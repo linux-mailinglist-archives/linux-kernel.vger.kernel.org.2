@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DF531D859
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA81931D869
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhBQL3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:29:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
+        id S232327AbhBQLag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:30:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231696AbhBQLYx (ORCPT
+        with ESMTP id S230389AbhBQLZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:24:53 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE303C0611C2
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:09 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id d8so7951326ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:09 -0800 (PST)
+        Wed, 17 Feb 2021 06:25:24 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B275C061A2A
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:13 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id lu16so6607403ejb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZPduukUW+zDcmyBtGD0E9Wpo2DTKnNWksKWwvc+AcBM=;
-        b=sHKbw5I0YlIzg9BI+qVO6EQchewu61LYKiI677vW8jsKfjSh3CX7pd4MkMXciZJlh+
-         Znzn9jSBXHe4UMMBigs71aFpVwsiiRVB6tcqTe2JO6SchrH2eCv/lfPIE86qrOG1SBr5
-         mXcBmEAb17lF1CQZEli2Oh8s+zLKrrr0IFANeSgsqMDph89EGsCq3BX6EdbPPC2oQZbr
-         aD0AZWW3i4A7ZrfhhMQY/2Y3TZRm0yi2x10wlQc/MXgVJNe2BkIHcK2jR3mxz0PsGln9
-         6ctB34lzaULsfVmiOkKKJlzym73QmbmlzHeYTh1is43hY0GbU37kkcdTj8ISMV8xX8yL
-         ZTAA==
+        bh=GKAsn7c+mWrgn+lNs9oJUQfT0Rjjz0SqrUrscFNnPlA=;
+        b=NANJFo39wSqwPN6MO6rbQJBuuVoTw1Q0p4r0m9iiWsypB0VNGqRBxNUzVKXNGKzdGt
+         PgHQXhqEZIn5GG+g3TOF8nsdX6QW7i29H1w7AOdf5qF85VYLtDpIs8TkEkuXLP8UXOx/
+         VZg4//MaLQPI++v851761wxeb8uiJKV/HnER0GqZsl1SnIrhJVZLtUyJ/mNLswDJX2+9
+         0pm4ydzG8YbrYp/11qvGCcn0KNmrztjN7L0Ibt9E2fAd9amZcY+CcnSlyOoC4QxyufEj
+         vZqQcF9jD5oE2EDT//YFgIp4OFzhOpLQF9jOGpk4k8fhHLZ/Ppkm5x5p1JKMDi0UxMik
+         44pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZPduukUW+zDcmyBtGD0E9Wpo2DTKnNWksKWwvc+AcBM=;
-        b=tTCF+JHkEc2IXM766WaZ0gA5SienL1ycdyE2up+dyBl4Q6vd1P6aM3VQ1FG4u7GCUu
-         ke0Vb7VERmN5kEnL/yOQn3hwP2Nk3sr0J06jkWN3tKlSNdvYJU9EkBDCJEKqwDA+rcRw
-         Uj43WEuxNgeR64ccWpIJkfO25oGqTQWjbNyfGTnUSSvIhGiDZ/qSnEs/+ZIN8aobMerL
-         R8teriilFCGXSi/8qH0HwBD4pve68i6IE8bpXdN51xyaK/SBEeeDEF80MFuKuEzDibCU
-         WaH5QVuAO32Ur7/tTbO/MwH8Rug94KjuwNutuHoETbj0jh7xfHWQFMdae8rJSjy/28Zv
-         efjg==
-X-Gm-Message-State: AOAM532V7TVKuGeaWJUBkjKg3jqRceBz1dZviWTwQ+U62LEpz0AL+cnb
-        t7eQzezCs+D+LANvOC3dN6iz50joJqOEpA==
-X-Google-Smtp-Source: ABdhPJyuxTGAq5Z6xESlvTCA0C5yKYa0MW/8mqyQ32dcYt5s7UIgj4ozN5YZJIKp11GBmDApWSpiaA==
-X-Received: by 2002:a17:907:6fb:: with SMTP id yh27mr6849604ejb.54.1613560928186;
-        Wed, 17 Feb 2021 03:22:08 -0800 (PST)
+        bh=GKAsn7c+mWrgn+lNs9oJUQfT0Rjjz0SqrUrscFNnPlA=;
+        b=hsy0bhJWbRxXCYYiY284OY04tqtZ5XkSaz7ahB5e88BkseseCUVcm4rty4mVjN+5BN
+         Fqzt953C7kO2rOv9q+r4XMyA6HHuK72lbMH/e7+wa6HCgW1iW5yzzgdsYn6ZlntuOIBT
+         3npDAKjn7AE8zIQAn95ZE5aXQLiWL4bDDEGZOpWoIUsXPLBvfBXmocC4fDXQDERANKQ5
+         fTn+xsZQAdZhHw01FTFvjSHlR4m3nSLBYSNsXPkE7/faxFWTuTqFegLo8A1huBjNXViz
+         fM7aXaCDOZcx1pmOm0ZKaY2PtyHKL/ZFtSD+Kez1Dv4JmSULoaG1eoN3/OY4YXTvMVKS
+         CqdA==
+X-Gm-Message-State: AOAM532evkcDe5lLnoTMubLs44kDDm2L3SDDGbecKrt97lsi6E74CIyY
+        vaalIUkdbwN0hlM+4Ob0flwF2Q==
+X-Google-Smtp-Source: ABdhPJxbgcaAL/o0FHtAs5djTEfkndau2qEbPKTfzHQC9EZLv9kJTdJedYz6a8u18Kn3ZeNzFTr/1Q==
+X-Received: by 2002:a17:906:5902:: with SMTP id h2mr24428247ejq.137.1613560931585;
+        Wed, 17 Feb 2021 03:22:11 -0800 (PST)
 Received: from localhost.localdomain ([2a02:2450:102f:d6a:4815:d4dc:ff5a:704a])
-        by smtp.gmail.com with ESMTPSA id h10sm934344edk.45.2021.02.17.03.22.06
+        by smtp.gmail.com with ESMTPSA id h10sm934344edk.45.2021.02.17.03.22.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 03:22:07 -0800 (PST)
+        Wed, 17 Feb 2021 03:22:11 -0800 (PST)
 From:   Robert Foss <robert.foss@linaro.org>
 To:     agross@kernel.org, bjorn.andersson@linaro.org,
         robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
@@ -63,9 +63,9 @@ Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
         Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Jonathan Marek <jonathan@marek.ca>
-Subject: [PATCH v5 07/22] media: camss: Add support for VFE hardware version Titan 170
-Date:   Wed, 17 Feb 2021 12:21:07 +0100
-Message-Id: <20210217112122.424236-8-robert.foss@linaro.org>
+Subject: [PATCH v5 09/22] media: camss: Refactor CSID HW version support
+Date:   Wed, 17 Feb 2021 12:21:09 +0100
+Message-Id: <20210217112122.424236-10-robert.foss@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210217112122.424236-1-robert.foss@linaro.org>
 References: <20210217112122.424236-1-robert.foss@linaro.org>
@@ -75,1165 +75,1721 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add register definitions for version 170 of the Titan architecture
-and implement support for the RDI output mode.
-
-The RDI mode as opposed to the PIX output mode for the VFE unit does
-not support any ISP functionality. This means essentially only
-supporting dumping the output of the whatever the CSI decoder receives
-from the sensor.
-
-For example will a sensor outputting YUV pixel format frames, only
-allow the VFE to dump those frames as they are received by the ISP
-to memory through the RDI interface.
+In order to support Qualcomm ISP hardware architectures that diverge
+from older architectures, the CSID subdevice drivers needs to be refactored
+to better abstract the different ISP hardware architectures.
 
 Signed-off-by: Robert Foss <robert.foss@linaro.org>
 ---
 
+Changes since v1
+ - kernel test robot: Add missing include, interrupt.h
 
-Changes since v1:
- - Andrey: Remove commented out chunk
- - Remove left over WIP comments
-
-Changes since v4:
- - Andrey: Remove traces of PIX support
- - Andrey: Fix vfe_global_reset() overwriting reset command
- - Remove unused variable
+Changes since v4
+ - Andrey: Removed whitespace from some includes
+ - Andrey: Removed unused enum
 
 
-
- drivers/media/platform/qcom/camss/Makefile    |   1 +
- .../media/platform/qcom/camss/camss-vfe-170.c | 790 ++++++++++++++++++
- drivers/media/platform/qcom/camss/camss-vfe.c |  47 +-
- drivers/media/platform/qcom/camss/camss-vfe.h |  26 +-
- .../media/platform/qcom/camss/camss-video.c   |  52 ++
- drivers/media/platform/qcom/camss/camss.c     |  61 ++
- 6 files changed, 957 insertions(+), 20 deletions(-)
- create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-170.c
+ drivers/media/platform/qcom/camss/Makefile    |   2 +
+ .../platform/qcom/camss/camss-csid-4-1.c      | 330 ++++++++++
+ .../platform/qcom/camss/camss-csid-4-7.c      | 406 ++++++++++++
+ .../media/platform/qcom/camss/camss-csid.c    | 616 +-----------------
+ .../media/platform/qcom/camss/camss-csid.h    | 126 +++-
+ 5 files changed, 890 insertions(+), 590 deletions(-)
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-1.c
+ create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-7.c
 
 diff --git a/drivers/media/platform/qcom/camss/Makefile b/drivers/media/platform/qcom/camss/Makefile
-index 940c0ae3e003..052c4f405fa3 100644
+index 052c4f405fa3..cff388b653ba 100644
 --- a/drivers/media/platform/qcom/camss/Makefile
 +++ b/drivers/media/platform/qcom/camss/Makefile
-@@ -11,6 +11,7 @@ qcom-camss-objs += \
- 		camss-vfe-4-1.o \
- 		camss-vfe-4-7.o \
- 		camss-vfe-4-8.o \
-+		camss-vfe-170.o \
- 		camss-vfe-gen1.o \
- 		camss-vfe.o \
- 		camss-video.o \
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
+@@ -4,6 +4,8 @@
+ qcom-camss-objs += \
+ 		camss.o \
+ 		camss-csid.o \
++		camss-csid-4-1.o \
++		camss-csid-4-7.o \
+ 		camss-csiphy-2ph-1-0.o \
+ 		camss-csiphy-3ph-1-0.o \
+ 		camss-csiphy.o \
+diff --git a/drivers/media/platform/qcom/camss/camss-csid-4-1.c b/drivers/media/platform/qcom/camss/camss-csid-4-1.c
 new file mode 100644
-index 000000000000..c4991b1f22f8
+index 000000000000..c92077a7f758
 --- /dev/null
-+++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
-@@ -0,0 +1,790 @@
++++ b/drivers/media/platform/qcom/camss/camss-csid-4-1.c
+@@ -0,0 +1,330 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * camss-vfe-4-7.c
++ * camss-csid-4-1.c
 + *
-+ * Qualcomm MSM Camera Subsystem - VFE (Video Front End) Module v4.7
++ * Qualcomm MSM Camera Subsystem - CSID (CSI Decoder) Module
 + *
-+ * Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
-+ * Copyright (C) 2015-2018 Linaro Ltd.
++ * Copyright (C) 2020 Linaro Ltd.
 + */
 +
-+#include <linux/delay.h>
++#include <linux/completion.h>
 +#include <linux/interrupt.h>
 +#include <linux/io.h>
-+#include <linux/iopoll.h>
++#include <linux/kernel.h>
++#include <linux/of.h>
 +
++#include "camss-csid.h"
 +#include "camss.h"
-+#include "camss-vfe.h"
 +
-+#define VFE_HW_VERSION				(0x000)
-+
-+#define VFE_GLOBAL_RESET_CMD			(0x018)
-+#define		GLOBAL_RESET_CMD_CORE		BIT(0)
-+#define		GLOBAL_RESET_CMD_CAMIF		BIT(1)
-+#define		GLOBAL_RESET_CMD_BUS		BIT(2)
-+#define		GLOBAL_RESET_CMD_BUS_BDG	BIT(3)
-+#define		GLOBAL_RESET_CMD_REGISTER	BIT(4)
-+#define		GLOBAL_RESET_CMD_PM		BIT(5)
-+#define		GLOBAL_RESET_CMD_BUS_MISR	BIT(6)
-+#define		GLOBAL_RESET_CMD_TESTGEN	BIT(7)
-+#define		GLOBAL_RESET_CMD_DSP		BIT(8)
-+#define		GLOBAL_RESET_CMD_IDLE_CGC	BIT(9)
-+#define		GLOBAL_RESET_CMD_RDI0		BIT(10)
-+#define		GLOBAL_RESET_CMD_RDI1		BIT(11)
-+#define		GLOBAL_RESET_CMD_RDI2		BIT(12)
-+#define		GLOBAL_RESET_CMD_RDI3		BIT(13)
-+#define		GLOBAL_RESET_CMD_VFE_DOMAIN	BIT(30)
-+#define		GLOBAL_RESET_CMD_RESET_BYPASS	BIT(31)
-+
-+
-+#define VFE_CORE_CFG				(0x050)
-+#define		CFG_PIXEL_PATTERN_YCBYCR	(0x4)
-+#define		CFG_PIXEL_PATTERN_YCRYCB	(0x5)
-+#define		CFG_PIXEL_PATTERN_CBYCRY	(0x6)
-+#define		CFG_PIXEL_PATTERN_CRYCBY	(0x7)
-+#define		CFG_COMPOSITE_REG_UPDATE_EN	BIT(4)
-+
-+#define VFE_IRQ_CMD				(0x058)
-+#define		CMD_GLOBAL_CLEAR		BIT(0)
-+
-+#define VFE_IRQ_MASK_0					(0x05c)
-+#define		MASK_0_CAMIF_SOF			BIT(0)
-+#define		MASK_0_CAMIF_EOF			BIT(1)
-+#define		MASK_0_RDI_REG_UPDATE(n)		BIT((n) + 5)
-+#define		MASK_0_IMAGE_MASTER_n_PING_PONG(n)	BIT((n) + 8)
-+#define		MASK_0_IMAGE_COMPOSITE_DONE_n(n)	BIT((n) + 25)
-+#define		MASK_0_RESET_ACK			BIT(31)
-+
-+#define VFE_IRQ_MASK_1					(0x060)
-+#define		MASK_1_CAMIF_ERROR			BIT(0)
-+#define		MASK_1_VIOLATION			BIT(7)
-+#define		MASK_1_BUS_BDG_HALT_ACK			BIT(8)
-+#define		MASK_1_IMAGE_MASTER_n_BUS_OVERFLOW(n)	BIT((n) + 9)
-+#define		MASK_1_RDI_SOF(n)			BIT((n) + 29)
-+
-+#define VFE_IRQ_CLEAR_0					(0x064)
-+#define VFE_IRQ_CLEAR_1					(0x068)
-+
-+#define VFE_IRQ_STATUS_0				(0x06c)
-+#define		STATUS_0_CAMIF_SOF			BIT(0)
-+#define		STATUS_0_RDI_REG_UPDATE(n)		BIT((n) + 5)
-+#define		STATUS_0_IMAGE_MASTER_PING_PONG(n)	BIT((n) + 8)
-+#define		STATUS_0_IMAGE_COMPOSITE_DONE(n)	BIT((n) + 25)
-+#define		STATUS_0_RESET_ACK			BIT(31)
-+
-+#define VFE_IRQ_STATUS_1				(0x070)
-+#define		STATUS_1_VIOLATION			BIT(7)
-+#define		STATUS_1_BUS_BDG_HALT_ACK		BIT(8)
-+#define		STATUS_1_RDI_SOF(n)			BIT((n) + 27)
-+
-+#define VFE_VIOLATION_STATUS			(0x07c)
-+
-+#define VFE_CAMIF_CMD				(0x478)
-+#define		CMD_CLEAR_CAMIF_STATUS		BIT(2)
-+
-+#define VFE_CAMIF_CFG				(0x47c)
-+#define		CFG_VSYNC_SYNC_EDGE		(0)
-+#define			VSYNC_ACTIVE_HIGH	(0)
-+#define			VSYNC_ACTIVE_LOW	(1)
-+#define		CFG_HSYNC_SYNC_EDGE		(1)
-+#define			HSYNC_ACTIVE_HIGH	(0)
-+#define			HSYNC_ACTIVE_LOW	(1)
-+#define		CFG_VFE_SUBSAMPLE_ENABLE	BIT(4)
-+#define		CFG_BUS_SUBSAMPLE_ENABLE	BIT(5)
-+#define		CFG_VFE_OUTPUT_EN		BIT(6)
-+#define		CFG_BUS_OUTPUT_EN		BIT(7)
-+#define		CFG_BINNING_EN			BIT(9)
-+#define		CFG_FRAME_BASED_EN		BIT(10)
-+#define		CFG_RAW_CROP_EN			BIT(22)
-+
-+// XXX different, don't exist in TITAN register docs
-+#define VFE_0_CAMIF_FRAME_CFG			0x484
-+#define VFE_0_CAMIF_WINDOW_WIDTH_CFG		0x488
-+#define VFE_0_CAMIF_WINDOW_HEIGHT_CFG		0x48c
-+#define VFE_0_CAMIF_SUBSAMPLE_CFG		0x490
-+#define VFE_0_CAMIF_IRQ_FRAMEDROP_PATTERN	0x498
-+#define VFE_0_CAMIF_IRQ_SUBSAMPLE_PATTERN	0x49c
-+#define VFE_0_CAMIF_STATUS			0x4a4
-+#define VFE_0_CAMIF_STATUS_HALT			BIT(31)
-+#define CAMIF_TIMEOUT_SLEEP_US 1000
-+#define CAMIF_TIMEOUT_ALL_US 1000000
-+
-+#define VFE_REG_UPDATE_CMD			(0x4ac)
-+#define		REG_UPDATE_RDI(n)		BIT(1 + (n))
++#define CAMSS_CSID_HW_VERSION		0x0
++#define CAMSS_CSID_CORE_CTRL_0		0x004
++#define CAMSS_CSID_CORE_CTRL_1		0x008
++#define CAMSS_CSID_RST_CMD		0x00c
++#define CAMSS_CSID_CID_LUT_VC_n(n)	(0x010 + 0x4 * (n))
++#define CAMSS_CSID_CID_n_CFG(n)		(0x020 + 0x4 * (n))
++#define CAMSS_CSID_CID_n_CFG_ISPIF_EN	BIT(0)
++#define CAMSS_CSID_CID_n_CFG_RDI_EN	BIT(1)
++#define CAMSS_CSID_CID_n_CFG_DECODE_FORMAT_SHIFT	4
++#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8		(0 << 8)
++#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16		(1 << 8)
++#define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_LSB	(0 << 9)
++#define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_MSB	(1 << 9)
++#define CAMSS_CSID_CID_n_CFG_RDI_MODE_RAW_DUMP		(0 << 10)
++#define CAMSS_CSID_CID_n_CFG_RDI_MODE_PLAIN_PACKING	(1 << 10)
++#define CAMSS_CSID_IRQ_CLEAR_CMD	0x060
++#define CAMSS_CSID_IRQ_MASK		0x064
++#define CAMSS_CSID_IRQ_STATUS		0x068
++#define CAMSS_CSID_TG_CTRL		0x0a0
++#define CAMSS_CSID_TG_CTRL_DISABLE	0xa06436
++#define CAMSS_CSID_TG_CTRL_ENABLE	0xa06437
++#define CAMSS_CSID_TG_VC_CFG		0x0a4
++#define CAMSS_CSID_TG_VC_CFG_H_BLANKING		0x3ff
++#define CAMSS_CSID_TG_VC_CFG_V_BLANKING		0x7f
++#define CAMSS_CSID_TG_DT_n_CGG_0(n)	(0x0ac + 0xc * (n))
++#define CAMSS_CSID_TG_DT_n_CGG_1(n)	(0x0b0 + 0xc * (n))
++#define CAMSS_CSID_TG_DT_n_CGG_2(n)	(0x0b4 + 0xc * (n))
 +
 +
-+#define VFE_BUS_IRQ_MASK(n)		(0x2044 + (n) * 4)
-+#define VFE_BUS_IRQ_CLEAR(n)		(0x2050 + (n) * 4)
++static const struct csid_format csid_formats[] = {
++	{
++		MEDIA_BUS_FMT_UYVY8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_VYUY8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_YUYV8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_YVYU8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_SBGGR8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGBRG8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGRBG8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SRGGB8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SBGGR10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGBRG10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGRBG10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SRGGB10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SBGGR12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGBRG12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGRBG12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SRGGB12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_Y10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++};
 +
-+#define VFE_BUS_IRQ_STATUS(n)		(0x205c + (n) * 4)
-+#define		STATUS0_COMP_RESET_DONE		BIT(0)
-+#define		STATUS0_COMP_REG_UPDATE0_DONE	BIT(1)
-+#define		STATUS0_COMP_REG_UPDATE1_DONE	BIT(2)
-+#define		STATUS0_COMP_REG_UPDATE2_DONE	BIT(3)
-+#define		STATUS0_COMP_REG_UPDATE3_DONE	BIT(4)
-+#define		STATUS0_COMP_REG_UPDATE_DONE(n)	BIT(n + 1)
-+#define		STATUS0_COMP0_BUF_DONE		BIT(5)
-+#define		STATUS0_COMP1_BUF_DONE		BIT(6)
-+#define		STATUS0_COMP2_BUF_DONE		BIT(7)
-+#define		STATUS0_COMP3_BUF_DONE		BIT(8)
-+#define		STATUS0_COMP4_BUF_DONE		BIT(9)
-+#define		STATUS0_COMP5_BUF_DONE		BIT(10)
-+#define		STATUS0_COMP_BUF_DONE(n)	BIT(n + 5)
-+#define		STATUS0_COMP_ERROR		BIT(11)
-+#define		STATUS0_COMP_OVERWRITE		BIT(12)
-+#define		STATUS0_OVERFLOW		BIT(13)
-+#define		STATUS0_VIOLATION		BIT(14)
-+/* WM_CLIENT_BUF_DONE defined for buffers 0:19 */
-+#define		STATUS1_WM_CLIENT_BUF_DONE(n)		BIT(n)
-+#define		STATUS1_EARLY_DONE			BIT(24)
-+#define		STATUS2_DUAL_COMP0_BUF_DONE		BIT(0)
-+#define		STATUS2_DUAL_COMP1_BUF_DONE		BIT(1)
-+#define		STATUS2_DUAL_COMP2_BUF_DONE		BIT(2)
-+#define		STATUS2_DUAL_COMP3_BUF_DONE		BIT(3)
-+#define		STATUS2_DUAL_COMP4_BUF_DONE		BIT(4)
-+#define		STATUS2_DUAL_COMP5_BUF_DONE		BIT(5)
-+#define		STATUS2_DUAL_COMP_BUF_DONE(n)		BIT(n)
-+#define		STATUS2_DUAL_COMP_ERROR			BIT(6)
-+#define		STATUS2_DUAL_COMP_OVERWRITE		BIT(7)
-+
-+#define VFE_BUS_IRQ_CLEAR_GLOBAL		(0x2068)
-+
-+#define VFE_BUS_WM_DEBUG_STATUS_CFG		(0x226c)
-+#define		DEBUG_STATUS_CFG_STATUS0(n)	BIT(n)
-+#define		DEBUG_STATUS_CFG_STATUS1(n)	BIT(8+n)
-+
-+#define VFE_BUS_WM_ADDR_SYNC_FRAME_HEADER	(0x2080)
-+
-+#define VFE_BUS_WM_ADDR_SYNC_NO_SYNC		(0x2084)
-+#define		BUS_VER2_MAX_CLIENTS (24)
-+#define		WM_ADDR_NO_SYNC_DEFAULT_VAL \
-+				((1 << BUS_VER2_MAX_CLIENTS) - 1)
-+
-+#define VFE_BUS_WM_CGC_OVERRIDE			(0x200c)
-+#define		WM_CGC_OVERRIDE_ALL		(0xFFFFF)
-+
-+#define VFE_BUS_WM_TEST_BUS_CTRL		(0x211c)
-+
-+#define VFE_BUS_WM_STATUS0(n)			(0x2200 + (n) * 0x100)
-+#define VFE_BUS_WM_STATUS1(n)			(0x2204 + (n) * 0x100)
-+#define VFE_BUS_WM_CFG(n)			(0x2208 + (n) * 0x100)
-+#define		WM_CFG_EN			(0)
-+#define		WM_CFG_MODE			(1)
-+#define			MODE_QCOM_PLAIN	(0)
-+#define			MODE_MIPI_RAW	(1)
-+#define		WM_CFG_VIRTUALFRAME		(2)
-+#define VFE_BUS_WM_HEADER_ADDR(n)		(0x220c + (n) * 0x100)
-+#define VFE_BUS_WM_HEADER_CFG(n)		(0x2210 + (n) * 0x100)
-+#define VFE_BUS_WM_IMAGE_ADDR(n)		(0x2214 + (n) * 0x100)
-+#define VFE_BUS_WM_IMAGE_ADDR_OFFSET(n)		(0x2218 + (n) * 0x100)
-+#define VFE_BUS_WM_BUFFER_WIDTH_CFG(n)		(0x221c + (n) * 0x100)
-+#define		WM_BUFFER_DEFAULT_WIDTH		(0xFF01)
-+
-+#define VFE_BUS_WM_BUFFER_HEIGHT_CFG(n)		(0x2220 + (n) * 0x100)
-+#define VFE_BUS_WM_PACKER_CFG(n)		(0x2224 + (n) * 0x100)
-+
-+#define VFE_BUS_WM_STRIDE(n)			(0x2228 + (n) * 0x100)
-+#define		WM_STRIDE_DEFAULT_STRIDE	(0xFF01)
-+
-+#define VFE_BUS_WM_IRQ_SUBSAMPLE_PERIOD(n)	(0x2248 + (n) * 0x100)
-+#define VFE_BUS_WM_IRQ_SUBSAMPLE_PATTERN(n)	(0x224c + (n) * 0x100)
-+#define VFE_BUS_WM_FRAMEDROP_PERIOD(n)		(0x2250 + (n) * 0x100)
-+#define VFE_BUS_WM_FRAMEDROP_PATTERN(n)		(0x2254 + (n) * 0x100)
-+#define VFE_BUS_WM_FRAME_INC(n)			(0x2258 + (n) * 0x100)
-+#define VFE_BUS_WM_BURST_LIMIT(n)		(0x225c + (n) * 0x100)
-+
-+
-+static void vfe_hw_version_read(struct vfe_device *vfe, struct device *dev)
++static void csid_configure_stream(struct csid_device *csid, u8 enable)
 +{
-+	u32 hw_version = readl_relaxed(vfe->base + VFE_HW_VERSION);
-+
-+	u32 gen = (hw_version >> 28) & 0xF;
-+	u32 rev = (hw_version >> 16) & 0xFFF;
-+	u32 step = hw_version & 0xFFFF;
-+
-+	dev_err(dev, "VFE HW Version = %u.%u.%u\n", gen, rev, step);
-+}
-+
-+static inline void vfe_reg_clr(struct vfe_device *vfe, u32 reg, u32 clr_bits)
-+{
-+	u32 bits = readl_relaxed(vfe->base + reg);
-+
-+	writel_relaxed(bits & ~clr_bits, vfe->base + reg);
-+}
-+
-+static inline void vfe_reg_set(struct vfe_device *vfe, u32 reg, u32 set_bits)
-+{
-+	u32 bits = readl_relaxed(vfe->base + reg);
-+
-+	writel_relaxed(bits | set_bits, vfe->base + reg);
-+}
-+
-+static void vfe_global_reset(struct vfe_device *vfe)
-+{
-+	u32 reset_bits = GLOBAL_RESET_CMD_CORE		|
-+			 GLOBAL_RESET_CMD_CAMIF		|
-+			 GLOBAL_RESET_CMD_BUS		|
-+			 GLOBAL_RESET_CMD_REGISTER	|
-+			 GLOBAL_RESET_CMD_PM		|
-+			 GLOBAL_RESET_CMD_BUS_MISR	|
-+			 GLOBAL_RESET_CMD_IDLE_CGC	|
-+			 GLOBAL_RESET_CMD_RDI0		|
-+			 GLOBAL_RESET_CMD_RDI1		|
-+			 GLOBAL_RESET_CMD_RDI2;
-+
-+	writel_relaxed(BIT(31), vfe->base + VFE_IRQ_MASK_0);
-+
-+	/* Make sure IRQ mask has been written before resetting */
-+	wmb();
-+
-+	writel_relaxed(reset_bits, vfe->base + VFE_GLOBAL_RESET_CMD);
-+}
-+
-+static void vfe_wm_start(struct vfe_device *vfe, u8 wm, struct vfe_line *line)
-+{
++	struct csid_testgen_config *tg = &csid->testgen;
 +	u32 val;
 +
-+	/*Set Debug Registers*/
-+	val = DEBUG_STATUS_CFG_STATUS0(1) |
-+	      DEBUG_STATUS_CFG_STATUS0(7);
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_DEBUG_STATUS_CFG);
++	if (enable) {
++		struct v4l2_mbus_framefmt *input_format;
++		const struct csid_format *format;
++		u8 vc = 0; /* Virtual Channel 0 */
++		u8 cid = vc * 4; /* id of Virtual Channel and Data Type set */
++		u8 dt_shift;
 +
-+	/* BUS_WM_INPUT_IF_ADDR_SYNC_FRAME_HEADER */
-+	writel_relaxed(0, vfe->base + VFE_BUS_WM_ADDR_SYNC_FRAME_HEADER);
++		if (tg->enabled) {
++			/* Config Test Generator */
++			u32 num_lines, num_bytes_per_line;
 +
-+	/* no clock gating at bus input */
-+	val = WM_CGC_OVERRIDE_ALL;
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_CGC_OVERRIDE);
++			input_format = &csid->fmt[MSM_CSID_PAD_SRC];
++			format = csid_get_fmt_entry(csid->formats, csid->nformats,
++						    input_format->code);
++			num_bytes_per_line = input_format->width * format->bpp * format->spp / 8;
++			num_lines = input_format->height;
 +
-+	writel_relaxed(0x0, vfe->base + VFE_BUS_WM_TEST_BUS_CTRL);
++			/* 31:24 V blank, 23:13 H blank, 3:2 num of active DT */
++			/* 1:0 VC */
++			val = ((CAMSS_CSID_TG_VC_CFG_V_BLANKING & 0xff) << 24) |
++				  ((CAMSS_CSID_TG_VC_CFG_H_BLANKING & 0x7ff) << 13);
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_VC_CFG);
 +
-+	/* if addr_no_sync has default value then config the addr no sync reg */
-+	val = WM_ADDR_NO_SYNC_DEFAULT_VAL;
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_ADDR_SYNC_NO_SYNC);
++			/* 28:16 bytes per lines, 12:0 num of lines */
++			val = ((num_bytes_per_line & 0x1fff) << 16) |
++				  (num_lines & 0x1fff);
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_DT_n_CGG_0(0));
 +
-+	writel_relaxed(0xf, vfe->base + VFE_BUS_WM_BURST_LIMIT(wm));
++			/* 5:0 data type */
++			val = format->data_type;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_DT_n_CGG_1(0));
 +
-+	val = WM_BUFFER_DEFAULT_WIDTH;
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_BUFFER_WIDTH_CFG(wm));
++			/* 2:0 output test pattern */
++			val = tg->mode;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_DT_n_CGG_2(0));
++		} else {
++			struct csid_phy_config *phy = &csid->phy;
 +
-+	val = 0;
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_BUFFER_HEIGHT_CFG(wm));
++			input_format = &csid->fmt[MSM_CSID_PAD_SINK];
++			format = csid_get_fmt_entry(csid->formats, csid->nformats,
++						    input_format->code);
 +
-+	val = 0;
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_PACKER_CFG(wm)); // XXX 1 for PLAIN8?
++			val = phy->lane_cnt - 1;
++			val |= phy->lane_assign << 4;
 +
-+	/* Configure stride for RDIs */
-+	//val = pix->plane_fmt[0].bytesperline;
-+	val = WM_STRIDE_DEFAULT_STRIDE;
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_STRIDE(wm));
++			writel_relaxed(val, csid->base + CAMSS_CSID_CORE_CTRL_0);
 +
-+	/* Enable WM */
-+	val = 1 << WM_CFG_EN |
-+	      MODE_MIPI_RAW << WM_CFG_MODE;
-+	writel_relaxed(val, vfe->base + VFE_BUS_WM_CFG(wm));
-+}
++			val = phy->csiphy_id << 17;
++			val |= 0x9;
 +
-+static void vfe_wm_stop(struct vfe_device *vfe, u8 wm)
-+{
-+	/* Disable WM */
-+	writel_relaxed(0, vfe->base + VFE_BUS_WM_CFG(wm));
-+}
++			writel_relaxed(val, csid->base + CAMSS_CSID_CORE_CTRL_1);
++		}
 +
-+static void vfe_wm_update(struct vfe_device *vfe, u8 wm, u32 addr,
-+			  struct vfe_line *line)
-+{
-+	struct v4l2_pix_format_mplane *pix =
-+		&line->video_out.active_fmt.fmt.pix_mp;
-+	u32 stride = pix->plane_fmt[0].bytesperline;
++		/* Config LUT */
 +
-+	writel_relaxed(addr, vfe->base + VFE_BUS_WM_IMAGE_ADDR(wm));
-+	writel_relaxed(stride * pix->height, vfe->base + VFE_BUS_WM_FRAME_INC(wm));
-+}
++		dt_shift = (cid % 4) * 8;
++		val = readl_relaxed(csid->base + CAMSS_CSID_CID_LUT_VC_n(vc));
++		val &= ~(0xff << dt_shift);
++		val |= format->data_type << dt_shift;
++		writel_relaxed(val, csid->base + CAMSS_CSID_CID_LUT_VC_n(vc));
 +
-+static void vfe_reg_update(struct vfe_device *vfe, enum vfe_line_id line_id)
-+{
-+	vfe->reg_update |= REG_UPDATE_RDI(line_id);
++		val = CAMSS_CSID_CID_n_CFG_ISPIF_EN;
++		val |= CAMSS_CSID_CID_n_CFG_RDI_EN;
++		val |= format->decode_format << CAMSS_CSID_CID_n_CFG_DECODE_FORMAT_SHIFT;
++		val |= CAMSS_CSID_CID_n_CFG_RDI_MODE_RAW_DUMP;
++		writel_relaxed(val, csid->base + CAMSS_CSID_CID_n_CFG(cid));
 +
-+	/* Enforce ordering between previous reg writes and reg update */
-+	wmb();
-+
-+	writel_relaxed(vfe->reg_update, vfe->base + VFE_REG_UPDATE_CMD);
-+
-+	/* Enforce ordering between reg update and subsequent reg writes */
-+	wmb();
-+}
-+
-+static inline void vfe_reg_update_clear(struct vfe_device *vfe,
-+					enum vfe_line_id line_id)
-+{
-+	vfe->reg_update &= ~REG_UPDATE_RDI(line_id);
-+}
-+
-+static void vfe_enable_irq_common(struct vfe_device *vfe)
-+{
-+	vfe_reg_set(vfe, VFE_IRQ_MASK_0, ~0u);
-+	vfe_reg_set(vfe, VFE_IRQ_MASK_1, ~0u);
-+
-+	writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(0));
-+	writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(1));
-+	writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(2));
-+}
-+
-+static void vfe_isr_halt_ack(struct vfe_device *vfe)
-+{
-+	complete(&vfe->halt_complete);
-+}
-+
-+static void vfe_isr_read(struct vfe_device *vfe, u32 *status0, u32 *status1)
-+{
-+	*status0 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_0);
-+	*status1 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_1);
-+
-+	writel_relaxed(*status0, vfe->base + VFE_IRQ_CLEAR_0);
-+	writel_relaxed(*status1, vfe->base + VFE_IRQ_CLEAR_1);
-+
-+	/* Enforce ordering between IRQ Clear and Global IRQ Clear */
-+	wmb();
-+	writel_relaxed(CMD_GLOBAL_CLEAR, vfe->base + VFE_IRQ_CMD);
-+}
-+
-+static void vfe_violation_read(struct vfe_device *vfe)
-+{
-+	u32 violation = readl_relaxed(vfe->base + VFE_VIOLATION_STATUS);
-+
-+	pr_err_ratelimited("VFE: violation = 0x%08x\n", violation);
-+}
-+
-+/*
-+ * vfe_isr - VFE module interrupt handler
-+ * @irq: Interrupt line
-+ * @dev: VFE device
-+ *
-+ * Return IRQ_HANDLED on success
-+ */
-+static irqreturn_t vfe_isr(int irq, void *dev)
-+{
-+	struct vfe_device *vfe = dev;
-+	u32 status0, status1, vfe_bus_status[3];
-+	int i, wm;
-+
-+	status0 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_0);
-+	status1 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_1);
-+
-+	writel_relaxed(status0, vfe->base + VFE_IRQ_CLEAR_0);
-+	writel_relaxed(status1, vfe->base + VFE_IRQ_CLEAR_1);
-+
-+	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++) {
-+		vfe_bus_status[i] = readl_relaxed(vfe->base + VFE_BUS_IRQ_STATUS(i));
-+		writel_relaxed(vfe_bus_status[i], vfe->base + VFE_BUS_IRQ_CLEAR(i));
++		if (tg->enabled) {
++			val = CAMSS_CSID_TG_CTRL_ENABLE;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_CTRL);
++		}
++	} else {
++		if (tg->enabled) {
++			val = CAMSS_CSID_TG_CTRL_DISABLE;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_CTRL);
++		}
 +	}
++}
 +
-+	/* Enforce ordering between IRQ reading and interpretation */
-+	wmb();
++static int csid_configure_testgen_pattern(struct csid_device *csid, s32 val)
++{
++	s32 regval = val - 1;
 +
-+	writel_relaxed(CMD_GLOBAL_CLEAR, vfe->base + VFE_IRQ_CMD);
-+	writel_relaxed(1, vfe->base + VFE_BUS_IRQ_CLEAR_GLOBAL);
++	if (regval > 0 || regval <= CSID_PAYLOAD_MODE_MAX_SUPPORTED_4_1)
++		csid->testgen.mode = regval;
 +
-+	if (status0 & STATUS_0_RESET_ACK)
-+		vfe->isr_ops.reset_ack(vfe);
++	return 0;
++}
 +
-+	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
-+		if (status0 & STATUS_0_RDI_REG_UPDATE(i))
-+			vfe->isr_ops.reg_update(vfe, i);
++static u32 csid_hw_version(struct csid_device *csid)
++{
++	u32 hw_version = readl_relaxed(csid->base + CAMSS_CSID_HW_VERSION);
 +
-+	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
-+		if (status0 & STATUS_1_RDI_SOF(i))
-+			vfe->isr_ops.sof(vfe, i);
++	dev_dbg(csid->camss->dev, "CSID HW Version = 0x%08x\n", hw_version);
 +
-+	for (i = 0; i < MSM_VFE_COMPOSITE_IRQ_NUM; i++)
-+		if (vfe_bus_status[0] & STATUS0_COMP_BUF_DONE(i))
-+			vfe->isr_ops.comp_done(vfe, i);
++	return hw_version;
++}
 +
-+	for (wm = 0; wm < MSM_VFE_IMAGE_MASTERS_NUM; wm++)
-+		if (status0 & BIT(9))
-+			if (vfe_bus_status[1] & STATUS1_WM_CLIENT_BUF_DONE(wm))
-+				vfe->isr_ops.wm_done(vfe, wm);
++static irqreturn_t csid_isr(int irq, void *dev)
++{
++	struct csid_device *csid = dev;
++	u32 value;
++
++	value = readl_relaxed(csid->base + CAMSS_CSID_IRQ_STATUS);
++	writel_relaxed(value, csid->base + CAMSS_CSID_IRQ_CLEAR_CMD);
++
++	if ((value >> 11) & 0x1)
++		complete(&csid->reset_complete);
 +
 +	return IRQ_HANDLED;
 +}
 +
-+/*
-+ * vfe_halt - Trigger halt on VFE module and wait to complete
-+ * @vfe: VFE device
-+ *
-+ * Return 0 on success or a negative error code otherwise
-+ */
-+static int vfe_halt(struct vfe_device *vfe)
++static int csid_reset(struct csid_device *csid)
 +{
 +	unsigned long time;
 +
-+	return 0;
++	reinit_completion(&csid->reset_complete);
 +
-+	reinit_completion(&vfe->halt_complete);
++	writel_relaxed(0x7fff, csid->base + CAMSS_CSID_RST_CMD);
 +
-+	time = wait_for_completion_timeout(&vfe->halt_complete,
-+		msecs_to_jiffies(VFE_HALT_TIMEOUT_MS));
++	time = wait_for_completion_timeout(&csid->reset_complete,
++		msecs_to_jiffies(CSID_RESET_TIMEOUT_MS));
 +	if (!time) {
-+		dev_err(vfe->camss->dev, "VFE halt timeout\n");
++		dev_err(csid->camss->dev, "CSID reset timeout\n");
 +		return -EIO;
 +	}
 +
 +	return 0;
 +}
 +
-+static int vfe_get_output(struct vfe_line *line)
++static u32 csid_src_pad_code(struct csid_device *csid, u32 sink_code,
++			     unsigned int match_format_idx, u32 match_code)
 +{
-+	struct vfe_device *vfe = to_vfe(line);
-+	struct vfe_output *output;
-+	unsigned long flags;
-+	int i;
-+	int wm_idx;
++	if (match_format_idx > 0)
++		return 0;
 +
-+	spin_lock_irqsave(&vfe->output_lock, flags);
++	return sink_code;
++}
 +
-+	output = &line->output;
-+	if (output->state != VFE_OUTPUT_OFF) {
-+		dev_err(vfe->camss->dev, "Output is running\n");
-+		goto error;
-+	}
++static void csid_subdev_init(struct csid_device *csid)
++{
++	csid->formats = csid_formats;
++	csid->nformats = ARRAY_SIZE(csid_formats);
++	csid->testgen.modes = csid_testgen_modes;
++	csid->testgen.nmodes = CSID_PAYLOAD_MODE_MAX_SUPPORTED_4_1;
++}
 +
-+	output->wm_num = 1;
++const struct csid_hw_ops csid_ops_4_1 = {
++	.configure_stream = csid_configure_stream,
++	.configure_testgen_pattern = csid_configure_testgen_pattern,
++	.hw_version = csid_hw_version,
++	.isr = csid_isr,
++	.reset = csid_reset,
++	.src_pad_code = csid_src_pad_code,
++	.subdev_init = csid_subdev_init,
++};
+diff --git a/drivers/media/platform/qcom/camss/camss-csid-4-7.c b/drivers/media/platform/qcom/camss/camss-csid-4-7.c
+new file mode 100644
+index 000000000000..16a69b140f4e
+--- /dev/null
++++ b/drivers/media/platform/qcom/camss/camss-csid-4-7.c
+@@ -0,0 +1,406 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * camss-csid-4-7.c
++ *
++ * Qualcomm MSM Camera Subsystem - CSID (CSI Decoder) Module
++ *
++ * Copyright (C) 2020 Linaro Ltd.
++ */
++#include <linux/completion.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/of.h>
 +
-+	for (i = 0; i < output->wm_num; i++) {
-+		wm_idx = vfe_reserve_wm(vfe, line->id);
-+		if (wm_idx < 0) {
-+			dev_err(vfe->camss->dev, "Can not reserve wm\n");
-+			goto error_get_wm;
++#include "camss-csid.h"
++#include "camss.h"
++
++#define CAMSS_CSID_HW_VERSION		0x0
++#define CAMSS_CSID_CORE_CTRL_0		0x004
++#define CAMSS_CSID_CORE_CTRL_1		0x008
++#define CAMSS_CSID_RST_CMD		0x010
++#define CAMSS_CSID_CID_LUT_VC_n(n)	(0x014 + 0x4 * (n))
++#define CAMSS_CSID_CID_n_CFG(n)		(0x024 + 0x4 * (n))
++#define CAMSS_CSID_CID_n_CFG_ISPIF_EN	BIT(0)
++#define CAMSS_CSID_CID_n_CFG_RDI_EN	BIT(1)
++#define CAMSS_CSID_CID_n_CFG_DECODE_FORMAT_SHIFT	4
++#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8		(0 << 8)
++#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16		(1 << 8)
++#define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_LSB	(0 << 9)
++#define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_MSB	(1 << 9)
++#define CAMSS_CSID_CID_n_CFG_RDI_MODE_RAW_DUMP		(0 << 10)
++#define CAMSS_CSID_CID_n_CFG_RDI_MODE_PLAIN_PACKING	(1 << 10)
++#define CAMSS_CSID_IRQ_CLEAR_CMD	0x064
++#define CAMSS_CSID_IRQ_MASK		0x068
++#define CAMSS_CSID_IRQ_STATUS		0x06c
++#define CAMSS_CSID_TG_CTRL		0x0a8
++#define CAMSS_CSID_TG_CTRL_DISABLE	0xa06436
++#define CAMSS_CSID_TG_CTRL_ENABLE	0xa06437
++#define CAMSS_CSID_TG_VC_CFG		0x0ac
++#define CAMSS_CSID_TG_VC_CFG_H_BLANKING		0x3ff
++#define CAMSS_CSID_TG_VC_CFG_V_BLANKING		0x7f
++#define CAMSS_CSID_TG_DT_n_CGG_0(n)	(0x0b4 + 0xc * (n))
++#define CAMSS_CSID_TG_DT_n_CGG_1(n)	(0x0b8 + 0xc * (n))
++#define CAMSS_CSID_TG_DT_n_CGG_2(n)	(0x0bc + 0xc * (n))
++
++
++static const struct csid_format csid_formats[] = {
++	{
++		MEDIA_BUS_FMT_UYVY8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_VYUY8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_YUYV8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_YVYU8_2X8,
++		DATA_TYPE_YUV422_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		2,
++	},
++	{
++		MEDIA_BUS_FMT_SBGGR8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGBRG8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGRBG8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SRGGB8_1X8,
++		DATA_TYPE_RAW_8BIT,
++		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
++		8,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SBGGR10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGBRG10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGRBG10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SRGGB10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SBGGR12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGBRG12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGRBG12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SRGGB12_1X12,
++		DATA_TYPE_RAW_12BIT,
++		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
++		12,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SBGGR14_1X14,
++		DATA_TYPE_RAW_14BIT,
++		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
++		14,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGBRG14_1X14,
++		DATA_TYPE_RAW_14BIT,
++		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
++		14,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SGRBG14_1X14,
++		DATA_TYPE_RAW_14BIT,
++		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
++		14,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_SRGGB14_1X14,
++		DATA_TYPE_RAW_14BIT,
++		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
++		14,
++		1,
++	},
++	{
++		MEDIA_BUS_FMT_Y10_1X10,
++		DATA_TYPE_RAW_10BIT,
++		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
++		10,
++		1,
++	},
++};
++
++static void csid_configure_stream(struct csid_device *csid, u8 enable)
++{
++	struct csid_testgen_config *tg = &csid->testgen;
++	u32 sink_code = csid->fmt[MSM_CSID_PAD_SINK].code;
++	u32 src_code = csid->fmt[MSM_CSID_PAD_SRC].code;
++	u32 val;
++
++	if (enable) {
++		struct v4l2_mbus_framefmt *input_format;
++		const struct csid_format *format;
++		u8 vc = 0; /* Virtual Channel 0 */
++		u8 cid = vc * 4; /* id of Virtual Channel and Data Type set */
++		u8 dt_shift;
++
++		if (tg->enabled) {
++			/* Config Test Generator */
++			u32 num_bytes_per_line, num_lines;
++
++			input_format = &csid->fmt[MSM_CSID_PAD_SRC];
++			format = csid_get_fmt_entry(csid->formats, csid->nformats,
++						    input_format->code);
++			num_bytes_per_line = input_format->width * format->bpp * format->spp / 8;
++			num_lines = input_format->height;
++
++			/* 31:24 V blank, 23:13 H blank, 3:2 num of active DT */
++			/* 1:0 VC */
++			val = ((CAMSS_CSID_TG_VC_CFG_V_BLANKING & 0xff) << 24) |
++				  ((CAMSS_CSID_TG_VC_CFG_H_BLANKING & 0x7ff) << 13);
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_VC_CFG);
++
++			/* 28:16 bytes per lines, 12:0 num of lines */
++			val = ((num_bytes_per_line & 0x1fff) << 16) |
++				  (num_lines & 0x1fff);
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_DT_n_CGG_0(0));
++
++			/* 5:0 data type */
++			val = format->data_type;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_DT_n_CGG_1(0));
++
++			/* 2:0 output test pattern */
++			val = tg->mode;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_DT_n_CGG_2(0));
++		} else {
++			struct csid_phy_config *phy = &csid->phy;
++
++			input_format = &csid->fmt[MSM_CSID_PAD_SINK];
++			format = csid_get_fmt_entry(csid->formats, csid->nformats,
++						    input_format->code);
++
++			val = phy->lane_cnt - 1;
++			val |= phy->lane_assign << 4;
++
++			writel_relaxed(val, csid->base + CAMSS_CSID_CORE_CTRL_0);
++
++			val = phy->csiphy_id << 17;
++			val |= 0x9;
++
++			writel_relaxed(val, csid->base + CAMSS_CSID_CORE_CTRL_1);
 +		}
-+		output->wm_idx[i] = wm_idx;
-+	}
 +
-+	output->drop_update_idx = 0;
++		/* Config LUT */
 +
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
++		dt_shift = (cid % 4) * 8;
 +
-+	return 0;
++		val = readl_relaxed(csid->base + CAMSS_CSID_CID_LUT_VC_n(vc));
++		val &= ~(0xff << dt_shift);
++		val |= format->data_type << dt_shift;
++		writel_relaxed(val, csid->base + CAMSS_CSID_CID_LUT_VC_n(vc));
 +
-+error_get_wm:
-+	for (i--; i >= 0; i--)
-+		vfe_release_wm(vfe, output->wm_idx[i]);
-+	output->state = VFE_OUTPUT_OFF;
-+error:
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
++		val = CAMSS_CSID_CID_n_CFG_ISPIF_EN;
++		val |= CAMSS_CSID_CID_n_CFG_RDI_EN;
++		val |= format->decode_format << CAMSS_CSID_CID_n_CFG_DECODE_FORMAT_SHIFT;
++		val |= CAMSS_CSID_CID_n_CFG_RDI_MODE_RAW_DUMP;
 +
-+	return -EINVAL;
-+}
-+
-+static int vfe_enable_output(struct vfe_line *line)
-+{
-+	struct vfe_device *vfe = to_vfe(line);
-+	struct vfe_output *output = &line->output;
-+	const struct vfe_hw_ops *ops = vfe->ops;
-+	struct media_entity *sensor;
-+	unsigned long flags;
-+	unsigned int frame_skip = 0;
-+	unsigned int i;
-+
-+	sensor = camss_find_sensor(&line->subdev.entity);
-+	if (sensor) {
-+		struct v4l2_subdev *subdev = media_entity_to_v4l2_subdev(sensor);
-+
-+		v4l2_subdev_call(subdev, sensor, g_skip_frames, &frame_skip);
-+		/* Max frame skip is 29 frames */
-+		if (frame_skip > VFE_FRAME_DROP_VAL - 1)
-+			frame_skip = VFE_FRAME_DROP_VAL - 1;
-+	}
-+
-+	spin_lock_irqsave(&vfe->output_lock, flags);
-+
-+	ops->reg_update_clear(vfe, line->id);
-+
-+	if (output->state != VFE_OUTPUT_OFF) {
-+		dev_err(vfe->camss->dev, "Output is not in reserved state %d\n",
-+			output->state);
-+		spin_unlock_irqrestore(&vfe->output_lock, flags);
-+		return -EINVAL;
-+	}
-+
-+	WARN_ON(output->gen2.active_num);
-+
-+	output->state = VFE_OUTPUT_ON;
-+
-+	output->sequence = 0;
-+	output->wait_reg_update = 0;
-+	reinit_completion(&output->reg_update);
-+
-+	vfe_wm_start(vfe, output->wm_idx[0], line);
-+
-+	for (i = 0; i < 2; i++) {
-+		output->buf[i] = vfe_buf_get_pending(output);
-+		if (!output->buf[i])
-+			break;
-+		output->gen2.active_num++;
-+		vfe_wm_update(vfe, output->wm_idx[0], output->buf[i]->addr[0], line);
-+	}
-+
-+	ops->reg_update(vfe, line->id);
-+
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
-+
-+	return 0;
-+}
-+
-+static int vfe_disable_output(struct vfe_line *line)
-+{
-+	struct vfe_device *vfe = to_vfe(line);
-+	struct vfe_output *output = &line->output;
-+	unsigned long flags;
-+	unsigned int i;
-+	bool done;
-+	int timeout = 0;
-+
-+	do {
-+		spin_lock_irqsave(&vfe->output_lock, flags);
-+		done = !output->gen2.active_num;
-+		spin_unlock_irqrestore(&vfe->output_lock, flags);
-+		usleep_range(10000, 20000);
-+
-+		if (timeout++ == 100) {
-+			dev_err(vfe->camss->dev, "VFE idle timeout - resetting\n");
-+			vfe_reset(vfe);
-+			output->gen2.active_num = 0;
-+			return 0;
++		if ((sink_code == MEDIA_BUS_FMT_SBGGR10_1X10 &&
++		     src_code == MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE) ||
++		    (sink_code == MEDIA_BUS_FMT_Y10_1X10 &&
++		     src_code == MEDIA_BUS_FMT_Y10_2X8_PADHI_LE)) {
++			val |= CAMSS_CSID_CID_n_CFG_RDI_MODE_PLAIN_PACKING;
++			val |= CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16;
++			val |= CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_LSB;
 +		}
-+	} while (!done);
 +
-+	spin_lock_irqsave(&vfe->output_lock, flags);
-+	for (i = 0; i < output->wm_num; i++)
-+		vfe_wm_stop(vfe, output->wm_idx[i]);
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
++		writel_relaxed(val, csid->base + CAMSS_CSID_CID_n_CFG(cid));
 +
-+	return 0;
-+}
-+
-+/*
-+ * vfe_enable - Enable streaming on VFE line
-+ * @line: VFE line
-+ *
-+ * Return 0 on success or a negative error code otherwise
-+ */
-+static int vfe_enable(struct vfe_line *line)
-+{
-+	struct vfe_device *vfe = to_vfe(line);
-+	int ret;
-+
-+	mutex_lock(&vfe->stream_lock);
-+
-+	if (!vfe->stream_count)
-+		vfe_enable_irq_common(vfe);
-+
-+	vfe->stream_count++;
-+
-+	mutex_unlock(&vfe->stream_lock);
-+
-+	ret = vfe_get_output(line);
-+	if (ret < 0)
-+		goto error_get_output;
-+
-+	ret = vfe_enable_output(line);
-+	if (ret < 0)
-+		goto error_enable_output;
-+
-+	vfe->was_streaming = 1;
-+
-+	return 0;
-+
-+
-+error_enable_output:
-+	vfe_put_output(line);
-+
-+error_get_output:
-+	mutex_lock(&vfe->stream_lock);
-+
-+	vfe->stream_count--;
-+
-+	mutex_unlock(&vfe->stream_lock);
-+
-+	return ret;
-+}
-+
-+/*
-+ * vfe_disable - Disable streaming on VFE line
-+ * @line: VFE line
-+ *
-+ * Return 0 on success or a negative error code otherwise
-+ */
-+static int vfe_disable(struct vfe_line *line)
-+{
-+	struct vfe_device *vfe = to_vfe(line);
-+
-+	vfe_disable_output(line);
-+
-+	vfe_put_output(line);
-+
-+	mutex_lock(&vfe->stream_lock);
-+
-+	vfe->stream_count--;
-+
-+	mutex_unlock(&vfe->stream_lock);
-+
-+	return 0;
-+}
-+
-+/*
-+ * vfe_isr_sof - Process start of frame interrupt
-+ * @vfe: VFE Device
-+ * @line_id: VFE line
-+ */
-+static void vfe_isr_sof(struct vfe_device *vfe, enum vfe_line_id line_id)
-+{
-+
-+}
-+
-+/*
-+ * vfe_isr_reg_update - Process reg update interrupt
-+ * @vfe: VFE Device
-+ * @line_id: VFE line
-+ */
-+static void vfe_isr_reg_update(struct vfe_device *vfe, enum vfe_line_id line_id)
-+{
-+	struct vfe_output *output;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&vfe->output_lock, flags);
-+	vfe->ops->reg_update_clear(vfe, line_id);
-+
-+	output = &vfe->line[line_id].output;
-+
-+	if (output->wait_reg_update) {
-+		output->wait_reg_update = 0;
-+		complete(&output->reg_update);
-+	}
-+
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
-+}
-+
-+/*
-+ * vfe_isr_wm_done - Process write master done interrupt
-+ * @vfe: VFE Device
-+ * @wm: Write master id
-+ */
-+static void vfe_isr_wm_done(struct vfe_device *vfe, u8 wm)
-+{
-+	struct vfe_line *line = &vfe->line[vfe->wm_output_map[wm]];
-+	struct camss_buffer *ready_buf;
-+	struct vfe_output *output;
-+	unsigned long flags;
-+	u32 index;
-+	u64 ts = ktime_get_ns();
-+
-+	spin_lock_irqsave(&vfe->output_lock, flags);
-+
-+	if (vfe->wm_output_map[wm] == VFE_LINE_NONE) {
-+		dev_err_ratelimited(vfe->camss->dev,
-+				    "Received wm done for unmapped index\n");
-+		goto out_unlock;
-+	}
-+	output = &vfe->line[vfe->wm_output_map[wm]].output;
-+
-+	ready_buf = output->buf[0];
-+	if (!ready_buf) {
-+		dev_err_ratelimited(vfe->camss->dev,
-+				    "Missing ready buf %d!\n", output->state);
-+		goto out_unlock;
-+	}
-+
-+	ready_buf->vb.vb2_buf.timestamp = ts;
-+	ready_buf->vb.sequence = output->sequence++;
-+
-+	index = 0;
-+	output->buf[0] = output->buf[1];
-+	if (output->buf[0])
-+		index = 1;
-+
-+	output->buf[index] = vfe_buf_get_pending(output);
-+
-+	if (output->buf[index])
-+		vfe_wm_update(vfe, output->wm_idx[0], output->buf[index]->addr[0], line);
-+	else
-+		output->gen2.active_num--;
-+
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
-+
-+	vb2_buffer_done(&ready_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
-+
-+	return;
-+
-+out_unlock:
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
-+}
-+
-+/*
-+ * vfe_queue_buffer - Add empty buffer
-+ * @vid: Video device structure
-+ * @buf: Buffer to be enqueued
-+ *
-+ * Add an empty buffer - depending on the current number of buffers it will be
-+ * put in pending buffer queue or directly given to the hardware to be filled.
-+ *
-+ * Return 0 on success or a negative error code otherwise
-+ */
-+static int vfe_queue_buffer(struct camss_video *vid,
-+			    struct camss_buffer *buf)
-+{
-+	struct vfe_line *line = container_of(vid, struct vfe_line, video_out);
-+	struct vfe_device *vfe = to_vfe(line);
-+	struct vfe_output *output;
-+	unsigned long flags;
-+
-+	output = &line->output;
-+
-+	spin_lock_irqsave(&vfe->output_lock, flags);
-+
-+	if (output->state == VFE_OUTPUT_ON && output->gen2.active_num < 2) {
-+		output->buf[output->gen2.active_num++] = buf;
-+		vfe_wm_update(vfe, output->wm_idx[0], buf->addr[0], line);
++		if (tg->enabled) {
++			val = CAMSS_CSID_TG_CTRL_ENABLE;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_CTRL);
++		}
 +	} else {
-+		vfe_buf_add_pending(output, buf);
++		if (tg->enabled) {
++			val = CAMSS_CSID_TG_CTRL_DISABLE;
++			writel_relaxed(val, csid->base + CAMSS_CSID_TG_CTRL);
++		}
 +	}
++}
 +
-+	spin_unlock_irqrestore(&vfe->output_lock, flags);
++static int csid_configure_testgen_pattern(struct csid_device *csid, s32 val)
++{
++	s32 regval = val - 1;
++
++	if (regval > 0 || regval <= CSID_PAYLOAD_MODE_MAX_SUPPORTED_4_7)
++		csid->testgen.mode = regval;
 +
 +	return 0;
 +}
 +
-+const struct vfe_isr_ops vfe_isr_ops_170 = {
-+	.reset_ack = vfe_isr_reset_ack,
-+	.halt_ack = vfe_isr_halt_ack,
-+	.reg_update = vfe_isr_reg_update,
-+	.sof = vfe_isr_sof,
-+	.comp_done = vfe_isr_comp_done,
-+	.wm_done = vfe_isr_wm_done,
-+};
-+
-+static const struct camss_video_ops vfe_video_ops_170 = {
-+	.queue_buffer = vfe_queue_buffer,
-+	.flush_buffers = vfe_flush_buffers,
-+};
-+
-+static void vfe_subdev_init(struct device *dev, struct vfe_device *vfe)
++static u32 csid_hw_version(struct csid_device *csid)
 +{
-+	vfe->isr_ops = vfe_isr_ops_170;
-+	vfe->video_ops = vfe_video_ops_170;
++	u32 hw_version = readl_relaxed(csid->base + CAMSS_CSID_HW_VERSION);
 +
-+	vfe->line_num = VFE_LINE_NUM_GEN2;
++	dev_dbg(csid->camss->dev, "CSID HW Version = 0x%08x\n", hw_version);
++
++	return hw_version;
 +}
 +
-+const struct vfe_hw_ops vfe_ops_170 = {
-+	.global_reset = vfe_global_reset,
-+	.hw_version_read = vfe_hw_version_read,
-+	.isr_read = vfe_isr_read,
-+	.isr = vfe_isr,
-+	.reg_update_clear = vfe_reg_update_clear,
-+	.reg_update = vfe_reg_update,
-+	.subdev_init = vfe_subdev_init,
-+	.vfe_disable = vfe_disable,
-+	.vfe_enable = vfe_enable,
-+	.vfe_halt = vfe_halt,
-+	.violation_read = vfe_violation_read,
-+};
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-index 375843bd16af..6fafeb8a5484 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.c
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-@@ -96,6 +96,32 @@ static const struct vfe_format formats_pix_8x96[] = {
- 	{ MEDIA_BUS_FMT_YVYU8_2X8, 8 },
- };
- 
-+static const struct vfe_format formats_rdi_845[] = {
-+	{ MEDIA_BUS_FMT_UYVY8_2X8, 8 },
-+	{ MEDIA_BUS_FMT_VYUY8_2X8, 8 },
-+	{ MEDIA_BUS_FMT_YUYV8_2X8, 8 },
-+	{ MEDIA_BUS_FMT_YVYU8_2X8, 8 },
-+	{ MEDIA_BUS_FMT_SBGGR8_1X8, 8 },
-+	{ MEDIA_BUS_FMT_SGBRG8_1X8, 8 },
-+	{ MEDIA_BUS_FMT_SGRBG8_1X8, 8 },
-+	{ MEDIA_BUS_FMT_SRGGB8_1X8, 8 },
-+	{ MEDIA_BUS_FMT_SBGGR10_1X10, 10 },
-+	{ MEDIA_BUS_FMT_SGBRG10_1X10, 10 },
-+	{ MEDIA_BUS_FMT_SGRBG10_1X10, 10 },
-+	{ MEDIA_BUS_FMT_SRGGB10_1X10, 10 },
-+	{ MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE, 16 },
-+	{ MEDIA_BUS_FMT_SBGGR12_1X12, 12 },
-+	{ MEDIA_BUS_FMT_SGBRG12_1X12, 12 },
-+	{ MEDIA_BUS_FMT_SGRBG12_1X12, 12 },
-+	{ MEDIA_BUS_FMT_SRGGB12_1X12, 12 },
-+	{ MEDIA_BUS_FMT_SBGGR14_1X14, 14 },
-+	{ MEDIA_BUS_FMT_SGBRG14_1X14, 14 },
-+	{ MEDIA_BUS_FMT_SGRBG14_1X14, 14 },
-+	{ MEDIA_BUS_FMT_SRGGB14_1X14, 14 },
-+	{ MEDIA_BUS_FMT_Y10_1X10, 10 },
-+	{ MEDIA_BUS_FMT_Y10_2X8_PADHI_LE, 16 },
-+};
++/*
++ * isr - CSID module interrupt service routine
++ * @irq: Interrupt line
++ * @dev: CSID device
++ *
++ * Return IRQ_HANDLED on success
++ */
++static irqreturn_t csid_isr(int irq, void *dev)
++{
++	struct csid_device *csid = dev;
++	u32 value;
 +
- /*
-  * vfe_get_bpp - map media bus format to bits per pixel
-  * @formats: supported media bus formats array
-@@ -192,7 +218,8 @@ static u32 vfe_src_pad_code(struct vfe_line *line, u32 sink_code,
- 			return sink_code;
- 		}
- 	else if (vfe->camss->version == CAMSS_8x96 ||
--		 vfe->camss->version == CAMSS_660)
-+		 vfe->camss->version == CAMSS_660 ||
-+		 vfe->camss->version == CAMSS_845)
- 		switch (sink_code) {
- 		case MEDIA_BUS_FMT_YUYV8_2X8:
- 		{
-@@ -256,13 +283,7 @@ static u32 vfe_src_pad_code(struct vfe_line *line, u32 sink_code,
++	value = readl_relaxed(csid->base + CAMSS_CSID_IRQ_STATUS);
++	writel_relaxed(value, csid->base + CAMSS_CSID_IRQ_CLEAR_CMD);
++
++	if ((value >> 11) & 0x1)
++		complete(&csid->reset_complete);
++
++	return IRQ_HANDLED;
++}
++
++/*
++ * csid_reset - Trigger reset on CSID module and wait to complete
++ * @csid: CSID device
++ *
++ * Return 0 on success or a negative error code otherwise
++ */
++static int csid_reset(struct csid_device *csid)
++{
++	unsigned long time;
++
++	reinit_completion(&csid->reset_complete);
++
++	writel_relaxed(0x7fff, csid->base + CAMSS_CSID_RST_CMD);
++
++	time = wait_for_completion_timeout(&csid->reset_complete,
++		msecs_to_jiffies(CSID_RESET_TIMEOUT_MS));
++	if (!time) {
++		dev_err(csid->camss->dev, "CSID reset timeout\n");
++		return -EIO;
++	}
++
++	return 0;
++}
++
++static u32 csid_src_pad_code(struct csid_device *csid, u32 sink_code,
++			     unsigned int match_format_idx, u32 match_code)
++{
++	switch (sink_code) {
++	case MEDIA_BUS_FMT_SBGGR10_1X10:
++	{
++		u32 src_code[] = {
++			MEDIA_BUS_FMT_SBGGR10_1X10,
++			MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE,
++		};
++
++		return csid_find_code(src_code, ARRAY_SIZE(src_code),
++				      match_format_idx, match_code);
++	}
++	case MEDIA_BUS_FMT_Y10_1X10:
++	{
++		u32 src_code[] = {
++			MEDIA_BUS_FMT_Y10_1X10,
++			MEDIA_BUS_FMT_Y10_2X8_PADHI_LE,
++		};
++
++		return csid_find_code(src_code, ARRAY_SIZE(src_code),
++				      match_format_idx, match_code);
++	}
++	default:
++		if (match_format_idx > 0)
++			return 0;
++
++		return sink_code;
++	}
++}
++
++static void csid_subdev_init(struct csid_device *csid)
++{
++	csid->formats = csid_formats;
++	csid->nformats = ARRAY_SIZE(csid_formats);
++	csid->testgen.modes = csid_testgen_modes;
++	csid->testgen.nmodes = CSID_PAYLOAD_MODE_MAX_SUPPORTED_4_7;
++}
++
++const struct csid_hw_ops csid_ops_4_7 = {
++	.configure_stream = csid_configure_stream,
++	.configure_testgen_pattern = csid_configure_testgen_pattern,
++	.hw_version = csid_hw_version,
++	.isr = csid_isr,
++	.reset = csid_reset,
++	.src_pad_code = csid_src_pad_code,
++	.subdev_init = csid_subdev_init,
++};
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+index be3fe76f3dc3..601bd810f2b0 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.c
++++ b/drivers/media/platform/qcom/camss/camss-csid.c
+@@ -26,405 +26,35 @@
+ 
+ #define MSM_CSID_NAME "msm_csid"
+ 
+-#define CAMSS_CSID_HW_VERSION		0x0
+-#define CAMSS_CSID_CORE_CTRL_0		0x004
+-#define CAMSS_CSID_CORE_CTRL_1		0x008
+-#define CAMSS_CSID_RST_CMD(v)		((v) == CAMSS_8x16 ? 0x00c : 0x010)
+-#define CAMSS_CSID_CID_LUT_VC_n(v, n)	\
+-			(((v) == CAMSS_8x16 ? 0x010 : 0x014) + 0x4 * (n))
+-#define CAMSS_CSID_CID_n_CFG(v, n)	\
+-			(((v) == CAMSS_8x16 ? 0x020 : 0x024) + 0x4 * (n))
+-#define CAMSS_CSID_CID_n_CFG_ISPIF_EN	BIT(0)
+-#define CAMSS_CSID_CID_n_CFG_RDI_EN	BIT(1)
+-#define CAMSS_CSID_CID_n_CFG_DECODE_FORMAT_SHIFT	4
+-#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8		(0 << 8)
+-#define CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16		(1 << 8)
+-#define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_LSB	(0 << 9)
+-#define CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_MSB	(1 << 9)
+-#define CAMSS_CSID_CID_n_CFG_RDI_MODE_RAW_DUMP		(0 << 10)
+-#define CAMSS_CSID_CID_n_CFG_RDI_MODE_PLAIN_PACKING	(1 << 10)
+-#define CAMSS_CSID_IRQ_CLEAR_CMD(v)	((v) == CAMSS_8x16 ? 0x060 : 0x064)
+-#define CAMSS_CSID_IRQ_MASK(v)		((v) == CAMSS_8x16 ? 0x064 : 0x068)
+-#define CAMSS_CSID_IRQ_STATUS(v)	((v) == CAMSS_8x16 ? 0x068 : 0x06c)
+-#define CAMSS_CSID_TG_CTRL(v)		((v) == CAMSS_8x16 ? 0x0a0 : 0x0a8)
+-#define CAMSS_CSID_TG_CTRL_DISABLE	0xa06436
+-#define CAMSS_CSID_TG_CTRL_ENABLE	0xa06437
+-#define CAMSS_CSID_TG_VC_CFG(v)		((v) == CAMSS_8x16 ? 0x0a4 : 0x0ac)
+-#define CAMSS_CSID_TG_VC_CFG_H_BLANKING		0x3ff
+-#define CAMSS_CSID_TG_VC_CFG_V_BLANKING		0x7f
+-#define CAMSS_CSID_TG_DT_n_CGG_0(v, n)	\
+-			(((v) == CAMSS_8x16 ? 0x0ac : 0x0b4) + 0xc * (n))
+-#define CAMSS_CSID_TG_DT_n_CGG_1(v, n)	\
+-			(((v) == CAMSS_8x16 ? 0x0b0 : 0x0b8) + 0xc * (n))
+-#define CAMSS_CSID_TG_DT_n_CGG_2(v, n)	\
+-			(((v) == CAMSS_8x16 ? 0x0b4 : 0x0bc) + 0xc * (n))
+-
+-#define DATA_TYPE_EMBEDDED_DATA_8BIT	0x12
+-#define DATA_TYPE_YUV422_8BIT		0x1e
+-#define DATA_TYPE_RAW_6BIT		0x28
+-#define DATA_TYPE_RAW_8BIT		0x2a
+-#define DATA_TYPE_RAW_10BIT		0x2b
+-#define DATA_TYPE_RAW_12BIT		0x2c
+-#define DATA_TYPE_RAW_14BIT		0x2d
+-
+-#define DECODE_FORMAT_UNCOMPRESSED_6_BIT	0x0
+-#define DECODE_FORMAT_UNCOMPRESSED_8_BIT	0x1
+-#define DECODE_FORMAT_UNCOMPRESSED_10_BIT	0x2
+-#define DECODE_FORMAT_UNCOMPRESSED_12_BIT	0x3
+-#define DECODE_FORMAT_UNCOMPRESSED_14_BIT	0x8
+-
+-#define CSID_RESET_TIMEOUT_MS 500
+-
+-struct csid_format {
+-	u32 code;
+-	u8 data_type;
+-	u8 decode_format;
+-	u8 bpp;
+-	u8 spp; /* bus samples per pixel */
+-};
+-
+-static const struct csid_format csid_formats_8x16[] = {
+-	{
+-		MEDIA_BUS_FMT_UYVY8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_VYUY8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_YUYV8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_YVYU8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SBGGR8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGBRG8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGRBG8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SRGGB8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SBGGR10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGBRG10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGRBG10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SRGGB10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SBGGR12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGBRG12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGRBG12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SRGGB12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_Y10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-};
+-
+-static const struct csid_format csid_formats_8x96[] = {
+-	{
+-		MEDIA_BUS_FMT_UYVY8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_VYUY8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_YUYV8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_YVYU8_2X8,
+-		DATA_TYPE_YUV422_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		2,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SBGGR8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGBRG8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGRBG8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SRGGB8_1X8,
+-		DATA_TYPE_RAW_8BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
+-		8,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SBGGR10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGBRG10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGRBG10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SRGGB10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SBGGR12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGBRG12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGRBG12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SRGGB12_1X12,
+-		DATA_TYPE_RAW_12BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
+-		12,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SBGGR14_1X14,
+-		DATA_TYPE_RAW_14BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
+-		14,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGBRG14_1X14,
+-		DATA_TYPE_RAW_14BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
+-		14,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SGRBG14_1X14,
+-		DATA_TYPE_RAW_14BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
+-		14,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_SRGGB14_1X14,
+-		DATA_TYPE_RAW_14BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
+-		14,
+-		1,
+-	},
+-	{
+-		MEDIA_BUS_FMT_Y10_1X10,
+-		DATA_TYPE_RAW_10BIT,
+-		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
+-		10,
+-		1,
+-	},
+-};
+ 
+-static u32 csid_find_code(u32 *code, unsigned int n_code,
+-			  unsigned int index, u32 req_code)
++u32 csid_find_code(u32 *codes, unsigned int ncodes,
++		   unsigned int match_format_idx, u32 match_code)
+ {
+ 	int i;
+ 
+-	if (!req_code && (index >= n_code))
++	if (!match_code && (match_format_idx >= ncodes))
  		return 0;
+ 
+-	for (i = 0; i < n_code; i++)
+-		if (req_code) {
+-			if (req_code == code[i])
+-				return req_code;
++	for (i = 0; i < ncodes; i++)
++		if (match_code) {
++			if (codes[i] == match_code)
++				return match_code;
+ 		} else {
+-			if (i == index)
+-				return code[i];
+-		}
+-
+-	return code[0];
+-}
+-
+-static u32 csid_src_pad_code(struct csid_device *csid, u32 sink_code,
+-			     unsigned int index, u32 src_req_code)
+-{
+-	if (csid->camss->version == CAMSS_8x16) {
+-		if (index > 0)
+-			return 0;
+-
+-		return sink_code;
+-	} else if (csid->camss->version == CAMSS_8x96 ||
+-		   csid->camss->version == CAMSS_660) {
+-		switch (sink_code) {
+-		case MEDIA_BUS_FMT_SBGGR10_1X10:
+-		{
+-			u32 src_code[] = {
+-				MEDIA_BUS_FMT_SBGGR10_1X10,
+-				MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE,
+-			};
+-
+-			return csid_find_code(src_code, ARRAY_SIZE(src_code),
+-					      index, src_req_code);
+-		}
+-		case MEDIA_BUS_FMT_Y10_1X10:
+-		{
+-			u32 src_code[] = {
+-				MEDIA_BUS_FMT_Y10_1X10,
+-				MEDIA_BUS_FMT_Y10_2X8_PADHI_LE,
+-			};
+-
+-			return csid_find_code(src_code, ARRAY_SIZE(src_code),
+-					      index, src_req_code);
++			if (i == match_format_idx)
++				return codes[i];
+ 		}
+-		default:
+-			if (index > 0)
+-				return 0;
+ 
+-			return sink_code;
+-		}
+-	} else {
+-		return 0;
+-	}
++	return codes[0];
+ }
+ 
+-static const struct csid_format *csid_get_fmt_entry(
++const struct csid_format *csid_get_fmt_entry(
+ 					const struct csid_format *formats,
+-					unsigned int nformat,
++					unsigned int nformats,
+ 					u32 code)
+ {
+ 	unsigned int i;
+ 
+-	for (i = 0; i < nformat; i++)
++	for (i = 0; i < nformats; i++)
+ 		if (code == formats[i].code)
+ 			return &formats[i];
+ 
+@@ -433,28 +63,6 @@ static const struct csid_format *csid_get_fmt_entry(
+ 	return &formats[0];
  }
  
 -/*
-- * vfe_reset - Trigger reset on VFE module and wait to complete
-- * @vfe: VFE device
+- * csid_isr - CSID module interrupt handler
+- * @irq: Interrupt line
+- * @dev: CSID device
 - *
-- * Return 0 on success or a negative error code otherwise
+- * Return IRQ_HANDLED on success
 - */
--static int vfe_reset(struct vfe_device *vfe)
-+int vfe_reset(struct vfe_device *vfe)
- {
- 	unsigned long time;
- 
-@@ -429,7 +450,8 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
- 		struct camss_clock *clock = &vfe->clock[i];
- 
- 		if (!strcmp(clock->name, "vfe0") ||
--		    !strcmp(clock->name, "vfe1")) {
-+		    !strcmp(clock->name, "vfe1") ||
-+		    !strcmp(clock->name, "vfe_lite")) {
- 			u64 min_rate = 0;
- 			long rate;
- 
-@@ -1268,6 +1290,10 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
- 	case CAMSS_660:
- 		vfe->ops = &vfe_ops_4_8;
- 		break;
-+
-+	case CAMSS_845:
-+		vfe->ops = &vfe_ops_170;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -1379,6 +1405,9 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
- 				l->formats = formats_rdi_8x96;
- 				l->nformats = ARRAY_SIZE(formats_rdi_8x96);
- 			}
-+		} else if (camss->version == CAMSS_845) {
-+			l->formats = formats_rdi_845;
-+			l->nformats = ARRAY_SIZE(formats_rdi_845);
- 		} else {
- 			return -EINVAL;
- 		}
-diff --git a/drivers/media/platform/qcom/camss/camss-vfe.h b/drivers/media/platform/qcom/camss/camss-vfe.h
-index aad5dc74c2c0..29b3d930ffc6 100644
---- a/drivers/media/platform/qcom/camss/camss-vfe.h
-+++ b/drivers/media/platform/qcom/camss/camss-vfe.h
-@@ -19,7 +19,6 @@
- #include "camss-video.h"
- #include "camss-vfe-gen1.h"
- 
+-static irqreturn_t csid_isr(int irq, void *dev)
+-{
+-	struct csid_device *csid = dev;
+-	enum camss_version ver = csid->camss->version;
+-	u32 value;
 -
- #define MSM_VFE_PAD_SINK 0
- #define MSM_VFE_PAD_SRC 1
- #define MSM_VFE_PADS_NUM 2
-@@ -38,14 +37,14 @@
- #define to_vfe(ptr_line)	\
- 	container_of(vfe_line_array(ptr_line), struct vfe_device, line)
- 
+-	value = readl_relaxed(csid->base + CAMSS_CSID_IRQ_STATUS(ver));
+-	writel_relaxed(value, csid->base + CAMSS_CSID_IRQ_CLEAR_CMD(ver));
 -
- enum vfe_output_state {
- 	VFE_OUTPUT_OFF,
- 	VFE_OUTPUT_RESERVED,
- 	VFE_OUTPUT_SINGLE,
- 	VFE_OUTPUT_CONTINUOUS,
- 	VFE_OUTPUT_IDLE,
--	VFE_OUTPUT_STOPPING
-+	VFE_OUTPUT_STOPPING,
-+	VFE_OUTPUT_ON,
- };
- 
- enum vfe_line_id {
-@@ -53,6 +52,7 @@ enum vfe_line_id {
- 	VFE_LINE_RDI0 = 0,
- 	VFE_LINE_RDI1 = 1,
- 	VFE_LINE_RDI2 = 2,
-+	VFE_LINE_NUM_GEN2 = 3,
- 	VFE_LINE_PIX = 3,
- 	VFE_LINE_NUM_GEN1 = 4,
- 	VFE_LINE_NUM_MAX = 4
-@@ -73,6 +73,9 @@ struct vfe_output {
- 			int active_buf;
- 			int wait_sof;
- 		} gen1;
-+		struct {
-+			int active_num;
-+		} gen2;
- 	};
- 	enum vfe_output_state state;
- 	unsigned int sequence;
-@@ -171,14 +174,6 @@ void vfe_buf_add_pending(struct vfe_output *output, struct camss_buffer *buffer)
- 
- struct camss_buffer *vfe_buf_get_pending(struct vfe_output *output);
+-	if ((value >> 11) & 0x1)
+-		complete(&csid->reset_complete);
+-
+-	return IRQ_HANDLED;
+-}
+-
+ /*
+  * csid_set_clock_rates - Calculate and set clock rates on CSID module
+  * @csiphy: CSID device
+@@ -521,31 +129,6 @@ static int csid_set_clock_rates(struct csid_device *csid)
+ 	return 0;
+ }
  
 -/*
-- * vfe_disable - Disable streaming on VFE line
-- * @line: VFE line
+- * csid_reset - Trigger reset on CSID module and wait to complete
+- * @csid: CSID device
 - *
 - * Return 0 on success or a negative error code otherwise
 - */
--int vfe_disable(struct vfe_line *line);
+-static int csid_reset(struct csid_device *csid)
+-{
+-	unsigned long time;
 -
- int vfe_flush_buffers(struct camss_video *vid, enum vb2_buffer_state state);
- 
+-	reinit_completion(&csid->reset_complete);
+-
+-	writel_relaxed(0x7fff, csid->base +
+-		       CAMSS_CSID_RST_CMD(csid->camss->version));
+-
+-	time = wait_for_completion_timeout(&csid->reset_complete,
+-		msecs_to_jiffies(CSID_RESET_TIMEOUT_MS));
+-	if (!time) {
+-		dev_err(csid->camss->dev, "CSID reset timeout\n");
+-		return -EIO;
+-	}
+-
+-	return 0;
+-}
+-
  /*
-@@ -193,8 +188,17 @@ int vfe_put_output(struct vfe_line *line);
- int vfe_release_wm(struct vfe_device *vfe, u8 wm);
- int vfe_reserve_wm(struct vfe_device *vfe, enum vfe_line_id line_id);
+  * csid_set_power - Power on/off CSID module
+  * @sd: CSID V4L2 subdevice
+@@ -560,8 +143,6 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+ 	int ret;
  
-+/*
-+ * vfe_reset - Trigger reset on VFE module and wait to complete
-+ * @vfe: VFE device
-+ *
-+ * Return 0 on success or a negative error code otherwise
-+ */
-+int vfe_reset(struct vfe_device *vfe);
-+
- extern const struct vfe_hw_ops vfe_ops_4_1;
- extern const struct vfe_hw_ops vfe_ops_4_7;
- extern const struct vfe_hw_ops vfe_ops_4_8;
-+extern const struct vfe_hw_ops vfe_ops_170;
+ 	if (on) {
+-		u32 hw_version;
+-
+ 		ret = pm_runtime_get_sync(dev);
+ 		if (ret < 0) {
+ 			pm_runtime_put_sync(dev);
+@@ -590,7 +171,7 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
  
- #endif /* QC_MSM_CAMSS_VFE_H */
-diff --git a/drivers/media/platform/qcom/camss/camss-video.c b/drivers/media/platform/qcom/camss/camss-video.c
-index 97cea7c4d769..f282275af626 100644
---- a/drivers/media/platform/qcom/camss/camss-video.c
-+++ b/drivers/media/platform/qcom/camss/camss-video.c
-@@ -133,6 +133,55 @@ static const struct camss_format_info formats_rdi_8x96[] = {
- 	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
- };
+ 		enable_irq(csid->irq);
  
-+static const struct camss_format_info formats_rdi_845[] = {
-+	{ MEDIA_BUS_FMT_UYVY8_2X8, V4L2_PIX_FMT_UYVY, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
-+	{ MEDIA_BUS_FMT_VYUY8_2X8, V4L2_PIX_FMT_VYUY, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
-+	{ MEDIA_BUS_FMT_YUYV8_2X8, V4L2_PIX_FMT_YUYV, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
-+	{ MEDIA_BUS_FMT_YVYU8_2X8, V4L2_PIX_FMT_YVYU, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
-+	{ MEDIA_BUS_FMT_SBGGR8_1X8, V4L2_PIX_FMT_SBGGR8, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
-+	{ MEDIA_BUS_FMT_SGBRG8_1X8, V4L2_PIX_FMT_SGBRG8, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
-+	{ MEDIA_BUS_FMT_SGRBG8_1X8, V4L2_PIX_FMT_SGRBG8, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
-+	{ MEDIA_BUS_FMT_SRGGB8_1X8, V4L2_PIX_FMT_SRGGB8, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
-+	{ MEDIA_BUS_FMT_SBGGR10_1X10, V4L2_PIX_FMT_SBGGR10P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
-+	{ MEDIA_BUS_FMT_SGBRG10_1X10, V4L2_PIX_FMT_SGBRG10P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
-+	{ MEDIA_BUS_FMT_SGRBG10_1X10, V4L2_PIX_FMT_SGRBG10P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
-+	{ MEDIA_BUS_FMT_SRGGB10_1X10, V4L2_PIX_FMT_SRGGB10P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
-+	{ MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE, V4L2_PIX_FMT_SBGGR10, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
-+	{ MEDIA_BUS_FMT_SBGGR12_1X12, V4L2_PIX_FMT_SBGGR12P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
-+	{ MEDIA_BUS_FMT_SGBRG12_1X12, V4L2_PIX_FMT_SGBRG12P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
-+	{ MEDIA_BUS_FMT_SGRBG12_1X12, V4L2_PIX_FMT_SGRBG12P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
-+	{ MEDIA_BUS_FMT_SRGGB12_1X12, V4L2_PIX_FMT_SRGGB12P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
-+	{ MEDIA_BUS_FMT_SBGGR14_1X14, V4L2_PIX_FMT_SBGGR14P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
-+	{ MEDIA_BUS_FMT_SGBRG14_1X14, V4L2_PIX_FMT_SGBRG14P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
-+	{ MEDIA_BUS_FMT_SGRBG14_1X14, V4L2_PIX_FMT_SGRBG14P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
-+	{ MEDIA_BUS_FMT_SRGGB14_1X14, V4L2_PIX_FMT_SRGGB14P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
-+	{ MEDIA_BUS_FMT_Y10_1X10, V4L2_PIX_FMT_Y10P, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
-+	{ MEDIA_BUS_FMT_Y10_2X8_PADHI_LE, V4L2_PIX_FMT_Y10, 1,
-+	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
-+};
-+
- static const struct camss_format_info formats_pix_8x16[] = {
- 	{ MEDIA_BUS_FMT_YUYV8_1_5X8, V4L2_PIX_FMT_NV12, 1,
- 	  { { 1, 1 } }, { { 2, 3 } }, { 8 } },
-@@ -960,6 +1009,9 @@ int msm_video_register(struct camss_video *video, struct v4l2_device *v4l2_dev,
- 			video->formats = formats_rdi_8x96;
- 			video->nformats = ARRAY_SIZE(formats_rdi_8x96);
+-		ret = csid_reset(csid);
++		ret = csid->ops->reset(csid);
+ 		if (ret < 0) {
+ 			disable_irq(csid->irq);
+ 			camss_disable_clocks(csid->nclocks, csid->clock);
+@@ -599,8 +180,7 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+ 			return ret;
  		}
-+	}  else if (video->camss->version == CAMSS_845) {
-+		video->formats = formats_rdi_845;
-+		video->nformats = ARRAY_SIZE(formats_rdi_845);
- 	} else {
- 		ret = -EINVAL;
- 		goto error_video_register;
-diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index 6c6f1e59ccd8..0e006def1996 100644
---- a/drivers/media/platform/qcom/camss/camss.c
-+++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -465,6 +465,67 @@ static const struct resources vfe_res_660[] = {
- 	}
- };
  
-+static const struct resources vfe_res_845[] = {
-+	/* VFE0 */
-+	{
-+		.regulator = { NULL },
-+		.clock = { "camnoc_axi", "cpas_ahb", "slow_ahb_src",
-+				"soc_ahb", "vfe0", "vfe0_axi",
-+				"vfe0_src", "csi0",
-+				"csi0_src"},
-+		.clock_rate = { { 0 },
-+				{ 0 },
-+				{ 80000000 },
-+				{ 0 },
-+				{ 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
-+				{ 0 },
-+				{ 320000000 },
-+				{ 19200000, 75000000, 384000000, 538666667 },
-+				{ 384000000 } },
-+		.reg = { "vfe0" },
-+		.interrupt = { "vfe0" }
-+	},
+-		hw_version = readl_relaxed(csid->base + CAMSS_CSID_HW_VERSION);
+-		dev_dbg(dev, "CSID HW Version = 0x%08x\n", hw_version);
++		csid->ops->hw_version(csid);
+ 	} else {
+ 		disable_irq(csid->irq);
+ 		camss_disable_clocks(csid->nclocks, csid->clock);
+@@ -623,16 +203,9 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+ static int csid_set_stream(struct v4l2_subdev *sd, int enable)
+ {
+ 	struct csid_device *csid = v4l2_get_subdevdata(sd);
+-	struct csid_testgen_config *tg = &csid->testgen;
+-	enum camss_version ver = csid->camss->version;
+-	u32 val;
++	int ret;
+ 
+ 	if (enable) {
+-		u8 vc = 0; /* Virtual Channel 0 */
+-		u8 cid = vc * 4; /* id of Virtual Channel and Data Type set */
+-		u8 dt, dt_shift, df;
+-		int ret;
+-
+ 		ret = v4l2_ctrl_handler_setup(&csid->ctrls);
+ 		if (ret < 0) {
+ 			dev_err(csid->camss->dev,
+@@ -640,116 +213,13 @@ static int csid_set_stream(struct v4l2_subdev *sd, int enable)
+ 			return ret;
+ 		}
+ 
+-		if (!tg->enabled &&
++		if (!csid->testgen.enabled &&
+ 		    !media_entity_remote_pad(&csid->pads[MSM_CSID_PAD_SINK]))
+ 			return -ENOLINK;
+-
+-		if (tg->enabled) {
+-			/* Config Test Generator */
+-			struct v4l2_mbus_framefmt *f =
+-					&csid->fmt[MSM_CSID_PAD_SRC];
+-			const struct csid_format *format = csid_get_fmt_entry(
+-					csid->formats, csid->nformats, f->code);
+-			u32 num_bytes_per_line =
+-				f->width * format->bpp * format->spp / 8;
+-			u32 num_lines = f->height;
+-
+-			/* 31:24 V blank, 23:13 H blank, 3:2 num of active DT */
+-			/* 1:0 VC */
+-			val = ((CAMSS_CSID_TG_VC_CFG_V_BLANKING & 0xff) << 24) |
+-			      ((CAMSS_CSID_TG_VC_CFG_H_BLANKING & 0x7ff) << 13);
+-			writel_relaxed(val, csid->base +
+-				       CAMSS_CSID_TG_VC_CFG(ver));
+-
+-			/* 28:16 bytes per lines, 12:0 num of lines */
+-			val = ((num_bytes_per_line & 0x1fff) << 16) |
+-			      (num_lines & 0x1fff);
+-			writel_relaxed(val, csid->base +
+-				       CAMSS_CSID_TG_DT_n_CGG_0(ver, 0));
+-
+-			dt = format->data_type;
+-
+-			/* 5:0 data type */
+-			val = dt;
+-			writel_relaxed(val, csid->base +
+-				       CAMSS_CSID_TG_DT_n_CGG_1(ver, 0));
+-
+-			/* 2:0 output test pattern */
+-			val = tg->payload_mode;
+-			writel_relaxed(val, csid->base +
+-				       CAMSS_CSID_TG_DT_n_CGG_2(ver, 0));
+-
+-			df = format->decode_format;
+-		} else {
+-			struct v4l2_mbus_framefmt *f =
+-					&csid->fmt[MSM_CSID_PAD_SINK];
+-			const struct csid_format *format = csid_get_fmt_entry(
+-					csid->formats, csid->nformats, f->code);
+-			struct csid_phy_config *phy = &csid->phy;
+-
+-			val = phy->lane_cnt - 1;
+-			val |= phy->lane_assign << 4;
+-
+-			writel_relaxed(val,
+-				       csid->base + CAMSS_CSID_CORE_CTRL_0);
+-
+-			val = phy->csiphy_id << 17;
+-			val |= 0x9;
+-
+-			writel_relaxed(val,
+-				       csid->base + CAMSS_CSID_CORE_CTRL_1);
+-
+-			dt = format->data_type;
+-			df = format->decode_format;
+-		}
+-
+-		/* Config LUT */
+-
+-		dt_shift = (cid % 4) * 8;
+-
+-		val = readl_relaxed(csid->base +
+-				    CAMSS_CSID_CID_LUT_VC_n(ver, vc));
+-		val &= ~(0xff << dt_shift);
+-		val |= dt << dt_shift;
+-		writel_relaxed(val, csid->base +
+-			       CAMSS_CSID_CID_LUT_VC_n(ver, vc));
+-
+-		val = CAMSS_CSID_CID_n_CFG_ISPIF_EN;
+-		val |= CAMSS_CSID_CID_n_CFG_RDI_EN;
+-		val |= df << CAMSS_CSID_CID_n_CFG_DECODE_FORMAT_SHIFT;
+-		val |= CAMSS_CSID_CID_n_CFG_RDI_MODE_RAW_DUMP;
+-
+-		if (csid->camss->version == CAMSS_8x96 ||
+-		    csid->camss->version == CAMSS_660) {
+-			u32 sink_code = csid->fmt[MSM_CSID_PAD_SINK].code;
+-			u32 src_code = csid->fmt[MSM_CSID_PAD_SRC].code;
+-
+-			if ((sink_code == MEDIA_BUS_FMT_SBGGR10_1X10 &&
+-			     src_code == MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE) ||
+-			    (sink_code == MEDIA_BUS_FMT_Y10_1X10 &&
+-			     src_code == MEDIA_BUS_FMT_Y10_2X8_PADHI_LE)) {
+-				val |= CAMSS_CSID_CID_n_CFG_RDI_MODE_PLAIN_PACKING;
+-				val |= CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16;
+-				val |= CAMSS_CSID_CID_n_CFG_PLAIN_ALIGNMENT_LSB;
+-			}
+-		}
+-
+-		writel_relaxed(val, csid->base +
+-			       CAMSS_CSID_CID_n_CFG(ver, cid));
+-
+-		if (tg->enabled) {
+-			val = CAMSS_CSID_TG_CTRL_ENABLE;
+-			writel_relaxed(val, csid->base +
+-				       CAMSS_CSID_TG_CTRL(ver));
+-		}
+-	} else {
+-		if (tg->enabled) {
+-			val = CAMSS_CSID_TG_CTRL_DISABLE;
+-			writel_relaxed(val, csid->base +
+-				       CAMSS_CSID_TG_CTRL(ver));
+-		}
+ 	}
+ 
++	csid->ops->configure_stream(csid, enable);
 +
-+	/* VFE1 */
-+	{
-+		.regulator = { NULL },
-+		.clock = { "camnoc_axi", "cpas_ahb", "slow_ahb_src",
-+				"soc_ahb", "vfe1", "vfe1_axi",
-+				"vfe1_src", "csi1",
-+				"csi1_src"},
-+		.clock_rate = { { 0 },
-+				{ 0 },
-+				{ 80000000 },
-+				{ 0 },
-+				{ 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
-+				{ 0 },
-+				{ 320000000 },
-+				{ 19200000, 75000000, 384000000, 538666667 },
-+				{ 384000000 } },
-+		.reg = { "vfe1" },
-+		.interrupt = { "vfe1" }
-+	},
+ 	return 0;
+ }
+ 
+@@ -818,7 +288,7 @@ static void csid_try_format(struct csid_device *csid,
+ 
+ 			*fmt = *__csid_get_format(csid, cfg,
+ 						      MSM_CSID_PAD_SINK, which);
+-			fmt->code = csid_src_pad_code(csid, fmt->code, 0, code);
++			fmt->code = csid->ops->src_pad_code(csid, fmt->code, 0, code);
+ 		} else {
+ 			/* Test generator is enabled, set format on source */
+ 			/* pad to allow test generator usage */
+@@ -868,7 +338,7 @@ static int csid_enum_mbus_code(struct v4l2_subdev *sd,
+ 						     MSM_CSID_PAD_SINK,
+ 						     code->which);
+ 
+-			code->code = csid_src_pad_code(csid, sink_fmt->code,
++			code->code = csid->ops->src_pad_code(csid, sink_fmt->code,
+ 						       code->index, 0);
+ 			if (!code->code)
+ 				return -EINVAL;
+@@ -1004,15 +474,6 @@ static int csid_init_formats(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+ 	return csid_set_format(sd, fh ? fh->pad : NULL, &format);
+ }
+ 
+-static const char * const csid_test_pattern_menu[] = {
+-	"Disabled",
+-	"Incrementing",
+-	"Alternating 0x55/0xAA",
+-	"All Zeros 0x00",
+-	"All Ones 0xFF",
+-	"Pseudo-random Data",
+-};
+-
+ /*
+  * csid_set_test_pattern - Set test generator's pattern mode
+  * @csid: CSID device
+@@ -1030,25 +491,7 @@ static int csid_set_test_pattern(struct csid_device *csid, s32 value)
+ 
+ 	tg->enabled = !!value;
+ 
+-	switch (value) {
+-	case 1:
+-		tg->payload_mode = CSID_PAYLOAD_MODE_INCREMENTING;
+-		break;
+-	case 2:
+-		tg->payload_mode = CSID_PAYLOAD_MODE_ALTERNATING_55_AA;
+-		break;
+-	case 3:
+-		tg->payload_mode = CSID_PAYLOAD_MODE_ALL_ZEROES;
+-		break;
+-	case 4:
+-		tg->payload_mode = CSID_PAYLOAD_MODE_ALL_ONES;
+-		break;
+-	case 5:
+-		tg->payload_mode = CSID_PAYLOAD_MODE_RANDOM;
+-		break;
+-	}
+-
+-	return 0;
++	return csid->ops->configure_testgen_pattern(csid, value);
+ }
+ 
+ /*
+@@ -1097,17 +540,14 @@ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
+ 	csid->id = id;
+ 
+ 	if (camss->version == CAMSS_8x16) {
+-		csid->formats = csid_formats_8x16;
+-		csid->nformats =
+-				ARRAY_SIZE(csid_formats_8x16);
++		csid->ops = &csid_ops_4_1;
+ 	} else if (camss->version == CAMSS_8x96 ||
+ 		   camss->version == CAMSS_660) {
+-		csid->formats = csid_formats_8x96;
+-		csid->nformats =
+-				ARRAY_SIZE(csid_formats_8x96);
++		csid->ops = &csid_ops_4_7;
+ 	} else {
+ 		return -EINVAL;
+ 	}
++	csid->ops->subdev_init(csid);
+ 
+ 	/* Memory */
+ 
+@@ -1130,7 +570,7 @@ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
+ 	csid->irq = r->start;
+ 	snprintf(csid->irq_name, sizeof(csid->irq_name), "%s_%s%d",
+ 		 dev_name(dev), MSM_CSID_NAME, csid->id);
+-	ret = devm_request_irq(dev, csid->irq, csid_isr,
++	ret = devm_request_irq(dev, csid->irq, csid->ops->isr,
+ 		IRQF_TRIGGER_RISING, csid->irq_name, csid);
+ 	if (ret < 0) {
+ 		dev_err(dev, "request_irq failed: %d\n", ret);
+@@ -1341,8 +781,8 @@ int msm_csid_register_entity(struct csid_device *csid,
+ 
+ 	csid->testgen_mode = v4l2_ctrl_new_std_menu_items(&csid->ctrls,
+ 				&csid_ctrl_ops, V4L2_CID_TEST_PATTERN,
+-				ARRAY_SIZE(csid_test_pattern_menu) - 1, 0, 0,
+-				csid_test_pattern_menu);
++				csid->testgen.nmodes, 0, 0,
++				csid->testgen.modes);
+ 
+ 	if (csid->ctrls.error) {
+ 		dev_err(dev, "Failed to init ctrl: %d\n", csid->ctrls.error);
+diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+index 02fc34ee8a41..d40194e2bed3 100644
+--- a/drivers/media/platform/qcom/camss/camss-csid.h
++++ b/drivers/media/platform/qcom/camss/camss-csid.h
+@@ -11,6 +11,7 @@
+ #define QC_MSM_CAMSS_CSID_H
+ 
+ #include <linux/clk.h>
++#include <linux/interrupt.h>
+ #include <media/media-entity.h>
+ #include <media/v4l2-ctrls.h>
+ #include <media/v4l2-device.h>
+@@ -70,19 +71,50 @@
+ #define PLAIN_FORMAT_PLAIN16	0x1 /* supports DPCM, UNCOMPRESSED_10/16_BIT */
+ #define PLAIN_FORMAT_PLAIN32	0x2 /* supports UNCOMPRESSED_20_BIT */
+ 
++#define CSID_RESET_TIMEOUT_MS 500
+ 
+-enum csid_payload_mode {
 +
-+	/* VFE-lite */
-+	{
-+		.regulator = { NULL },
-+		.clock = { "camnoc_axi", "cpas_ahb", "slow_ahb_src",
-+				"soc_ahb", "vfe_lite",
-+				"vfe_lite_src", "csi2",
-+				"csi2_src"},
-+		.clock_rate = { { 0 },
-+				{ 0 },
-+				{ 80000000 },
-+				{ 0 },
-+				{ 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
-+				{ 320000000 },
-+				{ 19200000, 75000000, 384000000, 538666667 },
-+				{ 384000000 } },
-+		.reg = { "vfe_lite" },
-+		.interrupt = { "vfe_lite" }
-+	}
++enum csid_testgen_mode {
+ 	CSID_PAYLOAD_MODE_INCREMENTING = 0,
+ 	CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
+ 	CSID_PAYLOAD_MODE_ALL_ZEROES = 2,
+ 	CSID_PAYLOAD_MODE_ALL_ONES = 3,
+ 	CSID_PAYLOAD_MODE_RANDOM = 4,
+ 	CSID_PAYLOAD_MODE_USER_SPECIFIED = 5,
++	CSID_PAYLOAD_MODE_MAX_SUPPORTED_4_1 = 5,
++	CSID_PAYLOAD_MODE_MAX_SUPPORTED_4_7 = 5,
++	CSID_PAYLOAD_MODE_COMPLEX_PATTERN = 6,
++	CSID_PAYLOAD_MODE_COLOR_BOX = 7,
++	CSID_PAYLOAD_MODE_COLOR_BARS = 8,
++	CSID_PAYLOAD_MODE_MAX_SUPPORTED_170 = 8,
 +};
 +
- /*
-  * camss_add_clock_margin - Add margin to clock frequency rate
-  * @rate: Clock frequency rate
++static const char * const csid_testgen_modes[] = {
++	"Disabled",
++	"Incrementing",
++	"Alternating 0x55/0xAA",
++	"All Zeros 0x00",
++	"All Ones 0xFF",
++	"Pseudo-random Data",
++	"User Specified",
++	"Complex pattern",
++	"Color box",
++	"Color bars",
++};
++
++struct csid_format {
++	u32 code;
++	u8 data_type;
++	u8 decode_format;
++	u8 bpp;
++	u8 spp; /* bus samples per pixel */
+ };
+ 
+ struct csid_testgen_config {
++	enum csid_testgen_mode mode;
++	const char * const*modes;
++	u8 nmodes;
+ 	u8 enabled;
+-	enum csid_payload_mode payload_mode;
+ };
+ 
+ struct csid_phy_config {
+@@ -91,6 +123,65 @@ struct csid_phy_config {
+ 	u32 lane_assign;
+ };
+ 
++struct csid_device;
++
++struct csid_hw_ops {
++	/*
++	 * configure_stream - Configures and starts CSID input stream
++	 * @csid: CSID device
++	 */
++	void (*configure_stream)(struct csid_device *csid, u8 enable);
++
++	/*
++	 * configure_testgen_pattern - Validates and configures output pattern mode
++	 * of test pattern generator
++	 * @csid: CSID device
++	 */
++	int (*configure_testgen_pattern)(struct csid_device *csid, s32 val);
++
++	/*
++	 * hw_version - Read hardware version register from hardware
++	 * @csid: CSID device
++	 */
++	u32 (*hw_version)(struct csid_device *csid);
++
++	/*
++	 * isr - CSID module interrupt service routine
++	 * @irq: Interrupt line
++	 * @dev: CSID device
++	 *
++	 * Return IRQ_HANDLED on success
++	 */
++	irqreturn_t (*isr)(int irq, void *dev);
++
++	/*
++	 * reset - Trigger reset on CSID module and wait to complete
++	 * @csid: CSID device
++	 *
++	 * Return 0 on success or a negative error code otherwise
++	 */
++	int (*reset)(struct csid_device *csid);
++
++	/*
++	 * src_pad_code - Pick an output/src format based on the input/sink format
++	 * @csid: CSID device
++	 * @sink_code: The sink format of the input
++	 * @match_format_idx: Request preferred index, as defined by subdevice csid_format.
++	 *	Set @match_code to 0 if used.
++	 * @match_code: Request preferred code, set @match_format_idx to 0 if used
++	 *
++	 * Return 0 on failure or src format code otherwise
++	 */
++	u32 (*src_pad_code)(struct csid_device *csid, u32 sink_code,
++			    unsigned int match_format_idx, u32 match_code);
++
++	/*
++	 * subdev_init - Initialize CSID device according for hardware revision
++	 * @csid: CSID device
++	 */
++	void (*subdev_init)(struct csid_device *csid);
++};
++
+ struct csid_device {
+ 	struct camss *camss;
+ 	u8 id;
+@@ -110,10 +201,37 @@ struct csid_device {
+ 	struct v4l2_ctrl *testgen_mode;
+ 	const struct csid_format *formats;
+ 	unsigned int nformats;
++	const struct csid_hw_ops *ops;
+ };
+ 
+ struct resources;
+ 
++
++/*
++ * csid_find_code - Find a format code in an array using array index or format code
++ * @codes: Array of format codes
++ * @ncodes: Length of @code array
++ * @req_format_idx: Request preferred index, as defined by subdevice csid_format.
++ *	Set @match_code to 0 if used.
++ * @match_code: Request preferred code, set @req_format_idx to 0 if used
++ *
++ * Return 0 on failure or format code otherwise
++ */
++u32 csid_find_code(u32 *codes, unsigned int ncode,
++		   unsigned int match_format_idx, u32 match_code);
++
++/*
++ * csid_get_fmt_entry - Find csid_format entry with matching format code
++ * @formats: Array of format csid_format entries
++ * @nformats: Length of @nformats array
++ * @code: Desired format code
++ *
++ * Return formats[0] on failure to find code
++ */
++const struct csid_format *csid_get_fmt_entry(const struct csid_format *formats,
++					     unsigned int nformats,
++					     u32 code);
++
+ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
+ 			 const struct resources *res, u8 id);
+ 
+@@ -124,4 +242,8 @@ void msm_csid_unregister_entity(struct csid_device *csid);
+ 
+ void msm_csid_get_csid_id(struct media_entity *entity, u8 *id);
+ 
++
++extern const struct csid_hw_ops csid_ops_4_1;
++extern const struct csid_hw_ops csid_ops_4_7;
++
+ #endif /* QC_MSM_CAMSS_CSID_H */
 -- 
 2.27.0
 
