@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A474D31D567
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:39:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475D431D569
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:42:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhBQGiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 01:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231441AbhBQGh6 (ORCPT
+        id S231557AbhBQGkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:40:13 -0500
+Received: from antares.kleine-koenig.org ([94.130.110.236]:57732 "EHLO
+        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231224AbhBQGkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:37:58 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785DFC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 22:37:18 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id dr7so5838384qvb.1
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 22:37:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ugTQaAHGFRc8CPFFaoP0oTLZDH3L7/TR0bJ/954bT1w=;
-        b=v8HGgPjVyadQVfPmCx53Cywv+tY+/NwgMZesn4Cct7G8jWSbvOzSIGB/hxY7I+rWGA
-         oPcjS0UokMyi6R8y8MHOZwg3JJF+o1joKHa5yfpiRZu3x83CxzklWCWA6FeIJMTnAWwa
-         1cjF4Jz6JHzpRx+OJw9YQp+P/pzawTcePep9dRvCNXkqQ93Db2OxFXqsn6ONhV/ZhD5h
-         LlmUlWKOvNF0oDynmUvZ9R0CzNkbwPNwrbf4RrBCl8bFgVu/3tJJoxyj+NXRObkpv9Vz
-         kWZpDzE7jiCSXPhk9ngfm93euWFpMKJ6F/jAnHNWbm3d3fpjYzoY5Zjx0x6kDOPhJSDe
-         ZsqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ugTQaAHGFRc8CPFFaoP0oTLZDH3L7/TR0bJ/954bT1w=;
-        b=jAyjw6YbWYA6pE1sZS0CqP2DI2BQqXwyTC1iZLSym3wcQWlcT8ftAOJwMxkq/oL4Sw
-         z6jPtipAdgVPTZmEZAJV23ARzkxlVDBB6R0wkY2fQlw+0QGHjV9qMkEq5vPXCIYWLP3H
-         RFVLH+musgy4GWv4zBbfscBlPVfYQ4wxb/jyEaIw6wnlSqUeQc7Bh32bXAyk4DkrueRC
-         FzKr4kzhAYThocdqTPL2E2cxrHUebfxDADN/ZBgdXbwjWs1/vD3IoDm4dwH6erIgYylo
-         H4Na3WA2yrsD1R/LoKoob/1bsNicmnvnj1/o0pPUEsazef2b4XtvQ99nHlPgKNSucpFU
-         CMpQ==
-X-Gm-Message-State: AOAM532m9HlUKx2hw1es0T4SC1De+4FwMLf/aVHndlmoMhKFD6UP6i24
-        zzFEUjg/5jz0sFpHwF9kAu4FlFnB1k4WWRufHSwvRw==
-X-Google-Smtp-Source: ABdhPJziFbydIqs9spoKH8g+9HfptYXkPclDT0RznHkiHmn/kvucRG/COOeZ+TcnMFsCaeIlanv6uAAeyMTjEF5z1HE=
-X-Received: by 2002:a0c:8304:: with SMTP id j4mr23007277qva.18.1613543837440;
- Tue, 16 Feb 2021 22:37:17 -0800 (PST)
+        Wed, 17 Feb 2021 01:40:00 -0500
+Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
+        by antares.kleine-koenig.org (Postfix) with ESMTP id B7D5FB03DF5;
+        Wed, 17 Feb 2021 07:39:14 +0100 (CET)
+Received: from antares.kleine-koenig.org ([94.130.110.236])
+        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
+        with ESMTP id S8ReJb4Xkcck; Wed, 17 Feb 2021 07:39:13 +0100 (CET)
+Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5ad:2000:7867:997:4a55:eb43])
+        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
+        Wed, 17 Feb 2021 07:39:13 +0100 (CET)
+Subject: Re: [PATCH v2 0/5] dax-device: Some cleanups
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210205222842.34896-1-uwe@kleine-koenig.org>
+ <CAPcyv4gMg7ksLS6vWR3Ya=bZd5wBiRLtSGxf6mc3yqf+3rA_TQ@mail.gmail.com>
+ <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
+From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+Message-ID: <d1891be1-9345-9d2b-edcc-2a5ce2ac9360@kleine-koenig.org>
+Date:   Wed, 17 Feb 2021 07:39:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <0000000000000be4d705bb68dfa7@google.com> <20210216172817.GA14978@arm.com>
- <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
- <CAHmME9ob9g-pcsKU2=n2SOzjNwyGh9+dL-WGpQn4Da+DD4dPzA@mail.gmail.com>
- <20210216180143.GB14978@arm.com> <CACT4Y+ZH4ViZix7qyPPXtcgaanimm8CmSu1J8qhqpEedxC=fmQ@mail.gmail.com>
-In-Reply-To: <CACT4Y+ZH4ViZix7qyPPXtcgaanimm8CmSu1J8qhqpEedxC=fmQ@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Wed, 17 Feb 2021 07:37:06 +0100
-Message-ID: <CACT4Y+bXSn+gh-AbVJmDvLOoG84Za6=bBGaXb=VnQFvosbbG+A@mail.gmail.com>
-Subject: Re: KASAN: invalid-access Write in enqueue_timer
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Eric Dumazet <edumazet@google.com>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Netdev <netdev@vger.kernel.org>,
-        syzbot <syzbot+95c862be69e37145543f@syzkaller.appspotmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 7:15 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > On Tue, Feb 16, 2021 at 06:50:20PM +0100, Jason A. Donenfeld wrote:
-> > > On Tue, Feb 16, 2021 at 6:46 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> > > > On Tue, Feb 16, 2021 at 6:28 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > > > > >  hlist_add_head include/linux/list.h:883 [inline]
-> > > > > >  enqueue_timer+0x18/0xc0 kernel/time/timer.c:581
-> > > > > >  mod_timer+0x14/0x20 kernel/time/timer.c:1106
-> > > > > >  mod_peer_timer drivers/net/wireguard/timers.c:37 [inline]
-> > > > > >  wg_timers_any_authenticated_packet_traversal+0x68/0x90 drivers/net/wireguard/timers.c:215
-> > > >
-> > > > The line of hlist_add_head that it's hitting is:
-> > > >
-> > > > static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
-> > > > {
-> > > >        struct hlist_node *first = h->first;
-> > > >        WRITE_ONCE(n->next, first);
-> > > >        if (first)
-> > > >
-> > > > So that means it's the dereferencing of h that's a problem. That comes from:
-> > > >
-> > > > static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
-> > > >                          unsigned int idx, unsigned long bucket_expiry)
-> > > > {
-> > > >
-> > > >        hlist_add_head(&timer->entry, base->vectors + idx);
-> > > >
-> > > > That means it concerns base->vectors + idx, not the timer_list object
-> > > > that wireguard manages. That's confusing. Could that imply that the
-> > > > bug is in freeing a previous timer without removing it from the timer
-> > > > lists, so that it winds up being in base->vectors?
-> >
-> > Good point, it's indeed likely that the timer list is messed up already,
-> > just an unlucky encounter in the wireguard code.
-> >
-> > > Digging around on syzkaller, it looks like there's a similar bug on
-> > > jbd2, concerning iptunnels's allocation:
-> > >
-> > > https://syzkaller.appspot.com/text?tag=CrashReport&x=13afb19cd00000
-> > [...]
-> > > It might not actually be a wireguard bug?
-> >
-> > I wonder whether syzbot reported similar issues with
-> > CONFIG_KASAN_SW_TAGS. It shouldn't be that different from the HW_TAGS
-> > but at least we can rule out qemu bugs with the MTE emulation.
->
-> +Eric
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn
+Content-Type: multipart/mixed; boundary="hBBVWP2Xum3ONlVJRDp4uyuSeD8Sa6qHy";
+ protected-headers="v1"
+From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang
+ <dave.jiang@intel.com>, Andrew Morton <akpm@linux-foundation.org>,
+ linux-nvdimm <linux-nvdimm@lists.01.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Message-ID: <d1891be1-9345-9d2b-edcc-2a5ce2ac9360@kleine-koenig.org>
+Subject: Re: [PATCH v2 0/5] dax-device: Some cleanups
+References: <20210205222842.34896-1-uwe@kleine-koenig.org>
+ <CAPcyv4gMg7ksLS6vWR3Ya=bZd5wBiRLtSGxf6mc3yqf+3rA_TQ@mail.gmail.com>
+ <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
+In-Reply-To: <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
 
-I've seen some similar reports on other syzkaller instances. They all
-have similar alloc/free stacks, but different access stacks.
-This does not seem to be wireguard nor arm/mte related. It seems that
-something released the device prematurely, and then some innocent code
-gets a use-after-free.
+--hBBVWP2Xum3ONlVJRDp4uyuSeD8Sa6qHy
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hello Dan,
+
+On 2/17/21 4:55 AM, Dan Williams wrote:
+>> One small comment on patch5, otherwise looks good.
+>=20
+> I take it back, patch5 looks good. I was going to ask about the return
+> value removal for dax_bus_remove(), but that would need struct
+> bus_type to change prototypes.
+
+Changing struct bus_type::remove to return void is the eventual plan. To =
+
+make this a pretty and easily reviewable patch I currently go through=20
+all buses and make sure that for the prototype change I only have to do=20
+one s/int/void/ and drop a "return 0" per bus.
+
+> All merged to the nvdimm tree.
+
+Great, thanks
+Uwe
+
+
+--hBBVWP2Xum3ONlVJRDp4uyuSeD8Sa6qHy--
+
+--NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAsugYACgkQwfwUeK3K
+7Anipwf+MQUO3Q+0QPOYdHW2iyztwa/+y2PBB7JgXTg7BWm3X0WiJ7B2ZUj9NKSx
+2Z1oyu79E1w/mNFeXeVKJ/9HGEsClUCaag1AA2om/gKvSJmVFU48N4STJAZ5LAX/
+tL6lLx4HDn1/mLXgIhsk3bdLQg959Q2BaBYmXFA/DOM+wRRYrnzI734WS/Vwst4b
+50SijYxZSheaEJWVOT9cpK35C2qMifgs8dB9MyC2LmmD5P1rGL0BtztcmQSC3KSh
+U5AvMnCnS9F+PAHWIbiAJKZxevIxDuOAMv7TyV7S2AY+KGW5wQS2isMHy8KhFRYm
+1x8qvSbWvETF2H/4rzKM3s9yWg1S5w==
+=lL31
+-----END PGP SIGNATURE-----
+
+--NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn--
