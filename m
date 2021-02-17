@@ -2,284 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D203231DE2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA6CB31DE53
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:35:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhBQRad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:30:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbhBQRac (ORCPT
+        id S231866AbhBQRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:35:06 -0500
+Received: from [139.28.40.42] ([139.28.40.42]:46870 "EHLO
+        tarta.nabijaczleweli.xyz" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S234146AbhBQRcs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:30:32 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8697C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:29:51 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id u11so7748863plg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:29:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LfC994+VdXOQvCvXIS28RgeAE0JKfwsj7yHp42+2dB4=;
-        b=NwZ7WW5fJDdkYcjGdM+at8BoNVtemf2RuTxH8f31wEaoo0wu++7FnTTVFxLc4E23y8
-         wo8Yzhi/5QT1Nc+Mxvf+nyC7KQAbGtirGgQMCqP1vPxtJn0OcpO0Fy9JK9Aj8fFtaCCT
-         Jzy8Jyw2mze4/jt1Ad9Pb15yY8lwNtLVbY2wPxXe+tLJgmdBFXjpOu3uwpZoG8DIq65K
-         zEmRJnpbBcQZqN2KP/I8t0/6GlPI86iL3kgTI8ISXkKGtcxzpdzeixaGTGtykJEenvpb
-         AoWzo/NLfRUuwLAb5IRHLj03R5leCws7KG0s/3culLWektghnn/wI+aqPLMeC5FIkgW2
-         xMIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LfC994+VdXOQvCvXIS28RgeAE0JKfwsj7yHp42+2dB4=;
-        b=GWf/vGFNfsjwilSA8zkarez7nvW7+Hm8XVbS541b1CFhZPSAmG8VbwHaSKic9YXVO6
-         LAyz9OAvuEDh7pSprmIc405llG7Pz3jiyrmwXIdcylr2iw80YNiYhu6JqC7GpQlNHYYH
-         eRige6WbA706oQPR92+6eX56/JhZqGVVrx28nSUruUNyCuG9YxZSAVP6JhwQWrt5CzFL
-         n992RSl2iTn+tmhN83qp2LBn3DIdpsQuqgWKfmUCNl8EUbP0Pif7R7gix7CBYJp49w2u
-         oDY6NqmZMZrSr72/A3S3wVcs5o1mPLJHcn95n1gytvxpuYnQcVbtgccI5qfzntxUP6Fs
-         1Mnw==
-X-Gm-Message-State: AOAM5314i9Kdp2uKjE9DyZX1nNJ8qthHWAZAqnuXsM+P6J5hyEaY+bJD
-        kY7ZABUzIs63ULeqbLqvrd3GVg==
-X-Google-Smtp-Source: ABdhPJxrhCZCogiYruFh+JkUGOouFGuW/3JBAXAvoR5H/+XJXZNcITcQpw3UYcslH1KcVK1+8EErmg==
-X-Received: by 2002:a17:903:230b:b029:dd:7cf1:8c33 with SMTP id d11-20020a170903230bb02900dd7cf18c33mr110882plh.31.1613582989259;
-        Wed, 17 Feb 2021 09:29:49 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:6948:259b:72c6:5517])
-        by smtp.gmail.com with ESMTPSA id y22sm3116778pgh.19.2021.02.17.09.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 09:29:48 -0800 (PST)
-Date:   Wed, 17 Feb 2021 09:29:42 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH 4/7] KVM: nVMX: move inject_page_fault tweak to
- .complete_mmu_init
-Message-ID: <YC1ShhSZ+6ST63nZ@google.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
- <20210217145718.1217358-5-mlevitsk@redhat.com>
+        Wed, 17 Feb 2021 12:32:48 -0500
+Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 99A0336011D;
+        Wed, 17 Feb 2021 18:22:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nabijaczleweli.xyz;
+        s=202006; t=1613582544;
+        bh=5WfzNG7IUI6eMlFOH38CcAl/0dszPETSZdLlIuk5Rf0=;
+        h=Date:From:Cc:Subject:From;
+        b=EWwMB5uk1waX6FJpQS+zXMzmuuaOllUv+K08VRedvR+UAnI8SzGAcbIC1jIuedhcT
+         BEWxQhiwxT5aEEGLyk4fAf9+wN0l2B/0xh/3LKXe47ioMu1nwwjOjvwHxtbrk+yFX7
+         aUrcDWfVbYCl/1YAL2KZRvBv1bgLZXirUCvdvk+HebY24omLgFoCqcERgsbGsG1SMt
+         EpN6Z05TxAOwz7r/5EMfFdAGeJXfATLJNSeZaRrhdseJpFjMsB+qqU5m6j3N336Ul0
+         x/hGQVNl98hzYSGwWx+j972MpmK2HHvNBEuXq0y4csGj5FS8vimYGeaDdm//9ZDGzV
+         11hRQso7gNiIA==
+Date:   Wed, 17 Feb 2021 18:22:23 +0100
+From:   =?utf-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Stylus-on-touchscreen device support
+Message-ID: <cover.1613582014.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="as2a7ri2rx7w3ffl"
 Content-Disposition: inline
-In-Reply-To: <20210217145718.1217358-5-mlevitsk@redhat.com>
+User-Agent: NeoMutt/20210205
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021, Maxim Levitsky wrote:
-> This fixes a (mostly theoretical) bug which can happen if ept=0
-> on host and we run a nested guest which triggers a mmu context
-> reset while running nested.
-> In this case the .inject_page_fault callback will be lost.
->
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 8 +-------
->  arch/x86/kvm/vmx/nested.h | 1 +
->  arch/x86/kvm/vmx/vmx.c    | 5 ++++-
->  3 files changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 0b6dab6915a3..f9de729dbea6 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -419,7 +419,7 @@ static int nested_vmx_check_exception(struct kvm_vcpu *vcpu, unsigned long *exit
->  }
->  
->  
-> -static void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
-> +void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
->  		struct x86_exception *fault)
->  {
->  	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
-> @@ -2620,9 +2620,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->  		vmcs_write64(GUEST_PDPTR3, vmcs12->guest_pdptr3);
->  	}
->  
-> -	if (!enable_ept)
-> -		vcpu->arch.walk_mmu->inject_page_fault = vmx_inject_page_fault_nested;
-> -
->  	if ((vmcs12->vm_entry_controls & VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL) &&
->  	    WARN_ON_ONCE(kvm_set_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL,
->  				     vmcs12->guest_ia32_perf_global_ctrl)))
-> @@ -4224,9 +4221,6 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
->  	if (nested_vmx_load_cr3(vcpu, vmcs12->host_cr3, false, &ignored))
->  		nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_PDPTE_FAIL);
->  
-> -	if (!enable_ept)
-> -		vcpu->arch.walk_mmu->inject_page_fault = kvm_inject_page_fault;
 
-Oof, please explicitly call out these types of side effects in the changelog,
-it took me a while to piece together that this can be dropped because a MMU
-reset is guaranteed and is also guaranteed to restore inject_page_fault.
+--as2a7ri2rx7w3ffl
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I would even go so far as to say this particular line of code should be removed
-in a separate commit.  Unless I'm overlooking something, this code is
-effectively a nop, which means it doesn't need to be removed to make the bug fix
-functionally correct.
+This patchset adds support for stylus-on-touchscreen devices as found on
+the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among others;
+with it, they properly behave like a drawing tablet.
 
-All that being said, I'm pretty we can eliminate setting inject_page_fault
-dynamically.  I think that would yield more maintainable code.  Following these
-flows is a nightmare.  The change itself will be scarier, but I'm pretty sure
-the end result will be a lot cleaner.
+Patches 2 and 4 funxionally depend on patch 1.
+Patch 4 needs patch 3 to apply.
 
-And I believe there's also a second bug that would be fixed by such an approach.
-Doesn't vmx_inject_page_fault_nested() need to be used for the nested_mmu when
-ept=1?  E.g. if the emulator injects a #PF to L2, L1 should still be able to
-intercept the #PF even if L1 is using EPT.  This likely hasn't been noticed
-because hypervisors typically don't intercept #PF when EPT is enabled.
+The output of this patchset and the need for a kernel, rather than
+userspace, patch was previously discussed here:
+  https://gitlab.freedesktop.org/libinput/libinput/-/merge_requests/558#not=
+e_792834
 
-Something like this (very incomplete):
+Ahelenia Ziemia=C5=84ska (4):
+  HID: multitouch: require Finger field to mark Win8 reports as MT
+  HID: multitouch: set Stylus suffix for Stylus-application devices, too
+  HID: input: replace outdated HID numbers+comments with macros
+  HID: input: work around Win8 stylus-on-touchscreen reporting
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 30e9b0cb9abd..f957514a4d65 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4497,7 +4497,6 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
-        context->direct_map = true;
-        context->get_guest_pgd = get_cr3;
-        context->get_pdptr = kvm_pdptr_read;
--       context->inject_page_fault = kvm_inject_page_fault;
+ drivers/hid/hid-input.c      | 47 +++++++++++++++++++++++++++++++++---
+ drivers/hid/hid-multitouch.c | 18 ++++++++------
+ 2 files changed, 55 insertions(+), 10 deletions(-)
 
-        if (!is_paging(vcpu)) {
-                context->nx = false;
-@@ -4687,7 +4686,6 @@ static void init_kvm_softmmu(struct kvm_vcpu *vcpu)
+--=20
+2.20.1
 
-        context->get_guest_pgd     = get_cr3;
-        context->get_pdptr         = kvm_pdptr_read;
--       context->inject_page_fault = kvm_inject_page_fault;
- }
+--as2a7ri2rx7w3ffl
+Content-Type: application/pgp-signature; name="signature.asc"
 
- static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
-@@ -4701,7 +4699,6 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
-        g_context->mmu_role.as_u64 = new_role.as_u64;
-        g_context->get_guest_pgd     = get_cr3;
-        g_context->get_pdptr         = kvm_pdptr_read;
--       g_context->inject_page_fault = kvm_inject_page_fault;
+-----BEGIN PGP SIGNATURE-----
 
-        /*
-         * L2 page tables are never shadowed, so there is no need to sync
-@@ -5272,6 +5269,8 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
-        if (ret)
-                goto fail_allocate_root;
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmAtUMsACgkQvP0LAY0m
+WPEFARAAqFw6tyfU/2yLrXagcabPbSj4728gA+a4jCFUfuoYwI3q5+KLsi2CR3UI
+dxU2RuoKJ2xm+47KDJyV6Ho2TkKL34gR1EVbco24/9UJlXUpp8AQirT0zaf0QpNH
+exL0EVyOiNpL2jMaSX5s0k7eOh8J+e3lCwgNCvS1h1V4Ajm5cEhglAXZxvH8JgZR
+XDI2dxtGT11xuDbyo+H/4HTRPYnhaiK+rL5xcLOTNoGej9g/9PjyrZnlfCu0OJwb
+/Xpt3f3xtYqnNua+Z4wGl3rer5ANUOPcynWPP5aCx5J0+WFd48eC7cJDP4Esihvc
+NmWMSUjVUfQ2kpz6hr4WEUMQZI7AxoQHXut1SmR0+IlDrwJgiiUKL5E1r+Au8hkY
+pFqNa2CMu/QiNyLOhJ91qWITPIpbsdhBVlqKgcONrTDbcu5UpCoG2lZ9ffHOY1YK
+Ge4hXI1bHkARvyrfKatDppCeGI3khl1bi/uv9fLgFx7Jh3ii2tklOCg4UZbo1OPD
+GY2EWkUZGCaZuD69d0Wy8JoLXNVUiMGivvb9NnLlL3ZUmL0ajiZkUTfZCA8bqlEw
+UMuHQANfpVuYeVV4Vb6Z0SFgptg5HPK+MZkno6yP7kH2gvnoI0E3/b7knQN6sG63
+IAjiKr1VDB/2KYK3uZe7J4i66xCvhtnKFLK/4NDO4awjPyE6O7Y=
+=J2mS
+-----END PGP SIGNATURE-----
 
-+       static_call(kvm_x86_mmu_create)(vcpu);
-+
-        return ret;
-  fail_allocate_root:
-        free_mmu_pages(&vcpu->arch.guest_mmu);
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index a63da447ede9..aa6c48295117 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -425,15 +425,14 @@ static int nested_vmx_check_exception(struct kvm_vcpu *vcpu, unsigned long *exit
- }
-
-
--static void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
-+static void vmx_inject_page_fault(struct kvm_vcpu *vcpu,
-                struct x86_exception *fault)
- {
-        struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
-
--       WARN_ON(!is_guest_mode(vcpu));
--
--       if (nested_vmx_is_page_fault_vmexit(vmcs12, fault->error_code) &&
--               !to_vmx(vcpu)->nested.nested_run_pending) {
-+       if (guest_mode(vcpu) &&
-+           nested_vmx_is_page_fault_vmexit(vmcs12, fault->error_code) &&
-+           !to_vmx(vcpu)->nested.nested_run_pending) {
-                vmcs12->vm_exit_intr_error_code = fault->error_code;
-                nested_vmx_vmexit(vcpu, EXIT_REASON_EXCEPTION_NMI,
-                                  PF_VECTOR | INTR_TYPE_HARD_EXCEPTION |
-@@ -2594,9 +2593,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
-                vmcs_write64(GUEST_PDPTR3, vmcs12->guest_pdptr3);
-        }
-
--       if (!enable_ept)
--               vcpu->arch.walk_mmu->inject_page_fault = vmx_inject_page_fault_nested;
--
-        if ((vmcs12->vm_entry_controls & VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL) &&
-            WARN_ON_ONCE(kvm_set_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL,
-                                     vmcs12->guest_ia32_perf_global_ctrl)))
-@@ -4198,9 +4194,6 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
-        if (nested_vmx_load_cr3(vcpu, vmcs12->host_cr3, false, &ignored))
-                nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_PDPTE_FAIL);
-
--       if (!enable_ept)
--               vcpu->arch.walk_mmu->inject_page_fault = kvm_inject_page_fault;
--
-        nested_vmx_transition_tlb_flush(vcpu, vmcs12, false);
-
-        vmcs_write32(GUEST_SYSENTER_CS, vmcs12->host_ia32_sysenter_cs);
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 1204e5f0fe67..0e5ee22eea77 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -3081,6 +3081,13 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
-        vmx->emulation_required = emulation_required(vcpu);
- }
-
-+static void vmx_mmu_create(struct kvm_vcpu *vcpu)
-+{
-+       vcpu->arch.root_mmu.inject_page_fault = vmx_inject_page_fault;
-+       vcpu->arch.guest_mmu.inject_page_fault = nested_ept_inject_page_fault;
-+       vcpu->arch.nested_mmu.inject_page_fault = vmx_inject_page_fault;
-+}
-+
- static int vmx_get_max_tdp_level(void)
- {
-        if (cpu_has_vmx_ept_5levels())
-@@ -7721,6 +7728,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
-
-        .write_l1_tsc_offset = vmx_write_l1_tsc_offset,
-
-+       .mmu_create = vmx_mmu_create,
-        .load_mmu_pgd = vmx_load_mmu_pgd,
-
-        .check_intercept = vmx_check_intercept,
-
-> -
->  	nested_vmx_transition_tlb_flush(vcpu, vmcs12, false);
->  
->  	vmcs_write32(GUEST_SYSENTER_CS, vmcs12->host_ia32_sysenter_cs);
-> diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
-> index 197148d76b8f..2ab279744d38 100644
-> --- a/arch/x86/kvm/vmx/nested.h
-> +++ b/arch/x86/kvm/vmx/nested.h
-> @@ -36,6 +36,7 @@ void nested_vmx_pmu_entry_exit_ctls_update(struct kvm_vcpu *vcpu);
->  void nested_mark_vmcs12_pages_dirty(struct kvm_vcpu *vcpu);
->  bool nested_vmx_check_io_bitmaps(struct kvm_vcpu *vcpu, unsigned int port,
->  				 int size);
-> +void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,struct x86_exception *fault);
->  
->  static inline struct vmcs12 *get_vmcs12(struct kvm_vcpu *vcpu)
->  {
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index bf6ef674d688..c43324df4877 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -3254,7 +3254,10 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
->  
->  static void vmx_complete_mmu_init(struct kvm_vcpu *vcpu)
->  {
-> -
-> +	if (!enable_ept && is_guest_mode(vcpu)) {
-> +		WARN_ON(mmu_is_nested(vcpu));
-> +		vcpu->arch.mmu->inject_page_fault = vmx_inject_page_fault_nested;
-> +	}
->  }
->  
->  static bool vmx_is_valid_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
-> -- 
-> 2.26.2
-> 
+--as2a7ri2rx7w3ffl--
