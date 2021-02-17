@@ -2,122 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFBB31D527
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3BE31D528
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhBQFrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 00:47:45 -0500
-Received: from mga09.intel.com ([134.134.136.24]:33725 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230231AbhBQFrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 00:47:41 -0500
-IronPort-SDR: 3n9NNd0n43PN78i0TMntCKOGPHAB0HLUuXzDi4Zc95zIy6h2MWm3XpFOcNryli1JJ1sq9lGSCT
- HfgfQh12YuFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="183240869"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="183240869"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 21:47:00 -0800
-IronPort-SDR: ud/keKpLGbgL5aGlJAIoxTmzJj+x2hg4aaCz4SH7RtiWEyB636m0BaEsv9XXQJxG1GMgl7I+P8
- cxATzZ6c0nbg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="439234342"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by orsmga001.jf.intel.com with ESMTP; 16 Feb 2021 21:46:55 -0800
-Subject: Re: [PATCH 2/2] mmc: core: Add no single read retries
-To:     DooHyun Hwang <dh0421.hwang@samsung.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, axboe@kernel.dk, satyat@google.com,
-        ebiggers@google.com, gustavoars@kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, cw9316.lee@samsung.com,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com
-References: <20210217052239.13780-1-dh0421.hwang@samsung.com>
- <CGME20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c@epcas1p2.samsung.com>
- <20210217052239.13780-3-dh0421.hwang@samsung.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <4035139d-7850-8460-f069-06fc61d13039@intel.com>
-Date:   Wed, 17 Feb 2021 07:46:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S230099AbhBQFsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 00:48:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhBQFsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 00:48:51 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46BEC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:48:11 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id gx20so982864pjb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:48:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kC7FB84HuJWwG5tVJoY1zO9qUYFIRLjueg1bLxKBI2I=;
+        b=YCng1pPS942DfxHLPAotAgXTm1nzESHgrA5K44OELy7mkwyvQkjk8XlsycPqV7c+ZM
+         mRGq5Qdi9ijg8JkEVPuKkzSmYNTO+o/Rvg36qTQwnKNi1/h+qSDMhBXFD4oLGlIkqz9D
+         DCE3Z5NIyRrR1kCMwOstHi0fNgapzRSFeN19Evnr8DrJlyrEtBjTnE4OwLPP2NJ9d8wd
+         odLaRrtUzNeZD+AjYc5AcpdadlS2vbnEVlg3rDQRi3zdMj5zzUa6KQSq35zPE3wKi8nB
+         SbfYju807ApL76s+iQGYx+Kh9Uve7DgoVH71SrURTIcrExwva/pI0jccbZxw1hLwzAJ5
+         c6Cw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kC7FB84HuJWwG5tVJoY1zO9qUYFIRLjueg1bLxKBI2I=;
+        b=r+FtqulOJVzx/8lezcIhV8f3Tow5GiokKKj45NnYSFeMnPaOGHHwH0ovFAM+DJz7bl
+         DLxckZiyKgqkm2WkR8g4QpHe5CCtXkL7W233GGR88/bNTA/fxBKvGzku5JkB5WY8LJAF
+         NWBGDM+vIHwp6yYYGnOEhLcqnGnOY9nHsP/egxQaWGA55inukSSNhckC+xbIvIJibu2B
+         8q8sgMV0+LXbmR7hULJrtl9FRHhCMzpw8vnb4v+kgpB59tpmRz3x6jZap1S+QbNA2AuW
+         /uOGL+RXWD/GH/S2073pOPvTsdkdjaxboSnt/eytLLXruJ1ZTdV9escDnBEtb45UWWte
+         wv2w==
+X-Gm-Message-State: AOAM5311sRRgy025TEDQvOr+62usg5QjIkjwimmspn2bz8qLlRfKbjtH
+        PTa0mKE3TaU3eeCYA4fvreaxeA==
+X-Google-Smtp-Source: ABdhPJzMR139L7M+PXqZWGtFHB4viwOIPgzZgjst2aH6XqmmTW2UDP7q7jvYJqFhPFVMcpTKSb4K9w==
+X-Received: by 2002:a17:902:bccc:b029:de:8483:506d with SMTP id o12-20020a170902bcccb02900de8483506dmr1039523pls.53.1613540891035;
+        Tue, 16 Feb 2021 21:48:11 -0800 (PST)
+Received: from localhost.localdomain ([2409:8a28:e6d:6480:41c9:75c:168:49f5])
+        by smtp.gmail.com with ESMTPSA id r13sm867262pfc.198.2021.02.16.21.48.07
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Feb 2021 21:48:10 -0800 (PST)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org
+Cc:     linux-kernel@vger.kernel.org, songmuchun@bytedance.com,
+        zhouchengming@bytedance.com
+Subject: [PATCH v2] psi: Optimize task switch inside shared cgroups
+Date:   Wed, 17 Feb 2021 13:48:03 +0800
+Message-Id: <20210217054803.77890-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-In-Reply-To: <20210217052239.13780-3-dh0421.hwang@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/21 7:22 am, DooHyun Hwang wrote:
-> This makes to handle read errors faster by not retrying
-> multiple block read(CMD18) errors with single block reads(CMD17).
-> 
-> On some bad SD Cards that have problem with read operations,
-> it is not helpful to retry multiple block read errors with
-> several single block reads, and it is delayed to treat read
-> operations as I/O error as much as retrying single block reads.
+The commit 36b238d57172 ("psi: Optimize switching tasks inside shared
+cgroups") only update cgroups whose state actually changes during a
+task switch only in task preempt case, not in task sleep case.
 
-If the issue is that it takes too long, then maybe it would be better to get
-mmc_blk_read_single() to give up after a certain amount of time.
+We actually don't need to clear and set TSK_ONCPU state for common cgroups
+of next and prev task in sleep case, that can save many psi_group_change
+especially when most activity comes from one leaf cgroup.
 
-> 
-> Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
-> ---
->  drivers/mmc/core/block.c | 3 ++-
->  drivers/mmc/core/host.c  | 6 ++++++
->  include/linux/mmc/host.h | 3 +++
->  3 files changed, 11 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index d666e24fbe0e..e25aaf8fca34 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -1809,7 +1809,8 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue *mq, struct request *req)
->  
->  	/* FIXME: Missing single sector read for large sector size */
->  	if (!mmc_large_sector(card) && rq_data_dir(req) == READ &&
-> -	    brq->data.blocks > 1) {
-> +	    brq->data.blocks > 1 &&
-> +	    !card->host->no_single_read_retry) {
->  		/* Read one sector at a time */
->  		mmc_blk_read_single(mq, req);
->  		return;
-> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
-> index 9b89a91b6b47..3bf5b2fc111b 100644
-> --- a/drivers/mmc/core/host.c
-> +++ b/drivers/mmc/core/host.c
-> @@ -352,6 +352,12 @@ int mmc_of_parse(struct mmc_host *host)
->  	if (device_property_read_bool(dev, "no-mmc"))
->  		host->caps2 |= MMC_CAP2_NO_MMC;
->  
-> +	if (device_property_read_bool(dev, "no-single-read-retry")) {
-> +		dev_info(host->parent,
-> +			"Single block read retrying is not supported\n");
-> +		host->no_single_read_retry = true;
-> +	}
-> +
->  	/* Must be after "non-removable" check */
->  	if (device_property_read_u32(dev, "fixed-emmc-driver-type", &drv_type) == 0) {
->  		if (host->caps & MMC_CAP_NONREMOVABLE)
-> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-> index 26a3c7bc29ae..faec55035a63 100644
-> --- a/include/linux/mmc/host.h
-> +++ b/include/linux/mmc/host.h
-> @@ -502,6 +502,9 @@ struct mmc_host {
->  	/* Host Software Queue support */
->  	bool			hsq_enabled;
->  
-> +	/* Do not retry multi block read as single block read */
-> +	bool			no_single_read_retry;
-> +
->  	unsigned long		private[] ____cacheline_aligned;
->  };
->  
-> 
+sleep before:
+psi_dequeue()
+  while ((group = iterate_groups(prev)))  # all ancestors
+    psi_group_change(prev, .clear=TSK_RUNNING|TSK_ONCPU)
+psi_task_switch()
+  while ((group = iterate_groups(next)))  # all ancestors
+    psi_group_change(next, .set=TSK_ONCPU)
+
+sleep after:
+psi_dequeue()
+  nop
+psi_task_switch()
+  while ((group = iterate_groups(next)))  # until (prev & next)
+    psi_group_change(next, .set=TSK_ONCPU)
+  while ((group = iterate_groups(prev)))  # all ancestors
+    psi_group_change(prev, .clear = common ? TSK_RUNNING : TSK_RUNNING|TSK_ONCPU)
+
+When a voluntary sleep switches to another task, we remove one call of
+psi_group_change() for every common cgroup ancestor of the two tasks.
+
+Updates since v1:
+- Many improvements in the comments and code from Johannes.
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ kernel/sched/psi.c   | 35 +++++++++++++++++++++++++----------
+ kernel/sched/stats.h | 28 ++++++++++++----------------
+ 2 files changed, 37 insertions(+), 26 deletions(-)
+
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 0fe6ff6a6a15..548d405bae3e 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -840,20 +840,35 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
+ 		}
+ 	}
+ 
+-	/*
+-	 * If this is a voluntary sleep, dequeue will have taken care
+-	 * of the outgoing TSK_ONCPU alongside TSK_RUNNING already. We
+-	 * only need to deal with it during preemption.
+-	 */
+-	if (sleep)
+-		return;
+-
+ 	if (prev->pid) {
+-		psi_flags_change(prev, TSK_ONCPU, 0);
++		int clear = TSK_ONCPU, set = 0;
++
++		/*
++		 * When we're going to sleep, psi_dequeue() lets us handle
++		 * TSK_RUNNING and TSK_IOWAIT here, where we can combine it
++		 * with TSK_ONCPU and save walking common ancestors twice.
++		 */
++		if (sleep) {
++			clear |= TSK_RUNNING;
++			if (prev->in_iowait)
++				set |= TSK_IOWAIT;
++		}
++
++		psi_flags_change(prev, clear, set);
+ 
+ 		iter = NULL;
+ 		while ((group = iterate_groups(prev, &iter)) && group != common)
+-			psi_group_change(group, cpu, TSK_ONCPU, 0, true);
++			psi_group_change(group, cpu, clear, set, true);
++
++		/*
++		 * TSK_ONCPU is handled up to the common ancestor. If we're tasked
++		 * with dequeuing too, finish that for the rest of the hierarchy.
++		 */
++		if (sleep) {
++			clear &= ~TSK_ONCPU;
++			for (; group; group = iterate_groups(prev, &iter))
++				psi_group_change(group, cpu, clear, set, true);
++		}
+ 	}
+ }
+ 
+diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
+index 9e4e67a94731..dc218e9f4558 100644
+--- a/kernel/sched/stats.h
++++ b/kernel/sched/stats.h
+@@ -84,28 +84,24 @@ static inline void psi_enqueue(struct task_struct *p, bool wakeup)
+ 
+ static inline void psi_dequeue(struct task_struct *p, bool sleep)
+ {
+-	int clear = TSK_RUNNING, set = 0;
++	int clear = TSK_RUNNING;
+ 
+ 	if (static_branch_likely(&psi_disabled))
+ 		return;
+ 
+-	if (!sleep) {
+-		if (p->in_memstall)
+-			clear |= TSK_MEMSTALL;
+-	} else {
+-		/*
+-		 * When a task sleeps, schedule() dequeues it before
+-		 * switching to the next one. Merge the clearing of
+-		 * TSK_RUNNING and TSK_ONCPU to save an unnecessary
+-		 * psi_task_change() call in psi_sched_switch().
+-		 */
+-		clear |= TSK_ONCPU;
++	/*
++	 * A voluntary sleep is a dequeue followed by a task switch. To
++	 * avoid walking all ancestors twice, psi_task_switch() handles
++	 * TSK_RUNNING and TSK_IOWAIT for us when it moves TSK_ONCPU.
++	 * Do nothing here.
++	 */
++	if (sleep)
++		return;
+ 
+-		if (p->in_iowait)
+-			set |= TSK_IOWAIT;
+-	}
++	if (p->in_memstall)
++		clear |= TSK_MEMSTALL;
+ 
+-	psi_task_change(p, clear, set);
++	psi_task_change(p, clear, 0);
+ }
+ 
+ static inline void psi_ttwu_dequeue(struct task_struct *p)
+-- 
+2.11.0
 
