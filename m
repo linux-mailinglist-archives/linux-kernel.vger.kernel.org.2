@@ -2,111 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A08F931D8BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B26631D8C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:48:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbhBQLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
+        id S232348AbhBQLrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:47:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhBQLnc (ORCPT
+        with ESMTP id S231761AbhBQLnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:43:32 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1416EC061793
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:40:31 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id z6so8252330pfq.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:40:31 -0800 (PST)
+        Wed, 17 Feb 2021 06:43:35 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572E0C0617A7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:40:57 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id do6so11103762ejc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:40:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=11pGVD0nzA2DAiJ7cWPXp9I44T8zR661lI4xstwokb8=;
-        b=nN3POMtqLZQF8/79uB0ZdenvqJkcov6oKL3+Yaukuqsj3U0pi+rmZsW6D/unqNXCP0
-         4Xdu9O8wIAQpxqis6OuGqhr9RyyW/HWKYqZvwuPiAvJH+AHoGjRTDzciOgrTwWOkCoUF
-         XT+TnNXJQBqDJCNrAYWI7L4mVB0cgLerE8aevwJe0wxiKZjvQsNBpi12uHi1aFyY+LEN
-         9HAfWZMhSvePdMxjTbgmHXF0qK740ZMRl8hnxQotc2GLAzMrDYRs03JAFseq1X4pOtbd
-         lNCp3VQMft6/UqDuzuWT4qnPLMsSrIfq3lbn5vOqg/MtC5jv83XFjcuEW3ygFDMyvUoR
-         IK9g==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=bzovg3MJ/PGe0BE4lvDzG7ULiOduFRR2/N3B0q7Yo2s=;
+        b=ur6iaE7lJ/sNlaMcH31IsJWRRvsSYWP3NVA/THbFGPa+ckOR7fl0fyINJDt4uh7fSI
+         6wqVCEnZq47H+cpdhGYyXfsewaxWA8weJ0olkfMAH46a1T0POwq2Nz73gNPAzcgINaee
+         3W7r32foS0mtGzxU3ItjI6KJhcUwxkSCLzV//SljU33v8n2IEH5soR8sWijZPlkl0ENC
+         4xpWPU7GQwp9NDyycBrCkgySwuC+z2sbgFU5IBXuA7PBZfaNoh9cc4Msh4MZ96JunKUx
+         13WA/UZvNHYNP/iCPWWKDLHvZLLPBsnpkJx92FoO0ZtomaodDdeooSiSMWc743dAorlD
+         RxDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=11pGVD0nzA2DAiJ7cWPXp9I44T8zR661lI4xstwokb8=;
-        b=pasqQ/7PhGjp0KrXIeEf5YozD0lvwNwofRDGnTvzWmA8X8cifznped7aUrmmBvhU3q
-         vZ1e3GNb7rYqheLtfwMSJCz70//ryDFpLgWzwz9njs5jtg+BOLvT1bl9PuLUC2elo9rV
-         h7nrUOOQ3jg6RQx+wbxMC+m7rmXhYCVLJ1TmF20tIh2rmVjNc+3i1AR1gkoENSMFO5mj
-         g27Z3ItXLwzSVSApI+Nv906kliI0jZc33CTNbNxSsKORx52aJsW5zpmhXCLpcTv/fmlU
-         ZibP8UEAzSLqRu5mAFkdAqqyox+SHrPhzcn/dp4pTWPEljSAVKlIyugRWlHMs93fWVCu
-         Je1g==
-X-Gm-Message-State: AOAM5317ygmE9XLtl5dh16aTFlj6GaYWMPrc77Rcnvj6zAGaGn63jxb7
-        HUA1EJ5uM2hcnsxle/sbcyU2+g==
-X-Google-Smtp-Source: ABdhPJzr4uJe4QkljUPFWlLqLXnOjixB1cwYPo3cq1LNkxSXQbV/GK5ae2xqgQx6gdCFQbeMSp90cQ==
-X-Received: by 2002:a62:6585:0:b029:1b9:d8d9:1af2 with SMTP id z127-20020a6265850000b02901b9d8d91af2mr23638713pfb.17.1613562030391;
-        Wed, 17 Feb 2021 03:40:30 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id h124sm2331354pfe.216.2021.02.17.03.40.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Feb 2021 03:40:29 -0800 (PST)
-Date:   Wed, 17 Feb 2021 17:10:27 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
- sched_freq_tick() callback
-Message-ID: <20210217114027.ashqh67hrfk4hwib@vireshk-i7>
-References: <cover.1611829953.git.viresh.kumar@linaro.org>
- <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
- <20210203114521.GA6380@arm.com>
- <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
- <20210217002422.GA17422@arm.com>
- <20210217042558.o4anjdkayzgqny55@vireshk-i7>
- <20210217113011.GA22176@arm.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=bzovg3MJ/PGe0BE4lvDzG7ULiOduFRR2/N3B0q7Yo2s=;
+        b=uSkMk84DLhfesm0eVhuQfU/yYJ63ahkPvHZJMaET2PrEVvl/fCTqmvt8cUwleP69LW
+         f+H9DaxopemNg3i4XSnA2THdwnYRFIBvjzru0OuZYh2EHBpjEfwu1a3kK6q2sFMxcpV7
+         MI23UKR5jU7VZTcwGUxo+bylxmW22CejNX4zbFkYRrji/nyCiC4Qrv6Hshj516OqwS4V
+         /uGyfsi65uB6Y+2dQuPsQR1UPIwU/Bab/Uf2pbgIcY27w0xR7G0m7aQYpbUi6eh0B40o
+         zfwEbjj5VzafYs3f93vNgjePPAjZRUAavL3dwW198FyP0hirhYCyiDRM3eY1f+HAn3zs
+         7e0w==
+X-Gm-Message-State: AOAM5310Kem88Nkp8Wj/Tph013elYrBph02clhmYm1xXT1d1eClt8WWe
+        IoQiFP6VDMwuHeNFtc1sjWY=
+X-Google-Smtp-Source: ABdhPJwkN2uItMww6x7Rc49csJ8mR7v+vttZoxu8rOrZOoMTrfoU5RPdCZ/NO2M38g0t7dBR9PsB6Q==
+X-Received: by 2002:a17:906:1951:: with SMTP id b17mr6422450eje.409.1613562056129;
+        Wed, 17 Feb 2021 03:40:56 -0800 (PST)
+Received: from gmail.com (20014C4E1C8ABB004E764B08203955B1.dsl.pool.telekom.hu. [2001:4c4e:1c8a:bb00:4e76:4b08:2039:55b1])
+        by smtp.gmail.com with ESMTPSA id q20sm898834ejs.17.2021.02.17.03.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 03:40:55 -0800 (PST)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Wed, 17 Feb 2021 12:40:54 +0100
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] locking updates for v5.12
+Message-ID: <20210217114054.GA80562@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217113011.GA22176@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-02-21, 11:30, Ionela Voinescu wrote:
-> The problem is not topology_scale_freq_invariant() but whether a scale
-> factor is set for some CPUs.
-> 
-> Scenario (test system above):
->  - "AMUs" are only supported for [1-2],
->  - cpufreq_supports_freq_invariance() -> false
-> 
-> What should happen:
->  - topology_scale_freq_invariant() -> false (passed)
->  - all CPUs should have their freq_scale unmodified (1024) - (failed)
->    because only 2 out of 6 CPUs have a method of setting a scale factor
-> 
-> What does happen:
->  - arch_set_freq_tick() -> topology_set_freq_tick() will set a scale
->    factor for [1-2] based on AMUs. This should not happen. We will end
->    up with invariant signals for bigs and signals that are not freq
->    invariant for littles.
+Linus,
 
-Another case. cpufreq is included as a module and AMU is implemented
-partially.
+Please pull the latest locking/core git tree from:
 
-- first time cpufreq driver is inserted, we set up everything and
-  freq_scale gets updated on ticks.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-core-2021-02-17
 
-- remove cpufreq driver, we are back in same situation.
+   # HEAD: 3765d01bab73bdb920ef711203978f02cd26e4da Merge branch 'for-mingo-lkmm' of git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu into locking/core
 
-We can't control it that way.. Or we add another call layer in middle
-before the tick-handler gets called for AMU, which will check if we
-are fully invariant or not ?
+These are the v5.12 updates for the locking subsystem:
 
--- 
-viresh
+ - Core locking primitives updates:
+
+    - Remove mutex_trylock_recursive() from the API - no users left
+    - Simplify + constify the futex code a bit
+
+ - Lockdep updates:
+
+    - Teach lockdep about local_lock_t
+    - Add CONFIG_DEBUG_IRQFLAGS=y debug config option to check for
+      potentially unsafe IRQ mask restoration patterns. (I.e.
+      calling raw_local_irq_restore() with IRQs enabled.)
+    - Add wait context self-tests
+    - Fix graph lock corner case corrupting internal data structures
+    - Fix noinstr annotations
+
+ - LKMM updates:
+
+    - Simplify the litmus tests
+    - Documentation fixes
+
+ - KCSAN updates:
+
+    - Re-enable KCSAN instrumentation in lib/random32.c
+
+ - Misc fixes:
+
+    - Don't branch-trace static label APIs
+    - DocBook fix
+    - Remove stale leftover empty file
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Akira Yokosawa (2):
+      tools/memory-model: Remove redundant initialization in litmus tests
+      tools/memory-model: Fix typo in klitmus7 compatibility table
+
+Alejandro Colomar (1):
+      futex: Change utime parameter to be 'const ... *'
+
+Alex Shi (1):
+      locking/rtmutex: Add missing kernel-doc markup
+
+Boqun Feng (3):
+      lockdep/selftest: Add wait context selftests
+      locking/lockdep: Add a skip() function to __bfs()
+      locking/lockdep: Exclude local_lock_t from IRQ inversions
+
+Jangwoong Kim (1):
+      futex: Remove unneeded gotos
+
+Marco Elver (2):
+      kcsan: Rewrite kcsan_prandom_u32_max() without prandom_u32_state()
+      random32: Re-enable KCSAN instrumentation
+
+Mark Rutland (1):
+      lockdep: report broken irq restoration
+
+Nikolay Borisov (1):
+      locking/rwsem: Remove empty rwsem.h
+
+Paul E. McKenney (1):
+      tools/memory-model: Tie acquire loads to reads-from
+
+Peter Zijlstra (7):
+      locking/selftests: More granular debug_locks_verbose
+      locking/lockdep: Mark local_lock_t
+      locking/lockdep: Clean up check_redundant() a bit
+      locking/selftests: Add local_lock inversion tests
+      locking: Add Reviewers
+      locking/lockdep: Avoid unmatched unlock
+      lockdep: Noinstr annotate warn_bogus_irq_restore()
+
+Sebastian Andrzej Siewior (2):
+      locking/mutex: Kill mutex_trylock_recursive()
+      checkpatch: Don't check for mutex_trylock_recursive()
+
+Steven Rostedt (VMware) (1):
+      jump_label: Do not profile branch annotations
+
+Sven Schnelle (1):
+      s390: Use arch_local_irq_{save,restore}() in early boot code
+
+
+ Documentation/admin-guide/kernel-parameters.txt    |  11 +-
+ MAINTAINERS                                        |   2 +
+ drivers/s390/char/sclp_early_core.c                |   4 +-
+ include/linux/compiler.h                           |   2 +
+ include/linux/irqflags.h                           |  12 +
+ include/linux/jump_label.h                         |  12 +-
+ include/linux/local_lock_internal.h                |   5 +-
+ include/linux/lockdep.h                            |  15 +-
+ include/linux/lockdep_types.h                      |  18 +-
+ include/linux/mutex.h                              |  25 --
+ include/linux/syscalls.h                           |   8 +-
+ kernel/futex.c                                     |  13 +-
+ kernel/kcsan/core.c                                |  26 +-
+ kernel/locking/Makefile                            |   1 +
+ kernel/locking/irqflag-debug.c                     |  13 +
+ kernel/locking/lockdep.c                           | 186 ++++++++----
+ kernel/locking/mutex.c                             |  10 -
+ kernel/locking/rtmutex.c                           |  17 +-
+ kernel/locking/rwsem.h                             |   0
+ lib/Kconfig.debug                                  |   8 +
+ lib/Makefile                                       |   3 -
+ lib/locking-selftest.c                             | 334 ++++++++++++++++++++-
+ scripts/checkpatch.pl                              |   6 -
+ tools/memory-model/Documentation/glossary.txt      |  12 +-
+ tools/memory-model/README                          |   2 +-
+ .../litmus-tests/CoRR+poonceonce+Once.litmus       |   4 +-
+ .../litmus-tests/CoRW+poonceonce+Once.litmus       |   4 +-
+ .../litmus-tests/CoWR+poonceonce+Once.litmus       |   4 +-
+ .../litmus-tests/CoWW+poonceonce.litmus            |   4 +-
+ .../IRIW+fencembonceonces+OnceOnce.litmus          |   5 +-
+ .../litmus-tests/IRIW+poonceonces+OnceOnce.litmus  |   5 +-
+ .../ISA2+pooncelock+pooncelock+pombonce.litmus     |   7 +-
+ .../litmus-tests/ISA2+poonceonces.litmus           |   6 +-
+ ...cerelease+poacquirerelease+poacquireonce.litmus |   6 +-
+ .../LB+fencembonceonce+ctrlonceonce.litmus         |   5 +-
+ .../LB+poacquireonce+pooncerelease.litmus          |   5 +-
+ .../litmus-tests/LB+poonceonces.litmus             |   5 +-
+ .../MP+fencewmbonceonce+fencermbonceonce.litmus    |   5 +-
+ .../litmus-tests/MP+onceassign+derefonce.litmus    |   4 +-
+ .../MP+polockmbonce+poacquiresilsil.litmus         |   5 +-
+ .../MP+polockonce+poacquiresilsil.litmus           |   5 +-
+ tools/memory-model/litmus-tests/MP+polocks.litmus  |   6 +-
+ .../litmus-tests/MP+poonceonces.litmus             |   5 +-
+ .../MP+pooncerelease+poacquireonce.litmus          |   5 +-
+ .../memory-model/litmus-tests/MP+porevlocks.litmus |   6 +-
+ .../litmus-tests/R+fencembonceonces.litmus         |   5 +-
+ .../memory-model/litmus-tests/R+poonceonces.litmus |   5 +-
+ .../S+fencewmbonceonce+poacquireonce.litmus        |   5 +-
+ .../memory-model/litmus-tests/S+poonceonces.litmus |   5 +-
+ .../litmus-tests/SB+fencembonceonces.litmus        |   5 +-
+ .../litmus-tests/SB+poonceonces.litmus             |   5 +-
+ .../litmus-tests/SB+rfionceonce-poonceonces.litmus |   5 +-
+ .../litmus-tests/WRC+poonceonces+Once.litmus       |   5 +-
+ .../WRC+pooncerelease+fencermbonceonce+Once.litmus |   5 +-
+ .../Z6.0+pooncelock+poonceLock+pombonce.litmus     |   7 +-
+ .../Z6.0+pooncelock+pooncelock+pombonce.litmus     |   7 +-
+ ...release+poacquirerelease+fencembonceonce.litmus |   6 +-
+ 57 files changed, 617 insertions(+), 294 deletions(-)
+ create mode 100644 kernel/locking/irqflag-debug.c
+ delete mode 100644 kernel/locking/rwsem.h
+
