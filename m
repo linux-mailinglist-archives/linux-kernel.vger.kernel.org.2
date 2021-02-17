@@ -2,111 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475D431D569
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE0F31D56D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:42:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhBQGkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 01:40:13 -0500
-Received: from antares.kleine-koenig.org ([94.130.110.236]:57732 "EHLO
-        antares.kleine-koenig.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhBQGkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:40:00 -0500
-Received: from antares.kleine-koenig.org (localhost [127.0.0.1])
-        by antares.kleine-koenig.org (Postfix) with ESMTP id B7D5FB03DF5;
-        Wed, 17 Feb 2021 07:39:14 +0100 (CET)
-Received: from antares.kleine-koenig.org ([94.130.110.236])
-        by antares.kleine-koenig.org (antares.kleine-koenig.org [94.130.110.236]) (amavisd-new, port 10024)
-        with ESMTP id S8ReJb4Xkcck; Wed, 17 Feb 2021 07:39:13 +0100 (CET)
-Received: from taurus.defre.kleine-koenig.org (unknown [IPv6:2a02:8071:b5ad:2000:7867:997:4a55:eb43])
-        by antares.kleine-koenig.org (Postfix) with ESMTPSA;
-        Wed, 17 Feb 2021 07:39:13 +0100 (CET)
-Subject: Re: [PATCH v2 0/5] dax-device: Some cleanups
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210205222842.34896-1-uwe@kleine-koenig.org>
- <CAPcyv4gMg7ksLS6vWR3Ya=bZd5wBiRLtSGxf6mc3yqf+3rA_TQ@mail.gmail.com>
- <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
-From:   =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-Message-ID: <d1891be1-9345-9d2b-edcc-2a5ce2ac9360@kleine-koenig.org>
-Date:   Wed, 17 Feb 2021 07:39:02 +0100
+        id S231579AbhBQGk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:40:27 -0500
+Received: from relay.sw.ru ([185.231.240.75]:48710 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231224AbhBQGkS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 01:40:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=msbrzWSRT5T++kWmjXz/e9gdzpOs5BdgrXcVbJWD5Xc=; b=tsBHnKGrU+6H/vsSb
+        TAb/c7pIa3s4LaCLiLYIyaITybbHYyf2/5Xu4EgAT93JTIfEAxqjxrul1cIQHZKirvgePPe3ZEAyb
+        gOyb/hyUUiBNjOixs/bDwyIvtJilLiKi3xHQOaS1NQYEGM7Ek59kfb9Hggkl8+cEtCMLG1AkJP6vc
+        =;
+Received: from [192.168.15.68]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1lCGUM-002GTE-8V; Wed, 17 Feb 2021 09:39:06 +0300
+Subject: Re: [v8 PATCH 10/13] mm: vmscan: use per memcg nr_deferred of
+ shrinker
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210217001322.2226796-1-shy828301@gmail.com>
+ <20210217001322.2226796-11-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <acd90ddf-b9b3-cbb1-7037-2fec3af49924@virtuozzo.com>
+Date:   Wed, 17 Feb 2021 09:39:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn"
+In-Reply-To: <20210217001322.2226796-11-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn
-Content-Type: multipart/mixed; boundary="hBBVWP2Xum3ONlVJRDp4uyuSeD8Sa6qHy";
- protected-headers="v1"
-From: =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang
- <dave.jiang@intel.com>, Andrew Morton <akpm@linux-foundation.org>,
- linux-nvdimm <linux-nvdimm@lists.01.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Message-ID: <d1891be1-9345-9d2b-edcc-2a5ce2ac9360@kleine-koenig.org>
-Subject: Re: [PATCH v2 0/5] dax-device: Some cleanups
-References: <20210205222842.34896-1-uwe@kleine-koenig.org>
- <CAPcyv4gMg7ksLS6vWR3Ya=bZd5wBiRLtSGxf6mc3yqf+3rA_TQ@mail.gmail.com>
- <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
-In-Reply-To: <CAPcyv4jq_8as=qUL8LJnNcM2UsrqEJqjc7+EHjs8XwuWCVZKPw@mail.gmail.com>
+On 17.02.2021 03:13, Yang Shi wrote:
+> Use per memcg's nr_deferred for memcg aware shrinkers.  The shrinker's nr_deferred
+> will be used in the following cases:
+>     1. Non memcg aware shrinkers
+>     2. !CONFIG_MEMCG
+>     3. memcg is disabled by boot parameter
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
---hBBVWP2Xum3ONlVJRDp4uyuSeD8Sa6qHy
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
 
-Hello Dan,
+> ---
+>  mm/vmscan.c | 78 ++++++++++++++++++++++++++++++++++++++++++++---------
+>  1 file changed, 66 insertions(+), 12 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index fcb399e18fc3..57cbc6bc8a49 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -374,6 +374,24 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
+>  	idr_remove(&shrinker_idr, id);
+>  }
+>  
+> +static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+> +				   struct mem_cgroup *memcg)
+> +{
+> +	struct shrinker_info *info;
+> +
+> +	info = shrinker_info_protected(memcg, nid);
+> +	return atomic_long_xchg(&info->nr_deferred[shrinker->id], 0);
+> +}
+> +
+> +static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+> +				  struct mem_cgroup *memcg)
+> +{
+> +	struct shrinker_info *info;
+> +
+> +	info = shrinker_info_protected(memcg, nid);
+> +	return atomic_long_add_return(nr, &info->nr_deferred[shrinker->id]);
+> +}
+> +
+>  static bool cgroup_reclaim(struct scan_control *sc)
+>  {
+>  	return sc->target_mem_cgroup;
+> @@ -412,6 +430,18 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
+>  {
+>  }
+>  
+> +static long xchg_nr_deferred_memcg(int nid, struct shrinker *shrinker,
+> +				   struct mem_cgroup *memcg)
+> +{
+> +	return 0;
+> +}
+> +
+> +static long add_nr_deferred_memcg(long nr, int nid, struct shrinker *shrinker,
+> +				  struct mem_cgroup *memcg)
+> +{
+> +	return 0;
+> +}
+> +
+>  static bool cgroup_reclaim(struct scan_control *sc)
+>  {
+>  	return false;
+> @@ -423,6 +453,39 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+>  }
+>  #endif
+>  
+> +static long xchg_nr_deferred(struct shrinker *shrinker,
+> +			     struct shrink_control *sc)
+> +{
+> +	int nid = sc->nid;
+> +
+> +	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> +		nid = 0;
+> +
+> +	if (sc->memcg &&
+> +	    (shrinker->flags & SHRINKER_MEMCG_AWARE))
+> +		return xchg_nr_deferred_memcg(nid, shrinker,
+> +					      sc->memcg);
+> +
+> +	return atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
+> +}
+> +
+> +
+> +static long add_nr_deferred(long nr, struct shrinker *shrinker,
+> +			    struct shrink_control *sc)
+> +{
+> +	int nid = sc->nid;
+> +
+> +	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> +		nid = 0;
+> +
+> +	if (sc->memcg &&
+> +	    (shrinker->flags & SHRINKER_MEMCG_AWARE))
+> +		return add_nr_deferred_memcg(nr, nid, shrinker,
+> +					     sc->memcg);
+> +
+> +	return atomic_long_add_return(nr, &shrinker->nr_deferred[nid]);
+> +}
+> +
+>  /*
+>   * This misses isolated pages which are not accounted for to save counters.
+>   * As the data only determines if reclaim or compaction continues, it is
+> @@ -558,14 +621,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  	long freeable;
+>  	long nr;
+>  	long new_nr;
+> -	int nid = shrinkctl->nid;
+>  	long batch_size = shrinker->batch ? shrinker->batch
+>  					  : SHRINK_BATCH;
+>  	long scanned = 0, next_deferred;
+>  
+> -	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+> -		nid = 0;
+> -
+>  	freeable = shrinker->count_objects(shrinker, shrinkctl);
+>  	if (freeable == 0 || freeable == SHRINK_EMPTY)
+>  		return freeable;
+> @@ -575,7 +634,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  	 * and zero it so that other concurrent shrinker invocations
+>  	 * don't also do this scanning work.
+>  	 */
+> -	nr = atomic_long_xchg(&shrinker->nr_deferred[nid], 0);
+> +	nr = xchg_nr_deferred(shrinker, shrinkctl);
+>  
+>  	total_scan = nr;
+>  	if (shrinker->seeks) {
+> @@ -666,14 +725,9 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  		next_deferred = 0;
+>  	/*
+>  	 * move the unused scan count back into the shrinker in a
+> -	 * manner that handles concurrent updates. If we exhausted the
+> -	 * scan, there is no need to do an update.
+> +	 * manner that handles concurrent updates.
+>  	 */
+> -	if (next_deferred > 0)
+> -		new_nr = atomic_long_add_return(next_deferred,
+> -						&shrinker->nr_deferred[nid]);
+> -	else
+> -		new_nr = atomic_long_read(&shrinker->nr_deferred[nid]);
+> +	new_nr = add_nr_deferred(next_deferred, shrinker, shrinkctl);
+>  
+>  	trace_mm_shrink_slab_end(shrinker, shrinkctl->nid, freed, nr, new_nr, total_scan);
+>  	return freed;
+> 
 
-On 2/17/21 4:55 AM, Dan Williams wrote:
->> One small comment on patch5, otherwise looks good.
->=20
-> I take it back, patch5 looks good. I was going to ask about the return
-> value removal for dax_bus_remove(), but that would need struct
-> bus_type to change prototypes.
-
-Changing struct bus_type::remove to return void is the eventual plan. To =
-
-make this a pretty and easily reviewable patch I currently go through=20
-all buses and make sure that for the prototype change I only have to do=20
-one s/int/void/ and drop a "return 0" per bus.
-
-> All merged to the nvdimm tree.
-
-Great, thanks
-Uwe
-
-
---hBBVWP2Xum3ONlVJRDp4uyuSeD8Sa6qHy--
-
---NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAsugYACgkQwfwUeK3K
-7Anipwf+MQUO3Q+0QPOYdHW2iyztwa/+y2PBB7JgXTg7BWm3X0WiJ7B2ZUj9NKSx
-2Z1oyu79E1w/mNFeXeVKJ/9HGEsClUCaag1AA2om/gKvSJmVFU48N4STJAZ5LAX/
-tL6lLx4HDn1/mLXgIhsk3bdLQg959Q2BaBYmXFA/DOM+wRRYrnzI734WS/Vwst4b
-50SijYxZSheaEJWVOT9cpK35C2qMifgs8dB9MyC2LmmD5P1rGL0BtztcmQSC3KSh
-U5AvMnCnS9F+PAHWIbiAJKZxevIxDuOAMv7TyV7S2AY+KGW5wQS2isMHy8KhFRYm
-1x8qvSbWvETF2H/4rzKM3s9yWg1S5w==
-=lL31
------END PGP SIGNATURE-----
-
---NVYrnRlgCQ2dWcNf6WA1OxAcEomB67SXn--
