@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BB431DCD6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 618B131DCD7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbhBQQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:00:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
+        id S233957AbhBQQBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:01:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233887AbhBQQAt (ORCPT
+        with ESMTP id S233568AbhBQQBA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:00:49 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446AEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:00:09 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id b21so8751956pgk.7
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:00:09 -0800 (PST)
+        Wed, 17 Feb 2021 11:01:00 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9139DC061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:00:20 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id c3so12546608qkj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:00:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GOQVmvgp4dt65rKsAQWxL7KavP/pmOa+Mhm9+94yhA0=;
-        b=OgWgfmcXzUIfi/RaYLY+BdMNraMTmk6AGXnvuMXh263tKqYsVRvv5S6QkszHfK6p9e
-         R7ugb2dwa7Sys1Pdo2kHaqCYHLUo4t7HGHzt1X7d0Y5gqr7awVtUJh1+VKnQsDtsgcb4
-         MpHY6dJyhLutgPzx08UrSWpabf4/q+scQi3p4S74LBkq2x4/NrxQf1OnXUdk8O7Imu/6
-         TvoJ/FFTaQtt3bW4ciD5DSBsDjfrdLaDM+AgRwWLbDTTqnO9XUvrbuuKVQBDNbWRjS1Q
-         xUFs4lmZmP95+DzJefEFUcvMVvKjAVpMWcJzx7vOpqzCw1FIW7Nq3cVS5VBu++zkbnWI
-         WVzw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QCz5c6Vj3j++ulPRAaUvRc9melH6ifWxWMvaz0/sclE=;
+        b=N1kQ17eOPAiq7GhlylmQGB2qUgmwjmAl7mo3niD0Cbg+YI8sNgLiS/0izE8v4Ju7jj
+         AXYSc2ekH0/g9t0dCZzN7nJQt3yMGgpoE2E7xOqNgx9JrxJpNuSeYXK/EkgxuJrZjoJ1
+         CzSbClxXg77Fh8Lg8lznnvqAyI/TKOinKuw/uTXhPREBaASB6rLyR1L6hZenEt3slMi8
+         2HFQ2dm+ifXmdynt6P1NLiExhsjWgNNOSv8Q9vIdTG6gc++sCZiQbD29Zg1dJo4X2Uwt
+         g2/7lzxN4ecWIMyCi7DJjZ5m54CmdmfmcTkbnyDVFatNwTY6G4LzJ+O7XQmK0uFWQ2bx
+         fSzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GOQVmvgp4dt65rKsAQWxL7KavP/pmOa+Mhm9+94yhA0=;
-        b=L4DQje9CZcOgcL55HQo2cODp/KyaFmhhZ8F+elO28ospPN0Eh0pi7wpJD5336FJwaL
-         kLDmhtP1XmE8qArZwWpdS2FFc/mIKDajOsK7O9Cok9fRrQNBOjM1LxPJJS0j3HpZl8Uw
-         LTXh1A6M2vHfCO/+jVPIIdCtIaJIU97uVqXtPfmcmPITp0QdyLnWCNc9SuVbM5wyK/Ed
-         Gl758Nhv1xpadqJlrk4Lpj52ORJNPGMXr++cfjLSWj/CD8sT7hbeJHNrJ1nBvYag+phH
-         OB6lKqFhGsjtGvxbxUnfC2xDrw8CXmYD56VDHjcSlAOMD5baky0t9DV4UU4PPXbSgEKA
-         5pRw==
-X-Gm-Message-State: AOAM531qmfmdX8sM5wpSgnsoG03T0bEJVscYRMas4iGN9BPl2t/c8nx9
-        k8LrXbZVziTde77LUPm/+b8=
-X-Google-Smtp-Source: ABdhPJwwiktyfKOXgb8Yb//e1wziSLZ4qWg8ZQIuFlYzLgICbjZMZ+Sc5K/88aC9aX/mkrZnPbAJuw==
-X-Received: by 2002:a63:e602:: with SMTP id g2mr57105pgh.290.1613577608768;
-        Wed, 17 Feb 2021 08:00:08 -0800 (PST)
-Received: from nuc10.amust.local (104.36.148.139.aurocloud.com. [104.36.148.139])
-        by smtp.gmail.com with ESMTPSA id 74sm2911183pfw.53.2021.02.17.08.00.06
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QCz5c6Vj3j++ulPRAaUvRc9melH6ifWxWMvaz0/sclE=;
+        b=kAW2VZ8QYX+z52mQ4L3D7jsBMA6o0da12c7KzYVp/+Qj5/FAtr7M6nd3O3pE2XLrPF
+         laOJndZnySOiSbnExYxaOpF1fUE8cGYCTiS79o7QYoYjj+n+QEdKwVwerpISo3D4Xrn+
+         j6vZSRcJiYcZvK+3MSYHROcw/oeUihV/+Bbf2i7ThXRaD+VjN8jSSKERu1gL00x6E39W
+         fwu+jPMSe0OfFiU8mJUgBc+w0NA1Gb5Ihyfda0hi97JdlxwSZF6fPd4bk2MnGLeDPxeh
+         KrTRiRGYJ9r7HyfmXUCFHwzg+pQJS28RpB8hxpjvKCdVj/5j3BrQ5OkwVjqYAd+9olzv
+         HCmg==
+X-Gm-Message-State: AOAM531AFck1wl62crUtg58sgRtxdz68r+hOm9TBChcKKlNNAQUC3e+m
+        LHBwftZGE+6xxv1dpUPPCe6DZYmWzyzUyA==
+X-Google-Smtp-Source: ABdhPJxnS0r+o29d1+W4k+BWjkDoVfHomh9Hp0PxR51wp85CQYBISyNDlryWu8QfYjSMiDX4RSIalA==
+X-Received: by 2002:a37:8a04:: with SMTP id m4mr24929995qkd.78.1613577619806;
+        Wed, 17 Feb 2021 08:00:19 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 16sm1393855qtz.17.2021.02.17.08.00.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 08:00:08 -0800 (PST)
-From:   Rustam Kovhaev <rkovhaev@gmail.com>
-To:     anton@tuxera.com, linux-ntfs-dev@lists.sourceforge.net
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: [PATCH] ntfs: check for valid standard information attribute
-Date:   Wed, 17 Feb 2021 07:59:30 -0800
-Message-Id: <20210217155930.1506815-1-rkovhaev@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Wed, 17 Feb 2021 08:00:19 -0800 (PST)
+Date:   Wed, 17 Feb 2021 11:00:18 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Chris Down <chris@chrisdown.name>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YC09kt7Lo9iqAEOp@cmpxchg.org>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCv9Xb7ePnDy9xRf@alley>
+ <YCwAbGoVuZJspcx5@chrisdown.name>
+ <YCwycC8hPsPD7ArU@cmpxchg.org>
+ <YCwzrLTaE9PwNihj@chrisdown.name>
+ <YC06LyPGmytXJ8Iu@alley>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC06LyPGmytXJ8Iu@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-we should check for valid STANDARD_INFORMATION attribute offset and
-length before trying to access it
+On Wed, Feb 17, 2021 at 04:45:51PM +0100, Petr Mladek wrote:
+> On Tue 2021-02-16 21:05:48, Chris Down wrote:
+> > Johannes Weiner writes:
+> > > On Tue, Feb 16, 2021 at 05:27:08PM +0000, Chris Down wrote:
+> > > > Petr Mladek writes:
+> > > > > I wonder if we could find a better name for the configure switch.
+> > > > > I have troubles to imagine what printk enumeration might mean.
+> > > > > Well, it might be because I am not a native speaker.
+> > > > >
+> > > > > Anyway, the word "enumeration" is used only in the configure option.
+> > > > > Everything else is "printk_fmt"
+> > > > >
+> > > > > What about DEBUG_PRINTK_FORMATS?
+> > > > 
+> > > > Hmm, I don't like DEBUG_PRINTK_FMTS because it's not about debugging, it's
+> > > > about enumeration, I guess :-)
+> > > > 
+> > > > The name should reflect that this catalogues the available printks in the
+> > > > kernel -- "debugging" seems to imply something different.
+> > > > 
+> > > > I'm ok with a different name like "printk catalogue" or something like that
+> > > > if you prefer. Personally I think "printk enumeration" is fairly clear --
+> > > > it's about enumerating the available printks -- but anything that captures
+> > > > that spirit is fine.
+> > > 
+> > > How about config PRINTK_INDEX?
+> > 
+> > Ah yes, I also like that. PRINTK_INDEX is fine from my perspective and is
+> > more straightforward than "enumeration", thanks.
+> 
+> It is better than enumeration. But there is still the same
+> problem. The word "index" is used neither in the code
+> nor in the debugfs interface. It is like enabling cars and
+> seeing apples.
 
-Reported-and-tested-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
-Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-Acked-by: Anton Altaparmakov <anton@tuxera.com>
-Link: https://syzkaller.appspot.com/bug?extid=c584225dabdea2f71969
----
- fs/ntfs/inode.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-index f7e4cbc26eaf..be4ff9386ec0 100644
---- a/fs/ntfs/inode.c
-+++ b/fs/ntfs/inode.c
-@@ -629,6 +629,12 @@ static int ntfs_read_locked_inode(struct inode *vi)
- 	}
- 	a = ctx->attr;
- 	/* Get the standard information attribute value. */
-+	if ((u8 *)a + le16_to_cpu(a->data.resident.value_offset)
-+			+ le32_to_cpu(a->data.resident.value_length) >
-+			(u8 *)ctx->mrec + vol->mft_record_size) {
-+		ntfs_error(vi->i_sb, "Corrupt standard information attribute in inode.");
-+		goto unm_err_out;
-+	}
- 	si = (STANDARD_INFORMATION*)((u8*)a +
- 			le16_to_cpu(a->data.resident.value_offset));
- 
--- 
-2.30.0
-
+I assumed code and interface would then also be changed to
+printk_index, struct printk_index_section, pi_foo, ...
