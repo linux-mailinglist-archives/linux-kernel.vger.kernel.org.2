@@ -2,140 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5110A31D87E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55C731D891
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:42:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231667AbhBQLgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:36:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231902AbhBQL2p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:28:45 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D04C0698E6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:35 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id hs11so21502431ejc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=sjijWu2CS7yMTPf9NU8eeAhJBb7+bRB7LViznamY/28=;
-        b=VKry+78BKA4xuVWTSa0tDNkkQENThiMS14KSD9XhbYDeHNhTFvbyLpoP9QMKaFLI3w
-         uEr8cRtndFXwd3jd6GHBNPL2r4C8wj52Wcq+Mf4Gv5SmDsCVy7FI1MdBBRZbu9g1HKhL
-         1f5ukkEf4uDyWk68KPyIVZ6Pw5aXNjLHpxUiscR8kFF1Gf8EMPzbVZBZmPNtHjRCSGwz
-         ZVs76FePyV4/HvGkXchv7aOr0rZFkUtZny+7EdGofz6vUAghKgri88FuOrrfmkw/2XAG
-         x0jeRFkH3vsGzcs4lQT87G560llSjzujzoxa4EqZDYcBUGpvcdYyZvWtu49E7Nc7iQQp
-         YqKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=sjijWu2CS7yMTPf9NU8eeAhJBb7+bRB7LViznamY/28=;
-        b=tWjpvEv55ZghfebDA/cBhbLLI5OwpoE51mq7w1KoYVN24xtPTNvC7AoRH/Zj1YbTN2
-         kUfN0eef7TP2RK1k/EJ1U8YaIoeEuwYIJCfK5gecXk1Ri29ny4zJ5tQdZ8BTcoASydRd
-         b4aiUSkjRxs3cY7oNs0PrJfvbEtabT5YF3oyDChiv+V4BcvDDMcFe5n3Vw1k2ZobM81C
-         e6d4nTmssfLE2ZJQan97oxiQ2tgAsqNXhFh+/vzex7lnDqv4fBLTCfskpsVk+pBA4VYG
-         Zqp23IgT1D1EpYIuZFFKkSRn8GpJTMEOBFoCJd9GEzJHhrjxNdsZ28z9xBC0YBONkVNW
-         i0wQ==
-X-Gm-Message-State: AOAM530TiqKs/u7UMpDvTAfDyZurtqZ3jx6W9PtAZ/hRZF6p1hyD9mU9
-        cVH4R8geP7cBOve9TXTvDqlUCw==
-X-Google-Smtp-Source: ABdhPJxDvkv4b6iHuxj/xb/7fQYyp523dkeOIgNDIXRRcg9XGji694JymxprKHaXxCyueJE64omQcw==
-X-Received: by 2002:a17:907:724a:: with SMTP id ds10mr24319729ejc.28.1613560954268;
-        Wed, 17 Feb 2021 03:22:34 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:102f:d6a:4815:d4dc:ff5a:704a])
-        by smtp.gmail.com with ESMTPSA id h10sm934344edk.45.2021.02.17.03.22.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 03:22:33 -0800 (PST)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
-        robh+dt@kernel.org, angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Subject: [PATCH v5 22/22] arm64: dts: sdm845-db845c: Enable ov8856 sensor and connect to ISP
-Date:   Wed, 17 Feb 2021 12:21:22 +0100
-Message-Id: <20210217112122.424236-23-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210217112122.424236-1-robert.foss@linaro.org>
-References: <20210217112122.424236-1-robert.foss@linaro.org>
+        id S232401AbhBQLjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:39:06 -0500
+Received: from foss.arm.com ([217.140.110.172]:56714 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231380AbhBQLbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 06:31:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7203931B;
+        Wed, 17 Feb 2021 03:30:13 -0800 (PST)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 043473F73B;
+        Wed, 17 Feb 2021 03:30:12 -0800 (PST)
+Date:   Wed, 17 Feb 2021 11:30:11 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210217113011.GA22176@arm.com>
+References: <cover.1611829953.git.viresh.kumar@linaro.org>
+ <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
+ <20210203114521.GA6380@arm.com>
+ <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
+ <20210217002422.GA17422@arm.com>
+ <20210217042558.o4anjdkayzgqny55@vireshk-i7>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217042558.o4anjdkayzgqny55@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable camss & ov8856 DT nodes.
+Hi,
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
+Replying this first as it's going to be relevant below:
 
-Changes since v1
- - Laurent: Fix subject
- - Laurent: Remove redundant regulator labels
- - Laurent: Remove empty line
+> Just out of curiosity, what exactly did you test and what was the setup ? :)
 
-Changes since v3
- - Fixed ordering of IRQs
- - Add newlines for better readability
+I tested it on:
 
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ - Juno R0 (CPUs [0, 3-5] are littles, CPUs [1-2] are bigs)
+   + PMUs faking AMUs
+   + userspace/schedutil +
+   + cpufreq-FIE/!cpufreq-FIE
+   + DT
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index 5842ab65789c..d89286f6aacb 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -1108,6 +1108,21 @@ &cci {
- 
- &camss {
- 	vdda-supply = <&vreg_l1a_0p875>;
-+
-+	status = "ok";
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		port@0 {
-+			reg = <0>;
-+			csiphy0_ep: endpoint {
-+				clock-lanes = <1>;
-+				data-lanes = <1 2 3 4>;
-+				remote-endpoint = <&ov8856_ep>;
-+			};
-+		};
-+	};
- };
- 
- &cci_i2c0 {
-@@ -1139,7 +1154,7 @@ camera@10 {
- 		avdd-supply = <&cam0_avdd_2v8>;
- 		dvdd-supply = <&cam0_dvdd_1v2>;
- 
--		status = "disable";
-+		status = "ok";
- 
- 		port {
- 			ov8856_ep: endpoint {
-@@ -1147,7 +1162,7 @@ ov8856_ep: endpoint {
- 				link-frequencies = /bits/ 64
- 					<360000000 180000000>;
- 				data-lanes = <1 2 3 4>;
--//				remote-endpoint = <&csiphy0_ep>;
-+				remote-endpoint = <&csiphy0_ep>;
- 			};
- 		};
- 	};
--- 
-2.27.0
+This testing did not yet cover patch 2/2.
 
+My checklist shows:
+ - system invariance status correct - passed
+ - scale factor correct (userspace cpufreq governor) - passed
+ - arch_set_freq_scale bypassed - passed
+ - partial "AMUs" support - failed (see below)
+ - EAS enabling - passed
+
+I don't have an automated process for this as many test cases involve
+kernel source changes. In time I will automate all of these and
+possibly cover all scenarios with FVP (fast models) testing, but for
+now human error is possible :).
+
+On Wednesday 17 Feb 2021 at 09:55:58 (+0530), Viresh Kumar wrote:
+> On 17-02-21, 00:24, Ionela Voinescu wrote:
+> > I think it could be merged in patch 1/2 as it's part of enabling the use
+> > of multiple sources of information for FIE. Up to you!
+> 
+> Sure.
+> 
+> > >  static void amu_fie_setup(const struct cpumask *cpus)
+> > >  {
+> > > -	bool invariant;
+> > >  	int cpu;
+> > >  
+> > >  	/* We are already set since the last insmod of cpufreq driver */
+> > > @@ -257,25 +256,10 @@ static void amu_fie_setup(const struct cpumask *cpus)
+> > >  
+> > >  	cpumask_or(amu_fie_cpus, amu_fie_cpus, cpus);
+> > >  
+> > > -	invariant = topology_scale_freq_invariant();
+> > > -
+> > > -	/* We aren't fully invariant yet */
+> > > -	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
+> > > -		return;
+> > > -
+> > 
+> > You still need these checks, otherwise you could end up with only part
+> > of the CPUs setting a scale factor, when only part of the CPUs support
+> > AMUs and there is no cpufreq support for FIE.
+> 
+> Both supports_scale_freq_counters() and topology_scale_freq_invariant() take
+> care of this now and they will keep reporting the system as invariant until the
+> time all the CPUs have counters (in absence of cpufreq).
+> 
+
+Correct!
+
+> The topology_set_scale_freq_source() API is supposed to be called multiple
+> times, probably once for each policy and so I don't see a need of these checks
+> anymore.
+> 
+
+The problem is not topology_scale_freq_invariant() but whether a scale
+factor is set for some CPUs.
+
+Scenario (test system above):
+ - "AMUs" are only supported for [1-2],
+ - cpufreq_supports_freq_invariance() -> false
+
+What should happen:
+ - topology_scale_freq_invariant() -> false (passed)
+ - all CPUs should have their freq_scale unmodified (1024) - (failed)
+   because only 2 out of 6 CPUs have a method of setting a scale factor
+
+What does happen:
+ - arch_set_freq_tick() -> topology_set_freq_tick() will set a scale
+   factor for [1-2] based on AMUs. This should not happen. We will end
+   up with invariant signals for bigs and signals that are not freq
+   invariant for littles.
+
+Ionela.
+
+> > Small(ish) optimisation at the beginning of this function:
+> > 
+> >     if (cpumask_empty(&scale_freq_counters_mask))
+> >         scale_freq_invariant = topology_scale_freq_invariant();
+> > 
+> > This will save you a call to rebuild_sched_domains_energy(), which is
+> > quite expensive, when cpufreq supports FIE and we also have counters.
+> 
+> Good Point.
+>  
+> > After comments addressed,
+> > 
+> > Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> 
+> Thanks.
+> 
+> > Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> 
+> 
+
+> -- 
+> viresh
