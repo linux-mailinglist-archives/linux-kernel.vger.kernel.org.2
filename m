@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075A531DF42
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB9E31DF40
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234984AbhBQSvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:51:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60001 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234976AbhBQSvT (ORCPT
+        id S234974AbhBQSvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:51:17 -0500
+Received: from outbound-smtp55.blacknight.com ([46.22.136.239]:35219 "EHLO
+        outbound-smtp55.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232565AbhBQSvL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:51:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613587793;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DvTxX1REm63UaLhg9YAlB+lmeLiEF7o4BY5lOTT8ELs=;
-        b=LUQ0F13gyz1lVyv1qN1h2xmnbcv7i4XMnD0TIcTBxp/Li59buYReUXsZav0tmdZQpXTq02
-        81lr1PBJMWod6f3jVfSOCShCpEOsPrjL3azH7blfCUerZ+PV6MC57hNNtIz6Cgwr4wI9ac
-        LajBA1dEkMY4cd+U4gAt5OO15km1Dv4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-fBaqKlkSMXCxqFuipNmVUw-1; Wed, 17 Feb 2021 13:49:49 -0500
-X-MC-Unique: fBaqKlkSMXCxqFuipNmVUw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 106F980402C;
-        Wed, 17 Feb 2021 18:49:48 +0000 (UTC)
-Received: from starship (unknown [10.35.206.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A2CFE60C5F;
-        Wed, 17 Feb 2021 18:49:44 +0000 (UTC)
-Message-ID: <334212ae74dcf1ecf112ff00cfea61b92342d287.camel@redhat.com>
-Subject: Re: [PATCH 4/7] KVM: nVMX: move inject_page_fault tweak to
- .complete_mmu_init
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Date:   Wed, 17 Feb 2021 20:49:43 +0200
-In-Reply-To: <5a8bea9b-deb1-673a-3dc8-f08b679de4c5@redhat.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
-         <20210217145718.1217358-5-mlevitsk@redhat.com>
-         <YC1ShhSZ+6ST63nZ@google.com>
-         <5a8bea9b-deb1-673a-3dc8-f08b679de4c5@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 17 Feb 2021 13:51:11 -0500
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp55.blacknight.com (Postfix) with ESMTPS id 7AAE9FA8EE
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 18:50:17 +0000 (GMT)
+Received: (qmail 21941 invoked from network); 17 Feb 2021 18:50:17 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 17 Feb 2021 18:50:17 -0000
+Date:   Wed, 17 Feb 2021 18:50:16 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH] mm, compaction: make fast_isolate_freepages() stay
+ within zone
+Message-ID: <20210217185015.GF3697@techsingularity.net>
+References: <20210217173300.6394-1-vbabka@suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210217173300.6394-1-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-17 at 18:37 +0100, Paolo Bonzini wrote:
-> On 17/02/21 18:29, Sean Christopherson wrote:
-> > All that being said, I'm pretty we can eliminate setting 
-> > inject_page_fault dynamically. I think that would yield more 
-> > maintainable code. Following these flows is a nightmare. The change 
-> > itself will be scarier, but I'm pretty sure the end result will be a lot 
-> > cleaner.
-
-I agree with that.
-
+On Wed, Feb 17, 2021 at 06:33:00PM +0100, Vlastimil Babka wrote:
+> Compaction always operates on pages from a single given zone when isolating
+> both pages to migrate and freepages. Pageblock boundaries are intersected with
+> zone boundaries to be safe in case zone starts or ends in the middle of
+> pageblock. The use of pageblock_pfn_to_page() protects against non-contiguous
+> pageblocks.
 > 
-> I had a similar reaction, though my proposal was different.
+> The functions fast_isolate_freepages() and fast_isolate_around() don't
+> currently protect the fast freepage isolation thoroughly enough against these
+> corner cases, and can result in freepage isolation operate outside of zone
+> boundaries:
 > 
-> The only thing we're changing in complete_mmu_init is the page fault 
-> callback for init_kvm_softmmu, so couldn't that be the callback directly 
-> (i.e. something like context->inject_page_fault = 
-> kvm_x86_ops.inject_softmmu_page_fault)?  And then adding is_guest_mode 
-> to the conditional that is already in vmx_inject_page_fault_nested and 
-> svm_inject_page_fault_nested.
-
-I was thinking about this a well, I tried to make an as simple as possible
-solution that doesn't make things worse.
+> - in fast_isolate_freepages() if we get a pfn from the first pageblock of a
+>   zone that starts in the middle of that pageblock, 'highest' can be a pfn
+>   outside of the zone. If we fail to isolate anything in this function, we
+>   may then call fast_isolate_around() on a pfn outside of the zone and there
+>   effectively do a set_pageblock_skip(page_to_pfn(highest)) which may currently
+>   hit a VM_BUG_ON() in some configurations
+> - fast_isolate_around() checks only the zone end boundary and not beginning,
+>   nor that the pageblock is contiguous (with pageblock_pfn_to_page()) so it's
+>   possible that we end up calling isolate_freepages_block() on a range of pfn's
+>   from two different zones and end up e.g. isolating freepages under the wrong
+>   zone's lock.
 > 
-> That said, I'm also rusty on _why_ this code is needed.  Why isn't it 
-> enough to inject the exception normally, and let 
-> nested_vmx_check_exception decide whether to inject a vmexit to L1 or an 
-> exception into L2?
+> This patch should fix the above issues.
 > 
-> Also, bonus question which should have been in the 5/7 changelog: are 
-> there kvm-unit-tests testcases that fail with npt=0, and if not could we 
-> write one?  [Answer: the mode_switch testcase fails, but I haven't 
-> checked why].
+> Fixes: 5a811889de10 ("mm, compaction: use free lists to quickly locate a migration target")
 
-I agree with all of this. I'll see why this code is needed (it is needed,
-since I once removed it accidentaly on VMX, and it broke nesting with ept=0,
-in exact the same way as it was broken on AMD).
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-I''l debug this a bit to see if I can make it work as you suggest.
-
-
-Best regards,
-	Maxim Levitsky
-> 
-> 
-> Paolo
-> 
-
-
+-- 
+Mel Gorman
+SUSE Labs
