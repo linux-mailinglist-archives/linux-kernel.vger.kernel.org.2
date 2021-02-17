@@ -2,244 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98AFC31D563
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:36:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A474D31D567
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:39:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231396AbhBQGf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 01:35:57 -0500
-Received: from relay.sw.ru ([185.231.240.75]:47306 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhBQGfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:35:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
-        Subject; bh=UWifoNWHjm8ujBKFAdfeZpTuODNpeOHG/96Nwmh3A1g=; b=cM3EuMPXzVS70vT8v
-        w7irdVAzjocgmYCvRj9lNe6xySMvu3EhDd1yqsbcIDkwE7wRyOpP8NGzYjyPHKL0r2Wx8g+zpJkV5
-        dmjh6fVfXzoxSlaTEd55x9w8t4NFOrojMJztPKuJyMQfgyyfu6RSvFFt7+NRpjHsGraHYMerE1LJ8
-        =;
-Received: from [192.168.15.68]
-        by relay.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1lCGQ0-002GSw-E6; Wed, 17 Feb 2021 09:34:36 +0300
-Subject: Re: [v8 PATCH 09/13] mm: vmscan: add per memcg shrinker nr_deferred
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
-        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
-        mhocko@suse.com, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210217001322.2226796-1-shy828301@gmail.com>
- <20210217001322.2226796-10-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <6071ba4f-a855-eb5f-c8b1-c94658561b3c@virtuozzo.com>
-Date:   Wed, 17 Feb 2021 09:34:46 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231446AbhBQGiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:38:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231441AbhBQGh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 01:37:58 -0500
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785DFC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 22:37:18 -0800 (PST)
+Received: by mail-qv1-xf29.google.com with SMTP id dr7so5838384qvb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 22:37:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ugTQaAHGFRc8CPFFaoP0oTLZDH3L7/TR0bJ/954bT1w=;
+        b=v8HGgPjVyadQVfPmCx53Cywv+tY+/NwgMZesn4Cct7G8jWSbvOzSIGB/hxY7I+rWGA
+         oPcjS0UokMyi6R8y8MHOZwg3JJF+o1joKHa5yfpiRZu3x83CxzklWCWA6FeIJMTnAWwa
+         1cjF4Jz6JHzpRx+OJw9YQp+P/pzawTcePep9dRvCNXkqQ93Db2OxFXqsn6ONhV/ZhD5h
+         LlmUlWKOvNF0oDynmUvZ9R0CzNkbwPNwrbf4RrBCl8bFgVu/3tJJoxyj+NXRObkpv9Vz
+         kWZpDzE7jiCSXPhk9ngfm93euWFpMKJ6F/jAnHNWbm3d3fpjYzoY5Zjx0x6kDOPhJSDe
+         ZsqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ugTQaAHGFRc8CPFFaoP0oTLZDH3L7/TR0bJ/954bT1w=;
+        b=jAyjw6YbWYA6pE1sZS0CqP2DI2BQqXwyTC1iZLSym3wcQWlcT8ftAOJwMxkq/oL4Sw
+         z6jPtipAdgVPTZmEZAJV23ARzkxlVDBB6R0wkY2fQlw+0QGHjV9qMkEq5vPXCIYWLP3H
+         RFVLH+musgy4GWv4zBbfscBlPVfYQ4wxb/jyEaIw6wnlSqUeQc7Bh32bXAyk4DkrueRC
+         FzKr4kzhAYThocdqTPL2E2cxrHUebfxDADN/ZBgdXbwjWs1/vD3IoDm4dwH6erIgYylo
+         H4Na3WA2yrsD1R/LoKoob/1bsNicmnvnj1/o0pPUEsazef2b4XtvQ99nHlPgKNSucpFU
+         CMpQ==
+X-Gm-Message-State: AOAM532m9HlUKx2hw1es0T4SC1De+4FwMLf/aVHndlmoMhKFD6UP6i24
+        zzFEUjg/5jz0sFpHwF9kAu4FlFnB1k4WWRufHSwvRw==
+X-Google-Smtp-Source: ABdhPJziFbydIqs9spoKH8g+9HfptYXkPclDT0RznHkiHmn/kvucRG/COOeZ+TcnMFsCaeIlanv6uAAeyMTjEF5z1HE=
+X-Received: by 2002:a0c:8304:: with SMTP id j4mr23007277qva.18.1613543837440;
+ Tue, 16 Feb 2021 22:37:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210217001322.2226796-10-shy828301@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <0000000000000be4d705bb68dfa7@google.com> <20210216172817.GA14978@arm.com>
+ <CAHmME9q2-wbRmE-VgSoW5fxjGQ9kkafYH-X5gSVvgWESo5rm4Q@mail.gmail.com>
+ <CAHmME9ob9g-pcsKU2=n2SOzjNwyGh9+dL-WGpQn4Da+DD4dPzA@mail.gmail.com>
+ <20210216180143.GB14978@arm.com> <CACT4Y+ZH4ViZix7qyPPXtcgaanimm8CmSu1J8qhqpEedxC=fmQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZH4ViZix7qyPPXtcgaanimm8CmSu1J8qhqpEedxC=fmQ@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Wed, 17 Feb 2021 07:37:06 +0100
+Message-ID: <CACT4Y+bXSn+gh-AbVJmDvLOoG84Za6=bBGaXb=VnQFvosbbG+A@mail.gmail.com>
+Subject: Re: KASAN: invalid-access Write in enqueue_timer
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Netdev <netdev@vger.kernel.org>,
+        syzbot <syzbot+95c862be69e37145543f@syzkaller.appspotmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>, mbenes@suse.cz,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.02.2021 03:13, Yang Shi wrote:
-> Currently the number of deferred objects are per shrinker, but some slabs, for example,
-> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
-> 
-> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
-> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
-> may suffer from over shrink, excessive reclaim latency, etc.
-> 
-> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
-> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
-> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
-> 
-> We observed this hit in our production environment which was running vfs heavy workload
-> shown as the below tracing log:
-> 
-> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
-> cache items 246404277 delta 31345 total_scan 123202138
-> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
-> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
-> last shrinker return val 123186855
-> 
-> The vfs cache and page cache ratio was 10:1 on this machine, and half of caches were dropped.
-> This also resulted in significant amount of page caches were dropped due to inodes eviction.
-> 
-> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
-> better isolation.
-> 
-> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
-> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+On Tue, Feb 16, 2021 at 7:15 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > On Tue, Feb 16, 2021 at 06:50:20PM +0100, Jason A. Donenfeld wrote:
+> > > On Tue, Feb 16, 2021 at 6:46 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> > > > On Tue, Feb 16, 2021 at 6:28 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > > > > >  hlist_add_head include/linux/list.h:883 [inline]
+> > > > > >  enqueue_timer+0x18/0xc0 kernel/time/timer.c:581
+> > > > > >  mod_timer+0x14/0x20 kernel/time/timer.c:1106
+> > > > > >  mod_peer_timer drivers/net/wireguard/timers.c:37 [inline]
+> > > > > >  wg_timers_any_authenticated_packet_traversal+0x68/0x90 drivers/net/wireguard/timers.c:215
+> > > >
+> > > > The line of hlist_add_head that it's hitting is:
+> > > >
+> > > > static inline void hlist_add_head(struct hlist_node *n, struct hlist_head *h)
+> > > > {
+> > > >        struct hlist_node *first = h->first;
+> > > >        WRITE_ONCE(n->next, first);
+> > > >        if (first)
+> > > >
+> > > > So that means it's the dereferencing of h that's a problem. That comes from:
+> > > >
+> > > > static void enqueue_timer(struct timer_base *base, struct timer_list *timer,
+> > > >                          unsigned int idx, unsigned long bucket_expiry)
+> > > > {
+> > > >
+> > > >        hlist_add_head(&timer->entry, base->vectors + idx);
+> > > >
+> > > > That means it concerns base->vectors + idx, not the timer_list object
+> > > > that wireguard manages. That's confusing. Could that imply that the
+> > > > bug is in freeing a previous timer without removing it from the timer
+> > > > lists, so that it winds up being in base->vectors?
+> >
+> > Good point, it's indeed likely that the timer list is messed up already,
+> > just an unlucky encounter in the wireguard code.
+> >
+> > > Digging around on syzkaller, it looks like there's a similar bug on
+> > > jbd2, concerning iptunnels's allocation:
+> > >
+> > > https://syzkaller.appspot.com/text?tag=CrashReport&x=13afb19cd00000
+> > [...]
+> > > It might not actually be a wireguard bug?
+> >
+> > I wonder whether syzbot reported similar issues with
+> > CONFIG_KASAN_SW_TAGS. It shouldn't be that different from the HW_TAGS
+> > but at least we can rule out qemu bugs with the MTE emulation.
+>
+> +Eric
 
-Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
-
-> ---
->  include/linux/memcontrol.h |  7 +++--
->  mm/vmscan.c                | 60 ++++++++++++++++++++++++++------------
->  2 files changed, 46 insertions(+), 21 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 4c9253896e25..c457fc7bc631 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -93,12 +93,13 @@ struct lruvec_stat {
->  };
->  
->  /*
-> - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-> - * which have elements charged to this memcg.
-> + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
-> + * shrinkers, which have elements charged to this memcg.
->   */
->  struct shrinker_info {
->  	struct rcu_head rcu;
-> -	unsigned long map[];
-> +	atomic_long_t *nr_deferred;
-> +	unsigned long *map;
->  };
->  
->  /*
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index a1047ea60ecf..fcb399e18fc3 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -187,11 +187,17 @@ static DECLARE_RWSEM(shrinker_rwsem);
->  #ifdef CONFIG_MEMCG
->  static int shrinker_nr_max;
->  
-> +/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
->  static inline int shrinker_map_size(int nr_items)
->  {
->  	return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
->  }
->  
-> +static inline int shrinker_defer_size(int nr_items)
-> +{
-> +	return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
-> +}
-> +
->  static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
->  						     int nid)
->  {
-> @@ -200,10 +206,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
->  }
->  
->  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
-> -				    int size, int old_size)
-> +				    int map_size, int defer_size,
-> +				    int old_map_size, int old_defer_size)
->  {
->  	struct shrinker_info *new, *old;
->  	int nid;
-> +	int size = map_size + defer_size;
->  
->  	for_each_node(nid) {
->  		old = shrinker_info_protected(memcg, nid);
-> @@ -215,9 +223,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
->  		if (!new)
->  			return -ENOMEM;
->  
-> -		/* Set all old bits, clear all new bits */
-> -		memset(new->map, (int)0xff, old_size);
-> -		memset((void *)new->map + old_size, 0, size - old_size);
-> +		new->nr_deferred = (atomic_long_t *)(new + 1);
-> +		new->map = (void *)new->nr_deferred + defer_size;
-> +
-> +		/* map: set all old bits, clear all new bits */
-> +		memset(new->map, (int)0xff, old_map_size);
-> +		memset((void *)new->map + old_map_size, 0, map_size - old_map_size);
-> +		/* nr_deferred: copy old values, clear all new values */
-> +		memcpy(new->nr_deferred, old->nr_deferred, old_defer_size);
-> +		memset((void *)new->nr_deferred + old_defer_size, 0,
-> +		       defer_size - old_defer_size);
->  
->  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
->  		kvfree_rcu(old);
-> @@ -232,9 +247,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
->  	struct shrinker_info *info;
->  	int nid;
->  
-> -	if (mem_cgroup_is_root(memcg))
-> -		return;
-> -
->  	for_each_node(nid) {
->  		pn = mem_cgroup_nodeinfo(memcg, nid);
->  		info = shrinker_info_protected(memcg, nid);
-> @@ -247,12 +259,12 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
->  {
->  	struct shrinker_info *info;
->  	int nid, size, ret = 0;
-> -
-> -	if (mem_cgroup_is_root(memcg))
-> -		return 0;
-> +	int map_size, defer_size = 0;
->  
->  	down_write(&shrinker_rwsem);
-> -	size = shrinker_map_size(shrinker_nr_max);
-> +	map_size = shrinker_map_size(shrinker_nr_max);
-> +	defer_size = shrinker_defer_size(shrinker_nr_max);
-> +	size = map_size + defer_size;
->  	for_each_node(nid) {
->  		info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
->  		if (!info) {
-> @@ -260,6 +272,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
->  			ret = -ENOMEM;
->  			break;
->  		}
-> +		info->nr_deferred = (atomic_long_t *)(info + 1);
-> +		info->map = (void *)info->nr_deferred + defer_size;
->  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
->  	}
->  	up_write(&shrinker_rwsem);
-> @@ -267,15 +281,21 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
->  	return ret;
->  }
->  
-> +static inline bool need_expand(int nr_max)
-> +{
-> +	return round_up(nr_max, BITS_PER_LONG) >
-> +	       round_up(shrinker_nr_max, BITS_PER_LONG);
-> +}
-> +
->  static int expand_shrinker_info(int new_id)
->  {
-> -	int size, old_size, ret = 0;
-> +	int ret = 0;
->  	int new_nr_max = new_id + 1;
-> +	int map_size, defer_size = 0;
-> +	int old_map_size, old_defer_size = 0;
->  	struct mem_cgroup *memcg;
->  
-> -	size = shrinker_map_size(new_nr_max);
-> -	old_size = shrinker_map_size(shrinker_nr_max);
-> -	if (size <= old_size)
-> +	if (!need_expand(new_nr_max))
->  		goto out;
->  
->  	if (!root_mem_cgroup)
-> @@ -283,11 +303,15 @@ static int expand_shrinker_info(int new_id)
->  
->  	lockdep_assert_held(&shrinker_rwsem);
->  
-> +	map_size = shrinker_map_size(new_nr_max);
-> +	defer_size = shrinker_defer_size(new_nr_max);
-> +	old_map_size = shrinker_map_size(shrinker_nr_max);
-> +	old_defer_size = shrinker_defer_size(shrinker_nr_max);
-> +
->  	memcg = mem_cgroup_iter(NULL, NULL, NULL);
->  	do {
-> -		if (mem_cgroup_is_root(memcg))
-> -			continue;
-> -		ret = expand_one_shrinker_info(memcg, size, old_size);
-> +		ret = expand_one_shrinker_info(memcg, map_size, defer_size,
-> +					       old_map_size, old_defer_size);
->  		if (ret) {
->  			mem_cgroup_iter_break(NULL, memcg);
->  			goto out;
-> 
-
+I've seen some similar reports on other syzkaller instances. They all
+have similar alloc/free stacks, but different access stacks.
+This does not seem to be wireguard nor arm/mte related. It seems that
+something released the device prematurely, and then some innocent code
+gets a use-after-free.
