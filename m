@@ -2,207 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1191D31D428
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 04:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0671D31D42D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 04:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230386AbhBQDID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 22:08:03 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:2411 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229946AbhBQDH7 (ORCPT
+        id S230431AbhBQDJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 22:09:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59650 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229946AbhBQDI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 22:07:59 -0500
-X-IronPort-AV: E=Sophos;i="5.81,184,1610380800"; 
-   d="scan'208";a="104561806"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 17 Feb 2021 11:07:08 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 8C4954CE6F9B;
-        Wed, 17 Feb 2021 11:07:02 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 17 Feb
- 2021 11:06:55 +0800
-Subject: Re: [PATCH 4/7] fsdax: Replace mmap entry in case of CoW
-To:     <dsterba@suse.cz>, <linux-kernel@vger.kernel.org>,
-        <linux-xfs@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-fsdevel@vger.kernel.org>, <darrick.wong@oracle.com>,
-        <dan.j.williams@intel.com>, <willy@infradead.org>, <jack@suse.cz>,
-        <viro@zeniv.linux.org.uk>, <linux-btrfs@vger.kernel.org>,
-        <ocfs2-devel@oss.oracle.com>, <david@fromorbit.com>, <hch@lst.de>,
-        <rgoldwyn@suse.de>, Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
- <20210207170924.2933035-5-ruansy.fnst@cn.fujitsu.com>
- <20210216131154.GN1993@twin.jikos.cz>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <4e9a79ed-aa99-c57b-6098-f55ef28cc535@cn.fujitsu.com>
-Date:   Wed, 17 Feb 2021 11:06:55 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Tue, 16 Feb 2021 22:08:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613531253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fNH5ITRF0iwB8lmxXdXfW6GsZrNoD5cb0aLw0H35nCY=;
+        b=OqvJeFMytf00vAIc6x3tbSpXBRhe3a1GWJpWkHCRvfgoHcd6hwVIMctBWoSnXaqti40ibF
+        vxlUai+fwdvlLyTQgo2NmBlazXjHVN/ktvM01ceeb+pwYkY1VpjFJF3xlarVbxs7yQzU3A
+        sTkgvXtGpvXkJSgN2QkCXHya1Xjw7yo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-107-qgHmBGBANbajsrIAsAC2Og-1; Tue, 16 Feb 2021 22:07:31 -0500
+X-MC-Unique: qgHmBGBANbajsrIAsAC2Og-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6320AC28A;
+        Wed, 17 Feb 2021 03:07:30 +0000 (UTC)
+Received: from T590 (ovpn-12-102.pek2.redhat.com [10.72.12.102])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4BCBF6F7E8;
+        Wed, 17 Feb 2021 03:07:19 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 11:07:14 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Ewan D . Milne" <emilne@redhat.com>
+Subject: Re: [PATCH 0/2] block: avoid to drop & re-add partitions if
+ partitions aren't changed
+Message-ID: <20210217030714.GB259250@T590>
+References: <20210205021708.1498711-1-ming.lei@redhat.com>
+ <20210215040341.GA257964@T590>
+ <20210216084430.GA23694@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20210216131154.GN1993@twin.jikos.cz>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 8C4954CE6F9B.AD540
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216084430.GA23694@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 16, 2021 at 09:44:30AM +0100, Christoph Hellwig wrote:
+> On Mon, Feb 15, 2021 at 12:03:41PM +0800, Ming Lei wrote:
+> > Hello,
+> 
+> I think this is a fundamentally bad idea.  We should not keep the
+> parsed partition state around forever just to work around some buggy
+> user space software.
 
+What is the bug in userspace software?
 
-On 2021/2/16 下午9:11, David Sterba wrote:
-> On Mon, Feb 08, 2021 at 01:09:21AM +0800, Shiyang Ruan wrote:
->> We replace the existing entry to the newly allocated one
->> in case of CoW. Also, we mark the entry as PAGECACHE_TAG_TOWRITE
->> so writeback marks this entry as writeprotected. This
->> helps us snapshots so new write pagefaults after snapshots
->> trigger a CoW.
->>
->> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
->> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
->> ---
->>   fs/dax.c | 31 +++++++++++++++++++++++--------
->>   1 file changed, 23 insertions(+), 8 deletions(-)
->>
->> diff --git a/fs/dax.c b/fs/dax.c
->> index b2195cbdf2dc..29698a3d2e37 100644
->> --- a/fs/dax.c
->> +++ b/fs/dax.c
->> @@ -722,6 +722,9 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->>   	return 0;
->>   }
->>   
->> +#define DAX_IF_DIRTY		(1ULL << 0)
->> +#define DAX_IF_COW		(1ULL << 1)
-> 
-> The constants are ULL, but I see other flags only 'unsigned long'
-> 
->> +
->>   /*
->>    * By this point grab_mapping_entry() has ensured that we have a locked entry
->>    * of the appropriate size so we don't have to worry about downgrading PMDs to
->> @@ -731,14 +734,16 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
->>    */
->>   static void *dax_insert_entry(struct xa_state *xas,
->>   		struct address_space *mapping, struct vm_fault *vmf,
->> -		void *entry, pfn_t pfn, unsigned long flags, bool dirty)
->> +		void *entry, pfn_t pfn, unsigned long flags, bool insert_flags)
-> 
-> insert_flags is bool
-> 
->>   {
->>   	void *new_entry = dax_make_entry(pfn, flags);
->> +	bool dirty = insert_flags & DAX_IF_DIRTY;
-> 
-> "insert_flags & DAX_IF_DIRTY" is "bool & ULL", this can't be right
+Do you think it is correct for ioctl(BLKRRPART) to always drop/re-add
+partition device node?
 
-This is a mistake caused by rebasing my old version patchset.  Thanks 
-for pointing out.  I'll fix this in next version.
-> 
->> +	bool cow = insert_flags & DAX_IF_COW;
-> 
-> Same
-> 
->>   
->>   	if (dirty)
->>   		__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
->>   
->> -	if (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE)) {
->> +	if (cow || (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE))) {
->>   		unsigned long index = xas->xa_index;
->>   		/* we are replacing a zero page with block mapping */
->>   		if (dax_is_pmd_entry(entry))
->> @@ -750,7 +755,7 @@ static void *dax_insert_entry(struct xa_state *xas,
->>   
->>   	xas_reset(xas);
->>   	xas_lock_irq(xas);
->> -	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
->> +	if (cow || dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
->>   		void *old;
->>   
->>   		dax_disassociate_entry(entry, mapping, false);
->> @@ -774,6 +779,9 @@ static void *dax_insert_entry(struct xa_state *xas,
->>   	if (dirty)
->>   		xas_set_mark(xas, PAGECACHE_TAG_DIRTY);
->>   
->> +	if (cow)
->> +		xas_set_mark(xas, PAGECACHE_TAG_TOWRITE);
->> +
->>   	xas_unlock_irq(xas);
->>   	return entry;
->>   }
->> @@ -1319,6 +1327,7 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
->>   	void *entry;
->>   	pfn_t pfn;
->>   	void *kaddr;
->> +	unsigned long insert_flags = 0;
->>   
->>   	trace_dax_pte_fault(inode, vmf, ret);
->>   	/*
->> @@ -1444,8 +1453,10 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
->>   
->>   		goto finish_iomap;
->>   	case IOMAP_UNWRITTEN:
->> -		if (write && iomap.flags & IOMAP_F_SHARED)
->> +		if (write && (iomap.flags & IOMAP_F_SHARED)) {
->> +			insert_flags |= DAX_IF_COW;
-> 
-> Here's an example of 'unsigned long = unsigned long long', though it'll
-> work, it would be better to unify all the types.
-
-Yes, I'll fix it.
-
-
---
-Thanks,
-Ruan Shiyang.
-> 
->>   			goto cow;
->> +		}
->>   		fallthrough;
->>   	case IOMAP_HOLE:
->>   		if (!write) {
->> @@ -1555,6 +1566,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
->>   	int error;
->>   	pfn_t pfn;
->>   	void *kaddr;
->> +	unsigned long insert_flags = 0;
->>   
->>   	/*
->>   	 * Check whether offset isn't beyond end of file now. Caller is
->> @@ -1670,14 +1682,17 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
->>   		result = vmf_insert_pfn_pmd(vmf, pfn, write);
->>   		break;
->>   	case IOMAP_UNWRITTEN:
->> -		if (write && iomap.flags & IOMAP_F_SHARED)
->> +		if (write && (iomap.flags & IOMAP_F_SHARED)) {
->> +			insert_flags |= DAX_IF_COW;
->>   			goto cow;
->> +		}
->>   		fallthrough;
->>   	case IOMAP_HOLE:
->> -		if (WARN_ON_ONCE(write))
->> +		if (!write) {
->> +			result = dax_pmd_load_hole(&xas, vmf, &iomap, &entry);
->>   			break;
->> -		result = dax_pmd_load_hole(&xas, vmf, &iomap, &entry);
->> -		break;
->> +		}
->> +		fallthrough;
->>   	default:
->>   		WARN_ON_ONCE(1);
->>   		break;
->> -- 
->> 2.30.0
->>
->>
-> 
-> 
-
+-- 
+Ming
 
