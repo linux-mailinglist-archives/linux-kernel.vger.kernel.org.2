@@ -2,150 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5874D31D678
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD47D31D67B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhBQITp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 03:19:45 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:44632 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhBQITn (ORCPT
+        id S231796AbhBQIUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 03:20:23 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:36282 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231666AbhBQIUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 03:19:43 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H8EVJ8194598;
-        Wed, 17 Feb 2021 08:18:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=8Fd3YC/y7oHuWnHytgKLmnWCvXnmiTYOYH8Mln3sbJY=;
- b=GDAJKbTFlLr22rRwMyqvjbaN1iVbN9tmnVf7/7hGlA6iXJ8ny3/ubVdyKZp+0dbMOGsr
- dw1ez+T/qPpyZVikS8R0HEpoKVjs6Fpk5Ors+amC6tTToxmJ3ePLYvCidY1+Yiy8nBCM
- Qq7ptHgOk58bBzKWKZCSi0mAH/5komnQK5ViIM/HvTDjPMM1OR2AUv8ypTtOrOOze/N2
- qjBvrbjQIyAgHeEFz1ZL1r6HFesqJx/DdXiPmK8vg4ewn81BPvZm9582IFOefTqrNUF6
- cfm+m41PobmwRRmhrbv++O4+SZMjMxINWSwDfu5dl538+6q0Q1K4mkICB7bbzKso9S7c zQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 36p7dnhcf2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 08:18:45 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H8G6Pt051826;
-        Wed, 17 Feb 2021 08:18:44 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 36prpxup0t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 08:18:43 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11H8Ib4Z024550;
-        Wed, 17 Feb 2021 08:18:37 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 17 Feb 2021 00:18:36 -0800
-Date:   Wed, 17 Feb 2021 11:18:26 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Joe Perches <joe@perches.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>
-Subject: Re: [PATCH v4 2/2] pinctrl: pinmux: Add pinmux-select debugfs file
-Message-ID: <20210217081826.GJ2222@kadam>
-References: <20210210222851.232374-1-drew@beagleboard.org>
- <20210210222851.232374-3-drew@beagleboard.org>
- <20210211071153.GJ20820@kadam>
- <7b4105ca8671a2962910deb5418a934bf07d1458.camel@perches.com>
- <20210211073938.GL20820@kadam>
- <20210212033533.GA347396@x1>
+        Wed, 17 Feb 2021 03:20:20 -0500
+Received: by mail-oi1-f174.google.com with SMTP id k204so14167725oih.3;
+        Wed, 17 Feb 2021 00:20:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IQ/7Ynw6UjxQWo4UNim1ZxExxF5E9QOAqwb5uDMav7Y=;
+        b=DhGMuE1jyzWsq0R+1MNpNz4mAMdn9JgbQsigoy1KCIJe/LtKo2s18OQ3SfULR136C9
+         cZ9q8M132e/AQ4rOyKjJ2UrbHSM4CxfSoCHFWetLHZaWD0v7BmP21FtJkLPS34XfvPDW
+         RTw7U7TBJLPUM+2G/CFfC7L4EOjPNxkZ4BiQAbYiTCjLxgVqwjGyiFHYu5hsYRFnz8pP
+         v1EOhYVSjsmOpe17V2XDgw3bF614Tvg7RDd6PRPGHRgzi5BL1VsrbuAIqrIpThHpm2WF
+         gnuW6IpgsQ7+tq8p0nKBVKtNLyl5fFJzMNq0rA6d6WebRCGD3i6XUoIqqZctenCeUe50
+         yHuQ==
+X-Gm-Message-State: AOAM530OSrWYMC8XtVTl0b8u66oyp8S+BYZzdcHxGg4BasPQ0Cf4h3Sw
+        7ltw1M9zDvLOawMF9bNnMMB8D7fg+Nhd75cH4CI=
+X-Google-Smtp-Source: ABdhPJzf7b77gwzlj8rw7+OYcwIn25MD2agWKqzzrmr8L+oVXs0AVoNNUCJtmhm6rKvNq0tTSuPreYnrnWhQzNpsq70=
+X-Received: by 2002:aca:d8c6:: with SMTP id p189mr5078143oig.54.1613549979250;
+ Wed, 17 Feb 2021 00:19:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212033533.GA347396@x1>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170061
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1015 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102170061
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org> <20210216174146.106639-15-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210216174146.106639-15-jacopo+renesas@jmondi.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Feb 2021 09:19:28 +0100
+Message-ID: <CAMuHMdWiGwcqkjpqfKrBDjuh6avNGY0t5rt7Pvfxdr17Da0ZCQ@mail.gmail.com>
+Subject: Re: [PATCH 14/16] media: i2c: max9286: Initialize remotes when bound
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 07:35:33PM -0800, Drew Fustini wrote:
-> On Thu, Feb 11, 2021 at 10:39:38AM +0300, Dan Carpenter wrote:
-> > On Wed, Feb 10, 2021 at 11:24:23PM -0800, Joe Perches wrote:
-> > > On Thu, 2021-02-11 at 10:11 +0300, Dan Carpenter wrote:
-> > > > On Wed, Feb 10, 2021 at 02:28:54PM -0800, Drew Fustini wrote:
-> > > > > +	ret = strncpy_from_user(buf, user_buf, PINMUX_MAX_NAME * 2);
-> > > > > +	if (ret < 0) {
-> > > > > +		dev_err(pctldev->dev, "failed to copy buffer from userspace");
-> > > > > +		goto free_gname;
-> > > > > +	}
-> > > > > +	buf[len-1] = '\0';
-> > > > > +
-> > > > > +	ret = sscanf(buf, "%s %s", fname, gname);
-> > > > > +	if (ret != 2) {
-> > > > > +		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-> > > > > +		goto free_gname;
-> > > > 
-> > > > We need a "ret = -EINVAL;" before the goto.  sscanf doesn't return error
-> > > > codes.  Normally we would write it like so:
-> > > > 
-> > > > 	if (sscanf(buf, "%s %s", fname, gname) != 2) {
-> > > > 		dev_err(pctldev->dev, "expected format: <function-name> <group-name>");
-> > > > 		ret = -EINVAL;
-> > > > 		goto free_gname;
-> > > > 	}
-> > > > 
-> > > > I'm going to write a Smatch check for this today.
-> > > 
-> > > It's a pretty frequently used style:
-> > > 
-> > > $ git grep -P '\w+\s*=\s+sscanf\b' | wc -l
-> > > 327
-> > 
-> > Yeah.  That's true.  I looked through a couple of those and they were
-> > fine.  (Sample size 2)  But the other format is more common.
-> > 
-> > $ git grep sscanf | grep = | wc -l
-> > 803
-> > 
-> > I have written a Smatch check to complain whenever we propogate the
-> > return value from sscanf.  I'll let you know tomorrow how that goes.
-> > 
-> > I should write another check which says "On this error path, we know
-> > sscanf was not equal to the value we wanted but we are still returning
-> > success".
-> > 
-> > regards,
-> > dan carpenter
-> > 
-> 
-> Thank you for comments regarding sscanf().  And also thank you for the
-> LF mentorship session on smatch this morning.  It helped me understand
-> it much better.
+On Tue, Feb 16, 2021 at 6:41 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
+> With the introduction of the .init() core subdev operation in the
+> max9271 GMSL serializer, the max9286 deserializer needs to explicitly
+> initialize the remote devices by calling the .init() subdev operation on
+> each probed camera.
+>
+> Call the .init() subdev operation at remote bound time and toggle
+> the reverse channel amplitude to compensate for the remote ends
+> noise immunity threshold.
 
-Good deal!
+remote end's?
+remote ends' ... thresholds?
 
-The warning about propagating errors from sscanf caught a couple bugs.
-The one about returning success if sscanf failed didn't catch anything.
+Gr{oetje,eeting}s,
 
-The sscanf overflow patch didn't find anything either, but I think we've
-had those bugs in the past and so I expect some in the future so I will
-keep that one in my private tests without pushing it.
+                        Geert
 
-regards,
-dan carpenter
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
