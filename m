@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D3531D76B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:21:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D6931D76F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbhBQKSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:18:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbhBQKQ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:16:28 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1713FC061574;
-        Wed, 17 Feb 2021 02:15:48 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id z21so8202940pgj.4;
-        Wed, 17 Feb 2021 02:15:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PWMDkLyuoQFnyVhCDSKForjRIrCz/CYTz/aboHVEpC0=;
-        b=eXnnMZ0G51shDdPz9jSetL9ouwoklyGpi6GXDgzmGA/IhXc3e0OLuOhL/3RprTM9zl
-         v5qQysQaMy8cc53O1uOSFAPyWH6/la5kQdmLn3vh6Kkrc6kFsU5f6kkEwozSrYtzSjsV
-         NK9FU8EHz+lkksLxqGlskgn2lEwGKoCQ40jyS4FcvcojLCnf/FBvisns/8x/YbxxVfh2
-         FJPr2ZKubgsMStm3/zjyW4qdrTo685KTLHDTwRR6/mTPiU8RlnNjZIDTY0k3mYGOWEtg
-         /YBeazO9MCdIiTrlM23bAuQQM2cGQlnsSTxJIt3jQqf/W8Vq4SiRgwwUTBNN3Xmwk97x
-         W6Aw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PWMDkLyuoQFnyVhCDSKForjRIrCz/CYTz/aboHVEpC0=;
-        b=qhvcHOUdi5J/i/fQIKaE79pkksCerJplUAMT/IIiTR6mWy+Q4kfgf5Gwyr+CPs4w3I
-         q7Sw8RFWiRphtqDaZFlGTyQg7OPeETzaXyfuzftMe9RLpUGqom15OSIfh9fMQhhzE07p
-         i0Gpui5fHcitWRjr9LjehiguVxc/bGGtBQj3Ic61pPDi+huyTcDcKClmw9NHMzrK8qcL
-         WANaO8otCZVypBd1zRVrVABToFlddqPX3rra6EUon5JJxA7Xy74rYlnbh3E4sCg4e7YJ
-         7oQbgqXcLZFPcXwnZH85D5HfvYYS8hIi9zLC36grrVdxR3BrVBVQKXMPW77kkb7d1EQg
-         4P/Q==
-X-Gm-Message-State: AOAM533p2zJGbED0E/sB8AxNO6DcU7AS7CyrOZNbE9npCdRrGpfhlE4r
-        lAmDr0Pg+5P1h2Ha11fKDtyaFO5OsWW+3OFWWRU=
-X-Google-Smtp-Source: ABdhPJwHxbyGWzMtxJ7ItogY45paozuwlLwLEJTb3PI0WJC3v/QIzWFZMZLh+4YKBsP/k03seyM7MK3flJOTxz74IU0=
-X-Received: by 2002:a62:384c:0:b029:1e3:8bca:5701 with SMTP id
- f73-20020a62384c0000b02901e38bca5701mr23579306pfa.7.1613556947563; Wed, 17
- Feb 2021 02:15:47 -0800 (PST)
+        id S232277AbhBQKSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:18:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232166AbhBQKQ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:16:26 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 09AFA60C40;
+        Wed, 17 Feb 2021 10:15:45 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lCJry-00EZer-Rm; Wed, 17 Feb 2021 10:15:42 +0000
 MIME-Version: 1.0
-References: <20210217160714.7c1fcaac@canb.auug.org.au>
-In-Reply-To: <20210217160714.7c1fcaac@canb.auug.org.au>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 17 Feb 2021 12:15:31 +0200
-Message-ID: <CAHp75VdhLLWFm414G8TQUnkaXbsi0DcF1v1fZpsAa1_rtoBS3g@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the tip tree with the pm tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 17 Feb 2021 10:15:42 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>, Preeti Nagar <pnagar@codeaurora.org>
+Cc:     ardb@kernel.org, arnd@arndb.de, jmorris@namei.org,
+        serge@hallyn.com, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, casey@schaufler-ca.com,
+        ndesaulniers@google.com, dhowells@redhat.com, ojeda@kernel.org,
+        psodagud@codeaurora.org, nmardana@codeaurora.org,
+        rkavati@codeaurora.org, vsekhar@codeaurora.org,
+        mreichar@codeaurora.org, johan@kernel.org, joe@perches.com,
+        jeyu@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RTIC: selinux: ARM64: Move selinux_state to a separate
+ page
+In-Reply-To: <20210217094205.GA3570@willie-the-truck>
+References: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
+ <20210217094205.GA3570@willie-the-truck>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <09bd49a4d8fcb1bebaa4f40fd5c6eac3@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, pnagar@codeaurora.org, ardb@kernel.org, arnd@arndb.de, jmorris@namei.org, serge@hallyn.com, paul@paul-moore.com, stephen.smalley.work@gmail.com, eparis@parisplace.org, linux-security-module@vger.kernel.org, selinux@vger.kernel.org, linux-arch@vger.kernel.org, casey@schaufler-ca.com, ndesaulniers@google.com, dhowells@redhat.com, ojeda@kernel.org, psodagud@codeaurora.org, nmardana@codeaurora.org, rkavati@codeaurora.org, vsekhar@codeaurora.org, mreichar@codeaurora.org, johan@kernel.org, joe@perches.com, jeyu@kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 7:38 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> Today's linux-next merge of the tip tree got a conflict in:
->
->   arch/x86/platform/intel-mid/device_libs/platform_bt.c
->
-> between commit:
->
->   4590d98f5a4f ("sfi: Remove framework for deprecated firmware")
->
-> from the pm tree and commit:
->
->   bdb154f074a6 ("x86/platform/intel-mid: Convert comma to semicolon")
->
-> from the tip tree.
->
-> I fixed it up (the former removed the file, so I did that) and can
-> carry the fix as necessary. This is now fixed as far as linux-next is
-> concerned, but any non trivial conflicts should be mentioned to your
-> upstream maintainer when your tree is submitted for merging.  You may
-> also want to consider cooperating with the maintainer of the conflicting
-> tree to minimise any particularly complex conflicts.
+On 2021-02-17 09:42, Will Deacon wrote:
+> [Please include arm64 and kvm folks for threads involving the stage-2 
+> MMU]
+> 
+> On Tue, Feb 16, 2021 at 03:47:52PM +0530, Preeti Nagar wrote:
+>> The changes introduce a new security feature, RunTime Integrity Check
+>> (RTIC), designed to protect Linux Kernel at runtime. The motivation
+>> behind these changes is:
+>> 1. The system protection offered by Security Enhancements(SE) for
+>> Android relies on the assumption of kernel integrity. If the kernel
+>> itself is compromised (by a perhaps as yet unknown future 
+>> vulnerability),
+>> SE for Android security mechanisms could potentially be disabled and
+>> rendered ineffective.
+>> 2. Qualcomm Snapdragon devices use Secure Boot, which adds 
+>> cryptographic
+>> checks to each stage of the boot-up process, to assert the 
+>> authenticity
+>> of all secure software images that the device executes.  However, due 
+>> to
+>> various vulnerabilities in SW modules, the integrity of the system can 
+>> be
+>> compromised at any time after device boot-up, leading to un-authorized
+>> SW executing.
+>> 
+>> The feature's idea is to move some sensitive kernel structures to a
+>> separate page and monitor further any unauthorized changes to these,
+>> from higher Exception Levels using stage 2 MMU. Moving these to a
+>> different page will help avoid getting page faults from un-related 
+>> data.
+>> The mechanism we have been working on removes the write permissions 
+>> for
+>> HLOS in the stage 2 page tables for the regions to be monitored, such
+>> that any modification attempts to these will lead to faults being
+>> generated and handled by handlers. If the protected assets are moved 
+>> to
+>> a separate page, faults will be generated corresponding to change 
+>> attempts
+>> to these assets only. If not moved to a separate page, write attempts 
+>> to
+>> un-related data present on the monitored pages will also be generated.
+>> 
+>> Using this feature, some sensitive variables of the kernel which are
+>> initialized after init or are updated rarely can also be protected 
+>> from
+>> simple overwrites and attacks trying to modify these.
+> 
+> Although I really like the idea of using stage-2 to protect the kernel, 
+> I
+> think the approach you outline here is deeply flawed. Identifying 
+> "sensitive
+> variables" of the kernel to protect is subjective and doesn't scale.
+> Furthermore, the triaging of what constitues a valid access is notably
+> absent from your description and is assumedly implemented in an opaque 
+> blob
+> at EL2.
+> 
+> I think a better approach would be along the lines of:
+> 
+>   1. Introduce the protection at stage-1 (like we already have for 
+> mapping
+>      e.g. the kernel text R/O)
+> 
+>   2. Implement the handlers in the kernel, so the heuristics are clear.
+> 
+>   3. Extend this to involve KVM, so that the host can manage its own
+>      stage-2 to firm-up the stage-1 protections.
 
-Yes, the file removal is the right thing to do.
-Thanks!
++1 on that. Even if, as I suspect, this is targeting some unspecified
+hypervisor that is not KVM, the first course of action should be for
+this to be implemented in the kernel's own hypervisor first so that
+anyone can review understand what is at play.
 
+Thanks,
+
+          M.
 -- 
-With Best Regards,
-Andy Shevchenko
+Jazz is not dead. It just smells funny...
