@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AA0D31DE3D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F78731DE3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:33:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhBQRcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:32:46 -0500
-Received: from mail-io1-f70.google.com ([209.85.166.70]:33128 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233782AbhBQRcE (ORCPT
+        id S234249AbhBQRcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:32:25 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:51111 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233756AbhBQRcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:32:04 -0500
-Received: by mail-io1-f70.google.com with SMTP id m3so12422040ioy.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:31:48 -0800 (PST)
+        Wed, 17 Feb 2021 12:32:03 -0500
+Received: by mail-il1-f197.google.com with SMTP id x11so10953350ill.17
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:31:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=rNKpLhkKFfl81T2Dw8MfkIfrcSM+vdv5Ip5r2EUodUc=;
-        b=Wli/wcDgA1oQrr/pII1hPJU7okEBZB8LEVu6CdBiIErcmqomKoRM1bhykEw9s/qomM
-         tAgNuRNdr2MumtTYkPf3h1HV6u/23aYToH3loQwHeVBJyxu4EGLVTF7pohIpGyj/YyPI
-         jmrD2k0h2LSg1IW6w91TPD/sW+cyE3SW2wF5qt9MdQ7joMdg/3+2s4seBquyaTQg8JVA
-         3NY+SLM25PnTUmpXPQmbDGh4yc94+u6tEG+pwAyEXhAuGFyMxDnSoiG8YN9a/Nu5jqZ4
-         l7ZhIqz/n/BQmvWQdxBC7yWyeumOBgextGGRFkjuPR3FBjp0fgyAHQDyBFTej45TwfUs
-         L18w==
-X-Gm-Message-State: AOAM531HZkbwbGoXOoFt+qqSjam7p5B69SbpzfROlOSrlehPz5CngVtX
-        o5CkR3esX0/Ai8CBxkYfDQVnXRX3xmrpWgudjfzyiMeUhvqf
-X-Google-Smtp-Source: ABdhPJwxUdbXjHbs2JhYfhCWsAWe5JUtXoMDQCBXfenubzELl0ZcSCm8Pf8sxIMcvIbn6dmuxVDqAEwa55dseTGHsKGxQNuYnapH
+        bh=Q8EJQL0MD6go7XFOfljUTqAoX/K/UQ5b4Yq+nX1XKbI=;
+        b=G0XtUPM8ItMyiaFg4esZdCHv1qk/Ab01LHylciFFO/3eWkcNTGQOBjZLSzU9Pl9Zqg
+         SgsesoephqUQDowUlCwgiZ1idTerSaVKSgS5tijIYz8HpaNKJ1tIqmG3HDIJFtAfKL/I
+         KgOddql5AhEEhN5XWkZA8kuC0i5JJwA/fqIzAFhL7O1h695gsPewoUn6ClDfSiPlU8FS
+         783nSeaXQCBQ/CIdnPSza4HtaEohFDjRgFAV2eIJdGOY3cHb2/eUo5LN4Oi9Yoex9IaA
+         JKyJVSc8LfsDguPAlcch4pbiNRIgR5aK7GyDsW4edS9YByt1efRNtiPvWgw7m3hETO9i
+         vTdg==
+X-Gm-Message-State: AOAM531lPBkiAyq0Bd4Ym9idCwVkRl146ioCBmEBcC1/e5PscgoNbB6k
+        C+hOnAZZGhpARkttMtGFEtYmaMJ2YKEfcpNX/pr44pvSR6iU
+X-Google-Smtp-Source: ABdhPJx2uXDzKi02A3GCGw9T19gC6qcaq7rkdWOFEZ2JbDCjmm5Es5MK5EQ7OCidhg4WY+vV0rYa4XfMga8nw8Kxr1HotRz6KJtb
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:18ca:: with SMTP id s10mr122663ilu.286.1613583082878;
+X-Received: by 2002:a02:8b:: with SMTP id 133mr483268jaa.92.1613583082564;
  Wed, 17 Feb 2021 09:31:22 -0800 (PST)
 Date:   Wed, 17 Feb 2021 09:31:22 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000787b8805bb8b96ce@google.com>
-Subject: possible deadlock in mptcp_push_pending
-From:   syzbot <syzbot+d1b1723faccb7a43f6d1@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        mptcp@lists.01.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000073aedf05bb8b96cf@google.com>
+Subject: WARNING in dst_release
+From:   syzbot <syzbot+b53bbea2ad64f9cf80d8@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, fw@strlen.de,
+        kuba@kernel.org, linmiaohe@huawei.com,
+        linux-kernel@vger.kernel.org, mathew.j.martineau@linux.intel.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,130 +49,70 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    c48f8607 Merge branch 'PTP-for-DSA-tag_ocelot_8021q'
+HEAD commit:    9ec5eea5 lib/parman: Delete newline
 git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=16525cb0d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=107fb9d2d00000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=d1b1723faccb7a43f6d1
+dashboard link: https://syzkaller.appspot.com/bug?extid=b53bbea2ad64f9cf80d8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11fe1d3cd00000
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The issue was bisected to:
+
+commit 40947e13997a1cba4e875893ca6e5d5e61a0689d
+Author: Florian Westphal <fw@strlen.de>
+Date:   Fri Feb 12 23:59:56 2021 +0000
+
+    mptcp: schedule worker when subflow is closed
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11ee2f02d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13ee2f02d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15ee2f02d00000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d1b1723faccb7a43f6d1@syzkaller.appspotmail.com
+Reported-by: syzbot+b53bbea2ad64f9cf80d8@syzkaller.appspotmail.com
+Fixes: 40947e13997a ("mptcp: schedule worker when subflow is closed")
 
-============================================
-WARNING: possible recursive locking detected
-5.11.0-rc7-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.1/15600 is trying to acquire lock:
-ffff888057303220 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1598 [inline]
-ffff888057303220 (sk_lock-AF_INET6){+.+.}-{0:0}, at: mptcp_push_pending+0x28b/0x650 net/mptcp/protocol.c:1466
-
-but task is already holding lock:
-ffff8880285da520 (sk_lock-AF_INET6){+.+.}-{0:0}, at: inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(sk_lock-AF_INET6);
-  lock(sk_lock-AF_INET6);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-1 lock held by syz-executor.1/15600:
- #0: ffff8880285da520 (sk_lock-AF_INET6){+.+.}-{0:0}, at: inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
-
-stack backtrace:
-CPU: 1 PID: 15600 Comm: syz-executor.1 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_deadlock_bug kernel/locking/lockdep.c:2761 [inline]
- check_deadlock kernel/locking/lockdep.c:2804 [inline]
- validate_chain kernel/locking/lockdep.c:3595 [inline]
- __lock_acquire.cold+0x114/0x39e kernel/locking/lockdep.c:4832
- lock_acquire kernel/locking/lockdep.c:5442 [inline]
- lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5407
- lock_sock_nested+0xc5/0x110 net/core/sock.c:3071
- lock_sock include/net/sock.h:1598 [inline]
- mptcp_push_pending+0x28b/0x650 net/mptcp/protocol.c:1466
- mptcp_sendmsg+0xde4/0x2830 net/mptcp/protocol.c:1685
- inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- sock_write_iter+0x289/0x3c0 net/socket.c:999
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x1ee/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465d99
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0f45e25188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465d99
-RDX: 0000000020000001 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
-R13: 00007ffec3fddc7f R14: 00007f0f45e25300 R15: 0000000000022000
-general protection fault, probably for non-canonical address 0xdffffc0000000007: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000038-0x000000000000003f]
-CPU: 0 PID: 15600 Comm: syz-executor.1 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:mptcp_sendmsg_frag+0xa3f/0x1220 net/mptcp/protocol.c:1330
-Code: 80 3c 02 00 0f 85 04 07 00 00 48 8b 04 24 48 8b 98 20 07 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 38 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e d6 04 00 00 48 8d 7d 10 44 8b
-RSP: 0018:ffffc900020577e8 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000007 RSI: 0000000000000000 RDI: 0000000000000038
-RBP: ffff88802b42e610 R08: 0000000000000001 R09: ffff88802b42e610
-R10: ffffed1005685cc4 R11: 0000000000000000 R12: ffff8880285da400
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000204
-FS:  00007f0f45e25700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055d4b6e570c0 CR3: 000000005c5ae000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
- mptcp_sendmsg+0xde4/0x2830 net/mptcp/protocol.c:1685
- inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- sock_write_iter+0x289/0x3c0 net/socket.c:999
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x1ee/0x250 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465d99
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f0f45e25188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465d99
-RDX: 0000000020000001 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
-R13: 00007ffec3fddc7f R14: 00007f0f45e25300 R15: 0000000000022000
+------------[ cut here ]------------
+dst_release underflow
+WARNING: CPU: 0 PID: 9649 at net/core/dst.c:175 dst_release net/core/dst.c:175 [inline]
+WARNING: CPU: 0 PID: 9649 at net/core/dst.c:175 dst_release+0xd2/0xe0 net/core/dst.c:169
 Modules linked in:
----[ end trace 88e1139d1c953589 ]---
-RIP: 0010:mptcp_sendmsg_frag+0xa3f/0x1220 net/mptcp/protocol.c:1330
-Code: 80 3c 02 00 0f 85 04 07 00 00 48 8b 04 24 48 8b 98 20 07 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 38 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e d6 04 00 00 48 8d 7d 10 44 8b
-RSP: 0018:ffffc900020577e8 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000007 RSI: 0000000000000000 RDI: 0000000000000038
-RBP: ffff88802b42e610 R08: 0000000000000001 R09: ffff88802b42e610
-R10: ffffed1005685cc4 R11: 0000000000000000 R12: ffff8880285da400
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000204
-FS:  00007f0f45e25700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CPU: 0 PID: 9649 Comm: syz-executor.0 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:dst_release net/core/dst.c:175 [inline]
+RIP: 0010:dst_release+0xd2/0xe0 net/core/dst.c:169
+Code: 89 c3 89 c6 e8 cf b3 77 fa 85 db 74 a4 e9 e4 66 fd 01 e8 41 ac 77 fa 48 c7 c7 c0 72 44 8a c6 05 0a 9b 94 06 01 e8 01 52 c1 01 <0f> 0b eb c6 66 2e 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55 48
+RSP: 0018:ffffc90009cf7d20 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801895d340 RSI: ffffffff815b7595 RDI: fffff5200139ef96
+RBP: ffff888017c95e00 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815b076e R11: 0000000000000000 R12: ffff88802bad7200
+R13: 00000000ffffffff R14: ffff888017c95e04 R15: 0000000000000000
+FS:  00007ff13b462700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f272a496000 CR3: 000000005c5ae000 CR4: 00000000001506f0
+CR2: 000055e9f2997360 CR3: 0000000015dd0000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ sk_dst_set include/net/sock.h:1999 [inline]
+ sk_dst_reset include/net/sock.h:2011 [inline]
+ __inet_bind+0x71f/0xbc0 net/ipv4/af_inet.c:549
+ inet_bind+0xf0/0x170 net/ipv4/af_inet.c:457
+ mptcp_bind+0x112/0x210 net/mptcp/protocol.c:3147
+ __sys_bind+0x1e9/0x250 net/socket.c:1635
+ __do_sys_bind net/socket.c:1646 [inline]
+ __se_sys_bind net/socket.c:1644 [inline]
+ __x64_sys_bind+0x6f/0xb0 net/socket.c:1644
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465d99
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ff13b462188 EFLAGS: 00000246 ORIG_RAX: 0000000000000031
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465d99
+RDX: 0000000000000010 RSI: 0000000020000080 RDI: 0000000000000005
+RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffd21708c7f R14: 00007ff13b462300 R15: 0000000000022000
 
 
 ---
@@ -182,3 +122,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
