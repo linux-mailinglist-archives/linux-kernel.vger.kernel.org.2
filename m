@@ -2,125 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 902DD31D52E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F5C31D54F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:13:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbhBQFvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 00:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhBQFvN (ORCPT
+        id S231638AbhBQGN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:13:26 -0500
+Received: from pbmsgap02.intersil.com ([192.157.179.202]:54498 "EHLO
+        pbmsgap02.intersil.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231577AbhBQGNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 00:51:13 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0A6EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:50:32 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id q20so7725839pfu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:50:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qkSCWZe3fPVf1MeLv0asrOZ7NO0HuQyQtXUna6IlKOo=;
-        b=C1oz9qbn1tp0GqzJhJGK3w7HzbreQKZ7gl95fjVZDqlxtGMKJKu1XB+CYLR+D1lgqW
-         UdTcYDJbq3WCMoUoaNwUrR4HWGPJXeyv27gu01mO4Fb/v26u8mPLXfrKJtXpEaRViEz4
-         s5TI4SUh7OhOKpqcrFNkwesCGnoB+0diRzP5PUD1t8pIfNQAk5zKWnEszExIZ5nt3K26
-         InkakXPjCRgHLGE2mHVEzvIUJVSJC7S6iaT/Jt8gcny/lHGKowVb1JmzG4GODbfhDfNq
-         lMA+xQ6X01go41TmraZRwDj3wA5egSbBq8+OhKDE+uqvcOdu98EIG2Bm4ZHinzkOHm30
-         Oekg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qkSCWZe3fPVf1MeLv0asrOZ7NO0HuQyQtXUna6IlKOo=;
-        b=uiImd6HZvqZOXOVzyAwpXB4ilUbb2yr9k+92sskXssA1jIj3d3o5Dkp+OLkNKHr6X9
-         HOphTwkRedioq5YpbbvFbB7PXrohLkzFUzoH7QXBbtOL4wR0MgetqJPAGuPBo81phZhI
-         A7ESRAPH7o/9MBWD9aXtebkMP9RbZt0zIkeW3ia+9dOaxx6I6c55k8UtfWbA0z35Vw4r
-         if8vjejcbOBrur/YnRKeiLaWCxfV3owVD3uQDWKxBs0E3IetI378iYX6hJ8R2FsD5uO9
-         CzdRYCaxEZ2SlTEMPR2IS2xVuzzy2NFyu2oAEijA17FXJGJIIkdwYXlwOJGh4m5pELaL
-         yz0Q==
-X-Gm-Message-State: AOAM5326ik6wXqYkL4p/zWduzDAgdNVilHPeyDUy3DkLf454wcRlrcnp
-        rcMdKNpFsFx3NeqmEq38tbtrgw==
-X-Google-Smtp-Source: ABdhPJzpXTBfvNeba7mYHrI+FH1jg2GCvb4+vm+u7jdZvxavOPjvmN3FmJ3miyhBevHte/ldyntmUw==
-X-Received: by 2002:a63:ec55:: with SMTP id r21mr21916136pgj.144.1613541032581;
-        Tue, 16 Feb 2021 21:50:32 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id h5sm843546pgv.87.2021.02.16.21.50.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Feb 2021 21:50:31 -0800 (PST)
-Date:   Wed, 17 Feb 2021 11:20:29 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     rjw@rjwysocki.net, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: exclude boost frequencies from valid count if
- not enabled
-Message-ID: <20210217055029.a25wjsyoosxageti@vireshk-i7>
-References: <20210217000013.4063289-1-thara.gopinath@linaro.org>
+        Wed, 17 Feb 2021 01:13:20 -0500
+Received: from pps.filterd (pbmsgap02.intersil.com [127.0.0.1])
+        by pbmsgap02.intersil.com (8.16.0.42/8.16.0.42) with SMTP id 11H5glCx032617;
+        Wed, 17 Feb 2021 00:42:47 -0500
+Received: from pbmxdp03.intersil.corp (pbmxdp03.pb.intersil.com [132.158.200.224])
+        by pbmsgap02.intersil.com with ESMTP id 36p9tmscnf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 17 Feb 2021 00:42:47 -0500
+Received: from pbmxdp03.intersil.corp (132.158.200.224) by
+ pbmxdp03.intersil.corp (132.158.200.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id
+ 15.1.1979.3; Wed, 17 Feb 2021 00:42:46 -0500
+Received: from localhost (132.158.202.108) by pbmxdp03.intersil.corp
+ (132.158.200.224) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 17 Feb 2021 00:42:45 -0500
+From:   <vincent.cheng.xh@renesas.com>
+To:     <richardcochran@gmail.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Vincent Cheng <vincent.cheng.xh@renesas.com>
+Subject: [PATCH v3 net-next 0/7] ptp: ptp_clockmatrix: Fix output 1 PPS alignment.
+Date:   Wed, 17 Feb 2021 00:42:11 -0500
+Message-ID: <1613540538-23792-1-git-send-email-vincent.cheng.xh@renesas.com>
+X-Mailer: git-send-email 2.7.4
+X-TM-AS-MML: disable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217000013.4063289-1-thara.gopinath@linaro.org>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-17_02:2021-02-16,2021-02-17 signatures=0
+X-Proofpoint-Spam-Details: rule=junk_notspam policy=junk score=0 malwarescore=0 mlxlogscore=999
+ spamscore=0 phishscore=0 adultscore=0 mlxscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102170042
+X-Proofpoint-Spam-Reason: mlx
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thara,
+From: Vincent Cheng <vincent.cheng.xh@renesas.com>
 
-On 16-02-21, 19:00, Thara Gopinath wrote:
-> This is a fix for a regression observed on db845 platforms with 5.7-rc11
-> kernel.  On these platforms running stress tests with 5.11-rc7 kernel
-> causes big cpus to overheat and ultimately shutdown the system due to
-> hitting critical temperature (thermal throttling does not happen and
-> cur_state of cpufreq cooling device for big cpus remain stuck at 0 or max
-> frequency).
-> 
-> This platform has boost opp defined for big cpus but boost mode itself is
-> disabled in the cpufreq driver. Hence the initial max frequency request
-> from cpufreq cooling device(cur_state) for big cpus is for boost
-> frequency(2803200) where as initial max frequency request from cpufreq
-> driver itself is for the highest non boost frequency (2649600).
+This series fixes a race condition that may result in the output clock
+not aligned to internal 1 PPS clock.
 
-Okay.
+Part of device initialization is to align the rising edge of output
+clocks to the internal rising edge of the 1 PPS clock.  If the system
+APLL and DPLL are not locked when this alignment occurs, the alignment
+fails and a fixed offset between the internal 1 PPS clock and the
+output clock occurs.
 
-> qos
-> framework collates these two requests and puts the max frequency of big
-> cpus to 2649600 which the thermal framework is unaware of.
+If a clock is dynamically enabled after power-up, the output clock
+also needs to be aligned to the internal 1 PPS clock.
 
-It doesn't need to be aware of that. It sets its max frequency and other
-frameworks can put their own requests and the lowest one wins. In this case the
-other constraint came from cpufreq-core, which is fine.
+v3:
+Suggested by: Jakub Kicinski <kuba@kernel.org>
+- Remove unnecessary 'err' variable
+- Increase msleep()/loop accuracy by using jiffies in while()
+- No empty lines between variables
+- No empty lines between call and the if
+- parenthesis around a == b are unnecessary
+- Inconsistent \n usage in dev_()
+- Remove unnecessary empty line
+- Leave string format in place so static code checkers can
+  validate arguments
 
-> Now during an
-> over heat event, with step-wise policy governor, thermal framework tries to
-> throttle the cpu and places a restriction on max frequency of the cpu to
-> cur_state - 1
+v2:
+Suggested by: Richard Cochran <richardcochran@gmail.com>
+- Added const to "char * fmt"
+- Break unrelated header change into separate patch
 
-Actually it is cur_state + 1 as the values are inversed here, cooling state 0
-refers to highest frequency :)
+Vincent Cheng (7):
+  ptp: ptp_clockmatrix: Add wait_for_sys_apll_dpll_lock.
+  ptp: ptp_clockmatrix: Add alignment of 1 PPS to idtcm_perout_enable.
+  ptp: ptp_clockmatrix: Remove unused header declarations.
+  ptp: ptp_clockmatrix: Clean-up dev_*() messages.
+  ptp: ptp_clockmatrix: Coding style - tighten vertical spacing.
+  ptp: ptp_clockmatrix: Simplify code - remove unnecessary `err`
+    variable.
+  ptp: ptp_clockmatrix: clean-up - parenthesis around a == b are
+    unnecessary
 
-> which in this case 2649600. qos framework in turn tells the
-> cpufreq cooling device that max frequency of the cpu is already at 2649600
-> and the cooling device driver returns doing nothing(cur_state of the
-> cooling device remains unchanged).
-
-And that's where the bug lies, I have sent proper fix for that now.
-
-> Thus thermal remains stuck in a loop and
-> never manages to actually throttle the cpu frequency. This ultimately leads
-> to system shutdown in case of a thermal overheat event on big cpus.
- 
-> There are multiple possible fixes for this issue. Fundamentally,it is wrong
-> for cpufreq driver and cpufreq cooling device driver to show different
-> maximum possible state/frequency for a cpu.
-
-Not actually, cpufreq core changes the max supported frequency at runtime based
-on the availability of boost frequencies.
-
-cpufreq_table_count_valid_entries() is used at different places and it is
-implemented correctly.
+ drivers/ptp/idt8a340_reg.h    |  10 ++
+ drivers/ptp/ptp_clockmatrix.c | 313 ++++++++++++++++++------------------------
+ drivers/ptp/ptp_clockmatrix.h |  17 ++-
+ 3 files changed, 162 insertions(+), 178 deletions(-)
 
 -- 
-viresh
+2.7.4
+
