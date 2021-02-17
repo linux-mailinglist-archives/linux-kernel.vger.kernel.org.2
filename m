@@ -2,161 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3551D31DBE5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:04:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 452DF31DC05
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233741AbhBQPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:02:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40642 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233743AbhBQPBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:01:06 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613574018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zNdiGqAoz3ZwhvlUdJkNCXpe7aX8eZygEhCr3tOEEWw=;
-        b=eJ64cNAG041bxJF2KFRBBXXn727Q2vCB/jsaissiJL9tVdOl0408WcejPxq1wISIB11yAh
-        3bcxpmrBpQw1RZhQoYnHQMY1Ry9pO6CUsa8UvPvyYli1ScXKJiU36gScBtZlW/SG6/cc8R
-        H1IurCthlR+0+3ClJ0ZsyFhyLONGLnI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9AF0EB8FE;
-        Wed, 17 Feb 2021 15:00:18 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 16:00:11 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        id S233605AbhBQPRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:17:18 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:38592 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233681AbhBQPE7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 10:04:59 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11HF39Zf127806;
+        Wed, 17 Feb 2021 10:04:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=/6wXyRiKtag76Uas8odstYAw9ozKCm1AGlHsC88M7ls=;
+ b=gaNCCzI0H/TXOiIUU27B7o28uTSqj3XtSxLIuoFUpz2LYFDHyzj/v1cBuxfRDn4C1oFw
+ LBwee3RXs2Hp6vWOlk9nHZ/lv3JqSAsKQyAILnCWCB7fvL9NPNxOYoulzCu+9YHZMHbB
+ L+skP42xiNcKzPsxhxRCxKDI8NiBOOrcDYdep57PMWiXDHMqy7oRrYpuVVJzXfflNeqc
+ +T9Djy7RG+KNpmdHl1zX2gOAj2qzZ6fkixwlWBbQv3JJLBVgwsCVfMWOCAH1P9T0++og
+ hNI5zNB7yzFP0iogvWg1yxMwkNkwxTfa0F7HCsAOkjmpoWHX0HnwkA24KXZzm56pboNZ BQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36s4v41b6a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Feb 2021 10:04:05 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11HF1odu005279;
+        Wed, 17 Feb 2021 15:04:01 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 36rw3u8dpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Feb 2021 15:04:01 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11HF3lC735389902
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Feb 2021 15:03:47 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0E0034205C;
+        Wed, 17 Feb 2021 15:03:59 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 44E8D4204C;
+        Wed, 17 Feb 2021 15:03:57 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.163.42.84])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Feb 2021 15:03:57 +0000 (GMT)
+Message-ID: <ab197aa9719b4218ab497b55f0bc78a0dadc83dd.camel@linux.ibm.com>
+Subject: Re: [PATCH v2] IMA: support for duplicate data measurement
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
-Message-ID: <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
-References: <20210217100816.28860-1-osalvador@suse.de>
- <20210217100816.28860-2-osalvador@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217100816.28860-2-osalvador@suse.de>
+Date:   Wed, 17 Feb 2021 10:03:55 -0500
+In-Reply-To: <20210217024649.23405-1-tusharsu@linux.microsoft.com>
+References: <20210217024649.23405-1-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-17_12:2021-02-16,2021-02-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ mlxlogscore=999 spamscore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ clxscore=1015 priorityscore=1501 phishscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102170113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-02-21 11:08:15, Oscar Salvador wrote:
-[...]
-> +static bool alloc_and_dissolve_huge_page(struct hstate *h, struct page *page)
-> +{
-> +	gfp_t gfp_mask = htlb_alloc_mask(h);
-> +	nodemask_t *nmask = &node_states[N_MEMORY];
-> +	struct page *new_page;
-> +	bool ret = false;
-> +	int nid;
-> +
-> +	spin_lock(&hugetlb_lock);
-> +	/*
-> +	 * Check one more time to make race-window smaller.
-> +	 */
-> +	if (!PageHuge(page)) {
-> +		/*
-> +		 * Dissolved from under our feet.
-> +		 */
-> +		spin_unlock(&hugetlb_lock);
-> +		return true;
-> +	}
+Hi Tushar,
 
-Is this really necessary? dissolve_free_huge_page will take care of this
-and the race windown you are covering is really tiny.
+The Subject line could be improved.  Perhaps something like - "IMA:
+support for duplicate measurement records"
 
-> +
-> +	nid = page_to_nid(page);
-> +	spin_unlock(&hugetlb_lock);
-> +
-> +	/*
-> +	 * Before dissolving the page, we need to allocate a new one,
-> +	 * so the pool remains stable.
-> +	 */
-> +	new_page = alloc_fresh_huge_page(h, gfp_mask, nid, nmask, NULL);
+On Tue, 2021-02-16 at 18:46 -0800, Tushar Sugandhi wrote:
+> IMA does not measure duplicate data since TPM extend is a very expensive
+> operation.  However, in some cases, the measurement of duplicate data
+> is necessary to accurately determine the current state of the system.
+> Eg, SELinux state changing from 'audit', to 'enforcing', and back to
+> 'audit' again.  In this example, currently, IMA will not measure the
+> last state change to 'audit'.  This limits the ability of attestation
+> services to accurately determine the current state of the measurements 
+> on the system.
 
-wrt. fallback to other zones, I haven't realized that the primary
-usecase is a form of memory offlining (from virt-mem). I am not yet sure
-what the proper behavior is in that case but if breaking hugetlb pools,
-similar to the normal hotplug operation, is viable then this needs a
-special mode. We do not want a random alloc_contig_range user to do the
-same. So for starter I would go with __GFP_THISNODE here.
+This patch description is written from your specific usecase
+perspective, but it impacts file and buffer data measurements as well,
+not only critical data measurements.  In all of these situations, with
+this patch a new measurement record is added/appended to the
+measurement list.  Please re-write the patch description making it more
+generic. 
 
-> +	if (new_page) {
-> +		/*
-> +		 * Ok, we got a new free hugepage to replace this one. Try to
-> +		 * dissolve the old page.
-> +		 */
-> +		if (!dissolve_free_huge_page(page)) {
-> +			ret = true;
-> +		} else if (dissolve_free_huge_page(new_page)) {
-> +			/*
-> +			 * Seems the old page could not be dissolved, so try to
-> +			 * dissolve the freshly allocated page. If that fails
-> +			 * too, let us count the new page as a surplus. Doing so
-> +			 * allows the pool to be re-balanced when pages are freed
-> +			 * instead of enqueued again.
-> +			 */
-> +			spin_lock(&hugetlb_lock);
-> +			h->surplus_huge_pages++;
-> +			h->surplus_huge_pages_node[nid]++;
-> +			spin_unlock(&hugetlb_lock);
-> +		}
-> +		/*
-> +		 * Free it into the hugepage allocator
-> +		 */
-> +		put_page(new_page);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +bool isolate_or_dissolve_huge_page(struct page *page)
-> +{
-> +	struct hstate *h = NULL;
-> +	struct page *head;
-> +	bool ret = false;
-> +
-> +	spin_lock(&hugetlb_lock);
-> +	if (PageHuge(page)) {
-> +		head = compound_head(page);
-> +		h = page_hstate(head);
-> +	}
-> +	spin_unlock(&hugetlb_lock);
-> +
-> +	if (!h)
-> +		/*
-> +		 * The page might have been dissolved from under our feet.
-> +		 * If that is the case, return success as if we dissolved it
-> +		 * ourselves.
-> +		 */
-> +		return true;
+For example, I would start with something like, "IMA does not include
+duplicate file, buffer or critical data measurement records ..."
 
-nit I would put the comment above the conditin for both cases. It reads
-more easily that way. At least without { }.
+thanks,
 
-> +
-> +	if (hstate_is_gigantic(h))
-> +		/*
-> +		 * Fence off gigantic pages as there is a cyclic dependency
-> +		 * between alloc_contig_range and them.
-> +		 */
-> +		return ret;
-> +
-> +	if(!page_count(head) && alloc_and_dissolve_huge_page(h, head))
-> +		ret = true;
-> +
-> +	return ret;
-> +}
-> +
->  struct page *alloc_huge_page(struct vm_area_struct *vma,
->  				    unsigned long addr, int avoid_reserve)
->  {
+Mimi
 
-Other than that I haven't noticed any surprises.
--- 
-Michal Hocko
-SUSE Labs
+> 
+> Update ima_add_template_entry() to support measurement of duplicate
+> data, driven by a Kconfig option - IMA_DISABLE_HTABLE.
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+
