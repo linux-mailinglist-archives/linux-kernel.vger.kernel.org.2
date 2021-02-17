@@ -2,122 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B971231E09F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C82131E0A6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:43:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbhBQUkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 15:40:16 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12424 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231372AbhBQUkM (ORCPT
+        id S234571AbhBQUnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 15:43:21 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59748 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231483AbhBQUnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:40:12 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11HKVZEm004928;
-        Wed, 17 Feb 2021 15:39:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Uv/VsbMkjDDcE/fG4/p2xFwjYLvP0biQL5L8n3jQGw4=;
- b=HDFEw+c8kIc6tB4lBKuV0qY/wJnRauBhZSEz2g3X8J7lBkcLhMMONwuX9adJyXYU17UL
- +Fb3JOI3PEInd1Mz1WB5I1MltUutGGwdE3g0oTr53gy53K+BrXqb6B98dPyMM+gHx3qV
- OhxZSCqUI/c3GqsAwYzUXTCQLlMZgSQsBtAqGikLeTCo22K8TSD2XHpg/f6g63FzLa4U
- LIK/use1dVwJTK0h/d31MofMhk2X6aR1K9vInbXmZTNcBEcj1EQH1IPcr6/KnwtQ/pAY
- tObyJVKkx2fi2xbmgJPNpZUHMwKpEU+rHC1ry+ExWvhnhhAS5xAVEi/kfb3E7caj7R9I 4Q== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36s9h7se06-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 15:39:27 -0500
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11HKcumW018411;
-        Wed, 17 Feb 2021 20:39:25 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma05fra.de.ibm.com with ESMTP id 36p6d8j3c9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 20:39:25 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11HKdBsF36438464
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 20:39:11 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F84042045;
-        Wed, 17 Feb 2021 20:39:23 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3511142041;
-        Wed, 17 Feb 2021 20:39:21 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.163.42.84])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Feb 2021 20:39:20 +0000 (GMT)
-Message-ID: <bb4356d779720b8fa9c342647132cfeec938c296.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] IMA: support for duplicate data measurement
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Wed, 17 Feb 2021 15:39:19 -0500
-In-Reply-To: <5236e03f-9be4-f7f3-ec6c-29f00c16dc18@linux.microsoft.com>
-References: <20210217024649.23405-1-tusharsu@linux.microsoft.com>
-         <ab197aa9719b4218ab497b55f0bc78a0dadc83dd.camel@linux.ibm.com>
-         <5236e03f-9be4-f7f3-ec6c-29f00c16dc18@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-17_16:2021-02-16,2021-02-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 spamscore=0 priorityscore=1501
- impostorscore=0 suspectscore=0 lowpriorityscore=0 clxscore=1015
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102170148
+        Wed, 17 Feb 2021 15:43:16 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id EC2C61F450C4
+Message-ID: <c10b0612d6d624c37750b16d611e3554dc41f151.camel@collabora.com>
+Subject: Re: [PATCH v1 11/18] media: hantro: Add helper function for
+ auxiliary buffers allocation
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Wed, 17 Feb 2021 17:42:21 -0300
+In-Reply-To: <20210217080306.157876-12-benjamin.gaignard@collabora.com>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+         <20210217080306.157876-12-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-17 at 10:53 -0800, Tushar Sugandhi wrote:
-> Thanks for the feedback Mimi.
-> Appreciate it.
+Hi Benjamin,
+
+On Wed, 2021-02-17 at 09:02 +0100, Benjamin Gaignard wrote:
+> Add helper functions to allocate and free auxiliary buffers.
+> These buffers aren't for frames but are needed by the hardware
+> to store scaling matrix, tiles size, border filters etc...
 > 
-> On 2021-02-17 7:03 a.m., Mimi Zohar wrote:
-> > Hi Tushar,
-> > 
-> > The Subject line could be improved.  Perhaps something like - "IMA:
-> > support for duplicate measurement records"
-> > 
-> Will do.
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> ---
+>  drivers/staging/media/hantro/hantro.h | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
 > 
-> > On Tue, 2021-02-16 at 18:46 -0800, Tushar Sugandhi wrote:
-> >> IMA does not measure duplicate data since TPM extend is a very expensive
-> >> operation.  However, in some cases, the measurement of duplicate data
-> >> is necessary to accurately determine the current state of the system.
-> >> Eg, SELinux state changing from 'audit', to 'enforcing', and back to
-> >> 'audit' again.  In this example, currently, IMA will not measure the
-> >> last state change to 'audit'.  This limits the ability of attestation
-> >> services to accurately determine the current state of the measurements
-> >> on the system.
-> > 
-> > This patch description is written from your specific usecase
-> > perspective, but it impacts file and buffer data measurements as well,
-> > not only critical data measurements.  In all of these situations, with
-> > this patch a new measurement record is added/appended to the
-> > measurement list.  Please re-write the patch description making it more
-> > generic.
-> > 
-> > For example, I would start with something like, "IMA does not include
-> > duplicate file, buffer or critical data measurement records ..."
-> > 
-> Agreed.
-> I will generalize the description further and send the v3 for review.
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index a9b80b2c9124..7f842edbc341 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -446,6 +446,30 @@ hantro_get_dec_buf(struct hantro_ctx *ctx, struct vb2_buffer *vb)
+>         return vb2_plane_vaddr(vb, 0);
+>  }
+>  
+> +static inline int
+> +hantro_aux_buf_alloc(struct hantro_dev *vpu,
+> +                    struct hantro_aux_buf *buf, size_t size)
+> +{
 
-It would be good to boot with the ima_policy=tcb policy with/without
-your patch and account for the different number of measurements.   Are
-all the differences related to duplicate measurements - original file
-hash -> new file hash -> original file hash - similar to what you
-described.
+Can you add convert the dma_alloc_ calls in the driver,
+and squash it in this patch?
 
-thanks,
+I.e. hantro_h264_dec_init, hantro_vp8_dec_init, etc.
 
-Mimi
+Thanks!
+Ezequiel
+
+> +       buf->cpu = dma_alloc_coherent(vpu->dev, size, &buf->dma, GFP_KERNEL);
+> +       if (!buf->cpu)
+> +               return -ENOMEM;
+> +
+> +       buf->size = size;
+> +       return 0;
+> +}
+> +
+> +static inline void
+> +hantro_aux_buf_free(struct hantro_dev *vpu,
+> +                   struct hantro_aux_buf *buf)
+> +{
+> +       if (buf->cpu)
+> +               dma_free_coherent(vpu->dev, buf->size, buf->cpu, buf->dma);
+> +
+> +       buf->cpu = NULL;
+> +       buf->dma = 0;
+> +       buf->size = 0;
+> +}
+> +
+>  void hantro_postproc_disable(struct hantro_ctx *ctx);
+>  void hantro_postproc_enable(struct hantro_ctx *ctx);
+>  void hantro_postproc_free(struct hantro_ctx *ctx);
+
 
