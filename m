@@ -2,132 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D3831D9C5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A30D31D9C9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232789AbhBQMv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:51:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhBQMvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:51:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BB6864D7F;
-        Wed, 17 Feb 2021 12:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613566272;
-        bh=3K4qxG5FxziY0VbjYqvHR9bFW2KNVRc8FRhAvzJqfbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=asLWbWxdyJgKGbMqamq7TNlwn0NaRzjzmz4QYmGVxmq8BmZX9kaZYlkS9iSrWPJcG
-         FfR5G2rfeCADNTpstSq5reFEN1lPj+xjeet+Ic1bSZuSaytPoi/hOqo1pIL9c0EAuo
-         KrAyI+a38OVVtt9csomAb3a9GES5xq4t2xSelCylBeTIveQPLO88cAqkAmfk2ip8Lf
-         4GzB1qtiZvwIxyrjJy1TzSyLL59mXS80MEm2MH4vUa5H2Zt7eIoaQJgd5NhoQtmt5a
-         ojWZCKx7CU0to9eGvdmHFcCwcYncFzM9QNyMoov5ojQf5ROMn6t/AF11CZ5+A5/Nf3
-         eLbReNamn+Edg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 6DECF40CD9; Wed, 17 Feb 2021 09:51:10 -0300 (-03)
-Date:   Wed, 17 Feb 2021 09:51:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Subject: Re: [PATCH v2] perf tools: Resolve symbols against debug file first
-Message-ID: <YC0RPsH83ppYFsBF@kernel.org>
-References: <20210217122125.26416-1-jslaby@suse.cz>
+        id S232434AbhBQM4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:56:10 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:47566 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhBQM4F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:56:05 -0500
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 308EB8C4;
+        Wed, 17 Feb 2021 13:55:22 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613566522;
+        bh=SZmom8e6Ukq+kensQZ86TKqC3oX7PjE2ZGFbW5sEnbI=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=l7KOgWSOyzPyUPo2F6t44T8fMqWskLMrWg+2CSXSwlDdyNYAJCkz1L6DbTUlbBapI
+         i/3mJJUYg6WJrp4HLNQmOQHHOlvA9VS1+9xvsPzi3qak9Ek1b4PNE2xarSe+MX4Gjo
+         GEPQOaDFPjbmctfKAWh6iGeuUW5AeymcP9TXvq08=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 01/16] media: i2c: rdacm20: Enable noise immunity
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-2-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <5691f68f-724d-9d6a-9ea8-1e017b305c66@ideasonboard.com>
+Date:   Wed, 17 Feb 2021 12:55:19 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217122125.26416-1-jslaby@suse.cz>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210216174146.106639-2-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Feb 17, 2021 at 01:21:25PM +0100, Jiri Slaby escreveu:
-> With LTO, there are symbols like these:
-> /usr/lib/debug/usr/lib64/libantlr4-runtime.so.4.8-4.8-1.4.x86_64.debug
->  10305: 0000000000955fa4     0 NOTYPE  LOCAL  DEFAULT   29 Predicate.cpp.2bc410e7
-> 
-> This comes from a runtime/debug split done by the standard way:
-> objcopy --only-keep-debug $runtime $debug
-> objcopy --add-gnu-debuglink=$debugfn -R .comment -R .GCC.command.line --strip-all $runtime
-> 
-> perf currently cannot resolve such symbols (relicts of LTO), as section
-> 29 exists only in the debug file (29 is .debug_info). And perf resolves
-> symbols only against runtime file. This results in all symbols from such
-> a library being unresolved:
->      0.38%  main2    libantlr4-runtime.so.4.8  [.] 0x00000000000671e0
-> 
-> So try resolving against the debug file first. And only if it fails (the
-> section has NOBITS set), try runtime file. We can do this, as "objcopy
-> --only-keep-debug" per documentation preserves all sections, but clears
-> data of some of them (the runtime ones) and marks them as NOBITS.
-> 
-> The correct result is now:
->      0.38%  main2    libantlr4-runtime.so.4.8  [.] antlr4::IntStream::~IntStream
-> 
-> Note that these LTO symbols are properly skipped anyway as they belong
-> neither to *text* nor to *data* (is_label && !elf_sec__filter(&shdr,
-> secstrs) is true).
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+Hi Jacopo,
 
-Thanks, applied.
+On 16/02/2021 17:41, Jacopo Mondi wrote:
+> Enable the noise immunity threshold at the end of the rdacm20
+> initialization routine.
+> 
+> The rdcam20 camera module has been so far tested with a startup
+> delay that allowed the embedded MCU to program the serializer. If
+> the initialization routine is run before the MCU programs the
+> serializer and the image sensor and their addresses gets changed
+> by the rdacm20 driver it is required to manually enable the noise
+> immunity threshold to make the communication on the control channel
+> more reliable.
+> 
 
-- Arnaldo
+Oh, this is interesting, ... booting up without the delays would be ...
+much nicer.
 
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 > ---
-> [v2] added a comment
+>  drivers/media/i2c/rdacm20.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 > 
->  tools/perf/util/symbol-elf.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-> index f3577f7d72fe..ecc05aa8399d 100644
-> --- a/tools/perf/util/symbol-elf.c
-> +++ b/tools/perf/util/symbol-elf.c
-> @@ -1226,12 +1226,26 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
->  		if (sym.st_shndx == SHN_ABS)
->  			continue;
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index 90eb73f0e6e9..f7fd5ae955d0 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -541,7 +541,13 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
 >  
-> -		sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-> +		sec = elf_getscn(syms_ss->elf, sym.st_shndx);
->  		if (!sec)
->  			goto out_elf_end;
+>  	dev_info(dev->dev, "Identified MAX9271 + OV10635 device\n");
 >  
->  		gelf_getshdr(sec, &shdr);
+> -	return 0;
+> +	/*
+> +	 * Set reverse channel high threshold to increase noise immunity.
+> +	 *
+> +	 * This should be compensated by increasing the reverse channel
+> +	 * amplitude on the remote deserializer side.
+> +	 */
+> +	return max9271_set_high_threshold(&dev->serializer, true);
+
+Does this work 'out of the box' ? I.e. if this patch is applied, I
+assume it is required to remove the regulator delays that I/we have in DT?
+
+Likewise, does that note mean this patch must also be accompanied by the
+update in max9286 somehow?
+
+I guess we can't keep 'test bisectability' with this very easily so it
+probably doesn't matter too much, the end result will be the interesting
+part.
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+
+
+>  }
 >  
-> +		/*
-> +		 * We have to fallback to runtime when syms' section header has
-> +		 * NOBITS set. NOBITS results in file offset (sh_offset) not
-> +		 * being incremented. So sh_offset used below has different
-> +		 * values for syms (invalid) and runtime (valid).
-> +		 */
-> +		if (shdr.sh_type == SHT_NOBITS) {
-> +			sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-> +			if (!sec)
-> +				goto out_elf_end;
-> +
-> +			gelf_getshdr(sec, &shdr);
-> +		}
-> +
->  		if (is_label && !elf_sec__filter(&shdr, secstrs))
->  			continue;
->  
-> -- 
-> 2.30.1
+>  static int rdacm20_probe(struct i2c_client *client)
 > 
 
--- 
-
-- Arnaldo
