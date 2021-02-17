@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2797C31D6CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:10:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C760631D6D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhBQJJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 04:09:45 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45650 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhBQJJk (ORCPT
+        id S232053AbhBQJLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 04:11:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231944AbhBQJLd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 04:09:40 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B9BC61C0BA3; Wed, 17 Feb 2021 10:08:57 +0100 (CET)
-Date:   Wed, 17 Feb 2021 10:08:54 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 022/104] kbuild: simplify GCC_PLUGINS enablement in
- dummy-tools/gcc
-Message-ID: <20210217090854.GA7693@amd>
-References: <20210215152719.459796636@linuxfoundation.org>
- <20210215152720.193592547@linuxfoundation.org>
+        Wed, 17 Feb 2021 04:11:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613553007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RFusShBhS4qAoH9QAhjf7bQvV8GQfYBBL88bdpAsQow=;
+        b=h0WXDLKYAmWqRHUPYd/t/CDP69M75DaDTPM6BmXFpyVGqiZZktdjEAJZzoBOZzdgXIhpRd
+        Jr5Q8HYSv7mS3JnYnF/KonWjtu2Ap23utDFJb4/4unIkF2G8BF41ddqFGZ9m03sA3vKxZT
+        LO9SLzi4CYKJWWFFbxJxVIDoekel0P4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-599-8jQz2_2HM-mUSQwRkBX7UA-1; Wed, 17 Feb 2021 04:10:03 -0500
+X-MC-Unique: 8jQz2_2HM-mUSQwRkBX7UA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8C3E81020C20;
+        Wed, 17 Feb 2021 09:10:01 +0000 (UTC)
+Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DF16660C62;
+        Wed, 17 Feb 2021 09:09:58 +0000 (UTC)
+Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
+To:     Eiichi Tsukata <eiichi.tsukata@nutanix.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, mcgrof@kernel.org, keescook@chromium.org,
+        yzaikin@google.com, akpm@linux-foundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Cc:     felipe.franciosi@nutanix.com
+References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <dc18e98e-2467-bb36-7f78-d7003d9aa5f9@redhat.com>
+Date:   Wed, 17 Feb 2021 10:09:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9amGYk9869ThD9tj"
-Content-Disposition: inline
-In-Reply-To: <20210215152720.193592547@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16.02.21 04:07, Eiichi Tsukata wrote:
+> Hugepages can be preallocated to avoid unpredictable allocation latency.
+> If we run into 4k page shortage, the kernel can trigger OOM even though
+> there were free hugepages. When OOM is triggered by user address page
+> fault handler, we can use oom notifier to free hugepages in user space
+> but if it's triggered by memory allocation for kernel, there is no way
+> to synchronously handle it in user space.
+> 
+> This patch introduces a new sysctl vm.sacrifice_hugepage_on_oom. If
+> enabled, it first tries to free a hugepage if available before invoking
+> the oom-killer. The default value is disabled not to change the current
+> behavior.
 
---9amGYk9869ThD9tj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In addition to the other comments, some more thoughts:
 
-Hi!
+What if you're low on kernel memory but you end up freeing huge pages 
+residing in ZONE_MOVABLE? IOW, this is not zone aware.
 
-> From: Masahiro Yamada <masahiroy@kernel.org>
->=20
-> [ Upstream commit f4c3b83b75b91c5059726cb91e3165cc01764ce7 ]
->=20
-> With commit 1e860048c53e ("gcc-plugins: simplify GCC plugin-dev
-> capability test") applied, this hunk can be way simplified because
-> now scripts/gcc-plugins/Kconfig only checks plugin-version.h
+-- 
+Thanks,
 
-AFAICT referenced commit 1e860048c53e ("gcc-plugins: simplify GCC
-plugin-dev capability test") is not present in 5.10-stable branch, so
-I believe this should not be applied, either.
+David / dhildenb
 
-Best regards,
-								Pavel
-							=09
-> +++ b/scripts/dummy-tools/gcc
-> @@ -75,16 +75,12 @@ if arg_contain -S "$@"; then
->  	fi
->  fi
-> =20
-> -# For scripts/gcc-plugin.sh
-> +# To set GCC_PLUGINS
->  if arg_contain -print-file-name=3Dplugin "$@"; then
->  	plugin_dir=3D$(mktemp -d)
-> =20
-> -	sed -n 's/.*#include "\(.*\)"/\1/p' $(dirname $0)/../gcc-plugins/gcc-co=
-mmon.h |
-> -	while read header
-> -	do
-> -		mkdir -p $plugin_dir/include/$(dirname $header)
-> -		touch $plugin_dir/include/$header
-> -	done
-> +	mkdir -p $plugin_dir/include
-> +	touch $plugin_dir/include/plugin-version.h
-> =20
->  	echo $plugin_dir
->  	exit 0
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---9amGYk9869ThD9tj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAs3SUACgkQMOfwapXb+vKSpACfYY4bl1SC7VVzI3PuPxkKxAxx
-2FcAn3h9w9eXu7sX5UBeVS0NfQsJTMw0
-=Ue8t
------END PGP SIGNATURE-----
-
---9amGYk9869ThD9tj--
