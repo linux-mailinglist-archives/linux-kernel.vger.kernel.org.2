@@ -2,181 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2604831D60F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E810D31D652
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:11:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhBQIDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 03:03:54 -0500
-Received: from mga07.intel.com ([134.134.136.100]:8720 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231673AbhBQIDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 03:03:45 -0500
-IronPort-SDR: 1GWvZuOMRLcbHYgAwTaEb8XBVU2ggi4ToR5KKORdj0guUbPvVlvFflmsKneXGC3OQ3MTB3r0ln
- dGcF6vn9pewg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="247201990"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="247201990"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 00:03:03 -0800
-IronPort-SDR: UKqGDNe3ApTc4vL9NDJJ2dXUkrXizsRjRUhmn+4+Zr1HRzoyiXtKzGvT6kS6z01wa8jMxRIjfs
- C8yAnitX75/Q==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="439270368"
-Received: from ideak-desk.fi.intel.com ([10.237.68.141])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 00:03:00 -0800
-Date:   Wed, 17 Feb 2021 10:02:57 +0200
-From:   Imre Deak <imre.deak@intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     intel-gfx@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        Matt Roper <matthew.d.roper@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] drm/i915/gen9bc: Handle TGP PCH during
- suspend/resume
-Message-ID: <20210217080257.GB443835@ideak-desk.fi.intel.com>
-Reply-To: imre.deak@intel.com
-References: <20210217025337.1929015-1-lyude@redhat.com>
+        id S231946AbhBQIJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 03:09:49 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:53152 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231793AbhBQIEo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 03:04:44 -0500
+Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:fd6e:12cd:95d7:3350])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7382F1F4507D;
+        Wed, 17 Feb 2021 08:03:59 +0000 (GMT)
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v1 09/18] media: hantro: move hantro_needs_postproc function
+Date:   Wed, 17 Feb 2021 09:02:57 +0100
+Message-Id: <20210217080306.157876-10-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217025337.1929015-1-lyude@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 09:53:36PM -0500, Lyude Paul wrote:
-> From: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> 
-> For Legacy S3 suspend/resume GEN9 BC needs to enable and
-> setup TGP PCH.
-> 
-> v2:
-> * Move Wa_14010685332 into it's own function - vsyrjala
-> * Add TODO comment about figuring out if we can move this workaround - imre
-> v3:
-> * Rename cnp_irq_post_reset() to cnp_display_clock_wa()
-> * Add TODO item mentioning we need to clarify which platforms this
->   workaround applies to
-> * Just use ibx_irq_reset() in gen8_irq_reset(). This code should be
->   functionally equivalent on gen9 bc to the code v2 added
-> * Drop icp_hpd_irq_setup() call in spt_hpd_irq_setup(), this looks to be
->   more or less identical to spt_hpd_irq_setup() minus additionally enabling
->   one port. Will update i915 to use icp_hpd_irq_setup() for ICP in a
->   separate patch.
-> 
-> Cc: Matt Roper <matthew.d.roper@intel.com>
-> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> ---
->  drivers/gpu/drm/i915/i915_irq.c | 52 +++++++++++++++++++++------------
->  1 file changed, 33 insertions(+), 19 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/i915_irq.c b/drivers/gpu/drm/i915/i915_irq.c
-> index 98145a7f28a4..f86b147f588f 100644
-> --- a/drivers/gpu/drm/i915/i915_irq.c
-> +++ b/drivers/gpu/drm/i915/i915_irq.c
-> @@ -3040,6 +3040,24 @@ static void valleyview_irq_reset(struct drm_i915_private *dev_priv)
->  	spin_unlock_irq(&dev_priv->irq_lock);
->  }
->  
-> +static void cnp_display_clock_wa(struct drm_i915_private *dev_priv)
-> +{
-> +	struct intel_uncore *uncore = &dev_priv->uncore;
-> +
-> +	/*
-> +	 * Wa_14010685332:icl+
+hantro_needs_postproc function becoming to much complex to
+stray inline in .h file move it to .c file.
 
-For now let's keep this matching the code:
-	   Wa_14010685332:cnp/cmp,tgp,adp
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+---
+ drivers/staging/media/hantro/hantro.h          |  8 ++------
+ drivers/staging/media/hantro/hantro_postproc.c | 17 +++++++++++++++++
+ 2 files changed, 19 insertions(+), 6 deletions(-)
 
-> +	 * TODO: Clarify which platforms this applies to
-> +	 * TODO: Figure out if this workaround can be applied in the s0ix suspend/resume handlers as
-> +	 * on earlier platforms and whether the workaround is also needed for runtime suspend/resume
-> +	 */
-> +	if (INTEL_PCH_TYPE(dev_priv) == PCH_CNP ||
-> +	    (INTEL_PCH_TYPE(dev_priv) >= PCH_TGP && INTEL_PCH_TYPE(dev_priv) < PCH_DG1)) {
-> +		intel_uncore_rmw(uncore, SOUTH_CHICKEN1, SBCLK_RUN_REFCLK_DIS,
-> +				 SBCLK_RUN_REFCLK_DIS);
-> +		intel_uncore_rmw(uncore, SOUTH_CHICKEN1, SBCLK_RUN_REFCLK_DIS, 0);
-> +	}
-> +}
-> +
->  static void gen8_irq_reset(struct drm_i915_private *dev_priv)
->  {
->  	struct intel_uncore *uncore = &dev_priv->uncore;
-> @@ -3061,8 +3079,9 @@ static void gen8_irq_reset(struct drm_i915_private *dev_priv)
->  	GEN3_IRQ_RESET(uncore, GEN8_DE_MISC_);
->  	GEN3_IRQ_RESET(uncore, GEN8_PCU_);
->  
-> -	if (HAS_PCH_SPLIT(dev_priv))
-> -		ibx_irq_reset(dev_priv);
-> +	ibx_irq_reset(dev_priv);
+diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+index 8459643657ab..2523c0d010df 100644
+--- a/drivers/staging/media/hantro/hantro.h
++++ b/drivers/staging/media/hantro/hantro.h
+@@ -419,12 +419,8 @@ hantro_get_dst_buf(struct hantro_ctx *ctx)
+ 	return v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+ }
+ 
+-static inline bool
+-hantro_needs_postproc(const struct hantro_ctx *ctx,
+-		      const struct hantro_fmt *fmt)
+-{
+-	return !ctx->is_encoder && fmt->fourcc != V4L2_PIX_FMT_NV12;
+-}
++bool hantro_needs_postproc(const struct hantro_ctx *ctx,
++			   const struct hantro_fmt *fmt);
+ 
+ static inline dma_addr_t
+ hantro_get_dec_buf_addr(struct hantro_ctx *ctx, struct vb2_buffer *vb)
+diff --git a/drivers/staging/media/hantro/hantro_postproc.c b/drivers/staging/media/hantro/hantro_postproc.c
+index 6d2a8f2a8f0b..050880f720d6 100644
+--- a/drivers/staging/media/hantro/hantro_postproc.c
++++ b/drivers/staging/media/hantro/hantro_postproc.c
+@@ -50,6 +50,23 @@ const struct hantro_postproc_regs hantro_g1_postproc_regs = {
+ 	.display_width = {G1_REG_PP_DISPLAY_WIDTH, 0, 0xfff},
+ };
+ 
++bool hantro_needs_postproc(const struct hantro_ctx *ctx,
++			   const struct hantro_fmt *fmt)
++{
++	struct hantro_dev *vpu = ctx->dev;
++
++	if (ctx->is_encoder)
++		return false;
++
++	if (vpu->core_hw_dec_rev == HANTRO_G1_REV)
++		return fmt->fourcc != V4L2_PIX_FMT_NV12;
++
++	if (vpu->core_hw_dec_rev == HANTRO_G2_REV)
++		return false;
++
++	return false;
++}
++
+ void hantro_postproc_enable(struct hantro_ctx *ctx)
+ {
+ 	struct hantro_dev *vpu = ctx->dev;
+-- 
+2.25.1
 
-The above shouldn't be changed to account for !PCH platforms as well.
-
-> +
-> +	cnp_display_clock_wa(dev_priv);
->  }
->  
->  static void gen11_display_irq_reset(struct drm_i915_private *dev_priv)
-> @@ -3104,15 +3123,7 @@ static void gen11_display_irq_reset(struct drm_i915_private *dev_priv)
->  	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
->  		GEN3_IRQ_RESET(uncore, SDE);
->  
-> -	/* Wa_14010685332:cnp/cmp,tgp,adp */
-> -	if (INTEL_PCH_TYPE(dev_priv) == PCH_CNP ||
-> -	    (INTEL_PCH_TYPE(dev_priv) >= PCH_TGP &&
-> -	     INTEL_PCH_TYPE(dev_priv) < PCH_DG1)) {
-> -		intel_uncore_rmw(uncore, SOUTH_CHICKEN1,
-> -				 SBCLK_RUN_REFCLK_DIS, SBCLK_RUN_REFCLK_DIS);
-> -		intel_uncore_rmw(uncore, SOUTH_CHICKEN1,
-> -				 SBCLK_RUN_REFCLK_DIS, 0);
-> -	}
-> +	cnp_display_clock_wa(dev_priv);
->  }
->  
->  static void gen11_irq_reset(struct drm_i915_private *dev_priv)
-> @@ -3764,9 +3775,19 @@ static void gen8_de_irq_postinstall(struct drm_i915_private *dev_priv)
->  	}
->  }
->  
-> +static void icp_irq_postinstall(struct drm_i915_private *dev_priv)
-> +{
-> +	struct intel_uncore *uncore = &dev_priv->uncore;
-> +	u32 mask = SDE_GMBUS_ICP;
-> +
-> +	GEN3_IRQ_INIT(uncore, SDE, ~mask, 0xffffffff);
-> +}
-> +
->  static void gen8_irq_postinstall(struct drm_i915_private *dev_priv)
->  {
-> -	if (HAS_PCH_SPLIT(dev_priv))
-> +	if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
-> +		icp_irq_postinstall(dev_priv);
-> +	else if (HAS_PCH_SPLIT(dev_priv))
->  		ibx_irq_postinstall(dev_priv);
->  
->  	gen8_gt_irq_postinstall(&dev_priv->gt);
-> @@ -3775,13 +3796,6 @@ static void gen8_irq_postinstall(struct drm_i915_private *dev_priv)
->  	gen8_master_intr_enable(dev_priv->uncore.regs);
->  }
->  
-> -static void icp_irq_postinstall(struct drm_i915_private *dev_priv)
-> -{
-> -	struct intel_uncore *uncore = &dev_priv->uncore;
-> -	u32 mask = SDE_GMBUS_ICP;
-> -
-> -	GEN3_IRQ_INIT(uncore, SDE, ~mask, 0xffffffff);
-> -}
->  
->  static void gen11_irq_postinstall(struct drm_i915_private *dev_priv)
->  {
-> -- 
-> 2.29.2
-> 
