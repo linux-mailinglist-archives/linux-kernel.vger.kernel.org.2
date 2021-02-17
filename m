@@ -2,110 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3A931D953
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:24:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C20831D955
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232041AbhBQMWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:22:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54022 "EHLO mx2.suse.de"
+        id S232455AbhBQMXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:23:03 -0500
+Received: from foss.arm.com ([217.140.110.172]:57836 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231336AbhBQMWI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:22:08 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8BF9FB96C;
-        Wed, 17 Feb 2021 12:21:26 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     jolsa@redhat.com
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Subject: [PATCH v2] perf tools: Resolve symbols against debug file first
-Date:   Wed, 17 Feb 2021 13:21:25 +0100
-Message-Id: <20210217122125.26416-1-jslaby@suse.cz>
-X-Mailer: git-send-email 2.30.1
+        id S232385AbhBQMWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:22:53 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 246671042;
+        Wed, 17 Feb 2021 04:22:07 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.46.232])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 630103F694;
+        Wed, 17 Feb 2021 04:22:03 -0800 (PST)
+Date:   Wed, 17 Feb 2021 12:22:00 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/25] arm64: Always keep DAIF.[IF] in sync
+Message-ID: <20210217122200.GC5556@C02TD0UTHF1T.local>
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-9-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215121713.57687-9-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With LTO, there are symbols like these:
-/usr/lib/debug/usr/lib64/libantlr4-runtime.so.4.8-4.8-1.4.x86_64.debug
- 10305: 0000000000955fa4     0 NOTYPE  LOCAL  DEFAULT   29 Predicate.cpp.2bc410e7
+Hi Hector,
 
-This comes from a runtime/debug split done by the standard way:
-objcopy --only-keep-debug $runtime $debug
-objcopy --add-gnu-debuglink=$debugfn -R .comment -R .GCC.command.line --strip-all $runtime
+On Mon, Feb 15, 2021 at 09:16:56PM +0900, Hector Martin wrote:
+> Apple SoCs (A11 and newer) have some interrupt sources hardwired to the
+> FIQ line. We implement support for this by simply treating IRQs and FIQs
+> the same way in the interrupt vectors.
+> 
+> To support these systems, the FIQ mask bit needs to be kept in sync with
+> the IRQ mask bit, so both kinds of exceptions are masked together. No
+> other platforms should be delivering FIQ exceptions right now, and we
+> already unmask FIQ in normal process context, so this should not have an
+> effect on other systems - if spurious FIQs were arriving, they would
+> already panic the kernel.
 
-perf currently cannot resolve such symbols (relicts of LTO), as section
-29 exists only in the debug file (29 is .debug_info). And perf resolves
-symbols only against runtime file. This results in all symbols from such
-a library being unresolved:
-     0.38%  main2    libantlr4-runtime.so.4.8  [.] 0x00000000000671e0
+Keeping these in sync sounds fine to me, FWIW.
 
-So try resolving against the debug file first. And only if it fails (the
-section has NOBITS set), try runtime file. We can do this, as "objcopy
---only-keep-debug" per documentation preserves all sections, but clears
-data of some of them (the runtime ones) and marks them as NOBITS.
+> Root irqchip drivers can discriminate between IRQs and FIQs by checking
+> the ISR_EL1 system register.
 
-The correct result is now:
-     0.38%  main2    libantlr4-runtime.so.4.8  [.] antlr4::IntStream::~IntStream
+I think we can remove this note for now. If we go with seperate handlers
+this won't be necessary, and if not this would be better placed on a
+commit adding the FIQ handling capability.
 
-Note that these LTO symbols are properly skipped anyway as they belong
-neither to *text* nor to *data* (is_label && !elf_sec__filter(&shdr,
-secstrs) is true).
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  arch/arm64/include/asm/assembler.h |  6 +++---
+>  arch/arm64/include/asm/daifflags.h |  4 ++--
+>  arch/arm64/include/asm/irqflags.h  | 19 +++++++++++--------
+>  arch/arm64/kernel/entry.S          |  6 +++---
+>  4 files changed, 19 insertions(+), 16 deletions(-)
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
----
-[v2] added a comment
+Judging by `git grep -Wi daif -- arch/arm64`, with this patch applied,
+we'll also need fixups in:
 
- tools/perf/util/symbol-elf.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+* gic_arch_enable_irqs() in arch/arm64/include/asm/arch_gicv3.h
+* save_and_disable_irq() in arch/arm64/include/asm/assembler.h (noted below)
+* local_daif_save_flags() in arch/arm64/include/asm/daifflags.h
+  (the fake DAIF should have F set too)
+* __cpu_do_idle_irqprio() in arch/arm64/kernel/process.c
 
-diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
-index f3577f7d72fe..ecc05aa8399d 100644
---- a/tools/perf/util/symbol-elf.c
-+++ b/tools/perf/util/symbol-elf.c
-@@ -1226,12 +1226,26 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
- 		if (sym.st_shndx == SHN_ABS)
- 			continue;
- 
--		sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-+		sec = elf_getscn(syms_ss->elf, sym.st_shndx);
- 		if (!sec)
- 			goto out_elf_end;
- 
- 		gelf_getshdr(sec, &shdr);
- 
-+		/*
-+		 * We have to fallback to runtime when syms' section header has
-+		 * NOBITS set. NOBITS results in file offset (sh_offset) not
-+		 * being incremented. So sh_offset used below has different
-+		 * values for syms (invalid) and runtime (valid).
-+		 */
-+		if (shdr.sh_type == SHT_NOBITS) {
-+			sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
-+			if (!sec)
-+				goto out_elf_end;
-+
-+			gelf_getshdr(sec, &shdr);
-+		}
-+
- 		if (is_label && !elf_sec__filter(&shdr, secstrs))
- 			continue;
- 
--- 
-2.30.1
+> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> index bf125c591116..ac4c823bf2b6 100644
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -40,9 +40,9 @@
+>  	msr	daif, \flags
+>  	.endm
+>  
+> -	/* IRQ is the lowest priority flag, unconditionally unmask the rest. */
+> -	.macro enable_da_f
+> -	msr	daifclr, #(8 | 4 | 1)
+> +	/* IRQ/FIQ are the lowest priority flags, unconditionally unmask the rest. */
+> +	.macro enable_da
+> +	msr	daifclr, #(8 | 4)
+>  	.endm
 
+I think save_and_diable_irq below needs to be updated too, since it
+only sets DAIF.I and leaves DAIF.F as-is.
+
+[...]
+
+> diff --git a/arch/arm64/include/asm/irqflags.h b/arch/arm64/include/asm/irqflags.h
+> index ff328e5bbb75..125201dced5f 100644
+> --- a/arch/arm64/include/asm/irqflags.h
+> +++ b/arch/arm64/include/asm/irqflags.h
+> @@ -12,15 +12,18 @@
+>  
+>  /*
+>   * Aarch64 has flags for masking: Debug, Asynchronous (serror), Interrupts and
+> - * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'dai'
+> + * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'daif'
+>   * order:
+>   * Masking debug exceptions causes all other exceptions to be masked too/
+> - * Masking SError masks irq, but not debug exceptions. Masking irqs has no
+> - * side effects for other flags. Keeping to this order makes it easier for
+> - * entry.S to know which exceptions should be unmasked.
+> + * Masking SError masks IRQ/FIQ, but not debug exceptions. IRQ and FIQ are
+> + * always masked and unmasked together, and have no side effects for other
+> + * flags. Keeping to this order makes it easier for entry.S to know which
+> + * exceptions should be unmasked.
+>   *
+
+This sounds good.
+
+> - * FIQ is never expected, but we mask it when we disable debug exceptions, and
+> - * unmask it at all other times.
+> + * FIQ is never expected on most platforms, but we keep it synchronized
+> + * with the IRQ mask status. On platforms that do not expect FIQ, that vector
+> + * triggers a kernel panic. On platforms that do, the FIQ vector is unified
+> + * with the IRQ vector.
+>   */
+
+Can we please delete this bit, though? Now that we say IRQ and FIQ are
+masked/unmasked together, I don't think the rest is necessary to
+understand the masking logic, and it's one less thing to keep in sync
+with changes to the entry code.
+
+Otherwise this looks good to me.
+
+Thanks,
+Mark.
