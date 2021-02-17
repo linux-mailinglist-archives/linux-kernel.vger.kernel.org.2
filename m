@@ -2,148 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85BB31DBE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3551D31DBE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbhBQPBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233728AbhBQPAt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:00:49 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B8FC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:00:08 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id j19so21903397lfr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:00:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rh+5DVV2EZcIZwJ1XuaHOxn/tnJr/iJkF+N040Yn/HY=;
-        b=M2F9g6UwE5JX/c5d+1RDp2TjHOgK94HobVq5+b+33U+hA6d1v8leYWM7ITPeSwqBw6
-         wj51n/YUEQM3/eGuAYvT8/qAWMZii7Yik+bLrs7GvTwFJbwFE7GcBC+6qfNhU6/0dLq1
-         hwzHf2OkLBmUdv4bHUJtKup9MPpD8HuAf/ndec9RzEXUpHfdvo40swjWsFNjwpF2C/zx
-         7SAEyvvlO/NLKOwoSu+ffhOP5o2t08+/NWa3VXVBAo5i8vzoO9/FpPeZEAO673Zid6Dv
-         9XaU04B0WRvQfG1NvhQ9l4NcG8K+XCRgrEqcgSEhauKVEuPYoZYrp3lI07JNWy4mjrNi
-         NPlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rh+5DVV2EZcIZwJ1XuaHOxn/tnJr/iJkF+N040Yn/HY=;
-        b=s2hLlxFJshrbc1XW3OukcAoX6Z8BdJIdp1UMhiEWeSA6VoTvLkSESh9QzbQBpRTzj1
-         Cs6kGI2/X7FPhmOE5SOP7SSXG5hQS/solDCuQUdh2FVT4u2Kxggy2IrAqKhVXHjVlS2m
-         BI+m3RaiiiPQApp9/imfedq+wphnBpXJUp7Pn/8i+DtAIsleZPp7qSZ2dxEu5maZUbDg
-         OBEFw8G4TGTAyy9hbwzGCGOHeWTs86+ufpP7PkPqbBpSAMZH4j0QDrkX9Nim9SVFOsjS
-         KM8A+EK3zZMQPZnKIMhWiPCUUyhSOCVVXcD7Uu5jNSUcDrL0y4jMaXj60VmPZ+Vl1bWT
-         HK/Q==
-X-Gm-Message-State: AOAM5316iZNJmG/qNO/vepDnBmh3xPHa9fk4QqmVtT6uP5LoFk+3tqzs
-        hf3Vb/Wcf6eZD1mm0rNvxNYUf/bsL9yioIRYWadvEw==
-X-Google-Smtp-Source: ABdhPJxC3vk206lSTN9W66FKVHDRC0E1DkhIxFEY6OsGgcDpuUBwmLqZwlDnx1hY/9TIQakOxaCd4H9IKdKLhqkPPus=
-X-Received: by 2002:a05:6512:10c8:: with SMTP id k8mr15123602lfg.299.1613574006710;
- Wed, 17 Feb 2021 07:00:06 -0800 (PST)
+        id S233741AbhBQPCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:02:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40642 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233743AbhBQPBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 10:01:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613574018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zNdiGqAoz3ZwhvlUdJkNCXpe7aX8eZygEhCr3tOEEWw=;
+        b=eJ64cNAG041bxJF2KFRBBXXn727Q2vCB/jsaissiJL9tVdOl0408WcejPxq1wISIB11yAh
+        3bcxpmrBpQw1RZhQoYnHQMY1Ry9pO6CUsa8UvPvyYli1ScXKJiU36gScBtZlW/SG6/cc8R
+        H1IurCthlR+0+3ClJ0ZsyFhyLONGLnI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9AF0EB8FE;
+        Wed, 17 Feb 2021 15:00:18 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 16:00:11 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
 MIME-Version: 1.0
-References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
- <YCt+cVvWPbWvt2rG@dhcp22.suse.cz> <b821f4de-3260-f6e2-469f-65ccfa699bb7@google.com>
-In-Reply-To: <b821f4de-3260-f6e2-469f-65ccfa699bb7@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 17 Feb 2021 06:59:55 -0800
-Message-ID: <CALvZod6M5L-NJMx5R9ySnGJG5Fe9G9DagWJzt2D7iNuRiaE96g@mail.gmail.com>
-Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
-To:     David Rientjes <rientjes@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>, mcgrof@kernel.org,
-        Kees Cook <keescook@chromium.org>, yzaikin@google.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        felipe.franciosi@nutanix.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217100816.28860-2-osalvador@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 5:25 PM David Rientjes <rientjes@google.com> wrote:
->
-> On Tue, 16 Feb 2021, Michal Hocko wrote:
->
-> > > Hugepages can be preallocated to avoid unpredictable allocation latency.
-> > > If we run into 4k page shortage, the kernel can trigger OOM even though
-> > > there were free hugepages. When OOM is triggered by user address page
-> > > fault handler, we can use oom notifier to free hugepages in user space
-> > > but if it's triggered by memory allocation for kernel, there is no way
-> > > to synchronously handle it in user space.
-> >
-> > Can you expand some more on what kind of problem do you see?
-> > Hugetlb pages are, by definition, a preallocated, unreclaimable and
-> > admin controlled pool of pages.
->
-> Small nit: true of non-surplus hugetlb pages.
->
-> > Under those conditions it is expected
-> > and required that the sizing would be done very carefully. Why is that a
-> > problem in your particular setup/scenario?
-> >
-> > If the sizing is really done properly and then a random process can
-> > trigger OOM then this can lead to malfunctioning of those workloads
-> > which do depend on hugetlb pool, right? So isn't this a kinda DoS
-> > scenario?
-> >
-> > > This patch introduces a new sysctl vm.sacrifice_hugepage_on_oom. If
-> > > enabled, it first tries to free a hugepage if available before invoking
-> > > the oom-killer. The default value is disabled not to change the current
-> > > behavior.
-> >
-> > Why is this interface not hugepage size aware? It is quite different to
-> > release a GB huge page or 2MB one. Or is it expected to release the
-> > smallest one? To the implementation...
-> >
-> > [...]
-> > > +static int sacrifice_hugepage(void)
-> > > +{
-> > > +   int ret;
-> > > +
-> > > +   spin_lock(&hugetlb_lock);
-> > > +   ret = free_pool_huge_page(&default_hstate, &node_states[N_MEMORY], 0);
-> >
-> > ... no it is going to release the default huge page. This will be 2MB in
-> > most cases but this is not given.
-> >
-> > Unless I am mistaken this will free up also reserved hugetlb pages. This
-> > would mean that a page fault would SIGBUS which is very likely not
-> > something we want to do right? You also want to use oom nodemask rather
-> > than a full one.
-> >
-> > Overall, I am not really happy about this feature even when above is
-> > fixed, but let's hear more the actual problem first.
->
-> Shouldn't this behavior be possible as an oomd plugin instead, perhaps
-> triggered by psi?  I'm not sure if oomd is intended only to kill something
-> (oomkilld? lol) or if it can be made to do sysadmin level behavior, such
-> as shrinking the hugetlb pool, to solve the oom condition.
+On Wed 17-02-21 11:08:15, Oscar Salvador wrote:
+[...]
+> +static bool alloc_and_dissolve_huge_page(struct hstate *h, struct page *page)
+> +{
+> +	gfp_t gfp_mask = htlb_alloc_mask(h);
+> +	nodemask_t *nmask = &node_states[N_MEMORY];
+> +	struct page *new_page;
+> +	bool ret = false;
+> +	int nid;
+> +
+> +	spin_lock(&hugetlb_lock);
+> +	/*
+> +	 * Check one more time to make race-window smaller.
+> +	 */
+> +	if (!PageHuge(page)) {
+> +		/*
+> +		 * Dissolved from under our feet.
+> +		 */
+> +		spin_unlock(&hugetlb_lock);
+> +		return true;
+> +	}
 
-The senpai plugin of oomd actually is a proactive reclaimer, so oomd
-is being used for more than oom-killing.
+Is this really necessary? dissolve_free_huge_page will take care of this
+and the race windown you are covering is really tiny.
 
->
-> If so, it seems like we want to do this at the absolute last minute.  In
-> other words, reclaim has failed to free memory by other means so we would
-> like to shrink the hugetlb pool.  (It's the reason why it's implemented as
-> a predecessor to oom as opposed to part of reclaim in general.)
->
-> Do we have the ability to suppress the oom killer until oomd has a chance
-> to react in this scenario?
+> +
+> +	nid = page_to_nid(page);
+> +	spin_unlock(&hugetlb_lock);
+> +
+> +	/*
+> +	 * Before dissolving the page, we need to allocate a new one,
+> +	 * so the pool remains stable.
+> +	 */
+> +	new_page = alloc_fresh_huge_page(h, gfp_mask, nid, nmask, NULL);
 
-There is no explicit knob but there are indirect ways to delay the
-kernel oom killer. In the presence of reclaimable memory the kernel is
-very conservative to trigger the oom-kill. I think the way Facebook is
-achieving this in oomd is by using swap to have good enough
-reclaimable memory and then using memory.swap.high to throttle the
-workload's allocation rates which will increase the PSI as well. Since
-oomd pools PSI, it will be able to react before the kernel oom-killer.
+wrt. fallback to other zones, I haven't realized that the primary
+usecase is a form of memory offlining (from virt-mem). I am not yet sure
+what the proper behavior is in that case but if breaking hugetlb pools,
+similar to the normal hotplug operation, is viable then this needs a
+special mode. We do not want a random alloc_contig_range user to do the
+same. So for starter I would go with __GFP_THISNODE here.
+
+> +	if (new_page) {
+> +		/*
+> +		 * Ok, we got a new free hugepage to replace this one. Try to
+> +		 * dissolve the old page.
+> +		 */
+> +		if (!dissolve_free_huge_page(page)) {
+> +			ret = true;
+> +		} else if (dissolve_free_huge_page(new_page)) {
+> +			/*
+> +			 * Seems the old page could not be dissolved, so try to
+> +			 * dissolve the freshly allocated page. If that fails
+> +			 * too, let us count the new page as a surplus. Doing so
+> +			 * allows the pool to be re-balanced when pages are freed
+> +			 * instead of enqueued again.
+> +			 */
+> +			spin_lock(&hugetlb_lock);
+> +			h->surplus_huge_pages++;
+> +			h->surplus_huge_pages_node[nid]++;
+> +			spin_unlock(&hugetlb_lock);
+> +		}
+> +		/*
+> +		 * Free it into the hugepage allocator
+> +		 */
+> +		put_page(new_page);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +bool isolate_or_dissolve_huge_page(struct page *page)
+> +{
+> +	struct hstate *h = NULL;
+> +	struct page *head;
+> +	bool ret = false;
+> +
+> +	spin_lock(&hugetlb_lock);
+> +	if (PageHuge(page)) {
+> +		head = compound_head(page);
+> +		h = page_hstate(head);
+> +	}
+> +	spin_unlock(&hugetlb_lock);
+> +
+> +	if (!h)
+> +		/*
+> +		 * The page might have been dissolved from under our feet.
+> +		 * If that is the case, return success as if we dissolved it
+> +		 * ourselves.
+> +		 */
+> +		return true;
+
+nit I would put the comment above the conditin for both cases. It reads
+more easily that way. At least without { }.
+
+> +
+> +	if (hstate_is_gigantic(h))
+> +		/*
+> +		 * Fence off gigantic pages as there is a cyclic dependency
+> +		 * between alloc_contig_range and them.
+> +		 */
+> +		return ret;
+> +
+> +	if(!page_count(head) && alloc_and_dissolve_huge_page(h, head))
+> +		ret = true;
+> +
+> +	return ret;
+> +}
+> +
+>  struct page *alloc_huge_page(struct vm_area_struct *vma,
+>  				    unsigned long addr, int avoid_reserve)
+>  {
+
+Other than that I haven't noticed any surprises.
+-- 
+Michal Hocko
+SUSE Labs
