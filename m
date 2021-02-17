@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86D031D58D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B711F31D58F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:53:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbhBQGwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 01:52:02 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:21793 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231629AbhBQGuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:50:25 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613544599; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=iVPlDtA3cYmRcNPsiuCDEl0x5PWDq4z0g6exuU4Nous=; b=NpdVSLH5UHjLsMyCb6j8m3iyT4j9chq746p5PvMy05m9x7VWDDxWlwOXJrBK09A1vTWhTISG
- kuRRql9kp75IPcaJm9fMUr6iiTAFSqkmF8yitBo9+imQJ5c74WSmaExpACTOLV0A4lSEZzWm
- LIVkOIlUK10H4X1QMwk5ornWAq0=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 602cbc7806bddda9df676371 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 06:49:28
- GMT
-Sender: schowdhu=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 49EE3C433C6; Wed, 17 Feb 2021 06:49:27 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-525.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: schowdhu)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9E2CAC433ED;
-        Wed, 17 Feb 2021 06:49:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9E2CAC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=schowdhu@codeaurora.org
-From:   Souradeep Chowdhury <schowdhu@codeaurora.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Souradeep Chowdhury <schowdhu@codeaurora.org>
-Subject: [PATCH V0 6/6] MAINTAINERS:Added the entry for DCC(Data Capture and Compare) driver support
-Date:   Wed, 17 Feb 2021 12:18:27 +0530
-Message-Id: <051dbb5f446de9b89af2a6b4c6e19673d32cca6f.1613541226.git.schowdhu@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1613541226.git.schowdhu@codeaurora.org>
-References: <cover.1613541226.git.schowdhu@codeaurora.org>
-In-Reply-To: <cover.1613541226.git.schowdhu@codeaurora.org>
-References: <cover.1613541226.git.schowdhu@codeaurora.org>
+        id S231661AbhBQGwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:52:34 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3373 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231589AbhBQGwN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 01:52:13 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602cbcf10000>; Tue, 16 Feb 2021 22:51:29 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 17 Feb 2021 06:51:27 +0000
+Date:   Wed, 17 Feb 2021 08:51:23 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Si-Wei Liu <si-wei.liu@oracle.com>
+CC:     Jason Wang <jasowang@redhat.com>, <mst@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lulu@redhat.com>
+Subject: Re: [PATCH v1] vdpa/mlx5: Restore the hardware used index after
+ change map
+Message-ID: <20210217065123.GA128881@mtl-vdi-166.wap.labs.mlnx>
+References: <0d592ed0-3cea-cfb0-9b7b-9d2755da3f12@redhat.com>
+ <20210208100445.GA173340@mtl-vdi-166.wap.labs.mlnx>
+ <379d79ff-c8b4-9acb-1ee4-16573b601973@redhat.com>
+ <20210209061232.GC210455@mtl-vdi-166.wap.labs.mlnx>
+ <411ff244-a698-a312-333a-4fdbeb3271d1@redhat.com>
+ <a90dd931-43cc-e080-5886-064deb972b11@oracle.com>
+ <b749313c-3a44-f6b2-f9b8-3aefa2c2d72c@redhat.com>
+ <24d383db-e65c-82ff-9948-58ead3fc502b@oracle.com>
+ <20210210154531.GA70716@mtl-vdi-166.wap.labs.mlnx>
+ <fa78717a-3707-520b-35cb-c8e37503dccf@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <fa78717a-3707-520b-35cb-c8e37503dccf@oracle.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613544689; bh=gXlU4wj89dRtYqmSRTd3ZCIacCt3jo7TZ0QmF2GeH/w=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=D51MUk6a1LIHjYR7vDnSfWHJ6CpdnAzYmaYM6Tr0hfGJoFfxpOIegOEJIMEskXkZ7
+         QF5PTei3v6wIctQtI1+JqYxM792BciA+JNi4F387Pd+/decgsAhTEF/ep6s6m3G1SM
+         N4EgF/V5X534ag5JmwlIo0rJzDetHHwSCUtPvGFamTznzpqGW+AApQlsrHt88RGfXT
+         i9MUs6F5d5NvYJAs9AfLMEjl0O5snGW5Rusz2cq8sEDkSkg+FcCPbCfV0YEWPkprk1
+         fYowVXb4ekOBbJFr5efi/ICTD8EcvpccjhTd29aE/8EAp5qyFhlc7zT5leuUUWd9fe
+         Q2qACShDjlaKw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added the entries for all the files added as a part of driver support for
-DCC(Data Capture and Compare).
+On Tue, Feb 16, 2021 at 04:25:20PM -0800, Si-Wei Liu wrote:
+> 
+> > > The saved mvq->avail_idx will be used to recreate hardware virtq object and
+> > > the used index in create_virtqueue(), once status DRIVER_OK is set. I
+> > > suspect we should pass the index to mvq->used_idx in
+> > > mlx5_vdpa_set_vq_state() below instead.
+> > > 
+> > Right, that's what I am checking but still no final conclusions. I need
+> > to harness hardware guy to provide me with clear answers.
+> OK. Could you update what you find from the hardware guy and let us know
+> e.g. if the current firmware interface would suffice?
+> 
 
-Signed-off-by: Souradeep Chowdhury <schowdhu@codeaurora.org>
----
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Te answer I got is that upon query_virtqueue, the hardware available and
+used indices should always return the same value for virtqueues that
+complete in order - that's the case for network virtqueues. The value
+returned is the consumer index of the hardware. These values should be
+provided when creating a virtqueue; in case of attaching to an existing
+virtqueue (e.g. after suspend and resume), the values can be non zero.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 546aa66..f0d208a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4931,6 +4931,14 @@ F:	include/linux/tfrc.h
- F:	include/uapi/linux/dccp.h
- F:	net/dccp/
- 
-+QUALCOMM DCC DRIVER
-+M:	Souradeep Chowdhury <schowdhu@codeaurora.org>
-+L:	linux-arm-msm@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/ABI/testing/sysfs-driver-dcc
-+F:	Documentation/devicetree/bindings/arm/msm/qcom,dcc.yaml
-+F:	drivers/soc/qcom/dcc.c
-+
- DECnet NETWORK LAYER
- L:	linux-decnet-user@lists.sourceforge.net
- S:	Orphan
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+Currently there's a bug in the firmware where for RX virtqueue, the
+value returned for the available index is wrong. However, the value
+returned for used index is the correct value.
 
+Therefore, we need to return the hardware used index in get_vq_state()
+and restore this value into both the new object's available and used
+indices.
