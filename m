@@ -2,163 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF67031DD45
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:26:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2453031DD4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbhBQQZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:25:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60663 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233070AbhBQQZr (ORCPT
+        id S234112AbhBQQ0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:26:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233070AbhBQQ0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:25:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613579060;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fqY3aX+LcVTJX1gt4GvTFj3mpGHf8hCtl9l3H4cgEMs=;
-        b=bhhQeOko8HkD7Jo/+LpuRBUUkdsFCk1nrHPuJCYP53TQe4JeleIt2KaTwT/oo+qFMEFFb7
-        e677WRrLah8KYQWG7QlXRYF2ebreGVRhpJ3v3QwSxjCsvyxYidUTN5+apSnnrtFodbfQ/m
-        FzQbxtthX9vpiEYMebk23KRsL4vDah8=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-266-1zkNcTtfMO2sIgxGu4LKxw-1; Wed, 17 Feb 2021 11:24:18 -0500
-X-MC-Unique: 1zkNcTtfMO2sIgxGu4LKxw-1
-Received: by mail-qv1-f70.google.com with SMTP id n8so7291701qvo.18
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:24:18 -0800 (PST)
+        Wed, 17 Feb 2021 11:26:31 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E696C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:25:51 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id n4so15040145wrx.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:25:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ut0i3UNMCZuvoqWdNAPofqX9H/0FtbpaXgUvulT7kdY=;
+        b=E0EkzspLd5Ur2E3db92QRZU0V0t7WTJUwsm3ZBzUuefl2pAHkLPhHMdliyATroRyc1
+         FJ+q/8OtaXo5LQ44krV5MAsxSF6/lbkK1qOC6JwTSgIe4lSHUlR6f44zk5h5leg+T8TO
+         EZNYusBkYWNpFbw/86a6Ykypdhh7Zg0+Um8/g=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fqY3aX+LcVTJX1gt4GvTFj3mpGHf8hCtl9l3H4cgEMs=;
-        b=UbJ2EtE2scbgtgQ8/12YLOJAnHrjNwzJLjOn1inJU3YnTG7sg/AlOdOzHzGgfbn/O0
-         DNOMJDxDvn9sIC0NbGir5Q8uHL4gam5Cx6aH5dmQLJiyqroGyk7j01m0kcO3D9gtupuS
-         EjaCVUmpJ+xtJ1qFWw46EwrL00Nqr+5qEWQas0UkVw4CkpSmNX6T0FAPMcUHYSfkI8Sd
-         PL23WCSDZ9ePibnHB7qM2qYxz9F9NJxPvd2nnJNiWckhruKLdKlh+cNfwQ4DG+GXq9tU
-         ig+F9Ku3ee0fmSyyoJyXeJ8KYE44+aYnKIyokS3tnt7wINO29AQulfjrtrKHQn8I8uSb
-         CekA==
-X-Gm-Message-State: AOAM532aap9klNpe5X+qL5b1aWV4dKMPJGNC3Fp1qJe7HZ2kFV+PHbC6
-        plocfVDL7yrBve+jl0yIPnrBtEP7cxdwBUz5hzCkMJjylqQdz+NCiwlU+/L7FrAFVFm/Fr5OR1Y
-        bWSaf65sJZZNkZZmEot8ipQpr
-X-Received: by 2002:ac8:59d6:: with SMTP id f22mr61290qtf.230.1613579058312;
-        Wed, 17 Feb 2021 08:24:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzn9Qa0Y9o7twQrPMgLfwghwwaSijFXNhNL1AlkR44bHdaMQ3yXomUNjdjOPLlg9C3gTJHwAQ==
-X-Received: by 2002:ac8:59d6:: with SMTP id f22mr61266qtf.230.1613579058053;
-        Wed, 17 Feb 2021 08:24:18 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id k129sm1919411qkf.108.2021.02.17.08.24.16
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ut0i3UNMCZuvoqWdNAPofqX9H/0FtbpaXgUvulT7kdY=;
+        b=VoYEp3XKCdwge7Jo0nV13jViWm9WikJTVic7Bo39lXiCa+zcAv9n+uXW/Fokavtf1v
+         ssVGhgl8sqqHZtVvKACPuaN/tOIYDXulJTqVr4uiTw1fJL4LG44V7v1/mgmWImfYOaD9
+         r9+wtEcYfr4hCuMEnssxGo4OdVOSTmkBsb9a42t3xmUg1Tvzh9J+BaIkxS48uuozWj/V
+         PD651KKPonwZ45JrxG2O6KxMv6jboGMeQZqjGq7Uzn3ha1yWRNXsNh2Mock+upVELjBq
+         +WxKLBLQ74uCImzwp3/HUfqrenznnZWhXbHrLmtP1p+tQzKfLkyS03lHN5XiplQLYJXz
+         D6Yw==
+X-Gm-Message-State: AOAM530nv7zJnbGsv5cj/M4brGM1dmv7QTP84fu5LnI3tqIqHgu+Kf6z
+        uPOOundN9PfAqWsHVl23miFkSg==
+X-Google-Smtp-Source: ABdhPJzyI1Wh3rwp9Dqv8O1YyxhOoZscyz/ob4GZ2MgZPT9xhnC9HYTzvRmnyMylWlJXquJ2e8g0Qg==
+X-Received: by 2002:a5d:5185:: with SMTP id k5mr53944wrv.352.1613579149779;
+        Wed, 17 Feb 2021 08:25:49 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::4:76fd])
+        by smtp.gmail.com with ESMTPSA id l1sm3584790wmi.48.2021.02.17.08.25.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 08:24:17 -0800 (PST)
-Date:   Wed, 17 Feb 2021 11:24:15 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, shu wang <malate_wangshu@hotmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 1/5] hugetlb: add hugetlb helpers for soft dirty
+        Wed, 17 Feb 2021 08:25:49 -0800 (PST)
+Date:   Wed, 17 Feb 2021 16:25:49 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
  support
-Message-ID: <20210217162415.GA6519@xz-x1>
-References: <20210211000322.159437-1-mike.kravetz@oracle.com>
- <20210211000322.159437-2-mike.kravetz@oracle.com>
+Message-ID: <YC1DjeZmBWmJe35c@chrisdown.name>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCv9Xb7ePnDy9xRf@alley>
+ <YCwAbGoVuZJspcx5@chrisdown.name>
+ <YC0/xQTephcfo6GL@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210211000322.159437-2-mike.kravetz@oracle.com>
+In-Reply-To: <YC0/xQTephcfo6GL@alley>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 04:03:18PM -0800, Mike Kravetz wrote:
-> Add interfaces to set and clear soft dirty in hugetlb ptes.  Make
-> hugetlb interfaces needed for /proc clear_refs available outside
-> hugetlb.c.
-> 
-> arch/s390 has it's own version of most routines in asm-generic/hugetlb.h,
-> so add new routines there as well.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  arch/s390/include/asm/hugetlb.h | 30 ++++++++++++++++++++++++++++++
->  include/asm-generic/hugetlb.h   | 30 ++++++++++++++++++++++++++++++
->  include/linux/hugetlb.h         |  1 +
->  mm/hugetlb.c                    | 10 +---------
->  4 files changed, 62 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/s390/include/asm/hugetlb.h b/arch/s390/include/asm/hugetlb.h
-> index 60f9241e5e4a..b7d26248fb1c 100644
-> --- a/arch/s390/include/asm/hugetlb.h
-> +++ b/arch/s390/include/asm/hugetlb.h
-> @@ -105,6 +105,11 @@ static inline pte_t huge_pte_mkdirty(pte_t pte)
->  	return pte_mkdirty(pte);
->  }
->  
-> +static inline pte_t huge_pte_mkyoung(pte_t pte)
-> +{
-> +	return pte_mkyoung(pte);
-> +}
-> +
->  static inline pte_t huge_pte_wrprotect(pte_t pte)
->  {
->  	return pte_wrprotect(pte);
-> @@ -115,9 +120,34 @@ static inline pte_t huge_pte_modify(pte_t pte, pgprot_t newprot)
->  	return pte_modify(pte, newprot);
->  }
->  
-> +static inline bool huge_pte_soft_dirty(pte_t pte)
-> +{
-> +	return pte_soft_dirty(pte);
-> +}
-> +
-> +static inline pte_t huge_pte_clear_soft_dirty(pte_t pte)
-> +{
-> +	return pte_clear_soft_dirty(pte);
-> +}
-> +
-> +static inline pte_t huge_pte_swp_clear_soft_dirty(pte_t pte)
-> +{
-> +	return pte_swp_clear_soft_dirty(pte);
-> +}
-> +
+Petr Mladek writes:
+>What about storing the pointer to struct pf_object into
+>struct printk_fmt_sec *ps into the s->file->f_inode->i_private?
+>Then we would not need any global list/table at all.
 
-Indeed asm/hugetlb.h of s390 didn't include asm-generic/hugetlb.h as what was
-normally done by asm/hugetlb.h of other archs.  Do you know why it's special?
-E.g. huge_pte_wrprotect() of s390 version is actually the same of the default
-version.
+Unless I'm misreading the debugfs code, I think the following is possible:
 
-When I looked at the huge_pte_wrprotect() I also see that there seems to have
-no real user of __HAVE_ARCH_HUGE_PTE_WRPROTECT.  Not sure whether it can be
-dropped.  My gut feeling is that s390 should also include asm-generic/hugetlb.h
-but only redefine the helper only if necessary, since I see no point defining
-the same helper multiple times.
+open(f);
+   debugfs_file_get(f);
+   fops->open();
+     inode->private = ps;
+   debugfs_file_put(f);
 
->  static inline bool gigantic_page_runtime_supported(void)
->  {
->  	return true;
->  }
->  
-> +#if !defined(__HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE) && !defined(MODULE)
-> +#include <asm/tlbflush.h>
-> +
-> +static inline void flush_hugetlb_tlb_range(struct vm_area_struct *vma,
-> +					unsigned long start, unsigned long end)
-> +{
-> +	flush_tlb_range(vma, start, end);
-> +}
-> +#endif
+remove_printk_fmt_sec(); /* kfree ps */
 
-Similar question here, only ppc defined __HAVE_ARCH_FLUSH_HUGETLB_TLB_RANGE, so
-IIUC it means s390 should simply use the default version, and it'll be great if
-we don't need to redefine it here.
+read(f);
+   debugfs_file_get(f);
+   fops->read();
+     ps = inode->private;  /* invalid */
+   debugfs_file_put(f);
 
-Thanks,
+That's the reason why the code looks up from the module address again during 
+_read. Maybe I'm missing something? :-)
 
--- 
-Peter Xu
+>> Oh, I meant to change the name for v4 but neglected to do so. Sounds good,
+>> will do.
+>
+>Thanks a lot. I am sorry that I ask you to do so many changes.
+>I talked about the style early enough to make the review easy.
+>Also I think that it is not ideal and annoing to do these
+>mass changes and refactoring when the code is already reviewed,
+>tested, and functional.
 
+Quite the opposite: thanks a lot for taking so much time to provide valuable 
+feedback :-) As someone who mostly works on mm code, having you to provide 
+feedback as printk maintainer is really helpful. Even if we disagree on some 
+stuff, it's really important that we have a good shared understanding of what 
+we eventually agree upon.
