@@ -2,110 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0901631E106
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DE331E10D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhBQVHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230488AbhBQVHL (ORCPT
+        id S234722AbhBQVHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:07:46 -0500
+Received: from mail-oo1-f47.google.com ([209.85.161.47]:41650 "EHLO
+        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231710AbhBQVHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:07:11 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9A2C061574;
-        Wed, 17 Feb 2021 13:06:31 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id z21so9290338pgj.4;
-        Wed, 17 Feb 2021 13:06:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=QOLobN1m4PsV5WCsxl2Kd4kTbQR1Euzif7wEpXKsHao=;
-        b=sMPxnjaC3doNxVKbEOz3S/xfRRPgLdj9d4KFAS8qH+9ZbTpzu228z7/dKBFsoKsajL
-         M1ia/SpEL4BnKNBjRTxG4XxJD7fJ8xHr5bAzQT/ZqSt4km/a9/uoSiTafhUgJUy3/4Xf
-         VXK+sBd7DqyuMopV3fIPzp7KSmPGT3TdS1XAC1/IGeHSvi+OR8PswnMkCyWm643cbmmR
-         DkXnMR0jl8Cpaq1fRjuizjQ2vUR0T4w7LMQc3Ti1N0sMtA/Skp1uQg62XhEVvRJjPywI
-         CAHMR7jRh11AD92UrFsX89o8IaB+gB5fQJQ92Ti0uCPsQW5kaj2VtoAqzfhFDXjL40mc
-         HB/w==
+        Wed, 17 Feb 2021 16:07:37 -0500
+Received: by mail-oo1-f47.google.com with SMTP id h38so3394526ooi.8;
+        Wed, 17 Feb 2021 13:07:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=QOLobN1m4PsV5WCsxl2Kd4kTbQR1Euzif7wEpXKsHao=;
-        b=EKPM8kgVuX90yoFjehQHdx0cp2oh4Q+1TiNVA6BfTUavmmXBlX5ld5cpeHMTC43VsF
-         EGoEqLxBU5ADNyks4FhbVMbsPqs31fVMgUD7qb/htXohfvxciZfqjOqU8RCOYlfMk9dN
-         hvjC13kKGNWnV9NpzbaQAf8Rl//0EucEY+njO4GJgRxaY4jsj2SsH+yzhNPR2Urz8cPc
-         U9psRhSmBVYAzua6upadHdGYAr7aDoZPB+FbyASxyEFEHQhc0x4BStPG/THCmS+3fw+q
-         9nqex8R61s3EtcldsF+zuDg2D6uh1y0JWHS6BjRUtYXz6uWCDmprXKC6p3VMy4JABI69
-         +QEA==
-X-Gm-Message-State: AOAM533wtelQxgYdJNyxYhx94o4i/iNj1UzEv1VHJj+2E8GIf/eHINDa
-        Qtf0tuhchYWpFUzTH488Uu4=
-X-Google-Smtp-Source: ABdhPJxhd+vG1wnIsYR75bvhSOQfCvl0vxLh/nZEWeXT+CtBAZGvfvSMoIFdlRCzCU6v5vdTFl5mdw==
-X-Received: by 2002:a05:6a00:847:b029:1b3:b9c3:11fb with SMTP id q7-20020a056a000847b02901b3b9c311fbmr1082899pfk.44.1613595990350;
-        Wed, 17 Feb 2021 13:06:30 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a459:a528:1312:4d4c])
-        by smtp.gmail.com with ESMTPSA id w3sm3012516pjt.24.2021.02.17.13.06.29
+         :mime-version:content-disposition:in-reply-to;
+        bh=hQwMs3U/95KY+I7ERg8afjmtvvQ8j6QtTF7kUMzLV2M=;
+        b=Xjc4nfv4WlgVJaENohief3mL6BTibw4hVugHlPXqxG94fdT0LyZ0KyfuOmYfmqC6te
+         u3K+h6tOoipBxsMWR4EFT1uTXgnOP4C5yQU1xIg2cKLstF8eiN+I6VcA7A/k7Le1du3t
+         FMJe9C6DXs6k9bvMEp8/DEyI1eT862qObfbKJeF4irXjOqzK1tpFtZkGzi2dqgXKMjU+
+         RgQlOZnRfM7TLt/yYnPy+X/UdZwCk4sR88gdZSpiAe+EoLxZ/w1htg6xKnP8DFRBids1
+         WJMBUwz9OL3DdGGt1pyHVGImoN1UnmxdhPQXe6ulPXbFV5UkUlCdlTIN/wediTZ6PJ2l
+         qqMg==
+X-Gm-Message-State: AOAM533AuzYLDkuzMFMxwBx+74EOddvi1JB1myBbJflGcCUipKswXagg
+        dRDD4AwATYC/BPoXTBXxOg==
+X-Google-Smtp-Source: ABdhPJyYBIFwNq4dbzmcj6krkSueeChW11Sp3wHQ9o9KLb/3qxt5qOqTk8DmnMZu4ifCffDXyWoeFw==
+X-Received: by 2002:a4a:b509:: with SMTP id r9mr683682ooo.21.1613596015798;
+        Wed, 17 Feb 2021 13:06:55 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a28sm618420ook.24.2021.02.17.13.06.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 13:06:29 -0800 (PST)
-Date:   Wed, 17 Feb 2021 13:06:27 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "Life is hard, and then you die" <ronald@innovation.ch>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] Input: applespi: Add trace_event module param for
- early tracing.
-Message-ID: <YC2FUwOdIoKKg1Ew@google.com>
-References: <20210217190718.11035-1-ronald@innovation.ch>
- <20210217190718.11035-3-ronald@innovation.ch>
- <YC176rlGQeyKuOpn@google.com>
- <20210217205257.GB25685@innovation.ch>
+        Wed, 17 Feb 2021 13:06:54 -0800 (PST)
+Received: (nullmailer pid 2756132 invoked by uid 1000);
+        Wed, 17 Feb 2021 21:06:53 -0000
+Date:   Wed, 17 Feb 2021 15:06:53 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Nava kishore Manne <navam@xilinx.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "mdf@kernel.org" <mdf@kernel.org>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        git <git@xilinx.com>,
+        Appana Durga Kedareswara Rao <appanad@xilinx.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "chinnikishore369@gmail.com" <chinnikishore369@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trix@redhat.com" <trix@redhat.com>,
+        Michal Simek <michals@xilinx.com>
+Subject: Re: [PATCH v2 2/3] dt-bindings: fpga: Add binding doc for versal
+ fpga manager
+Message-ID: <20210217210653.GA2752472@robh.at.kernel.org>
+References: <20210211060532.23662-1-nava.manne@xilinx.com>
+ <20210211060532.23662-3-nava.manne@xilinx.com>
+ <1613055380.699799.519684.nullmailer@robh.at.kernel.org>
+ <MWHPR02MB2623787A36B389BCF337D8EBC28B9@MWHPR02MB2623.namprd02.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210217205257.GB25685@innovation.ch>
+In-Reply-To: <MWHPR02MB2623787A36B389BCF337D8EBC28B9@MWHPR02MB2623.namprd02.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 12:52:57PM -0800, Life is hard, and then you die wrote:
+On Fri, Feb 12, 2021 at 06:13:33AM +0000, Nava kishore Manne wrote:
+> Hi Rob,
 > 
->   Hi Dmitry,
+> Please find my response inline.
 > 
-> On Wed, Feb 17, 2021 at 12:26:18PM -0800, Dmitry Torokhov wrote:
+> > -----Original Message-----
+> > From: Rob Herring <robh@kernel.org>
+> > Sent: Thursday, February 11, 2021 8:26 PM
+> > To: Nava kishore Manne <navam@xilinx.com>
+> > Cc: linux-arm-kernel@lists.infradead.org; mdf@kernel.org; linux-
+> > fpga@vger.kernel.org; git <git@xilinx.com>; Appana Durga Kedareswara Rao
+> > <appanad@xilinx.com>; devicetree@vger.kernel.org; robh+dt@kernel.org;
+> > chinnikishore369@gmail.com; linux-kernel@vger.kernel.org;
+> > trix@redhat.com; Michal Simek <michals@xilinx.com>
+> > Subject: Re: [PATCH v2 2/3] dt-bindings: fpga: Add binding doc for versal fpga
+> > manager
 > > 
-> > On Wed, Feb 17, 2021 at 11:07:18AM -0800, Ronald Tschalär wrote:
-> > > The problem is that tracing can't be set via sysfs until the module is
-> > > loaded, at which point the keyboard and trackpad initialization commands
-> > > have already been run and hence tracing can't be used to debug problems
-> > > here.
-> > > 
-> > > Adding this param allows tracing to be enabled for messages sent and
-> > > received during module probing. It takes comma-separated list of events,
-> > > e.g.
-> > > 
-> > >   trace_event=applespi_tp_ini_cmd,applespi_bad_crc
+> > On Thu, 11 Feb 2021 11:35:31 +0530, Nava kishore Manne wrote:
+> > > From: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>
+> > >
+> > > This patch adds binding doc for versal fpga manager driver.
+> > >
+> > > Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> > > Signed-off-by: Appana Durga Kedareswara rao
+> > > <appana.durga.rao@xilinx.com>
+> > > ---
+> > > Changes for v2:
+> > >                 -Fixed file format and syntax issues.
+> > >
+> > >  .../bindings/fpga/xlnx,versal-fpga.yaml       | 33 +++++++++++++++++++
+> > >  1 file changed, 33 insertions(+)
+> > >  create mode 100644
+> > > Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml
+> > >
 > > 
-> > You can unbind and rebind a device to a driver via sysfs as many times
-> > as needed (see bind and unbind driver sysfs attributes), so I believe
+> > My bot found errors running 'make dt_binding_check' on your patch:
+> > 
+> > yamllint warnings/errors:
+> > ./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:12:14:
+> > [warning] too many spaces after colon (colons)
+> > ./Documentation/devicetree/bindings/fpga/xlnx,versal-fpga.yaml:20:9:
+> > [warning] wrong indentation: expected 10 but found 8 (indentation)
+> > 
+> > dtschema/dtc warnings/errors:
+> > 
+> > See https://patchwork.ozlabs.org/patch/1439305
+> > 
+> > This check can fail if there are any dependencies. The base for a patch series
+> > is generally the most recent rc1.
+> > 
+> > If you already ran 'make dt_binding_check' and didn't see the above error(s),
+> > then make sure 'yamllint' is installed and dt-schema is up to
+> > date:
+> > 
+> > pip3 install dtschema --upgrade
+> > 
+> > Please check and re-submit.
 > 
-> Hmm, I'm going to have to play with that a bit, but one place it still
-> won't help I think is something we ran into in practise: init was
-> failing during boot, but was successfull later on.
+> Initially, I couldn't see any issue when I run.
+> After installing yamllint and with upgraded dt-schema, I am able to reproduce the above pointed issues.
+> Is there any prerequisite(Other than yamllint) I need to follow to run dt-schema?
 
-Maybe compiling module as a built-in and then using kernel command line
-option to initiate the trace would work?
+No, just keeping dtschema up to date.
 
-If this facility is really needed, it would be beneficial for other
-modules as well, and thus better implemented in the module loading code
-to activate desired tracing after loading the module but before invoking
-module init code.
-
-Thanks.
-
--- 
-Dmitry
+Rob
