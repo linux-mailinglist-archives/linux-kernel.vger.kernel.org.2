@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D026E31DEA0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:53:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DE731DE92
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234655AbhBQRwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:52:15 -0500
-Received: from smtp-17-i2.italiaonline.it ([213.209.12.17]:49610 "EHLO
-        libero.it" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231856AbhBQRwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:52:12 -0500
-X-Greylist: delayed 382 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Feb 2021 12:52:11 EST
-Received: from oxapps-35-162.iol.local ([10.101.8.208])
-        by smtp-17.iol.local with ESMTPA
-        id CQstlfmUklChfCQstliNjk; Wed, 17 Feb 2021 18:45:07 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1613583907; bh=zBqy723wOBBDSylIEHvgw0wi/3YgDj4qoD8G9JQ58LM=;
-        h=From;
-        b=Wn4H5yzYrvztBa3YxN9G+r9/C5PeRkBDoGOOysnN3s7m0K8y7b4QWRdiEt2tcCn9n
-         9k0a3mWXVZ2le4dQ5MEAUIQ2A9s1hgS0z+8E6fIu9tEc1ISYo0mgt9pXr2Ysw2ZHTN
-         GujkLW8Ozp3LYaOLHhvgymdk2B6cNjBWtHL9yuAt82mcRhNFe/uxoWeBbYtXnw8etu
-         PfR33pEj5pjhd7MNmTtJLGQhxb/DJ2/ZP2+AqkQfM05aqN0gBiZ7IRy6dJpYYot8YX
-         JH/yre7W7DVeECyiM1xnilmKwiCJMlLuVB1bExuLLyunT6fqHXNsKi3wrfc8jlhAo9
-         W/YIGl/aetAFA==
-X-CNFS-Analysis: v=2.4 cv=S6McfKgP c=1 sm=1 tr=0 ts=602d5623 cx=a_exe
- a=OCAZjQWm+uh9gf1btJle/A==:117 a=UPWQtH3J-JgA:10 a=IkcTkHD0fZMA:10
- a=_gZzKa99_6AA:10 a=P1BnusSwAAAA:8 a=e5mUnYsNAAAA:8 a=TPS9zQsonGm_BbHK3pAA:9
- a=QEXdDO2ut3YA:10 a=D0XLA9XvdZm18NrgonBM:22 a=Vxmtnl_E_bksehYqCbjh:22
-Date:   Wed, 17 Feb 2021 18:45:07 +0100 (CET)
-From:   Dario Binacchi <dariobin@libero.it>
-To:     Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        linux-kernel@vger.kernel.org, Jyri Sarha <jyri.sarha@iki.fi>
-Cc:     David Airlie <airlied@linux.ie>, dri-devel@lists.freedesktop.org
-Message-ID: <1121866478.204588.1613583907193@mail1.libero.it>
-In-Reply-To: <07f7a7c0-8016-bf32-92ad-b9de4aaed84c@ideasonboard.com>
-References: <20210216202225.12861-1-dariobin@libero.it>
- <07f7a7c0-8016-bf32-92ad-b9de4aaed84c@ideasonboard.com>
-Subject: Re: [RESEND PATCH] drm/tilcdc: fix raster control register setting
+        id S234670AbhBQRqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:46:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234667AbhBQRqL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:46:11 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D3D3C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:45:30 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id a24so7778718plm.11
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:45:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Th2rBrQf0xivjZpxGz4MWrvo0rVQSj3VaD7SN2MtDyY=;
+        b=lBHLQReA/7O65lJ3ZtEEu7KLtKIx1UBxtaP7rQeRMdHAQg43bRyKwbQNKvWuSncR81
+         UCfTsoe8QIq2BWF/qYGoDEj1DhK1bGLM6yXkeX9/Xg6USw83GT9C7KPMIqIZVBmT56dT
+         cA7PNtEOwXK+GpoDF+O7esVIGyzr6kCgNPljWpNWcHxYFa79XiGJNeJOTA4IzBlnbxeX
+         WflX3qYq7LXGGdAPTAW+/q5L/mB5rpAqeMn9qEVcSaIeZW+rJC4crDKM45YuFOiqZbZ7
+         3JWZf/L+XVfI+hWvOGUJALYB8WVqIR+7rLMxmMU4xhCljll0XpIekjGI8fKLVOjlPt/U
+         AITg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Th2rBrQf0xivjZpxGz4MWrvo0rVQSj3VaD7SN2MtDyY=;
+        b=KY7Hya94hq/KZ1vfApdZR49wX50WhNANIjlLyGGhWYTMlDTTmXHI3KbWlzSmIRnfza
+         khIB9l0c/jgZCNkEMJ78+8W/pm8RbuwMeVJgOxHxxQ2n8FH99PT6BaXo7PwvDKe2GkDr
+         GWeflemcCy/RfwIWGslzMZwL0hlWqpR0rdsWQA91mkxFUYtMceuC08c2N0vwlR7x+MBE
+         Zd2OtfRVRW9IG4NiX1RFrwArPJ2mJd5SltTNn74+7/gD9/cYOLL4jTk5SrE/QMVGmKmh
+         tVyt7sEUfOpwtmYOzw+nqNT4jJ0DChcEvMKv4DXuOsSI8thhQODbZ6Fd0ALhgaC2ho7a
+         gZrg==
+X-Gm-Message-State: AOAM530X9WcJ9JiBV3qrMIlGlBwb0XiBSDuZa++HJGdirwCm61G7nEXA
+        KkRKR3RIQKWMiuzgDSs79g6EQgCSQng=
+X-Google-Smtp-Source: ABdhPJz/p6j4HMadmLD6c+JI0OqrpX+YSC4dsnRiAD2jV7j9ebD3NuDSpQDonFErz5Q9zDqe4VrObg==
+X-Received: by 2002:a17:902:ac88:b029:e3:8a26:35bb with SMTP id h8-20020a170902ac88b02900e38a2635bbmr377944plr.45.1613583929836;
+        Wed, 17 Feb 2021 09:45:29 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:cdf7:1c5d:c444:e341])
+        by smtp.gmail.com with ESMTPSA id k24sm2992496pfg.40.2021.02.17.09.45.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 09:45:28 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Wed, 17 Feb 2021 09:45:27 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, mhocko@suse.com,
+        joaodias@google.com
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Message-ID: <YC1WN1rQONAnt5M9@google.com>
+References: <20210217163603.429062-1-minchan@kernel.org>
+ <854d4ec8-1eb9-3595-b867-3e50f5a0e6a8@redhat.com>
+ <YC1RtmdhUR40gAzq@google.com>
+ <0f201a5a-caaf-2861-59f2-b66152fe9c53@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev27
-X-Originating-IP: 87.20.116.197
-X-Originating-Client: open-xchange-appsuite
-x-libjamsun: oP0GJDCylp8dfkkjPZa2j1JWQtWSQ61M
-x-libjamv: GDjNrlyrYqE=
-X-CMAE-Envelope: MS4xfOuOpzKBmd+dVP2XpVdv7VScfSsJTdTeRCvLqmRq6b7Rwpr0X4HI8pYOVUC5yDD7D+WiNn5KxJhS1gVvWCKwOT62vfwcj/RKmgCQAjbOIgNAOlUxOswD
- jkDlKHOE+PcjqiyJvmAKoaw2kVbHGwSeeoHMcFF/BYNdkc4W1q9fEpSE63/91grTFHfoYy01aDss7J/C37S28SGkLF8XU5Tf5azehWRCbNNwJC0797gWzgNa
- pKztHVwZ+w8/yze6CptETpo3CLvjlF40LWaF9ja53qHu/227cDOd0wwFpC1ZRJMHgExVdRfWW8EYvjQw6y+W8qKA9ep5gQmZW0r3uCWXqlK5Exc8vnEvI9Cp
- g0HmJB+F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0f201a5a-caaf-2861-59f2-b66152fe9c53@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomi,
+On Wed, Feb 17, 2021 at 06:34:13PM +0100, David Hildenbrand wrote:
+> On 17.02.21 18:26, Minchan Kim wrote:
+> > On Wed, Feb 17, 2021 at 05:51:27PM +0100, David Hildenbrand wrote:
+> > > On 17.02.21 17:36, Minchan Kim wrote:
+> > > > alloc_contig_range is usually used on cma area or movable zone.
+> > > > It's critical if the page migration fails on those areas so
+> > > > dump more debugging message like memory_hotplug unless user
+> > > > specifiy __GFP_NOWARN.
+> > > > 
+> > > > Signed-off-by: Minchan Kim <minchan@kernel.org>
+> > > > ---
+> > > >    mm/page_alloc.c | 16 +++++++++++++++-
+> > > >    1 file changed, 15 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > > > index 0b55c9c95364..67f3ee3a1528 100644
+> > > > --- a/mm/page_alloc.c
+> > > > +++ b/mm/page_alloc.c
+> > > > @@ -8486,6 +8486,15 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+> > > >    				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+> > > >    	}
+> > > >    	if (ret < 0) {
+> > > > +		if (!(cc->gfp_mask & __GFP_NOWARN)) {
+> > > > +			struct page *page;
+> > > > +
+> > > > +			list_for_each_entry(page, &cc->migratepages, lru) {
+> > > > +				pr_warn("migrating pfn %lx failed ret:%d ",
+> > > > +						page_to_pfn(page), ret);
+> > > > +				dump_page(page, "migration failure");
+> > > > +			}
+> > > 
+> > > This can create *a lot* of noise. For example, until huge pages are actually
+> > > considered, we will choke on each end every huge page - and might do so over
+> > > and over again.
+> > 
+> > I am not familiar with huge page status at this moment but why couldn't
+> > they use __GFP_NOWARN if they are supposed to fail frequently?
+> 
+> any alloc_contig_range() user will fail on hugetlbfs pages right now when
+> they are placed into CMA/ZONE_MOVABLE. Oscar is working on that upstream.
 
-> Il 17/02/2021 07:41 Tomi Valkeinen <tomi.valkeinen@ideasonboard.com> ha scritto:
-> 
->  
-> On 16/02/2021 22:22, Dario Binacchi wrote:
-> > The fdd property of the tilcdc_panel_info structure must set the reqdly
-> > bit field  (bit 12 to 19) of the raster control register. The previous
-> > statement set the least significant bit instead.
-> > 
-> > Signed-off-by: Dario Binacchi <dariobin@libero.it>
-> > 
-> > ---
-> > 
-> >  drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> > index 30213708fc99..238068e28729 100644
-> > --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> > +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> > @@ -393,7 +393,7 @@ static void tilcdc_crtc_set_mode(struct drm_crtc *crtc)
-> >  			return;
-> >  		}
-> >  	}
-> > -	reg |= info->fdd < 12;
-> > +	reg |= info->fdd << 12;
-> >  	tilcdc_write(dev, LCDC_RASTER_CTRL_REG, reg);
-> >  
-> >  	if (info->invert_pxl_clk)
-> > 
-> 
-> This is interesting, looks like this has always been broken, and in many
-> cases sets bits 0, which is the enable bit. So we enable LCDC before
-> even setting the fb address. How does this not blow up LCDC totally?
-> 
-> The fix looks correct to me, but it will change the register value for
-> boards that have apparently been working for years.
-> 
-> Dario, did you test this on actual HW, or did you just spot the error?
-
-I tested it on Beaglebone Black + LCD cape (4.3inch).
-I also checked the register value with devmem.
-
-Regards,
-Dario
+Until then, how about adding this under !CONFIG_HUGETLBFS?
 
 > 
-> Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> > 
+> > > 
+> > > This might be helpful for debugging, but is unacceptable for production
+> > > systems for now I think. Maybe for now, do it based on CONFIG_DEBUG_VM.
+> > 
+> > If it's due to huge page you mentioned above and caller passes
+> > __GFP_NOWARN in that case, couldn't we enable always-on?
 > 
->  Tomi
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> It would make sense to add that for virito-mem when calling
+> alloc_contig_range(). For now I didn't do so, because there were not that
+> many messages yet - alloc_contig_range() essentially didn't understand
+> __GFP_NOWARN.
+> 
+> We should then also stop printing the "PFNs busy ..." part from
+> alloc_contig_range() with __GFP_NOWARN.
+
+Yub.
+
+> 
+> > 
+> > Actually, I am targeting cma allocation failure, which should
+> > be rather rare compared to other call sites but critical to fail.
+> > If it's concern to emit too many warning message, I will scope
+> > down for site for only cma allocation.
+> 
+> If you add "__GFP_NOWARN" when !ZONE_MOVABLE, how would you ever print
+> something for CMA? What am I missing? CMA is usually not on ZONE_MOVABLE.
+
+If the caller of cma_alloc passed __GFP_NOWARN, I don't care since
+caller explictly declare it's not critical. What I'd like to catch up
+is cma_alloc with !__GFP_NOWARN sites.
