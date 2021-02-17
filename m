@@ -2,116 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFCE31D48B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:15:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC1931D497
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:27:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhBQEPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 23:15:06 -0500
-Received: from mga07.intel.com ([134.134.136.100]:21743 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231346AbhBQELr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 23:11:47 -0500
-IronPort-SDR: GspS+H6jCKCprRbqT4PcDuYa9z98YqP6+cBY6mEKF7Pmw2Yq1/p7wmnnzzWWasIvoeXtBe/7AT
- a0B8B+Lsli0w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="247165948"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="247165948"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 20:10:18 -0800
-IronPort-SDR: Mug5PkrodM8Rl1xWiYxq98sDIf0X3SSeMjlZa9yQ7TA5gumGj0U/nmFtBL6W2PpAlt1kXP8boS
- FlOqJ5QddABA==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="384948885"
-Received: from yxie-mobl.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.134.141])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 20:10:16 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: [RFC PATCH v5 9/9] cxl/mem: Add payload dumping for debug
-Date:   Tue, 16 Feb 2021 20:09:58 -0800
-Message-Id: <20210217040958.1354670-10-ben.widawsky@intel.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210217040958.1354670-1-ben.widawsky@intel.com>
-References: <20210217040958.1354670-1-ben.widawsky@intel.com>
+        id S229850AbhBQE0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 23:26:05 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:36469 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231216AbhBQEVP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 23:21:15 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 42F4E5801CA;
+        Tue, 16 Feb 2021 23:20:09 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 16 Feb 2021 23:20:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=vcAcHB+fD0WBZ4/KZULBkvSTwy
+        AFLPO+DmF46sm6krc=; b=o1JlfthmQKSDLiuQkWLqrwI13ij3loAs6cEm4wG0LR
+        lt/5+hJ4Ppq5lmda6B0xRiThJNMC85/6z7swcqnpfYmVApQeFCiCyalfg752DfSL
+        1y2g6waJFCf1zZMiFZxXAlTjp8zNndhQEMwmzWm76oSMw7EBiG+VKVO+slrWR1TR
+        5WPdZJ/cdQZW29maof3tQXR+xVvgbX7VtEBntahGfhpRO+qwsl3C8ZzY4P/yznVk
+        kccHquHyi/btURufj/HW09b/q9huQp+LOBaWpp7shAYizFgSHXLuIOcXFNsCfYqo
+        Tc0ClfnDR3HVHe8dpRCNng5rGUiX9HBEdBwFHhCDVsVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=vcAcHB+fD0WBZ4/KZ
+        ULBkvSTwyAFLPO+DmF46sm6krc=; b=kcy/W/OWjjjHEvqZKJSgxHzt+tJ4SDyuB
+        NqEVVC5Ao7mFbxTDnLvMP3XW4ytm9rrRiG3QJJI7s0EQCxO7Bmn8tsRi6GbcC9SP
+        +GUnIeH7TAWcObIPw+G15PXj2vDtYwHch43w8e001RXS2NgygcWx3rUKKX9Dgws4
+        qpxB1c9sFO8vegNv7IqszKmfw8tHF1jYd5uZPp2cXBZ+1N/dFkm1qboBgJymg4/C
+        aOl8bbrqfux6ElVfVM98tPraT3q3hFztvJ1bEBdTwkNYq68dpJtmDeUpL3l+Ux33
+        SBsQ8ahhIQFWY7ZSiHzdINR1Jr/SGhRnVdwAesD6Qg5+NDcIgk8bA==
+X-ME-Sender: <xms:d5ksYEG6eaIbVMUYGMSPCV45z2mWQeKg0-6aBvZvCFcfFb4U0YC41Q>
+    <xme:d5ksYNQ0jAVNWNisI2ZD0FCWp2n6TKS__9eFjuwi67Wp4HuExVRxa5evjzCsvxrNk
+    565dEejZEjPF1trrA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedugdeikecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufgrmhhuvghlucfj
+    ohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrfgrth
+    htvghrnhepieetkefhheduudfgledtudefjeejfeegveehkeeufffhhfejkeehiefftdev
+    tdevnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgurdho
+    rhhg
+X-ME-Proxy: <xmx:d5ksYLDrvYD-ix2xUyYp66JncfmyCPvk_2M5RwaS7eoT2wqVcrpyDA>
+    <xmx:d5ksYN1miBot7w1_cAz5_I60tHFY0eHLpwXtpG2HTuFnNyJZBkxaag>
+    <xmx:d5ksYJVjOWE6m2xtVExIpDcIPUUZQ9msEUvUxUFHY1m8B5_sl2YBog>
+    <xmx:eZksYOD76BO5jJqVE8yKC4PmzpKhZpth4N3no-2psDCNIPw9btVguQ>
+Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 083B824005D;
+        Tue, 16 Feb 2021 23:20:07 -0500 (EST)
+From:   Samuel Holland <samuel@sholland.org>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Corentin Labbe <clabbe@baylibre.com>
+Cc:     Ondrej Jirman <megous@megous.com>, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
+Subject: [PATCH net-next v2 0/5] dwmac-sun8i cleanup and shutdown hook
+Date:   Tue, 16 Feb 2021 22:20:01 -0600
+Message-Id: <20210217042006.54559-1-samuel@sholland.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's often useful in debug scenarios to see what the hardware has dumped
-out. As it stands today, any device error will result in the payload not
-being copied out, so there is no way to triage commands which weren't
-expected to fail (and sometimes the payload may have that information).
+These patches clean up some things I noticed while fixing suspend/resume
+behavior. The first four are minor code improvements. The last one adds
+a shutdown hook to minimize power consumption on boards without a PMIC.
 
-The functionality is protected by normal kernel security mechanisms as
-well as a CONFIG option in the CXL driver.
+Changes v1 to v2:
+  - Note the assumption of exclusive reset controller access in patch 3
 
-This was extracted from the original version of the CXL enabling patch
-series.
+Samuel Holland (5):
+  net: stmmac: dwmac-sun8i: Return void from PHY unpower
+  net: stmmac: dwmac-sun8i: Remove unnecessary PHY power check
+  net: stmmac: dwmac-sun8i: Use reset_control_reset
+  net: stmmac: dwmac-sun8i: Minor probe function cleanup
+  net: stmmac: dwmac-sun8i: Add a shutdown callback
 
-Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
----
- drivers/cxl/Kconfig | 13 +++++++++++++
- drivers/cxl/mem.c   |  8 ++++++++
- 2 files changed, 21 insertions(+)
+ .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 33 ++++++++++++-------
+ 1 file changed, 21 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
-index 97dc4d751651..3eec9276e586 100644
---- a/drivers/cxl/Kconfig
-+++ b/drivers/cxl/Kconfig
-@@ -50,4 +50,17 @@ config CXL_MEM_RAW_COMMANDS
- 	  potential impact to memory currently in use by the kernel.
- 
- 	  If developing CXL hardware or the driver say Y, otherwise say N.
-+
-+config CXL_MEM_INSECURE_DEBUG
-+	bool "CXL.mem debugging"
-+	depends on CXL_MEM
-+	help
-+	  Enable debug of all CXL command payloads.
-+
-+	  Some CXL devices and controllers support encryption and other
-+	  security features. The payloads for the commands that enable
-+	  those features may contain sensitive clear-text security
-+	  material. Disable debug of those command payloads by default.
-+	  If you are a kernel developer actively working on CXL
-+	  security enabling say Y, otherwise say N.
- endif
-diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-index 6d7d3870b5da..d63c8eaf23c7 100644
---- a/drivers/cxl/mem.c
-+++ b/drivers/cxl/mem.c
-@@ -346,6 +346,14 @@ static int __cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
- 
- 	/* #5 */
- 	rc = cxl_mem_wait_for_doorbell(cxlm);
-+
-+	if (!cxl_is_security_command(mbox_cmd->opcode) ||
-+	    IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
-+		print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
-+				     mbox_cmd->payload_in, mbox_cmd->size_in,
-+				     true);
-+	}
-+
- 	if (rc == -ETIMEDOUT) {
- 		cxl_mem_mbox_timeout(cxlm, mbox_cmd);
- 		return rc;
 -- 
-2.30.1
+2.26.2
 
