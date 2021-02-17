@@ -2,79 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8864F31DCA1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CF031DC9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233830AbhBQPo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:44:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30919 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233770AbhBQPoM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233794AbhBQPoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 17 Feb 2021 10:44:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613576566;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZcLEsH31tuwsh/4DX1Q5nBlV7w+3XG/SIyqKK0hnVM0=;
-        b=hkCVrxYUxXy06vRNVMxv1Fe9AOz4nJxocpvzEXRlhKSZTgq9xmFv4Yn96u44yaWdxPL2UE
-        OhhtxCgpjhoS0s9lZfqQRY7WsyeUTGamajmRrCRSYdejb37vQNfR9AxvQ4JrsuX2V7nl9V
-        deUnwuB8t8KSAsHTys7fGq72LeQr7kA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-200-droMoF7zMQSpyOmj-QQ_fw-1; Wed, 17 Feb 2021 10:42:42 -0500
-X-MC-Unique: droMoF7zMQSpyOmj-QQ_fw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0E76A0BC8;
-        Wed, 17 Feb 2021 15:42:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 35BDC5C3E4;
-        Wed, 17 Feb 2021 15:42:34 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAOg9mSQYBjnMsDj5pMd6MOGTY5w_ZR=pw7VRYKfP5ZwmHBj2=Q@mail.gmail.com>
-References: <CAOg9mSQYBjnMsDj5pMd6MOGTY5w_ZR=pw7VRYKfP5ZwmHBj2=Q@mail.gmail.com> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk> <20210216103215.GB27714@lst.de> <20210216132251.GI2858050@casper.infradead.org>
-To:     Mike Marshall <hubcap@omnibond.com>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-mm <linux-mm@kvack.org>, linux-cachefs@redhat.com,
-        linux-afs@lists.infradead.org,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        linux-cifs@vger.kernel.org,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        V9FS Developers <v9fs-developer@lists.sourceforge.net>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+Received: from pv50p00im-ztdg10012001.me.com ([17.58.6.51]:44140 "EHLO
+        pv50p00im-ztdg10012001.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233476AbhBQPoK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 10:44:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
+        s=1a1hai; t=1613576589;
+        bh=qY6a0Sr6oY2hiCTNhF9SsJZEouIXiMrkajwvQEyslnQ=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=uPo0py6jVpkYKGsw8CdHMplteRtdYiH57EmVYfamrm9IQFxbgkZimxXzLiwo4c03G
+         LDzwArcQBFST8KWuKho8NXagy8X6aOke/mPIxpOAL2nRF6Smnmr02d/rXW00Obd8Px
+         AzAVTnaE6UMCx4wKoJAFuIs4JlpH4X05Y8IVhEzCL0Uqohy/oZoMEAniEwifxpUFO8
+         DLSqdANkqOLJfU/RCcDHszS75LOKoastf80ir5Bh8NV/2RWjuh2KaG3ANMJanaSWT2
+         WC8n8zxrpBb7c+RrBHP205ftmJ4Bk/ZREq1Ga/8/CkS49/J85JLhMHWtLavHtZ3uK4
+         f6kLGiOpsCwPw==
+Received: from everest.nathzi1505 (unknown [45.250.51.33])
+        by pv50p00im-ztdg10012001.me.com (Postfix) with ESMTPSA id CCC1728035A;
+        Wed, 17 Feb 2021 15:43:07 +0000 (UTC)
+From:   Pritthijit Nath <pritthijit.nath@icloud.com>
+To:     gregkh@linuxfoundation.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Pritthijit Nath <pritthijit.nath@icloud.com>
+Subject: [PATCH] staging: wlan-ng: Fixed incorrect type warning in p80211netdev.c
+Date:   Wed, 17 Feb 2021 21:12:55 +0530
+Message-Id: <20210217154255.112115-1-pritthijit.nath@icloud.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1586930.1613576553.1@warthog.procyon.org.uk>
-Date:   Wed, 17 Feb 2021 15:42:33 +0000
-Message-ID: <1586931.1613576553@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-17_13:2021-02-16,2021-02-17 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2006250000 definitions=main-2102170119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mike Marshall <hubcap@omnibond.com> wrote:
+This change fixes a sparse warning "incorrect type in argument 1
+(different address spaces)".
 
-> I plan to try and use readahead_expand in Orangefs...
+Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+---
+ drivers/staging/wlan-ng/p80211netdev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Would it help if I shuffled the readahead_expand patch to the bottom of the
-pack?
-
-David
+diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+index 6f9666dc0277..70570e8a5ad2 100644
+--- a/drivers/staging/wlan-ng/p80211netdev.c
++++ b/drivers/staging/wlan-ng/p80211netdev.c
+@@ -569,7 +569,7 @@ static int p80211knetdev_do_ioctl(struct net_device *dev,
+ 		goto bail;
+ 	}
+ 
+-	msgbuf = memdup_user(req->data, req->len);
++	msgbuf = memdup_user((void __user *)req->data, req->len);
+ 	if (IS_ERR(msgbuf)) {
+ 		result = PTR_ERR(msgbuf);
+ 		goto bail;
+-- 
+2.25.1
 
