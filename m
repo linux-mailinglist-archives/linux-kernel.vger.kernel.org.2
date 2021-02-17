@@ -2,68 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7821E31DB7D
+	by mail.lfdr.de (Postfix) with ESMTP id 01D0A31DB7C
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbhBQO3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:29:55 -0500
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:52125 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233381AbhBQO3r (ORCPT
+        id S233468AbhBQO3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:29:51 -0500
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:49796 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233328AbhBQO3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:29:47 -0500
-Received: by mail-wm1-f54.google.com with SMTP id o82so2293195wme.1;
-        Wed, 17 Feb 2021 06:29:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yM2rqa31pE2vSB899/jqlE3r2uEYnRVyZYaQUTQ4qds=;
-        b=TS8ZAGbGw9LDb6F2v6yMi9fA933p2dfoi4ZLk2FR9iG23o6Re2CZ/ut9yYx4/wynhd
-         kBa9PQghea76jn7+WLzYhfwLsT4u2bMfRzhvglSUzpADlD1AIPMJKrh4QOroSjo3up9d
-         AgYs3qeCvjPvgZjx4gEjzNE3lmMAV/mzz0DLOnZT0XDauwEyQLhZvGK1Yz+3+qYNcp7G
-         PW0yF3R9RhGtfHf9XxfYRLtOC42waQpV/x8A0KZ83soevH2Ev0EMReZnb1+XXmJYlUt2
-         mauDeAgfJCBiGSB8geKUt79l8gwYbXsn1v65jniAnmhz6IOwiPQxTOf/NH3hCmxSyPBo
-         CZww==
-X-Gm-Message-State: AOAM530LL+IWuAGJFbJbpx9udos+wMRqdo31eG+2mca4Cd6WtRHMgRWL
-        Hr9EKwBVWyUCMiZhHnEre94=
-X-Google-Smtp-Source: ABdhPJyepK93+QBagP0ipGRdAOmgCOzt2cjHaLCE+b91sTA14WfUAplhbR7/UPM5NJE8TOMjUOhcmQ==
-X-Received: by 2002:a1c:7301:: with SMTP id d1mr7341350wmb.33.1613572145912;
-        Wed, 17 Feb 2021 06:29:05 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id r7sm3069313wmh.38.2021.02.17.06.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 06:29:04 -0800 (PST)
-Date:   Wed, 17 Feb 2021 15:29:03 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/8] arm64: defconfig: Enable wm8960 audio driver.
-Message-ID: <20210217142903.ij5u5n4h7ebj4al3@kozik-lap>
-References: <20210215231943.36910-1-adrien.grassein@gmail.com>
- <20210215231943.36910-9-adrien.grassein@gmail.com>
+        Wed, 17 Feb 2021 09:29:42 -0500
+X-Greylist: delayed 8976 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Feb 2021 09:29:40 EST
+Received: from myt5-23f0be3aa648.qloud-c.yandex.net (myt5-23f0be3aa648.qloud-c.yandex.net [IPv6:2a02:6b8:c12:3e29:0:640:23f0:be3a])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id E89CE2E0C61;
+        Wed, 17 Feb 2021 17:28:57 +0300 (MSK)
+Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
+        by myt5-23f0be3aa648.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id bPjqwWRHUA-SvxaPpXq;
+        Wed, 17 Feb 2021 17:28:57 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
+        t=1613572137; bh=/M/W/rry6PW248aDe81ggUEdVdPjrAZqjQQ99mtBe3k=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=0tTT32VPUOg0z6LDzc8HPZL7d+d+PsB/jnFYWLRT2W3Nx0ZQqEhQPu5Vgl4mDACv/
+         jzmSZRbdIPVH/coLWDDW0dtNFTi8c2sWCb1xIobGnBma8wAzB5fNXbw89N0R5+FF0K
+         zxVqX78wxQq6HHVH0faWVIV2B4F9FvO1C2lJLueg=
+Authentication-Results: myt5-23f0be3aa648.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:6619::1:17])
+        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id IlngOxqDDd-SuoS9OgN;
+        Wed, 17 Feb 2021 17:28:57 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Andrey Ryabinin <arbn@yandex-team.com>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        valesini@yandex-team.ru, Andrey Ryabinin <arbn@yandex-team.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] iommu/amd: Fix sleeping in atomic in increase_address_space()
+Date:   Wed, 17 Feb 2021 17:30:04 +0300
+Message-Id: <20210217143004.19165-1-arbn@yandex-team.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210215231943.36910-9-adrien.grassein@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:19:43AM +0100, Adrien Grassein wrote:
-> This driver is used by the Nitrogen8m Mini SBC.
-> 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
+increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
+disabled interrupts. gfp flags passed to increase_address_space() may allow
+sleeping, so it comes to this:
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+ BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
+ in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
 
-Best regards,
-Krzysztof
+ Call Trace:
+  dump_stack+0x66/0x8b
+  ___might_sleep+0xec/0x110
+  __alloc_pages_nodemask+0x104/0x300
+  get_zeroed_page+0x15/0x40
+  iommu_map_page+0xdd/0x3e0
+  amd_iommu_map+0x50/0x70
+  iommu_map+0x106/0x220
+  vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
+  do_vfs_ioctl+0xa3/0x6f0
+  ksys_ioctl+0x66/0x70
+  __x64_sys_ioctl+0x16/0x20
+  do_syscall_64+0x4e/0x100
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
+
+Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+Cc: <stable@vger.kernel.org>
+---
+ drivers/iommu/amd/iommu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
+index f0adbc48fd17..9256f84f5ebf 100644
+--- a/drivers/iommu/amd/iommu.c
++++ b/drivers/iommu/amd/iommu.c
+@@ -1502,6 +1502,10 @@ static bool increase_address_space(struct protection_domain *domain,
+ 	bool ret = true;
+ 	u64 *pte;
+ 
++	pte = (void *)get_zeroed_page(gfp);
++	if (!pte)
++		return false;
++
+ 	spin_lock_irqsave(&domain->lock, flags);
+ 
+ 	amd_iommu_domain_get_pgtable(domain, &pgtable);
+@@ -1513,10 +1517,6 @@ static bool increase_address_space(struct protection_domain *domain,
+ 	if (WARN_ON_ONCE(pgtable.mode == PAGE_MODE_6_LEVEL))
+ 		goto out;
+ 
+-	pte = (void *)get_zeroed_page(gfp);
+-	if (!pte)
+-		goto out;
+-
+ 	*pte = PM_LEVEL_PDE(pgtable.mode, iommu_virt_to_phys(pgtable.root));
+ 
+ 	pgtable.root  = pte;
+@@ -1530,10 +1530,12 @@ static bool increase_address_space(struct protection_domain *domain,
+ 	 */
+ 	amd_iommu_domain_set_pgtable(domain, pte, pgtable.mode);
+ 
++	pte = NULL;
+ 	ret = true;
+ 
+ out:
+ 	spin_unlock_irqrestore(&domain->lock, flags);
++	free_page((unsigned long)pte);
+ 
+ 	return ret;
+ }
+-- 
+2.26.2
+
