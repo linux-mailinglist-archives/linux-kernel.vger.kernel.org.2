@@ -2,71 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA1731D5B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:32:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB9431D5B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:32:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhBQHce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:32:34 -0500
-Received: from mga05.intel.com ([192.55.52.43]:62797 "EHLO mga05.intel.com"
+        id S231676AbhBQHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 02:32:07 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:62042 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231515AbhBQHcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:32:31 -0500
-IronPort-SDR: F6OQHdEUrnEZZp8n2xoJmVfhvaBnQuXjLk5UyEDr0NTi9QL3tNBRsps8C5Lq4YnClSesWHG4+i
- nl2ysRvLDO7w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="267977757"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="267977757"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 23:30:42 -0800
-IronPort-SDR: 69tXmDL9lkx0z/px0P1VfkdwnlW9srEkubwldGWVkNw5AkrenN577WTq2HmmPiFbp4IvsGG8Gl
- 1zh96fmfclKg==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="439262663"
-Received: from gna-dev.igk.intel.com (HELO localhost) ([10.102.80.34])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 23:30:37 -0800
-References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com> <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com> <YCwFBNa2npYcEIQ+@kroah.com>
-User-agent: mu4e 1.4.13; emacs 26.3
-From:   Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
-        Savo Novakovic <savox.novakovic@intel.com>,
-        Jianxun Zhang <jianxun.zhang@linux.intel.com>
-Subject: Re: [PATCH v1 01/12] gna: add driver module
-In-reply-to: <YCwFBNa2npYcEIQ+@kroah.com>
-Date:   Wed, 17 Feb 2021 08:30:33 +0100
-Message-ID: <85ft1v2lt2.fsf@linux.intel.com>
+        id S231515AbhBQHbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 02:31:50 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613547092; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=VdTuFW1eZ3KIE8WTPHjDwu+M4861ybBJaxdd7BYbVgs=; b=BydtRVbzBi1+qmxaOxe0luP+DsQe4M8cBma/zF9QEkClyXKI+FneJU5+wlVxi1kslWReX2pv
+ 0TJub4O5qAuln08F7Dt15szd2RsxGx99cHUi32B2sOkQFaMoL++t2CNAOpMwWp6KPrzQFeZ2
+ 6XzqHTrrF5SsX9unryMfKWM81aU=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 602cc6350b8eba4b52b50f1f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 07:31:01
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C6E75C43465; Wed, 17 Feb 2021 07:31:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0331C433CA;
+        Wed, 17 Feb 2021 07:30:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0331C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Felix Fietkau <nbd@nbd.name>, davem@davemloft.net, kuba@kernel.org,
+        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] ath9k: fix ath_tx_process_buffer() potential null ptr dereference
+References: <43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org>
+        <20210216070336.D138BC43463@smtp.codeaurora.org>
+        <0fd9a538-e269-e10e-a7f9-02d4c5848420@nbd.name>
+        <caac2b21-d5de-32ac-0fe0-75af8fb80bbb@linuxfoundation.org>
+Date:   Wed, 17 Feb 2021 09:30:55 +0200
+In-Reply-To: <caac2b21-d5de-32ac-0fe0-75af8fb80bbb@linuxfoundation.org> (Shuah
+        Khan's message of "Tue, 16 Feb 2021 08:22:07 -0700")
+Message-ID: <878s7nqhg0.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Shuah Khan <skhan@linuxfoundation.org> writes:
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-
-> On Tue, Feb 16, 2021 at 05:05:14PM +0100, Maciej Kwapulinski wrote:
->> --- /dev/null
->> +++ b/drivers/misc/gna/gna_driver.c
->> @@ -0,0 +1,65 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +// Copyright(c) 2017-2021 Intel Corporation
->> +
->> +#define pr_fmt(fmt) KBUILD_MODNAME " " fmt
+> On 2/16/21 12:53 AM, Felix Fietkau wrote:
+>>
+>> On 2021-02-16 08:03, Kalle Valo wrote:
+>>> Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>
+>>>> ath_tx_process_buffer() references ieee80211_find_sta_by_ifaddr()
+>>>> return pointer (sta) outside null check. Fix it by moving the code
+>>>> block under the null check.
+>>>>
+>>>> This problem was found while reviewing code to debug RCU warn from
+>>>> ath10k_wmi_tlv_parse_peer_stats_info() and a subsequent manual audit
+>>>> of other callers of ieee80211_find_sta_by_ifaddr() that don't hold
+>>>> RCU read lock.
+>>>>
+>>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+>>>
+>>> Patch applied to ath-next branch of ath.git, thanks.
+>>>
+>>> a56c14bb21b2 ath9k: fix ath_tx_process_buffer() potential null ptr dereference
+>> I just took another look at this patch, and it is completely bogus.
+>> Not only does the stated reason not make any sense (sta is simply passed
+>> to other functions, not dereferenced without checks), but this also
+>> introduces a horrible memory leak by skipping buffer completion if sta
+>> is NULL.
+>> Please drop it, the code is fine as-is.
 >
-> You are a driver, you should never need a pr_* call, so this should not
-> be needed.  You should always just use dev_* instead.
->
+> A comment describing what you said here might be a good addition to this
+> comment block though.
 
-Hi Greg and all other Reviewers.
+Shuah, can you send a followup patch which reverts your change and adds
+the comment? I try to avoid rebasing my trees.
 
-Thank You for all the comments so far.
+-- 
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-I'm starting preparing PATCH v2 series based on them.
-I'll also answer comments individually where need arises.
-
-regards,
-Maciej
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
