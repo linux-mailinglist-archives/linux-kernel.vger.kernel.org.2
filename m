@@ -2,88 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAC4431E327
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:42:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FC431E32A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbhBQXlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 18:41:46 -0500
-Received: from mga01.intel.com ([192.55.52.88]:52161 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232773AbhBQXlm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:41:42 -0500
-IronPort-SDR: DAo+cFLNhlhW3OXfvkUzJCjUTnYfCjZDHGldgvgUKxB8xN3jwb+RP5jrmTwB7c1i5d1c4t/cE5
- lTK5FpAMOX8w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="202583666"
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
-   d="scan'208";a="202583666"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:39:56 -0800
-IronPort-SDR: l5pau08vLwqdrwwdltVo1XaSyI3oBoG1y6KAqdpYFr4C2i2Lh1623A5gGiz6/MMD7CXw2zFGS3
- 73xFYk/1m1yQ==
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
-   d="scan'208";a="439544551"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:39:56 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 10E336365;
-        Wed, 17 Feb 2021 15:39:56 -0800 (PST)
-Date:   Wed, 17 Feb 2021 15:39:56 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>
-Subject: Re: [PATCH v6 34/34] misc: HDDL device management for IA host
-Message-ID: <20210217233955.GK154917@linux.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-35-mgross@linux.intel.com>
- <bf135165-35c3-002f-305a-33019fb52b44@infradead.org>
+        id S233119AbhBQXn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 18:43:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46198 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233739AbhBQXnN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 18:43:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613605306;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J3M2KhFv949MzTChyZ6whg+sl8JiaihVgRYmFFexUMY=;
+        b=gJnF7y7W4PRgDZD4RiZdvdDcPI885OxvhDjyxPuSW14uPYXTqz5CiP8mm2oYWB419sS64i
+        Yk92G5NEqQS3SHlruH2hYx28rGrnr+xbR4VCR2pksxY8bOcgc57G0fg5xemWQo1kAIYajC
+        fnuS+HtLEfYvrmTAjMa+IkRTB/nfPf0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-jzJXKHZYOXi5LExsQ0q2iA-1; Wed, 17 Feb 2021 18:41:44 -0500
+X-MC-Unique: jzJXKHZYOXi5LExsQ0q2iA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91A26BBEE2;
+        Wed, 17 Feb 2021 23:41:42 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5DC8F648A2;
+        Wed, 17 Feb 2021 23:41:34 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 18:41:31 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Phil Sutter <phil@nwl.cc>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
+        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
+ events
+Message-ID: <20210217234131.GN3141668@madcap2.tricolour.ca>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+ <20210211151606.GX3158@orbyte.nwl.cc>
+ <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+ <20210211202628.GP2015948@madcap2.tricolour.ca>
+ <20210211220930.GC2766@breakpoint.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bf135165-35c3-002f-305a-33019fb52b44@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210211220930.GC2766@breakpoint.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 14, 2021 at 09:48:53AM -0800, Randy Dunlap wrote:
-> On 2/12/21 2:23 PM, mgross@linux.intel.com wrote:
-> > diff --git a/drivers/misc/hddl_device/Kconfig b/drivers/misc/hddl_device/Kconfig
-> > index e1ae81fdf177..7f9a6a685275 100644
-> > --- a/drivers/misc/hddl_device/Kconfig
-> > +++ b/drivers/misc/hddl_device/Kconfig
-> > @@ -12,3 +12,15 @@ config HDDL_DEVICE_CLIENT
-> >  	  the device connect/disconnect programming sequence.
-> >  	  Say Y if using a processor that includes the Intel VPU such as
-> >  	  Keem Bay.  If unsure, say N.
-> > +
-> > +config HDDL_DEVICE_SERVER
-> > +	tristate "Support for hddl device server"
+On 2021-02-11 23:09, Florian Westphal wrote:
+> Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > > I personally would notify once per transaction. This is easy and quick.
+> > 
+> > This was the goal.  iptables was atomic.  nftables appears to no longer
+> > be so.  If I have this wrong, please show how that works.
 > 
-> Please use "HDDL" consistently.
-fixed and qued up for merge window closure.
+> nftables transactions are atomic, either the entire batch takes effect or not
+> at all.
+> 
+> The audit_log_nfcfg() calls got added to the the nft monitor infra which
+> is designed to allow userspace to follow the entire content of the
+> transaction log.
+> 
+> So, if its just a 'something was changed' event that is needed all of
+> them can be removed. ATM the audit_log_nfcfg() looks like this:
+> 
+>         /* step 3. Start new generation, rules_gen_X now in use. */
+>         net->nft.gencursor = nft_gencursor_next(net);
+> 
+>         list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
+>                 switch (trans->msg_type) {
+>                 case NFT_MSG_NEWTABLE:
+> 			audit_log_nfcfg();
+> 			...
+> 		case NFT_MSG_...
+> 			audit_log_nfcfg();
+> 	..
+> 	       	}
+> 
+> which gives an audit_log for every single change in the batch.
+> 
+> So, if just a summary is needed a single audit_log_nfcfg()
+> after 'step 3' and outside of the list_for_each_entry_safe() is all
+> that is needed.
 
---mark
+Ok, so it should not matter if it is before or after that
+list_for_each_entry_safe(), which could be used to collect that summary.
 
-> 
-> > +	depends on XLINK_CORE && !HDDL_DEVICE_CLIENT
-> > +	help
-> > +	  This option enables HDDL device server module.
-> > +
-> > +	  This driver is used for sharing time sync data to local host and
-> > +	  retrives the sensors available on the platform. This also handles
-> > +	  the device connect/disconnect programming sequence.
-> > +	  Say Y if using a processor that includes the Intel VPU such as
-> > +	  Keem Bay.  If unsure, say N.
-> 
-> 
-> thanks.
-> -- 
-> ~Randy
-> 
+> If a summary is wanted as well one could fe. count the number of
+> transaction types in the batch, e.g. table adds, chain adds, rule
+> adds etc. and then log a summary count instead.
+
+The current fields are "table", "family", "entries", "op".
+
+Could one batch change more than one table?  (I think it could?)
+
+It appears it can change more than one family.
+"family" is currently a single integer, so that might need to be changed
+to a list, or something to indicate multi-family.
+
+A batch can certainly change more than one chain, but that was already a
+bonus.
+
+"entries" would be the obvious place for the summary count.
+
+Listing all the ops seems a bit onerous.  Is there a hierarchy to the
+ops and if so, are they in that order in a batch or in nf_tables_commit()?
+It seems I'd need to filter out the NFT_MSG_GET_* ops.
+
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
+
