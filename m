@@ -2,151 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B17E31DF6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1B931DF6E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:11:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhBQTJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:09:37 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:42714 "EHLO z11.mailgun.us"
+        id S232131AbhBQTLf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Feb 2021 14:11:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231491AbhBQTJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:09:33 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613588945; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=iUgyAmn0n/jIbpXd2qZaNyiWNOIW2DJRiGM1oQdo+qY=; b=oGeEk4dCgdU6/ltiBdxn7FWBChAq4rrSUgV7VmTKgAAe8fKvCPjhL4vgWok6tHvr7s6F89Lx
- R80wQ0gavb9GrUcVJbyBSSsUs2Ay6H1I2CIcZfP4OvFRBZ1g4Bc+Uk301Dxu8k4KKKWze6S2
- 0vILZ9MlaWPkzMvKOz8e2JX6EFg=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 602d69a91e797edad879c13e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 19:08:25
- GMT
-Sender: jcrouse=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2769CC43462; Wed, 17 Feb 2021 19:08:25 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S231336AbhBQTL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:11:29 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 256B9C433C6;
-        Wed, 17 Feb 2021 19:08:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 256B9C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Wed, 17 Feb 2021 12:08:20 -0700
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Jonathan Marek <jonathan@marek.ca>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/msm/a6xx: fix for kernels without CONFIG_NVMEM
-Message-ID: <20210217190820.GA2229@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>, Jonathan Marek <jonathan@marek.ca>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210216200909.19039-1-jonathan@marek.ca>
- <CAF6AEGv53nnzqMgTfSA6t2YpHx1dDW8UqnH9Gw0w3p8bf0mTLw@mail.gmail.com>
- <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEDF864DE0;
+        Wed, 17 Feb 2021 19:10:48 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lCSDm-00EeFc-JX; Wed, 17 Feb 2021 19:10:46 +0000
+Date:   Wed, 17 Feb 2021 19:10:45 +0000
+Message-ID: <87ft1upl1m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, marcan@marcan.st,
+        kernel-team@android.com
+Subject: Re: [PATCH] irqchip: Do not blindly select CONFIG_GENERIC_IRQ_MULTI_HANDLER
+In-Reply-To: <20210217142800.2547737-1-maz@kernel.org>
+References: <20210217142800.2547737-1-maz@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, mark.rutland@arm.com, tglx@linutronix.de, marcan@marcan.st, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 07:14:16PM +0530, Akhil P Oommen wrote:
-> On 2/17/2021 8:36 AM, Rob Clark wrote:
-> >On Tue, Feb 16, 2021 at 12:10 PM Jonathan Marek <jonathan@marek.ca> wrote:
-> >>
-> >>Ignore nvmem_cell_get() EOPNOTSUPP error in the same way as a ENOENT error,
-> >>to fix the case where the kernel was compiled without CONFIG_NVMEM.
-> >>
-> >>Fixes: fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
-> >>Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> >>---
-> >>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
-> >>  1 file changed, 3 insertions(+), 3 deletions(-)
-> >>
-> >>diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>index ba8e9d3cf0fe..7fe5d97606aa 100644
-> >>--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>@@ -1356,10 +1356,10 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
-> >>
-> >>         cell = nvmem_cell_get(dev, "speed_bin");
-> >>         /*
-> >>-        * -ENOENT means that the platform doesn't support speedbin which is
-> >>-        * fine
-> >>+        * -ENOENT means no speed bin in device tree,
-> >>+        * -EOPNOTSUPP means kernel was built without CONFIG_NVMEM
-> >
-> >very minor nit, it would be nice to at least preserve the gist of the
-> >"which is fine" (ie. some variation of "this is an optional thing and
-> >things won't catch fire without it" ;-))
-> >
-> >(which is, I believe, is true, hopefully Akhil could confirm.. if not
-> >we should have a harder dependency on CONFIG_NVMEM..)
-> IIRC, if the gpu opp table in the DT uses the 'opp-supported-hw' property,
-> we will see some error during boot up if we don't call
-> dev_pm_opp_set_supported_hw(). So calling "nvmem_cell_get(dev, "speed_bin")"
-> is a way to test this.
+On Wed, 17 Feb 2021 14:28:00 +0000,
+Marc Zyngier <maz@kernel.org> wrote:
 > 
-> If there is no other harm, we can put a hard dependency on CONFIG_NVMEM.
-
-I'm not sure if we want to go this far given the squishiness about module
-dependencies. As far as I know we are the only driver that uses this seriously
-on QCOM SoCs and this is only needed for certain targets. I don't know if we
-want to force every target to build NVMEM and QFPROM on our behalf. But maybe
-I'm just saying that because Kconfig dependencies tend to break my brain (and
-then Arnd has to send a patch to fix it).
-
-Jordan
-
-> -Akhil.
-> >
-> >BR,
-> >-R
-> >
-> >>          */
-> >>-       if (PTR_ERR(cell) == -ENOENT)
-> >>+       if (PTR_ERR(cell) == -ENOENT || PTR_ERR(cell) == -EOPNOTSUPP)
-> >>                 return 0;
-> >>         else if (IS_ERR(cell)) {
-> >>                 DRM_DEV_ERROR(dev,
-> >>--
-> >>2.26.1
-> >>
+> Implementing CONFIG_GENERIC_IRQ_MULTI_HANDLER is a decision that is
+> made at the architecture level, and shouldn't involve the irqchip
+> at all (we even provide a fallback helper when the option isn't
+> selected).
 > 
+> Drop all instances of such selection from non-arch code.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/irqchip/Kconfig | 9 ---------
+>  1 file changed, 9 deletions(-)
+> 
+> diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+> index da7b3cf63b07..1e3dba80ff0b 100644
+> --- a/drivers/irqchip/Kconfig
+> +++ b/drivers/irqchip/Kconfig
+
+[...]
+
+> @@ -64,7 +62,6 @@ config ARM_NVIC
+>  config ARM_VIC
+>  	bool
+>  	select IRQ_DOMAIN
+> -	select GENERIC_IRQ_MULTI_HANDLER
+>  
+
+Mark pointed out that ep93xx doesn't select GENERIC_IRQ_MULTI_HANDLER,
+and that this removal breaks it. I've added the patch below before
+this one to address the issue.
+
+Thanks,
+
+	M.
+
+From c14dc142dd97708d53566efafd7ef7c4e8354f8d Mon Sep 17 00:00:00 2001
+From: Marc Zyngier <maz@kernel.org>
+Date: Wed, 17 Feb 2021 18:10:35 +0000
+Subject: [PATCH] ARM: ep93xx: Select GENERIC_IRQ_MULTI_HANDLER directly
+
+ep93xx currently relies of CONFIG_ARM_VIC to select
+GENERIC_IRQ_MULTI_HANDLER. Given that this is logically a platform
+architecture property, add the selection of GENERIC_IRQ_MULTI_HANDLER
+at the platform level.
+
+Further patches will remove the selection from the irqchip side.
+
+Reported-by: Marc Rutland <mark.rutland@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ arch/arm/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 138248999df7..8efa01363da3 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -348,6 +348,7 @@ config ARCH_EP93XX
+ 	select ARM_AMBA
+ 	imply ARM_PATCH_PHYS_VIRT
+ 	select ARM_VIC
++	select GENERIC_IRQ_MULTI_HANDLER
+ 	select AUTO_ZRELADDR
+ 	select CLKDEV_LOOKUP
+ 	select CLKSRC_MMIO
+-- 
+2.30.0
+
 
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Without deviation from the norm, progress is not possible.
