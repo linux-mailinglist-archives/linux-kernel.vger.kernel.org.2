@@ -2,160 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F69731DE7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:42:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFAD31DE80
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234597AbhBQRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234541AbhBQRhI (ORCPT
+        id S234633AbhBQRlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:41:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36746 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234554AbhBQRi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:37:08 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DD3C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:36:22 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id e9so2103918pjj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:36:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=WY6BWQE+OiB63lkzsmOgRmOC11+SnGhNqoMsqPgupK0=;
-        b=GprgssCWFqAFmY0cF2yEF2MPhDCjdfUL8SjA6Y++eq8i4XcOu4c8qwI3dKrBcZABFQ
-         McRxKZJkcg7vkbxQJFUJwisk5b9MME3e2RUDKt+voxBDyp+sc7W7UNA9z41HvXUI7KpG
-         G/CgtqDUunpMsp4gDi7IUyw+U4sU+HoYw8OwE=
+        Wed, 17 Feb 2021 12:38:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613583450;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UPGAdvbPe3s8hDQD7kYYeKCejFf3hkqwhppMcQX39O8=;
+        b=TbN6S8z/R44ta0lZG8hhlF5B/BzsJE8/wPs4tCEsvl/1cl57mLqQUmqfflhQOdOW1xkFxG
+        BGYp0KEtBULO4IZ/DD8twNfcn+cl0VS3wFZGDFEAIjKX4m8hjVCywCtTD0DwAG/L0bxNQb
+        wFmIPh05FXuHVF5K6Q7iCwTM05kYfHU=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-P3BGnftBPQmz4z43xE5CBg-1; Wed, 17 Feb 2021 12:37:28 -0500
+X-MC-Unique: P3BGnftBPQmz4z43xE5CBg-1
+Received: by mail-wm1-f70.google.com with SMTP id t15so2327466wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:37:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=WY6BWQE+OiB63lkzsmOgRmOC11+SnGhNqoMsqPgupK0=;
-        b=fxcmU127//H/0CyvZs7o/zU5fazrF5CTZOPeCrWxGFAamU59/p+tj9V+l9TOClV+ze
-         12bLV8iRDL4Pl/pEO0MNcEcd+taYClZ+oUKl0SXZz70WriHbrduEUhNmB4jyq8My/z5+
-         RTBuoNbmw93igdhaX2lisHt5qSu5uXNCCEJ388DhSCXuTptCx9KtOGaxLacxyLadZ3cY
-         OBcdhmB31oPfDe9tBxsGapgtNKRQLqGl5fAKbaIFwiVPQUSGy9hN5bZnXl+C0rmDzVNk
-         CNKxa/1PeGwrjwn2LTg22+Znm6rL2Hb2/NKaXJR81yDbPRw7WfJWNsFyRT07X3hgGVA2
-         nZWg==
-X-Gm-Message-State: AOAM530MZjLOtozYw9AbUwKa4R/Q1AErtQX6pdwhKvUZ88/VSir8czXf
-        HfQm9Hy6NBXv3aX3c+yid1kIetw+yTh3lQ==
-X-Google-Smtp-Source: ABdhPJyhWhQ9ajxWuvuPPlk0WDsx0eU1nYFqyGy8fAj+49lGy1XE7lbsHVRetwAlivzQsGqhK0yUdQ==
-X-Received: by 2002:a17:90a:aa0d:: with SMTP id k13mr10652749pjq.210.1613583382027;
-        Wed, 17 Feb 2021 09:36:22 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:e915:2799:f43d:3184])
-        by smtp.gmail.com with ESMTPSA id np7sm2638673pjb.10.2021.02.17.09.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 09:36:21 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UPGAdvbPe3s8hDQD7kYYeKCejFf3hkqwhppMcQX39O8=;
+        b=poPlv1ea+8+puUo3JdkbBYvaegNN7w5DShHJgKARyWv6H6/bAPuaWaLF40eX42cC1F
+         Yt+xSXScbDLGrB497ZgwMlG2YniRKlcUjfqdNs2J06aAyiq/swOuOQox6uSqgCGfN6Ee
+         Mkr9XN/ecEotmO97ToEguxXl6P0Z2+Onv+UV2ImijqAOLr3hhk6BoC1JTEW03J1qt/Qb
+         11e64Fa6jNiVZFEoTde97j6oJc9ljQC+cYxQ+AxJk+LyamU5AMamvWJQFRdMBlRTPKAk
+         KJILTRNZdHZQB3VIv32e0h8rTb3bHJ6/UeJt6XUFtwyy2pcjF2G/h3iPa5/l1V1AakzP
+         Zx1Q==
+X-Gm-Message-State: AOAM5339OUkWujASerb+KczX4laJU1tjaj3GTnSADoZkKzj5mOxHWXZ9
+        jAkEQWuYcQm6jCSJK4Z3YsuGYuKyUIpl0khK2b+jqwioBVXSOK2rw43UFdHuazSr1h8OQQHhwcx
+        oqNFc8765ewuAqTzzqzsuMMJI
+X-Received: by 2002:a1c:bbc5:: with SMTP id l188mr58825wmf.32.1613583447118;
+        Wed, 17 Feb 2021 09:37:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzE1/ypz4t+gMfd5XV3rMhW1vFNWYoK+YTd/GqoJtUHKsj6mlHffXpSQ+5XtDl1Rs4O73+XjQ==
+X-Received: by 2002:a1c:bbc5:: with SMTP id l188mr58817wmf.32.1613583446952;
+        Wed, 17 Feb 2021 09:37:26 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id i10sm6137319wrp.0.2021.02.17.09.37.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Feb 2021 09:37:26 -0800 (PST)
+Subject: Re: [PATCH 4/7] KVM: nVMX: move inject_page_fault tweak to
+ .complete_mmu_init
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210217145718.1217358-1-mlevitsk@redhat.com>
+ <20210217145718.1217358-5-mlevitsk@redhat.com> <YC1ShhSZ+6ST63nZ@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <5a8bea9b-deb1-673a-3dc8-f08b679de4c5@redhat.com>
+Date:   Wed, 17 Feb 2021 18:37:25 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1613581122-8473-1-git-send-email-khsieh@codeaurora.org>
-References: <1613581122-8473-1-git-send-email-khsieh@codeaurora.org>
-Subject: Re: [PATCH] drm/msm/dp: add support of HBR3 link rate
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run, Vinod Koul <vkoul@kernel.org>
-Date:   Wed, 17 Feb 2021 09:36:18 -0800
-Message-ID: <161358337887.1254594.12898848287081049541@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <YC1ShhSZ+6ST63nZ@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-02-17 08:58:42)
-> Add hbr3_hbr2 voltage and pre-emphasis swing table to support
-> HBR3 link rate
->=20
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/dp/dp_panel.c   |  4 ----
->  drivers/phy/qualcomm/phy-qcom-qmp.c | 24 ++++++++++++++++++++++--
+On 17/02/21 18:29, Sean Christopherson wrote:
+> All that being said, I'm pretty we can eliminate setting 
+> inject_page_fault dynamically. I think that would yield more 
+> maintainable code. Following these flows is a nightmare. The change 
+> itself will be scarier, but I'm pretty sure the end result will be a lot 
+> cleaner.
 
-This spans to subsystems so at least you should run get_maintainers and
-include phy maintainers. Maybe it should be split into two patches too
-so it can go via different trees.
+I had a similar reaction, though my proposal was different.
 
->  2 files changed, 22 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/d=
-p_panel.c
-> index 9cc8166..63112fa 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_panel.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-> @@ -76,10 +76,6 @@ static int dp_panel_read_dpcd(struct dp_panel *dp_pane=
-l)
->         if (link_info->num_lanes > dp_panel->max_dp_lanes)
->                 link_info->num_lanes =3D dp_panel->max_dp_lanes;
-> =20
-> -       /* Limit support upto HBR2 until HBR3 support is added */
-> -       if (link_info->rate >=3D (drm_dp_bw_code_to_link_rate(DP_LINK_BW_=
-5_4)))
-> -               link_info->rate =3D drm_dp_bw_code_to_link_rate(DP_LINK_B=
-W_5_4);
-> -
->         DRM_DEBUG_DP("version: %d.%d\n", major, minor);
->         DRM_DEBUG_DP("link_rate=3D%d\n", link_info->rate);
->         DRM_DEBUG_DP("lane_count=3D%d\n", link_info->num_lanes);
-> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/p=
-hy-qcom-qmp.c
-> index 0939a9e..cc5ef59 100644
-> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-> @@ -2965,6 +2965,21 @@ static void qcom_qmp_phy_dp_aux_init(struct qmp_ph=
-y *qphy)
->                qphy->pcs + QSERDES_V3_DP_PHY_AUX_INTERRUPT_MASK);
->  }
-> =20
-> +
-> +static u8 const qmp_dp_v3_pre_emphasis_hbr3_hbr2[4][4] =3D {
+The only thing we're changing in complete_mmu_init is the page fault 
+callback for init_kvm_softmmu, so couldn't that be the callback directly 
+(i.e. something like context->inject_page_fault = 
+kvm_x86_ops.inject_softmmu_page_fault)?  And then adding is_guest_mode 
+to the conditional that is already in vmx_inject_page_fault_nested and 
+svm_inject_page_fault_nested.
 
-Should be static const u8 qmp_dp...
+That said, I'm also rusty on _why_ this code is needed.  Why isn't it 
+enough to inject the exception normally, and let 
+nested_vmx_check_exception decide whether to inject a vmexit to L1 or an 
+exception into L2?
 
-> +        {0x00, 0x0C, 0x15, 0x1A},
-> +        {0x02, 0x0E, 0x16, 0xFF},
-> +        {0x02, 0x11, 0xFF, 0xFF},
-> +        {0x04, 0xFF, 0xFF, 0xFF}
-> +};
-> +
-> +static u8 const qmp_dp_v3_voltage_swing_hbr3_hbr2[4][4] =3D {
+Also, bonus question which should have been in the 5/7 changelog: are 
+there kvm-unit-tests testcases that fail with npt=0, and if not could we 
+write one?  [Answer: the mode_switch testcase fails, but I haven't 
+checked why].
 
-Same.
 
-> +        {0x02, 0x12, 0x16, 0x1A},
+Paolo
 
-Please add a space after { and before } and use lowercase hex to match
-the qmp_dp_v3_pre_emphasis_hbr_rbr design.
-
-> +        {0x09, 0x19, 0x1F, 0xFF},
-> +        {0x10, 0x1F, 0xFF, 0xFF},
-> +        {0x1F, 0xFF, 0xFF, 0xFF}
-> +};
-> +
->  static const u8 qmp_dp_v3_pre_emphasis_hbr_rbr[4][4] =3D {
->         { 0x00, 0x0c, 0x14, 0x19 },
->         { 0x00, 0x0b, 0x12, 0xff },
-> @@ -3000,8 +3015,13 @@ static void qcom_qmp_phy_configure_dp_tx(struct qm=
-p_phy *qphy)
->                 drvr_en =3D 0x10;
->         }
-> =20
-> -       voltage_swing_cfg =3D qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_=
-level];
-> -       pre_emphasis_cfg =3D qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_le=
-vel];
-> +       if (dp_opts->link_rate <=3D 2700) {
-> +               voltage_swing_cfg =3D qmp_dp_v3_voltage_swing_hbr_rbr[v_l=
-evel][p_level];
-> +               pre_emphasis_cfg =3D qmp_dp_v3_pre_emphasis_hbr_rbr[v_lev=
-el][p_level];
-> +       } else {
-> +               voltage_swing_cfg =3D qmp_dp_v3_voltage_swing_hbr3_hbr2[v=
-_level][p_level];
-> +               pre_emphasis_cfg =3D qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_l=
-evel][p_level];
-> +       }
