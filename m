@@ -2,114 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC5231D423
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 04:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1191D31D428
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 04:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBQDEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 22:04:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhBQDEB (ORCPT
+        id S230386AbhBQDID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 22:08:03 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:2411 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229946AbhBQDH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 22:04:01 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717D9C061574;
-        Tue, 16 Feb 2021 19:03:21 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id v1so15799075wrd.6;
-        Tue, 16 Feb 2021 19:03:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K5+6phUMVFMaRDA3F4TKDcCMWV0Y6SKjytFwuos+eCo=;
-        b=N5NMdUkX/SISYBEbo4zogYa+OyoIMfr3kgfB3MAeDQ5I8q6OAdeag2hCtK+P4X/Ph9
-         Den0jMO4Ij95BqW3JWmXwXK7r7Li4vZGZEJqDFITh/xQBk2FV97Xkq4jdr7d4vkxXxf5
-         Ww8n3z2hpCFxmkx0KQdZv5PCjKnt9wNQCdMSjwcfb1JNGfP4sTU+atKMvF1CJ9/xy2xr
-         9dfwRWLbIydH6e86U7Gdh31dFxX4NLKP7V/dz20zNfMohDU28haRs+SlWOsJhgtEE9LS
-         T0VCdbab2f1nS5GuKY/NPP4ow7z44GgbKbRwvDzfrDaAHbB4rjS7xxJmeeRXcH8L4c5b
-         sWVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K5+6phUMVFMaRDA3F4TKDcCMWV0Y6SKjytFwuos+eCo=;
-        b=n6wxQhJpmN9il/W0fe9dzsVLPDg1lgzVgrRr8BXYscA2d0BVTasbMiCSaHNEFCSYdE
-         sOo6YIGio+mtXr8q1a6SPdlXeCGmLYF1C5Q2nFKZf57H3r/kl2nEulxNAFOKOFhChNnq
-         KT3CMd+/3CKlPr/lSe3bwYKVr5IFMvu0mnbyeC+xxbKrdC4bmHXYfqqrB+gUnirDX/PL
-         Qe1X0Zxb+WvagWC7ubfEgYuG8BQlHuGJVfTz6Z/rMTo23CS3OtIBSlQmAuWJYjognOJA
-         FL0cfGzDYxL9xury6G55AYUuwYX4dLhUS5xcIuNwOxFZBSF6/u9xrvBWKjbZkvYiezYH
-         Kjbw==
-X-Gm-Message-State: AOAM532FspFcMxqi4kBuQivE234BM4H37ar/dx922qw4a4He5/vmgVAh
-        eVy/3fCWN5Us/jFCLAvKKxBq2ib4STbGvsPCGkAvN0z98zUwHA==
-X-Google-Smtp-Source: ABdhPJysM4i+VFwS+4UtJ8OqSqZC7ZdIVq6OmnStef7a16sT9kl+pO99M9F3CAk2lUJ2USJ7LmdYJxRJ6PGmb8/Mh24=
-X-Received: by 2002:adf:fad2:: with SMTP id a18mr5618297wrs.147.1613531000181;
- Tue, 16 Feb 2021 19:03:20 -0800 (PST)
+        Tue, 16 Feb 2021 22:07:59 -0500
+X-IronPort-AV: E=Sophos;i="5.81,184,1610380800"; 
+   d="scan'208";a="104561806"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 17 Feb 2021 11:07:08 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 8C4954CE6F9B;
+        Wed, 17 Feb 2021 11:07:02 +0800 (CST)
+Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
+ (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 17 Feb
+ 2021 11:06:55 +0800
+Subject: Re: [PATCH 4/7] fsdax: Replace mmap entry in case of CoW
+To:     <dsterba@suse.cz>, <linux-kernel@vger.kernel.org>,
+        <linux-xfs@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-fsdevel@vger.kernel.org>, <darrick.wong@oracle.com>,
+        <dan.j.williams@intel.com>, <willy@infradead.org>, <jack@suse.cz>,
+        <viro@zeniv.linux.org.uk>, <linux-btrfs@vger.kernel.org>,
+        <ocfs2-devel@oss.oracle.com>, <david@fromorbit.com>, <hch@lst.de>,
+        <rgoldwyn@suse.de>, Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20210207170924.2933035-1-ruansy.fnst@cn.fujitsu.com>
+ <20210207170924.2933035-5-ruansy.fnst@cn.fujitsu.com>
+ <20210216131154.GN1993@twin.jikos.cz>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <4e9a79ed-aa99-c57b-6098-f55ef28cc535@cn.fujitsu.com>
+Date:   Wed, 17 Feb 2021 11:06:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210216200909.19039-1-jonathan@marek.ca>
-In-Reply-To: <20210216200909.19039-1-jonathan@marek.ca>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 16 Feb 2021 19:06:12 -0800
-Message-ID: <CAF6AEGv53nnzqMgTfSA6t2YpHx1dDW8UqnH9Gw0w3p8bf0mTLw@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/a6xx: fix for kernels without CONFIG_NVMEM
-To:     Jonathan Marek <jonathan@marek.ca>,
-        Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210216131154.GN1993@twin.jikos.cz>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: 8C4954CE6F9B.AD540
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:10 PM Jonathan Marek <jonathan@marek.ca> wrote:
->
-> Ignore nvmem_cell_get() EOPNOTSUPP error in the same way as a ENOENT error,
-> to fix the case where the kernel was compiled without CONFIG_NVMEM.
->
-> Fixes: fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> index ba8e9d3cf0fe..7fe5d97606aa 100644
-> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> @@ -1356,10 +1356,10 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
->
->         cell = nvmem_cell_get(dev, "speed_bin");
->         /*
-> -        * -ENOENT means that the platform doesn't support speedbin which is
-> -        * fine
-> +        * -ENOENT means no speed bin in device tree,
-> +        * -EOPNOTSUPP means kernel was built without CONFIG_NVMEM
 
-very minor nit, it would be nice to at least preserve the gist of the
-"which is fine" (ie. some variation of "this is an optional thing and
-things won't catch fire without it" ;-))
 
-(which is, I believe, is true, hopefully Akhil could confirm.. if not
-we should have a harder dependency on CONFIG_NVMEM..)
+On 2021/2/16 下午9:11, David Sterba wrote:
+> On Mon, Feb 08, 2021 at 01:09:21AM +0800, Shiyang Ruan wrote:
+>> We replace the existing entry to the newly allocated one
+>> in case of CoW. Also, we mark the entry as PAGECACHE_TAG_TOWRITE
+>> so writeback marks this entry as writeprotected. This
+>> helps us snapshots so new write pagefaults after snapshots
+>> trigger a CoW.
+>>
+>> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+>> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+>> ---
+>>   fs/dax.c | 31 +++++++++++++++++++++++--------
+>>   1 file changed, 23 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/fs/dax.c b/fs/dax.c
+>> index b2195cbdf2dc..29698a3d2e37 100644
+>> --- a/fs/dax.c
+>> +++ b/fs/dax.c
+>> @@ -722,6 +722,9 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
+>>   	return 0;
+>>   }
+>>   
+>> +#define DAX_IF_DIRTY		(1ULL << 0)
+>> +#define DAX_IF_COW		(1ULL << 1)
+> 
+> The constants are ULL, but I see other flags only 'unsigned long'
+> 
+>> +
+>>   /*
+>>    * By this point grab_mapping_entry() has ensured that we have a locked entry
+>>    * of the appropriate size so we don't have to worry about downgrading PMDs to
+>> @@ -731,14 +734,16 @@ static int copy_cow_page_dax(struct block_device *bdev, struct dax_device *dax_d
+>>    */
+>>   static void *dax_insert_entry(struct xa_state *xas,
+>>   		struct address_space *mapping, struct vm_fault *vmf,
+>> -		void *entry, pfn_t pfn, unsigned long flags, bool dirty)
+>> +		void *entry, pfn_t pfn, unsigned long flags, bool insert_flags)
+> 
+> insert_flags is bool
+> 
+>>   {
+>>   	void *new_entry = dax_make_entry(pfn, flags);
+>> +	bool dirty = insert_flags & DAX_IF_DIRTY;
+> 
+> "insert_flags & DAX_IF_DIRTY" is "bool & ULL", this can't be right
 
-BR,
--R
+This is a mistake caused by rebasing my old version patchset.  Thanks 
+for pointing out.  I'll fix this in next version.
+> 
+>> +	bool cow = insert_flags & DAX_IF_COW;
+> 
+> Same
+> 
+>>   
+>>   	if (dirty)
+>>   		__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
+>>   
+>> -	if (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE)) {
+>> +	if (cow || (dax_is_zero_entry(entry) && !(flags & DAX_ZERO_PAGE))) {
+>>   		unsigned long index = xas->xa_index;
+>>   		/* we are replacing a zero page with block mapping */
+>>   		if (dax_is_pmd_entry(entry))
+>> @@ -750,7 +755,7 @@ static void *dax_insert_entry(struct xa_state *xas,
+>>   
+>>   	xas_reset(xas);
+>>   	xas_lock_irq(xas);
+>> -	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
+>> +	if (cow || dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
+>>   		void *old;
+>>   
+>>   		dax_disassociate_entry(entry, mapping, false);
+>> @@ -774,6 +779,9 @@ static void *dax_insert_entry(struct xa_state *xas,
+>>   	if (dirty)
+>>   		xas_set_mark(xas, PAGECACHE_TAG_DIRTY);
+>>   
+>> +	if (cow)
+>> +		xas_set_mark(xas, PAGECACHE_TAG_TOWRITE);
+>> +
+>>   	xas_unlock_irq(xas);
+>>   	return entry;
+>>   }
+>> @@ -1319,6 +1327,7 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>>   	void *entry;
+>>   	pfn_t pfn;
+>>   	void *kaddr;
+>> +	unsigned long insert_flags = 0;
+>>   
+>>   	trace_dax_pte_fault(inode, vmf, ret);
+>>   	/*
+>> @@ -1444,8 +1453,10 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>>   
+>>   		goto finish_iomap;
+>>   	case IOMAP_UNWRITTEN:
+>> -		if (write && iomap.flags & IOMAP_F_SHARED)
+>> +		if (write && (iomap.flags & IOMAP_F_SHARED)) {
+>> +			insert_flags |= DAX_IF_COW;
+> 
+> Here's an example of 'unsigned long = unsigned long long', though it'll
+> work, it would be better to unify all the types.
 
->          */
-> -       if (PTR_ERR(cell) == -ENOENT)
-> +       if (PTR_ERR(cell) == -ENOENT || PTR_ERR(cell) == -EOPNOTSUPP)
->                 return 0;
->         else if (IS_ERR(cell)) {
->                 DRM_DEV_ERROR(dev,
-> --
-> 2.26.1
->
+Yes, I'll fix it.
+
+
+--
+Thanks,
+Ruan Shiyang.
+> 
+>>   			goto cow;
+>> +		}
+>>   		fallthrough;
+>>   	case IOMAP_HOLE:
+>>   		if (!write) {
+>> @@ -1555,6 +1566,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>>   	int error;
+>>   	pfn_t pfn;
+>>   	void *kaddr;
+>> +	unsigned long insert_flags = 0;
+>>   
+>>   	/*
+>>   	 * Check whether offset isn't beyond end of file now. Caller is
+>> @@ -1670,14 +1682,17 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>>   		result = vmf_insert_pfn_pmd(vmf, pfn, write);
+>>   		break;
+>>   	case IOMAP_UNWRITTEN:
+>> -		if (write && iomap.flags & IOMAP_F_SHARED)
+>> +		if (write && (iomap.flags & IOMAP_F_SHARED)) {
+>> +			insert_flags |= DAX_IF_COW;
+>>   			goto cow;
+>> +		}
+>>   		fallthrough;
+>>   	case IOMAP_HOLE:
+>> -		if (WARN_ON_ONCE(write))
+>> +		if (!write) {
+>> +			result = dax_pmd_load_hole(&xas, vmf, &iomap, &entry);
+>>   			break;
+>> -		result = dax_pmd_load_hole(&xas, vmf, &iomap, &entry);
+>> -		break;
+>> +		}
+>> +		fallthrough;
+>>   	default:
+>>   		WARN_ON_ONCE(1);
+>>   		break;
+>> -- 
+>> 2.30.0
+>>
+>>
+> 
+> 
+
+
