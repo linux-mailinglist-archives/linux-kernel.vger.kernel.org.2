@@ -2,87 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F58931DCAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF10531DCB6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233837AbhBQPuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:50:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37398 "EHLO
+        id S233883AbhBQPvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbhBQPuH (ORCPT
+        with ESMTP id S233634AbhBQPug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:50:07 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A38F5C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:49:26 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id h26so22355218lfm.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:49:26 -0800 (PST)
+        Wed, 17 Feb 2021 10:50:36 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49FD1C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:49:56 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id v62so4050005wmg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:49:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DhE3/EikzDNrinXadeDZeDUdIcV3qZIo3s67JM6FpNc=;
-        b=muNUfcV9zc5HIXmhP8ZEGmuggOekcYvR/Y9KDvBch9bWKwvTx1N3KfkCG1mygmTyFg
-         w+wjzaA0O4OI4wyorOFv15SSNfYGe3lI9MOwfv0ruLrs4aXzycFF/nf3iDREc1XKdGqS
-         w5uuY6zx1N7Pbt4bbR+hLs5FDyIHBbVL6OpB9oSTV/cY+BvEauzZxvgpFiA0x+W9o8VM
-         Zr9oH1Yy59bWWvwGurIQ8LhScLAPfmHtKVBEqqEE3iesdGDVfczcVx3QD8LJk4gpsbVY
-         sFZ6mXeevOwt3i1H+XrY7g/IQq9Pckj7MwULxIGRdErhTXAcucelVD12W9AiwPGp+yYr
-         eMXg==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vyIz6XzbeaNCCfCuuD+2mwRTt6br0jc9ZpAqiPSLHBI=;
+        b=fdm/+1aAXgcX3VNEVSWNSNwU5smLpnydMyFDodUCVHoapRhjtEnrMuU2y8HZcghVSK
+         /gqhQSKX3EFMKrdoY3t5ivRhZUxmbUjk9nvA3AqXtXUmenp3ewzLt8ahJlm+2/Do/cut
+         Ao8rfCh4p72EwVvbkTxjIYEdiJcp+1BHN3ais=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DhE3/EikzDNrinXadeDZeDUdIcV3qZIo3s67JM6FpNc=;
-        b=P2giMTUdbWvHChzGSz7fMsNMQMzLC0c8k3obGdAqnkSHwdjtYPglfqRLlVL680Ao4m
-         10585g4sq7P3+eLu1rQK6oFevJI42k4tdKW3L1onKQAg0Nk0z/jhaaEyG+nd85bLnMiv
-         0/iyjPxeltH9FO9EyFXHNCiZ/QVIvttbBwWOD1yp7fQ1TZvvm+rmxI0p3wZykLXK7l18
-         pqfRlsQAe1HagUkmyA2GMkjOx4YY77ZNkEhgRGiNwu1S488hv6z2BV29kYMotRUvdXs7
-         QTQBrtfHDWP1zc/jSS2rHRKzA80tSKP5Td42mt/ZBFGyA3tNaOQ4gNWRzoNxl4t8z9/q
-         a4DQ==
-X-Gm-Message-State: AOAM531NlOrh/jTh54UZ9YFHbo3X4WAGdIwIvVOa8eA+WN7hxYrBKD0a
-        y+VFXG6xcBmedpyyhtOIHop5RjOD6t1VNK1nuiFjnw==
-X-Google-Smtp-Source: ABdhPJyy9iTqA8C2g42flRO9f9hGRnxMUTBGC9O3MNRp5PSGXPXz58iayOSUn7JvftkQVsr2ateqUdi0FSaV0lw8YCc=
-X-Received: by 2002:a05:6512:519:: with SMTP id o25mr15351161lfb.529.1613576963370;
- Wed, 17 Feb 2021 07:49:23 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vyIz6XzbeaNCCfCuuD+2mwRTt6br0jc9ZpAqiPSLHBI=;
+        b=T+tWxTF5SSiPbt6f0C6X8uegVfw2LJFekvOWw4CQy5cQXG8AO4/88CmyDkiM77Qlj8
+         1Ma/U494RUwvIOYfnUxZtMhUpa0oNyrncf2fXW+3zU9PPgkq4CzHAMwtTL5nj8TxwMnz
+         1NFafcbyB503yAKCy7ze4PdhNlKPErYn4Qsr2aB6JramtO8skpUeaD812vxX++yvrKMw
+         P73xrBqECQ8FEVSbyoEL8vSshuIhGE9+lz8JwIzFwx0IZ6wCd8MG+0/czv0fVy64cdIe
+         ph+5QWH3GtM5KwaD8WVdGF2h+iEgxTX2kRC7npehxJWD9G2wZNergsGWADdYOYIGVnqS
+         vQeg==
+X-Gm-Message-State: AOAM531+O44muoN3tqV22XXYW1rm0Mav6XHeIyov9qb8jXRzDKVPUVmH
+        udiFCR2VGN5vZlUNx1PaHHgTBg==
+X-Google-Smtp-Source: ABdhPJw4GD5+t9hg0pYMTFUui9uhu9unEJ2d7e6wDarWTJw34Ws80afxoENQduB8QeZ2zamLBjpAWA==
+X-Received: by 2002:a1c:bcc3:: with SMTP id m186mr7543013wmf.165.1613576994841;
+        Wed, 17 Feb 2021 07:49:54 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::4:76fd])
+        by smtp.gmail.com with ESMTPSA id v204sm3622000wmg.38.2021.02.17.07.49.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 07:49:54 -0800 (PST)
+Date:   Wed, 17 Feb 2021 15:49:54 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: debugfs: was: Re: [PATCH v4] printk: Userspace format
+ enumeration support
+Message-ID: <YC07IszYreU0mUn5@chrisdown.name>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCvsGzv3qlsWU+UE@alley>
+ <YCv+gpVGHTh9ZMNq@chrisdown.name>
+ <YC03xnsB8586agnT@alley>
 MIME-Version: 1.0
-References: <20210126044742.87602-1-drew@beagleboard.org> <CACRpkdbcOvOS4OSZt8cAWV7+-D8sHN7HWhrxGLU7fqKiwB1CCg@mail.gmail.com>
- <20210212173742.GA660547@x1>
-In-Reply-To: <20210212173742.GA660547@x1>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 17 Feb 2021 16:49:12 +0100
-Message-ID: <CACRpkdbHUr8xk5TA3cr2P7+rsDkw+-njTvg9TMXCrXOqyojntg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: use to octal permissions for debugfs files
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YC03xnsB8586agnT@alley>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 6:37 PM Drew Fustini <drew@beagleboard.org> wrote:
-> On Fri, Feb 12, 2021 at 08:58:58AM +0100, Linus Walleij wrote:
-> > On Tue, Jan 26, 2021 at 5:55 AM Drew Fustini <drew@beagleboard.org> wrote:
-> >
-> > > Switch over pinctrl debugfs files to use octal permissions as they are
-> > > preferred over symbolic permissions. Refer to commit f90774e1fd27
-> > > ("checkpatch: look for symbolic permissions and suggest octal instead").
-> > >
-> > > Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> >
-> > That's right. Patch applied!
-> >
-> > Yours,
-> > Linus Walleij
+Petr Mladek writes:
+>> > > +	debugfs_remove(ps->file);
+>> >
+>> > IMHO, we should remove the file before we remove the way how
+>> > to read it. This should be done in the opposite order
+>> > than in store_printk_fmt_sec().
+>>
+>> There is a subtle issue with doing this as-is: debugfs_remove(ps->file)
+>> cannot be called under printk_fmts_mutex, because we may deadlock due to a
+>> pinned debugfs refcnt if debugfs_remove() and _show happen at the same time.
 >
-> Thanks, Linus.  However, Andy suggested I make this a series as it was
-> prep for my patch to add 'pinmux-select' to debugfs.  I posted it as
-> part of a 2 patch series [1].  In addition, Joe Perches noticed I forgot
-> 3 instances of debugfs_create_file() in core.c so I was about to fix
-> that in v5 of the patch series.  v5 is mostly addressing comments on the
-> pinmux-select feature.
+>Do we need to call debugfs_remove(ps->file) under printk_fmts_mutex?
 
-Oh I saw that and pulled it out again, no big deal.
+Ah, my concern was simultaneous entries into remove_printk_fmt_sec (which would 
+require setting a separate flag under the mutex), but now I think about it, the 
+module notifier synchronously waits, so that can't happen anyway.
 
-Yours,
-Linus Walleij
+As such it should be safe to just do:
+
+remove()
+{
+	mutex_lock(&printk_fmts_mutex);
+	ps = find_printk_fmt_sec();
+	mutex_unlock(&printk_fmts_mutex);
+
+	if (!ps)
+		return;
+
+	/* waits for _show */
+	debugfs_remove(ps->file);
+
+	mutex_lock(&printk_fmts_mutex);
+	/* Do the data structure teardown */
+	mutex_unlock(&printk_fmts_mutex);
+}
+
+Sounds good to me, I'll do that for v5. Thanks! :-)
