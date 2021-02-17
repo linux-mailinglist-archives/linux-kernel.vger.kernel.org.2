@@ -2,73 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5AC31E120
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DC031E12F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhBQVRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:17:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229796AbhBQVRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:17:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 960BF64E4B;
-        Wed, 17 Feb 2021 21:16:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1613596584;
-        bh=DBaMrQR3F5JOtPbp0XVz9+wx0qFmfjBV/goU8RfjcNA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=sO30w73rQ5z7kJkSNMJn07P8kHSLkdpJxMS9VRCXafBQGAzaSaqdTYzSfsxFfV4qv
-         imggOSesENdOrOzDMCL4zBY3ysSoLMlGhD9PVyBbq6htSlb5Z0BvghVLnl0iQBV5UD
-         QFpN3gvdv7jOr4GyUyLO488wBClo7Tm64QzMe0j4=
-Date:   Wed, 17 Feb 2021 13:16:23 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>
-Cc:     Daniel Walker <danielwa@cisco.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rob Herring <robh+dt@kernel.org>, xe-linux-external@cisco.com,
-        linuxppc-dev@lists.ozlabs.org, Daniel Walker <dwalker@fifo99.com>,
-        Maksym Kokhan <maksym.kokhan@globallogic.com>,
-        linux-kernel@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH 1/4] add generic builtin command line
-Message-Id: <20210217131623.cb19ac2f8a143ba33e7623f1@linux-foundation.org>
-In-Reply-To: <1613417521.3853.5.camel@chimera>
-References: <20190319232448.45964-2-danielwa@cisco.com>
-        <20190320155319.2cd3c0f73ef3cdefb65d5d1e@linux-foundation.org>
-        <20190320232328.3bijcxek2yg43a25@zorba>
-        <20190320201433.6c5c4782f4432d280c0e8361@linux-foundation.org>
-        <20190321151308.yt6uc3mxgppm5zko@zorba>
-        <20190321151519.1f4479d92228c8a8738e02cf@linux-foundation.org>
-        <1613417521.3853.5.camel@chimera>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S232883AbhBQVSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:18:52 -0500
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:57059
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230292AbhBQVSk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:18:40 -0500
+X-IronPort-AV: E=Sophos;i="5.81,185,1610406000"; 
+   d="scan'208";a="373371849"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 22:17:56 +0100
+Date:   Wed, 17 Feb 2021 22:17:56 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Denis Efremov <efremov@linux.com>
+cc:     Julia Lawall <julia.lawall@inria.fr>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coccinelle: misc: add minmax script
+In-Reply-To: <20210216160326.1341741-1-efremov@linux.com>
+Message-ID: <alpine.DEB.2.22.394.2102172208030.3081@hadrien>
+References: <20210216160326.1341741-1-efremov@linux.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 11:32:01 -0800 Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us> wrote:
 
-> On Thu, 2019-03-21 at 15:15 -0700, Andrew Morton wrote:
-> > On Thu, 21 Mar 2019 08:13:08 -0700 Daniel Walker <danielwa@cisco.com> wrote:
-> > > On Wed, Mar 20, 2019 at 08:14:33PM -0700, Andrew Morton wrote:
-> > > > The patches (or some version of them) are already in linux-next,
-> > > > which messes me up.  I'll disable them for now.
-> > >  
-> > > Those are from my tree, but I remove them when you picked up the series. The
-> > > next linux-next should not have them.
-> > 
-> > Yup, thanks, all looks good now.
-> 
-> This patchset is currently neither in mainline nor in -next. May I ask
-> what happened to it? Thanks.
 
-Seems that I didn't bring them back after the confict with the powerpc
-tree resolved itself.
+On Tue, 16 Feb 2021, Denis Efremov wrote:
 
-Please resend everything for -rc1 and let's await the reviewer
-feedback,
+> Check for opencoded min(), max() implementations.
 
+Some cases that could be improved:
+
+diff -u -p a/drivers/platform/x86/asus-laptop.c
+b/drivers/platform/x86/asus-laptop.c
+--- a/drivers/platform/x86/asus-laptop.c
++++ b/drivers/platform/x86/asus-laptop.c
+@@ -1195,7 +1195,7 @@ static ssize_t ls_level_store(struct dev
+        if (rv < 0)
+                return rv;
+
+-       value = (0 < value) ? ((15 < value) ? 15 : value) : 0;
++       value = (0 < value) ? (min(15, value)) : 0;
+        /* 0 <= value <= 15 */
+        asus_als_level(asus, value);
+
+
+diff -u -p a/sound/pci/ctxfi/ctatc.c b/sound/pci/ctxfi/ctatc.c
+--- a/sound/pci/ctxfi/ctatc.c
++++ b/sound/pci/ctxfi/ctatc.c
+@@ -382,7 +382,7 @@ static int atc_pcm_playback_start(struct
+	apcm->started = 1;
+
+        max_cisz = src->multi * src->rsc.msr;
+-       max_cisz = 0x80 * (max_cisz < 8 ? max_cisz : 8);
++       max_cisz = 0x80 * (min(max_cisz, 8));
+
+
+> +func(...)
+> +{
+> +	... when any
+> +*	(x cmp y) ?@p x : y
+> +	... when any
+> +}
+
+In all cases, this would be more efficient as:
+
+func(...)
+{
+ <...
+* (x cmp y) ?@p x : y
+ ...>
+}
+
+There is an optimization that causes this to be just a search through the
+nodes of the control-flow graph, rather than following the actual control
+flow from the beginning of the function to the end.
+
+> +@script:python depends on report@
+> +p << rmax.p;
+> +@@
+> +
+> +coccilib.report.print_report(p[0], "WARNING opportunity for max()")
+> +
+> +@script:python depends on org@
+> +p << rmax.p;
+> +@@
+> +
+> +coccilib.report.print_todo(p[0], "WARNING opportunity for max()")
+
+All of the org cases should be coccilib.org, not coccilib.report.
+
+julia
