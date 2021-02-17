@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C02F31D7EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CBC31D7F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:10:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhBQLIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:08:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33330 "EHLO
+        id S231497AbhBQLKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:10:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231146AbhBQLHU (ORCPT
+        with ESMTP id S231483AbhBQLH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:07:20 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C6FC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:06:39 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id f1so20800395lfu.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:06:39 -0800 (PST)
+        Wed, 17 Feb 2021 06:07:57 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4454C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:07:14 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id a207so3245585wmd.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:07:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MwS831m1n6psR45EVgkCf+b/AQlrJ1Z/xieizsG7Xng=;
-        b=D5fPkxhxdXGPtuBy7fS3LPZqJcgpEXb0+HlnxyRwfgihyLkIW3AJiW8nkodxy7By2I
-         0iC6/ta7s16xMKKrgLgRiuw/e6vyzCv8q1RX37YKWQ83G765b1GFj/bhwug6CyiG+O8W
-         9hjcKH6U8ndh2fx8R4MG+lPE28TsegzMrI9nKesJ7K38ueYuvMvbpKxmTuybZzX5l9y0
-         5je2Vu2M8Jycf2JqlQZuwugcTMRUfm+ZdN6WoC0yKuRiYV5ghfyJaCRWx2ffUIH6CCow
-         W+ZhPHkdTq//KhaEJ3QIL44ah6Fww4U8cL6XqyA/P2uDkQgruFOiFg/nrwMcUbSCgCWk
-         6ToQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0viQUj5Dr40nhdd+nbH060vF+sT9j2nptYrLWR14fgQ=;
+        b=inXAa2Oc3moxxLXWr3kSM1NnCVXHDIZJdoCbdo/Otczc2T55Yld5fb0Xcz6tg2GchS
+         Yhn5FPcXkRsE0L4mHJM+u8o4WAxye0KqBCxxqxc88n/gFD3a1OfQZEYIh1bTSUgs7Mdg
+         FQj0tH9DTUKwJur5CsX0JzDw/0kBCfz2lokqNgZYAoPTna6H8LVufUeeLazj3TYbYHvc
+         sm6McUnM6kqWkbzUuOGaxTS4O7cP3pc6iK7Fs4PqqLE5mxA5f2MDAeK6aUM/IVCB6F6Z
+         aPg70gSaHnnlDkLO8xZfqU08ClFEtOaHH2ZwU6tONh5QHoFnhouS6AXEswBBf0R2dKXS
+         p+JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MwS831m1n6psR45EVgkCf+b/AQlrJ1Z/xieizsG7Xng=;
-        b=IGc0Qy0qRlirJ2DmjhnYS/lOeSr2aBmxAhdSwrZ6MWhmXrdW2ttB/EwDgSfqR2LDCk
-         8ArcooZ6PsEN7o9g7K+txcl9dVsAZ7xIGBusz/mSrS2mA+bAbBAlnhpHdBAIqI5qXxTV
-         Yyq7PO+VwTgYDxqp0zOAea++RbJ7g/e/xZAr3AqC1Hpx5qrrJqWc2AKpnwWWdnF5gChN
-         Z2W3FXnI1fjm3soBlvvEbQFUuoFIs4qGWcx+sG0vZgIMLBNDzMZnaqw7evo9TodtN5jg
-         wMhWBzw9LmoAcuMjrRtngAycAKkWIC0FIa3rE5BTKoq8RWrnqX+GPXLZsUJ67x46kvCQ
-         KTKw==
-X-Gm-Message-State: AOAM530qJjmS3P4iuN49CEZofzQvKOLZk/Nym1psiWJYprannAGrdDsL
-        tmHji/HkZo6BMVwk6lQJP9oB4x7pUxzJjSVHqbl4ZQ==
-X-Google-Smtp-Source: ABdhPJwYy1FY3vO8pRA2SPYpVdqQHjNLkn9EQIvqD1qAzq8OcZlErQvrmfwwh4UCIAlqwTz4YM8VzTKz+vnqYPNbA/8=
-X-Received: by 2002:ac2:5222:: with SMTP id i2mr3706138lfl.194.1613559998136;
- Wed, 17 Feb 2021 03:06:38 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0viQUj5Dr40nhdd+nbH060vF+sT9j2nptYrLWR14fgQ=;
+        b=LLpcBffUvR/R6zQzrEA9wrBle1OXlwo5xFHlEkMy2taQBaEYkEnOBKkCOlyx/x/t1Y
+         ko7RcjY5qPeGMEUDH2MmKKb9BYW2AArpsFT+aVx5lpkI0W2ltl+0i0Pqdo6fMDM3y4qw
+         ug8XAZNC+OTqitpvBBkT2ml1oKWYtrtpEbCp2hhVzn1RbaKCSuCMrBisSOh0r1zqMRgq
+         PFDrDahQnhP04Xpw4V3eaCyn+iF7sGjgBoAczF3Ku2YrZ6CvUVf62C594IwOzqgPtObr
+         kwT2MRsoB7b0spb06bzvZrQXBJGDISj/JkDhAmuaEUHCHJ45VgyOKTb8NHiUNH3/rx0G
+         Abqw==
+X-Gm-Message-State: AOAM530zmkHxnOQwpyac/uayi7KpVbqbLZrX5wlC77MVkgQiyl2atW98
+        OCUHwhfSgQBQWKbaMLUOGbA=
+X-Google-Smtp-Source: ABdhPJwcMRjozqtTz0qQ9Hsbqsaw5xZcXHmRuIkFQHT8j1PJ/vVSRVS5HYYSD7mYLWz5NXF+5gwi/A==
+X-Received: by 2002:a7b:c055:: with SMTP id u21mr6894105wmc.68.1613560033609;
+        Wed, 17 Feb 2021 03:07:13 -0800 (PST)
+Received: from poker.lan (static.2-229-210-222.ip198.fastwebnet.it. [2.229.210.222])
+        by smtp.gmail.com with ESMTPSA id y1sm3594073wrr.41.2021.02.17.03.07.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 03:07:13 -0800 (PST)
+From:   Andrea Merello <andrea.merello@gmail.com>
+To:     tglx@linutronix.de, daniel.lezcano@linaro.org
+Cc:     Andrea Merello <andrea.merello@gmail.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>
+Subject: [PATCH 0/2] Fix missing entropy on Zynq arch due to get_cycles() not supported
+Date:   Wed, 17 Feb 2021 12:07:07 +0100
+Message-Id: <20210217110709.17250-1-andrea.merello@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <20210204150210.3nv734ktyeljsa6c@maple.lan>
-In-Reply-To: <20210204150210.3nv734ktyeljsa6c@maple.lan>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 17 Feb 2021 16:36:26 +0530
-Message-ID: <CAFA6WYOdprGAe7d6ryLYpvC657qEGt1nRkpmuErDAk+msdp3DA@mail.gmail.com>
-Subject: Re: [peterz@infradead.org: Re: [PATCH] x86/kgdb: Allow removal of
- early BPs]
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@i4.cs.fau.de, qy15sije@cip.cs.fau.de,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, alexandre.chartre@oracle.com,
-        rppt@kernel.org, ira.weiny@intel.com, adrian.hunter@intel.com,
-        gustavoars@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        kgdb-bugreport@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+A real-world problem has been seen with a Zynq-based board running
+Debian 10, where ssh daemon takes a really long time to come up at boot.
+This is due to lack of random numbers.
 
-> On Mon, Dec 14, 2020 at 03:13:12PM +0100, Stefan Saecherl wrote:
->
-> > One thing to consider when doing this is that code can go away during boot
-> > (e.g. .init.text). Previously kgdb_arch_remove_breakpoint handled this case
-> > gracefully by just having copy_to_kernel_nofault fail but if one then calls
-> > text_poke_kgdb the system dies due to the BUG_ON we moved out of
-> > __text_poke.  To avoid this __text_poke now returns an error in case of a
-> > nonpresent code page and the error is handled at call site.
->
-> So what if the page is reused and now exists again?
->
-> We keep track of the init state, how about you look at that and not poke
-> at .init.text after it's freed instead?
->
+Since commit 50ee7529ec450 ("random: try to actively add entropy rather
+than passively wait for it") we try to generate entropy whenever we are
+in short of random numbers and someone needs them.
 
-Makes sense. I'll see if I can patch the debug core to get an
-architecture neutral fix for this.
+This trick works only when CPU cycle counter is available. On ARM this
+means that get_cycles() works and in turn read_current_timer() works.
 
--Sumit
+Zynq HW includes two "cadence TTC" timers and the "ARM global timer".
+All these pieces of HW are fed by the CPU clock, which dynamically
+changes whenever CPU frequency scaling is enabled.
+
+In timer-cadence-ttc driver this scenario is handled by looking at parent
+clock changes and adjusting things when required. This is the only usable
+clocksource when CPU frequency scaling is in use. arm_global_timer driver
+is disabled in Kconfig when CPU_FREQ is enabled for Zynq arch.
+
+Unfortunately timer-cadence-ttc driver does register itself via
+register_current_timer_delay() and that ultimately ends up in get_cycles()
+to always return zero, causing the aforementioned lack of entropy problem.
+I believe that the reason for this is because Cadence TTC counter on Zynq
+silicon is only 16-bit wide.
+
+This patchset works around this by implementing in ARM global timer driver
+a mechanism to compensate for parent clock variations, similarly to what
+it's done in Cadence TTC timer driver, so that it can be used together
+with CPU frequency scaling on Zynq arch.
+
+This proved to finally fix the problem on my Zynq-based Z-turn board.
+
+Signed-off-by: Andrea Merello <andrea.merello@gmail.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Sören Brinkmann <soren.brinkmann@xilinx.com>
+
+Andrea Merello (2):
+  clocksource: arm_global_timer: implement rate compensation whenever
+    source clock changes
+  arm: zynq: don't disable CONFIG_ARM_GLOBAL_TIMER due to
+    CONFIG_CPU_FREQ anymore
+
+ arch/arm/mach-zynq/Kconfig             |   2 +-
+ drivers/clocksource/Kconfig            |  14 +++
+ drivers/clocksource/arm_global_timer.c | 122 +++++++++++++++++++++++--
+ 3 files changed, 127 insertions(+), 11 deletions(-)
+
+--
+2.17.1
