@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BE731DCA4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC8431DCA6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233847AbhBQPpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:45:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233666AbhBQPpu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:45:50 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8801FC061574;
-        Wed, 17 Feb 2021 07:45:10 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id f14so22978520ejc.8;
-        Wed, 17 Feb 2021 07:45:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JTQlVM4uXKEOAQPyXsr5kAcKMvA9e+zle4Kor02Y7h8=;
-        b=Nuhy6hYzuAiQOnomYxdGYbrbWlYoW7/P4jQuK4BPBxQltQmj+9tGWXP1HuQuZlWXsV
-         OvHLRdqqxon9FrSZbzvH7hS4tcFcc7XJKljDZzzH8BDyTKHun0erMJNpgcQi0FoK1mCF
-         iW9/pedtnZGZ9lcuNNPXujGH1zHALMMLGyK4mD5JfqauTkiJV8p7RNhpqE/etvZUjY3W
-         EERl1dqkRxr6CAXjUGo2KW3HZU1uT2880VhWHafyU1+ldqZngPwBcdvJwScyfyBP33nF
-         MU65LgPtSd/UL0hbxAhrf+RlfAGfLQc5sfHiaxNujrB55+m2AEVfgCu9ohhxxE+6ZKmZ
-         4JbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JTQlVM4uXKEOAQPyXsr5kAcKMvA9e+zle4Kor02Y7h8=;
-        b=qR2hjeZF+H5G5yUf9+LV/Twn4g2Sw55SQY8Gwa9mx6wKDoFICdkv67zE1nIg6hdLpY
-         kOWy6MR+pvBZix5tNWeRnEEKfKJ+PhQYQrh80hkIwE2mIeeYNvttlW7Q20Y6zWXTFPbT
-         MRs8WsBs4pQulKDtFlmpoBDsv9msDVAgJmk3qsar6st+o9VRMeEvJaw68+Ultj9uM0X7
-         /HJn1B3ZvPM53B/OQBrbY7R9BQDXQ8ZSm2THkoXulQ6PEcllj6U++7I+es0FFXgU2kXw
-         sgwRxx3BSesZYoTto4ym5/lyZ2kloyTyP1dcQ+Py/i5isw8e5aPni5qVqXy7a3F+XLiw
-         rRWA==
-X-Gm-Message-State: AOAM532+VvpLPYXQNu97psK/G5khjohM321R3QaKDBEOkDZLYUBh7pc4
-        wVGu2jyLnCB285H6Rlgkt9Xt0zPLkgziq46Bx3EUFpJ3uv2S
-X-Google-Smtp-Source: ABdhPJzdbvNfFEEPXUuuzV3Lxev7vgQL/8WBf/2UmefHgSzXMCW4dYDmV3jL0VZUhrSw879Q+fEQz1DG4EcceMUsknM=
-X-Received: by 2002:a17:906:a948:: with SMTP id hh8mr26554611ejb.226.1613576709212;
- Wed, 17 Feb 2021 07:45:09 -0800 (PST)
+        id S233778AbhBQPrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:47:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49370 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233666AbhBQPqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 10:46:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613576752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FUn7QE4j9n1Ke4FG2h/jPjvP9Wt9kP4O0SUWhsu5TQ0=;
+        b=N4OZq7gXUPKaU2Q/R6QAWbED8XySuySJqkmJlCCmN+U2tDf0kCEGF+SN+rL3G1Ih/+IwgV
+        qlSWochGv5Gt5A8bIfQ+S/+EHQ84lQfZ+cMxM1KdXCyRJjmROtp1FI/jAO4ogm9UfW0boY
+        vtJQF91ixs7xfiYXk7WWJPcX0Hh0uk8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2AE42B11F;
+        Wed, 17 Feb 2021 15:45:52 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 16:45:51 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YC06LyPGmytXJ8Iu@alley>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCv9Xb7ePnDy9xRf@alley>
+ <YCwAbGoVuZJspcx5@chrisdown.name>
+ <YCwycC8hPsPD7ArU@cmpxchg.org>
+ <YCwzrLTaE9PwNihj@chrisdown.name>
 MIME-Version: 1.0
-References: <20210217153038.1068170-1-rsalvaterra@gmail.com> <20210217164232.25a7765c@kernel.org>
-In-Reply-To: <20210217164232.25a7765c@kernel.org>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Wed, 17 Feb 2021 15:44:58 +0000
-Message-ID: <CALjTZvaZdvMU-gjF=h88A_yS-fiVVdHGL_iyYc30z0Qm82yjLA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: turris-omnia: fix hardware buffer management
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Cc:     andrew@lunn.ch, gregory.clement@bootlin.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCwzrLTaE9PwNihj@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Marek,
+On Tue 2021-02-16 21:05:48, Chris Down wrote:
+> Johannes Weiner writes:
+> > On Tue, Feb 16, 2021 at 05:27:08PM +0000, Chris Down wrote:
+> > > Petr Mladek writes:
+> > > > I wonder if we could find a better name for the configure switch.
+> > > > I have troubles to imagine what printk enumeration might mean.
+> > > > Well, it might be because I am not a native speaker.
+> > > >
+> > > > Anyway, the word "enumeration" is used only in the configure option.
+> > > > Everything else is "printk_fmt"
+> > > >
+> > > > What about DEBUG_PRINTK_FORMATS?
+> > > 
+> > > Hmm, I don't like DEBUG_PRINTK_FMTS because it's not about debugging, it's
+> > > about enumeration, I guess :-)
+> > > 
+> > > The name should reflect that this catalogues the available printks in the
+> > > kernel -- "debugging" seems to imply something different.
+> > > 
+> > > I'm ok with a different name like "printk catalogue" or something like that
+> > > if you prefer. Personally I think "printk enumeration" is fairly clear --
+> > > it's about enumerating the available printks -- but anything that captures
+> > > that spirit is fine.
+> > 
+> > How about config PRINTK_INDEX?
+> 
+> Ah yes, I also like that. PRINTK_INDEX is fine from my perspective and is
+> more straightforward than "enumeration", thanks.
 
-On Wed, 17 Feb 2021 at 15:42, Marek Beh=C3=BAn <kabel@kernel.org> wrote:
->
-> /o\ How did I manage to miss this?
+It is better than enumeration. But there is still the same
+problem. The word "index" is used neither in the code
+nor in the debugfs interface. It is like enabling cars and
+seeing apples.
 
-Heh=E2=80=A6 it happens. :)
+What about CONFIG_PRINTK_DEBUGFS?
 
-> Please wait a few minutes I am just going to do a fast compile and test.
+It seems that various subsystems use CONFIG_<SUBSYSTEM>_DEBUGFS
+pattern when they expose some internals in debugfs.
 
-No worries. I'm going to cook a backport for OpenWrt.
-
-Cheers,
-Rui
+Best Regards,
+Petr
