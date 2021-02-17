@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1BE31DEBE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B89531DEC5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234766AbhBQSCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:02:47 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:46894 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234748AbhBQSCm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:02:42 -0500
-Date:   Wed, 17 Feb 2021 19:01:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613584920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IorYWVX6aTray9URwFxb4iXem9eN7bHL8eDC2Dpv93Y=;
-        b=HCPELpW/mmnioa1NDn/N6RKGX4RSoOO/sMm2U57k60FuIGKCA3PxzbzC8h7BD0PHFWny/P
-        UD6Kav1UoUPwOhHp5xOFEKYvFPXPWeUIUKjmP7MoI+j4z8fq5sIV9oeCf7M6kDc56RrDSE
-        tFu+4PD07VaqUWIJSuotX6lLZbLAvjeZBQdeW6zWi5zTrQIN/b+miT9gRT5OIJjl30N+qQ
-        zvdW7DhOpkYk9N6qlC4ZJ1UfrtpRI4tSFpM1G6ALQka1QBFhLyl97sVmh2d0gucXu5ZKEP
-        7uCQD8ZzWeiCBpHAxZTTyOqFIVX3cdnti/7Yt8MnX6TLO3EB1lqHuNgJ9Gtekg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613584920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=IorYWVX6aTray9URwFxb4iXem9eN7bHL8eDC2Dpv93Y=;
-        b=naYHD/i74Jm6TrgW7qqjXb44yKU6O4Tv25tS96WNLPbQRFn0zWwIxK8pHVQiDACwLZV+Ce
-        kHT7VwQjy/lRQkBg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
-Message-ID: <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
-References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
- <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
- <20210217155447.GC2743@paulmck-ThinkPad-P72>
+        id S234784AbhBQSE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:04:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233065AbhBQSDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:03:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A35B64E58;
+        Wed, 17 Feb 2021 18:03:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613584987;
+        bh=mk2ayuiham+xkGX3mCdpxhHDxa72J1kkP7EWe6+BkQ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WBZj/nmA24PHGS6CBg5AbR08SoRieeoZoRqjzetG8Diwmez98HSvluVyJKl0PA7se
+         +O9tW7I4hYw+PcSky2vgFS/z0ARKlKzoV9gah3V01KJrbDH1fQ6U2T76t59lVGa4gZ
+         Sfb2fPvZiZISUM2a0OHm5MQE2M9pr+TDBKPZOmT7I15Gm9xbrFr4NtIjhIlLqg6Mmq
+         /HK4pDOQnFQolRiGmrM/1LnyMl4b7ZvPLCsNUolt8NHjKpPYw2IWDLZJi1UIp3jRa0
+         /FC+p+oOeAoo65mIjCg2Odqh5OMP50oULHhAOsZhaXu9oTFSahdN9dnqOhRZr3KIqR
+         BlBOM6rovystw==
+Date:   Wed, 17 Feb 2021 10:03:06 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vincent Cheng <vincent.cheng.xh@renesas.com>
+Cc:     richardcochran@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 1/3] ptp: ptp_clockmatrix: Add
+ wait_for_sys_apll_dpll_lock.
+Message-ID: <20210217100306.4948cc73@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210216181226.GA5450@renesas.com>
+References: <1613192766-14010-1-git-send-email-vincent.cheng.xh@renesas.com>
+        <1613192766-14010-2-git-send-email-vincent.cheng.xh@renesas.com>
+        <20210215114822.4f698920@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210216181226.GA5450@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210217155447.GC2743@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-17 07:54:47 [-0800], Paul E. McKenney wrote:
-> > I though boosting is accomplished by acquiring a rt_mutex in a
-> > rcu_read() section. Do you have some code to point me to, to see how a
-> > timer is involved here? Or is it the timer saying that *now* boosting is
-> > needed.
+On Tue, 16 Feb 2021 13:12:29 -0500 Vincent Cheng wrote:
+> >> +}
+> >> +
+> >> +static int wait_for_sys_apll_dpll_lock(struct idtcm *idtcm)
+> >> +{
+> >> +	const char *fmt = "%d ms SYS lock timeout: APLL Loss Lock %d  DPLL state %d";
+> >> +	u8 i = LOCK_TIMEOUT_MS / LOCK_POLL_INTERVAL_MS;  
+> >
+> >Using msleep() and loops is quite inaccurate. I'd recommend you switch
+> >to:
+> >
+> >	unsigned long timeout = jiffies + msecs_to_jiffies(LOCK_TIMEOUT_MS);
+> >
+> >And then use:
+> >
+> >	while (time_is_after_jiffies(timeout))
+> >  
 > 
-> Yes, this last, which is in the grace-period kthread code, for example,
-> in rcu_gp_fqs_loop().
+> To clarify, the suggestion is to use jiffies for accuracy, but
+> the msleep(LOCK_POLL_INTERVAL_MS) remains to prevent the do-while
+> loop from becoming a busy-wait loop.
+> 
+> #define LOCK_TIMEOUT_MS			(2000)
+> #define LOCK_POLL_INTERVAL_MS		(10)
+> 
+> unsigned long timeout = jiffies + msecs_to_jiffies(LOCK_TIMEOUT_MS);
+> 
+> do {
+> 	...
+>         /*refresh 'locked' variable */
+> 	if (locked)
+> 		return 0;
+> 	
+> 	msleep(LOCK_POLL_INTERVAL_MS);
+> 
+> } while (time_is_after_jiffies(timeout));
+
+Yes, exactly, sorry for lack of clarity.
+
+> >> +			dev_warn(&idtcm->client->dev,
+> >> +				"No wait state: DPLL_SYS_STATE %d", dpll);  
+> >
+> >It looks like other prints in this function use \n at the end of the
+> >lines, should we keep it consistent?  
+> 
+> Looks like the \n is not needed for dev_warn.  Will remove \n 
+> of existing messages for consistency.
 >
-> > If your hrtimer is a "normal" hrtimer then it will be served by
-> > ksoftirqd, too. You would additionally need one of the
-> > HRTIMER_MODE_*_HARD to make it work.
+> >> +	dev_warn(&idtcm->client->dev, fmt, LOCK_TIMEOUT_MS, apll, dpll);  
+> >
+> >I'd recommend leaving the format in place, that way static code
+> >checkers can validate the arguments.  
 > 
-> Good to know.  Anything I should worry about for this mode?
+> Good point.  The fmt was used to keep 80 column rule.
+> But now that 100 column rule is in place, the fmt
+> workaround is not needed anymore.  Will fix in v3 patch.
 
-Well. It is always hardirq. No spinlock_t, etc. within that callback.
-If you intend to wake a thread, that thread needs an elevated priority
-otherwise it won't be scheduled (assuming there is a RT tasking running
-which would block otherwise ksoftirqd).
+Log strings / formats are a well known / long standing exception 
+to the line length limit. No need to worry about that.
 
-Ah. One nice thing is that you can move the RCU threads to a house
-keeping CPU - away from the CPU(s) running the RT tasks. Would this
-scenario be still affected (if ksoftirqd would be blocked)?
-
-Oh. One thing I forgot to mention: the timer_list timer is nice in terms
-of moving forward (the timer did not fire, the condition is true and you
-move the timeout forward).
-A hrtimer timer on the other hand needs to be removed, forwarded and
-added back to the "timer tree". This is considered more expensive
-especially if the timer does not fire.
-
-> Also, the current test expects callbacks to be invoked, which involves a
-> number of additional kthreads and timers, for example, in nocb_gp_wait().
-> I suppose I could instead look at grace-period sequence numbers, but I
-> believe that real-life use cases needing RCU priority boosting also need
-> the callbacks to be invoked reasonably quickly (as in within hundreds
-> of milliseconds up through very small numbers of seconds).
-
-A busy/overloaded kvm-host could lead to delays by not scheduling the
-guest for a while.
-
-My understanding of the need for RCU boosting is to get a task,
-preempted (by a RT task) within a RCU section, back on the CPU to
-at least close the RCU section. So it is possible to run RCU callbacks
-and free memory.
-The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
-killer got nervous (and if we had memory allocation failures).
-Also, running thousands of accumulated callbacks isn't good either.
-
-> Thoughts?
+> >> +static void wait_for_chip_ready(struct idtcm *idtcm)
+> >> +{
+> >> +	if (wait_for_boot_status_ready(idtcm))
+> >> +		dev_warn(&idtcm->client->dev, "BOOT_STATUS != 0xA0");  
+> >
+> >no new line?  
 > 
-> 							Thanx, Paul
-Sebastian
+> Nope.  Tried an experiment and \n is not neeeded.
+> 
+> 	dev_warn(&idtcm->client->dev, "debug: has \\n at end\n");
+> 	dev_warn(&idtcm->client->dev, "debug: does not have \\n at end");
+> 	dev_warn(&idtcm->client->dev, "debug: has \\n\\n at end\n\n");
+> 	dev_warn(&idtcm->client->dev, "debug: hello");
+> 	dev_warn(&idtcm->client->dev, "debug: world");
+> 
+> [   99.069100] idtcm 15-005b: debug: has \n at end
+> [   99.073623] idtcm 15-005b: debug: does not have \n at end
+> [   99.079017] idtcm 15-005b: debug: has \n\n at end
+> [   99.079017]
+> [   99.085194] idtcm 15-005b: debug: hello
+> [   99.089025] idtcm 15-005b: debug: world
+> 
+> >> +
+> >> +	if (wait_for_sys_apll_dpll_lock(idtcm))
+> >> +		dev_warn(&idtcm->client->dev,
+> >> +			 "Continuing while SYS APLL/DPLL is not locked");  
+> >
+> >And here.  
+> 
+> \n not needed.
+
+Right, it's not needed I was just commenting that the new cases are not
+consistent with existing code in the file, but removing \n everywhere
+sounds fine as well.
