@@ -2,133 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F0531D4A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24BF31D4A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:38:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231344AbhBQEeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 23:34:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhBQE0m (ORCPT
+        id S230442AbhBQEhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 23:37:21 -0500
+Received: from mail-pl1-f173.google.com ([209.85.214.173]:34980 "EHLO
+        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230179AbhBQEfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 23:26:42 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96748C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:26:02 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id cl8so768243pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:26:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YzQ3Ntnx2eFZZBEtRSvFqcJub5kYZcaEUuwH2LgukfU=;
-        b=GF54HJeqkRyhzQ+s1UuFr+w4WNWreO8HkCTv0fjuc8ieF4Vuv1uG68W2aMLLLYVkDL
-         27rv7civIAcFkIQZkHqqknj/dKZ2FNRM+hR+6dtEhwLXINCkAG/6BYMDcfvzQSHGYgy6
-         nxm4+W7b9nypIGbXtoM0RMQUAAyiUNJNyFlzAXX31eP6kPVkLReHqNsR22vw7f7wr/ti
-         9U/Mbq+z/QrGmUUEKZrsjFVM4G4OJv04m9BGogx3DGwPTtrw3C3orl5A0nNx+5jAEdE7
-         +MQHhq3fIwc6Ydgyr7ygK0QVnCVkVQU6Rjmpi1ObI1WizR4NuDQ2FmWaDhg2lxXpr+0V
-         87ow==
+        Tue, 16 Feb 2021 23:35:24 -0500
+Received: by mail-pl1-f173.google.com with SMTP id g20so6782417plo.2;
+        Tue, 16 Feb 2021 20:34:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YzQ3Ntnx2eFZZBEtRSvFqcJub5kYZcaEUuwH2LgukfU=;
-        b=Jc3/hVgTd5UQRCLZuM6qQiqb0BDUT/wATU8dCpsgmsF3YHLBsf20Va7ELcbpgS4maW
-         /FioEl8CLFXbahlv+DLo8vuGag/97raLY1yDZPFReooo+D0sJiHw3x2aN67U6OxhleEE
-         LN/pQ8YmAMDMcsYDyM1ARfmIYmwBDnPPrOSVG7xWa2vkJjCxpgt65tfK+rkpg8iZOBba
-         vJbiZSKQSTRhkZg1t0ZUWhv+5gdxW37b/ldQo5fZv7GyX00oMXz3V21uCZsDqpyu3Wf/
-         0zVXqAaFH0rABix0OQUfWyGRGAWIS4ZC98Fnp8fjU5xNLBDS6g6XEUwZA7UO1bpB2aSk
-         TWZw==
-X-Gm-Message-State: AOAM533es7EZVQln6DcdDH2delwM+kXHQ7HSicE3xtaeqmHVZmldx8Pf
-        YmrRO8FjcFbcz53z+z5Y4U3eoA==
-X-Google-Smtp-Source: ABdhPJwD1MjawYnKf/zWxkffns2EzkYqkyajXQZau0EaYhD/LPRTlppqqZbAVVP4NmCKvXiEjHG10A==
-X-Received: by 2002:a17:90b:3781:: with SMTP id mz1mr7396744pjb.178.1613535962017;
-        Tue, 16 Feb 2021 20:26:02 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id t17sm695687pgk.25.2021.02.16.20.26.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 16 Feb 2021 20:26:01 -0800 (PST)
-Date:   Wed, 17 Feb 2021 09:55:58 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
- sched_freq_tick() callback
-Message-ID: <20210217042558.o4anjdkayzgqny55@vireshk-i7>
-References: <cover.1611829953.git.viresh.kumar@linaro.org>
- <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
- <20210203114521.GA6380@arm.com>
- <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
- <20210217002422.GA17422@arm.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=oPAIMKuKvKEaHiQvXAcNDbDQ0OtzKGU/PgY56JPRvao=;
+        b=eRhLulKJHoRvO0HQNePpV6veSQcUWw7OPmM3Gmg9jjBrO54wev/1bSCHWIYGwOjj4E
+         M6m37OtjPBTN7tCcibK5VDe3WPv0M4wUPTiGImnh5aDAYDHH7fm1GXA1zwjkOwNbu84y
+         PUDlO5xgU7N2pdb6zXwL2S28rQY/xesScH0yYT4MyQqUJoODM6uytG0u9yZlCDerpkkw
+         jOb7M7jEjbv4dheMzHSA9O5pOu/HwsAmdWN97RQ8fjcecYLJgif2eyrbGLrw0JRJKXjU
+         9d+Cbvb02E8xh67rDVixNLE6ot5nHg2/wRIHmnuyrfAXsV3vVltg7Ii12jiF5EhRh59O
+         v9/A==
+X-Gm-Message-State: AOAM530ycQZKuWmIo8/vfoJWHzse/KHf+tXadlnA291q0cFQWesghCdh
+        PTfV3ISy1yVIvswm9OZPbZ1BF9m69ncjVQ==
+X-Google-Smtp-Source: ABdhPJzIEwO60oDsi+w5F+xbgSrhdv3fo6P2LXM2ZmEgJLGfdzFj/PdvikKPiHbjkiLaBcwbmXtcAg==
+X-Received: by 2002:a17:90a:c083:: with SMTP id o3mr7392132pjs.30.1613536445705;
+        Tue, 16 Feb 2021 20:34:05 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id y13sm526283pfc.28.2021.02.16.20.34.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 20:34:05 -0800 (PST)
+Date:   Tue, 16 Feb 2021 20:34:03 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Russ Weight <russell.h.weight@intel.com>
+Cc:     Tom Rix <trix@redhat.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com
+Subject: Re: [PATCH v9 0/7] FPGA Security Manager Class Driver
+Message-ID: <YCycu/QvjGxO0s1n@epycbox.lan>
+References: <20210105225924.14573-1-russell.h.weight@intel.com>
+ <a9705da0-1ed0-8d9a-8eea-f04d7b9b471c@redhat.com>
+ <0a3274a4-607d-cce6-2000-b8ea89f03c48@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217002422.GA17422@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <0a3274a4-607d-cce6-2000-b8ea89f03c48@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-02-21, 00:24, Ionela Voinescu wrote:
-> I think it could be merged in patch 1/2 as it's part of enabling the use
-> of multiple sources of information for FIE. Up to you!
+Hi Russ,
 
-Sure.
-
-> >  static void amu_fie_setup(const struct cpumask *cpus)
-> >  {
-> > -	bool invariant;
-> >  	int cpu;
-> >  
-> >  	/* We are already set since the last insmod of cpufreq driver */
-> > @@ -257,25 +256,10 @@ static void amu_fie_setup(const struct cpumask *cpus)
-> >  
-> >  	cpumask_or(amu_fie_cpus, amu_fie_cpus, cpus);
-> >  
-> > -	invariant = topology_scale_freq_invariant();
-> > -
-> > -	/* We aren't fully invariant yet */
-> > -	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
-> > -		return;
-> > -
+On Tue, Feb 16, 2021 at 09:46:53AM -0800, Russ Weight wrote:
+> I believe all of the dependencies have been accepted now.
 > 
-> You still need these checks, otherwise you could end up with only part
-> of the CPUs setting a scale factor, when only part of the CPUs support
-> AMUs and there is no cpufreq support for FIE.
+> - Russ
 
-Both supports_scale_freq_counters() and topology_scale_freq_invariant() take
-care of this now and they will keep reporting the system as invariant until the
-time all the CPUs have counters (in absence of cpufreq).
+Sorry for dropping the ball on this, I'll get to this ASAP after -rc1 is
+tagged.
 
-The topology_set_scale_freq_source() API is supposed to be called multiple
-times, probably once for each policy and so I don't see a need of these checks
-anymore.
-
-> Small(ish) optimisation at the beginning of this function:
 > 
->     if (cpumask_empty(&scale_freq_counters_mask))
->         scale_freq_invariant = topology_scale_freq_invariant();
+> On 2/15/21 6:56 AM, Tom Rix wrote:
+> > Russ, Moritz
+> >
+> > This patchset still applies.
+> >
+> > Updating the fpga is a fairly important feature.
+> >
+> > Are there any dependencies we are waiting on ?
+> >
+> > Tom
+> >
+> > On 1/5/21 2:59 PM, Russ Weight wrote:
+> >> The FPGA Security Manager class driver provides a common
+> >> API for user-space tools to manage updates for secure FPGA
+> >> devices. Device drivers that instantiate the FPGA Security
+> >> Manager class driver will interact with a HW secure update
+> >> engine in order to transfer new FPGA and BMC images to FLASH so
+> >> that they will be automatically loaded when the FPGA card reboots.
+> >>
+> >> A significant difference between the FPGA Manager and the FPGA 
+> >> Security Manager is that the FPGA Manager does a live update (Partial
+> >> Reconfiguration) to a device whereas the FPGA Security Manager
+> >> updates the FLASH images for the Static Region and the BMC so that
+> >> they will be loaded the next time the FPGA card boots. Security is
+> >> enforced by hardware and firmware. The security manager interacts
+> >> with the firmware to initiate an update, pass in the necessary data,
+> >> and collect status on the update.
+> >>
+> >> The n3000bmc-secure driver is the first driver to use the FPGA
+> >> Security Manager. This driver was previously submitted in the same
+> >> patch set, but has been split out into a separate patch set starting
+> >> with V2. Future devices will also make use of this common API for
+> >> secure updates.
+> >>
+> >> In addition to managing secure updates of the FPGA and BMC images,
+> >> the FPGA Security Manager update process may also be used to
+> >> program root entry hashes and cancellation keys for the FPGA static
+> >> region, the FPGA partial reconfiguration region, and the BMC.
+> >> The image files are self-describing, and contain a header describing
+> >> the image type.
+> >>
+> >> Secure updates make use of the request_firmware framework, which
+> >> requires that image files are accessible under /lib/firmware. A request
+> >> for a secure update returns immediately, while the update itself
+> >> proceeds in the context of a kernel worker thread. Sysfs files provide
+> >> a means for monitoring the progress of a secure update and for
+> >> retrieving error information in the event of a failure.
+> >>
+> >> The API includes a "name" sysfs file to export the name of the parent
+> >> driver. It also includes an "update" sub-directory containing files that
+> >> that can be used to instantiate and monitor a secure update.
+> >>
+> >> Changelog v8 -> v9:
+> >>   - Rebased patches for 5.11-rc2
+> >>   - Updated Date and KernelVersion in ABI documentation
+> >>
+> >> Changelog v7 -> v8:
+> >>   - Fixed grammatical error in Documentation/fpga/fpga-sec-mgr.rst
+> >>
+> >> Changelog v6 -> v7:
+> >>   - Changed dates in documentation file to December 2020
+> >>   - Changed filename_store() to use kmemdup_nul() instead of
+> >>     kstrndup() and changed the count to not assume a line-return.
+> >>
+> >> Changelog v5 -> v6:
+> >>   - Removed sysfs support and documentation for the display of the
+> >>     flash count, root entry hashes, and code-signing-key cancelation
+> >>     vectors from the class driver. This information can vary by device
+> >>     and will instead be displayed by the device-specific parent driver.
+> >>
+> >> Changelog v4 -> v5:
+> >>   - Added the devm_fpga_sec_mgr_unregister() function, following recent
+> >>     changes to the fpga_manager() implementation.
+> >>   - Changed most of the *_show() functions to use sysfs_emit()
+> >>     instead of sprintf(
+> >>   - When checking the return values for functions of type enum
+> >>     fpga_sec_err err_code, test for FPGA_SEC_ERR_NONE instead of 0
+> >>
+> >> Changelog v3 -> v4:
+> >>   - This driver is generic enough that it could be used for non Intel
+> >>     FPGA devices. Changed from "Intel FPGA Security Manager" to FPGA
+> >>     Security Manager" and removed unnecessary references to "Intel".
+> >>   - Changed: iops -> sops, imgr -> smgr, IFPGA_ -> FPGA_, ifpga_ to fpga_
+> >>     Note that this also affects some filenames.
+> >>
+> >> Changelog v2 -> v3:
+> >>   - Use dev_err() to report invalid progress in sec_progress()
+> >>   - Use dev_err() to report invalid error code in sec_error()
+> >>   - Modified sysfs handler check in check_sysfs_handler() to make
+> >>     it more readable.
+> >>   - Removed unnecessary "goto done"
+> >>   - Added a comment to explain imgr->driver_unload in
+> >>     ifpga_sec_mgr_unregister()
+> >>
+> >> Changelog v1 -> v2:
+> >>   - Separated out the MAX10 BMC Security Engine to be submitted in
+> >>     a separate patch-set.
+> >>   - Bumped documentation dates and versions
+> >>   - Split ifpga_sec_mgr_register() into create() and register() functions
+> >>   - Added devm_ifpga_sec_mgr_create()
+> >>   - Added Documentation/fpga/ifpga-sec-mgr.rst 
+> >>   - Changed progress state "read_file" to "reading"
+> >>   - Added sec_error() function (similar to sec_progress())
+> >>   - Removed references to bmc_flash_count & smbus_flash_count (not supported)
+> >>   - Removed typedefs for imgr ops
+> >>   - Removed explicit value assignments in enums
+> >>   - Other minor code cleanup per review comments 
+> >>
+> >> Russ Weight (7):
+> >>   fpga: sec-mgr: fpga security manager class driver
+> >>   fpga: sec-mgr: enable secure updates
+> >>   fpga: sec-mgr: expose sec-mgr update status
+> >>   fpga: sec-mgr: expose sec-mgr update errors
+> >>   fpga: sec-mgr: expose sec-mgr update size
+> >>   fpga: sec-mgr: enable cancel of secure update
+> >>   fpga: sec-mgr: expose hardware error info
+> >>
+> >>  .../ABI/testing/sysfs-class-fpga-sec-mgr      |  81 +++
+> >>  Documentation/fpga/fpga-sec-mgr.rst           |  44 ++
+> >>  Documentation/fpga/index.rst                  |   1 +
+> >>  MAINTAINERS                                   |   9 +
+> >>  drivers/fpga/Kconfig                          |   9 +
+> >>  drivers/fpga/Makefile                         |   3 +
+> >>  drivers/fpga/fpga-sec-mgr.c                   | 652 ++++++++++++++++++
+> >>  include/linux/fpga/fpga-sec-mgr.h             | 100 +++
+> >>  8 files changed, 899 insertions(+)
+> >>  create mode 100644 Documentation/ABI/testing/sysfs-class-fpga-sec-mgr
+> >>  create mode 100644 Documentation/fpga/fpga-sec-mgr.rst
+> >>  create mode 100644 drivers/fpga/fpga-sec-mgr.c
+> >>  create mode 100644 include/linux/fpga/fpga-sec-mgr.h
+> >>
 > 
-> This will save you a call to rebuild_sched_domains_energy(), which is
-> quite expensive, when cpufreq supports FIE and we also have counters.
 
-Good Point.
- 
-> After comments addressed,
-> 
-> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-
-Thanks.
-
-> Tested-by: Ionela Voinescu <ionela.voinescu@arm.com>
-
-Just out of curiosity, what exactly did you test and what was the setup ? :)
-
--- 
-viresh
+- Moritz
