@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C227F31D764
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:17:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D3531D76B
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhBQKPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:15:19 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:40909 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232296AbhBQKOE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:14:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613556821; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=0GnC3gzb6NPfiHDXGrS5DaD4rAkL1uIis8KU0WkuDck=; b=xTVVXoirDOIMtq7zrTkmodPgqXnxhEz0MGqa1M2T9KTVb6qTnRkeAQmjnTnWLBcoGPE5TWPg
- pb3cQorDzM7C0yrz0t8DHIGhW9MoToj/6bPLBEeSKa6khOVcXAH7JROHOAhuap6wUM5aJzYN
- F/L97yQhH13cQmNxePFvtV2/N0c=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 602cec31a294c935b76047d5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 10:13:05
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8D6EEC43462; Wed, 17 Feb 2021 10:13:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 480F0C433C6;
-        Wed, 17 Feb 2021 10:13:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 480F0C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
-Subject: Re: [PATCH] [v13] wireless: Initial driver submission for pureLiFi STA devices
-References: <20200928102008.32568-1-srini.raju@purelifi.com>
-        <20210212115030.124490-1-srini.raju@purelifi.com>
-        <87v9arovvo.fsf@codeaurora.org>
-Date:   Wed, 17 Feb 2021 12:13:00 +0200
-In-Reply-To: <87v9arovvo.fsf@codeaurora.org> (Kalle Valo's message of "Wed, 17
-        Feb 2021 12:02:03 +0200")
-Message-ID: <87mtw3gfyr.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S232236AbhBQKSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232272AbhBQKQ2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:16:28 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1713FC061574;
+        Wed, 17 Feb 2021 02:15:48 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id z21so8202940pgj.4;
+        Wed, 17 Feb 2021 02:15:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PWMDkLyuoQFnyVhCDSKForjRIrCz/CYTz/aboHVEpC0=;
+        b=eXnnMZ0G51shDdPz9jSetL9ouwoklyGpi6GXDgzmGA/IhXc3e0OLuOhL/3RprTM9zl
+         v5qQysQaMy8cc53O1uOSFAPyWH6/la5kQdmLn3vh6Kkrc6kFsU5f6kkEwozSrYtzSjsV
+         NK9FU8EHz+lkksLxqGlskgn2lEwGKoCQ40jyS4FcvcojLCnf/FBvisns/8x/YbxxVfh2
+         FJPr2ZKubgsMStm3/zjyW4qdrTo685KTLHDTwRR6/mTPiU8RlnNjZIDTY0k3mYGOWEtg
+         /YBeazO9MCdIiTrlM23bAuQQM2cGQlnsSTxJIt3jQqf/W8Vq4SiRgwwUTBNN3Xmwk97x
+         W6Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PWMDkLyuoQFnyVhCDSKForjRIrCz/CYTz/aboHVEpC0=;
+        b=qhvcHOUdi5J/i/fQIKaE79pkksCerJplUAMT/IIiTR6mWy+Q4kfgf5Gwyr+CPs4w3I
+         q7Sw8RFWiRphtqDaZFlGTyQg7OPeETzaXyfuzftMe9RLpUGqom15OSIfh9fMQhhzE07p
+         i0Gpui5fHcitWRjr9LjehiguVxc/bGGtBQj3Ic61pPDi+huyTcDcKClmw9NHMzrK8qcL
+         WANaO8otCZVypBd1zRVrVABToFlddqPX3rra6EUon5JJxA7Xy74rYlnbh3E4sCg4e7YJ
+         7oQbgqXcLZFPcXwnZH85D5HfvYYS8hIi9zLC36grrVdxR3BrVBVQKXMPW77kkb7d1EQg
+         4P/Q==
+X-Gm-Message-State: AOAM533p2zJGbED0E/sB8AxNO6DcU7AS7CyrOZNbE9npCdRrGpfhlE4r
+        lAmDr0Pg+5P1h2Ha11fKDtyaFO5OsWW+3OFWWRU=
+X-Google-Smtp-Source: ABdhPJwHxbyGWzMtxJ7ItogY45paozuwlLwLEJTb3PI0WJC3v/QIzWFZMZLh+4YKBsP/k03seyM7MK3flJOTxz74IU0=
+X-Received: by 2002:a62:384c:0:b029:1e3:8bca:5701 with SMTP id
+ f73-20020a62384c0000b02901e38bca5701mr23579306pfa.7.1613556947563; Wed, 17
+ Feb 2021 02:15:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210217160714.7c1fcaac@canb.auug.org.au>
+In-Reply-To: <20210217160714.7c1fcaac@canb.auug.org.au>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 17 Feb 2021 12:15:31 +0200
+Message-ID: <CAHp75VdhLLWFm414G8TQUnkaXbsi0DcF1v1fZpsAa1_rtoBS3g@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the tip tree with the pm tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kalle Valo <kvalo@codeaurora.org> writes:
-
-> Srinivasan Raju <srini.raju@purelifi.com> writes:
+On Wed, Feb 17, 2021 at 7:38 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 >
->> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
->> and LiFi-XL USB devices.
->>
->> This driver implementation has been based on the zd1211rw driver.
->>
->> Driver is based on 802.11 softMAC Architecture and uses
->> native 802.11 for configuration and management.
->>
->> The driver is compiled and tested in ARM, x86 architectures and
->> compiled in powerpc architecture.
->>
->> Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
+> Hi all,
 >
-> I pushed this now to the pending branch of wireless-drivers-next for
-> build testing, let's see what kind of results we get.
+> Today's linux-next merge of the tip tree got a conflict in:
+>
+>   arch/x86/platform/intel-mid/device_libs/platform_bt.c
+>
+> between commit:
+>
+>   4590d98f5a4f ("sfi: Remove framework for deprecated firmware")
+>
+> from the pm tree and commit:
+>
+>   bdb154f074a6 ("x86/platform/intel-mid: Convert comma to semicolon")
+>
+> from the tip tree.
+>
+> I fixed it up (the former removed the file, so I did that) and can
+> carry the fix as necessary. This is now fixed as far as linux-next is
+> concerned, but any non trivial conflicts should be mentioned to your
+> upstream maintainer when your tree is submitted for merging.  You may
+> also want to consider cooperating with the maintainer of the conflicting
+> tree to minimise any particularly complex conflicts.
 
-Ah, kbuild bot had already reported few issues:
-
-https://patchwork.kernel.org/project/linux-wireless/patch/20210212115030.124490-1-srini.raju@purelifi.com/
-
-Please fix those and I recommend waiting few days in case the bot finds
-more issues. After that you can submitt v14 fixing the comments you got
-in this review round.
+Yes, the file removal is the right thing to do.
+Thanks!
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+With Best Regards,
+Andy Shevchenko
