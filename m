@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6919531DD1A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D3531DD26
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234177AbhBQQP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:15:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
+        id S234005AbhBQQSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:18:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234137AbhBQQNw (ORCPT
+        with ESMTP id S233070AbhBQQSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:13:52 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6609BC0613D6
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:13:12 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id e9so7654013plh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:13:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=30obSL6wNoXFckVZgqPZYM3QP6QIWGyiK7vFvnqdzsc=;
-        b=uMcxqdXTNNbAbHrPi3G1vCKyjA5zEkRIsBX4o5BMlHNrbUndUYMFl3/Nn2C4stNK67
-         47C3V5ZBfV4pPQpdrUjEtvQimOKxcpNoJqVmiaT1eg19JROswfZEOvUeVycCpVOTWueO
-         E8C5xkypv0DAHJz0zWUprp2lflWttCQ8nV/dlqVPr12YIcv6QoI9x6pLkKqm4UcFvFks
-         rRu9azNmLqRHl0mcfSUcuzS7JeqXkGIfaOZYwsGQ2hSjBVUROEJMU3FU+N49Hf95pAC5
-         jv4GiyvYx2ef8pjKB+Z/5lz1frOibN1bwOvKaj31tt+fly7rxZaS4KvxQg2RDLhmtWA+
-         mDbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=30obSL6wNoXFckVZgqPZYM3QP6QIWGyiK7vFvnqdzsc=;
-        b=rv6drzQdvohebhrAdfv6rAj7ATlZ/WYt2bTkc/D/UqUOpkD9DjgxsF25ejrjJEwxaO
-         Fx9mE4AgbhZJa31w9JGnHwWGKHbmAq22BSL+5arpFD2qs+XyaazDJoSoBfXKhEaQEF3r
-         +ZxRt4yJPsgAukii9Q7qfwzoFeqiFxqa6HeMKleaBnmm4rud4sxVBT0W/SN6LO3Gi7Vp
-         3/kXkJuagDmpTmmUNadA8xFKXTFt+aVKRjXyhmt5eZjxj8IHdXqXGyPpr8VgpFD/9dku
-         hQNKvVDnuPzyGmUrbn464CAdlThRVb0PzB+I4nM4u1TmNXs9Gx6Z8+g992zgv4HLY6N8
-         ZuvA==
-X-Gm-Message-State: AOAM532rBjbEOCQvBieA35Zte2jqLuU16QARTuRNPacd1cMT64TpwTTU
-        20OJikNv+SZQHpzgz0bOXgwOXw==
-X-Google-Smtp-Source: ABdhPJyfKy2Cz1wXMvzNBd+cA8KhTW+umCAlEIA2Ctay8I7b4LKIUZ2LOEJzneCCMkuYOtND/wuWbA==
-X-Received: by 2002:a17:90a:1503:: with SMTP id l3mr9758253pja.41.1613578391687;
-        Wed, 17 Feb 2021 08:13:11 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:6948:259b:72c6:5517])
-        by smtp.gmail.com with ESMTPSA id 8sm3129452pfp.171.2021.02.17.08.13.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 08:13:11 -0800 (PST)
-Date:   Wed, 17 Feb 2021 08:13:04 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
-Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "rkrcmar@redhat.com" <rkrcmar@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>, "bp@suse.de" <bp@suse.de>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "srutherford@google.com" <srutherford@google.com>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Message-ID: <YC1AkNPNET+T928c@google.com>
-References: <cover.1612398155.git.ashish.kalra@amd.com>
- <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
- <YCxrV4u98ZQtInOE@google.com>
- <SN6PR12MB2767168CA61257A85B29C26D8E869@SN6PR12MB2767.namprd12.prod.outlook.com>
+        Wed, 17 Feb 2021 11:18:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9CFC061574;
+        Wed, 17 Feb 2021 08:17:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=VfrUoqOUihVjvmCvSLv9mlyS0o00nDdsmdN3qvEoA00=; b=cSa+ST1CT82tnPFcDFN6385/gf
+        fX5ue2PIy1WjeGVEzkDGZMTsFzLmqC7c+WYAQLnYutzJbsajtl2Jh42nC0w4lqBcrHrlZkXESMSyp
+        xlcoDR3Wp9R6AuEdsi/ty3h3DDMfecTJMK444IMwUHEhC9geKbbRqshaygCMw7xBUsOlIbyDSduNy
+        dmDRIklz83kii8sK5gQXi1rPYZtyfyYvM4vvxJRvwGML8x9D7AnF0WgJAsIE2nAV7DOSN//6W8z37
+        7Iss1QwTmm8FBDB49gMScTNNT7Ln/Ocl0tdU2/isZxvLSBXMpl/SURMPrdCcTpYsHSkF0tAUW3gJk
+        KVjidQgA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lCPSg-000e1H-2j; Wed, 17 Feb 2021 16:14:28 +0000
+Date:   Wed, 17 Feb 2021 16:13:58 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+Message-ID: <20210217161358.GM2858050@casper.infradead.org>
+References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
+ <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN6PR12MB2767168CA61257A85B29C26D8E869@SN6PR12MB2767.namprd12.prod.outlook.com>
+In-Reply-To: <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021, Kalra, Ashish wrote:
-> From: Sean Christopherson <seanjc@google.com> 
-> On Thu, Feb 04, 2021, Ashish Kalra wrote:
-> > From: Brijesh Singh <brijesh.singh@amd.com>
-> > 
-> > The ioctl is used to retrieve a guest's shared pages list.
-> 
-> >What's the performance hit to boot time if KVM_HC_PAGE_ENC_STATUS is passed
-> >through to userspace?  That way, userspace could manage the set of pages >in
-> >whatever data structure they want, and these get/set ioctls go away.
-> 
-> What is the advantage of passing KVM_HC_PAGE_ENC_STATUS through to user-space
-> ?
-> 
-> As such it is just a simple interface to get the shared page list via the
-> get/set ioctl's. simply an array is passed to these ioctl to get/set the
-> shared pages list.
+On Mon, Feb 15, 2021 at 03:44:52PM +0000, David Howells wrote:
+> +++ b/include/linux/pagemap.h
+> @@ -761,6 +761,8 @@ extern void __delete_from_page_cache(struct page *page, void *shadow);
+>  int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask);
+>  void delete_from_page_cache_batch(struct address_space *mapping,
+>  				  struct pagevec *pvec);
+> +void readahead_expand(struct readahead_control *ractl,
+> +		      loff_t new_start, size_t new_len);
 
-It eliminates any probability of the kernel choosing the wrong data structure,
-and it's two fewer ioctls to maintain and test.
+If we're revising this patchset, I'd rather this lived with the other
+readahead declarations, ie after the definition of readahead_control.
 
-> >Also, aren't there plans for an in-guest migration helper?  If so, do we
-> >have any idea what that interface will look like?  E.g. if we're going to
-> >end up with a full >fledged driver in the guest, why not bite the bullet now
-> >and bypass KVM entirely?
-> 
-> Even the in-guest migration helper will be using page encryption status
-> hypercalls, so some interface is surely required.
+> +	/* Expand the trailing edge upwards */
+> +	while (ractl->_nr_pages < new_nr_pages) {
+> +		unsigned long index = ractl->_index + ractl->_nr_pages;
+> +		struct page *page = xa_load(&mapping->i_pages, index);
+> +
+> +		if (page && !xa_is_value(page))
+> +			return; /* Page apparently present */
+> +
+> +		page = __page_cache_alloc(gfp_mask);
+> +		if (!page)
+> +			return;
+> +		if (add_to_page_cache_lru(page, mapping, index, gfp_mask) < 0) {
+> +			put_page(page);
+> +			return;
+> +		}
+> +		ractl->_nr_pages++;
+> +	}
 
-If it's a driver with a more extensive interace, then the hypercalls can be
-replaced by a driver operation.  That's obviously a big if, though.
+We're defeating the ondemand_readahead() algorithm here.  Let's suppose
+userspace is doing 64kB reads, the filesystem is OrangeFS which only
+wants to do 4MB reads, the page cache is initially empty and there's
+only one thread doing a sequential read.  ondemand_readahead() calls
+get_init_ra_size() which tells it to allocate 128kB and set the async
+marker at 64kB.  Then orangefs calls readahead_expand() to allocate the
+remainder of the 4MB.  After the app has read the first 64kB, it comes
+back to read the next 64kB, sees the readahead marker and tries to trigger
+the next batch of readahead, but it's already present, so it does nothing
+(see page_cache_ra_unbounded() for what happens with pages present).
 
-> Also the in-guest migration will be mainly an OVMF component, won't  really
-> be a full fledged kernel driver in the guest.
+Then it keeps going through the 4MB that's been read, not seeing any more
+readahead markers, gets to 4MB and asks for ... 256kB?  Not quite sure.
+Anyway, it then has to wait for the next 4MB because the readahead didn't
+overlap with the application processing.
 
-Is there code and/or a description of what the proposed helper would look like?
+So readahead_expand() needs to adjust the file's f_ra so that when the
+application gets to 64kB, it kicks off the readahead of 4MB-8MB chunk (and
+then when we get to 4MB+256kB, it kicks off the readahead of 8MB-12MB,
+and so on).
+
+Unless someone sees a better way to do this?  I don't
+want to inadvertently break POSIX_FADV_WILLNEED which calls
+force_page_cache_readahead() and should not perturb the kernel's
+ondemand algorithm.  Perhaps we need to add an 'ra' pointer to the
+ractl to indicate whether the file_ra_state should be updated by
+readahead_expand()?
