@@ -2,151 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E50F31DE46
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A82131DE32
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbhBQRe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:34:26 -0500
-Received: from [139.28.40.42] ([139.28.40.42]:46858 "EHLO
-        tarta.nabijaczleweli.xyz" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S233885AbhBQRcq (ORCPT
+        id S232549AbhBQRbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:31:18 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:55517 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231547AbhBQRbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:32:46 -0500
-Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
-        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id 3CCEE3601D2;
-        Wed, 17 Feb 2021 18:22:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nabijaczleweli.xyz;
-        s=202006; t=1613582569;
-        bh=ziY0iXdxwSWXFOzoXNDOFn5JohGhP3IMScquKcj790E=;
-        h=Date:From:Cc:Subject:References:In-Reply-To:From;
-        b=dBtD6W7ffddYH3UpRpeMSIBASbBvDE0f49x3J5KBtcCW6VsP4BcwMFuR6FL1oFJxa
-         bqy4Kh7A5puaWJgQ8kP2TKCLApSB4rerNuVZ4gMfWmndAyFpk3d334E71H9rjJzRl5
-         kQWbdinoT448hsAqOqRcfuC3JfpZjslvphls0uDvUvLu5Mx/RVHjPqF4lqqnsDjrUb
-         2Qo/pEWxJ9ftZzVYC0HTmnGc+kfwQMV6SsCE236BBZA2i1yrD9Ze42LrOeMxjUtqfE
-         50x014EZIDuKlnOIH7k5GyTSo1HNe+F9IIeCSLXik4PDut/m/NHDuIIlfTTzkxhr8w
-         ZhTU12bo9duHQ==
-Date:   Wed, 17 Feb 2021 18:22:48 +0100
-From:   Ahelenia =?utf-8?Q?Ziemia=C5=84ska?= 
-        <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        Jiri Kosina <jikos@kernel.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] HID: input: work around Win8 stylus-on-touchscreen
- reporting
-Message-ID: <b0cb2d0ee8743263608284e0e5112c446e3cb2ee.1613582014.git.nabijaczleweli@nabijaczleweli.xyz>
-References: <cover.1613582014.git.nabijaczleweli@nabijaczleweli.xyz>
+        Wed, 17 Feb 2021 12:31:03 -0500
+Received: by mail-io1-f71.google.com with SMTP id e9so10690767iok.22
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:30:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=W7PZMoQ6/2ZuncEHOYXVO/E5fVdcQhSl2dwt9WT7asE=;
+        b=ncw6UFF5PEKDsGn1eEo9gWX12btTJUcoDVG8dD8XwNlGe1BjdApu9kAe/rIgTW3W+p
+         5/jqt/p74QI9oOlYA8cGvQ5KDu48IvipN6eJ888AVRWE73jVbQ17V8rnusvoHg9rOkLV
+         x4R2+Ur1AdNWJAYhXVURiitlnsMoEQO80AhKu1cWmsr/5yQnlZzFvT1uqit/y+5xL51X
+         zHYxULgR1lo67fo86HN8rj45Z3q3OTYZJpJy747qPXBwHmdyh5Cf7sYx4ASAUUxhE9WO
+         flurwRZVYW/KHEMg6Fk+xvIDtubuvVAi8HIFIrK0prjIDobQCWmvWajRY16dZ4RRpSdC
+         b+sw==
+X-Gm-Message-State: AOAM530jQfwV2/Keuu0qpTfVJ8yj2hHL59bFCYu+H4A325W/oTceF/Sf
+        L2yeXmN0k/gw2HDg1I91CPIlbpFe1IlfnYWTM1kbEX8+TSYI
+X-Google-Smtp-Source: ABdhPJynh6K4gj10z49orQ6DtNdBbnCCeOmfa43dNXzkStpp20ndApto9zr330a3hQKBZBOzGQJjkcZqoQt9s9wKIG4xn1BdvUAc
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ebko57ktge7ctid7"
-Content-Disposition: inline
-In-Reply-To: <cover.1613582014.git.nabijaczleweli@nabijaczleweli.xyz>
-User-Agent: NeoMutt/20210205
-To:     unlisted-recipients:; (no To-header on input)
+X-Received: by 2002:a05:6e02:152c:: with SMTP id i12mr145560ilu.46.1613583022725;
+ Wed, 17 Feb 2021 09:30:22 -0800 (PST)
+Date:   Wed, 17 Feb 2021 09:30:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e29ec405bb8b9251@google.com>
+Subject: general protection fault in mptcp_sendmsg_frag
+From:   syzbot <syzbot+409b0354a6ba83a86aaf@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.01.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---ebko57ktge7ctid7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+syzbot found the following issue on:
 
-With this, these devices now behave as tablets as expected by userspace
+HEAD commit:    773dc50d Merge branch 'Xilinx-axienet-updates'
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1744ba4cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+dashboard link: https://syzkaller.appspot.com/bug?extid=409b0354a6ba83a86aaf
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16548404d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150c2914d00000
 
-Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+409b0354a6ba83a86aaf@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000007: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000038-0x000000000000003f]
+CPU: 0 PID: 8763 Comm: syz-executor836 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:mptcp_sendmsg_frag+0xa3f/0x1220 net/mptcp/protocol.c:1330
+Code: 80 3c 02 00 0f 85 04 07 00 00 48 8b 04 24 48 8b 98 20 07 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 38 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e d6 04 00 00 48 8d 7d 10 44 8b
+RSP: 0018:ffffc90001dff7e8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000007 RSI: 0000000000000000 RDI: 0000000000000038
+RBP: ffff8880120d9e10 R08: 0000000000000001 R09: ffff8880120d9e10
+R10: ffffed100241b3c4 R11: 0000000000000000 R12: ffff88801bf51800
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008000
+FS:  00007f0f56768700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000084 CR3: 000000001b547000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
+ mptcp_sendmsg+0x1ffb/0x2830 net/mptcp/protocol.c:1692
+ inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ sock_write_iter+0x289/0x3c0 net/socket.c:999
+ call_write_iter include/linux/fs.h:1901 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x791/0xa30 fs/read_write.c:605
+ ksys_write+0x1ee/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4492d9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 a1 15 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0f56768318 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00000000004cf4c8 RCX: 00000000004492d9
+RDX: 0000000000000001 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00000000004cf4c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004cf4cc
+R13: 00007fff4b6baf0f R14: 00007f0f56768400 R15: 0000000000022000
+Modules linked in:
+---[ end trace a30ad1b3e9650ce6 ]---
+RIP: 0010:mptcp_sendmsg_frag+0xa3f/0x1220 net/mptcp/protocol.c:1330
+Code: 80 3c 02 00 0f 85 04 07 00 00 48 8b 04 24 48 8b 98 20 07 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 38 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e d6 04 00 00 48 8d 7d 10 44 8b
+RSP: 0018:ffffc90001dff7e8 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000007 RSI: 0000000000000000 RDI: 0000000000000038
+RBP: ffff8880120d9e10 R08: 0000000000000001 R09: ffff8880120d9e10
+R10: ffffed100241b3c4 R11: 0000000000000000 R12: ffff88801bf51800
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000008000
+FS:  00007f0f56768700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f97dbf78000 CR3: 000000001b547000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
 ---
- drivers/hid/hid-input.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index a5ba92978473..b8813fc3e9d2 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -1273,6 +1273,41 @@ static void hidinput_handle_scroll(struct hid_usage =
-*usage,
- 	input_event(input, EV_REL, usage->code, hi_res);
- }
-=20
-+/*
-+ * Win8 tablet stylus devices send, in order:
-+ *   HID_DG_TIPSWITCH (BTN_TOUCH)
-+ *   HID_DG_INVERT    (BTN_TOOL_RUBBER)
-+ *   HID_DG_ERASER    (BTN_TOUCH)
-+ *   HID_DG_INRANGE   (BTN_TOOL_PEN)
-+ *
-+ * For each of these states:
-+ *   hover     :                         INRANGE
-+ *   touching  : TIPSWITCH
-+ *   hover+2   :           INVERT        INRANGE
-+ *   touching+2:                  ERASER INRANGE
-+ *
-+ * Which means we'd send BTN_TOUCH=3D0 + BTN_TOOL_PEN=3D1 on proximity,
-+ * then BTN_TOUCH=3D1 and BTN_TOOL_PEN=3D0 in consecutive groups when touc=
-hed,
-+ * indicating the stylus leaving the screen as soon as the two meet.
-+ */
-+static void hidinput_fixup_win8_inrange(struct hid_device *hid, struct hid=
-_field *field, __s32 *value)
-+{
-+	unsigned f, u;
-+	struct hid_field *rfield;
-+
-+	if (!*value) {
-+		for (f =3D 0; f < field->report->maxfield; ++f) {
-+			rfield =3D field->report->field[f];
-+			for (u =3D 0; u < rfield->maxusage; ++u) {
-+				if (rfield->usage[u].hid =3D=3D HID_DG_TIPSWITCH) {
-+					*value =3D rfield->value[u];
-+					return;
-+				}
-+			}
-+		}
-+	}
-+}
-+
- void hidinput_hid_event(struct hid_device *hid, struct hid_field *field, s=
-truct hid_usage *usage, __s32 value)
- {
- 	struct input_dev *input;
-@@ -1306,7 +1341,13 @@ void hidinput_hid_event(struct hid_device *hid, stru=
-ct hid_field *field, struct
- 		return;
- 	}
-=20
-+	if (usage->hid =3D=3D HID_DG_ERASER && value)
-+		*quirks |=3D HID_QUIRK_INVERT;
-+
- 	if (usage->hid =3D=3D HID_DG_INRANGE) {
-+		if (hid->group =3D=3D HID_GROUP_MULTITOUCH_WIN_8)
-+			hidinput_fixup_win8_inrange(hid, field, &value);
-+
- 		if (value) {
- 			input_event(input, usage->type, (*quirks & HID_QUIRK_INVERT) ? BTN_TOOL=
-_RUBBER : usage->code, 1);
- 			return;
---=20
-2.20.1
-
---ebko57ktge7ctid7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmAtUOcACgkQvP0LAY0m
-WPEsSw/9FOl8WYpFD9PhApLY7h33XSD93qqJ/fUAxl2Ev4X5DjB2ASd/ghtwbDWm
-rEkPnwWyyvKwQeBc11EEggP4U2lWghBthwxhWycCuLBiUw/J9L4XVi4sLWhdfBBm
-PyjP7CPSo22y3vk4S94ATB8GeCMIde8unJFugoIyW7aP0esspAsfKukv9Tk4grGR
-fPrv3Sxeq5sHEZPtwE4jL0z872EvqZTQewncN39TJK6BNqOvNwLHntS8UsYrZtSS
-j8aGuY6t9c9MUEm1+iFkGS0m5zZ1ULEZ/LSo7zLHqIJTEIRFjaoD57DRxiICGEIF
-Jkq+SC72F14/cWBRwRWt/6sX7q7QXRG0qNE/Ksc/aanOyMJgIQVsPtkVP2OMF/sv
-DwEp5LTRGPp+ilUdn5mRFOavT2uHADYqTjS65s04CZpWMFsTV8TqGlydOoZbHSX6
-uFxVGY3e4rOz64Kp6o69XU0oNE+AV5xg8mkefFTYzm0zjWrJMl0RJYmgvGQlEfS8
-wPJ6uApzDdP+MkJAEVDBm2YPTUVP5/7tjvxt+zBz9ARon+i+cziApiVkpOcXDmSb
-eABvttue6lP7J8fjyP909u8YptS3CoKfOMXXVSzLQyI/XwQHMDfBYuZPjOXNQgua
-9uVrkoiIY1xrunkIHkAqORmUtqa/N8ORWtV9f+on08MVBmZgH+c=
-=3kSe
------END PGP SIGNATURE-----
-
---ebko57ktge7ctid7--
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
