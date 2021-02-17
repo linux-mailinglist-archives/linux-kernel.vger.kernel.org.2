@@ -2,50 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1114331DA76
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A51631DA78
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhBQN2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:28:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33282 "EHLO
+        id S231593AbhBQNaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbhBQNTC (ORCPT
+        with ESMTP id S232782AbhBQNTx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:19:02 -0500
+        Wed, 17 Feb 2021 08:19:53 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE085C0617AB;
-        Wed, 17 Feb 2021 05:17:39 -0800 (PST)
-Date:   Wed, 17 Feb 2021 13:17:37 -0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FDCC06121C;
+        Wed, 17 Feb 2021 05:17:41 -0800 (PST)
+Date:   Wed, 17 Feb 2021 13:17:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613567858;
+        s=2020; t=1613567859;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ep0/fEEv+0SuSo3EUORfFUJeyfp6RHWuXX2iz5jBIH0=;
-        b=2Urc0DrkPp0BielVCUoXbqe26FjyjXEWOBzuv+eElqVTt6TtEkRvOgWHbBO0Y/pJewzDD9
-        ymOvME02hvV5+9gi3D9Hrq1hip5ZmLq/en6SGZVLLWBrpzub2uirxQl+1PVT0x79mbYsbj
-        kYm1d/YOoXtCTNoXRGCzSrt/4dTI7yfDsHPFx1k7AgYQeRMd3ot2s4LAXyzaw0R4a/RZOb
-        u3qIvc+Qz2HPYNG/hCZcpWXWck6fw3gTI6frcFJoT/WeZx5vg8YZz3Y+PqUyihNDBPPxRW
-        qyc2jxJ/HjatdZ02p1bwlG9rb4FqNRlxO0PPSjL+ZZw+qaAAKEJ/ia86SHMpsw==
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Enhza+v10Ym2ixtyOL9d52WlnFvQYOluMR1bV/a0k6M=;
+        b=TFE0XbLy2gO4Re80psMgSLtdhcSNY4NylqLWVAs4mQXhPPblJC+GJf17hVJjdkvW3lTnfe
+        iKtjy9OoMGdAtlHqCONkMN892zZWxKJ6Qb1dzAjaAUAuizl7JUoRjPI63SR+z5OMQvu9A2
+        ZWpEqTLTUWSjjlBtdBPXPz76vURYnvIb0IwBRj2/g3WlkEv9RiBSC/S6D3SVJJ9QgpF1cJ
+        O0vmTJ00GeC0b/sXV/Ly71f7y63JVzYfDAO+45c1XRJVUjSMugf8yJukPv0WVAmrsqNcop
+        ftjGaehJ4EcXqx8nVW5UmZ9W0Ez4wVslJxXLIZshgmXg1SH0RuC1kwn2GqQxbA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613567858;
+        s=2020e; t=1613567859;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=ep0/fEEv+0SuSo3EUORfFUJeyfp6RHWuXX2iz5jBIH0=;
-        b=y3hFkRNm30mIcP5xqeEl+KULMtnsrPD8eOKPA2K3XlJTlll99ovUqGUg2yfAcZN9mX9rpo
-        fMK8y8xKKYZFOwDw==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Enhza+v10Ym2ixtyOL9d52WlnFvQYOluMR1bV/a0k6M=;
+        b=K4SrviUxo9C0N6XIgrGwcuKO3v65lw70G4vWLFaQI1tvTatUAABanMF9/4enBwigB4pxTK
+        8mVc9Vjwj9WeixBg==
+From:   "tip-bot2 for Mel Gorman" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] rbtree, uprobes: Use rbtree helpers
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: sched/core] sched/fair: Merge select_idle_core/cpu()
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
+In-Reply-To: <20210127135203.19633-5-mgorman@techsingularity.net>
+References: <20210127135203.19633-5-mgorman@techsingularity.net>
 MIME-Version: 1.0
-Message-ID: <161356785754.20312.10402032931275465475.tip-bot2@tip-bot2>
+Message-ID: <161356785893.20312.10270833120354178289.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -56,139 +63,196 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     a905e84e64083a0ee701f61810badee234050825
-Gitweb:        https://git.kernel.org/tip/a905e84e64083a0ee701f61810badee234050825
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 29 Apr 2020 17:06:27 +02:00
+Commit-ID:     9fe1f127b913318c631d0041ecf71486e38c2c2d
+Gitweb:        https://git.kernel.org/tip/9fe1f127b913318c631d0041ecf71486e38c2c2d
+Author:        Mel Gorman <mgorman@techsingularity.net>
+AuthorDate:    Wed, 27 Jan 2021 13:52:03 
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 17 Feb 2021 14:07:52 +01:00
+CommitterDate: Wed, 17 Feb 2021 14:07:25 +01:00
 
-rbtree, uprobes: Use rbtree helpers
+sched/fair: Merge select_idle_core/cpu()
 
-Reduce rbtree boilerplate by using the new helpers.
+Both select_idle_core() and select_idle_cpu() do a loop over the same
+cpumask. Observe that by clearing the already visited CPUs, we can
+fold the iteration and iterate a core at a time.
 
+All we need to do is remember any non-idle CPU we encountered while
+scanning for an idle core. This way we'll only iterate every CPU once.
+
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Davidlohr Bueso <dbueso@suse.de>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/20210127135203.19633-5-mgorman@techsingularity.net
 ---
- kernel/events/uprobes.c | 80 +++++++++++++++++++---------------------
- 1 file changed, 39 insertions(+), 41 deletions(-)
+ kernel/sched/fair.c |  99 +++++++++++++++++++++++++------------------
+ 1 file changed, 59 insertions(+), 40 deletions(-)
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index bf9edd8..fd5160d 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -613,41 +613,56 @@ static void put_uprobe(struct uprobe *uprobe)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 6a0fc8a..c73d588 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6019,6 +6019,14 @@ static inline int find_idlest_cpu(struct sched_domain *sd, struct task_struct *p
+ 	return new_cpu;
+ }
+ 
++static inline int __select_idle_cpu(int cpu)
++{
++	if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
++		return cpu;
++
++	return -1;
++}
++
+ #ifdef CONFIG_SCHED_SMT
+ DEFINE_STATIC_KEY_FALSE(sched_smt_present);
+ EXPORT_SYMBOL_GPL(sched_smt_present);
+@@ -6077,48 +6085,51 @@ unlock:
+  * there are no idle cores left in the system; tracked through
+  * sd_llc->shared->has_idle_cores and enabled through update_idle_core() above.
+  */
+-static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
++static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
+ {
+-	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+-	int core, cpu;
++	bool idle = true;
++	int cpu;
+ 
+ 	if (!static_branch_likely(&sched_smt_present))
+-		return -1;
+-
+-	if (!test_idle_cores(target, false))
+-		return -1;
+-
+-	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
++		return __select_idle_cpu(core);
+ 
+-	for_each_cpu_wrap(core, cpus, target) {
+-		bool idle = true;
+-
+-		for_each_cpu(cpu, cpu_smt_mask(core)) {
+-			if (!available_idle_cpu(cpu)) {
+-				idle = false;
+-				break;
++	for_each_cpu(cpu, cpu_smt_mask(core)) {
++		if (!available_idle_cpu(cpu)) {
++			idle = false;
++			if (*idle_cpu == -1) {
++				if (sched_idle_cpu(cpu) && cpumask_test_cpu(cpu, p->cpus_ptr)) {
++					*idle_cpu = cpu;
++					break;
++				}
++				continue;
+ 			}
++			break;
+ 		}
+-
+-		if (idle)
+-			return core;
+-
+-		cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
++		if (*idle_cpu == -1 && cpumask_test_cpu(cpu, p->cpus_ptr))
++			*idle_cpu = cpu;
  	}
+ 
+-	/*
+-	 * Failed to find an idle core; stop looking for one.
+-	 */
+-	set_idle_cores(target, 0);
++	if (idle)
++		return core;
+ 
++	cpumask_andnot(cpus, cpus, cpu_smt_mask(core));
+ 	return -1;
  }
  
--static int match_uprobe(struct uprobe *l, struct uprobe *r)
-+static __always_inline
-+int uprobe_cmp(const struct inode *l_inode, const loff_t l_offset,
-+	       const struct uprobe *r)
+ #else /* CONFIG_SCHED_SMT */
+ 
+-static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
++static inline void set_idle_cores(int cpu, int val)
  {
--	if (l->inode < r->inode)
-+	if (l_inode < r->inode)
- 		return -1;
- 
--	if (l->inode > r->inode)
-+	if (l_inode > r->inode)
- 		return 1;
- 
--	if (l->offset < r->offset)
-+	if (l_offset < r->offset)
- 		return -1;
- 
--	if (l->offset > r->offset)
-+	if (l_offset > r->offset)
- 		return 1;
- 
- 	return 0;
- }
- 
-+#define __node_2_uprobe(node) \
-+	rb_entry((node), struct uprobe, rb_node)
-+
-+struct __uprobe_key {
-+	struct inode *inode;
-+	loff_t offset;
-+};
-+
-+static inline int __uprobe_cmp_key(const void *key, const struct rb_node *b)
-+{
-+	const struct __uprobe_key *a = key;
-+	return uprobe_cmp(a->inode, a->offset, __node_2_uprobe(b));
+-	return -1;
 +}
 +
-+static inline int __uprobe_cmp(struct rb_node *a, const struct rb_node *b)
++static inline bool test_idle_cores(int cpu, bool def)
 +{
-+	struct uprobe *u = __node_2_uprobe(a);
-+	return uprobe_cmp(u->inode, u->offset, __node_2_uprobe(b));
++	return def;
 +}
 +
- static struct uprobe *__find_uprobe(struct inode *inode, loff_t offset)
- {
--	struct uprobe u = { .inode = inode, .offset = offset };
--	struct rb_node *n = uprobes_tree.rb_node;
--	struct uprobe *uprobe;
--	int match;
-+	struct __uprobe_key key = {
-+		.inode = inode,
-+		.offset = offset,
-+	};
-+	struct rb_node *node = rb_find(&key, &uprobes_tree, __uprobe_cmp_key);
- 
--	while (n) {
--		uprobe = rb_entry(n, struct uprobe, rb_node);
--		match = match_uprobe(&u, uprobe);
--		if (!match)
--			return get_uprobe(uprobe);
-+	if (node)
-+		return __node_2_uprobe(node);
- 
--		if (match < 0)
--			n = n->rb_left;
--		else
--			n = n->rb_right;
--	}
- 	return NULL;
++static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
++{
++	return __select_idle_cpu(core);
  }
  
-@@ -668,32 +683,15 @@ static struct uprobe *find_uprobe(struct inode *inode, loff_t offset)
- 
- static struct uprobe *__insert_uprobe(struct uprobe *uprobe)
+ #endif /* CONFIG_SCHED_SMT */
+@@ -6131,10 +6142,11 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
+ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
  {
--	struct rb_node **p = &uprobes_tree.rb_node;
--	struct rb_node *parent = NULL;
--	struct uprobe *u;
--	int match;
-+	struct rb_node *node;
+ 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
++	int i, cpu, idle_cpu = -1, nr = INT_MAX;
++	bool smt = test_idle_cores(target, false);
++	int this = smp_processor_id();
+ 	struct sched_domain *this_sd;
+ 	u64 time;
+-	int this = smp_processor_id();
+-	int cpu, nr = INT_MAX;
  
--	while (*p) {
--		parent = *p;
--		u = rb_entry(parent, struct uprobe, rb_node);
--		match = match_uprobe(uprobe, u);
--		if (!match)
--			return get_uprobe(u);
-+	node = rb_find_add(&uprobe->rb_node, &uprobes_tree, __uprobe_cmp);
-+	if (node)
-+		return get_uprobe(__node_2_uprobe(node));
+ 	this_sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+ 	if (!this_sd)
+@@ -6142,7 +6154,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
  
--		if (match < 0)
--			p = &parent->rb_left;
--		else
--			p = &parent->rb_right;
--
--	}
--
--	u = NULL;
--	rb_link_node(&uprobe->rb_node, parent, p);
--	rb_insert_color(&uprobe->rb_node, &uprobes_tree);
- 	/* get access + creation ref */
- 	refcount_set(&uprobe->ref, 2);
--
--	return u;
-+	return NULL;
+ 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+ 
+-	if (sched_feat(SIS_PROP)) {
++	if (sched_feat(SIS_PROP) && !smt) {
+ 		u64 avg_cost, avg_idle, span_avg;
+ 
+ 		/*
+@@ -6162,18 +6174,29 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+ 	}
+ 
+ 	for_each_cpu_wrap(cpu, cpus, target) {
+-		if (!--nr)
+-			return -1;
+-		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+-			break;
++		if (smt) {
++			i = select_idle_core(p, cpu, cpus, &idle_cpu);
++			if ((unsigned int)i < nr_cpumask_bits)
++				return i;
++
++		} else {
++			if (!--nr)
++				return -1;
++			idle_cpu = __select_idle_cpu(cpu);
++			if ((unsigned int)idle_cpu < nr_cpumask_bits)
++				break;
++		}
+ 	}
+ 
+-	if (sched_feat(SIS_PROP)) {
++	if (smt)
++		set_idle_cores(this, false);
++
++	if (sched_feat(SIS_PROP) && !smt) {
+ 		time = cpu_clock(this) - time;
+ 		update_avg(&this_sd->avg_scan_cost, time);
+ 	}
+ 
+-	return cpu;
++	return idle_cpu;
  }
  
  /*
+@@ -6302,10 +6325,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if (!sd)
+ 		return target;
+ 
+-	i = select_idle_core(p, sd, target);
+-	if ((unsigned)i < nr_cpumask_bits)
+-		return i;
+-
+ 	i = select_idle_cpu(p, sd, target);
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
