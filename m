@@ -2,152 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D211231E293
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:40:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A911A31E2A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbhBQWiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:38:21 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:45988 "EHLO m42-2.mailgun.net"
+        id S230131AbhBQWly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:41:54 -0500
+Received: from mga03.intel.com ([134.134.136.65]:15550 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233979AbhBQWam (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:30:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613601013; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=LcpeerQwr9nnsJvjmhs5Td+khk4yX/3Qw+1ErsogUrI=; b=q958X7SSOi5AuKQ7D9QEeEIon5q5whQVkTp4rHbLKwTaFUuXgcz8Aal+sdcLGD4g0dJf+s/u
- fAXMVya7oBaln7ZP/SyFxdxRLAxFI2+lkFO9C4pzDZUPKbcy5eG/bq03YS5h4u3kZr30e+6h
- y/8sLoGk6dtYdCBROG7rX668tRs=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 602d98db3af8a933044237a6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 22:29:47
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 23FE9C43467; Wed, 17 Feb 2021 22:29:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from stor-presley.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5B456C433CA;
-        Wed, 17 Feb 2021 22:29:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5B456C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Date:   Wed, 17 Feb 2021 14:29:40 -0800
-From:   Asutosh Das <asutoshd@codeaurora.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "cang@codeaurora.org" <cang@codeaurora.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 1/1] scsi: ufs: Enable power management for wlun
-Message-ID: <20210217222940.GA18897@stor-presley.qualcomm.com>
-References: <cover.1613070911.git.asutoshd@codeaurora.org>
- <eed327cdace40d1e1d706da5b0fa64ea4ee99422.1613070912.git.asutoshd@codeaurora.org>
- <DM6PR04MB65758E0EBF4171FD6E1CF0CFFC8A9@DM6PR04MB6575.namprd04.prod.outlook.com>
- <20210216173646.GA35819@stor-presley.qualcomm.com>
+        id S233935AbhBQWc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 17:32:29 -0500
+IronPort-SDR: c6cLwFIv7Kh4e1t/3HafvF1CUOtAoEsjXp+mlDQpB9nc0eN0AP9i1yily9xGXVlO9yjCvgXc67
+ aMQsbPWlTZng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="183408999"
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="183408999"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 14:31:45 -0800
+IronPort-SDR: Lx1J4MPTKVtIOVaO9O+FGhFiogAn1Ae6Zwg9iidmqao5eDMpjO1TQ/CIJf6fJfnADJ060PfSG2
+ Q6woQk53gXOw==
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="362200450"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 14:31:44 -0800
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v21 0/7] Control-flow Enforcement: Indirect Branch Tracking
+Date:   Wed, 17 Feb 2021 14:31:28 -0800
+Message-Id: <20210217223135.16790-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210216173646.GA35819@stor-presley.qualcomm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16 2021 at 09:44 -0800, Asutosh Das wrote:
->On Sat, Feb 13 2021 at 13:37 -0800, Avri Altman wrote:
->>>+       } else {
->>Is it possible to get here?
->>Scsi_scan_host is called only after successful add_wluns
->
->It looks so.
->scsi 0:0:0:49488: Link setup for lun - ufshcd_setup_links
->[...]
->Call trace:
->dump_backtrace+0x0/0x1d4
->show_stack+0x18/0x24
->dump_stack+0xc4/0x144
->ufshcd_setup_links+0xd8/0x100
->ufshcd_slave_alloc+0x134/0x1a0
->scsi_alloc_sdev+0x1c0/0x230
->scsi_probe_and_add_lun+0xc0/0xd48
->__scsi_add_device+0xc0/0x138
->ufshcd_scsi_add_wlus+0x30/0x1c0
->ufshcd_async_scan+0x58/0x240
->async_run_entry_fn+0x48/0x128
->process_one_work+0x1f0/0x470
->worker_thread+0x26c/0x4c8
->kthread+0x13c/0x320
->ret_from_fork+0x10/0x18
->
->>
->>>+               /* device wlun is probed */
->>>+               hba->luns_avail--;
->>>+       }
->>>+}
->>>+
->>
->>
->>>
->>> /**
->>>@@ -7254,6 +7312,14 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba
->>>*hba)
->>>                goto out;
->>>        }
->>>        ufshcd_blk_pm_runtime_init(hba->sdev_ufs_device);
->>>+       /*
->>>+        * A pm_runtime_put_sync is invoked when this device enables
->>>blk_pm_runtime
->>>+        * & would suspend the device-wlun upon timer expiry.
->>>+        * But suspending device wlun _may_ put the ufs device in the pre-defined
->>>+        * low power mode (SSU <rpm_lvl>). Probing of other luns may fail then.
->>>+        * Don't allow this suspend until all the luns have been probed.
->>Maybe add one more sentence: see pm_runtime_mark_last_busy in ufshcd_setup_links
->Done.
->
->>
->>
->>
->>>-       ufshcd_clear_ua_wluns(hba);
->>Are there any callers left to ufshcd_clear_ua_wluns?
->>Can it be removed?
->Let me check.
->
-I don't think this can be removed.
-The reasoning behind this call as per the commit message indicates that if
-there's a reset this request_sense is needed to clear uac.
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-In pm level 5, the reset would still happen. So I guess this is needed.
-Please let me know if I'm missing something here.
-The commit message didn't have much details otherwise.
+This is the second part of CET and enables Indirect Branch Tracking (IBT).
+It is built on top of the shadow stack series.
 
+Changes in v21:
+- Rebase to Linus tree v5.11.
 
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
 
->
->>
->>>+       if (hba->wlun_dev_clr_ua)
->>>+               ufshcd_clear_ua_wlun(hba, UFS_UPIU_UFS_DEVICE_WLUN);
->>>
->>>        cmd[4] = pwr_mode << 4;
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
+
+[2] Indirect Branch Tracking patches v20:
+
+    https://lkml.kernel.org/r/20210210180245.13770-1-yu-cheng.yu@intel.com/
+
+H.J. Lu (3):
+  x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+  x86/vdso/32: Add ENDBR32 to __kernel_vsyscall entry point
+  x86/vdso: Insert endbr32/endbr64 to vDSO
+
+Yu-cheng Yu (4):
+  x86/cet/ibt: Update Kconfig for user-mode Indirect Branch Tracking
+  x86/cet/ibt: User-mode Indirect Branch Tracking support
+  x86/cet/ibt: Handle signals for Indirect Branch Tracking
+  x86/cet/ibt: Update ELF header parsing for Indirect Branch Tracking
+
+ arch/x86/Kconfig                         |  1 +
+ arch/x86/entry/vdso/Makefile             |  4 ++
+ arch/x86/entry/vdso/vdso32/system_call.S |  3 ++
+ arch/x86/include/asm/cet.h               |  3 ++
+ arch/x86/kernel/cet.c                    | 59 +++++++++++++++++++++++-
+ arch/x86/kernel/cet_prctl.c              |  5 ++
+ arch/x86/kernel/fpu/signal.c             |  8 ++--
+ arch/x86/kernel/process_64.c             |  8 ++++
+ 8 files changed, 86 insertions(+), 5 deletions(-)
+
+-- 
+2.21.0
+
