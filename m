@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D6331DECB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:08:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A132331DEDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbhBQSII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:08:08 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:63737 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232901AbhBQSIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:08:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613585265; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=SU4Ew2Jl/seI0yq8ZCxyYv4yJD9/KPHDlda50sJKbi4=; b=Yr4anvRgIi0gyy7BYv4smH5y2yNAaZrP7FPvuvIYQ7KloTSGZ0CEKh2Y75QOTLrl1EJr+2wx
- CyU9miBqlnRkfdWDyuwJCvnqorv4zpPOxLh78CoaFDx21MrmoNsV/4JYe7FjGBBOkHOHvHNs
- I6o5t1TyGfGwHgmRLFyDSxtAJdw=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 602d5b4f97484ee2ac3940f4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 18:07:11
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DC930C433ED; Wed, 17 Feb 2021 18:07:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.100] (unknown [124.123.173.84])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C2ABBC433C6;
-        Wed, 17 Feb 2021 18:07:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C2ABBC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH] arm64: Add part number for Arm Cortex-A78
-To:     Will Deacon <will@kernel.org>
-Cc:     catalin.marinas@arm.com, saiprakash.ranjan@codeaurora.org,
-        robh@kernel.org, konrad.dybcio@somainline.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <1613580251-12694-1-git-send-email-neeraju@codeaurora.org>
- <20210217170612.GA4254@willie-the-truck>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <c43d8eed-2665-9e9b-c6b5-799b5281c657@codeaurora.org>
-Date:   Wed, 17 Feb 2021 23:37:04 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232730AbhBQSJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233149AbhBQSJ3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:09:29 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44511C061793
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:08:32 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id w18so8910663pfu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:08:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=O90jLhGQ0RlHH4NdJj1oYXN3dRv0sZyXJBNmJ5tDDck=;
+        b=ccD4MgD+0kioofgsnxt8DyI25aYiEYy+iVxXgzfZgcUmXIE3HaN/0iKS2GoDYhhpnN
+         eC+b6ILU16zRbOdh7hTbeVY8Z66gm4NzWtEzPCJvOUJr6GcRMEGgo8rC0kgvekNs7qZK
+         JPhNd4FnNGqiQq4c1v1K7k9wn6I1tdAeq2/Gs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=O90jLhGQ0RlHH4NdJj1oYXN3dRv0sZyXJBNmJ5tDDck=;
+        b=Cfo9QW8ioulbbOg/KLwTFbuCGYDt8B3cUKXQSxDWSCv2rloPEYpusNzMVrxh/W9nkm
+         oLE+tEWZLwPKAAP/3wgno1p3YUZIUb/SCVeDGNl0ItCtBX9G1VwFoQuRkbsObHth9MOk
+         UO06CR/TPIf81AB4UuMtFj60jjeLTcujRbCfGbjIzdrcR9+dzWyVC+3R+arwv7m+HOIh
+         DgZ3gk9ybFbm9lOJItI7Bxl0vWoSqLYNhccSE+zjK4lNBD8ZWWgJAC4+Z4a8PBizT2lG
+         S8R9G6Fyz/BevrJLtaJ3RG9nNGrda5G35JxatBW1Qq+luHc5NOlbDvOFBGPE8es4HsNG
+         pstw==
+X-Gm-Message-State: AOAM533CqCKNecJc/tQnmCQiSPLXFbJ42yp6bKRNpzbsyJmAk/vceDhi
+        GdjQULygLu0Vtdyw3Cz5VeOF2w==
+X-Google-Smtp-Source: ABdhPJy63kvoxKLnifjgM/0FsW+dYrbSO2HWL1L3zMrMkEFWbs7/G2ttJ7BVYEWja1RdeFoRmAHlcA==
+X-Received: by 2002:a62:3085:0:b029:1ec:a570:682c with SMTP id w127-20020a6230850000b02901eca570682cmr511282pfw.28.1613585310771;
+        Wed, 17 Feb 2021 10:08:30 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id mm8sm2989723pjb.11.2021.02.17.10.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 10:08:29 -0800 (PST)
+Date:   Wed, 17 Feb 2021 10:08:28 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Bill Wendling <morbo@google.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        George Burgess IV <gbiv@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [GIT PULL] clang-lto for v5.12-rc1
+Message-ID: <202102171006.DD2F341@keescook>
+References: <20210216224751.7367-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <20210217170612.GA4254@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216224751.7367-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/17/2021 10:36 PM, Will Deacon wrote:
-> On Wed, Feb 17, 2021 at 10:14:11PM +0530, Neeraj Upadhyay wrote:
->> Add the MIDR part number info for the Arm Cortex-A78.
->>
->> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
->> ---
->>   arch/arm64/include/asm/cputype.h | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
->> index ef5b040..3aced88 100644
->> --- a/arch/arm64/include/asm/cputype.h
->> +++ b/arch/arm64/include/asm/cputype.h
->> @@ -72,6 +72,7 @@
->>   #define ARM_CPU_PART_CORTEX_A76		0xD0B
->>   #define ARM_CPU_PART_NEOVERSE_N1	0xD0C
->>   #define ARM_CPU_PART_CORTEX_A77		0xD0D
->> +#define ARM_CPU_PART_CORTEX_A78		0xD41
->>   
->>   #define APM_CPU_PART_POTENZA		0x000
->>   
->> @@ -109,6 +110,7 @@
->>   #define MIDR_CORTEX_A76	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A76)
->>   #define MIDR_NEOVERSE_N1 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N1)
->>   #define MIDR_CORTEX_A77	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A77)
->> +#define MIDR_CORTEX_A78	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78)
->>   #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
->>   #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
->>   #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
+On Tue, Feb 16, 2021 at 10:48:10PM +0000, Alexander Lobakin wrote:
+> From: Kees Cook <keescook@chromium.org>
+> Date: Tue, 16 Feb 2021 12:34:37 -0800
 > 
-> This usually means there's an erratum to work around. What are you hiding ;)
+> > Hi Linus,
+> > 
+> > Please pull this Clang Link Time Optimization series for v5.12-rc1. This
+> > has been in linux-next for the entire last development cycle, and is
+> > built on the work done preparing[0] for LTO by arm64 folks, tracing folks,
+> > etc. This series includes the core changes as well as the remaining pieces
+> > for arm64 (LTO has been the default build method on Android for about
+> > 3 years now, as it is the prerequisite for the Control Flow Integrity
+> > protections). While x86 LTO support is done[1], there is still some
+> > on-going clean-up work happening for objtool[2] that should hopefully
+> > land by the v5.13 merge window.
 > 
-> Will
+[...]
 > 
+> Seems like you forgot the fix from [0], didn't you?
+> 
+[...]
+> 
+> [0] https://lore.kernel.org/lkml/20210121184544.659998-1-alobakin@pm.me
 
-:) . This is needed for supporting implementation defined AMU counters 
-in A78 [1]. However, there is no upstream user of it.
-
-[1] https://www.spinics.net/lists/arm-kernel/msg856989.html
-
-
-Thanks
-Neeraj
+Ah yes, sorry for overlooking that. I can send a follow-up PR. AIUI,
+it's usually better for Linus's workflow for me to build on sent PRs
+instead of resending. (But given the merge window disruption, we'll see
+what happens!)
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+Kees Cook
