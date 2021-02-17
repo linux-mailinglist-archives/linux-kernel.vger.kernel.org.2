@@ -2,102 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D6431D7AF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D8231D7B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:51:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBQKqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:46:53 -0500
-Received: from foss.arm.com ([217.140.110.172]:55806 "EHLO foss.arm.com"
+        id S230138AbhBQKuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:50:02 -0500
+Received: from mga02.intel.com ([134.134.136.20]:60484 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229707AbhBQKqo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:46:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 50CF31042;
-        Wed, 17 Feb 2021 02:45:58 -0800 (PST)
-Received: from [10.57.61.90] (unknown [10.57.61.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 96EDF3F73B;
-        Wed, 17 Feb 2021 02:45:55 -0800 (PST)
-Subject: Re: [PATCH] thermal: cpufreq_cooling: freq_qos_update_request()
- returns < 0 on error
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Amit Kucheria <amitk@kernel.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "v5 . 7+" <stable@vger.kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <b2b7e84944937390256669df5a48ce5abba0c1ef.1613540713.git.viresh.kumar@linaro.org>
- <91749e19-9091-1292-b8aa-c923efa8021d@arm.com>
- <20210217103911.n34zzjttyso7dlco@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <0b276055-e93a-3e08-5eee-662008d8db6c@arm.com>
-Date:   Wed, 17 Feb 2021 10:45:53 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S229707AbhBQKt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:49:59 -0500
+IronPort-SDR: iPXgHtsJFrTfJmI7wo/z9/6qkKRbpiqOQCX3tRdoPmJ0dSL56FW9pa8auSzO/KsZpVLKsigfDu
+ VHBwYAAKkgQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="170296960"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="170296960"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 02:49:18 -0800
+IronPort-SDR: 3sfKgOsUN6Zs2IyTpqCK3b+SC6MHxopB4GmzgPiA7pM+PkRAyE7hesT3KknnV2o0wG8mFoDNvt
+ 1fA7GDy4p0/g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="385073665"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
+  by fmsmga008.fm.intel.com with ESMTP; 17 Feb 2021 02:49:16 -0800
+Date:   Wed, 17 Feb 2021 18:49:15 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        lkp <lkp@intel.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: {standard input}:577: Error: unsupported relocation against base
+Message-ID: <20210217104915.GB44989@shbuild999.sh.intel.com>
+References: <202101051834.FGH835Vs-lkp@intel.com>
+ <98587e13-d22f-973f-1e16-f7a811f71016@csgroup.eu>
+ <20210205100821.GA71063@shbuild999.sh.intel.com>
+ <87lfbouzgd.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <20210217103911.n34zzjttyso7dlco@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87lfbouzgd.fsf@mpe.ellerman.id.au>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Michael,
+
+On Tue, Feb 16, 2021 at 08:36:02PM +1100, Michael Ellerman wrote:
+> Feng Tang <feng.tang@intel.com> writes:
+> > Hi Christophe and Michael,
+> >
+> > On Mon, Jan 18, 2021 at 10:24:08PM +0800, Christophe Leroy wrote:
+> >> 
+> >> Le 05/01/2021 ? 11:58, kernel test robot a 閏rit :
+> >> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> >> > head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> >> > commit: 8b8319b181fd9d6821703fef1228b4dcde613a16 powerpc/44x: Don't support 440 when CONFIG_PPC_47x is set
+> >> 
+> >> I see no link with that commit. Looks like the problem has been existing for some time.
+> >> It exists on the commit before that one, it exists on v5.9 and it exists on v5.10 with that commit
+> >> reverted.
+> >  
+> > Yes, this seems to be a long-standing issue, and we just double checked
+> > this compile error. 
+> >
+> > It happend when compiling arch/powerpc/platforms/44x/fsp2.c, macro
+> > 'mfdcr' requirs an instant number as parameter, while is not met by
+> > show_plbopb_regs(). Changing show_plbopb_regs() from function to
+> > a macro fixes the error, as the patch below:
+> >
+> > Thanks,
+> > Feng
+> >
+> >
+> > From 3bcb9638afc873d0e803aea1aad4f77bf1c2f6f6 Mon Sep 17 00:00:00 2001
+> > From: Feng Tang <feng.tang@intel.com>
+> > Date: Fri, 5 Feb 2021 16:08:43 +0800
+> > Subject: [PATCH] powerpc/44x/fsp2: fix a compiling error regarding macro
+> >  'mdfcr'
+> >
+> > 0day's kbuild test found error:
+> >
+> > "
+> >   CC      arch/powerpc/platforms/44x/fsp2.o
+> >
+> >   {standard input}:577: Error: unsupported relocation against base
+> >   {standard input}:580: Error: unsupported relocation against base
+> >   {standard input}:583: Error: unsupported relocation against base
+> > "
+> >
+> > The reason is macro 'mfdcr' requirs an instant number as parameter,
+> > which is not met by show_plbopb_regs().
+> 
+> It doesn't require a constant, it checks if the argument is constant:
+
+Aha, seems my grep found the wrong target: arch/powerpc/boot/dcr.h,
+which has  
+
+#define mfdcr(rn) \
+	({	\
+		unsigned long rval; \
+		asm volatile("mfdcr %0,%1" : "=r"(rval) : "i"(rn)); \
+		rval; \
+	})
+
+> #define mfdcr(rn)						\
+> 	({unsigned int rval;					\
+> 	if (__builtin_constant_p(rn) && rn < 1024)		\
+> 		asm volatile("mfdcr %0," __stringify(rn)	\
+> 		              : "=r" (rval));			\
+> 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
+> 		rval = mfdcrx(rn);				\
+> 	else							\
+> 		rval = __mfdcr(rn);				\
+> 	rval;})
+> 
+> But the error you're seeing implies the compiler is choosing the first
+> leg of the if, even when rn == "base + x", which is surprising.
+
+Yes, it might be related to compiler (though myself isn't faimiliar
+with it). As show_plbopb_regs() was introduced by commit 7813043e1bbc
+("powerpc/44x/fsp2: Add irq error handlers") back in 2017, while it
+was just reported.
+
+> We've had cases in the past of __builtin_constant_p() returning false
+> for things that a human can see are constant at build time, but I've
+> never seen the reverse.
+> 
+> cheers
 
 
-On 2/17/21 10:39 AM, Viresh Kumar wrote:
-> On 17-02-21, 10:29, Lukasz Luba wrote:
->> On 2/17/21 5:48 AM, Viresh Kumar wrote:
->>> freq_qos_update_request() returns 1 if the effective constraint value
->>> has changed, 0 if the effective constraint value has not changed, or a
->>> negative error code on failures.
->>>
->>> The frequency constraints for CPUs can be set by different parts of the
->>> kernel. If the maximum frequency constraint set by other parts of the
->>> kernel are set at a lower value than the one corresponding to cooling
->>> state 0, then we will never be able to cool down the system as
->>> freq_qos_update_request() will keep on returning 0 and we will skip
->>> updating cpufreq_state and thermal pressure.
->>
->> To be precised, thermal pressure signal is not so important in this
->> mechanism and the 'cpufreq_state' has changed recently:
-> 
-> Right, I wasn't concerned only about no thermal cooling, but both
-> thermal cooling and pressure.
-> 
->> 236761f19a4f373354  thermal/drivers/cpufreq_cooling: Update cpufreq_state
->> only if state has changed
-> 
-> This moved the assignment to a more logical place for me, i.e. not to
-> do that on errors, just that the block in which it landed may not get
-> called at all :(
-> 
->>> Fix that by doing the updates even in the case where
->>> freq_qos_update_request() returns 0, as we have effectively set the
->>> constraint to a new value even if the consolidated value of the
->>> actual constraint is unchanged because of external factors.
->>>
->>> Cc: v5.7+ <stable@vger.kernel.org> # v5.7+
->>> Reported-by: Thara Gopinath <thara.gopinath@linaro.org>
->>> Fixes: f12e4f66ab6a ("thermal/cpu-cooling: Update thermal pressure in case of a maximum frequency capping")
->>
->> I'm not sure if that f12e4f is the root cause.
-> 
-> Hmm, depends on how we define the problem :)
-> 
-> If this was just about thermal-cooling not happening, then may be yes,
-> but to me it is rather about mishandled return value of
-> freq_qos_update_request() which has more than one side effects and so
-> I went for the main commit.
-> 
-> This is also important as f12e4f66ab6a got merged in 5.7 and 236761f19
-> merged in 5.11 and this patch needs to get applied in stable kernels
-> since 5.7 to fix it all.
-> 
-
-'to fix it all' - I agree
+Thanks,
+Feng
