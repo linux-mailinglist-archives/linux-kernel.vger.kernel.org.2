@@ -2,121 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6376831DEE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:11:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FB331DEE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233225AbhBQSLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:11:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233173AbhBQSKs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233626AbhBQSLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:11:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44966 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233175AbhBQSKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Feb 2021 13:10:48 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0F6C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:10:06 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id z15so8927569pfc.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:10:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=smbTqrlF1OKSavBRXV32uMxPnySvhK57w5+UGPsp0pE=;
-        b=iCYp/wqQbf0lAfQyTZJC4Tpp4Uoo/e/ftBURBj65dQOsffIX9A1/b29tDwiSxSpBlV
-         uA5Qh2XiSPPTGWSz7QgjlDHn3w/7JafCOT5gAuz+u6HdeazOqx9XKYdQBzbMYtJXHz2+
-         SR/ZodXHJEavXSysanbYLuEjS3DAsXNNHRhDCAhIoSg5cWeZmOmsqnmXwG2pzTng4+Uo
-         M5MVQFkY3Ex62HWjYGrWQwEWeKCerW3u6q1GXH86KIsgfL7RA+9geTesbdc4X04W7UJB
-         v3YGiQcgCn2Bgc4iKiyxf/N+uiZb+Qh2IBkE3SGbafsnd0iVahhD8fb9IZyttfoO8CtU
-         nYMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=smbTqrlF1OKSavBRXV32uMxPnySvhK57w5+UGPsp0pE=;
-        b=ttpg7xTjk5a0pYrg7X6TvsbDoawlBYvu0/WbLvmwlGbv824J5jMhHdIWBfcaDEMCSl
-         GBRJmKc/mBIDBcs4iVX/tpeGg9FfxMbTige604BSw9wEAshxjTaWcCyHFYOn3svgRX6j
-         lLMyFRY8Yt68dkJhkUlF7hHz8uGnMFhqcO0OdtHuIjJ7F3WGobxNwQQIIgwM4ZMlMOvZ
-         14gAWl840QsjtVR0YQrwBy4qAS5j5Q8NmEYdUO+IZ017Cb3/tXfWFcJkGFStFUUCFrax
-         wpQjN4FFDLcuwfAFZqQ//uOByu36CRRystXzRNVEooD6fPAA23asuVjsT5CHCNGzPkpp
-         Sx8g==
-X-Gm-Message-State: AOAM532zwgl7VG9eKe7PFDomGwEJ+bhjA16x9dpIDb4tAOmhWYfdiU3j
-        EUt24BGMOWzNLQeEy0reJgWXOJ6drBMb8w==
-X-Google-Smtp-Source: ABdhPJwJXdQeytcmBSrD7wMQDbQj12GCNRhhCvIy+S3PRCufhtd2+luzJUoIFOfzC05AV7KPMSVJOg==
-X-Received: by 2002:a05:6a00:15d2:b029:1b7:30c1:8495 with SMTP id o18-20020a056a0015d2b02901b730c18495mr563274pfu.32.1613585405906;
-        Wed, 17 Feb 2021 10:10:05 -0800 (PST)
-Received: from atulu-ubuntu ([106.200.12.170])
-        by smtp.gmail.com with ESMTPSA id 202sm3062101pfv.89.2021.02.17.10.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 10:10:05 -0800 (PST)
-Date:   Wed, 17 Feb 2021 23:40:00 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
-Message-ID: <20210217181000.GB10124@atulu-ubuntu>
-References: <20210217165907.9777-1-atulgopinathan@gmail.com>
- <YC1T06VCh0K2BBW5@kroah.com>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF80664E42;
+        Wed, 17 Feb 2021 18:10:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613585407;
+        bh=0Z0WorCxaD7BP56hnkNMqdSiCglGFGlqAwsbSLCh6m8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DomK4OPIHSzryzMWD5lTcExqL1chGXqVrXzu9LoLydAPrkFf74FsawJICKWnt1zWI
+         q/KJDAtzBK0+DcQxYKC8mRmCTx/OdNROykkMOmkda4Pt0NX1x+J4uz4QfbMAFIyyyt
+         /ldV/cm2fyYDcojGz4m2mitcaJknMpOXR66i4TBDaY+7hCMayTqa5tFicFYdsPRaEx
+         aaCqO/zycLaUsiMFLcteS6hyBTRyZxwgfuFCkTPLbkT6yTcVSbT6aPeZ+t1fCxghBV
+         HbpBcx4xDe+WnFP9gd2WEcFUm9g39+iVELWLsCMO1fDXQd6efesRCk7BD3IHzsE5W0
+         rtbd55DCpwibA==
+Date:   Wed, 17 Feb 2021 18:10:02 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Andrey Ryabinin <arbn@yandex-team.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        valesini@yandex-team.ru, stable@vger.kernel.org
+Subject: Re: [PATCH] iommu/amd: Fix sleeping in atomic in
+ increase_address_space()
+Message-ID: <20210217181002.GC4304@willie-the-truck>
+References: <20210217143004.19165-1-arbn@yandex-team.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC1T06VCh0K2BBW5@kroah.com>
+In-Reply-To: <20210217143004.19165-1-arbn@yandex-team.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 06:35:15PM +0100, Greg KH wrote:
-> On Wed, Feb 17, 2021 at 10:29:08PM +0530, Atul Gopinathan wrote:
-> > Resolve the following warning generated by sparse:
-> > 
-> > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-> > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-> > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
-> > 
-> > compat_ptr() has a return type of "void __user *"
-> > as defined in "include/linux/compat.h"
-> > 
-> > cmd->chanlist is of type "unsigned int *" as defined
-> > in drivers/staging/comedi/comedi.h" in struct
-> > comedi_cmd.
-> > 
-> > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> > ---
-> >  drivers/staging/comedi/comedi_fops.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> > index e85a99b68f31..fc4ec38012b4 100644
-> > --- a/drivers/staging/comedi/comedi_fops.c
-> > +++ b/drivers/staging/comedi/comedi_fops.c
-> > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
-> >  	cmd->scan_end_arg = v32.scan_end_arg;
-> >  	cmd->stop_src = v32.stop_src;
-> >  	cmd->stop_arg = v32.stop_arg;
-> > -	cmd->chanlist = compat_ptr(v32.chanlist);
-> > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+On Wed, Feb 17, 2021 at 05:30:04PM +0300, Andrey Ryabinin wrote:
+> increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
+> disabled interrupts. gfp flags passed to increase_address_space() may allow
+> sleeping, so it comes to this:
 > 
-> __force?  That feels wrong, something is odd if that is ever needed.
+>  BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
+>  in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
 > 
-> Are you _sure_ this is correct?
+>  Call Trace:
+>   dump_stack+0x66/0x8b
+>   ___might_sleep+0xec/0x110
+>   __alloc_pages_nodemask+0x104/0x300
+>   get_zeroed_page+0x15/0x40
+>   iommu_map_page+0xdd/0x3e0
+>   amd_iommu_map+0x50/0x70
+>   iommu_map+0x106/0x220
+>   vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
+>   do_vfs_ioctl+0xa3/0x6f0
+>   ksys_ioctl+0x66/0x70
+>   __x64_sys_ioctl+0x16/0x20
+>   do_syscall_64+0x4e/0x100
+>   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
+> 
+> Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
+> Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+> Cc: <stable@vger.kernel.org>
+> ---
+>  drivers/iommu/amd/iommu.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 
-The same file has instances of "(usigned int __force *)" cast being
-used on the same "cmd->chanlist". For reference:
+Acked-by: Will Deacon <will@kernel.org>
 
-At line 1797 of comedi_fops.c:
-1796                 /* restore chanlist pointer before copying back */
-1797                 cmd->chanlist = (unsigned int __force *)user_chanlist;
-1798                 cmd->data = NULL;
-
-At line 1880:
-1879         /* restore chanlist pointer before copying back */
-1880         cmd->chanlist = (unsigned int __force *)user_chanlist;
-1881         *copy = true;
-
-Here "user_chanlist" is of type "unsigned int __user *".
-
-
-Or perhaps, I shouldn't be relying on them?
-
-Thanks!
-Atul
+Will
