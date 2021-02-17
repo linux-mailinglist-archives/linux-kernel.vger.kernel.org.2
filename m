@@ -2,101 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C5D31DFCD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:44:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD19D31DFC9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhBQToW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:44:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23648 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233710AbhBQTnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:43:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613590943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EJM1EJb2IlVcsAafjc8DDTue6Vq84muOSo4iOsYZMrA=;
-        b=MP4kxDUT+AiE/YVBjbLkN3dOcOVUt9+RAvqqqCwcDUbw5bXLbdsiSRhmlfufpivkDAlilp
-        ghN72T75smg+Vy444mBbtUkIraVTFRBYRnlmfm6bD69yWwgBZaPAUoZTrkj06jkM88e65o
-        mxYucoPa90o7vKH+M1LSCbERt5EO5SU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-224--D2yc6o0M--F1RjNWsSPDQ-1; Wed, 17 Feb 2021 14:42:19 -0500
-X-MC-Unique: -D2yc6o0M--F1RjNWsSPDQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6AAA6107ACE3;
-        Wed, 17 Feb 2021 19:42:16 +0000 (UTC)
-Received: from horse.redhat.com (ovpn-114-123.rdu2.redhat.com [10.10.114.123])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 94AD25C276;
-        Wed, 17 Feb 2021 19:42:12 +0000 (UTC)
-Received: by horse.redhat.com (Postfix, from userid 10451)
-        id E191E220BCF; Wed, 17 Feb 2021 14:42:11 -0500 (EST)
-Date:   Wed, 17 Feb 2021 14:42:11 -0500
-From:   Vivek Goyal <vgoyal@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     john.p.donnelly@oracle.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] kernel/crash_core: Add crashkernel=auto for
- vmcore creation
-Message-ID: <20210217194211.GC31184@redhat.com>
-References: <20210211180814.69708-1-saeed.mirzamohammadi@oracle.com>
- <77fcb8e8-c3ec-6161-14a8-c142e02a9061@oracle.com>
- <20210217142653.0fcd9ce3@gandalf.local.home>
+        id S233766AbhBQTn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 14:43:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58244 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233314AbhBQTnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:43:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9658464E45;
+        Wed, 17 Feb 2021 19:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613590981;
+        bh=LlwTiP8/hl3yvWK78ty94eQWzvbMMEBmhJXYr7fFCGw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LeXPpXW9sSFaAMYkPWATCI2c1AmR8XraBwEzu5gLRubwCcRT9TpTY5pdqFijlZ6cS
+         sNYSONm5cxfkGtWN6CCBpsMNab/3Y9Jkkna3UoBYjbVUm6xU2OyKzHdkydxAE6G+Uu
+         z7+jerCAAEivb+o496+evKQQTz3YGqqTAHvJtJkEtiS0IzVKfq8tNm5kdC1LgQRiIQ
+         PsXfC+u33/sKbcm7fzUsnaWVWzJ/yYEhjahbNpE6EwUdjmXQM3dVHFemrJpGaSqfFV
+         Gibb4YwNeyZStStpMRIIPS99PbQ+x7YjBmwAbjZ+hzRItz8MLJqCZiLoi9nitzKnjk
+         hKBUCFah2uQSA==
+Received: by mail-ej1-f54.google.com with SMTP id f14so24334673ejc.8;
+        Wed, 17 Feb 2021 11:43:01 -0800 (PST)
+X-Gm-Message-State: AOAM531s01eQyS4tnsrN+EU1SxiYMRuzy9973VLuoLnDuBkH2sFPGn2w
+        4zAhEDHpuE537cLPD6iEIC3Nm7o6vTGeq99POw==
+X-Google-Smtp-Source: ABdhPJzAMNa126EXLIevgRQHmZuiDRjOGeslDBdTqUCA1s4KD+K8imQWfogzr0YaUNopBqs64UbcpGOwQFT9y0JO5q8=
+X-Received: by 2002:a17:906:d1d0:: with SMTP id bs16mr553549ejb.468.1613590980184;
+ Wed, 17 Feb 2021 11:43:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217142653.0fcd9ce3@gandalf.local.home>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210215224258.1231449-1-saravanak@google.com>
+In-Reply-To: <20210215224258.1231449-1-saravanak@google.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Wed, 17 Feb 2021 13:42:47 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKQ=J2KnUL3EN16p5uPLnF3kHqUU_82FMt9g_yWYBrm_Q@mail.gmail.com>
+Message-ID: <CAL_JsqKQ=J2KnUL3EN16p5uPLnF3kHqUU_82FMt9g_yWYBrm_Q@mail.gmail.com>
+Subject: Re: [PATCH] of: property: fw_devlink: Ignore interrupts property for
+ some configs
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <treding@nvidia.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Android Kernel Team <kernel-team@android.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 02:26:53PM -0500, Steven Rostedt wrote:
-> On Wed, 17 Feb 2021 12:40:43 -0600
-> john.p.donnelly@oracle.com wrote:
-> 
-> > Hello.
-> > 
-> > Ping.
-> > 
-> > Can we get this reviewed and staged ?
-> > 
-> > Thank you.
-> 
-> Andrew,
-> 
-> Seems you are the only one pushing patches in for kexec/crash. Is this
-> maintained by anyone?
+On Mon, Feb 15, 2021 at 4:43 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> When CONFIG_OF_IRQ is not defined, it doesn't make sense to parse
+> interrupts property.
+>
+> Also, parsing and tracking interrupts property breaks some PPC
+> devices[1].  But none of the IRQ drivers in PPC seem ready to be
+> converted to a proper platform (or any bus) driver. So, there's not much
+> of a point in tracking the interrupts property for CONFIG_PPC. So, let's
+> stop parsing interrupts for CONFIG_PPC.
+>
+> [1] - https://lore.kernel.org/lkml/20210213185422.GA195733@roeck-us.net/
+> Fixes: 4104ca776ba3 ("of: property: Add fw_devlink support for interrupts")
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+> Greg/Rob,
+>
+> I believe this needs to land on driver-core-next.
 
-Dave Young and Baoquan He still maintain kexec/kdump stuff, AFAIK. I
-don't get time to look into this stuff now a days. 
-
-Vivek
-
+Acked-by: Rob Herring <robh@kernel.org>
