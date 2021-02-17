@@ -2,219 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE5431DB14
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:01:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 615ED31DB17
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233290AbhBQOBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:01:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhBQOA6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:00:58 -0500
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8789FC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:00:18 -0800 (PST)
-Received: by mail-vs1-xe33.google.com with SMTP id a62so3474493vsa.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:00:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mUiZCwMmsWsrhaAe2fPZND6ofvBT8klJLiYwu6OuvSQ=;
-        b=LLs6QXryF5u6+AxYq5B0es7Kss78Bqzk0m8UEQAEvVpAnHAsldDfCQBM9cpP28ex2m
-         SN1XOgbZElUQjqfgDsbCv0xV9gUcWMBDsKFbMq9J/zscqgF73jadReNdIooV1Fw/Ds7H
-         BLShsw3Lp77h7PYOPm0Qk0JDpBwXgXj6mWiGo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mUiZCwMmsWsrhaAe2fPZND6ofvBT8klJLiYwu6OuvSQ=;
-        b=UAwkUjt5hSE2bg8LuJhTV8xhzf9PUFAnJHEgH+AbHmuYp65EXe9ANI6m9MvF8O5s+u
-         722WNubeZyUfzQVGtrnoZllq8KJ+8X0ZrewxzIgNqmtPw6jPyE2tPxNxLBu1r/LsqQFA
-         3SYzqZ/9yXvL/enCqJWWYhccMypj4uEdmBwL5V7MAePcSnLtZ6cbCuCzhx938O0sr5K5
-         L+vFiYMZuAanqlOqZdrYt9TL5dWLUYFeKMUTjOHiMVrr2BT5quL7zI4HhMcfyx2AJXF9
-         r9ZAEz71pKOQqIzJpRNoxYRfRnakMB+mpphAo1YLQLd2j3cHge0gxC1toHX8ZS86GENw
-         1pWg==
-X-Gm-Message-State: AOAM531mhwYxWYnpLuH1lM5akIrrGZGK+/4kndNQjzOwrzLOEkLM0kul
-        fn7SPMgbUYOe/rQzhkmk/b9Lv0bVPn8Q+Dhv/9VkJg==
-X-Google-Smtp-Source: ABdhPJwfb9G2cFPKESqOMZU5xuNw8j8pH4Wm65jNdBkCXp0E5XGfX8vecy+Nu4FxGh06JSFL5+errxq5Hhe2dCMSOi4=
-X-Received: by 2002:a67:8844:: with SMTP id k65mr1266666vsd.9.1613570417388;
- Wed, 17 Feb 2021 06:00:17 -0800 (PST)
+        id S233309AbhBQOBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:01:40 -0500
+Received: from mail-eopbgr770070.outbound.protection.outlook.com ([40.107.77.70]:2277
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232951AbhBQOBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 09:01:37 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KAXMeSHALO8YN8ICco2VSRbKtqyPhrL3p3WTAYYbOi8TNORm366cvcv2tox7goSNgmXSdfjJ0iq5tHMRTFGZkHVeH/RHqByiubHuHA8/63XPnT9y14pCOJYpQ4PmRUyDXBE6WwWFgsZIItOEdsvQlDQ2EudGWBQ6GC1WljJXWwo8ufVlK6z2F0afgXBZuvaWTN1Xg/zigX+gTsHULSEsAP/r/fwpMPt5gu85bSK4J31Wx+Co6a9g4nDL9klelgnNVFsWiOXXegu4QBYfGaptCdBWPumPj+tyWnxbBEZ4xsYdIGX68KiR3VFNS114O2bunwkKnduHND3PNvnmjXi6Sg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=19K+b3miusv4ceQxLVTA3stkUaQcR7yOZ7LeqwUKuD0=;
+ b=e01VKHI1M7yOZFWcHoPALidfDBEwNj+Mv/b8CWLmvx6KASe3D6y3cfJUK+pMe8v7S5l3lx/cipatYe6S1C1xAOJTCvFmBOmK4rqcs2SCLXVeEiGSfi3dkAPrAvxJZQfJBLs6jsQtnT9ONDCrI5qQR0L+oZlugP9wi6ovxQPSdYo4IU6H8rj4zPwMGELVj7Ilh6GPZh0wxfwdMYVryMq1iXQJg41Yn0foq3PvPSQrPVSIRneWrET7dlETJA5xwY95o7tvt3J6Deq0vJBLwdnKyplKUQODcteHRyG7geIZIV5DrOayNGEq7lk5+4a+c4qgYsW7vT7YdZbs/EucYq8BlQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=19K+b3miusv4ceQxLVTA3stkUaQcR7yOZ7LeqwUKuD0=;
+ b=J+ydtboQDzvszFgKjXNwzOI29btXZDAdvenXPODmT5YRJiid9TRTMDPnqKDES4agX00IgaXxJX9oZnrW5mjaXZ/fv8FsGjFTwIp/DGF/kYcjRTdobPeWTr2I4bC9ycV9JU3nPSlgLTceGgCREs682MaKTY715kQ5sbWrXoFUB8w=
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
+ by SA0PR12MB4511.namprd12.prod.outlook.com (2603:10b6:806:95::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Wed, 17 Feb
+ 2021 14:00:44 +0000
+Received: from SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::24bb:3e53:c95e:cb8e]) by SN6PR12MB2767.namprd12.prod.outlook.com
+ ([fe80::24bb:3e53:c95e:cb8e%7]) with mapi id 15.20.3846.038; Wed, 17 Feb 2021
+ 14:00:44 +0000
+From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
+To:     Sean Christopherson <seanjc@google.com>
+CC:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "rkrcmar@redhat.com" <rkrcmar@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>, "bp@suse.de" <bp@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "srutherford@google.com" <srutherford@google.com>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>
+Subject: RE: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
+ ioctl
+Thread-Topic: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
+ ioctl
+Thread-Index: AQHW+o4w4C5VGgubRkqZlElkExidF6pbnD+AgADRN1A=
+Date:   Wed, 17 Feb 2021 14:00:44 +0000
+Message-ID: <SN6PR12MB2767168CA61257A85B29C26D8E869@SN6PR12MB2767.namprd12.prod.outlook.com>
+References: <cover.1612398155.git.ashish.kalra@amd.com>
+ <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com>
+In-Reply-To: <YCxrV4u98ZQtInOE@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-02-17T14:00:39Z;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=460fabc0-65bf-43df-931a-4ad924367558;
+ MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
+authentication-results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [183.83.213.136]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4bf3b653-706e-4d71-5ae6-08d8d34c6b56
+x-ms-traffictypediagnostic: SA0PR12MB4511:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SA0PR12MB45117D5AA6ABBC867E9FCDEB8E869@SA0PR12MB4511.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2DKaBqM8AR8qNtZnoGi8tDxvzKlMeCkpr7YnUdfGxY1qzM88F6J0guL0c7aFGM4l5NB2UvBaPg1xcNRPcrY2JQkFotL3rw8AgGHYNQ3MwFeuFto43g/RzWYUmJisgIwuWtIHxkPbs6IFfVic9cft+OhhIkYBvkGArqyGUJeaj97RK0ylLgRImZwTcmCJRJPrGLBZC1UcqKJ63jlTw0BxqUTMP6GwXy+ck3huBpIyt+oYIEjepvSZJsE/g1TUek+o0O/uwQldQbv3mEXvS+LZT71ORmrktXeONZjawPFijF+KcYe9EWI5+auikLFfIprRj7fBuijB6f76ZVCx7T67G9NmOl1XnXI/MVuaHLAlF19t+Skbe+X2XG9b7ZCHMykB6CsIPriCxPJU93JbscASvTwUvb7T79sxnSsoKUNuaaslPU0mfgE+fDmJ40FdFxPg+HE/FZKEwr5YiIoBTDMc54Ewye78dNu8SlenRXB/rlXgq9Hg9/bwVEr4WJ5DW3z3Dn6e782YG8ihmPlLTw9ytg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(396003)(39850400004)(9686003)(66446008)(53546011)(66556008)(66476007)(5660300002)(64756008)(55016002)(52536014)(26005)(76116006)(83380400001)(186003)(6506007)(8676002)(66946007)(478600001)(316002)(6916009)(71200400001)(4326008)(33656002)(7416002)(8936002)(86362001)(2906002)(54906003)(7696005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?pnnWXb22pbE5r7s4q53CM5YXAR4tteyCl9uF82QEv9DyyyGXT67OUL0vl4nU?=
+ =?us-ascii?Q?c3zcdbAg8IPlOSAljdIRZJW9wRWFQh88i3PSHmM2aZOK7wMjnibJ8Cy3S4QA?=
+ =?us-ascii?Q?3a/Za23wryDjJAXWfNVOhHiNZuB7Si+3++MrwR1YELRHVY+T7bl97BHrnGf+?=
+ =?us-ascii?Q?qM74w6YUnRWPuJDDAkru2MfR8JM9ifFjAyUGhYszk21wggJRCXGY4T1Jflhd?=
+ =?us-ascii?Q?bUHlL/LHdMsVslHemTRs/WM5c7sVT8KmkglF2ZJ1qtk8aS69xhsnOpO/tt6A?=
+ =?us-ascii?Q?TRu7ZfEer9QKM0Vs9jVrZYewSX5dw1vBbVqaY7BNlj9qmbiiHGitdkPYNOP8?=
+ =?us-ascii?Q?GjHjY1WEy3n5QkNUPxrbcLoD+jAKZ/gobe4H/Z8pASDfQvhCGlDZwCQ/y77L?=
+ =?us-ascii?Q?0u5w3riA7pjdDBEaaj2FyryL6F+Bdm4QyX5N7ZorF+6QLLX2EFEPxGFaabrG?=
+ =?us-ascii?Q?R14oLSJwpswq9S1YcRLBQ9q4qvBWCUcO4UU/Ql7djgj0K7kCZoIu+hdj09qx?=
+ =?us-ascii?Q?fuE4/gOtomrU1HBbzsTL1gwkAZHqLCk4Y7e9LZmLPn3f2S6ddJn5asGUNupx?=
+ =?us-ascii?Q?B1COhwGq0VLRQQsDJHAYthxsIIdHPuw6OYIBJUjab7M9rs0uVK09l151XJrN?=
+ =?us-ascii?Q?Izq03MQlr3px2qg37YacUfEVciyO2Dj+Bsl5wsry2FOEoqdPhEMRkzTyJvmu?=
+ =?us-ascii?Q?atxQ9qUFn0pJa8STGQVQW/APx8WXTIaC05zuzKlOOVLmKy5U5LPyzGbshER+?=
+ =?us-ascii?Q?xYYax8B1Jf1ScPSrT+ZaCWYmI18HRNbejSDxzEoRLAFA/2t/I1gnEeDssd5W?=
+ =?us-ascii?Q?sG2r6ZDj32K/db02G8g1wIVqBJcZ2arxQbXoN7eCHxUItzhR7ido2jrfhUS6?=
+ =?us-ascii?Q?s4Rqed59nql0U/08x5vC43ZITuqHCOxN27lydLwojKgkavxJIMyMkxOYzcOK?=
+ =?us-ascii?Q?g9+sWv5yezYAAco00IAfaLZS2Bh/IGFnnQD0P3Jpp6CytT69kJ+1NsG8rO7z?=
+ =?us-ascii?Q?PfoS2f0P5vVvx/oM5DRT1/Q0jxT8UTgUtqYclRnGlISpsDJEYZjdVDl0uB3r?=
+ =?us-ascii?Q?KCSW+wViBAGZ1YZrwkbzWxmqovPBGyIYJPX7Ncob2e5ywglxQDFw5K0fSWGr?=
+ =?us-ascii?Q?6J/4Kx4k6R896M8BffAQFckOuZC3kuulG3G8fqWveqk1903i/f3fqsyjRR4e?=
+ =?us-ascii?Q?yVhMsxBbzWEZV2bvvx73tncoqFc+yMDBk32XVHMOigq1jcRopEVrGdUdtvW1?=
+ =?us-ascii?Q?ZTAxlFiJdpIe2b3EjpJO1tR7AQRkoY2HvZB8vBws0zy+Yar+BUlAobHqetEw?=
+ =?us-ascii?Q?gx8=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210125153057.3623715-1-balsini@android.com> <20210125153057.3623715-6-balsini@android.com>
-In-Reply-To: <20210125153057.3623715-6-balsini@android.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Wed, 17 Feb 2021 15:00:06 +0100
-Message-ID: <CAJfpegtpX93S00LrbChQmC8wc968t5Hd9OFMTrF9g10Hk0E+Zg@mail.gmail.com>
-Subject: Re: [PATCH RESEND V12 5/8] fuse: Introduce synchronous read and write
- for passthrough
-To:     Alessio Balsini <balsini@android.com>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Peng Tao <bergwolf@gmail.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4bf3b653-706e-4d71-5ae6-08d8d34c6b56
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Feb 2021 14:00:44.2972
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EnSrqzhWNVw7gUDa0ML8RxOyyP8ptIF/kL1I7KGQbV0dZFrNaj332VI7ISFf2ei1tRxVbvDiBhYYCBf/XeHoow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4511
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 4:31 PM Alessio Balsini <balsini@android.com> wrote:
->
-> All the read and write operations performed on fuse_files which have the
-> passthrough feature enabled are forwarded to the associated lower file
-> system file via VFS.
->
-> Sending the request directly to the lower file system avoids the
-> userspace round-trip that, because of possible context switches and
-> additional operations might reduce the overall performance, especially
-> in those cases where caching doesn't help, for example in reads at
-> random offsets.
->
-> Verifying if a fuse_file has a lower file system file associated with
-> can be done by checking the validity of its passthrough_filp pointer.
-> This pointer is not NULL only if passthrough has been successfully
-> enabled via the appropriate ioctl().
-> When a read/write operation is requested for a FUSE file with
-> passthrough enabled, a new equivalent VFS request is generated, which
-> instead targets the lower file system file.
-> The VFS layer performs additional checks that allow for safer operations
-> but may cause the operation to fail if the process accessing the FUSE
-> file system does not have access to the lower file system.
->
-> This change only implements synchronous requests in passthrough,
-> returning an error in the case of asynchronous operations, yet covering
-> the majority of the use cases.
->
-> Signed-off-by: Alessio Balsini <balsini@android.com>
-> ---
->  fs/fuse/file.c        |  8 ++++--
->  fs/fuse/fuse_i.h      |  2 ++
->  fs/fuse/passthrough.c | 57 +++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 65 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index 953f3034c375..cddada1e8bd9 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -1581,7 +1581,9 @@ static ssize_t fuse_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->         if (FUSE_IS_DAX(inode))
->                 return fuse_dax_read_iter(iocb, to);
->
-> -       if (!(ff->open_flags & FOPEN_DIRECT_IO))
-> +       if (ff->passthrough.filp)
-> +               return fuse_passthrough_read_iter(iocb, to);
-> +       else if (!(ff->open_flags & FOPEN_DIRECT_IO))
->                 return fuse_cache_read_iter(iocb, to);
->         else
->                 return fuse_direct_read_iter(iocb, to);
-> @@ -1599,7 +1601,9 @@ static ssize_t fuse_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
->         if (FUSE_IS_DAX(inode))
->                 return fuse_dax_write_iter(iocb, from);
->
-> -       if (!(ff->open_flags & FOPEN_DIRECT_IO))
-> +       if (ff->passthrough.filp)
-> +               return fuse_passthrough_write_iter(iocb, from);
-> +       else if (!(ff->open_flags & FOPEN_DIRECT_IO))
->                 return fuse_cache_write_iter(iocb, from);
->         else
->                 return fuse_direct_write_iter(iocb, from);
-> diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-> index 8d39f5304a11..c4730d893324 100644
-> --- a/fs/fuse/fuse_i.h
-> +++ b/fs/fuse/fuse_i.h
-> @@ -1239,5 +1239,7 @@ int fuse_passthrough_open(struct fuse_dev *fud,
->  int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
->                            struct fuse_open_out *openarg);
->  void fuse_passthrough_release(struct fuse_passthrough *passthrough);
-> +ssize_t fuse_passthrough_read_iter(struct kiocb *iocb, struct iov_iter *to);
-> +ssize_t fuse_passthrough_write_iter(struct kiocb *iocb, struct iov_iter *from);
->
->  #endif /* _FS_FUSE_I_H */
-> diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-> index cf993e83803e..d949ca07a83b 100644
-> --- a/fs/fuse/passthrough.c
-> +++ b/fs/fuse/passthrough.c
-> @@ -4,6 +4,63 @@
->
->  #include <linux/fuse.h>
->  #include <linux/idr.h>
-> +#include <linux/uio.h>
-> +
-> +#define PASSTHROUGH_IOCB_MASK                                                  \
-> +       (IOCB_APPEND | IOCB_DSYNC | IOCB_HIPRI | IOCB_NOWAIT | IOCB_SYNC)
-> +
-> +static void fuse_copyattr(struct file *dst_file, struct file *src_file)
-> +{
-> +       struct inode *dst = file_inode(dst_file);
-> +       struct inode *src = file_inode(src_file);
-> +
-> +       i_size_write(dst, i_size_read(src));
-> +}
+[AMD Public Use]
 
-Hmm, I see why this is done, yet it's contrary to what's been set out
-at the beginning: "All the requests other than reads or writes are
-still handled by the userspace FUSE daemon."
+-----Original Message-----
+From: Sean Christopherson <seanjc@google.com>=20
+Sent: Tuesday, February 16, 2021 7:03 PM
+To: Kalra, Ashish <Ashish.Kalra@amd.com>
+Cc: pbonzini@redhat.com; tglx@linutronix.de; mingo@redhat.com; hpa@zytor.co=
+m; rkrcmar@redhat.com; joro@8bytes.org; bp@suse.de; Lendacky, Thomas <Thoma=
+s.Lendacky@amd.com>; x86@kernel.org; kvm@vger.kernel.org; linux-kernel@vger=
+.kernel.org; srutherford@google.com; venu.busireddy@oracle.com; Singh, Brij=
+esh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIS=
+T ioctl
 
-Maybe just use fuse_write_update_size() instead of copying the size
-from the underlying inode.
+On Thu, Feb 04, 2021, Ashish Kalra wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
+>=20
+> The ioctl is used to retrieve a guest's shared pages list.
 
-> +
-> +ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
-> +                                  struct iov_iter *iter)
-> +{
-> +       ssize_t ret;
-> +       struct file *fuse_filp = iocb_fuse->ki_filp;
-> +       struct fuse_file *ff = fuse_filp->private_data;
-> +       struct file *passthrough_filp = ff->passthrough.filp;
-> +
-> +       if (!iov_iter_count(iter))
-> +               return 0;
-> +
-> +       ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
-> +                           iocb_to_rw_flags(iocb_fuse->ki_flags,
-> +                                            PASSTHROUGH_IOCB_MASK));
+>What's the performance hit to boot time if KVM_HC_PAGE_ENC_STATUS is passe=
+d through to userspace?  That way, userspace could manage the set of pages =
+>in whatever data structure they want, and these get/set ioctls go away.
 
-Please split this line up into:
+What is the advantage of passing KVM_HC_PAGE_ENC_STATUS through to user-spa=
+ce ?
 
-rwf = ioctb_to_rw_flags(...);
-ret = vfs_iter_read(..., rwf);
+As such it is just a simple interface to get the shared page list via the g=
+et/set ioctl's. simply an array is passed to these ioctl to get/set the sha=
+red pages
+list.
 
-> +
-> +       return ret;
-> +}
-> +
-> +ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
-> +                                   struct iov_iter *iter)
-> +{
-> +       ssize_t ret;
-> +       struct file *fuse_filp = iocb_fuse->ki_filp;
-> +       struct fuse_file *ff = fuse_filp->private_data;
-> +       struct inode *fuse_inode = file_inode(fuse_filp);
-> +       struct file *passthrough_filp = ff->passthrough.filp;
-> +
-> +       if (!iov_iter_count(iter))
-> +               return 0;
-> +
-> +       inode_lock(fuse_inode);
-> +
-> +       file_start_write(passthrough_filp);
-> +       ret = vfs_iter_write(passthrough_filp, iter, &iocb_fuse->ki_pos,
-> +                            iocb_to_rw_flags(iocb_fuse->ki_flags,
-> +                                             PASSTHROUGH_IOCB_MASK));
+>Also, aren't there plans for an in-guest migration helper?  If so, do we h=
+ave any idea what that interface will look like?  E.g. if we're going to en=
+d up with a full >fledged driver in the guest, why not bite the bullet now =
+and bypass KVM entirely?
 
-Same here.
+Even the in-guest migration helper will be using page encryption status hyp=
+ercalls, so some interface is surely required.
+
+Also the in-guest migration will be mainly an OVMF component, won't  really=
+ be a full fledged kernel driver in the guest.
 
 Thanks,
-Miklos
+Ashish
