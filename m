@@ -2,294 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 025B631DF30
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0256D31DF33
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:44:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234963AbhBQSm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:42:59 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:39702 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234955AbhBQSmv (ORCPT
+        id S234952AbhBQSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:44:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232468AbhBQSoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:42:51 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11HITg26019436;
-        Wed, 17 Feb 2021 18:41:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=ZYYhpipuCXyXP5WOR2qcgQekf/ZD7O/jUrzM7MUGkNg=;
- b=GEnumeZq4YIf4PrQ/5sx9gYyMAT4BSe0dRHi+e/mwMAl1zJx3X08WGvUUEIJk+2DNxjz
- e3zihYdEl6eraUlA4Hs0Axu0AdGmAJj9ciE7VV6MWLdIrN1DS4uV367uzTCyu3ekJ5Sz
- Dff3/EJ+5DfdbOsbyjQZClvCWFc99/Uo7Qs6YXlYZxU8cidTNHChPVQg7wmZ6CPyW1DK
- kO6FrWoriWtUxk2pVSv8JGFHKraQeXTRrtenb8Lybfl3LDm10a1GDN2jST/Dxi0e1bQh
- HKoECO4/SF+BRevON0FKytIEPgyQCvc7eZwIpaXUEcex9NgP5OvJQEkd7kjHUP08GFJf 6g== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 36pd9aaxfv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 18:41:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11HIU8fI178909;
-        Wed, 17 Feb 2021 18:41:04 GMT
-Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2055.outbound.protection.outlook.com [104.47.46.55])
-        by userp3030.oracle.com with ESMTP id 36prpyfv4w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Feb 2021 18:41:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oOQmyRm8pt2aIqYw5fkCjUfPljBoJerWvqu/mFSRreWzRn8GqwGyLHAf8EWxboJ490kKSoOECuTO5gAHxfaU3h4TbtSz7WqIFOil9+/UkXrMYh4t+Wf0R0ZDFdQ5rNpCSvjCbY4b0j88PpP/OWQ1WU5HwLigIEYrElhT6PDF9J4OFbVYgTmeD4MopdBBXtrC11wtsu8PZwxmQEVgblyca8hqoZ4R5WTOh8lQWx0BkRdZ/vSF0BpRkm0xnA2JpJciLJy0gD00EH5o+ooHETayVu3K6OaVCK1W6Y2UIP9xBdJO9VHT1//NnojOonzIUYHtnSfr+Hg4q9MGrjN78VZAJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZYYhpipuCXyXP5WOR2qcgQekf/ZD7O/jUrzM7MUGkNg=;
- b=XffUvMTuGKqr+oF/IpK0cjJqE+I7bbPqg0/1+8HOu9uFNYGZSRUbiJ5rH2d3Azwpx6xhAW8ylPZDL8udxQ2V8XTgEFcUQYec8yq2SoE6MCc+h+ec+Oo4V9Gu22lA2y4B+ispk+iC6/haVBvEY2sa6+Fg9DRFbYmSapD1TRvBqe/o4KyGtMJ12yNVk/DgfjqwIQxuO/oaknZeE6zQoljwZXXTWWu0JQYFvFFJmJ94zXr7Am7PM9MPlVf6OX+s3q7AIQTa5z5+St6kuIA2ZQnscFzsRt/qcyASZgc5bTY6SJfay5iBWXJKYMEq7o1UMNLivs7PvbHDGtXWU+nj88T2AA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZYYhpipuCXyXP5WOR2qcgQekf/ZD7O/jUrzM7MUGkNg=;
- b=n+Rwsv7r3CXBIXV+K79TtRimOWowGYAVjE4mjJf3gR9U0VSUx3sL5rmIgR1ZgWrJwzZz1/p8FyWvb+02LQRwt405T0edGsnOw22Z/nuZWBM72yqrnbWdzwFnbC/5SJ25k+4vyZpf7olsdNt5UWyotcGVp/q+b1khNPy9dh726to=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from CO1PR10MB4722.namprd10.prod.outlook.com (2603:10b6:303:9e::12)
- by MWHPR1001MB2062.namprd10.prod.outlook.com (2603:10b6:301:2f::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Wed, 17 Feb
- 2021 18:41:00 +0000
-Received: from CO1PR10MB4722.namprd10.prod.outlook.com
- ([fe80::50a1:9424:e4df:af22]) by CO1PR10MB4722.namprd10.prod.outlook.com
- ([fe80::50a1:9424:e4df:af22%4]) with mapi id 15.20.3846.042; Wed, 17 Feb 2021
- 18:41:00 +0000
-Subject: Re: [PATCH v3 1/1] kernel/crash_core: Add crashkernel=auto for vmcore
- creation
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        kexec@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210211180814.69708-1-saeed.mirzamohammadi@oracle.com>
-From:   john.p.donnelly@oracle.com
-Message-ID: <77fcb8e8-c3ec-6161-14a8-c142e02a9061@oracle.com>
-Date:   Wed, 17 Feb 2021 12:40:43 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
-In-Reply-To: <20210211180814.69708-1-saeed.mirzamohammadi@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [47.220.66.60]
-X-ClientProxiedBy: AM0P190CA0022.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:208:190::32) To CO1PR10MB4722.namprd10.prod.outlook.com
- (2603:10b6:303:9e::12)
+        Wed, 17 Feb 2021 13:44:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613587360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fc/cgBJx4NP4jJbQcjdBienLwoYsr1J649MR4Bg9UHw=;
+        b=CZX1N46YCpoC4f7G+wD4P69KVpi6gkAaxrKvhYFRQVjUT8UlvXJnDtb2l1uehokyc2xRrS
+        r9kUppFlUosr9K7/n+H6ezPKy7bXmWoT8vHNwXIBadp/huQB57nyNdVhg5EniTnSFwvOJt
+        WUXQ4DzmbsXiEQEla+z8hVkiWeXmfJ0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-91-GnmTQ9otNhiP7VuY2p6hEQ-1; Wed, 17 Feb 2021 13:42:36 -0500
+X-MC-Unique: GnmTQ9otNhiP7VuY2p6hEQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5AD98710E0;
+        Wed, 17 Feb 2021 18:42:32 +0000 (UTC)
+Received: from ovpn-114-40.ams2.redhat.com (ovpn-114-40.ams2.redhat.com [10.36.114.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36F2719D9F;
+        Wed, 17 Feb 2021 18:42:28 +0000 (UTC)
+Message-ID: <22cc42aced0ddfdd50a004a65476ce88fc3bf92a.camel@redhat.com>
+Subject: Re: KASAN: use-after-free Read in tcp_current_mss
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     syzbot <syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com>,
+        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
+        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com,
+        yoshfuji@linux-ipv6.org
+Date:   Wed, 17 Feb 2021 19:42:27 +0100
+In-Reply-To: <00000000000016715505bb89fb93@google.com>
+References: <00000000000016715505bb89fb93@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from dhcp-10-175-47-46.vpn.oracle.com (47.220.66.60) by AM0P190CA0022.EURP190.PROD.OUTLOOK.COM (2603:10a6:208:190::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Wed, 17 Feb 2021 18:40:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3c8b38db-5e46-42d0-b9c4-08d8d3739235
-X-MS-TrafficTypeDiagnostic: MWHPR1001MB2062:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MWHPR1001MB20628A06B2D12FF08AA79EA3C7869@MWHPR1001MB2062.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n15JLS5rsTo99gCEth8coWL85OnHRY3q3IG06QPNIadXIqNvxbyoCkFOF/rle8cLfaxS/EFYZB3eEWvpLK6xQSPAylaV41xeJRkbf1QMvWWWG0V5MabuJTEuvYREiQ4VJ8lnxXn3B+YT2UnRsVjfCN7C8/XQBoLCsobm2QCJO3fCWlDmBjAAzxcnPWPz+pI0ZF6P5jV9ASc0nG6icopD+1pdAACRzZz0PlqxKCV8hSYUPWhlnUJ2N5G5wzQ3prquJDp3e2U0iEEPz5Zigcggsv8/h3Z5dgDfO+sEK52/+0HwcopMQebpjADTgSSyeA2xpKs4x3quVFcEEY3TVh6h+eKJMQcqzWqduD2p11vl1TFD0I0I5onktBvZAVj6LR+0JB+t2F5Aqzs/bFqpZGjbynOEwrE8xFj5o+ijXSPkWAIRPKo6Y962KDW6Bg998bIhbbvoeOcGOZV2lzQNv1hYcE9YD5yKKGun/WIKMaLyjGwpeL9sjA9gOkVId48utFmbyHoTkpG6EFU9mzZNt8CkUeuUhGWt/eQ9kJaaQa8fgXQS0xk45fCbPSDpfLIvQJ21++TI3wqWuk5cPcFrJqIvJw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4722.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(136003)(376002)(39860400002)(54906003)(66946007)(86362001)(478600001)(316002)(9686003)(7696005)(4326008)(66476007)(8676002)(186003)(2616005)(66556008)(16526019)(83380400001)(31696002)(6862004)(7416002)(26005)(956004)(6486002)(37006003)(2906002)(6666004)(5660300002)(36756003)(8936002)(31686004)(53546011)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?U0lSZWdUSVU3d2E2UlJ0NTZMZDBHSjljQm9oT0ozRnZLdkRTa3RwVndUalN6?=
- =?utf-8?B?M3FnUUlwVFdwUklBaGowWlhyWWhvZWNQdE92UXJ1TmhseURTb2RUaUtyQ00w?=
- =?utf-8?B?QmpVTUcxbkxSeEtET09JWDNsVWc4Vjcwa090Z21ldEh6VkRUVXFnR21Wam1D?=
- =?utf-8?B?aTdHT2hlaDNWSzB1TTlPcjZkR3phaTJmdTRuTUROektzRS8rTkFZaktwWll1?=
- =?utf-8?B?OU5KTnRoQ1NkeitWSGFzY3Ira0NaZFAxK3I1T0VHOGs3emEvY0x3M3BvVlpQ?=
- =?utf-8?B?WFdxMU5HdWxEd1VoS2lOQVhqV3hINFp4dXhZMGNIOUNIWTdGckhBT2UvbzFT?=
- =?utf-8?B?eFVxQ2Y3NzNyWWJzOWEwSCt2NW9YemhvRG44SUNDQklTZENsUldvQThMcGtB?=
- =?utf-8?B?OVdwR2FFRkg1S0dxRHJCWHJKT2lBc2puc24zOHJJUzdlRVdXUFBUbHNXbmRl?=
- =?utf-8?B?MjExUUhCYW15OUR5U24rbXkzcmFZMXRJVjhDRDhGa1ZJVGVTTFJZVmZUZVRp?=
- =?utf-8?B?VUVBU29uNnI0QnYyT2F4SXhTMnB6RHJKRk90VFM3Rk5DRkQwTWY5QlRVZ3Q3?=
- =?utf-8?B?YWgzeTNGZXV2Q3NrcnVKQmtHT1ZrYVRYTDlYTXdGRmNLZjkxZUtxa0NVU3pk?=
- =?utf-8?B?emppdXNvTTdXQnNtMUtWWWFNYTZDNS9oTlFtbHlHd2NBVThwcGhPUTVZV1Iz?=
- =?utf-8?B?ZlljR3BidytWQzh4ODdxYmdoeFFWSk9xSHNGczMvd0pxRXRpRTBIM2tESE1p?=
- =?utf-8?B?ZUlrRjIveDRWVjJlM1ZxMlFHVU5pUUtIUlFjUU01NTA5enlRclRKbUJpeFpq?=
- =?utf-8?B?K2lqYXY3dTc4NmZsSS9NTFJmYmxSSWppTVhJU0p4K1llekY5MytEZjdlZUhM?=
- =?utf-8?B?TGtwMmcwaVpjdU9NU1pJZ2NsbC9qNXFJblJ2L0JqNHZJdWNjcjB5VElGSmN6?=
- =?utf-8?B?WGE5ckdiR3pXamdINE9YKy9BMlQyUGMwR3VZaFNNK1U3VzZ6azdxMWpzc2FE?=
- =?utf-8?B?eWI2dmswM05IYlpGS2lpbVBkSlRUenlHMjY4NWoxdDRvZWs5Zy81dTRIM0Yv?=
- =?utf-8?B?SC9PRW1hWnA4OHBQZUxYeDc5cXd5QUFHaFhseUJwK0VPcjh0NnlEc1ZScnAx?=
- =?utf-8?B?Q0NPWVlhU0ZqRWRyUXZ6aExTU2FBNjVBa01NM3RPcE1QK2xKRGNQWjE5TllF?=
- =?utf-8?B?aDVrMTdmOTFwd3R6SW40QTFURnpaM1NQL2x0SGx4d3dpWFRiYzl2TjdOUmp1?=
- =?utf-8?B?dXU2RDY5YkpvRnR2UC9QdFIvZ09NNGVaTnc2Vk5kTjMxQk92ZjNjNUZ6cndH?=
- =?utf-8?B?UWpmTnY1Q1BxSWtyOW9hOFJNVTk0bUZUY29uUGZTSVJPQm9scmdUeW5EL3NN?=
- =?utf-8?B?TmVpME5oRkZyN0gvOG9QWWJOanJpL3Ywc0lHNDNMSXdtT2NCdnhrWGwyaFds?=
- =?utf-8?B?djR5R1V5ODM3VXJqZ1g3YlZqcis5OTZaSTltTnJnN01wVFZSYVNHK2s2Wmhu?=
- =?utf-8?B?b2pmaldnNGdGRmVpWTJkem81d0R2ZGlUWURZM1hyUXVuYklaUjdUckcvZmM5?=
- =?utf-8?B?dE9CaVpUeTBobzh5bEJaMGJkNDd3NEpza2E5em5EamM2SkJCbHh3dUFjaU9Q?=
- =?utf-8?B?TzkveW1NeEx1L0VPWld5OXR5ZmFUUk5sdVZOMFBzS1czVGZZK3Jpenp4czhG?=
- =?utf-8?B?aGZQZi9HK21IeHhIN1FUVk5iK21FNnA4UUhyY1hDT1YrNVl0aEJKd2c4L0hG?=
- =?utf-8?Q?90Z0oQUwPdjuoseE6FScG9WYkF11AAINEOHgEwJ?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3c8b38db-5e46-42d0-b9c4-08d8d3739235
-X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4722.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2021 18:41:00.3227
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ac895lECDl+WuDRCg20VKDRONTTocKJTbDdnpq/DrejkxQBkSW+nkAQ9ys7mvcSA8q36zuyZeEl1P4cI2LO5ROqKEYLZA7QCj4K/B2iNjt8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2062
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170134
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
- mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170134
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/11/21 12:08 PM, Saeed Mirzamohammadi wrote:
-> This adds crashkernel=auto feature to configure reserved memory for
-> vmcore creation. CONFIG_CRASH_AUTO_STR is defined to be set for
-> different kernel distributions and different archs based on their
-> needs.
+On Wed, 2021-02-17 at 07:36 -0800, syzbot wrote:
+> Hello,
 > 
-> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
-> Tested-by: John Donnelly <john.p.donnelly@oracle.com>
-> ---
->   Documentation/admin-guide/kdump/kdump.rst     |  3 ++-
->   .../admin-guide/kernel-parameters.txt         |  6 +++++
->   arch/Kconfig                                  | 24 +++++++++++++++++++
->   kernel/crash_core.c                           |  7 ++++++
->   4 files changed, 39 insertions(+), 1 deletion(-)
+> syzbot found the following issue on:
 > 
-> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-> index 2da65fef2a1c..e55cdc404c6b 100644
-> --- a/Documentation/admin-guide/kdump/kdump.rst
-> +++ b/Documentation/admin-guide/kdump/kdump.rst
-> @@ -285,7 +285,8 @@ This would mean:
->       2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
->       3) if the RAM size is larger than 2G, then reserve 128M
->   
-> -
-> +Or you can use crashkernel=auto to choose the crash kernel memory size
-> +based on the recommended configuration set for each arch.
->   
->   Boot into System Kernel
->   =======================
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 7d4e523646c3..aa2099465458 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -736,6 +736,12 @@
->   			a memory unit (amount[KMG]). See also
->   			Documentation/admin-guide/kdump/kdump.rst for an example.
->   
-> +	crashkernel=auto
-> +			[KNL] This parameter will set the reserved memory for
-> +			the crash kernel based on the value of the CRASH_AUTO_STR
-> +			that is the best effort estimation for each arch. See also
-> +			arch/Kconfig for further details.
-> +
->   	crashkernel=size[KMG],high
->   			[KNL, X86-64] range could be above 4G. Allow kernel
->   			to allocate physical memory region from top, so could
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index af14a567b493..f87c88ffa2f8 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -14,6 +14,30 @@ menu "General architecture-dependent options"
->   config CRASH_CORE
->   	bool
->   
-> +if CRASH_CORE
-> +
-> +config CRASH_AUTO_STR
-> +	string "Memory reserved for crash kernel"
-> +	depends on CRASH_CORE
-> +	default "1G-64G:128M,64G-1T:256M,1T-:512M"
-> +	help
-> +	  This configures the reserved memory dependent
-> +	  on the value of System RAM. The syntax is:
-> +	  crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
-> +	              range=start-[end]
-> +
-> +	  For example:
-> +	      crashkernel=512M-2G:64M,2G-:128M
-> +
-> +	  This would mean:
-> +
-> +	      1) if the RAM is smaller than 512M, then don't reserve anything
-> +	         (this is the "rescue" case)
-> +	      2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
-> +	      3) if the RAM size is larger than 2G, then reserve 128M
-> +
-> +endif # CRASH_CORE
-> +
->   config KEXEC_CORE
->   	select CRASH_CORE
->   	bool
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 106e4500fd53..ab0a2b4b1ffa 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -7,6 +7,7 @@
->   #include <linux/crash_core.h>
->   #include <linux/utsname.h>
->   #include <linux/vmalloc.h>
-> +#include <linux/kexec.h>
->   
->   #include <asm/page.h>
->   #include <asm/sections.h>
-> @@ -250,6 +251,12 @@ static int __init __parse_crashkernel(char *cmdline,
->   	if (suffix)
->   		return parse_crashkernel_suffix(ck_cmdline, crash_size,
->   				suffix);
-> +#ifdef CONFIG_CRASH_AUTO_STR
-> +	if (strncmp(ck_cmdline, "auto", 4) == 0) {
-> +		ck_cmdline = CONFIG_CRASH_AUTO_STR;
-> +		pr_info("Using crashkernel=auto, the size chosen is a best effort estimation.\n");
-> +	}
-> +#endif
->   	/*
->   	 * if the commandline contains a ':', then that's the extended
->   	 * syntax -- if not, it must be the classic syntax
+> HEAD commit:    773dc50d Merge branch 'Xilinx-axienet-updates'
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=13460822d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ea948c9d0dedf6ff57b1
 > 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in dst_mtu include/net/dst.h:201 [inline]
+> BUG: KASAN: use-after-free in tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
+> Read of size 8 at addr ffff88802943db08 by task syz-executor.2/11568
+> 
+> CPU: 0 PID: 11568 Comm: syz-executor.2 Not tainted 5.11.0-rc7-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+>  __kasan_report mm/kasan/report.c:396 [inline]
+>  kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+>  dst_mtu include/net/dst.h:201 [inline]
+>  tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
+>  tcp_send_mss+0x28/0x2b0 net/ipv4/tcp.c:943
+>  mptcp_sendmsg_frag+0x13b/0x1220 net/mptcp/protocol.c:1266
+>  mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
+>  mptcp_sendmsg+0x1ffb/0x2830 net/mptcp/protocol.c:1692
+>  inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:672
+>  sock_write_iter+0x289/0x3c0 net/socket.c:999
+>  call_write_iter include/linux/fs.h:1901 [inline]
+>  new_sync_write+0x426/0x650 fs/read_write.c:518
+>  vfs_write+0x791/0xa30 fs/read_write.c:605
+>  ksys_write+0x1ee/0x250 fs/read_write.c:658
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x465d99
+> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007fc692d89188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465d99
+> RDX: 0000000000000001 RSI: 0000000020000000 RDI: 0000000000000003
+> RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
+> R13: 00007ffc258487df R14: 00007fc692d89300 R15: 0000000000022000
+> 
+> Allocated by task 11558:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:401 [inline]
+>  ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+>  kasan_slab_alloc include/linux/kasan.h:209 [inline]
+>  slab_post_alloc_hook mm/slab.h:512 [inline]
+>  slab_alloc_node mm/slub.c:2892 [inline]
+>  slab_alloc mm/slub.c:2900 [inline]
+>  kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2905
+>  dst_alloc+0x9e/0x650 net/core/dst.c:93
+>  rt_dst_alloc+0x73/0x430 net/ipv4/route.c:1642
+>  __mkroute_output net/ipv4/route.c:2457 [inline]
+>  ip_route_output_key_hash_rcu+0x955/0x2ce0 net/ipv4/route.c:2684
+>  ip_route_output_key_hash+0x1a4/0x2f0 net/ipv4/route.c:2512
+>  __ip_route_output_key include/net/route.h:126 [inline]
+>  ip_route_output_flow+0x23/0x150 net/ipv4/route.c:2773
+>  ip_route_newports include/net/route.h:342 [inline]
+>  tcp_v4_connect+0x12d7/0x1c40 net/ipv4/tcp_ipv4.c:281
+>  tcp_v6_connect+0x733/0x1df0 net/ipv6/tcp_ipv6.c:248
+>  __inet_stream_connect+0x8c5/0xee0 net/ipv4/af_inet.c:661
+>  inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:725
+>  mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
+>  __sys_connect_file+0x155/0x1a0 net/socket.c:1835
+>  __sys_connect+0x161/0x190 net/socket.c:1852
+>  __do_sys_connect net/socket.c:1862 [inline]
+>  __se_sys_connect net/socket.c:1859 [inline]
+>  __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Freed by task 11559:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+>  ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+>  kasan_slab_free include/linux/kasan.h:192 [inline]
+>  slab_free_hook mm/slub.c:1547 [inline]
+>  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+>  slab_free mm/slub.c:3143 [inline]
+>  kmem_cache_free+0x82/0x350 mm/slub.c:3159
+>  dst_destroy+0x2bc/0x3c0 net/core/dst.c:129
+>  rcu_do_batch kernel/rcu/tree.c:2489 [inline]
+>  rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
+>  __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+> 
+> Last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
+>  __call_rcu kernel/rcu/tree.c:2965 [inline]
+>  call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
+>  dst_release net/core/dst.c:179 [inline]
+>  dst_release+0x79/0xe0 net/core/dst.c:169
+>  tcp_disconnect+0xc26/0x1ec0 net/ipv4/tcp.c:3003
+>  __tcp_close+0x486/0x1170 net/ipv4/tcp.c:2745
+>  tcp_close+0x29/0xc0 net/ipv4/tcp.c:2867
+>  inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
+>  inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
+>  __sock_release net/socket.c:597 [inline]
+>  sock_release+0x87/0x1b0 net/socket.c:625
+>  rds_tcp_accept_one+0x5fc/0xc10 net/rds/tcp_listen.c:220
+>  rds_tcp_accept_worker+0x50/0x80 net/rds/tcp.c:515
+>  process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Second to last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
+>  __call_rcu kernel/rcu/tree.c:2965 [inline]
+>  call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
+>  dst_release net/core/dst.c:179 [inline]
+>  dst_release+0x79/0xe0 net/core/dst.c:169
+>  inet_sock_destruct+0x600/0x830 net/ipv4/af_inet.c:160
+>  __sk_destruct+0x4b/0x900 net/core/sock.c:1795
+>  rcu_do_batch kernel/rcu/tree.c:2489 [inline]
+>  rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
+>  __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
+> 
+> The buggy address belongs to the object at ffff88802943db00
+>  which belongs to the cache ip_dst_cache of size 176
+> The buggy address is located 8 bytes inside of
+>  176-byte region [ffff88802943db00, ffff88802943dbb0)
+> The buggy address belongs to the page:
+> page:0000000019369b4d refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2943d
+> flags: 0xfff00000000200(slab)
+> raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888141745a00
+> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>  ffff88802943da00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff88802943da80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+> > ffff88802943db00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                       ^
+>  ffff88802943db80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
+>  ffff88802943dc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> ==================================================================
 
+Even this one...
 
-Hello.
+#syz dup: WARNING in dst_release
 
-Ping.
-
-Can we get this reviewed and staged ?
-
-Thank you.
-
-John.
-
+/P
 
