@@ -2,330 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FEE31D5D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:43:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D806B31D5D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:43:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhBQHka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:40:30 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:5912 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231739AbhBQHfn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:35:43 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11H7KLWX014567;
-        Wed, 17 Feb 2021 02:34:50 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36p9gb2d7x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 02:34:50 -0500
-Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 11H7YlpL003774
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 17 Feb 2021 02:34:48 -0500
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Tue, 16 Feb 2021
- 23:34:46 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Tue, 16 Feb 2021 23:34:46 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11H7YS3k031303;
-        Wed, 17 Feb 2021 02:34:43 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v4 6/6] tools: iio: add example for high-speed buffer support
-Date:   Wed, 17 Feb 2021 09:36:38 +0200
-Message-ID: <20210217073638.21681-7-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210217073638.21681-1-alexandru.ardelean@analog.com>
-References: <20210217073638.21681-1-alexandru.ardelean@analog.com>
+        id S231494AbhBQHne convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Feb 2021 02:43:34 -0500
+Received: from mail-eopbgr1320121.outbound.protection.outlook.com ([40.107.132.121]:36304
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231835AbhBQHlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 02:41:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M3ukMJaK4cjbe4/JXw1JGdn9Qa123tnROdnGyKaAuMjpczPpFlhYoDwwlGMd8iUH/sgMQEVb4S/P51qWxIL9q1Q7sm2qqictNGkbKHKnZUKgEWfhtQH4ONDqIfjByPalL2CROzZaVg9tMf2U+HAcadG086dAQh18lHJuKZtKELQS+IsYfCLmpCit9IHOP8F14EOn49zDCJmPunRwF98zP/viLpllHQe7O5+ejq5EBI4QBBBU88R+s3xlwfVFVtymvQckHKOgxVVg00OaDVj1f08GRvxNhGXnFpacmc67eqneH+MabgXs+H6WxKvyM34ZbJx72ViitHq1EsFis+0h6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r9B3hux1IxS7FYEurOjBLzeegi7kYuStTT0ETlYnE0E=;
+ b=OQZsgNxX0mtVKtGJ1AqvdTyElvjRzKJAmvfuIg6dz5cjf3w8Qs+6N8ryeCp6CIbC87biusd3Y8b3lM38EOYWZ+tWhDxn3S6Mdb78gsYOXQAkrkkD52CJlLOIea8x17692TTJBqwFW9nGiJ87pMkFxngDW0UCI0EkXK6lPDQPgMAESjKBNJpbx4uPAVgbaQreibbvO62G+P8ig6zyw2ozRcXkObUvE9CdfV4Rf5kbprE2QJYlA1iXFSL/2gCO86ADmB7QXtSXy1N42DUH4hn6qJf2/gG1sIk3Hj2Pc26I7RfUExHNHE1O+5HJ8Gi8OoSvEbl/IhuRYTXWIJzPYswcxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (52.132.237.202) by
+ HK0PR06MB2819.apcprd06.prod.outlook.com (20.177.24.85) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3868.27; Wed, 17 Feb 2021 07:40:17 +0000
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::394c:29f2:cb4c:55ed]) by HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::394c:29f2:cb4c:55ed%3]) with mapi id 15.20.3846.041; Wed, 17 Feb 2021
+ 07:40:16 +0000
+From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>, Lee Jones <lee.jones@linaro.org>
+CC:     BMC-SW <BMC-SW@aspeedtech.com>,
+        Haiyue Wang <haiyue.wang@linux.intel.com>,
+        Robert Lippert <rlippert@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Corey Minyard <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+Subject: RE: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Thread-Topic: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Thread-Index: AQHW6ndtLpV90qI+i0aaOeinwbKhAKo6sL2AgCF0F+A=
+Date:   Wed, 17 Feb 2021 07:40:15 +0000
+Message-ID: <HK0PR06MB3779B25984A461E4A1ADEF1191869@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
+ <20210114131622.8951-2-chiawei_wang@aspeedtech.com>
+ <85f00459-4a39-441e-8119-8e12f8132cfe@www.fastmail.com>
+In-Reply-To: <85f00459-4a39-441e-8119-8e12f8132cfe@www.fastmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6cee2f67-245f-4575-509b-08d8d3174492
+x-ms-traffictypediagnostic: HK0PR06MB2819:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK0PR06MB28194DA48E205F9EFCC719E191869@HK0PR06MB2819.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: upFmur1U1rXrvRla/oUuG+AF6Vmd40/2tnBmg/pC++1ClR8gcuBOkP9vPY5c4k3x8nWhEt7pydbTA7AZKO7gZtZTOwa5aIMg/geMsh4IRmICzxw7pxFuakON5lUAbKk2Sl3Wz0sFPifDqg4Ld50RGI6W3ydn6SPeeKIhEDZgV0ucvWfDoRuGTUkZsT3pxQKE9FKO1IjaYhWzSAVGP7Vj9nC+keER0Pkud2Lft5CQaKC0zkLoAjueNxF2sKuvqZGHQ9HV/HuWOiBiEkCb3aWK9TmKsF+SGr+u48U7He1KEydWnZTlYzEkpgVOkXWetCCiTTGESNtg2b6Px7zQ3wR7hQ61dS/4sKepSJv3iW69RNHFnZvDkgHA2beKldSte5OGCblbvVgP9ZY+cKTp+y/9cBtsLCP7wGW3AYYEdgBrjEvCoslUTmeKVLu+XD3PdxkJ+lZTL5r+K3XwpRxD5T2fup/9la6ybkrePxQPxcpjsvLuMj6ur0LbY34OqyfYxnffHcGwD1NdEmocrS/QR7LNng==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(39850400004)(376002)(346002)(55016002)(54906003)(7416002)(110136005)(33656002)(478600001)(9686003)(316002)(86362001)(6506007)(53546011)(83380400001)(4326008)(26005)(7696005)(186003)(55236004)(71200400001)(4744005)(64756008)(66476007)(66946007)(66446008)(76116006)(8936002)(2906002)(66556008)(52536014)(5660300002)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?SiyHhbJzaOA4MJCpflgj0CEifAstmD34AQJjY6OpLpwbys2kYo3xEXtrQAlA?=
+ =?us-ascii?Q?eSMK40nMqrNT+UhhBNCb5tuyvSdzC8K8LfPixzb/m2YOacvPxV/9aSo4mgcq?=
+ =?us-ascii?Q?p+gVzvzVtiL5z/LpIhZmdhljNogsgMwvZgp31QEMq4Nto1D1NfK+JOJ1epmM?=
+ =?us-ascii?Q?la9kj13TZBeRr3hy/dA/KqRWxPkduN3/58qGec08gYbN5lvfzLGP2fzD9FZl?=
+ =?us-ascii?Q?5Nyr743GsRNwtOOGWVuKipp7/8VLB4NdBgqf72Jhc7DRu0xMPHOnS3iJ2pz5?=
+ =?us-ascii?Q?4KQrGZiGMKGle/lmPwdJR75+5uOYYULxuyJQIcHt9a/AOxzyiA58GmP85G5x?=
+ =?us-ascii?Q?YYxGHccpMSF3VmnyuDjtNTXUwjd7TjpdmTXEYS8B+R/Q4tzXybnWgSNE1aeV?=
+ =?us-ascii?Q?TzAvAcEQDgYzh5dCu99qlvsIY5fyw5iZ7Evlwm+uLb8Syhud4EEY6qO6rh13?=
+ =?us-ascii?Q?znrLHc0JqnXPD2gNqqfLYZQrt19JzPEWoliPfDbjPX1TFVVZC0Vj/P6W1NWh?=
+ =?us-ascii?Q?lUk5HFfHu/4jV+CseQ6nAlU4xxmUcl2HVoGX7CV3H1aw+UcvpEtcOv1Om9fd?=
+ =?us-ascii?Q?Za3GkI1e/9tUrf8DBj1wMg+T25t0X3GgzBeWykY8/y43VwXf1OAqUTwBbYfh?=
+ =?us-ascii?Q?0MbeEgW7zeb8eYqGmHmkjSrqxHKEXKbLn2j0yiIEG6ITtvis/6UBl4YdHvT3?=
+ =?us-ascii?Q?zFs32ouL2aVoIfYTRcNiYZiAATOUMhTp55+45cTH34hrgVwKlfMuFNknNysZ?=
+ =?us-ascii?Q?apYwBjutUBLyMtj+GmjjWk/C/8SUrbeVTZx1wPywHHv2pJm/+1kX8pZe8O9e?=
+ =?us-ascii?Q?bS0BL6iUDyvluViGt4Nn+/H4dKkc0SIhwUuwVjsO/o6mJWU0JcbkUK1DolgU?=
+ =?us-ascii?Q?uwF2o1mdj59NhScgCPR/OTfEsh7HS+ok2Vs9qP4pXu+fDMn99nWgdNU07Nr6?=
+ =?us-ascii?Q?wPm+aXZuloTl7OXGtQOh2u+CDRomyzzLdK9VUji/YIfU33wGKdFw+Ni3gULk?=
+ =?us-ascii?Q?KTh/0OjfmRSm6GQp0L8Z9Ek17Tpx2hjWa+fSt4c7RkA5kzKSgQtNQljrhMGs?=
+ =?us-ascii?Q?U4lohfyfW3tKxi+Cdbd71op7b6eBSgnwSm43eCR9rOSxe344zoPnP5vFK+es?=
+ =?us-ascii?Q?E8jvJdGikRFIMi7QrnmLo6ioAtNEDI1PwwITmzk7F/vMZblefxFY3u5eR72R?=
+ =?us-ascii?Q?WiIZapHraokFDpZjBoEbIyoMH7RuJPn6aCh0441+loOU8etFk/GLJgHrtUJo?=
+ =?us-ascii?Q?W0jrxfz0LPejpbz1eiet662wV1CKFN9ShyooEzx6fFyPPSJrzT4IVstty5DL?=
+ =?us-ascii?Q?HNY3A5XMXqcxc94zCNh5FTqv?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-17_06:2021-02-16,2021-02-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 clxscore=1015
- mlxscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170054
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6cee2f67-245f-4575-509b-08d8d3174492
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Feb 2021 07:40:15.6725
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VMNjQXz+qtD5Y3OaH6KcXs63vgs0S0ZTrIJcCOEC7LFDr6AE1ggXyrdffkVwUomao82P9Lk2m7+V4JmF0j6TskRIg2v+iaMCSQg2pOqQOOM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2819
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Following a recent update to the IIO buffer infrastructure, this change
-adds a basic example on how to access an IIO buffer via the new mmap()
-interface.
+Hi All,
 
-The ioctl() for the high-speed mode needs to be enabled right from the
-start, before setting any parameters via sysfs (length, enable, etc), to
-make sure that the mmap mode is used and not the fileio mode.
+Do you have update on this patch series?
+Aspeed has subsequent LPC module upstream plan.
+We hope that the following patches can be on the basis of the fixed LPC layout.
+Thanks.
 
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- tools/iio/iio_generic_buffer.c | 185 +++++++++++++++++++++++++++++++--
- 1 file changed, 179 insertions(+), 6 deletions(-)
+Chiawei
 
-diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-index 2491c54a5e4f..e7c327fa6091 100644
---- a/tools/iio/iio_generic_buffer.c
-+++ b/tools/iio/iio_generic_buffer.c
-@@ -31,6 +31,7 @@
- #include <stdbool.h>
- #include <signal.h>
- #include <sys/ioctl.h>
-+#include <sys/mman.h>
- #include <linux/iio/buffer.h>
- #include "iio_utils.h"
- 
-@@ -239,6 +240,133 @@ static int enable_disable_all_channels(char *dev_dir_name, int buffer_idx, int e
- 	return 0;
- }
- 
-+struct mmap_block {
-+	struct iio_buffer_block block;
-+	void *addr;
-+};
-+
-+static struct mmap_block *enable_high_speed(int buf_fd, unsigned int block_size,
-+					    int nblocks)
-+{
-+	struct iio_buffer_block_alloc_req req = { 0 };
-+	struct mmap_block *mmaps = NULL;
-+	int mmaps_cnt = 0;
-+	int i, ret;
-+
-+	/**
-+	 * Validate we can do high-speed by issuing BLOCK_FREE ioctl.
-+	 * If using just BLOCK_ALLOC it's distinguish between ENOSYS
-+	 * and other error types.
-+	 */
-+	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-+	if (ret < 0) {
-+		errno = ENOSYS;
-+		return NULL;
-+	}
-+
-+	/* for now, this */
-+	req.id = 0;
-+	req.type = 0;
-+	req.size = block_size;
-+	req.count = nblocks;
-+
-+	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ALLOC_IOCTL, &req);
-+	if (ret < 0)
-+		return NULL;
-+
-+	if (req.count == 0) {
-+		errno = ENOMEM;
-+		return NULL;
-+	}
-+
-+	if (req.count < nblocks) {
-+		fprintf(stderr, "Requested %d blocks, got %d\n",
-+			nblocks, req.count);
-+		errno = ENOMEM;
-+		return NULL;
-+	}
-+
-+	mmaps = calloc(req.count, sizeof(*mmaps));
-+	if (!mmaps) {
-+		errno = ENOMEM;
-+		return NULL;
-+	}
-+
-+	for (i = 0; i < req.count; i++) {
-+		mmaps[i].block.id = i;
-+		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_QUERY_IOCTL, &mmaps[i].block);
-+		if (ret < 0)
-+			goto error;
-+
-+		ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[i].block);
-+		if (ret < 0)
-+			goto error;
-+
-+		mmaps[i].addr = mmap(0, mmaps[i].block.size,
-+				      PROT_READ | PROT_WRITE, MAP_SHARED,
-+				      buf_fd, mmaps[i].block.data.offset);
-+
-+		if (mmaps[i].addr == MAP_FAILED)
-+			goto error;
-+
-+		mmaps_cnt++;
-+	}
-+
-+	return mmaps;
-+
-+error:
-+	for (i = 0; i < mmaps_cnt; i++)
-+		munmap(mmaps[i].addr, mmaps[i].block.size);
-+	free(mmaps);
-+	ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-+	return NULL;
-+}
-+
-+static int read_high_speed(int buf_fd, char *data, unsigned int block_size,
-+			   struct mmap_block *mmaps, unsigned int mmaps_cnt)
-+{
-+	struct iio_buffer_block block;
-+	int ret;
-+
-+	/**
-+	 * This is where some buffer-pool management can do wonders,
-+	 * but for the sake of this sample-code, we're just going to
-+	 * copy the data and re-enqueue it back
-+	 */
-+	memset(&block, 0, sizeof(block));
-+	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_DEQUEUE_IOCTL, &block);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* check for weird conditions */
-+	if (block.bytes_used > block_size) {
-+		fprintf(stderr,
-+			"Got a bigger block (%u) than expected (%u)\n",
-+			block.bytes_used, block_size);
-+		return -EFBIG;
-+	}
-+
-+	if (block.bytes_used < block_size) {
-+		/**
-+		 * This can be normal, with some real-world data
-+		 * terminating abruptly. But log it.
-+		 */
-+		fprintf(stderr,
-+			"Got a smaller block (%u) than expected (%u)\n",
-+			block.bytes_used, block_size);
-+	}
-+
-+	/* memcpy() the data, we lose some more performance here :p */
-+	memcpy(data, mmaps[block.id].addr, block.bytes_used);
-+
-+	/* and re-queue this back */
-+	ret = ioctl(buf_fd, IIO_BUFFER_BLOCK_ENQUEUE_IOCTL, &mmaps[block.id].block);
-+	if (ret < 0)
-+		return ret;
-+
-+	return block.bytes_used;
-+}
-+
- static void print_usage(void)
- {
- 	fprintf(stderr, "Usage: generic_buffer [options]...\n"
-@@ -249,6 +377,7 @@ static void print_usage(void)
- 		"  -c <n>     Do n conversions, or loop forever if n < 0\n"
- 		"  -e         Disable wait for event (new data)\n"
- 		"  -g         Use trigger-less mode\n"
-+		"  -h         Use high-speed buffer access\n"
- 		"  -l <n>     Set buffer length to n samples\n"
- 		"  --device-name -n <name>\n"
- 		"  --device-num -N <num>\n"
-@@ -356,9 +485,15 @@ int main(int argc, char **argv)
- 
- 	struct iio_channel_info *channels = NULL;
- 
-+	static bool use_high_speed = false;
-+	unsigned int block_size;
-+	int nblocks = 16; /* default */
-+	int mmaps_cnt = 0;
-+	struct mmap_block *mmaps = NULL;
-+
- 	register_cleanup();
- 
--	while ((c = getopt_long(argc, argv, "aAb:c:egl:n:N:t:T:w:?", longopts,
-+	while ((c = getopt_long(argc, argv, "aAb:c:eghl:n:N:t:T:w:?", longopts,
- 				NULL)) != -1) {
- 		switch (c) {
- 		case 'a':
-@@ -396,6 +531,9 @@ int main(int argc, char **argv)
- 		case 'g':
- 			notrigger = 1;
- 			break;
-+		case 'h':
-+			use_high_speed = true;
-+			break;
- 		case 'l':
- 			errno = 0;
- 			buf_len = strtoul(optarg, &dummy, 10);
-@@ -659,6 +797,29 @@ int main(int argc, char **argv)
- 		goto error;
- 	}
- 
-+	scan_size = size_from_channelarray(channels, num_channels);
-+	block_size = scan_size * buf_len;
-+	/**
-+	 * Need to enable high-speed before configuring length/enable.
-+	 * Otherwise, the DMA buffer will work in fileio mode,
-+	 * and mmap won't work.
-+	 */
-+	if (use_high_speed) {
-+		/**
-+		 * The block_size for one block is the same as 'data', but it
-+		 * doesn't need to be the same size. It is easier for the sake
-+		 * of this example.
-+		 */
-+		mmaps = enable_high_speed(buf_fd, block_size, nblocks);
-+		if (!mmaps) {
-+			fprintf(stderr, "Could not enable high-speed mode\n");
-+			ret = -errno;
-+			goto error;
-+		}
-+		mmaps_cnt = nblocks;
-+		printf("Using high-speed mode\n");
-+	}
-+
- 	/* Setup ring buffer parameters */
- 	ret = write_sysfs_int("length", buf_dir_name, buf_len);
- 	if (ret < 0)
-@@ -673,8 +834,7 @@ int main(int argc, char **argv)
- 		goto error;
- 	}
- 
--	scan_size = size_from_channelarray(channels, num_channels);
--	data = malloc(scan_size * buf_len);
-+	data = malloc(block_size);
- 	if (!data) {
- 		ret = -ENOMEM;
- 		goto error;
-@@ -721,7 +881,13 @@ int main(int argc, char **argv)
- 			toread = 64;
- 		}
- 
--		read_size = read(buf_fd, data, toread * scan_size);
-+		if (use_high_speed) {
-+			read_size = read_high_speed(buf_fd, data, block_size,
-+						    mmaps, mmaps_cnt);
-+		} else {
-+			read_size = read(buf_fd, data, toread * scan_size);
-+		}
-+
- 		if (read_size < 0) {
- 			if (errno == EAGAIN) {
- 				fprintf(stderr, "nothing available\n");
-@@ -740,8 +906,15 @@ int main(int argc, char **argv)
- 
- 	if (fd >= 0 && close(fd) == -1)
- 		perror("Failed to close character device");
--	if (buf_fd >= 0 && close(buf_fd) == -1)
--		perror("Failed to close buffer");
-+	for (i = 0; i < mmaps_cnt; i++)
-+		munmap(mmaps[i].addr, mmaps[i].block.size);
-+	free(mmaps);
-+	if (buf_fd >= 0) {
-+		if (use_high_speed)
-+			ioctl(buf_fd, IIO_BUFFER_BLOCK_FREE_IOCTL, 0);
-+		if (close(buf_fd) == -1)
-+			perror("Failed to close buffer");
-+	}
- 	free(buffer_access);
- 	free(data);
- 	free(buf_dir_name);
--- 
-2.17.1
-
+> -----Original Message-----
+> From: Andrew Jeffery <andrew@aj.id.au>
+> Sent: Wednesday, January 27, 2021 8:25 AM
+> To: Lee Jones <lee.jones@linaro.org>
+> Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+> 
+> 
+> 
+> On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
+> > The LPC controller has no concept of the BMC and the Host partitions.
+> > This patch fixes the documentation by removing the description on LPC
+> > partitions. The register offsets illustrated in the DTS node examples
+> > are also fixed to adapt to the LPC DTS change.
+> >
+> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> 
+> Any thoughts Lee? If you ack it would you be happy for the patch to go through
+> the Aspeed tree?
+> 
+> Andrew
