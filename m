@@ -2,257 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8907531D754
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2BEB31D756
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:16:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbhBQKL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:11:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232210AbhBQKLH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:11:07 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19C6C061574;
-        Wed, 17 Feb 2021 02:10:27 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id p21so2526804pgl.12;
-        Wed, 17 Feb 2021 02:10:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R3amEnqTrjGlEFPrUrxJ7Z//9UhhhB9TemZrGckJqHM=;
-        b=TU/BX86zcPFQR6S97iGcuO6njJeSDGcshoUuZh5eO9HC6Z1NoN5a2ZTImcOesOlecU
-         mWqpTcSNrgJau1QV9BGlfPNw+veBEpeHC1u0tEKPecCo0BXyxRhZlNwEmiPShgprhuTi
-         tZywy1OPG3oKGYTV6JACfSTkyxBGeh1hOGowA5B8jHUr3eDtynXS79tXHDuIf3+oJ0gm
-         OoBh92WgZJnDIgOg/b4UDrqgRIXs6T9KDK7BSipFHPXta3AFt5sPoNLy+JgfXDe1YViR
-         JMmLQIRtmnp4+NMeVBxm3DeynmY9kUx9BJcyUP8p+UPdVrfud+xX/ZwZlCaCxD3yrTLo
-         s2uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R3amEnqTrjGlEFPrUrxJ7Z//9UhhhB9TemZrGckJqHM=;
-        b=B8GSu077ynUMuaOnMhm8EVAvkiHH4TX9XXiylCePUFaF9FvDLfQu9UO7Z70DXAg9e+
-         nI78J/XZS0r4YwobZJ6+FybBWB+vInf1YxlKpStAWgXgOG+i08SvaqtVK3im59hqU0hw
-         rCc0yxVXVGXMpCYqkvr2bTqV4ReWw0aFTwnTTv+IJ3xoPz9N4PlaFS7JhydOzgQoMOW+
-         HsCi0kaflupCc4yiLbHDBxLcMARcn6SWtl+UiR9tpxBYkbDZxPU/qYVDm1tDdY/Yto7G
-         E7PAfk9Zvgoy+i7klF64nCRsxgyaoVYMvb8/YrfdaK6J6yfem1/i33me7x1su5jr2y1A
-         bYKg==
-X-Gm-Message-State: AOAM532ip9PaceOhzmyoSMgSs6dNlSuOOV3gVkmpwVGm75WnklkrEFYj
-        V6s0og6bqNNmlOMlYLvKgXXXcjLaaV8VmbTF/OE=
-X-Google-Smtp-Source: ABdhPJwEBAgNhwsFu4aMsZ75JMBNPMOgIt6H8qFNOv4fGBTUXzQaNROd8mU25Zke9Ql5c2KJRABHqAgKD8OkN+haAg0=
-X-Received: by 2002:a63:3d0:: with SMTP id 199mr23357594pgd.4.1613556626978;
- Wed, 17 Feb 2021 02:10:26 -0800 (PST)
+        id S231898AbhBQKMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:12:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229774AbhBQKMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:12:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D574664E28;
+        Wed, 17 Feb 2021 10:11:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613556715;
+        bh=zLZ5Le94qZEV3ZFJVTNws7/pfFQfMlZkQcgYfjrAcqs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rVD+Y2w6ginuy0R9YwBtb9zPFV9Xgwv3u1vXC1biBpqFr74GsbBYvtR49bxVa2EcQ
+         20jck+dNhwGDGLAYhGoMVvNCrMw9qMJqw2ynf+7W8p9uXrkFN+c17gcHNPkCtQYWS7
+         uUicQYhB9uF26NU4PWXhWEZV+bS1dLp1iZYEObsg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.4.99
+Date:   Wed, 17 Feb 2021 11:11:51 +0100
+Message-Id: <161355671152170@kroah.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210216224455.1504008-1-drew@beagleboard.org> <20210216224455.1504008-3-drew@beagleboard.org>
-In-Reply-To: <20210216224455.1504008-3-drew@beagleboard.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 17 Feb 2021 12:10:10 +0200
-Message-ID: <CAHp75VekJC4mTvKndNvQMgLM5x5pY40swYaduRQE2s1TZvtR6A@mail.gmail.com>
-Subject: Re: [PATCH v6 2/3] pinctrl: pinmux: Add pinmux-select debugfs file
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 12:45 AM Drew Fustini <drew@beagleboard.org> wrote:
->
-> Add "pinmux-select" to debugfs which will activate a function and group:
->
->   echo "<function-name group-name>" > pinmux-select
->
-> The write operation pinmux_select() handles this by checking that the
-> names map to valid selectors and then calling ops->set_mux().
->
-> The existing "pinmux-functions" debugfs file lists the pin functions
-> registered for the pin controller. For example:
->
->   function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
->   function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
->   function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
->   function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
->   function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
->   function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
->
-> To activate function pinmux-i2c1 and group pinmux-i2c1-pins:
->
->   echo "pinmux-i2c1 pinmux-i2c1-pins" > pinmux-select
+I'm announcing the release of the 5.4.99 kernel.
 
-Thanks, looks almost good to me (few nit-picks below)
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+All users of the 5.4 kernel series must upgrade.
 
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
-> ---
->  drivers/pinctrl/pinmux.c | 102 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 102 insertions(+)
->
-> diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
-> index c651b2db0925..08f336e4246c 100644
-> --- a/drivers/pinctrl/pinmux.c
-> +++ b/drivers/pinctrl/pinmux.c
-> @@ -23,6 +23,7 @@
->  #include <linux/string.h>
->  #include <linux/debugfs.h>
->  #include <linux/seq_file.h>
-> +#include <linux/ctype.h>
+The updated 5.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Perhaps squeeze it to look slightly more ordered?
+thanks,
 
->  #include <linux/pinctrl/machine.h>
->  #include <linux/pinctrl/pinmux.h>
->  #include "core.h"
-> @@ -673,6 +674,105 @@ void pinmux_show_setting(struct seq_file *s,
->  DEFINE_SHOW_ATTRIBUTE(pinmux_functions);
->  DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
+greg k-h
 
-> +#define PINMUX_SELECT_MAX 50
+------------
 
-Why suddenly this number? Maybe 64 for the sake of good power of 2?
+ Makefile                                                      |    2 
+ arch/arm/boot/dts/lpc32xx.dtsi                                |    3 
+ arch/arm/include/asm/kexec-internal.h                         |   12 
+ arch/arm/kernel/asm-offsets.c                                 |    5 
+ arch/arm/kernel/machine_kexec.c                               |   20 
+ arch/arm/kernel/relocate_kernel.S                             |   38 -
+ arch/arm/kernel/signal.c                                      |   14 
+ arch/arm/mach-omap2/cpuidle44xx.c                             |   16 
+ arch/arm/xen/enlighten.c                                      |    2 
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts                    |    4 
+ arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts          |    4 
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi                      |    2 
+ arch/h8300/kernel/asm-offsets.c                               |    3 
+ arch/powerpc/kernel/vmlinux.lds.S                             |    1 
+ arch/riscv/include/asm/page.h                                 |    5 
+ arch/x86/Makefile                                             |    6 
+ block/bfq-iosched.c                                           |    8 
+ drivers/clk/sunxi-ng/ccu_mp.c                                 |    2 
+ drivers/gpio/gpio-ep93xx.c                                    |  216 +++++-----
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c             |   22 -
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c         |   10 
+ drivers/gpu/drm/sun4i/sun4i_tcon.c                            |   25 +
+ drivers/gpu/drm/sun4i/sun4i_tcon.h                            |    6 
+ drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c                         |    6 
+ drivers/gpu/drm/sun4i/sun8i_hdmi_phy.c                        |   26 -
+ drivers/gpu/drm/vc4/vc4_plane.c                               |   18 
+ drivers/i2c/busses/i2c-stm32f7.c                              |   11 
+ drivers/misc/lkdtm/Makefile                                   |    2 
+ drivers/misc/lkdtm/rodata.c                                   |    2 
+ drivers/net/ethernet/freescale/enetc/enetc_hw.h               |    2 
+ drivers/net/ethernet/freescale/enetc/enetc_pf.c               |   59 ++
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c       |    7 
+ drivers/net/ethernet/ibm/ibmvnic.c                            |   17 
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c               |    7 
+ drivers/net/wireless/mediatek/mt76/dma.c                      |    8 
+ drivers/net/xen-netback/rx.c                                  |    9 
+ drivers/nvme/host/pci.c                                       |    2 
+ drivers/platform/x86/hp-wmi.c                                 |   14 
+ drivers/usb/dwc3/ulpi.c                                       |   20 
+ drivers/xen/xenbus/xenbus.h                                   |    1 
+ drivers/xen/xenbus/xenbus_probe.c                             |    2 
+ fs/overlayfs/copy_up.c                                        |   15 
+ fs/overlayfs/inode.c                                          |    2 
+ fs/overlayfs/super.c                                          |   13 
+ include/asm-generic/sections.h                                |    3 
+ include/asm-generic/vmlinux.lds.h                             |   12 
+ include/linux/compiler.h                                      |   53 ++
+ include/linux/compiler_types.h                                |    4 
+ include/linux/netdevice.h                                     |    2 
+ include/linux/uio.h                                           |    8 
+ include/xen/xenbus.h                                          |    2 
+ kernel/bpf/stackmap.c                                         |    2 
+ kernel/cgroup/cgroup.c                                        |    4 
+ kernel/trace/trace.c                                          |    2 
+ kernel/trace/trace_events.c                                   |    3 
+ lib/iov_iter.c                                                |   24 -
+ net/core/datagram.c                                           |   12 
+ net/core/dev.c                                                |   11 
+ net/dsa/dsa2.c                                                |    7 
+ net/netfilter/nf_conntrack_core.c                             |    3 
+ net/netfilter/nf_flow_table_core.c                            |    4 
+ net/netfilter/nf_tables_api.c                                 |   25 -
+ net/netfilter/xt_recent.c                                     |   12 
+ net/qrtr/tun.c                                                |    6 
+ net/rds/rdma.c                                                |    3 
+ net/rxrpc/call_object.c                                       |    2 
+ net/sctp/proc.c                                               |   16 
+ net/vmw_vsock/af_vsock.c                                      |   13 
+ net/vmw_vsock/hyperv_transport.c                              |    4 
+ net/vmw_vsock/virtio_transport_common.c                       |    4 
+ scripts/mod/modpost.c                                         |    2 
+ security/commoncap.c                                          |   67 +--
+ tools/testing/selftests/networking/timestamping/txtimestamp.c |    6 
+ 73 files changed, 665 insertions(+), 320 deletions(-)
 
-> +static ssize_t pinmux_select(struct file *file, const char __user *user_buf,
-> +                                  size_t len, loff_t *ppos)
-> +{
-> +       struct seq_file *sfile = file->private_data;
-> +       struct pinctrl_dev *pctldev = sfile->private;
-> +       const struct pinmux_ops *pmxops = pctldev->desc->pmxops;
-> +       const char *const *groups;
-> +       char *buf, *fname, *gname;
-> +       unsigned int num_groups;
-> +       int fsel, gsel, ret;
-> +
-> +       if (len > PINMUX_SELECT_MAX)
-> +               return -ENOMEM;
-> +
-> +       buf = kzalloc(PINMUX_SELECT_MAX, GFP_KERNEL);
-> +       if (!buf)
-> +               return -ENOMEM;
-> +
-> +       ret = strncpy_from_user(buf, user_buf, PINMUX_SELECT_MAX);
-> +       if (ret < 0)
-> +               goto exit_free_buf;
-> +       buf[len-1] = '\0';
-> +
-> +       /* remove leading and trailing spaces of input buffer */
-> +       fname = strstrip(buf);
-> +       if (*fname == '\0') {
-> +               ret = -EINVAL;
-> +               goto exit_free_buf;
-> +       }
-> +
-> +       /* find a separator like a space character */
+Alain Volmat (1):
+      i2c: stm32f7: fix configuration of the digital filter
 
-"find a separator which is a spacelike character" ?
+Alexandre Belloni (1):
+      ARM: dts: lpc32xx: Revert set default clock rate of HCLK PLL
 
-> +       for (gname = fname; !isspace(*gname); gname++) {
-> +               if (*gname == '\0') {
-> +                       ret = -EINVAL;
-> +                       goto exit_free_buf;
-> +               }
-> +       }
-> +       *gname = '\0';
-> +
-> +       /* drop extra spaces between function and group name */
+Alexandre Ghiti (1):
+      riscv: virt_addr_valid must check the address belongs to linear mapping
 
-names
+Amir Goldstein (1):
+      ovl: skip getxattr of security labels
 
-> +       gname = skip_spaces(gname + 1);
-> +       if (*gname == '\0') {
-> +               ret = -EINVAL;
-> +               goto exit_free_buf;
-> +       }
-> +
-> +       fsel = pinmux_func_name_to_selector(pctldev, fname);
-> +       if (fsel < 0) {
-> +               dev_err(pctldev->dev, "invalid function %s in map table\n", fname);
-> +               ret = fsel;
-> +               goto exit_free_buf;
-> +       }
+Bjorn Andersson (1):
+      arm64: dts: qcom: sdm845: Reserve LPASS clocks in gcc
 
-Here and below you could do other way around, i.e.
+Borislav Petkov (1):
+      x86/build: Disable CET instrumentation in the kernel for 32-bit too
 
-ret = ...
-if (ret < 0) {
- ...
-}
-fsel = ret;
+Bui Quang Minh (1):
+      bpf: Check for integer overflow when using roundup_pow_of_two()
 
-> +       ret = pmxops->get_function_groups(pctldev, fsel, &groups, &num_groups);
-> +       if (ret) {
-> +               dev_err(pctldev->dev, "no groups for function %d (%s)", fsel, fname);
-> +               goto exit_free_buf;
-> +       }
-> +
-> +       ret = match_string(groups, num_groups, gname);
-> +       if (ret < 0) {
-> +               dev_err(pctldev->dev, "invalid group %s", gname);
-> +               goto exit_free_buf;
-> +       }
-> +
-> +       gsel = pinctrl_get_group_selector(pctldev, gname);
-> +       if (gsel < 0) {
-> +               dev_err(pctldev->dev, "failed to get group selector for %s", gname);
-> +               ret = gsel;
-> +               goto exit_free_buf;
-> +       }
-> +
-> +       ret = pmxops->set_mux(pctldev, fsel, gsel);
-> +       if (ret) {
-> +               dev_err(pctldev->dev, "set_mux() failed: %d", ret);
-> +               goto exit_free_buf;
-> +       }
-> +       ret = len;
-> +
-> +exit_free_buf:
-> +       kfree(buf);
-> +
-> +       return ret;
-> +}
-> +
-> +static int pinmux_select_open(struct inode *inode, struct file *file)
-> +{
-> +       return single_open(file, NULL, inode->i_private);
-> +}
-> +
-> +static const struct file_operations pinmux_select_ops = {
-> +       .owner = THIS_MODULE,
-> +       .open = pinmux_select_open,
-> +       .write = pinmux_select,
-> +       .llseek = no_llseek,
-> +       .release = single_release,
-> +};
-> +
->  void pinmux_init_device_debugfs(struct dentry *devroot,
->                          struct pinctrl_dev *pctldev)
->  {
-> @@ -680,6 +780,8 @@ void pinmux_init_device_debugfs(struct dentry *devroot,
->                             devroot, pctldev, &pinmux_functions_fops);
->         debugfs_create_file("pinmux-pins", 0444,
->                             devroot, pctldev, &pinmux_pins_fops);
-> +       debugfs_create_file("pinmux-select", 0200,
-> +                           devroot, pctldev, &pinmux_select_ops);
->  }
->
->  #endif /* CONFIG_DEBUG_FS */
-> --
-> 2.25.1
->
+Claus Stovgaard (1):
+      nvme-pci: ignore the subsysem NQN on Phison E16
 
+David Howells (1):
+      rxrpc: Fix clearance of Tx/Rx ring when releasing a call
 
--- 
-With Best Regards,
-Andy Shevchenko
+Edwin Peer (1):
+      net: watchdog: hold device global xmit lock during tx disable
+
+Eric Dumazet (1):
+      net: gro: do not keep too many GRO packets in napi->rx_list
+
+Fangrui Song (1):
+      firmware_loader: align .builtin_fw to 8
+
+Felipe Balbi (1):
+      usb: dwc3: ulpi: fix checkpatch warning
+
+Florian Westphal (1):
+      netfilter: conntrack: skip identical origin tuple in same zone only
+
+Greg Kroah-Hartman (1):
+      Linux 5.4.99
+
+Hans de Goede (1):
+      platform/x86: hp-wmi: Disable tablet-mode reporting by default
+
+Jernej Skrabec (4):
+      drm/sun4i: tcon: set sync polarity for tcon1 channel
+      drm/sun4i: Fix H6 HDMI PHY configuration
+      drm/sun4i: dw-hdmi: Fix max. frequency for H6
+      clk: sunxi-ng: mp: fix parent rate change flag check
+
+Jozsef Kadlecsik (1):
+      netfilter: xt_recent: Fix attempt to update deleted entry
+
+Juergen Gross (1):
+      xen/netback: avoid race in xenvif_rx_ring_slots_available()
+
+Julien Grall (1):
+      arm/xen: Don't probe xenbus as part of an early initcall
+
+Lin Feng (1):
+      bfq-iosched: Revert "bfq: Fix computation of shallow depth"
+
+Lorenzo Bianconi (1):
+      mt76: dma: fix a possible memory leak in mt76_add_fragment()
+
+Marc Zyngier (1):
+      arm64: dts: rockchip: Fix PCIe DT properties on rk3399
+
+Mark Rutland (1):
+      lkdtm: don't move ctors to .rodata
+
+Maxime Ripard (1):
+      drm/vc4: hvs: Fix buffer overflow with the dlist handling
+
+Miklos Szeredi (3):
+      ovl: perform vfs_getxattr() with mounter creds
+      cap: fix conversions on getxattr
+      ovl: expand warning in ovl_d_real()
+
+Mohammad Athari Bin Ismail (1):
+      net: stmmac: set TxQ mode back to DCB after disabling CBS
+
+NeilBrown (1):
+      net: fix iteration for sctp transport seq_files
+
+Nikita Shubin (2):
+      gpio: ep93xx: fix BUG_ON port F usage
+      gpio: ep93xx: Fix single irqchip with multi gpiochips
+
+Norbert Slusarek (1):
+      net/vmw_vsock: improve locking in vsock_connect_timeout()
+
+Odin Ugedal (1):
+      cgroup: fix psi monitor for root cgroup
+
+Pablo Neira Ayuso (1):
+      netfilter: nftables: fix possible UAF over chains from packet path in netns
+
+Randy Dunlap (1):
+      h8300: fix PREEMPTION build, TI_PRE_COUNT undefined
+
+Russell King (2):
+      ARM: ensure the signal page contains defined contents
+      ARM: kexec: fix oops after TLB are invalidated
+
+Sabyrzhan Tasbolatov (2):
+      net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
+      net/qrtr: restrict user-controlled length in qrtr_tun_write_iter()
+
+Serge Semin (1):
+      usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
+
+Stefano Garzarella (2):
+      vsock/virtio: update credit only if socket is not closed
+      vsock: fix locking in vsock_shutdown()
+
+Steven Rostedt (VMware) (2):
+      tracing: Do not count ftrace events in top level enable output
+      tracing: Check length before giving out the filter buffer
+
+Sukadev Bhattiprolu (1):
+      ibmvnic: Clear failover_pending if unable to schedule
+
+Sung Lee (1):
+      drm/amd/display: Add more Clock Sources to DCN2.1
+
+Sven Auhagen (1):
+      netfilter: flowtable: fix tcp and udp header checksum update
+
+Thomas Gleixner (1):
+      vmlinux.lds.h: Create section for protection against instrumentation
+
+Tony Lindgren (1):
+      ARM: OMAP2+: Fix suspcious RCU usage splats for omap_enter_idle_coupled
+
+Vadim Fedorenko (1):
+      selftests: txtimestamp: fix compilation issue
+
+Victor Lu (3):
+      drm/amd/display: Fix dc_sink kref count in emulated_link_detect
+      drm/amd/display: Free atomic state after drm_atomic_commit
+      drm/amd/display: Decrement refcount of dc_sink before reassignment
+
+Vladimir Oltean (2):
+      net: enetc: initialize the RFS and RSS memories
+      net: dsa: call teardown method on probe failure
+
+Willem de Bruijn (1):
+      udp: fix skb_copy_and_csum_datagram with odd segment sizes
+
+Yufeng Mo (1):
+      net: hns3: add a check for queue_id in hclge_reset_vf_queue()
+
