@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37EF631E0AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:45:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DE131E0B5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhBQUoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 15:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbhBQUos (ORCPT
+        id S234582AbhBQUqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 15:46:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27075 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234469AbhBQUpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:44:48 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58052C061574;
-        Wed, 17 Feb 2021 12:44:06 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 92D2E1F44763
-Message-ID: <b7338896a344ac06f41d782b6b56db227e359348.camel@collabora.com>
-Subject: Re: [PATCH v1 18/18] arm64: dts: imx8mq: Add node to G2 hardware
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
-        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
-        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-Date:   Wed, 17 Feb 2021 17:43:53 -0300
-In-Reply-To: <20210217080306.157876-19-benjamin.gaignard@collabora.com>
-References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
-         <20210217080306.157876-19-benjamin.gaignard@collabora.com>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Wed, 17 Feb 2021 15:45:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613594664;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wKnX6l35uYOYGVmyrGbS8NnU2DNKyn8085j6FnLGtks=;
+        b=Ut2uvwAocxeg33/Mf7kERk58dfx5s85hCRM6AeSiqXCuIouVlUA0PuDGZ2Nz0ai4j+DbqU
+        eupM/pp9SnXV6Vt/qPqWCzUNxGQEUEvZiNw7IZeBS9cEEMllmJeWmOoNRKt+ueXRW6ev9Y
+        8E+ofOG0bkM+4Sc60KTJVHjHR30lrEk=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-164-v7r6bm-GNJiOB2ZTLgZLfQ-1; Wed, 17 Feb 2021 15:44:21 -0500
+X-MC-Unique: v7r6bm-GNJiOB2ZTLgZLfQ-1
+Received: by mail-qk1-f199.google.com with SMTP id z19so11662949qki.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 12:44:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wKnX6l35uYOYGVmyrGbS8NnU2DNKyn8085j6FnLGtks=;
+        b=R8vZSx8wYkglHkem+s6RFWocBld1TF0cOPuD6jBNqHJSfXVHSPOT4t2qcHE+AH4sCP
+         5SvOqienAhZRtbUMMpaNIgesznUWL7IFBU4VMn4y0ScNBnfOtekXqet4AOwfRZPfYKt0
+         PCPNRuY7Gvr+h7k/L8wJv13ZOdn5k8BgxfjUfuRhyL0+uTApnVp8ad7VJbm4DFfpAwDS
+         qSBmLTAhse4vEYcnDy0dfRrd92+k8oKdJYqZUI+iveMNneFomYDQS1BTD5yqnn8YZaO4
+         WVm1h6NX1tLzQDQHT/nJVwoLjbAkvTEjNU2URmMVqmyg8BSwq/W1+CycPfkhrpV2WIVm
+         z+UQ==
+X-Gm-Message-State: AOAM531hXUanOAjwDXLO7CrDyP/s9BLLGiivXEtJ5wi3IhXbF9lW9kvw
+        Uxw60zkgdEjwccgyBE+vLVcanA48oPl12lGn+PmZRkpGrxjnvR/VgQ0Cm4mrYB8UOjibURy7JOL
+        rzAG+qg3J+nl0ZBjXNu2kTdta
+X-Received: by 2002:ac8:4c8e:: with SMTP id j14mr1162189qtv.92.1613594660607;
+        Wed, 17 Feb 2021 12:44:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw41/8jcc85nh57uJJp6w4BmUxYj45HaRdC7P+WmAiuC/RN7+9paF6jxDr68f7JF00mqhPc1g==
+X-Received: by 2002:ac8:4c8e:: with SMTP id j14mr1162168qtv.92.1613594660352;
+        Wed, 17 Feb 2021 12:44:20 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id f9sm2440561qkm.28.2021.02.17.12.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 12:44:19 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     peterx@redhat.com, Axel Rasmussen <axelrasmussen@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>
+Subject: [PATCH v2 0/4] hugetlb: Disable huge pmd unshare for uffd-wp
+Date:   Wed, 17 Feb 2021 15:44:14 -0500
+Message-Id: <20210217204418.54259-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-17 at 09:03 +0100, Benjamin Gaignard wrote:
-> Split VPU node in two: one for G1 and one for G2 since they are
-> different hardware blocks.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 43 +++++++++++++++++------
->  1 file changed, 33 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index d9d9efc8592d..3cab3f0b9131 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -1287,17 +1287,16 @@ vpu_reset: vpu-reset@38320000 {
->                         #reset-cells = <1>;
->                 };
->  
-> -               vpu: video-codec@38300000 {
-> +               vpu_g1: video-codec@38300000 {
->                         compatible = "nxp,imx8mq-vpu";
-> -                       reg = <0x38300000 0x10000>,
-> -                             <0x38310000 0x10000>;
-> -                       reg-names = "g1", "g2";
-> -                       interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
-> -                                    <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-> -                       interrupt-names = "g1", "g2";
-> +                       reg = <0x38300000 0x10000>;
-> +                       reg-names = "g1";
-> +                       interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "g1";
->                         clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
-> -                                <&clk IMX8MQ_CLK_VPU_G2_ROOT>;
-> -                       clock-names = "g1", "g2";
-> +                                <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-> +                                <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-> +                       clock-names = "g1", "g2", "bus";
-
-How come the G1 block needs the G2 clock?
-
->                         assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
->                                           <&clk IMX8MQ_CLK_VPU_G2>,
->                                           <&clk IMX8MQ_CLK_VPU_BUS>,
-> @@ -1306,12 +1305,36 @@ vpu: video-codec@38300000 {
->                                                  <&clk IMX8MQ_VPU_PLL_OUT>,
->                                                  <&clk IMX8MQ_SYS1_PLL_800M>,
->                                                  <&clk IMX8MQ_VPU_PLL>;
-> -                       assigned-clock-rates = <600000000>, <600000000>,
-> +                       assigned-clock-rates = <600000000>, <300000000>,
->                                                <800000000>, <0>;
->                         resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G1>;
->                         power-domains = <&pgc_vpu>;
->                 };
->  
-> +               vpu_g2: video-codec@38310000 {
-> +                       compatible = "nxp,imx8mq-vpu-g2";
-> +                       reg = <0x38310000 0x10000>;
-> +                       reg-names = "g2";
-> +                       interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "g2";
-> +                       clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
-> +                                <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-
-Ditto, the G2 block needs the G1 clock?
-
-Thanks,
-Ezequiel
+v2:=0D
+- patch 4: move hugetlb_unshare_all_pmds() into mm/hugetlb.c, so it can be =
+used=0D
+  even outside userfaultfd.c=0D
+=0D
+This series tries to disable huge pmd unshare of hugetlbfs backed memory fo=
+r=0D
+uffd-wp.  Although uffd-wp of hugetlbfs is still during rfc stage, the idea=
+ of=0D
+this series may be needed for multiple tasks (Axel's uffd minor fault serie=
+s,=0D
+and Mike's soft dirty series), so I picked it out from the larger series.=0D
+=0D
+References works:=0D
+=0D
+Uffd shmem+hugetlbfs rfc:=0D
+https://lore.kernel.org/lkml/20210115170907.24498-1-peterx@redhat.com/=0D
+=0D
+Uffd minor mode for hugetlbfs:=0D
+https://lore.kernel.org/lkml/20210212215403.3457686-1-axelrasmussen@google.=
+com/=0D
+=0D
+Soft dirty for hugetlbfs:=0D
+https://lore.kernel.org/lkml/20210211000322.159437-1-mike.kravetz@oracle.co=
+m/=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (4):=0D
+  hugetlb: Pass vma into huge_pte_alloc() and huge_pmd_share()=0D
+  hugetlb/userfaultfd: Forbid huge pmd sharing when uffd enabled=0D
+  mm/hugetlb: Move flush_hugetlb_tlb_range() into hugetlb.h=0D
+  hugetlb/userfaultfd: Unshare all pmds for hugetlbfs when register wp=0D
+=0D
+ arch/arm64/mm/hugetlbpage.c   |  7 ++-=0D
+ arch/ia64/mm/hugetlbpage.c    |  3 +-=0D
+ arch/mips/mm/hugetlbpage.c    |  4 +-=0D
+ arch/parisc/mm/hugetlbpage.c  |  2 +-=0D
+ arch/powerpc/mm/hugetlbpage.c |  3 +-=0D
+ arch/s390/mm/hugetlbpage.c    |  2 +-=0D
+ arch/sh/mm/hugetlbpage.c      |  2 +-=0D
+ arch/sparc/mm/hugetlbpage.c   |  1 +=0D
+ fs/userfaultfd.c              |  4 ++=0D
+ include/linux/hugetlb.h       | 16 +++++-=0D
+ include/linux/userfaultfd_k.h |  9 ++++=0D
+ mm/hugetlb.c                  | 94 +++++++++++++++++++++++++++--------=0D
+ mm/userfaultfd.c              |  2 +-=0D
+ 13 files changed, 114 insertions(+), 35 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
