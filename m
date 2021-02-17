@@ -2,20 +2,17 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164A631DA64
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5A631DA49
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbhBQN2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232894AbhBQNS4 (ORCPT
+        id S230378AbhBQNXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:23:17 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45252 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232839AbhBQNSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:18:56 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C751C061797;
-        Wed, 17 Feb 2021 05:17:38 -0800 (PST)
-Date:   Wed, 17 Feb 2021 13:17:35 -0000
+        Wed, 17 Feb 2021 08:18:18 -0500
+Date:   Wed, 17 Feb 2021 13:17:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1613567856;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -23,12 +20,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vOFuCz4fR9zyc3oqbFnResD0AJQp8DdnXViMVvKDK20=;
-        b=I6ro56W8r65kUg+1twtHD1r4oEXjO6+fOH63/huz1pmsreUMZdCtYbHd/0qTsjboBcg93W
-        RVtlYdZ20aibkLKZGxLXIeOcEu7gKxvY7xVsdKJodGF+LgKdIVX4PSfZMnBVgZOlJ4IV/a
-        7xh0mcXT1Et0E/fR/fN+hExrlOf5Rh2o2Q7vXOs5zJ2+rsNcU96BITvfVm6S3ijTwJwG+0
-        fG9Pev055JahWuBxqpasil7/pf6HDx35qUODPJX3OId/Er60CeUpvJRY80A5r+SUex0UWx
-        buefghJ7cIMSpf/MVXLgygbknLHCczG2uFJzDpbzb9BSpGmqWBXSuDP9k2c/gw==
+        bh=qpAC4avhCQfBak38YIGESeWZ1qr62c8rol0Lyq8c7Ec=;
+        b=WT+FUuU5niNSlyV4nveaJLrH22u2gknpCp5MMiKmZRC0jwpG8u8V9USBDPP9se7AijBGjd
+        1GSeNqHAI4Pxzpo9SicuteQFUCBhahrA4vBOXYAUgBhfr+33An8m+HZTdIDI+/NvrWnQX+
+        O0sBmvyer8Oxdd32EoGqizxlChVNv2XzyZ9xt1pFSMmvRl4PQwjA94PTdAJ3XaqPiTs6vy
+        Msxj+UUZjGuMqTQk+JIUA0HRtZ/8x7fmTDQVQwe/4SMce0EMUGQC5Pwvcx690UVqSom2oH
+        C05/Z8a2E14/6ZV+ehoFGEk9oD3sOh+4zIjUiDCqHEdzJRM7Efsm34E+b5Ohcw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1613567856;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -36,22 +33,22 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vOFuCz4fR9zyc3oqbFnResD0AJQp8DdnXViMVvKDK20=;
-        b=LVHl6JrhOkuCP9T29UAPKpvl18/YLiSjFqiyPWYaNp+Qbp5+TFO+7hsRfu4wdpbWLtWjEU
-        ZC4RYH3ESjTK70BQ==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+        bh=qpAC4avhCQfBak38YIGESeWZ1qr62c8rol0Lyq8c7Ec=;
+        b=rdhe5X9rzYq1IWMnuZmygKDGx9GnGeRjT946CRxsvmXAwhzl/uENEoKj4ZjQt/fEsjdwaC
+        EKlQ1P2BQSyv51AA==
+From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] static_call/x86: Add __static_call_return0()
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
+Subject: [tip: sched/core] sched/core: Update task_prio() function header
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210118141223.123667-2-frederic@kernel.org>
-References: <20210118141223.123667-2-frederic@kernel.org>
+In-Reply-To: <20210128131040.296856-4-dietmar.eggemann@arm.com>
+References: <20210128131040.296856-4-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-Message-ID: <161356785556.20312.8835577071462298948.tip-bot2@tip-bot2>
+Message-ID: <161356785604.20312.11097939924109968883.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,136 +59,46 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     3f2a8fc4b15de18644e8a80a09edda168676e22c
-Gitweb:        https://git.kernel.org/tip/3f2a8fc4b15de18644e8a80a09edda168676e22c
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 18 Jan 2021 15:12:16 +01:00
+Commit-ID:     c541bb7835a306cdbbe8abbdf4e4df507e0ca27a
+Gitweb:        https://git.kernel.org/tip/c541bb7835a306cdbbe8abbdf4e4df507e0ca27a
+Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
+AuthorDate:    Thu, 28 Jan 2021 14:10:40 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 17 Feb 2021 14:08:43 +01:00
+CommitterDate: Wed, 17 Feb 2021 14:08:30 +01:00
 
-static_call/x86: Add __static_call_return0()
+sched/core: Update task_prio() function header
 
-Provide a stub function that return 0 and wire up the static call site
-patching to replace the CALL with a single 5 byte instruction that
-clears %RAX, the return value register.
+The description of the RT offset and the values for 'normal' tasks needs
+update. Moreover there are DL tasks now.
+task_prio() has to stay like it is to guarantee compatibility with the
+/proc/<pid>/stat priority field:
 
-The function can be cast to any function pointer type that has a
-single %RAX return (including pointers). Also provide a version that
-returns an int for convenience. We are clearing the entire %RAX register
-in any case, whether the return value is 32 or 64 bits, since %RAX is
-always a scratch register anyway.
+  # cat /proc/<pid>/stat | awk '{ print $18; }'
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20210118141223.123667-2-frederic@kernel.org
+Link: https://lkml.kernel.org/r/20210128131040.296856-4-dietmar.eggemann@arm.com
 ---
- arch/x86/kernel/static_call.c | 17 +++++++++++++++--
- include/linux/static_call.h   | 12 ++++++++++++
- kernel/static_call.c          |  5 +++++
- 3 files changed, 32 insertions(+), 2 deletions(-)
+ kernel/sched/core.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/static_call.c b/arch/x86/kernel/static_call.c
-index ca9a380..9442c41 100644
---- a/arch/x86/kernel/static_call.c
-+++ b/arch/x86/kernel/static_call.c
-@@ -11,14 +11,26 @@ enum insn_type {
- 	RET = 3,  /* tramp / site cond-tail-call */
- };
- 
-+/*
-+ * data16 data16 xorq %rax, %rax - a single 5 byte instruction that clears %rax
-+ * The REX.W cancels the effect of any data16.
-+ */
-+static const u8 xor5rax[] = { 0x66, 0x66, 0x48, 0x31, 0xc0 };
-+
- static void __ref __static_call_transform(void *insn, enum insn_type type, void *func)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f0b0b67..4afbdd2 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5616,8 +5616,12 @@ SYSCALL_DEFINE1(nice, int, increment)
+  * @p: the task in question.
+  *
+  * Return: The priority value as seen by users in /proc.
+- * RT tasks are offset by -200. Normal tasks are centered
+- * around 0, value goes from -16 to +15.
++ *
++ * sched policy         return value   kernel prio    user prio/nice
++ *
++ * normal, batch, idle     [0 ... 39]  [100 ... 139]          0/[-20 ... 19]
++ * fifo, rr             [-2 ... -100]     [98 ... 0]  [1 ... 99]
++ * deadline                     -101             -1           0
+  */
+ int task_prio(const struct task_struct *p)
  {
-+	const void *emulate = NULL;
- 	int size = CALL_INSN_SIZE;
- 	const void *code;
- 
- 	switch (type) {
- 	case CALL:
- 		code = text_gen_insn(CALL_INSN_OPCODE, insn, func);
-+		if (func == &__static_call_return0) {
-+			emulate = code;
-+			code = &xor5rax;
-+		}
-+
- 		break;
- 
- 	case NOP:
-@@ -41,7 +53,7 @@ static void __ref __static_call_transform(void *insn, enum insn_type type, void 
- 	if (unlikely(system_state == SYSTEM_BOOTING))
- 		return text_poke_early(insn, code, size);
- 
--	text_poke_bp(insn, code, size, NULL);
-+	text_poke_bp(insn, code, size, emulate);
- }
- 
- static void __static_call_validate(void *insn, bool tail)
-@@ -54,7 +66,8 @@ static void __static_call_validate(void *insn, bool tail)
- 			return;
- 	} else {
- 		if (opcode == CALL_INSN_OPCODE ||
--		    !memcmp(insn, ideal_nops[NOP_ATOMIC5], 5))
-+		    !memcmp(insn, ideal_nops[NOP_ATOMIC5], 5) ||
-+		    !memcmp(insn, xor5rax, 5))
- 			return;
- 	}
- 
-diff --git a/include/linux/static_call.h b/include/linux/static_call.h
-index a2c0645..bd6735d 100644
---- a/include/linux/static_call.h
-+++ b/include/linux/static_call.h
-@@ -142,6 +142,8 @@ extern void __static_call_update(struct static_call_key *key, void *tramp, void 
- extern int static_call_mod_init(struct module *mod);
- extern int static_call_text_reserved(void *start, void *end);
- 
-+extern long __static_call_return0(void);
-+
- #define DEFINE_STATIC_CALL(name, _func)					\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
-@@ -206,6 +208,11 @@ static inline int static_call_text_reserved(void *start, void *end)
- 	return 0;
- }
- 
-+static inline long __static_call_return0(void)
-+{
-+	return 0;
-+}
-+
- #define EXPORT_STATIC_CALL(name)					\
- 	EXPORT_SYMBOL(STATIC_CALL_KEY(name));				\
- 	EXPORT_SYMBOL(STATIC_CALL_TRAMP(name))
-@@ -222,6 +229,11 @@ struct static_call_key {
- 	void *func;
- };
- 
-+static inline long __static_call_return0(void)
-+{
-+	return 0;
-+}
-+
- #define DEFINE_STATIC_CALL(name, _func)					\
- 	DECLARE_STATIC_CALL(name, _func);				\
- 	struct static_call_key STATIC_CALL_KEY(name) = {		\
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 84565c2..0bc11b5 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -438,6 +438,11 @@ int __init static_call_init(void)
- }
- early_initcall(static_call_init);
- 
-+long __static_call_return0(void)
-+{
-+	return 0;
-+}
-+
- #ifdef CONFIG_STATIC_CALL_SELFTEST
- 
- static int func_a(int x)
