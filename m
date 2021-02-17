@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AA931D995
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BBF31D998
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:37:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232727AbhBQMfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:35:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27440 "EHLO
+        id S232748AbhBQMfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:35:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40791 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232661AbhBQMdw (ORCPT
+        by vger.kernel.org with ESMTP id S232675AbhBQMdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:33:52 -0500
+        Wed, 17 Feb 2021 07:33:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613565145;
+        s=mimecast20190719; t=1613565147;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PyW7/aPT/CmxAFFjwwcxZ8Yi1YDWx8y+ATOQUU199Ts=;
-        b=dO0RjrfIU5M7N+ghNDnA5FgvbplWrtP3Xol2S6Oj/VP3VZYFYcYmjlhy/zNgH5eUv07E3y
-        g4suj0V53U+RzTynrFmTbS9wTKRjV+Z95ZEA1AXXjNH2Ve8WsOXprjyACrHmUCsl+zwQNJ
-        BcA66lHkExsh4jABmcY8Zlv1jrj31F8=
+        bh=PrAFBJvVVYODkUICutXeBfli8yoFz//LCVZCLaIAVbA=;
+        b=S85O3IDx61sXrJvrS74VFHfO7IY8+KAO61j85gajurx0UPgR2WbPiQ4vejOJDRBTuLjDZe
+        Ho7lJFQQcWn7ODM6BBdmLdOyv8cDgiLGsec44Lbamx1qtd5DRMI7jKFns+zqJPtrZF4tzr
+        J7/qInH/4TtwJ5RQvoTPt3Lei8RNnOY=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-417-YbH5p-s2MeqaL7ox8w8tjg-1; Wed, 17 Feb 2021 07:32:24 -0500
-X-MC-Unique: YbH5p-s2MeqaL7ox8w8tjg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-517-En2lN0AvPHWyb8kfuG3KOg-1; Wed, 17 Feb 2021 07:32:25 -0500
+X-MC-Unique: En2lN0AvPHWyb8kfuG3KOg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4653874982;
-        Wed, 17 Feb 2021 12:32:22 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 475E21020C21;
+        Wed, 17 Feb 2021 12:32:23 +0000 (UTC)
 Received: from sirius.home.kraxel.org (ovpn-114-184.ams2.redhat.com [10.36.114.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AAE4060C5F;
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 008251349A;
         Wed, 17 Feb 2021 12:32:19 +0000 (UTC)
 Received: by sirius.home.kraxel.org (Postfix, from userid 1000)
-        id CAF5A18003BC; Wed, 17 Feb 2021 13:32:14 +0100 (CET)
+        id EA60818003BD; Wed, 17 Feb 2021 13:32:14 +0100 (CET)
 From:   Gerd Hoffmann <kraxel@redhat.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Gerd Hoffmann <kraxel@redhat.com>,
@@ -46,55 +46,110 @@ Cc:     Gerd Hoffmann <kraxel@redhat.com>,
         VIRTUAL GPU),
         spice-devel@lists.freedesktop.org (open list:DRM DRIVER FOR QXL VIRTUAL
         GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 08/11] drm/qxl: fix monitors object vmap
-Date:   Wed, 17 Feb 2021 13:32:10 +0100
-Message-Id: <20210217123213.2199186-9-kraxel@redhat.com>
+Subject: [PATCH v2 09/11] drm/qxl: move shadow handling to new qxl_prepare_shadow()
+Date:   Wed, 17 Feb 2021 13:32:11 +0100
+Message-Id: <20210217123213.2199186-10-kraxel@redhat.com>
 In-Reply-To: <20210217123213.2199186-1-kraxel@redhat.com>
 References: <20210217123213.2199186-1-kraxel@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the correct vmap variant.  We don't hold a reservation here,
-so we can't use the _locked variant.  We can drop the pin because
-qxl_bo_vmap will do that for us.
+Pure code motion, no functional change.
 
 Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 ---
- drivers/gpu/drm/qxl/qxl_display.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/qxl/qxl_display.c | 61 +++++++++++++++++--------------
+ 1 file changed, 34 insertions(+), 27 deletions(-)
 
 diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
-index bfcc93089a94..f106da917863 100644
+index f106da917863..b315d7484e21 100644
 --- a/drivers/gpu/drm/qxl/qxl_display.c
 +++ b/drivers/gpu/drm/qxl/qxl_display.c
-@@ -1159,12 +1159,10 @@ int qxl_create_monitors_object(struct qxl_device *qdev)
+@@ -771,13 +771,45 @@ static void qxl_calc_dumb_shadow(struct qxl_device *qdev,
+ 		DRM_DEBUG("%dx%d\n", surf->width, surf->height);
+ }
+ 
++static void qxl_prepare_shadow(struct qxl_device *qdev, struct qxl_bo *user_bo,
++			       int crtc_index)
++{
++	struct qxl_surface surf;
++
++	qxl_update_dumb_head(qdev, crtc_index,
++			     user_bo);
++	qxl_calc_dumb_shadow(qdev, &surf);
++	if (!qdev->dumb_shadow_bo ||
++	    qdev->dumb_shadow_bo->surf.width  != surf.width ||
++	    qdev->dumb_shadow_bo->surf.height != surf.height) {
++		if (qdev->dumb_shadow_bo) {
++			drm_gem_object_put
++				(&qdev->dumb_shadow_bo->tbo.base);
++			qdev->dumb_shadow_bo = NULL;
++		}
++		qxl_bo_create(qdev, surf.height * surf.stride,
++			      true, true, QXL_GEM_DOMAIN_SURFACE, 0,
++			      &surf, &qdev->dumb_shadow_bo);
++	}
++	if (user_bo->shadow != qdev->dumb_shadow_bo) {
++		if (user_bo->shadow) {
++			qxl_bo_unpin(user_bo->shadow);
++			drm_gem_object_put
++				(&user_bo->shadow->tbo.base);
++			user_bo->shadow = NULL;
++		}
++		drm_gem_object_get(&qdev->dumb_shadow_bo->tbo.base);
++		user_bo->shadow = qdev->dumb_shadow_bo;
++		qxl_bo_pin(user_bo->shadow);
++	}
++}
++
+ static int qxl_plane_prepare_fb(struct drm_plane *plane,
+ 				struct drm_plane_state *new_state)
+ {
+ 	struct qxl_device *qdev = to_qxl(plane->dev);
+ 	struct drm_gem_object *obj;
+ 	struct qxl_bo *user_bo;
+-	struct qxl_surface surf;
+ 
+ 	if (!new_state->fb)
+ 		return 0;
+@@ -787,32 +819,7 @@ static int qxl_plane_prepare_fb(struct drm_plane *plane,
+ 
+ 	if (plane->type == DRM_PLANE_TYPE_PRIMARY &&
+ 	    user_bo->is_dumb) {
+-		qxl_update_dumb_head(qdev, new_state->crtc->index,
+-				     user_bo);
+-		qxl_calc_dumb_shadow(qdev, &surf);
+-		if (!qdev->dumb_shadow_bo ||
+-		    qdev->dumb_shadow_bo->surf.width  != surf.width ||
+-		    qdev->dumb_shadow_bo->surf.height != surf.height) {
+-			if (qdev->dumb_shadow_bo) {
+-				drm_gem_object_put
+-					(&qdev->dumb_shadow_bo->tbo.base);
+-				qdev->dumb_shadow_bo = NULL;
+-			}
+-			qxl_bo_create(qdev, surf.height * surf.stride,
+-				      true, true, QXL_GEM_DOMAIN_SURFACE, 0,
+-				      &surf, &qdev->dumb_shadow_bo);
+-		}
+-		if (user_bo->shadow != qdev->dumb_shadow_bo) {
+-			if (user_bo->shadow) {
+-				qxl_bo_unpin(user_bo->shadow);
+-				drm_gem_object_put
+-					(&user_bo->shadow->tbo.base);
+-				user_bo->shadow = NULL;
+-			}
+-			drm_gem_object_get(&qdev->dumb_shadow_bo->tbo.base);
+-			user_bo->shadow = qdev->dumb_shadow_bo;
+-			qxl_bo_pin(user_bo->shadow);
+-		}
++		qxl_prepare_shadow(qdev, user_bo, new_state->crtc->index);
  	}
- 	qdev->monitors_config_bo = gem_to_qxl_bo(gobj);
  
--	ret = qxl_bo_pin(qdev->monitors_config_bo);
-+	ret = qxl_bo_vmap(qdev->monitors_config_bo, &map);
- 	if (ret)
- 		return ret;
- 
--	qxl_bo_vmap_locked(qdev->monitors_config_bo, &map);
--
- 	qdev->monitors_config = qdev->monitors_config_bo->kptr;
- 	qdev->ram_header->monitors_config =
- 		qxl_bo_physical_address(qdev, qdev->monitors_config_bo, 0);
-@@ -1189,8 +1187,7 @@ int qxl_destroy_monitors_object(struct qxl_device *qdev)
- 	qdev->monitors_config = NULL;
- 	qdev->ram_header->monitors_config = 0;
- 
--	qxl_bo_vunmap_locked(qdev->monitors_config_bo);
--	ret = qxl_bo_unpin(qdev->monitors_config_bo);
-+	ret = qxl_bo_vunmap(qdev->monitors_config_bo);
- 	if (ret)
- 		return ret;
- 
+ 	return qxl_bo_pin(user_bo);
 -- 
 2.29.2
 
