@@ -2,129 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FC431E32A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:44:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302AD31E330
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233119AbhBQXn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 18:43:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46198 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233739AbhBQXnN (ORCPT
+        id S233182AbhBQXpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 18:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232191AbhBQXpF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:43:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613605306;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J3M2KhFv949MzTChyZ6whg+sl8JiaihVgRYmFFexUMY=;
-        b=gJnF7y7W4PRgDZD4RiZdvdDcPI885OxvhDjyxPuSW14uPYXTqz5CiP8mm2oYWB419sS64i
-        Yk92G5NEqQS3SHlruH2hYx28rGrnr+xbR4VCR2pksxY8bOcgc57G0fg5xemWQo1kAIYajC
-        fnuS+HtLEfYvrmTAjMa+IkRTB/nfPf0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-444-jzJXKHZYOXi5LExsQ0q2iA-1; Wed, 17 Feb 2021 18:41:44 -0500
-X-MC-Unique: jzJXKHZYOXi5LExsQ0q2iA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91A26BBEE2;
-        Wed, 17 Feb 2021 23:41:42 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5DC8F648A2;
-        Wed, 17 Feb 2021 23:41:34 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 18:41:31 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Phil Sutter <phil@nwl.cc>, LKML <linux-kernel@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
-        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
- events
-Message-ID: <20210217234131.GN3141668@madcap2.tricolour.ca>
-References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
- <20210211151606.GX3158@orbyte.nwl.cc>
- <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
- <20210211202628.GP2015948@madcap2.tricolour.ca>
- <20210211220930.GC2766@breakpoint.cc>
+        Wed, 17 Feb 2021 18:45:05 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7279C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 15:44:24 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id w18so28375pfu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 15:44:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=PqTK2asE5Pm0G1XwTNldGeSNxyz+U3YMDodiNkSaEFM=;
+        b=lrepYEvD+DGdM9L3CQikCjNFhA6vT3lgF22RN5cNbY1Jurn6s1Zjnwl5zrfzei/IZx
+         oHan1v0OZl1gy3wQ0q53vHTzakuGIlWNsvYM8u6gKrbk8vMVbzavu5tU4VViONTGCYVu
+         pehRNsGa/AUwhxFmWWboE7IggKpkKbqIEN7xo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=PqTK2asE5Pm0G1XwTNldGeSNxyz+U3YMDodiNkSaEFM=;
+        b=qd0Yo3lxdcUvp9UG/wa6ywZ7Zg27lqI0m02Ivy43pulhpkTgdB8dZhoDSGgpApStjL
+         lGV5JMXZtoD8jYF6p2pnArWmY6EsgOXwsZL7fD+jhkpWDe3RMpzz/4UCVb65t0mjnA0a
+         fRTBqJca2KLXYKKjypwI6VwEpIQDWfau67K30G4Dp4g5ws1iBrSt4gth4Rr3FZAEnx7r
+         ERbX84Q+Q03snXQNjxxi3cggPTWZ2St9cqNWp5MbbaOJhGFAFDSeohJjKW1d0DQw2RWr
+         jRag+/qhFq0dClvzIfnPehuLjb8OYFGOSPNetn/36UmsnepX53lT3JHabYnOaPdgoavu
+         I26A==
+X-Gm-Message-State: AOAM5318AM+1Dr4+T0BAAu/58bOwUFaFmt5kZziROq5dW6G2bILPX4cY
+        1eIru4KvFfLBQcaBOZsm8DZGlRjKYfkQng==
+X-Google-Smtp-Source: ABdhPJxCD7mhiaN4h0nKY9qB4dTxH7maWpkjGIJyIc7l8y/Twj++X2M3xwrtywbDup2VgSc5IvPErw==
+X-Received: by 2002:a63:5301:: with SMTP id h1mr1618756pgb.180.1613605438147;
+        Wed, 17 Feb 2021 15:43:58 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:ec84:ed2b:a796:b756])
+        by smtp.gmail.com with ESMTPSA id d12sm3342971pgm.83.2021.02.17.15.43.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 15:43:56 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210211220930.GC2766@breakpoint.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1613604031-27798-1-git-send-email-khsieh@codeaurora.org>
+References: <1613604031-27798-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis swing table
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Date:   Wed, 17 Feb 2021 15:43:55 -0800
+Message-ID: <161360543514.1254594.14314447256582277276@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-11 23:09, Florian Westphal wrote:
-> Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > > I personally would notify once per transaction. This is easy and quick.
-> > 
-> > This was the goal.  iptables was atomic.  nftables appears to no longer
-> > be so.  If I have this wrong, please show how that works.
-> 
-> nftables transactions are atomic, either the entire batch takes effect or not
-> at all.
-> 
-> The audit_log_nfcfg() calls got added to the the nft monitor infra which
-> is designed to allow userspace to follow the entire content of the
-> transaction log.
-> 
-> So, if its just a 'something was changed' event that is needed all of
-> them can be removed. ATM the audit_log_nfcfg() looks like this:
-> 
->         /* step 3. Start new generation, rules_gen_X now in use. */
->         net->nft.gencursor = nft_gencursor_next(net);
-> 
->         list_for_each_entry_safe(trans, next, &net->nft.commit_list, list) {
->                 switch (trans->msg_type) {
->                 case NFT_MSG_NEWTABLE:
-> 			audit_log_nfcfg();
-> 			...
-> 		case NFT_MSG_...
-> 			audit_log_nfcfg();
-> 	..
-> 	       	}
-> 
-> which gives an audit_log for every single change in the batch.
-> 
-> So, if just a summary is needed a single audit_log_nfcfg()
-> after 'step 3' and outside of the list_for_each_entry_safe() is all
-> that is needed.
+Quoting Kuogee Hsieh (2021-02-17 15:20:31)
+> Add hbr3_hbr2 voltage and premphasis swing table to support
+> HBR3 link rate.
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-qmp.c | 23 +++++++++++++++++++++--
+>  1 file changed, 21 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/p=
+hy-qcom-qmp.c
+> index 0939a9e..c920143 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> @@ -2965,6 +2965,20 @@ static void qcom_qmp_phy_dp_aux_init(struct qmp_ph=
+y *qphy)
+>                qphy->pcs + QSERDES_V3_DP_PHY_AUX_INTERRUPT_MASK);
+>  }
+> =20
+> +static const u8 qmp_dp_v3_pre_emphasis_hbr3_hbr2[4][4] =3D {
+> +        { 0x00, 0x0C, 0x15, 0x1A },
+> +        { 0x02, 0x0E, 0x16, 0xFF },
+> +        { 0x02, 0x11, 0xFF, 0xFF },
+> +        { 0x04, 0xFF, 0xFF, 0xFF }
 
-Ok, so it should not matter if it is before or after that
-list_for_each_entry_safe(), which could be used to collect that summary.
+Lowercase hex please.
 
-> If a summary is wanted as well one could fe. count the number of
-> transaction types in the batch, e.g. table adds, chain adds, rule
-> adds etc. and then log a summary count instead.
+> +};
+> +
+> +static const u8 qmp_dp_v3_voltage_swing_hbr3_hbr2[4][4] =3D {
+> +        { 0x02, 0x12, 0x16, 0x1A },
+> +        { 0x09, 0x19, 0x1F, 0xFF },
+> +        { 0x10, 0x1F, 0xFF, 0xFF },
+> +        { 0x1F, 0xFF, 0xFF, 0xFF }
+> +};
 
-The current fields are "table", "family", "entries", "op".
+Lowercase hex please.
 
-Could one batch change more than one table?  (I think it could?)
-
-It appears it can change more than one family.
-"family" is currently a single integer, so that might need to be changed
-to a list, or something to indicate multi-family.
-
-A batch can certainly change more than one chain, but that was already a
-bonus.
-
-"entries" would be the obvious place for the summary count.
-
-Listing all the ops seems a bit onerous.  Is there a hierarchy to the
-ops and if so, are they in that order in a batch or in nf_tables_commit()?
-It seems I'd need to filter out the NFT_MSG_GET_* ops.
-
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+> +
+>  static const u8 qmp_dp_v3_pre_emphasis_hbr_rbr[4][4] =3D {
+>         { 0x00, 0x0c, 0x14, 0x19 },
+>         { 0x00, 0x0b, 0x12, 0xff },
+> @@ -3000,8 +3014,13 @@ static void qcom_qmp_phy_configure_dp_tx(struct qm=
+p_phy *qphy)
+>                 drvr_en =3D 0x10;
+>         }
+> =20
+> -       voltage_swing_cfg =3D qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_=
+level];
+> -       pre_emphasis_cfg =3D qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_le=
+vel];
+> +       if (dp_opts->link_rate <=3D 2700) {
+> +               voltage_swing_cfg =3D qmp_dp_v3_voltage_swing_hbr_rbr[v_l=
+evel][p_level];
+> +               pre_emphasis_cfg =3D qmp_dp_v3_pre_emphasis_hbr_rbr[v_lev=
+el][p_level];
+> +       } else {
+> +               voltage_swing_cfg =3D qmp_dp_v3_voltage_swing_hbr3_hbr2[v=
+_level][p_level];
+> +               pre_emphasis_cfg =3D qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_l=
+evel][p_level];
+> +       }
+>
