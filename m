@@ -2,217 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4424F31E0E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0345931E0EA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:59:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbhBQU5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 15:57:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231766AbhBQU5g (ORCPT
+        id S233248AbhBQU6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 15:58:09 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8611 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231766AbhBQU6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:57:36 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF266C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 12:56:55 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id o10so17121528wru.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 12:56:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=SFShG9HSiA/a5wZPjw/2OI6suzBuDo/vPg1sGXiNPU4=;
-        b=uq+kvVIzeR3An4gN/CAYw6QE6pVQHn27D86IFwunejdmU2OjZaTb9XiR41vGvWVf1m
-         DksVLOj8BdFHTVsw2bj45IJjx43mEoGKUZA6z2RJ8uqSk/sjjs9qy/YvYTfc78kfmHKw
-         ur3Pwdw66rmu5Fo43k0P81tGop/9P/X9cep/Alz9YOKrijW7UIjvvnikPc5vPke+4zXc
-         oBsnCBHRKMjugKkcpV4PRP1ZwVB352IYfVqSk6lqqJtCp2DNfCCl0Fi3P+J0Ydy/z84l
-         cXjO9FMDbiHmosEuqU9+ZzFuSrBXaRZ+eUr4rk9bU5OtGytxWDGj7MwqEkWhh+/Uyc5Q
-         ADNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=SFShG9HSiA/a5wZPjw/2OI6suzBuDo/vPg1sGXiNPU4=;
-        b=tl+bXCxaQSQ7pH73wzalru5CdNEuaZad4DB+1VohSoHvPOhbV3TGhrfxPhqxrRkFsH
-         SiAZzsJ/XzTykbse8rSRZ0TVz+sIkVLe0YdplLzjiiQ0aJ9M73TvuIonLvCfxZyFx8d0
-         kotb376P3Q+xFxeUhJYvQXD8cQlztjS3qE6Yfop1z/Zqv6OW1cec5t3vsJJgGTLsUtK5
-         ennZjiRhszVDWwL6FcsPgT+2ENFgrNUkSRhtPcLy4HoT31kTijJhuiIM03lZR+WeDdzr
-         9Go3x3nOtxHKj5ShAnFB7HRrDN2Tcig3X1IENOz87qbnuGAkdks/snthAAdbLe44BSo+
-         an/w==
-X-Gm-Message-State: AOAM532YjbZJK2+a6X44XlCn8PTTte1VvCUG0G3rT9kyBujHhhu6PPhe
-        uey5tZyYQWpgfFTCAVkQPi+EnlGNvDbNSE71
-X-Google-Smtp-Source: ABdhPJzpzJFCBeHD/qAy4KRbvT1c+dX2xurE+gdmzIVLGnbTZurQCDQ/kd3T+GmwRfTjrwYjKetpJ1RUziqKPKwg
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:fc35:c4d:59c2:bb21])
- (user=andreyknvl job=sendgmr) by 2002:a05:600c:4314:: with SMTP id
- p20mr604956wme.52.1613595413677; Wed, 17 Feb 2021 12:56:53 -0800 (PST)
-Date:   Wed, 17 Feb 2021 21:56:32 +0100
-Message-Id: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] mm, kasan: don't poison boot memory
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 17 Feb 2021 15:58:06 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602d83360000>; Wed, 17 Feb 2021 12:57:26 -0800
+Received: from [10.2.55.242] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 17 Feb
+ 2021 20:57:25 +0000
+Subject: Re: [PATCH] mm: vmstat: add cma statistics
+To:     Minchan Kim <minchan@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        <surenb@google.com>, <joaodias@google.com>
+References: <20210217170025.512704-1-minchan@kernel.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <8036d8e6-8e96-7b4e-91c0-e1ae91b637e1@nvidia.com>
+Date:   Wed, 17 Feb 2021 12:57:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
+MIME-Version: 1.0
+In-Reply-To: <20210217170025.512704-1-minchan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613595446; bh=hI0hY92PVZ/Q8bLOHZtIMPTuj0DO35pgrbP+g6IycJk=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=f31UQ+734TU3Iut9TEFTyDhQ6PvmWIYjezGcPbIORNJCP39NI5Fph5I0kpRe72Bf/
+         UpKtyfwXEnAvDY+pv8butvZABcj2ACipE2xPBQwWFmCzx9DVMTh8fi1HhmbJIQfAsk
+         aeID8fnSAY7VLGN8ss7vxX/3x2y8nVKDn4ncGhBBC4U15nioCJar9pSCLl42rjSGNu
+         uh+xo9BsXK2wphoepTQyYnfDWznq6+AlXYD/dJwtGdswsQtXrO8IqcfB8Apxfb3xTY
+         Op0ply0O2UbEbYCnP9gHV+5uiaAt4xn0n5xU160AnUoUyGBTG0nSCeztKkerncRmBu
+         1npqpwcE9puZQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During boot, all non-reserved memblock memory is exposed to the buddy
-allocator. Poisoning all that memory with KASAN lengthens boot time,
-especially on systems with large amount of RAM. This patch makes
-page_alloc to not call kasan_free_pages() on all new memory.
+On 2/17/21 9:00 AM, Minchan Kim wrote:
+> Since CMA is used more widely, it's worth to have CMA
+> allocation statistics into vmstat. With it, we could
+> know how agressively system uses cma allocation and
+> how often it fails.
+> 
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> ---
+>   include/linux/vm_event_item.h |  3 +++
+>   mm/cma.c                      | 12 +++++++++---
+>   mm/vmstat.c                   |  4 ++++
+>   3 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+> index 18e75974d4e3..0c567014ce82 100644
+> --- a/include/linux/vm_event_item.h
+> +++ b/include/linux/vm_event_item.h
+> @@ -70,6 +70,9 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>   #endif
+>   #ifdef CONFIG_HUGETLB_PAGE
+>   		HTLB_BUDDY_PGALLOC, HTLB_BUDDY_PGALLOC_FAIL,
+> +#endif
+> +#ifdef CONFIG_CMA
+> +		CMA_ALLOC, CMA_ALLOC_FAIL,
 
-__free_pages_core() is used when exposing fresh memory during system
-boot and when onlining memory during hotplug. This patch adds a new
-FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok() through
-free_pages_prepare() from __free_pages_core().
+This seems wrong: here it's called "alloc", but in the output it's
+called "alloc success", and in the implementation it's clearly
+"alloc attempt" that is being counted.
 
-This has little impact on KASAN memory tracking.
+Once these are all made consistent, then the bug should naturally
+go away as part of that.
 
-Assuming that there are no references to newly exposed pages before they
-are ever allocated, there won't be any intended (but buggy) accesses to
-that memory that KASAN would normally detect.
+nit: I think the multiple items per line is a weak idea at best, even
+though it's used here already. Each item is important and needs to be
+visually compared to it's output item later. So one per line might
+have helped avoid mismatches, and I think we should change to that to
+encourage that trend.
 
-However, with this patch, KASAN stops detecting wild and large
-out-of-bounds accesses that happen to land on a fresh memory page that
-was never allocated. This is taken as an acceptable trade-off.
-
-All memory allocated normally when the boot is over keeps getting
-poisoned as usual.
-
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
----
- mm/page_alloc.c | 43 ++++++++++++++++++++++++++++++++-----------
- 1 file changed, 32 insertions(+), 11 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 0b55c9c95364..f10966e3b4a5 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -108,6 +108,17 @@ typedef int __bitwise fpi_t;
-  */
- #define FPI_TO_TAIL		((__force fpi_t)BIT(1))
- 
-+/*
-+ * Don't poison memory with KASAN.
-+ * During boot, all non-reserved memblock memory is exposed to the buddy
-+ * allocator. Poisoning all that memory lengthens boot time, especially on
-+ * systems with large amount of RAM. This flag is used to skip that poisoning.
-+ * Assuming that there are no references to those newly exposed pages before
-+ * they are ever allocated, this has little effect on KASAN memory tracking.
-+ * All memory allocated normally after boot gets poisoned as usual.
-+ */
-+#define FPI_SKIP_KASAN_POISON	((__force fpi_t)BIT(2))
-+
- /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
- static DEFINE_MUTEX(pcp_batch_high_lock);
- #define MIN_PERCPU_PAGELIST_FRACTION	(8)
-@@ -384,10 +395,14 @@ static DEFINE_STATIC_KEY_TRUE(deferred_pages);
-  * on-demand allocation and then freed again before the deferred pages
-  * initialization is done, but this is not likely to happen.
-  */
--static inline void kasan_free_nondeferred_pages(struct page *page, int order)
-+static inline void kasan_free_nondeferred_pages(struct page *page, int order,
-+							fpi_t fpi_flags)
- {
--	if (!static_branch_unlikely(&deferred_pages))
--		kasan_free_pages(page, order);
-+	if (static_branch_unlikely(&deferred_pages))
-+		return;
-+	if (fpi_flags & FPI_SKIP_KASAN_POISON)
-+		return;
-+	kasan_free_pages(page, order);
- }
- 
- /* Returns true if the struct page for the pfn is uninitialised */
-@@ -438,7 +453,13 @@ defer_init(int nid, unsigned long pfn, unsigned long end_pfn)
- 	return false;
- }
- #else
--#define kasan_free_nondeferred_pages(p, o)	kasan_free_pages(p, o)
-+static inline void kasan_free_nondeferred_pages(struct page *page, int order,
-+							fpi_t fpi_flags)
-+{
-+	if (fpi_flags & FPI_SKIP_KASAN_POISON)
-+		return;
-+	kasan_free_pages(page, order);
-+}
- 
- static inline bool early_page_uninitialised(unsigned long pfn)
- {
-@@ -1216,7 +1237,7 @@ static void kernel_init_free_pages(struct page *page, int numpages)
- }
- 
- static __always_inline bool free_pages_prepare(struct page *page,
--					unsigned int order, bool check_free)
-+			unsigned int order, bool check_free, fpi_t fpi_flags)
- {
- 	int bad = 0;
- 
-@@ -1290,7 +1311,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 
- 	debug_pagealloc_unmap_pages(page, 1 << order);
- 
--	kasan_free_nondeferred_pages(page, order);
-+	kasan_free_nondeferred_pages(page, order, fpi_flags);
- 
- 	return true;
- }
-@@ -1303,7 +1324,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
-  */
- static bool free_pcp_prepare(struct page *page)
- {
--	return free_pages_prepare(page, 0, true);
-+	return free_pages_prepare(page, 0, true, FPI_NONE);
- }
- 
- static bool bulkfree_pcp_prepare(struct page *page)
-@@ -1323,9 +1344,9 @@ static bool bulkfree_pcp_prepare(struct page *page)
- static bool free_pcp_prepare(struct page *page)
- {
- 	if (debug_pagealloc_enabled_static())
--		return free_pages_prepare(page, 0, true);
-+		return free_pages_prepare(page, 0, true, FPI_NONE);
- 	else
--		return free_pages_prepare(page, 0, false);
-+		return free_pages_prepare(page, 0, false, FPI_NONE);
- }
- 
- static bool bulkfree_pcp_prepare(struct page *page)
-@@ -1533,7 +1554,7 @@ static void __free_pages_ok(struct page *page, unsigned int order,
- 	int migratetype;
- 	unsigned long pfn = page_to_pfn(page);
- 
--	if (!free_pages_prepare(page, order, true))
-+	if (!free_pages_prepare(page, order, true, fpi_flags))
- 		return;
- 
- 	migratetype = get_pfnblock_migratetype(page, pfn);
-@@ -1570,7 +1591,7 @@ void __free_pages_core(struct page *page, unsigned int order)
- 	 * Bypass PCP and place fresh pages right to the tail, primarily
- 	 * relevant for memory onlining.
- 	 */
--	__free_pages_ok(page, order, FPI_TO_TAIL);
-+	__free_pages_ok(page, order, FPI_TO_TAIL | FPI_SKIP_KASAN_POISON);
- }
- 
- #ifdef CONFIG_NEED_MULTIPLE_NODES
+thanks,
 -- 
-2.30.0.478.g8a0d178c01-goog
+John Hubbard
+NVIDIA
+
+>   #endif
+>   		UNEVICTABLE_PGCULLED,	/* culled to noreclaim list */
+>   		UNEVICTABLE_PGSCANNED,	/* scanned for reclaimability */
+> diff --git a/mm/cma.c b/mm/cma.c
+> index 23d4a97c834a..ea1e39559526 100644
+> --- a/mm/cma.c
+> +++ b/mm/cma.c
+> @@ -434,14 +434,16 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   	struct page *page = NULL;
+>   	int ret = -ENOMEM;
+>   
+> +	count_vm_event(CMA_ALLOC);
+> +
+>   	if (!cma || !cma->count || !cma->bitmap)
+> -		return NULL;
+> +		goto out;
+>   
+>   	pr_debug("%s(cma %p, count %zu, align %d)\n", __func__, (void *)cma,
+>   		 count, align);
+>   
+>   	if (!count)
+> -		return NULL;
+> +		goto out;
+>   
+>   	mask = cma_bitmap_aligned_mask(cma, align);
+>   	offset = cma_bitmap_aligned_offset(cma, align);
+> @@ -449,7 +451,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   	bitmap_count = cma_bitmap_pages_to_bits(cma, count);
+>   
+>   	if (bitmap_count > bitmap_maxno)
+> -		return NULL;
+> +		goto out;
+>   
+>   	for (;;) {
+>   		mutex_lock(&cma->lock);
+> @@ -506,6 +508,10 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+>   	}
+>   
+>   	pr_debug("%s(): returned %p\n", __func__, page);
+> +out:
+> +	if (!page)
+> +		count_vm_event(CMA_ALLOC_FAIL);
+> +
+>   	return page;
+>   }
+>   
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 97fc32a53320..d8c32a33208d 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1305,6 +1305,10 @@ const char * const vmstat_text[] = {
+>   #ifdef CONFIG_HUGETLB_PAGE
+>   	"htlb_buddy_alloc_success",
+>   	"htlb_buddy_alloc_fail",
+> +#endif
+> +#ifdef CONFIG_CMA
+> +	"cma_alloc_success",
+> +	"cma_alloc_fail",
+>   #endif
+>   	"unevictable_pgs_culled",
+>   	"unevictable_pgs_scanned",
+> 
 
