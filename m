@@ -2,380 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 601F431D366
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01BB231D368
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:24:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbhBQAYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 19:24:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhBQAYh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231509AbhBQAY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 19:24:57 -0500
+Received: from mail-eopbgr1410138.outbound.protection.outlook.com ([40.107.141.138]:16067
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230079AbhBQAYh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 16 Feb 2021 19:24:37 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB401C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 16:23:56 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id p15so9830934ilq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 16:23:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aaif1Sgb6oENICDppW3S1VxRlv6IlaPlax4rXXhIzKN0FrDmMY+RXDFiKPDEgAVR6J7syaE6VV+rk/BUdr1nfbK2/TyZUKpXWMia0e22g0iIuO2qar1KKXlSR39k6RWvlt/VFRRrLAXjWrS9JWd1wKMPE5+pqgMUrGB0JASBTYVZcxX+RcK2S5vRlmQnd3s6xBMgptxTajPYOuT5XNFhEm6HTdu9L/t8T5duGHxtIL/qk9EfATiq6U4W0EZ18wVmjV97Q1kw+2BElca93ZdA8UduhFak0JG5V3Cx7wzjB+6JI/VssDmsLAGPfBNJCSyUFLA0sjD0Hq6o9MjDDwx9UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qO9r2Dg5UM0RHN3z0hGLed91Bk6Vo9ZyojBnn4T5ZUM=;
+ b=ZHOZynpJTx8zIwDBgEnOxc8kxK+D9x+ClXkN2qjHPkzPEcyPf0N//JGYO2IEY8Sy7i3pd0b0Nbg90yYA9zkwI7zvg0TGVu85MFXls9SzdFnxSqRmUh2aBd7R5SIvqjJRpVDSxZGjhksHKIumlJLU+5+G2pNYq7yUwuM2KiMbajm67auHb5BBY2tVXlZyyvIjr/dnN2Ig1gMcsValgnp2u3MTHY6Vvuo5PjQ5Kfa2SSrHLQzRNyP+MjhdFKJNgnrNa40HZ/MpyC0UTOhx+M3X5AuE6vT5JAanpnOLmZusAEaZmAj3ZrvAq0LbXQFZcUmNWYmNvSQJM2Mhsx0CKGfILg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PeG9R7zKIcoHIEeiMPw1euy26nDLafMkqz6ilGi7JlI=;
-        b=soQBXDmL3ULSLZifIcy4+kBa+ZQ1ohlTSVZpKjVqzbUi08A8W3LwZeY/DzjBz4C/UR
-         ht2PuJzuoKwV1J9WCUUXbQV7W7aIB2mNuEPoC74rU4EbvAU/w3H5lb21zKmxKMDU3F0R
-         nFcs7S9l5HF8o1XVM2k1jiqYqZiAjEtknpxajUHFi8KIzrUpMNwUOPw/oPx8flkAJXZK
-         5fXLYUMnIPFs9m40/zMDMRfc/S0MC4gT7e+kkvBKAmpHKauK80gIBUS+ealSGBHcYozz
-         bvTRy92Bt0qwfv7bSJVtPm8qH/FPWsiR5QzJMqLnFmsjt4ijKLjAOh63VJgcImr3odmP
-         pVnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PeG9R7zKIcoHIEeiMPw1euy26nDLafMkqz6ilGi7JlI=;
-        b=qtOlpHgXN5ZD46zvuJ7DJd6WXE6vPxKF4xGk2cVn69Y+HCDKhSJUT3GXESM4LboyjE
-         2uv+OEEtRI8oej2x1iBd9nmFk5LJ8ZjxbMT7NpiEl1KLPW0LsIXA2TvyZ5zuPD2JH7j3
-         emP1nuW/0CZ2XVLP/45YiLisjFiIx6OgZ3cOcH41bO9Kw58Jt/Z9gmUsPdKiOFxEdKD9
-         +AIKN4jonMaacWFZiLCfh2o8w6hCmPR/8AgOu1ZENKOn+8kGhXc3R8k1g9jwh3pkZkJG
-         a+AF+d6lXETd1ApFAc3KYaQhO2pcZyMJx2DHOKcZIS7hXyFKGkCkYIoRFtL/3QuYHmzH
-         r0Vw==
-X-Gm-Message-State: AOAM532YpfTZVuIgcQwKKaQ/rhii97hE3gg79QLMuZOKvkK5O0RTS0Ma
-        9LQ616RmJZZLjVRk7XNvffGKbwj+Otof5FLfH+6lSA==
-X-Google-Smtp-Source: ABdhPJzI34vsoO4G8Tr0Z3Q1CsX80ew8t/j3SlSGV0kmkbU66WJKMXJ32Carvwoata6HLf65AuqPwnBScgg3KgkzAzg=
-X-Received: by 2002:a05:6e02:5c6:: with SMTP id l6mr18981185ils.136.1613521435891;
- Tue, 16 Feb 2021 16:23:55 -0800 (PST)
-MIME-Version: 1.0
-References: <20210209221443.78812-1-dlatypov@google.com> <20210209221443.78812-2-dlatypov@google.com>
- <CABVgOS=j=23J55jqT=84AhzvBxwZSR-POMOndZxAo1JCyvBLtA@mail.gmail.com>
- <alpine.LRH.2.23.451.2102111524210.10553@localhost> <CAGS_qxpwLbeYiFxL58aKbrU0sgjMq1HCnmoZMhFhXETRSrhV7g@mail.gmail.com>
- <CAFd5g45kPdrKz-UnMagx1JdcRmLK0uG31m5OELvJKe=pTaND+w@mail.gmail.com>
-In-Reply-To: <CAFd5g45kPdrKz-UnMagx1JdcRmLK0uG31m5OELvJKe=pTaND+w@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Tue, 16 Feb 2021 16:23:44 -0800
-Message-ID: <CAGS_qxpwSyjuxRcppwOb9yQLRXBDbE2czDsxxf_=sPa8JjHHww@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] kunit: support failure from dynamic analysis tools
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Alan Maguire <alan.maguire@oracle.com>,
-        David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qO9r2Dg5UM0RHN3z0hGLed91Bk6Vo9ZyojBnn4T5ZUM=;
+ b=HcLOSAfzNJ2cqOOWbm6laK+DKIdDDZiPVmymEswLPNlja74yrPdzkIjOZftI2T8XyBNNh4kPamtOOoU1O1UMNqm4PW+s8IDgBs7Rt8BARZu+mIbnln4LDObVeh8GF8o9wuSrmBycbizeEqkIwd+bzgzImL5MsT9RftWzyYg0VN4=
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com (2603:1096:404:d5::22)
+ by TYBPR01MB5405.jpnprd01.prod.outlook.com (2603:1096:404:802c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Wed, 17 Feb
+ 2021 00:23:48 +0000
+Received: from TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::cb4:9680:bb26:8f3f]) by TY2PR01MB3692.jpnprd01.prod.outlook.com
+ ([fe80::cb4:9680:bb26:8f3f%4]) with mapi id 15.20.3846.038; Wed, 17 Feb 2021
+ 00:23:48 +0000
+From:   Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+CC:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: linux-next: manual merge of the net-next tree with the arm-soc
+ tree
+Thread-Topic: linux-next: manual merge of the net-next tree with the arm-soc
+ tree
+Thread-Index: AQHXBAh+B+TipWzLUEKtUb6Ddgfgl6paq7qwgACehICAADMTEA==
+Date:   Wed, 17 Feb 2021 00:23:47 +0000
+Message-ID: <TY2PR01MB3692AA4A88C27C2CBF2BF13CD8869@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+References: <20210216130449.3d1f0338@canb.auug.org.au>
+        <TY2PR01MB3692F75AF6192AB0B082B493D8879@TY2PR01MB3692.jpnprd01.prod.outlook.com>
+ <20210217081739.6dfac3ab@canb.auug.org.au>
+In-Reply-To: <20210217081739.6dfac3ab@canb.auug.org.au>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: canb.auug.org.au; dkim=none (message not signed)
+ header.d=none;canb.auug.org.au; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [124.210.22.195]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: a28b6b99-c12e-4bcb-43cc-08d8d2da4b7e
+x-ms-traffictypediagnostic: TYBPR01MB5405:
+x-microsoft-antispam-prvs: <TYBPR01MB540550E355EEFFA3CA4B2D51D8869@TYBPR01MB5405.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N0UB/w5RDdAl/aHizd6o//TidetekQsKSMSTebEC8EY7B+oU1rB2E0IR3c582u6a57F/+lxY2L4ZYkAr92IEpMRVOIUIw1E+eWptEzh5vTzaWnbedT3BGPGtOMwV654rz6ss4+qREx71SA9EgG0nyZV2fTFICf8GUSHJPPho2mvkZij+MyPilcgXi1KGtm40w31ys9iL3+MicUHEbJbz1JZ3LjVk+Dl5j/CPSvaI14umivPZ9ZH5fACCReGtVHDfSxOxn8t5tCgDcKA3TapaQ5fUzRpOeNRa3TY2A4oz3X0icHNkxkQCRlA5hQblndLSRJBOW/n10QljI4ziMy8rPpvduLdUjHkD7nrhB0xpsmX1q5wLIOWGTcj7Vg8K+7wx/9hq6jwIbIiSKaCowwYJ/HUqcVn5OJeNjcXXLGX7BF2eafzR7yzYaRlbcw4Jc0+sd4/cVTr/l3OEted6zeCzhFvOa1w4g/+szPNfndZxyHn3C8nLAXyTA/XzmHhzgnWW7mbFAx5McuF18ORVp33mgQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY2PR01MB3692.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(396003)(346002)(39860400002)(9686003)(66446008)(478600001)(5660300002)(2906002)(6916009)(7696005)(52536014)(66556008)(8936002)(33656002)(54906003)(71200400001)(8676002)(66946007)(66476007)(76116006)(55016002)(64756008)(186003)(6506007)(83380400001)(86362001)(316002)(4326008)(26005)(55236004)(7416002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?xzj/X6OBIS5yaPDQ1ah/vjLiMGL44+SufarQj8EKQLh9zIGCe6XT9f4Renyo?=
+ =?us-ascii?Q?5TVJjHDuhGyYtYLQXDGaDP7k/ohC/pd2AFBPbxmObcoBujkCJ3L73+T7DqtZ?=
+ =?us-ascii?Q?j/hVeOEyknF8rSZ4UoJqmHwxaz3IzcDdG89Ov53MrhzyJWIAsEnwT1Q0Sugd?=
+ =?us-ascii?Q?pt6zGEpVGAJ+iPNlBnjCMkk5wS9Qtmapi3TDHmzpfMUAeCu1X9sZm0DTKB8Q?=
+ =?us-ascii?Q?7A5e+U0wlc9gwu74nVIu7ETGvxflVWCJEymIvdouSGJaPnBrMmjL7Q5eJjru?=
+ =?us-ascii?Q?sduglUHYYg5e/Ty1MPfcKdxH+E6ifQ+iqqkJTnbH3CQIH24zetuHcDA1Ml7L?=
+ =?us-ascii?Q?knE3v/mDHew92QhypKfDUr19/lkGXAiqihIiR4ta6dAQk3F83BZAx6r/S38f?=
+ =?us-ascii?Q?hgK7XYFvrlm7foEX3qNiW0ZKx+QhfuHF0GdbOVM6/n/pujcys/of0wNTREeI?=
+ =?us-ascii?Q?kbWa+S17ddPEst2VZ257SSbXeHTbMSRm9Wuee0gVieEIYVoa+HYQZDwblhBE?=
+ =?us-ascii?Q?EyM8xv7tr5Y7p3FV0SSYeAX5WMmDZeRQbvsaW4h+DFH3aNsHmr4W6Jdrci0q?=
+ =?us-ascii?Q?Pf7K93FivU7KNkZWFFs7FR7P2m+yg4UM6vkdhuRra2ajqm3fQ6lx1RqyH7d7?=
+ =?us-ascii?Q?8x8wikVDQIoljFguzMEKMj6p2mBT1c2+9IdGHdLiQzAdJflJZdgrje38hqzB?=
+ =?us-ascii?Q?/MHx74Apys4OZ1Hmx4aqipVWWL2IPt6NIMeZgQg1u2zU7/pUPG43/DtK2/lD?=
+ =?us-ascii?Q?738QI5q9ERSV6tunkfbpwHyx98UaT6h97l4O15b9+uh4VwUz9iC4YfKbOkQQ?=
+ =?us-ascii?Q?VwYTN9HXKc77/K4YJyvfqCcVbxSFyrTLizj9vX/8THfwD+8UfsY6+RVmOKen?=
+ =?us-ascii?Q?d3PL6yDgfCEm17DNuduF2UcL8uUwhv/lPJAJdpLdHT6Hk1OZyNQ+lc8A/60e?=
+ =?us-ascii?Q?opFNQNtM212zyB4q806It1wpKS4GDfYWO817MSXsjVC89kKKeQEPoh0X/PfZ?=
+ =?us-ascii?Q?/+05+dkwVbWR4kapjjPEiUb9lm4PWNlym8PP7ZV6Q2nrVxWcu4Y95JSKphiO?=
+ =?us-ascii?Q?swdD0AiTzop+SRhVLuCCedlAW/grMKnrge26Z057dvCWqR+0R8kZhq+M6aGY?=
+ =?us-ascii?Q?WpdojkAxszHMjXVx8KsEFZLPlB9j8lFcXrbiTYDs6hsJ/UfBuvy+6K0K6dZV?=
+ =?us-ascii?Q?cLrj+kBULkUAL5oTeX4Ne3tLqAAc3BIBhD/fTMBvv9M3PE1Oqfvjtnrz+3Nw?=
+ =?us-ascii?Q?mmqNV1DfhZXL16NrdWRjBAvAlSoZpfngOlLzDdC4PDyFtatjo1Ram9mVlPHe?=
+ =?us-ascii?Q?OGW+HpwQgvJ+s3QZuERi1Rl5?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY2PR01MB3692.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a28b6b99-c12e-4bcb-43cc-08d8d2da4b7e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Feb 2021 00:23:48.0167
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6xWBwComxI7DnCc9Vm0IJG96o6SYpSV0MA3ZyOLXHJgiUT+iDKY1502pbsqjTQnkb/Ivmo6IeRMpk4l143Qt9GslaOn96aAUNYPccGIOOYtOa8Rh9gJ3R/uDtwRN6rXV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYBPR01MB5405
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 1:33 PM 'Brendan Higgins' via KUnit
-Development <kunit-dev@googlegroups.com> wrote:
->
-> On Thu, Feb 11, 2021 at 12:58 PM Daniel Latypov <dlatypov@google.com> wro=
-te:
-> >
-> > On Thu, Feb 11, 2021 at 7:40 AM Alan Maguire <alan.maguire@oracle.com> =
-wrote:
-> > >
-> > > On Thu, 11 Feb 2021, David Gow wrote:
-> > >
-> > > > On Wed, Feb 10, 2021 at 6:14 AM Daniel Latypov <dlatypov@google.com=
-> wrote:
-> > > > >
-> > > > > From: Uriel Guajardo <urielguajardo@google.com>
-> > > > >
-> > > > > Add a kunit_fail_current_test() function to fail the currently ru=
-nning
-> > > > > test, if any, with an error message.
-> > > > >
-> > > > > This is largely intended for dynamic analysis tools like UBSAN an=
-d for
-> > > > > fakes.
-> > > > > E.g. say I had a fake ops struct for testing and I wanted my `fre=
-e`
-> > > > > function to complain if it was called with an invalid argument, o=
-r
-> > > > > caught a double-free. Most return void and have no normal means o=
-f
-> > > > > signalling failure (e.g. super_operations, iommu_ops, etc.).
-> > > > >
-> > > > > Key points:
-> > > > > * Always update current->kunit_test so anyone can use it.
-> > > > >   * commit 83c4e7a0363b ("KUnit: KASAN Integration") only updated=
- it for
-> > > > >   CONFIG_KASAN=3Dy
-> > > > >
-> > > > > * Create a new header <kunit/test-bug.h> so non-test code doesn't=
- have
-> > > > > to include all of <kunit/test.h> (e.g. lib/ubsan.c)
-> > > > >
-> > > > > * Forward the file and line number to make it easier to track dow=
-n
-> > > > > failures
-> > > > >
-> > > > > * Declare the helper function for nice __printf() warnings about =
-mismatched
-> > > > > format strings even when KUnit is not enabled.
-> > > > >
-> > > > > Example output from kunit_fail_current_test("message"):
-> > > > > [15:19:34] [FAILED] example_simple_test
-> > > > > [15:19:34]     # example_simple_test: initializing
-> > > > > [15:19:34]     # example_simple_test: lib/kunit/kunit-example-tes=
-t.c:24: message
-> > > > > [15:19:34]     not ok 1 - example_simple_test
-> > > > >
-> > > > > Co-developed-by: Daniel Latypov <dlatypov@google.com>
-> > > > > Signed-off-by: Uriel Guajardo <urielguajardo@google.com>
-> > > > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > > > > ---
-> > > > >  include/kunit/test-bug.h | 30 ++++++++++++++++++++++++++++++
-> > > > >  lib/kunit/test.c         | 37 +++++++++++++++++++++++++++++++++-=
----
-> > > > >  2 files changed, 63 insertions(+), 4 deletions(-)
-> > > > >  create mode 100644 include/kunit/test-bug.h
-> > > > >
-> > > > > diff --git a/include/kunit/test-bug.h b/include/kunit/test-bug.h
-> > > > > new file mode 100644
-> > > > > index 000000000000..18b1034ec43a
-> > > > > --- /dev/null
-> > > > > +++ b/include/kunit/test-bug.h
-> > > > > @@ -0,0 +1,30 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > > > +/*
-> > > > > + * KUnit API allowing dynamic analysis tools to interact with KU=
-nit tests
-> > > > > + *
-> > > > > + * Copyright (C) 2020, Google LLC.
-> > > > > + * Author: Uriel Guajardo <urielguajardo@google.com>
-> > > > > + */
-> > > > > +
-> > > > > +#ifndef _KUNIT_TEST_BUG_H
-> > > > > +#define _KUNIT_TEST_BUG_H
-> > > > > +
-> > > > > +#define kunit_fail_current_test(fmt, ...) \
-> > > > > +       __kunit_fail_current_test(__FILE__, __LINE__, fmt, ##__VA=
-_ARGS__)
-> > > > > +
-> > > > > +#if IS_ENABLED(CONFIG_KUNIT)
-> > > >
-> > > > As the kernel test robot has pointed out on the second patch, this
-> > > > probably should be IS_BUILTIN(), otherwise this won't build if KUni=
-t
-> > > > is a module, and the code calling it isn't.
-> > > >
-> > > > This does mean that things like UBSAN integration won't work if KUn=
-it
-> > > > is a module, which is a shame.
-> > > >
-> > > > (It's worth noting that the KASAN integration worked around this by
-> > > > only calling inline functions, which would therefore be built-in ev=
-en
-> > > > if the rest of KUnit was built as a module. I don't think it's quit=
-e
-> > > > as convenient to do that here, though.)
-> > > >
-> > >
-> > > Right, static inline'ing __kunit_fail_current_test() seems problemati=
-c
-> > > because it calls other exported functions; more below....
-> > >
-> > > > > +
-> > > > > +extern __printf(3, 4) void __kunit_fail_current_test(const char =
-*file, int line,
-> > > > > +                                                   const char *f=
-mt, ...);
-> > > > > +
-> > > > > +#else
-> > > > > +
-> > > > > +static __printf(3, 4) void __kunit_fail_current_test(const char =
-*file, int line,
-> > > > > +                                                   const char *f=
-mt, ...)
-> > > > > +{
-> > > > > +}
-> > > > > +
-> > > > > +#endif
-> > > > > +
-> > > > > +
-> > > > > +#endif /* _KUNIT_TEST_BUG_H */
-> > > > > diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> > > > > index ec9494e914ef..5794059505cf 100644
-> > > > > --- a/lib/kunit/test.c
-> > > > > +++ b/lib/kunit/test.c
-> > > > > @@ -7,6 +7,7 @@
-> > > > >   */
-> > > > >
-> > > > >  #include <kunit/test.h>
-> > > > > +#include <kunit/test-bug.h>
-> > > > >  #include <linux/kernel.h>
-> > > > >  #include <linux/kref.h>
-> > > > >  #include <linux/sched/debug.h>
-> > > > > @@ -16,6 +17,38 @@
-> > > > >  #include "string-stream.h"
-> > > > >  #include "try-catch-impl.h"
-> > > > >
-> > > > > +/*
-> > > > > + * Fail the current test and print an error message to the log.
-> > > > > + */
-> > > > > +void __kunit_fail_current_test(const char *file, int line, const=
- char *fmt, ...)
-> > > > > +{
-> > > > > +       va_list args;
-> > > > > +       int len;
-> > > > > +       char *buffer;
-> > > > > +
-> > > > > +       if (!current->kunit_test)
-> > > > > +               return;
-> > > > > +
-> > > > > +       kunit_set_failure(current->kunit_test);
-> > > > > +
-> > >
-> > > currently kunit_set_failure() is static, but it could be inlined I
-> > > suspect.
-> > >
-> > > > > +       /* kunit_err() only accepts literals, so evaluate the arg=
-s first. */
-> > > > > +       va_start(args, fmt);
-> > > > > +       len =3D vsnprintf(NULL, 0, fmt, args) + 1;
-> > > > > +       va_end(args);
-> > > > > +
-> > > > > +       buffer =3D kunit_kmalloc(current->kunit_test, len, GFP_KE=
-RNEL);
-> > >
-> > > kunit_kmalloc()/kunit_kfree() are exported also, but we could probabl=
-y
-> > > dodge allocation with a static buffer.  In fact since we end up
-> > > using an on-stack buffer for logging in kunit_log_append(), it might =
-make
-> >
-> > Ah, right there's those as well.
-> >
-> > I originally had it on the stack, but the fact we use an on-stack
-> > buffer is why I switched over.
-> >
-> > I originally had it as a macro as you do now but liked the __printf()
-> > annotation to be closer* to the user's code and now down through
-> > several layers of macros (kunit_fail_current_test =3D> kunit_err =3D>
-> > kunit_printk =3D> kunit_log =3D> printk).
-> > And then having it on the stack and then calling into
-> > kunit_log_append() would (naively) use up 2 *KUNIT_LOG_SIZE stack
-> > space.
-> >
-> > So only a minor concern, and so I like the simpler def using a macro
-> > given the messiness.
-> > (But we'd give up the __printf checking when compiling w/o KUnit,
-> > which is a bit sad)
-> >
-> > *E.g. if one misuses kunit_err(), we get this message which is
-> > understandable, but a bit more noisy than I'd prefer.
-> > ../include/linux/kern_levels.h:5:18: warning: format =E2=80=98%d=E2=80=
-=99 expects
-> > argument of type =E2=80=98int=E2=80=99, but argument 3 has type =E2=80=
-=98char *=E2=80=99 [-Wformat=3D]
-> >     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-> >       |                  ^~~~~~
-> > ../include/kunit/test.h:621:10: note: in definition of macro =E2=80=98k=
-unit_log=E2=80=99
-> >   621 |   printk(lvl fmt, ##__VA_ARGS__);    \
-> >       |          ^~~
-> > ../include/kunit/test.h:662:2: note: in expansion of macro =E2=80=98kun=
-it_printk=E2=80=99
-> >   662 |  kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
-> >       |  ^~~~~~~~~~~~
-> > ../include/linux/kern_levels.h:11:18: note: in expansion of macro =E2=
-=80=98KERN_SOH=E2=80=99
-> >    11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
-> >       |                  ^~~~~~~~
-> > ../include/kunit/test.h:662:15: note: in expansion of macro =E2=80=98KE=
-RN_ERR=E2=80=99
-> >   662 |  kunit_printk(KERN_ERR, test, fmt, ##__VA_ARGS__)
-> >       |               ^~~~~~~~
-> > ../lib/kunit/kunit-example-test.c:30:2: note: in expansion of macro =E2=
-=80=98kunit_err=E2=80=99
-> >    30 |  kunit_err(test, "invalid format string: %d", "hi");
-> >       |  ^~~~~~~~~
-> >
-> >
-> > > sense to #define __kunit_fail_current_test() instead, i.e.
-> > >
-> > > #define __kunit_fail_current_test(file, line, fmt, ...)         \
-> > >         do {                                                    \
-> > >                 kunit_set_failure(current->kunit_test);         \
-> > >                 kunit_err(current->kunit_test, "%s:%d: " fmt,   \
-> > >                           ##__VA_ARGS__);                       \
-> > >         } while (0)
-> > >
-> > > > > +       if (!buffer)
-> > > > > +               return;
-> > > > > +
-> > > > > +       va_start(args, fmt);
-> > > > > +       vsnprintf(buffer, len, fmt, args);
-> > > > > +       va_end(args);
-> > > > > +
-> > > > > +       kunit_err(current->kunit_test, "%s:%d: %s", file, line, b=
-uffer);
-> > >
-> > > To get kunit_err() to work, we'd need to "static inline"
-> > > kunit_log_append().  It's not a trivial function, but on the plus
-> > > side it doesn't call any other exported kunit functions AFAICT.
-> > >
-> > > So while any of the above suggestions aren't intended to block
-> > > Daniel's work, does the above seem reasonable for a follow-up
-> > > series to get UBSAN working with module-based KUnit? Thanks!
-> >
-> > Ack, so sounds like we'd want to go ahead with making it only work w/
-> > CONFIG_KUNIT=3Dy?
->
-> I also think this is probably only useful when KUnit is built in.
-> Although it would be certainly neat to be able to support utilizing
-> `current->kunit_test` after the fact when KUnit is built as a module,
-> the problem is that `kunit_test` is only a member of the task_struct
-> when KUnit is enabled anyway:
->
-> https://elixir.bootlin.com/linux/v5.10.15/source/include/linux/sched.h#L1=
-234
->
-> I think that making `kunit_test` always present in task_struct is
-> undesirable for many users, and so you then have to be sure that your
-> kernel you want to load the KUnit module into was built with
-> CONFIG_KUNIT=3Dm.
->
-> Overall, I think it is safer and easier to just require KUnit to be
-> built in if you want to use `current->kunit_test`. In any case, that
-> does not take away the ability to use KUnit test modules with it, just
-> not KUnit itself as a module (CONFIG_KUNIT=3Dy is compatible with tests
-> built as modules).
+Hi Stephen,
 
-Good point, will change to IS_BUILTIN(), in that case.
-
->
-> > I can simplify it down into a macro since the __printf() bit isn't too
-> > big of a deal.
-> > And then it'd let us only depend on kunit_log_append(), making it
-> > easier to get CONFIG_KUNIT=3Dm working.
-
-Ugh, actually, I'll have to walk back making it a macro for now...
-The goal had been that <kunit/test-bug.h> wouldn't pull in kunit code.
-
-We can forward declare kunit_set_failure(), but not kunit_err(), which
-is a macro.
-So to make a static inline or macro version of
-kunit_fail_current_test() requires pulling in <kunit/test.h>
-
-
+> From: Stephen Rothwell, Sent: Wednesday, February 17, 2021 6:18 AM
+> On Tue, 16 Feb 2021 11:53:56 +0000 Yoshihiro Shimoda <yoshihiro.shimoda.u=
+h@renesas.com> wrote:
 > >
-> > Thanks both for digging into this!
-> > I saw KTR's email and was dreading having to dig into what the
-> > smallest needed change would be.
-> >
+> > > From: Stephen Rothwell, Sent: Tuesday, February 16, 2021 11:05 AM
+> > <snip>
+> > > diff --cc arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> > > index 2407b2d89c1e,48fa8776e36f..000000000000
+> > > --- a/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> > > +++ b/arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts
+> > > @@@ -42,11 -42,20 +42,29 @@@
+> > >   	clock-names =3D "apb_pclk";
+> > >   };
 > > >
-> > > Alan
->
-> --
-> You received this message because you are subscribed to the Google Groups=
- "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgi=
-d/kunit-dev/CAFd5g45kPdrKz-UnMagx1JdcRmLK0uG31m5OELvJKe%3DpTaND%2Bw%40mail.=
-gmail.com.
+> > >  +&wdt {
+> > >  +	status =3D "okay";
+> > >  +	clocks =3D <&wdt_clk>;
+> > >  +};
+> > >  +
+> > >  +&gpio {
+> > >  +	status =3D "okay";
+> > > ++};`
+> >
+> > This ` causes the following build error on the next-20210216.
+> >
+> >   DTC     arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dtb
+> > Error: arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dts:52.3-4 syntax e=
+rror
+> > FATAL ERROR: Unable to parse input tree
+> > scripts/Makefile.lib:336: recipe for target 'arch/arm64/boot/dts/toshib=
+a/tmpv7708-rm-mbrc.dtb' failed
+> > make[2]: *** [arch/arm64/boot/dts/toshiba/tmpv7708-rm-mbrc.dtb] Error 1
+> > scripts/Makefile.build:530: recipe for target 'arch/arm64/boot/dts/tosh=
+iba' failed
+>=20
+> Sorry about that ( ` is nect to ESC on my keyboard) it will be fixed up
+> in today's resolution.
+
+Thank you for the reply! I understood it.
+
+Best regards,
+Yoshihiro Shimoda
+
