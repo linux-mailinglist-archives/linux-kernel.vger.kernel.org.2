@@ -2,102 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BF831D3B5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438BD31D3BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229985AbhBQBNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 20:13:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
+        id S229894AbhBQBUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 20:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229864AbhBQBNY (ORCPT
+        with ESMTP id S229581AbhBQBUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 20:13:24 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E255AC06174A;
-        Tue, 16 Feb 2021 17:12:43 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id cl8so476856pjb.0;
-        Tue, 16 Feb 2021 17:12:43 -0800 (PST)
+        Tue, 16 Feb 2021 20:20:11 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E96C061574;
+        Tue, 16 Feb 2021 17:19:30 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id e2so2765632ilu.0;
+        Tue, 16 Feb 2021 17:19:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wNVZYewXDzKdq3nivCVCuJM93zq5lmDXKFfuCe08TZU=;
-        b=lze8dBm3rNnLESFrVkK3G9iztt0PsgOI/qDTKzkgci30CWAZwENz2kt4IoLhdNYWTd
-         4DGVKvBwUnm1xVNxS3o/C1Q+TDopRCdasjx38BwpwAEIKNq4MIqlm0MB25PGq0GokhY5
-         CDYZ/yslGXhBJGQH6VEvEzVOrXW6lNco4g42us0/5lVnH0wf7dirjcj44TtQuATNUnYh
-         TFWxjJzEVbwAKWT0/JA8tzzlTI46uPvxTauJdd4XakpCu80NxofMqf4j7gd7Q2eTOxtX
-         1bcQz+ndQ8NhF7H61meQMPZ2TE/vbNX/bNhLTmOwsZKXWyRsmvx0XreYPXkN5fj1E1RM
-         YrmA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=a4x+djdWvyY/y18wtVmluNe/i6nnmv2klaecD6O1IpY=;
+        b=rDw0MoKsuIX0ccVjTchBPxzUhKDdWjadd68GwBwFkaCobYwoqdr4aALfiR9PTtwgBe
+         Y4Z8BJY2CTVy2jnw7Hz3RCAkwjvSqVm4P1YXI4Rx+2mw/gS18A6vb3qtcSN2ssEOelFE
+         qfjzcq+9YX6z+s1vww3+qSjvkBXQNb95fVwiSqUCvtJtuiYrHKiy7hR8r1KGsky43njJ
+         Qmlj+nnSzMuCqcqsbadVUJGQHtOl3VrHIFoMHzSEOqMDHrD1O3CuAqEsI9Sln/gFSjkU
+         GjK9bo1gOsHS796rI1nNbYyVmGRnFmEj5ElkWQhrVidHzSn5+7pg+Bl2ZV/0G+VqbH8f
+         QcYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wNVZYewXDzKdq3nivCVCuJM93zq5lmDXKFfuCe08TZU=;
-        b=UWSbKC6zuJesSFT4X5We/bWtUXYlKqMS7hPFSuS9UJQ2eDuXnBst+SEfvzQ1MekmHM
-         Rn2QpSkHrC4Azuan+G1NgzU3QVDZA5pmo2Z5sSHH9W9fe6qlPzXGAeZLKHNnA5cq9FMu
-         9qstkiBOX+8bEDcnSfwqcvk/yMZ/UtYJ+JEVGDvZmTj7f4gAFI8mvnhmL+9jnSkEeTrR
-         OOUhVJFTEx4k3BOunBWDyOu9oRBFd4/Y0QHObMy1h9XfYlRt13U3vCs4ja0uwsjzootg
-         ZC62PpKkL8zE2yq5JfYVKYFYu1W4j4JTVMDnJKK2rpj7zzdongNFFW1YEKREsfOnET8I
-         57eQ==
-X-Gm-Message-State: AOAM532MUs6ehm/hGmuDPfItN0vPN+/VpSb0Fuhz3aeje+bdyTwomrkr
-        0n7hdOQMy0HJxl8d5GoIaOj/f6kU8QM=
-X-Google-Smtp-Source: ABdhPJxI42w5Dp3+mhtK9Eu+GOs7t/DjNXtsyX/1HLRij6cQkCWDcR+YtmZ70nMLW3lATeCUnw7Fxg==
-X-Received: by 2002:a17:90b:17c7:: with SMTP id me7mr6781873pjb.205.1613524363086;
-        Tue, 16 Feb 2021 17:12:43 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id y22sm326153pgh.19.2021.02.16.17.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Feb 2021 17:12:42 -0800 (PST)
-Subject: Re: [PATCH] Revert "ARM: dts: bcm2711: Add the BSC interrupt
- controller"
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     dave.stevenson@raspberrypi.com, maz@kernel.org, eric@anholt.net,
-        tzimmermann@suse.de, linux-rpi-kernel@lists.infradead.org,
-        hverkuil-cisco@xs4all.nl, nsaenzjulienne@suse.de,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        dri-devel@lists.freedesktop.org, maxime@cerno.tech,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210212191104.2365912-1-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <6ce9e820-992f-7f97-ccaa-f8cb99698a68@gmail.com>
-Date:   Tue, 16 Feb 2021 17:12:39 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=a4x+djdWvyY/y18wtVmluNe/i6nnmv2klaecD6O1IpY=;
+        b=sR8bUyhN43P6yfUpknPEiSAhwTSZ2bmQnX3V9KY2AVT2II5gSerzfxItHlb629NFX6
+         SvTo4lDlmLh13xfK9kGFjjaiMhrji80TsIDDa0zR2dXgknt4P6WBlJi0H5xhs1/vlfpW
+         z4/UiiKH9/gUZpjTW0RXvg9ruWZEZApj00CxsyqJaMTXahtEzTMv7f/mLqsdKUUG1QCd
+         y3mjhENoAsiXI0qQH/wpKcmTZcmGKJL0gslI6LtwQIs7R1gxrTvW2yfzvEjDS0E74eYX
+         hWw2jYRU1mzZIihIbzYBA4RfSnBneY41rMYfX1cRtADbxqG8VoT83/hbxjn7gRlTkGJE
+         od/g==
+X-Gm-Message-State: AOAM531QGHg/ExWwVpExS+YPASQGyzGGd5KbW704gidsyMj9tpJF9Q3B
+        e9q3UiB3tZ8gk/gikVgYhkJhpzWnF9znkw==
+X-Google-Smtp-Source: ABdhPJzQ1+zBNZDJEwXFq4rdDJ1ul/EtXVts2a08c3XQ2yCtZqMgX9vyWVq76RBKczOnLlAW2c5d2Q==
+X-Received: by 2002:a92:c7c7:: with SMTP id g7mr20701071ilk.304.1613524770363;
+        Tue, 16 Feb 2021 17:19:30 -0800 (PST)
+Received: from book ([2601:445:8200:6c90::4121])
+        by smtp.gmail.com with ESMTPSA id n7sm160428ili.79.2021.02.16.17.19.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 17:19:30 -0800 (PST)
+Date:   Tue, 16 Feb 2021 19:19:28 -0600
+From:   Ross Schmidt <ross.schm.dev@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 000/104] 5.10.17-rc1 review
+Message-ID: <20210217011928.GA4901@book>
+References: <20210215152719.459796636@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210212191104.2365912-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215152719.459796636@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 15, 2021 at 04:26:13PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.17 release.
+> There are 104 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+
+Compiled and booted with no regressions on x86_64.
+
+Tested-by: Ross Schmidt <ross.schm.dev@gmail.com>
 
 
-On 2/12/2021 11:11 AM, Florian Fainelli wrote:
-> As Dave reported:
-> 
-> This seems to have unintended side effects.  GIC interrupt 117 is shared
-> between the standard I2C controllers (i2c-bcm2835) and the l2-intc block
-> handling the HDMI I2C interrupts.
-> 
-> There is not a great way to share an interrupt between an interrupt
-> controller using the chained IRQ handler which is an interrupt flow and
-> another driver like i2c-bcm2835 which uses an interrupt handler
-> (although it specifies IRQF_SHARED).
-> 
-> Simply revert this change for now which will mean that HDMI I2C will be
-> polled, like it was before.
-> 
-> Reported-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+thanks,
 
-Applied to devicetree/next, thanks!
--- 
-Florian
+Ross
