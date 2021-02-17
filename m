@@ -2,127 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A81A31DDC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE03E31DDE6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:05:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234308AbhBQQ7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:59:43 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:31470 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234283AbhBQQ7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:59:40 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613581162; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=B5AXYKuDNSG0opzkSoixITlEQXeGyUfALGQ8770qpOg=; b=TgVu2b8cGYMDykLvMBY7JTefwwEV9+ge63CDztX/0vuR6wMQ81MezeaEoojoWbUN+pqQjBKY
- 5UtVJf44vUjuExMgrQXhruxyoOdDNAlLyg869Rr95VYvOrenEasvFriuf/ABvZdPVRSQRwBZ
- Fn5sNRZCXzVfvW4NKMm0LkWsPIs=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 602d4b4ed2def62f1e002700 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 16:58:54
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 547BFC43461; Wed, 17 Feb 2021 16:58:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CC7FCC433CA;
-        Wed, 17 Feb 2021 16:58:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CC7FCC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/msm/dp: add support of HBR3 link rate
-Date:   Wed, 17 Feb 2021 08:58:42 -0800
-Message-Id: <1613581122-8473-1-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S234346AbhBQREt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:04:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234250AbhBQREp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:04:45 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F114C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:04:03 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id gx20so2035862pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:04:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/Ld/ShzShm5KDKAgwYyvO0aBML/jn8k0pry3XCWAfd0=;
+        b=NNmnKat9LAdeDIp7dqqwINwu/xuel5bwjWV2AhyFHnv1G3xHwim1kZA4VfaG5+3LxE
+         +kTEGs36EnXR35RRYWe21MTJ3noNUDZ28NgnVWkcNyanqcNUlxtzUdOCkz5bzy01y0KV
+         ob1uzbj1OdkOguh92oZW72e7vMu1EH/k4r6gT1wbvvrdkfRl6Vtn1vfXWgv6ttqsLxBR
+         Jl+2nwPlkw0pJBtQZOUJCzbhF4mA05FSLzIykMbN2ljUjLVe7x9kR2OS+mMTqPkQgdBr
+         1rN+AaBgusw2bdDfCFRbeaJHPX3K0roEq7KyVX8q5mkr8ligkaLtzWyRqxRXvmStky2H
+         Zadw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/Ld/ShzShm5KDKAgwYyvO0aBML/jn8k0pry3XCWAfd0=;
+        b=REAg+KbLlZstsWOTfuXzsENhcweMITVmMFAR+ZaLhKKdetp1uRYn93P0irGZ717uCJ
+         qozMUPJoAapd53JqEKSvOa54OzC+8nEujd59rAWPAnxh6RKpu9VDUVU3T32Ouoh45+UF
+         Ib0FEkqWneN7P5BekX96wWUTkn1LB6zgaxVF+vicxhKiAE9nyoeC6cNUAdClKN7M4RXY
+         HpdP/btWgEKkFHTLinyDDSxO//fZzyjskTXkdlRYiRIFvdLV1jaKb0S000THcsx6i91A
+         Nm9i+juMfTeYacRDawZCzr77V0X9BLtf8tWokG4V9Bq9ufXxFGnCtf3PnjFtSomm1Q1a
+         igTA==
+X-Gm-Message-State: AOAM533hp9+KNq8u4rStNlO7Ttnnd8vOlCCMeIzdKcwEWAOs1TiQMp3b
+        fF/f4Czmp3T5iGf8u96FVWw=
+X-Google-Smtp-Source: ABdhPJyfQ975J7M7Z5JfrVETyiWjBSfaRb+F1ic1oPoJYbpa/SlUQBc9RmrYKjBg0euvkiHeuMrY1g==
+X-Received: by 2002:a17:902:6bca:b029:e2:c5d6:973e with SMTP id m10-20020a1709026bcab02900e2c5d6973emr25292018plt.40.1613581442936;
+        Wed, 17 Feb 2021 09:04:02 -0800 (PST)
+Received: from localhost.localdomain ([27.61.15.122])
+        by smtp.gmail.com with ESMTPSA id 9sm3200539pgw.61.2021.02.17.09.03.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 09:04:01 -0800 (PST)
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Subject: [PATCH] staging: comedi: cast to (unsigned int *)
+Date:   Wed, 17 Feb 2021 22:29:08 +0530
+Message-Id: <20210217165907.9777-1-atulgopinathan@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add hbr3_hbr2 voltage and pre-emphasis swing table to support
-HBR3 link rate
+Resolve the following warning generated by sparse:
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
+drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
+drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
+
+compat_ptr() has a return type of "void __user *"
+as defined in "include/linux/compat.h"
+
+cmd->chanlist is of type "unsigned int *" as defined
+in drivers/staging/comedi/comedi.h" in struct
+comedi_cmd.
+
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
 ---
- drivers/gpu/drm/msm/dp/dp_panel.c   |  4 ----
- drivers/phy/qualcomm/phy-qcom-qmp.c | 24 ++++++++++++++++++++++--
- 2 files changed, 22 insertions(+), 6 deletions(-)
+ drivers/staging/comedi/comedi_fops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
-index 9cc8166..63112fa 100644
---- a/drivers/gpu/drm/msm/dp/dp_panel.c
-+++ b/drivers/gpu/drm/msm/dp/dp_panel.c
-@@ -76,10 +76,6 @@ static int dp_panel_read_dpcd(struct dp_panel *dp_panel)
- 	if (link_info->num_lanes > dp_panel->max_dp_lanes)
- 		link_info->num_lanes = dp_panel->max_dp_lanes;
- 
--	/* Limit support upto HBR2 until HBR3 support is added */
--	if (link_info->rate >= (drm_dp_bw_code_to_link_rate(DP_LINK_BW_5_4)))
--		link_info->rate = drm_dp_bw_code_to_link_rate(DP_LINK_BW_5_4);
--
- 	DRM_DEBUG_DP("version: %d.%d\n", major, minor);
- 	DRM_DEBUG_DP("link_rate=%d\n", link_info->rate);
- 	DRM_DEBUG_DP("lane_count=%d\n", link_info->num_lanes);
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
-index 0939a9e..cc5ef59 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
-@@ -2965,6 +2965,21 @@ static void qcom_qmp_phy_dp_aux_init(struct qmp_phy *qphy)
- 	       qphy->pcs + QSERDES_V3_DP_PHY_AUX_INTERRUPT_MASK);
- }
- 
-+
-+static u8 const qmp_dp_v3_pre_emphasis_hbr3_hbr2[4][4] = {
-+        {0x00, 0x0C, 0x15, 0x1A},
-+        {0x02, 0x0E, 0x16, 0xFF},
-+        {0x02, 0x11, 0xFF, 0xFF},
-+        {0x04, 0xFF, 0xFF, 0xFF}
-+};
-+
-+static u8 const qmp_dp_v3_voltage_swing_hbr3_hbr2[4][4] = {
-+        {0x02, 0x12, 0x16, 0x1A},
-+        {0x09, 0x19, 0x1F, 0xFF},
-+        {0x10, 0x1F, 0xFF, 0xFF},
-+        {0x1F, 0xFF, 0xFF, 0xFF}
-+};
-+
- static const u8 qmp_dp_v3_pre_emphasis_hbr_rbr[4][4] = {
- 	{ 0x00, 0x0c, 0x14, 0x19 },
- 	{ 0x00, 0x0b, 0x12, 0xff },
-@@ -3000,8 +3015,13 @@ static void qcom_qmp_phy_configure_dp_tx(struct qmp_phy *qphy)
- 		drvr_en = 0x10;
- 	}
- 
--	voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
--	pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
-+	if (dp_opts->link_rate <= 2700) {
-+		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
-+		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
-+	} else {
-+		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr3_hbr2[v_level][p_level];
-+		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_level][p_level];
-+	}
- 
- 	/* TODO: Move check to config check */
- 	if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
+diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+index e85a99b68f31..fc4ec38012b4 100644
+--- a/drivers/staging/comedi/comedi_fops.c
++++ b/drivers/staging/comedi/comedi_fops.c
+@@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+ 	cmd->scan_end_arg = v32.scan_end_arg;
+ 	cmd->stop_src = v32.stop_src;
+ 	cmd->stop_arg = v32.stop_arg;
+-	cmd->chanlist = compat_ptr(v32.chanlist);
++	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+ 	cmd->chanlist_len = v32.chanlist_len;
+ 	cmd->data = compat_ptr(v32.data);
+ 	cmd->data_len = v32.data_len;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.27.0
 
