@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B271231D5BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:38:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8B231D5C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:38:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhBQHf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:35:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        id S231759AbhBQHgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 02:36:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231695AbhBQHe1 (ORCPT
+        with ESMTP id S231722AbhBQHet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:34:27 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F35C061786
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:47 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id v6so7751873ybk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:47 -0800 (PST)
+        Wed, 17 Feb 2021 02:34:49 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7111C061788
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:49 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id f3so16889898ybg.15
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=ThH9iVP9QdHLrLEcluQEGDH9qW5NfRpLNK2v5o+PxGg=;
-        b=b2igWe9XdEIaW4pxLIl/xX06ld2NsrEM+ApAoXqSrJoWs0ncizd9MbjQMLNmBSq/1J
-         vnbrsNoRGSjLF0ysn9q/0hEIwimByU97K7/DKZYDPWHrkN9oHgUiW1vwcwxfbfXVFtrW
-         CRDeu+SejB6njxGYIFfZF4LSVtvTZki22wYV/Tk6zMwSSDdRV+XllNr16vD4UhUXBcOL
-         npKXlP2Uk1RT/23Z0lnwDkm/B4qf/4wQ6QsbpgF69W4UdZSpIIoJMY64rVMfozBmbukv
-         TGRPpXOzZWntQAKeX6DxxWmTcFN2kYtOYwK7tlFkWriMqqFt2bi6tLZppTSK17p5rP/d
-         ZPjA==
+        bh=6qKo0RCKzfkUdg1aVv7+GSGl79l43/TBLx7+DoXXi8I=;
+        b=NUUqAKSm5fJlcLA3lidIGQhpQA/w5v7l+bo4P6DdSbGbL5iJcXCaTumT3ekzXeuYm2
+         j88vcVcLoobDoICWGa15GihF/y1dgXsRseyicIt+l9Opiv6ItwHRz3x2d2bh5cKoc2sk
+         IvjP7C68JNAGmVZ7uIkwBw1MVEtum9X/6Z+b+YKkzjBDoDISGqYSJD4QixrRpPhlDdRG
+         YoW6419SqKu5s2fXzWtk9Dd3wQ4XNRIiBw+1E666y0yJ2ImPYnulWg6YA191KGT3yK5W
+         qMB7JTCZFSeHpZTqrasQSE+rdXKhamMmIx8id2kAN3t3NN7rXDZxMZ0JRFnDwrmBd/kr
+         U/UQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=ThH9iVP9QdHLrLEcluQEGDH9qW5NfRpLNK2v5o+PxGg=;
-        b=oaLImmRh8HXEuEPQTo4SCyefLRLDi6Zd46RU+8Bm1x9Qe5Go7QtE9Gd5x5bjUCmGPc
-         Lbfxg6A44qaic8pMyZWDrP18WTngvXVSD7YFUIWyC+IZ+YmV071tJGM6pb+NWYnKN6iw
-         UipiAsDKSrEfGZsH3RjlnQ21D2LyiXcj1XBoJ1C1uphaiE/7y9SneYJGr4stMkn0+r37
-         2OchHdo9pm0J+ecKawTMZTTYzev/ay8S+rxabvB5VlzBuFRuPxEJ+zFpxYdvf4OrPcGK
-         R2/pl/5sIORh8Y5XcOson/xLOBpTzfz0ZgK/cQa35TZZhR5y2Ju1klI2Uzja9VM6X3Ke
-         T4RA==
-X-Gm-Message-State: AOAM533/e8a7spNnql/diyFe7aXsvbRR3jo2vhHtSqL2OFV02A9MKHlX
-        GC/KjRqLjxJHYr3xdC4d1uT6ghU=
-X-Google-Smtp-Source: ABdhPJy/kxrSjIK+iknn1KcMXRYxX4ywp0jUWV3GdSTX0/XUdl4mjNsdLDE5Srm48uH9LeG0rTNmr0M=
+        bh=6qKo0RCKzfkUdg1aVv7+GSGl79l43/TBLx7+DoXXi8I=;
+        b=sa1wqzRT3zUwBPvf0VSNmD32gDhoVyd2c6RP7hihQwK0PMplLSRd4J20yBuo7Y3GRp
+         ysL6bkSR5vjqFgHlntcRzj3d/sz3QcnaPL4TVCOVwWlEIbEDZ/X6RApCO3jyjGQNiEfS
+         CA1PwJ8DRjXtf3aX9CG+dNjPeXMwLTAgfnSe/va37TiovpgRxUMlUKzHrhcm4eqM6Yak
+         lc45DPBHpr11aXafq3m20uY+1FP6Ta0KL7JZraI6SNuFaejTMsYSq63TvYMw0TmAVKEQ
+         WoZRCrX6EHUbYWXTsIFOU0Uttfsdjh6AbQJ8O8gcH053I7GV9/DoImLT2vB59SkKKFat
+         f2eg==
+X-Gm-Message-State: AOAM530NdpFhxHei5fl0utTrKXwEB/uwqWG2MEC2kesFFTTQbEeddm51
+        w5HfaUpKOjuK4dNyi2rXkT6BEpY=
+X-Google-Smtp-Source: ABdhPJyCbvWIcimi/8Dd3oa4K5QbAuJxaLHILVFxNfFetvLayltZYdOWETxjv17kQsAqFtTDvQt5VGQ=
 Sender: "wak via sendgmr" <wak@wak-linux.svl.corp.google.com>
 X-Received: from wak-linux.svl.corp.google.com ([2620:15c:2c5:3:e984:b7fc:110a:274a])
- (user=wak job=sendgmr) by 2002:a25:7613:: with SMTP id r19mr27769351ybc.212.1613547226987;
- Tue, 16 Feb 2021 23:33:46 -0800 (PST)
-Date:   Tue, 16 Feb 2021 23:33:17 -0800
+ (user=wak job=sendgmr) by 2002:a25:830e:: with SMTP id s14mr36705171ybk.42.1613547228953;
+ Tue, 16 Feb 2021 23:33:48 -0800 (PST)
+Date:   Tue, 16 Feb 2021 23:33:18 -0800
 In-Reply-To: <20210217073318.540369-1-wak@google.com>
-Message-Id: <20210217073318.540369-4-wak@google.com>
+Message-Id: <20210217073318.540369-5-wak@google.com>
 Mime-Version: 1.0
 References: <20210217073318.540369-1-wak@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 3/4] ipmi: kcs_bmc: Invert allocation
+Subject: [PATCH 4/4] ipmi: kcs_bmc: Simplify state machine
 From:   "William A. Kennington III" <wak@google.com>
 To:     Corey Minyard <minyard@acm.org>
 Cc:     openipmi-developer@lists.sourceforge.net,
@@ -63,699 +63,613 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a more typical pattern for having the platform specific drivers
-store their own data around the generic driver data.
+This makes a few changes, notably:
+
+  - Removes the mutex primitive as it is not needed in the file
+    operation path. The read path had multiple spinlock acquisitions
+    with state changes that don't appear safe to reordering,
+    specifically around forced aborts.
+
+  - Removes multiple per-channel allocated data buffers, opting to only
+    store the necessary data for the currently in flight transaction.
+    Since only 1 data buffer can really be used at a given time, we
+    don't need the previous 2-3.
+
+  - Reduces the number of states in the KCS state machine. There are
+    some states, like the second abort state, that effectively duplicate
+    others.
+
+  - Cleans up the initialization and register setting logic to include
+    bits that were missed previously.
 
 Signed-off-by: William A. Kennington III <wak@google.com>
 ---
- drivers/char/ipmi/kcs_bmc.c         |  40 +++---
- drivers/char/ipmi/kcs_bmc.h         |  13 +-
- drivers/char/ipmi/kcs_bmc_aspeed.c  | 216 ++++++++++++++--------------
- drivers/char/ipmi/kcs_bmc_npcm7xx.c |  61 ++++----
- 4 files changed, 163 insertions(+), 167 deletions(-)
+ drivers/char/ipmi/kcs_bmc.c | 301 ++++++++++++++----------------------
+ drivers/char/ipmi/kcs_bmc.h |  49 ++----
+ 2 files changed, 132 insertions(+), 218 deletions(-)
 
 diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
-index 4c504588e714..f182c4f6f982 100644
+index 16a378d79db9..f2fa43a516da 100644
 --- a/drivers/char/ipmi/kcs_bmc.c
 +++ b/drivers/char/ipmi/kcs_bmc.c
-@@ -277,9 +277,6 @@ static ssize_t kcs_bmc_read(struct file *filp, char __user *buf,
- 	}
+@@ -11,21 +11,14 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/poll.h>
+-#include <linux/sched.h>
+-#include <linux/slab.h>
  
- 	if (count < data_len) {
--		pr_err("channel=%u with too large data : %zu\n",
--			kcs_bmc->channel, data_len);
+ #include "kcs_bmc.h"
+ 
+ #define DEVICE_NAME "ipmi-kcs"
+ 
+-#define KCS_MSG_BUFSIZ    1000
 -
- 		spin_lock_irq(&kcs_bmc->lock);
- 		kcs_force_abort(kcs_bmc);
- 		spin_unlock_irq(&kcs_bmc->lock);
-@@ -402,17 +399,11 @@ static const struct file_operations kcs_bmc_fops = {
- 	.unlocked_ioctl = kcs_bmc_ioctl,
+-#define KCS_ZERO_DATA     0
+-
+-
+ /* IPMI 2.0 - Table 9-1, KCS Interface Status Register Bits */
+ #define KCS_STATUS_STATE(state) (state << 6)
+-#define KCS_STATUS_STATE_MASK   GENMASK(7, 6)
++#define KCS_STATUS_STATE_MASK   GENMASK(7, 4)
+ #define KCS_STATUS_CMD_DAT      BIT(3)
+ #define KCS_STATUS_SMS_ATN      BIT(2)
+ #define KCS_STATUS_IBF          BIT(1)
+@@ -33,19 +26,19 @@
+ 
+ /* IPMI 2.0 - Table 9-2, KCS Interface State Bits */
+ enum kcs_states {
+-	IDLE_STATE  = 0,
+-	READ_STATE  = 1,
+-	WRITE_STATE = 2,
+-	ERROR_STATE = 3,
++	KCS_STATE_IDLE  = 0,
++	KCS_STATE_READ  = 1,
++	KCS_STATE_WRITE = 2,
++	KCS_STATE_ERROR = 3,
  };
  
--struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel)
-+int kcs_bmc_init(struct kcs_bmc *kcs_bmc, struct device *dev, u32 channel)
+ /* IPMI 2.0 - Table 9-3, KCS Interface Control Codes */
+ #define KCS_CMD_GET_STATUS_ABORT  0x60
+ #define KCS_CMD_WRITE_START       0x61
+ #define KCS_CMD_WRITE_END         0x62
+-#define KCS_CMD_READ_BYTE         0x68
++#define KCS_DATA_READ_BYTE        0x68
+ 
+-static void update_status_bits(struct kcs_bmc *kcs_bmc, u8 mask, u8 val)
++static void kcs_update_status_bits(struct kcs_bmc *kcs_bmc, u8 mask, u8 val)
  {
--	struct kcs_bmc *kcs_bmc;
--
--	kcs_bmc = devm_kzalloc(dev, sizeof(*kcs_bmc) + sizeof_priv, GFP_KERNEL);
--	if (!kcs_bmc)
--		return NULL;
-+	int rc;
- 
- 	spin_lock_init(&kcs_bmc->lock);
--	kcs_bmc->channel = channel;
--
- 	mutex_init(&kcs_bmc->mutex);
- 	init_waitqueue_head(&kcs_bmc->queue);
- 
-@@ -420,17 +411,28 @@ struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel)
- 	kcs_bmc->data_out = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
- 	kcs_bmc->kbuffer = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
- 
--	kcs_bmc->miscdev.minor = MISC_DYNAMIC_MINOR;
--	kcs_bmc->miscdev.name = devm_kasprintf(dev, GFP_KERNEL, "%s%u",
--					       DEVICE_NAME, channel);
--	if (!kcs_bmc->data_in || !kcs_bmc->data_out || !kcs_bmc->kbuffer ||
--	    !kcs_bmc->miscdev.name)
--		return NULL;
- 	kcs_bmc->miscdev.fops = &kcs_bmc_fops;
-+	kcs_bmc->miscdev.minor = MISC_DYNAMIC_MINOR;
-+	kcs_bmc->miscdev.name =
-+		devm_kasprintf(dev, GFP_KERNEL, "%s%u", DEVICE_NAME, channel);
-+	if (!kcs_bmc->miscdev.name)
-+		return -ENOMEM;
-+
-+	rc = misc_register(&kcs_bmc->miscdev);
-+	if (rc) {
-+		dev_err(dev, "Registering kcs_bmc: %d\n", rc);
-+		return rc;
-+	}
- 
--	return kcs_bmc;
-+	return 0;
-+}
-+EXPORT_SYMBOL(kcs_bmc_init);
-+
-+void kcs_bmc_stop(struct kcs_bmc *kcs_bmc)
-+{
-+	misc_deregister(&kcs_bmc->miscdev);
+ 	u8 tmp = kcs_bmc->read_status(kcs_bmc);
+ 	tmp &= ~mask;
+@@ -53,95 +46,70 @@ static void update_status_bits(struct kcs_bmc *kcs_bmc, u8 mask, u8 val)
+ 	kcs_bmc->write_status(kcs_bmc, tmp);
  }
--EXPORT_SYMBOL(kcs_bmc_alloc);
-+EXPORT_SYMBOL(kcs_bmc_stop);
  
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
-diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
-index 8c541251fe97..d65ffd479e9b 100644
---- a/drivers/char/ipmi/kcs_bmc.h
-+++ b/drivers/char/ipmi/kcs_bmc.h
-@@ -64,7 +64,6 @@ enum kcs_errors {
- struct kcs_bmc {
- 	spinlock_t lock;
+-static inline void set_state(struct kcs_bmc *kcs_bmc, u8 state)
++static void kcs_set_state(struct kcs_bmc *kcs_bmc, enum kcs_states state)
+ {
+-	update_status_bits(kcs_bmc, KCS_STATUS_STATE_MASK,
++	kcs_update_status_bits(kcs_bmc, KCS_STATUS_STATE_MASK,
+ 					KCS_STATUS_STATE(state));
+ }
  
--	u32 channel;
- 	int running;
+-static void kcs_force_abort(struct kcs_bmc *kcs_bmc)
++static void kcs_force_abort(struct kcs_bmc *kcs_bmc, enum kcs_errors error)
+ {
+-	set_state(kcs_bmc, ERROR_STATE);
++	kcs_bmc->phase = KCS_PHASE_ERROR;
++	kcs_bmc->error = error;
++	kcs_set_state(kcs_bmc, KCS_STATE_ERROR);
+ 	kcs_bmc->read_data_in(kcs_bmc);
+-	kcs_bmc->write_data_out(kcs_bmc, KCS_ZERO_DATA);
++	kcs_bmc->write_data_out(kcs_bmc, 0);
++}
  
- 	/* Setup by BMC KCS controller driver */
-@@ -89,16 +88,10 @@ struct kcs_bmc {
- 	u8 *kbuffer;
+-	kcs_bmc->phase = KCS_PHASE_ERROR;
+-	kcs_bmc->data_in_avail = false;
+-	kcs_bmc->data_in_idx = 0;
++static void kcs_pump_data_out(struct kcs_bmc *kcs_bmc)
++{
++	kcs_bmc->write_data_out(kcs_bmc,
++			kcs_bmc->data_idx >= kcs_bmc->data_len ?
++			0 : kcs_bmc->data[kcs_bmc->data_idx++]);
+ }
  
- 	struct miscdevice miscdev;
+ static void kcs_bmc_handle_data(struct kcs_bmc *kcs_bmc)
+ {
+-	u8 data;
 -
--	unsigned long priv[];
- };
+ 	switch (kcs_bmc->phase) {
+-	case KCS_PHASE_WRITE_START:
+-		kcs_bmc->phase = KCS_PHASE_WRITE_DATA;
+-		fallthrough;
+-
+ 	case KCS_PHASE_WRITE_DATA:
+-		if (kcs_bmc->data_in_idx < KCS_MSG_BUFSIZ) {
+-			set_state(kcs_bmc, WRITE_STATE);
+-			kcs_bmc->write_data_out(kcs_bmc, KCS_ZERO_DATA);
+-			kcs_bmc->data_in[kcs_bmc->data_in_idx++] =
+-						kcs_bmc->read_data_in(kcs_bmc);
+-		} else {
+-			kcs_force_abort(kcs_bmc);
+-			kcs_bmc->error = KCS_LENGTH_ERROR;
+-		}
++		if (kcs_bmc->data_len >= KCS_MSG_BUFSIZ)
++			return kcs_force_abort(kcs_bmc, KCS_LENGTH_ERROR);
++		kcs_bmc->data[kcs_bmc->data_len++] =
++			kcs_bmc->read_data_in(kcs_bmc);
++		kcs_bmc->write_data_out(kcs_bmc, 0);
+ 		break;
  
--static inline void *kcs_bmc_priv(struct kcs_bmc *kcs_bmc)
+-	case KCS_PHASE_WRITE_END_CMD:
+-		if (kcs_bmc->data_in_idx < KCS_MSG_BUFSIZ) {
+-			set_state(kcs_bmc, READ_STATE);
+-			kcs_bmc->data_in[kcs_bmc->data_in_idx++] =
+-						kcs_bmc->read_data_in(kcs_bmc);
+-			kcs_bmc->phase = KCS_PHASE_WRITE_DONE;
+-			kcs_bmc->data_in_avail = true;
+-			wake_up_interruptible(&kcs_bmc->queue);
+-		} else {
+-			kcs_force_abort(kcs_bmc);
+-			kcs_bmc->error = KCS_LENGTH_ERROR;
+-		}
++	case KCS_PHASE_WRITE_END:
++		if (kcs_bmc->data_len < 1 && kcs_bmc->data_len >= KCS_MSG_BUFSIZ)
++			return kcs_force_abort(kcs_bmc, KCS_LENGTH_ERROR);
++		kcs_bmc->phase = KCS_PHASE_WRITE_DONE;
++		kcs_set_state(kcs_bmc, KCS_STATE_READ);
++		kcs_bmc->data[kcs_bmc->data_len++] =
++			kcs_bmc->read_data_in(kcs_bmc);
++		wake_up_interruptible(&kcs_bmc->read_ready);
+ 		break;
+ 
+ 	case KCS_PHASE_READ:
+-		if (kcs_bmc->data_out_idx == kcs_bmc->data_out_len)
+-			set_state(kcs_bmc, IDLE_STATE);
+-
+-		data = kcs_bmc->read_data_in(kcs_bmc);
+-		if (data != KCS_CMD_READ_BYTE) {
+-			set_state(kcs_bmc, ERROR_STATE);
+-			kcs_bmc->write_data_out(kcs_bmc, KCS_ZERO_DATA);
+-			break;
+-		}
+-
+-		if (kcs_bmc->data_out_idx == kcs_bmc->data_out_len) {
+-			kcs_bmc->write_data_out(kcs_bmc, KCS_ZERO_DATA);
++		if (kcs_bmc->data_idx >= kcs_bmc->data_len) {
+ 			kcs_bmc->phase = KCS_PHASE_IDLE;
+-			break;
++			kcs_set_state(kcs_bmc, KCS_STATE_IDLE);
+ 		}
+-
+-		kcs_bmc->write_data_out(kcs_bmc,
+-			kcs_bmc->data_out[kcs_bmc->data_out_idx++]);
++		if (kcs_bmc->read_data_in(kcs_bmc) != KCS_DATA_READ_BYTE)
++			return kcs_force_abort(kcs_bmc, KCS_UNSPECIFIED_ERROR);
++		kcs_pump_data_out(kcs_bmc);
+ 		break;
+ 
+-	case KCS_PHASE_ABORT_ERROR1:
+-		set_state(kcs_bmc, READ_STATE);
+-		kcs_bmc->read_data_in(kcs_bmc);
++	case KCS_PHASE_ABORT:
++		kcs_set_state(kcs_bmc, KCS_STATE_READ);
++		if (kcs_bmc->read_data_in(kcs_bmc) != 0)
++			return kcs_force_abort(kcs_bmc, KCS_UNSPECIFIED_ERROR);
++		kcs_bmc->phase = KCS_PHASE_READ;
++		kcs_bmc->data_len = 0;
+ 		kcs_bmc->write_data_out(kcs_bmc, kcs_bmc->error);
+-		kcs_bmc->phase = KCS_PHASE_ABORT_ERROR2;
+-		break;
+-
+-	case KCS_PHASE_ABORT_ERROR2:
+-		set_state(kcs_bmc, IDLE_STATE);
+-		kcs_bmc->read_data_in(kcs_bmc);
+-		kcs_bmc->write_data_out(kcs_bmc, KCS_ZERO_DATA);
+-		kcs_bmc->phase = KCS_PHASE_IDLE;
+ 		break;
+ 
+ 	default:
+-		kcs_force_abort(kcs_bmc);
++		kcs_force_abort(kcs_bmc, KCS_UNSPECIFIED_ERROR);
+ 		break;
+ 	}
+ }
+@@ -150,40 +118,32 @@ static void kcs_bmc_handle_cmd(struct kcs_bmc *kcs_bmc)
+ {
+ 	u8 cmd;
+ 
+-	set_state(kcs_bmc, WRITE_STATE);
+-	kcs_bmc->write_data_out(kcs_bmc, KCS_ZERO_DATA);
+-
++	kcs_set_state(kcs_bmc, KCS_STATE_WRITE);
+ 	cmd = kcs_bmc->read_data_in(kcs_bmc);
++	kcs_bmc->write_data_out(kcs_bmc, 0);
++
+ 	switch (cmd) {
+ 	case KCS_CMD_WRITE_START:
+-		kcs_bmc->phase = KCS_PHASE_WRITE_START;
+-		kcs_bmc->error = KCS_NO_ERROR;
+-		kcs_bmc->data_in_avail = false;
+-		kcs_bmc->data_in_idx = 0;
++		if (kcs_bmc->phase != KCS_PHASE_IDLE)
++			return kcs_force_abort(kcs_bmc, KCS_UNSPECIFIED_ERROR);
++		kcs_bmc->phase = KCS_PHASE_WRITE_DATA;
++		kcs_bmc->data_len = 0;
+ 		break;
+ 
+ 	case KCS_CMD_WRITE_END:
+-		if (kcs_bmc->phase != KCS_PHASE_WRITE_DATA) {
+-			kcs_force_abort(kcs_bmc);
+-			break;
+-		}
+-
+-		kcs_bmc->phase = KCS_PHASE_WRITE_END_CMD;
++		if (kcs_bmc->phase != KCS_PHASE_WRITE_DATA)
++			return kcs_force_abort(kcs_bmc, KCS_UNSPECIFIED_ERROR);
++		kcs_bmc->phase = KCS_PHASE_WRITE_END;
+ 		break;
+ 
+ 	case KCS_CMD_GET_STATUS_ABORT:
+-		if (kcs_bmc->error == KCS_NO_ERROR)
++		if (kcs_bmc->phase != KCS_PHASE_ERROR)
+ 			kcs_bmc->error = KCS_ABORTED_BY_COMMAND;
+-
+-		kcs_bmc->phase = KCS_PHASE_ABORT_ERROR1;
+-		kcs_bmc->data_in_avail = false;
+-		kcs_bmc->data_in_idx = 0;
++		kcs_bmc->phase = KCS_PHASE_ABORT;
+ 		break;
+ 
+ 	default:
+-		kcs_force_abort(kcs_bmc);
+-		kcs_bmc->error = KCS_ILLEGAL_CONTROL_CODE;
+-		break;
++		kcs_force_abort(kcs_bmc, KCS_ILLEGAL_CONTROL_CODE);
+ 	}
+ }
+ 
+@@ -198,8 +158,8 @@ irqreturn_t kcs_bmc_irq(int irq, void *arg)
+ 
+ 	status = kcs_bmc->read_status(kcs_bmc);
+ 	if (status & KCS_STATUS_IBF) {
+-		if (!kcs_bmc->running)
+-			kcs_force_abort(kcs_bmc);
++		if (!kcs_bmc->open)
++			kcs_force_abort(kcs_bmc, KCS_NO_ERROR);
+ 		else if (status & KCS_STATUS_CMD_DAT)
+ 			kcs_bmc_handle_cmd(kcs_bmc);
+ 		else
+@@ -218,30 +178,15 @@ static inline struct kcs_bmc *to_kcs_bmc(struct file *filp)
+ 	return container_of(filp->private_data, struct kcs_bmc, miscdev);
+ }
+ 
+-static int kcs_bmc_open(struct inode *inode, struct file *filp)
 -{
--	return kcs_bmc->priv;
+-	struct kcs_bmc *kcs_bmc = to_kcs_bmc(filp);
+-	int ret = 0;
+-
+-	spin_lock_irq(&kcs_bmc->lock);
+-	if (!kcs_bmc->running)
+-		kcs_bmc->running = 1;
+-	else
+-		ret = -EBUSY;
+-	spin_unlock_irq(&kcs_bmc->lock);
+-
+-	return ret;
 -}
 -
- irqreturn_t kcs_bmc_irq(int irq, void *arg);
--struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv,
--					u32 channel);
-+int kcs_bmc_init(struct kcs_bmc *kcs_bmc, struct device *dev, u32 channel);
-+void kcs_bmc_stop(struct kcs_bmc *kcs_bmc);
-+
- #endif /* __KCS_BMC_H__ */
-diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
-index d3b771e4d039..b466569d049d 100644
---- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-+++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-@@ -69,11 +69,29 @@ struct aspeed_kcs_reg {
- };
+ static __poll_t kcs_bmc_poll(struct file *filp, poll_table *wait)
+ {
+ 	struct kcs_bmc *kcs_bmc = to_kcs_bmc(filp);
+ 	__poll_t mask = 0;
  
- struct aspeed_kcs {
-+	struct kcs_bmc kcs_bmc;
-+
-+	u32 channel;
- 	struct regmap *map;
-+};
+-	poll_wait(filp, &kcs_bmc->queue, wait);
++	poll_wait(filp, &kcs_bmc->read_ready, wait);
  
--	const struct aspeed_kcs_reg *reg;
-+static const struct aspeed_kcs_reg aspeed_kcs_regs[KCS_CHANNEL_MAX] = {
-+	{ .idr = LPC_IDR1, .odr = LPC_ODR1, .str = LPC_STR1 },
-+	{ .idr = LPC_IDR2, .odr = LPC_ODR2, .str = LPC_STR2 },
-+	{ .idr = LPC_IDR3, .odr = LPC_ODR3, .str = LPC_STR3 },
-+	{ .idr = LPC_IDR4, .odr = LPC_ODR4, .str = LPC_STR4 },
- };
+ 	spin_lock_irq(&kcs_bmc->lock);
+-	if (kcs_bmc->data_in_avail)
++	if (kcs_bmc->phase == KCS_PHASE_WRITE_DONE)
+ 		mask |= EPOLLIN;
+ 	spin_unlock_irq(&kcs_bmc->lock);
  
-+static struct aspeed_kcs *to_aspeed_kcs(struct kcs_bmc *kcs_bmc)
-+{
-+	return container_of(kcs_bmc, struct aspeed_kcs, kcs_bmc);
+@@ -252,57 +197,36 @@ static ssize_t kcs_bmc_read(struct file *filp, char __user *buf,
+ 			    size_t count, loff_t *ppos)
+ {
+ 	struct kcs_bmc *kcs_bmc = to_kcs_bmc(filp);
+-	bool data_avail;
+-	size_t data_len;
++	u8 data_in[KCS_MSG_BUFSIZ];
+ 	ssize_t ret;
+ 
+-	if (!(filp->f_flags & O_NONBLOCK))
+-		wait_event_interruptible(kcs_bmc->queue,
+-					 kcs_bmc->data_in_avail);
+-
+-	mutex_lock(&kcs_bmc->mutex);
+-
+ 	spin_lock_irq(&kcs_bmc->lock);
+-	data_avail = kcs_bmc->data_in_avail;
+-	if (data_avail) {
+-		data_len = kcs_bmc->data_in_idx;
+-		memcpy(kcs_bmc->kbuffer, kcs_bmc->data_in, data_len);
+-	}
+-	spin_unlock_irq(&kcs_bmc->lock);
+ 
+-	if (!data_avail) {
+-		ret = -EAGAIN;
+-		goto out_unlock;
++	while (kcs_bmc->phase != KCS_PHASE_WRITE_DONE) {
++		if (filp->f_flags & O_NONBLOCK) {
++			spin_unlock_irq(&kcs_bmc->lock);
++			return -EAGAIN;
++		}
++		ret = wait_event_interruptible_lock_irq(kcs_bmc->read_ready,
++					 kcs_bmc->phase == KCS_PHASE_WRITE_DONE, kcs_bmc->lock);
++		if (ret) {
++			spin_unlock_irq(&kcs_bmc->lock);
++			return ret;
++		}
+ 	}
+ 
+-	if (count < data_len) {
+-		spin_lock_irq(&kcs_bmc->lock);
+-		kcs_force_abort(kcs_bmc);
++	if (kcs_bmc->data_len > count) {
+ 		spin_unlock_irq(&kcs_bmc->lock);
+-
+-		ret = -EOVERFLOW;
+-		goto out_unlock;
++		return -EOVERFLOW;
+ 	}
+ 
+-	if (copy_to_user(buf, kcs_bmc->kbuffer, data_len)) {
+-		ret = -EFAULT;
+-		goto out_unlock;
+-	}
+-
+-	ret = data_len;
+-
+-	spin_lock_irq(&kcs_bmc->lock);
+-	if (kcs_bmc->phase == KCS_PHASE_WRITE_DONE) {
+-		kcs_bmc->phase = KCS_PHASE_WAIT_READ;
+-		kcs_bmc->data_in_avail = false;
+-		kcs_bmc->data_in_idx = 0;
+-	} else {
+-		ret = -EAGAIN;
+-	}
++	ret = kcs_bmc->data_len;
++	memcpy(data_in, kcs_bmc->data, kcs_bmc->data_len);
++	kcs_bmc->phase = KCS_PHASE_WAIT_READ;
+ 	spin_unlock_irq(&kcs_bmc->lock);
+ 
+-out_unlock:
+-	mutex_unlock(&kcs_bmc->mutex);
++	if (copy_to_user(buf, data_in, ret))
++		return -EFAULT;
+ 
+ 	return ret;
+ }
+@@ -312,34 +236,28 @@ static ssize_t kcs_bmc_write(struct file *filp, const char __user *buf,
+ {
+ 	struct kcs_bmc *kcs_bmc = to_kcs_bmc(filp);
+ 	ssize_t ret;
++	u8 data_out[KCS_MSG_BUFSIZ];
+ 
+ 	/* a minimum response size '3' : netfn + cmd + ccode */
+-	if (count < 3 || count > KCS_MSG_BUFSIZ)
++	if (count < 3 || count > sizeof(data_out))
+ 		return -EINVAL;
+ 
+-	mutex_lock(&kcs_bmc->mutex);
+-
+-	if (copy_from_user(kcs_bmc->kbuffer, buf, count)) {
+-		ret = -EFAULT;
+-		goto out_unlock;
+-	}
++	if (copy_from_user(data_out, buf, count))
++		return -EFAULT;
+ 
+ 	spin_lock_irq(&kcs_bmc->lock);
+ 	if (kcs_bmc->phase == KCS_PHASE_WAIT_READ) {
+ 		kcs_bmc->phase = KCS_PHASE_READ;
+-		kcs_bmc->data_out_idx = 1;
+-		kcs_bmc->data_out_len = count;
+-		memcpy(kcs_bmc->data_out, kcs_bmc->kbuffer, count);
+-		kcs_bmc->write_data_out(kcs_bmc, kcs_bmc->data_out[0]);
++		memcpy(kcs_bmc->data, data_out, count);
++		kcs_bmc->data_idx = 0;
++		kcs_bmc->data_len = count;
++		kcs_pump_data_out(kcs_bmc);
+ 		ret = count;
+ 	} else {
+-		ret = -EINVAL;
++		ret = -EBUSY;
+ 	}
+ 	spin_unlock_irq(&kcs_bmc->lock);
+ 
+-out_unlock:
+-	mutex_unlock(&kcs_bmc->mutex);
+-
+ 	return ret;
+ }
+ 
+@@ -350,27 +268,42 @@ static long kcs_bmc_ioctl(struct file *filp, unsigned int cmd,
+ 	long ret = 0;
+ 
+ 	spin_lock_irq(&kcs_bmc->lock);
+-
+ 	switch (cmd) {
+ 	case IPMI_BMC_IOCTL_SET_SMS_ATN:
+-		update_status_bits(kcs_bmc, KCS_STATUS_SMS_ATN,
+-				   KCS_STATUS_SMS_ATN);
++		kcs_update_status_bits(kcs_bmc, KCS_STATUS_SMS_ATN,
++				KCS_STATUS_SMS_ATN);
+ 		break;
+ 
+ 	case IPMI_BMC_IOCTL_CLEAR_SMS_ATN:
+-		update_status_bits(kcs_bmc, KCS_STATUS_SMS_ATN,
+-				   0);
++		kcs_update_status_bits(kcs_bmc, KCS_STATUS_SMS_ATN, 0);
+ 		break;
+ 
+ 	case IPMI_BMC_IOCTL_FORCE_ABORT:
+-		kcs_force_abort(kcs_bmc);
++		kcs_force_abort(kcs_bmc, KCS_NO_ERROR);
+ 		break;
+ 
+ 	default:
+ 		ret = -EINVAL;
+ 		break;
+ 	}
++	spin_unlock_irq(&kcs_bmc->lock);
+ 
++	return ret;
 +}
 +
-+static const struct aspeed_kcs_reg *to_aspeed_kcs_reg(
-+		const struct aspeed_kcs *aspeed_kcs)
++static int kcs_bmc_open(struct inode *inode, struct file *filp)
 +{
-+	return &aspeed_kcs_regs[aspeed_kcs->channel-1];
-+}
++	struct kcs_bmc *kcs_bmc = to_kcs_bmc(filp);
++	int ret = 0;
++
++	spin_lock_irq(&kcs_bmc->lock);
++	if (kcs_bmc->open) {
++		ret = -EBUSY;
++	} else {
++		kcs_bmc->open = true;
++		kcs_update_status_bits(kcs_bmc, KCS_STATUS_SMS_ATN, 0);
++		kcs_force_abort(kcs_bmc, KCS_NO_ERROR);
++	}
+ 	spin_unlock_irq(&kcs_bmc->lock);
  
- static u8 aspeed_kcs_inb(struct aspeed_kcs *aspeed_kcs, u32 reg)
- {
-@@ -91,26 +109,26 @@ static void aspeed_kcs_outb(struct aspeed_kcs *aspeed_kcs, u32 reg, u8 data)
+ 	return ret;
+@@ -381,8 +314,9 @@ static int kcs_bmc_release(struct inode *inode, struct file *filp)
+ 	struct kcs_bmc *kcs_bmc = to_kcs_bmc(filp);
  
- static u8 aspeed_kcs_read_status(struct kcs_bmc *kcs_bmc)
- {
--	struct aspeed_kcs *aspeed_kcs = kcs_bmc_priv(kcs_bmc);
--	return aspeed_kcs_inb(aspeed_kcs, aspeed_kcs->reg->str);
-+	struct aspeed_kcs *aspeed_kcs = to_aspeed_kcs(kcs_bmc);
-+	return aspeed_kcs_inb(aspeed_kcs, to_aspeed_kcs_reg(aspeed_kcs)->str);
- }
+ 	spin_lock_irq(&kcs_bmc->lock);
+-	kcs_bmc->running = 0;
+-	kcs_force_abort(kcs_bmc);
++	kcs_bmc->open = false;
++	kcs_update_status_bits(kcs_bmc, KCS_STATUS_SMS_ATN, 0);
++	kcs_force_abort(kcs_bmc, KCS_NO_ERROR);
+ 	spin_unlock_irq(&kcs_bmc->lock);
  
- static void aspeed_kcs_write_status(struct kcs_bmc *kcs_bmc, u8 data)
- {
--	struct aspeed_kcs *aspeed_kcs = kcs_bmc_priv(kcs_bmc);
--	aspeed_kcs_outb(aspeed_kcs, aspeed_kcs->reg->str, data);
-+	struct aspeed_kcs *aspeed_kcs = to_aspeed_kcs(kcs_bmc);
-+	aspeed_kcs_outb(aspeed_kcs, to_aspeed_kcs_reg(aspeed_kcs)->str, data);
- }
+ 	return 0;
+@@ -403,12 +337,9 @@ int kcs_bmc_init(struct kcs_bmc *kcs_bmc, struct device *dev, u32 channel)
+ 	int rc;
  
- static u8 aspeed_kcs_read_data_in(struct kcs_bmc *kcs_bmc)
- {
--	struct aspeed_kcs *aspeed_kcs = kcs_bmc_priv(kcs_bmc);
--	return aspeed_kcs_inb(aspeed_kcs, aspeed_kcs->reg->idr);
-+	struct aspeed_kcs *aspeed_kcs = to_aspeed_kcs(kcs_bmc);
-+	return aspeed_kcs_inb(aspeed_kcs, to_aspeed_kcs_reg(aspeed_kcs)->idr);
- }
+ 	spin_lock_init(&kcs_bmc->lock);
+-	mutex_init(&kcs_bmc->mutex);
+-	init_waitqueue_head(&kcs_bmc->queue);
++	init_waitqueue_head(&kcs_bmc->read_ready);
  
- static void aspeed_kcs_write_data_out(struct kcs_bmc *kcs_bmc, u8 data)
- {
--	struct aspeed_kcs *aspeed_kcs = kcs_bmc_priv(kcs_bmc);
--	aspeed_kcs_outb(aspeed_kcs, aspeed_kcs->reg->odr, data);
-+	struct aspeed_kcs *aspeed_kcs = to_aspeed_kcs(kcs_bmc);
-+	aspeed_kcs_outb(aspeed_kcs, to_aspeed_kcs_reg(aspeed_kcs)->odr, data);
- }
+-	kcs_bmc->data_in = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
+-	kcs_bmc->data_out = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
+-	kcs_bmc->kbuffer = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
++	kcs_bmc->open = false;
  
+ 	kcs_bmc->miscdev.fops = &kcs_bmc_fops;
+ 	kcs_bmc->miscdev.minor = MISC_DYNAMIC_MINOR;
+diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
+index d65ffd479e9b..48c4fa8772d7 100644
+--- a/drivers/char/ipmi/kcs_bmc.h
++++ b/drivers/char/ipmi/kcs_bmc.h
+@@ -8,42 +8,37 @@
  
-@@ -127,32 +145,31 @@ static void aspeed_kcs_write_data_out(struct kcs_bmc *kcs_bmc, u8 data)
-  *     C. KCS4
-  *        D / C : CA4h / CA5h
+ #include <linux/irqreturn.h>
+ #include <linux/miscdevice.h>
++#include <linux/spinlock.h>
++#include <linux/wait.h>
+ 
+ /* Different phases of the KCS BMC module.
+  *  KCS_PHASE_IDLE:
+  *            BMC should not be expecting nor sending any data.
+- *  KCS_PHASE_WRITE_START:
+- *            BMC is receiving a WRITE_START command from system software.
+  *  KCS_PHASE_WRITE_DATA:
+  *            BMC is receiving a data byte from system software.
+- *  KCS_PHASE_WRITE_END_CMD:
++ *  KCS_PHASE_WRITE_END:
+  *            BMC is waiting a last data byte from system software.
+  *  KCS_PHASE_WRITE_DONE:
+- *            BMC has received the whole request from system software.
++ *            BMC is waiting to send request to the upper IPMI service.
+  *  KCS_PHASE_WAIT_READ:
+  *            BMC is waiting the response from the upper IPMI service.
+  *  KCS_PHASE_READ:
+  *            BMC is transferring the response to system software.
+- *  KCS_PHASE_ABORT_ERROR1:
++ *  KCS_PHASE_ABORT:
+  *            BMC is waiting error status request from system software.
+- *  KCS_PHASE_ABORT_ERROR2:
+- *            BMC is waiting for idle status afer error from system software.
+  *  KCS_PHASE_ERROR:
+  *            BMC has detected a protocol violation at the interface level.
   */
--static void aspeed_kcs_set_address(struct kcs_bmc *kcs_bmc, u16 addr)
-+static void aspeed_kcs_set_address(
-+		struct aspeed_kcs *aspeed_kcs, u16 addr)
- {
--	struct aspeed_kcs *priv = kcs_bmc_priv(kcs_bmc);
+ enum kcs_phases {
+ 	KCS_PHASE_IDLE,
+ 
+-	KCS_PHASE_WRITE_START,
+ 	KCS_PHASE_WRITE_DATA,
+-	KCS_PHASE_WRITE_END_CMD,
++	KCS_PHASE_WRITE_END,
+ 	KCS_PHASE_WRITE_DONE,
 -
--	switch (kcs_bmc->channel) {
-+	switch (aspeed_kcs->channel) {
- 	case 1:
--		regmap_update_bits(priv->map, LPC_HICR4,
-+		regmap_update_bits(aspeed_kcs->map, LPC_HICR4,
- 				LPC_HICR4_LADR12AS, 0);
--		regmap_write(priv->map, LPC_LADR12H, addr >> 8);
--		regmap_write(priv->map, LPC_LADR12L, addr & 0xFF);
-+		regmap_write(aspeed_kcs->map, LPC_LADR12H, addr >> 8);
-+		regmap_write(aspeed_kcs->map, LPC_LADR12L, addr & 0xFF);
- 		break;
+ 	KCS_PHASE_WAIT_READ,
+ 	KCS_PHASE_READ,
  
- 	case 2:
--		regmap_update_bits(priv->map, LPC_HICR4,
-+		regmap_update_bits(aspeed_kcs->map, LPC_HICR4,
- 				LPC_HICR4_LADR12AS, LPC_HICR4_LADR12AS);
--		regmap_write(priv->map, LPC_LADR12H, addr >> 8);
--		regmap_write(priv->map, LPC_LADR12L, addr & 0xFF);
-+		regmap_write(aspeed_kcs->map, LPC_LADR12H, addr >> 8);
-+		regmap_write(aspeed_kcs->map, LPC_LADR12L, addr & 0xFF);
- 		break;
+-	KCS_PHASE_ABORT_ERROR1,
+-	KCS_PHASE_ABORT_ERROR2,
++	KCS_PHASE_ABORT,
+ 	KCS_PHASE_ERROR
+ };
  
- 	case 3:
--		regmap_write(priv->map, LPC_LADR3H, addr >> 8);
--		regmap_write(priv->map, LPC_LADR3L, addr & 0xFF);
-+		regmap_write(aspeed_kcs->map, LPC_LADR3H, addr >> 8);
-+		regmap_write(aspeed_kcs->map, LPC_LADR3L, addr & 0xFF);
- 		break;
+@@ -56,36 +51,24 @@ enum kcs_errors {
+ 	KCS_UNSPECIFIED_ERROR       = 0xFF
+ };
  
- 	case 4:
--		regmap_write(priv->map, LPC_LADR4, ((addr + 1) << 16) |
-+		regmap_write(aspeed_kcs->map, LPC_LADR4, ((addr + 1) << 16) |
- 			addr);
- 		break;
- 
-@@ -161,64 +178,63 @@ static void aspeed_kcs_set_address(struct kcs_bmc *kcs_bmc, u16 addr)
- 	}
- }
- 
--static void aspeed_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
-+static void aspeed_kcs_enable_channel(
-+		struct aspeed_kcs *aspeed_kcs, bool enable)
- {
--	struct aspeed_kcs *priv = kcs_bmc_priv(kcs_bmc);
+-/* IPMI 2.0 - 9.5, KCS Interface Registers
+- * @idr: Input Data Register
+- * @odr: Output Data Register
+- * @str: Status Register
+- */
+-struct kcs_bmc {
+-	spinlock_t lock;
 -
--	switch (kcs_bmc->channel) {
-+	switch (aspeed_kcs->channel) {
- 	case 1:
- 		if (enable) {
--			regmap_update_bits(priv->map, LPC_HICR2,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR2,
- 					LPC_HICR2_IBFIF1, LPC_HICR2_IBFIF1);
--			regmap_update_bits(priv->map, LPC_HICR0,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR0,
- 					LPC_HICR0_LPC1E, LPC_HICR0_LPC1E);
- 		} else {
--			regmap_update_bits(priv->map, LPC_HICR0,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR0,
- 					LPC_HICR0_LPC1E, 0);
--			regmap_update_bits(priv->map, LPC_HICR2,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR2,
- 					LPC_HICR2_IBFIF1, 0);
- 		}
- 		break;
+-	int running;
++#define KCS_MSG_BUFSIZ    960
  
- 	case 2:
- 		if (enable) {
--			regmap_update_bits(priv->map, LPC_HICR2,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR2,
- 					LPC_HICR2_IBFIF2, LPC_HICR2_IBFIF2);
--			regmap_update_bits(priv->map, LPC_HICR0,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR0,
- 					LPC_HICR0_LPC2E, LPC_HICR0_LPC2E);
- 		} else {
--			regmap_update_bits(priv->map, LPC_HICR0,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR0,
- 					LPC_HICR0_LPC2E, 0);
--			regmap_update_bits(priv->map, LPC_HICR2,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR2,
- 					LPC_HICR2_IBFIF2, 0);
- 		}
- 		break;
++struct kcs_bmc {
+ 	/* Setup by BMC KCS controller driver */
+ 	u8 (*read_status)(struct kcs_bmc *kcs_bmc);
+ 	void (*write_status)(struct kcs_bmc *kcs_bmc, u8 b);
+ 	u8 (*read_data_in)(struct kcs_bmc *kcs_bmc);
+ 	void (*write_data_out)(struct kcs_bmc *kcs_bmc, u8 b);
  
- 	case 3:
- 		if (enable) {
--			regmap_update_bits(priv->map, LPC_HICR2,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR2,
- 					LPC_HICR2_IBFIF3, LPC_HICR2_IBFIF3);
--			regmap_update_bits(priv->map, LPC_HICR0,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR0,
- 					LPC_HICR0_LPC3E, LPC_HICR0_LPC3E);
--			regmap_update_bits(priv->map, LPC_HICR4,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR4,
- 					LPC_HICR4_KCSENBL, LPC_HICR4_KCSENBL);
- 		} else {
--			regmap_update_bits(priv->map, LPC_HICR0,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR0,
- 					LPC_HICR0_LPC3E, 0);
--			regmap_update_bits(priv->map, LPC_HICR4,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR4,
- 					LPC_HICR4_KCSENBL, 0);
--			regmap_update_bits(priv->map, LPC_HICR2,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICR2,
- 					LPC_HICR2_IBFIF3, 0);
- 		}
- 		break;
- 
- 	case 4:
- 		if (enable)
--			regmap_update_bits(priv->map, LPC_HICRB,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICRB,
- 					LPC_HICRB_IBFIF4 | LPC_HICRB_LPC4E,
- 					LPC_HICRB_IBFIF4 | LPC_HICRB_LPC4E);
- 		else
--			regmap_update_bits(priv->map, LPC_HICRB,
-+			regmap_update_bits(aspeed_kcs->map, LPC_HICRB,
- 					LPC_HICRB_IBFIF4 | LPC_HICRB_LPC4E,
- 					0);
- 		break;
-@@ -242,18 +258,10 @@ static int aspeed_kcs_config_irq(struct kcs_bmc *kcs_bmc,
- 				dev_name(dev), kcs_bmc);
- }
- 
--static const struct aspeed_kcs_reg aspeed_kcs_regs[KCS_CHANNEL_MAX] = {
--	{ .idr = LPC_IDR1, .odr = LPC_ODR1, .str = LPC_STR1 },
--	{ .idr = LPC_IDR2, .odr = LPC_ODR2, .str = LPC_STR2 },
--	{ .idr = LPC_IDR3, .odr = LPC_ODR3, .str = LPC_STR3 },
--	{ .idr = LPC_IDR4, .odr = LPC_ODR4, .str = LPC_STR4 },
--};
--
--static struct kcs_bmc *aspeed_kcs_probe_of_v1(struct platform_device *pdev)
-+static int aspeed_kcs_probe_of_v1(
-+		struct aspeed_kcs *aspeed_kcs, struct platform_device *pdev)
- {
--	struct aspeed_kcs *priv;
- 	struct device_node *np;
--	struct kcs_bmc *kcs;
- 	u32 channel;
- 	u32 slave;
- 	int rc;
-@@ -263,30 +271,25 @@ static struct kcs_bmc *aspeed_kcs_probe_of_v1(struct platform_device *pdev)
- 	rc = of_property_read_u32(np, "kcs_chan", &channel);
- 	if ((rc != 0) || (channel == 0 || channel > KCS_CHANNEL_MAX)) {
- 		dev_err(&pdev->dev, "no valid 'kcs_chan' configured\n");
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	}
-+	aspeed_kcs->channel = channel;
- 
--	kcs = kcs_bmc_alloc(&pdev->dev, sizeof(struct aspeed_kcs), channel);
--	if (!kcs)
--		return ERR_PTR(-ENOMEM);
--
--	priv = kcs_bmc_priv(kcs);
--	priv->map = syscon_node_to_regmap(pdev->dev.parent->of_node);
--	if (IS_ERR(priv->map)) {
-+	aspeed_kcs->map = syscon_node_to_regmap(pdev->dev.parent->of_node);
-+	if (IS_ERR(aspeed_kcs->map)) {
- 		dev_err(&pdev->dev, "Couldn't get regmap\n");
--		return ERR_PTR(-ENODEV);
-+		return -ENODEV;
- 	}
- 
- 	rc = of_property_read_u32(np, "kcs_addr", &slave);
- 	if (rc) {
- 		dev_err(&pdev->dev, "no valid 'kcs_addr' configured\n");
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	}
- 
--	priv->reg = &aspeed_kcs_regs[channel - 1];
--	aspeed_kcs_set_address(kcs, slave);
-+	aspeed_kcs_set_address(aspeed_kcs, slave);
- 
--	return kcs;
-+	return 0;
- }
- 
- static int aspeed_kcs_calculate_channel(const struct aspeed_kcs_reg *reg)
-@@ -301,12 +304,11 @@ static int aspeed_kcs_calculate_channel(const struct aspeed_kcs_reg *reg)
- 	return -EINVAL;
- }
- 
--static struct kcs_bmc *aspeed_kcs_probe_of_v2(struct platform_device *pdev)
-+static int aspeed_kcs_probe_of_v2(
-+		struct aspeed_kcs *aspeed_kcs, struct platform_device *pdev)
- {
--	struct aspeed_kcs *priv;
- 	struct device_node *np;
- 	struct aspeed_kcs_reg reg;
--	struct kcs_bmc *kcs;
- 	const __be32 *of_reg;
- 	int channel;
- 	u32 slave;
-@@ -317,120 +319,116 @@ static struct kcs_bmc *aspeed_kcs_probe_of_v2(struct platform_device *pdev)
- 	/* Don't translate addresses, we want offsets for the regmaps */
- 	of_reg = of_get_address(np, 0, NULL, NULL);
- 	if (!of_reg)
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	reg.idr = be32_to_cpup(of_reg);
- 
- 	of_reg = of_get_address(np, 1, NULL, NULL);
- 	if (!of_reg)
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	reg.odr = be32_to_cpup(of_reg);
- 
- 	of_reg = of_get_address(np, 2, NULL, NULL);
- 	if (!of_reg)
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	reg.str = be32_to_cpup(of_reg);
- 
- 	channel = aspeed_kcs_calculate_channel(&reg);
- 	if (channel < 0)
--		return ERR_PTR(channel);
-+		return channel;
-+	aspeed_kcs->channel = channel;
- 
--	kcs = kcs_bmc_alloc(&pdev->dev, sizeof(struct aspeed_kcs), channel);
--	if (!kcs)
--		return ERR_PTR(-ENOMEM);
--
--	priv = kcs_bmc_priv(kcs);
--	priv->reg = &aspeed_kcs_regs[channel - 1];
--	priv->map = syscon_node_to_regmap(pdev->dev.parent->of_node);
--	if (IS_ERR(priv->map)) {
-+	aspeed_kcs->map = syscon_node_to_regmap(pdev->dev.parent->of_node);
-+	if (IS_ERR(aspeed_kcs->map)) {
- 		dev_err(&pdev->dev, "Couldn't get regmap\n");
--		return ERR_PTR(-ENODEV);
-+		return -ENODEV;
- 	}
- 
- 	rc = of_property_read_u32(np, "aspeed,lpc-io-reg", &slave);
- 	if (rc)
--		return ERR_PTR(rc);
-+		return rc;
- 
--	aspeed_kcs_set_address(kcs, slave);
-+	aspeed_kcs_set_address(aspeed_kcs, slave);
- 
--	return kcs;
-+	return 0;
- }
- 
- static int aspeed_kcs_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct kcs_bmc *kcs_bmc;
--	struct aspeed_kcs *priv;
-+	struct aspeed_kcs *aspeed_kcs;
- 	struct device_node *np;
-+	const struct aspeed_kcs_reg *reg;
- 	int rc;
- 
-+	aspeed_kcs = devm_kzalloc(dev, sizeof(*aspeed_kcs), GFP_KERNEL);
-+	if (!aspeed_kcs)
-+		return -ENOMEM;
-+	kcs_bmc = &aspeed_kcs->kcs_bmc;
-+	dev_set_drvdata(dev, kcs_bmc);
++	spinlock_t lock;
++	wait_queue_head_t read_ready;
 +
- 	np = pdev->dev.of_node;
- 	if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc") ||
- 			of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc"))
--		kcs_bmc = aspeed_kcs_probe_of_v1(pdev);
-+		rc = aspeed_kcs_probe_of_v1(aspeed_kcs, pdev);
- 	else if (of_device_is_compatible(np, "aspeed,ast2400-kcs-bmc-v2") ||
- 			of_device_is_compatible(np, "aspeed,ast2500-kcs-bmc-v2"))
--		kcs_bmc = aspeed_kcs_probe_of_v2(pdev);
-+		rc = aspeed_kcs_probe_of_v2(aspeed_kcs, pdev);
- 	else
--		return -EINVAL;
-+		rc = -EINVAL;
-+
-+	if (rc)
-+		return rc;
- 
--	if (IS_ERR(kcs_bmc))
--		return PTR_ERR(kcs_bmc);
-+	aspeed_kcs_enable_channel(aspeed_kcs, true);
- 
- 	kcs_bmc->read_status = aspeed_kcs_read_status;
- 	kcs_bmc->write_status = aspeed_kcs_write_status;
- 	kcs_bmc->read_data_in = aspeed_kcs_read_data_in;
- 	kcs_bmc->write_data_out = aspeed_kcs_write_data_out;
- 
--	rc = aspeed_kcs_config_irq(kcs_bmc, pdev);
-+	rc = kcs_bmc_init(kcs_bmc, dev, aspeed_kcs->channel);
- 	if (rc)
- 		return rc;
- 
--	dev_set_drvdata(dev, kcs_bmc);
++	bool open;
+ 	enum kcs_phases phase;
+ 	enum kcs_errors error;
 -
--	aspeed_kcs_enable_channel(kcs_bmc, true);
+-	wait_queue_head_t queue;
+-	bool data_in_avail;
+-	int  data_in_idx;
+-	u8  *data_in;
 -
--	rc = misc_register(&kcs_bmc->miscdev);
-+	rc = aspeed_kcs_config_irq(kcs_bmc, pdev);
- 	if (rc) {
--		dev_err(dev, "Unable to register device\n");
-+		kcs_bmc_stop(kcs_bmc);
- 		return rc;
- 	}
- 
--	priv = kcs_bmc_priv(kcs_bmc);
-+	reg = to_aspeed_kcs_reg(aspeed_kcs);
- 	dev_dbg(&pdev->dev,
- 		"Probed KCS device %d (IDR=0x%x, ODR=0x%x, STR=0x%x)\n",
--		kcs_bmc->channel, priv->reg->idr, priv->reg->odr,
--		priv->reg->str);
-+		aspeed_kcs->channel, reg->idr, reg->odr, reg->str);
- 
- 	return 0;
- }
- 
- static int aspeed_kcs_remove(struct platform_device *pdev)
- {
--	struct kcs_bmc *kcs_bmc = dev_get_drvdata(&pdev->dev);
+-	int  data_out_idx;
+-	int  data_out_len;
+-	u8  *data_out;
 -
--	misc_deregister(&kcs_bmc->miscdev);
--
-+	kcs_bmc_stop(dev_get_drvdata(&pdev->dev));
- 	return 0;
- }
+-	struct mutex mutex;
+-	u8 *kbuffer;
++	u8 data[KCS_MSG_BUFSIZ];
++	size_t data_idx;
++	size_t data_len;
  
--static const struct of_device_id ast_kcs_bmc_match[] = {
-+static const struct of_device_id aspeed_kcs_bmc_match[] = {
- 	{ .compatible = "aspeed,ast2400-kcs-bmc" },
- 	{ .compatible = "aspeed,ast2500-kcs-bmc" },
- 	{ .compatible = "aspeed,ast2400-kcs-bmc-v2" },
- 	{ .compatible = "aspeed,ast2500-kcs-bmc-v2" },
- 	{ }
+ 	struct miscdevice miscdev;
  };
--MODULE_DEVICE_TABLE(of, ast_kcs_bmc_match);
-+MODULE_DEVICE_TABLE(of, aspeed_kcs_bmc_match);
- 
--static struct platform_driver ast_kcs_bmc_driver = {
-+static struct platform_driver aspeed_kcs_bmc_driver = {
- 	.driver = {
- 		.name           = DEVICE_NAME,
--		.of_match_table = ast_kcs_bmc_match,
-+		.of_match_table = aspeed_kcs_bmc_match,
- 	},
- 	.probe  = aspeed_kcs_probe,
- 	.remove = aspeed_kcs_remove,
- };
--module_platform_driver(ast_kcs_bmc_driver);
-+module_platform_driver(aspeed_kcs_bmc_driver);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
-diff --git a/drivers/char/ipmi/kcs_bmc_npcm7xx.c b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-index 572501f7da71..e9ba95d0d560 100644
---- a/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-+++ b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-@@ -65,8 +65,9 @@ struct npcm7xx_kcs_reg {
- };
- 
- struct npcm7xx_kcs {
--	struct regmap *map;
-+	struct kcs_bmc kcs_bmc;
- 
-+	struct regmap *map;
- 	const struct npcm7xx_kcs_reg *reg;
- };
- 
-@@ -76,6 +77,11 @@ static const struct npcm7xx_kcs_reg npcm7xx_kcs_reg_tbl[KCS_CHANNEL_MAX] = {
- 	{ .sts = KCS3ST, .dob = KCS3DO, .dib = KCS3DI, .ctl = KCS3CTL, .ie = KCS3IE },
- };
- 
-+static struct npcm7xx_kcs *to_npcm7xx_kcs(struct kcs_bmc *kcs_bmc)
-+{
-+	return container_of(kcs_bmc, struct npcm7xx_kcs, kcs_bmc);
-+}
-+
- static u8 npcm7xx_kcs_inb(struct npcm7xx_kcs *npcm7xx_kcs, u32 reg)
- {
- 	u32 val = 0;
-@@ -92,36 +98,35 @@ static void npcm7xx_kcs_outb(struct npcm7xx_kcs *npcm7xx_kcs, u32 reg, u8 data)
- 
- static u8 npcm7xx_kcs_read_status(struct kcs_bmc *kcs_bmc)
- {
--	struct npcm7xx_kcs *npcm7xx_kcs = kcs_bmc_priv(kcs_bmc);
-+	struct npcm7xx_kcs *npcm7xx_kcs = to_npcm7xx_kcs(kcs_bmc);
- 	return npcm7xx_kcs_inb(npcm7xx_kcs, npcm7xx_kcs->reg->sts);
- }
- 
- static void npcm7xx_kcs_write_status(struct kcs_bmc *kcs_bmc, u8 data)
- {
--	struct npcm7xx_kcs *npcm7xx_kcs = kcs_bmc_priv(kcs_bmc);
-+	struct npcm7xx_kcs *npcm7xx_kcs = to_npcm7xx_kcs(kcs_bmc);
- 	npcm7xx_kcs_outb(npcm7xx_kcs, npcm7xx_kcs->reg->sts, data);
- }
- 
- static u8 npcm7xx_kcs_read_data_in(struct kcs_bmc *kcs_bmc)
- {
--	struct npcm7xx_kcs *npcm7xx_kcs = kcs_bmc_priv(kcs_bmc);
-+	struct npcm7xx_kcs *npcm7xx_kcs = to_npcm7xx_kcs(kcs_bmc);
- 	return npcm7xx_kcs_inb(npcm7xx_kcs, npcm7xx_kcs->reg->dib);
- }
- 
- static void npcm7xx_kcs_write_data_out(struct kcs_bmc *kcs_bmc, u8 data)
- {
--	struct npcm7xx_kcs *npcm7xx_kcs = kcs_bmc_priv(kcs_bmc);
-+	struct npcm7xx_kcs *npcm7xx_kcs = to_npcm7xx_kcs(kcs_bmc);
- 	npcm7xx_kcs_outb(npcm7xx_kcs, npcm7xx_kcs->reg->dob, data);
- }
- 
--static void npcm7xx_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
-+static void npcm7xx_kcs_enable_channel(struct npcm7xx_kcs *npcm7xx_kcs, bool enable)
- {
--	struct npcm7xx_kcs *priv = kcs_bmc_priv(kcs_bmc);
--
--	regmap_update_bits(priv->map, priv->reg->ctl, KCS_CTL_IBFIE,
--			   enable ? KCS_CTL_IBFIE : 0);
-+	regmap_update_bits(npcm7xx_kcs->map, npcm7xx_kcs->reg->ctl,
-+			   KCS_CTL_IBFIE, enable ? KCS_CTL_IBFIE : 0);
- 
--	regmap_update_bits(priv->map, priv->reg->ie, KCS_IE_IRQE | KCS_IE_HIRQE,
-+	regmap_update_bits(npcm7xx_kcs->map, npcm7xx_kcs->reg->ie,
-+			   KCS_IE_IRQE | KCS_IE_HIRQE,
- 			   enable ? KCS_IE_IRQE | KCS_IE_HIRQE : 0);
- }
- 
-@@ -142,7 +147,7 @@ static int npcm7xx_kcs_config_irq(struct kcs_bmc *kcs_bmc,
- static int npcm7xx_kcs_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct npcm7xx_kcs *priv;
-+	struct npcm7xx_kcs *npcm7xx_kcs;
- 	struct kcs_bmc *kcs_bmc;
- 	u32 chan;
- 	int rc;
-@@ -153,49 +158,47 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	kcs_bmc = kcs_bmc_alloc(dev, sizeof(*priv), chan);
--	if (!kcs_bmc)
-+	npcm7xx_kcs = devm_kzalloc(dev, sizeof(*npcm7xx_kcs), GFP_KERNEL);
-+	if (!npcm7xx_kcs)
- 		return -ENOMEM;
-+	kcs_bmc = &npcm7xx_kcs->kcs_bmc;
-+	dev_set_drvdata(dev, kcs_bmc);
- 
--	priv = kcs_bmc_priv(kcs_bmc);
--	priv->map = syscon_node_to_regmap(dev->parent->of_node);
--	if (IS_ERR(priv->map)) {
-+	npcm7xx_kcs->map = syscon_node_to_regmap(dev->parent->of_node);
-+	if (IS_ERR(npcm7xx_kcs->map)) {
- 		dev_err(dev, "Couldn't get regmap\n");
- 		return -ENODEV;
- 	}
--	priv->reg = &npcm7xx_kcs_reg_tbl[chan - 1];
-+	npcm7xx_kcs->reg = &npcm7xx_kcs_reg_tbl[chan - 1];
- 
- 	kcs_bmc->read_status = npcm7xx_kcs_read_status;
- 	kcs_bmc->write_status = npcm7xx_kcs_write_status;
- 	kcs_bmc->read_data_in = npcm7xx_kcs_read_data_in;
- 	kcs_bmc->write_data_out = npcm7xx_kcs_write_data_out;
- 
--	dev_set_drvdata(dev, kcs_bmc);
-+	npcm7xx_kcs_enable_channel(npcm7xx_kcs, true);
- 
--	npcm7xx_kcs_enable_channel(kcs_bmc, true);
--	rc = npcm7xx_kcs_config_irq(kcs_bmc, pdev);
-+	rc = kcs_bmc_init(kcs_bmc, dev, chan);
- 	if (rc)
- 		return rc;
- 
--	rc = misc_register(&kcs_bmc->miscdev);
-+	rc = npcm7xx_kcs_config_irq(kcs_bmc, pdev);
- 	if (rc) {
--		dev_err(dev, "Unable to register device\n");
-+		kcs_bmc_stop(kcs_bmc);
- 		return rc;
- 	}
- 
- 	dev_dbg(&pdev->dev,
--		"Probed KCS device %d (DIB=0x%x, DOB=0x%x, STS=0x%x )\n",
--		chan, priv->reg->dib, priv->reg->dob, priv->reg->sts);
-+		"Probed KCS device %d (DIB=0x%x, DOB=0x%x, STS=0x%x)\n",
-+		chan, npcm7xx_kcs->reg->dib, npcm7xx_kcs->reg->dob,
-+		npcm7xx_kcs->reg->sts);
- 
- 	return 0;
- }
- 
- static int npcm7xx_kcs_remove(struct platform_device *pdev)
- {
--	struct kcs_bmc *kcs_bmc = dev_get_drvdata(&pdev->dev);
--
--	misc_deregister(&kcs_bmc->miscdev);
--
-+	kcs_bmc_stop(dev_get_drvdata(&pdev->dev));
- 	return 0;
- }
- 
 -- 
 2.30.0.478.g8a0d178c01-goog
 
