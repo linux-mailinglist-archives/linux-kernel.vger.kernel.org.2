@@ -2,87 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC27431DD93
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8476C31DD92
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhBQQpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:45:17 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:23047 "EHLO z11.mailgun.us"
+        id S234192AbhBQQpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:45:09 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:22364 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233694AbhBQQpP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:45:15 -0500
+        id S233694AbhBQQpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 11:45:07 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613580292; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=6r4IImVOl7JARGGICLwyYe0bDR0yIu1YrLOqz/hgxJM=; b=iZUuG8ZyaZrbU+tflX8i2ZaviwZo5A9BzbApTzLOaD/Y8jz/JxnLyG4HQHF2ahc+4gd/okm8
- 5DqdiYnmETHRcSKrV1y7eMU8p1fBE9x0trY0/tkQXUzEUIKJdp6wORzqgpR+m6WCqpYCM/Y2
- a8983zfg8xt0A6OJApSr5JXOSPg=
+ s=smtp; t=1613580287; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=lP/wW1WoOhWCByLzAv/Wf4dAFE7ofJU7cPtmIjec1tA=; b=mNiFtbzkFkTO9bh2Ytt1ayxXL4j+8psm4XgoJc0WJFOkg2bWvDXCGsAy8bs04carApYUbI3G
+ sK9+9BgE67P7O6ew4kh1qyzGVkWAxZCXJsLdFUzhqD61iA5ov2mypclBLhybTSOfmpJOGvFu
+ 1hQhnkLEhLenFQYk/V3GFLUOl94=
 X-Mailgun-Sending-Ip: 104.130.96.11
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 602d47e11e797edad8fcec63 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 16:44:17
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 602d47e570933e9467bf42b2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 16:44:21
  GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E3F6C43462; Wed, 17 Feb 2021 16:44:17 +0000 (UTC)
+        id B4C08C433CA; Wed, 17 Feb 2021 16:44:20 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        UPPERCASE_50_75,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (unknown [202.46.22.19])
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0403FC433CA;
-        Wed, 17 Feb 2021 16:44:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0403FC433CA
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1423EC433C6;
+        Wed, 17 Feb 2021 16:44:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1423EC433C6
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-To:     catalin.marinas@arm.com, will@kernel.org,
-        saiprakash.ranjan@codeaurora.org, robh@kernel.org,
-        konrad.dybcio@somainline.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH] arm64: Add part number for Arm Cortex-A78
-Date:   Wed, 17 Feb 2021 22:14:11 +0530
-Message-Id: <1613580251-12694-1-git-send-email-neeraju@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v3] bus: mhi: core: Return EAGAIN if MHI ring is full
+To:     Jeffrey Hugo <jhugo@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Fan Wu <wufan@codeaurora.org>
+References: <1613579209-3675-1-git-send-email-jhugo@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <7f8120f7-e7bd-756c-cdbb-8580cd87bc13@codeaurora.org>
+Date:   Wed, 17 Feb 2021 08:44:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1613579209-3675-1-git-send-email-jhugo@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the MIDR part number info for the Arm Cortex-A78.
 
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
----
- arch/arm64/include/asm/cputype.h | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
-index ef5b040..3aced88 100644
---- a/arch/arm64/include/asm/cputype.h
-+++ b/arch/arm64/include/asm/cputype.h
-@@ -72,6 +72,7 @@
- #define ARM_CPU_PART_CORTEX_A76		0xD0B
- #define ARM_CPU_PART_NEOVERSE_N1	0xD0C
- #define ARM_CPU_PART_CORTEX_A77		0xD0D
-+#define ARM_CPU_PART_CORTEX_A78		0xD41
- 
- #define APM_CPU_PART_POTENZA		0x000
- 
-@@ -109,6 +110,7 @@
- #define MIDR_CORTEX_A76	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A76)
- #define MIDR_NEOVERSE_N1 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N1)
- #define MIDR_CORTEX_A77	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A77)
-+#define MIDR_CORTEX_A78	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78)
- #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
- #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
- #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
+On 2/17/21 8:26 AM, Jeffrey Hugo wrote:
+> From: Fan Wu <wufan@codeaurora.org>
+> 
+> Currently ENOMEM is returned when MHI ring is full. This error code is
+> very misleading. Change to EAGAIN instead.
+> 
+> Signed-off-by: Fan Wu <wufan@codeaurora.org>
+> Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+> ---
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-hosted by The Linux Foundation
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
