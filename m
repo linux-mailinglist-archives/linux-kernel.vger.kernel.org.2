@@ -2,141 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 407A631DDF3
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AE931DDFF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:14:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbhBQRId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:08:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54825 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234260AbhBQRIZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:08:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613581619;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=teZTA6Q4Aw5qzYmTXQsisbEZn/CxzO/4FfFNpRMYgZg=;
-        b=ckJRyaeUX/4RQwqzKsp85kWaRPxtLdL+0qXyMabCPm4piZMsx0gIIpvZTb1+KFoOTy1lUT
-        JIARDzMN2FxoB3dIeeeBKblkyzQpIchf/STHReHsVpm558E4qrWEzzJGhK5S50RkkMzy7+
-        8SFpRMdRxoPKkFznmhtf6Ld3cTVnACY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-_Tk9Tt78NC2R41z3BB0FMA-1; Wed, 17 Feb 2021 12:06:54 -0500
-X-MC-Unique: _Tk9Tt78NC2R41z3BB0FMA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D3821192D790;
-        Wed, 17 Feb 2021 17:06:49 +0000 (UTC)
-Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 02BFE10016F0;
-        Wed, 17 Feb 2021 17:06:39 +0000 (UTC)
-To:     Dave Hansen <dave.hansen@intel.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <726b0766-9624-69c5-5a45-ffad42c446b1@intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <9129686d-a272-fa8a-3f99-2de2fac52c93@redhat.com>
-Date:   Wed, 17 Feb 2021 18:06:39 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234371AbhBQROA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Feb 2021 12:14:00 -0500
+Received: from mga17.intel.com ([192.55.52.151]:45679 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234282AbhBQRN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:13:56 -0500
+IronPort-SDR: z8BdrBP6bYVx8VlJ2jZJeqIr0/rzfudMnbD9SsM8tOv7u9tRv69azkwhyRD6iTSTI9pU1te0bX
+ kuZ22rS0d4AQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="163039261"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="163039261"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 09:13:15 -0800
+IronPort-SDR: Ze8hAK6HItV4g6zHQhfupFSfrmcGUQEuGy1aaFVF31i+EmsF3J0xduCKFOkGcaCBGcbbCMTpVW
+ M10pDqE4dSAQ==
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="400034792"
+Received: from mvalka-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.39.140])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 09:13:06 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Christian =?utf-8?Q?K=C3=B6nig?= <christian.koenig@amd.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rahul Lakkireddy <rahul.lakkireddy@chelsio.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        amd-gfx@lists.freedesktop.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        netdev <netdev@vger.kernel.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH v1 1/3] string: Consolidate yesno() helpers under string.h hood
+In-Reply-To: <YC0QBvv9HXr64ySf@alley>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210215142137.64476-1-andriy.shevchenko@linux.intel.com> <43456ba7-c372-84cc-4949-dcb817188e21@amd.com> <CAHp75VfVXnqdVRAPQ36vZeD-ZMCjWmjA_-6T=jnOEVMne4bv0g@mail.gmail.com> <YC0QBvv9HXr64ySf@alley>
+Date:   Wed, 17 Feb 2021 19:13:03 +0200
+Message-ID: <8735xubotc.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <726b0766-9624-69c5-5a45-ffad42c446b1@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.02.21 17:46, Dave Hansen wrote:
-> On 2/17/21 7:48 AM, David Hildenbrand wrote:
->> While MADV_DONTNEED and FALLOC_FL_PUNCH_HOLE provide us ways to reliably
->> discard memory, there is no generic approach to populate ("preallocate")
->> memory.
->>
->> Although mmap() supports MAP_POPULATE, it is not applicable to the concept
->> of sparse memory mappings, where we want to do populate/discard
->> dynamically and avoid expensive/problematic remappings. In addition,
->> we never actually report error during the final populate phase - it is
->> best-effort only.
-> 
-> Seems pretty sane to me.
-> 
-> But, I was surprised that MADV_WILLNEED was no mentioned.  It might be
-> nice to touch on on why MADV_WILLNEED is a bad choice for this
-> functionality?  We could theoretically have it populate anonymous
-> mappings instead of just swapping in.
+On Wed, 17 Feb 2021, Petr Mladek <pmladek@suse.com> wrote:
+> On Mon 2021-02-15 16:39:26, Andy Shevchenko wrote:
+>> +Cc: Sakari and printk people
+>> 
+>> On Mon, Feb 15, 2021 at 4:28 PM Christian König
+>> <christian.koenig@amd.com> wrote:
+>> > Am 15.02.21 um 15:21 schrieb Andy Shevchenko:
+>> > > We have already few similar implementation and a lot of code that can benefit
+>> > > of the yesno() helper.  Consolidate yesno() helpers under string.h hood.
+>> > >
+>> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> >
+>> > Looks like a good idea to me, feel free to add an Acked-by: Christian
+>> > König <christian.koenig@amd.com> to the series.
+>> 
+>> Thanks.
+>> 
+>> > But looking at the use cases for this, wouldn't it make more sense to
+>> > teach kprintf some new format modifier for this?
+>> 
+>> As a next step? IIRC Sakari has at some point the series converted
+>> yesno and Co. to something which I don't remember the details of.
+>> 
+>> Guys, what do you think?
+>
+> Honestly, I think that yesno() is much easier to understand than %py.
+> And %py[DOY] looks really scary. It has been suggested at
+> https://lore.kernel.org/lkml/YCqaNnr7ynRydczE@smile.fi.intel.com/#t
+>
+> Yes, enabledisable() is hard to parse but it is still self-explaining
+> and can be found easily by cscope. On the contrary, %pyD will likely
+> print some python code and it is not clear if it would be compatible
+> with v3. I am just kidding but you get the picture.
 
-I stumbled over it, but it ended up looking like mixing in different 
-semantics.
+Personally I prefer %s and the functions.
 
-"Expect access in the near future." and "might be a good idea to read 
-some pages" vs. "Definitely populate/preallocate all memory and 
-definitely fail.".
+I think the format specifiers have become unwieldy. I don't remember any
+of the kernel specific ones by heart, I always look them up or just
+cargo-cult. I think the fourcc format specifiers are a nice cleanup, but
+I don't remember them either. I'd like something like %foo{yesno} where,
+if you remember the %foo part, you could actually also remember the
+rest.
 
-> 
-> I guess it's possible that folks are using MADV_WILLNEED on sparse
-> mappings that they don't want to populate, but it would be nice to get
-> that in the changelog.
+But really if you get *any* version accepted, I'm not going to argue
+against it, and you can disregard this as meaningless bikeshedding.
 
-Indeed: prime example is virtio-balloon in QEMU when deflating. Just 
-because we are deflating the balloon doesn't mean that the guest is 
-going to use all memory immediately - and that we want to actually 
-consume memory immediately. ... we call MADV_WILLNEED unconditionally on 
-any memory backing when deflating ...
+BR,
+Jani.
 
-I'll definitely add that to the changelog - thanks.
-
-> 
-> I was also a bit bummed to see the broad VM_IO/PFNMAP restriction show
-> up again.  I was just looking at implementing pre-faulting for the new
-> SGX driver:
-
-I added that because __mm_populate() similarly skips over VM_IO | 
-VM_PFNMAP. So it mimics existing "populate semantics" we have.
-
-> 
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/x86/kernel/cpu/sgx/driver.c
-> 
-> It has a vm_ops->fault handler, but the VMAs are VM_IO.  It obviously
-> don't work with gup, though.  Not a deal breaker, and something we could
-> certainly add to this later.
-
-I assume you would then also want to support MAP_POPULATE, right? 
-Because it ends up using __mm_populate() and would not work.
-
-Thanks!
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Jani Nikula, Intel Open Source Graphics Center
