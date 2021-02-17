@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D0A31DB7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:30:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468A731DB8D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:38:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbhBQO3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:29:51 -0500
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:49796 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233328AbhBQO3m (ORCPT
+        id S233529AbhBQOiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:38:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233496AbhBQOhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:29:42 -0500
-X-Greylist: delayed 8976 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Feb 2021 09:29:40 EST
-Received: from myt5-23f0be3aa648.qloud-c.yandex.net (myt5-23f0be3aa648.qloud-c.yandex.net [IPv6:2a02:6b8:c12:3e29:0:640:23f0:be3a])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id E89CE2E0C61;
-        Wed, 17 Feb 2021 17:28:57 +0300 (MSK)
-Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
-        by myt5-23f0be3aa648.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id bPjqwWRHUA-SvxaPpXq;
-        Wed, 17 Feb 2021 17:28:57 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
-        t=1613572137; bh=/M/W/rry6PW248aDe81ggUEdVdPjrAZqjQQ99mtBe3k=;
-        h=Message-Id:Date:Subject:To:From:Cc;
-        b=0tTT32VPUOg0z6LDzc8HPZL7d+d+PsB/jnFYWLRT2W3Nx0ZQqEhQPu5Vgl4mDACv/
-         jzmSZRbdIPVH/coLWDDW0dtNFTi8c2sWCb1xIobGnBma8wAzB5fNXbw89N0R5+FF0K
-         zxVqX78wxQq6HHVH0faWVIV2B4F9FvO1C2lJLueg=
-Authentication-Results: myt5-23f0be3aa648.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:6619::1:17])
-        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id IlngOxqDDd-SuoS9OgN;
-        Wed, 17 Feb 2021 17:28:57 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-From:   Andrey Ryabinin <arbn@yandex-team.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Will Deacon <will@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        valesini@yandex-team.ru, Andrey Ryabinin <arbn@yandex-team.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] iommu/amd: Fix sleeping in atomic in increase_address_space()
-Date:   Wed, 17 Feb 2021 17:30:04 +0300
-Message-Id: <20210217143004.19165-1-arbn@yandex-team.com>
-X-Mailer: git-send-email 2.26.2
+        Wed, 17 Feb 2021 09:37:48 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611E7C0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:37:08 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id v16so3814577ote.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:37:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=omnibond-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KRNZjZzTqfrWLRx1QJmelJFfxfPUcehdqwqj+L7mkPQ=;
+        b=R8hCb4eKqdCpoFdkYTrVn7FoN33zUtyi/ljWByVLrm0nNn3tup4D+Hft33LDzdElis
+         n16SrG3viJflBxrjVIN2QmmXO/BgPFSDWJe1ljVa2OopffyUF0+G8Fh9aoQpou3/MlTR
+         6lOKbNE6+B3j4d5dwhv33gPtGhtt8L27dc4EMEm0vGnJ/TAunXib+QvZcOCi9i0mwM86
+         k3prqX0Oe/sUpTqzEgE3HcERBdh4YwNsSjrGveT+xsSircuhGURdlWmXiZnYI5Mz2W8Z
+         jNhEhauvpFlyX/F69JD4IZFRmykIsAN3vuO7r6enaGZ5EvFYprDuRwGgQKV+8pJmk5aD
+         UJew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KRNZjZzTqfrWLRx1QJmelJFfxfPUcehdqwqj+L7mkPQ=;
+        b=DIxqyBKVR8dhpzucONg2wdQpq4Pqw71xZ9x9gLkEgq7puQIRSvTeCECQXeOW1inZLq
+         ID9OInJfbH8ytD2AWd6+BkuQ3idfSR4rVtEL0VjkCeBCt32Ml0MxfSkigzxQ8YkYXQUK
+         ufzSZs2/4EIBIhgbNozYEoTrCAkGDCBdEphveJMdtS2nJYsBKExv0+yUzGBGy2vekb7L
+         Djm+qhZYIpNC9wKwnlfm9DG6F+/jBae8hKEWA84pYHZGovBkW/Me8S3ZyXv5FLdOojCc
+         smkzoJRsCC+laKIawT2wJtz3afYwxHZXWfh5gL6OSN1wPWrtiYHkzijKhAhavqGGFrP/
+         REMg==
+X-Gm-Message-State: AOAM530zs0MKXudYNZGfpViiXsQp9eTqj6r4eDH7DEm9joOsVXSOqKSf
+        THxIeRqqy9F74z475cAXZYmq5R5zaYUQ0smN4i1KOA==
+X-Google-Smtp-Source: ABdhPJy4hyW/PUrDPGqVg3UI4ZfJfCb8Vr2cdTNl0Mc8udn+hWDu9ZRGdP0xDV4oyRaIVmDhAucDgP/5yXuHdlUvdPs=
+X-Received: by 2002:a05:6830:2424:: with SMTP id k4mr7412732ots.352.1613572627726;
+ Wed, 17 Feb 2021 06:37:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
+ <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+ <20210216103215.GB27714@lst.de> <20210216132251.GI2858050@casper.infradead.org>
+In-Reply-To: <20210216132251.GI2858050@casper.infradead.org>
+From:   Mike Marshall <hubcap@omnibond.com>
+Date:   Wed, 17 Feb 2021 09:36:56 -0500
+Message-ID: <CAOg9mSQYBjnMsDj5pMd6MOGTY5w_ZR=pw7VRYKfP5ZwmHBj2=Q@mail.gmail.com>
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        David Howells <dhowells@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-mm <linux-mm@kvack.org>, linux-cachefs@redhat.com,
+        linux-afs@lists.infradead.org,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        linux-cifs@vger.kernel.org,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        V9FS Developers <v9fs-developer@lists.sourceforge.net>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-increase_address_space() calls get_zeroed_page(gfp) under spin_lock with
-disabled interrupts. gfp flags passed to increase_address_space() may allow
-sleeping, so it comes to this:
+I plan to try and use readahead_expand in Orangefs...
 
- BUG: sleeping function called from invalid context at mm/page_alloc.c:4342
- in_atomic(): 1, irqs_disabled(): 1, pid: 21555, name: epdcbbf1qnhbsd8
+-Mike
 
- Call Trace:
-  dump_stack+0x66/0x8b
-  ___might_sleep+0xec/0x110
-  __alloc_pages_nodemask+0x104/0x300
-  get_zeroed_page+0x15/0x40
-  iommu_map_page+0xdd/0x3e0
-  amd_iommu_map+0x50/0x70
-  iommu_map+0x106/0x220
-  vfio_iommu_type1_ioctl+0x76e/0x950 [vfio_iommu_type1]
-  do_vfs_ioctl+0xa3/0x6f0
-  ksys_ioctl+0x66/0x70
-  __x64_sys_ioctl+0x16/0x20
-  do_syscall_64+0x4e/0x100
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Fix this by moving get_zeroed_page() out of spin_lock/unlock section.
-
-Fixes: 754265bcab ("iommu/amd: Fix race in increase_address_space()")
-Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
-Cc: <stable@vger.kernel.org>
----
- drivers/iommu/amd/iommu.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index f0adbc48fd17..9256f84f5ebf 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -1502,6 +1502,10 @@ static bool increase_address_space(struct protection_domain *domain,
- 	bool ret = true;
- 	u64 *pte;
- 
-+	pte = (void *)get_zeroed_page(gfp);
-+	if (!pte)
-+		return false;
-+
- 	spin_lock_irqsave(&domain->lock, flags);
- 
- 	amd_iommu_domain_get_pgtable(domain, &pgtable);
-@@ -1513,10 +1517,6 @@ static bool increase_address_space(struct protection_domain *domain,
- 	if (WARN_ON_ONCE(pgtable.mode == PAGE_MODE_6_LEVEL))
- 		goto out;
- 
--	pte = (void *)get_zeroed_page(gfp);
--	if (!pte)
--		goto out;
--
- 	*pte = PM_LEVEL_PDE(pgtable.mode, iommu_virt_to_phys(pgtable.root));
- 
- 	pgtable.root  = pte;
-@@ -1530,10 +1530,12 @@ static bool increase_address_space(struct protection_domain *domain,
- 	 */
- 	amd_iommu_domain_set_pgtable(domain, pte, pgtable.mode);
- 
-+	pte = NULL;
- 	ret = true;
- 
- out:
- 	spin_unlock_irqrestore(&domain->lock, flags);
-+	free_page((unsigned long)pte);
- 
- 	return ret;
- }
--- 
-2.26.2
-
+On Tue, Feb 16, 2021 at 8:28 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Tue, Feb 16, 2021 at 11:32:15AM +0100, Christoph Hellwig wrote:
+> > On Mon, Feb 15, 2021 at 03:44:52PM +0000, David Howells wrote:
+> > > Provide a function, readahead_expand(), that expands the set of pages
+> > > specified by a readahead_control object to encompass a revised area with a
+> > > proposed size and length.
+> > >
+> > > The proposed area must include all of the old area and may be expanded yet
+> > > more by this function so that the edges align on (transparent huge) page
+> > > boundaries as allocated.
+> > >
+> > > The expansion will be cut short if a page already exists in either of the
+> > > areas being expanded into.  Note that any expansion made in such a case is
+> > > not rolled back.
+> > >
+> > > This will be used by fscache so that reads can be expanded to cache granule
+> > > boundaries, thereby allowing whole granules to be stored in the cache, but
+> > > there are other potential users also.
+> >
+> > So looking at linux-next this seems to have a user, but that user is
+> > dead wood given that nothing implements ->expand_readahead.
+> >
+> > Looking at the code structure I think netfs_readahead and
+> > netfs_rreq_expand is a complete mess and needs to be turned upside
+> > down, that is instead of calling back from netfs_readahead to the
+> > calling file system, split it into a few helpers called by the
+> > caller.
+>
+> That's funny, we modelled it after iomap.
+>
+> > But even after this can't we just expose the cache granule boundary
+> > to the VM so that the read-ahead request gets setup correctly from
+> > the very beginning?
+>
+> The intent is that this be usable by filesystems which want to (for
+> example) compress variable sized blocks.  So they won't know which pages
+> they want to readahead until they're in their iomap actor routine,
+> see that the extent they're in is compressed, and find out how large
+> the extent is.
