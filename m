@@ -2,143 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC30C31D74E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:12:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EA031D751
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhBQKJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:09:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50772 "EHLO mx2.suse.de"
+        id S232105AbhBQKKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:10:30 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:64615 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232161AbhBQKJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:09:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3F935AFB5;
-        Wed, 17 Feb 2021 10:08:27 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH 2/2] mm: Make alloc_contig_range handle in-use hugetlb pages
-Date:   Wed, 17 Feb 2021 11:08:16 +0100
-Message-Id: <20210217100816.28860-3-osalvador@suse.de>
-X-Mailer: git-send-email 2.13.7
-In-Reply-To: <20210217100816.28860-1-osalvador@suse.de>
-References: <20210217100816.28860-1-osalvador@suse.de>
+        id S232158AbhBQKKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:10:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613556601; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=jCW7xZ2ylvOaKOBk/URfPytU0nmWAyANZpQ2VOK7Fkg=; b=MkFlTP/QefAFFb50+9CLWUaV/fuDnemsF3cAqwKWWLAxAn6fmM0SHDYOTWnpd9iivV+eN6P8
+ TVeqDTOeXYqsZQcSLprFzMkmQZGDWTt4BwT0EH+0pE6rHf54MimOcog94tQuLCbvU1BpcxO3
+ LspBnt5s9d1cy1FkAjY94AJegtg=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 602ceb5a1e797edad8c2cbad (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 10:09:30
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AFE5AC433CA; Wed, 17 Feb 2021 10:09:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51129C433C6;
+        Wed, 17 Feb 2021 10:09:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51129C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Srinivasan Raju <srini.raju@purelifi.com>
+Cc:     mostafa.afgani@purelifi.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list),
+        linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS)
+Subject: Re: [PATCH] [v13] wireless: Initial driver submission for pureLiFi STA devices
+References: <20200928102008.32568-1-srini.raju@purelifi.com>
+        <20210212115030.124490-1-srini.raju@purelifi.com>
+Date:   Wed, 17 Feb 2021 12:09:26 +0200
+In-Reply-To: <20210212115030.124490-1-srini.raju@purelifi.com> (Srinivasan
+        Raju's message of "Fri, 12 Feb 2021 17:19:39 +0530")
+Message-ID: <87mtw3ovjd.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In-use hugetlb pages can be migrated as any other page (LRU
-and Movable), so let alloc_contig_range handle them.
+Srinivasan Raju <srini.raju@purelifi.com> writes:
 
-All we need is to succesfully isolate such page.
+> This introduces the pureLiFi LiFi driver for LiFi-X, LiFi-XC
+> and LiFi-XL USB devices.
+>
+> This driver implementation has been based on the zd1211rw driver.
+>
+> Driver is based on 802.11 softMAC Architecture and uses
+> native 802.11 for configuration and management.
+>
+> The driver is compiled and tested in ARM, x86 architectures and
+> compiled in powerpc architecture.
+>
+> Signed-off-by: Srinivasan Raju <srini.raju@purelifi.com>
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- include/linux/hugetlb.h |  5 +++--
- mm/compaction.c         | 11 ++++++++++-
- mm/hugetlb.c            |  6 ++++--
- mm/vmscan.c             |  5 +++--
- 4 files changed, 20 insertions(+), 7 deletions(-)
+[...]
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 72352d718829..8c17d0dbc87c 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -505,7 +505,7 @@ struct huge_bootmem_page {
- 	struct hstate *hstate;
- };
- 
--bool isolate_or_dissolve_huge_page(struct page *page);
-+bool isolate_or_dissolve_huge_page(struct page *page, struct list_head *list);
- struct page *alloc_huge_page(struct vm_area_struct *vma,
- 				unsigned long addr, int avoid_reserve);
- struct page *alloc_huge_page_nodemask(struct hstate *h, int preferred_nid,
-@@ -776,7 +776,8 @@ void set_page_huge_active(struct page *page);
- #else	/* CONFIG_HUGETLB_PAGE */
- struct hstate {};
- 
--static inline bool isolate_or_dissolve_huge_page(struct page *page)
-+static inline bool isolate_or_dissolve_huge_page(struct page *page,
-+						 struct list_head *list)
- {
- 	return false;
- }
-diff --git a/mm/compaction.c b/mm/compaction.c
-index d52506ed9db7..55a41a9228a9 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -906,9 +906,17 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		}
- 
- 		if (PageHuge(page) && cc->alloc_contig) {
--			if (!isolate_or_dissolve_huge_page(page))
-+			if (!isolate_or_dissolve_huge_page(page, &cc->migratepages))
- 				goto isolate_fail;
- 
-+			if (PageHuge(page)) {
-+				/*
-+				 * Hugepage was succesfully isolated.
-+				 */
-+				low_pfn += compound_nr(page) - 1;
-+				goto isolate_success_no_list;
-+			}
-+
- 			/*
- 			 * Ok, the hugepage was dissolved. Now these pages are
- 			 * Buddy and cannot be re-allocated because they are
-@@ -1053,6 +1061,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 
- isolate_success:
- 		list_add(&page->lru, &cc->migratepages);
-+isolate_success_no_list:
- 		cc->nr_migratepages += compound_nr(page);
- 		nr_isolated += compound_nr(page);
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index b78926bca60a..9fa678d13c68 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2351,7 +2351,7 @@ static bool alloc_and_dissolve_huge_page(struct hstate *h, struct page *page)
- 	return ret;
- }
- 
--bool isolate_or_dissolve_huge_page(struct page *page)
-+bool isolate_or_dissolve_huge_page(struct page *page, struct list_head *list)
- {
- 	struct hstate *h = NULL;
- 	struct page *head;
-@@ -2379,7 +2379,9 @@ bool isolate_or_dissolve_huge_page(struct page *page)
- 		 */
- 		return ret;
- 
--	if(!page_count(head) && alloc_and_dissolve_huge_page(h, head))
-+	if (page_count(head) && isolate_huge_page(head, list))
-+		ret = true;
-+	else if(!page_count(head) && alloc_and_dissolve_huge_page(h, head))
- 		ret = true;
- 
- 	return ret;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b1b574ad199d..0803adca4469 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1506,8 +1506,9 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 	LIST_HEAD(clean_pages);
- 
- 	list_for_each_entry_safe(page, next, page_list, lru) {
--		if (page_is_file_lru(page) && !PageDirty(page) &&
--		    !__PageMovable(page) && !PageUnevictable(page)) {
-+		if (!PageHuge(page) && page_is_file_lru(page) &&
-+		    !PageDirty(page) && !__PageMovable(page) &&
-+		    !PageUnevictable(page)) {
- 			ClearPageActive(page);
- 			list_move(&page->lru, &clean_pages);
- 		}
+> +	send_vendor_command(udev, PLF_VNDR_FPGA_STATE_CMD, NULL, 0);
+> +
+> +	msleep(200);
+
+There are multiple msleeps like this, please add a descriptive define
+for value 200.
+
 -- 
-2.16.3
+https://patchwork.kernel.org/project/linux-wireless/list/
 
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
