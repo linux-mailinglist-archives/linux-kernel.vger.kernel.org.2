@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81E931D59B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D9431D59F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhBQHD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:03:58 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:49141 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhBQHD4 (ORCPT
+        id S231573AbhBQHH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 02:07:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhBQHHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:03:56 -0500
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 11H72lIm022478;
-        Wed, 17 Feb 2021 16:02:48 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11H72lIm022478
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613545368;
-        bh=E1RLv4/hlDSK/JAIVwLXtUV86s2XAsZpcBxtZyFWB18=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PfIBeEV2phEKnmhFmw+03MjCkyAWCCGR8KDP2uTuBQB3evYCeqqqeUyxpAxvc6di1
-         cNVedLMGWTeWCLHFuwvjYypcEBUr5Lv/IgIYJzbw2wWjx2OVGls1TUwTd7xLj7r6cJ
-         jvxHGUsJ4FdXd4l3J8HulI1Zt3YhQDEwImr6/Y1HPZhlyCqIrxGj+Jbm0hAekSKLR1
-         ivbUhg4q0TUfZKRo9UxoeMYtKnOo0ShtCKrtxgSzKwYrUCoNTOaydDY7HBJ4Z6IsrX
-         9mlDIJTE0WXuG/d+9rauZkQDsHt0D5fT93tpN91OazmmSwmsQnPUroMHiiu38p9Cuj
-         DOce2ighCj1sw==
-X-Nifty-SrcIP: [209.85.210.172]
-Received: by mail-pf1-f172.google.com with SMTP id w18so7823742pfu.9;
-        Tue, 16 Feb 2021 23:02:48 -0800 (PST)
-X-Gm-Message-State: AOAM5308Qn4ZdccmbHmJUl9n4bO6niFqiAeE+RRV2lu3Fq7HjWqy0tnD
-        pJ8dwIHtyNG23FusADafyuQXGg2pALjtrnO55cI=
-X-Google-Smtp-Source: ABdhPJxKDpcaYvfx0b/i7FFnrPbrcRu4r1etXIPAHil6i22L6iSu+cypHsxDAUNFxSo3WaZ/cip+05e3tgOIplb2loA=
-X-Received: by 2002:a63:575e:: with SMTP id h30mr22503796pgm.7.1613545367403;
- Tue, 16 Feb 2021 23:02:47 -0800 (PST)
-MIME-Version: 1.0
-References: <20210216213312.30462-1-nathan@kernel.org>
-In-Reply-To: <20210216213312.30462-1-nathan@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 17 Feb 2021 16:02:09 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARcy52b6aGtV1mgq3rehtnwo7sm7TkNHc9H4bGu9Qdu8Q@mail.gmail.com>
-Message-ID: <CAK7LNARcy52b6aGtV1mgq3rehtnwo7sm7TkNHc9H4bGu9Qdu8Q@mail.gmail.com>
-Subject: Re: [PATCH] Makefile: Remove # characters from compiler string
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Michael Fuckner <michael@fuckner.net>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 17 Feb 2021 02:07:55 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3884EC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:07:15 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id kr16so952281pjb.2
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:07:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=uUceRMwlX9IZeouSnfen/C1hPvySWdTZkKj9we8Ehb8=;
+        b=C89ryAF9aFUedZbGkE/HdZAmPNa4/BiT2AaYiJ+yqQCgBYNbEA46kYNoe/7h6/SNJ7
+         b8uGKwpiVe8AcazMajtwsNTQWlki5Qget5ARV1ZsU1Q4WU8HKljLvPeLCR2MbfB+d7cM
+         3SQ//bbXKU5vC/TRjSGjJy5MrkBS7qOeJouMK2hYOqys94/LpczvLrjz3ULRx3kTHL7+
+         VChboaU0KMJiCkYXi/ADkGt0J6axrgUN9edszMZHvYoOCNjw6SQRn88XkD7FpnUPWLdl
+         XY0lKA9AzAvgQFN79g2VBVyY3Zc4QyGjAWg40G5zZS3TfyS0xGO8WR2qWHnZfelCuTSF
+         SXMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=uUceRMwlX9IZeouSnfen/C1hPvySWdTZkKj9we8Ehb8=;
+        b=TrkVdRfRwZ4PNQXOlPXkdqjtkiBrOfYcFRBiGP1G+gxaL2Yrl4nqvbPYaPceiQw77i
+         E18MVcr/nl0Z2r1dhszFcD5kLQDHlIUo1nnBjN8/QhTFM4/TTruFFn8TsTJYGI1QFtTo
+         9oJ7pa/Rh/2CMTECiH1cML0F27vTSibqEDLaDImq1+j+obwUXpxEgXG6bMeQa6xtdeWp
+         eJlSv8PUoJDuYEH4gCevO4T4QqqOT775CMGFpl7zQG5sJR367tKGHPqd2RFqC3hmm411
+         6UQZQyaoRh5e/nRZPThH97foiT8oXFqw6e01yKHqXASdzi7UBrSBCQWg2jfM4kw3byhO
+         usKQ==
+X-Gm-Message-State: AOAM532iRuIkk5QIIiTGoKhlH8DERHkQHbCI40ipR/nhzn/0zKV0q/Zg
+        NKdi597c5nvSNUkxB/ZlGL8=
+X-Google-Smtp-Source: ABdhPJwbeQHODNxqBptsyO7J6CNit1Ee7v8+7bAZvSQHSoqqUgnQJ5Da0aYS1OI7At+a2ZHBQs0zxQ==
+X-Received: by 2002:a17:90a:ab07:: with SMTP id m7mr7883085pjq.74.1613545634469;
+        Tue, 16 Feb 2021 23:07:14 -0800 (PST)
+Received: from localhost.localdomain ([116.73.175.128])
+        by smtp.gmail.com with ESMTPSA id 123sm1117217pfd.91.2021.02.16.23.07.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 23:07:14 -0800 (PST)
+From:   Selvakumar Elangovan <selvakumar16197@gmail.com>
+To:     matthias.bgg@gmail.com, gregkh@linuxfoundation.org,
+        sergio.paracuellos@gmail.com
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Staging: mt7621-pci: fixed a blank line coding style issue
+Date:   Wed, 17 Feb 2021 12:37:10 +0530
+Message-Id: <20210217070710.7359-1-selvakumar16197@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 6:33 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> When using AMD's Optimizing C/C++ Compiler (AOCC), the build fails due
-> to a # character in the version string, which is interpreted as a
-> comment:
->
-> $ make CC=clang defconfig init/main.o
-> include/config/auto.conf.cmd:1374: *** invalid syntax in conditional. Stop.
->
-> $ sed -n 1374p include/config/auto.conf.cmd
-> ifneq "$(CC_VERSION_TEXT)" "AMD clang version 11.0.0 (CLANG: AOCC_2.3.0-Build#85 2020_11_10) (based on LLVM Mirror.Version.11.0.0)"
->
-> Remove all # characters in the version string so that the build does not
-> fail unexpectedly.
->
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1298
-> Reported-by: Michael Fuckner <michael@fuckner.net>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
+Removed an unnecessary blank line before closing brace reported by
+checkpatch.pl
 
+Signed-off-by: Selvakumar Elangovan <selvakumar16197@gmail.com>
+---
+ drivers/staging/mt7621-pci/pci-mt7621.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-After some thoughts, I decided to apply this as-is for now.
+diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
+index c3532bc138fb..1781c1dcf5b4 100644
+--- a/drivers/staging/mt7621-pci/pci-mt7621.c
++++ b/drivers/staging/mt7621-pci/pci-mt7621.c
+@@ -521,7 +521,6 @@ static void mt7621_pcie_init_ports(struct mt7621_pcie *pcie)
 
-
-Ideally, the part "AOCC_2.3.0-Build#85"
-could be escaped like "AOCC_2.3.0-Build\#85"
-so that the original version string is preserved.
-
-I know it is impossible because escape sequence
-handling in Kconfig is buggy.
-
-So, I accept dropping problematic '#' characters entirely,
-and I agree this is the safest fix.
-
-When I have time, I might want to revisit this with a Kconfig fix.
-
-
-Applied to linux-kbuild. Thanks.
-
-
-
-
-
-
+ 			if (slot == 1 && tmp && !tmp->enabled)
+ 				phy_power_off(tmp->phy);
+-
+ 		}
+ 	}
+ }
 --
-Best Regards
-Masahiro Yamada
+2.17.1
+
