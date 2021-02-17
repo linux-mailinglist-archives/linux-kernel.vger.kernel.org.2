@@ -2,174 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF0731D8BB
+	by mail.lfdr.de (Postfix) with ESMTP id A08F931D8BC
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhBQLqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:46:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
+        id S231797AbhBQLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:46:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhBQLnc (ORCPT
+        with ESMTP id S231663AbhBQLnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Feb 2021 06:43:32 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC11EC06178C;
-        Wed, 17 Feb 2021 03:40:18 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id z15so8240628pfc.3;
-        Wed, 17 Feb 2021 03:40:18 -0800 (PST)
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1416EC061793
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:40:31 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id z6so8252330pfq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:40:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=645THBJSX2gD2j8qlDKgO7ipMGXMkXchUslhmTUGCSo=;
-        b=f7LuYmoiqK+h+c4JOKA5/5O/NUjR1n1RFFecrkqaL5USPvrCHPNree9C6uJu1seq/S
-         tHV3xXzOj7boCXHXKyvlYsNQ52f4biaTldoeqQx24X5Z2K7uxJdrybICrBjN736ibs/W
-         v7vbddMvG2+WTjILLvmKLzyb5LKeXHrqeESRmc606sIgXu4TORzes+RY+V9H8euym8hR
-         x8yhqs6CgBkhhtUgtohQJ0qkklvzRX69yVmTZSqfbTdtpSblSPdMLl0JCE1bc2gYWNrC
-         FUMiVuMPyUT7CL56zfFuoQRtFxB0jVvGAK0jEgzAGZ7sbrp/CG9hk0rBfr8196lrQyLj
-         l1Bw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=11pGVD0nzA2DAiJ7cWPXp9I44T8zR661lI4xstwokb8=;
+        b=nN3POMtqLZQF8/79uB0ZdenvqJkcov6oKL3+Yaukuqsj3U0pi+rmZsW6D/unqNXCP0
+         4Xdu9O8wIAQpxqis6OuGqhr9RyyW/HWKYqZvwuPiAvJH+AHoGjRTDzciOgrTwWOkCoUF
+         XT+TnNXJQBqDJCNrAYWI7L4mVB0cgLerE8aevwJe0wxiKZjvQsNBpi12uHi1aFyY+LEN
+         9HAfWZMhSvePdMxjTbgmHXF0qK740ZMRl8hnxQotc2GLAzMrDYRs03JAFseq1X4pOtbd
+         lNCp3VQMft6/UqDuzuWT4qnPLMsSrIfq3lbn5vOqg/MtC5jv83XFjcuEW3ygFDMyvUoR
+         IK9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=645THBJSX2gD2j8qlDKgO7ipMGXMkXchUslhmTUGCSo=;
-        b=qSa9+zqLU3bu0Vpe/1dEaKDtW6QkZtdJaW2kz2cT9kdxkd0ZkGdnIKAhxcrhndXN98
-         R9Gyp7x6fc3ZXIlxChDQWh0L4d5bEcnIE0WH9rL5MEd2pCMsMergw7JTeO4JhVxeJO0L
-         DeaUu/P9a79xHQ2MJKZD6HaqLPOZTMGCPpx7lmdBhiDSNOAjHanMqWTeMj4WJ0Ed6/rA
-         7r4NUnjIyf0XHcK8XudfQ8oCJ1EoDvCjrGjhK2agwb2iUKGT50w0cMTd5P04wd2TsZWl
-         LAOSYrOL9nqR7u2yidWaXRp9AfIkL53AR8BBxwDtFZZI6qKv/9Lm8TJb9t/miFVQv5fP
-         CRWg==
-X-Gm-Message-State: AOAM530etrAeXYMy0D1dIVPQQSc+dZ7MxSD6cpicQ0r+8U0JkJaiVd8c
-        MmWb595I7twtvgSBaOn1DCo=
-X-Google-Smtp-Source: ABdhPJzMUXObPeYAJTsYVaU5Q5UdOBH3zomQSroHpD5o3nnkv4SvHp+sL9tHYOW1Afc88wB25YlwrQ==
-X-Received: by 2002:a05:6a00:787:b029:1da:643b:6d41 with SMTP id g7-20020a056a000787b02901da643b6d41mr24735094pfu.31.1613562017723;
-        Wed, 17 Feb 2021 03:40:17 -0800 (PST)
-Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
-        by smtp.gmail.com with ESMTPSA id c18sm2255853pgm.88.2021.02.17.03.40.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 03:40:17 -0800 (PST)
-Date:   Wed, 17 Feb 2021 19:40:14 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
-        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] i2c: designware: Use the correct name of
- device-managed function
-Message-ID: <20210217114014.GB766103@nuc8i5>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <20210216160249.749799-4-zhengdejin5@gmail.com>
- <YCwE2cf9X/Gd6lWy@rocinante>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=11pGVD0nzA2DAiJ7cWPXp9I44T8zR661lI4xstwokb8=;
+        b=pasqQ/7PhGjp0KrXIeEf5YozD0lvwNwofRDGnTvzWmA8X8cifznped7aUrmmBvhU3q
+         vZ1e3GNb7rYqheLtfwMSJCz70//ryDFpLgWzwz9njs5jtg+BOLvT1bl9PuLUC2elo9rV
+         h7nrUOOQ3jg6RQx+wbxMC+m7rmXhYCVLJ1TmF20tIh2rmVjNc+3i1AR1gkoENSMFO5mj
+         g27Z3ItXLwzSVSApI+Nv906kliI0jZc33CTNbNxSsKORx52aJsW5zpmhXCLpcTv/fmlU
+         ZibP8UEAzSLqRu5mAFkdAqqyox+SHrPhzcn/dp4pTWPEljSAVKlIyugRWlHMs93fWVCu
+         Je1g==
+X-Gm-Message-State: AOAM5317ygmE9XLtl5dh16aTFlj6GaYWMPrc77Rcnvj6zAGaGn63jxb7
+        HUA1EJ5uM2hcnsxle/sbcyU2+g==
+X-Google-Smtp-Source: ABdhPJzr4uJe4QkljUPFWlLqLXnOjixB1cwYPo3cq1LNkxSXQbV/GK5ae2xqgQx6gdCFQbeMSp90cQ==
+X-Received: by 2002:a62:6585:0:b029:1b9:d8d9:1af2 with SMTP id z127-20020a6265850000b02901b9d8d91af2mr23638713pfb.17.1613562030391;
+        Wed, 17 Feb 2021 03:40:30 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id h124sm2331354pfe.216.2021.02.17.03.40.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Feb 2021 03:40:29 -0800 (PST)
+Date:   Wed, 17 Feb 2021 17:10:27 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210217114027.ashqh67hrfk4hwib@vireshk-i7>
+References: <cover.1611829953.git.viresh.kumar@linaro.org>
+ <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
+ <20210203114521.GA6380@arm.com>
+ <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
+ <20210217002422.GA17422@arm.com>
+ <20210217042558.o4anjdkayzgqny55@vireshk-i7>
+ <20210217113011.GA22176@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YCwE2cf9X/Gd6lWy@rocinante>
+In-Reply-To: <20210217113011.GA22176@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 06:46:01PM +0100, Krzysztof Wilczyński wrote:
-Hi Krzysztof,
-> Hi Dejin,
+On 17-02-21, 11:30, Ionela Voinescu wrote:
+> The problem is not topology_scale_freq_invariant() but whether a scale
+> factor is set for some CPUs.
 > 
-> Thank you for all the changes, looks good!
+> Scenario (test system above):
+>  - "AMUs" are only supported for [1-2],
+>  - cpufreq_supports_freq_invariance() -> false
 > 
-> You could improve the subject line, as it is very vague - what is the
-> new function name more correct?  Was the other and/or the previous one
-> not correct?  Seems like you are correcting a typo of sorts, rather than
-> introducing a new function in this file.
->
-If you have read the following commit comments, As you know, the
-pci_alloc_irq_vectors() is not a real device-managed function. But
-in some specific cases, it will act as an device-managed function.
-Such naming will cause controversy, So In the case of need device-managed,
-should be used pcim_alloc_irq_vectors(), an explicit device-managed
-function. So the subject name is "Use the correct name of device-managed function".
+> What should happen:
+>  - topology_scale_freq_invariant() -> false (passed)
+>  - all CPUs should have their freq_scale unmodified (1024) - (failed)
+>    because only 2 out of 6 CPUs have a method of setting a scale factor
+> 
+> What does happen:
+>  - arch_set_freq_tick() -> topology_set_freq_tick() will set a scale
+>    factor for [1-2] based on AMUs. This should not happen. We will end
+>    up with invariant signals for bigs and signals that are not freq
+>    invariant for littles.
 
-> > Use the new function pcim_alloc_irq_vectors() to allocate IRQ vectors,
-> > the pcim_alloc_irq_vectors() function, an explicit device-managed
-> > version of pci_alloc_irq_vectors(). If pcim_enable_device() has been
-> > called before, then pci_alloc_irq_vectors() is actually
-> > a device-managed function. It is used here as a device-managed
-> > function, So replace it with pcim_alloc_irq_vectors().
-> 
-> The commit is good, but it could use some polish, so to speak.
-> 
-> A few suggestions to think about:
-> 
->   - What are we adding and/or changing, and why
->   - Why is using pcim_alloc_irq_vectors(), which is part
->     of the managed devices framework, a better alternative
->     to the pci_alloc_irq_vectors()
->   - And finally why this change allowed us to remove the
->     pci_free_irq_vectors()
-> 
-These are all explained by the device-managed function mechanism.
+Another case. cpufreq is included as a module and AMU is implemented
+partially.
 
-> > At the same time, simplify the error handling path.
-> 
-> The change simplifies the error handling path, how?  A line of two which
-> explains how it has been achieved might help should someone reads the
-> commit message in the future.
-> 
-To put it simply, if the driver probe fail, the device-managed function
-mechanism will automatically call pcim_release(), then the pci_free_irq_vectors()
-will be executed. For details, please see the relevant code.
+- first time cpufreq driver is inserted, we set up everything and
+  freq_scale gets updated on ticks.
 
-> [...]
-> >  	if (controller->setup) {
-> >  		r = controller->setup(pdev, controller);
-> > -		if (r) {
-> > -			pci_free_irq_vectors(pdev);
-> > +		if (r)
-> >  			return r;
-> > -		}
-> >  	}
-> >  
-> >  	i2c_dw_adjust_bus_speed(dev);
-> > @@ -246,10 +244,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
-> >  		i2c_dw_acpi_configure(&pdev->dev);
-> >  
-> >  	r = i2c_dw_validate_speed(dev);
-> > -	if (r) {
-> > -		pci_free_irq_vectors(pdev);
-> > +	if (r)
-> >  		return r;
-> > -	}
-> >  
-> >  	i2c_dw_configure(dev);
-> >  
-> > @@ -269,10 +265,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
-> >  	adap->nr = controller->bus_num;
-> >  
-> >  	r = i2c_dw_probe(dev);
-> > -	if (r) {
-> > -		pci_free_irq_vectors(pdev);
-> > +	if (r)
-> >  		return r;
-> > -	}
-> >  
-> >  	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
-> >  	pm_runtime_use_autosuspend(&pdev->dev);
-> > @@ -292,7 +286,6 @@ static void i2c_dw_pci_remove(struct pci_dev *pdev)
-> >  
-> >  	i2c_del_adapter(&dev->adapter);
-> >  	devm_free_irq(&pdev->dev, dev->irq, dev);
-> > -	pci_free_irq_vectors(pdev);
-> 
-> If pcim_release() is called should the pci_driver's probe callback fail,
-Yes, you guessed right.
+- remove cpufreq driver, we are back in same situation.
 
-> and I assume that this is precisely the case, then all of the above make
-> sense in the view of using pcim_alloc_irq_vectors().
-> 
-> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
-> 
-> Krzysztof
+We can't control it that way.. Or we add another call layer in middle
+before the tick-handler gets called for AMU, which will check if we
+are fully invariant or not ?
 
-BR,
-Dejin
+-- 
+viresh
