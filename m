@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C9931D49D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E2D31D4A1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbhBQEax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 23:30:53 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:47597 "EHLO
+        id S229999AbhBQEcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 23:32:06 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34083 "EHLO
         new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231218AbhBQEVP (ORCPT
+        by vger.kernel.org with ESMTP id S231185AbhBQEWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 23:21:15 -0500
+        Tue, 16 Feb 2021 23:22:20 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 599C0580376;
-        Tue, 16 Feb 2021 23:20:09 -0500 (EST)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 89A7258037B;
+        Tue, 16 Feb 2021 23:20:10 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 16 Feb 2021 23:20:09 -0500
+  by compute3.internal (MEProxy); Tue, 16 Feb 2021 23:20:10 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=n2MqGhQ5o4Ylt
-        VCPJ1jY0hzOaCnyziRkK7pQjX/OSoE=; b=bdWVV8mYOlJeYKBDDjEBZE1OZGm/H
-        VyVacPJAcKwStlWAYmVO4J0XEKavxZyFvlUqZ2O/geyoI/nJEWr5Cm/e3euGhGaj
-        Da4hSRGjKmMIuyA8by20VEgXb7Es5I7lnFl7Dgy3Q4wEp4q4x9IjOfUFgcMLmhyr
-        DJMyziqKAqBJWaH/2HWnAwcFIagsAvT51DnQ1TA7qUYjUAjtjmY/U+lRfieSKxmG
-        SBCkrJOLfcEVci0dL0Gb+oOv/Me/5gqAAukOqpVopXojgxa77XcBn3F4SHc1k9aU
-        m9xDmgornL/t3byZL1CMLxwoJxnS3LKR+kmYmaTK57hJD/z0yooZETBQQ==
+        :mime-version:content-transfer-encoding; s=fm2; bh=/Ll9sOu6/aNt8
+        sKVthTKqJ9f/C+c6WcSRYeGV0Onyhk=; b=IcCMWw+oIFDwum354Zkm3Z/pcQJ06
+        ZI+zzhRgnmzqSSEivC6y2fhlJ1uiigjNjUBwwzbyNdXgX9XX7vquCYo2jU7h0hWk
+        fVkVYBGhMFwoQ/8Iw/WUSSpfvJ2vdV8TY6wUsiAWsYRAjsgSCVwr3FMaM7GQw/mt
+        zq0s11o9WRfh43LxexLB6T8sdWJEEOIphZKmCP34DRAoJ4UNwFKvtOlgq8D8Fdf5
+        WLENXI5nmD9AGe0mDUfz2/IzSaHOiSeqxNeWe2m/GiIALhDhmmwh+Tbw1z7td8L7
+        InA/KqNOByil73kSoWoBQ1tLHLRCCpiX64TbrjTdh8wKdayB3oKQWWFmA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=n2MqGhQ5o4YltVCPJ1jY0hzOaCnyziRkK7pQjX/OSoE=; b=j6p8JpPl
-        us5XEIAth3QRuQQxrso0QlVc5oXFivMY87+BZ/HSYvR2dOV/4b9XREtOnqGh/mm8
-        G5tZxWdzbJTG9xh9LRhsvPWMDbyDrvRg4RGGDeH5B4SeyAGi/xU+h1Qak9LVYyJF
-        gULM8XgoGrz+UIk/83zbHf7snVojKcfW+9J9yr+ZsCKHVdrwADPMH8bcmN31RWpn
-        AQiKBdugfr72dJ8Wuh4tuudumrxR2WmngtH657WR64uYPGFBBCx96eZZkFaKFw/p
-        l6UA0ZBLFd/vcWMfNp3NVp+TXyQByV7gQn/v2tyVPnoJ/ntqe9PohzzUXMts+3yB
-        DruiMqX/vkx6ew==
-X-ME-Sender: <xms:eJksYJGWrFi6LiU5BLZ7FxTlzD4MtvBCeJ4r1Clj7SkYbSdGvCyRIg>
-    <xme:eJksYH8UAzhnHDXpYRLTdKRdJlVYePeoj20RkS0V2EHZqn6bCUzTjLq1nx_TfcXUZ
-    YVhtt1KLeux-J87Tg>
+        fm2; bh=/Ll9sOu6/aNt8sKVthTKqJ9f/C+c6WcSRYeGV0Onyhk=; b=FIYYxLsR
+        gnCz93LHiPBAQVKUjCg1/rC6m8VIu1YGLNNhaKJdy7+PzIC5yl2tCxTcRnrW0sSv
+        Ix5tbGdaZ1Elle9p8JCvI4aWZGNK/nJTyPrsA+pX7x5OrzlAXWk12mvkqFu7JmU2
+        dYrpIYTrt0a/HJR1/aKI2aFVjDXCEyK3Chgps5T+aRDl88jhdd9jsAD/1qSHeeQu
+        64YWZmF38J4Y63JMYLlxUXXUH+NeYeIFYWVwscuwcxu0UX9A5KkkmHeDKBRvZjFf
+        xrFZIuSYwIRjbehJ7rRBDUqso98ucPGAu8FSTnAaUu2saz30+l6JyNhiyi51jmP9
+        hF2nrKxCFnqlVA==
+X-ME-Sender: <xms:epksYB5vemyz7r1hTepmDn6Xczf0kQQosbVOOzt_o0kINq51dQ5olQ>
+    <xme:epksYKbWsEZjuPXSN21r6kjqx2YqnyOmUsjodAPdM-B3EHkm8DdDYIBdTYPLC25BU
+    1C2XROpPNiWjMWLEw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedugdeikecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -47,15 +47,15 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedugdeikecutefuodetggdote
     ucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecuggftrf
     grthhtvghrnhepudfhjeefvdfhgfefheetgffhieeigfefhefgvddvveefgeejheejvdfg
     jeehueeinecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
+    gvpedvnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgrnhgu
     rdhorhhg
-X-ME-Proxy: <xmx:eJksYLLLn1aWNEQpWWAS2nyB8_S6RUO4yVMb2rT7tMp1y1iCqxUxjQ>
-    <xmx:eJksYCavocv744IkKW0OaM_N3JdZu_6MS5w700-GaBk9k4P42LGk8w>
-    <xmx:eJksYNI6Bksuz0Ucul-MR1MrGOPR92DYPbMDMb9BT7D7fJcl1CbB0Q>
-    <xmx:eZksYHclIkTR3pUIVqASgStNA528wnab_O-eIanWVhHXhlBlhY2CBA>
+X-ME-Proxy: <xmx:epksYO6yzVRsZhAG92J7Kn4QrByI3nUH5rSuT2xSAL8fiCIy9QShkw>
+    <xmx:epksYFDA1HZ8Y1PI9rzX1WewSwISO_GXoDc46KlFrYxAm-0bnPtupw>
+    <xmx:epksYMcbGmsYu_5hS2nCKBt7OY4nByqi7pABPk-kgSgA71JG4GkFPw>
+    <xmx:epksYPkRTfBhtmBkqotxXMuswpNc4SKxNtIyh9ER8hrmDJ6y-P3XaA>
 Received: from titanium.stl.sholland.net (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AA6AC240062;
-        Tue, 16 Feb 2021 23:20:07 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 015A2240064;
+        Tue, 16 Feb 2021 23:20:09 -0500 (EST)
 From:   Samuel Holland <samuel@sholland.org>
 To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Alexandre Torgue <alexandre.torgue@st.com>,
@@ -69,9 +69,9 @@ To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
 Cc:     Ondrej Jirman <megous@megous.com>, netdev@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com, Samuel Holland <samuel@sholland.org>
-Subject: [PATCH net-next v2 1/5] net: stmmac: dwmac-sun8i: Return void from PHY unpower
-Date:   Tue, 16 Feb 2021 22:20:02 -0600
-Message-Id: <20210217042006.54559-2-samuel@sholland.org>
+Subject: [PATCH net-next v2 5/5] net: stmmac: dwmac-sun8i: Add a shutdown callback
+Date:   Tue, 16 Feb 2021 22:20:06 -0600
+Message-Id: <20210217042006.54559-6-samuel@sholland.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210217042006.54559-1-samuel@sholland.org>
 References: <20210217042006.54559-1-samuel@sholland.org>
@@ -81,37 +81,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a deinitialization function that always returned zero, and that
-return value was always ignored. Have it return void instead.
+The Ethernet MAC and PHY are usually major consumers of power on boards
+which may not be able to fully power off (those with no PMIC). Powering
+down the MAC and internal PHY saves power while these boards are "off".
 
 Reviewed-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Samuel Holland <samuel@sholland.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-index a5e0eff4a3874..8e505019adf85 100644
+index a3d333b652836..6b75cf2603ffc 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -820,15 +820,14 @@ static int sun8i_dwmac_power_internal_phy(struct stmmac_priv *priv)
+@@ -1284,6 +1284,15 @@ static int sun8i_dwmac_remove(struct platform_device *pdev)
  	return 0;
  }
  
--static int sun8i_dwmac_unpower_internal_phy(struct sunxi_priv_data *gmac)
-+static void sun8i_dwmac_unpower_internal_phy(struct sunxi_priv_data *gmac)
- {
- 	if (!gmac->internal_phy_powered)
--		return 0;
-+		return;
- 
- 	clk_disable_unprepare(gmac->ephy_clk);
- 	reset_control_assert(gmac->rst_ephy);
- 	gmac->internal_phy_powered = false;
--	return 0;
- }
- 
- /* MDIO multiplexing switch function
++static void sun8i_dwmac_shutdown(struct platform_device *pdev)
++{
++	struct net_device *ndev = platform_get_drvdata(pdev);
++	struct stmmac_priv *priv = netdev_priv(ndev);
++	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
++
++	sun8i_dwmac_exit(pdev, gmac);
++}
++
+ static const struct of_device_id sun8i_dwmac_match[] = {
+ 	{ .compatible = "allwinner,sun8i-h3-emac",
+ 		.data = &emac_variant_h3 },
+@@ -1304,6 +1313,7 @@ MODULE_DEVICE_TABLE(of, sun8i_dwmac_match);
+ static struct platform_driver sun8i_dwmac_driver = {
+ 	.probe  = sun8i_dwmac_probe,
+ 	.remove = sun8i_dwmac_remove,
++	.shutdown = sun8i_dwmac_shutdown,
+ 	.driver = {
+ 		.name           = "dwmac-sun8i",
+ 		.pm		= &stmmac_pltfr_pm_ops,
 -- 
 2.26.2
 
