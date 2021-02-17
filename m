@@ -2,87 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC18431E035
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:26:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8AC31E041
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:28:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234946AbhBQUZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 15:25:51 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:42372 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234169AbhBQUZj (ORCPT
+        id S235031AbhBQU1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 15:27:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26643 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235015AbhBQU0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:25:39 -0500
-Received: by mail-oi1-f175.google.com with SMTP id 6so6432946ois.9;
-        Wed, 17 Feb 2021 12:25:23 -0800 (PST)
+        Wed, 17 Feb 2021 15:26:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613593522;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hZtRJeUML7NHUfQaoih4ryjpEijORracEaJufXohTpE=;
+        b=cc8vViWY2QCgC5YaU/p1FluPbyHCTL/18aHudvKUjuK8crgjn+n7yv8Ihod6nXmykYf3JL
+        QGS4AAkr8bHycQANPmsbIxriEC/xVF/zyxhEs5i0vts8w1oYePAIWtRX20gxV39/r20u+9
+        m751s3FzqHYnDZQJjt/oY6A72pgYl9M=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-2_Jx9N0TOFK7fWZrDSTPQQ-1; Wed, 17 Feb 2021 15:25:21 -0500
+X-MC-Unique: 2_Jx9N0TOFK7fWZrDSTPQQ-1
+Received: by mail-qt1-f197.google.com with SMTP id 22so10914738qty.14
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 12:25:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=fFAIBJRtS8lz4sWBKvSYwdMKZETWELFgP9KEyHLr6qo=;
-        b=W0gHTdtIG2HRo7QcSxoReBKKp88/Y/n6T8hsw0/+z7U96Y2uoSJyCjKH8Bgd5c8RS2
-         xh3vf5/tsVyEZxH4mcJs72NLqvw3DQ92aFAj/Bfyy9oaXZZguMGT4sTX2/j4rKGZG2d+
-         hq/XVR6mnS9o80F6ZqxrkZcFOnkYzYuNBVMeKkUFLlBRaUmDodO1tnGV5PTg5VzH7OdA
-         KOz9Zd3nEecwhwxvH3JYaPtakDukOGnuutvG6c/kOZ9BzAL56MVOQ4BLj+DkfbPNiF5G
-         IqJJ0tSXsYxglCVofY9ONpA5UL9jso5F7grNPS+GtFaLjzEQ0KOE3nR58hdMh1dI+Igk
-         LenA==
-X-Gm-Message-State: AOAM530mxLBUFffVCP4y71fkaNeXosqmO03nHJzg0pE+U5m4+vd+2p1H
-        4Qs+aPkYNB1nNTTInN8G1XmkiIRUaQ==
-X-Google-Smtp-Source: ABdhPJzYhqCcG+yX3Uzd3OscwPiULaH/YhQfG5nIUHIFUlKV3wM7OO7MID/izmLtsM8b3f8nwgSy/g==
-X-Received: by 2002:aca:d0b:: with SMTP id 11mr401379oin.35.1613593498317;
-        Wed, 17 Feb 2021 12:24:58 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w124sm659788oiw.40.2021.02.17.12.24.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hZtRJeUML7NHUfQaoih4ryjpEijORracEaJufXohTpE=;
+        b=l6/GZgCk8IGqPT77S9uZysyLazRAtSZHV+DUi9/1PT3Bx/lt0Hi15R75SGDCiVv2t2
+         c5/7Xa40yjGIE4BS1nOilmn6oLoq31DNfKggJUkKCRffF1R/MJSUgBQbxsvTcNi0Tlpi
+         wuiggi2MiSCKpgszqWx1+DsSoNyHxkj/hwvUxNsGWuhD3iJKtnuMGkcG7NUDgX4HLg7u
+         mKJ9bRPuHedogB5lUuu5GBKj8coMdrsm/rpi3rCjujUnu4gb68TDdeSjWdIt2Y5aCx2c
+         c6omvHk4zG0nO9vzwLm/7aQe5KTkJZnXnQ2NpMCUu8mmKul2Ms1jth76MBb6W6I0//8E
+         11YA==
+X-Gm-Message-State: AOAM530m42ZknE2QUfVYbeK9qEMgtQ8hvKq/nldRjjUWIeGjik6Ni1fV
+        PlqwDlJf8503NDVJ4v03+f15uh17iG9Jdf/nVW2CVz/NzF2POZ1pt6Neg2RQNP4Bs7GjT7ZGFBR
+        Nx6pbls34gsHDyPbehMVukauk
+X-Received: by 2002:a37:e4d:: with SMTP id 74mr997932qko.109.1613593520568;
+        Wed, 17 Feb 2021 12:25:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzh1hgcn30UQ1Pzk5/L6ZLtIbXgncB61U4mq0qYkBmtccAv/ChS4Cjoj7zOPZwFtCtLxtOTeQ==
+X-Received: by 2002:a37:e4d:: with SMTP id 74mr997909qko.109.1613593520273;
+        Wed, 17 Feb 2021 12:25:20 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id r80sm2436111qke.97.2021.02.17.12.25.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 12:24:57 -0800 (PST)
-Received: (nullmailer pid 2681061 invoked by uid 1000);
-        Wed, 17 Feb 2021 20:24:51 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, jonas@kwiboo.se,
-        dri-devel@lists.freedesktop.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, narmstrong@baylibre.com,
-        jernej.skrabec@siol.net, a.hajda@samsung.com,
-        Laurent.pinchart@ideasonboard.com, airlied@linux.ie
-In-Reply-To: <20210214232904.1142706-2-adrien.grassein@gmail.com>
-References: <20210214232904.1142706-1-adrien.grassein@gmail.com> <20210214232904.1142706-2-adrien.grassein@gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: display: bridge: Add documentation for LT8912
-Date:   Wed, 17 Feb 2021 14:24:51 -0600
-Message-Id: <1613593491.462326.2681060.nullmailer@robh.at.kernel.org>
+        Wed, 17 Feb 2021 12:25:19 -0800 (PST)
+Date:   Wed, 17 Feb 2021 15:25:18 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, shu wang <malate_wangshu@hotmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 5/5] mm proc/task_mmu.c: add hugetlb specific routine
+ for clear_refs
+Message-ID: <20210217202518.GA19238@xz-x1>
+References: <20210211000322.159437-1-mike.kravetz@oracle.com>
+ <20210211000322.159437-6-mike.kravetz@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210211000322.159437-6-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 00:29:03 +0100, Adrien Grassein wrote:
-> Lontium LT8912 is a DSI to HDMI bridge.
+On Wed, Feb 10, 2021 at 04:03:22PM -0800, Mike Kravetz wrote:
+> There was is no hugetlb specific routine for clearing soft dirty and
+> other referrences.  The 'default' routines would only clear the
+> VM_SOFTDIRTY flag in the vma.
 > 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> Add new routine specifically for hugetlb vmas.
+> 
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 > ---
->  .../display/bridge/lontium,lt8912.yaml        | 102 ++++++++++++++++++
->  MAINTAINERS                                   |   5 +
->  2 files changed, 107 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/lontium,lt8912.yaml
+>  fs/proc/task_mmu.c | 110 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 110 insertions(+)
 > 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 829b35016aaa..f06cf9b131a8 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -1116,6 +1116,115 @@ static inline void clear_soft_dirty_pmd(struct vm_area_struct *vma,
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_HUGETLB_PAGE
+> +static inline bool huge_pte_is_pinned(struct vm_area_struct *vma,
+> +					unsigned long addr, pte_t pte)
+> +{
+> +	struct page *page;
+> +
+> +	if (likely(!atomic_read(&vma->vm_mm->has_pinned)))
+> +		return false;
+> +	page = pte_page(pte);
+> +	if (!page)
+> +		return false;
+> +	return page_maybe_dma_pinned(page);
+> +}
+> +
+> +static int clear_refs_hugetlb_range(pte_t *ptep, unsigned long hmask,
+> +				unsigned long addr, unsigned long end,
+> +				struct mm_walk *walk)
+> +{
+> +	struct clear_refs_private *cp = walk->private;
+> +	struct vm_area_struct *vma = walk->vma;
+> +	struct hstate *h = hstate_vma(walk->vma);
+> +	unsigned long adj_start = addr, adj_end = end;
+> +	spinlock_t *ptl;
+> +	pte_t old_pte, pte;
+> +
+> +	/*
+> +	 * clear_refs should only operate on complete vmas.  Therefore,
+> +	 * values passed here should be huge page aligned and huge page
+> +	 * size in length.  Quick validation before taking any action in
+> +	 * case upstream code is changed.
+> +	 */
+> +	if ((addr & hmask) != addr || end - addr != huge_page_size(h)) {
+> +		WARN_ONCE(1, "%s passed unaligned address\n", __func__);
+> +		return 1;
+> +	}
 
-My bot found errors running 'make dt_binding_check' on your patch:
+I wouldn't worry too much on the interface change - The one who will change the
+interface should guarantee all existing hooks will still work, isn't it? :)
 
-yamllint warnings/errors:
+It's slightly confusing to me on why "clear_refs should only operate on
+complete vmas" is related to the check, though.
 
-dtschema/dtc warnings/errors:
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/display/bridge/lontium,lt8912.example.dt.yaml'
-Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/media/video-interfaces.yaml'
-make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/display/bridge/lontium,lt8912.example.dt.yaml] Error 255
-make: *** [Makefile:1370: dt_binding_check] Error 2
+> +
+> +	ptl = huge_pte_lock(hstate_vma(vma), walk->mm, ptep);
+> +
+> +	/* Soft dirty and pmd sharing do not mix */
 
-See https://patchwork.ozlabs.org/patch/1440379
+Right, this seems to be a placeholder for unsharing code.
 
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
+Though maybe we can do that earlier in pre_vma() hook?  That should be per-vma
+rather than handling one specific huge page here, hence more efficient imho.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+this reminded me that I should also better move hugetlb_unshare_all_pmds() of
+my other patch into hugetlb.c, so that this code can call it.  Currently it's a
+static function in userfaultfd.c.
 
-pip3 install dtschema --upgrade
+> +
+> +	pte = huge_ptep_get(ptep);
+> +	if (!pte_present(pte))
+> +		goto out;
+> +	if (unlikely(is_hugetlb_entry_hwpoisoned(pte)))
+> +		goto out;
+> +
+> +	if (cp->type == CLEAR_REFS_SOFT_DIRTY) {
 
-Please check and re-submit.
+Maybe move this check into clear_refs_test_walk()?  We can bail out earlier if:
+
+      (is_vm_hugetlb_page(vma) && (type != CLEAR_REFS_SOFT_DIRTY))
+
+> +		if (huge_pte_is_pinned(vma, addr, pte))
+> +			goto out;
+
+Out of topic of this patchset, but it's definitely a pity that we can't track
+soft dirty for pinned pages.  Currently the assumption of the pte code path is:
+"if this page can be DMA written then we won't know whether data changed after
+all, then tracking dirty is meaningless", however that's prone to change when
+new hardwares coming, say, IOMMU could start to trap DMA writes already.
+
+But again that's another story.. and we should just follow what we do with
+non-hugetlbfs for sure here, until some day if we'd like to revive soft dirty
+tracking with pinned pages.
+
+> +
+> +		/*
+> +		 * soft dirty and pmd sharing do not work together as
+> +		 * per-process is tracked in ptes, and pmd sharing allows
+> +		 * processed to share ptes.  We unshare any pmds here.
+> +		 */
+> +		adjust_range_if_pmd_sharing_possible(vma, &adj_start, &adj_end);
+
+Ideally when reach here, huge pmd sharing won't ever exist, right?  Then do we
+still need to adjust the range at all?
+
+Thanks,
+
+-- 
+Peter Xu
 
