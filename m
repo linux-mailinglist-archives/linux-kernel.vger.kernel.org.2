@@ -2,146 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C937631DBE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85BB31DBE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:04:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbhBQPA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:00:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233692AbhBQO7U (ORCPT
+        id S233763AbhBQPBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:01:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233728AbhBQPAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:59:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613573874;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=D6vYOR0dgL/biSGZfHd88o0jtjehBMmGld8Fzmh3jxI=;
-        b=C3Wkmt8ct2ICz0qrYDEFKk6EflYEViqEP/OiRPkvZCF9nciNZ24Z1P8B4jW2Lka7y0FlYx
-        ApYJFSkPBXdQkLpdcgpfkRdYM1DkOUOyMhmmZBsl3dVrSUcsGXfa4VRYetAkddBuYpxeua
-        yxCIo6tp0txodm9X2rYdyDu0EjLfNy8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-ABdhTXJ3NLuaTxT6sZ4Pvw-1; Wed, 17 Feb 2021 09:57:50 -0500
-X-MC-Unique: ABdhTXJ3NLuaTxT6sZ4Pvw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F268D192AB78;
-        Wed, 17 Feb 2021 14:57:48 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EB7A10023AF;
-        Wed, 17 Feb 2021 14:57:45 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 7/7] KVM: nSVM: call nested_svm_load_cr3 on nested state load
-Date:   Wed, 17 Feb 2021 16:57:18 +0200
-Message-Id: <20210217145718.1217358-8-mlevitsk@redhat.com>
-In-Reply-To: <20210217145718.1217358-1-mlevitsk@redhat.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
+        Wed, 17 Feb 2021 10:00:49 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B8FC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:00:08 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id j19so21903397lfr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:00:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rh+5DVV2EZcIZwJ1XuaHOxn/tnJr/iJkF+N040Yn/HY=;
+        b=M2F9g6UwE5JX/c5d+1RDp2TjHOgK94HobVq5+b+33U+hA6d1v8leYWM7ITPeSwqBw6
+         wj51n/YUEQM3/eGuAYvT8/qAWMZii7Yik+bLrs7GvTwFJbwFE7GcBC+6qfNhU6/0dLq1
+         hwzHf2OkLBmUdv4bHUJtKup9MPpD8HuAf/ndec9RzEXUpHfdvo40swjWsFNjwpF2C/zx
+         7SAEyvvlO/NLKOwoSu+ffhOP5o2t08+/NWa3VXVBAo5i8vzoO9/FpPeZEAO673Zid6Dv
+         9XaU04B0WRvQfG1NvhQ9l4NcG8K+XCRgrEqcgSEhauKVEuPYoZYrp3lI07JNWy4mjrNi
+         NPlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rh+5DVV2EZcIZwJ1XuaHOxn/tnJr/iJkF+N040Yn/HY=;
+        b=s2hLlxFJshrbc1XW3OukcAoX6Z8BdJIdp1UMhiEWeSA6VoTvLkSESh9QzbQBpRTzj1
+         Cs6kGI2/X7FPhmOE5SOP7SSXG5hQS/solDCuQUdh2FVT4u2Kxggy2IrAqKhVXHjVlS2m
+         BI+m3RaiiiPQApp9/imfedq+wphnBpXJUp7Pn/8i+DtAIsleZPp7qSZ2dxEu5maZUbDg
+         OBEFw8G4TGTAyy9hbwzGCGOHeWTs86+ufpP7PkPqbBpSAMZH4j0QDrkX9Nim9SVFOsjS
+         KM8A+EK3zZMQPZnKIMhWiPCUUyhSOCVVXcD7Uu5jNSUcDrL0y4jMaXj60VmPZ+Vl1bWT
+         HK/Q==
+X-Gm-Message-State: AOAM5316iZNJmG/qNO/vepDnBmh3xPHa9fk4QqmVtT6uP5LoFk+3tqzs
+        hf3Vb/Wcf6eZD1mm0rNvxNYUf/bsL9yioIRYWadvEw==
+X-Google-Smtp-Source: ABdhPJxC3vk206lSTN9W66FKVHDRC0E1DkhIxFEY6OsGgcDpuUBwmLqZwlDnx1hY/9TIQakOxaCd4H9IKdKLhqkPPus=
+X-Received: by 2002:a05:6512:10c8:: with SMTP id k8mr15123602lfg.299.1613574006710;
+ Wed, 17 Feb 2021 07:00:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
+ <YCt+cVvWPbWvt2rG@dhcp22.suse.cz> <b821f4de-3260-f6e2-469f-65ccfa699bb7@google.com>
+In-Reply-To: <b821f4de-3260-f6e2-469f-65ccfa699bb7@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Wed, 17 Feb 2021 06:59:55 -0800
+Message-ID: <CALvZod6M5L-NJMx5R9ySnGJG5Fe9G9DagWJzt2D7iNuRiaE96g@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
+To:     David Rientjes <rientjes@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Eiichi Tsukata <eiichi.tsukata@nutanix.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>, mcgrof@kernel.org,
+        Kees Cook <keescook@chromium.org>, yzaikin@google.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        felipe.franciosi@nutanix.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While KVM's MMU should be fully reset by loading of nested CR0/CR3/CR4
-by KVM_SET_SREGS, we are not in nested mode yet when we do it and therefore
-only root_mmu is reset.
+On Tue, Feb 16, 2021 at 5:25 PM David Rientjes <rientjes@google.com> wrote:
+>
+> On Tue, 16 Feb 2021, Michal Hocko wrote:
+>
+> > > Hugepages can be preallocated to avoid unpredictable allocation latency.
+> > > If we run into 4k page shortage, the kernel can trigger OOM even though
+> > > there were free hugepages. When OOM is triggered by user address page
+> > > fault handler, we can use oom notifier to free hugepages in user space
+> > > but if it's triggered by memory allocation for kernel, there is no way
+> > > to synchronously handle it in user space.
+> >
+> > Can you expand some more on what kind of problem do you see?
+> > Hugetlb pages are, by definition, a preallocated, unreclaimable and
+> > admin controlled pool of pages.
+>
+> Small nit: true of non-surplus hugetlb pages.
+>
+> > Under those conditions it is expected
+> > and required that the sizing would be done very carefully. Why is that a
+> > problem in your particular setup/scenario?
+> >
+> > If the sizing is really done properly and then a random process can
+> > trigger OOM then this can lead to malfunctioning of those workloads
+> > which do depend on hugetlb pool, right? So isn't this a kinda DoS
+> > scenario?
+> >
+> > > This patch introduces a new sysctl vm.sacrifice_hugepage_on_oom. If
+> > > enabled, it first tries to free a hugepage if available before invoking
+> > > the oom-killer. The default value is disabled not to change the current
+> > > behavior.
+> >
+> > Why is this interface not hugepage size aware? It is quite different to
+> > release a GB huge page or 2MB one. Or is it expected to release the
+> > smallest one? To the implementation...
+> >
+> > [...]
+> > > +static int sacrifice_hugepage(void)
+> > > +{
+> > > +   int ret;
+> > > +
+> > > +   spin_lock(&hugetlb_lock);
+> > > +   ret = free_pool_huge_page(&default_hstate, &node_states[N_MEMORY], 0);
+> >
+> > ... no it is going to release the default huge page. This will be 2MB in
+> > most cases but this is not given.
+> >
+> > Unless I am mistaken this will free up also reserved hugetlb pages. This
+> > would mean that a page fault would SIGBUS which is very likely not
+> > something we want to do right? You also want to use oom nodemask rather
+> > than a full one.
+> >
+> > Overall, I am not really happy about this feature even when above is
+> > fixed, but let's hear more the actual problem first.
+>
+> Shouldn't this behavior be possible as an oomd plugin instead, perhaps
+> triggered by psi?  I'm not sure if oomd is intended only to kill something
+> (oomkilld? lol) or if it can be made to do sysadmin level behavior, such
+> as shrinking the hugetlb pool, to solve the oom condition.
 
-On regular nested entries we call nested_svm_load_cr3 which both updates the
-guest's CR3 in the MMU when it is needed, and it also initializes
-the mmu again which makes it initialize the walk_mmu as well when nested
-paging is enabled in both host and guest.
+The senpai plugin of oomd actually is a proactive reclaimer, so oomd
+is being used for more than oom-killing.
 
-Since we don't call nested_svm_load_cr3 on nested state load,
-the walk_mmu can be left uninitialized, which can lead to a NULL pointer
-dereference while accessing it, if we happen to get a nested page fault
-right after entering the nested guest first time after the migration and
-if we decide to emulate it.
-This makes the emulator access NULL walk_mmu->gva_to_gpa.
+>
+> If so, it seems like we want to do this at the absolute last minute.  In
+> other words, reclaim has failed to free memory by other means so we would
+> like to shrink the hugetlb pool.  (It's the reason why it's implemented as
+> a predecessor to oom as opposed to part of reclaim in general.)
+>
+> Do we have the ability to suppress the oom killer until oomd has a chance
+> to react in this scenario?
 
-Therefore we should call this function on nested state load as well.
-
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 40 +++++++++++++++++++++------------------
- 1 file changed, 22 insertions(+), 18 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 53b9037259b5..ebc7dfaa9f13 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -215,24 +215,6 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
- 	return true;
- }
- 
--static bool svm_get_nested_state_pages(struct kvm_vcpu *vcpu)
--{
--	struct vcpu_svm *svm = to_svm(vcpu);
--
--	if (WARN_ON(!is_guest_mode(vcpu)))
--		return true;
--
--	if (!nested_svm_vmrun_msrpm(svm)) {
--		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
--		vcpu->run->internal.suberror =
--			KVM_INTERNAL_ERROR_EMULATION;
--		vcpu->run->internal.ndata = 0;
--		return false;
--	}
--
--	return true;
--}
--
- static bool nested_vmcb_check_controls(struct vmcb_control_area *control)
- {
- 	if (CC(!vmcb_is_intercept(control, INTERCEPT_VMRUN)))
-@@ -1311,6 +1293,28 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
- 	return ret;
- }
- 
-+static bool svm_get_nested_state_pages(struct kvm_vcpu *vcpu)
-+{
-+	struct vcpu_svm *svm = to_svm(vcpu);
-+
-+	if (WARN_ON(!is_guest_mode(vcpu)))
-+		return true;
-+
-+	if (nested_svm_load_cr3(&svm->vcpu, vcpu->arch.cr3,
-+				nested_npt_enabled(svm)))
-+		return false;
-+
-+	if (!nested_svm_vmrun_msrpm(svm)) {
-+		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-+		vcpu->run->internal.suberror =
-+			KVM_INTERNAL_ERROR_EMULATION;
-+		vcpu->run->internal.ndata = 0;
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- struct kvm_x86_nested_ops svm_nested_ops = {
- 	.check_events = svm_check_nested_events,
- 	.get_nested_state_pages = svm_get_nested_state_pages,
--- 
-2.26.2
-
+There is no explicit knob but there are indirect ways to delay the
+kernel oom killer. In the presence of reclaimable memory the kernel is
+very conservative to trigger the oom-kill. I think the way Facebook is
+achieving this in oomd is by using swap to have good enough
+reclaimable memory and then using memory.swap.high to throttle the
+workload's allocation rates which will increase the PSI as well. Since
+oomd pools PSI, it will be able to react before the kernel oom-killer.
