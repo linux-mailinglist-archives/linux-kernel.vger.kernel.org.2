@@ -2,227 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FC031D7EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 583FD31D7F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:10:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhBQLGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhBQLFX (ORCPT
+        id S230436AbhBQLJ2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Feb 2021 06:09:28 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24919 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231133AbhBQLHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:05:23 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1132C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:04:43 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id o38so8248035pgm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:04:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BtOBKP8Jtor+YFs8+p9bqhmg075DZ0P/iwFiIwD9A2g=;
-        b=Cxl9mh/nNdhHmXNmwVji5GwMLL9JBYVG+4D2OZfwY9ZeaL1hE7TR6qKf5K73J4boQ7
-         cdoLkeETORFg7/mmDvC15V48vd03QROM3VjMeElcHYN/m/qU5OKi+vnKxxZkAarSU6kx
-         SeW6addBNiGDnf0xOtPG5zNBg1FR8hcONUzPskboGhX5YDT45J4kdfvOsKp9tl6cZHmE
-         6/DU12CsOb4MgzSIhYWt820L03/mGUdpJncV9LakcSD0qKnBCHuNQRa4icWBJwRqbAHu
-         zKU/774378Cns+YNYxg20bGRyMLw40lj3Z6/u+Mde4GVw3wL5xWS8O9SoIFR+HegP6j7
-         ztfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BtOBKP8Jtor+YFs8+p9bqhmg075DZ0P/iwFiIwD9A2g=;
-        b=B+C/a4nMnltIc2kR1xS+EOie+RvhMnFX4XNeXA425suEpQFQAKmG4QPnG3m5xdj8ju
-         ret1ESDytfl56SVIFVqkb6BTbxgW77qVFMEHU6fXzWIbuob6qXbqQek8DB6BuagJ1CBo
-         zwFi+hptlmWJD+2O5SByNuGbfS19KwA1aZUwtbf6no5B/7jB4AFJ0Mfv4mCLJRVVrmz8
-         j9BaeDIpdYN+QjejhcehGRtFf+KnyVP0Qtt+TU3KA9y6G1Vy2DXXg4m3c7V5YEqJ6Ztj
-         zY/m3ycNOcSU2aN2aFW0XjbQTqyZUg/kj4/EtMe67Bfdq8WQ6d2Qi44vm2xi/e91sqa6
-         it+g==
-X-Gm-Message-State: AOAM531tuq0KkDPKp+X9yAYZD99VRg+nqTXMIf5A52TSLm25KN3L+7sE
-        pYLeg5je9pqVvcKOHzDx/P92AnGBFh4MouVCpbDGuA==
-X-Google-Smtp-Source: ABdhPJzpn6zQ++Oa7twNCZoZBN9ALCsJx2Sl4V5XqFDzuStU+9Sb9kYoOynwDY6X2yG33kXGQNhOba8xVA2ndH4maSs=
-X-Received: by 2002:aa7:9281:0:b029:1ec:48b2:811c with SMTP id
- j1-20020aa792810000b02901ec48b2811cmr9331621pfa.18.1613559882353; Wed, 17 Feb
- 2021 03:04:42 -0800 (PST)
+        Wed, 17 Feb 2021 06:07:23 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-259-RMvaaEXENMqE2t3sbz9bsg-1; Wed, 17 Feb 2021 11:05:41 +0000
+X-MC-Unique: RMvaaEXENMqE2t3sbz9bsg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 17 Feb 2021 11:05:39 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 17 Feb 2021 11:05:38 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Will Deacon' <will@kernel.org>, Jian Cai <jiancai@google.com>
+CC:     "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "manojgupta@google.com" <manojgupta@google.com>,
+        "llozano@google.com" <llozano@google.com>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Krzysztof Kozlowski" <krzk@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?iso-8859-1?Q?Andreas_F=E4rber?= <afaerber@suse.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: [PATCH v2] ARM: Implement Clang's SLS mitigation
+Thread-Topic: [PATCH v2] ARM: Implement Clang's SLS mitigation
+Thread-Index: AQHXBRIkVPd+AU3vQkaBjLLnHtqPv6pcLG4Q
+Date:   Wed, 17 Feb 2021 11:05:38 +0000
+Message-ID: <a2b21c7326e94c63a64a2e29ae64ba3b@AcuMS.aculab.com>
+References: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com>
+ <20210212195255.1321544-1-jiancai@google.com>
+ <20210217094859.GA3706@willie-the-truck>
+In-Reply-To: <20210217094859.GA3706@willie-the-truck>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210205104414.299732-1-robert.foss@linaro.org> <5fea18b2-307b-2b45-4bc7-d327022642b0@linaro.org>
-In-Reply-To: <5fea18b2-307b-2b45-4bc7-d327022642b0@linaro.org>
-From:   Robert Foss <robert.foss@linaro.org>
-Date:   Wed, 17 Feb 2021 12:04:31 +0100
-Message-ID: <CAG3jFyve8jAzt5Zm9UidVSJtJWdDymk9wCAwBOZS36ap54SVrA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/22] Add support for the SDM845 Camera Subsystem
-To:     Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        angelogioacchino.delregno@somainline.org,
-        linux-media <linux-media@vger.kernel.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Rob Herring <robh@kernel.org>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Feb 2021 at 21:14, Andrey Konovalov
-<andrey.konovalov@linaro.org> wrote:
->
-> Hi Robert,
->
-> On 05.02.2021 13:43, Robert Foss wrote:
-> > This series implements support for the camera subsystem found in
-> > the SDM845 SOCs and the Titan 170 ISP. The support is partial
-> > in that it implements CSIPHY, CSID, and partial VFE support.
+From: Will Deacon
+> Sent: 17 February 2021 09:49
+> 
+> On Fri, Feb 12, 2021 at 11:52:53AM -0800, Jian Cai wrote:
+> > This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+> > -mharden-sls=all, which mitigates the straight-line speculation
+> > vulnerability, speculative execution of the instruction following some
+> > unconditional jumps. Notice -mharden-sls= has other options as below,
+> > and this config turns on the strongest option.
 > >
-> > The Titan generation of the ISP diverges a fair amount from the
-> > design of the previous architecture generation, CAMSS. As a result
-> > some pretty invasive refactoring is done in this series. It also
-> > means that at this time we're unable to implement support for all
-> > of the IP blocks contained. This is due to a combination of legal
-> > considerations with respect to the IP and its owner Qualcomm and
-> > time & man hour constrains on the Linaro side.
-> >
-> > The CSIPHY (CSI Physical Layer) & CSID (CSI Decoder) support is
-> > complete, but the VFE (Video Front End, which is referred to as IFE
-> > (Image Front End) in the Titan generation of ISPs) only has support
-> > for the RDI (Raw Dump Interface) which allows the raw output of
-> > the CSID to be written to memory.
-> >
-> > The 2nd interface implemented in the VFE silicon is the PIX
-> > interface, and camss does not support it for this generation of ISPs.
-> > The reason for this is that the PIX interface is used for sending
-> > image data to the BPS (Bayer Processing Section) & IPE (Image
-> > Processing Engine), but both of these units are beyond the scope
-> > of enabling basic ISP functionality for the SDM845.
->
-> The problem is that for SDM845 the topology printed by media-ctl
-> still has the PIX devices. That is even though the PIX interface is not
-> supported for SDM845 in this driver, the msm_vfeN_pix subdevices
-> and the corresponding msm_vfeN_video3 devices are still created.
-> Your patchset is currently missing changes to the hardcoded:
->
-> #define MSM_VFE_LINE_NUM 4
->
-> struct vfe_device {
-> ...
->          struct vfe_line line[MSM_VFE_LINE_NUM];
-> ...
-> };
->
-> in drivers/media/platform/qcom/camss/camss-vfe.h.
+> > all: enable all mitigations against Straight Line Speculation that are implemented.
+> > none: disable all mitigations against Straight Line Speculation.
+> > retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+> > blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+> 
+> What exactly does this mitigation do? This should be documented somewhere,
+> maybe in the Kconfig text?
 
-I had a look through the driver and made the line number variable for
-the different versions of hardware. This required touching most of the
-vfe related compilation units, but was a pretty mechanical change.
+I looked it up, it adds some fairly heavy serialising instructions
+after the unconditional jump.
+For BLR (call indirect) it has to use a BL (call) to an indirect jump.
 
-Thanks for spotting this issue.
+I don't know if the execution of the serialising instructions
+gets aborted.
+If not you could end up with unexpected delays - like those on
+some x86 cpu when they speculatively executed trig functions.
 
->
->
-> Thanks,
-> Andrey
->
-> > Since the Titan architecture generation diverges quite a bit from
-> > the CAMSS generation, a lot of pretty major refactoring is carried
-> > out in this series. Both the CSID & VFE core paths are made more
-> > general and hardware version specific parts are broken out.
-> > The CSIPHY didn't require quite as radical changes and therefore
-> > keeps its current form.
-> >
-> > Tested on:
-> >   - Qcom RB3 / db845c + camera mezzanine, which is SDM845 based
-> >   - db410c + D3 Camera mezzanine, which is APQ8016 based
-> >
-> > Branch:
-> >   - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v1
-> >   - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v2
-> >   - https://git.linaro.org/people/robert.foss/linux.git/log/?h=camss_sdm845_v3
-> >
-> >
-> > Due to the dt-bindings supporting sdm660-camss, this series depends
-> > the sdm660 clock driver being upstreamed. I've linked this series below.
-> >
-> > SDM630/660 Multimedia and GPU clock controllers
-> > https://lkml.org/lkml/2020/9/26/166
-> >
-> >
-> > Robert Foss (22):
-> >    media: camss: Fix vfe_isr_comp_done() documentation
-> >    media: camss: Fix vfe_isr comment typo
-> >    media: camss: Replace trace_printk() with dev_dbg()
-> >    media: camss: Add CAMSS_845 camss version
-> >    media: camss: Make ISPIF subdevice optional
-> >    media: camss: Refactor VFE HW version support
-> >    media: camss: Add support for VFE hardware version Titan 170
-> >    media: camss: Add missing format identifiers
-> >    media: camss: Refactor CSID HW version support
-> >    media: camss: Add support for CSID hardware version Titan 170
-> >    media: camss: Add support for CSIPHY hardware version Titan 170
-> >    media: camss: Remove per VFE power domain toggling
-> >    media: camss: Enable SDM845
-> >    dt-bindings: media: camss: Add qcom,msm8916-camss binding
-> >    dt-bindings: media: camss: Add qcom,msm8996-camss binding
-> >    dt-bindings: media: camss: Add qcom,sdm660-camss binding
-> >    dt-bindings: media: camss: Add qcom,sdm845-camss binding
-> >    MAINTAINERS: Change CAMSS documentation to use dtschema bindings
-> >    media: dt-bindings: media: Remove qcom,camss documentation
-> >    arm64: dts: sdm845: Add CAMSS ISP node
-> >    arm64: dts: sdm845-db845c: Configure regulators for camss node
-> >    arm64: dts: sdm845-db845c: Enable ov8856 sensor and connect to ISP
-> >
-> >   .../devicetree/bindings/media/qcom,camss.txt  |  236 ----
-> >   .../bindings/media/qcom,msm8916-camss.yaml    |  256 ++++
-> >   .../bindings/media/qcom,msm8996-camss.yaml    |  387 ++++++
-> >   .../bindings/media/qcom,sdm660-camss.yaml     |  398 ++++++
-> >   .../bindings/media/qcom,sdm845-camss.yaml     |  370 ++++++
-> >   MAINTAINERS                                   |    2 +-
-> >   arch/arm64/boot/dts/qcom/sdm845-db845c.dts    |   23 +-
-> >   arch/arm64/boot/dts/qcom/sdm845.dtsi          |  135 ++
-> >   drivers/media/platform/qcom/camss/Makefile    |    6 +
-> >   .../platform/qcom/camss/camss-csid-170.c      |  602 +++++++++
-> >   .../platform/qcom/camss/camss-csid-4-1.c      |  338 +++++
-> >   .../platform/qcom/camss/camss-csid-4-7.c      |  406 ++++++
-> >   .../media/platform/qcom/camss/camss-csid.c    |  620 +--------
-> >   .../media/platform/qcom/camss/camss-csid.h    |  178 ++-
-> >   .../qcom/camss/camss-csiphy-3ph-1-0.c         |  182 ++-
-> >   .../media/platform/qcom/camss/camss-csiphy.c  |   66 +-
-> >   .../media/platform/qcom/camss/camss-ispif.c   |  117 +-
-> >   .../media/platform/qcom/camss/camss-ispif.h   |    3 +-
-> >   .../media/platform/qcom/camss/camss-vfe-170.c |  804 ++++++++++++
-> >   .../media/platform/qcom/camss/camss-vfe-4-1.c |  123 +-
-> >   .../media/platform/qcom/camss/camss-vfe-4-7.c |  244 ++--
-> >   .../media/platform/qcom/camss/camss-vfe-4-8.c | 1164 +++++++++++++++++
-> >   .../platform/qcom/camss/camss-vfe-gen1.c      |  763 +++++++++++
-> >   .../platform/qcom/camss/camss-vfe-gen1.h      |  110 ++
-> >   drivers/media/platform/qcom/camss/camss-vfe.c |  840 +-----------
-> >   drivers/media/platform/qcom/camss/camss-vfe.h |  118 +-
-> >   .../media/platform/qcom/camss/camss-video.c   |  100 ++
-> >   drivers/media/platform/qcom/camss/camss.c     |  419 ++++--
-> >   drivers/media/platform/qcom/camss/camss.h     |   17 +-
-> >   29 files changed, 6965 insertions(+), 2062 deletions(-)
-> >   delete mode 100644 Documentation/devicetree/bindings/media/qcom,camss.txt
-> >   create mode 100644 Documentation/devicetree/bindings/media/qcom,msm8916-camss.yaml
-> >   create mode 100644 Documentation/devicetree/bindings/media/qcom,msm8996-camss.yaml
-> >   create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm660-camss.yaml
-> >   create mode 100644 Documentation/devicetree/bindings/media/qcom,sdm845-camss.yaml
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-csid-170.c
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-1.c
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-csid-4-7.c
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-170.c
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-4-8.c
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-gen1.c
-> >   create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-gen1.h
-> >
+It all seems pretty broken though.
+I'd expect the branch prediction unit to speculate at the jump
+target for 'predicted taken' conditional jumps.
+So you'd really expect unconditional jumps to behave the same way.
+BLR ought to be using the branch target buffer (BTB).
+
+(It isn't actually 100% clear that some processors don't use the BTB
+for non-indirect jumps though....)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
