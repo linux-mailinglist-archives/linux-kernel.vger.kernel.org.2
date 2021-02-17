@@ -2,75 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439D831D3D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:43:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 432E931D3D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbhBQBlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 20:41:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
+        id S230106AbhBQBo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 20:44:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbhBQBlo (ORCPT
+        with ESMTP id S229480AbhBQBoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 20:41:44 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C72C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 17:41:04 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id w1so10533883ejk.6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 17:41:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aUUOJlgDQumqSSsn6b2nMo56O2uNsyRlZI5+0ZRl54U=;
-        b=KqWjsFoguTrjWzkyFDr4S7tTXgUIqm3Y4PfT/ofs5LnJNHjNgmSKwxSugOcsMWm6+H
-         BoTlzMwTcNvHP6B0Bnl3Xw5Fe2tGprhZ2GPvM0Rn5udBuHOtQcFGiGfqkHM0oyecYmCz
-         cKX/9lGvNYEBWtBhHKAZXOmol7P8xRKTge5POr7MV4CoGSMG6hqh5BbhJL2+h+QGvnqW
-         XRTkRKha1iNLzP1IjVsvvhGwzrFR4R8anK/4zjo6cMe7tEDTn+DyDAOKf/rR5EYO6O9x
-         Py/EDa7UkNGrJnz+qr3Y2R1KVSjVymb7XbkoDsAlcn8nQDCNjTw6dBJlhYLqjZLQow/f
-         jUtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aUUOJlgDQumqSSsn6b2nMo56O2uNsyRlZI5+0ZRl54U=;
-        b=SZuQ5mc/wDCme1KP0Vqk/aq3BU52vB31+xQsWA+ZvLg8OocR0z27JmbBQqaTcNaa9q
-         y6WTGDMGT0NiNgm+MnxHHGIE+3wKz/9bMfp2lW1MF4g5klQ4uBldFDDkqT/OhN5WNzdf
-         KhOicRKeuM4f550ShSRD/FYdnfaVGobzrUm0wuNXYXlai/iABheP2hn9p+oB535xWw8X
-         Goh0MPeC3ZhMTNv/iwu0nf5yy5CpNAu57ias3xBM0PpoKttr5/D0xg1bPpNMdKp+2ZxH
-         KGk8bE1mFeyrTHFH9AtisUqn4X+u025tmyyFqK2dHJRrXI54wgyGkLNU1W1qafpQvYia
-         6xCw==
-X-Gm-Message-State: AOAM530XIaV867ayxIGGGlBy10fh/Fghhnzg2QeZfu7W3KK1R0Igkxvk
-        tPmnuVQq+Q9TO8pPIHkCA38/2zZxwnd3NbZo1sgDHA==
-X-Google-Smtp-Source: ABdhPJz4EYHuN8wyWFuoFR7FSadeWSJslfOV5vc8kLUvyWmZnsOwRzCVfCl3RDFdPjy97HCFJP5rvSPOVwvdT+ExobU=
-X-Received: by 2002:a17:906:1352:: with SMTP id x18mr17937904ejb.418.1613526062947;
- Tue, 16 Feb 2021 17:41:02 -0800 (PST)
+        Tue, 16 Feb 2021 20:44:23 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBA0C061574;
+        Tue, 16 Feb 2021 17:43:42 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DgLGL4tglz9sBy;
+        Wed, 17 Feb 2021 12:43:38 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613526219;
+        bh=YxHG4aTt8Q+DJqmCsA/7VHsTg8HAhTeywx2/Ow/y8mk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=QET1vpacsoO/PsOPZm50Zg9AUU6GXGCBMqBu9uz0ujKGRaXrMjvevwqqVInfVqwbw
+         Xizy4XdoTryCce0Y1tUQquHrmLvg9kYYs1O8Ewj5+9m1y9mHZx4vaBaJaOqHCc28bo
+         1pRHFtSvcmUevRyvr6nJW6k6FwC4O07Eo4NbpaCy5kWAgKkpzRmDqpk0RLnsGpQW1O
+         1F+wvPksGVIhVWh41lS3KehEs0hvyFsFJS+2D0HoK3V5RCnerTE+bQcxjPKXJxe0u4
+         cRMxkFNBPKUywk6kBJ0eBo76kjLcjJcjcTeoSOXPDc1o61xoc5LSMtj1b4HUfWysR8
+         CPI8UwmHty//Q==
+Date:   Wed, 17 Feb 2021 12:43:37 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Lijun Pan <lijunp213@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Subject: linux-next: manual merge of the net-next tree with the net tree
+Message-ID: <20210217124337.47db7c69@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210212171043.2136580-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20210212171043.2136580-1-u.kleine-koenig@pengutronix.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 16 Feb 2021 17:40:53 -0800
-Message-ID: <CAPcyv4gqXpQK5ta9enky1MrGVYAGa09DaJHod5CK9Ybe59772w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] libnvdimm: simplify nvdimm_remove()
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel@pengutronix.de, linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/LS2qvUpNPap5oaYhIxbUHgR";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 9:11 AM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> nvdimm_remove is only ever called after nvdimm_probe() returned
-> successfully. In this case driver data is always set to a non-NULL value
-> so the check for driver data being NULL can go away as it's always false.
+--Sig_/LS2qvUpNPap5oaYhIxbUHgR
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Looks good, thanks.
+Hi all,
+
+Today's linux-next merge of the net-next tree got conflicts in:
+
+  drivers/net/ethernet/ibm/ibmvnic.c
+  drivers/net/ethernet/ibm/ibmvnic.h
+
+between commit:
+
+  4a41c421f367 ("ibmvnic: serialize access to work queue on remove")
+
+from the net tree and commits:
+
+  bab08bedcdc3 ("ibmvnic: fix block comments")
+  a369d96ca554 ("ibmvnic: add comments for spinlock_t definitions")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/net/ethernet/ibm/ibmvnic.c
+index 13ae7eee7ef5,927d5f36d308..000000000000
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@@ -2395,10 -2288,7 +2294,9 @@@ static int ibmvnic_reset(struct ibmvnic
+  	unsigned long flags;
+  	int ret;
+ =20
+ +	spin_lock_irqsave(&adapter->rwi_lock, flags);
+ +
+- 	/*
+- 	 * If failover is pending don't schedule any other reset.
++ 	/* If failover is pending don't schedule any other reset.
+  	 * Instead let the failover complete. If there is already a
+  	 * a failover reset scheduled, we will detect and drop the
+  	 * duplicate reset when walking the ->rwi_list below.
+diff --cc drivers/net/ethernet/ibm/ibmvnic.h
+index 72fea3b1c87d,270d1cac86a4..000000000000
+--- a/drivers/net/ethernet/ibm/ibmvnic.h
++++ b/drivers/net/ethernet/ibm/ibmvnic.h
+@@@ -1080,10 -1081,12 +1081,16 @@@ struct ibmvnic_adapter=20
+ =20
+  	struct tasklet_struct tasklet;
+  	enum vnic_state state;
+ -	/* Used for serializatin of state field */
+++	/* Used for serialization of state field. When taking both state
+++	 * and rwi locks, take state lock first.
+++	 */
++ 	spinlock_t state_lock;
+  	enum ibmvnic_reset_reason reset_reason;
+- 	/* when taking both state and rwi locks, take state lock first */
+- 	spinlock_t rwi_lock;
+  	struct list_head rwi_list;
+ -	/* Used for serialization of rwi_list */
+++	/* Used for serialization of rwi_list. When taking both state
+++	 * and rwi locks, take state lock first
+++	 */
++ 	spinlock_t rwi_lock;
+  	struct work_struct ibmvnic_reset;
+  	struct delayed_work ibmvnic_delayed_reset;
+  	unsigned long resetting;
+
+--Sig_/LS2qvUpNPap5oaYhIxbUHgR
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAsdMkACgkQAVBC80lX
+0Gzo1Af/WN8ZaEECThEe1tEdCs7VQuezb+570ogkGwa7mRW+6+jfe1eUXEqsMcRh
+y6HkWZLIeUqF3JL3a/QJutpxz2orsZJksSohEEzuOL9UW6KFmBmDo8bT+JaU175S
+wh0cquRKBuuMf41rWCo5i3McFllK1IfITDcz5HKXakACMtddkmvCd5doleDovx8f
+VsnheZoqE/Awg9NxIFw1UgPn0J4e4kI+VXvRhTzdtoMU5Z/sq54S5+upkRpRPIdQ
+o39CH+rm79Wuad49QGPbjH70Yd7e/Nj9xbVKqAXbkjnYSS/o6G/4R1kxBWkWZU6i
+7y+OOSjcXkpO/BLNhrcgf1UX6v84Pw==
+=eiXC
+-----END PGP SIGNATURE-----
+
+--Sig_/LS2qvUpNPap5oaYhIxbUHgR--
