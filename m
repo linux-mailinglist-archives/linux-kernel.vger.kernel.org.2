@@ -2,224 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D7531DE04
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:17:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC18631DE0E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbhBQRPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:15:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46087 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234378AbhBQRPO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:15:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613582025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QiquG9IOiLb2ArxThqBsSmOSv1VEYLQ2aODCK5RKfjM=;
-        b=YFL91b4aHCnHJt1bMmguFZITJU5YUPxL/3yQ7pbSG9qBT6+Yxalvg3juAde/tzdCyMQ1Sk
-        PnAbLKkTSp2057sZG7OOmHEXXtWr9VBxNO0Dqm2uqmpga2QluSSy55tspnD+qalvcg+yJ1
-        2aMoFpFQ5wrGWIBQrTy4LJajU+a+qAA=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-dR-8yaVwPv-2BvJZSW8nWg-1; Wed, 17 Feb 2021 12:13:43 -0500
-X-MC-Unique: dR-8yaVwPv-2BvJZSW8nWg-1
-Received: by mail-ed1-f70.google.com with SMTP id bd22so10826111edb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:13:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QiquG9IOiLb2ArxThqBsSmOSv1VEYLQ2aODCK5RKfjM=;
-        b=akL6GOOCwaPeJHLgMx6utjbsw6k2mBPWnGRGP/Wmddt6v2ZIP9dcD9diTj3WhaWbCe
-         4YnEZcfivbV9v8P72QqSQ2bBNkiCCoiXCpeC3iiOs/DHIospRwQAQdKMRoLX1pXxj8qe
-         s6RR+8RvdObZYszN55zIu1uXCr/N1pmrTuJHOsfv7k/iwZo977ruL7G6psV/2QFXR5YK
-         7bSMxBBSZLO0vzDsSt6I1ZRasL4K5en42ATI40mTH+sX3DH19jrcXW8L72bhXkQzjUlf
-         RftYk2olYP4P97pU5f2P7XsA9qzn1OO8DLA6xJlW1ETXpW5PVvX8wrktjW+K/IiiMNCC
-         cyww==
-X-Gm-Message-State: AOAM530Kj/pdmOH9vH3HMl0NQtbCDwP8t/7oBe94HSy1ISeMjbxD3k5l
-        Nyd2plyd6F2X8/7VNgjLfSQxDr7eR8SYzXSAydxc63KBwSQklkAnGgviIjd1pCTL0IjLiWaeDR0
-        zvWhAvzARa8v5yrfZj2ENNCOI
-X-Received: by 2002:a05:6402:1484:: with SMTP id e4mr27937280edv.104.1613582022713;
-        Wed, 17 Feb 2021 09:13:42 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwuvd1ltECKJmOuiIgpNkSWnIT6BYItP6BB7mgr9PrMcDvlJLCU0gU86eEIIRUXY3AbAs2Oww==
-X-Received: by 2002:a05:6402:1484:: with SMTP id e4mr27937261edv.104.1613582022551;
-        Wed, 17 Feb 2021 09:13:42 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id f13sm1302362ejf.42.2021.02.17.09.13.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 09:13:41 -0800 (PST)
-Date:   Wed, 17 Feb 2021 12:13:37 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     jasowang@redhat.com, si-wei.liu@oracle.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Parav Pandit <parav@nvidia.com>
-Subject: Re: [PATCH 2/2 v1] vdpa/mlx5: Enable user to add/delete vdpa device
-Message-ID: <20210217121315-mutt-send-email-mst@kernel.org>
-References: <20210217113136.10215-1-elic@nvidia.com>
+        id S234392AbhBQRWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:22:51 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60242 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234282AbhBQRWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:22:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4C000BA2B;
+        Wed, 17 Feb 2021 17:22:01 +0000 (UTC)
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org,
+        Linux API <linux-api@vger.kernel.org>
+References: <20210217154844.12392-1-david@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <7859a7a0-96e2-72ff-be92-c0af5d642564@suse.cz>
+Date:   Wed, 17 Feb 2021 18:21:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217113136.10215-1-elic@nvidia.com>
+In-Reply-To: <20210217154844.12392-1-david@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 01:31:36PM +0200, Eli Cohen wrote:
-> Allow to control vdpa device creation and destruction using the vdpa
-> management tool.
-> 
-> Examples:
-> 1. List the management devices
-> $ vdpa mgmtdev show
-> pci/0000:3b:00.1:
->   supported_classes net
-> 
-> 2. Create vdpa instance
-> $ vdpa dev add mgmtdev pci/0000:3b:00.1 name vdpa0
-> 
-> 3. Show vdpa devices
-> $ vdpa dev show
-> vdpa0: type network mgmtdev pci/0000:3b:00.1 vendor_id 5555 max_vqs 16 \
-> max_vq_size 256
-> 
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> Reviewed-by: Parav Pandit <parav@nvidia.com>
++CC linux-api, please do on further revisions.
 
-where's the rest of the patchset though? I only got 2/2 ... confused.
+Keeping rest of the e-mail.
 
+On 2/17/21 4:48 PM, David Hildenbrand wrote:
+> When we manage sparse memory mappings dynamically in user space - also
+> sometimes involving MADV_NORESERVE - we want to dynamically populate/
+> discard memory inside such a sparse memory region. Example users are
+> hypervisors (especially implementing memory ballooning or similar
+> technologies like virtio-mem) and memory allocators. In addition, we want
+> to fail in a nice way if populating does not succeed because we are out of
+> backend memory (which can happen easily with file-based mappings,
+> especially tmpfs and hugetlbfs).
+> 
+> While MADV_DONTNEED and FALLOC_FL_PUNCH_HOLE provide us ways to reliably
+> discard memory, there is no generic approach to populate ("preallocate")
+> memory.
+> 
+> Although mmap() supports MAP_POPULATE, it is not applicable to the concept
+> of sparse memory mappings, where we want to do populate/discard
+> dynamically and avoid expensive/problematic remappings. In addition,
+> we never actually report error during the final populate phase - it is
+> best-effort only.
+> 
+> fallocate() can be used to preallocate file-based memory and fail in a safe
+> way. However, it is less useful for private mappings on anonymous files
+> due to COW semantics. For example, using fallocate() to preallocate memory
+> on an anonymous memfd files that are mapped MAP_PRIVATE results in a double
+> memory consumption when actually writing via the mapping. In addition,
+> fallocate() does not actually populate page tables, so we still always
+> have to resolve minor faults on first access.
+> 
+> Because we don't have a proper interface, what applications
+> (like QEMU and databases) end up doing is touching (i.e., writing) all
+> individual pages. However, it requires expensive signal handling (SIGBUS);
+> for example, this is problematic in hypervisors like QEMU where SIGBUS
+> handlers might already be used by other subsystems concurrently to e.g,
+> handle hardware errors. "Simply" doing preallocation from another thread
+> is not that easy.
+> 
+> Let's introduce MADV_POPULATE with the following semantics
+> 1. MADV_POPULATED does not work on PROT_NONE and special VMAs. It works
+>    on everything else.
+> 2. Errors during MADV_POPULATED (especially OOM) are reported. If we hit
+>    hardware errors on pages, ignore them - nothing we really can or
+>    should do.
+> 3. On errors during MADV_POPULATED, some memory might have been
+>    populated. Callers have to clean up if they care.
+> 4. Concurrent changes to the virtual memory layour are tolerated - we
+>    process each and every PFN only once, though.
+> 5. If MADV_POPULATE succeeds, all memory in the range can be accessed
+>    without SIGBUS. (of course, not if user space changed mappings in the
+>    meantime or KSM kicked in on anonymous memory).
+> 
+> Although sparse memory mappings are the primary use case, this will
+> also be useful for ordinary preallocations where MAP_POPULATE is not
+> desired (e.g., in QEMU, where users can trigger preallocation of
+> guest RAM after the mapping was created).
+> 
+> Looking at the history, MADV_POPULATE was already proposed in 2013 [1],
+> however, the main motivation back than was performance improvements
+> (which should also still be the case, but it's a seconary concern).
+> 
+> Basic functionality was tested with:
+> - anonymous memory
+> - MAP_PRIVATE on anonymous file via memfd
+> - MAP_SHARED on anonymous file via memf
+> - MAP_PRIVATE on anonymous hugetlbfs file via memfd
+> - MAP_SHARED on anonymous hugetlbfs file via memfd
+> - MAP_PRIVATE on tmpfs/shmem file (we end up with double memory consumption
+>   though, as the actual file gets populated with zeroes)
+> - MAP_SHARED on tmpfs/shmem file
+> 
+> Note: For populating/preallocating zeroed-out memory while userfaultfd is
+> active, it's even faster to use first fallocate() or placing zeroed pages
+> via userfaultfd APIs. Otherwise, we'll have to route every fault while
+> populating via the userfaultfd handler.
+> 
+> [1] https://lkml.org/lkml/2013/6/27/698
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: Rik van Riel <riel@surriel.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Richard Henderson <rth@twiddle.net>
+> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+> Cc: Matt Turner <mattst88@gmail.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: linux-alpha@vger.kernel.org
+> Cc: linux-mips@vger.kernel.org
+> Cc: linux-parisc@vger.kernel.org
+> Cc: linux-xtensa@linux-xtensa.org
+> Cc: linux-arch@vger.kernel.org
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 > ---
-> v0->v1:
-> set mgtdev->ndev NULL on dev delete 
 > 
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 79 +++++++++++++++++++++++++++----
->  1 file changed, 70 insertions(+), 9 deletions(-)
+> If we agree that this makes sense I'll do more testing to see if we
+> are missing any return value handling and prepare a man page update to
+> document the semantics.
 > 
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index a51b0f86afe2..08fb481ddc4f 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1974,23 +1974,32 @@ static void init_mvqs(struct mlx5_vdpa_net *ndev)
->  	}
+> Thoughts?
+> 
+> ---
+>  arch/alpha/include/uapi/asm/mman.h     |  2 +
+>  arch/mips/include/uapi/asm/mman.h      |  2 +
+>  arch/parisc/include/uapi/asm/mman.h    |  2 +
+>  arch/xtensa/include/uapi/asm/mman.h    |  2 +
+>  include/uapi/asm-generic/mman-common.h |  2 +
+>  mm/madvise.c                           | 70 ++++++++++++++++++++++++++
+>  6 files changed, 80 insertions(+)
+> 
+> diff --git a/arch/alpha/include/uapi/asm/mman.h b/arch/alpha/include/uapi/asm/mman.h
+> index a18ec7f63888..e90eeb5e6cf1 100644
+> --- a/arch/alpha/include/uapi/asm/mman.h
+> +++ b/arch/alpha/include/uapi/asm/mman.h
+> @@ -71,6 +71,8 @@
+>  #define MADV_COLD	20		/* deactivate these pages */
+>  #define MADV_PAGEOUT	21		/* reclaim these pages */
+>  
+> +#define MADV_POPULATE	22		/* populate pages */
+> +
+>  /* compatibility flags */
+>  #define MAP_FILE	0
+>  
+> diff --git a/arch/mips/include/uapi/asm/mman.h b/arch/mips/include/uapi/asm/mman.h
+> index 57dc2ac4f8bd..b928becc5308 100644
+> --- a/arch/mips/include/uapi/asm/mman.h
+> +++ b/arch/mips/include/uapi/asm/mman.h
+> @@ -98,6 +98,8 @@
+>  #define MADV_COLD	20		/* deactivate these pages */
+>  #define MADV_PAGEOUT	21		/* reclaim these pages */
+>  
+> +#define MADV_POPULATE	22		/* populate pages */
+> +
+>  /* compatibility flags */
+>  #define MAP_FILE	0
+>  
+> diff --git a/arch/parisc/include/uapi/asm/mman.h b/arch/parisc/include/uapi/asm/mman.h
+> index ab78cba446ed..9d3a56044287 100644
+> --- a/arch/parisc/include/uapi/asm/mman.h
+> +++ b/arch/parisc/include/uapi/asm/mman.h
+> @@ -52,6 +52,8 @@
+>  #define MADV_COLD	20		/* deactivate these pages */
+>  #define MADV_PAGEOUT	21		/* reclaim these pages */
+>  
+> +#define MADV_POPULATE	22		/* populate pages */
+> +
+>  #define MADV_MERGEABLE   65		/* KSM may merge identical pages */
+>  #define MADV_UNMERGEABLE 66		/* KSM may not merge identical pages */
+>  
+> diff --git a/arch/xtensa/include/uapi/asm/mman.h b/arch/xtensa/include/uapi/asm/mman.h
+> index e5e643752947..3169b1be8920 100644
+> --- a/arch/xtensa/include/uapi/asm/mman.h
+> +++ b/arch/xtensa/include/uapi/asm/mman.h
+> @@ -106,6 +106,8 @@
+>  #define MADV_COLD	20		/* deactivate these pages */
+>  #define MADV_PAGEOUT	21		/* reclaim these pages */
+>  
+> +#define MADV_POPULATE	22		/* populate pages */
+> +
+>  /* compatibility flags */
+>  #define MAP_FILE	0
+>  
+> diff --git a/include/uapi/asm-generic/mman-common.h b/include/uapi/asm-generic/mman-common.h
+> index f94f65d429be..fa617fd0d733 100644
+> --- a/include/uapi/asm-generic/mman-common.h
+> +++ b/include/uapi/asm-generic/mman-common.h
+> @@ -72,6 +72,8 @@
+>  #define MADV_COLD	20		/* deactivate these pages */
+>  #define MADV_PAGEOUT	21		/* reclaim these pages */
+>  
+> +#define MADV_POPULATE	22		/* populate pages */
+> +
+>  /* compatibility flags */
+>  #define MAP_FILE	0
+>  
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 6a660858784b..f76fdd6fcf10 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -53,6 +53,7 @@ static int madvise_need_mmap_write(int behavior)
+>  	case MADV_COLD:
+>  	case MADV_PAGEOUT:
+>  	case MADV_FREE:
+> +	case MADV_POPULATE:
+>  		return 0;
+>  	default:
+>  		/* be safe, default to 1. list exceptions explicitly */
+> @@ -821,6 +822,72 @@ static long madvise_dontneed_free(struct vm_area_struct *vma,
+>  		return -EINVAL;
 >  }
 >  
-> -static int mlx5v_probe(struct auxiliary_device *adev,
-> -		       const struct auxiliary_device_id *id)
-> +struct mlx5_vdpa_mgmtdev {
-> +	struct vdpa_mgmt_dev mgtdev;
-> +	struct mlx5_adev *madev;
-> +	struct mlx5_vdpa_net *ndev;
-> +};
-> +
-> +static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
->  {
-> -	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
-> -	struct mlx5_core_dev *mdev = madev->mdev;
-> +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
->  	struct virtio_net_config *config;
->  	struct mlx5_vdpa_dev *mvdev;
->  	struct mlx5_vdpa_net *ndev;
-> +	struct mlx5_core_dev *mdev;
->  	u32 max_vqs;
->  	int err;
->  
-> +	if (mgtdev->ndev)
-> +		return -ENOSPC;
-> +
-> +	mdev = mgtdev->madev->mdev;
->  	/* we save one virtqueue for control virtqueue should we require it */
->  	max_vqs = MLX5_CAP_DEV_VDPA_EMULATION(mdev, max_num_virtio_queues);
->  	max_vqs = min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
->  
->  	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
-> -				 2 * mlx5_vdpa_max_qps(max_vqs), NULL);
-> +				 2 * mlx5_vdpa_max_qps(max_vqs), name);
->  	if (IS_ERR(ndev))
->  		return PTR_ERR(ndev);
->  
-> @@ -2018,11 +2027,12 @@ static int mlx5v_probe(struct auxiliary_device *adev,
->  	if (err)
->  		goto err_res;
->  
-> -	err = vdpa_register_device(&mvdev->vdev);
-> +	mvdev->vdev.mdev = &mgtdev->mgtdev;
-> +	err = _vdpa_register_device(&mvdev->vdev);
->  	if (err)
->  		goto err_reg;
->  
-> -	dev_set_drvdata(&adev->dev, ndev);
-> +	mgtdev->ndev = ndev;
->  	return 0;
->  
->  err_reg:
-> @@ -2035,11 +2045,62 @@ static int mlx5v_probe(struct auxiliary_device *adev,
->  	return err;
->  }
->  
-> +static void mlx5_vdpa_dev_del(struct vdpa_mgmt_dev *v_mdev, struct vdpa_device *dev)
+> +static long madvise_populate(struct vm_area_struct *vma,
+> +			     struct vm_area_struct **prev,
+> +			     unsigned long start, unsigned long end)
 > +{
-> +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
+> +	struct mm_struct *mm = vma->vm_mm;
+> +	unsigned long tmp_end;
+> +	int locked = 1;
+> +	long pages;
 > +
-> +	_vdpa_unregister_device(dev);
-> +	mgtdev->ndev = NULL;
-> +}
+> +	*prev = vma;
 > +
-> +static const struct vdpa_mgmtdev_ops mdev_ops = {
-> +	.dev_add = mlx5_vdpa_dev_add,
-> +	.dev_del = mlx5_vdpa_dev_del,
-> +};
+> +	while (start < end) {
+> +		/*
+> +		 * We might have temporarily dropped the lock. For example,
+> +		 * our VMA might have been split.
+> +		 */
+> +		if (!vma || start >= vma->vm_end) {
+> +			vma = find_vma(mm, start);
+> +			if (!vma)
+> +				return -ENOMEM;
+> +		}
 > +
-> +static struct virtio_device_id id_table[] = {
-> +	{ VIRTIO_ID_NET, VIRTIO_DEV_ANY_ID },
-> +	{ 0 },
-> +};
+> +		/* Bail out on incompatible VMA types. */
+> +		if (vma->vm_flags & (VM_IO | VM_PFNMAP) ||
+> +		    !vma_is_accessible(vma)) {
+> +			return -EINVAL;
+> +		}
 > +
-> +static int mlx5v_probe(struct auxiliary_device *adev,
-> +		       const struct auxiliary_device_id *id)
-> +
-> +{
-> +	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
-> +	struct mlx5_core_dev *mdev = madev->mdev;
-> +	struct mlx5_vdpa_mgmtdev *mgtdev;
-> +	int err;
-> +
-> +	mgtdev = kzalloc(sizeof(*mgtdev), GFP_KERNEL);
-> +	if (!mgtdev)
-> +		return -ENOMEM;
-> +
-> +	mgtdev->mgtdev.ops = &mdev_ops;
-> +	mgtdev->mgtdev.device = mdev->device;
-> +	mgtdev->mgtdev.id_table = id_table;
-> +	mgtdev->madev = madev;
-> +
-> +	err = vdpa_mgmtdev_register(&mgtdev->mgtdev);
-> +	if (err)
-> +		goto reg_err;
-> +
-> +	dev_set_drvdata(&adev->dev, mgtdev);
-> +
+> +		/*
+> +		 * Populate pages and take care of VM_LOCKED: simulate user
+> +		 * space access.
+> +		 *
+> +		 * For private, writable mappings, trigger a write fault to
+> +		 * break COW (i.e., shared zeropage). For other mappings (i.e.,
+> +		 * read-only, shared), trigger a read fault.
+> +		 */
+> +		tmp_end = min_t(unsigned long, end, vma->vm_end);
+> +		pages = populate_vma_page_range(vma, start, tmp_end, &locked);
+> +		if (!locked) {
+> +			mmap_read_lock(mm);
+> +			*prev = NULL;
+> +			vma = NULL;
+> +		}
+> +		if (pages < 0) {
+> +			switch (pages) {
+> +			case -EINTR:
+> +			case -ENOMEM:
+> +				return pages;
+> +			case -EHWPOISON:
+> +				/* Skip over any poisoned pages. */
+> +				start += PAGE_SIZE;
+> +				continue;
+> +			case -EBUSY:
+> +			case -EAGAIN:
+> +				continue;
+> +			default:
+> +				pr_warn_once("%s: unhandled return value: %ld\n",
+> +					     __func__, pages);
+> +				return -ENOMEM;
+> +			}
+> +		}
+> +		start += pages * PAGE_SIZE;
+> +	}
 > +	return 0;
-> +
-> +reg_err:
-> +	kfree(mdev);
-> +	return err;
 > +}
 > +
->  static void mlx5v_remove(struct auxiliary_device *adev)
->  {
-> -	struct mlx5_vdpa_dev *mvdev = dev_get_drvdata(&adev->dev);
-> +	struct mlx5_vdpa_mgmtdev *mgtdev;
->  
-> -	vdpa_unregister_device(&mvdev->vdev);
-> +	mgtdev = dev_get_drvdata(&adev->dev);
-> +	vdpa_mgmtdev_unregister(&mgtdev->mgtdev);
-> +	kfree(mgtdev);
->  }
->  
->  static const struct auxiliary_device_id mlx5v_id_table[] = {
-> -- 
-> 2.29.2
+>  /*
+>   * Application wants to free up the pages and associated backing store.
+>   * This is effectively punching a hole into the middle of a file.
+> @@ -934,6 +1001,8 @@ madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
+>  	case MADV_FREE:
+>  	case MADV_DONTNEED:
+>  		return madvise_dontneed_free(vma, prev, start, end, behavior);
+> +	case MADV_POPULATE:
+> +		return madvise_populate(vma, prev, start, end);
+>  	default:
+>  		return madvise_behavior(vma, prev, start, end, behavior);
+>  	}
+> @@ -954,6 +1023,7 @@ madvise_behavior_valid(int behavior)
+>  	case MADV_FREE:
+>  	case MADV_COLD:
+>  	case MADV_PAGEOUT:
+> +	case MADV_POPULATE:
+>  #ifdef CONFIG_KSM
+>  	case MADV_MERGEABLE:
+>  	case MADV_UNMERGEABLE:
+> 
 
