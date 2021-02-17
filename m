@@ -2,106 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2225F31E1C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5E631E1C7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:06:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhBQWER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:04:17 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41148 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231483AbhBQWED (ORCPT
+        id S233053AbhBQWFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:05:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229828AbhBQWFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:04:03 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 88A821C0B8E; Wed, 17 Feb 2021 23:02:59 +0100 (CET)
-Date:   Wed, 17 Feb 2021 23:02:58 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dm-devel@redhat.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        xen-devel@lists.xenproject.org, linux-nvme@lists.infradead.org,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-pm@vger.kernel.org,
-        linux-mm@kvack.org, axboe@kernel.dk, philipp.reisner@linbit.com,
-        lars.ellenberg@linbit.com, konrad.wilk@oracle.com,
-        roger.pau@citrix.com, minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, agk@redhat.com,
-        snitzer@redhat.com, hch@lst.de, sagi@grimberg.me,
-        martin.petersen@oracle.com, viro@zeniv.linux.org.uk, tytso@mit.edu,
-        jaegeuk@kernel.org, ebiggers@kernel.org, djwong@kernel.org,
-        shaggy@kernel.org, konishi.ryusuke@gmail.com, mark@fasheh.com,
-        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        damien.lemoal@wdc.com, naohiro.aota@wdc.com, jth@kernel.org,
-        rjw@rjwysocki.net, len.brown@intel.com, akpm@linux-foundation.org,
-        hare@suse.de, gustavoars@kernel.org, tiwai@suse.de,
-        alex.shi@linux.alibaba.com, asml.silence@gmail.com,
-        ming.lei@redhat.com, tj@kernel.org, osandov@fb.com,
-        bvanassche@acm.org, jefflexu@linux.alibaba.com
-Subject: Re: [RFC PATCH 29/34] power/swap: use bio_new in hib_submit_io
-Message-ID: <20210217220257.GA10791@amd>
-References: <20210128071133.60335-1-chaitanya.kulkarni@wdc.com>
- <20210128071133.60335-30-chaitanya.kulkarni@wdc.com>
+        Wed, 17 Feb 2021 17:05:01 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7ECDC061574;
+        Wed, 17 Feb 2021 14:04:18 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id v14so142873wro.7;
+        Wed, 17 Feb 2021 14:04:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6wttnQGWu0sxnyWFkVI72XRlxSZgSjW/Vbi7KmBnooU=;
+        b=S8NztYelNcnuzKYnhS7oX1mJsUZSLgr3mbFA8X2i1g0Ufu+3349DArFXUmApD+wUN8
+         qae+oQZcQrMGGwfs5uXO/8pg0rTm52mo+/cNttAYIrGQrUaez8wbfR0azlntX+LX4u3G
+         BCBpcyV17PSqvQRIcv8dDeKp0HBzhIFX9UViWcKGce0DeL8ZU+5MbE4wV/VuDlMMp99u
+         GqyjV3+G6IpSQ0+lce5zJAFo4GQZqMhq6ncTXWjHGKCuotpBbeX+zEqDlymSamjkU+l4
+         WWSWTMUQOhU9/pG7L1dhuaTW+9eEEbhrEKX0TVpp7LMEplSM8fTiGesWNq3AKS3I33zP
+         1RUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6wttnQGWu0sxnyWFkVI72XRlxSZgSjW/Vbi7KmBnooU=;
+        b=d7YlqnJohor//F5Y8MZxziK7v8PJbulj3kFN3VWgU+O7Gmd4CQx69vHrVC9qa1q83D
+         fDVQAXxzeaxljrz6s/ucxTZeh3qJZfRGtyqFmzwfH65MooqzB4B9/SRXXw03IvsYVzru
+         dPlXLrBThzBWm4drPx8tFH67H/qR2K8D7T2ykERS/fl8qIJFnDfWkPi4ntAoxqG3WIrj
+         ahekWM7te4WjEc6AP2IWHwJ5F8UEjFIn4E9f1Hvas3O0zcsibIOlTlhpRfIsRzxhwHmr
+         DX0iAuPfOu8RSlxMvc6e2ZCgYd0OiIg4q5ZFC1+XJvqIpVrzl18OoSa7hcEoBNdVC79G
+         B2cQ==
+X-Gm-Message-State: AOAM533nZxkDjcQVLyXSpzfub5nGFvfx/aqLYWrdBkVuBkuMPPVFOc7s
+        /SiQ/ZvzlWo2tWYMg6WvZbzGonfMRsqvCxcgF+E=
+X-Google-Smtp-Source: ABdhPJyoNgeCYh4ZR1wXJGekd+0GnvpscpjxuRKyBWvKDEv6fshsFjkzz00EaLIHiia/zG7sJrerWde6Yn90dDe9PP0=
+X-Received: by 2002:a5d:49d2:: with SMTP id t18mr1232965wrs.224.1613599457065;
+ Wed, 17 Feb 2021 14:04:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
-Content-Disposition: inline
-In-Reply-To: <20210128071133.60335-30-chaitanya.kulkarni@wdc.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20210216010806.31948-1-TheSven73@gmail.com> <BN8PR11MB3651BB478489CF5B69A9DB6DFA869@BN8PR11MB3651.namprd11.prod.outlook.com>
+In-Reply-To: <BN8PR11MB3651BB478489CF5B69A9DB6DFA869@BN8PR11MB3651.namprd11.prod.outlook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Wed, 17 Feb 2021 17:04:05 -0500
+Message-ID: <CAGngYiUV_c7Z-gUCt0xKcP-E_5UVyM9PWBQ_wYK9o5_L0D-1qA@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 0/5] lan743x speed boost
+To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David Miller <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        Hillf Danton <hdanton@sina.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jakub and Bryan,
 
---LQksG6bCIzRHxTLp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Feb 17, 2021 at 4:43 PM <Bryan.Whitehead@microchip.com> wrote:
+>
+> Just to let you know, my colleague tested the patches 1 and 2 on x86 PC and we are satisfied with the result.
+> We confirmed some performance improvements.
+> We also confirmed PTP is working.
+>
+> Thanks for your work on this.
+>
+> Tested-by: UNGLinuxDriver@microchip.com
+>
 
-Hi!
->=20
-> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-> index c73f2e295167..e92e36c053a6 100644
-> --- a/kernel/power/swap.c
-> +++ b/kernel/power/swap.c
-> @@ -271,13 +271,12 @@ static int hib_submit_io(int op, int op_flags, pgof=
-f_t page_off, void *addr,
->  		struct hib_bio_batch *hb)
->  {
->  	struct page *page =3D virt_to_page(addr);
-> +	sector_t sect =3D page_off * (PAGE_SIZE >> 9);
->  	struct bio *bio;
->  	int error =3D 0;
-> =20
-> -	bio =3D bio_alloc(GFP_NOIO | __GFP_HIGH, 1);
-> -	bio->bi_iter.bi_sector =3D page_off * (PAGE_SIZE >> 9);
-> -	bio_set_dev(bio, hib_resume_bdev);
-> -	bio_set_op_attrs(bio, op, op_flags);
-> +	bio =3D bio_new(hib_resume_bdev, sect, op, op_flags, 1,
-> +		      GFP_NOIO | __GFP_HIGH);
-> =20
+Bryan, that is great news. My pleasure, thank you for your guidance
+and considerable expertise.
 
-C function with 6 arguments... dunno. Old version looks comparable or
-even more readable...
-
-Best regards,
-							Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---LQksG6bCIzRHxTLp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAtkpEACgkQMOfwapXb+vL5ywCguk9XRtMJ4/rJgwKlR42qzH7B
-ww4AoK8H3c5uHgpu/eHAUqpvoYMrxHuL
-=Rk1V
------END PGP SIGNATURE-----
-
---LQksG6bCIzRHxTLp--
+Jakub, is there anything else you'd like to see from us, before you
+are satisfied that patches 1/5 and 2/5 can be merged into your tree?
