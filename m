@@ -2,103 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB9431D5B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D30BB31D5B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:38:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhBQHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:32:07 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:62042 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231515AbhBQHbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:31:50 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613547092; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=VdTuFW1eZ3KIE8WTPHjDwu+M4861ybBJaxdd7BYbVgs=; b=BydtRVbzBi1+qmxaOxe0luP+DsQe4M8cBma/zF9QEkClyXKI+FneJU5+wlVxi1kslWReX2pv
- 0TJub4O5qAuln08F7Dt15szd2RsxGx99cHUi32B2sOkQFaMoL++t2CNAOpMwWp6KPrzQFeZ2
- 6XzqHTrrF5SsX9unryMfKWM81aU=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 602cc6350b8eba4b52b50f1f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 07:31:01
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C6E75C43465; Wed, 17 Feb 2021 07:31:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0331C433CA;
-        Wed, 17 Feb 2021 07:30:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0331C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Felix Fietkau <nbd@nbd.name>, davem@davemloft.net, kuba@kernel.org,
-        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ath9k: fix ath_tx_process_buffer() potential null ptr dereference
-References: <43ed9abb9e8d7112f3cc168c2f8c489e253635ba.1613090339.git.skhan@linuxfoundation.org>
-        <20210216070336.D138BC43463@smtp.codeaurora.org>
-        <0fd9a538-e269-e10e-a7f9-02d4c5848420@nbd.name>
-        <caac2b21-d5de-32ac-0fe0-75af8fb80bbb@linuxfoundation.org>
-Date:   Wed, 17 Feb 2021 09:30:55 +0200
-In-Reply-To: <caac2b21-d5de-32ac-0fe0-75af8fb80bbb@linuxfoundation.org> (Shuah
-        Khan's message of "Tue, 16 Feb 2021 08:22:07 -0700")
-Message-ID: <878s7nqhg0.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S231701AbhBQHe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 02:34:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44500 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231500AbhBQHeX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 02:34:23 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27A4EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:43 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id i2so17118915ybl.16
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=lOAK9IBrMCCtns9spRcLU7grHL9xP9PXBr01poTnJKY=;
+        b=P5gyLLrxKOVGU82VrYnGNZR9YQ8DEUufItIWC1jzHPG3BqSxp7C3OyFVNzXbUfhP/2
+         cDOOlPgBQDbGbFNzWH/5mTW7476Gf4ujHV6J5qJvHwdvyqb5MpH9aLMqBOlaAwLX4MGW
+         uzcm9IeFYvaJImfJaeutslEa7gdOmZ8uuP7tTmWuj2HnUMmzGUPI0xhsMzW9swyaxtaC
+         OReaE0rCjyekMoHLekdekSlY5N3TE+Dk1zMdTzKxt2wnpf+JXkp6HGWHXuLrjRUt3bkg
+         mqAbTdGMM3Te+ASL5Kl3d+JkpHaSGp+HJJtUexQ0QoU8+P2h4OYb6dnmDjliyBqnnexa
+         ZjRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=lOAK9IBrMCCtns9spRcLU7grHL9xP9PXBr01poTnJKY=;
+        b=apOpgNcJ50pc/t9JTngNod7H6GmlvHLiwS3WK+TX1cHDzZInNr9yiBmvST9Rf53Bpu
+         38rrPrzixpCdZ8hhloKMhOY0Qe0iJznxsY7DBwml1EYGyAeABzr+Jt+ubN0w1JEFVvwt
+         EkEbVeweZFRmwNpjik7oFsI5y4SsmdGUZQTIDeVKm9NbpBVGO3wnQfiMxoyErSPomCvC
+         Hyg9+xnui5FR2zC0TL5MTUOFDg1ZfktH6bOEw/mdftyMqcCGrps20g4tVr1zh5jSRoCj
+         7MwP3hdvRIh4WSo2dWHlygY8/MgmtqxuY3TD5XAJN6/qzM2vzM3pDQyJzY0NSE7FBASs
+         1V/A==
+X-Gm-Message-State: AOAM5311RTw+Hm4gWRhyYhBDZtHgboZLH9CbloBTOvCCnOmlh8D5DOw1
+        iU5tMOCZwBNeOBPH35Iq3wO82oo=
+X-Google-Smtp-Source: ABdhPJzYB7CSY+bsx+FwoZb40f5/sdDpsrEVDYihSkZCXu8FC6rGnStezZAhqtcO27fQjXacbrkLiA4=
+Sender: "wak via sendgmr" <wak@wak-linux.svl.corp.google.com>
+X-Received: from wak-linux.svl.corp.google.com ([2620:15c:2c5:3:e984:b7fc:110a:274a])
+ (user=wak job=sendgmr) by 2002:a25:850e:: with SMTP id w14mr28906187ybk.259.1613547220757;
+ Tue, 16 Feb 2021 23:33:40 -0800 (PST)
+Date:   Tue, 16 Feb 2021 23:33:14 -0800
+Message-Id: <20210217073318.540369-1-wak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH 1/4] ipmi: kcs_bmc: Simplify irq handling
+From:   "William A. Kennington III" <wak@google.com>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        "William A. Kennington III" <wak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah Khan <skhan@linuxfoundation.org> writes:
+Platforms specific IRQ handles repeat the same logic, calling a
+sub-handler in the kcs_bmc generic code that should just conform to the
+irqhandler callback.
 
-> On 2/16/21 12:53 AM, Felix Fietkau wrote:
->>
->> On 2021-02-16 08:03, Kalle Valo wrote:
->>> Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>
->>>> ath_tx_process_buffer() references ieee80211_find_sta_by_ifaddr()
->>>> return pointer (sta) outside null check. Fix it by moving the code
->>>> block under the null check.
->>>>
->>>> This problem was found while reviewing code to debug RCU warn from
->>>> ath10k_wmi_tlv_parse_peer_stats_info() and a subsequent manual audit
->>>> of other callers of ieee80211_find_sta_by_ifaddr() that don't hold
->>>> RCU read lock.
->>>>
->>>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
->>>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
->>>
->>> Patch applied to ath-next branch of ath.git, thanks.
->>>
->>> a56c14bb21b2 ath9k: fix ath_tx_process_buffer() potential null ptr dereference
->> I just took another look at this patch, and it is completely bogus.
->> Not only does the stated reason not make any sense (sta is simply passed
->> to other functions, not dereferenced without checks), but this also
->> introduces a horrible memory leak by skipping buffer completion if sta
->> is NULL.
->> Please drop it, the code is fine as-is.
->
-> A comment describing what you said here might be a good addition to this
-> comment block though.
+Signed-off-by: William A. Kennington III <wak@google.com>
+---
+ drivers/char/ipmi/kcs_bmc.c         | 10 +++++-----
+ drivers/char/ipmi/kcs_bmc.h         |  3 ++-
+ drivers/char/ipmi/kcs_bmc_aspeed.c  | 12 +-----------
+ drivers/char/ipmi/kcs_bmc_npcm7xx.c | 12 +-----------
+ 4 files changed, 9 insertions(+), 28 deletions(-)
 
-Shuah, can you send a followup patch which reverts your change and adds
-the comment? I try to avoid rebasing my trees.
-
+diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
+index f292e74bd4a5..ccb35f1645cf 100644
+--- a/drivers/char/ipmi/kcs_bmc.c
++++ b/drivers/char/ipmi/kcs_bmc.c
+@@ -209,10 +209,11 @@ static void kcs_bmc_handle_cmd(struct kcs_bmc *kcs_bmc)
+ 	}
+ }
+ 
+-int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc)
++irqreturn_t kcs_bmc_irq(int irq, void *arg)
+ {
++	struct kcs_bmc *kcs_bmc = arg;
+ 	unsigned long flags;
+-	int ret = -ENODATA;
++	irqreturn_t ret = IRQ_NONE;
+ 	u8 status;
+ 
+ 	spin_lock_irqsave(&kcs_bmc->lock, flags);
+@@ -225,15 +226,14 @@ int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc)
+ 			kcs_bmc_handle_cmd(kcs_bmc);
+ 		else
+ 			kcs_bmc_handle_data(kcs_bmc);
+-
+-		ret = 0;
++		ret = IRQ_HANDLED;
+ 	}
+ 
+ 	spin_unlock_irqrestore(&kcs_bmc->lock, flags);
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL(kcs_bmc_handle_event);
++EXPORT_SYMBOL(kcs_bmc_irq);
+ 
+ static inline struct kcs_bmc *to_kcs_bmc(struct file *filp)
+ {
+diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
+index eb9ea4ce78b8..959d7042e6d2 100644
+--- a/drivers/char/ipmi/kcs_bmc.h
++++ b/drivers/char/ipmi/kcs_bmc.h
+@@ -6,6 +6,7 @@
+ #ifndef __KCS_BMC_H__
+ #define __KCS_BMC_H__
+ 
++#include <linux/irqreturn.h>
+ #include <linux/miscdevice.h>
+ 
+ /* Different phases of the KCS BMC module.
+@@ -102,7 +103,7 @@ static inline void *kcs_bmc_priv(struct kcs_bmc *kcs_bmc)
+ 	return kcs_bmc->priv;
+ }
+ 
+-int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc);
++irqreturn_t kcs_bmc_irq(int irq, void *arg);
+ struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv,
+ 					u32 channel);
+ #endif /* __KCS_BMC_H__ */
+diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
+index a140203c079b..6451a8af2664 100644
+--- a/drivers/char/ipmi/kcs_bmc_aspeed.c
++++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
+@@ -203,16 +203,6 @@ static void aspeed_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
+ 	}
+ }
+ 
+-static irqreturn_t aspeed_kcs_irq(int irq, void *arg)
+-{
+-	struct kcs_bmc *kcs_bmc = arg;
+-
+-	if (!kcs_bmc_handle_event(kcs_bmc))
+-		return IRQ_HANDLED;
+-
+-	return IRQ_NONE;
+-}
+-
+ static int aspeed_kcs_config_irq(struct kcs_bmc *kcs_bmc,
+ 			struct platform_device *pdev)
+ {
+@@ -223,7 +213,7 @@ static int aspeed_kcs_config_irq(struct kcs_bmc *kcs_bmc,
+ 	if (irq < 0)
+ 		return irq;
+ 
+-	return devm_request_irq(dev, irq, aspeed_kcs_irq, IRQF_SHARED,
++	return devm_request_irq(dev, irq, kcs_bmc_irq, IRQF_SHARED,
+ 				dev_name(dev), kcs_bmc);
+ }
+ 
+diff --git a/drivers/char/ipmi/kcs_bmc_npcm7xx.c b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
+index 722f7391fe1f..f417813cf900 100644
+--- a/drivers/char/ipmi/kcs_bmc_npcm7xx.c
++++ b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
+@@ -108,16 +108,6 @@ static void npcm7xx_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
+ 			   enable ? KCS_IE_IRQE | KCS_IE_HIRQE : 0);
+ }
+ 
+-static irqreturn_t npcm7xx_kcs_irq(int irq, void *arg)
+-{
+-	struct kcs_bmc *kcs_bmc = arg;
+-
+-	if (!kcs_bmc_handle_event(kcs_bmc))
+-		return IRQ_HANDLED;
+-
+-	return IRQ_NONE;
+-}
+-
+ static int npcm7xx_kcs_config_irq(struct kcs_bmc *kcs_bmc,
+ 				  struct platform_device *pdev)
+ {
+@@ -128,7 +118,7 @@ static int npcm7xx_kcs_config_irq(struct kcs_bmc *kcs_bmc,
+ 	if (irq < 0)
+ 		return irq;
+ 
+-	return devm_request_irq(dev, irq, npcm7xx_kcs_irq, IRQF_SHARED,
++	return devm_request_irq(dev, irq, kcs_bmc_irq, IRQF_SHARED,
+ 				dev_name(dev), kcs_bmc);
+ }
+ 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+2.30.0.478.g8a0d178c01-goog
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
