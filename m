@@ -2,186 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFF031D9CB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2B4F31D9CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:58:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232615AbhBQM4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:56:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230328AbhBQM41 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:56:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48C5464D92;
-        Wed, 17 Feb 2021 12:55:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613566546;
-        bh=17RKUiyV8HYsvPwtxjJkOW8n5oqEmDDV+0F6V0Ytj4E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZmkVLoxLNnEGMM9bfr6m1g7nEMoaWnME/cx6wMwrS54qslEntPbV3V6pvIlIj3QZd
-         TMNxBCOnGkftd3Pi30Cwwrff/RqnsHvv5ykw4ya1XPxbLyW2U1ufTgxzee7DczsCfA
-         t5BFe98C1I6cDmOhecY2vrtIHGMYKCbDXRfXaePOA1ZG15pe12K0C9jXgnej793/Qn
-         i/Joxt9U5LZKGjYd2hSA1kjqiKNlbIDRtStcFOh3m+YabS5lKdJjb9pVa4VxolCNnO
-         qdnXMbl5waqWit13q5ej3zeStVsRcrmrlHYlfy4+lj1rAvgCWpwq9uMNTSuj4rjojt
-         NQO27m/LLDrMg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 080E640CD9; Wed, 17 Feb 2021 09:55:44 -0300 (-03)
-Date:   Wed, 17 Feb 2021 09:55:43 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jianlin Lv <Jianlin.Lv@arm.com>
-Cc:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
-        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, irogers@google.com,
-        agerstmayr@redhat.com, kan.liang@linux.intel.com,
-        adrian.hunter@intel.com, iecedge@gmail.com,
+        id S232776AbhBQM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230473AbhBQM5j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:57:39 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CBF3C061574;
+        Wed, 17 Feb 2021 04:56:59 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id B09F98C4;
+        Wed, 17 Feb 2021 13:56:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613566615;
+        bh=N1iYn7bi2jeqm/vuWmZGkRcnJPc8uFeqeRkupaPeAYA=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TxIcOhXh36VjVYR6mPrJnpDdJb3uhqn8GinjJsBV9g/uUclLkXHUUVljWc74YyBGW
+         xMnhmIei5RqqJE6v44y3aZzWjfr5qvd4edpsitf6b9l7YKlGMYeO9wioLC3I9RkCz1
+         TOhpNi5uYnsiwb4TAI/f5gq/y5eo4yldso0oZTRM=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 02/16] media: i2c: rdacm20: Embedded 'serializer' field
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] perf tools: Fix arm64 build error with gcc-11
-Message-ID: <YC0ST0Q24LuCboKr@kernel.org>
-References: <20210217115830.1414355-1-Jianlin.Lv@arm.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-3-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <f1c765b4-e5c4-7bf0-dcbd-65eeefeb3f2d@ideasonboard.com>
+Date:   Wed, 17 Feb 2021 12:56:52 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210216174146.106639-3-jacopo+renesas@jmondi.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210217115830.1414355-1-Jianlin.Lv@arm.com>
-X-Url:  http://acmel.wordpress.com
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Feb 17, 2021 at 07:58:30PM +0800, Jianlin Lv escreveu:
-> gcc version: 11.0.0 20210208 (experimental) (GCC)
-> 
-> Following build error on arm64:
-> 
-> .......
-> In function ‘printf’,
->     inlined from ‘regs_dump__printf’ at util/session.c:1141:3,
->     inlined from ‘regs__printf’ at util/session.c:1169:2:
-> /usr/include/aarch64-linux-gnu/bits/stdio2.h:107:10: \
->   error: ‘%-5s’ directive argument is null [-Werror=format-overflow=]
-> 
-> 107 |   return __printf_chk (__USE_FORTIFY_LEVEL - 1, __fmt, \
->                 __va_arg_pack ());
-> 
-> ......
-> In function ‘fprintf’,
->   inlined from ‘perf_sample__fprintf_regs.isra’ at \
->     builtin-script.c:622:14:
-> /usr/include/aarch64-linux-gnu/bits/stdio2.h:100:10: \
->     error: ‘%5s’ directive argument is null [-Werror=format-overflow=]
->   100 |   return __fprintf_chk (__stream, __USE_FORTIFY_LEVEL - 1, __fmt,
->   101 |                         __va_arg_pack ());
-> 
-> cc1: all warnings being treated as errors
-> .......
-> 
-> This patch fixes Wformat-overflow warnings. Add helper function to
-> convert NULL to "unknown".
+Hi Jacopo,
 
-I think this is the right approach, but since both return a string, it
-is strange that only one of them have its _str() at the end, what we
-usually do in such cases is to have:
-
-  const char *__perf_reg_name(int id)
-  {
-  	return NULL if id unknown;
-  }
-
-  And:
-
-  static inline const char *perf_reg_name(int id)
-  {
-  	const char *name = __perf_reg_name(id);
-	return name ?: "unknown";
-  }
-
-Ok?
-
-- Arnaldo
- 
-> Signed-off-by: Jianlin Lv <Jianlin.Lv@arm.com>
+On 16/02/2021 17:41, Jacopo Mondi wrote:
+> There's no reason to allocate dynamically the 'serializer' field in
+> the driver structure.
+> 
+> Embed the field and adjust all its users in the driver.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 > ---
-> v2: Add ternary operator to avoid similar errors in other arch.
-> v3: Declared reg_name in inner block.
-> v4: Add helper function: perf_reg_name_str, update changelog.
-> ---
->  tools/perf/builtin-script.c                           |  2 +-
->  tools/perf/util/perf_regs.h                           | 11 ++++++++++-
->  .../perf/util/scripting-engines/trace-event-python.c  |  2 +-
->  tools/perf/util/session.c                             |  2 +-
->  4 files changed, 13 insertions(+), 4 deletions(-)
+>  drivers/media/i2c/rdacm20.c | 38 ++++++++++++++++---------------------
+>  1 file changed, 16 insertions(+), 22 deletions(-)
 > 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index 42dad4a0f8cf..35cddca2c7a7 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -643,7 +643,7 @@ static int perf_sample__fprintf_regs(struct regs_dump *regs, uint64_t mask,
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index f7fd5ae955d0..4d9bac87cba8 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -312,7 +312,7 @@ static const struct ov10635_reg {
 >  
->  	for_each_set_bit(r, (unsigned long *) &mask, sizeof(mask) * 8) {
->  		u64 val = regs->regs[i++];
-> -		printed += fprintf(fp, "%5s:0x%"PRIx64" ", perf_reg_name(r), val);
-> +		printed += fprintf(fp, "%5s:0x%"PRIx64" ", perf_reg_name_str(r), val);
->  	}
->  
->  	return printed;
-> diff --git a/tools/perf/util/perf_regs.h b/tools/perf/util/perf_regs.h
-> index a45499126184..e4a0a6f5408e 100644
-> --- a/tools/perf/util/perf_regs.h
-> +++ b/tools/perf/util/perf_regs.h
-> @@ -33,13 +33,22 @@ extern const struct sample_reg sample_reg_masks[];
->  
->  int perf_reg_value(u64 *valp, struct regs_dump *regs, int id);
->  
-> +static inline const char *perf_reg_name_str(int id)
-> +{
-> +	const char *str = perf_reg_name(id);
-> +
-> +	if (!str)
-> +		return "unknown";
-> +	return str;
-> +}
-> +
->  #else
->  #define PERF_REGS_MASK	0
->  #define PERF_REGS_MAX	0
->  
->  #define DWARF_MINIMAL_REGS PERF_REGS_MASK
->  
-> -static inline const char *perf_reg_name(int id __maybe_unused)
-> +static inline const char *perf_reg_name_str(int id __maybe_unused)
+>  struct rdacm20_device {
+>  	struct device			*dev;
+> -	struct max9271_device		*serializer;
+> +	struct max9271_device		serializer;
+>  	struct i2c_client		*sensor;
+>  	struct v4l2_subdev		sd;
+>  	struct media_pad		pad;
+> @@ -399,7 +399,7 @@ static int rdacm20_s_stream(struct v4l2_subdev *sd, int enable)
 >  {
->  	return "unknown";
->  }
-> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> index c83c2c6564e0..361307026485 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-> @@ -702,7 +702,7 @@ static int regs_map(struct regs_dump *regs, uint64_t mask, char *bf, int size)
+>  	struct rdacm20_device *dev = sd_to_rdacm20(sd);
 >  
->  		printed += scnprintf(bf + printed, size - printed,
->  				     "%5s:0x%" PRIx64 " ",
-> -				     perf_reg_name(r), val);
-> +				     perf_reg_name_str(r), val);
->  	}
->  
->  	return printed;
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 25adbcce0281..0737d3e7e698 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -1140,7 +1140,7 @@ static void regs_dump__printf(u64 mask, u64 *regs)
->  		u64 val = regs[i++];
->  
->  		printf(".... %-5s 0x%016" PRIx64 "\n",
-> -		       perf_reg_name(rid), val);
-> +		       perf_reg_name_str(rid), val);
->  	}
+> -	return max9271_set_serial_link(dev->serializer, enable);
+> +	return max9271_set_serial_link(&dev->serializer, enable);
 >  }
 >  
-> -- 
-> 2.25.1
+>  static int rdacm20_enum_mbus_code(struct v4l2_subdev *sd,
+> @@ -456,11 +456,11 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  	int ret;
+>  
+>  	/* Verify communication with the MAX9271: ping to wakeup. */
+> -	dev->serializer->client->addr = MAX9271_DEFAULT_ADDR;
+> -	i2c_smbus_read_byte(dev->serializer->client);
+> +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> +	i2c_smbus_read_byte(dev->serializer.client);
+>  
+>  	/* Serial link disabled during config as it needs a valid pixel clock. */
+> -	ret = max9271_set_serial_link(dev->serializer, false);
+> +	ret = max9271_set_serial_link(&dev->serializer, false);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -468,35 +468,35 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  	 *  Ensure that we have a good link configuration before attempting to
+>  	 *  identify the device.
+>  	 */
+> -	max9271_configure_i2c(dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> -					       MAX9271_I2CSLVTO_1024US |
+> -					       MAX9271_I2CMSTBT_105KBPS);
+> +	max9271_configure_i2c(&dev->serializer, MAX9271_I2CSLVSH_469NS_234NS |
+> +						MAX9271_I2CSLVTO_1024US |
+> +						MAX9271_I2CMSTBT_105KBPS);
+>  
+> -	max9271_configure_gmsl_link(dev->serializer);
+> +	max9271_configure_gmsl_link(&dev->serializer);
+>  
+> -	ret = max9271_verify_id(dev->serializer);
+> +	ret = max9271_verify_id(&dev->serializer);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = max9271_set_address(dev->serializer, dev->addrs[0]);
+> +	ret = max9271_set_address(&dev->serializer, dev->addrs[0]);
+>  	if (ret < 0)
+>  		return ret;
+> -	dev->serializer->client->addr = dev->addrs[0];
+> +	dev->serializer.client->addr = dev->addrs[0];
+>  
+>  	/*
+>  	 * Reset the sensor by cycling the OV10635 reset signal connected to the
+>  	 * MAX9271 GPIO1 and verify communication with the OV10635.
+>  	 */
+> -	ret = max9271_enable_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_enable_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = max9271_clear_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_clear_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  	usleep_range(10000, 15000);
+>  
+> -	ret = max9271_set_gpios(dev->serializer, MAX9271_GPIO1OUT);
+> +	ret = max9271_set_gpios(&dev->serializer, MAX9271_GPIO1OUT);
+>  	if (ret)
+>  		return ret;
+>  	usleep_range(10000, 15000);
+> @@ -560,13 +560,7 @@ static int rdacm20_probe(struct i2c_client *client)
+>  	if (!dev)
+>  		return -ENOMEM;
+>  	dev->dev = &client->dev;
+> -
+> -	dev->serializer = devm_kzalloc(&client->dev, sizeof(*dev->serializer),
+> -				       GFP_KERNEL);
+> -	if (!dev->serializer)
+> -		return -ENOMEM;
+
+Every allocation removed is a win.
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+
+> -
+> -	dev->serializer->client = client;
+> +	dev->serializer.client = client;
+>  
+>  	ret = of_property_read_u32_array(client->dev.of_node, "reg",
+>  					 dev->addrs, 2);
 > 
 
--- 
-
-- Arnaldo
