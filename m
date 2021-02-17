@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDD731DA3B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B6E31DA41
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231805AbhBQNUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:20:13 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45198 "EHLO
+        id S231781AbhBQNVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:21:41 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45230 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232648AbhBQNSP (ORCPT
+        with ESMTP id S232827AbhBQNSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:18:15 -0500
-Date:   Wed, 17 Feb 2021 13:17:33 -0000
+        Wed, 17 Feb 2021 08:18:18 -0500
+Date:   Wed, 17 Feb 2021 13:17:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613567853;
+        s=2020; t=1613567854;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=viclKIS/wEh2C5cZN05Bn36phjwqC1yjEjIXMF4ZcH0=;
-        b=nvicFERDgIkMfVb9mbRWEoLEpOaYl6rZfOnBVmubcH7GCFc9MVvURheTiK6LNlqBobwcWg
-        iVRbzBZGUqoB8F9MEDfZKcPvMA7rz8y1GYjJGgYBEGmBKwruzF1qNCVBxJZh8UaxNBBG1b
-        xivbA9w0jJlVjd4F75RqwFYAEhERFsHpNHwcLvwNM1KUG5ekXZi1zYfgtwYfxOYIGIOpgG
-        fsBHIcre5G9bCKRscG8K4w8sbF8wAvliXoWfcIu/anDpIa33+jNC47H4QSHQKDz/lD6KQf
-        YOs5irym5vMckcY/vg+xDFtvPmD4Rq4n42XycMDCT8gDxPEQOJOeAw/vaFEzSQ==
+        bh=YmCB05hpa+0Z0irgXs42zcb8Hvgup3x1aLiEnJL6+wg=;
+        b=OeNNX8ovwwoC7OeDfQB5yvqQwifZFtG57dCOc5gWRvBzBNEKbyYcsE90qn0JM7+sez77uS
+        1h2oq0gWHRopfFYXzCZ61J/F9Z7V48SCAEmAorCu49i/V6kmzG5J5kINVpK2OwVGMU5GXz
+        AJVmaBhZoyIe2ThmMRDjWEmRH5iGzZi8g+r4tU/w70aGX/ZaFVKRwn2aTIz2xOV4UbXbPL
+        oo2UKyVXOJ1/SbnoF1adHD2KP1PnPSq0plYlP0chy1VN86ezQgp1nNAjYSSTe97pixbwmN
+        O+XqooCsH2nqbtjMtKb0M2g2GOdbBByRx187TAnLWGx3KZ3drq2Jd8nIMKYBjQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613567853;
+        s=2020e; t=1613567854;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=viclKIS/wEh2C5cZN05Bn36phjwqC1yjEjIXMF4ZcH0=;
-        b=xa3SKRYSO9mCzZVc9W0ohyy/Uz+w9GjhZKvSULTHXV9o4GTGS5KcjKiOtESAUFd3cmCu1N
-        waZ7l7JAf5ZYZIBg==
-From:   "tip-bot2 for Sebastian Andrzej Siewior" <tip-bot2@linutronix.de>
+        bh=YmCB05hpa+0Z0irgXs42zcb8Hvgup3x1aLiEnJL6+wg=;
+        b=2qmzEPE/Tq7RipdXE+yypoxwYCqcxlsMnNszZGPmpxwUWPuh9v7+i9ShU3p095Vz8iTg3C
+        anDu4phh02VsehCg==
+From:   "tip-bot2 for Peter Zijlstra (Intel)" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] smp: Process pending softirqs in
- flush_smp_call_function_from_idle()
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: sched/core] preempt/dynamic: Provide
+ irqentry_exit_cond_resched() static call
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210123201027.3262800-2-bigeasy@linutronix.de>
-References: <20210123201027.3262800-2-bigeasy@linutronix.de>
+In-Reply-To: <20210118141223.123667-8-frederic@kernel.org>
+References: <20210118141223.123667-8-frederic@kernel.org>
 MIME-Version: 1.0
-Message-ID: <161356785301.20312.17140312346684582449.tip-bot2@tip-bot2>
+Message-ID: <161356785431.20312.17594381361120515669.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -61,53 +60,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     f9d34595ae4feed38856b88769e2ba5af22d2548
-Gitweb:        https://git.kernel.org/tip/f9d34595ae4feed38856b88769e2ba5af22d2548
-Author:        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-AuthorDate:    Sat, 23 Jan 2021 21:10:25 +01:00
+Commit-ID:     40607ee97e4eec5655cc0f76a720bdc4c63a6434
+Gitweb:        https://git.kernel.org/tip/40607ee97e4eec5655cc0f76a720bdc4c63a6434
+Author:        Peter Zijlstra (Intel) <peterz@infradead.org>
+AuthorDate:    Mon, 18 Jan 2021 15:12:22 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 17 Feb 2021 14:12:42 +01:00
 
-smp: Process pending softirqs in flush_smp_call_function_from_idle()
+preempt/dynamic: Provide irqentry_exit_cond_resched() static call
 
-send_call_function_single_ipi() may wake an idle CPU without sending an
-IPI. The woken up CPU will process the SMP-functions in
-flush_smp_call_function_from_idle(). Any raised softirq from within the
-SMP-function call will not be processed.
-Should the CPU have no tasks assigned, then it will go back to idle with
-pending softirqs and the NOHZ will rightfully complain.
+Provide static call to control IRQ preemption (called in CONFIG_PREEMPT)
+so that we can override its behaviour when preempt= is overriden.
 
-Process pending softirqs on return from flush_smp_call_function_queue().
+Since the default behaviour is full preemption, its call is
+initialized to provide IRQ preemption when preempt= isn't passed.
 
-Fixes: b2a02fc43a1f4 ("smp: Optimize send_call_function_single_ipi()")
-Reported-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20210123201027.3262800-2-bigeasy@linutronix.de
+Link: https://lkml.kernel.org/r/20210118141223.123667-8-frederic@kernel.org
 ---
- kernel/smp.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ include/linux/entry-common.h |  4 ++++
+ kernel/entry/common.c        | 10 +++++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 1b6070b..aeb0adf 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -14,6 +14,7 @@
- #include <linux/export.h>
- #include <linux/percpu.h>
- #include <linux/init.h>
-+#include <linux/interrupt.h>
- #include <linux/gfp.h>
- #include <linux/smp.h>
- #include <linux/cpu.h>
-@@ -449,6 +450,9 @@ void flush_smp_call_function_from_idle(void)
+diff --git a/include/linux/entry-common.h b/include/linux/entry-common.h
+index a104b29..883acef 100644
+--- a/include/linux/entry-common.h
++++ b/include/linux/entry-common.h
+@@ -2,6 +2,7 @@
+ #ifndef __LINUX_ENTRYCOMMON_H
+ #define __LINUX_ENTRYCOMMON_H
  
- 	local_irq_save(flags);
- 	flush_smp_call_function_queue(true);
-+	if (local_softirq_pending())
-+		do_softirq();
-+
- 	local_irq_restore(flags);
++#include <linux/static_call_types.h>
+ #include <linux/tracehook.h>
+ #include <linux/syscalls.h>
+ #include <linux/seccomp.h>
+@@ -454,6 +455,9 @@ irqentry_state_t noinstr irqentry_enter(struct pt_regs *regs);
+  * Conditional reschedule with additional sanity checks.
+  */
+ void irqentry_exit_cond_resched(void);
++#ifdef CONFIG_PREEMPT_DYNAMIC
++DECLARE_STATIC_CALL(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
++#endif
+ 
+ /**
+  * irqentry_exit - Handle return from exception that used irqentry_enter()
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index f9d491b..f09cae3 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -385,6 +385,9 @@ void irqentry_exit_cond_resched(void)
+ 			preempt_schedule_irq();
+ 	}
  }
++#ifdef CONFIG_PREEMPT_DYNAMIC
++DEFINE_STATIC_CALL(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
++#endif
  
+ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
+ {
+@@ -411,8 +414,13 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
+ 		}
+ 
+ 		instrumentation_begin();
+-		if (IS_ENABLED(CONFIG_PREEMPTION))
++		if (IS_ENABLED(CONFIG_PREEMPTION)) {
++#ifdef CONFIG_PREEMT_DYNAMIC
++			static_call(irqentry_exit_cond_resched)();
++#else
+ 			irqentry_exit_cond_resched();
++#endif
++		}
+ 		/* Covers both tracing and lockdep */
+ 		trace_hardirqs_on();
+ 		instrumentation_end();
