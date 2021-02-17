@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6BA31D911
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D39731D921
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232592AbhBQMDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:03:41 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:58517 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232544AbhBQMCY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:02:24 -0500
-Date:   Wed, 17 Feb 2021 12:01:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1613563299; bh=lgg1wNkMT8XQOATCoVN+lIKDRAuSPLux4jRMr6UVN+I=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=mKH57b/z3ygQp6bN9b2bkh7Wr+ip9/4vHvJE7HLfSm5hNvA4WyKWgIPnVTnoMqpXM
-         vtyKe6sDEJ1uflLtcYfameo5ZiDops+pvjmpkoBomfRiDeDDQIUG84i6lzxK90JH8U
-         EGltuSEVQV/LI6GwACuVarzi7128Mmdzq6aN8Kb3X/7mW7XvZy3LpVNEfR+DB9jRzT
-         YoBw9CuWg+G5vb7AA085gATPcVd80A/qV9SeKxgmsQf5Qgwd+CBDP/9YbS37GmD74Y
-         BB2sIh9gO69YfGbcchQAOcj4TmO3Hk1NkvToTI6kTsh4srZKrE7CQtPBIKeONemobO
-         YbGxCnHQyUO3g==
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?utf-8?Q?Bj=C3=B6rn_T=C3=B6pel?= <bjorn@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v7 bpf-next 4/6] virtio-net: support IFF_TX_SKB_NO_LINEAR
-Message-ID: <20210217120003.7938-5-alobakin@pm.me>
-In-Reply-To: <20210217120003.7938-1-alobakin@pm.me>
-References: <20210217120003.7938-1-alobakin@pm.me>
+        id S232052AbhBQMFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:05:44 -0500
+Received: from 8bytes.org ([81.169.241.247]:55946 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232583AbhBQMDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:03:00 -0500
+Received: from cap.home.8bytes.org (p549adcf6.dip0.t-ipconnect.de [84.154.220.246])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id 2E8D9246;
+        Wed, 17 Feb 2021 13:02:08 +0100 (CET)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     x86@kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 0/3] x86/sev-es: Check for trusted regs->sp in __sev_es_ist_enter()
+Date:   Wed, 17 Feb 2021 13:01:40 +0100
+Message-Id: <20210217120143.6106-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+From: Joerg Roedel <jroedel@suse.de>
 
-Virtio net supports the case where the skb linear space is empty, so add
-priv_flags.
+Hi,
 
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- drivers/net/virtio_net.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+here are some changes to the Linux SEV-ES code to check whether the
+value in regs->sp can be trusted, before checking whether it points to
+the #VC IST stack.
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index ba8e63792549..f2ff6c3906c1 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -2972,7 +2972,8 @@ static int virtnet_probe(struct virtio_device *vdev)
- =09=09return -ENOMEM;
-=20
- =09/* Set up network device as normal. */
--=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE;
-+=09dev->priv_flags |=3D IFF_UNICAST_FLT | IFF_LIVE_ADDR_CHANGE |
-+=09=09=09   IFF_TX_SKB_NO_LINEAR;
- =09dev->netdev_ops =3D &virtnet_netdev;
- =09dev->features =3D NETIF_F_HIGHDMA;
-=20
---=20
-2.30.1
+Andy Lutomirski reported that it is entirely possible to reach this
+function with a regs->sp value which was set by user-space. So check
+for this condition and don't use regs->sp if it can't be trusted.
 
+Also improve the comments around __sev_es_ist_enter/exit() to better
+explain what these function do and why they are there.
+
+Please review.
+
+Thanks,
+
+	Joerg
+
+Joerg Roedel (3):
+  x86/sev-es: Introduce from_syscall_gap() helper
+  x86/sev-es: Check if regs->sp is trusted before adjusting #VC IST
+    stack
+  x86/sev-es: Improve comments in and around __sev_es_ist_enter/exit()
+
+ arch/x86/include/asm/ptrace.h |  8 ++++++++
+ arch/x86/kernel/sev-es.c      | 27 +++++++++++++++++++--------
+ arch/x86/kernel/traps.c       |  3 +--
+ 3 files changed, 28 insertions(+), 10 deletions(-)
+
+-- 
+2.30.0
 
