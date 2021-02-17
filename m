@@ -2,123 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CBF531DE74
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5606831DE7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234523AbhBQRil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:38:41 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37526 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234417AbhBQRdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:33:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 40991B7C4;
-        Wed, 17 Feb 2021 17:33:09 +0000 (UTC)
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>
+        id S234592AbhBQRlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:41:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26447 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234453AbhBQRfo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:35:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613583258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qpc/1mlUzLnmcczpO47H6GSp0ZG9steVwoYmgJ68hFo=;
+        b=IBTpvJIObMuZf9apaobn04p4LKxKrgsIQIXTtIdsYrgVLLSdBmc4JURP2JcHw3tamEzzXl
+        xr1GLIP/wT6+vfcb/ijGcp3mtTsQuYLl2/HLTyUUwT0QaFh3XxzX51Ob6Aknrb63H6psaN
+        cDZqj6GD70bMbMut526ulNVJ7rg3iAo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-mrA4KtbZOMiY7rnmbxHPqw-1; Wed, 17 Feb 2021 12:34:16 -0500
+X-MC-Unique: mrA4KtbZOMiY7rnmbxHPqw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28D51100962D;
+        Wed, 17 Feb 2021 17:34:15 +0000 (UTC)
+Received: from [10.36.114.178] (ovpn-114-178.ams2.redhat.com [10.36.114.178])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DE62B5D72F;
+        Wed, 17 Feb 2021 17:34:13 +0000 (UTC)
+To:     Minchan Kim <minchan@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, stable@vger.kernel.org
-Subject: [PATCH] mm, compaction: make fast_isolate_freepages() stay within zone
-Date:   Wed, 17 Feb 2021 18:33:00 +0100
-Message-Id: <20210217173300.6394-1-vbabka@suse.cz>
-X-Mailer: git-send-email 2.30.0
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, mhocko@suse.com,
+        joaodias@google.com
+References: <20210217163603.429062-1-minchan@kernel.org>
+ <854d4ec8-1eb9-3595-b867-3e50f5a0e6a8@redhat.com>
+ <YC1RtmdhUR40gAzq@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Message-ID: <0f201a5a-caaf-2861-59f2-b66152fe9c53@redhat.com>
+Date:   Wed, 17 Feb 2021 18:34:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <YC1RtmdhUR40gAzq@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compaction always operates on pages from a single given zone when isolating
-both pages to migrate and freepages. Pageblock boundaries are intersected with
-zone boundaries to be safe in case zone starts or ends in the middle of
-pageblock. The use of pageblock_pfn_to_page() protects against non-contiguous
-pageblocks.
+On 17.02.21 18:26, Minchan Kim wrote:
+> On Wed, Feb 17, 2021 at 05:51:27PM +0100, David Hildenbrand wrote:
+>> On 17.02.21 17:36, Minchan Kim wrote:
+>>> alloc_contig_range is usually used on cma area or movable zone.
+>>> It's critical if the page migration fails on those areas so
+>>> dump more debugging message like memory_hotplug unless user
+>>> specifiy __GFP_NOWARN.
+>>>
+>>> Signed-off-by: Minchan Kim <minchan@kernel.org>
+>>> ---
+>>>    mm/page_alloc.c | 16 +++++++++++++++-
+>>>    1 file changed, 15 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>> index 0b55c9c95364..67f3ee3a1528 100644
+>>> --- a/mm/page_alloc.c
+>>> +++ b/mm/page_alloc.c
+>>> @@ -8486,6 +8486,15 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+>>>    				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+>>>    	}
+>>>    	if (ret < 0) {
+>>> +		if (!(cc->gfp_mask & __GFP_NOWARN)) {
+>>> +			struct page *page;
+>>> +
+>>> +			list_for_each_entry(page, &cc->migratepages, lru) {
+>>> +				pr_warn("migrating pfn %lx failed ret:%d ",
+>>> +						page_to_pfn(page), ret);
+>>> +				dump_page(page, "migration failure");
+>>> +			}
+>>
+>> This can create *a lot* of noise. For example, until huge pages are actually
+>> considered, we will choke on each end every huge page - and might do so over
+>> and over again.
+> 
+> I am not familiar with huge page status at this moment but why couldn't
+> they use __GFP_NOWARN if they are supposed to fail frequently?
 
-The functions fast_isolate_freepages() and fast_isolate_around() don't
-currently protect the fast freepage isolation thoroughly enough against these
-corner cases, and can result in freepage isolation operate outside of zone
-boundaries:
+any alloc_contig_range() user will fail on hugetlbfs pages right now 
+when they are placed into CMA/ZONE_MOVABLE. Oscar is working on that 
+upstream.
 
-- in fast_isolate_freepages() if we get a pfn from the first pageblock of a
-  zone that starts in the middle of that pageblock, 'highest' can be a pfn
-  outside of the zone. If we fail to isolate anything in this function, we
-  may then call fast_isolate_around() on a pfn outside of the zone and there
-  effectively do a set_pageblock_skip(page_to_pfn(highest)) which may currently
-  hit a VM_BUG_ON() in some configurations
-- fast_isolate_around() checks only the zone end boundary and not beginning,
-  nor that the pageblock is contiguous (with pageblock_pfn_to_page()) so it's
-  possible that we end up calling isolate_freepages_block() on a range of pfn's
-  from two different zones and end up e.g. isolating freepages under the wrong
-  zone's lock.
+> 
+>>
+>> This might be helpful for debugging, but is unacceptable for production
+>> systems for now I think. Maybe for now, do it based on CONFIG_DEBUG_VM.
+> 
+> If it's due to huge page you mentioned above and caller passes
+> __GFP_NOWARN in that case, couldn't we enable always-on?
 
-This patch should fix the above issues.
+It would make sense to add that for virito-mem when calling 
+alloc_contig_range(). For now I didn't do so, because there were not 
+that many messages yet - alloc_contig_range() essentially didn't 
+understand __GFP_NOWARN.
 
-Fixes: 5a811889de10 ("mm, compaction: use free lists to quickly locate a migration target")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- mm/compaction.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+We should then also stop printing the "PFNs busy ..." part from 
+alloc_contig_range() with __GFP_NOWARN.
 
-Hi, as promised here's a fix for issues that I think exist regardless of the
-memblock stuff, but were partially exposed by that. I will see if I can manage
-to test that it does prevent the known symptoms (it should if I didn't miss
-anything).
+> 
+> Actually, I am targeting cma allocation failure, which should
+> be rather rare compared to other call sites but critical to fail.
+> If it's concern to emit too many warning message, I will scope
+> down for site for only cma allocation.
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 190ccdaa6c19..22a35521e358 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -1288,7 +1288,7 @@ static void
- fast_isolate_around(struct compact_control *cc, unsigned long pfn, unsigned long nr_isolated)
- {
- 	unsigned long start_pfn, end_pfn;
--	struct page *page = pfn_to_page(pfn);
-+	struct page *page;
- 
- 	/* Do not search around if there are enough pages already */
- 	if (cc->nr_freepages >= cc->nr_migratepages)
-@@ -1299,8 +1299,12 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn, unsigned long
- 		return;
- 
- 	/* Pageblock boundaries */
--	start_pfn = pageblock_start_pfn(pfn);
--	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone)) - 1;
-+	start_pfn = max(pageblock_start_pfn(pfn), cc->zone->zone_start_pfn);
-+	end_pfn = min(pageblock_end_pfn(pfn), zone_end_pfn(cc->zone));
-+
-+	page = pageblock_pfn_to_page(start_pfn, end_pfn, cc->zone);
-+	if (!page)
-+		return;
- 
- 	/* Scan before */
- 	if (start_pfn != pfn) {
-@@ -1402,7 +1406,8 @@ fast_isolate_freepages(struct compact_control *cc)
- 			pfn = page_to_pfn(freepage);
- 
- 			if (pfn >= highest)
--				highest = pageblock_start_pfn(pfn);
-+				highest = max(pageblock_start_pfn(pfn),
-+					      cc->zone->zone_start_pfn);
- 
- 			if (pfn >= low_pfn) {
- 				cc->fast_search_fail = 0;
-@@ -1472,7 +1477,8 @@ fast_isolate_freepages(struct compact_control *cc)
- 			} else {
- 				if (cc->direct_compaction && pfn_valid(min_pfn)) {
- 					page = pageblock_pfn_to_page(min_pfn,
--						pageblock_end_pfn(min_pfn),
-+						min(pageblock_end_pfn(min_pfn),
-+						    zone_end_pfn(cc->zone)),
- 						cc->zone);
- 					cc->free_pfn = min_pfn;
- 				}
+If you add "__GFP_NOWARN" when !ZONE_MOVABLE, how would you ever print 
+something for CMA? What am I missing? CMA is usually not on ZONE_MOVABLE.
+
 -- 
-2.30.0
+Thanks,
+
+David / dhildenb
 
