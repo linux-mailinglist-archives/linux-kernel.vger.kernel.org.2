@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6931231E2D6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C8531E2D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbhBQWxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:53:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43478 "EHLO
+        id S233510AbhBQWv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:51:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234021AbhBQWws (ORCPT
+        with ESMTP id S232953AbhBQWvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:52:48 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2998C061574;
-        Wed, 17 Feb 2021 14:52:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=exGxKvz2dkO6Ia4BmvggC59Ll6D9+WqpkO0LLDpW53U=; b=DAsadcKxmsU6ocqG684beBo7F/
-        pwtwAkJtxmTMpf4Yaf/uMliVqkqw8h9mTKmhc9jES0ZyI7WcfPT69f5KQCv6xNKgnrvwupFO9uIti
-        qu+Lr192QSZBD65r5vcrpJeRgG7Wk6phDdZTZ6QSzm2L8F6/Rw6yoDPMSkwF70J9djiWPgzhM4bzW
-        gbH8VzVJvY7blol40F8Lb+Vjx+9EPXX+e6l1ggpAsMYqr+Ou3p9dr73qkXHVrSpAjSVNld/S93yLB
-        Nedtkxx4lvJsktlKJ9eFPfP//m8xQ0/weFQAgZU+eqRSoH/EpVvf4qMA+TiHJsM7LqgUgpfBqCbxz
-        t0ekOKRg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lCVdG-000xt5-Iq; Wed, 17 Feb 2021 22:49:44 +0000
-Date:   Wed, 17 Feb 2021 22:49:18 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
-Message-ID: <20210217224918.GP2858050@casper.infradead.org>
-References: <20210217161358.GM2858050@casper.infradead.org>
- <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
- <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
- <1901187.1613601279@warthog.procyon.org.uk>
+        Wed, 17 Feb 2021 17:51:46 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A090C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:51:05 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id gx20so201606pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:51:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gWwYr0s0Pd0lrE6qpWWSKWiLIJ1ICefuI8SGvs5PCCI=;
+        b=BwNEZo/uMnUvV84uNLV3wlI9IibOa+RKEp/9kxTKuAmnJLZcXhpudPHAJvEPVJjqyg
+         CLnO11IA8QWPIXTX3gm6aU1pDPJpimH8EzKuKxZTuJxN+CZ/COpYtSOKnWlRyLGRr9cg
+         oUEl+hTELV4NX+aMLxwObKsBJ+EgAN62bQOfQnYnJsguTWG2cTJOuqt3Lf2VvFfxG9C/
+         R9dYYXf4wJb7HK2xnf0svEOuwawqPgutBJDMelz/OnywFdmIgW8RJMj/gyKFLhjf5SfC
+         G3t4cSm44H3qGb2tVoew+wnwHHNq9XOiCyPqD/fTt3nwCN6GmUeuSmMKLtquG2pCYwoM
+         tE4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gWwYr0s0Pd0lrE6qpWWSKWiLIJ1ICefuI8SGvs5PCCI=;
+        b=tA2WJBrcXQX7At1VYwAe05/VQm5tckZavwG1NQ8hHtVM73GPaIfefWReb2o4KZ8H/Z
+         XAxUA5kRdkDWUQw4q0q4TMOEZrnwdkwt2a3iu7WrzcgwoQCMAOrOMo5j1AadL0APQEaQ
+         mbWAKHDoA1dcwTGTtLoyFIvi/eJeOzsri7P0zDSaVTzoWxchQrurlCV/hukFJk4w07AW
+         PTfBEVEhoujQ738m2kUehMf8GtozLyL0zILf+zD2AtWobzms125fe6jOY49o76EspMSG
+         9AwudunnR3ZxHMLz2AotgtGlnvudw7pG/AzUnyWpyjDA2CadMmaSrjTZCqaFYiVuHHpM
+         g26A==
+X-Gm-Message-State: AOAM532bAlz+PSNkqIPSRydonEEu8S/XickLaNDriPXmmo/TXJV/FXHU
+        aA6kowHy3/P0w/kUmMa69EpjPQ==
+X-Google-Smtp-Source: ABdhPJx9fClsRISNCiWm/gQ103a2Y9OtUG2MLjoFzn7CA4sDZy/+YZ1vnqhdpdDfd30MCJfDu9jOzw==
+X-Received: by 2002:a17:90b:1bcf:: with SMTP id oa15mr1043843pjb.78.1613602264695;
+        Wed, 17 Feb 2021 14:51:04 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:dc76:757f:9e9e:647c])
+        by smtp.gmail.com with ESMTPSA id q13sm2735111pfg.61.2021.02.17.14.51.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 14:51:04 -0800 (PST)
+Date:   Wed, 17 Feb 2021 14:50:57 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Makarand Sonare <makarandsonare@google.com>
+Subject: Re: [PATCH 00/14] KVM: x86/mmu: Dirty logging fixes and improvements
+Message-ID: <YC2d0ZkdCOJEWlng@google.com>
+References: <20210213005015.1651772-1-seanjc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1901187.1613601279@warthog.procyon.org.uk>
+In-Reply-To: <20210213005015.1651772-1-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 10:34:39PM +0000, David Howells wrote:
-> Matthew Wilcox <willy@infradead.org> wrote:
-> 
-> > We're defeating the ondemand_readahead() algorithm here.  Let's suppose
-> > userspace is doing 64kB reads, the filesystem is OrangeFS which only
-> > wants to do 4MB reads, the page cache is initially empty and there's
-> > only one thread doing a sequential read.  ondemand_readahead() calls
-> > get_init_ra_size() which tells it to allocate 128kB and set the async
-> > marker at 64kB.  Then orangefs calls readahead_expand() to allocate the
-> > remainder of the 4MB.  After the app has read the first 64kB, it comes
-> > back to read the next 64kB, sees the readahead marker and tries to trigger
-> > the next batch of readahead, but it's already present, so it does nothing
-> > (see page_cache_ra_unbounded() for what happens with pages present).
-> 
-> It sounds like Christoph is right on the right track and the vm needs to ask
-> the filesystem (and by extension, the cache) before doing the allocation and
-> before setting the trigger flag.  Then we don't need to call back into the vm
-> to expand the readahead.
+On Fri, Feb 12, 2021, Sean Christopherson wrote:
+> Paolo, this is more or less ready, but on final read-through before
+> sending I realized it would be a good idea to WARN during VM destruction
+> if cpu_dirty_logging_count is non-zero.  I wanted to get you this before
+> the 5.12 window opens in case you want the TDP MMU fixes for 5.12.  I'll
+> do the above change and retest next week (note, Monday is a US holiday).
 
-Doesn't work.  You could read my reply to Christoph, or try to figure out
-how to get rid of
-https://evilpiepirate.org/git/bcachefs.git/tree/fs/bcachefs/fs-io.c#n742
-for yourself.
+Verified cpu_dirty_logging_count does indeed hit zero during VM destruction.
 
-> Also, there's Steve's request to try and keep at least two requests in flight
-> for CIFS/SMB at the same time to consider.
-
-That's not relevant to this problem.
+Adding a WARN to KVM would require adding an arch hook to kvm_free_memslots(),
+otherwise the count will be non-zero if the VM is destroyed with dirty logging
+active.  That doesn't seem worthwhile, so I'm not planning on pursuing a WARN
+for the upstream code.
