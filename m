@@ -2,138 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D8231D7B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E3631D7B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhBQKuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:50:02 -0500
-Received: from mga02.intel.com ([134.134.136.20]:60484 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229707AbhBQKt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:49:59 -0500
-IronPort-SDR: iPXgHtsJFrTfJmI7wo/z9/6qkKRbpiqOQCX3tRdoPmJ0dSL56FW9pa8auSzO/KsZpVLKsigfDu
- VHBwYAAKkgQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="170296960"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="170296960"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 02:49:18 -0800
-IronPort-SDR: 3sfKgOsUN6Zs2IyTpqCK3b+SC6MHxopB4GmzgPiA7pM+PkRAyE7hesT3KknnV2o0wG8mFoDNvt
- 1fA7GDy4p0/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="385073665"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.165])
-  by fmsmga008.fm.intel.com with ESMTP; 17 Feb 2021 02:49:16 -0800
-Date:   Wed, 17 Feb 2021 18:49:15 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        lkp <lkp@intel.com>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: {standard input}:577: Error: unsupported relocation against base
-Message-ID: <20210217104915.GB44989@shbuild999.sh.intel.com>
-References: <202101051834.FGH835Vs-lkp@intel.com>
- <98587e13-d22f-973f-1e16-f7a811f71016@csgroup.eu>
- <20210205100821.GA71063@shbuild999.sh.intel.com>
- <87lfbouzgd.fsf@mpe.ellerman.id.au>
+        id S230210AbhBQKux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:50:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBQKus (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 05:50:48 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5D2C061574;
+        Wed, 17 Feb 2021 02:50:07 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id fy5so1231609pjb.5;
+        Wed, 17 Feb 2021 02:50:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=fXkbLQATOKndDvfr5Qj7u/6zI0+WmDIYmlBTAHrdBJI=;
+        b=Re5WaqAlVW/yYnQMKI1D7aRaPmDFeZ0xnry8HD//r2RAYzhy9Gtuv9cDaPKRltcqpr
+         pjq1efKzduQz2XnpF2s2gdqtaJCU7TlzYf3NokXArovSHkDOsIDCYONvDYPJfueQH16F
+         8+aMBjuJnGU/edQgLa/+hEkI6/NUUbOvK2aZ0icNXEvLgnkwO5XpDOzFxtP5UQ/pxJ3t
+         rKEfJI8p7pgNl+Bg6Wg/xej1sVzWaasgaoTIbR/FgJg3/SS7FFImrxpvo4cDSeOaLKsP
+         s3PS8C+gS+tEe25IAjTZPI3gb6QOVpPnLJqusLnDDHQS1dx4zf7T0KO1LZbEFXDuYsVG
+         jL6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=fXkbLQATOKndDvfr5Qj7u/6zI0+WmDIYmlBTAHrdBJI=;
+        b=bzsyifd5ERCYPwLRoukMOrg6Ccr+NV4qAIDqzxGkT5WOK0jGYDJH4ft80+IbsRg+CF
+         0jxFbTABUUIr69ueL9qVJYAcjla2cRVWOdl50eYmGEDWAKygf7WzyIQEBvx/PFMpGWg8
+         wEl9yN9PJc+NEyO6NuByKfoYFTC7AiD17EdTiRJlgVjnySTVkEJwftuAO/qkbxPSBAWf
+         BCQq51qri0A6HqcnnwE5OlX15fUKXXTU4RxzyhCWXf7scbGfzUBtoh8Ecwwo8B3/94f9
+         1QavUBBIhTv2Hs7sH7aif2hJaAinEIr5jpsFNpIWzW9Hpp0E3I1xc8z+3rybUtUv9c8S
+         xXPw==
+X-Gm-Message-State: AOAM5316bUJTLbgLLycKLd3i9Xfkkt3WZWdXCqmvwtlARb7QPFdpVWEV
+        v49rhQKn2ClZMN5YEiKpM5o=
+X-Google-Smtp-Source: ABdhPJyUuNLPIvFuTkno50Z8KunBg8GLSaabHpi5Wb+v6bVPPax/PEVJbocspeMf5EIGu0YuhIqq1Q==
+X-Received: by 2002:a17:90a:4606:: with SMTP id w6mr8742831pjg.205.1613559007197;
+        Wed, 17 Feb 2021 02:50:07 -0800 (PST)
+Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
+        by smtp.gmail.com with ESMTPSA id u22sm2053238pfn.62.2021.02.17.02.50.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 02:50:06 -0800 (PST)
+Date:   Wed, 17 Feb 2021 18:50:04 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] Documentation: devres: Add
+ pcim_alloc_irq_vectors()
+Message-ID: <20210217105004.GA766103@nuc8i5>
+References: <20210216160249.749799-1-zhengdejin5@gmail.com>
+ <20210216160249.749799-3-zhengdejin5@gmail.com>
+ <YCv8nCX0ZdAb+CHm@rocinante>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87lfbouzgd.fsf@mpe.ellerman.id.au>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <YCv8nCX0ZdAb+CHm@rocinante>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On Tue, Feb 16, 2021 at 08:36:02PM +1100, Michael Ellerman wrote:
-> Feng Tang <feng.tang@intel.com> writes:
-> > Hi Christophe and Michael,
-> >
-> > On Mon, Jan 18, 2021 at 10:24:08PM +0800, Christophe Leroy wrote:
-> >> 
-> >> Le 05/01/2021 ? 11:58, kernel test robot a 閏rit :
-> >> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> >> > head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-> >> > commit: 8b8319b181fd9d6821703fef1228b4dcde613a16 powerpc/44x: Don't support 440 when CONFIG_PPC_47x is set
-> >> 
-> >> I see no link with that commit. Looks like the problem has been existing for some time.
-> >> It exists on the commit before that one, it exists on v5.9 and it exists on v5.10 with that commit
-> >> reverted.
-> >  
-> > Yes, this seems to be a long-standing issue, and we just double checked
-> > this compile error. 
-> >
-> > It happend when compiling arch/powerpc/platforms/44x/fsp2.c, macro
-> > 'mfdcr' requirs an instant number as parameter, while is not met by
-> > show_plbopb_regs(). Changing show_plbopb_regs() from function to
-> > a macro fixes the error, as the patch below:
-> >
-> > Thanks,
-> > Feng
-> >
-> >
-> > From 3bcb9638afc873d0e803aea1aad4f77bf1c2f6f6 Mon Sep 17 00:00:00 2001
-> > From: Feng Tang <feng.tang@intel.com>
-> > Date: Fri, 5 Feb 2021 16:08:43 +0800
-> > Subject: [PATCH] powerpc/44x/fsp2: fix a compiling error regarding macro
-> >  'mdfcr'
-> >
-> > 0day's kbuild test found error:
-> >
-> > "
-> >   CC      arch/powerpc/platforms/44x/fsp2.o
-> >
-> >   {standard input}:577: Error: unsupported relocation against base
-> >   {standard input}:580: Error: unsupported relocation against base
-> >   {standard input}:583: Error: unsupported relocation against base
-> > "
-> >
-> > The reason is macro 'mfdcr' requirs an instant number as parameter,
-> > which is not met by show_plbopb_regs().
+On Tue, Feb 16, 2021 at 06:10:52PM +0100, Krzysztof Wilczyński wrote:
+> Hi Dejin,
 > 
-> It doesn't require a constant, it checks if the argument is constant:
-
-Aha, seems my grep found the wrong target: arch/powerpc/boot/dcr.h,
-which has  
-
-#define mfdcr(rn) \
-	({	\
-		unsigned long rval; \
-		asm volatile("mfdcr %0,%1" : "=r"(rval) : "i"(rn)); \
-		rval; \
-	})
-
-> #define mfdcr(rn)						\
-> 	({unsigned int rval;					\
-> 	if (__builtin_constant_p(rn) && rn < 1024)		\
-> 		asm volatile("mfdcr %0," __stringify(rn)	\
-> 		              : "=r" (rval));			\
-> 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
-> 		rval = mfdcrx(rn);				\
-> 	else							\
-> 		rval = __mfdcr(rn);				\
-> 	rval;})
+> Thank you again for all the work here!
 > 
-> But the error you're seeing implies the compiler is choosing the first
-> leg of the if, even when rn == "base + x", which is surprising.
-
-Yes, it might be related to compiler (though myself isn't faimiliar
-with it). As show_plbopb_regs() was introduced by commit 7813043e1bbc
-("powerpc/44x/fsp2: Add irq error handlers") back in 2017, while it
-was just reported.
-
-> We've had cases in the past of __builtin_constant_p() returning false
-> for things that a human can see are constant at build time, but I've
-> never seen the reverse.
+> > Add pcim_alloc_irq_vectors(), a device-managed version of
+> > pci_alloc_irq_vectors(). introducing this function can simplify
+> > the error handling path in many drivers.
 > 
-> cheers
+> The second sentence should most likely start with a capital letter.
+> 
+> Having said that, people might ask - how does it simplify the error
+> handling path?
+> 
+> You might have to back this with a line of two to explain how does the
+> change achieved that, so that when someone looks at the commit message
+> it would be clear what the benefits of the change were.
+>
+Hi Krzysztof,
 
+The device-managed function is a conventional concept that every developer
+knows. So don't worry about this. And I really can't explain its operation
+mechanism to you in a sentence or two. If you are really interested, you
+can read the relevant code.
 
-Thanks,
-Feng
+I think it is meaningless to add a lot of explanations of general
+concepts in the commit comments. Maybe it will be better let us put more
+energy and time on the code.
+
+BR,
+Dejin
+
+> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> 
+> Krzysztof
