@@ -2,195 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B26431D33A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:07:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7F931D33E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:14:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhBQAGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 19:06:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
+        id S231243AbhBQAOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 19:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbhBQAGp (ORCPT
+        with ESMTP id S229989AbhBQAOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 19:06:45 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE22C061574;
-        Tue, 16 Feb 2021 16:06:05 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id w4so339100wmi.4;
-        Tue, 16 Feb 2021 16:06:05 -0800 (PST)
+        Tue, 16 Feb 2021 19:14:09 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF79C061574;
+        Tue, 16 Feb 2021 16:13:29 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id b21so7338300pgk.7;
+        Tue, 16 Feb 2021 16:13:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XQqpqg6jSzHG83op6n6dlIe74aKdQKtD9br7jGebjUw=;
-        b=UNKYNkYO0LfnOS/TsdDDmSB9Njy/d4xhqsOEFDi91kfNRXvsy9i6E8+4Xs92EgAxrN
-         A1mTLusx49wda93oKOT4RMx3bTUrvcfaxgEIVSl4XHMpTCil4glWs2iSvfVr6iyHKXLY
-         Cs3dzbnSF0QEr0+Yfb3rpnUKydrhYi0froutx0YA6PhN7nufa3O/d8GEkwyJi14OZyoY
-         LPqCtTMhSX0iuggc8z3bs+/YFWNh0wleqLw4d/WPK9zt3+dzWJ/ZK15W/jP72Vlc58zy
-         flMdpeoSr2Yy4bBq1kNlxT1f0Tp+kyHAq0D70zPfgamSvqXRq7+hwONx4HJFfZQJ/5tq
-         jrPQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=90gfnMARQAcrnt8N8qfPDPkOz3+A1rWq0avKglF5JvU=;
+        b=L5I0exfNaCtnFMqyzbx712lS5SL7RZe4oxMXrXuqqZlGILW8DhI4tAWCz6SLy9zOGP
+         jpdpWeuThaUG3OdRZgxE3rLRsy05n3qAxrwkPKnf04wr3m1FwfN1uBue24+ArqOlztfC
+         jIyl9CzWNFa0BJ0nTEALWHERZ7NP21DbCcMRVd6/R2dokh/u0DA6pAzBvXtgylwRmsA8
+         +UG6WrcelEh626kh4sAIf/i3h6VuNZ5S2jFSZYH6sxFAu8rjySH95NFFs8hHTaZ2ul2l
+         JzqfIJ3eB3Y86S9RjmASEkbJ3YoqdcWvXwVwd0jzbRyrbGq/SErvIYuL1t4CmjgCQjXh
+         cftQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XQqpqg6jSzHG83op6n6dlIe74aKdQKtD9br7jGebjUw=;
-        b=TSCiZKKWFFUa+qA69ErJOujMRW54ULQG10b0DGPtbud6NqWgFHM2cDI0XBvsDtqapf
-         EiCGVk6DBWEevMOG6UKIIWq9XRP5r8oG57KNhwiJnuWUlJqKXo2poBcbucHfefKUX81G
-         JpebInSIGqa4QRvJ4N0COmkTDm0/y+rz70+5XLpQxwCyJMmEmuqAix32sI7gmaI6ys+m
-         Sn4nMxKgmzdLr4HHG6OMR284MB36BSyUG0ZaKkVd+84lwjYNcjljnLa5YJwPVpeY+oSW
-         vcT2q+J9JYGx05nH0fDp5Rsh4ddk53a8Eo3N+b/f1cpOUHCaJGt+wrTz7mKAg1SGMv7g
-         1ymA==
-X-Gm-Message-State: AOAM530FSlnHqXTgEW6Jc6wZw3/Th6XKWaUgJ22RNMub0IjWXg6LU4PD
-        MIlnUaoXBFml5F6hJO7y/gPdjiLto8rgTo/5Qo8=
-X-Google-Smtp-Source: ABdhPJx/2suxGtJCRIigMjkQD6gjPWjzXEgtH7zFIY7Pf5+83ly/26LyReNhpwl+41tqGRJB5Zunt+GbkMx4vOPFL70=
-X-Received: by 2002:a7b:c149:: with SMTP id z9mr4975291wmi.164.1613520364006;
- Tue, 16 Feb 2021 16:06:04 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=90gfnMARQAcrnt8N8qfPDPkOz3+A1rWq0avKglF5JvU=;
+        b=ka+/lKQsyqpO0LwCwj/M7yI5OupYPDyRsjn3i3YVV1ABRpxTb/yNpqAa9RUU1B4SVF
+         /gkw3mhnTbaTZbqbFziSwADs59XX+wM4Crp63JupIDiArIu4opYQolERR+Z7hYGO3IFv
+         gEn2ft+H9G4OmGGwK9bxZ4G5mBKFbFAVtDun9jU7iOgQ/RALqOwyQbLsnGAiyTHieck/
+         3qhghjR9hY79Xb5VGYnm/v+yzg9or/98akNxJIFpeY2FXNhQTm7PCN3GXGUAcl/Iy5BC
+         YjqdOIBljMp81Uy9LBVsH2FlWwCS6kvF0z2r06c0G/US5ohhtd3BaoDL3eifXxAJmo7g
+         F8ng==
+X-Gm-Message-State: AOAM5309LYHQOe0Kssy8JJwSAPkXMixw43yhgBSsmM2P1Y7rfh+xXJBb
+        IMDzHqWPtmwNYe2ExOp6UbSj4k/ZLuE=
+X-Google-Smtp-Source: ABdhPJzYUf+5VZa396XK07fla+GhquQ9qedfEWecSmz++e+bVImxzUojHBHUijkZIeVjdj6ghSlL3g==
+X-Received: by 2002:a65:4c08:: with SMTP id u8mr13174117pgq.203.1613520808776;
+        Tue, 16 Feb 2021 16:13:28 -0800 (PST)
+Received: from localhost.localdomain (c-73-93-239-127.hsd1.ca.comcast.net. [73.93.239.127])
+        by smtp.gmail.com with ESMTPSA id y12sm99220pjc.56.2021.02.16.16.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 16:13:27 -0800 (PST)
+From:   Yang Shi <shy828301@gmail.com>
+To:     guro@fb.com, ktkhai@virtuozzo.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     shy828301@gmail.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [v8 PATCH 00/13] Make shrinker's nr_deferred memcg aware
+Date:   Tue, 16 Feb 2021 16:13:09 -0800
+Message-Id: <20210217001322.2226796-1-shy828301@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20210215161537.14696-1-jonathan@marek.ca> <20210215161537.14696-2-jonathan@marek.ca>
- <CAA8EJpo_Fs8Wj6zjH6BQqm=mG=qcGt3_JMj4nK-vsKCzr8tn1g@mail.gmail.com> <29231c68-0cc4-9d8a-8cb1-791511780bcd@marek.ca>
-In-Reply-To: <29231c68-0cc4-9d8a-8cb1-791511780bcd@marek.ca>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 16 Feb 2021 16:08:56 -0800
-Message-ID: <CAF6AEGtyiD6vtYrgkB4X+B00=ew09_7bZA3ketZsZ2+M7aFR+w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] drm/msm: add compatibles for sm8150/sm8250 display
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Drew Davenport <ddavenport@chromium.org>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 10:06 AM Jonathan Marek <jonathan@marek.ca> wrote:
->
-> On 2/16/21 11:54 AM, Dmitry Baryshkov wrote:
-> > On Mon, 15 Feb 2021 at 19:25, Jonathan Marek <jonathan@marek.ca> wrote:
-> >>
-> >> The driver already has support for sm8150/sm8250, but the compatibles were
-> >> never added.
-> >>
-> >> Also inverse the non-mdp4 condition in add_display_components() to avoid
-> >> having to check every new compatible in the condition.
-> >>
-> >> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> >> ---
-> >>   Documentation/devicetree/bindings/display/msm/dpu.txt | 4 ++--
-> >>   drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c               | 2 ++
-> >>   drivers/gpu/drm/msm/msm_drv.c                         | 6 +++---
-> >>   3 files changed, 7 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/display/msm/dpu.txt b/Documentation/devicetree/bindings/display/msm/dpu.txt
-> >> index 551ae26f60da..5763f43200a0 100644
-> >> --- a/Documentation/devicetree/bindings/display/msm/dpu.txt
-> >> +++ b/Documentation/devicetree/bindings/display/msm/dpu.txt
-> >> @@ -8,7 +8,7 @@ The DPU display controller is found in SDM845 SoC.
-> >>
-> >>   MDSS:
-> >>   Required properties:
-> >> -- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss"
-> >> +- compatible:  "qcom,sdm845-mdss", "qcom,sc7180-mdss", "qcom,sm8150-mdss", "qcom,sm8250-mdss"
-> >>   - reg: physical base address and length of contoller's registers.
-> >>   - reg-names: register region names. The following region is required:
-> >>     * "mdss"
-> >> @@ -41,7 +41,7 @@ Optional properties:
-> >>
-> >>   MDP:
-> >>   Required properties:
-> >> -- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu"
-> >> +- compatible: "qcom,sdm845-dpu", "qcom,sc7180-dpu", "qcom,sm8150-dpu", "qcom,sm8250-dpu"
-> >>   - reg: physical base address and length of controller's registers.
-> >>   - reg-names : register region names. The following region is required:
-> >>     * "mdp"
-> >
-> > These two chunks should probably go to the separate patch 'dt-bindings:...'.
-> >
->
-> In this case I think its better to have this change in the same patch,
-> but maybe one of the Robs will disagree.
 
-I *think* typically the reason to split dt bindings into their own
-patch is that devicetree@ list isn't interested in reviewing driver
-changes, just binding changes..
+Changelog
+v7 --> v8:
+    * Added lockdep assert in expand_shrinker_info() per Roman.
+    * Added patch 05/13 to use kvfree_rcu() instead of call_rcu() per Roman
+      and Kirill.
+    * Moved rwsem acquire/release out of unregister_memcg_shrinker() per Roman.
+    * Renamed count_nr_deferred_{memcg} to xchg_nr_deferred_{memcg} per Roman.
+    * Fixed the next_deferred logic per Vlastimil.
+    * Misc minor code cleanup, refactor and spelling correction per Roman
+      and Shakeel.
+    * Collected more ack and review tags from Roman, Shakeel and Vlastimil.
+v6 --> v7:
+    * Expanded shrinker_info in a batch of BITS_PER_LONG per Kirill.
+    * Added patch 06/12 to introduce a helper for dereferencing shrinker_info
+      per Kirill.
+    * Renamed set_nr_deferred_memcg to add_nr_deferred_memcg per Kirill.
+    * Collected Acked-by from Kirill.
+v5 --> v6:
+    * Rebased on top of https://lore.kernel.org/linux-mm/1611216029-34397-1-git-send-email-abaci-bugfix@linux.alibaba.com/
+      per Kirill.
+    * Don't register shrinker idr with NULL and remove idr_replace() per Vlastimil.
+    * Move nr_deferred before map to guarantee the alignment per Vlastimil.
+    * Misc minor code cleanup and refactor per Kirill and Vlastimil.
+    * Added Acked-by from Vlastimil for path #1, #2, #3, #5, #9 and #10.
+v4 --> v5:
+    * Incorporated the comments from Kirill.
+    * Rebased to v5.11-rc5.
+v3 --> v4:
+    * Removed "memcg_" prefix for shrinker_maps related functions per Roman.
+    * Use write lock instead of read lock per Kirill. Also removed Johannes's ack
+      since write lock is used.
+    * Incorporated the comments from Kirill.
+    * Removed RFC.
+    * Rebased to v5.11-rc4.
+v2 --> v3:
+    * Moved shrinker_maps related code to vmscan.c per Dave.
+    * Removed memcg_shrinker_map_size. Calcuated the size of map via shrinker_nr_max
+      per Johannes.
+    * Consolidated shrinker_deferred with shrinker_maps into one struct per Dave.
+    * Simplified the nr_deferred related code.
+    * Dropped the memory barrier from v2.
+    * Moved nr_deferred reparent code to vmscan.c per Dave.
+    * Added test coverage information in patch #11. Dave is concerned about the
+      potential regression. I didn't notice regression with my tests, but suggestions
+      about more test coverage is definitely welcome. And it may help spot regression
+      with this patch in -mm tree then linux-next tree so I keep it in this version.
+    * The code cleanup and consolidation resulted in the series grow to 11 patches.
+    * Rebased onto 5.11-rc2. 
+v1 --> v2:
+    * Use shrinker->flags to store the new SHRINKER_REGISTERED flag per Roman.
+    * Folded patch #1 into patch #6 per Roman.
+    * Added memory barrier to prevent shrink_slab_memcg from seeing NULL shrinker_maps/
+      shrinker_deferred per Kirill.
+    * Removed memcg_shrinker_map_mutex. Protcted shrinker_map/shrinker_deferred
+      allocations from expand with shrinker_rwsem per Johannes.
 
-In this case since it is just adding a compatible I think it is ok..
-(or at least ok by me, but maybe other-Rob disagrees ;-))
+Recently huge amount one-off slab drop was seen on some vfs metadata heavy workloads,
+it turned out there were huge amount accumulated nr_deferred objects seen by the
+shrinker.
 
-> > Also, could you please pinpoint the reason for adding more
-> > compatibility strings, while they map to the same internal data?
-> > I think we might want instead to use some generic name for the dpu
-> > block, like "qcom,dpu" or "qcom,mdp-dpu" instead of specifying the
-> > platform name.
-> >
->
-> sdm845 and sc7180 aren't using generic compatibles, this is just being
-> consistent with that.
+On our production machine, I saw absurd number of nr_deferred shown as the below
+tracing result: 
 
-It is good to have a device specific compatible up front, even if we
-fallback to the more generic one for matching.. just in case we find a
-reason for needing it later
+<...>-48776 [032] .... 27970562.458916: mm_shrink_slab_start:
+super_cache_scan+0x0/0x1a0 ffff9a83046f3458: nid: 0 objects to shrink
+2531805877005 gfp_flags GFP_HIGHUSER_MOVABLE pgs_scanned 32 lru_pgs
+9300 cache items 1667 delta 11 total_scan 833
 
-BR,
--R
+There are 2.5 trillion deferred objects on one node, assuming all of them
+are dentry (192 bytes per object), so the total size of deferred on
+one node is ~480TB. It is definitely ridiculous.
 
-> >
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >> index 5a8e3e1fc48c..fff12a4c8bfc 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c
-> >> @@ -1219,6 +1219,8 @@ static const struct dev_pm_ops dpu_pm_ops = {
-> >>   static const struct of_device_id dpu_dt_match[] = {
-> >>          { .compatible = "qcom,sdm845-dpu", },
-> >>          { .compatible = "qcom,sc7180-dpu", },
-> >> +       { .compatible = "qcom,sm8150-dpu", },
-> >> +       { .compatible = "qcom,sm8250-dpu", },
-> >>          {}
-> >>   };
-> >>   MODULE_DEVICE_TABLE(of, dpu_dt_match);
-> >> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> >> index 94525ac76d4e..928f13d4bfbc 100644
-> >> --- a/drivers/gpu/drm/msm/msm_drv.c
-> >> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> >> @@ -1185,9 +1185,7 @@ static int add_display_components(struct device *dev,
-> >>           * Populate the children devices, find the MDP5/DPU node, and then add
-> >>           * the interfaces to our components list.
-> >>           */
-> >> -       if (of_device_is_compatible(dev->of_node, "qcom,mdss") ||
-> >> -           of_device_is_compatible(dev->of_node, "qcom,sdm845-mdss") ||
-> >> -           of_device_is_compatible(dev->of_node, "qcom,sc7180-mdss")) {
-> >> +       if (!of_device_is_compatible(dev->of_node, "qcom,mdp4")) {
-> >>                  ret = of_platform_populate(dev->of_node, NULL, NULL, dev);
-> >>                  if (ret) {
-> >>                          DRM_DEV_ERROR(dev, "failed to populate children devices\n");
-> >> @@ -1320,6 +1318,8 @@ static const struct of_device_id dt_match[] = {
-> >>          { .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
-> >>          { .compatible = "qcom,sdm845-mdss", .data = (void *)KMS_DPU },
-> >>          { .compatible = "qcom,sc7180-mdss", .data = (void *)KMS_DPU },
-> >> +       { .compatible = "qcom,sm8150-mdss", .data = (void *)KMS_DPU },
-> >> +       { .compatible = "qcom,sm8250-mdss", .data = (void *)KMS_DPU },
-> >>          {}
-> >>   };
-> >>   MODULE_DEVICE_TABLE(of, dt_match);
-> >> --
-> >> 2.26.1
-> >>
-> >
-> >
+I managed to reproduce this problem with kernel build workload plus negative dentry
+generator.
+
+First step, run the below kernel build test script:
+
+NR_CPUS=`cat /proc/cpuinfo | grep -e processor | wc -l`
+
+cd /root/Buildarea/linux-stable
+
+for i in `seq 1500`; do
+        cgcreate -g memory:kern_build
+        echo 4G > /sys/fs/cgroup/memory/kern_build/memory.limit_in_bytes
+
+        echo 3 > /proc/sys/vm/drop_caches
+        cgexec -g memory:kern_build make clean > /dev/null 2>&1
+        cgexec -g memory:kern_build make -j$NR_CPUS > /dev/null 2>&1
+
+        cgdelete -g memory:kern_build
+done
+
+Then run the below negative dentry generator script:
+
+NR_CPUS=`cat /proc/cpuinfo | grep -e processor | wc -l`
+
+mkdir /sys/fs/cgroup/memory/test
+echo $$ > /sys/fs/cgroup/memory/test/tasks
+
+for i in `seq $NR_CPUS`; do
+        while true; do
+                FILE=`head /dev/urandom | tr -dc A-Za-z0-9 | head -c 64`
+                cat $FILE 2>/dev/null
+        done &
+done
+
+Then kswapd will shrink half of dentry cache in just one loop as the below tracing result
+showed:
+
+	kswapd0-475   [028] .... 305968.252561: mm_shrink_slab_start: super_cache_scan+0x0/0x190 0000000024acf00c: nid: 0
+objects to shrink 4994376020 gfp_flags GFP_KERNEL cache items 93689873 delta 45746 total_scan 46844936 priority 12
+	kswapd0-475   [021] .... 306013.099399: mm_shrink_slab_end: super_cache_scan+0x0/0x190 0000000024acf00c: nid: 0 unused
+scan count 4994376020 new scan count 4947576838 total_scan 8 last shrinker return val 46844928
+
+There were huge number of deferred objects before the shrinker was called, the behavior
+does match the code but it might be not desirable from the user's stand of point.
+
+The excessive amount of nr_deferred might be accumulated due to various reasons, for example:
+    * GFP_NOFS allocation
+    * Significant times of small amount scan (< scan_batch, 1024 for vfs metadata)
+
+However the LRUs of slabs are per memcg (memcg-aware shrinkers) but the deferred objects
+is per shrinker, this may have some bad effects:
+    * Poor isolation among memcgs. Some memcgs which happen to have frequent limit
+      reclaim may get nr_deferred accumulated to a huge number, then other innocent
+      memcgs may take the fall. In our case the main workload was hit.
+    * Unbounded deferred objects. There is no cap for deferred objects, it can outgrow
+      ridiculously as the tracing result showed.
+    * Easy to get out of control. Although shrinkers take into account deferred objects,
+      but it can go out of control easily. One misconfigured memcg could incur absurd 
+      amount of deferred objects in a period of time.
+    * Sort of reclaim problems, i.e. over reclaim, long reclaim latency, etc. There may be
+      hundred GB slab caches for vfe metadata heavy workload, shrink half of them may take
+      minutes. We observed latency spike due to the prolonged reclaim.
+
+These issues also have been discussed in https://lore.kernel.org/linux-mm/20200916185823.5347-1-shy828301@gmail.com/.
+The patchset is the outcome of that discussion.
+
+So this patchset makes nr_deferred per-memcg to tackle the problem. It does:
+    * Have memcg_shrinker_deferred per memcg per node, just like what shrinker_map
+      does. Instead it is an atomic_long_t array, each element represent one shrinker
+      even though the shrinker is not memcg aware, this simplifies the implementation.
+      For memcg aware shrinkers, the deferred objects are just accumulated to its own
+      memcg. The shrinkers just see nr_deferred from its own memcg. Non memcg aware
+      shrinkers still use global nr_deferred from struct shrinker.
+    * Once the memcg is offlined, its nr_deferred will be reparented to its parent along
+      with LRUs.
+    * The root memcg has memcg_shrinker_deferred array too. It simplifies the handling of
+      reparenting to root memcg.
+    * Cap nr_deferred to 2x of the length of lru. The idea is borrowed from Dave Chinner's
+      series (https://lore.kernel.org/linux-xfs/20191031234618.15403-1-david@fromorbit.com/)
+
+The downside is each memcg has to allocate extra memory to store the nr_deferred array.
+On our production environment, there are typically around 40 shrinkers, so each memcg
+needs ~320 bytes. 10K memcgs would need ~3.2MB memory. It seems fine.
+
+We have been running the patched kernel on some hosts of our fleet (test and production) for
+months, it works very well. The monitor data shows the working set is sustained as expected.
+
+Yang Shi (13):
+      mm: vmscan: use nid from shrink_control for tracepoint
+      mm: vmscan: consolidate shrinker_maps handling code
+      mm: vmscan: use shrinker_rwsem to protect shrinker_maps allocation
+      mm: vmscan: remove memcg_shrinker_map_size
+      mm: vmscan: use kvfree_rcu instead of call_rcu
+      mm: memcontrol: rename shrinker_map to shrinker_info
+      mm: vmscan: add shrinker_info_protected() helper
+      mm: vmscan: use a new flag to indicate shrinker is registered
+      mm: vmscan: add per memcg shrinker nr_deferred
+      mm: vmscan: use per memcg nr_deferred of shrinker
+      mm: vmscan: don't need allocate shrinker->nr_deferred for memcg aware shrinkers
+      mm: memcontrol: reparent nr_deferred when memcg offline
+      mm: vmscan: shrink deferred objects proportional to priority
+
+ include/linux/memcontrol.h |  23 +++---
+ include/linux/shrinker.h   |   7 +-
+ mm/huge_memory.c           |   4 +-
+ mm/list_lru.c              |   6 +-
+ mm/memcontrol.c            | 130 +------------------------------
+ mm/vmscan.c                | 394 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------
+ 6 files changed, 319 insertions(+), 245 deletions(-)
+
