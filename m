@@ -2,89 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E15931DD2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:21:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D57BC31DD2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhBQQUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:20:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27974 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233694AbhBQQUB (ORCPT
+        id S234024AbhBQQUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:20:20 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:20384 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233084AbhBQQUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:20:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613578715;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gSopKRjxSoVocCtQC39gpXrfRXN9hZVDEXQjfMG00wI=;
-        b=PhMa8IyxVXCoomgz46TVwu+/UZGXncXqHHBNJHGGScve1x2lMysGN0FkJhKQWizk4LY5/v
-        DMM7l5dqEAdUECzQOlsZasjvrlcMJ52gmUJv0eKjaIku6aY41fv8xEKudB8xn7qREnGfuE
-        ISEsd5V55sVgqBcyRBscsjDKOXHTjWc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-tDoSXVT9P9WbUFO6cZN0-w-1; Wed, 17 Feb 2021 11:18:33 -0500
-X-MC-Unique: tDoSXVT9P9WbUFO6cZN0-w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 323E5107ACE8;
-        Wed, 17 Feb 2021 16:18:30 +0000 (UTC)
-Received: from starship (unknown [10.35.206.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7982C60C6E;
-        Wed, 17 Feb 2021 16:18:25 +0000 (UTC)
-Message-ID: <666eb754189a380899b82e0a9798eb2560ae6972.camel@redhat.com>
-Subject: Re: [PATCH 1/7] KVM: VMX: read idt_vectoring_info a bit earlier
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-Date:   Wed, 17 Feb 2021 18:18:24 +0200
-In-Reply-To: <09de977a-0275-0f4f-cf75-f45e4b5d9ca5@redhat.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
-         <20210217145718.1217358-2-mlevitsk@redhat.com>
-         <09de977a-0275-0f4f-cf75-f45e4b5d9ca5@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 17 Feb 2021 11:20:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1613578805; x=1645114805;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Cs4BA7FTmjYzHJsFq1qDXA+grIoaOTs9jb/eR7cncrc=;
+  b=mA9bPT5qHd8dZ6jHmN+aBX50uFyJchn4M5fQuCLoKoHooB9YgCjxueZq
+   mTGUwW1BQaTUj3RbpNmGLw35/H9gsk7gqZc8GniZEEX2Sre5DkvBs+OQn
+   lZApdHKgVA9y6NNrpIv2BdFELpOi0uQ0+WEhSqiOfWLeyPEPwvqpHRdKg
+   de5v8VfbwuoumpelF0wddT+nxupkLCO/2xYfRJHmNimlcg/aEIxTXphVL
+   WdEnhCBKAHhmA8xuFM46j77VF+3i/iFu61wYT53pXKfxTEIaAYI9dn0tZ
+   H+eeeQdMuo3fAqimuneFt1Gd6t4UvAOnIma5XW6ukbw1BS6+DWfGtArUf
+   w==;
+IronPort-SDR: KIECLvx6Y04Xxp7Nx/aNJRKTcHeDcZNBNyXo5IgQYH4Hn4tWRG4cbKD37H0G+Yp8jLBJSZaqhR
+ 2Q6KC24saFrgKMR029tvuX+MX3AGPUg0d30jI5sZywy71oHRdtljd6qBeHB4qOJbHPXMa99JGX
+ VqjrorV51nLn5t8Tw8fU3DT/cmCx24i2IXHuGZz5bVgEs9qOVaViqeOjisWffPcr/ekeLmofFN
+ MUN8iGwJPTpzWbSpz/JnujVrw/guujmRrg11TZZSE70YtWUmontJMRs0ALp/MXvV14X83+Ohug
+ WEo=
+X-IronPort-AV: E=Sophos;i="5.81,184,1610434800"; 
+   d="scan'208";a="106969729"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Feb 2021 09:18:48 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.87.72) by
+ chn-vm-ex02.mchp-main.com (10.10.87.72) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 17 Feb 2021 09:18:48 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex02.mchp-main.com
+ (10.10.85.144) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 17 Feb 2021 09:18:48 -0700
+Date:   Wed, 17 Feb 2021 17:18:47 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "ivecera@redhat.com" <ivecera@redhat.com>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>,
+        "roopa@nvidia.com" <roopa@nvidia.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>
+Subject: Re: [PATCH net-next v4 5/8] bridge: mrp: Update br_mrp to use new
+ return values of br_mrp_switchdev
+Message-ID: <20210217161847.6ntm52kqk7ygata7@soft-dev3.localdomain>
+References: <20210216214205.32385-1-horatiu.vultur@microchip.com>
+ <20210216214205.32385-6-horatiu.vultur@microchip.com>
+ <20210217105951.5nyfclvf6e2p2nkf@skbuf>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210217105951.5nyfclvf6e2p2nkf@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-17 at 17:06 +0100, Paolo Bonzini wrote:
-> On 17/02/21 15:57, Maxim Levitsky wrote:
-> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > index b3e36dc3f164..e428d69e21c0 100644
-> > --- a/arch/x86/kvm/vmx/vmx.c
-> > +++ b/arch/x86/kvm/vmx/vmx.c
-> > @@ -6921,13 +6921,15 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
-> >  	if (unlikely((u16)vmx->exit_reason.basic == EXIT_REASON_MCE_DURING_VMENTRY))
-> >  		kvm_machine_check();
-> >  
-> > +	if (likely(!vmx->exit_reason.failed_vmentry))
-> > +		vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
-> > +
+The 02/17/2021 10:59, Vladimir Oltean wrote:
 > 
-> Any reason for the if?
-
-Sean Christopherson asked me to do this to avoid updating idt_vectoring_info on failed
-VM entry, to keep things as they were logically before this patch.
-
-Best regards,
-	Maxim Levitsky
-
+> On Tue, Feb 16, 2021 at 10:42:02PM +0100, Horatiu Vultur wrote:
+> > diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+> > index 01c67ed727a9..12487f6fe9b4 100644
+> > --- a/net/bridge/br_mrp.c
+> > +++ b/net/bridge/br_mrp.c
+> > @@ -639,7 +639,7 @@ int br_mrp_set_ring_role(struct net_bridge *br,
+> >                        struct br_mrp_ring_role *role)
+> >  {
+> >       struct br_mrp *mrp = br_mrp_find_id(br, role->ring_id);
+> > -     int err;
+> > +     enum br_mrp_hw_support support;
+> >
+> >       if (!mrp)
+> >               return -EINVAL;
+> > @@ -647,9 +647,9 @@ int br_mrp_set_ring_role(struct net_bridge *br,
+> >       mrp->ring_role = role->ring_role;
+> >
+> >       /* If there is an error just bailed out */
+> > -     err = br_mrp_switchdev_set_ring_role(br, mrp, role->ring_role);
+> > -     if (err && err != -EOPNOTSUPP)
+> > -             return err;
+> > +     support = br_mrp_switchdev_set_ring_role(br, mrp, role->ring_role);
+> > +     if (support == BR_MRP_NONE)
+> > +             return -EOPNOTSUPP;
 > 
-> Paolo
+> It is broken to update the return type and value of a function in one
+> patch, and check for the updated return value in another patch.
 > 
 
+Yes, I will be more careful next time. I have tried to compile between
+the patches and I have not see any issues here so I though that
+everything is good.
 
+> >
+> >       /* Now detect if the HW actually applied the role or not. If the HW
+> >        * applied the role it means that the SW will not to do those operations
+> > @@ -657,7 +657,7 @@ int br_mrp_set_ring_role(struct net_bridge *br,
+> >        * SW when ring is open, but if the is not pushed to the HW the SW will
+> >        * need to detect when the ring is open
+> >        */
+> > -     mrp->ring_role_offloaded = err == -EOPNOTSUPP ? 0 : 1;
+> > +     mrp->ring_role_offloaded = support == BR_MRP_SW ? 0 : 1;
+> >
+> >       return 0;
+> >  }
+
+-- 
+/Horatiu
