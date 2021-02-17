@@ -2,108 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F6E31DB45
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:16:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C770931DB4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:20:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbhBQOPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:15:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhBQOPg (ORCPT
+        id S233382AbhBQOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:18:54 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2581 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232371AbhBQOSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:15:36 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065CDC061756
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:14:56 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id v15so17566106wrx.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:14:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UDFCRTsuiZ3IiAm76Fu7UKNR+ruV15r3mLWBUKSRUYk=;
-        b=FMzIj+DJ25ZBr9XVddM/3sw4Ehs2ShlUSy4+IsWMKw5/EiywQmPWCY+BijAzt40ZEf
-         Mtyzv7WTU5/nktwY9Li/Lc9lCgMCkXMjgfWGtKroR5kUH8iVwslpgv/lVOUl7bwQw8Sj
-         HjbciOmOvBoNm9YhGrNvkeSMLLl+0gKuN7RzSB0/6qXuykp+ZY9vZjJTI5S5kGgtBIYy
-         NgoPxH4wFk7lo+xQoYpv80b1F4KqgwDFrMEcxqJbDcEwnSyF3JNhtEsMFX6kBP8e8g2r
-         OBi8707/VxQnfjF4L3NU9A1iMG3vJGXS2V5ICBiRn2xFO1CYcyx7Oh2BMmTxioXRD3eK
-         BiIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UDFCRTsuiZ3IiAm76Fu7UKNR+ruV15r3mLWBUKSRUYk=;
-        b=heebN4yXv2DyO8MejGUh5Sbx3wDPe/MtyF2TMJLUrrapy/VlYSfELzzAj6HK9heKls
-         KXRs88/FGnhDGkvriQf322cxl6NMKFLFXUyUGV3gJ3TeDG2Rx6k0YAxabRlz2c2UIC7I
-         ncobvei+3n+8dFVLT4IQnvBMfjM1kZ/atDcNYO1ZckZYSIljJUxl532KKWWPDCEJxu5L
-         oF4QFi9kYQV+342SvnXGJS1Ywkm/Z0SasNHQRJ89h1MEVtlhIm5XqISGlGf+qtbvPDsB
-         AEaVaFNuwzDXux9Rcv9My++W6lOYQd8/jicE+PksgyaCOY4ACGdPrTmFXPkh19C/2Qf+
-         WKKA==
-X-Gm-Message-State: AOAM532YQY/9qxlq2kZUwvtEN7r94wqJC3LHr1ifujmSgOr66gAou+VY
-        kH1HLLAtQQERryAFZMNpi6aSM3ukOqPXHw==
-X-Google-Smtp-Source: ABdhPJwNxrY3w7dpix3j+g9HhjNKICiJJZam+Eh0j5KukroXDcYynUnVCkkLPfAbhQS67/4wu1zBxg==
-X-Received: by 2002:a5d:4850:: with SMTP id n16mr29797243wrs.296.1613571292946;
-        Wed, 17 Feb 2021 06:14:52 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id m17sm3083820wmq.5.2021.02.17.06.14.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Feb 2021 06:14:52 -0800 (PST)
-Subject: Re: [PATCH][next] ASoC: codecs: lpass-rx-macro: remove redundant
- initialization of variable hph_pwr_mode
-To:     Colin King <colin.king@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210215200501.90697-1-colin.king@canonical.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <4e261a11-4577-4568-8ab3-f2ef1a9a8474@linaro.org>
-Date:   Wed, 17 Feb 2021 14:14:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 17 Feb 2021 09:18:51 -0500
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DgfwT1hRjz67qL6;
+        Wed, 17 Feb 2021 22:14:17 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 17 Feb 2021 15:18:08 +0100
+Received: from localhost (10.47.29.73) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 17 Feb
+ 2021 14:18:06 +0000
+Date:   Wed, 17 Feb 2021 14:16:59 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        "Chris Browy" <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Jon Masters" <jcm@jonmasters.org>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v5 4/9] cxl/mem: Add basic IOCTL interface
+Message-ID: <20210217141659.000064ec@Huawei.com>
+In-Reply-To: <20210217040958.1354670-5-ben.widawsky@intel.com>
+References: <20210217040958.1354670-1-ben.widawsky@intel.com>
+        <20210217040958.1354670-5-ben.widawsky@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210215200501.90697-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.29.73]
+X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 16 Feb 2021 20:09:53 -0800
+Ben Widawsky <ben.widawsky@intel.com> wrote:
 
-
-On 15/02/2021 20:05, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+> Add a straightforward IOCTL that provides a mechanism for userspace to
+> query the supported memory device commands. CXL commands as they appear
+> to userspace are described as part of the UAPI kerneldoc. The command
+> list returned via this IOCTL will contain the full set of commands that
+> the driver supports, however, some of those commands may not be
+> available for use by userspace.
 > 
-> The variable hph_pwr_mode is being initialized with a value that is
-> never read and it is being updated later with a new value.  The
-> initialization is redundant and can be removed.
+> Memory device commands first appear in the CXL 2.0 specification. They
+> are submitted through a mailbox mechanism specified in the CXL 2.0
+> specification.
 > 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
-Thanks for the patch!
-
-LGTM,
-
-
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
->   sound/soc/codecs/lpass-rx-macro.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> The send command allows userspace to issue mailbox commands directly to
+> the hardware. The list of available commands to send are the output of
+> the query command. The driver verifies basic properties of the command
+> and possibly inspect the input (or output) payload to determine whether
+> or not the command is allowed (or might taint the kernel).
 > 
-> diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
-> index 8c04b3b2c907..76909c50d7b9 100644
-> --- a/sound/soc/codecs/lpass-rx-macro.c
-> +++ b/sound/soc/codecs/lpass-rx-macro.c
-> @@ -2038,7 +2038,7 @@ static int rx_macro_load_compander_coeff(struct snd_soc_component *component,
->   {
->   	u16 comp_coeff_lsb_reg, comp_coeff_msb_reg;
->   	int i;
-> -	int hph_pwr_mode = HPH_LOHIFI;
-> +	int hph_pwr_mode;
->   
->   	if (!rx->comp_enabled[comp])
->   		return 0;
-> 
+> Reported-by: kernel test robot <lkp@intel.com> # bug in earlier revision
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com> (v2)
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
