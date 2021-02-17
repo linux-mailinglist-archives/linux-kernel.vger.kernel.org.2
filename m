@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95DA631D686
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:24:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EF731D690
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:29:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhBQIW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 03:22:58 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:56796 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231815AbhBQIWl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 03:22:41 -0500
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S231725AbhBQI3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 03:29:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhBQI2z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 03:28:55 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C2EAC061574;
+        Wed, 17 Feb 2021 00:28:15 -0800 (PST)
+Received: from [IPv6:2a01:e0a:4cb:a870:fd6e:12cd:95d7:3350] (unknown [IPv6:2a01:e0a:4cb:a870:fd6e:12cd:95d7:3350])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 50EEC20A19;
-        Wed, 17 Feb 2021 08:21:57 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Kees Cook <keescook@chromium.org>
-Subject: [RESEND PATCH v4 3/3] proc: Disable cancellation of subset=pid option
-Date:   Wed, 17 Feb 2021 09:21:43 +0100
-Message-Id: <4aa63b96263e564822a7782ad826e43d3d9de34b.1613550081.git.gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1613550081.git.gladkov.alexey@gmail.com>
-References: <cover.1613550081.git.gladkov.alexey@gmail.com>
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id E4BA41F44D79;
+        Wed, 17 Feb 2021 08:28:12 +0000 (GMT)
+Subject: Re: [PATCH v1 00/18] Add HANTRO G2/HEVC decoder support for IMX8MQ
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <YCzO7SRmBKzGeMUS@kroah.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <04dfae0b-92e5-e02d-c687-ba4d28b7aaf2@collabora.com>
+Date:   Wed, 17 Feb 2021 09:28:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <YCzO7SRmBKzGeMUS@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Wed, 17 Feb 2021 08:21:57 +0000 (UTC)
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no way to remount procfs mountpoint with subset=pid option
-without it. This is done in order not to make visible what was hidden
-since some checks occur during mount.
 
-This patch makes this limitation explicit and demonstrates the error.
+Le 17/02/2021 à 09:08, Greg KH a écrit :
+> On Wed, Feb 17, 2021 at 09:02:48AM +0100, Benjamin Gaignard wrote:
+>> The IMX8MQ got two VPUs but until now only G1 has been enabled.
+>> This series aim to add the second VPU (aka G2) and provide basic
+>> HEVC decoding support.
+> Why are you adding this directly to drivers/staging/media/ and not
+> drivers/media/?  Why can't this just go to the main location and not
+> live in staging?
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
----
- fs/proc/root.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+G2/HEVC is added inside the already exiting Hantro driver, it is "just"
+an other codec from Hantro driver point of view.
+In addition of that v4l2-hevc uAPI is still unstable.
+One goal of this series is to have one more consumer of this v4l2-hevc
+uAPI so maybe we can claim it to be stable enough to move away from staging
+and then do the same for Hantro driver. That would be a great achievement !
 
-diff --git a/fs/proc/root.c b/fs/proc/root.c
-index 0ab90e24d9ae..d4a91f48c430 100644
---- a/fs/proc/root.c
-+++ b/fs/proc/root.c
-@@ -145,7 +145,7 @@ static int proc_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 	return 0;
- }
- 
--static void proc_apply_options(struct super_block *s,
-+static int proc_apply_options(struct super_block *s,
- 			       struct fs_context *fc,
- 			       struct user_namespace *user_ns)
- {
-@@ -159,8 +159,11 @@ static void proc_apply_options(struct super_block *s,
- 	if (ctx->mask & (1 << Opt_subset)) {
- 		if (ctx->pidonly == PROC_PIDONLY_ON)
- 			s->s_iflags |= SB_I_DYNAMIC;
-+		else if (fs_info->pidonly == PROC_PIDONLY_ON)
-+			return invalf(fc, "proc: subset=pid cannot be unset\n");
- 		fs_info->pidonly = ctx->pidonly;
- 	}
-+	return 0;
- }
- 
- static int proc_fill_super(struct super_block *s, struct fs_context *fc)
-@@ -187,7 +190,10 @@ static int proc_fill_super(struct super_block *s, struct fs_context *fc)
- 	fs_info->pid_ns = get_pid_ns(ctx->pid_ns);
- 	fs_info->mounter_cred = get_cred(fc->cred);
- 
--	proc_apply_options(s, fc, current_user_ns());
-+	ret = proc_apply_options(s, fc, current_user_ns());
-+	if (ret) {
-+		return ret;
-+	}
- 
- 	/*
- 	 * procfs isn't actually a stacking filesystem; however, there is
-@@ -229,8 +235,7 @@ static int proc_reconfigure(struct fs_context *fc)
- 	put_cred(fs_info->mounter_cred);
- 	fs_info->mounter_cred = get_cred(fc->cred);
- 
--	proc_apply_options(sb, fc, current_user_ns());
--	return 0;
-+	return proc_apply_options(sb, fc, current_user_ns());
- }
- 
- static int proc_get_tree(struct fs_context *fc)
--- 
-2.29.2
+Benjamin
 
+> thanks,
+>
+> greg k-h
+>
