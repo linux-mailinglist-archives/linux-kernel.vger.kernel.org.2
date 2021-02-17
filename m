@@ -2,156 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A689D31E165
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953E531E167
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231740AbhBQVbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:31:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50918 "EHLO mail.kernel.org"
+        id S232900AbhBQVbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:31:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231761AbhBQVaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:30:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F222264EBB;
-        Wed, 17 Feb 2021 21:29:25 +0000 (UTC)
+        id S232890AbhBQVbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:31:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5497664E85;
+        Wed, 17 Feb 2021 21:30:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613597366;
-        bh=GGbVQmdfv6/5ramMfyXCOEyLAOyqzZEU0DNPfevuAAE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QhYpTc/crki9aMdMXc8BdkR3Ik2nxdbcshETOxZWRcYUgdOeNUlB0YDfdBD186hXN
-         ViluWIsBWODv4GfpFB2tjhjsc3NNUi3JtjrDKZcvvpQm5NA1UxArHpwf3SeJtXQBrU
-         5m32s1aZ7S2wvKzfubOugQTVwMB/EaBFWfolyFABPzEAz278w1u1RyxABaAkwQBHTW
-         GHlhHzkifDhvPrfOdFmz4EH0MPmHqc930Ixhvyj4xOiiukD53J1aRXjPEs5RARwyYs
-         C+sNyv6CwxKuTTO/U+zt+RlxPAuaZS+IfuirkvMexqxOcB0jv28hk25aV+mUF+gA3+
-         YDSP9djV69R9A==
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@fb.com, john.stultz@linaro.org, tglx@linutronix.de,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, ak@linux.intel.com, clm@fb.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH clocksource 5/5] clocksource: Do pairwise clock-desynchronization checking
-Date:   Wed, 17 Feb 2021 13:29:23 -0800
-Message-Id: <20210217212923.21418-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210217212814.GA14952@paulmck-ThinkPad-P72>
-References: <20210217212814.GA14952@paulmck-ThinkPad-P72>
+        s=k20201202; t=1613597431;
+        bh=WgRxiqmGWb/NNjj30Km3X2UGAL7IO9ln+kqQU/TQu6U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IIUYl+kx286L8XAbuoI1nFhR6GLGmWR37+lXiZQPd90hH0szDCBrQ5FWMXeULISx4
+         gaGpIyG2FFlt+DMObk0hMPlCkYnTawuCtljEEkzUUU0RSvnC0yJ0NNUKpMYcekSOvh
+         Yh32Mpve4kb1c1Vs1CdrIcxcOXSPV0X7VowLnjotPugA6AEXPwYJ8z2NkUvAafVWit
+         Inak6DJoiZrLTk28Ij6mL2nyqxB6h8v1qO5SCswhTtT4OiUmdFL3E4UQqf2I8jn7nS
+         k1Q+T/5tBxPh2r++1Q5iSVvz81r6cURl4C0hA/4QwHqr2FZznojt5aH8PwyLmIDWrV
+         FMrnWA7HNT1OA==
+Received: by mail-ot1-f50.google.com with SMTP id 80so33786oty.2;
+        Wed, 17 Feb 2021 13:30:31 -0800 (PST)
+X-Gm-Message-State: AOAM531JY6QzHLiBU7S5n6LuNv4XVtzclYzmJ84vdsYFYNEQqs6tO3mX
+        21eUbij8ekOttpQWyG9r4iK3+T+MmB7u73HZPYU=
+X-Google-Smtp-Source: ABdhPJz1Azps44lN+jQOH+CDQmyg6qd67SBn4K0xmXvmlNAmv1A2dJGjw6f5euo1835xoHhFcxpq3LVx1T8pcul4Uyw=
+X-Received: by 2002:a05:6830:1db5:: with SMTP id z21mr807185oti.210.1613597430588;
+ Wed, 17 Feb 2021 13:30:30 -0800 (PST)
+MIME-Version: 1.0
+References: <1613012611-8489-1-git-send-email-min.li.xe@renesas.com>
+ <CAK8P3a3YhAGEfrvmi4YhhnG_3uWZuQi0ChS=0Cu9c4XCf5oGdw@mail.gmail.com>
+ <OSBPR01MB47732017A97D5C911C4528F0BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2KDO4HutsXNJzjmRJTvW1QW4Kt8H7U53_QqpmgvZtd3A@mail.gmail.com>
+ <OSBPR01MB4773B22EA094A362DD807F83BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a3k5dAF=X3_NrYAAp5gPJ_uvF3XfmC4rKz0oGTrGRriCw@mail.gmail.com>
+ <OSBPR01MB47732AFC03DA8A0DDF626706BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2TeeLfsTNkZPnC3YowdOS=bFM5yYj58crP6F5U9Y_r-Q@mail.gmail.com>
+ <OSBPR01MB47739CBDE12E1F3A19649772BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2fRgDJZv-vzy_X6Y5t3daaVdCiXtMwkmXUyG0EQZ0a6Q@mail.gmail.com> <OSBPR01MB477394546AE3BC1F186FC0E9BA869@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSBPR01MB477394546AE3BC1F186FC0E9BA869@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 17 Feb 2021 22:30:14 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a32jF+iCH5Sk82LaozyPJ0n=f92MRdseZwN9aOtf4DwKQ@mail.gmail.com>
+Message-ID: <CAK8P3a32jF+iCH5Sk82LaozyPJ0n=f92MRdseZwN9aOtf4DwKQ@mail.gmail.com>
+Subject: Re: [PATCH net-next] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Wed, Feb 17, 2021 at 9:20 PM Min Li <min.li.xe@renesas.com> wrote:
+>
+> I attached the G.8273.2 document, where chapter 6 is about supporting physical layer
+> frequency. And combo mode is Renesas way to support this requirement. Other companies
+> may come up with different ways to support it.
+>
+> When EEC quality is below certain level, we would wanna turn off combo mode.
 
-Although smp_call_function() has the advantage of simplicity, using
-it to check for cross-CPU clock desynchronization means that any CPU
-being slow reduces the sensitivity of the checking across all CPUs.
-And it is not uncommon for smp_call_function() latencies to be in the
-hundreds of microseconds.
+Maybe this is something that could be handled inside of the device driver then?
 
-This commit therefore switches to smp_call_function_single(), so that
-delays from a given CPU affect only those measurements involving that
-particular CPU.
+If the driver can use the same algorithm that is in your user space software
+today, that would seem to be a nicer way to handle it than requiring a separate
+application.
 
-Cc: John Stultz <john.stultz@linaro.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Stephen Boyd <sboyd@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Mark Rutland <Mark.Rutland@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Reported-by: Chris Mason <clm@fb.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/time/clocksource.c | 41 +++++++++++++++++++++++++----------------
- 1 file changed, 25 insertions(+), 16 deletions(-)
+> > > This function will read FCW first and convert it to FFO.
+> >
+> > Is this related to the information in the timex->freq field? It sounds like this
+> > would already be accessible through the existing
+> > clock_adjtime() interface.
+> >
+>
+> They are related, but dealing with timex->freq has limitations
+>
+> 1) Renesas SMU has up to 8 DPLLs and only one of the them would be ptp
+> clock and we want to be able to read any DPLL's FFO or state
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index df48416..4161c84 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -214,7 +214,7 @@ static void clocksource_watchdog_inject_delay(void)
- }
- 
- static struct clocksource *clocksource_verify_work_cs;
--static DEFINE_PER_CPU(u64, csnow_mid);
-+static u64 csnow_mid;
- static cpumask_t cpus_ahead;
- static cpumask_t cpus_behind;
- 
-@@ -228,7 +228,7 @@ static void clocksource_verify_one_cpu(void *csin)
- 		sign = ((smp_processor_id() >> inject_delay_shift_percpu) & 0x1) * 2 - 1;
- 		delta = sign * NSEC_PER_SEC;
- 	}
--	__this_cpu_write(csnow_mid, cs->read(cs) + delta);
-+	csnow_mid = cs->read(cs) + delta;
- }
- 
- static void clocksource_verify_percpu_wq(struct work_struct *unused)
-@@ -236,9 +236,12 @@ static void clocksource_verify_percpu_wq(struct work_struct *unused)
- 	int cpu;
- 	struct clocksource *cs;
- 	int64_t cs_nsec;
-+	int64_t cs_nsec_max;
-+	int64_t cs_nsec_min;
- 	u64 csnow_begin;
- 	u64 csnow_end;
--	u64 delta;
-+	s64 delta;
-+	bool firsttime = 1;
- 
- 	cs = smp_load_acquire(&clocksource_verify_work_cs); // pairs with release
- 	if (WARN_ON_ONCE(!cs))
-@@ -247,19 +250,28 @@ static void clocksource_verify_percpu_wq(struct work_struct *unused)
- 		cs->name, smp_processor_id());
- 	cpumask_clear(&cpus_ahead);
- 	cpumask_clear(&cpus_behind);
--	csnow_begin = cs->read(cs);
--	smp_call_function(clocksource_verify_one_cpu, cs, 1);
--	csnow_end = cs->read(cs);
-+	preempt_disable();
- 	for_each_online_cpu(cpu) {
- 		if (cpu == smp_processor_id())
- 			continue;
--		delta = (per_cpu(csnow_mid, cpu) - csnow_begin) & cs->mask;
--		if ((s64)delta < 0)
-+		csnow_begin = cs->read(cs);
-+		smp_call_function_single(cpu, clocksource_verify_one_cpu, cs, 1);
-+		csnow_end = cs->read(cs);
-+		delta = (s64)((csnow_mid - csnow_begin) & cs->mask);
-+		if (delta < 0)
- 			cpumask_set_cpu(cpu, &cpus_behind);
--		delta = (csnow_end - per_cpu(csnow_mid, cpu)) & cs->mask;
--		if ((s64)delta < 0)
-+		delta = (csnow_end - csnow_mid) & cs->mask;
-+		if (delta < 0)
- 			cpumask_set_cpu(cpu, &cpus_ahead);
-+		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
-+		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
-+		if (firsttime || cs_nsec > cs_nsec_max)
-+			cs_nsec_max = cs_nsec;
-+		if (firsttime || cs_nsec < cs_nsec_min)
-+			cs_nsec_min = cs_nsec;
-+		firsttime = 0;
- 	}
-+	preempt_enable();
- 	if (!cpumask_empty(&cpus_ahead))
- 		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
- 			cpumask_pr_args(&cpus_ahead),
-@@ -268,12 +280,9 @@ static void clocksource_verify_percpu_wq(struct work_struct *unused)
- 		pr_warn("        CPUs %*pbl behind CPU %d for clocksource %s.\n",
- 			cpumask_pr_args(&cpus_behind),
- 			smp_processor_id(), cs->name);
--	if (!cpumask_empty(&cpus_ahead) || !cpumask_empty(&cpus_behind)) {
--		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
--		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
--		pr_warn("        CPU %d duration %lldns for clocksource %s.\n",
--			smp_processor_id(), cs_nsec, cs->name);
--	}
-+	if (!firsttime && (!cpumask_empty(&cpus_ahead) || !cpumask_empty(&cpus_behind)))
-+		pr_warn("        CPU %d check durations %lldns - %lldns for clocksource %s.\n",
-+			smp_processor_id(), cs_nsec_min, cs_nsec_max, cs->name);
- 	smp_store_release(&clocksource_verify_work_cs, NULL); // pairs with acquire.
- }
- 
--- 
-2.9.5
+Is this necessarily unique to Renesas SMU though? Not sure what
+makes sense in terms of the phc/ptp interface. Could there just be
+a separate instance for each DPLL in the phc subsystem even if it's
+actually a ptp clock, or would that be an incorrect use?
 
+> 2) timex->freq's unit is ppb and we want to read more precise ffo in smaller unit of ppqt
+
+This also sounds like something that would not be vendor specific. If you
+need a higher resolution, then at some point others would need it as well.
+There is already precedence in 'struct timex' to redefine the resolution of
+some fields based on a flag -- 'time.tv_usec' can either refer to microseconds
+to nanoseconds.
+
+If the range of the 'freq' field is sufficient to encode ppqt, you could add
+another flag for that, otherwise another reserved field can be used.
+
+> 3) there is no interface in the current ptp hardware clock infrastructure to read ffo back from hardware
+
+Adding an internal interface is the easy part here, the hard part is defining
+the user interface.
+
+> > Wouldn't any PTP clock run in one of these modes? If this is just
+> > informational, it might be appropriate to have another sysfs attribute for
+> > each PTP clock that shows the state of the DPLL, and then have the PTP
+> > driver either fill in the current value in 'struct ptp_clock', or provide a
+> > callback to report the state when a user reads the sysfs attribute.
+> >
+>
+> What you propose can work. But DPLL operating mode is not standardized
+> so different vendor may have different explanation for various modes.
+
+If it's a string, that could easily be extended to further modes, as long
+as the kernel documents which names are allowed. If multiple vendors
+refer to the same mode by different names, someone will have to decide
+what to call it in the kernel, and everyone afterwards would use the same
+name.
+
+> Also, I thought sysfs is only for debug or informational purpose.
+> Production software is not supposed to use it for critical tasks?
+
+No, you are probably thinking of debugfs. sysfs is one of multiple
+common ways to exchange this kind of data in a reliable way.
+
+An ioctl would probably work just as well though, usually sysfs
+is better when the information makes sense to human operators
+or simple shell scripts, while an ioctl interface is better if performance
+is important, or if the information is primarily used in C programs.
+
+        Arnd
