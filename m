@@ -2,144 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9614931DD20
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5EC31DCD5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhBQQRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:17:51 -0500
-Received: from mga17.intel.com ([192.55.52.151]:39945 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233516AbhBQQRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:17:36 -0500
-IronPort-SDR: 60a0An1pZLny3oi6z00XdFkKSddNp3vNgB854Y70JXmRE5MLLKEhXSZY+A6q2OmxzeR+xep8Jr
- bgodiuTZSq1Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="163019614"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="163019614"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 08:15:51 -0800
-IronPort-SDR: nFkPI59WHleHomyyQnTLiz9UFCiPfhCn2YA9VEETu0tlr9Ih8wY++elKUw7McEH7+MRGFI3l5w
- OkOl1/JKLSZA==
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="385244288"
-Received: from gretavix-mobl.amr.corp.intel.com (HELO [10.255.228.22]) ([10.255.228.22])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 08:15:49 -0800
-Subject: Re: [PATCH v3 1/3] platform/x86: dell-privacy: Add support for Dell
- hardware privacy
-To:     Perry Yuan <perry979106@gmail.com>,
-        Perry Yuan <Perry.Yuan@dell.com>, oder_chiou@realtek.com,
-        perex@perex.cz, tiwai@suse.com, hdegoede@redhat.com,
-        mgross@linux.intel.com
-Cc:     alsa-devel@alsa-project.org, Mario.Limonciello@dell.com,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        platform-driver-x86@vger.kernel.org, broonie@kernel.org
-References: <20210112171723.19484-1-Perry_Yuan@Dell.com>
- <bf048701-4e6b-ad18-1a73-8bca5c922425@linux.intel.com>
- <79277bf2-3c9e-8b66-47a9-b926a2576f7f@gmail.com>
- <31982e8d-3b0d-7187-8798-900f95d876ee@linux.intel.com>
- <e66d8098-beb6-1299-20aa-42cfe13882f6@gmail.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <882f4b80-c182-4038-39bd-eddb2ecc7800@linux.intel.com>
-Date:   Wed, 17 Feb 2021 08:23:59 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233945AbhBQQAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:00:06 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:32544 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233568AbhBQQAD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 11:00:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1613577602; x=1645113602;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TrSgV4ppZBB1E4H994V5PZn9jNxoOv0E4rNOorIzQXM=;
+  b=IXbp7xo8PgFNdAAn4/TtbtsNuuk6r7gxz5vA+U/Uzj6WNGbr7UBC/abh
+   GALwsnjPTC7vM7jGOBoKbo+pforIRkRDyKsOuZU7/MOf7nRWmvAlpqlCw
+   qwBfwbJIlUOMAGhg6wDhchaJ7XZR56hRBNlKbh2aoSIumJ8DMUZZ62qBC
+   4jmNFnmcxlpsbkkStim7nMXivLYQws1YkYRK2Uqrwjs6n1hHvvdf10VkG
+   beG2xEI2npeb5IxS03giSZoZQuSy28y7MOhecTjWNeHaa+6tpMT+jvT/q
+   2X1SkCmSfFwatB9KtwnC3wOLxGzyAqjELxybVa8MssSsHieMS6mCHlqeZ
+   A==;
+IronPort-SDR: liuIKZbScHZBumPKPyFyxIEpz+9DDmVCmrm1/ICmVxn4g16h9v5w1fSiJx9QfK5voSHPPf5foA
+ jo0ypmmrtTF7fNspqcVRQeyC527x2aIiaL3OJsJjAlvlEyj6XJy+4w1TQksAJDhBRAArDQoqeu
+ QfxoSiIobdHp4ZOlIDoafIMEsgpF9CLiGiwem6K6+H1pgdrU/gixXS859KTuIrHfghKjHXEwde
+ 2ck/cVxSqRB5ytiXlbEA6x7Ii/21htGvLpk12yVNLayX/UWUCKFKMgtLGiRYFlHNVpM7DcplL0
+ lLU=
+X-IronPort-AV: E=Sophos;i="5.81,184,1610434800"; 
+   d="scan'208";a="106963267"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Feb 2021 08:58:46 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 17 Feb 2021 08:58:45 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Wed, 17 Feb 2021 08:58:45 -0700
+Date:   Wed, 17 Feb 2021 16:58:45 +0100
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jiri@resnulli.us" <jiri@resnulli.us>,
+        "ivecera@redhat.com" <ivecera@redhat.com>,
+        "nikolay@nvidia.com" <nikolay@nvidia.com>,
+        "roopa@nvidia.com" <roopa@nvidia.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>
+Subject: Re: [PATCH net-next v4 2/8] switchdev: mrp: Extend ring_role_mrp and
+ in_role_mrp
+Message-ID: <20210217155845.oegbmsnxykkqc6um@soft-dev3.localdomain>
+References: <20210216214205.32385-1-horatiu.vultur@microchip.com>
+ <20210216214205.32385-3-horatiu.vultur@microchip.com>
+ <20210217103433.bilnuo2tfvgvjmxy@skbuf>
 MIME-Version: 1.0
-In-Reply-To: <e66d8098-beb6-1299-20aa-42cfe13882f6@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20210217103433.bilnuo2tfvgvjmxy@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The 02/17/2021 10:34, Vladimir Oltean wrote:
 
+Hi Vladimir,
 
-On 2/17/21 6:47 AM, Perry Yuan wrote:
-> Hi Pierre:
-> On 2021/2/16 22:56, Pierre-Louis Bossart wrote:
->>
->>>>> +static const struct acpi_device_id privacy_acpi_device_ids[] = {
->>>>> +    {"PNP0C09", 0},
->>>>> +    { },
->>>>> +};
->>>>> +MODULE_DEVICE_TABLE(acpi, privacy_acpi_device_ids);
->>>>> +
->>>>> +static struct platform_driver dell_privacy_platform_drv = {
->>>>> +    .driver = {
->>>>> +        .name = PRIVACY_PLATFORM_NAME,
->>>>> +        .acpi_match_table = ACPI_PTR(privacy_acpi_device_ids),
->>>>> +    },
->>>>
->>>> no .probe?
->>> Originally i added the probe here, but it cause the driver  .probe 
->>> called twice. after i use platform_driver_probe to register the 
->>> driver loading process, the duplicated probe issue resolved.
->>>
->>> I
->>>>
->>>>> +    .remove = dell_privacy_acpi_remove,
->>>>> +};
->>>>> +
->>>>> +int __init dell_privacy_acpi_init(void)
->>>>> +{
->>>>> +    int err;
->>>>> +    struct platform_device *pdev;
->>>>> +    int privacy_capable = wmi_has_guid(DELL_PRIVACY_GUID);
->>>>> +
->>>>> +    if (!wmi_has_guid(DELL_PRIVACY_GUID))
->>>>> +        return -ENODEV;
->>>>> +
->>>>> +    privacy_acpi = kzalloc(sizeof(*privacy_acpi), GFP_KERNEL);
->>>>> +    if (!privacy_acpi)
->>>>> +        return -ENOMEM;
->>>>> +
->>>>> +    pdev = platform_device_register_simple(
->>>>> +            PRIVACY_PLATFORM_NAME, PLATFORM_DEVID_NONE, NULL, 0);
->>>>> +    if (IS_ERR(pdev)) {
->>>>> +        err = PTR_ERR(pdev);
->>>>> +        goto pdev_err;
->>>>> +    }
->>>>> +    err = platform_driver_probe(&dell_privacy_platform_drv,
->>>>> +            dell_privacy_acpi_probe);
->>>>> +    if (err)
->>>>> +        goto pdrv_err;
->>>>
->>>> why is the probe done here? Put differently, what prevents you from 
->>>> using a 'normal' platform driver, and do the leds_setup in the 
->>>> .probe()?
->>> At first ,I used the normal platform driver framework, however tt 
->>> cause the driver  .probe called twice. after i use 
->>> platform_driver_probe to register the driver loading process, the 
->>> duplicated probe issue resolved.
->>
->> This sounds very odd...
->>
->> this looks like a conflict with the ACPI subsystem finding a device 
->> and probing the driver that's associated with the PNP0C09 HID, and 
->> then this module __init  creating a device manually which leads to a 
->> second probe
->>
->> Neither the platform_device_register_simple() nor 
->> platform_driver_probe() seem necessary?Because this privacy acpi 
->> driver file has dependency on the ec handle, 
-> so i want to determine if the driver can be loaded basing on the EC ID 
-> PNP0C09 matching.
 > 
-> So far,It works well for me to register the privacy driver with  the 
-> register sequence.
-> Dose it hurt to keep current registering process with 
-> platform_driver_probe used?
+> On Tue, Feb 16, 2021 at 10:41:59PM +0100, Horatiu Vultur wrote:
+> > Add the member sw_backup to the structures switchdev_obj_ring_role_mrp
+> > and switchdev_obj_in_role_mrp. In this way the SW can call the driver in
+> > 2 ways, once when sw_backup is set to false, meaning that the driver
+> > should implement this completely in HW. And if that is not supported the
+> > SW will call again but with sw_backup set to true, meaning that the
+> > HW should help or allow the SW to run the protocol.
+> >
+> > For example when role is MRM, if the HW can't detect when it stops
+> > receiving MRP Test frames but it can trap these frames to CPU, then it
+> > needs to return -EOPNOTSUPP when sw_backup is false and return 0 when
+> > sw_backup is true.
+> >
+> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > ---
+> >  include/net/switchdev.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/include/net/switchdev.h b/include/net/switchdev.h
+> > index 465362d9d063..b7fc7d0f54e2 100644
+> > --- a/include/net/switchdev.h
+> > +++ b/include/net/switchdev.h
+> > @@ -127,6 +127,7 @@ struct switchdev_obj_ring_role_mrp {
+> >       struct switchdev_obj obj;
+> >       u8 ring_role;
+> >       u32 ring_id;
+> > +     u8 sw_backup;
+> >  };
+> >
+> >  #define SWITCHDEV_OBJ_RING_ROLE_MRP(OBJ) \
+> > @@ -161,6 +162,7 @@ struct switchdev_obj_in_role_mrp {
+> >       u32 ring_id;
+> >       u16 in_id;
+> >       u8 in_role;
+> > +     u8 sw_backup;
+> 
+> What was wrong with 'bool'?
+Yeah, that would be a better match.
+> 
+> >  };
+> >
+> >  #define SWITCHDEV_OBJ_IN_ROLE_MRP(OBJ) \
+> > --
+> > 2.27.0
+> >
+> 
+> If a driver implements full MRP offload for a ring/interconnect
+> manager/automanager, should it return -EOPNOTSUPP when sw_backup=false?
 
-Sorry, I don't understand why you need to list PNP0C09 HID in a matching 
-table if it's not used to probe anything.
+In that case it should return 0.
+So if the driver can:
+- fully support MRP, when sw_backup = false, return 0. Then end of story.
+- partially support MRP, when sw_backup = false, return -EOPNOTSUPP,
+                         when sw_backup = true, return 0.
+- no support at all, return -EOPNOTSUPP.
 
-The purpose of those matching tables is that when this HID is found, the 
-core will invoke the probe callback with no need for any manual 
-intervention.
-
-If you want to do things manually with the module init, that's fine, 
-it's the combination of the two that I find questionable.
-
-It's like having both a manual and automatic transmission in a car, with 
-the automatic transmission not coupled to the wheels.
-
+-- 
+/Horatiu
