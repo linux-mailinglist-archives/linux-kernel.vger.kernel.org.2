@@ -2,102 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9295231DEF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0EE31DEF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234761AbhBQSRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:17:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbhBQSRk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:17:40 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FBEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:17:00 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id a4so7408511pgc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:17:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=Gi5brysudot778XfmQVyx+aFXT8IJ2mHpa0FTPkL6QA=;
-        b=JDl2MhLCKhOanylnBiOEISbmJ/fonCREql9eNZHng2H7QwzVFaolfNg+s/F0hE+eQI
-         cir2nRyVipOFEdPTN776AvYbVQCj4y+QZ1IfarCboeoTw30HyqCHN28Cklg5UeKtQzO3
-         K+nUCfCVrBslJkoW4kIw6wJDhHd5BTn7DGOb+XZJTcNK1leoU0WHZ6+oshreIlUjc46A
-         BEdYP0Wh1g76zpGnNwbZPPyzYIyQKDBaUpHuUgsWMRdgpuvBl4+9+rXzvFC3qc6Oh1o1
-         UnplyjT1+j5iWUEHy1a2es5vbA27tH0vPIXN6VJotGrnqYQOWnpg8DhwV94t+buCqPn2
-         ilwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=Gi5brysudot778XfmQVyx+aFXT8IJ2mHpa0FTPkL6QA=;
-        b=SojAoWlQIbOZUX8wMlCc4/Bx9HdsmXwLd6OEmQhkbwDwerANnMQCSvuaZmYECCBZs+
-         phkyzufhvsih8ijQEYM3hr9rwXy3w/aw1rwFvABb4RuvWWV+dpcUNE03qpkOV+zae0MI
-         W19K5IotHoAF6MeLTG/9CF5Cp0Bgq4ZG7U+bQQXICk/nuQOkR7yBNKErxkbzbI2b2gMu
-         1hHGc72kDwUu5hxtJh71Jz9b/PvE+JFZKRbcZlsgh24U078q0aaCQA20aFToW+qyNJCB
-         6Qfdo/MMHmqOssl7pOiWqpWzBufwmLJJPbgSpPmN9ItU0/h590wg1LiEGuzgUszx3zjw
-         wjXA==
-X-Gm-Message-State: AOAM532ysv+5lJpJ/X0aN0rRn164d2KMwUVkKJ6+JOCLBSLjPgtcY5Zj
-        lRWcrfrJIAdkwUwZ41RZT7A6hg==
-X-Google-Smtp-Source: ABdhPJwkPj5MkgTeombBs7pS0/rjx65B5ONZ/wzcQkeUkP51XCckDsu8TF+UwXtCGcplyrsMAymmSQ==
-X-Received: by 2002:a63:a0d:: with SMTP id 13mr560363pgk.130.1613585819166;
-        Wed, 17 Feb 2021 10:16:59 -0800 (PST)
-Received: from [2620:15c:17:3:984e:d574:ca36:ce3c] ([2620:15c:17:3:984e:d574:ca36:ce3c])
-        by smtp.gmail.com with ESMTPSA id j73sm3295845pfd.170.2021.02.17.10.16.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 10:16:58 -0800 (PST)
-Date:   Wed, 17 Feb 2021 10:16:57 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     linux-mm@kvack.org, Mel Gorman <mgorman@techsingularity.net>,
+        id S234869AbhBQSSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:18:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233242AbhBQSST (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:18:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A015564DF0;
+        Wed, 17 Feb 2021 18:17:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613585858;
+        bh=Sicwol4jzvim9fUtubKnzNeNUGfyQyP2qrAg+YTtXVs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=aW8QUi892EbYpMtXDVE1nQgFiWGcw6/TvWBoXW8t4I1zvRpmdPDRtFSVgR/gk0J3Z
+         jYY3cOkC8Q7rdCKwEICoZ1LkIW83hMZNYeC+NUoHEs2YQRLAFCUV3esbJZsb3zZbyF
+         NLVbKbP3F/8lgLT/B7JDPtKM8MfQcOq7AGq57clHB70uqe/qg4wfT2hA+UigU0zI++
+         +tpaKxMa3LFFaaQdbSKy06Q+bN6YAWmcTCagH9t5C0TtSyzvcwukOLLDflhTxYn3uD
+         UMhccblrc/vTtJ2H7fTy7Ev3yl4bLuL/qwC2DCTmxZJMww7tTRwD28yGbaZlcvGQKQ
+         976AjxjvAf1wg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 47CCE3522611; Wed, 17 Feb 2021 10:17:38 -0800 (PST)
+Date:   Wed, 17 Feb 2021 10:17:38 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH] mm, compaction: make fast_isolate_freepages() stay within
- zone
-In-Reply-To: <20210217173300.6394-1-vbabka@suse.cz>
-Message-ID: <f871a4c-45fe-d7c1-a686-2eefe22543ee@google.com>
-References: <20210217173300.6394-1-vbabka@suse.cz>
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        rostedt@goodmis.org
+Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
+Message-ID: <20210217181738.GE2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210212192059.wytqwdf4qm4rnq3d@linutronix.de>
+ <20210212211207.GA2046@pc638.lan>
+ <20210212234851.GP2743@paulmck-ThinkPad-P72>
+ <20210213003709.GA27846@paulmck-ThinkPad-P72>
+ <20210213004328.GB27846@paulmck-ThinkPad-P72>
+ <20210213113030.GA1878@pc638.lan>
+ <20210213164554.GS2743@paulmck-ThinkPad-P72>
+ <20210215112826.xc6b4se6ujwvrwco@linutronix.de>
+ <20210216173003.GX2743@paulmck-ThinkPad-P72>
+ <20210217234759.b82e39049a2e99cf6358e1c2@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217234759.b82e39049a2e99cf6358e1c2@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021, Vlastimil Babka wrote:
+On Wed, Feb 17, 2021 at 11:47:59PM +0900, Masami Hiramatsu wrote:
+> On Tue, 16 Feb 2021 09:30:03 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > On Mon, Feb 15, 2021 at 12:28:26PM +0100, Sebastian Andrzej Siewior wrote:
+> > > On 2021-02-13 08:45:54 [-0800], Paul E. McKenney wrote:
+> > > > Glad you like it!  But let's see which (if any) of these patches solves
+> > > > the problem for Sebastian.
+> > > 
+> > > Looking at that, is there any reason for doing this that can not be
+> > > solved by moving the self-test a little later? Maybe once we reached at
+> > > least SYSTEM_SCHEDULING?
+> > 
+> > One problem is that ksoftirqd and the kprobes use are early_initcall(),
+> > so we cannot count on ksoftirqd being spawned when kprobes first uses
+> > synchronize_rcu_tasks().  Moving the selftest later won't fix this
+> > problem, but rather just paper it over.
+> > 
+> > > This happens now even before lockdep is up or the console is registered.
+> > > So if something bad happens, you end up with a blank terminal.
+> > 
+> > I was getting a splat, but I could easily believe that there are
+> > configurations where the hang is totally silent.  In other words, I do
+> > agree that this needs a proper fix.  All we need do is work out an
+> > agreeable value of "proper".  ;-)
+> > 
+> > > There is nothing else that early in the boot process that requires
+> > > working softirq. The only exception to this is wait_task_inactive()
+> > > which is used while starting a new thread (including the ksoftirqd)
+> > > which is why it was moved to schedule_hrtimeout().
+> > 
+> > Moving kprobes initialization to early_initcall() [1] means that there
+> > can be a call to synchronize_rcu_tasks() before the current spawning of
+> > ksoftirqd.  Because synchronize_rcu_tasks() needs timers to work, it needs
+> > softirq to work.  I know two straightforward ways to make that happen:
+> > 
+> > 1.	Spawn ksoftirqd earlier.
+> > 
+> > 2.	Suppress attempts to awaken ksoftirqd before it exists,
+> > 	forcing all ksoftirq execution on the back of interrupts.
+> > 
+> > Uladzislau and I each produced patches for #1, and I produced a patch
+> > for #2.
+> > 
+> > The only other option I know of is to push the call to init_kprobes()
+> > later in the boot sequence, perhaps to its original subsys_initcall(),
+> > or maybe only as late as core_initcall().  I added Masami and Steve on
+> > CC for their thoughts on this.
+> > 
+> > Is there some other proper fix that I am missing?
+> 
+> Oh, I missed that the synchronize_rcu_tasks() will be involved the kprobes
+> in early stage. Does the problem only exist in the synchronize_rcu_tasks()
+> instead of synchronize_rcu()? If so I can just stop optimizer in early stage
+> because I just want to enable kprobes in early stage, but not optprobes.
+> 
+> Does the following patch help?
 
-> Compaction always operates on pages from a single given zone when isolating
-> both pages to migrate and freepages. Pageblock boundaries are intersected with
-> zone boundaries to be safe in case zone starts or ends in the middle of
-> pageblock. The use of pageblock_pfn_to_page() protects against non-contiguous
-> pageblocks.
-> 
-> The functions fast_isolate_freepages() and fast_isolate_around() don't
-> currently protect the fast freepage isolation thoroughly enough against these
-> corner cases, and can result in freepage isolation operate outside of zone
-> boundaries:
-> 
-> - in fast_isolate_freepages() if we get a pfn from the first pageblock of a
->   zone that starts in the middle of that pageblock, 'highest' can be a pfn
->   outside of the zone. If we fail to isolate anything in this function, we
->   may then call fast_isolate_around() on a pfn outside of the zone and there
->   effectively do a set_pageblock_skip(page_to_pfn(highest)) which may currently
->   hit a VM_BUG_ON() in some configurations
-> - fast_isolate_around() checks only the zone end boundary and not beginning,
->   nor that the pageblock is contiguous (with pageblock_pfn_to_page()) so it's
->   possible that we end up calling isolate_freepages_block() on a range of pfn's
->   from two different zones and end up e.g. isolating freepages under the wrong
->   zone's lock.
-> 
-> This patch should fix the above issues.
-> 
-> Fixes: 5a811889de10 ("mm, compaction: use free lists to quickly locate a migration target")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+It does look to me like it would!  I clearly should have asked you about
+this a couple of months ago.  ;-)
 
-Acked-by: David Rientjes <rientjes@google.com>
+The proof of the pudding would be whether the powerpc guys can apply
+this to v5.10-rc7 and have their kernel come up without hanging at boot.
+
+							Thanx, Paul
+
+> >From e5fafcda3ff918cd52619f795a3f22fb95c72b11 Mon Sep 17 00:00:00 2001
+> From: Masami Hiramatsu <mhiramat@kernel.org>
+> Date: Wed, 17 Feb 2021 23:35:20 +0900
+> Subject: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+> 
+> Since the kprobes jump optimization involves synchronize_rcu_tasks()
+> which depends on the ksoftirqd, that can not be enabled at the
+> early_initcall() boot stage. So this makes the kprobe optimization
+> disabled in the early_initcall() and enables it in subsys_initcall().
+> 
+> Note that non-optimized kprobes is still available after
+> early_initcall(). Only jump optimization is delayed.
+> 
+> Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  kernel/kprobes.c | 31 +++++++++++++++++++++----------
+>  1 file changed, 21 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index d5a3eb74a657..779d8322e307 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -861,7 +861,6 @@ static void try_to_optimize_kprobe(struct kprobe *p)
+>  	cpus_read_unlock();
+>  }
+>  
+> -#ifdef CONFIG_SYSCTL
+>  static void optimize_all_kprobes(void)
+>  {
+>  	struct hlist_head *head;
+> @@ -887,6 +886,7 @@ static void optimize_all_kprobes(void)
+>  	mutex_unlock(&kprobe_mutex);
+>  }
+>  
+> +#ifdef CONFIG_SYSCTL
+>  static void unoptimize_all_kprobes(void)
+>  {
+>  	struct hlist_head *head;
+> @@ -2497,18 +2497,14 @@ static int __init init_kprobes(void)
+>  		}
+>  	}
+>  
+> -#if defined(CONFIG_OPTPROBES)
+> -#if defined(__ARCH_WANT_KPROBES_INSN_SLOT)
+> -	/* Init kprobe_optinsn_slots */
+> -	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
+> -#endif
+> -	/* By default, kprobes can be optimized */
+> -	kprobes_allow_optimization = true;
+> -#endif
+> -
+>  	/* By default, kprobes are armed */
+>  	kprobes_all_disarmed = false;
+>  
+> +#if defined(CONFIG_OPTPROBES) && defined(__ARCH_WANT_KPROBES_INSN_SLOT)
+> +	/* Init kprobe_optinsn_slots for allocation */
+> +	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
+> +#endif
+> +
+>  	err = arch_init_kprobes();
+>  	if (!err)
+>  		err = register_die_notifier(&kprobe_exceptions_nb);
+> @@ -2523,6 +2519,21 @@ static int __init init_kprobes(void)
+>  }
+>  early_initcall(init_kprobes);
+>  
+> +#if defined(CONFIG_OPTPROBES)
+> +static int __init init_optprobes(void)
+> +{
+> +	/*
+> +	 * Enable kprobe optimization - this kicks the optimizer which
+> +	 * depends on synchronize_rcu_tasks() and ksoftirqd, that is
+> +	 * not spawned in early initcall. So delay the optimization.
+> +	 */
+> +	optimize_all_kprobes();
+> +
+> +	return 0;
+> +}
+> +subsys_initcall(init_optprobes);
+> +#endif
+> +
+>  #ifdef CONFIG_DEBUG_FS
+>  static void report_probe(struct seq_file *pi, struct kprobe *p,
+>  		const char *sym, int offset, char *modname, struct kprobe *pp)
+> -- 
+> 2.25.1
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
