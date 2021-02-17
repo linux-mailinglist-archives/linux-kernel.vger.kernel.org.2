@@ -2,132 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241FB31DCC6
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:58:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1190F31DCCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233893AbhBQP4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:56:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233645AbhBQP4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:56:22 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E3F3C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:55:42 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id m22so22334764lfg.5
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:55:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KRsRMiJdhUIxr2Xg+92+1e5npMvkoee1V46CqCqYxRQ=;
-        b=KzpNmFCrWYzucYiPdw9HhVTul/NMWbVj9oJ/4cXajUjdPX45NZq0PMy5Apha5wiGcx
-         fZ39dIhyVFltm7T1U3mSaxoLCPQyvrTzZHrKPV3i5rV6TsUd+jAveIoLWNJ/D7LG6F9t
-         PA41HtSfB/NkJzgmKEv7XhLCSu47z4MqyuILMYfse0sEpbBrOsFBVUzoZ7S1P3yMdNZd
-         SnNb0UPc6gtqRSvDmvIkXrMozSdrxQHmTbDhr9YJq8jFhW1Upwfs10t0qjxPBNbBvIof
-         +xOxyHYNprvy8HEXXUTD65j4B5/8qMhkQQzCogLV0QG/1uQm8yzMhfSY9mjUb2Q/92jE
-         NTQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KRsRMiJdhUIxr2Xg+92+1e5npMvkoee1V46CqCqYxRQ=;
-        b=CwWv9pF24I0bOUla87+tI1zwHYhpXEdb4KcUk50t0X3rUt8+ZcLu7z9Dlo3eH6Bh3H
-         wq1bqP11x7hCsXVxfx9aWD2/MwdD/tx5xjcZfUMXSBx97qaSp6Ilgy/wxx8AkoYzsBlB
-         UoRfI1+5SP8HwtvxrngMpVXpincJh0oiJl3FI5wALS7kmjsKo8rJPmnqf71HKjkOO16G
-         uQ2FiOzsyjQFIeqtxTHZsR0KLq/7jzb2bKr8NGib3t6rfdmtKBYBz5sPzoENgA35yAse
-         PENcLygMeNj+OWFSRajHfLh2HOzX7pzJYJ5BFikEIlfSA/nHiirBHuJThSnAhWlLd/3R
-         oOlA==
-X-Gm-Message-State: AOAM533HTo4Npx3/DUDMmfyHu38q1UBez1VPqN34Wkd7b7vpBKIYfpwZ
-        zmGAaPwhuW7bS52rjIUCXlE=
-X-Google-Smtp-Source: ABdhPJzMdHVBMkH8VYpou3wIVYgDnwUia43Q7sdIAP4gj49UgfDl9nJTpYoEx1uvHvybnC34LVochw==
-X-Received: by 2002:a19:6b1a:: with SMTP id d26mr15356954lfa.162.1613577340535;
-        Wed, 17 Feb 2021 07:55:40 -0800 (PST)
-Received: from localhost.localdomain ([146.158.65.225])
-        by smtp.googlemail.com with ESMTPSA id g19sm287322lfb.54.2021.02.17.07.55.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 07:55:39 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        snovitoll@gmail.com,
-        syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com
-Subject: [PATCH v2] tty: fix when iov_iter_count() returns 0 in tty_write()
-Date:   Wed, 17 Feb 2021 21:55:36 +0600
-Message-Id: <20210217155536.2986178-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YC0zGySVWMKdpulA@kroah.com>
-References: <YC0zGySVWMKdpulA@kroah.com>
+        id S233909AbhBQP5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:57:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233901AbhBQP5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 10:57:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 782EB64DA1;
+        Wed, 17 Feb 2021 15:56:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613577386;
+        bh=b9fBt+ej2vO4foVBIklKpPzfmDmDGzNgOt496HpJmyU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RDvgYMaJntoxNEgOFcHuJLkW/0EDXJomCx6bokly0GcgYl30NXq42mLvEGqlhFEkv
+         LkevpMCGOlBE7jpCWgMJY9/0aDgwVquJaJgKrCXE0p8y2+u23pHzCigepba5MN7F9r
+         /q3IYH8AbCSDYotEJVlbAaEzn+vDN68TgJ4kLv5fGDRfomiwCqFMwpipvi6x9IOqlX
+         M4pKInP04YIQZl4psBwhI2xCjIqYwaRaOQaeCyu8BA53bhb3tYQeZRaI78aAyD4Y/+
+         1LzoiuL+mP5Hb5i9RH0rdsh5iXICAiKBWlURMJywcqa7C6NAJlfE/1sVmzPA5VJYx5
+         nbMh4HCFEIRUA==
+Received: by mail-oi1-f171.google.com with SMTP id 18so15433113oiz.7;
+        Wed, 17 Feb 2021 07:56:26 -0800 (PST)
+X-Gm-Message-State: AOAM531exmj7P+RwSBU8L/tP+fUFiO1oQ0TUbr5zZvHzLjs+EGlOzFJO
+        Mj6wKSKT6VRsY6rXtN7IZoyU6zkg2EGCeF7INAE=
+X-Google-Smtp-Source: ABdhPJyh6Wu655aO2Um9XGrM2VPaQJnkaIX2U987Oai785QHYTW76/WDBgkH2zKec22DnLFiQYTRn3pCPLzjACmwlDA=
+X-Received: by 2002:aca:aad4:: with SMTP id t203mr5740518oie.67.1613577385876;
+ Wed, 17 Feb 2021 07:56:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1613012611-8489-1-git-send-email-min.li.xe@renesas.com>
+ <CAK8P3a3YhAGEfrvmi4YhhnG_3uWZuQi0ChS=0Cu9c4XCf5oGdw@mail.gmail.com>
+ <OSBPR01MB47732017A97D5C911C4528F0BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2KDO4HutsXNJzjmRJTvW1QW4Kt8H7U53_QqpmgvZtd3A@mail.gmail.com>
+ <OSBPR01MB4773B22EA094A362DD807F83BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a3k5dAF=X3_NrYAAp5gPJ_uvF3XfmC4rKz0oGTrGRriCw@mail.gmail.com>
+ <OSBPR01MB47732AFC03DA8A0DDF626706BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2TeeLfsTNkZPnC3YowdOS=bFM5yYj58crP6F5U9Y_r-Q@mail.gmail.com> <OSBPR01MB47739CBDE12E1F3A19649772BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSBPR01MB47739CBDE12E1F3A19649772BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 17 Feb 2021 16:56:09 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2fRgDJZv-vzy_X6Y5t3daaVdCiXtMwkmXUyG0EQZ0a6Q@mail.gmail.com>
+Message-ID: <CAK8P3a2fRgDJZv-vzy_X6Y5t3daaVdCiXtMwkmXUyG0EQZ0a6Q@mail.gmail.com>
+Subject: Re: [PATCH net-next] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found WARNING in iov_iter_revert[1] when iov_iter_count() returns 0,
-therefore INT_MAX is passed to iov_iter_revert() causing > MAX_RW_COUNT
-warning.
-
-static inline ssize_t do_tty_write()
-{
-..
-	size_t count = iov_iter_count(from);
-..
-		size_t size = count;
-		if (ret != size)
-			iov_iter_revert(from, size-ret);
-
-[1] WARNING: lib/iov_iter.c:1090
-Call Trace:
- do_tty_write drivers/tty/tty_io.c:967 [inline]
- file_tty_write.constprop.0+0x55f/0x8f0 drivers/tty/tty_io.c:1048
- call_write_iter include/linux/fs.h:1901 [inline]
- new_sync_write+0x426/0x650 fs/read_write.c:518
- vfs_write+0x791/0xa30 fs/read_write.c:605
- ksys_write+0x12d/0x250 fs/read_write.c:658
-
-Fixes: 9bb48c82aced ("tty: implement write_iter")
-Reported-by: syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
----
-
-v2: Fixed "Fixed" tag to proper commit and changed write return to -EFAULT
-as this statement is valid, tested via strace:
-
-write(3, NULL, 0)                       = -1 EFAULT (Bad address)
-
-Updated to -EFAULT, should be a valid exit code as
-copy_from_iter(.., .., from) returns -EFAULT as well if *from is invalid
-address.
-
+On Tue, Feb 16, 2021 at 11:14 PM Min Li <min.li.xe@renesas.com> wrote:
+> > I can't help but think you are evading my question I asked. If there is no
+> > specific action that this pcm4l tool needs to perform, then I'd think we
+> > should better not provide any interface for it at all.
+> >
+> > I also found a reference to only closed source software at
+> > https://www.renesas.com/us/en/software-tool/ptp-clock-manager-linux
+> > We don't add low-level interfaces to the kernel that are only usable by
+> > closed-source software.
+> >
+> > Once you are able to describe the requirements for what pcm4l actually
+> > needs from the hardware, we can start discussing what a high-level
+> > interface would look like that can be used to replace the your current
+> > interface, in a way that would work across vendors and with both pcm4l and
+> > open-source tools that do the same job.
 >
-> Nit, you need a ' ' before your '(' character here, otherwise the
-> linux-next scripts will complain.
+> This driver is used by pcm4l to access functionalities that cannot be accessed through PHC(ptp hardware clock) interface.
+>
+> All these functions are kind of specific to Renesas SMU device and I have never heard other devices offering similar functions
+>
+> The 3 functions currently provided are (more to be added in the future)
+>
+> - set combomode
+>
+> In Telecom Boundary Clock (T-BC) and Telecom Time Slave Clock (T-TSC) applications
+> per ITU-T G.8275.2, two DPLLs can be used:
+> one DPLL is configured as a DCO to synthesize PTP clocks, and the other DPLL is
+> configured as an EEC(Ethernet Equipment Clock) to generate physical layer clocks.
+> Combo mode provides physical layer frequency support from the EEC/SEC to the PTP
+> clock.
 
-> Also, you got the git commit id wrong, so this needs to be fixed up
-> anyway.  You are pointing to a merge point, I doubt that's what you want
-> to point to here, right?
+Thank you for the explanation. Now, to take the question to an even
+higher level, is it useful to leave it up to the user to pick one of the two
+modes explicitly, or can the kernel make that decision based on some
+other information that it already has, or that can be supplied to it
+using a more abstract interface?
 
-Thanks!
----
- drivers/tty/tty_io.c | 3 +++
- 1 file changed, 3 insertions(+)
+In other words, when would a user pick combomode over non-combomode
+or vice versa? Would it make sense to have this configured according to
+the hardware platform, e.g. in a device tree property of the device, rather
+than having the user choose a mode?
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index 816e709afa56..e1460cad8b7d 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -905,6 +905,9 @@ static inline ssize_t do_tty_write(
- 	ssize_t ret, written = 0;
- 	unsigned int chunk;
- 
-+	if (!count)
-+		return -EFAULT;
-+
- 	ret = tty_write_lock(tty, file->f_flags & O_NDELAY);
- 	if (ret < 0)
- 		return ret;
--- 
-2.25.1
+Which of the two possible modes do other PTP devices use that support
+DCO and EEC but are not configurable?
 
+> - read DPLL's FFO
+>
+> Read fractional frequency offset (FFO) from a DPLL.
+>
+> For a DPLL channel, a Frequency Control Word (FCW) is used to adjust the
+> frequency output of the DCO. A positive value will increase the output frequency
+> and a negative one will decrease the output frequency.
+>
+> This function will read FCW first and convert it to FFO.
+
+Is this related to the information in the timex->freq field? It sounds
+like this would already be accessible through the existing
+clock_adjtime() interface.
+
+> -read DPLL's state
+>
+> The DPLLs support four primary operating modes: Free-Run, Locked,
+> Holdover, and DCO. In Free-Run mode the DPLLs synthesize clocks
+>  based on the system clock alone. In Locked mode the DPLLs filter
+> reference clock jitter with the selected bandwidth. Additionally in
+> Locked mode, the long-term output frequency accuracy is the same
+> as the long-term frequency accuracy of the selected input reference.
+> In Holdover mode, the DPLL uses frequency data acquired while in
+> Locked mode to generate accurate frequencies when input
+> references are not available. In DCO mode, the DPLL control loop
+> is opened and the DCO can be controlled by a PTP clock recovery
+> servo running on an external processor to synthesize PTP clocks.
+
+Wouldn't any PTP clock run in one of these modes? If this is just
+informational, it might be appropriate to have another sysfs attribute
+for each PTP clock that shows the state of the DPLL, and then
+have the PTP driver either fill in the current value in 'struct ptp_clock',
+or provide a callback to report the state when a user reads the sysfs
+attribute.
+
+      Arnd
