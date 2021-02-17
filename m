@@ -2,152 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F3131DB4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0826031DB54
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:22:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbhBQOTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:19:17 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:34513 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbhBQOTO (ORCPT
+        id S233403AbhBQOUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:20:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232371AbhBQOU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:19:14 -0500
-Received: by mail-oi1-f177.google.com with SMTP id j5so2850100oie.1;
-        Wed, 17 Feb 2021 06:18:58 -0800 (PST)
+        Wed, 17 Feb 2021 09:20:26 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09043C061574;
+        Wed, 17 Feb 2021 06:19:46 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id g20so7496074plo.2;
+        Wed, 17 Feb 2021 06:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PrBPn4ucvSZDYyOg5P1485RiveVpxJfQgk27MHvdjcQ=;
+        b=Dc6x4dorP7H1v4dUzIUMTv1iH0y/m8xen5IEZZR/eI8SIpVmsgcYp+FTXJpPrPHffa
+         z9aE+DNcPZARp7KUl2m3kaPYyq7HRjBdIFd2NvSMu66K2d00SG+Vj2CFMT/cfItsSLmz
+         m6dh1Dws/c6UbLR+tZxOlinNuQMYyfaRGUrE1mJg7r6uc2qdEUuNp1g+S56BbRpuQzur
+         NV9OYEANNrUVzqjc5wyCCgSrtlapViZh4iJQ/KZyRVUAdWR9reWwypDjnNsoDOJ0IwW0
+         TFzKmywqqzmNephZup94VxCZ19qicXkbhX5kem19jv0EmmRd2Yq221TQD1uNnW0AzPMG
+         6qNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=NsxA0/UMZkWVAuhoOzLnhRZ4hWdYEg6eUXHOKWQmu2s=;
-        b=BSKjF3wLOs+y+UOiRwuFTRlg85iBdwD4JQqOPAcVfgaBkKEfkLK2KEFReaGDw3/kEG
-         FIk1BUA/US7XfukeRDO67vWYBZdbBjWULAiMiQxgcmBNyjwU98/dNORpwKh0JpVU1934
-         6AuC46IzxyUwxE+IsaGDQNz/4VZsQ0MwQgkrqCmIGV0UMUndkb+pRd3R79nzSWK4y4tI
-         bkBff2e7niKkuIjiOoKp0m/mhGmmU1vSHycKY/YjVcm9mdJxrmG6RVMXwbRuvuiZr3ok
-         37g7e84PcW4bvms4trfpY/YgpWCORL/efLM+2krV5MLSuajiTt/kPZfqka9n8JS+Xwyt
-         zpjQ==
-X-Gm-Message-State: AOAM531+WEEoSbx8jnsCEftpfsI6IKkHaj29WXVZW6QXSd7sf5s6JCRq
-        LMAuIrSKinSUf1Dn1ZoX0xZNLpoGwfQWhWSxHIfVgbWk
-X-Google-Smtp-Source: ABdhPJwye/1M50cGEfgKGs0AAZcZAOe6ZZ7AelM6gzs8QYWO/HXIzyqiYrRkV1uGM61diyUAmuMy3LtZphrg3L7goWg=
-X-Received: by 2002:a54:400b:: with SMTP id x11mr5818289oie.71.1613571513496;
- Wed, 17 Feb 2021 06:18:33 -0800 (PST)
+        bh=PrBPn4ucvSZDYyOg5P1485RiveVpxJfQgk27MHvdjcQ=;
+        b=AA3VMjwpKz2p461yK92Jx4eJYNZ/dDLy54/G7YaTdvtBB40HXm/cCAkilRN+jetPP2
+         /Tz5L/PY4qMdifHPpGbJNj1UfsxP+148CCoGihAv+vPUe3zjr/aWXeLMFRk7LHeIvVxj
+         g92fhIyiyx7Tso2/Qdt/uZw0oFYgno2AOdrqaEv7OkbueAms8+d01Q+yjPlhvbF2hsGF
+         LzlGaVIOrAQ8mX9RfX8z98vyz1/rQmA1kHF6ewigTTg7DrvLxvlpQBa+kftVWyc3WmC9
+         Gf4xHXwd0NpFVXVES/WepIAUtiT9sOCZAi2PrQl2/WVLNn4bcx3YTm5xVEmOdEEK8Imm
+         +umw==
+X-Gm-Message-State: AOAM533tcfOnf7w76L8nrGWjDw/t6TlLdVH5xUltJEC2WI8HLqwMYfqW
+        lD4RQqjA4cUELtxJTKU+F5cIL6RN7s6o8gBq+EQ=
+X-Google-Smtp-Source: ABdhPJyDsNr463ejN3TXRk3mrr7eqip19jDxQgwKn3TJjeI0Gg6WojU0sMfbhcuhYtpsCJGhr8rzufyDROEEE714hyc=
+X-Received: by 2002:a17:90b:3d8:: with SMTP id go24mr9641404pjb.181.1613571585464;
+ Wed, 17 Feb 2021 06:19:45 -0800 (PST)
 MIME-Version: 1.0
-References: <1974978.nRy8TqEeLZ@kreacher> <1613558749.2373.55.camel@suse.cz>
-In-Reply-To: <1613558749.2373.55.camel@suse.cz>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 17 Feb 2021 15:18:20 +0100
-Message-ID: <CAJZ5v0iv22rCJ5uw-sguk6hgMhYn8EdXooHiMaD1pkR_d+zNnA@mail.gmail.com>
-Subject: Re: [RFT][PATCH v1] cpufreq: ACPI: Set cpuinfo.max_freq directly if
- max boost is known
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Michael Larabel <Michael@phoronix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
+References: <20210211175140.85391-1-alban.bedel@aerq.com> <CAHp75VfUY5-VtCWjaU6Q=hJY9hyUz8B36C0528RXUxkbnL9yEA@mail.gmail.com>
+ <4d67d5627921b0f7ca6579b81f97691c53ef0c34.camel@aerq.com> <CAHp75Vczzhs=8k9G1FQYvqOV+Xg3GHp2=TykJX+E5ypT8puFqw@mail.gmail.com>
+ <a1f4f5cc14a5037a8b122c811d2f24a8d3068c41.camel@aerq.com>
+In-Reply-To: <a1f4f5cc14a5037a8b122c811d2f24a8d3068c41.camel@aerq.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 17 Feb 2021 16:19:29 +0200
+Message-ID: <CAHp75VekEoU3y0iZ9RyfB4887n1hbLMcKfrgzYWfa6_cbKp_iQ@mail.gmail.com>
+Subject: Re: [PATCH v2] gpio: pca953x: add support for open drain pins on PCAL6524
+To:     "Bedel, Alban" <alban.bedel@aerq.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 11:46 AM Giovanni Gherdovich
-<ggherdovich@suse.cz> wrote:
->
-> On Mon, 2021-02-15 at 20:24 +0100, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Commit 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover
-> > boost frequencies") attempted to address a performance issue involving
-> > acpi-cpufreq, the schedutil governor and scale-invariance on x86 by
-> > extending the frequency tables created by acpi-cpufreq to cover the
-> > entire range of "turbo" (or "boost") frequencies, but that caused
-> > frequencies reported via /proc/cpuinfo and the scaling_cur_freq
-> > attribute in sysfs to change which may confuse users and monitoring
-> > tools.
-> >
-> > For this reason, revert the part of commit 3c55e94c0ade adding the
-> > extra entry to the frequency table and use the observation that
-> > in principle cpuinfo.max_freq need not be equal to the maximum
-> > frequency listed in the frequency table for the given policy.
-> >
-> > Namely, modify cpufreq_frequency_table_cpuinfo() to allow cpufreq
-> > drivers to set their own cpuinfo.max_freq above that frequency and
-> > change  acpi-cpufreq to set cpuinfo.max_freq to the maximum boost
-> > frequency found via CPPC.
-> >
-> > This should be sufficient to let all of the cpufreq subsystem know
-> > the real maximum frequency of the CPU without changing frequency
-> > reporting.
-> >
-> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=211305
-> > Fixes: 3c55e94c0ade ("cpufreq: ACPI: Extend frequency tables to cover boost frequencies")
-> > Reported-by: Matt McDonald <gardotd426@gmail.com>
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >
-> > Michael, Giovanni,
-> >
-> > The fix for the EPYC performance regression that was merged into 5.11 introduced
-> > an undesirable side-effect by distorting the CPU frequency reporting via
-> > /proc/cpuinfo and scaling_cur_freq (see the BZ link above for details).
-> >
-> > The patch below is reported to address this problem and it should still allow
-> > schedutil to achieve desirable performance, because it simply sets
-> > cpuinfo.max_freq without extending the frequency table of the CPU.
-> >
-> > Please test this one and let me know if it adversely affects performance.
-> >
-> > Thanks!
->
-> Hello Rafael,
->
-> more extended testing confirms the initial feeling; performance with this
-> patch is mostly identical to vanilla v5.11.
+On Wed, Feb 17, 2021 at 3:11 PM Bedel, Alban <alban.bedel@aerq.com> wrote:
+> On Tue, 2021-02-16 at 19:50 +0200, Andy Shevchenko wrote:
+> > On Tue, Feb 16, 2021 at 6:37 PM Bedel, Alban <alban.bedel@aerq.com>
+> > wrote:
+> > > On Mon, 2021-02-15 at 14:53 +0200, Andy Shevchenko wrote:
+> > > > On Thu, Feb 11, 2021 at 7:52 PM Alban Bedel <alban.bedel@aerq.com
+> > > > wrote:
 
-Thank you!
+...
 
-> Tbench shows an improvement.
-
-Interesting.
-
-> Thanks for the fix!
-
-YW
-
-> Tested-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+> > Before continuing on this, have you considered to split this
+> > particular chip to a real pin controller and use the existing driver
+> > only for GPIO part of the functionality?
 >
-> Results follow. The machine has two sockets with an AMD EPYC 7742 each.
-> The governor is always schedutil.
->
->
-> Ratios of time, lower is better:
->                                             v5.11     v5.11
->                                            vanilla    patch
->     - - - - - - - - - - - - - - - - - - - - - - - - - - - -
->     NASA Parallel Benchmarks w/ MPI         1.00      0.96
->     NASA Parallel Benchmarks w/ OpenMP      1.00      ~
->     dbench on XFS                           1.00      ~
->     Linux kernel compilation                1.00      ~
->     git unit test suite                     1.00      ~
->
->
-> Ratio of throughput, higher is better:
->                                             v5.11     v5.11
->                                            vanilla    patch
->     - - - - - - - - - - - - - - - - - - - - - - - - - - - -
->     tbench on localhost                     1.00      1.09
->
->
-> Tilde (~): no change wrt baseline.
+> No, this driver already use the ->set_config() mechanism so adding
+> another property is trivial. On the other hand having a pinctrl driver
+> would be a massive undertaking as the pinctrl API is quiet complex
+> iirc.
 
-Thanks again!
+> Furthermore, unless I'm missing something, that would not allow a
+> consumer to request an open drain GPIO which is what I'm after.
 
-It would be good to hear from Michael too, but this is already
-sufficient for me to queue up the patch for 5.12-rc.
+Hmm... Linus, is it so?
 
-Cheers!
+...
+
+> > > > > +#define PCAL65xx_REGS          BIT(10)
+> > > >
+> > > > Can we have it as a _TYPE, please?
+> > >
+> > > Let's please take a closer look at these macros and what they mean.
+> > > Currently we have 3 possible set of functions that are indicated by
+> > > setting bits in driver_data using the PCA_xxx macros:
+> > >
+> > > - Basic register only: 0
+> > > - With interrupt support: PCA_INT
+> > > - With latching interrupt regs: PCA_INT | PCA_PCAL = PCA_LATCH_INT
+> > >
+> > > This patch then add a forth case:
+> > >
+> > > - With pin config regs: PCA_INT | PCA_PCAL |
+> > > $MACRO_WE_ARE_DICUSSING
+> > >
+> > > Then there is the PCA953X_TYPE and PCA957X_TYPE macros which
+> > > indicate
+> > > the need for a different regmap config and register layout.
+> >
+> > Exactly, and you have a different register layout (coincidentally
+> > overlaps with the original PCA953x).
+>
+> We have 2 layout for the base registers, the "mixed up registers" of
+> the PCA957x and the "standard" of the PCA953x. Then we have the
+> PCALxxxx chips which extend the base PCA953x registers with further
+> registers for better interrupt handling. These are not treated as a new
+> type in the current code, but as an extra feature on top of the
+> PCA953x.
+
+Yes, because they are about interrupts AFAICS.
+
+>  The PCAL65xx we are talking about add a further register
+> block, so following the existing concept its not a new layout.
+
+Yes, with one important detail, i.e. it extends the "mixed up"
+registers, it's not a separate "feature" in this sense. The separate
+"feature" can be, for example, PWM registers. I admit that this most
+of the angle of preference how to draw a line between the features.
+
+I prefer to see it as a type because of two things (in the current code):
+ - OF_9*() macros take only two arguments, second of which is Interrupt related
+ - PCA_INT group of bits is about Interrupt only
+
+Your proposal will disrupt the code (more invasive).
+
+Actually I prefer to see this chip as a pin controller, but it will be
+a longer road to pass, I suppose.
+
+...
+
+> > > These are
+> > > accessed using the PCA_CHIP_TYPE() and are used as an integer
+> > > value,
+> > > not as bit-field like the above ones. If we had a struct instead of
+> > > a
+> > > packed integer that would be a different field.
+> >
+> > How come? It's a bitmask.
+>
+> The definitions use BIT() but all evaluations of PCA_CHIP_TYPE() use
+> the equality operator.
+
+I don't get how it's related. It's a bitmap and each bit uniquely
+defines the type.
+
+...
+
+> > > I'll change it to PCAL65xx_TYPE if you insist, but that seems very
+> > > wrong to me to use the same naming convention for macros meant for
+> > > different fields.
+> >
+> > To me it's the opposite. The 6524 defines a new type (which has some
+> > registers others don't have). We even have already definitions of
+> > those special registers. I think TYPE is a better approach here.
+>
+> Let's look at pca953x_writeable_register() which I think clearly show
+> how chips variants are currently handled. This is just one example but
+> the rest of the code follows the same concept.
+>
+> static bool pca953x_writeable_register(struct device *dev, unsigned int reg)
+> {
+>         struct pca953x_chip *chip = dev_get_drvdata(dev);
+>         u32 bank;
+>
+>         if (PCA_CHIP_TYPE(chip->driver_data) == PCA953X_TYPE) {
+>                 bank = PCA953x_BANK_OUTPUT | PCA953x_BANK_POLARITY |
+>                         PCA953x_BANK_CONFIG;
+>         } else {
+>                 bank = PCA957x_BANK_OUTPUT | PCA957x_BANK_POLARITY |
+>                         PCA957x_BANK_CONFIG | PCA957x_BANK_BUSHOLD;
+>         }
+>
+>         if (chip->driver_data & PCA_PCAL)
+>                 bank |= PCAL9xxx_BANK_IN_LATCH | PCAL9xxx_BANK_PULL_EN |
+>                         PCAL9xxx_BANK_PULL_SEL | PCAL9xxx_BANK_IRQ_MASK;
+>
+> +       if (chip->driver_data & PCAL65xx_REGS)
+> +               bank |= PCAL65xx_BANK_INDOUT_CONF;
+> +
+>         return pca953x_check_register(chip, reg, bank);
+> }
+>
+> The chip we are talking about further extend the PCAL registers, so it
+> is currently covered by PCA953X_TYPE as base type and has the PCA_PCAL
+> bit set. I really fails to see how this new type would nicely fit in
+> the existing code.
+
+Use switch-case instead of if-else-if and it will bring you a better
+picture (not sure about __fallthrough be good or bad here).
+
+switch (PCA_CHIP_TYPE(chip->driver_data)) {
+case PCA6524_TYPE:
+ ...
+ __fallthrough; // perhaps better is to explicitly show what's going on
+case PCA953X_TYPE:
+default: // originally default seems PCA957X, but I guess this makes more sense
+ ...
+break;
+case PCA957X_TYPE:
+...
+break;
+}
+
+-- 
+With Best Regards,
+Andy Shevchenko
