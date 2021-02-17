@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 798AA31D661
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:16:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC7531D663
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:16:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232020AbhBQIMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 03:12:34 -0500
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:51967 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231831AbhBQIFy (ORCPT
+        id S232066AbhBQIMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 03:12:55 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:41731 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231883AbhBQIHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 03:05:54 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 376C95802F4;
-        Wed, 17 Feb 2021 03:04:56 -0500 (EST)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Wed, 17 Feb 2021 03:04:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=nE/twV9lmTlIyX6U7fiaqg/3ZI4aMx+
-        bPYLO39QK5O0=; b=leKVx17HtaHJn3FrmsRfWtV8fzB2OYxry6LHwsLi2TOoXR6
-        GWY4gxCvoCb6laeSYlrndXi+xLE/IkPb0pvqGLXB1+i5nW20zpm+N/7+kDDMPIkd
-        EPTeAw3132A0wOz0nBXXgjtTdrpil26/Cal4Xo/1pEyihPWrJwZUTjTCzSh8/lAI
-        A3EsqQZe4zm2JmKBNUyLF9KqgAIgD414plXpciBPjKc043OAhIxmfLX9DiajDgAT
-        ZDEWwykIeIdo+eNq+XDnzw0uGupXJMAWJ8wnAHL7PtxKU2L5IvfrtlhKWqtWBUDI
-        a531LmQgmy7KYI1/kWRvKsv33G2m9AdOCuuVa+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=nE/twV
-        9lmTlIyX6U7fiaqg/3ZI4aMx+bPYLO39QK5O0=; b=RsFtyn4/5ZrsYMmsUH8fiK
-        ss76if/+SFU/X+mGqQSL0zlT/WAu2mdzS26/z5dUntdtmIk70LgFK9s0L0qY1Fcg
-        Uj5TI05PU6+RvmtKowYtxFfWvRwf8Kp4el5AAkC5QXlByDoy22hsh7AjsAKold1G
-        ahfB0x3+oxs/JFutjIpjALprWb53ZaTsfHScUux+OIw8WEKT3j3VsYMUE0httU8K
-        JQ72ug4dz943Oq+oVq6n3AMz8T/cxcMOitzPXVZwpWv7axyVfFYCJsWlEu0TaioS
-        Tp3Z2FyAdqK7E2mHXS7K7mqjU3YHleHIVY6Vsfq01G39DMuyBmzqzuz6EDdvha5w
-        ==
-X-ME-Sender: <xms:Js4sYK4Rhd2CEdnUu0JfJhnOCl7qBxXZ1m7-YA5iGbdB06t_7QKrOw>
-    <xme:Js4sYD736FfHDDvk_otqV6Yg5n0YvuQfvuzx9_0zz9VA7qK8gmRQaILkI26oT9r5Q
-    J4CfwtA10ycvs3i2A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedugdduudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
-    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:Js4sYJdR22Rn3jHyJqjtGULmYpgkTUHm1MFJ5bT9q4v3cWn8iPPQyA>
-    <xmx:Js4sYHLTxmq6iU6FeOcRHtlEAp-0qjhwmBEjJDYQm2iZQMIHXWQEnw>
-    <xmx:Js4sYOI3_B2V1lnlgMXmRTP5ZGtcilhyvXv_K8V9hhuUTs9IfmpSMw>
-    <xmx:KM4sYEyBoR5ITQLvEbc2ZLN-LAwg-mHHOPQFi2IfN-RnRn5WorcBfg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 961C3A00060; Wed, 17 Feb 2021 03:04:54 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
-Mime-Version: 1.0
-Message-Id: <26958980-d998-407d-926a-40c370cfc8c6@www.fastmail.com>
-In-Reply-To: <CACPK8XdFLKg9k6snLSZrRzorxBeg1fLoqakm6J_8VCXh_=JEQA@mail.gmail.com>
-References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
- <20210114131622.8951-2-chiawei_wang@aspeedtech.com>
- <85f00459-4a39-441e-8119-8e12f8132cfe@www.fastmail.com>
- <HK0PR06MB3779B25984A461E4A1ADEF1191869@HK0PR06MB3779.apcprd06.prod.outlook.com>
- <CACPK8XdFLKg9k6snLSZrRzorxBeg1fLoqakm6J_8VCXh_=JEQA@mail.gmail.com>
-Date:   Wed, 17 Feb 2021 18:34:25 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Joel Stanley" <joel@jms.id.au>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
-Cc:     BMC-SW <BMC-SW@aspeedtech.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "Corey Minyard" <minyard@acm.org>,
-        "Robert Lippert" <rlippert@google.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "Haiyue Wang" <haiyue.wang@linux.intel.com>
-Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Content-Type: text/plain
+        Wed, 17 Feb 2021 03:07:25 -0500
+Received: by mail-oi1-f182.google.com with SMTP id v193so14106738oie.8;
+        Wed, 17 Feb 2021 00:07:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o6A4tdaKh5y2j4m9oXG0FiniGXLjw0wwg2ak9qpEZb0=;
+        b=AR5BV5l6Pb9UnavBX+SaCB+I26Zc3/2C6Sm2WrHOHcnXTxOwzTONxejETLxNTpoSsD
+         vSGTCrfT/9gz+yALY6MgQrGEQ7rt6hhWgbkxHEHHvK0mais/hRlagS2naoaOZosueLIb
+         f4PI2ieSX70BNjVpJF2iFKH/8Sfk0kLjZ2xr8ucPNlCrUbnZfGR+m4BPUx/w+i9SOeLd
+         MyGXEMBn4myw4NgtWyuIjhypoeaf+o/ScI12a2k1MjjMtX++/q3N8s0TDmoJrfSPONlb
+         WSaFnfmkW1FdZXK26uj+TVMKzw7zFckQBSxnQf2YMgJ6UhySCPykCP5Q2g9wU+OlFUTx
+         Gn0A==
+X-Gm-Message-State: AOAM533PFob99QE2Wuc6FNax/GnxGA4XPry+JlOpYAbWOpZJd2CZNrBO
+        lvFV413JB0JEMIBBmYhtzNkXl4bFq5lPlFhjkBw=
+X-Google-Smtp-Source: ABdhPJywMV7acX5qz1G997cfR1R7vSZD5sxPbhFkJgwGWh77jEPv5pM4Xu9FulQERCbcaSBj6IzzjHNrdlcGRxQIqXM=
+X-Received: by 2002:aca:d908:: with SMTP id q8mr2352692oig.148.1613549199859;
+ Wed, 17 Feb 2021 00:06:39 -0800 (PST)
+MIME-Version: 1.0
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org> <20210216174146.106639-10-jacopo+renesas@jmondi.org>
+In-Reply-To: <20210216174146.106639-10-jacopo+renesas@jmondi.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Wed, 17 Feb 2021 09:06:28 +0100
+Message-ID: <CAMuHMdXqr_hZb0YuQ4U8doBUBqaSzjgMtU_8XB80Vg0gKd=2qw@mail.gmail.com>
+Subject: Re: [PATCH 09/16] media: i2c: rdacm21: Re-work OV10640 initialization
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jacopo,
 
+On Tue, Feb 16, 2021 at 6:41 PM Jacopo Mondi <jacopo+renesas@jmondi.org> wrote:
+> The OV10640 image sensor reset and powerdown on signals are controlled
 
-On Wed, 17 Feb 2021, at 18:14, Joel Stanley wrote:
-> Hi Chaiwei,
-> 
-> On Wed, 17 Feb 2021 at 07:40, ChiaWei Wang <chiawei_wang@aspeedtech.com> wrote:
-> >
-> > Hi All,
-> >
-> > Do you have update on this patch series?
-> > Aspeed has subsequent LPC module upstream plan.
-> > We hope that the following patches can be on the basis of the fixed LPC layout.
-> 
-> Andrew has expressed his support for your changes. I will take time to
-> closely review your proposal this week.
-> 
-> We will set the goal of having this rework merged for the next merge window.
-> 
+Drop the "on"?
 
-FWIW I have a patch series that builds on top of Chiawei's changes. Once
-some weather has passed and some power is restored I should be able to test
-then send it out.
+> by the embedded OV490 ISP. The current reset procedure does not respect
+> the 1 millisecond power-up delay and releases the reset signal before
+> the powerdown one.
+>
+> Fix the OV10640 power up sequence by releasing the powerdown signal,
+> waiting the mandatory 1 millisecond power up delay and then releasing
 
-Andrew
+"powerdown" vs. "power-up" vs. "power up"?
+
+> the reset signal. The reset delay is not characterized in the chip
+> manual if not as "255 XVCLK + initialization". Wait for at least 3
+> milliseconds to guarantee the SCCB bus is available.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
