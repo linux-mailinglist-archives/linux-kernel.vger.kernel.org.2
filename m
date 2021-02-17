@@ -2,236 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ADFC31D4CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A7331D4D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:13:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhBQFJK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 00:09:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41916 "EHLO
+        id S230321AbhBQFNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 00:13:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhBQFJA (ORCPT
+        with ESMTP id S230099AbhBQFNF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 00:09:00 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F000C06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:08:20 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id p21so2093877pgl.12
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:08:20 -0800 (PST)
+        Wed, 17 Feb 2021 00:13:05 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF44C06174A
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:12:24 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id t11so7752087pgu.8
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:12:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=rSbdzZy0zhA235v4H2lMk653Cgrt4U0Umw6xOgysAbg=;
-        b=X4zGw/gC7CxpQfxbeiTJ+s2TZ/dSX6Kn3j4aACW9VDgDSmmZDiWDzjFsPUYLh7c+gB
-         s3WMNTUk6Zfaor9Xv5aWxaEe9l8JvSBMB15jqurZGiUGN+fBs2VcIHtLz7vsSpT6wo9l
-         k9t8+LhxMqf+SihJ3trElyCaqEZSPhZdqBzpMDIrkK5StDfNJncAwuj64tUW/gL1ewie
-         L7+10WGmpJ8uiG19i/zMIIinSXta+kOCwSFy+3yjQUZADPkYVIhXCm82HOMnNj7h6BOy
-         WgESStnTnktAT8XOs+WLk/D1pW9IfiZj+Ft3yoDwSmDtINz9btNNucUdGhhoBnjlnRbh
-         Ywfw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UYvHNjsRzSj3lg/h8/eBWdl0bg6pjg+N/53V5e6DzuQ=;
+        b=FCYy9NQ49xDdGoLj67f6UIW8p2z+z+n05jGQwri581J7GMphWlV6A+j7JVZ1V5JXlS
+         zw9Y8dvkI79zWY5zAZ0qcyiRUdO3/Nk1dMNx9diSUnZUiTTxVCxt9HhvTDzvWdshddv3
+         o4i+YEEs2bDjJBrpfNE5THv62gXQlLMgUplLAExWD1gktcLQT/YF1mIBh620ARqAk7rW
+         yQVYFo6/hhqV+RyFY/2nG2ZxH2GQXGpOo4Qqd/YBcFKYgcz8hJGwZ2sw+y1ja/7a8z0U
+         kV12YfOCH2wh+EajlGcPZaLE4+f4PCGomXnOyHnyiWRoh8VxPCAUWdrRYPqka8ZYprDM
+         0qZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=rSbdzZy0zhA235v4H2lMk653Cgrt4U0Umw6xOgysAbg=;
-        b=GDiHpun4EiCPodxWlSRxEBM4vQoQaZ00ao5xhLMqZp7sEdYDubydOnWDkR6ZaY4m/N
-         OGmSiYZdApRpDavBbia8Z6IIfDDrRpp2obCHty5R30cj1EEsdHEpdgCRNKWVGto4Baqv
-         50itpo5wfIAOPHk1By3h1DwPW9I1iR3CQCfWp4WsLU8AnYhKPeZfVyRO/nITu7vqVDV/
-         Cp6Sgq+cWhWpw5nTPRCZN34amrfAayAL19hYNsXLVgkIPj1iI9DThGP69tCuz7NvMVvb
-         RlYxBlWOGSqV8YVDhzpDh6JWkBcER5KbmAnMiVIJ2EhxyV+012T0jFWafco5Q/VB2jkU
-         CTDg==
-X-Gm-Message-State: AOAM530diG2RCq5laC4HA2NFCB/XJXyZaKTPbiTOjzdvC1hiSTh4Tvjf
-        lRevDHp2rEWlkvQqZMgA4euDTg==
-X-Google-Smtp-Source: ABdhPJwLrLKg3oNF9Ej2rKYaxNhZ3yF4wC/+ZO2sVS8Hp3F6umQnTkDvMwG2zDKRlTPoNyr/P5ymZg==
-X-Received: by 2002:a62:8881:0:b029:1de:cc32:4266 with SMTP id l123-20020a6288810000b02901decc324266mr1137754pfd.60.1613538497045;
-        Tue, 16 Feb 2021 21:08:17 -0800 (PST)
-Received: from ?IPv6:2409:8a28:e6d:6480:41c9:75c:168:49f5? ([2409:8a28:e6d:6480:41c9:75c:168:49f5])
-        by smtp.gmail.com with ESMTPSA id t6sm771693pgp.57.2021.02.16.21.08.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Feb 2021 21:08:16 -0800 (PST)
-Subject: Re: [External] Re: [PATCH] psi: Optimize task switch inside shared
- cgroups
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        linux-kernel@vger.kernel.org, songmuchun@bytedance.com
-References: <20210209071413.17097-1-zhouchengming@bytedance.com>
- <YCwkZ+UwDzQVXUyc@cmpxchg.org>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-Message-ID: <17c5f30f-83b1-8f14-86a6-f3810950e5fe@bytedance.com>
-Date:   Wed, 17 Feb 2021 13:08:11 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UYvHNjsRzSj3lg/h8/eBWdl0bg6pjg+N/53V5e6DzuQ=;
+        b=fSjBeKsi8PXfu/1NsMcaEXpwKK3srjmN6wZFhQmjaC/aMNZimyIHZJkDiLrr8/BcZv
+         tPhrId/n6SzyzIWNFfLwkFpntlCsXwNtdTfxEWa4uE1lqkQ/w04Uo4IMXJ8YZYghaPnJ
+         vBJl0wfAacqMQ+Y1BSnjOVJIFbtuXYcISKRZidhrWOSl1tcSwF3PzhMoYf3mk5VGm32L
+         PmTyGBRSSLKHulCHiKmkkK4AECP3Of04yOcaOcbqPoNLSaX86lCo7hXnRP5LZ/14K5Ui
+         IavU2Nf8auO9IYqx6z7X4L/GvmPLDqvJk74dN0a3C11uD/NQMPJIdr/GuDMpUgYcX7Vv
+         +fzg==
+X-Gm-Message-State: AOAM533W8KiA5ONhYXNtf8dkDINnZOQrZDjl56yok+05ABTBEeGGyaOf
+        uhuiuk5NqplP8mwCyDi3ift0afpwD9O0fxPYe3YdsA==
+X-Google-Smtp-Source: ABdhPJztTWrBi2XK37iRQE3e6jrMC+zfIZ0VrgdHndnthS77eBVOQCMpFhhB5dIfpwXQ0wbtu+nzQPZ4b99HjWCWDBU=
+X-Received: by 2002:a63:480f:: with SMTP id v15mr22395088pga.341.1613538743917;
+ Tue, 16 Feb 2021 21:12:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YCwkZ+UwDzQVXUyc@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20210212170159.32153-1-songmuchun@bytedance.com>
+ <20210212170159.32153-4-songmuchun@bytedance.com> <YCv51LgGIWxVjLHT@cmpxchg.org>
+In-Reply-To: <YCv51LgGIWxVjLHT@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Wed, 17 Feb 2021 13:11:47 +0800
+Message-ID: <CAMZfGtWw14a7MTJzY9MVBTRh5X9Qv0YbaBAqEaYPVHSy-SrcEg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on
+ cgroup v2
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Johannes,
+On Wed, Feb 17, 2021 at 12:59 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> Hello Muchun,
+>
+> On Sat, Feb 13, 2021 at 01:01:59AM +0800, Muchun Song wrote:
+> > The swap charges the actual number of swap entries on cgroup v2.
+> > If a swap cache page is charged successful, and then we uncharge
+> > the swap counter. It is wrong on cgroup v2. Because the swap
+> > entry is not freed.
+>
+> The patch makes sense to me. But this code is a bit tricky, we should
+> add more documentation to how it works and what the problem is.
+>
+> How about this for the changelog?
+>
+> ---
+> mm: memcontrol: fix swap undercounting for shared pages in cgroup2
+>
+> When shared pages are swapped in partially, we can have some page
+> tables referencing the in-memory page and some referencing the swap
+> slot. Cgroup1 and cgroup2 handle these overlapping lifetimes slightly
+> differently due to the nature of how they account memory and swap:
+>
+> Cgroup1 has a unified memory+swap counter that tracks a data page
+> regardless whether it's in-core or swapped out. On swapin, we transfer
+> the charge from the swap entry to the newly allocated swapcache page,
+> even though the swap entry might stick around for a while. That's why
+> we have a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
+>
+> Cgroup2 tracks memory and swap as separate, independent resources and
+> thus has split memory and swap counters. On swapin, we charge the
+> newly allocated swapcache page as memory, while the swap slot in turn
+> must remain charged to the swap counter as long as its allocated too.
+>
+> The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol:
+> make swap tracking an integral part of memory control"), because it
+> accidentally removed the do_memsw_account() check in the branch inside
+> mem_cgroup_uncharge() that was supposed to tell the difference between
+> the charge transfer in cgroup1 and the separate counters in cgroup2.
+>
+> As a result, cgroup2 currently undercounts consumed swap when shared
+> pages are partially swapped back in. This in turn allows a cgroup to
+> consume more swap than its configured limit intends.
+>
+> Add the do_memsw_account() check back to fix this problem.
 
-在 2021/2/17 上午4:00, Johannes Weiner 写道:
-> Hello Chengming,
->
-> This patch looks useful to me. A couple of comments below:
->
-> On Tue, Feb 09, 2021 at 03:14:13PM +0800, Chengming Zhou wrote:
->> The commit 36b238d57172 ("psi: Optimize switching tasks inside shared
->> cgroups") only update cgroups whose state actually changes during a
->> task switch only in task preempt case, not in task sleep case.
->>
->> We actually don't need to clear and set TSK_ONCPU state for common cgroups
->> of next and prev task in sleep case, that can save many psi_group_change
->> especially when most activity comes from one leaf cgroup.
-> Can you please make this a bit more concrete? Maybe include this:
->
-> sleep before:
-> psi_dequeue()
->   while ((group = iterate_groups(prev)))			# all ancestors
->     psi_group_change(prev, .clear=TSK_RUNNING|TSK_ONCPU)
-> psi_task_switch()
->   while ((group = iterate_groups(next)))			# all ancestors
->     psi_group_change(next, .set=TSK_ONCPU)
->
-> sleep after:
-> psi_dequeue()
->   nop
-> psi_task_switch()
->   while ((group = iterate_groups(next)))			# until (prev & next)
->     psi_group_change(next, .set=TSK_ONCPU)
->   while ((group = iterate_groups(prev)))			# all ancestors
->     psi_group_change(prev, .clear = common ? TSK_RUNNING : TSK_RUNNING|TSK_ONCPU)
->
-> When a voluntary sleep switches to another task, we remove one call of
-> psi_group_change() for every common cgroup ancestor of the two tasks.
-Thank you for the very beautiful and detailed comments, must be included : )
->> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  kernel/sched/psi.c   | 27 +++++++++++++++++----------
->>  kernel/sched/stats.h | 17 +++--------------
->>  2 files changed, 20 insertions(+), 24 deletions(-)
->>
->> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
->> index 6e46d9eb279b..6061e87089ac 100644
->> --- a/kernel/sched/psi.c
->> +++ b/kernel/sched/psi.c
->> @@ -836,20 +836,27 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
->>  		}
->>  	}
->>  
->> -	/*
->> -	 * If this is a voluntary sleep, dequeue will have taken care
->> -	 * of the outgoing TSK_ONCPU alongside TSK_RUNNING already. We
->> -	 * only need to deal with it during preemption.
->> -	 */
->> -	if (sleep)
->> -		return;
->> -
->>  	if (prev->pid) {
->> -		psi_flags_change(prev, TSK_ONCPU, 0);
->> +		int clear = 0, set = 0;
->> +
->> +		if (sleep) {
->> +			clear |= TSK_RUNNING;
->> +			if (prev->in_iowait)
->> +				set |= TSK_IOWAIT;
->> +		}
-> This needs a comment why it's doing psi_dequeue()'s job. How about this?
->
-> 		/*
-> 		 * When we're going to sleep, psi_dequeue() lets us handle
-> 		 * TSK_RUNNING and TSK_IOWAIT here, where we can combine it
-> 		 * with TSK_ONCPU and save walking common ancestors twice.
-> 		 */
-> 		if (sleep) {
-> 			...
-Make sense, will be added.
->> +		psi_flags_change(prev, clear | TSK_ONCPU, set);
->>  
->>  		iter = NULL;
->>  		while ((group = iterate_groups(prev, &iter)) && group != common)
->> -			psi_group_change(group, cpu, TSK_ONCPU, 0, true);
->> +			psi_group_change(group, cpu, clear | TSK_ONCPU, set, true);
->> +
->> +		if (sleep) {
->> +			while (group) {
->> +				psi_group_change(group, cpu, clear, set, true);
->> +				group = iterate_groups(prev, &iter);
->> +			}
->> +		}
-> This function is *primarily* about handling TSK_ONCPU and secondarily
-> optimizes the dequeue. It would be a bit clearer to do:
->
-> 	int clear = TSK_ONCPU, set = 0;
->
-> 	...
->
-> 	/*
-> 	 * TSK_ONCPU is handled up to the common ancestor. If we're tasked
-> 	 * with dequeuing too, finish that for the rest of the hierarchy.
-> 	 */
-> 	if (sleep) {
-> 		clear &= TSK_ONCPU;
-> 		for (; group; group = iterate_groups(prev, &iter))
-> 			psi_group_change(group, cpu, clear, set, true);			
-> 	}
->
-Make sense, I will modify the patch and send a patch-v2.
+Thanks. Sorry for my poor English. I should improve my changelog.
 
-BTW there is a typo above: clear &= ~TSK_ONCPU;
+> ---
+>
+> > Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Thanks.
 
->> diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
->> index 9e4e67a94731..2d92c8467678 100644
->> --- a/kernel/sched/stats.h
->> +++ b/kernel/sched/stats.h
->> @@ -84,28 +84,17 @@ static inline void psi_enqueue(struct task_struct *p, bool wakeup)
->>  
->>  static inline void psi_dequeue(struct task_struct *p, bool sleep)
->>  {
->> -	int clear = TSK_RUNNING, set = 0;
->> -
->>  	if (static_branch_likely(&psi_disabled))
->>  		return;
->>  
->>  	if (!sleep) {
->> +		int clear = TSK_RUNNING;
->> +
->>  		if (p->in_memstall)
->>  			clear |= TSK_MEMSTALL;
->> -	} else {
->> -		/*
->> -		 * When a task sleeps, schedule() dequeues it before
->> -		 * switching to the next one. Merge the clearing of
->> -		 * TSK_RUNNING and TSK_ONCPU to save an unnecessary
->> -		 * psi_task_change() call in psi_sched_switch().
->> -		 */
->> -		clear |= TSK_ONCPU;
->>  
->> -		if (p->in_iowait)
->> -			set |= TSK_IOWAIT;
->> +		psi_task_change(p, clear, 0);
->>  	}
-> Likewise, this really should have a comment for why it's not handling
-> TSK_RUNNING to match psi_enqueue()!
 >
-> 	int clear = TSK_RUNNING;
+> > ---
+> >  mm/memcontrol.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index c737c8f05992..be6bc5044150 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+> >       memcg_check_events(memcg, page);
+> >       local_irq_enable();
+> >
+> > -     if (PageSwapCache(page)) {
+> > +     if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
 >
-> 	/*
-> 	 * A voluntary sleep is a dequeue followed by a task switch. To
-> 	 * avoid walking all ancestors twice, psi_task_switch() handles
-> 	 * TSK_RUNNING and TSK_IOWAIT for us when it moves TSK_ONCPU.
-> 	 * Do nothing here.
-> 	 */
-> 	 if (sleep)
-> 		return;
+> It's more descriptive to use do_memsw_account() here, IMO.
 >
-> 	if (p->in_memstall)
-> 		clear |= TSK_MEMSTALL;
+> We should also add a comment. How about this above the branch?
+
+I will add a comment here. Thanks.
+
 >
-> 	psi_task_change(p, clear, 0);
-> 	
-> Thanks
+>         /*
+>          * Cgroup1's unified memory+swap counter has been charged with the
+>          * new swapcache page, finish the transfer by uncharging the swap
+>          * slot. The swap slot would also get uncharged when it dies, but
+>          * for shared pages it can stick around indefinitely and we'd count
+>          * the page twice the entire time.
+>          *
+>          * Cgroup2 has separate resource counters for memory and swap,
+>          * so this is a non-issue here. Memory and swap charge lifetimes
+>          * correspond 1:1 to page and swap slot lifetimes: we charge the
+>          * page to memory here, and uncharge swap when the slot is freed.
+>          */
