@@ -2,107 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9268C31DB07
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365F231DB44
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhBQN4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:56:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232803AbhBQN4Z (ORCPT
+        id S233296AbhBQOOy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Feb 2021 09:14:54 -0500
+Received: from mail.fireflyinternet.com ([109.228.58.192]:56928 "EHLO
+        fireflyinternet.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232371AbhBQOOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:56:25 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974EDC061574;
-        Wed, 17 Feb 2021 05:55:44 -0800 (PST)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7BB208C4;
-        Wed, 17 Feb 2021 14:55:42 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613570143;
-        bh=R7osoee4kcMq/rCIg8WjLb7+RqLp/8fGBINFY//63RM=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=WY/iaR8bIKo9Psk8cfxKKKAAt/4NZoMbimWz1xkh4uwEbqxjroQqMobH1KKsXONRP
-         n7+gB7s+l4YqSL5BX0CK/rY1tKFmavG09sGi/4TV1+VE5q40jn2UKnLeiPGRIZVm7S
-         ogp9EsyOy+f/9YC97LAIz1cYlFfTjqBD17ZR8rP4=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH 09/16] media: i2c: rdacm21: Re-work OV10640 initialization
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-10-jacopo+renesas@jmondi.org>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <106ffb6f-dc21-d45f-dfe8-824f05e453f4@ideasonboard.com>
-Date:   Wed, 17 Feb 2021 13:55:40 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 17 Feb 2021 09:14:52 -0500
+X-Greylist: delayed 1027 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Feb 2021 09:14:51 EST
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.69.177;
+Received: from localhost (unverified [78.156.69.177]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23891380-1500050 
+        for multiple; Wed, 17 Feb 2021 13:56:50 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210216174146.106639-10-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210216212953.24458-1-nathan@kernel.org>
+References: <20210216212953.24458-1-nathan@kernel.org>
+Subject: Re: [PATCH] drm/i915: Enable -Wuninitialized
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Arnd Bergmann <arnd@arndb.de>, intel-gfx@lists.freedesktop.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        clang-built-linux@googlegroups.com
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Date:   Wed, 17 Feb 2021 13:56:49 +0000
+Message-ID: <161357020959.15107.941362709800379680@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On 16/02/2021 17:41, Jacopo Mondi wrote:
-> The OV10640 image sensor reset and powerdown on signals are controlled
-> by the embedded OV490 ISP. The current reset procedure does not respect
-> the 1 millisecond power-up delay and releases the reset signal before
-> the powerdown one.
+Quoting Nathan Chancellor (2021-02-16 21:29:54)
+> -Wunintialized was disabled in commit c5627461490e ("drm/i915: Disable
+> -Wuninitialized") because there were two warnings that were false
+> positives. The first was due to DECLARE_WAIT_QUEUE_HEAD_ONSTACK, which
+> was fixed in LLVM 9.0.0. The second was in busywait_stop, which was
+> fixed in LLVM 10.0.0 (issue 415). The kernel's minimum version for LLVM
+> is 10.0.1 so this warning can be safely enabled, where it has already
+> caught a couple bugs.
 > 
-> Fix the OV10640 power up sequence by releasing the powerdown signal,
-> waiting the mandatory 1 millisecond power up delay and then releasing
-> the reset signal. The reset delay is not characterized in the chip
-> manual if not as "255 XVCLK + initialization". Wait for at least 3
-> milliseconds to guarantee the SCCB bus is available.
-> 
-> This commit fixes a sporadic start-up error triggered by a failure to
-> read the OV10640 chip ID:
-> rdacm21 8-0054: OV10640 ID mismatch: (0x01)
+> Link: https://github.com/ClangBuiltLinux/linux/issues/220
+> Link: https://github.com/ClangBuiltLinux/linux/issues/415
+> Link: https://github.com/ClangBuiltLinux/linux/issues/499
+> Link: https://github.com/llvm/llvm-project/commit/2e040398f8d691cc378c1abb098824ff49f3f28f
+> Link: https://github.com/llvm/llvm-project/commit/c667cdc850c2aa821ffeedbc08c24bc985c59edd
+> Fixes: c5627461490e ("drm/i915: Disable -Wuninitialized")
+> References: 2ea4a7ba9bf6 ("drm/i915/gt: Avoid uninitialized use of rpcurupei in frequency_show")
+> References: 2034c2129bc4 ("drm/i915/display: Ensure that ret is always initialized in icl_combo_phy_verify_state")
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-Have you done a similar initialisation rework for the RDACM21 as you do
-in [03/16] of this series for the RDACM20 (or was it already better
-perhaps?)
-
-Only interested because of noting that I think the 'mismatch' check is
-now gone from the RDAMC20.
-
-
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/rdacm21.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> index b22a2ca5340b..c420a6b96879 100644
-> --- a/drivers/media/i2c/rdacm21.c
-> +++ b/drivers/media/i2c/rdacm21.c
-> @@ -333,13 +333,15 @@ static int ov10640_initialize(struct rdacm21_device *dev)
->  {
->  	u8 val;
->  
-> -	/* Power-up OV10640 by setting RESETB and PWDNB pins high. */
-> +	/* Power-up OV10640 by setting PWDNB and RESETB pins high. */
->  	ov490_write_reg(dev, OV490_GPIO_SEL0, OV490_GPIO0);
->  	ov490_write_reg(dev, OV490_GPIO_SEL1, OV490_SPWDN0);
->  	ov490_write_reg(dev, OV490_GPIO_DIRECTION0, OV490_GPIO0);
->  	ov490_write_reg(dev, OV490_GPIO_DIRECTION1, OV490_SPWDN0);
-> -	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0);
-> +
->  	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_SPWDN0);
-> +	usleep_range(1500, 3000);
-> +	ov490_write_reg(dev, OV490_GPIO_OUTPUT_VALUE0, OV490_GPIO0);
->  	usleep_range(3000, 5000);
->  
->  	/* Read OV10640 ID to test communications. */
-> 
-
+make CC=clang-11 now compiles cleanly for me as well,
+Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+-Chris
