@@ -2,170 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1DBF31DC54
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C9431DC69
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:37:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbhBQPfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:35:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233767AbhBQPdV (ORCPT
+        id S233806AbhBQPgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:36:16 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46178 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233784AbhBQPdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 10:33:21 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CF8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:32:40 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id e15so9756214qte.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 07:32:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iCNwmZhWZAWkw9lmubfy3Ctrt4GVRNHAO0fjrQG+z70=;
-        b=K7XhU7BCJNi7/Km2X5hifC75VEEjDwXIINfNpjT8aMJZecj/NE0rRTuoy3sNMp8fB1
-         KTaxnDT2kurODW77ZPkg4j89ophmKvoPQKqyBbn1+kBkl7pkQLajB0xVcUf/4+bVg82m
-         VD1ij0jLVKod10+gUZlx76ymqBLMwiHRUvUfRwxvt6fGrqIJz+jEoR99HapRyMqa+O8p
-         So1G+QUivb7t1a1+9sgRSLKEvJL5PfwAPYLnI8V9h0Gqd9lNtHRwKl/QasnfX7QKqy48
-         Tz8zGa9q/c3xU0nDgKh5qMZ5x9M99S5kCRJQcPf3XlQfTyckCOTp+2t+ekotQuR6B+NY
-         YZiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iCNwmZhWZAWkw9lmubfy3Ctrt4GVRNHAO0fjrQG+z70=;
-        b=pg1unnwYAR74TBTU6FL1yVL6OGMi7vLGtHVu0XhkJsg34433E9yoz8qUgqhPgLtxzB
-         RmdaNREjKeIl9cfXqsCMWVGcTS0yg+pu8Ms43YOW2wKfuV7gncYYrFaML34ck43qI/QE
-         p6O0v8/NhSMlr/djs4pYKyaZWCr5PIwGP6xWLeBI9Yy7FoGaJlcaQFRtgMTPsn9RXeDO
-         ZfHYcX5+wnVAfZ7lNc5y8BnQBaj8DZyB7h6t8nXv5KyO0EVreWz8bsPucBVRvL9pIEG1
-         iWPJnVaPeTgyMRefK3lMnLoBVmN26dH1Q7kg5MtVQRDOrUqRIvpQ8xIWiRwdMmL8cpJz
-         1StA==
-X-Gm-Message-State: AOAM530jf+JYww7Hufzo8hK0Zq8cQjt5bNxCduG/q8XA/Jiqe20lO33e
-        krfNYatN5cXgSbMLMaJTvUF6Zg==
-X-Google-Smtp-Source: ABdhPJzI+kSwjLRo2M5K5Vwk1Dg2soKjc4+KPmHsDbzklvoB72bf2QBgKx4M9bDqrixDGSOrhRhTtw==
-X-Received: by 2002:ac8:110e:: with SMTP id c14mr23911588qtj.78.1613575959225;
-        Wed, 17 Feb 2021 07:32:39 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id f78sm1845446qke.71.2021.02.17.07.32.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Feb 2021 07:32:38 -0800 (PST)
-Subject: Re: [PATCH] cpufreq: exclude boost frequencies from valid count if
- not enabled
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20210217000013.4063289-1-thara.gopinath@linaro.org>
- <20210217055029.a25wjsyoosxageti@vireshk-i7>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <4c9d9d44-5fa5-3ae1-e9bb-45cf6521b764@linaro.org>
-Date:   Wed, 17 Feb 2021 10:32:38 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 17 Feb 2021 10:33:47 -0500
+Date:   Wed, 17 Feb 2021 16:32:53 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613575974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4uM3wH9hVBa0PRle3Aj+gJvZPAjKPZlC62SmlWEA14=;
+        b=IFJs0vLCPPYEVHm3uAhwAaHU/f8vZy3j7L77P48JYidoOiqiQoM0M07Auj9eIFKamH8o1K
+        C38bDr44sN0CNi9D/LEFPDKSoOFQZspv/juhO4SxELLp7TigwT3DQOADdpIBf9IDSZiMuH
+        7YZuhMTbj2R8LeN3kI2LfvlP9lCdTuxrVwgFFc1qL1cFTpohQ6c49D984nlpT2sG+2Lumo
+        YmrbHby8evVwNEAjLNS6ulSH6CwzjQbNVf+PBESshqFp+yUmsIeJ62dYr5N63EGrUEsEvX
+        VsyrnLYeNuofq76soHfBmpdqvos57SmMG6pSQET8LhQJ9WXYpBC6ji6kpra5zg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613575974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=q4uM3wH9hVBa0PRle3Aj+gJvZPAjKPZlC62SmlWEA14=;
+        b=dXQRM80rWzu6UmvciMGAvlsvqDS+BQd9hBlFA1JLDWntEuYOHeuwuHTrF/DYIanqM0TgNy
+        nZNzWGOOBR2JBFBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
+Message-ID: <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
+References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-In-Reply-To: <20210217055029.a25wjsyoosxageti@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210216183609.GA7027@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-16 10:36:09 [-0800], Paul E. McKenney wrote:
+> Hello, Sebastian,
 
+Hi Paul,
 
-On 2/17/21 12:50 AM, Viresh Kumar wrote:
-> Hi Thara,
-> 
-> On 16-02-21, 19:00, Thara Gopinath wrote:
->> This is a fix for a regression observed on db845 platforms with 5.7-rc11
->> kernel.  On these platforms running stress tests with 5.11-rc7 kernel
->> causes big cpus to overheat and ultimately shutdown the system due to
->> hitting critical temperature (thermal throttling does not happen and
->> cur_state of cpufreq cooling device for big cpus remain stuck at 0 or max
->> frequency).
->>
->> This platform has boost opp defined for big cpus but boost mode itself is
->> disabled in the cpufreq driver. Hence the initial max frequency request
->> from cpufreq cooling device(cur_state) for big cpus is for boost
->> frequency(2803200) where as initial max frequency request from cpufreq
->> driver itself is for the highest non boost frequency (2649600).
-> 
-> Okay.
-> 
->> qos
->> framework collates these two requests and puts the max frequency of big
->> cpus to 2649600 which the thermal framework is unaware of.
-> 
-> It doesn't need to be aware of that. It sets its max frequency and other
-> frameworks can put their own requests and the lowest one wins. In this case the
-> other constraint came from cpufreq-core, which is fine.
+> I punted on this for the moment by making RCU priority boosting testing
+> depend on CONFIG_PREEMPT_RT, but longer term I am wondering if RCU's
+> various timed delays and timeouts should use hrtimers rather than normal
+> timers in kernels built with CONFIG_RCU_BOOST.  As it is, RCU priority
+> boosting can be defeated if any of the RCU grace-period kthread's timeouts
+> are serviced by the non-realtime ksoftirqd.
 
-Yes. the qos behavior is correct here.
+I though boosting is accomplished by acquiring a rt_mutex in a
+rcu_read() section. Do you have some code to point me to, to see how a
+timer is involved here? Or is it the timer saying that *now* boosting is
+needed.
 
+If your hrtimer is a "normal" hrtimer then it will be served by
+ksoftirqd, too. You would additionally need one of the
+HRTIMER_MODE_*_HARD to make it work.
+
+> This might require things like swait_event_idle_hrtimeout_exclusive(),
+> either as primitives or just open coded.
 > 
->> Now during an
->> over heat event, with step-wise policy governor, thermal framework tries to
->> throttle the cpu and places a restriction on max frequency of the cpu to
->> cur_state - 1
+> Thoughts?
 > 
-> Actually it is cur_state + 1 as the values are inversed here, cooling state 0
-> refers to highest frequency :)
+> 							Thanx, Paul
 
-yes. it does indeed!
-
-> 
->> which in this case 2649600. qos framework in turn tells the
->> cpufreq cooling device that max frequency of the cpu is already at 2649600
->> and the cooling device driver returns doing nothing(cur_state of the
->> cooling device remains unchanged).
-> 
-> And that's where the bug lies, I have sent proper fix for that now.
-
-Like I mention below there are multiple possible fixes for this issue!
-More on mismatch of frequencies below.
-> 
->> Thus thermal remains stuck in a loop and
->> never manages to actually throttle the cpu frequency. This ultimately leads
->> to system shutdown in case of a thermal overheat event on big cpus.
->   
->> There are multiple possible fixes for this issue. Fundamentally,it is wrong
->> for cpufreq driver and cpufreq cooling device driver to show different
->> maximum possible state/frequency for a cpu.
-> 
-> Not actually, cpufreq core changes the max supported frequency at runtime based
-> on the availability of boost frequencies.
-
-First of all, I am still unable to find this setting in the sysfs space.
-Irrespective the ideal behavior here will be to change the cpufreq 
-cooling dev max state when this happens. I say this for two reasons
-1. The cooling device max state will reflect the correct highest 
-frequency as reported by cpufreq core. These are interfaces exposed to
-user space and they should not be showing two different things.
-2. More importantly, thermal will not waste valuable cycles attempting 
-to throttle down from an non-existing high frequency. In the case of 
-sdm845 we have only one boost opp in the opp table and hence the first 
-time thermal tries to throttle via the cpufreq cooling device(with the 
-step policy governor), it will return back saying that the state is 
-already achieved and then will retry again because overheating has not 
-stopped. But let us a platform has 5 such opps in the table and boost 
-mode not enabled. cpufreq cooling device will have to attempt 5 times 
-before any actual cooling action happens.
-
-> 
-> cpufreq_table_count_valid_entries() is used at different places and it is
-> implemented correctly.
-
-It is used in one other place which is for statistics count. Boost 
-statistics need not be considered if boost mode is not enabled. And like 
-I mentioned before as in the case of cpufreq cooling device correct 
-behavior will be to reflect this as and when boost is enabled. But then 
-again for statistics purpose it is not much of an issue if the entry 
-itself is present with the count showing 0 if boost modes are not 
-enabled. In this case, we should have another api or cpufreq cooling 
-device not use cpufreq_table_count_valid_entries to get the max state.
-
-> 
-
--- 
-Warm Regards
-Thara
+Sebastian
