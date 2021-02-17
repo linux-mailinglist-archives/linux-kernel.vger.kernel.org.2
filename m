@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9C931DD6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:35:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BADCB31DD79
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:39:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbhBQQdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:33:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46662 "EHLO
+        id S234165AbhBQQgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:36:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234239AbhBQQdE (ORCPT
+        with ESMTP id S233986AbhBQQgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:33:04 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7CBEC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:32:23 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id g6so18014549wrs.11
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:32:23 -0800 (PST)
+        Wed, 17 Feb 2021 11:36:48 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F22C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:36:08 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id o38so8798075pgm.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:36:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=p8EXC5f8XmmEzFQQjXafcaeNFWSNN27JEw5tE0rgszc=;
-        b=bIhQ0iKTGuHw5g/CU7AUMxGI7Wx/Uw1wz8DNcOjWPieW4H2gELFxvII2Kt6ZinzQae
-         EhyyW1uKRYZlpFx33gsuy+Tm7s5NifyDJcGcReXNKKRJB3m54g5MPaS+y60EJedDzTJZ
-         6keodpR2GbdqsnZ5w0tmtKGDmLq9Rmd5lYZRY=
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WXIcl6OjwHYOdUvY1AbzlPKs0gf3kbJZZdxqTT5jVpM=;
+        b=G8IMiTzquvhqASKS3eBBR2Tqy32NX8vLtGtNGB7t8MEsE32dUThk9wltx7hM3S0gue
+         Vs0SKBMmVSJxLwHdWLW2pddn7LV8NsV+kknrwuL65T2TTGOXlEoXM4wN2U/xQEdyGilT
+         YkqbBI/WDTPy5JrhI8u9Q5eVzSuKygRGE9dxEcG4iO8o7l9xwnjkwiZi0gybWwrHODrO
+         OHoT1yA3JyDAkdZFvTmUPnEBv2nt8lj7GZ7i8ZzhbIjn1V3wDt28gNTT1R9S0tgDsdlI
+         lfGY3awFwpT25EDAE/VaLIJwJh4f7HCHqJgi7OG2ULnTcPbqRx6W5Z5/SbBgJYL6ZvZO
+         iucQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=p8EXC5f8XmmEzFQQjXafcaeNFWSNN27JEw5tE0rgszc=;
-        b=WmNMvZWe41gc/X5AhX8bM4Yv/Ku/atOFCZ/4oGvKVJnLL/cq+YVTRS0vXLLzZoSMUk
-         3LGrEPB3FaTLGC4Q1gyfEX49Ed3HWQ+kTpdhEdcsaY1MC01PO2DlcRtRyO6ou/HTGKsH
-         OfrL9dfHSRs5CcncMFCCFSdTRSb2DwkVoDU6VaRyzA/ESrr1bkELtPXi158lEm4qpzqC
-         BodSY0XyR0BF6jRNl8iy6dveZqhlXFvy0qjqWkCIHvRZOP/aQv66f+9LvfaTk3lKr06A
-         87yt6v6vSML+i1krF2LsDKz6MKIfOEVBej/8egPch2TJPwggbihi0RCnqAvgK+9Ei6Gp
-         aiqw==
-X-Gm-Message-State: AOAM53102J6THvCAc2vskXeLcv6BV3dfsIKoCgPMHWW1Evxu3xjaf4Ru
-        QZFCaLXsjuA3n7TW+DuPrvgMfg==
-X-Google-Smtp-Source: ABdhPJxiUQMMmqhgCiDn93K542yhJm0V+P6nFzza7SpnK4m1/WSNNsKW/8rNVP0Es1sxIPfriUtoXg==
-X-Received: by 2002:adf:de86:: with SMTP id w6mr101058wrl.32.1613579542483;
-        Wed, 17 Feb 2021 08:32:22 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:76fd])
-        by smtp.gmail.com with ESMTPSA id t30sm4871829wra.56.2021.02.17.08.32.22
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=WXIcl6OjwHYOdUvY1AbzlPKs0gf3kbJZZdxqTT5jVpM=;
+        b=DUZhG/JssHa/2BnyHf5SLf33kujnHb4CCc8+OP/GsT4bsgagatMY3WGl+HI36Z3gwA
+         VHfxZ9WRHfsxGkgdBn9oy21jSG/TeyVPR4Im2dKgHTK7hBOk1LHsZ3zFZamBitUrQyG8
+         BVnLyGYpa9Z4a3dUwQYbYNuRqUZ29T60AkT6NDZ8kr1eYL6bTIHQrFpjQvwj+qGMTG7U
+         XVMM8dI+82Chnz9dGZEFmQWP2Cf+hll6U3Q1uYfRfg/s4B1nP5GDruy6ZVj0WXsElof6
+         aAGwFHChAF3pY/cdnBR/67Be5EhcA5jDW1xagYLywmIFM7CRhABzEygg3sarROi+ceYq
+         Wskw==
+X-Gm-Message-State: AOAM532SsVllsHIIzC7f4+XtTN+R8B3zsc2ZCym2+l+IteYMARDtkIGf
+        uT1RIewtWQ9iqT9m2lB2zd8=
+X-Google-Smtp-Source: ABdhPJwdeylB2BJC0jCIrsR5u5T4D3uPaBfWaqrtrdYp26DWyQLPvSA0yegpTKMuiqeY7AIC/ctHYA==
+X-Received: by 2002:a63:1343:: with SMTP id 3mr209669pgt.166.1613579768128;
+        Wed, 17 Feb 2021 08:36:08 -0800 (PST)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:cdf7:1c5d:c444:e341])
+        by smtp.gmail.com with ESMTPSA id a136sm2939364pfa.66.2021.02.17.08.36.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 08:32:22 -0800 (PST)
-Date:   Wed, 17 Feb 2021 16:32:21 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
- support
-Message-ID: <YC1FFVCNQpaJwO/N@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YCv9Xb7ePnDy9xRf@alley>
- <YCwAbGoVuZJspcx5@chrisdown.name>
- <YC0/xQTephcfo6GL@alley>
- <YC1DjeZmBWmJe35c@chrisdown.name>
+        Wed, 17 Feb 2021 08:36:07 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        mhocko@suse.com, david@redhat.com, joaodias@google.com,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Date:   Wed, 17 Feb 2021 08:36:03 -0800
+Message-Id: <20210217163603.429062-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YC1DjeZmBWmJe35c@chrisdown.name>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Chris Down writes:
->open(f);
->  debugfs_file_get(f);
->  fops->open();
->    inode->private = ps;
->  debugfs_file_put(f);
->
->remove_printk_fmt_sec(); /* kfree ps */
->
->read(f);
->  debugfs_file_get(f);
->  fops->read();
->    ps = inode->private;  /* invalid */
->  debugfs_file_put(f);
+alloc_contig_range is usually used on cma area or movable zone.
+It's critical if the page migration fails on those areas so
+dump more debugging message like memory_hotplug unless user
+specifiy __GFP_NOWARN.
 
-Er, sorry, inode->private is populated at creation time, not at open(). The 
-same general concern applies though -- as far as I can tell there's some period 
-where we may be able to _read() and `ps` has already been freed.
+Signed-off-by: Minchan Kim <minchan@kernel.org>
+---
+ mm/page_alloc.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 0b55c9c95364..67f3ee3a1528 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8486,6 +8486,15 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+ 	}
+ 	if (ret < 0) {
++		if (!(cc->gfp_mask & __GFP_NOWARN)) {
++			struct page *page;
++
++			list_for_each_entry(page, &cc->migratepages, lru) {
++				pr_warn("migrating pfn %lx failed ret:%d ",
++						page_to_pfn(page), ret);
++				dump_page(page, "migration failure");
++			}
++		}
+ 		putback_movable_pages(&cc->migratepages);
+ 		return ret;
+ 	}
+@@ -8728,6 +8737,8 @@ struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
+ 		pfn = ALIGN(zone->zone_start_pfn, nr_pages);
+ 		while (zone_spans_last_pfn(zone, pfn, nr_pages)) {
+ 			if (pfn_range_valid_contig(zone, pfn, nr_pages)) {
++				unsigned long gfp_flags;
++
+ 				/*
+ 				 * We release the zone lock here because
+ 				 * alloc_contig_range() will also lock the zone
+@@ -8736,8 +8747,11 @@ struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
+ 				 * and cause alloc_contig_range() to fail...
+ 				 */
+ 				spin_unlock_irqrestore(&zone->lock, flags);
++
++				if (zone_idx(zone) != ZONE_MOVABLE)
++					gfp_flags = gfp_mask | __GFP_NOWARN;
+ 				ret = __alloc_contig_pages(pfn, nr_pages,
+-							gfp_mask);
++							gfp_flags);
+ 				if (!ret)
+ 					return pfn_to_page(pfn);
+ 				spin_lock_irqsave(&zone->lock, flags);
+-- 
+2.30.0.478.g8a0d178c01-goog
+
