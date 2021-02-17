@@ -2,98 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D2431D95B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9D331D963
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbhBQMYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:24:46 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2580 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231808AbhBQMYn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:24:43 -0500
-Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DgcMF4f0Yz67q1Q;
-        Wed, 17 Feb 2021 20:18:49 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Feb 2021 13:24:00 +0100
-Received: from localhost (10.47.29.73) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 17 Feb
- 2021 12:23:59 +0000
-Date:   Wed, 17 Feb 2021 12:22:53 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
+        id S232396AbhBQM2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:28:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57804 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230473AbhBQM2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:28:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C95DAB9D4;
+        Wed, 17 Feb 2021 12:27:38 +0000 (UTC)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Mel Gorman <mgorman@suse.de>,
         David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v5 2/9] cxl/mem: Find device capabilities
-Message-ID: <20210217122253.00007bc2@Huawei.com>
-In-Reply-To: <20210217040958.1354670-3-ben.widawsky@intel.com>
-References: <20210217040958.1354670-1-ben.widawsky@intel.com>
-        <20210217040958.1354670-3-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        stable@vger.kernel.org, x86@kernel.org
+References: <e5ce315f-64f7-75e3-b587-ad0062d5902c@redhat.com>
+ <YCaAHI/rFp1upRLc@dhcp22.suse.cz> <20210214180016.GO242749@kernel.org>
+ <YCo4Lyio1h2Heixh@dhcp22.suse.cz> <20210215212440.GA1307762@kernel.org>
+ <YCuDUG89KwQNbsjA@dhcp22.suse.cz> <20210216110154.GB1307762@kernel.org>
+ <b1302d8e-5380-18d1-0f55-2dfd61f470e6@suse.cz>
+ <YCvEeWuU2tBUUNBG@dhcp22.suse.cz>
+ <caeebbcc-b6c9-624b-3eeb-591bf59f28a6@suse.cz>
+ <20210216174914.GD1307762@kernel.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v5 1/1] mm: refactor initialization of struct page for
+ holes in memory layout
+Message-ID: <0255912b-19af-e8fc-9a04-06a519287716@suse.cz>
+Date:   Wed, 17 Feb 2021 13:27:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.29.73]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210216174914.GD1307762@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 20:09:51 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
-
-> Provide enough functionality to utilize the mailbox of a memory device.
-> The mailbox is used to interact with the firmware running on the memory
-> device. The flow is proven with one implemented command, "identify".
-> Because the class code has already told the driver this is a memory
-> device and the identify command is mandatory.
+On 2/16/21 6:49 PM, Mike Rapoport wrote:
+> Hi Vlastimil,
 > 
-> CXL devices contain an array of capabilities that describe the
-> interactions software can have with the device or firmware running on
-> the device. A CXL compliant device must implement the device status and
-> the mailbox capability. Additionally, a CXL compliant memory device must
-> implement the memory device capability. Each of the capabilities can
-> [will] provide an offset within the MMIO region for interacting with the
-> CXL device.
+> On Tue, Feb 16, 2021 at 05:39:12PM +0100, Vlastimil Babka wrote:
+>> 
+>> 
+>> So, Andrea could you please check if this fixes the original
+>> fast_isolate_around() issue for you? With the VM_BUG_ON not removed, DEBUG_VM
+>> enabled, no changes to struct page initialization...
+>> It relies on pageblock_pfn_to_page as the rest of the compaction code.
 > 
-> The capabilities tell the driver how to find and map the register space
-> for CXL Memory Devices. The registers are required to utilize the CXL
-> spec defined mailbox interface. The spec outlines two mailboxes, primary
-> and secondary. The secondary mailbox is earmarked for system firmware,
-> and not handled in this driver.
-> 
-> Primary mailboxes are capable of generating an interrupt when submitting
-> a background command. That implementation is saved for a later time.
-> 
-> Reported-by: Colin Ian King <colin.king@canonical.com> (coverity)
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com> (smatch)
-> Link: https://www.computeexpresslink.org/download-the-specification
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com> (v2)
+> Pardon my ignorance of compaction internals, but does this mean that with
+> your patch we'll never call set_pfnblock_flags_mask() for a pfn in a hole?
 
-Looks good to me. 
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
+No it doesn't mean that kind of guarantee. But we will not call it anymore (if
+my patch is correct) from a path which we currently know it's doing that and
+triggering the VM_BUG_ON. So that's a targetted fix that matches stable backport
+criteria. It doesn't contradict your patch as a way to improve mainline, I still
+agree it's best long-term if we initialize the struct pages without such
+surprises. But I also agree with Michal that there's a risk of replacing one
+corner case with another and thus we shouldn't do that as a stable fix.
