@@ -2,189 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC6931DF0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:24:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A19831DF18
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233443AbhBQSX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:23:28 -0500
-Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:59877 "EHLO
-        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234808AbhBQSXX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:23:23 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud9.xs4all.net with ESMTPA
-        id CRTBlAPRPZvk6CRTEl8I7v; Wed, 17 Feb 2021 19:22:40 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1613586160; bh=TxewsW4kpTtGfbxRoZbS7VCVbJuKhfu4UFSTglJmyNA=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=bq/HWGxfyNsyLCJ5f2TkassV5zXDVFvDNr2Q2SRnrbH4ept5NRXW/aA0kXKANUvBZ
-         o1XikyPgR4lbmyq6j7jyeZXnPrrRtVM3yzLt3u9qJS3xvTOQHTHqwV30Zfv1beAS2d
-         rtKgyuKfXxBEJXXIymZn8QZKFmkPfu2DPSfXz0j4MwjNsxXz2abxWm6B9FjyFCHtbL
-         wBs0JZTaOagc+dXHF7MJaNNP5TD8dAt5idrzVHQprviwFQTwn8/X2zoMPREhAP2TGn
-         L04RfnQ5Ry4fR+uQrFQhebpcq5fhedO5tsKksIM6FTDuABeOwRPFXHWNqKJ5anV/Re
-         4ALSxhH9iqkIg==
-Subject: Re: [PATCH] test-media: wrap vivid code around $vivid variable
-To:     Helen Koike <helen.koike@collabora.com>,
-        linux-media@vger.kernel.org
-Cc:     kernel@collabora.com, linux-kernel@vger.kernel.org
-References: <20210217181157.28285-1-helen.koike@collabora.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <c9d01579-7200-2d37-d244-92895353c842@xs4all.nl>
-Date:   Wed, 17 Feb 2021 19:22:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.0
+        id S234884AbhBQS00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:26:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231562AbhBQS0Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:26:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BC9164E5F;
+        Wed, 17 Feb 2021 18:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613586343;
+        bh=+fVkBu800M04O2PuUDftIhfqw4KoBuaiI9SLennii9c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A2N8WcYs1ES5YIl2d2xGUxnuyo8B4PyjagwJ+qV4fwmbHmqwVduYv9EpjgO8pHag/
+         F1bhc0Xny6Qb7XGTFAUCUOILsTkN2bNBQPReaBbwd+nWNBeZcY2uyoN491aqdyQ5T6
+         zmgwDAS925yQ88FvuQAi0gqrMXIiHVbejX+tWfwCifppshlu/xmTMS9/iJpuKlIqs8
+         N+Q9bIzRFQhzS1XvBD4OG9J3o7PSQrxGoTnkePC0xwzUjwQzlYf8uUN5WE2il7lPDY
+         Bo7jv80CG2mxmtpFJN8JiuBqYKvhSZAtc5UwD9JXySCzad79htdxAU/IQJfhfEAydd
+         yn8oiOzmg6L7A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 54DA040CD9; Wed, 17 Feb 2021 15:25:40 -0300 (-03)
+Date:   Wed, 17 Feb 2021 15:25:40 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Martin =?utf-8?B?TGnFoWth?= <mliska@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH] perf annotate: do not jump after 'k' is pressed
+Message-ID: <YC1fpJIJFFfrNLUI@kernel.org>
+References: <65416cff-4eb6-713c-a174-2aa43fa64332@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <20210217181157.28285-1-helen.koike@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfNQUuMWNza5mXo+iraYOhZU0f+1f+9nDu0YJYhoH2vLcxpHkP6xWZohU3yrXuYNsaT+58Ko9Ipy3O8RKtveFHAnlwHhLML7wFMdEljn6fuIaAJsB5WeK
- 2NoS29ET7vGKwoDMQwSp1fexOMPKyz/F3sFKfVHPY4lXNSYAKp9D16c89csSxMevP6+i0mEECAne1BEmOVDKj7UGrO4D9MPBE4/ydvziOQvW8R1xjd2jRBLg
- ZonQkCCHr1tSRiDZLEFHNHWx6h/6WtDhK+rcGv8fZ6oUeordEUbTARnLaOkv9batx435U2zgpYmZ6JtINbFNmQ==
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <65416cff-4eb6-713c-a174-2aa43fa64332@suse.cz>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/2021 19:11, Helen Koike wrote:
-> The script was trying to load vivid and run some commands on top of it
-> even when $vivid = 0.
-> Wrap all vivid code under $vivid variable.
-> 
-> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+Em Mon, Feb 15, 2021 at 01:45:25PM +0100, Martin Liška escreveu:
+> Do not jump when 'k' is pressed, the cursor show stay where it is.
+> Right now, it jumps to the currently selected hot instruction.
+
+Thanks, applied.
+
+- Arnaldo
+
+ 
+> Signed-off-by: Martin Liška <mliska@suse.cz>
 > ---
->  contrib/test/test-media | 66 ++++++++++++++++++++---------------------
->  1 file changed, 33 insertions(+), 33 deletions(-)
+>  tools/perf/ui/browsers/annotate.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/contrib/test/test-media b/contrib/test/test-media
-> index 10b7e89d..8cd8bc37 100755
-> --- a/contrib/test/test-media
-> +++ b/contrib/test/test-media
-> @@ -146,29 +146,29 @@ if [ $kmemleak -eq 1 ]; then
->  	echo clear >/sys/kernel/debug/kmemleak
->  fi
->  
-> -rmmod vivid 2&>/dev/null
-> -modprobe vivid n_devs=3 multiplanar=1,2,2 cache_hints=1,0,0 #allocators=0,1,1
-
-Ah, no. Vivid is also used to test dmabuf for vim2m, vimc and vicodec tests. It
-functions as the allocator for the dma buffers in that case.
-
-So even if vivid isn't given, but only vim2m, vimc or vicodec, it should still be loaded.
-
-It isn't needed for vidtv, so I guess it could be disabled if only vidtv is tested.
-
-Regards,
-
-	Hans
-
-> -sleep 1
-> +if [ $vivid -eq 1 ]; then
-> +	rmmod vivid 2&>/dev/null
-> +	modprobe vivid n_devs=3 multiplanar=1,2,2 cache_hints=1,0,0 #allocators=0,1,1
-> +	sleep 1
->  
-> -tmp=`mktemp`
-> +	tmp=`mktemp`
->  
-> -if ! $v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap ; then
-> -	echo "FAIL: the vivid module failed to load" | tee -a $tmp
-> -	echo "Grand Total for vivid: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
-> -	echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
-> -	exit 0
-> -fi
-> +	if ! $v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap ; then
-> +		echo "FAIL: the vivid module failed to load" | tee -a $tmp
-> +		echo "Grand Total for vivid: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
-> +		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
-> +		exit 0
-> +	fi
->  
-> -$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
-> -$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-out -o1 -x width=3840,height=2160,pixelformat=NV24
-> -$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-cap -i3 -v width=3840,height=2160,pixelformat=NM16
-> -$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
-> -$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
-> -$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
-> +	$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
-> +	$v4l2_ctl -z platform:vivid-000 -d vivid-000-vid-out -o1 -x width=3840,height=2160,pixelformat=NV24
-> +	$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-cap -i3 -v width=3840,height=2160,pixelformat=NM16
-> +	$v4l2_ctl -z platform:vivid-001 -d vivid-001-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
-> +	$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-cap -i3 -v width=3840,height=2160,pixelformat=NV24
-> +	$v4l2_ctl -z platform:vivid-002 -d vivid-002-vid-out -o1 -x width=3840,height=2160,pixelformat=NM16
->  
-> -echo
-> +	echo
->  
-> -if [ $vivid -eq 1 ]; then
->  	dmesg -n notice
->  	echo
->  	echo vivid compliance tests, contiguous planes | tee /dev/kmsg
-> @@ -287,6 +287,18 @@ if [ $vivid -eq 1 ]; then
->  	echo
->  	echo
->  	echo
-> +
-> +	date
-> +	echo
-> +	echo unbind vivid | tee /dev/kmsg
-> +	echo
-> +	echo -n vivid.0 >/sys/bus/platform/drivers/vivid/unbind
-> +	sleep $unbind_time
-> +	echo
-> +	echo rmmod vivid | tee /dev/kmsg
-> +	echo
-> +	rmmod vivid
-> +	sleep $rmmod_time
->  fi
->  
->  if [ $vim2m -eq 1 ]; then
-> @@ -300,7 +312,7 @@ if [ $vim2m -eq 1 ]; then
->  		echo "FAIL: the vim2m module failed to load" | tee -a $tmp
->  		echo "Grand Total for vim2m: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->  		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
-> -		rmmod vivid
-> +		rmmod vim2m
->  		exit 0
->  	fi
->  
-> @@ -373,7 +385,7 @@ if [ $vimc -eq 1 ]; then
->  		echo "FAIL: the vimc module failed to load" | tee -a $tmp
->  		echo "Grand Total for vimc: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->  		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
-> -		rmmod vivid
-> +		rmmod vimc
->  		exit 0
->  	fi
->  
-> @@ -467,7 +479,7 @@ if [ $vicodec -eq 1 ]; then
->  		echo "FAIL: the vicodec module failed to load" | tee -a $tmp
->  		echo "Grand Total for vicodec: Succeeded: 0, Failed: 1, Warnings: 0" | tee -a $tmp
->  		echo "Final Summary: 1, Succeeded: 0, Failed: 1, Warnings: 0"
-> -		rmmod vivid
-> +		rmmod vicodec
->  		exit 0
->  	fi
->  
-> @@ -603,18 +615,6 @@ if [ $vicodec -eq 1 ]; then
->  	echo
->  fi
->  
-> -date
-> -echo
-> -echo unbind vivid | tee /dev/kmsg
-> -echo
-> -echo -n vivid.0 >/sys/bus/platform/drivers/vivid/unbind
-> -sleep $unbind_time
-> -echo
-> -echo rmmod vivid | tee /dev/kmsg
-> -echo
-> -rmmod vivid
-> -sleep $rmmod_time
-> -
->  if [ $vidtv -eq 1 ]; then
->  	rmmod dvb_vidtv_bridge dvb_vidtv_tuner dvb_vidtv_demod 2&>/dev/null
->  	modprobe vidtv
+> diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+> index bd77825fd5a1..35b82caf8090 100644
+> --- a/tools/perf/ui/browsers/annotate.c
+> +++ b/tools/perf/ui/browsers/annotate.c
+> @@ -759,7 +759,7 @@ static int annotate_browser__run(struct annotate_browser *browser,
+>  			continue;
+>  		case 'k':
+>  			notes->options->show_linenr = !notes->options->show_linenr;
+> -			break;
+> +			continue;
+>  		case 'H':
+>  			nd = browser->curr_hot;
+>  			break;
+> -- 
+> 2.30.0
 > 
 
+-- 
+
+- Arnaldo
