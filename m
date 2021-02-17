@@ -2,104 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C1931D9D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B624731D9E9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:02:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhBQM7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:59:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231709AbhBQM7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:59:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE01D64E4A;
-        Wed, 17 Feb 2021 12:58:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613566710;
-        bh=LuuTZFC1X9pim/XLsOBXERDNf+hidyPvmXjt6nSvnLI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O1Yb0vfxWPHRCJFBuuIBDynYRiPc+oDKTR8hHnIgK2ZeqslARNnJ5F0DbGPomS0RC
-         CQIjk3IgYwiv3WmMIVOFCRLA1bZ41OChTznf7bmaIvv/+i/+zLPT76F7KXo+d22ofg
-         7sqW0OuxFdWEnIOYZrhYhsxjdO4sl0JefWnP4QAb3M+V8NPboDfpuNr5MleI+3v9r/
-         dCtIKa4BHOrzxXKqrRkIQnqKwjH/MdatZle9xqzVxdmAEdACsxpIWPm95Ux9DZARcA
-         5sEgxk62lQt9X9tyO9gF3CQ4Pu7s93pLLg16FsXPRgBnspSfY3s0EkGehDhDxlnAMt
-         vS8nzB3I3O0LQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D2D6C40CD9; Wed, 17 Feb 2021 09:58:27 -0300 (-03)
-Date:   Wed, 17 Feb 2021 09:58:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH 3/3] tools/lib/fs: Cache cgroupfs mount point
-Message-ID: <YC0S858hMZG6o/tt@kernel.org>
-References: <20201216090556.813996-1-namhyung@kernel.org>
- <20201216090556.813996-3-namhyung@kernel.org>
- <20201229115158.GH521329@kernel.org>
- <CAM9d7cidFuM5gmjq8=uy+mJjHHEVE=q6qESkc_OeTeGEQkGbnA@mail.gmail.com>
- <CAM9d7chBmkG6S1QzF+gDU8=5ce8zQo2xM5Jr1t_iptsh_+t7NQ@mail.gmail.com>
+        id S232845AbhBQNC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:02:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232836AbhBQNCL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 08:02:11 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FF0C061574;
+        Wed, 17 Feb 2021 05:01:30 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E5B608C4;
+        Wed, 17 Feb 2021 14:01:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613566889;
+        bh=jTrK5mTGlhq1kUdxGmed2yTPALsvJWCZwyi5GisaGwQ=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZDDarJPFUlZzIY971JSlYWkifdNOylqqtlodPWt4JyfU81YAT1PGY+kqdkiNYsl/8
+         olPO0DQCPTIs/5qHdpFSqbPVoG+LC5rP+xIwrZjkvTuL28Xg5XbeSksbJvvwRmdju3
+         eL59D2fnOTfOo4WZbRqceJIIfspLJ5CO3i3QYamo=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 03/16] media: i2c: rdacm20: Replace goto with a loop
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-4-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <c95022bc-3841-4d0a-653c-6d6974e20355@ideasonboard.com>
+Date:   Wed, 17 Feb 2021 13:01:26 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7chBmkG6S1QzF+gDU8=5ce8zQo2xM5Jr1t_iptsh_+t7NQ@mail.gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210216174146.106639-4-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jan 08, 2021 at 02:51:44PM +0900, Namhyung Kim escreveu:
-> On Wed, Jan 6, 2021 at 10:33 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hi Arnaldo,
-> >
-> > On Tue, Dec 29, 2020 at 8:51 PM Arnaldo Carvalho de Melo
-> > <acme@kernel.org> wrote:
-> > >
-> > > Em Wed, Dec 16, 2020 at 06:05:56PM +0900, Namhyung Kim escreveu:
-> > > > Currently it parses the /proc file everytime it opens a file in the
-> > > > cgroupfs.  Save the last result to avoid it (assuming it won't be
-> > > > changed between the accesses).
-> > >
-> > > Which is the most likely case, but can't we use something like inotify
-> > > to detect that and bail out or warn the user?
-> >
-> > Hmm.. looks doable.  Will check.
-> 
-> So I've played with inotify a little bit, and it seems it needs to monitor
-> changes on the file or the directory.  I didn't get any notification from
-> the /proc/mounts file even if I did some mount/umount.
-> 
-> Instead, I could get IN_UNMOUNT when the cgroup filesystem was
-> unmounted.  But for the monitoring, we need to do one of a) select-like
-> syscall to wait for the events, b) signal-driven IO notification or c) read
-> the inotify file with non-block mode everytime.
-> 
-> In a library code, I don't think we can do a) or b) since it can affect
-> user program behaviors.  Then we should go with c) but I think
-> it's opposite to the purpose of this patch. :)
-> 
-> As you said, I think mostly we don't care as the accesses will happen
-> in a short period of time.  But if you really care, maybe for the upcoming
-> perf daemon changes, I think we can add an API to invalidate the cache
-> or internal time-based invalidation logic (like remove it after 10 sec.).
+Hi Jacopo,
 
-Ok, we can have something in 'perf daemon' to periodically invalidate
-this, maybe do a poor man inotify and when asking for the cgroup
-mountpoint, check some characteristic of that file that changes when it
-is modified, or plain use a timestamp and have some threshold.
-
-- Arnaldo
- 
-> Thoughts?
+On 16/02/2021 17:41, Jacopo Mondi wrote:
+> During the camera module initialization the image sensor PID is read to
+> verify it can correctly be identified. The current implementation is
+> rather confused and uses a loop implemented with a label and a goto.
 > 
-> Thanks,
-> Namhyung
+> Replace it with a more compact for() loop.
+> 
+> No functional changes intended.
 
--- 
+I think there is a functional change in here, but I almost like it.
 
-- Arnaldo
+Before, if the read was successful, it would check to see if the
+OV10635_PID == OV10635_VERSION, and if not it would print that the read
+was successful but a mismatch.
+
+Now - it will retry again instead, and if at the end of the retries it
+still fails then it's a failure.
+
+This means we perhaps don't get told if the device id is not correct in
+the same way, but it also means that if the VERSION was not correct
+because of a read error (which I believe i've seen occur), it will retry.
+
+Because there is a functional change you might want to update the
+commit, but I still think this is a good change overall.
+
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/rdacm20.c | 27 ++++++++++-----------------
+>  1 file changed, 10 insertions(+), 17 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index 4d9bac87cba8..6504ed0bd3bc 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -59,6 +59,8 @@
+>   */
+>  #define OV10635_PIXEL_RATE		(44000000)
+>  
+> +#define OV10635_PID_TIMEOUT		3
+> +
+>  static const struct ov10635_reg {
+>  	u16	reg;
+>  	u8	val;
+> @@ -452,7 +454,7 @@ static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+>  
+>  static int rdacm20_initialize(struct rdacm20_device *dev)
+>  {
+> -	unsigned int retry = 3;
+> +	unsigned int i;
+>  	int ret;
+>  
+>  	/* Verify communication with the MAX9271: ping to wakeup. */
+> @@ -501,23 +503,14 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+>  		return ret;
+>  	usleep_range(10000, 15000);
+>  
+> -again:
+> -	ret = ov10635_read16(dev, OV10635_PID);
+> -	if (ret < 0) {
+> -		if (retry--)
+> -			goto again;
+> -
+> -		dev_err(dev->dev, "OV10635 ID read failed (%d)\n",
+> -			ret);
+> -		return -ENXIO;
+> +	for (i = 0; i < OV10635_PID_TIMEOUT; ++i) {
+> +		ret = ov10635_read16(dev, OV10635_PID);
+> +		if (ret == OV10635_VERSION)
+> +			break;
+> +		usleep_range(1000, 2000);
+>  	}
+> -
+> -	if (ret != OV10635_VERSION) {
+> -		if (retry--)
+> -			goto again;
+> -
+> -		dev_err(dev->dev, "OV10635 ID mismatch (0x%04x)\n",
+> -			ret);
+> +	if (i == OV10635_PID_TIMEOUT) {
+> +		dev_err(dev->dev, "OV10635 ID read failed (%d)\n", ret);
+>  		return -ENXIO;
+>  	}
+>  
+> 
+
