@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5C131E160
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E7231E161
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhBQVaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:30:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50870 "EHLO mail.kernel.org"
+        id S232641AbhBQVbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:31:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231717AbhBQVaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:30:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 895CB64EB3;
+        id S231740AbhBQVaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:30:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD9A464EB4;
         Wed, 17 Feb 2021 21:29:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1613597365;
-        bh=nmwK3FND9d66oaZlU2fmzMWHgXjgHroXiaXxD0PxySQ=;
+        bh=SmIYgmsUQG0n/vxAVS2m4pDj/rA3t7iUn7rbmbpTHZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XcQt66jzsyXrDOkCMjua5SPFvc0JJsID1walmxdn/n1la60i5UmOddY9vhB0jHMCM
-         zdY6ZRw7TVVPZ4FpQ3HcwFHmJV6WoXZYpUzCapA10b46od1ALSIBZg+JIpfsBOYvCX
-         R7yIiOGER/wgL9fdxZOe93FhiK/l+pJnJStqiR9v5rwQeBoJpIZWB9xVUrIkw5lYyk
-         1zwQ1i2pyEhxcgYcaeICSriCmQhymCrgvELYDqbVYNPvcYxUpg9gyS1buNSAjRDx7+
-         iQjrhqsj6hDtODDV9paa8555so9RipMvz0BNrGT7lg00Bj7iaYlqI3l3c7B16RfjKr
-         GAQhbTiuOy9VQ==
+        b=SnZBTM08LWvgZ/V3UYGCzqTMLH1ozy+2b96UDkl86740Ts39ocvMFbqPUzayqY4Gb
+         QSb7ebHoX63ZH8q186OmZpcOf+ZrF78Jl63QQDk5TV93PqgzQhNwPRmfcSf55aLBjT
+         b1vj2AgW1SUVSwM2+27dQym/AVU+SzM9PkQfdYDjnk6Iei5nrEaVEJVHmICBEg2OGW
+         zhoBT5gleeP/NfokMwEIwqn8Br5ZUJlwdJhem+Ugli0V3KBh8/gtQAEU5G/vdR8zDK
+         +1+QaYZgrFrpkvfIDbtopfk3qFQtxbUV4T9Kw9ev/9/WcAd0MdWpHPPPBTaeYhn16j
+         7NiWr5Zggo8UQ==
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org
 Cc:     kernel-team@fb.com, john.stultz@linaro.org, tglx@linutronix.de,
         sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
         maz@kernel.org, ak@linux.intel.com, clm@fb.com,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH clocksource 3/5] clocksource: Check per-CPU clock synchronization when marked unstable
-Date:   Wed, 17 Feb 2021 13:29:21 -0800
-Message-Id: <20210217212923.21418-3-paulmck@kernel.org>
+Subject: [PATCH clocksource 4/5] clocksource: Provide a module parameter to fuzz per-CPU clock checking
+Date:   Wed, 17 Feb 2021 13:29:22 -0800
+Message-Id: <20210217212923.21418-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210217212814.GA14952@paulmck-ThinkPad-P72>
 References: <20210217212814.GA14952@paulmck-ThinkPad-P72>
@@ -41,19 +41,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Some sorts of per-CPU clock sources have a history of going out of
-synchronization with each other.  However, this problem has purportedy
-been solved in the past ten years.  Except that it is all too possible
-that the problem has instead simply been made less likely, which might
-mean that some of the occasional "Marking clocksource 'tsc' as unstable"
-messages might be due to desynchronization.  How would anyone know?
-
-This commit therefore adds CPU-to-CPU synchronization checking
-for newly unstable clocksource that are marked with the new
-CLOCK_SOURCE_VERIFY_PERCPU flag.  Lists of desynchronized CPUs are
-printed, with the caveat that if it is the reporting CPU that is itself
-desynchronized, it will appear that all the other clocks are wrong.
-Just like in real life.
+Code that checks for clock desynchronization must itself be tested, so
+this commit creates a new clocksource.inject_delay_shift_percpu= kernel
+boot parameter that adds or subtracts a large value from the check read,
+using the specified bit of the CPU ID to determine whether to add or
+to subtract.
 
 Cc: John Stultz <john.stultz@linaro.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -63,146 +55,69 @@ Cc: Mark Rutland <Mark.Rutland@arm.com>
 Cc: Marc Zyngier <maz@kernel.org>
 Cc: Andi Kleen <ak@linux.intel.com>
 Reported-by: Chris Mason <clm@fb.com>
-[ paulmck: Add "static" to clocksource_verify_one_cpu() per kernel test robot feedback. ]
+[ paulmck: Apply Randy Dunlap feedback. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- arch/x86/kernel/kvmclock.c  |  2 +-
- arch/x86/kernel/tsc.c       |  3 +-
- include/linux/clocksource.h |  2 +-
- kernel/time/clocksource.c   | 73 +++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 77 insertions(+), 3 deletions(-)
+ Documentation/admin-guide/kernel-parameters.txt | 16 ++++++++++++++++
+ kernel/time/clocksource.c                       | 10 +++++++++-
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index aa59374..337bb2c 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -169,7 +169,7 @@ struct clocksource kvm_clock = {
- 	.read	= kvm_clock_get_cycles,
- 	.rating	= 400,
- 	.mask	= CLOCKSOURCE_MASK(64),
--	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
-+	.flags	= CLOCK_SOURCE_IS_CONTINUOUS | CLOCK_SOURCE_VERIFY_PERCPU,
- 	.enable	= kvm_cs_enable,
- };
- EXPORT_SYMBOL_GPL(kvm_clock);
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index f70dffc..5628917 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1151,7 +1151,8 @@ static struct clocksource clocksource_tsc = {
- 	.mask			= CLOCKSOURCE_MASK(64),
- 	.flags			= CLOCK_SOURCE_IS_CONTINUOUS |
- 				  CLOCK_SOURCE_VALID_FOR_HRES |
--				  CLOCK_SOURCE_MUST_VERIFY,
-+				  CLOCK_SOURCE_MUST_VERIFY |
-+				  CLOCK_SOURCE_VERIFY_PERCPU,
- 	.vdso_clock_mode	= VDSO_CLOCKMODE_TSC,
- 	.enable			= tsc_cs_enable,
- 	.resume			= tsc_resume,
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 86d143d..83a3ebf 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -131,7 +131,7 @@ struct clocksource {
- #define CLOCK_SOURCE_UNSTABLE			0x40
- #define CLOCK_SOURCE_SUSPEND_NONSTOP		0x80
- #define CLOCK_SOURCE_RESELECT			0x100
--
-+#define CLOCK_SOURCE_VERIFY_PERCPU		0x200
- /* simplify initialization of mask field */
- #define CLOCKSOURCE_MASK(bits) GENMASK_ULL((bits) - 1, 0)
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 9965266..628e87f 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -593,6 +593,22 @@
+ 			times the value specified for inject_delay_freq
+ 			of consecutive non-delays.
  
++	clocksource.inject_delay_shift_percpu= [KNL]
++			Clocksource delay injection partitions the CPUs
++			into two sets, one whose clocks are moved ahead
++			and the other whose clocks are moved behind.
++			This kernel parameter selects the CPU-number
++			bit that determines which of these two sets the
++			corresponding CPU is placed into.  For example,
++			setting this parameter to the value 4 will result
++			in the first set containing alternating groups
++			of 16 CPUs whose clocks are moved ahead, while
++			the second set will contain the rest of the CPUs,
++			whose clocks are moved behind.
++
++			The default value of -1 disables this type of
++			error injection.
++
+ 	clocksource.max_read_retries= [KNL]
+ 			Number of clocksource_watchdog() retries due to
+ 			external delays before the clock will be marked
 diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 3f734c6..663bc53 100644
+index 663bc53..df48416 100644
 --- a/kernel/time/clocksource.c
 +++ b/kernel/time/clocksource.c
-@@ -211,6 +211,78 @@ static void clocksource_watchdog_inject_delay(void)
- 	WARN_ON_ONCE(injectfail < 0);
+@@ -190,6 +190,8 @@ static int inject_delay_freq;
+ module_param(inject_delay_freq, int, 0644);
+ static int inject_delay_run = 1;
+ module_param(inject_delay_run, int, 0644);
++static int inject_delay_shift_percpu = -1;
++module_param(inject_delay_shift_percpu, int, 0644);
+ static int max_read_retries = 3;
+ module_param(max_read_retries, int, 0644);
+ 
+@@ -219,8 +221,14 @@ static cpumask_t cpus_behind;
+ static void clocksource_verify_one_cpu(void *csin)
+ {
+ 	struct clocksource *cs = (struct clocksource *)csin;
++	s64 delta = 0;
++	int sign;
+ 
+-	__this_cpu_write(csnow_mid, cs->read(cs));
++	if (inject_delay_shift_percpu >= 0) {
++		sign = ((smp_processor_id() >> inject_delay_shift_percpu) & 0x1) * 2 - 1;
++		delta = sign * NSEC_PER_SEC;
++	}
++	__this_cpu_write(csnow_mid, cs->read(cs) + delta);
  }
  
-+static struct clocksource *clocksource_verify_work_cs;
-+static DEFINE_PER_CPU(u64, csnow_mid);
-+static cpumask_t cpus_ahead;
-+static cpumask_t cpus_behind;
-+
-+static void clocksource_verify_one_cpu(void *csin)
-+{
-+	struct clocksource *cs = (struct clocksource *)csin;
-+
-+	__this_cpu_write(csnow_mid, cs->read(cs));
-+}
-+
-+static void clocksource_verify_percpu_wq(struct work_struct *unused)
-+{
-+	int cpu;
-+	struct clocksource *cs;
-+	int64_t cs_nsec;
-+	u64 csnow_begin;
-+	u64 csnow_end;
-+	u64 delta;
-+
-+	cs = smp_load_acquire(&clocksource_verify_work_cs); // pairs with release
-+	if (WARN_ON_ONCE(!cs))
-+		return;
-+	pr_warn("Checking clocksource %s synchronization from CPU %d.\n",
-+		cs->name, smp_processor_id());
-+	cpumask_clear(&cpus_ahead);
-+	cpumask_clear(&cpus_behind);
-+	csnow_begin = cs->read(cs);
-+	smp_call_function(clocksource_verify_one_cpu, cs, 1);
-+	csnow_end = cs->read(cs);
-+	for_each_online_cpu(cpu) {
-+		if (cpu == smp_processor_id())
-+			continue;
-+		delta = (per_cpu(csnow_mid, cpu) - csnow_begin) & cs->mask;
-+		if ((s64)delta < 0)
-+			cpumask_set_cpu(cpu, &cpus_behind);
-+		delta = (csnow_end - per_cpu(csnow_mid, cpu)) & cs->mask;
-+		if ((s64)delta < 0)
-+			cpumask_set_cpu(cpu, &cpus_ahead);
-+	}
-+	if (!cpumask_empty(&cpus_ahead))
-+		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
-+			cpumask_pr_args(&cpus_ahead),
-+			smp_processor_id(), cs->name);
-+	if (!cpumask_empty(&cpus_behind))
-+		pr_warn("        CPUs %*pbl behind CPU %d for clocksource %s.\n",
-+			cpumask_pr_args(&cpus_behind),
-+			smp_processor_id(), cs->name);
-+	if (!cpumask_empty(&cpus_ahead) || !cpumask_empty(&cpus_behind)) {
-+		delta = clocksource_delta(csnow_end, csnow_begin, cs->mask);
-+		cs_nsec = clocksource_cyc2ns(delta, cs->mult, cs->shift);
-+		pr_warn("        CPU %d duration %lldns for clocksource %s.\n",
-+			smp_processor_id(), cs_nsec, cs->name);
-+	}
-+	smp_store_release(&clocksource_verify_work_cs, NULL); // pairs with acquire.
-+}
-+
-+static DECLARE_WORK(clocksource_verify_work, clocksource_verify_percpu_wq);
-+
-+static void clocksource_verify_percpu(struct clocksource *cs)
-+{
-+	if (!(cs->flags & CLOCK_SOURCE_VERIFY_PERCPU))
-+		return;
-+	if (smp_load_acquire(&clocksource_verify_work_cs)) { // pairs with release.
-+		pr_warn("Previous clocksource synchronization still in flight.\n");
-+		return;
-+	}
-+	smp_store_release(&clocksource_verify_work_cs, cs); //pairs with acquire.
-+	queue_work(system_highpri_wq, &clocksource_verify_work);
-+}
-+
- static void clocksource_watchdog(struct timer_list *unused)
- {
- 	struct clocksource *cs;
-@@ -284,6 +356,7 @@ static void clocksource_watchdog(struct timer_list *unused)
- 				watchdog->name, wdnow, wdlast, watchdog->mask);
- 			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
- 				cs->name, csnow, cslast, cs->mask);
-+			clocksource_verify_percpu(cs);
- 			__clocksource_unstable(cs);
- 			continue;
- 		}
+ static void clocksource_verify_percpu_wq(struct work_struct *unused)
 -- 
 2.9.5
 
