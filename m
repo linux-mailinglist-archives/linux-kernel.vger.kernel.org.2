@@ -2,107 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F9431E19B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FA831E15E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232791AbhBQVp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:45:26 -0500
-Received: from mga14.intel.com ([192.55.52.115]:37244 "EHLO mga14.intel.com"
+        id S231899AbhBQVaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:30:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231933AbhBQVo5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:44:57 -0500
-IronPort-SDR: Uek8OnRX3Wosq9yzC5fgEvZLbBTlDivE6tg7JJB9nUIime4RVTVlGpLfdM9opLU/sUlWIDrtRC
- wmlRUzTEPtOQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="182538765"
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
-   d="scan'208";a="182538765"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 13:41:57 -0800
-IronPort-SDR: fyXWGY+qTbQbuVmeCtCGViaNOmO5KLB9GCktnf6sqEPS4OOLdfqg8pm8qyxyXHVzxofdAq+crC
- i8lmAP2b6Ivw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
-   d="scan'208";a="401430721"
-Received: from skl-02.jf.intel.com ([10.54.74.28])
-  by orsmga007.jf.intel.com with ESMTP; 17 Feb 2021 13:41:57 -0800
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Date:   Wed, 17 Feb 2021 12:41:36 -0800
-Message-Id: <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1613584277.git.tim.c.chen@linux.intel.com>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231682AbhBQVaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:30:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EAD5F64E58;
+        Wed, 17 Feb 2021 21:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613597365;
+        bh=OMYq0f6qxgt+9hjRJqovDDecx5pQZzpUZSFpyMbZCgc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=vJclYT+caoffbA0ecIiImcQD7iepsQxA5UlAcnGv6kG53IDUXxNnOGDV4RHM6Rv1j
+         MLbY5s+V+oBGpnN3/zZusAK1h5Kl/WfY9PWxQu70S4qdVXDHeI26Cf7j8s1NtwDJfA
+         R7vb+rz6znHXTViwd+c2JYow/X6/g1TgkVsky3D+XFg6d9lQBaYVvXfbbMnggBcYjo
+         wCUlfPWTDmmKjc6UiWXlimwBqbEUX6nzjO23g9QdoPrjFrfuN0GmONqrHNhWMVGm5x
+         pmshslamnD2kJSEDeECMW+0zr327jiCWds83ADekF5j80b+viTSCFC/HJy6kOoeLtu
+         85x/i4GbscIaQ==
+From:   paulmck@kernel.org
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@fb.com, john.stultz@linaro.org, tglx@linutronix.de,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, ak@linux.intel.com, clm@fb.com,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH clocksource 1/5] clocksource: Provide module parameters to inject delays in watchdog
+Date:   Wed, 17 Feb 2021 13:29:19 -0800
+Message-Id: <20210217212923.21418-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210217212814.GA14952@paulmck-ThinkPad-P72>
+References: <20210217212814.GA14952@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On a per node basis, the mem cgroup soft limit tree on each node tracks
-how much a cgroup has exceeded its soft limit memory limit and sorts
-the cgroup by its excess usage.  On page release, the trees are not
-updated right away, until we have gathered a batch of pages belonging to
-the same cgroup. This reduces the frequency of updating the soft limit tree
-and locking of the tree and associated cgroup.
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-However, the batch of pages could contain pages from multiple nodes but
-only the soft limit tree from one node would get updated.  Change the
-logic so that we update the tree in batch of pages, with each batch of
-pages all in the same mem cgroup and memory node.  An update is issued for
-the batch of pages of a node collected till now whenever we encounter
-a page belonging to a different node.  Note that this batching for
-the same node logic is only relevant for v1 cgroup that has a memory
-soft limit.
+When the clocksource watchdog marks a clock as unstable, this might be due
+to that clock being unstable or it might be due to delays that happen to
+occur between the reads of the two clocks.  Yes, interrupts are disabled
+across those two reads, but there are no shortage of things that can
+delay interrupts-disabled regions of code ranging from SMI handlers to
+vCPU preemption.  It would be good to have some indication as to why
+the clock was marked unstable.
 
-Reviewed-by: Ying Huang <ying.huang@intel.com>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+The first step is a way of injecting such delays, and this
+commit therefore provides a clocksource.inject_delay_freq and
+clocksource.inject_delay_run kernel boot parameters that specify that
+sufficient delay be injected to cause the clocksource_watchdog()
+function to mark a clock unstable.  This delay is injected every
+Nth set of M calls to clocksource_watchdog(), where N is the value
+specified for the inject_delay_freq boot parameter and M is the value
+specified for the inject_delay_run boot parameter.  Values of zero or
+less for either parameter disable delay injection, and the default for
+clocksource.inject_delay_freq is zero, that is, disabled.  The default for
+clocksource.inject_delay_run is the value one, that is single-call runs.
+
+This facility is intended for diagnostic use only, and should be avoided
+on production systems.
+
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Mark Rutland <Mark.Rutland@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+[ paulmck: Apply Rik van Riel feedback. ]
+Reported-by: Chris Mason <clm@fb.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- mm/memcontrol.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/kernel-parameters.txt | 22 ++++++++++++++++++++
+ kernel/time/clocksource.c                       | 27 +++++++++++++++++++++++++
+ 2 files changed, 49 insertions(+)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d72449eeb85a..8bddee75f5cb 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6804,6 +6804,7 @@ struct uncharge_gather {
- 	unsigned long pgpgout;
- 	unsigned long nr_kmem;
- 	struct page *dummy_page;
-+	int nid;
- };
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a10b545..9965266 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -577,6 +577,28 @@
+ 			loops can be debugged more effectively on production
+ 			systems.
  
- static inline void uncharge_gather_clear(struct uncharge_gather *ug)
-@@ -6849,7 +6850,13 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
- 	 * exclusive access to the page.
- 	 */
++	clocksource.inject_delay_freq= [KNL]
++			Number of runs of calls to clocksource_watchdog()
++			before delays are injected between reads from the
++			two clocksources.  Values less than or equal to
++			zero disable this delay injection.  These delays
++			can cause clocks to be marked unstable, so use
++			of this parameter should therefore be avoided on
++			production systems.  Defaults to zero (disabled).
++
++	clocksource.inject_delay_run= [KNL]
++			Run lengths of clocksource_watchdog() delay
++			injections.  Specifying the value 8 will result
++			in eight consecutive delays followed by eight
++			times the value specified for inject_delay_freq
++			of consecutive non-delays.
++
++	clocksource.max_read_retries= [KNL]
++			Number of clocksource_watchdog() retries due to
++			external delays before the clock will be marked
++			unstable.  Defaults to three retries, that is,
++			four attempts to read the clock under test.
++
+ 	clearcpuid=BITNUM[,BITNUM...] [X86]
+ 			Disable CPUID feature X for the kernel. See
+ 			arch/x86/include/asm/cpufeatures.h for the valid bit
+diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
+index cce484a..4be4391 100644
+--- a/kernel/time/clocksource.c
++++ b/kernel/time/clocksource.c
+@@ -14,6 +14,7 @@
+ #include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
+ #include <linux/tick.h>
+ #include <linux/kthread.h>
++#include <linux/delay.h>
  
--	if (ug->memcg != page_memcg(page)) {
-+	if (ug->memcg != page_memcg(page) ||
-+	    /*
-+	     * Update soft limit tree used in v1 cgroup in page batch for
-+	     * the same node. Relevant only to v1 cgroup with a soft limit.
-+	     */
-+	    (ug->dummy_page && ug->nid != page_to_nid(page) &&
-+	     ug->memcg->soft_limit != PAGE_COUNTER_MAX)) {
- 		if (ug->memcg) {
- 			uncharge_batch(ug);
- 			uncharge_gather_clear(ug);
-@@ -6869,6 +6876,7 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
- 		ug->pgpgout++;
- 
- 	ug->dummy_page = page;
-+	ug->nid = page_to_nid(page);
- 	page->memcg_data = 0;
- 	css_put(&ug->memcg->css);
+ #include "tick-internal.h"
+ #include "timekeeping_internal.h"
+@@ -184,6 +185,31 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 	spin_unlock_irqrestore(&watchdog_lock, flags);
  }
+ 
++static int inject_delay_freq;
++module_param(inject_delay_freq, int, 0644);
++static int inject_delay_run = 1;
++module_param(inject_delay_run, int, 0644);
++static int max_read_retries = 3;
++module_param(max_read_retries, int, 0644);
++
++static void clocksource_watchdog_inject_delay(void)
++{
++	int i;
++	static int injectfail = -1;
++
++	if (inject_delay_freq <= 0 || inject_delay_run <= 0)
++		return;
++	if (injectfail < 0 || injectfail > INT_MAX / 2)
++		injectfail = inject_delay_run;
++	if (!(++injectfail / inject_delay_run % inject_delay_freq)) {
++		pr_warn("%s(): Injecting delay.\n", __func__);
++		for (i = 0; i < 2 * WATCHDOG_THRESHOLD / NSEC_PER_MSEC; i++)
++			udelay(1000);
++		pr_warn("%s(): Done injecting delay.\n", __func__);
++	}
++	WARN_ON_ONCE(injectfail < 0);
++}
++
+ static void clocksource_watchdog(struct timer_list *unused)
+ {
+ 	struct clocksource *cs;
+@@ -208,6 +234,7 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 
+ 		local_irq_disable();
+ 		csnow = cs->read(cs);
++		clocksource_watchdog_inject_delay();
+ 		wdnow = watchdog->read(watchdog);
+ 		local_irq_enable();
+ 
 -- 
-2.20.1
+2.9.5
 
