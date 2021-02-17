@@ -2,140 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E563431D513
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A85431D51F
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbhBQFfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 00:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbhBQFeH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 00:34:07 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F8AC061574;
-        Tue, 16 Feb 2021 21:33:26 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id r77so11737145qka.12;
-        Tue, 16 Feb 2021 21:33:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G7oEC+eTJ+ELbOjqhGFXJgcF60fpnjm1ejAxDJwpCHM=;
-        b=WlMKZ5hlrfOmRvznzBxnUU/mks2XIk1591CeNiGAyG5zeL4WBNFsz38hwwMfPeMXPY
-         5JRNxB0k/Ox1Zso50f3VM9y+vARWP5F4fOTPwrlwt2BWJbu0+g4exxzS35XBvdCOxLu0
-         b2H9Djtf6SVxN25cyTlbxSwYSHZnEh7Lz/jbKp+OaJMdj3R9x2pDzgBzv5xHN/sERL6R
-         mxZl8PlZMqTg6rWiJIEMp3aTwkfZfweUU7BP3DPUryupczW8vt/FjJRwTj6bkYfz8zoq
-         84p6jtMxlaO5WzIvanBIE+JBp2EXZ0lQzie44wsVXHGOd1SXzIjG0E2m0Ek0lp+TQooo
-         ES2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G7oEC+eTJ+ELbOjqhGFXJgcF60fpnjm1ejAxDJwpCHM=;
-        b=eiPT8Imn6QCnf5O05yJu5OdJYKrOwSfQd1n1qV4Xed8d8kQXYZk8NTBjw+erFLj+MS
-         EyyxMiNYbgS5nqSfqp5TPo159rS6uUwW9DQK3+48pq7QfaQDefo6nnR6kk/ENIfR8nZj
-         w0SlUtsaOlblEbOgog7tk30bZWY8KTNMp4si4euvwLJHJ+m+tDjfw+p35BZ1OvZOesdT
-         TEjCs3NasdrbYmJQ3vd7ygQrkTjgrrQu+8dK/KyZ8inpPQFFRv6T4VDSAIDuIWmpdnl3
-         W33qpKLK1fH79MkB6SCvNMKa9RFi0Cb+hA6iBfxP1Kydz2ub07bqepCwVcGF0WAMYRoC
-         urjA==
-X-Gm-Message-State: AOAM533YS4zbpSQOaLAh12mSmTB1EN5eBise9kZlLREEB4Pou7YuXkm7
-        xEgU7XTi4G1ugWMe0qpzybs=
-X-Google-Smtp-Source: ABdhPJxydVvaF0xz2a74Yr+1br9CohCN1SxZFBEJ6l+F7HF64UE3c6NLI+FJbN1HKUCcJEncTGjlPg==
-X-Received: by 2002:ae9:f309:: with SMTP id p9mr19189000qkg.111.1613540005565;
-        Tue, 16 Feb 2021 21:33:25 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id s14sm535960qtq.97.2021.02.16.21.33.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Feb 2021 21:33:25 -0800 (PST)
-Subject: Re: DT overlay applied via pinctrl description
-To:     Michal Simek <michal.simek@xilinx.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Sai Krishna Potthuri <lakshmi.sai.krishna.potthuri@xilinx.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-References: <63d610ba-5f63-2be1-6215-f44bd88d94d2@xilinx.com>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <929190e9-1195-4381-ae18-b71d17444569@gmail.com>
-Date:   Tue, 16 Feb 2021 23:33:23 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230526AbhBQFkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 00:40:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229885AbhBQFj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 00:39:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B710264DEC;
+        Wed, 17 Feb 2021 05:39:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613540358;
+        bh=NbAmmaGQmfZWMm1BXQVzI0umy9Eh1JXd1YaKOjPeNhw=;
+        h=In-Reply-To:References:From:Date:Subject:To:Cc:From;
+        b=GCxQmX2RiMPgd1bkNN4owBaeyRM8OYxDSUvIVLmDWut06EtLz3Tax0o+epduqmLwl
+         BhPjd4I08C8usQuaBrmlUNRajWg2o7qTViC65mQ+AErin5T1L3g+Zuq3lTR53U7zbO
+         RflmF9l99/h/lGYsrpsTdndX5aRFHPJY3iQCRM1uTiy5BDnomV2ZSTlEms31yB+3X3
+         BU2rqDvtDz8/5n9LLS00gQHhzQQ+UTjDb1uXuvO4UDlsZUxOZ+PT47O/4BRKCZ+slw
+         OngllKYCi2jRz9Ij6DO9Nlpl0FNGzSco0fjN7aVmKo1OYTTqAfoBqkqZVk8k5OU3ob
+         UiBST3BO7+t5w==
+Received: by mail-ot1-f52.google.com with SMTP id c16so11120625otp.0;
+        Tue, 16 Feb 2021 21:39:18 -0800 (PST)
+X-Gm-Message-State: AOAM530mN2htvZttjGLEU1yS1uhVU4sU8a4tF73NSe4wfyXZ35K+ILJ4
+        FeWyl+kbNydS1p/GPlJdmF9IGvnj82x5kRUYiRM=
+X-Google-Smtp-Source: ABdhPJwDq71zLUcnG1gLUuvuBxrgIhyJajYbuwWxi3suqIL2IrLuCHbyuuIb8Ergaz3UxGo+TUbG/gYQ08y47/4TTtE=
+X-Received: by 2002:a05:6830:1146:: with SMTP id x6mr12150898otq.120.1613540358062;
+ Tue, 16 Feb 2021 21:39:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <63d610ba-5f63-2be1-6215-f44bd88d94d2@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ac9:13e5:0:0:0:0:0 with HTTP; Tue, 16 Feb 2021 21:39:17
+ -0800 (PST)
+In-Reply-To: <78a7f3ec-f5c2-071a-506c-b19b21b9b04c@gmail.com>
+References: <20210216223306.47693-1-hyeongseok@gmail.com> <20210216223306.47693-2-hyeongseok@gmail.com>
+ <BYAPR04MB4965E7E1A47A3EF603A3E34C86879@BYAPR04MB4965.namprd04.prod.outlook.com>
+ <c186df93-a6b8-2cd5-8710-077382574b83@gmail.com> <BYAPR04MB4965E80E52DA1E8D90F4736886869@BYAPR04MB4965.namprd04.prod.outlook.com>
+ <78a7f3ec-f5c2-071a-506c-b19b21b9b04c@gmail.com>
+From:   Namjae Jeon <linkinjeon@kernel.org>
+Date:   Wed, 17 Feb 2021 14:39:17 +0900
+X-Gmail-Original-Message-ID: <CAKYAXd9=NwCpFJ7NczFBF1diFV3mLpL2Sz7UQP-Pg78zaFtBnA@mail.gmail.com>
+Message-ID: <CAKYAXd9=NwCpFJ7NczFBF1diFV3mLpL2Sz7UQP-Pg78zaFtBnA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] exfat: add initial ioctl function
+To:     Hyeongseok Kim <hyeongseok@gmail.com>
+Cc:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "namjae.jeon@samsung.com" <namjae.jeon@samsung.com>,
+        "sj1557.seo@samsung.com" <sj1557.seo@samsung.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Frank, Rob, devicetree list
-
-On 2/16/21 9:35 AM, Michal Simek wrote:
-> Hi,
-> 
-> I have a question about expectations when pinctrl setting is applied. In
-> DTS all nodes are described in the order available in DT.
-> 
-> uart-default {
-> 	mux {
-> 		...
-> 	};
-> 
-> 	conf {
-> 		...
-> 	};
-> };
-> 
-> I don't know if this standard description or not. I definitely see other
-> pinctrl drivers which are using different structure.
-> 
-> Anyway when overlay is applied the order has changed to
-> uart-default {
-> 	conf {
-> 		...
-> 	};
-> 
-> 	mux {
-> 		...
-> 	};
-> };
-> 
-> which is causing issue because pin is configured first via conf node
-> before it is requested via mux. This is something what firmware is
-> checking and error out.
-> 
-> That's why I want to check with you if this is issue with DT binding
-> description we use in zynqmp pinctrl driver posted here
-> https://lore.kernel.org/linux-arm-kernel/1613131643-60062-1-git-send-email-lakshmi.sai.krishna.potthuri@xilinx.com/
-> 
-> I have also tried to use init and default configuration where init is
-> called just with mux setting and then default is called just with config
-> but the issue is there as well because in pinctrl_commit_state()
-> previous state is checked and for MUXes pinmux_disable_setting() is
-> called which release a pin. And then configuration in default is called
-> but without requesting pin which fails for the same reason as above.
-> 
-> That's why my questions are:
-> Are we using incorrect DT description?
-> And is there a need sort subnodes in a way that mux should be called
-> first by core before configuration?
-> Or is there any different way how to do it?
-
-Node ordering and property ordering within a node are not defined
-in the Linux kernel.  If a subsystem or property is depending upon
-a certain order, they must implement a method other than the
-order as accessed by of_* functions.  And as you noted, use of an
-overlay may also change ordering.
-
--Frank
-
-> 
-> Thanks,
-> Michal
-> 
-
+2021-02-17 9:33 GMT+09:00, Hyeongseok Kim <hyeongseok@gmail.com>:
+> On 2/17/21 9:17 AM, Chaitanya Kulkarni wrote:
+>> On 2/16/21 16:13, Hyeongseok Kim wrote:
+>>> Sorry, I don't understand exactly.
+>>> You're saying that these 2 patch should be merged to a single patch?
+>>> Would it be better?
+>> I think so unless there is a specific reason for this to keep it
+>> isolated.
+>>
+> The reason was just that I think it seems better to seperate ioctl
+> initializing and adding specific ioctl functionality.
+> Anyway, I got it.
+>
+> Namjae,
+Hi Hyeongseok,
+> Do you have any other opinion about this?
+I also think this patch should be combined with the 2/2 patch.
+> If you agree, I'll merge these as one.
+Yep, Agreed. Please do that:)
+Thanks!
+>
+>
