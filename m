@@ -2,115 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7543631DEDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6376831DEE0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhBQSKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:10:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232480AbhBQSKm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:10:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 245E664DEC
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 18:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613585401;
-        bh=L1OIdISDMiKRSiSWhaILOTGeRPn9DN0OB9U34bRhQek=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tmjHATDWxlVbs//lCjmhXz0QNI7+Gw1Xbz5+af5khjJyi1muOTUw92d/TN1UtGt2+
-         1Z/+ybuCpbO2EuU6sV6G2o8r0rOKaIMJnntjfXGRivIE+IA4mvYi4YbzoyMI7hDer/
-         W+sMpeU/DLDaMfSZAZqoR6H7pmny3c26/AsJDPnaPUqaignJNnOMxixNqBG5+/ifts
-         CzF4JzxfYfG65uKYzuVz7Hvgsk6W8mumOCseKs0S+r2vq7S9vppmiuoK4a5bGMEgTe
-         g0nDVaEOni97kwzYuN4Nci8afgF/Ru1s3VKUKUEVwa0DQWACmxa4F/Mwiofk9/5hLe
-         afBfHjtP+JZig==
-Received: by mail-ed1-f42.google.com with SMTP id z22so17629454edb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:10:01 -0800 (PST)
-X-Gm-Message-State: AOAM533hjJNwQmKODeQEh9kPXgXkB5hSKYK4uPt8TC6a1MrNSIjcZA7g
-        Ua1aYqujNz7V8WpaYBkSjNXJHW1w4vlNfgifHz6UcQ==
-X-Google-Smtp-Source: ABdhPJzwArcpxgytNfc42oZjlVBrqCPpsnJwfz+6zR5LkK02Ldu1E4mXTepd7vnfdobtpuRYckLoG8BqletPssvhb9Y=
-X-Received: by 2002:a17:906:b356:: with SMTP id cd22mr175224ejb.253.1613585399128;
- Wed, 17 Feb 2021 10:09:59 -0800 (PST)
+        id S233225AbhBQSLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:11:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233173AbhBQSKs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:10:48 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0F6C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:10:06 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id z15so8927569pfc.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:10:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=smbTqrlF1OKSavBRXV32uMxPnySvhK57w5+UGPsp0pE=;
+        b=iCYp/wqQbf0lAfQyTZJC4Tpp4Uoo/e/ftBURBj65dQOsffIX9A1/b29tDwiSxSpBlV
+         uA5Qh2XiSPPTGWSz7QgjlDHn3w/7JafCOT5gAuz+u6HdeazOqx9XKYdQBzbMYtJXHz2+
+         SR/ZodXHJEavXSysanbYLuEjS3DAsXNNHRhDCAhIoSg5cWeZmOmsqnmXwG2pzTng4+Uo
+         M5MVQFkY3Ex62HWjYGrWQwEWeKCerW3u6q1GXH86KIsgfL7RA+9geTesbdc4X04W7UJB
+         v3YGiQcgCn2Bgc4iKiyxf/N+uiZb+Qh2IBkE3SGbafsnd0iVahhD8fb9IZyttfoO8CtU
+         nYMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=smbTqrlF1OKSavBRXV32uMxPnySvhK57w5+UGPsp0pE=;
+        b=ttpg7xTjk5a0pYrg7X6TvsbDoawlBYvu0/WbLvmwlGbv824J5jMhHdIWBfcaDEMCSl
+         GBRJmKc/mBIDBcs4iVX/tpeGg9FfxMbTige604BSw9wEAshxjTaWcCyHFYOn3svgRX6j
+         lLMyFRY8Yt68dkJhkUlF7hHz8uGnMFhqcO0OdtHuIjJ7F3WGobxNwQQIIgwM4ZMlMOvZ
+         14gAWl840QsjtVR0YQrwBy4qAS5j5Q8NmEYdUO+IZ017Cb3/tXfWFcJkGFStFUUCFrax
+         wpQjN4FFDLcuwfAFZqQ//uOByu36CRRystXzRNVEooD6fPAA23asuVjsT5CHCNGzPkpp
+         Sx8g==
+X-Gm-Message-State: AOAM532zwgl7VG9eKe7PFDomGwEJ+bhjA16x9dpIDb4tAOmhWYfdiU3j
+        EUt24BGMOWzNLQeEy0reJgWXOJ6drBMb8w==
+X-Google-Smtp-Source: ABdhPJwJXdQeytcmBSrD7wMQDbQj12GCNRhhCvIy+S3PRCufhtd2+luzJUoIFOfzC05AV7KPMSVJOg==
+X-Received: by 2002:a05:6a00:15d2:b029:1b7:30c1:8495 with SMTP id o18-20020a056a0015d2b02901b730c18495mr563274pfu.32.1613585405906;
+        Wed, 17 Feb 2021 10:10:05 -0800 (PST)
+Received: from atulu-ubuntu ([106.200.12.170])
+        by smtp.gmail.com with ESMTPSA id 202sm3062101pfv.89.2021.02.17.10.10.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 10:10:05 -0800 (PST)
+Date:   Wed, 17 Feb 2021 23:40:00 +0530
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
+Message-ID: <20210217181000.GB10124@atulu-ubuntu>
+References: <20210217165907.9777-1-atulgopinathan@gmail.com>
+ <YC1T06VCh0K2BBW5@kroah.com>
 MIME-Version: 1.0
-References: <20210217120143.6106-1-joro@8bytes.org> <20210217120143.6106-3-joro@8bytes.org>
-In-Reply-To: <20210217120143.6106-3-joro@8bytes.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 17 Feb 2021 10:09:46 -0800
-X-Gmail-Original-Message-ID: <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
-Message-ID: <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] x86/sev-es: Check if regs->sp is trusted before
- adjusting #VC IST stack
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     X86 ML <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC1T06VCh0K2BBW5@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 4:02 AM Joerg Roedel <joro@8bytes.org> wrote:
->
-> From: Joerg Roedel <jroedel@suse.de>
->
-> The code in the NMI handler to adjust the #VC handler IST stack is
-> needed in case an NMI hits when the #VC handler is still using its IST
-> stack.
-> But the check for this condition also needs to look if the regs->sp
-> value is trusted, meaning it was not set by user-space. Extend the
-> check to not use regs->sp when the NMI interrupted user-space code or
-> the SYSCALL gap.
->
-> Reported-by: Andy Lutomirski <luto@kernel.org>
-> Fixes: 315562c9af3d5 ("x86/sev-es: Adjust #VC IST Stack on entering NMI handler")
-> Cc: stable@vger.kernel.org # 5.10+
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/kernel/sev-es.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-> index 84c1821819af..0df38b185d53 100644
-> --- a/arch/x86/kernel/sev-es.c
-> +++ b/arch/x86/kernel/sev-es.c
-> @@ -144,7 +144,9 @@ void noinstr __sev_es_ist_enter(struct pt_regs *regs)
->         old_ist = __this_cpu_read(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC]);
->
->         /* Make room on the IST stack */
-> -       if (on_vc_stack(regs->sp))
-> +       if (on_vc_stack(regs->sp) &&
-> +           !user_mode(regs) &&
-> +           !from_syscall_gap(regs))
->                 new_ist = ALIGN_DOWN(regs->sp, 8) - sizeof(old_ist);
->         else
->
+On Wed, Feb 17, 2021 at 06:35:15PM +0100, Greg KH wrote:
+> On Wed, Feb 17, 2021 at 10:29:08PM +0530, Atul Gopinathan wrote:
+> > Resolve the following warning generated by sparse:
+> > 
+> > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
+> > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
+> > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
+> > 
+> > compat_ptr() has a return type of "void __user *"
+> > as defined in "include/linux/compat.h"
+> > 
+> > cmd->chanlist is of type "unsigned int *" as defined
+> > in drivers/staging/comedi/comedi.h" in struct
+> > comedi_cmd.
+> > 
+> > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> > ---
+> >  drivers/staging/comedi/comedi_fops.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> > index e85a99b68f31..fc4ec38012b4 100644
+> > --- a/drivers/staging/comedi/comedi_fops.c
+> > +++ b/drivers/staging/comedi/comedi_fops.c
+> > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+> >  	cmd->scan_end_arg = v32.scan_end_arg;
+> >  	cmd->stop_src = v32.stop_src;
+> >  	cmd->stop_arg = v32.stop_arg;
+> > -	cmd->chanlist = compat_ptr(v32.chanlist);
+> > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+> 
+> __force?  That feels wrong, something is odd if that is ever needed.
+> 
+> Are you _sure_ this is correct?
 
-Can you get rid of the linked list hack while you're at it?  This code
-is unnecessarily convoluted right now, and it seems to be just asking
-for weird bugs.  Just stash the old value in a local variable, please.
+The same file has instances of "(usigned int __force *)" cast being
+used on the same "cmd->chanlist". For reference:
 
-Meanwhile, I'm pretty sure I can break this whole scheme if the
-hypervisor is messing with us.  As a trivial example, the sequence
-SYSCALL gap -> #VC -> NMI -> #VC will go quite poorly.  Is this really
-better than just turning IST off for #VC and documenting that we are
-not secure against a malicious hypervisor yet?
+At line 1797 of comedi_fops.c:
+1796                 /* restore chanlist pointer before copying back */
+1797                 cmd->chanlist = (unsigned int __force *)user_chanlist;
+1798                 cmd->data = NULL;
 
---Andy
+At line 1880:
+1879         /* restore chanlist pointer before copying back */
+1880         cmd->chanlist = (unsigned int __force *)user_chanlist;
+1881         *copy = true;
+
+Here "user_chanlist" is of type "unsigned int __user *".
+
+
+Or perhaps, I shouldn't be relying on them?
+
+Thanks!
+Atul
