@@ -2,83 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8A0531D384
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EB031D387
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 02:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhBQBEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 20:04:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46340 "EHLO
+        id S231274AbhBQBHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 20:07:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhBQBEJ (ORCPT
+        with ESMTP id S230292AbhBQBHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 20:04:09 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D2FDC06174A
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 17:03:28 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id u143so7327063pfc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 17:03:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qtwKaBiuPYUvz0xWl8m1S45ms1wew6GiKaYyXPstShY=;
-        b=hR+6zsrZvmQI1jiLm98fGBSwoksg+qAfy20KAE1ORvWET6C9nkuhCS8n4UTgOAZKkv
-         QObyw5pSdj33watWVnWiNP07EWbdZc74aX3ehGOZmjNbuJztbzqGFDJ06jB74mjrQ/pw
-         GwWTJssT9ffcLgU021QHckdCmh/VNAyERhwRqiHu/8cN8bn6eYhGi6ba7zj1drC7Ohsl
-         N/NZROd+s7fujzMa4Y/UxFsjQvwP02LO3CFyvFdXyiEVmhYr3K4QwyIWmcUIkeC7PwfT
-         /wSZgn/cMzk70byBU5oQZGLzMpyCslk3pmdvj4l6poYtvj9ILOCqPptxG9q9b97JaxDH
-         F97g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qtwKaBiuPYUvz0xWl8m1S45ms1wew6GiKaYyXPstShY=;
-        b=V6dN6UFqRAwzPorfd6pt8UooHNwXzxhGGQfA8MQ5ygmvojVitj5x+9yPTMQnPuMWKj
-         vRKRMEeFZOGxBTCcuN7UWMcAY7IjnSpn0l6B2Q/3R3tHUj0b4NW/zUB7IbQ/QA6I3Xza
-         Y+pqgqP8K5D4BibL+yyDXBXFTRd4FjWOjwFP8LqjJ/tv5Vz+SkyHF6NXLCtpUcesyaFQ
-         FIBdqOZ6u8C7IVLqU6Vsch1nmcb3jgdvcQVcwElm63TxK2GXqdOVbdE2E2xgRVOGij/J
-         DXCA0OgDgbCuc14iNvY8YqK6fRswtLdX8t3ogwPYy0RUsWkNFP6KnnP/LadW3Svs9cxI
-         OI9A==
-X-Gm-Message-State: AOAM531407B89iUI00cMjkv1mQPclTtuYrky41JWilXYt+88oh32tn8n
-        cKH1/J/8ovvt9fN97xKqN2+vQQ==
-X-Google-Smtp-Source: ABdhPJwjZFj3CFYYa4dEPkFYRXMEe77KR30ZgCJLDDPCSZBQF+i+bCpafGAOHWyio9En1S2D5oOqgg==
-X-Received: by 2002:a63:4e4c:: with SMTP id o12mr21708720pgl.143.1613523806692;
-        Tue, 16 Feb 2021 17:03:26 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:6948:259b:72c6:5517])
-        by smtp.gmail.com with ESMTPSA id v31sm308840pgl.76.2021.02.16.17.03.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 17:03:25 -0800 (PST)
-Date:   Tue, 16 Feb 2021 17:03:19 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <Ashish.Kalra@amd.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        hpa@zytor.com, rkrcmar@redhat.com, joro@8bytes.org, bp@suse.de,
-        thomas.lendacky@amd.com, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, srutherford@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Message-ID: <YCxrV4u98ZQtInOE@google.com>
-References: <cover.1612398155.git.ashish.kalra@amd.com>
- <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+        Tue, 16 Feb 2021 20:07:04 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3BCC061574;
+        Tue, 16 Feb 2021 17:06:24 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DgKRH1v58z9rx8;
+        Wed, 17 Feb 2021 12:06:18 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613523982;
+        bh=RRzkqdL37ji72TSNLKK1EnP8N9KbpqruLJNYdU6zsVg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jJ2tZ7L+0hj83UJ59qTAzTSEtxI6Bwx9eKnAmVeRGL/AtjjOefF0LZfcSqhb4EKX7
+         Fd9scFKDXRSMIkDgCdqSJ/02o/GvskpmW9cqIuoyWs7OUENBI7SyBAOsAkvtckBkOa
+         Nk5SGw8OIZMuZqUwI9xJymARrYOMr1y9bTX/pZi8Fa7DX3LSDZ0aK1Yh4K5o5+Cclc
+         QvdN2l0T8GYrTQUYlhH8FM7SQ0ka7s8AcHY2/Mf0qAs9y2zHRthyMf3o83DAlW7jVT
+         Wz8imQe82CYZHms9L64+UdQL+U3aHZxOo1xljnItheNx+tUehBaUlFd3nlwC+iCE96
+         A2nwAkq7IkyzA==
+Date:   Wed, 17 Feb 2021 12:06:17 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: linux-next: manual merge of the pm tree with the i3c tree
+Message-ID: <20210217120617.61b22e5e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+Content-Type: multipart/signed; boundary="Sig_/oi1JKT2qPaLEnZh0.EjaeV4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 04, 2021, Ashish Kalra wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
-> 
-> The ioctl is used to retrieve a guest's shared pages list.
+--Sig_/oi1JKT2qPaLEnZh0.EjaeV4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-What's the performance hit to boot time if KVM_HC_PAGE_ENC_STATUS is passed
-through to userspace?  That way, userspace could manage the set of pages in
-whatever data structure they want, and these get/set ioctls go away.
+Hi all,
 
-Also, aren't there plans for an in-guest migration helper?  If so, do we have
-any idea what that interface will look like?  E.g. if we're going to end up with
-a full fledged driver in the guest, why not bite the bullet now and bypass KVM
-entirely?
+Today's linux-next merge of the pm tree got a conflict in:
+
+  MAINTAINERS
+
+between commit:
+
+  f06a1af8e739 ("MAINTAINERS: Add Silvaco I3C master")
+
+from the i3c tree and commit:
+
+  4590d98f5a4f ("sfi: Remove framework for deprecated firmware")
+
+from the pm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc MAINTAINERS
+index fdb32f96ede9,f7ec274a3e5a..000000000000
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@@ -16221,21 -16235,6 +16218,14 @@@ S:	Maintaine
+  F:	Documentation/fb/sm712fb.rst
+  F:	drivers/video/fbdev/sm712*
+ =20
+ +SILVACO I3C DUAL-ROLE MASTER
+ +M:	Miquel Raynal <miquel.raynal@bootlin.com>
+ +M:	Conor Culhane <conor.culhane@silvaco.com>
+ +L:	linux-i3c@lists.infradead.org
+ +S:	Maintained
+ +F:	Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml
+ +F:	drivers/i3c/master/svc-i3c-master.c
+ +
+- SIMPLE FIRMWARE INTERFACE (SFI)
+- S:	Obsolete
+- W:	http://simplefirmware.org/
+- F:	arch/x86/platform/sfi/
+- F:	drivers/sfi/
+- F:	include/linux/sfi*.h
+-=20
+  SIMPLEFB FB DRIVER
+  M:	Hans de Goede <hdegoede@redhat.com>
+  L:	linux-fbdev@vger.kernel.org
+
+--Sig_/oi1JKT2qPaLEnZh0.EjaeV4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAsbAkACgkQAVBC80lX
+0GykCgf9Ej3Of3aQhseiJHFRupOw8mZOvylyWsOqtrFy46hP2HFo13MDLvgZoWts
+5RBA2+MFyMw2aZ8YQz4GEKeARtYvp6WkzSk80F0DUp5ZlkKlEEX8efTEA0AQBflF
+eucD3toocScKuGMkRJIs5NXsszqWx/LLhz63uq2uJi9ZG76cqdPF/e16zAFKumMk
+JyCc0c1rBX91F1Au8//H/XZod4unctfdbXoYETnRNQbIEUmFW7Iq0WdbcMMiOu8l
+XTX0WXeXqh6sT0z+7AwVwTmZirLSuIj2RMTjt0Fxi2uUZqq/yXhjJ1lKNA8RaU4Z
+tDTHCdm6koMo0i85j0PNo0PMScquzA==
+=dMwo
+-----END PGP SIGNATURE-----
+
+--Sig_/oi1JKT2qPaLEnZh0.EjaeV4--
