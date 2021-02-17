@@ -2,181 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD9231E310
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:37:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0865A31E319
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhBQXgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 18:36:12 -0500
-Received: from mail-dm6nam11on2101.outbound.protection.outlook.com ([40.107.223.101]:30081
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232478AbhBQXgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:36:07 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OvJ+EUCHqNuCzrK+MZfIH6eAZLWwYuKTdLa27rzZBK9i2L3Rk9/owmUyCaVRxymV8busA+t6vY5dGHpJxhWHQAlOthOKUzPKwyrtUWFjW7JOy9Xj7us/gmaXhjwieYrMkCxsuh58ATRPrSswEU7tlKSTUUGpC/K1hZ8GfDM1WwM3EUnxK5uamOEvVfBnRaoJhTnoJ7gMleh5lyNQgbvekt23r4NJdCGauNxZ4Mdr3c69dCDieb0TzEsbZG44Sgrc9TRZFC/6+I7+c2iZckgtKlZEEZEzNdv9KGkWUa734W8jv/sf+GUYNS6Gf1umpx5OjnUfjqXFEcixut4YAUmPxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4b6VxYQ5a5nwJoh0Eaf8NjK0mK/qan8ADH/BpVFvDWQ=;
- b=MW9JhqjG5LonMEpM8pT+DZLIVskM8Yuunw+HjsOUPx8G+04cqkK3Tx3xSi5Sb9+XSZs6CWf8XvrE9t8TkqWsxfxm1lKg6ow0uxg4VFZ5u5C8Js1/cyunfXAC2R+zNIW1K+zk1uF+HPBvzqX+MSYXy6/1NroCMJae8oalQ+fsrXCyPxZHLu3WgRRFKrioS0l2OQ4SQJvaV002/uoqWfeStwoOjTrHUElDGP85Y67oNabxk6tmL9M5B1i8IxyAG3I03nT6izl/nuQ+rVRm1zFWnrUjFWyUJ3QYXzyWRNq9PPmMBq5/g9xZvlpZu4oFumOZE9m5e5ylJ+0KMCIM0bKlOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4b6VxYQ5a5nwJoh0Eaf8NjK0mK/qan8ADH/BpVFvDWQ=;
- b=GRIh9WhzWZKeJwEusvx8a3g+eoDNtGOmNNCBFu+XpPkGszrDJTRpHj4KcX7zNSap6U2Maq5RVzNT9UGelKNH1cqTDrYxXgHkX0MlST+GINRzacx0SmpwOqtXqUvrtas6gBc+5Si0FYp+liMPSWAfzSOZx5HZrojdpU+05B+C+YQ=
-Received: from (2603:10b6:301:7c::11) by
- MW2PR2101MB1034.namprd21.prod.outlook.com (2603:10b6:302:a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.15; Wed, 17 Feb
- 2021 23:35:13 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3890.003; Wed, 17 Feb 2021
- 23:35:13 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     Vasanth <vasanth3g@gmail.com>, KY Srinivasan <kys@microsoft.com>
-CC:     Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] Staging: hv: channel.c: fixed a tab spaces before space
-       hv: connection.c fixed a "=" sign without space in code
-Thread-Topic: [PATCH] Staging: hv: channel.c: fixed a tab spaces before space
-       hv: connection.c fixed a "=" sign without space in code
-Thread-Index: AQHXBTiV4K3/hF0cKUaKi0hsvp4wQKpc/GXA
-Date:   Wed, 17 Feb 2021 23:35:13 +0000
-Message-ID: <MWHPR21MB15930D979877196E44E48F41D7869@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <20210217142228.393370-1-vasanth3g@gmail.com>
-In-Reply-To: <20210217142228.393370-1-vasanth3g@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-17T23:35:11Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=8e4015c1-4e96-4971-96bc-2b76121369d5;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 428a566e-24a2-4bbf-de63-08d8d39cac8e
-x-ms-traffictypediagnostic: MW2PR2101MB1034:
-x-ms-exchange-transport-forked: True
-x-ms-exchange-minimumurldomainage: kernel.org#8748
-x-microsoft-antispam-prvs: <MW2PR2101MB1034951F2DB6C4619F76F47FD7869@MW2PR2101MB1034.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2887;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7Pjy7D2pNtqjYtw62pV9FBjCsII+MpOLyTuDdzaG+cuW8xahqt6MjUoyAuJLWveOns41sXTpJ5r4djulNdDP7NMH52R1wnzJDM1dFgQWw3qjfUPRxo8if3e/N3Q+LrWYFA99JZtuDO/6Z8nCcCYYBZOFu4j/5IZ9H54HmtZDDZ/A3o7YOodkrkRp+gDGlSsL47bybbEEifRd8bJaKAYCCYAyGc9P4Dgz3Ar5/FnvYEJiuT8YJ/iZ2Rb5n66jONUYGryzSXFANZucV1dKEdPjzj6pOJ2432Xd6iWM+vkngGppealfvEQ5UquzHbTrqw7e6CuS058WAC4Hu31W2s+ZXpcZkkGRYPbHeT6cP04NoGhxndbSxGFx+plHEnaECOYEwcZWUWBy4c7++U8S3Bx9QwAOCdUGCICmEmKv1ep0JFixfkS6cNehg1vMM7AmH+oarvIDlQ8ffb3lhsKhW17ygZf0TZTk8Bip7ofxR8l7yDk7VMxcRb0Qq58Z+p7je/Akswu6+AXWwMJQyQvN1cshU52TuAeUHOWiCnEpZHLIXhFZY/L7+JfSJx0Q8qq/iMIIYvVWuLtPw9qeTFLPrBobZeh+z7ZKIp1ch9241u1Yyhc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(366004)(39860400002)(478600001)(9686003)(66476007)(316002)(26005)(33656002)(5660300002)(64756008)(66556008)(55016002)(7696005)(186003)(8936002)(110136005)(52536014)(86362001)(76116006)(10290500003)(83380400001)(8676002)(54906003)(4326008)(2906002)(82950400001)(82960400001)(71200400001)(6506007)(66446008)(66946007)(966005)(6636002)(8990500004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?WTJ5RmiKAiFJJpmiZ/66acJICcjT3puqApNsk7erdB14C3qLBm2YzLUXcpgC?=
- =?us-ascii?Q?GiNbePdC/cMCd3ucfNDMRXMs8LrqkySjLutLH+SG5FSbTrnbu14NWpGP3Kfz?=
- =?us-ascii?Q?iU8bGEDx77YyjCSTCJ/aebWWfBX9+vPGBUSkFnYxw1UYqz6QlnT5YS5bIOHl?=
- =?us-ascii?Q?LXR4An9uUG32qz1rctbILAwJyCQfttT9CPVumkW5ncdJtpvGp/2FYdZXseG1?=
- =?us-ascii?Q?X0tEVT0i1hkjytAGYBRlZy2WuSlYLkBZ7fe+Ba91tWqKNQ24sWKkpuGQFt8F?=
- =?us-ascii?Q?uCUCiN5Qt2ab3BDfex75JrsRh8khilvbrM9Ez2f0HvHz7MIbHqdD3SQgSqkW?=
- =?us-ascii?Q?bpv1wkIbhz3gx3Bo/hksknBjKFuemm0csRHRTbp/c7xs6sjzJ5dFRIrJ73iK?=
- =?us-ascii?Q?oJTLnfgOqZkW2G8h+0jz7MS3QQiAmTegC2P+au3luezm2hXk5Y9FUiI8QGNg?=
- =?us-ascii?Q?t1M2g4DPhjz+NP4kSocNFDIDH9z9+IfMgAfkECNtYNuK3+qJB6NqRo0XmnpL?=
- =?us-ascii?Q?2YjUMbn9ki/q8WZ56MeR2sLEukksMbTwUr1TL6GbrY5wnVa4Y3XrfLf69UGP?=
- =?us-ascii?Q?iVhyIsERdZ1H+ShKkOtBrWLTEhZY4i+y/BiarMj7na3oYXpAf8cFe7kscSN4?=
- =?us-ascii?Q?iOv6C2tYLpEpLA2X+ad1EMNLbrRnVYP1r/On+P+Rl6fpWuLTaQoJL7bd3Yqh?=
- =?us-ascii?Q?JcgSNWsUBCAFuCUSavUh3FZpk/VY0iD2TBalJKzzH+aYky4eRbT6Nev/z50s?=
- =?us-ascii?Q?7JZPPXCJTw8yIgKA6+uzAPj9WJ/9MyIXKgVPCsZTM/9xpLjf5xSLPPTBl6ym?=
- =?us-ascii?Q?SQ81CTyU0wKoUrZxOKPKMTb2ymwrYtnUNvutLxjHN/leTb2Lf+75cFz3YMEV?=
- =?us-ascii?Q?OI3OLTRfxpCHRc3w+xj7YibsYxHibag/e6REEe+QL9e6NC+zo0c8eI5Fhse3?=
- =?us-ascii?Q?hoq7o0CyLrfRXCSlK5CiuxuHx/TWsMxHBbpU1fCcoDMoCEw/YLCJ5HYuwEbw?=
- =?us-ascii?Q?ObYpwXQvcaXcxXONpI1W4JUgyaqRJiZdFrEtMfUjKUHEosFUEJpcTwdVbPHg?=
- =?us-ascii?Q?iKXtZxYfY1kJoS/g2IwAL9UpVMCV/GXHPNyzRzhpWS9sQFf9UUpGE4g4laMe?=
- =?us-ascii?Q?CXPDajX2cUTErcTF73x1DMr9A4m2EeiayjIC7IZ5+1riMicTOJR/O4Zw4r8J?=
- =?us-ascii?Q?mIy8LzQSN9qELJ2El1ltIspXLkpJwm+/IJMlR/470CXsSqItkm0c2cg0d/tV?=
- =?us-ascii?Q?S3FkcVrC1x7C6JBtbWqHZBmWehHzqOqCOmKDUwK3x7FasqHTMZbpKnXLc+CH?=
- =?us-ascii?Q?tBbp4mBcVcifTI92G11JRwfQ?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233312AbhBQXjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 18:39:18 -0500
+Received: from mga09.intel.com ([134.134.136.24]:18962 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232867AbhBQXh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 18:37:29 -0500
+IronPort-SDR: udH8UKsl0MM6Qh7gGH6qTQXoeqbeQQPp1+lEj/Qd4MQo7qEIEYb7FtMx0dN7E/gOooZpWnmiu2
+ qBfTnGnHSHpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="183473197"
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="183473197"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:35:43 -0800
+IronPort-SDR: J/W1vCIp1CTjxtUy8uLWVixNUloEJn1tLdh7PB/yZA/7j4bn8wWbNX6x2bstkZS9UosvfErsSn
+ Idcz8zpt3mWw==
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="427698389"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:35:42 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id AF4AF6365;
+        Wed, 17 Feb 2021 15:35:41 -0800 (PST)
+Date:   Wed, 17 Feb 2021 15:35:41 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org,
+        "C, Udhayakumar" <udhayakumar.c@intel.com>
+Subject: Re: [PATCH v6 29/34] Intel tsens i2c slave driver.
+Message-ID: <20210217233541.GH154917@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-30-mgross@linux.intel.com>
+ <abdb8d8a-d382-7dec-4ce1-a0dc447dea32@infradead.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 428a566e-24a2-4bbf-de63-08d8d39cac8e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Feb 2021 23:35:13.5079
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: rV2i7YoOdSHX3y+JhM8jC+VkoXm3l7DkPctHlKz/Wmkd92fA80yEmdvPdA3aK1m6bIkDwX/+Jk4FxTBpDdtrT/gzVnZJ8rKqURAJD9GD5Ls=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1034
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <abdb8d8a-d382-7dec-4ce1-a0dc447dea32@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasanth <vasanth3g@gmail.com> Sent: Wednesday, February 17, 2021 6:22=
- AM
->=20
-> Signed-off-by: Vasanth Mathivanan <vasanth3g@gmail.com>
-> ---
->  drivers/hv/channel.c    | 2 +-
->  drivers/hv/connection.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
-> index 6fb0c76bfbf8..587234065e37 100644
-> --- a/drivers/hv/channel.c
-> +++ b/drivers/hv/channel.c
-> @@ -385,7 +385,7 @@ static int create_gpadl_header(enum hv_gpadl_type typ=
-e, void
-> *kbuffer,
->   * @kbuffer: from kmalloc or vmalloc
->   * @size: page-size multiple
->   * @send_offset: the offset (in bytes) where the send ring buffer starts=
-,
-> - * 		 should be 0 for BUFFER type gpadl
-> + *              should be 0 for BUFFER type gpadl
->   * @gpadl_handle: some funky thing
->   */
->  static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
-> diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-> index 11170d9a2e1a..3760cbb6ffaf 100644
-> --- a/drivers/hv/connection.c
-> +++ b/drivers/hv/connection.c
-> @@ -28,7 +28,7 @@ struct vmbus_connection vmbus_connection =3D {
->  	.conn_state		=3D DISCONNECTED,
->  	.next_gpadl_handle	=3D ATOMIC_INIT(0xE1E10),
->=20
-> -	.ready_for_suspend_event=3D COMPLETION_INITIALIZER(
-> +	.ready_for_suspend_event =3D COMPLETION_INITIALIZER(
->  				  vmbus_connection.ready_for_suspend_event),
->  	.ready_for_resume_event	=3D COMPLETION_INITIALIZER(
->  				  vmbus_connection.ready_for_resume_event),
-> --
-> 2.25.1
+On Sun, Feb 14, 2021 at 09:41:26AM -0800, Randy Dunlap wrote:
+> On 2/12/21 2:22 PM, mgross@linux.intel.com wrote:
+> > diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
+> > index 8b263fdd80c3..be8d27e81864 100644
+> > --- a/drivers/misc/intel_tsens/Kconfig
+> > +++ b/drivers/misc/intel_tsens/Kconfig
+> > @@ -14,6 +14,20 @@ config INTEL_TSENS_LOCAL_HOST
+> >  	  Say Y if using a processor that includes the Intel VPU such as
+> >  	  Keem Bay.  If unsure, say N.
+> >  
+> > +config INTEL_TSENS_I2C_SLAVE
+> > +	bool "I2C slave driver for intel tsens"
+> 
+> s/intel/Intel/ ?
+> (as below)
+fixed and qued up for posting when merge window closes.
 
-Vasanth -- your changes to fix the spacing look OK to me.  However,
-the Subject of the patch email is a bit unexpected, as the code
-under drivers/hv is not a "Staging" driver.   "Staging" drivers are
-drivers under the pathname drivers/staging that have not been
-fully accepted into the Linux kernel.
+Thanks
 
-Changes to the code in the "hv" directory usually have a "Subject" line
-that is prefixed with "Drivers: hv:" or "Drivers: hv: vmbus: ".   For this
-code, you can see the history of changes and the Subject lines at this URL:
+--mark
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/driv=
-ers/hv
-
-Also, your submission does not have a commit message.  While the
-Subject captures the details of your change, the expectation is that
-patches should also have a commit message, though in this case they
-might be very similar.  I would suggest shortening the Subject, and
-then providing just a little bit more detail in the commit message.
-
-Michael
+> 
+> > +	depends on INTEL_TSENS_LOCAL_HOST
+> > +	depends on I2C=y && I2C_SLAVE
+> > +	help
+> > +	  This option enables tsens I2C slave driver.
+> > +
+> > +	  This driver is used for reporting thermal data via I2C
+> > +	  SMBUS to remote host.
+> > +	  Enable this option if you want to have support for thermal
+> > +	  management controller.
+> > +	  Say Y if using a processor that includes the Intel VPU such as
+> > +	  Keem Bay.  If unsure, say N.
+> 
+> 
+> -- 
+> ~Randy
+> 
