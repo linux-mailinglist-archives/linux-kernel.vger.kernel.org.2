@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3926E31D72E
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1618F31D723
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbhBQJ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 04:57:20 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2579 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231470AbhBQJ5N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 04:57:13 -0500
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DgY545pj4z67nyq;
-        Wed, 17 Feb 2021 17:51:20 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Feb 2021 10:56:31 +0100
-Received: from localhost (10.47.29.73) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 17 Feb
- 2021 09:56:30 +0000
-Date:   Wed, 17 Feb 2021 09:55:24 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v4 4/9] cxl/mem: Add basic IOCTL interface
-Message-ID: <20210217095524.000071f5@Huawei.com>
-In-Reply-To: <20210216183432.lf2uj63uckogfad4@intel.com>
-References: <20210216014538.268106-1-ben.widawsky@intel.com>
-        <20210216014538.268106-5-ben.widawsky@intel.com>
-        <20210216152223.000009e8@Huawei.com>
-        <20210216175314.ut2dn5ujayj57zp2@intel.com>
-        <20210216182849.00002c8c@Huawei.com>
-        <20210216183432.lf2uj63uckogfad4@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.29.73]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        id S231962AbhBQJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 04:54:05 -0500
+Received: from mga11.intel.com ([192.55.52.93]:22527 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231470AbhBQJyA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 04:54:00 -0500
+IronPort-SDR: bgy/IG8OCJ8P0Tjjo/qySct4nGrx/IOk6vHf04c8ZE+JGVIODDEp2eujcr3RvtpOS96/6d6Z6e
+ B5xHIgpdr44A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="179643960"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="179643960"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 01:53:17 -0800
+IronPort-SDR: dX9qS/mBPVuRlhyR92/GwDld8pE4SCeO/Q2gieLHME5cB1d7vIm6tSK+qkyus4IgLVk5ZsZ7A/
+ 0cQlIXue7ivA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="589549452"
+Received: from glass.png.intel.com ([10.158.65.51])
+  by fmsmga006.fm.intel.com with ESMTP; 17 Feb 2021 01:53:13 -0800
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/1] net: stmmac: Add PCI bus info to ethtool driver query output
+Date:   Wed, 17 Feb 2021 17:57:05 +0800
+Message-Id: <20210217095705.13806-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 10:34:32 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+This patch populates the PCI bus info in the ethtool driver query data.
 
-...
+Users will be able to view PCI bus info using 'ethtool -i <interface>'.
 
-> > > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > > index 237b956f0be0..4ca4f5afd9d2 100644
-> > > --- a/drivers/cxl/mem.c
-> > > +++ b/drivers/cxl/mem.c
-> > > @@ -686,7 +686,11 @@ static int cxl_validate_cmd_from_user(struct cxl_mem *cxlm,
-> > > 
-> > >         memcpy(out_cmd, c, sizeof(*c));
-> > >         out_cmd->info.size_in = send_cmd->in.size;
-> > > -       out_cmd->info.size_out = send_cmd->out.size;
-> > > +       /*
-> > > +        * XXX: out_cmd->info.size_out will be controlled by the driver, and the
-> > > +        * specified number of bytes @send_cmd->out.size will be copied back out
-> > > +        * to userspace.
-> > > +        */
-> > > 
-> > >         return 0;
-> > >  }  
-> > 
-> > This deals with the buffer overflow being triggered from userspace.
-> > 
-> > I'm still nervous.  I really don't like assuming hardware will do the right
-> > thing and never send us more data than we expect.
-> > 
-> > Given the check that it will fit in the target buffer is simple,
-> > I'd prefer to harden it and know we can't have a problem.
-> > 
-> > Jonathan  
-> 
-> I'm working on hardening __cxl_mem_mbox_send_cmd now per your request. With
-> that, I think this solves the issue, right?
+Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c    | 1 +
+ drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 4 ++++
+ include/linux/stmmac.h                               | 1 +
+ 3 files changed, 6 insertions(+)
 
-Should do.  Thanks,
-
-Jonathan
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+index 1c9c67b641a2..751dfdeec41c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+@@ -236,6 +236,7 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
+ 	int ret;
+ 	int i;
+ 
++	plat->pdev = pdev;
+ 	plat->phy_addr = -1;
+ 	plat->clk_csr = 5;
+ 	plat->has_gmac = 0;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+index 9e54f953634b..c5642985ef95 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c
+@@ -268,6 +268,10 @@ static void stmmac_ethtool_getdrvinfo(struct net_device *dev,
+ 		strlcpy(info->driver, MAC100_ETHTOOL_NAME,
+ 			sizeof(info->driver));
+ 
++	if (priv->plat->pdev) {
++		strlcpy(info->bus_info, pci_name(priv->plat->pdev),
++			sizeof(info->bus_info));
++	}
+ 	strlcpy(info->version, DRV_MODULE_VERSION, sizeof(info->version));
+ }
+ 
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 15ca6b4167cc..a302982de2d7 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -202,5 +202,6 @@ struct plat_stmmacenet_data {
+ 	bool vlan_fail_q_en;
+ 	u8 vlan_fail_q;
+ 	unsigned int eee_usecs_rate;
++	struct pci_dev *pdev;
+ };
+ #endif
+-- 
+2.17.0
 
