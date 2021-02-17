@@ -2,120 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 463A031DBD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BDC31DBBB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhBQPAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 10:00:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42491 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233574AbhBQO7P (ORCPT
+        id S233603AbhBQOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:55:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhBQOzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:59:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613573869;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d7hdrmggGz0IX+vXiyJwgHKownPeIRNtGuiBFLCAaUw=;
-        b=Z3oxzDAsRXXEpRBtPkaQ1r0xFv7T4U0LSS0B5Rk3ncNq1INyFDDjhlkNw67Tgd+EHF/UST
-        xJ/93FrDDXCXOtlJp9HZpQKe20yZZNCC6kD57736E+o8q7AT1scFen7ZuRmmvdHeW1XTTl
-        NPhPH7+j/bDQm/nCEgn7wrBycblG5MY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-0hpgskSyOPycxJdIbXKYSA-1; Wed, 17 Feb 2021 09:57:46 -0500
-X-MC-Unique: 0hpgskSyOPycxJdIbXKYSA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3F9BB192AB78;
-        Wed, 17 Feb 2021 14:57:45 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DE8BB10023AF;
-        Wed, 17 Feb 2021 14:57:41 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 6/7] KVM: nVMX: don't load PDPTRS right after nested state set
-Date:   Wed, 17 Feb 2021 16:57:17 +0200
-Message-Id: <20210217145718.1217358-7-mlevitsk@redhat.com>
-In-Reply-To: <20210217145718.1217358-1-mlevitsk@redhat.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
+        Wed, 17 Feb 2021 09:55:13 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8DAC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:54:33 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id i23so16409134ejg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:54:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9eW3LA1cMGZsWxGBTyavm4NRE0/iFEXmezUgPd8JDrw=;
+        b=uzRl5FUfskRu8WBAvZjyt8A7P+d4ve/tU0wc6QWHJH/S+68vsn7KeGCY3YCkEv9WDU
+         cK9/Q3LYnFUYkeYIk2y2c/kqwzXSzGqLtM4B6xOoGrY52obwH6r4LbAY/43QwZCxDqo3
+         dvA9cfbquRhsB6ssjmAPFq6LSLhyLlyV+cn50ZkwRwcVRrDgyS2jb2alg5+Em99L1tEe
+         sxAAUc70n6DNWl1cduaVBYOWktxYnJWBwOBTCQdJW1GEcdYacQS976HB6QXZO/DGjwEQ
+         Y7ZtOiw2Y504CJ26alsOiakX8diuzGD2xnBy2U1ICT1XnaZ7pcGEWTHu0g25B/JIsBgf
+         0snQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9eW3LA1cMGZsWxGBTyavm4NRE0/iFEXmezUgPd8JDrw=;
+        b=aTUCEpp92xH5V1O5PRvfge373dVtoV1bU/vdnkz8Sd3pO+F3PbjxtTALuOZsT59EGW
+         V3FDxEmTXM/GLayVtypBJT+/n0YpVqymTve/pJ8S9XfG3TiDu8u9cJqG2L2vr+N5IsHD
+         FoQ60nuhelzZb7Raf4t55A2l25k/cQiG/ueouJk081Om+U4VT8yBFqCw7iBGUevw13P9
+         xHOBYAjO/cqX5mV0ily7Zr7EGHrxpWW9QfKQZ2753Sj1ytn7NCVmqa65x7MQXPPAWJQo
+         ttJOyIKSjielYVylFyIqoqp7poeKFeZGmnZy9I/zIIk9y/qMomMUkD3jh7ocytYgWA+0
+         nm1g==
+X-Gm-Message-State: AOAM533kIb2A4DoxMJ3qvZC94FDj5gj7NB90iSwc1PYexPC6pw0DVK+l
+        di/ksNFWQM2vKAGIWzTZguizjs2xr0MOLtkndviemM2I3XNTWw==
+X-Google-Smtp-Source: ABdhPJw4kb9KSeUbijA4QgzZlMVsQril4Khu0lYfNxhBSf2zC/5Q2rhbObi2fEGOqL/tHHl+GZc0X53A0dP0sNwftvw=
+X-Received: by 2002:a17:906:9452:: with SMTP id z18mr24058492ejx.466.1613573671755;
+ Wed, 17 Feb 2021 06:54:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+References: <1613501314-2392-1-git-send-email-jhugo@codeaurora.org>
+In-Reply-To: <1613501314-2392-1-git-send-email-jhugo@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Wed, 17 Feb 2021 16:02:03 +0100
+Message-ID: <CAMZdPi9S5OnWs_QFnf+xVM+jLve6cpdvi_vpC_KdEbUUaqoFYg@mail.gmail.com>
+Subject: Re: [PATCH] mhi_bus: core: Return EBUSY if MHI ring is full
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Fan Wu <wufan@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like all other nested memory accesses, after a migration loading
-PDPTRs should be delayed to first VM entry to ensure
-that guest memory is fully initialized.
+On Tue, 16 Feb 2021 at 19:50, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+>
+> From: Fan Wu <wufan@codeaurora.org>
+>
+> Currently ENOMEM is returned when MHI ring is full. This error code is
+> very misleading. Change to EBUSY instead.
 
-Just move the call to nested_vmx_load_cr3 to nested_get_vmcs12_pages
-to implement this.
+Well, there is no space left in the ring, so it's no so misleading.
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/vmx/nested.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index f9de729dbea6..26084f8eee82 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2596,11 +2596,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
- 		return -EINVAL;
- 	}
- 
--	/* Shadow page tables on either EPT or shadow page tables. */
--	if (nested_vmx_load_cr3(vcpu, vmcs12->guest_cr3, nested_cpu_has_ept(vmcs12),
--				entry_failure_code))
--		return -EINVAL;
--
- 	/*
- 	 * Immediately write vmcs02.GUEST_CR3.  It will be propagated to vmcs12
- 	 * on nested VM-Exit, which can occur without actually running L2 and
-@@ -3138,11 +3133,16 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
- static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
- {
- 	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
-+	enum vm_entry_failure_code entry_failure_code;
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	struct kvm_host_map *map;
- 	struct page *page;
- 	u64 hpa;
- 
-+	if (nested_vmx_load_cr3(vcpu, vmcs12->guest_cr3, nested_cpu_has_ept(vmcs12),
-+				&entry_failure_code))
-+		return false;
-+
- 	if (nested_cpu_has2(vmcs12, SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES)) {
- 		/*
- 		 * Translate L1 physical address to host physical
-@@ -3386,6 +3386,10 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
- 	}
- 
- 	if (from_vmentry) {
-+		if (nested_vmx_load_cr3(vcpu, vmcs12->guest_cr3,
-+		    nested_cpu_has_ept(vmcs12), &entry_failure_code))
-+			goto vmentry_fail_vmexit_guest_mode;
-+
- 		failed_index = nested_vmx_load_msr(vcpu,
- 						   vmcs12->vm_entry_msr_load_addr,
- 						   vmcs12->vm_entry_msr_load_count);
--- 
-2.26.2
-
+Regards,
+Loic
