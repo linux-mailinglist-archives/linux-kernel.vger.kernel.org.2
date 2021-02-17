@@ -2,63 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5237631D8EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4E231D8F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbhBQL6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:58:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48848 "EHLO mail.kernel.org"
+        id S232381AbhBQL64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:58:56 -0500
+Received: from foss.arm.com ([217.140.110.172]:57400 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232377AbhBQL43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:56:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F171E6024A;
-        Wed, 17 Feb 2021 11:55:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613562945;
-        bh=QVdC0kU6jvzs+zB5lNoccmInKiPDjsnzbqv6e9gAuVo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=LFygKx8G6a6cR9opfRPviyHwluOcVDE1WCf5TDDheCfjUfSHPthfNxErDn5E5gkjW
-         DOUNQM6zdEbxe54nRBF8TaiLWbET5FfwA5VrDNrkZUJZUWOICw7p8DP4n9EuY3Qq4P
-         nVnxyYdNjEaY8Hc4SGMJMS3y9WcpSfSmbZ/zrWwoEyE+u3G6h/Qlr2rQteDbgZNMG5
-         6fG6Vl/hfhpUjl5wXuD+pzf3ucYXrCRjLP6EfIr5TdMyGomjYdaerJ465reCAO6TYp
-         783DhmPzmzX+WfHRM73A8H/zv/IvIVoSa0FAT9r3ggVPtKtcBIUKVrZfUHKR1TUphf
-         h7D3kyzrjocUg==
-Date:   Wed, 17 Feb 2021 12:55:41 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Jonathan Cameron <jic23@kernel.org>
-cc:     Ye Xiang <xiang.ye@intel.com>, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] iio: Add relative sensitivity support
-In-Reply-To: <20210212182809.2cc90cfd@archlinux>
-Message-ID: <nycvar.YFH.7.76.2102171255250.28696@cbobk.fhfr.pm>
-References: <20210207070048.23935-1-xiang.ye@intel.com> <20210207070048.23935-2-xiang.ye@intel.com> <20210212182809.2cc90cfd@archlinux>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S232111AbhBQL6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 06:58:15 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 854FB31B;
+        Wed, 17 Feb 2021 03:57:28 -0800 (PST)
+Received: from localhost (unknown [10.1.195.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 24BD23F694;
+        Wed, 17 Feb 2021 03:57:28 -0800 (PST)
+Date:   Wed, 17 Feb 2021 11:57:26 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210217115726.GA25441@arm.com>
+References: <cover.1611829953.git.viresh.kumar@linaro.org>
+ <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
+ <20210203114521.GA6380@arm.com>
+ <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
+ <20210217002422.GA17422@arm.com>
+ <20210217042558.o4anjdkayzgqny55@vireshk-i7>
+ <20210217113011.GA22176@arm.com>
+ <20210217114027.ashqh67hrfk4hwib@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217114027.ashqh67hrfk4hwib@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021, Jonathan Cameron wrote:
-
-> > Some hid sensors may use relative sensitivity such as als sensor.
-> > This patch adds relative sensitivity checking for all hid sensors.
+On Wednesday 17 Feb 2021 at 17:10:27 (+0530), Viresh Kumar wrote:
+> On 17-02-21, 11:30, Ionela Voinescu wrote:
+> > The problem is not topology_scale_freq_invariant() but whether a scale
+> > factor is set for some CPUs.
 > > 
-> > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-> Hi,
+> > Scenario (test system above):
+> >  - "AMUs" are only supported for [1-2],
+> >  - cpufreq_supports_freq_invariance() -> false
+> > 
+> > What should happen:
+> >  - topology_scale_freq_invariant() -> false (passed)
+> >  - all CPUs should have their freq_scale unmodified (1024) - (failed)
+> >    because only 2 out of 6 CPUs have a method of setting a scale factor
+> > 
+> > What does happen:
+> >  - arch_set_freq_tick() -> topology_set_freq_tick() will set a scale
+> >    factor for [1-2] based on AMUs. This should not happen. We will end
+> >    up with invariant signals for bigs and signals that are not freq
+> >    invariant for littles.
 > 
-> One totally trivial extra line below.  I'll fix that whilst applying
-> unless you need to respin for some reason.
+> Another case. cpufreq is included as a module and AMU is implemented
+> partially.
 > 
-> I'm fine with the series, but looking for an Ack from Jiri
-> for the HID header changes.
+> - first time cpufreq driver is inserted, we set up everything and
+>   freq_scale gets updated on ticks.
+> 
+> - remove cpufreq driver, we are back in same situation.
+> 
 
-Acked-by: Jiri Kosina <jkosina@suse.cz>
+Yes, but the littles (lacking AMUs) would have had a scale factor set
+through arch_set_freq_scale() which will correspond to the last
+frequency change through the cpufreq driver. When removing the driver,
+it's unlikely that the frequency of littles will change (no driver).
+ - topology_scale_freq_invariant() will still return true.
+ - littles would still  have a scale factor set which is likely accurate
+ - bigs will continue updating the scale factor through AMUs.
+
+See a very useful comment someone added recently :) :
+
+"""
++	/*
++	 * We don't need to handle CPUFREQ_REMOVE_POLICY event as the AMU
++	 * counters don't have any dependency on cpufreq driver once we have
++	 * initialized AMU support and enabled invariance. The AMU counters will
++	 * keep on working just fine in the absence of the cpufreq driver, and
++	 * for the CPUs for which there are no counters available, the last set
++	 * value of freq_scale will remain valid as that is the frequency those
++	 * CPUs are running at.
++	 */
+"""
+
+> We can't control it that way.. Or we add another call layer in middle
+> before the tick-handler gets called for AMU, which will check if we
+> are fully invariant or not ?
+> 
+
+I would avoid additional work done on the tick, especially for a scenario which
+is unlikely. If you think this case is worth supporting, it might be best to do
+it at CPUFREQ_REMOVE_POLICY event.
 
 Thanks,
+Ionela.
 
--- 
-Jiri Kosina
-SUSE Labs
-
+> -- 
+> viresh
