@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDEB31DFCE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBD531DFD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:46:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234004AbhBQTpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:45:10 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:47320 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233192AbhBQToo (ORCPT
+        id S233331AbhBQTqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 14:46:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25419 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232906AbhBQTqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:44:44 -0500
-Date:   Wed, 17 Feb 2021 20:43:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613591041;
+        Wed, 17 Feb 2021 14:46:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613591083;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=GMqp8oEZfhAb6qDKCdq5YeW4+55exCSRTAdK0yr3Q1s=;
-        b=U7rgM9nSlM+RmwfpYhIiWwsXqTqxejKrydEZIjBjHHmy4R+cRjc8ibUf1C8cDmVOQ3DiMn
-        ZibqMusrV/7GQs1KuYbGbreG/mICqROo30v+HubeSI1KwNf/1doCWXqJ7uouOCYG5K6H9I
-        Yxb9qio0+LyZNyADZf7fXoFhX3fe/QGZcJltc+DGSWbG5ql9dEd+2Yq6SFBEKIeWeCiCr/
-        T3hHBFT/Cfs7oBUBvLMwuizUJidQpciOwI2PLJhnOoYqMJXjC5ff7oCNs4F8RC8mTK2YvV
-        aW2shLVO9TIGzrXdcuC8W8TKNSJX54rPMSzD0tLxRYqBJmdbLO1DJHXe24K9gA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613591041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GMqp8oEZfhAb6qDKCdq5YeW4+55exCSRTAdK0yr3Q1s=;
-        b=C2rdsvix9Cv3CClUnc0KLNo4CsVvV/mU4CJ7DJnZ8tKn2yOtzKAGs1FmwyifmJL9PUJ3AT
-        SBzsNr+oqwKb4mAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
-Message-ID: <20210217194359.m647inivfp4frzc7@linutronix.de>
-References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
- <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
- <20210217155447.GC2743@paulmck-ThinkPad-P72>
- <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
- <20210217191907.GH2743@paulmck-ThinkPad-P72>
+        bh=DKRCGD5cZBFDckHkhQGxjYspyMuPSVpV7imvsh15Fwg=;
+        b=LvGc2Xeq00G5rRjv8YGkcyP3GGm1FCE8PPl+Wtt8UQoU7Dyg5FaSMv/Yi8RGsrs+Hvq+Uz
+        LFhXuhAOXe2Qfih269F5mjw2iV/aEroh2+zffIjCDGY0rfWZ5BlgdRSJbRyFebE5XSSZgd
+        iQj0I/ZRKs/lL4GfCSKU09bag2ebIj8=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-vHE8ANtaP5umAsdXQFl6qA-1; Wed, 17 Feb 2021 14:44:39 -0500
+X-MC-Unique: vHE8ANtaP5umAsdXQFl6qA-1
+Received: by mail-qv1-f71.google.com with SMTP id p4so10676065qvn.23
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 11:44:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DKRCGD5cZBFDckHkhQGxjYspyMuPSVpV7imvsh15Fwg=;
+        b=gJbM4ca/vFEGkQNXvBC7tBiAzB++7irki+LvlyzTb/kN6c31E6o1pLiwZQ0KTlLHHQ
+         lDHT0Tl94f3+dRMOvK3g/NCjbnGGStPGPJm7UgpZzQkr9jR3i+txww1de/JtTxp4uAm0
+         pJwn23x7v8IaCiOtoN0vCZMZa8LpdiHLaW8F+n2fm2BzW3JsfU84vi+QwiLZOGAKmLWP
+         U1NXwKjmWTbMtbAJgWwzdp5+yPjZI2d67scj25fG63Kc/oLLN7etgyddDH7VpN/djlG9
+         2jdNi+zGtdspfV85jeB7Ef5/nPGddjHXCcdlDBxgdMown8Xl6TO2XBBPgc8H/a0o2sI6
+         qH9g==
+X-Gm-Message-State: AOAM530TZBJnaHO7vkmUCiq7GbBmoUPCOYKzrthzIHKkfBOBOnxSmb7Z
+        KhfdMoFuJ5FhX/hX8W9ISagM254Bv+JDqjOBM7ptEY8Tzjim8xiCM1hUXf/3oNFKOJzWBkJAtVa
+        Hf915CIW8wkleTKLQnQKwCyNd
+X-Received: by 2002:a37:e20b:: with SMTP id g11mr832453qki.292.1613591078916;
+        Wed, 17 Feb 2021 11:44:38 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzmn0YnwZ3NDVqO0cMhaXsErwcpE5p4rLVKMLyL5IWYZzrdUFReeIRZBso5fLx1tUu0zEu6dg==
+X-Received: by 2002:a37:e20b:: with SMTP id g11mr832433qki.292.1613591078685;
+        Wed, 17 Feb 2021 11:44:38 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id k187sm2318732qkc.74.2021.02.17.11.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 11:44:38 -0800 (PST)
+Date:   Wed, 17 Feb 2021 14:44:36 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, shu wang <malate_wangshu@hotmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michel Lespinasse <walken@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RFC PATCH 4/5] hugetlb: don't permit pmd sharing if soft dirty
+ in use
+Message-ID: <20210217194436.GD6519@xz-x1>
+References: <20210211000322.159437-1-mike.kravetz@oracle.com>
+ <20210211000322.159437-5-mike.kravetz@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210217191907.GH2743@paulmck-ThinkPad-P72>
+In-Reply-To: <20210211000322.159437-5-mike.kravetz@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-17 11:19:07 [-0800], Paul E. McKenney wrote:
-> > Ah. One nice thing is that you can move the RCU threads to a house
-> > keeping CPU - away from the CPU(s) running the RT tasks. Would this
-> > scenario be still affected (if ksoftirqd would be blocked)?
+On Wed, Feb 10, 2021 at 04:03:21PM -0800, Mike Kravetz wrote:
+> If page modifications are being monitoried with the soft dirty mechanism,
+> then this information is contained in page table entries.  Tracking is
+> enabled on a 'per-process' basis.  hugetlb pmd sharing allows processes
+> to share page table entries.  This makes pmd sharing incompatible with
+> soft dirty monitoring.  So, pmd sharing must be disabled if soft dirty
+> tracking is in use.
 > 
-> At this point, I am going to say that it is the sysadm's job to place
-> the rcuo kthreads, and if they are placed poorly, life is hard.
-
-Good. Because that is what I suggest :)
-
-> > Oh. One thing I forgot to mention: the timer_list timer is nice in terms
-> > of moving forward (the timer did not fire, the condition is true and you
-> > move the timeout forward).
-> > A hrtimer timer on the other hand needs to be removed, forwarded and
-> > added back to the "timer tree". This is considered more expensive
-> > especially if the timer does not fire.
+> The VM_SOFTDIRTY flag is set in all vma's by default.  When soft dirty
+> monitoring is started, the flag is cleared.  We can therefore allow pmd
+> sharing in vmas with the VM_SOFTDIRTY flag set.  Check this when deciding
+> to perform pmd sharing.
 > 
-> There are some timers that are used to cause a wakeup to happen from
-> a clean environment, but maybe these can instead use irq-work.
-
-irq-work has also a "hard" mode because people ended up to throwing
-everything in there.
-
-> That it can!  Aravinda Prasad prototyped a mechanism hinting to the
-> hypervisor in such cases, but I don't know that this ever saw the light
-> of day.
-
-Ah, good to know.
-
-> > My understanding of the need for RCU boosting is to get a task,
-> > preempted (by a RT task) within a RCU section, back on the CPU to
-> > at least close the RCU section. So it is possible to run RCU callbacks
-> > and free memory.
-> > The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
-> > killer got nervous (and if we had memory allocation failures).
-> > Also, running thousands of accumulated callbacks isn't good either.
+> A subsequent patch will add code to allow soft dirty monitoring for hugetlb
+> vmas.  Any existing pmd sharing will be undone at that time.
 > 
-> Sounds good, thank you!
-
-I hope my understanding was correct. Glad to be if service :)
-
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  mm/hugetlb.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> 							Thanx, Paul
-> 
-Sebastian
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index b561b6867ec1..cf4aa63be9b1 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5285,6 +5285,13 @@ static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr)
+>  	unsigned long base = addr & PUD_MASK;
+>  	unsigned long end = base + PUD_SIZE;
+>  
+> +	/*
+> +	 * Do not allow pmd sharing if soft dirty tracking is in use.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_MEM_SOFT_DIRTY) &&
+> +				!(vma->vm_flags & VM_SOFTDIRTY))
+> +		return false;
+> +
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
+
+The indent of using three tabs is a bit weird to me, though.. I do see this
+happen somewhere else in the repo too, so maybe it's a way to indent that I
+don't know.
+
+Thanks,
+
+-- 
+Peter Xu
+
