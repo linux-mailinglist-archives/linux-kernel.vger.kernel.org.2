@@ -2,115 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF2931DD60
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB7A31DD64
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhBQQbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:31:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40694 "EHLO
+        id S234166AbhBQQcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:32:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33763 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233128AbhBQQa7 (ORCPT
+        by vger.kernel.org with ESMTP id S232759AbhBQQcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:30:59 -0500
+        Wed, 17 Feb 2021 11:32:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613579372;
+        s=mimecast20190719; t=1613579466;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ogjeFLx6f8wS8oULOo5urcfaXCqjTKbtarJ5n6850Gk=;
-        b=V1J8j/dYDN3kx1FVAv+f436QCyT0AmzVZunL8mm1JERGVrWcMQekMEHqtPJezIUNPWrUm2
-        /uF5/0ixZ3kNlNe0EV+ggZomAyLIQCGe1jy36SRrnDC7AhefDAtPoHj/B8qDxgjhsD0VX6
-        jAsfDUb61RHl4XrEmF5qtO74uUIBPNo=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-147-0qu7axiUN-e-rpdh7cn4pw-1; Wed, 17 Feb 2021 11:29:30 -0500
-X-MC-Unique: 0qu7axiUN-e-rpdh7cn4pw-1
-Received: by mail-wr1-f70.google.com with SMTP id s18so16940782wrf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:29:30 -0800 (PST)
+         content-transfer-encoding:content-transfer-encoding;
+        bh=8AAWQzQ4/CdL2KkeRSZXE51wd9zmuk6qWVztCiHi//g=;
+        b=CQceEvGlqHHV9jnvuD2tKCOBPph7O5DAWFkWDzojTqF7P97b77eisieO0966Sg0RbuTTnO
+        TqBipnYe6UZLbo0sbvRcpQyWhxP7Y9CzgRZ0V7KWhnE0ehO0u45MICXCIo3JDQx3dUHd/Y
+        nUAU12NaR2RS+nvkueKG6/n89/wawSc=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-189-J-VbdyiIPTiGOwFtbmffXA-1; Wed, 17 Feb 2021 11:31:05 -0500
+X-MC-Unique: J-VbdyiIPTiGOwFtbmffXA-1
+Received: by mail-qv1-f69.google.com with SMTP id k4so7662814qvf.8
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:31:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ogjeFLx6f8wS8oULOo5urcfaXCqjTKbtarJ5n6850Gk=;
-        b=rstvQKZlKr72de96hjngLcPthb5PZEgR8+6CL4+9Scy3KQiZTsYX04GKDWleL4kHj1
-         L2JoioLzRvVzQiZfRqj6/z2bPEOWjzcxHqX7I6fGD6mPlpad1wqpboUyHLHdWG+P1gFp
-         qWB6FfjlMjYB8p126VgsEQhYXUb5ptQpFR4tvFkZdfrPMmpHT3jyBZ6yE+ZLMMpxuhUc
-         YdObTuqxJ7UCazd+/CgPv68QIiN/daIhj/k5x2lixkoMuaMdvmp0zurFXWxp2OMc8QWn
-         B/dHPAP7WCXDrQWj+CEM26R25Cv2BmDTQNYbcM2KdeDnmMe5pzN3Pg2dJsM1Ugqk4ICP
-         1mCA==
-X-Gm-Message-State: AOAM532wgMd0qepHzkks7jxQ1pqDDPp2KNAbwWPLzjYhInBJnLSC+1Ha
-        H9BK80eSOI6+yeoFqbQg2ipOTmwllPi98Nezg98jWlRPAlOBO4nHSkAMr4Vsdpr8yf2qYGVh7u/
-        PbKg4d3zp+bUqNDAkfvoHZdH2
-X-Received: by 2002:a5d:66c5:: with SMTP id k5mr67297wrw.302.1613579369238;
-        Wed, 17 Feb 2021 08:29:29 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyGiKt9ZaoBvLpCf/2NQOYGBsJJzApNDzwuDqPtEiFGGB8EW6xroD1eYyxOkbO4a1JPNMNw8g==
-X-Received: by 2002:a5d:66c5:: with SMTP id k5mr67272wrw.302.1613579368980;
-        Wed, 17 Feb 2021 08:29:28 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s23sm3820305wmc.29.2021.02.17.08.29.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Feb 2021 08:29:27 -0800 (PST)
-Subject: Re: [PATCH 1/7] KVM: VMX: read idt_vectoring_info a bit earlier
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
- <20210217145718.1217358-2-mlevitsk@redhat.com>
- <09de977a-0275-0f4f-cf75-f45e4b5d9ca5@redhat.com>
- <666eb754189a380899b82e0a9798eb2560ae6972.camel@redhat.com>
- <YC1Cljte2ozGSKV/@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <26f7ee7b-568f-c838-d0e0-db125cfbd4e5@redhat.com>
-Date:   Wed, 17 Feb 2021 17:29:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=8AAWQzQ4/CdL2KkeRSZXE51wd9zmuk6qWVztCiHi//g=;
+        b=RjClwqcpCQruCRcpt2DgFeE5cjjC943DrhprjXcI2bLkVjixj/gHJ/rj8hWeX7V1OS
+         /Qi26RuutOAlRDL+SAartcIEVwLddPpkWewTs2w1ljtToQyLDT0nE/PLdPfqYQhht0Bs
+         uJZjyrpEgdEZZ8iafB8Nbqzc+uIIHCOoOXaxKBpEXRh07zOh/cVJ5FoRu4IE45cTeaOw
+         vObccGw+IAfQ6QIZmYIPgC1JXk9HSWeiA6GA1En26YnyvequeJOqyatkWdTWkZLopms9
+         6VuRtrAaIbXmeftYhF+mbQj6qGoXi5aXKmJCB8P4CfjAWk3DgKeEGfzE4JhFcSq9zGIk
+         cCwg==
+X-Gm-Message-State: AOAM5311HsMcNO9BovVZb280vWMC50sm6OpBHVpyuF2EFWd2hzXPhSX2
+        k6U8UfO9YpTD1PNYMkYquzO4g6aP1JYdGt3gKBz1cGxTjLrUxg2ASp9ZFs+ljxpmLFhnw8qHhZi
+        Sjp6RezuhG7bMjycYy5bubL5L8Vkgsp8MaSSI4vcqDOoG3vP5b5nI1EEmO3RX20gWxWd2Rln8sQ
+        ==
+X-Received: by 2002:a0c:dc8e:: with SMTP id n14mr34564qvk.6.1613579464319;
+        Wed, 17 Feb 2021 08:31:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwY+ynxFfjY7nkB88CerCDQdVqSoB87GQyX3clxID0Vtz7rAhk7euXUgwNUQMp5UuJaLnvT0g==
+X-Received: by 2002:a0c:dc8e:: with SMTP id n14mr34530qvk.6.1613579464005;
+        Wed, 17 Feb 2021 08:31:04 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id z37sm399902qth.87.2021.02.17.08.31.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 08:31:03 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     peterx@redhat.com, Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH 0/4] hugetlb: Disable huge pmd unshare for uffd-wp
+Date:   Wed, 17 Feb 2021 11:30:58 -0500
+Message-Id: <20210217163102.13436-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <YC1Cljte2ozGSKV/@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/21 17:21, Sean Christopherson wrote:
-> On Wed, Feb 17, 2021, Maxim Levitsky wrote:
->> On Wed, 2021-02-17 at 17:06 +0100, Paolo Bonzini wrote:
->>> On 17/02/21 15:57, Maxim Levitsky wrote:
->>>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->>>> index b3e36dc3f164..e428d69e21c0 100644
->>>> --- a/arch/x86/kvm/vmx/vmx.c
->>>> +++ b/arch/x86/kvm/vmx/vmx.c
->>>> @@ -6921,13 +6921,15 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->>>>   	if (unlikely((u16)vmx->exit_reason.basic == EXIT_REASON_MCE_DURING_VMENTRY))
->>>>   		kvm_machine_check();
->>>>   
->>>> +	if (likely(!vmx->exit_reason.failed_vmentry))
->>>> +		vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
->>>> +
->>>
->>> Any reason for the if?
->>
->> Sean Christopherson asked me to do this to avoid updating idt_vectoring_info on failed
->> VM entry, to keep things as they were logically before this patch.
-> 
-> Ya, specifically because the field isn't valid if VM-Enter fails.  I'm also ok
-> with an unconditional VMREAD if we add a comment stating that it's unnecessary
-> if VM-Enter failed, but faster in the common case.
-
-It's okay, just good to know!
-
-Thanks,
-
-paolo
+This series tries to disable huge pmd unshare of hugetlbfs backed memory fo=
+r=0D
+uffd-wp.  Although uffd-wp of hugetlbfs is still during rfc stage, the idea=
+ of=0D
+this series may be needed for multiple tasks (Axel's uffd minor fault serie=
+s,=0D
+and Mike's soft dirty series), so I picked it out from the larger series.=0D
+=0D
+References works:=0D
+=0D
+Uffd shmem+hugetlbfs rfc:=0D
+https://lore.kernel.org/lkml/20210115170907.24498-1-peterx@redhat.com/=0D
+=0D
+Uffd minor mode for hugetlbfs:=0D
+https://lore.kernel.org/lkml/20210212215403.3457686-1-axelrasmussen@google.=
+com/=0D
+=0D
+Soft dirty for hugetlbfs:=0D
+https://lore.kernel.org/lkml/20210211000322.159437-1-mike.kravetz@oracle.co=
+m/=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (4):=0D
+  hugetlb: Pass vma into huge_pte_alloc() and huge_pmd_share()=0D
+  hugetlb/userfaultfd: Forbid huge pmd sharing when uffd enabled=0D
+  mm/hugetlb: Move flush_hugetlb_tlb_range() into hugetlb.h=0D
+  hugetlb/userfaultfd: Unshare all pmds for hugetlbfs when register wp=0D
+=0D
+ arch/arm64/mm/hugetlbpage.c   |  7 ++---=0D
+ arch/ia64/mm/hugetlbpage.c    |  3 +-=0D
+ arch/mips/mm/hugetlbpage.c    |  4 +--=0D
+ arch/parisc/mm/hugetlbpage.c  |  2 +-=0D
+ arch/powerpc/mm/hugetlbpage.c |  3 +-=0D
+ arch/s390/mm/hugetlbpage.c    |  2 +-=0D
+ arch/sh/mm/hugetlbpage.c      |  2 +-=0D
+ arch/sparc/mm/hugetlbpage.c   |  1 +=0D
+ fs/userfaultfd.c              | 57 +++++++++++++++++++++++++++++++++++=0D
+ include/linux/hugetlb.h       | 15 +++++++--=0D
+ include/linux/userfaultfd_k.h |  9 ++++++=0D
+ mm/hugetlb.c                  | 43 +++++++++++++-------------=0D
+ mm/userfaultfd.c              |  2 +-=0D
+ 13 files changed, 115 insertions(+), 35 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
