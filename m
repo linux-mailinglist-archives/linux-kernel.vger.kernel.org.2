@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9D3531DD26
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE51631DCE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234005AbhBQQSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:18:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43550 "EHLO
+        id S234000AbhBQQHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:07:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233070AbhBQQSi (ORCPT
+        with ESMTP id S233991AbhBQQHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:18:38 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9CFC061574;
-        Wed, 17 Feb 2021 08:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=VfrUoqOUihVjvmCvSLv9mlyS0o00nDdsmdN3qvEoA00=; b=cSa+ST1CT82tnPFcDFN6385/gf
-        fX5ue2PIy1WjeGVEzkDGZMTsFzLmqC7c+WYAQLnYutzJbsajtl2Jh42nC0w4lqBcrHrlZkXESMSyp
-        xlcoDR3Wp9R6AuEdsi/ty3h3DDMfecTJMK444IMwUHEhC9geKbbRqshaygCMw7xBUsOlIbyDSduNy
-        dmDRIklz83kii8sK5gQXi1rPYZtyfyYvM4vvxJRvwGML8x9D7AnF0WgJAsIE2nAV7DOSN//6W8z37
-        7Iss1QwTmm8FBDB49gMScTNNT7Ln/Ocl0tdU2/isZxvLSBXMpl/SURMPrdCcTpYsHSkF0tAUW3gJk
-        KVjidQgA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lCPSg-000e1H-2j; Wed, 17 Feb 2021 16:14:28 +0000
-Date:   Wed, 17 Feb 2021 16:13:58 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
-Message-ID: <20210217161358.GM2858050@casper.infradead.org>
-References: <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
- <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+        Wed, 17 Feb 2021 11:07:44 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE95C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:07:03 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id i23so16870398ejg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:07:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AftdaebIpCDcjcG7rOA2wIM0Y3Td1DLEqD5IAEbRfXA=;
+        b=gxiLTE5YG3jxuCRIaDNoSwKLCBkeEhm1sTjPlCDekWh5yazl3P3UuueZXS97uf2yzb
+         /hBKb3Cl6EhdNBvGhf0WcTy7HLPophHbdGjJvPYDqTDkJhmrGr263S/ihS7BzrlLyY7g
+         EJ2Cw2vfFyeZrgaYQTFHKddw/IaIymBH/7xcUt+2BiJsMxtttV8j2vY49ewN3+bWrlri
+         /P5VBRrDhfpzggqRFmiylwZn9MSEsHsVtFZtu9ZdbIQe9CbnnrpcVLoykxjBA4wDSZK8
+         7DLLfbbx5ijyjGExDtL7L4WUjhO1uuaP/jW0hMOzL83Q+RNySuAqPL0BJho1MmV6K3mS
+         4guQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AftdaebIpCDcjcG7rOA2wIM0Y3Td1DLEqD5IAEbRfXA=;
+        b=NUoGXfM5h3CXfppnVCQgCJ6Nz/tqdjhdLDbfHLeM8qoX7hkLmVfaCIo9I9v0/yiEG1
+         tGakI9act75wv25qrBJNPkEUOTPP+JfR704L6uW3Lovyw57PbjTh+t+pRfMquo9epJrd
+         j9BeVpomw558nLBp99wYPWlXPi4Zq3oIeBtw/dCcz0BU20nl9SB2QvE0TsLJTM+Q3TIK
+         vbUK/NRWa3OFvzlvy9jiIw5xbKyGHt09DSM6l6u8cR3z1xp3Coqwot1o1MuQwxJURxFR
+         n4xhHpeagyNMp8G8bWNUEcxIhI0cFbF8PY5uLnmusPS7PyO6MRQlveCYQkxeSovjfYbM
+         5jWg==
+X-Gm-Message-State: AOAM530UCHwikjFstUapUtBZwjD/Tu2wf5L9lqV1ypMd1UhY57lhyJ5C
+        obKK6/6khEeN53vYm0CIjTObBsAea6CmHocz3M2tAw==
+X-Google-Smtp-Source: ABdhPJyJ2lzMSIS9QPqVOg7eBJ+X0T2qipK5Gyk8akppKz7EJPtC+YCFsyVmKG1GpZ67Ud4zbJu7r6U9eaJLO+3TISU=
+X-Received: by 2002:a17:907:9702:: with SMTP id jg2mr26681055ejc.48.1613578022322;
+ Wed, 17 Feb 2021 08:07:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+References: <1613501314-2392-1-git-send-email-jhugo@codeaurora.org>
+ <CAMZdPi9S5OnWs_QFnf+xVM+jLve6cpdvi_vpC_KdEbUUaqoFYg@mail.gmail.com> <eb873085-4120-7ec4-1f18-1c768ed741bd@codeaurora.org>
+In-Reply-To: <eb873085-4120-7ec4-1f18-1c768ed741bd@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Wed, 17 Feb 2021 17:14:34 +0100
+Message-ID: <CAMZdPi-s5kXcPZftCv-VfRK7VpGT9_1TREO8GNTC3rwpU8RHpQ@mail.gmail.com>
+Subject: Re: [PATCH] mhi_bus: core: Return EBUSY if MHI ring is full
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Fan Wu <wufan@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 03:44:52PM +0000, David Howells wrote:
-> +++ b/include/linux/pagemap.h
-> @@ -761,6 +761,8 @@ extern void __delete_from_page_cache(struct page *page, void *shadow);
->  int replace_page_cache_page(struct page *old, struct page *new, gfp_t gfp_mask);
->  void delete_from_page_cache_batch(struct address_space *mapping,
->  				  struct pagevec *pvec);
-> +void readahead_expand(struct readahead_control *ractl,
-> +		      loff_t new_start, size_t new_len);
+On Wed, 17 Feb 2021 at 16:06, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+>
+> On 2/17/2021 8:02 AM, Loic Poulain wrote:
+> > On Tue, 16 Feb 2021 at 19:50, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
+> >>
+> >> From: Fan Wu <wufan@codeaurora.org>
+> >>
+> >> Currently ENOMEM is returned when MHI ring is full. This error code is
+> >> very misleading. Change to EBUSY instead.
+> >
+> > Well, there is no space left in the ring, so it's no so misleading.
+>
+> ENOMEM is typically a memory allocation failure which is not what a
+> client is going to think of regarding the ring, and it's not a unique
+> failure code in this case.  gen_tre can also return ENOMEM, which makes
+> it difficult for the client to know if there is some significant
+> failure, or they might just need to wait (assuming that is something the
+> client can do).
 
-If we're revising this patchset, I'd rather this lived with the other
-readahead declarations, ie after the definition of readahead_control.
+Yes, fair enough, I overlooked the other thread, -EAGAIN would indeed
+make sense.
 
-> +	/* Expand the trailing edge upwards */
-> +	while (ractl->_nr_pages < new_nr_pages) {
-> +		unsigned long index = ractl->_index + ractl->_nr_pages;
-> +		struct page *page = xa_load(&mapping->i_pages, index);
-> +
-> +		if (page && !xa_is_value(page))
-> +			return; /* Page apparently present */
-> +
-> +		page = __page_cache_alloc(gfp_mask);
-> +		if (!page)
-> +			return;
-> +		if (add_to_page_cache_lru(page, mapping, index, gfp_mask) < 0) {
-> +			put_page(page);
-> +			return;
-> +		}
-> +		ractl->_nr_pages++;
-> +	}
-
-We're defeating the ondemand_readahead() algorithm here.  Let's suppose
-userspace is doing 64kB reads, the filesystem is OrangeFS which only
-wants to do 4MB reads, the page cache is initially empty and there's
-only one thread doing a sequential read.  ondemand_readahead() calls
-get_init_ra_size() which tells it to allocate 128kB and set the async
-marker at 64kB.  Then orangefs calls readahead_expand() to allocate the
-remainder of the 4MB.  After the app has read the first 64kB, it comes
-back to read the next 64kB, sees the readahead marker and tries to trigger
-the next batch of readahead, but it's already present, so it does nothing
-(see page_cache_ra_unbounded() for what happens with pages present).
-
-Then it keeps going through the 4MB that's been read, not seeing any more
-readahead markers, gets to 4MB and asks for ... 256kB?  Not quite sure.
-Anyway, it then has to wait for the next 4MB because the readahead didn't
-overlap with the application processing.
-
-So readahead_expand() needs to adjust the file's f_ra so that when the
-application gets to 64kB, it kicks off the readahead of 4MB-8MB chunk (and
-then when we get to 4MB+256kB, it kicks off the readahead of 8MB-12MB,
-and so on).
-
-Unless someone sees a better way to do this?  I don't
-want to inadvertently break POSIX_FADV_WILLNEED which calls
-force_page_cache_readahead() and should not perturb the kernel's
-ondemand algorithm.  Perhaps we need to add an 'ra' pointer to the
-ractl to indicate whether the file_ra_state should be updated by
-readahead_expand()?
+Regards,
+Loic
