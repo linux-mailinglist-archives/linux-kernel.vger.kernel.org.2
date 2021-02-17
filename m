@@ -2,129 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C8E31DEEE
+	by mail.lfdr.de (Postfix) with ESMTP id E8BEB31DEEF
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhBQSOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:14:17 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:40138 "EHLO mail.zx2c4.com"
+        id S233508AbhBQSPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:15:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234813AbhBQSNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:13:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1613585531;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=swCSQpXU0cBUK+8HD0R9gjV+haeLjLXOEm2K+cTEeXc=;
-        b=ZZ2c6ADfceZPcG7066XHjkwkmgdTuJsNdxPL2FOFH+GaBGeIY81pNgHDKx/6rIy1JSJS7x
-        7QQUCnTTfYBbnc4XjheOFxdyrr6JfHaVPuSXGM9A+pZSS0eeTIFhhgJxib8NKTPH96EPoC
-        nrgJQpuLVhl7ePtTOc9+98h8+DarhDY=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id bdf45ff6 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 17 Feb 2021 18:12:11 +0000 (UTC)
-Received: by mail-yb1-f179.google.com with SMTP id n195so14653772ybg.9;
-        Wed, 17 Feb 2021 10:12:11 -0800 (PST)
-X-Gm-Message-State: AOAM531Og2xFp44gnNeCQsXYpviU/HF8KUJT6mzA7oRM4PJV1M+Zx5ci
-        ZOb1s67RgGgDR/cO5w/8abSDE1OZFpvo0Yhn+1s=
-X-Google-Smtp-Source: ABdhPJwks4POCamgjwBjWKdr5p4yZ9c1y9yTD+R52YjcJwoD8n52/q6FNsk52DTr9Wlm2NPOXv3GWU/mlZlNwmjXMWg=
-X-Received: by 2002:a25:7693:: with SMTP id r141mr848044ybc.49.1613585530840;
- Wed, 17 Feb 2021 10:12:10 -0800 (PST)
+        id S233443AbhBQSPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:15:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38D6C64E42;
+        Wed, 17 Feb 2021 18:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613585664;
+        bh=EtFpxIod6BvtUZCAySsXtHWqrDLqxvS+ba4KsRuq7V8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Di8CFwwclo67kf0N5CFMSD2lXYoc/voEZO3P4chikvhOFPUVHbJkrFAKk7AbP30xE
+         Lpna+Cy7/UiXpX+7DNkhSPydCiMl+xY5OQuZMaH2/gBb8xlCYvN+LiEa/+hYdbAlKx
+         5WL7REQkrNrlXzoM/9qw5DsUrCtL7HAMdcgYkdKLWCCatq9D+bBtYTfkWaEYM5oC+a
+         DP25SUPeyt3uwCT+n1S/+um+CL4FgZiKnMRxsUiJyyj9UYQAeLmvpZuWXSSANTy0Un
+         GJqm59c5NVZ8W2nAQv8mHfiqffVLozJ/X8HI+pTiXftpH0W1qt5AkkAbA6FGVGc10g
+         VCVFKe5YvIpJQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0855540CD9; Wed, 17 Feb 2021 15:14:22 -0300 (-03)
+Date:   Wed, 17 Feb 2021 15:14:21 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Fabian Hemmer <copy@copy.sh>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf tools: Add OCaml demangling
+Message-ID: <YC1c/dw8DXPSrpyV@kernel.org>
+References: <20210203211537.b25ytjb6dq5jfbwx@nyu>
+ <CAM9d7cj_n5_Jbs_bnET1rLi-Qm9OuS0RySgB_U+9FQqcjH2R_w@mail.gmail.com>
 MIME-Version: 1.0
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Wed, 17 Feb 2021 19:12:00 +0100
-X-Gmail-Original-Message-ID: <CAHmME9qfXFZKZfO-uc7GC3xguSq99_CqrTtzmgp_984MSfNbgA@mail.gmail.com>
-Message-ID: <CAHmME9qfXFZKZfO-uc7GC3xguSq99_CqrTtzmgp_984MSfNbgA@mail.gmail.com>
-Subject: possible stack corruption in icmp_send (__stack_chk_fail)
-To:     Netdev <netdev@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cj_n5_Jbs_bnET1rLi-Qm9OuS0RySgB_U+9FQqcjH2R_w@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Netdev & Willem,
+Em Tue, Feb 16, 2021 at 04:47:30PM +0900, Namhyung Kim escreveu:
+> Hello,
+> 
+> (+ Cc: LKML)
+> 
+> On Thu, Feb 4, 2021 at 6:22 AM Fabian Hemmer <copy@copy.sh> wrote:
+> >
+> > Detect symbols generated by the OCaml compiler based on their prefix.
+> >
+> > Demangle OCaml symbols, returning a newly allocated string (like the
+> > existing Java demangling functionality).
+> >
+> > Move a helper function (hex) from tests/code-reading.c to util/string.c
+> >
+> > To test:
+> >
+> > echo 'Printf.printf "%d\n" (Random.int 42)' > test.ml
+> > perf record ocamlopt.opt test.ml
+> > perf report -d ocamlopt.opt
+> >
+> > Signed-off-by: Fabian Hemmer <copy@copy.sh>
+> 
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-I've received a report of stack corruption -- via the stack protector
-check -- in icmp_send. I was sent a vmcore, and was able to extract
-the OOPS from there. However, I've been unable to produce the bug and
-I don't see where it'd be in the code. That might point to a more
-sinister problem, or I'm simply just not seeing it. Apparently the
-reporter reproduces it every 40 or so minutes, and has seen it happen
-since at least ~5.10. Willem - I'm emailing you because it seems like
-you were making a lot of changes to the icmp code around then, and
-perhaps you have an intuition. For example, some of the error handling
-code takes a pointer to a stack buffer (_objh and such), and maybe
-that's problematic? I'm not quite sure. The vmcore, along with the
-various kernel binaries I hunted down are here:
-https://data.zx2c4.com/icmp_send-crash-e03b4a42-706a-43bf-bc40-1f15966b3216.tar.xz
-. The extracted dmesg follows below, in case you or anyone has a
-pointer. I've been staring at this for a while and don't see it.
+This should have been a series of patches, anyway, applying :-\
 
-Jason
+Thanks.
 
-Kernel panic - not syncing: stack-protector: Kernel stack is corrupted
-in: __icmp_send+0x5bd/0x5c0
-CPU: 0 PID: 959 Comm: kworker/0:2 Kdump: loaded Not tainted
-5.11.0-051100-lowlatency #202102142330
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014
-Workqueue: wg-crypt-wg0 wg_packet_decrypt_worker [wireguard]
-Call Trace:
- <IRQ>
- show_stack+0x52/0x58
- dump_stack+0x70/0x8b
- panic+0x108/0x2ea
- ? ip_push_pending_frames+0x42/0x90
- ? __icmp_send+0x5bd/0x5c0
- __stack_chk_fail+0x14/0x20
- __icmp_send+0x5bd/0x5c0
- icmp_ndo_send+0x148/0x160
- wg_xmit+0x359/0x450 [wireguard]
- ? harmonize_features+0x19/0x80
- xmit_one.constprop.0+0x9f/0x190
- dev_hard_start_xmit+0x43/0x90
- sch_direct_xmit+0x11d/0x340
- __qdisc_run+0x66/0xc0
- __dev_xmit_skb+0xd5/0x340
- __dev_queue_xmit+0x32b/0x4d0
- ? nf_conntrack_double_lock.constprop.0+0x97/0x140 [nf_conntrack]
- dev_queue_xmit+0x10/0x20
- neigh_connected_output+0xcb/0xf0
- ip_finish_output2+0x17f/0x470
- __ip_finish_output+0x9b/0x140
- ? ipv4_confirm+0x4a/0x80 [nf_conntrack]
- ip_finish_output+0x2d/0xb0
- ip_output+0x78/0x110
- ? __ip_finish_output+0x140/0x140
- ip_forward_finish+0x58/0x90
- ip_forward+0x40a/0x4d0
- ? ip4_key_hashfn+0xb0/0xb0
- ip_sublist_rcv_finish+0x3d/0x50
- ip_list_rcv_finish.constprop.0+0x163/0x190
- ip_sublist_rcv+0x37/0xb0
- ? ip_rcv_finish_core.constprop.0+0x310/0x310
- ip_list_rcv+0xf5/0x120
- __netif_receive_skb_list_core+0x228/0x250
- __netif_receive_skb_list+0x102/0x170
- ? dev_gro_receive+0x1b5/0x370
- netif_receive_skb_list_internal+0xca/0x190
- napi_complete_done+0x7a/0x1a0
- wg_packet_rx_poll+0x384/0x400 [wireguard]
- napi_poll+0x92/0x200
- net_rx_action+0xb8/0x1c0
- __do_softirq+0xce/0x2b3
- asm_call_irq_on_stack+0x12/0x20
- </IRQ>
- do_softirq_own_stack+0x3d/0x50
- do_softirq+0x66/0x80
- __local_bh_enable_ip+0x62/0x70
- _raw_spin_unlock_bh+0x1e/0x20
- wg_packet_decrypt_worker+0xf6/0x190 [wireguard]
- process_one_work+0x217/0x3e0
- worker_thread+0x4d/0x350
- ? rescuer_thread+0x390/0x390
- kthread+0x145/0x170
- ? __kthread_bind_mask+0x70/0x70
- ret_from_fork+0x22/0x30
-Kernel Offset: 0x2000000 from 0xffffffff81000000 (relocation range:
-0xffffffff80000000-0xffffffffbfffffff)
+- Arnaldo
+ 
+> Thanks,
+> Namhyung
+> 
+> 
+> > ---
+> >  tools/perf/tests/Build                 |  1 +
+> >  tools/perf/tests/builtin-test.c        |  4 ++
+> >  tools/perf/tests/code-reading.c        | 10 +---
+> >  tools/perf/tests/demangle-ocaml-test.c | 43 ++++++++++++++
+> >  tools/perf/tests/tests.h               |  1 +
+> >  tools/perf/util/Build                  |  1 +
+> >  tools/perf/util/demangle-ocaml.c       | 80 ++++++++++++++++++++++++++
+> >  tools/perf/util/demangle-ocaml.h       |  7 +++
+> >  tools/perf/util/string.c               |  9 +++
+> >  tools/perf/util/string2.h              |  2 +
+> >  tools/perf/util/symbol-elf.c           |  9 ++-
+> >  11 files changed, 156 insertions(+), 11 deletions(-)
+> >  create mode 100644 tools/perf/tests/demangle-ocaml-test.c
+> >  create mode 100644 tools/perf/util/demangle-ocaml.c
+> >  create mode 100644 tools/perf/util/demangle-ocaml.h
+> >
+> > diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+> > index aa4dc4f5abde..650aec19d490 100644
+> > --- a/tools/perf/tests/Build
+> > +++ b/tools/perf/tests/Build
+> > @@ -58,6 +58,7 @@ perf-y += time-utils-test.o
+> >  perf-y += genelf.o
+> >  perf-y += api-io.o
+> >  perf-y += demangle-java-test.o
+> > +perf-y += demangle-ocaml-test.o
+> >  perf-y += pfm.o
+> >  perf-y += parse-metric.o
+> >  perf-y += pe-file-parsing.o
+> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> > index 7273823d0d02..c4b888f18e9c 100644
+> > --- a/tools/perf/tests/builtin-test.c
+> > +++ b/tools/perf/tests/builtin-test.c
+> > @@ -338,6 +338,10 @@ static struct test generic_tests[] = {
+> >                 .desc = "Demangle Java",
+> >                 .func = test__demangle_java,
+> >         },
+> > +       {
+> > +               .desc = "Demangle OCaml",
+> > +               .func = test__demangle_ocaml,
+> > +       },
+> >         {
+> >                 .desc = "Parse and process metrics",
+> >                 .func = test__parse_metric,
+> > diff --git a/tools/perf/tests/code-reading.c b/tools/perf/tests/code-reading.c
+> > index 7c098d49c77e..280f0348a09c 100644
+> > --- a/tools/perf/tests/code-reading.c
+> > +++ b/tools/perf/tests/code-reading.c
+> > @@ -26,6 +26,7 @@
+> >  #include "event.h"
+> >  #include "record.h"
+> >  #include "util/mmap.h"
+> > +#include "util/string2.h"
+> >  #include "util/synthetic-events.h"
+> >  #include "thread.h"
+> >
+> > @@ -41,15 +42,6 @@ struct state {
+> >         size_t done_cnt;
+> >  };
+> >
+> > -static unsigned int hex(char c)
+> > -{
+> > -       if (c >= '0' && c <= '9')
+> > -               return c - '0';
+> > -       if (c >= 'a' && c <= 'f')
+> > -               return c - 'a' + 10;
+> > -       return c - 'A' + 10;
+> > -}
+> > -
+> >  static size_t read_objdump_chunk(const char **line, unsigned char **buf,
+> >                                  size_t *buf_len)
+> >  {
+> > diff --git a/tools/perf/tests/demangle-ocaml-test.c b/tools/perf/tests/demangle-ocaml-test.c
+> > new file mode 100644
+> > index 000000000000..a273ed5163d7
+> > --- /dev/null
+> > +++ b/tools/perf/tests/demangle-ocaml-test.c
+> > @@ -0,0 +1,43 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <string.h>
+> > +#include <stdlib.h>
+> > +#include <stdio.h>
+> > +#include "tests.h"
+> > +#include "session.h"
+> > +#include "debug.h"
+> > +#include "demangle-ocaml.h"
+> > +
+> > +int test__demangle_ocaml(struct test *test __maybe_unused, int subtest __maybe_unused)
+> > +{
+> > +       int ret = TEST_OK;
+> > +       char *buf = NULL;
+> > +       size_t i;
+> > +
+> > +       struct {
+> > +               const char *mangled, *demangled;
+> > +       } test_cases[] = {
+> > +               { "main",
+> > +                 NULL },
+> > +               { "camlStdlib__array__map_154",
+> > +                 "Stdlib.array.map" },
+> > +               { "camlStdlib__anon_fn$5bstdlib$2eml$3a334$2c0$2d$2d54$5d_1453",
+> > +                 "Stdlib.anon_fn[stdlib.ml:334,0--54]" },
+> > +               { "camlStdlib__bytes__$2b$2b_2205",
+> > +                 "Stdlib.bytes.++" },
+> > +       };
+> > +
+> > +       for (i = 0; i < sizeof(test_cases) / sizeof(test_cases[0]); i++) {
+> > +               buf = ocaml_demangle_sym(test_cases[i].mangled);
+> > +               if ((buf == NULL && test_cases[i].demangled != NULL)
+> > +                               || (buf != NULL && test_cases[i].demangled == NULL)
+> > +                               || (buf != NULL && strcmp(buf, test_cases[i].demangled))) {
+> > +                       pr_debug("FAILED: %s: %s != %s\n", test_cases[i].mangled,
+> > +                                buf == NULL ? "(null)" : buf,
+> > +                                test_cases[i].demangled == NULL ? "(null)" : test_cases[i].demangled);
+> > +                       ret = TEST_FAIL;
+> > +               }
+> > +               free(buf);
+> > +       }
+> > +
+> > +       return ret;
+> > +}
+> > diff --git a/tools/perf/tests/tests.h b/tools/perf/tests/tests.h
+> > index 8e24a61fe4c2..b85f005308a3 100644
+> > --- a/tools/perf/tests/tests.h
+> > +++ b/tools/perf/tests/tests.h
+> > @@ -119,6 +119,7 @@ int test__time_utils(struct test *t, int subtest);
+> >  int test__jit_write_elf(struct test *test, int subtest);
+> >  int test__api_io(struct test *test, int subtest);
+> >  int test__demangle_java(struct test *test, int subtest);
+> > +int test__demangle_ocaml(struct test *test, int subtest);
+> >  int test__pfm(struct test *test, int subtest);
+> >  const char *test__pfm_subtest_get_desc(int subtest);
+> >  int test__pfm_subtest_get_nr(void);
+> > diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+> > index e2563d0154eb..34995e1fef8f 100644
+> > --- a/tools/perf/util/Build
+> > +++ b/tools/perf/util/Build
+> > @@ -172,6 +172,7 @@ perf-$(CONFIG_ZSTD) += zstd.o
+> >
+> >  perf-$(CONFIG_LIBCAP) += cap.o
+> >
+> > +perf-y += demangle-ocaml.o
+> >  perf-y += demangle-java.o
+> >  perf-y += demangle-rust.o
+> >
+> > diff --git a/tools/perf/util/demangle-ocaml.c b/tools/perf/util/demangle-ocaml.c
+> > new file mode 100644
+> > index 000000000000..3df14e67c622
+> > --- /dev/null
+> > +++ b/tools/perf/util/demangle-ocaml.c
+> > @@ -0,0 +1,80 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +#include <string.h>
+> > +#include <stdlib.h>
+> > +#include "util/string2.h"
+> > +
+> > +#include "demangle-ocaml.h"
+> > +
+> > +#include <linux/ctype.h>
+> > +
+> > +static const char *caml_prefix = "caml";
+> > +static const size_t caml_prefix_len = 4;
+> > +
+> > +/* mangled OCaml symbols start with "caml" followed by an upper-case letter */
+> > +static bool
+> > +ocaml_is_mangled(const char *sym)
+> > +{
+> > +       return 0 == strncmp(sym, caml_prefix, caml_prefix_len)
+> > +               && isupper(sym[caml_prefix_len]);
+> > +}
+> > +
+> > +/*
+> > + * input:
+> > + *     sym: a symbol which may have been mangled by the OCaml compiler
+> > + * return:
+> > + *     if the input doesn't look like a mangled OCaml symbol, NULL is returned
+> > + *     otherwise, a newly allocated string containing the demangled symbol is returned
+> > + */
+> > +char *
+> > +ocaml_demangle_sym(const char *sym)
+> > +{
+> > +       char *result;
+> > +       int j = 0;
+> > +       int i;
+> > +       int len;
+> > +
+> > +       if (!ocaml_is_mangled(sym)) {
+> > +               return NULL;
+> > +       }
+> > +
+> > +       len = strlen(sym);
+> > +
+> > +       /* the demangled symbol is always smaller than the mangled symbol */
+> > +       result = malloc(len + 1);
+> > +       if (!result)
+> > +               return NULL;
+> > +
+> > +       /* skip "caml" prefix */
+> > +       i = caml_prefix_len;
+> > +
+> > +       while (i < len) {
+> > +               if (sym[i] == '_' && sym[i + 1] == '_') {
+> > +                       /* "__" -> "." */
+> > +                       result[j++] = '.';
+> > +                       i += 2;
+> > +               }
+> > +               else if (sym[i] == '$' && isxdigit(sym[i + 1]) && isxdigit(sym[i + 2])) {
+> > +                       /* "$xx" is a hex-encoded character */
+> > +                       result[j++] = (hex(sym[i + 1]) << 4) | hex(sym[i + 2]);
+> > +                       i += 3;
+> > +               }
+> > +               else {
+> > +                       result[j++] = sym[i++];
+> > +               }
+> > +       }
+> > +       result[j] = '\0';
+> > +
+> > +       /* scan backwards to remove an "_" followed by decimal digits */
+> > +       if (j != 0 && isdigit(result[j - 1])) {
+> > +               while (--j) {
+> > +                       if (!isdigit(result[j])) {
+> > +                               break;
+> > +                       }
+> > +               }
+> > +               if (result[j] == '_') {
+> > +                       result[j] = '\0';
+> > +               }
+> > +       }
+> > +
+> > +       return result;
+> > +}
+> > diff --git a/tools/perf/util/demangle-ocaml.h b/tools/perf/util/demangle-ocaml.h
+> > new file mode 100644
+> > index 000000000000..843cc4fa10a6
+> > --- /dev/null
+> > +++ b/tools/perf/util/demangle-ocaml.h
+> > @@ -0,0 +1,7 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef __PERF_DEMANGLE_OCAML
+> > +#define __PERF_DEMANGLE_OCAML 1
+> > +
+> > +char * ocaml_demangle_sym(const char *str);
+> > +
+> > +#endif /* __PERF_DEMANGLE_OCAML */
+> > diff --git a/tools/perf/util/string.c b/tools/perf/util/string.c
+> > index 52603876c548..f6d90cdd9225 100644
+> > --- a/tools/perf/util/string.c
+> > +++ b/tools/perf/util/string.c
+> > @@ -293,3 +293,12 @@ char *strdup_esc(const char *str)
+> >
+> >         return ret;
+> >  }
+> > +
+> > +unsigned int hex(char c)
+> > +{
+> > +       if (c >= '0' && c <= '9')
+> > +               return c - '0';
+> > +       if (c >= 'a' && c <= 'f')
+> > +               return c - 'a' + 10;
+> > +       return c - 'A' + 10;
+> > +}
+> > diff --git a/tools/perf/util/string2.h b/tools/perf/util/string2.h
+> > index 73df616ced43..56c30fef9682 100644
+> > --- a/tools/perf/util/string2.h
+> > +++ b/tools/perf/util/string2.h
+> > @@ -38,4 +38,6 @@ char *asprintf__tp_filter_pids(size_t npids, pid_t *pids);
+> >  char *strpbrk_esc(char *str, const char *stopset);
+> >  char *strdup_esc(const char *str);
+> >
+> > +unsigned int hex(char c);
+> > +
+> >  #endif /* PERF_STRING_H */
+> > diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> > index f3577f7d72fe..1e9114592f2e 100644
+> > --- a/tools/perf/util/symbol-elf.c
+> > +++ b/tools/perf/util/symbol-elf.c
+> > @@ -12,6 +12,7 @@
+> >  #include "maps.h"
+> >  #include "symbol.h"
+> >  #include "symsrc.h"
+> > +#include "demangle-ocaml.h"
+> >  #include "demangle-java.h"
+> >  #include "demangle-rust.h"
+> >  #include "machine.h"
+> > @@ -251,8 +252,12 @@ static char *demangle_sym(struct dso *dso, int kmodule, const char *elf_name)
+> >             return demangled;
+> >
+> >         demangled = bfd_demangle(NULL, elf_name, demangle_flags);
+> > -       if (demangled == NULL)
+> > -               demangled = java_demangle_sym(elf_name, JAVA_DEMANGLE_NORET);
+> > +       if (demangled == NULL) {
+> > +               demangled = ocaml_demangle_sym(elf_name);
+> > +               if (demangled == NULL) {
+> > +                       demangled = java_demangle_sym(elf_name, JAVA_DEMANGLE_NORET);
+> > +               }
+> > +       }
+> >         else if (rust_is_mangled(demangled))
+> >                 /*
+> >                     * Input to Rust demangling is the BFD-demangled
+> > --
+> > 2.30.0
+> >
+
+-- 
+
+- Arnaldo
