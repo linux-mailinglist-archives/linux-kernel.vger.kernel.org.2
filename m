@@ -2,206 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36D5431D4B7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:49:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F15731D4BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231236AbhBQErL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 23:47:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
+        id S231398AbhBQEuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 23:50:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhBQEqe (ORCPT
+        with ESMTP id S229544AbhBQEuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 23:46:34 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15452C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:45:54 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id a11so5996336vsm.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:45:54 -0800 (PST)
+        Tue, 16 Feb 2021 23:50:39 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA7F9C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:49:59 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id d2so901750pjs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 20:49:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uktxjKQwz4TfwBjCYOOJzA5Rs1qSh3+bpu7dP8/xG98=;
-        b=Ob7vhkngcs5SWjWVOtXougGOBUPgdqIiyzX5uKLWMlq6lQTrZ2PUjthoQjHous+cx7
-         d5pWfI4ADzGXpZb/8wNemgCNGcoJK7h2gX/SNiWUbKVfPuoN7gLueEhhCh06bQp2D4kj
-         nO7uch7pPugyX+oLuzb8DPlSpoKToPbcLYd6M=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LZb+d9m06HHICZn76e5LAG2jofpaShTxeaY5Qtk8seo=;
+        b=R8zwqy2m+UfvCoU4D6sMpED8T5pBxeFNw4wi7GhAXPikDwW4J1VxLdILw0SKjPKdcd
+         8crIEzqK/510F0d3r2nrgSaTxDh89nyeyZ93TbxAkqTXjcUbbPxFebKOyOrE3zyPJXyN
+         3ht4yOHpJ3nTiGvjNNWmFEUwjdi+p1y+0eUdZNrNGjPfCTCZQvV93PO36om/NmUYwTFn
+         PNnyhkzOj+vVbAC9WYF2pUDQmhjEGUULBB4T2ai6nRCuCAVqkLnmTkjTngfalQbm+b9I
+         2iYyG7sDFYvtLK1HI4EAYBZtwThHJOjFvedRRQw/jtWwqmHSDVapG9BTTfHTgniV6hxM
+         6Y2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uktxjKQwz4TfwBjCYOOJzA5Rs1qSh3+bpu7dP8/xG98=;
-        b=pDQSj7sbBEXGZmnHD80MBGGcTv0JkSf+gQdGJ+lhMYntqYZCxoFaLOiYsbj+n+HBzA
-         n4BiBEprGuMs0NEM82tXtAX0v9wuGxugcR165Qw2faX0ZYo1Y1Xb1WF+SXA39cGQn3eH
-         qkgn49iWeM8jvDHMwfvT/eQk+omHxOZFuehM/A6UD4WpwRKvWtJL8mj36NTkCdBsAjae
-         uBODM8sB/EvXKfehJqMIKRNK/hnSxxNlV1lrDKxAh1fzZsIb1kU9ofKP0TqP3gLEffYC
-         r4x/j4nE3MZyZjvnhZsDqQ5mNHWxg8vXCMC9o2DHBJNShezqApT+vc6Yt7QGtiTyXNfZ
-         aRog==
-X-Gm-Message-State: AOAM532bePR3fFnRM12LGARfy6AMOXkf3OZPl0HdkOUhcjDwcjSW65Wn
-        iVSUFiPkcY2kLX1xmboIXiVmf5IBg1n5aR6BpoNkQQ==
-X-Google-Smtp-Source: ABdhPJxI8u0RvnOp3BypDJ/HZUdf2uePEnqUeAieLHAvwOaNch0GOwf7JSOHb1NAP4ygE7Ttv2XRYC6P0KVm2+/QFtU=
-X-Received: by 2002:a67:8945:: with SMTP id l66mr13422008vsd.48.1613537153038;
- Tue, 16 Feb 2021 20:45:53 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LZb+d9m06HHICZn76e5LAG2jofpaShTxeaY5Qtk8seo=;
+        b=szm0H52Zlczqv9cHmjxs0bma4JP+tOPV//ez2yIjjtDPGPpKrSYvF6isHbbZRR1Ahu
+         cx42KKNzTSYVopQO5j7JHD8RaDL2DNNrHMca2O5eudEcrRP0hBmC1u1NR9T7SwDvUTxk
+         dfeo9oWqcW33tNgGAyCFTKA9AUR0lurLIdP3xVgkLiDaQ1POzzkMyz6awsOQ7OYA1c5d
+         dINFaonKGCb5Wq8UWEQtYXd4TmDxcTOhiwi2tXOZC8Xf42Uj+DR2ct/aWxV30LyWQC9p
+         fAVgQY+ZncywDELJ68Jkcb+VpMJu7ovVu5wU1XG/skIRP44kcT8A9BJasvoDX8XQWv+j
+         xQ/w==
+X-Gm-Message-State: AOAM5329nT0bkvS5ADc1ML7mAZR3C9NnApJ0oWV6DqQAZSKVyEJiy4vz
+        PsfOeZ3t/olnAKVVP66mnvtLEQ==
+X-Google-Smtp-Source: ABdhPJw+UxFSs2K+AX/FF0SVr5D//nxO0uI6h4a8Ky6fyBadf3zjRc2tF0lxrBwfweOQv8T383nG1Q==
+X-Received: by 2002:a17:90b:a58:: with SMTP id gw24mr7531774pjb.143.1613537399316;
+        Tue, 16 Feb 2021 20:49:59 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id g68sm592349pfb.29.2021.02.16.20.49.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Feb 2021 20:49:58 -0800 (PST)
+Date:   Wed, 17 Feb 2021 10:19:55 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Document SM8350
+ CPUfreq compatible
+Message-ID: <20210217044955.qmbpd43wis7xtjoj@vireshk-i7>
+References: <20210216111251.1838149-1-vkoul@kernel.org>
 MIME-Version: 1.0
-References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
- <20210215154317.8590-1-lhenriques@suse.de>
-In-Reply-To: <20210215154317.8590-1-lhenriques@suse.de>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Wed, 17 Feb 2021 12:45:41 +0800
-Message-ID: <CANMq1KCWF=yucGZ_DizvdzytW8RCXKPaQeC9huML2FJkqNWjQw@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Amir Goldstein <amir73il@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>, ceph-devel@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210216111251.1838149-1-vkoul@kernel.org>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 11:42 PM Luis Henriques <lhenriques@suse.de> wrote:
->
-> Nicolas Boichat reported an issue when trying to use the copy_file_range
-> syscall on a tracefs file.  It failed silently because the file content is
-> generated on-the-fly (reporting a size of zero) and copy_file_range needs
-> to know in advance how much data is present.
-
-Not sure if you have the whole history, these links and discussion can
-help if you want to expand on the commit message:
-[1] http://issuetracker.google.com/issues/178332739
-[2] https://lkml.org/lkml/2021/1/25/64
-[3] https://lkml.org/lkml/2021/1/26/1736
-[4] https://patchwork.kernel.org/project/linux-fsdevel/cover/20210212044405.4120619-1-drinkcat@chromium.org/
-
-> This commit restores the cross-fs restrictions that existed prior to
-> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") and
-> removes generic_copy_file_range() calls from ceph, cifs, fuse, and nfs.
-
-It goes beyond that, I think this also prevents copies within the same
-FS if copy_file_range is not implemented. Which is IMHO a good thing
-since this has been broken on procfs and friends ever since
-copy_file_range was implemented (but I assume that nobody ever hit
-that before cross-fs became available).
-
->
-> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> Cc: Nicolas Boichat <drinkcat@chromium.org>
-
-You could replace that with Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+On 16-02-21, 16:42, Vinod Koul wrote:
+> Add the CPUfreq compatible for SM8350 SoC along with note for using the
+> specific compatible for SoCs
+> 
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
 > ---
-> Changes since v1 (after Amir review)
-> - restored do_copy_file_range() helper
-> - return -EOPNOTSUPP if fs doesn't implement CFR
-> - updated commit description
->
->  fs/ceph/file.c     | 21 +++-----------------
->  fs/cifs/cifsfs.c   |  3 ---
->  fs/fuse/file.c     | 21 +++-----------------
->  fs/nfs/nfs4file.c  | 20 +++----------------
->  fs/read_write.c    | 49 ++++++++++------------------------------------
->  include/linux/fs.h |  3 ---
->  6 files changed, 19 insertions(+), 98 deletions(-)
->
-[snip]
-> diff --git a/fs/read_write.c b/fs/read_write.c
-> index 75f764b43418..b217cd62ae0d 100644
-> --- a/fs/read_write.c
-> +++ b/fs/read_write.c
-> @@ -1358,40 +1358,12 @@ COMPAT_SYSCALL_DEFINE4(sendfile64, int, out_fd, int, in_fd,
->  }
->  #endif
->
-> -/**
-> - * generic_copy_file_range - copy data between two files
-> - * @file_in:   file structure to read from
-> - * @pos_in:    file offset to read from
-> - * @file_out:  file structure to write data to
-> - * @pos_out:   file offset to write data to
-> - * @len:       amount of data to copy
-> - * @flags:     copy flags
-> - *
-> - * This is a generic filesystem helper to copy data from one file to another.
-> - * It has no constraints on the source or destination file owners - the files
-> - * can belong to different superblocks and different filesystem types. Short
-> - * copies are allowed.
-> - *
-> - * This should be called from the @file_out filesystem, as per the
-> - * ->copy_file_range() method.
-> - *
-> - * Returns the number of bytes copied or a negative error indicating the
-> - * failure.
-> - */
-> -
-> -ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
-> -                               struct file *file_out, loff_t pos_out,
-> -                               size_t len, unsigned int flags)
-> -{
-> -       return do_splice_direct(file_in, &pos_in, file_out, &pos_out,
-> -                               len > MAX_RW_COUNT ? MAX_RW_COUNT : len, 0);
-> -}
-> -EXPORT_SYMBOL(generic_copy_file_range);
-> -
->  static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
->                                   struct file *file_out, loff_t pos_out,
->                                   size_t len, unsigned int flags)
->  {
-> +       ssize_t ret = -EXDEV;
-> +
->         /*
->          * Although we now allow filesystems to handle cross sb copy, passing
->          * a file of the wrong filesystem type to filesystem driver can result
-> @@ -1400,14 +1372,14 @@ static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
->          * several different file_system_type structures, but they all end up
->          * using the same ->copy_file_range() function pointer.
->          */
-> -       if (file_out->f_op->copy_file_range &&
-> -           file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
-> -               return file_out->f_op->copy_file_range(file_in, pos_in,
-> -                                                      file_out, pos_out,
-> -                                                      len, flags);
-> +       if (!file_out->f_op->copy_file_range)
-> +               ret = -EOPNOTSUPP;
+>  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> index 9299028ee712..3eb3cee59d79 100644
+> --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> @@ -8,7 +8,9 @@ Properties:
+>  - compatible
+>  	Usage:		required
+>  	Value type:	<string>
+> -	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss".
+> +	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss"
+> +			along with SoC specific compatible:
+> +			  "qcom,sm8350-cpufreq-epss", "qcom,cpufreq-epss"
 
-This doesn't work as the 0-filesize check is done before that in
-vfs_copy_file_range (so the syscall still returns 0, works fine if you
-comment out `if (len == 0)`).
+And why is SoC specific compatible required here ? Is the implementation on
+sm8350 any different than the ones using "qcom,cpufreq-epss" compatible ?
 
-Also, you need to check for file_in->f_op->copy_file_range instead,
-the problem is if the _input_ filesystem doesn't report sizes or can't
-seek properly.
+FWIW, the same compatible string must be reused until the time there is
+difference in the hardware. The compatible string must be considered as a marker
+for a particular version of the hardware.
 
-> +       else if (file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
-> +               ret = file_out->f_op->copy_file_range(file_in, pos_in,
-> +                                                     file_out, pos_out,
-> +                                                     len, flags);
->
-> -       return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
-> -                                      flags);
-> +       return ret;
->  }
->
->  /*
-> @@ -1514,8 +1486,7 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
->         }
->
->         ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
-> -                               flags);
-> -       WARN_ON_ONCE(ret == -EOPNOTSUPP);
-> +                                flags);
->  done:
->         if (ret > 0) {
->                 fsnotify_access(file_in);
+-- 
+viresh
