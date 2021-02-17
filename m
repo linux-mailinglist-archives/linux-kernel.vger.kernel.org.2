@@ -2,161 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B304E31DB62
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:24:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 357AD31DB6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:25:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhBQOXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:23:42 -0500
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:40289 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233373AbhBQOXc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:23:32 -0500
-Received: by mail-ej1-f41.google.com with SMTP id b14so16462212eju.7;
-        Wed, 17 Feb 2021 06:23:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/cZ1TPSfhwcT7eeaWpLG2b2x+qUWHwcJjDjHqV8vqz8=;
-        b=mgFgIEqqnXwz0eMgabcUf2yaKLdE7VaC+CWxm6Uk+k07eqrZUjKe2SayoPUXTNd3hC
-         SNW/CPdkW0FZmqyLfZtpUH25dE5Zd3mY70eOeI1KHEiDIqyGP8u/P0j7Jud+ggG9gvjY
-         3jOOOwN4vic0aRS3MBTD/kv6VkrMw1c/pUJ57h5nYtrwskaJwqbgezY6Dpuc51U5adSM
-         iX+TtkYugTJWKjMYdoToJrZRJnpCHex2KgkCH7UPsuLnNUpSr36tzlr43dfQ2sz1hFdq
-         JeaTCVo5SsuOQWg3ngqCjaqotnNN6n3OaptpOxcwDOSxIJYO2WqejluUx4snk34sa5vY
-         3xxg==
-X-Gm-Message-State: AOAM530sfAeM2pPc0XpUdo+WCnv5OAc0no944qGaW2hxqKtZ++m4ukG+
-        HlkqXtsUqMCuM08+t42pM6k=
-X-Google-Smtp-Source: ABdhPJxvm+4w8jYCGbVq1X1GGG/XVSiVzPd1/5/eZsnm9n1dc1nwiQUnQgCal6Os3p3nACTexccIFA==
-X-Received: by 2002:a17:906:7697:: with SMTP id o23mr18674348ejm.292.1613571770988;
-        Wed, 17 Feb 2021 06:22:50 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id z16sm1072289ejd.102.2021.02.17.06.22.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 06:22:49 -0800 (PST)
-Date:   Wed, 17 Feb 2021 15:22:48 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        id S233486AbhBQOY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:24:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46814 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233374AbhBQOYW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 09:24:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D3039B8FA;
+        Wed, 17 Feb 2021 14:23:39 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 15:23:37 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/8] arm64: dts: imx8mm-nitrogen-r2: add uarts
-Message-ID: <20210217142248.klq36mraspeehiqj@kozik-lap>
-References: <20210215231943.36910-1-adrien.grassein@gmail.com>
- <20210215231943.36910-5-adrien.grassein@gmail.com>
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <20210217142321.GA651@linux>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0agxVWYRKGm5IO@dhcp22.suse.cz>
+ <182f6a4a-6f95-9911-7730-8718ab72ece2@redhat.com>
+ <YC0fIhEHRDOVzK8U@dhcp22.suse.cz>
+ <5f50c810-3f49-a162-6d1d-cf621c515f45@redhat.com>
+ <YC0gzBX8ubV6x5NK@dhcp22.suse.cz>
+ <5d70b340-2db0-ef1f-1564-e5d39354c11c@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210215231943.36910-5-adrien.grassein@gmail.com>
+In-Reply-To: <5d70b340-2db0-ef1f-1564-e5d39354c11c@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 12:19:39AM +0100, Adrien Grassein wrote:
-> Add description and pinmuxing for uarts.
+On Wed, Feb 17, 2021 at 03:08:04PM +0100, David Hildenbrand wrote:
+> On 17.02.21 14:59, Michal Hocko wrote:
+> > On Wed 17-02-21 14:53:37, David Hildenbrand wrote:
+> > > On 17.02.21 14:50, Michal Hocko wrote:
+> > [...]
+> > > > Do we have any real life examples? Or does this fall more into, let's
+> > > > optimize an existing implementation category.
+> > > > 
+> > > 
+> > > It's a big TODO item I have on my list and I am happy that Oscar is looking
+> > > into it. So yes, I noticed it while working on virtio-mem. It's real.
+> > 
+> > Do not take me wrong, I am not opposing to the functionality. I am
+> > asking for the specific usecase.
 > 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 53 ++++++++++++++++++-
->  1 file changed, 52 insertions(+), 1 deletion(-)
+> Makes sense, and a proper motivation should be included in the patches/cover
+> letter. So here comes a quick-n-dirty example:
+
+Definitely. I took it for granted that the problem was obvious.
+
+> Start a VM with 4G. Hotplug 1G via virtio-mem and online it to ZONE_MOVABLE.
+> Allocate 512 huge pages.
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> index 22acde0f3ba8..3c5b692f6ad1 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> @@ -206,6 +206,15 @@ rtc@68 {
->  	};
->  };
->  
-> +/* BT */
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart1>;
-> +	assigned-clocks = <&clk IMX8MM_CLK_UART1>;
+> [root@localhost ~]# cat /proc/meminfo
+> MemTotal:        5061512 kB
+> MemFree:         3319396 kB
+> MemAvailable:    3457144 kB
+> ...
+> HugePages_Total:     512
+> HugePages_Free:      512
+> HugePages_Rsvd:        0
+> HugePages_Surp:        0
+> Hugepagesize:       2048 kB
+> 
+> 
+> The huge pages get partially allocate from ZONE_MOVABLE. Try unplugging 1G
+> via virtio-mem (remember, all ZONE_MOVABLE). Inside the guest:
+> 
+> [  180.058992] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+> [  180.060531] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+> [  180.061972] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+> [  180.063413] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+> [  180.064838] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+> [  180.065848] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+> [  180.066794] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+> [  180.067738] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+> [  180.068669] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+> [  180.069598] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+> 
+> 
+> I succeed in unplugging 540MB - 484 MB remain blocked by huge pages ("which
+> did not end up there by pure luck"). These pages are movable (and even
+> free!) and can easily be reallocated.
 
-I see you have it also for uart2 - what is the purpose of it? What does
-the "assigned-clocks" property alone do?
+Thanks for providing such a detailed case David.
+I will gather the bits and prepare a v2 once I gather more feedback.
 
-> +	uart-has-rtscts;
-> +	status = "okay";
-> +};
-> +
->  /* console */
->  &uart2 {
->  	pinctrl-names = "default";
-> @@ -215,6 +224,23 @@ &uart2 {
->  	status = "okay";
->  };
->  
-> +/* J15 */
-> +&uart3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart3>;
-> +	assigned-clocks = <&clk IMX8MM_CLK_UART3>;
-> +	uart-has-rtscts;
-> +	status = "okay";
-> +};
-> +
-> +/* J9 */
-> +&uart4 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_uart4>;
-> +	assigned-clocks = <&clk IMX8MM_CLK_UART4>;
-> +	status = "okay";
-> +};
-> +
->  /* eMMC */
->  &usdhc1 {
->  	bus-width = <8>;
-> @@ -353,6 +379,15 @@ MX8MM_IOMUXC_SAI5_RXC_GPIO3_IO20 0x16
->  		>;
->  	};
->  
-> +	pinctrl_uart1: uart1grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_UART1_RXD_UART1_DCE_RX 0x140
-> +			MX8MM_IOMUXC_UART1_TXD_UART1_DCE_TX 0x140
-> +			MX8MM_IOMUXC_UART3_RXD_UART1_DCE_CTS_B 0x140
-> +			MX8MM_IOMUXC_UART3_TXD_UART1_DCE_RTS_B 0x140
-> +		>;
-> +	};
-> +
->  	pinctrl_uart2: uart2grp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX 0x140
-> @@ -360,6 +395,22 @@ MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX 0x140
->  		>;
->  	};
->  
-> +	pinctrl_uart3: uart3grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_ECSPI1_SCLK_UART3_DCE_RX 0x140
-> +			MX8MM_IOMUXC_ECSPI1_MOSI_UART3_DCE_TX 0x140
-> +			MX8MM_IOMUXC_ECSPI1_SS0_UART3_DCE_RTS_B 0x140
-> +			MX8MM_IOMUXC_ECSPI1_MISO_UART3_DCE_CTS_B 0x140
-> +		>;
-> +	};
-> +
-> +	pinctrl_uart4: uart4grp {
-> +		fsl,pins = <
-> +			MX8MM_IOMUXC_UART4_RXD_UART4_DCE_RX 0x140
-> +			MX8MM_IOMUXC_UART4_TXD_UART4_DCE_TX 0x140
-> +		>;
-> +	};
-> +
->  	pinctrl_usbotg1: usbotg1grp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_GPIO1_IO12_USB1_OTG_PWR	0x16
-> @@ -370,7 +421,7 @@ MX8MM_IOMUXC_GPIO1_IO13_USB1_OTG_OC	0x156
->  	pinctrl_usbotg2: usbotg2grp {
->  		fsl,pins = <
->  			MX8MM_IOMUXC_GPIO1_IO14_USB2_OTG_PWR	0x16
-> -			MX8MM_IOMUXC_GPIO1_IO15_USB2_OTG_OC	0x156
-> +			MX8MM_IOMUXC_GPIO1_IO15_USB2_OTG_OC	0x15
-
-This is not relevant to the topic.
-
-Best regards,
-Krzysztof
+-- 
+Oscar Salvador
+SUSE L3
