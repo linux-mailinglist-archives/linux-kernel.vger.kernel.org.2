@@ -2,109 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 780BB31E2BB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0761231E2BF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:48:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbhBQWqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:46:49 -0500
-Received: from chill.innovation.ch ([216.218.245.220]:46888 "EHLO
-        chill.innovation.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbhBQWfq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:35:46 -0500
-Date:   Wed, 17 Feb 2021 14:34:40 -0800
-DKIM-Filter: OpenDKIM Filter v2.10.3 chill.innovation.ch DD83B641387
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=innovation.ch;
-        s=default; t=1613601280;
-        bh=hrCqOktxWH8gGcBmBtZ5Sz0GQaLvLl4sZU2pzZlHrWg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QUCtJBALr8Xvqb80iRCFaYJiiuzl0DbLcpR+fFjP5B1dsUccr2yF8wyRm+LeCj23T
-         eFs3AY5o60UNMKxJb5D5xxEgcFmKSXoHvTqp1qOnxyTJKNmgBVHxgjv6c97g1l6uJ+
-         N5hmVvSfB2zbfOqFuFGU+kzp5jQNA5d6uEH9pBLEE9wrIVI43vjqO9FwlvitFCZMc+
-         Za2ghMkqskOdIlIbmKp+HyEhZPmFUDkTF6VVcWTOWei4bMm0sCZcgnjtoOstWiJeb5
-         0ZqpLdRy0PapYmYk1aZekztbHbzQx9ZSPbeYPouVwkK0PfqZdFYnOry6ywR1UuRVxX
-         59VQMg95ZOPnQ==
-From:   "Life is hard, and then you die" <ronald@innovation.ch>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] Input: applespi: Add trace_event module param for
- early tracing.
-Message-ID: <20210217223440.GC25685@innovation.ch>
-References: <20210217190718.11035-1-ronald@innovation.ch>
- <20210217190718.11035-3-ronald@innovation.ch>
- <YC176rlGQeyKuOpn@google.com>
- <20210217205257.GB25685@innovation.ch>
- <YC2FUwOdIoKKg1Ew@google.com>
+        id S232563AbhBQWsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:48:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233399AbhBQWks (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 17:40:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6F97064E2E;
+        Wed, 17 Feb 2021 22:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613601607;
+        bh=h4GGmCDmodDTOfcOMQkHVeIRed8RvDWc90CgF6SA0HM=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=c/HdA/KW6OQP1U1BG9/G/gpNhbgo4UMSFY34Sb4UmJqCbSz5y+UljgD0C6Zg0u+2w
+         4oHz3qrjM0XTh4xN2dfSMgkXDA7V1Q6BLpbk9+xo6aFPIpiqnj4mzvm886IPiAnyCy
+         07Fq4kxjyUo3Xh391HRYb5eAWwKVuuFISX1Vgqu524kcwkwAurJi0hrwFAFQjJ+hbg
+         9ODkUJ3UV7ffRt9gfQVvaMvCa0blsdbsdxw9WvjhgfBBR8+kuQbuCLMP3I15idmA43
+         +oA1fti9kYyYTRPkvtkntd0enSV9VVgf5A0p+slYEBNJCJi/sClb50fPBJ+Rg+FyGt
+         ZLuG3uchB97Mw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5F10D6096D;
+        Wed, 17 Feb 2021 22:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YC2FUwOdIoKKg1Ew@google.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+Subject: Re: [PATCH net-next 1/1] net: stmmac: Add PCI bus info to ethtool driver
+ query output
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161360160738.1867.9252976425152960129.git-patchwork-notify@kernel.org>
+Date:   Wed, 17 Feb 2021 22:40:07 +0000
+References: <20210217095705.13806-1-vee.khee.wong@intel.com>
+In-Reply-To: <20210217095705.13806-1-vee.khee.wong@intel.com>
+To:     Wong Vee Khee <vee.khee.wong@intel.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
-  Hi Dmitry,
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, Feb 17, 2021 at 01:06:27PM -0800, Dmitry Torokhov wrote:
-> On Wed, Feb 17, 2021 at 12:52:57PM -0800, Life is hard, and then you die wrote:
-> > 
-> > On Wed, Feb 17, 2021 at 12:26:18PM -0800, Dmitry Torokhov wrote:
-> > > 
-> > > On Wed, Feb 17, 2021 at 11:07:18AM -0800, Ronald Tschalär wrote:
-> > > > The problem is that tracing can't be set via sysfs until the module is
-> > > > loaded, at which point the keyboard and trackpad initialization commands
-> > > > have already been run and hence tracing can't be used to debug problems
-> > > > here.
-> > > > 
-> > > > Adding this param allows tracing to be enabled for messages sent and
-> > > > received during module probing. It takes comma-separated list of events,
-> > > > e.g.
-> > > > 
-> > > >   trace_event=applespi_tp_ini_cmd,applespi_bad_crc
-> > > 
-> > > You can unbind and rebind a device to a driver via sysfs as many times
-> > > as needed (see bind and unbind driver sysfs attributes), so I believe
-
-Ok yes, that works well, except for the boot-debug scenario.
-
-> > Hmm, I'm going to have to play with that a bit, but one place it still
-> > won't help I think is something we ran into in practise: init was
-> > failing during boot, but was successfull later on.
+On Wed, 17 Feb 2021 17:57:05 +0800 you wrote:
+> This patch populates the PCI bus info in the ethtool driver query data.
 > 
-> Maybe compiling module as a built-in and then using kernel command line
-> option to initiate the trace would work?
+> Users will be able to view PCI bus info using 'ethtool -i <interface>'.
+> 
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c    | 1 +
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_ethtool.c | 4 ++++
+>  include/linux/stmmac.h                               | 1 +
+>  3 files changed, 6 insertions(+)
 
-My personal issue with this is the fact that most folks reporting
-issues are running their distro's standard kernel, which invariably
-has this (and most others) compiled as a loadable module; and asking
-folks to rebuild their kernel is actually quite a hurdle for them, in
-particular compared to asking them to just add some boot params or
-manipulating some sysfs entries. So I prefer to try to provide easy
-ways for folks to be able to generate and report info back that work
-and are enabled out-of-the-box on most distros.
+Here is the summary with links:
+  - [net-next,1/1] net: stmmac: Add PCI bus info to ethtool driver query output
+    https://git.kernel.org/netdev/net-next/c/20e07e2c3cf3
 
-> If this facility is really needed, it would be beneficial for other
-> modules as well, and thus better implemented in the module loading code
-> to activate desired tracing after loading the module but before invoking
-> module init code.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-I don't know if it rises to the level of "really needed" - I certainly
-needed something like this to debug an issue and hence the module
-param. And I figured if somebody adds/debugs additional init commands
-they could find it useful too. But this may not be commonly needed
-after all, or folks are using some other solution.
-
-If there's interest, I might be able to take a stab a this in the near
-future, but not sure.
-
-
-  Cheers,
-
-  Ronald
 
