@@ -2,194 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8AC31E041
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2A531E040
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 21:28:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235031AbhBQU1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 15:27:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26643 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235015AbhBQU0u (ORCPT
+        id S235024AbhBQU0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 15:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233645AbhBQU0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 15:26:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613593522;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hZtRJeUML7NHUfQaoih4ryjpEijORracEaJufXohTpE=;
-        b=cc8vViWY2QCgC5YaU/p1FluPbyHCTL/18aHudvKUjuK8crgjn+n7yv8Ihod6nXmykYf3JL
-        QGS4AAkr8bHycQANPmsbIxriEC/xVF/zyxhEs5i0vts8w1oYePAIWtRX20gxV39/r20u+9
-        m751s3FzqHYnDZQJjt/oY6A72pgYl9M=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-2_Jx9N0TOFK7fWZrDSTPQQ-1; Wed, 17 Feb 2021 15:25:21 -0500
-X-MC-Unique: 2_Jx9N0TOFK7fWZrDSTPQQ-1
-Received: by mail-qt1-f197.google.com with SMTP id 22so10914738qty.14
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 12:25:21 -0800 (PST)
+        Wed, 17 Feb 2021 15:26:42 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28EDC061574;
+        Wed, 17 Feb 2021 12:26:01 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id 75so5826953pgf.13;
+        Wed, 17 Feb 2021 12:26:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oQrfzO17knb0L2S7w06JElc/0RtdSnwzho+6k4zHaN0=;
+        b=u0aqlOkz+ygOgoDWu2MW9cD0xGWxxpjARMtgQFTLUiGhKbE8H3CwYteDRFgmkvrLZ0
+         Sjd0zuR2k10uoGsoLtMHhDn1Q90X/v4n3U81fjPq466AglSZOCboNrUas8mSjf3OpCvv
+         /g/kh1B8mIN7l3kpIh4Sy64eWfZOU7uAk+nSUSd2XeekNmBEXKbGboU4hCyHm0LonEnn
+         GYzMJylmmd9ysYawLXdqkaUnQGO12cOPG2SROGDmbdqa0D6Rj+4hkFUpq7LJ4iUGdV1h
+         96ShljAITpMrVsYoII2iz7aOr/mS7n3KxFdRRCmLoqdN4fOVvLMdh1DNv2vY51gaspjY
+         BLRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hZtRJeUML7NHUfQaoih4ryjpEijORracEaJufXohTpE=;
-        b=l6/GZgCk8IGqPT77S9uZysyLazRAtSZHV+DUi9/1PT3Bx/lt0Hi15R75SGDCiVv2t2
-         c5/7Xa40yjGIE4BS1nOilmn6oLoq31DNfKggJUkKCRffF1R/MJSUgBQbxsvTcNi0Tlpi
-         wuiggi2MiSCKpgszqWx1+DsSoNyHxkj/hwvUxNsGWuhD3iJKtnuMGkcG7NUDgX4HLg7u
-         mKJ9bRPuHedogB5lUuu5GBKj8coMdrsm/rpi3rCjujUnu4gb68TDdeSjWdIt2Y5aCx2c
-         c6omvHk4zG0nO9vzwLm/7aQe5KTkJZnXnQ2NpMCUu8mmKul2Ms1jth76MBb6W6I0//8E
-         11YA==
-X-Gm-Message-State: AOAM530m42ZknE2QUfVYbeK9qEMgtQ8hvKq/nldRjjUWIeGjik6Ni1fV
-        PlqwDlJf8503NDVJ4v03+f15uh17iG9Jdf/nVW2CVz/NzF2POZ1pt6Neg2RQNP4Bs7GjT7ZGFBR
-        Nx6pbls34gsHDyPbehMVukauk
-X-Received: by 2002:a37:e4d:: with SMTP id 74mr997932qko.109.1613593520568;
-        Wed, 17 Feb 2021 12:25:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzh1hgcn30UQ1Pzk5/L6ZLtIbXgncB61U4mq0qYkBmtccAv/ChS4Cjoj7zOPZwFtCtLxtOTeQ==
-X-Received: by 2002:a37:e4d:: with SMTP id 74mr997909qko.109.1613593520273;
-        Wed, 17 Feb 2021 12:25:20 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id r80sm2436111qke.97.2021.02.17.12.25.18
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oQrfzO17knb0L2S7w06JElc/0RtdSnwzho+6k4zHaN0=;
+        b=VE80Wjbquj89d0P+MibEhriTCXfBt06/l8LnD+9Z+TN59W24bjIWuG/uT5e685kiCr
+         AeJLquzrl+TzpuqzVtAjI4BSuMdP/zhOUrU67R9mKZqhnGP5JMUP6vRaHQ9E+knY4xff
+         uXjBIQI7DnZm/lOjEOmf4SBGOKQp1FTv3Mha3gZysvYYzAGvkGTWHLhVd7zuBJq+vaIZ
+         ADnLFAibVMsJPyyRFGHu5zsvrgFuEt9qvEn0vKs3Fi4Ae540cSyluRmuOTwaa0kX1f7L
+         FPnxYzQOfr9i1bYnUfm+/YJOA8Sd486u0l98RW6dGHxKMvmAqUGhdDF0FUcT9AxSb57r
+         GxoQ==
+X-Gm-Message-State: AOAM5320YrF1N74RgKVq/gj9kcz33SLq8d9GYh+2/JlrCJVbi2YqXvid
+        GgX7VcIdreQuAmsgIxclpNNJE6PCSwM=
+X-Google-Smtp-Source: ABdhPJw7sprEYpUjr8VOY599l4n2vzIFZHUpSg+RjAqb0AIMDTySDpu7Fvog9t6aHHctDV29dyatJA==
+X-Received: by 2002:a05:6a00:787:b029:1da:643b:6d41 with SMTP id g7-20020a056a000787b02901da643b6d41mr967979pfu.31.1613593560975;
+        Wed, 17 Feb 2021 12:26:00 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id n1sm3470238pgi.78.2021.02.17.12.25.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 12:25:19 -0800 (PST)
-Date:   Wed, 17 Feb 2021 15:25:18 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, shu wang <malate_wangshu@hotmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michel Lespinasse <walken@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH 5/5] mm proc/task_mmu.c: add hugetlb specific routine
- for clear_refs
-Message-ID: <20210217202518.GA19238@xz-x1>
-References: <20210211000322.159437-1-mike.kravetz@oracle.com>
- <20210211000322.159437-6-mike.kravetz@oracle.com>
+        Wed, 17 Feb 2021 12:26:00 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE)
+Subject: [PATCH net-next] net: mdio: Remove of_phy_attach()
+Date:   Wed, 17 Feb 2021 12:25:57 -0800
+Message-Id: <20210217202558.2645876-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210211000322.159437-6-mike.kravetz@oracle.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 04:03:22PM -0800, Mike Kravetz wrote:
-> There was is no hugetlb specific routine for clearing soft dirty and
-> other referrences.  The 'default' routines would only clear the
-> VM_SOFTDIRTY flag in the vma.
-> 
-> Add new routine specifically for hugetlb vmas.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  fs/proc/task_mmu.c | 110 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 110 insertions(+)
-> 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 829b35016aaa..f06cf9b131a8 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1116,6 +1116,115 @@ static inline void clear_soft_dirty_pmd(struct vm_area_struct *vma,
->  }
->  #endif
->  
-> +#ifdef CONFIG_HUGETLB_PAGE
-> +static inline bool huge_pte_is_pinned(struct vm_area_struct *vma,
-> +					unsigned long addr, pte_t pte)
-> +{
-> +	struct page *page;
-> +
-> +	if (likely(!atomic_read(&vma->vm_mm->has_pinned)))
-> +		return false;
-> +	page = pte_page(pte);
-> +	if (!page)
-> +		return false;
-> +	return page_maybe_dma_pinned(page);
-> +}
-> +
-> +static int clear_refs_hugetlb_range(pte_t *ptep, unsigned long hmask,
-> +				unsigned long addr, unsigned long end,
-> +				struct mm_walk *walk)
-> +{
-> +	struct clear_refs_private *cp = walk->private;
-> +	struct vm_area_struct *vma = walk->vma;
-> +	struct hstate *h = hstate_vma(walk->vma);
-> +	unsigned long adj_start = addr, adj_end = end;
-> +	spinlock_t *ptl;
-> +	pte_t old_pte, pte;
-> +
-> +	/*
-> +	 * clear_refs should only operate on complete vmas.  Therefore,
-> +	 * values passed here should be huge page aligned and huge page
-> +	 * size in length.  Quick validation before taking any action in
-> +	 * case upstream code is changed.
-> +	 */
-> +	if ((addr & hmask) != addr || end - addr != huge_page_size(h)) {
-> +		WARN_ONCE(1, "%s passed unaligned address\n", __func__);
-> +		return 1;
-> +	}
+We have no in-tree users, also update the sfp-phylink.rst documentation
+to indicate that phy_attach_direct() is used instead of of_phy_attach().
 
-I wouldn't worry too much on the interface change - The one who will change the
-interface should guarantee all existing hooks will still work, isn't it? :)
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ Documentation/networking/sfp-phylink.rst |  2 +-
+ drivers/net/mdio/of_mdio.c               | 30 ------------------------
+ include/linux/of_mdio.h                  | 10 --------
+ 3 files changed, 1 insertion(+), 41 deletions(-)
 
-It's slightly confusing to me on why "clear_refs should only operate on
-complete vmas" is related to the check, though.
-
-> +
-> +	ptl = huge_pte_lock(hstate_vma(vma), walk->mm, ptep);
-> +
-> +	/* Soft dirty and pmd sharing do not mix */
-
-Right, this seems to be a placeholder for unsharing code.
-
-Though maybe we can do that earlier in pre_vma() hook?  That should be per-vma
-rather than handling one specific huge page here, hence more efficient imho.
-
-this reminded me that I should also better move hugetlb_unshare_all_pmds() of
-my other patch into hugetlb.c, so that this code can call it.  Currently it's a
-static function in userfaultfd.c.
-
-> +
-> +	pte = huge_ptep_get(ptep);
-> +	if (!pte_present(pte))
-> +		goto out;
-> +	if (unlikely(is_hugetlb_entry_hwpoisoned(pte)))
-> +		goto out;
-> +
-> +	if (cp->type == CLEAR_REFS_SOFT_DIRTY) {
-
-Maybe move this check into clear_refs_test_walk()?  We can bail out earlier if:
-
-      (is_vm_hugetlb_page(vma) && (type != CLEAR_REFS_SOFT_DIRTY))
-
-> +		if (huge_pte_is_pinned(vma, addr, pte))
-> +			goto out;
-
-Out of topic of this patchset, but it's definitely a pity that we can't track
-soft dirty for pinned pages.  Currently the assumption of the pte code path is:
-"if this page can be DMA written then we won't know whether data changed after
-all, then tracking dirty is meaningless", however that's prone to change when
-new hardwares coming, say, IOMMU could start to trap DMA writes already.
-
-But again that's another story.. and we should just follow what we do with
-non-hugetlbfs for sure here, until some day if we'd like to revive soft dirty
-tracking with pinned pages.
-
-> +
-> +		/*
-> +		 * soft dirty and pmd sharing do not work together as
-> +		 * per-process is tracked in ptes, and pmd sharing allows
-> +		 * processed to share ptes.  We unshare any pmds here.
-> +		 */
-> +		adjust_range_if_pmd_sharing_possible(vma, &adj_start, &adj_end);
-
-Ideally when reach here, huge pmd sharing won't ever exist, right?  Then do we
-still need to adjust the range at all?
-
-Thanks,
-
+diff --git a/Documentation/networking/sfp-phylink.rst b/Documentation/networking/sfp-phylink.rst
+index 5aec7c8857d0..328f8d39eeb3 100644
+--- a/Documentation/networking/sfp-phylink.rst
++++ b/Documentation/networking/sfp-phylink.rst
+@@ -163,7 +163,7 @@ this documentation.
+ 	err = phylink_of_phy_connect(priv->phylink, node, flags);
+ 
+    For the most part, ``flags`` can be zero; these flags are passed to
+-   the of_phy_attach() inside this function call if a PHY is specified
++   the phy_attach_direct() inside this function call if a PHY is specified
+    in the DT node ``node``.
+ 
+    ``node`` should be the DT node which contains the network phy property,
+diff --git a/drivers/net/mdio/of_mdio.c b/drivers/net/mdio/of_mdio.c
+index 4daf94bb56a5..ea9d5855fb52 100644
+--- a/drivers/net/mdio/of_mdio.c
++++ b/drivers/net/mdio/of_mdio.c
+@@ -462,36 +462,6 @@ struct phy_device *of_phy_get_and_connect(struct net_device *dev,
+ }
+ EXPORT_SYMBOL(of_phy_get_and_connect);
+ 
+-/**
+- * of_phy_attach - Attach to a PHY without starting the state machine
+- * @dev: pointer to net_device claiming the phy
+- * @phy_np: Node pointer for the PHY
+- * @flags: flags to pass to the PHY
+- * @iface: PHY data interface type
+- *
+- * If successful, returns a pointer to the phy_device with the embedded
+- * struct device refcount incremented by one, or NULL on failure. The
+- * refcount must be dropped by calling phy_disconnect() or phy_detach().
+- */
+-struct phy_device *of_phy_attach(struct net_device *dev,
+-				 struct device_node *phy_np, u32 flags,
+-				 phy_interface_t iface)
+-{
+-	struct phy_device *phy = of_phy_find_device(phy_np);
+-	int ret;
+-
+-	if (!phy)
+-		return NULL;
+-
+-	ret = phy_attach_direct(dev, phy, flags, iface);
+-
+-	/* refcount is held by phy_attach_direct() on success */
+-	put_device(&phy->mdio.dev);
+-
+-	return ret ? NULL : phy;
+-}
+-EXPORT_SYMBOL(of_phy_attach);
+-
+ /*
+  * of_phy_is_fixed_link() and of_phy_register_fixed_link() must
+  * support two DT bindings:
+diff --git a/include/linux/of_mdio.h b/include/linux/of_mdio.h
+index cfe8c607a628..2b05e7f7c238 100644
+--- a/include/linux/of_mdio.h
++++ b/include/linux/of_mdio.h
+@@ -26,9 +26,6 @@ of_phy_connect(struct net_device *dev, struct device_node *phy_np,
+ struct phy_device *
+ of_phy_get_and_connect(struct net_device *dev, struct device_node *np,
+ 		       void (*hndlr)(struct net_device *));
+-struct phy_device *
+-of_phy_attach(struct net_device *dev, struct device_node *phy_np,
+-	      u32 flags, phy_interface_t iface);
+ 
+ struct mii_bus *of_mdio_find_bus(struct device_node *mdio_np);
+ int of_phy_register_fixed_link(struct device_node *np);
+@@ -100,13 +97,6 @@ of_phy_get_and_connect(struct net_device *dev, struct device_node *np,
+ 	return NULL;
+ }
+ 
+-static inline struct phy_device *of_phy_attach(struct net_device *dev,
+-					       struct device_node *phy_np,
+-					       u32 flags, phy_interface_t iface)
+-{
+-	return NULL;
+-}
+-
+ static inline struct mii_bus *of_mdio_find_bus(struct device_node *mdio_np)
+ {
+ 	return NULL;
 -- 
-Peter Xu
+2.25.1
 
