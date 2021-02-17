@@ -2,163 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8FF31DF7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:18:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AEE31DF81
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhBQTSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:18:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52718 "EHLO mail.kernel.org"
+        id S232772AbhBQTT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 14:19:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232494AbhBQTSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:18:02 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71A4C64E62;
-        Wed, 17 Feb 2021 19:17:19 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 14:17:17 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: output: was: Re: [PATCH v4] printk: Userspace format
- enumeration support
-Message-ID: <20210217141717.52089bbc@gandalf.local.home>
-In-Reply-To: <YC02GBghuhmlvrXk@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
-        <YCvqdrBc3wLDClhv@alley>
-        <YCv4V5EFeuEmyxSz@chrisdown.name>
-        <YC0n3vRO788sXqud@alley>
-        <YC02GBghuhmlvrXk@chrisdown.name>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232691AbhBQTTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:19:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C874A64E62;
+        Wed, 17 Feb 2021 19:19:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613589547;
+        bh=pSG0iuIL31xGXVd9szFmnqpW+CJUWaIRfjO6bTtnfsI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uHYxUrvOUASzSxS2gDGR33EEKxQi8tL6F057S9vZjqehl3d5NgFwW+nfva+80dWfQ
+         z90GzJM6i1iWU9GpjDuW89CJ9mHfflZylFucLOGpl2eLqi76S6ea1x7xCdAIDY2X7r
+         KEZw2qqilb83+clyqJ2Z/toOCBsCaecvARNYzVYjfQ1XYkJ/OjAPiXdEwhqc+1rv3k
+         h3MBg/atXxiojVvPgivQIPGuiCP5eRwqurplyOBWDqy/L+SiLMmxdgUdDyMptCM1GV
+         8h1yBD4LqL59GFcpqrovl1QtFk0ATWGX0CTCTsOBPdmeD++J5zKrva+YOHlwfSt9oY
+         eOM297eDQ33sg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 8C87F3522611; Wed, 17 Feb 2021 11:19:07 -0800 (PST)
+Date:   Wed, 17 Feb 2021 11:19:07 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
+Message-ID: <20210217191907.GH2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
+ <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
+ <20210217155447.GC2743@paulmck-ThinkPad-P72>
+ <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 15:28:24 +0000
-Chris Down <chris@chrisdown.name> wrote:
-
-> Petr Mladek writes:
-> >I guess that you already use it internally and have its own tooling
-> >around it.  
-> 
-> Hmm, we're actually not using it yet widely because I don't want to backport it 
-> to our prod kernel until we're reasonably agreed on the format :-)
-> 
-> My main concern is making sure that parsing is reliable, and there's as
-> little "well, there shouldn't ever be a <char> here" as possible. That's why I
-> preferred originally to use the already well established char array/printk
-> rules where possible, since they're mature and well tested.
-> 
-> I'm not against some other solution though, as long as it meets these
-> requirements. It looks like your proposed format with escaping prior to sending 
-> to userspace also meets that requirement.
-> 
-> >    $ cat pf.py
-> >    #!/usr/bin/env python
-> >    with open("/sys/kernel/debug/printk/formats/vmlinux") as f:
-> >        raw_fmts = f.read().split("\x00")[:-1]
-> >        for raw_fmt in raw_fmts:
-> >            level, fmt = raw_fmt[1], raw_fmt[2:]
-> >            print(f"Level {level}: {fmt!r}")
-
-Honestly, I have no idea what the above is doing. And python people tell me
-that Perl is hard to read :-p
-
-
+On Wed, Feb 17, 2021 at 07:01:59PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-02-17 07:54:47 [-0800], Paul E. McKenney wrote:
+> > > I though boosting is accomplished by acquiring a rt_mutex in a
+> > > rcu_read() section. Do you have some code to point me to, to see how a
+> > > timer is involved here? Or is it the timer saying that *now* boosting is
+> > > needed.
+> > 
+> > Yes, this last, which is in the grace-period kthread code, for example,
+> > in rcu_gp_fqs_loop().
 > >
-> >I wonder how it would look in another scripting languages, like
-> >bash or perl. Any non-printable character is tricky and would
-> >complicate it.  
+> > > If your hrtimer is a "normal" hrtimer then it will be served by
+> > > ksoftirqd, too. You would additionally need one of the
+> > > HRTIMER_MODE_*_HARD to make it work.
+> > 
+> > Good to know.  Anything I should worry about for this mode?
 > 
-> It's really not that complicated there, either. Since you bring up bash, it's
-> even less work than the Python solution:
+> Well. It is always hardirq. No spinlock_t, etc. within that callback.
+> If you intend to wake a thread, that thread needs an elevated priority
+> otherwise it won't be scheduled (assuming there is a RT tasking running
+> which would block otherwise ksoftirqd).
+
+Good to know, thank you!  I believe that all the needed locks are already
+raw spinlocks, but the actual kernel code always takes precedence over
+one's beliefs.
+
+> Ah. One nice thing is that you can move the RCU threads to a house
+> keeping CPU - away from the CPU(s) running the RT tasks. Would this
+> scenario be still affected (if ksoftirqd would be blocked)?
+
+At this point, I am going to say that it is the sysadm's job to place
+the rcuo kthreads, and if they are placed poorly, life is hard.
+
+This means that I need to create a couple of additional polling RCU
+grace-period functions for rcutorture's priority-boosting use, but I
+probably should have done that a long time ago.  Simpler to just call a
+polling API occasionally than to handle all the corner cases of keeping
+an RCU callback queued.
+
+> Oh. One thing I forgot to mention: the timer_list timer is nice in terms
+> of moving forward (the timer did not fire, the condition is true and you
+> move the timeout forward).
+> A hrtimer timer on the other hand needs to be removed, forwarded and
+> added back to the "timer tree". This is considered more expensive
+> especially if the timer does not fire.
+
+There are some timers that are used to cause a wakeup to happen from
+a clean environment, but maybe these can instead use irq-work.
+
+> > Also, the current test expects callbacks to be invoked, which involves a
+> > number of additional kthreads and timers, for example, in nocb_gp_wait().
+> > I suppose I could instead look at grace-period sequence numbers, but I
+> > believe that real-life use cases needing RCU priority boosting also need
+> > the callbacks to be invoked reasonably quickly (as in within hundreds
+> > of milliseconds up through very small numbers of seconds).
 > 
->      while IFS= read -r -d $'\0' fmt; do
->          printf 'Level %s: %q\n' "${fmt:1:1}" "${fmt:2}"
+> A busy/overloaded kvm-host could lead to delays by not scheduling the
+> guest for a while.
 
-OK, now do the same in C. "%q" "and I guess that "f" in the print statement
-in python (but I don't know for sure) does some magic with converting the
-"\n" and such.
+That it can!  Aravinda Prasad prototyped a mechanism hinting to the
+hypervisor in such cases, but I don't know that this ever saw the light
+of day.
 
-I agree with Petr on this. Print the format itself, and not what is
-converted. It's much easier to convert "\t" and such to what they mean,
-than to go the other way around.
+> My understanding of the need for RCU boosting is to get a task,
+> preempted (by a RT task) within a RCU section, back on the CPU to
+> at least close the RCU section. So it is possible to run RCU callbacks
+> and free memory.
+> The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
+> killer got nervous (and if we had memory allocation failures).
+> Also, running thousands of accumulated callbacks isn't good either.
 
+Sounds good, thank you!
 
->      done < /sys/kernel/debug/printk/formats/vmlinux
-> 
-> The changelog describes the use case: automated detection of printk fmts
-> changing. For that reason, I don't understand why there's a desire to produce a
-> human readable format by default when the only known consumer of this is going
-> to be automation anyway.
+							Thanx, Paul
 
-It may be the reason its being added, but that doesn't mean it will be the
-only use case. Otherwise I would just throw a NAK at this whole thing.
-
-> 
-> If a use case for that comes up, we can always have a directory producing human 
-> readable versions. I personally don't see the need though.
-
-I rather not add more cruft then needed.
-
-> 
-> As long as it's reliably parseable though, I won't die on this hill, I just 
-> don't understand the rationale :-)
-
-I rather not have a binary file listing for printk format listings.  Just
-for sanity sake if not for anything else.
-
-> 
-> >> Re: not being not safe for machine processing because it only works for a
-> >> single digit, I'm a little confused. KERN_* levels are, as far as I know,
-> >> only a single byte wide, and we rely on that already (eg. in
-> >> printk_skip_header()).  
-> >
-> >It is great that you mentioned it. KERN_ levels are implementation
-> >detail.
-> >
-> >It used to be "<level>". The binary KERN_SOH has been introduced
-> >in v3.6-rc1 by the commit 04d2c8c83d0e3ac5f ("printk: convert
-> >the format for KERN_<LEVEL> to a 2 byte pattern").
-> >
-> >In v4.9-rc1, the commit 4bcc595ccd80decb4 ("printk: reinstate KERN_CONT
-> >for printing continuation lines") added the possibility to define
-> >both KERN_LEVEL + KERN_CONT at the same time. It is not handled
-> >by your python snippet above.  
-> 
-> Thanks, this is a good callout. I will make sure v5 handles that.
-> 
-> In a hypothetical scenario where we do go towards something human-readable, how 
-> do you perceive that should look? Something like this?
-> 
->      % less ...
->      <c, 5> 'Some fmt with cont + level 5\n'
->      <5> 'Some fmt with only level 5\n'
->      <c> 'Some fmt with only LOG_CONT\n'
-> 
-> >> We also already have precedent for
-> >> null-separation/control characters in (for example) /proc/pid/cmdline.  
-> >
-> >Yes, there is a precedent. But it does not mean that we should not
-> >try to do it better.  
-> 
-> To be clear, I'm actually asserting that I believe the machine-readable version 
-> _is_ better, not that it's simply unnecessary to produce a human-readable 
-> version :-)
-> 
-> As mentioned earlier in this e-mail though, it's not a hill I want to die on.  
-> If you believe it should be human-readable, as long as its reliably parseable, 
-> I'm happy to do that.
-
-I too vote for a human readable machine parseable format ;-)
-
--- Steve
+> > Thoughts?
+> > 
+> > 							Thanx, Paul
+> Sebastian
