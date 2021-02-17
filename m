@@ -2,186 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375F031DD7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:39:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9548C31DD8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhBQQhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:37:37 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:48973 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234227AbhBQQhf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:37:35 -0500
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 62D241C0004;
-        Wed, 17 Feb 2021 16:36:40 +0000 (UTC)
-Subject: Re: riscv+KASAN does not boot
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
- <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
- <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
- <20210118145310.crnqnh6kax5jqicj@distanz.ch>
- <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
- <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
- <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr>
- <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
- <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
- <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
- <24857bfc-c557-f141-8ae7-2e3da24f67f5@ghiti.fr>
- <CACT4Y+bmuhR=2u=1bGK+W8ttOn+=bkKrqCRM8_SiDSW1iAX60A@mail.gmail.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <957f09fb-84f4-2e0a-13ab-f7e4831ee7d0@ghiti.fr>
-Date:   Wed, 17 Feb 2021 11:36:40 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234115AbhBQQoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:44:54 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:48798 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233694AbhBQQox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 11:44:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613580273; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=8z+GQFDMPDxWqMGf+iZxNYROZ5xgetxMNrnNdc81W2Q=; b=f8hoMdfbF6vQsIMUcWwpu4b4I60wMrxervZG+DM/TTlvGYJErspFE7/Y32J61o/nAZ1fj6/N
+ rtuq40f9nL1R1avt4GnW9JyKfTLq7pt0mtrfoyl+DUkVMmp5b+nfZuUVVNQiwDXvVc0dnsNc
+ UfU99GkrRrIroveXgP1g2+nULTo=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 602d47cbeb4f89cdf86906f2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 16:43:55
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F0F83C433C6; Wed, 17 Feb 2021 16:43:54 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4D2BC433CA;
+        Wed, 17 Feb 2021 16:43:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A4D2BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH v2] bus: mhi: core: Check state before processing power_down
+Date:   Wed, 17 Feb 2021 09:43:31 -0700
+Message-Id: <1613580211-22744-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+bmuhR=2u=1bGK+W8ttOn+=bkKrqCRM8_SiDSW1iAX60A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 2/16/21 à 11:42 PM, Dmitry Vyukov a écrit :
-> On Tue, Feb 16, 2021 at 9:42 PM Alex Ghiti <alex@ghiti.fr> wrote:
->>
->> Hi Dmitry,
->>
->> Le 2/16/21 à 6:25 AM, Dmitry Vyukov a écrit :
->>> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->>>>
->>>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->>>>>> I was fixing KASAN support for my sv48 patchset so I took a look at your
->>>>>> issue: I built a kernel on top of the branch riscv/fixes using
->>>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
->>>>>> and Buildroot 2020.11. I have the warnings regarding the use of
->>>>>> __virt_to_phys on wrong addresses (but that's normal since this function
->>>>>> is used in virt_addr_valid) but not the segfaults you describe.
->>>>>
->>>>> Hi Alex,
->>>>>
->>>>> Let me try to rebuild buildroot image. Maybe there was something wrong
->>>>> with my build, though, I did 'make clean' before doing. But at the
->>>>> same time it worked back in June...
->>>>>
->>>>> Re WARNINGs, they indicate kernel bugs. I am working on setting up a
->>>>> syzbot instance on riscv. If there a WARNING during boot then the
->>>>> kernel will be marked as broken. No further testing will happen.
->>>>> Is it a mis-use of WARN_ON? If so, could anybody please remove it or
->>>>> replace it with pr_err.
->>>>
->>>>
->>>> Hi,
->>>>
->>>> I've localized one issue with riscv/KASAN:
->>>> KASAN breaks VDSO and that's I think the root cause of weird faults I
->>>> saw earlier. The following patch fixes it.
->>>> Could somebody please upstream this fix? I don't know how to add/run
->>>> tests for this.
->>>> Thanks
->>>>
->>>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
->>>> index 0cfd6da784f84..cf3a383c1799d 100644
->>>> --- a/arch/riscv/kernel/vdso/Makefile
->>>> +++ b/arch/riscv/kernel/vdso/Makefile
->>>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
->>>>    # Disable gcov profiling for VDSO code
->>>>    GCOV_PROFILE := n
->>>>    KCOV_INSTRUMENT := n
->>>> +KASAN_SANITIZE := n
->>>>
->>>>    # Force dependency
->>>>    $(obj)/vdso.o: $(obj)/vdso.so
->>
->> What's weird is that I don't have any issue without this patch with the
->> following config whereas it indeed seems required for KASAN. But when
->> looking at the segfaults you got earlier, the segfault address is 0xbb0
->> and the cause is an instruction page fault: this address is the PLT base
->> address in vdso.so and an instruction page fault would mean that someone
->> tried to jump at this address, which is weird. At first sight, that does
->> not seem related to your patch above, but clearly I may be wrong.
->>
->> Tobias, did you observe the same segfaults as Dmitry ?
-> 
-> 
-> I noticed that not all buildroot images use VDSO, it seems to be
-> dependent on libc settings (at least I think I changed it in the
-> past).
+We cannot process a power_down if the power state is DISABLED.  There is
+no valid mhi_ctxt in that case, so attepting to process the power_down
+will likely result in a null pointer dereference.  If the power state is
+DISABLED, there is nothing to do anyways, so just bail early.
 
-Ok, I used uClibc but then when using glibc, I have the same segfaults, 
-only when KASAN is enabled. And your patch fixes the problem. I will try 
-to take a look later to better understand the problem.
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+---
 
-> I also booted an image completely successfully including dhcpd/sshd
-> start, but then my executable crashed in clock_gettime. The executable
-> was build on linux/amd64 host with "riscv64-linux-gnu-gcc -static"
-> (10.2.1).
-> 
-> 
->>> Second issue I am seeing seems to be related to text segment size.
->>> I check out v5.11 and use this config:
->>> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
->>
->> This config gave my laptop a hard time ! Finally I was able to boot
->> correctly to userspace, but I realized I used my sv48 branch...Either I
->> fixed your issue along the way or I can't reproduce it, I'll give it a
->> try tomorrow.
-> 
-> Where is your branch? I could also test in my setup on your branch.
-> 
+v2: Fix subject and tweak the locking to avoid needless lock/unlock/relock
 
-You can find my branch int/alex/riscv_kernel_end_of_address_space_v2 
-here: https://github.com/AlexGhiti/riscv-linux.git
+ drivers/bus/mhi/core/pm.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Thanks,
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index 56ba3ab..47f6621 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -1144,6 +1144,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+ 		mhi_deinit_dev_ctxt(mhi_cntrl);
+ 
+ error_dev_ctxt:
++	mhi_cntrl->pm_state = MHI_PM_DISABLE;
+ 	mutex_unlock(&mhi_cntrl->pm_mutex);
+ 
+ 	return ret;
+@@ -1155,11 +1156,17 @@ void mhi_power_down(struct mhi_controller *mhi_cntrl, bool graceful)
+ 	enum mhi_pm_state cur_state, transition_state;
+ 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+ 
++	mutex_lock(&mhi_cntrl->pm_mutex);
++	cur_state = mhi_cntrl->pm_state;
++	if (cur_state == MHI_PM_DISABLE) {
++		mutex_unlock(&mhi_cntrl->pm_mutex);
++		return; /* Already powered down */
++	}
++
+ 	/* If it's not a graceful shutdown, force MHI to linkdown state */
+ 	transition_state = (graceful) ? MHI_PM_SHUTDOWN_PROCESS :
+ 			   MHI_PM_LD_ERR_FATAL_DETECT;
+ 
+-	mutex_lock(&mhi_cntrl->pm_mutex);
+ 	write_lock_irq(&mhi_cntrl->pm_lock);
+ 	cur_state = mhi_tryset_pm_state(mhi_cntrl, transition_state);
+ 	if (cur_state != transition_state) {
+-- 
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-> 
->>> Then trying to boot it using:
->>> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
->>> $ qemu-system-riscv64 -machine virt -smp 2 -m 4G ...
->>>
->>> It shows no output from the kernel whatsoever, even though I have
->>> earlycon and output shows very early with other configs.
->>> Kernel boots fine with defconfig and other smaller configs.
->>>
->>> If I enable KASAN_OUTLINE and CC_OPTIMIZE_FOR_SIZE, then this config
->>> also boots fine. Both of these options significantly reduce kernel
->>> size. However, I can also boot the kernel without these 2 configs, if
->>> I disable a whole lot of subsystem configs. This makes me think that
->>> there is an issue related to kernel size somewhere in
->>> qemu/bootloader/kernel bootstrap code.
->>> Does it make sense to you? Can somebody reproduce what I am seeing? >
->>
->> I did not bring any answer to your question, but at least you know I'm
->> working on it, I'll keep you posted.
->>
->> Thanks for taking the time to setup syzkaller.
->>
->> Alex
->>
->>> Thanks
->>>
->>> _______________________________________________
->>> linux-riscv mailing list
->>> linux-riscv@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->>>
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
