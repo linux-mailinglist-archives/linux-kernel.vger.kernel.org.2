@@ -2,229 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F06C631D941
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 890BB31D948
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhBQMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:15:35 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50566 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231336AbhBQMPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:15:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 04A97B958;
-        Wed, 17 Feb 2021 12:14:50 +0000 (UTC)
-Subject: Re: [PATCH v9 0/4] Add %p4cc printk modifier for V4L2 and DRM fourcc
- codes
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        dri-devel@lists.freedesktop.org
-Cc:     linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20210216155723.17109-1-sakari.ailus@linux.intel.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <9e279133-298d-433f-0694-5366861a6dbe@suse.de>
-Date:   Wed, 17 Feb 2021 13:14:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210216155723.17109-1-sakari.ailus@linux.intel.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="HyUqrLrN2TqE8TEiCzyyAR5yf6EjGYvi5"
+        id S232022AbhBQMTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:19:09 -0500
+Received: from mout.kundenserver.de ([212.227.126.130]:48061 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231336AbhBQMTG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:19:06 -0500
+Received: from orion.localdomain ([95.118.154.137]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis)
+ id 1MiJEc-1lpYdo0EI2-00fOZf; Wed, 17 Feb 2021 13:15:46 +0100
+From:   "Enrico Weigelt, metux IT consult" <info@metux.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] lib: vsprintf: check for NULL device_node name in device_node_string()
+Date:   Wed, 17 Feb 2021 13:15:43 +0100
+Message-Id: <20210217121543.13010-1-info@metux.net>
+X-Mailer: git-send-email 2.11.0
+X-Provags-ID: V03:K1:lX09z2OoKzZLBm5KCTp8eKEKKIAbQ3PWN5cSgh2b5SM7vTW9J6D
+ Jx4o3WWQRKDWpASJZ/q/yX2rerpr7SfpJ7I5sPWZmLeWQqAyarPEgpIFmoSyLHSLGzYPFSr
+ 16ALY5ooHN2e9MphJmmIu6PqyqAM5bcpG49YSvKZiBiBmlkY8tdhrcI4ExKhkOkejFCHkB5
+ iw9zZEYDEt26VPxwehKRQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZUoFaR7AFa0=:RJFlRmGPAc7ycfOpmRAIle
+ cMzNhDSuMu9TSlh8eCMHJ475rVdWbmpPVW1xcPE6IlT0SoceiQvBRj7wYCYXsgqFpb3dImzik
+ 8qP5jXIn/tVqg4mgxGVoykPaHYAFk2BHKOOcWHX2lcAFaTrKFbH78PEYEUyYvSoBOqDopaOLO
+ rjYyktnUn1bYPXU4Zv3HsgIyxHT6TPqbkuF3xG8IgnxVjdnRLlBWIc15L50FU7b/yi6IPOZUn
+ xeO5h+ZOMKki2tJRgzPgyTyIq9GyiD4rG4CdVn6flM0BHNetvOoxWg40lzilr+f35qMXduI5X
+ U83RFBVO6chUdc0mhiamE+ELVsOZHXCGsRsnrH70dZ/Jkr4eEH68IPHlMuIIdXj+1OCnVdrTi
+ EN3QsitbiWZeKcdMcgdmMcpW7q12dLuT3snZpB9XllaN1RBCjqRkWJcnhHW+h
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---HyUqrLrN2TqE8TEiCzyyAR5yf6EjGYvi5
-Content-Type: multipart/mixed; boundary="2duiza1Wx6GqImBjDmg8HnMhbYyED8yYa";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
- dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
- Dave Stevenson <dave.stevenson@raspberrypi.com>, hverkuil@xs4all.nl,
- laurent.pinchart@ideasonboard.com, mchehab@kernel.org,
- Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>, Joe Perches <joe@perches.com>,
- Jani Nikula <jani.nikula@linux.intel.com>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>, Daniel Vetter <daniel@ffwll.ch>
-Message-ID: <9e279133-298d-433f-0694-5366861a6dbe@suse.de>
-Subject: Re: [PATCH v9 0/4] Add %p4cc printk modifier for V4L2 and DRM fourcc
- codes
-References: <20210216155723.17109-1-sakari.ailus@linux.intel.com>
-In-Reply-To: <20210216155723.17109-1-sakari.ailus@linux.intel.com>
+Under rare circumstances it may happen that a device node's name is NULL
+(most likely kernel bug in some other place). In such situations anything
+but helpful, if the debug printout crashes, and nobody knows what actually
+happened here.
 
---2duiza1Wx6GqImBjDmg8HnMhbYyED8yYa
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Therefore protect it by an explicit NULL check and print out an extra
+warning.
 
-Hi
+Signed-off-by: Enrico Weigelt, metux IT consult <info@metux.net>
+---
+ lib/vsprintf.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Am 16.02.21 um 16:57 schrieb Sakari Ailus:
-> Hi all,
->=20
-> 	On merging --- it would seem everyone is happy with merging this
-> 	through the drm-misc tree. The last patch should wait until all
-> 	users are gone for sure, probably to the next kernel release.
-> 	There are no users of drm_get_format_name() in linux-next
-> 	currently after the 3rd patch.
+diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+index 3b53c73580c5..050a60b88073 100644
+--- a/lib/vsprintf.c
++++ b/lib/vsprintf.c
+@@ -2013,6 +2013,10 @@ char *device_node_string(char *buf, char *end, struct device_node *dn,
+ 			break;
+ 		case 'n':	/* name */
+ 			p = fwnode_get_name(of_fwnode_handle(dn));
++			if (!p) {
++				pr_warn("device_node without name. Kernel bug ?\n");
++				p = "<NULL>";
++			}
+ 			precision = str_spec.precision;
+ 			str_spec.precision = strchrnul(p, '@') - p;
+ 			buf = string(buf, end, p, str_spec);
+-- 
+2.11.0
 
-I've merged patches 1 to 3 into drm-misc-next. Patch 4 (and maybe some=20
-final fix-up patch) will land when all DRM trees have catched up the=20
-changes.
-
-Best regards
-Thomas
-
->=20
-> This set adds support for %p4cc printk modifier for printing V4L2 and D=
-RM
-> fourcc codes. The codes are cumbersome to print manually and by adding =
-the
-> modifier, this task is saved from the V4L2 and DRM frameworks as well a=
-s
-> related drivers. DRM actually had it handled in a way (see 3rd patch) b=
-ut
-> the printk modifier makes printing the format easier even there. On V4L=
-2
-> side it saves quite a few lines of repeating different implementations =
-of
-> printing the 4cc codes.
->=20
-> Further work will include converting the V4L2 drivers doing the same. I=
-
-> left these out from this version since individual drivers are easier
-> changed without dealing with multiple trees.
->=20
-> Since v8:
->=20
-> - Reduce ternary conditionals in intel_plane_uapi_info().
->=20
-> - Wrap a long line in intel_plane_hw_info().
->=20
-> Since v7:
->=20
-> - Add more examples, one with big endian and another with a space.
->=20
-> - Add Y10 test format.
->=20
-> - Use "0123" in the size string for temporary buffer.
->=20
-> - Added acks.
->=20
-> - Split the 3rd patch into two: driver changes and removal of
->    drm_get_format_name().
->=20
-> Since v6:
->=20
-> - Don't drop spaces in fourcc codes.
->=20
-> - Print unprintable characters as dot ('.') instead of hexadecimal numb=
-er
->    in parentheses.
->=20
-> - Convert DRM from drm_get_format_name() to %p4cc. I wonder if this sho=
-uld
->    be merged through the DRM tree, albeit it's probably unlikely to
->    conflict with other changes. Further use of the function could be a
->    problem.
->=20
-> - Make tests more realistic.
->=20
-> Since v5:
->=20
-> - Added V4L2 core conversion to %p4cc, as well as change the DRM
->    fourcc printing function to use %p4cc.
->=20
-> - Add missing checkpatch.pl checks for %p4cc modifier.
->=20
-> Sakari Ailus (4):
->    lib/vsprintf: Add support for printing V4L2 and DRM fourccs
->    v4l: ioctl: Use %p4cc printk modifier to print FourCC codes
->    drm: Switch to %p4cc format modifier
->    drm: Remove drm_get_format_name()
->=20
->   Documentation/core-api/printk-formats.rst     | 18 ++++
->   drivers/gpu/drm/amd/amdgpu/dce_v10_0.c        |  5 +-
->   drivers/gpu/drm/amd/amdgpu/dce_v11_0.c        |  5 +-
->   drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  5 +-
->   drivers/gpu/drm/amd/amdgpu/dce_v8_0.c         |  5 +-
->   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |  5 +-
->   .../arm/display/komeda/komeda_format_caps.h   | 11 ---
->   .../arm/display/komeda/komeda_framebuffer.c   |  4 +-
->   .../gpu/drm/arm/display/komeda/komeda_plane.c |  6 +-
->   drivers/gpu/drm/arm/malidp_mw.c               |  7 +-
->   drivers/gpu/drm/drm_atomic.c                  |  8 +-
->   drivers/gpu/drm/drm_crtc.c                    |  7 +-
->   drivers/gpu/drm/drm_fourcc.c                  | 25 ------
->   drivers/gpu/drm/drm_framebuffer.c             | 11 +--
->   drivers/gpu/drm/drm_mipi_dbi.c                |  5 +-
->   drivers/gpu/drm/drm_plane.c                   |  8 +-
->   .../gpu/drm/hisilicon/kirin/kirin_drm_ade.c   |  5 +-
->   drivers/gpu/drm/i915/display/intel_display.c  | 14 +--
->   .../drm/i915/display/intel_display_debugfs.c  | 19 ++---
->   drivers/gpu/drm/i915/display/intel_sprite.c   |  6 +-
->   drivers/gpu/drm/mcde/mcde_display.c           |  6 +-
->   drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c      |  6 +-
->   drivers/gpu/drm/nouveau/nouveau_display.c     |  9 +-
->   drivers/gpu/drm/radeon/atombios_crtc.c        | 10 +--
->   drivers/gpu/drm/sun4i/sun4i_backend.c         |  6 +-
->   drivers/gpu/drm/vkms/vkms_writeback.c         |  7 +-
->   drivers/gpu/drm/vmwgfx/vmwgfx_kms.c           | 15 ++--
->   drivers/media/v4l2-core/v4l2-ioctl.c          | 85 +++++-------------=
--
->   include/drm/drm_fourcc.h                      |  1 -
->   lib/test_printf.c                             | 18 ++++
->   lib/vsprintf.c                                | 39 +++++++++
->   scripts/checkpatch.pl                         |  6 +-
->   32 files changed, 164 insertions(+), 223 deletions(-)
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---2duiza1Wx6GqImBjDmg8HnMhbYyED8yYa--
-
---HyUqrLrN2TqE8TEiCzyyAR5yf6EjGYvi5
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF4BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAtCLMFAwAAAAAACgkQlh/E3EQov+AY
-kw/3RFAkt2XQW6AGXYNJcGJ4bdXzGbp1aJ/k0FyEiHaoP5GuXFnJnGizaOfdRn+BG7J2moOYhU9u
-L3HCZpaWW7zGWd96gC8tw81685lf5eNFNHzFll7To8/bipzSuObsBU02WkGLgj7PGBJaoR206u9e
-SlWCWxlOFK9iQO+CT5Jfx3YzlW0FzHiuJwCMgZJhn7jqhPyHNtP2TdJPcLhmtERrFk4ZD4TgiLSK
-ReHmugCGUywD397rcFIg1FD5hYM9/QLchNX2mPP9B75l4Cbk/DuhnPOvnGzD8ccL5J94CaRthdeH
-EkjCeO+03A8hOCOP8p4382LMeVI723FzsrmI+GHJNhez6Vav7eEsFsVroWUlmSr8u4ZP1TTwtHaf
-APnm00Qt8sqb0ParG5spKT7eMjYIfa34VvgLnHzGjyM6C/Nhxkzj2Ll/a17staqR6NmIdnERlgvB
-7G+SpGpReLQRMLb6jGn4dF2cHaX6Dp5BmYWb9etnMf5otJzGU1KQ71JaNqqt4ySi4fhmELdJNyGU
-bdYIjcTYD9D2IuBxamAvWN6AQ5emllmgW+uPHuMMI+zWx3KP43RMYOa6mXdqK2KjjMPdGM299xdC
-1Wx983c0iMswmAAI/8DFJA5KNgJ/svA/t+SAEEfwPL/+KDE0K6M5KCpYvQMkr5gzmxUoeNjPNBix
-0w==
-=fadD
------END PGP SIGNATURE-----
-
---HyUqrLrN2TqE8TEiCzyyAR5yf6EjGYvi5--
