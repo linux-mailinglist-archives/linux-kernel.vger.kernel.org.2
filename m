@@ -2,62 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32FD31D561
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:36:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AFC31D563
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhBQGfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 01:35:04 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:31978 "EHLO m42-2.mailgun.net"
+        id S231396AbhBQGf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:35:57 -0500
+Received: from relay.sw.ru ([185.231.240.75]:47306 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhBQGfC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:35:02 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613543684; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=rXPbKTWIi5rEfZI9/+7ppMeB12s7LpLBdTqWdVTE+Qk=; b=ZhWqcF2gvhBtACBVTcsaZgUsw0t/h5HlDOtaDkD21RNCopBcTwhmzNy+ECCgdcrBHsT0SVzj
- nChLcx9SVllf+qxHPMlNIPfeOJW6ldRmd3IrXQdC83oEu0AHNiBu2OJJ1D/KmZteaFoHx6W8
- P8LRsDczoUBrE98TIIH62AKIurI=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 602cb8e09f8fd267c2f400ff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 06:34:08
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 714A0C43466; Wed, 17 Feb 2021 06:34:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.147.187] (unknown [106.195.71.124])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A2DF8C433C6;
-        Wed, 17 Feb 2021 06:34:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A2DF8C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH] mm: slub: Convert sys slab alloc_calls, free_calls to bin
- attribute
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        vinmenon@codeaurora.org
-References: <1610443287-23933-1-git-send-email-faiyazm@codeaurora.org>
- <20210112122245.GK35215@casper.infradead.org>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <2bccabbd-fc41-4484-d19d-cab86cf318b6@codeaurora.org>
-Date:   Wed, 17 Feb 2021 12:04:01 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S229459AbhBQGfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 01:35:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=virtuozzo.com; s=relay; h=Content-Type:MIME-Version:Date:Message-ID:From:
+        Subject; bh=UWifoNWHjm8ujBKFAdfeZpTuODNpeOHG/96Nwmh3A1g=; b=cM3EuMPXzVS70vT8v
+        w7irdVAzjocgmYCvRj9lNe6xySMvu3EhDd1yqsbcIDkwE7wRyOpP8NGzYjyPHKL0r2Wx8g+zpJkV5
+        dmjh6fVfXzoxSlaTEd55x9w8t4NFOrojMJztPKuJyMQfgyyfu6RSvFFt7+NRpjHsGraHYMerE1LJ8
+        =;
+Received: from [192.168.15.68]
+        by relay.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1lCGQ0-002GSw-E6; Wed, 17 Feb 2021 09:34:36 +0300
+Subject: Re: [v8 PATCH 09/13] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, vbabka@suse.cz,
+        shakeelb@google.com, david@fromorbit.com, hannes@cmpxchg.org,
+        mhocko@suse.com, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210217001322.2226796-1-shy828301@gmail.com>
+ <20210217001322.2226796-10-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <6071ba4f-a855-eb5f-c8b1-c94658561b3c@virtuozzo.com>
+Date:   Wed, 17 Feb 2021 09:34:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210112122245.GK35215@casper.infradead.org>
+In-Reply-To: <20210217001322.2226796-10-shy828301@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,21 +43,203 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
+On 17.02.2021 03:13, Yang Shi wrote:
+> Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
+> 
+> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> may suffer from over shrink, excessive reclaim latency, etc.
+> 
+> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> 
+> We observed this hit in our production environment which was running vfs heavy workload
+> shown as the below tracing log:
+> 
+> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> cache items 246404277 delta 31345 total_scan 123202138
+> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> last shrinker return val 123186855
+> 
+> The vfs cache and page cache ratio was 10:1 on this machine, and half of caches were dropped.
+> This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> 
+> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> better isolation.
+> 
+> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
 
-On 1/12/2021 5:52 PM, Matthew Wilcox wrote:
-> On Tue, Jan 12, 2021 at 02:51:27PM +0530, Faiyaz Mohammed wrote:
->> @@ -5180,6 +5187,7 @@ static int any_slab_objects(struct kmem_cache *s)
->>  
->>  struct slab_attribute {
->>  	struct attribute attr;
->> +	struct bin_attribute bin_attr;
->>  	ssize_t (*show)(struct kmem_cache *s, char *buf);
->>  	ssize_t (*store)(struct kmem_cache *s, const char *x, size_t count);
->>  };
+Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+
+> ---
+>  include/linux/memcontrol.h |  7 +++--
+>  mm/vmscan.c                | 60 ++++++++++++++++++++++++++------------
+>  2 files changed, 46 insertions(+), 21 deletions(-)
 > 
-> I'd rather you added a struct slab_bin_attribute.  If that's even
-> needed ..  I think you could just use the bin_attribute directly instead
-> of embedding it in this struct.
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 4c9253896e25..c457fc7bc631 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -93,12 +93,13 @@ struct lruvec_stat {
+>  };
+>  
+>  /*
+> - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+> - * which have elements charged to this memcg.
+> + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+> + * shrinkers, which have elements charged to this memcg.
+>   */
+>  struct shrinker_info {
+>  	struct rcu_head rcu;
+> -	unsigned long map[];
+> +	atomic_long_t *nr_deferred;
+> +	unsigned long *map;
+>  };
+>  
+>  /*
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index a1047ea60ecf..fcb399e18fc3 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -187,11 +187,17 @@ static DECLARE_RWSEM(shrinker_rwsem);
+>  #ifdef CONFIG_MEMCG
+>  static int shrinker_nr_max;
+>  
+> +/* The shrinker_info is expanded in a batch of BITS_PER_LONG */
+>  static inline int shrinker_map_size(int nr_items)
+>  {
+>  	return (DIV_ROUND_UP(nr_items, BITS_PER_LONG) * sizeof(unsigned long));
+>  }
+>  
+> +static inline int shrinker_defer_size(int nr_items)
+> +{
+> +	return (round_up(nr_items, BITS_PER_LONG) * sizeof(atomic_long_t));
+> +}
+> +
+>  static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+>  						     int nid)
+>  {
+> @@ -200,10 +206,12 @@ static struct shrinker_info *shrinker_info_protected(struct mem_cgroup *memcg,
+>  }
+>  
+>  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> -				    int size, int old_size)
+> +				    int map_size, int defer_size,
+> +				    int old_map_size, int old_defer_size)
+>  {
+>  	struct shrinker_info *new, *old;
+>  	int nid;
+> +	int size = map_size + defer_size;
+>  
+>  	for_each_node(nid) {
+>  		old = shrinker_info_protected(memcg, nid);
+> @@ -215,9 +223,16 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+>  		if (!new)
+>  			return -ENOMEM;
+>  
+> -		/* Set all old bits, clear all new bits */
+> -		memset(new->map, (int)0xff, old_size);
+> -		memset((void *)new->map + old_size, 0, size - old_size);
+> +		new->nr_deferred = (atomic_long_t *)(new + 1);
+> +		new->map = (void *)new->nr_deferred + defer_size;
+> +
+> +		/* map: set all old bits, clear all new bits */
+> +		memset(new->map, (int)0xff, old_map_size);
+> +		memset((void *)new->map + old_map_size, 0, map_size - old_map_size);
+> +		/* nr_deferred: copy old values, clear all new values */
+> +		memcpy(new->nr_deferred, old->nr_deferred, old_defer_size);
+> +		memset((void *)new->nr_deferred + old_defer_size, 0,
+> +		       defer_size - old_defer_size);
+>  
+>  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+>  		kvfree_rcu(old);
+> @@ -232,9 +247,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+>  	struct shrinker_info *info;
+>  	int nid;
+>  
+> -	if (mem_cgroup_is_root(memcg))
+> -		return;
+> -
+>  	for_each_node(nid) {
+>  		pn = mem_cgroup_nodeinfo(memcg, nid);
+>  		info = shrinker_info_protected(memcg, nid);
+> @@ -247,12 +259,12 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>  {
+>  	struct shrinker_info *info;
+>  	int nid, size, ret = 0;
+> -
+> -	if (mem_cgroup_is_root(memcg))
+> -		return 0;
+> +	int map_size, defer_size = 0;
+>  
+>  	down_write(&shrinker_rwsem);
+> -	size = shrinker_map_size(shrinker_nr_max);
+> +	map_size = shrinker_map_size(shrinker_nr_max);
+> +	defer_size = shrinker_defer_size(shrinker_nr_max);
+> +	size = map_size + defer_size;
+>  	for_each_node(nid) {
+>  		info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+>  		if (!info) {
+> @@ -260,6 +272,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>  			ret = -ENOMEM;
+>  			break;
+>  		}
+> +		info->nr_deferred = (atomic_long_t *)(info + 1);
+> +		info->map = (void *)info->nr_deferred + defer_size;
+>  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
+>  	}
+>  	up_write(&shrinker_rwsem);
+> @@ -267,15 +281,21 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+>  	return ret;
+>  }
+>  
+> +static inline bool need_expand(int nr_max)
+> +{
+> +	return round_up(nr_max, BITS_PER_LONG) >
+> +	       round_up(shrinker_nr_max, BITS_PER_LONG);
+> +}
+> +
+>  static int expand_shrinker_info(int new_id)
+>  {
+> -	int size, old_size, ret = 0;
+> +	int ret = 0;
+>  	int new_nr_max = new_id + 1;
+> +	int map_size, defer_size = 0;
+> +	int old_map_size, old_defer_size = 0;
+>  	struct mem_cgroup *memcg;
+>  
+> -	size = shrinker_map_size(new_nr_max);
+> -	old_size = shrinker_map_size(shrinker_nr_max);
+> -	if (size <= old_size)
+> +	if (!need_expand(new_nr_max))
+>  		goto out;
+>  
+>  	if (!root_mem_cgroup)
+> @@ -283,11 +303,15 @@ static int expand_shrinker_info(int new_id)
+>  
+>  	lockdep_assert_held(&shrinker_rwsem);
+>  
+> +	map_size = shrinker_map_size(new_nr_max);
+> +	defer_size = shrinker_defer_size(new_nr_max);
+> +	old_map_size = shrinker_map_size(shrinker_nr_max);
+> +	old_defer_size = shrinker_defer_size(shrinker_nr_max);
+> +
+>  	memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>  	do {
+> -		if (mem_cgroup_is_root(memcg))
+> -			continue;
+> -		ret = expand_one_shrinker_info(memcg, size, old_size);
+> +		ret = expand_one_shrinker_info(memcg, map_size, defer_size,
+> +					       old_map_size, old_defer_size);
+>  		if (ret) {
+>  			mem_cgroup_iter_break(NULL, memcg);
+>  			goto out;
 > 
-Yes, we can use bin_attribute directly. Please find patch v2.
+
