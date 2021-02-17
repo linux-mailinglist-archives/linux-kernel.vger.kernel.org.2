@@ -2,448 +2,1238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DADC31D847
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DF531D859
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhBQL2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:28:11 -0500
-Received: from mail-vi1eur05on2048.outbound.protection.outlook.com ([40.107.21.48]:58074
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231613AbhBQLYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:24:34 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A6aUPJe3Sr8PFbIeXPUwth+eulVQvMNrkEoGvH2FWgsH+qqDHLarv5GN+fF1hcAVgRUvq/cIkohhIoczVedzmRiCnVA4VoEPxGNaEs9RDaFzD2Vo+NMJFOl4sMKI57criMBmGukgp3Voxp29YPqbPyGj8nCDRfaStEtPWajQsSWCyoyUDRWy2OId2mvqpiOZS3VNoNVxZjJAySH+8GsfNX62LJ0usLRhNNZkUvUBj+eoP/Im7fh5ECXlQ353U8ugnsdnnN3Puw1IWeawGrdzhsss9JIegvb/qCH4hlkqM4JyxZoTi5K2tz81jwRsISnPh42TQx9x0v1KniEdOkeUsw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6/aEXQUbrqih7fnqkYtmslFp1Hhl40QN2oBHbhyz044=;
- b=HQSdjgiuFQXk/4NNvtvjm+/lEtM9O2OsDd9yufuKhr2KvD4xMczzk6XaUR2lqeU2YiAidJXHcMPRNMgYb3JhSp+Y3e4w6HSwptmsRMy1gMWGMCYeYv/VBOyW6EvNOmjCsk82SOkDy9MCF73abRgGETJ1ikhywi3lu7BH6JYb8QVyATZUbBVMLWhp1FUGntw5MUPqvOsIYZVzc2XNPV5xRcfN+Qzo9/uijJSWkwsvynGYjLm3SVMr3eSzq+892ci+BbKlIVIpc6BM43ThanciHpMBggVUtGtTgZ4nqoAKIqmtGkyk1gZDfev7Sd+UHVhJojhzQRpngkymWgfMMBGvUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6/aEXQUbrqih7fnqkYtmslFp1Hhl40QN2oBHbhyz044=;
- b=FWm0HRA8bDUCAEf9DQYiBKIEQjzXjkPB8husP1K6w0dsMJluIAb4RKzL1f5GqzYQZLo45OZr6WDOsQBMdVJ3vHkoPd02un5w1CEZEwXTBushWrVnwiBWb32iFz4AMt7eQaRDhnjjVwRF7gUu0aBMd3RF14u1/XBm5f1RpulZd1Y=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR0402MB3711.eurprd04.prod.outlook.com (2603:10a6:803:18::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.36; Wed, 17 Feb
- 2021 11:23:42 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::3df3:2eba:51bb:58d7]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::3df3:2eba:51bb:58d7%7]) with mapi id 15.20.3846.042; Wed, 17 Feb 2021
- 11:23:42 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jiri@resnulli.us" <jiri@resnulli.us>,
-        "ivecera@redhat.com" <ivecera@redhat.com>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "roopa@nvidia.com" <roopa@nvidia.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next v4 7/8] net: dsa: add MRP support
-Thread-Topic: [PATCH net-next v4 7/8] net: dsa: add MRP support
-Thread-Index: AQHXBKzLl00K3/1pHkaPz14zGny+PqpcNVUA
-Date:   Wed, 17 Feb 2021 11:23:42 +0000
-Message-ID: <20210217112340.xxdfvwp3mw52isse@skbuf>
-References: <20210216214205.32385-1-horatiu.vultur@microchip.com>
- <20210216214205.32385-8-horatiu.vultur@microchip.com>
-In-Reply-To: <20210216214205.32385-8-horatiu.vultur@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [5.12.227.87]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8e23bb99-1df8-4a4d-2f6e-08d8d3367b84
-x-ms-traffictypediagnostic: VI1PR0402MB3711:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB37119494E35A740A14ADD84BE0869@VI1PR0402MB3711.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2KFKbtUWZ1l5yVt+jRkQCcDXvlxEuEQn+aNzrjcVwCPThYJn7VeH/1nTrgfN3UzqpLczw6iHzQ43dffwIhXhy2bca7wHvaY/o/mZ6dD/BMmru2v3pM7zlYVEi7BYsmSWSIvEApYrWj6V5u41m9xA7OqHfX36SLMEJKKPD7AO7uryPU+yQLB4wRbhwgYn2tbMKXMa1ONWUp27IC8TunlHCk0QV2JwngZcbIA7xDuv68ylMkxGX3xAJ1QIJoZKGsSQMji36jVyeLm7mMbWEC47r07UewYXEzrQfpyCxS7Q3V5BfsugoHjQ9DFiU/fHTKPHCuA2Vqmj0pWK9qZGn0oIrqW6bIiqLLuBfBeDUcj82PjmItuXlLMxqM2hW4XsBiUhC7v7T0Lxj7ye8e1KpOiAPCIdp/z0fjOiEqcO0rr4g/ewdnxrWfX0Xn+fDnzb6f5vYV0xAJkZntVXjGR1v/Uf/qUXp+8ff9CxJ0tuZkOdbwoYV2+lbioK9yGMEMfeoHci6tZzwDi3lEq5gulTc9s4XQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(136003)(376002)(346002)(366004)(39860400002)(4326008)(478600001)(83380400001)(54906003)(6506007)(76116006)(2906002)(66946007)(33716001)(91956017)(6916009)(8676002)(5660300002)(26005)(186003)(64756008)(6486002)(66476007)(8936002)(66556008)(66446008)(6512007)(44832011)(86362001)(71200400001)(9686003)(7416002)(1076003)(316002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?uKGb9tdlJUDGwtcd0foGOSTXEgf4x3DfUeIeFTzsaQwavGjlRtuH7ivm8wTT?=
- =?us-ascii?Q?igx1cOgFGMX8uhJWv0FVPOTX+MEzDPQPOr2vSkFORgqYlzHbo9Gp4Zo9/Llz?=
- =?us-ascii?Q?iY5Rvr1/3XdXS0oQVDpM4ShqFewcBOrbuOTWnctIf1utiSS+8orc8y7HjuCg?=
- =?us-ascii?Q?unwjS/311Y1m7fqAN7oYKtJmk+mG5Ua2g8Bbvw14WXij7UVEPR0nGVqlfE9U?=
- =?us-ascii?Q?1Ay/8/3nO7+wPvaepAwqSW69p7BAkPgW2VnvNZNERt98pq6DbtaxbjUHovoY?=
- =?us-ascii?Q?07RZfMvOj9quLGY5l8foTrq5D4/bcf3tabS9+9Ec2CzK5Jryfh1HgAfzCyZn?=
- =?us-ascii?Q?78EprG2cfK0IvstMoYGhNse3ZtfIHDGWIoZrLseWgsS7zV7YPPmSUSa1hQkI?=
- =?us-ascii?Q?/YpLRoZ7wR8mqtCg2Y92hDxMuPdzbjLLCdSLa1HQU9wDhmjvaJfHzmZWM2VU?=
- =?us-ascii?Q?UL7gMF8xWH7uUxgAaAoj/ZJBUiOR4+G6E9vD1ti5UuYmJU1NqeR6GwUMQSSZ?=
- =?us-ascii?Q?9kbjM0SlaaMX42Ymm6EuKikuzh55ShztzXdf6Cbf5I1AJfUENMQsMGruhnwh?=
- =?us-ascii?Q?7CssEL34/rrgXR04sOIFRJ9NY93zYLQoDO+XxLyb9UfyXQxg5A6kZRzU/hbF?=
- =?us-ascii?Q?A8voutqlrb+fdY6o0XVBr9+bVbVX77+1Zkb8L+wKG4pCCB5BuLE3kAW9ekYQ?=
- =?us-ascii?Q?JyNV9nDTsW99TLndzWFp7ssqRfkZgpRKZ1GZuuCLjdLkvFNzu9vnuK9k8CoV?=
- =?us-ascii?Q?yLg9Ore6BqkARGB50oN1H/5+8vofAL3KcW5OStghRRiRuIxhDFccJK3xo38E?=
- =?us-ascii?Q?fSzIfu8KVRWxYKN28ntyMs62U2+SJloNYg364kdQrFbCKuOWQYofXDUr0BO9?=
- =?us-ascii?Q?/GETvxyI+YNFSv+xEgfsI+KMXUgysWwUWFc5Xq9LuG9aDBswoZiJ8mCPueRJ?=
- =?us-ascii?Q?jVlstxQ9q3os2IOJxvMc7srwj/9CBhRt7VEz+cOZCP50Av07Evca5Yec8y1P?=
- =?us-ascii?Q?CWEdFI1dkzIw3LReFJ7uiFg0AbuomvzKV8hcHbJxRTFaFhJPWS38M134Q9sR?=
- =?us-ascii?Q?83KadxJEjiC3XLKdaDbc4sD49vgjTvoLzUuMTJJ5HTbTEmf/F4SsjvdSxVn0?=
- =?us-ascii?Q?nDbd9W3LrX94W0RDZDjgrHBqOjcn6FpamdOoLQNdnrmXHheJ1vkRqCd5X4yP?=
- =?us-ascii?Q?Ac17ai9J4OHn4LsLz5Bn8E+CKJbNRinHEDTfMwvWp2qILufV3vq+ouLsngwP?=
- =?us-ascii?Q?xbEEnAukALip0V92psgJynH4hrmgHlODH1W8nkpsZRNVZHAH97uY/FVbt87u?=
- =?us-ascii?Q?1rldhqP1EV6St53vZdu/miU/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <370D995BDD149F42963C905A96EF2249@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S231941AbhBQL3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:29:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231696AbhBQLYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 06:24:53 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE303C0611C2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:09 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id d8so7951326ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 03:22:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=ZPduukUW+zDcmyBtGD0E9Wpo2DTKnNWksKWwvc+AcBM=;
+        b=sHKbw5I0YlIzg9BI+qVO6EQchewu61LYKiI677vW8jsKfjSh3CX7pd4MkMXciZJlh+
+         Znzn9jSBXHe4UMMBigs71aFpVwsiiRVB6tcqTe2JO6SchrH2eCv/lfPIE86qrOG1SBr5
+         mXcBmEAb17lF1CQZEli2Oh8s+zLKrrr0IFANeSgsqMDph89EGsCq3BX6EdbPPC2oQZbr
+         aD0AZWW3i4A7ZrfhhMQY/2Y3TZRm0yi2x10wlQc/MXgVJNe2BkIHcK2jR3mxz0PsGln9
+         6ctB34lzaULsfVmiOkKKJlzym73QmbmlzHeYTh1is43hY0GbU37kkcdTj8ISMV8xX8yL
+         ZTAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=ZPduukUW+zDcmyBtGD0E9Wpo2DTKnNWksKWwvc+AcBM=;
+        b=tTCF+JHkEc2IXM766WaZ0gA5SienL1ycdyE2up+dyBl4Q6vd1P6aM3VQ1FG4u7GCUu
+         ke0Vb7VERmN5kEnL/yOQn3hwP2Nk3sr0J06jkWN3tKlSNdvYJU9EkBDCJEKqwDA+rcRw
+         Uj43WEuxNgeR64ccWpIJkfO25oGqTQWjbNyfGTnUSSvIhGiDZ/qSnEs/+ZIN8aobMerL
+         R8teriilFCGXSi/8qH0HwBD4pve68i6IE8bpXdN51xyaK/SBEeeDEF80MFuKuEzDibCU
+         WaH5QVuAO32Ur7/tTbO/MwH8Rug94KjuwNutuHoETbj0jh7xfHWQFMdae8rJSjy/28Zv
+         efjg==
+X-Gm-Message-State: AOAM532V7TVKuGeaWJUBkjKg3jqRceBz1dZviWTwQ+U62LEpz0AL+cnb
+        t7eQzezCs+D+LANvOC3dN6iz50joJqOEpA==
+X-Google-Smtp-Source: ABdhPJyuxTGAq5Z6xESlvTCA0C5yKYa0MW/8mqyQ32dcYt5s7UIgj4ozN5YZJIKp11GBmDApWSpiaA==
+X-Received: by 2002:a17:907:6fb:: with SMTP id yh27mr6849604ejb.54.1613560928186;
+        Wed, 17 Feb 2021 03:22:08 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:4815:d4dc:ff5a:704a])
+        by smtp.gmail.com with ESMTPSA id h10sm934344edk.45.2021.02.17.03.22.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 03:22:07 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
+        robh+dt@kernel.org, angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+Subject: [PATCH v5 07/22] media: camss: Add support for VFE hardware version Titan 170
+Date:   Wed, 17 Feb 2021 12:21:07 +0100
+Message-Id: <20210217112122.424236-8-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210217112122.424236-1-robert.foss@linaro.org>
+References: <20210217112122.424236-1-robert.foss@linaro.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e23bb99-1df8-4a4d-2f6e-08d8d3367b84
-X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Feb 2021 11:23:42.5860
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ArDNLg7FmknLYHb6zwqY53uoh0hBD+8zHh/HdtKaZREnhBdbYrQpGKGegkd00bbcoy3tAceAUsp1mcL6qNTywQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3711
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 10:42:04PM +0100, Horatiu Vultur wrote:
-> Add support for offloading MRP in HW. Currently implement the switchdev
-> calls 'SWITCHDEV_OBJ_ID_MRP', 'SWITCHDEV_OBJ_ID_RING_ROLE_MRP',
-> to allow to create MRP instances and to set the role of these instances.
->=20
-> Add DSA_NOTIFIER_MRP_ADD/DEL and DSA_NOTIFIER_MRP_ADD/DEL_RING_ROLE
-> which calls to .port_mrp_add/del and .port_mrp_add/del_ring_role in the
-> DSA driver for the switch.
->=20
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> ---
->  include/net/dsa.h  |  12 ++++++
->  net/dsa/dsa_priv.h |  26 +++++++++++
->  net/dsa/port.c     |  48 +++++++++++++++++++++
->  net/dsa/slave.c    |  22 ++++++++++
->  net/dsa/switch.c   | 105 +++++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 213 insertions(+)
->=20
-> diff --git a/include/net/dsa.h b/include/net/dsa.h
-> index 68f8159564a3..83a933e563fe 100644
-> --- a/include/net/dsa.h
-> +++ b/include/net/dsa.h
-> @@ -792,6 +792,18 @@ struct dsa_switch_ops {
->  				 struct net_device *hsr);
->  	int	(*port_hsr_leave)(struct dsa_switch *ds, int port,
->  				  struct net_device *hsr);
-> +
-> +	/*
-> +	 * MRP integration
-> +	 */
-> +	int	(*port_mrp_add)(struct dsa_switch *ds, int port,
-> +				const struct switchdev_obj_mrp *mrp);
-> +	int	(*port_mrp_del)(struct dsa_switch *ds, int port,
-> +				const struct switchdev_obj_mrp *mrp);
-> +	int	(*port_mrp_add_ring_role)(struct dsa_switch *ds, int port,
-> +					  const struct switchdev_obj_ring_role_mrp *mrp);
-> +	int	(*port_mrp_del_ring_role)(struct dsa_switch *ds, int port,
-> +					  const struct switchdev_obj_ring_role_mrp *mrp);
->  };
-> =20
->  #define DSA_DEVLINK_PARAM_DRIVER(_id, _name, _type, _cmodes)		\
-> diff --git a/net/dsa/dsa_priv.h b/net/dsa/dsa_priv.h
-> index e9d1e76c42ba..2eeaa42f2e08 100644
-> --- a/net/dsa/dsa_priv.h
-> +++ b/net/dsa/dsa_priv.h
-> @@ -31,6 +31,10 @@ enum {
->  	DSA_NOTIFIER_VLAN_DEL,
->  	DSA_NOTIFIER_MTU,
->  	DSA_NOTIFIER_TAG_PROTO,
-> +	DSA_NOTIFIER_MRP_ADD,
-> +	DSA_NOTIFIER_MRP_DEL,
-> +	DSA_NOTIFIER_MRP_ADD_RING_ROLE,
-> +	DSA_NOTIFIER_MRP_DEL_RING_ROLE,
->  };
-> =20
->  /* DSA_NOTIFIER_AGEING_TIME */
-> @@ -91,6 +95,20 @@ struct dsa_notifier_tag_proto_info {
->  	const struct dsa_device_ops *tag_ops;
->  };
-> =20
-> +/* DSA_NOTIFIER_MRP_* */
-> +struct dsa_notifier_mrp_info {
-> +	const struct switchdev_obj_mrp *mrp;
-> +	int sw_index;
-> +	int port;
-> +};
-> +
-> +/* DSA_NOTIFIER_MRP_* */
-> +struct dsa_notifier_mrp_ring_role_info {
-> +	const struct switchdev_obj_ring_role_mrp *mrp;
-> +	int sw_index;
-> +	int port;
-> +};
-> +
->  struct dsa_switchdev_event_work {
->  	struct dsa_switch *ds;
->  	int port;
-> @@ -198,6 +216,14 @@ int dsa_port_vlan_add(struct dsa_port *dp,
->  		      struct netlink_ext_ack *extack);
->  int dsa_port_vlan_del(struct dsa_port *dp,
->  		      const struct switchdev_obj_port_vlan *vlan);
-> +int dsa_port_mrp_add(const struct dsa_port *dp,
-> +		     const struct switchdev_obj_mrp *mrp);
-> +int dsa_port_mrp_del(const struct dsa_port *dp,
-> +		     const struct switchdev_obj_mrp *mrp);
-> +int dsa_port_mrp_add_ring_role(const struct dsa_port *dp,
-> +			       const struct switchdev_obj_ring_role_mrp *mrp);
-> +int dsa_port_mrp_del_ring_role(const struct dsa_port *dp,
-> +			       const struct switchdev_obj_ring_role_mrp *mrp);
->  int dsa_port_link_register_of(struct dsa_port *dp);
->  void dsa_port_link_unregister_of(struct dsa_port *dp);
->  int dsa_port_hsr_join(struct dsa_port *dp, struct net_device *hsr);
-> diff --git a/net/dsa/port.c b/net/dsa/port.c
-> index 14a1d0d77657..c9c6d7ab3f47 100644
-> --- a/net/dsa/port.c
-> +++ b/net/dsa/port.c
-> @@ -564,6 +564,54 @@ int dsa_port_vlan_del(struct dsa_port *dp,
->  	return dsa_port_notify(dp, DSA_NOTIFIER_VLAN_DEL, &info);
->  }
-> =20
-> +int dsa_port_mrp_add(const struct dsa_port *dp,
-> +		     const struct switchdev_obj_mrp *mrp)
-> +{
-> +	struct dsa_notifier_mrp_info info =3D {
-> +		.sw_index =3D dp->ds->index,
-> +		.port =3D dp->index,
-> +		.mrp =3D mrp,
-> +	};
-> +
-> +	return dsa_port_notify(dp, DSA_NOTIFIER_MRP_ADD, &info);
-> +}
-> +
-> +int dsa_port_mrp_del(const struct dsa_port *dp,
-> +		     const struct switchdev_obj_mrp *mrp)
-> +{
-> +	struct dsa_notifier_mrp_info info =3D {
-> +		.sw_index =3D dp->ds->index,
-> +		.port =3D dp->index,
-> +		.mrp =3D mrp,
-> +	};
-> +
-> +	return dsa_port_notify(dp, DSA_NOTIFIER_MRP_DEL, &info);
-> +}
-> +
-> +int dsa_port_mrp_add_ring_role(const struct dsa_port *dp,
-> +			       const struct switchdev_obj_ring_role_mrp *mrp)
-> +{
-> +	struct dsa_notifier_mrp_ring_role_info info =3D {
-> +		.sw_index =3D dp->ds->index,
-> +		.port =3D dp->index,
-> +		.mrp =3D mrp,
-> +	};
-> +
-> +	return dsa_port_notify(dp, DSA_NOTIFIER_MRP_ADD_RING_ROLE, &info);
-> +}
-> +
-> +int dsa_port_mrp_del_ring_role(const struct dsa_port *dp,
-> +			       const struct switchdev_obj_ring_role_mrp *mrp)
-> +{
-> +	struct dsa_notifier_mrp_ring_role_info info =3D {
-> +		.sw_index =3D dp->ds->index,
-> +		.port =3D dp->index,
-> +		.mrp =3D mrp,
-> +	};
-> +
-> +	return dsa_port_notify(dp, DSA_NOTIFIER_MRP_DEL_RING_ROLE, &info);
-> +}
-> +
->  void dsa_port_set_tag_protocol(struct dsa_port *cpu_dp,
->  			       const struct dsa_device_ops *tag_ops)
->  {
-> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
-> index 5ecb43a1b6e0..491e3761b5f4 100644
-> --- a/net/dsa/slave.c
-> +++ b/net/dsa/slave.c
-> @@ -404,6 +404,17 @@ static int dsa_slave_port_obj_add(struct net_device =
-*dev,
->  	case SWITCHDEV_OBJ_ID_PORT_VLAN:
->  		err =3D dsa_slave_vlan_add(dev, obj, extack);
->  		break;
-> +	case SWITCHDEV_OBJ_ID_MRP:
-> +		if (!dsa_port_offloads_netdev(dp, obj->orig_dev))
-> +			return -EOPNOTSUPP;
-> +		err =3D dsa_port_mrp_add(dp, SWITCHDEV_OBJ_MRP(obj));
-> +		break;
-> +	case SWITCHDEV_OBJ_ID_RING_ROLE_MRP:
-> +		if (!dsa_port_offloads_netdev(dp, obj->orig_dev))
-> +			return -EOPNOTSUPP;
-> +		err =3D dsa_port_mrp_add_ring_role(dp,
-> +						 SWITCHDEV_OBJ_RING_ROLE_MRP(obj));
-> +		break;
->  	default:
->  		err =3D -EOPNOTSUPP;
->  		break;
-> @@ -461,6 +472,17 @@ static int dsa_slave_port_obj_del(struct net_device =
-*dev,
->  	case SWITCHDEV_OBJ_ID_PORT_VLAN:
->  		err =3D dsa_slave_vlan_del(dev, obj);
->  		break;
-> +	case SWITCHDEV_OBJ_ID_MRP:
-> +		if (!dsa_port_offloads_netdev(dp, obj->orig_dev))
-> +			return -EOPNOTSUPP;
-> +		err =3D dsa_port_mrp_del(dp, SWITCHDEV_OBJ_MRP(obj));
-> +		break;
-> +	case SWITCHDEV_OBJ_ID_RING_ROLE_MRP:
-> +		if (!dsa_port_offloads_netdev(dp, obj->orig_dev))
-> +			return -EOPNOTSUPP;
-> +		err =3D dsa_port_mrp_del_ring_role(dp,
-> +						 SWITCHDEV_OBJ_RING_ROLE_MRP(obj));
-> +		break;
->  	default:
->  		err =3D -EOPNOTSUPP;
->  		break;
-> diff --git a/net/dsa/switch.c b/net/dsa/switch.c
-> index db2a9b221988..4b5da89dc27a 100644
-> --- a/net/dsa/switch.c
-> +++ b/net/dsa/switch.c
-> @@ -372,6 +372,99 @@ static int dsa_switch_change_tag_proto(struct dsa_sw=
-itch *ds,
->  	return 0;
->  }
-> =20
-> +static bool dsa_switch_mrp_match(struct dsa_switch *ds, int port,
-> +				 struct dsa_notifier_mrp_info *info)
-> +{
-> +	if (ds->index =3D=3D info->sw_index && port =3D=3D info->port)
-> +		return true;
-> +
-> +	if (dsa_is_dsa_port(ds, port))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +static int dsa_switch_mrp_add(struct dsa_switch *ds,
-> +			      struct dsa_notifier_mrp_info *info)
-> +{
-> +	int err =3D 0;
-> +	int port;
-> +
-> +	if (!ds->ops->port_mrp_add)
-> +		return -EOPNOTSUPP;
-> +
-> +	for (port =3D 0; port < ds->num_ports; port++) {
-> +		if (dsa_switch_mrp_match(ds, port, info)) {
-> +			err =3D ds->ops->port_mrp_add(ds, port, info->mrp);
-> +			if (err)
-> +				break;
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int dsa_switch_mrp_del(struct dsa_switch *ds,
-> +			      struct dsa_notifier_mrp_info *info)
-> +{
-> +	if (!ds->ops->port_mrp_del)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (ds->index =3D=3D info->sw_index)
-> +		return ds->ops->port_mrp_del(ds, info->port, info->mrp);
-> +
-> +	return 0;
-> +}
-> +
+Add register definitions for version 170 of the Titan architecture
+and implement support for the RDI output mode.
 
-Why not use dsa_switch_mrp_match here too? (question valid for the ring
-role below too)
+The RDI mode as opposed to the PIX output mode for the VFE unit does
+not support any ISP functionality. This means essentially only
+supporting dumping the output of the whatever the CSI decoder receives
+from the sensor.
 
-> +static bool
-> +dsa_switch_mrp_ring_role_match(struct dsa_switch *ds, int port,
-> +			       struct dsa_notifier_mrp_ring_role_info *info)
-> +{
-> +	if (ds->index =3D=3D info->sw_index && port =3D=3D info->port)
-> +		return true;
-> +
-> +	if (dsa_is_dsa_port(ds, port))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +static int
-> +dsa_switch_mrp_add_ring_role(struct dsa_switch *ds,
-> +			     struct dsa_notifier_mrp_ring_role_info *info)
-> +{
-> +	int err =3D 0;
-> +	int port;
-> +
-> +	if (!ds->ops->port_mrp_add)
-> +		return -EOPNOTSUPP;
-> +
-> +	for (port =3D 0; port < ds->num_ports; port++) {
-> +		if (dsa_switch_mrp_ring_role_match(ds, port, info)) {
-> +			err =3D ds->ops->port_mrp_add_ring_role(ds, port,
-> +							      info->mrp);
-> +			if (err)
-> +				break;
-> +		}
-> +	}
-> +
-> +	return err;
-> +}
-> +
-> +static int
-> +dsa_switch_mrp_del_ring_role(struct dsa_switch *ds,
-> +			     struct dsa_notifier_mrp_ring_role_info *info)
-> +{
-> +	if (!ds->ops->port_mrp_del)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (ds->index =3D=3D info->sw_index)
-> +		return ds->ops->port_mrp_del_ring_role(ds, info->port,
-> +						       info->mrp);
-> +
-> +	return 0;
-> +}
-> +
->  static int dsa_switch_event(struct notifier_block *nb,
->  			    unsigned long event, void *info)
->  {
-> @@ -427,6 +520,18 @@ static int dsa_switch_event(struct notifier_block *n=
-b,
->  	case DSA_NOTIFIER_TAG_PROTO:
->  		err =3D dsa_switch_change_tag_proto(ds, info);
->  		break;
-> +	case DSA_NOTIFIER_MRP_ADD:
-> +		err =3D dsa_switch_mrp_add(ds, info);
-> +		break;
-> +	case DSA_NOTIFIER_MRP_DEL:
-> +		err =3D dsa_switch_mrp_del(ds, info);
-> +		break;
-> +	case DSA_NOTIFIER_MRP_ADD_RING_ROLE:
-> +		err =3D dsa_switch_mrp_add_ring_role(ds, info);
-> +		break;
-> +	case DSA_NOTIFIER_MRP_DEL_RING_ROLE:
-> +		err =3D dsa_switch_mrp_del_ring_role(ds, info);
-> +		break;
->  	default:
->  		err =3D -EOPNOTSUPP;
->  		break;
-> --=20
-> 2.27.0
-> =
+For example will a sensor outputting YUV pixel format frames, only
+allow the VFE to dump those frames as they are received by the ISP
+to memory through the RDI interface.
+
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
+
+
+Changes since v1:
+ - Andrey: Remove commented out chunk
+ - Remove left over WIP comments
+
+Changes since v4:
+ - Andrey: Remove traces of PIX support
+ - Andrey: Fix vfe_global_reset() overwriting reset command
+ - Remove unused variable
+
+
+
+ drivers/media/platform/qcom/camss/Makefile    |   1 +
+ .../media/platform/qcom/camss/camss-vfe-170.c | 790 ++++++++++++++++++
+ drivers/media/platform/qcom/camss/camss-vfe.c |  47 +-
+ drivers/media/platform/qcom/camss/camss-vfe.h |  26 +-
+ .../media/platform/qcom/camss/camss-video.c   |  52 ++
+ drivers/media/platform/qcom/camss/camss.c     |  61 ++
+ 6 files changed, 957 insertions(+), 20 deletions(-)
+ create mode 100644 drivers/media/platform/qcom/camss/camss-vfe-170.c
+
+diff --git a/drivers/media/platform/qcom/camss/Makefile b/drivers/media/platform/qcom/camss/Makefile
+index 940c0ae3e003..052c4f405fa3 100644
+--- a/drivers/media/platform/qcom/camss/Makefile
++++ b/drivers/media/platform/qcom/camss/Makefile
+@@ -11,6 +11,7 @@ qcom-camss-objs += \
+ 		camss-vfe-4-1.o \
+ 		camss-vfe-4-7.o \
+ 		camss-vfe-4-8.o \
++		camss-vfe-170.o \
+ 		camss-vfe-gen1.o \
+ 		camss-vfe.o \
+ 		camss-video.o \
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe-170.c b/drivers/media/platform/qcom/camss/camss-vfe-170.c
+new file mode 100644
+index 000000000000..c4991b1f22f8
+--- /dev/null
++++ b/drivers/media/platform/qcom/camss/camss-vfe-170.c
+@@ -0,0 +1,790 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * camss-vfe-4-7.c
++ *
++ * Qualcomm MSM Camera Subsystem - VFE (Video Front End) Module v4.7
++ *
++ * Copyright (c) 2013-2015, The Linux Foundation. All rights reserved.
++ * Copyright (C) 2015-2018 Linaro Ltd.
++ */
++
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/iopoll.h>
++
++#include "camss.h"
++#include "camss-vfe.h"
++
++#define VFE_HW_VERSION				(0x000)
++
++#define VFE_GLOBAL_RESET_CMD			(0x018)
++#define		GLOBAL_RESET_CMD_CORE		BIT(0)
++#define		GLOBAL_RESET_CMD_CAMIF		BIT(1)
++#define		GLOBAL_RESET_CMD_BUS		BIT(2)
++#define		GLOBAL_RESET_CMD_BUS_BDG	BIT(3)
++#define		GLOBAL_RESET_CMD_REGISTER	BIT(4)
++#define		GLOBAL_RESET_CMD_PM		BIT(5)
++#define		GLOBAL_RESET_CMD_BUS_MISR	BIT(6)
++#define		GLOBAL_RESET_CMD_TESTGEN	BIT(7)
++#define		GLOBAL_RESET_CMD_DSP		BIT(8)
++#define		GLOBAL_RESET_CMD_IDLE_CGC	BIT(9)
++#define		GLOBAL_RESET_CMD_RDI0		BIT(10)
++#define		GLOBAL_RESET_CMD_RDI1		BIT(11)
++#define		GLOBAL_RESET_CMD_RDI2		BIT(12)
++#define		GLOBAL_RESET_CMD_RDI3		BIT(13)
++#define		GLOBAL_RESET_CMD_VFE_DOMAIN	BIT(30)
++#define		GLOBAL_RESET_CMD_RESET_BYPASS	BIT(31)
++
++
++#define VFE_CORE_CFG				(0x050)
++#define		CFG_PIXEL_PATTERN_YCBYCR	(0x4)
++#define		CFG_PIXEL_PATTERN_YCRYCB	(0x5)
++#define		CFG_PIXEL_PATTERN_CBYCRY	(0x6)
++#define		CFG_PIXEL_PATTERN_CRYCBY	(0x7)
++#define		CFG_COMPOSITE_REG_UPDATE_EN	BIT(4)
++
++#define VFE_IRQ_CMD				(0x058)
++#define		CMD_GLOBAL_CLEAR		BIT(0)
++
++#define VFE_IRQ_MASK_0					(0x05c)
++#define		MASK_0_CAMIF_SOF			BIT(0)
++#define		MASK_0_CAMIF_EOF			BIT(1)
++#define		MASK_0_RDI_REG_UPDATE(n)		BIT((n) + 5)
++#define		MASK_0_IMAGE_MASTER_n_PING_PONG(n)	BIT((n) + 8)
++#define		MASK_0_IMAGE_COMPOSITE_DONE_n(n)	BIT((n) + 25)
++#define		MASK_0_RESET_ACK			BIT(31)
++
++#define VFE_IRQ_MASK_1					(0x060)
++#define		MASK_1_CAMIF_ERROR			BIT(0)
++#define		MASK_1_VIOLATION			BIT(7)
++#define		MASK_1_BUS_BDG_HALT_ACK			BIT(8)
++#define		MASK_1_IMAGE_MASTER_n_BUS_OVERFLOW(n)	BIT((n) + 9)
++#define		MASK_1_RDI_SOF(n)			BIT((n) + 29)
++
++#define VFE_IRQ_CLEAR_0					(0x064)
++#define VFE_IRQ_CLEAR_1					(0x068)
++
++#define VFE_IRQ_STATUS_0				(0x06c)
++#define		STATUS_0_CAMIF_SOF			BIT(0)
++#define		STATUS_0_RDI_REG_UPDATE(n)		BIT((n) + 5)
++#define		STATUS_0_IMAGE_MASTER_PING_PONG(n)	BIT((n) + 8)
++#define		STATUS_0_IMAGE_COMPOSITE_DONE(n)	BIT((n) + 25)
++#define		STATUS_0_RESET_ACK			BIT(31)
++
++#define VFE_IRQ_STATUS_1				(0x070)
++#define		STATUS_1_VIOLATION			BIT(7)
++#define		STATUS_1_BUS_BDG_HALT_ACK		BIT(8)
++#define		STATUS_1_RDI_SOF(n)			BIT((n) + 27)
++
++#define VFE_VIOLATION_STATUS			(0x07c)
++
++#define VFE_CAMIF_CMD				(0x478)
++#define		CMD_CLEAR_CAMIF_STATUS		BIT(2)
++
++#define VFE_CAMIF_CFG				(0x47c)
++#define		CFG_VSYNC_SYNC_EDGE		(0)
++#define			VSYNC_ACTIVE_HIGH	(0)
++#define			VSYNC_ACTIVE_LOW	(1)
++#define		CFG_HSYNC_SYNC_EDGE		(1)
++#define			HSYNC_ACTIVE_HIGH	(0)
++#define			HSYNC_ACTIVE_LOW	(1)
++#define		CFG_VFE_SUBSAMPLE_ENABLE	BIT(4)
++#define		CFG_BUS_SUBSAMPLE_ENABLE	BIT(5)
++#define		CFG_VFE_OUTPUT_EN		BIT(6)
++#define		CFG_BUS_OUTPUT_EN		BIT(7)
++#define		CFG_BINNING_EN			BIT(9)
++#define		CFG_FRAME_BASED_EN		BIT(10)
++#define		CFG_RAW_CROP_EN			BIT(22)
++
++// XXX different, don't exist in TITAN register docs
++#define VFE_0_CAMIF_FRAME_CFG			0x484
++#define VFE_0_CAMIF_WINDOW_WIDTH_CFG		0x488
++#define VFE_0_CAMIF_WINDOW_HEIGHT_CFG		0x48c
++#define VFE_0_CAMIF_SUBSAMPLE_CFG		0x490
++#define VFE_0_CAMIF_IRQ_FRAMEDROP_PATTERN	0x498
++#define VFE_0_CAMIF_IRQ_SUBSAMPLE_PATTERN	0x49c
++#define VFE_0_CAMIF_STATUS			0x4a4
++#define VFE_0_CAMIF_STATUS_HALT			BIT(31)
++#define CAMIF_TIMEOUT_SLEEP_US 1000
++#define CAMIF_TIMEOUT_ALL_US 1000000
++
++#define VFE_REG_UPDATE_CMD			(0x4ac)
++#define		REG_UPDATE_RDI(n)		BIT(1 + (n))
++
++
++#define VFE_BUS_IRQ_MASK(n)		(0x2044 + (n) * 4)
++#define VFE_BUS_IRQ_CLEAR(n)		(0x2050 + (n) * 4)
++
++#define VFE_BUS_IRQ_STATUS(n)		(0x205c + (n) * 4)
++#define		STATUS0_COMP_RESET_DONE		BIT(0)
++#define		STATUS0_COMP_REG_UPDATE0_DONE	BIT(1)
++#define		STATUS0_COMP_REG_UPDATE1_DONE	BIT(2)
++#define		STATUS0_COMP_REG_UPDATE2_DONE	BIT(3)
++#define		STATUS0_COMP_REG_UPDATE3_DONE	BIT(4)
++#define		STATUS0_COMP_REG_UPDATE_DONE(n)	BIT(n + 1)
++#define		STATUS0_COMP0_BUF_DONE		BIT(5)
++#define		STATUS0_COMP1_BUF_DONE		BIT(6)
++#define		STATUS0_COMP2_BUF_DONE		BIT(7)
++#define		STATUS0_COMP3_BUF_DONE		BIT(8)
++#define		STATUS0_COMP4_BUF_DONE		BIT(9)
++#define		STATUS0_COMP5_BUF_DONE		BIT(10)
++#define		STATUS0_COMP_BUF_DONE(n)	BIT(n + 5)
++#define		STATUS0_COMP_ERROR		BIT(11)
++#define		STATUS0_COMP_OVERWRITE		BIT(12)
++#define		STATUS0_OVERFLOW		BIT(13)
++#define		STATUS0_VIOLATION		BIT(14)
++/* WM_CLIENT_BUF_DONE defined for buffers 0:19 */
++#define		STATUS1_WM_CLIENT_BUF_DONE(n)		BIT(n)
++#define		STATUS1_EARLY_DONE			BIT(24)
++#define		STATUS2_DUAL_COMP0_BUF_DONE		BIT(0)
++#define		STATUS2_DUAL_COMP1_BUF_DONE		BIT(1)
++#define		STATUS2_DUAL_COMP2_BUF_DONE		BIT(2)
++#define		STATUS2_DUAL_COMP3_BUF_DONE		BIT(3)
++#define		STATUS2_DUAL_COMP4_BUF_DONE		BIT(4)
++#define		STATUS2_DUAL_COMP5_BUF_DONE		BIT(5)
++#define		STATUS2_DUAL_COMP_BUF_DONE(n)		BIT(n)
++#define		STATUS2_DUAL_COMP_ERROR			BIT(6)
++#define		STATUS2_DUAL_COMP_OVERWRITE		BIT(7)
++
++#define VFE_BUS_IRQ_CLEAR_GLOBAL		(0x2068)
++
++#define VFE_BUS_WM_DEBUG_STATUS_CFG		(0x226c)
++#define		DEBUG_STATUS_CFG_STATUS0(n)	BIT(n)
++#define		DEBUG_STATUS_CFG_STATUS1(n)	BIT(8+n)
++
++#define VFE_BUS_WM_ADDR_SYNC_FRAME_HEADER	(0x2080)
++
++#define VFE_BUS_WM_ADDR_SYNC_NO_SYNC		(0x2084)
++#define		BUS_VER2_MAX_CLIENTS (24)
++#define		WM_ADDR_NO_SYNC_DEFAULT_VAL \
++				((1 << BUS_VER2_MAX_CLIENTS) - 1)
++
++#define VFE_BUS_WM_CGC_OVERRIDE			(0x200c)
++#define		WM_CGC_OVERRIDE_ALL		(0xFFFFF)
++
++#define VFE_BUS_WM_TEST_BUS_CTRL		(0x211c)
++
++#define VFE_BUS_WM_STATUS0(n)			(0x2200 + (n) * 0x100)
++#define VFE_BUS_WM_STATUS1(n)			(0x2204 + (n) * 0x100)
++#define VFE_BUS_WM_CFG(n)			(0x2208 + (n) * 0x100)
++#define		WM_CFG_EN			(0)
++#define		WM_CFG_MODE			(1)
++#define			MODE_QCOM_PLAIN	(0)
++#define			MODE_MIPI_RAW	(1)
++#define		WM_CFG_VIRTUALFRAME		(2)
++#define VFE_BUS_WM_HEADER_ADDR(n)		(0x220c + (n) * 0x100)
++#define VFE_BUS_WM_HEADER_CFG(n)		(0x2210 + (n) * 0x100)
++#define VFE_BUS_WM_IMAGE_ADDR(n)		(0x2214 + (n) * 0x100)
++#define VFE_BUS_WM_IMAGE_ADDR_OFFSET(n)		(0x2218 + (n) * 0x100)
++#define VFE_BUS_WM_BUFFER_WIDTH_CFG(n)		(0x221c + (n) * 0x100)
++#define		WM_BUFFER_DEFAULT_WIDTH		(0xFF01)
++
++#define VFE_BUS_WM_BUFFER_HEIGHT_CFG(n)		(0x2220 + (n) * 0x100)
++#define VFE_BUS_WM_PACKER_CFG(n)		(0x2224 + (n) * 0x100)
++
++#define VFE_BUS_WM_STRIDE(n)			(0x2228 + (n) * 0x100)
++#define		WM_STRIDE_DEFAULT_STRIDE	(0xFF01)
++
++#define VFE_BUS_WM_IRQ_SUBSAMPLE_PERIOD(n)	(0x2248 + (n) * 0x100)
++#define VFE_BUS_WM_IRQ_SUBSAMPLE_PATTERN(n)	(0x224c + (n) * 0x100)
++#define VFE_BUS_WM_FRAMEDROP_PERIOD(n)		(0x2250 + (n) * 0x100)
++#define VFE_BUS_WM_FRAMEDROP_PATTERN(n)		(0x2254 + (n) * 0x100)
++#define VFE_BUS_WM_FRAME_INC(n)			(0x2258 + (n) * 0x100)
++#define VFE_BUS_WM_BURST_LIMIT(n)		(0x225c + (n) * 0x100)
++
++
++static void vfe_hw_version_read(struct vfe_device *vfe, struct device *dev)
++{
++	u32 hw_version = readl_relaxed(vfe->base + VFE_HW_VERSION);
++
++	u32 gen = (hw_version >> 28) & 0xF;
++	u32 rev = (hw_version >> 16) & 0xFFF;
++	u32 step = hw_version & 0xFFFF;
++
++	dev_err(dev, "VFE HW Version = %u.%u.%u\n", gen, rev, step);
++}
++
++static inline void vfe_reg_clr(struct vfe_device *vfe, u32 reg, u32 clr_bits)
++{
++	u32 bits = readl_relaxed(vfe->base + reg);
++
++	writel_relaxed(bits & ~clr_bits, vfe->base + reg);
++}
++
++static inline void vfe_reg_set(struct vfe_device *vfe, u32 reg, u32 set_bits)
++{
++	u32 bits = readl_relaxed(vfe->base + reg);
++
++	writel_relaxed(bits | set_bits, vfe->base + reg);
++}
++
++static void vfe_global_reset(struct vfe_device *vfe)
++{
++	u32 reset_bits = GLOBAL_RESET_CMD_CORE		|
++			 GLOBAL_RESET_CMD_CAMIF		|
++			 GLOBAL_RESET_CMD_BUS		|
++			 GLOBAL_RESET_CMD_REGISTER	|
++			 GLOBAL_RESET_CMD_PM		|
++			 GLOBAL_RESET_CMD_BUS_MISR	|
++			 GLOBAL_RESET_CMD_IDLE_CGC	|
++			 GLOBAL_RESET_CMD_RDI0		|
++			 GLOBAL_RESET_CMD_RDI1		|
++			 GLOBAL_RESET_CMD_RDI2;
++
++	writel_relaxed(BIT(31), vfe->base + VFE_IRQ_MASK_0);
++
++	/* Make sure IRQ mask has been written before resetting */
++	wmb();
++
++	writel_relaxed(reset_bits, vfe->base + VFE_GLOBAL_RESET_CMD);
++}
++
++static void vfe_wm_start(struct vfe_device *vfe, u8 wm, struct vfe_line *line)
++{
++	u32 val;
++
++	/*Set Debug Registers*/
++	val = DEBUG_STATUS_CFG_STATUS0(1) |
++	      DEBUG_STATUS_CFG_STATUS0(7);
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_DEBUG_STATUS_CFG);
++
++	/* BUS_WM_INPUT_IF_ADDR_SYNC_FRAME_HEADER */
++	writel_relaxed(0, vfe->base + VFE_BUS_WM_ADDR_SYNC_FRAME_HEADER);
++
++	/* no clock gating at bus input */
++	val = WM_CGC_OVERRIDE_ALL;
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_CGC_OVERRIDE);
++
++	writel_relaxed(0x0, vfe->base + VFE_BUS_WM_TEST_BUS_CTRL);
++
++	/* if addr_no_sync has default value then config the addr no sync reg */
++	val = WM_ADDR_NO_SYNC_DEFAULT_VAL;
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_ADDR_SYNC_NO_SYNC);
++
++	writel_relaxed(0xf, vfe->base + VFE_BUS_WM_BURST_LIMIT(wm));
++
++	val = WM_BUFFER_DEFAULT_WIDTH;
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_BUFFER_WIDTH_CFG(wm));
++
++	val = 0;
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_BUFFER_HEIGHT_CFG(wm));
++
++	val = 0;
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_PACKER_CFG(wm)); // XXX 1 for PLAIN8?
++
++	/* Configure stride for RDIs */
++	//val = pix->plane_fmt[0].bytesperline;
++	val = WM_STRIDE_DEFAULT_STRIDE;
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_STRIDE(wm));
++
++	/* Enable WM */
++	val = 1 << WM_CFG_EN |
++	      MODE_MIPI_RAW << WM_CFG_MODE;
++	writel_relaxed(val, vfe->base + VFE_BUS_WM_CFG(wm));
++}
++
++static void vfe_wm_stop(struct vfe_device *vfe, u8 wm)
++{
++	/* Disable WM */
++	writel_relaxed(0, vfe->base + VFE_BUS_WM_CFG(wm));
++}
++
++static void vfe_wm_update(struct vfe_device *vfe, u8 wm, u32 addr,
++			  struct vfe_line *line)
++{
++	struct v4l2_pix_format_mplane *pix =
++		&line->video_out.active_fmt.fmt.pix_mp;
++	u32 stride = pix->plane_fmt[0].bytesperline;
++
++	writel_relaxed(addr, vfe->base + VFE_BUS_WM_IMAGE_ADDR(wm));
++	writel_relaxed(stride * pix->height, vfe->base + VFE_BUS_WM_FRAME_INC(wm));
++}
++
++static void vfe_reg_update(struct vfe_device *vfe, enum vfe_line_id line_id)
++{
++	vfe->reg_update |= REG_UPDATE_RDI(line_id);
++
++	/* Enforce ordering between previous reg writes and reg update */
++	wmb();
++
++	writel_relaxed(vfe->reg_update, vfe->base + VFE_REG_UPDATE_CMD);
++
++	/* Enforce ordering between reg update and subsequent reg writes */
++	wmb();
++}
++
++static inline void vfe_reg_update_clear(struct vfe_device *vfe,
++					enum vfe_line_id line_id)
++{
++	vfe->reg_update &= ~REG_UPDATE_RDI(line_id);
++}
++
++static void vfe_enable_irq_common(struct vfe_device *vfe)
++{
++	vfe_reg_set(vfe, VFE_IRQ_MASK_0, ~0u);
++	vfe_reg_set(vfe, VFE_IRQ_MASK_1, ~0u);
++
++	writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(0));
++	writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(1));
++	writel_relaxed(~0u, vfe->base + VFE_BUS_IRQ_MASK(2));
++}
++
++static void vfe_isr_halt_ack(struct vfe_device *vfe)
++{
++	complete(&vfe->halt_complete);
++}
++
++static void vfe_isr_read(struct vfe_device *vfe, u32 *status0, u32 *status1)
++{
++	*status0 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_0);
++	*status1 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_1);
++
++	writel_relaxed(*status0, vfe->base + VFE_IRQ_CLEAR_0);
++	writel_relaxed(*status1, vfe->base + VFE_IRQ_CLEAR_1);
++
++	/* Enforce ordering between IRQ Clear and Global IRQ Clear */
++	wmb();
++	writel_relaxed(CMD_GLOBAL_CLEAR, vfe->base + VFE_IRQ_CMD);
++}
++
++static void vfe_violation_read(struct vfe_device *vfe)
++{
++	u32 violation = readl_relaxed(vfe->base + VFE_VIOLATION_STATUS);
++
++	pr_err_ratelimited("VFE: violation = 0x%08x\n", violation);
++}
++
++/*
++ * vfe_isr - VFE module interrupt handler
++ * @irq: Interrupt line
++ * @dev: VFE device
++ *
++ * Return IRQ_HANDLED on success
++ */
++static irqreturn_t vfe_isr(int irq, void *dev)
++{
++	struct vfe_device *vfe = dev;
++	u32 status0, status1, vfe_bus_status[3];
++	int i, wm;
++
++	status0 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_0);
++	status1 = readl_relaxed(vfe->base + VFE_IRQ_STATUS_1);
++
++	writel_relaxed(status0, vfe->base + VFE_IRQ_CLEAR_0);
++	writel_relaxed(status1, vfe->base + VFE_IRQ_CLEAR_1);
++
++	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++) {
++		vfe_bus_status[i] = readl_relaxed(vfe->base + VFE_BUS_IRQ_STATUS(i));
++		writel_relaxed(vfe_bus_status[i], vfe->base + VFE_BUS_IRQ_CLEAR(i));
++	}
++
++	/* Enforce ordering between IRQ reading and interpretation */
++	wmb();
++
++	writel_relaxed(CMD_GLOBAL_CLEAR, vfe->base + VFE_IRQ_CMD);
++	writel_relaxed(1, vfe->base + VFE_BUS_IRQ_CLEAR_GLOBAL);
++
++	if (status0 & STATUS_0_RESET_ACK)
++		vfe->isr_ops.reset_ack(vfe);
++
++	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
++		if (status0 & STATUS_0_RDI_REG_UPDATE(i))
++			vfe->isr_ops.reg_update(vfe, i);
++
++	for (i = VFE_LINE_RDI0; i <= VFE_LINE_RDI2; i++)
++		if (status0 & STATUS_1_RDI_SOF(i))
++			vfe->isr_ops.sof(vfe, i);
++
++	for (i = 0; i < MSM_VFE_COMPOSITE_IRQ_NUM; i++)
++		if (vfe_bus_status[0] & STATUS0_COMP_BUF_DONE(i))
++			vfe->isr_ops.comp_done(vfe, i);
++
++	for (wm = 0; wm < MSM_VFE_IMAGE_MASTERS_NUM; wm++)
++		if (status0 & BIT(9))
++			if (vfe_bus_status[1] & STATUS1_WM_CLIENT_BUF_DONE(wm))
++				vfe->isr_ops.wm_done(vfe, wm);
++
++	return IRQ_HANDLED;
++}
++
++/*
++ * vfe_halt - Trigger halt on VFE module and wait to complete
++ * @vfe: VFE device
++ *
++ * Return 0 on success or a negative error code otherwise
++ */
++static int vfe_halt(struct vfe_device *vfe)
++{
++	unsigned long time;
++
++	return 0;
++
++	reinit_completion(&vfe->halt_complete);
++
++	time = wait_for_completion_timeout(&vfe->halt_complete,
++		msecs_to_jiffies(VFE_HALT_TIMEOUT_MS));
++	if (!time) {
++		dev_err(vfe->camss->dev, "VFE halt timeout\n");
++		return -EIO;
++	}
++
++	return 0;
++}
++
++static int vfe_get_output(struct vfe_line *line)
++{
++	struct vfe_device *vfe = to_vfe(line);
++	struct vfe_output *output;
++	unsigned long flags;
++	int i;
++	int wm_idx;
++
++	spin_lock_irqsave(&vfe->output_lock, flags);
++
++	output = &line->output;
++	if (output->state != VFE_OUTPUT_OFF) {
++		dev_err(vfe->camss->dev, "Output is running\n");
++		goto error;
++	}
++
++	output->wm_num = 1;
++
++	for (i = 0; i < output->wm_num; i++) {
++		wm_idx = vfe_reserve_wm(vfe, line->id);
++		if (wm_idx < 0) {
++			dev_err(vfe->camss->dev, "Can not reserve wm\n");
++			goto error_get_wm;
++		}
++		output->wm_idx[i] = wm_idx;
++	}
++
++	output->drop_update_idx = 0;
++
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++
++	return 0;
++
++error_get_wm:
++	for (i--; i >= 0; i--)
++		vfe_release_wm(vfe, output->wm_idx[i]);
++	output->state = VFE_OUTPUT_OFF;
++error:
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++
++	return -EINVAL;
++}
++
++static int vfe_enable_output(struct vfe_line *line)
++{
++	struct vfe_device *vfe = to_vfe(line);
++	struct vfe_output *output = &line->output;
++	const struct vfe_hw_ops *ops = vfe->ops;
++	struct media_entity *sensor;
++	unsigned long flags;
++	unsigned int frame_skip = 0;
++	unsigned int i;
++
++	sensor = camss_find_sensor(&line->subdev.entity);
++	if (sensor) {
++		struct v4l2_subdev *subdev = media_entity_to_v4l2_subdev(sensor);
++
++		v4l2_subdev_call(subdev, sensor, g_skip_frames, &frame_skip);
++		/* Max frame skip is 29 frames */
++		if (frame_skip > VFE_FRAME_DROP_VAL - 1)
++			frame_skip = VFE_FRAME_DROP_VAL - 1;
++	}
++
++	spin_lock_irqsave(&vfe->output_lock, flags);
++
++	ops->reg_update_clear(vfe, line->id);
++
++	if (output->state != VFE_OUTPUT_OFF) {
++		dev_err(vfe->camss->dev, "Output is not in reserved state %d\n",
++			output->state);
++		spin_unlock_irqrestore(&vfe->output_lock, flags);
++		return -EINVAL;
++	}
++
++	WARN_ON(output->gen2.active_num);
++
++	output->state = VFE_OUTPUT_ON;
++
++	output->sequence = 0;
++	output->wait_reg_update = 0;
++	reinit_completion(&output->reg_update);
++
++	vfe_wm_start(vfe, output->wm_idx[0], line);
++
++	for (i = 0; i < 2; i++) {
++		output->buf[i] = vfe_buf_get_pending(output);
++		if (!output->buf[i])
++			break;
++		output->gen2.active_num++;
++		vfe_wm_update(vfe, output->wm_idx[0], output->buf[i]->addr[0], line);
++	}
++
++	ops->reg_update(vfe, line->id);
++
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++
++	return 0;
++}
++
++static int vfe_disable_output(struct vfe_line *line)
++{
++	struct vfe_device *vfe = to_vfe(line);
++	struct vfe_output *output = &line->output;
++	unsigned long flags;
++	unsigned int i;
++	bool done;
++	int timeout = 0;
++
++	do {
++		spin_lock_irqsave(&vfe->output_lock, flags);
++		done = !output->gen2.active_num;
++		spin_unlock_irqrestore(&vfe->output_lock, flags);
++		usleep_range(10000, 20000);
++
++		if (timeout++ == 100) {
++			dev_err(vfe->camss->dev, "VFE idle timeout - resetting\n");
++			vfe_reset(vfe);
++			output->gen2.active_num = 0;
++			return 0;
++		}
++	} while (!done);
++
++	spin_lock_irqsave(&vfe->output_lock, flags);
++	for (i = 0; i < output->wm_num; i++)
++		vfe_wm_stop(vfe, output->wm_idx[i]);
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++
++	return 0;
++}
++
++/*
++ * vfe_enable - Enable streaming on VFE line
++ * @line: VFE line
++ *
++ * Return 0 on success or a negative error code otherwise
++ */
++static int vfe_enable(struct vfe_line *line)
++{
++	struct vfe_device *vfe = to_vfe(line);
++	int ret;
++
++	mutex_lock(&vfe->stream_lock);
++
++	if (!vfe->stream_count)
++		vfe_enable_irq_common(vfe);
++
++	vfe->stream_count++;
++
++	mutex_unlock(&vfe->stream_lock);
++
++	ret = vfe_get_output(line);
++	if (ret < 0)
++		goto error_get_output;
++
++	ret = vfe_enable_output(line);
++	if (ret < 0)
++		goto error_enable_output;
++
++	vfe->was_streaming = 1;
++
++	return 0;
++
++
++error_enable_output:
++	vfe_put_output(line);
++
++error_get_output:
++	mutex_lock(&vfe->stream_lock);
++
++	vfe->stream_count--;
++
++	mutex_unlock(&vfe->stream_lock);
++
++	return ret;
++}
++
++/*
++ * vfe_disable - Disable streaming on VFE line
++ * @line: VFE line
++ *
++ * Return 0 on success or a negative error code otherwise
++ */
++static int vfe_disable(struct vfe_line *line)
++{
++	struct vfe_device *vfe = to_vfe(line);
++
++	vfe_disable_output(line);
++
++	vfe_put_output(line);
++
++	mutex_lock(&vfe->stream_lock);
++
++	vfe->stream_count--;
++
++	mutex_unlock(&vfe->stream_lock);
++
++	return 0;
++}
++
++/*
++ * vfe_isr_sof - Process start of frame interrupt
++ * @vfe: VFE Device
++ * @line_id: VFE line
++ */
++static void vfe_isr_sof(struct vfe_device *vfe, enum vfe_line_id line_id)
++{
++
++}
++
++/*
++ * vfe_isr_reg_update - Process reg update interrupt
++ * @vfe: VFE Device
++ * @line_id: VFE line
++ */
++static void vfe_isr_reg_update(struct vfe_device *vfe, enum vfe_line_id line_id)
++{
++	struct vfe_output *output;
++	unsigned long flags;
++
++	spin_lock_irqsave(&vfe->output_lock, flags);
++	vfe->ops->reg_update_clear(vfe, line_id);
++
++	output = &vfe->line[line_id].output;
++
++	if (output->wait_reg_update) {
++		output->wait_reg_update = 0;
++		complete(&output->reg_update);
++	}
++
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++}
++
++/*
++ * vfe_isr_wm_done - Process write master done interrupt
++ * @vfe: VFE Device
++ * @wm: Write master id
++ */
++static void vfe_isr_wm_done(struct vfe_device *vfe, u8 wm)
++{
++	struct vfe_line *line = &vfe->line[vfe->wm_output_map[wm]];
++	struct camss_buffer *ready_buf;
++	struct vfe_output *output;
++	unsigned long flags;
++	u32 index;
++	u64 ts = ktime_get_ns();
++
++	spin_lock_irqsave(&vfe->output_lock, flags);
++
++	if (vfe->wm_output_map[wm] == VFE_LINE_NONE) {
++		dev_err_ratelimited(vfe->camss->dev,
++				    "Received wm done for unmapped index\n");
++		goto out_unlock;
++	}
++	output = &vfe->line[vfe->wm_output_map[wm]].output;
++
++	ready_buf = output->buf[0];
++	if (!ready_buf) {
++		dev_err_ratelimited(vfe->camss->dev,
++				    "Missing ready buf %d!\n", output->state);
++		goto out_unlock;
++	}
++
++	ready_buf->vb.vb2_buf.timestamp = ts;
++	ready_buf->vb.sequence = output->sequence++;
++
++	index = 0;
++	output->buf[0] = output->buf[1];
++	if (output->buf[0])
++		index = 1;
++
++	output->buf[index] = vfe_buf_get_pending(output);
++
++	if (output->buf[index])
++		vfe_wm_update(vfe, output->wm_idx[0], output->buf[index]->addr[0], line);
++	else
++		output->gen2.active_num--;
++
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++
++	vb2_buffer_done(&ready_buf->vb.vb2_buf, VB2_BUF_STATE_DONE);
++
++	return;
++
++out_unlock:
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++}
++
++/*
++ * vfe_queue_buffer - Add empty buffer
++ * @vid: Video device structure
++ * @buf: Buffer to be enqueued
++ *
++ * Add an empty buffer - depending on the current number of buffers it will be
++ * put in pending buffer queue or directly given to the hardware to be filled.
++ *
++ * Return 0 on success or a negative error code otherwise
++ */
++static int vfe_queue_buffer(struct camss_video *vid,
++			    struct camss_buffer *buf)
++{
++	struct vfe_line *line = container_of(vid, struct vfe_line, video_out);
++	struct vfe_device *vfe = to_vfe(line);
++	struct vfe_output *output;
++	unsigned long flags;
++
++	output = &line->output;
++
++	spin_lock_irqsave(&vfe->output_lock, flags);
++
++	if (output->state == VFE_OUTPUT_ON && output->gen2.active_num < 2) {
++		output->buf[output->gen2.active_num++] = buf;
++		vfe_wm_update(vfe, output->wm_idx[0], buf->addr[0], line);
++	} else {
++		vfe_buf_add_pending(output, buf);
++	}
++
++	spin_unlock_irqrestore(&vfe->output_lock, flags);
++
++	return 0;
++}
++
++const struct vfe_isr_ops vfe_isr_ops_170 = {
++	.reset_ack = vfe_isr_reset_ack,
++	.halt_ack = vfe_isr_halt_ack,
++	.reg_update = vfe_isr_reg_update,
++	.sof = vfe_isr_sof,
++	.comp_done = vfe_isr_comp_done,
++	.wm_done = vfe_isr_wm_done,
++};
++
++static const struct camss_video_ops vfe_video_ops_170 = {
++	.queue_buffer = vfe_queue_buffer,
++	.flush_buffers = vfe_flush_buffers,
++};
++
++static void vfe_subdev_init(struct device *dev, struct vfe_device *vfe)
++{
++	vfe->isr_ops = vfe_isr_ops_170;
++	vfe->video_ops = vfe_video_ops_170;
++
++	vfe->line_num = VFE_LINE_NUM_GEN2;
++}
++
++const struct vfe_hw_ops vfe_ops_170 = {
++	.global_reset = vfe_global_reset,
++	.hw_version_read = vfe_hw_version_read,
++	.isr_read = vfe_isr_read,
++	.isr = vfe_isr,
++	.reg_update_clear = vfe_reg_update_clear,
++	.reg_update = vfe_reg_update,
++	.subdev_init = vfe_subdev_init,
++	.vfe_disable = vfe_disable,
++	.vfe_enable = vfe_enable,
++	.vfe_halt = vfe_halt,
++	.violation_read = vfe_violation_read,
++};
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+index 375843bd16af..6fafeb8a5484 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.c
++++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+@@ -96,6 +96,32 @@ static const struct vfe_format formats_pix_8x96[] = {
+ 	{ MEDIA_BUS_FMT_YVYU8_2X8, 8 },
+ };
+ 
++static const struct vfe_format formats_rdi_845[] = {
++	{ MEDIA_BUS_FMT_UYVY8_2X8, 8 },
++	{ MEDIA_BUS_FMT_VYUY8_2X8, 8 },
++	{ MEDIA_BUS_FMT_YUYV8_2X8, 8 },
++	{ MEDIA_BUS_FMT_YVYU8_2X8, 8 },
++	{ MEDIA_BUS_FMT_SBGGR8_1X8, 8 },
++	{ MEDIA_BUS_FMT_SGBRG8_1X8, 8 },
++	{ MEDIA_BUS_FMT_SGRBG8_1X8, 8 },
++	{ MEDIA_BUS_FMT_SRGGB8_1X8, 8 },
++	{ MEDIA_BUS_FMT_SBGGR10_1X10, 10 },
++	{ MEDIA_BUS_FMT_SGBRG10_1X10, 10 },
++	{ MEDIA_BUS_FMT_SGRBG10_1X10, 10 },
++	{ MEDIA_BUS_FMT_SRGGB10_1X10, 10 },
++	{ MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE, 16 },
++	{ MEDIA_BUS_FMT_SBGGR12_1X12, 12 },
++	{ MEDIA_BUS_FMT_SGBRG12_1X12, 12 },
++	{ MEDIA_BUS_FMT_SGRBG12_1X12, 12 },
++	{ MEDIA_BUS_FMT_SRGGB12_1X12, 12 },
++	{ MEDIA_BUS_FMT_SBGGR14_1X14, 14 },
++	{ MEDIA_BUS_FMT_SGBRG14_1X14, 14 },
++	{ MEDIA_BUS_FMT_SGRBG14_1X14, 14 },
++	{ MEDIA_BUS_FMT_SRGGB14_1X14, 14 },
++	{ MEDIA_BUS_FMT_Y10_1X10, 10 },
++	{ MEDIA_BUS_FMT_Y10_2X8_PADHI_LE, 16 },
++};
++
+ /*
+  * vfe_get_bpp - map media bus format to bits per pixel
+  * @formats: supported media bus formats array
+@@ -192,7 +218,8 @@ static u32 vfe_src_pad_code(struct vfe_line *line, u32 sink_code,
+ 			return sink_code;
+ 		}
+ 	else if (vfe->camss->version == CAMSS_8x96 ||
+-		 vfe->camss->version == CAMSS_660)
++		 vfe->camss->version == CAMSS_660 ||
++		 vfe->camss->version == CAMSS_845)
+ 		switch (sink_code) {
+ 		case MEDIA_BUS_FMT_YUYV8_2X8:
+ 		{
+@@ -256,13 +283,7 @@ static u32 vfe_src_pad_code(struct vfe_line *line, u32 sink_code,
+ 		return 0;
+ }
+ 
+-/*
+- * vfe_reset - Trigger reset on VFE module and wait to complete
+- * @vfe: VFE device
+- *
+- * Return 0 on success or a negative error code otherwise
+- */
+-static int vfe_reset(struct vfe_device *vfe)
++int vfe_reset(struct vfe_device *vfe)
+ {
+ 	unsigned long time;
+ 
+@@ -429,7 +450,8 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
+ 		struct camss_clock *clock = &vfe->clock[i];
+ 
+ 		if (!strcmp(clock->name, "vfe0") ||
+-		    !strcmp(clock->name, "vfe1")) {
++		    !strcmp(clock->name, "vfe1") ||
++		    !strcmp(clock->name, "vfe_lite")) {
+ 			u64 min_rate = 0;
+ 			long rate;
+ 
+@@ -1268,6 +1290,10 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+ 	case CAMSS_660:
+ 		vfe->ops = &vfe_ops_4_8;
+ 		break;
++
++	case CAMSS_845:
++		vfe->ops = &vfe_ops_170;
++		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+@@ -1379,6 +1405,9 @@ int msm_vfe_subdev_init(struct camss *camss, struct vfe_device *vfe,
+ 				l->formats = formats_rdi_8x96;
+ 				l->nformats = ARRAY_SIZE(formats_rdi_8x96);
+ 			}
++		} else if (camss->version == CAMSS_845) {
++			l->formats = formats_rdi_845;
++			l->nformats = ARRAY_SIZE(formats_rdi_845);
+ 		} else {
+ 			return -EINVAL;
+ 		}
+diff --git a/drivers/media/platform/qcom/camss/camss-vfe.h b/drivers/media/platform/qcom/camss/camss-vfe.h
+index aad5dc74c2c0..29b3d930ffc6 100644
+--- a/drivers/media/platform/qcom/camss/camss-vfe.h
++++ b/drivers/media/platform/qcom/camss/camss-vfe.h
+@@ -19,7 +19,6 @@
+ #include "camss-video.h"
+ #include "camss-vfe-gen1.h"
+ 
+-
+ #define MSM_VFE_PAD_SINK 0
+ #define MSM_VFE_PAD_SRC 1
+ #define MSM_VFE_PADS_NUM 2
+@@ -38,14 +37,14 @@
+ #define to_vfe(ptr_line)	\
+ 	container_of(vfe_line_array(ptr_line), struct vfe_device, line)
+ 
+-
+ enum vfe_output_state {
+ 	VFE_OUTPUT_OFF,
+ 	VFE_OUTPUT_RESERVED,
+ 	VFE_OUTPUT_SINGLE,
+ 	VFE_OUTPUT_CONTINUOUS,
+ 	VFE_OUTPUT_IDLE,
+-	VFE_OUTPUT_STOPPING
++	VFE_OUTPUT_STOPPING,
++	VFE_OUTPUT_ON,
+ };
+ 
+ enum vfe_line_id {
+@@ -53,6 +52,7 @@ enum vfe_line_id {
+ 	VFE_LINE_RDI0 = 0,
+ 	VFE_LINE_RDI1 = 1,
+ 	VFE_LINE_RDI2 = 2,
++	VFE_LINE_NUM_GEN2 = 3,
+ 	VFE_LINE_PIX = 3,
+ 	VFE_LINE_NUM_GEN1 = 4,
+ 	VFE_LINE_NUM_MAX = 4
+@@ -73,6 +73,9 @@ struct vfe_output {
+ 			int active_buf;
+ 			int wait_sof;
+ 		} gen1;
++		struct {
++			int active_num;
++		} gen2;
+ 	};
+ 	enum vfe_output_state state;
+ 	unsigned int sequence;
+@@ -171,14 +174,6 @@ void vfe_buf_add_pending(struct vfe_output *output, struct camss_buffer *buffer)
+ 
+ struct camss_buffer *vfe_buf_get_pending(struct vfe_output *output);
+ 
+-/*
+- * vfe_disable - Disable streaming on VFE line
+- * @line: VFE line
+- *
+- * Return 0 on success or a negative error code otherwise
+- */
+-int vfe_disable(struct vfe_line *line);
+-
+ int vfe_flush_buffers(struct camss_video *vid, enum vb2_buffer_state state);
+ 
+ /*
+@@ -193,8 +188,17 @@ int vfe_put_output(struct vfe_line *line);
+ int vfe_release_wm(struct vfe_device *vfe, u8 wm);
+ int vfe_reserve_wm(struct vfe_device *vfe, enum vfe_line_id line_id);
+ 
++/*
++ * vfe_reset - Trigger reset on VFE module and wait to complete
++ * @vfe: VFE device
++ *
++ * Return 0 on success or a negative error code otherwise
++ */
++int vfe_reset(struct vfe_device *vfe);
++
+ extern const struct vfe_hw_ops vfe_ops_4_1;
+ extern const struct vfe_hw_ops vfe_ops_4_7;
+ extern const struct vfe_hw_ops vfe_ops_4_8;
++extern const struct vfe_hw_ops vfe_ops_170;
+ 
+ #endif /* QC_MSM_CAMSS_VFE_H */
+diff --git a/drivers/media/platform/qcom/camss/camss-video.c b/drivers/media/platform/qcom/camss/camss-video.c
+index 97cea7c4d769..f282275af626 100644
+--- a/drivers/media/platform/qcom/camss/camss-video.c
++++ b/drivers/media/platform/qcom/camss/camss-video.c
+@@ -133,6 +133,55 @@ static const struct camss_format_info formats_rdi_8x96[] = {
+ 	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
+ };
+ 
++static const struct camss_format_info formats_rdi_845[] = {
++	{ MEDIA_BUS_FMT_UYVY8_2X8, V4L2_PIX_FMT_UYVY, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
++	{ MEDIA_BUS_FMT_VYUY8_2X8, V4L2_PIX_FMT_VYUY, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
++	{ MEDIA_BUS_FMT_YUYV8_2X8, V4L2_PIX_FMT_YUYV, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
++	{ MEDIA_BUS_FMT_YVYU8_2X8, V4L2_PIX_FMT_YVYU, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
++	{ MEDIA_BUS_FMT_SBGGR8_1X8, V4L2_PIX_FMT_SBGGR8, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
++	{ MEDIA_BUS_FMT_SGBRG8_1X8, V4L2_PIX_FMT_SGBRG8, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
++	{ MEDIA_BUS_FMT_SGRBG8_1X8, V4L2_PIX_FMT_SGRBG8, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
++	{ MEDIA_BUS_FMT_SRGGB8_1X8, V4L2_PIX_FMT_SRGGB8, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 8 } },
++	{ MEDIA_BUS_FMT_SBGGR10_1X10, V4L2_PIX_FMT_SBGGR10P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
++	{ MEDIA_BUS_FMT_SGBRG10_1X10, V4L2_PIX_FMT_SGBRG10P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
++	{ MEDIA_BUS_FMT_SGRBG10_1X10, V4L2_PIX_FMT_SGRBG10P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
++	{ MEDIA_BUS_FMT_SRGGB10_1X10, V4L2_PIX_FMT_SRGGB10P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
++	{ MEDIA_BUS_FMT_SBGGR10_2X8_PADHI_LE, V4L2_PIX_FMT_SBGGR10, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
++	{ MEDIA_BUS_FMT_SBGGR12_1X12, V4L2_PIX_FMT_SBGGR12P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
++	{ MEDIA_BUS_FMT_SGBRG12_1X12, V4L2_PIX_FMT_SGBRG12P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
++	{ MEDIA_BUS_FMT_SGRBG12_1X12, V4L2_PIX_FMT_SGRBG12P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
++	{ MEDIA_BUS_FMT_SRGGB12_1X12, V4L2_PIX_FMT_SRGGB12P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 12 } },
++	{ MEDIA_BUS_FMT_SBGGR14_1X14, V4L2_PIX_FMT_SBGGR14P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
++	{ MEDIA_BUS_FMT_SGBRG14_1X14, V4L2_PIX_FMT_SGBRG14P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
++	{ MEDIA_BUS_FMT_SGRBG14_1X14, V4L2_PIX_FMT_SGRBG14P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
++	{ MEDIA_BUS_FMT_SRGGB14_1X14, V4L2_PIX_FMT_SRGGB14P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 14 } },
++	{ MEDIA_BUS_FMT_Y10_1X10, V4L2_PIX_FMT_Y10P, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 10 } },
++	{ MEDIA_BUS_FMT_Y10_2X8_PADHI_LE, V4L2_PIX_FMT_Y10, 1,
++	  { { 1, 1 } }, { { 1, 1 } }, { 16 } },
++};
++
+ static const struct camss_format_info formats_pix_8x16[] = {
+ 	{ MEDIA_BUS_FMT_YUYV8_1_5X8, V4L2_PIX_FMT_NV12, 1,
+ 	  { { 1, 1 } }, { { 2, 3 } }, { 8 } },
+@@ -960,6 +1009,9 @@ int msm_video_register(struct camss_video *video, struct v4l2_device *v4l2_dev,
+ 			video->formats = formats_rdi_8x96;
+ 			video->nformats = ARRAY_SIZE(formats_rdi_8x96);
+ 		}
++	}  else if (video->camss->version == CAMSS_845) {
++		video->formats = formats_rdi_845;
++		video->nformats = ARRAY_SIZE(formats_rdi_845);
+ 	} else {
+ 		ret = -EINVAL;
+ 		goto error_video_register;
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+index 6c6f1e59ccd8..0e006def1996 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -465,6 +465,67 @@ static const struct resources vfe_res_660[] = {
+ 	}
+ };
+ 
++static const struct resources vfe_res_845[] = {
++	/* VFE0 */
++	{
++		.regulator = { NULL },
++		.clock = { "camnoc_axi", "cpas_ahb", "slow_ahb_src",
++				"soc_ahb", "vfe0", "vfe0_axi",
++				"vfe0_src", "csi0",
++				"csi0_src"},
++		.clock_rate = { { 0 },
++				{ 0 },
++				{ 80000000 },
++				{ 0 },
++				{ 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
++				{ 0 },
++				{ 320000000 },
++				{ 19200000, 75000000, 384000000, 538666667 },
++				{ 384000000 } },
++		.reg = { "vfe0" },
++		.interrupt = { "vfe0" }
++	},
++
++	/* VFE1 */
++	{
++		.regulator = { NULL },
++		.clock = { "camnoc_axi", "cpas_ahb", "slow_ahb_src",
++				"soc_ahb", "vfe1", "vfe1_axi",
++				"vfe1_src", "csi1",
++				"csi1_src"},
++		.clock_rate = { { 0 },
++				{ 0 },
++				{ 80000000 },
++				{ 0 },
++				{ 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
++				{ 0 },
++				{ 320000000 },
++				{ 19200000, 75000000, 384000000, 538666667 },
++				{ 384000000 } },
++		.reg = { "vfe1" },
++		.interrupt = { "vfe1" }
++	},
++
++	/* VFE-lite */
++	{
++		.regulator = { NULL },
++		.clock = { "camnoc_axi", "cpas_ahb", "slow_ahb_src",
++				"soc_ahb", "vfe_lite",
++				"vfe_lite_src", "csi2",
++				"csi2_src"},
++		.clock_rate = { { 0 },
++				{ 0 },
++				{ 80000000 },
++				{ 0 },
++				{ 19200000, 100000000, 320000000, 404000000, 480000000, 600000000 },
++				{ 320000000 },
++				{ 19200000, 75000000, 384000000, 538666667 },
++				{ 384000000 } },
++		.reg = { "vfe_lite" },
++		.interrupt = { "vfe_lite" }
++	}
++};
++
+ /*
+  * camss_add_clock_margin - Add margin to clock frequency rate
+  * @rate: Clock frequency rate
+-- 
+2.27.0
+
