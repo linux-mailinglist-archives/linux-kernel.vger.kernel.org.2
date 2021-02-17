@@ -2,218 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0256D31DF33
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:44:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D319D31DF36
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:46:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234952AbhBQSoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:44:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50498 "EHLO
+        id S234966AbhBQSpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:45:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57063 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232468AbhBQSoH (ORCPT
+        by vger.kernel.org with ESMTP id S231466AbhBQSpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:44:07 -0500
+        Wed, 17 Feb 2021 13:45:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613587360;
+        s=mimecast20190719; t=1613587444;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Fc/cgBJx4NP4jJbQcjdBienLwoYsr1J649MR4Bg9UHw=;
-        b=CZX1N46YCpoC4f7G+wD4P69KVpi6gkAaxrKvhYFRQVjUT8UlvXJnDtb2l1uehokyc2xRrS
-        r9kUppFlUosr9K7/n+H6ezPKy7bXmWoT8vHNwXIBadp/huQB57nyNdVhg5EniTnSFwvOJt
-        WUXQ4DzmbsXiEQEla+z8hVkiWeXmfJ0=
+        bh=i/8MtmZojpmDuuUUpQuOBZfPjHk5zxyd4IRmW1b/L0g=;
+        b=CBXJz/HgQYlL+MRv5toj8d1GIGPID+A1OH79T1u8MjszRQCVSTWTcK42pY76N/zMgWBgSN
+        oqtdulIoyYQIYyKeh8eVWTPmwysnDabr/FJf3pPpUQVTpn2y9pTu/tcQPM8YjzSe8VX8ev
+        3JUJvNY4/q7GePmPrpEc0OcESipwwzw=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-91-GnmTQ9otNhiP7VuY2p6hEQ-1; Wed, 17 Feb 2021 13:42:36 -0500
-X-MC-Unique: GnmTQ9otNhiP7VuY2p6hEQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-456-gg3PvVHmNX6-psJkMrYMfQ-1; Wed, 17 Feb 2021 13:44:01 -0500
+X-MC-Unique: gg3PvVHmNX6-psJkMrYMfQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5AD98710E0;
-        Wed, 17 Feb 2021 18:42:32 +0000 (UTC)
-Received: from ovpn-114-40.ams2.redhat.com (ovpn-114-40.ams2.redhat.com [10.36.114.40])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 36F2719D9F;
-        Wed, 17 Feb 2021 18:42:28 +0000 (UTC)
-Message-ID: <22cc42aced0ddfdd50a004a65476ce88fc3bf92a.camel@redhat.com>
-Subject: Re: KASAN: use-after-free Read in tcp_current_mss
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     syzbot <syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com>,
-        andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com,
-        yoshfuji@linux-ipv6.org
-Date:   Wed, 17 Feb 2021 19:42:27 +0100
-In-Reply-To: <00000000000016715505bb89fb93@google.com>
-References: <00000000000016715505bb89fb93@google.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CC8701005501;
+        Wed, 17 Feb 2021 18:43:53 +0000 (UTC)
+Received: from starship (unknown [10.35.206.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B047A5D9D2;
+        Wed, 17 Feb 2021 18:43:49 +0000 (UTC)
+Message-ID: <1b9cb222508b9b16b27075745d902e4a40cf9a25.camel@redhat.com>
+Subject: Re: [PATCH 4/7] KVM: nVMX: move inject_page_fault tweak to
+ .complete_mmu_init
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+Date:   Wed, 17 Feb 2021 20:43:48 +0200
+In-Reply-To: <YC1ShhSZ+6ST63nZ@google.com>
+References: <20210217145718.1217358-1-mlevitsk@redhat.com>
+         <20210217145718.1217358-5-mlevitsk@redhat.com>
+         <YC1ShhSZ+6ST63nZ@google.com>
 Content-Type: text/plain; charset="UTF-8"
 User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-02-17 at 07:36 -0800, syzbot wrote:
-> Hello,
+On Wed, 2021-02-17 at 09:29 -0800, Sean Christopherson wrote:
+> On Wed, Feb 17, 2021, Maxim Levitsky wrote:
+> > This fixes a (mostly theoretical) bug which can happen if ept=0
+> > on host and we run a nested guest which triggers a mmu context
+> > reset while running nested.
+> > In this case the .inject_page_fault callback will be lost.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/vmx/nested.c | 8 +-------
+> >  arch/x86/kvm/vmx/nested.h | 1 +
+> >  arch/x86/kvm/vmx/vmx.c    | 5 ++++-
+> >  3 files changed, 6 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index 0b6dab6915a3..f9de729dbea6 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -419,7 +419,7 @@ static int nested_vmx_check_exception(struct kvm_vcpu *vcpu, unsigned long *exit
+> >  }
+> >  
+> >  
+> > -static void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
+> > +void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
+> >  		struct x86_exception *fault)
+> >  {
+> >  	struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
+> > @@ -2620,9 +2620,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+> >  		vmcs_write64(GUEST_PDPTR3, vmcs12->guest_pdptr3);
+> >  	}
+> >  
+> > -	if (!enable_ept)
+> > -		vcpu->arch.walk_mmu->inject_page_fault = vmx_inject_page_fault_nested;
+> > -
+> >  	if ((vmcs12->vm_entry_controls & VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL) &&
+> >  	    WARN_ON_ONCE(kvm_set_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL,
+> >  				     vmcs12->guest_ia32_perf_global_ctrl)))
+> > @@ -4224,9 +4221,6 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
+> >  	if (nested_vmx_load_cr3(vcpu, vmcs12->host_cr3, false, &ignored))
+> >  		nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_PDPTE_FAIL);
+> >  
+> > -	if (!enable_ept)
+> > -		vcpu->arch.walk_mmu->inject_page_fault = kvm_inject_page_fault;
 > 
-> syzbot found the following issue on:
+> Oof, please explicitly call out these types of side effects in the changelog,
+> it took me a while to piece together that this can be dropped because a MMU
+> reset is guaranteed and is also guaranteed to restore inject_page_fault.
 > 
-> HEAD commit:    773dc50d Merge branch 'Xilinx-axienet-updates'
-> git tree:       net-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13460822d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
-> dashboard link: https://syzkaller.appspot.com/bug?extid=ea948c9d0dedf6ff57b1
+> I would even go so far as to say this particular line of code should be removed
+> in a separate commit.  Unless I'm overlooking something, this code is
+> effectively a nop, which means it doesn't need to be removed to make the bug fix
+> functionally correct.
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> All that being said, I'm pretty we can eliminate setting inject_page_fault
+> dynamically.  I think that would yield more maintainable code.  Following these
+> flows is a nightmare.  The change itself will be scarier, but I'm pretty sure
+> the end result will be a lot cleaner.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+ea948c9d0dedf6ff57b1@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: use-after-free in dst_mtu include/net/dst.h:201 [inline]
-> BUG: KASAN: use-after-free in tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
-> Read of size 8 at addr ffff88802943db08 by task syz-executor.2/11568
-> 
-> CPU: 0 PID: 11568 Comm: syz-executor.2 Not tainted 5.11.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x107/0x163 lib/dump_stack.c:120
->  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
->  __kasan_report mm/kasan/report.c:396 [inline]
->  kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
->  dst_mtu include/net/dst.h:201 [inline]
->  tcp_current_mss+0x358/0x360 net/ipv4/tcp_output.c:1835
->  tcp_send_mss+0x28/0x2b0 net/ipv4/tcp.c:943
->  mptcp_sendmsg_frag+0x13b/0x1220 net/mptcp/protocol.c:1266
->  mptcp_push_pending+0x2cc/0x650 net/mptcp/protocol.c:1477
->  mptcp_sendmsg+0x1ffb/0x2830 net/mptcp/protocol.c:1692
->  inet6_sendmsg+0x99/0xe0 net/ipv6/af_inet6.c:638
->  sock_sendmsg_nosec net/socket.c:652 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:672
->  sock_write_iter+0x289/0x3c0 net/socket.c:999
->  call_write_iter include/linux/fs.h:1901 [inline]
->  new_sync_write+0x426/0x650 fs/read_write.c:518
->  vfs_write+0x791/0xa30 fs/read_write.c:605
->  ksys_write+0x1ee/0x250 fs/read_write.c:658
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x465d99
-> Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fc692d89188 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: 000000000056c0b0 RCX: 0000000000465d99
-> RDX: 0000000000000001 RSI: 0000000020000000 RDI: 0000000000000003
-> RBP: 00000000004bcf27 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056c0b0
-> R13: 00007ffc258487df R14: 00007fc692d89300 R15: 0000000000022000
-> 
-> Allocated by task 11558:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:401 [inline]
->  ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
->  kasan_slab_alloc include/linux/kasan.h:209 [inline]
->  slab_post_alloc_hook mm/slab.h:512 [inline]
->  slab_alloc_node mm/slub.c:2892 [inline]
->  slab_alloc mm/slub.c:2900 [inline]
->  kmem_cache_alloc+0x1c6/0x440 mm/slub.c:2905
->  dst_alloc+0x9e/0x650 net/core/dst.c:93
->  rt_dst_alloc+0x73/0x430 net/ipv4/route.c:1642
->  __mkroute_output net/ipv4/route.c:2457 [inline]
->  ip_route_output_key_hash_rcu+0x955/0x2ce0 net/ipv4/route.c:2684
->  ip_route_output_key_hash+0x1a4/0x2f0 net/ipv4/route.c:2512
->  __ip_route_output_key include/net/route.h:126 [inline]
->  ip_route_output_flow+0x23/0x150 net/ipv4/route.c:2773
->  ip_route_newports include/net/route.h:342 [inline]
->  tcp_v4_connect+0x12d7/0x1c40 net/ipv4/tcp_ipv4.c:281
->  tcp_v6_connect+0x733/0x1df0 net/ipv6/tcp_ipv6.c:248
->  __inet_stream_connect+0x8c5/0xee0 net/ipv4/af_inet.c:661
->  inet_stream_connect+0x53/0xa0 net/ipv4/af_inet.c:725
->  mptcp_stream_connect+0x156/0x800 net/mptcp/protocol.c:3200
->  __sys_connect_file+0x155/0x1a0 net/socket.c:1835
->  __sys_connect+0x161/0x190 net/socket.c:1852
->  __do_sys_connect net/socket.c:1862 [inline]
->  __se_sys_connect net/socket.c:1859 [inline]
->  __x64_sys_connect+0x6f/0xb0 net/socket.c:1859
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Freed by task 11559:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
->  ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
->  kasan_slab_free include/linux/kasan.h:192 [inline]
->  slab_free_hook mm/slub.c:1547 [inline]
->  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
->  slab_free mm/slub.c:3143 [inline]
->  kmem_cache_free+0x82/0x350 mm/slub.c:3159
->  dst_destroy+0x2bc/0x3c0 net/core/dst.c:129
->  rcu_do_batch kernel/rcu/tree.c:2489 [inline]
->  rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
->  __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
-> 
-> Last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
->  __call_rcu kernel/rcu/tree.c:2965 [inline]
->  call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
->  dst_release net/core/dst.c:179 [inline]
->  dst_release+0x79/0xe0 net/core/dst.c:169
->  tcp_disconnect+0xc26/0x1ec0 net/ipv4/tcp.c:3003
->  __tcp_close+0x486/0x1170 net/ipv4/tcp.c:2745
->  tcp_close+0x29/0xc0 net/ipv4/tcp.c:2867
->  inet_release+0x12e/0x280 net/ipv4/af_inet.c:431
->  inet6_release+0x4c/0x70 net/ipv6/af_inet6.c:475
->  __sock_release net/socket.c:597 [inline]
->  sock_release+0x87/0x1b0 net/socket.c:625
->  rds_tcp_accept_one+0x5fc/0xc10 net/rds/tcp_listen.c:220
->  rds_tcp_accept_worker+0x50/0x80 net/rds/tcp.c:515
->  process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
->  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
->  kthread+0x3b1/0x4a0 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> 
-> Second to last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xc5/0xf0 mm/kasan/generic.c:344
->  __call_rcu kernel/rcu/tree.c:2965 [inline]
->  call_rcu+0xbb/0x700 kernel/rcu/tree.c:3038
->  dst_release net/core/dst.c:179 [inline]
->  dst_release+0x79/0xe0 net/core/dst.c:169
->  inet_sock_destruct+0x600/0x830 net/ipv4/af_inet.c:160
->  __sk_destruct+0x4b/0x900 net/core/sock.c:1795
->  rcu_do_batch kernel/rcu/tree.c:2489 [inline]
->  rcu_core+0x5eb/0xf00 kernel/rcu/tree.c:2723
->  __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
-> 
-> The buggy address belongs to the object at ffff88802943db00
->  which belongs to the cache ip_dst_cache of size 176
-> The buggy address is located 8 bytes inside of
->  176-byte region [ffff88802943db00, ffff88802943dbb0)
-> The buggy address belongs to the page:
-> page:0000000019369b4d refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2943d
-> flags: 0xfff00000000200(slab)
-> raw: 00fff00000000200 dead000000000100 dead000000000122 ffff888141745a00
-> raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> 
-> Memory state around the buggy address:
->  ffff88802943da00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff88802943da80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
-> > ffff88802943db00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                       ^
->  ffff88802943db80: fb fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc
->  ffff88802943dc00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ==================================================================
+> And I believe there's also a second bug that would be fixed by such an approach.
+> Doesn't vmx_inject_page_fault_nested() need to be used for the nested_mmu when
+> ept=1?  E.g. if the emulator injects a #PF to L2, L1 should still be able to
+> intercept the #PF even if L1 is using EPT.  This likely hasn't been noticed
+> because hypervisors typically don't intercept #PF when EPT is enabled.
 
-Even this one...
+Let me explain what I know about this:
+ 
+There are basically 3 cases:
+ 
+1. npt/ept disabled in the host. In this case we have a single shadowing
+and a nested hypervisor has to do its own shadowing on top of it.
+In this case the MMU itself has to generate page faults (they are a result
+of hardware page faults, but are completely different), and in case
+of nesting these page faults have to be sometimes injected as VM exits.
+ 
+2. npt/ept enabled on host and disabled in guest.
+In this case we don't need to shadow anything, while the nested hypervisor
+does need to do shadowing to run its guest.
+In this case in fact it is likely that L1 intercepts the page faults,
+however they are just reflected as is to it, like what nested_svm_exit_special
+does (it does have a special case for async page fault which I need to investigate.
 
-#syz dup: WARNING in dst_release
+This is where the bug that you mention can happen. I haven’t checked how VMX
+reflects the page faults to the nested guest also.
+ 
+3. (the common case) npt/ept are enabled on both host and guest.
+In this case walk_mmu is used for all the page faults which is actually
+tweaked in the similar way (see nested_svm_init_mmu_context for example)
 
-/P
+
+Also if the emulator injects the page fault, then indeed I think the
+bug will happen.
+
+
+Best regards and thanks for the feedback,
+	Maxim Levitsky
+
+> 
+> Something like this (very incomplete):
+> 
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 30e9b0cb9abd..f957514a4d65 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -4497,7 +4497,6 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+>         context->direct_map = true;
+>         context->get_guest_pgd = get_cr3;
+>         context->get_pdptr = kvm_pdptr_read;
+> -       context->inject_page_fault = kvm_inject_page_fault;
+> 
+>         if (!is_paging(vcpu)) {
+>                 context->nx = false;
+> @@ -4687,7 +4686,6 @@ static void init_kvm_softmmu(struct kvm_vcpu *vcpu)
+> 
+>         context->get_guest_pgd     = get_cr3;
+>         context->get_pdptr         = kvm_pdptr_read;
+> -       context->inject_page_fault = kvm_inject_page_fault;
+>  }
+> 
+>  static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
+> @@ -4701,7 +4699,6 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
+>         g_context->mmu_role.as_u64 = new_role.as_u64;
+>         g_context->get_guest_pgd     = get_cr3;
+>         g_context->get_pdptr         = kvm_pdptr_read;
+> -       g_context->inject_page_fault = kvm_inject_page_fault;
+> 
+>         /*
+>          * L2 page tables are never shadowed, so there is no need to sync
+> @@ -5272,6 +5269,8 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
+>         if (ret)
+>                 goto fail_allocate_root;
+> 
+> +       static_call(kvm_x86_mmu_create)(vcpu);
+> +
+>         return ret;
+>   fail_allocate_root:
+>         free_mmu_pages(&vcpu->arch.guest_mmu);
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index a63da447ede9..aa6c48295117 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -425,15 +425,14 @@ static int nested_vmx_check_exception(struct kvm_vcpu *vcpu, unsigned long *exit
+>  }
+> 
+> 
+> -static void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,
+> +static void vmx_inject_page_fault(struct kvm_vcpu *vcpu,
+>                 struct x86_exception *fault)
+>  {
+>         struct vmcs12 *vmcs12 = get_vmcs12(vcpu);
+> 
+> -       WARN_ON(!is_guest_mode(vcpu));
+> -
+> -       if (nested_vmx_is_page_fault_vmexit(vmcs12, fault->error_code) &&
+> -               !to_vmx(vcpu)->nested.nested_run_pending) {
+> +       if (guest_mode(vcpu) &&
+> +           nested_vmx_is_page_fault_vmexit(vmcs12, fault->error_code) &&
+> +           !to_vmx(vcpu)->nested.nested_run_pending) {
+>                 vmcs12->vm_exit_intr_error_code = fault->error_code;
+>                 nested_vmx_vmexit(vcpu, EXIT_REASON_EXCEPTION_NMI,
+>                                   PF_VECTOR | INTR_TYPE_HARD_EXCEPTION |
+> @@ -2594,9 +2593,6 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>                 vmcs_write64(GUEST_PDPTR3, vmcs12->guest_pdptr3);
+>         }
+> 
+> -       if (!enable_ept)
+> -               vcpu->arch.walk_mmu->inject_page_fault = vmx_inject_page_fault_nested;
+> -
+>         if ((vmcs12->vm_entry_controls & VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL) &&
+>             WARN_ON_ONCE(kvm_set_msr(vcpu, MSR_CORE_PERF_GLOBAL_CTRL,
+>                                      vmcs12->guest_ia32_perf_global_ctrl)))
+> @@ -4198,9 +4194,6 @@ static void load_vmcs12_host_state(struct kvm_vcpu *vcpu,
+>         if (nested_vmx_load_cr3(vcpu, vmcs12->host_cr3, false, &ignored))
+>                 nested_vmx_abort(vcpu, VMX_ABORT_LOAD_HOST_PDPTE_FAIL);
+> 
+> -       if (!enable_ept)
+> -               vcpu->arch.walk_mmu->inject_page_fault = kvm_inject_page_fault;
+> -
+>         nested_vmx_transition_tlb_flush(vcpu, vmcs12, false);
+> 
+>         vmcs_write32(GUEST_SYSENTER_CS, vmcs12->host_ia32_sysenter_cs);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 1204e5f0fe67..0e5ee22eea77 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -3081,6 +3081,13 @@ void vmx_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
+>         vmx->emulation_required = emulation_required(vcpu);
+>  }
+> 
+> +static void vmx_mmu_create(struct kvm_vcpu *vcpu)
+> +{
+> +       vcpu->arch.root_mmu.inject_page_fault = vmx_inject_page_fault;
+> +       vcpu->arch.guest_mmu.inject_page_fault = nested_ept_inject_page_fault;
+> +       vcpu->arch.nested_mmu.inject_page_fault = vmx_inject_page_fault;
+> +}
+> +
+>  static int vmx_get_max_tdp_level(void)
+>  {
+>         if (cpu_has_vmx_ept_5levels())
+> @@ -7721,6 +7728,7 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+> 
+>         .write_l1_tsc_offset = vmx_write_l1_tsc_offset,
+> 
+> +       .mmu_create = vmx_mmu_create,
+>         .load_mmu_pgd = vmx_load_mmu_pgd,
+> 
+>         .check_intercept = vmx_check_intercept,
+> 
+> > -
+> >  	nested_vmx_transition_tlb_flush(vcpu, vmcs12, false);
+> >  
+> >  	vmcs_write32(GUEST_SYSENTER_CS, vmcs12->host_ia32_sysenter_cs);
+> > diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
+> > index 197148d76b8f..2ab279744d38 100644
+> > --- a/arch/x86/kvm/vmx/nested.h
+> > +++ b/arch/x86/kvm/vmx/nested.h
+> > @@ -36,6 +36,7 @@ void nested_vmx_pmu_entry_exit_ctls_update(struct kvm_vcpu *vcpu);
+> >  void nested_mark_vmcs12_pages_dirty(struct kvm_vcpu *vcpu);
+> >  bool nested_vmx_check_io_bitmaps(struct kvm_vcpu *vcpu, unsigned int port,
+> >  				 int size);
+> > +void vmx_inject_page_fault_nested(struct kvm_vcpu *vcpu,struct x86_exception *fault);
+> >  
+> >  static inline struct vmcs12 *get_vmcs12(struct kvm_vcpu *vcpu)
+> >  {
+> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > index bf6ef674d688..c43324df4877 100644
+> > --- a/arch/x86/kvm/vmx/vmx.c
+> > +++ b/arch/x86/kvm/vmx/vmx.c
+> > @@ -3254,7 +3254,10 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
+> >  
+> >  static void vmx_complete_mmu_init(struct kvm_vcpu *vcpu)
+> >  {
+> > -
+> > +	if (!enable_ept && is_guest_mode(vcpu)) {
+> > +		WARN_ON(mmu_is_nested(vcpu));
+> > +		vcpu->arch.mmu->inject_page_fault = vmx_inject_page_fault_nested;
+> > +	}
+> >  }
+> >  
+> >  static bool vmx_is_valid_cr4(struct kvm_vcpu *vcpu, unsigned long cr4)
+> > -- 
+> > 2.26.2
+> > 
+
 
