@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BF731D4C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 05:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D5F631D4C4
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhBQEz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 23:55:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41360 "EHLO mail.kernel.org"
+        id S229726AbhBQFIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 00:08:06 -0500
+Received: from ozlabs.org ([203.11.71.1]:32839 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhBQEz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 23:55:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 845C564DE9;
-        Wed, 17 Feb 2021 04:55:14 +0000 (UTC)
-Subject: Re: [SPAM?]Re: arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits'
- undeclared
-To:     Arnd Bergmann <arnd@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, kbuild-all@lists.01.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <202102121331.d4C0ShlS-lkp@intel.com>
- <CAK8P3a3uM7rCbnJP9r2SFEjm0D7oy2YsXw7VcGzkg5tq7mQbag@mail.gmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Message-ID: <2903dec9-b21d-9d91-0ad9-045bd9b2afd4@linux-m68k.org>
-Date:   Wed, 17 Feb 2021 14:55:12 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229459AbhBQFIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 00:08:02 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DgQnH429jz9sBy;
+        Wed, 17 Feb 2021 16:07:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613538439;
+        bh=HQjL0w5hzGU39nX6zl1CFqYXPyGjIVpcJad29S9dcOw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eV3NInWOGLnX7DXzMu5rkNfkptXhUgMiZUaU9SXvesRtAuZmRvsJWLLNIFYj4S4mQ
+         q5SzGVjfZFMuVH2BAPG6x2Zh1n1E5IWXJUDO6AZ49JtRD1Tu9etTvsKmXfgIT2J8K6
+         IloQGrUtLN1B2GWhzBVDGRp8epazvN9p2EWkhIAsda94h6I6IICkP9CQxwculcan9H
+         juIbkyRq+6N7RSwKGtB8MhKiEyi64wdOGF1twyLe6C6VfC3rq7Qvec5g/Y8j8TKDml
+         HB04FPRxjwejEL6GPne58REkuQSOiwqEQr5N9OLogaDVM/Io+rgCoCwjrCQCFtDZAx
+         bBjTwa/bjTteQ==
+Date:   Wed, 17 Feb 2021 16:07:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: linux-next: manual merge of the tip tree with the pm tree
+Message-ID: <20210217160714.7c1fcaac@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a3uM7rCbnJP9r2SFEjm0D7oy2YsXw7VcGzkg5tq7mQbag@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/wKSUvSh6GRuIdKDk0BS3huY";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+--Sig_/wKSUvSh6GRuIdKDk0BS3huY
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 12/2/21 8:05 pm, Arnd Bergmann wrote:
-> On Fri, Feb 12, 2021 at 6:48 AM kernel test robot <lkp@intel.com> wrote:
->>
->> FYI, the error/warning still remains.
-> 
->>           |             ^~~~~~~~~~~~
->>     arch/m68k/68000/dragen2.c: In function 'init_dragen2':
->>>> arch/m68k/68000/dragen2.c:73:16: error: 'screen_bits' undeclared (first use in this function)
->>        73 |  LSSA = (long) screen_bits;
->>           |                ^~~~~~~~~~~
->>     arch/m68k/68000/dragen2.c:73:16: note: each undeclared identifier is reported only once for each function it appears in
-> 
-> This problem existed before my patch, I just moved the line to another file.
-> To fix it, one needs to test on real hardware and figure out what is supposed
-> to go in there.
-> 
-> The bug was apparently introduced in linux-2.5.70 in this commit:
- >
-> commit 2b1a7e97c8c2d6330a432cbcaf83a0ef5fab848e
-> Author: gerg <gerg>
-> Date:   Mon May 26 16:45:57 2003 +0000
-> 
->      [PATCH] fix m68knommu DragonEngine2 target setup code
-> 
->      Numerous fixes for the m68knommu DragonEngine2 setup code.
-> 
->      It was out of date relative to more recent kernels.  Original patches
->      from Georges Menie.
-> 
->      BKrev: 3ed244c5dPVeFKP63b4kkeS_rEshag
+Hi all,
 
-Digging around a bit I think the screen_bits data structure was
-originally in a screen.h file that was generated from a screen.xbm file.
-That was removed in commit 0c0e6db80683 ("m68k: drop unused parts of 
-68VZ328 Makefile").
+Today's linux-next merge of the tip tree got a conflict in:
 
-Obviously no one seems to be using this, that has been broken for a long 
-time now.
+  arch/x86/platform/intel-mid/device_libs/platform_bt.c
 
-I could restore the generated screen.h here, so this could compile at 
-least. I don't have any of the hardware supported in the arch/m68k/68000 
-directory, so I can't test anything we fix in there.
+between commit:
 
-The other option is to remove the dragen code altogether.
+  4590d98f5a4f ("sfi: Remove framework for deprecated firmware")
 
+from the pm tree and commit:
 
-Regards
-Greg
+  bdb154f074a6 ("x86/platform/intel-mid: Convert comma to semicolon")
 
+from the tip tree.
 
+I fixed it up (the former removed the file, so I did that) and can
+carry the fix as necessary. This is now fixed as far as linux-next is
+concerned, but any non trivial conflicts should be mentioned to your
+upstream maintainer when your tree is submitted for merging.  You may
+also want to consider cooperating with the maintainer of the conflicting
+tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/wKSUvSh6GRuIdKDk0BS3huY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAspIIACgkQAVBC80lX
+0Gy8+gf6Au1D5ZF9dOgQcwyGjpaEhmEEgtKbzzQapBnAAbP9D2CXn8AO39JM43EX
+VyzAOJzjA//Xg9aClM1l1ibYf+ebHYmAkzZuP2zJve0DHOJ6HHEC3ivgrWHyrBYO
+8SlkvNGmySBHtTF8bgI5GPG1//ODR75PS92/2cw2brb/7/5zlI7MdJAvBB7nz3vx
+kkWqD/umK7v+u4F/L+XSx7jXpCPlUGIvFgd/3fIzjzDZGnwigPLBELNAfvb93SHQ
+Tgri3ckmOZvamhl5F/oBfXJFUq/hiy8HQRwInHYXIWlXCjYkD7mM64uuKyiwQqX7
+zg5glPL+okSXhzS6afh4Eb3aG/ZWew==
+=o5t4
+-----END PGP SIGNATURE-----
+
+--Sig_/wKSUvSh6GRuIdKDk0BS3huY--
