@@ -2,128 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C965031D7EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC4031D7E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbhBQLH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:07:28 -0500
-Received: from mout.kundenserver.de ([212.227.126.130]:50359 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231335AbhBQLFh (ORCPT
+        id S230339AbhBQLG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:06:27 -0500
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:55113 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231230AbhBQLEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:05:37 -0500
-Received: from [192.168.1.155] ([95.118.154.137]) by mrelayeu.kundenserver.de
- (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N4A1h-1luMS91vX7-01091g; Wed, 17 Feb 2021 12:02:48 +0100
-Subject: Re: [PATCH v2] leds: apu: extend support for PC Engines APU1 with
- newer firmware
-To:     Andreas Eberlein <foodeas@aeberlein.de>,
-        Pavel Machek <pavel@ucw.cz>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210216133028.4025-1-foodeas@aeberlein.de>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <c7eebbb6-df0c-51df-7701-ecb8f6543466@metux.net>
-Date:   Wed, 17 Feb 2021 12:02:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Wed, 17 Feb 2021 06:04:35 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6929F5C00D3;
+        Wed, 17 Feb 2021 06:03:17 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 17 Feb 2021 06:03:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=RhWcT+wzUyCCkN6d1Yoz8PTsSVB
+        hl4FHpU5J3vQcZDE=; b=H3dVaDibAMsKoUksJrYqWmyoE/KNQb0f/+IBdGlE/hZ
+        n4W/BRi+spDr4LaggTNgzjTS6TxTdJcyM3PpcKyDD0nonZRbI8pyPNd+IMBOnXcl
+        7oD4fB0bDhUkhR2M5qSeksR3ldlhufv79X57Xee5vO2jOyP8jF8pRAaxg9na/3Oi
+        HvQM1yElBZWr6g613otX+rwlmSgGa6Nk0POUUOtKm5EQ0uC2MNzj3aN0M8XN8biM
+        4G17NsBDk3mmOkLDfu7LNSvW8Mue6JZGh/XKQWBW2tAmXWSThAxWRce7lhsfrzmZ
+        bqKjwWtQrwe1n/TT++coxv6LRjh6PZ06H4+SKhsvxqQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=RhWcT+
+        wzUyCCkN6d1Yoz8PTsSVBhl4FHpU5J3vQcZDE=; b=cMrw4u+dIQ4Q8FsWi3IkRg
+        K8Z+HQUvS0Y6vb30HIUV2FcVKgx26+Rx6Yu8pwaeITsHvH3cSg8dQhNWgj6wUJo3
+        BcE7XfcpJ49jdYGoCMToJFGROFJowd475o597clroj0H6azkRV9QrbdO104xtXre
+        zZWgS1ackAA2FuVpgATVQxS/Tst1z+a28GBIbWJULe10WkIPsFdW+wg4BU9aOVJC
+        UjlV1sAPEGlXQ3rldWzgkIHt25Ea8t0pg1rCebI7h/s2MubcW2xnsdJ/3DelCXXn
+        huBznNPBmqXP0RzVYv91qtyfovnzmPZfe8/LjGdN3/oxyr2jxb0erCKLvSSCG5Cw
+        ==
+X-ME-Sender: <xms:8_csYDjKWj8yvtqDXQ0_3j3h7xQ7egLpJaiZhKN0ycKAES3d3Ztx8A>
+    <xme:8_csYP_qa-8NZNBnC1W2YJYYbO5VaI_Nu6whxL3oWZjexfWPC5dw-JEvZk2JDmybb
+    lIGGbyJyfrKyk69bYs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjedugddugeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
+    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:8_csYP8dTUyJxSjW3uxv3vKY9In1dFN0vyL_ry0Sfer3-ZArs5QF1A>
+    <xmx:8_csYIDMh1AT2d7witfNg_L6eE_VDidYd1tB355iTPmGGD1Qv2HjUg>
+    <xmx:8_csYPwbjOBUe8L6JwovIPhC2HhWntcVSE65dLY-SOlCRMGCQ_gB4g>
+    <xmx:9fcsYAPfbz1StMBWRvwmFuGfuHw2qnJsPJV2aq3X5FrzYadySEHe7w>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AACE624005E;
+        Wed, 17 Feb 2021 06:03:15 -0500 (EST)
+Date:   Wed, 17 Feb 2021 12:03:13 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Marjan Pascolo <marjan.pascolo@trexom.it>
+Cc:     wens@csie.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] pinctrl/sunxi: adding input-debounce-ns property
+Message-ID: <20210217110313.ly5ly5u5vyh2s7dh@gilmour>
+References: <d244aa6b-00b7-d768-83cb-e5a228b7ee08@trexom.it>
+ <20210114081732.9386-1-giulio.benetti@benettiengineering.com>
+ <20210114114219.faulkwww3dhdqwmc@gilmour>
+ <c3bc06e3-4193-dc0b-b2b3-d54636481e28@trexom.it>
 MIME-Version: 1.0
-In-Reply-To: <20210216133028.4025-1-foodeas@aeberlein.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:yAxNEpEFxBE7Ix0QnFkCYKxglhgHdHtGs6CuP/iEros+rhaun5S
- YVAWXGspnSbqMA3YQLsbBgNhbB3qtdq3GDCzWxa4fc1bvhVMglZ3Z24Xo428eaBZ4lBh2L/
- FvfZKfoNOvefI/M/HB+tbPLRES+mRevWcKy6WowjrX/N3cSK7b3YhAWUbtRxqJ91nfWSvZ8
- LSd+xcbVA2Y96f184TQ4g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:AexSnRepnHw=:FoN8i7EG1uKLf49OyAj+R2
- mmreqh/jyPo77rm0WNt2kGQDulhlehZHfMs7m6UIZp33TVbW4BWwH/30IuprN8tctQPwofju4
- JbCmuXy9WFAkzmkf4VQmZ/QOz6QdVM9vTj7zSXvDmd1mJVY2SzY/we/imbHrY1oVjufh2t4ep
- b5FAtDpwScaftKpL8Fn+YSJP9Sp0VlcSrAG2NsO0PH49uQ5odjUmaaMzcq0nmiMD9C1SLxw2z
- uhrZO7nI7kqJ2IAsHmiJ5Xz5/sk+C1MSHSlj6K0nZLXrAwBpmAxtVi3tgWclTLKIA81MDoIKe
- HWaeMrBNL5BvZk5/X5/okXUeIJmtGpe6MYlVVOgWkwgLeoPYAqbBNfR3Q8Ksj7uL+NkR6/qCB
- W0wuuz1cEyfWjFsLI8wA9f5uZOqYNZooY1bBHKSrwRUcYxYUXsqar6fxUtIU3kjzdzqhIQS0k
- X6KSGYGMK6gyiFpiJTGydeURny5Y2LycL/vsuF3B0ImJk6v67ER4
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="4d4ux434tr5bcsek"
+Content-Disposition: inline
+In-Reply-To: <c3bc06e3-4193-dc0b-b2b3-d54636481e28@trexom.it>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.02.21 14:30, Andreas Eberlein wrote:
+
+--4d4ux434tr5bcsek
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-> The DMI_PRODUCT_NAME entry on current firmware of PC Engines APU1 changed
-> from "APU" to "apu1"
-> 
-> This modification adds the missing DMI data and thereby the LED support for
-> the PC Engines APU1 with firmware versions >= 4.6.8.
+On Wed, Feb 10, 2021 at 05:22:37PM +0100, Marjan Pascolo wrote:
+> On Allwinner SoC interrupt debounce can be controlled by two oscillator
+> (32KHz and 24MHz) and a prescale divider.
+> Oscillator and prescale divider are set through
+> device tree property "input-debounce" which have 1uS accuracy.
+> For acheive nS precision a new device tree poperty is made
+> named "input-debounce-ns".
+> "input-debounce-ns" is checked only if "input-debounce"
+> property is not defined.
+>=20
+> Suggested-by: Maxime Ripard <maxime@cerno.tech>
+> Signed-off-by: Marjan Pascolo <marjan.pascolo@trexom.it>
+> ---
+> ---
+> =A0.../pinctrl/allwinner,sun4i-a10-pinctrl.yaml=A0 |=A0 9 +++++++
+> =A0drivers/pinctrl/sunxi/pinctrl-sunxi.c=A0=A0=A0=A0=A0=A0=A0=A0 | 25 +++=
++++++++++++++---
+> =A02 files changed, 30 insertions(+), 4 deletions(-)
+>=20
+> diff --git
+> a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml
+> b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml
+> index 5240487dfe50..346776de3a44 100644
+> ---
+> a/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml
+> +++
+> b/Documentation/devicetree/bindings/pinctrl/allwinner,sun4i-a10-pinctrl.y=
+aml
+> @@ -93,6 +93,15 @@ properties:
+> =A0=A0=A0=A0 minItems: 1
+> =A0=A0=A0=A0 maxItems: 5
+>=20
+> +=A0 input-debounce-ns:
+> +=A0=A0=A0 description:
+> +=A0=A0=A0=A0=A0 Debouncing periods in nanoseconds, one period per interr=
+upt
+> +=A0=A0=A0=A0=A0 bank found in the controller.
+> +=A0=A0=A0=A0=A0 Only checked if input-debounce is not present
+> +=A0=A0=A0 $ref: /schemas/types.yaml#/definitions/uint32-array
+> +=A0=A0=A0 minItems: 1
+> +=A0=A0=A0 maxItems: 5
+> +
 
-Do you have a device for more intensive testing ?
+This should be a separate patch, with the DT maintainers in Cc.=20
 
-In that case I'd like to suggest splitting the driver into gpio and
-gpio-based LED (using leds-gpio) - just like already I did for apu2/3/4.
-Maybe this even could also be moveed into the apu2 driver. This probably
-just makes sense if there're more gpio-connected devices than just LED)
+You should enforce that the properties are mutually exclusive through
+the schema too
 
-Personally, I don't have access to the old apu1 board (IIRC not even
-produced anymore for several years), so I didn't dare to touch anything
-here.
+> =A0patternProperties:
+> =A0=A0 # It's pretty scary, but the basic idea is that:
+> =A0=A0 #=A0=A0 - One node name can start with either s- or r- for PRCM no=
+des,
+> diff --git a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+> b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+> index dc8d39ae045b..869b6d5743ba 100644
+> --- a/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+> +++ b/drivers/pinctrl/sunxi/pinctrl-sunxi.c
+> @@ -1335,14 +1335,31 @@ static int sunxi_pinctrl_setup_debounce(struct
+> sunxi_pinctrl *pctl,
+> =A0=A0=A0=A0 struct clk *hosc, *losc;
+> =A0=A0=A0=A0 u8 div, src;
+> =A0=A0=A0=A0 int i, ret;
+> +=A0=A0=A0 /* Keeping for loop below clean */
+> +=A0=A0=A0 const char* debounce_prop_name;
+> +=A0=A0=A0 unsigned long debounce_dividend;
+>=20
+> =A0=A0=A0=A0 /* Deal with old DTs that didn't have the oscillators */
+> =A0=A0=A0=A0 if (of_clk_get_parent_count(node) !=3D 3)
+> =A0=A0=A0=A0 =A0=A0=A0 return 0;
+>=20
+> +=A0=A0=A0 /*
+> +=A0=A0=A0 =A0* Distinguish between simple input-debounce
+> +=A0=A0=A0 =A0* and new input-debounce-ns
+> +=A0=A0=A0 =A0*/
+> +
 
-Note that apu1 vs. apu2/3/4 have completely different SOC with different
-gpio logic - that was one of the reasons for writing a completely new
-driver for apu2+ from scrath, rather than extending the old one.
+I'm not sure that comment should stay, the code is obvious enough
 
-> --- a/drivers/leds/leds-apu.c
-> +++ b/drivers/leds/leds-apu.c
-> @@ -83,6 +83,7 @@ static const struct apu_led_profile apu1_led_profile[] = {
->   };
->   
->   static const struct dmi_system_id apu_led_dmi_table[] __initconst = {
-> +	/* PC Engines APU with factory bios "SageBios_PCEngines_APU-45" */
->   	{
->   		.ident = "apu",
->   		.matches = {
-> @@ -90,6 +91,14 @@ static const struct dmi_system_id apu_led_dmi_table[] __initconst = {
->   			DMI_MATCH(DMI_PRODUCT_NAME, "APU")
->   		}
->   	},
-> +	/* PC Engines APU with "Mainline" bios >= 4.6.8 */
-> +	{
-> +		.ident = "apu",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "PC Engines"),
-> +			DMI_MATCH(DMI_PRODUCT_NAME, "apu1")
-> +		}
-> +	},
->   	{}
->   };
->   MODULE_DEVICE_TABLE(dmi, apu_led_dmi_table);
-> @@ -173,7 +182,7 @@ static int __init apu_led_init(void)
->   	int err;
->   
->   	if (!(dmi_match(DMI_SYS_VENDOR, "PC Engines") &&
-> -	      dmi_match(DMI_PRODUCT_NAME, "APU"))) {
-> +	      (dmi_match(DMI_PRODUCT_NAME, "APU") || dmi_match(DMI_PRODUCT_NAME, "apu1")))) {
->   		pr_err("No PC Engines APUv1 board detected. For APUv2,3 support, enable CONFIG_PCENGINES_APU2\n");
->   		return -ENODEV;
->   	}
-> 
+> =A0=A0=A0=A0 /* If we don't have any setup, bail out */
+> -=A0=A0=A0 if (!of_find_property(node, "input-debounce", NULL))
+> -=A0=A0=A0 =A0=A0=A0 return 0;
+> +=A0=A0=A0 if (!of_find_property(node, "input-debounce", NULL)) {
+> +=A0=A0=A0 =A0=A0=A0 if(!of_find_property(node, "input-debounce-ns", NULL=
+)) {
+> +=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return 0;
+> +=A0=A0=A0 =A0=A0=A0 } else {
+> +=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 debounce_prop_name=3D"input-debounce-ns";
+> +=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 debounce_dividend=3DNSEC_PER_SEC;
+> +=A0=A0=A0 =A0=A0=A0 }
+> +=A0=A0=A0 } else {
+> +=A0=A0=A0 =A0=A0=A0 debounce_prop_name=3D"input-debounce";
+> +=A0=A0=A0 =A0=A0=A0 debounce_dividend=3DUSEC_PER_SEC;
+> +=A0=A0=A0 }
 
-Looks good to me. But don't dare giving official ack, since I don't
-have an apu1 board for testing.
+This doesn't follow the kernel coding style, make sure to run
+scripts/checkpatch.pl on your patches before sending them.
 
-Is Alan Mizrahi (original author) still here ?
+Maxime
 
+--4d4ux434tr5bcsek
+Content-Type: application/pgp-signature; name="signature.asc"
 
---mtx
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYCz38QAKCRDj7w1vZxhR
+xdYxAQDuQw3AAskrMfcPPpaS8bwmoVbfXI1KgKDZ6IRikJ/MtwD+JBs5jXA0i0aL
+4KwQ8cc5G7YLwGjAjFAVn15ACOnxtgc=
+=9525
+-----END PGP SIGNATURE-----
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+--4d4ux434tr5bcsek--
