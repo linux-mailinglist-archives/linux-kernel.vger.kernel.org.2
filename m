@@ -2,54 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278C931DA58
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:25:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F8431DA75
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:31:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230219AbhBQNZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:25:27 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:45340 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbhBQNSW (ORCPT
+        id S232288AbhBQN23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:28:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232901AbhBQNTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:18:22 -0500
-Date:   Wed, 17 Feb 2021 13:17:39 -0000
+        Wed, 17 Feb 2021 08:19:02 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAEE1C0617AA;
+        Wed, 17 Feb 2021 05:17:39 -0800 (PST)
+Date:   Wed, 17 Feb 2021 13:17:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613567859;
+        s=2020; t=1613567857;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oHOdxPK1PimUSz+dNel4xfb8TJHlo2JATIPacGkvQm4=;
-        b=QHDvHUU6ZhG7la/Y7m3i9+00DskSpYjft1bSz9/eT92SseeDNOJp05s9YKA6vLmZCCM2bW
-        aOM1+9CijETLZOJMmrd12cBuSErEMlVDpiTyl/ggsroo5amSSKbcpXr0SAGlAPvM2eM0Qh
-        C2DRhplN6uwCdwkVYqQEvh3RcEcA63cNmF2zdMM7JIacjTM5pVD/EvbryjKXmx4hoX6Hkd
-        lxhPfR+uTFp+SQXB65hQuclxnJTD8Rlbck56hwjzmZC5tuerE6o7egkLzkppw2AcPnmA+7
-        RxBDMUPW0bSs+spW7ihWIe4wx4n7/wjAQHhRQiliVpzmdsWVt+1PcN3R9MOlvA==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=rd/W1CRGnSD8mehvLbKv8P+T2jwQCIZywXxgXcMfz94=;
+        b=zacELPSktbD/FbyWvAYuCo18wjymiIOh8rHpraTHxtbvbhle9seIqwAd11iiBU21rYmMOI
+        58bB6+AgZv9KJiNY47ELu2OIZzruO2VKBtQrLTWCB6PLODki86IAlmgJtZ1R+8eqXbsFOo
+        NtQk51gKyCmkGKyoo++YpK0+IfGTD0iEPMucLi0HpxRcnSwR4DMtT5UvIkDNL77bSk3gRm
+        bDft2nNNUOhdOCq9atKEyvOt7rX2L0w5SrqGg94G8BWwg8uF5g52c+Vkhf7t0f9oNxYSmQ
+        6lK++gPMhN2Qs9r7S9R3IgrRoJ7B2jhCN6LXjJlY+xA13M5/fNGdGR7aZypCQw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613567859;
+        s=2020e; t=1613567857;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oHOdxPK1PimUSz+dNel4xfb8TJHlo2JATIPacGkvQm4=;
-        b=AMuCN2sq+htLpaHpvj75+9Of42zWe3yScjZrptjWySKvwErP20wusu5wmLMWljCt30CRtK
-        j6WikLYQa3SHuYAg==
-From:   "tip-bot2 for Mel Gorman" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=rd/W1CRGnSD8mehvLbKv8P+T2jwQCIZywXxgXcMfz94=;
+        b=bk8+V0X/BwicpI5hFztndOOEFrM9kBSUme4gUHbaiHHsRIKr4F4BfPvZ1rMvLTJbT7CBiO
+        v4Euc2QEz9jQQaBA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Remove select_idle_smt()
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: sched/core] rbtree, timerqueue: Use rb_add_cached()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210125085909.4600-4-mgorman@techsingularity.net>
-References: <20210125085909.4600-4-mgorman@techsingularity.net>
 MIME-Version: 1.0
-Message-ID: <161356785922.20312.12827530048357418558.tip-bot2@tip-bot2>
+Message-ID: <161356785704.20312.639489769023750532.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,79 +56,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     6cd56ef1df399a004f90ecb682427f9964969fc9
-Gitweb:        https://git.kernel.org/tip/6cd56ef1df399a004f90ecb682427f9964969fc9
-Author:        Mel Gorman <mgorman@techsingularity.net>
-AuthorDate:    Mon, 25 Jan 2021 08:59:08 
+Commit-ID:     798172b1374e28ecf687d6662fc5fdaec5c65385
+Gitweb:        https://git.kernel.org/tip/798172b1374e28ecf687d6662fc5fdaec5c65385
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 29 Apr 2020 17:07:53 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 17 Feb 2021 14:06:59 +01:00
+CommitterDate: Wed, 17 Feb 2021 14:08:01 +01:00
 
-sched/fair: Remove select_idle_smt()
+rbtree, timerqueue: Use rb_add_cached()
 
-In order to make the next patch more readable, and to quantify the
-actual effectiveness of this pass, start by removing it.
+Reduce rbtree boiler plate by using the new helpers.
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210125085909.4600-4-mgorman@techsingularity.net
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
 ---
- kernel/sched/fair.c | 30 ------------------------------
- 1 file changed, 30 deletions(-)
+ lib/timerqueue.c | 28 +++++++++-------------------
+ 1 file changed, 9 insertions(+), 19 deletions(-)
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 4c18ef6..6a0fc8a 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6114,27 +6114,6 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int 
- 	return -1;
- }
+diff --git a/lib/timerqueue.c b/lib/timerqueue.c
+index c527109..cdb9c76 100644
+--- a/lib/timerqueue.c
++++ b/lib/timerqueue.c
+@@ -14,6 +14,14 @@
+ #include <linux/rbtree.h>
+ #include <linux/export.h>
  
--/*
-- * Scan the local SMT mask for idle CPUs.
-- */
--static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
--{
--	int cpu;
++#define __node_2_tq(_n) \
++	rb_entry((_n), struct timerqueue_node, node)
++
++static inline bool __timerqueue_less(struct rb_node *a, const struct rb_node *b)
++{
++	return __node_2_tq(a)->expires < __node_2_tq(b)->expires;
++}
++
+ /**
+  * timerqueue_add - Adds timer to timerqueue.
+  *
+@@ -26,28 +34,10 @@
+  */
+ bool timerqueue_add(struct timerqueue_head *head, struct timerqueue_node *node)
+ {
+-	struct rb_node **p = &head->rb_root.rb_root.rb_node;
+-	struct rb_node *parent = NULL;
+-	struct timerqueue_node *ptr;
+-	bool leftmost = true;
 -
--	if (!static_branch_likely(&sched_smt_present))
--		return -1;
--
--	for_each_cpu(cpu, cpu_smt_mask(target)) {
--		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
--		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
--			continue;
--		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
--			return cpu;
+ 	/* Make sure we don't add nodes that are already added */
+ 	WARN_ON_ONCE(!RB_EMPTY_NODE(&node->node));
+ 
+-	while (*p) {
+-		parent = *p;
+-		ptr = rb_entry(parent, struct timerqueue_node, node);
+-		if (node->expires < ptr->expires) {
+-			p = &(*p)->rb_left;
+-		} else {
+-			p = &(*p)->rb_right;
+-			leftmost = false;
+-		}
 -	}
+-	rb_link_node(&node->node, parent, p);
+-	rb_insert_color_cached(&node->node, &head->rb_root, leftmost);
 -
--	return -1;
--}
--
- #else /* CONFIG_SCHED_SMT */
- 
- static inline int select_idle_core(struct task_struct *p, struct sched_domain *sd, int target)
-@@ -6142,11 +6121,6 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
- 	return -1;
+-	return leftmost;
++	return rb_add_cached(&node->node, &head->rb_root, __timerqueue_less);
  }
- 
--static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
--{
--	return -1;
--}
--
- #endif /* CONFIG_SCHED_SMT */
- 
- /*
-@@ -6336,10 +6310,6 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
--	i = select_idle_smt(p, sd, target);
--	if ((unsigned)i < nr_cpumask_bits)
--		return i;
--
- 	return target;
- }
+ EXPORT_SYMBOL_GPL(timerqueue_add);
  
