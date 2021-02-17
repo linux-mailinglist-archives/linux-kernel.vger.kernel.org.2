@@ -2,173 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D6731E100
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0901631E106
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234713AbhBQVFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:05:42 -0500
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:33881 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234709AbhBQVFZ (ORCPT
+        id S232183AbhBQVHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:07:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230488AbhBQVHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:05:25 -0500
-Received: by mail-oi1-f173.google.com with SMTP id j5so4276788oie.1;
-        Wed, 17 Feb 2021 13:05:09 -0800 (PST)
+        Wed, 17 Feb 2021 16:07:11 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C9A2C061574;
+        Wed, 17 Feb 2021 13:06:31 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id z21so9290338pgj.4;
+        Wed, 17 Feb 2021 13:06:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QOLobN1m4PsV5WCsxl2Kd4kTbQR1Euzif7wEpXKsHao=;
+        b=sMPxnjaC3doNxVKbEOz3S/xfRRPgLdj9d4KFAS8qH+9ZbTpzu228z7/dKBFsoKsajL
+         M1ia/SpEL4BnKNBjRTxG4XxJD7fJ8xHr5bAzQT/ZqSt4km/a9/uoSiTafhUgJUy3/4Xf
+         VXK+sBd7DqyuMopV3fIPzp7KSmPGT3TdS1XAC1/IGeHSvi+OR8PswnMkCyWm643cbmmR
+         DkXnMR0jl8Cpaq1fRjuizjQ2vUR0T4w7LMQc3Ti1N0sMtA/Skp1uQg62XhEVvRJjPywI
+         CAHMR7jRh11AD92UrFsX89o8IaB+gB5fQJQ92Ti0uCPsQW5kaj2VtoAqzfhFDXjL40mc
+         HB/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QKAFux8XcEkNyoW3lOTVnQo4Rj14jUDRtsW9J/H/LJg=;
-        b=KJjk4+ST/0u1awn7YEo3bjd+H0pIXykUUaQbfzRUI9UROPMmylwX+fFuzdROBLSpaW
-         O3LI8vExRvOmYdaMbd/Md76YlUImRp+ehyWDu2I7kbfkcbXKI8T5BJQbeG7XVyjXZfXj
-         u1KkOQQu9RkH5ubKgjGgavQNWbbZXaOi598En+fsid8ksbCP7SKQHHpjqFJISOL6JGBZ
-         W2uEdpMOizS4w4KIhtcRAJOBMlLrHUC6v7pcgaTr1H6BfECKWnxbPL0cZ5TLXnkLa3Zi
-         yKlh+3Du94lXbTD/JTYySxRGY6pIMaaCvwDvj2nYggtR5EBXj1zlAQUKYza2IueI4rk2
-         7pKw==
-X-Gm-Message-State: AOAM5316oagBCBLkQ43fY/EhMutv4R+WKTb/v2Y2E4QBb6cuhGFKWHrP
-        Z7uEtjxnTuGA5L/BQO6fsg==
-X-Google-Smtp-Source: ABdhPJxh3dS23qtLfh7ls7pqVObEW5PGwbQ5egZFAPvIdN9ALx8kFVv2h6t+P8NvUL6Sf6mmMyx8oA==
-X-Received: by 2002:a05:6808:115:: with SMTP id b21mr476463oie.110.1613595883842;
-        Wed, 17 Feb 2021 13:04:43 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 7sm622099oth.38.2021.02.17.13.04.42
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QOLobN1m4PsV5WCsxl2Kd4kTbQR1Euzif7wEpXKsHao=;
+        b=EKPM8kgVuX90yoFjehQHdx0cp2oh4Q+1TiNVA6BfTUavmmXBlX5ld5cpeHMTC43VsF
+         EGoEqLxBU5ADNyks4FhbVMbsPqs31fVMgUD7qb/htXohfvxciZfqjOqU8RCOYlfMk9dN
+         hvjC13kKGNWnV9NpzbaQAf8Rl//0EucEY+njO4GJgRxaY4jsj2SsH+yzhNPR2Urz8cPc
+         U9psRhSmBVYAzua6upadHdGYAr7aDoZPB+FbyASxyEFEHQhc0x4BStPG/THCmS+3fw+q
+         9nqex8R61s3EtcldsF+zuDg2D6uh1y0JWHS6BjRUtYXz6uWCDmprXKC6p3VMy4JABI69
+         +QEA==
+X-Gm-Message-State: AOAM533wtelQxgYdJNyxYhx94o4i/iNj1UzEv1VHJj+2E8GIf/eHINDa
+        Qtf0tuhchYWpFUzTH488Uu4=
+X-Google-Smtp-Source: ABdhPJxhd+vG1wnIsYR75bvhSOQfCvl0vxLh/nZEWeXT+CtBAZGvfvSMoIFdlRCzCU6v5vdTFl5mdw==
+X-Received: by 2002:a05:6a00:847:b029:1b3:b9c3:11fb with SMTP id q7-20020a056a000847b02901b3b9c311fbmr1082899pfk.44.1613595990350;
+        Wed, 17 Feb 2021 13:06:30 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a459:a528:1312:4d4c])
+        by smtp.gmail.com with ESMTPSA id w3sm3012516pjt.24.2021.02.17.13.06.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 13:04:43 -0800 (PST)
-Received: (nullmailer pid 2752193 invoked by uid 1000);
-        Wed, 17 Feb 2021 21:04:41 -0000
-Date:   Wed, 17 Feb 2021 15:04:41 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH v5 1/4] dt-bindings: usb: Add binding for discrete
- onboard USB hubs
-Message-ID: <20210217210441.GA2709172@robh.at.kernel.org>
-References: <20210210171040.684659-1-mka@chromium.org>
- <20210210091015.v5.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+        Wed, 17 Feb 2021 13:06:29 -0800 (PST)
+Date:   Wed, 17 Feb 2021 13:06:27 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     "Life is hard, and then you die" <ronald@innovation.ch>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] Input: applespi: Add trace_event module param for
+ early tracing.
+Message-ID: <YC2FUwOdIoKKg1Ew@google.com>
+References: <20210217190718.11035-1-ronald@innovation.ch>
+ <20210217190718.11035-3-ronald@innovation.ch>
+ <YC176rlGQeyKuOpn@google.com>
+ <20210217205257.GB25685@innovation.ch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210210091015.v5.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210217205257.GB25685@innovation.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:10:36AM -0800, Matthias Kaehlcke wrote:
-> Discrete onboard USB hubs (an example for such a hub is the Realtek
-> RTS5411) need to be powered and may require initialization of other
-> resources (like GPIOs or clocks) to work properly. This adds a device
-> tree binding for these hubs.
+On Wed, Feb 17, 2021 at 12:52:57PM -0800, Life is hard, and then you die wrote:
 > 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
+>   Hi Dmitry,
 > 
-> Changes in v5:
-> - updated 'title'
-> - only use standard USB compatible strings
-> - deleted 'usb_hub' node
-> - renamed 'usb_controller' node to 'usb-controller'
-> - removed labels from USB nodes
-> - added 'vdd-supply' to USB nodes
+> On Wed, Feb 17, 2021 at 12:26:18PM -0800, Dmitry Torokhov wrote:
+> > 
+> > On Wed, Feb 17, 2021 at 11:07:18AM -0800, Ronald Tschalär wrote:
+> > > The problem is that tracing can't be set via sysfs until the module is
+> > > loaded, at which point the keyboard and trackpad initialization commands
+> > > have already been run and hence tracing can't be used to debug problems
+> > > here.
+> > > 
+> > > Adding this param allows tracing to be enabled for messages sent and
+> > > received during module probing. It takes comma-separated list of events,
+> > > e.g.
+> > > 
+> > >   trace_event=applespi_tp_ini_cmd,applespi_bad_crc
+> > 
+> > You can unbind and rebind a device to a driver via sysfs as many times
+> > as needed (see bind and unbind driver sysfs attributes), so I believe
 > 
-> Changes in v4:
-> - none
-> 
-> Changes in v3:
-> - updated commit message
-> - removed recursive reference to $self
-> - adjusted 'compatible' definition to support multiple entries
-> - changed USB controller phandle to be a node
-> 
-> Changes in v2:
-> - removed 'wakeup-source' and 'power-off-in-suspend' properties
-> - consistently use spaces for indentation in example
-> 
->  .../bindings/usb/onboard_usb_hub.yaml         | 49 +++++++++++++++++++
->  1 file changed, 49 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> new file mode 100644
-> index 000000000000..bf4ec52e6c7b
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> @@ -0,0 +1,49 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/onboard_usb_hub.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Binding for discrete onboard USB hubs
+> Hmm, I'm going to have to play with that a bit, but one place it still
+> won't help I think is something we ran into in practise: init was
+> failing during boot, but was successfull later on.
 
-This isn't really generic. Maybe there's a set of hubs with only a 
-single supply much like 'simple-panel', but I kind of doubt that here. 
-There aren't hundreds of hub chips like panels. Though, we should put 
-this into bindings/usb/hub/ so we start collecting hub bindings in one 
-place.
+Maybe compiling module as a built-in and then using kernel command line
+option to initiate the trace would work?
 
-A generic driver doesn't have to have a generic binding. You can have a 
-specific device binding which is handled by a generic driver. Or not. 
-Who knows. Maybe a simple user like u-boot has a generic driver while 
-something more feature rich has a device specific binding.
+If this facility is really needed, it would be beneficial for other
+modules as well, and thus better implemented in the module loading code
+to activate desired tracing after loading the module but before invoking
+module init code.
 
-> +
-> +maintainers:
-> +  - Matthias Kaehlcke <mka@chromium.org>
+Thanks.
 
-Now we have usb-device.yaml, you need:
-
-allOf:
-  - $ref: usb-device.yaml#
-
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +        - usbbda,5411
-> +        - usbbda,411
-> +
-> +  vdd-supply:
-> +    description:
-> +      phandle to the regulator that provides power to the hub.
-> +
-> +required:
-> +  - compatible
-> +  - vdd-supply
-> +
-> +examples:
-> +  - |
-> +    usb-controller {
-> +        dr_mode = "host";
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        /* 2.0 hub on port 1 */
-> +        hub_2_0: hub@1 {
-> +            compatible = "usbbda,5411";
-> +            reg = <1>;
-> +            vdd-supply = <&pp3300_hub>;
-> +        };
-> +
-> +        /* 3.0 hub on port 2 */
-> +        hub_3_0: hub@2 {
-> +            compatible = "usbbda,411";
-> +            reg = <2>;
-> +            vdd-supply = <&pp3300_hub>;
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.30.0.478.g8a0d178c01-goog
-> 
+-- 
+Dmitry
