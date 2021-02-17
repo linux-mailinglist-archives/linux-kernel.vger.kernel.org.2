@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091CF31E150
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:26:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4657F31E157
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 22:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhBQVZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 16:25:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50272 "EHLO mail.kernel.org"
+        id S231808AbhBQV3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 16:29:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231630AbhBQVYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 16:24:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE33864E6C;
-        Wed, 17 Feb 2021 21:24:04 +0000 (UTC)
+        id S231616AbhBQV2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 16:28:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F3A1564E58;
+        Wed, 17 Feb 2021 21:28:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613597045;
-        bh=m2z/x1Zrj0A4fqoRWSZo7Xax9iL04VQAEJ0SYZrLHys=;
+        s=k20201202; t=1613597295;
+        bh=+s6kyvidSro6M1MNvoRGlwm1ScSQRwQLiGUb60mL0yc=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=COcGE94+mVQ/Mr+h+fiY7w9xxW3RaIR0HS5jqWAyH9hUBE4jRKau7KlRPscLNhfkl
-         lO/deqlC8pVqOMRRdSeE5APP9KGoatdQSnpbh3jwSQlZhQxUgQG2Izi8ZlM5fN0NkL
-         ommgd3wHYUVTfIVwDYT2mw5yug7IgPC8XuqPlh84vVXWnHzYa2yEttw5bOKJatPZ5J
-         o8yeBBYnB67NepUGdEy/blK3j6IgPEInSYTFPL95oPep8oQjkKBs0L9M5jHmpnsFVO
-         uBWbhfUZHbEoPAFiOQ0PHn7vtyy8r6wAYt+s7TknlqHn+kmC1Ck3OqAEWxFv1+TNN3
-         M0MDnwqAxAtZg==
+        b=CAd3dg2bj286w02Yiz/m6q8UHiX0ztwriIRcRGvhGHN7jS8IPDMtnYy+59xF9nIAG
+         xBRU0l+TsLAv9yNqm5ZQwS3sBGWaCI6XsWIG7ra8GjSvCY0D6Dju/KKlw3ZtPKdCUD
+         wSHm1KZ0u4+uN6CUIauqZy/K9YrydICXv7Zwf7dYQWlY4iBsnYNW/tZlLmT94od16/
+         EnuwAogqKZw7H2ULaluEQXp8Gsoq4KLf3Mu7pX7gqVvsobh7JF4/Zh0w2aR7wvPDCq
+         dGE02D3XYNeZeQQrDpmOu1036lU+r0fajljnMes43IXMlQ8VF77ZjKA+Y2DlIN9wNy
+         /2xApTSPWFZxA==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B7A3E3522611; Wed, 17 Feb 2021 13:24:04 -0800 (PST)
-Date:   Wed, 17 Feb 2021 13:24:04 -0800
+        id A605A3522611; Wed, 17 Feb 2021 13:28:14 -0800 (PST)
+Date:   Wed, 17 Feb 2021 13:28:14 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v3 1/1] rcuscale: add kfree_rcu() single-argument scale
- test
-Message-ID: <20210217212404.GK2743@paulmck-ThinkPad-P72>
+To:     linux-kernel@vger.kernel.org
+Cc:     john.stultz@linaro.org, tglx@linutronix.de, sboyd@kernel.org,
+        corbet@lwn.net, Mark.Rutland@arm.com, maz@kernel.org,
+        kernel-team@fb.com, neeraju@codeaurora.org, ak@linux.intel.com
+Subject: Re: [PATCH v3 clocksource] Do not mark clocks unstable due to delays
+Message-ID: <20210217212814.GA14952@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20210217185110.2099-1-urezki@gmail.com>
+References: <20210106004013.GA11179@paulmck-ThinkPad-P72>
+ <20210112004258.GA23158@paulmck-ThinkPad-P72>
+ <20210202170437.GA23593@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217185110.2099-1-urezki@gmail.com>
+In-Reply-To: <20210202170437.GA23593@paulmck-ThinkPad-P72>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 07:51:10PM +0100, Uladzislau Rezki (Sony) wrote:
-> To stress and test a single argument of kfree_rcu() call, we
-> should to have a special coverage for it. We used to have it
-> in the test-suite related to vmalloc stressing. The reason is
-> the rcuscale is a correct place for RCU related things.
-> 
-> Therefore introduce two torture_param() variables, one is for
-> single-argument scale test and another one for double-argument
-> scale test.
-> 
-> By default kfree_rcu_test_single and kfree_rcu_test_double are
-> initialized to false. If both have the same value (false or true)
-> both are randomly tested, otherwise only the one with value true
-> is tested. The value of this is that it allows testing of both
-> options with one test.
-> 
-> Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Hello!
 
-Queued with the usual wordsmithing, thank you!
+If there is a sufficient delay between reading the watchdog clock and the
+clock under test, the clock under test will be marked unstable through no
+fault of its own.  This series checks for this, doing limited retries
+to get a good set of clock reads.  If the clock is marked unstable
+and is marked as being per-CPU, cross-CPU synchronization is checked.
+This series also provides delay injection, which may be enabled via
+kernel boot parameters to test the checking for delays.
 
-							Thanx, Paul
+1.	Provide module parameters to inject delays in watchdog.
 
-> ---
->  kernel/rcu/rcuscale.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
-> index 06491d5530db..0fb540e2b22b 100644
-> --- a/kernel/rcu/rcuscale.c
-> +++ b/kernel/rcu/rcuscale.c
-> @@ -625,6 +625,8 @@ rcu_scale_shutdown(void *arg)
->  torture_param(int, kfree_nthreads, -1, "Number of threads running loops of kfree_rcu().");
->  torture_param(int, kfree_alloc_num, 8000, "Number of allocations and frees done in an iteration.");
->  torture_param(int, kfree_loops, 10, "Number of loops doing kfree_alloc_num allocations and frees.");
-> +torture_param(bool, kfree_rcu_test_single, false, "Do we run a kfree_rcu() single-argument scale test?");
-> +torture_param(bool, kfree_rcu_test_double, false, "Do we run a kfree_rcu() double-argument scale test?");
->  
->  static struct task_struct **kfree_reader_tasks;
->  static int kfree_nrealthreads;
-> @@ -644,10 +646,13 @@ kfree_scale_thread(void *arg)
->  	struct kfree_obj *alloc_ptr;
->  	u64 start_time, end_time;
->  	long long mem_begin, mem_during = 0;
-> +	bool kfree_rcu_test_both;
-> +	DEFINE_TORTURE_RANDOM(tr);
->  
->  	VERBOSE_SCALEOUT_STRING("kfree_scale_thread task started");
->  	set_cpus_allowed_ptr(current, cpumask_of(me % nr_cpu_ids));
->  	set_user_nice(current, MAX_NICE);
-> +	kfree_rcu_test_both = (kfree_rcu_test_single == kfree_rcu_test_double);
->  
->  	start_time = ktime_get_mono_fast_ns();
->  
-> @@ -670,7 +675,15 @@ kfree_scale_thread(void *arg)
->  			if (!alloc_ptr)
->  				return -ENOMEM;
->  
-> -			kfree_rcu(alloc_ptr, rh);
-> +			// By default kfree_rcu_test_single and kfree_rcu_test_double are
-> +			// initialized to false. If both have the same value (false or true)
-> +			// both are randomly tested, otherwise only the one with value true
-> +			// is tested.
-> +			if ((kfree_rcu_test_single && !kfree_rcu_test_double) ||
-> +					(kfree_rcu_test_both && torture_random(&tr) & 0x800))
-> +				kfree_rcu(alloc_ptr);
-> +			else
-> +				kfree_rcu(alloc_ptr, rh);
->  		}
->  
->  		cond_resched();
-> -- 
-> 2.20.1
-> 
+2.	Retry clock read if long delays detected.
+
+3.	Check per-CPU clock synchronization when marked unstable.
+
+4.	Provide a module parameter to fuzz per-CPU clock checking.
+
+5.	Do pairwise clock-desynchronization checking.
+
+Changes since v3:
+
+o	Rebased to v5.11.
+
+o	Apply Randy Dunlap feedback.
+
+Changes since v2:
+
+o	Rebased to v5.11-rc6.
+
+o	Updated Cc: list.
+
+Changes since v1:
+
+o	Applied feedback from Rik van Riel.
+
+o	Rebased to v5.11-rc3.
+
+o	Stripped "RFC" from the subject lines.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.txt |   38 +++++
+ arch/x86/kernel/kvmclock.c                      |    2 
+ arch/x86/kernel/tsc.c                           |    3 
+ include/linux/clocksource.h                     |    2 
+ kernel/time/clocksource.c                       |  174 +++++++++++++++++++++---
+ 5 files changed, 195 insertions(+), 24 deletions(-)
