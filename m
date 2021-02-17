@@ -2,89 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE5E631E1C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46C031E1CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhBQWFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:05:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbhBQWFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:05:01 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7ECDC061574;
-        Wed, 17 Feb 2021 14:04:18 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id v14so142873wro.7;
-        Wed, 17 Feb 2021 14:04:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6wttnQGWu0sxnyWFkVI72XRlxSZgSjW/Vbi7KmBnooU=;
-        b=S8NztYelNcnuzKYnhS7oX1mJsUZSLgr3mbFA8X2i1g0Ufu+3349DArFXUmApD+wUN8
-         qae+oQZcQrMGGwfs5uXO/8pg0rTm52mo+/cNttAYIrGQrUaez8wbfR0azlntX+LX4u3G
-         BCBpcyV17PSqvQRIcv8dDeKp0HBzhIFX9UViWcKGce0DeL8ZU+5MbE4wV/VuDlMMp99u
-         GqyjV3+G6IpSQ0+lce5zJAFo4GQZqMhq6ncTXWjHGKCuotpBbeX+zEqDlymSamjkU+l4
-         WWSWTMUQOhU9/pG7L1dhuaTW+9eEEbhrEKX0TVpp7LMEplSM8fTiGesWNq3AKS3I33zP
-         1RUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6wttnQGWu0sxnyWFkVI72XRlxSZgSjW/Vbi7KmBnooU=;
-        b=d7YlqnJohor//F5Y8MZxziK7v8PJbulj3kFN3VWgU+O7Gmd4CQx69vHrVC9qa1q83D
-         fDVQAXxzeaxljrz6s/ucxTZeh3qJZfRGtyqFmzwfH65MooqzB4B9/SRXXw03IvsYVzru
-         dPlXLrBThzBWm4drPx8tFH67H/qR2K8D7T2ykERS/fl8qIJFnDfWkPi4ntAoxqG3WIrj
-         ahekWM7te4WjEc6AP2IWHwJ5F8UEjFIn4E9f1Hvas3O0zcsibIOlTlhpRfIsRzxhwHmr
-         DX0iAuPfOu8RSlxMvc6e2ZCgYd0OiIg4q5ZFC1+XJvqIpVrzl18OoSa7hcEoBNdVC79G
-         B2cQ==
-X-Gm-Message-State: AOAM533nZxkDjcQVLyXSpzfub5nGFvfx/aqLYWrdBkVuBkuMPPVFOc7s
-        /SiQ/ZvzlWo2tWYMg6WvZbzGonfMRsqvCxcgF+E=
-X-Google-Smtp-Source: ABdhPJyoNgeCYh4ZR1wXJGekd+0GnvpscpjxuRKyBWvKDEv6fshsFjkzz00EaLIHiia/zG7sJrerWde6Yn90dDe9PP0=
-X-Received: by 2002:a5d:49d2:: with SMTP id t18mr1232965wrs.224.1613599457065;
- Wed, 17 Feb 2021 14:04:17 -0800 (PST)
+        id S232196AbhBQWKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:10:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229828AbhBQWKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 17:10:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3400A64E2E;
+        Wed, 17 Feb 2021 22:10:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613599807;
+        bh=RTrHvcKlu4nh2Uhh5Yy4CCmThHz37p3dsD6u6sdppHU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=uBEVVJ/HZ7z777vIkozNbFM/29C1elhPuwU3QdWmus+Q2QYy+MtGovMl9EDNLkj9K
+         hevUVs9zP+zR1XKt7PtaRhhLvHqJvGf74BiUnBfdLEyld/Dyg5Euyq8Vutx5UH0q4q
+         xeWcfb/gB0E/gqlp5I1DNY6t201sKSaaSFd68wDZzmncdmjL/nEbDeo9+3Mait1PjC
+         Q3SXeeVDP8Kdiq/gWe8ERrrSTowVYli9wq9+WekMK4+wPSaduj3+UuBLMGsP2Rvp+2
+         My+M+dw2DrN2dx6OOr9gv0LecvNXWMJp/7DmICwe0ZvIQDU3eiKd+ekALrRj5tNsuO
+         wd+kg4O2iFsIA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 22C8560A15;
+        Wed, 17 Feb 2021 22:10:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210216010806.31948-1-TheSven73@gmail.com> <BN8PR11MB3651BB478489CF5B69A9DB6DFA869@BN8PR11MB3651.namprd11.prod.outlook.com>
-In-Reply-To: <BN8PR11MB3651BB478489CF5B69A9DB6DFA869@BN8PR11MB3651.namprd11.prod.outlook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Wed, 17 Feb 2021 17:04:05 -0500
-Message-ID: <CAGngYiUV_c7Z-gUCt0xKcP-E_5UVyM9PWBQ_wYK9o5_L0D-1qA@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 0/5] lan743x speed boost
-To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        Hillf Danton <hdanton@sina.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next] bpf: fix a warning message in
+ mark_ptr_not_null_reg()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161359980713.20364.16930530087071491703.git-patchwork-notify@kernel.org>
+Date:   Wed, 17 Feb 2021 22:10:07 +0000
+References: <YCzJlV3hnF/t1Pk4@mwanda>
+In-Reply-To: <YCzJlV3hnF/t1Pk4@mwanda>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, me@ubique.spb.ru,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jakub and Bryan,
+Hello:
 
-On Wed, Feb 17, 2021 at 4:43 PM <Bryan.Whitehead@microchip.com> wrote:
->
-> Just to let you know, my colleague tested the patches 1 and 2 on x86 PC and we are satisfied with the result.
-> We confirmed some performance improvements.
-> We also confirmed PTP is working.
->
-> Thanks for your work on this.
->
-> Tested-by: UNGLinuxDriver@microchip.com
->
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-Bryan, that is great news. My pleasure, thank you for your guidance
-and considerable expertise.
+On Wed, 17 Feb 2021 10:45:25 +0300 you wrote:
+> The WARN_ON() argument is a condition, not an error message.  So this
+> code will print a stack trace but will not print the warning message.
+> Fix that and also change it to only WARN_ONCE().
+> 
+> Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> [...]
 
-Jakub, is there anything else you'd like to see from us, before you
-are satisfied that patches 1/5 and 2/5 can be merged into your tree?
+Here is the summary with links:
+  - [v2,bpf-next] bpf: fix a warning message in mark_ptr_not_null_reg()
+    https://git.kernel.org/bpf/bpf-next/c/7b1e385c9a48
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
