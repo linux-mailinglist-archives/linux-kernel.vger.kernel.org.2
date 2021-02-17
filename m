@@ -2,59 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944F931DA5F
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7D531DA48
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:23:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhBQN1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:27:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbhBQNSz (ORCPT
+        id S232947AbhBQNWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:22:48 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45224 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232822AbhBQNSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:18:55 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E683BC061788;
-        Wed, 17 Feb 2021 05:17:34 -0800 (PST)
-Date:   Wed, 17 Feb 2021 13:17:32 -0000
+        Wed, 17 Feb 2021 08:18:18 -0500
+Date:   Wed, 17 Feb 2021 13:17:33 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613567852;
+        s=2020; t=1613567854;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a6fJHWHzGXDij8Gpwi71823DsiNF59SRzBHAispXgPA=;
-        b=G3KJvpAn/eO6C0zZjz2oAUfYktHjCuY+LaL9R7einOzR7COSlbBe5S733DtjkWl+JbeGuy
-        rIi+4rfQzFJwpZd2QMT1RIL6RoXp6P8YmTc4MeYB/G0gfC0vgSt7eVfcBkrNb86u1y1vBe
-        d5Bim3EYDvxUZZS6ZwxvaG6s/FVJOf68t1CkNYzJKwseJKr2CNbTjuOJmdK9snT3xxQiBd
-        FAaPhFlbfHYM8c3lOrhRa/SfKPzIJtxYoUTLwAnOVHVPz7I9y6wQ/I03//Ni4/VXvksRz8
-        ESo01XxgfIhuYJBTfYbjXjzyLswWYHjCEaO7Jm0pOhHtCZm4ac0QeQLakGwytQ==
+        bh=U4+cw8LKXbpP0Ai7n2aQVONfoDtNlPAEPk1XZSQcaec=;
+        b=tQy/cqZiGGWrEWe3bYrdo2Rv0LJw915VYGgfCNF9+Rs0fBp2DbbEID1T1DzahHFXZ6MaSu
+        uV8vdAQ7IJ9BpGq0FfqXUereUA4W98RjsE7pBKbk2jC/0PwGMbYcfBtycM8XctKEigaDTc
+        uYIKpi+OfIm2RntC8OWupOeKSuwnsUXHKYC2F6WLG580v0jX26zmpobUTRdaaKFOiICD+o
+        fQxvwJ3Y/B/5qHTnM4npuXRcWVsh+jWQ4gm7okqNBsi+Sv2YQSDL1iidHJ1PEeI1i4vSoE
+        HqYxSmUKIkoub9EqD2tq0gfBlkywNKqymN2bVyG2mG6ZwxzuRbL/YlrhOh+cJg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613567852;
+        s=2020e; t=1613567854;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a6fJHWHzGXDij8Gpwi71823DsiNF59SRzBHAispXgPA=;
-        b=qNOWSjgJ9I62coCaJIz9/cwbewlXxKtNSlhe0lK3/9CeNhbqXLMzKOliWdKH4X3KWSm41u
-        dCr9itXABRuiYrAA==
-From:   "tip-bot2 for Juri Lelli" <tip-bot2@linutronix.de>
+        bh=U4+cw8LKXbpP0Ai7n2aQVONfoDtNlPAEPk1XZSQcaec=;
+        b=GNlLsG2CxrQE06RZSoSjO3Nv8EHF6EWFOJkiF6NBz5h57YMNHW6+86zUdbkOdrz3MV+sln
+        NutxdRKpe3r3SoAg==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/features: Distinguish between NORMAL and
- DEADLINE hrtick
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+Subject: [tip: sched/core] sched: Add /debug/sched_preempt
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210208073554.14629-3-juri.lelli@redhat.com>
-References: <20210208073554.14629-3-juri.lelli@redhat.com>
+In-Reply-To: <YAsGiUYf6NyaTplX@hirez.programming.kicks-ass.net>
+References: <YAsGiUYf6NyaTplX@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <161356785209.20312.4469541394599855364.tip-bot2@tip-bot2>
+Message-ID: <161356785383.20312.16884665839597173112.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,165 +58,189 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     e0ee463c93c43b1657ad69cf2678ff5bf1b754fe
-Gitweb:        https://git.kernel.org/tip/e0ee463c93c43b1657ad69cf2678ff5bf1b754fe
-Author:        Juri Lelli <juri.lelli@redhat.com>
-AuthorDate:    Mon, 08 Feb 2021 08:35:54 +01:00
+Commit-ID:     e59e10f8ef63d42fbb99776a5a112841e798b3b5
+Gitweb:        https://git.kernel.org/tip/e59e10f8ef63d42fbb99776a5a112841e798b3b5
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Fri, 22 Jan 2021 13:01:58 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Wed, 17 Feb 2021 14:12:42 +01:00
 
-sched/features: Distinguish between NORMAL and DEADLINE hrtick
+sched: Add /debug/sched_preempt
 
-The HRTICK feature has traditionally been servicing configurations that
-need precise preemptions point for NORMAL tasks. More recently, the
-feature has been extended to also service DEADLINE tasks with stringent
-runtime enforcement needs (e.g., runtime < 1ms with HZ=1000).
+Add a debugfs file to muck about with the preempt mode at runtime.
 
-Enabling HRTICK sched feature currently enables the additional timer and
-task tick for both classes, which might introduced undesired overhead
-for no additional benefit if one needed it only for one of the cases.
-
-Separate HRTICK sched feature in two (and leave the traditional case
-name unmodified) so that it can be selectively enabled when needed.
-
-With:
-
-  $ echo HRTICK > /sys/kernel/debug/sched_features
-
-the NORMAL/fair hrtick gets enabled.
-
-With:
-
-  $ echo HRTICK_DL > /sys/kernel/debug/sched_features
-
-the DEADLINE hrtick gets enabled.
-
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
-Signed-off-by: Luis Claudio R. Goncalves <lgoncalv@redhat.com>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20210208073554.14629-3-juri.lelli@redhat.com
+Link: https://lkml.kernel.org/r/YAsGiUYf6NyaTplX@hirez.programming.kicks-ass.net
 ---
- kernel/sched/core.c     |  2 +-
- kernel/sched/deadline.c |  4 ++--
- kernel/sched/fair.c     |  4 ++--
- kernel/sched/features.h |  1 +
- kernel/sched/sched.h    | 26 ++++++++++++++++++++++++--
- 5 files changed, 30 insertions(+), 7 deletions(-)
+ kernel/sched/core.c | 135 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 126 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 18d51ab..88a2e2b 100644
+index 0c06717..4a17bb5 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -4969,7 +4969,7 @@ static void __sched notrace __schedule(bool preempt)
- 
- 	schedule_debug(prev, preempt);
- 
--	if (sched_feat(HRTICK))
-+	if (sched_feat(HRTICK) || sched_feat(HRTICK_DL))
- 		hrtick_clear(rq);
- 
- 	local_irq_disable();
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 6f37796..aac3539 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -1832,7 +1832,7 @@ static void set_next_task_dl(struct rq *rq, struct task_struct *p, bool first)
- 	if (!first)
- 		return;
- 
--	if (hrtick_enabled(rq))
-+	if (hrtick_enabled_dl(rq))
- 		start_hrtick_dl(rq, p);
- 
- 	if (rq->curr->sched_class != &dl_sched_class)
-@@ -1895,7 +1895,7 @@ static void task_tick_dl(struct rq *rq, struct task_struct *p, int queued)
- 	 * not being the leftmost task anymore. In that case NEED_RESCHED will
- 	 * be set and schedule() will start a new hrtick for the next task.
- 	 */
--	if (hrtick_enabled(rq) && queued && p->dl.runtime > 0 &&
-+	if (hrtick_enabled_dl(rq) && queued && p->dl.runtime > 0 &&
- 	    is_leftmost(p, &rq->dl))
- 		start_hrtick_dl(rq, p);
- }
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 59b645e..8a8bd7b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -5429,7 +5429,7 @@ static void hrtick_update(struct rq *rq)
- {
- 	struct task_struct *curr = rq->curr;
- 
--	if (!hrtick_enabled(rq) || curr->sched_class != &fair_sched_class)
-+	if (!hrtick_enabled_fair(rq) || curr->sched_class != &fair_sched_class)
- 		return;
- 
- 	if (cfs_rq_of(&curr->se)->nr_running < sched_nr_latency)
-@@ -7116,7 +7116,7 @@ done: __maybe_unused;
- 	list_move(&p->se.group_node, &rq->cfs_tasks);
- #endif
- 
--	if (hrtick_enabled(rq))
-+	if (hrtick_enabled_fair(rq))
- 		hrtick_start_fair(rq, p);
- 
- 	update_misfit_status(p, rq);
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index e875eab..1bc2b15 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -38,6 +38,7 @@ SCHED_FEAT(CACHE_HOT_BUDDY, true)
- SCHED_FEAT(WAKEUP_PREEMPTION, true)
- 
- SCHED_FEAT(HRTICK, false)
-+SCHED_FEAT(HRTICK_DL, false)
- SCHED_FEAT(DOUBLE_TICK, false)
- 
- /*
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0dfdd52..10a1522 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2105,17 +2105,39 @@ extern const_debug unsigned int sysctl_sched_migration_cost;
+@@ -5363,37 +5363,154 @@ EXPORT_STATIC_CALL(preempt_schedule_notrace);
+  *   preempt_schedule_notrace   <- preempt_schedule_notrace
+  *   irqentry_exit_cond_resched <- irqentry_exit_cond_resched
   */
- static inline int hrtick_enabled(struct rq *rq)
+-static int __init setup_preempt_mode(char *str)
++
++enum {
++	preempt_dynamic_none = 0,
++	preempt_dynamic_voluntary,
++	preempt_dynamic_full,
++};
++
++static int preempt_dynamic_mode = preempt_dynamic_full;
++
++static int sched_dynamic_mode(const char *str)
  {
--	if (!sched_feat(HRTICK))
--		return 0;
- 	if (!cpu_active(cpu_of(rq)))
- 		return 0;
- 	return hrtimer_is_hres_active(&rq->hrtick_timer);
- }
- 
-+static inline int hrtick_enabled_fair(struct rq *rq)
-+{
-+	if (!sched_feat(HRTICK))
+-	if (!strcmp(str, "none")) {
++	if (!strcmp(str, "none"))
 +		return 0;
-+	return hrtick_enabled(rq);
++
++	if (!strcmp(str, "voluntary"))
++		return 1;
++
++	if (!strcmp(str, "full"))
++		return 2;
++
++	return -1;
 +}
 +
-+static inline int hrtick_enabled_dl(struct rq *rq)
++static void sched_dynamic_update(int mode)
 +{
-+	if (!sched_feat(HRTICK_DL))
-+		return 0;
-+	return hrtick_enabled(rq);
++	/*
++	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
++	 * the ZERO state, which is invalid.
++	 */
++	static_call_update(cond_resched, __cond_resched);
++	static_call_update(might_resched, __cond_resched);
++	static_call_update(preempt_schedule, __preempt_schedule_func);
++	static_call_update(preempt_schedule_notrace, __preempt_schedule_notrace_func);
++	static_call_update(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
++
++	switch (mode) {
++	case preempt_dynamic_none:
+ 		static_call_update(cond_resched, __cond_resched);
+ 		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
+ 		static_call_update(preempt_schedule, (typeof(&preempt_schedule)) NULL);
+ 		static_call_update(preempt_schedule_notrace, (typeof(&preempt_schedule_notrace)) NULL);
+ 		static_call_update(irqentry_exit_cond_resched, (typeof(&irqentry_exit_cond_resched)) NULL);
+-		pr_info("Dynamic Preempt: %s\n", str);
+-	} else if (!strcmp(str, "voluntary")) {
++		pr_info("Dynamic Preempt: none\n");
++		break;
++
++	case preempt_dynamic_voluntary:
+ 		static_call_update(cond_resched, __cond_resched);
+ 		static_call_update(might_resched, __cond_resched);
+ 		static_call_update(preempt_schedule, (typeof(&preempt_schedule)) NULL);
+ 		static_call_update(preempt_schedule_notrace, (typeof(&preempt_schedule_notrace)) NULL);
+ 		static_call_update(irqentry_exit_cond_resched, (typeof(&irqentry_exit_cond_resched)) NULL);
+-		pr_info("Dynamic Preempt: %s\n", str);
+-	} else if (!strcmp(str, "full")) {
++		pr_info("Dynamic Preempt: voluntary\n");
++		break;
++
++	case preempt_dynamic_full:
+ 		static_call_update(cond_resched, (typeof(&__cond_resched)) __static_call_return0);
+ 		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
+ 		static_call_update(preempt_schedule, __preempt_schedule_func);
+ 		static_call_update(preempt_schedule_notrace, __preempt_schedule_notrace_func);
+ 		static_call_update(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
+-		pr_info("Dynamic Preempt: %s\n", str);
+-	} else {
+-		pr_warn("Dynamic Preempt: Unsupported preempt mode %s, default to full\n", str);
++		pr_info("Dynamic Preempt: full\n");
++		break;
++	}
++
++	preempt_dynamic_mode = mode;
 +}
 +
- void hrtick_start(struct rq *rq, u64 delay);
- 
- #else
- 
-+static inline int hrtick_enabled_fair(struct rq *rq)
++static int __init setup_preempt_mode(char *str)
 +{
-+	return 0;
-+}
++	int mode = sched_dynamic_mode(str);
++	if (mode < 0) {
++		pr_warn("Dynamic Preempt: unsupported mode: %s\n", str);
+ 		return 1;
+ 	}
 +
-+static inline int hrtick_enabled_dl(struct rq *rq)
-+{
-+	return 0;
-+}
-+
- static inline int hrtick_enabled(struct rq *rq)
- {
++	sched_dynamic_update(mode);
  	return 0;
+ }
+ __setup("preempt=", setup_preempt_mode);
+ 
++#ifdef CONFIG_SCHED_DEBUG
++
++static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
++				   size_t cnt, loff_t *ppos)
++{
++	char buf[16];
++	int mode;
++
++	if (cnt > 15)
++		cnt = 15;
++
++	if (copy_from_user(&buf, ubuf, cnt))
++		return -EFAULT;
++
++	buf[cnt] = 0;
++	mode = sched_dynamic_mode(strstrip(buf));
++	if (mode < 0)
++		return mode;
++
++	sched_dynamic_update(mode);
++
++	*ppos += cnt;
++
++	return cnt;
++}
++
++static int sched_dynamic_show(struct seq_file *m, void *v)
++{
++	static const char * preempt_modes[] = {
++		"none", "voluntary", "full"
++	};
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
++		if (preempt_dynamic_mode == i)
++			seq_puts(m, "(");
++		seq_puts(m, preempt_modes[i]);
++		if (preempt_dynamic_mode == i)
++			seq_puts(m, ")");
++
++		seq_puts(m, " ");
++	}
++
++	seq_puts(m, "\n");
++	return 0;
++}
++
++static int sched_dynamic_open(struct inode *inode, struct file *filp)
++{
++	return single_open(filp, sched_dynamic_show, NULL);
++}
++
++static const struct file_operations sched_dynamic_fops = {
++	.open		= sched_dynamic_open,
++	.write		= sched_dynamic_write,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++};
++
++static __init int sched_init_debug_dynamic(void)
++{
++	debugfs_create_file("sched_preempt", 0644, NULL, NULL, &sched_dynamic_fops);
++	return 0;
++}
++late_initcall(sched_init_debug_dynamic);
++
++#endif /* CONFIG_SCHED_DEBUG */
+ #endif /* CONFIG_PREEMPT_DYNAMIC */
+ 
+ 
