@@ -2,167 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E10EC31DF07
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:21:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A8D31DF09
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhBQSUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:20:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234802AbhBQSUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:20:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D04764DFF;
-        Wed, 17 Feb 2021 18:19:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613585971;
-        bh=YI0feRKi0HADFgtGGKnsDY6OxjSAOTUzUGmBggQklsc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C60iXVbl2YEKNoduSi3hgGlTi2lHPLugweknDDwSsMunPnScI3ieeDHFWD2UP4T0J
-         Qb6RyiXPZDngHoaV4+UhGVaK4N9lSPW07SvgLg38o3ZSxD1RWI/emvWY1G5qH7gsg3
-         07q/awsMe6OTV6IPaOPGru8bNLXIs8nPl7nkue/lp1aQLRsl4Vi1+jcEnvGmVTHYR+
-         ZgVYNUUgF8AZskA+FC0z71mLdF7X5yft73wGH1w+JkQ+u9SjQGBqwk147q4zjURLZ9
-         FnpSTSye0xnnpupEZRk/Bd8r4mEgD0Uy/SW/163p6Ac0k1F7DeUhqekXYLlzUIBSza
-         ChQws5eNO62NA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D254B40CD9; Wed, 17 Feb 2021 15:19:28 -0300 (-03)
-Date:   Wed, 17 Feb 2021 15:19:28 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-Subject: Re: [PATCH 1/4] perf buildid-cache: Don't skip 16-byte build-ids
-Message-ID: <YC1eMMw39DIkyqtE@kernel.org>
-References: <597788e4-661d-633f-857c-3de700115d02@codeweavers.com>
- <YCqF3ENDLNLXoa2j@krava>
- <7f5bc880-7724-643b-5344-c27c4de572ae@codeweavers.com>
+        id S234813AbhBQSVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:21:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233793AbhBQSVA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:21:00 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4629C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:20:19 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id h26so23266154lfm.1
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:20:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y8i0g9QG9GcfcjV4SfK9KOZfpjS43yyxo3Zx1FaTpHg=;
+        b=h7iUpSow9k12uVMOboB5Bjv17rWg/6jjYDY14S/c9H+JtKhmOqzKKU0SXNql5LMSHo
+         5QUI6VYKH41Q7OVNhB/oRl8/+8YHm/LpjROCeDAL45ObLLq2hUNpbu9IH/1Wm79tGcHw
+         7I/VLgzKKpQBdyOWC/bbaetILYY449szZWMu2hzrd6QIXUK6Su4OEsgmGEEmv+khIr+Z
+         iv34uRIonT6ZvmaYzrb5/yPNbO6L3PG9NpOnmHBmEj/cnRPa0FJ9d3QXdUsaW3FPBHHs
+         7RXQ0sx29ZzqUml1Qp9wzvoD0y+zw1iV0vedpNOeo9itpeCTUZGdnKWeiE2ri6WPbIvE
+         hnEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y8i0g9QG9GcfcjV4SfK9KOZfpjS43yyxo3Zx1FaTpHg=;
+        b=WMg0fW2Z4HV3nU/rt1u86L+n8b3wkO+ApvP9yerJuQzxS+PLLihDNvKSWz+H+KVgAT
+         MWQO9n4D4eMRISZq/Yf1NSrU4RLJxKrv7iJLaI+VESnThMpIdinJKxPyOTV/L2ezEdTK
+         BhgNNX1hO6rlK0c07DLuJJuMNZY7y/2dDUznXPSZx6lUZLPXUiiBdkBUeuymK5IMuxBi
+         Q+lDciPPBR7ekTmsoTzw9qPdHjEITm6bVK+BLCb0WXDv5yyf6NSK08ELJOMRTko+OmbA
+         P6xj+4VkTGjI9eUIlaGaEJqbQAfGYDMX4c9O3+Wc4p+c54PvwRsqF13Q78eha4+7tHvD
+         pzfA==
+X-Gm-Message-State: AOAM530cXM+XZ7wQdcbtop5dj4v/IXEWsMoAkUsHK2zyEAVczpcTlXLF
+        oTjay1FiPK0nPbEZUZOpvtJoEMhImIkK1dt779U+Aw==
+X-Google-Smtp-Source: ABdhPJxMOLeAZPfh9/xXXXpTBjyQSpSyJvRHbhY5s0MXSFezU+L7QBkjMpxGQPfs6EC3HXmAYL8YPvDdUF5+IFW0YzQ=
+X-Received: by 2002:a19:4013:: with SMTP id n19mr89135lfa.543.1613586018064;
+ Wed, 17 Feb 2021 10:20:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7f5bc880-7724-643b-5344-c27c4de572ae@codeweavers.com>
-X-Url:  http://acmel.wordpress.com
+References: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com> <20210212195255.1321544-1-jiancai@google.com>
+In-Reply-To: <20210212195255.1321544-1-jiancai@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 17 Feb 2021 10:20:06 -0800
+Message-ID: <CAKwvOdn7N9dRfjrR0NiE6Dc_f_6PU-_4g1G5uRcoAvnob51ZfA@mail.gmail.com>
+Subject: Re: [PATCH v2] ARM: Implement Clang's SLS mitigation
+To:     Jian Cai <jiancai@google.com>
+Cc:     Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Feb 16, 2021 at 11:35:06AM -0500, Nicholas Fraser escreveu:
-> No problem, I've added a call to "perf buildid-cache -l" in check() to make
-> sure the added IDs are reported. The MD5 test fails without the previous
-> patch to allow 16-byte build-ids.
-> 
-> Do you also want PE files tested by this test script? This would make the
-> script depend on a number of things:
-> 
-> - We'd need to change "readelf" to something that can read the build-id of
->   PE files;
-> 
-> - We'd need MinGW installed to build them on the fly the same as the ELF
->   test cases, although we could use tests/pe-file.exe instead which is
->   already included;
-> 
-> - We'd need Wine to actually run it under perf record, which I'm sure you
->   don't want to depend on;
+On Fri, Feb 12, 2021 at 11:53 AM 'Jian Cai' via Clang Built Linux
+<clang-built-linux@googlegroups.com> wrote:
 
-We can check if wine is installed, if not, just emit a warning. I, for
-one, will install wine for this purpose.
- 
-> - We'd need to detect whether perf was built with libbfd support. Easily
->   done by calling perf version --build-options but by this point the test
->   case is getting pretty out of hand for what it's supposed to test.
+The oneline of the commit is "ARM: Implement Clang's SLS mitigation,"
+but that's not precise. GCC implements the same flag with the same
+arguments.  There is nothing compiler specific about this patch.
+(Though perhaps different section names are used, see below).
 
-Nope, at least a group of people need to be checking if this new code
-doesn't regress, and fix it if it does.
- 
-> I'll send patches for this test without PE support. It still tests 16-byte
-> build-ids because it tests an MD5 ELF file. Let me know if you also want me
-> to add PE support to this script. We can make it optionally perform PE
-> tests if all of the necessary tools are installed but it would take some
-> pretty large changes to the script.
-> 
-> Nick
-> 
-> 
-> On 2021-02-15 9:31 a.m., Jiri Olsa wrote:
-> > On Wed, Feb 10, 2021 at 02:17:25PM -0500, Nicholas Fraser wrote:
-> >> lsdir_bid_tail_filter() ignored any build-id that wasn't exactly 20
-> >> bytes. This worked only for SHA-1 build-ids. The build-id for a PE file
-> >> is always a 16-byte GUID and ELF files can also have MD5 or UUID
-> >> build-ids.
-> >>
-> >> This fix changes the filter to allow build-ids between 16 and 20 bytes.
-> > 
-> > hi,
-> > there's tests/shell/buildid.sh test for this, please add
-> > testcase for this.. looks like perf buildid-cacle -l will
-> > end up calling this function
-> > 
-> > thanks,
-> > jirka
-> > 
-> >>
-> >> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> >> ---
-> >>  tools/perf/util/build-id.c | 5 +++--
-> >>  tools/perf/util/build-id.h | 4 +++-
-> >>  2 files changed, 6 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> >> index 02df36b30ac5..e32e8f2ff3bd 100644
-> >> --- a/tools/perf/util/build-id.c
-> >> +++ b/tools/perf/util/build-id.c
-> >> @@ -448,7 +448,8 @@ static bool lsdir_bid_tail_filter(const char *name __maybe_unused,
-> >>  	int i = 0;
-> >>  	while (isxdigit(d->d_name[i]) && i < SBUILD_ID_SIZE - 3)
-> >>  		i++;
-> >> -	return (i == SBUILD_ID_SIZE - 3) && (d->d_name[i] == '\0');
-> >> +	return (i >= SBUILD_ID_MIN_SIZE - 3) && (i <= SBUILD_ID_SIZE - 3) &&
-> >> +		(d->d_name[i] == '\0');
-> >>  }
-> >>  
-> >>  struct strlist *build_id_cache__list_all(bool validonly)
-> >> @@ -490,7 +491,7 @@ struct strlist *build_id_cache__list_all(bool validonly)
-> >>  		}
-> >>  		strlist__for_each_entry(nd2, linklist) {
-> >>  			if (snprintf(sbuild_id, SBUILD_ID_SIZE, "%s%s",
-> >> -				     nd->s, nd2->s) != SBUILD_ID_SIZE - 1)
-> >> +				     nd->s, nd2->s) > SBUILD_ID_SIZE - 1)
-> >>  				goto err_out;
-> >>  			if (validonly && !build_id_cache__valid_id(sbuild_id))
-> >>  				continue;
-> >> diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
-> >> index 02613f4b2c29..c19617151670 100644
-> >> --- a/tools/perf/util/build-id.h
-> >> +++ b/tools/perf/util/build-id.h
-> >> @@ -2,8 +2,10 @@
-> >>  #ifndef PERF_BUILD_ID_H_
-> >>  #define PERF_BUILD_ID_H_ 1
-> >>  
-> >> -#define BUILD_ID_SIZE	20
-> >> +#define BUILD_ID_SIZE	20 /* SHA-1 length in bytes */
-> >> +#define BUILD_ID_MIN_SIZE	16 /* MD5/UUID/GUID length in bytes */
-> >>  #define SBUILD_ID_SIZE	(BUILD_ID_SIZE * 2 + 1)
-> >> +#define SBUILD_ID_MIN_SIZE	(BUILD_ID_MIN_SIZE * 2 + 1)
-> >>  
-> >>  #include "machine.h"
-> >>  #include "tool.h"
-> >> -- 
-> >> 2.30.0
-> >>
-> > 
+>
+> This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+> -mharden-sls=all, which mitigates the straight-line speculation
+> vulnerability, speculative execution of the instruction following some
+> unconditional jumps. Notice -mharden-sls= has other options as below,
+> and this config turns on the strongest option.
+>
+> all: enable all mitigations against Straight Line Speculation that are implemented.
+> none: disable all mitigations against Straight Line Speculation.
+> retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+> blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+>
+> Link: https://reviews.llvm.org/D93221
+> Link: https://reviews.llvm.org/D81404
+> Link: https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
+> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
+>
+> Suggested-by: Manoj Gupta <manojgupta@google.com>
+> Suggested-by: Nathan Chancellor  <nathan@kernel.org>
+> Suggested-by: David Laight <David.Laight@aculab.com>
+> Signed-off-by: Jian Cai <jiancai@google.com>
+
+I observe lots of linker warnings with this applied on linux-next:
+ld.lld: warning:
+init/built-in.a(main.o):(.text.__llvm_slsblr_thunk_x0) is being placed
+in '.text.__llvm_slsblr_thunk_x0'
+You need to modify arch/arm64/kernel/vmlinux.lds.S and
+arch/arm/kernel/vmlinux.lds.S (and possibly
+arch/arm/boot/compressed/vmlinux.lds.S as well) to add these sections
+back into .text so that the linkers don't place these orphaned
+sections in wild places.  The resulting aarch64 kernel image doesn't
+even boot (under emulation).
+
+For 32b ARM:
+ld.lld: warning:
+init/built-in.a(main.o):(.text.__llvm_slsblr_thunk_arm_r0) is being
+placed in '.text.__llvm_slsblr_thunk_arm_r0'
+...
+ld.lld: warning:
+init/built-in.a(main.o):(.text.__llvm_slsblr_thunk_thumb_r0) is being
+placed in '.text.__llvm_slsblr_thunk_thumb_r0'
+...
+<trimmed, but there's close to 60 of these>
+
+And the image doesn't boot (under emulation).
+
+> ---
+>
+> Changes v1 -> v2:
+>  Update the description and patch based on Nathan and David's comments.
+>
+>  arch/arm/Makefile          | 4 ++++
+>  arch/arm64/Makefile        | 4 ++++
+>  security/Kconfig.hardening | 7 +++++++
+>  3 files changed, 15 insertions(+)
+>
+> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+> index 4aaec9599e8a..11d89ef32da9 100644
+> --- a/arch/arm/Makefile
+> +++ b/arch/arm/Makefile
+> @@ -48,6 +48,10 @@ CHECKFLAGS   += -D__ARMEL__
+>  KBUILD_LDFLAGS += -EL
+>  endif
+>
+> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
+> +KBUILD_CFLAGS  += -mharden-sls=all
+> +endif
+> +
+>  #
+>  # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
+>  # later may result in code being generated that handles signed short and signed
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 90309208bb28..ca7299b356a9 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
+>    endif
+>  endif
+>
+> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
+> +KBUILD_CFLAGS  += -mharden-sls=all
+> +endif
+> +
+>  cc_has_k_constraint := $(call try-run,echo                             \
+>         'int main(void) {                                               \
+>                 asm volatile("and w0, w0, %w0" :: "K" (4294967295));    \
+> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+> index 269967c4fc1b..9266d8d1f78f 100644
+> --- a/security/Kconfig.hardening
+> +++ b/security/Kconfig.hardening
+> @@ -121,6 +121,13 @@ choice
+>
+>  endchoice
+>
+> +config HARDEN_SLS_ALL
+> +       bool "enable SLS vulnerability hardening"
+> +       def_bool $(cc-option,-mharden-sls=all)
+
+This fails to set CONFIG_HARDEN_SLS_ALL for me with:
+$ ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- make LLVM=1 LLVM_IAS=1
+-j72 defconfig
+$ grep SLS_ALL .config
+# CONFIG_HARDEN_SLS_ALL is not set
+
+but it's flipped on there for arm64 defconfig:
+$ ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make LLVM=1 LLVM_IAS=1
+-j72 defconfig
+$ grep SLS_ALL .config
+CONFIG_HARDEN_SLS_ALL=y
+
+What's going on there?  Is the cc-option Kconfig macro broken for
+Clang when cross compiling 32b ARM?  I can still enable
+CONFIG_HARDEN_SLS_ALL via menuconfig, but I wonder if the default
+value is funny because the cc-option check is failing?
+
+> +        help
+> +          Enables straight-line speculation vulnerability hardening
+> +         at highest level.
+> +
+>  config GCC_PLUGIN_STRUCTLEAK_VERBOSE
+>         bool "Report forcefully initialized variables"
+>         depends on GCC_PLUGIN_STRUCTLEAK
+> --
 
 -- 
-
-- Arnaldo
+Thanks,
+~Nick Desaulniers
