@@ -2,131 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA80E31D71C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E4EB31D721
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 10:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhBQJtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 04:49:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54196 "EHLO mail.kernel.org"
+        id S231932AbhBQJvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 04:51:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:37088 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229659AbhBQJts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 04:49:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9EEF64D9A;
-        Wed, 17 Feb 2021 09:49:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613555347;
-        bh=Xt/pQSPwnxdeV+GK8xvNK5JorjBJhSGXtix1A7YYkHs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cmHOlOJSrtLNdApKnF1/VctQ8ghvtak+WGJq46qyDCg5JefXgafmbZC9mDPfSd3KB
-         rhv+okJgtmULUfVaMG8fgTlLK430NC94GnMK5If9O72D1lwBcaBhNbmP+9EWoL8g8w
-         h1QTXkhPytla+f17A6on0yqlagF1AB9V/CzBtPpasiojS0pliXVG/OaXDjWY7DMSIx
-         GgBX8fhfwU8RloN2syZjG7CaBizB5Yqc/cJjGsEC0OWGe+gpus6TUKIv1Ej17XKokh
-         Aq16i9tFXzN1gNGaLRjiES3MHp3c3SXgDWimMtsZBfDFRkpvXyltTZThaaecwuq+eJ
-         U92mKBijH3UdA==
-Date:   Wed, 17 Feb 2021 09:49:00 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: Implement Clang's SLS mitigation
-Message-ID: <20210217094859.GA3706@willie-the-truck>
-References: <3f61af0eee9b495e8e8c032902d033c5@AcuMS.aculab.com>
- <20210212195255.1321544-1-jiancai@google.com>
+        id S231470AbhBQJvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 04:51:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613555457; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=A8liV9LivvgJbefXJ55VyrMSp067sOf3ODYYksKOF1U=;
+        b=vUF/7zLqOIqRO3nHFbLVor/ibH6SIiaLTRd3+Z+WlOYv/WpjYhGjkjIDAI+N2LQZmScOMy
+        91aUHNP9DizHYPNHY8OIu+h5XNrlpC6KuxoZmT8YFFZgJW9aIrB97wCEMLoea/3cifM7sd
+        skrLy8aV8Ymd4rwEaISTX5QXhPG4sFE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7079EB7A8;
+        Wed, 17 Feb 2021 09:50:57 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 10:50:55 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgoldswo@codeaurora.org,
+        linux-fsdevel@vger.kernel.org, willy@infradead.org,
+        david@redhat.com, vbabka@suse.cz, viro@zeniv.linux.org.uk,
+        joaodias@google.com
+Subject: Re: [RFC 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YCzm/3GIy1EJlBi2@dhcp22.suse.cz>
+References: <20210216170348.1513483-1-minchan@kernel.org>
+ <YCzbCg3+upAo1Kdj@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212195255.1321544-1-jiancai@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YCzbCg3+upAo1Kdj@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 11:52:53AM -0800, Jian Cai wrote:
-> This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
-> -mharden-sls=all, which mitigates the straight-line speculation
-> vulnerability, speculative execution of the instruction following some
-> unconditional jumps. Notice -mharden-sls= has other options as below,
-> and this config turns on the strongest option.
+On Wed 17-02-21 09:59:54, Michal Hocko wrote:
+> On Tue 16-02-21 09:03:47, Minchan Kim wrote:
+[...]
+> >  /*
+> >   * migrate_prep() needs to be called before we start compiling a list of pages
+> >   * to be migrated using isolate_lru_page(). If scheduling work on other CPUs is
+> > @@ -64,11 +80,27 @@
+> >   */
+> >  void migrate_prep(void)
+> >  {
+> > +	unsigned int cpu;
+> > +
+> > +	spin_lock(&migrate_pending_lock);
+> > +	migrate_pending_count++;
+> > +	spin_unlock(&migrate_pending_lock);
 > 
-> all: enable all mitigations against Straight Line Speculation that are implemented.
-> none: disable all mitigations against Straight Line Speculation.
-> retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-> blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+> I suspect you do not want to add atomic_read inside hot paths, right? Is
+> this really something that we have to microoptimize for? atomic_read is
+> a simple READ_ONCE on many archs.
 
-What exactly does this mitigation do? This should be documented somewhere,
-maybe in the Kconfig text?
+Or you rather wanted to prevent from read memory barrier to enfore the
+ordering.
 
-> Link: https://reviews.llvm.org/D93221
-> Link: https://reviews.llvm.org/D81404
-> Link: https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
+> > +
+> > +	for_each_online_cpu(cpu) {
+> > +		struct work_struct *work = &per_cpu(migrate_pending_work, cpu);
+> > +
+> > +		INIT_WORK(work, read_migrate_pending);
+> > +		queue_work_on(cpu, mm_percpu_wq, work);
+> > +	}
+> > +
+> > +	for_each_online_cpu(cpu)
+> > +		flush_work(&per_cpu(migrate_pending_work, cpu));
 > 
-> Suggested-by: Manoj Gupta <manojgupta@google.com>
-> Suggested-by: Nathan Chancellor  <nathan@kernel.org>
-> Suggested-by: David Laight <David.Laight@aculab.com>
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
+> I also do not follow this scheme. Where is the IPI you are mentioning
+> above?
+
+Thinking about it some more I think you mean the rescheduling IPI here?
+
+> > +	/*
+> > +	 * From now on, every online cpu will see uptodate
+> > +	 * migarte_pending_work.
+> > +	 */
+> >  	/*
+> >  	 * Clear the LRU lists so pages can be isolated.
+> > -	 * Note that pages may be moved off the LRU after we have
+> > -	 * drained them. Those pages will fail to migrate like other
+> > -	 * pages that may be busy.
+> >  	 */
+> >  	lru_add_drain_all();
 > 
-> Changes v1 -> v2:
->  Update the description and patch based on Nathan and David's comments. 
-> 
->  arch/arm/Makefile          | 4 ++++
->  arch/arm64/Makefile        | 4 ++++
->  security/Kconfig.hardening | 7 +++++++
->  3 files changed, 15 insertions(+)
-> 
-> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-> index 4aaec9599e8a..11d89ef32da9 100644
-> --- a/arch/arm/Makefile
-> +++ b/arch/arm/Makefile
-> @@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
->  KBUILD_LDFLAGS	+= -EL
->  endif
->  
-> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-> +KBUILD_CFLAGS  += -mharden-sls=all
-> +endif
-> +
->  #
->  # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
->  # later may result in code being generated that handles signed short and signed
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 90309208bb28..ca7299b356a9 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
->    endif
->  endif
->  
-> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-> +KBUILD_CFLAGS  += -mharden-sls=all
-> +endif
+> Overall, this looks rather heavy weight to my taste. Have you tried to
+> play with a simple atomic counter approach? atomic_read when adding to
+> the cache and atomic_inc inside migrate_prep followed by lrdu_add_drain.
 
-The big problem I have with this is that it's a compile-time decision.
-For the other spectre crap we have a combination of the "mitigations=off"
-command-line and CPU detection to avoid the cost of the mitigation where
-it is not deemed necessary.
-
-So I think that either we enable this unconditionally, or we don't enable it
-at all (and people can hack their CFLAGS themselves if they want to). It
-would be helpful for one of the Arm folks to chime in, as I'm yet to see any
-evidence that this is actually exploitable. Is it any worse that Spectre-v1,
-where we _don't_ have a compiler mitigation?
-
-Finally, do we have to worry about our assembly code?
-
-Will
+If you really want a strong ordering then it should be sufficient to
+simply alter lru_add_drain_all to force draining all CPUs. This will
+make sure no new pages are added to the pcp lists and you will also sync
+up anything that has accumulated because of a race between atomic_read
+and inc:
+diff --git a/mm/swap.c b/mm/swap.c
+index 2cca7141470c..91600d7bb7a8 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -745,7 +745,7 @@ static void lru_add_drain_per_cpu(struct work_struct *dummy)
+  * Calling this function with cpu hotplug locks held can actually lead
+  * to obscure indirect dependencies via WQ context.
+  */
+-void lru_add_drain_all(void)
++void lru_add_drain_all(bool force_all_cpus)
+ {
+ 	/*
+ 	 * lru_drain_gen - Global pages generation number
+@@ -820,7 +820,8 @@ void lru_add_drain_all(void)
+ 	for_each_online_cpu(cpu) {
+ 		struct work_struct *work = &per_cpu(lru_add_drain_work, cpu);
+ 
+-		if (pagevec_count(&per_cpu(lru_pvecs.lru_add, cpu)) ||
++		if (force_all_cpus ||
++		    pagevec_count(&per_cpu(lru_pvecs.lru_add, cpu)) ||
+ 		    data_race(pagevec_count(&per_cpu(lru_rotate.pvec, cpu))) ||
+ 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate_file, cpu)) ||
+ 		    pagevec_count(&per_cpu(lru_pvecs.lru_deactivate, cpu)) ||
+-- 
+Michal Hocko
+SUSE Labs
