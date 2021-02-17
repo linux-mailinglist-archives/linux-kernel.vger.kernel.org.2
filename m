@@ -2,157 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B8831DCE0
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008FC31DCE9
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:09:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233967AbhBQQE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:04:29 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:49423 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233568AbhBQQEN (ORCPT
+        id S233977AbhBQQIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:08:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233740AbhBQQIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:04:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613577853; x=1645113853;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qJK73leWzrkDzeBC+OYmyCx8uVJIE42XDAZUX9Da8BA=;
-  b=CPbIGLP32py8SPbCp/gQlxp913YTWwUT97eQSKq7G8sYFujsHnzRkg7w
-   YaxC+CA8PFYXLTvjnCdOPZFlT7D3z5+Gb37I+TYPEmlKw5CamiTjjseft
-   hqdrtjUrivpMxyZeuuRNby9L2TQe2O2rN078Ys8Oq/H9n+/UAIGKqIUK5
-   CfKNk3ddpzDWFJxiiRm0ZkAvaWGsKOfSCysNgMuRononcRQJsE8BfJsco
-   kZhWekHnhlwSqprqP2+yoafXxzgILUV9bGMk9RjbRNM67ao9+A9Xgelo1
-   slY8SAwFEGN1Q9wqJJ28An6wQ9RuX20DZI53PgoiL75SjXVzgUh+MRNed
-   A==;
-IronPort-SDR: Hu/+IvePcSQwKNP0tOMJPBiW+a6Afmyi2efURNVPMT6eb2YmarbDFgiJBk1VrLvjKJaBwoHdkB
- VWX8n9+f9rsnLBsoJlEvKqhGTJxupkxc0TodaUX/FLEUqZACLaAmdQuqDYmmVVaILnH5sC+IcK
- 5mQaxt8Xu1Ah1OqKCdSSnD2BVKaaryELGVG8kDxe1cl9N2sCua/2u//P1YH1Z/0x4Yy17pkPUO
- EOYFQ01j5ntyVupMJ/wRV5e5hRF9oP50oAdS3Gpd7tj6iN4BRJZknMMsCQ9tp7eBRh1aBlsQEc
- w3Q=
-X-IronPort-AV: E=Sophos;i="5.81,184,1610434800"; 
-   d="scan'208";a="109576978"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Feb 2021 09:02:58 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 17 Feb 2021 09:02:57 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 17 Feb 2021 09:02:57 -0700
-Date:   Wed, 17 Feb 2021 17:02:56 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jiri@resnulli.us" <jiri@resnulli.us>,
-        "ivecera@redhat.com" <ivecera@redhat.com>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "roopa@nvidia.com" <roopa@nvidia.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next v4 4/8] bridge: mrp: Extend br_mrp_switchdev to
- detect better the errors
-Message-ID: <20210217160256.jr33sgi73s7wsaaa@soft-dev3.localdomain>
-References: <20210216214205.32385-1-horatiu.vultur@microchip.com>
- <20210216214205.32385-5-horatiu.vultur@microchip.com>
- <20210217105624.aehyxw3tfs5uycdl@skbuf>
+        Wed, 17 Feb 2021 11:08:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613578005;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xx/3WvlTzcC3JQ0X57zlgEH5/O7A+hGnATTqDH1zbwA=;
+        b=TAonOkk9yP725eCGEUbYc5xoXRFQVhUvQ1lzrqDEw2PL2BGmKWnQ03t1aOifMiWhfU8Fdu
+        2bSMqDqCEC3zUTsgKTRPGlO2VGpy4xoEvlIJfm7dHtXid6/cNV7JfoAg6lDQdXwPFrcKKw
+        DuVF6YcWI4yxr/B3DUf+mZ69wltsOkY=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-TBdJVbDiNbSXu6hYwhuX1Q-1; Wed, 17 Feb 2021 11:06:43 -0500
+X-MC-Unique: TBdJVbDiNbSXu6hYwhuX1Q-1
+Received: by mail-wr1-f69.google.com with SMTP id x12so16658096wrw.21
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:06:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xx/3WvlTzcC3JQ0X57zlgEH5/O7A+hGnATTqDH1zbwA=;
+        b=QcEv9I8EXwKlzP+NYDgo01xzLnDoQFYh8/tT6+8r4gtYieXd8NFyv07JIEZet4sQTx
+         nbvrFXq+Uf8y4AcwbYx3jbjHdZhQCzF8l43Aij0miVbGATNu+2ntE/9pGvpKuJqsEWu1
+         yTCG6CfHtOJO8h1afbRAAutSgu2/Nmk9CxOdeKzsQIS4qqCcP9THfIrm/KzKkoF6urpZ
+         an92Lht9qyfkWm8ZOrBSO/pg49Dr8ygx7BOFLINBS+cLn+Hp5hRTN/P0t98bREP390xA
+         e+37c0RPd6zzKcAQkWAVzP/pcPjx/wGphFX03E/H1aoKmkuE19XZA50+BzRUbn+ZFGlZ
+         3gXg==
+X-Gm-Message-State: AOAM53338/jvxq5kPxQiDlWTgR3n9uYkbSjRGXcy96y721hDfirRUe9J
+        GIKlbMuuknCR4crczQMd+5ihj225mwDa9z8EO/zekw7qNxgsqpcyNvGmKJmXdKU5HOS5nQ0iu64
+        iKEY9FBFQXiCMFR/V4n3L6TvQ
+X-Received: by 2002:a1c:9a06:: with SMTP id c6mr7621487wme.140.1613578002610;
+        Wed, 17 Feb 2021 08:06:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyOeuR/6k5/Yu56xP0XRWEW2iDB8En4mmF4J9uPErF7EqilyJenTCKXNRiVaeCiRpw4PziTug==
+X-Received: by 2002:a1c:9a06:: with SMTP id c6mr7621469wme.140.1613578002183;
+        Wed, 17 Feb 2021 08:06:42 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id t9sm4444132wrw.76.2021.02.17.08.06.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Feb 2021 08:06:40 -0800 (PST)
+Subject: Re: [PATCH 1/7] KVM: VMX: read idt_vectoring_info a bit earlier
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210217145718.1217358-1-mlevitsk@redhat.com>
+ <20210217145718.1217358-2-mlevitsk@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <09de977a-0275-0f4f-cf75-f45e4b5d9ca5@redhat.com>
+Date:   Wed, 17 Feb 2021 17:06:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210217105624.aehyxw3tfs5uycdl@skbuf>
+In-Reply-To: <20210217145718.1217358-2-mlevitsk@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 02/17/2021 10:56, Vladimir Oltean wrote:
+On 17/02/21 15:57, Maxim Levitsky wrote:
 > 
-> On Tue, Feb 16, 2021 at 10:42:01PM +0100, Horatiu Vultur wrote:
-> > This patch extends the br_mrp_switchdev functions to be able to have a
-> > better understanding what cause the issue and if the SW needs to be used
-> > as a backup.
-> >
-> > There are the following cases:
-> > - when the code is compiled without CONFIG_NET_SWITCHDEV. In this case
-> >   return success so the SW can continue with the protocol. Depending
-> >   on the function, it returns 0 or BR_MRP_SW.
-> > - when code is compiled with CONFIG_NET_SWITCHDEV and the driver doesn't
-> >   implement any MRP callbacks. In this case the HW can't run MRP so it
-> >   just returns -EOPNOTSUPP. So the SW will stop further to configure the
-> >   node.
-> > - when code is compiled with CONFIG_NET_SWITCHDEV and the driver fully
-> >   supports any MRP functionality. In this case the SW doesn't need to do
-> >   anything. The functions will return 0 or BR_MRP_HW.
-> > - when code is compiled with CONFIG_NET_SWITCHDEV and the HW can't run
-> >   completely the protocol but it can help the SW to run it. For
-> >   example, the HW can't support completely MRM role(can't detect when it
-> >   stops receiving MRP Test frames) but it can redirect these frames to
-> >   CPU. In this case it is possible to have a SW fallback. The SW will
-> >   try initially to call the driver with sw_backup set to false, meaning
-> >   that the HW should implement completely the role. If the driver returns
-> >   -EOPNOTSUPP, the SW will try again with sw_backup set to false,
-> >   meaning that the SW will detect when it stops receiving the frames but
-> >   it needs HW support to redirect the frames to CPU. In case the driver
-> >   returns 0 then the SW will continue to configure the node accordingly.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  net/bridge/br_mrp_switchdev.c | 171 +++++++++++++++++++++-------------
-> >  net/bridge/br_private_mrp.h   |  24 +++--
-> >  2 files changed, 118 insertions(+), 77 deletions(-)
-> >
-> > diff --git a/net/bridge/br_mrp_switchdev.c b/net/bridge/br_mrp_switchdev.c
-> > index 3c9a4abcf4ee..cb54b324fa8c 100644
-> > --- a/net/bridge/br_mrp_switchdev.c
-> > +++ b/net/bridge/br_mrp_switchdev.c
-> > @@ -4,6 +4,30 @@
-> >
-> >  #include "br_private_mrp.h"
-> >
-> > +static enum br_mrp_hw_support
-> > +br_mrp_switchdev_port_obj(struct net_bridge *br,
-> > +                       const struct switchdev_obj *obj, bool add)
-> > +{
-> > +     int err;
-> > +
-> 
-> Looks like you could have added this check here and simplified all the
-> callers:
-> 
->         if (!IS_ENABLED(CONFIG_NET_SWITCHDEV))
->                 return BR_MRP_SW;
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index b3e36dc3f164..e428d69e21c0 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6921,13 +6921,15 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>  	if (unlikely((u16)vmx->exit_reason.basic == EXIT_REASON_MCE_DURING_VMENTRY))
+>  		kvm_machine_check();
+>  
+> +	if (likely(!vmx->exit_reason.failed_vmentry))
+> +		vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
+> +
 
-Yes, good catch!
+Any reason for the if?
 
-> 
-> > +     if (add)
-> > +             err = switchdev_port_obj_add(br->dev, obj, NULL);
-> > +     else
-> > +             err = switchdev_port_obj_del(br->dev, obj);
-> > +
-> > +     /* In case of success just return and notify the SW that doesn't need
-> > +      * to do anything
-> > +      */
-> > +     if (!err)
-> > +             return BR_MRP_HW;
-> > +
-> > +     if (err != -EOPNOTSUPP)
-> > +             return BR_MRP_NONE;
-> > +
-> > +     /* Continue with SW backup */
-> > +     return BR_MRP_SW;
-> > +}
-> > +
+Paolo
 
--- 
-/Horatiu
