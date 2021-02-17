@@ -2,75 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0BDC31DBBB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C937631DBE2
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 16:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233603AbhBQOzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:55:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhBQOzN (ORCPT
+        id S233736AbhBQPA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 10:00:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42619 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233692AbhBQO7U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:55:13 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8DAC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:54:33 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id i23so16409134ejg.10
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 06:54:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9eW3LA1cMGZsWxGBTyavm4NRE0/iFEXmezUgPd8JDrw=;
-        b=uzRl5FUfskRu8WBAvZjyt8A7P+d4ve/tU0wc6QWHJH/S+68vsn7KeGCY3YCkEv9WDU
-         cK9/Q3LYnFUYkeYIk2y2c/kqwzXSzGqLtM4B6xOoGrY52obwH6r4LbAY/43QwZCxDqo3
-         dvA9cfbquRhsB6ssjmAPFq6LSLhyLlyV+cn50ZkwRwcVRrDgyS2jb2alg5+Em99L1tEe
-         sxAAUc70n6DNWl1cduaVBYOWktxYnJWBwOBTCQdJW1GEcdYacQS976HB6QXZO/DGjwEQ
-         Y7ZtOiw2Y504CJ26alsOiakX8diuzGD2xnBy2U1ICT1XnaZ7pcGEWTHu0g25B/JIsBgf
-         0snQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9eW3LA1cMGZsWxGBTyavm4NRE0/iFEXmezUgPd8JDrw=;
-        b=aTUCEpp92xH5V1O5PRvfge373dVtoV1bU/vdnkz8Sd3pO+F3PbjxtTALuOZsT59EGW
-         V3FDxEmTXM/GLayVtypBJT+/n0YpVqymTve/pJ8S9XfG3TiDu8u9cJqG2L2vr+N5IsHD
-         FoQ60nuhelzZb7Raf4t55A2l25k/cQiG/ueouJk081Om+U4VT8yBFqCw7iBGUevw13P9
-         xHOBYAjO/cqX5mV0ily7Zr7EGHrxpWW9QfKQZ2753Sj1ytn7NCVmqa65x7MQXPPAWJQo
-         ttJOyIKSjielYVylFyIqoqp7poeKFeZGmnZy9I/zIIk9y/qMomMUkD3jh7ocytYgWA+0
-         nm1g==
-X-Gm-Message-State: AOAM533kIb2A4DoxMJ3qvZC94FDj5gj7NB90iSwc1PYexPC6pw0DVK+l
-        di/ksNFWQM2vKAGIWzTZguizjs2xr0MOLtkndviemM2I3XNTWw==
-X-Google-Smtp-Source: ABdhPJw4kb9KSeUbijA4QgzZlMVsQril4Khu0lYfNxhBSf2zC/5Q2rhbObi2fEGOqL/tHHl+GZc0X53A0dP0sNwftvw=
-X-Received: by 2002:a17:906:9452:: with SMTP id z18mr24058492ejx.466.1613573671755;
- Wed, 17 Feb 2021 06:54:31 -0800 (PST)
+        Wed, 17 Feb 2021 09:59:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613573874;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D6vYOR0dgL/biSGZfHd88o0jtjehBMmGld8Fzmh3jxI=;
+        b=C3Wkmt8ct2ICz0qrYDEFKk6EflYEViqEP/OiRPkvZCF9nciNZ24Z1P8B4jW2Lka7y0FlYx
+        ApYJFSkPBXdQkLpdcgpfkRdYM1DkOUOyMhmmZBsl3dVrSUcsGXfa4VRYetAkddBuYpxeua
+        yxCIo6tp0txodm9X2rYdyDu0EjLfNy8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-3-ABdhTXJ3NLuaTxT6sZ4Pvw-1; Wed, 17 Feb 2021 09:57:50 -0500
+X-MC-Unique: ABdhTXJ3NLuaTxT6sZ4Pvw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F268D192AB78;
+        Wed, 17 Feb 2021 14:57:48 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9EB7A10023AF;
+        Wed, 17 Feb 2021 14:57:45 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 7/7] KVM: nSVM: call nested_svm_load_cr3 on nested state load
+Date:   Wed, 17 Feb 2021 16:57:18 +0200
+Message-Id: <20210217145718.1217358-8-mlevitsk@redhat.com>
+In-Reply-To: <20210217145718.1217358-1-mlevitsk@redhat.com>
+References: <20210217145718.1217358-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-References: <1613501314-2392-1-git-send-email-jhugo@codeaurora.org>
-In-Reply-To: <1613501314-2392-1-git-send-email-jhugo@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Wed, 17 Feb 2021 16:02:03 +0100
-Message-ID: <CAMZdPi9S5OnWs_QFnf+xVM+jLve6cpdvi_vpC_KdEbUUaqoFYg@mail.gmail.com>
-Subject: Re: [PATCH] mhi_bus: core: Return EBUSY if MHI ring is full
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Fan Wu <wufan@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 at 19:50, Jeffrey Hugo <jhugo@codeaurora.org> wrote:
->
-> From: Fan Wu <wufan@codeaurora.org>
->
-> Currently ENOMEM is returned when MHI ring is full. This error code is
-> very misleading. Change to EBUSY instead.
+While KVM's MMU should be fully reset by loading of nested CR0/CR3/CR4
+by KVM_SET_SREGS, we are not in nested mode yet when we do it and therefore
+only root_mmu is reset.
 
-Well, there is no space left in the ring, so it's no so misleading.
+On regular nested entries we call nested_svm_load_cr3 which both updates the
+guest's CR3 in the MMU when it is needed, and it also initializes
+the mmu again which makes it initialize the walk_mmu as well when nested
+paging is enabled in both host and guest.
 
-Regards,
-Loic
+Since we don't call nested_svm_load_cr3 on nested state load,
+the walk_mmu can be left uninitialized, which can lead to a NULL pointer
+dereference while accessing it, if we happen to get a nested page fault
+right after entering the nested guest first time after the migration and
+if we decide to emulate it.
+This makes the emulator access NULL walk_mmu->gva_to_gpa.
+
+Therefore we should call this function on nested state load as well.
+
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+---
+ arch/x86/kvm/svm/nested.c | 40 +++++++++++++++++++++------------------
+ 1 file changed, 22 insertions(+), 18 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 53b9037259b5..ebc7dfaa9f13 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -215,24 +215,6 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
+ 	return true;
+ }
+ 
+-static bool svm_get_nested_state_pages(struct kvm_vcpu *vcpu)
+-{
+-	struct vcpu_svm *svm = to_svm(vcpu);
+-
+-	if (WARN_ON(!is_guest_mode(vcpu)))
+-		return true;
+-
+-	if (!nested_svm_vmrun_msrpm(svm)) {
+-		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+-		vcpu->run->internal.suberror =
+-			KVM_INTERNAL_ERROR_EMULATION;
+-		vcpu->run->internal.ndata = 0;
+-		return false;
+-	}
+-
+-	return true;
+-}
+-
+ static bool nested_vmcb_check_controls(struct vmcb_control_area *control)
+ {
+ 	if (CC(!vmcb_is_intercept(control, INTERCEPT_VMRUN)))
+@@ -1311,6 +1293,28 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+ 	return ret;
+ }
+ 
++static bool svm_get_nested_state_pages(struct kvm_vcpu *vcpu)
++{
++	struct vcpu_svm *svm = to_svm(vcpu);
++
++	if (WARN_ON(!is_guest_mode(vcpu)))
++		return true;
++
++	if (nested_svm_load_cr3(&svm->vcpu, vcpu->arch.cr3,
++				nested_npt_enabled(svm)))
++		return false;
++
++	if (!nested_svm_vmrun_msrpm(svm)) {
++		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
++		vcpu->run->internal.suberror =
++			KVM_INTERNAL_ERROR_EMULATION;
++		vcpu->run->internal.ndata = 0;
++		return false;
++	}
++
++	return true;
++}
++
+ struct kvm_x86_nested_ops svm_nested_ops = {
+ 	.check_events = svm_check_nested_events,
+ 	.get_nested_state_pages = svm_get_nested_state_pages,
+-- 
+2.26.2
+
