@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEA931DAF1
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACA031DAF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:52:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhBQNtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:49:11 -0500
-Received: from mga14.intel.com ([192.55.52.115]:57442 "EHLO mga14.intel.com"
+        id S232904AbhBQNv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:51:58 -0500
+Received: from mga01.intel.com ([192.55.52.88]:64437 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231748AbhBQNtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:49:03 -0500
-IronPort-SDR: Ucd2bFIG2htyppdwu8dLV2IZlKeesNPq4+jrEhaiwdoQj50rG0S/hA4/lIlv08y1v2pCJw24zn
- Vo1x13lzPHtw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="182413780"
+        id S231470AbhBQNvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 08:51:53 -0500
+IronPort-SDR: JzwiFj0SmnIpbqieihnLQBmx57mRkJy2lFS0z0G63718IlLr52qSOpkNtatgVqGokqya+5IZQ3
+ 0dm7E5fXPDlA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="202416163"
 X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="182413780"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 05:47:07 -0800
-IronPort-SDR: F90pREd138flyL/iIcxg7rFosRi7BUx7S/w3QiWC6N/l+QKAx/taM8RgmZbgQo8eKCkORNf4Os
- qP9ZHR9qgzjQ==
+   d="scan'208";a="202416163"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 05:50:06 -0800
+IronPort-SDR: Sn1UNc3NY5KdPzI6hywaTZO83Ua+4LFs6vru1yboiQGthZGzhFy8MJVlArWjcg/KlC/vIRX2G6
+ klDb6PahATew==
 X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="580866233"
+   d="scan'208";a="366980157"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 05:47:03 -0800
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 05:50:03 -0800
 Received: from andy by smile with local (Exim 4.94)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lCNAT-005ibQ-4B; Wed, 17 Feb 2021 15:47:01 +0200
-Date:   Wed, 17 Feb 2021 15:47:01 +0200
+        id 1lCNDM-005icp-3T; Wed, 17 Feb 2021 15:50:00 +0200
+Date:   Wed, 17 Feb 2021 15:50:00 +0200
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        helgaas@kernel.org, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] i2c: designware: Use the correct name of
- device-managed function
-Message-ID: <YC0eVZf4Xci0IF5+@smile.fi.intel.com>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <20210216160249.749799-4-zhengdejin5@gmail.com>
- <YCwE2cf9X/Gd6lWy@rocinante>
- <20210217114014.GB766103@nuc8i5>
+To:     "Enrico Weigelt, metux IT consult" <info@metux.net>
+Cc:     linux-kernel@vger.kernel.org, pmladek@suse.com,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        linux@rasmusvillemoes.dk, kafai@fb.com, songliubraving@fb.com,
+        yhs@fb.com, john.fastabend@gmail.com, kpsingh@kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH] lib: vsprintf: check for NULL device_node name in
+ device_node_string()
+Message-ID: <YC0fCAp6wxJfizD7@smile.fi.intel.com>
+References: <20210217121543.13010-1-info@metux.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210217114014.GB766103@nuc8i5>
+In-Reply-To: <20210217121543.13010-1-info@metux.net>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 07:40:14PM +0800, Dejin Zheng wrote:
-> On Tue, Feb 16, 2021 at 06:46:01PM +0100, Krzysztof Wilczyński wrote:
+On Wed, Feb 17, 2021 at 01:15:43PM +0100, Enrico Weigelt, metux IT consult wrote:
+> Under rare circumstances it may happen that a device node's name is NULL
+> (most likely kernel bug in some other place).
+
+What circumstances? How can I reproduce this? More information, please!
+
+> In such situations anything
+> but helpful, if the debug printout crashes, and nobody knows what actually
+> happened here.
+> 
+> Therefore protect it by an explicit NULL check and print out an extra
+> warning.
 
 ...
 
-> > The change simplifies the error handling path, how?  A line of two which
-> > explains how it has been achieved might help should someone reads the
-> > commit message in the future.
-> > 
-> To put it simply, if the driver probe fail, the device-managed function
-> mechanism will automatically call pcim_release(), then the pci_free_irq_vectors()
-> will be executed. For details, please see the relevant code.
+> +				pr_warn("device_node without name. Kernel bug ?\n");
 
-Perhaps as a compromise you may add this short sentence to your commit
-messages, like "the freeing resources will take automatically when device
-is gone".
+If it's not once, then it's possible to have log spammed with this, right?
+
+...
+
+> +				p = "<NULL>";
+
+We have different standard de facto for NULL pointers to be printed. Actually
+if you wish, you may gather them under one definition (maybe somewhere under
+printk) and export to everybody to use.
 
 -- 
 With Best Regards,
