@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 785A531DACE
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:41:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C175131DA8A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:34:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233113AbhBQNjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:39:09 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:47119 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233115AbhBQNcr (ORCPT
+        id S233096AbhBQNb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:31:59 -0500
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:17818 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233015AbhBQNaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:32:47 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11HDS2Ze026032;
-        Wed, 17 Feb 2021 14:31:59 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=CRnSbQdFwvKmyMc039keRokTHONUmSL8dsL/yTFkE0w=;
- b=DSef1EykTWXbQKXEkRUowgzcLAMtb/V4v2KJMScqU7BEvPVA+8zmBFbF/LDLxqcs+ID/
- pvqjfVLszTMveOwN6hhaFD+4X1fgFO8IcCurctgaMXyAo1wJUEpeH8vwiGCc4EKtuj9D
- COwumNzXdbfNcaX4B0Cs8tBsQWblZLnQdrasw5fZBB7bbU0og4kXAmqUJuIujkMCdDyO
- SJECRr4+xex0omxWGW/zbATFpYfHUp0w6c9eILqxmIMjKW5fFjDXXBrOMg3Knp+2GszI
- ky7MWCSTpKW4LpNWdV1GZs/1no9HzjQzyipdulg4MDelOoyhpUZ14/Mj+89z/DcOt+vR 8g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36p547p3wu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 14:31:59 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0C99710002A;
-        Wed, 17 Feb 2021 14:31:59 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id F3F982370CE;
-        Wed, 17 Feb 2021 14:31:58 +0100 (CET)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 17 Feb 2021 14:31:58
- +0100
-From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Andy Gross <agross@kernel.org>
-CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>
-Subject: [PATCH v4 16/16] rpmsg: char: return an error if device already open
-Date:   Wed, 17 Feb 2021 14:29:05 +0100
-Message-ID: <20210217132905.1485-17-arnaud.pouliquen@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210217132905.1485-1-arnaud.pouliquen@foss.st.com>
-References: <20210217132905.1485-1-arnaud.pouliquen@foss.st.com>
+        Wed, 17 Feb 2021 08:30:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1613568621;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=bp3fBtBumnQYDuMT4p4O4vegfrz8kk/nF90ppoE+EIQ=;
+  b=LD8wHbTgeEH8lvrxKWZgn0dWL5OoUb7HGoRuBhlG4gR8rkT2miZHCG0N
+   bIgGa/k8QFFzuqyJ6TU4XuVoPCpuiK2uUn6zTHpB82umeX5QpJgUqBBWx
+   PQ6/ugS2Yo+Z1U57HJU9Y5ctocjGgNidEy3XJ2+vUdP5ALnwO1RL9jQ+0
+   g=;
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: o7LaJcbQT5QuBw1xPwkFm1kmmIpHK9sbb9lZj5IyJs4mA6AKdPwwmE6rjsZVBkmNqq+f1rg7v9
+ LhPjd42AWS+GmnJwjqQu2oMcrOsirvyJVxH5cCnpbZzFpjLStPB9qB5/CJH5wL2kyX3hIiHH41
+ BiJdvO1WYeF49G5IAxgFWe2Doce5WdQcFnPhB0gMWpqLGNUyZ04XS+fO43Jds6xWB/x8VdXjLc
+ TVqBAY/waBGvsB5Nt+Gp+8G4G7JcUyHaEeserRUmk28EhENWIwM7fRM4ds93N++2/jeX9TnB7a
+ ItU=
+X-SBRS: 5.1
+X-MesageID: 37785213
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.81,184,1610427600"; 
+   d="scan'208";a="37785213"
+Subject: Re: [PATCH v2 8/8] xen/evtchn: use READ/WRITE_ONCE() for accessing
+ ring indices
+To:     Juergen Gross <jgross@suse.com>, <xen-devel@lists.xenproject.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>
+References: <20210211101616.13788-1-jgross@suse.com>
+ <20210211101616.13788-9-jgross@suse.com>
+From:   Ross Lagerwall <ross.lagerwall@citrix.com>
+Message-ID: <6818fcde-abab-1250-119c-d0ccb8c80488@citrix.com>
+Date:   Wed, 17 Feb 2021 13:29:19 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-17_11:2021-02-16,2021-02-17 signatures=0
+In-Reply-To: <20210211101616.13788-9-jgross@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The rpmsg_create_ept function is invoked when the device is opened.
-As only one endpoint must be created per device. It is not possible to
-open the same device twice. But there is nothing to prevent multi open.
-Return -EBUSY when device is already opened to have a generic error
-instead of relying on the back-end to potentially detect the error.
+On 2021-02-11 10:16, Juergen Gross wrote:
+> For avoiding read- and write-tearing by the compiler use READ_ONCE()
+> and WRITE_ONCE() for accessing the ring indices in evtchn.c.
+> 
+> Signed-off-by: Juergen Gross <jgross@suse.com>
+> ---
+> V2:
+> - modify all accesses (Julien Grall)
+> ---
+>  drivers/xen/evtchn.c | 25 ++++++++++++++++---------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
+> index 421382c73d88..620008f89dbe 100644
+> --- a/drivers/xen/evtchn.c
+> +++ b/drivers/xen/evtchn.c
+> @@ -162,6 +162,7 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
+>  {
+>  	struct user_evtchn *evtchn = data;
+>  	struct per_user_data *u = evtchn->user;
+> +	unsigned int prod, cons;
+>  
+>  	WARN(!evtchn->enabled,
+>  	     "Interrupt for port %u, but apparently not enabled; per-user %p\n",
+> @@ -171,10 +172,14 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
+>  
+>  	spin_lock(&u->ring_prod_lock);
+>  
+> -	if ((u->ring_prod - u->ring_cons) < u->ring_size) {
+> -		*evtchn_ring_entry(u, u->ring_prod) = evtchn->port;
+> +	prod = READ_ONCE(u->ring_prod);
+> +	cons = READ_ONCE(u->ring_cons);
+> +
+> +	if ((prod - cons) < u->ring_size) {
+> +		*evtchn_ring_entry(u, prod) = evtchn->port;
+>  		smp_wmb(); /* Ensure ring contents visible */
+> -		if (u->ring_cons == u->ring_prod++) {
+> +		if (cons == prod++) {
+> +			WRITE_ONCE(u->ring_prod, prod);
+>  			wake_up_interruptible(&u->evtchn_wait);
+>  			kill_fasync(&u->evtchn_async_queue,
+>  				    SIGIO, POLL_IN);
 
-Without this patch for instance the GLINK driver return -EBUSY while
-the virtio bus return -ENOSPC.
+This doesn't work correctly since now u->ring_prod is only updated if cons == prod++.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
----
- drivers/rpmsg/rpmsg_char.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-index 0b0a6b7c0c9a..2eacddb83e29 100644
---- a/drivers/rpmsg/rpmsg_char.c
-+++ b/drivers/rpmsg/rpmsg_char.c
-@@ -116,6 +116,9 @@ static int rpmsg_eptdev_open(struct inode *inode, struct file *filp)
- 	struct device *dev = &eptdev->dev;
- 	u32 addr = eptdev->chinfo.src;
- 
-+	if (eptdev->ept)
-+		return -EBUSY;
-+
- 	get_device(dev);
- 
- 	/*
--- 
-2.17.1
-
+Ross
