@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D02B31E2FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C10AA31E2FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhBQXTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 18:19:07 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:50168 "EHLO mail.zx2c4.com"
+        id S231929AbhBQXVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 18:21:40 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:53916 "EHLO m42-2.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhBQXTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:19:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1613603900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AdrWV+0RqhKCTxk9ZB3XViePvtjikVcHH9GgVrWTd7k=;
-        b=O+2A58Bl3UDsyNIyinZjpQM9ivnsh1sOLIQka876ehzrRILUCXsUkUTQk5rjCHhlN7BNz+
-        WGPLnZydELSSq4c7LuY18LrsewQOLFjvF3DrQ88sIyDGST6llAvXKwL8qKB/KwZ33YC8lP
-        crbbwE0IffNQBN9o9w37DduavYA24GM=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a67271fe (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Wed, 17 Feb 2021 23:18:20 +0000 (UTC)
-Received: by mail-yb1-f175.google.com with SMTP id u3so341023ybk.6;
-        Wed, 17 Feb 2021 15:18:20 -0800 (PST)
-X-Gm-Message-State: AOAM530WHkyxJjmO9ulUdkgMBz6eKj9RACrD7D7ZX07iQsZwlS1PtHYz
-        TXmPqtIEoMGp7anU06SrN+d5y5jYXJlMh6xpqjw=
-X-Google-Smtp-Source: ABdhPJzHFoKDH/ZMtpGk4JJaz0HtVODj3UjZQBaRjwppT6zywQcfNjkMCTDE2i6TWrTwHS8e5Ss25NMgNFsfNnp1p8A=
-X-Received: by 2002:a25:4981:: with SMTP id w123mr2560681yba.123.1613603900090;
- Wed, 17 Feb 2021 15:18:20 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:7110:8013:b029:34:f999:a3fe with HTTP; Wed, 17 Feb 2021
- 15:18:19 -0800 (PST)
-In-Reply-To: <CAF=yD-+Fm7TuggoEeP=Wy7DEmfuC6nxmyBQxX=EzhyTQsiP2DQ@mail.gmail.com>
-References: <CAHmME9qfXFZKZfO-uc7GC3xguSq99_CqrTtzmgp_984MSfNbgA@mail.gmail.com>
- <CA+FuTSfHRtV7kP-y6ihW_BnYVmHE9Hv7jHgOdTwJhUXkd6L79w@mail.gmail.com>
- <CAHmME9qRkxeKDA6pOXTE7yXTkN-AsfaDfLfUX8J7EP7fbUiB0Q@mail.gmail.com> <CAF=yD-+Fm7TuggoEeP=Wy7DEmfuC6nxmyBQxX=EzhyTQsiP2DQ@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Thu, 18 Feb 2021 00:18:19 +0100
-X-Gmail-Original-Message-ID: <CAHmME9oe59WAdNS-AjJP9rQ+Fc6TfQVh7aHABc3JNTJaZ3sVLA@mail.gmail.com>
-Message-ID: <CAHmME9oe59WAdNS-AjJP9rQ+Fc6TfQVh7aHABc3JNTJaZ3sVLA@mail.gmail.com>
-Subject: Re: possible stack corruption in icmp_send (__stack_chk_fail)
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231234AbhBQXVh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 18:21:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613604073; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=lyJ/HMoHhhljyWh+L2DVmQ7J+9Sbbr4I7CsMTFLVOM4=; b=so8PWXSgvn2Hfk0wN4GX7oRGn6C7V/IUz8CEeH3LJ4XoLl8ctrjGbr/QJ5+24VPXVO8CtIG4
+ iDiNfkdI367waaId0UOxkQa3jHJ7e5LWttvce2lr7zrasflHpZklw0ZdzvpY0HQPozm0ymHF
+ 9BIFnZv2OCPEbmppneW5V9OJfXU=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 602da4c7666e232b38992adc (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 23:20:39
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0A663C43463; Wed, 17 Feb 2021 23:20:39 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C385C433C6;
+        Wed, 17 Feb 2021 23:20:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9C385C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis swing table
+Date:   Wed, 17 Feb 2021 15:20:31 -0800
+Message-Id: <1613604031-27798-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/18/21, Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-> On Wed, Feb 17, 2021 at 5:56 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->>
->> Hi Willem,
->>
->> On Wed, Feb 17, 2021 at 11:27 PM Willem de Bruijn
->> <willemdebruijn.kernel@gmail.com> wrote:
->> > A vmlinux image might help. I couldn't find one for this kernel.
->>
->> https://data.zx2c4.com/icmp_send-crash-e03b4a42-706a-43bf-bc40-1f15966b3216.tar.xz
->> has .debs with vmlinuz in there, which you can extract to vmlinux, as
->> well as my own vmlinux elf construction with the symbols added back in
->> by extracting them from kallsyms. That's the best I've been able to
->> do, as all of this is coming from somebody random emailing me.
->>
->> > But could it be
->> > that the forwarded packet is not sensible IPv4? The skb->protocol is
->> > inferred in wg_packet_consume_data_done->ip_tunnel_parse_protocol.
->>
->> The wg calls to icmp_ndo_send are gated by checking skb->protocol:
->>
->>         if (skb->protocol == htons(ETH_P_IP))
->>                icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_HOST_UNREACH,
->> 0);
->>        else if (skb->protocol == htons(ETH_P_IPV6))
->>                icmpv6_ndo_send(skb, ICMPV6_DEST_UNREACH,
->> ICMPV6_ADDR_UNREACH, 0);
->>
->> On the other hand, that code is hit on an error path when
->> wg_check_packet_protocol returns false:
->>
->> static inline bool wg_check_packet_protocol(struct sk_buff *skb)
->> {
->>        __be16 real_protocol = ip_tunnel_parse_protocol(skb);
->>        return real_protocol && skb->protocol == real_protocol;
->> }
->>
->> So that means, at least in theory, icmp_ndo_send could be called with
->> skb->protocol != ip_tunnel_parse_protocol(skb). I guess I can address
->> that. But... is it actually a problem?
->
-> For this forwarded packet that arrived on a wireguard tunnel,
-> skb->protocol was originally also set by ip_tunnel_parse_protocol.
-> So likely not.
->
-> The other issue seems more like a real bug. wg_xmit calling
-> icmp_ndo_send without clearing IPCB first.
->
+Add hbr3_hbr2 voltage and premphasis swing table to support
+HBR3 link rate.
 
-Bingo! Nice eye! I confirmed the crash by just memsetting 0x41 to cb
-before the call. Clearly this should be zeroed by icmp_ndo_xmit. Will
-send a patch for icmp_ndo_xmit momentarily and will CC you.
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/phy/qualcomm/phy-qcom-qmp.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-Jason
+diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+index 0939a9e..c920143 100644
+--- a/drivers/phy/qualcomm/phy-qcom-qmp.c
++++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+@@ -2965,6 +2965,20 @@ static void qcom_qmp_phy_dp_aux_init(struct qmp_phy *qphy)
+ 	       qphy->pcs + QSERDES_V3_DP_PHY_AUX_INTERRUPT_MASK);
+ }
+ 
++static const u8 qmp_dp_v3_pre_emphasis_hbr3_hbr2[4][4] = {
++        { 0x00, 0x0C, 0x15, 0x1A },
++        { 0x02, 0x0E, 0x16, 0xFF },
++        { 0x02, 0x11, 0xFF, 0xFF },
++        { 0x04, 0xFF, 0xFF, 0xFF }
++};
++
++static const u8 qmp_dp_v3_voltage_swing_hbr3_hbr2[4][4] = {
++        { 0x02, 0x12, 0x16, 0x1A },
++        { 0x09, 0x19, 0x1F, 0xFF },
++        { 0x10, 0x1F, 0xFF, 0xFF },
++        { 0x1F, 0xFF, 0xFF, 0xFF }
++};
++
+ static const u8 qmp_dp_v3_pre_emphasis_hbr_rbr[4][4] = {
+ 	{ 0x00, 0x0c, 0x14, 0x19 },
+ 	{ 0x00, 0x0b, 0x12, 0xff },
+@@ -3000,8 +3014,13 @@ static void qcom_qmp_phy_configure_dp_tx(struct qmp_phy *qphy)
+ 		drvr_en = 0x10;
+ 	}
+ 
+-	voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
+-	pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
++	if (dp_opts->link_rate <= 2700) {
++		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
++		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
++	} else {
++		voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr3_hbr2[v_level][p_level];
++		pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_level][p_level];
++	}
+ 
+ 	/* TODO: Move check to config check */
+ 	if (voltage_swing_cfg == 0xFF && pre_emphasis_cfg == 0xFF)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
