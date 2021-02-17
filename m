@@ -2,125 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97AEE31DF81
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F77931DF8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:23:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232772AbhBQTT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:19:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53572 "EHLO mail.kernel.org"
+        id S232691AbhBQTWS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 14:22:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48034 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232691AbhBQTTs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:19:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C874A64E62;
-        Wed, 17 Feb 2021 19:19:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613589547;
-        bh=pSG0iuIL31xGXVd9szFmnqpW+CJUWaIRfjO6bTtnfsI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=uHYxUrvOUASzSxS2gDGR33EEKxQi8tL6F057S9vZjqehl3d5NgFwW+nfva+80dWfQ
-         z90GzJM6i1iWU9GpjDuW89CJ9mHfflZylFucLOGpl2eLqi76S6ea1x7xCdAIDY2X7r
-         KEZw2qqilb83+clyqJ2Z/toOCBsCaecvARNYzVYjfQ1XYkJ/OjAPiXdEwhqc+1rv3k
-         h3MBg/atXxiojVvPgivQIPGuiCP5eRwqurplyOBWDqy/L+SiLMmxdgUdDyMptCM1GV
-         8h1yBD4LqL59GFcpqrovl1QtFk0ATWGX0CTCTsOBPdmeD++J5zKrva+YOHlwfSt9oY
-         eOM297eDQ33sg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8C87F3522611; Wed, 17 Feb 2021 11:19:07 -0800 (PST)
-Date:   Wed, 17 Feb 2021 11:19:07 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
-Message-ID: <20210217191907.GH2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
- <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
- <20210217155447.GC2743@paulmck-ThinkPad-P72>
- <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
+        id S232032AbhBQTWK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:22:10 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9A3C7AC97;
+        Wed, 17 Feb 2021 19:21:27 +0000 (UTC)
+Subject: Re: [PATCH v2 02/11] drm/qxl: more fence wait rework
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210217123213.2199186-1-kraxel@redhat.com>
+ <20210217123213.2199186-3-kraxel@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <11f0d3e5-8823-212f-0f4e-83a639a1d476@suse.de>
+Date:   Wed, 17 Feb 2021 20:21:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210217123213.2199186-3-kraxel@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="85GU1GqhvOPcBOU6e0aBenn292yxkgXpN"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 07:01:59PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-02-17 07:54:47 [-0800], Paul E. McKenney wrote:
-> > > I though boosting is accomplished by acquiring a rt_mutex in a
-> > > rcu_read() section. Do you have some code to point me to, to see how a
-> > > timer is involved here? Or is it the timer saying that *now* boosting is
-> > > needed.
-> > 
-> > Yes, this last, which is in the grace-period kthread code, for example,
-> > in rcu_gp_fqs_loop().
-> >
-> > > If your hrtimer is a "normal" hrtimer then it will be served by
-> > > ksoftirqd, too. You would additionally need one of the
-> > > HRTIMER_MODE_*_HARD to make it work.
-> > 
-> > Good to know.  Anything I should worry about for this mode?
-> 
-> Well. It is always hardirq. No spinlock_t, etc. within that callback.
-> If you intend to wake a thread, that thread needs an elevated priority
-> otherwise it won't be scheduled (assuming there is a RT tasking running
-> which would block otherwise ksoftirqd).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--85GU1GqhvOPcBOU6e0aBenn292yxkgXpN
+Content-Type: multipart/mixed; boundary="ZvZdUBN6pYzhnlreMlZRRvWzo4M0IYBF9";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, open list <linux-kernel@vger.kernel.org>
+Message-ID: <11f0d3e5-8823-212f-0f4e-83a639a1d476@suse.de>
+Subject: Re: [PATCH v2 02/11] drm/qxl: more fence wait rework
+References: <20210217123213.2199186-1-kraxel@redhat.com>
+ <20210217123213.2199186-3-kraxel@redhat.com>
+In-Reply-To: <20210217123213.2199186-3-kraxel@redhat.com>
 
-Good to know, thank you!  I believe that all the needed locks are already
-raw spinlocks, but the actual kernel code always takes precedence over
-one's beliefs.
+--ZvZdUBN6pYzhnlreMlZRRvWzo4M0IYBF9
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> Ah. One nice thing is that you can move the RCU threads to a house
-> keeping CPU - away from the CPU(s) running the RT tasks. Would this
-> scenario be still affected (if ksoftirqd would be blocked)?
 
-At this point, I am going to say that it is the sysadm's job to place
-the rcuo kthreads, and if they are placed poorly, life is hard.
 
-This means that I need to create a couple of additional polling RCU
-grace-period functions for rcutorture's priority-boosting use, but I
-probably should have done that a long time ago.  Simpler to just call a
-polling API occasionally than to handle all the corner cases of keeping
-an RCU callback queued.
+Am 17.02.21 um 13:32 schrieb Gerd Hoffmann:
+> Move qxl_io_notify_oom() call into wait condition.
+> That way the driver will call it again if one call
+> wasn't enough.
+>=20
+> Also allows to remove the extra dma_fence_is_signaled()
+> check and the goto.
+>=20
+> Fixes: 5a838e5d5825 ("drm/qxl: simplify qxl_fence_wait")
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
 
-> Oh. One thing I forgot to mention: the timer_list timer is nice in terms
-> of moving forward (the timer did not fire, the condition is true and you
-> move the timeout forward).
-> A hrtimer timer on the other hand needs to be removed, forwarded and
-> added back to the "timer tree". This is considered more expensive
-> especially if the timer does not fire.
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 
-There are some timers that are used to cause a wakeup to happen from
-a clean environment, but maybe these can instead use irq-work.
+> ---
+>   drivers/gpu/drm/qxl/qxl_release.c | 8 ++------
+>   1 file changed, 2 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qx=
+l_release.c
+> index 6ed673d75f9f..579c6de10c8e 100644
+> --- a/drivers/gpu/drm/qxl/qxl_release.c
+> +++ b/drivers/gpu/drm/qxl/qxl_release.c
+> @@ -62,16 +62,12 @@ static long qxl_fence_wait(struct dma_fence *fence,=
+ bool intr,
+>  =20
+>   	qdev =3D container_of(fence->lock, struct qxl_device, release_lock);=
 
-> > Also, the current test expects callbacks to be invoked, which involves a
-> > number of additional kthreads and timers, for example, in nocb_gp_wait().
-> > I suppose I could instead look at grace-period sequence numbers, but I
-> > believe that real-life use cases needing RCU priority boosting also need
-> > the callbacks to be invoked reasonably quickly (as in within hundreds
-> > of milliseconds up through very small numbers of seconds).
-> 
-> A busy/overloaded kvm-host could lead to delays by not scheduling the
-> guest for a while.
+>  =20
+> -	if (dma_fence_is_signaled(fence))
+> -		goto signaled;
+> -
+> -	qxl_io_notify_oom(qdev);
+>   	if (!wait_event_timeout(qdev->release_event,
+> -				dma_fence_is_signaled(fence),
+> +				(dma_fence_is_signaled(fence) ||
+> +				 (qxl_io_notify_oom(qdev), 0)),
+>   				timeout))
+>   		return 0;
+>  =20
+> -signaled:
+>   	cur =3D jiffies;
+>   	if (time_after(cur, end))
+>   		return 0;
+>=20
 
-That it can!  Aravinda Prasad prototyped a mechanism hinting to the
-hypervisor in such cases, but I don't know that this ever saw the light
-of day.
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
-> My understanding of the need for RCU boosting is to get a task,
-> preempted (by a RT task) within a RCU section, back on the CPU to
-> at least close the RCU section. So it is possible to run RCU callbacks
-> and free memory.
-> The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
-> killer got nervous (and if we had memory allocation failures).
-> Also, running thousands of accumulated callbacks isn't good either.
 
-Sounds good, thank you!
+--ZvZdUBN6pYzhnlreMlZRRvWzo4M0IYBF9--
 
-							Thanx, Paul
+--85GU1GqhvOPcBOU6e0aBenn292yxkgXpN
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-> > Thoughts?
-> > 
-> > 							Thanx, Paul
-> Sebastian
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAtbLYFAwAAAAAACgkQlh/E3EQov+Dn
+hA//SQHbXUJsbtp0KvlZ1STFVXxrBy4T7K2vJFVCkFS5KxHjl/ewgKFx1YSSHayz0p+QFON+7eC/
+F/pdyiv3ydbHfs60QJ1D68i1NeG9hs7XKId5m8wZFxGTXgBXmiBZ1r+VEzkH6QX5gwTC98+E2Mdy
+NZUE0gVtsq8iMnDyzu9BuFnQVHduz8xNSaIwuZRORyDvptIw87+JIOiOEE3y8YtU6Q38itW3DF/k
+RIgd8+ZQ86mrtZKsyi3KUX14c2sj2G5haGXwYGXWnWbNJQ/2HeHrLDiT450FgPYde7epPJnACx+e
+/a2txg0G476R4Lh4CVLvf0UdSvaaUoWJW2+rVbMBGHM+NgREOvvo8uYA8iCKw36GZn5suagsJoTY
+U1QolQA2aPjl7EFNeNFf/0M+gJ1WRd2367Stt3rcQcQ5ZOlR4KilWg7xQZ3ZFCGX2O5Tlh2yNYdX
+VWWQWOr8Te5FktOWLVjNN5Vw8QnuRdnGnQGqDIJQSXYgQq2k5CFQW9yLHTj5X7+K+JBaBSudWUGQ
+HzJnqS114c4F/Baiwe8NUi4yl0tf38VBefHIhUD0CEfJw+QwiqGG2z4Eeu0zz9zxlH+4eXGA+NIc
+ZUJEbw22lzJ3FdInNML0CDZFa4cYsPVaTATziPeAVDl9nqWCos3b0Dq/8un4ga3yRG25YQZAUVyu
+4B0=
+=J1s4
+-----END PGP SIGNATURE-----
+
+--85GU1GqhvOPcBOU6e0aBenn292yxkgXpN--
