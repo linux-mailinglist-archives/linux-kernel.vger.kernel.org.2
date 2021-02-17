@@ -2,166 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6C931DEB9
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1BE31DEBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:03:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbhBQSBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:01:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234713AbhBQSBe (ORCPT
+        id S234766AbhBQSCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:02:47 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:46894 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234748AbhBQSCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:01:34 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B80C061574;
-        Wed, 17 Feb 2021 10:00:52 -0800 (PST)
-Received: from zn.tnic (p200300ec2f05bb00a5a1b5cb6f03bfce.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:bb00:a5a1:b5cb:6f03:bfce])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 426BF1EC0402;
-        Wed, 17 Feb 2021 19:00:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1613584851;
+        Wed, 17 Feb 2021 13:02:42 -0500
+Date:   Wed, 17 Feb 2021 19:01:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613584920;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OyC60AEXb/9wdHg79nRJVAwmz+d5y82NOII64Aytkw4=;
-        b=rZCe/fUCQVQIdCLfy0ZZX86wa1k2dVKkf+PDmFOG4MS7fmj2VZoM4iC/mO0MQe9ouVSUV4
-        AA5HzXgovgE4O63ljYDoXrY24nbmBoNNpStJFJOEg2TL1n1FfPZSR6+rMznkaIIGgV6+e8
-        Ls90hdQStGA73QaE4V43VHLz45AeEIc=
-Date:   Wed, 17 Feb 2021 19:00:54 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 3/3] x86/sev-es: Improve comments in and around
- __sev_es_ist_enter/exit()
-Message-ID: <20210217180054.GC6479@zn.tnic>
-References: <20210217120143.6106-1-joro@8bytes.org>
- <20210217120143.6106-4-joro@8bytes.org>
+         in-reply-to:in-reply-to:references:references;
+        bh=IorYWVX6aTray9URwFxb4iXem9eN7bHL8eDC2Dpv93Y=;
+        b=HCPELpW/mmnioa1NDn/N6RKGX4RSoOO/sMm2U57k60FuIGKCA3PxzbzC8h7BD0PHFWny/P
+        UD6Kav1UoUPwOhHp5xOFEKYvFPXPWeUIUKjmP7MoI+j4z8fq5sIV9oeCf7M6kDc56RrDSE
+        tFu+4PD07VaqUWIJSuotX6lLZbLAvjeZBQdeW6zWi5zTrQIN/b+miT9gRT5OIJjl30N+qQ
+        zvdW7DhOpkYk9N6qlC4ZJ1UfrtpRI4tSFpM1G6ALQka1QBFhLyl97sVmh2d0gucXu5ZKEP
+        7uCQD8ZzWeiCBpHAxZTTyOqFIVX3cdnti/7Yt8MnX6TLO3EB1lqHuNgJ9Gtekg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613584920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IorYWVX6aTray9URwFxb4iXem9eN7bHL8eDC2Dpv93Y=;
+        b=naYHD/i74Jm6TrgW7qqjXb44yKU6O4Tv25tS96WNLPbQRFn0zWwIxK8pHVQiDACwLZV+Ce
+        kHT7VwQjy/lRQkBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: Should RCU_BOOST kernels use hrtimers in GP kthread?
+Message-ID: <20210217180159.c4lr3h34lkkvjn7s@linutronix.de>
+References: <20210216183609.GA7027@paulmck-ThinkPad-P72>
+ <20210217153253.fy2mhxo3o3ehsuix@linutronix.de>
+ <20210217155447.GC2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210217120143.6106-4-joro@8bytes.org>
+In-Reply-To: <20210217155447.GC2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 01:01:43PM +0100, Joerg Roedel wrote:
-> From: Joerg Roedel <jroedel@suse.de>
+On 2021-02-17 07:54:47 [-0800], Paul E. McKenney wrote:
+> > I though boosting is accomplished by acquiring a rt_mutex in a
+> > rcu_read() section. Do you have some code to point me to, to see how a
+> > timer is involved here? Or is it the timer saying that *now* boosting is
+> > needed.
 > 
-> Better explain why this code is necessary and what it is doing.
+> Yes, this last, which is in the grace-period kthread code, for example,
+> in rcu_gp_fqs_loop().
+>
+> > If your hrtimer is a "normal" hrtimer then it will be served by
+> > ksoftirqd, too. You would additionally need one of the
+> > HRTIMER_MODE_*_HARD to make it work.
 > 
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
-> ---
->  arch/x86/kernel/sev-es.c | 23 ++++++++++++++++-------
->  1 file changed, 16 insertions(+), 7 deletions(-)
+> Good to know.  Anything I should worry about for this mode?
+
+Well. It is always hardirq. No spinlock_t, etc. within that callback.
+If you intend to wake a thread, that thread needs an elevated priority
+otherwise it won't be scheduled (assuming there is a RT tasking running
+which would block otherwise ksoftirqd).
+
+Ah. One nice thing is that you can move the RCU threads to a house
+keeping CPU - away from the CPU(s) running the RT tasks. Would this
+scenario be still affected (if ksoftirqd would be blocked)?
+
+Oh. One thing I forgot to mention: the timer_list timer is nice in terms
+of moving forward (the timer did not fire, the condition is true and you
+move the timeout forward).
+A hrtimer timer on the other hand needs to be removed, forwarded and
+added back to the "timer tree". This is considered more expensive
+especially if the timer does not fire.
+
+> Also, the current test expects callbacks to be invoked, which involves a
+> number of additional kthreads and timers, for example, in nocb_gp_wait().
+> I suppose I could instead look at grace-period sequence numbers, but I
+> believe that real-life use cases needing RCU priority boosting also need
+> the callbacks to be invoked reasonably quickly (as in within hundreds
+> of milliseconds up through very small numbers of seconds).
+
+A busy/overloaded kvm-host could lead to delays by not scheduling the
+guest for a while.
+
+My understanding of the need for RCU boosting is to get a task,
+preempted (by a RT task) within a RCU section, back on the CPU to
+at least close the RCU section. So it is possible to run RCU callbacks
+and free memory.
+The 10 seconds without RCU callbacks shouldn't be bad unless the OOM
+killer got nervous (and if we had memory allocation failures).
+Also, running thousands of accumulated callbacks isn't good either.
+
+> Thoughts?
 > 
-> diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-> index 0df38b185d53..79241bc45f25 100644
-> --- a/arch/x86/kernel/sev-es.c
-> +++ b/arch/x86/kernel/sev-es.c
-> @@ -127,14 +127,20 @@ static __always_inline bool on_vc_stack(unsigned long sp)
->  }
->  
->  /*
-> - * This function handles the case when an NMI is raised in the #VC exception
-> - * handler entry code. In this case, the IST entry for #VC must be adjusted, so
-> - * that any subsequent #VC exception will not overwrite the stack contents of the
-> - * interrupted #VC handler.
-> + * This function handles the case when an NMI is raised in the #VC
-> + * exception handler entry code, before the #VC handler has switched off
-> + * its IST stack. In this case, the IST entry for #VC must be adjusted,
-> + * so that any nested #VC exception will not overwrite the stack
-> + * contents of the interrupted #VC handler.
->   *
->   * The IST entry is adjusted unconditionally so that it can be also be
-> - * unconditionally adjusted back in sev_es_ist_exit(). Otherwise a nested
-> - * sev_es_ist_exit() call may adjust back the IST entry too early.
-> + * unconditionally adjusted back in __sev_es_ist_exit(). Otherwise a
-> + * nested sev_es_ist_exit() call may adjust back the IST entry too
-> + * early.
-> + *
-> + * The __sev_es_ist_enter() and __sev_es_ist_exit() functions always run
-> + * on the NMI IST stack, as they are only called from NMI handling code
-> + * right now.
->   */
->  void noinstr __sev_es_ist_enter(struct pt_regs *regs)
->  {
-> @@ -143,7 +149,10 @@ void noinstr __sev_es_ist_enter(struct pt_regs *regs)
->  	/* Read old IST entry */
->  	old_ist = __this_cpu_read(cpu_tss_rw.x86_tss.ist[IST_INDEX_VC]);
->  
-> -	/* Make room on the IST stack */
-> +	/*
-> +	 * Make room on the IST stack - Reserve 8 bytes to store the old
-> +	 * IST entry.
-> +	 */
->  	if (on_vc_stack(regs->sp) &&
->  	    !user_mode(regs) &&
->  	    !from_syscall_gap(regs))
-> -- 
-
-Yah, and then we probably should simplify this __sev_es_ist_enter()
-function even more as it is not easy to grok.
-
-For example, the ALIGN_DOWN(regs->sp, 8) is not really needed, right?
-
-Also, both branches do "- sizeof(old_ist);" so you can just as well do
-it unconditionally.
-
-And the sizeof(old_ist) is just a confusing way to write 8, right? We're
-64-bit only so there's no need for that, I'd say.
-
-And then you probably should change the comments from
-
-	/* Store old IST entry */
-
-and
-
-	/* Set new IST entry */
-
-to something like:
-
- /*
-  * If on the #VC IST stack, new_ist gets set to point one stack slot
-  * further down from the #VC interrupt frame which has been pushed on
-  * it during the first #VC exception entry.
-  *
-  * If not, simply the next slot on the #VC IST stack is set to point...
-
-and here I'm not even sure why we're doing it?
-
-The else branch, when we're not on the #VC stack, why are we doing
-
-	new_ist = old_ist - sizeof(old_ist);
-
-?
-
-I mean, if the NMI handler causes a #VC exception, it will simply run on
-the #VC IST stack so why do we have to do that - 8 thing at all?
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 							Thanx, Paul
+Sebastian
