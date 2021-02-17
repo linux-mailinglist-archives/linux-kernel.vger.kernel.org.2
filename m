@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCB531D6AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1375631D6B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 09:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhBQIgJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 17 Feb 2021 03:36:09 -0500
-Received: from mail-ej1-f54.google.com ([209.85.218.54]:35645 "EHLO
-        mail-ej1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhBQIgA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 03:36:00 -0500
-Received: by mail-ej1-f54.google.com with SMTP id g5so17262357ejt.2;
-        Wed, 17 Feb 2021 00:35:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9YGc/AkEmrmvh3rYxNMRJNk+zbFkuGcoCi3dyG2K5wQ=;
-        b=fCBpYFZkw5kLxtcWF5IASW7xHhj0vcaKXpEvmfY0OexfmP371keiGquObRyOYb2xwA
-         aZLn8bdlx3+BshYb5P0QAzVLNPkm4sva0rPBtDGCD5IMJl2jbiggtLfNMiNuJZzV+dVR
-         APP5UR9W6wk5OFtoHftWLQkgKAdA1hMUJPg4ghFXVkAZJVBWS7VhkhEY+rszAg82+HJB
-         P3j2bumbRQQe8iKO+vVmT+a1ZB7NQ8Br/PAIOnG5/Cmoghnod6z3J4qejjQBNUOiYNbl
-         oyY/FL0jDk1VHBwDYHkIL73/wyJbVa1yMocFsj6R9ivBh2ZvLajEl3Q2fl03MEO8bzke
-         9mNw==
-X-Gm-Message-State: AOAM533pdqRd87Ae4j6JLkkjVyD5dPS0zFQFnJOBSGqwCODNm33yBzNh
-        aGghGdRhjrxl20HvfKMe6YU=
-X-Google-Smtp-Source: ABdhPJwEw9XICl6WlTWbG6n9gcJnfoCj4IdJREq+D8UV1QLDJQaZ1WW/n3Uv9WVjsIlSArdj3d1avA==
-X-Received: by 2002:a17:907:9483:: with SMTP id dm3mr24482144ejc.120.1613550917882;
-        Wed, 17 Feb 2021 00:35:17 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id z2sm649259ejd.44.2021.02.17.00.35.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 00:35:16 -0800 (PST)
-Date:   Wed, 17 Feb 2021 09:35:15 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?M=C3=A5rten?= Lindahl <marten.lindahl@axis.com>
-Cc:     kernel@axis.com,
-        =?utf-8?Q?M=C3=A5rten?= Lindahl <martenli@axis.com>,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: exynos5: Preserve high speed master code
-Message-ID: <20210217083515.n5mgzgsddsks4aaw@kozik-lap>
-References: <20210216222538.6427-1-marten.lindahl@axis.com>
+        id S231634AbhBQIha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 03:37:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47386 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230303AbhBQIhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 03:37:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AF9264E28;
+        Wed, 17 Feb 2021 08:36:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613551004;
+        bh=i4kNSveyDKj4UzuU1mXSC8PvJCQPboPkNLn+8F+ab1k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yv8i9+KWelFKyWLh1az5qyANS5nqW/AHNH77/f72B/vWnXtGRFkSTStnMXIzvn9+/
+         7Yapooh4A9SgaLexotU/96Kqx2XvJlhLyMEQmHNANmx1G4weIrm/bwd1/Aq4aDsYwO
+         o+5GaOV3bjjAb3IKdFImyUa6w0MOJR8ndzyMTx1U=
+Date:   Wed, 17 Feb 2021 09:36:41 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     peng.fan@nxp.com, kernel@collabora.com, devel@driverdev.osuosl.org,
+        Anson.Huang@nxp.com, krzk@kernel.org,
+        linux-rockchip@lists.infradead.org, wens@csie.org,
+        linux-imx@nxp.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, p.zabel@pengutronix.de,
+        s.hauer@pengutronix.de, mripard@kernel.org, robh+dt@kernel.org,
+        mchehab@kernel.org, ezequiel@collabora.com,
+        linux-arm-kernel@lists.infradead.org, aisheng.dong@nxp.com,
+        jernej.skrabec@siol.net, adrian.ratiu@collabora.com,
+        linux-kernel@vger.kernel.org, paul.kocialkowski@bootlin.com,
+        kernel@pengutronix.de, hverkuil-cisco@xs4all.nl,
+        shawnguo@kernel.org, shengjiu.wang@nxp.com
+Subject: Re: [PATCH v1 00/18] Add HANTRO G2/HEVC decoder support for IMX8MQ
+Message-ID: <YCzVmRVL79KMkxXQ@kroah.com>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <YCzO7SRmBKzGeMUS@kroah.com>
+ <04dfae0b-92e5-e02d-c687-ba4d28b7aaf2@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210216222538.6427-1-marten.lindahl@axis.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <04dfae0b-92e5-e02d-c687-ba4d28b7aaf2@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 11:25:38PM +0100, MÃ¥rten Lindahl wrote:
-> From: MÃ¥rten Lindahl <martenli@axis.com>
+On Wed, Feb 17, 2021 at 09:28:09AM +0100, Benjamin Gaignard wrote:
 > 
-> When the driver starts to send a message with the MASTER_ID field
-> set (high speed), the whole I2C_ADDR register is overwritten including
-> MASTER_ID as the SLV_ADDR_MAS field is set.
+> Le 17/02/2021 à 09:08, Greg KH a écrit :
+> > On Wed, Feb 17, 2021 at 09:02:48AM +0100, Benjamin Gaignard wrote:
+> > > The IMX8MQ got two VPUs but until now only G1 has been enabled.
+> > > This series aim to add the second VPU (aka G2) and provide basic
+> > > HEVC decoding support.
+> > Why are you adding this directly to drivers/staging/media/ and not
+> > drivers/media/?  Why can't this just go to the main location and not
+> > live in staging?
 > 
-> This patch preserves already written fields in I2C_ADDR when writing
-> SLV_ADDR_MAS.
-> 
-> Signed-off-by: MÃ¥rten Lindahl <martenli@axis.com>
-> ---
-> v2:
-> - Change commit message as the problem is not in the controller but in
->   the driver.
-> - Use MASTER_ID macro instead of reading back register contents.
-> 
->  drivers/i2c/busses/i2c-exynos5.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
+> G2/HEVC is added inside the already exiting Hantro driver, it is "just"
+> an other codec from Hantro driver point of view.
+> In addition of that v4l2-hevc uAPI is still unstable.
+> One goal of this series is to have one more consumer of this v4l2-hevc
+> uAPI so maybe we can claim it to be stable enough to move away from staging
+> and then do the same for Hantro driver. That would be a great achievement !
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-Tested-by: Krzysztof Kozlowski <krzk@kernel.org>
+I know I do not like seeing new additions/features/whatever being added
+to staging drivers as that encourages people to do new stuff on them
+without doing the real work needed to get them out of staging.
 
-Best regards,
-Krzysztof
+So what is preventing the existing driver from getting out of staging
+now?
+
+And how are you all creating new userspace apis for staging drivers to
+the v4l layer?  What happens when you export something new and then
+userspace starts to rely on it and then you change it?
+
+Anyway, the media staging drivers are on their own, I don't touch them,
+it just feels odd to me...
+
+thanks,
+
+greg k-h
