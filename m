@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C770931DB4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5102B31DB49
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 15:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233382AbhBQOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 09:18:54 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2581 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbhBQOSv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 09:18:51 -0500
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DgfwT1hRjz67qL6;
-        Wed, 17 Feb 2021 22:14:17 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Feb 2021 15:18:08 +0100
-Received: from localhost (10.47.29.73) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Wed, 17 Feb
- 2021 14:18:06 +0000
-Date:   Wed, 17 Feb 2021 14:16:59 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        "Jon Masters" <jcm@jonmasters.org>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v5 4/9] cxl/mem: Add basic IOCTL interface
-Message-ID: <20210217141659.000064ec@Huawei.com>
-In-Reply-To: <20210217040958.1354670-5-ben.widawsky@intel.com>
-References: <20210217040958.1354670-1-ben.widawsky@intel.com>
-        <20210217040958.1354670-5-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S233366AbhBQOSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 09:18:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232371AbhBQOSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 09:18:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BD17C64DBD;
+        Wed, 17 Feb 2021 14:17:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613571475;
+        bh=9DtE28FgJnN9z9xq9OPPtCLnloyzssm4m4fGCOYg9Bk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o5wafKTdgY0WWFUxF9kARDCaFzQRev6VAoYAMmpGwvR8PuDZA8Jh/CUf535/3GUqn
+         TAP2/M2hR268xiAc/buBQv018xNaT5+1dS+1AJx5IqLaIljMtcvsBKOjquwr+RC1vZ
+         ynRk2VI7sq9l8nXGn1V0d2PwfUtc2SJKbCIksXgg=
+Date:   Wed, 17 Feb 2021 15:17:52 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 1/4] firmware: Add the support for ZSTD-compressed
+ firmware files
+Message-ID: <YC0lkDRXcR8Rg7+h@kroah.com>
+References: <20210127154939.13288-1-tiwai@suse.de>
+ <20210127154939.13288-2-tiwai@suse.de>
+ <20210217132419.GN4332@42.do-not-panic.com>
+ <s5ha6s24y39.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.29.73]
-X-ClientProxiedBy: lhreml704-chm.china.huawei.com (10.201.108.53) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5ha6s24y39.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 20:09:53 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
-
-> Add a straightforward IOCTL that provides a mechanism for userspace to
-> query the supported memory device commands. CXL commands as they appear
-> to userspace are described as part of the UAPI kerneldoc. The command
-> list returned via this IOCTL will contain the full set of commands that
-> the driver supports, however, some of those commands may not be
-> available for use by userspace.
+On Wed, Feb 17, 2021 at 02:34:34PM +0100, Takashi Iwai wrote:
+> On Wed, 17 Feb 2021 14:24:19 +0100,
+> Luis Chamberlain wrote:
+> > 
+> > On Wed, Jan 27, 2021 at 04:49:36PM +0100, Takashi Iwai wrote:
+> > > Due to the popular demands on ZSTD, here is a patch to add a support
+> > > of ZSTD-compressed firmware files via the direct firmware loader.
+> > > It's just like XZ-compressed file support, providing a decompressor
+> > > with ZSTD.  Since ZSTD API can give the decompression size beforehand,
+> > > the code is even simpler than XZ.
+> > > 
+> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > 
+> > It also occurs to me that having a simple like #define HAVE_FIRMWARE_COMPRESS_ZSTD
+> > on include/linux/firmware.h would enable userspace to be aware (if they
+> > have kernel sources) to determine if the kernels supports this format.
 > 
-> Memory device commands first appear in the CXL 2.0 specification. They
-> are submitted through a mailbox mechanism specified in the CXL 2.0
-> specification.
-> 
-> The send command allows userspace to issue mailbox commands directly to
-> the hardware. The list of available commands to send are the output of
-> the query command. The driver verifies basic properties of the command
-> and possibly inspect the input (or output) payload to determine whether
-> or not the command is allowed (or might taint the kernel).
-> 
-> Reported-by: kernel test robot <lkp@intel.com> # bug in earlier revision
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com> (v2)
+> Extending that idea, we might want to have a sysfs entry showing the
+> supported formats instead?  This will allow to judge dynamically.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
+What could userspace do with that information?
