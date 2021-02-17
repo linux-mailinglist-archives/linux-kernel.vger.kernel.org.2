@@ -2,56 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2984131DA66
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF3031DA55
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:25:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233095AbhBQN2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:28:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbhBQNS7 (ORCPT
+        id S232846AbhBQNY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:24:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:45296 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232641AbhBQNSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:18:59 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5D6C0617A9;
-        Wed, 17 Feb 2021 05:17:38 -0800 (PST)
-Date:   Wed, 17 Feb 2021 13:17:36 -0000
+        Wed, 17 Feb 2021 08:18:21 -0500
+Date:   Wed, 17 Feb 2021 13:17:37 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613567856;
+        s=2020; t=1613567857;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k+WKpWCtgBHlUbDq+xtt2lSnLipSTFLq5UmDtvANAhA=;
-        b=vzr4Fg1Y54pHmcYJqtzwT9ScXstS8zKqqVHXF658t3pdOfSRpO0I0EntXMn5Sl4dL8hWl8
-        zBQjf+tt5Hc9Ast2/GY4WOqcSlrjIzITmnN2P0zvwXJ/MjYiR0pXS1XoJy/5YK8o8hkJAP
-        l+PY7UyB2W9Gzo5ut1QXOeeYlJYYzrJk5hJkjihXMPVPHGGGHIip6xtrksj3k/NENHG9D+
-        oC2VR08MUKH11CNSZbYulN9F3LeVazcs9sYCel8W8dEWoLEHOdcrQtBUrgrIKCVBWRBbD+
-        APFLLxG9wYAeM4wvOGDpY4yvmeVNUT1/T4i+uqStgCt+coiG9SnFKQhtMkV8uQ==
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=Hk3hXl46m71iNJ/h86EQ4bBz+PJHkf4mWd568adpOTo=;
+        b=3IqjJJk90NF6/UVcZ4nqNnPbHcz9JGOKpHgVC5RAkDVyLmHWWiTdofXwEKPVqo3u83U+Rk
+        03t8z5X4ou8DlE1+NzrGG6wTk9tI4CIo4iMSqfTZBwEUUf96C/5YqloA49Kt/geudaChB+
+        oW70EqxylKRa4WuFDpUVnmp2nSB2SfhWcWpyKQT+bUDJxULXFf/kiytr9Ic6ueXwkod2v1
+        WbHJao8j89v/e5FHud8L07l30YKI7vc7fg8v5u3n3UrPh+Dlef1FGLEbCxhXOBGVuzCCWB
+        IP1mdoB47I+liFkkqTiPZkDy9SwPl6dJl9LrbNYD9Ck3WSJWLAlxubIhlv3nUA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613567856;
+        s=2020e; t=1613567857;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k+WKpWCtgBHlUbDq+xtt2lSnLipSTFLq5UmDtvANAhA=;
-        b=glBLhW0noa3JJGvxpgF26462qupAHlvUwG7KjmJf6rsTy3IfloCqu3eMoQbVrLNMMYkfgD
-        5syThWGhSDl07bBg==
-From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=Hk3hXl46m71iNJ/h86EQ4bBz+PJHkf4mWd568adpOTo=;
+        b=TR5Q5dTnSWYDVX5nsQdS/43IPC62smJ4X7fi0c1/DyY1IR5K41IssWOctwsIQGvVu/n/lq
+        FwK+QgXPr8e0SjDQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched: Remove USER_PRIO, TASK_USER_PRIO and MAX_USER_PRIO
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+Subject: [tip: sched/core] rbtree, rtmutex: Use rb_add_cached()
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Davidlohr Bueso <dbueso@suse.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210128131040.296856-3-dietmar.eggemann@arm.com>
-References: <20210128131040.296856-3-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-Message-ID: <161356785632.20312.11413360885700610042.tip-bot2@tip-bot2>
+Message-ID: <161356785728.20312.7772121827108396177.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,96 +53,99 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     9d061ba6bc170045857f3efe0bba5def30188d4d
-Gitweb:        https://git.kernel.org/tip/9d061ba6bc170045857f3efe0bba5def30188d4d
-Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
-AuthorDate:    Thu, 28 Jan 2021 14:10:39 +01:00
+Commit-ID:     5a7987253ef0909d94e176cd97e511013de0fe19
+Gitweb:        https://git.kernel.org/tip/5a7987253ef0909d94e176cd97e511013de0fe19
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Wed, 29 Apr 2020 17:29:58 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Wed, 17 Feb 2021 14:08:17 +01:00
+CommitterDate: Wed, 17 Feb 2021 14:07:57 +01:00
 
-sched: Remove USER_PRIO, TASK_USER_PRIO and MAX_USER_PRIO
+rbtree, rtmutex: Use rb_add_cached()
 
-The only remaining use of MAX_USER_PRIO (and USER_PRIO) is the
-SCALE_PRIO() definition in the PowerPC Cell architecture's Synergistic
-Processor Unit (SPU) scheduler. TASK_USER_PRIO isn't used anymore.
+Reduce rbtree boiler plate by using the new helpers.
 
-Commit fe443ef2ac42 ("[POWERPC] spusched: Dynamic timeslicing for
-SCHED_OTHER") copied SCALE_PRIO() from the task scheduler in v2.6.23.
-
-Commit a4ec24b48dde ("sched: tidy up SCHED_RR") removed it from the task
-scheduler in v2.6.24.
-
-Commit 3ee237dddcd8 ("sched/prio: Add 3 macros of MAX_NICE, MIN_NICE and
-NICE_WIDTH in prio.h") introduced NICE_WIDTH much later.
-
-With:
-
-  MAX_USER_PRIO = USER_PRIO(MAX_PRIO)
-
-                = MAX_PRIO - MAX_RT_PRIO
-
-       MAX_PRIO = MAX_RT_PRIO + NICE_WIDTH
-
-  MAX_USER_PRIO = MAX_RT_PRIO + NICE_WIDTH - MAX_RT_PRIO
-
-  MAX_USER_PRIO = NICE_WIDTH
-
-MAX_USER_PRIO can be replaced by NICE_WIDTH to be able to remove all the
-{*_}USER_PRIO defines.
-
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lkml.kernel.org/r/20210128131040.296856-3-dietmar.eggemann@arm.com
+Acked-by: Davidlohr Bueso <dbueso@suse.de>
 ---
- arch/powerpc/platforms/cell/spufs/sched.c |  2 +-
- include/linux/sched/prio.h                |  9 ---------
- kernel/sched/sched.h                      |  2 +-
- 3 files changed, 2 insertions(+), 11 deletions(-)
+ kernel/locking/rtmutex.c | 54 +++++++++++++--------------------------
+ 1 file changed, 18 insertions(+), 36 deletions(-)
 
-diff --git a/arch/powerpc/platforms/cell/spufs/sched.c b/arch/powerpc/platforms/cell/spufs/sched.c
-index f18d506..aeb7f39 100644
---- a/arch/powerpc/platforms/cell/spufs/sched.c
-+++ b/arch/powerpc/platforms/cell/spufs/sched.c
-@@ -72,7 +72,7 @@ static struct timer_list spuloadavg_timer;
- #define DEF_SPU_TIMESLICE	(100 * HZ / (1000 * SPUSCHED_TICK))
+diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
+index 2f8cd61..57e3804 100644
+--- a/kernel/locking/rtmutex.c
++++ b/kernel/locking/rtmutex.c
+@@ -267,27 +267,18 @@ rt_mutex_waiter_equal(struct rt_mutex_waiter *left,
+ 	return 1;
+ }
  
- #define SCALE_PRIO(x, prio) \
--	max(x * (MAX_PRIO - prio) / (MAX_USER_PRIO / 2), MIN_SPU_TIMESLICE)
-+	max(x * (MAX_PRIO - prio) / (NICE_WIDTH / 2), MIN_SPU_TIMESLICE)
- 
- /*
-  * scale user-nice values [ -20 ... 0 ... 19 ] to time slice values:
-diff --git a/include/linux/sched/prio.h b/include/linux/sched/prio.h
-index d111f2f..ab83d85 100644
---- a/include/linux/sched/prio.h
-+++ b/include/linux/sched/prio.h
-@@ -27,15 +27,6 @@
- #define PRIO_TO_NICE(prio)	((prio) - DEFAULT_PRIO)
- 
- /*
-- * 'User priority' is the nice value converted to something we
-- * can work with better when scaling various scheduler parameters,
-- * it's a [ 0 ... 39 ] range.
-- */
--#define USER_PRIO(p)		((p)-MAX_RT_PRIO)
--#define TASK_USER_PRIO(p)	USER_PRIO((p)->static_prio)
--#define MAX_USER_PRIO		(USER_PRIO(MAX_PRIO))
++#define __node_2_waiter(node) \
++	rb_entry((node), struct rt_mutex_waiter, tree_entry)
++
++static inline bool __waiter_less(struct rb_node *a, const struct rb_node *b)
++{
++	return rt_mutex_waiter_less(__node_2_waiter(a), __node_2_waiter(b));
++}
++
+ static void
+ rt_mutex_enqueue(struct rt_mutex *lock, struct rt_mutex_waiter *waiter)
+ {
+-	struct rb_node **link = &lock->waiters.rb_root.rb_node;
+-	struct rb_node *parent = NULL;
+-	struct rt_mutex_waiter *entry;
+-	bool leftmost = true;
 -
--/*
-  * Convert nice value [19,-20] to rlimit style value [1,40].
-  */
- static inline long nice_to_rlimit(long nice)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f519aba..2185b3b 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -140,7 +140,7 @@ extern void call_trace_sched_update_nr_running(struct rq *rq, int count);
-  * scale_load() and scale_load_down(w) to convert between them. The
-  * following must be true:
-  *
-- *  scale_load(sched_prio_to_weight[USER_PRIO(NICE_TO_PRIO(0))]) == NICE_0_LOAD
-+ *  scale_load(sched_prio_to_weight[NICE_TO_PRIO(0)-MAX_RT_PRIO]) == NICE_0_LOAD
-  *
-  */
- #define NICE_0_LOAD		(1L << NICE_0_LOAD_SHIFT)
+-	while (*link) {
+-		parent = *link;
+-		entry = rb_entry(parent, struct rt_mutex_waiter, tree_entry);
+-		if (rt_mutex_waiter_less(waiter, entry)) {
+-			link = &parent->rb_left;
+-		} else {
+-			link = &parent->rb_right;
+-			leftmost = false;
+-		}
+-	}
+-
+-	rb_link_node(&waiter->tree_entry, parent, link);
+-	rb_insert_color_cached(&waiter->tree_entry, &lock->waiters, leftmost);
++	rb_add_cached(&waiter->tree_entry, &lock->waiters, __waiter_less);
+ }
+ 
+ static void
+@@ -300,27 +291,18 @@ rt_mutex_dequeue(struct rt_mutex *lock, struct rt_mutex_waiter *waiter)
+ 	RB_CLEAR_NODE(&waiter->tree_entry);
+ }
+ 
++#define __node_2_pi_waiter(node) \
++	rb_entry((node), struct rt_mutex_waiter, pi_tree_entry)
++
++static inline bool __pi_waiter_less(struct rb_node *a, const struct rb_node *b)
++{
++	return rt_mutex_waiter_less(__node_2_pi_waiter(a), __node_2_pi_waiter(b));
++}
++
+ static void
+ rt_mutex_enqueue_pi(struct task_struct *task, struct rt_mutex_waiter *waiter)
+ {
+-	struct rb_node **link = &task->pi_waiters.rb_root.rb_node;
+-	struct rb_node *parent = NULL;
+-	struct rt_mutex_waiter *entry;
+-	bool leftmost = true;
+-
+-	while (*link) {
+-		parent = *link;
+-		entry = rb_entry(parent, struct rt_mutex_waiter, pi_tree_entry);
+-		if (rt_mutex_waiter_less(waiter, entry)) {
+-			link = &parent->rb_left;
+-		} else {
+-			link = &parent->rb_right;
+-			leftmost = false;
+-		}
+-	}
+-
+-	rb_link_node(&waiter->pi_tree_entry, parent, link);
+-	rb_insert_color_cached(&waiter->pi_tree_entry, &task->pi_waiters, leftmost);
++	rb_add_cached(&waiter->pi_tree_entry, &task->pi_waiters, __pi_waiter_less);
+ }
+ 
+ static void
