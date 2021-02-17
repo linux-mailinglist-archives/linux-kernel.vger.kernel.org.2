@@ -2,87 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C75831D419
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 03:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A83931D41C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 03:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhBQCzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 21:55:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32439 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230071AbhBQCzh (ORCPT
+        id S230258AbhBQC5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 21:57:17 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:9771 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229544AbhBQC5B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 21:55:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613530452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pGpyvpoZaV2XZR1+BH6GoXWIxB5qeFgJto6v9O6bjeo=;
-        b=Eu3GpsuMk+opfPsQ8PaPnSDgFHi07orILvqXJytC1Ri/2d8gxAxkEZA3DFqwR+Ksd303R9
-        /5ygOswVmmFj99f+OrgE1DB0t7cIGMvoy0S71XyM2S99kanjRKbB0V52PxftSeINhV5SSq
-        M18QAd3ZY1Bkbhg+dApGbgpX/8vDhKY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-PYuQhyyoOl6d2aqUESWFYA-1; Tue, 16 Feb 2021 21:54:10 -0500
-X-MC-Unique: PYuQhyyoOl6d2aqUESWFYA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBBEAC28A;
-        Wed, 17 Feb 2021 02:54:08 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-113-106.rdu2.redhat.com [10.10.113.106])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7F1F010016F7;
-        Wed, 17 Feb 2021 02:54:07 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org
-Cc:     Imre Deak <imre.deak@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 2/2] drm/i915/icp+: Use icp_hpd_irq_setup() instead of spt_hpd_irq_setup()
-Date:   Tue, 16 Feb 2021 21:53:37 -0500
-Message-Id: <20210217025337.1929015-2-lyude@redhat.com>
-In-Reply-To: <20210217025337.1929015-1-lyude@redhat.com>
-References: <20210217025337.1929015-1-lyude@redhat.com>
+        Tue, 16 Feb 2021 21:57:01 -0500
+X-IronPort-AV: E=Sophos;i="5.81,184,1610380800"; 
+   d="scan'208";a="104561557"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 17 Feb 2021 10:56:13 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 374484CE72EC;
+        Wed, 17 Feb 2021 10:56:13 +0800 (CST)
+Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
+ (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 17 Feb
+ 2021 10:56:11 +0800
+Subject: Re: [PATCH v3 05/11] mm, fsdax: Refactor memory-failure handler for
+ dax mapping
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
+        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
+        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>,
+        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
+        <david@fromorbit.com>, <agk@redhat.com>, <snitzer@redhat.com>,
+        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
+References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com>
+ <20210208105530.3072869-6-ruansy.fnst@cn.fujitsu.com>
+ <20210210133347.GD30109@lst.de>
+From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Message-ID: <45a20d88-63ee-d678-ad86-6ccd8cdf7453@cn.fujitsu.com>
+Date:   Wed, 17 Feb 2021 10:56:11 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210210133347.GD30109@lst.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Originating-IP: [10.167.225.141]
+X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
+X-yoursite-MailScanner-ID: 374484CE72EC.AB75D
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While reviewing patches for handling workarounds related to gen9 bc, Imre
-from Intel discovered that we're using spt_hpd_irq_setup() on ICP+ PCHs
-despite it being almost the same as icp_hpd_irq_setup(). Since we need to
-be calling icp_hpd_irq_setup() to ensure that CML-S/TGP platforms function
-correctly anyway, let's move platforms using PCH_ICP which aren't handled
-by gen11_hpd_irq_setup() over to icp_hpd_irq_setup().
 
-Cc: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/i915/i915_irq.c | 2 ++
- 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/gpu/drm/i915/i915_irq.c b/drivers/gpu/drm/i915/i915_irq.c
-index f86b147f588f..7ec61187a315 100644
---- a/drivers/gpu/drm/i915/i915_irq.c
-+++ b/drivers/gpu/drm/i915/i915_irq.c
-@@ -4320,6 +4320,8 @@ void intel_irq_init(struct drm_i915_private *dev_priv)
- 			dev_priv->display.hpd_irq_setup = gen11_hpd_irq_setup;
- 		else if (IS_GEN9_LP(dev_priv))
- 			dev_priv->display.hpd_irq_setup = bxt_hpd_irq_setup;
-+		else if (INTEL_PCH_TYPE(dev_priv) >= PCH_ICP)
-+			dev_priv->display.hpd_irq_setup = icp_hpd_irq_setup;
- 		else if (INTEL_PCH_TYPE(dev_priv) >= PCH_SPT)
- 			dev_priv->display.hpd_irq_setup = spt_hpd_irq_setup;
- 		else
--- 
-2.29.2
+On 2021/2/10 下午9:33, Christoph Hellwig wrote:
+>> +extern int mf_dax_mapping_kill_procs(struct address_space *mapping, pgoff_t index, int flags);
+> 
+> No nee for the extern, please avoid the overly long line.
+
+OK.
+
+I'd like to confirm one thing...  I have checked all of this patchset by 
+checkpatch.pl and it did not report the overly long line warning.  So, I 
+should still obey the rule of 80 chars one line?
+
+> 
+>> @@ -120,6 +121,13 @@ static int hwpoison_filter_dev(struct page *p)
+>>   	if (PageSlab(p))
+>>   		return -EINVAL;
+>>   
+>> +	if (pfn_valid(page_to_pfn(p))) {
+>> +		if (is_device_fsdax_page(p))
+>> +			return 0;
+>> +		else
+>> +			return -EINVAL;
+>> +	}
+>> +
+> 
+> This looks odd.  For one there is no need for an else after a return.
+> But more importantly page_mapping() as called below pretty much assumes
+> a valid PFN, so something is fishy in this function.
+
+Yes, a mistake here.  I'll fix it.
+
+> 
+>> +	if (is_zone_device_page(p)) {
+>> +		if (is_device_fsdax_page(p))
+>> +			tk->addr = vma->vm_start +
+>> +					((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+> 
+> The arithmetics here scream for a common helper, I suspect there might
+> be other places that could use the same helper.
+> 
+>> +int mf_dax_mapping_kill_procs(struct address_space *mapping, pgoff_t index, int flags)
+> 
+> Overly long line.  Also the naming scheme with the mf_ seems rather
+> unusual. Maybe dax_kill_mapping_procs?  Also please add a kerneldoc
+> comment describing the function given that it exported.
+> 
+
+OK.  Thanks for your guidance.
+
+
+--
+Thanks,
+Ruan Shiyang.
+
+> 
+
 
