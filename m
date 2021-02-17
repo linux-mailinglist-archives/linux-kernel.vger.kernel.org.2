@@ -2,141 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492D031D334
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:07:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A49E231D337
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhBPX54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 18:57:56 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:37441 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbhBPX5w (ORCPT
+        id S231166AbhBQAA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 19:00:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230014AbhBQAAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 18:57:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1613520483; x=1645056483;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=dRfPikWj5eTaEeRbwmeH4cP/5PSMQNYAvVWNg0kVymU=;
-  b=H+7pf6OMv5xDAgB8UwE8BLjK+69N1R9YKUf765y4oNX3htvt1gDZLUnT
-   f1RK35fTRGrzWS+DO692ifB+J+eqYw81VKbQuk07hXvPcWmzkswdyYQYI
-   Rfrj0EyofAAJm2kNX856zU3as/jaZnrG81x06/J685katE6OfcsD2GtC7
-   fvMIvfigZAskE4ZGcHXuTFkEyepCRx/tpyKGGsKmuL8pgvBnQnDDs4NQU
-   Kq6WKOwEPBzh4EtSRGA9HtYjSGKo12Guw1erj4pzUW2KjrIUAPuwxLkak
-   zlxK9AqXstISduSKe8EQ0EPEaVgi8HnMSoARbT+Rr/+MWQaJb4Fpxtdar
-   g==;
-IronPort-SDR: BBnpzRSOCzmJKgLZzchUSuQ/tsaLcUUMmwkSQDtPPtt/5yL8vPiMVticv/x+Mt3wmz5yFFjU9T
- nmlOMo2ZRP5ztp/f0tx2IP5LpXzJRPB6pejMELn1qN+jfrlioKk4k2qKnD8so5x2zTBH49ZvfM
- eaRBebLmeYAoyxraklAZKAKDczvLysnXuUxWQ4L+nr5TO5tObEIvJ2380hV19aAxLW/20W5/Oe
- AVibZ8xYn8oR5fg8CZwIcgHT6HlhA1j7PkGey3RACv+6K5exlXzopdLDhKc5c2uuItqnVzGmNO
- bSU=
-X-IronPort-AV: E=Sophos;i="5.81,184,1610380800"; 
-   d="scan'208";a="264273066"
-Received: from mail-dm6nam12lp2175.outbound.protection.outlook.com (HELO NAM12-DM6-obe.outbound.protection.outlook.com) ([104.47.59.175])
-  by ob1.hgst.iphmx.com with ESMTP; 17 Feb 2021 08:06:23 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IfJ1IryuSRbLQnYrPmRp4JkHk2sqLM7dg5EFjES956cRdnq1hr7LFvIonfRusewASlg5ryfKbXULuEeQbsrod0PrIinMWKeG0eJcUbGTm4FE67WjpUpPbaxeOL/TCtCblLFfr7R/LZxpVET7kmklySXxHfoPKINblMAFBTv7IIgalHqu8M6uoUib/8Bm8sqRWnll1bUiFs4iN49eLxqOXpIYvv/z0NPzz53zI4+6y/wEtz1J1BYmv5h1iaiCoqtcj+PjgNPj/iVaitz4i0tEz4xc6pr81yW2jeiCgexsB04TXf0JlKbAyaN/VPt19cpVruv0VXqdLnt0A0Zbur2XaA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TzDapXoZXYFHUDn/DfQOhecw6n0hQixwNxMncQphqgw=;
- b=FJTCoUa6hA/DOzxaWaoGSnV0yNnQL51eI7tOHiWYBOBloZAl2ebhLrofJPlVJUKG00zoIOkVh8o3LZwC3hwCAuH9Mlq39wVUdIVSGm6Kwlu7YBYgEzDHZWhqnEe6LUiOrsW5w05BwF1X8NiP6Vkdgfq8hOiRRyyDWqSvK7OGbHS0ffFcoqVZHIHR4w6k0+FkZrAbk1WsVGl96DyV1ofVuWi79XC0IhjHdoHT5mNsfmT5Jbp4/8EUgOHy4457onAclaJ6fGIMM1yk6isroBsrhAqDaNKmkxBcowAX/7Bg0e9/N/ytmMucGiXdsg9mVXJaAyr0sv6nm3cKAvj23+cypA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Tue, 16 Feb 2021 19:00:55 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F903C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 16:00:15 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id t62so11241513qke.7
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 16:00:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TzDapXoZXYFHUDn/DfQOhecw6n0hQixwNxMncQphqgw=;
- b=GjDWBR4ogKh8eBR10G2sg+NBQDjgWHt1ZrG5+NZfQTqVPnDeIKk+XF9CkJz5ld48d9QDoSzy8O8w1SOFkDTZnDQbW8NK3PLthJXHXuSNEkW0rE9vrfCT98UOvBFOd9A9pOSkycBDqsGFFox8hfNKN4t30mOdHnYkEkC8k6EtBTo=
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
- by BYAPR04MB5526.namprd04.prod.outlook.com (2603:10b6:a03:e9::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.31; Tue, 16 Feb
- 2021 23:56:44 +0000
-Received: from BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::1d83:38d9:143:4c9c]) by BYAPR04MB4965.namprd04.prod.outlook.com
- ([fe80::1d83:38d9:143:4c9c%5]) with mapi id 15.20.3846.041; Tue, 16 Feb 2021
- 23:56:44 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Hyeongseok Kim <hyeongseok@gmail.com>,
-        "namjae.jeon@samsung.com" <namjae.jeon@samsung.com>,
-        "sj1557.seo@samsung.com" <sj1557.seo@samsung.com>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] exfat: add support FITRIM ioctl
-Thread-Topic: [PATCH v2 2/2] exfat: add support FITRIM ioctl
-Thread-Index: AQHXBLQ4TfEdCXpxX0WTlBkibKV56Q==
-Date:   Tue, 16 Feb 2021 23:56:44 +0000
-Message-ID: <BYAPR04MB4965F5734BC7A2363D4C3BCD86879@BYAPR04MB4965.namprd04.prod.outlook.com>
-References: <20210216223306.47693-1-hyeongseok@gmail.com>
- <20210216223306.47693-3-hyeongseok@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [199.255.45.62]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a354a51d-a905-439b-e666-08d8d2d683b5
-x-ms-traffictypediagnostic: BYAPR04MB5526:
-x-microsoft-antispam-prvs: <BYAPR04MB5526BB4BAEEF8FE8B9D4975986879@BYAPR04MB5526.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:1417;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jOyGt92bwAF+0aJnMomGVmx4xr9TvMnfPpfjYeipFBVfRkLxWA3T0D4qSj65UNeLD9NOHXX97TAAfrVYKaW+NwytjSAwF/LlU/gXdRZKK5EkFFbqHkbLFKL0grTncJbggMMXtOAVaWrB8TIKZtgsc6HAEBhcOQoXzvE4G+Cps5ZHVHHcrzYRtuQEZ4SzXuB7yitAV2ssMeCU9P6Sllaloq4xuobEJTQTBSkfoPyWiP1JL6b3QUbB37RYQhT5N4X8atmnGhBE6NpAg58ajX/ZS8Fbgo11THjnplqNH03CkIHF/KA0yM1zQ4BNuBhY7NouEfb2Hp2FKo0Go2Z0IiYTxbPPsGlF/ReCDBz5+WfCucaTSH6aL0RTN+ML4fXlUZLjzCJpS1Jtsw76fuwR0e83nuNjqbu9om8sc+bQCT7ehkoh51+iI7Z1eEl8Pyj+uE3rouXazwwlwgcd/QMWhNZBvw9ob3YbZtFhMoRarCP56E5+wYfPyKaJTo+NlgZYy2tEJm+NasUnyhlah7fuLL7PmQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(366004)(136003)(396003)(376002)(478600001)(33656002)(4326008)(53546011)(86362001)(7696005)(26005)(8936002)(71200400001)(83380400001)(8676002)(5660300002)(110136005)(54906003)(6506007)(66556008)(66476007)(76116006)(186003)(66946007)(66446008)(64756008)(9686003)(4744005)(316002)(55016002)(52536014)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?kdxTjYr3dmvlTnGVoVjEym/FwT4mMC8BxOFq+Q04kNuCWIkAq77eMU4If5Jb?=
- =?us-ascii?Q?hDhxUTAr4wQ27cAu+6Ao65v1EZwxiKbhbj0mxrs1ruWWunsvaE3OhMkzEkUG?=
- =?us-ascii?Q?/SSV0xp5hyK2d8LGw/G1VHgOurzguuvdznAymxwt27uLyispr5EcJmfjm1Hw?=
- =?us-ascii?Q?hpV84g3LxNEMfPbkniUYmRUZOG/6uonsM2ovM4DmYW6kGn5sqe816bSTZRfK?=
- =?us-ascii?Q?RRkkS1DN0tf+W36p/NSPIQdiZSioS4QCoDBifImLnkjRPDzYXJ891cENF3Y+?=
- =?us-ascii?Q?o+wdoXjjCCg65bTYOwHJi8TmLo7hsgbDjwEImqSd6H/nKzDK4M6HZetatWJm?=
- =?us-ascii?Q?kUsMdSWxDsMobAcgOtbklEYj4qmxZyupUQGdZ6mAMJ9/3RzenYpbh6wTRw77?=
- =?us-ascii?Q?tlux7UmabtDIP8SBcVYroxm1Hs2PaLzDGWcrbbq1/btotEFbZaFKfAn19n3y?=
- =?us-ascii?Q?8JLb/cEo5WoaWO5Gr0vnXysXwjA3hI1vm7ob/mEU3FCo4rYtZsNWGrnKyIRM?=
- =?us-ascii?Q?562+m+332pnrsYculUm/2Qc+MtUGNdUkUpXxGVjrhT+dsT0bbU886jm8vb1q?=
- =?us-ascii?Q?SZXgobkjHZKyLuhySxBOO1FdeL7DzDO9q3zYNVKQB2TBilwDiBdyfhPeRlJI?=
- =?us-ascii?Q?kMuQ00vwA5uFXSul4l3YiZcM4KSNsPZmpMwOHpkmvuZMo1HxrtMa1rnnZr2C?=
- =?us-ascii?Q?v1bg+MK9BsPUHQOPLhPPGLh2kGgUv3MsVB1qqB0Vho0dNvag8PEnOGQywab/?=
- =?us-ascii?Q?n5O6aAB/hq3YvUw1rflZUtbA6erkVbiEFGPCZkW8edmIbi2iDgMr77SZjkfM?=
- =?us-ascii?Q?LK0dGE+ihHe2vlKBRj6S1DGg3WkVgwGGw8VHE6RpjBI9zkNkcx3HKbEAcose?=
- =?us-ascii?Q?qBqbaPqiyYyqvly5EN2ACM3XNjvsoT/g0vTbtSCzOQy9TejqBW5LCKQ+X8KV?=
- =?us-ascii?Q?5qrY8l+U9WYIUi604cHswgW5JK3mxmwuCQDVxIZ+c0wcm0gKg/YL3wD1P2WE?=
- =?us-ascii?Q?MwQsCzr79pqx3aMTI2ZQTtNmXl27hBSEp9o/EB54Wgb2Pr6H2jJShoJfcko2?=
- =?us-ascii?Q?StxSrl7h/bqk8rodnwcJYk23OK0oIpd04TTf1pQSMVpxt/nBc/CzPi3cRxTx?=
- =?us-ascii?Q?JZb1eigt9f6y+ZwpudnQMLRistkA0ubpdLCIJh3G29l6SjRXr+oI2vv7i4EE?=
- =?us-ascii?Q?G1npEzqH1eOMZoJ+drqQxRmiUe+Ck+s1ajp4aqr7NvqAM3UNGVQIF4IKneoN?=
- =?us-ascii?Q?DEDOEsSIgDYGG58rm+NFQUG9ukh3iHqa0ZdzGvIUR4yfuZ5rPVpNIWsIRwC2?=
- =?us-ascii?Q?i15vqcaei9BHpP5JV+F4mcir?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7pgxfLYtB4b4dqlNRuCkDcBYdwrqTW32/gAXyaE8lXM=;
+        b=i2C77GrEYhmSVsDSIlvbowp1+1tIWUO2pPflB6TfUO8/UZuZTeEOCS0o0LAV6JxHUz
+         JO6YOis2IlNULxuxeACG5HlZwd0bXumgAgC2u7sFkVwlOeCuaofn+dBSRezXRLb1iPRf
+         gvvXlFUs75h56CtGgoG2PHUdJOZmPvfPUKQyB5Qhp2d6Bit6nJsjSjWa8fxkA4t81ZEO
+         oJJgV0rM+midM4o+RxU57dzfgmjSeNEumY5/TskkrCz4pGTCW1suJUN+JAH3KbbRnkai
+         dMazmQgMxWmwRUwtKLvIt0tN4EsQP0ZiKLzAIiirrNre3dQKNBxCxZozHYRJ0CuMFJhc
+         Hm5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7pgxfLYtB4b4dqlNRuCkDcBYdwrqTW32/gAXyaE8lXM=;
+        b=iX6NyNvFYcuA6aqlJp5JEfr+z2ZUzhaX0cZQ3toADa5HoRcXeBtckaqiaWlaC5cE4D
+         Y5z23EETMjHZ6iRvUgkQuaxVgtSWgSQHETqP1Z0QKGWeWY8xDSfD/nSf06GEN+U1xLhz
+         60OtqADidFv+241Fy9llKrFAiUy5f2Xj0IjNK4Pn/wYaEYKLqLaQ9ZAQOLjN76a9ddlw
+         G+vSjmcoA307qnD48kLNG8jnfDDSK1ogWK2RK6S12rQ2TcRB4vRRT6oOI2Tq4nSd4rdN
+         4AVNc4SXybQr5p/QRSPBTnfagH1mjE31iY9rDfyKSqLk6e7OmUxnGwmW4YlryOxegiU2
+         XkVg==
+X-Gm-Message-State: AOAM532jpoGhE9J6giSRnSSm6EwbroQugpQyE+Em86irm7m6rQCyBy73
+        acKDlo688oMtJq/I4MdBfiEcPw==
+X-Google-Smtp-Source: ABdhPJykqFxNudS+GmqRQWf8wikxvlbLHS4VcisT2qH/HdTqsT2hMFYTRhK64deqnxhel8d6Oygj2A==
+X-Received: by 2002:a05:620a:1435:: with SMTP id k21mr17977868qkj.289.1613520014253;
+        Tue, 16 Feb 2021 16:00:14 -0800 (PST)
+Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.googlemail.com with ESMTPSA id g21sm94091qtv.68.2021.02.16.16.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 16:00:13 -0800 (PST)
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
+Cc:     bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: [PATCH] cpufreq: exclude boost frequencies from valid count if not enabled
+Date:   Tue, 16 Feb 2021 19:00:13 -0500
+Message-Id: <20210217000013.4063289-1-thara.gopinath@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a354a51d-a905-439b-e666-08d8d2d683b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2021 23:56:44.6516
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wfuN3PHhnUY+c4F0LA6IzRyfu5NEOzV+lVr9wh8A9dOOeXZAIRn/Z57KnSsh27eQ28Pc6XlZgKgL75qIu/wUowGO2XlRhmwPR79X44bTMZE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB5526
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/16/21 14:36, Hyeongseok Kim wrote:=0A=
-> +static int exfat_ioctl_fitrim(struct inode *inode, unsigned long arg)=0A=
-> +{=0A=
-> +	struct super_block *sb =3D inode->i_sb;=0A=
-Do you really need sb variable ? it is only used once if I'm not wrong.=0A=
-> +	struct request_queue *q =3D bdev_get_queue(sb->s_bdev);=0A=
-> +	struct fstrim_range range;=0A=
-> +	int ret =3D 0;=0A=
-=0A=
+This is a fix for a regression observed on db845 platforms with 5.7-rc11
+kernel.  On these platforms running stress tests with 5.11-rc7 kernel
+causes big cpus to overheat and ultimately shutdown the system due to
+hitting critical temperature (thermal throttling does not happen and
+cur_state of cpufreq cooling device for big cpus remain stuck at 0 or max
+frequency).
+
+This platform has boost opp defined for big cpus but boost mode itself is
+disabled in the cpufreq driver. Hence the initial max frequency request
+from cpufreq cooling device(cur_state) for big cpus is for boost
+frequency(2803200) where as initial max frequency request from cpufreq
+driver itself is for the highest non boost frequency (2649600). qos
+framework collates these two requests and puts the max frequency of big
+cpus to 2649600 which the thermal framework is unaware of. Now during an
+over heat event, with step-wise policy governor, thermal framework tries to
+throttle the cpu and places a restriction on max frequency of the cpu to
+cur_state - 1 which in this case 2649600. qos framework in turn tells the
+cpufreq cooling device that max frequency of the cpu is already at 2649600
+and the cooling device driver returns doing nothing(cur_state of the
+cooling device remains unchanged). Thus thermal remains stuck in a loop and
+never manages to actually throttle the cpu frequency. This ultimately leads
+to system shutdown in case of a thermal overheat event on big cpus.
+
+There are multiple possible fixes for this issue. Fundamentally,it is wrong
+for cpufreq driver and cpufreq cooling device driver to show different
+maximum possible state/frequency for a cpu. Hence fix this issue by
+ensuring that the max state of cpufreq cooling device is in sync with the
+maximum frequency of the cpu in cpufreq driver.
+cpufreq_table_count_valid_entries is used to retrieve max level/max
+frequency of a cpu by cpufreq_cooling_device during initialization. Add
+check in this api to ignore boost frequencies if boost mode is not enabled
+thus keeping the max state of cpufreq cooling device in sync with the
+maximum frequency of the cpu in cpufreq driver.
+cpufreq_frequency_table_cpuinfo that calculates the maximum frequency of a
+cpu for cpufreq driver already has such a check in place.
+
+Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
+---
+ include/linux/cpufreq.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index 9c8b7437b6cd..fe52892e0812 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -1006,8 +1006,11 @@ static inline int cpufreq_table_count_valid_entries(const struct cpufreq_policy
+ 	if (unlikely(!policy->freq_table))
+ 		return 0;
+ 
+-	cpufreq_for_each_valid_entry(pos, policy->freq_table)
++	cpufreq_for_each_valid_entry(pos, policy->freq_table) {
++		if (!cpufreq_boost_enabled() && (pos->flags & CPUFREQ_BOOST_FREQ))
++			continue;
+ 		count++;
++	}
+ 
+ 	return count;
+ }
+-- 
+2.25.1
+
