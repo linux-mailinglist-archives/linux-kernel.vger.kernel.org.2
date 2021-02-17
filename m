@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F275A31DECA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D6331DECB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 19:08:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233286AbhBQSIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 13:08:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24229 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232243AbhBQSID (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 13:08:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613585197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k+PafZtTxxRkQ/4iNlBI25yfowv1emoIIbzvsMB2gSE=;
-        b=Y/chTFCJ2hixJEiLF88GIhd6CPmu93FcwVns2gkwxSaOn7+mq5vJweNBlZZDP07I73s67u
-        1K2s1humEN/USTwgWIGwAAib44kOmtBoUBxQK8OBaBlz27I3zqLm3va94WPETtnkkoHhQc
-        xFu5or32tas1vg6jYuSsbRqbtmdXE2M=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-545--iYPh-OmPL65teTp_xmHEg-1; Wed, 17 Feb 2021 13:06:35 -0500
-X-MC-Unique: -iYPh-OmPL65teTp_xmHEg-1
-Received: by mail-wm1-f71.google.com with SMTP id j204so2710985wmj.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 10:06:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k+PafZtTxxRkQ/4iNlBI25yfowv1emoIIbzvsMB2gSE=;
-        b=BslVZZtFARN0fKNIVv4jJxszSdexZbbozLLMBhBahae2NUaqeydrPKroxTbaijByb4
-         8DW9VrbbEMhEFNNrwi7S1H8lJR2/9MNtxmNGsxtVLxtA4BLOUeiX6N32kC64tNN1RIYH
-         AyDyYRzjFzqf4DsYi77r/hZ5kkAxK1Q8Id1Qa1yzht3EoWc0WUITSYfHGoi4HkNDsMU8
-         q/jibNUG32FHI7UGZ0bWZMXPWh2iOINuWb1nz/k9kJc4jcYFzE/BTW61Nd/z9wIzM4dH
-         1g8bEwDqyc1Bk27uOyaPUauKQBbK/4cyO6UTbU+8O/ouhE6f7cgDt+5ke/E/0sgo97Ee
-         hOXw==
-X-Gm-Message-State: AOAM532H9ghdt8r9CYjDFURzRBZahJwLWBHjEH4RslGQznJ1q0Tod5ir
-        ncq++Ua7p8fn5dRk1jxZ1wa5q90Nz6v2zfEN6C5RlvnnDycXmheM6YsRXhYMcZvopXS2fRTIFaE
-        vmp92GM4bCL6Q8Sq00xye7TTG
-X-Received: by 2002:a7b:c397:: with SMTP id s23mr136732wmj.10.1613585194511;
-        Wed, 17 Feb 2021 10:06:34 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzj3+yONrD5USEwpi0jytCwqxYl0gWMNhs6MJDy1RnaxhN+ylhooyQJKQvSXLrh8MQUjAvhhA==
-X-Received: by 2002:a7b:c397:: with SMTP id s23mr136705wmj.10.1613585194201;
-        Wed, 17 Feb 2021 10:06:34 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w8sm5037173wrm.21.2021.02.17.10.06.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Feb 2021 10:06:33 -0800 (PST)
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
- <20210217145718.1217358-7-mlevitsk@redhat.com> <YC1X2FMdPn32ci1C@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 6/7] KVM: nVMX: don't load PDPTRS right after nested state
- set
-Message-ID: <8660e415-5375-d4cf-54d4-b0b8eb6e1dc3@redhat.com>
-Date:   Wed, 17 Feb 2021 19:06:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S234744AbhBQSII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 13:08:08 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:63737 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232901AbhBQSIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 13:08:04 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613585265; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=SU4Ew2Jl/seI0yq8ZCxyYv4yJD9/KPHDlda50sJKbi4=; b=Yr4anvRgIi0gyy7BYv4smH5y2yNAaZrP7FPvuvIYQ7KloTSGZ0CEKh2Y75QOTLrl1EJr+2wx
+ CyU9miBqlnRkfdWDyuwJCvnqorv4zpPOxLh78CoaFDx21MrmoNsV/4JYe7FjGBBOkHOHvHNs
+ I6o5t1TyGfGwHgmRLFyDSxtAJdw=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 602d5b4f97484ee2ac3940f4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 18:07:11
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DC930C433ED; Wed, 17 Feb 2021 18:07:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.100] (unknown [124.123.173.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C2ABBC433C6;
+        Wed, 17 Feb 2021 18:07:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C2ABBC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH] arm64: Add part number for Arm Cortex-A78
+To:     Will Deacon <will@kernel.org>
+Cc:     catalin.marinas@arm.com, saiprakash.ranjan@codeaurora.org,
+        robh@kernel.org, konrad.dybcio@somainline.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <1613580251-12694-1-git-send-email-neeraju@codeaurora.org>
+ <20210217170612.GA4254@willie-the-truck>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <c43d8eed-2665-9e9b-c6b5-799b5281c657@codeaurora.org>
+Date:   Wed, 17 Feb 2021 23:37:04 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YC1X2FMdPn32ci1C@google.com>
+In-Reply-To: <20210217170612.GA4254@willie-the-truck>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/21 18:52, Sean Christopherson wrote:
+
+
+On 2/17/2021 10:36 PM, Will Deacon wrote:
+> On Wed, Feb 17, 2021 at 10:14:11PM +0530, Neeraj Upadhyay wrote:
+>> Add the MIDR part number info for the Arm Cortex-A78.
 >>
->> Just move the call to nested_vmx_load_cr3 to nested_get_vmcs12_pages
->> to implement this.
->
-> I don't love this approach.  KVM_SET_NESTED_STATE will now succeed with a bad
-> vmcs12.GUEST_CR3.  At a minimum, GUEST_CR3 should be checked in
-> nested_vmx_check_guest_state().  It also feels like vcpu->arch.cr3 should be set
-> immediately, e.g. KVM_SET_NESTED_STATE -> KVM_GET_SREGS should reflect L2's CR3
-> even if KVM_RUN hasn't been invoked.
+>> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+>> ---
+>>   arch/arm64/include/asm/cputype.h | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+>> index ef5b040..3aced88 100644
+>> --- a/arch/arm64/include/asm/cputype.h
+>> +++ b/arch/arm64/include/asm/cputype.h
+>> @@ -72,6 +72,7 @@
+>>   #define ARM_CPU_PART_CORTEX_A76		0xD0B
+>>   #define ARM_CPU_PART_NEOVERSE_N1	0xD0C
+>>   #define ARM_CPU_PART_CORTEX_A77		0xD0D
+>> +#define ARM_CPU_PART_CORTEX_A78		0xD41
+>>   
+>>   #define APM_CPU_PART_POTENZA		0x000
+>>   
+>> @@ -109,6 +110,7 @@
+>>   #define MIDR_CORTEX_A76	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A76)
+>>   #define MIDR_NEOVERSE_N1 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N1)
+>>   #define MIDR_CORTEX_A77	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A77)
+>> +#define MIDR_CORTEX_A78	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78)
+>>   #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
+>>   #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
+>>   #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
+> 
+> This usually means there's an erratum to work around. What are you hiding ;)
+> 
+> Will
+> 
 
-Note that KVM_SET_NESTED_STATE does not remove the need to invoke 
-KVM_SET_SREGS.  Calling KVM_SET_NESTED_STATE does not necessarily saying 
-anything about the value of KVM_GET_SREGS after it.
+:) . This is needed for supporting implementation defined AMU counters 
+in A78 [1]. However, there is no upstream user of it.
 
-In particular on SVM it's a "feature" that KVM_SET_NESTED_STATE does not 
-include any guest register state; the nested state only includes the 
-VMCB12 control state and the L1 save state.  But thinking more about it, 
-loading the PDPTRs for the guest CR3 might not be advisable even upon 
-KVM_SET_SREGS, and we might want to extend KVM_REQ_GET_NESTED_PAGES to 
-cover non-nested PDPTRs as well.
+[1] https://www.spinics.net/lists/arm-kernel/msg856989.html
 
-Paolo
 
+Thanks
+Neeraj
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
