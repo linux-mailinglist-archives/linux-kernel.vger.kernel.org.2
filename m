@@ -2,120 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B19231D79B
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C57831D79E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 11:41:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhBQKiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 05:38:22 -0500
-Received: from smtprelay0124.hostedemail.com ([216.40.44.124]:36644 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229707AbhBQKiV (ORCPT
+        id S229903AbhBQKkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 05:40:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhBQKjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 05:38:21 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 99826837F24C;
-        Wed, 17 Feb 2021 10:37:39 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 30,2,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4250:4321:5007:6119:6120:6299:7652:7901:7903:8957:10010:10400:11026:11232:11473:11658:11783:11889:11914:12043:12297:12438:12555:12740:12895:13095:13138:13206:13229:13231:13439:13894:14181:14659:14721:21080:21433:21451:21611:21627:21939:30012:30054:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: gold08_4914dfe2764b
-X-Filterd-Recvd-Size: 3759
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 17 Feb 2021 10:37:38 +0000 (UTC)
-Message-ID: <4d6856b33cc870ac655d801d066f04af6ebadcd7.camel@perches.com>
-Subject: Re: [PATCH RFC v3 2/3] docs: add documentation for checkpatch
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Wed, 17 Feb 2021 02:37:37 -0800
-In-Reply-To: <CABJPP5CaAavDMWy8xmQ8Bxpf5549v8fqOz8Zi=g7g6ZGnCAVmg@mail.gmail.com>
-References: <20210213131513.51386-1-dwaipayanray1@gmail.com>
-         <20210213131513.51386-3-dwaipayanray1@gmail.com>
-         <b2e25e683a3e2f31d4dc2d666e082634e30643b3.camel@perches.com>
-         <CABJPP5CaAavDMWy8xmQ8Bxpf5549v8fqOz8Zi=g7g6ZGnCAVmg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Wed, 17 Feb 2021 05:39:55 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB0DC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 02:39:14 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id g20so7211941plo.2
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 02:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hZFcwR5BRWH+3EYg5+obcKKhiEoxlBBTkBhbZP7VP0Q=;
+        b=E2O+q3qUGv/vnR2egym99EOzyONntxOQSfwgCiA3Oj3rP579WSkfBMvSI3Ek31ajNn
+         K7nIt5+3YSRFI3Zj+wcL2AdTp7RSz22KlJoNwtDyE8R5E11/zUhoD5Q4B4hwTep4NqqO
+         pTj/qCOyqVy6HfPaYVKR/9oOI0uiRk7UypHtMqPqA43gLFE6zKVudWrpxwetjFs1Kguv
+         /87sPB7Xl/YqYl24I9wOaF1FY91cBOAqbVtZszUnwdUYr+NQH9uOEtvAGDzLAtTX7Yq2
+         130hgYhljzG4a7C1kpFsbf45vzl92uoXSJ3NbbNRN3Xlbp0tH/mPMYaEBk/G+HKPjsxX
+         1l7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hZFcwR5BRWH+3EYg5+obcKKhiEoxlBBTkBhbZP7VP0Q=;
+        b=BmfPoNNKic31Fu+TiT1s7o0MDpCiSTBULcT+5eD9fgWz7vxulnhTldpngaASE0ZsB0
+         uOsqaD1tvc5TKG54b7jq44V9VNdUiaQeI5w94nBF4QiodTWjs9owUlHYR7UkEAbSQl8o
+         h8keLd/urdYMaXzlpMhUaed1eHkCZlaeZ+6KjTCbhuKdy1j6+ZX99PdofZyOUBgI3SJj
+         nmeY5xRp7kS2tNW9vo7g7Rhx0UNmkitwEuNcN7uCsIldQ+nTVfAZNYF5ZNlOo+yivFhE
+         kIRC34UXfFjZyel73j5vLIiRHgyOa7XDpaDzoyX/t3Movm+Gg82ADj6MJfHNoKw/cCVM
+         /evQ==
+X-Gm-Message-State: AOAM531NqFnEalLxkzRmyNt0nfS9Y2OrZ+RKzczh+FrBw4G2p7BsUT0A
+        honTJdP9BoSYkHJQe0s0MbFoyg==
+X-Google-Smtp-Source: ABdhPJx3xROzVqnQy00H9CkkHbW2uVh8IV36hU56AUZJi5cJGXWOlqpUOqxggnmYTDM4OHZiOwo8og==
+X-Received: by 2002:a17:90b:3907:: with SMTP id ob7mr8673581pjb.18.1613558353955;
+        Wed, 17 Feb 2021 02:39:13 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id u129sm1996908pfu.219.2021.02.17.02.39.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Feb 2021 02:39:13 -0800 (PST)
+Date:   Wed, 17 Feb 2021 16:09:11 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Amit Kucheria <amitk@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "v5 . 7+" <stable@vger.kernel.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] thermal: cpufreq_cooling: freq_qos_update_request()
+ returns < 0 on error
+Message-ID: <20210217103911.n34zzjttyso7dlco@vireshk-i7>
+References: <b2b7e84944937390256669df5a48ce5abba0c1ef.1613540713.git.viresh.kumar@linaro.org>
+ <91749e19-9091-1292-b8aa-c923efa8021d@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <91749e19-9091-1292-b8aa-c923efa8021d@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-02-16 at 19:48 +0530, Dwaipayan Ray wrote:
-> On Sun, Feb 14, 2021 at 10:27 PM Joe Perches <joe@perches.com> wrote:
-> > On Sat, 2021-02-13 at 18:45 +0530, Dwaipayan Ray wrote:
-> > > Add documentation for kernel script checkpatch.pl.
-> > > This documentation is also parsed by checkpatch to
-> > > enable a verbose mode.
-> > > 
-> > > The message types in checkpatch are documented with rst
-> > > field lists. A total of 33 checkpatch type descriptions
-> > > are added.
+On 17-02-21, 10:29, Lukasz Luba wrote:
+> On 2/17/21 5:48 AM, Viresh Kumar wrote:
+> > freq_qos_update_request() returns 1 if the effective constraint value
+> > has changed, 0 if the effective constraint value has not changed, or a
+> > negative error code on failures.
 > > 
-> > Alphabetic ordering isn't that great for these entries.
-> > Please group them by use:
+> > The frequency constraints for CPUs can be set by different parts of the
+> > kernel. If the maximum frequency constraint set by other parts of the
+> > kernel are set at a lower value than the one corresponding to cooling
+> > state 0, then we will never be able to cool down the system as
+> > freq_qos_update_request() will keep on returning 0 and we will skip
+> > updating cpufreq_state and thermal pressure.
+> 
+> To be precised, thermal pressure signal is not so important in this
+> mechanism and the 'cpufreq_state' has changed recently:
+
+Right, I wasn't concerned only about no thermal cooling, but both
+thermal cooling and pressure.
+
+> 236761f19a4f373354  thermal/drivers/cpufreq_cooling: Update cpufreq_state
+> only if state has changed
+
+This moved the assignment to a more logical place for me, i.e. not to
+do that on errors, just that the block in which it landed may not get
+called at all :(
+
+> > Fix that by doing the updates even in the case where
+> > freq_qos_update_request() returns 0, as we have effectively set the
+> > constraint to a new value even if the consolidated value of the
+> > actual constraint is unchanged because of external factors.
 > > 
-> > whitespace/code layout style:
-> > SPACING, TRAILING_WHITESPACE, LINE_SPACING
-[]
-> Could I get some comment on this grouping for types:
+> > Cc: v5.7+ <stable@vger.kernel.org> # v5.7+
+> > Reported-by: Thara Gopinath <thara.gopinath@linaro.org>
+> > Fixes: f12e4f66ab6a ("thermal/cpu-cooling: Update thermal pressure in case of a maximum frequency capping")
 > 
-> Allocation Style: ALLOC_ARRAY_ARGS, ALLOC_SIZEOF_STRUCT, ALLOC_WITH_MULTIPLY
+> I'm not sure if that f12e4f is the root cause.
+
+Hmm, depends on how we define the problem :)
+
+If this was just about thermal-cooling not happening, then may be yes,
+but to me it is rather about mishandled return value of
+freq_qos_update_request() which has more than one side effects and so
+I went for the main commit.
+
+This is also important as f12e4f66ab6a got merged in 5.7 and 236761f19
+merged in 5.11 and this patch needs to get applied in stable kernels
+since 5.7 to fix it all.
+
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> > Hi Guys,
+> > 
+> > This needs to go in 5.12-rc.
+> > 
+> > Thara, please give this a try and give your tested-by :).
+> > 
+> >   drivers/thermal/cpufreq_cooling.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> API Usage: ARCH_DEFINES, ARCH_INCLUDE_LINUX, ARRAY_SIZE, AVOID_BUG,
->                     AVOID_EXTERNS, AVOID_L_PREFIX, BIT_MACRO, CONSIDER_KSTRTO
 > 
-> Comment Style: BLOCK_COMMENT_STYLE, C99_COMMENTS
+> Anyway, the fix LGTM. I will have to make sure that I'm CC'ed for these
+> topic, so I can have a look (I missed somehow 236761f19)
 > 
-> Commit Message: BAD_SIGN_OFF, BAD_STABLE_ADDRESS_STYLE, COMMIT_COMMENT_SYMBOL,
->                               COMMIT_MESSAGE, MISSING_SIGN_OFF,
-> NO_AUTHOR_SIGN_OFF
-> 
-> Comparison Style: ASSIGN_IN_IF, BOOL_COMPARISON, COMPARISON_TO_NULL,
->                                CONSTANT_COMPARISON
-> 
-> Spacing & Brackets: ASSIGNMENT_CONTINUATIONS, BRACES, BRACKET_SPACE,
->                                   CODE_INDENT, CONCATENATED_STRING,
-> LINE_SPACING,
->                                   TRAILING_WHITESPACE
-> 
-> Others: CAMELCASE, CONFIG_DESCRIPTION
-> 
-> This is what I have done till now. Any suggestions would be nice and if it looks
-> okay I would like to send the v4 in.
+> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> Tested-by: Lukasz Luba <lukasz.luba@arm.com>
 
-Looks OK.
+Thanks.
 
-Please make sure you at least include SPACING in the spacing & brackets
-descriptions.
-
-It also seems like ref links to Documentation/process/coding-style.rst
-<section> (3.1 in the SPACING case) should be used more frequently.
-
-It'd be 'nice' to somehow use sortable tables with some grouping
-attribute for these groups, but I have no idea if that's feasible with
-.rst restrutured text files.
-
-Perhaps simplify the checkpatch code a bit for the --terse and --verbose
-output.
-
-Maybe something like:
----
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 869d80397f9f..07566cb3b3f8 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-
-@@ -292,15 +292,16 @@ GetOptions(
- 
- help(0) if ($help);
- 
-+die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
-+die "$P: --verbose canot be used with --terse\n" if ($verbose && $terse);
-+
- list_types(0) if ($list_types);
-
-
+-- 
+viresh
