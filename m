@@ -2,255 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D129731DD13
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5419331DD03
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:12:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhBQQNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:13:23 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:41778 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234042AbhBQQLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:11:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613578275; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=U8Z4sq17MZxEZbn8xWLO7meIIHA9hE8Uv9NohLheFCw=; b=D2BCfl0P8/0dC+p6t626j9WJH1h6b4MO+pvmEqyhvBuSd1kOIkx6ADJ8jqwV3IhMqnbUABzX
- MwETXJwJy/sTZjQdFmfglMJRolfSZxizFZrkS1mykCBooItFCOZe3BeWq2ChO2aRtUOvNfzK
- E4KtMwmV/+BuZbbGwLspwW4fFc8=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 602d4003a294c935b7c220a9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 16:10:43
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7AA91C43462; Wed, 17 Feb 2021 16:10:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 337DAC433ED;
-        Wed, 17 Feb 2021 16:10:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 337DAC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
-Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
-Subject: [PATCH] mhi_bus: core: Sanity check values from remote device before use
-Date:   Wed, 17 Feb 2021 09:10:32 -0700
-Message-Id: <1613578232-15229-1-git-send-email-jhugo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S234068AbhBQQLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233940AbhBQQLh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 11:11:37 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9199BC061574;
+        Wed, 17 Feb 2021 08:10:57 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id n4so14992116wrx.1;
+        Wed, 17 Feb 2021 08:10:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fHsYy4kfuz+dbx5gX5ft7BQfcq6kBGE+mw/1lENuRso=;
+        b=aQ7MHk22HeT/jY9RUMRVTlOcqM92NR7YscR9Mwy3ShNBI0Rtx3hEjiNkFHGtIv7Sg2
+         wWQS/mHOqr99gmjydS6/32KC96jGW1BcPrN0vNFNixn4YCaY4CCsh8Dn3tLc8uFWTbqy
+         GLJQorhZ9MBYGwwtNNaEczjG1JB6CtrmHZ4XCLHkExBFlE54TDJdsSCiku7unuY+IsyW
+         vOg127XwIpyPMjV7P0eAMc+XgRnFYpe9DRoT5CfeQRURtLvkQgQEmTw3Tjdc9TJynbaU
+         vGmfNzRdM7JEJRpR2F29Ik6Z0QvBWpIzj7PWwhIL5+0o4CKWwp2boK+z8LIn4Q0LOvvX
+         odfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fHsYy4kfuz+dbx5gX5ft7BQfcq6kBGE+mw/1lENuRso=;
+        b=YmL+96dmLUhCLb0HK4mdodCkkzGaKyDobxXDwAMx/7fMtNR8x+jyzmhidL+WhSGgXw
+         y+uIDsSXrU9n1PI7Jh+ey7xhugXlcb4DHGFUyFhabjqcOK2B0/Yt/UmjyOwT8PeZOzL/
+         14DE8Z1G0/KaHlFRapR46WElv25+oDLzVVYclkRmHzET5uXarIFDEQ2ODp+S4oWp+wdO
+         yLItpIv8y01BHH1Q0D15smBmdwIPX7Jrdvnl+97n7slu6rf5GnX/FapKtiT2LzXBZ7Cy
+         fFBYj52UCwCk+6xeTI6E1InzA22ZLceJVyhSRb5P+4mkcn0i9cbGXIw3EXWCPRLOaFNi
+         sNfg==
+X-Gm-Message-State: AOAM530hEsq+i1YOmD7vlo+gObX2F3POAZesTpIzStlAqwL7Z1sUH+dX
+        3OAtbQGn2hnN5mQhBAmx27M=
+X-Google-Smtp-Source: ABdhPJzOqQjVdT9zAKzwZdWyKKojD2Cz+/nfbiJMOhT3nN1KnubeVvM78t/slY9c0UFmyZvNd0ehKQ==
+X-Received: by 2002:adf:e511:: with SMTP id j17mr30903395wrm.251.1613578256290;
+        Wed, 17 Feb 2021 08:10:56 -0800 (PST)
+Received: from adgra-XPS-15-9570.home (2a01cb0008bd2700605dcea117b1d0f0.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:605d:cea1:17b1:d0f0])
+        by smtp.gmail.com with ESMTPSA id e12sm4260260wrv.59.2021.02.17.08.10.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 08:10:55 -0800 (PST)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     krzk@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, catalin.marinas@arm.com, will@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v2 0/8] Add peripheral support for imx8mm-nitrogen-r2 board
+Date:   Wed, 17 Feb 2021 17:10:44 +0100
+Message-Id: <20210217161052.877877-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When parsing the structures in the shared memory, there are values which
-come from the remote device.  For example, a transfer completion event
-will have a pointer to the tre in the relevant channel's transfer ring.
-Such values should be considered to be untrusted, and validated before
-use.  If we blindly use such values, we may access invalid data or crash
-if the values are corrupted.
+Hi,
 
-If validation fails, drop the relevant event.
+this patch set is to add several peripheral support for the
+imx8mm-nitrogen-r2 board.
 
-Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
----
- drivers/bus/mhi/core/main.c | 81 +++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 74 insertions(+), 7 deletions(-)
+Thanks,
 
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index c043574..1eb2fd3 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -242,6 +242,11 @@ static void mhi_del_ring_element(struct mhi_controller *mhi_cntrl,
- 	smp_wmb();
- }
- 
-+static bool is_valid_ring_ptr(struct mhi_ring *ring, dma_addr_t addr)
-+{
-+	return addr >= ring->iommu_base && addr < ring->iommu_base + ring->len;
-+}
-+
- int mhi_destroy_device(struct device *dev, void *data)
- {
- 	struct mhi_device *mhi_dev;
-@@ -383,7 +388,16 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
- 	struct mhi_event_ctxt *er_ctxt =
- 		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
- 	struct mhi_ring *ev_ring = &mhi_event->ring;
--	void *dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	dma_addr_t ptr = er_ctxt->rp;
-+	void *dev_rp;
-+
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return IRQ_HANDLED;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 
- 	/* Only proceed if event ring has pending events */
- 	if (ev_ring->rp == dev_rp)
-@@ -536,6 +550,11 @@ static int parse_xfer_event(struct mhi_controller *mhi_cntrl,
- 		struct mhi_buf_info *buf_info;
- 		u16 xfer_len;
- 
-+		if (!is_valid_ring_ptr(tre_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event element points outside of the tre ring\n");
-+			break;
-+		}
- 		/* Get the TRB this event points to */
- 		ev_tre = mhi_to_virtual(tre_ring, ptr);
- 
-@@ -695,6 +714,12 @@ static void mhi_process_cmd_completion(struct mhi_controller *mhi_cntrl,
- 	struct mhi_chan *mhi_chan;
- 	u32 chan;
- 
-+	if (!is_valid_ring_ptr(mhi_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event element points outside of the cmd ring\n");
-+		return;
-+	}
-+
- 	cmd_pkt = mhi_to_virtual(mhi_ring, ptr);
- 
- 	chan = MHI_TRE_GET_CMD_CHID(cmd_pkt);
-@@ -719,6 +744,7 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	u32 chan;
- 	int count = 0;
-+	dma_addr_t ptr = er_ctxt->rp;
- 
- 	/*
- 	 * This is a quick check to avoid unnecessary event processing
-@@ -728,7 +754,13 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
- 		return -EIO;
- 
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return -EIO;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 	local_rp = ev_ring->rp;
- 
- 	while (dev_rp != local_rp) {
-@@ -834,6 +866,8 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 			 */
- 			if (chan < mhi_cntrl->max_chan) {
- 				mhi_chan = &mhi_cntrl->mhi_chan[chan];
-+				if (!mhi_chan->configured)
-+					break;
- 				parse_xfer_event(mhi_cntrl, local_rp, mhi_chan);
- 				event_quota--;
- 			}
-@@ -845,7 +879,15 @@ int mhi_process_ctrl_ev_ring(struct mhi_controller *mhi_cntrl,
- 
- 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
- 		local_rp = ev_ring->rp;
--		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+		ptr = er_ctxt->rp;
-+		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event ring rp points outside of the event ring\n");
-+			return -EIO;
-+		}
-+
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
- 		count++;
- 	}
- 
-@@ -868,11 +910,18 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 	int count = 0;
- 	u32 chan;
- 	struct mhi_chan *mhi_chan;
-+	dma_addr_t ptr = er_ctxt->rp;
- 
- 	if (unlikely(MHI_EVENT_ACCESS_INVALID(mhi_cntrl->pm_state)))
- 		return -EIO;
- 
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		return -EIO;
-+	}
-+
-+	dev_rp = mhi_to_virtual(ev_ring, ptr);
- 	local_rp = ev_ring->rp;
- 
- 	while (dev_rp != local_rp && event_quota > 0) {
-@@ -886,7 +935,8 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 		 * Only process the event ring elements whose channel
- 		 * ID is within the maximum supported range.
- 		 */
--		if (chan < mhi_cntrl->max_chan) {
-+		if (chan < mhi_cntrl->max_chan &&
-+		    mhi_cntrl->mhi_chan[chan].configured) {
- 			mhi_chan = &mhi_cntrl->mhi_chan[chan];
- 
- 			if (likely(type == MHI_PKT_TYPE_TX_EVENT)) {
-@@ -900,7 +950,15 @@ int mhi_process_data_event_ring(struct mhi_controller *mhi_cntrl,
- 
- 		mhi_recycle_ev_ring_element(mhi_cntrl, ev_ring);
- 		local_rp = ev_ring->rp;
--		dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+		ptr = er_ctxt->rp;
-+		if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+			dev_err(&mhi_cntrl->mhi_dev->dev,
-+				"Event ring rp points outside of the event ring\n");
-+			return -EIO;
-+		}
-+
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
- 		count++;
- 	}
- 	read_lock_bh(&mhi_cntrl->pm_lock);
-@@ -1365,6 +1423,7 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
- 	struct mhi_ring *ev_ring;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	unsigned long flags;
-+	dma_addr_t ptr;
- 
- 	dev_dbg(dev, "Marking all events for chan: %d as stale\n", chan);
- 
-@@ -1372,7 +1431,15 @@ static void mhi_mark_stale_events(struct mhi_controller *mhi_cntrl,
- 
- 	/* mark all stale events related to channel as STALE event */
- 	spin_lock_irqsave(&mhi_event->lock, flags);
--	dev_rp = mhi_to_virtual(ev_ring, er_ctxt->rp);
-+
-+	ptr = er_ctxt->rp;
-+	if (!is_valid_ring_ptr(ev_ring, ptr)) {
-+		dev_err(&mhi_cntrl->mhi_dev->dev,
-+			"Event ring rp points outside of the event ring\n");
-+		dev_rp = ev_ring->rp;
-+	} else {
-+		dev_rp = mhi_to_virtual(ev_ring, ptr);
-+	}
- 
- 	local_rp = ev_ring->rp;
- 	while (dev_rp != local_rp) {
+Update in v2:
+  - Fix some typo found in v1;
+  - Fix UART description
+
+Adrien Grassein (8):
+  arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
+  arm64: dts: imx8mm-nitrogen-r2: add USB support
+  arm64: dts: imx8mm-nitrogen-r2: add espi2 support
+  arm64: dts: imx8mm-nitrogen-r2: add UARTs
+  arm64: dts: imx8mm-nitrogen-r2: add PWMs
+  arm64: dts: imx8mm-nitrogen-r2: add FlexSPI
+  arm64: dts: imx8mm-nitrogen-r2: add audio
+  arm64: defconfig: Enable wm8960 audio driver.
+
+ .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 307 +++++++++++++++++-
+ arch/arm64/configs/defconfig                  |   1 +
+ 2 files changed, 306 insertions(+), 2 deletions(-)
+
 -- 
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.25.1
 
