@@ -2,109 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 081B531E2BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:47:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B401131E2BC
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231751AbhBQWqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:46:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233545AbhBQWex (ORCPT
+        id S233589AbhBQWrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:47:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42725 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234045AbhBQWge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:34:53 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE09FC061788
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:34:11 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id 100so174256otg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 14:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=J1qY5r9Z3a/mo/EMdt37YP9TIpp8gvqH0wcp8KFskVA=;
-        b=ypCbFUrXzJ9e7MwrAEKWLRFspEeuU/M2Rj2Dh+IJKNXw+HfWcyHOsJwCX7JdRTKFwI
-         xuebPqyQzADc92+qBvp9YCL9SWCOFm8CCJiB7nugTvc3SV2LSq9sWYcHyoKC4lTqqo/V
-         E5eGFzNJ1SxSgvQmyX3kqaoCcwY1YUGGANkWGc8uBdHc9XlW9fpV7QRihBXCTxMpSDiF
-         imnUO5WJc4z0gyA03kZn0IFMjzwRMbR4d6IeZu0QwpZznJDEOLdTiRa5wpPEQg5GIfIs
-         usOSdF4oi8NckD+sptnEGs1LpOC+3AzkfROhO2p5g7gAn9sKF5JNjYFr4oefsDaw2PpO
-         G6qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=J1qY5r9Z3a/mo/EMdt37YP9TIpp8gvqH0wcp8KFskVA=;
-        b=Q47aguzdHrLiu5WQqZxWbHDiux9r0aPINQ7NO1//SFrd4Fnmwx46J2LbFxDYWU+2w4
-         WCQH+50S+Igsbta1hxcMOxVZ2KXZbm6zsvRdhnp1+a2wOyEk4o71r6giPROzTMXUabIQ
-         r4msz2Uv/v9RVtjiKHrLzH7JMy7P5znrABP4YtxPugE0gjNB0s1ZNgGd575/DCt+kbZF
-         pADXFmt9J/DTY+mup+wUt94Rxgl3OkTBINY5KfJE9HkAAKrzZYJmkWc7p6GcZD9Wj4US
-         Vp/oKh+q5jtvSyWRXq1h4GeSNygXHMAIFPXyXrtivRfQQ3uKxrb5dJjSt/NtC3Vts+5L
-         daUw==
-X-Gm-Message-State: AOAM531sTqEFjMDJCKD+1qV+DfxhI+ZtriY768VSfQ3jM1hhWhDbRda1
-        UXWaj/YtaSjlHMnSYizxQ+Xnuw==
-X-Google-Smtp-Source: ABdhPJw5Drm2g1d7LBICt7NWdPD4P2Qi6i3UPteyalyiWVgvxGKB4FWlsp2JvgNWSGVPMFgfeZrU6Q==
-X-Received: by 2002:a9d:6016:: with SMTP id h22mr942346otj.63.1613601251160;
-        Wed, 17 Feb 2021 14:34:11 -0800 (PST)
-Received: from blackbox.Home ([2806:10b7:2:8299::3])
-        by smtp.gmail.com with ESMTPSA id q2sm686232otc.28.2021.02.17.14.34.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 14:34:10 -0800 (PST)
-From:   =?UTF-8?q?An=C3=ADbal=20Lim=C3=B3n?= <anibal.limon@linaro.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        =?UTF-8?q?An=C3=ADbal=20Lim=C3=B3n?= <anibal.limon@linaro.org>
-Subject: [PATCH] arm64: dts: qcom: db410c: Update firmware-name for wcnss and mpss
-Date:   Wed, 17 Feb 2021 16:34:06 -0600
-Message-Id: <20210217223406.1422005-1-anibal.limon@linaro.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20200108055735.660475-1-bjorn.andersson@linaro.org>
-References: <20200108055735.660475-1-bjorn.andersson@linaro.org>
+        Wed, 17 Feb 2021 17:36:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613601301;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zG7FxA5GztnCQS45ZSuVJT+MqV0RLaZ+4XZ4Hnsp3v0=;
+        b=CpM4WhmBRay0voC79V0t7fgc+U+Foegh/AQ4GYaammhRlqMA78vr1JafD30KzBr/6Ibzi9
+        b7jphbSUyo+v5sTLUc2rVgGOeRgGaKqLuNGN+oU+5BmPOeTPezWslLC0toVPYArRw00icx
+        /NZjRES/oAkCFXaNBuvXZu6SPCYuoAE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-96-q2CSv0q5Mky64VzDZGuXqA-1; Wed, 17 Feb 2021 17:34:57 -0500
+X-MC-Unique: q2CSv0q5Mky64VzDZGuXqA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEC63189CD2E;
+        Wed, 17 Feb 2021 22:34:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D0F6E60C61;
+        Wed, 17 Feb 2021 22:34:40 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210217161358.GM2858050@casper.infradead.org>
+References: <20210217161358.GM2858050@casper.infradead.org> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Christoph Hellwig <hch@lst.de>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1901186.1613601279.1@warthog.procyon.org.uk>
+Date:   Wed, 17 Feb 2021 22:34:39 +0000
+Message-ID: <1901187.1613601279@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Enable the mpss remoteproc node and specify the firmware-name for this
-and the wcnss remoteproc on the Dragonboard 410c.
+> We're defeating the ondemand_readahead() algorithm here.  Let's suppose
+> userspace is doing 64kB reads, the filesystem is OrangeFS which only
+> wants to do 4MB reads, the page cache is initially empty and there's
+> only one thread doing a sequential read.  ondemand_readahead() calls
+> get_init_ra_size() which tells it to allocate 128kB and set the async
+> marker at 64kB.  Then orangefs calls readahead_expand() to allocate the
+> remainder of the 4MB.  After the app has read the first 64kB, it comes
+> back to read the next 64kB, sees the readahead marker and tries to trigger
+> the next batch of readahead, but it's already present, so it does nothing
+> (see page_cache_ra_unbounded() for what happens with pages present).
 
-Link: https://lore.kernel.org/r/20200108055735.660475-1-bjorn.andersson@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-[rebased and moved to use pronto label]
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Tested-by: Aníbal Limón <anibal.limon@linaro.org>
----
- arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+It sounds like Christoph is right on the right track and the vm needs to ask
+the filesystem (and by extension, the cache) before doing the allocation and
+before setting the trigger flag.  Then we don't need to call back into the vm
+to expand the readahead.
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-index 3c7f97539390..8f1ada75d3ed 100644
---- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
-@@ -301,6 +301,11 @@ &lpass {
- 	status = "okay";
- };
- 
-+&mpss {
-+	status = "okay";
-+	firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mdt";
-+};
-+
- &pm8916_resin {
- 	status = "okay";
- 	linux,code = <KEY_VOLUMEDOWN>;
-@@ -308,6 +313,7 @@ &pm8916_resin {
- 
- &pronto {
- 	status = "okay";
-+	firmware-name = "qcom/msm8916/wcnss.mdt";
- };
- 
- &sdhc_1 {
--- 
-2.30.0
+Also, there's Steve's request to try and keep at least two requests in flight
+for CIFS/SMB at the same time to consider.
+
+David
 
