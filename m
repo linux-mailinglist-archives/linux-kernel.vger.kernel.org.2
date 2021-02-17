@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AFAD31DE80
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599F631DE83
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 18:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234633AbhBQRlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 12:41:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36746 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234554AbhBQRi4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 12:38:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613583450;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S234312AbhBQRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 12:43:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42154 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234594AbhBQRn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 12:43:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613583759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=UPGAdvbPe3s8hDQD7kYYeKCejFf3hkqwhppMcQX39O8=;
-        b=TbN6S8z/R44ta0lZG8hhlF5B/BzsJE8/wPs4tCEsvl/1cl57mLqQUmqfflhQOdOW1xkFxG
-        BGYp0KEtBULO4IZ/DD8twNfcn+cl0VS3wFZGDFEAIjKX4m8hjVCywCtTD0DwAG/L0bxNQb
-        wFmIPh05FXuHVF5K6Q7iCwTM05kYfHU=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-P3BGnftBPQmz4z43xE5CBg-1; Wed, 17 Feb 2021 12:37:28 -0500
-X-MC-Unique: P3BGnftBPQmz4z43xE5CBg-1
-Received: by mail-wm1-f70.google.com with SMTP id t15so2327466wmj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 09:37:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UPGAdvbPe3s8hDQD7kYYeKCejFf3hkqwhppMcQX39O8=;
-        b=poPlv1ea+8+puUo3JdkbBYvaegNN7w5DShHJgKARyWv6H6/bAPuaWaLF40eX42cC1F
-         Yt+xSXScbDLGrB497ZgwMlG2YniRKlcUjfqdNs2J06aAyiq/swOuOQox6uSqgCGfN6Ee
-         Mkr9XN/ecEotmO97ToEguxXl6P0Z2+Onv+UV2ImijqAOLr3hhk6BoC1JTEW03J1qt/Qb
-         11e64Fa6jNiVZFEoTde97j6oJc9ljQC+cYxQ+AxJk+LyamU5AMamvWJQFRdMBlRTPKAk
-         KJILTRNZdHZQB3VIv32e0h8rTb3bHJ6/UeJt6XUFtwyy2pcjF2G/h3iPa5/l1V1AakzP
-         Zx1Q==
-X-Gm-Message-State: AOAM5339OUkWujASerb+KczX4laJU1tjaj3GTnSADoZkKzj5mOxHWXZ9
-        jAkEQWuYcQm6jCSJK4Z3YsuGYuKyUIpl0khK2b+jqwioBVXSOK2rw43UFdHuazSr1h8OQQHhwcx
-        oqNFc8765ewuAqTzzqzsuMMJI
-X-Received: by 2002:a1c:bbc5:: with SMTP id l188mr58825wmf.32.1613583447118;
-        Wed, 17 Feb 2021 09:37:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzE1/ypz4t+gMfd5XV3rMhW1vFNWYoK+YTd/GqoJtUHKsj6mlHffXpSQ+5XtDl1Rs4O73+XjQ==
-X-Received: by 2002:a1c:bbc5:: with SMTP id l188mr58817wmf.32.1613583446952;
-        Wed, 17 Feb 2021 09:37:26 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id i10sm6137319wrp.0.2021.02.17.09.37.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Feb 2021 09:37:26 -0800 (PST)
-Subject: Re: [PATCH 4/7] KVM: nVMX: move inject_page_fault tweak to
- .complete_mmu_init
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>
-References: <20210217145718.1217358-1-mlevitsk@redhat.com>
- <20210217145718.1217358-5-mlevitsk@redhat.com> <YC1ShhSZ+6ST63nZ@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5a8bea9b-deb1-673a-3dc8-f08b679de4c5@redhat.com>
-Date:   Wed, 17 Feb 2021 18:37:25 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=a6Rl/czINqek0rZKZZkZim1YkdyieBAQrw40eO7tWpo=;
+        b=soFy8+R1BOZzWqypKMO/GP4dVw3MB+lo7eiyCGXhnG4ImOxT6IaKHEB11G9vIuv9sdAyA8
+        nw7VQtqcz8RaeT5LDfr2BPqVWi9/ddvB+QBzpoJOQmDYEVNzMUOjsvd/8KSUJszCzOWT0J
+        wUDlYi6Sh9TDjry0L3TDFJVGZhBTqjI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2E6A9B7B8;
+        Wed, 17 Feb 2021 17:42:39 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 18:42:32 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v3 4/8] cgroup: rstat: support cgroup1
+Message-ID: <20210217174232.GA19239@blackbody.suse.cz>
+References: <20210209163304.77088-1-hannes@cmpxchg.org>
+ <20210209163304.77088-5-hannes@cmpxchg.org>
 MIME-Version: 1.0
-In-Reply-To: <YC1ShhSZ+6ST63nZ@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="YiEDa0DAkWCtVeE4"
+Content-Disposition: inline
+In-Reply-To: <20210209163304.77088-5-hannes@cmpxchg.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/21 18:29, Sean Christopherson wrote:
-> All that being said, I'm pretty we can eliminate setting 
-> inject_page_fault dynamically. I think that would yield more 
-> maintainable code. Following these flows is a nightmare. The change 
-> itself will be scarier, but I'm pretty sure the end result will be a lot 
-> cleaner.
 
-I had a similar reaction, though my proposal was different.
+--YiEDa0DAkWCtVeE4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The only thing we're changing in complete_mmu_init is the page fault 
-callback for init_kvm_softmmu, so couldn't that be the callback directly 
-(i.e. something like context->inject_page_fault = 
-kvm_x86_ops.inject_softmmu_page_fault)?  And then adding is_guest_mode 
-to the conditional that is already in vmx_inject_page_fault_nested and 
-svm_inject_page_fault_nested.
+Hello.
 
-That said, I'm also rusty on _why_ this code is needed.  Why isn't it 
-enough to inject the exception normally, and let 
-nested_vmx_check_exception decide whether to inject a vmexit to L1 or an 
-exception into L2?
+On Tue, Feb 09, 2021 at 11:33:00AM -0500, Johannes Weiner <hannes@cmpxchg.o=
+rg> wrote:
+> @@ -1971,10 +1978,14 @@ int cgroup_setup_root(struct cgroup_root *root, u=
+16 ss_mask)
+>  	if (ret)
+>  		goto destroy_root;
+> =20
+> -	ret =3D rebind_subsystems(root, ss_mask);
+> +	ret =3D cgroup_rstat_init(root_cgrp);
+Would it make sense to do cgroup_rstat_init() only if there's a subsys
+in ss_mask that makes use of rstat?
+(On legacy systems there could be individual hierarchy for each
+controller so the rstat space can be saved.)
 
-Also, bonus question which should have been in the 5/7 changelog: are 
-there kvm-unit-tests testcases that fail with npt=0, and if not could we 
-write one?  [Answer: the mode_switch testcase fails, but I haven't 
-checked why].
+> @@ -5159,11 +5170,9 @@ static struct cgroup *cgroup_create(struct cgroup =
+*parent, const char *name,
+>  	if (ret)
+>  		goto out_free_cgrp;
+> =20
+> -	if (cgroup_on_dfl(parent)) {
+> -		ret =3D cgroup_rstat_init(cgrp);
+> -		if (ret)
+> -			goto out_cancel_ref;
+> -	}
+> +	ret =3D cgroup_rstat_init(cgrp);
+And here do cgroup_rstat_init() only when parent has it.
 
+> @@ -285,8 +285,6 @@ void __init cgroup_rstat_boot(void)
+> =20
+>  	for_each_possible_cpu(cpu)
+>  		raw_spin_lock_init(per_cpu_ptr(&cgroup_rstat_cpu_lock, cpu));
+> -
+> -	BUG_ON(cgroup_rstat_init(&cgrp_dfl_root.cgrp));
+>  }
+Regardless of the suggestion above, this removal obsoletes the comment
+cgroup_rstat_init:
 
-Paolo
+         int cpu;
+=20
+-        /* the root cgrp has rstat_cpu preallocated */
+         if (!cgrp->rstat_cpu) {
+                 cgrp->rstat_cpu =3D alloc_percpu(struct cgroup_rstat_cpu);
 
+Regards,
+Michal
+
+--YiEDa0DAkWCtVeE4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmAtVYQACgkQia1+riC5
+qSgrug/8CSTeb3l4LFsYInnLNt+TFGvt5ZjsT2mDXjfBjDSY8Nxa0h9Epw58x19L
+CbDnD6Q0kLLnK4ZUw4CAM1UWpHqsLaNsRTWg7LhLkpt8YB4r7Mu2TWJFNbq+hvl8
+ylFSNrEws0GLv+T7ymT5voKGZacN3TkS7krrEh/4eJfBKIfKVwyfbF984rLCmVk2
+ZX7a/e6hc26KKLEEKgRl6bXHeMeQTHe0elonZh7o/U1ganJqzidcs/a4f/kDXy94
+NxILYXpoO6A2P3AlzQsMpLxUItsW/8BWEGzwYx3XwXz2Yr5i7fr/5qK24egs4izQ
+o9BsDCE4mO+V7WEUxDQjG5LhQLFh4AmsGuk/NQeLZEPebTdkbBeA3FaWDzSd4SWw
+GWELqOFMduOse8dAofnWv0dAjSxUspJ2dyVSD9d2mAO4Zf1DohjdAtCR5BmFTS8E
+Jq0/DQk4bAY9dou2JzpA5CF8WSp/oKnPoZymFTW5om9bwm8yAsrhshzQ40d5DOD0
+lwpswxSbv7cHE+qxyTU2/jEgjKfis9Fir+gS47OjHMQvBuZ4OLU4r7flg5IUo5X1
+Vk8zvbDD9Y22pFVAzg5UXgRZZoHepbgJaGUW+E/A4+hy7iWpgX9M44f9Devyjyrt
+tL9oj/nw/RKkkdsCn3s4z2ZykQzhU0boLi2qzeHENef45VDHqyY=
+=LqMk
+-----END PGP SIGNATURE-----
+
+--YiEDa0DAkWCtVeE4--
