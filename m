@@ -2,292 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBA131D4D5
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3070631D509
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:33:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhBQFWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 00:22:01 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:56149 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231283AbhBQFV4 (ORCPT
+        id S231435AbhBQFdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 00:33:24 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:19034 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230471AbhBQFdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 00:21:56 -0500
-Received: by mail-il1-f200.google.com with SMTP id z16so9611472ilz.22
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:21:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=E3eoy7X6NYdSUyASxFWq/l34y8qh1dJOGYcOLXWNHXk=;
-        b=O+rlzZLPYmozIWdTR9I7ttxgIMMSNXXOHrIy6riirYEewCS7oEJF4Fj12DHXkfaM7+
-         9zBl/t9xvQzE77KLFz3PhJ/BQM1m1yqKb7A7lVu0E2aTyEddJfZimuw+/1W0u9SrRPIo
-         o6K5CJ6NbE6nZZYVwLNXqp8zlXWWRbawcT+B1mRnDsvJ0Rb8GJTQ3LnEVN5H4X9oUVZI
-         5o42t76OWgV5WgXACXcaRUAg+c+MVZjGMK/t80D2K0QIQ5BWuIBGWgeql3G0WmSz3hQS
-         ny+kn+NtUCqS9fq60QfTFmVjymhn/4E3QCf3bqLGMcaA4M215DQQ6PbvnXUxiN0udS0Y
-         D/2w==
-X-Gm-Message-State: AOAM531O+vMiIV2sOmucXkC/kudpSfYfFwZZv3CV6P+Lyf/ZrhfAU2++
-        hn8M4aUc/xPor0fO3bzm+rW56e//42jDK7xQHnZGR1FEXdsK
-X-Google-Smtp-Source: ABdhPJxCPz/OJ5G/8eSJMngJE4Pqi2mfoEUGY2izFroYFK9cTw37wDrqxAg/X4d8kuJc+h4t4aXZoRHCsdIq80YNaOLyBuTRvxN4
+        Wed, 17 Feb 2021 00:33:21 -0500
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210217053237epoutp04bbd23f0c0a0753f3995694affb75d897~kcgrT3uSP0917909179epoutp04d
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 05:32:37 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210217053237epoutp04bbd23f0c0a0753f3995694affb75d897~kcgrT3uSP0917909179epoutp04d
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1613539957;
+        bh=3WOerBjeKYYmhGSAUrnasDhEXSeMuaE6qtFqEDxJ1hw=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=YwXUYNfAwxEI62X/QzcjS3Dz1yFDfTsPaIjmseWcHuz+irwo7ysP04V2D1SX+kNIb
+         6Y6LP+MVFKtiQGTsN1/i7zEHscoqfHw93P35Qn2uXTROyLHscWCyFgPq9QXFJ82PGy
+         VmjD5rK40tpuRtWrv6zL2F/gA3Kyi3xbHEr7BCkU=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210217053235epcas1p238c43bc95e2860b4670605b5f0a87577~kcgp6yWTk1475914759epcas1p2_;
+        Wed, 17 Feb 2021 05:32:35 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.166]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4DgRLV5Zr6z4x9Pv; Wed, 17 Feb
+        2021 05:32:34 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1B.B4.02418.27AAC206; Wed, 17 Feb 2021 14:32:34 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210217053233epcas1p3f6b8177e5f2d27a4f7dc4f136bdcfa48~kcgoD1kY11235212352epcas1p3q;
+        Wed, 17 Feb 2021 05:32:33 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210217053233epsmtrp16bc9ddfd425969c5f472cc01b49acec2~kcgoCywPp1493814938epsmtrp1K;
+        Wed, 17 Feb 2021 05:32:33 +0000 (GMT)
+X-AuditID: b6c32a35-c0dff70000010972-62-602caa72964a
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        11.CE.13470.17AAC206; Wed, 17 Feb 2021 14:32:33 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.101.61]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210217053233epsmtip12a46e791678ba1fb98ec598a0466bea8~kcgnyd-OO2816328163epsmtip1f;
+        Wed, 17 Feb 2021 05:32:33 +0000 (GMT)
+From:   DooHyun Hwang <dh0421.hwang@samsung.com>
+To:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, axboe@kernel.dk, adrian.hunter@intel.com,
+        satyat@google.com, baolin.wang@linaro.org, ebiggers@google.com,
+        gustavoars@kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
+        sh043.lee@samsung.com, cw9316.lee@samsung.com,
+        sh8267.baek@samsung.com, wkon.kim@samsung.com,
+        DooHyun Hwang <dh0421.hwang@samsung.com>
+Subject: [PATCH 0/2] mmc: core: add a new property
+Date:   Wed, 17 Feb 2021 14:19:37 +0900
+Message-Id: <20210217051939.13695-1-dh0421.hwang@samsung.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:13eb:: with SMTP id w11mr19135535ilj.103.1613539274519;
- Tue, 16 Feb 2021 21:21:14 -0800 (PST)
-Date:   Tue, 16 Feb 2021 21:21:14 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000049fbd305bb816399@google.com>
-Subject: memory leak in path_openat (2)
-From:   syzbot <syzbot+921ef0ccfeed3a496721@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Tf0xTVxTefa99fTiKb6XqtTNSXtRRskILFq5OYMmaWdniyLbohtnKGzwB
+        V9qur12m/wyHEixoRQ0iw/hzPwIoWaEbsrbLKgoljIRVu4yMuRC2yYggdGWMgqz0acZ/53zf
+        d+53zrn3krjET8jIcqOVtRgZA02sEnx9U6FSWlqeL1J5exXIP9ZGoNYRB4FmKu/gqLG/Wogu
+        9AwKkTfoF6Gh1iNCNL/YLkLzQw1CVOM6jaGuPwdEqHuxCkOB7mYC9Sw5ADrq6REhR+sIgT5Z
+        8ApQcKBPiHqv7UUdP84KXpTqLjptuivucUwX+MGmc7YcI3S/BN2E7kRnC9CFnBsLRIWGHWUs
+        U8Ja5Kyx2FRSbizNoV95Q/+SXpOlUivV21A2LTcyFWwOrX21QPlyuSE6Di3/kDHYolABw3F0
+        eu4Oi8lmZeVlJs6aQ7PmEoNZrTKncUwFZzOWphWbKrarVaoMTVRZZCibrBnFzS7BR56f5vBK
+        EMHsII6E1FbY0HsDt4NVpITqAvBu82fEMiGhZgC8MJbHE7MAPug/I3hScar7FuAJD4D9X0wK
+        +CQEoPfhmGhZRVBp0H28RbhMSCk7BkcWfcRyglPTAF4anoiZJFIZsD5yNnaugNoML7vCsa7E
+        VA4cvTP12C8JLtyrw3n8Geg/NxbD8She5fo01jmk3CRsC1zC+QItvPXllJCPE+FfvZ0iPpbB
+        cUf147gWQIcvly8+CWCgt47giUw4EwpFpyOjDgrY3p3Ow8nwRuQ84I0T4GS4TrgsgZQY1lRL
+        eMkWeOXRP1GJKBpvgIef5lEd/CZShfErfQeeGLouOAmSmlYM07RimKb/bS8CvAWsZc1cRSnL
+        qc3qlbfqBLE3narpAvUPHqb5AEYCH4AkTkvFolBqkURcwhw8xFpMeovNwHI+oImutx6XrSk2
+        RT+F0apXazIyMzPR1qzsLE0mvU78nuo3vYQqZazs+yxrZi1P6jAyTlaJPQuU9HSoMGNLXCJq
+        jL+5ZiTpqDslN0XqV8upQL7H9fGky/la4aPjH2j3dcGfl6Zt393VuTbu87zQ5CoOaxKCzxW/
+        2ZNsD71+1Tofv201/e3Au1mjDskeucm+dtdV/ea4w92yctXcLkf+btfe2fUQm+gzr9+fPLPa
+        Olr6+6CzubYhNTGoBQf7/Z/v2T6xaeGI7W9l++l/d+bc359/THxmSqn3fzX3R+fA9Xs7mcGU
+        a7hlUno++/uSpxS1oVF2nf32udQgTtZXa+qHg/PhcFvH4m2yI2LQpmR58uLfvq9Q5B7Y1Jac
+        MPvWcIr6kMB79kDjlBL+GmQCfXmXN+zOXUofpwVcGaNOxS0c8x+OyxBMXAQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrBLMWRmVeSWpSXmKPExsWy7bCSnG7hKp0Eg47duhYnn6xhs1h9t5/N
+        4lPDFWaLGafaWC3mHznHarHv2kl2i4urW1gtfv1dz27x6+I0VouOrZOZLHY8P8NusetvM5PF
+        5V1z2CyO/O9ntGjde4Tdon/1XTaLpj/7WCyunTnBanF8bbjF5kvfWBxEPBZsKvVYvOclk8fl
+        s6Uem1Z1snncubaHzaNvyypGj8+b5ALYo7hsUlJzMstSi/TtErgy3nU8Yi7YylKx9/oP5gbG
+        30xdjJwcEgImEpN2HWXsYuTiEBLYzSixofc3O0RCRqL7/l4gmwPIFpY4fLgYouYjo8TV2VPA
+        atgE9CT29K5iBUmICMxgkjh0+Ak7iMMs8JtRYtKPZrAqYQEjiYm/p7OA2CwCqhKLtn4FW80r
+        YCvx6Mp7Foht8hJ/7vcwQ8QFJU7OfAIWZwaKN2+dzTyBkW8WktQsJKkFjEyrGCVTC4pz03OL
+        DQsM81LL9YoTc4tL89L1kvNzNzGCI0dLcwfj9lUf9A4xMnEwHmKU4GBWEuFl/6yVIMSbklhZ
+        lVqUH19UmpNafIhRmoNFSZz3QtfJeCGB9MSS1OzU1ILUIpgsEwenVAPTvisnzrCfMv1xIfHn
+        mYzrbYf/HVtvtSeXXbfI1OVVjc+vyPx3i1imrtZvWb1ousriiqKgu1MmNaZzJ5mUCXWYxXtr
+        5TuxPuF4nrpuevDDNI2WXf9VHKZ1mFl57Ct5KFiR+3GX6qz/ny6s9c/g5FI8VODJzvz2Z2ex
+        9s3UhZdvJZ64b3PfzWnF0u9sJrM7Opb2zvvvElFz7Wuzh4DwwcqilSdn/39RpLrapC4vQMRc
+        49as1XOW6jvozZhVfMrmO8vbL7IvyyMcpXKuzd//fpPX58gtnRlHLq+KT65uEZ6dz7RGJ2vb
+        y5Jtbo7yyzw2r6ld+vrqtmdzLpjyu/g5zk/jKDi0UbDnJ8OPOpuzl84zKbEUZyQaajEXFScC
+        AActtvcLAwAA
+X-CMS-MailID: 20210217053233epcas1p3f6b8177e5f2d27a4f7dc4f136bdcfa48
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210217053233epcas1p3f6b8177e5f2d27a4f7dc4f136bdcfa48
+References: <CGME20210217053233epcas1p3f6b8177e5f2d27a4f7dc4f136bdcfa48@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add an optional property to not retry multiple block read error
+with several single block reads.
 
-syzbot found the following issue on:
+DooHyun Hwang (2):
+  dt-bindings: mmc: Add no-single-read-retry property
+  mmc: core: Add no single read retries
 
-HEAD commit:    dcc0b490 Merge tag 'powerpc-5.11-8' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1316c614d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a2fbb1a71525e1d5
-dashboard link: https://syzkaller.appspot.com/bug?extid=921ef0ccfeed3a496721
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1378ba4cd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e73fc2d00000
+ Documentation/devicetree/bindings/mmc/mmc-controller.yaml | 6 ++++++
+ drivers/mmc/core/block.c                                  | 3 ++-
+ drivers/mmc/core/host.c                                   | 6 ++++++
+ include/linux/mmc/host.h                                  | 3 +++
+ 4 files changed, 17 insertions(+), 1 deletion(-)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+921ef0ccfeed3a496721@syzkaller.appspotmail.com
+-- 
+2.29.0
 
-BUG: memory leak
-unreferenced object 0xffff88810ffa0780 (size 192):
-  comm "systemd-udevd", pid 9109, jiffies 4294974202 (age 70.810s)
-  hex dump (first 32 bytes):
-    44 80 00 00 06 00 00 00 00 00 00 00 00 00 00 00  D...............
-    00 00 00 00 00 00 00 00 c0 63 f1 0f 81 88 ff ff  .........c......
-  backtrace:
-    [<000000000f4d69f8>] __d_alloc+0x2a/0x270 fs/dcache.c:1716
-    [<00000000a20f7fde>] d_alloc+0x25/0xd0 fs/dcache.c:1795
-    [<000000007cbd02b4>] d_alloc_parallel+0x6b/0x940 fs/dcache.c:2547
-    [<00000000fda6bfea>] lookup_open fs/namei.c:3033 [inline]
-    [<00000000fda6bfea>] open_last_lookups fs/namei.c:3180 [inline]
-    [<00000000fda6bfea>] path_openat+0xca3/0x1b00 fs/namei.c:3368
-    [<00000000e92e3050>] do_filp_open+0xa0/0x190 fs/namei.c:3398
-    [<00000000ca660767>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002fb778b6>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002fb778b6>] __do_sys_open fs/open.c:1196 [inline]
-    [<000000002fb778b6>] __se_sys_open fs/open.c:1192 [inline]
-    [<000000002fb778b6>] __x64_sys_open+0x7d/0xe0 fs/open.c:1192
-    [<0000000011942ea6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000076bff2b1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88810ffea360 (size 608):
-  comm "systemd-udevd", pid 9109, jiffies 4294974202 (age 70.810s)
-  hex dump (first 32 bytes):
-    a4 81 0c 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000cbb42cce>] alloc_inode+0xbe/0x100 fs/inode.c:235
-    [<00000000dc171831>] iget_locked+0x126/0x340 fs/inode.c:1192
-    [<0000000025e74921>] kernfs_get_inode+0x20/0x190 fs/kernfs/inode.c:252
-    [<000000008b802090>] kernfs_iop_lookup+0xa0/0xe0 fs/kernfs/dir.c:1100
-    [<00000000e4bc5624>] lookup_open fs/namei.c:3085 [inline]
-    [<00000000e4bc5624>] open_last_lookups fs/namei.c:3180 [inline]
-    [<00000000e4bc5624>] path_openat+0x95d/0x1b00 fs/namei.c:3368
-    [<00000000e92e3050>] do_filp_open+0xa0/0x190 fs/namei.c:3398
-    [<00000000ca660767>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002fb778b6>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002fb778b6>] __do_sys_open fs/open.c:1196 [inline]
-    [<000000002fb778b6>] __se_sys_open fs/open.c:1192 [inline]
-    [<000000002fb778b6>] __x64_sys_open+0x7d/0xe0 fs/open.c:1192
-    [<0000000011942ea6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000076bff2b1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88810ec1b2b8 (size 24):
-  comm "systemd-udevd", pid 9109, jiffies 4294974202 (age 70.810s)
-  hex dump (first 24 bytes):
-    98 a4 fe 0f 81 88 ff ff 30 e1 09 82 ff ff ff ff  ........0.......
-    00 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<00000000d6a1f02a>] kmem_cache_zalloc include/linux/slab.h:672 [inline]
-    [<00000000d6a1f02a>] lsm_inode_alloc security/security.c:590 [inline]
-    [<00000000d6a1f02a>] security_inode_alloc+0x2a/0xb0 security/security.c:973
-    [<000000009366b0d8>] inode_init_always+0x10c/0x250 fs/inode.c:170
-    [<00000000357b1464>] alloc_inode+0x44/0x100 fs/inode.c:240
-    [<00000000dc171831>] iget_locked+0x126/0x340 fs/inode.c:1192
-    [<0000000025e74921>] kernfs_get_inode+0x20/0x190 fs/kernfs/inode.c:252
-    [<000000008b802090>] kernfs_iop_lookup+0xa0/0xe0 fs/kernfs/dir.c:1100
-    [<00000000e4bc5624>] lookup_open fs/namei.c:3085 [inline]
-    [<00000000e4bc5624>] open_last_lookups fs/namei.c:3180 [inline]
-    [<00000000e4bc5624>] path_openat+0x95d/0x1b00 fs/namei.c:3368
-    [<00000000e92e3050>] do_filp_open+0xa0/0x190 fs/namei.c:3398
-    [<00000000ca660767>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002fb778b6>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002fb778b6>] __do_sys_open fs/open.c:1196 [inline]
-    [<000000002fb778b6>] __se_sys_open fs/open.c:1192 [inline]
-    [<000000002fb778b6>] __x64_sys_open+0x7d/0xe0 fs/open.c:1192
-    [<0000000011942ea6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000076bff2b1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88810ffc3f00 (size 192):
-  comm "kdevtmpfs", pid 21, jiffies 4294974223 (age 70.600s)
-  hex dump (first 32 bytes):
-    08 80 00 00 06 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 90 56 00 81 88 ff ff  ..........V.....
-  backtrace:
-    [<000000000f4d69f8>] __d_alloc+0x2a/0x270 fs/dcache.c:1716
-    [<00000000a20f7fde>] d_alloc+0x25/0xd0 fs/dcache.c:1795
-    [<00000000e1f38abc>] __lookup_hash+0x77/0xd0 fs/namei.c:1441
-    [<000000002b4d8a6a>] filename_create+0xc3/0x240 fs/namei.c:3470
-    [<0000000049e829fd>] handle_create+0x49/0x28a drivers/base/devtmpfs.c:207
-    [<0000000033a814c1>] handle drivers/base/devtmpfs.c:377 [inline]
-    [<0000000033a814c1>] devtmpfs_work_loop drivers/base/devtmpfs.c:392 [inline]
-    [<0000000033a814c1>] devtmpfsd+0x14e/0x1d3 drivers/base/devtmpfs.c:434
-    [<00000000f978b357>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<000000000ea26e78>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-BUG: memory leak
-unreferenced object 0xffff888114e342d0 (size 720):
-  comm "kdevtmpfs", pid 21, jiffies 4294974223 (age 70.600s)
-  hex dump (first 32 bytes):
-    00 00 00 00 01 00 00 00 00 00 20 00 00 00 00 00  .......... .....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000d4c4e200>] shmem_alloc_inode+0x18/0x40 mm/shmem.c:3826
-    [<00000000bbfd1b25>] alloc_inode+0x27/0x100 fs/inode.c:233
-    [<00000000639a7c47>] new_inode_pseudo fs/inode.c:927 [inline]
-    [<00000000639a7c47>] new_inode+0x23/0x100 fs/inode.c:956
-    [<000000004e164ffa>] shmem_get_inode+0xcd/0x460 mm/shmem.c:2303
-    [<00000000c3e9d654>] shmem_mknod+0x37/0x130 mm/shmem.c:2925
-    [<0000000094c3aa16>] vfs_mknod+0x339/0x430 fs/namei.c:3554
-    [<00000000a44105b5>] handle_create+0x1db/0x28a drivers/base/devtmpfs.c:215
-    [<0000000033a814c1>] handle drivers/base/devtmpfs.c:377 [inline]
-    [<0000000033a814c1>] devtmpfs_work_loop drivers/base/devtmpfs.c:392 [inline]
-    [<0000000033a814c1>] devtmpfsd+0x14e/0x1d3 drivers/base/devtmpfs.c:434
-    [<00000000f978b357>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<000000000ea26e78>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-BUG: memory leak
-unreferenced object 0xffff88810ffa0780 (size 192):
-  comm "systemd-udevd", pid 9109, jiffies 4294974202 (age 70.960s)
-  hex dump (first 32 bytes):
-    44 80 00 00 06 00 00 00 00 00 00 00 00 00 00 00  D...............
-    00 00 00 00 00 00 00 00 c0 63 f1 0f 81 88 ff ff  .........c......
-  backtrace:
-    [<000000000f4d69f8>] __d_alloc+0x2a/0x270 fs/dcache.c:1716
-    [<00000000a20f7fde>] d_alloc+0x25/0xd0 fs/dcache.c:1795
-    [<000000007cbd02b4>] d_alloc_parallel+0x6b/0x940 fs/dcache.c:2547
-    [<00000000fda6bfea>] lookup_open fs/namei.c:3033 [inline]
-    [<00000000fda6bfea>] open_last_lookups fs/namei.c:3180 [inline]
-    [<00000000fda6bfea>] path_openat+0xca3/0x1b00 fs/namei.c:3368
-    [<00000000e92e3050>] do_filp_open+0xa0/0x190 fs/namei.c:3398
-    [<00000000ca660767>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002fb778b6>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002fb778b6>] __do_sys_open fs/open.c:1196 [inline]
-    [<000000002fb778b6>] __se_sys_open fs/open.c:1192 [inline]
-    [<000000002fb778b6>] __x64_sys_open+0x7d/0xe0 fs/open.c:1192
-    [<0000000011942ea6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000076bff2b1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88810ffea360 (size 608):
-  comm "systemd-udevd", pid 9109, jiffies 4294974202 (age 70.960s)
-  hex dump (first 32 bytes):
-    a4 81 0c 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff  ................
-  backtrace:
-    [<00000000cbb42cce>] alloc_inode+0xbe/0x100 fs/inode.c:235
-    [<00000000dc171831>] iget_locked+0x126/0x340 fs/inode.c:1192
-    [<0000000025e74921>] kernfs_get_inode+0x20/0x190 fs/kernfs/inode.c:252
-    [<000000008b802090>] kernfs_iop_lookup+0xa0/0xe0 fs/kernfs/dir.c:1100
-    [<00000000e4bc5624>] lookup_open fs/namei.c:3085 [inline]
-    [<00000000e4bc5624>] open_last_lookups fs/namei.c:3180 [inline]
-    [<00000000e4bc5624>] path_openat+0x95d/0x1b00 fs/namei.c:3368
-    [<00000000e92e3050>] do_filp_open+0xa0/0x190 fs/namei.c:3398
-    [<00000000ca660767>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002fb778b6>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002fb778b6>] __do_sys_open fs/open.c:1196 [inline]
-    [<000000002fb778b6>] __se_sys_open fs/open.c:1192 [inline]
-    [<000000002fb778b6>] __x64_sys_open+0x7d/0xe0 fs/open.c:1192
-    [<0000000011942ea6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000076bff2b1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88810ec1b2b8 (size 24):
-  comm "systemd-udevd", pid 9109, jiffies 4294974202 (age 70.960s)
-  hex dump (first 24 bytes):
-    98 a4 fe 0f 81 88 ff ff 30 e1 09 82 ff ff ff ff  ........0.......
-    00 00 00 00 00 00 00 00                          ........
-  backtrace:
-    [<00000000d6a1f02a>] kmem_cache_zalloc include/linux/slab.h:672 [inline]
-    [<00000000d6a1f02a>] lsm_inode_alloc security/security.c:590 [inline]
-    [<00000000d6a1f02a>] security_inode_alloc+0x2a/0xb0 security/security.c:973
-    [<000000009366b0d8>] inode_init_always+0x10c/0x250 fs/inode.c:170
-    [<00000000357b1464>] alloc_inode+0x44/0x100 fs/inode.c:240
-    [<00000000dc171831>] iget_locked+0x126/0x340 fs/inode.c:1192
-    [<0000000025e74921>] kernfs_get_inode+0x20/0x190 fs/kernfs/inode.c:252
-    [<000000008b802090>] kernfs_iop_lookup+0xa0/0xe0 fs/kernfs/dir.c:1100
-    [<00000000e4bc5624>] lookup_open fs/namei.c:3085 [inline]
-    [<00000000e4bc5624>] open_last_lookups fs/namei.c:3180 [inline]
-    [<00000000e4bc5624>] path_openat+0x95d/0x1b00 fs/namei.c:3368
-    [<00000000e92e3050>] do_filp_open+0xa0/0x190 fs/namei.c:3398
-    [<00000000ca660767>] do_sys_openat2+0xed/0x230 fs/open.c:1172
-    [<000000002fb778b6>] do_sys_open fs/open.c:1188 [inline]
-    [<000000002fb778b6>] __do_sys_open fs/open.c:1196 [inline]
-    [<000000002fb778b6>] __se_sys_open fs/open.c:1192 [inline]
-    [<000000002fb778b6>] __x64_sys_open+0x7d/0xe0 fs/open.c:1192
-    [<0000000011942ea6>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000076bff2b1>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-BUG: memory leak
-unreferenced object 0xffff88810ffc3f00 (size 192):
-  comm "kdevtmpfs", pid 21, jiffies 4294974223 (age 70.750s)
-  hex dump (first 32 bytes):
-    08 80 00 00 06 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 90 56 00 81 88 ff ff  ..........V.....
-  backtrace:
-    [<000000000f4d69f8>] __d_alloc+0x2a/0x270 fs/dcache.c:1716
-    [<00000000a20f7fde>] d_alloc+0x25/0xd0 fs/dcache.c:1795
-    [<00000000e1f38abc>] __lookup_hash+0x77/0xd0 fs/namei.c:1441
-    [<000000002b4d8a6a>] filename_create+0xc3/0x240 fs/namei.c:3470
-    [<0000000049e829fd>] handle_create+0x49/0x28a drivers/base/devtmpfs.c:207
-    [<0000000033a814c1>] handle drivers/base/devtmpfs.c:377 [inline]
-    [<0000000033a814c1>] devtmpfs_work_loop drivers/base/devtmpfs.c:392 [inline]
-    [<0000000033a814c1>] devtmpfsd+0x14e/0x1d3 drivers/base/devtmpfs.c:434
-    [<00000000f978b357>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<000000000ea26e78>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-BUG: memory leak
-unreferenced object 0xffff888114e342d0 (size 720):
-  comm "kdevtmpfs", pid 21, jiffies 4294974223 (age 70.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 01 00 00 00 00 00 20 00 00 00 00 00  .......... .....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000d4c4e200>] shmem_alloc_inode+0x18/0x40 mm/shmem.c:3826
-    [<00000000bbfd1b25>] alloc_inode+0x27/0x100 fs/inode.c:233
-    [<00000000639a7c47>] new_inode_pseudo fs/inode.c:927 [inline]
-    [<00000000639a7c47>] new_inode+0x23/0x100 fs/inode.c:956
-    [<000000004e164ffa>] shmem_get_inode+0xcd/0x460 mm/shmem.c:2303
-    [<00000000c3e9d654>] shmem_mknod+0x37/0x130 mm/shmem.c:2925
-    [<0000000094c3aa16>] vfs_mknod+0x339/0x430 fs/namei.c:3554
-    [<00000000a44105b5>] handle_create+0x1db/0x28a drivers/base/devtmpfs.c:215
-    [<0000000033a814c1>] handle drivers/base/devtmpfs.c:377 [inline]
-    [<0000000033a814c1>] devtmpfs_work_loop drivers/base/devtmpfs.c:392 [inline]
-    [<0000000033a814c1>] devtmpfsd+0x14e/0x1d3 drivers/base/devtmpfs.c:434
-    [<00000000f978b357>] kthread+0x178/0x1b0 kernel/kthread.c:292
-    [<000000000ea26e78>] ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
