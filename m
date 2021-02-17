@@ -2,130 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE90B31E31C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C9F31E323
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 00:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233399AbhBQXjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 18:39:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233299AbhBQXjR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 18:39:17 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F758C061574;
-        Wed, 17 Feb 2021 15:38:36 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id g5so246078ejt.2;
-        Wed, 17 Feb 2021 15:38:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zqKD4385HtPzJpxNaFEp7frHm8dOSRRgs99GkVuwN9I=;
-        b=jm1ls5dh6neIFVdO5uKyYn2ZWGKDO+Rbz6PRcPEc9r2X2eQSRo6i/Dp8X6JPgC7tLx
-         zsLITcSepJ8/hV6wlkWNjGBcYzfy+t50yni9xwFOVzLt/md7kqn95B6X3rfWYDi5NeKO
-         7KRJ+5OrsLXOkZ15Op3I2zQVETegTw6xZrOvoGHjPxgPa8dJSVFl+QoAJsvfYTGb1KRF
-         IrkjF1XWKhUtA+jUWxU0afcqsk6uLJnWD991FJYULtjDRvuEIyDxQrVUQn4bapgZCE1/
-         nfMihXUBh0UcnptSZ5hgyQewzMGNd5iC+6m9GnFovLt/z70y8j5qbzxMZT5tODvo/IQt
-         0i7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zqKD4385HtPzJpxNaFEp7frHm8dOSRRgs99GkVuwN9I=;
-        b=CiTV9D5hJjU/Hdey+WuIagZlM/RbUn51g73lAv4ldRk6GwKb9jT+iBwxBh7FUWiCP7
-         GLfNRzwy/H9gZDqT4AbpJzsZ5xBXuuRJCZoP/aHVnn27xRBPWUeMdVUjRNu7YfrwZG7E
-         r7yQAugeA0/09CGiOgMbVJshY5jKNUb7tz7nMh6I6cqZfgy18+kH7c3Qoo92QeRZgnrx
-         M80YD9qME2DywHBf3MALqQ7Ihomr6wGIE3RClY3xqjq2BU62sVzmUdZQEfwESoG7QR/A
-         LdOvcvvl+oV2sEl1ZjDvbgJdkGQ2hXB/pTGxT2SOhp8czP4AQ4KfU5QUOUC2kYS4vDV7
-         rhRA==
-X-Gm-Message-State: AOAM532z/DkgDbDQdn0WpqgX13loXASvOZoyld5zCKdERy/xmq6zaxV/
-        tuVussaWt829VA9VJZiUmQKZjchIvNG73/sL7PIqVsXE
-X-Google-Smtp-Source: ABdhPJzSZWre9B/vS3q/nuLZU9v7WdwKG7FL5jW4ATOaQCKP9nkctOYi+0P0JsNV/a78ha/ijlxvVY3WqQ7i7N5zAbY=
-X-Received: by 2002:a17:906:fcb9:: with SMTP id qw25mr1305980ejb.11.1613605115001;
- Wed, 17 Feb 2021 15:38:35 -0800 (PST)
+        id S233401AbhBQXkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 18:40:21 -0500
+Received: from mga07.intel.com ([134.134.136.100]:6273 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233478AbhBQXkF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 18:40:05 -0500
+IronPort-SDR: /c5ASMLnziC2oWudVa/3mr66SZ0SP2UIWeJtDz/h0rUnBS5gPUNbUrmhfSVSsm0BWyazQGHP2W
+ B8YHxduzFLXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247420481"
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="247420481"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:38:06 -0800
+IronPort-SDR: LnmPHAALu5beXDv9MjoGt68hk/4WYBTwOZugo6fms8UlOf0ktBsUKV3/VbqNy5Ejq8Ofr+fME5
+ j3Kv2Yb8Bzgg==
+X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
+   d="scan'208";a="439542777"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 15:38:07 -0800
+Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 076C46365;
+        Wed, 17 Feb 2021 15:38:07 -0800 (PST)
+Date:   Wed, 17 Feb 2021 15:38:07 -0800
+From:   mark gross <mgross@linux.intel.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com, linux-kernel@vger.kernel.org,
+        "C, Udhayakumar" <udhayakumar.c@intel.com>
+Subject: Re: [PATCH v6 33/34] misc: Hddl device management for local host
+Message-ID: <20210217233806.GJ154917@linux.intel.com>
+Reply-To: mgross@linux.intel.com
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-34-mgross@linux.intel.com>
+ <e3bf77bf-d22b-5163-2af4-db88627b5450@infradead.org>
 MIME-Version: 1.0
-References: <CAHmME9qfXFZKZfO-uc7GC3xguSq99_CqrTtzmgp_984MSfNbgA@mail.gmail.com>
- <CA+FuTSfHRtV7kP-y6ihW_BnYVmHE9Hv7jHgOdTwJhUXkd6L79w@mail.gmail.com>
- <CAHmME9qRkxeKDA6pOXTE7yXTkN-AsfaDfLfUX8J7EP7fbUiB0Q@mail.gmail.com>
- <CAF=yD-+Fm7TuggoEeP=Wy7DEmfuC6nxmyBQxX=EzhyTQsiP2DQ@mail.gmail.com> <CAHmME9oe59WAdNS-AjJP9rQ+Fc6TfQVh7aHABc3JNTJaZ3sVLA@mail.gmail.com>
-In-Reply-To: <CAHmME9oe59WAdNS-AjJP9rQ+Fc6TfQVh7aHABc3JNTJaZ3sVLA@mail.gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 17 Feb 2021 18:37:58 -0500
-Message-ID: <CAF=yD-LOF116aHub6RMe8vB8ZpnrrnoTdqhobEx+bvoA8AsP0w@mail.gmail.com>
-Subject: Re: possible stack corruption in icmp_send (__stack_chk_fail)
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e3bf77bf-d22b-5163-2af4-db88627b5450@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 6:18 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
->
-> On 2/18/21, Willem de Bruijn <willemdebruijn.kernel@gmail.com> wrote:
-> > On Wed, Feb 17, 2021 at 5:56 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
-> >>
-> >> Hi Willem,
-> >>
-> >> On Wed, Feb 17, 2021 at 11:27 PM Willem de Bruijn
-> >> <willemdebruijn.kernel@gmail.com> wrote:
-> >> > A vmlinux image might help. I couldn't find one for this kernel.
-> >>
-> >> https://data.zx2c4.com/icmp_send-crash-e03b4a42-706a-43bf-bc40-1f15966b3216.tar.xz
-> >> has .debs with vmlinuz in there, which you can extract to vmlinux, as
-> >> well as my own vmlinux elf construction with the symbols added back in
-> >> by extracting them from kallsyms. That's the best I've been able to
-> >> do, as all of this is coming from somebody random emailing me.
-> >>
-> >> > But could it be
-> >> > that the forwarded packet is not sensible IPv4? The skb->protocol is
-> >> > inferred in wg_packet_consume_data_done->ip_tunnel_parse_protocol.
-> >>
-> >> The wg calls to icmp_ndo_send are gated by checking skb->protocol:
-> >>
-> >>         if (skb->protocol == htons(ETH_P_IP))
-> >>                icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_HOST_UNREACH,
-> >> 0);
-> >>        else if (skb->protocol == htons(ETH_P_IPV6))
-> >>                icmpv6_ndo_send(skb, ICMPV6_DEST_UNREACH,
-> >> ICMPV6_ADDR_UNREACH, 0);
-> >>
-> >> On the other hand, that code is hit on an error path when
-> >> wg_check_packet_protocol returns false:
-> >>
-> >> static inline bool wg_check_packet_protocol(struct sk_buff *skb)
-> >> {
-> >>        __be16 real_protocol = ip_tunnel_parse_protocol(skb);
-> >>        return real_protocol && skb->protocol == real_protocol;
-> >> }
-> >>
-> >> So that means, at least in theory, icmp_ndo_send could be called with
-> >> skb->protocol != ip_tunnel_parse_protocol(skb). I guess I can address
-> >> that. But... is it actually a problem?
-> >
-> > For this forwarded packet that arrived on a wireguard tunnel,
-> > skb->protocol was originally also set by ip_tunnel_parse_protocol.
-> > So likely not.
-> >
-> > The other issue seems more like a real bug. wg_xmit calling
-> > icmp_ndo_send without clearing IPCB first.
-> >
->
-> Bingo! Nice eye! I confirmed the crash by just memsetting 0x41 to cb
-> before the call. Clearly this should be zeroed by icmp_ndo_xmit. Will
-> send a patch for icmp_ndo_xmit momentarily and will CC you.
+On Sun, Feb 14, 2021 at 09:47:51AM -0800, Randy Dunlap wrote:
+> On 2/12/21 2:23 PM, mgross@linux.intel.com wrote:
+> > diff --git a/drivers/misc/hddl_device/Kconfig b/drivers/misc/hddl_device/Kconfig
+> > new file mode 100644
+> > index 000000000000..e1ae81fdf177
+> > --- /dev/null
+> > +++ b/drivers/misc/hddl_device/Kconfig
+> > @@ -0,0 +1,14 @@
+> > +# Copyright (C) 2020 Intel Corporation
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> > +
+> > +config HDDL_DEVICE_CLIENT
+> > +	tristate "Support for hddl device client"
+> 
+> Please use "HDDL" consistently.
+fixed and qued up for merge window closure.
 
-Great, let's hope that's it.
+--mark
 
-gtp_build_skb_ip4 zeroes before calling. The fix will be most
-obviously correct if wg_xmit does the same.
 
-But it is quite likely that the other callers, xfrmi_xmit2 and
-sunvnet_start_xmit_common should zero, too. If so, then icmp_ndo_xmit
-is the more robust location to do this. Then the Fixes tag will likely
-go quite a bit farther back, too.
-
-Whichever variant of the patch you prefer.
+> > +	depends on XLINK_CORE && INTEL_TSENS_LOCAL_HOST
+> > +	help
+> > +	  This option enables HDDL device client module.
+> > +
+> > +	  This driver is used for sharing time sync data to local host and
+> > +	  retrives the sensors available on the platform. This also handles
+> > +	  the device connect/disconnect programming sequence.
+> > +	  Say Y if using a processor that includes the Intel VPU such as
+> > +	  Keem Bay.  If unsure, say N.
+> 
+> 
+> -- 
+> ~Randy
+> 
