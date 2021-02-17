@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2B931DD18
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6919531DD1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:16:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234135AbhBQQPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:15:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
+        id S234177AbhBQQP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:15:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234132AbhBQQMz (ORCPT
+        with ESMTP id S234137AbhBQQNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:12:55 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88889C061574;
-        Wed, 17 Feb 2021 08:12:15 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id i23so16901819ejg.10;
-        Wed, 17 Feb 2021 08:12:15 -0800 (PST)
+        Wed, 17 Feb 2021 11:13:52 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6609BC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:13:12 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id e9so7654013plh.3
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:13:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PvHnK2Kxh4/xxv8lM9GK97Ij0mdmR95VbATZqITurVA=;
-        b=BnX1n6Z1F484sz2L1Y37k+fzsOIBbDvcamI2TFCucLnmedTYA7eW4F9uYMoKSMELyH
-         nFvadc8u3p4zQ0OptXxiSl9H1oVgiNqKxgAWIWsc4sYaN9XD9pFCnI3bY6nHn+pvL+Z6
-         j1e6F0xbRWo0UqQhygrI00hG6nX45CTosuNVs8/BwJxV8EoyHehYdGfx314y8h07hneE
-         eQNUyPiYxzV5rFJCuCbvMf+0y8VNa7DA7eXHOX1LvGi3jIN4+svW8SXNHdL7Bl7AItwU
-         Z7eTTSccqR63FdLudI+dOo91/TwTu5AD6y4Fna4RHg9KkjAwlfl29cRFfdhbz9/loYTa
-         I96g==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=30obSL6wNoXFckVZgqPZYM3QP6QIWGyiK7vFvnqdzsc=;
+        b=uMcxqdXTNNbAbHrPi3G1vCKyjA5zEkRIsBX4o5BMlHNrbUndUYMFl3/Nn2C4stNK67
+         47C3V5ZBfV4pPQpdrUjEtvQimOKxcpNoJqVmiaT1eg19JROswfZEOvUeVycCpVOTWueO
+         E8C5xkypv0DAHJz0zWUprp2lflWttCQ8nV/dlqVPr12YIcv6QoI9x6pLkKqm4UcFvFks
+         rRu9azNmLqRHl0mcfSUcuzS7JeqXkGIfaOZYwsGQ2hSjBVUROEJMU3FU+N49Hf95pAC5
+         jv4GiyvYx2ef8pjKB+Z/5lz1frOibN1bwOvKaj31tt+fly7rxZaS4KvxQg2RDLhmtWA+
+         mDbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PvHnK2Kxh4/xxv8lM9GK97Ij0mdmR95VbATZqITurVA=;
-        b=aWPYqcpUJ1qlhJkqMoxoRFTunMzB1pKWYaniRILT3fMC90W0GL5V7Cz1RhqeF0u0Ud
-         SfK3oIzIbVFDptfT6h+s/jyOuQiuItPTwWIil3B3FbMFqGOTFKXEEwCNI97alNNxwjYc
-         HdlUjAm4rfUiMJnTr5XUZY0vyv0FjcQnNFL/g7BxxRgGKjLDvDck8dbZ9NvCQp1SJcYf
-         Yv5+Os/LUKEWg1XAW+XfhH6goyADQg6BcwJETn9yjMvuD3lcoeSYA6r2ogtOLDnPSyaa
-         HBWlRrm7HRu2oJAmrUtci7Ik71NthX5JwiaXXiXGvF0vmSusDLDxeagtFpkHAd1krjXN
-         ibyA==
-X-Gm-Message-State: AOAM531Avik7aWe8Ih3RTONG01yiL1fkaGWrLijDs6qShNekIfS0ObCG
-        WWqYdckGZk0NCmBTMLwbnUTxsZZhvXzrIvXBag==
-X-Google-Smtp-Source: ABdhPJzdfRN8S4Ap+nEoUFnwjiIl/FDYo8PL14eRmzgezhQeqjWZhA2mSB1AYKy/qj3614lbsfDsUEDgg2p5DKudALk=
-X-Received: by 2002:a17:906:5a91:: with SMTP id l17mr15516816ejq.231.1613578334250;
- Wed, 17 Feb 2021 08:12:14 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=30obSL6wNoXFckVZgqPZYM3QP6QIWGyiK7vFvnqdzsc=;
+        b=rv6drzQdvohebhrAdfv6rAj7ATlZ/WYt2bTkc/D/UqUOpkD9DjgxsF25ejrjJEwxaO
+         Fx9mE4AgbhZJa31w9JGnHwWGKHbmAq22BSL+5arpFD2qs+XyaazDJoSoBfXKhEaQEF3r
+         +ZxRt4yJPsgAukii9Q7qfwzoFeqiFxqa6HeMKleaBnmm4rud4sxVBT0W/SN6LO3Gi7Vp
+         3/kXkJuagDmpTmmUNadA8xFKXTFt+aVKRjXyhmt5eZjxj8IHdXqXGyPpr8VgpFD/9dku
+         hQNKvVDnuPzyGmUrbn464CAdlThRVb0PzB+I4nM4u1TmNXs9Gx6Z8+g992zgv4HLY6N8
+         ZuvA==
+X-Gm-Message-State: AOAM532rBjbEOCQvBieA35Zte2jqLuU16QARTuRNPacd1cMT64TpwTTU
+        20OJikNv+SZQHpzgz0bOXgwOXw==
+X-Google-Smtp-Source: ABdhPJyfKy2Cz1wXMvzNBd+cA8KhTW+umCAlEIA2Ctay8I7b4LKIUZ2LOEJzneCCMkuYOtND/wuWbA==
+X-Received: by 2002:a17:90a:1503:: with SMTP id l3mr9758253pja.41.1613578391687;
+        Wed, 17 Feb 2021 08:13:11 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:6948:259b:72c6:5517])
+        by smtp.gmail.com with ESMTPSA id 8sm3129452pfp.171.2021.02.17.08.13.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 08:13:11 -0800 (PST)
+Date:   Wed, 17 Feb 2021 08:13:04 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
+Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "rkrcmar@redhat.com" <rkrcmar@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>, "bp@suse.de" <bp@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "srutherford@google.com" <srutherford@google.com>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
+ ioctl
+Message-ID: <YC1AkNPNET+T928c@google.com>
+References: <cover.1612398155.git.ashish.kalra@amd.com>
+ <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com>
+ <SN6PR12MB2767168CA61257A85B29C26D8E869@SN6PR12MB2767.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210217153038.1068170-1-rsalvaterra@gmail.com> <20210217171029.40922d14@kernel.org>
-In-Reply-To: <20210217171029.40922d14@kernel.org>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Wed, 17 Feb 2021 16:12:03 +0000
-Message-ID: <CALjTZvYh8enD96x=npj0Dnwf_yuhA_6h5Cd8AtKHMdC2oojVkQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: turris-omnia: fix hardware buffer management
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Cc:     gregory.clement@bootlin.com, andrew@lunn.ch,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR12MB2767168CA61257A85B29C26D8E869@SN6PR12MB2767.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again, Marek,
+On Wed, Feb 17, 2021, Kalra, Ashish wrote:
+> From: Sean Christopherson <seanjc@google.com> 
+> On Thu, Feb 04, 2021, Ashish Kalra wrote:
+> > From: Brijesh Singh <brijesh.singh@amd.com>
+> > 
+> > The ioctl is used to retrieve a guest's shared pages list.
+> 
+> >What's the performance hit to boot time if KVM_HC_PAGE_ENC_STATUS is passed
+> >through to userspace?  That way, userspace could manage the set of pages >in
+> >whatever data structure they want, and these get/set ioctls go away.
+> 
+> What is the advantage of passing KVM_HC_PAGE_ENC_STATUS through to user-space
+> ?
+> 
+> As such it is just a simple interface to get the shared page list via the
+> get/set ioctl's. simply an array is passed to these ioctl to get/set the
+> shared pages list.
 
-On Wed, 17 Feb 2021 at 16:10, Marek Beh=C3=BAn <kabel@kernel.org> wrote:
->
-> Rui, in the future make the subject prefix
->   [PATCH mvebu-dt]
-> or
->   [PATCH mvebu/dt]
->
-> so that Gregory knows its for him and for which branch.
+It eliminates any probability of the kernel choosing the wrong data structure,
+and it's two fewer ioctls to maintain and test.
 
-Thanks, will do!
+> >Also, aren't there plans for an in-guest migration helper?  If so, do we
+> >have any idea what that interface will look like?  E.g. if we're going to
+> >end up with a full >fledged driver in the guest, why not bite the bullet now
+> >and bypass KVM entirely?
+> 
+> Even the in-guest migration helper will be using page encryption status
+> hypercalls, so some interface is surely required.
 
-Cheers,
-Rui
+If it's a driver with a more extensive interace, then the hypercalls can be
+replaced by a driver operation.  That's obviously a big if, though.
+
+> Also the in-guest migration will be mainly an OVMF component, won't  really
+> be a full fledged kernel driver in the guest.
+
+Is there code and/or a description of what the proposed helper would look like?
