@@ -2,114 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2A131D5DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A78C331D5E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhBQHpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhBQHpo (ORCPT
+        id S231639AbhBQHql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 02:46:41 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:51454 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229885AbhBQHqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:45:44 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBF5C061574;
-        Tue, 16 Feb 2021 23:45:03 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id r77so11905708qka.12;
-        Tue, 16 Feb 2021 23:45:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gCYHkP1aaPC2ju2paPaY+eoqpfjSVcunRt30wEH2p8U=;
-        b=AAHObVQGaERydM1DlwWubQJKTKTVnmQBfgoX0PGJn29iia5qcb/iGf1AoROZuZSqvl
-         w+PMF3vUx06pWgQNfzENim4S9nkdJxlUW7hEpi6jIvu1/aO87i9jsX5dtWqRrJos722i
-         NmAofX+BGRlEjlnFc/i1f4WoZSH26+35dlwUA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gCYHkP1aaPC2ju2paPaY+eoqpfjSVcunRt30wEH2p8U=;
-        b=B37HOIWPh9rX7M1MYITUSoECSwr0PXqnSOobchWKZjT7YZv23QmXFe/06YVCz6JUFx
-         yXNe9Lfi0C691liTZlg+lhVTxNTdz44zNEV6h7+d4MDp15kbnyRrPiCDB+kV4XvUccde
-         KBeR/GZ//KZMXd+b08zOWnofw+EKsvCN8xgrWmluR2FBAmiBo0f4+BsaEw3lSwivM2rI
-         Zh0bDTddQ3ila/U9ohC0+H0+H7paqYqL1mG/QBFjoHSpUtphF/9o3TRMTk9yRODBJAEm
-         BCmofcMb8b8f+TWzKi39alT3LtJCVO4Rc5zB4KLsLvLhg/AWNW//vv5KQpXNynrj/kH+
-         QObw==
-X-Gm-Message-State: AOAM531ve25XoGqAaIwtBkQvsMr5XRVE9FapwtreZGD6x/GefOnA6Yf9
-        62EI6RNDBI/ihkcV66TREBFSBbNYHR0sb2stxrg=
-X-Google-Smtp-Source: ABdhPJwZtu3Qq+3imBOs8bwV65/o2jyioHqrf93AnZbhcE4AEEgRRwSgKEqek1P9uLpKbbu/kI/mf9O2uP6SF4p1+PI=
-X-Received: by 2002:a37:27d2:: with SMTP id n201mr19429138qkn.465.1613547903021;
- Tue, 16 Feb 2021 23:45:03 -0800 (PST)
+        Wed, 17 Feb 2021 02:46:38 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H7i1t8188011;
+        Wed, 17 Feb 2021 07:45:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=/pArH5tMaRMpY8eyf0TKcZn37e4pAHh3sJz76jbmFIs=;
+ b=PtVGR3+vE3kCGQqYlmKtn9cimXF3HCZjE1UB9g3TaQ6P4wfrMuojSQ2rxJ57/Pcd1CIN
+ NtbDETgTvFZCg372A8PJ6qvzI30xAk+aIvI+okwGRemsCQbGEIEwvLuKpElUtryJN3SK
+ Qi3aw2I1W+eKKtvUmWRd/KSgNcccLgAxilfuF86bxWuyOBjptMUpXTCOi5dRkrGNVgJo
+ XZESmyg0EsJFwn1m6K1vWO7cjEeYuyHClto+7LajRacM/s4LqBkSLWQ+jA7chRAQFEro
+ Okr9JcrZPQglQM0TjkxZMezh9meOaWbp0JNlSGQmPw0rT2FbIrrBo68MVPKYMJUTNSbs 3w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 36pd9a8ur0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Feb 2021 07:45:40 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11H7jYGn059452;
+        Wed, 17 Feb 2021 07:45:38 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 36prhsj3br-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Feb 2021 07:45:38 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11H7jY5s018703;
+        Wed, 17 Feb 2021 07:45:34 GMT
+Received: from mwanda (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 17 Feb 2021 07:45:34 +0000
+Date:   Wed, 17 Feb 2021 10:45:25 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alexei Starovoitov <ast@kernel.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Dmitrii Banshchikov <me@ubique.spb.ru>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v2 bpf-next] bpf: fix a warning message in
+ mark_ptr_not_null_reg()
+Message-ID: <YCzJlV3hnF/t1Pk4@mwanda>
 MIME-Version: 1.0
-References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
- <20210114131622.8951-2-chiawei_wang@aspeedtech.com> <85f00459-4a39-441e-8119-8e12f8132cfe@www.fastmail.com>
- <HK0PR06MB3779B25984A461E4A1ADEF1191869@HK0PR06MB3779.apcprd06.prod.outlook.com>
-In-Reply-To: <HK0PR06MB3779B25984A461E4A1ADEF1191869@HK0PR06MB3779.apcprd06.prod.outlook.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Wed, 17 Feb 2021 07:44:50 +0000
-Message-ID: <CACPK8XdFLKg9k6snLSZrRzorxBeg1fLoqakm6J_8VCXh_=JEQA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>
-Cc:     Andrew Jeffery <andrew@aj.id.au>, Lee Jones <lee.jones@linaro.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        Haiyue Wang <haiyue.wang@linux.intel.com>,
-        Robert Lippert <rlippert@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Corey Minyard <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <04c60ed2-1a96-2835-9ae1-0ba84f482362@iogearbox.net>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102170056
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9897 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102170056
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chaiwei,
+The WARN_ON() argument is a condition, not an error message.  So this
+code will print a stack trace but will not print the warning message.
+Fix that and also change it to only WARN_ONCE().
 
-On Wed, 17 Feb 2021 at 07:40, ChiaWei Wang <chiawei_wang@aspeedtech.com> wrote:
->
-> Hi All,
->
-> Do you have update on this patch series?
-> Aspeed has subsequent LPC module upstream plan.
-> We hope that the following patches can be on the basis of the fixed LPC layout.
+Fixes: 4ddb74165ae5 ("bpf: Extract nullable reg type conversion into a helper function")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+v2:  Use WARN_ONCE().
 
-Andrew has expressed his support for your changes. I will take time to
-closely review your proposal this week.
+ kernel/bpf/verifier.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-We will set the goal of having this rework merged for the next merge window.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 1dda9d81f12c..3d34ba492d46 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -1120,7 +1120,7 @@ static void mark_ptr_not_null_reg(struct bpf_reg_state *reg)
+ 		reg->type = PTR_TO_RDWR_BUF;
+ 		break;
+ 	default:
+-		WARN_ON("unknown nullable register type");
++		WARN_ONCE(1, "unknown nullable register type");
+ 	}
+ }
+ 
+-- 
+2.30.0
 
-Cheers,
-
-Joel
-
-
-> Thanks.
->
-> Chiawei
->
-> > -----Original Message-----
-> > From: Andrew Jeffery <andrew@aj.id.au>
-> > Sent: Wednesday, January 27, 2021 8:25 AM
-> > To: Lee Jones <lee.jones@linaro.org>
-> > Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-> >
-> >
-> >
-> > On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
-> > > The LPC controller has no concept of the BMC and the Host partitions.
-> > > This patch fixes the documentation by removing the description on LPC
-> > > partitions. The register offsets illustrated in the DTS node examples
-> > > are also fixed to adapt to the LPC DTS change.
-> > >
-> > > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-> >
-> > Any thoughts Lee? If you ack it would you be happy for the patch to go through
-> > the Aspeed tree?
-> >
-> > Andrew
