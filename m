@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B401131E2BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780BB31E2BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 23:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhBQWrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 17:47:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42725 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234045AbhBQWge (ORCPT
+        id S233054AbhBQWqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 17:46:49 -0500
+Received: from chill.innovation.ch ([216.218.245.220]:46888 "EHLO
+        chill.innovation.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233233AbhBQWfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 17:36:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613601301;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zG7FxA5GztnCQS45ZSuVJT+MqV0RLaZ+4XZ4Hnsp3v0=;
-        b=CpM4WhmBRay0voC79V0t7fgc+U+Foegh/AQ4GYaammhRlqMA78vr1JafD30KzBr/6Ibzi9
-        b7jphbSUyo+v5sTLUc2rVgGOeRgGaKqLuNGN+oU+5BmPOeTPezWslLC0toVPYArRw00icx
-        /NZjRES/oAkCFXaNBuvXZu6SPCYuoAE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-96-q2CSv0q5Mky64VzDZGuXqA-1; Wed, 17 Feb 2021 17:34:57 -0500
-X-MC-Unique: q2CSv0q5Mky64VzDZGuXqA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEC63189CD2E;
-        Wed, 17 Feb 2021 22:34:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D0F6E60C61;
-        Wed, 17 Feb 2021 22:34:40 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210217161358.GM2858050@casper.infradead.org>
-References: <20210217161358.GM2858050@casper.infradead.org> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Christoph Hellwig <hch@lst.de>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
+        Wed, 17 Feb 2021 17:35:46 -0500
+Date:   Wed, 17 Feb 2021 14:34:40 -0800
+DKIM-Filter: OpenDKIM Filter v2.10.3 chill.innovation.ch DD83B641387
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=innovation.ch;
+        s=default; t=1613601280;
+        bh=hrCqOktxWH8gGcBmBtZ5Sz0GQaLvLl4sZU2pzZlHrWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QUCtJBALr8Xvqb80iRCFaYJiiuzl0DbLcpR+fFjP5B1dsUccr2yF8wyRm+LeCj23T
+         eFs3AY5o60UNMKxJb5D5xxEgcFmKSXoHvTqp1qOnxyTJKNmgBVHxgjv6c97g1l6uJ+
+         N5hmVvSfB2zbfOqFuFGU+kzp5jQNA5d6uEH9pBLEE9wrIVI43vjqO9FwlvitFCZMc+
+         Za2ghMkqskOdIlIbmKp+HyEhZPmFUDkTF6VVcWTOWei4bMm0sCZcgnjtoOstWiJeb5
+         0ZqpLdRy0PapYmYk1aZekztbHbzQx9ZSPbeYPouVwkK0PfqZdFYnOry6ywR1UuRVxX
+         59VQMg95ZOPnQ==
+From:   "Life is hard, and then you die" <ronald@innovation.ch>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+Subject: Re: [PATCH 3/3] Input: applespi: Add trace_event module param for
+ early tracing.
+Message-ID: <20210217223440.GC25685@innovation.ch>
+References: <20210217190718.11035-1-ronald@innovation.ch>
+ <20210217190718.11035-3-ronald@innovation.ch>
+ <YC176rlGQeyKuOpn@google.com>
+ <20210217205257.GB25685@innovation.ch>
+ <YC2FUwOdIoKKg1Ew@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1901186.1613601279.1@warthog.procyon.org.uk>
-Date:   Wed, 17 Feb 2021 22:34:39 +0000
-Message-ID: <1901187.1613601279@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YC2FUwOdIoKKg1Ew@google.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
 
-> We're defeating the ondemand_readahead() algorithm here.  Let's suppose
-> userspace is doing 64kB reads, the filesystem is OrangeFS which only
-> wants to do 4MB reads, the page cache is initially empty and there's
-> only one thread doing a sequential read.  ondemand_readahead() calls
-> get_init_ra_size() which tells it to allocate 128kB and set the async
-> marker at 64kB.  Then orangefs calls readahead_expand() to allocate the
-> remainder of the 4MB.  After the app has read the first 64kB, it comes
-> back to read the next 64kB, sees the readahead marker and tries to trigger
-> the next batch of readahead, but it's already present, so it does nothing
-> (see page_cache_ra_unbounded() for what happens with pages present).
+  Hi Dmitry,
 
-It sounds like Christoph is right on the right track and the vm needs to ask
-the filesystem (and by extension, the cache) before doing the allocation and
-before setting the trigger flag.  Then we don't need to call back into the vm
-to expand the readahead.
+On Wed, Feb 17, 2021 at 01:06:27PM -0800, Dmitry Torokhov wrote:
+> On Wed, Feb 17, 2021 at 12:52:57PM -0800, Life is hard, and then you die wrote:
+> > 
+> > On Wed, Feb 17, 2021 at 12:26:18PM -0800, Dmitry Torokhov wrote:
+> > > 
+> > > On Wed, Feb 17, 2021 at 11:07:18AM -0800, Ronald Tschalär wrote:
+> > > > The problem is that tracing can't be set via sysfs until the module is
+> > > > loaded, at which point the keyboard and trackpad initialization commands
+> > > > have already been run and hence tracing can't be used to debug problems
+> > > > here.
+> > > > 
+> > > > Adding this param allows tracing to be enabled for messages sent and
+> > > > received during module probing. It takes comma-separated list of events,
+> > > > e.g.
+> > > > 
+> > > >   trace_event=applespi_tp_ini_cmd,applespi_bad_crc
+> > > 
+> > > You can unbind and rebind a device to a driver via sysfs as many times
+> > > as needed (see bind and unbind driver sysfs attributes), so I believe
 
-Also, there's Steve's request to try and keep at least two requests in flight
-for CIFS/SMB at the same time to consider.
+Ok yes, that works well, except for the boot-debug scenario.
 
-David
+> > Hmm, I'm going to have to play with that a bit, but one place it still
+> > won't help I think is something we ran into in practise: init was
+> > failing during boot, but was successfull later on.
+> 
+> Maybe compiling module as a built-in and then using kernel command line
+> option to initiate the trace would work?
+
+My personal issue with this is the fact that most folks reporting
+issues are running their distro's standard kernel, which invariably
+has this (and most others) compiled as a loadable module; and asking
+folks to rebuild their kernel is actually quite a hurdle for them, in
+particular compared to asking them to just add some boot params or
+manipulating some sysfs entries. So I prefer to try to provide easy
+ways for folks to be able to generate and report info back that work
+and are enabled out-of-the-box on most distros.
+
+> If this facility is really needed, it would be beneficial for other
+> modules as well, and thus better implemented in the module loading code
+> to activate desired tracing after loading the module but before invoking
+> module init code.
+
+I don't know if it rises to the level of "really needed" - I certainly
+needed something like this to debug an issue and hence the module
+param. And I figured if somebody adds/debugs additional init commands
+they could find it useful too. But this may not be commonly needed
+after all, or folks are using some other solution.
+
+If there's interest, I might be able to take a stab a this in the near
+future, but not sure.
+
+
+  Cheers,
+
+  Ronald
 
