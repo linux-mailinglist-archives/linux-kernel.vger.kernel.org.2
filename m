@@ -2,124 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A49E231D337
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC0431D33C
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 01:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhBQAA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 16 Feb 2021 19:00:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbhBQAAz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 16 Feb 2021 19:00:55 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F903C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 16:00:15 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id t62so11241513qke.7
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 16:00:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7pgxfLYtB4b4dqlNRuCkDcBYdwrqTW32/gAXyaE8lXM=;
-        b=i2C77GrEYhmSVsDSIlvbowp1+1tIWUO2pPflB6TfUO8/UZuZTeEOCS0o0LAV6JxHUz
-         JO6YOis2IlNULxuxeACG5HlZwd0bXumgAgC2u7sFkVwlOeCuaofn+dBSRezXRLb1iPRf
-         gvvXlFUs75h56CtGgoG2PHUdJOZmPvfPUKQyB5Qhp2d6Bit6nJsjSjWa8fxkA4t81ZEO
-         oJJgV0rM+midM4o+RxU57dzfgmjSeNEumY5/TskkrCz4pGTCW1suJUN+JAH3KbbRnkai
-         dMazmQgMxWmwRUwtKLvIt0tN4EsQP0ZiKLzAIiirrNre3dQKNBxCxZozHYRJ0CuMFJhc
-         Hm5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7pgxfLYtB4b4dqlNRuCkDcBYdwrqTW32/gAXyaE8lXM=;
-        b=iX6NyNvFYcuA6aqlJp5JEfr+z2ZUzhaX0cZQ3toADa5HoRcXeBtckaqiaWlaC5cE4D
-         Y5z23EETMjHZ6iRvUgkQuaxVgtSWgSQHETqP1Z0QKGWeWY8xDSfD/nSf06GEN+U1xLhz
-         60OtqADidFv+241Fy9llKrFAiUy5f2Xj0IjNK4Pn/wYaEYKLqLaQ9ZAQOLjN76a9ddlw
-         G+vSjmcoA307qnD48kLNG8jnfDDSK1ogWK2RK6S12rQ2TcRB4vRRT6oOI2Tq4nSd4rdN
-         4AVNc4SXybQr5p/QRSPBTnfagH1mjE31iY9rDfyKSqLk6e7OmUxnGwmW4YlryOxegiU2
-         XkVg==
-X-Gm-Message-State: AOAM532jpoGhE9J6giSRnSSm6EwbroQugpQyE+Em86irm7m6rQCyBy73
-        acKDlo688oMtJq/I4MdBfiEcPw==
-X-Google-Smtp-Source: ABdhPJykqFxNudS+GmqRQWf8wikxvlbLHS4VcisT2qH/HdTqsT2hMFYTRhK64deqnxhel8d6Oygj2A==
-X-Received: by 2002:a05:620a:1435:: with SMTP id k21mr17977868qkj.289.1613520014253;
-        Tue, 16 Feb 2021 16:00:14 -0800 (PST)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id g21sm94091qtv.68.2021.02.16.16.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Feb 2021 16:00:13 -0800 (PST)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org
-Cc:     bjorn.andersson@linaro.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH] cpufreq: exclude boost frequencies from valid count if not enabled
-Date:   Tue, 16 Feb 2021 19:00:13 -0500
-Message-Id: <20210217000013.4063289-1-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        id S229925AbhBQAIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 16 Feb 2021 19:08:36 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:34671 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229894AbhBQAId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 16 Feb 2021 19:08:33 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613520493; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=sOL58otYVbO9KpkCVWoE3Hr3GQzXRXCnoq1WEZdF9WM=; b=Swkb+nhnUJ9I5carBKQTHzjHsraomeJEdSCmQVxRyCAlfdHOash5WM+6YmV9kj8w8TVnrgiE
+ CEj8Eze4Lot531McRBPbXJ57Khuh2L4G7ByblxxEbF26YtDAK4AwjCrvZQO9oF2zjcXhuPX+
+ Wyq1aV3N7ACFVHfji0IG66Bxzbs=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 602c5e4d24187d7bf210de3c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 00:07:41
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 83620C43461; Wed, 17 Feb 2021 00:07:40 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.74.71] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id ED0FAC433C6;
+        Wed, 17 Feb 2021 00:07:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org ED0FAC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: usb: dwc3: gadget: Change runtime pm function for DWC3 runtime
+ suspend
+To:     eg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        "open list:DESIGNWARE USB3 DRD IP DRIVER" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <CGME20210215025057epcas2p205c3c283a8806d818d71f90c872c6e51@epcas2p2.samsung.com>
+ <1613356739-91734-1-git-send-email-dh10.jung@samsung.com>
+ <20210215174145.GA960831@rowland.harvard.edu> <20210216013052.GA37172@ubuntu>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <d725315a-de98-aa77-fb81-65df19757954@codeaurora.org>
+Date:   Tue, 16 Feb 2021 16:07:37 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210216013052.GA37172@ubuntu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a fix for a regression observed on db845 platforms with 5.7-rc11
-kernel.  On these platforms running stress tests with 5.11-rc7 kernel
-causes big cpus to overheat and ultimately shutdown the system due to
-hitting critical temperature (thermal throttling does not happen and
-cur_state of cpufreq cooling device for big cpus remain stuck at 0 or max
-frequency).
 
-This platform has boost opp defined for big cpus but boost mode itself is
-disabled in the cpufreq driver. Hence the initial max frequency request
-from cpufreq cooling device(cur_state) for big cpus is for boost
-frequency(2803200) where as initial max frequency request from cpufreq
-driver itself is for the highest non boost frequency (2649600). qos
-framework collates these two requests and puts the max frequency of big
-cpus to 2649600 which the thermal framework is unaware of. Now during an
-over heat event, with step-wise policy governor, thermal framework tries to
-throttle the cpu and places a restriction on max frequency of the cpu to
-cur_state - 1 which in this case 2649600. qos framework in turn tells the
-cpufreq cooling device that max frequency of the cpu is already at 2649600
-and the cooling device driver returns doing nothing(cur_state of the
-cooling device remains unchanged). Thus thermal remains stuck in a loop and
-never manages to actually throttle the cpu frequency. This ultimately leads
-to system shutdown in case of a thermal overheat event on big cpus.
 
-There are multiple possible fixes for this issue. Fundamentally,it is wrong
-for cpufreq driver and cpufreq cooling device driver to show different
-maximum possible state/frequency for a cpu. Hence fix this issue by
-ensuring that the max state of cpufreq cooling device is in sync with the
-maximum frequency of the cpu in cpufreq driver.
-cpufreq_table_count_valid_entries is used to retrieve max level/max
-frequency of a cpu by cpufreq_cooling_device during initialization. Add
-check in this api to ignore boost frequencies if boost mode is not enabled
-thus keeping the max state of cpufreq cooling device in sync with the
-maximum frequency of the cpu in cpufreq driver.
-cpufreq_frequency_table_cpuinfo that calculates the maximum frequency of a
-cpu for cpufreq driver already has such a check in place.
+On 2/15/2021 5:30 PM, Jung Daehwan wrote:
+> Hello, Alan
+> 
+> On Mon, Feb 15, 2021 at 12:41:45PM -0500, Alan Stern wrote:
+>> On Mon, Feb 15, 2021 at 11:38:58AM +0900, Daehwan Jung wrote:
+>>> It seems pm_runtime_put calls runtime_idle callback not runtime_suspend callback.
+>>
+>> How is this fact related to your patch?
+> 
+> I think we should cause dwc3_runtime_suspend at the time.
+> That's why I use pm_runtime_put_sync_suspend.
+> 
+>>
+>>> It's better to use pm_runtime_put_sync_suspend to allow DWC3 runtime suspend.
+>>
+>> Why do you think it is better?  The advantage of pm_runtime_put is that 
+>> it allows the suspend to occur at a later time in a workqueue thread, so 
+>> the caller doesn't have to wait for the device to go into suspend.
+>>
+> 
+> We can assume DWC3 was already in suspend state if pm_runtime_get_sync
+> returns 0. DWC3 resumes due to pm_rumtime_get_sync but it doesn't
+> re-enter runtime_suspend but runtime_idle. pm_runtime_put decreases
+> usage_count but doesn't cause runtime_suspend.
+> 
+> 1. USB disconnected
+> 2. UDC unbinded
+> 3. DWC3 runtime suspend
+> 4. UDC binded unexpectedly
+> 5. DWC3 runtime resume (pm_runtime_get_sync)
+> 6. DWC3 runtime idle (pm_runtime_put)
+>    -> DWC3 runtime suspend again (pm_runtime_put_sync_suspend)
+> 
+> I've talked with Wesley in other patch.
+> 
+> usbb: dwc3: gadget: skip pullup and set_speed after suspend
+> patchwork.kernel.org/project/linux-usb/patch/1611113968-102424-1-git-send-email-dh10.jung@samsung.com
+> 
+> @ Wesley
+> 
+> I think We should guarantee DWC3 enters suspend again at the time.
+> How do you think?
+> 
+Hi Daehwan,
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- include/linux/cpufreq.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Even if we call runtime idle versus suspend, if the device is still in
+the disconnected state, it should call the runtime PM suspend routine
+after the autosuspend timer expires.  As Alan mentioned already, this
+allows not blocking the caller for the entire DWC3 suspend sequence to
+execute. (DWC3 core will suspend other components as well, such as PHYs)
 
-diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
-index 9c8b7437b6cd..fe52892e0812 100644
---- a/include/linux/cpufreq.h
-+++ b/include/linux/cpufreq.h
-@@ -1006,8 +1006,11 @@ static inline int cpufreq_table_count_valid_entries(const struct cpufreq_policy
- 	if (unlikely(!policy->freq_table))
- 		return 0;
- 
--	cpufreq_for_each_valid_entry(pos, policy->freq_table)
-+	cpufreq_for_each_valid_entry(pos, policy->freq_table) {
-+		if (!cpufreq_boost_enabled() && (pos->flags & CPUFREQ_BOOST_FREQ))
-+			continue;
- 		count++;
-+	}
- 
- 	return count;
- }
+Also, for legitimate cases where pullup is actually called to start
+enumeration from a suspended state, I'm not sure if the short duration
+between RS set and re-suspend (due to your patch) is enough time for the
+host to actually detect the device connected.
+
+Thanks
+Wesley Cheng
+
+> Best Regards,
+> Jung Daehwan
+> 
+>> Alan Stern
+>>
+> 
+> 
+>>> Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
+>>> ---
+>>>  drivers/usb/dwc3/gadget.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>>> index aebcf8e..4a4b93b 100644
+>>> --- a/drivers/usb/dwc3/gadget.c
+>>> +++ b/drivers/usb/dwc3/gadget.c
+>>> @@ -2229,7 +2229,7 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
+>>>  	 */
+>>>  	ret = pm_runtime_get_sync(dwc->dev);
+>>>  	if (!ret || ret < 0) {
+>>> -		pm_runtime_put(dwc->dev);
+>>> +		pm_runtime_put_sync_suspend(dwc->dev);
+>>>  		return 0;
+>>>  	}
+>>>  
+>>> -- 
+>>> 2.7.4
+>>>
+>>
+>>
+
 -- 
-2.25.1
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
