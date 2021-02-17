@@ -2,112 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5209831D523
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFBB31D527
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 06:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbhBQFoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 00:44:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhBQFoe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 00:44:34 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1678C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 21:43:53 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DgRbQ3QKZz9sSC;
-        Wed, 17 Feb 2021 16:43:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1613540629;
-        bh=cuTueLS+LkhijlxNPLuAoL98d7mLmmeibblhAo85X+k=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=aA8wYWmXhfqeStgk5RZlDxrEjZGKD8i3sFU+IxNy0VtdcG9kOqdt2d19IlZSvopC3
-         Jv+sGAftN3y6qLMSqOGutGtngFRy2Vn3++pRhQUxzoE8M1PxySd5IoP/iwV6RyNF18
-         OeVtWY7CV5cOI8z0umK0i/F9/JZAnZdJPeosklWjcpOArJf2iUIOLhzE2SSsUSYkg2
-         4FsLYvned2JdoUzcmVt2LrvPrEUkqFLQloKZZHcUPosv7hvUDHTgayHuG3hCh5R47U
-         8tgDPeYGvxC8LDszbhWx9u/qXoVT5wyJTAt60mFiJmKLqrI964TsOmG1IS5QwYi6tT
-         YOg2jys92DyxQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Segher Boessenkool <segher@kernel.crashing.org>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        lkp <lkp@intel.com>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: {standard input}:577: Error: unsupported relocation against base
-In-Reply-To: <20210216220619.GL28121@gate.crashing.org>
-References: <202101051834.FGH835Vs-lkp@intel.com>
- <98587e13-d22f-973f-1e16-f7a811f71016@csgroup.eu>
- <20210205100821.GA71063@shbuild999.sh.intel.com>
- <87lfbouzgd.fsf@mpe.ellerman.id.au>
- <20210216220619.GL28121@gate.crashing.org>
-Date:   Wed, 17 Feb 2021 16:43:45 +1100
-Message-ID: <87a6s3uu3y.fsf@mpe.ellerman.id.au>
+        id S230508AbhBQFrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 00:47:45 -0500
+Received: from mga09.intel.com ([134.134.136.24]:33725 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230231AbhBQFrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 00:47:41 -0500
+IronPort-SDR: 3n9NNd0n43PN78i0TMntCKOGPHAB0HLUuXzDi4Zc95zIy6h2MWm3XpFOcNryli1JJ1sq9lGSCT
+ HfgfQh12YuFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="183240869"
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="183240869"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 21:47:00 -0800
+IronPort-SDR: ud/keKpLGbgL5aGlJAIoxTmzJj+x2hg4aaCz4SH7RtiWEyB636m0BaEsv9XXQJxG1GMgl7I+P8
+ cxATzZ6c0nbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
+   d="scan'208";a="439234342"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
+  by orsmga001.jf.intel.com with ESMTP; 16 Feb 2021 21:46:55 -0800
+Subject: Re: [PATCH 2/2] mmc: core: Add no single read retries
+To:     DooHyun Hwang <dh0421.hwang@samsung.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, ulf.hansson@linaro.org,
+        robh+dt@kernel.org, axboe@kernel.dk, satyat@google.com,
+        ebiggers@google.com, gustavoars@kernel.org
+Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
+        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
+        sh043.lee@samsung.com, cw9316.lee@samsung.com,
+        sh8267.baek@samsung.com, wkon.kim@samsung.com
+References: <20210217052239.13780-1-dh0421.hwang@samsung.com>
+ <CGME20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c@epcas1p2.samsung.com>
+ <20210217052239.13780-3-dh0421.hwang@samsung.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <4035139d-7850-8460-f069-06fc61d13039@intel.com>
+Date:   Wed, 17 Feb 2021 07:46:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210217052239.13780-3-dh0421.hwang@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Segher Boessenkool <segher@kernel.crashing.org> writes:
-> Hi!
->
-> On Tue, Feb 16, 2021 at 08:36:02PM +1100, Michael Ellerman wrote:
->> Feng Tang <feng.tang@intel.com> writes:
->> >   {standard input}:577: Error: unsupported relocation against base
->> >   {standard input}:580: Error: unsupported relocation against base
->> >   {standard input}:583: Error: unsupported relocation against base
->
->> > The reason is macro 'mfdcr' requirs an instant number as parameter,
->> > which is not met by show_plbopb_regs().
->> 
->> It doesn't require a constant, it checks if the argument is constant:
->> 
->> #define mfdcr(rn)						\
->> 	({unsigned int rval;					\
->> 	if (__builtin_constant_p(rn) && rn < 1024)		\
->> 		asm volatile("mfdcr %0," __stringify(rn)	\
->> 		              : "=r" (rval));			\
->> 	else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))	\
->> 		rval = mfdcrx(rn);				\
->> 	else							\
->> 		rval = __mfdcr(rn);				\
->> 	rval;})
->
-> It requires a constant number with known (at compile time) value, while
-> __builtin_constant_p checks for any constant.  The address of some
-> defined symbol is a constant as well normally, for example.
->
-> It's better to write that asm as
-> 	asm volatile("mfdcr %0,%1" : "=r" (rval) : "n"(rn));
-> btw (the "n" constraint means "constant integer with known value" (it
-> stands for "numeric"), while the "i" constraint means just "constant
-> integer").
+On 17/02/21 7:22 am, DooHyun Hwang wrote:
+> This makes to handle read errors faster by not retrying
+> multiple block read(CMD18) errors with single block reads(CMD17).
+> 
+> On some bad SD Cards that have problem with read operations,
+> it is not helpful to retry multiple block read errors with
+> several single block reads, and it is delayed to treat read
+> operations as I/O error as much as retrying single block reads.
 
-Actually that fixes it.
+If the issue is that it takes too long, then maybe it would be better to get
+mmc_blk_read_single() to give up after a certain amount of time.
 
-diff --git a/arch/powerpc/include/asm/dcr-native.h b/arch/powerpc/include/asm/dcr-native.h
-index 7141ccea8c94..d143308b0f95 100644
---- a/arch/powerpc/include/asm/dcr-native.h
-+++ b/arch/powerpc/include/asm/dcr-native.h
-@@ -53,8 +53,8 @@ static inline void mtdcrx(unsigned int reg, unsigned int val)
- #define mfdcr(rn)                                              \
-        ({unsigned int rval;                                    \
-        if (__builtin_constant_p(rn) && rn < 1024)              \
--               asm volatile("mfdcr %0," __stringify(rn)        \
--                             : "=r" (rval));                   \
-+               asm volatile("mfdcr %0, %1" : "=r" (rval)       \
-+                            : "n" (rn));                       \
-        else if (likely(cpu_has_feature(CPU_FTR_INDEXED_DCR)))  \
-                rval = mfdcrx(rn);                              \
-        else                                                    \
+> 
+> Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
+> ---
+>  drivers/mmc/core/block.c | 3 ++-
+>  drivers/mmc/core/host.c  | 6 ++++++
+>  include/linux/mmc/host.h | 3 +++
+>  3 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index d666e24fbe0e..e25aaf8fca34 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -1809,7 +1809,8 @@ static void mmc_blk_mq_rw_recovery(struct mmc_queue *mq, struct request *req)
+>  
+>  	/* FIXME: Missing single sector read for large sector size */
+>  	if (!mmc_large_sector(card) && rq_data_dir(req) == READ &&
+> -	    brq->data.blocks > 1) {
+> +	    brq->data.blocks > 1 &&
+> +	    !card->host->no_single_read_retry) {
+>  		/* Read one sector at a time */
+>  		mmc_blk_read_single(mq, req);
+>  		return;
+> diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> index 9b89a91b6b47..3bf5b2fc111b 100644
+> --- a/drivers/mmc/core/host.c
+> +++ b/drivers/mmc/core/host.c
+> @@ -352,6 +352,12 @@ int mmc_of_parse(struct mmc_host *host)
+>  	if (device_property_read_bool(dev, "no-mmc"))
+>  		host->caps2 |= MMC_CAP2_NO_MMC;
+>  
+> +	if (device_property_read_bool(dev, "no-single-read-retry")) {
+> +		dev_info(host->parent,
+> +			"Single block read retrying is not supported\n");
+> +		host->no_single_read_retry = true;
+> +	}
+> +
+>  	/* Must be after "non-removable" check */
+>  	if (device_property_read_u32(dev, "fixed-emmc-driver-type", &drv_type) == 0) {
+>  		if (host->caps & MMC_CAP_NONREMOVABLE)
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 26a3c7bc29ae..faec55035a63 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -502,6 +502,9 @@ struct mmc_host {
+>  	/* Host Software Queue support */
+>  	bool			hsq_enabled;
+>  
+> +	/* Do not retry multi block read as single block read */
+> +	bool			no_single_read_retry;
+> +
+>  	unsigned long		private[] ____cacheline_aligned;
+>  };
+>  
+> 
 
-
-I guess because we give the compiler time to work out the constant,
-rather than stringifying it immediately.
-
-cheers
