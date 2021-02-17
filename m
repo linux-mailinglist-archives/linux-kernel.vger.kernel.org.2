@@ -2,72 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EB731DF5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2733031DF80
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:20:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231752AbhBQTDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:03:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231239AbhBQTDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:03:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90D3E6186A;
-        Wed, 17 Feb 2021 19:02:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1613588572;
-        bh=odEQGZsuO+lEqXY7esyTBK2QgwaJ1DoXNXR2BQ1SGlc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=zOE7O/FpIEoPbTe+GWOPDp8/ki03sqzNLQavTgdbhGlzxCACNYMYDEhpwElSTFUBL
-         Yfl2GW/J+6CTXv3m9VJE3WvAMVoOeEs9OSFrC0+zD5g5d9qL7KeS4Ny3PlR9JNKEre
-         Mxh3+R1H1GFO9zDdiQ2Egb0nNz/TTDgN7jsz0T9E=
-Date:   Wed, 17 Feb 2021 11:02:52 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Zi Yan <ziy@nvidia.com>, Davidlohr Bueso <dbueso@suse.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] hugetlb: fix update_and_free_page contig page
- struct assumption
-Message-Id: <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
-In-Reply-To: <20210217184926.33567-1-mike.kravetz@oracle.com>
-References: <20210217184926.33567-1-mike.kravetz@oracle.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S232111AbhBQTTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 14:19:48 -0500
+Received: from ec2-44-228-98-151.us-west-2.compute.amazonaws.com ([44.228.98.151]:58896
+        "EHLO chill.innovation.ch" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232548AbhBQTTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:19:36 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by chill.innovation.ch (Postfix) with ESMTP id 423071B6410;
+        Wed, 17 Feb 2021 19:07:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at chill.innovation.ch
+Received: from chill.innovation.ch ([127.0.0.1])
+        by localhost (chill.innovation.ch [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id gTv6AwvRv-QZ; Wed, 17 Feb 2021 19:07:30 +0000 (UTC)
+From:   =?UTF-8?q?Ronald=20Tschal=C3=A4r?= <ronald@innovation.ch>
+DKIM-Filter: OpenDKIM Filter v2.11.0 chill.innovation.ch B782B1B5EA9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=innovation.ch;
+        s=default; t=1613588850;
+        bh=kG3doMqYTJAWa6Cik1eP36mmnCuyDrLmpJlt/5Wwi6s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ry5z7xRdtVseBSrzLncqrNUO2Jpldl3OV6yCb2Q5YOI5emoBTaN8z7cx18X4oroVg
+         O0bqaRIenMC6nzDk9bLaJ0uf50PpGQ9QeSu+P2bUL2qlNhc6svieDbgTxBf2BL2tXU
+         ui9z0F0yw1y+sD1CDB/DU1oJCcdG0L4QrmrF0RPNpo3aLyH7+LsLX9RtaVVDNupnW8
+         K0NDYUXmaUuSFdxugvvdiQs/q591YOK+1c3/gjHeNkOS9cvwiC460aZM2NdRkMutGL
+         0xt+9EcqNsAXi/esy3r6Gf3ulmz/WaYcRtKzI7tGEEgZO1zGrbpN309c0EStKj5+N7
+         bHm0rXznNNiXg==
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] Input: applespi: Don't wait for responses to commands indefinitely.
+Date:   Wed, 17 Feb 2021 11:07:16 -0800
+Message-Id: <20210217190718.11035-1-ronald@innovation.ch>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 10:49:25 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+The response to a command may never arrive or it may be corrupted (and
+hence dropped) for some reason. While exceedingly rare, when it did
+happen it blocked all further commands. One way to fix this was to
+do a suspend/resume. However, recovering automatically seems like a
+nicer option. Hence this puts a time limit (1 sec) on how long we're
+willing to wait for a response, after which we assume it got lost.
 
-> page structs are not guaranteed to be contiguous for gigantic pages.  The
-> routine update_and_free_page can encounter a gigantic page, yet it assumes
-> page structs are contiguous when setting page flags in subpages.
-> 
-> If update_and_free_page encounters non-contiguous page structs, we can
-> see “BUG: Bad page state in process …” errors.
-> 
-> Non-contiguous page structs are generally not an issue.  However, they can
-> exist with a specific kernel configuration and hotplug operations.  For
-> example: Configure the kernel with CONFIG_SPARSEMEM and
-> !CONFIG_SPARSEMEM_VMEMMAP.  Then, hotplug add memory for the area where the
-> gigantic page will be allocated.
-> Zi Yan outlined steps to reproduce here [1].
-> 
-> [1] https://lore.kernel.org/linux-mm/16F7C58B-4D79-41C5-9B64-A1A1628F4AF2@nvidia.com/
-> 
-> Fixes: 944d9fec8d7a ("hugetlb: add support for gigantic page allocation at runtime")
+Signed-off-by: Ronald Tschalär <ronald@innovation.ch>
+---
+ drivers/input/keyboard/applespi.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-June 2014.  That's a long lurk time for a bug.  I wonder if some later
-commit revealed it.
-
-I guess it doesn't matter a lot, but some -stable kernel maintainers
-might wonder if they really need this fix...
-
+diff --git a/drivers/input/keyboard/applespi.c b/drivers/input/keyboard/applespi.c
+index d22223154177f..8494bf610fd70 100644
+--- a/drivers/input/keyboard/applespi.c
++++ b/drivers/input/keyboard/applespi.c
+@@ -48,6 +48,7 @@
+ #include <linux/efi.h>
+ #include <linux/input.h>
+ #include <linux/input/mt.h>
++#include <linux/ktime.h>
+ #include <linux/leds.h>
+ #include <linux/module.h>
+ #include <linux/spinlock.h>
+@@ -409,7 +410,7 @@ struct applespi_data {
+ 	unsigned int			cmd_msg_cntr;
+ 	/* lock to protect the above parameters and flags below */
+ 	spinlock_t			cmd_msg_lock;
+-	bool				cmd_msg_queued;
++	ktime_t				cmd_msg_queued;
+ 	enum applespi_evt_type		cmd_evt_type;
+ 
+ 	struct led_classdev		backlight_info;
+@@ -729,7 +730,7 @@ static void applespi_msg_complete(struct applespi_data *applespi,
+ 		wake_up_all(&applespi->drain_complete);
+ 
+ 	if (is_write_msg) {
+-		applespi->cmd_msg_queued = false;
++		applespi->cmd_msg_queued = 0;
+ 		applespi_send_cmd_msg(applespi);
+ 	}
+ 
+@@ -771,8 +772,16 @@ static int applespi_send_cmd_msg(struct applespi_data *applespi)
+ 		return 0;
+ 
+ 	/* check whether send is in progress */
+-	if (applespi->cmd_msg_queued)
+-		return 0;
++	if (applespi->cmd_msg_queued) {
++		if (ktime_ms_delta(ktime_get(), applespi->cmd_msg_queued) < 1000)
++			return 0;
++
++		dev_warn(&applespi->spi->dev, "Command %d timed out\n",
++			 applespi->cmd_evt_type);
++
++		applespi->cmd_msg_queued = 0;
++		applespi->write_active = false;
++	}
+ 
+ 	/* set up packet */
+ 	memset(packet, 0, APPLESPI_PACKET_SIZE);
+@@ -869,7 +878,7 @@ static int applespi_send_cmd_msg(struct applespi_data *applespi)
+ 		return sts;
+ 	}
+ 
+-	applespi->cmd_msg_queued = true;
++	applespi->cmd_msg_queued = ktime_get();
+ 	applespi->write_active = true;
+ 
+ 	return 0;
+@@ -1921,7 +1930,7 @@ static int __maybe_unused applespi_resume(struct device *dev)
+ 	applespi->drain = false;
+ 	applespi->have_cl_led_on = false;
+ 	applespi->have_bl_level = 0;
+-	applespi->cmd_msg_queued = false;
++	applespi->cmd_msg_queued = 0;
+ 	applespi->read_active = false;
+ 	applespi->write_active = false;
+ 
+-- 
+2.26.2
 
