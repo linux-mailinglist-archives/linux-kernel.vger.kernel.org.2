@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5EC31DCD5
+	by mail.lfdr.de (Postfix) with ESMTP id E0BB431DCD6
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:01:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbhBQQAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:00:06 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:32544 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233568AbhBQQAD (ORCPT
+        id S233950AbhBQQAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233887AbhBQQAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:00:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613577602; x=1645113602;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TrSgV4ppZBB1E4H994V5PZn9jNxoOv0E4rNOorIzQXM=;
-  b=IXbp7xo8PgFNdAAn4/TtbtsNuuk6r7gxz5vA+U/Uzj6WNGbr7UBC/abh
-   GALwsnjPTC7vM7jGOBoKbo+pforIRkRDyKsOuZU7/MOf7nRWmvAlpqlCw
-   qwBfwbJIlUOMAGhg6wDhchaJ7XZR56hRBNlKbh2aoSIumJ8DMUZZ62qBC
-   4jmNFnmcxlpsbkkStim7nMXivLYQws1YkYRK2Uqrwjs6n1hHvvdf10VkG
-   beG2xEI2npeb5IxS03giSZoZQuSy28y7MOhecTjWNeHaa+6tpMT+jvT/q
-   2X1SkCmSfFwatB9KtwnC3wOLxGzyAqjELxybVa8MssSsHieMS6mCHlqeZ
-   A==;
-IronPort-SDR: liuIKZbScHZBumPKPyFyxIEpz+9DDmVCmrm1/ICmVxn4g16h9v5w1fSiJx9QfK5voSHPPf5foA
- jo0ypmmrtTF7fNspqcVRQeyC527x2aIiaL3OJsJjAlvlEyj6XJy+4w1TQksAJDhBRAArDQoqeu
- QfxoSiIobdHp4ZOlIDoafIMEsgpF9CLiGiwem6K6+H1pgdrU/gixXS859KTuIrHfghKjHXEwde
- 2ck/cVxSqRB5ytiXlbEA6x7Ii/21htGvLpk12yVNLayX/UWUCKFKMgtLGiRYFlHNVpM7DcplL0
- lLU=
-X-IronPort-AV: E=Sophos;i="5.81,184,1610434800"; 
-   d="scan'208";a="106963267"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 17 Feb 2021 08:58:46 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 17 Feb 2021 08:58:45 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Wed, 17 Feb 2021 08:58:45 -0700
-Date:   Wed, 17 Feb 2021 16:58:45 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jiri@resnulli.us" <jiri@resnulli.us>,
-        "ivecera@redhat.com" <ivecera@redhat.com>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "roopa@nvidia.com" <roopa@nvidia.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "rasmus.villemoes@prevas.dk" <rasmus.villemoes@prevas.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "bridge@lists.linux-foundation.org" 
-        <bridge@lists.linux-foundation.org>
-Subject: Re: [PATCH net-next v4 2/8] switchdev: mrp: Extend ring_role_mrp and
- in_role_mrp
-Message-ID: <20210217155845.oegbmsnxykkqc6um@soft-dev3.localdomain>
-References: <20210216214205.32385-1-horatiu.vultur@microchip.com>
- <20210216214205.32385-3-horatiu.vultur@microchip.com>
- <20210217103433.bilnuo2tfvgvjmxy@skbuf>
+        Wed, 17 Feb 2021 11:00:49 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 446AEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:00:09 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id b21so8751956pgk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:00:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GOQVmvgp4dt65rKsAQWxL7KavP/pmOa+Mhm9+94yhA0=;
+        b=OgWgfmcXzUIfi/RaYLY+BdMNraMTmk6AGXnvuMXh263tKqYsVRvv5S6QkszHfK6p9e
+         R7ugb2dwa7Sys1Pdo2kHaqCYHLUo4t7HGHzt1X7d0Y5gqr7awVtUJh1+VKnQsDtsgcb4
+         MpHY6dJyhLutgPzx08UrSWpabf4/q+scQi3p4S74LBkq2x4/NrxQf1OnXUdk8O7Imu/6
+         TvoJ/FFTaQtt3bW4ciD5DSBsDjfrdLaDM+AgRwWLbDTTqnO9XUvrbuuKVQBDNbWRjS1Q
+         xUFs4lmZmP95+DzJefEFUcvMVvKjAVpMWcJzx7vOpqzCw1FIW7Nq3cVS5VBu++zkbnWI
+         WVzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GOQVmvgp4dt65rKsAQWxL7KavP/pmOa+Mhm9+94yhA0=;
+        b=L4DQje9CZcOgcL55HQo2cODp/KyaFmhhZ8F+elO28ospPN0Eh0pi7wpJD5336FJwaL
+         kLDmhtP1XmE8qArZwWpdS2FFc/mIKDajOsK7O9Cok9fRrQNBOjM1LxPJJS0j3HpZl8Uw
+         LTXh1A6M2vHfCO/+jVPIIdCtIaJIU97uVqXtPfmcmPITp0QdyLnWCNc9SuVbM5wyK/Ed
+         Gl758Nhv1xpadqJlrk4Lpj52ORJNPGMXr++cfjLSWj/CD8sT7hbeJHNrJ1nBvYag+phH
+         OB6lKqFhGsjtGvxbxUnfC2xDrw8CXmYD56VDHjcSlAOMD5baky0t9DV4UU4PPXbSgEKA
+         5pRw==
+X-Gm-Message-State: AOAM531qmfmdX8sM5wpSgnsoG03T0bEJVscYRMas4iGN9BPl2t/c8nx9
+        k8LrXbZVziTde77LUPm/+b8=
+X-Google-Smtp-Source: ABdhPJwwiktyfKOXgb8Yb//e1wziSLZ4qWg8ZQIuFlYzLgICbjZMZ+Sc5K/88aC9aX/mkrZnPbAJuw==
+X-Received: by 2002:a63:e602:: with SMTP id g2mr57105pgh.290.1613577608768;
+        Wed, 17 Feb 2021 08:00:08 -0800 (PST)
+Received: from nuc10.amust.local (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id 74sm2911183pfw.53.2021.02.17.08.00.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 08:00:08 -0800 (PST)
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     anton@tuxera.com, linux-ntfs-dev@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        Rustam Kovhaev <rkovhaev@gmail.com>
+Subject: [PATCH] ntfs: check for valid standard information attribute
+Date:   Wed, 17 Feb 2021 07:59:30 -0800
+Message-Id: <20210217155930.1506815-1-rkovhaev@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20210217103433.bilnuo2tfvgvjmxy@skbuf>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 02/17/2021 10:34, Vladimir Oltean wrote:
+we should check for valid STANDARD_INFORMATION attribute offset and
+length before trying to access it
 
-Hi Vladimir,
+Reported-and-tested-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
+Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+Acked-by: Anton Altaparmakov <anton@tuxera.com>
+Link: https://syzkaller.appspot.com/bug?extid=c584225dabdea2f71969
+---
+ fs/ntfs/inode.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-> 
-> On Tue, Feb 16, 2021 at 10:41:59PM +0100, Horatiu Vultur wrote:
-> > Add the member sw_backup to the structures switchdev_obj_ring_role_mrp
-> > and switchdev_obj_in_role_mrp. In this way the SW can call the driver in
-> > 2 ways, once when sw_backup is set to false, meaning that the driver
-> > should implement this completely in HW. And if that is not supported the
-> > SW will call again but with sw_backup set to true, meaning that the
-> > HW should help or allow the SW to run the protocol.
-> >
-> > For example when role is MRM, if the HW can't detect when it stops
-> > receiving MRP Test frames but it can trap these frames to CPU, then it
-> > needs to return -EOPNOTSUPP when sw_backup is false and return 0 when
-> > sw_backup is true.
-> >
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> > ---
-> >  include/net/switchdev.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/include/net/switchdev.h b/include/net/switchdev.h
-> > index 465362d9d063..b7fc7d0f54e2 100644
-> > --- a/include/net/switchdev.h
-> > +++ b/include/net/switchdev.h
-> > @@ -127,6 +127,7 @@ struct switchdev_obj_ring_role_mrp {
-> >       struct switchdev_obj obj;
-> >       u8 ring_role;
-> >       u32 ring_id;
-> > +     u8 sw_backup;
-> >  };
-> >
-> >  #define SWITCHDEV_OBJ_RING_ROLE_MRP(OBJ) \
-> > @@ -161,6 +162,7 @@ struct switchdev_obj_in_role_mrp {
-> >       u32 ring_id;
-> >       u16 in_id;
-> >       u8 in_role;
-> > +     u8 sw_backup;
-> 
-> What was wrong with 'bool'?
-Yeah, that would be a better match.
-> 
-> >  };
-> >
-> >  #define SWITCHDEV_OBJ_IN_ROLE_MRP(OBJ) \
-> > --
-> > 2.27.0
-> >
-> 
-> If a driver implements full MRP offload for a ring/interconnect
-> manager/automanager, should it return -EOPNOTSUPP when sw_backup=false?
-
-In that case it should return 0.
-So if the driver can:
-- fully support MRP, when sw_backup = false, return 0. Then end of story.
-- partially support MRP, when sw_backup = false, return -EOPNOTSUPP,
-                         when sw_backup = true, return 0.
-- no support at all, return -EOPNOTSUPP.
-
+diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+index f7e4cbc26eaf..be4ff9386ec0 100644
+--- a/fs/ntfs/inode.c
++++ b/fs/ntfs/inode.c
+@@ -629,6 +629,12 @@ static int ntfs_read_locked_inode(struct inode *vi)
+ 	}
+ 	a = ctx->attr;
+ 	/* Get the standard information attribute value. */
++	if ((u8 *)a + le16_to_cpu(a->data.resident.value_offset)
++			+ le32_to_cpu(a->data.resident.value_length) >
++			(u8 *)ctx->mrec + vol->mft_record_size) {
++		ntfs_error(vi->i_sb, "Corrupt standard information attribute in inode.");
++		goto unm_err_out;
++	}
+ 	si = (STANDARD_INFORMATION*)((u8*)a +
+ 			le16_to_cpu(a->data.resident.value_offset));
+ 
 -- 
-/Horatiu
+2.30.0
+
