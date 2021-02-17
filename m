@@ -2,94 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E38A431D8EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5237631D8EF
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbhBQL5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:57:46 -0500
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:46886 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232054AbhBQLxd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 06:53:33 -0500
-Received: by mail-ej1-f42.google.com with SMTP id ly28so1666025ejb.13;
-        Wed, 17 Feb 2021 03:53:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tpzgM7DwrHm/I77e3idiEKwStb99IJkjqQ/VL9hmTWo=;
-        b=Vg+pXxDjYxSP09AhCDW74eaLJaR7Yv+Z61cJXgYwX5Vm38WLubHgVMOSwPZt8bCuj4
-         1AI3IOGZYeoTkoGz4B4VgWbJlPjEkMspNCvbMnN55B6eywDBtuxhoVR7mvMfZxnPTbj6
-         sRUtuVZUbVwI6iuptRf0b1x7xI4rWjek77tD1i+mnOumXmC1BneslT0Rsnm92zj7PVbX
-         Xwrv7EV4Z4dz/oLlkRySDmEhk8b0KZI5qsVOorXHFJpX0SqurRDUsnH7hOgn9OqgyK/L
-         9qYOqmulVMr9ZbAJ/8DTjAX0dHOYTjNnKV2DeB0dIABk5NOOvEmwtcsG4PilftpUQBQt
-         2uFg==
-X-Gm-Message-State: AOAM532sMqeqM/PQRLHmblS+MkvDMGhrvHo3J8qJL/0kHsT4pxfb+uKo
-        fCdLcfUZP676QookGUnPV4A=
-X-Google-Smtp-Source: ABdhPJw06of3Fmyf6zbfkdm6PQ8KqMgb8iuOWXimYxThESWkgIlvy6rYUgIt1Zk0SnvDVIieydKISQ==
-X-Received: by 2002:a17:907:aa9:: with SMTP id bz9mr24376522ejc.528.1613562771138;
-        Wed, 17 Feb 2021 03:52:51 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id z2sm898600ejd.44.2021.02.17.03.52.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 03:52:50 -0800 (PST)
-Date:   Wed, 17 Feb 2021 12:52:48 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>
-Cc:     robh@kernel.org, shawnguo@kernel.org, festevam@gmail.com,
-        kernel@pengutronix.de, linux-imx@nxp.com, kernel@puri.sm,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Angus Ainslie <angus@akkea.ca>
-Subject: Re: [PATCH v2 4/5] arm64: dts: librem5: protect some partitions of
- the nor-flash
-Message-ID: <20210217115248.7t5b64jorzfzbd7h@kozik-lap>
-References: <20210217111944.1416-1-martin.kepplinger@puri.sm>
- <20210217111944.1416-5-martin.kepplinger@puri.sm>
+        id S232361AbhBQL6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:58:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232377AbhBQL43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 06:56:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F171E6024A;
+        Wed, 17 Feb 2021 11:55:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613562945;
+        bh=QVdC0kU6jvzs+zB5lNoccmInKiPDjsnzbqv6e9gAuVo=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=LFygKx8G6a6cR9opfRPviyHwluOcVDE1WCf5TDDheCfjUfSHPthfNxErDn5E5gkjW
+         DOUNQM6zdEbxe54nRBF8TaiLWbET5FfwA5VrDNrkZUJZUWOICw7p8DP4n9EuY3Qq4P
+         nVnxyYdNjEaY8Hc4SGMJMS3y9WcpSfSmbZ/zrWwoEyE+u3G6h/Qlr2rQteDbgZNMG5
+         6fG6Vl/hfhpUjl5wXuD+pzf3ucYXrCRjLP6EfIr5TdMyGomjYdaerJ465reCAO6TYp
+         783DhmPzmzX+WfHRM73A8H/zv/IvIVoSa0FAT9r3ggVPtKtcBIUKVrZfUHKR1TUphf
+         h7D3kyzrjocUg==
+Date:   Wed, 17 Feb 2021 12:55:41 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Jonathan Cameron <jic23@kernel.org>
+cc:     Ye Xiang <xiang.ye@intel.com>, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] iio: Add relative sensitivity support
+In-Reply-To: <20210212182809.2cc90cfd@archlinux>
+Message-ID: <nycvar.YFH.7.76.2102171255250.28696@cbobk.fhfr.pm>
+References: <20210207070048.23935-1-xiang.ye@intel.com> <20210207070048.23935-2-xiang.ye@intel.com> <20210212182809.2cc90cfd@archlinux>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210217111944.1416-5-martin.kepplinger@puri.sm>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 12:19:43PM +0100, Martin Kepplinger wrote:
-> From: Angus Ainslie <angus@akkea.ca>
+On Fri, 12 Feb 2021, Jonathan Cameron wrote:
+
+> > Some hid sensors may use relative sensitivity such as als sensor.
+> > This patch adds relative sensitivity checking for all hid sensors.
+> > 
+> > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+> Hi,
 > 
-> These sections should be read only as they contain important data.
+> One totally trivial extra line below.  I'll fix that whilst applying
+> unless you need to respin for some reason.
 > 
-> Signed-off-by: Angus Ainslie <angus@akkea.ca>
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  .../arm64/boot/dts/freescale/imx8mq-librem5.dtsi | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> index c2bbbdeb93e3..3c0462f81b3a 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5.dtsi
-> @@ -258,6 +258,22 @@
->  		compatible = "jedec,spi-nor";
->  		reg = <0>;
->  		spi-max-frequency = <1000000>;
-> +		#address-cells = <1>;
-> +		#size-cells = <1>;
+> I'm fine with the series, but looking for an Ack from Jiri
+> for the HID header changes.
 
-Still a line break here is needed.
+Acked-by: Jiri Kosina <jkosina@suse.cz>
 
-> +		partition@0 {
-> +			label = "protected0";
-> +			reg = <0x00000000 0x00030000>;
-> +			read-only;
-> +		};
-> +		partition@30000 {
-> +			label = "protected1";
-> +			reg = <0x00030000 0x00010000>;
+Thanks,
 
-Drop the leading 0 in address and size. I saw some DTS using it but it's
-not the common format. All nodes don't lead with 0 so why partitions are
-different?
+-- 
+Jiri Kosina
+SUSE Labs
 
-Best regards,
-Krzysztof
