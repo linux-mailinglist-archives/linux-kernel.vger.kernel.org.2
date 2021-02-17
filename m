@@ -2,167 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7FC31D5D4
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2A131D5DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhBQHlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:41:49 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:41302 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231565AbhBQHjp (ORCPT
+        id S231695AbhBQHpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 02:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhBQHpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:39:45 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11H7LVcr015796;
-        Wed, 17 Feb 2021 02:38:58 -0500
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36p9gb2dhc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Feb 2021 02:38:58 -0500
-Received: from SCSQMBX11.ad.analog.com (SCSQMBX11.ad.analog.com [10.77.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 11H7cuaB004093
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 17 Feb 2021 02:38:57 -0500
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 16 Feb
- 2021 23:38:54 -0800
-Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Tue, 16 Feb 2021 23:38:54 -0800
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11H7coEE031401;
-        Wed, 17 Feb 2021 02:38:51 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <jic23@kernel.org>, <mircea.caprioru@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH][RESEND] iio: dac: ad5686: Add support for AD5673R/AD5677R
-Date:   Wed, 17 Feb 2021 09:41:02 +0200
-Message-ID: <20210217074102.23148-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 17 Feb 2021 02:45:44 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBF5C061574;
+        Tue, 16 Feb 2021 23:45:03 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id r77so11905708qka.12;
+        Tue, 16 Feb 2021 23:45:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gCYHkP1aaPC2ju2paPaY+eoqpfjSVcunRt30wEH2p8U=;
+        b=AAHObVQGaERydM1DlwWubQJKTKTVnmQBfgoX0PGJn29iia5qcb/iGf1AoROZuZSqvl
+         w+PMF3vUx06pWgQNfzENim4S9nkdJxlUW7hEpi6jIvu1/aO87i9jsX5dtWqRrJos722i
+         NmAofX+BGRlEjlnFc/i1f4WoZSH26+35dlwUA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gCYHkP1aaPC2ju2paPaY+eoqpfjSVcunRt30wEH2p8U=;
+        b=B37HOIWPh9rX7M1MYITUSoECSwr0PXqnSOobchWKZjT7YZv23QmXFe/06YVCz6JUFx
+         yXNe9Lfi0C691liTZlg+lhVTxNTdz44zNEV6h7+d4MDp15kbnyRrPiCDB+kV4XvUccde
+         KBeR/GZ//KZMXd+b08zOWnofw+EKsvCN8xgrWmluR2FBAmiBo0f4+BsaEw3lSwivM2rI
+         Zh0bDTddQ3ila/U9ohC0+H0+H7paqYqL1mG/QBFjoHSpUtphF/9o3TRMTk9yRODBJAEm
+         BCmofcMb8b8f+TWzKi39alT3LtJCVO4Rc5zB4KLsLvLhg/AWNW//vv5KQpXNynrj/kH+
+         QObw==
+X-Gm-Message-State: AOAM531ve25XoGqAaIwtBkQvsMr5XRVE9FapwtreZGD6x/GefOnA6Yf9
+        62EI6RNDBI/ihkcV66TREBFSBbNYHR0sb2stxrg=
+X-Google-Smtp-Source: ABdhPJwZtu3Qq+3imBOs8bwV65/o2jyioHqrf93AnZbhcE4AEEgRRwSgKEqek1P9uLpKbbu/kI/mf9O2uP6SF4p1+PI=
+X-Received: by 2002:a37:27d2:: with SMTP id n201mr19429138qkn.465.1613547903021;
+ Tue, 16 Feb 2021 23:45:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-17_06:2021-02-16,2021-02-17 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 clxscore=1015
- mlxscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102170054
+References: <20210114131622.8951-1-chiawei_wang@aspeedtech.com>
+ <20210114131622.8951-2-chiawei_wang@aspeedtech.com> <85f00459-4a39-441e-8119-8e12f8132cfe@www.fastmail.com>
+ <HK0PR06MB3779B25984A461E4A1ADEF1191869@HK0PR06MB3779.apcprd06.prod.outlook.com>
+In-Reply-To: <HK0PR06MB3779B25984A461E4A1ADEF1191869@HK0PR06MB3779.apcprd06.prod.outlook.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Wed, 17 Feb 2021 07:44:50 +0000
+Message-ID: <CACPK8XdFLKg9k6snLSZrRzorxBeg1fLoqakm6J_8VCXh_=JEQA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Cc:     Andrew Jeffery <andrew@aj.id.au>, Lee Jones <lee.jones@linaro.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        Haiyue Wang <haiyue.wang@linux.intel.com>,
+        Robert Lippert <rlippert@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Corey Minyard <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mircea Caprioru <mircea.caprioru@analog.com>
+Hi Chaiwei,
 
-The AD5673R/AD5677R are low power, 16-channel, 12-/16-bit buffered voltage
-output digital-to-analog converters (DACs). They include a 2.5 V internal
-reference (enabled by default).
+On Wed, 17 Feb 2021 at 07:40, ChiaWei Wang <chiawei_wang@aspeedtech.com> wrote:
+>
+> Hi All,
+>
+> Do you have update on this patch series?
+> Aspeed has subsequent LPC module upstream plan.
+> We hope that the following patches can be on the basis of the fixed LPC layout.
 
-These devices are very similar to AD5674R/AD5679R, except that they
-have an i2c interface.
+Andrew has expressed his support for your changes. I will take time to
+closely review your proposal this week.
 
-Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
+We will set the goal of having this rework merged for the next merge window.
 
-Forgot to include the linux-iio list in the first send.
+Cheers,
 
- drivers/iio/dac/Kconfig      |  5 +++--
- drivers/iio/dac/ad5686.c     | 12 ++++++++++++
- drivers/iio/dac/ad5686.h     |  2 ++
- drivers/iio/dac/ad5696-i2c.c |  6 ++++--
- 4 files changed, 21 insertions(+), 4 deletions(-)
+Joel
 
-diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
-index cea07b4cced1..75e1f2b48638 100644
---- a/drivers/iio/dac/Kconfig
-+++ b/drivers/iio/dac/Kconfig
-@@ -142,8 +142,9 @@ config AD5696_I2C
- 	select AD5686
- 	help
- 	  Say yes here to build support for Analog Devices AD5311R, AD5338R,
--	  AD5671R, AD5675R, AD5691R, AD5692R, AD5693, AD5693R, AD5694, AD5694R,
--	  AD5695R, AD5696, and AD5696R Digital to Analog converters.
-+	  AD5671R, AD5673R, AD5675R, AD5677R, AD5691R, AD5692R, AD5693, AD5693R,
-+	  AD5694, AD5694R, AD5695R, AD5696, and AD5696R Digital to Analog
-+	  converters.
- 
- 	  To compile this driver as a module, choose M here: the module will be
- 	  called ad5696.
-diff --git a/drivers/iio/dac/ad5686.c b/drivers/iio/dac/ad5686.c
-index 7d6792ac1020..99a95282ac57 100644
---- a/drivers/iio/dac/ad5686.c
-+++ b/drivers/iio/dac/ad5686.c
-@@ -301,6 +301,12 @@ static const struct ad5686_chip_info ad5686_chip_info_tbl[] = {
- 		.num_channels = 8,
- 		.regmap_type = AD5686_REGMAP,
- 	},
-+	[ID_AD5673R] = {
-+		.channels = ad5674r_channels,
-+		.int_vref_mv = 2500,
-+		.num_channels = 16,
-+		.regmap_type = AD5686_REGMAP,
-+	},
- 	[ID_AD5674R] = {
- 		.channels = ad5674r_channels,
- 		.int_vref_mv = 2500,
-@@ -324,6 +330,12 @@ static const struct ad5686_chip_info ad5686_chip_info_tbl[] = {
- 		.num_channels = 8,
- 		.regmap_type = AD5686_REGMAP,
- 	},
-+	[ID_AD5677R] = {
-+		.channels = ad5679r_channels,
-+		.int_vref_mv = 2500,
-+		.num_channels = 16,
-+		.regmap_type = AD5686_REGMAP,
-+	},
- 	[ID_AD5679R] = {
- 		.channels = ad5679r_channels,
- 		.int_vref_mv = 2500,
-diff --git a/drivers/iio/dac/ad5686.h b/drivers/iio/dac/ad5686.h
-index d9c8ba413fe9..f89a6f92b427 100644
---- a/drivers/iio/dac/ad5686.h
-+++ b/drivers/iio/dac/ad5686.h
-@@ -55,10 +55,12 @@ enum ad5686_supported_device_ids {
- 	ID_AD5338R,
- 	ID_AD5671R,
- 	ID_AD5672R,
-+	ID_AD5673R,
- 	ID_AD5674R,
- 	ID_AD5675R,
- 	ID_AD5676,
- 	ID_AD5676R,
-+	ID_AD5677R,
- 	ID_AD5679R,
- 	ID_AD5681R,
- 	ID_AD5682R,
-diff --git a/drivers/iio/dac/ad5696-i2c.c b/drivers/iio/dac/ad5696-i2c.c
-index a39eda7c02d2..24a6a4a5a2e0 100644
---- a/drivers/iio/dac/ad5696-i2c.c
-+++ b/drivers/iio/dac/ad5696-i2c.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * AD5671R, AD5675R, AD5691R, AD5692R, AD5693, AD5693R,
-- * AD5694, AD5694R, AD5695R, AD5696, AD5696R
-+ * AD5338R, AD5671R, AD5673R, AD5675R, AD5677R, AD5691R, AD5692R, AD5693,
-+ * AD5693R, AD5694, AD5694R, AD5695R, AD5696, AD5696R
-  * Digital to analog converters driver
-  *
-  * Copyright 2018 Analog Devices Inc.
-@@ -74,7 +74,9 @@ static const struct i2c_device_id ad5686_i2c_id[] = {
- 	{"ad5311r", ID_AD5311R},
- 	{"ad5338r", ID_AD5338R},
- 	{"ad5671r", ID_AD5671R},
-+	{"ad5673r", ID_AD5673R},
- 	{"ad5675r", ID_AD5675R},
-+	{"ad5677r", ID_AD5677R},
- 	{"ad5691r", ID_AD5691R},
- 	{"ad5692r", ID_AD5692R},
- 	{"ad5693", ID_AD5693},
--- 
-2.17.1
 
+> Thanks.
+>
+> Chiawei
+>
+> > -----Original Message-----
+> > From: Andrew Jeffery <andrew@aj.id.au>
+> > Sent: Wednesday, January 27, 2021 8:25 AM
+> > To: Lee Jones <lee.jones@linaro.org>
+> > Subject: Re: [PATCH v5 1/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+> >
+> >
+> >
+> > On Thu, 14 Jan 2021, at 23:46, Chia-Wei, Wang wrote:
+> > > The LPC controller has no concept of the BMC and the Host partitions.
+> > > This patch fixes the documentation by removing the description on LPC
+> > > partitions. The register offsets illustrated in the DTS node examples
+> > > are also fixed to adapt to the LPC DTS change.
+> > >
+> > > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> >
+> > Any thoughts Lee? If you ack it would you be happy for the patch to go through
+> > the Aspeed tree?
+> >
+> > Andrew
