@@ -2,128 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7269531DFE1
+	by mail.lfdr.de (Postfix) with ESMTP id 0102931DFE0
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbhBQTz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:55:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54551 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232196AbhBQTzg (ORCPT
+        id S233400AbhBQTzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 14:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233524AbhBQTzg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Feb 2021 14:55:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613591650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=X0iUMET3apekVXH6rEyg15tn94AvSxyWLiw3xeT+m28=;
-        b=jNe82RoJoU9qasWI+JcQ7UdaAKyfduIOcZtINkVikjVxlF7GlyHORqBsGVgY3+lEl51m7y
-        i0jQW/0dgzUCTXiGBZ2zYhpcaU7vpcHQKuQmH5dKYnTX5u01DW3uEvAExHvMBxYJUGP6tt
-        Je3Xhb0QMX49REEQNcfZKNAdmQ5RbX8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-brBdVrt7NFGsnetgIpHptw-1; Wed, 17 Feb 2021 14:54:06 -0500
-X-MC-Unique: brBdVrt7NFGsnetgIpHptw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 337B479ED6;
-        Wed, 17 Feb 2021 19:54:04 +0000 (UTC)
-Received: from krava (unknown [10.40.195.160])
-        by smtp.corp.redhat.com (Postfix) with SMTP id F214018B5E;
-        Wed, 17 Feb 2021 19:54:00 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 20:54:00 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-Subject: Re: [PATCH 1/4] perf buildid-cache: Don't skip 16-byte build-ids
-Message-ID: <YC10WPYjps4Z0H8B@krava>
-References: <597788e4-661d-633f-857c-3de700115d02@codeweavers.com>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EEEC061756;
+        Wed, 17 Feb 2021 11:54:55 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id F15B91F4580A
+Message-ID: <e7b6201fa2a4b199b38536b0723cce52d5b67b41.camel@collabora.com>
+Subject: Re: [PATCH v1 04/18] media: hevc: add structures for hevc codec
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+Date:   Wed, 17 Feb 2021 16:54:40 -0300
+In-Reply-To: <20210217080306.157876-5-benjamin.gaignard@collabora.com>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+         <20210217080306.157876-5-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <597788e4-661d-633f-857c-3de700115d02@codeweavers.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:17:25PM -0500, Nicholas Fraser wrote:
-> lsdir_bid_tail_filter() ignored any build-id that wasn't exactly 20
-> bytes. This worked only for SHA-1 build-ids. The build-id for a PE file
-> is always a 16-byte GUID and ELF files can also have MD5 or UUID
-> build-ids.
+Hi Benjamin,
+
+Thanks a lot for picking this up.
+
+On Wed, 2021-02-17 at 09:02 +0100, Benjamin Gaignard wrote:
+> Define additional structures to be used by HEVC codecs.
+> This will allow to provide the needed information to the
+> hardware block.
+> Adapt Cedrus driver to use these new structures
 > 
-> This fix changes the filter to allow build-ids between 16 and 20 bytes.
-> 
-> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+So this commit description needs some more information.
 
-thanks,
-jirka
+See commit d9358563179a7f01f9020ebbe201c7e54ba3af48
+Author: Ezequiel Garcia <ezequiel@collabora.com>
+Date:   Tue Aug 25 05:52:36 2020 +0200
 
+    media: uapi: h264: Clean slice invariants syntax elements
+
+which explains why it's OK to move some fields out of the slice control,
+and which also explains which fields can be moved.
+
+See 7.4.7.1 General slice segment header semantics, in the H.265 ITU specification.
+
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
 > ---
->  tools/perf/util/build-id.c | 5 +++--
->  tools/perf/util/build-id.h | 4 +++-
->  2 files changed, 6 insertions(+), 3 deletions(-)
+>  drivers/staging/media/sunxi/cedrus/cedrus.c   |  6 +++
+>  drivers/staging/media/sunxi/cedrus/cedrus.h   |  1 +
+>  .../staging/media/sunxi/cedrus/cedrus_dec.c   |  2 +
+>  .../staging/media/sunxi/cedrus/cedrus_h265.c  |  6 ++-
+>  include/media/hevc-ctrls.h                    | 52 ++++++++++++++++---
+>  5 files changed, 57 insertions(+), 10 deletions(-)
 > 
-> diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-> index 02df36b30ac5..e32e8f2ff3bd 100644
-> --- a/tools/perf/util/build-id.c
-> +++ b/tools/perf/util/build-id.c
-> @@ -448,7 +448,8 @@ static bool lsdir_bid_tail_filter(const char *name __maybe_unused,
->  	int i = 0;
->  	while (isxdigit(d->d_name[i]) && i < SBUILD_ID_SIZE - 3)
->  		i++;
-> -	return (i == SBUILD_ID_SIZE - 3) && (d->d_name[i] == '\0');
-> +	return (i >= SBUILD_ID_MIN_SIZE - 3) && (i <= SBUILD_ID_SIZE - 3) &&
-> +		(d->d_name[i] == '\0');
->  }
->  
->  struct strlist *build_id_cache__list_all(bool validonly)
-> @@ -490,7 +491,7 @@ struct strlist *build_id_cache__list_all(bool validonly)
->  		}
->  		strlist__for_each_entry(nd2, linklist) {
->  			if (snprintf(sbuild_id, SBUILD_ID_SIZE, "%s%s",
-> -				     nd->s, nd2->s) != SBUILD_ID_SIZE - 1)
-> +				     nd->s, nd2->s) > SBUILD_ID_SIZE - 1)
->  				goto err_out;
->  			if (validonly && !build_id_cache__valid_id(sbuild_id))
->  				continue;
-> diff --git a/tools/perf/util/build-id.h b/tools/perf/util/build-id.h
-> index 02613f4b2c29..c19617151670 100644
-> --- a/tools/perf/util/build-id.h
-> +++ b/tools/perf/util/build-id.h
-> @@ -2,8 +2,10 @@
->  #ifndef PERF_BUILD_ID_H_
->  #define PERF_BUILD_ID_H_ 1
->  
-> -#define BUILD_ID_SIZE	20
-> +#define BUILD_ID_SIZE	20 /* SHA-1 length in bytes */
-> +#define BUILD_ID_MIN_SIZE	16 /* MD5/UUID/GUID length in bytes */
->  #define SBUILD_ID_SIZE	(BUILD_ID_SIZE * 2 + 1)
-> +#define SBUILD_ID_MIN_SIZE	(BUILD_ID_MIN_SIZE * 2 + 1)
->  
->  #include "machine.h"
->  #include "tool.h"
-> -- 
-> 2.30.0
-> 
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/media/sunxi/cedrus/cedrus.c
+> index 7bd9291c8d5f..4cd3cab1a257 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
+> @@ -151,6 +151,12 @@ static const struct cedrus_control cedrus_controls[] = {
+>                 },
+>                 .codec          = CEDRUS_CODEC_VP8,
+>         },
+> +       {
+> +               .cfg = {
+> +                       .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
+> +               },
+> +               .codec          = CEDRUS_CODEC_H265,
+> +       },
+>  };
+>  
+>  #define CEDRUS_CONTROLS_COUNT  ARRAY_SIZE(cedrus_controls)
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.h b/drivers/staging/media/sunxi/cedrus/cedrus.h
+> index 251a6a660351..c18b7f7a2820 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus.h
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.h
+> @@ -76,6 +76,7 @@ struct cedrus_h265_run {
+>         const struct v4l2_ctrl_hevc_sps                 *sps;
+>         const struct v4l2_ctrl_hevc_pps                 *pps;
+>         const struct v4l2_ctrl_hevc_slice_params        *slice_params;
+> +       const struct v4l2_ctrl_hevc_decode_params       *decode_params;
+>  };
+>  
+>  struct cedrus_vp8_run {
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
+> index a9090daf626a..cd821f417a14 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
+> @@ -68,6 +68,8 @@ void cedrus_device_run(void *priv)
+>                         V4L2_CID_MPEG_VIDEO_HEVC_PPS);
+>                 run.h265.slice_params = cedrus_find_control_data(ctx,
+>                         V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS);
+> +               run.h265.decode_params = cedrus_find_control_data(ctx,
+> +                       V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS);
+>                 break;
+>  
+>         case V4L2_PIX_FMT_VP8_FRAME:
+> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+> index ce497d0197df..dce5db6be13a 100644
+> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
+> @@ -245,6 +245,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
+>         const struct v4l2_ctrl_hevc_sps *sps;
+>         const struct v4l2_ctrl_hevc_pps *pps;
+>         const struct v4l2_ctrl_hevc_slice_params *slice_params;
+> +       const struct v4l2_ctrl_hevc_decode_params *decode_params;
+>         const struct v4l2_hevc_pred_weight_table *pred_weight_table;
+>         dma_addr_t src_buf_addr;
+>         dma_addr_t src_buf_end_addr;
+> @@ -256,6 +257,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
+>         sps = run->h265.sps;
+>         pps = run->h265.pps;
+>         slice_params = run->h265.slice_params;
+> +       decode_params = run->h265.decode_params;
+>         pred_weight_table = &slice_params->pred_weight_table;
+>  
+>         /* MV column buffer size and allocation. */
+> @@ -487,7 +489,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
+>  
+>         reg = VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_TC_OFFSET_DIV2(slice_params->slice_tc_offset_div2) |
+>               VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_BETA_OFFSET_DIV2(slice_params->slice_beta_offset_div2) |
+> -             VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(slice_params->num_rps_poc_st_curr_after == 0) |
+> +             VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(decode_params->num_rps_poc_st_curr_after == 0) |
+>               VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CR_QP_OFFSET(slice_params->slice_cr_qp_offset) |
+>               VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CB_QP_OFFSET(slice_params->slice_cb_qp_offset) |
+>               VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_QP_DELTA(slice_params->slice_qp_delta);
+> @@ -528,7 +530,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
+>  
+>         /* Write decoded picture buffer in pic list. */
+>         cedrus_h265_frame_info_write_dpb(ctx, slice_params->dpb,
+> -                                        slice_params->num_active_dpb_entries);
+> +                                        decode_params->num_active_dpb_entries);
+>  
+>         /* Output frame. */
+>  
+> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+> index ce503bbcb441..799c81612242 100644
+> --- a/include/media/hevc-ctrls.h
+> +++ b/include/media/hevc-ctrls.h
+> @@ -58,6 +58,9 @@ enum v4l2_mpeg_video_hevc_start_code {
+>  /* The controls are not stable at the moment and will likely be reworked. */
+>  struct v4l2_ctrl_hevc_sps {
+>         /* ISO/IEC 23008-2, ITU-T Rec. H.265: Sequence parameter set */
+> +       __u8    video_parameter_set_id;
+> +       __u8    seq_parameter_set_id;
+> +       __u8    chroma_format_idc;
+>         __u16   pic_width_in_luma_samples;
+>         __u16   pic_height_in_luma_samples;
+>         __u8    bit_depth_luma_minus8;
+> @@ -78,9 +81,9 @@ struct v4l2_ctrl_hevc_sps {
+>         __u8    log2_diff_max_min_pcm_luma_coding_block_size;
+>         __u8    num_short_term_ref_pic_sets;
+>         __u8    num_long_term_ref_pics_sps;
+> -       __u8    chroma_format_idc;
+>  
+> -       __u8    padding;
+> +       __u8    num_slices;
+> +       __u8    padding[6];
+>  
+>         __u64   flags;
+>  };
+> @@ -104,10 +107,15 @@ struct v4l2_ctrl_hevc_sps {
+>  #define V4L2_HEVC_PPS_FLAG_PPS_DISABLE_DEBLOCKING_FILTER       (1ULL << 16)
+>  #define V4L2_HEVC_PPS_FLAG_LISTS_MODIFICATION_PRESENT          (1ULL << 17)
+>  #define V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT (1ULL << 18)
+> +#define V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT   (1ULL << 19)
+> +#define V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING                     (1ULL << 20)
+>  
+>  struct v4l2_ctrl_hevc_pps {
+>         /* ISO/IEC 23008-2, ITU-T Rec. H.265: Picture parameter set */
+> +       __u8    pic_parameter_set_id;
+>         __u8    num_extra_slice_header_bits;
+> +       __u8    num_ref_idx_l0_default_active_minus1;
+> +       __u8    num_ref_idx_l1_default_active_minus1;
+>         __s8    init_qp_minus26;
+>         __u8    diff_cu_qp_delta_depth;
+>         __s8    pps_cb_qp_offset;
+> @@ -120,7 +128,7 @@ struct v4l2_ctrl_hevc_pps {
+>         __s8    pps_tc_offset_div2;
+>         __u8    log2_parallel_merge_level_minus2;
+>  
+> -       __u8    padding[4];
+> +       __u8    padding;
+>         __u64   flags;
+>  };
+>  
+> @@ -169,6 +177,10 @@ struct v4l2_ctrl_hevc_slice_params {
+>         __u32   bit_size;
+>         __u32   data_bit_offset;
+>  
+> +       /* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
+> +       __u32   slice_segment_addr;
+> +       __u32   num_entry_point_offsets;
+> +
+>         /* ISO/IEC 23008-2, ITU-T Rec. H.265: NAL unit header */
+>         __u8    nal_unit_type;
+>         __u8    nuh_temporal_id_plus1;
+> @@ -194,15 +206,13 @@ struct v4l2_ctrl_hevc_slice_params {
+>         __u8    pic_struct;
+>  
+>         /* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
+> -       __u8    num_active_dpb_entries;
+>         __u8    ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>         __u8    ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+>  
+> -       __u8    num_rps_poc_st_curr_before;
+> -       __u8    num_rps_poc_st_curr_after;
+> -       __u8    num_rps_poc_lt_curr;
+> +       __u16   short_term_ref_pic_set_size;
+> +       __u16   long_term_ref_pic_set_size;
+>  
+> -       __u8    padding;
+> +       __u8    padding[5];
+>  
+>         /* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header */
+>         struct v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+> @@ -213,4 +223,30 @@ struct v4l2_ctrl_hevc_slice_params {
+>         __u64   flags;
+>  };
+>  
+> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IRAP_PIC           0x1
+> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IDR_PIC            0x2
+> +#define V4L2_HEVC_DECODE_PARAM_FLAG_NO_OUTPUT_OF_PRIOR  0x4
+> +
+> +struct v4l2_ctrl_hevc_decode_params {
+> +       __s32   pic_order_cnt_val;
+> +       __u8    num_active_dpb_entries;
+> +       struct  v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+> +       __u8    num_rps_poc_st_curr_before;
+> +       __u8    num_rps_poc_st_curr_after;
+> +       __u8    num_rps_poc_lt_curr;
+> +       __u8    rps_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+> +       __u8    rps_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+> +       __u8    rps_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
+> +       __u64   flags;
+> +};
+> +
+> +struct v4l2_ctrl_hevc_scaling_matrix {
+
+I believe this v4l2_ctrl_hevc_scaling_matrix change shouldn't be here.
+
+Thanks,
+Ezequiel
 
