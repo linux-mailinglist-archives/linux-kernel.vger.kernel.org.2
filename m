@@ -2,50 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3F531DB01
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39CCD31DB03
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 14:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhBQNyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 08:54:38 -0500
-Received: from muru.com ([72.249.23.125]:34676 "EHLO muru.com"
+        id S233055AbhBQNzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 08:55:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51728 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231470AbhBQNye (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 08:54:34 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 6F8CF8061;
-        Wed, 17 Feb 2021 13:54:14 +0000 (UTC)
-Date:   Wed, 17 Feb 2021 15:53:46 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 0/3] pinctrl: pinmux: Add pinmux-select debugfs file
-Message-ID: <YC0f6uuNlbv7wjyP@atomide.com>
-References: <20210216224455.1504008-1-drew@beagleboard.org>
+        id S232927AbhBQNzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 08:55:17 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613570070; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cGZn21Gwdacac4lJmjWs7og7us1pnxGAs5d/KiaX3Wc=;
+        b=CuQ9syD5a9/plxWcOzZtRtU/gUDxV/DyJ0MWCNEZtRqMzA8snhlchgrKXuAE2Q1zyxViaV
+        9xFeI788BLis5xvMfejXS8fJoIkVbzlPDoFiCL6Uw6el5F4xYJQRz2cP9+CC345O21bZkR
+        SnLE+caGcsCCV5znjNj/2XAkg36h4PY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D2997B761;
+        Wed, 17 Feb 2021 13:54:30 +0000 (UTC)
+Date:   Wed, 17 Feb 2021 14:54:24 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: Make alloc_contig_range handle in-use hugetlb
+ pages
+Message-ID: <YC0gEBEeeDT1lZhD@dhcp22.suse.cz>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-3-osalvador@suse.de>
+ <YC0b39IfoI+c0ts1@dhcp22.suse.cz>
+ <20210217134649.GB32488@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210216224455.1504008-1-drew@beagleboard.org>
+In-Reply-To: <20210217134649.GB32488@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Drew Fustini <drew@beagleboard.org> [210216 22:46]:
-> This series first converts the debugfs files in the pinctrl subsystem to
-> octal permissions and then adds a new debugfs file "pinmux-select".
+On Wed 17-02-21 14:46:49, Oscar Salvador wrote:
+> On Wed, Feb 17, 2021 at 02:36:31PM +0100, Michal Hocko wrote:
+> > On Wed 17-02-21 11:08:16, Oscar Salvador wrote:
+> > > In-use hugetlb pages can be migrated as any other page (LRU
+> > > and Movable), so let alloc_contig_range handle them.
+> > > 
+> > > All we need is to succesfully isolate such page.
+> > 
+> > Again, this is missing a problem statement and a justification why we
+> > want/need this.
 > 
-> Function name and group name can be written to "pinmux-select" which
-> will cause the function and group to be activated on the pin controller.
+> Heh, I was poor in words.
+> 
+> "alloc_contig_range() will fail miserably if it finds a HugeTLB page within
+>  the range without a chance to handle them. Since HugeTLB pages can be migrated
+>  as any other page (LRU and Movable), it does not make sense to bail out.
+>  Enable the interface to recognize in-use HugeTLB pages and have a chance
+>  to migrate them"
+> 
+> What about something along those lines?
 
-Nice to see this happening!
-
-Reviewed-by: Tony Lindgren <tony@atomide.com>
+Is this a real life problem? I know we _can_ but I do not see any
+reasoning _why_ should we care all that much.
+-- 
+Michal Hocko
+SUSE Labs
