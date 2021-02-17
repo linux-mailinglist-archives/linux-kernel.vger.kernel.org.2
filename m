@@ -2,62 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE8431D8F8
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E3B31D92D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:10:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhBQMA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:00:56 -0500
-Received: from foss.arm.com ([217.140.110.172]:57482 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232459AbhBQMAS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:00:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94B2C1042;
-        Wed, 17 Feb 2021 03:59:20 -0800 (PST)
-Received: from e123648.arm.com (unknown [10.57.61.90])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 99F863F694;
-        Wed, 17 Feb 2021 03:59:18 -0800 (PST)
-From:   Lukasz Luba <lukasz.luba@arm.com>
-To:     linux-kernel@vger.kernel.org, javi.merino@kernel.org,
-        daniel.lezcano@linaro.org
-Cc:     viresh.kumar@linaro.org, thara.gopinath@linaro.org,
-        amitk@kernel.org, rui.zhang@intel.com
-Subject: [RESEND PATCH] MAINTAINERS: update thermal CPU cooling section
-Date:   Wed, 17 Feb 2021 11:59:08 +0000
-Message-Id: <20210217115908.22547-1-lukasz.luba@arm.com>
-X-Mailer: git-send-email 2.17.1
+        id S232596AbhBQMJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:09:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232604AbhBQMDo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:03:44 -0500
+X-Greylist: delayed 164 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 17 Feb 2021 04:03:02 PST
+Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46527C06178A;
+        Wed, 17 Feb 2021 04:03:02 -0800 (PST)
+Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id E82BF2E1331;
+        Wed, 17 Feb 2021 14:58:54 +0300 (MSK)
+Received: from iva4-f06c35e68a0a.qloud-c.yandex.net (iva4-f06c35e68a0a.qloud-c.yandex.net [2a02:6b8:c0c:152e:0:640:f06c:35e6])
+        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with ESMTP id yLPDcZwg70-wrxenppT;
+        Wed, 17 Feb 2021 14:58:54 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.com; s=default;
+        t=1613563134; bh=vUwCClxuuPybLqdPXj4P31Jz2tCAVBtC1IxfWOO/Vmo=;
+        h=Message-Id:Date:Subject:To:From:Cc;
+        b=f68LnMvHOlCg6quWIKcZyZHX1xm+vHio8tQ99b5GUIsKWZL55IUH9Qq9xkdV02GIx
+         Kt3aenj8gShgJqIQ37KU2unY949lU83vp9SfBRG/xly8nM4F5jP5lZrXDH5zFBWfq2
+         qkdOjGQ7+9Xc8bYgPe9QG33aP/rVCZpLMxbFAkKc=
+Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.com
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7222::1:5])
+        by iva4-f06c35e68a0a.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id GINHK1nK2P-wrnWtRAm;
+        Wed, 17 Feb 2021 14:58:53 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Andrey Ryabinin <arbn@yandex-team.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Boris Burkov <boris@bur.io>,
+        Bharata B Rao <bharata@linux.vnet.ibm.com>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrey Ryabinin <arbn@yandex-team.com>, stable@vger.kernel.org
+Subject: [PATCH 1/4] cputime,cpuacct: Include guest time in user time in cpuacct.stat
+Date:   Wed, 17 Feb 2021 15:00:01 +0300
+Message-Id: <20210217120004.7984-1-arbn@yandex-team.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update maintainers responsible for CPU cooling on Arm side.
+cpuacct.stat in no-root cgroups shows user time without guest time
+included int it. This doesn't match with user time shown in root
+cpuacct.stat and /proc/<pid>/stat.
 
-Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+Make account_guest_time() to add user time to cgroup's cpustat to
+fix this.
+
+Fixes: ef12fefabf94 ("cpuacct: add per-cgroup utime/stime statistics")
+Signed-off-by: Andrey Ryabinin <arbn@yandex-team.com>
+Cc: <stable@vger.kernel.org>
 ---
-Hi Daniel,
+ kernel/sched/cputime.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-Please ignore the previous email and that this change with 'R'.
-Javi will ack it later.
-
-Regards,
-Lukasz
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index f32ebcff37d2..fe34f56acb0f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17774,7 +17774,7 @@ THERMAL/CPU_COOLING
- M:	Amit Daniel Kachhap <amit.kachhap@gmail.com>
- M:	Daniel Lezcano <daniel.lezcano@linaro.org>
- M:	Viresh Kumar <viresh.kumar@linaro.org>
--M:	Javi Merino <javi.merino@kernel.org>
-+R:	Lukasz Luba <lukasz.luba@arm.com>
- L:	linux-pm@vger.kernel.org
- S:	Supported
- F:	Documentation/driver-api/thermal/cpu-cooling-api.rst
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 5f611658eeab..95a9c5603d29 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -139,8 +139,6 @@ void account_user_time(struct task_struct *p, u64 cputime)
+  */
+ void account_guest_time(struct task_struct *p, u64 cputime)
+ {
+-	u64 *cpustat = kcpustat_this_cpu->cpustat;
+-
+ 	/* Add guest time to process. */
+ 	p->utime += cputime;
+ 	account_group_user_time(p, cputime);
+@@ -148,11 +146,11 @@ void account_guest_time(struct task_struct *p, u64 cputime)
+ 
+ 	/* Add guest time to cpustat. */
+ 	if (task_nice(p) > 0) {
+-		cpustat[CPUTIME_NICE] += cputime;
+-		cpustat[CPUTIME_GUEST_NICE] += cputime;
++		task_group_account_field(p, CPUTIME_NICE, cputime);
++		task_group_account_field(p, CPUTIME_GUEST_NICE, cputime);
+ 	} else {
+-		cpustat[CPUTIME_USER] += cputime;
+-		cpustat[CPUTIME_GUEST] += cputime;
++		task_group_account_field(p, CPUTIME_USER, cputime);
++		task_group_account_field(p, CPUTIME_GUEST, cputime);
+ 	}
+ }
+ 
 -- 
-2.17.1
+2.26.2
 
