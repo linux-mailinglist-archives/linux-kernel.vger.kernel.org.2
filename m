@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13EC131D5BA
+	by mail.lfdr.de (Postfix) with ESMTP id B271231D5BB
 	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 08:38:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231723AbhBQHfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 02:35:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
+        id S231735AbhBQHf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 02:35:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231515AbhBQHeZ (ORCPT
+        with ESMTP id S231695AbhBQHe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 02:34:25 -0500
+        Wed, 17 Feb 2021 02:34:27 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C026FC0613D6
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:45 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 194so11033121ybl.5
-        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:45 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F35C061786
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:47 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id v6so7751873ybk.9
+        for <linux-kernel@vger.kernel.org>; Tue, 16 Feb 2021 23:33:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=rtEvX9uHlSIREHQ1L0f6M87+3kUQFXopkD5d6A+OYIs=;
-        b=AySBwm6HzK80xSd6gz20mv82RpE4YpXB0addGcZ/cAzlm8Qf0iI0ILq+pp11DVwdPw
-         jGpW6eTIGKv09jiLEaY9GJDlT2OTihudHlDnTNti/0BjyyWatRbtVk6AhbzZzugSX/iK
-         YP9eOOWSwMjagdtmAWJGh07UiEHeuqKucI6wECf9w+U0PEvHlnC6+QZ3ODHgkH3P/o+p
-         BBzKSL3fW7myaTrqAWFPx/2YmEvK69ihV94QHrVtIjJBtOzEh6qbrJTmxu81b3Vhbfge
-         pEvLERnQDeAoPLSpKQm8vuRuA8xhCPD04nUKP7CWCf9KUBgmeTixRVVgO2b3LVP4w2J4
-         G+5Q==
+        bh=ThH9iVP9QdHLrLEcluQEGDH9qW5NfRpLNK2v5o+PxGg=;
+        b=b2igWe9XdEIaW4pxLIl/xX06ld2NsrEM+ApAoXqSrJoWs0ncizd9MbjQMLNmBSq/1J
+         vnbrsNoRGSjLF0ysn9q/0hEIwimByU97K7/DKZYDPWHrkN9oHgUiW1vwcwxfbfXVFtrW
+         CRDeu+SejB6njxGYIFfZF4LSVtvTZki22wYV/Tk6zMwSSDdRV+XllNr16vD4UhUXBcOL
+         npKXlP2Uk1RT/23Z0lnwDkm/B4qf/4wQ6QsbpgF69W4UdZSpIIoJMY64rVMfozBmbukv
+         TGRPpXOzZWntQAKeX6DxxWmTcFN2kYtOYwK7tlFkWriMqqFt2bi6tLZppTSK17p5rP/d
+         ZPjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=rtEvX9uHlSIREHQ1L0f6M87+3kUQFXopkD5d6A+OYIs=;
-        b=qQQ8aJZsEFc0rGyA+tnQRahlzOgG3//c3oHUr3bWQIJbMEYus7ouVJQXEhmzzTSgp2
-         g1//sBjPDdaCWLNBcU5OcDZL7HGbwDRtEqjpAcXeFbxxz2TBpeFMkTyiRDRihzbiodfs
-         ZIXqmpZOLPIeQZG+PBtqbSrrTkv0aPXAR8+uG/zEh3dBXMm30hoOmLK3lrDDa5+VD0OE
-         LnxFOpjcV6p08NRO0aZT/9yebvJc2hS1Zjoy9eiNboBP3AB1vYZqx9kYRA/cCbDRESxE
-         3ROOeu+y7W+78EMlkbkxqDsChVWKgX09FMXH/VOl7w4aWF0uiNxI+DaEythxAh6Gq03K
-         JnWA==
-X-Gm-Message-State: AOAM532J9NJuU68G7UDUqC/U0KWpwxziM2ApKhIsN40tFRDCdkQ6QzVB
-        0A/scHM+IO8R01LEc7X+BKc1nfY=
-X-Google-Smtp-Source: ABdhPJwZwa33Fvv0Q+0+YgVsN88Ef2HImtzrVLyYZfcz75bz7Vj/q6Ild0NYRZ+yoGx2orO5UgaEYLQ=
+        bh=ThH9iVP9QdHLrLEcluQEGDH9qW5NfRpLNK2v5o+PxGg=;
+        b=oaLImmRh8HXEuEPQTo4SCyefLRLDi6Zd46RU+8Bm1x9Qe5Go7QtE9Gd5x5bjUCmGPc
+         Lbfxg6A44qaic8pMyZWDrP18WTngvXVSD7YFUIWyC+IZ+YmV071tJGM6pb+NWYnKN6iw
+         UipiAsDKSrEfGZsH3RjlnQ21D2LyiXcj1XBoJ1C1uphaiE/7y9SneYJGr4stMkn0+r37
+         2OchHdo9pm0J+ecKawTMZTTYzev/ay8S+rxabvB5VlzBuFRuPxEJ+zFpxYdvf4OrPcGK
+         R2/pl/5sIORh8Y5XcOson/xLOBpTzfz0ZgK/cQa35TZZhR5y2Ju1klI2Uzja9VM6X3Ke
+         T4RA==
+X-Gm-Message-State: AOAM533/e8a7spNnql/diyFe7aXsvbRR3jo2vhHtSqL2OFV02A9MKHlX
+        GC/KjRqLjxJHYr3xdC4d1uT6ghU=
+X-Google-Smtp-Source: ABdhPJy/kxrSjIK+iknn1KcMXRYxX4ywp0jUWV3GdSTX0/XUdl4mjNsdLDE5Srm48uH9LeG0rTNmr0M=
 Sender: "wak via sendgmr" <wak@wak-linux.svl.corp.google.com>
 X-Received: from wak-linux.svl.corp.google.com ([2620:15c:2c5:3:e984:b7fc:110a:274a])
- (user=wak job=sendgmr) by 2002:a25:4684:: with SMTP id t126mr34118792yba.102.1613547225007;
- Tue, 16 Feb 2021 23:33:45 -0800 (PST)
-Date:   Tue, 16 Feb 2021 23:33:16 -0800
+ (user=wak job=sendgmr) by 2002:a25:7613:: with SMTP id r19mr27769351ybc.212.1613547226987;
+ Tue, 16 Feb 2021 23:33:46 -0800 (PST)
+Date:   Tue, 16 Feb 2021 23:33:17 -0800
 In-Reply-To: <20210217073318.540369-1-wak@google.com>
-Message-Id: <20210217073318.540369-3-wak@google.com>
+Message-Id: <20210217073318.540369-4-wak@google.com>
 Mime-Version: 1.0
 References: <20210217073318.540369-1-wak@google.com>
 X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH 3/4] ipmi: kcs_bmc: Invert allocation pattern
+Subject: [PATCH 3/4] ipmi: kcs_bmc: Invert allocation
 From:   "William A. Kennington III" <wak@google.com>
 To:     Corey Minyard <minyard@acm.org>
 Cc:     openipmi-developer@lists.sourceforge.net,
@@ -63,10 +63,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The generic kcs_bmc code shouldn't need to store data on behalf of the
-platform specific driver that initializes it. Instead, have the platform
-specific driver allocate memory and call a generic initialization
-routine.
+This is a more typical pattern for having the platform specific drivers
+store their own data around the generic driver data.
 
 Signed-off-by: William A. Kennington III <wak@google.com>
 ---
@@ -77,10 +75,10 @@ Signed-off-by: William A. Kennington III <wak@google.com>
  4 files changed, 163 insertions(+), 167 deletions(-)
 
 diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
-index aa2093323622..16a378d79db9 100644
+index 4c504588e714..f182c4f6f982 100644
 --- a/drivers/char/ipmi/kcs_bmc.c
 +++ b/drivers/char/ipmi/kcs_bmc.c
-@@ -276,9 +276,6 @@ static ssize_t kcs_bmc_read(struct file *filp, char __user *buf,
+@@ -277,9 +277,6 @@ static ssize_t kcs_bmc_read(struct file *filp, char __user *buf,
  	}
  
  	if (count < data_len) {
@@ -90,7 +88,7 @@ index aa2093323622..16a378d79db9 100644
  		spin_lock_irq(&kcs_bmc->lock);
  		kcs_force_abort(kcs_bmc);
  		spin_unlock_irq(&kcs_bmc->lock);
-@@ -401,17 +398,11 @@ static const struct file_operations kcs_bmc_fops = {
+@@ -402,17 +399,11 @@ static const struct file_operations kcs_bmc_fops = {
  	.unlocked_ioctl = kcs_bmc_ioctl,
  };
  
@@ -110,7 +108,7 @@ index aa2093323622..16a378d79db9 100644
  	mutex_init(&kcs_bmc->mutex);
  	init_waitqueue_head(&kcs_bmc->queue);
  
-@@ -419,17 +410,28 @@ struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel)
+@@ -420,17 +411,28 @@ struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel)
  	kcs_bmc->data_out = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
  	kcs_bmc->kbuffer = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
  
