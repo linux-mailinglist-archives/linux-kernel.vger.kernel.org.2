@@ -2,134 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43ACA31DF7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B17E31DF6D
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 20:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbhBQTTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 14:19:16 -0500
-Received: from ec2-44-228-98-151.us-west-2.compute.amazonaws.com ([44.228.98.151]:58878
-        "EHLO chill.innovation.ch" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232547AbhBQTTN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 14:19:13 -0500
-X-Greylist: delayed 651 seconds by postgrey-1.27 at vger.kernel.org; Wed, 17 Feb 2021 14:19:10 EST
-Received: from localhost (localhost [127.0.0.1])
-        by chill.innovation.ch (Postfix) with ESMTP id 30D451B640F;
-        Wed, 17 Feb 2021 19:07:32 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at chill.innovation.ch
-Received: from chill.innovation.ch ([127.0.0.1])
-        by localhost (chill.innovation.ch [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id 7BxdjnFa6Gfu; Wed, 17 Feb 2021 19:07:31 +0000 (UTC)
-From:   =?UTF-8?q?Ronald=20Tschal=C3=A4r?= <ronald@innovation.ch>
-DKIM-Filter: OpenDKIM Filter v2.11.0 chill.innovation.ch 77B491B5EA9
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=innovation.ch;
-        s=default; t=1613588851;
-        bh=NTnBPdcPQ1mHAuBRtKTt9xZ5SgKJhiroAKknFH1WnTw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bjhz7O0GLjLTNOkGgBYYRnp9CBqiOsET9xfFY56qDsSxdHc7lpTIB8Nj5s8g0RGiX
-         4cJVGHvCZEkrfhaBvjueFaVDAUkMpdFoJVy+Ja9LoShKKssBoRdTneci9h3uTS/MIs
-         NzrN6crorswasrDXGxzyydNVitahKYpClQ94koL7C9R554dJ38Y24OL87PrDWrci3S
-         St0BCcJNP4kf06+0CipaFtNK2VwQ/kDrHG4g+v6UuA/cdT5eBqXFWlJd60NmbUk75+
-         ecC4d/6YGdC+ieNIb8JW15fcHsEpG+1NTvFW7NfbYc63ZIJkUVDiGlabMqH9Y52S2c
-         wR4lmGJm+vm/g==
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] Input: applespi: Add trace_event module param for early tracing.
-Date:   Wed, 17 Feb 2021 11:07:18 -0800
-Message-Id: <20210217190718.11035-3-ronald@innovation.ch>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210217190718.11035-1-ronald@innovation.ch>
-References: <20210217190718.11035-1-ronald@innovation.ch>
+        id S231842AbhBQTJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 14:09:37 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:42714 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231491AbhBQTJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 14:09:33 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613588945; h=In-Reply-To: Content-Type: MIME-Version:
+ References: Message-ID: Subject: Cc: To: From: Date: Sender;
+ bh=iUgyAmn0n/jIbpXd2qZaNyiWNOIW2DJRiGM1oQdo+qY=; b=oGeEk4dCgdU6/ltiBdxn7FWBChAq4rrSUgV7VmTKgAAe8fKvCPjhL4vgWok6tHvr7s6F89Lx
+ R80wQ0gavb9GrUcVJbyBSSsUs2Ay6H1I2CIcZfP4OvFRBZ1g4Bc+Uk301Dxu8k4KKKWze6S2
+ 0vILZ9MlaWPkzMvKOz8e2JX6EFg=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 602d69a91e797edad879c13e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 17 Feb 2021 19:08:25
+ GMT
+Sender: jcrouse=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2769CC43462; Wed, 17 Feb 2021 19:08:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jcrouse)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 256B9C433C6;
+        Wed, 17 Feb 2021 19:08:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 256B9C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jcrouse@codeaurora.org
+Date:   Wed, 17 Feb 2021 12:08:20 -0700
+From:   Jordan Crouse <jcrouse@codeaurora.org>
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Jonathan Marek <jonathan@marek.ca>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drm/msm/a6xx: fix for kernels without CONFIG_NVMEM
+Message-ID: <20210217190820.GA2229@jcrouse1-lnx.qualcomm.com>
+Mail-Followup-To: Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>, Jonathan Marek <jonathan@marek.ca>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210216200909.19039-1-jonathan@marek.ca>
+ <CAF6AEGv53nnzqMgTfSA6t2YpHx1dDW8UqnH9Gw0w3p8bf0mTLw@mail.gmail.com>
+ <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The problem is that tracing can't be set via sysfs until the module is
-loaded, at which point the keyboard and trackpad initialization commands
-have already been run and hence tracing can't be used to debug problems
-here.
+On Wed, Feb 17, 2021 at 07:14:16PM +0530, Akhil P Oommen wrote:
+> On 2/17/2021 8:36 AM, Rob Clark wrote:
+> >On Tue, Feb 16, 2021 at 12:10 PM Jonathan Marek <jonathan@marek.ca> wrote:
+> >>
+> >>Ignore nvmem_cell_get() EOPNOTSUPP error in the same way as a ENOENT error,
+> >>to fix the case where the kernel was compiled without CONFIG_NVMEM.
+> >>
+> >>Fixes: fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
+> >>Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> >>---
+> >>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
+> >>  1 file changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >>diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >>index ba8e9d3cf0fe..7fe5d97606aa 100644
+> >>--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >>+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >>@@ -1356,10 +1356,10 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+> >>
+> >>         cell = nvmem_cell_get(dev, "speed_bin");
+> >>         /*
+> >>-        * -ENOENT means that the platform doesn't support speedbin which is
+> >>-        * fine
+> >>+        * -ENOENT means no speed bin in device tree,
+> >>+        * -EOPNOTSUPP means kernel was built without CONFIG_NVMEM
+> >
+> >very minor nit, it would be nice to at least preserve the gist of the
+> >"which is fine" (ie. some variation of "this is an optional thing and
+> >things won't catch fire without it" ;-))
+> >
+> >(which is, I believe, is true, hopefully Akhil could confirm.. if not
+> >we should have a harder dependency on CONFIG_NVMEM..)
+> IIRC, if the gpu opp table in the DT uses the 'opp-supported-hw' property,
+> we will see some error during boot up if we don't call
+> dev_pm_opp_set_supported_hw(). So calling "nvmem_cell_get(dev, "speed_bin")"
+> is a way to test this.
+> 
+> If there is no other harm, we can put a hard dependency on CONFIG_NVMEM.
 
-Adding this param allows tracing to be enabled for messages sent and
-received during module probing. It takes comma-separated list of events,
-e.g.
+I'm not sure if we want to go this far given the squishiness about module
+dependencies. As far as I know we are the only driver that uses this seriously
+on QCOM SoCs and this is only needed for certain targets. I don't know if we
+want to force every target to build NVMEM and QFPROM on our behalf. But maybe
+I'm just saying that because Kconfig dependencies tend to break my brain (and
+then Arnd has to send a patch to fix it).
 
-  trace_event=applespi_tp_ini_cmd,applespi_bad_crc
+Jordan
 
-Signed-off-by: Ronald Tschalär <ronald@innovation.ch>
----
- drivers/input/keyboard/applespi.c | 32 +++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+> -Akhil.
+> >
+> >BR,
+> >-R
+> >
+> >>          */
+> >>-       if (PTR_ERR(cell) == -ENOENT)
+> >>+       if (PTR_ERR(cell) == -ENOENT || PTR_ERR(cell) == -EOPNOTSUPP)
+> >>                 return 0;
+> >>         else if (IS_ERR(cell)) {
+> >>                 DRM_DEV_ERROR(dev,
+> >>--
+> >>2.26.1
+> >>
+> 
 
-diff --git a/drivers/input/keyboard/applespi.c b/drivers/input/keyboard/applespi.c
-index f0a0067c48ff6..03f9ad0f83967 100644
---- a/drivers/input/keyboard/applespi.c
-+++ b/drivers/input/keyboard/applespi.c
-@@ -53,6 +53,8 @@
- #include <linux/module.h>
- #include <linux/spinlock.h>
- #include <linux/spi/spi.h>
-+#include <linux/string.h>
-+#include <linux/trace_events.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
- 
-@@ -110,6 +112,10 @@ module_param_string(touchpad_dimensions, touchpad_dimensions,
- 		    sizeof(touchpad_dimensions), 0444);
- MODULE_PARM_DESC(touchpad_dimensions, "The pixel dimensions of the touchpad, as XxY+W+H .");
- 
-+static char *trace_event;
-+module_param(trace_event, charp, 0444);
-+MODULE_PARM_DESC(trace_event, "Enable early event tracing. It takes the form of a comma-separated list of events to enable.");
-+
- /**
-  * struct keyboard_protocol - keyboard message.
-  * message.type = 0x0110, message.length = 0x000a
-@@ -1645,6 +1651,30 @@ static void applespi_save_bl_level(struct applespi_data *applespi,
- 			 "Error saving backlight level to EFI vars: %d\n", sts);
- }
- 
-+static void applespi_enable_early_event_tracing(struct device *dev)
-+{
-+	char *buf, *event;
-+	int sts;
-+
-+	if (trace_event && trace_event[0]) {
-+		buf = kstrdup(trace_event, GFP_KERNEL);
-+		if (!buf)
-+			return;
-+
-+		while ((event = strsep(&buf, ","))) {
-+			if (event[0]) {
-+				sts = trace_set_clr_event("applespi", event, 1);
-+				if (sts)
-+					dev_warn(dev,
-+						 "Error setting trace event '%s': %d\n",
-+						 event, sts);
-+			}
-+		}
-+
-+		kfree(buf);
-+	}
-+}
-+
- static int applespi_probe(struct spi_device *spi)
- {
- 	struct applespi_data *applespi;
-@@ -1653,6 +1683,8 @@ static int applespi_probe(struct spi_device *spi)
- 	int sts, i;
- 	unsigned long long gpe, usb_status;
- 
-+	applespi_enable_early_event_tracing(&spi->dev);
-+
- 	/* check if the USB interface is present and enabled already */
- 	acpi_sts = acpi_evaluate_integer(spi_handle, "UIST", NULL, &usb_status);
- 	if (ACPI_SUCCESS(acpi_sts) && usb_status) {
 -- 
-2.26.2
-
+The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
