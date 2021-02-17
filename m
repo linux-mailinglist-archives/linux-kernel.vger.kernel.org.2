@@ -2,208 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5291731D9C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D3831D9C5
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 13:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbhBQMtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 07:49:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54972 "EHLO mail.kernel.org"
+        id S232789AbhBQMv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 07:51:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232062AbhBQMtd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 07:49:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 039C664D7F;
-        Wed, 17 Feb 2021 12:48:50 +0000 (UTC)
+        id S230473AbhBQMvx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 07:51:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BB6864D7F;
+        Wed, 17 Feb 2021 12:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613566131;
-        bh=5d2W/63Jxfiiw0sNrlo+Kx8fUzAfX4DZdK8EvI+meqg=;
+        s=k20201202; t=1613566272;
+        bh=3K4qxG5FxziY0VbjYqvHR9bFW2KNVRc8FRhAvzJqfbI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GZKs5uCBl58HCXDZQjCwW8JQ+Aihu1zdAmXS92GwOl4r0TMQ284t40eKf+OG5Eon/
-         usCO/UPZyd02QlYjBma4G/bMnMplKZFGjoFZjq1miMhWut3n8Z9FGIyFOBKcvqYaw+
-         6Y2XL1fw1nx2phPuHGg2VsyfKrpd2wryt6rwxa95UjZmT4UTX7wKWg9vj2T0iU+utM
-         osJ7ZArQLJXrS5bQt+cCZkEnZhSXl0/VpIkFNqfP2YTHRRDWqi/kdBP1vTNfZ9lPkO
-         yYHKXvUkMjxBiiTTMBEpCCi1o+BTrBWlU/z8xS2f93Hn9QfPhk8i7fjqNxwVaFWc5V
-         NUHqvkq5IHRdw==
+        b=asLWbWxdyJgKGbMqamq7TNlwn0NaRzjzmz4QYmGVxmq8BmZX9kaZYlkS9iSrWPJcG
+         FfR5G2rfeCADNTpstSq5reFEN1lPj+xjeet+Ic1bSZuSaytPoi/hOqo1pIL9c0EAuo
+         KrAyI+a38OVVtt9csomAb3a9GES5xq4t2xSelCylBeTIveQPLO88cAqkAmfk2ip8Lf
+         4GzB1qtiZvwIxyrjJy1TzSyLL59mXS80MEm2MH4vUa5H2Zt7eIoaQJgd5NhoQtmt5a
+         ojWZCKx7CU0to9eGvdmHFcCwcYncFzM9QNyMoov5ojQf5ROMn6t/AF11CZ5+A5/Nf3
+         eLbReNamn+Edg==
 Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id CBC7E40CD9; Wed, 17 Feb 2021 09:48:48 -0300 (-03)
-Date:   Wed, 17 Feb 2021 09:48:48 -0300
+        id 6DECF40CD9; Wed, 17 Feb 2021 09:51:10 -0300 (-03)
+Date:   Wed, 17 Feb 2021 09:51:10 -0300
 From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Domenico Andreoli <cavok@debian.org>
-Cc:     Sedat Dilek <sedat.dilek@gmail.com>, dwarves@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
-        Daniel =?iso-8859-1?Q?P=2E_Berrang=E9?= <berrange@redhat.com>,
-        Tom Stellard <tstellar@redhat.com>, 705969@bugs.debian.org
-Subject: Re: ANNOUNCE: pahole v1.20 (gcc11 DWARF5's default, lots of ELF
- sections, BTF)
-Message-ID: <YC0QsIprcCwxc+jK@kernel.org>
-References: <20210204220741.GA920417@kernel.org>
- <CA+icZUXngJL2WXRyeWDjTyBYbXc0uC0_C69nBH9bq4sr_TAx5g@mail.gmail.com>
- <20210208123253.GI920417@kernel.org>
- <YC0HN+0Tva0lOPIt@m4>
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Subject: Re: [PATCH v2] perf tools: Resolve symbols against debug file first
+Message-ID: <YC0RPsH83ppYFsBF@kernel.org>
+References: <20210217122125.26416-1-jslaby@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC0HN+0Tva0lOPIt@m4>
+In-Reply-To: <20210217122125.26416-1-jslaby@suse.cz>
 X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Feb 17, 2021 at 01:08:23PM +0100, Domenico Andreoli escreveu:
-> On Mon, Feb 08, 2021 at 09:32:53AM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Mon, Feb 08, 2021 at 03:44:54AM +0100, Sedat Dilek escreveu:
-> > > On Thu, Feb 4, 2021 at 11:07 PM Arnaldo Carvalho de Melo
-> > > <arnaldo.melo@gmail.com> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > >         The v1.20 release of pahole and its friends is out, mostly
-> > > > addressing problems related to gcc 11 defaulting to DWARF5 for -g,
-> > > > available at the usual places:
-> > > >
-> > > > Main git repo:
-> > > >
-> > > >    git://git.kernel.org/pub/scm/devel/pahole/pahole.git
-> > > >
-> > > > Mirror git repo:
-> > > >
-> > > >    https://github.com/acmel/dwarves.git
-> > > >
-> > > > tarball + gpg signature:
-> > > >
-> > > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.xz
-> > > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.bz2
-> > > >    https://fedorapeople.org/~acme/dwarves/dwarves-1.20.tar.sign
-> > > >
-> > > 
-> > > FYI:
-> > > Debian now ships dwarves package version 1.20-1 in unstable.
-> > > 
-> > > Just a small nit to this release and its tagging:
-> > > 
-> > > You did:
-> > > commit 0d415f68c468b77c5bf8e71965cd08c6efd25fc4 ("pahole: Prep 1.20")
-> > > 
-> > > Is this new?
-> > > 
-> > > The release before:
-> > > commit dd15aa4b0a6421295cbb7c3913429142fef8abe0 ("dwarves: Prep v1.19")
-> > 
-> > Its minor but intentional, pahole is by far the most well known tool in
-> > dwarves, so using that name more frequently (the git repo is pahole.git
-> > , for instance) may help more quickly associate with the tool needed for
-> > BTF encoding, data analysis, etc. And since its not about only DWARF,
-> > perhaps transitioning to using 'pahole' more widely is interesting.
- 
-> Any plan to switch also the release tarball name?
- 
-> We are planning to rename the Debian package once the Bullseye is
-> released, currently it's dwarves-dfsg for legacy/unclear reasons.
- 
-> Would it be a good idea to switch directly to pahole then?
+Em Wed, Feb 17, 2021 at 01:21:25PM +0100, Jiri Slaby escreveu:
+> With LTO, there are symbols like these:
+> /usr/lib/debug/usr/lib64/libantlr4-runtime.so.4.8-4.8-1.4.x86_64.debug
+>  10305: 0000000000955fa4     0 NOTYPE  LOCAL  DEFAULT   29 Predicate.cpp.2bc410e7
+> 
+> This comes from a runtime/debug split done by the standard way:
+> objcopy --only-keep-debug $runtime $debug
+> objcopy --add-gnu-debuglink=$debugfn -R .comment -R .GCC.command.line --strip-all $runtime
+> 
+> perf currently cannot resolve such symbols (relicts of LTO), as section
+> 29 exists only in the debug file (29 is .debug_info). And perf resolves
+> symbols only against runtime file. This results in all symbols from such
+> a library being unresolved:
+>      0.38%  main2    libantlr4-runtime.so.4.8  [.] 0x00000000000671e0
+> 
+> So try resolving against the debug file first. And only if it fails (the
+> section has NOBITS set), try runtime file. We can do this, as "objcopy
+> --only-keep-debug" per documentation preserves all sections, but clears
+> data of some of them (the runtime ones) and marks them as NOBITS.
+> 
+> The correct result is now:
+>      0.38%  main2    libantlr4-runtime.so.4.8  [.] antlr4::IntStream::~IntStream
+> 
+> Note that these LTO symbols are properly skipped anyway as they belong
+> neither to *text* nor to *data* (is_label && !elf_sec__filter(&shdr,
+> secstrs) is true).
+> 
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Yeah, I think it is, I'll check what are the bureaucratic steps to do
-that rename on Fedora and RHEL, but then, no need for all distros to do
-it at once if that is something that requires long term planning or
-whatever.
+Thanks, applied.
 
 - Arnaldo
- 
-> Dom
+
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+> Cc: Jiri Olsa <jolsa@redhat.com>
+> ---
+> [v2] added a comment
 > 
-> > 
-> > - Arnaldo
-> >  
-> > > - Sedat -
-> > > 
-> > > > Best Regards,
-> > > >
-> > > >  - Arnaldo
-> > > >
-> > > > v1.20:
-> > > >
-> > > > BTF encoder:
-> > > >
-> > > >   - Improve ELF error reporting using elf_errmsg(elf_errno()).
-> > > >
-> > > >   - Improve objcopy error handling.
-> > > >
-> > > >   - Fix handling of 'restrict' qualifier, that was being treated as a 'const'.
-> > > >
-> > > >   - Support SHN_XINDEX in st_shndx symbol indexes, to handle ELF objects with
-> > > >     more than 65534 sections, for instance, which happens with kernels built
-> > > >     with 'KCFLAGS="-ffunction-sections -fdata-sections", Other cases may
-> > > >     include when using FG-ASLR, LTO.
-> > > >
-> > > >   - Cope with functions without a name, as seen sometimes when building kernel
-> > > >     images with some versions of clang, when a SEGFAULT was taking place.
-> > > >
-> > > >   - Fix BTF variable generation for kernel modules, not skipping variables at
-> > > >     offset zero.
-> > > >
-> > > >   - Fix address size to match what is in the ELF file being processed, to fix using
-> > > >     a 64-bit pahole binary to generate BTF for a 32-bit vmlinux image.
-> > > >
-> > > >   - Use kernel module ftrace addresses when finding which functions to encode,
-> > > >     which increases the number of functions encoded.
-> > > >
-> > > > libbpf:
-> > > >
-> > > >   - Allow use of packaged version, for distros wanting to dynamically link with
-> > > >     the system's libbpf package instead of using the libbpf git submodule shipped
-> > > >     in pahole's source code.
-> > > >
-> > > > DWARF loader:
-> > > >
-> > > >   - Support DW_AT_data_bit_offset
-> > > >
-> > > >     This appeared in DWARF4 but is supported only in gcc's -gdwarf-5,
-> > > >     support it in a way that makes the output be the same for both cases.
-> > > >
-> > > >       $ gcc -gdwarf-5 -c examples/dwarf5/bf.c
-> > > >       $ pahole bf.o
-> > > >       struct pea {
-> > > >             long int                   a:1;                  /*     0: 0  8 */
-> > > >             long int                   b:1;                  /*     0: 1  8 */
-> > > >             long int                   c:1;                  /*     0: 2  8 */
-> > > >
-> > > >             /* XXX 29 bits hole, try to pack */
-> > > >             /* Bitfield combined with next fields */
-> > > >
-> > > >             int                        after_bitfield;       /*     4     4 */
-> > > >
-> > > >             /* size: 8, cachelines: 1, members: 4 */
-> > > >             /* sum members: 4 */
-> > > >             /* sum bitfield members: 3 bits, bit holes: 1, sum bit holes: 29 bits */
-> > > >             /* last cacheline: 8 bytes */
-> > > >       };
-> > > >
-> > > >   - DW_FORM_implicit_const in attr_numeric() and attr_offset()
-> > > >
-> > > >   - Support DW_TAG_GNU_call_site, its the standardized rename of the previously supported
-> > > >     DW_TAG_GNU_call_site.
-> > > >
-> > > > build:
-> > > >
-> > > >     - Fix compilation on 32-bit architectures.
-> > > >
-> > > > Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > 
-> > -- 
-> > 
-> > - Arnaldo
+>  tools/perf/util/symbol-elf.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
 > 
+> diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+> index f3577f7d72fe..ecc05aa8399d 100644
+> --- a/tools/perf/util/symbol-elf.c
+> +++ b/tools/perf/util/symbol-elf.c
+> @@ -1226,12 +1226,26 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+>  		if (sym.st_shndx == SHN_ABS)
+>  			continue;
+>  
+> -		sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
+> +		sec = elf_getscn(syms_ss->elf, sym.st_shndx);
+>  		if (!sec)
+>  			goto out_elf_end;
+>  
+>  		gelf_getshdr(sec, &shdr);
+>  
+> +		/*
+> +		 * We have to fallback to runtime when syms' section header has
+> +		 * NOBITS set. NOBITS results in file offset (sh_offset) not
+> +		 * being incremented. So sh_offset used below has different
+> +		 * values for syms (invalid) and runtime (valid).
+> +		 */
+> +		if (shdr.sh_type == SHT_NOBITS) {
+> +			sec = elf_getscn(runtime_ss->elf, sym.st_shndx);
+> +			if (!sec)
+> +				goto out_elf_end;
+> +
+> +			gelf_getshdr(sec, &shdr);
+> +		}
+> +
+>  		if (is_label && !elf_sec__filter(&shdr, secstrs))
+>  			continue;
+>  
 > -- 
-> rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
-> ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
-
-
+> 2.30.1
+> 
 
 -- 
 
