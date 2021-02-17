@@ -2,95 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1F331D8BD
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF0731D8BB
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 12:48:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhBQLqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 06:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S232149AbhBQLqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 06:46:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhBQLnc (ORCPT
+        with ESMTP id S231637AbhBQLnc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 17 Feb 2021 06:43:32 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 136A6C06178B;
-        Wed, 17 Feb 2021 03:40:11 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id v62so3333194wmg.4;
-        Wed, 17 Feb 2021 03:40:11 -0800 (PST)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC11EC06178C;
+        Wed, 17 Feb 2021 03:40:18 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id z15so8240628pfc.3;
+        Wed, 17 Feb 2021 03:40:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jiX7X0M+t1Zm8HAFufsMGCFO60ftU2nIQxPg0v/LgAc=;
-        b=Ss506/A9nt5EKOBvaSCczz2B78J4fjW/sVk668oJ+QuvY95oROp0eklSyg9pr7JfKV
-         Mj7Hbwnd6wykfTZbiW1X70hvA4E+2/yCHGJIAcSu8539zp9rl42W0sFy7UpRb5IFzQkw
-         AK3rgwAq3LrU7FUCg7abR4XIE66up10sLZM+SGhcBBTCLGpKinGYHRq8goMmv+1yURqm
-         XaKHI9rVsnTw+4+nUXNDMALxNIWR2djiPa/6fWXNJIBDmPQ1JHYNuEgw9BJPZOIhN6Zu
-         8Wd9J29cCjg90v+a3nmb23HtngIW0mrVcf5TqZCmSz6MYCkoHYn20VMifX3Zwl4hwR92
-         73Lg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=645THBJSX2gD2j8qlDKgO7ipMGXMkXchUslhmTUGCSo=;
+        b=f7LuYmoiqK+h+c4JOKA5/5O/NUjR1n1RFFecrkqaL5USPvrCHPNree9C6uJu1seq/S
+         tHV3xXzOj7boCXHXKyvlYsNQ52f4biaTldoeqQx24X5Z2K7uxJdrybICrBjN736ibs/W
+         v7vbddMvG2+WTjILLvmKLzyb5LKeXHrqeESRmc606sIgXu4TORzes+RY+V9H8euym8hR
+         x8yhqs6CgBkhhtUgtohQJ0qkklvzRX69yVmTZSqfbTdtpSblSPdMLl0JCE1bc2gYWNrC
+         FUMiVuMPyUT7CL56zfFuoQRtFxB0jVvGAK0jEgzAGZ7sbrp/CG9hk0rBfr8196lrQyLj
+         l1Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jiX7X0M+t1Zm8HAFufsMGCFO60ftU2nIQxPg0v/LgAc=;
-        b=O4j37b/zkktBf3h5XtAmHPUs3dmneZTpwv4cm+c7PJ9W8ORqPt+SCSndUolH7gH5LR
-         4LhH6svtPwFpyPyormmKpCAKulu0R72CiSkVsymlmAjZKZl8Ocqz5XJC1Id58fGkHgny
-         siOcd1/IgfMIVcyXuF0blQx4/8o7GlK2JlIWJRtJWJQhXRk1D+pBXOZ2Xv+cntEYDPJc
-         alYA+mLYjovMLTirjzRbEffLQLBjbT1tEPkQU9g2ZQQUqq/Yzj8VEMUflZeqQuP++46d
-         VtQP0UQl+T29bhTKYkBO10XLlnxWl6tUmwjqVFhJ8aWAAvlo9LtLDqt+/G6KTAl13vyD
-         HWzQ==
-X-Gm-Message-State: AOAM5315jGMCPMVz/jbi5dtNXwb4thUT0yLwHKb8zJx8Uw+Y7QTKP41X
-        BdgDfs1fbOXEtI+UsB+tgV8=
-X-Google-Smtp-Source: ABdhPJzuePG01HjKt42jOlK+RehB6tXeB77Vpegn7SuiLtjx93WLKQvzB1N6h//7lhj7llHgXFcT8w==
-X-Received: by 2002:a1c:4903:: with SMTP id w3mr1982855wma.143.1613562009880;
-        Wed, 17 Feb 2021 03:40:09 -0800 (PST)
-Received: from localhost.localdomain (67.red-83-54-30.dynamicip.rima-tde.net. [83.54.30.67])
-        by smtp.gmail.com with ESMTPSA id q140sm3600813wme.0.2021.02.17.03.40.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Feb 2021 03:40:09 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     sboyd@kernel.org
-Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        neil@brown.name
-Subject: [PATCH v7 6/6] MAINTAINERS: add MT7621 CLOCK maintainer
-Date:   Wed, 17 Feb 2021 12:40:00 +0100
-Message-Id: <20210217114000.19571-7-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210217114000.19571-1-sergio.paracuellos@gmail.com>
-References: <20210217114000.19571-1-sergio.paracuellos@gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=645THBJSX2gD2j8qlDKgO7ipMGXMkXchUslhmTUGCSo=;
+        b=qSa9+zqLU3bu0Vpe/1dEaKDtW6QkZtdJaW2kz2cT9kdxkd0ZkGdnIKAhxcrhndXN98
+         R9Gyp7x6fc3ZXIlxChDQWh0L4d5bEcnIE0WH9rL5MEd2pCMsMergw7JTeO4JhVxeJO0L
+         DeaUu/P9a79xHQ2MJKZD6HaqLPOZTMGCPpx7lmdBhiDSNOAjHanMqWTeMj4WJ0Ed6/rA
+         7r4NUnjIyf0XHcK8XudfQ8oCJ1EoDvCjrGjhK2agwb2iUKGT50w0cMTd5P04wd2TsZWl
+         LAOSYrOL9nqR7u2yidWaXRp9AfIkL53AR8BBxwDtFZZI6qKv/9Lm8TJb9t/miFVQv5fP
+         CRWg==
+X-Gm-Message-State: AOAM530etrAeXYMy0D1dIVPQQSc+dZ7MxSD6cpicQ0r+8U0JkJaiVd8c
+        MmWb595I7twtvgSBaOn1DCo=
+X-Google-Smtp-Source: ABdhPJzMUXObPeYAJTsYVaU5Q5UdOBH3zomQSroHpD5o3nnkv4SvHp+sL9tHYOW1Afc88wB25YlwrQ==
+X-Received: by 2002:a05:6a00:787:b029:1da:643b:6d41 with SMTP id g7-20020a056a000787b02901da643b6d41mr24735094pfu.31.1613562017723;
+        Wed, 17 Feb 2021 03:40:17 -0800 (PST)
+Received: from localhost (89.208.244.53.16clouds.com. [89.208.244.53])
+        by smtp.gmail.com with ESMTPSA id c18sm2255853pgm.88.2021.02.17.03.40.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 03:40:17 -0800 (PST)
+Date:   Wed, 17 Feb 2021 19:40:14 +0800
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, helgaas@kernel.org, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] i2c: designware: Use the correct name of
+ device-managed function
+Message-ID: <20210217114014.GB766103@nuc8i5>
+References: <20210216160249.749799-1-zhengdejin5@gmail.com>
+ <20210216160249.749799-4-zhengdejin5@gmail.com>
+ <YCwE2cf9X/Gd6lWy@rocinante>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YCwE2cf9X/Gd6lWy@rocinante>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding myself as maintainer for mt7621 clock driver.
+On Tue, Feb 16, 2021 at 06:46:01PM +0100, Krzysztof Wilczyński wrote:
+Hi Krzysztof,
+> Hi Dejin,
+> 
+> Thank you for all the changes, looks good!
+> 
+> You could improve the subject line, as it is very vague - what is the
+> new function name more correct?  Was the other and/or the previous one
+> not correct?  Seems like you are correcting a typo of sorts, rather than
+> introducing a new function in this file.
+>
+If you have read the following commit comments, As you know, the
+pci_alloc_irq_vectors() is not a real device-managed function. But
+in some specific cases, it will act as an device-managed function.
+Such naming will cause controversy, So In the case of need device-managed,
+should be used pcim_alloc_irq_vectors(), an explicit device-managed
+function. So the subject name is "Use the correct name of device-managed function".
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > Use the new function pcim_alloc_irq_vectors() to allocate IRQ vectors,
+> > the pcim_alloc_irq_vectors() function, an explicit device-managed
+> > version of pci_alloc_irq_vectors(). If pcim_enable_device() has been
+> > called before, then pci_alloc_irq_vectors() is actually
+> > a device-managed function. It is used here as a device-managed
+> > function, So replace it with pcim_alloc_irq_vectors().
+> 
+> The commit is good, but it could use some polish, so to speak.
+> 
+> A few suggestions to think about:
+> 
+>   - What are we adding and/or changing, and why
+>   - Why is using pcim_alloc_irq_vectors(), which is part
+>     of the managed devices framework, a better alternative
+>     to the pci_alloc_irq_vectors()
+>   - And finally why this change allowed us to remove the
+>     pci_free_irq_vectors()
+> 
+These are all explained by the device-managed function mechanism.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 809a68af5efd..be5ada6b4309 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11288,6 +11288,12 @@ L:	linux-wireless@vger.kernel.org
- S:	Maintained
- F:	drivers/net/wireless/mediatek/mt7601u/
- 
-+MEDIATEK MT7621 CLOCK DRIVER
-+M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
-+F:	drivers/clk/ralink/clk-mt7621.c
-+
- MEDIATEK MT7621/28/88 I2C DRIVER
- M:	Stefan Roese <sr@denx.de>
- L:	linux-i2c@vger.kernel.org
--- 
-2.25.1
+> > At the same time, simplify the error handling path.
+> 
+> The change simplifies the error handling path, how?  A line of two which
+> explains how it has been achieved might help should someone reads the
+> commit message in the future.
+> 
+To put it simply, if the driver probe fail, the device-managed function
+mechanism will automatically call pcim_release(), then the pci_free_irq_vectors()
+will be executed. For details, please see the relevant code.
 
+> [...]
+> >  	if (controller->setup) {
+> >  		r = controller->setup(pdev, controller);
+> > -		if (r) {
+> > -			pci_free_irq_vectors(pdev);
+> > +		if (r)
+> >  			return r;
+> > -		}
+> >  	}
+> >  
+> >  	i2c_dw_adjust_bus_speed(dev);
+> > @@ -246,10 +244,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+> >  		i2c_dw_acpi_configure(&pdev->dev);
+> >  
+> >  	r = i2c_dw_validate_speed(dev);
+> > -	if (r) {
+> > -		pci_free_irq_vectors(pdev);
+> > +	if (r)
+> >  		return r;
+> > -	}
+> >  
+> >  	i2c_dw_configure(dev);
+> >  
+> > @@ -269,10 +265,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
+> >  	adap->nr = controller->bus_num;
+> >  
+> >  	r = i2c_dw_probe(dev);
+> > -	if (r) {
+> > -		pci_free_irq_vectors(pdev);
+> > +	if (r)
+> >  		return r;
+> > -	}
+> >  
+> >  	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
+> >  	pm_runtime_use_autosuspend(&pdev->dev);
+> > @@ -292,7 +286,6 @@ static void i2c_dw_pci_remove(struct pci_dev *pdev)
+> >  
+> >  	i2c_del_adapter(&dev->adapter);
+> >  	devm_free_irq(&pdev->dev, dev->irq, dev);
+> > -	pci_free_irq_vectors(pdev);
+> 
+> If pcim_release() is called should the pci_driver's probe callback fail,
+Yes, you guessed right.
+
+> and I assume that this is precisely the case, then all of the above make
+> sense in the view of using pcim_alloc_irq_vectors().
+> 
+> Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+> 
+> Krzysztof
+
+BR,
+Dejin
