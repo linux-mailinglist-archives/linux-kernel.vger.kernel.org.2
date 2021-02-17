@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8488A31D532
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:01:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7EF31D53E
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 07:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhBQGB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 01:01:26 -0500
-Received: from mga09.intel.com ([134.134.136.24]:34697 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhBQGBX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 01:01:23 -0500
-IronPort-SDR: UIxIHHKC0frKkIXsR52ECFUb+mUts79xB9WHtXDJ4fYIsjcTrwyTXC+jZ5K1u1k6wnMtAd+uwU
- gj6mLEf9IEdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9897"; a="183243000"
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="183243000"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2021 22:00:41 -0800
-IronPort-SDR: tSgtMsSpUTVgltzLm0RROy0h3b40BzvRlGZ0R28f/EqM37T4ePG/lgR5p0tJhNimsWYnAOlXA7
- h9DAjeB5WYCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,184,1610438400"; 
-   d="scan'208";a="439239452"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.149]) ([10.237.72.149])
-  by orsmga001.jf.intel.com with ESMTP; 16 Feb 2021 22:00:37 -0800
-Subject: Re: [PATCH 2/2] mmc: core: Add no single read retries
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     DooHyun Hwang <dh0421.hwang@samsung.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ulf.hansson@linaro.org,
-        robh+dt@kernel.org, axboe@kernel.dk, satyat@google.com,
-        ebiggers@google.com, gustavoars@kernel.org
-Cc:     grant.jung@samsung.com, jt77.jang@samsung.com,
-        junwoo80.lee@samsung.com, jangsub.yi@samsung.com,
-        sh043.lee@samsung.com, cw9316.lee@samsung.com,
-        sh8267.baek@samsung.com, wkon.kim@samsung.com
-References: <20210217052239.13780-1-dh0421.hwang@samsung.com>
- <CGME20210217053521epcas1p2aa80cae5d52f30c8c8882f44abe8045c@epcas1p2.samsung.com>
- <20210217052239.13780-3-dh0421.hwang@samsung.com>
- <4035139d-7850-8460-f069-06fc61d13039@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <3e6525b5-9cd7-e632-800a-1066c5fa3581@intel.com>
-Date:   Wed, 17 Feb 2021 08:00:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S231561AbhBQGFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 01:05:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231516AbhBQGD6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 01:03:58 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B79DC061574;
+        Tue, 16 Feb 2021 22:03:18 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d15so6864319plh.4;
+        Tue, 16 Feb 2021 22:03:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gHw6vm1AqKtBc55asTK4A1TUwUAkAjxtXR85iRepLUo=;
+        b=b+pzg/0CGxtGBxoBgPGZ+NdPIS7rLgfy6dHhYLejT0viowoopgcC4UgAfqxHb2Vaka
+         i7+Pt92cTg/bhrY4KMeMmgqeGOgUcoxJ5HhZ4tIm1O4wEYPSBzbjo1L+xms7Ajg7ar4x
+         FakWFJtqiUHV05Xfqq58L9Uqbb72YtaWZQohEwgPI6dWW7BzOZItjUg8niy7h9YRnMw2
+         weXtiTUWvttZz1tmWEfKisr5HYxXHgXlbUQ33RDpgOH4/YUT6AJrLqqFwuEKT1bNxxmi
+         EUn0aSioPEtZuRVavBzlJwIzvCGg24Qt9oA7kdcjAbLQIpUcYDmSQPBRffF5FVPQuYog
+         n04Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gHw6vm1AqKtBc55asTK4A1TUwUAkAjxtXR85iRepLUo=;
+        b=qf0OHJVIAgHRloURe0UCU7vsuN3Gtw26wRVZrUqMiNazREsicQMnGyydDWiVtHQL7Y
+         /5pgFj+i1g82kWUcVHOUzxmZDfZl6wF5IuqkdAQMx0M60/QBQHkcxARqHoCa37cs1DFC
+         HbnWDgA9Gf7yZ6z6qEflf2z++7k5HhbjrAXYy0l3bEBFlokeKpcTCK70girg7NaEWfYM
+         y9HgFmTmuumntVQmaI7HW/x5RChL+T1y4AgTJMz1AxWuWNH+bR/zfOs7ZCS+gFFuRFlj
+         HLB8yGCJWmiDT41Q77Pc/s8NyZ5rfQROlFn5LTUWtuEGuduflHSWX1HBmdMAqHL1kbJD
+         v/uQ==
+X-Gm-Message-State: AOAM531904MejPpMpJybU6/D7UGwH/QIJbyDm2kthW35SKphab5TA0tO
+        dKpR/wbCMmn4sHhAy4+ZzmkdEWNxm2gQag==
+X-Google-Smtp-Source: ABdhPJyQpWLcWvGQNtESGk+efT3ZjsF7UAwB0sTrBoc34ISWDQGWwjLW71YXl3plxbYxaOv3mnZwtg==
+X-Received: by 2002:a17:902:f686:b029:de:18c7:41f8 with SMTP id l6-20020a170902f686b02900de18c741f8mr1088130plg.65.1613541797408;
+        Tue, 16 Feb 2021 22:03:17 -0800 (PST)
+Received: from localhost.localdomain ([27.122.242.75])
+        by smtp.gmail.com with ESMTPSA id x73sm861769pfd.185.2021.02.16.22.03.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Feb 2021 22:03:17 -0800 (PST)
+From:   Hyeongseok Kim <hyeongseok@gmail.com>
+To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hyeongseok Kim <hyeongseok@gmail.com>
+Subject: [PATCH v3 0/1] Add FITRIM ioctl support for exFAT filesystem
+Date:   Wed, 17 Feb 2021 15:03:04 +0900
+Message-Id: <20210217060305.190898-1-hyeongseok@gmail.com>
+X-Mailer: git-send-email 2.27.0.83.g0313f36
 MIME-Version: 1.0
-In-Reply-To: <4035139d-7850-8460-f069-06fc61d13039@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/21 7:46 am, Adrian Hunter wrote:
-> On 17/02/21 7:22 am, DooHyun Hwang wrote:
->> This makes to handle read errors faster by not retrying
->> multiple block read(CMD18) errors with single block reads(CMD17).
->>
->> On some bad SD Cards that have problem with read operations,
->> it is not helpful to retry multiple block read errors with
->> several single block reads, and it is delayed to treat read
->> operations as I/O error as much as retrying single block reads.
-> 
-> If the issue is that it takes too long, then maybe it would be better to get
-> mmc_blk_read_single() to give up after a certain amount of time.
-> 
+This is for adding FITRIM ioctl functionality to exFAT filesystem.
+To do that, add generic ioctl function and FITRIM handler.
 
-So that a device property would not be needed I mean.  Then everyone would
-benefit.
+Changelog
+=========
+v2->v3:
+- Remove unnecessary local variable
+- Merge all changes to a single patch
+
+v1->v2:
+- Change variable declaration order as reverse tree style.
+- Return -EOPNOTSUPP from sb_issue_discard() just as it is.
+- Remove cond_resched() in while loop.
+- Move ioctl related code into it's helper function.
+
+Hyeongseok Kim (1):
+  exfat: add support ioctl and FITRIM function
+
+ fs/exfat/balloc.c   | 81 +++++++++++++++++++++++++++++++++++++++++++++
+ fs/exfat/dir.c      |  5 +++
+ fs/exfat/exfat_fs.h |  4 +++
+ fs/exfat/file.c     | 53 +++++++++++++++++++++++++++++
+ 4 files changed, 143 insertions(+)
+
+-- 
+2.27.0.83.g0313f36
+
