@@ -2,120 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BADCB31DD79
-	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 375F031DD7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 17 Feb 2021 17:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234165AbhBQQgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 11:36:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233986AbhBQQgs (ORCPT
+        id S234237AbhBQQhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 11:37:37 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:48973 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234227AbhBQQhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 11:36:48 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F22C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:36:08 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id o38so8798075pgm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 08:36:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WXIcl6OjwHYOdUvY1AbzlPKs0gf3kbJZZdxqTT5jVpM=;
-        b=G8IMiTzquvhqASKS3eBBR2Tqy32NX8vLtGtNGB7t8MEsE32dUThk9wltx7hM3S0gue
-         Vs0SKBMmVSJxLwHdWLW2pddn7LV8NsV+kknrwuL65T2TTGOXlEoXM4wN2U/xQEdyGilT
-         YkqbBI/WDTPy5JrhI8u9Q5eVzSuKygRGE9dxEcG4iO8o7l9xwnjkwiZi0gybWwrHODrO
-         OHoT1yA3JyDAkdZFvTmUPnEBv2nt8lj7GZ7i8ZzhbIjn1V3wDt28gNTT1R9S0tgDsdlI
-         lfGY3awFwpT25EDAE/VaLIJwJh4f7HCHqJgi7OG2ULnTcPbqRx6W5Z5/SbBgJYL6ZvZO
-         iucQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=WXIcl6OjwHYOdUvY1AbzlPKs0gf3kbJZZdxqTT5jVpM=;
-        b=DUZhG/JssHa/2BnyHf5SLf33kujnHb4CCc8+OP/GsT4bsgagatMY3WGl+HI36Z3gwA
-         VHfxZ9WRHfsxGkgdBn9oy21jSG/TeyVPR4Im2dKgHTK7hBOk1LHsZ3zFZamBitUrQyG8
-         BVnLyGYpa9Z4a3dUwQYbYNuRqUZ29T60AkT6NDZ8kr1eYL6bTIHQrFpjQvwj+qGMTG7U
-         XVMM8dI+82Chnz9dGZEFmQWP2Cf+hll6U3Q1uYfRfg/s4B1nP5GDruy6ZVj0WXsElof6
-         aAGwFHChAF3pY/cdnBR/67Be5EhcA5jDW1xagYLywmIFM7CRhABzEygg3sarROi+ceYq
-         Wskw==
-X-Gm-Message-State: AOAM532SsVllsHIIzC7f4+XtTN+R8B3zsc2ZCym2+l+IteYMARDtkIGf
-        uT1RIewtWQ9iqT9m2lB2zd8=
-X-Google-Smtp-Source: ABdhPJwdeylB2BJC0jCIrsR5u5T4D3uPaBfWaqrtrdYp26DWyQLPvSA0yegpTKMuiqeY7AIC/ctHYA==
-X-Received: by 2002:a63:1343:: with SMTP id 3mr209669pgt.166.1613579768128;
-        Wed, 17 Feb 2021 08:36:08 -0800 (PST)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:201:cdf7:1c5d:c444:e341])
-        by smtp.gmail.com with ESMTPSA id a136sm2939364pfa.66.2021.02.17.08.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 08:36:07 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        mhocko@suse.com, david@redhat.com, joaodias@google.com,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Date:   Wed, 17 Feb 2021 08:36:03 -0800
-Message-Id: <20210217163603.429062-1-minchan@kernel.org>
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+        Wed, 17 Feb 2021 11:37:35 -0500
+X-Originating-IP: 2.7.49.219
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 62D241C0004;
+        Wed, 17 Feb 2021 16:36:40 +0000 (UTC)
+Subject: Re: riscv+KASAN does not boot
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Topel <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
+ <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
+ <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
+ <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
+ <20210118145310.crnqnh6kax5jqicj@distanz.ch>
+ <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
+ <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
+ <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr>
+ <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
+ <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
+ <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
+ <24857bfc-c557-f141-8ae7-2e3da24f67f5@ghiti.fr>
+ <CACT4Y+bmuhR=2u=1bGK+W8ttOn+=bkKrqCRM8_SiDSW1iAX60A@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <957f09fb-84f4-2e0a-13ab-f7e4831ee7d0@ghiti.fr>
+Date:   Wed, 17 Feb 2021 11:36:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <CACT4Y+bmuhR=2u=1bGK+W8ttOn+=bkKrqCRM8_SiDSW1iAX60A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_contig_range is usually used on cma area or movable zone.
-It's critical if the page migration fails on those areas so
-dump more debugging message like memory_hotplug unless user
-specifiy __GFP_NOWARN.
+Le 2/16/21 à 11:42 PM, Dmitry Vyukov a écrit :
+> On Tue, Feb 16, 2021 at 9:42 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Hi Dmitry,
+>>
+>> Le 2/16/21 à 6:25 AM, Dmitry Vyukov a écrit :
+>>> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>>
+>>>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>>>> I was fixing KASAN support for my sv48 patchset so I took a look at your
+>>>>>> issue: I built a kernel on top of the branch riscv/fixes using
+>>>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
+>>>>>> and Buildroot 2020.11. I have the warnings regarding the use of
+>>>>>> __virt_to_phys on wrong addresses (but that's normal since this function
+>>>>>> is used in virt_addr_valid) but not the segfaults you describe.
+>>>>>
+>>>>> Hi Alex,
+>>>>>
+>>>>> Let me try to rebuild buildroot image. Maybe there was something wrong
+>>>>> with my build, though, I did 'make clean' before doing. But at the
+>>>>> same time it worked back in June...
+>>>>>
+>>>>> Re WARNINGs, they indicate kernel bugs. I am working on setting up a
+>>>>> syzbot instance on riscv. If there a WARNING during boot then the
+>>>>> kernel will be marked as broken. No further testing will happen.
+>>>>> Is it a mis-use of WARN_ON? If so, could anybody please remove it or
+>>>>> replace it with pr_err.
+>>>>
+>>>>
+>>>> Hi,
+>>>>
+>>>> I've localized one issue with riscv/KASAN:
+>>>> KASAN breaks VDSO and that's I think the root cause of weird faults I
+>>>> saw earlier. The following patch fixes it.
+>>>> Could somebody please upstream this fix? I don't know how to add/run
+>>>> tests for this.
+>>>> Thanks
+>>>>
+>>>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+>>>> index 0cfd6da784f84..cf3a383c1799d 100644
+>>>> --- a/arch/riscv/kernel/vdso/Makefile
+>>>> +++ b/arch/riscv/kernel/vdso/Makefile
+>>>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
+>>>>    # Disable gcov profiling for VDSO code
+>>>>    GCOV_PROFILE := n
+>>>>    KCOV_INSTRUMENT := n
+>>>> +KASAN_SANITIZE := n
+>>>>
+>>>>    # Force dependency
+>>>>    $(obj)/vdso.o: $(obj)/vdso.so
+>>
+>> What's weird is that I don't have any issue without this patch with the
+>> following config whereas it indeed seems required for KASAN. But when
+>> looking at the segfaults you got earlier, the segfault address is 0xbb0
+>> and the cause is an instruction page fault: this address is the PLT base
+>> address in vdso.so and an instruction page fault would mean that someone
+>> tried to jump at this address, which is weird. At first sight, that does
+>> not seem related to your patch above, but clearly I may be wrong.
+>>
+>> Tobias, did you observe the same segfaults as Dmitry ?
+> 
+> 
+> I noticed that not all buildroot images use VDSO, it seems to be
+> dependent on libc settings (at least I think I changed it in the
+> past).
 
-Signed-off-by: Minchan Kim <minchan@kernel.org>
----
- mm/page_alloc.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+Ok, I used uClibc but then when using glibc, I have the same segfaults, 
+only when KASAN is enabled. And your patch fixes the problem. I will try 
+to take a look later to better understand the problem.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 0b55c9c95364..67f3ee3a1528 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8486,6 +8486,15 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
- 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
- 	}
- 	if (ret < 0) {
-+		if (!(cc->gfp_mask & __GFP_NOWARN)) {
-+			struct page *page;
-+
-+			list_for_each_entry(page, &cc->migratepages, lru) {
-+				pr_warn("migrating pfn %lx failed ret:%d ",
-+						page_to_pfn(page), ret);
-+				dump_page(page, "migration failure");
-+			}
-+		}
- 		putback_movable_pages(&cc->migratepages);
- 		return ret;
- 	}
-@@ -8728,6 +8737,8 @@ struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
- 		pfn = ALIGN(zone->zone_start_pfn, nr_pages);
- 		while (zone_spans_last_pfn(zone, pfn, nr_pages)) {
- 			if (pfn_range_valid_contig(zone, pfn, nr_pages)) {
-+				unsigned long gfp_flags;
-+
- 				/*
- 				 * We release the zone lock here because
- 				 * alloc_contig_range() will also lock the zone
-@@ -8736,8 +8747,11 @@ struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
- 				 * and cause alloc_contig_range() to fail...
- 				 */
- 				spin_unlock_irqrestore(&zone->lock, flags);
-+
-+				if (zone_idx(zone) != ZONE_MOVABLE)
-+					gfp_flags = gfp_mask | __GFP_NOWARN;
- 				ret = __alloc_contig_pages(pfn, nr_pages,
--							gfp_mask);
-+							gfp_flags);
- 				if (!ret)
- 					return pfn_to_page(pfn);
- 				spin_lock_irqsave(&zone->lock, flags);
--- 
-2.30.0.478.g8a0d178c01-goog
+> I also booted an image completely successfully including dhcpd/sshd
+> start, but then my executable crashed in clock_gettime. The executable
+> was build on linux/amd64 host with "riscv64-linux-gnu-gcc -static"
+> (10.2.1).
+> 
+> 
+>>> Second issue I am seeing seems to be related to text segment size.
+>>> I check out v5.11 and use this config:
+>>> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
+>>
+>> This config gave my laptop a hard time ! Finally I was able to boot
+>> correctly to userspace, but I realized I used my sv48 branch...Either I
+>> fixed your issue along the way or I can't reproduce it, I'll give it a
+>> try tomorrow.
+> 
+> Where is your branch? I could also test in my setup on your branch.
+> 
 
+You can find my branch int/alex/riscv_kernel_end_of_address_space_v2 
+here: https://github.com/AlexGhiti/riscv-linux.git
+
+Thanks,
+
+> 
+>>> Then trying to boot it using:
+>>> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
+>>> $ qemu-system-riscv64 -machine virt -smp 2 -m 4G ...
+>>>
+>>> It shows no output from the kernel whatsoever, even though I have
+>>> earlycon and output shows very early with other configs.
+>>> Kernel boots fine with defconfig and other smaller configs.
+>>>
+>>> If I enable KASAN_OUTLINE and CC_OPTIMIZE_FOR_SIZE, then this config
+>>> also boots fine. Both of these options significantly reduce kernel
+>>> size. However, I can also boot the kernel without these 2 configs, if
+>>> I disable a whole lot of subsystem configs. This makes me think that
+>>> there is an issue related to kernel size somewhere in
+>>> qemu/bootloader/kernel bootstrap code.
+>>> Does it make sense to you? Can somebody reproduce what I am seeing? >
+>>
+>> I did not bring any answer to your question, but at least you know I'm
+>> working on it, I'll keep you posted.
+>>
+>> Thanks for taking the time to setup syzkaller.
+>>
+>> Alex
+>>
+>>> Thanks
+>>>
+>>> _______________________________________________
+>>> linux-riscv mailing list
+>>> linux-riscv@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
