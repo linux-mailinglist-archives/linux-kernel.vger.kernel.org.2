@@ -2,83 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC41631E8A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8C931E89E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhBRKK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:10:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44214 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231261AbhBRI5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:57:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613638579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8RAszh7yrqFMBVVaDFUSTwmQ6Tv/ON0s4M9Tz9qKwYg=;
-        b=VeKsaAxMxonW/fD/t12Ia80ScMOR6LGjZl7eGItzFNo4Yxu2+IDqnAMrfmw/FiXSEbHM3f
-        HXfyeiLxxftUjGZRFMCg1ZCaP3LQ1lj+pif3w2fU6YWXwOLXZk9U1HHbsqhKLtpmujbkIK
-        1GzcAD728DMOsM6asbmcgSVMLoSjEzY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 740FFAD87;
-        Thu, 18 Feb 2021 08:56:19 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 09:56:18 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, david@redhat.com,
-        joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
-References: <20210217163603.429062-1-minchan@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217163603.429062-1-minchan@kernel.org>
+        id S232515AbhBRKJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 05:09:17 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:43385 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231386AbhBRI6X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:58:23 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOsw9.C_1613638653;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UOsw9.C_1613638653)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Feb 2021 16:57:34 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     shuah@kernel.org
+Cc:     sboyd@kernel.org, john.stultz@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] selftests: timers: set-timer-lat: remove unneeded semicolon
+Date:   Thu, 18 Feb 2021 16:57:28 +0800
+Message-Id: <1613638648-23781-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-02-21 08:36:03, Minchan Kim wrote:
-> alloc_contig_range is usually used on cma area or movable zone.
-> It's critical if the page migration fails on those areas so
-> dump more debugging message like memory_hotplug unless user
-> specifiy __GFP_NOWARN.
+Eliminate the following coccicheck warning:
+./tools/testing/selftests/timers/set-timer-lat.c:83:2-3: Unneeded
+semicolon
+./tools/testing/selftests/timers/nsleep-lat.c:75:2-3: Unneeded semicolon
+./tools/testing/selftests/timers/nanosleep.c:75:2-3: Unneeded semicolon
+./tools/testing/selftests/timers/inconsistency-check.c:75:2-3: Unneeded
+semicolon
+./tools/testing/selftests/timers/alarmtimer-suspend.c:82:2-3: Unneeded
+semicolon
 
-I agree with David that this has a potential to generate a lot of output
-and it is not really clear whether it is worth it. Page isolation code
-already has REPORT_FAILURE mode which currently used only for the memory
-hotplug because this was just too noisy from the CMA path - d381c54760dc
-("mm: only report isolation failures when offlining memory").
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ tools/testing/selftests/timers/alarmtimer-suspend.c  | 2 +-
+ tools/testing/selftests/timers/inconsistency-check.c | 2 +-
+ tools/testing/selftests/timers/nanosleep.c           | 2 +-
+ tools/testing/selftests/timers/nsleep-lat.c          | 2 +-
+ tools/testing/selftests/timers/set-timer-lat.c       | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-Maybe migration failures are less likely to fail but still. Doesn't CMA
-allocator provide some useful error reporting on its own?
-
-[...]
-> @@ -8736,8 +8747,11 @@ struct page *alloc_contig_pages(unsigned long nr_pages, gfp_t gfp_mask,
->  				 * and cause alloc_contig_range() to fail...
->  				 */
->  				spin_unlock_irqrestore(&zone->lock, flags);
-> +
-> +				if (zone_idx(zone) != ZONE_MOVABLE)
-> +					gfp_flags = gfp_mask | __GFP_NOWARN;
-
-Nack to this. Caller shouldn't tweak gfp mask of the caller. If we
-really want to control the reporting based on __GFP_NOWARN or a lack of
-it then this has to be under control of the caller.
-
->  				ret = __alloc_contig_pages(pfn, nr_pages,
-> -							gfp_mask);
-> +							gfp_flags);
->  				if (!ret)
->  					return pfn_to_page(pfn);
->  				spin_lock_irqsave(&zone->lock, flags);
-> -- 
-> 2.30.0.478.g8a0d178c01-goog
-> 
-
+diff --git a/tools/testing/selftests/timers/alarmtimer-suspend.c b/tools/testing/selftests/timers/alarmtimer-suspend.c
+index 4da09db..54da4b08 100644
+--- a/tools/testing/selftests/timers/alarmtimer-suspend.c
++++ b/tools/testing/selftests/timers/alarmtimer-suspend.c
+@@ -79,7 +79,7 @@ char *clockstring(int clockid)
+ 		return "CLOCK_BOOTTIME_ALARM";
+ 	case CLOCK_TAI:
+ 		return "CLOCK_TAI";
+-	};
++	}
+ 	return "UNKNOWN_CLOCKID";
+ }
+ 
+diff --git a/tools/testing/selftests/timers/inconsistency-check.c b/tools/testing/selftests/timers/inconsistency-check.c
+index 022d3ff..e6756d9 100644
+--- a/tools/testing/selftests/timers/inconsistency-check.c
++++ b/tools/testing/selftests/timers/inconsistency-check.c
+@@ -72,7 +72,7 @@ char *clockstring(int clockid)
+ 		return "CLOCK_BOOTTIME_ALARM";
+ 	case CLOCK_TAI:
+ 		return "CLOCK_TAI";
+-	};
++	}
+ 	return "UNKNOWN_CLOCKID";
+ }
+ 
+diff --git a/tools/testing/selftests/timers/nanosleep.c b/tools/testing/selftests/timers/nanosleep.c
+index 71b5441..433a096 100644
+--- a/tools/testing/selftests/timers/nanosleep.c
++++ b/tools/testing/selftests/timers/nanosleep.c
+@@ -72,7 +72,7 @@ char *clockstring(int clockid)
+ 		return "CLOCK_BOOTTIME_ALARM";
+ 	case CLOCK_TAI:
+ 		return "CLOCK_TAI";
+-	};
++	}
+ 	return "UNKNOWN_CLOCKID";
+ }
+ 
+diff --git a/tools/testing/selftests/timers/nsleep-lat.c b/tools/testing/selftests/timers/nsleep-lat.c
+index eb3e79e..a7ca982 100644
+--- a/tools/testing/selftests/timers/nsleep-lat.c
++++ b/tools/testing/selftests/timers/nsleep-lat.c
+@@ -72,7 +72,7 @@ char *clockstring(int clockid)
+ 		return "CLOCK_BOOTTIME_ALARM";
+ 	case CLOCK_TAI:
+ 		return "CLOCK_TAI";
+-	};
++	}
+ 	return "UNKNOWN_CLOCKID";
+ }
+ 
+diff --git a/tools/testing/selftests/timers/set-timer-lat.c b/tools/testing/selftests/timers/set-timer-lat.c
+index 50da454..d60bbca 100644
+--- a/tools/testing/selftests/timers/set-timer-lat.c
++++ b/tools/testing/selftests/timers/set-timer-lat.c
+@@ -80,7 +80,7 @@ char *clockstring(int clockid)
+ 		return "CLOCK_BOOTTIME_ALARM";
+ 	case CLOCK_TAI:
+ 		return "CLOCK_TAI";
+-	};
++	}
+ 	return "UNKNOWN_CLOCKID";
+ }
+ 
 -- 
-Michal Hocko
-SUSE Labs
+1.8.3.1
+
