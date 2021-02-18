@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28DD131EDAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F9631EDB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234655AbhBRRwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:52:14 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:45755 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230471AbhBRPHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:07:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613660784; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=1uExP2WGvf9xPZ33k+OCJqm0dqeYbUXRNsv4T2X8DpA=; b=fstIjlIY8op6J1IIl9HGS7l+lT0ctBL7FrYBxPAmeAZRkCVt9y0bUZ6VNe+r1oGWiU84SBKa
- XrQyHhOwKujbTOHe0/omi/yx0mjaifEfb7OtR9Cf4XPrLYzonNJiW0Rsw0+CDmIsuynOaSpo
- EVDIbAnhLhuF8NCJre9OlQd+aR4=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 602e824eba08663830b8c847 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Feb 2021 15:05:50
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08479C43462; Thu, 18 Feb 2021 15:05:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0080DC433C6;
-        Thu, 18 Feb 2021 15:05:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0080DC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>, kbuild-all@lists.01.org,
+        id S234816AbhBRRxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230256AbhBRPJY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:09:24 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F5A2C0617A9;
+        Thu, 18 Feb 2021 07:06:09 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 546383E7;
+        Thu, 18 Feb 2021 16:06:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613660765;
+        bh=dSBqhVkp/iAa5cgZEEnWPWhwlXHCmngOAaA5uAmLBNs=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=I7tWCKzD49p26ryzl1QeMEiSvCHKvWl9rbIEGioJtgnr+AvMalEvrkQNZ5B5teWD6
+         GvXB0w8YJYTWIyOBzS13TDcDYXRA0/5Vp3clfTxMEXxsHdvDi1FogO7txLbSXr38AY
+         BJ1nL82Gy9bjMhBNAt7U58M3kOOFEcp3TZ0c7mjg=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 10/16] media: i2c: max9286: Rename reverse_channel_mv
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: undefined reference to `led_classdev_unregister'
-References: <202102181657.0GhWB9nF-lkp@intel.com>
-Date:   Thu, 18 Feb 2021 17:05:44 +0200
-In-Reply-To: <202102181657.0GhWB9nF-lkp@intel.com> (kernel test robot's
-        message of "Thu, 18 Feb 2021 16:42:59 +0800")
-Message-ID: <874ki9l8l3.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-11-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <9e1cca71-e0f0-4d66-d3f5-268760c53eec@ideasonboard.com>
+Date:   Thu, 18 Feb 2021 15:06:01 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210216174146.106639-11-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot <lkp@intel.com> writes:
+Hi Jacopo,
 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f40ddce88593482919761f74910f42f4b84c004b
-> commit: 72cdab808714b1ec24b0c7bdebed163ce791f01f ath9k: Do not select MAC80211_LEDS by default
-> date:   6 months ago
-> config: parisc-randconfig-r002-20210218 (attached as .config)
-> compiler: hppa64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=72cdab808714b1ec24b0c7bdebed163ce791f01f
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 72cdab808714b1ec24b0c7bdebed163ce791f01f
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    hppa64-linux-ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `.LC54':
->>> (.data.rel.ro+0xe8): undefined reference to `led_classdev_unregister'
->    hppa64-linux-ld: drivers/net/wireless/ath/ath9k/gpio.o: in function `.LC64':
->>> (.data.rel.ro+0x120): undefined reference to `led_classdev_register_ext'
+On 16/02/2021 17:41, Jacopo Mondi wrote:
+> Rename the reverse_channel_mv variable to init_rev_chan_mv as
+> the next patches will cache the reverse channel amplitude in
+> a new driver variable.
+> 
 
-This commit should fix the issue:
+I've been trying to figure out if we really do need two variables to
+store this now, but I can't see an easy way to factor out the
+initialisation value, and I like the idea of caching the current stored
+value.
 
-b64acb28da83 ath9k: fix build error with LEDS_CLASS=m
+So
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9286.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 1d9951215868..1f14cd817fbf 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -163,7 +163,7 @@ struct max9286_priv {
+>  	unsigned int mux_channel;
+>  	bool mux_open;
+>  
+> -	u32 reverse_channel_mv;
+> +	u32 init_rev_chan_mv;
+>  
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
+> @@ -563,7 +563,7 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  	 * - Disable auto-ack as communication on the control channel are now
+>  	 *   stable.
+>  	 */
+> -	if (priv->reverse_channel_mv < 170)
+> +	if (priv->init_rev_chan_mv < 170)
+>  		max9286_reverse_channel_setup(priv, 170);
+>  	max9286_check_config_link(priv, priv->source_mask);
+>  
+> @@ -971,7 +971,7 @@ static int max9286_setup(struct max9286_priv *priv)
+>  	 * only. This should be disabled after the mux is initialised.
+>  	 */
+>  	max9286_configure_i2c(priv, true);
+> -	max9286_reverse_channel_setup(priv, priv->reverse_channel_mv);
+> +	max9286_reverse_channel_setup(priv, priv->init_rev_chan_mv);
+>  
+>  	/*
+>  	 * Enable GMSL links, mask unused ones and autodetect link
+> @@ -1236,9 +1236,9 @@ static int max9286_parse_dt(struct max9286_priv *priv)
+>  	if (of_property_read_u32(dev->of_node,
+>  				 "maxim,reverse-channel-microvolt",
+>  				 &reverse_channel_microvolt))
+> -		priv->reverse_channel_mv = 170;
+> +		priv->init_rev_chan_mv = 170;
+>  	else
+> -		priv->reverse_channel_mv = reverse_channel_microvolt / 1000U;
+> +		priv->init_rev_chan_mv = reverse_channel_microvolt / 1000U;
+>  
+>  	priv->route_mask = priv->source_mask;
+>  
+> 
+
