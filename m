@@ -2,729 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D0531F0DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:15:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B8731F0E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:18:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBRUNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:13:35 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:53868 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhBRUL1 (ORCPT
+        id S230508AbhBRUSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230183AbhBRURd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:11:27 -0500
-Date:   Thu, 18 Feb 2021 21:10:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613679042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bvvjBVd6kMksuRExd1897cU/wp+0u44ymsx1YD8T0Fw=;
-        b=Yf/edwy60ldzRjRPKTN1bqSbH3Tg2IAnJ339KM2qCHJsWVTt4tDQTqnm3Ayzlll3AJITDD
-        3riQzSnH9/Bl5GLWC4bOt35ZF7bRXxC15UM44ebbIOQxz6XSOVqpwZ/h4vXuAelLWPttbu
-        JmwexeeWSdGlbeuZgLOKbOBPuuXKgt3PYFVQ7iom4PkM6BHxDtw+EtVhgJ195Yp5Y1OKDj
-        cLWSXlUQN6D7154DKXDc8RdquVnv+OY/YTp7kIFVdYbojAmkQsyKgu8cOng4pAN1k8z1p/
-        9R14cYYER9w2Yrk4tcWb0wV2Fw5qBbR0oTK8yPkw+8aeLUZOMJ+hoP4lfmQXCQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613679042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=bvvjBVd6kMksuRExd1897cU/wp+0u44ymsx1YD8T0Fw=;
-        b=a3lizvqBb3rA1PE59qo4IhFERm62QgQ+btFtJJ0CoCi64Kb+FIVOT1AuPc5ipi+mUTJF0h
-        oQwxfHB6IxpSRaBA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [ANNOUNCE] v5.11-rt6
-Message-ID: <20210218201041.65fknr7bdplwqbez@linutronix.de>
+        Thu, 18 Feb 2021 15:17:33 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9F0C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:16:53 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id fy5so2011996pjb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:16:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=6LygCFQKr93lVBkRebNCCJIHWf5hg/ZyRrqPMwLae/Q=;
+        b=EGaPAZLAL5QmfsPwIMxuKSYv+RCVMYLsZndnq3qrh9fUQ0jH6aYTHUkKl+E5yPe8Zv
+         eNWFHPKMTfhHwWwXxaQBVrnpKGjYCqMlwhEDIiTjGSH1qBqk8pp0D/mexE0sjBqGGhDu
+         0ucasoVQz9zhnP5F+OmpGtsAIvVL+6EcCaE6s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=6LygCFQKr93lVBkRebNCCJIHWf5hg/ZyRrqPMwLae/Q=;
+        b=dXPObKRb4kUhrp933ZMEnfpQg6dhp5Z9H2yKMbY1eYcR9OSb93j9XEU4YGRWev/Wd8
+         8i/8U+bYZ9I2mjQxM0hzVE9ucukCqn/9MeOFodHK43MH2JB4BRC/a2sdIv1MxaRIthtn
+         JYGuzw0pbSbHq48Gr69L/fJM/cpbFBLbFu9/gGoAYfRcN1sd5J63E1oupBnj9XyrG3J+
+         oDNXtXIO8UzCh1rQg1Xod6ccgdyNiPqD0C7w22xFrX4mlz6K2vVG3eNXDXMYZ8hNGwFz
+         yUmssyuvy8gWWb2f/oD5F2QAqX99Zg4+eDz5jpqdSamKIV/PVH6WzECmGewmV0vtv7a/
+         2y0w==
+X-Gm-Message-State: AOAM533DZF0w5d5fB8yZ1LTU8eOnoOnFvcdDBL3uIZNEWSO6Up1LIrUh
+        qvfDY4kqe21jrJ1DydBGyAmJ3w==
+X-Google-Smtp-Source: ABdhPJylyGKc3SCmijxKlL6CfyEBi89JCBWirbtxWlGVt2beHhfvgqCQLb7pD5ScCjtcSJIjowP2gg==
+X-Received: by 2002:a17:902:e8cb:b029:e2:9906:45a6 with SMTP id v11-20020a170902e8cbb02900e2990645a6mr5698981plg.41.1613679412571;
+        Thu, 18 Feb 2021 12:16:52 -0800 (PST)
+Received: from lbrmn-lnxub113.ric.broadcom.net ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id p7sm3075296pgg.2.2021.02.18.12.16.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 12:16:52 -0800 (PST)
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Willy Tarreau <w@1wt.eu>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
+ <YBBkplRxzzmPYKC+@kroah.com> <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <20210218165104.GC2013@sasha-vm>
+ <00b9e2fb-d818-58d6-edae-4dbd6aa814f7@gmail.com> <YC6ptKgsMh20tmu6@kroah.com>
+ <20210218182050.GB15217@1wt.eu> <YC6zq3u2jciI2gyZ@kroah.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <b283eaa5-028f-a3d0-42a1-5b11c48ffe91@broadcom.com>
+Date:   Thu, 18 Feb 2021 12:16:50 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <YC6zq3u2jciI2gyZ@kroah.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000031eb3305bba2040b"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear RT folks!
+--00000000000031eb3305bba2040b
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 
-I'm pleased to announce the v5.11-rt6 patch set. 
+On 2021-02-18 10:36 a.m., Greg Kroah-Hartman wrote:
+> On Thu, Feb 18, 2021 at 07:20:50PM +0100, Willy Tarreau wrote:
+>> On Thu, Feb 18, 2021 at 06:53:56PM +0100, Greg Kroah-Hartman wrote:
+>>> On Thu, Feb 18, 2021 at 09:21:13AM -0800, Florian Fainelli wrote:
+>>>> As a company, we are most likely shooting ourselves in the foot by not
+>>>> having a point of coordination with the Linux Foundation and key people
+>>>> like you, Greg and other participants in the stable kernel.
+>>>
+>>> What does the LF have to do with this?
+>>>
+>>> We are here, on the mailing lists, working with everyone.  Just test the
+>>> -rc releases we make and let us know if they work or not for you, it's
+>>> not a lot of "coordination" needed at all.
+>>>
+>>> Otherwise, if no one is saying that they are going to need these for 6
+>>> years and are willing to use it in their project (i.e. and test it),
+>>> there's no need for us to maintain it for that long, right?
+>>
+>> Greg, please remember I expressed I really need them for slightly more than
+>> 3 years (say 3.5-4) :-) I'm fine with helping a bit more as time permits if
+>> this saves me from having to take over these kernels after you, like in the
+>> past, but I cannot engage on the regularity of my availability.
+> 
+> Ok, great!
+> 
+> That's one person/company saying they can help out (along with what CIP
+> has been stating.)
+> 
+> What about others?  Broadcom started this conversation, odd that they
+> don't seem to want to help out :)
+Greg, I'm sorry but I'm not in a position to provide such a commitment.
 
-Changes since v5.11-rt5:
+My original question arose because the 5.10 kernel is declared as 2 years LTS while older LTS kernels are now 6 years.
+One problem this has created is requests to provide silicon support in an older kernel version (for a new project) rather than starting from a newer kernel version that more properly supports the (silicon and non-silicon) features.  
 
-  - Updated the "tracing: Merge irqflags + preempt counter." patch to
-    the version Steven posted for upstream inclusion.
+If all LTS kernels were declared as 3.5-4 years as Willy commented this would solve a few issues.
+6 year LTS kernels would only have a maximum 1 year lifespan over the latest declared LTS kernel.
+Also, many products take a year or more to develop, there isn't any life left in an LTS kernel if it is only 2 years.
 
-  - Due to tracing rework, the 'L' marker (for need resched lazy) got
-    lost and is now back.
+After 1-3 years of kernel age the relevant parties that want to invest and care about supporting specific kernel versions longer should become apparent and could commit to longer support.  Perhaps you move the burden of 6 years LTS elsewhere to longer term projects.  But, I'm sure many are happy because you continue doing such a great job in a central location, especially those whose product lifespan is around 6 years.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-  - The patch for the zsmalloc/zswap regression in v5.11 got updated to
-    v2 as posted by Barry Song.
 
-  - A kcov enabled kernel did not compile with PREEMPT_RT enabled.
+--00000000000031eb3305bba2040b
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Known issues
-     - kdb/kgdb can easily deadlock.
-     - kmsg dumpers expecting not to be called in parallel can clobber
-       their temp buffer.
-     - netconsole triggers WARN.
-
-The delta patch against v5.11-rt5 is appended below and can be found here:
- 
-     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/incr/patch-5.11-rt5-rt6.patch.xz
-
-You can get this release via the git tree at:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.11-rt6
-
-The RT patch against v5.11 can be found here:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/older/patch-5.11-rt6.patch.xz
-
-The split quilt queue is available at:
-
-    https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.11/older/patches-5.11-rt6.tar.xz
-
-Sebastian
-
-diff --git a/include/linux/kcov.h b/include/linux/kcov.h
-index 4e3037dc12048..55dc338f6bcdd 100644
---- a/include/linux/kcov.h
-+++ b/include/linux/kcov.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_KCOV_H
- #define _LINUX_KCOV_H
- 
-+#include <linux/sched.h>
- #include <uapi/linux/kcov.h>
- 
- struct task_struct;
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 7337630326751..183e9d90841cb 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -14,7 +14,6 @@
- #include <linux/pid.h>
- #include <linux/sem.h>
- #include <linux/shm.h>
--#include <linux/kcov.h>
- #include <linux/mutex.h>
- #include <linux/plist.h>
- #include <linux/hrtimer.h>
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 5d08fb467f69a..89c3f7162267b 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -162,9 +162,58 @@ static inline void tracing_generic_entry_update(struct trace_entry *entry,
- 	entry->flags			= trace_ctx >> 24;
- }
- 
--unsigned int _tracing_gen_ctx_flags(unsigned long irqflags);
--unsigned int tracing_gen_ctx_flags(void);
--unsigned int tracing_gen_ctx_flags_dect(void);
-+unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status);
-+
-+enum trace_flag_type {
-+	TRACE_FLAG_IRQS_OFF		= 0x01,
-+	TRACE_FLAG_IRQS_NOSUPPORT	= 0x02,
-+	TRACE_FLAG_NEED_RESCHED		= 0x04,
-+	TRACE_FLAG_HARDIRQ		= 0x08,
-+	TRACE_FLAG_SOFTIRQ		= 0x10,
-+	TRACE_FLAG_PREEMPT_RESCHED	= 0x20,
-+	TRACE_FLAG_NMI			= 0x40,
-+	TRACE_FLAG_NEED_RESCHED_LAZY	= 0x80,
-+};
-+
-+#ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
-+static inline unsigned int tracing_gen_ctx_flags(unsigned long irqflags)
-+{
-+	unsigned int irq_status = irqs_disabled_flags(irqflags) ?
-+		TRACE_FLAG_IRQS_OFF : 0;
-+	return tracing_gen_ctx_irq_test(irq_status);
-+}
-+static inline unsigned int tracing_gen_ctx(void)
-+{
-+	unsigned long irqflags;
-+
-+	local_save_flags(irqflags);
-+	return tracing_gen_ctx_flags(irqflags);
-+}
-+#else
-+
-+static inline unsigned int tracing_gen_ctx_flags(unsigned long irqflags)
-+{
-+	return tracing_gen_ctx_irq_test(TRACE_FLAG_IRQS_NOSUPPORT);
-+}
-+static inline unsigned int tracing_gen_ctx(void)
-+{
-+	return tracing_gen_ctx_irq_test(TRACE_FLAG_IRQS_NOSUPPORT);
-+}
-+#endif
-+
-+static inline unsigned int tracing_gen_ctx_dec(void)
-+{
-+	unsigned int trace_ctx;
-+
-+	trace_ctx = tracing_gen_ctx();
-+	/*
-+	 * Subtract one from the preeption counter if preemption is enabled,
-+	 * see trace_event_buffer_reserve()for details.
-+	 */
-+	if (IS_ENABLED(CONFIG_PREEMPTION))
-+		trace_ctx--;
-+	return trace_ctx;
-+}
- 
- struct trace_event_file;
- 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index f5c4f1d72a885..c54eae2ab208c 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -79,7 +79,7 @@ static void trace_note(struct blk_trace *bt, pid_t pid, int action,
- 
- 	if (blk_tracer) {
- 		buffer = blk_tr->array_buffer.buffer;
--		trace_ctx = _tracing_gen_ctx_flags(0);
-+		trace_ctx = tracing_gen_ctx_flags(0);
- 		event = trace_buffer_lock_reserve(buffer, TRACE_BLK,
- 						  sizeof(*t) + len + cgid_len,
- 						  trace_ctx);
-@@ -253,7 +253,7 @@ static void __blk_add_trace(struct blk_trace *bt, sector_t sector, int bytes,
- 		tracing_record_cmdline(current);
- 
- 		buffer = blk_tr->array_buffer.buffer;
--		trace_ctx = _tracing_gen_ctx_flags(0);
-+		trace_ctx = tracing_gen_ctx_flags(0);
- 		event = trace_buffer_lock_reserve(buffer, TRACE_BLK,
- 						  sizeof(*t) + pdu_len + cgid_len,
- 						  trace_ctx);
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index ed515daacd568..e33e7bad3fac1 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -1018,7 +1018,7 @@ int __trace_puts(unsigned long ip, const char *str, int size)
- 
- 	alloc = sizeof(*entry) + size + 2; /* possible \n added */
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 	buffer = global_trace.array_buffer.buffer;
- 	ring_buffer_nest_start(buffer);
- 	event = __trace_buffer_lock_reserve(buffer, TRACE_PRINT, alloc,
-@@ -1068,7 +1068,7 @@ int __trace_bputs(unsigned long ip, const char *str)
- 	if (unlikely(tracing_selftest_running || tracing_disabled))
- 		return 0;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 	buffer = global_trace.array_buffer.buffer;
- 
- 	ring_buffer_nest_start(buffer);
-@@ -2587,20 +2587,13 @@ static unsigned short migration_disable_value(void)
- #endif
- }
- 
--unsigned int _tracing_gen_ctx_flags(unsigned long irqflags)
-+unsigned int tracing_gen_ctx_irq_test(unsigned int irqs_status)
- {
--	unsigned int trace_flags = 0;
-+	unsigned int trace_flags = irqs_status;
- 	unsigned int pc;
- 
- 	pc = preempt_count();
- 
--#ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
--	if (irqs_disabled_flags(irqflags))
--		trace_flags |= TRACE_FLAG_IRQS_OFF;
--#else
--	trace_flags |= TRACE_FLAG_IRQS_NOSUPPORT;
--#endif
--
- 	if (pc & NMI_MASK)
- 		trace_flags |= TRACE_FLAG_NMI;
- 	if (pc & HARDIRQ_MASK)
-@@ -2613,39 +2606,17 @@ unsigned int _tracing_gen_ctx_flags(unsigned long irqflags)
- 	if (test_preempt_need_resched())
- 		trace_flags |= TRACE_FLAG_PREEMPT_RESCHED;
- 
-+#ifdef CONFIG_PREEMPT_LAZY
-+	if (need_resched_lazy())
-+		trace_flags |= TRACE_FLAG_NEED_RESCHED_LAZY;
-+#endif
-+
- 	return (pc & 0xff) |
- 		(migration_disable_value() & 0xff) << 8 |
- 		(preempt_lazy_count() & 0xff) << 16 |
- 		(trace_flags << 24);
- }
- 
--unsigned int tracing_gen_ctx_flags(void)
--{
--	unsigned long irqflags;
--
--#ifdef CONFIG_TRACE_IRQFLAGS_SUPPORT
--	local_save_flags(irqflags);
--#else
--	irqflags = 0;
--#endif
--	return _tracing_gen_ctx_flags(irqflags);
--}
--
--unsigned int tracing_gen_ctx_flags_dect(void)
--{
--	unsigned int trace_ctx;
--
--	trace_ctx = tracing_gen_ctx_flags();
--
--	/*
--	 * Subtract one from the preeption counter if preemption is enabled,
--	 * see trace_event_buffer_reserve()for details.
--	 */
--	if (IS_ENABLED(CONFIG_PREEMPTION))
--		trace_ctx--;
--	return trace_ctx;
--}
--
- struct ring_buffer_event *
- trace_buffer_lock_reserve(struct trace_buffer *buffer,
- 			  int type,
-@@ -3090,7 +3061,7 @@ void trace_dump_stack(int skip)
- 	skip++;
- #endif
- 	__ftrace_trace_stack(global_trace.array_buffer.buffer,
--			     tracing_gen_ctx_flags(), skip, NULL);
-+			     tracing_gen_ctx(), skip, NULL);
- }
- EXPORT_SYMBOL_GPL(trace_dump_stack);
- 
-@@ -3286,7 +3257,7 @@ int trace_vbprintk(unsigned long ip, const char *fmt, va_list args)
- 	/* Don't pollute graph traces with trace_vprintk internals */
- 	pause_graph_tracing();
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 	preempt_disable_notrace();
- 
- 	tbuffer = get_trace_buf();
-@@ -3348,7 +3319,7 @@ __trace_array_vprintk(struct trace_buffer *buffer,
- 	/* Don't pollute graph traces with trace_vprintk internals */
- 	pause_graph_tracing();
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 	preempt_disable_notrace();
- 
- 
-@@ -6718,7 +6689,7 @@ tracing_mark_write(struct file *filp, const char __user *ubuf,
- 
- 	buffer = tr->array_buffer.buffer;
- 	event = __trace_buffer_lock_reserve(buffer, TRACE_PRINT, size,
--					    tracing_gen_ctx_flags());
-+					    tracing_gen_ctx());
- 	if (unlikely(!event))
- 		/* Ring buffer disabled, return as if not open for write */
- 		return -EBADF;
-@@ -6797,7 +6768,7 @@ tracing_mark_raw_write(struct file *filp, const char __user *ubuf,
- 
- 	buffer = tr->array_buffer.buffer;
- 	event = __trace_buffer_lock_reserve(buffer, TRACE_RAW_DATA, size,
--					    tracing_gen_ctx_flags());
-+					    tracing_gen_ctx());
- 	if (!event)
- 		/* Ring buffer disabled, return as if not open for write */
- 		return -EBADF;
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index b687e98fcbe10..93fb08ab8bb6b 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -136,27 +136,6 @@ struct kretprobe_trace_entry_head {
- 	unsigned long		ret_ip;
- };
- 
--/*
-- * trace_flag_type is an enumeration that holds different
-- * states when a trace occurs. These are:
-- *  IRQS_OFF		- interrupts were disabled
-- *  IRQS_NOSUPPORT	- arch does not support irqs_disabled_flags
-- *  NEED_RESCHED	- reschedule is requested
-- *  HARDIRQ		- inside an interrupt handler
-- *  SOFTIRQ		- inside a softirq handler
-- *  NEED_RESCHED_LAZY	- lazy reschedule is requested
-- */
--enum trace_flag_type {
--	TRACE_FLAG_IRQS_OFF		= 0x01,
--	TRACE_FLAG_IRQS_NOSUPPORT	= 0x02,
--	TRACE_FLAG_NEED_RESCHED		= 0x04,
--	TRACE_FLAG_HARDIRQ		= 0x08,
--	TRACE_FLAG_SOFTIRQ		= 0x10,
--	TRACE_FLAG_PREEMPT_RESCHED	= 0x20,
--	TRACE_FLAG_NMI			= 0x40,
--	TRACE_FLAG_NEED_RESCHED_LAZY	= 0x80,
--};
--
- #define TRACE_BUF_SIZE		1024
- 
- struct trace_array;
-diff --git a/kernel/trace/trace_branch.c b/kernel/trace/trace_branch.c
-index a95b7f1fa351c..e47fdb4c92fbc 100644
---- a/kernel/trace/trace_branch.c
-+++ b/kernel/trace/trace_branch.c
-@@ -59,7 +59,7 @@ probe_likely_condition(struct ftrace_likely_data *f, int val, int expect)
- 	if (atomic_read(&data->disabled))
- 		goto out;
- 
--	trace_ctx = _tracing_gen_ctx_flags(flags);
-+	trace_ctx = tracing_gen_ctx_flags(flags);
- 	buffer = tr->array_buffer.buffer;
- 	event = trace_buffer_lock_reserve(buffer, TRACE_BRANCH,
- 					  sizeof(*entry), trace_ctx);
-diff --git a/kernel/trace/trace_event_perf.c b/kernel/trace/trace_event_perf.c
-index 5e64b06ab5189..288ad2c274fba 100644
---- a/kernel/trace/trace_event_perf.c
-+++ b/kernel/trace/trace_event_perf.c
-@@ -422,7 +422,7 @@ void perf_trace_buf_update(void *record, u16 type)
- {
- 	struct trace_entry *entry = record;
- 
--	tracing_generic_entry_update(entry, type, tracing_gen_ctx_flags());
-+	tracing_generic_entry_update(entry, type, tracing_gen_ctx());
- }
- NOKPROBE_SYMBOL(perf_trace_buf_update);
- 
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 95a544899ddd0..a7c176251c637 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -266,7 +266,7 @@ void *trace_event_buffer_reserve(struct trace_event_buffer *fbuffer,
- 	 * interested in the preempt_count at the time the tracepoint was
- 	 * hit, we need to subtract one to offset the increment.
- 	 */
--	fbuffer->trace_ctx = tracing_gen_ctx_flags_dect();
-+	fbuffer->trace_ctx = tracing_gen_ctx_dec();
- 	fbuffer->trace_file = trace_file;
- 
- 	fbuffer->event =
-@@ -3682,7 +3682,7 @@ function_test_events_call(unsigned long ip, unsigned long parent_ip,
- 	long disabled;
- 	int cpu;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 	preempt_disable_notrace();
- 	cpu = raw_smp_processor_id();
- 	disabled = atomic_inc_return(&per_cpu(ftrace_test_event_disable, cpu));
-diff --git a/kernel/trace/trace_events_inject.c b/kernel/trace/trace_events_inject.c
-index 65150c0a5e7af..c188045c5f976 100644
---- a/kernel/trace/trace_events_inject.c
-+++ b/kernel/trace/trace_events_inject.c
-@@ -203,7 +203,7 @@ static int parse_entry(char *str, struct trace_event_call *call, void **pentry)
- 		return -ENOMEM;
- 
- 	tracing_generic_entry_update(entry, call->event.type,
--				     tracing_gen_ctx_flags());
-+				     tracing_gen_ctx());
- 
- 	while ((len = parse_field(str, call, &field, &val)) > 0) {
- 		if (is_function_field(field))
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 31183dc3ba973..9bb03ab44fffc 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -143,7 +143,7 @@ function_trace_call(unsigned long ip, unsigned long parent_ip,
- 	if (bit < 0)
- 		return;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 	preempt_disable_notrace();
- 
- 	cpu = smp_processor_id();
-@@ -197,7 +197,7 @@ function_stack_trace_call(unsigned long ip, unsigned long parent_ip,
- 	disabled = atomic_inc_return(&data->disabled);
- 
- 	if (likely(disabled == 1)) {
--		trace_ctx = _tracing_gen_ctx_flags(flags);
-+		trace_ctx = tracing_gen_ctx_flags(flags);
- 		trace_function(tr, ip, parent_ip, trace_ctx);
- 		__trace_stack(tr, trace_ctx, STACK_SKIP);
- 	}
-@@ -404,7 +404,7 @@ static __always_inline void trace_stack(struct trace_array *tr)
- {
- 	unsigned int trace_ctx;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 
- 	__trace_stack(tr, trace_ctx, FTRACE_STACK_SKIP);
- }
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index 83d6be491d468..0aa6e6faa9439 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -173,7 +173,7 @@ int trace_graph_entry(struct ftrace_graph_ent *trace)
- 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
- 	disabled = atomic_inc_return(&data->disabled);
- 	if (likely(disabled == 1)) {
--		trace_ctx = _tracing_gen_ctx_flags(flags);
-+		trace_ctx = tracing_gen_ctx_flags(flags);
- 		ret = __trace_graph_entry(tr, trace, trace_ctx);
- 	} else {
- 		ret = 0;
-@@ -253,7 +253,7 @@ void trace_graph_return(struct ftrace_graph_ret *trace)
- 	data = per_cpu_ptr(tr->array_buffer.data, cpu);
- 	disabled = atomic_inc_return(&data->disabled);
- 	if (likely(disabled == 1)) {
--		trace_ctx = _tracing_gen_ctx_flags(flags);
-+		trace_ctx = tracing_gen_ctx_flags(flags);
- 		__trace_graph_return(tr, trace, trace_ctx);
- 	}
- 	atomic_dec(&data->disabled);
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 375e7635baf67..34dc1a712dcbb 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -110,7 +110,7 @@ static void trace_hwlat_sample(struct hwlat_sample *sample)
- 	struct hwlat_entry *entry;
- 
- 	event = trace_buffer_lock_reserve(buffer, TRACE_HWLAT, sizeof(*entry),
--					  tracing_gen_ctx_flags());
-+					  tracing_gen_ctx());
- 	if (!event)
- 		return;
- 	entry	= ring_buffer_event_data(event);
-diff --git a/kernel/trace/trace_irqsoff.c b/kernel/trace/trace_irqsoff.c
-index 56e5ad7240333..590b3d51afae9 100644
---- a/kernel/trace/trace_irqsoff.c
-+++ b/kernel/trace/trace_irqsoff.c
-@@ -148,7 +148,7 @@ irqsoff_tracer_call(unsigned long ip, unsigned long parent_ip,
- 	if (!func_prolog_dec(tr, &data, &flags))
- 		return;
- 
--	trace_ctx = _tracing_gen_ctx_flags(flags);
-+	trace_ctx = tracing_gen_ctx_flags(flags);
- 
- 	trace_function(tr, ip, parent_ip, trace_ctx);
- 
-@@ -198,7 +198,7 @@ static int irqsoff_graph_entry(struct ftrace_graph_ent *trace)
- 	if (!func_prolog_dec(tr, &data, &flags))
- 		return 0;
- 
--	trace_ctx = _tracing_gen_ctx_flags(flags);
-+	trace_ctx = tracing_gen_ctx_flags(flags);
- 	ret = __trace_graph_entry(tr, trace, trace_ctx);
- 	atomic_dec(&data->disabled);
- 
-@@ -217,7 +217,7 @@ static void irqsoff_graph_return(struct ftrace_graph_ret *trace)
- 	if (!func_prolog_dec(tr, &data, &flags))
- 		return;
- 
--	trace_ctx = _tracing_gen_ctx_flags(flags);
-+	trace_ctx = tracing_gen_ctx_flags(flags);
- 	__trace_graph_return(tr, trace, trace_ctx);
- 	atomic_dec(&data->disabled);
- }
-@@ -331,7 +331,7 @@ check_critical_timing(struct trace_array *tr,
- 	T1 = ftrace_now(cpu);
- 	delta = T1-T0;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 
- 	if (!report_latency(tr, delta))
- 		goto out;
-@@ -393,7 +393,7 @@ start_critical_timing(unsigned long ip, unsigned long parent_ip)
- 	data->preempt_timestamp = ftrace_now(cpu);
- 	data->critical_start = parent_ip ? : ip;
- 
--	__trace_function(tr, ip, parent_ip, tracing_gen_ctx_flags());
-+	__trace_function(tr, ip, parent_ip, tracing_gen_ctx());
- 
- 	per_cpu(tracing_cpu, cpu) = 1;
- 
-@@ -426,7 +426,7 @@ stop_critical_timing(unsigned long ip, unsigned long parent_ip)
- 
- 	atomic_inc(&data->disabled);
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 	__trace_function(tr, ip, parent_ip, trace_ctx);
- 	check_critical_timing(tr, data, parent_ip ? : ip, cpu);
- 	data->critical_start = 0;
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index 86dda18fa09b2..f6c459aba8a61 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -1386,7 +1386,7 @@ __kprobe_trace_func(struct trace_kprobe *tk, struct pt_regs *regs,
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
--	fbuffer.trace_ctx = tracing_gen_ctx_flags();
-+	fbuffer.trace_ctx = tracing_gen_ctx();
- 	fbuffer.trace_file = trace_file;
- 
- 	dsize = __get_data_size(&tk->tp, regs);
-@@ -1433,7 +1433,7 @@ __kretprobe_trace_func(struct trace_kprobe *tk, struct kretprobe_instance *ri,
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
--	fbuffer.trace_ctx = tracing_gen_ctx_flags();
-+	fbuffer.trace_ctx = tracing_gen_ctx();
- 	fbuffer.trace_file = trace_file;
- 
- 	dsize = __get_data_size(&tk->tp, regs);
-diff --git a/kernel/trace/trace_mmiotrace.c b/kernel/trace/trace_mmiotrace.c
-index 5a7d37bf6888c..7221ae0b4c477 100644
---- a/kernel/trace/trace_mmiotrace.c
-+++ b/kernel/trace/trace_mmiotrace.c
-@@ -302,7 +302,7 @@ static void __trace_mmiotrace_rw(struct trace_array *tr,
- 	struct trace_mmiotrace_rw *entry;
- 	unsigned int trace_ctx;
- 
--	trace_ctx = _tracing_gen_ctx_flags(0);
-+	trace_ctx = tracing_gen_ctx_flags(0);
- 	event = trace_buffer_lock_reserve(buffer, TRACE_MMIO_RW,
- 					  sizeof(*entry), trace_ctx);
- 	if (!event) {
-@@ -333,7 +333,7 @@ static void __trace_mmiotrace_map(struct trace_array *tr,
- 	struct trace_mmiotrace_map *entry;
- 	unsigned int trace_ctx;
- 
--	trace_ctx = _tracing_gen_ctx_flags(0);
-+	trace_ctx = tracing_gen_ctx_flags(0);
- 	event = trace_buffer_lock_reserve(buffer, TRACE_MMIO_MAP,
- 					  sizeof(*entry), trace_ctx);
- 	if (!event) {
-diff --git a/kernel/trace/trace_sched_wakeup.c b/kernel/trace/trace_sched_wakeup.c
-index 8c7d0650a9ba9..e5778d1d7a5b6 100644
---- a/kernel/trace/trace_sched_wakeup.c
-+++ b/kernel/trace/trace_sched_wakeup.c
-@@ -75,7 +75,7 @@ func_prolog_preempt_disable(struct trace_array *tr,
- 	if (likely(!wakeup_task))
- 		return 0;
- 
--	*trace_ctx = tracing_gen_ctx_flags();
-+	*trace_ctx = tracing_gen_ctx();
- 	preempt_disable_notrace();
- 
- 	cpu = raw_smp_processor_id();
-@@ -459,7 +459,7 @@ probe_wakeup_sched_switch(void *ignore, bool preempt,
- 		goto out;
- 
- 	local_irq_save(flags);
--	trace_ctx = _tracing_gen_ctx_flags(flags);
-+	trace_ctx = tracing_gen_ctx_flags(flags);
- 
- 	arch_spin_lock(&wakeup_lock);
- 
-@@ -550,7 +550,7 @@ probe_wakeup(void *ignore, struct task_struct *p)
- 	if (unlikely(disabled != 1))
- 		goto out;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 
- 	/* interrupts should be off from try_to_wake_up */
- 	arch_spin_lock(&wakeup_lock);
-diff --git a/kernel/trace/trace_syscalls.c b/kernel/trace/trace_syscalls.c
-index 71a2e705970f0..8bfcd3b094226 100644
---- a/kernel/trace/trace_syscalls.c
-+++ b/kernel/trace/trace_syscalls.c
-@@ -321,7 +321,7 @@ static void ftrace_syscall_enter(void *data, struct pt_regs *regs, long id)
- 
- 	size = sizeof(*entry) + sizeof(unsigned long) * sys_data->nb_args;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 
- 	buffer = tr->array_buffer.buffer;
- 	event = trace_buffer_lock_reserve(buffer,
-@@ -365,7 +365,7 @@ static void ftrace_syscall_exit(void *data, struct pt_regs *regs, long ret)
- 	if (!sys_data)
- 		return;
- 
--	trace_ctx = tracing_gen_ctx_flags();
-+	trace_ctx = tracing_gen_ctx();
- 
- 	buffer = tr->array_buffer.buffer;
- 	event = trace_buffer_lock_reserve(buffer,
-diff --git a/localversion-rt b/localversion-rt
-index 0efe7ba1930e1..8fc605d806670 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt5
-+-rt6
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 67d4555491b03..1566cc3ab7f46 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -935,7 +935,7 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
- 	struct scatterlist input, output;
- 	struct crypto_acomp_ctx *acomp_ctx;
- 
--	u8 *src, *tmp;
-+	u8 *src, *tmp = NULL;
- 	unsigned int dlen;
- 	int ret;
- 	struct writeback_control wbc = {
-@@ -943,8 +943,7 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
- 	};
- 
- 	if (!zpool_can_sleep_mapped(pool)) {
--
--		tmp = kmalloc(entry->length, GFP_ATOMIC);
-+		tmp = kmalloc(PAGE_SIZE, GFP_ATOMIC);
- 		if (!tmp)
- 			return -ENOMEM;
- 	}
-@@ -962,6 +961,7 @@ static int zswap_writeback_entry(struct zpool *pool, unsigned long handle)
- 		/* entry was invalidated */
- 		spin_unlock(&tree->lock);
- 		zpool_unmap_handle(pool, handle);
-+		kfree(tmp);
- 		return 0;
- 	}
- 	spin_unlock(&tree->lock);
-@@ -1272,6 +1272,7 @@ static int zswap_frontswap_load(unsigned type, pgoff_t offset,
- 		dst = kmap_atomic(page);
- 		zswap_fill_page(dst, entry->value);
- 		kunmap_atomic(dst);
-+		ret = 0;
- 		goto freeentry;
- 	}
- 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 785daff48030d..e64d0a2e21c31 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -60,6 +60,7 @@
- #include <linux/prefetch.h>
- #include <linux/if_vlan.h>
- #include <linux/mpls.h>
-+#include <linux/kcov.h>
- 
- #include <net/protocol.h>
- #include <net/dst.h>
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index b31417f40bd56..39943c33abbfa 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -15,6 +15,7 @@
- #include <linux/if_arp.h>
- #include <linux/netdevice.h>
- #include <linux/rtnetlink.h>
-+#include <linux/kcov.h>
- #include <net/mac80211.h>
- #include <net/ieee80211_radiotap.h>
- #include "ieee80211_i.h"
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 972895e9f22dc..3527b17f235a8 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -17,6 +17,7 @@
- #include <linux/etherdevice.h>
- #include <linux/rcupdate.h>
- #include <linux/export.h>
-+#include <linux/kcov.h>
- #include <linux/bitops.h>
- #include <net/mac80211.h>
- #include <net/ieee80211_radiotap.h>
+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
+I/3RRboOeC9M13VNr5feU91O0iDoMreAgPQJ0Lo7YrodKYug0Tt/fFDjkW3v3VIbEr2liUN69U0C
+AwEAAaOCAdEwggHNMA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUH
+MAKGQWh0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNo
+YTJnM29jc3AuY3J0MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3Nw
+ZXJzb25hbHNpZ24yc2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIB
+FiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1Ud
+HwQ9MDswOaA3oDWGM2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hh
+MmczLmNybDAlBgNVHREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUWOK7
+qiyDSt/IDm/SRcNi/sTEiyswDQYJKoZIhvcNAQELBQADggEBAEe2edd4F9tpp0GPmrFrQ+xp9kY7
+uxBzPdCw588bgVrPemjLwiwV37XTT4iWJtNhPfEpaguM6jeLm58LCvHq5/IBjcyHyf4URQVwAg7B
+pqkH8/M+IBstu4/D+znPHB59X+c+au3Q8D+xoNFd7I30kaE+oJuBuFsGXRBc0Ci+FM86x9k7SF8U
+aui1E7Y9wDfsRSCL2TSwU773f09WkrvVdlKxNqQZj2z7bQUUn+yfXdFfBz0LqlYNfn7xJOpQE3HI
+H4jq6U9+b0Qf+J0n0wyysjXPSeQ7EKXVkT8dM2KSpIN86v5dd9LkAz3C1dmjuPRGEC8ZhI1IjMBt
+0itrn6C23NsxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0g
+RzMCDFtD165RQeUC8DvoCDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgiuAx+wL3
+aI14xZ3MUaahg5FMFPIk1HaBOgorH8Bo3v8wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
+hkiG9w0BCQUxDxcNMjEwMjE4MjAxNjUzWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjAL
+BglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG
+9w0BAQcwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBADbmLZ2DDtUdu86Xwcn/UFHH3LPC
+CWyqbwxrjzflQUMjLPFnD/9ifhbLK2thA1iuOfWQTqn9q5xrH3VQ0MnNv9ucYtbNik8QSvCYkAyO
+LhLVC11X9uIbsHioYAWkefcdHTaEpBEoabDp5wgesufmGl2W2lT+riaTDNm98DL+oIfxQ1kwb1eS
+GDuaDWxbtbuPstOs/CAWp0ArGtncQiAnygjBshOezD/wmvix9it9HzODbMcZ4JfODkiQVNyOxjOT
+nmMAT0vjyFvNUCQoyafy/ErZFUab/WOF95ej5im/ZtZZhwrOSNJIiT/wv/QGebUou0MqtQQQJwiw
+NI521Ev9TvY=
+--00000000000031eb3305bba2040b--
