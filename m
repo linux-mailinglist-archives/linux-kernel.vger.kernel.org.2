@@ -2,153 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFB931F2D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0E331F2D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhBRXM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 18:12:57 -0500
-Received: from mail-bn8nam11on2044.outbound.protection.outlook.com ([40.107.236.44]:15905
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229535AbhBRXMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 18:12:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BYYvUsxYwQzq2QzYDvrg5DWQsqfgP6g/bhpGSq00za+8Tjgu9T7mud7fF/7VTobC3VkDKrRLzuR+xkYaOZtJK1I/hJq/rzm4Aeyk777LFmYYn3JXwrZu/usudOmVwpu81tFUQ303JidCRemv5AZloJCRdVF4LiSzd5M0z6XMFqRcgDa9s1AdZmJ6+LE91tA9l5Wq/GP7LDw1gHDKD63VjCMFNVrfuMZH78EdnHcJtzE19mgp2lNmza0ZJKGI23DURZSExjUEcjcKVUIMEVl4378YotL2OmpVj0QcKOeuU3a9DDuAEHOj1+ZokMJPBGVjHDv1XcORK7Z5b6lY7CaMSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8wU2m5o1ywvoNW73am5AcPi/RC4gBpJxmwAf07oLheA=;
- b=UyukgOllkpvM91LLcfrgus53ZK71TjgIXhYp4Gwu4aPYdfic6vWXvzlcSGsgSoEUe0PvalMaw+1HysntYqBE1/nt1cE11J4l5XVRgRFUtui/LECwn/nNnBI+x4wG1MC+/aqGhkH08HxaVdAaere4NnSv8UzI54R0e8HLGsbmyBCZy9bi/9vFJFgoedz8FcdUfBak6MqLbRYHMxd3XHa/euCvfHqQm6MYATeHM6FrPgU4RXOVQXVUjjW+N5JiTqpyQ4wUPxVYk06NQ62wqiw9yPwuwXZ33CApruiGrNf590NWUZVrnsEykGBWNcpM5K94MN1wAtdxhq7/dEaoAb/5ew==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8wU2m5o1ywvoNW73am5AcPi/RC4gBpJxmwAf07oLheA=;
- b=wo9F02Z8W0RX2WZTWWHP7Fd5hRnvg7+RXVq8RQ0uej4YCZ72IyNqEd28q+0TGOHa2I32W2Vj1ieSklvC0Ua8uHzgHrnarex0tm9peqM44u2fGDJjLB8y+qS123YRWeVfG/KwzEE0lYAcL7AhOIyeryRp3HhQNv9CSwXlIEd0DQ8=
-Received: from MN2PR12MB3022.namprd12.prod.outlook.com (2603:10b6:208:ce::32)
- by MN2PR12MB3101.namprd12.prod.outlook.com (2603:10b6:208:c4::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Thu, 18 Feb
- 2021 23:12:02 +0000
-Received: from MN2PR12MB3022.namprd12.prod.outlook.com
- ([fe80::49f7:4979:3a0a:4554]) by MN2PR12MB3022.namprd12.prod.outlook.com
- ([fe80::49f7:4979:3a0a:4554%6]) with mapi id 15.20.3868.027; Thu, 18 Feb 2021
- 23:12:02 +0000
-From:   "Wang, Kevin(Yang)" <Kevin1.Wang@amd.com>
-To:     Nathan Chancellor <nathan@kernel.org>
-CC:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] drm/amd/pm/swsmu: Avoid using structure_size
- uninitialized in smu_cmn_init_soft_gpu_metrics
-Thread-Topic: [PATCH] drm/amd/pm/swsmu: Avoid using structure_size
- uninitialized in smu_cmn_init_soft_gpu_metrics
-Thread-Index: AQHXBkhFDJucxY3wQEGNwt0cVYduT6peil0M
-Date:   Thu, 18 Feb 2021 23:12:02 +0000
-Message-ID: <DE2DF569-7545-41C2-AF18-400D6BD73215@amd.com>
-References: <20210218224849.5591-1-nathan@kernel.org>
-In-Reply-To: <20210218224849.5591-1-nathan@kernel.org>
-Accept-Language: en-US, zh-CN
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [112.65.12.233]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 7dc278be-6896-49db-c89f-08d8d46299b0
-x-ms-traffictypediagnostic: MN2PR12MB3101:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR12MB310134F44EE134F3A839E8BFA2859@MN2PR12MB3101.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:186;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: gZVADYGbdWeTHtk5Y/UfVTByS7K2ADI8vKISIr/VLNGKpMcTitrGucktdsnYdl6g6jTxGfGe4r/dZK0ZPLCQOflTvx9plVuMwCSjrbDv1sMXnWgXmYQ8NNA85mlpkLW5kuR9Oqjl9HHsMPzw0wU5OeIgkbBZI0HwjJvF0jyCK55CvnUPp+ApLnL1KzOWCOv74D+ucGBaX4bb571M/zAx7K+UM1toSQF66qJQZuI1B3ekE6TAFE/gMWwee9kC4hDjXfo5hCD6cOlWTs8D/zGPCB+e31FKu8B1SH6Ow5ApKV4vNa1nuu9ZleAZ3iVK1nbiTZGbDO4J0oIi71DaGsz4vEtwXohd8ho95YoP+M0oBTl7QBuyRZk5ukDhcMO+PiHNEuZj4dnx/ch/CnAAchW8JoLlVp7V1ioJEuxo4y9azPlJ+PkWXPU4ypp9NGG86hBNPxFLJuhT7zglYYUnJ1mkjl97yAhyJNgo+yNbCB093mK6HaZRJfJ1pVEAoKHLGLKMQ7VQhnRrtINR/5tuvdkY1cZi2OSYJfHRFeTuIlJqU8MW9J3deT2q8/Xva7sMTvaAWvUzBbNkBpSs2IqmvTirYXLYrFBmYwJCLP6Gm6RxS/PtWIYDoctxk8tV78D2iNbOwLAMQAG1gE9HG7oL7cULSv9IQM8S3mZ8XpksvvRPiHs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3022.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(346002)(39860400002)(366004)(64756008)(66556008)(66446008)(66946007)(966005)(186003)(66476007)(2906002)(83380400001)(6916009)(54906003)(6512007)(76116006)(91956017)(478600001)(8676002)(26005)(33656002)(36756003)(6486002)(5660300002)(8936002)(2616005)(4326008)(86362001)(71200400001)(316002)(6506007)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?aDR0RFE0MHBSbUJlUlhKY1dTRlNabEdveGk2QzM0czF6YUJrM253L3ZDZzU2?=
- =?utf-8?B?Q0NvUnNQOGp0bmc3ak1OMG9pQ0lGNGZNWFJnZW1tZCswZG5jRTBWNUY1L2hu?=
- =?utf-8?B?SE12SWs4MHBPZXNwVWllbG8zUDJqVUNsZHpydWdidkE5NnRDaW5LczdGWFU2?=
- =?utf-8?B?eFRvMTJleFpVbUppaUVMdm9iR3cramprMmUxc3h3d0hLZDc4RlRKdXdwaFdu?=
- =?utf-8?B?OFM3UmZ6dlVQcm1LL2tQZjFzRlpZNXUxeHdxV0ZWcExTUDBPSVJjSklsc3Nw?=
- =?utf-8?B?RUt4S0VoajJlTEpnSHprMHJWdDBpU2RiOU02LzJXeHJGbDhlQnREbERMZG5F?=
- =?utf-8?B?OUQrM3ovdExyVVFXZ2RPekhqN3g1c3VXa0NMZmV5NVdxZUt6ZS94bC9Md0ZH?=
- =?utf-8?B?SG1TTHFQM3dNZzFKd1J5Z01Qc2QwZFpFN1dXbzNFcjJmYWNpM3d3OFN0VVdK?=
- =?utf-8?B?aURvdlVHTmZTQnl3RXAvVFAxRDljRm5hSlV1YUZpTllheGd3R0ltZFZURlll?=
- =?utf-8?B?ckNPNFNBL2hDTnVKaUc3eCtlOFQ0TmVkc2U2STFsUTNFZnpkamJBckE1aGQx?=
- =?utf-8?B?bVlzZ1QyT0YzSmlHRXlFVDV6Zk5ld3d6WmRLUUNXbmNYQi9iNXgrcWE1YkJZ?=
- =?utf-8?B?YXFrZ0ZBOE9MTWJScWxGd1ZVTXp6eGNJM1plZUZJdTNDN0dEWXdJZFNxZ0pa?=
- =?utf-8?B?Qi9xVCt0MktVRjZaNm9UbkZxckwrcG82ZERmdXJ0ZmtJV1Jvem9FaGVMc2dH?=
- =?utf-8?B?bWlaZW1GU3ZyZ1NpU1dBQkRlaktFU2J4OGJpclI5NTJXa1d3U1V3cms0SVFR?=
- =?utf-8?B?bjc0dlVQOHRIWDc0U2RHdnVtbEM1Z0NXNW9jdFltRG82eEloOUVRQVU0K3FG?=
- =?utf-8?B?ZzBjeWpaWm1YdUM5aW51MUdUdlY3VjMxeVMrUWF2YXJBK0NpT3lvY3ByTGtS?=
- =?utf-8?B?cG1WWjE1QWZCczVyUjVZK2o3aUphWkF2RmxFM0ptZkhZSXhRSExEUmhldlVQ?=
- =?utf-8?B?RG5lTk9YWHhDMWYwR1p5VnNjU2s2V29aWk0wM3M2cmgyZFpBOVY1a2ZsOGVD?=
- =?utf-8?B?VkpqMmNnZFNkR3RVdzlQaDkwWkk4VFZpdlFNQXlxTG44ZFBuSGNpWitGRnpm?=
- =?utf-8?B?dkRxbzRmb3V4RW00bFFXZ24yYm1GTGVBZEw1V0FrSll4aWZUdHRhQkFHK0h6?=
- =?utf-8?B?bU1DdjhNOVhweHhlSWc4cC95N1F2aDNqRFliRE1DUmpaWXU5MEVGSFlrSDUw?=
- =?utf-8?B?N1BRaE9HbDVua3Y5dzQ2aVFPek5rVlpRanBibG8yWS9iMUJ0L2lPRWRvVWdr?=
- =?utf-8?B?Z1RpQzBpS0NmblozVC9WNVRUUkRSZjdVVC9yc1ZyZkNMZjFvNlMrM290a2tj?=
- =?utf-8?B?MExuWGpIblIxanJOUWU0NFRPdG9pMWNDWWNEZlJ3L0ZHdjVOeHlmS1VSRDZV?=
- =?utf-8?B?TXN4eTRWMmdDRndmNlJlOHFQNHcrSnAyZFBSUUF5RTZKYm1OM2RrUHZ5SGgz?=
- =?utf-8?B?bkw5NlZGOFV5WFhwc2tYcTZ5RHJzdEhsR1hXeWtNOU4zWjlGZGlOU0pjaU12?=
- =?utf-8?B?dUdUcmZ2bXRZdTR1RmkydWpqVExnNjZNQ1dVOW03dmQ3V3RwM1NLWmFJRkpm?=
- =?utf-8?B?Ti96YnRXd0ZtR2NJb2JuQ29yYi9pT0NkaDhabTlLNjNkL0J5NkZZdjZvVCtn?=
- =?utf-8?B?Q1NkU256MTRZQW5RbVFLbnUybWNSMGorcHVHY1lyR3ZHc1ZxZkRTbGZWS0hO?=
- =?utf-8?Q?a9N40JXmK5La02P3ug+3JGkOKgPsfv5tUkvE2Cq?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229849AbhBRXNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 18:13:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24370 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229577AbhBRXNe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 18:13:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613689926;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e4OLUk0Jy8zIZlRHoRelkknb6fgRUan1/BmpVqTVRpo=;
+        b=FCPdN442UEwUOHDLFsw16hoK9IjZTwBNxB+L1dFMSFcAqTWgg9Zt8b51Sg57Bep272pTEz
+        ESJvQYV/GtrM+VNcGaYd2T82a1dspBjFnOaRez4UGRkvbzuuQHYMHkNZpm/FJ98QHAmuza
+        pTtdD0bl6joEFTPaptj1lnjVyzLfeAM=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-183-g0hPl6afMDO-geT9xRkbzg-1; Thu, 18 Feb 2021 18:12:05 -0500
+X-MC-Unique: g0hPl6afMDO-geT9xRkbzg-1
+Received: by mail-qv1-f70.google.com with SMTP id u8so2119027qvm.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 15:12:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=e4OLUk0Jy8zIZlRHoRelkknb6fgRUan1/BmpVqTVRpo=;
+        b=sC66cmcbqD3mWPN+REZk+bY0a+NklW+9gHnR4v2lr4fdS3lSeG9593ucdzQMkkhocW
+         Agb/oqYf19xv7n9y0UO1m6Ki5b5fhxVJDK1wK1mo102Zl0D1QWuhNVPGo/kNmSLM/vwf
+         3pMl1KPkw7Pw1heAXUSyabFmyUJyZJ8ocSi1l7fl5/GpXyqc7fBK2S3tZmGGNFmHiXqB
+         QopjgPpJfbvEuJZhrAdqx3N9v2mlQ7rrk4cr8r1lYH6JaXWnK5X/me23aQ8bZBKaKePd
+         86E/fsxwipyAuoYo/r5Vbtr8/aUQ8Q5Wv5wQMvsCTbNoTGWZTXMP6z1YlI0ZdL7JZPY2
+         oUNg==
+X-Gm-Message-State: AOAM532TlOxpJvrPBH+jlr6ISy23Guq/4haxlyXmzh6dmrgpsC9xeZUf
+        KcC4zNPKoaji1kymX9MrWlm65bfzk+nX12l5VP/MzujgmgmOnYNCtOcn3NmiENo1Y7jmguexu75
+        /X5bLfuJ7RLkmZ2cjvCLUPaAQ7uXZrZ+1sGNhm0GflvGdNgbexT3wZL2Nlc+9F1FtqIyO73D/LA
+        ==
+X-Received: by 2002:a05:620a:1d:: with SMTP id j29mr6700556qki.44.1613689924380;
+        Thu, 18 Feb 2021 15:12:04 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyNcCRt5mpNJEHZqxBiuceXrqWJT6w5UnTTmmRll9SNEnxh73o0Dd3vEIchpsfhphq0LTVt3A==
+X-Received: by 2002:a05:620a:1d:: with SMTP id j29mr6700517qki.44.1613689924057;
+        Thu, 18 Feb 2021 15:12:04 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id c191sm2078643qke.1.2021.02.18.15.12.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 15:12:03 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     peterx@redhat.com, Andrea Arcangeli <aarcange@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH v4 2/4] hugetlb/userfaultfd: Forbid huge pmd sharing when uffd enabled
+Date:   Thu, 18 Feb 2021 18:12:02 -0500
+Message-Id: <20210218231202.15426-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210218230633.15028-1-peterx@redhat.com>
+References: <20210218230633.15028-1-peterx@redhat.com>
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3022.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7dc278be-6896-49db-c89f-08d8d46299b0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 23:12:02.2718
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: WSXzk9jxwfxsvY1FlcQbh8jp0tsQhdGRWBBuZdKCQ5wT6VUXzRQo6tz+wDF4SKw/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3101
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dGhhbmtzLA0KDQpSZXZpZXdlZC1ieTogS2V2aW4gV2FuZyA8a2V2aW4xLndhbmdAYW1kLmNvbT4N
-Cg0KUmVnYXJkcywNCktldmluDQoNCj4g5ZyoIDIwMjHlubQy5pyIMTnml6XvvIwwNjo0Oe+8jE5h
-dGhhbiBDaGFuY2VsbG9yIDxuYXRoYW5Aa2VybmVsLm9yZz4g5YaZ6YGT77yaDQo+IA0KPiDvu79D
-bGFuZyB3YXJuczoNCj4gDQo+IGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1Ly4uL3BtL3N3c211
-L3NtdV9jbW4uYzo3NjQ6Mjogd2FybmluZzoNCj4gdmFyaWFibGUgJ3N0cnVjdHVyZV9zaXplJyBp
-cyB1c2VkIHVuaW5pdGlhbGl6ZWQgd2hlbmV2ZXIgc3dpdGNoIGRlZmF1bHQNCj4gaXMgdGFrZW4g
-Wy1Xc29tZXRpbWVzLXVuaW5pdGlhbGl6ZWRdDQo+ICAgICAgICBkZWZhdWx0Og0KPiAgICAgICAg
-Xn5+fn5+fg0KPiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS8uLi9wbS9zd3NtdS9zbXVfY21u
-LmM6NzcwOjIzOiBub3RlOg0KPiB1bmluaXRpYWxpemVkIHVzZSBvY2N1cnMgaGVyZQ0KPiAgICAg
-ICAgbWVtc2V0KGhlYWRlciwgMHhGRiwgc3RydWN0dXJlX3NpemUpOw0KPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fn4NCj4gZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
-cHUvLi4vcG0vc3dzbXUvc211X2Ntbi5jOjc1MzoyNTogbm90ZToNCj4gaW5pdGlhbGl6ZSB0aGUg
-dmFyaWFibGUgJ3N0cnVjdHVyZV9zaXplJyB0byBzaWxlbmNlIHRoaXMgd2FybmluZw0KPiAgICAg
-ICAgdWludDE2X3Qgc3RydWN0dXJlX3NpemU7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIF4NCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID0gMA0KPiAxIHdhcm5pbmcg
-Z2VuZXJhdGVkLg0KPiANCj4gUmV0dXJuIGluIHRoZSBkZWZhdWx0IGNhc2UsIGFzIHRoZSBzaXpl
-IG9mIHRoZSBoZWFkZXIgd2lsbCBub3QgYmUga25vd24uDQo+IA0KPiBGaXhlczogZGU0YjdjZDhj
-Yjg3ICgiZHJtL2FtZC9wbS9zd3NtdTogdW5pZnkgdGhlIGluaXQgc29mdCBncHUgbWV0cmljcyBm
-dW5jdGlvbiIpDQo+IExpbms6IGh0dHBzOi8vZ2l0aHViLmNvbS9DbGFuZ0J1aWx0TGludXgvbGlu
-dXgvaXNzdWVzLzEzMDQNCj4gU2lnbmVkLW9mZi1ieTogTmF0aGFuIENoYW5jZWxsb3IgPG5hdGhh
-bkBrZXJuZWwub3JnPg0KPiAtLS0NCj4gZHJpdmVycy9ncHUvZHJtL2FtZC9wbS9zd3NtdS9zbXVf
-Y21uLmMgfCAyICstDQo+IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlv
-bigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvcG0vc3dzbXUvc211
-X2Ntbi5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9wbS9zd3NtdS9zbXVfY21uLmMNCj4gaW5kZXgg
-YmI2MjBmZGQ0Y2QyLi5iY2VkZDRkOTJlMzUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2Ry
-bS9hbWQvcG0vc3dzbXUvc211X2Ntbi5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvcG0v
-c3dzbXUvc211X2Ntbi5jDQo+IEBAIC03NjIsNyArNzYyLDcgQEAgdm9pZCBzbXVfY21uX2luaXRf
-c29mdF9ncHVfbWV0cmljcyh2b2lkICp0YWJsZSwgdWludDhfdCBmcmV2LCB1aW50OF90IGNyZXYp
-DQo+ICAgICAgICBzdHJ1Y3R1cmVfc2l6ZSA9IHNpemVvZihzdHJ1Y3QgZ3B1X21ldHJpY3NfdjJf
-MCk7DQo+ICAgICAgICBicmVhazsNCj4gICAgZGVmYXVsdDoNCj4gLSAgICAgICAgYnJlYWs7DQo+
-ICsgICAgICAgIHJldHVybjsNCj4gICAgfQ0KPiANCj4gI3VuZGVmIE1FVFJJQ1NfVkVSU0lPTg0K
-PiAtLSANCj4gMi4zMC4xDQo+IA0K
+Huge pmd sharing could bring problem to userfaultfd.  The thing is that
+userfaultfd is running its logic based on the special bits on page table
+entries, however the huge pmd sharing could potentially share page table
+entries for different address ranges.  That could cause issues on either:
+
+  - When sharing huge pmd page tables for an uffd write protected range, the
+    newly mapped huge pmd range will also be write protected unexpectedly, or,
+
+  - When we try to write protect a range of huge pmd shared range, we'll first
+    do huge_pmd_unshare() in hugetlb_change_protection(), however that also
+    means the UFFDIO_WRITEPROTECT could be silently skipped for the shared
+    region, which could lead to data loss.
+
+Since at it, a few other things are done altogether:
+
+  - Move want_pmd_share() from mm/hugetlb.c into linux/hugetlb.h, because
+    that's definitely something that arch code would like to use too
+
+  - ARM64 currently directly check against CONFIG_ARCH_WANT_HUGE_PMD_SHARE when
+    trying to share huge pmd.  Switch to the want_pmd_share() helper.
+
+Since at it, move vma_shareable() from huge_pmd_share() into want_pmd_share().
+
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ arch/arm64/mm/hugetlbpage.c   |  3 +--
+ include/linux/hugetlb.h       |  2 ++
+ include/linux/userfaultfd_k.h |  9 +++++++++
+ mm/hugetlb.c                  | 20 ++++++++++++++------
+ 4 files changed, 26 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 6e3bcffe2837..58987a98e179 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -284,8 +284,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		 */
+ 		ptep = pte_alloc_map(mm, pmdp, addr);
+ 	} else if (sz == PMD_SIZE) {
+-		if (IS_ENABLED(CONFIG_ARCH_WANT_HUGE_PMD_SHARE) &&
+-		    pud_none(READ_ONCE(*pudp)))
++		if (want_pmd_share(vma, addr) && pud_none(READ_ONCE(*pudp)))
+ 			ptep = huge_pmd_share(mm, vma, addr, pudp);
+ 		else
+ 			ptep = (pte_t *)pmd_alloc(mm, pudp, addr);
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index a6113fa6d21d..bc86f2f516e7 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -950,4 +950,6 @@ static inline __init void hugetlb_cma_check(void)
+ }
+ #endif
+ 
++bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr);
++
+ #endif /* _LINUX_HUGETLB_H */
+diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+index a8e5f3ea9bb2..c63ccdae3eab 100644
+--- a/include/linux/userfaultfd_k.h
++++ b/include/linux/userfaultfd_k.h
+@@ -52,6 +52,15 @@ static inline bool is_mergeable_vm_userfaultfd_ctx(struct vm_area_struct *vma,
+ 	return vma->vm_userfaultfd_ctx.ctx == vm_ctx.ctx;
+ }
+ 
++/*
++ * Never enable huge pmd sharing on uffd-wp registered vmas, because uffd-wp
++ * protect information is per pgtable entry.
++ */
++static inline bool uffd_disable_huge_pmd_share(struct vm_area_struct *vma)
++{
++	return vma->vm_flags & VM_UFFD_WP;
++}
++
+ static inline bool userfaultfd_missing(struct vm_area_struct *vma)
+ {
+ 	return vma->vm_flags & VM_UFFD_MISSING;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 07bb9bdc3282..8e8e2f3dfe06 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -5292,6 +5292,18 @@ static bool vma_shareable(struct vm_area_struct *vma, unsigned long addr)
+ 	return false;
+ }
+ 
++bool want_pmd_share(struct vm_area_struct *vma, unsigned long addr)
++{
++#ifndef CONFIG_ARCH_WANT_HUGE_PMD_SHARE
++	return false;
++#endif
++#ifdef CONFIG_USERFAULTFD
++	if (uffd_disable_huge_pmd_share(vma))
++		return false;
++#endif
++	return vma_shareable(vma, addr);
++}
++
+ /*
+  * Determine if start,end range within vma could be mapped by shared pmd.
+  * If yes, adjust start and end to cover range associated with possible
+@@ -5346,9 +5358,6 @@ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	pte_t *pte;
+ 	spinlock_t *ptl;
+ 
+-	if (!vma_shareable(vma, addr))
+-		return (pte_t *)pmd_alloc(mm, pud, addr);
+-
+ 	i_mmap_assert_locked(mapping);
+ 	vma_interval_tree_foreach(svma, &mapping->i_mmap, idx, idx) {
+ 		if (svma == vma)
+@@ -5412,7 +5421,7 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+ 	*addr = ALIGN(*addr, HPAGE_SIZE * PTRS_PER_PTE) - HPAGE_SIZE;
+ 	return 1;
+ }
+-#define want_pmd_share()	(1)
++
+ #else /* !CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
+ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct vma,
+ 		      unsigned long addr, pud_t *pud)
+@@ -5430,7 +5439,6 @@ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+ 				unsigned long *start, unsigned long *end)
+ {
+ }
+-#define want_pmd_share()	(0)
+ #endif /* CONFIG_ARCH_WANT_HUGE_PMD_SHARE */
+ 
+ #ifdef CONFIG_ARCH_WANT_GENERAL_HUGETLB
+@@ -5452,7 +5460,7 @@ pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+ 			pte = (pte_t *)pud;
+ 		} else {
+ 			BUG_ON(sz != PMD_SIZE);
+-			if (want_pmd_share() && pud_none(*pud))
++			if (want_pmd_share(vma, addr) && pud_none(*pud))
+ 				pte = huge_pmd_share(mm, vma, addr, pud);
+ 			else
+ 				pte = (pte_t *)pmd_alloc(mm, pud, addr);
+-- 
+2.26.2
+
