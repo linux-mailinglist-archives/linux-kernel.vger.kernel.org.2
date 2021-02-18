@@ -2,96 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A079131EFD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D8F31EFCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhBRT17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:27:59 -0500
-Received: from mga02.intel.com ([134.134.136.20]:47036 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232417AbhBRSiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:38:19 -0500
-IronPort-SDR: OaEJHUpjNaMZwe5N5kbFFW2c7vyWdzewFPtA8KVCuevQCLgaM3QrYu5eazSE4ixungQ6oyGOwT
- i8ucj0sJGA8g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="170740653"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="170740653"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 10:30:26 -0800
-IronPort-SDR: K3prdcyMQiILvxrHbSlBhLyrBhdsusQb3Ie+7kLhrXL3PlDG9elq+aDuhFcd4h4iwFlph3eae9
- lRpPRtrwhOkQ==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="428315976"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.101.217])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 10:30:26 -0800
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
- <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <c3ffa2cb-cb2c-20b7-d722-c875934992e9@linux.intel.com>
-Date:   Thu, 18 Feb 2021 10:30:20 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S232234AbhBRTZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:25:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231588AbhBRSeW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:34:22 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C77C0611C2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:32:36 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id o7so2356207ils.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:32:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ASJfbMESWoJh/HQsMW7Q3UKMpf/MfugaFVT8oj4WLmg=;
+        b=ryCJHtpSF1ypfE4YKHb5dWe5u3MHqsEwaEb86TPt1EPl6gh2KYJ445RXpgLxv4Hxo5
+         SI8cver45q3N02qNa4nG2bpG99XCwT0u9VJiSrCw2RN8twvMjSsTZrnu6RgQW/lAQBBo
+         96yqOc/zXHlKVeqzMlp++IMC6pd1isZABQAMn+4270ssbBkolJpt99LBVV+9MX439rxx
+         +xAOZ6oxmoK3QESndmnAbLlK8wxrAa7YURMzc2vDoGzTdX7Fahd/7T4JmYNofBmVrKNX
+         Ys9Y4XQRw0x7y5WEWO87oKDhpjFBnVBxWG54QmZrMT+re7WY+aXQuseBUadBpIJr5zEK
+         PAdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ASJfbMESWoJh/HQsMW7Q3UKMpf/MfugaFVT8oj4WLmg=;
+        b=iYuibLLeEG13rALwO0nC8QdGNRVHvlnA0IL/D3rMe0BY9uGz+WBTHy9ww7JeRbVogB
+         +ox7thoSjdgaCv++S2eNDVvczqcLrtNiiyuoUWUVovrmW4x0v15AR0ZzcAibRR6kB+3c
+         Hh/Wn+6CZ7n9IISA8zL+wYZr1O748V6wzRa9w1TczoCaXGajAa7ES6K6UpN01oNXB1pq
+         DkksnZ/M2LVLmeioRZGQYQd/juS+nFgg1OePLinRxi6/n5pDFUMIsdzWdh6xMcv7a3uT
+         TcoqnwTAO1vWbCcCtPU2Xv6FfAoQ13aPNtMNut4QWZh+Ij8BUDYnY4MZxL/Yv9UAjhb4
+         c7GA==
+X-Gm-Message-State: AOAM531Kj0ib6zExKZAkBS2KeX0hiCuPxaWO10SrpvNq+bovtvg7/c+O
+        ++OVqI+na32iDfOX1QReL39vIAG6ZhGgdEWNwv9UaLxRK+jrLQ==
+X-Google-Smtp-Source: ABdhPJxN7VuxhWkGQJ+OPNAsI1XMlP8fqswa88PjUGdgrl0cSBm2dVVLaUGfCOtoI2FWS+lI1yoLHRzD23Q5kDVMGes=
+X-Received: by 2002:a05:6e02:1c8d:: with SMTP id w13mr394834ill.301.1613673155515;
+ Thu, 18 Feb 2021 10:32:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210217204418.54259-1-peterx@redhat.com> <20210217204619.54761-1-peterx@redhat.com>
+ <20210217204619.54761-3-peterx@redhat.com>
+In-Reply-To: <20210217204619.54761-3-peterx@redhat.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu, 18 Feb 2021 10:32:00 -0800
+Message-ID: <CAJHvVchtVtDHE2iJRAmraL+kbTezgfck0Mgj7xM+7U5yaJ5aCQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] hugetlb/userfaultfd: Unshare all pmds for
+ hugetlbfs when register wp
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 17, 2021 at 12:46 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> Huge pmd sharing for hugetlbfs is racy with userfaultfd-wp because
+> userfaultfd-wp is always based on pgtable entries, so they cannot be shared.
+>
+> Walk the hugetlb range and unshare all such mappings if there is, right before
+> UFFDIO_REGISTER will succeed and return to userspace.
+>
+> This will pair with want_pmd_share() in hugetlb code so that huge pmd sharing
+> is completely disabled for userfaultfd-wp registered range.
+>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  fs/userfaultfd.c        |  4 ++++
+>  include/linux/hugetlb.h |  1 +
+>  mm/hugetlb.c            | 51 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 56 insertions(+)
+>
+> diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
+> index 894cc28142e7..e259318fcae1 100644
+> --- a/fs/userfaultfd.c
+> +++ b/fs/userfaultfd.c
+> @@ -15,6 +15,7 @@
+>  #include <linux/sched/signal.h>
+>  #include <linux/sched/mm.h>
+>  #include <linux/mm.h>
+> +#include <linux/mmu_notifier.h>
+>  #include <linux/poll.h>
+>  #include <linux/slab.h>
+>  #include <linux/seq_file.h>
+> @@ -1448,6 +1449,9 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
+>                 vma->vm_flags = new_flags;
+>                 vma->vm_userfaultfd_ctx.ctx = ctx;
+>
+> +               if (is_vm_hugetlb_page(vma) && uffd_disable_huge_pmd_share(vma))
+> +                       hugetlb_unshare_all_pmds(vma);
 
+This line yields the following error, if building with:
+# CONFIG_CMA is not set
 
-On 2/18/21 12:24 AM, Michal Hocko wrote:
+./fs/userfaultfd.c:1459: undefined reference to `hugetlb_unshare_all_pmds'
 
-> 
-> I have already acked this patch in the previous version along with Fixes
-> tag. It seems that my review feedback has been completely ignored also
-> for other patches in this series.
-
-Michal,
-
-My apology.  Our mail system screwed up and there are some mail missing
-from our mail system that I completely missed your mail.  
-Only saw them now after I looked into the lore.kernel.org.
-
-Responding to your comment:
-
->Have you observed this happening in the real life? I do agree that the
->threshold based updates of the tree is not ideal but the whole soft
->reclaim code is far from optimal. So why do we care only now? The
->feature is essentially dead and fine tuning it sounds like a step back
->to me.
-
-Yes, I did see the issue mentioned in patch 2 breaking soft limit
-reclaim for cgroup v1.  There are still some of our customers using
-cgroup v1 so we will like to fix this if possible.
-
-For patch 3 regarding the uncharge_batch, it
-is more of an observation that we should uncharge in batch of same node
-and not prompted by actual workload.
-Thinking more about this, the worst that could happen
-is we could have some entries in the soft limit tree that overestimate
-the memory used.  The worst that could happen is a soft page reclaim
-on that cgroup.  The overhead from extra memcg event update could
-be more than a soft page reclaim pass.  So let's drop patch 3
-for now.
-
-Let me know if you will like me to resend patch 1 with the fixes tag
-for commit 4e41695356fb ("memory controller: soft limit reclaim on contention")
-and if there are any changes I should make for patch 2.
-
-Thanks.
-
-Tim
-
+> +
+>         skip:
+>                 prev = vma;
+>                 start = vma->vm_end;
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 3b4104021dd3..97ecfd4c20b2 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -188,6 +188,7 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
+>                 unsigned long address, unsigned long end, pgprot_t newprot);
+>
+>  bool is_hugetlb_entry_migration(pte_t pte);
+> +void hugetlb_unshare_all_pmds(struct vm_area_struct *vma);
+>
+>  #else /* !CONFIG_HUGETLB_PAGE */
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index f53a0b852ed8..83c006ea3ff9 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -5723,4 +5723,55 @@ void __init hugetlb_cma_check(void)
+>         pr_warn("hugetlb_cma: the option isn't supported by current arch\n");
+>  }
+>
+> +/*
+> + * This function will unconditionally remove all the shared pmd pgtable entries
+> + * within the specific vma for a hugetlbfs memory range.
+> + */
+> +void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
+> +{
+> +       struct hstate *h = hstate_vma(vma);
+> +       unsigned long sz = huge_page_size(h);
+> +       struct mm_struct *mm = vma->vm_mm;
+> +       struct mmu_notifier_range range;
+> +       unsigned long address, start, end;
+> +       spinlock_t *ptl;
+> +       pte_t *ptep;
+> +
+> +       if (!(vma->vm_flags & VM_MAYSHARE))
+> +               return;
+> +
+> +       start = ALIGN(vma->vm_start, PUD_SIZE);
+> +       end = ALIGN_DOWN(vma->vm_end, PUD_SIZE);
+> +
+> +       if (start >= end)
+> +               return;
+> +
+> +       /*
+> +        * No need to call adjust_range_if_pmd_sharing_possible(), because
+> +        * we're going to operate on the whole vma
+> +        */
+> +       mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm,
+> +                               vma->vm_start, vma->vm_end);
+> +       mmu_notifier_invalidate_range_start(&range);
+> +       i_mmap_lock_write(vma->vm_file->f_mapping);
+> +       for (address = start; address < end; address += PUD_SIZE) {
+> +               unsigned long tmp = address;
+> +
+> +               ptep = huge_pte_offset(mm, address, sz);
+> +               if (!ptep)
+> +                       continue;
+> +               ptl = huge_pte_lock(h, mm, ptep);
+> +               /* We don't want 'address' to be changed */
+> +               huge_pmd_unshare(mm, vma, &tmp, ptep);
+> +               spin_unlock(ptl);
+> +       }
+> +       flush_hugetlb_tlb_range(vma, vma->vm_start, vma->vm_end);
+> +       i_mmap_unlock_write(vma->vm_file->f_mapping);
+> +       /*
+> +        * No need to call mmu_notifier_invalidate_range(), see
+> +        * Documentation/vm/mmu_notifier.rst.
+> +        */
+> +       mmu_notifier_invalidate_range_end(&range);
+> +}
+> +
+>  #endif /* CONFIG_CMA */
+> --
+> 2.26.2
+>
