@@ -2,68 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0A731EBE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E11C31EC2F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhBRPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:55:24 -0500
-Received: from muru.com ([72.249.23.125]:35026 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233526AbhBRNZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:25:38 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id BD83880AA;
-        Thu, 18 Feb 2021 13:24:25 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        id S232473AbhBRQVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:21:09 -0500
+Received: from smtp104.iad3a.emailsrvr.com ([173.203.187.104]:48814 "EHLO
+        smtp104.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231136AbhBRNh6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:37:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1613643185;
+        bh=m8t/XvYW9G95yu9XimEdQKxasSEtsFIC/kxyuxGznXQ=;
+        h=Subject:To:From:Date:From;
+        b=yA6Z0QaT4Ycd/kgyfT6p/CRzVhqj+XQlFw/KcCy8Rv4VEoufamI5JAaBYjYlShTd+
+         m3WGGaCUINsdB/RxQN8mR3sGCBtdqyFrL//CM178XYRYvSZPLfRNYxMi3ixwbZ9auN
+         GIfQl1dRBA+9+DyeKv2livU6AHcScfGGC6qBEMFI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1613643185;
+        bh=m8t/XvYW9G95yu9XimEdQKxasSEtsFIC/kxyuxGznXQ=;
+        h=Subject:To:From:Date:From;
+        b=EaDRJM9YUnPRxXAlMwcJ+Q/sy4Z6YrgcX+hS6Va3bRlf8DGNKiQwJnpHne+0VxRx8
+         JhcKzWlIXGnvif/45YEpqcLM+4rsmvbXxkAuvjWHuyKaXVHZ1JNCXuLufgFxwlaZ+B
+         m9MLRLgx4R/Cc7zKtZes/7kUYWcUg9sjCp+YTTdo=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp22.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id F1CB8195C;
+        Thu, 18 Feb 2021 05:13:04 -0500 (EST)
+Subject: Re: [PATCH] drivers: staging: comedi: Fixed side effects from macro
+ definition.
+To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH] bus: ti-sysc: Fix warning on unbind if reset is not deasserted
-Date:   Thu, 18 Feb 2021 15:23:57 +0200
-Message-Id: <20210218132357.46074-1-tony@atomide.com>
-X-Mailer: git-send-email 2.30.1
+        Ethan Edwards <ethancarteredwards@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20210217142008.29699-1-chakravarthikulkarni2021@gmail.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <3c1ddf91-da6c-5620-61e7-1ec453b2aa93@mev.co.uk>
+Date:   Thu, 18 Feb 2021 10:13:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210217142008.29699-1-chakravarthikulkarni2021@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: d7105027-4594-4034-967a-e94a4fffd174-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We currently get thefollowing on driver unbind if a reset is configured
-and asserted:
+On 17/02/2021 14:20, chakravarthikulkarni wrote:
+> Warning found by checkpatch.pl script.
+> 
+> Signed-off-by: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+> ---
+>   drivers/staging/comedi/comedi.h | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/comedi/comedi.h b/drivers/staging/comedi/comedi.h
+> index b5d00a006dbb..b2af6a88d389 100644
+> --- a/drivers/staging/comedi/comedi.h
+> +++ b/drivers/staging/comedi/comedi.h
+> @@ -1103,9 +1103,12 @@ enum ni_common_signal_names {
+>   
+>   /* *** END GLOBALLY-NAMED NI TERMINALS/SIGNALS *** */
+>   
+> -#define NI_USUAL_PFI_SELECT(x)	(((x) < 10) ? (0x1 + (x)) : (0xb + (x)))
+> -#define NI_USUAL_RTSI_SELECT(x)	(((x) < 7) ? (0xb + (x)) : 0x1b)
+> -
+> +#define NI_USUAL_PFI_SELECT(x) \
+> +	({ typeof(x) _x = x; \
+> +	 (((_x) < 10) ? (0x1 + (_x)) : (0xb + (_x))); })
+> +#define NI_USUAL_RTSI_SELECT(x)	\
+> +	({ typeof(x) _x = x; \
+> +	 (((_x) < 7) ? (0xb + (_x)) : 0x1b); })
+>   /*
+>    * mode bits for NI general-purpose counters, set with
+>    * INSN_CONFIG_SET_COUNTER_MODE
+> 
 
-WARNING: CPU: 0 PID: 993 at drivers/reset/core.c:432 reset_control_assert
-...
-(reset_control_assert) from [<c0fecda8>] (sysc_remove+0x190/0x1e4)
-(sysc_remove) from [<c0a2bb58>] (platform_remove+0x24/0x3c)
-(platform_remove) from [<c0a292fc>] (__device_release_driver+0x154/0x214)
-(__device_release_driver) from [<c0a2a210>] (device_driver_detach+0x3c/0x8c)
-(device_driver_detach) from [<c0a27d64>] (unbind_store+0x60/0xd4)
-(unbind_store) from [<c0546bec>] (kernfs_fop_write_iter+0x10c/0x1cc)
+I'd rather not do that because this is intended to be a userspace 
+header.  This change adds GCC extensions and prohibits the use of the 
+macros in constant expressions.
 
-Let's fix it by checking the reset status.
-
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/bus/ti-sysc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -3053,7 +3053,9 @@ static int sysc_remove(struct platform_device *pdev)
- 
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
--	reset_control_assert(ddata->rsts);
-+
-+	if (!reset_control_status(ddata->rsts))
-+		reset_control_assert(ddata->rsts);
- 
- unprepare:
- 	sysc_unprepare(ddata);
 -- 
-2.30.1
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
