@@ -2,96 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D950E31F291
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:52:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF5231F293
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:54:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhBRWwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:52:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229945AbhBRWw0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:52:26 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD4FC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:51:46 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id d8so8412168ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:51:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Vrc627xbuX2TMgkXGGkkQoTFvSmbGef3PT5dPjYaHq4=;
-        b=G+VppJXi/ZOG8gHCQ6TFEVZSG0VMgwjTbKRWl1GBBX3e9vwfVqsXJnB+Swrbm9Mbki
-         HeZGAKA758jQl1Wchle/AFqcf2AjQAMFFj13bi28/2IH0R2ELAAHaO0ZWoqacamBBtzs
-         uUGJ8VNz+ZknAy1z21qDfTSQ4nYI2gdZIrkck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Vrc627xbuX2TMgkXGGkkQoTFvSmbGef3PT5dPjYaHq4=;
-        b=HkKnBerrJcvUOQxZSqta3PmzUzpvjn081qxcJQTLO+QsslUNFYmKzk43LLATEGqcAt
-         Nj5Gvlz77UxAoGPNE/gZVAdkk/qJm+KHRU9jO1fIQy3+lvhr9ufYcsKHs9B5pBdIZpgr
-         A3jHEkEMD3rWpVZ38E9fjzzqiPw8H9CrLk6E14BaI8pKdpfuS0lquH6h3atefCD4XpT1
-         CMOOl+qrOiVygeZttaSIsdgMtWPL4FFciLYFG2rUWJecPX4+sTJlVscxKAo3lqecXGaD
-         x33C2Hw150IKXMJLLtND+HUnzXL2Vp45J/+lj4i25R8x8FPoopkVHpKbZ0cUx9q4YWvf
-         rZ0Q==
-X-Gm-Message-State: AOAM531HDdclMw3CTc/dSj3jz4XT9RaU41ZwPK3cl8l7VfI0u4QTXmcD
-        +VRGnfl5ncFCpLJUWYrmlToKkQ==
-X-Google-Smtp-Source: ABdhPJyKhm7W7GiwYBIDb8MWNmpDRdcqaFasH1pPiX6+4A01bLs1vLg+znuOAZacAYcYbAiyu87wIA==
-X-Received: by 2002:a17:906:301b:: with SMTP id 27mr2584079ejz.230.1613688705192;
-        Thu, 18 Feb 2021 14:51:45 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id m7sm3279119ejk.52.2021.02.18.14.51.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 14:51:44 -0800 (PST)
-Subject: Re: [PATCH 04/14] lib: introduce BITS_{FIRST,LAST} macro
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-5-yury.norov@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
-Date:   Thu, 18 Feb 2021 23:51:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230010AbhBRWw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:52:59 -0500
+Received: from foss.arm.com ([217.140.110.172]:56576 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhBRWw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 17:52:56 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 791EEED1;
+        Thu, 18 Feb 2021 14:52:05 -0800 (PST)
+Received: from [10.57.61.241] (unknown [10.57.61.241])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9D4A3F73D;
+        Thu, 18 Feb 2021 14:52:03 -0800 (PST)
+Subject: Re: [PATCH V3 06/14] dts: bindings: Document device tree bindings for
+ ETE
+To:     Rob Herring <robh@kernel.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        devicetree@vger.kernel.org, mathieu.poirier@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, lcherian@marvell.com,
+        mike.leach@linaro.org
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-7-git-send-email-anshuman.khandual@arm.com>
+ <20210209190031.GA4102836@robh.at.kernel.org>
+ <4d0e6b88-72c2-be23-f43a-3f541f9ebb86@arm.com>
+ <20210218183335.GA915713@robh.at.kernel.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <952f91ef-7fd2-a3d4-06d8-b7f433aa4c76@arm.com>
+Date:   Thu, 18 Feb 2021 22:51:56 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210218040512.709186-5-yury.norov@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+In-Reply-To: <20210218183335.GA915713@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/2021 05.05, Yury Norov wrote:
-> BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
-> functionality of GENMASK(). The scope of there macros is wider
-> than just bitmap. This patch defines 4 new macros: BITS_FIRST(),
-> BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
-> on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
-> to avoid duplication and increase the scope of the macros.
+On 2/18/21 6:33 PM, Rob Herring wrote:
+> On Wed, Feb 10, 2021 at 12:33:44PM +0000, Suzuki K Poulose wrote:
+>> Hi Rob
+>>
+>> On 2/9/21 7:00 PM, Rob Herring wrote:
+>>> On Wed, Jan 27, 2021 at 02:25:30PM +0530, Anshuman Khandual wrote:
+>>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>>
+>>>> Document the device tree bindings for Embedded Trace Extensions.
+>>>> ETE can be connected to legacy coresight components and thus
+>>>> could optionally contain a connection graph as described by
+>>>> the CoreSight bindings.
+>>>>
+>>>> Cc: devicetree@vger.kernel.org
+>>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>> Cc: Mike Leach <mike.leach@linaro.org>
+>>>> Cc: Rob Herring <robh@kernel.org>
+>>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>>> ---
+>>>> Changes in V3:
+>>>>
+>>>> - Fixed all DT yaml semantics problems
+>>>>
+>>>>    Documentation/devicetree/bindings/arm/ete.yaml | 74 ++++++++++++++++++++++++++
+>>>>    1 file changed, 74 insertions(+)
+>>>>    create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
+>>>> new file mode 100644
+>>>> index 0000000..edc1fe2
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
+>>>> @@ -0,0 +1,74 @@
+>>>> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+>>>> +# Copyright 2021, Arm Ltd
+>>>> +%YAML 1.2
+>>>> +---
+>>>> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
+>>>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+>>>> +
+>>>> +title: ARM Embedded Trace Extensions
+>>>> +
+>>>> +maintainers:
+>>>> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
+>>>> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
+>>>> +
+>>>> +description: |
+>>>> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
+>>>> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
+>>>> +  architecture and has extended support for future architecture changes.
+>>>> +  The trace generated by the ETE could be stored via legacy CoreSight
+>>>> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
+>>>> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
+>>>> +  legacy CoreSight components, a node must be listed per instance, along
+>>>> +  with any optional connection graph as per the coresight bindings.
+>>>> +  See bindings/arm/coresight.txt.
+>>>> +
+>>>> +properties:
+>>>> +  $nodename:
+>>>> +    pattern: "^ete([0-9a-f]+)$"
+>>>> +  compatible:
+>>>> +    items:
+>>>> +      - const: arm,embedded-trace-extension
+>>>> +
+>>>> +  cpu:
+>>>
+>>> We've already established 'cpus' for this purpose.
+>>>
+>>
+>> Please see : https://lkml.kernel.org/r/9417218b-6eda-373b-a2cb-869089ffc7cd@arm.com
+>> for my response in the previous version to this and the one with out-ports.
+> 
+> Okay, fair enough.
+> 
+>>
+>>>> +    description: |
+>>>> +      Handle to the cpu this ETE is bound to.
+>>>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>>>> +
+>>>> +  out-ports:
+>>>> +    type: object
+>>>
+>>> Replace with: $ref: /schemas/graph.yaml#/properties/ports
+>>
+>> So, just to confirm again :
+>> The CoreSight graph bindings expect the input ports and output ports
+>> grouped under in-ports{} and out-ports{} respectively to avoid having
+>> to specify the direction of the ports in the individual "port" nodes.
+>> i.e
+>>
+>> in-ports {
+>>
+>> 	property: ports
+>> 	  OR
+>> 	property: port
+>>
+>> 	required:
+>> 		OneOf:
+>> 			ports
+>> 			port
+> 
+> No, 'ports' as a child of in-ports is not correct. There should only be
+> 'port(@[0-9a-f]+)?' nodes. That's why you need the above $ref added. The
+> $ref doesn't define the node name is 'ports', but what a 'ports' or
+> 'foo-ports' contains.
+
+Sorry, it is my bad. We don't expect ports{} under in-ports. So your
+suggestion is the accurate one. I will respin.
+
+
+
+> 
+>> }
+>>
+>> out-ports {
+>>
+>> 	# same as above
+>> }
+>>
+>> So thats why I added out-ports as a new object, where the ports/port
+>> could be a child node.
+>>
+>> Ideally the definition of out-ports /in-ports should go to a common schema
+>> for CoreSight bindings, when we move to Yaml for the existing bindings,
+>> which will follow in a separate series, later.
+> 
+> Yes, maybe, but I'm not sure something common is going to help here.
+> You'll still have to describe what each 'port' node does in each device
+> specific binding.
+
+For CoreSight components the end-point of the ports are system specific.
+i.e, it could be anything on the other end. There is no fixed end-point
+connection.
+
+e.g, ETM could be connected to a Replicator or a Funnel. Same as here
+above for ETE. Thus the driver must parse the endpoints and make
+the connection path from devices to other devices.
+
+Anyways, will come to that in a different series.
+
+I will fix the in-ports/out-ports for the next version.
+
+Thanks for your guidance.
+
+Cheers
+Suzuki
+
+
+
+> 
+> Rob
 > 
 
-Please include some info on changes in generated code, if any. When the
-parameter to the macro is a constant I'm sure it all folds to a
-compile-time constant either way, but when it's not, I'm not sure gcc
-can do the same optimizations when the expressions become more complicated.
-
-Rasmus
