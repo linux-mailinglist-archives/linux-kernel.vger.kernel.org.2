@@ -2,138 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F0231E973
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BE3C31E97C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhBRL7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 06:59:55 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:39931 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232854AbhBRKcG (ORCPT
+        id S232313AbhBRMCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:02:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232898AbhBRKdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:32:06 -0500
-X-UUID: 471a6bc633954277bbe2f8199d179daf-20210218
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=eON87UBh4F9YZE2o4i+l3IiN/mJ3GXZV1FRvjVbIqC0=;
-        b=LeXI2DTFzLPmSm8dn0aEv8G3MR1FHCVy3J+TAPwJyGosZyEUlAvfKpceh74+twkU1H5CwhWcQgzSw9sso83EyCIvSrS+QYsUGTIHbP7Xb8DwnLP1DA5kLPougo3iFFURIkT9p/nveibo2Df8HyBwAZ7LYkkKLwPt6g+SqKkTpwQ=;
-X-UUID: 471a6bc633954277bbe2f8199d179daf-20210218
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2003067634; Thu, 18 Feb 2021 18:31:05 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 18 Feb 2021 18:31:03 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Feb 2021 18:31:03 +0800
-Message-ID: <1613644263.10586.8.camel@mtksdaap41>
-Subject: Re: [PATCH v3] arm64: dts: mediatek: Add mt8192 power domains
- controller
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>
-CC:     Rob Herring <robh@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 18 Feb 2021 18:31:03 +0800
-In-Reply-To: <1606734983.24689.1.camel@mtksdaap41>
-References: <1605782884-19741-1-git-send-email-weiyi.lu@mediatek.com>
-         <CAFqH_522NuGY9c-_XWhHxoa3QkrdoM92qTOLxgM8PpOU=-ttbw@mail.gmail.com>
-         <1605791419.19819.4.camel@mtksdaap41>
-         <CAFqH_51m5Pg9ny4HWt1iwf8wtsGSdShpDCVaGwac=v9BBDj2vg@mail.gmail.com>
-         <1f25cc3f-324a-0020-7bf2-e5a915291522@gmail.com>
-         <1606734983.24689.1.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Thu, 18 Feb 2021 05:33:06 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365C1C061786;
+        Thu, 18 Feb 2021 02:32:26 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id z32so980856qtd.8;
+        Thu, 18 Feb 2021 02:32:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QBpF/UnYAHGf5ye3tF7er160fB31uR/wphWC4wYVvOY=;
+        b=hdp5dGdccPpZBRsGUZfrcOO1t19DF1z6ve2rfVbio4eLyNcgMasMEDVu1LWtiXlMHU
+         VM/WGerj+KIm+dyw2tbDSldipRhpx4ZHmCIR82MXX57YshOieVIWl6Y2v1+e3TJXu/5H
+         E6SmMEVSpeVRPKGL/tUxgJzuSsM/XmQDDu1ntbEPNNJwTVu62ngo8pBMP/M+Tb19PO0c
+         BJuM9Ev2dclumrqD7SFsm8f8s22/4M1/sH3zT/Zd1UJRPVlBQHRW+f9Y2E4rcruLdqDR
+         rptDH3qeEniByvKgWDgrh442PAu5CmA+yMHL2qAK5ujh+CjH7hVUWH7aBc89sCgpAWPa
+         HJGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QBpF/UnYAHGf5ye3tF7er160fB31uR/wphWC4wYVvOY=;
+        b=emf1OCTIyvVNBPfy8+Zout+qP6IG5HxJSBpCyhXRsHYz9KYwkyyh9V96RKZ381ngi7
+         rdDNDCZmbVK6x3gBiberEqEewKKh+7OlauxXdLuFMyQWnUcib2CF3PiooEnL84nui9np
+         q+5dkNpVy8RWNnujhg17Vq6yV5URbwnhH4eo7EN7P9sM5splxYx3/pygj7rLD7vVw9bJ
+         Ytofix7oVOWYVE1XmbZiLXZPz4SJ3iXF6O4ep70MyCx1gYzONlFW91G3Gsem6JWHy8G5
+         qK7I0c6KE6WvD07qVhIVFEMlJNaU+YIl/mC1ztKNTJf20c3/39NiHqwhzcCh9xKZqQ0B
+         cUgQ==
+X-Gm-Message-State: AOAM532DU5xhCdrvA9rhq1OQbBDMSZHf4N9MqzrJ3RU7ksnBkDC7FFL8
+        gYHD4o4xKr7xwYfQwFqspxg=
+X-Google-Smtp-Source: ABdhPJxpeJvOxn5+wkohLMk++QGjYXEV+m6sdsuoygdRkAHpXCY4e6XA3/Ti9BNHd5lPJ3ItEYOTOg==
+X-Received: by 2002:aed:38e3:: with SMTP id k90mr3438649qte.119.1613644345405;
+        Thu, 18 Feb 2021 02:32:25 -0800 (PST)
+Received: from shinobu ([193.27.12.132])
+        by smtp.gmail.com with ESMTPSA id g20sm3090235qtq.35.2021.02.18.02.32.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 02:32:24 -0800 (PST)
+Date:   Thu, 18 Feb 2021 19:32:16 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de
+Subject: Re: [PATCH v8 20/22] counter: Implement events_queue_size sysfs
+ attribute
+Message-ID: <YC5CMLuKnXbkZond@shinobu>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+ <013b2b8682ddc3c85038083e6d5567696b6254b3.1613131238.git.vilhelm.gray@gmail.com>
+ <20210214181146.66d43da7@archlinux>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9db4GuH0vsB+CvNJ"
+Content-Disposition: inline
+In-Reply-To: <20210214181146.66d43da7@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW9uLCAyMDIwLTExLTMwIGF0IDE5OjE2ICswODAwLCBXZWl5aSBMdSB3cm90ZToNCj4gT24g
-RnJpLCAyMDIwLTExLTI3IGF0IDEzOjQyICswMTAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3RlOg0K
-PiA+IA0KPiA+IE9uIDE5LzExLzIwMjAgMTU6MTMsIEVucmljIEJhbGxldGJvIFNlcnJhIHdyb3Rl
-Og0KPiA+ID4gSGkgV2VpeWksDQo+ID4gPiANCj4gPiA+IE1pc3NhdGdlIGRlIFdlaXlpIEx1IDx3
-ZWl5aS5sdUBtZWRpYXRlay5jb20+IGRlbCBkaWEgZGouLCAxOSBkZSBub3YuDQo+ID4gPiAyMDIw
-IGEgbGVzIDE0OjEwOg0KPiA+ID4+DQo+ID4gPj4gT24gVGh1LCAyMDIwLTExLTE5IGF0IDEzOjEz
-ICswMTAwLCBFbnJpYyBCYWxsZXRibyBTZXJyYSB3cm90ZToNCj4gPiA+Pj4gSGkgV2VpeWksDQo+
-ID4gPj4+DQo+ID4gPj4+IFRoYW5rIHlvdSBmb3IgdGhlIHBhdGNoDQo+ID4gPj4+DQo+ID4gPj4+
-IE1pc3NhdGdlIGRlIFdlaXlpIEx1IDx3ZWl5aS5sdUBtZWRpYXRlay5jb20+IGRlbCBkaWEgZGou
-LCAxOSBkZSBub3YuDQo+ID4gPj4+IDIwMjAgYSBsZXMgMTE6NDg6DQo+ID4gPj4+Pg0KPiA+ID4+
-Pj4gQWRkIHBvd2VyIGRvbWFpbnMgY29udHJvbGxlciBub2RlIGZvciBTb0MgbXQ4MTkyDQo+ID4g
-Pj4+Pg0KPiA+ID4+Pj4gU2lnbmVkLW9mZi1ieTogV2VpeWkgTHUgPHdlaXlpLmx1QG1lZGlhdGVr
-LmNvbT4NCj4gPiA+Pj4+IC0tLQ0KPiA+IFsuLi5dDQo+ID4gPj4+PiArICAgICAgICAgICAgICAg
-ICAgICAgICAvKiBTeXN0ZW0gUG93ZXIgTWFuYWdlciAqLw0KPiA+ID4+Pj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgc3BtOiBwb3dlci1jb250cm9sbGVyIHsNCj4gPiA+Pj4+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItcG93ZXIt
-Y29udHJvbGxlciI7DQo+ID4gPj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICNh
-ZGRyZXNzLWNlbGxzID0gPDE+Ow0KPiA+ID4+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAjc2l6ZS1jZWxscyA9IDwwPjsNCj4gPiA+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwxPjsNCj4gPiA+Pj4+ICsNCj4gPiA+Pj4+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogcG93ZXIgZG9tYWluIG9mIHRoZSBT
-b0MgKi8NCj4gPiA+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXVkaW9ATVQ4
-MTkyX1BPV0VSX0RPTUFJTl9BVURJTyB7DQo+ID4gPj4+DQo+ID4gPj4+IElmIHlvdSBydW4gdGhl
-IGR0X2JpbmRpbmdzX2NoZWNrIGl0IHNob3VsZCByZXR1cm4gc29tZSBlcnJvcnMsIGFzIGFsbA0K
-PiA+ID4+PiB0aGVzZSBub2RlIG5hbWVzIHNob3VsZCBiZSAncG93ZXItZG9tYWluQCcuIFdoaWNo
-IGlzIGEgYml0IGFubm95aW5nDQo+ID4gPj4+IGJlY2F1c2UgdGhlbiB5b3Ugd2lsbCBnZXQgYSBi
-dW5jaCBvZiBlcnJvcnMgbGlrZSB0aGlzOg0KPiA+ID4+Pg0KPiA+ID4+PiBbICAgIDEuOTY5MTEw
-XSBkZWJ1Z2ZzOiBEaXJlY3RvcnkgJ3Bvd2VyLWRvbWFpbicgd2l0aCBwYXJlbnQNCj4gPiA+Pj4g
-J3BtX2dlbnBkJyBhbHJlYWR5IHByZXNlbnQhDQo+ID4gPj4+IFsgICAgMS45NzY5OTddIGRlYnVn
-ZnM6IERpcmVjdG9yeSAncG93ZXItZG9tYWluJyB3aXRoIHBhcmVudA0KPiA+ID4+PiAncG1fZ2Vu
-cGQnIGFscmVhZHkgcHJlc2VudCENCj4gPiA+Pj4gWyAgICAxLjk4NDgyOF0gZGVidWdmczogRGly
-ZWN0b3J5ICdwb3dlci1kb21haW4nIHdpdGggcGFyZW50DQo+ID4gPj4+ICdwbV9nZW5wZCcgYWxy
-ZWFkeSBwcmVzZW50IQ0KPiA+ID4+PiBbICAgIDEuOTkyNjU3XSBkZWJ1Z2ZzOiBEaXJlY3Rvcnkg
-J3Bvd2VyLWRvbWFpbicgd2l0aCBwYXJlbnQNCj4gPiA+Pj4gJ3BtX2dlbnBkJyBhbHJlYWR5IHBy
-ZXNlbnQhDQo+ID4gPj4+IFsgICAgMi4wMDA2ODVdIGRlYnVnZnM6IERpcmVjdG9yeSAncG93ZXIt
-ZG9tYWluJyB3aXRoIHBhcmVudA0KPiA+ID4+PiAncG1fZ2VucGQnIGFscmVhZHkgcHJlc2VudCEN
-Cj4gPiA+Pj4gWyAgICAyLjAwODU2Nl0gZGVidWdmczogRGlyZWN0b3J5ICdwb3dlci1kb21haW4n
-IHdpdGggcGFyZW50DQo+ID4gPj4+ICdwbV9nZW5wZCcgYWxyZWFkeSBwcmVzZW50IQ0KPiA+ID4+
-PiBbICAgIDIuMDE2Mzk1XSBkZWJ1Z2ZzOiBEaXJlY3RvcnkgJ3Bvd2VyLWRvbWFpbicgd2l0aCBw
-YXJlbnQNCj4gPiA+Pj4gJ3BtX2dlbnBkJyBhbHJlYWR5IHByZXNlbnQhDQo+ID4gPj4+IFsgICAg
-Mi4wMjQyMjFdIGRlYnVnZnM6IERpcmVjdG9yeSAncG93ZXItZG9tYWluJyB3aXRoIHBhcmVudA0K
-PiA+ID4+PiAncG1fZ2VucGQnIGFscmVhZHkgcHJlc2VudCENCj4gPiA+Pj4gWyAgICAyLjAzMjA0
-OV0gZGVidWdmczogRGlyZWN0b3J5ICdwb3dlci1kb21haW4nIHdpdGggcGFyZW50DQo+ID4gPj4+
-ICdwbV9nZW5wZCcgYWxyZWFkeSBwcmVzZW50IQ0KPiA+ID4+PiBbICAgIDIuMDM5ODc0XSBkZWJ1
-Z2ZzOiBEaXJlY3RvcnkgJ3Bvd2VyLWRvbWFpbicgd2l0aCBwYXJlbnQNCj4gPiA+Pj4gJ3BtX2dl
-bnBkJyBhbHJlYWR5IHByZXNlbnQhDQo+ID4gPj4+IFsgICAgMi4wNDc2OTldIGRlYnVnZnM6IERp
-cmVjdG9yeSAncG93ZXItZG9tYWluJyB3aXRoIHBhcmVudA0KPiA+ID4+PiAncG1fZ2VucGQnIGFs
-cmVhZHkgcHJlc2VudCENCj4gPiA+Pj4gWyAgICAyLjA1NTUyNF0gZGVidWdmczogRGlyZWN0b3J5
-ICdwb3dlci1kb21haW4nIHdpdGggcGFyZW50DQo+ID4gPj4+ICdwbV9nZW5wZCcgYWxyZWFkeSBw
-cmVzZW50IQ0KPiA+ID4+PiBbICAgIDIuMDYzMzUyXSBkZWJ1Z2ZzOiBEaXJlY3RvcnkgJ3Bvd2Vy
-LWRvbWFpbicgd2l0aCBwYXJlbnQNCj4gPiA+Pj4gJ3BtX2dlbnBkJyBhbHJlYWR5IHByZXNlbnQh
-DQo+ID4gPj4+IFsgICAgMi4wNzExNzZdIGRlYnVnZnM6IERpcmVjdG9yeSAncG93ZXItZG9tYWlu
-JyB3aXRoIHBhcmVudA0KPiA+ID4+PiAncG1fZ2VucGQnIGFscmVhZHkgcHJlc2VudCENCj4gPiA+
-Pj4NCj4gPiA+Pj4gQnV0IHRoYXQncyBhbm90aGVyIHByb2JsZW0gdGhhdCBzaG91bGQgYmUgaGFu
-ZGxlZCBpbiBkZWJ1Z2ZzIHN5c3RlbS4NCj4gPiA+Pj4NCj4gPiA+Pg0KPiA+ID4+IEluZGVlZC4u
-LnNvIEkgY2hvc2UgdG8gdXNlIGRpZmZlcmVudCBuYW1lIGluIGR0cyB0byBhdm9pZCBwcm9ibGVt
-cyBpbg0KPiA+ID4+IGRlYnVnZnMuIEl0IGRvZXMgdmlvbGF0ZSB0aGUgbmFtaW5nIHJ1bGVzLg0K
-PiA+ID4+DQo+ID4gPiANCj4gPiA+IEJ1dCB5b3VyIGJpbmRpbmcgd2lsbCBub3QgcGFzcyAob3Ig
-dHJpZ2dlciB3YXJuaW5ncykgdGhlIGR0YiBjaGVjaw0KPiA+ID4gdGhlbi4gUm9iIHdhcyBjbGVh
-ciB0aGF0IG5hbWVzIHNob3VsZCBiZSBnZW5lcmljLiBQcm9wZXIgZml4IGlzIGZpeA0KPiA+ID4g
-ZGVidWdmcyBub3QgdGhlIGJpbmRpbmcuDQo+ID4gPiANCj4gPiANCj4gPiBCeSB0aGUgd2F5LCBp
-cyBhbnlib2R5IHdvcmtpbmcgb24gdGhpcyBkZWJ1Z2ZzIGlzc3VlPw0KPiA+IA0KPiANCj4gSSB0
-aGluayB3ZSBjYW4gc29sdmUgdGhpcyBwcm9ibGVtIGJ5IGFkZGluZyAibmFtZSIgdG8gdGhlIHN0
-cnVjdA0KPiBzY3BzeXNfZG9tYWluX2RhdGEgYW5kIHVzZSB0aGlzIGRvbWFpbl9kYXRhLT5uYW1l
-IGFzIHRoZSBnZW5wZC5uYW1lLg0KPiBUaGlzIGlzIHZlcnkgc2ltcGxlLiBCdXQgSSB3YW50IHRv
-IGtub3cgaWYgeW91IGJvdGggbGlrZSBpdD8NCj4gDQoNCkhpIEVucmljIGFuZCBNYXR0aGlhcywN
-Cg0KTWF5IEkgaGF2ZSB5b3VyIG9waW5pb25zIG9uIGhvdyB5b3UgbWlnaHQgdG8gZml4IHRoaXMg
-aXNzdWU/DQpJJ2xsIHRyeSB0byBnaXZlIGFub3RoZXIgbmFtZSB0byBlYWNoIHBvd2VyIGRvbWFp
-biBpbiB0aGUNCnNjcHN5c19kb21haW5fZGF0YSBhbmQgcmVnaXN0ZXIgcG93ZXIgZG9tYWluIHdp
-dGggdGhpcyBuYW1lIGxpa2UgYmVsb3cNCg0Kc3RydWN0IHNjcHN5c19kb21haW5fZGF0YSB7DQog
-CS4uLg0KKwljaGFyICpuYW1lOw0KIH07DQoNCg0KLQlwZC0+Z2VucGQubmFtZSA9IG5vZGUtPm5h
-bWU7DQorCXBkLT5nZW5wZC5uYW1lID0gcGQtPmRhdGEtPm5hbWUgPzogbm9kZS0+bmFtZTsNCg0K
-DQpEb2VzIGl0IHZpb2xhdGUgdGhlIG5hbWluZyBydWxlcyB0byBzb21lIGV4dGVudD8gb3IgaXQn
-cyBhY2NlcHRhYmxlPw0KDQo+ID4gUmVnYXJkcywNCj4gPiBNYXR0aGlhcw0KPiANCj4gDQo+IF9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+IExpbnV4LW1l
-ZGlhdGVrIG1haWxpbmcgbGlzdA0KPiBMaW51eC1tZWRpYXRla0BsaXN0cy5pbmZyYWRlYWQub3Jn
-DQo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtbWVk
-aWF0ZWsNCg0K
 
+--9db4GuH0vsB+CvNJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Feb 14, 2021 at 06:11:46PM +0000, Jonathan Cameron wrote:
+> On Fri, 12 Feb 2021 21:13:44 +0900
+> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+>=20
+> > The events_queue_size sysfs attribute provides a way for users to
+> > dynamically configure the Counter events queue size for the Counter
+> > character device interface. The size is in number of struct
+> > counter_event data structures. The number of elements will be rounded-up
+> > to a power of 2 due to a requirement of the kfifo_alloc function called
+> > during reallocation of the queue.
+> >=20
+> > Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-counter |  8 +++++++
+> >  drivers/counter/counter-chrdev.c            | 23 +++++++++++++++++++
+> >  drivers/counter/counter-chrdev.h            |  2 ++
+> >  drivers/counter/counter-sysfs.c             | 25 +++++++++++++++++++++
+> >  4 files changed, 58 insertions(+)
+> >=20
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentatio=
+n/ABI/testing/sysfs-bus-counter
+> > index 847e96f19d19..f6cb2a8b08a7 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-counter
+> > +++ b/Documentation/ABI/testing/sysfs-bus-counter
+> > @@ -212,6 +212,14 @@ Description:
+> >  		both edges:
+> >  			Any state transition.
+> > =20
+> > +What:		/sys/bus/counter/devices/counterX/events_queue_size
+> > +KernelVersion:	5.13
+> > +Contact:	linux-iio@vger.kernel.org
+> > +Description:
+> > +		Size of the Counter events queue in number of struct
+> > +		counter_event data structures. The number of elements will be
+> > +		rounded-up to a power of 2.
+> > +
+> >  What:		/sys/bus/counter/devices/counterX/name
+> >  KernelVersion:	5.2
+> >  Contact:	linux-iio@vger.kernel.org
+> > diff --git a/drivers/counter/counter-chrdev.c b/drivers/counter/counter=
+-chrdev.c
+> > index 16f02df7f73d..53eea894e13f 100644
+> > --- a/drivers/counter/counter-chrdev.c
+> > +++ b/drivers/counter/counter-chrdev.c
+> > @@ -375,6 +375,29 @@ void counter_chrdev_remove(struct counter_device *=
+const counter)
+> >  	cdev_del(&counter->chrdev);
+> >  }
+> > =20
+> > +int counter_chrdev_realloc_queue(struct counter_device *const counter,
+> > +				 size_t queue_size)
+> > +{
+> > +	int err;
+> > +	DECLARE_KFIFO_PTR(events, struct counter_event);
+> > +	unsigned long flags;
+> > +
+> > +	/* Allocate new events queue */
+> > +	err =3D kfifo_alloc(&events, queue_size, GFP_ATOMIC);
+>=20
+> Is there any potential for losing events?
+
+We take the events_list_lock down below so we're safe against missing an
+event, but past events currently unread in the queue will be lost.
+
+Shortening the size of the queue is inherently a destructive process if
+we have more events in the current queue than can fit in the new queue.
+Because we a liable to lose some events in such a case, I think it's
+best to keep the behavior of this reallocation consistent and have it
+provide a fresh empty queue every time, as opposed to sometimes dropping
+events and sometimes not.
+
+I also suspect an actual user would be setting the size of their queue
+to the required amount before they begin watching events, rather than
+adjusting it sporadically during a live operation.
+
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	raw_spin_lock_irqsave(&counter->events_list_lock, flags);
+> > +
+> > +	/* Swap in new events queue */
+> > +	kfifo_free(&counter->events);
+> > +	counter->events.kfifo =3D events.kfifo;
+> > +
+> > +	raw_spin_unlock_irqrestore(&counter->events_list_lock, flags);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int counter_get_data(struct counter_device *const counter,
+> >  			    const struct counter_comp_node *const comp_node,
+> >  			    u64 *const value)
+> > diff --git a/drivers/counter/counter-chrdev.h b/drivers/counter/counter=
+-chrdev.h
+> > index cf5a318fe540..ff7fb0191852 100644
+> > --- a/drivers/counter/counter-chrdev.h
+> > +++ b/drivers/counter/counter-chrdev.h
+> > @@ -12,5 +12,7 @@
+> >  int counter_chrdev_add(struct counter_device *const counter,
+> >  		       const dev_t counter_devt);
+> >  void counter_chrdev_remove(struct counter_device *const counter);
+> > +int counter_chrdev_realloc_queue(struct counter_device *const counter,
+> > +				 size_t queue_size);
+> > =20
+> >  #endif /* _COUNTER_CHRDEV_H_ */
+> > diff --git a/drivers/counter/counter-sysfs.c b/drivers/counter/counter-=
+sysfs.c
+> > index 0cb3dba950bc..9abc821a3871 100644
+> > --- a/drivers/counter/counter-sysfs.c
+> > +++ b/drivers/counter/counter-sysfs.c
+> > @@ -13,6 +13,7 @@
+> >  #include <linux/sysfs.h>
+> >  #include <linux/types.h>
+> > =20
+> > +#include "counter-chrdev.h"
+> >  #include "counter-sysfs.h"
+> > =20
+> >  /**
+> > @@ -737,12 +738,30 @@ static int counter_num_counts_read(struct counter=
+_device *counter, u8 *val)
+> >  	return 0;
+> >  }
+> > =20
+> > +static int counter_events_queue_size_read(struct counter_device *count=
+er,
+> > +					  u64 *val)
+> > +{
+> > +	*val =3D counter->events.kfifo.mask + 1;
+>=20
+> kfifo_size() rather than open coding it?
+
+Ack.
+
+William Breathitt Gray
+
+> > +	return 0;
+> > +}
+> > +
+> > +static int counter_events_queue_size_write(struct counter_device *coun=
+ter,
+> > +					   u64 val)
+> > +{
+> > +	return counter_chrdev_realloc_queue(counter, val);
+> > +}
+> > +
+> >  static struct counter_comp counter_num_signals_comp =3D
+> >  	COUNTER_COMP_DEVICE_U8("num_signals", counter_num_signals_read, NULL);
+> > =20
+> >  static struct counter_comp counter_num_counts_comp =3D
+> >  	COUNTER_COMP_DEVICE_U8("num_counts", counter_num_counts_read, NULL);
+> > =20
+> > +static struct counter_comp counter_events_queue_size_comp =3D
+> > +	COUNTER_COMP_DEVICE_U64("events_queue_size",
+> > +				counter_events_queue_size_read,
+> > +				counter_events_queue_size_write);
+> > +
+> >  static int counter_sysfs_attr_add(struct counter_device *const counter,
+> >  				  struct counter_attribute_group *group)
+> >  {
+> > @@ -781,6 +800,12 @@ static int counter_sysfs_attr_add(struct counter_d=
+evice *const counter,
+> >  	if (err < 0)
+> >  		return err;
+> > =20
+> > +	/* Create num_counts attribute */
+> > +	err =3D counter_attr_create(dev, group, &counter_events_queue_size_co=
+mp,
+> > +				  scope, NULL);
+> > +	if (err < 0)
+> > +		return err;
+> > +
+> >  	/* Create an attribute for each extension */
+> >  	for (i =3D 0; i < counter->num_ext; i++) {
+> >  		ext =3D counter->ext + i;
+>=20
+
+--9db4GuH0vsB+CvNJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAuQjAACgkQhvpINdm7
+VJLb4w//XoS0cfe5nK5uwMVsnyoHPugIaFvxzK5Bm+98z+78pkVC3MPScsWvip1T
+thzsY6SVy1LnrYkIihPnyFMzs+xwg6B2uyViHdXBjlQyKbEyTBsMUpHJbCsqlJDU
+I91rt3gP3SKYhg5e+bN0y2jFgXohy/3glP8vMoeWaUh7aJXsjnNUWNdvb4zJzn7A
+RlnfRvL8q0E7cU/gZ7ra0GgdTyTTTIYzdIGPyf/W9BdJxdZsr8fUStaXDWD+vutF
+7TgNBJ0dLnBJotIFe9CUegCn232vmpls68SCM2eRWoo9UOJIa+IzislxvQoVOj+w
+gJOd1VKwmVphRc6j9myvqe8NlVeFt5bnkQdvw9Vle9qjerlUxkE5ObXH95H178uA
+a6QrI5REZnRU5ggfQCF9kGqy49O0ealT/+fIvrkawdd8x7Km4/Ua5h1vxzZroW2x
+J0P8j2+SQC0+ZiVryWAl8BL2ochZBaNdCulYAF+X5Na/ynw+WCZ8ds/dwAoY9M27
+DJYvS2odf1RzZ7iOTA5l5QmFOx7r//n4eh9ViYYobB71rGDE0BYPFu+IhDod30wr
+TopXRBcepDLGgCRaYcmrjmXUCqIKqBqX8tC7dJqMSAQiI59bTwqQtYeb9Z54g5GL
+XeDYmgpZBmAp5qGgt0BMnglb/qemGvYEzqwXeOwkIe9iZoYTnW8=
+=ARu2
+-----END PGP SIGNATURE-----
+
+--9db4GuH0vsB+CvNJ--
