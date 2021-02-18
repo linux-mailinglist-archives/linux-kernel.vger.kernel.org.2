@@ -2,170 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C95231E74F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EE231E74A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhBRIM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 03:12:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbhBRHSm (ORCPT
+        id S229658AbhBRIJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 03:09:38 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12377 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230290AbhBRHQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 02:18:42 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C00C061786
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 23:11:13 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id my11so2476773pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 23:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iytkFIO4hSXQIBWKY33k5dtDFRuVFbzG9ucqyGSbeCM=;
-        b=O7YBggq+29bBa7kWdkXCRFHInLuywJb+OzXcrU2yGT22lP8MR3KzFLVpSWXBnzRDuW
-         BZlZX8dlDADiraA/z2O18oCo3DaXFkOi4WqW0VT790TXVm5aYinhIKLH9yiJKh1Wsckk
-         kiOKOGghLnZ0aUfWARRhO7N2gNIim03qJ2JgYkiv4Xe6gcW9L8DQ7FQkxi+5iO+OK2J9
-         gEYJIPvcYQblY7IJY1AVbXcFRa0KwhGH6uD5gVQe9mzAEhNIN2DJZq/AEn1R49dcdOF9
-         nP9D0/YAXSSMsD5QLvUBiADewDM2YvfKkYIz19QsVc5NjEgvXizn1/UzKFtS0A0KmxUI
-         gG2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iytkFIO4hSXQIBWKY33k5dtDFRuVFbzG9ucqyGSbeCM=;
-        b=atm/oweKhpMHSO0/gp6UwV53VKrdeDl3C3NlM8dk+MrLZthI9ysvG7RoEF+ThkEqWL
-         FJUvJe0gnxkMqs9HQtBwihaOX/DpKokDtAgYiR6GIS3q/S4bZ5zYJXmsJhvT2O8ByxR3
-         hrPQ7IUIMfZz3Sv+SVZvbJzSXmriV7j6jYoBjVYdVBq5mzZOW6mnJcFgYhK9ECYaUE/J
-         qxFzZ6VWCpl8UC2t4PgyaQAg9e5ALEk8JeREpaCx9E5j/G1zOH/hDJvxB7u8p2cB1VkY
-         +G0769ZIhB6gfEalqFSHvOaYd3B9nDj39zzCBuD4+n2K0z1gE1uoSI6ytSx+iKRCHh/P
-         XrpA==
-X-Gm-Message-State: AOAM530uZFtrXneL6CpU18igXxkSYjg5bAz8T0UdhuhOhQYTjMzAdUCe
-        DiSitqvVPi8U/NpGQ7pyDpGOtQ==
-X-Google-Smtp-Source: ABdhPJwyY9fS2Jg6hyJv1RpisVeWu0tX+C73xXGJ+YhkEumeOgR+TNIbi6JGi/7jKWdaaPs3MkP5vg==
-X-Received: by 2002:a17:90b:1bd2:: with SMTP id oa18mr2685662pjb.80.1613632272580;
-        Wed, 17 Feb 2021 23:11:12 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id e21sm4487798pgv.74.2021.02.17.23.11.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Feb 2021 23:11:11 -0800 (PST)
-Date:   Thu, 18 Feb 2021 12:41:09 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, Viresh Kumar <vireshk@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        "open list:OPERATING PERFORMANCE POINTS (OPP)" 
-        <linux-pm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] opp: fix dev_pm_opp_set_rate for different frequency at
- the same opp level
-Message-ID: <20210218071109.afxnlqkusl7b2xqp@vireshk-i7>
-References: <20210216201030.19152-1-jonathan@marek.ca>
+        Thu, 18 Feb 2021 02:16:25 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602e132a0003>; Wed, 17 Feb 2021 23:11:38 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 18 Feb 2021 07:11:36 +0000
+Date:   Thu, 18 Feb 2021 09:11:33 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     <jasowang@redhat.com>, <si-wei.liu@oracle.com>,
+        <linux-kernel@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, Parav Pandit <parav@nvidia.com>
+Subject: Re: [PATCH 2/2 v1] vdpa/mlx5: Enable user to add/delete vdpa device
+Message-ID: <20210218071133.GA174998@mtl-vdi-166.wap.labs.mlnx>
+References: <20210217113136.10215-1-elic@nvidia.com>
+ <20210217121315-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210216201030.19152-1-jonathan@marek.ca>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20210217121315-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613632298; bh=xw9huqWbeDspVAD8DJrF7bRBMcq1jhn7EkZ5VV/beVU=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=qEf9rFywCfO/USLszDI8EeBefaraTFdzQAfAj8QB9EHGezn9aA8fmB01JQeB8dHL/
+         J2KsNdFsc6BQBV4LxL+RejAVqVww9LgPbzAoelAIzEQm1rBNTRKQQVwdyPRsj2V6YY
+         gzfmvcNSdslrh5WcDL7gD7HeO+5Kpxk4ekVIPO1HnvPyVt/aHHz5hrieBZSUmpN75F
+         eYR0sBPjbz0jLYEyOi1ZQaSV5jmTweGM7nrDFu+VkcCW4zAxmalw1f1r06gvalcsa9
+         HWgiC8Sw1pcZKp56QjdFwyeQgPt/JrNlI6G8wyLJ1FlQWsdqw7WCB31Vz7/VkdUPr2
+         s0miPabRWz3ag==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16-02-21, 15:10, Jonathan Marek wrote:
-> There is not "nothing to do" when the opp is the same. The frequency can
-> be different from opp->rate.
+On Wed, Feb 17, 2021 at 12:13:37PM -0500, Michael S. Tsirkin wrote:
+> On Wed, Feb 17, 2021 at 01:31:36PM +0200, Eli Cohen wrote:
+> > Allow to control vdpa device creation and destruction using the vdpa
+> > management tool.
+> > 
+> > Examples:
+> > 1. List the management devices
+> > $ vdpa mgmtdev show
+> > pci/0000:3b:00.1:
+> >   supported_classes net
+> > 
+> > 2. Create vdpa instance
+> > $ vdpa dev add mgmtdev pci/0000:3b:00.1 name vdpa0
+> > 
+> > 3. Show vdpa devices
+> > $ vdpa dev show
+> > vdpa0: type network mgmtdev pci/0000:3b:00.1 vendor_id 5555 max_vqs 16 \
+> > max_vq_size 256
+> > 
+> > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > Reviewed-by: Parav Pandit <parav@nvidia.com>
 > 
-> Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  drivers/opp/core.c | 7 +++++--
->  drivers/opp/opp.h  | 1 +
->  2 files changed, 6 insertions(+), 2 deletions(-)
+> where's the rest of the patchset though? I only got 2/2 ... confused.
 
-Thanks, I have updated it a bit and applied, thanks.
+Sorry, I hade two unrelated patches that git format patch named them
+0001... and 0002... git send email added 1/2 and 2/2 even though I sent
+them seperately.
 
--- 
-viresh
+I will send them again.
 
--------------------------8<-------------------------
-
-From: Jonathan Marek <jonathan@marek.ca>
-Date: Tue, 16 Feb 2021 15:10:29 -0500
-Subject: [PATCH] opp: Don't skip freq update for different frequency
-
-We skip the OPP update if the current and target OPPs are same. This is
-fine for the devices that don't support frequency but may cause issues
-for the ones that need to program frequency.
-
-An OPP entry doesn't really signify a single operating frequency but
-rather the highest frequency at which the other properties of the OPP
-entry apply. And we may reach here with different frequency values,
-while all of them would point to the same OPP entry in the OPP table.
-
-We just need to update the clock frequency in that case, though in order
-to not add special exit points we reuse the code flow from a normal
-path.
-
-While at it, rearrange the conditionals in the 'if' statement to check
-'enabled' flag at the end.
-
-Fixes: 81c4d8a3c414 ("opp: Keep track of currently programmed OPP")
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-[ Viresh: Improved commit log and subject, rename current_freq as
-	  current_rate, document it, remove local variable and rearrange
-	  code. ]
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/opp/core.c | 8 +++++---
- drivers/opp/opp.h  | 2 ++
- 2 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/opp/core.c b/drivers/opp/core.c
-index c3f3d9249cc5..c2689386a906 100644
---- a/drivers/opp/core.c
-+++ b/drivers/opp/core.c
-@@ -998,14 +998,15 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
- 	old_opp = opp_table->current_opp;
- 
- 	/* Return early if nothing to do */
--	if (opp_table->enabled && old_opp == opp) {
-+	if (old_opp == opp && opp_table->current_rate == freq &&
-+	    opp_table->enabled) {
- 		dev_dbg(dev, "%s: OPPs are same, nothing to do\n", __func__);
- 		return 0;
- 	}
- 
- 	dev_dbg(dev, "%s: switching OPP: Freq %lu -> %lu Hz, Level %u -> %u, Bw %u -> %u\n",
--		__func__, old_opp->rate, freq, old_opp->level, opp->level,
--		old_opp->bandwidth ? old_opp->bandwidth[0].peak : 0,
-+		__func__, opp_table->current_rate, freq, old_opp->level,
-+		opp->level, old_opp->bandwidth ? old_opp->bandwidth[0].peak : 0,
- 		opp->bandwidth ? opp->bandwidth[0].peak : 0);
- 
- 	scaling_down = _opp_compare_key(old_opp, opp);
-@@ -1061,6 +1062,7 @@ static int _set_opp(struct device *dev, struct opp_table *opp_table,
- 	/* Make sure current_opp doesn't get freed */
- 	dev_pm_opp_get(opp);
- 	opp_table->current_opp = opp;
-+	opp_table->current_rate = freq;
- 
- 	return ret;
- }
-diff --git a/drivers/opp/opp.h b/drivers/opp/opp.h
-index 9b9daf83b074..50fb9dced3c5 100644
---- a/drivers/opp/opp.h
-+++ b/drivers/opp/opp.h
-@@ -135,6 +135,7 @@ enum opp_table_access {
-  * @clock_latency_ns_max: Max clock latency in nanoseconds.
-  * @parsed_static_opps: Count of devices for which OPPs are initialized from DT.
-  * @shared_opp: OPP is shared between multiple devices.
-+ * @current_rate: Currently configured frequency.
-  * @current_opp: Currently configured OPP for the table.
-  * @suspend_opp: Pointer to OPP to be used during device suspend.
-  * @genpd_virt_dev_lock: Mutex protecting the genpd virtual device pointers.
-@@ -184,6 +185,7 @@ struct opp_table {
- 
- 	unsigned int parsed_static_opps;
- 	enum opp_table_access shared_opp;
-+	unsigned long current_rate;
- 	struct dev_pm_opp *current_opp;
- 	struct dev_pm_opp *suspend_opp;
- 
+> 
+> > ---
+> > v0->v1:
+> > set mgtdev->ndev NULL on dev delete 
+> > 
+> >  drivers/vdpa/mlx5/net/mlx5_vnet.c | 79 +++++++++++++++++++++++++++----
+> >  1 file changed, 70 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > index a51b0f86afe2..08fb481ddc4f 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -1974,23 +1974,32 @@ static void init_mvqs(struct mlx5_vdpa_net *ndev)
+> >  	}
+> >  }
+> >  
+> > -static int mlx5v_probe(struct auxiliary_device *adev,
+> > -		       const struct auxiliary_device_id *id)
+> > +struct mlx5_vdpa_mgmtdev {
+> > +	struct vdpa_mgmt_dev mgtdev;
+> > +	struct mlx5_adev *madev;
+> > +	struct mlx5_vdpa_net *ndev;
+> > +};
+> > +
+> > +static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *name)
+> >  {
+> > -	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
+> > -	struct mlx5_core_dev *mdev = madev->mdev;
+> > +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
+> >  	struct virtio_net_config *config;
+> >  	struct mlx5_vdpa_dev *mvdev;
+> >  	struct mlx5_vdpa_net *ndev;
+> > +	struct mlx5_core_dev *mdev;
+> >  	u32 max_vqs;
+> >  	int err;
+> >  
+> > +	if (mgtdev->ndev)
+> > +		return -ENOSPC;
+> > +
+> > +	mdev = mgtdev->madev->mdev;
+> >  	/* we save one virtqueue for control virtqueue should we require it */
+> >  	max_vqs = MLX5_CAP_DEV_VDPA_EMULATION(mdev, max_num_virtio_queues);
+> >  	max_vqs = min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
+> >  
+> >  	ndev = vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device, &mlx5_vdpa_ops,
+> > -				 2 * mlx5_vdpa_max_qps(max_vqs), NULL);
+> > +				 2 * mlx5_vdpa_max_qps(max_vqs), name);
+> >  	if (IS_ERR(ndev))
+> >  		return PTR_ERR(ndev);
+> >  
+> > @@ -2018,11 +2027,12 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+> >  	if (err)
+> >  		goto err_res;
+> >  
+> > -	err = vdpa_register_device(&mvdev->vdev);
+> > +	mvdev->vdev.mdev = &mgtdev->mgtdev;
+> > +	err = _vdpa_register_device(&mvdev->vdev);
+> >  	if (err)
+> >  		goto err_reg;
+> >  
+> > -	dev_set_drvdata(&adev->dev, ndev);
+> > +	mgtdev->ndev = ndev;
+> >  	return 0;
+> >  
+> >  err_reg:
+> > @@ -2035,11 +2045,62 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+> >  	return err;
+> >  }
+> >  
+> > +static void mlx5_vdpa_dev_del(struct vdpa_mgmt_dev *v_mdev, struct vdpa_device *dev)
+> > +{
+> > +	struct mlx5_vdpa_mgmtdev *mgtdev = container_of(v_mdev, struct mlx5_vdpa_mgmtdev, mgtdev);
+> > +
+> > +	_vdpa_unregister_device(dev);
+> > +	mgtdev->ndev = NULL;
+> > +}
+> > +
+> > +static const struct vdpa_mgmtdev_ops mdev_ops = {
+> > +	.dev_add = mlx5_vdpa_dev_add,
+> > +	.dev_del = mlx5_vdpa_dev_del,
+> > +};
+> > +
+> > +static struct virtio_device_id id_table[] = {
+> > +	{ VIRTIO_ID_NET, VIRTIO_DEV_ANY_ID },
+> > +	{ 0 },
+> > +};
+> > +
+> > +static int mlx5v_probe(struct auxiliary_device *adev,
+> > +		       const struct auxiliary_device_id *id)
+> > +
+> > +{
+> > +	struct mlx5_adev *madev = container_of(adev, struct mlx5_adev, adev);
+> > +	struct mlx5_core_dev *mdev = madev->mdev;
+> > +	struct mlx5_vdpa_mgmtdev *mgtdev;
+> > +	int err;
+> > +
+> > +	mgtdev = kzalloc(sizeof(*mgtdev), GFP_KERNEL);
+> > +	if (!mgtdev)
+> > +		return -ENOMEM;
+> > +
+> > +	mgtdev->mgtdev.ops = &mdev_ops;
+> > +	mgtdev->mgtdev.device = mdev->device;
+> > +	mgtdev->mgtdev.id_table = id_table;
+> > +	mgtdev->madev = madev;
+> > +
+> > +	err = vdpa_mgmtdev_register(&mgtdev->mgtdev);
+> > +	if (err)
+> > +		goto reg_err;
+> > +
+> > +	dev_set_drvdata(&adev->dev, mgtdev);
+> > +
+> > +	return 0;
+> > +
+> > +reg_err:
+> > +	kfree(mdev);
+> > +	return err;
+> > +}
+> > +
+> >  static void mlx5v_remove(struct auxiliary_device *adev)
+> >  {
+> > -	struct mlx5_vdpa_dev *mvdev = dev_get_drvdata(&adev->dev);
+> > +	struct mlx5_vdpa_mgmtdev *mgtdev;
+> >  
+> > -	vdpa_unregister_device(&mvdev->vdev);
+> > +	mgtdev = dev_get_drvdata(&adev->dev);
+> > +	vdpa_mgmtdev_unregister(&mgtdev->mgtdev);
+> > +	kfree(mgtdev);
+> >  }
+> >  
+> >  static const struct auxiliary_device_id mlx5v_id_table[] = {
+> > -- 
+> > 2.29.2
+> 
