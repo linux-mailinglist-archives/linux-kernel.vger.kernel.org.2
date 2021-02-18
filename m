@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1D731E858
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC63031E857
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhBRJ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:57:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
+        id S232254AbhBRJ5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230380AbhBRIy3 (ORCPT
+        with ESMTP id S230402AbhBRIyT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:54:29 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C910BC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:44:33 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id t2so1022416pjq.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:44:33 -0800 (PST)
+        Thu, 18 Feb 2021 03:54:19 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89199C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:44:42 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id p21so708568pgl.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:44:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ed3oT+OewzwPMtx3xp3F8acYmpBybfyINlaZN6Lx5c4=;
-        b=hqjskiM1dcTdIdLHKY6FqQx9B2WAf4ATIFDry3FEwSvqDP2jExxzydONzGn/fwQJnX
-         1mU63R8Z5HstVm8M/AmDpsq8eSGLxz/wOYPf2pvGICbcgu5djbu6A8epIrNqiJL/Tk04
-         C0L5YDCvtU90evEj2rHHYnZTpD3irmUSfW2Ls7gE4b8pc2u3hPH3lNf7UEnLMT1jEvhQ
-         qA0YH+dIXRH6wwIu9zkYi9VmfIuvngWIP8WAZqJhBzst16PkcT5rTwSTU9aAwI/8bl6J
-         rE2Xj7eXOcr60Geok91+1V8yxSY3uUlKvXPL6AhNQd8k2JazEWfrx0MkyuE3+2otg+3+
-         nKtg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=A8UH8Y8lnFDky7j02NHxVDP5/IqVpxpPoD+z++23Jjw=;
+        b=KcPhApM8QnfE4f6XhayOfxpNYtpLFoBj4X6Q50ax20kEpve+i2AY2e7hE+/RvDRK94
+         G1079KlZZE+OeMHGr56EnqRiIY7hsaait//CumGNLzc2dzjOZ1XFqxxXNoZM3BZYst5v
+         rS4N3BdRHSou9HQSO+sDhsPcogyRhZRN6KPiSyir0Beo26QXjdXQZwC0Wk0BRLTccwKN
+         MpWs4HgGExNeIMGrbco2wT1lbefbHeyFQol17vD+cX+B7wLlrHmFQhvJxzsRmtchR4CM
+         +5TofU5YQ+gC4PYHRllmnAS7hoTAunscoPFiQePc8diCok1A//q+GNdwAizix9wNTr8c
+         cXow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ed3oT+OewzwPMtx3xp3F8acYmpBybfyINlaZN6Lx5c4=;
-        b=CzmcDnxmO03ZkSMJxqQUD0GuNnMEYbXDffLp8viRpIXgZT0zSaHB5uEwU+xaM5b9K6
-         R/UuMaNHgfgGwMWeHe+o9NjCVC+ZeS66AaKsbLT0Zrvvcd7/ZebpgjRYlVDyrHTpPlK3
-         ioYz1LdkWpdO1e/wRCIV4Uv9nl1p1yclqvwocCkLsTfqk2SJ1tKHFhmYeOmwT3zdsBQc
-         1rrruxCwtQoCRF07D8K1KXyxTKaOlGUJkVG0AvCeoMqPZF+pTPAX1qUSXYUKVaxlzT9H
-         A1YqA5OxRQcAn3WcPLCdfwurQajNdlUbWehNcLv/GIAGTjbwT0MTl2+JUcVWQpQRxwbI
-         4XQQ==
-X-Gm-Message-State: AOAM532ER2LlgXLeJ7CdrPqjsaswhcQpyo/0r/miMrrZQlgN8Tz+2NMg
-        xlFM+Ef6F0mW9EOcZ0xD5qY=
-X-Google-Smtp-Source: ABdhPJwEXv7DYrOjgQZNRGKO+GCDcYpgQpIRlfSpKHeEhbxRz/SXiEM3Uof1IEQ6CiAy/3tYM5XSRA==
-X-Received: by 2002:a17:902:bd85:b029:e3:11d0:367f with SMTP id q5-20020a170902bd85b02900e311d0367fmr3326951pls.12.1613637872814;
-        Thu, 18 Feb 2021 00:44:32 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=A8UH8Y8lnFDky7j02NHxVDP5/IqVpxpPoD+z++23Jjw=;
+        b=B7B2hLRzwl6JX+qJJ5VAFcMfP67ywyaxAvU8I0bX2cJ4xGjdXKrNgHxEdQh/eZdC4z
+         m/ys36qB4uuB1LsWrLpcgNKQfllXvGZhvynNcp0REGbBPGJTicTqB4/vAbT2NzKjh21P
+         0+eqMXkL1s5+wuYA+VbXAgi8oVuoVI2t7jzciXX6KHLoDrbQuaBVLXISxILSVFqHIW8i
+         Kx8/gLlPep5UnAUsldfxNA6ouerGoDQw7envKCLAXdwgGGJAhrfN6mOaBK509k2XnQ3G
+         9Ux178NjA5IhX+eQ/w1eTxdXmn50LJ3rT8oakTnsnt8HvqaHfhUEFmNKOxouDRdH460Z
+         aHvA==
+X-Gm-Message-State: AOAM533OVamwUSIlkkT1t+m7w6dMPGLzwNSzttCfa0ZFLZ4btq/ZAfNM
+        ArHJAFWlHkQCjkFhCMH/gIQ=
+X-Google-Smtp-Source: ABdhPJw8yyKBD2DR0EjYn0UoijXcz7jeuCoHRYAwEUJcFfGRh1Fv15rr4596TMoqt4RVchZmyV8coQ==
+X-Received: by 2002:a63:e64e:: with SMTP id p14mr3120255pgj.374.1613637882213;
+        Thu, 18 Feb 2021 00:44:42 -0800 (PST)
 Received: from localhost.localdomain ([106.200.12.142])
-        by smtp.gmail.com with ESMTPSA id u20sm4941761pjy.36.2021.02.18.00.44.29
+        by smtp.gmail.com with ESMTPSA id u20sm4941761pjy.36.2021.02.18.00.44.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 00:44:32 -0800 (PST)
+        Thu, 18 Feb 2021 00:44:41 -0800 (PST)
 From:   Atul Gopinathan <atulgopinathan@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
         devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         Atul Gopinathan <atulgopinathan@gmail.com>
-Subject: [PATCH v2 1/2] staging: comedi: cast function output to assigned variable type
-Date:   Thu, 18 Feb 2021 14:14:03 +0530
-Message-Id: <20210218084404.16591-1-atulgopinathan@gmail.com>
+Subject: [PATCH v2 2/2] staging: comedi: cast function argument to expected type (void __user *)
+Date:   Thu, 18 Feb 2021 14:14:04 +0530
+Message-Id: <20210218084404.16591-2-atulgopinathan@gmail.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210218084404.16591-1-atulgopinathan@gmail.com>
+References: <20210218084404.16591-1-atulgopinathan@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following warning generated by sparse:
+Resolve the following sparse warning:
 
-drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
+drivers/staging//comedi/comedi_fops.c:2983:41: warning: incorrect type in argument 1 (different address spaces)
+drivers/staging//comedi/comedi_fops.c:2983:41:    expected void [noderef] <asn:1> *uptr
+drivers/staging//comedi/comedi_fops.c:2983:41:    got unsigned int *chanlist
 
-compat_ptr() has a return type of "void __user *"
-as defined in "include/linux/compat.h"
+cmd->chanlist is of type (unsigned int *) as defined in
+"struct comedi_cmd" in file drivers/staging/comedi/comedi.h
 
-cmd->chanlist is of type "unsigned int *" as defined
-in drivers/staging/comedi/comedi.h" in struct
-comedi_cmd.
+The function "ptr_to_compat()" expects argument of type
+(void __user *) as defined in include/linux/compat.h
 
 Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
 ---
@@ -82,18 +83,18 @@ Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-index e85a99b68f31..fc4ec38012b4 100644
+index fc4ec38012b4..8b2672c3c408 100644
 --- a/drivers/staging/comedi/comedi_fops.c
 +++ b/drivers/staging/comedi/comedi_fops.c
-@@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
- 	cmd->scan_end_arg = v32.scan_end_arg;
- 	cmd->stop_src = v32.stop_src;
- 	cmd->stop_arg = v32.stop_arg;
--	cmd->chanlist = compat_ptr(v32.chanlist);
-+	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
- 	cmd->chanlist_len = v32.chanlist_len;
- 	cmd->data = compat_ptr(v32.data);
- 	cmd->data_len = v32.data_len;
+@@ -2980,7 +2980,7 @@ static int put_compat_cmd(struct comedi32_cmd_struct __user *cmd32,
+ 	v32.stop_src = cmd->stop_src;
+ 	v32.stop_arg = cmd->stop_arg;
+ 	/* Assume chanlist pointer is unchanged. */
+-	v32.chanlist = ptr_to_compat(cmd->chanlist);
++	v32.chanlist = ptr_to_compat((void __user *)cmd->chanlist);
+ 	v32.chanlist_len = cmd->chanlist_len;
+ 	v32.data = ptr_to_compat(cmd->data);
+ 	v32.data_len = cmd->data_len;
 -- 
 2.27.0
 
