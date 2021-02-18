@@ -2,146 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DC631EE04
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E116F31EE27
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBRSI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:08:28 -0500
-Received: from mga14.intel.com ([192.55.52.115]:5039 "EHLO mga14.intel.com"
+        id S231723AbhBRSWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:22:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56832 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231173AbhBRPjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:39:18 -0500
-IronPort-SDR: 7/ID0Oep/tvTT7ZFHj3+5fi6r+ksqIYRcdw5CWOqrRfmGt2QV13rXq6Q0cdWO9q9WMdaCAKB6L
- FAr4YPivEKXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="182743191"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="182743191"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 07:35:26 -0800
-IronPort-SDR: Jf9QAV+Q8Uj40xLFxyt+iyEzDFTa+gsXAj7hC4bl3PYJgAqhZ97tw0QErHi6WLmqoGB29Vd+0B
- R7hoI5aI5ehQ==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="378440303"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 07:35:23 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lClKq-005yoo-6T; Thu, 18 Feb 2021 17:35:20 +0200
-Date:   Thu, 18 Feb 2021 17:35:20 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/4] i2c: designware: Use the correct name of
- device-managed function
-Message-ID: <YC6JONTb8QdREZ1h@smile.fi.intel.com>
-References: <20210218150458.798347-1-zhengdejin5@gmail.com>
- <20210218150458.798347-4-zhengdejin5@gmail.com>
+        id S232812AbhBRPyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:54:25 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613662566; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J0bYXrkkoPf7gVIUGqIf4ANRouo9dbAcE/WUn/S4mKM=;
+        b=bQvVgdZl5ZzeQ5N4N+rSaHvztptxpoBV6JLXiGija5xYmN7S7MzLGqJuhKzUQXt1AOE0qw
+        +8qZMv8zEhIJbjjpds5/C/T3v3hQei4tRzfneKT7l0oV12t5skMkNnqZ5R5zIFdornAQy8
+        mw9/delHn81QPDF/I6Rkba1cxdv/Sak=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1AE14ACD4;
+        Thu, 18 Feb 2021 15:36:06 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 16:36:00 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH v3 6/8] mm: memcontrol: switch to rstat
+Message-ID: <YC6JYD6AdTZ9cbbB@blackbook>
+References: <20210209163304.77088-1-hannes@cmpxchg.org>
+ <20210209163304.77088-7-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="uZNJgE1PSkaSK3Iw"
 Content-Disposition: inline
-In-Reply-To: <20210218150458.798347-4-zhengdejin5@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210209163304.77088-7-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 11:04:57PM +0800, Dejin Zheng wrote:
-> Use the new function pcim_alloc_irq_vectors() to allocate IRQ vectors,
-> the pcim_alloc_irq_vectors() function, an explicit device-managed version
-> of pci_alloc_irq_vectors(). If pcim_enable_device() has been called
-> before, then pci_alloc_irq_vectors() is actually a device-managed
-> function. It is used here as a device-managed function, So replace it
-> with pcim_alloc_irq_vectors(). At the same time, Remove the
-> pci_free_irq_vectors() function to simplify the error handling path.
-> the freeing resources will take automatically when device is gone.
 
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-One side note below.
+--uZNJgE1PSkaSK3Iw
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+On Tue, Feb 09, 2021 at 11:33:02AM -0500, Johannes Weiner <hannes@cmpxchg.o=
+rg> wrote:
+> Rstat combines the best of both worlds: from the write side, it
+> cheaply maintains a queue of cgroups that have pending changes, so
+> that the read side can do selective tree aggregation. This way the
+> reported stats will always be precise and recent as can be, while the
+> aggregation can skip over potentially large numbers of idle cgroups.
+IIUC, on the unified hierarchy the rstat tree built from writer
+notifications is shared with all controllers. (Currently, it means
+memory updates are merged with base stats cpu time updates.) This is
+just for reference, to stress the current rstat design.
+
 > ---
-> v3 -> v4:
-> 	- add some commit comments.
-> v2 -> v3:
-> 	- simplify the error handling path.
-> v1 -> v2:
-> 	- Modify some commit messages.
->  drivers/i2c/busses/i2c-designware-pcidrv.c | 15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-pcidrv.c b/drivers/i2c/busses/i2c-designware-pcidrv.c
-> index 55c83a7a24f3..620b41e373b6 100644
-> --- a/drivers/i2c/busses/i2c-designware-pcidrv.c
-> +++ b/drivers/i2c/busses/i2c-designware-pcidrv.c
-> @@ -219,7 +219,7 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
->  	if (!dev)
->  		return -ENOMEM;
->  
-> -	r = pci_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
-> +	r = pcim_alloc_irq_vectors(pdev, 1, 1, PCI_IRQ_ALL_TYPES);
->  	if (r < 0)
->  		return r;
->  
-> @@ -234,10 +234,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
->  
->  	if (controller->setup) {
->  		r = controller->setup(pdev, controller);
-> -		if (r) {
-> -			pci_free_irq_vectors(pdev);
-> +		if (r)
->  			return r;
-> -		}
->  	}
->  
->  	i2c_dw_adjust_bus_speed(dev);
-> @@ -246,10 +244,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
->  		i2c_dw_acpi_configure(&pdev->dev);
->  
->  	r = i2c_dw_validate_speed(dev);
-> -	if (r) {
-> -		pci_free_irq_vectors(pdev);
-> +	if (r)
->  		return r;
-> -	}
->  
->  	i2c_dw_configure(dev);
->  
-> @@ -269,10 +265,8 @@ static int i2c_dw_pci_probe(struct pci_dev *pdev,
->  	adap->nr = controller->bus_num;
->  
->  	r = i2c_dw_probe(dev);
-> -	if (r) {
-> -		pci_free_irq_vectors(pdev);
-> +	if (r)
->  		return r;
-> -	}
->  
->  	pm_runtime_set_autosuspend_delay(&pdev->dev, 1000);
->  	pm_runtime_use_autosuspend(&pdev->dev);
-> @@ -292,7 +286,6 @@ static void i2c_dw_pci_remove(struct pci_dev *pdev)
->  
->  	i2c_del_adapter(&dev->adapter);
->  	devm_free_irq(&pdev->dev, dev->irq, dev);
-> -	pci_free_irq_vectors(pdev);
+>  include/linux/memcontrol.h |  67 ++++++-----
+>  mm/memcontrol.c            | 223 +++++++++++++++----------------------
+>  2 files changed, 132 insertions(+), 158 deletions(-)
+Well done.
 
-I'm wondering if we need explicit devm_free_irq() call now. If we don't, it can
-be cleaned up in the separate change with a motivation that we got to device
-managed PCI IRQ allocation and thus the ordering will be correct (needs a
-double check!).
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
->  }
->  
->  /* work with hotplug and coldplug */
-> -- 
-> 2.25.0
-> 
+--uZNJgE1PSkaSK3Iw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
--- 
-With Best Regards,
-Andy Shevchenko
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmAuiVwACgkQia1+riC5
+qSgMFQ/+P3SjzQZK1rAMCOLKGsCvWS+G4aY2oJqOwqeeoIbEl4mvs2o0K3JTl72o
+u/NuEl/GEEehOrO6wnWA1QW0fVPFGXIkvFLmprRk9vOhg7nixi7VqAB73FnWyIOW
+NR0mM5CHnjAR7VfB2eh8rOnMTjA/LL6W+QGc2Z9OTbYHQ8ZHpILIjqlFAvIWa7SL
+C8y6vGv9wpiB3oZngg1NVtQ5+CS8EkkUNgJRmSzi8DatO4gwjhFVvXpFD1oFjCvk
+1aHQeouFOxvpgy2m6LHjKzg3ybP1APXunDnhrPV8d0/hsw3JNUtyGLlDWMGQmJyg
+q4UVVeUu92jDkD9iWsRSBSxG0AELlHIsxJJKh4lm0VXbYSMprX90+cNLEA7fAOy7
+TTEUpzaJvOHM9/KzMKjV5EPL1YQ7ZkKV20Vf09802YRh2FZm9njxneqS0GHHS89f
+ZtVPB21C7INTntOrNVP8vDT/IcpAUG6eSXWGtrCWL+/Lcbr9IE0jw1Py7rUV1VnR
+6CBQgFXf/qckuLdZULmlRjTsy3N3OE5KryOe8EL9c0ikHA+SJBQZ90JW3NapX/q9
+KRMdi6oMWEBGp8mUPAWuT5jFrExSKOjemRdeYAF0x+l1kzVIVST7kFc2djkFi3o8
+UCQ/yJaL/0En58UKyBOJPmQNBCBNwC2kH5g9ws0hiAdwlDUnxxc=
+=Dp9h
+-----END PGP SIGNATURE-----
 
+--uZNJgE1PSkaSK3Iw--
