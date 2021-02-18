@@ -2,142 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C532131E84D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6062B31E84A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230209AbhBRJzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhBRIta (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:49:30 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3501C061756;
-        Thu, 18 Feb 2021 00:36:41 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id r23so2996367ljh.1;
-        Thu, 18 Feb 2021 00:36:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=M9artFNahNJXMTqeblKUa+liYcJDw6ZriCndVjRs68A=;
-        b=L6M9dQQWFbNg0rv9keR8DU1O6CbzcyEmgRaX2KNjScJ1vX1UCgGvSfgipA1EWLitBg
-         LP+E04a4HSZq550hUu1fZsQ1ksA6Ygbl8HiEOkSI+OFw1NJ8LORwgAOGBZBOLMZThISr
-         7jO+giYF5UoytvP3+NpZrtlqmD7/emqH75Qv8Nof98RZTLbyP5wYyGG+I3hOODkqSOq8
-         5sT6SyQ4iiGeBrTQRIEU1n/RJAdWXXycuFf5hhS+pnYqAlnWUAtgstVpJu+p1OONMCow
-         +8/5O/W+fw7pSTmFgEjhRVR/FDXQQuDGQu/iSeVkZI30uSHZSYwT0yvXLVENm2y6OSa+
-         d8lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=M9artFNahNJXMTqeblKUa+liYcJDw6ZriCndVjRs68A=;
-        b=eBkXx4Yn2DmRJzOh4fZkS68PCP862whs6vziGTKVjjfLDmC8rWVaykxxg+3K1J2slb
-         iFsJVu5q0QIkd1HNLEqYuqL9awvZPeeJSzS5wqpUBlDOsO716F5+T9EXAlvAV20FA0K4
-         MI8FlUJe7MBMAIywlynzkiXHD5/y+5fkCwL9k1GiuC150LkYXh7mtdL2WdCYUr3WpxIO
-         e0q5xwQ7oaSf7HE4qEqtVt4Ra6HdLmaTq4D5/eqwppGDARuNVnyvnu97w6XzjIsybBrb
-         Few75BjbznZOvTPnyy19RJMDtJ1wDaHQt+nCJ5z0kFibh+5EBmFfWd9s1g0RPulS2hOi
-         0J4w==
-X-Gm-Message-State: AOAM5314t0Bu5RZkJBeS2pm2rRJ379FJPq4Liu4KjZQvWAyT55kbG6bc
-        VM7jxVGm8WuQnYysxEx5hrs=
-X-Google-Smtp-Source: ABdhPJwSC2MTfD3teUGS/hLfmQ1NgyPeVuBn9o2aRZonuPlXX3vyyLZGzMQiIShONegI0t0WQv38tA==
-X-Received: by 2002:a2e:90cc:: with SMTP id o12mr1966972ljg.464.1613637399063;
-        Thu, 18 Feb 2021 00:36:39 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id s12sm528556lfo.143.2021.02.18.00.36.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 00:36:38 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Thu, 18 Feb 2021 09:36:36 +0100
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     paulmck@kernel.org,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        rostedt@goodmis.org
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-ID: <20210218083636.GA2030@pc638.lan>
-References: <20210212234851.GP2743@paulmck-ThinkPad-P72>
- <20210213003709.GA27846@paulmck-ThinkPad-P72>
- <20210213004328.GB27846@paulmck-ThinkPad-P72>
- <20210213113030.GA1878@pc638.lan>
- <20210213164554.GS2743@paulmck-ThinkPad-P72>
- <20210215112826.xc6b4se6ujwvrwco@linutronix.de>
- <20210216173003.GX2743@paulmck-ThinkPad-P72>
- <20210217234759.b82e39049a2e99cf6358e1c2@kernel.org>
- <20210217181738.GE2743@paulmck-ThinkPad-P72>
- <20210218140307.71f475248ebefa0ca613c09e@kernel.org>
+        id S230036AbhBRJyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:54:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230175AbhBRIll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:41:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 343A960238;
+        Thu, 18 Feb 2021 08:40:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613637660;
+        bh=y1uZixkc/Teji98Qqjp10uO3bpz5x0IaskLw4jV+MyE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fedan8NayLvVSPabiYyb1K4vttKD/LAOxtKOMnbM8/e6gFo/kAMF57PfrlUatDJcb
+         MFcSFAAQzDpccOcW6giD1hjmNdCnxU2OEtRO12Plbzl5WtDZ3ihwWcPPRQ4y0Z10PS
+         dId7/kchTZAfbz6G6o/OWBTG7ZvM7ADeesW67sQE=
+Date:   Thu, 18 Feb 2021 09:40:58 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-kernel@vger.kernel.org, maz@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH] irqdomain: remove debugfs_file from struct irq_domain
+Message-ID: <YC4oGsBTyMJrGJ9C@kroah.com>
+References: <YCvYV53ZdzQSWY6w@kroah.com>
+ <20210217195717.13727-1-michael@walle.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218140307.71f475248ebefa0ca613c09e@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210217195717.13727-1-michael@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 02:03:07PM +0900, Masami Hiramatsu wrote:
-> On Wed, 17 Feb 2021 10:17:38 -0800
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Wed, Feb 17, 2021 at 08:57:17PM +0100, Michael Walle wrote:
+> Hi Greg,
 > 
-> > > > 1.	Spawn ksoftirqd earlier.
-> > > > 
-> > > > 2.	Suppress attempts to awaken ksoftirqd before it exists,
-> > > > 	forcing all ksoftirq execution on the back of interrupts.
-> > > > 
-> > > > Uladzislau and I each produced patches for #1, and I produced a patch
-> > > > for #2.
-> > > > 
-> > > > The only other option I know of is to push the call to init_kprobes()
-> > > > later in the boot sequence, perhaps to its original subsys_initcall(),
-> > > > or maybe only as late as core_initcall().  I added Masami and Steve on
-> > > > CC for their thoughts on this.
-> > > > 
-> > > > Is there some other proper fix that I am missing?
-> > > 
-> > > Oh, I missed that the synchronize_rcu_tasks() will be involved the kprobes
-> > > in early stage. Does the problem only exist in the synchronize_rcu_tasks()
-> > > instead of synchronize_rcu()? If so I can just stop optimizer in early stage
-> > > because I just want to enable kprobes in early stage, but not optprobes.
-> > > 
-> > > Does the following patch help?
-> > 
-> > It does look to me like it would!  I clearly should have asked you about
-> > this a couple of months ago.  ;-)
-> > 
-> > The proof of the pudding would be whether the powerpc guys can apply
-> > this to v5.10-rc7 and have their kernel come up without hanging at boot.
+> > There's no need to keep around a dentry pointer to a simple file that
+> > debugfs itself can look up when we need to remove it from the system.
+> > So simplify the code by deleting the variable and cleaning up the logic
+> > around the debugfs file.
 > 
-> Who could I ask for testing this patch, Uladzislau?
-> I think the test machine which enough slow or the kernel has much initcall
-> to run optimization thread while booting.
-> In my environment, I could not reproduce that issue because the optimizer
-> was sheduled after some tick passed. At that point, ksoftirqd has already
-> been initialized.
+> This will generate the following oops on my board (arm64,
+> freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts). In debugfs_lookup()
+> debugfs_mount is NULL.
 > 
-From my end i did some simulation and had a look at your change. So the
-patch works on my setup. I see that optimization of kprobes is deferred
-and can be initiated only from the subsys_initcall() phase. So the sequence
-should be correct for v5.10-rc7:
+> [    0.000000] Linux version 5.11.0-next-20210217-00014-g41e0e92a2d05 (mwalle@mwalle01) (aarch64-linux-gnu-gcc (Debian 8.3.0-2) 8.3.0, GNU ld (GNU Binutils for Debian) 2.31.1) #69 SMP PREEMPT Wed Feb 17 20:47:10 CET 2021
+> [..]
+> [    0.000000] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+> [    0.000000] Mem abort info:
+> [    0.000000]   ESR = 0x96000004
 
-1. ksoftirq is setup early_initcall();
-2. rcu_spawn_tasks_* are setup in the core_initcall();
-3. an optimization of kprobes are invoked from subsys_initcall().
+<snip>
 
-For real test on power-pc you can ask Daniel Axtens <dja@axtens.net> for help. 
+Back to this log, do you see:
+	"Unable to pin filesystem for file "
+anywhere before this crash?
 
---
-Vlad Rezki
+thanks,
+
+greg k-h
