@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A91031E664
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C19B531E66B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230412AbhBRGke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 01:40:34 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:31598 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230158AbhBRGYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:24:39 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613629453; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=kjnSg/kugYVk+PZm6eRtfipOjR0yNO2Df/RdfiFIMfg=;
- b=rmrfu96JlU9cqMGSVp3OURx0iQuzY1CQsVKZyzRUP2nHxKVTvPlHJXIPOwvv+6Ypf4mxuJKx
- g1QW6oPbpF6HfSamJZO9TUQufyUSdn/62p5ALk6r8uqSBkCwstY5Cgr+0ldXp/mZ/9aeaQo5
- Kv7XJTiGHWABiEFUYqSek5UXdlA=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 602e07e666a058a0ec7e2456 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Feb 2021 06:23:34
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4368FC43464; Thu, 18 Feb 2021 06:23:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 72226C433CA;
-        Thu, 18 Feb 2021 06:23:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 72226C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
+        id S229900AbhBRGp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 01:45:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230380AbhBRGbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 01:31:35 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAF4AC061786
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 22:30:51 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id d13so705012plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 22:30:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KYip4fwriZ+R8/UL+CCJ++KKQonk0PCFu8VWhzBzWzI=;
+        b=f5VT2H4UjeBMIbMTT1Jrl9nCy9MAdnuOgVCayqulGBCNiu4gRgMZgDxYmG+5FjsJXn
+         oIQquRxOvcRw6CFw1FXbYdHIFa6rTsIt4tMTBqa7a+VW5HX+di8BQoOfC2UVODKbMC5/
+         rBdLvMfcKvQzSM0V/aZqXF6QCzc+oDdoXB6hftvWcY5I0uGfKqkY0RQgJ5AtgPQ6HUI5
+         lFHNRe8+uWJOlEM2P3oD/19LbyRjdcuDnBU8QXLq2izH4S9lGRGT0KCddkfxgamKYjUa
+         sj4gj7Eq0ou5u6XPILWEiN6yC1pmhnSy6vsTip3BerC3FVXgYs5OyudiJORWtbS4hJO4
+         809g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KYip4fwriZ+R8/UL+CCJ++KKQonk0PCFu8VWhzBzWzI=;
+        b=kur4a7rw7mZc8RiWCPbw6lkGPyX11VAB8q0ug5pQ6XgV2Mrcxl3N9wM5q56I2TlL1y
+         OVL7Io9NNoAJX1idBCk11bZXsArOl7rXINngM3ymfC1CGlfWtgXpRY6uoVYiFLfPWm5Y
+         gPYeKiD7L0D/cyI6eM0Vba78TK0+oqkHyckmNq2wx3wiApsn1BqsbxPaS4bfxHMce8tD
+         FkzRoFhX51wQuLs/Cb9b5qTVirpxBh16s3p/NNfUAbbhwx1pKzpZI4NU8/8d5tJiAIE7
+         uqKQJ1RcYGF4f1amtSaBnOrIRCzFExDVvjaZVokeFm1ArMGawGzBwa94bFyobxtP1loq
+         WwvQ==
+X-Gm-Message-State: AOAM5339kfb4WZmowcdosM/Zky6aWJSN7IU9sX1Y5CwHpCThCbpvQDgR
+        hNn9MdspxFVgzwY7iphwYfk=
+X-Google-Smtp-Source: ABdhPJwaiObq10hAQqM6lpbAlOng30r2w2hUC1KZpWjqF4PbSsNIhpL7aX0soYcloPwd6VObRGVi5Q==
+X-Received: by 2002:a17:90a:194b:: with SMTP id 11mr2612660pjh.100.1613629851309;
+        Wed, 17 Feb 2021 22:30:51 -0800 (PST)
+Received: from localhost.localdomain ([27.61.13.38])
+        by smtp.gmail.com with ESMTPSA id l25sm4224067pff.105.2021.02.17.22.30.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 22:30:50 -0800 (PST)
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Subject: [PATCH] staging: comedi: cast to (void __user *)
+Date:   Thu, 18 Feb 2021 11:58:40 +0530
+Message-Id: <20210218062839.32650-1-atulgopinathan@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH] Revert "ath9k: fix ath_tx_process_buffer() potential null
- ptr
- dereference"
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210217211801.22540-1-skhan@linuxfoundation.org>
-References: <20210217211801.22540-1-skhan@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, nbd@nbd.name,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210218062333.4368FC43464@smtp.codeaurora.org>
-Date:   Thu, 18 Feb 2021 06:23:33 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shuah Khan <skhan@linuxfoundation.org> wrote:
+Resolve the following sparse warning:
+drivers/staging//comedi/comedi_fops.c:2983:41: warning: incorrect type in argument 1 (different address spaces)
+drivers/staging//comedi/comedi_fops.c:2983:41:    expected void [noderef] <asn:1> *uptr
+drivers/staging//comedi/comedi_fops.c:2983:41:    got unsigned int *chanlist
 
-> This reverts commit a56c14bb21b296fb6d395164ab62ef2e419e5069.
-> 
-> ath_tx_process_buffer() doesn't dereference or check sta and passes it
-> to ath_tx_complete_aggr() and ath_tx_complete_buf().
-> 
-> ath_tx_complete_aggr() checks the pointer before use. No problem here.
-> 
-> ath_tx_complete_buf() doesn't check or dereference sta and passes it on
-> to ath_tx_complete(). ath_tx_complete() doesn't check or dereference sta,
-> but assigns it to tx_info->status.status_driver_data[0]
-> 
-> ath_tx_complete_buf() is called from ath_tx_complete_aggr() passing
-> null ieee80211_sta pointer.
-> 
-> There is a potential for dereference later on, if and when the
-> tx_info->status.status_driver_data[0]is referenced. In addition, the
-> rcu read lock might be released before referencing the contents.
-> 
-> ath_tx_complete_buf() should be fixed to check sta perhaps? Worth
-> looking into.
-> 
-> Reverting this patch because it doesn't solve the problem and introduces
-> memory leak by skipping buffer completion if the pointer (sta) is NULL.
-> 
-> Fixes: a56c14bb21b2 ("ath9k: fix ath_tx_process_buffer() potential null ptr dereference")
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+cmd->chanlist is of type (unsigned int *) as defined in
+"struct comedi_cmd" in file drivers/staging/comedi/comedi.h
 
-Thanks. I added the commit id and Fixes tag to the commit log, see the new version above.
+The function "ptr_to_compat()" expects argument of type
+(void __user *) as defined in include/linux/compat.h
 
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+---
+ drivers/staging/comedi/comedi_fops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+index e85a99b68f31..db483cc698fd 100644
+--- a/drivers/staging/comedi/comedi_fops.c
++++ b/drivers/staging/comedi/comedi_fops.c
+@@ -2980,7 +2980,7 @@ static int put_compat_cmd(struct comedi32_cmd_struct __user *cmd32,
+ 	v32.stop_src = cmd->stop_src;
+ 	v32.stop_arg = cmd->stop_arg;
+ 	/* Assume chanlist pointer is unchanged. */
+-	v32.chanlist = ptr_to_compat(cmd->chanlist);
++	v32.chanlist = ptr_to_compat((void __user *)cmd->chanlist);
+ 	v32.chanlist_len = cmd->chanlist_len;
+ 	v32.data = ptr_to_compat(cmd->data);
+ 	v32.data_len = cmd->data_len;
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210217211801.22540-1-skhan@linuxfoundation.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.27.0
 
