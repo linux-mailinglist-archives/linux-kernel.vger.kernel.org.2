@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D55C31E9FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECF931EA08
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233151AbhBRMkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:40:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46680 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230306AbhBRK7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:59:46 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613645912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yx8UvHFLOEGyp2IMZSmLxmNPWrPsYDF4mvl1D+05RmM=;
-        b=FHRDnC7nZxhhDmbOuUlR8ZwgW5TILFG68B0oEDs1K23l/u6IRFNjB0G1/xKfgWBeUKyiBm
-        k06uYThkSppb9bqeaC+PInhd3fFXChzCgBfFcsRjvGmcpPlnsXEI4c3M1gav3S4Cmc60Xy
-        7I/0wFWmKG6i1X8IXZYC+R0SIpYUBE8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 38196ACD4;
-        Thu, 18 Feb 2021 10:58:32 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 11:58:31 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
- support
-Message-ID: <YC5IV9yAAg2t8PoX@alley>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YCv9Xb7ePnDy9xRf@alley>
- <YCwAbGoVuZJspcx5@chrisdown.name>
- <YCwycC8hPsPD7ArU@cmpxchg.org>
- <YCwzrLTaE9PwNihj@chrisdown.name>
- <YC06LyPGmytXJ8Iu@alley>
- <YC08tgirtDsZumkK@chrisdown.name>
+        id S233264AbhBRMuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:50:10 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:56118 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhBRLDs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:03:48 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAxTv9003382;
+        Thu, 18 Feb 2021 11:00:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Mt6WEzbLHUNDGK7TyqjjsRvc/zZnJpboS3ehhw2gAZI=;
+ b=a3Uw9oDuo7Was84U+cpymjlmN1e0Q/B//TgQVx0NFGAhhnYFhwBDIlW6aiOfwG2yz4ls
+ HYln5lWqTMDTpKJsgkGSEAQbn2T3QrpZ4ElDqeoLclWN8k17aYYG7W6MV3kvtOEJJ2Np
+ yat5nWPkVesFpKNB8Czy3kCdTq4SyK/hywVvPxMhVgoWKOiCCmWJyUK0ye6nVHGXXZvO
+ o7YjyTCpKwKGuOVJ6wkTXCz58cb8Qid6JT1mg3ZKevj47gIquc/lNfHPt4wexwmtkh4e
+ 51Ds5YD/bwJubX46LFGGSneL4T2ftOiwWhJLADHwtuSnz7cVaeroPPGb8WCItwxAItWg qg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 36p66r5j0p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 11:00:30 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IB0FWs017822;
+        Thu, 18 Feb 2021 11:00:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 36prp1cy4v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 11:00:27 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IB03Kj028891;
+        Thu, 18 Feb 2021 11:00:03 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 03:00:02 -0800
+Date:   Thu, 18 Feb 2021 13:59:49 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v1 09/18] media: hantro: move hantro_needs_postproc
+ function
+Message-ID: <20210218105949.GG2087@kadam>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <20210217080306.157876-10-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC08tgirtDsZumkK@chrisdown.name>
+In-Reply-To: <20210217080306.157876-10-benjamin.gaignard@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180097
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-02-17 15:56:38, Chris Down wrote:
-> Petr Mladek writes:
-> > > > How about config PRINTK_INDEX?
-> > > 
-> > > Ah yes, I also like that. PRINTK_INDEX is fine from my perspective and is
-> > > more straightforward than "enumeration", thanks.
-> > 
-> > It is better than enumeration. But there is still the same
-> > problem. The word "index" is used neither in the code
-> > nor in the debugfs interface. It is like enabling cars and
-> > seeing apples.
-> > 
-> > What about CONFIG_PRINTK_DEBUGFS?
-> > 
-> > It seems that various subsystems use CONFIG_<SUBSYSTEM>_DEBUGFS
-> > pattern when they expose some internals in debugfs.
+On Wed, Feb 17, 2021 at 09:02:57AM +0100, Benjamin Gaignard wrote:
+> hantro_needs_postproc function becoming to much complex to
+> stray inline in .h file move it to .c file.
 > 
-> The thing I don't like about that is that it describes a largely
-> inconsequential implementation detail rather than the semantic intent of the
-> config change, which is what the person deciding what to include in their
-> config is likely to care about.  Often when I see "XXX debug interface" when
-> doing `make oldconfig` I think to myself "yes, but what does the debugfs
-> interface _do_?".
 
-I see.
+Yeah.  I do think this would make more sense folded in with patch 7.
 
-> If someone else was writing this patch, and I saw "CONFIG_PRINTK_DEBUGFS"
-> appear in my prod kernel, I'd probably say N, because I don't need printk
-> debugging information. On the other hand, if I saw "CONFIG_PRINTK_INDEX", I'd
-> immediately understand that it's probably applicable to me.
-> 
-> I'm happy to rename the debugfs structure as <debugfs>/printk/fmt_index if it
-> helps, but personally I really feel CONFIG_PRINTK_{INDEX,ENUMERATION,CATALOGUE}
-> is a lot more descriptive than just saying "it has a debugfs interface" in the
-> config name for that reason.
+regards,
+dan carpenter
 
-PRINTK_INDEX sounds the best to me. Keep in mind that I am not a
-native speaker.
-
-And my concern will be gone when we use it also in the API and debugfs
-hierarchy as suggested by Johannes.
-
-Another compromise might be to have CONFIG_PRINTK_FORMATS_INDEX.
-Then the prefix printk_format_, pf_ would still match the option.
-Or we could use printk_format_index_m, pfi_ indexes.
-
-Best Regards,
-Petr
-
-PS: I feel that I have enough bike-shading. I think that I will be
-    fine with anything that you choose ;-)
