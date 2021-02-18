@@ -2,108 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA15231EE47
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2BF31EE4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhBRS2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:28:38 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:48224 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232853AbhBRQFo (ORCPT
+        id S230021AbhBRS3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:29:07 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:33160 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233120AbhBRQIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:05:44 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFsK69112500;
-        Thu, 18 Feb 2021 16:04:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=UdQaTckhRsQ/jLTcCYtgh8CqaJ2t3hREWioBusMXLg8=;
- b=bh6tXScDka/SJZxzWNk8AI2igzzRkZ1ioRC7sVc9jCuDZR5BnFcSoxKvzQldFOTStXjn
- HrmVWcmGK5D0avmETisKOaAUDUMT7nB3MCymb78yo7LJwoASLM7/ZRXRhEFaPMi+lQak
- vPoLlMpYWy1V1ZqHVJ/QwyE2UGqcmzFK3+DlHoL6JCCRO/q9mVo4ugJtbfh3QuUHHOJb
- vWXjIEB1TUjHxfVoJ4iVAAAvIr/s+RwAJ9yw+5lam7T55d45a9ot2DYaWWo3fEv8B3Tc
- p6UMcw5FFxbp2PE+IHy4hA7DMqILV2aH8SV5zzBJx9CkD9w6y12lCxXNnmlecI/bOazu 6w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36p7dnpc4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 16:04:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFpfW3083329;
-        Thu, 18 Feb 2021 16:04:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 36prhudng4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 16:04:31 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IG4UW1001769;
-        Thu, 18 Feb 2021 16:04:30 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Feb 2021 08:04:29 -0800
-Date:   Thu, 18 Feb 2021 19:04:20 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Kurt Manucredo <fuzzybritches@protonmail.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        Thu, 18 Feb 2021 11:08:18 -0500
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 580BC3E7;
+        Thu, 18 Feb 2021 17:07:33 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613664453;
+        bh=kQ8OEh/Mm+FqKi7mPHrc30jLI5eIvbGSQ8oxqED2fN8=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZozBA+bNhh0ZR4Elyf2cX7TcUNNp8Hp8Hc7zaP1D1PNs7a1Pzv0cOmPyUVm21PXbz
+         /4NHy66lF5BsPjaJK4LuxZEQ/DDJtaTB4q39+lVajHZH2fwcHPVUtI982JsHRD1UW5
+         OqYAzbl+eOp/ZHcaDbHmXhYLWqwyIymEGACY+4ZE=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 16/16] media: i2c: gmsl: Use 339Kbps I2C bit-rate
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fix comparisons - put constant on right side- eudyptula
- challenge 10
-Message-ID: <20210218160420.GN2087@kadam>
-References: <20210218155422.7-1-fuzzybritches@protonmail.com>
- <20210218155422.7-2-fuzzybritches@protonmail.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-17-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <aa7d8a9c-93a0-8c14-4fe4-b831e7b45d88@ideasonboard.com>
+Date:   Thu, 18 Feb 2021 16:07:30 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218155422.7-2-fuzzybritches@protonmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102180139
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1015 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102180139
+In-Reply-To: <20210216174146.106639-17-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the subject.  Don't mention eudyptula.
-
-[PATCH] Staging: rtl8723bs: put constant on right side of comparison
-
-Add a commit message:
-
-Checkpatch complains that the constant needs to be on the right hand
-side of the comparion.
-
-
-On Thu, Feb 18, 2021 at 03:54:40PM +0000, Kurt Manucredo wrote:
-> Signed-off-by: Kurt Manucredo <fuzzybritches@protonmail.com>
-> ---
->  drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On 16/02/2021 17:41, Jacopo Mondi wrote:
+> With the camera modules initialization routines now running with
+> the noise immunity threshold enabled, it is possible to restore
+> the bit rate of the I2C transactions transported on the GMSL control
+> channel to 339 Kbps.
 > 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> index 975f2830e29e..089c6ec19373 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> @@ -2146,7 +2146,7 @@ void rtw_get_sec_iv(struct adapter *padapter, u8 *pcur_dot11txpn, u8 *StaAddr)
->  	struct security_priv *psecpriv = &padapter->securitypriv;
+> The 339 Kbps bit rate represents the default setting for the serializer
+> and the deserializer chips, and the setup/hold time and slave timeout
+> time in use are calibrate to support that rate.
+
+s/calibrate/calibrated/
+
+Does that mean the setup/hold time and timeouts should be adjusted based
+on the i2c speed? (which we have not been doing?)
+
+With all of your other reliability improvements, does *this* change
+alone have any difference or impact on reliability?
+
+I.e. if we go slower (stay at current speed) - would we be more reliable?
+
+Is there a reliability improvement by making this speed faster?
+
+I presume we don't have a way to convey the i2c bus speed between the
+max9286 and the max9271 currently? Seems a bit like a bus parameter....
+
+
+
+
+
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> ---
+>  drivers/media/i2c/max9286.c | 2 +-
+>  drivers/media/i2c/rdacm20.c | 2 +-
+>  drivers/media/i2c/rdacm21.c | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index aa01d5bb79ef..0b620f2f8c41 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -330,7 +330,7 @@ static int max9286_i2c_mux_init(struct max9286_priv *priv)
+>  static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
+>  {
+>  	u8 config = MAX9286_I2CSLVSH_469NS_234NS | MAX9286_I2CSLVTO_1024US |
+> -		    MAX9286_I2CMSTBT_105KBPS;
+> +		    MAX9286_I2CMSTBT_339KBPS;
 >  
->  	memset(pcur_dot11txpn, 0, 8);
-> -	if (NULL == StaAddr)
-> +	if (StaAddr == NULL)
-
-The prefered format for this is actually:
-
-	if (!StaAddr)
-		return;
-
-regards,
-dan carpenter
+>  	if (localack)
+>  		config |= MAX9286_I2CLOCACK;
+> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> index 0632ef98eea7..d45e8b0e52a0 100644
+> --- a/drivers/media/i2c/rdacm20.c
+> +++ b/drivers/media/i2c/rdacm20.c
+> @@ -450,7 +450,7 @@ static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
+>  	ret = max9271_configure_i2c(&dev->serializer,
+>  				    MAX9271_I2CSLVSH_469NS_234NS |
+>  				    MAX9271_I2CSLVTO_1024US |
+> -				    MAX9271_I2CMSTBT_105KBPS);
+> +				    MAX9271_I2CMSTBT_339KBPS);
+>  	if (ret)
+>  		return ret;
+>  
+> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> index 80b6f16f87a8..552985026458 100644
+> --- a/drivers/media/i2c/rdacm21.c
+> +++ b/drivers/media/i2c/rdacm21.c
+> @@ -442,7 +442,7 @@ static int rdacm21_init(struct v4l2_subdev *sd, unsigned int val)
+>  	ret = max9271_configure_i2c(&dev->serializer,
+>  				    MAX9271_I2CSLVSH_469NS_234NS |
+>  				    MAX9271_I2CSLVTO_1024US |
+> -				    MAX9271_I2CMSTBT_105KBPS);
+> +				    MAX9271_I2CMSTBT_339KBPS);
+>  	if (ret)
+>  		return ret;
+>  
+> 
 
