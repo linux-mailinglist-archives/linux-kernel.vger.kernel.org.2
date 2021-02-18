@@ -2,112 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB3B31F05B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:51:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D41F31F05E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232398AbhBRTql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:46:41 -0500
-Received: from mout.gmx.net ([212.227.17.20]:42193 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232818AbhBRTQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:16:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613675643;
-        bh=OumvlyMfMF8OuGKnB6ZFA0Vs6VIp2wW434PmpZU2Q6Q=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ihgEJyvmqs+l/amrtE06CAB/NYjM7xkKQur7JyySpDs7c8S6UnXoi+owRCwAlGSFv
-         ArzhyF5lyUJnXpx6AZW5IhpmMlv7ZohRYFjroxupK8p0K6s3w6apcfE3J4aaPaQ1RF
-         uklIUSG67/kXSFx7ytgtmyXdLFYeMPUobzDL5fwQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2V0B-1lr7x60pfr-013xFj; Thu, 18
- Feb 2021 20:14:03 +0100
-Subject: Re: [PATCH RESEND v5] tpm: fix reference counting for struct tpm_chip
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, David.Laight@aculab.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org
-References: <1613505191-4602-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613505191-4602-2-git-send-email-LinoSanfilippo@gmx.de>
- <YC2WRJfNbY22yIOn@kernel.org>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Message-ID: <5d0f7222-a9ef-809b-cd9a-86bbacb03790@gmx.de>
-Date:   Thu, 18 Feb 2021 20:13:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232069AbhBRTrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:47:37 -0500
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:2954 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234247AbhBRTSO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:18:14 -0500
+Received: from pps.filterd (m0170390.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11IJD5So010291;
+        Thu, 18 Feb 2021 14:17:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=smtpout1; bh=iUVRd1Dew3Yl0r8pCqPyu14KJjwaP3ceR2N+ILkEPNI=;
+ b=XPfnJaKeU6jhQZHS4pIaFDf8dIwrgmUzSP9hGgtsZJpUXvBYPgj4+Q4Xd5+aeDalJg8r
+ jGZ98c2O7Hr2l6WFnJe5YL1Ier1eU+ey6VTTK7gjxBO94mGPOEfpMn8IlXgTmdanggE5
+ EJJtrTxv5kB0GgH7AbpTVd3USZ7HT4KudS2XkpDD0OF90CDvLrSZgXoofrEIPupmNuMd
+ pwCEJlKS4/gUPZSCbPeRVoDDTRJwhBFpb3fZMP1pyWeJZJY+eghI1QNjr+/uHZJeGpDK
+ BndpuZZ/wIjO1sRfpEg4lX39rwAseX9OR+Vj8+gLNucnHR9m6FsgXy9Z35uEPBWHAhJ5 5Q== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 36paq99fv8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Feb 2021 14:17:32 -0500
+Received: from pps.filterd (m0090351.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11IJEhH2155509;
+        Thu, 18 Feb 2021 14:17:32 -0500
+Received: from ausxipps301.us.dell.com (ausxipps301.us.dell.com [143.166.148.223])
+        by mx0b-00154901.pphosted.com with ESMTP id 36pvxgp3rc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 14:17:32 -0500
+X-LoopCount0: from 10.177.160.151
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.81,187,1610431200"; 
+   d="scan'208";a="577970456"
+From:   Mario Limonciello <mario.limonciello@dell.com>
+To:     Hans De Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@dell.com>,
+        Divya Bharathi <Divya.Bharathi@Dell.com>,
+        Alexander Naumann <alexandernaumann@gmx.de>
+Subject: [PATCH] platform/x86: dell-wmi-sysman: correct an initialization failure
+Date:   Thu, 18 Feb 2021 13:17:23 -0600
+Message-Id: <20210218191723.20030-1-mario.limonciello@dell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YC2WRJfNbY22yIOn@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7qLkTgedFEkckgxUROxL2yXb/CiegrAXFaO7P+ZZ6y332p2Kyhw
- nfvX0hLPtks4MpwkLI+MRW9XERkSVQz3zn3vpki6xAldWtvoeJ1nJZ/pF1VT+aO8xKyE4jx
- GTzOTY+QxNH+2RAgTAEk1+noK3UcRWodvfCX5At9Bhcos903jErpz2dQHfFQ/MW/N3KphhZ
- oILK+nPqG4lhDKUD656kQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wobcJB6G+es=:69RYnVhGdD1O8pwHzqrV64
- tTpd7JJ1VCNrBI05C9qKULlr+DEbL/g0+o8SrK1r/n+rhWRn3fsKcsPrmAiCkqPnqOEp9FXBX
- 9ac9ELpnoJPblr1KjAxGG8cS5/CErq+DM/O61VzNDxZMus1V2YUQ4jjeH0VyvOXMUZJU5Vxsk
- cxYD/4mnFSr4vG0Bav9GipfJJy5yPLrj8WZYU9ghkrQq9ymqaHBlq8aCK2JmBK/8sPtO54QqP
- rXFPnaGWLfUPnIljJlxIRdEYOm6gKV1Y9IUzMjNsw8ds4LMu9ha5wMmdXIq4UAPKUD6yWnseX
- GjiaVm3M0ORlxLpg3AT1d7Ba2xxo+jnRhwFx3WaI4o0HkUVp7dL9wtaxTBdgGm4QizmpPhHNO
- ZDTWPkGXc+m/RiPyPespC1taUT268Hqpl/0koTBooYVAp8G2/qeanjftehnjtxCqeviDKmYLo
- OaXeBN+56AksoCSCP25WI49Eo7zGmj2MSUtMz53PD74Ut7IKpJTvRTKuxzCd4eJT1aYCkcLpb
- xVbkFaAQ+PqoJl2W7e3pexwuBMjTj9AumXzwqxIcvLYbjOPkBLbqRgXnyBRC5SjZDV3ubeCpU
- 0k4RS7R/bPFu0IXv94NaQtQeptOKJjaCutwduvbJzSRoSQz/rca3xy2FZjlfyfIq8Gh3F7/yC
- gORO/gG7t772vxaifOGGEGjl8eWMQ5tAG3obTnnnGlxrDKZMtsTeZ4bRZNzndq347arKRIunl
- ZZZmB+eMGL80lP0zhixLJ2C88rjkwSY3uElaDnuOEbGamJjRe0+7mz0PkMDQb161WEnhndK07
- NDP+r1+E2JWOcnacaGDen0WbYmFh9phEf/LApXSQAzuDcB5hl44XSiM6NpdDQP2VMQEjx8iT4
- 3y/6F9Qdp2JPIh1lyMMQ==
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-18_09:2021-02-18,2021-02-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ suspectscore=0 clxscore=1015 bulkscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 mlxscore=0 impostorscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180159
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 adultscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180159
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Dell systems that don't support this interface the module is
+mistakingly returning error code "0", when it should be returning
+-ENODEV.  Correct a logic error to guarantee the correct return code.
 
-Hi,
+Cc: Divya Bharathi <Divya_Bharathi@Dell.com>
+Reported-by: Alexander Naumann <alexandernaumann@gmx.de>
+Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
+---
+ drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c     | 4 +++-
+ drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c | 4 +++-
+ drivers/platform/x86/dell-wmi-sysman/sysman.c                 | 4 ++--
+ 3 files changed, 8 insertions(+), 4 deletions(-)
 
-On 17.02.21 at 23:18, Jarkko Sakkinen wrote:
+diff --git a/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c b/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
+index f95d8ddace5a..8d59f81f9db4 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
++++ b/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
+@@ -175,7 +175,9 @@ static struct wmi_driver bios_attr_set_interface_driver = {
+ 
+ int init_bios_attr_set_interface(void)
+ {
+-	return wmi_driver_register(&bios_attr_set_interface_driver);
++	int ret = wmi_driver_register(&bios_attr_set_interface_driver);
++
++	return wmi_priv.bios_attr_wdev ? ret : -ENODEV;
+ }
+ 
+ void exit_bios_attr_set_interface(void)
+diff --git a/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c b/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
+index 5780b4d94759..bf449dc5ff47 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
++++ b/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
+@@ -142,7 +142,9 @@ static struct wmi_driver bios_attr_pass_interface_driver = {
+ 
+ int init_bios_attr_pass_interface(void)
+ {
+-	return wmi_driver_register(&bios_attr_pass_interface_driver);
++	int ret = wmi_driver_register(&bios_attr_pass_interface_driver);
++
++	return wmi_priv.password_attr_wdev ? ret : -ENODEV;
+ }
+ 
+ void exit_bios_attr_pass_interface(void)
+diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+index cb81010ba1a2..d9ad0e83b66f 100644
+--- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
++++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+@@ -513,13 +513,13 @@ static int __init sysman_init(void)
+ 	}
+ 
+ 	ret = init_bios_attr_set_interface();
+-	if (ret || !wmi_priv.bios_attr_wdev) {
++	if (ret) {
+ 		pr_debug("failed to initialize set interface\n");
+ 		goto fail_set_interface;
+ 	}
+ 
+ 	ret = init_bios_attr_pass_interface();
+-	if (ret || !wmi_priv.password_attr_wdev) {
++	if (ret) {
+ 		pr_debug("failed to initialize pass interface\n");
+ 		goto fail_pass_interface;
+ 	}
+-- 
+2.25.1
 
->> +
->
-> /*
->  * Please describe what the heck the function does. No need for full on
->  * kdoc.
->  */
-
-Ok.
-
->> +int tpm2_add_device(struct tpm_chip *chip)
->
-> Please, rename as tpm_devs_add for coherency sake.
->
-
-Sorry I confused this and renamed it wrongly. I will fix it in the next
-patch version.
-
->> +{
->> +	int rc;
->> +
->> +	device_initialize(&chip->devs);
->> +	chip->devs.parent =3D chip->dev.parent;
->> +	chip->devs.class =3D tpmrm_class;
->
-> Empty line. Cannot recall, if I stated before.
->> +	/* +	 * get extra reference on main device to hold on behalf of devs.
->> +	 * This holds the chip structure while cdevs is in use. The
->> +	 * corresponding put is in the tpm_devs_release.
->> +	 */
->> +	get_device(&chip->dev);
->> +	chip->devs.release =3D tpm_devs_release;
->> +	chip->devs.devt =3D MKDEV(MAJOR(tpm_devt),
->> +					chip->dev_num + TPM_NUM_DEVICES);
->
-> NAK, same comment as before.
->
-
-Thx for the review, I will fix these issues.
-
-Regards,
-Lino
