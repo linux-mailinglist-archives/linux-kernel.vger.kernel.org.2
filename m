@@ -2,91 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3089431F031
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:44:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A7531EFE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:34:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhBRTmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:42:51 -0500
-Received: from smtp117.ord1c.emailsrvr.com ([108.166.43.117]:42973 "EHLO
-        smtp117.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232864AbhBRTHb (ORCPT
+        id S231367AbhBRTbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:31:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232912AbhBRSr2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:07:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1613666733;
-        bh=S1Fq+tox9MWcUqvYO7gs5705kiM9wMsNW7MjUawCZy4=;
-        h=Subject:To:From:Date:From;
-        b=PhgcptYevAjOOqtTfJe9xAWMQ4jHc9GUy2VcDPCvyyjGhOxENORLlzwO0Ekx5sYhs
-         GJHPZan9poZc1GYObbIEhnKkeXd/TAmiZtz0XY84rUdrpXGgg+oZEu00BUu+TuQPLj
-         v/apwnpVZbUpMKBvxR3tIb2JnVHt3jhaoj69u8yc=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1613666733;
-        bh=S1Fq+tox9MWcUqvYO7gs5705kiM9wMsNW7MjUawCZy4=;
-        h=Subject:To:From:Date:From;
-        b=auWMYbr66PL4muUl7BX5naim5F3JKkx+n2dvf7romJdMyTRGOgCx6BUhZ29EP+ChQ
-         aAhXw5rsj9Di7QUt8gQy5Kx1Rw6GkAnjBgXKJqEJUJGLGMYj9bV5O9FuWud7kIQTBP
-         X9LAghWP+ec/GctA5gPVU1z0vgW6Anks+YhADaO4=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp7.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 88B10A0225;
-        Thu, 18 Feb 2021 11:45:31 -0500 (EST)
-Subject: Re: [PATCH] Staging: comedi: Replaced strlcpy to strscpy
-To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
-Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Michel Lespinasse <walken@google.com>,
-        B K Karthik <bkkarthik@pesu.pes.edu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210218143152.3957-1-chakravarthikulkarni2021@gmail.com>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <43b0f966-9d88-3c92-28ce-6dfce755a1be@mev.co.uk>
-Date:   Thu, 18 Feb 2021 16:45:30 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 18 Feb 2021 13:47:28 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6DFC06178B
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:46 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id gb24so1871264pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=TYSvMCIPacqOphOa16rzA+X+0GuBxuIS4Qj5ygoV2IM=;
+        b=aWV5hnEy8rnECOEGtDuAcE+s4yLDrZzLFVj+vn97GLn50xSeuxHfgdHF7Yz6jpcksB
+         CYfZpw1Zh4nmKvytWq2vjdYlJZlmbDpatiO45blzVexSo6J8CdGpJ/r3/Jfht+NfQhSW
+         LOtBc1iiEAii0nADT1I0ZZyiE9uk7n6kjhupE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=TYSvMCIPacqOphOa16rzA+X+0GuBxuIS4Qj5ygoV2IM=;
+        b=YuoRpiChY9uYxAHV5zShydKxBNbF+lIlBpzTUXVK7ylI4f+JjUWP5eeXU8/fUJHTb6
+         sDHy0e6MHJXfy3LvknvoX9hONGiuyZHHDbikCMDW9ezqoBN/wHdAiwYP99n0oNjHY8oR
+         ZAksdoD2QgYXATaGjJzq7JIncM5eu2Nzs7CzZxPk2L4kd9L9gdd2tSVrnNtNTYZz7B5G
+         Yi0wXtNfdlKsa1424HB/zhR6jy/yhDZ7rdVEjuHWjhB+HuXfc20WxRlN3k0vYQiZjzhM
+         ndNgUXIRN23o6IafGwdzikeK5D5Xnvj5Jr2PcDlMHK4cgHHgHzFdJwMwsevRFW/33cCJ
+         O1WA==
+X-Gm-Message-State: AOAM531AnkhoOhAF2Uv5ZOXwdv4xyd2t3HhIsKexYsBRAJm1O9StQVtr
+        lSzuGcHHuve6EwdeyS7qNIge7w==
+X-Google-Smtp-Source: ABdhPJxCmb8Y1Km73TqeTEgYOkLH188D40vElREuf0w7ub9wbnNw7oCNpoGFosfaLftBUBdQlyWCeg==
+X-Received: by 2002:a17:902:aa03:b029:e3:721:c093 with SMTP id be3-20020a170902aa03b02900e30721c093mr5267903plb.50.1613674006193;
+        Thu, 18 Feb 2021 10:46:46 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:ec84:ed2b:a796:b756])
+        by smtp.gmail.com with ESMTPSA id 25sm7127704pfh.199.2021.02.18.10.46.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 10:46:45 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210218143152.3957-1-chakravarthikulkarni2021@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: d6d0b856-a613-4e54-8f8c-36e84e572270-1-1
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1613603397-21179-1-git-send-email-khsieh@codeaurora.org>
+References: <1613603397-21179-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH 2/2] drm/msm/dp: Drop limit link rate at HBR2
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Thu, 18 Feb 2021 10:46:44 -0800
+Message-ID: <161367400432.1254594.2213007173465217655@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/2021 14:31, chakravarthikulkarni wrote:
-> Warning found by checkpath.pl script.
-> 
-> Signed-off-by: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+Quoting Kuogee Hsieh (2021-02-17 15:09:57)
+> Drop limit link rate at HBR2 to support link rate
+> upto HBR3.
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 > ---
->  drivers/staging/comedi/comedi_fops.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> index 80d74cce2a01..df77b6bf5c64 100644
-> --- a/drivers/staging/comedi/comedi_fops.c
-> +++ b/drivers/staging/comedi/comedi_fops.c
-> @@ -939,8 +939,8 @@ static int do_devinfo_ioctl(struct comedi_device *dev,
->  	/* fill devinfo structure */
->  	devinfo.version_code = COMEDI_VERSION_CODE;
->  	devinfo.n_subdevs = dev->n_subdevices;
-> -	strlcpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
-> -	strlcpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
-> +	strscpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
-> +	strscpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
->  
->  	s = comedi_file_read_subdevice(file);
->  	if (s)
-> 
 
-Thanks, but you are too late.  It has already been fixed in linux-next.
-
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
