@@ -2,80 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 442C931EF26
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:05:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF0B931EF33
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhBRTCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:02:38 -0500
-Received: from mail-ot1-f52.google.com ([209.85.210.52]:33798 "EHLO
-        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233574AbhBRRXO (ORCPT
+        id S233741AbhBRTGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:06:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233578AbhBRRYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:23:14 -0500
-Received: by mail-ot1-f52.google.com with SMTP id b16so2573937otq.1;
-        Thu, 18 Feb 2021 09:22:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NX6EDg3WVwyAV5L0N2YCyGTGVewn44yzxxRjVeIot1Q=;
-        b=qGpUndmKQE00QbO/h/ebGD7GoDZo/vP0E5JpYx00VGk5ukPQxMcKPKyZN8RPs8OM1y
-         krdsmxsuUYwIOYpRsTeC+BBjvmCxuBHId75GhE+MjCyJzNhUfEfMBMgiByEQ9GREUTeG
-         J5+TyFuZl5m/vc4+A8BvvIhWCaYAOiSeC2RXSlC2p/mKn7ikJ2Zo6qen8aTZ8W0VGjq6
-         A2mTYVWWxYX8F4zbN2cMVxzigY90L1ApEoBxxNjcnVjzkvCdjEg9kyAB/Oz6ADfJ37+Z
-         ucXHL1GIKJIvRMkW2R45kDi9zEw5ePiEDfy24cKc8kpv0xvSiWPtD0K++PnV1iHZ+Xyb
-         bOPw==
-X-Gm-Message-State: AOAM530vY0Wq44ZhdRx3ECwtvrQ4N6JdH3x5ky6x/zbdkhtpr7mDTSJ+
-        egr+ZDiU8Yq8qoQaM67jZDyyVlpWEev1j5eY9uY=
-X-Google-Smtp-Source: ABdhPJyL0mcRakFrgJhNrkU9sn6cSFUrR5BucNkiLUT4O9W9lDN6NNlc6aJ2wuf3wy7Wz49hLOKbNxVpTznj1Oz4O68=
-X-Received: by 2002:a9d:a2d:: with SMTP id 42mr3773337otg.321.1613668953665;
- Thu, 18 Feb 2021 09:22:33 -0800 (PST)
+        Thu, 18 Feb 2021 12:24:50 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3754C06178B
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:23:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=UegB2Zj0n1bQJXQibuqGXU/TCSS1amPkWG/5jTW6Kdw=; b=vi+FXIyJcxRhZlxVAeloDvBqp
+        lb8JZ5XRKbJaJ5PXQPyThu8TCdZAq2fl32gpRe0i+Fbamw+hFq30nb+QxA/D0hETR02PNhzksk1aM
+        eyohetNJFXNBAHozAmDYP4sV7D/8JeKh7PJjwDCtu3QsH3SIq6CFeKkjxfwHInFCOQRy1/szcg6oi
+        DHZ2/GJDA0wzRaz4rr232ECpLl8/Zg+0pqsuijarUxF3tDExDoLCbTvWTzub2oi+iEWMauj/PKQ84
+        S5IjsBboMeRoblIj1J0JJCHDRu/87uiT89l190Q9khcIV2MzMkksxYH5J0HiI2W3669CTPRGUIxUA
+        DTHwI4uJA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45110)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lCn12-0003eq-JS; Thu, 18 Feb 2021 17:23:00 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lCn11-0006bR-BJ; Thu, 18 Feb 2021 17:22:59 +0000
+Date:   Thu, 18 Feb 2021 17:22:59 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jari Ruusu <jariruusu@protonmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <20210218172259.GJ1463@shell.armlinux.org.uk>
+References: <YA/E1bHRmZb50MlS@kroah.com>
+ <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
+ <YBBkplRxzzmPYKC+@kroah.com>
+ <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <YC4atKmK7ZqlOGER@kroah.com>
+ <20210218113107.GA12547@1wt.eu>
+ <602E766F.758C74D8@users.sourceforge.net>
+ <20210218143341.GB13671@1wt.eu>
+ <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com>
 MIME-Version: 1.0
-References: <20210217195136.195789-1-colin.king@canonical.com>
-In-Reply-To: <20210217195136.195789-1-colin.king@canonical.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 18 Feb 2021 18:22:22 +0100
-Message-ID: <CAJZ5v0gOcLu1=Vn5uqRix=JXy2ucHZVDtiPcbMsaSYgrgf7pxg@mail.gmail.com>
-Subject: Re: [PATCH] drivers/base/cpu: remove redundant initialization of
- variable retval
-To:     Colin King <colin.king@canonical.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 8:51 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> The variable retval is being initialized with a value that is never read
-> and it is being updated later with a new value.  The initialization is
-> redundant and can be removed.
->
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/base/cpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index 8f1d6569564c..2e834cd315d8 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -409,7 +409,7 @@ __cpu_device_create(struct device *parent, void *drvdata,
->                     const char *fmt, va_list args)
->  {
->         struct device *dev = NULL;
-> -       int retval = -ENODEV;
+On Thu, Feb 18, 2021 at 05:19:54PM +0000, Jari Ruusu wrote:
+> In-tree iwlwifi worked half-ok on early 4.9.y stable. If
+> connection somehow de-autheticated (out of radio range or
+> whatever) it crashed the kernel spectacularly. Eventually that was
+> fixed and in-tree iwlwifi worked fine on 4.9.y and 4.14.y stable
+> kernels. On second half of year 2020 (don't remember exactly when)
+> iwlwifi started causing erratic behavior when some random process
+> terminated, as if some exit processing left some resources
+> un-freed or something weird like that.
 
-Might as well init it to -ENOMEM and drop the assignment below.
+So you bisected the stable kernel, and reported the problem so the
+problem commit could be dealt with?
 
-> +       int retval;
->
->         dev = kzalloc(sizeof(*dev), GFP_KERNEL);
->         if (!dev) {
-> --
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
