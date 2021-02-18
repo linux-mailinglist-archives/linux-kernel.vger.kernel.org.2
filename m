@@ -2,189 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBB031EAD0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49E331EAD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbhBROPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 09:15:33 -0500
-Received: from hmm.wantstofly.org ([213.239.204.108]:57170 "EHLO
-        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhBRM3C (ORCPT
+        id S233689AbhBROQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 09:16:49 -0500
+Received: from mail-oo1-f53.google.com ([209.85.161.53]:44068 "EHLO
+        mail-oo1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232184AbhBRMbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:29:02 -0500
-Received: by mail.wantstofly.org (Postfix, from userid 1000)
-        id 258987F4BE; Thu, 18 Feb 2021 14:27:55 +0200 (EET)
-Date:   Thu, 18 Feb 2021 14:27:55 +0200
-From:   Lennert Buytenhek <buytenh@wantstofly.org>
-To:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        io-uring@vger.kernel.org
-Cc:     David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v3 2/2] io_uring: add support for IORING_OP_GETDENTS
-Message-ID: <20210218122755.GC334506@wantstofly.org>
-References: <20210218122640.GA334506@wantstofly.org>
+        Thu, 18 Feb 2021 07:31:35 -0500
+Received: by mail-oo1-f53.google.com with SMTP id n19so393409ooj.11
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:31:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FLFWnxyElxblI6vJcZgv/haPPfA2hlisE2SESMOZ5uE=;
+        b=Kkrst1BaXzFbT/boYl+Wjjnv1Nu9hGvfg8E2zbvXww0CO2Gh+Nff4YQ7kYph/w5tKL
+         6JZbJhIkHbCR2mXzs5Jr9WGITnXCe9sfMXTW2r/5meC+BvHLm+y5PsDOgspXuOXwhcJS
+         sf8ZiXrT01mevz3fpXbab8FgEcxidcsCPcAY2z0f8ep+hRYIOB4x/QUb7+HO2s/Nrkm2
+         kwEPzMPRl/IFECBEowrQSM+1BQIEDW0hxabRZprWcw6SMNTWz0VmCUNcdpbKpe4eSFPr
+         e7WJSQFRZ5rQ4l7fWbNp4mGrU7BhN0WM2Mdnpi8opCiWMzOqfdRZOUb0GcT1an/8bv6C
+         Zg8w==
+X-Gm-Message-State: AOAM5306ht5K+e7FwMiQUdT+JDorsd3SsUX++XeBajtZTmwKE2mBhxUB
+        /qXgV40jmQERUpTYBFERwqQ3WwfK59w+JGtTyGzFFJKd
+X-Google-Smtp-Source: ABdhPJwrzpZYIOHp//3CdHCqEXC35mKObMW0c55p0aDKVL+a8XY5NAEksaI4blqI4iA4A8A0X7O2KGFsZk4hUJKR3gw=
+X-Received: by 2002:a4a:3bcb:: with SMTP id s194mr2788989oos.1.1613651454338;
+ Thu, 18 Feb 2021 04:30:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218122640.GA334506@wantstofly.org>
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+ <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+ <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com> <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
+ <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
+In-Reply-To: <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 18 Feb 2021 13:30:43 +0100
+Message-ID: <CAMuHMdUFv2r+YAttodcXhLxEVe+2KXgAG=q8Z3vA6WUKQj7zVA@mail.gmail.com>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IORING_OP_GETDENTS behaves much like getdents64(2) and takes the same
-arguments, but with a small twist: it takes an additional offset
-argument, and reading from the specified directory starts at the given
-offset.
+Hi Arnd,
 
-For the first IORING_OP_GETDENTS call on a directory, the offset
-parameter can be set to zero, and for subsequent calls, it can be
-set to the ->d_off field of the last struct linux_dirent64 returned
-by the previous IORING_OP_GETDENTS call.
+On Thu, Feb 18, 2021 at 12:20 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> Most of these are normal short-lived interrupts that only transfer
+> a few bytes or schedule deferred processing of some sort.
+> Most of the scsi and network drivers process the data in
+> a softirq, so those are generally fine here, but I do see that 8390
+> (ne2000) ethernet and the drivers/ide drivers do transfer their
+> data in hardirq context.
 
-Internally, if necessary, IORING_OP_GETDENTS will vfs_llseek() to
-the right directory position before calling vfs_getdents().
+The reason drivers/ide is doing that may be related to IDE hard drive
+quirks.  The old WD Caviar drives didn't obey disabling the IDE interrupt
+at the drive level.  On PC, that worked fine, as IRQs 14 and 15 weren't
+shared with other devices.  On systems with shared interrupts, that
+broke badly, and led to an interrupt storm.
 
-IORING_OP_GETDENTS may or may not update the specified directory's
-file offset, and the file offset should not be relied upon having
-any particular value during or after an IORING_OP_GETDENTS call.
+Gr{oetje,eeting}s,
 
-Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
----
- fs/io_uring.c                 | 73 +++++++++++++++++++++++++++++++++++
- include/uapi/linux/io_uring.h |  1 +
- 2 files changed, 74 insertions(+)
+                        Geert
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 056bd4c90ade..6853bf48369a 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -635,6 +635,13 @@ struct io_mkdir {
- 	struct filename			*filename;
- };
- 
-+struct io_getdents {
-+	struct file			*file;
-+	struct linux_dirent64 __user	*dirent;
-+	unsigned int			count;
-+	loff_t				pos;
-+};
-+
- struct io_completion {
- 	struct file			*file;
- 	struct list_head		list;
-@@ -772,6 +779,7 @@ struct io_kiocb {
- 		struct io_rename	rename;
- 		struct io_unlink	unlink;
- 		struct io_mkdir		mkdir;
-+		struct io_getdents	getdents;
- 		/* use only after cleaning per-op data, see io_clean_op() */
- 		struct io_completion	compl;
- 	};
-@@ -1030,6 +1038,11 @@ static const struct io_op_def io_op_defs[] = {
- 		.work_flags		= IO_WQ_WORK_MM | IO_WQ_WORK_FILES |
- 						IO_WQ_WORK_FS | IO_WQ_WORK_BLKCG,
- 	},
-+	[IORING_OP_GETDENTS] = {
-+		.needs_file		= 1,
-+		.work_flags		= IO_WQ_WORK_MM | IO_WQ_WORK_FILES |
-+						IO_WQ_WORK_FS | IO_WQ_WORK_BLKCG,
-+	},
- };
- 
- static void io_uring_try_cancel_requests(struct io_ring_ctx *ctx,
-@@ -4677,6 +4690,61 @@ static int io_sync_file_range(struct io_kiocb *req, unsigned int issue_flags)
- 	return 0;
- }
- 
-+static int io_getdents_prep(struct io_kiocb *req,
-+			    const struct io_uring_sqe *sqe)
-+{
-+	struct io_getdents *getdents = &req->getdents;
-+
-+	if (unlikely(req->ctx->flags & IORING_SETUP_IOPOLL))
-+		return -EINVAL;
-+	if (sqe->ioprio || sqe->rw_flags || sqe->buf_index)
-+		return -EINVAL;
-+
-+	getdents->pos = READ_ONCE(sqe->off);
-+	getdents->dirent = u64_to_user_ptr(READ_ONCE(sqe->addr));
-+	getdents->count = READ_ONCE(sqe->len);
-+	return 0;
-+}
-+
-+static int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
-+{
-+	struct io_getdents *getdents = &req->getdents;
-+	bool pos_unlock = false;
-+	int ret = 0;
-+
-+	/* getdents always requires a blocking context */
-+	if (issue_flags & IO_URING_F_NONBLOCK)
-+		return -EAGAIN;
-+
-+	/* for vfs_llseek and to serialize ->iterate_shared() on this file */
-+	if (file_count(req->file) > 1) {
-+		pos_unlock = true;
-+		mutex_lock(&req->file->f_pos_lock);
-+	}
-+
-+	if (req->file->f_pos != getdents->pos) {
-+		loff_t res = vfs_llseek(req->file, getdents->pos, SEEK_SET);
-+		if (res < 0)
-+			ret = res;
-+	}
-+
-+	if (ret == 0) {
-+		ret = vfs_getdents(req->file, getdents->dirent,
-+				   getdents->count);
-+	}
-+
-+	if (pos_unlock)
-+		mutex_unlock(&req->file->f_pos_lock);
-+
-+	if (ret < 0) {
-+		if (ret == -ERESTARTSYS)
-+			ret = -EINTR;
-+		req_set_fail_links(req);
-+	}
-+	io_req_complete(req, ret);
-+	return 0;
-+}
-+
- #if defined(CONFIG_NET)
- static int io_setup_async_msg(struct io_kiocb *req,
- 			      struct io_async_msghdr *kmsg)
-@@ -6184,6 +6252,8 @@ static int io_req_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
- 		return io_unlinkat_prep(req, sqe);
- 	case IORING_OP_MKDIRAT:
- 		return io_mkdirat_prep(req, sqe);
-+	case IORING_OP_GETDENTS:
-+		return io_getdents_prep(req, sqe);
- 	}
- 
- 	printk_once(KERN_WARNING "io_uring: unhandled opcode %d\n",
-@@ -6428,6 +6498,9 @@ static int io_issue_sqe(struct io_kiocb *req, unsigned int issue_flags)
- 	case IORING_OP_MKDIRAT:
- 		ret = io_mkdirat(req, issue_flags);
- 		break;
-+	case IORING_OP_GETDENTS:
-+		ret = io_getdents(req, issue_flags);
-+		break;
- 	default:
- 		ret = -EINVAL;
- 		break;
-diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
-index 890edd850a9e..fe097b1fa332 100644
---- a/include/uapi/linux/io_uring.h
-+++ b/include/uapi/linux/io_uring.h
-@@ -138,6 +138,7 @@ enum {
- 	IORING_OP_RENAMEAT,
- 	IORING_OP_UNLINKAT,
- 	IORING_OP_MKDIRAT,
-+	IORING_OP_GETDENTS,
- 
- 	/* this goes last, obviously */
- 	IORING_OP_LAST,
 -- 
-2.29.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
