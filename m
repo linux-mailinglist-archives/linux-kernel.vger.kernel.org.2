@@ -2,84 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3103B31F085
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A012931F08F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhBRTyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:54:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbhBRT1a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:27:30 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F477C06178B;
-        Thu, 18 Feb 2021 11:26:50 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id ly28so7425081ejb.13;
-        Thu, 18 Feb 2021 11:26:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aw8d5niVaenZLTQo98c2VrT4Pux17Z8Q4Q6X91Kfq3U=;
-        b=GPeAezxLenee31Xo7WYsfzOiXa0RGgJjYiwDgkQiabdq0SY9I2k2+j68t6u6iaPSXv
-         s4Rr7rI86o/M86G+2RpMNdFADz9ws4f7PHovioyYrrCZoTY6kSCShsNa2RRaR1f+FXd3
-         UhvOGRoPHiLb3Ogxf7wDNKNUr2ir1nrfEp/5jW89k8/CpK2qrJ5yYHfePhsjO5RXXO1F
-         lC0I2XVGT4ijrBPtzASr3o1eoNvjkXaCMzX+AxtXUMeMoWHkUTIgIdq3+NPQkolUW+3j
-         l2p8+qIvSCSfQi4DNbf7qxBSGxOvQoZ1Wc0tx9iQ/rHDKzCiTMHW+BzpqtNg9eZvfabi
-         qkYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aw8d5niVaenZLTQo98c2VrT4Pux17Z8Q4Q6X91Kfq3U=;
-        b=ZZIir37JLB2KTkeFoFfzW1M6wpdamSculs2GBhZ7AvxswZXHz4HJ1BgloxHPPYMqvr
-         1/e82/QDEaSXPKuY3gwmAUqwXFE5scpHSYSvqBS0fRFU8WcvDWJsBjAMlRG3YggVTmaw
-         KQwfuMPRS8lFecxk10RQIyrb442hnwx6MTbaZtHLJcGLiJ+i15H+KDttdtjtAMGqF8Uh
-         d4XooNowePW59wpIldq0wleYo3k/SOHRdbtiXbUqPjzEXW3xh/CIAhno7yi9/Rew3k+S
-         1C/maAsdQzyYvpHsLW47n3uYbHXElKFFoz4n7Kz+32R3Y4Xx3piHU5dve5sEyh/VQZ/u
-         WIqw==
-X-Gm-Message-State: AOAM530i3Jbf+ccjrc9G29KEC13qib2JWAwQkFX+D3ExNGj5ibdGkD50
-        oYvV5pVPHgquZSul23QB2qRNWhWlqak=
-X-Google-Smtp-Source: ABdhPJwn4q3cnEBltpPfaLDstDNi1hwtK7htRNC3aZH/s4iY/8SIp4oDQlv04evEjyPrxHkKDYiF7Q==
-X-Received: by 2002:a17:906:ae85:: with SMTP id md5mr5678930ejb.76.1613676409266;
-        Thu, 18 Feb 2021 11:26:49 -0800 (PST)
-Received: from skbuf ([188.25.217.13])
-        by smtp.gmail.com with ESMTPSA id a23sm3113645ejy.60.2021.02.18.11.26.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 11:26:48 -0800 (PST)
-Date:   Thu, 18 Feb 2021 21:26:47 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net-next v2 0/2] net: phy: at803x: paging support
-Message-ID: <20210218192647.m5l4wkboxms47urw@skbuf>
-References: <20210218185240.23615-1-michael@walle.cc>
+        id S231593AbhBRTzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:55:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232630AbhBRT2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:28:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB90164DF0;
+        Thu, 18 Feb 2021 19:27:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613676452;
+        bh=XfVjVZpWYLTAsNl6mOoxLz46fumb9V2SXnTYEAUS40Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=sVKez0e4ne1EbQ5M8GLkhuHBoD6+l+5DRo9A8zB/gcW1IlrLH5iyEgvIHhIIl9huB
+         ExOx92OO8HSsasfnwOEEEDzNMjjOolPnP1657MjkPyP5HSN+qEhbz8mFyjX/rM+A1k
+         UH8Ja/Srp15x3YE08Z2eIOtJgyd67POMHDxTzpypyq6RVVXANFbVJ5ZCX8JtbF65jD
+         5m0UKc7XaXHVYHJ6QFWAgwP5vPh0CwASyx95Ly5QzLfl4uYCrTStN6qC/2uJHGruhQ
+         sQ+bPFsZA96pZP8I+Hzlyv2CO7yZ9lJsDgeg2jeIgdsgF15tlv23yUmIFa2cvYEG3/
+         WzfnwSuXQj9rw==
+Date:   Thu, 18 Feb 2021 13:27:30 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     dmaengine@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH v7 04/15] PCI: Add pci_find_vsec_capability() to find a
+ specific VSEC
+Message-ID: <20210218192730.GA996712@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218185240.23615-1-michael@walle.cc>
+In-Reply-To: <d89506834fb11c6fa0bd5d515c0dd55b13ac6958.1613674948.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 07:52:38PM +0100, Michael Walle wrote:
-> Add paging support to the QCA AR8031/33 PHY. This will be needed if we
-> add support for the .config_inband_aneg callback, see series [1].
->
-> The driver itself already accesses the fiber page (without proper locking).
-> The former version of this patchset converted the access to
-> phy_read_paged(), but Vladimir Oltean mentioned that it is dead code.
-> Therefore, the second patch will just remove it.
->
-> changes since v1:
->  - second patch will remove at803x_aneg_done() altogether
+On Thu, Feb 18, 2021 at 08:03:58PM +0100, Gustavo Pimentel wrote:
+> Add pci_find_vsec_capability() to locate a Vendor-Specific Extended
+> Capability with the specified VSEC ID.
+> 
+> The Vendor-Specific Extended Capability (VSEC) allows one or more
+> proprietary capabilities defined by the vendor which aren't standard
+> or shared between vendors.
+> 
+> Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
 
-I'm pretty sure net-next is closed now, since David sent the pull
-request, and I didn't come to a conclusion yet regarding the final
-form of the phy_config_inband_aneg method either.
+Beautiful, thanks!
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+> ---
+>  drivers/pci/pci.c   | 30 ++++++++++++++++++++++++++++++
+>  include/linux/pci.h |  1 +
+>  2 files changed, 31 insertions(+)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index b9fecc2..aef217c 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -693,6 +693,36 @@ u8 pci_find_ht_capability(struct pci_dev *dev, int ht_cap)
+>  EXPORT_SYMBOL_GPL(pci_find_ht_capability);
+>  
+>  /**
+> + * pci_find_vsec_capability - Find a vendor-specific extended capability
+> + * @dev: PCI device to query
+> + * @vendor: Vendor ID for which capability is defined
+> + * @cap: Vendor-specific capability ID
+> + *
+> + * If @dev has Vendor ID @vendor, search for a VSEC capability with
+> + * VSEC ID @cap. If found, return the capability offset in
+> + * config space; otherwise return 0.
+> + */
+> +u16 pci_find_vsec_capability(struct pci_dev *dev, u16 vendor, int cap)
+> +{
+> +	u16 vsec = 0;
+> +	u32 header;
+> +
+> +	if (vendor != dev->vendor)
+> +		return 0;
+> +
+> +	while ((vsec = pci_find_next_ext_capability(dev, vsec,
+> +						     PCI_EXT_CAP_ID_VNDR))) {
+> +		if (pci_read_config_dword(dev, vsec + PCI_VNDR_HEADER,
+> +					  &header) == PCIBIOS_SUCCESSFUL &&
+> +		    PCI_VNDR_HEADER_ID(header) == cap)
+> +			return vsec;
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(pci_find_vsec_capability);
+> +
+> +/**
+>   * pci_find_parent_resource - return resource region of parent bus of given
+>   *			      region
+>   * @dev: PCI device structure contains resources to be searched
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index b32126d..814f814 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1077,6 +1077,7 @@ u8 pci_find_next_ht_capability(struct pci_dev *dev, u8 pos, int ht_cap);
+>  u16 pci_find_ext_capability(struct pci_dev *dev, int cap);
+>  u16 pci_find_next_ext_capability(struct pci_dev *dev, u16 pos, int cap);
+>  struct pci_bus *pci_find_next_bus(const struct pci_bus *from);
+> +u16 pci_find_vsec_capability(struct pci_dev *dev, u16 vendor, int cap);
+
+If you do any updates for other reasons, slide this up one more line
+so we have:
+
+  u16 pci_find_ext_capability(struct pci_dev *dev, int cap);
+  u16 pci_find_next_ext_capability(struct pci_dev *dev, u16 pos, int cap);
+  u16 pci_find_vsec_capability(struct pci_dev *dev, u16 vendor, int cap);
+
+  struct pci_bus *pci_find_next_bus(const struct pci_bus *from);
+
+I don't know why pci_find_next_bus() got stuck with the capability
+things.  It doesn't have anything to do with finding capabilities.  It
+goes more with pci_get_device(), etc.
+
+But don't roll the series just for that.
+
+>  u64 pci_get_dsn(struct pci_dev *dev);
+>  
+> -- 
+> 2.7.4
+> 
