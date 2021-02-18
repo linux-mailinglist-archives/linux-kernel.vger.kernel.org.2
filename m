@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3718731F02E
+	by mail.lfdr.de (Postfix) with ESMTP id B339D31F02F
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232271AbhBRTme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:42:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52320 "EHLO mail.kernel.org"
+        id S232785AbhBRTmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:42:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232474AbhBRTGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:06:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 523DB64E79;
-        Thu, 18 Feb 2021 19:05:21 +0000 (UTC)
+        id S233749AbhBRTGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:06:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDCEE64EB8;
+        Thu, 18 Feb 2021 19:05:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613675122;
-        bh=R4gsCZgMwDgngZ9qyYmkJ+oFMXRTckcvHATUvxlt/JE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Whm2zE7EeuTvM69X4g8Gc7a/abB6P97YSfEeTZg9ybvSaTRqWfXdJbOZ6v/VY5Yk6
-         4WUVOuCtYUaznHCoL/LQCUEYFwhR0hOZPwqpWha5v573IpnZzSx3CUsSRfz2+XIaMq
-         BdkU3WQO/TIsAgvDRLAZaYPwUQn5Or0Ur/lR6lB8lnBS8wruUmuW08HpiYOpbtU0My
-         GvyZxikx/CPFHKsyfereJrXRfNjJYZvwe5OoxNn/kSUgvTfM2U4rxQUWiBlKdeqhsJ
-         AF1Ccg35n2kBgKX2wmugoQvkAMAgqjRG0nS47dggKjnUjz6dK8bDPGZ1VAOsTmGSU7
-         3GGicHzc/fmVw==
-Date:   Thu, 18 Feb 2021 11:05:20 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, linux.cj@gmail.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [net-next PATCH v6 02/15] net: phy: Introduce
- fwnode_mdio_find_device()
-Message-ID: <20210218110520.727d24b7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210218052654.28995-3-calvin.johnson@oss.nxp.com>
-References: <20210218052654.28995-1-calvin.johnson@oss.nxp.com>
-        <20210218052654.28995-3-calvin.johnson@oss.nxp.com>
+        s=k20201202; t=1613675152;
+        bh=0kVaXeLYH6acQ+pBzW3nw03A0aCbRYsMMbgXTgirLJM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m40QTEzWC7biDgQER7o6T5VhRmNhCIf2MXkVAWlZHbvPSZeyjrimjyeQopm5piFCr
+         x4KHMHpP7qVbBI4Lf0/xPA8Sryrx73RicaB+KY65oOjnXvmk0/VweDrbHmWBo2Ltxc
+         12Zs5+/cipA6wI9fYUAJ8NcxmppNyXwCmaQSsT2Ol6lKcDGmjq71KATMO47xiTAj4f
+         UjQMib+sk6T7q7dGzCwNfSMtKBqyxMwc10epsZC84ScbsNA3pJkE5gjJFr0MtHLpCd
+         YoqkLn+cxmFaMUWXV34t6c6moaU+903oBgrFmCUSrXeLTtYdUvZQkqLSSmrxos4Y+Z
+         J8YLtFhfeHGDQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 32FE640CD9; Thu, 18 Feb 2021 16:05:48 -0300 (-03)
+Date:   Thu, 18 Feb 2021 16:05:48 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/0] perf intel-pt: Add PSB events
+Message-ID: <YC66jF0/vXLJ/c80@kernel.org>
+References: <20210205175350.23817-1-adrian.hunter@intel.com>
+ <20210205205449.GG27611@tassilo.jf.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210205205449.GG27611@tassilo.jf.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Feb 2021 10:56:41 +0530 Calvin Johnson wrote:
-> +/**
-> + * fwnode_mdio_find_device - Given a fwnode, find the mdio_device
-> + * @np: pointer to the mdio_device's fwnode
-> + *
-> + * If successful, returns a pointer to the mdio_device with the embedded
-> + * struct device refcount incremented by one, or NULL on failure.
-> + * The caller should call put_device() on the mdio_device after its use
-> + */
-> +struct mdio_device *fwnode_mdio_find_device(struct fwnode_handle *fwnode)
+Em Fri, Feb 05, 2021 at 12:54:49PM -0800, Andi Kleen escreveu:
+> On Fri, Feb 05, 2021 at 07:53:46PM +0200, Adrian Hunter wrote:
+> > Hi
+> > 
+> > Here are 3 fixes and 1 minor new feature, for Intel PT.
+> 
+> For the series:
+> 
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
 
-drivers/net/phy/phy_device.c:2834: warning: Function parameter or member 'fwnode' not described in 'fwnode_mdio_find_device'
-drivers/net/phy/phy_device.c:2834: warning: Excess function parameter 'np' description in 'fwnode_mdio_find_device'
+Thanks, applied.
+
+- Arnaldo
+
