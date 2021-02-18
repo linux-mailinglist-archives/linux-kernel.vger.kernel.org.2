@@ -2,153 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E1631E638
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C91331E64D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230145AbhBRGPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 01:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhBRFvz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 00:51:55 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B87D2C061786;
-        Wed, 17 Feb 2021 21:51:14 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id e2so524070ilu.0;
-        Wed, 17 Feb 2021 21:51:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:message-id:in-reply-to:references:subject
-         :mime-version:content-transfer-encoding;
-        bh=1MiXI1ghzyDJbbFlIYODMYli9/N2JgiwurFchZ9firo=;
-        b=dEBmN7prep6VSAQphqNi5WtJV6Fv9Y0sSG8g+DH+WqFF3soIzqH/sc3anKxEM7hqgF
-         oybeCMKfrDFUCehJlWR731HqDZ+AaoF+GSgKRLMvbFjc3ILgnrh9SIqNnEt/gYIck31K
-         2ymaCUdFyNORx5Dfw3Xub+LTH9JMqzRlRKoQ+bsOjC90fWtvmB9TdWKVnIDvq/vMIpdZ
-         lFtOEJNbyVZj2W6Mr747dHg3aIR+qgKtEly+VdDTZ2DXFJC+fZk0Et5K6UjQMt7VLrV5
-         ti7l3VZGFz4Ddwhc3nEyp4yhuBRhQyv+akSh3+KVViFaTs6FtF0QhmZ6xNePtHPnRgPZ
-         uyJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
-         :references:subject:mime-version:content-transfer-encoding;
-        bh=1MiXI1ghzyDJbbFlIYODMYli9/N2JgiwurFchZ9firo=;
-        b=eOEf7/cpnpGD+pO3TgYw31zJX0F5Aa0cOVHdLT/XXoeJF5S/ZRzrkENUDrKbI4CJvg
-         mj/e1oXr9TS8Jdiul2hsM+s9Lr5a8mXqayzhaZTDhaLKzUMBDBa5S5+XxnM8dUziW89L
-         1oD9IetLU4WnEjzZ3P2BW3TWn6v9vKqWOWuAOLnRhHfV4ZMbaWIDpNGg12tp3NIE32su
-         tzNFWoGxPzsEnUSnV5HYW9i3k9L1niqOxIMoPUqXHrBVJGcF2NIwNgoXYVeAOSyqOcAi
-         HLiBOH1/mGOerqSuAjuGsIoAixwt2XQePsQXXuvk3WcnEOp6L0zIJeVK0F/sc5+47i+B
-         t0kQ==
-X-Gm-Message-State: AOAM5325gGxDzV9ExCvGmB2IcoZKtZ9AjY9GJe9YnVjlGPqaCvsm/l+f
-        RHg2peX47UOZV332Jd8z3FA=
-X-Google-Smtp-Source: ABdhPJwf4UBkV7ifcird11DTwA51LcyMnqHR7AdEo+L5paqAu0t48ISl/VVRDyTLTn24RA1B9tvqGw==
-X-Received: by 2002:a05:6e02:1a25:: with SMTP id g5mr2470754ile.73.1613627474096;
-        Wed, 17 Feb 2021 21:51:14 -0800 (PST)
-Received: from localhost ([172.243.146.206])
-        by smtp.gmail.com with ESMTPSA id e195sm3795840iof.51.2021.02.17.21.51.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 21:51:13 -0800 (PST)
-Date:   Wed, 17 Feb 2021 21:51:07 -0800
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        John Fastabend <john.fastabend@gmail.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Dust Li <dust.li@linux.alibaba.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Alexander Lobakin <alobakin@pm.me>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>
-Message-ID: <602e004b4286_1e7da2082a@john-XPS-13-9370.notmuch>
-In-Reply-To: <1613615475.9629707-1-xuanzhuo@linux.alibaba.com>
-References: <602db8cc18aaf_fc5420827@john-XPS-13-9370.notmuch>
- <1613615475.9629707-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: RE: [PATCH v7 bpf-next 6/6] xsk: build skb by page (aka generic
- zerocopy xmit)
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+        id S230426AbhBRGZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 01:25:34 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:42424 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231995AbhBRGGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 01:06:53 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3818B1A073E;
+        Thu, 18 Feb 2021 07:06:01 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 826301A074A;
+        Thu, 18 Feb 2021 07:05:57 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 66215402BE;
+        Thu, 18 Feb 2021 07:05:53 +0100 (CET)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     shawnguo@kernel.org, ping.bai@nxp.com
+Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH] clk: imx8mp: Remove the none exist pcie clocks
+Date:   Thu, 18 Feb 2021 13:54:14 +0800
+Message-Id: <1613627654-29801-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xuan Zhuo wrote:
-> On Wed, 17 Feb 2021 16:46:04 -0800, John Fastabend <john.fastabend@gmail.com> wrote:
-> > Alexander Lobakin wrote:
-> > > From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > >
-> > > This patch is used to construct skb based on page to save memory copy
-> > > overhead.
-> > >
-> > > This function is implemented based on IFF_TX_SKB_NO_LINEAR. Only the
-> > > network card priv_flags supports IFF_TX_SKB_NO_LINEAR will use page to
-> > > directly construct skb. If this feature is not supported, it is still
-> > > necessary to copy data to construct skb.
-> > >
-> > > ---------------- Performance Testing ------------
-> > >
-> > > The test environment is Aliyun ECS server.
-> > > Test cmd:
-> > > ```
-> > > xdpsock -i eth0 -t  -S -s <msg size>
-> > > ```
-> > >
-> > > Test result data:
-> > >
-> > > size    64      512     1024    1500
-> > > copy    1916747 1775988 1600203 1440054
-> > > page    1974058 1953655 1945463 1904478
-> > > percent 3.0%    10.0%   21.58%  32.3%
-> > >
-> > > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-> > > Reviewed-by: Dust Li <dust.li@linux.alibaba.com>
-> > > [ alobakin:
-> > >  - expand subject to make it clearer;
-> > >  - improve skb->truesize calculation;
-> > >  - reserve some headroom in skb for drivers;
-> > >  - tailroom is not needed as skb is non-linear ]
-> > > Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> > > Acked-by: Magnus Karlsson <magnus.karlsson@intel.com>
-> > > ---
-> >
-> > [...]
-> >
-> > > +	buffer = xsk_buff_raw_get_data(pool, addr);
-> > > +	offset = offset_in_page(buffer);
-> > > +	addr = buffer - pool->addrs;
-> > > +
-> > > +	for (copied = 0, i = 0; copied < len; i++) {
-> > > +		page = pool->umem->pgs[addr >> PAGE_SHIFT];
-> >
-> > Looks like we could walk off the end of pgs[] if len is larger than
-> > the number of pgs? Do we need to guard against a misconfigured socket
-> > causing a panic here? AFAIU len here is read from the user space
-> > descriptor so is under user control. Or maybe I missed a check somewhere.
-> >
-> > Thanks,
-> > John
-> >
-> 
-> Don't worry about this, the legality of desc has been checked.
-> 
-> xskq_cons_peek_desc -> xskq_cons_read_desc ->
->                    xskq_cons_is_valid_desc -> xp_validate_desc
+In the i.MX8MP PCIe design, the PCIe PHY REF clock comes from external
+OSC or internal system PLL. It is configured in the IOMUX_GPR14 register
+directly, and can't be contolled by CCM at all.
+Remove the PCIE PHY clock from clock driver to clean up codes.
+There is only one PCIe in i.MX8MP, remove the none exist second PCIe
+related clocks.
 
-Ah OK I didn't dig past the cons_read_desc(). In that case LGTM.
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+Reviewed-by: Jason Liu <jason.hui.liu@nxp.com>
+---
+ drivers/clk/imx/clk-imx8mp.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
-Acked-by: John Fastabend <john.fastabend@gmail.com>
+diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
+index 2f4e1d674e1c..afbeb6bf1909 100644
+--- a/drivers/clk/imx/clk-imx8mp.c
++++ b/drivers/clk/imx/clk-imx8mp.c
+@@ -152,10 +152,6 @@ static const char * const imx8mp_can2_sels[] = {"osc_24m", "sys_pll2_200m", "sys
+ 						"sys_pll1_160m", "sys_pll1_800m", "sys_pll3_out",
+ 						"sys_pll2_250m", "audio_pll2_out", };
+ 
+-static const char * const imx8mp_pcie_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+-						    "clk_ext1", "clk_ext2", "clk_ext3",
+-						    "clk_ext4", "sys_pll1_400m", };
+-
+ static const char * const imx8mp_pcie_aux_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+ 						    "sys_pll3_out", "sys_pll2_100m", "sys_pll1_80m",
+ 						    "sys_pll1_160m", "sys_pll1_200m", };
+@@ -380,14 +376,6 @@ static const char * const imx8mp_memrepair_sels[] = {"osc_24m", "sys_pll2_100m",
+ 							"sys_pll1_800m", "sys_pll2_1000m", "sys_pll3_out",
+ 							"clk_ext3", "audio_pll2_out", };
+ 
+-static const char * const imx8mp_pcie2_ctrl_sels[] = {"osc_24m", "sys_pll2_250m", "sys_pll2_200m",
+-						      "sys_pll1_266m", "sys_pll1_800m", "sys_pll2_500m",
+-						      "sys_pll2_333m", "sys_pll3_out", };
+-
+-static const char * const imx8mp_pcie2_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
+-						     "clk_ext1", "clk_ext2", "clk_ext3",
+-						     "clk_ext4", "sys_pll1_400m", };
+-
+ static const char * const imx8mp_media_mipi_test_byte_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
+ 								"sys_pll3_out", "sys_pll2_100m",
+ 								"sys_pll1_80m", "sys_pll1_160m",
+@@ -585,7 +573,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ 	hws[IMX8MP_CLK_VPU_G2] = imx8m_clk_hw_composite("vpu_g2", imx8mp_vpu_g2_sels, ccm_base + 0xa180);
+ 	hws[IMX8MP_CLK_CAN1] = imx8m_clk_hw_composite("can1", imx8mp_can1_sels, ccm_base + 0xa200);
+ 	hws[IMX8MP_CLK_CAN2] = imx8m_clk_hw_composite("can2", imx8mp_can2_sels, ccm_base + 0xa280);
+-	hws[IMX8MP_CLK_PCIE_PHY] = imx8m_clk_hw_composite("pcie_phy", imx8mp_pcie_phy_sels, ccm_base + 0xa380);
+ 	hws[IMX8MP_CLK_PCIE_AUX] = imx8m_clk_hw_composite("pcie_aux", imx8mp_pcie_aux_sels, ccm_base + 0xa400);
+ 	hws[IMX8MP_CLK_I2C5] = imx8m_clk_hw_composite("i2c5", imx8mp_i2c5_sels, ccm_base + 0xa480);
+ 	hws[IMX8MP_CLK_I2C6] = imx8m_clk_hw_composite("i2c6", imx8mp_i2c6_sels, ccm_base + 0xa500);
+@@ -643,8 +630,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
+ 	hws[IMX8MP_CLK_MEDIA_CAM2_PIX] = imx8m_clk_hw_composite("media_cam2_pix", imx8mp_media_cam2_pix_sels, ccm_base + 0xbe80);
+ 	hws[IMX8MP_CLK_MEDIA_LDB] = imx8m_clk_hw_composite("media_ldb", imx8mp_media_ldb_sels, ccm_base + 0xbf00);
+ 	hws[IMX8MP_CLK_MEMREPAIR] = imx8m_clk_hw_composite_critical("mem_repair", imx8mp_memrepair_sels, ccm_base + 0xbf80);
+-	hws[IMX8MP_CLK_PCIE2_CTRL] = imx8m_clk_hw_composite("pcie2_ctrl", imx8mp_pcie2_ctrl_sels, ccm_base + 0xc000);
+-	hws[IMX8MP_CLK_PCIE2_PHY] = imx8m_clk_hw_composite("pcie2_phy", imx8mp_pcie2_phy_sels, ccm_base + 0xc080);
+ 	hws[IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE] = imx8m_clk_hw_composite("media_mipi_test_byte", imx8mp_media_mipi_test_byte_sels, ccm_base + 0xc100);
+ 	hws[IMX8MP_CLK_ECSPI3] = imx8m_clk_hw_composite("ecspi3", imx8mp_ecspi3_sels, ccm_base + 0xc180);
+ 	hws[IMX8MP_CLK_PDM] = imx8m_clk_hw_composite("pdm", imx8mp_pdm_sels, ccm_base + 0xc200);
+-- 
+2.17.1
+
