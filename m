@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 111E931EC08
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0194131EC14
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbhBRQJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:09:18 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:44164 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhBRNbu (ORCPT
+        id S233115AbhBRQNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:13:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41664 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231207AbhBRNeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:31:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613655110; x=1645191110;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=DwiOvq1QcHy6JlnUCm+lrwBHZVvgBShvBR+IoOqxj5M=;
-  b=uQOApi13Q02MCeWero7iX9cndROKvky8UVO8+AApLLZzPrMlMjk5HLXg
-   OJ3DS0/ftGtYEo5ZqneoEwvq7PbA42Oj6aSVrD6v7XqTHrJDv2zdNsGEF
-   dekmbMH61oDQ1Ki3VfGlrOE00dlVHon4Km1+flgeEvxTHqBLMD/K+naXY
-   czTHMt/HrL6XjWAKfA0ZziO/UkJg3VW2U2g3q0sqdxLCexDM0oDuRhkNA
-   HPySB1H45pJKF8szI6o8OTfOpjO3gB/OwUjsyXrnvnw39dUjSupyJ56FG
-   CvWimDaidcNSIs+puwwXvwuo4WLMr3OCOmimUYaKs/Cw2FBWdQNRMNkHk
-   g==;
-IronPort-SDR: ZfjT7QoQWC7E3bmgtnnjqe3AugjAQ70E6GiPujMwWkly976SbHhzdogv1qyLs5cezKmmb03wcg
- Gi53N/05TlhtZ4sTBFJAsRbQfNBWsPPyM22y1JiIdtB3T0sY+2fiKeKO2EuHeE/wi3SzGVvkrp
- WsAPjQbCp0ndrt+JkSF7K3rs0/buAU+AHCzsxsL/aArEGzKTF1AgJP2+lxyhzKv69EQGnbWLqD
- uOL6TGLr3wSKHBWN7znuu7AV53N23Z+sa0aXeVf8gBpG/g8EO1ZA7O96wLYTKptrZ4D4LQvkI4
- b3I=
-X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
-   d="scan'208";a="104291412"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 06:28:46 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 06:28:45 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 18 Feb 2021 06:28:43 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <broonie@kernel.org>
-CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>, <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Subject: [PATCH] spi: atmel: Drop unused variable
-Date:   Thu, 18 Feb 2021 15:28:40 +0200
-Message-ID: <20210218132840.131898-1-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Feb 2021 08:34:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613655148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LwJc5OvASzfvdbcGnjuZgUulTpqs+UTqZM4Fn7//J8E=;
+        b=N1gGWWfAnStOcXGdL7GviK2NIV0x871Iy21UnmwWKt4t6bIXeDUFvgb8GpMMf4KDCMqzPE
+        pVhnoqG2fKtxTLU78KgxZMvda7tirtOUvdlz6ajAQ0OSR1cNl/VOmTyVbl1VZiOyEy7o/3
+        DL3hsA56ekh+x0PVwiPs2gPU8Y9aZSI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-zklqRn62Oc61Tka6IOZESw-1; Thu, 18 Feb 2021 08:28:55 -0500
+X-MC-Unique: zklqRn62Oc61Tka6IOZESw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96C27100CCC0;
+        Thu, 18 Feb 2021 13:28:53 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id AC66C60917;
+        Thu, 18 Feb 2021 13:28:45 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 08:28:43 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Phil Sutter <phil@nwl.cc>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
+        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
+ events
+Message-ID: <20210218132843.GP3141668@madcap2.tricolour.ca>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+ <20210211151606.GX3158@orbyte.nwl.cc>
+ <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+ <20210211202628.GP2015948@madcap2.tricolour.ca>
+ <20210211220930.GC2766@breakpoint.cc>
+ <20210217234131.GN3141668@madcap2.tricolour.ca>
+ <20210218082207.GJ2766@breakpoint.cc>
+ <20210218124211.GO3141668@madcap2.tricolour.ca>
+ <20210218125248.GB22944@breakpoint.cc>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218125248.GB22944@breakpoint.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMA cap mask is no longer used since:
-commit 7758e390699f ("spi: atmel: remove compat for non DT board when requesting dma chan")
-Drop it now.
+On 2021-02-18 13:52, Florian Westphal wrote:
+> Richard Guy Briggs <rgb@redhat.com> wrote:
+> > On 2021-02-18 09:22, Florian Westphal wrote:
+> > > No.  There is a hierarchy, e.g. you can't add a chain without first
+> > > adding a table, BUT in case the table was already created by an earlier
+> > > transaction it can also be stand-alone.
+> > 
+> > Ok, so there could be a stand-alone chain mod with one table, then a
+> > table add of a different one with a "higher ranking" op...
+> 
+> Yes, that can happen.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/spi/spi-atmel.c | 4 ----
- 1 file changed, 4 deletions(-)
+Ok, can I get one more clarification on this "hierarchy"?  Is it roughly
+in the order they appear in nf_tables_commit() after step 3?  It appears
+it might be mostly already.  If it isn't already, would it be reasonable
+to re-order them?  Would you suggest a different order?
 
-diff --git a/drivers/spi/spi-atmel.c b/drivers/spi/spi-atmel.c
-index 0e5e64a80848..19d6f228efa0 100644
---- a/drivers/spi/spi-atmel.c
-+++ b/drivers/spi/spi-atmel.c
-@@ -506,10 +506,6 @@ static int atmel_spi_configure_dma(struct spi_master *master,
- 	struct device *dev = &as->pdev->dev;
- 	int err;
- 
--	dma_cap_mask_t mask;
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--
- 	master->dma_tx = dma_request_chan(dev, "tx");
- 	if (IS_ERR(master->dma_tx)) {
- 		err = dev_err_probe(dev, PTR_ERR(master->dma_tx),
--- 
-2.25.1
+(snip GET bits, that's now clear, thank you)
+
+> > such that it would be desirable to filter them out
+> > to reduce noise in that single log line if it is attempted to list all
+> > the change ops?  It almost sounds like it would be better to do one
+> > audit log line for each table for each family, and possibly for each op
+> > to avoid the need to change userspace.  This would already be a
+> > significant improvement picking the highest ranking op.
+> 
+> I think i understand what you'd like to do.  Yes, that would reduce
+> the log output a lot.
+
+Would the generation change id be useful outside the kernel?  What
+exactly does it look like?  I don't quite understand the genmask purpose.
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
