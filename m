@@ -2,176 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88CB31E9CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:31:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2E831E9D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhBRM2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231773AbhBRKpl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:45:41 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B955AC061574;
-        Thu, 18 Feb 2021 02:43:49 -0800 (PST)
-Received: from [IPv6:2a01:e0a:4cb:a870:fd6e:12cd:95d7:3350] (unknown [IPv6:2a01:e0a:4cb:a870:fd6e:12cd:95d7:3350])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id F21B81F45A1F;
-        Thu, 18 Feb 2021 10:43:45 +0000 (GMT)
-Subject: Re: [PATCH v1 13/18] media: hantro: Introduce G2/HEVC decoder
-To:     Ezequiel Garcia <ezequiel@collabora.com>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
-        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
-        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
- <20210217080306.157876-14-benjamin.gaignard@collabora.com>
- <bb410fde0a2f50cc34840e091c3d9c1395601514.camel@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <1fab0734-f1db-21ee-152c-4b289be31e4a@collabora.com>
-Date:   Thu, 18 Feb 2021 11:43:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229993AbhBRM3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:29:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38734 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232113AbhBRKp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:45:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613645111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZUYdGfBovPQofBTZOwpzeDRcMqQI0Cs/F1EUZmLN1Og=;
+        b=j/Q23nWy3DDqB0knZYFLM3ufccVH6Vlqjyra2RiO1s3T7UvBaB7b3ZemTGW7q68CP70eEU
+        wg5LP8GGVgjojxP3IK1rSuckmoksDNdmSiTEUFU3PiM6dbdXk6O/j9UV+uZnxX2PRqeGjL
+        260IOflu7cjHtraYDwFafFfcr/wtxf4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1D530AE04;
+        Thu, 18 Feb 2021 10:45:11 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 11:45:10 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YC5FNkSkQ+ez1JvT@alley>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCv9Xb7ePnDy9xRf@alley>
+ <YCwAbGoVuZJspcx5@chrisdown.name>
+ <YC0/xQTephcfo6GL@alley>
+ <YC1DjeZmBWmJe35c@chrisdown.name>
+ <YC1FFVCNQpaJwO/N@chrisdown.name>
 MIME-Version: 1.0
-In-Reply-To: <bb410fde0a2f50cc34840e091c3d9c1395601514.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC1FFVCNQpaJwO/N@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 2021-02-17 16:32:21, Chris Down wrote:
+> Chris Down writes:
+> > open(f);
+> >  debugfs_file_get(f);
+> >  fops->open();
+> >    inode->private = ps;
+> >  debugfs_file_put(f);
+> > 
+> > remove_printk_fmt_sec(); /* kfree ps */
+> > 
+> > read(f);
+> >  debugfs_file_get(f);
+> >  fops->read();
+> >    ps = inode->private;  /* invalid */
+> >  debugfs_file_put(f);
+> 
+> Er, sorry, inode->private is populated at creation time, not at open(). The
+> same general concern applies though -- as far as I can tell there's some
+> period where we may be able to _read() and `ps` has already been freed.
 
-Le 17/02/2021 à 21:45, Ezequiel Garcia a écrit :
-> Hi Benjamin,
->
-> Before I review the implementation in detail,
-> there's one thing that looks suspicious.
->
-> On Wed, 2021-02-17 at 09:03 +0100, Benjamin Gaignard wrote:
->> Implement all the logic to get G2 hardware decoding HEVC frames.
->> It support up level 5.1 HEVC stream.
->> It doesn't support yet 10 bits formats or scaling feature.
->>
->> Add HANTRO HEVC dedicated control to skip some bits at the beginning
->> of the slice header. That is very specific to this hardware so can't
->> go into uapi structures. Compute the needed value is complex and require
->> information from the stream that only the userland knows so let it
->> provide the correct value to the driver.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
->> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
->> ---
->>   drivers/staging/media/hantro/Makefile         |   2 +
->>   drivers/staging/media/hantro/hantro_drv.c     |  41 ++
->>   .../staging/media/hantro/hantro_g2_hevc_dec.c | 637 ++++++++++++++++++
->>   drivers/staging/media/hantro/hantro_g2_regs.h | 198 ++++++
->>   drivers/staging/media/hantro/hantro_hevc.c    | 274 ++++++++
->>   drivers/staging/media/hantro/hantro_hw.h      |  14 +
->>   6 files changed, 1166 insertions(+)
->>   create mode 100644 drivers/staging/media/hantro/hantro_g2_hevc_dec.c
->>   create mode 100644 drivers/staging/media/hantro/hantro_g2_regs.h
->>   create mode 100644 drivers/staging/media/hantro/hantro_hevc.c
->>
->> diff --git a/drivers/staging/media/hantro/Makefile b/drivers/staging/media/hantro/Makefile
->> index 743ce08eb184..0357f1772267 100644
->> --- a/drivers/staging/media/hantro/Makefile
->> +++ b/drivers/staging/media/hantro/Makefile
->> @@ -9,12 +9,14 @@ hantro-vpu-y += \
->>                  hantro_h1_jpeg_enc.o \
->>                  hantro_g1_h264_dec.o \
->>                  hantro_g1_mpeg2_dec.o \
->> +               hantro_g2_hevc_dec.o \
->>                  hantro_g1_vp8_dec.o \
->>                  rk3399_vpu_hw_jpeg_enc.o \
->>                  rk3399_vpu_hw_mpeg2_dec.o \
->>                  rk3399_vpu_hw_vp8_dec.o \
->>                  hantro_jpeg.o \
->>                  hantro_h264.o \
->> +               hantro_hevc.o \
->>                  hantro_mpeg2.o \
->>                  hantro_vp8.o
->>   
->> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
->> index e1443c394f62..d171fb80876a 100644
->> --- a/drivers/staging/media/hantro/hantro_drv.c
->> +++ b/drivers/staging/media/hantro/hantro_drv.c
->> @@ -280,6 +280,20 @@ static int hantro_jpeg_s_ctrl(struct v4l2_ctrl *ctrl)
->>          return 0;
->>   }
->>   
->> +static int hantro_extra_s_ctrl(struct v4l2_ctrl *ctrl)
->> +{
->> +       const struct hantro_hevc_extra_decode_params *extra_params;
->> +       struct hantro_ctx *ctx;
->> +
->> +       ctx = container_of(ctrl->handler,
->> +                          struct hantro_ctx, ctrl_handler);
->> +       extra_params = &ctx->hevc_dec.ctrls.extra_params;
->> +
->> +       memcpy((void *)extra_params, ctrl->p_new.p_u8, sizeof(extra_params));
->> +
->> +       return 0;
->> +}
->> +
->>   static const struct v4l2_ctrl_ops hantro_ctrl_ops = {
->>          .try_ctrl = hantro_try_ctrl,
->>   };
->> @@ -288,6 +302,10 @@ static const struct v4l2_ctrl_ops hantro_jpeg_ctrl_ops = {
->>          .s_ctrl = hantro_jpeg_s_ctrl,
->>   };
->>   
->> +static const struct v4l2_ctrl_ops hantro_extra_ctrl_ops = {
->> +       .s_ctrl = hantro_extra_s_ctrl,
->> +};
->> +
->>   static const struct hantro_ctrl controls[] = {
->>          {
->>                  .codec = HANTRO_JPEG_ENCODER,
->> @@ -413,6 +431,29 @@ static const struct hantro_ctrl controls[] = {
->>                  .cfg = {
->>                          .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
->>                  },
->> +       }, {
->> +               .codec = HANTRO_HEVC_DECODER,
->> +               .cfg = {
->> +                       .id = V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS,
->> +                       .name = "HANTRO extra decode params",
->> +                       .type = V4L2_CTRL_TYPE_U8,
->> +                       .min = 0,
->> +                       .def = 0,
->> +                       .max = 255,
->> +                       .step = 1,
->> +                       .dims = { sizeof(struct hantro_hevc_extra_decode_params) },
->> +                       .ops = &hantro_extra_ctrl_ops,
->> +               },
->> +       }, {
->> +               .codec = HANTRO_JPEG_ENCODER | HANTRO_MPEG2_DECODER |
->> +                        HANTRO_VP8_DECODER | HANTRO_H264_DECODER |
->> +                        HANTRO_HEVC_DECODER,
->> +               .cfg = {
->> +                       .id = V4L2_CID_USER_CLASS,
-> Are you sure you need to expose the V4L2_CID_USER_CLASS?
-> Maybe I'm missing something, but this looks odd.
+Honestly, I am a bit lost here. Also I have realized that you needed to
+release the struct from the module going notifier. And there you have
+only pointer to struct module.
 
-v4l2-compliance complains if this isn't exposed when adding V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS.
-Other drivers with dedicated control have duplicated this definition but I prefer use it directly.
+The thing is that I do not see similar tricks anywhere else. Well, other
+users are easier because they create the debugfs file for it own purpose.
+In our case, we actually create the file for another module.
 
-Benjamin
+Anyway, we are going to use the seq_buf iterator API. IMHO, the
+seq_buf iterator functions should be able to get the structure
+directly via the data pointer.
 
->
-> Thanks,
-> Ezequiel
->
->
+I wonder if it is similar to proc_seq_open() and proc_seq_release().
+It is using the seq_buf iterator as well. It is created used
+by proc_create_seq_private(). This API is used, for example,
+in decnet_init(). It is a module, so there must be the similar
+problems. All data are gone when the module is removed.
+
+The only remaining problem is the module going notifier. For this
+purpose, we could store the pointer to struct module. There
+are many other fields for similar purposes. I am pretty sure that
+the module loader maintainer will agree.
+
+The result will be using some existing patterns. It should reduce
+problems with possible races. It should make the life easier for
+all involved APIs.
+
+Best Regards,
+Petr
