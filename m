@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD1231F283
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D950E31F291
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhBRWt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:49:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhBRWtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:49:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82CD164DFD;
-        Thu, 18 Feb 2021 22:49:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613688545;
-        bh=SGNPeiZEIHSwqt1VUZYZ9K9idlNdJU7dXBV+/C03bbc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=qf72mZ0ibMde6JSaiwo3z9u0PSmey7GqBjkO/kHW63QNTDh5qTnC+v3pZM2cK8m53
-         kci+DlNpoQSBrLdL9n+ve0IIHyu75/z4/3RDexTH0x6qtfCCACtJaV05iEd/Puw+LJ
-         9JY6MSC2ke9p2aMSKoHNW6x3GJ7DWeakB3dZGBMk5eRbRqbqMIbYOMCuJdTLMZZHps
-         +0kznePsP6inGcIO3y5s91gwIN9qnTyATqgCf/mMdWquxETo2RNlYOnY8gPgaJASSi
-         boUX1t/+bTKj+pUBP3WNRdCxoGfudBGGt//XgihjphTVawJmKjRSEVhja34s0KlH8Y
-         Jn+gBttahZe+A==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kevin Wang <kevin1.wang@amd.com>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH] drm/amd/pm/swsmu: Avoid using structure_size uninitialized in smu_cmn_init_soft_gpu_metrics
-Date:   Thu, 18 Feb 2021 15:48:50 -0700
-Message-Id: <20210218224849.5591-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.30.1
+        id S229974AbhBRWwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:52:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229945AbhBRWw0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 17:52:26 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD4FC06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:51:46 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id d8so8412168ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:51:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Vrc627xbuX2TMgkXGGkkQoTFvSmbGef3PT5dPjYaHq4=;
+        b=G+VppJXi/ZOG8gHCQ6TFEVZSG0VMgwjTbKRWl1GBBX3e9vwfVqsXJnB+Swrbm9Mbki
+         HeZGAKA758jQl1Wchle/AFqcf2AjQAMFFj13bi28/2IH0R2ELAAHaO0ZWoqacamBBtzs
+         uUGJ8VNz+ZknAy1z21qDfTSQ4nYI2gdZIrkck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Vrc627xbuX2TMgkXGGkkQoTFvSmbGef3PT5dPjYaHq4=;
+        b=HkKnBerrJcvUOQxZSqta3PmzUzpvjn081qxcJQTLO+QsslUNFYmKzk43LLATEGqcAt
+         Nj5Gvlz77UxAoGPNE/gZVAdkk/qJm+KHRU9jO1fIQy3+lvhr9ufYcsKHs9B5pBdIZpgr
+         A3jHEkEMD3rWpVZ38E9fjzzqiPw8H9CrLk6E14BaI8pKdpfuS0lquH6h3atefCD4XpT1
+         CMOOl+qrOiVygeZttaSIsdgMtWPL4FFciLYFG2rUWJecPX4+sTJlVscxKAo3lqecXGaD
+         x33C2Hw150IKXMJLLtND+HUnzXL2Vp45J/+lj4i25R8x8FPoopkVHpKbZ0cUx9q4YWvf
+         rZ0Q==
+X-Gm-Message-State: AOAM531HDdclMw3CTc/dSj3jz4XT9RaU41ZwPK3cl8l7VfI0u4QTXmcD
+        +VRGnfl5ncFCpLJUWYrmlToKkQ==
+X-Google-Smtp-Source: ABdhPJyKhm7W7GiwYBIDb8MWNmpDRdcqaFasH1pPiX6+4A01bLs1vLg+znuOAZacAYcYbAiyu87wIA==
+X-Received: by 2002:a17:906:301b:: with SMTP id 27mr2584079ejz.230.1613688705192;
+        Thu, 18 Feb 2021 14:51:45 -0800 (PST)
+Received: from [192.168.1.149] ([80.208.71.141])
+        by smtp.gmail.com with ESMTPSA id m7sm3279119ejk.52.2021.02.18.14.51.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 14:51:44 -0800 (PST)
+Subject: Re: [PATCH 04/14] lib: introduce BITS_{FIRST,LAST} macro
+To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
+        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-5-yury.norov@gmail.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <b371c94c-7480-5af4-d2bd-481436f535eb@rasmusvillemoes.dk>
+Date:   Thu, 18 Feb 2021 23:51:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210218040512.709186-5-yury.norov@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clang warns:
+On 18/02/2021 05.05, Yury Norov wrote:
+> BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> functionality of GENMASK(). The scope of there macros is wider
+> than just bitmap. This patch defines 4 new macros: BITS_FIRST(),
+> BITS_LAST(), BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h
+> on top of GENMASK() and replaces BITMAP_{LAST,FIRST}_WORD_MASK()
+> to avoid duplication and increase the scope of the macros.
+> 
 
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:764:2: warning:
-variable 'structure_size' is used uninitialized whenever switch default
-is taken [-Wsometimes-uninitialized]
-        default:
-        ^~~~~~~
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:770:23: note:
-uninitialized use occurs here
-        memset(header, 0xFF, structure_size);
-                             ^~~~~~~~~~~~~~
-drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:753:25: note:
-initialize the variable 'structure_size' to silence this warning
-        uint16_t structure_size;
-                               ^
-                                = 0
-1 warning generated.
+Please include some info on changes in generated code, if any. When the
+parameter to the macro is a constant I'm sure it all folds to a
+compile-time constant either way, but when it's not, I'm not sure gcc
+can do the same optimizations when the expressions become more complicated.
 
-Return in the default case, as the size of the header will not be known.
-
-Fixes: de4b7cd8cb87 ("drm/amd/pm/swsmu: unify the init soft gpu metrics function")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1304
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-index bb620fdd4cd2..bcedd4d92e35 100644
---- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-+++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
-@@ -762,7 +762,7 @@ void smu_cmn_init_soft_gpu_metrics(void *table, uint8_t frev, uint8_t crev)
- 		structure_size = sizeof(struct gpu_metrics_v2_0);
- 		break;
- 	default:
--		break;
-+		return;
- 	}
- 
- #undef METRICS_VERSION
--- 
-2.30.1
-
+Rasmus
