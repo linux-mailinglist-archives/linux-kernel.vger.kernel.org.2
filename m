@@ -2,203 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9CDD31EAC6
+	by mail.lfdr.de (Postfix) with ESMTP id 59EE331EAC5
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:12:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhBROJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 09:09:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60336 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232725AbhBRMYH (ORCPT
+        id S233609AbhBROJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 09:09:45 -0500
+Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:44116 "EHLO
+        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231610AbhBRMYH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Feb 2021 07:24:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613650960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yhLVfX0fB/D8R1zKoQVO+TMTBrUwUHt7HIxasf2kZek=;
-        b=Al081Z3aHbE5jdQK80eTI7QmH5Gpc/UmEcSCSp1N+3NUc118lXFA6lW6iJyXCYP6gcSESU
-        e/egyXlvEUcFkwth4sJUkP+tD1LLTpzJcYdfjrGICmpRH0ilBSE8tjvof/2oSg/OvFyq4w
-        HpxBShX6FYU7dN0k1lgM59mtkZ0I1Lg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-nqPI8Ju-OrO5-wTceZ7uYA-1; Thu, 18 Feb 2021 07:22:36 -0500
-X-MC-Unique: nqPI8Ju-OrO5-wTceZ7uYA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A694835E25;
-        Thu, 18 Feb 2021 12:22:32 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-114-59.ams2.redhat.com [10.36.114.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5A9F02C01F;
-        Thu, 18 Feb 2021 12:22:17 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Rolf Eike Beer <eike-kernel@sf-tec.de>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org, Linux API <linux-api@vger.kernel.org>
-Subject: [PATCH RFC] madvise.2: Document MADV_POPULATE
-Date:   Thu, 18 Feb 2021 13:22:16 +0100
-Message-Id: <20210218122216.12424-1-david@redhat.com>
-In-Reply-To: <20210217154844.12392-1-david@redhat.com>
-References: <20210217154844.12392-1-david@redhat.com>
+Received: from pps.filterd (m0127842.ppops.net [127.0.0.1])
+        by mx0b-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11IC90Wj001227;
+        Thu, 18 Feb 2021 04:22:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version;
+ s=proofpoint20171006; bh=qV6HYeyWC8H3czOYoUAvNwwXHM/KUyEiBkalj6UvpO0=;
+ b=EylsoqbuZYyYF3pabRJIEAVYV5slyCYpTgUwgrbMuQv+3pD3Fau4O1E+xwNjwl63CqYp
+ 2k5z5N+MgiH3zaamJPGmoqpdWf1/ongkTO3lKD4nLcr5tAHnerHAlvT4Q8Pjh+LZrdXj
+ KrcZ4RMZ0Q3F8ELMNlgrOkiUGliwqKz09qs0QiauUth6CZxw4GFRS12+dcPlXLVHuYr5
+ xHtgyTBvFE8vtdlGpilzXIjd8KjwN0ivjkvx3Giab0FJ9FtnNw/j43O75p5w/EXvlIE+
+ M1K433cp8d8EFT/dLYITW0wbTY/Mc/Tq9UDuiZ4NDyalCqdDQj9jPLsaoPbQhokKCKFl sw== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2172.outbound.protection.outlook.com [104.47.58.172])
+        by mx0b-002c1b01.pphosted.com with ESMTP id 36peyn2vqk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 18 Feb 2021 04:22:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gll8vk/HHnzhGrVIr4CgapPScTSDaw+J4y4itq3BufxBPJHjcsUDMcmBm/sntOKq/ab5UvMsP2eexdIJowLDoxz7srLDsKTKd/EwZhFqMkVhNvAWVOgOdpK5LEYdwKFbbxou+bHbMOz1g9WA96ngL/ErDTxA0KG7aq+oa9cc1FSt1xliqEydMTuX3hbewOi27QX23xWC8c26nQuM84sF1gJJS3yebTA9obhCXB/eeliOI/CvYljPhPeHsfAM3+fznsptlzOUtXgMBCtmnK8NON9NYTlW6XIzkxScsbStsPK56ThFFfU4epDnoA8slsvKiNOydgwdBynOuepQIXqSmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qV6HYeyWC8H3czOYoUAvNwwXHM/KUyEiBkalj6UvpO0=;
+ b=kXZCZXM8TgxdDutxLBt62S3WkM6nf3syP55aH5Pu9t3hMqMHWOLtgHtNMAOnZtRMXBdDuedHxGIz/civX4Zkq0Axa1ITC5gVHQn2ETmIGg3U0hav1rwUkhk29jb+XA5UkZRuNpXLCIMzShXiduWJXTlwuvAX/qUD/+K6iMKchluoFcQM5aJtet44+ty6slE2DYdq1gLHBYZNQI8/574Obr5ypx7nbtbpByskspAMZcOnM3WYZo4OjdsfQgnHL1TpKA5+3igVcF5Dn5/W2abBffBbDJvVIviWN4ylzXmc994Dvih8qZ8xHmMsLs8AkaJ+j+foo5PTTUxITTUqRo0BkA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from DM6PR02MB6250.namprd02.prod.outlook.com (2603:10b6:5:1f5::26)
+ by DM6PR02MB4106.namprd02.prod.outlook.com (2603:10b6:5:9f::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Thu, 18 Feb
+ 2021 12:22:37 +0000
+Received: from DM6PR02MB6250.namprd02.prod.outlook.com
+ ([fe80::6059:b0b7:ce3e:cb7e]) by DM6PR02MB6250.namprd02.prod.outlook.com
+ ([fe80::6059:b0b7:ce3e:cb7e%6]) with mapi id 15.20.3846.039; Thu, 18 Feb 2021
+ 12:22:37 +0000
+From:   Eiichi Tsukata <eiichi.tsukata@nutanix.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     Mike Kravetz <mike.kravetz@oracle.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "yzaikin@google.com" <yzaikin@google.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Felipe Franciosi <felipe@nutanix.com>,
+        "shakeelb@google.com" <shakeelb@google.com>
+Subject: Re: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
+Thread-Topic: [RFC PATCH] mm, oom: introduce vm.sacrifice_hugepage_on_oom
+Thread-Index: AQHXBBDlHFjialWl9UGQ+pFSTaCvrqpabtKAgADvpICAAJ5jgIAALiuAgAAeYACAAY/1AA==
+Date:   Thu, 18 Feb 2021 12:22:37 +0000
+Message-ID: <99FF105C-1AAB-40F3-9C13-7BDA23AD89D9@nutanix.com>
+References: <20210216030713.79101-1-eiichi.tsukata@nutanix.com>
+ <YCt+cVvWPbWvt2rG@dhcp22.suse.cz>
+ <bb3508e7-48d1-fa1b-f1a0-7f42be55ed9c@oracle.com>
+ <YCzMVa5QSyUtlmnI@dhcp22.suse.cz>
+ <D66DC6A7-C708-4888-8FCF-E4EB0F90ED48@nutanix.com>
+ <YC0MiqwCGp90Oj4N@dhcp22.suse.cz>
+In-Reply-To: <YC0MiqwCGp90Oj4N@dhcp22.suse.cz>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: suse.com; dkim=none (message not signed)
+ header.d=none;suse.com; dmarc=none action=none header.from=nutanix.com;
+x-originating-ip: [114.159.158.19]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 207337e0-3c6a-43ea-c6e9-08d8d407e10b
+x-ms-traffictypediagnostic: DM6PR02MB4106:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR02MB4106CC2A14E3F174EA1C92F380859@DM6PR02MB4106.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: sRLpYy+J47fDZIgmvLkqvc2jzA7yZW++gxfOa3a1Sm5AZPhFyi4tWFU3VB0S5Y4J+OxxbtZySvzSRUKpoGvCepe5ni1CgDNA9CCfcNKs5jyjbmTwylebPjqnOWBUPb1CzSTQoFzNO4S8YaN+rLiwkJl9xjvnwptNmArmb3R/785SszxqO697Vu6ihYDtQtncrtWaNQOV29RJcDDORXpM/hGvdQzkGru13cRZfF17cFviMeVA3EIEqlNoDFtQ1YK1h+ZCvUGBLjQE89El46UwN//GoFU+dVnpb3oSF2TJH1ApBir0M75fk5IMXK7vX38c5VC7cGJVNT4O1chXqQ9BLJ2W9o5VDAXloQE6nx+nG4NiZ9NrUt9PsiM/MFKjWURJn32RG9ThWgXx8Oks2u2S3Gal3w3ieRKFODGe7YJ95XTI5L+1AdhH1/WBiYu3iKvXtl5SOwx7Sv1govRPJWiCIaHd+iNBnG0a6f9njav3KQAopztOvcR3FHKxERbgPtmLxYSa3NYy8tQRwlWyl+7zhtRpMg6mLEHStYHgfEKTQihe9nF/OmiUSdOHhZxkadcvWaAQsH20DNnXeqjWn0XN7w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB6250.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(39860400002)(366004)(136003)(376002)(83380400001)(6486002)(66446008)(6506007)(8676002)(7416002)(64756008)(36756003)(4326008)(2906002)(478600001)(66476007)(2616005)(44832011)(26005)(54906003)(66946007)(5660300002)(66556008)(86362001)(6916009)(186003)(6512007)(76116006)(316002)(91956017)(33656002)(53546011)(8936002)(71200400001)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Vmfwy75FD7uVL6sF/P8uZ/gLx87fD37q+Kw5ijQDPCu7bOhCUrbtFWzum/dl?=
+ =?us-ascii?Q?NETdZ5bhbpOXEeRmH5vSO/mal3EfMNldGE5FDLVxK5R2IW0iSm+KI67gwWKm?=
+ =?us-ascii?Q?qw/9tS+2KywydIJyDxpO/lhi1dA7/Mo1M0MEZP3Y+DVh4k2ebSF926hc59AP?=
+ =?us-ascii?Q?d9ovufoAFz/C0WMq2tqMhFmWlOquftLtCBJmbuxk9DIdX6R6iyh7X57PoFzI?=
+ =?us-ascii?Q?nqvJEjiNs0l09LvdKqEvCzmzTz6y/yvL2xhgxh0WWamC7Htd4mA4P7Eabtw6?=
+ =?us-ascii?Q?2sxUjqbRvPQLUyavDL3Eul7CbuPRRN1wUw1HJEf1DT3drpR+EcLFbFioirHp?=
+ =?us-ascii?Q?reb59PXjWgTVqeVP1byfpnAednV0qCU5iQZMX6EJyPpJUp2QwUYuT3VdXLyw?=
+ =?us-ascii?Q?2Vfbnn3Qy6I0fM0uGD5Jd443JRDODjwdCvqU7VSUNpQmesFBq7ZLIcXBGSlC?=
+ =?us-ascii?Q?peb8BgPLvYiUJWeHYT0/xBzSx9wLksNQAoTiswZ1l0wHKfsorFHMND6RftAN?=
+ =?us-ascii?Q?6iL8dc25FuYvkgmTixI0y0bvtdusQDGWDGrD71iZ3BkNjMAN6XVT8isnNV8Q?=
+ =?us-ascii?Q?/Pg7g2KOOrFACrkh3Kv1giYB1wXKriIQlCS8f5r+8w+8tJp3Ym+mNYNt0Eh2?=
+ =?us-ascii?Q?rUU1tSYAedwLjD1K+doHN8Wt+UgcyTZt2tXZrS5BxTI0MyrP6lY+mGzbE8mB?=
+ =?us-ascii?Q?gQELRZy9OUkQzp+Mn+cOg23xUbB6QPiLrJwpqDN5JVCNKKHgReWsBB+dzoV3?=
+ =?us-ascii?Q?ilguiOwlNznsShfX/Wll6NHK9Qw8ZBEcQFDa83ndneM5GTrEWzWvc014GuF5?=
+ =?us-ascii?Q?ttz90QBdxpFG08ZEasp7CUIaBD28/fjdPz3WTgIVXZmvrNDK43wEHUnZoPUS?=
+ =?us-ascii?Q?Fw0I2mOiYBsLAEqHEmA6yFvhB9tfC6FF/CbJ7xnP6MIm26mf4FYGJtqQfghA?=
+ =?us-ascii?Q?U34SYROBrMQpl25zLdqk4SOqCFrWDDPp+L2bcGMADgl3w2imO46GiSXWjhtV?=
+ =?us-ascii?Q?w//K3V8uijcq/u3XduNjNDgKUY3yz2piMI5C0ZlxleXUkA+knOteNWKOyOTF?=
+ =?us-ascii?Q?tUhA8DEL1I/c4kGHH5Kt3bWE+gLpooizlAr/tvVSXKwUFTpuybXk+DRlkDes?=
+ =?us-ascii?Q?6cs/q0STrvT/qZcRsGunClk2QZbMs2dMhtAIWcWH2q11AVvRIJp6U+MXAMfK?=
+ =?us-ascii?Q?R3lEhrNhwyc7Xuqissu4lhW3yr33vphJRJl4dxADvqYhZpM1IvVSSNk5o139?=
+ =?us-ascii?Q?3GoshpYq39hKyA2Q1B1xgV19KJAz9OblHOehXNae0/u2Nxss/BmjHtsO6xHr?=
+ =?us-ascii?Q?rhKF27xoGQBGwuEvOiL6p6Tz?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B2B3AD51813AFE4A8E509158CEE22435@namprd02.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR02MB6250.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 207337e0-3c6a-43ea-c6e9-08d8d407e10b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 12:22:37.7800
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y9EJdkkrLnmJ3O5D1ewWFvTQzhVEGgcmtiy/RUdiE2LkviLEWc8cCCkvqwRQ7LWjQroiSI2uTRUGGaUZPnYWNw4BTDHOR/JELI7Rc8Au1b8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR02MB4106
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-18_05:2021-02-18,2021-02-18 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Preview of MADV_POPULATE documentation, which is still under discussion:
-https://lkml.kernel.org/r/20210217154844.12392-1-david@redhat.com
+Hi Michal
 
-Once/if merged, there will be an official patch to man-page folks.
+> On Feb 17, 2021, at 21:31, Michal Hocko <mhocko@suse.com> wrote:
+>=20
+> On Wed 17-02-21 10:42:24, Eiichi Tsukata wrote:
+>> Hi All,
+>>=20
+>> Firstly, thank you for your careful review and attention to my patch
+>> (and apologies for top-posting!).  Let me first explain why our use
+>> case requires hugetlb over THP and then elaborate on the difficulty we
+>> have to maintain the correct number of hugepages in the pool, finally
+>> concluding with why the proposed approach would help us. Hopefully you
+>> can extend it to other use cases and justify the proposal.
+>>=20
+>> We use Linux to operate a KVM-based hypervisor. Using hugepages to
+>> back VM memory significantly increases performance and density. Each
+>> VM incurs a 4k regular page overhead which can vary drastically even
+>> at runtime (eg. depending on network traffic). In addition, the
+>> software doesn't know upfront if users will power on one large VM or
+>> several small VMs.
+>>=20
+>> To manage the varying balance of 4k pages vs. hugepages, we originally
+>> leveraged THP. However, constant fragmentation due to VM power cycles,
+>> the varying overhead I mentioned above, and other operations like
+>> reconfiguration of NIC RX buffers resulted in two problems:
+>> 1) There were no guarantees hugepages would be used; and
+>> 2) Constant memory compaction incurred a measurable overhead.
+>>=20
+>> Having a userspace service managing hugetlb gave us significant
+>> performance advantages and much needed determinism. It chooses when to
+>> try and create more hugepages as well as how many hugepages to go
+>> after. Elements like how many hugepages it actually gets, combined
+>> with what operations are happening on the host, allow our service to
+>> make educated decisions about when to compact memory, drop caches, and
+>> retry growing (or shrinking) the pool.
+>=20
+> OK, thanks for the clarification. Just to make sure I understand. This
+> means that you are pro-activelly and optimistically pre-allocate hugetlb
+> pages even when there is no immediate need for those, right?
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Jann Horn <jannh@google.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Richard Henderson <rth@twiddle.net>
-Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-Cc: Matt Turner <mattst88@gmail.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-Cc: Helge Deller <deller@gmx.de>
-Cc: Chris Zankel <chris@zankel.net>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Rolf Eike Beer <eike-kernel@sf-tec.de>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linux-xtensa@linux-xtensa.org
-Cc: linux-arch@vger.kernel.org
-Cc: Linux API <linux-api@vger.kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- man2/madvise.2 | 59 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+Right, but this is not a "pre-allocation just in case". We need to
+know how many hugepages are available for VM memory upfront. That
+allows us to plan for disaster scenarios where a host goes down and we
+need to restart VMs in other hosts. In addition, going from zero to
+TBs worth of hugepages may take a long time and makes VM power on
+times too slow. Of course in bloat conditions we could lose hugepages
+we pre-allocated, but our placement models can react to that.
 
-diff --git a/man2/madvise.2 b/man2/madvise.2
-index 2af407212..ff08768a3 100644
---- a/man2/madvise.2
-+++ b/man2/madvise.2
-@@ -469,6 +469,48 @@ If a page is file-backed and dirty, it will be written back to the backing
- storage.
- The advice might be ignored for some pages in the range when it is not
- applicable.
-+.TP
-+.BR MADV_POPULATE " (since Linux 5.13)
-+Populate (prefault) page tables for the whole range.
-+Depending on the underlying mapping, preallocate memory or read the
-+underlying file.
-+Do not generate
-+.B SIGBUS
-+when populating fails, return an error instead.
-+The populate semantics match
-+.BR MAP_POPULATE
-+(see
-+.BR mmap (2))
-+with the exception that
-+.B MADV_POPULATE
-+fails if there is a proplem populating page tables.
-+.B MADV_POPULATE
-+simulates user space access to all pages in the range without actually
-+reading/writing the pages.
-+For private, writable mappings, simulate a write access; for all other
-+mappings, simulate a read access.
-+.IP
-+If
-+.B MADV_POPULATE
-+succeeds, all page tables have been populated (prefaulted) once.
-+If
-+.B MADV_POPULATE
-+fails, some page tables might have been populated.
-+.IP
-+.B MADV_POPULATE
-+cannot be applied to
-+.B PROT_NONE
-+and special mappings marked with the kernel-internal
-+.B VM_PFNMAP
-+and
-+.BR VM_IO .
-+.IP
-+Note that
-+.B MADV_POPULATE
-+will ignore any poisoned pages in the range.
-+Similar to
-+.BR MAP_POPULATE ,
-+it cannot protect from the OOM (Out Of Memory) handler killing the process.
- .SH RETURN VALUE
- On success,
- .BR madvise ()
-@@ -533,6 +575,17 @@ or
- .BR VM_PFNMAP
- ranges.
- .TP
-+.B EINVAL
-+.I advice
-+is
-+.BR MADV_POPULATE ,
-+but the specified address range includes
-+.BR PROT_NONE ,
-+.B VM_IO
-+or
-+.B VM_PFNMAP
-+ranges.
-+.TP
- .B EIO
- (for
- .BR MADV_WILLNEED )
-@@ -548,6 +601,12 @@ Not enough memory: paging in failed.
- Addresses in the specified range are not currently
- mapped, or are outside the address space of the process.
- .TP
-+.B ENOMEM
-+.I advice
-+is
-+.BR MADV_POPULATE ,
-+but populating (prefaulting) page tables failed.
-+.TP
- .B EPERM
- .I advice
- is
--- 
-2.29.2
+
+>=20
+>> But that comes with a challenge: despite listening on cgroup for
+>> pressure notifications (which happen from those runtime events we do
+>> not control),
+>=20
+> We do also have global pressure (PSI) counters. Have you tried to look
+> into those and try to back off even when the situation becomes critical?
+
+Yes. PSI counters help us to some extent. But we've found that in some case=
+s
+OOM can happen before we observe memory pressure if memory bloat occurred
+rapidly. The proposed failsafe mechanism can cover even such a situation.
+Also, as I mentioned in commit message, oom notifiers doesn't work if OOM
+is triggered by memory allocation for kernel.
+
+>=20
+>> the service is not guaranteed to sacrifice hugepages
+>> fast enough and that causes an OOM. The killer will normally take out
+>> a VM even if there are plenty of unused hugepages and that's obviously
+>> disruptive for users. For us, free hugepages are almost always expendabl=
+e.
+>>=20
+>> For the bloat cases which are predictable, a memory management service
+>> can adjust the hugepage pool size ahead of time. But it can be hard to
+>> anticipate all scenarios, and some can be very volatile. Having a
+>> failsafe mechanism as proposed in this patch offers invaluable
+>> protection when things are missed.
+>>=20
+>> The proposal solves this problem by sacrificing hugepages inline even
+>> when the pressure comes from kernel allocations. The userspace service
+>> can later readjust the pool size without being under pressure. Given
+>> this is configurable, and defaults to being off, we thought it would
+>> be a nice addition to the kernel and appreciated by other users that
+>> may have similar requirements.
+>=20
+> Thanks for your usecase description. It helped me to understand what you
+> are doing and how this can be really useful for your particular setup.
+> This is really a very specific situation from my POV. I am not yet sure
+> this is generic enough to warrant for a yet another tunable. One thing
+> you can do [1] is to
+> hook into oom notifiers interface (register_oom_notifier) and release
+> pages from the callback. Why is that batter than a global tunable?
+> For one thing you can make the implementation tailored to your specific
+> usecase. As the review feedback has shown this would be more tricky to
+> be done in a general case. Unlike a generic solution it would allow you
+> to coordinate with your userspace if you need. Would something like that
+> work for you?
+
+Thanks for your suggestion. Implementing our own oom handler using
+register_oom_notifier in out-of-tree kernel module is actually one of our
+options. The intention of this RFC patch is to share the idea and know
+the needs from other users who may have similar requirements.
+
+As for the implementation, I'm considering to make the behavior of
+sacrifice_hugepage() corresponds to decrementing vm.nr_hugepages param.
+Of course any suggestions are always welcome.
+
+Eiichi
+
+>=20
+> ---
+> [1] and I have to say I hate myself for suggesting that because I was
+> really hoping this interface would go away. But the reality disagrees so
+> I gave up on that goal...
+> --=20
+> Michal Hocko
+> SUSE Labs
 
