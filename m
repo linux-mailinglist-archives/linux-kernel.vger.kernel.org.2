@@ -2,60 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E772131E773
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8796531E77D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:35:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhBRI25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 03:28:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231334AbhBRHZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 02:25:24 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A61C061756;
-        Wed, 17 Feb 2021 23:24:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/2v+QGn+KU5Y7ETX+f4m+/C9mqYX7kRJpIOupRvF2fw=; b=kyZS8ocnGrcZV4lsTNDl3BpyDz
-        dtG2dlWSViX5bE/25KdLYGkIuQbJmPjbol66/1AmOcyvA5cdB5BCSAM62kN93HWw/f3EN80pIPjC5
-        TOAPr+85sW+VKW/Cd7u6yd8zjg7ij0DvNXmorpVNT3IjiD7O5MTAFkOxTiKlIjfiYW0+RYubUcRLA
-        7SIMfXRuNwqnryEJxN1Kf9Rb1qaeeLPteifBnBlGLowjgJQHr0uDjuHQ7jOaSsgam8vfrxi5LZxwa
-        bAhyyADILF6RwTIu/nchrTFTzunLnu00KPL2MaxWz6fG5+9jCjuRNca4vuxqDfA33oDBljBYxd/rT
-        1oIXJmBg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lCdfs-001Mmr-1K; Thu, 18 Feb 2021 07:24:34 +0000
-Date:   Thu, 18 Feb 2021 07:24:32 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Doug Ledford <dledford@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v4 0/4] mm/gup: page unpining improvements
-Message-ID: <20210218072432.GA325423@infradead.org>
-References: <20210212130843.13865-1-joao.m.martins@oracle.com>
+        id S231203AbhBRIcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 03:32:00 -0500
+Received: from mga06.intel.com ([134.134.136.31]:61996 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230211AbhBRHaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 02:30:02 -0500
+IronPort-SDR: Ke762VkCXF9ytOeAqK2J2X2sTKNx14u3hZTgQiMoQ5NdEgoYulfk3i+zIj7Je4HaIB1HA1I2aG
+ 3RMPRY6WuntA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="244882856"
+X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
+   d="scan'208";a="244882856"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 23:27:13 -0800
+IronPort-SDR: /sCPfWNKE52fh+yCaJ2IFkZ1S2LTiaA22tcHVAEgS89O3W/yKVbJa4uQ6Q22XLdKjY10vAhRse
+ dGhgDJfDzvtw==
+X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
+   d="scan'208";a="362331541"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 23:27:09 -0800
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 3A9132036A;
+        Thu, 18 Feb 2021 09:27:07 +0200 (EET)
+Date:   Thu, 18 Feb 2021 09:27:07 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
+        mchehab@kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Joe Perches <joe@perches.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v9 0/4] Add %p4cc printk modifier for V4L2 and DRM fourcc
+ codes
+Message-ID: <20210218072707.GD3@paasikivi.fi.intel.com>
+References: <20210216155723.17109-1-sakari.ailus@linux.intel.com>
+ <9e279133-298d-433f-0694-5366861a6dbe@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210212130843.13865-1-joao.m.martins@oracle.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <9e279133-298d-433f-0694-5366861a6dbe@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 01:08:39PM +0000, Joao Martins wrote:
-> Hey,
+On Wed, Feb 17, 2021 at 01:14:42PM +0100, Thomas Zimmermann wrote:
+> Hi
 > 
-> This series improves page unpinning, with an eye on improving MR
-> deregistration for big swaths of memory (which is bound by the page
-> unpining), particularly:
+> Am 16.02.21 um 16:57 schrieb Sakari Ailus:
+> > Hi all,
+> > 
+> > 	On merging --- it would seem everyone is happy with merging this
+> > 	through the drm-misc tree. The last patch should wait until all
+> > 	users are gone for sure, probably to the next kernel release.
+> > 	There are no users of drm_get_format_name() in linux-next
+> > 	currently after the 3rd patch.
+> 
+> I've merged patches 1 to 3 into drm-misc-next. Patch 4 (and maybe some final
+> fix-up patch) will land when all DRM trees have catched up the changes.
 
-Can you also take a look at the (bdev and iomap) direct I/O code to
-make use of this?  It should really help there, with a much wieder use
-than RDMA.
+Thank you!
+
+-- 
+Sakari Ailus
