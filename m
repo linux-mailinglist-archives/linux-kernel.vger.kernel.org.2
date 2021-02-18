@@ -2,114 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352E431EE2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD6B31EE2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBRSW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:22:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232815AbhBRPy0 (ORCPT
+        id S232117AbhBRSWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:22:55 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:60800 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232834AbhBRPz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:54:26 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CE1C06178A;
-        Thu, 18 Feb 2021 07:53:45 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id w1so1844968ilm.12;
-        Thu, 18 Feb 2021 07:53:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jHTepAlgTB29GedvBS59O+ZCtpomsphnsV6+Q0YzaKA=;
-        b=rh06aKoeJZqVRP33hjROHoKd/qSMoZCoo3TwZOv3WnZOLPIVpCyj9huZGaAx9W0QSc
-         ouVZ+SzP+qYt0nZImmvgN9wE6A0RVITwEniF6KIp9rfrZd05RQG0Tpet2qu9VwMtoN/8
-         YNnBMuxco6dxHVokc4GdEyfwGPixHb9UU1PxOvVU9Frq2KyHIsdg1T+ooHoaIfqIS6nD
-         AORQV/jA9yfxAtwN62q5Z3Fr6NQOptyysokkmb5fJIqtVnFGXTal9XOCDFT1CE3hrt5/
-         T0Fu+YQTNq1sKawIyxv57mKie0SkMpd34/uce7jTxsLDY6BPsLBpTIWRJy7oJxn/jidO
-         JFtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jHTepAlgTB29GedvBS59O+ZCtpomsphnsV6+Q0YzaKA=;
-        b=hhlzFshOr+4EjHoEex3Uf79OzZSJSjHFdK9OWMpFJ0kkPxpZzN8k0Ha3DsQaiHqMEo
-         0qnJ6tCgH74ik1OlsHfH7v15baF5hXd1ABBzInLIVEyXweOqPvaAMnx0rPFLvwZxQz46
-         7IMH8CUQKlI+xrgEcdb1QlsRLbSHb1HSu7RoAPMkN/M0wYMWYOhWgpBCOAOvkmMC2epo
-         LIXXzWcz68QR993WSSMVMl6AclBPaAVfvIIarIYWjLqzWlsbyOJ80m450rTQnLa4MVoq
-         ePsizHBIkkN/joaDd3mMWxgXavbM9jUVwkGEI/Fm0j48bfplJ0OUPTsqExTk6T76V0Z5
-         T9pg==
-X-Gm-Message-State: AOAM533Xq5v7/JLs68kQ+GRiI3WyeX7Ayy4GpBy9WlpYUQUGR3k+KLHf
-        nUlKLKZ8bE7hHxpk7wOdymD7fhU/mBE22WvAoTE=
-X-Google-Smtp-Source: ABdhPJzX4e5mLMreJslRfH45oHpKARb9BPN/u3cMRDZ7OC9QXf/dJ7aDlICxgGSnOYq4QhM4PQD2699e4RN20kEKijo=
-X-Received: by 2002:a92:8e42:: with SMTP id k2mr4398912ilh.250.1613663624156;
- Thu, 18 Feb 2021 07:53:44 -0800 (PST)
+        Thu, 18 Feb 2021 10:55:28 -0500
+Date:   Thu, 18 Feb 2021 15:54:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613663672;
+        bh=0F5bOJE9FkJO0yoXlkGBbjh+9YZ0Gztvth6EcfpFias=;
+        h=Date:To:From:Reply-To:Subject:From;
+        b=xToeaOB2U/mlybdMyOSkp+EYUaDBraYLq5ouCp0abk8yIVvGn6zF08eO7YDzT3Xai
+         wyRfhY9tSr8gQPsu/Jm+hoYN23h5aiphoDVPwcinGq3rEpcqWc3f6gGFfp9ursSYjw
+         HvHF9u+ckaX+QW/uwhJi5Hy7qcO84qsj1QfXHMy4=
+To:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+From:   Kurt Manucredo <fuzzybritches@protonmail.com>
+Reply-To: Kurt Manucredo <fuzzybritches@protonmail.com>
+Subject: [PATCH] fix comparisons - put constant on right side- eudyptula
+Message-ID: <20210218155422.7-1-fuzzybritches@protonmail.com>
 MIME-Version: 1.0
-References: <CAOQ4uxj=ZeJ0HYtivP=pg5mSDaiQGU8Fz8qw0Egfa2Ert5Ra7A@mail.gmail.com>
- <20210218151752.26710-1-lhenriques@suse.de>
-In-Reply-To: <20210218151752.26710-1-lhenriques@suse.de>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 18 Feb 2021 17:53:33 +0200
-Message-ID: <CAOQ4uxgO45cqKLRsXBxn04fVkqH483G3ngCtV_gZGHMQDFixig@mail.gmail.com>
-Subject: Re: [PATCH v5] vfs: fix copy_file_range regression in cross-fs copies
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Jeff Layton <jlayton@kernel.org>, Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 5:16 PM Luis Henriques <lhenriques@suse.de> wrote:
->
-> A regression has been reported by Nicolas Boichat, found while using the
-> copy_file_range syscall to copy a tracefs file.  Before commit
-> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-> kernel would return -EXDEV to userspace when trying to copy a file across
-> different filesystems.  After this commit, the syscall doesn't fail anymore
-> and instead returns zero (zero bytes copied), as this file's content is
-> generated on-the-fly and thus reports a size of zero.
->
-> This patch restores some cross-filesystem copy restrictions that existed
-> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> devices").  Filesystems are still allowed to fall-back to the VFS
-> generic_copy_file_range() implementation, but that has now to be done
-> explicitly.
->
-> nfsd is also modified to fall-back into generic_copy_file_range() in case
-> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
->
-> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> ---
-> And v5!  Sorry.  Sure, it makes sense to go through the all the vfs_cfr()
-> checks first.
 
-You missed my other comment on v4...
+Dear linux kernel developers,
 
-not checking NULL copy_file_range case.
+for my eudyptula challenge it is required of me to fix a coding style
+issue in the staging area in linux-next. I am aware that it is in
+general frowned upon when submitting these sorts of patches. However, to
+finish my 10th challenge I was tasked to do exactly that. So I ask you
+kindly to pull this patch if possible.
 
-Thanks,
-Amir.
+Thank you for your time,
+
+kind regards
+
+
+
