@@ -2,306 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0310C31EE75
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFB831EE71
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:39:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhBRShK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:37:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233271AbhBRQOf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:14:35 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F218DC061794;
-        Thu, 18 Feb 2021 08:13:19 -0800 (PST)
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 824B93E7;
-        Thu, 18 Feb 2021 17:13:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613664797;
-        bh=NZXHmRuk+81g03fsYTzDeUQDDnQFVFpIlWdtgC35F1c=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=UuB8UMVJa80cR3ev8fbrW2ziYHfkUHZCkgTo4WYxvO4mQvZBBWryY0V+3EdL3Am+l
-         ADwWSAlwH2GGrqFNrxjQmmxJ4dr6qvZUIkw8MwEDYRvM6iyt0/YsXnaPY5qlYIbvmN
-         RR1GTOna7MmAjwZnQVYDhSlcXKFcpaJ3KfwbJ6zM=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH 13/16] media: i2c: rdacm2x: Implement .init() subdev op
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-14-jacopo+renesas@jmondi.org>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <ce1673db-9ea7-f28c-a22a-0d129c0bff98@ideasonboard.com>
-Date:   Thu, 18 Feb 2021 16:13:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230398AbhBRSf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:35:56 -0500
+Received: from mail-eopbgr1410101.outbound.protection.outlook.com ([40.107.141.101]:38208
+        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233223AbhBRQPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:15:04 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SoRcYgaGOD1VHgAL2EYItLOsPE2K4gCvZn5nwv1LGX70ol49J6dEZ1OR6pd52raORfsO48gSC1iGc4mkF12GzJuNSP+birc95xlgZ/6T8XdJCJlQbR9+4+/UYJL3OJxP2ODS3jIG0OJ9VWLQ3ym+G/aLpgLDwUyws2YkKrOEKJNNW9kxQULeH3qzolUauzHyVXobQxtiqa68WtmVdBiJo7keq81AO5ObAWTt9fwaWmbPgT7fzIP535FTAfDPYjAcpSCh4ROGBhRgJLH7kOHwK0F8TxX642dgLa0YYm+7kQEyvOon615eAv8Nlc7fu4R+NNH4ZExwgVM1dInw7DA0Dw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YwVnaT+4zU+LkJVF8xph8egtE/8BvQhjj341vYRR8R0=;
+ b=aKjNCFiOoG/YN577TbvoiG8YodshoN3cTzqBkjlZklh4F/eMLeokov+cUB2eiEGMYUK/O1BV8IKEWskXgpFwhjotCC15zcQrMDfVSyvAf9bgFmt6hCKS/HxDorYaotimqQhmgA6fIE0DNEm/JbTrCKivpnNhSofT1RbO7LE09PBriNUyx4hlD/8qw2xTK12vNE4vm8gnvimvdOFX/VHkq9l524sUEKuV89apoi/pzzfj/lIwX/0Sn9qM59zuaZJJvkYt+6jz8RYCcvvRUSUFN2ZXK156C+joWDxeFEX+/ui1jQZI9nuQN1cJjTfdbvNj7wTzqhYyDcNfGyhSUGVhpg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YwVnaT+4zU+LkJVF8xph8egtE/8BvQhjj341vYRR8R0=;
+ b=Db9aE24qIqm9NIzclGWMncvXWPXNATqjsifAI2neQwyWYLE8SpSHfZGGFySTChQtBcqi30foKCJIAcqyqeOg/gXkyxL7gsj2Q6feti8m6Bb9rojSSpQoBHD+FE7T7+51w3vrAZ22S2SQZTGQgJ2nj7ybiRWNWmJNE7aUOyAUqa4=
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
+ by OSYPR01MB5512.jpnprd01.prod.outlook.com (2603:1096:604:91::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.28; Thu, 18 Feb
+ 2021 16:14:13 +0000
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::1971:336c:e4c0:8c5]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::1971:336c:e4c0:8c5%3]) with mapi id 15.20.3846.038; Thu, 18 Feb 2021
+ 16:14:13 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        gregkh <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>
+Subject: RE: [PATCH net-next] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Thread-Topic: [PATCH net-next] misc: Add Renesas Synchronization Management
+ Unit (SMU) support
+Thread-Index: AQHXACKOoFb+ofRp20OhBYk2S05d7KpS86SAgADGlHCAAIcoAIAAassggABEPICABhmmwIAAPsuAgAAOzaCAATLmgIAAD7eQgABNoACAAGKO8IAAfRmAgABR13A=
+Date:   Thu, 18 Feb 2021 16:14:13 +0000
+Message-ID: <OSBPR01MB4773548EE94463B9A595BBE2BA859@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+References: <1613012611-8489-1-git-send-email-min.li.xe@renesas.com>
+ <CAK8P3a3YhAGEfrvmi4YhhnG_3uWZuQi0ChS=0Cu9c4XCf5oGdw@mail.gmail.com>
+ <OSBPR01MB47732017A97D5C911C4528F0BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2KDO4HutsXNJzjmRJTvW1QW4Kt8H7U53_QqpmgvZtd3A@mail.gmail.com>
+ <OSBPR01MB4773B22EA094A362DD807F83BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a3k5dAF=X3_NrYAAp5gPJ_uvF3XfmC4rKz0oGTrGRriCw@mail.gmail.com>
+ <OSBPR01MB47732AFC03DA8A0DDF626706BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2TeeLfsTNkZPnC3YowdOS=bFM5yYj58crP6F5U9Y_r-Q@mail.gmail.com>
+ <OSBPR01MB47739CBDE12E1F3A19649772BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a2fRgDJZv-vzy_X6Y5t3daaVdCiXtMwkmXUyG0EQZ0a6Q@mail.gmail.com>
+ <OSBPR01MB477394546AE3BC1F186FC0E9BA869@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a32jF+iCH5Sk82LaozyPJ0n=f92MRdseZwN9aOtf4DwKQ@mail.gmail.com>
+ <OSBPR01MB47737A11F8BFCC856C4A62DCBA859@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <CAK8P3a3LrkAE9MuMkwMpJ6_5ZYM3m_S-0v7V7qrpY6JaAzHUTQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a3LrkAE9MuMkwMpJ6_5ZYM3m_S-0v7V7qrpY6JaAzHUTQ@mail.gmail.com>
+Accept-Language: en-CA, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [72.140.114.230]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: fe1bdfaf-53a3-4f87-2073-08d8d4283bab
+x-ms-traffictypediagnostic: OSYPR01MB5512:
+x-microsoft-antispam-prvs: <OSYPR01MB5512743C40C18E9A50A41958BA859@OSYPR01MB5512.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Vu6XZLTwHhvlBxBZrEeSCDS4oaspQGT7HNShPsFdE2RmW3U1eiQS14UhhptGhDbxfCexH6CL1GGfWrvAoZNdTDS/e389X3nh6iJ6qklMRzvRHBmPJTtcDz4WycfkYUYkgzj0RGMHr1BapACfNscggoU75PERDIZKorOiBHhLUuV0Xil0WMhuDaGLv+wmbfSNuymCUm074jRcqPbLl7p2CiZ41gVg1W5y8MIfvdi9iQWmL+IcUtuD1SKt260WIt0b2CidKQ5WffcKw494e4RCLON6C7mt+C1eZijygDUuXriggMFF7NYYXcOQP1Q8X3VtLCKd83hr/yuI3gnPN8ISTzKWBVIMilbHULZG9EmtWg4NlEUgB0VBtac8iVq8zqJsBVweJsLWrpWhrTqcZKmeVXAMle9GlbItNw2FE6w//kZootNpfl63hdCYE50s5CgEDetUi9ciAPWnWsDhkKlYqSItrNVuDs/bKUxx12QP8BgGbiyeGYfmKp0644s8jMEapTs3GYS9pIG6cPuixVNIkQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(396003)(366004)(136003)(83380400001)(86362001)(26005)(186003)(33656002)(8676002)(2906002)(478600001)(9686003)(54906003)(55016002)(316002)(5660300002)(76116006)(66556008)(4326008)(8936002)(66476007)(52536014)(66946007)(7696005)(6916009)(71200400001)(66446008)(53546011)(64756008)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?S2pra0c2Y1VmV0pRUmJRR28yTlloRC9PeGVaS2E0NGtBS3JpWENtWHh4SnAy?=
+ =?utf-8?B?TzRZbXdtVDdvMUdta2tTM2tMZ0lORGxtUVhjcisyREVGbXVnQ1ZTblFyNndL?=
+ =?utf-8?B?Mk1JdzkwUStpbThHQTRTTzA1c2lKNmtIUlFEUjNwOHJ3bnJRWVFUMHJsWVVs?=
+ =?utf-8?B?aERHR2FyM2xxeDRQQmZaWkNuUmM1OHhmd2JrQzAvcmRXR0JWQ05YS0xwVWNP?=
+ =?utf-8?B?RDdHT2Zvclc1bW9telhuR2pPWFI4T2dRU3ppVVR3cS9hU3p0WG93QlN3NW56?=
+ =?utf-8?B?a1FzKzVteENKNFJ3S3NSZ2ZrK1dldzJHZEhxYm83QlRndEdsejFFUHArd21u?=
+ =?utf-8?B?MU0vUi9iSXhXN2hkeEl4VUROeEgxMDVxZ0o0MGVvN3RmRjNJY1ViWUJjMFoy?=
+ =?utf-8?B?ekowb0VLSlVzYjRvR2RmTzdhWlRlQ0xPdlJHYytPMnJGaHp4U3gzdEpFSzJy?=
+ =?utf-8?B?ZTdGbmFFWWhTSWZQamRNZkFTakVxT3AydE9MeUR1aVprSVhTOHJvVzJJOXlR?=
+ =?utf-8?B?QkN3aWJHYUhiS0ZGMFpLOWJnQ2ZaZS9VdURvTWwvVkdETk9iNGF2bzR6bk1x?=
+ =?utf-8?B?SFlsdEhXSFp5blRTRENTVjVOcGo3Q3lZcWJLUTl5MXlhenB4YU0zdnloTHJz?=
+ =?utf-8?B?bVE3OHVHcnBEMEwrQmRiUjJLbTNCVGNaQ3RsYjd0RTNKRFpERFhYelJUaUgy?=
+ =?utf-8?B?RWpzeUFzcWJveklFeWtlckxSLy9xVzRyNVZ5UU5lMFJicGxETVVrN0NyaTdE?=
+ =?utf-8?B?K1hWZ1VqcUo0RUQ3QUgwanN0dlBCSEljK28wall6NEV1MlVoZktPb2FwVXhG?=
+ =?utf-8?B?THdBMFVFQVFmcW9yN0htYjJiT0RrbEcxUkdlOGtsOWRSaGFZdktRSGo0ODlK?=
+ =?utf-8?B?bkxRODIwTDhCREpGRHlNbTAvWlZ6NXJPNWswR3BubTFBZDg3dFFsZXg4ak1V?=
+ =?utf-8?B?ME1ZOEUxL3JaNUczQi9nVXJ4ZlB6ak9kOXhLSkgxU0JSeGtkTGhLKzFVelMw?=
+ =?utf-8?B?SGlyNmljZWs5UFg5clB3czRxbG1obTRkWjFhRGtIQlhMMFdrNm1oZVVTMHp5?=
+ =?utf-8?B?bXVOTUtnUlpsYzMxUml5Y09raTN5SE9HK2JCUnJ0NW5RODI3QTV0Q3o1Smxy?=
+ =?utf-8?B?R0pseFcvdDZvUmlVQ0NVSTBDNEorSDJwSXNPTnRIejRuMjRLTURmcTl1dUkw?=
+ =?utf-8?B?VlVjaDBtdWF1RDMzazZjNDJQa0VuSmVyZHhnR3lXYnBEc285V2dsZHJ6dDdW?=
+ =?utf-8?B?SGZlbWkxV25qT2V1bUtsTkgwc2Z1NmxCNVB0dXZLdkpyeDVUd1FoMTJMZmtH?=
+ =?utf-8?B?VFdWaWtuVjRqaWgzWU9qMW54eFphTGdYNjNPaEdabTF0Tm51SURQL1dRWGJF?=
+ =?utf-8?B?MkZoV1JPWXNxU2ZCS0hrc2Q2NThseTYxdWRoK05IOFU0RENCcGZLR1VISisy?=
+ =?utf-8?B?aDVGOWdqcTY0K0pwbWJWNHZBdjlvVEVRTU9vWHp5aTVnWXV4c1Z5UUtubFlZ?=
+ =?utf-8?B?L0dnUkh3eVNjL29NbDE0NU9TU0tLMFpWZ0UyWTE2Y0FNOTM1anpSV3A3a25v?=
+ =?utf-8?B?Y1lQYkxaYloyNC91R2paKzJtS0cxWTlMZDRkb0Y2bXZkZ0djMmlnRUtxOFlS?=
+ =?utf-8?B?TFJ6RlVsQWFUazdNaUU1SmljRUVJWFFOdUJ1VWVRVGhVeVNkQm9JamhVaXRS?=
+ =?utf-8?B?Rys0WW9oWlJ1YkhDK2lDNFlpV1luQmNjZG54ajZIZWw5dWJGUWtvNDlKSUh4?=
+ =?utf-8?Q?Oqr0tMjOm3SB2gAK/kq6FdDhS+2oVYZIoqoAqt6?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210216174146.106639-14-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe1bdfaf-53a3-4f87-2073-08d8d4283bab
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 16:14:13.6377
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: AwxerOxrnZ0ibgC/euxa1ZZUGMPKdZz2yOdmVB+SB7/L9iMwmyqEACQJcNoBaIMrGoPkG2+3KMTUd++R0kLtig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSYPR01MB5512
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On 16/02/2021 17:41, Jacopo Mondi wrote:
-> The current probe() procedure of the RDACM20 and RDACM20 performs
-
-and RDACM21?
-
-> initialization of the serializer image sensors and increases the noise
-
-Of the serializer 'and' image sensors ?
-or perhaps just
-
-s/serializer/serializer,/ ?
-
-> immunity threshold as last operation, which is then compensated by the
-
-as a last operation
-or
-as a final operation
-
-
-> remote deserializer by increasing the reverse channel signal amplitude
-> once all remotes have bound.
-> 
-> The probe routine is then run without noise immunity activated which
-> in noisy environment conditions makes the probe sequence less reliable as
-> the chips configuration requires a relevant amount of i2c transactions.
-
-s/relevant/relatively high/ ?
-
-> 
-> Break chip initialization in two:
-> - At probe time only configure the serializer's reverse channel with
->   noise immunity activated, to reduce the number of transactions
->   performed without noise immunity protection
-> - Move the chips initialization to the .init() core subdev operation to
->   be invoked by the deserializer after the camera has probed and it has
->   increased the reverse channel amplitude
-
-Is this the op you said was deprecated?
-
-
-Functionally in this code, it seems fine, but as mentioned on the next
-patch, I suspect it might need squashing to make sure it stays functional...
-
-I'm not fully sure of the implications of this patch, but your tests
-have reportede that this series is helping a lot with reliability so I
-don't want to block it.
-
-The code changes themselves look ok, with the following thougts:
-
- - If this op/methodology is deprecated it might be harder to get
-   acceptance?
-
- - now we have _init and _initialise - should that be made more
-   distinct?
-
- - Seeing the duplication of the MAX9271_DEFAULT_ADDR / ping again
-   really makes me want to see that wrapped in the max9271.c ;-)
-
- - Likely needs squashed with relevant changes in max9286?
-
-But even with those thoughts, I don't think this is necessarily wrong so:
-
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/rdacm20.c | 65 ++++++++++++++++++++++---------------
->  drivers/media/i2c/rdacm21.c | 65 ++++++++++++++++++++++---------------
->  2 files changed, 78 insertions(+), 52 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> index 39e4b4241870..0632ef98eea7 100644
-> --- a/drivers/media/i2c/rdacm20.c
-> +++ b/drivers/media/i2c/rdacm20.c
-> @@ -437,36 +437,12 @@ static int rdacm20_get_fmt(struct v4l2_subdev *sd,
->  	return 0;
->  }
->  
-> -static const struct v4l2_subdev_video_ops rdacm20_video_ops = {
-> -	.s_stream	= rdacm20_s_stream,
-> -};
-> -
-> -static const struct v4l2_subdev_pad_ops rdacm20_subdev_pad_ops = {
-> -	.enum_mbus_code = rdacm20_enum_mbus_code,
-> -	.get_fmt	= rdacm20_get_fmt,
-> -	.set_fmt	= rdacm20_get_fmt,
-> -};
-> -
-> -static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
-> -	.video		= &rdacm20_video_ops,
-> -	.pad		= &rdacm20_subdev_pad_ops,
-> -};
-> -
-> -static int rdacm20_initialize(struct rdacm20_device *dev)
-> +static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
->  {
-> +	struct rdacm20_device *dev = sd_to_rdacm20(sd);
->  	unsigned int i;
->  	int ret;
->  
-> -	/* Verify communication with the MAX9271: ping to wakeup. */
-> -	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> -	i2c_smbus_read_byte(dev->serializer.client);
-> -	usleep_range(5000, 8000);
-> -
-> -	/* Serial link disabled during config as it needs a valid pixel clock. */
-> -	ret = max9271_set_serial_link(&dev->serializer, false);
-> -	if (ret)
-> -		return ret;
-> -
->  	/*
->  	 *  Ensure that we have a good link configuration before attempting to
->  	 *  identify the device.
-> @@ -537,6 +513,43 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
->  
->  	dev_info(dev->dev, "Identified RDACM20 camera module\n");
->  
-> +	return 0;
-> +}
-> +
-> +static const struct v4l2_subdev_core_ops rdacm20_core_ops = {
-> +	.init           = rdacm20_init,
-> +};
-> +
-> +static const struct v4l2_subdev_video_ops rdacm20_video_ops = {
-> +	.s_stream	= rdacm20_s_stream,
-> +};
-> +
-> +static const struct v4l2_subdev_pad_ops rdacm20_subdev_pad_ops = {
-> +	.enum_mbus_code = rdacm20_enum_mbus_code,
-> +	.get_fmt	= rdacm20_get_fmt,
-> +	.set_fmt	= rdacm20_get_fmt,
-> +};
-> +
-> +static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
-> +	.core		= &rdacm20_core_ops,
-> +	.video		= &rdacm20_video_ops,
-> +	.pad		= &rdacm20_subdev_pad_ops,
-> +};
-> +
-> +static int rdacm20_initialize(struct rdacm20_device *dev)
-> +{
-> +	int ret;
-> +
-> +	/* Verify communication with the MAX9271: ping to wakeup. */
-> +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> +	i2c_smbus_read_byte(dev->serializer.client);
-> +	usleep_range(5000, 8000);
-> +
-> +	/* Serial link disabled during config as it needs a valid pixel clock. */
-> +	ret = max9271_set_serial_link(&dev->serializer, false);
-> +	if (ret)
-> +		return ret;
-> +
->  	/*
->  	 * Set reverse channel high threshold to increase noise immunity.
->  	 *
-> diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
-> index c420a6b96879..80b6f16f87a8 100644
-> --- a/drivers/media/i2c/rdacm21.c
-> +++ b/drivers/media/i2c/rdacm21.c
-> @@ -314,21 +314,6 @@ static int rdacm21_get_fmt(struct v4l2_subdev *sd,
->  	return 0;
->  }
->  
-> -static const struct v4l2_subdev_video_ops rdacm21_video_ops = {
-> -	.s_stream	= rdacm21_s_stream,
-> -};
-> -
-> -static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
-> -	.enum_mbus_code = rdacm21_enum_mbus_code,
-> -	.get_fmt	= rdacm21_get_fmt,
-> -	.set_fmt	= rdacm21_get_fmt,
-> -};
-> -
-> -static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
-> -	.video		= &rdacm21_video_ops,
-> -	.pad		= &rdacm21_subdev_pad_ops,
-> -};
-> -
->  static int ov10640_initialize(struct rdacm21_device *dev)
->  {
->  	u8 val;
-> @@ -448,20 +433,11 @@ static int ov490_initialize(struct rdacm21_device *dev)
->  	return 0;
->  }
->  
-> -static int rdacm21_initialize(struct rdacm21_device *dev)
-> +static int rdacm21_init(struct v4l2_subdev *sd, unsigned int val)
->  {
-> +	struct rdacm21_device *dev = sd_to_rdacm21(sd);
->  	int ret;
->  
-> -	/* Verify communication with the MAX9271: ping to wakeup. */
-> -	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> -	i2c_smbus_read_byte(dev->serializer.client);
-> -	usleep_range(5000, 8000);
-> -
-> -	/* Enable reverse channel and disable the serial link. */
-> -	ret = max9271_set_serial_link(&dev->serializer, false);
-> -	if (ret)
-> -		return ret;
-> -
->  	/* Configure I2C bus at 105Kbps speed and configure GMSL. */
->  	ret = max9271_configure_i2c(&dev->serializer,
->  				    MAX9271_I2CSLVSH_469NS_234NS |
-> @@ -508,6 +484,43 @@ static int rdacm21_initialize(struct rdacm21_device *dev)
->  	if (ret)
->  		return ret;
->  
-> +	return 0;
-> +}
-> +
-> +static const struct v4l2_subdev_core_ops rdacm21_core_ops = {
-> +	.init		= rdacm21_init,
-> +};
-> +
-> +static const struct v4l2_subdev_video_ops rdacm21_video_ops = {
-> +	.s_stream	= rdacm21_s_stream,
-> +};
-> +
-> +static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
-> +	.enum_mbus_code = rdacm21_enum_mbus_code,
-> +	.get_fmt	= rdacm21_get_fmt,
-> +	.set_fmt	= rdacm21_get_fmt,
-> +};
-> +
-> +static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
-> +	.core		= &rdacm21_core_ops,
-> +	.video		= &rdacm21_video_ops,
-> +	.pad		= &rdacm21_subdev_pad_ops,
-> +};
-> +
-> +static int rdacm21_initialize(struct rdacm21_device *dev)
-> +{
-> +	int ret;
-> +
-> +	/* Verify communication with the MAX9271: ping to wakeup. */
-> +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
-> +	i2c_smbus_read_byte(dev->serializer.client);
-> +	usleep_range(5000, 8000);
-> +
-> +	/* Enable reverse channel and disable the serial link. */
-> +	ret = max9271_set_serial_link(&dev->serializer, false);
-> +	if (ret)
-> +		return ret;
-> +
->  	/*
->  	 * Set reverse channel high threshold to increase noise immunity.
->  	 *
-> 
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQXJuZCBCZXJnbWFubiA8
+YXJuZEBrZXJuZWwub3JnPg0KPiBTZW50OiBGZWJydWFyeSAxOCwgMjAyMSA1OjUxIEFNDQo+IFRv
+OiBNaW4gTGkgPG1pbi5saS54ZUByZW5lc2FzLmNvbT4NCj4gQ2M6IERlcmVrIEtpZXJuYW4gPGRl
+cmVrLmtpZXJuYW5AeGlsaW54LmNvbT47IERyYWdhbiBDdmV0aWMNCj4gPGRyYWdhbi5jdmV0aWNA
+eGlsaW54LmNvbT47IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+OyBncmVna2gNCj4gPGdy
+ZWdraEBsaW51eGZvdW5kYXRpb24ub3JnPjsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsg
+TmV0d29ya2luZw0KPiA8bmV0ZGV2QHZnZXIua2VybmVsLm9yZz47IFJpY2hhcmQgQ29jaHJhbiA8
+cmljaGFyZGNvY2hyYW5AZ21haWwuY29tPg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIG5ldC1uZXh0
+XSBtaXNjOiBBZGQgUmVuZXNhcyBTeW5jaHJvbml6YXRpb24NCj4gTWFuYWdlbWVudCBVbml0IChT
+TVUpIHN1cHBvcnQNCj4gDQo+IE9uIFRodSwgRmViIDE4LCAyMDIxIGF0IDQ6MjggQU0gTWluIExp
+IDxtaW4ubGkueGVAcmVuZXNhcy5jb20+IHdyb3RlOg0KPiA+ID4gSWYgdGhlIGRyaXZlciBjYW4g
+dXNlIHRoZSBzYW1lIGFsZ29yaXRobSB0aGF0IGlzIGluIHlvdXIgdXNlciBzcGFjZQ0KPiA+ID4g
+c29mdHdhcmUgdG9kYXksIHRoYXQgd291bGQgc2VlbSB0byBiZSBhIG5pY2VyIHdheSB0byBoYW5k
+bGUgaXQgdGhhbg0KPiA+ID4gcmVxdWlyaW5nIGEgc2VwYXJhdGUgYXBwbGljYXRpb24uDQo+ID4g
+Pg0KPiA+DQo+ID4gSGkgQXJuZA0KPiA+DQo+ID4NCj4gPiBXaGF0IGlzIHRoZSBkZXZpY2UgZHJp
+dmVyIHRoYXQgeW91IGFyZSByZWZlcnJpbmcgaGVyZT8NCj4gPg0KPiA+IEluIHN1bW1hcnkgb2Yg
+eW91ciByZXZpZXdzLCBhcmUgeW91IHN1Z2dlc3RpbmcgbWUgdG8gZGlzY2FyZCB0aGlzDQo+ID4g
+Y2hhbmdlIGFuZCBnbyBiYWNrIHRvIFBUUCBzdWJzeXN0ZW0gdG8gZmluZCBhIGJldHRlciBwbGFj
+ZSBmb3IgdGhpbmdzDQo+ID4gdGhhdCBJIHdhbm5hIGRvIGhlcmU/DQo+IA0KPiBZZXMsIEkgbWVh
+biBkb2luZyBpdCBhbGwgaW4gdGhlIFBUUCBkcml2ZXIuDQo+IA0KPiAgICAgICAgIEFybmQNCg0K
+SGkgQXJuZA0KDQpUaGUgQVBJcyBJIGFtIGFkZGluZyBoZXJlIGlzIGZvciBvdXIgZGV2ZWxvcG1l
+bnQgb2YgYXNzaXN0ZWQgcGFydGlhbCB0aW1pbmcgc3VwcG9ydCAoQVBUUyksDQp3aGljaCBpcyBh
+IEdsb2JhbCBOYXZpZ2F0aW9uIFNhdGVsbGl0ZSBTeXN0ZW0gKEdOU1MpIGJhY2tlZCBieSBQcmVj
+aXNpb24gVGltZSBQcm90b2NvbCAoUFRQKS4NClNvIGl0IGlzIG5vdCBwYXJ0IG9mIFBUUCBidXQg
+dGhleSBjYW4gd29yayB0b2dldGhlciBmb3IgbmV0d29yayB0aW1pbmcgc29sdXRpb24uDQoNCldo
+YXQgSSBhbSB0cnlpbmcgdG8gc2F5IGlzIHRoZSB0aGluZ3MgdGhhdCBJIGFtIGFkZGluZyBoZXJl
+IGRvZXNuJ3QgcmVhbGx5IGJlbG9uZyB0byB0aGUgUFRQIHdvcmxkLg0KRm9yIGV4YW1wbGUsIHRp
+bWV4LT5mcmVxIGlzIGRpZmZlcmVudCBmcm9tIHRoZSBmZm8gdGhhdCBJIGFtIHJlYWRpbmcgZnJv
+bSB0aGlzIGRyaXZlciBzaW5jZSB0aGUgRFBMTCBpcw0KV29ya2luZyBpbiBkaWZmZXJlbnQgbW9k
+ZS4gRm9yIFBUUCwgRFBMTCBpcyB3b3JraW5nIGluIERDTyBtb2RlLiBJbiBEQ08gbW9kZSwgdGhl
+IERQTEwgDQpjb250cm9sIGxvb3AgaXMgb3BlbmVkIGFuZCB0aGUgRENPIGNhbiBiZSBjb250cm9s
+bGVkIGJ5IGEgUFRQIGNsb2NrIHJlY292ZXJ5IHNlcnZvIHJ1bm5pbmcgb24gYW4gDQpleHRlcm5h
+bCBwcm9jZXNzb3IgdG8gc3ludGhlc2l6ZSBQVFAgY2xvY2tzLiBPbiB0aGUgb3RoZXIgaGFuZCBm
+b3IgR05TUyB0aW1pbmcsIHRoZSBmZm8gSSBhbSByZWFkaW5nIGhlcmUgaXMgd2hlbiBEUExMIGlz
+DQppbiBsb2NrZWQgbW9kZS4gSW4gTG9ja2VkIHRoZSBsb25nLXRlcm0gb3V0cHV0IGZyZXF1ZW5j
+eSBhY2N1cmFjeSBpcyB0aGUgc2FtZSBhcyB0aGUgbG9uZy10ZXJtDQpmcmVxdWVuY3kgYWNjdXJh
+Y3kgb2YgdGhlIHNlbGVjdGVkIGlucHV0IHJlZmVyZW5jZS4NCg0KRm9yIG91ciBHTlNTIEFQVFMg
+ZGV2ZWxvcG1lbnQsIHdlIGhhdmUgMiBEUExMIGNoYW5uZWxzLCBvbmUgY2hhbm5lbCBpcyBsb2Nr
+ZWQgdG8gR05TUyBhbmQgYW5vdGhlciBjaGFubmVsIGlzIFBUUCBjaGFubmVsLg0KSWYgR05TUyBj
+aGFubmVsIGlzIGxvY2tlZCwgd2UgdXNlIEdOU1MncyBjaGFubmVsIHRvIHN1cHBvcnQgbmV0d29y
+ayB0aW1pbmcuIE90aGVyd2lzZSwgd2Ugc3dpdGNoIHRvIFBUUCBjaGFubmVsLiANCg0KVG8gdGhp
+bmsgYWJvdXQgaXQsIG91ciBkZXZpY2UgaXMgcmVhbGx5IGFuIG11bHRpIGZ1bmN0aW9uYWwgZGV2
+aWNlIChNRkQpLCB3aGljaCBpcyB3aHkgSSBhbSBzdWJtaXR0aW5nIGFub3RoZXIgcmV2aWV3IGZv
+ciBvdXIgTUZEIGRyaXZlcg0Kb24gdGhlIHNpZGUuIFdlIGhhdmUgb3VyIFBUUCBkcml2ZXIgYW5k
+IHdlIGhhdmUgdGhpcyBmb3IgR05TUyBBUFRTIGFuZCBvdGhlciBtaXNjIGZ1bmN0aW9ucy4gDQoN
+ClNvIGNhbiB5b3UgdGFrZSBhIGxvb2sgYXQgdGhpcyBhZ2FpbiBhbmQgc2VlIGlmIGl0IG1ha2Vz
+IHNlbnNlIHRvIGtlZXAgdGhpcyBjaGFuZ2Ugc2ltcGx5IGJlY2F1c2UgdGhlIGNoYW5nZSBpcyBu
+b3QgcGFydCBvZiBQVFAgc3Vic3lzdGVtLg0KVGhleSBzb3VuZCBsaWtlIHRoZXkgYXJlIHJlbGF0
+ZWQuIEJ1dCB3aGVuIGl0IGNvbWVzIHRvIHRlY2huaWNhbGl0eSwgdGhlcmUgaXMgcmVhbGx5IG5v
+IHBsYWNlIGluIFBUUCB0byBob2xkIHN0dWZmIHRoYXQgSSBhbSBkb2luZyBoZXJlLg0KDQpUaGFu
+a3MNCg0KTWluDQo=
