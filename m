@@ -2,208 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5F631E7A4
+	by mail.lfdr.de (Postfix) with ESMTP id 8D73E31E7A5
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhBRIsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 03:48:52 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14850 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231132AbhBRHmw (ORCPT
+        id S231364AbhBRItR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 03:49:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBRHnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 02:42:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602e1a530000>; Wed, 17 Feb 2021 23:42:11 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
- 2021 07:42:11 +0000
-Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Feb 2021 07:42:07 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>, <si-wei.liu@oracle.com>,
-        <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>
-CC:     <elic@nvidia.com>, Parav Pandit <parav@nvidia.com>
-Subject: [PATCH v2] vdpa/mlx5: Enable user to add/delete vdpa device
-Date:   Thu, 18 Feb 2021 09:41:57 +0200
-Message-ID: <20210218074157.43220-1-elic@nvidia.com>
-X-Mailer: git-send-email 2.28.0
+        Thu, 18 Feb 2021 02:43:25 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68565C061756;
+        Wed, 17 Feb 2021 23:42:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mZKmyMBoFtbztfFABY/ghh/w9RSwZqEFrZcUD41TwBM=; b=NR2Kuw5GHI8Ltkju70NOS/E+Vc
+        GIsUGB16gfua9MjaNDOuKCVgSYghs6gwn9TXap4xA3BjM1nu3TeJ4irbThgbg/uJ0Srp1Ad6plT9E
+        Am98qX6QIMqBzRTns7b77v+dRhkUDfPwtRdqIajgIq0PiU/NXt+9eHTkX/un/biM0loOmF54E+GlC
+        dqPJ7mhuxfgeSfylc8QeVGyKYWB7fHhq+8uFHaTn/5COe4xRVhYtR3rToFaL4m9mlSv3y4peWyxfy
+        GCJ4NU5xAxiJbXel6/4BEcVPM8Aa5j2tkLPQ8JzZgvtynnAfH49jl/QA1xrPBw0e0Vfj4b+gUVYDV
+        9GkUN3PA==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lCdwt-001No9-Nr; Thu, 18 Feb 2021 07:42:08 +0000
+Date:   Thu, 18 Feb 2021 07:42:07 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-fsdevel@vger.kernel.org,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+Message-ID: <20210218074207.GA329605@infradead.org>
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+ <20210215154317.8590-1-lhenriques@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613634131; bh=KImlT5UFrP91/CHfSEc7lribc3MT5XvisfsIc0GuGX8=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Transfer-Encoding:Content-Type;
-        b=oo/UhEWaXto0rDF4EzTgfIau0VHXIyRdcwLsucASWfiDK9vlM29zhz1DRvsM6v+Tp
-         7I7936/9UYn0rCre0tjLk0kl5PCdaBWD8QNcV7iP1vqla0AdgChrn6O4KE5O1xdj09
-         pSMURgAwlFk/X3ziwl3clLYXuyWzFdlgpwvY0gmHtakkv7VEB9UxW18kj8rgLWCjz+
-         2IrnFYtglb6YOyJM80esX0MTaCIilq0kNHCEi9nZSkpJrGOqiMPE1st4aBCmjYDPlN
-         4XVMkoVEAEUQExzO7e/FAoFSuaOS2ThBRlXbKsR3+JXff/8cBDxVdIoyZWMLkvhh7D
-         odHw340wfGfsQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215154317.8590-1-lhenriques@suse.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow to control vdpa device creation and destruction using the vdpa
-management tool.
+Looks good:
 
-Examples:
-1. List the management devices
-$ vdpa mgmtdev show
-pci/0000:3b:00.1:
-  supported_classes net
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-2. Create vdpa instance
-$ vdpa dev add mgmtdev pci/0000:3b:00.1 name vdpa0
-
-3. Show vdpa devices
-$ vdpa dev show
-vdpa0: type network mgmtdev pci/0000:3b:00.1 vendor_id 5555 max_vqs 16 \
-max_vq_size 256
-
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Reviewed-by: Parav Pandit <parav@nvidia.com>
----
-v0->v1:
-set mgtdev->ndev NULL on dev delete
-v1->v2: Resend
-
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 79 +++++++++++++++++++++++++++----
- 1 file changed, 70 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
-_vnet.c
-index a51b0f86afe2..08fb481ddc4f 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -1974,23 +1974,32 @@ static void init_mvqs(struct mlx5_vdpa_net *ndev)
- 	}
- }
-=20
--static int mlx5v_probe(struct auxiliary_device *adev,
--		       const struct auxiliary_device_id *id)
-+struct mlx5_vdpa_mgmtdev {
-+	struct vdpa_mgmt_dev mgtdev;
-+	struct mlx5_adev *madev;
-+	struct mlx5_vdpa_net *ndev;
-+};
-+
-+static int mlx5_vdpa_dev_add(struct vdpa_mgmt_dev *v_mdev, const char *nam=
-e)
- {
--	struct mlx5_adev *madev =3D container_of(adev, struct mlx5_adev, adev);
--	struct mlx5_core_dev *mdev =3D madev->mdev;
-+	struct mlx5_vdpa_mgmtdev *mgtdev =3D container_of(v_mdev, struct mlx5_vdp=
-a_mgmtdev, mgtdev);
- 	struct virtio_net_config *config;
- 	struct mlx5_vdpa_dev *mvdev;
- 	struct mlx5_vdpa_net *ndev;
-+	struct mlx5_core_dev *mdev;
- 	u32 max_vqs;
- 	int err;
-=20
-+	if (mgtdev->ndev)
-+		return -ENOSPC;
-+
-+	mdev =3D mgtdev->madev->mdev;
- 	/* we save one virtqueue for control virtqueue should we require it */
- 	max_vqs =3D MLX5_CAP_DEV_VDPA_EMULATION(mdev, max_num_virtio_queues);
- 	max_vqs =3D min_t(u32, max_vqs, MLX5_MAX_SUPPORTED_VQS);
-=20
- 	ndev =3D vdpa_alloc_device(struct mlx5_vdpa_net, mvdev.vdev, mdev->device=
-, &mlx5_vdpa_ops,
--				 2 * mlx5_vdpa_max_qps(max_vqs), NULL);
-+				 2 * mlx5_vdpa_max_qps(max_vqs), name);
- 	if (IS_ERR(ndev))
- 		return PTR_ERR(ndev);
-=20
-@@ -2018,11 +2027,12 @@ static int mlx5v_probe(struct auxiliary_device *ade=
-v,
- 	if (err)
- 		goto err_res;
-=20
--	err =3D vdpa_register_device(&mvdev->vdev);
-+	mvdev->vdev.mdev =3D &mgtdev->mgtdev;
-+	err =3D _vdpa_register_device(&mvdev->vdev);
- 	if (err)
- 		goto err_reg;
-=20
--	dev_set_drvdata(&adev->dev, ndev);
-+	mgtdev->ndev =3D ndev;
- 	return 0;
-=20
- err_reg:
-@@ -2035,11 +2045,62 @@ static int mlx5v_probe(struct auxiliary_device *ade=
-v,
- 	return err;
- }
-=20
-+static void mlx5_vdpa_dev_del(struct vdpa_mgmt_dev *v_mdev, struct vdpa_de=
-vice *dev)
-+{
-+	struct mlx5_vdpa_mgmtdev *mgtdev =3D container_of(v_mdev, struct mlx5_vdp=
-a_mgmtdev, mgtdev);
-+
-+	_vdpa_unregister_device(dev);
-+	mgtdev->ndev =3D NULL;
-+}
-+
-+static const struct vdpa_mgmtdev_ops mdev_ops =3D {
-+	.dev_add =3D mlx5_vdpa_dev_add,
-+	.dev_del =3D mlx5_vdpa_dev_del,
-+};
-+
-+static struct virtio_device_id id_table[] =3D {
-+	{ VIRTIO_ID_NET, VIRTIO_DEV_ANY_ID },
-+	{ 0 },
-+};
-+
-+static int mlx5v_probe(struct auxiliary_device *adev,
-+		       const struct auxiliary_device_id *id)
-+
-+{
-+	struct mlx5_adev *madev =3D container_of(adev, struct mlx5_adev, adev);
-+	struct mlx5_core_dev *mdev =3D madev->mdev;
-+	struct mlx5_vdpa_mgmtdev *mgtdev;
-+	int err;
-+
-+	mgtdev =3D kzalloc(sizeof(*mgtdev), GFP_KERNEL);
-+	if (!mgtdev)
-+		return -ENOMEM;
-+
-+	mgtdev->mgtdev.ops =3D &mdev_ops;
-+	mgtdev->mgtdev.device =3D mdev->device;
-+	mgtdev->mgtdev.id_table =3D id_table;
-+	mgtdev->madev =3D madev;
-+
-+	err =3D vdpa_mgmtdev_register(&mgtdev->mgtdev);
-+	if (err)
-+		goto reg_err;
-+
-+	dev_set_drvdata(&adev->dev, mgtdev);
-+
-+	return 0;
-+
-+reg_err:
-+	kfree(mdev);
-+	return err;
-+}
-+
- static void mlx5v_remove(struct auxiliary_device *adev)
- {
--	struct mlx5_vdpa_dev *mvdev =3D dev_get_drvdata(&adev->dev);
-+	struct mlx5_vdpa_mgmtdev *mgtdev;
-=20
--	vdpa_unregister_device(&mvdev->vdev);
-+	mgtdev =3D dev_get_drvdata(&adev->dev);
-+	vdpa_mgmtdev_unregister(&mgtdev->mgtdev);
-+	kfree(mgtdev);
- }
-=20
- static const struct auxiliary_device_id mlx5v_id_table[] =3D {
---=20
-2.29.2
-
+This whole idea of cross-device copie has always been a horrible idea,
+and I've been arguing against it since the patches were posted.
