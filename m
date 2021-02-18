@@ -2,71 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDB631ED03
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7610231ECC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:05:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhBRRMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:12:43 -0500
-Received: from fgw21-4.mail.saunalahti.fi ([62.142.5.108]:65460 "EHLO
-        fgw21-4.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232319AbhBROe5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:34:57 -0500
-X-Greylist: delayed 1088 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Feb 2021 09:34:56 EST
-Received: from toshiba (85-156-79-75.elisa-laajakaista.fi [85.156.79.75])
-        by fgw21.mail.saunalahti.fi (Halon) with ESMTPSA
-        id b7901546-71f3-11eb-9eb8-005056bdd08f;
-        Thu, 18 Feb 2021 16:15:14 +0200 (EET)
-Message-ID: <602E766F.758C74D8@users.sourceforge.net>
-Date:   Thu, 18 Feb 2021 16:15:11 +0200
-From:   Jari Ruusu <jariruusu@users.sourceforge.net>
+        id S231392AbhBRRAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:00:33 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:46050 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233686AbhBRORK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:17:10 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613657781; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=tJX4rE8ABtqKQQqunHr79YkB0O9cnHpfxeT03CsiSsw=;
+ b=UdaPlbvbXQy6YjxzoEEaPypgh04ixiBq0pS+UDOgMt1EoL50ph1YiJUiBd11PeS8/Fr+srLo
+ wPvDBieoONgN/omzwQGBEzXVnZ3ElsAbiM9Zq0Q3j+HMBnS0WjJOFJaBUfnBauFL0ZZ+2QjY
+ JpxROEyFwDJYEE3HPMJaP1h3zLo=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 602e76769946643859a1b080 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Feb 2021 14:15:18
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 104D2C43462; Thu, 18 Feb 2021 14:15:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78746C433C6;
+        Thu, 18 Feb 2021 14:15:17 +0000 (UTC)
 MIME-Version: 1.0
-To:     Willy Tarreau <w@1wt.eu>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
-         <YA/E1bHRmZb50MlS@kroah.com>
-         <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
-         <YBBkplRxzzmPYKC+@kroah.com>
-         <YCzknUTDytY8gRA8@kroah.com>
-         <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
-         <YC4atKmK7ZqlOGER@kroah.com> <20210218113107.GA12547@1wt.eu>
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Feb 2021 19:45:17 +0530
+From:   rojay@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     wsa@kernel.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V8 1/1] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+In-Reply-To: <161052087940.3661239.14609415796697267628@swboyd.mtv.corp.google.com>
+References: <20210108150545.2018-1-rojay@codeaurora.org>
+ <20210108150545.2018-2-rojay@codeaurora.org>
+ <161052087940.3661239.14609415796697267628@swboyd.mtv.corp.google.com>
+Message-ID: <9ec10130df230a0ff078d9eec47e94b2@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Willy Tarreau wrote:
-> The only set of fixes that can be trusted are the "official" stable
-> kernels, because they are the only ones that are approved by the patches
-> authors themselves. Adding more stuff on top of stable kernels is fine
-> (and done at your own risk), but randomly dropping stuff from stable
-> kernels just because you don't think you need that is totally non-sense
-> and must not be done anymore!
+Hi Stephen,
 
-This may be little bit off-topic... but stable kernel.org kernels
-can also bit-rot badly because of "selective" backporting... as in
-anything that does not apply cleanly gets dropped regardless of
-how critical they are.
+On 2021-01-13 12:24, Stephen Boyd wrote:
+> Quoting Roja Rani Yarubandi (2021-01-08 07:05:45)
+>> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c 
+>> b/drivers/i2c/busses/i2c-qcom-geni.c
+>> index 214b4c913a13..c3f584795911 100644
+>> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+>> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+>> @@ -375,6 +375,32 @@ static void geni_i2c_tx_msg_cleanup(struct 
+>> geni_i2c_dev *gi2c,
+>>         }
+>>  }
+>> 
+>> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
+>> +{
+>> +       int ret;
+>> +       u32 geni_status;
+>> +       struct i2c_msg *cur;
+>> +
+>> +       /* Resume device, as runtime suspend can happen anytime during 
+>> transfer */
+>> +       ret = pm_runtime_get_sync(gi2c->se.dev);
+>> +       if (ret < 0) {
+>> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", 
+>> ret);
+>> +               return;
+>> +       }
+>> +
+>> +       geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
+>> +       if (geni_status & M_GENI_CMD_ACTIVE) {
+>> +               cur = gi2c->cur;
+> 
+> Why don't we need to hold the spinlock gi2c::lock here?
+> 
 
-I will give you one example: Intel WiFi (iwlwifi) on 4.19.y
-kernel.org stable kernels is currently missing many critical
-locking fixes. As a result, that in-tree iwlwifi driver causes
-erratic behavior to random unrelated processes, and has been doing
-so for many months now. My not-so-politically correct opinion is
-that in-tree iwlwifi is completely FUBAR unless someone steps up
-to do professional quality backport of those locking fixes from
-upstream out-of-tree Intel version [1] [2] of the driver. For me
-only way to get properly working WiFi on my laptop computer is to
-compile that Intel out-of-tree version. Sad, but true.
+I am not seeing any race here. May I know which race are you suspecting 
+here?
 
-[1] https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi/core_release
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/backport-iwlwifi.git/
-
--- 
-Jari Ruusu  4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD  ACDF F073 3C80 8132 F189
+>> +               geni_i2c_abort_xfer(gi2c);
+>> +               if (cur->flags & I2C_M_RD)
+>> +                       geni_i2c_rx_msg_cleanup(gi2c, cur);
+>> +               else
+>> +                       geni_i2c_tx_msg_cleanup(gi2c, cur);
+>> +       }
+>> +
+>> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
+>> +}
+>> +
+>>  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct 
+>> i2c_msg *msg,
+>>                                 u32 m_param)
+>>  {
