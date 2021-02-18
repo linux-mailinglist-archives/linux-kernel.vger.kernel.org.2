@@ -2,146 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A3F31E426
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 03:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE1DE31E42C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 03:03:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhBRCA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 21:00:26 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:50207 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229553AbhBRCAW (ORCPT
+        id S229993AbhBRCDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 21:03:13 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12615 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhBRCDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 21:00:22 -0500
-X-UUID: 8cd2c95e1bff40d0aedca9387197c08c-20210218
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=YZYQMm57Fv4EFKstruSJa6i7mCgo3eCEf5swT5xmKoY=;
-        b=eojwOA9Ja6Uo/icsbfNJC7/b70CfIQMW2Q9KvHOuxPDP9CTxcNfxkTTCp9ZlvdVCgLhNc7jaIM0yo61gceXaR01ifpyMRQmF6Yz+QQQZgnCoUMqjnoK2dWJ1TBViF6vESnLfwznw9wME5sDqu9ZVRhThWgZxrZThSZeoaCBxSQ0=;
-X-UUID: 8cd2c95e1bff40d0aedca9387197c08c-20210218
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 953206165; Thu, 18 Feb 2021 09:59:35 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 18 Feb 2021 09:59:33 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Feb 2021 09:59:33 +0800
-Message-ID: <1613613573.10714.27.camel@mtksdaap41>
-Subject: Re: [PATCH v6 10/22] clk: mediatek: Add MT8192 basic clocks support
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        "Nicolas Boichat" <drinkcat@chromium.org>,
-        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Date:   Thu, 18 Feb 2021 09:59:33 +0800
-In-Reply-To: <b16e4693-1dc6-e13c-3cc9-feb5005179dd@gmail.com>
-References: <1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com>
-         <1608642587-15634-11-git-send-email-weiyi.lu@mediatek.com>
-         <b16e4693-1dc6-e13c-3cc9-feb5005179dd@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 17 Feb 2021 21:03:09 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dgybr5V08z168fr;
+        Thu, 18 Feb 2021 10:00:56 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Feb 2021 10:01:58 +0800
+Subject: Re: [PATCH v2 3/3] crypto: hisilicon/sec - fixes shash test error
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <wangzhou1@hisilicon.com>, <xuzaibo@huawei.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1612692280-11386-1-git-send-email-liulongfang@huawei.com>
+ <1612692280-11386-4-git-send-email-liulongfang@huawei.com>
+ <20210210064328.GA15849@gondor.apana.org.au>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <0afaed85-eeb0-236c-817f-a0f9cf02c65a@huawei.com>
+Date:   Thu, 18 Feb 2021 10:01:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210210064328.GA15849@gondor.apana.org.au>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTAyLTEwIGF0IDEzOjQ2ICswMTAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMjIvMTIvMjAyMCAxNDowOSwgV2VpeWkgTHUgd3JvdGU6DQo+ID4gQWRkIE1U
-ODE5MiBiYXNpYyBjbG9jayBwcm92aWRlcnMsIGluY2x1ZGUgdG9wY2tnZW4sIGFwbWl4ZWRzeXMs
-DQo+ID4gaW5mcmFjZmcgYW5kIHBlcmljZmcuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogV2Vp
-eWkgTHUgPHdlaXlpLmx1QG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAgZHJpdmVycy9jbGsv
-bWVkaWF0ZWsvS2NvbmZpZyAgICAgIHwgICAgOCArDQo+ID4gIGRyaXZlcnMvY2xrL21lZGlhdGVr
-L01ha2VmaWxlICAgICB8ICAgIDEgKw0KPiA+ICBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4
-MTkyLmMgfCAxMzI2ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPiAg
-ZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW11eC5oICAgIHwgICAxNSArDQo+ID4gIDQgZmlsZXMg
-Y2hhbmdlZCwgMTM1MCBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2
-ZXJzL2Nsay9tZWRpYXRlay9jbGstbXQ4MTkyLmMNCj4gPiANCj4gDQo+IFsuLi5dDQo+IA0KPiA+
-ICtzdGF0aWMgaW50IGNsa19tdDgxOTJfYXBtaXhlZF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2
-aWNlICpwZGV2KQ0KPiA+ICt7DQo+ID4gKwlzdHJ1Y3QgY2xrX29uZWNlbGxfZGF0YSAqY2xrX2Rh
-dGE7DQo+ID4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGUgPSBwZGV2LT5kZXYub2Zfbm9kZTsN
-Cj4gPiArCWludCByOw0KPiA+ICsNCj4gPiArCWNsa19kYXRhID0gbXRrX2FsbG9jX2Nsa19kYXRh
-KENMS19BUE1JWEVEX05SX0NMSyk7DQo+ID4gKwlpZiAoIWNsa19kYXRhKQ0KPiA+ICsJCXJldHVy
-biAtRU5PTUVNOw0KPiA+ICsNCj4gPiArCW10a19jbGtfcmVnaXN0ZXJfcGxscyhub2RlLCBwbGxz
-LCBBUlJBWV9TSVpFKHBsbHMpLCBjbGtfZGF0YSk7DQo+ID4gKwlyID0gbXRrX2Nsa19yZWdpc3Rl
-cl9nYXRlcyhub2RlLCBhcG1peGVkX2Nsa3MsIEFSUkFZX1NJWkUoYXBtaXhlZF9jbGtzKSwgY2xr
-X2RhdGEpOw0KPiA+ICsJaWYgKHIpDQo+ID4gKwkJcmV0dXJuIHI7DQo+ID4gKw0KPiA+ICsJcmV0
-dXJuIG9mX2Nsa19hZGRfcHJvdmlkZXIobm9kZSwgb2ZfY2xrX3NyY19vbmVjZWxsX2dldCwgY2xr
-X2RhdGEpOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2Rldmlj
-ZV9pZCBvZl9tYXRjaF9jbGtfbXQ4MTkyW10gPSB7DQo+ID4gKwl7DQo+ID4gKwkJLmNvbXBhdGli
-bGUgPSAibWVkaWF0ZWssbXQ4MTkyLWFwbWl4ZWRzeXMiLA0KPiA+ICsJCS5kYXRhID0gY2xrX210
-ODE5Ml9hcG1peGVkX3Byb2JlLA0KPiA+ICsJfSwgew0KPiA+ICsJCS5jb21wYXRpYmxlID0gIm1l
-ZGlhdGVrLG10ODE5Mi10b3Bja2dlbiIsDQo+ID4gKwkJLmRhdGEgPSBjbGtfbXQ4MTkyX3RvcF9w
-cm9iZSwNCj4gPiArCX0sIHsNCj4gPiArCQkuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTIt
-aW5mcmFjZmciLA0KPiA+ICsJCS5kYXRhID0gY2xrX210ODE5Ml9pbmZyYV9wcm9iZSwNCj4gPiAr
-CX0sIHsNCj4gPiArCQkuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItcGVyaWNmZyIsDQo+
-ID4gKwkJLmRhdGEgPSBjbGtfbXQ4MTkyX3BlcmlfcHJvYmUsDQo+ID4gKwl9LCB7DQo+ID4gKwkJ
-Lyogc2VudGluZWwgKi8NCj4gPiArCX0NCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQg
-Y2xrX210ODE5Ml9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiA+ICt7DQo+
-ID4gKwlpbnQgKCpjbGtfcHJvYmUpKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpOw0KPiA+
-ICsJaW50IHI7DQo+ID4gKw0KPiA+ICsJY2xrX3Byb2JlID0gb2ZfZGV2aWNlX2dldF9tYXRjaF9k
-YXRhKCZwZGV2LT5kZXYpOw0KPiA+ICsJaWYgKCFjbGtfcHJvYmUpDQo+ID4gKwkJcmV0dXJuIC1F
-SU5WQUw7DQo+ID4gKw0KPiA+ICsJciA9IGNsa19wcm9iZShwZGV2KTsNCj4gPiArCWlmIChyKQ0K
-PiA+ICsJCWRldl9lcnIoJnBkZXYtPmRldiwgImNvdWxkIG5vdCByZWdpc3RlciBjbG9jayBwcm92
-aWRlcjogJXM6ICVkXG4iLCBwZGV2LT5uYW1lLCByKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gcjsN
-Cj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgY2xrX210
-ODE5Ml9kcnYgPSB7DQo+ID4gKwkucHJvYmUgPSBjbGtfbXQ4MTkyX3Byb2JlLA0KPiA+ICsJLmRy
-aXZlciA9IHsNCj4gPiArCQkubmFtZSA9ICJjbGstbXQ4MTkyIiwNCj4gPiArCQkub2ZfbWF0Y2hf
-dGFibGUgPSBvZl9tYXRjaF9jbGtfbXQ4MTkyLA0KPiA+ICsJfSwNCj4gPiArfTsNCj4gPiArDQo+
-ID4gK3N0YXRpYyBpbnQgX19pbml0IGNsa19tdDgxOTJfaW5pdCh2b2lkKQ0KPiA+ICt7DQo+ID4g
-KwlyZXR1cm4gcGxhdGZvcm1fZHJpdmVyX3JlZ2lzdGVyKCZjbGtfbXQ4MTkyX2Rydik7DQo+ID4g
-K30NCj4gPiArDQo+ID4gK2FyY2hfaW5pdGNhbGwoY2xrX210ODE5Ml9pbml0KTsNCj4gDQo+IERv
-IHdlIHJlYWxseSBuZWVkIGFsbCB0aGVzZSBjbG9ja3MgdGhhdCBlYXJseT8NCj4gV2h5IGRvbid0
-IHdlIHVzZSBDTEtfT0ZfREVDTEFSRV9EUklWRVIoKSB0aGVuIGFuZCB3aHkgZG8gd2UgaW5pdGlh
-bGl6ZSBzb21lDQo+IGNsb2NrcyBDTEtfT0ZfREVDTEFSRV9EUklWRVIgYW5kIG90aGVyIHdpdGgg
-YXJjaF9pbml0Y2FsbD8NCj4gDQo+IEkga25vdyB0aGF0IHRoaXMgaXMgaW4gb3RoZXIgZHJpdmVy
-cyBmb3IgTWVkaWFUZWsgU29DcywgYnV0IHRoYXQgZG9lcyBub3QgbWVhbg0KPiBpdCdzIHRoZSBy
-aWdodCBhcHByb2FjaC4NCj4gDQoNCkkgZ3Vlc3MgeW91IG1lYW4gQ0xLX09GX0RFQ0xBUkUoKSBi
-dXQgbm90IENMS19PRl9ERUNMQVJFX0RSSVZFUigpLCBhbSBJDQpjb3JyZWN0Pw0KSSBzYXcgdGhl
-cmUgaGFkIHNvbWUgZGlzY3Vzc2lvblsxXVsyXSBhYm91dCBpbml0aWFsaXppbmcgdGhlc2UgYmFz
-aWMNCmNsb2NrcyBieSBDTEtfT0ZfREVDTEFSRSgpIG9yIHRoZSBjdXJyZW50IGltcGxlbWVudGF0
-aW9uIGJ5IGFyY2hfaW5pdCgpLg0KQ291bGQgSSBoYXZlIG1vcmUgb2YgeW91ciBvcGluaW9uIG9u
-IHRoaXMgZGlzY3Vzc2lvbj8NClsxXQ0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9q
-ZWN0L2xpbnV4LW1lZGlhdGVrL3BhdGNoLzE0NTQ2NjUwNTAtMzc3NzYtNS1naXQtc2VuZC1lbWFp
-bC1qYW1lc2pqLmxpYW9AbWVkaWF0ZWsuY29tLw0KWzJdDQpodHRwczovL3BhdGNod29yay5rZXJu
-ZWwub3JnL3Byb2plY3QvbGludXgtbWVkaWF0ZWsvcGF0Y2gvMTQ2MDYyMTUxNC02NTE5MS01LWdp
-dC1zZW5kLWVtYWlsLWphbWVzamoubGlhb0BtZWRpYXRlay5jb20vDQoNCkFzIHRvIENMS19PRl9E
-RUNMQVJFX0RSSVZFUigpLCB3ZSBoYXZlIHRvIGluaXRpYWxpemUgdGhlIGNsb2NrcyBlYXJsaWVy
-DQpmb3IgdGltZXIoY2xvY2tzb3VyY2UpIGRyaXZlciBieSB0aGlzIHdheS4NCg0KPiANCj4gPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLW11eC5oIGIvZHJpdmVycy9jbGsv
-bWVkaWF0ZWsvY2xrLW11eC5oDQo+ID4gaW5kZXggZjU2MjVmNC4uYWZiYzdkZiAxMDA2NDQNCj4g
-PiAtLS0gYS9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstbXV4LmgNCj4gPiArKysgYi9kcml2ZXJz
-L2Nsay9tZWRpYXRlay9jbGstbXV4LmgNCj4gPiBAQCAtNzcsNiArNzcsMjEgQEAgc3RydWN0IG10
-a19tdXggew0KPiA+ICAJCQlfd2lkdGgsIF9nYXRlLCBfdXBkX29mcywgX3VwZCwJCQlcDQo+ID4g
-IAkJCUNMS19TRVRfUkFURV9QQVJFTlQpDQo+ID4gIA0KPiA+ICsjZGVmaW5lIE1VWF9DTFJfU0VU
-X1VQRF9GTEFHUyhfaWQsIF9uYW1lLCBfcGFyZW50cywgX211eF9vZnMsCQlcDQo+ID4gKwkJCV9t
-dXhfc2V0X29mcywgX211eF9jbHJfb2ZzLCBfc2hpZnQsIF93aWR0aCwJXA0KPiA+ICsJCQlfdXBk
-X29mcywgX3VwZCwgX2ZsYWdzKQkJCQlcDQo+ID4gKwkJR0FURV9DTFJfU0VUX1VQRF9GTEFHUyhf
-aWQsIF9uYW1lLCBfcGFyZW50cywgX211eF9vZnMsCVwNCj4gPiArCQkJX211eF9zZXRfb2ZzLCBf
-bXV4X2Nscl9vZnMsIF9zaGlmdCwgX3dpZHRoLAlcDQo+ID4gKwkJCTAsIF91cGRfb2ZzLCBfdXBk
-LCBfZmxhZ3MsCQkJXA0KPiA+ICsJCQltdGtfbXV4X2Nscl9zZXRfdXBkX29wcykNCj4gPiArDQo+
-ID4gKyNkZWZpbmUgTVVYX0NMUl9TRVRfVVBEKF9pZCwgX25hbWUsIF9wYXJlbnRzLCBfbXV4X29m
-cywJCQlcDQo+ID4gKwkJCV9tdXhfc2V0X29mcywgX211eF9jbHJfb2ZzLCBfc2hpZnQsIF93aWR0
-aCwJXA0KPiA+ICsJCQlfdXBkX29mcywgX3VwZCkJCQkJCVwNCj4gPiArCQlNVVhfQ0xSX1NFVF9V
-UERfRkxBR1MoX2lkLCBfbmFtZSwgX3BhcmVudHMsCQlcDQo+ID4gKwkJCV9tdXhfb2ZzLCBfbXV4
-X3NldF9vZnMsIF9tdXhfY2xyX29mcywgX3NoaWZ0LAlcDQo+ID4gKwkJCV93aWR0aCwgX3VwZF9v
-ZnMsIF91cGQsCUNMS19TRVRfUkFURV9QQVJFTlQpDQo+ID4gKw0KPiANCj4gV2h5IGNhbid0IHdl
-IGRvIHNvbWV0aGluZyBsaWtlOg0KPiANCj4gI2RlZmluZSBNVVhfQ0xSX1NFVF9VUEQoX2lkLCBf
-bmFtZSwgX3BhcmVudHMsIF9tdXhfb2ZzLAkJCVwNCj4gCQkJX211eF9zZXRfb2ZzLCBfbXV4X2Ns
-cl9vZnMsIF9zaGlmdCwgX3dpZHRoLAlcDQo+IAkJCV91cGRfb2ZzLCBfdXBkKQkJCQkJXA0KPiAJ
-CUdBVEVfQ0xSX1NFVF9VUERfRkxBR1MoX2lkLCBfbmFtZSwgX3BhcmVudHMsIF9tdXhfb2ZzLAlc
-DQo+IAkJCV9tdXhfc2V0X29mcywgX211eF9jbHJfb2ZzLCBfc2hpZnQsIF93aWR0aCwJXA0KPiAJ
-CQkwLCBfdXBkX29mcywgX3VwZCwgQ0xLX1NFVF9SQVRFX1BBUkVOVCwJCQlcDQo+IAkJCW10a19t
-dXhfY2xyX3NldF91cGRfb3BzKQ0KPiANCj4gPiAgc3RydWN0IGNsayAqbXRrX2Nsa19yZWdpc3Rl
-cl9tdXgoY29uc3Qgc3RydWN0IG10a19tdXggKm11eCwNCj4gPiAgCQkJCSBzdHJ1Y3QgcmVnbWFw
-ICpyZWdtYXAsDQo+ID4gIAkJCQkgc3BpbmxvY2tfdCAqbG9jayk7DQo+ID4gDQoNCkl0IGNvdWxk
-IGJlLCBzbyBJJ2xsIGZpeCBpbiBuZXh0IHBhdGNoLg0KDQo+IA0KPiBfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBMaW51eC1tZWRpYXRlayBtYWlsaW5n
-IGxpc3QNCj4gTGludXgtbWVkaWF0ZWtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW1lZGlhdGVrDQoNCg==
-
+On 2021/2/10 14:43, Herbert Xu Wrote:
+> On Sun, Feb 07, 2021 at 06:04:40PM +0800, Longfang Liu wrote:
+>> If the header file "crypto/internal/hash.h" not
+>> added, the allocation of crypto_tfm will fail when
+>> the shash algorithm calculates the hash
+>> through the software.
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+>> ---
+>>  drivers/crypto/hisilicon/sec2/sec_crypto.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> index d2c4a2c..988faf7 100644
+>> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+>> @@ -7,6 +7,7 @@
+>>  #include <crypto/des.h>
+>>  #include <crypto/hash.h>
+>>  #include <crypto/internal/aead.h>
+>> +#include <crypto/internal/hash.h>
+> 
+> Please explain what exactly in this file needs this header file.
+> 
+> As it stands you could just be hiding real bugs.
+> 
+> Thanks,
+> 
+The crypto_alloc_shash() interface in the header file
+will be used in the function sec_aead_ctx_init(),
+If this header file is not added, calling the interface
+crypto_alloc_shash() during the initialization of the
+aead algorithm will return an error.
+Thanks,
