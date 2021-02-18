@@ -2,65 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D2A31EF80
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A168931EF86
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhBRTPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:15:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232174AbhBRRym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:54:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95E7364E2E;
-        Thu, 18 Feb 2021 17:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613670839;
-        bh=1Mckai72+Ezeyz93253E8fXqlylV55QI3DAGPILrLMc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JsiKVEXuQNa9/iKvBCU0cg82KvNz2O8DsIEUHXvdWZg5Ii/1g4iBxFOFYZiWxZksz
-         j9cX884hxHbL2q2vpo4tm5WIDtc9tAB+aitMfwx6mTuvcQdNefqrLSzptJZIHvoHp8
-         +/4w7K1E5X8BAuEsRU8uq0Q+vwf3Tl8qKRCtmh2E=
-Date:   Thu, 18 Feb 2021 18:53:56 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <YC6ptKgsMh20tmu6@kroah.com>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
- <YBBkplRxzzmPYKC+@kroah.com>
- <YCzknUTDytY8gRA8@kroah.com>
- <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
- <20210218165104.GC2013@sasha-vm>
- <00b9e2fb-d818-58d6-edae-4dbd6aa814f7@gmail.com>
+        id S232846AbhBRTQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:16:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233640AbhBRRzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 12:55:52 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9C0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:55:12 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id d7so2655387otq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:55:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tgi2PT/4+anU3pfYa8JYNys7ChKyAjV7/eCb1ADvlbQ=;
+        b=qnE6/yHiDn67OdK7pvvUIINFuUG0S7jPrr6b+2c9mMjTNonTCnBWnGpIwWe1t3UQcG
+         CpBm51EqMP4Wns59KX4czCyugG21sPLFkFMHuYE7SkXkX8NfYQmKW013EmuPJWXwqy+3
+         +hEyGZm/ZL+7DK+fNy9PTWj4OFleCawPLaOK+fXIwwDiIvDVbFXMx3L76C04CpnDdhZd
+         yRh+2OFj6Xs7Foamx9ojJ+rktQ6XVgtH4xk/JQohBbaI0u7VUlxmVTKHTV1OVfS4u8ZF
+         ChRahBKg3/KFerxqZZq+cRsFzwZjPWHc07YQ4mKX0cgPTOVOdbdhztLFuBVv1Z16Bfbx
+         IpoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tgi2PT/4+anU3pfYa8JYNys7ChKyAjV7/eCb1ADvlbQ=;
+        b=N6i25l2XDMiizzBYrwqiBGMkt+Dtn6rOeLZsiLBKT4TzsikTaxcTz6+mp1gSSC9ddc
+         Igv8o0AH8xuSDAqL+orPilyGXlVZGskkIyr+Wt1iHLNv9SDZBpy1/jmbRSrP8vkijyvB
+         YzBXFC4WM6RnFBJm65SQTjDFkAWCZySBnJzAFj5u/j6USZxxk1utBh3JB5Z1NjM2WakA
+         xRYH1tH1v8LmOM4wbtWwvahPbjj0f/D+NN/BbeHdasbTwtWJldk5Dk4hs+X8PymFmfjX
+         LCLU45cgsoDd9g4vcQgX85AsEdbCqvFHZ5LTMZexXGpWrjC8GQxNBUcT06yIpC1htkn6
+         gYjQ==
+X-Gm-Message-State: AOAM533kWxzHOKTpiujjgeA2QasFUFa3ZV6zfePbevLVQusJPMDCjsts
+        3OFGGUXOyfpXXA6zXqa8d9+EmO4Pby/J6bk90yReFA==
+X-Google-Smtp-Source: ABdhPJxFq2xp4sEJi4/hmbQAsrJdWcJiX+FB/+//cEcqbBtjBEZwTThD0tidD8SXZHFNNbODkrlqFAox11M6bmbDA3Q=
+X-Received: by 2002:a9d:7a47:: with SMTP id z7mr3786711otm.295.1613670911413;
+ Thu, 18 Feb 2021 09:55:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00b9e2fb-d818-58d6-edae-4dbd6aa814f7@gmail.com>
+References: <20210218100450.2157308-1-david.edmondson@oracle.com>
+ <708f2956-fa0f-b008-d3d2-93067f95783c@redhat.com> <cuntuq9ilg4.fsf@dme.org>
+ <8f9d4ef7-ddad-160b-2d94-69f4370e8702@redhat.com> <YC6XVrWPRQJ7V6Nd@google.com>
+In-Reply-To: <YC6XVrWPRQJ7V6Nd@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 18 Feb 2021 09:55:00 -0800
+Message-ID: <CALMp9eTX4Na2VTY2aU=-SUrGhst5aExdCB3f=4krKj1mFPgcqQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is valid
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, David Edmondson <dme@dme.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, kvm list <kvm@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 09:21:13AM -0800, Florian Fainelli wrote:
-> As a company, we are most likely shooting ourselves in the foot by not
-> having a point of coordination with the Linux Foundation and key people
-> like you, Greg and other participants in the stable kernel.
+On Thu, Feb 18, 2021 at 8:35 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Thu, Feb 18, 2021, Paolo Bonzini wrote:
+> > On 18/02/21 13:56, David Edmondson wrote:
+> > > On Thursday, 2021-02-18 at 12:54:52 +01, Paolo Bonzini wrote:
+> > >
+> > > > On 18/02/21 11:04, David Edmondson wrote:
+> > > > > When dumping the VMCS, retrieve the current guest value of EFER from
+> > > > > the kvm_vcpu structure if neither VM_EXIT_SAVE_IA32_EFER or
+> > > > > VM_ENTRY_LOAD_IA32_EFER is set, which can occur if the processor does
+> > > > > not support the relevant VM-exit/entry controls.
+> > > >
+> > > > Printing vcpu->arch.efer is not the best choice however.  Could we dump
+> > > > the whole MSR load/store area instead?
+> > >
+> > > I'm happy to do that, and think that it would be useful, but it won't
+> > > help with the original problem (which I should have explained more).
+> > >
+> > > If the guest has EFER_LMA set but we aren't using the entry/exit
+> > > controls, vm_read64(GUEST_IA32_EFER) returns 0, causing dump_vmcs() to
+> > > erroneously dump the PDPTRs.
+> >
+> > Got it now.  It would sort of help, because while dumping the MSR load/store
+> > area you could get hold of the real EFER, and use it to decide whether to
+> > dump the PDPTRs.
+>
+> EFER isn't guaranteed to be in the load list, either, e.g. if guest and host
+> have the same desired value.
+>
+> The proper way to retrieve the effective EFER is to reuse the logic in
+> nested_vmx_calc_efer(), i.e. look at VM_ENTRY_IA32E_MODE if EFER isn't being
+> loaded via VMCS.
 
-What does the LF have to do with this?
-
-We are here, on the mailing lists, working with everyone.  Just test the
--rc releases we make and let us know if they work or not for you, it's
-not a lot of "coordination" needed at all.
-
-Otherwise, if no one is saying that they are going to need these for 6
-years and are willing to use it in their project (i.e. and test it),
-there's no need for us to maintain it for that long, right?
-
-thanks,
-
-greg k-h
+Shouldn't dump_vmcs() simply dump the contents of the VMCS, in its
+entirety? What does it matter what the value of EFER is?
