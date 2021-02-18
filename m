@@ -2,187 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF5A31EF08
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C3A31EF09
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:57:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231298AbhBRSz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:55:29 -0500
-Received: from mail-co1nam11on2058.outbound.protection.outlook.com ([40.107.220.58]:19152
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231756AbhBRRGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:06:36 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dP2Z6jcJ65JwRhgMgLc4Bq5Ole5Qe3d4Q+4evcJKZviPPizjNw1AQwAdq3byNCg5TahKMLWWtQUvPfp9GRtMENnKEO8+PXZcbr6jbiZkrXZ3J+kBpwf7ywKbQWT8/BEmiuznB5Is4DcoM9BuLWB2LeAELevTxhlCgV+2SuMLFf1okYVDxano7FQ4+LVywX3WJrJ4XlLmLJfNzeZENcripHTkHXkvSBaLD2CrKyveOA96uluEz53h6OKbfY0kFQ1/lL2SVP7nS60ZVlH9ajvAMCl4TAa+eFUiip4rLVEERssDkqGA7H2S/h8OCWhIn/V1oKR6SZHZ9gNSLxbBe1uE4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8dJPWvzC+D/0J+wEx0asaP13QDTW+v37F98GQJOAjJQ=;
- b=DnrIhaqEF4GLbOcf9gJ2rMdm/3KEjMF0Shn0MgPcCIBDYk7MIKb4HUKUBzCzBFfQ02Tl/szEPBAyXzk7sg65ZDCNTL/tceOTrufGiHweg/Ko5awNxaLAQCASUtxJ8XYYk1Tp8qRXaQ/FsLYpbLA5uPcb9eWLGxHt2dNkyj1jkL7xhWJpFksmSX5CwUkQmDoJf/0clAc/KCOkSd5mPgb0ybUhvcSQUSOmgxI3YGk33nGEzA/CeNYeUzOCHKuWe46/fUPm5aq9ly45XfGo75A/cNXCv3N3i94+TjX5nA3Yt2cc9mWCocxMcNBK+tmDLKySxFC2Zx99cA/HODTTpL8p7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8dJPWvzC+D/0J+wEx0asaP13QDTW+v37F98GQJOAjJQ=;
- b=0I22ltQadlUhFDJJ/0s3+U1l0I6Y+TQvPwjhyXFVX3/dXN4TRBJamEIIP0e1woZFeRxdNtVnSnLmlvla6PWwUiIWnZbgTR+G3yb5DlsUz4Ru79a5enyncYMBewMUg4p5DGOQwDKX5i34TxUWxrIEyaReBLmVJpd/eG7fOcFrwf4=
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SA0PR12MB4415.namprd12.prod.outlook.com (2603:10b6:806:70::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Thu, 18 Feb
- 2021 17:05:23 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::24bb:3e53:c95e:cb8e%7]) with mapi id 15.20.3846.038; Thu, 18 Feb 2021
- 17:05:23 +0000
-From:   "Kalra, Ashish" <Ashish.Kalra@amd.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "rkrcmar@redhat.com" <rkrcmar@redhat.com>,
-        "joro@8bytes.org" <joro@8bytes.org>, "bp@suse.de" <bp@suse.de>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "srutherford@google.com" <srutherford@google.com>,
-        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>
-Subject: RE: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Thread-Topic: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
- ioctl
-Thread-Index: AQHW+o4w4C5VGgubRkqZlElkExidF6pbnD+AgADRN1CAACz4AIAA7nZggACrNwCAAAP8AA==
-Date:   Thu, 18 Feb 2021 17:05:23 +0000
-Message-ID: <SN6PR12MB2767A978C3A2B43982F2F4898E859@SN6PR12MB2767.namprd12.prod.outlook.com>
-References: <cover.1612398155.git.ashish.kalra@amd.com>
- <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
- <YCxrV4u98ZQtInOE@google.com>
- <SN6PR12MB2767168CA61257A85B29C26D8E869@SN6PR12MB2767.namprd12.prod.outlook.com>
- <YC1AkNPNET+T928c@google.com>
- <SN6PR12MB27676C0BF3BBA872E55D5FC78E859@SN6PR12MB2767.namprd12.prod.outlook.com>
- <YC6YOuJyNlSxKVR4@google.com>
-In-Reply-To: <YC6YOuJyNlSxKVR4@google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Enabled=true;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SetDate=2021-02-18T17:05:18Z;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Method=Privileged;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_Name=Public_0;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ActionId=c2c774a6-218c-4325-9e2d-775ee0a08af6;
- MSIP_Label_0d814d60-469d-470c-8cb0-58434e2bf457_ContentBits=1
-authentication-results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [183.83.213.136]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3f4a1dd7-1ee9-454b-dab5-08d8d42f6142
-x-ms-traffictypediagnostic: SA0PR12MB4415:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SA0PR12MB44155FD208EBDD4970D0C47D8E859@SA0PR12MB4415.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:873;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5+ILRHGHcqEUGT1hwEJtYyO3nUHEkz4nEQ4b8bUwJgEIwq3eFArrETnFVhpDojv57Ai1mWtxfuD1mtYqDsp7D6p4muJfpJHFROYFg+FaWVqeIIwVNug5FBZIxAZtWRDTH+XiyLdjC5rR3Cb/JwBQc0XY2wpRoVsYoNgXLhTp8UMWznN1wIpesvZK0XELCGECaQExRR1zPkQjt07UZEkb4NrkZ8T3HexWbqChinalvrFx+7Y9ok4rj99UZ0BXO4Xhj9fHCBltp/n9vI3nzdJXurLg6YZkUT2DW10FHHpUNT97AJ4YiOmWJ/3gEPrId7YbabE5RCTxBG2LvztU3dpl/ISmXIifButtA3TZk9B50Z8KhduJ2adp/47XHH5EHVXjovRicMcd3q3ilg3EGu8iNSSeFu+anv0GM/ShDUZtW3ifbmq5JbQhowG++asI0hdAy2QSdhLkW2hUfj7NhG+F0ZhPpk22QdvWSwa7zNdp7b4twuhLGd+7Tt6mCqxwr6y5CuPANaVf1Yjs0oUlzRi3pQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(376002)(396003)(366004)(9686003)(66556008)(66476007)(2906002)(83380400001)(316002)(71200400001)(66446008)(54906003)(8936002)(4326008)(7696005)(76116006)(26005)(6506007)(478600001)(5660300002)(86362001)(66946007)(33656002)(53546011)(8676002)(7416002)(55016002)(52536014)(6916009)(186003)(64756008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?UjibT6nnyR+shpL1HYkAQfOFf7fZfkZ4Hj25oEHHXN/862Hn7JsJBig8d3I5?=
- =?us-ascii?Q?SRenQi3MR6DVJA/NP8I17RziEcoggZcTc9Aw7/0kf13HHkEfEok+JEUbRy1/?=
- =?us-ascii?Q?ip6wMLx1wMudRNSRvg39sJe+Qb/R6L/d+zBCtDojtOPqr33BRKdq9qpzlLQD?=
- =?us-ascii?Q?zZY5sipIlonC/nj/ErBIEWFTE/MajAwos1gc1V/hME0oJpZyaxpnEEBnyG26?=
- =?us-ascii?Q?i6RXs7Pf4GUwySmBPZ5rZQ8QivUpcCP/mOFFlD0EHWdjuiliXvKxdzV57n1s?=
- =?us-ascii?Q?+M2PrzTqyVbPKah49cj0b1aI6NQrF4+9YtuYsC4MNZVN5LVHjtzKDUazVNKo?=
- =?us-ascii?Q?ydoypyNp8WXqTljNbAE0xvw23tqqOYwbH507E7YQlHJMYnOkjWKti1aQKDCR?=
- =?us-ascii?Q?9i0wK0watpi0LAHUiYzKFajt7Mx3r1RxGNFU/0tG9tu8WswuFR0fN4rFm5Ky?=
- =?us-ascii?Q?6hY+wHS/cpi4w+UDW8PlVxLZC5uY8OhexuS1Z4/uoLtn2aluLgOI+ByP71Dh?=
- =?us-ascii?Q?HKzk054jx/AyH2WVAd6SaxBddr4BrQW9RT/FfWy0IxxUpUqEMCVwoR3CSWgL?=
- =?us-ascii?Q?XK5oEN+f6nPpbQZEFruS7wnhpTICE2uIxLFd58HOKGMXVwZdhfKlTSqjhu0P?=
- =?us-ascii?Q?S/6VTa+vHQj6ZH74OslveWNBeOvbIN+kIC1JrlhaMyfbjp51ob9LVOfgP7LE?=
- =?us-ascii?Q?zUHVk92L9bK/GX70swmo/uMrw1qxQB4WKzEkCmj4U4R0uNPhhy6eYNqmDrvP?=
- =?us-ascii?Q?8BGdj9nDeid/OvXohGVw55EMgvXZUk47wAdTkYvfms74W4xncZEGEgNNAHxQ?=
- =?us-ascii?Q?6q57Dhb20mXVe4OkG5+UhNcW1w15qRBmk6FUeu1aCm7/afpUpRY2NrZOr1X4?=
- =?us-ascii?Q?iUeXIxVho/2zd7ZSD/IixSyrm8Vgh4SJXQkPkvM9DxaQMDswQm9I9RbOR6UG?=
- =?us-ascii?Q?jGLDpApJzLXl/xA62OHOAYAbIH90VlJBZNLoAmDFlGgu10RoVTS3zGZ1nyg9?=
- =?us-ascii?Q?6VacWH5GniU0yJdSHKyfnCyYKYjwWiZvm8epIiTgPsi1jP6R0cDGz1DWqJIN?=
- =?us-ascii?Q?lbVdnOiZ3jt1PgtxXb/JRwqiL4Klb5NhLdKUW6X7zGpaC0ycDYJg6rKS6DuI?=
- =?us-ascii?Q?fA9Aae0HWaqLcTvEt+8X+LLrA/V22THljAEfnIV8tmyeHhSRMQDVkHn7hiE7?=
- =?us-ascii?Q?iB6dCxuW1Ob+DZu5X9DByZKAMYC5iQG/5d5uA9n35zGDsb5gQKnx9zssYq7I?=
- =?us-ascii?Q?9rc+Gt3rUfybd/vYC7dzzBSW6tLTJQsuPP0o+jQBLu9UZYTKaGIQhbG5QNoY?=
- =?us-ascii?Q?bY3g8lRFsUZFg2SpE+QjYAnG?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232065AbhBRS4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:56:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231901AbhBRRHU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 12:07:20 -0500
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10278C0613D6;
+        Thu, 18 Feb 2021 09:06:25 -0800 (PST)
+Received: by mail-oo1-xc36.google.com with SMTP id f1so619590oou.0;
+        Thu, 18 Feb 2021 09:06:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IAeHU+ZuCyviiLpYZa0pCGB0W5e4M4NB3l+n2M4fYZU=;
+        b=W2AmWeei+CA/GEK4JmFfGdwEachPjWFFyto0odTBPeQ9zEqX03doEOA5p0/5q0mKPj
+         0S258LiVaiGbW6XdWkEPWad8Sy2NgjgtGYgoEWba8jvfvi4W29kEFHPCk5IbtaqGF/Di
+         lzGz1a5wWVwxEb7RjYCCQTpL/smiWu4C1jvcesTdXtwg4pyWORStNl8a8Xdfnirkfq7K
+         7i7F2/0va7wYCUFn/ZNzrgKjdQkZKOS2QuI2NSyf/FBRuDFaSaXpvR45ClXslV1QHkRB
+         9MnVmR6SCOIIe/BdWmf0keMfx7BEQ4TpWNJgekyxZrjx2nxg99hjV7U0Ac8+ka7kIIre
+         YXWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IAeHU+ZuCyviiLpYZa0pCGB0W5e4M4NB3l+n2M4fYZU=;
+        b=omP92B0k9VSgzMeYEDxxL7ZFnSMBb7/rE4jsKpAACyqaqjMt/vGUZfcShKr5dMIgkU
+         eMnlIpZiyJAyjj5XvtciCIWLOg9ecr1ZTOzbB5wBk5lNWpGpNKDwVlz1retkB5AA6++Z
+         GgtiE9p6DnZT0/ghitYd80hiTi8r0D/ixyi7tuWPUTZ5Cc09DW11XuutDD1K2DsF4tLP
+         6sH1VhprcpcYKjbJr9wXLyihSecMPpXa7tWvVcCcWHTgVnzYhCB03/WbXHO3jGCvkXwk
+         yy//KidvfZWS7f72Yjj2riaIlVL2+ljtb9HW7l2NtEETteY2+w1cXpYOW2K7PUW4x9cE
+         L8mw==
+X-Gm-Message-State: AOAM533sN86lzvhtToAW+f58637m8a2VoSjwvn+mKBnsyJagCRljU4Xk
+        huEDE5s+xANuZgy3PhtdiEeTRR+He/QJIoVbtA==
+X-Google-Smtp-Source: ABdhPJzkb2Wsxw93sktjBF57OYN8O/Neps2Jf8JqDDO4E3TPDKyViTk2GDUsHX4LYhOfw2va9fffTqZjko1jYxrirR8=
+X-Received: by 2002:a4a:3407:: with SMTP id b7mr3732250ooa.43.1613667984444;
+ Thu, 18 Feb 2021 09:06:24 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f4a1dd7-1ee9-454b-dab5-08d8d42f6142
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 17:05:23.2188
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: NUV7wMCEF6Glw9PmadvEg5JTnC21ZV9vAan+Xsy603L2K+MzPsYckhOueuM/yM34IgVdwebTs9ugjaPgpXII8Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4415
+References: <CAFSKS=Ncr-9s1Oi0GTqQ74sUaDjoHR-1P-yM+rNqjF-Hb+cPCA@mail.gmail.com>
+ <20210218150116.1521-1-marco.wenzel@a-eberle.de>
+In-Reply-To: <20210218150116.1521-1-marco.wenzel@a-eberle.de>
+From:   George McCollister <george.mccollister@gmail.com>
+Date:   Thu, 18 Feb 2021 11:06:12 -0600
+Message-ID: <CAFSKS=OpnDK83F6MWCpGDg2pdY-enJyusB5Th1RGvq8UC1WCNQ@mail.gmail.com>
+Subject: Re: [PATCH] net: hsr: add support for EntryForgetTime
+To:     Marco Wenzel <marco.wenzel@a-eberle.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Amol Grover <frextrite@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Arvid Brodin <Arvid.Brodin@xdin.com>, netdev@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Public Use]
+On Thu, Feb 18, 2021 at 9:01 AM Marco Wenzel <marco.wenzel@a-eberle.de> wrote:
+>
+> In IEC 62439-3 EntryForgetTime is defined with a value of 400 ms. When a
+> node does not send any frame within this time, the sequence number check
+> for can be ignored. This solves communication issues with Cisco IE 2000
+> in Redbox mode.
+>
+> Fixes: f421436a591d ("net/hsr: Add support for the High-availability Seamless Redundancy protocol (HSRv0)")
+> Signed-off-by: Marco Wenzel <marco.wenzel@a-eberle.de>
+> ---
+>  net/hsr/hsr_framereg.c | 9 +++++++--
+>  net/hsr/hsr_framereg.h | 1 +
+>  net/hsr/hsr_main.h     | 1 +
+>  3 files changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
+> index 5c97de459905..805f974923b9 100644
+> --- a/net/hsr/hsr_framereg.c
+> +++ b/net/hsr/hsr_framereg.c
+> @@ -164,8 +164,10 @@ static struct hsr_node *hsr_add_node(struct hsr_priv *hsr,
+>          * as initialization. (0 could trigger an spurious ring error warning).
+>          */
+>         now = jiffies;
+> -       for (i = 0; i < HSR_PT_PORTS; i++)
+> +       for (i = 0; i < HSR_PT_PORTS; i++) {
+>                 new_node->time_in[i] = now;
+> +               new_node->time_out[i] = now;
+> +       }
+>         for (i = 0; i < HSR_PT_PORTS; i++)
+>                 new_node->seq_out[i] = seq_out;
+>
+> @@ -411,9 +413,12 @@ void hsr_register_frame_in(struct hsr_node *node, struct hsr_port *port,
+>  int hsr_register_frame_out(struct hsr_port *port, struct hsr_node *node,
+>                            u16 sequence_nr)
+>  {
+> -       if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]))
+> +       if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]) &&
+> +           time_is_after_jiffies(node->time_out[port->type] +
+> +           msecs_to_jiffies(HSR_ENTRY_FORGET_TIME)))
+>                 return 1;
+>
+> +       node->time_out[port->type] = jiffies;
+>         node->seq_out[port->type] = sequence_nr;
+>         return 0;
+>  }
+> diff --git a/net/hsr/hsr_framereg.h b/net/hsr/hsr_framereg.h
+> index 86b43f539f2c..d9628e7a5f05 100644
+> --- a/net/hsr/hsr_framereg.h
+> +++ b/net/hsr/hsr_framereg.h
+> @@ -75,6 +75,7 @@ struct hsr_node {
+>         enum hsr_port_type      addr_B_port;
+>         unsigned long           time_in[HSR_PT_PORTS];
+>         bool                    time_in_stale[HSR_PT_PORTS];
+> +       unsigned long           time_out[HSR_PT_PORTS];
+>         /* if the node is a SAN */
+>         bool                    san_a;
+>         bool                    san_b;
+> diff --git a/net/hsr/hsr_main.h b/net/hsr/hsr_main.h
+> index 7dc92ce5a134..f79ca55d6986 100644
+> --- a/net/hsr/hsr_main.h
+> +++ b/net/hsr/hsr_main.h
+> @@ -21,6 +21,7 @@
+>  #define HSR_LIFE_CHECK_INTERVAL                 2000 /* ms */
+>  #define HSR_NODE_FORGET_TIME           60000 /* ms */
+>  #define HSR_ANNOUNCE_INTERVAL            100 /* ms */
+> +#define HSR_ENTRY_FORGET_TIME            400 /* ms */
+>
+>  /* By how much may slave1 and slave2 timestamps of latest received frame from
+>   * each node differ before we notify of communication problem?
+> --
+> 2.30.0
+>
 
+scripts/checkpatch.pl gives errors about DOS line endings but once
+that is resolved this looks good. I tested it on an HSR network with
+the software implementation and the xrs700x which uses offloading and
+everything still works. I don't have a way to force anything on the
+HSR network to reuse sequence numbers after 400ms.
 
------Original Message-----
-From: Sean Christopherson <seanjc@google.com>=20
-Sent: Thursday, February 18, 2021 10:39 AM
-To: Kalra, Ashish <Ashish.Kalra@amd.com>
-Cc: pbonzini@redhat.com; tglx@linutronix.de; mingo@redhat.com; hpa@zytor.co=
-m; rkrcmar@redhat.com; joro@8bytes.org; bp@suse.de; Lendacky, Thomas <Thoma=
-s.Lendacky@amd.com>; x86@kernel.org; kvm@vger.kernel.org; linux-kernel@vger=
-.kernel.org; srutherford@google.com; venu.busireddy@oracle.com; Singh, Brij=
-esh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIS=
-T ioctl
-
-On Thu, Feb 18, 2021, Kalra, Ashish wrote:
-> From: Sean Christopherson <seanjc@google.com>
->=20
-> On Wed, Feb 17, 2021, Kalra, Ashish wrote:
-> >> From: Sean Christopherson <seanjc@google.com> On Thu, Feb 04, 2021,=20
-> >> Ashish Kalra wrote:
-> >> > From: Brijesh Singh <brijesh.singh@amd.com>
-> >> >=20
-> >> > The ioctl is used to retrieve a guest's shared pages list.
-> >>=20
-> >> >What's the performance hit to boot time if KVM_HC_PAGE_ENC_STATUS=20
-> >> >is passed through to userspace?  That way, userspace could manage=20
-> >> >the set of pages >in whatever data structure they want, and these get=
-/set ioctls go away.
-> >>=20
-> >> What is the advantage of passing KVM_HC_PAGE_ENC_STATUS through to=20
-> >> user-space ?
-> >>=20
-> >> As such it is just a simple interface to get the shared page list=20
-> >> via the get/set ioctl's. simply an array is passed to these ioctl=20
-> >> to get/set the shared pages list.
->>=20
->> > It eliminates any probability of the kernel choosing the wrong data=20
->> > structure, and it's two fewer ioctls to maintain and test.
->>=20
->> The set shared pages list ioctl cannot be avoided as it needs to be=20
->> issued to setup the shared pages list on the migrated VM, it cannot be=20
->> achieved by passing KVM_HC_PAGE_ENC_STATUS through to user-space.
-
->Why's that?  AIUI, KVM doesn't do anything with the list other than pass i=
-t back to userspace.  Assuming that's the case, userspace can just hold ont=
-o the list >for the next migration.
-
-KVM does use it as part of the SEV DBG_DECTYPT API, within sev_dbg_decrypt(=
-) to check if the guest page(s) are encrypted or not,
-and accordingly use it to decide whether to decrypt the guest page(s) and r=
-eturn that back to user-space or just return it as it is.
-
-Thanks,
-Ashish
+Reviewed-by: George McCollister <george.mccollister@gmail.com
+Tested-by: George McCollister <george.mccollister@gmail.com
