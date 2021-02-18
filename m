@@ -2,193 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB3031EA5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884D831EA73
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232645AbhBRNSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:18:14 -0500
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:9822 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229769AbhBRLm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:42:29 -0500
-X-IronPort-AV: E=Sophos;i="5.81,187,1610406000"; 
-   d="scan'208";a="493656325"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 12:29:02 +0100
-Date:   Thu, 18 Feb 2021 12:29:02 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coccinelle: misc: add swap script
-In-Reply-To: <4e913cc4-cb86-4552-bced-a89cbecca3b2@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2102181227230.2748@hadrien>
-References: <20210216080133.455456-1-efremov@linux.com> <alpine.DEB.2.22.394.2102172224570.3081@hadrien> <c2b60288-3e46-14e3-9be2-3f75366a4b47@linux.com> <alpine.DEB.2.22.394.2102181114380.2748@hadrien> <4e913cc4-cb86-4552-bced-a89cbecca3b2@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S233568AbhBRN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:29:28 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49851 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230218AbhBRLq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:46:26 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 11IBV7Lt013142;
+        Thu, 18 Feb 2021 12:31:07 +0100
+Date:   Thu, 18 Feb 2021 12:31:07 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <20210218113107.GA12547@1wt.eu>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
+ <YBBkplRxzzmPYKC+@kroah.com>
+ <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <YC4atKmK7ZqlOGER@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC4atKmK7ZqlOGER@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 18, 2021 at 08:43:48AM +0100, Greg Kroah-Hartman wrote:
+> On Wed, Feb 17, 2021 at 11:48:21AM -0800, Scott Branden wrote:
+> > Other difficulty with the LTS version is the frequency it is updated.
 
+What a stange statement! So basically if fixes come in quickly so that
+customers are not exposed too long to well-known issues, it's a difficulty ?
+I guess by now every serious OS vendor provides at least weekly fixes, and
+at an era where devices are all interconnected, it's really necessary
+(unless of course you don't care about your customer's security).
 
-On Thu, 18 Feb 2021, Denis Efremov wrote:
+> > We would not
+> > pickup the changes that frequently to test.  A quarterly, bi-annually, or when a critical fix
+> > is identified would be when we update and perform any meaningful testing when in maintainence.
+> 
+> How are you "identifying" these "critical fixes"?  We fix at least one
+> known security issue a week, and probably multitudes of
+> unknown-at-this-moment ones.  How are you determining when you need to
+> send a new base kernel update off to your customers?  At such long
+> intervals it feels like anyone using your kernel releases is woefully
+> insecure.
 
->
->
-> On 2/18/21 1:17 PM, Julia Lawall wrote:
-> >
-> >
-> > On Thu, 18 Feb 2021, Denis Efremov wrote:
-> >
-> >>
-> >>
-> >> On 2/18/21 12:31 AM, Julia Lawall wrote:
-> >>>> +@depends on patch@
-> >>>> +identifier tmp;
-> >>>> +expression a, b;
-> >>>> +type T;
-> >>>> +@@
-> >>>> +
-> >>>> +(
-> >>>> +- T tmp;
-> >>>> +|
-> >>>> +- T tmp = 0;
-> >>>> +|
-> >>>> +- T *tmp = NULL;
-> >>>> +)
-> >>>> +... when != tmp
-> >>>> +- tmp = a;
-> >>>> +- a = b;
-> >>>> +- b = tmp;
-> >>>> ++ swap(a, b);
-> >>>> +... when != tmp
-> >>>
-> >>> In this rule and the next one, if you remove the final ; from the b = tmp
-> >>> line and from the swap line, and put it into context code afterwards, them
-> >>> the generated code looks better on cases like fs/xfs/xfs_inode.c in the
-> >>> function xfs_lock_two_inodes where two successive swap calls are
-> >>> generated.
-> >>>
-> >>> There are also some cases such as drivers/net/wireless/ath/ath5k/phy.c in
-> >>> the function ath5k_hw_get_median_noise_floor where the swap code makes up
-> >>> a whole if branch.
-> >>
-> >>> In this cases it would be good to remove the {}.
-> >>
-> >> How this can be handled?
-> >>
-> >> If I use this pattern:
-> >> @depends on patch@
-> >> identifier tmp;
-> >> expression a, b;
-> >> @@
-> >>
-> >> (
-> >>   if (...)
-> >> - {
-> >> -       tmp = a;
-> >> -       a = b;
-> >> -       b = tmp
-> >> +       swap(a, b)
-> >>         ;
-> >> - }
-> >> |
-> >> -       tmp = a;
-> >> -       a = b;
-> >> -       b = tmp
-> >> +       swap(a, b)
-> >>         ;
-> >> )
-> >>
-> >> The tool fails with error:
-> >>
-> >> EXN: Failure("rule starting on line 58: already tagged token:\nC code
-> >> context\nFile \"drivers/net/wireless/ath/ath5k/phy.c\", line 1574,
-> >> column 4, charpos = 41650\n around = 'sort',\n whole content =
-> >> \t\t\t\tsort[j - 1] = tmp;") in drivers/net/wireless/ath/ath5k/phy.c
-> >
-> > A disjunction basically says "at this node in the cfg, can I match the
-> > first patter, or can I match the second pattern, etc."  Unfortunately in
-> > this case the two branches start matching at different nodes, so the short
-> > circuit aspect of a disjunction isn't used, and it matches both patterns.
-> >
-> > The solution is to just make two rules.  The first for the if case and the
-> > second for everything else.
-> >
->
->   if (...)
-> - {
-> -       tmp = a;
-> -       a = b;
-> -       b = tmp
-> +       swap(a, b)
->         ;
-> - }
->
->
-> This produces "single-line ifs".
-> Maybe generated patches can be improved somehow?
-> Moving -+; doesn't help in this case.
++1! It seems like this dangerous practice will never end :-(
 
-There is clearly some problem with the management of newlines...
+Let me explain a personal experience. When I took over 2.6.32 many years
+ago, Greg asked me to adapt to the new maintenance process involving the
+patch reviews. At first I feared that it would increase my amount of work.
+And it did. But I also discovered how important these reviews were, because
+I started to get lots of "don't take this one in this version" and more
+importantly "if you merge this you'll need these ones as well". And very
+quickly I discovered how bogus the branches I used to maintain before
+had been, given the high feedback ratio!
 
-The other alternative is to just have one rule for introducing swap and
-another for removing the braces around a swap, ie
+So based on this experience, I can assure anyone doing cherry-picks in
+their garage from LTS kernels that they're doing crap and that they must
+not distribute these kernels to anyone because THESE KERNELS ARE DANGEROUS.
+It's even very easy to introduce vulnerabilities by doing this!
 
-if (...)
-- {
-  swap(...);
-- }
+The only set of fixes that can be trusted are the "official" stable
+kernels, because they are the only ones that are approved by the patches
+authors themselves. Adding more stuff on top of stable kernels is fine
+(and done at your own risk), but randomly dropping stuff from stable
+kernels just because you don't think you need that is totally non-sense
+and must not be done anymore!
 
-I don't think it would be motivated to remove the newline in that case.
-
-julia
-
->
-> diff -u -p a/drivers/net/wireless/ath/ath9k/calib.c b/drivers/net/wireless/ath/ath9k/calib.c
-> --- a/drivers/net/wireless/ath/ath9k/calib.c
-> +++ b/drivers/net/wireless/ath/ath9k/calib.c
-> @@ -32,11 +32,7 @@ static int16_t ath9k_hw_get_nf_hist_mid(
->
->         for (i = 0; i < ATH9K_NF_CAL_HIST_MAX - 1; i++) {
->                 for (j = 1; j < ATH9K_NF_CAL_HIST_MAX - i; j++) {
-> -                       if (sort[j] > sort[j - 1]) {
-> -                               nfval = sort[j];
-> -                               sort[j] = sort[j - 1];
-> -                               sort[j - 1] = nfval;
-> -                       }
-> +                       if (sort[j] > sort[j - 1]) swap(sort[j], sort[j - 1]);
->                 }
->         }
->         nfval = sort[(ATH9K_NF_CAL_HIST_MAX - 1) >> 1];
-> diff -u -p a/drivers/net/wireless/ath/ath9k/ar9003_calib.c b/drivers/net/wireless/ath/ath9k/ar9003_calib.c
-> --- a/drivers/net/wireless/ath/ath9k/ar9003_calib.c
-> +++ b/drivers/net/wireless/ath/ath9k/ar9003_calib.c
-> @@ -1011,19 +1011,11 @@ static void __ar955x_tx_iq_cal_sort(stru
->                 for (ix = 0; ix < MAXIQCAL - 1; ix++) {
->                         for (iy = ix + 1; iy <= MAXIQCAL - 1; iy++) {
->                                 if (coeff->mag_coeff[i][im][iy] <
-> -                                   coeff->mag_coeff[i][im][ix]) {
-> -                                       temp = coeff->mag_coeff[i][im][ix];
-> -                                       coeff->mag_coeff[i][im][ix] =
-> -                                               coeff->mag_coeff[i][im][iy];
-> -                                       coeff->mag_coeff[i][im][iy] = temp;
-> -                               }
-> +                                   coeff->mag_coeff[i][im][ix]) swap(coeff->mag_coeff[i][im][ix],
-> +                                                                     coeff->mag_coeff[i][im][iy]);
->                                 if (coeff->phs_coeff[i][im][iy] <
-> -                                   coeff->phs_coeff[i][im][ix]) {
-> -                                       temp = coeff->phs_coeff[i][im][ix];
-> -                                       coeff->phs_coeff[i][im][ix] =
-> -                                               coeff->phs_coeff[i][im][iy];
-> -                                       coeff->phs_coeff[i][im][iy] = temp;
-> -                               }
-> +                                   coeff->phs_coeff[i][im][ix]) swap(coeff->phs_coeff[i][im][ix],
-> +                                                                     coeff->phs_coeff[i][im][iy]);
->
-> Thanks,
-> Denis
->
+Willy
