@@ -2,105 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEB131EAFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C6231EB31
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbhBROdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 09:33:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232937AbhBRMmW (ORCPT
+        id S231790AbhBRO6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 09:58:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37066 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231480AbhBRMy2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:42:22 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1311AC06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:41:41 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id o82so3494924wme.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:41:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2yM4QIJUWbnv3qV7hB4p/81CEeJSilGooTOMXeB9PUs=;
-        b=ZgM2FNfs7o9TAWAekIEDSwUHlRQJ/N6cfdg7dInG++laCTbXZDcPCcwEpAnqkQE5Xq
-         bZybIRR8lSn+BT6HcZ2Xi3HWsdyPVwV4BtOPvGBrX9beN4qTvI2CuZVxt3+2UPlEDHcO
-         xF24S8tJpaHtJ7EngNI+Acgobz1M8IEpuwC3c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2yM4QIJUWbnv3qV7hB4p/81CEeJSilGooTOMXeB9PUs=;
-        b=T6yvc0JehTO09COJ2nt3GshTSz3q3nIlLdMODRihNikmH47ediNid+TuGyR8+QOFg4
-         o7TRMyM2T4k7HrNbN/JadUGIThpS/VTRTbzE9vWWfX0mB/TN7YkpCWv1AxaBBf/A+CyL
-         9XVog8euXg7NSdaYpJxfUg2xYs1csaCxy3FU1QbwOqNlmiZkOauNoK4LfoZMxjfa/orI
-         XmRQAuqoThyH+/ejvPp1OekIUkiErwjt43cy/e3nBpD2RxI9K46VX6+oFaLFQm6dOkZq
-         5759Gahr0ubA/f9NLDpgALRtdbF4QgR+PZhnzjRAyRJ/vVdnEsXkm+NGdjWGmUZf07Qt
-         A+ZQ==
-X-Gm-Message-State: AOAM533DugjjEkoeuBY2R0XZLewdDfWjEyjqTN9qOJaRrBdGbCpccwJu
-        tD5X7rJtRr/gaRtxDVbWSofaVw==
-X-Google-Smtp-Source: ABdhPJwQMeBhuVXrSgkkQURsWUYGotN7xdnkauFq9ofOY1yaOMlv971ciD9cGMV+0Vw/Lkn1PJqjew==
-X-Received: by 2002:a1c:60c1:: with SMTP id u184mr3515552wmb.22.1613652099731;
-        Thu, 18 Feb 2021 04:41:39 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:f7e9])
-        by smtp.gmail.com with ESMTPSA id o13sm9699836wro.15.2021.02.18.04.41.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 04:41:39 -0800 (PST)
-Date:   Thu, 18 Feb 2021 12:41:39 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v4] printk: Userspace format enumeration support
-Message-ID: <YC5ggyeC0uqtOD6R@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YC5b4+hTjrGwG22o@chrisdown.name>
- <YC5flsiUEZnPs7qz@alley>
+        Thu, 18 Feb 2021 07:54:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613652781;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KAPWiMLdVgpL54iOswvuAK9eFuhy8zwjl8z04LgGsM0=;
+        b=Q3DzArRYmty0FekwceP55r/OERcFfQ07OE8GOdmhWDgSjIjtgBk5XlQ8Sa8jHvCrDNq5l6
+        nStT7WJ/DpqgCQm/aAJQVJWUwzsKJaDQ6NWeiQhpIUMgprAl9viYBizCkuGXRDg8oyAN1K
+        zHsWeTaQ2WFuke50fmY1Bsc2fIny1YA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-579-iA1Zs0AHPcal5N-Lhv75GQ-1; Thu, 18 Feb 2021 07:41:54 -0500
+X-MC-Unique: iA1Zs0AHPcal5N-Lhv75GQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F202AFA81;
+        Thu, 18 Feb 2021 12:41:51 +0000 (UTC)
+Received: from ovpn-114-233.ams2.redhat.com (ovpn-114-233.ams2.redhat.com [10.36.114.233])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D17CC6A03D;
+        Thu, 18 Feb 2021 12:41:45 +0000 (UTC)
+Message-ID: <639082dd7bddce31122200cc0e587c482379d1a7.camel@redhat.com>
+Subject: Re: possible deadlock in mptcp_push_pending
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+d1b1723faccb7a43f6d1@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        mptcp@lists.01.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Date:   Thu, 18 Feb 2021 13:41:44 +0100
+In-Reply-To: <000000000000787b8805bb8b96ce@google.com>
+References: <000000000000787b8805bb8b96ce@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YC5flsiUEZnPs7qz@alley>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek writes:
->> - Move to another file, kernel/printk/debug_formats.c or similar
->
->Just to be sure. The filename should be ideally based on the configure
->option and API names, e.g. formats_index.c or so.
->
->The printk_ prefix is not strictly necessary. The file is in printk/
->directory. IMHO, we should have used ringbuffer.c but ...
+On Wed, 2021-02-17 at 09:31 -0800, syzbot wrote:
+> syzbot found the following issue on:
+> 
+> HEAD commit:    c48f8607 Merge branch 'PTP-for-DSA-tag_ocelot_8021q'
+> git tree:       net-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=16525cb0d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d1b1723faccb7a43f6d1
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d1b1723faccb7a43f6d1@syzkaller.appspotmail.com
+> 
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.11.0-rc7-syzkaller #0 Not tainted
+> --------------------------------------------
+> syz-executor.1/15600 is trying to acquire lock:
+> ffff888057303220 (sk_lock-AF_INET6){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1598 [inline]
+> ffff888057303220 (sk_lock-AF_INET6){+.+.}-{0:0}, at: mptcp_push_pending+0x28b/0x650 net/mptcp/protocol.c:1466
 
-Sure thing.
+Even this one is suspected to be a dup of 'WARNING in dst_release': the
+subflow socket lock family is reported to be 'sk_lock-AF_INET6', but
+subflows are created in kernel, and get 'k-sk_lock-AF_INET6'. This
+looks like [re]use after free, likely via msk->first, as in the
+suspected dup issue. Lacking a repro, I'm not 110% sure.
 
->> - Use `struct module *mod` instead of calling it module
->> - Add documentation for printk_fmt_sec (or whatever it will be called)
->> - Rename things to pf_, pi_, or something
->> - See if it's safe to pass a printk_fmt_sec to seq_file instead of a module
->
->Also it might be needed to store the pointer to struct module.
+@Dmitry, I'm wondering which is the preferred course of action here:
+tentatively marking this one as a dup, or leaving it alone till we get
+a reproducer?
 
-You mean, have a `struct module` entry for this? I somewhat suspect that 
-module.c maintainers are not likely to be happy about injecting non-generic 
-code into there if it's possible to be avoided, but maybe I'm misunderstanding? 
+Thanks!
 
->Both things together might allow to remove the global hash table and likely
->even the mutex.
->
->> - Handle cont + level
->> - Don't expose level/KERN_SOH directly
->
->I can't remember anything else. I am curious how v5 would look like.
+Paolo
 
-You can join the club on that one... ;-)
-
-Let me know if I understood you correctly on the `struct module` point, and 
-after that I'll start work on v5. Thanks!
