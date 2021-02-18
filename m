@@ -2,113 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB14B31EC60
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:39:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5674931EC73
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:49:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233792AbhBRQjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:39:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38304 "EHLO
+        id S233707AbhBRQmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:42:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhBRNxz (ORCPT
+        with ESMTP id S232041AbhBRN6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:53:55 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DECBC061756;
-        Thu, 18 Feb 2021 05:53:08 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id k13so3839330ejs.10;
-        Thu, 18 Feb 2021 05:53:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e4WxhpsUCYoI68epWSVeYmZpkTYdeeFLMrDY4wlplfI=;
-        b=pHcD0ghentGOj45fVxrfkX0xPlSZvJlC0kd55797B5+7/FDJlRdHC9SkXW6ugmrNgK
-         X6hGVuBi8QvWvI67Qz+hZ8U7osHbDuB6KtlpwRBkq/2shwzErWmKsoy3LTn6TQGu1jIl
-         Yo64yXGT9VUimy9DnHi719D1gvNEgtvWVw+U68Z7BoJaiOvA9lBI19trc+JMMBa+FlMw
-         jq00qgzP+phsfc+PuRwfmT8Ze9o8f5Jm2VJ3YOTcrF6wv+YcRf6K/VpPwCp8M03Q1wRi
-         wRrU5a+VkfQ8wMMML5nmr+vFJ64WpquXC8gxvaAl4x4hfAdn1BPVCq86muKBF1COxEvF
-         2AgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e4WxhpsUCYoI68epWSVeYmZpkTYdeeFLMrDY4wlplfI=;
-        b=IflLrPbg4VFK+tXbIiKlF5oLpGYSiSGOQQVPZfTXueiYSzCw7SayrbTYJrWOroU7/l
-         pblvlWWPx0jMrKnoGkJmB7H88TXO6X7sdwBsyUMPSJzq3yEI0UvS1MXXvYRLHwGMJus3
-         9dS/niSPFkdZD1bXhpZXBZ32pbBexjlGnvR5L4CBw3tZcOSqTervdECZfTqhGhSlh5us
-         wYr3xeoIZ6CfzBLaUQd+shh/GSgBzPJGh0A/sqoVJn5FFuXiVmamjSdCkJL+XJ3mzrEK
-         DIdpSjfREbooHsae3TGSnNrv01N5CsnxAL7v3WzlBEj5ViJ7Jeuh9BTjUcG+sfLn4oKX
-         AcRg==
-X-Gm-Message-State: AOAM531HnUhZy3MzaZMQCQuYcCTtZs0G0mSULcru1cny9Z//goRtaiFW
-        uAbGqlbXPFCVMB+3hHM4MMOPuH8htOC33bB7zw==
-X-Google-Smtp-Source: ABdhPJyjnj3etHjyJP96CAwGNcurZz9kLIYoqEOkH+GezZ/ZGsXaciElTkISu6NL/wj6DRkIqVBz6keGOskaBkyE5vc=
-X-Received: by 2002:a17:906:f85:: with SMTP id q5mr4044757ejj.108.1613656386829;
- Thu, 18 Feb 2021 05:53:06 -0800 (PST)
+        Thu, 18 Feb 2021 08:58:07 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9755AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:57:26 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id C0AB541E96;
+        Thu, 18 Feb 2021 13:53:12 +0000 (UTC)
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-20-marcan@marcan.st>
+ <20210215184012.sf6p6dbk5c25phdm@kozik-lap>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH v2 19/25] tty: serial: samsung_tty: IRQ rework
+Message-ID: <31068a51-736b-08f6-6c00-1779734465ea@marcan.st>
+Date:   Thu, 18 Feb 2021 22:53:10 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210218144815.5673ae6f@canb.auug.org.au> <874ki9vene.fsf@mpe.ellerman.id.au>
- <20210218223427.77109d83@canb.auug.org.au>
-In-Reply-To: <20210218223427.77109d83@canb.auug.org.au>
-From:   Rob Herring <robherring2@gmail.com>
-Date:   Thu, 18 Feb 2021 07:52:52 -0600
-Message-ID: <CAL_JsqJ9Ske4hkWn3uo8-nef29MQ1DkNdtE=gxbqj8CKrtQorg@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the devicetree tree with the powerpc tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210215184012.sf6p6dbk5c25phdm@kozik-lap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 5:34 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi Michael,
->
-> On Thu, 18 Feb 2021 21:44:37 +1100 Michael Ellerman <mpe@ellerman.id.au> wrote:
-> >
-> > I think it just needs this?
-> >
-> > diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-> > index 87e34611f93d..0492ca6003f3 100644
-> > --- a/arch/powerpc/kexec/elf_64.c
-> > +++ b/arch/powerpc/kexec/elf_64.c
-> > @@ -104,7 +104,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
-> >
-> >       fdt = of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
-> >                                          initrd_len, cmdline,
-> > -                                        fdt_totalsize(initial_boot_params));
-> > +                                        kexec_fdt_totalsize_ppc64(image));
-> >       if (!fdt) {
-> >               pr_err("Error setting up the new device tree.\n");
-> >               ret = -EINVAL;
-> >
->
-> I thought about that, but the last argument to
-> of_kexec_alloc_and_setup_fdt() is extra_fdt_size and the allocation
-> done is for this:
->
-> fdt_size = fdt_totalsize(initial_boot_params) +
->                    (cmdline ? strlen(cmdline) : 0) +
->                    FDT_EXTRA_SPACE +
->                    extra_fdt_size;
->
-> and kexec_fdt_totalsize_ppc64() also includes
-> fdt_totalsize(initial_boot_params) so I was not sure.  Maybe
-> kexec_fdt_totalsize_ppc64() needs modification as well?
+On 16/02/2021 03.40, Krzysztof Kozlowski wrote:
+> On Mon, Feb 15, 2021 at 09:17:07PM +0900, Hector Martin wrote:
+>> * Split out s3c24xx_serial_tx_chars from s3c24xx_serial_tx_irq,
+>>    where only the latter acquires the port lock.
+> 
+> I miss here information why you do all this.
 
-You're both right. Michael's fix is sufficient for the merge. The only
-risk with a larger size is failing to allocate it, but we're talking
-only 10s of KB. Historically until the commit causing the conflict,
-PPC was just used 2x fdt_totalsize(initial_boot_params). You could
-drop 'fdt_size = fdt_totalsize(initial_boot_params) + (2 *
-COMMAND_LINE_SIZE);' from kexec_fdt_totalsize_ppc64() as well, but
-then the function name is misleading.
+Added an explanation for v3. This is used by a subsequent patch in the 
+series.
 
-Lakshmi can send a follow-up patch to fine tune the size and rename
-kexec_fdt_totalsize_ppc64.
+>>
+>> * For S3C64xx, return IRQ_NONE if no flag bits were set, so the
+>>    interrupt core can detect IRQ storms. Note that both IRQ handlers
+>>    always return IRQ_HANDLED anyway, so 'or' logic isn't necessary here,
+>>    if either handler ran we are always going to return IRQ_HANDLED.
+> 
+> It looks like separate patch. Your patches should do only one thing at
+> once. The fact that you have here three bullet points is a warning
+> sign. This is even more important if you do some refactorings and
+> cleanups which should not affect functionality. Hiding there changes
+> which could affect functionality is a no-go.
 
-Rob
+I've reverted this one. I don't think it should affect functionality, 
+but I don't have any way to test on these devices, so I'll leave it to 
+someone else to be safe :)
+
+>>
+>> * Rename s3c24xx_serial_rx_chars to s3c24xx_serial_rx_irq for
+>>    consistency with the above. All it does now is call two other
+>>    functions anyway.
+> 
+> Separate patch for trivial renaming.
+
+I think it makes sense to do this rename together with the first change 
+above, as it keeps both functions symmetric. Otherwise we end up with an 
+inconsistent function naming between both patches. If you really want it 
+separate though, I can do that.
+
+> 
+>>
+>> Signed-off-by: Hector Martin <marcan@marcan.st>
+>> ---
+>>   drivers/tty/serial/samsung_tty.c | 41 +++++++++++++++++++-------------
+>>   1 file changed, 24 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+>> index 21955be680a4..821cd0e4f870 100644
+>> --- a/drivers/tty/serial/samsung_tty.c
+>> +++ b/drivers/tty/serial/samsung_tty.c
+>> @@ -151,6 +151,9 @@ struct s3c24xx_uart_port {
+>>   #endif
+>>   };
+>>   
+>> +static void s3c24xx_serial_start_next_tx(struct s3c24xx_uart_port *ourport);
+>> +static void s3c24xx_serial_tx_chars(struct s3c24xx_uart_port *ourport);
+>> +
+>>   /* conversion functions */
+>>   
+>>   #define s3c24xx_dev_to_port(__dev) dev_get_drvdata(__dev)
+>> @@ -316,8 +319,6 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
+>>   	ourport->tx_mode = 0;
+>>   }
+>>   
+>> -static void s3c24xx_serial_start_next_tx(struct s3c24xx_uart_port *ourport);
+>> -
+> 
+> Why moving this? Why adding s3c24xx_serial_tx_chars() forward
+> declaration?
+
+This should've gone in the next patch. A previous reviewer told me to 
+put declarations at the top of the file, so I put it there and moved 
+this one along with it, but I'll keep it to the additon only for v3.
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
