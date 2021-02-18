@@ -2,138 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B74731ED71
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2FDF31ED74
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:41:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhBRRi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:38:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhBROxC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:53:02 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 351F6C061574;
-        Thu, 18 Feb 2021 06:52:21 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id z9so1605105pjl.5;
-        Thu, 18 Feb 2021 06:52:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8jS31/1Xy+yRuy91zGYhjBqYA9AzfRcHmkz195N5Ino=;
-        b=a5EsrysyjYS2a3vIaxGq657Ry7MQI+NuO/AkfEuVdskDMAZ7G71BzRfPVmksdG56W/
-         3fAATQrKa3yCs+icFjOeOgjgNunLPTd63UJenFJ2QeEJJAq5L5EiBoXNGXqyluh7kvm/
-         Pr1yQMWKZmkRfM7IeHLvsLbYMdGxoyw0qSumoMZ+F2SO9Jivus+xeEo2OAm8XWx8yJoH
-         Id61kAt6ZOw/Mp6/aDt9JIM/p+GSNgiNy+4Za3ROSGqEP06JMtFuG2aMTiJfVQGi+hhr
-         G4X90zlP8P6VLqoFlepGV2rexaMl/D6C22YIvK/WoyTW6f09Pk43n4AwOyOiG+ni+lqp
-         PT/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8jS31/1Xy+yRuy91zGYhjBqYA9AzfRcHmkz195N5Ino=;
-        b=sE643N3bvrm47EcYMcGpZUM3kDE0FzPaySmnt5yhR5/bAMfnXTnwCaiNkhCW0DTurv
-         kfzTVp/dUp5rvkcBRmRaLv0rQjU055+YcRAMyHhEGapkBlKvodFe8Lvni0pMZu2C5UfT
-         2Hx9nF1WpVDNmqyY0Qw0xrjaQWhtyr3WR3kxz5SsRKS90iqn5gpYqZYL4IIfocmU5NR7
-         SunqGgBVkkGBS35uQ/VVmp7LN09ADEC3lvQcVX+/Cij/6TmeBAYuDp8XzocuNc4f5sjq
-         VFsOCqmE3udsB5CJJC7OupaXDMMzeDU5n4yaeTDrmMfsg627yAUzjX4bnBQxPl/GWpvX
-         XQzg==
-X-Gm-Message-State: AOAM532bd63tJeFyMWMr8sSb3RApP9aKTCh+6SiijklTcQAIjPWDZPpY
-        BatREyFuyVkEFrGROBel6WL0MvDVEgpTCfcSR5I=
-X-Google-Smtp-Source: ABdhPJxZI+4VfRDkag4o49pJKHBbnYmuybuwr0rlNf4PNsh4hcHvrKgQYLePPB3gebs5CWrYpfq6N3/h19hC0Wz5GGo=
-X-Received: by 2002:a17:902:a710:b029:e3:b18:7e5b with SMTP id
- w16-20020a170902a710b02900e30b187e5bmr4353726plq.17.1613659940699; Thu, 18
- Feb 2021 06:52:20 -0800 (PST)
+        id S234527AbhBRRke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:40:34 -0500
+Received: from mail.manjaro.org ([176.9.38.148]:40322 "EHLO mail.manjaro.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230386AbhBROyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:54:18 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.manjaro.org (Postfix) with ESMTP id 18BD93E60861;
+        Thu, 18 Feb 2021 15:53:32 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at manjaro.org
+Received: from mail.manjaro.org ([127.0.0.1])
+        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id CbrTc1Qv79oS; Thu, 18 Feb 2021 15:53:29 +0100 (CET)
+Subject: Re: [PATCH] power: supply: cw2015: Add CHARGE_NOW support
+To:     Martin Ashby <martin@ashbysoft.com>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Sebastian Reichel <sre@kernel.org>
+References: <20210218124250.128008-1-martin@ashbysoft.com>
+From:   Tobias Schramm <t.schramm@manjaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <52cbdca7-feb2-6d6f-fa53-c36848587577@manjaro.org>
+Date:   Thu, 18 Feb 2021 15:53:27 +0100
 MIME-Version: 1.0
-References: <20210218052654.28995-1-calvin.johnson@oss.nxp.com> <20210218052654.28995-8-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20210218052654.28995-8-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Feb 2021 16:52:04 +0200
-Message-ID: <CAHp75VetyEo6+KhWm=h3iCSfRS6KGFXR4fOHE3KA9sWcwZsXrg@mail.gmail.com>
-Subject: Re: [net-next PATCH v6 07/15] net: mdiobus: Introduce fwnode_mdiobus_register_phy()
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210218124250.128008-1-martin@ashbysoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US-large
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 7:28 AM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Introduce fwnode_mdiobus_register_phy() to register PHYs on the
-> mdiobus. From the compatible string, identify whether the PHY is
-> c45 and based on this create a PHY device instance which is
-> registered on the mdiobus.
+Hi Martin,
 
-Thanks for an update!
-Below some nit-picks, may be ignored.
+thanks for the patch. Now everything is looking good.
 
-> uninitialized symbol 'mii_ts'
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Just one small thing for the future: Please version your patches. Even 
+when the patch subject changes. It helps everyone to distinguish clearly 
+between different versions of a patch.
 
-I don't think the above deserves to be in the commit message (rather
-after the cutter '---' line as a changelog).
+> CHARGE_NOW is expected by some user software (such as waybar)
+> instead of 'CAPACITY', in order to correctly calculate remaining battery
+> life.
+> 
+> Signed-off-by: Martin Ashby <martin@ashbysoft.com>
+> ---
+>   drivers/power/supply/cw2015_battery.c | 6 ++++++
+>   1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/power/supply/cw2015_battery.c b/drivers/power/supply/cw2015_battery.c
+> index 0146f1bfc..aa1f1771b 100644
+> --- a/drivers/power/supply/cw2015_battery.c
+> +++ b/drivers/power/supply/cw2015_battery.c
+> @@ -511,6 +511,11 @@ static int cw_battery_get_property(struct power_supply *psy,
+>   			val->intval = 0;
+>   		break;
+>   
+> +	case POWER_SUPPLY_PROP_CHARGE_NOW:
+> +		val->intval = cw_bat->battery.charge_full_design_uah;
+> +		val->intval = val->intval * cw_bat->soc / 100;
+> +		break;
+> +
+>   	case POWER_SUPPLY_PROP_CURRENT_NOW:
+>   		if (cw_battery_valid_time_to_empty(cw_bat) &&
+>   		    cw_bat->battery.charge_full_design_uah > 0) {
+> @@ -542,6 +547,7 @@ static enum power_supply_property cw_battery_properties[] = {
+>   	POWER_SUPPLY_PROP_CHARGE_COUNTER,
+>   	POWER_SUPPLY_PROP_CHARGE_FULL,
+>   	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
+> +	POWER_SUPPLY_PROP_CHARGE_NOW,
+>   	POWER_SUPPLY_PROP_CURRENT_NOW,
+>   };
+>   
+> 
 
-> Signed-off-by: Calvin Johnson <calvin.johnson@oss.nxp.com>
+Reviewed-by: Tobias Schramm <t.schramm@manjaro.org>
+Tested-by: Tobias Schramm <t.schramm@manjaro.org>
 
-...
-
-> +               if (mii_ts)
-> +                       unregister_mii_timestamper(mii_ts);
-
-...
-
-> +                       if (mii_ts)
-> +                               unregister_mii_timestamper(mii_ts);
-
-I'm wondering if we can move this check to the
-unregister_mii_timestamper() to make it NULL aware as many other
-similar (unregister) APIs do. I have checked that there are currently
-three users of this that can benefit of the change.
-
-...
-
-> +       /* phy->mii_ts may already be defined by the PHY driver. A
-> +        * mii_timestamper probed via the device tree will still have
-> +        * precedence.
-> +        */
-> +       if (mii_ts)
-> +               phy->mii_ts = mii_ts;
-
-I'm wondering if the belo form is better to read
-
-        phy->mii_ts = mii_ts ?: phy->mii_ts;
-
--- 
-With Best Regards,
-Andy Shevchenko
+Cheers,
+Tobias
