@@ -2,145 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6844331E89B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F0631E89D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhBRKFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:05:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231280AbhBRIz4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:55:56 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S232450AbhBRKIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 05:08:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47578 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230403AbhBRI4w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:56:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613638518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XKvhMYbPeIfjBqzilW6MTKDEALceHhOMd9Ttih7NUzc=;
+        b=MLxzsSEVj2slcN2G0gOS9NGNTTTtDX/I3+UxLbpfWQaaQDqlilvG9xdWB6eGg0HIc/1e73
+        uKPpIGc+Tcvnpq3GZSlsaTvIRO1FrAYlIIYwH79smBxvMIitbyLnCIuXFVT2p7UNTX72O2
+        EqkQ9GvduS5wen0IKDUAjbhDI1mF2pQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-Q0uAD2YWMX25mfx7NX_YEw-1; Thu, 18 Feb 2021 03:55:15 -0500
+X-MC-Unique: Q0uAD2YWMX25mfx7NX_YEw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 79EBF64E6F;
-        Thu, 18 Feb 2021 08:47:18 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lCexv-00EjMV-TI; Thu, 18 Feb 2021 08:47:16 +0000
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A5146EE20;
+        Thu, 18 Feb 2021 08:55:13 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ADBD96E407;
+        Thu, 18 Feb 2021 08:55:08 +0000 (UTC)
+Subject: Re: [PATCH] mm, kasan: don't poison boot memory
+To:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com>
+Date:   Thu, 18 Feb 2021 09:55:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 18 Feb 2021 08:47:15 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH] irqdomain: remove debugfs_file from struct irq_domain
-In-Reply-To: <YC4nhoc9F59/1drh@kroah.com>
-References: <YCvYV53ZdzQSWY6w@kroah.com>
- <20210217195717.13727-1-michael@walle.cc>
- <4e4d0479b935e60a53f75ef534086476@kernel.org>
- <5c527bfb6f3dfe31b5c25f29418306c6@walle.cc> <87czwys6s1.wl-maz@kernel.org>
- <YC4X4iLMCK3tNVsF@kroah.com> <8b4de9eae773a43b38f42c8ab6d9d23c@walle.cc>
- <YC4nhoc9F59/1drh@kroah.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <b5739c15db3d009556abcf9704984dab@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: gregkh@linuxfoundation.org, michael@walle.cc, linux-kernel@vger.kernel.org, tglx@linutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-18 08:38, Greg KH wrote:
-> On Thu, Feb 18, 2021 at 09:27:09AM +0100, Michael Walle wrote:
->> Am 2021-02-18 08:31, schrieb Greg KH:
->> > On Wed, Feb 17, 2021 at 09:50:38PM +0000, Marc Zyngier wrote:
->> > > On Wed, 17 Feb 2021 20:10:50 +0000,
->> > > Michael Walle <michael@walle.cc> wrote:
->> > > >
->> > > > Am 2021-02-17 21:02, schrieb Marc Zyngier:
->> > > > > On 2021-02-17 19:57, Michael Walle wrote:
->> > > > >> Hi Greg,
->> > > > >>
->> > > > >>> There's no need to keep around a dentry pointer to a simple file that
->> > > > >>> debugfs itself can look up when we need to remove it from the system.
->> > > > >>> So simplify the code by deleting the variable and cleaning up the
->> > > > >>> logic
->> > > > >>> around the debugfs file.
->> > > > >>
->> > > > >> This will generate the following oops on my board (arm64,
->> > > > >> freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts). In debugfs_lookup()
->> > > > >> debugfs_mount is NULL.
->> > > > >
->> > > > > That's odd. I gave it a go yesterday, and nothing blew up.
->> > > > > Which makes me wonder whether I had the debug stuff enabled
->> > > > > the first place...
->> > > > >
->> > > > > I've dropped the patch from -next for now until I figure it out
->> > > > > (probably tomorrow).
->> > > >
->> > > > Mh, maybe its my .config, I've attached it. I also noticed that
->> > > > the board boots just fine in our kernel-ci [1].
->> > >
->> > > I reproduced here. I had disabled GENERIC_IRQ_DEBUGFS for obscure
->> > > reasons, and it caught fire as I re-enabled it.
->> > >
->> > > Adding this fixes it for me:
->> > >
->> > > diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
->> > > index 367ff1c35f75..d8a14cf1a7b6 100644
->> > > --- a/kernel/irq/irqdomain.c
->> > > +++ b/kernel/irq/irqdomain.c
->> > > @@ -1904,7 +1904,8 @@ static void debugfs_add_domain_dir(struct
->> > > irq_domain *d)
->> > >
->> > >  static void debugfs_remove_domain_dir(struct irq_domain *d)
->> > >  {
->> > > -	debugfs_remove(debugfs_lookup(d->name, domain_dir));
->> > > +	if (domain_dir)
->> > > +		debugfs_remove(debugfs_lookup(d->name, domain_dir));
->> > >  }
->> > >
->> > >  void __init irq_domain_debugfs_init(struct dentry *root)
->> > >
->> > >
->> > > Could you please check whether it works for you?
->> >
->> > Can you try this debugfs core change instead?  Callers to debugfs should
->> > not have to do the above type of checking as debugfs should be much more
->> > robust than that.
->> >
->> > thanks,
->> >
->> > greg k-h
->> >
->> >
->> > diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
->> > index 2fcf66473436..5aa798f52b6e 100644
->> > --- a/fs/debugfs/inode.c
->> > +++ b/fs/debugfs/inode.c
->> > @@ -297,7 +297,7 @@ struct dentry *debugfs_lookup(const char *name,
->> > struct dentry *parent)
->> >  {
->> >  	struct dentry *dentry;
->> >
->> > -	if (IS_ERR(parent))
->> > +	if (IS_ERR_OR_NULL(name) || IS_ERR(parent))
->> >  		return NULL;
->> >
->> >  	if (!parent)
->> 
->> This doesn't work. name is not NULL when it is called.
+On 17.02.21 21:56, Andrey Konovalov wrote:
+> During boot, all non-reserved memblock memory is exposed to the buddy
+> allocator. Poisoning all that memory with KASAN lengthens boot time,
+> especially on systems with large amount of RAM. This patch makes
+> page_alloc to not call kasan_free_pages() on all new memory.
 > 
-> Ok, but it is a good check we need to make anyway, I'll add it to a
-> patch series :)
+> __free_pages_core() is used when exposing fresh memory during system
+> boot and when onlining memory during hotplug. This patch adds a new
+> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok() through
+> free_pages_prepare() from __free_pages_core().
 > 
->> What has to happen before debugfs_lookup() can be called? Looks like
->> someone has to initialize the static debugfs_mount, first.
+> This has little impact on KASAN memory tracking.
 > 
-> Wow, wait, you are removing a debugfs file _before_ debugfs is even
-> initialized?  Didn't expect that, ok, let me go try this again...
+> Assuming that there are no references to newly exposed pages before they
+> are ever allocated, there won't be any intended (but buggy) accesses to
+> that memory that KASAN would normally detect.
+> 
+> However, with this patch, KASAN stops detecting wild and large
+> out-of-bounds accesses that happen to land on a fresh memory page that
+> was never allocated. This is taken as an acceptable trade-off.
+> 
+> All memory allocated normally when the boot is over keeps getting
+> poisoned as usual.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
 
-Yeah, that's a poor man's rename (file being deleted and re-created).
+Not sure this is the right thing to do, see
 
-         M.
+https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com
+
+Reversing the order in which memory gets allocated + used during boot 
+(in a patch by me) might have revealed an invalid memory access during boot.
+
+I suspect that that issue would no longer get detected with your patch, 
+as the invalid memory access would simply not get detected. Now, I 
+cannot prove that :)
+
 -- 
-Jazz is not dead. It just smells funny...
+Thanks,
+
+David / dhildenb
+
