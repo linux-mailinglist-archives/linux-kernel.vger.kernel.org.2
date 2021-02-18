@@ -2,108 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C184C31EE40
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:30:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA15231EE47
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbhBRS1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:27:46 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:33118 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233076AbhBRQEm (ORCPT
+        id S232360AbhBRS2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:28:38 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:48224 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232853AbhBRQFo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:04:42 -0500
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E4BB93F0;
-        Thu, 18 Feb 2021 17:03:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613664227;
-        bh=SLloweOlW3YyvTIFbGXuKXMzMH/hzXvlCc4Uv3Qfkbw=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=jsdokd8ueTpIyZ6oWK86J3Xl+7JRhHz0uqUipRlLgXKaKGKdCma8ALRQEthsLX6tA
-         Cx3vMHakIWeuSXHciPWdkc5TlKu3+jB+v6GMPFZepIHTlHFiTqh7tYBus8nuHDUYEF
-         f9fg0BIIivMrvU13VsXxEZE+8j4QkywyZqLiQMyc=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH 15/16] media: i2c: max9286: Rework comments in .bound()
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Thu, 18 Feb 2021 11:05:44 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFsK69112500;
+        Thu, 18 Feb 2021 16:04:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=UdQaTckhRsQ/jLTcCYtgh8CqaJ2t3hREWioBusMXLg8=;
+ b=bh6tXScDka/SJZxzWNk8AI2igzzRkZ1ioRC7sVc9jCuDZR5BnFcSoxKvzQldFOTStXjn
+ HrmVWcmGK5D0avmETisKOaAUDUMT7nB3MCymb78yo7LJwoASLM7/ZRXRhEFaPMi+lQak
+ vPoLlMpYWy1V1ZqHVJ/QwyE2UGqcmzFK3+DlHoL6JCCRO/q9mVo4ugJtbfh3QuUHHOJb
+ vWXjIEB1TUjHxfVoJ4iVAAAvIr/s+RwAJ9yw+5lam7T55d45a9ot2DYaWWo3fEv8B3Tc
+ p6UMcw5FFxbp2PE+IHy4hA7DMqILV2aH8SV5zzBJx9CkD9w6y12lCxXNnmlecI/bOazu 6w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 36p7dnpc4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 16:04:33 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFpfW3083329;
+        Thu, 18 Feb 2021 16:04:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 36prhudng4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 16:04:31 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IG4UW1001769;
+        Thu, 18 Feb 2021 16:04:30 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 08:04:29 -0800
+Date:   Thu, 18 Feb 2021 19:04:20 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Kurt Manucredo <fuzzybritches@protonmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-16-jacopo+renesas@jmondi.org>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <c1f9acd4-b5e6-1c57-8878-7d3e2d20b2a1@ideasonboard.com>
-Date:   Thu, 18 Feb 2021 16:03:44 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH] fix comparisons - put constant on right side- eudyptula
+ challenge 10
+Message-ID: <20210218160420.GN2087@kadam>
+References: <20210218155422.7-1-fuzzybritches@protonmail.com>
+ <20210218155422.7-2-fuzzybritches@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210216174146.106639-16-jacopo+renesas@jmondi.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218155422.7-2-fuzzybritches@protonmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180139
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 adultscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/02/2021 17:41, Jacopo Mondi wrote:
-> Re-phrase a comment in .bound() callback to make it clear we register
-> a subdev notifier and remove a redundant comment about disabling i2c
-> auto-ack.
-> 
-> No functional changes intended.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+Fix the subject.  Don't mention eudyptula.
+
+[PATCH] Staging: rtl8723bs: put constant on right side of comparison
+
+Add a commit message:
+
+Checkpatch complains that the constant needs to be on the right hand
+side of the comparion.
+
+
+On Thu, Feb 18, 2021 at 03:54:40PM +0000, Kurt Manucredo wrote:
+> Signed-off-by: Kurt Manucredo <fuzzybritches@protonmail.com>
 > ---
->  drivers/media/i2c/max9286.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
+>  drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index c41284de89b6..aa01d5bb79ef 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -567,9 +567,9 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
->  	}
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+> index 975f2830e29e..089c6ec19373 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+> @@ -2146,7 +2146,7 @@ void rtw_get_sec_iv(struct adapter *padapter, u8 *pcur_dot11txpn, u8 *StaAddr)
+>  	struct security_priv *psecpriv = &padapter->securitypriv;
 >  
->  	/*
-> -	 * We can only register v4l2_async_notifiers, which do not provide a
-> -	 * means to register a complete callback. bound_sources allows us to
-> -	 * identify when all remote serializers have completed their probe.
-> +	 * As we register a subdev notifiers we won't get a .complete() callback
-> +	 * here, so we have to use bound_sources to identify when all remote
-> +	 * serializers have probed.
+>  	memset(pcur_dot11txpn, 0, 8);
+> -	if (NULL == StaAddr)
+> +	if (StaAddr == NULL)
 
-s/subdev notifiers/subdev notifier/ ?
+The prefered format for this is actually:
 
-... I'm not sure that helps me ? :S
+	if (!StaAddr)
+		return;
 
->  	 */
->  	if (priv->bound_sources != priv->source_mask) {
->  		/*
-> @@ -583,16 +583,12 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
->  	/*
->  	 * All enabled sources have probed and enabled their reverse control
->  	 * channels:
-> +	 * - The reverse channel amplitude stays high
-
-Isn't this part of the previous patch?
-
-
->  	 * - Verify all configuration links are properly detected
-> -	 * - Disable auto-ack as communication on the control channel are now
-> -	 *   stable.
-> +	 * - Disable auto-ack as communications on the control channel are now
-> +	 *   stable
->  	 */
->  	max9286_check_config_link(priv, priv->source_mask);
-> -
-> -	/*
-> -	 * Re-configure I2C with local acknowledge disabled after cameras have
-> -	 * probed.
-> -	 */
->  	max9286_configure_i2c(priv, false);
->  
->  	return max9286_set_pixelrate(priv);
-> 
+regards,
+dan carpenter
 
