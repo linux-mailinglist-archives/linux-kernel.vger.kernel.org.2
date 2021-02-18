@@ -2,198 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEF731F1E4
+	by mail.lfdr.de (Postfix) with ESMTP id 9C05731F1E5
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBRV5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 16:57:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25269 "EHLO
+        id S230036AbhBRV54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:57:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35048 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229924AbhBRV53 (ORCPT
+        by vger.kernel.org with ESMTP id S229958AbhBRV5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:57:29 -0500
+        Thu, 18 Feb 2021 16:57:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613685362;
+        s=mimecast20190719; t=1613685373;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a/LGjoZ6J0eOt0Hag6QsOmNHN0ORlN3M/YMxrfz7rNU=;
-        b=bdIw9pXWt5Aiyq9ELgKnt1B6c2ADbWLpT1u/QyScSgYZ4k79FxAXbUCkX+FtvHSishNwRE
-        L3Bzlf/pcv6CI9weuzNxaW2uIfu8tPnE66O9yXkZwyrJg6s0CR3CFbx9LEDSGWJ6bqPW91
-        enENiZMDxawoC3FNmH114QoeH0ZbIUc=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-oGH7lzCIPxCznv_9kI-lAg-1; Thu, 18 Feb 2021 16:55:58 -0500
-X-MC-Unique: oGH7lzCIPxCznv_9kI-lAg-1
-Received: by mail-qt1-f197.google.com with SMTP id l63so2063759qtd.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:55:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=a/LGjoZ6J0eOt0Hag6QsOmNHN0ORlN3M/YMxrfz7rNU=;
-        b=LjDr6+uAazdANtaBt0B7fBnRP99dsMbWQOZlL+bZkjkr1LPsn3WvyrtjssBy+p6Ugt
-         Al6rvQJ8rc08cpvmx4VWPDLp+c1l/MZMU8E4K+ym9jXFdTy6sRUa5foM24mxrc0kIUGZ
-         pfJe8Gy+x1ZRXQSGXEgQsQ0bEEVgpSFlxUJ8TjfuqQiI4VfyolXwYxijwxj7LJbh+V4m
-         hr3mUuBkJFgtBEjV/Ex8GiupbO9OoKmAUS7XU5XDM4Veru4EBo4YAs3m87SoV+rSuBCo
-         x4/flakCaH9WJX18E/pBNTkOEEOOD7kjeq9Ulkzikh5srHQnIjTVoDvaQpgGelLILrqj
-         8qBA==
-X-Gm-Message-State: AOAM531P0xIED5NG7mtBsToNWEH/14a/7E+zchDmjuQL76j+h+Ks53oc
-        7NXPTQ6ywVs/S2XeDLFgLL/iB43K1eOLrBlVSDX1wsj5kD0DNs9YIIhCuTUoLyyHRcUAUqZ0vtW
-        ms6yghg6VPcSd5GxSimdRzQkY0cAKB+SrBVsHnyvd3NVBmXdfJhMTIVQwTK6wvgQZbA2nQdMgIg
-        ==
-X-Received: by 2002:a37:a7c9:: with SMTP id q192mr6324218qke.299.1613685357564;
-        Thu, 18 Feb 2021 13:55:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzMD5UVVS1w5xPjiB2AW4UW0+MMcsCBMmGZDBmYRgcCKOQNuldvrR1qOQccnAuyoRN9xCcXbg==
-X-Received: by 2002:a37:a7c9:: with SMTP id q192mr6324189qke.299.1613685357281;
-        Thu, 18 Feb 2021 13:55:57 -0800 (PST)
-Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id m5sm4956015qkf.55.2021.02.18.13.55.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 13:55:56 -0800 (PST)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>, peterx@redhat.com,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v3 4/4] hugetlb/userfaultfd: Unshare all pmds for hugetlbfs when register wp
-Date:   Thu, 18 Feb 2021 16:55:55 -0500
-Message-Id: <20210218215555.10710-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210218215434.10203-1-peterx@redhat.com>
-References: <20210218215434.10203-1-peterx@redhat.com>
+        bh=UwfqdvgXW5YV2n7ZLVg99JtxtTC8HlmnYeiQHi+6cYw=;
+        b=jOzIykur+SToWWMiFmVac0o7NuJQ9HFkfgFm9ot5ZDkPmt5Cs+lehCdVo7fRTu3/Y7qnnz
+        xRzovOyZW6HFf03Y2DZ9/sBGeZBlh0PR871tbKJlBSdIW0craLDGOujBdhkmCvQMgPYrWz
+        0yU8GmLB8RM+E3z0tEtKd5bJHGqeXsk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-561-m66-vAlkOGi0aAkq3DdAfA-1; Thu, 18 Feb 2021 16:56:09 -0500
+X-MC-Unique: m66-vAlkOGi0aAkq3DdAfA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2DFA0BBEF5;
+        Thu, 18 Feb 2021 21:56:07 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C6DD050DDE;
+        Thu, 18 Feb 2021 21:56:06 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 14:56:06 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
+Subject: Re: [PATCH 1/3] vfio: Introduce vma ops registration and notifier
+Message-ID: <20210218145606.09f08044@omen.home.shazbot.org>
+In-Reply-To: <20210218011209.GB4247@nvidia.com>
+References: <161315658638.7320.9686203003395567745.stgit@gimli.home>
+        <161315805248.7320.13358719859656681660.stgit@gimli.home>
+        <20210212212057.GW4247@nvidia.com>
+        <20210218011209.GB4247@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Huge pmd sharing for hugetlbfs is racy with userfaultfd-wp because
-userfaultfd-wp is always based on pgtable entries, so they cannot be shared.
+On Wed, 17 Feb 2021 21:12:09 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Walk the hugetlb range and unshare all such mappings if there is, right before
-UFFDIO_REGISTER will succeed and return to userspace.
+> On Fri, Feb 12, 2021 at 05:20:57PM -0400, Jason Gunthorpe wrote:
+> > On Fri, Feb 12, 2021 at 12:27:39PM -0700, Alex Williamson wrote:  
+> > > Create an interface through vfio-core where a vfio bus driver (ex.
+> > > vfio-pci) can register the vm_operations_struct it uses to map device
+> > > memory, along with a set of registration callbacks.  This allows
+> > > vfio-core to expose interfaces for IOMMU backends to match a
+> > > vm_area_struct to a bus driver and register a notifier for relavant
+> > > changes to the device mapping.  For now we define only a notifier
+> > > action for closing the device.
+> > > 
+> > > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > >  drivers/vfio/vfio.c  |  120 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> > >  include/linux/vfio.h |   20 ++++++++
+> > >  2 files changed, 140 insertions(+)
+> > > 
+> > > diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> > > index 38779e6fd80c..568f5e37a95f 100644
+> > > +++ b/drivers/vfio/vfio.c
+> > > @@ -47,6 +47,8 @@ static struct vfio {
+> > >  	struct cdev			group_cdev;
+> > >  	dev_t				group_devt;
+> > >  	wait_queue_head_t		release_q;
+> > > +	struct list_head		vm_ops_list;
+> > > +	struct mutex			vm_ops_lock;
+> > >  } vfio;
+> > >  
+> > >  struct vfio_iommu_driver {
+> > > @@ -2354,6 +2356,121 @@ struct iommu_domain *vfio_group_iommu_domain(struct vfio_group *group)
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(vfio_group_iommu_domain);
+> > >  
+> > > +struct vfio_vma_ops {
+> > > +	const struct vm_operations_struct	*vm_ops;
+> > > +	vfio_register_vma_nb_t			*reg_fn;
+> > > +	vfio_unregister_vma_nb_t		*unreg_fn;
+> > > +	struct list_head			next;
+> > > +};
+> > > +
+> > > +int vfio_register_vma_ops(const struct vm_operations_struct *vm_ops,
+> > > +			  vfio_register_vma_nb_t *reg_fn,
+> > > +			  vfio_unregister_vma_nb_t *unreg_fn)  
+> > 
+> > This just feels a little bit too complicated
+> > 
+> > I've recently learned from Daniel that we can use the address_space
+> > machinery to drive the zap_vma_ptes() via unmap_mapping_range(). This
+> > technique replaces all the open, close and vma_list logic in vfio_pci  
+> 
+> Here is my effort to make rdma use this, it removes a lot of ugly code:
+> 
+> https://github.com/jgunthorpe/linux/commits/rdma_addr_space
+> 
+> Still needs some more detailed testing.
+> 
+> This gives an option to detect vfio VMAs by checking
+> 
+>    if (vma->vm_file &&
+>        file_inode(vma->vm_file) &&
+>        file_inode(vma->vm_file)->i_sb->s_type == vfio_fs_type)
+> 
+> And all vfio VMA's can have some consistent vm_private_data, or at
+> worst a consistent extended vm operations struct.
 
-This will pair with want_pmd_share() in hugetlb code so that huge pmd sharing
-is completely disabled for userfaultfd-wp registered range.
+Looks pretty slick.  I won't claim it's fully gelled in my head yet,
+but AIUI you're creating these inodes on your new pseudo fs and
+associating it via the actual user fd via the f_mapping pointer, which
+allows multiple fds to associate and address space back to this inode
+when you want to call unmap_mapping_range().  That clarifies from the
+previous email how we'd store the inode on the vfio_device without
+introducing yet another tracking list for device fds.  I'll try to
+piece together something similar for vfio, especially if we can avoid
+that nasty lock switcheroo we copied from
+uverbs_user_mmap_disassociate().  Thanks,
 
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- fs/userfaultfd.c        |  4 ++++
- include/linux/hugetlb.h |  3 +++
- mm/hugetlb.c            | 51 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 58 insertions(+)
-
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 894cc28142e7..e259318fcae1 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -15,6 +15,7 @@
- #include <linux/sched/signal.h>
- #include <linux/sched/mm.h>
- #include <linux/mm.h>
-+#include <linux/mmu_notifier.h>
- #include <linux/poll.h>
- #include <linux/slab.h>
- #include <linux/seq_file.h>
-@@ -1448,6 +1449,9 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
- 		vma->vm_flags = new_flags;
- 		vma->vm_userfaultfd_ctx.ctx = ctx;
- 
-+		if (is_vm_hugetlb_page(vma) && uffd_disable_huge_pmd_share(vma))
-+			hugetlb_unshare_all_pmds(vma);
-+
- 	skip:
- 		prev = vma;
- 		start = vma->vm_end;
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 3b4104021dd3..6437483ad01b 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -188,6 +188,7 @@ unsigned long hugetlb_change_protection(struct vm_area_struct *vma,
- 		unsigned long address, unsigned long end, pgprot_t newprot);
- 
- bool is_hugetlb_entry_migration(pte_t pte);
-+void hugetlb_unshare_all_pmds(struct vm_area_struct *vma);
- 
- #else /* !CONFIG_HUGETLB_PAGE */
- 
-@@ -369,6 +370,8 @@ static inline vm_fault_t hugetlb_fault(struct mm_struct *mm,
- 	return 0;
- }
- 
-+static inline void hugetlb_unshare_all_pmds(struct vm_area_struct *vma) { }
-+
- #endif /* !CONFIG_HUGETLB_PAGE */
- /*
-  * hugepages at page global directory. If arch support
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index f53a0b852ed8..fc62932c31cb 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -5653,6 +5653,57 @@ void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason)
- 	}
- }
- 
-+/*
-+ * This function will unconditionally remove all the shared pmd pgtable entries
-+ * within the specific vma for a hugetlbfs memory range.
-+ */
-+void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
-+{
-+	struct hstate *h = hstate_vma(vma);
-+	unsigned long sz = huge_page_size(h);
-+	struct mm_struct *mm = vma->vm_mm;
-+	struct mmu_notifier_range range;
-+	unsigned long address, start, end;
-+	spinlock_t *ptl;
-+	pte_t *ptep;
-+
-+	if (!(vma->vm_flags & VM_MAYSHARE))
-+		return;
-+
-+	start = ALIGN(vma->vm_start, PUD_SIZE);
-+	end = ALIGN_DOWN(vma->vm_end, PUD_SIZE);
-+
-+	if (start >= end)
-+		return;
-+
-+	/*
-+	 * No need to call adjust_range_if_pmd_sharing_possible(), because
-+	 * we have already done the PUD_SIZE alignment.
-+	 */
-+	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, mm,
-+				start, end);
-+	mmu_notifier_invalidate_range_start(&range);
-+	i_mmap_lock_write(vma->vm_file->f_mapping);
-+	for (address = start; address < end; address += PUD_SIZE) {
-+		unsigned long tmp = address;
-+
-+		ptep = huge_pte_offset(mm, address, sz);
-+		if (!ptep)
-+			continue;
-+		ptl = huge_pte_lock(h, mm, ptep);
-+		/* We don't want 'address' to be changed */
-+		huge_pmd_unshare(mm, vma, &tmp, ptep);
-+		spin_unlock(ptl);
-+	}
-+	flush_hugetlb_tlb_range(vma, start, end);
-+	i_mmap_unlock_write(vma->vm_file->f_mapping);
-+	/*
-+	 * No need to call mmu_notifier_invalidate_range(), see
-+	 * Documentation/vm/mmu_notifier.rst.
-+	 */
-+	mmu_notifier_invalidate_range_end(&range);
-+}
-+
- #ifdef CONFIG_CMA
- static bool cma_reserve_called __initdata;
- 
--- 
-2.26.2
+Alex
 
