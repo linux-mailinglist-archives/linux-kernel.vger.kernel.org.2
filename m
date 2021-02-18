@@ -2,159 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10B431F2CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AFB931F2D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhBRXI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 18:08:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230000AbhBRXIK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 18:08:10 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361D4C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 15:07:30 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id lu16so8387748ejb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 15:07:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sJ5d0ZObxlJmFwJLKE12O8RmYqwub+T3UwgmplQq6AE=;
-        b=Jo5g6iOuyD0BqTUzqL5h57SSH+EeNnhpMwvLvFVX6MxUWBTDBsqzDxkvg8FpT/imeV
-         liNLub0Tlg4eSf0srTc9b7UGVY2O8Njj4v1Pg1ZuNmLScVnb1WDVaszWS5AJZwbQt33H
-         qp17CzaTpYHW1EsfgC4jpRW4lgndPH6DdJYhs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sJ5d0ZObxlJmFwJLKE12O8RmYqwub+T3UwgmplQq6AE=;
-        b=qUfwlogcpt7S/H44y7IxtzXk+KSmQswB+fhRn/PTX3eDvHnME0S8Y0mLkeVnQaumlK
-         8/JqAu6uDp/Bd33YEhujOFD5jId+xbnVxrWmZSVzm5E8SX9GGrdDRiJooQF7ne8lIIiZ
-         ucKpR1EF8wMfI8C/hCEJP731u1rmBWRslZqODlXt6837plCvUvIoR6pLl+aYyjPOwzrv
-         fNKMA4A9np6Qxi9Cb/wT/HFvHhX4iUJktuj9PqaT8OuG6iOmWl8xcTT7EPfucSeEkIP3
-         AF1elt1VWMS25J9f1FdR6Dl0bY0H4pNxrt1MG/3hwUL8CpHRzRY4jKZ+EGz0JE7yP+9d
-         GF9Q==
-X-Gm-Message-State: AOAM531MLd4OeY4vN4vutgFfa4yvjpHZSSp3ktetQwrDHpWzMWf3GaKC
-        fiuk+2w+6uqDBnhgAgLZ2gSl5A==
-X-Google-Smtp-Source: ABdhPJzYHdNT9GqXgfQD21oEC7iYSyGizicKOn318FZ+K56DF/69E5Vl8IATzjttfzUAWvPTfps3Mw==
-X-Received: by 2002:a17:906:2a8b:: with SMTP id l11mr6170970eje.1.1613689648835;
-        Thu, 18 Feb 2021 15:07:28 -0800 (PST)
-Received: from [192.168.1.149] ([80.208.71.141])
-        by smtp.gmail.com with ESMTPSA id a23sm3383140ejy.60.2021.02.18.15.07.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 15:07:28 -0800 (PST)
-Subject: Re: [PATCH 06/14] bitsperlong.h: introduce SMALL_CONST() macro
-To:     Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     linux-m68k@lists.linux-m68k.org, linux-arch@vger.kernel.org,
-        linux-sh@vger.kernel.org, Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-7-yury.norov@gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <55f1e25a-3211-8247-9dd3-3777e29287db@rasmusvillemoes.dk>
-Date:   Fri, 19 Feb 2021 00:07:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229752AbhBRXM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 18:12:57 -0500
+Received: from mail-bn8nam11on2044.outbound.protection.outlook.com ([40.107.236.44]:15905
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229535AbhBRXMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 18:12:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BYYvUsxYwQzq2QzYDvrg5DWQsqfgP6g/bhpGSq00za+8Tjgu9T7mud7fF/7VTobC3VkDKrRLzuR+xkYaOZtJK1I/hJq/rzm4Aeyk777LFmYYn3JXwrZu/usudOmVwpu81tFUQ303JidCRemv5AZloJCRdVF4LiSzd5M0z6XMFqRcgDa9s1AdZmJ6+LE91tA9l5Wq/GP7LDw1gHDKD63VjCMFNVrfuMZH78EdnHcJtzE19mgp2lNmza0ZJKGI23DURZSExjUEcjcKVUIMEVl4378YotL2OmpVj0QcKOeuU3a9DDuAEHOj1+ZokMJPBGVjHDv1XcORK7Z5b6lY7CaMSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8wU2m5o1ywvoNW73am5AcPi/RC4gBpJxmwAf07oLheA=;
+ b=UyukgOllkpvM91LLcfrgus53ZK71TjgIXhYp4Gwu4aPYdfic6vWXvzlcSGsgSoEUe0PvalMaw+1HysntYqBE1/nt1cE11J4l5XVRgRFUtui/LECwn/nNnBI+x4wG1MC+/aqGhkH08HxaVdAaere4NnSv8UzI54R0e8HLGsbmyBCZy9bi/9vFJFgoedz8FcdUfBak6MqLbRYHMxd3XHa/euCvfHqQm6MYATeHM6FrPgU4RXOVQXVUjjW+N5JiTqpyQ4wUPxVYk06NQ62wqiw9yPwuwXZ33CApruiGrNf590NWUZVrnsEykGBWNcpM5K94MN1wAtdxhq7/dEaoAb/5ew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8wU2m5o1ywvoNW73am5AcPi/RC4gBpJxmwAf07oLheA=;
+ b=wo9F02Z8W0RX2WZTWWHP7Fd5hRnvg7+RXVq8RQ0uej4YCZ72IyNqEd28q+0TGOHa2I32W2Vj1ieSklvC0Ua8uHzgHrnarex0tm9peqM44u2fGDJjLB8y+qS123YRWeVfG/KwzEE0lYAcL7AhOIyeryRp3HhQNv9CSwXlIEd0DQ8=
+Received: from MN2PR12MB3022.namprd12.prod.outlook.com (2603:10b6:208:ce::32)
+ by MN2PR12MB3101.namprd12.prod.outlook.com (2603:10b6:208:c4::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Thu, 18 Feb
+ 2021 23:12:02 +0000
+Received: from MN2PR12MB3022.namprd12.prod.outlook.com
+ ([fe80::49f7:4979:3a0a:4554]) by MN2PR12MB3022.namprd12.prod.outlook.com
+ ([fe80::49f7:4979:3a0a:4554%6]) with mapi id 15.20.3868.027; Thu, 18 Feb 2021
+ 23:12:02 +0000
+From:   "Wang, Kevin(Yang)" <Kevin1.Wang@amd.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+CC:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] drm/amd/pm/swsmu: Avoid using structure_size
+ uninitialized in smu_cmn_init_soft_gpu_metrics
+Thread-Topic: [PATCH] drm/amd/pm/swsmu: Avoid using structure_size
+ uninitialized in smu_cmn_init_soft_gpu_metrics
+Thread-Index: AQHXBkhFDJucxY3wQEGNwt0cVYduT6peil0M
+Date:   Thu, 18 Feb 2021 23:12:02 +0000
+Message-ID: <DE2DF569-7545-41C2-AF18-400D6BD73215@amd.com>
+References: <20210218224849.5591-1-nathan@kernel.org>
+In-Reply-To: <20210218224849.5591-1-nathan@kernel.org>
+Accept-Language: en-US, zh-CN
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [112.65.12.233]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 7dc278be-6896-49db-c89f-08d8d46299b0
+x-ms-traffictypediagnostic: MN2PR12MB3101:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR12MB310134F44EE134F3A839E8BFA2859@MN2PR12MB3101.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:186;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gZVADYGbdWeTHtk5Y/UfVTByS7K2ADI8vKISIr/VLNGKpMcTitrGucktdsnYdl6g6jTxGfGe4r/dZK0ZPLCQOflTvx9plVuMwCSjrbDv1sMXnWgXmYQ8NNA85mlpkLW5kuR9Oqjl9HHsMPzw0wU5OeIgkbBZI0HwjJvF0jyCK55CvnUPp+ApLnL1KzOWCOv74D+ucGBaX4bb571M/zAx7K+UM1toSQF66qJQZuI1B3ekE6TAFE/gMWwee9kC4hDjXfo5hCD6cOlWTs8D/zGPCB+e31FKu8B1SH6Ow5ApKV4vNa1nuu9ZleAZ3iVK1nbiTZGbDO4J0oIi71DaGsz4vEtwXohd8ho95YoP+M0oBTl7QBuyRZk5ukDhcMO+PiHNEuZj4dnx/ch/CnAAchW8JoLlVp7V1ioJEuxo4y9azPlJ+PkWXPU4ypp9NGG86hBNPxFLJuhT7zglYYUnJ1mkjl97yAhyJNgo+yNbCB093mK6HaZRJfJ1pVEAoKHLGLKMQ7VQhnRrtINR/5tuvdkY1cZi2OSYJfHRFeTuIlJqU8MW9J3deT2q8/Xva7sMTvaAWvUzBbNkBpSs2IqmvTirYXLYrFBmYwJCLP6Gm6RxS/PtWIYDoctxk8tV78D2iNbOwLAMQAG1gE9HG7oL7cULSv9IQM8S3mZ8XpksvvRPiHs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3022.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(346002)(39860400002)(366004)(64756008)(66556008)(66446008)(66946007)(966005)(186003)(66476007)(2906002)(83380400001)(6916009)(54906003)(6512007)(76116006)(91956017)(478600001)(8676002)(26005)(33656002)(36756003)(6486002)(5660300002)(8936002)(2616005)(4326008)(86362001)(71200400001)(316002)(6506007)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?aDR0RFE0MHBSbUJlUlhKY1dTRlNabEdveGk2QzM0czF6YUJrM253L3ZDZzU2?=
+ =?utf-8?B?Q0NvUnNQOGp0bmc3ak1OMG9pQ0lGNGZNWFJnZW1tZCswZG5jRTBWNUY1L2hu?=
+ =?utf-8?B?SE12SWs4MHBPZXNwVWllbG8zUDJqVUNsZHpydWdidkE5NnRDaW5LczdGWFU2?=
+ =?utf-8?B?eFRvMTJleFpVbUppaUVMdm9iR3cramprMmUxc3h3d0hLZDc4RlRKdXdwaFdu?=
+ =?utf-8?B?OFM3UmZ6dlVQcm1LL2tQZjFzRlpZNXUxeHdxV0ZWcExTUDBPSVJjSklsc3Nw?=
+ =?utf-8?B?RUt4S0VoajJlTEpnSHprMHJWdDBpU2RiOU02LzJXeHJGbDhlQnREbERMZG5F?=
+ =?utf-8?B?OUQrM3ovdExyVVFXZ2RPekhqN3g1c3VXa0NMZmV5NVdxZUt6ZS94bC9Md0ZH?=
+ =?utf-8?B?SG1TTHFQM3dNZzFKd1J5Z01Qc2QwZFpFN1dXbzNFcjJmYWNpM3d3OFN0VVdK?=
+ =?utf-8?B?aURvdlVHTmZTQnl3RXAvVFAxRDljRm5hSlV1YUZpTllheGd3R0ltZFZURlll?=
+ =?utf-8?B?ckNPNFNBL2hDTnVKaUc3eCtlOFQ0TmVkc2U2STFsUTNFZnpkamJBckE1aGQx?=
+ =?utf-8?B?bVlzZ1QyT0YzSmlHRXlFVDV6Zk5ld3d6WmRLUUNXbmNYQi9iNXgrcWE1YkJZ?=
+ =?utf-8?B?YXFrZ0ZBOE9MTWJScWxGd1ZVTXp6eGNJM1plZUZJdTNDN0dEWXdJZFNxZ0pa?=
+ =?utf-8?B?Qi9xVCt0MktVRjZaNm9UbkZxckwrcG82ZERmdXJ0ZmtJV1Jvem9FaGVMc2dH?=
+ =?utf-8?B?bWlaZW1GU3ZyZ1NpU1dBQkRlaktFU2J4OGJpclI5NTJXa1d3U1V3cms0SVFR?=
+ =?utf-8?B?bjc0dlVQOHRIWDc0U2RHdnVtbEM1Z0NXNW9jdFltRG82eEloOUVRQVU0K3FG?=
+ =?utf-8?B?ZzBjeWpaWm1YdUM5aW51MUdUdlY3VjMxeVMrUWF2YXJBK0NpT3lvY3ByTGtS?=
+ =?utf-8?B?cG1WWjE1QWZCczVyUjVZK2o3aUphWkF2RmxFM0ptZkhZSXhRSExEUmhldlVQ?=
+ =?utf-8?B?RG5lTk9YWHhDMWYwR1p5VnNjU2s2V29aWk0wM3M2cmgyZFpBOVY1a2ZsOGVD?=
+ =?utf-8?B?VkpqMmNnZFNkR3RVdzlQaDkwWkk4VFZpdlFNQXlxTG44ZFBuSGNpWitGRnpm?=
+ =?utf-8?B?dkRxbzRmb3V4RW00bFFXZ24yYm1GTGVBZEw1V0FrSll4aWZUdHRhQkFHK0h6?=
+ =?utf-8?B?bU1DdjhNOVhweHhlSWc4cC95N1F2aDNqRFliRE1DUmpaWXU5MEVGSFlrSDUw?=
+ =?utf-8?B?N1BRaE9HbDVua3Y5dzQ2aVFPek5rVlpRanBibG8yWS9iMUJ0L2lPRWRvVWdr?=
+ =?utf-8?B?Z1RpQzBpS0NmblozVC9WNVRUUkRSZjdVVC9yc1ZyZkNMZjFvNlMrM290a2tj?=
+ =?utf-8?B?MExuWGpIblIxanJOUWU0NFRPdG9pMWNDWWNEZlJ3L0ZHdjVOeHlmS1VSRDZV?=
+ =?utf-8?B?TXN4eTRWMmdDRndmNlJlOHFQNHcrSnAyZFBSUUF5RTZKYm1OM2RrUHZ5SGgz?=
+ =?utf-8?B?bkw5NlZGOFV5WFhwc2tYcTZ5RHJzdEhsR1hXeWtNOU4zWjlGZGlOU0pjaU12?=
+ =?utf-8?B?dUdUcmZ2bXRZdTR1RmkydWpqVExnNjZNQ1dVOW03dmQ3V3RwM1NLWmFJRkpm?=
+ =?utf-8?B?Ti96YnRXd0ZtR2NJb2JuQ29yYi9pT0NkaDhabTlLNjNkL0J5NkZZdjZvVCtn?=
+ =?utf-8?B?Q1NkU256MTRZQW5RbVFLbnUybWNSMGorcHVHY1lyR3ZHc1ZxZkRTbGZWS0hO?=
+ =?utf-8?Q?a9N40JXmK5La02P3ug+3JGkOKgPsfv5tUkvE2Cq?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210218040512.709186-7-yury.norov@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3022.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7dc278be-6896-49db-c89f-08d8d46299b0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 23:12:02.2718
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WSXzk9jxwfxsvY1FlcQbh8jp0tsQhdGRWBBuZdKCQ5wT6VUXzRQo6tz+wDF4SKw/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/2021 05.05, Yury Norov wrote:
-> Many algorithms become simpler if they are passed with relatively small
-> input values. One example is bitmap operations when the whole bitmap fits
-> into one word. To implement such simplifications, linux/bitmap.h declares
-> small_const_nbits() macro.
-> 
-> Other subsystems may also benefit from optimizations of this sort, like
-> find_bit API in the following patches. So it looks helpful to generalize
-> the macro and extend it's visibility.
-
-Perhaps, but SMALL_CONST is too generic a name, it needs to keep "bits"
-somewhere in there. So why not just keep it at small_const_nbits?
-
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  include/asm-generic/bitsperlong.h |  2 ++
->  include/linux/bitmap.h            | 33 ++++++++++++++-----------------
->  2 files changed, 17 insertions(+), 18 deletions(-)
-> 
-> diff --git a/include/asm-generic/bitsperlong.h b/include/asm-generic/bitsperlong.h
-> index 3905c1c93dc2..0eeb77544f1d 100644
-> --- a/include/asm-generic/bitsperlong.h
-> +++ b/include/asm-generic/bitsperlong.h
-> @@ -23,4 +23,6 @@
->  #define BITS_PER_LONG_LONG 64
->  #endif
->  
-> +#define SMALL_CONST(n) (__builtin_constant_p(n) && (unsigned long)(n) < BITS_PER_LONG)
-> +
->  #endif /* __ASM_GENERIC_BITS_PER_LONG */
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index adf7bd9f0467..e89f1dace846 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -224,9 +224,6 @@ extern int bitmap_print_to_pagebuf(bool list, char *buf,
->   * so make such users (should any ever turn up) call the out-of-line
->   * versions.
->   */
-> -#define small_const_nbits(nbits) \
-> -	(__builtin_constant_p(nbits) && (nbits) <= BITS_PER_LONG && (nbits) > 0)
-> -
->  static inline void bitmap_zero(unsigned long *dst, unsigned int nbits)
->  {
->  	unsigned int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
-> @@ -278,7 +275,7 @@ extern void bitmap_to_arr32(u32 *buf, const unsigned long *bitmap,
->  static inline int bitmap_and(unsigned long *dst, const unsigned long *src1,
->  			const unsigned long *src2, unsigned int nbits)
->  {
-> -	if (small_const_nbits(nbits))
-> +	if (SMALL_CONST(nbits - 1))
-
-Please don't force most users to be changed to something less readable.
-What's wrong with just keeping small_const_nbits() the way it is,
-avoiding all this churn and keeping the readability?
-
-At a quick reading, one of the very few places where you end up not
-passing nbits-1 but just nbits is this
-
- unsigned long find_next_zero_bit_le(const void *addr, unsigned
- 		long size, unsigned long offset)
- {
-+	if (SMALL_CONST(size)) {
-+		unsigned long val = *(const unsigned long *)addr;
-+
-+		if (unlikely(offset >= size))
-+			return size;
-
-which is a regression, for much the same reason the nbits==0 case was
-excluded from small_const_nbits in the first place. If size is 0, we
-used to just return 0 early in _find_next_bit. But you've introduced a
-dereference of addr before that check is now done, which is
-theoretically an oops.
-
-If find_next_zero_bit_le cannot handle nbits==BITS_PER_LONG efficiently
-but requires one off-limits bit position, fine, so be it, add an extra
-"small_const_nbits() && nbits < BITS_PER_LONG" (and a comment).
-
-Rasmus
+dGhhbmtzLA0KDQpSZXZpZXdlZC1ieTogS2V2aW4gV2FuZyA8a2V2aW4xLndhbmdAYW1kLmNvbT4N
+Cg0KUmVnYXJkcywNCktldmluDQoNCj4g5ZyoIDIwMjHlubQy5pyIMTnml6XvvIwwNjo0Oe+8jE5h
+dGhhbiBDaGFuY2VsbG9yIDxuYXRoYW5Aa2VybmVsLm9yZz4g5YaZ6YGT77yaDQo+IA0KPiDvu79D
+bGFuZyB3YXJuczoNCj4gDQo+IGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1Ly4uL3BtL3N3c211
+L3NtdV9jbW4uYzo3NjQ6Mjogd2FybmluZzoNCj4gdmFyaWFibGUgJ3N0cnVjdHVyZV9zaXplJyBp
+cyB1c2VkIHVuaW5pdGlhbGl6ZWQgd2hlbmV2ZXIgc3dpdGNoIGRlZmF1bHQNCj4gaXMgdGFrZW4g
+Wy1Xc29tZXRpbWVzLXVuaW5pdGlhbGl6ZWRdDQo+ICAgICAgICBkZWZhdWx0Og0KPiAgICAgICAg
+Xn5+fn5+fg0KPiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS8uLi9wbS9zd3NtdS9zbXVfY21u
+LmM6NzcwOjIzOiBub3RlOg0KPiB1bmluaXRpYWxpemVkIHVzZSBvY2N1cnMgaGVyZQ0KPiAgICAg
+ICAgbWVtc2V0KGhlYWRlciwgMHhGRiwgc3RydWN0dXJlX3NpemUpOw0KPiAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fn4NCj4gZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRn
+cHUvLi4vcG0vc3dzbXUvc211X2Ntbi5jOjc1MzoyNTogbm90ZToNCj4gaW5pdGlhbGl6ZSB0aGUg
+dmFyaWFibGUgJ3N0cnVjdHVyZV9zaXplJyB0byBzaWxlbmNlIHRoaXMgd2FybmluZw0KPiAgICAg
+ICAgdWludDE2X3Qgc3RydWN0dXJlX3NpemU7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIF4NCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgID0gMA0KPiAxIHdhcm5pbmcg
+Z2VuZXJhdGVkLg0KPiANCj4gUmV0dXJuIGluIHRoZSBkZWZhdWx0IGNhc2UsIGFzIHRoZSBzaXpl
+IG9mIHRoZSBoZWFkZXIgd2lsbCBub3QgYmUga25vd24uDQo+IA0KPiBGaXhlczogZGU0YjdjZDhj
+Yjg3ICgiZHJtL2FtZC9wbS9zd3NtdTogdW5pZnkgdGhlIGluaXQgc29mdCBncHUgbWV0cmljcyBm
+dW5jdGlvbiIpDQo+IExpbms6IGh0dHBzOi8vZ2l0aHViLmNvbS9DbGFuZ0J1aWx0TGludXgvbGlu
+dXgvaXNzdWVzLzEzMDQNCj4gU2lnbmVkLW9mZi1ieTogTmF0aGFuIENoYW5jZWxsb3IgPG5hdGhh
+bkBrZXJuZWwub3JnPg0KPiAtLS0NCj4gZHJpdmVycy9ncHUvZHJtL2FtZC9wbS9zd3NtdS9zbXVf
+Y21uLmMgfCAyICstDQo+IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlv
+bigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvcG0vc3dzbXUvc211
+X2Ntbi5jIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9wbS9zd3NtdS9zbXVfY21uLmMNCj4gaW5kZXgg
+YmI2MjBmZGQ0Y2QyLi5iY2VkZDRkOTJlMzUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2Ry
+bS9hbWQvcG0vc3dzbXUvc211X2Ntbi5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvcG0v
+c3dzbXUvc211X2Ntbi5jDQo+IEBAIC03NjIsNyArNzYyLDcgQEAgdm9pZCBzbXVfY21uX2luaXRf
+c29mdF9ncHVfbWV0cmljcyh2b2lkICp0YWJsZSwgdWludDhfdCBmcmV2LCB1aW50OF90IGNyZXYp
+DQo+ICAgICAgICBzdHJ1Y3R1cmVfc2l6ZSA9IHNpemVvZihzdHJ1Y3QgZ3B1X21ldHJpY3NfdjJf
+MCk7DQo+ICAgICAgICBicmVhazsNCj4gICAgZGVmYXVsdDoNCj4gLSAgICAgICAgYnJlYWs7DQo+
+ICsgICAgICAgIHJldHVybjsNCj4gICAgfQ0KPiANCj4gI3VuZGVmIE1FVFJJQ1NfVkVSU0lPTg0K
+PiAtLSANCj4gMi4zMC4xDQo+IA0K
