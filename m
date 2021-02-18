@@ -2,140 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB5231EEEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 501E531EEF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:54:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbhBRSvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:51:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233901AbhBRQuK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:50:10 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE099C06178B
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:47:31 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id d2so1832663pjs.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:47:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QLD/Vci8BmjI88mYbyEPyheGKG0KNpyI0nkYViJLyO4=;
-        b=YHDVGz9Wm9nKaEw67Tpa9tyNwVeX/OK3qzLTbNPaILkqjBy4kTvgggy2iLcv+k2EwG
-         rqsngVVMewnsiMnAkATXJ/l4pEhdkMFH/KDvGkToe1C9is3KG9QFm8ouC/d9Dc1cP27V
-         PWYss9F4yORor9Bf9/0aLD9HJp+m3eQRs2GRZ6Di182fy2nceb4R8xMFB7cnUtwjOAvd
-         RNUt2ZB3DR7CkCm3Dafk8OVP485zHB42AUkzr8wOc9lvHMDZJUpTUVhEVDT1hiTRelUc
-         8iAfN7qgX98vRzGubsqrwfuZnUEnbt7U1iLHbWDmvAY3ZNiaWwUaZrw2vzG8WRfjHR1E
-         KGaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=QLD/Vci8BmjI88mYbyEPyheGKG0KNpyI0nkYViJLyO4=;
-        b=trlF147Zy9iPmnFyAw3YfEI3I1BT3OwODeedeG0PU8QFImQ6sTGhbDFFzYhj0JdXhz
-         toxrBxXrpFjZAYBT8kzE0jC0XMaI7hpnkdcZzODE91hN7jZ1qdD/DkbLkkSDN/YG5nQ9
-         leFZzYPTSfAmnkmpFPW6AiVfXdTFpPSz3+t9SDvdzfitPDFAX0A3pEzjnQ4BE7uRIlb8
-         /7IvDCRms4aF8TRan908rtUJ7RYg5AR0HzlQQViqg+NElTMjQMXUsvUzqL3imjuOkgrb
-         y0Ga05EWnvae6PeX3VDBigYdBh7sju98FBglqtp1yRnAZK91gSdJ2vko4Om9CsRW5pLn
-         4a2A==
-X-Gm-Message-State: AOAM533/FB/PPcjd3W74ecRWnA77bsOkPTodN+EEQVd4vmCAt3zWfuQ8
-        BbLZgsixQ3z8vQETpN82OqY=
-X-Google-Smtp-Source: ABdhPJwoZfClDSLYCjn0A9YHv8diVsM02fTK00Xfw2+4RfmSwoJwROlZgiTYngLZZrqjzVcRE3H7DA==
-X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr4780789pjb.35.1613666851454;
-        Thu, 18 Feb 2021 08:47:31 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:157d:8a19:5427:ea9e])
-        by smtp.gmail.com with ESMTPSA id v9sm6014020pju.33.2021.02.18.08.47.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 08:47:30 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 18 Feb 2021 08:47:28 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YC6aIL67PaYlmeYq@google.com>
-References: <20210217163603.429062-1-minchan@kernel.org>
- <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
- <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
- <YC402s1vqvC4q041@dhcp22.suse.cz>
- <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
- <YC6TpqT26dSy11fU@google.com>
- <dc534e7b-3992-eb37-8399-67258ff03067@redhat.com>
+        id S233376AbhBRSwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:52:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60388 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233913AbhBRQwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:52:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47B1E64EB3;
+        Thu, 18 Feb 2021 16:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613667008;
+        bh=92qqsNKNLtQETmYq95JpSvV7z/qtYNHIl+uuhSbp41U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ha/QTsAIoUVp9c44+GpGrnWclaUGHIhd29nH8xrV1yz1URHEFONOiaMOpm82sNNfM
+         1b7fUrjk0tVZGc5lnza6WvRTAqpSysWcauDvEPeQRWS2JlELbX/40TDGMROlLKCgmw
+         8vOOT9C5HhwHLTMyUteJ7yytgxTcwXtk8ScIYmWg0+1pFQKRKrrtFxvexBaE3u/PY8
+         qSOh16p1wxThaFAdpW75VooJvGCecUcD4nwOH6iasCI1M/wWz2na8vveAnOzvx5uAJ
+         +Q0crPP+4O4atc5UpW6XyKmJRiq14xZ9SyRCpeUuj45oAAmOkh4/fCymsKScOObW56
+         e1Iaipe1Q8MGA==
+Date:   Thu, 18 Feb 2021 10:50:06 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     mingchuang.qiao@mediatek.com
+Cc:     bhelgaas@google.com, matthias.bgg@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, haijun.liu@mediatek.com,
+        lambert.wang@mediatek.com, kerun.zhu@mediatek.com,
+        mika.westerberg@linux.intel.com, alex.williamson@redhat.com,
+        rjw@rjwysocki.net, utkarsh.h.patel@intel.com
+Subject: Re: [v4] PCI: Avoid unsync of LTR mechanism configuration
+Message-ID: <20210218165006.GA983767@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dc534e7b-3992-eb37-8399-67258ff03067@redhat.com>
+In-Reply-To: <20210204095125.9212-1-mingchuang.qiao@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 05:26:08PM +0100, David Hildenbrand wrote:
-> On 18.02.21 17:19, Minchan Kim wrote:
-> > On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
-> > > On 18.02.21 10:35, Michal Hocko wrote:
-> > > > On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
-> > > > > On 18.02.21 09:56, Michal Hocko wrote:
-> > > > > > On Wed 17-02-21 08:36:03, Minchan Kim wrote:
-> > > > > > > alloc_contig_range is usually used on cma area or movable zone.
-> > > > > > > It's critical if the page migration fails on those areas so
-> > > > > > > dump more debugging message like memory_hotplug unless user
-> > > > > > > specifiy __GFP_NOWARN.
-> > > > > > 
-> > > > > > I agree with David that this has a potential to generate a lot of output
-> > > > > > and it is not really clear whether it is worth it. Page isolation code
-> > > > > > already has REPORT_FAILURE mode which currently used only for the memory
-> > > > > > hotplug because this was just too noisy from the CMA path - d381c54760dc
-> > > > > > ("mm: only report isolation failures when offlining memory").
-> > > > > > 
-> > > > > > Maybe migration failures are less likely to fail but still.
-> > > > > 
-> > > > > Side note: I really dislike that uncontrolled error reporting on memory
-> > > > > offlining path we have enabled as default. Yeah, it might be useful for
-> > > > > ZONE_MOVABLE in some cases, but otherwise it's just noise.
-> > > > > 
-> > > > > Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
-> > > > 
-> > > > Anyway we can discuss this in a separate thread but I think this is not
-> > > > a representative workload.
-> > > 
-> > > Sure, but the essence is "this is noise", and we'll have more noise on
-> > > alloc_contig_range() as we see these calls more frequently. There should be
-> > > an explicit way to enable such *debug* messages.
-> > 
-> > alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
+On Thu, Feb 04, 2021 at 05:51:25PM +0800, mingchuang.qiao@mediatek.com wrote:
+> From: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
 > 
-> I am not 100% sure it does.
-
-Oh, it should. Otherwise, let's fix either of caller or
-alloc_contig_range since we have a customer.
-
-```
-    ret = alloc_contig_range(pfn, pfn + count, MIGRATE_CMA,
-            GFP_KERNEL | (no_warn ? __GFP_NOWARN : 0))
-```
-
+> In bus scan flow, the "LTR Mechanism Enable" bit of DEVCTL2 register is
+> configured in pci_configure_ltr(). If device and bridge both support LTR
+> mechanism, the "LTR Mechanism Enable" bit of device and bridge will be
+> enabled in DEVCTL2 register. And pci_dev->ltr_path will be set as 1.
 > 
-> > Why shouldn't people use it if they don't care the failure?
+> If PCIe link goes down when device resets, the "LTR Mechanism Enable" bit
+> of bridge will change to 0 according to PCIe r5.0, sec 7.5.3.16. However,
+> the pci_dev->ltr_path value of bridge is still 1.
 > 
-> Because flooding the log with noise maybe a handful of people on this planet
-> care about is absolutely useless. With the warnings in warn_alloc() people
-> can at least conclude something reasonable.
+> For following conditions, check and re-configure "LTR Mechanism Enable" bit
+> of bridge to make "LTR Mechanism Enable" bit match ltr_path value.
+>    -before configuring device's LTR for hot-remove/hot-add
+>    -before restoring device's DEVCTL2 register when restore device state
+
+There's definitely a bug here.  The commit log should say a little
+more about what it is.  I *think* if LTR is enabled and we suspend
+(putting the device in D3cold) and resume, LTR probably doesn't work
+after resume because LTR is disabled in the upstream bridge, which
+would be an obvious bug.
+
+Also, if a device with LTR enabled is hot-removed, and we hot-add a
+device, I think LTR will not work on the new device.  Possibly also a
+bug, although I'm not convinced we know how to configure LTR on the
+new device anyway.
+
+So I'd *like* to merge the bug fix for v5.12, but I think I'll wait
+because of the issue below.
+
+> Signed-off-by: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+> ---
+> changes of v4
+>  -fix typo of commit message
+>  -rename: pci_reconfigure_bridge_ltr()->pci_bridge_reconfigure_ltr()
+> changes of v3
+>  -call pci_reconfigure_bridge_ltr() in probe.c
+> changes of v2
+>  -modify patch description
+>  -reconfigure bridge's LTR before restoring device DEVCTL2 register
+> ---
+>  drivers/pci/pci.c   | 25 +++++++++++++++++++++++++
+>  drivers/pci/pci.h   |  1 +
+>  drivers/pci/probe.c | 13 ++++++++++---
+>  3 files changed, 36 insertions(+), 3 deletions(-)
 > 
-> > Semantically, it makes sense to me.
-> > 
-> > About the messeage flooding, shouldn't we go with ratelimiting?
-> 
-> At least that (see warn_alloc()). But I'd even want to see some other
-> trigger to enable this explicitly on demand.
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index b9fecc25d213..6bf65d295331 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1437,6 +1437,24 @@ static int pci_save_pcie_state(struct pci_dev *dev)
+>  	return 0;
+>  }
+>  
+> +void pci_bridge_reconfigure_ltr(struct pci_dev *dev)
+> +{
+> +#ifdef CONFIG_PCIEASPM
+> +	struct pci_dev *bridge;
+> +	u32 ctl;
+> +
+> +	bridge = pci_upstream_bridge(dev);
+> +	if (bridge && bridge->ltr_path) {
+> +		pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
+> +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
+> +			pci_dbg(bridge, "re-enabling LTR\n");
+> +			pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
+> +						 PCI_EXP_DEVCTL2_LTR_EN);
 
-No objection.
+This pattern of updating the upstream bridge on behalf of "dev" is
+problematic because it's racy:
 
-How about adding verbose knob under CONFIG_CMA_DEBUGFS with
-alloc_contig_range(..., bool verbose) like start_isolate_page_range?
+  CPU 1                     CPU 2
+  -------------------       ---------------------
+  ctl = read DEVCTL2        ctl = read(DEVCTL2)
+  ctl |= DEVCTL2_LTR_EN     ctl |= DEVCTL2_ARI
+  write(DEVCTL2, ctl)
+                            write(DEVCTL2, ctl)
 
-If admin turns on the verbose mode under CONFIG_CMA_DEBUGFS,
-cma_alloc will pass alloc_contig_range(...., true).
+Now the bridge has ARI set, but not LTR_EN.
+
+We have the same problem in the pci_enable_device() path.  The most
+recent try at fixing it is [1].
+
+[1] https://lore.kernel.org/linux-pci/20201218174011.340514-2-s.miroshnichenko@yadro.com/
+
+> +		}
+> +	}
+> +#endif
+> +}
+> +
+>  static void pci_restore_pcie_state(struct pci_dev *dev)
+>  {
+>  	int i = 0;
+> @@ -1447,6 +1465,13 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
+>  	if (!save_state)
+>  		return;
+>  
+> +	/*
+> +	 * Downstream ports reset the LTR enable bit when link goes down.
+> +	 * Check and re-configure the bit here before restoring device.
+> +	 * PCIe r5.0, sec 7.5.3.16.
+> +	 */
+> +	pci_bridge_reconfigure_ltr(dev);
+> +
+>  	cap = (u16 *)&save_state->cap.data[0];
+>  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
+>  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++]);
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 5c59365092fa..b3a5e5287cb7 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -111,6 +111,7 @@ void pci_free_cap_save_buffers(struct pci_dev *dev);
+>  bool pci_bridge_d3_possible(struct pci_dev *dev);
+>  void pci_bridge_d3_update(struct pci_dev *dev);
+>  void pci_bridge_wait_for_secondary_bus(struct pci_dev *dev);
+> +void pci_bridge_reconfigure_ltr(struct pci_dev *dev);
+>  
+>  static inline void pci_wakeup_event(struct pci_dev *dev)
+>  {
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 953f15abc850..ade055e9fb58 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -2132,9 +2132,16 @@ static void pci_configure_ltr(struct pci_dev *dev)
+>  	 * Complex and all intermediate Switches indicate support for LTR.
+>  	 * PCIe r4.0, sec 6.18.
+>  	 */
+> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    ((bridge = pci_upstream_bridge(dev)) &&
+> -	      bridge->ltr_path)) {
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
+> +		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+> +					 PCI_EXP_DEVCTL2_LTR_EN);
+> +		dev->ltr_path = 1;
+> +		return;
+> +	}
+> +
+> +	bridge = pci_upstream_bridge(dev);
+> +	if (bridge && bridge->ltr_path) {
+> +		pci_bridge_reconfigure_ltr(dev);
+>  		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+>  					 PCI_EXP_DEVCTL2_LTR_EN);
+>  		dev->ltr_path = 1;
+> -- 
+> 2.18.0
