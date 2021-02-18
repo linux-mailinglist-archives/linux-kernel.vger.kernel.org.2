@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077EF31F2BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E55A131F2BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229944AbhBRXDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 18:03:06 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:64784 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229577AbhBRXC7 (ORCPT
+        id S229656AbhBRXD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 18:03:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25684 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229649AbhBRXDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 18:02:59 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11IMXFxi178716;
-        Thu, 18 Feb 2021 18:02:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=9yf/exikxb14aBP182cqL+okn4giAyPqoa0K6EQ+Crc=;
- b=cbq2aM6CyMgG9ajmDp8gY2ot7pA23dEakHLIQxSAxz8BYbUE6ZOF786tWnArdqYDnkni
- sZkQr/gcQmpuMKQMU1wO1gSDTsXNObt5/jJySoIUCiAlDEm2RoGQI4x2Wu4+2EB/KlDU
- m6xYHV0rGH0EX9JBNxxZfcAmdRxIq0MS+WjyJ97MzqD+fAXaThvcbHH10MeLj/ksjv7w
- iGOSMFgomcWAi+l2O4zBKdI9jSfG1DPnH9dfqHQa0yEaa9xDery8S5U5zoXVh6pFJDfy
- BbYkPPWpyU1Rm7tv+dgMZsPFX1leWx5hYjsa568BrR4q17/Bmb7PrZ03TwqrTXnjHHSA vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36sy3auwe9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 18:02:17 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11IMXLpu182431;
-        Thu, 18 Feb 2021 18:02:16 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36sy3auwd5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 18:02:16 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11IN2Ei5005209;
-        Thu, 18 Feb 2021 23:02:14 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 36p6d8d2pw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 23:02:14 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11IN2ASg41025948
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 23:02:11 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BF419A405C;
-        Thu, 18 Feb 2021 23:02:10 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AA171A405F;
-        Thu, 18 Feb 2021 23:02:08 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.66.70])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 18 Feb 2021 23:02:08 +0000 (GMT)
-Message-ID: <000c7600b041a9c513d37b126ecfa6debdd0c738.camel@linux.ibm.com>
-Subject: Re: [PATCH v2 5/5] ima: enable loading of build time generated key
- on .ima keyring
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        keyrings@vger.kernel.org
-Cc:     linux-security-module@vger.kernel.org,
-        David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 18 Feb 2021 18:02:07 -0500
-In-Reply-To: <20210218220011.67625-6-nayna@linux.ibm.com>
-References: <20210218220011.67625-1-nayna@linux.ibm.com>
-         <20210218220011.67625-6-nayna@linux.ibm.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-18_14:2021-02-18,2021-02-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- adultscore=0 spamscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1015 impostorscore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180188
+        Thu, 18 Feb 2021 18:03:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613689348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FU+AIYqDGgm8srMw7KnfiWhYBmq4BR3BSBFf66+l9Sc=;
+        b=Z7fTwP3EDBJuICg4JPriWWyFehPMfLtVxTxdC3S3TBgeTJCHQe1aLfUVCrcznTdeafV+He
+        uRcnklbiimFliLEOUKWNPQsehSMjEeYlZUYcq2uf+fQDqLni7seY2ib5jE8irHLwAOxbMH
+        DX6Bh4Uiw1/V3A28Bel7xBbWr1aaS74=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-181-OiA8WiqCOJG8k8f7LsoudQ-1; Thu, 18 Feb 2021 18:02:27 -0500
+X-MC-Unique: OiA8WiqCOJG8k8f7LsoudQ-1
+Received: by mail-qk1-f198.google.com with SMTP id r15so2333227qke.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 15:02:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FU+AIYqDGgm8srMw7KnfiWhYBmq4BR3BSBFf66+l9Sc=;
+        b=rTIrP1qZ3IYPeSnhT0Ttd1mfFLwJQIQhBbcNEbys9PUmvRumx7dlAj+Vm/9XkR6D4e
+         Kp4GIRRV/kv2BXAughUpPrMIwZSqLQXu7EThbqineWVB/DqQA2vDzmGPBDsOBu9swFeV
+         +tMiSi3Kn94DbClhw2G7r/8++kl7sSI2u+ZrdCfwnYoV3TLthoofNrDnvJK9FE3ueUKQ
+         bMLdsPQn/NMZOJ4R2LNla7sxT9b4lGuf0gtvLiHp40vpaGy+vfl3JfSu2D+xr04YHpz7
+         1vkehucnyM602ofWuSE9zkBVouofXSnoa/i2Uo5iYDL+w0KX3QHrREYVcLppoc0/lRad
+         5H2w==
+X-Gm-Message-State: AOAM532Ke8zViCVoAqo+byk0J7DADVFon7p323dFCVmiBrz+I8FqCSwM
+        hlg8RVewaGv9xXX2FY8U4OFXf5r4vQib9LOatlFbPIuImyt1HZUsHws3GgIvKZQBQbCqDGnzfGe
+        u6KeOo+pe8HBdMC/5CCnTd4HL
+X-Received: by 2002:ad4:5ecc:: with SMTP id jm12mr4018444qvb.33.1613689346907;
+        Thu, 18 Feb 2021 15:02:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxjIop6wWlrtUWew3t2FDo9DLD6rg6n78m0yu7ZvLqgdBvXGS0U7xBcDcd0OHbtsr2xsCDcfQ==
+X-Received: by 2002:ad4:5ecc:: with SMTP id jm12mr4018431qvb.33.1613689346688;
+        Thu, 18 Feb 2021 15:02:26 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id u126sm4902865qkc.107.2021.02.18.15.02.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 15:02:26 -0800 (PST)
+Date:   Thu, 18 Feb 2021 18:02:24 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH v3 1/4] hugetlb: Pass vma into huge_pte_alloc() and
+ huge_pmd_share()
+Message-ID: <20210218230224.GC6669@xz-x1>
+References: <20210218215434.10203-1-peterx@redhat.com>
+ <20210218215434.10203-2-peterx@redhat.com>
+ <76fee968-cfc2-787f-7e48-af781563756e@oracle.com>
+ <20210218222757.GA6669@xz-x1>
+ <9d93ec4c-4cb9-c3c8-5b73-ae00c4fa9435@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9d93ec4c-4cb9-c3c8-5b73-ae00c4fa9435@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-18 at 17:00 -0500, Nayna Jain wrote:
-> The kernel currently only loads the kernel module signing key onto
-> the builtin trusted keyring. To support IMA, load the module signing
-> key selectively either onto the builtin or IMA keyring based on MODULE_SIG
-> or MODULE_APPRAISE_MODSIG config respectively; and loads the CA kernel
-> key onto the builtin trusted keyring.
+On Thu, Feb 18, 2021 at 02:38:18PM -0800, Mike Kravetz wrote:
+> I thought the error was caused by not deleting the line
 > 
-> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
+> 	pte_t *huge_pte_alloc(struct mm_struct *mm,
+> 
+> when adding
+> 
+> 	pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
+> 
+> as above.
 
-Always having a CA key would simplify the code.   Otherwise for the
-patch set,
+Sorry about that!  I'll repost.
 
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+-- 
+Peter Xu
 
