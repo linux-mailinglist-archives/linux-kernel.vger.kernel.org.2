@@ -2,96 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B312E31EB97
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADF8531EB99
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhBRPaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:30:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
+        id S231642AbhBRPak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:30:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230248AbhBRNPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:15:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4285264E92;
-        Thu, 18 Feb 2021 13:14:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613654052;
-        bh=DICMxhSu9qIwJkZC3lVGDCORd7AqBmihED5o+uDFsVE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pulXCgMOy3JXpT4Cz56rgdtZWEARwMUh6EKE96xVim6pBzIfpeulZCcjfqiPWiHwU
-         /f5I/SPW/NGNfMDN5zDMXPRqyUwMY20p4+8hRT5nzjd35o+D5mCQJzLfTbiZToc0TB
-         k4kIzZwz54WyLmpu6Z4z8sBGkxNDFCHdLl6SSup5i7hiWE0vkzwhd/poAYPpIcGGX3
-         1jWqKjrbij5Ojh7mZuVOXIuX0vd5jV2J/yqNIyBBlVGOdrMeMgISYKYj+1MabyoU8F
-         kqxCf71C1t/x/39BwCmN8F1Rqxqs4oy1citP4TA32iuX5AHolOZCT0jv8Gbpf164QW
-         1vHXL2COSxS7A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0DCBF40CD9; Thu, 18 Feb 2021 10:14:10 -0300 (-03)
-Date:   Thu, 18 Feb 2021 10:14:10 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        peterz@infradead.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH] perf tools: Simplify the calculation of variables
-Message-ID: <YC5oIkXjJSj/GJpX@kernel.org>
-References: <1612497255-87189-1-git-send-email-jiapeng.chong@linux.alibaba.com>
- <YB0Um9N4rW8fd+oD@krava>
+        id S232743AbhBRNSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:18:18 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E533E64EAD;
+        Thu, 18 Feb 2021 13:17:35 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 13:17:32 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] resolve read hystersis return invalid argument
+ issue for hid sensors
+Message-ID: <20210218131732.56f9f4bf@archlinux>
+In-Reply-To: <20210201054921.18214-1-xiang.ye@intel.com>
+References: <20210201054921.18214-1-xiang.ye@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YB0Um9N4rW8fd+oD@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Feb 05, 2021 at 10:49:15AM +0100, Jiri Olsa escreveu:
-> On Fri, Feb 05, 2021 at 11:54:15AM +0800, Jiapeng Chong wrote:
-> > Fix the following coccicheck warnings:
-> > 
-> > ./tools/perf/util/header.c:3809:18-20: WARNING !A || A && B is
-> > equivalent to !A || B.
-> > 
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > ---
-> >  tools/perf/util/header.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-> > index c4ed3dc..4fe9e2a 100644
-> > --- a/tools/perf/util/header.c
-> > +++ b/tools/perf/util/header.c
-> > @@ -3806,7 +3806,7 @@ int perf_session__read_header(struct perf_session *session)
-> >  	 * check for the pipe header regardless of source.
-> >  	 */
-> >  	err = perf_header__read_pipe(session);
-> > -	if (!err || (err && perf_data__is_pipe(data))) {
-> > +	if (!err || perf_data__is_pipe(data)) {
+On Mon,  1 Feb 2021 13:49:19 +0800
+Ye Xiang <xiang.ye@intel.com> wrote:
+
+> This patch series move get sensitivity attribute to common layer and
+> resolve read hystersis return invalid argument issue for hid sensors als,
+> incli-3d, rotation, and press on intel ISH Platform.
+
+Given Jiri was fine with the follow up series, I'm going to guess he
+just missed this one and apply it with out his explicit ack.
+
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to see if they can find anything we missed.
+
+Thanks,
+
+Jonathan
+
 > 
-> mama mia, thanks
+> ---
+> v2:
+>   - separate the add relative sensitivity patch to the next patch series.
 > 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> jirka
+> Ye Xiang (2):
+>   iio: hid-sensors: Move get sensitivity attribute to hid-sensor-common
+>   hid-sensors: Add more data fields for sensitivity checking
 > 
-> >  		data->is_pipe = true;
-> >  		return err;
-> >  	}
-> > -- 
-> > 1.8.3.1
-> > 
+>  drivers/iio/accel/hid-sensor-accel-3d.c       | 23 ++++++-------
+>  .../hid-sensors/hid-sensor-attributes.c       | 17 +++++++++-
+>  drivers/iio/gyro/hid-sensor-gyro-3d.c         | 19 ++++-------
+>  drivers/iio/humidity/hid-sensor-humidity.c    | 16 ++++------
+>  drivers/iio/light/hid-sensor-als.c            | 20 +++++-------
+>  drivers/iio/light/hid-sensor-prox.c           | 27 +++++-----------
+>  drivers/iio/magnetometer/hid-sensor-magn-3d.c | 32 ++++++-------------
+>  drivers/iio/orientation/hid-sensor-incl-3d.c  | 20 +++++-------
+>  drivers/iio/orientation/hid-sensor-rotation.c | 24 ++++++--------
+>  .../position/hid-sensor-custom-intel-hinge.c  | 20 ++++--------
+>  drivers/iio/pressure/hid-sensor-press.c       | 20 +++++-------
+>  .../iio/temperature/hid-sensor-temperature.c  | 16 ++++------
+>  drivers/rtc/rtc-hid-sensor-time.c             |  4 ++-
+>  include/linux/hid-sensor-hub.h                |  4 ++-
+>  14 files changed, 111 insertions(+), 151 deletions(-)
 > 
 
--- 
-
-- Arnaldo
