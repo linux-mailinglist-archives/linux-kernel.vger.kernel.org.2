@@ -2,173 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEFB31EB78
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3ABB31EB4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBRPYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:24:03 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:31890 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232924AbhBRNDL (ORCPT
+        id S230309AbhBRPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:11:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42501 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233003AbhBRM5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:03:11 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11ICgG7R025222;
-        Thu, 18 Feb 2021 04:42:16 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=pfpt0220;
- bh=Wf9nGNGlZL5D6f89oSJlh1oCwj93RrSrls7xCKsb+tw=;
- b=bukrhnGZJ5rxS96hDwJbFi4lPtIo5U8XREfvYy81ODeJcSoOkKlJ3FpiXwqZOO6zEzMj
- fRtJmldTP1YX/+aMlaw2wSsjUUUv3lOWMA+3iHN3ga9YJJMbCWKuOxJtrLuvFioY/Bmy
- uribQXoIZPQiotngIrvz0roaGSjfCZhyp1W8q5isAR5T6sbEj0nPtcL5Nsbiol4Vkp04
- 3v9J9yP53G+LD/sqOkUaiAkG2L6kFIVixnQFarVueYnC6xNwZS6EoyQ3kZpbaRjei88m
- N8ZieuEvLq7nuw5s/kwNJQ6GsVbZ7v2uHlIzt/piV3iKopKQLVB1MXbCja8k7yJ13iqD ow== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36sesvsjn4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 04:42:16 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
- 2021 04:42:14 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
- 2021 04:42:14 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 18 Feb 2021 04:42:14 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 706663F7040;
-        Thu, 18 Feb 2021 04:42:11 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [net-next] net: mvpp2: skip RSS configurations on loopback port
-Date:   Thu, 18 Feb 2021 14:42:03 +0200
-Message-ID: <1613652123-19021-1-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
+        Thu, 18 Feb 2021 07:57:09 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613652901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CoL5IJK0wnV3SqWAZzfyOHTiK74bBoRTJKaiC70tzO8=;
+        b=MucdpXr0wTSv7pFO8oPpOYqN8chxMeDjz9bUDsj6BjKXUveA9qVi0TLea3mXYByQ84B2dx
+        2ZcQMDmytmqnQxdeax4T7vPmNU5Sa3AsJxIO6Xhnxjk4bvf0SDUS+WXh5f9G8MVyaiGSFx
+        KxFzJ8aHZJjL0clSM+UN/PbvHMM6So4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-598-NgKUGm02NNSyQyNz8lmLoQ-1; Thu, 18 Feb 2021 07:43:48 -0500
+X-MC-Unique: NgKUGm02NNSyQyNz8lmLoQ-1
+Received: by mail-wr1-f71.google.com with SMTP id y6so930344wrl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:43:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CoL5IJK0wnV3SqWAZzfyOHTiK74bBoRTJKaiC70tzO8=;
+        b=lSdvbXMl+FLtX21MgegBvPa+22z+fhyokYbcRlV56qpQLKQzBCqm5jE79IP2Qvzk7T
+         M0T6rmZGVvKCKdJlSP0ynLw7hCDzEfjA3Wedohs4UUVy/gEtwj5iRQfTQpMtxeP9P8gi
+         sN5UDM7F5lO8n6SKM7DnhEWLfgwDTg54qOyhsaRxViwVqt5jnHjbLDcQ+adV1JJxriSh
+         pMfNRv4TQaN4KQnR2Ciw6itb0DwNx5QXrTWoGeMS45uNzIm71Dp10Ygj5ULVs+kFWpF+
+         jgx5keUiyO9pyP757OSpvoP6Wbmc44nceMOuRjtdSm4ZbUPVQEc8tqnvHWg1ki6qC5A1
+         g8pA==
+X-Gm-Message-State: AOAM530kOOTYyiQhabcgWy13RQy1VO5FNh88rIsD8eSGzb94ogfJ3qy5
+        q1kRwMpHoLKJ6ODR2AXJpdbpIOOMEiOCKnkfTg5IJ3eMJEYz7VOuyf2b6yX9/BsOZ00byJMqlHf
+        6+WK2bc0rqmFIbU4hgS+sqKZh
+X-Received: by 2002:a1c:a795:: with SMTP id q143mr3483813wme.113.1613652227235;
+        Thu, 18 Feb 2021 04:43:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxBAxO15MXr//rnlF6I63/pZVcDmGH1FrUfG45+6JzkNwp43de8h/44CFBi0vu3YcmP57i4Lw==
+X-Received: by 2002:a1c:a795:: with SMTP id q143mr3483790wme.113.1613652227023;
+        Thu, 18 Feb 2021 04:43:47 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id z8sm8474317wrr.55.2021.02.18.04.43.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 04:43:46 -0800 (PST)
+Subject: Re: [PATCH 05/14] KVM: x86/mmu: Consult max mapping level when
+ zapping collapsible SPTEs
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
+        Makarand Sonare <makarandsonare@google.com>
+References: <20210213005015.1651772-1-seanjc@google.com>
+ <20210213005015.1651772-6-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <caa90b6b-c2fa-d8b7-3ee6-263d485c5913@redhat.com>
+Date:   Thu, 18 Feb 2021 13:43:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-18_05:2021-02-18,2021-02-18 signatures=0
+In-Reply-To: <20210213005015.1651772-6-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On 13/02/21 01:50, Sean Christopherson wrote:
+> 
+>  		pfn = spte_to_pfn(iter.old_spte);
+>  		if (kvm_is_reserved_pfn(pfn) ||
+> -		    (!PageTransCompoundMap(pfn_to_page(pfn)) &&
+> -		     !kvm_is_zone_device_pfn(pfn)))
+> +		    iter.level >= kvm_mmu_max_mapping_level(kvm, slot, iter.gfn,
+> +							    pfn, PG_LEVEL_NUM))
+>  			continue;
+>  
 
-PPv2 loopback port doesn't support RSS, so we should
-skip RSS configurations for this port.
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 25 +++++++++++---------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+This changes the test to PageCompound.  Is it worth moving the change to 
+patch 1?
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 10c17d1..d415447 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -4699,9 +4699,10 @@ static void mvpp2_irqs_deinit(struct mvpp2_port *port)
- 	}
- }
- 
--static bool mvpp22_rss_is_supported(void)
-+static bool mvpp22_rss_is_supported(struct mvpp2_port *port)
- {
--	return queue_mode == MVPP2_QDIST_MULTI_MODE;
-+	return (queue_mode == MVPP2_QDIST_MULTI_MODE) &&
-+		!(port->flags & MVPP2_F_LOOPBACK);
- }
- 
- static int mvpp2_open(struct net_device *dev)
-@@ -5513,7 +5514,7 @@ static int mvpp2_ethtool_get_rxnfc(struct net_device *dev,
- 	struct mvpp2_port *port = netdev_priv(dev);
- 	int ret = 0, i, loc = 0;
- 
--	if (!mvpp22_rss_is_supported())
-+	if (!mvpp22_rss_is_supported(port))
- 		return -EOPNOTSUPP;
- 
- 	switch (info->cmd) {
-@@ -5548,7 +5549,7 @@ static int mvpp2_ethtool_set_rxnfc(struct net_device *dev,
- 	struct mvpp2_port *port = netdev_priv(dev);
- 	int ret = 0;
- 
--	if (!mvpp22_rss_is_supported())
-+	if (!mvpp22_rss_is_supported(port))
- 		return -EOPNOTSUPP;
- 
- 	switch (info->cmd) {
-@@ -5569,7 +5570,9 @@ static int mvpp2_ethtool_set_rxnfc(struct net_device *dev,
- 
- static u32 mvpp2_ethtool_get_rxfh_indir_size(struct net_device *dev)
- {
--	return mvpp22_rss_is_supported() ? MVPP22_RSS_TABLE_ENTRIES : 0;
-+	struct mvpp2_port *port = netdev_priv(dev);
-+
-+	return mvpp22_rss_is_supported(port) ? MVPP22_RSS_TABLE_ENTRIES : 0;
- }
- 
- static int mvpp2_ethtool_get_rxfh(struct net_device *dev, u32 *indir, u8 *key,
-@@ -5578,7 +5581,7 @@ static int mvpp2_ethtool_get_rxfh(struct net_device *dev, u32 *indir, u8 *key,
- 	struct mvpp2_port *port = netdev_priv(dev);
- 	int ret = 0;
- 
--	if (!mvpp22_rss_is_supported())
-+	if (!mvpp22_rss_is_supported(port))
- 		return -EOPNOTSUPP;
- 
- 	if (indir)
-@@ -5596,7 +5599,7 @@ static int mvpp2_ethtool_set_rxfh(struct net_device *dev, const u32 *indir,
- 	struct mvpp2_port *port = netdev_priv(dev);
- 	int ret = 0;
- 
--	if (!mvpp22_rss_is_supported())
-+	if (!mvpp22_rss_is_supported(port))
- 		return -EOPNOTSUPP;
- 
- 	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc != ETH_RSS_HASH_CRC32)
-@@ -5617,7 +5620,7 @@ static int mvpp2_ethtool_get_rxfh_context(struct net_device *dev, u32 *indir,
- 	struct mvpp2_port *port = netdev_priv(dev);
- 	int ret = 0;
- 
--	if (!mvpp22_rss_is_supported())
-+	if (!mvpp22_rss_is_supported(port))
- 		return -EOPNOTSUPP;
- 	if (rss_context >= MVPP22_N_RSS_TABLES)
- 		return -EINVAL;
-@@ -5639,7 +5642,7 @@ static int mvpp2_ethtool_set_rxfh_context(struct net_device *dev,
- 	struct mvpp2_port *port = netdev_priv(dev);
- 	int ret;
- 
--	if (!mvpp22_rss_is_supported())
-+	if (!mvpp22_rss_is_supported(port))
- 		return -EOPNOTSUPP;
- 
- 	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc != ETH_RSS_HASH_CRC32)
-@@ -5956,7 +5959,7 @@ static int mvpp2_port_init(struct mvpp2_port *port)
- 	mvpp2_cls_oversize_rxq_set(port);
- 	mvpp2_cls_port_config(port);
- 
--	if (mvpp22_rss_is_supported())
-+	if (mvpp22_rss_is_supported(port))
- 		mvpp22_port_rss_init(port);
- 
- 	/* Provide an initial Rx packet size */
-@@ -6861,7 +6864,7 @@ static int mvpp2_port_probe(struct platform_device *pdev,
- 	dev->hw_features |= features | NETIF_F_RXCSUM | NETIF_F_GRO |
- 			    NETIF_F_HW_VLAN_CTAG_FILTER;
- 
--	if (mvpp22_rss_is_supported()) {
-+	if (mvpp22_rss_is_supported(port)) {
- 		dev->hw_features |= NETIF_F_RXHASH;
- 		dev->features |= NETIF_F_NTUPLE;
- 	}
--- 
-1.9.1
+Paolo
 
