@@ -2,103 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54A831E95A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E4031E91D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:49:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhBRLyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 06:54:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbhBRKTB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:19:01 -0500
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [IPv6:2a00:da80:fff0:2::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4380DC0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 02:06:26 -0800 (PST)
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EA20A1C0B7C; Thu, 18 Feb 2021 11:04:22 +0100 (CET)
-Date:   Thu, 18 Feb 2021 11:04:22 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <20210218100422.GA28546@amd>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
- <YBBkplRxzzmPYKC+@kroah.com>
- <YCzknUTDytY8gRA8@kroah.com>
+        id S232031AbhBRLU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 06:20:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54312 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232395AbhBRKJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:09:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AF2964EAE;
+        Thu, 18 Feb 2021 10:08:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613642905;
+        bh=8SxgXKz9u6HmAwFtrrTD4BRI30X3TGHaW/TFJfOO8gQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=so1Mu3Ps1gU98Tha/caBqosnDrIX7k2o3twPwq8zBIb35MicXQyjEjEHTLof1Nbbu
+         g2gUxff6idKQd5GfJ0+/eN9rs3eIu0a1P9WdLcaoASn5T+pO3tbvD84EwxVj7Rn9MD
+         aBZa3CZ636KbzUMCKpK/uSG43oweom+/q4ZGRr30=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Walle <michael@walle.cc>,
+        Marc Zyngier <maz@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH 1/2] debugfs: be more robust at handling improper input in debugfs_lookup()
+Date:   Thu, 18 Feb 2021 11:08:17 +0100
+Message-Id: <20210218100818.3622317-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
-Content-Disposition: inline
-In-Reply-To: <YCzknUTDytY8gRA8@kroah.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+debugfs_lookup() doesn't like it if it is passed an illegal name
+pointer, or if the filesystem isn't even initialized yet.  If either of
+these happen, it will crash the system, so fix it up by properly testing
+for valid input and that we are up and running before trying to find a
+file in the filesystem.
 
---ikeVEW9yuYc//A+q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reported-by: Michael Walle <michael@walle.cc>
+Tested-by: Michael Walle <michael@walle.cc>
+Tested-by: Marc Zyngier <maz@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/debugfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi!
+diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+index 2fcf66473436..bbeb563cbe78 100644
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -297,7 +297,7 @@ struct dentry *debugfs_lookup(const char *name, struct dentry *parent)
+ {
+ 	struct dentry *dentry;
+ 
+-	if (IS_ERR(parent))
++	if (!debugfs_initialized() || IS_ERR_OR_NULL(name) || IS_ERR(parent))
+ 		return NULL;
+ 
+ 	if (!parent)
+-- 
+2.30.1
 
-(Second attempt to reply, as first one is not in the archives?!)
-
-> > So far the jury is still out for 5.10, are you willing to help with
-> > this?  If not, why are you willing to hope that others are going to do
-> > your work for you?  I am talking to some companies, but am not willing
-> > to commit to anything in public just yet, because no one has committed
-> > to me yet.
->=20
-> Following up on this as I did not hear back from you.  Are you and/or
-> your company willing to help out with the testing of 5.10 to ensure that
-> it is a LTS kernel?  So far I have not had any companies agree to help
-> out with this effort, which is sad to see as it seems that companies
-> want 6 years of stable kernels, yet do not seem to be able to at the
-> least, do a test-build/run of those kernels, which is quite odd...
-
-We expect to maintain 5.10.X kernel for 10 years, which means you can
-expect similar testing we do for 4.4 and 4.19 to happen for 5.10:
-
-https://www.cip-project.org/blog/2020/12/02/cip-to-embark-on-kernel-5-10-de=
-velopment-for-slts
-
-If Broadcom (or anyone else) needs long-term support for 5.10 kernel,
-they are welcome to explore/join the CIP project. That should happen
-even if 5.10-stable is only mainained for 2 years.
-
-More information can be found here:
-
-https://wiki.linuxfoundation.org/civilinfrastructureplatform/start
-https://wiki.linuxfoundation.org/civilinfrastructureplatform/ciptesting/cip=
-referencehardware
-
-Best regards,
-								Pavel
-PS: Speaking for myself, but not saying anything not publicly known, I
-believe :-). I believe I can get more official statements if someone
-needs them.
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---ikeVEW9yuYc//A+q
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAuO6YACgkQMOfwapXb+vJcwQCfRPQz5lGgcMFcqrSusKSUQzR/
-RgkAn36OQGbZR53Khh/c93zmYfegFSps
-=uPaS
------END PGP SIGNATURE-----
-
---ikeVEW9yuYc//A+q--
