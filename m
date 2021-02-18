@@ -2,149 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D1E31EB9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:39:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9BD31EBAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:45:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhBRPfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:35:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233199AbhBRNTC (ORCPT
+        id S232322AbhBRPos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:44:48 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:5138 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232073AbhBRNXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:19:02 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on0628.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::628])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48358C061786;
-        Thu, 18 Feb 2021 05:18:16 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RsDPtIe2L63beG+SUs6jcQb2a2a9qLl/ed0gKSVGt5kLz/wFrpuFxJrnEFRWNUH/9EAqQepqHvLFeG3OexCFfcCMIHwdKe2Viv+fmPAzKKWX7Zk4Y+G2/bz03qkmPWkyQXkSl8zYMV05F9TUABMyIkUJoTWfsSjSLLQMviP0PrTThHyL9ZoukZarLNUc36xtgPLCoC/gP1rNWhsRHpscc55oI3+Qg3wPEN5E17vdrIEwlFmKpxBGGIs4/3Bl1g9H2iduUt0qzM0+pH4nBmWpOK1/3nlt9wku3lbc8nTnjvCf9gIQ4vH//BLDH3wbwcthfW8I4fyuR5KqX765cTj5Xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bldgEFtFLSWdSZ9fRL3QBKyM1/wFAEFAHSyJBN+ffnQ=;
- b=T5MlTGCDXwxkCcJwkU0/cvqPMrJRLmyiPry3bVMSTGibNUpWn/RNzLu6tAf4jgZoOFW91pyf/W0uEr3GmGEDgZm7rZjUJ2qb3VjIqKn8p0B2UhslUFnxVtMwwZ+lJeuWjIQPZ6whhfQ079AuGi1sfESSO9c8zLuiFxcI0yPlVfOGFrktsL6fg3dFw/FyWdB2exIHE0c17ksOX7zm/k0G+A6S9+vISz9zpX6A8S48VPG9gw0Z7h0om/sghuXCCcbJ0XK7XYmkkoup/pzEEdEjoPzFpLmRepkAkSzqIlHvCyrxirDIsAxdyn016aWcUQ7Fdy24w+zy+DeEGy048+Xb8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bldgEFtFLSWdSZ9fRL3QBKyM1/wFAEFAHSyJBN+ffnQ=;
- b=dtNKe8rWWmCS3qaiIcGV9ZuEnxFICkCF0kM+caiHrAeiiVst6TxXoJrvzEWCJDwoKWqE9510gy7k0A05uiqVZrr9kNuJu3vaZdiWnIEq/9V1zpaVQ6H3paFU7EB+Kf9LN0K5lNFK2GotN5et3v6yj7j1xZtTRYAcwLISfLfYi3c=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR0402MB2799.eurprd04.prod.outlook.com (2603:10a6:800:b0::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27; Thu, 18 Feb
- 2021 13:17:59 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::3df3:2eba:51bb:58d7]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::3df3:2eba:51bb:58d7%7]) with mapi id 15.20.3868.028; Thu, 18 Feb 2021
- 13:17:59 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: mscc: Fix MRP switchdev driver
-Thread-Topic: [PATCH net-next] net: mscc: Fix MRP switchdev driver
-Thread-Index: AQHXBevybXvIOkbZDk6j40ceQJbz2Kpd5RsA
-Date:   Thu, 18 Feb 2021 13:17:59 +0000
-Message-ID: <20210218131758.g4vsvmowggxdklfj@skbuf>
-References: <20210218114726.648927-1-horatiu.vultur@microchip.com>
-In-Reply-To: <20210218114726.648927-1-horatiu.vultur@microchip.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.25.217.13]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 5a7952e2-93d0-45c3-4eb8-08d8d40f9d05
-x-ms-traffictypediagnostic: VI1PR0402MB2799:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR0402MB2799C438C8F2B9264529F1F2E0859@VI1PR0402MB2799.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1WgD96N8FniBf2Zor/mNGlNNUVv6X1FhCE5/dQOC4DgNhaXIZItbj0DE8l1in9CC0hQ+BpgwRRZF3plfpqsrijEU37b3vhMBOUziB8j3b0FW42/bwcFyGIJxphpRL+7ARpbWKInxMzHOxcCEGIxENoWWvIP/h5+0XTX5iZTmp6a0qShFdV02pqYc6pmTardGjhR5lA76PSQ0T+Q3SAHNrger7wiSxDxDF3CvJy23JiF+Qaio2kD17gcMFuwT3VybFl43nTcZ956TOcjdV5MXJpVn9oQvJBrkZwZj8KdMiGZFgklLKjA7rGRiXTt88BEmTjE54FFGkFk/zg9yxhsAV5uLyBrv5VGbIrmmkXwqTUzcCGiXUHTCR3khA+WmENEt2/PxNr7UMGZZuKCMYUYSSV7USpCEKwpUF3sUlIBzl6m1VFSsDLZwBDj6PLt7K8WkmPoY04rHbKlT5Pl9iZH8PXl9UmhdGEXuQVuUPSg9zHURxM0smj9faK9VL/XIZiQFWBUBbMIEWy/PaiBFQTF5dw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(136003)(396003)(39860400002)(376002)(366004)(8936002)(7416002)(71200400001)(91956017)(6486002)(33716001)(64756008)(86362001)(66556008)(26005)(66446008)(66476007)(76116006)(54906003)(5660300002)(66946007)(6916009)(6506007)(186003)(8676002)(44832011)(83380400001)(2906002)(316002)(1076003)(4326008)(6512007)(9686003)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?l432vuWsZBEc6/vbgsqO+4i9kGNv8H7upHJhn+QWu9120hua+GCKLbjiyD02?=
- =?us-ascii?Q?K1oNmr7uyzmfTWgGtOZc5GnxKv1ZZotvvP7osyIGIvxEcSufuWg3VSIu7V6g?=
- =?us-ascii?Q?PAhnFPwt9roUuNrel/T70g36zW478CpnuCF9svPZaZM/BKMSieoPfRoli7rU?=
- =?us-ascii?Q?ngt0Q08Br3kl28EsC1YCogNwNDC5EhdYxxWFe8rt4/xi+zQPly/x3sVwjsL4?=
- =?us-ascii?Q?LxR6/HIfYNJ2I2lWgGr9VSse9c/jCkIs7usNmeqYMc+7qX6MBuxNYzCayg4v?=
- =?us-ascii?Q?Ga7igpop5W2kB2pePIUHgT6kNGMm+PzCGSuE8lGKaBtOqNLAZoLCKtziOsm4?=
- =?us-ascii?Q?eapCV0ER6NwypEfiEiOEG6FW1CRDllCkVSFJBJ4m////mAQW+pvEn9xU7KRU?=
- =?us-ascii?Q?JbJwikb/KVQRhsoor3/VS6pg7KoIt4m8KrRFl+6ys0BvvyZH0WlOFdUb9hzt?=
- =?us-ascii?Q?ZfcPR809E7vVQDbemoCoaaMMwIF3HZvATaCRr0KHFv4le/yXtEYmDuL/ylYT?=
- =?us-ascii?Q?2NxMmAZBqED/otU0gl7uzMQivaE26Sl2S9uBnRfVbtm2gYPd8IpLw7eMe3n2?=
- =?us-ascii?Q?yG2KNUKAnsTsebh2kxfv0Uio38uZ22wlKWINAbCLVymvxbAv2tbtuU0IojQN?=
- =?us-ascii?Q?kyT9ToWt6wjkzvHGwn/l6aWBcOyl9gooeNSqoTEqus71kBOU6wcDPK+w5PAV?=
- =?us-ascii?Q?Yci25FQPNwBeZhAz8QDPjXsgy8Vh64UXJjiKozSDk2edLHr+yZww8MdwoNMm?=
- =?us-ascii?Q?mxGCovtuVh2bEP8HXkb79a9mHGb9yLBsOMSHVDGp/L5k7ADX0Qe0J/00Gi26?=
- =?us-ascii?Q?Ls6JwP/Ke/IMjFIoplvgxD/idt3aGl6edvJgVEbibFyvAqcgjW5szW7804Xr?=
- =?us-ascii?Q?Km0A0NtdrF4a7YAsMbHsZvBoicYa0LthN/LjhcxzSG7TPv7GMqbuSJsWPd35?=
- =?us-ascii?Q?1+RbQksFdxtk2enzppw1f243cp48J+XrsJMOKge8C1BVGeaqb+3sLThWes2l?=
- =?us-ascii?Q?ryqpZ8fiokB418ldQ1AK/j7iqmHchKixKNCa9d56nP6RpppyXRyUPiU7QMPb?=
- =?us-ascii?Q?DUfdoc4RCCMKmEm8Sp/8H/XRwNWrKLBEz1ZYBjfn+OT5nYUDtq4oox4Wp+0b?=
- =?us-ascii?Q?fm9Sf7q05/8j9Ck3sguRN38PRmbvnyqjlTJu/aLcqvNgfsNlT5JxDJ4sigtb?=
- =?us-ascii?Q?FFYRQaaZbCzN7w60dqf6Pco2+yCH0iD3AgU/VXLg8DH8eNcQsTzq7SB+u7vf?=
- =?us-ascii?Q?BGmYW0UplKXQPWxw147XSwBJHD2r+e/5KGm0mYy+i9vLMWe4SQ5Y61DRByGN?=
- =?us-ascii?Q?ceUCgwWDZjXnQPHFQunSEEW+?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <D29566EF4E813C4B9A3AF704A3E5607B@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Thu, 18 Feb 2021 08:23:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1613654701; x=1645190701;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=7Z5gobiy/8FkE/TYphPMCbzPJlRPUDrnk+T3bO1VJgs=;
+  b=ZzdCBm3S+l4x2/fDOFdczA8EviRoWQE/JtCZD5ZvGcqXVH0DfcwTsZ+w
+   Ny6ggfgqwOVrepVjYImrrembDfqtv8L61R0NXYw3hwXIBchKrY7EoUWWL
+   yAg3oaYHneh88wSYACWkIiAdNwvhpZgWx6Aot096o0FPP4ZK2TcZgmDzl
+   NfDxHujDFw1iqhZpj7sv4E8uXQM3F9SQTS5rrTMb52boETZPf9TnSBqB6
+   MoiznIhHlvUocOXcI0ZYZgkAnW8FsZrKfn+bLKmSXy1lBG+FGcDXRo5Bs
+   k6cSQFooZrDPQ8la7B++A6Yw895FgUUl4/r6sSk12+68TxlBpiRDqDfXt
+   g==;
+IronPort-SDR: VPiZQ2urwXMOxw1xhwe9Q+1Ii7Q/NVQP2TgNZcrvVrsmu4l82tRjFkSC3ZJBl1f2zsv7cplfOL
+ e9Gu+i78UEJD5OxpPvUaP9KTRgJS0brfKH8m3veM7B2I+VNV5oevcwy+9uWUflH71Z3Z4vNb5I
+ /rdxKtuwym3K1SG4fZwGHLsdunTGivOI/lwsZMC9Y5JM1kmGQdhnJ8BZVamrmQYcMwdW4dTU7o
+ qPebyZIOgNAlMugmqtg+2dwLgH/4xxYY0Za26R8N/Wt74bKuLlzZcdMa7tKf/QRTNMW7beFK8b
+ NZc=
+X-IronPort-AV: E=Sophos;i="5.81,187,1610380800"; 
+   d="scan'208";a="264440596"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Feb 2021 21:40:45 +0800
+IronPort-SDR: J92JhHaq4y8c2VzWPsnaT5il+c99rUTE0yJw4xso0e0mc5Pw3wphkEQgc2fIPpB4niDcziCtD4
+ ZbhZPronLCvTVWktI/fM3tFeN60qqj2EomTNNlP5ZTrgCLqZc0Gxe2mlNtCOssDDyfQ0r6RpqD
+ /RzaOQ7c46UWhPbbZ+Yuei8o2Z2Qc+JcjeDjtIb5aflqPwGtp943o4Dj5kXMQlrdQd9xCxPg9Q
+ BQ9eLX+Bg1PA+av6RDW48O+mNqTHJdONBtUrvWq2PkemPsxNFby5xzdZp0Js3yQ3lNTUgBZ5b7
+ TG3Qoz8Oou92FhAq0/AwcXuZ
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 05:02:18 -0800
+IronPort-SDR: SuMQNxoMJZmionB4ubMvOKoud5sKbJoDcoDMqEtkGcOC9fvtLG/jYDzy3onjSMWfV+g0wFtGj5
+ d6I1CRNX+GughXuENc36PNhXVLrjqb/rrtX6Sn8+iJ5VYpBOlmgIt2Vz0TQOvYKzVePaRC6sxa
+ cnHIBFjT19XlGgDT2nKj8U2FhbYjZPYyDh2b3VzXz5Eples7zMv0gFSK+LsDQEsOA9SylQ0QLN
+ OMMWWEhvmX0tQcfLfn8vh84AqYH1lhtQ5EUdvyHlMTxTIL+xyyPFDi0IeBTy3RPSTiE1HX3OAe
+ b8Y=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Feb 2021 05:20:34 -0800
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v3 3/9] scsi: ufshpb: Add region's reads counter
+Date:   Thu, 18 Feb 2021 15:19:26 +0200
+Message-Id: <20210218131932.106997-4-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210218131932.106997-1-avri.altman@wdc.com>
+References: <20210218131932.106997-1-avri.altman@wdc.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5a7952e2-93d0-45c3-4eb8-08d8d40f9d05
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 13:17:59.5964
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zoxQD1bTIbztpIaEK0TvzzWnfKbbscXlYpBfpT7Yw+drGYSQKK/Ygvpntomn40GsfhuWBGnEJc6+rHg6Z2DZ4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2799
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Horatiu,
+In host control mode, reads are the major source of activation trials.
+Keep track of those reads counters, for both active as well inactive
+regions.
 
-On Thu, Feb 18, 2021 at 12:47:26PM +0100, Horatiu Vultur wrote:
-> This patch fixes the ocelot MRP switchdev driver such that also DSA
-> driver can use these functions. Before the driver presumed that the
-> net_device uses a 'struct ocelot_port_private' as priv which was wrong.
->=20
-> The only reason for using ocelot_port_private was to access the
-> net_device, but this can be passed as an argument because we already
-> have this information. Therefore update the functions to have also the
-> net_device parameter.
->=20
-> Fixes: a026c50b599fa ("net: dsa: felix: Add support for MRP")
-> Fixes: d8ea7ff3995ea ("net: mscc: ocelot: Add support for MRP")
-> Reported-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
->=20
-> ---
+We reset the read counter upon write - we are only interested in "clean"
+reads.  less intuitive however, is that we also reset it upon region's
+deactivation.  Region deactivation is often due to the fact that
+eviction took place: a region become active on the expense of another.
+This is happening when the max-active-regions limit has crossed. If we
+don’t reset the counter, we will trigger a lot of trashing of the HPB
+database, since few reads (or even one) to the region that was
+deactivated, will trigger a re-activation trial.
 
-Do you mind if we drop this patch for now (the net-next pull request was
-already sent) and I will ensure that the MRP assist for Felix DSA works
-properly when I find the time to compile your mrp/cfp user space
-packages and give them a try?
+Keep those counters normalized, as we are using those reads as a
+comparative score, to make various decisions.
+If during consecutive normalizations an active region has exhaust its
+reads - inactivate it.
 
-There are more issues to be fixed than your patch addresses. For
-example, MRP will only work with the NPI-based tagging protocol,
-somebody needs to reject MRP objects when ocelot-8021q is in use.
-I think it's better for someone who has access to a DSA setup to ensure
-that the driver is in a reasonable state.
+Signed-off-by: Avri Altman <avri.altman@wdc.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 108 ++++++++++++++++++++++++++++++++------
+ drivers/scsi/ufs/ufshpb.h |   7 +++
+ 2 files changed, 100 insertions(+), 15 deletions(-)
 
-Sorry for not reviewing the MRP patches in time.=
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index e052260868ad..348185964c32 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -16,6 +16,8 @@
+ #include "ufshpb.h"
+ #include "../sd.h"
+ 
++#define ACTIVATION_THRESHOLD 4 /* 4 IOs */
++
+ /* memory management */
+ static struct kmem_cache *ufshpb_mctx_cache;
+ static mempool_t *ufshpb_mctx_pool;
+@@ -570,6 +572,21 @@ static int ufshpb_issue_pre_req(struct ufshpb_lu *hpb, struct scsi_cmnd *cmd,
+ 	return ret;
+ }
+ 
++static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int rgn_idx,
++				      int srgn_idx)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	list_del_init(&rgn->list_inact_rgn);
++
++	if (list_empty(&srgn->list_act_srgn))
++		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++}
++
+ /*
+  * This function will set up HPB read command using host-side L2P map data.
+  */
+@@ -616,12 +633,45 @@ int ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+ 		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+ 				 transfer_len);
+ 		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
++
++		if (hpb->is_hcm) {
++			spin_lock_irqsave(&rgn->rgn_lock, flags);
++			rgn->reads = 0;
++			spin_unlock_irqrestore(&rgn->rgn_lock, flags);
++		}
++
+ 		return 0;
+ 	}
+ 
+ 	if (!ufshpb_is_support_chunk(hpb, transfer_len))
+ 		return 0;
+ 
++	if (hpb->is_hcm) {
++		bool activate = false;
++		/*
++		 * in host control mode, reads are the main source for
++		 * activation trials.
++		 */
++		spin_lock_irqsave(&rgn->rgn_lock, flags);
++		rgn->reads++;
++		if (rgn->reads == ACTIVATION_THRESHOLD)
++			activate = true;
++		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
++		if (activate) {
++			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++			ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
++			hpb->stats.rb_active_cnt++;
++			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++			dev_dbg(&hpb->sdev_ufs_lu->sdev_dev,
++				"activate region %d-%d\n", rgn_idx, srgn_idx);
++		}
++
++		/* keep those counters normalized */
++		if (rgn->reads > hpb->entries_per_srgn &&
++		    !test_and_set_bit(WORK_PENDING, &hpb->work_data_bits))
++			schedule_work(&hpb->ufshpb_normalization_work);
++	}
++
+ 	spin_lock_irqsave(&hpb->rgn_state_lock, flags);
+ 	if (ufshpb_test_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+ 				   transfer_len)) {
+@@ -738,21 +788,6 @@ static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
+ 	return 0;
+ }
+ 
+-static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int rgn_idx,
+-				      int srgn_idx)
+-{
+-	struct ufshpb_region *rgn;
+-	struct ufshpb_subregion *srgn;
+-
+-	rgn = hpb->rgn_tbl + rgn_idx;
+-	srgn = rgn->srgn_tbl + srgn_idx;
+-
+-	list_del_init(&rgn->list_inact_rgn);
+-
+-	if (list_empty(&srgn->list_act_srgn))
+-		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
+-}
+-
+ static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int rgn_idx)
+ {
+ 	struct ufshpb_region *rgn;
+@@ -998,6 +1033,14 @@ static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
+ 
+ 	ufshpb_cleanup_lru_info(lru_info, rgn);
+ 
++	if (hpb->is_hcm) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&rgn->rgn_lock, flags);
++		rgn->reads = 0;
++		spin_unlock_irqrestore(&rgn->rgn_lock, flags);
++	}
++
+ 	for_each_sub_region(rgn, srgn_idx, srgn)
+ 		ufshpb_purge_active_subregion(hpb, srgn);
+ }
+@@ -1420,6 +1463,36 @@ static void ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
+ 	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+ }
+ 
++static void ufshpb_normalization_work_handler(struct work_struct *work)
++{
++	struct ufshpb_lu *hpb;
++	int rgn_idx;
++
++	hpb = container_of(work, struct ufshpb_lu, ufshpb_normalization_work);
++
++	for (rgn_idx = 0; rgn_idx < hpb->rgns_per_lu; rgn_idx++) {
++		struct ufshpb_region *rgn = hpb->rgn_tbl + rgn_idx;
++
++		if (rgn->reads) {
++			unsigned long flags;
++
++			spin_lock_irqsave(&rgn->rgn_lock, flags);
++			rgn->reads = (rgn->reads >> 1);
++			spin_unlock_irqrestore(&rgn->rgn_lock, flags);
++		}
++
++		if (rgn->rgn_state != HPB_RGN_ACTIVE || rgn->reads)
++			continue;
++
++		/* if region is active but has no reads - inactivate it */
++		spin_lock(&hpb->rsp_list_lock);
++		ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
++		spin_unlock(&hpb->rsp_list_lock);
++	}
++
++	clear_bit(WORK_PENDING, &hpb->work_data_bits);
++}
++
+ static void ufshpb_map_work_handler(struct work_struct *work)
+ {
+ 	struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu, map_work);
+@@ -1810,6 +1883,9 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 	INIT_LIST_HEAD(&hpb->list_hpb_lu);
+ 
+ 	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
++	if (hpb->is_hcm)
++		INIT_WORK(&hpb->ufshpb_normalization_work,
++			  ufshpb_normalization_work_handler);
+ 
+ 	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
+ 			  sizeof(struct ufshpb_req), 0, 0, NULL);
+@@ -1909,6 +1985,8 @@ static void ufshpb_discard_rsp_lists(struct ufshpb_lu *hpb)
+ 
+ static void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
+ {
++	if (hpb->is_hcm)
++		cancel_work_sync(&hpb->ufshpb_normalization_work);
+ 	cancel_work_sync(&hpb->map_work);
+ }
+ 
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index 8e6c2a5b80a0..0a41df919f06 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -117,6 +117,10 @@ struct ufshpb_region {
+ 	struct list_head list_lru_rgn;
+ 	unsigned long rgn_flags;
+ #define RGN_FLAG_DIRTY 0
++
++	/* region reads - for host mode */
++	spinlock_t rgn_lock;
++	unsigned int reads;
+ };
+ 
+ #define for_each_sub_region(rgn, i, srgn)				\
+@@ -207,6 +211,9 @@ struct ufshpb_lu {
+ 
+ 	/* for selecting victim */
+ 	struct victim_select_info lru_info;
++	struct work_struct ufshpb_normalization_work;
++	unsigned long work_data_bits;
++#define WORK_PENDING 0
+ 
+ 	/* pinned region information */
+ 	u32 lu_pinned_start;
+-- 
+2.25.1
+
