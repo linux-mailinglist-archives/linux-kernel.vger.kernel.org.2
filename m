@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9477931EBE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:55:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C0A731EBE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:55:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbhBRPxp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:53:45 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:59414 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233521AbhBRNYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:24:45 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id C7F9B1C0B81; Thu, 18 Feb 2021 14:23:43 +0100 (CET)
-Date:   Thu, 18 Feb 2021 14:23:43 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Dylan Van Assche <me@dylanvanassche.be>
-Cc:     dmurphy@ti.com, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] leds: gpio: Set max brightness to 1
-Message-ID: <20210218132343.GA12948@duo.ucw.cz>
-References: <20210125200856.1976-1-me@dylanvanassche.be>
+        id S232642AbhBRPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:55:24 -0500
+Received: from muru.com ([72.249.23.125]:35026 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233526AbhBRNZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:25:38 -0500
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id BD83880AA;
+        Thu, 18 Feb 2021 13:24:25 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] bus: ti-sysc: Fix warning on unbind if reset is not deasserted
+Date:   Thu, 18 Feb 2021 15:23:57 +0200
+Message-Id: <20210218132357.46074-1-tony@atomide.com>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
-Content-Disposition: inline
-In-Reply-To: <20210125200856.1976-1-me@dylanvanassche.be>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We currently get thefollowing on driver unbind if a reset is configured
+and asserted:
 
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+WARNING: CPU: 0 PID: 993 at drivers/reset/core.c:432 reset_control_assert
+...
+(reset_control_assert) from [<c0fecda8>] (sysc_remove+0x190/0x1e4)
+(sysc_remove) from [<c0a2bb58>] (platform_remove+0x24/0x3c)
+(platform_remove) from [<c0a292fc>] (__device_release_driver+0x154/0x214)
+(__device_release_driver) from [<c0a2a210>] (device_driver_detach+0x3c/0x8c)
+(device_driver_detach) from [<c0a27d64>] (unbind_store+0x60/0xd4)
+(unbind_store) from [<c0546bec>] (kernfs_fop_write_iter+0x10c/0x1cc)
 
-On Mon 2021-01-25 21:08:57, Dylan Van Assche wrote:
-> GPIO LEDs only know 2 states: ON or OFF and do not have PWM capabilities.
-> However, the max brightness is reported as 255.
->=20
-> This patch sets the max brightness value of a GPIO controlled LED to 1.
->=20
-> Tested on my PinePhone 1.2.
->=20
-> Signed-off-by: Dylan Van Assche <me@dylanvanassche.be>
+Let's fix it by checking the reset status.
 
-I believe I have applied this already.
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/bus/ti-sysc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thanks for patches,
-								Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC5qXwAKCRAw5/Bqldv6
-8shcAJ0WSYgsDpUd45ncFen2XkjjQblLygCdG2nipAiDUAY39Sna/seZ0w6pH4k=
-=uT2O
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -3053,7 +3053,9 @@ static int sysc_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+-	reset_control_assert(ddata->rsts);
++
++	if (!reset_control_status(ddata->rsts))
++		reset_control_assert(ddata->rsts);
+ 
+ unprepare:
+ 	sysc_unprepare(ddata);
+-- 
+2.30.1
