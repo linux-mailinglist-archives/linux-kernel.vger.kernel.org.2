@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A9631EA92
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B925B31EAA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhBRNrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:47:42 -0500
-Received: from mail-qt1-f179.google.com ([209.85.160.179]:35734 "EHLO
-        mail-qt1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbhBRL5n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:57:43 -0500
-Received: by mail-qt1-f179.google.com with SMTP id g24so1136867qts.2;
-        Thu, 18 Feb 2021 03:55:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2kEv8sIFU+zpk6Mq8W5TYFeq6VABHf9B9emGrVNqUxw=;
-        b=P5Cq27fWBFe56Jgi5mVg4WDyYBWU5CS6aXI5sEIoLRJhM5N1yM9s1ZZyyu1dKnm+ZF
-         FPdG/H6PJ+kfU2GigYgBhk//vQJmXrkaOVA99hfyxvhKt1Xdnn11zIje1m27xOK41C2L
-         CIqbAfrRpp+4pVop3C6m6IxIj1whsqp12kV4ZY7wQhqsswuff+FH+fkSNr4dwWzh3SfO
-         lPnKV4DzNy1E1CcYi2F6IrgM6S6yre6yBbG9PKlV6WAJe3GXrtMe+AvFl/sALC+W2y/A
-         4CbLWq8mp4JqpzHjV8oSekPEx0XNcuH3yH/kXZC4zxsVWG/nU9hbjLGhdCpZtEhTwmWv
-         1zfg==
-X-Gm-Message-State: AOAM533R+rIFFLRpt9IbqfY7FT6TJzJHtqlM3bNvkP9fxqSSWVXvaEZ1
-        lqN4H6xJGJw+h2B5Kuc7HMM=
-X-Google-Smtp-Source: ABdhPJwq4o+OkO9IbuRkPF2GzLzPv1GdXZmEb2PU7uYq1lEm+iWIvWB4fZ/UW01rHB9BLj9o4u3yuA==
-X-Received: by 2002:a05:622a:28b:: with SMTP id z11mr3735807qtw.225.1613649309429;
-        Thu, 18 Feb 2021 03:55:09 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id 16sm3001512qtp.38.2021.02.18.03.55.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 03:55:09 -0800 (PST)
-Date:   Thu, 18 Feb 2021 12:55:05 +0100
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Richard Zhu <hongxing.zhu@nxp.com>
-Cc:     l.stach@pengutronix.de, helgaas@kernel.org, stefan@agner.ch,
-        lorenzo.pieralisi@arm.com, linux-pci@vger.kernel.org,
-        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH] PCI: imx6: Limit DBI register length for imx6qp pcie
-Message-ID: <YC5VmRTIylDHSFPt@rocinante>
-References: <1613624980-29382-1-git-send-email-hongxing.zhu@nxp.com>
+        id S232181AbhBRN4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:56:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58920 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231642AbhBRMBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:01:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 40E40AD78;
+        Thu, 18 Feb 2021 12:00:39 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
+Subject: [PATCH v2 0/2] Make alloc_contig_range handle Hugetlb pages
+Date:   Thu, 18 Feb 2021 13:00:26 +0100
+Message-Id: <20210218120028.6499-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1613624980-29382-1-git-send-email-hongxing.zhu@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+v1 -> v2:
+ - Adressed feedback by Michal
+ - Restrict the allocation to a node with __GFP_THISNODE
+ - Drop PageHuge check in alloc_and_dissolve_huge_page
+ - Re-order comments in isolate_or_dissolve_huge_page
+ - Extend comment in isolate_migratepages_block
+ - Place put_page right after we got the page, otherwise
+   dissolve_free_huge_page will fail
 
-Thank you for sending the patch over!
+ RFC -> v1:
+ - Drop RFC
+ - Addressed feedback from David and Mike
+ - Fence off gigantic pages as there is a cyclic dependency between
+   them and alloc_contig_range
+ - Re-organize the code to make race-window smaller and to put
+   all details in hugetlb code
+ - Drop nodemask initialization. First a node will be tried and then we
+   will back to other nodes containing memory (N_MEMORY). Details in
+   patch#1's changelog
+ - Count new page as surplus in case we failed to dissolve the old page
+   and the new one. Details in patch#1.
 
-> Refer to commit 075af61c19cd ("PCI: imx6: Limit DBI register length"),
-> i.MX6QP PCIe has the similar issue.
-> Define the length of the DBI registers and limit config space to its
-> length for i.MX6QP PCIe too.
+Cover letter:
 
-You could probably flip these two sentences around to make the commit
-message read slightly better, so what about this (a suggestion):
+alloc_contig_range lacks the hability for handling HugeTLB pages.
+This can be problematic for some users, e.g: CMA and virtio-mem, where those
+users will fail the call if alloc_contig_range ever sees a HugeTLB page, even
+when those pages lay in ZONE_MOVABLE and are free.
+That problem can be easily solved by replacing the hugepage by allocating a new one
+and dissolving the old one.
 
-Define the length of the DBI registers and limit config space to its
-length. This makes sure that the kernel does not access registers beyond
-that point that otherwise would lead to an abort on a i.MX 6QuadPlus.
+In-use HugeTLB are no exception though, as those can be isolated and migrated
+as any other LRU or Movable page.
 
-See commit 075af61c19cd ("PCI: imx6: Limit DBI register length") that
-resolves a similar issue on a i.MX 6Quad PCIe.
+This patchset aims for improving alloc_contig_range->isolate_migratepages_block,
+so HugeTLB pages can be recognized and handled.
 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 0cf1333c0440..853ea8e82952 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -1175,6 +1175,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
->  		.variant = IMX6QP,
->  		.flags = IMX6_PCIE_FLAG_IMX6_PHY |
->  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE,
-> +		.dbi_length = 0x200,
->  	},
->  	[IMX7D] = {
->  		.variant = IMX7D,
+Below is an insight from David (thanks), where the problem can clearly be seen:
 
-Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
+"Start a VM with 4G. Hotplug 1G via virtio-mem and online it to
+ZONE_MOVABLE. Allocate 512 huge pages.
 
-Krzysztof
+[root@localhost ~]# cat /proc/meminfo
+MemTotal:        5061512 kB
+MemFree:         3319396 kB
+MemAvailable:    3457144 kB
+...
+HugePages_Total:     512
+HugePages_Free:      512
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+
+
+The huge pages get partially allocate from ZONE_MOVABLE. Try unplugging
+1G via virtio-mem (remember, all ZONE_MOVABLE). Inside the guest:
+
+[  180.058992] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+[  180.060531] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+[  180.061972] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+[  180.063413] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+[  180.064838] alloc_contig_range: [1b8000, 1c0000) PFNs busy
+[  180.065848] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+[  180.066794] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+[  180.067738] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+[  180.068669] alloc_contig_range: [1bfc00, 1c0000) PFNs busy
+[  180.069598] alloc_contig_range: [1bfc00, 1c0000) PFNs busy"
+
+Oscar Salvador (2):
+  mm: Make alloc_contig_range handle free hugetlb pages
+  mm: Make alloc_contig_range handle in-use hugetlb pages
+
+ include/linux/hugetlb.h |  7 +++++
+ mm/compaction.c         | 22 ++++++++++++++
+ mm/hugetlb.c            | 77 +++++++++++++++++++++++++++++++++++++++++++++++++
+ mm/vmscan.c             |  5 ++--
+ 4 files changed, 109 insertions(+), 2 deletions(-)
+
+-- 
+2.16.3
+
