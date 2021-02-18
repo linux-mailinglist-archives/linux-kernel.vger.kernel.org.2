@@ -2,85 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FDF31ED74
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0170431ED7C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbhBRRke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:40:34 -0500
-Received: from mail.manjaro.org ([176.9.38.148]:40322 "EHLO mail.manjaro.org"
+        id S230513AbhBRRlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:41:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230386AbhBROyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:54:18 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 18BD93E60861;
-        Thu, 18 Feb 2021 15:53:32 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id CbrTc1Qv79oS; Thu, 18 Feb 2021 15:53:29 +0100 (CET)
-Subject: Re: [PATCH] power: supply: cw2015: Add CHARGE_NOW support
-To:     Martin Ashby <martin@ashbysoft.com>,
-        Tobias Schramm <t.schramm@manjaro.org>,
-        Sebastian Reichel <sre@kernel.org>
-References: <20210218124250.128008-1-martin@ashbysoft.com>
-From:   Tobias Schramm <t.schramm@manjaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <52cbdca7-feb2-6d6f-fa53-c36848587577@manjaro.org>
-Date:   Thu, 18 Feb 2021 15:53:27 +0100
+        id S231398AbhBROzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:55:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 943A964EB9;
+        Thu, 18 Feb 2021 14:54:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613660078;
+        bh=G1o3sltRRgh2gaudrfVPAl3cfmWIH60ygZShn9u7C+0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mQd9f8XcRwdbNjtFodNA0zCyokDf0TgyQH4wBSADfAKQW8HJ/b0rNY01rig/c4sNE
+         pYLJU7PkY17IsDVdZkwc0k9CeWdZA6ysyi40iEs9N6Al5xcwvlOMM/hiDpysWFFesg
+         rd9ZN9VyGGqLeO5PC9LqdXbss4OA8zD8Zm0oywC2AshWytroXyN6ynTb+4xISuQv9a
+         ebIKaBLjW+uvvdJEFaOZa8yalTArsSKsjSMk+oDWtnsLcdjXqVzLZv3RM87lq+ouHl
+         2JZvZo0a9mv5WkVoWPONvk03+ZxZ4yi5rno5IC+WzttCEFlFouLMEdcaL3jJixiXvz
+         v77QMu7bKOMog==
+Received: by mail-ej1-f41.google.com with SMTP id bl23so6066651ejb.5;
+        Thu, 18 Feb 2021 06:54:38 -0800 (PST)
+X-Gm-Message-State: AOAM531ObfIbrp3kBU557GDTVwh9rOcwmXt3OMc15bRk2h1vv/bzcNu1
+        cT7vIPox1NGnLkfe/UZvTZFEed3wuF5eZUpEYA==
+X-Google-Smtp-Source: ABdhPJxxWrEv48LJyTQCqlhuzhEJKbr+V+CGGHgE3gsPwH2Idv+DGKJKnUdZy9z9bYC2qSTpCbocZDlXK4kEkBPdcNM=
+X-Received: by 2002:a17:906:4094:: with SMTP id u20mr1702711ejj.525.1613660076908;
+ Thu, 18 Feb 2021 06:54:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210218124250.128008-1-martin@ashbysoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US-large
-Content-Transfer-Encoding: 7bit
+References: <20210111142309.193441-1-maxime@cerno.tech> <20210111142309.193441-14-maxime@cerno.tech>
+ <CAL_JsqJ3QBoJVXnpeMz1X56F6VWEe_HzTKs9efrDWh3ccdr=5A@mail.gmail.com>
+In-Reply-To: <CAL_JsqJ3QBoJVXnpeMz1X56F6VWEe_HzTKs9efrDWh3ccdr=5A@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 18 Feb 2021 08:54:23 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLKpT4y5gOH4kenHySY1n1pyV4sAEzGuwPV7V4vUJWevQ@mail.gmail.com>
+Message-ID: <CAL_JsqLKpT4y5gOH4kenHySY1n1pyV4sAEzGuwPV7V4vUJWevQ@mail.gmail.com>
+Subject: Re: [PATCH v2 13/15] dt-binding: display: bcm2711-hdmi: Add CEC and
+ hotplug interrupts
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On Mon, Feb 1, 2021 at 12:56 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Mon, Jan 11, 2021 at 8:27 AM Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > The CEC and hotplug interrupts were missing when that binding was
+> > introduced, let's add them in now that we've figured out how it works.
+> >
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >  .../bindings/display/brcm,bcm2711-hdmi.yaml   | 20 ++++++++++++++++++-
+> >  1 file changed, 19 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > index 7ce06f9f9f8e..6e8ac910bdd8 100644
+> > --- a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > +++ b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
+> > @@ -53,6 +53,24 @@ properties:
+> >        - const: audio
+> >        - const: cec
+> >
+> > +  interrupts:
+> > +    items:
+> > +      - description: CEC TX interrupt
+> > +      - description: CEC RX interrupt
+> > +      - description: CEC stuck at low interrupt
+> > +      - description: Wake-up interrupt
+> > +      - description: Hotplug connected interrupt
+> > +      - description: Hotplug removed interrupt
+> > +
+> > +  interrupt-names:
+> > +    items:
+> > +      - const: cec-tx
+> > +      - const: cec-rx
+> > +      - const: cec-low
+> > +      - const: wakeup
+> > +      - const: hpd-connected
+> > +      - const: hpd-removed
+> > +
+> >    ddc:
+> >      allOf:
+> >        - $ref: /schemas/types.yaml#/definitions/phandle
+> > @@ -90,7 +108,7 @@ required:
+> >    - resets
+> >    - ddc
+> >
+> > -additionalProperties: false
+> > +unevaluatedProperties: false
+>
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml:
+> 'additionalProperties' is a required property
+>
+> And you missed the DT list, so no checks ran.
 
-thanks for the patch. Now everything is looking good.
+This is still failing in linux-next.
 
-Just one small thing for the future: Please version your patches. Even 
-when the patch subject changes. It helps everyone to distinguish clearly 
-between different versions of a patch.
-
-> CHARGE_NOW is expected by some user software (such as waybar)
-> instead of 'CAPACITY', in order to correctly calculate remaining battery
-> life.
-> 
-> Signed-off-by: Martin Ashby <martin@ashbysoft.com>
-> ---
->   drivers/power/supply/cw2015_battery.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/power/supply/cw2015_battery.c b/drivers/power/supply/cw2015_battery.c
-> index 0146f1bfc..aa1f1771b 100644
-> --- a/drivers/power/supply/cw2015_battery.c
-> +++ b/drivers/power/supply/cw2015_battery.c
-> @@ -511,6 +511,11 @@ static int cw_battery_get_property(struct power_supply *psy,
->   			val->intval = 0;
->   		break;
->   
-> +	case POWER_SUPPLY_PROP_CHARGE_NOW:
-> +		val->intval = cw_bat->battery.charge_full_design_uah;
-> +		val->intval = val->intval * cw_bat->soc / 100;
-> +		break;
-> +
->   	case POWER_SUPPLY_PROP_CURRENT_NOW:
->   		if (cw_battery_valid_time_to_empty(cw_bat) &&
->   		    cw_bat->battery.charge_full_design_uah > 0) {
-> @@ -542,6 +547,7 @@ static enum power_supply_property cw_battery_properties[] = {
->   	POWER_SUPPLY_PROP_CHARGE_COUNTER,
->   	POWER_SUPPLY_PROP_CHARGE_FULL,
->   	POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN,
-> +	POWER_SUPPLY_PROP_CHARGE_NOW,
->   	POWER_SUPPLY_PROP_CURRENT_NOW,
->   };
->   
-> 
-
-Reviewed-by: Tobias Schramm <t.schramm@manjaro.org>
-Tested-by: Tobias Schramm <t.schramm@manjaro.org>
-
-Cheers,
-Tobias
+Rob
