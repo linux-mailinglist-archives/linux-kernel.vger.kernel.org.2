@@ -2,86 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6BB31F0E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:21:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB4531F0EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhBRUUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:20:49 -0500
-Received: from mout.gmx.net ([212.227.17.22]:45683 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhBRUUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:20:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613679534;
-        bh=v7T8wWtgo+xLwSXbQ882IbQmUkj3BIYNUxFQsrhglCo=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=UbXiC4aCoRZZ0360SQ1/x4Y4uDm9GZ+bpA3fA1IdPb2wHjJHTER8Bj4W4Wm5gRDoJ
-         of82DtZV8wcDJe6KYLAd3Fj5iYemqERJxa4iFIJkadHCdWjaKMw4YC23rPzWxOJYJ5
-         UHrUjzrRU7EQLMnZz0tkPEipDaoxUeECkioTkQV0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from mcbin.fritz.box ([62.143.246.89]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MryXN-1lgivT08lp-00nzm0; Thu, 18
- Feb 2021 21:18:54 +0100
-From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heinrich Schuchardt <xypron.glpk@gmx.de>
-Subject: [PATCH 1/1] efi/efivars: ConInDev, ConOutDev, ConErrDev are volatile
-Date:   Thu, 18 Feb 2021 21:18:49 +0100
-Message-Id: <20210218201849.2805-1-xypron.glpk@gmx.de>
-X-Mailer: git-send-email 2.30.0
+        id S230087AbhBRUYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:24:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhBRUYf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 15:24:35 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DE5C06178A;
+        Thu, 18 Feb 2021 12:23:40 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id 189so2072492pfy.6;
+        Thu, 18 Feb 2021 12:23:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lCnJivUm4N39ctfjAGVgyrNIuCixL1r+xFuOLgzirNM=;
+        b=LGlxBJWgUjqiVvva2jCU2+C4ql9KVEQCzWLLpjFmlF2cy1LZht+aOBVM1CBWx1Ny24
+         S0LT51ziI7SkZo3qBD7UP3Hgnq9OGCn7WuyYc5Ee/+dmZNf6vecwdINNaqDzJ+TGpr+D
+         xsn3dakkPjj04tNPYsL5LLFTxlgUlPXyRTd62X2CeBnEJ9yQesH+jzeYNUNdpb2Vc9F7
+         X4r/FoiaZSdr/Yw6CxYWa8xHJb3Mcnna4Uhla7FFW7rdu2a9jxmdJEycqJDzkl6rz61r
+         pbeHch1uUmo6pzAF2uyq+Sfyw16sDG56D4hcQFCMn6juLtWyR6eDSZgI9NF2WV3EE5jp
+         +V3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lCnJivUm4N39ctfjAGVgyrNIuCixL1r+xFuOLgzirNM=;
+        b=B9LBSTqwZTox6kk+rBru3f1n5URTMsOQIDNPHz6RTvPVaVlPFWmVIwSF2oVdKi8iOr
+         sUg0KNcAoSGXrB8S0Zcwp8WFkeVZD7xlZopRA7wCzt08fvVULtZCC9iYCvqK+L3EF253
+         fy5Ezmwm7R7OzXh8bbTxf7/mriNP1lARjIvh8z/7a9/7d7KDEgMvjQMwACpf89U/ekET
+         HHM+TYfU48AQZpAFqEzYqKYh81L3hyVMOC1wukjQTKw3o3m8kDghW00MgYg4cR0jk2EW
+         Fq4XAXWNRrGUQPeYpMqNxvavzyfkR3QrgguNrmG7RSZB7UIXN21d8QIlTskhtjaPImUk
+         jf4w==
+X-Gm-Message-State: AOAM533Bi+DCYg9rQjxpRxC0I4mYZy3GTPUQSkh5COI80hZonRDZaTYa
+        2NI3kc0t3juh5T/U1Q32ksnYC7jdAvQtNdHSk5g=
+X-Google-Smtp-Source: ABdhPJwCsu3k0NuMXcYpFsZCxvkwxF4NHxtY0aPWmrv0RKttIWXBOFmrnpTcT66V//zUC8JItBKY1hdn9GuV9Zwi+ck=
+X-Received: by 2002:a63:587:: with SMTP id 129mr5461734pgf.233.1613679819838;
+ Thu, 18 Feb 2021 12:23:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oTr59JrbvIWwZeuuGu1CnEG/Edw4+MbE1e5p3fxo70KFdqrbq7q
- uXKaq2rRSlN5eVUXg47idQCP14mJUkrO/MoI5WbOEbzTilEjXl5tWBnssVpja8DSeRGWteo
- f8wqDfBUsqYMbwXyuI6m2EqlPyc0wsuSbjT90qsWgcaYSg2V7q9gOUU7qzIeWiZorXipDf7
- erGLkwqDmczG6bjzUNaGg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:22JJ3K7ubG0=:52NEzhPr+n6w56Y8TEHK3j
- a/lFEIcTOydYR5yBl5V9vxPMEZs+xoS6S+WYup3uZGJ/1/95POS81dEbbXkA/EMor5Q9MNRej
- yFHwqUg5gjU8rFSbz0QFpLpJ3glYHJVBazL4Lh1pS7QMsBmXNE5qLAJwoSqR8KUByUyNZf4gx
- 44cGjI2PhMlvsGcguWUR8FSvj4agYF1oBifHyObYs/MJt8WsWqYObsGruBE0gWrGrYkb908eh
- sqxJD/4n7Gjo9m1sftzR5X11sPD11gbsOJBFAAWe9gNUZYEyJRsXBxDUmnl3WCX9AhZVr2NYU
- LQ/MOYau1KIpKHePCnyJg7FWsXP46InhWk7RWWsIlwiMQDM4ED7Del4lFxggysd+4GwA/13L6
- QJAtOcS4M8fdXBIZ0SPiRIwX6RskPUS74sKWDs5VNudEMmNGh8MER1dsMUFOe4Y9dtMOt0N/J
- fDVlD+C1GEUoUl7eUKuUPpKYrghXwjO8VbBTUtuqI5iMeQTy1ZEeNLDSW54AH5SJtu1PDuxY0
- ngtBTFBjrCjdsOpi1HiF1vx9iXtnbrBik8AWtS/yIngj0flII7xkwj1jfCCvEPBaAtyf4ToFL
- cn5rNpx7AMI7IvSuCa1sPs5yvSXAV62OVObaZ4YFrBa2QLATJ6l1NJFfWXNQk8fZaT4NTQn1G
- UtFeeKIPMc0UAIFESkAVZbbv71CRzTjZx1VtgDc7IDBsKR+R1Bt0JUk2w2cpagpgnW4aBz1W0
- L/5PRZh7A7h6yYDKIPye8tMAs8pDcRYd+TEeiL/PBSvzghAMsEZMv8Uf73wbiDA8GAWQPJguE
- BjQNZIaX8k8AjicP+kQK917RvnCcWQm64Fr7ATDmJJS05s/r3rSWyGXxFPux5QAK8B3s3yYMj
- 68sXjHtB5sU2YI4SaR8Q==
+References: <20210216201813.60394-1-xie.he.0141@gmail.com> <YC4sB9OCl5mm3JAw@unreal>
+ <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
+ <YC5DVTHHd6OOs459@unreal> <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
+ <YC7GHgYfGmL2wVRR@unreal> <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
+In-Reply-To: <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Thu, 18 Feb 2021 12:23:28 -0800
+Message-ID: <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UEFI variables ConInDev, ConOutDev, ConErrDev are volatile variables that
-are set by the firmware on every reset. It does not make sense to set thes=
-e
-variables via the efivarfs filesystem.
+On Thu, Feb 18, 2021 at 12:06 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Thu, Feb 18, 2021 at 11:55 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > This is how we write code, we use defines instead of constant numbers,
+> > comments to describe tricky parts and assign already preprocessed result.
+> >
+> > There is nothing I can do If you don't like or don't want to use Linux kernel
+> > style.
+>
+> So what is your suggestion exactly? Use defines or write comments?
+>
+> As I understand, you want to replace the "3 - 1" with "2", and then
+> write comments to explain that this "2" is the result of "3 - 1".
+>
+> Why do you want to do this? You are doing useless things and you force
+> readers of this code to think about useless things.
+>
+> You said this was "Linux kernel style"? Why? Which sentence of the
+> Linux kernel style guide suggests your way is better than my way?
 
-Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-=2D--
- drivers/firmware/efi/vars.c | 3 ---
- 1 file changed, 3 deletions(-)
+Nevermind, if you *really* want me to replace this "3 - 1" with "2"
+and explain in the comment that the "2" is a result of "3 - 1". I'll
+do this. I admit this is a style issue. So it is hard to argue and
+reach an agreement. Just reply with a request and I'll make the
+change. However I'm not able to agree with you in my heart.
 
-diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-index 41c1d00bf933..561e0a01093b 100644
-=2D-- a/drivers/firmware/efi/vars.c
-+++ b/drivers/firmware/efi/vars.c
-@@ -180,11 +180,8 @@ static const struct variable_validate variable_valida=
-te[] =3D {
- 	{ EFI_GLOBAL_VARIABLE_GUID, "DriverOrder", validate_boot_order },
- 	{ EFI_GLOBAL_VARIABLE_GUID, "Driver*", validate_load_option },
- 	{ EFI_GLOBAL_VARIABLE_GUID, "ConIn", validate_device_path },
--	{ EFI_GLOBAL_VARIABLE_GUID, "ConInDev", validate_device_path },
- 	{ EFI_GLOBAL_VARIABLE_GUID, "ConOut", validate_device_path },
--	{ EFI_GLOBAL_VARIABLE_GUID, "ConOutDev", validate_device_path },
- 	{ EFI_GLOBAL_VARIABLE_GUID, "ErrOut", validate_device_path },
--	{ EFI_GLOBAL_VARIABLE_GUID, "ErrOutDev", validate_device_path },
- 	{ EFI_GLOBAL_VARIABLE_GUID, "Lang", validate_ascii_string },
- 	{ EFI_GLOBAL_VARIABLE_GUID, "OsIndications", NULL },
- 	{ EFI_GLOBAL_VARIABLE_GUID, "PlatformLang", validate_ascii_string },
-=2D-
-2.30.0
-
+On Thu, Feb 18, 2021 at 12:06 PM Xie He <xie.he.0141@gmail.com> wrote:
+>
+> On Thu, Feb 18, 2021 at 11:55 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > This is how we write code, we use defines instead of constant numbers,
+> > comments to describe tricky parts and assign already preprocessed result.
+> >
+> > There is nothing I can do If you don't like or don't want to use Linux kernel
+> > style.
+>
+> So what is your suggestion exactly? Use defines or write comments?
+>
+> As I understand, you want to replace the "3 - 1" with "2", and then
+> write comments to explain that this "2" is the result of "3 - 1".
+>
+> Why do you want to do this? You are doing useless things and you force
+> readers of this code to think about useless things.
+>
+> You said this was "Linux kernel style"? Why? Which sentence of the
+> Linux kernel style guide suggests your way is better than my way?
