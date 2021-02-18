@@ -2,91 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7758931F170
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:56:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F8FC31F173
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:56:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhBRUyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:54:50 -0500
-Received: from ozlabs.org ([203.11.71.1]:52873 "EHLO ozlabs.org"
+        id S230306AbhBRU4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:56:39 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:45351 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231438AbhBRUxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:53:39 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S229652AbhBRU42 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 15:56:28 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613681764; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=1YLiLIzD9r+Pl9WVJiewfNV1c8r/VJFP379oAJmm6Wo=; b=oblMD7UenqIwA0sDhjlVQCIiJH0JCaexhCuersdTNpsksiQgyeYj2wt7Jhv8JjAw5b1ZLFWG
+ qgJm8NEi6qtAjIEJItlVGo/0MbzcvIS8ORDnsKLC4paTD2ESby3F7u1R86/F65eWvfefii0J
+ vri7LjJshrsAZNbBdyTxYBQvcUI=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 602ed4317237f827dcc5133c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Feb 2021 20:55:13
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0C9F9C43467; Thu, 18 Feb 2021 20:55:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DhRk14YVSz9sBJ;
-        Fri, 19 Feb 2021 07:52:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613681577;
-        bh=mbks+mMscNaIdkDjqnY7Nnb54RoU2CCcSOK6AZlVAfI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OTCcrfp/+Y1l/VLnYNEF393XECP67TRy0shjuEAFMt/bsqEhThLjJyySkK5v+5oM5
-         SuNs+MX6COEByVHkYRQnWcKGwxNMQU9D+vqEaJvhLQCfg4K0+CpkM5m8HoyvWYatvc
-         VJ3IOsz5w/YEqKGVoBQFT7N1bYZho00D2q0EQHXi4NkJ2DF4xoVHxZXhi6/N+1z3K3
-         kgRKk4h+6dx6bhNomJTiWfYT7/qNycfEq/rPnHqnazSpDp9AOqAhdh1wxPVRN0rgQD
-         Ed0sWQFph8SRfNEVLYM0yiJs73fTG48jiaButaITHlBO9GVj76uQYFaV9SJ2iHGITp
-         3Lj6UntjH0A2A==
-Date:   Fri, 19 Feb 2021 07:52:56 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warnings after merge of the net-next tree
-Message-ID: <20210219075256.7af60fb0@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lFxdG8TW_eZZr4dQ8a5F=aP";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1D76AC43461;
+        Thu, 18 Feb 2021 20:55:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1D76AC43461
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/2] drm/msm/dp: add supported max link rate specified from dtsi
+Date:   Thu, 18 Feb 2021 12:55:04 -0800
+Message-Id: <1613681704-12539-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lFxdG8TW_eZZr4dQ8a5F=aP
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Allow supported link rate to be limited to the value specified at
+dtsi. If it is not specified, then link rate is derived from dpcd
+directly. Below are examples,
+link-rate = <162000> for max link rate limited at 1.62G
+link-rate = <270000> for max link rate limited at 2.7G
+link-rate = <540000> for max link rate limited at 5.4G
+link-rate = <810000> for max link rate limited at 8.1G
 
-Hi all,
+Changes in V2:
+-- allow supported max link rate specified from dtsi
 
-After merging the net-next tree, today's linux-next build (htmldocs)
-produced these warnings:
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_display.c |  1 +
+ drivers/gpu/drm/msm/dp/dp_panel.c   |  7 ++++---
+ drivers/gpu/drm/msm/dp/dp_panel.h   |  1 +
+ drivers/gpu/drm/msm/dp/dp_parser.c  | 13 +++++++++++++
+ drivers/gpu/drm/msm/dp/dp_parser.h  |  1 +
+ 5 files changed, 20 insertions(+), 3 deletions(-)
 
-Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-st=
-ring without end-string.
-Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-st=
-ring without end-string.
-Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-st=
-ring without end-string.
-Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-st=
-ring without end-string.
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 5a39da6..f633ba6 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -322,6 +322,7 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	struct edid *edid;
+ 
+ 	dp->panel->max_dp_lanes = dp->parser->max_dp_lanes;
++	dp->panel->max_link_rate = dp->parser->max_link_rate;
+ 
+ 	rc = dp_panel_read_sink_caps(dp->panel, dp->dp_display.connector);
+ 	if (rc)
+diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
+index 9cc8166..be7f102 100644
+--- a/drivers/gpu/drm/msm/dp/dp_panel.c
++++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+@@ -76,9 +76,10 @@ static int dp_panel_read_dpcd(struct dp_panel *dp_panel)
+ 	if (link_info->num_lanes > dp_panel->max_dp_lanes)
+ 		link_info->num_lanes = dp_panel->max_dp_lanes;
+ 
+-	/* Limit support upto HBR2 until HBR3 support is added */
+-	if (link_info->rate >= (drm_dp_bw_code_to_link_rate(DP_LINK_BW_5_4)))
+-		link_info->rate = drm_dp_bw_code_to_link_rate(DP_LINK_BW_5_4);
++	/* Limit support of ink rate if specified */
++	if (dp_panel->max_link_rate &&
++			(link_info->rate > dp_panel->max_link_rate))
++		link_info->rate = dp_panel->max_link_rate;
+ 
+ 	DRM_DEBUG_DP("version: %d.%d\n", major, minor);
+ 	DRM_DEBUG_DP("link_rate=%d\n", link_info->rate);
+diff --git a/drivers/gpu/drm/msm/dp/dp_panel.h b/drivers/gpu/drm/msm/dp/dp_panel.h
+index 9023e5b..1876f5e 100644
+--- a/drivers/gpu/drm/msm/dp/dp_panel.h
++++ b/drivers/gpu/drm/msm/dp/dp_panel.h
+@@ -51,6 +51,7 @@ struct dp_panel {
+ 	u32 vic;
+ 	u32 max_pclk_khz;
+ 	u32 max_dp_lanes;
++	u32 max_link_rate;
+ 
+ 	u32 max_bw_code;
+ };
+diff --git a/drivers/gpu/drm/msm/dp/dp_parser.c b/drivers/gpu/drm/msm/dp/dp_parser.c
+index 0519dd3..d8b6898 100644
+--- a/drivers/gpu/drm/msm/dp/dp_parser.c
++++ b/drivers/gpu/drm/msm/dp/dp_parser.c
+@@ -87,6 +87,8 @@ static int dp_parser_misc(struct dp_parser *parser)
+ 	struct device_node *of_node = parser->pdev->dev.of_node;
+ 	int len = 0;
+ 	const char *data_lane_property = "data-lanes";
++	const char *link_rate_property = "link-rate";
++	u32 rate = 0;
+ 
+ 	len = of_property_count_elems_of_size(of_node,
+ 			 data_lane_property, sizeof(u32));
+@@ -97,6 +99,17 @@ static int dp_parser_misc(struct dp_parser *parser)
+ 	}
+ 
+ 	parser->max_dp_lanes = len;
++
++	len = of_property_count_elems_of_size(of_node,
++			 link_rate_property, sizeof(u32));
++
++	if (len == 1) {
++		of_property_read_u32_index(of_node,
++				link_rate_property, 0, &rate);
++
++		parser->max_link_rate = rate;
++	}
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/gpu/drm/msm/dp/dp_parser.h b/drivers/gpu/drm/msm/dp/dp_parser.h
+index 34b4962..7046fce 100644
+--- a/drivers/gpu/drm/msm/dp/dp_parser.h
++++ b/drivers/gpu/drm/msm/dp/dp_parser.h
+@@ -116,6 +116,7 @@ struct dp_parser {
+ 	struct dp_display_data disp_data;
+ 	const struct dp_regulator_cfg *regulator_cfg;
+ 	u32 max_dp_lanes;
++	u32 max_link_rate;
+ 
+ 	int (*parse)(struct dp_parser *parser);
+ };
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Introduced by commit
-
-  91c960b00566 ("bpf: Rename BPF_XADD and prepare to encode other atomics i=
-n .imm")
-
-Sorry that I missed these earlier.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/lFxdG8TW_eZZr4dQ8a5F=aP
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAu06gACgkQAVBC80lX
-0GzBCAgApTtuAAay2d4m9sdTUCRpHQWD5TyPja7zZTYF6rFWWybt9nO6Oa/8ssbj
-afIn7P+hTps2SqPBzDkmtbJP9zczwIvHSAC9n4J2g/IMFK+omJl0Inx77QcYnljc
-VNjwgzOJDEfnODGmIGqvohcRpMaGUfrmAQqHhAn07OqRvTs3+qeA9sPi5hn3HGJ/
-nr1xGPTgumvTn6mvs+GvxhcaI2NZjS84pszgeNLSImM27HSYqmOKeuF35TExreXd
-q2PJx+XGqPn3VWEPVE2NesLYgKUKT17A8pFYb8jLLfXJle9n5r4dvrZFx64NNCcT
-TeBaHjCRu7HXOIwdiGcciTkKBCvsRA==
-=MK4p
------END PGP SIGNATURE-----
-
---Sig_/lFxdG8TW_eZZr4dQ8a5F=aP--
