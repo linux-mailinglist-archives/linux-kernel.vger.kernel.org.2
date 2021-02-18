@@ -2,124 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C33931EF35
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:07:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E9731EF37
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:08:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbhBRTGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234365AbhBRRcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:32:43 -0500
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99100C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:32:02 -0800 (PST)
-Received: by mail-qt1-x82f.google.com with SMTP id b24so1936830qtp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:32:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0/TTwRZM5UWkeVt7hK50tjPjIUS/Pw+aCUTdCE6xC00=;
-        b=R/KR62gElCW/P34+zKXp/hSu2ZY5/ttxG2NPuBugoIHOJgJvFh0N1n5yTEoFM1sm4z
-         zmX0GHIwrq99bVreyqpHUroTjFhGXockDFXTHOb0Leb/rw3G7weLzZi1Vob0MB7Xphfu
-         iMZMyPoBha2eTTQeMYy3ERTKQF0kqG8zysxswJszTOdvgBu5Ed1IvxC3y+aD1iZ7RNbr
-         gudypmPAKl9HtKArAzbyqnrEpm0rXtUwbCbthidw5oCQAMo4ruhQ/6aMbyyZ5nF3fQhN
-         OuS+ovN4PrZYFHYBM10dxgIPHtwey4XdfR/aiSZzlXKnU2ftPFtTQpp1nDFRVjDi2gT8
-         iMQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0/TTwRZM5UWkeVt7hK50tjPjIUS/Pw+aCUTdCE6xC00=;
-        b=tYXpM6eGPNvR0YF5D9zwKwV45zTtj8eS77hNF2GLdlhFov+K7Sc31FJ9zfu9w70IpR
-         +6IP2IBYRQOquOpHqTp4RtN3GtLtXx+GYZZzZ1ZUWprWErcK6vX5p9s2LE7LHPEZ8Blp
-         3hYKJPprE4TtlLx485d+/euJMqdegv2Wc5+1xtyyBTEH1sB+0BYUBuhgs25nnx1OpOz8
-         023yS33PdSmGPWErb/imC6PhttX8CDkMjwpYdDWpQ+hp1J8lRx8+ewkmoqqTc6MXA58j
-         T9EJaZDEQ/5XjxH2qFUqw3sN54XInXzSHq73YXQZVkr7QBmdZz41KKycu4OE4b0dK2dK
-         5KnA==
-X-Gm-Message-State: AOAM531mzHAIxWLI5fLmQilPzz9Cgh7kzntANwMMGAuJXbFhjxiPNWcL
-        bxGaAJFq+fZH+dywDzyTZfX1Ig==
-X-Google-Smtp-Source: ABdhPJwEA6bqbvvkVsfcbWVRnFE/CFIp5IrjcT3JJfF32pFPZja2DfF74jrm0qh5CHPzi5RQB9ireA==
-X-Received: by 2002:ac8:4a83:: with SMTP id l3mr5273238qtq.350.1613669521898;
-        Thu, 18 Feb 2021 09:32:01 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id f188sm4392003qkj.110.2021.02.18.09.32.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 09:32:01 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lCn9k-00B5jy-Tc; Thu, 18 Feb 2021 13:32:00 -0400
-Date:   Thu, 18 Feb 2021 13:32:00 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Zi Yan <ziy@nvidia.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Davidlohr Bueso <dbueso@suse.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] hugetlb: fix update_and_free_page contig page struct
- assumption
-Message-ID: <20210218173200.GA2643399@ziepe.ca>
-References: <20210217184926.33567-1-mike.kravetz@oracle.com>
- <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
- <20210218144554.GS2858050@casper.infradead.org>
- <20210218172500.GA4718@ziepe.ca>
- <19612088-4856-4BE9-A731-BB903511F352@nvidia.com>
+        id S233770AbhBRTHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:07:31 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:63952 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230138AbhBRRes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 12:34:48 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613669664; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=4YG2gd9EPtlTost5rZaBg5LpqJqonc4HWpP85jvSGws=; b=vdNzLN5w5P/miSLLvFe/0mq/jTanAPKJ/qnhmyh7ufxaBBnvgFu9a4473URlDv17torwHLtb
+ l3hjDi46eNeOZQJsZy+ISrb7s58owgeYax6oNzumPzejYufZzm12f317N5rbGb1bFtVcUZeW
+ xQKAyDr0W4B3jf2n22qHh1rg70s=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 602ea4f8e87943df30ddbd8c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Feb 2021 17:33:44
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5CEBEC43461; Thu, 18 Feb 2021 17:33:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from jhugo-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 01D76C433CA;
+        Thu, 18 Feb 2021 17:33:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 01D76C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, hemantk@codeaurora.org
+Cc:     bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jeffrey Hugo <jhugo@codeaurora.org>
+Subject: [PATCH v2] bus: mhi: core: Wait for ready state after reset
+Date:   Thu, 18 Feb 2021 10:33:33 -0700
+Message-Id: <1613669613-5964-1-git-send-email-jhugo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <19612088-4856-4BE9-A731-BB903511F352@nvidia.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 12:27:58PM -0500, Zi Yan wrote:
-> On 18 Feb 2021, at 12:25, Jason Gunthorpe wrote:
-> 
-> > On Thu, Feb 18, 2021 at 02:45:54PM +0000, Matthew Wilcox wrote:
-> >> On Wed, Feb 17, 2021 at 11:02:52AM -0800, Andrew Morton wrote:
-> >>> On Wed, 17 Feb 2021 10:49:25 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >>>> page structs are not guaranteed to be contiguous for gigantic pages.  The
-> >>>
-> >>> June 2014.  That's a long lurk time for a bug.  I wonder if some later
-> >>> commit revealed it.
-> >>
-> >> I would suggest that gigantic pages have not seen much use.  Certainly
-> >> performance with Intel CPUs on benchmarks that I've been involved with
-> >> showed lower performance with 1GB pages than with 2MB pages until quite
-> >> recently.
-> >
-> > I suggested in another thread that maybe it is time to consider
-> > dropping this "feature"
->
-> You mean dropping gigantic page support in hugetlb?
+After the device has signaled the end of reset by clearing the reset bit,
+it will automatically reinit MHI and the internal device structures.  Once
+That is done, the device will signal it has entered the ready state.
 
-No, I mean dropping support for arches that want to do:
+Signaling the ready state involves sending an interrupt (MSI) to the host
+which might cause IOMMU faults if it occurs at the wrong time.
 
-   tail_page != head_page + tail_page_nr
+If the controller is being powered down, and possibly removed, then the
+reset flow would only wait for the end of reset.  At which point, the host
+and device would start a race.  The host may complete its reset work, and
+remove the interrupt handler, which would cause the interrupt to be
+disabled in the IOMMU.  If that occurs before the device signals the ready
+state, then the IOMMU will fault since it blocked an interrupt.  While
+harmless, the fault would appear like a serious issue has occurred so let's
+silence it by making sure the device hits the ready state before the host
+completes its reset processing.
 
-because they can't allocate the required page array either virtually
-or physically contiguously.
+Signed-off-by: Jeffrey Hugo <jhugo@codeaurora.org>
+---
 
-It seems like quite a burden on the core mm for a very niche, and
-maybe even non-existant, case. 
+v2: Fix subject and remove use of cur_state
 
-It was originally done for PPC, can these PPC systems use VMEMMAP now?
+ drivers/bus/mhi/core/pm.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-> > The cost to fix GUP to be compatible with this will hurt normal
-> > GUP performance - and again, that nobody has hit this bug in GUP
-> > further suggests the feature isn't used..
-> 
-> A easy fix might be to make gigantic hugetlb page depends on
-> CONFIG_SPARSEMEM_VMEMMAP, which guarantee all struct pages are contiguous.
+diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+index 36ab7aa..246bdb2 100644
+--- a/drivers/bus/mhi/core/pm.c
++++ b/drivers/bus/mhi/core/pm.c
+@@ -463,7 +463,7 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+ 
+ 	/* Trigger MHI RESET so that the device will not access host memory */
+ 	if (!MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
+-		u32 in_reset = -1;
++		u32 in_reset = -1, ready = 0;
+ 		unsigned long timeout = msecs_to_jiffies(mhi_cntrl->timeout_ms);
+ 
+ 		dev_dbg(dev, "Triggering MHI Reset in device\n");
+@@ -486,6 +486,21 @@ static void mhi_pm_disable_transition(struct mhi_controller *mhi_cntrl)
+ 		 * hence re-program it
+ 		 */
+ 		mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
++
++		if (!MHI_IN_PBL(mhi_get_exec_env(mhi_cntrl))) {
++			/* wait for ready to be set */
++			ret = wait_event_timeout(mhi_cntrl->state_event,
++						 mhi_read_reg_field(mhi_cntrl,
++							mhi_cntrl->regs,
++							MHISTATUS,
++							MHISTATUS_READY_MASK,
++							MHISTATUS_READY_SHIFT,
++							&ready)
++						 || ready, timeout);
++			if (!ret || !ready)
++				dev_warn(dev,
++					"Device failed to enter READY state\n");
++		}
+ 	}
+ 
+ 	dev_dbg(dev,
+-- 
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
 
-Yes, exactly.
-
-Jason
