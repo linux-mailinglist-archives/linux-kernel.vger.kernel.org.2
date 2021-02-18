@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C91331E64D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D7B31E642
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhBRGZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 01:25:34 -0500
-Received: from inva020.nxp.com ([92.121.34.13]:42424 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231995AbhBRGGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:06:53 -0500
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 3818B1A073E;
-        Thu, 18 Feb 2021 07:06:01 +0100 (CET)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 826301A074A;
-        Thu, 18 Feb 2021 07:05:57 +0100 (CET)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 66215402BE;
-        Thu, 18 Feb 2021 07:05:53 +0100 (CET)
-From:   Richard Zhu <hongxing.zhu@nxp.com>
-To:     shawnguo@kernel.org, ping.bai@nxp.com
-Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>
-Subject: [PATCH] clk: imx8mp: Remove the none exist pcie clocks
-Date:   Thu, 18 Feb 2021 13:54:14 +0800
-Message-Id: <1613627654-29801-1-git-send-email-hongxing.zhu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231290AbhBRGTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 01:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhBRF4o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 00:56:44 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73458C06178B
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 21:56:04 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id c25so448210qvb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 21:56:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=97xepu+H893Qn2oD7QzEQlF0nqYf2pV6us14XKtvHxU=;
+        b=mgbz52W0JN7xwQftwEtM6NGsY/g84xRLA4xkhTjEINN5my44bcXRu6XD/L38sC1qfB
+         fFk0r+RCj1e1clOhXV7+g4RwblTqhm4rMAYlgBga522+NSBTxYmvRQBy1Wby31qUxspS
+         2o1DQPJXVPiyJh6aiJRdpzWtHvBAg8XR4lxxIg1tkZhIUN+CxS34HLATPmSjYMbryzYh
+         L3gZ0Bmtz2aLr/fB2xjsFlEgfigT7X0md89CHZzGaIwcsqT+wP+5w7Yh09lA+jl/U8NS
+         5ZI43x8+XjOGS5AddwtIoX1G0f0hze4USrUbCr7PTJ7ElbZRW957RBC1kocJFd96cIPp
+         w/sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=97xepu+H893Qn2oD7QzEQlF0nqYf2pV6us14XKtvHxU=;
+        b=DsfeRKU/B8ztsRLdk2xOW0GsXwVoeghbvSK2Chsof8SI9/y6KnglvuVJtOiBcIftNE
+         jRLwZFqVIdMiP0BfG+is6D/1UwrAZ6sL4UXcfQ3/0KotpHC9XOmsS5JfBpa7U9rkkXAg
+         l3i7EXpVeT4t5nwWM5WtddE+le5ALL6epUyQA7bjrZxdYrwZtTrFxuOKduhJ1Pxgl+fR
+         33t2OYTQhIJ+ArN9JoREBsdpBAc7LF912zv7ElTggaPREuyFM01+fm7lOcSzOPReu7o+
+         FK82CJbHoHOTbg4I6YgzX6DE2CTKAX++ISd8RQVo3ZsrJx6zRJTD1yZx8eGpAA6jjNjq
+         5jOg==
+X-Gm-Message-State: AOAM5320EflXLvmQtJqRHthrMs+n6fGNrGlc5fieKanC2UbgT4FfskjS
+        LLugt8UMKhjibtTYRaUxcsA56Q==
+X-Google-Smtp-Source: ABdhPJwsk5IUVrVDg92pl5EyX/4pmGD+gOB1OV30TBrbHpR+IPLGYf7+2OWQg1V2jKga9UiKmLOINw==
+X-Received: by 2002:a05:6214:242f:: with SMTP id gy15mr2624583qvb.17.1613627763640;
+        Wed, 17 Feb 2021 21:56:03 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id p6sm3245805qkg.36.2021.02.17.21.56.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 21:56:03 -0800 (PST)
+Date:   Thu, 18 Feb 2021 00:56:02 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
+Message-ID: <YC4BcsNFEmW7XeqB@cmpxchg.org>
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the i.MX8MP PCIe design, the PCIe PHY REF clock comes from external
-OSC or internal system PLL. It is configured in the IOMUX_GPR14 register
-directly, and can't be contolled by CCM at all.
-Remove the PCIE PHY clock from clock driver to clean up codes.
-There is only one PCIe in i.MX8MP, remove the none exist second PCIe
-related clocks.
+On Wed, Feb 17, 2021 at 12:41:36PM -0800, Tim Chen wrote:
+> On a per node basis, the mem cgroup soft limit tree on each node tracks
+> how much a cgroup has exceeded its soft limit memory limit and sorts
+> the cgroup by its excess usage.  On page release, the trees are not
+> updated right away, until we have gathered a batch of pages belonging to
+> the same cgroup. This reduces the frequency of updating the soft limit tree
+> and locking of the tree and associated cgroup.
+> 
+> However, the batch of pages could contain pages from multiple nodes but
+> only the soft limit tree from one node would get updated.  Change the
+> logic so that we update the tree in batch of pages, with each batch of
+> pages all in the same mem cgroup and memory node.  An update is issued for
+> the batch of pages of a node collected till now whenever we encounter
+> a page belonging to a different node.  Note that this batching for
+> the same node logic is only relevant for v1 cgroup that has a memory
+> soft limit.
+> 
+> Reviewed-by: Ying Huang <ying.huang@intel.com>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> ---
+>  mm/memcontrol.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d72449eeb85a..8bddee75f5cb 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6804,6 +6804,7 @@ struct uncharge_gather {
+>  	unsigned long pgpgout;
+>  	unsigned long nr_kmem;
+>  	struct page *dummy_page;
+> +	int nid;
+>  };
+>  
+>  static inline void uncharge_gather_clear(struct uncharge_gather *ug)
+> @@ -6849,7 +6850,13 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+>  	 * exclusive access to the page.
+>  	 */
+>  
+> -	if (ug->memcg != page_memcg(page)) {
+> +	if (ug->memcg != page_memcg(page) ||
+> +	    /*
+> +	     * Update soft limit tree used in v1 cgroup in page batch for
+> +	     * the same node. Relevant only to v1 cgroup with a soft limit.
+> +	     */
+> +	    (ug->dummy_page && ug->nid != page_to_nid(page) &&
+> +	     ug->memcg->soft_limit != PAGE_COUNTER_MAX)) {
 
-Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-Reviewed-by: Jason Liu <jason.hui.liu@nxp.com>
----
- drivers/clk/imx/clk-imx8mp.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+Sorry, I used weird phrasing in my last email.
 
-diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
-index 2f4e1d674e1c..afbeb6bf1909 100644
---- a/drivers/clk/imx/clk-imx8mp.c
-+++ b/drivers/clk/imx/clk-imx8mp.c
-@@ -152,10 +152,6 @@ static const char * const imx8mp_can2_sels[] = {"osc_24m", "sys_pll2_200m", "sys
- 						"sys_pll1_160m", "sys_pll1_800m", "sys_pll3_out",
- 						"sys_pll2_250m", "audio_pll2_out", };
- 
--static const char * const imx8mp_pcie_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
--						    "clk_ext1", "clk_ext2", "clk_ext3",
--						    "clk_ext4", "sys_pll1_400m", };
--
- static const char * const imx8mp_pcie_aux_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
- 						    "sys_pll3_out", "sys_pll2_100m", "sys_pll1_80m",
- 						    "sys_pll1_160m", "sys_pll1_200m", };
-@@ -380,14 +376,6 @@ static const char * const imx8mp_memrepair_sels[] = {"osc_24m", "sys_pll2_100m",
- 							"sys_pll1_800m", "sys_pll2_1000m", "sys_pll3_out",
- 							"clk_ext3", "audio_pll2_out", };
- 
--static const char * const imx8mp_pcie2_ctrl_sels[] = {"osc_24m", "sys_pll2_250m", "sys_pll2_200m",
--						      "sys_pll1_266m", "sys_pll1_800m", "sys_pll2_500m",
--						      "sys_pll2_333m", "sys_pll3_out", };
--
--static const char * const imx8mp_pcie2_phy_sels[] = {"osc_24m", "sys_pll2_100m", "sys_pll2_500m",
--						     "clk_ext1", "clk_ext2", "clk_ext3",
--						     "clk_ext4", "sys_pll1_400m", };
--
- static const char * const imx8mp_media_mipi_test_byte_sels[] = {"osc_24m", "sys_pll2_200m", "sys_pll2_50m",
- 								"sys_pll3_out", "sys_pll2_100m",
- 								"sys_pll1_80m", "sys_pll1_160m",
-@@ -585,7 +573,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
- 	hws[IMX8MP_CLK_VPU_G2] = imx8m_clk_hw_composite("vpu_g2", imx8mp_vpu_g2_sels, ccm_base + 0xa180);
- 	hws[IMX8MP_CLK_CAN1] = imx8m_clk_hw_composite("can1", imx8mp_can1_sels, ccm_base + 0xa200);
- 	hws[IMX8MP_CLK_CAN2] = imx8m_clk_hw_composite("can2", imx8mp_can2_sels, ccm_base + 0xa280);
--	hws[IMX8MP_CLK_PCIE_PHY] = imx8m_clk_hw_composite("pcie_phy", imx8mp_pcie_phy_sels, ccm_base + 0xa380);
- 	hws[IMX8MP_CLK_PCIE_AUX] = imx8m_clk_hw_composite("pcie_aux", imx8mp_pcie_aux_sels, ccm_base + 0xa400);
- 	hws[IMX8MP_CLK_I2C5] = imx8m_clk_hw_composite("i2c5", imx8mp_i2c5_sels, ccm_base + 0xa480);
- 	hws[IMX8MP_CLK_I2C6] = imx8m_clk_hw_composite("i2c6", imx8mp_i2c6_sels, ccm_base + 0xa500);
-@@ -643,8 +630,6 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
- 	hws[IMX8MP_CLK_MEDIA_CAM2_PIX] = imx8m_clk_hw_composite("media_cam2_pix", imx8mp_media_cam2_pix_sels, ccm_base + 0xbe80);
- 	hws[IMX8MP_CLK_MEDIA_LDB] = imx8m_clk_hw_composite("media_ldb", imx8mp_media_ldb_sels, ccm_base + 0xbf00);
- 	hws[IMX8MP_CLK_MEMREPAIR] = imx8m_clk_hw_composite_critical("mem_repair", imx8mp_memrepair_sels, ccm_base + 0xbf80);
--	hws[IMX8MP_CLK_PCIE2_CTRL] = imx8m_clk_hw_composite("pcie2_ctrl", imx8mp_pcie2_ctrl_sels, ccm_base + 0xc000);
--	hws[IMX8MP_CLK_PCIE2_PHY] = imx8m_clk_hw_composite("pcie2_phy", imx8mp_pcie2_phy_sels, ccm_base + 0xc080);
- 	hws[IMX8MP_CLK_MEDIA_MIPI_TEST_BYTE] = imx8m_clk_hw_composite("media_mipi_test_byte", imx8mp_media_mipi_test_byte_sels, ccm_base + 0xc100);
- 	hws[IMX8MP_CLK_ECSPI3] = imx8m_clk_hw_composite("ecspi3", imx8mp_ecspi3_sels, ccm_base + 0xc180);
- 	hws[IMX8MP_CLK_PDM] = imx8m_clk_hw_composite("pdm", imx8mp_pdm_sels, ccm_base + 0xc200);
--- 
-2.17.1
+Can you please preface the checks you're adding with a
+!cgroup_subsys_on_dfl(memory_cgrp_subsys) to static branch for
+cgroup1? The uncharge path is pretty hot, and this would avoid the
+runtime overhead on cgroup2 at least, which doesn't have the SL.
 
+Also, do we need the ug->dummy_page check? It's only NULL on the first
+loop - where ug->memcg is NULL as well and the branch is taken anyway.
+
+The soft limit check is also slightly cheaper than the nid check, as
+page_to_nid() might be out-of-line, so we should do it first. This?
+
+	/*
+	 * Batch-uncharge all pages of the same memcg.
+	 *
+	 * Unless we're looking at a cgroup1 with a softlimit
+	 * set: the soft limit trees are maintained per-node
+	 * and updated on uncharge (via dummy_page), so keep
+	 * batches confined to a single node as well.
+	 */
+	if (ug->memcg != page_memcg(page) ||
+	    (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
+	     ug->memcg->soft_limit != PAGE_COUNTER_MAX &&
+	     ug->nid != page_to_nid(page)))
