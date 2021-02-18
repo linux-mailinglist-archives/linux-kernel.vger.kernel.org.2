@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B7731ED8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB4E831ED95
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhBRRpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
+        id S234636AbhBRRrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:47:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhBRPFE (ORCPT
+        with ESMTP id S230219AbhBRPFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:05:04 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B56EC061574;
-        Thu, 18 Feb 2021 07:04:18 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id z15so1475332pfc.3;
-        Thu, 18 Feb 2021 07:04:18 -0800 (PST)
+        Thu, 18 Feb 2021 10:05:46 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F98C06178A;
+        Thu, 18 Feb 2021 07:05:05 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id k13so1444440pfh.13;
+        Thu, 18 Feb 2021 07:05:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SCWX+UOWBBJn4LzW9Yj7QYHcJVlwVskIMygyEWiC3wA=;
-        b=ptTekISckA2jYFmD+CelhT4CRuY+9zmgwQo3vUOOSVTtYU+u8puIb5X6zY9O9vS4Qt
-         1MVrE0TXQvA7aPaTJMlSGwlJCmmU2FjesAbdk6HWoy+6ECmBtkwBHrWfLk340T+lqtUr
-         tdlpQjK67nm7aAClC/zNZtIW5TdxJTr0Nn3H3Zi5ilLW6kUonpRBd8U3ufddQMCY+XKw
-         1u0NzVmgKd2Dtg8j62nf7CIB933MdcHVI+wy0MJaTfX66TYJr4epBwbhuxQ7WDefLkeb
-         IzLkM4Wm9B9CfW/6kCUDReQYeXq3pXwpzi5DKlcM7ZnXDryILmtYSrRE05ziGFtkycuO
-         fPQw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q6JzUvbHZRHZd4ZQ75NBM4QAoNuZQMHHQcSNWn9QvA4=;
+        b=kqdz24IEELGBD6Xwjwkfk8x2Kth0atGo/+z5qaF4+NPcwPkDl8x9AzNCOwdtoUWSP6
+         fC/xvJH7grhIB4PcPhO6dhualq4Hts37AS9lAsNQ93hzcdt/LTLHjf1nhcQ3EdYR0O2r
+         wzTGpFp7fpH+oWHn5XgX/lQfwVEm4MbBA8Ym8p3KONLnhN6ZoiVj8OVX1jzl1LfXjJek
+         eW7QPkW+TAZUivhY09BerzQaE7j6JaaOf/LwCX9VVFBXl6EQ1iCEnvuLyMxzAlrTEWXS
+         772MaL3ECEaCxIRZ8jv5tRrbhkn9OByODs9+mWWbrhp4bZtUWNWO/hFOmu4nNrTNP838
+         DM1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SCWX+UOWBBJn4LzW9Yj7QYHcJVlwVskIMygyEWiC3wA=;
-        b=AsFwABVPeEPUgOK9qEcxcvjpuI4U+Bpb6fMOpx8u8WAg6k2Rr4FAQSXGy3oT3ExNV4
-         1fX72lbpDw9lzkkrpE6muw+/ya8Ek/P3qcROA9rf31JAioBg9VpHvYLRuGABiBa3q6tD
-         iWi2EfRrFpAfSC+OTf0Q1bYaimyt9HjD9QyQWZaWvLvxGxm2BX0IPByNga0maHtow8pG
-         Z7Plf5qhdO3vJS789f+JbaoOLFwRZp4PSYjWNyqIAwsAiNAwx/1MdM9vGoCMqRirFDjN
-         uP3t7U3kKnLtRrYaPb0yDDI+7TXWfKmYqgY7LoHzwTB9wGaFut9SYUM6E0DyW0d63qAr
-         4G1g==
-X-Gm-Message-State: AOAM533f9iAsL51R3dDHoMfbGtX18vTj6LlteRERNl3QeAZGJ9ldCNTr
-        LuBz9OoP3iwslWqfNkM7hrQO8TAIGe34A1XGReM=
-X-Google-Smtp-Source: ABdhPJwG5zE0x+hjJvBnpEznOmm5sOnqdV/YjJZRzgbBogf8unojEji7hX1GRoH0IU+rEawkdJbKxqx0xsaizjPJhNE=
-X-Received: by 2002:a65:4c08:: with SMTP id u8mr4275873pgq.203.1613660658089;
- Thu, 18 Feb 2021 07:04:18 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Q6JzUvbHZRHZd4ZQ75NBM4QAoNuZQMHHQcSNWn9QvA4=;
+        b=MT4tlFqpPOJgtwDvQYx36NDD07x7lYlVuNFEEjZqREP/7tAETXhRdhtC8ftyukjQS7
+         3L32h4ovIyFxsCjBnI+syWV8rGC8u9I99jcyAfU+W+J7gLexOB/ve6tE7ZOYbFZC0Naa
+         E8OEn6r4hvUraURKV8NsE5cw7vcae7EeC75S0eAJpQ+DS1j+FERymcTLLvf3vOg0Pg0n
+         nhbCVkc9dcyfQ/ayc1k+kqkxaVO3CsAxus7yKRAdmfSUzEjqqF/pWGr1HXJ4sUDAqVBY
+         ddPdHLM3QpsxOf6wS8ccsLu2aT41YOCgN9FfeL4KrCzIy4xza9eATgUTs4Q3poVYVKIS
+         jWWw==
+X-Gm-Message-State: AOAM5318bttiolT2qXTzAUbtKPKyaZ8A+8gHRwHw1d9fF6TLMNCu1We7
+        MbrASKPl3Bf3DyKdP/aRwDI=
+X-Google-Smtp-Source: ABdhPJyHfO8HbKQRE4fnLpa6R8PgqgfAwdUyVq4kbKdk3c/plDFgCfDlJ4z/UaYzkflgyZ1Fw2MpSA==
+X-Received: by 2002:a63:1648:: with SMTP id 8mr4426357pgw.392.1613660705220;
+        Thu, 18 Feb 2021 07:05:05 -0800 (PST)
+Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
+        by smtp.gmail.com with ESMTPSA id r23sm6396270pgl.42.2021.02.18.07.05.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 07:05:04 -0800 (PST)
+From:   Dejin Zheng <zhengdejin5@gmail.com>
+To:     corbet@lwn.net, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        rric@kernel.org, bhelgaas@google.com, wsa@kernel.org,
+        linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
+Subject: [PATCH v4 0/4] Introduce pcim_alloc_irq_vectors()
+Date:   Thu, 18 Feb 2021 23:04:54 +0800
+Message-Id: <20210218150458.798347-1-zhengdejin5@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <20210218052654.28995-1-calvin.johnson@oss.nxp.com> <20210218052654.28995-16-calvin.johnson@oss.nxp.com>
-In-Reply-To: <20210218052654.28995-16-calvin.johnson@oss.nxp.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 18 Feb 2021 17:04:02 +0200
-Message-ID: <CAHp75VdUs8_6_bK1-TS2Bi9vQvLJLsr8C+Y5xXF2_FJHsFKeFQ@mail.gmail.com>
-Subject: Re: [net-next PATCH v6 15/15] net: dpaa2-mac: Add ACPI support for
- DPAA2 MAC driver
-To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
-Cc:     Grant Likely <grant.likely@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
-        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
-        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Diana Madalina Craciun <diana.craciun@nxp.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "linux.cj" <linux.cj@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 7:29 AM Calvin Johnson
-<calvin.johnson@oss.nxp.com> wrote:
->
-> Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
-> DT or ACPI.
->
-> Modify dpaa2_mac_get_if_mode() to get interface mode from dpmac_node
-> which is a fwnode.
->
-> Modify dpaa2_pcs_create() to create pcs from dpmac_node fwnode.
->
-> Modify dpaa2_mac_connect() to support ACPI along with DT.
+Introduce pcim_alloc_irq_vectors(), a device-managed version of
+pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
+has been called before, then pci_alloc_irq_vectors() is actually a
+device-managed function. It is used as a device-managed function, So
+replace it with pcim_alloc_irq_vectors().
 
-...
+Changelog
+---------
+v3 -> v4:
+	- add some commit comments for patch 3
+v2 -> v3:
+	- Add some commit comments for replace some codes in
+	  pcim_release() by pci_free_irq_vectors().
+	- Simplify the error handling path in i2c designware
+	  driver.
+v1 -> v2:
+	- Use pci_free_irq_vectors() to replace some code in
+	  pcim_release().
+	- Modify some commit messages.
 
-> +                       if (is_of_node(fwnode))
+Dejin Zheng (4):
+  PCI: Introduce pcim_alloc_irq_vectors()
+  Documentation: devres: Add pcim_alloc_irq_vectors()
+  i2c: designware: Use the correct name of device-managed function
+  i2c: thunderx: Use the correct name of device-managed function
 
-Redundant check I think. If it's not an fwnode, the dpmacs is NULL and
-of_node_put() is NULL-aware.
-
-> +                               of_node_put(dpmacs);
-
-...
-
-> +       if (is_of_node(fwnode))
-> +               of_node_put(dpmacs);
-
-Ditto.
-
-...
-
->         mac->if_link_type = mac->attr.link_type;
-> -
-
-Do we need to remove this blank line?
-
-...
-
-> +       if (is_of_node(dpmac_node))
-> +               fwnode_handle_put(dpmac_node);
-
-> +       if (is_of_node(dpmac_node))
-> +               fwnode_handle_put(dpmac_node);
-
-Also not sure that you need a check in the above code excerpts.
+ .../driver-api/driver-model/devres.rst        |  1 +
+ drivers/i2c/busses/i2c-designware-pcidrv.c    | 15 +++------
+ drivers/i2c/busses/i2c-thunderx-pcidrv.c      |  2 +-
+ drivers/pci/pci.c                             | 33 ++++++++++++++++---
+ include/linux/pci.h                           |  3 ++
+ 5 files changed, 38 insertions(+), 16 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.0
+
