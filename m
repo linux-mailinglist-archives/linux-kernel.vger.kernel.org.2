@@ -2,124 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4604031EE20
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C91B431EE1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhBRSSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232771AbhBRPxR (ORCPT
+        id S232328AbhBRSSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:18:45 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:52550 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230169AbhBRPxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:53:17 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6838FC061756;
-        Thu, 18 Feb 2021 07:52:29 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id e9so1734636pjj.0;
-        Thu, 18 Feb 2021 07:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=trbbw9gkdkd105IaA7h2JtZJ5hEDJNcNLn2bkNlm+4I=;
-        b=SzE6MBiZb5aCdj45XpkSS9tohyDUfNdxO8chVfAf8ilCtUKf6KYwYkUN2cHQs/F476
-         kjlsryICuRkiYgiRUs5fKZoJhIJSTRFb66CV12mFr5V8KNwCw+9Z+QX4my2shC8IMLn7
-         02TYhaVdUI+OEJtOlvBFY50T7s5jcT2uY2cKXog6TKadvdC5MfevYEP5HW9iR727Vwwp
-         d8C3tayt1khUnAq7b4gqilQbHvZfcaTu+OXO/wTEtoZGOz8vo3d8E4gEmHSmOiB7ODIp
-         V03IXdBTha9TEdsMRFNa80eKSLOVDGUUFLnLKu+C19lVAgFP3VPzH2RgSXrZ1/DVOLXY
-         poWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=trbbw9gkdkd105IaA7h2JtZJ5hEDJNcNLn2bkNlm+4I=;
-        b=RzV43YZus5gK5Uh+z1ePsCs1CDo7DYQYInO1LivwWTikccqlNZGmGFDo+gCW+DGpx3
-         +DLuIGkyd9WRMD/5QsdUIz/VlAFL3DRw1clo8NEOZqtX3N3GIcTnZ0vHxSCW4Co5cXCH
-         KUUSp2OuSw2Pw1fvPSl/3Y6wiF69Z/uSW/sOOwyTLVnklc73oCYb+tp5APSbU9Z6b/SL
-         AO+cBi7JQfE8uwZtanSg4zYQSthY9xphrZrDfyn64tBtxPLanKCPWi0QwUTJcSq+4RPn
-         Tdvj+d2vDsN9XsvpnLVXu0b7XeD4osGCNCJdhJFz2Wggwqaj98UMTsp0yZ8fVeVBJbIf
-         dFfg==
-X-Gm-Message-State: AOAM533VdHuQjAwTeXVkTKaiPpFud1YiqErUjqbNSTe2hHOReKL3rHWT
-        mXsNNlqntEEV4+piHS4f/kU=
-X-Google-Smtp-Source: ABdhPJyd3O6GMj59MJrT2TGhOYJO4n8wZwHwSqWUCOe2jnjaDuLrcfqlkBZW8Xuoyik/vStFt7YAow==
-X-Received: by 2002:a17:902:ee46:b029:e3:74e1:24e8 with SMTP id 6-20020a170902ee46b02900e374e124e8mr4639333plo.85.1613663548995;
-        Thu, 18 Feb 2021 07:52:28 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:157d:8a19:5427:ea9e])
-        by smtp.gmail.com with ESMTPSA id y29sm227702pff.81.2021.02.18.07.52.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 07:52:27 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 18 Feb 2021 07:52:25 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgoldswo@codeaurora.org,
-        linux-fsdevel@vger.kernel.org, david@redhat.com, vbabka@suse.cz,
-        viro@zeniv.linux.org.uk, joaodias@google.com
-Subject: Re: [RFC 1/2] mm: disable LRU pagevec during the migration
- temporarily
-Message-ID: <YC6NOVBy5J4bUjfD@google.com>
-References: <20210216170348.1513483-1-minchan@kernel.org>
- <YCzbCg3+upAo1Kdj@dhcp22.suse.cz>
- <YC2Am34Fso5Y5SPC@google.com>
- <20210217211612.GO2858050@casper.infradead.org>
- <YC2LVXO6e2NVsBqz@google.com>
- <YC4ifqXYEeWrj4aF@dhcp22.suse.cz>
+        Thu, 18 Feb 2021 10:53:20 -0500
+Date:   Thu, 18 Feb 2021 18:52:31 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Rob Herring <robh@kernel.org>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 01/16] dt-bindings: net: dwmac: Add DW GMAC GPIOs
+ properties
+Message-ID: <20210218155231.cftvlzjuweumxarv@mobilestation>
+References: <20210208140820.10410-1-Sergey.Semin@baikalelectronics.ru>
+ <20210208140820.10410-2-Sergey.Semin@baikalelectronics.ru>
+ <20210209231352.GA402351@robh.at.kernel.org>
+ <20210210222805.upoioue7uc6cat2v@mobilestation>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <YC4ifqXYEeWrj4aF@dhcp22.suse.cz>
+In-Reply-To: <20210210222805.upoioue7uc6cat2v@mobilestation>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 09:17:02AM +0100, Michal Hocko wrote:
-> On Wed 17-02-21 13:32:05, Minchan Kim wrote:
-> > On Wed, Feb 17, 2021 at 09:16:12PM +0000, Matthew Wilcox wrote:
-> > > On Wed, Feb 17, 2021 at 12:46:19PM -0800, Minchan Kim wrote:
-> > > > > I suspect you do not want to add atomic_read inside hot paths, right? Is
-> > > > > this really something that we have to microoptimize for? atomic_read is
-> > > > > a simple READ_ONCE on many archs.
-> > > > 
-> > > > It's also spin_lock_irq_save in some arch. If the new synchonization is
-> > > > heavily compilcated, atomic would be better for simple start but I thought
-> > > > this locking scheme is too simple so no need to add atomic operation in
-> > > > readside.
+On Thu, Feb 11, 2021 at 01:28:06AM +0300, Serge Semin wrote:
+> On Tue, Feb 09, 2021 at 05:13:52PM -0600, Rob Herring wrote:
+> > On Mon, Feb 08, 2021 at 05:08:05PM +0300, Serge Semin wrote:
+> > > Synopsys DesignWare Ethernet controllers can be synthesized with
+> > > General-Purpose IOs support. GPIOs can work either as inputs or as outputs
+> > > thus belong to the gpi_i and gpo_o ports respectively. The ports width
+> > > (number of possible inputs/outputs) and the configuration registers layout
+> > > depend on the IP-core version. For instance, DW GMAC can have from 0 to 4
+> > > GPIs and from 0 to 4 GPOs, while DW xGMAC have a wider ports width up to
+> > > 16 pins of each one.
 > > > 
-> > > What arch uses a spinlock for atomic_read()?  I just had a quick grep and
-> > > didn't see any.
+> > > So the DW MAC DT-node can be equipped with "ngpios" property, which can't
+> > > have a value greater than 32, standard GPIO-related properties like
+> > > "gpio-controller" and "#gpio-cells", and, if GPIs are supposed to be
+> > > detected, IRQ-controller related properties.
+> > > 
+> > > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > > ---
+> > >  .../devicetree/bindings/net/snps,dwmac.yaml     | 17 +++++++++++++++++
+> > >  1 file changed, 17 insertions(+)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > index bdc437b14878..fcca23d3727e 100644
+> > > --- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > +++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
+> > > @@ -110,6 +110,23 @@ properties:
+> > >    reset-names:
+> > >      const: stmmaceth
+> > >  
+> > > +  ngpios:
+> > > +    description:
+> > > +      Total number of GPIOs the MAC supports. The property shall include both
+> > > +      the GPI and GPO ports width.
+> > > +    minimum: 1
+> > > +    maximum: 32
 > > 
-> > Ah, my bad. I was confused with update side.
-> > Okay, let's use atomic op to make it simple.
 > 
-> Thanks. This should make the code much more simple. Before you send
-> another version for the review I have another thing to consider. You are
-> kind of wiring this into the migration code but control over lru pcp
-> caches can be used in other paths as well. Memory offlining would be
-> another user. We already disable page allocator pcp caches to prevent
-> regular draining. We could do the same with lru pcp caches.
 
-I didn't catch your point here. If memory offlining is interested on
-disabling lru pcp, it could call migrate_prep and migrate_finish
-like other places. Are you suggesting this one?
+> > Does the driver actually need this? I'd omit it if just to validate 
+> > consumers are in range.
+> 
+> I can't say for all possible DW MAC IP-cores (I've got manuals for
+> GMAC and xGMAC only), but at least DW GMAC can't have more than four
+> GPIs and four GPOs, while XGMACs can be synthesized with up to 16
+> each. That's why I've set the upper boundary here as 32. But the
+> driver uses the ngpios property do determine the total number GPIOs
+> the core has been synthesized. Th number of GPIs and GPOs will be
+> auto-detected then (by writing-reading to-from the GPI type field of
+> the GPIO control register).
+> 
+> > 
+> > Are GPI and GPO counts independent? If so, this isn't really sufficient.
+> 
+> Yeap, they are independent. What do you suggest then? Define some
+> vendor-specific properties like snps,ngpis and snps,ngpos? If so then
+> they seem more generic than vendor-specific, because the separated
+> GPI and GPO space isn't an unique feature of the DW MAC GPIOs. Do we
+> need to create a generic version of such properties then? (That much
+> more changes then introduced here. We'd need to fix the dt-schema tool
+> too then.)
+> 
+> -Sergey
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index a969463bdda4..0ec1c13bfe32 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1425,8 +1425,12 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
-                node_clear(mtc.nid, nmask);
-                if (nodes_empty(nmask))
-                        node_set(mtc.nid, nmask);
-+
-+               migrate_prep();
-                ret = migrate_pages(&source, alloc_migration_target, NULL,
-                        (unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
-+
-+               migrate_finish();
-                if (ret) {
-                        list_for_each_entry(page, &source, lru) {
-                                pr_warn("migrating pfn %lx failed ret:%d ",
+Rob, any comment on my questions above? As the kernel is in
+merge-window now, I just hope this part won't get pushed back in the
+emails log out of your sight.
 
+-Sergey
+
+> 
+> > 
+> > Rob
