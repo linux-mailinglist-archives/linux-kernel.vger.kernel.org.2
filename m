@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3206331E46B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD7631E46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:05:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhBRDBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 22:01:10 -0500
-Received: from mga14.intel.com ([192.55.52.115]:61205 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229806AbhBRDBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 22:01:06 -0500
-IronPort-SDR: gVZyxOgvEY1zk7ovxmtqOjW9xdYXcC24XcGgGX1XA/d3o2FOfVyRsOe7LCv2S7pbNqngrujTIW
- eqBr1/p4NkpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="182593810"
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
-   d="scan'208";a="182593810"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 19:00:25 -0800
-IronPort-SDR: QIR+MLxOB8VxXlWN5qdiUGpSwwUAP+n/VlCJaC8GNkv2uFiQmS7UkuBaEdeV11Uwp1QysXWEpB
- tD5LD/BvBKpw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,185,1610438400"; 
-   d="scan'208";a="378250822"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga002.jf.intel.com with ESMTP; 17 Feb 2021 19:00:24 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Feb 2021 19:00:24 -0800
-Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 17 Feb 2021 19:00:23 -0800
-Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
- SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2106.002;
- Thu, 18 Feb 2021 11:00:21 +0800
-From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-To:     =?utf-8?B?J0tyenlzenRvZiBXaWxjennFhHNraSc=?= <kw@linux.com>
-CC:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] PCI/RCEC: Fix failure to inject errors to some RCiEP
- devices
-Thread-Topic: [PATCH 1/1] PCI/RCEC: Fix failure to inject errors to some RCiEP
- devices
-Thread-Index: AQHW/1FxyeRWMorsOUa/1MhtBDu8kapRGxsAgAwb9fA=
-Date:   Thu, 18 Feb 2021 03:00:20 +0000
-Message-ID: <a5b1aa8ef91a4c71982ad77234932349@intel.com>
-References: <20210210020516.95292-1-qiuxu.zhuo@intel.com>
- <YCQT90mK1kacZ7ZA@rocinante>
-In-Reply-To: <YCQT90mK1kacZ7ZA@rocinante>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229828AbhBRDEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 22:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhBRDEw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 22:04:52 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 519ECC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 19:04:12 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id z18so237924ile.9
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 19:04:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JNggqLKtzXuYZAHFzTbfh5YHmEXSP/0UgvQxrF83CoY=;
+        b=dlEMxlCP4YJvIMWiBqmZGmNkTNvsbRbaG4HmUkyDc2sUZxnMwrI6s1ECCdhTfBfEww
+         /9CXnai3+rpOIwMkhgjP5BtohS8i8Gmx9gPAyMET9N5Eskhc5pX0ncLrbI4fe+mIh8sD
+         2vFQiYluoiwNZZVTCj/lv2YeuwsRHV0FLMna3XbEbZCjkMm5KLPNJFjolJ/HBL5Vk2aB
+         USTEIPc0FsqmpWgrj9XrRFI1HbbVo0CzvNL+8CTkoKsjzUupx2fLlGrIjaTRTGlY0mPh
+         8uqH/InAV81icQEp2TzHO1W2uBouGEg7WQSHpg2uB586NyF3lu/ST68olYw44jva65+v
+         yo6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JNggqLKtzXuYZAHFzTbfh5YHmEXSP/0UgvQxrF83CoY=;
+        b=MxhWf00RHHtH7ndluA2tF2/SL8+xnzWyUAGlo59Dn6ybx66eXYW81zx0F1BDnMtMnj
+         fLXxa69Xufttu3zAZjfw8EJIW06LTL0pe1w/FoQaYYUf+j/kVLMWrkYNIosPOQsbDG7V
+         j9aLDGjpDjTCybUigt8LHUx5ey8QVqfMKmoBEQz22U3CMiau2C9TiAQGJZZ0BqCcJPXQ
+         eAW+C5WLo/t4k5DZrCoMpC8QqcAje63iXfFe3qWAa/8SdPFU+nwsTx7aQY+Ila3ED+K0
+         mwI4YhfBV4YX5TEYXOvxT6cgGZ5zI1SPpYfNLYTgL6ntebnP/IOMll7UMKhnQr089bLL
+         Ytog==
+X-Gm-Message-State: AOAM5301MQVEde2XUwHqamz0wNxDBdV8ns3+tld+FtG/nniOIf55/qr6
+        Z9Vx70Y/7PcezwOa/YscN9zI9AY3njieTLg8Zl8=
+X-Google-Smtp-Source: ABdhPJxBxyPhAYBkpCL+Gci953DJ6b0l1Brb4dbL/0ogFgG/L9WkMGdnYOikmRW5+cHg/hgOw6nEzY2lsIXJRM+tpS8=
+X-Received: by 2002:a05:6e02:1a8e:: with SMTP id k14mr1964474ilv.308.1613617451718;
+ Wed, 17 Feb 2021 19:04:11 -0800 (PST)
 MIME-Version: 1.0
+References: <20210217115802.49580-1-qiang.zhang@windriver.com>
+In-Reply-To: <20210217115802.49580-1-qiang.zhang@windriver.com>
+From:   Lai Jiangshan <jiangshanlai@gmail.com>
+Date:   Thu, 18 Feb 2021 11:04:00 +0800
+Message-ID: <CAJhGHyDE18PwQtS_W-aZA4Z6SAX3ZiCr6bA1Gqpu=XMN2n724w@mail.gmail.com>
+Subject: Re: [PATCH] workqueue: Remove rcu_read_lock/unlock() in workqueue_congested()
+To:     "Zhang, Qiang" <qiang.zhang@windriver.com>
+Cc:     Tejun Heo <tj@kernel.org>, Tejun Heo <htejun@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J6eXN6dG9mLA0KDQpTb3JyeSwganVzdCBiYWNrIGZyb20gQ2hpbmVzZSBOZXcgWWVhciBo
-b2xpZGF5Lg0KDQo+IEZyb206IEtyenlzenRvZiBXaWxjennFhHNraSA8a3dAbGludXguY29tPg0K
-PiAuLi4NCj4gLi4uDQo+IFdvdWxkIHRoaXMgb25seSBhZmZlY3QgZXJyb3IgaW5qZWN0aW9uIG9y
-IHdvdWxkIHRoaXMgYmUgYWxzbyBhIGdlbmVyaWMgcHJvYmxlbQ0KPiB3aXRoIHRoZSBkcml2ZXIg
-aXRzZWxmIGNhdXNpbmcgaXNzdWVzIHJlZ2FyZGxlc3Mgb2Ygd2hldGhlciBpdCB3YXMgYW4gZXJy
-b3INCj4gaW5qZWN0aW9uIG9yIG5vdCBmb3IgdGhpcyBwYXJ0aWN1bGFyIGRldmljZT8gIEkgYW0g
-YXNraW5nLCBhcyB0aGVyZSBpcyBhIGxvdCBnb2luZyBvbg0KPiBpbiB0aGUgY29tbWl0IG1lc3Nh
-Z2UuDQoNClRoaXMgaXMgYWxzbyBhIGdlbmVyaWMgcHJvYmxlbS4NCg0KPiBJIHdvbmRlciBpZiBz
-aW1wbGlmeWluZyB0aGlzIGNvbW1pdCBtZXNzYWdlIHNvIHRoYXQgaXQgY2xlYXJseSBleHBsYWlu
-cyB3aGF0IHdhcw0KPiBicm9rZW4sIHdoeSwgYW5kIGhvdyB0aGlzIHBhdGNoIGlzIGZpeGluZyBp
-dCwgd291bGQgcGVyaGFwcyBiZSBhbiBvcHRpb24/ICBUaGUNCj4gYmFja3N0b3J5IG9mIGhvdyB5
-b3UgZm91bmQgdGhlIGlzc3VlIHdoaWxlIGRvaW5nIHNvbWUgdGVzdGluZyBhbmQgZXJyb3INCj4g
-aW5qZWN0aW9uIGlzIG5pY2UsIGJ1dCBub3Qgc3VyZSBpZiBuZWVkZWQuDQo+IA0KPiBXaGF0IGRv
-IHlvdSB0aGluaz8NCg0KQWdyZWUgdG8gc2ltcGxpZnkgdGhlIGNvbW1pdCBtZXNzYWdlLiBIb3cg
-YWJvdXQgdGhlIGZvbGxvd2luZyBzdWJqZWN0IGFuZCBjb21taXQgbWVzc2FnZT8NCg0KU3ViamVj
-dDogIA0KVXNlIGRldmljZSBudW1iZXIgdG8gY2hlY2sgUkNpRVBCaXRtYXAgb2YgUkNFQw0KDQpD
-b21taXQgbWVzc2FnZTogDQpyY2VjX2Fzc29jX3JjaWVwKCkgdXNlZCB0aGUgY29tYmluYXRpb24g
-b2YgZGV2aWNlIG51bWJlciBhbmQgZnVuY3Rpb24gbnVtYmVyICdkZXZmbicgdG8gY2hlY2sgd2hl
-dGhlciB0aGUgY29ycmVzcG9uZGluZyBiaXQgaW4gdGhlIFJDaUVQQmltYXAgb2YgUkNFQyB3YXMg
-c2V0LiBBY2NvcmRpbmcgdG8gWzFdLCBpdCBvbmx5IG5lZWRzIHRvIHVzZSB0aGUgZGV2aWNlIG51
-bWJlciB0byBjaGVjayB0aGUgY29ycmVzcG9uZGluZyBiaXQgaW4gdGhlIFJDaUVQQml0bWFwIHdh
-cyBzZXQuIFNvIGZpeCBpdCBieSB1c2luZyBQQ0lfU0xPVCgpIHRvIGNvbnZlcnQgJ2RldmZuJyB0
-byBkZXZpY2UgbnVtYmVyIGZvciByY2VjX2Fzc29jX3JjaWVwKCkuDQpbMV0gUENJZSByNS4wLCBz
-ZWMgIjcuOS4xMC4yIEFzc29jaWF0aW9uIEJpdG1hcCBmb3IgUkNpRVBzIg0KDQoNClRoYW5rcyEN
-Ci1RaXV4dQ0K
++CC Paul
+
+
+On Wed, Feb 17, 2021 at 7:58 PM <qiang.zhang@windriver.com> wrote:
+>
+> From: Zqiang <qiang.zhang@windriver.com>
+>
+> The RCU read critical area already by preempt_disable/enable()
+> (equivalent to rcu_read_lock_sched/unlock_sched()) mark, so remove
+> rcu_read_lock/unlock().
+
+I think we can leave it which acks like document, especially
+workqueue_congested() is not performance crucial.  Either way
+is Ok for me.
+
+If it needs to be changed, please also do the same for
+rcu_read_lock() in wq_watchdog_timer_fn().
+
+And __queue_work() and try_to_grab_pending() also use local_irq_save()
+and rcu_read_lock() at the same time, but I don't know will these
+local_irq_save() be changed to raw_local_irq_save() in PREEMPT_RT.
+
+
+>
+> Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> ---
+>  kernel/workqueue.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+> index 0d150da252e8..c599835ad6c3 100644
+> --- a/kernel/workqueue.c
+> +++ b/kernel/workqueue.c
+> @@ -4540,7 +4540,6 @@ bool workqueue_congested(int cpu, struct workqueue_struct *wq)
+>         struct pool_workqueue *pwq;
+>         bool ret;
+>
+> -       rcu_read_lock();
+>         preempt_disable();
+>
+>         if (cpu == WORK_CPU_UNBOUND)
+> @@ -4553,7 +4552,6 @@ bool workqueue_congested(int cpu, struct workqueue_struct *wq)
+>
+>         ret = !list_empty(&pwq->delayed_works);
+>         preempt_enable();
+> -       rcu_read_unlock();
+>
+>         return ret;
+>  }
+> --
+> 2.25.1
+>
