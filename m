@@ -2,52 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54F631E8D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3313831E8D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhBRKqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:46:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231847AbhBRJ3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 04:29:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A45464E5F;
-        Thu, 18 Feb 2021 09:29:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613640554;
-        bh=i9kUQrGej5nnAqz252u1q780DHC6qw/nrdRa48+5dMI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WYwLGQEAj9r+tSDsRfYFnaoSAv7+3GDGBztVhqPKuiSkb0sBI/NtnT1FqitYczK17
-         MtEtfRgQWHEjkWDpMe9PsVhQ0+w7AEIn/HU6+Lr/qIUXQFDAt8c9r5xbmfb91iS/EW
-         abJKRXNKgnh3cfuRFN16tqbvtCHr9s5Me/3+xs3T8QZy1/ZHb1AY6Hh+34+5Ee1ILH
-         o3lpNde3LL7SLH3Rnr6oNFqNWH0yGbdZA+eIV4z4Yoqbm649HvdH/UqGE1RYuGK4WQ
-         lzptPJuCUAul2Am0LathYzj0olR0IJK/O/uJgm37G2gMbzXXDKilPn+Oht987+3i5c
-         sizpSveadc/ZQ==
-Date:   Thu, 18 Feb 2021 10:29:09 +0100
-From:   Robert Richter <rric@kernel.org>
-To:     Dejin Zheng <zhengdejin5@gmail.com>
-Cc:     wsa+renesas@sang-engineering.com, jan.glauber@gmail.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c: thunderx: Fix an issue about missing call to
- 'pci_free_irq_vectors()'
-Message-ID: <YC4zZNtRi4pql1H1@rric.localdomain>
-References: <20210214143734.591789-1-zhengdejin5@gmail.com>
+        id S232983AbhBRKrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 05:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232008AbhBRJbz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 04:31:55 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6B7C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:31:14 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id r21so2110562wrr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:31:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=VaSKa4DdnHoyZyCFHmPaCow3KCxH2Ne1C09ADbZ1yus=;
+        b=dRsXTrRzk7Wc31VNcTbJfc4NgGYL0oYa4TrPkTQZMezCPZJix76Gti85Vp4Yt4U+uY
+         qvfk2XL5qC9qgVqCHKJ9gGyJh/v2yDaSoxO5sAkmaNzasrphNDslGJIOOjdGbKAz1QQK
+         4xghW/rirIb3npghDbJJSNGXUipsbkyVznUa4nXfrFhP8ZjY8c+Ngpd8ML3l765bhShk
+         uP8iWjoRLeekT1gz2uN5nT6zKWr0JErbR50lvlx6YtfOcFshe+PTQqtahpMP8imSEncX
+         8m2OjhT/DZN+hMQTXLqi/ott3uA8MLN18PbnxALj4/JHkwpwuvmJoM83JRMCZM5wrFlR
+         rwmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=VaSKa4DdnHoyZyCFHmPaCow3KCxH2Ne1C09ADbZ1yus=;
+        b=tzqaP5t1QVPvHoo6MofE0cTi+pFXe5pUCBzR6HayV9unguXuw6PRhS+pPBoUI932w5
+         Ea9mdpkE+7WA7xVaeiRdnv+BpzDXjRfxUd/LgMPiqfCKcmVyrwLt72azkniEZ6cofxH8
+         9FnPbHGA8SJCIB0swTXNN8BjMcB5So0Wz3jYSUS3jhP1Mss2e+VyWU4Yvipvu/9SiJ/O
+         GhsIT7hgK8n0gqEEbdiH3OWcAPLtwdAEehWxqohCFCWxBNk6ux2sIXVMDnhPvQdUjssD
+         hCQr+ByhEIzsZAsg1sj4U3uoQoptQm5x28jeC1SV5WXPILL2Yo7Yp3FCdnFl/tnCyLrL
+         UEzQ==
+X-Gm-Message-State: AOAM530/JBJum5of5LSk3KTMrQe2AgCeKsT1ufz8FgjiDt9hGJWePTQV
+        xjhr6yk+xKFkkx961ff2G2RnJA==
+X-Google-Smtp-Source: ABdhPJxE8kmixkGOJBaQqpcOpvjiGzXrQRnCSlhlsVN/0EM3RqJlhWDEhhKX5MEo/csg0r4Y/dUISA==
+X-Received: by 2002:adf:d1ce:: with SMTP id b14mr3340189wrd.329.1613640671985;
+        Thu, 18 Feb 2021 01:31:11 -0800 (PST)
+Received: from dell ([91.110.221.153])
+        by smtp.gmail.com with ESMTPSA id m24sm8233954wml.36.2021.02.18.01.31.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 01:31:11 -0800 (PST)
+Date:   Thu, 18 Feb 2021 09:31:08 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Stephen Boyd <sboyd@kernel.org>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+        Jan Kotas <jank@cadence.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
+        Boris BREZILLON <boris.brezillon@free-electrons.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Emilio =?iso-8859-1?Q?L=F3pez?= <emilio@elopez.com.ar>,
+        Viresh Kumar <vireshk@kernel.org>, openbmc@lists.ozlabs.org,
+        Michal Simek <michal.simek@xilinx.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Nancy Yuen <yuenn@google.com>, Chen-Yu Tsai <wens@csie.org>,
+        Andy Gross <agross@kernel.org>, Loc Ho <lho@apm.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Richard Woodruff <r-woodruff2@ti.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-msm@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Maxime Ripard <mripard@kernel.org>,
+        linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org,
+        Shiraz Hashim <shiraz.linux.kernel@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        =?iso-8859-1?Q?S=F6ren?= Brinkmann <soren.brinkmann@xilinx.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Tero Kristo <kristo@kernel.org>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Nuvoton Technologies <tali.perry@nuvoton.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 00/21] [Set 2] Rid W=1 warnings from Clock
+Message-ID: <20210218093108.GA62231@dell>
+References: <161316754567.1254594.9542583200097699504@swboyd.mtv.corp.google.com>
+ <20210212223739.GE179940@dell>
+ <161317480301.1254594.16648868282165823277@swboyd.mtv.corp.google.com>
+ <YCf4kkMsX+Ymgy6N@lunn.ch>
+ <161333644244.1254594.4498059850307971318@swboyd.mtv.corp.google.com>
+ <YCmUOHTtc+j4eLkO@lunn.ch>
+ <20210215084952.GF179940@dell>
+ <20210215094509.0b1f0bbf@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210216082046.GA4803@dell>
+ <20210217100830.50db2195@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210214143734.591789-1-zhengdejin5@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210217100830.50db2195@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.02.21 22:37:34, Dejin Zheng wrote:
-> Call to 'pci_free_irq_vectors()' are missing both in the error handling
-> path of the probe function, and in the remove function. So add them.
+On Wed, 17 Feb 2021, Jakub Kicinski wrote:
+
+> On Tue, 16 Feb 2021 08:20:46 +0000 Lee Jones wrote:
+> > On Mon, 15 Feb 2021, Jakub Kicinski wrote:
+> > > On Mon, 15 Feb 2021 08:49:52 +0000 Lee Jones wrote:  
+> > > > Yes, please share.  
+> > > 
+> > > https://github.com/kuba-moo/nipa  
+> > 
+> > Thanks for this.
+> > 
+> > Oh, I see.  So you conduct tests locally, then post them up in a
+> > section called 'Checks' using the provided API.  
 > 
-> Fixes: 4c21541d8da17fb ("i2c: thunderx: Replace pci_enable_msix()")
-> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
+> For some definition of "locally" - NIPA runs on a rented VM.
 
-This is already taken care of in pcim_release() as the device is
-managed (pcim_enable_device()). Your change is not required.
+Right.  Infrastructure that you control vs by Patchwork.
 
--Robert
+> > I assume that Patchwork does not alert the user when something has
+> > gone awry?  Is this something Nipa does?
+> 
+> The way we run it on netdev is maintainer-centric, IOW we see 
+> the failures in patchwork and complain to people manually.
+> The netdev mailing list gets too many messages as is, if NIPA 
+> responded with results automatically (which is not that hard
+> technically) my concern is that people would be more likely to
+> send untested patches to the mailing list and rely on the bot.
+
+That makes sense.  Thank you for the explanation.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
