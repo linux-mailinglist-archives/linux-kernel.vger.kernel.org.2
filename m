@@ -2,99 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A5931EDE4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0C031EDFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhBRSDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:03:07 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:52464 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232457AbhBRPaH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:30:07 -0500
-Date:   Thu, 18 Feb 2021 18:29:04 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Felipe Balbi <balbi@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Manu Gautam <mgautam@codeaurora.org>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        <devicetree@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 1/3] usb: dwc3: qcom: Add missing DWC3 OF node
- refcount decrement
-Message-ID: <20210218152904.75bg2v6uh5ool5h3@mobilestation>
-References: <20210212205521.14280-1-Sergey.Semin@baikalelectronics.ru>
+        id S231571AbhBRSG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:06:26 -0500
+Received: from mga18.intel.com ([134.134.136.126]:18621 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232542AbhBRPeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:34:00 -0500
+IronPort-SDR: TYH1bw/ke9QgGSz/ZoIBv+22EiVWqgEgUDUeHJuNym9V4oOyFg4f3xFq1HDFPmewzfbHJlSQTD
+ pi5gQAw+mdsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="171205920"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="171205920"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 07:31:56 -0800
+IronPort-SDR: OouBEYarPuLAOdmgvJYlFPhxnKNIZH9nHQGGiQmc7dbK12MVbrWm8kF8ENYlPbTu8HmlXwGg1r
+ AZ2p00thMFwg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="385998262"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga008.fm.intel.com with SMTP; 18 Feb 2021 07:31:51 -0800
+Received: by stinkbox (sSMTP sendmail emulation); Thu, 18 Feb 2021 17:31:51 +0200
+Date:   Thu, 18 Feb 2021 17:31:51 +0200
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Jani Nikula <jani.nikula@intel.com>
+Cc:     lyude@redhat.com, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>, nouveau@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org, greg.depoire@gmail.com,
+        Sean Paul <seanpaul@chromium.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@redhat.com>
+Subject: Re: [Intel-gfx] [RFC v4 10/11] drm/dp: Extract i915's eDP backlight
+ code into DRM helpers
+Message-ID: <YC6IZ+BUcA5uDCej@intel.com>
+References: <20210208233902.1289693-1-lyude@redhat.com>
+ <20210208233902.1289693-11-lyude@redhat.com>
+ <20210211041540.GI82362@intel.com>
+ <355ce12ec69a9b5f20b4a856a40c8abf413be5c0.camel@redhat.com>
+ <87mtw1ai4m.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210212205521.14280-1-Sergey.Semin@baikalelectronics.ru>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87mtw1ai4m.fsf@intel.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bjorn, Greg, Felippe, Andy,
-Any comments on this series? Bjorn, Greg you asked me to resend the
-patches related with the DW USB3 node name change. I did as you said,
-but no news since then. I'd be glad to have this patch accepted in
-some -next repo and forget about it.
+On Thu, Feb 18, 2021 at 10:35:05AM +0200, Jani Nikula wrote:
+> On Fri, 12 Feb 2021, Lyude Paul <lyude@redhat.com> wrote:
+> > I think it wouldn't be a bad idea to just address this with a followup series
+> > instead and use the old DRM_DEBUG_* macros in the mean time.
+> 
+> aux->dev is there, could also use dev_dbg et al. in the mean time. They
+> handle NULL dev gracefully too if the driver didn't set that.
 
--Sergey
+Last I looked aux->dev was random. Some drivers point it at the
+connector vs. some at the the pci/platform device.
 
-On Fri, Feb 12, 2021 at 11:55:19PM +0300, Serge Semin wrote:
-> of_get_child_by_name() increments the reference counter of the OF node it
-> managed to find. So after the code is done using the device node, the
-> refcount must be decremented. Add missing of_node_put() invocation then
-> to the dwc3_qcom_of_register_core() method, since DWC3 OF node is being
-> used only there.
-> 
-> Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver")
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> 
-> ---
-> 
-> Note the patch will get cleanly applied on the commit 2bc02355f8ba ("usb:
-> dwc3: qcom: Add support for booting with ACPI"), while the bug has been
-> there since the Qualcomm DWC3 glue driver was submitted.
-> 
-> Changelog v7:
-> - This is a new patch. Please drop it If I missed something and the OF
->   node refcount decrement wasn't supposed to be there.
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index c703d552bbcf..3564d00cdce3 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -639,16 +639,19 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
->  	ret = of_platform_populate(np, NULL, NULL, dev);
->  	if (ret) {
->  		dev_err(dev, "failed to register dwc3 core - %d\n", ret);
-> -		return ret;
-> +		goto node_put;
->  	}
->  
->  	qcom->dwc3 = of_find_device_by_node(dwc3_np);
->  	if (!qcom->dwc3) {
-> +		ret = -ENODEV;
->  		dev_err(dev, "failed to get dwc3 platform device\n");
-> -		return -ENODEV;
->  	}
->  
-> -	return 0;
-> +node_put:
-> +	of_node_put(dwc3_np);
-> +
-> +	return ret;
->  }
->  
->  static int dwc3_qcom_probe(struct platform_device *pdev)
-> -- 
-> 2.30.0
-> 
+-- 
+Ville Syrjälä
+Intel
