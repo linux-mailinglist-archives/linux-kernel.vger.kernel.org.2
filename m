@@ -2,126 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 242C331E8C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB5C31E8C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230017AbhBRKjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:39:37 -0500
-Received: from relay5.mymailcheap.com ([159.100.241.64]:50686 "EHLO
-        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231811AbhBRJZk (ORCPT
+        id S231737AbhBRKoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 05:44:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhBRJWq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 04:25:40 -0500
-Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.119.155])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id C0508200FE;
-        Thu, 18 Feb 2021 09:23:59 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay3.mymailcheap.com (Postfix) with ESMTPS id 7C4A93ECDF;
-        Thu, 18 Feb 2021 10:21:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id A9CCA2A3EF;
-        Thu, 18 Feb 2021 04:21:55 -0500 (EST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1613640115;
-        bh=YGiCkBjBI0LQsVsngiZbqmO9H181CDvzBHWvXsO748Q=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=kemu8WChXJu6q24lPyFsXzFXqPM/V+41gd5mLiSPc2f7r5U6fRBuRraMSFbejlZhx
-         8zqbTqaAfN/JaLggej3iXgaMaU7GtZKPYLaxC8Un2qadlAr/wl44ivsg2sc5mzxHfE
-         9UXdAq2IdvRBrTR7t3npEwZ5WreKjojiPbEHr130=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id c5WIih2kyJjW; Thu, 18 Feb 2021 04:21:54 -0500 (EST)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Thu, 18 Feb 2021 04:21:54 -0500 (EST)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 84CE840C0B;
-        Thu, 18 Feb 2021 09:21:53 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="Wkxnc6WP";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [10.68.68.85] (unknown [117.136.12.200])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 4953340C0B;
-        Thu, 18 Feb 2021 09:21:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1613640102; bh=YGiCkBjBI0LQsVsngiZbqmO9H181CDvzBHWvXsO748Q=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=Wkxnc6WPu5/gWGjLmmfE0yISgx0S2LZ9YkgTFSwEZgndE5+X4up90++RXziin7g/Y
-         V6jLUojpsmZrjVoKXGGD4Lc0/9e+ozklQhYyuZRGMCuVlLeCIm5KL2mdFJKqwvYED2
-         UJ3sx9qfh+UbL4fJAyZMFclO2pcwwzd11Q+UQtok=
-Date:   Thu, 18 Feb 2021 17:21:16 +0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <914aeb08-0534-48aa-2c2e-4e87d4360e29@manjaro.org>
-References: <20210212135725.283877-1-t.schramm@manjaro.org> <20210218075835.o43tyarpimrcwbvk@gilmour> <C1E55B65-370F-4875-B7D6-7CD7A82A91DD@aosc.io> <914aeb08-0534-48aa-2c2e-4e87d4360e29@manjaro.org>
+        Thu, 18 Feb 2021 04:22:46 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41D5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:22:05 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id v15so2106062wrx.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:22:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=aX/bNkP4QxZHef1wuHRDIoy68LBSmgsRibOTvBGlINE=;
+        b=L/BnypvL9THTX0KZhWTKp4IRSirvi3m9JYun8pmwvSx5NanvrZGCKkO2GgYl72+gxa
+         DiNhDkBL8T/SjEY04j6sQLadVgDP0Mq2OBPOnM9IRgMFIoArFaBIn5Qfq5nw4ykgE5Ni
+         KekQbblqaBPL2wDGurzqESlaZmwNYDWOjJTNyH44K5xoOqnn6ft5Xx+kLXXDaWLWwPyz
+         CunSyQ8AR1c8IoYMv0qt1DzoChFOGivNiLglQDIuejceG8rD1lMSIS13lT6B4BwuU9Q0
+         SyoI8QduWu5GRmnqK6NoWZQeNlIxPnMg8kDzYAnizR1dupxSvoZsmYq87R9UfpV9ZvU7
+         J9/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=aX/bNkP4QxZHef1wuHRDIoy68LBSmgsRibOTvBGlINE=;
+        b=TU43nqnraggGXrPkfx7o0PGl0hNFFumstfgjstlYe1d0CaM1y9vrUStIqw+t++mCfn
+         jD9l9meXwmKkz2L+9gQjqAYhFzWQx9Taf3cHGgpO+cw8KStaet9KUi/6kziB+NzAVZ1/
+         Ypwkm3vtvFQhU+wt2rz39hnVq/BoiZxFnfBwlZjBrjemGTPTmVvYPQUvApskWiUqdIIt
+         F+ymm50XgOcRJKaFa05IiUVavQ1AGVWVThzDBHxbYqCWB9A+4MJansb6qv/f1TmDzhzh
+         ZgqWp9WqsSWnWcmdGBZXu7UN1nGLVmSEPWNZhMY6IP6GuDhjv9az7MtPfGfMiDo6C9Fy
+         7RsA==
+X-Gm-Message-State: AOAM531M332WixTnCUGX7gjahtyUz/zDAiA8uVmFB/Yb80Re/tSfq9io
+        aqOjjPRvh5lwN2XsUKR+oG0=
+X-Google-Smtp-Source: ABdhPJyj8xpNiVfMb6N+d/9wb4Lie3ISntTThXTyfS83PoFBVobPxqzSTgA6VylA1dXI12GMLi8w1Q==
+X-Received: by 2002:a5d:5149:: with SMTP id u9mr3401833wrt.348.1613640124563;
+        Thu, 18 Feb 2021 01:22:04 -0800 (PST)
+Received: from LEGION ([27.255.58.138])
+        by smtp.gmail.com with ESMTPSA id a9sm7697402wrn.60.2021.02.18.01.21.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 01:22:03 -0800 (PST)
+Date:   Thu, 18 Feb 2021 14:21:54 +0500
+From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
+To:     gregkh@linuxfoundation.org, lee.jones@linaro.org,
+        johannes@sipsolutions.net, arnd@arndb.de, kuba@kernel.org,
+        gustavoars@kernel.org, wanghai38@huawei.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Cc:     musamaanjum@gmail.com
+Subject: [PATCH] staging: wimax/i2400m: don't change the endianness of one
+ byte variable
+Message-ID: <20210218092154.GA46388@LEGION>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] clk: sunxi-ng: v3s: add support for variable rate audio pll output
-To:     Tobias Schramm <t.schramm@manjaro.org>,
-        Maxime Ripard <maxime@cerno.tech>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Icenowy Zheng <icenowy@aosc.io>
-Message-ID: <2BA0A0C7-DA37-486B-B12F-C485F1000F8E@aosc.io>
-X-Spamd-Result: default: False [2.90 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RECEIVED_SPAMHAUS_XBL(3.00)[117.136.12.200:received];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[117.136.12.200:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         ARC_NA(0.00)[];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
-X-Rspamd-Queue-Id: 84CE840C0B
-X-Rspamd-Server: mail20.mymailcheap.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It is wrong to change the endianness of a variable which has just one
+byte size.
 
+Sparse warnings fixed:
+drivers/staging//wimax/i2400m/control.c:452:17: warning: cast to restricted __le32
+drivers/staging//wimax/i2400m/control.c:452:17: warning: cast to restricted __le32
+drivers/staging//wimax/i2400m/op-rfkill.c:159:14: warning: cast to restricted __le32
+drivers/staging//wimax/i2400m/op-rfkill.c:160:14: warning: cast to restricted __le32
 
-=E4=BA=8E 2021=E5=B9=B42=E6=9C=8818=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=885=
-:18:39, Tobias Schramm <t=2Eschramm@manjaro=2Eorg> =E5=86=99=E5=88=B0:
->Hi Icenowy,
->
-> > We have introducee SDM-based accurate audio PLL on several
->> other SoCs=2E Some people is quite sensitive about audio-related
->things=2E
-> >
->While it is possible to support 24MHz * 128 / 25 / 5 =3D 24=2E576MHz
->without=20
->delta sigma modulation, matching 22=2E5792MHz is indeed not possible=2E I=
-=20
->read you'd prefer me to use SDM like the other SoCs though? Shall I
->send=20
->a v2 utilizing SDM?
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+---
+ drivers/staging/wimax/i2400m/control.c   | 4 ++--
+ drivers/staging/wimax/i2400m/op-rfkill.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Yes, I think so=2E
+diff --git a/drivers/staging/wimax/i2400m/control.c b/drivers/staging/wimax/i2400m/control.c
+index 1e270b2101e8..b6b2788af162 100644
+--- a/drivers/staging/wimax/i2400m/control.c
++++ b/drivers/staging/wimax/i2400m/control.c
+@@ -452,8 +452,8 @@ void i2400m_report_state_parse_tlv(struct i2400m *i2400m,
+ 		d_printf(2, dev, "%s: RF status TLV "
+ 			 "found (0x%04x), sw 0x%02x hw 0x%02x\n",
+ 			 tag, I2400M_TLV_RF_STATUS,
+-			 le32_to_cpu(rfss->sw_rf_switch),
+-			 le32_to_cpu(rfss->hw_rf_switch));
++			 rfss->sw_rf_switch,
++			 rfss->hw_rf_switch);
+ 		i2400m_report_tlv_rf_switches_status(i2400m, rfss);
+ 	}
+ 	if (0 == i2400m_tlv_match(tlv, I2400M_TLV_MEDIA_STATUS, sizeof(*ms))) {
+diff --git a/drivers/staging/wimax/i2400m/op-rfkill.c b/drivers/staging/wimax/i2400m/op-rfkill.c
+index fbddf2e18c14..a159808f0ec2 100644
+--- a/drivers/staging/wimax/i2400m/op-rfkill.c
++++ b/drivers/staging/wimax/i2400m/op-rfkill.c
+@@ -156,8 +156,8 @@ void i2400m_report_tlv_rf_switches_status(
+ 	enum i2400m_rf_switch_status hw, sw;
+ 	enum wimax_st wimax_state;
+ 
+-	sw = le32_to_cpu(rfss->sw_rf_switch);
+-	hw = le32_to_cpu(rfss->hw_rf_switch);
++	sw = rfss->sw_rf_switch;
++	hw = rfss->hw_rf_switch;
+ 
+ 	d_fnstart(3, dev, "(i2400m %p rfss %p [hw %u sw %u])\n",
+ 		  i2400m, rfss, hw, sw);
+-- 
+2.25.1
 
->
->Cheers,
->Tobias
