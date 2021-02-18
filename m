@@ -2,95 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32B031F050
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB3B31F05B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhBRTqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:46:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45144 "EHLO mx2.suse.de"
+        id S232398AbhBRTql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:46:41 -0500
+Received: from mout.gmx.net ([212.227.17.20]:42193 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233578AbhBRTOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:14:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613675615; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=coKwHmBVYiHs8qdOkruTnwD9yAp//Y7kxMvu4I7zdqY=;
-        b=RrzzDoFBHuoESeKLGhbYtUZ76hX2PS4zXWM0yFtA3ev3pd8bUmOqRWsEsvLz8Mp9+C2vOZ
-        xuTMlVt1KK6DqHqEnjE6lgIUxNCAJI/xTnFu/bH3lYcLO5H2mpP9smtIWKCM6xxRS1+HiW
-        NVPdOvXpq/zekqTWu5tRnseE0G3iFtE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BF44EAED2;
-        Thu, 18 Feb 2021 19:13:35 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 20:13:34 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-Message-ID: <YC68Xo9+R2msn/ul@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+        id S232818AbhBRTQA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:16:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613675643;
+        bh=OumvlyMfMF8OuGKnB6ZFA0Vs6VIp2wW434PmpZU2Q6Q=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ihgEJyvmqs+l/amrtE06CAB/NYjM7xkKQur7JyySpDs7c8S6UnXoi+owRCwAlGSFv
+         ArzhyF5lyUJnXpx6AZW5IhpmMlv7ZohRYFjroxupK8p0K6s3w6apcfE3J4aaPaQ1RF
+         uklIUSG67/kXSFx7ytgtmyXdLFYeMPUobzDL5fwQ=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.178.51] ([78.42.220.31]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N2V0B-1lr7x60pfr-013xFj; Thu, 18
+ Feb 2021 20:14:03 +0100
+Subject: Re: [PATCH RESEND v5] tpm: fix reference counting for struct tpm_chip
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, David.Laight@aculab.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
+        stable@vger.kernel.org
+References: <1613505191-4602-1-git-send-email-LinoSanfilippo@gmx.de>
+ <1613505191-4602-2-git-send-email-LinoSanfilippo@gmx.de>
+ <YC2WRJfNbY22yIOn@kernel.org>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Message-ID: <5d0f7222-a9ef-809b-cd9a-86bbacb03790@gmx.de>
+Date:   Thu, 18 Feb 2021 20:13:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+In-Reply-To: <YC2WRJfNbY22yIOn@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:7qLkTgedFEkckgxUROxL2yXb/CiegrAXFaO7P+ZZ6y332p2Kyhw
+ nfvX0hLPtks4MpwkLI+MRW9XERkSVQz3zn3vpki6xAldWtvoeJ1nJZ/pF1VT+aO8xKyE4jx
+ GTzOTY+QxNH+2RAgTAEk1+noK3UcRWodvfCX5At9Bhcos903jErpz2dQHfFQ/MW/N3KphhZ
+ oILK+nPqG4lhDKUD656kQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wobcJB6G+es=:69RYnVhGdD1O8pwHzqrV64
+ tTpd7JJ1VCNrBI05C9qKULlr+DEbL/g0+o8SrK1r/n+rhWRn3fsKcsPrmAiCkqPnqOEp9FXBX
+ 9ac9ELpnoJPblr1KjAxGG8cS5/CErq+DM/O61VzNDxZMus1V2YUQ4jjeH0VyvOXMUZJU5Vxsk
+ cxYD/4mnFSr4vG0Bav9GipfJJy5yPLrj8WZYU9ghkrQq9ymqaHBlq8aCK2JmBK/8sPtO54QqP
+ rXFPnaGWLfUPnIljJlxIRdEYOm6gKV1Y9IUzMjNsw8ds4LMu9ha5wMmdXIq4UAPKUD6yWnseX
+ GjiaVm3M0ORlxLpg3AT1d7Ba2xxo+jnRhwFx3WaI4o0HkUVp7dL9wtaxTBdgGm4QizmpPhHNO
+ ZDTWPkGXc+m/RiPyPespC1taUT268Hqpl/0koTBooYVAp8G2/qeanjftehnjtxCqeviDKmYLo
+ OaXeBN+56AksoCSCP25WI49Eo7zGmj2MSUtMz53PD74Ut7IKpJTvRTKuxzCd4eJT1aYCkcLpb
+ xVbkFaAQ+PqoJl2W7e3pexwuBMjTj9AumXzwqxIcvLYbjOPkBLbqRgXnyBRC5SjZDV3ubeCpU
+ 0k4RS7R/bPFu0IXv94NaQtQeptOKJjaCutwduvbJzSRoSQz/rca3xy2FZjlfyfIq8Gh3F7/yC
+ gORO/gG7t772vxaifOGGEGjl8eWMQ5tAG3obTnnnGlxrDKZMtsTeZ4bRZNzndq347arKRIunl
+ ZZZmB+eMGL80lP0zhixLJ2C88rjkwSY3uElaDnuOEbGamJjRe0+7mz0PkMDQb161WEnhndK07
+ NDP+r1+E2JWOcnacaGDen0WbYmFh9phEf/LApXSQAzuDcB5hl44XSiM6NpdDQP2VMQEjx8iT4
+ 3y/6F9Qdp2JPIh1lyMMQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-02-21 12:41:34, Tim Chen wrote:
-> During soft limit memory reclaim, we will temporarily remove the target
-> mem cgroup from the cgroup soft limit tree.  We then perform memory
-> reclaim, update the memory usage excess count and re-insert the mem
-> cgroup back into the mem cgroup soft limit tree according to the new
-> memory usage excess count.
-> 
-> However, when memory reclaim failed for a maximum number of attempts
-> and we bail out of the reclaim loop, we forgot to put the target mem
-> cgroup chosen for next reclaim back to the soft limit tree. This prevented
-> pages in the mem cgroup from being reclaimed in the future even though
-> the mem cgroup exceeded its soft limit.  Fix the logic and put the mem
-> cgroup back on the tree when page reclaim failed for the mem cgroup.
-> 
-> Reviewed-by: Ying Huang <ying.huang@intel.com>
-> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
 
-Fixes: 4e41695356fb ("memory controller: soft limit reclaim on contention")
-Acked-by: Michal Hocko <mhocko@suse.com>
+Hi,
 
-Thanks!
-> ---
->  mm/memcontrol.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ed5cc78a8dbf..a51bf90732cb 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
->  			break;
->  	} while (!nr_reclaimed);
-> -	if (next_mz)
-> +	if (next_mz) {
-> +		spin_lock_irq(&mctz->lock);
-> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-> +		spin_unlock_irq(&mctz->lock);
->  		css_put(&next_mz->memcg->css);
-> +	}
->  	return nr_reclaimed;
->  }
->  
-> -- 
-> 2.20.1
+On 17.02.21 at 23:18, Jarkko Sakkinen wrote:
 
--- 
-Michal Hocko
-SUSE Labs
+>> +
+>
+> /*
+>  * Please describe what the heck the function does. No need for full on
+>  * kdoc.
+>  */
+
+Ok.
+
+>> +int tpm2_add_device(struct tpm_chip *chip)
+>
+> Please, rename as tpm_devs_add for coherency sake.
+>
+
+Sorry I confused this and renamed it wrongly. I will fix it in the next
+patch version.
+
+>> +{
+>> +	int rc;
+>> +
+>> +	device_initialize(&chip->devs);
+>> +	chip->devs.parent =3D chip->dev.parent;
+>> +	chip->devs.class =3D tpmrm_class;
+>
+> Empty line. Cannot recall, if I stated before.
+>> +	/* +	 * get extra reference on main device to hold on behalf of devs.
+>> +	 * This holds the chip structure while cdevs is in use. The
+>> +	 * corresponding put is in the tpm_devs_release.
+>> +	 */
+>> +	get_device(&chip->dev);
+>> +	chip->devs.release =3D tpm_devs_release;
+>> +	chip->devs.devt =3D MKDEV(MAJOR(tpm_devt),
+>> +					chip->dev_num + TPM_NUM_DEVICES);
+>
+> NAK, same comment as before.
+>
+
+Thx for the review, I will fix these issues.
+
+Regards,
+Lino
