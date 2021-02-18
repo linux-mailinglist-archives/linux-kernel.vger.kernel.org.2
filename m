@@ -2,206 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D9B31EA7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:35:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E8431EA7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhBRNdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:33:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50114 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229919AbhBRLsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:48:31 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613648825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vP1S07ca3sqxgRiRY6So84F1f0cq3n+/55ZYZDA6jwQ=;
-        b=bbqMqQPt/mCi0FQMo/l8RuuHzWubuWl+3oL3+ISKNpzdVgWomKjvgyFU4aLwfBrO5r6YSB
-        bBsbYGkktn/vBHy77BiKC4W4Wa5m57T8d12DH4zahL7+jS6c92GYd9iAcQZQ1j0dYFgVu2
-        SmPIKAaqojOJEWKS/EnIXqK8M2Zhyv0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6C8E9AD78;
-        Thu, 18 Feb 2021 11:47:05 +0000 (UTC)
-Subject: Re: [PATCH v2 3/8] xen/events: avoid handling the same event on two
- cpus at the same time
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Julien Grall <julien@xen.org>
-References: <20210211101616.13788-1-jgross@suse.com>
- <20210211101616.13788-4-jgross@suse.com>
- <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <63e42922-204d-9d0e-6a02-49f64e7e8885@suse.com>
-Date:   Thu, 18 Feb 2021 12:47:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230393AbhBRNfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:35:52 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:43283 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231459AbhBRLti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:49:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1613648977; x=1645184977;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZwkPmjJG1PdO1l08+jLhIA6XO/0lLGVMxamIdskfH3w=;
+  b=OijV5FXkkssjrKfArlXuDbNCN5GkEmXYz6qCbYkEHR6oWd5k1B+a0H4+
+   jtEtbyoc2Jh2IFo5FkowJxcVYyObOpuMpW5NzOCewkFhkOHVZES9Um4gR
+   VThKcQpmnStJY4aEXMs4x+LTem1qtEt9HLjXJYBoAg33Buy5GvenZtH+l
+   pXU5VgJ/g7biHTt0U/FcLDrO05NQacjjyLWZbEvy/VXZJLoTSbofr5pzr
+   IP2DVp3jGKPrjT2InLKXGJ7Qg6chbGVjFRlIUwZz6FUmCuHsK/PegRF0v
+   G7hn0CnjEve2u6rtW2y6vYnGJBJChhuLrojOEJ9g78MjU0M+uDIKB83iL
+   Q==;
+IronPort-SDR: jGQdAYUA41LJ03PZDcZaAA2lJhVfQRVCMYOvcMOzPtAZ8nZYU1AohiWCRR9uw7W6pIz+eeEZZk
+ 4cztwbnsSarMfDn2jH71c018Wy88aUNxJCXokMtNlHYpBC0iTUY4Hc20XhaWJO+a5rnmTV04Gi
+ ddcj3kLN4iiNBrPPZstJEWLl28cMsdf9ib0Z2bmFumqRN7kRua8RtoqYVLCK3PdMUk8wDPmhHe
+ WHKddihCDQUNSW2j0ynA9r0HN08eWXQYMzUkyiCv6bhX5WJ8LzbCZouCh76OsS0zgNQGofOsGj
+ uI4=
+X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
+   d="scan'208";a="110225594"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 04:48:10 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 18 Feb 2021 04:48:10 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 18 Feb 2021 04:48:08 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <vladimir.oltean@nxp.com>, <claudiu.manoil@nxp.com>,
+        <alexandre.belloni@bootlin.com>, <UNGLinuxDriver@microchip.com>,
+        <andrew@lunn.ch>, <vivien.didelot@gmail.com>,
+        <f.fainelli@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net-next] net: mscc: Fix MRP switchdev driver
+Date:   Thu, 18 Feb 2021 12:47:26 +0100
+Message-ID: <20210218114726.648927-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E
-Content-Type: multipart/mixed; boundary="aIEYVeglYW0935UFABA3RFn6vG3A7vknV";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Cc: Stefano Stabellini <sstabellini@kernel.org>, Julien Grall <julien@xen.org>
-Message-ID: <63e42922-204d-9d0e-6a02-49f64e7e8885@suse.com>
-Subject: Re: [PATCH v2 3/8] xen/events: avoid handling the same event on two
- cpus at the same time
-References: <20210211101616.13788-1-jgross@suse.com>
- <20210211101616.13788-4-jgross@suse.com>
- <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
-In-Reply-To: <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
+This patch fixes the ocelot MRP switchdev driver such that also DSA
+driver can use these functions. Before the driver presumed that the
+net_device uses a 'struct ocelot_port_private' as priv which was wrong.
 
---aIEYVeglYW0935UFABA3RFn6vG3A7vknV
-Content-Type: multipart/mixed;
- boundary="------------456ECA628170F25D28062DF7"
-Content-Language: en-US
+The only reason for using ocelot_port_private was to access the
+net_device, but this can be passed as an argument because we already
+have this information. Therefore update the functions to have also the
+net_device parameter.
 
-This is a multi-part message in MIME format.
---------------456ECA628170F25D28062DF7
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Fixes: a026c50b599fa ("net: dsa: felix: Add support for MRP")
+Fixes: d8ea7ff3995ea ("net: mscc: ocelot: Add support for MRP")
+Reported-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
 
-On 15.02.21 22:35, Boris Ostrovsky wrote:
->=20
-> On 2/11/21 5:16 AM, Juergen Gross wrote:
->=20
->> @@ -622,6 +623,7 @@ static void xen_irq_lateeoi_locked(struct irq_info=
- *info, bool spurious)
->>   	}
->>  =20
->>   	info->eoi_time =3D 0;
->> +	smp_store_release(&info->is_active, 0);
->=20
->=20
-> Can this be done in lateeoi_ack_dynirq()/lateeoi_mask_ack_dynirq(), aft=
-er we've masked the channel? Then it will be consistent with how how othe=
-r chips do it, especially with the new helper.
+---
+This was tested using switchdev and only compile tested the DSA driver.
+---
+ drivers/net/dsa/ocelot/felix.c         | 20 ++++++++---
+ drivers/net/ethernet/mscc/ocelot_mrp.c | 49 ++++++++------------------
+ drivers/net/ethernet/mscc/ocelot_net.c |  8 ++---
+ include/linux/dsa/ocelot.h             |  2 +-
+ include/soc/mscc/ocelot.h              | 24 +++++++------
+ 5 files changed, 49 insertions(+), 54 deletions(-)
 
-Yes, I think this should work.
+diff --git a/drivers/net/dsa/ocelot/felix.c b/drivers/net/dsa/ocelot/felix.c
+index 628afb47b579..29a1191b2c5e 100644
+--- a/drivers/net/dsa/ocelot/felix.c
++++ b/drivers/net/dsa/ocelot/felix.c
+@@ -1586,16 +1586,22 @@ static int felix_mrp_add(struct dsa_switch *ds, int port,
+ 			 const struct switchdev_obj_mrp *mrp)
+ {
+ 	struct ocelot *ocelot = ds->priv;
++	struct net_device *dev;
+ 
+-	return ocelot_mrp_add(ocelot, port, mrp);
++	dev = felix_port_to_netdev(ocelot, port);
++
++	return ocelot_mrp_add(ocelot, dev, port, mrp);
+ }
+ 
+ static int felix_mrp_del(struct dsa_switch *ds, int port,
+ 			 const struct switchdev_obj_mrp *mrp)
+ {
+ 	struct ocelot *ocelot = ds->priv;
++	struct net_device *dev;
++
++	dev = felix_port_to_netdev(ocelot, port);
+ 
+-	return ocelot_mrp_add(ocelot, port, mrp);
++	return ocelot_mrp_add(ocelot, dev, port, mrp);
+ }
+ 
+ static int
+@@ -1603,8 +1609,11 @@ felix_mrp_add_ring_role(struct dsa_switch *ds, int port,
+ 			const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	struct ocelot *ocelot = ds->priv;
++	struct net_device *dev;
+ 
+-	return ocelot_mrp_add_ring_role(ocelot, port, mrp);
++	dev = felix_port_to_netdev(ocelot, port);
++
++	return ocelot_mrp_add_ring_role(ocelot, dev, port, mrp);
+ }
+ 
+ static int
+@@ -1612,8 +1621,11 @@ felix_mrp_del_ring_role(struct dsa_switch *ds, int port,
+ 			const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	struct ocelot *ocelot = ds->priv;
++	struct net_device *dev;
++
++	dev = felix_port_to_netdev(ocelot, port);
+ 
+-	return ocelot_mrp_del_ring_role(ocelot, port, mrp);
++	return ocelot_mrp_del_ring_role(ocelot, dev, port, mrp);
+ }
+ 
+ const struct dsa_switch_ops felix_switch_ops = {
+diff --git a/drivers/net/ethernet/mscc/ocelot_mrp.c b/drivers/net/ethernet/mscc/ocelot_mrp.c
+index 683da320bfd8..5068512bdc32 100644
+--- a/drivers/net/ethernet/mscc/ocelot_mrp.c
++++ b/drivers/net/ethernet/mscc/ocelot_mrp.c
+@@ -1,8 +1,5 @@
+ // SPDX-License-Identifier: (GPL-2.0 OR MIT)
+ /* Microsemi Ocelot Switch driver
+- *
+- * This contains glue logic between the switchdev driver operations and the
+- * mscc_ocelot_switch_lib.
+  *
+  * Copyright (c) 2017, 2019 Microsemi Corporation
+  * Copyright 2020-2021 NXP Semiconductors
+@@ -29,19 +26,14 @@ static int ocelot_mrp_del_vcap(struct ocelot *ocelot, int port)
+ 	return ocelot_vcap_filter_del(ocelot, filter);
+ }
+ 
+-int ocelot_mrp_add(struct ocelot *ocelot, int port,
++int ocelot_mrp_add(struct ocelot *ocelot, struct net_device *dev, int port,
+ 		   const struct switchdev_obj_mrp *mrp)
+ {
+ 	struct ocelot_port *ocelot_port = ocelot->ports[port];
+-	struct ocelot_port_private *priv;
+-	struct net_device *dev;
+ 
+-	if (!ocelot_port)
++	if (!ocelot_port || !dev)
+ 		return -EOPNOTSUPP;
+ 
+-	priv = container_of(ocelot_port, struct ocelot_port_private, port);
+-	dev = priv->dev;
+-
+ 	if (mrp->p_port != dev && mrp->s_port != dev)
+ 		return 0;
+ 
+@@ -62,19 +54,14 @@ int ocelot_mrp_add(struct ocelot *ocelot, int port,
+ }
+ EXPORT_SYMBOL(ocelot_mrp_add);
+ 
+-int ocelot_mrp_del(struct ocelot *ocelot, int port,
++int ocelot_mrp_del(struct ocelot *ocelot, struct net_device *dev, int port,
+ 		   const struct switchdev_obj_mrp *mrp)
+ {
+ 	struct ocelot_port *ocelot_port = ocelot->ports[port];
+-	struct ocelot_port_private *priv;
+-	struct net_device *dev;
+ 
+-	if (!ocelot_port)
++	if (!ocelot_port || !dev)
+ 		return -EOPNOTSUPP;
+ 
+-	priv = container_of(ocelot_port, struct ocelot_port_private, port);
+-	dev = priv->dev;
+-
+ 	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
+ 		return 0;
+ 
+@@ -83,7 +70,7 @@ int ocelot_mrp_del(struct ocelot *ocelot, int port,
+ 	    !ocelot->mrp_p_port)
+ 		return -EINVAL;
+ 
+-	if (ocelot_mrp_del_vcap(ocelot, priv->chip_port))
++	if (ocelot_mrp_del_vcap(ocelot, port))
+ 		return -EINVAL;
+ 
+ 	if (ocelot->mrp_p_port == dev)
+@@ -98,21 +85,17 @@ int ocelot_mrp_del(struct ocelot *ocelot, int port,
+ }
+ EXPORT_SYMBOL(ocelot_mrp_del);
+ 
+-int ocelot_mrp_add_ring_role(struct ocelot *ocelot, int port,
++int ocelot_mrp_add_ring_role(struct ocelot *ocelot, struct net_device *dev,
++			     int port,
+ 			     const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	struct ocelot_port *ocelot_port = ocelot->ports[port];
+ 	struct ocelot_vcap_filter *filter;
+-	struct ocelot_port_private *priv;
+-	struct net_device *dev;
+ 	int err;
+ 
+-	if (!ocelot_port)
++	if (!ocelot_port || !dev)
+ 		return -EOPNOTSUPP;
+ 
+-	priv = container_of(ocelot_port, struct ocelot_port_private, port);
+-	dev = priv->dev;
+-
+ 	if (ocelot->mrp_ring_id != mrp->ring_id)
+ 		return -EINVAL;
+ 
+@@ -128,11 +111,11 @@ int ocelot_mrp_add_ring_role(struct ocelot *ocelot, int port,
+ 
+ 	filter->key_type = OCELOT_VCAP_KEY_ETYPE;
+ 	filter->prio = 1;
+-	filter->id.cookie = priv->chip_port;
++	filter->id.cookie = port;
+ 	filter->id.tc_offload = false;
+ 	filter->block_id = VCAP_IS2;
+ 	filter->type = OCELOT_VCAP_FILTER_OFFLOAD;
+-	filter->ingress_port_mask = BIT(priv->chip_port);
++	filter->ingress_port_mask = BIT(port);
+ 	*(__be16 *)filter->key.etype.etype.value = htons(ETH_P_MRP);
+ 	*(__be16 *)filter->key.etype.etype.mask = htons(0xffff);
+ 	filter->action.mask_mode = OCELOT_MASK_MODE_PERMIT_DENY;
+@@ -148,19 +131,15 @@ int ocelot_mrp_add_ring_role(struct ocelot *ocelot, int port,
+ }
+ EXPORT_SYMBOL(ocelot_mrp_add_ring_role);
+ 
+-int ocelot_mrp_del_ring_role(struct ocelot *ocelot, int port,
++int ocelot_mrp_del_ring_role(struct ocelot *ocelot, struct net_device *dev,
++			     int port,
+ 			     const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	struct ocelot_port *ocelot_port = ocelot->ports[port];
+-	struct ocelot_port_private *priv;
+-	struct net_device *dev;
+ 
+-	if (!ocelot_port)
++	if (!ocelot_port || !dev)
+ 		return -EOPNOTSUPP;
+ 
+-	priv = container_of(ocelot_port, struct ocelot_port_private, port);
+-	dev = priv->dev;
+-
+ 	if (ocelot->mrp_ring_id != mrp->ring_id)
+ 		return -EINVAL;
+ 
+@@ -170,6 +149,6 @@ int ocelot_mrp_del_ring_role(struct ocelot *ocelot, int port,
+ 	if (ocelot->mrp_p_port != dev && ocelot->mrp_s_port != dev)
+ 		return 0;
+ 
+-	return ocelot_mrp_del_vcap(ocelot, priv->chip_port);
++	return ocelot_mrp_del_vcap(ocelot, port);
+ }
+ EXPORT_SYMBOL(ocelot_mrp_del_ring_role);
+diff --git a/drivers/net/ethernet/mscc/ocelot_net.c b/drivers/net/ethernet/mscc/ocelot_net.c
+index 12cb6867a2d0..57b0a31cfeed 100644
+--- a/drivers/net/ethernet/mscc/ocelot_net.c
++++ b/drivers/net/ethernet/mscc/ocelot_net.c
+@@ -1018,7 +1018,7 @@ static int ocelot_port_obj_mrp_add(struct net_device *dev,
+ 	struct ocelot *ocelot = ocelot_port->ocelot;
+ 	int port = priv->chip_port;
+ 
+-	return ocelot_mrp_add(ocelot, port, mrp);
++	return ocelot_mrp_add(ocelot, dev, port, mrp);
+ }
+ 
+ static int ocelot_port_obj_mrp_del(struct net_device *dev,
+@@ -1029,7 +1029,7 @@ static int ocelot_port_obj_mrp_del(struct net_device *dev,
+ 	struct ocelot *ocelot = ocelot_port->ocelot;
+ 	int port = priv->chip_port;
+ 
+-	return ocelot_mrp_del(ocelot, port, mrp);
++	return ocelot_mrp_del(ocelot, dev, port, mrp);
+ }
+ 
+ static int
+@@ -1041,7 +1041,7 @@ ocelot_port_obj_mrp_add_ring_role(struct net_device *dev,
+ 	struct ocelot *ocelot = ocelot_port->ocelot;
+ 	int port = priv->chip_port;
+ 
+-	return ocelot_mrp_add_ring_role(ocelot, port, mrp);
++	return ocelot_mrp_add_ring_role(ocelot, dev, port, mrp);
+ }
+ 
+ static int
+@@ -1053,7 +1053,7 @@ ocelot_port_obj_mrp_del_ring_role(struct net_device *dev,
+ 	struct ocelot *ocelot = ocelot_port->ocelot;
+ 	int port = priv->chip_port;
+ 
+-	return ocelot_mrp_del_ring_role(ocelot, port, mrp);
++	return ocelot_mrp_del_ring_role(ocelot, dev, port, mrp);
+ }
+ 
+ static int ocelot_port_obj_add(struct net_device *dev,
+diff --git a/include/linux/dsa/ocelot.h b/include/linux/dsa/ocelot.h
+index 4265f328681a..e284d56f1ad0 100644
+--- a/include/linux/dsa/ocelot.h
++++ b/include/linux/dsa/ocelot.h
+@@ -162,7 +162,7 @@ static inline void ocelot_xfh_get_src_port(void *extraction, u64 *src_port)
+ 
+ static inline void ocelot_xfh_get_cpuq(void *extraction, u64 *cpuq)
+ {
+-	packing(extraction, cpuq, 28, 20, OCELOT_TAG_LEN, UNPACK, 0);
++	packing(extraction, cpuq, 27, 20, OCELOT_TAG_LEN, UNPACK, 0);
+ }
+ 
+ static inline void ocelot_xfh_get_qos_class(void *extraction, u64 *qos_class)
+diff --git a/include/soc/mscc/ocelot.h b/include/soc/mscc/ocelot.h
+index 425ff29d9389..59d35365edea 100644
+--- a/include/soc/mscc/ocelot.h
++++ b/include/soc/mscc/ocelot.h
+@@ -680,11 +680,9 @@ struct ocelot {
+ 	spinlock_t			ptp_clock_lock;
+ 	struct ptp_pin_desc		ptp_pins[OCELOT_PTP_PINS_NUM];
+ 
+-#if IS_ENABLED(CONFIG_BRIDGE_MRP)
+ 	u16				mrp_ring_id;
+ 	struct net_device		*mrp_p_port;
+ 	struct net_device		*mrp_s_port;
+-#endif
+ };
+ 
+ struct ocelot_policer {
+@@ -883,36 +881,42 @@ int ocelot_sb_occ_tc_port_bind_get(struct ocelot *ocelot, int port,
+ 				   u32 *p_cur, u32 *p_max);
+ 
+ #if IS_ENABLED(CONFIG_BRIDGE_MRP)
+-int ocelot_mrp_add(struct ocelot *ocelot, int port,
++int ocelot_mrp_add(struct ocelot *ocelot, struct net_device *dev, int port,
+ 		   const struct switchdev_obj_mrp *mrp);
+-int ocelot_mrp_del(struct ocelot *ocelot, int port,
++int ocelot_mrp_del(struct ocelot *ocelot, struct net_device *dev, int port,
+ 		   const struct switchdev_obj_mrp *mrp);
+-int ocelot_mrp_add_ring_role(struct ocelot *ocelot, int port,
++int ocelot_mrp_add_ring_role(struct ocelot *ocelot, struct net_device *dev,
++			     int port,
+ 			     const struct switchdev_obj_ring_role_mrp *mrp);
+-int ocelot_mrp_del_ring_role(struct ocelot *ocelot, int port,
++int ocelot_mrp_del_ring_role(struct ocelot *ocelot, struct net_device *dev,
++			     int port,
+ 			     const struct switchdev_obj_ring_role_mrp *mrp);
+ #else
+-static inline int ocelot_mrp_add(struct ocelot *ocelot, int port,
++static inline int ocelot_mrp_add(struct ocelot *ocelot, struct net_device *dev,
++				 int port,
+ 				 const struct switchdev_obj_mrp *mrp)
+ {
+ 	return -EOPNOTSUPP;
+ }
+ 
+-static inline int ocelot_mrp_del(struct ocelot *ocelot, int port,
++static inline int ocelot_mrp_del(struct ocelot *ocelot, struct net_device *dev,
++				 int port,
+ 				 const struct switchdev_obj_mrp *mrp)
+ {
+ 	return -EOPNOTSUPP;
+ }
+ 
+ static inline int
+-ocelot_mrp_add_ring_role(struct ocelot *ocelot, int port,
++ocelot_mrp_add_ring_role(struct ocelot *ocelot, struct net_device *dev,
++			 int port,
+ 			 const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	return -EOPNOTSUPP;
+ }
+ 
+ static inline int
+-ocelot_mrp_del_ring_role(struct ocelot *ocelot, int port,
++ocelot_mrp_del_ring_role(struct ocelot *ocelot, struct net_device *dev,
++			 int port,
+ 			 const struct switchdev_obj_ring_role_mrp *mrp)
+ {
+ 	return -EOPNOTSUPP;
+-- 
+2.27.0
 
-
-Juergen
-
---------------456ECA628170F25D28062DF7
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------456ECA628170F25D28062DF7--
-
---aIEYVeglYW0935UFABA3RFn6vG3A7vknV--
-
---nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAuU7gFAwAAAAAACgkQsN6d1ii/Ey98
-ogf+OYHpzRVAg+cjmXBOIZ/G9w3jDjtACYbBCL6aLdsTm5mBymNr96GdNITM2eHwIKj2RjY/A9NO
-ZbJFT8kzKZLnKDI7Pz1s/qENqqe2aINBtEeXzln/8IBuZB2dOg236Q+BOtfTuNNK/MljOUm1qRkg
-XwlZbaBB5CGe8xZ4uS9tPWvmrQCWYshArgfg8UEoeZGbBeLzQ7Hdyh8Qj9Kh+oaUnKWjmi3xJ9Xc
-Y0KJ3N0kohBYNneknpMdWf6YmPXXmjud2QGBY85EO1gvjCw0ozxxqjiTzDQg7HUBEMqvHQvp4lT3
-8EzJBjCDsZUk6jbkMzqFJQHYwS9xCPo4EoCFBut7/Q==
-=19YR
------END PGP SIGNATURE-----
-
---nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E--
