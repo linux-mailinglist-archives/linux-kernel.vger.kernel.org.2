@@ -2,87 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A0E31EE38
+	by mail.lfdr.de (Postfix) with ESMTP id A75EB31EE39
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhBRS0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:26:04 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:46240 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232999AbhBRQC5 (ORCPT
+        id S230299AbhBRS0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:26:33 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:54018 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232740AbhBRQDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:02:57 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFsDZ2112412;
-        Thu, 18 Feb 2021 16:01:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=re0AgduDc5MORj6d0mAbSQpCdoy7EE3lsvXNuGddlUA=;
- b=glkujHk+UnRLV3HjGI3+ruqbbgQ1mN2uVv2dRbaStOLSpPz0lRWpaYBvmBMewXRzjbq8
- Tr800OEVtEW4vnCPmCmCzfsy9cLETOTVxeNSPe75rCvtJSvhY27OnYrncmEugUZ6UHap
- BHrS7WrJ7fuR8mdnTWDPSkbzeoanEyDLwkQJc8b/ciNLdSNyEAtkYZeSfO6xgUcDBe1G
- DiH+S+QjbTW/P4G/ANDBvE4hkH2jezgM0vNknpkJ97OzKkC2IWJQnse6OqqZ90ZtrroE
- 15a6F2ptbSm33+sakYRGOWjOjUVqCIlMBn+zrB894T1DrPgVmLAgLOqfQCMxhtsReNr5 2w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 36p7dnpbte-1
+        Thu, 18 Feb 2021 11:03:07 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFsxwa090548;
+        Thu, 18 Feb 2021 16:02:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=nTz7w5Opw4DmOhfWAocEaDsHyoTqepWVqxAx/g/DeoM=;
+ b=t6F58OSzo8VILfR7YsFSPiWiWrvUWxT+YtL6u7aFgMeBh5+o2QfNVG+jiATga6XEwB5g
+ 7gG5B4enmaBOEVOZswGXWTpSc4T7tO1QgCYoqFfJ+4ArSZGZduitVBumJVr6Ey5qsQ0/
+ ijjTVDBdrhuTm3QrbL1uEn5MiiQqljk8H1tsg0VAW9XN/MVWfWVSPvK5vI9XgBSc9uLp
+ rOqfjC1NNpcTDi9P/IA141EG6hFaZtKQzUbgEBONY32Um/jrq0bylfJPyj+fIeenh5pG
+ zlyhGpcpkQjMSykeN/gKLwQavRcGGzlyiFh8FX3MUKTwlUkbvUwNetpWbKfl54KD93ok ew== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 36p66r6es2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 16:01:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFoFRO074820;
-        Thu, 18 Feb 2021 16:01:25 GMT
+        Thu, 18 Feb 2021 16:02:05 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFoSwU115383;
+        Thu, 18 Feb 2021 16:02:05 GMT
 Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 36prp1q29q-1
+        by aserp3030.oracle.com with ESMTP id 36prbqxdxu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 16:01:25 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IG1N6P013704;
-        Thu, 18 Feb 2021 16:01:24 GMT
-Received: from kadam (/102.36.221.92)
+        Thu, 18 Feb 2021 16:02:05 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IG1wHl014059;
+        Thu, 18 Feb 2021 16:01:59 GMT
+Received: from [10.175.202.26] (/10.175.202.26)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Feb 2021 08:01:23 -0800
-Date:   Thu, 18 Feb 2021 19:01:14 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Kurt Manucredo <fuzzybritches@protonmail.com>
-Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fix comparisons - put constant on right side- eudyptula
-Message-ID: <20210218160114.GM2087@kadam>
-References: <20210218155422.7-1-fuzzybritches@protonmail.com>
+        with ESMTP ; Thu, 18 Feb 2021 08:01:58 -0800
+Subject: Re: [PATCH v4 0/4] mm/gup: page unpining improvements
+From:   Joao Martins <joao.m.martins@oracle.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20210212130843.13865-1-joao.m.martins@oracle.com>
+ <20210218072432.GA325423@infradead.org>
+ <a5f7d591-f3aa-1a54-569c-bd1abcb99334@oracle.com>
+Message-ID: <8a93027f-edd4-45e0-8fbd-aac9a31e8644@oracle.com>
+Date:   Thu, 18 Feb 2021 16:01:54 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218155422.7-1-fuzzybritches@protonmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
+In-Reply-To: <a5f7d591-f3aa-1a54-569c-bd1abcb99334@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180139
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=923 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180139
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=937
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
  definitions=main-2102180139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 03:54:29PM +0000, Kurt Manucredo wrote:
-> 
-> Dear linux kernel developers,
-> 
-> for my eudyptula challenge it is required of me to fix a coding style
-> issue in the staging area in linux-next. I am aware that it is in
-> general frowned upon when submitting these sorts of patches. However, to
-> finish my 10th challenge I was tasked to do exactly that. So I ask you
-> kindly to pull this patch if possible.
-> 
-> Thank you for your time,
 
-These patches are fine in staging.
 
-regards,
-dan carpenter
+On 2/18/21 3:33 PM, Joao Martins wrote:
+> On 2/18/21 7:24 AM, Christoph Hellwig wrote:
+>> On Fri, Feb 12, 2021 at 01:08:39PM +0000, Joao Martins wrote:
+>>> Hey,
+>>>
+>>> This series improves page unpinning, with an eye on improving MR
+>>> deregistration for big swaths of memory (which is bound by the page
+>>> unpining), particularly:
+>>
+>> Can you also take a look at the (bdev and iomap) direct I/O code to
+>> make use of this?  It should really help there, with a much wieder use
+>> than RDMA.
+>>
+> Perhaps by bdev and iomap direct I/O using this, you were thinking to replace
+> bio_release_pages() which operates on bvecs and hence releasing contiguous pages
+> in a bvec at once? e.g. something like from this:
+> 
+>         bio_for_each_segment_all(bvec, bio, iter_all) {
+>                 if (mark_dirty && !PageCompound(bvec->bv_page))
+>                         set_page_dirty_lock(bvec->bv_page);
+>                 put_page(bvec->bv_page);
+>         }
+> 
+> (...) to this instead:
+> 
+> 	bio_for_each_bvec_all(bvec, bio, i)
+> 		unpin_user_page_range_dirty_lock(bvec->bv_page,
+> 			DIV_ROUND_UP(bvec->bv_len, PAGE_SIZE),
+> 			mark_dirty && !PageCompound(bvec->bv_page));
+> 
+
+Quick correction: It should be put_user_page_range_dirty_lock() given that unpin is
+specific to FOLL_PIN users.
