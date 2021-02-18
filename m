@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE9A31F286
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD1231F283
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhBRWuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:50:13 -0500
-Received: from mga11.intel.com ([192.55.52.93]:35419 "EHLO mga11.intel.com"
+        id S229845AbhBRWt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:49:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229862AbhBRWuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:50:10 -0500
-IronPort-SDR: PXxltUC+nCXRkRD1ZCphu12L69b3/n52ZTBck7gMEGcnktVhzESg30ztCmseTu1xpneGEwEceH
- faW212by7VvQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="180159390"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="180159390"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 14:48:49 -0800
-IronPort-SDR: 3BbPWGw4358jO5fcFIuyRFXScJbK8dak/QttUQN57kkvj4q5/TFgX+DSB1kIA+Gfcj+TSIDEP+
- AEXLQJWBYdbA==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="367709276"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 14:48:49 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id E694F6365;
-        Thu, 18 Feb 2021 14:48:48 -0800 (PST)
-Date:   Thu, 18 Feb 2021 14:48:48 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@dell.com>
-Cc:     Hans De Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org,
-        Divya Bharathi <Divya.Bharathi@Dell.com>,
-        Alexander Naumann <alexandernaumann@gmx.de>
-Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: correct an initialization
- failure
-Message-ID: <20210218224848.GB134379@linux.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <20210218191723.20030-1-mario.limonciello@dell.com>
+        id S229535AbhBRWtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 17:49:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82CD164DFD;
+        Thu, 18 Feb 2021 22:49:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613688545;
+        bh=SGNPeiZEIHSwqt1VUZYZ9K9idlNdJU7dXBV+/C03bbc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qf72mZ0ibMde6JSaiwo3z9u0PSmey7GqBjkO/kHW63QNTDh5qTnC+v3pZM2cK8m53
+         kci+DlNpoQSBrLdL9n+ve0IIHyu75/z4/3RDexTH0x6qtfCCACtJaV05iEd/Puw+LJ
+         9JY6MSC2ke9p2aMSKoHNW6x3GJ7DWeakB3dZGBMk5eRbRqbqMIbYOMCuJdTLMZZHps
+         +0kznePsP6inGcIO3y5s91gwIN9qnTyATqgCf/mMdWquxETo2RNlYOnY8gPgaJASSi
+         boUX1t/+bTKj+pUBP3WNRdCxoGfudBGGt//XgihjphTVawJmKjRSEVhja34s0KlH8Y
+         Jn+gBttahZe+A==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kevin Wang <kevin1.wang@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH] drm/amd/pm/swsmu: Avoid using structure_size uninitialized in smu_cmn_init_soft_gpu_metrics
+Date:   Thu, 18 Feb 2021 15:48:50 -0700
+Message-Id: <20210218224849.5591-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218191723.20030-1-mario.limonciello@dell.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 01:17:23PM -0600, Mario Limonciello wrote:
-> On Dell systems that don't support this interface the module is
-> mistakingly returning error code "0", when it should be returning
-> -ENODEV.  Correct a logic error to guarantee the correct return code.
-> 
-> Cc: Divya Bharathi <Divya_Bharathi@Dell.com>
-> Reported-by: Alexander Naumann <alexandernaumann@gmx.de>
-> Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
-> ---
->  drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c     | 4 +++-
->  drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c | 4 +++-
->  drivers/platform/x86/dell-wmi-sysman/sysman.c                 | 4 ++--
->  3 files changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c b/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
-> index f95d8ddace5a..8d59f81f9db4 100644
-> --- a/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
-> +++ b/drivers/platform/x86/dell-wmi-sysman/biosattr-interface.c
-> @@ -175,7 +175,9 @@ static struct wmi_driver bios_attr_set_interface_driver = {
->  
->  int init_bios_attr_set_interface(void)
->  {
-> -	return wmi_driver_register(&bios_attr_set_interface_driver);
-> +	int ret = wmi_driver_register(&bios_attr_set_interface_driver);
-I have to ask if the propper fix should be in wmi_driver_register
-> +
-> +	return wmi_priv.bios_attr_wdev ? ret : -ENODEV;
-Also, is there any point to call wmi_driver_register if returning -ENODEV?
-i.e. should the call to driver register be wrapped in a test for
-bios_atter_wdev?
+Clang warns:
 
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:764:2: warning:
+variable 'structure_size' is used uninitialized whenever switch default
+is taken [-Wsometimes-uninitialized]
+        default:
+        ^~~~~~~
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:770:23: note:
+uninitialized use occurs here
+        memset(header, 0xFF, structure_size);
+                             ^~~~~~~~~~~~~~
+drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:753:25: note:
+initialize the variable 'structure_size' to silence this warning
+        uint16_t structure_size;
+                               ^
+                                = 0
+1 warning generated.
 
->  }
->  
->  void exit_bios_attr_set_interface(void)
-> diff --git a/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c b/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
-> index 5780b4d94759..bf449dc5ff47 100644
-> --- a/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
-> +++ b/drivers/platform/x86/dell-wmi-sysman/passwordattr-interface.c
-> @@ -142,7 +142,9 @@ static struct wmi_driver bios_attr_pass_interface_driver = {
->  
->  int init_bios_attr_pass_interface(void)
->  {
-> -	return wmi_driver_register(&bios_attr_pass_interface_driver);
-> +	int ret = wmi_driver_register(&bios_attr_pass_interface_driver);
-> +
-> +	return wmi_priv.password_attr_wdev ? ret : -ENODEV;
-same comments as above only for password_atter_wdev.
+Return in the default case, as the size of the header will not be known.
 
---mark
+Fixes: de4b7cd8cb87 ("drm/amd/pm/swsmu: unify the init soft gpu metrics function")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1304
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  }
->  
->  void exit_bios_attr_pass_interface(void)
-> diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-> index cb81010ba1a2..d9ad0e83b66f 100644
-> --- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
-> +++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-> @@ -513,13 +513,13 @@ static int __init sysman_init(void)
->  	}
->  
->  	ret = init_bios_attr_set_interface();
-> -	if (ret || !wmi_priv.bios_attr_wdev) {
-> +	if (ret) {
->  		pr_debug("failed to initialize set interface\n");
->  		goto fail_set_interface;
->  	}
->  
->  	ret = init_bios_attr_pass_interface();
-> -	if (ret || !wmi_priv.password_attr_wdev) {
-> +	if (ret) {
->  		pr_debug("failed to initialize pass interface\n");
->  		goto fail_pass_interface;
->  	}
-> -- 
-> 2.25.1
-> 
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
+index bb620fdd4cd2..bcedd4d92e35 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu_cmn.c
+@@ -762,7 +762,7 @@ void smu_cmn_init_soft_gpu_metrics(void *table, uint8_t frev, uint8_t crev)
+ 		structure_size = sizeof(struct gpu_metrics_v2_0);
+ 		break;
+ 	default:
+-		break;
++		return;
+ 	}
+ 
+ #undef METRICS_VERSION
+-- 
+2.30.1
+
