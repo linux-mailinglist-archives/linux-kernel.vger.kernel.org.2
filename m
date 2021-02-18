@@ -2,53 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB82631F2DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFBCF31F2FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhBRXR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 18:17:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhBRXR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 18:17:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82FD164EB9;
-        Thu, 18 Feb 2021 23:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1613690205;
-        bh=VuEQvhYrUQRk+2hwk6NOio3v4yKDWE3Dxa3E4sAhabU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ue/bdei15LxfCoVUnsg10eEKBppOUxhEAviiZH5iGhrO//dPBrsp6A0q3vlwaIjeI
-         h2Lenw3NHaPNJnbr/Qpk8XVt4eDLwXlo3EuN7JixwIs2jHPN0fat7hd9qypnGWDg80
-         w1fLwCIq1HbJrwFa8RLrokUcLm9rQGsX3tZTW/NY=
-Date:   Thu, 18 Feb 2021 15:16:44 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] percpu_counter: increase batch count
-Message-Id: <20210218151644.df430e4f77f763b7db2a004f@linux-foundation.org>
-In-Reply-To: <0bf90e07-8758-b238-b3f3-a330725a1134@kernel.dk>
-References: <0bf90e07-8758-b238-b3f3-a330725a1134@kernel.dk>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230017AbhBRXV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 18:21:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229743AbhBRXVy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 18:21:54 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1784DC0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 15:21:14 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id q186so3912126oig.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 15:21:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xEIVc+vQWriCkNYhFpstAFofB52ZFALeJcABj2wsqhc=;
+        b=jDt5GopaK8zN5wP04scD4w78fTJ48VcmEfXVLKOfcbNh/1CjTeq9BqmsTJPIxnICoY
+         gNYiT3wvvye3MuNpdHVWx1MOx0tO/P1WnbcPnH7jV2/V4wHcLZ4OT+7Gsc7eLH8/jdlY
+         edvzQs1v9s+PY5jjEJwVNSLCjXeszcc7tHWWTkzgNGYj0XXcZ0J7yDUfjYatTbXTvWNP
+         pk+eZITrLwb64iSXeLlDUBZ6CFsgdia8mL7aX4SRFKcBwvlIyYJxoEwVjQ/XvMPpD2Ey
+         OaqD0Ef4eos9r1rw1VNYcbPNkdax2DcBzncBOQaT+N0jZ39XJdM0o8AdtcwfBDTjwESl
+         wWEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xEIVc+vQWriCkNYhFpstAFofB52ZFALeJcABj2wsqhc=;
+        b=davXDjAcooQ+4Ahnv6CKa3v5G/JzqsNbzDWSLM+pCRFseMRlIS0eCVXZU0pqDrwqpb
+         kSXRxyIeCoBrvT35i9JOaN4zgav/lJjjSlj/9IhbYoIsdtxbMeRazAuJ66WgUDh+rRcD
+         bdHAlx8BN52boTIcn6oQAbZbp3M6xoksnQkrxo4pYPfOslEfrkHqBdwAHsjNGFb9LTb8
+         aY09MxEMD2cEb23tOUbRWbnUf9r/4tV/eh3ZortnH82h0X+bcfqppb7rJuvBTvQ9IBwq
+         NqL2UVcqFFvv6VCyDwzp/+B4JKLy/duHeZzoF+Ud98WaRqsXAbm/Er3kz/JpZOe3jgYm
+         kf+g==
+X-Gm-Message-State: AOAM532mqju3mVgHXBJShsBprOvhUnQxslJVce2/A1noPOLdOZVRqidW
+        h+DR57OC+EdROq6rJwS+YU+6/wkkhX4A/I28CEqVlA==
+X-Google-Smtp-Source: ABdhPJxN9UNunrU4U+YuaCFkAnkHUg/NsTcyax5MKcFTm4nUwI4VguyHgN7bNe58SAv47zPW5k+w3Zw4C8RjDu9HenQ=
+X-Received: by 2002:aca:ad0d:: with SMTP id w13mr2851317oie.84.1613690473045;
+ Thu, 18 Feb 2021 15:21:13 -0800 (PST)
+MIME-Version: 1.0
+References: <20210203090745.4103054-2-drosen@google.com> <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
+ <YBrP4NXAsvveIpwA@mit.edu> <YCMZSjgUDtxaVem3@mit.edu> <42511E9D-3786-4E70-B6BE-D7CB8F524912@dilger.ca>
+ <YCNbIdCsAsNcPuAL@mit.edu> <CA+PiJmT2hfdRLztCdp3-tYBqAo+-ibmuyqLvq5nb+asFj4vL7A@mail.gmail.com>
+ <YC0/ZsQbKntSpl97@mit.edu> <01918C7B-9D9B-4BD8-8ED1-BA1CBF53CA95@dilger.ca>
+In-Reply-To: <01918C7B-9D9B-4BD8-8ED1-BA1CBF53CA95@dilger.ca>
+From:   Daniel Rosenberg <drosen@google.com>
+Date:   Thu, 18 Feb 2021 15:21:01 -0800
+Message-ID: <CA+PiJmReVX_YXZF1JrfXmothFX7q3iihm2qHyEOGEoYFyrrE5Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
+To:     Andreas Dilger <adilger@dilger.ca>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Feb 2021 14:36:31 -0700 Jens Axboe <axboe@kernel.dk> wrote:
+On Wed, Feb 17, 2021 at 2:48 PM Andreas Dilger <adilger@dilger.ca> wrote:
+>
+> On Feb 17, 2021, at 9:08 AM, Theodore Ts'o <tytso@mit.edu> wrote:
+> >
+> > On Tue, Feb 16, 2021 at 08:01:11PM -0800, Daniel Rosenberg wrote:
+> >> I'm not sure what the conflict is, at least format-wise. Naturally,
+> >> there would need to be some work to reconcile the two patches, but my
+> >> patch only alters the format for directories which are encrypted and
+> >> casefolded, which always must have the additional hash field. In the
+> >> case of dirdata along with encryption and casefolding, couldn't we
+> >> have the dirdata simply follow after the existing data? Since we
+> >> always already know the length, it'd be unambiguous where that would
+> >> start. Casefolding can only be altered on an empty directory, and you
+> >> can only enable encryption for an empty directory, so I'm not too
+> >> concerned there. I feel like having it swapping between the different
+> >> methods makes it more prone to bugs, although it would be doable. I've
+> >> started rebasing the dirdata patch on my end to see how easy it is to
+> >> mix the two. At a glance, they touch a lot of the same areas in
+> >> similar ways, so it shouldn't be too hard. It's more of a question of
+> >> which way we want to resolve that, and which patch goes first.
+> >>
+> >> I've been trying to figure out how many devices in the field are using
+> >> casefolded encryption, but haven't found out yet. The code is
+> >> definitely available though, so I would not be surprised if it's being
+> >> used, or is about to be.
+> >
+> > The problem is in how the space after the filename in a directory is
+> > encoded.  The dirdata format is (mildly) expandable, supporting up to
+> > 4 different metadata chunks after the filename, using a very
+> > compatctly encoded TLV (or moral equivalent) scheme.  For directory
+> > inodes that have both the encyption and compression flags set, we have
+> > a single blob which gets used as the IV for the crypto.
+> >
+> > So it's the difference between a simple blob that is only used for one
+> > thing in this particular case, and something which is the moral
+> > equivalent of simple ASN.1 or protobuf encoding.
+> >
+> > Currently, datadata has defined uses for 2 of the 4 "chunks", which is
+> > used in Lustre servers.  The proposal which Andreas has suggested is
+> > if the dirdata feature is supported, then the 3rd dirdata chunk would
+> > be used for the case where we currently used by the
+> > encrypted-casefolded extension, and the 4th would get reserved for a
+> > to-be-defined extension mechanism.
+> >
+> > If there ext4 encrypted/casefold is not yet in use, and we can get the
+> > changes out to all potential users before they release products out
+> > into the field, then one approach would be to only support
+> > encrypted/casefold when dirdata is also enabled.
+> >
+> > If ext4 encrypted/casefold is in use, my suggestion is that we support
+> > both encrypted/casefold && !dirdata as you have currently implemented
+> > it, and encrypted/casefold && dirdata as Andreas has proposed.
+> >
+> > IIRC, supporting that Andreas's scheme essentially means that we use
+> > the top four bits in the rec_len field to indicate which chunks are
+> > present, and then for each chunk which is present, there is a 1 byte
+> > length followed by payload.  So that means in the case where it's
+> > encrypted/casefold && dirdata, the required storage of the directory
+> > entry would take one additional byte, plus setting a bit indicating
+> > that the encrypted/casefold dirdata chunk was present.
+>
+> I think your email already covers pretty much all of the points.
+>
+> One small difference between current "raw" encrypted/casefold hash vs.
+> dirdata is that the former is 4-byte aligned within the dirent, while
+> dirdata is packed.  So in 3/4 cases dirdata would take the same amount
+> of space (the 1-byte length would use one of the 1-3 bytes of padding
+> vs. the raw format), since the next dirent needs to be aligned anyway.
+>
+> The other implication here is that the 8-byte hash may need to be
+> copied out of the dirent into a local variable before use, due to
+> alignment issues, but I'm not sure if that is actually needed or not.
+>
+> > So, no, they aren't incompatible ultimatly, but it might require a
+> > tiny bit more work to integrate the combined support for dirdata plus
+> > encrypted/casefold.  One way we can do this, if we have to support the
+> > current encrypted/casefold format because it's out there in deployed
+> > implementations already, is to integrate encrypted/casefold &&
+> > !dirdata first upstream, and then when we integrate dirdata into
+> > upstream, we'll have to add support for the encrypted/casefold &&
+> > dirdata case.  This means that we'll have two variants of the on-disk
+> > format to test and support, but I don't think it's the going to be
+> > that difficult.
+>
+> It would be possible to detect if the encrypted/casefold+dirdata
+> variant is in use, because the dirdata variant would have the 0x40
+> bit set in the file_type byte.  It isn't possible to positively
+> identify the "raw" non-dirdata variant, but the assumption would be
+> if (rec_len >= round_up(name_len, 4) + 8) in an encrypted+casefold
+> directory that the "raw" hash must be present in the dirent.
+>
+> Cheers, Andreas
+>
+>
+>
+>
+>
 
-> Currently we cap the batch count at max(32, 2*nr_online_cpus), which these
-> days is kind of silly as systems have gotten much bigger than in 2009 when
-> this heuristic was introduced.
-> 
-> Bump it to capping it at 256 instead. This has a noticeable improvement
-> for certain io_uring workloads, as io_uring tracks per-task inflight count
-> using percpu counters.
-> 
-
-It will also make percpu_counter_read() and
-percpu_counter_read_positive() more inaccurate than at present.  Any
-effects from this will take a while to discover.
-
-But yes, worth trying - I'll add it to the post-rc1 pile.
+So sounds like we're going with the combined version. Andreas, do you
+have any suggestions for changes to the casefolding patch to ease the
+eventual merging with dirdata? A bunch of the changes are already
+pretty similar, so some of it is just calling essentially the same
+functions different things.
+-Daniel
