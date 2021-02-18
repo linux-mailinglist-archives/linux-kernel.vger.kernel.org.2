@@ -2,76 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A7531EFE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D8231EFE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhBRTbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:31:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232912AbhBRSr2 (ORCPT
+        id S231232AbhBRTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:32:04 -0500
+Received: from mail.codeweavers.com ([50.203.203.244]:54602 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232959AbhBRSrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:47:28 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F6DFC06178B
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:46 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id gb24so1871264pjb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=TYSvMCIPacqOphOa16rzA+X+0GuBxuIS4Qj5ygoV2IM=;
-        b=aWV5hnEy8rnECOEGtDuAcE+s4yLDrZzLFVj+vn97GLn50xSeuxHfgdHF7Yz6jpcksB
-         CYfZpw1Zh4nmKvytWq2vjdYlJZlmbDpatiO45blzVexSo6J8CdGpJ/r3/Jfht+NfQhSW
-         LOtBc1iiEAii0nADT1I0ZZyiE9uk7n6kjhupE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=TYSvMCIPacqOphOa16rzA+X+0GuBxuIS4Qj5ygoV2IM=;
-        b=YuoRpiChY9uYxAHV5zShydKxBNbF+lIlBpzTUXVK7ylI4f+JjUWP5eeXU8/fUJHTb6
-         sDHy0e6MHJXfy3LvknvoX9hONGiuyZHHDbikCMDW9ezqoBN/wHdAiwYP99n0oNjHY8oR
-         ZAksdoD2QgYXATaGjJzq7JIncM5eu2Nzs7CzZxPk2L4kd9L9gdd2tSVrnNtNTYZz7B5G
-         Yi0wXtNfdlKsa1424HB/zhR6jy/yhDZ7rdVEjuHWjhB+HuXfc20WxRlN3k0vYQiZjzhM
-         ndNgUXIRN23o6IafGwdzikeK5D5Xnvj5Jr2PcDlMHK4cgHHgHzFdJwMwsevRFW/33cCJ
-         O1WA==
-X-Gm-Message-State: AOAM531AnkhoOhAF2Uv5ZOXwdv4xyd2t3HhIsKexYsBRAJm1O9StQVtr
-        lSzuGcHHuve6EwdeyS7qNIge7w==
-X-Google-Smtp-Source: ABdhPJxCmb8Y1Km73TqeTEgYOkLH188D40vElREuf0w7ub9wbnNw7oCNpoGFosfaLftBUBdQlyWCeg==
-X-Received: by 2002:a17:902:aa03:b029:e3:721:c093 with SMTP id be3-20020a170902aa03b02900e30721c093mr5267903plb.50.1613674006193;
-        Thu, 18 Feb 2021 10:46:46 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:ec84:ed2b:a796:b756])
-        by smtp.gmail.com with ESMTPSA id 25sm7127704pfh.199.2021.02.18.10.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 10:46:45 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 18 Feb 2021 13:47:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=GwVBiojSLSWblI9Bv+rO89T9RfbR0j3pBE8d6PtzHog=; b=SowfVEn1pLeLDAhHcSGSa610+w
+        7MW3JNk8lUFzy9+aPeHUWLKN+wwSbKvA9EFytkZHG6eGGuMM5pTLErpsMu69HMyTf3IQK+FARf4T4
+        JvxSobxiuthWZqX6GHJXQ64zj43cmxKlKmep3o9ivMDr+28lBuaE+pqApm03J5I8OzII=;
+Received: from [10.69.141.136]
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <nfraser@codeweavers.com>)
+        id 1lCoKK-0002Jy-14; Thu, 18 Feb 2021 12:47:00 -0600
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
+Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+From:   Nicholas Fraser <nfraser@codeweavers.com>
+Subject: [PATCH] perf buildid-cache: Add test for PE executable
+Message-ID: <3823ae53-5b6f-1721-4414-35747485d9c4@codeweavers.com>
+Date:   Thu, 18 Feb 2021 13:46:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1613603397-21179-1-git-send-email-khsieh@codeaurora.org>
-References: <1613603397-21179-1-git-send-email-khsieh@codeaurora.org>
-Subject: Re: [PATCH 2/2] drm/msm/dp: Drop limit link rate at HBR2
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Date:   Thu, 18 Feb 2021 10:46:44 -0800
-Message-ID: <161367400432.1254594.2213007173465217655@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-02-17 15:09:57)
-> Drop limit link rate at HBR2 to support link rate
-> upto HBR3.
->=20
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+This builds on the previous changes to tests/shell/buildid.sh, adding
+tests for a PE file. It adds it to the build-id cache manually and, if
+Wine is available, runs it under "perf record" and verifies that it was
+added automatically.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+If wine is not installed, only warnings are printed; the test can still
+exit 0.
+
+(I welcome ways to make the GUID parsing less awful. checkpatch.pl is
+complaining about the line length of the sed command. The re-arranging
+could be done via e.g. id=${id:6:2}{id:4:2}... since this style is
+already used in the script but that turns out to be longer than the sed
+command and anyway it's bash-specific. This uses a hardcoded .exe so we
+could also just hardcode its GUID but I'd worry about making the tests
+too inflexible.)
+
+Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+---
+ tools/perf/tests/shell/buildid.sh | 43 +++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 5 deletions(-)
+
+diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+index de02a23b7c7b..55e2168ef26f 100755
+--- a/tools/perf/tests/shell/buildid.sh
++++ b/tools/perf/tests/shell/buildid.sh
+@@ -14,18 +14,41 @@ if ! [ -x "$(command -v cc)" ]; then
+ 	exit 2
+ fi
+ 
++# check what we need to test windows binaries
++add_pe=1
++run_pe=1
++if ! perf version --build-options | grep -q 'libbfd: .* on '; then
++    echo "WARNING: perf not built with libbfd. PE binaries will not be tested."
++    add_pe=0
++    run_pe=0
++fi
++if ! which wine > /dev/null; then
++    echo "WARNING: wine not found. PE binaries will not be run."
++    run_pe=0
++fi
++
+ ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
+ ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
++ex_pe=$(dirname $0)/../pe-file.exe
+ 
+ echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
+ echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
+ 
+-echo "test binaries: ${ex_sha1} ${ex_md5}"
++echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
+ 
+ check()
+ {
+-	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+-
++	case $1 in
++	*.exe)
++		# the build id must be rearranged into a GUID
++		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
++			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
++			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
++		;;
++	*)
++		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
++		;;
++	esac
+ 	echo "build id: ${id}"
+ 
+ 	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
+@@ -50,7 +73,7 @@ check()
+ 		exit 1
+ 	fi
+ 
+-	${perf} buildid-cache -l|grep $id
++	${perf} buildid-cache -l | grep ${id}
+ 	if [ $? -ne 0 ]; then
+ 		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
+ 		exit 1
+@@ -81,7 +104,7 @@ test_record()
+ 	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
+ 	perf="perf --buildid-dir ${build_id_dir}"
+ 
+-	${perf} record --buildid-all -o ${data} ${1}
++	${perf} record --buildid-all -o ${data} ${2} ${1}
+ 	if [ $? -ne 0 ]; then
+ 		echo "failed: record ${1}"
+ 		exit 1
+@@ -96,12 +119,22 @@ test_record()
+ # add binaries manual via perf buildid-cache -a
+ test_add ${ex_sha1}
+ test_add ${ex_md5}
++if [ $add_pe -eq 1 ]; then
++    test_add ${ex_pe}
++fi
+ 
+ # add binaries via perf record post processing
+ test_record ${ex_sha1}
+ test_record ${ex_md5}
++if [ $run_pe -eq 1 ]; then
++    test_record ${ex_pe} wine
++fi
+ 
+ # cleanup
+ rm ${ex_sha1} ${ex_md5}
+ 
++if [ $add_pe -eq 0 ] || [ $run_pe -eq 0 ]; then
++    echo "WARNING: some PE tests were skipped. See previous warnings."
++fi
++
+ exit ${err}
+-- 
+2.30.1
+
