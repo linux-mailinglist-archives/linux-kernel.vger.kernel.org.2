@@ -2,192 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C44731EB9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:34:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D1E31EB9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232380AbhBRPdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59036 "EHLO
+        id S232144AbhBRPfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:35:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232827AbhBRNSa (ORCPT
+        with ESMTP id S233199AbhBRNTC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:18:30 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6F58C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:17:49 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id w4so3679891wmi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:17:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dme-org.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:subject:in-reply-to:references:from:date:message-id
-         :mime-version;
-        bh=KBsy4+M5lR3eSmVo0u6hu7tNek39L40IUnAneMNB5ac=;
-        b=AHi6bFWssp81XnIMNZ8D/ruIf7GhE2yv6WmRGyLd+EwD5HU8Mv3uLeSou/inUtxwxb
-         XS6hEtpqPpvdkKEx1V9SJHegnM7LWImBQxwElWhpi7IL9QYWvOx1bf8JmRK0hUos7UBM
-         i9lwp0i+JACp+UHmTPo1UqNOLyP71Edj3MptO6WoF/BCGIRiiRC4bRrpawBJrNxP+1H5
-         Mr5j+JMgfxdIbfzCA9HuNNtXGwiQ7is87plEuAZ1tQzvTqM7edxRC2OL5htRt6N9hM1n
-         ALBu03rWXOLqN8uc/fcyV0EO9fJV4306Xdx7XxFmN7on8PoulgybEVxpr8T/bhLSBGb/
-         nzAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:subject:in-reply-to:references:from:date
-         :message-id:mime-version;
-        bh=KBsy4+M5lR3eSmVo0u6hu7tNek39L40IUnAneMNB5ac=;
-        b=CAZIKLRsvWSFEX1FHoOrt9CXwr6dWRdATKsBZ3KMFuWpYsbvvDIyjzQExjKBwytxdf
-         nQ0BlUt44eeOO9XuLyHl1Uch3C+8Zjr8yNYBuKqol0wEcfPO6Q7LgrWHzGoVhrQLLAHy
-         eOxZlqhYNe7nSlf06kkxDMJ/uzSlHyUufgCrMrTPWRRPU7Po/uHcwuwvPYxAD9Dmpjxq
-         pdWrVo6sLVZlf4Db1rdnzcrqd44LOSvtI0yPjARPW7nNR7skwU2UkB81nPHJb/g9oC0g
-         aM+A9Yms892BKibNmIv+pXm1xpJmsJOz57tENZfF4NF68IHdbFIeia0woPyvXGuTSIzf
-         4Vsw==
-X-Gm-Message-State: AOAM532nHLfa4moGDTl4oI2xzYRvX894LSqlgQwrLvkdl3iNF00gG36V
-        tOtQbTOaU6GtGu2KYN6BT/ws2w==
-X-Google-Smtp-Source: ABdhPJzWk5s8LJ2kFDAbJjFbOoUoKBs9vVVetv+kordzFiHu0PES0GcDfjRAu8Qnji6LneILmYCcXA==
-X-Received: by 2002:a1c:8096:: with SMTP id b144mr3667628wmd.169.1613654268328;
-        Thu, 18 Feb 2021 05:17:48 -0800 (PST)
-Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net. [2001:8b0:bb71:7140:64::1])
-        by smtp.gmail.com with ESMTPSA id s23sm7942062wmc.29.2021.02.18.05.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 05:17:47 -0800 (PST)
-Received: from localhost (disaster-area.hh.sledj.net [local])
-        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 81cd362e;
-        Thu, 18 Feb 2021 13:17:46 +0000 (UTC)
-To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Borislav Petkov <bp@alien8.de>, Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER
- is valid
-In-Reply-To: <8f9d4ef7-ddad-160b-2d94-69f4370e8702@redhat.com>
-References: <20210218100450.2157308-1-david.edmondson@oracle.com>
- <708f2956-fa0f-b008-d3d2-93067f95783c@redhat.com>
- <cuntuq9ilg4.fsf@dme.org>
- <8f9d4ef7-ddad-160b-2d94-69f4370e8702@redhat.com>
-X-HGTTG: zarquon
-From:   David Edmondson <dme@dme.org>
-Date:   Thu, 18 Feb 2021 13:17:46 +0000
-Message-ID: <cunr1ldikg5.fsf@dme.org>
+        Thu, 18 Feb 2021 08:19:02 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on0628.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::628])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48358C061786;
+        Thu, 18 Feb 2021 05:18:16 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RsDPtIe2L63beG+SUs6jcQb2a2a9qLl/ed0gKSVGt5kLz/wFrpuFxJrnEFRWNUH/9EAqQepqHvLFeG3OexCFfcCMIHwdKe2Viv+fmPAzKKWX7Zk4Y+G2/bz03qkmPWkyQXkSl8zYMV05F9TUABMyIkUJoTWfsSjSLLQMviP0PrTThHyL9ZoukZarLNUc36xtgPLCoC/gP1rNWhsRHpscc55oI3+Qg3wPEN5E17vdrIEwlFmKpxBGGIs4/3Bl1g9H2iduUt0qzM0+pH4nBmWpOK1/3nlt9wku3lbc8nTnjvCf9gIQ4vH//BLDH3wbwcthfW8I4fyuR5KqX765cTj5Xw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bldgEFtFLSWdSZ9fRL3QBKyM1/wFAEFAHSyJBN+ffnQ=;
+ b=T5MlTGCDXwxkCcJwkU0/cvqPMrJRLmyiPry3bVMSTGibNUpWn/RNzLu6tAf4jgZoOFW91pyf/W0uEr3GmGEDgZm7rZjUJ2qb3VjIqKn8p0B2UhslUFnxVtMwwZ+lJeuWjIQPZ6whhfQ079AuGi1sfESSO9c8zLuiFxcI0yPlVfOGFrktsL6fg3dFw/FyWdB2exIHE0c17ksOX7zm/k0G+A6S9+vISz9zpX6A8S48VPG9gw0Z7h0om/sghuXCCcbJ0XK7XYmkkoup/pzEEdEjoPzFpLmRepkAkSzqIlHvCyrxirDIsAxdyn016aWcUQ7Fdy24w+zy+DeEGy048+Xb8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bldgEFtFLSWdSZ9fRL3QBKyM1/wFAEFAHSyJBN+ffnQ=;
+ b=dtNKe8rWWmCS3qaiIcGV9ZuEnxFICkCF0kM+caiHrAeiiVst6TxXoJrvzEWCJDwoKWqE9510gy7k0A05uiqVZrr9kNuJu3vaZdiWnIEq/9V1zpaVQ6H3paFU7EB+Kf9LN0K5lNFK2GotN5et3v6yj7j1xZtTRYAcwLISfLfYi3c=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR0402MB2799.eurprd04.prod.outlook.com (2603:10a6:800:b0::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27; Thu, 18 Feb
+ 2021 13:17:59 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::3df3:2eba:51bb:58d7]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::3df3:2eba:51bb:58d7%7]) with mapi id 15.20.3868.028; Thu, 18 Feb 2021
+ 13:17:59 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: mscc: Fix MRP switchdev driver
+Thread-Topic: [PATCH net-next] net: mscc: Fix MRP switchdev driver
+Thread-Index: AQHXBevybXvIOkbZDk6j40ceQJbz2Kpd5RsA
+Date:   Thu, 18 Feb 2021 13:17:59 +0000
+Message-ID: <20210218131758.g4vsvmowggxdklfj@skbuf>
+References: <20210218114726.648927-1-horatiu.vultur@microchip.com>
+In-Reply-To: <20210218114726.648927-1-horatiu.vultur@microchip.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: microchip.com; dkim=none (message not signed)
+ header.d=none;microchip.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.217.13]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 5a7952e2-93d0-45c3-4eb8-08d8d40f9d05
+x-ms-traffictypediagnostic: VI1PR0402MB2799:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0402MB2799C438C8F2B9264529F1F2E0859@VI1PR0402MB2799.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1WgD96N8FniBf2Zor/mNGlNNUVv6X1FhCE5/dQOC4DgNhaXIZItbj0DE8l1in9CC0hQ+BpgwRRZF3plfpqsrijEU37b3vhMBOUziB8j3b0FW42/bwcFyGIJxphpRL+7ARpbWKInxMzHOxcCEGIxENoWWvIP/h5+0XTX5iZTmp6a0qShFdV02pqYc6pmTardGjhR5lA76PSQ0T+Q3SAHNrger7wiSxDxDF3CvJy23JiF+Qaio2kD17gcMFuwT3VybFl43nTcZ956TOcjdV5MXJpVn9oQvJBrkZwZj8KdMiGZFgklLKjA7rGRiXTt88BEmTjE54FFGkFk/zg9yxhsAV5uLyBrv5VGbIrmmkXwqTUzcCGiXUHTCR3khA+WmENEt2/PxNr7UMGZZuKCMYUYSSV7USpCEKwpUF3sUlIBzl6m1VFSsDLZwBDj6PLt7K8WkmPoY04rHbKlT5Pl9iZH8PXl9UmhdGEXuQVuUPSg9zHURxM0smj9faK9VL/XIZiQFWBUBbMIEWy/PaiBFQTF5dw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(136003)(396003)(39860400002)(376002)(366004)(8936002)(7416002)(71200400001)(91956017)(6486002)(33716001)(64756008)(86362001)(66556008)(26005)(66446008)(66476007)(76116006)(54906003)(5660300002)(66946007)(6916009)(6506007)(186003)(8676002)(44832011)(83380400001)(2906002)(316002)(1076003)(4326008)(6512007)(9686003)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?l432vuWsZBEc6/vbgsqO+4i9kGNv8H7upHJhn+QWu9120hua+GCKLbjiyD02?=
+ =?us-ascii?Q?K1oNmr7uyzmfTWgGtOZc5GnxKv1ZZotvvP7osyIGIvxEcSufuWg3VSIu7V6g?=
+ =?us-ascii?Q?PAhnFPwt9roUuNrel/T70g36zW478CpnuCF9svPZaZM/BKMSieoPfRoli7rU?=
+ =?us-ascii?Q?ngt0Q08Br3kl28EsC1YCogNwNDC5EhdYxxWFe8rt4/xi+zQPly/x3sVwjsL4?=
+ =?us-ascii?Q?LxR6/HIfYNJ2I2lWgGr9VSse9c/jCkIs7usNmeqYMc+7qX6MBuxNYzCayg4v?=
+ =?us-ascii?Q?Ga7igpop5W2kB2pePIUHgT6kNGMm+PzCGSuE8lGKaBtOqNLAZoLCKtziOsm4?=
+ =?us-ascii?Q?eapCV0ER6NwypEfiEiOEG6FW1CRDllCkVSFJBJ4m////mAQW+pvEn9xU7KRU?=
+ =?us-ascii?Q?JbJwikb/KVQRhsoor3/VS6pg7KoIt4m8KrRFl+6ys0BvvyZH0WlOFdUb9hzt?=
+ =?us-ascii?Q?ZfcPR809E7vVQDbemoCoaaMMwIF3HZvATaCRr0KHFv4le/yXtEYmDuL/ylYT?=
+ =?us-ascii?Q?2NxMmAZBqED/otU0gl7uzMQivaE26Sl2S9uBnRfVbtm2gYPd8IpLw7eMe3n2?=
+ =?us-ascii?Q?yG2KNUKAnsTsebh2kxfv0Uio38uZ22wlKWINAbCLVymvxbAv2tbtuU0IojQN?=
+ =?us-ascii?Q?kyT9ToWt6wjkzvHGwn/l6aWBcOyl9gooeNSqoTEqus71kBOU6wcDPK+w5PAV?=
+ =?us-ascii?Q?Yci25FQPNwBeZhAz8QDPjXsgy8Vh64UXJjiKozSDk2edLHr+yZww8MdwoNMm?=
+ =?us-ascii?Q?mxGCovtuVh2bEP8HXkb79a9mHGb9yLBsOMSHVDGp/L5k7ADX0Qe0J/00Gi26?=
+ =?us-ascii?Q?Ls6JwP/Ke/IMjFIoplvgxD/idt3aGl6edvJgVEbibFyvAqcgjW5szW7804Xr?=
+ =?us-ascii?Q?Km0A0NtdrF4a7YAsMbHsZvBoicYa0LthN/LjhcxzSG7TPv7GMqbuSJsWPd35?=
+ =?us-ascii?Q?1+RbQksFdxtk2enzppw1f243cp48J+XrsJMOKge8C1BVGeaqb+3sLThWes2l?=
+ =?us-ascii?Q?ryqpZ8fiokB418ldQ1AK/j7iqmHchKixKNCa9d56nP6RpppyXRyUPiU7QMPb?=
+ =?us-ascii?Q?DUfdoc4RCCMKmEm8Sp/8H/XRwNWrKLBEz1ZYBjfn+OT5nYUDtq4oox4Wp+0b?=
+ =?us-ascii?Q?fm9Sf7q05/8j9Ck3sguRN38PRmbvnyqjlTJu/aLcqvNgfsNlT5JxDJ4sigtb?=
+ =?us-ascii?Q?FFYRQaaZbCzN7w60dqf6Pco2+yCH0iD3AgU/VXLg8DH8eNcQsTzq7SB+u7vf?=
+ =?us-ascii?Q?BGmYW0UplKXQPWxw147XSwBJHD2r+e/5KGm0mYy+i9vLMWe4SQ5Y61DRByGN?=
+ =?us-ascii?Q?ceUCgwWDZjXnQPHFQunSEEW+?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <D29566EF4E813C4B9A3AF704A3E5607B@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5a7952e2-93d0-45c3-4eb8-08d8d40f9d05
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 13:17:59.5964
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zoxQD1bTIbztpIaEK0TvzzWnfKbbscXlYpBfpT7Yw+drGYSQKK/Ygvpntomn40GsfhuWBGnEJc6+rHg6Z2DZ4A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2799
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, 2021-02-18 at 14:01:40 +01, Paolo Bonzini wrote:
+Hi Horatiu,
 
-> On 18/02/21 13:56, David Edmondson wrote:
->> On Thursday, 2021-02-18 at 12:54:52 +01, Paolo Bonzini wrote:
->> 
->>> On 18/02/21 11:04, David Edmondson wrote:
->>>> When dumping the VMCS, retrieve the current guest value of EFER from
->>>> the kvm_vcpu structure if neither VM_EXIT_SAVE_IA32_EFER or
->>>> VM_ENTRY_LOAD_IA32_EFER is set, which can occur if the processor does
->>>> not support the relevant VM-exit/entry controls.
->>>
->>> Printing vcpu->arch.efer is not the best choice however.  Could we dump
->>> the whole MSR load/store area instead?
->> 
->> I'm happy to do that, and think that it would be useful, but it won't
->> help with the original problem (which I should have explained more).
->> 
->> If the guest has EFER_LMA set but we aren't using the entry/exit
->> controls, vm_read64(GUEST_IA32_EFER) returns 0, causing dump_vmcs() to
->> erroneously dump the PDPTRs.
->
-> Got it now.  It would sort of help, because while dumping the MSR 
-> load/store area you could get hold of the real EFER, and use it to 
-> decide whether to dump the PDPTRs.
+On Thu, Feb 18, 2021 at 12:47:26PM +0100, Horatiu Vultur wrote:
+> This patch fixes the ocelot MRP switchdev driver such that also DSA
+> driver can use these functions. Before the driver presumed that the
+> net_device uses a 'struct ocelot_port_private' as priv which was wrong.
+>=20
+> The only reason for using ocelot_port_private was to access the
+> net_device, but this can be passed as an argument because we already
+> have this information. Therefore update the functions to have also the
+> net_device parameter.
+>=20
+> Fixes: a026c50b599fa ("net: dsa: felix: Add support for MRP")
+> Fixes: d8ea7ff3995ea ("net: mscc: ocelot: Add support for MRP")
+> Reported-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+>=20
+> ---
 
-Okay, I'll do that and come back. Thanks!
+Do you mind if we drop this patch for now (the net-next pull request was
+already sent) and I will ensure that the MRP assist for Felix DSA works
+properly when I find the time to compile your mrp/cfp user space
+packages and give them a try?
 
-> Thanks,
->
-> Paolo
->
->
->>> Paolo
->>>
->>>> Fixes: 4eb64dce8d0a ("KVM: x86: dump VMCS on invalid entry")
->>>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
->>>> ---
->>>>    arch/x86/kvm/vmx/vmx.c | 14 +++++++++-----
->>>>    arch/x86/kvm/vmx/vmx.h |  2 +-
->>>>    2 files changed, 10 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->>>> index eb69fef57485..74ea4fe6f35e 100644
->>>> --- a/arch/x86/kvm/vmx/vmx.c
->>>> +++ b/arch/x86/kvm/vmx/vmx.c
->>>> @@ -5754,7 +5754,7 @@ static void vmx_dump_dtsel(char *name, uint32_t limit)
->>>>    	       vmcs_readl(limit + GUEST_GDTR_BASE - GUEST_GDTR_LIMIT));
->>>>    }
->>>>    
->>>> -void dump_vmcs(void)
->>>> +void dump_vmcs(struct kvm_vcpu *vcpu)
->>>>    {
->>>>    	u32 vmentry_ctl, vmexit_ctl;
->>>>    	u32 cpu_based_exec_ctrl, pin_based_exec_ctrl, secondary_exec_control;
->>>> @@ -5771,7 +5771,11 @@ void dump_vmcs(void)
->>>>    	cpu_based_exec_ctrl = vmcs_read32(CPU_BASED_VM_EXEC_CONTROL);
->>>>    	pin_based_exec_ctrl = vmcs_read32(PIN_BASED_VM_EXEC_CONTROL);
->>>>    	cr4 = vmcs_readl(GUEST_CR4);
->>>> -	efer = vmcs_read64(GUEST_IA32_EFER);
->>>> +	if ((vmexit_ctl & VM_EXIT_SAVE_IA32_EFER) ||
->>>> +	    (vmentry_ctl & VM_ENTRY_LOAD_IA32_EFER))
->>>> +		efer = vmcs_read64(GUEST_IA32_EFER);
->>>> +	else
->>>> +		efer = vcpu->arch.efer;
->>>>    	secondary_exec_control = 0;
->>>>    	if (cpu_has_secondary_exec_ctrls())
->>>>    		secondary_exec_control = vmcs_read32(SECONDARY_VM_EXEC_CONTROL);
->>>> @@ -5955,7 +5959,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->>>>    	}
->>>>    
->>>>    	if (exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY) {
->>>> -		dump_vmcs();
->>>> +		dump_vmcs(vcpu);
->>>>    		vcpu->run->exit_reason = KVM_EXIT_FAIL_ENTRY;
->>>>    		vcpu->run->fail_entry.hardware_entry_failure_reason
->>>>    			= exit_reason;
->>>> @@ -5964,7 +5968,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->>>>    	}
->>>>    
->>>>    	if (unlikely(vmx->fail)) {
->>>> -		dump_vmcs();
->>>> +		dump_vmcs(vcpu);
->>>>    		vcpu->run->exit_reason = KVM_EXIT_FAIL_ENTRY;
->>>>    		vcpu->run->fail_entry.hardware_entry_failure_reason
->>>>    			= vmcs_read32(VM_INSTRUCTION_ERROR);
->>>> @@ -6049,7 +6053,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->>>>    
->>>>    unexpected_vmexit:
->>>>    	vcpu_unimpl(vcpu, "vmx: unexpected exit reason 0x%x\n", exit_reason);
->>>> -	dump_vmcs();
->>>> +	dump_vmcs(vcpu);
->>>>    	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
->>>>    	vcpu->run->internal.suberror =
->>>>    			KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON;
->>>> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
->>>> index 9d3a557949ac..f8a0ce74798e 100644
->>>> --- a/arch/x86/kvm/vmx/vmx.h
->>>> +++ b/arch/x86/kvm/vmx/vmx.h
->>>> @@ -489,6 +489,6 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
->>>>    	return is_unrestricted_guest(vcpu) || __vmx_guest_state_valid(vcpu);
->>>>    }
->>>>    
->>>> -void dump_vmcs(void);
->>>> +void dump_vmcs(struct kvm_vcpu *vcpu);
->>>>    
->>>>    #endif /* __KVM_X86_VMX_H */
->>>>
->> 
->> dme.
->> 
+There are more issues to be fixed than your patch addresses. For
+example, MRP will only work with the NPI-based tagging protocol,
+somebody needs to reject MRP objects when ocelot-8021q is in use.
+I think it's better for someone who has access to a DSA setup to ensure
+that the driver is in a reasonable state.
 
-dme.
--- 
-But he said, leave me alone, I'm a family man.
+Sorry for not reviewing the MRP patches in time.=
