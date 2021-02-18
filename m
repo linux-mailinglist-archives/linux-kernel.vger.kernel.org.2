@@ -2,121 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E5031E489
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:31:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9559E31E48B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhBRDau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 22:30:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46122 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229889AbhBRDas (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 22:30:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613618961;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DoMp21k95Jp6kwK2dHRqLcGVCEPrre4aoDuTP2Iaam4=;
-        b=OamrIEH+VEGnZLPwittGP4uYK8MJoEF9GcmCLk/j+ZYMXvqwe1jmWdVErjlLIrqiNMcwNJ
-        n4fCfrZnXE780e0knojYcqd4nAE2B7Q/BlEDX50+NOCCNK3wkDXVK9q6TJ+yALg4NfgaS/
-        9H/agavA54aqlus4t0rFUxF/AeU0PZQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-51wJf5h3NYaw5muEIpHCEg-1; Wed, 17 Feb 2021 22:29:15 -0500
-X-MC-Unique: 51wJf5h3NYaw5muEIpHCEg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 78CB51005501;
-        Thu, 18 Feb 2021 03:29:12 +0000 (UTC)
-Received: from localhost (ovpn-12-112.pek2.redhat.com [10.72.12.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D3E14100164C;
-        Thu, 18 Feb 2021 03:29:08 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 11:29:06 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
-        dyoung@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
-        arnd@arndb.de, james.morse@arm.com, xiexiuqi@huawei.com,
-        guohanjun@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v14 01/11] x86: kdump: replace the hard-coded alignment
- with macro CRASH_ALIGN
-Message-ID: <20210218032607.GD2871@MiWiFi-R3L-srv>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
- <20210130071025.65258-2-chenzhou10@huawei.com>
-MIME-Version: 1.0
+        id S230166AbhBRDbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 22:31:01 -0500
+Received: from mail-mw2nam12on2118.outbound.protection.outlook.com ([40.107.244.118]:28769
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229889AbhBRDa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 22:30:58 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=id015StVCTKxWxBM2zSoPilWJ0vm3JUjdPcqaj3zgA3ZuJjARqo6WoU3UkAqpIoFsss0vq+ad4gw4FZwZ/dscb056MG0+fLqiyDcVJHbl71c0ETk7UuSkUtvaZhApZ1T1TajsmzRs8fqMd0iQqE34dBtQOD/PQ5/s2VrAYLMRuoyXsxhAjbJZJj6EGi85eTfR8uH15foFaLywENsP17iUoUIhRJTm3JccrFinm+HRDD8OkGYmvyd3XCdtKR0y2zOwrnUtztAe84AIzNtdauELqeQo3zfb4TpLKnWmhET00lvEWmGovyKcNaTC3pdmEpc6D9FzFD4E3I9J+g9q03YKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hRQP4SHLMiDmUVwU4TsI8/8I9HFUDs9VTI513DmJOi0=;
+ b=abkAuuuAxiMH2MJHs2nnK8x7QNESGBcGhGv+tXKskHkqvL4+gZPWYufqW5TbPEmMUBnl+UzJ/yff3ZGXjhgzoq9VSyVFNMqFp7G2zWl1K0lTM3dcZf/CWcytSrs1uPRjFea5Ak3QoJ9L2cfm0lujJAgzDqtxxCv4QXaOJniQam+0KDdN0Wq/I4exk/+UPyBxSmbtgKie+eE7xs1HY/b4XlZP7emlm3qW/Pf3TiydaDpPQSB9Fg+W/jTf7z3UfbfyO96rcyHvZyi7Dy5m1jCzdRhX4Wglfze8qhcQRSqJCQH/akw8l4n6Yw59MOOJJxN0iazamjoLFi6QWON7sX0AuQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hRQP4SHLMiDmUVwU4TsI8/8I9HFUDs9VTI513DmJOi0=;
+ b=csGUYcuqEiVGiUpNrYvSSWPms/XcnnKFurPWcz9QvLjZWmtFrIEvlLtcL02q3Akp1bA51SJ2aH792TJuFdJ8tGwAOUd43Iffv3es5HiWTMLQM8whvp91y07oLUTtZNLG+3PGFb/hjoNaFBwKD9yu5Grdqdowry6lhlnQfreF07k=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB3864.namprd04.prod.outlook.com (2603:10b6:a02:b1::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Thu, 18 Feb
+ 2021 03:29:49 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::6481:f617:8105:491f%2]) with mapi id 15.20.3846.038; Thu, 18 Feb 2021
+ 03:29:49 +0000
+Date:   Thu, 18 Feb 2021 11:29:41 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
+        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, Bernie Liang <bliang@analogixsemi.com>,
+        Sheng Pan <span@analogixsemi.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] dt-bindings:drm/bridge:anx7625:add vendor define
+ flags
+Message-ID: <20210218032941.GA2891@zhaomy-pc>
+References: <cover.1611802321.git.xji@analogixsemi.com>
+ <246b8bd6e51ed5c8cb3618f4259adf8aba319511.1611802321.git.xji@analogixsemi.com>
+ <20210209193010.GA4675@robh.at.kernel.org>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130071025.65258-2-chenzhou10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210209193010.GA4675@robh.at.kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Originating-IP: [61.148.116.10]
+X-ClientProxiedBy: HK2PR02CA0161.apcprd02.prod.outlook.com
+ (2603:1096:201:1f::21) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from zhaomy-pc (61.148.116.10) by HK2PR02CA0161.apcprd02.prod.outlook.com (2603:1096:201:1f::21) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3868.27 via Frontend Transport; Thu, 18 Feb 2021 03:29:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 27c9dda9-e54b-4681-03bc-08d8d3bd71ee
+X-MS-TrafficTypeDiagnostic: BYAPR04MB3864:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB3864108DC41E5F9692769136C7859@BYAPR04MB3864.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4s7eSY675ma/5f3xIOfq8oUfemkSu3oTEt9mTIXxA7Wxz8ZuiFJgSxSIfF2gPWQn1Ac2nDlglLqhLi3lb9ieJyqLMK2WO/35vJIYTx4wzX7XP2vVKYrDJleGjZafKmsn2pDPw1+TW3Ll7vsnuzWGCcyUZo2JmRODsJHQ3iwJNj5MvV83hwTh8xcqV07XcgehwJ2nCRts5HEg8U84E6jWYN2F/TVIaSFgZ0zLLeHPVmcoEXb+UcITWY0SbCzV+kBdyv8fzm4vg5Q1k/oWmLjk5pOqkExHnmNgeFMJoILBpRRdSZoH01cykFjUF1vzdDUT3tlAcCUu60vAL6ckIDbqJIrFS6MRYvZsJu3aCye6ZLy1nW80tbUx78jO+KKq+tmLp+FKXI29lpgQQ4LfP6Ooz/G+P3DFuwZFABVLnDcp1zvUtnpIhhvW1YYgNFW/I5X1Ei64arb3bqT4YsHnJ7BwYu52xdrJLcVnxeB91pepjC6KC/1vBKs4y82Jm2j/0EJiheMAuY+wS/ZUndKNJD8nWKH6oGyqVp6W/ZHsjSWLr656IsnOXaMxAlYR1CQlush1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39840400004)(396003)(366004)(376002)(55016002)(4326008)(9686003)(33656002)(86362001)(52116002)(478600001)(8936002)(316002)(2906002)(6916009)(1076003)(54906003)(5660300002)(16526019)(186003)(8676002)(956004)(66476007)(33716001)(7416002)(83380400001)(66946007)(66556008)(6496006)(26005)(6666004)(16060500005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Be/v4le0NuIrBlkWuzZcfgcorTQQVCl/auI6eMODiNfv7wc2cM3bL85Iu6Fl?=
+ =?us-ascii?Q?gaDAoc/g6/ISHLTvrOT1MWduG6He/3CZJaigLATTM3FLA1wO46YPVlFj78gj?=
+ =?us-ascii?Q?7CCieR+4XOdfHd2NwgM8edcymm+U5J12bYAkMD37kYfm0fLCkOIc4komSB1T?=
+ =?us-ascii?Q?8fAMOtHNvoX8reZrfmiDMIThxRu0GsxeWInj2TEUcO/8NahCdzY+Rwjhwgyp?=
+ =?us-ascii?Q?FnX9SmLz+bYtJZLO1c6j8oC92z5ZT3iRBC9A2BblWH67TctQS8olucX87zqE?=
+ =?us-ascii?Q?hi/Z6vxaVI7YT90n6AtmlvxIEnGb7fIJAuzFhFnlMwlqHrGCxAZoij9uwtRB?=
+ =?us-ascii?Q?kU3EClI74lM4lIOsdhXfnz7Jq8tULkhvqHoiShWZiUM25DKk44JGRFBCe0KK?=
+ =?us-ascii?Q?Ex/8f8WXH+lZJBANLgAS6gvizLfR0+ZdTpKRimmhwW10K9gP2egR5btoiGWJ?=
+ =?us-ascii?Q?lplh72SSZUi/59UehNgMBfWZc2g1r7JdYryGSaWnf4qXVoS1Rxe7pNzhqtpr?=
+ =?us-ascii?Q?V6QTg3oWcn99D3CwXk4WonKpYxj2xSN42Lr+XGEnlIgbnWF2knlGWu0rNRhc?=
+ =?us-ascii?Q?+vARuEPmilRgmGopRtu+TobRWp6QPqLyttZ0fMAniAMUVOlA/41ihANzWldy?=
+ =?us-ascii?Q?aOEjc7VlYjtsgDySrzplV6o2BeVKDGkE8ErkvuArR8Va9n3teU4ZyX2devJV?=
+ =?us-ascii?Q?ZcDyXXzTVLaxIwfeEsM2QYUOAJYIKcJQpNIbUynm2J+SpLSuFgN1iVR6mU8+?=
+ =?us-ascii?Q?hcz6X/65nPt2QUyS5FjG5besq5WVU0wIxdOh6/1UbWRFssxhceMFZ3uEL+Wb?=
+ =?us-ascii?Q?ZhjGXvEX3CbAZ55e5ug5mNHxZJuXDHIRhnfMvGkMoovf45GwbrvCKo2Hs2yJ?=
+ =?us-ascii?Q?9O8kLNZMUGVOOBbweH/iFFtPCqRumm3Cds9WdURFF2+G3SRMhlsgbLCw3iZX?=
+ =?us-ascii?Q?FIb/TQRKmFTxfB0ul1l9ISqSUO1cl9dRH6lf5BnIqqBoAOJcdz1/ttpbXh6R?=
+ =?us-ascii?Q?lCVNxnFh50np72u3S1pnaWdSWLl6471l7MegW00sMNM/7o7bNKK2TBhbA7NT?=
+ =?us-ascii?Q?7x4xdP+J/sg6o+4gWUbAeNEqFlJQks3eDw41ZztidqZCmrHNiwiQzAp4/CER?=
+ =?us-ascii?Q?zXwhdS+UcJgXghKxBbuwoDWQlemXcBEC50VkmtYFZ0QppkVW+eITfBjTRSCg?=
+ =?us-ascii?Q?r0K4U9BY1ySeqs/I6utmRJxA+95hQHXBuZTNwzqrXaJgFCivZIP+w/DRAYmN?=
+ =?us-ascii?Q?bQNC63ytadxFEA520oQmJGBU7tC/Utw+vxUkC9Ndn1ZJAGIHFWFFW+jyIKGD?=
+ =?us-ascii?Q?lTD82QXba7I+pywhPvBSIYmC?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27c9dda9-e54b-4681-03bc-08d8d3bd71ee
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 03:29:48.9237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H0PdouXBlWKCNHxv4TkTzuMo32Njwy59+hSq8KElNmnVSU++7iSRw3FOjgSjXTi8ZFoLg4DB7qsa1q3Stx070A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3864
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/30/21 at 03:10pm, Chen Zhou wrote:
-> Move CRASH_ALIGN to header asm/kexec.h for later use. Besides, the
-> alignment of crash kernel regions in x86 is 16M(CRASH_ALIGN), but
-> function reserve_crashkernel() also used 1M alignment. So just
-> replace hard-coded alignment 1M with macro CRASH_ALIGN.
+Hi Rob Herring, thanks for the comments.
+
+On Tue, Feb 09, 2021 at 01:30:10PM -0600, Rob Herring wrote:
+> On Thu, Jan 28, 2021 at 11:08:26AM +0800, Xin Ji wrote:
+> > Add 'bus-type' and 'data-lanes' define for port0, add HDCP support
+> > flag and DP tx lane0 and lane1 swing register array define.
+> > 
+> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
+> > ---
+> >  .../bindings/display/bridge/analogix,anx7625.yaml  | 54 +++++++++++++++++++++-
+> >  1 file changed, 53 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > index c789784..048deec 100644
+> > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+> > @@ -34,6 +34,24 @@ properties:
+> >      description: used for reset chip control, RESET_N pin B7.
+> >      maxItems: 1
+> >  
+> > +  analogix,lane0-swing:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > +    maxItems: 20
+> > +    description:
+> > +      an array of swing register setting for DP tx lane0 PHY, please don't
+> > +      add this property, or contact vendor.
+> > +
+> > +  analogix,lane1-swing:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> > +    maxItems: 20
+> > +    description:
+> > +      an array of swing register setting for DP tx lane1 PHY, please don't
+> > +      add this property, or contact vendor.
+> > +
+> > +  analogix,hdcp-support:
+> > +    type: boolean
+> > +    description: indicate the DP tx HDCP support or not.
 > 
-> Suggested-by: Dave Young <dyoung@redhat.com>
-> Suggested-by: Baoquan He <bhe@redhat.com>
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-> ---
->  arch/x86/include/asm/kexec.h | 3 +++
->  arch/x86/kernel/setup.c      | 5 +----
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> Please show the new properties in the example.
+OK, I'll add it in the example.
 > 
-> diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
-> index 6802c59e8252..be18dc7ae51f 100644
-> --- a/arch/x86/include/asm/kexec.h
-> +++ b/arch/x86/include/asm/kexec.h
-> @@ -18,6 +18,9 @@
->  
->  # define KEXEC_CONTROL_CODE_MAX_SIZE	2048
->  
-> +/* 16M alignment for crash kernel regions */
-> +#define CRASH_ALIGN		SZ_16M
-> +
->  #ifndef __ASSEMBLY__
->  
->  #include <linux/string.h>
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 3412c4595efd..da769845597d 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -390,9 +390,6 @@ static void __init memblock_x86_reserve_range_setup_data(void)
->  
->  #ifdef CONFIG_KEXEC_CORE
->  
-> -/* 16M alignment for crash kernel regions */
-> -#define CRASH_ALIGN		SZ_16M
-> -
->  /*
->   * Keep the crash kernel below this limit.
->   *
-> @@ -510,7 +507,7 @@ static void __init reserve_crashkernel(void)
->  	} else {
->  		unsigned long long start;
->  
-> -		start = memblock_phys_alloc_range(crash_size, SZ_1M, crash_base,
-> +		start = memblock_phys_alloc_range(crash_size, CRASH_ALIGN, crash_base,
->  						  crash_base + crash_size);
-
-Looks good to me, thx.
-
-Acked-by: Baoquan He <bhe@redhat.com>
-
->  		if (start != crash_base) {
->  			pr_info("crashkernel reservation failed - memory is in use.\n");
-> -- 
-> 2.20.1
+> > +
+> >    ports:
+> >      $ref: /schemas/graph.yaml#/properties/ports
+> >  
+> > @@ -41,13 +59,45 @@ properties:
+> >        port@0:
+> >          $ref: /schemas/graph.yaml#/properties/port
+> >          description:
+> > -          Video port for MIPI DSI input.
+> > +          Video port for MIPI input.
+> > +
+> > +        properties:
+> > +          endpoint:
+> > +            type: object
+> > +            additionalProperties: false
+> > +
+> > +            # Properties described in
+> > +            # Documentation/devicetree/bindings/media/video-interfaces.txt
 > 
-
+> Now video-interfaces.yaml which should have a $ref here. It's currently 
+> in media tree and linux-next. Follow the examples there. You'll also 
+> have to wait for 5.12-rc1 to apply to drm-misc.
+OK.
+> 
+> > +            properties:
+> > +              remote-endpoint: true
+> > +              bus-type: true
+> > +              data-lanes: true
+> > +
+> > +            required:
+> > +              - remote-endpoint
+> > +
+> > +        required:
+> > +          - endpoint
+> > +
+> >  
+> >        port@1:
+> >          $ref: /schemas/graph.yaml#/properties/port
+> >          description:
+> >            Video port for panel or connector.
+> >  
+> > +        properties:
+> > +          endpoint:
+> > +            type: object
+> > +            additionalProperties: false
+> > +
+> > +            # Properties described in
+> > +            # Documentation/devicetree/bindings/media/video-interfaces.txt
+> > +            properties:
+> > +              remote-endpoint: true
+> > +
+> > +            required:
+> > +              - remote-endpoint
+> > +
+> >      required:
+> >        - port@0
+> >        - port@1
+> > @@ -81,6 +131,8 @@ examples:
+> >                      reg = <0>;
+> >                      anx7625_in: endpoint {
+> >                          remote-endpoint = <&mipi_dsi>;
+> > +                        bus-type = <5>;
+> > +                        data-lanes = <0 1 2 3>;
+> >                      };
+> >                  };
+> >  
+> > -- 
+> > 2.7.4
+> > 
