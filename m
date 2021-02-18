@@ -2,118 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DAA31E9F7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D5731EA0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbhBRMip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:38:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbhBRLDR (ORCPT
+        id S233305AbhBRMuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:50:52 -0500
+Received: from mail-lj1-f170.google.com ([209.85.208.170]:38447 "EHLO
+        mail-lj1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231902AbhBRLEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:03:17 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E34C0617AB
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:00:16 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id u143so1037545pfc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:00:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WrPoxiKuB7nFteTe2ry4Rsr+lVl96TDbyIvoScKzpUk=;
-        b=u0JdY0rnRdgJqcQlsb1zFqwcow3ij+/ooaP2EcpEjj0IFYGHhHHbw0bgxBpFKS813P
-         OaHrpV8yO9E/OTE+uNVScWHnq+P4SdI9V8+wen8G8elqdLIQIv/37L6YaEApaKLvroDt
-         suLfDqUGqJiWNORsLDOPg4H1lW9eeIeD47R9F5uu+CLrzSxA6TeqzPMcPcFiV1cvnI34
-         kA9/kOl06oiJq0nt5GKDQNYY11xD86DUM5CVfUqmmWWF79WE+ehrJMybNFsoOVac0ezP
-         yY9/aAsWN1KI4coFivxUk4N2td3mLjpGW9dRnecKQEsbNr0hbzsV41QIuL56hHOlRZTP
-         syQA==
+        Thu, 18 Feb 2021 06:04:37 -0500
+Received: by mail-lj1-f170.google.com with SMTP id j6so3677287ljo.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:04:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WrPoxiKuB7nFteTe2ry4Rsr+lVl96TDbyIvoScKzpUk=;
-        b=EUrQf0FTp+eIYR5DZRf+hS755GNR7oWHa0NjfSKDhjOvAmX+YwtLBadmQItPmqUkMH
-         nMcf8Gn9gnWFIJGtGFf8gxlSKgb7v2wFswsWVgLOSrwoAEeoUeukqK1/coiMYa/ZFtHv
-         Nmqw+UWv1JkUyzQSZaChBtycbku2GZkVSMQ8a9KSPb5jPXWU9qKWF3OtqdmdkTLl7I8N
-         BNSNF1W6JjOzt6kcKBgkWlA2HDJyONt03w2hKKxOsAnuUrOmcYIfvfwKcCYLpvuv4tqO
-         QpYLyxBuBNkuYjzZ84iYMVE0/ARnJDHJH08S7yCdOEfDhIdGnBVOAOfxWzQ1189P0Brr
-         Yd0g==
-X-Gm-Message-State: AOAM5338n1oXICl0a3pYpkL/+MuM2/HdC5Eb2AG9KJsfc9N9hPA8zKMG
-        aVQFHcsMeGpQ+BEYH74ifdTIbg==
-X-Google-Smtp-Source: ABdhPJzCCZYNRKK7AWJkW25UkQ5W6waaRkg3G2H5FiP8f7b3uTCeGKCRbXiVu2cw+vZ4+vozE01Y2Q==
-X-Received: by 2002:a05:6a00:22d1:b029:1b4:9bb5:724c with SMTP id f17-20020a056a0022d1b02901b49bb5724cmr3849255pfj.63.1613646015953;
-        Thu, 18 Feb 2021 03:00:15 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id k11sm5301393pfc.22.2021.02.18.03.00.14
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Feb 2021 03:00:15 -0800 (PST)
-Date:   Thu, 18 Feb 2021 16:30:13 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        vireshk@kernel.org, cristian.marussi@arm.com,
-        morten.rasmussen@arm.com, chris.redpath@arm.com,
-        ionela.voinescu@arm.com
-Subject: Re: [PATCH v7 2/3] scmi-cpufreq: Get opp_shared_cpus from opp-v2 for
- EM
-Message-ID: <20210218110013.2b4ow7fzldra2srj@vireshk-i7>
-References: <20210215075139.30772-1-nicola.mazzucato@arm.com>
- <20210215075139.30772-3-nicola.mazzucato@arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uSgPXcrr0bv/k9+aoMiPbU1h1HohLPWEr1ZB1KM7VSU=;
+        b=BpO/xcDNySNLMpUUDkaKiuVLdUl0Wa+zIYx9md3Begpulpg+53eB5p2KLsCWJwT88D
+         MXMNwcs85ksgtQvhpMLru7/LbPlB5fZQySWIMLCGcr2IQCb/VZNVFA8s7coG3BW4BS6s
+         d56678RFxTQVE5TKsdgXAKeRcUjN6zNVWr7lLx2eKxTUNCrYf8gCTMHOY7Y+YpuPRhce
+         adO6Qa0QNw9cA6WAojJSIhrKgeGdk5Y7B9jQakfvHpuMRB83Bh64I/RTaLvBy0IalYU8
+         w3ZG/cQK/lH6pMg9/NAAKcnpZuxtMG+3oIlo8PQSpPv0ydIo+aHp4btXqrXSk/qBFW0i
+         /DLQ==
+X-Gm-Message-State: AOAM533apLJm/2s5E82hmI2vRwOAZhrBp5DWrzekkSP6EtDusAW7Gk5Z
+        CBNCuYzqRqEw1WvAOFfWILn6y5ILyZkFlw==
+X-Google-Smtp-Source: ABdhPJxPhsDjtWVUj4ksRrkssUUyVY+3QXund3Ixsh1OozHxG9dNcMFEhmo0IHDUDkxTNtoR9DPcZQ==
+X-Received: by 2002:a2e:5753:: with SMTP id r19mr2248004ljd.374.1613646229702;
+        Thu, 18 Feb 2021 03:03:49 -0800 (PST)
+Received: from [10.68.32.147] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.gmail.com with ESMTPSA id a30sm563533ljq.96.2021.02.18.03.03.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 03:03:49 -0800 (PST)
+Subject: Re: [PATCH] coccinelle: misc: add swap script
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
+References: <20210216080133.455456-1-efremov@linux.com>
+ <alpine.DEB.2.22.394.2102172224570.3081@hadrien>
+ <c2b60288-3e46-14e3-9be2-3f75366a4b47@linux.com>
+ <alpine.DEB.2.22.394.2102181114380.2748@hadrien>
+From:   Denis Efremov <efremov@linux.com>
+Message-ID: <4e913cc4-cb86-4552-bced-a89cbecca3b2@linux.com>
+Date:   Thu, 18 Feb 2021 14:03:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215075139.30772-3-nicola.mazzucato@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <alpine.DEB.2.22.394.2102181114380.2748@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-02-21, 07:51, Nicola Mazzucato wrote:
-> +	/*
-> +	 * Add OPPs only on those CPUs for which we haven't already done so.
-> +	 */
->  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
 
-Please add a more detailed comment here explaining why you expect OPPs
-to be present here in advance. i.e. you _may_ have policy per CPU even
-though OPP core says OPPs are shared.. It is not straight forward to
-catch otherwise.
 
->  	if (nr_opp <= 0) {
-> -		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
-> -			__func__, ret);
-> -
-> -		ret = -ENODEV;
-> -		goto out_free_priv;
-> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
-> +		if (ret) {
-> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
-> +			goto out_free_cpumask;
-> +		}
-> +
-> +		nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> +		if (nr_opp <= 0) {
-> +			dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
-> +				__func__, ret);
-> +
-> +			ret = -ENODEV;
-> +			goto out_free_opp;
-> +		}
-> +
-> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
-> +		if (ret) {
-> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
-> +				__func__, ret);
-> +
-> +			goto out_free_opp;
-> +		}
-> +
-> +		power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
-> +		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb,
-> +					    opp_shared_cpus, power_scale_mw);
->  	}
+On 2/18/21 1:17 PM, Julia Lawall wrote:
+> 
+> 
+> On Thu, 18 Feb 2021, Denis Efremov wrote:
+> 
+>>
+>>
+>> On 2/18/21 12:31 AM, Julia Lawall wrote:
+>>>> +@depends on patch@
+>>>> +identifier tmp;
+>>>> +expression a, b;
+>>>> +type T;
+>>>> +@@
+>>>> +
+>>>> +(
+>>>> +- T tmp;
+>>>> +|
+>>>> +- T tmp = 0;
+>>>> +|
+>>>> +- T *tmp = NULL;
+>>>> +)
+>>>> +... when != tmp
+>>>> +- tmp = a;
+>>>> +- a = b;
+>>>> +- b = tmp;
+>>>> ++ swap(a, b);
+>>>> +... when != tmp
+>>>
+>>> In this rule and the next one, if you remove the final ; from the b = tmp
+>>> line and from the swap line, and put it into context code afterwards, them
+>>> the generated code looks better on cases like fs/xfs/xfs_inode.c in the
+>>> function xfs_lock_two_inodes where two successive swap calls are
+>>> generated.
+>>>
+>>> There are also some cases such as drivers/net/wireless/ath/ath5k/phy.c in
+>>> the function ath5k_hw_get_median_noise_floor where the swap code makes up
+>>> a whole if branch.
+>>
+>>> In this cases it would be good to remove the {}.
+>>
+>> How this can be handled?
+>>
+>> If I use this pattern:
+>> @depends on patch@
+>> identifier tmp;
+>> expression a, b;
+>> @@
+>>
+>> (
+>>   if (...)
+>> - {
+>> -       tmp = a;
+>> -       a = b;
+>> -       b = tmp
+>> +       swap(a, b)
+>>         ;
+>> - }
+>> |
+>> -       tmp = a;
+>> -       a = b;
+>> -       b = tmp
+>> +       swap(a, b)
+>>         ;
+>> )
+>>
+>> The tool fails with error:
+>>
+>> EXN: Failure("rule starting on line 58: already tagged token:\nC code
+>> context\nFile \"drivers/net/wireless/ath/ath5k/phy.c\", line 1574,
+>> column 4, charpos = 41650\n around = 'sort',\n whole content =
+>> \t\t\t\tsort[j - 1] = tmp;") in drivers/net/wireless/ath/ath5k/phy.c
+> 
+> A disjunction basically says "at this node in the cfg, can I match the
+> first patter, or can I match the second pattern, etc."  Unfortunately in
+> this case the two branches start matching at different nodes, so the short
+> circuit aspect of a disjunction isn't used, and it matches both patterns.
+> 
+> The solution is to just make two rules.  The first for the if case and the
+> second for everything else.
+> 
 
--- 
-viresh
+  if (...)
+- {
+-       tmp = a;
+-       a = b;
+-       b = tmp
++       swap(a, b)
+        ;
+- }
+
+
+This produces "single-line ifs".
+Maybe generated patches can be improved somehow?
+Moving -+; doesn't help in this case.
+
+diff -u -p a/drivers/net/wireless/ath/ath9k/calib.c b/drivers/net/wireless/ath/ath9k/calib.c
+--- a/drivers/net/wireless/ath/ath9k/calib.c
++++ b/drivers/net/wireless/ath/ath9k/calib.c
+@@ -32,11 +32,7 @@ static int16_t ath9k_hw_get_nf_hist_mid(
+ 
+        for (i = 0; i < ATH9K_NF_CAL_HIST_MAX - 1; i++) {
+                for (j = 1; j < ATH9K_NF_CAL_HIST_MAX - i; j++) {
+-                       if (sort[j] > sort[j - 1]) {
+-                               nfval = sort[j];
+-                               sort[j] = sort[j - 1];
+-                               sort[j - 1] = nfval;
+-                       }
++                       if (sort[j] > sort[j - 1]) swap(sort[j], sort[j - 1]);
+                }
+        }
+        nfval = sort[(ATH9K_NF_CAL_HIST_MAX - 1) >> 1];
+diff -u -p a/drivers/net/wireless/ath/ath9k/ar9003_calib.c b/drivers/net/wireless/ath/ath9k/ar9003_calib.c
+--- a/drivers/net/wireless/ath/ath9k/ar9003_calib.c
++++ b/drivers/net/wireless/ath/ath9k/ar9003_calib.c
+@@ -1011,19 +1011,11 @@ static void __ar955x_tx_iq_cal_sort(stru
+                for (ix = 0; ix < MAXIQCAL - 1; ix++) {
+                        for (iy = ix + 1; iy <= MAXIQCAL - 1; iy++) {
+                                if (coeff->mag_coeff[i][im][iy] <
+-                                   coeff->mag_coeff[i][im][ix]) {
+-                                       temp = coeff->mag_coeff[i][im][ix];
+-                                       coeff->mag_coeff[i][im][ix] =
+-                                               coeff->mag_coeff[i][im][iy];
+-                                       coeff->mag_coeff[i][im][iy] = temp;
+-                               }
++                                   coeff->mag_coeff[i][im][ix]) swap(coeff->mag_coeff[i][im][ix],
++                                                                     coeff->mag_coeff[i][im][iy]);
+                                if (coeff->phs_coeff[i][im][iy] <
+-                                   coeff->phs_coeff[i][im][ix]) {
+-                                       temp = coeff->phs_coeff[i][im][ix];
+-                                       coeff->phs_coeff[i][im][ix] =
+-                                               coeff->phs_coeff[i][im][iy];
+-                                       coeff->phs_coeff[i][im][iy] = temp;
+-                               }
++                                   coeff->phs_coeff[i][im][ix]) swap(coeff->phs_coeff[i][im][ix],
++                                                                     coeff->phs_coeff[i][im][iy]);
+
+Thanks,
+Denis
