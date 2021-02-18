@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74ECD31F080
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3103B31F085
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbhBRTxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:53:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232187AbhBRTZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:25:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C12164E2F;
-        Thu, 18 Feb 2021 19:25:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613676306;
-        bh=zTgIYlyFaDJGycAett61ACFbsNZyANa5pHJS8Y3xQDg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bxXcMD6Wg3j5UI9wGwDU9FR2+01yr/5Ai+kpVSL+AJ22vI7CyWMfS5PkvvKHKMbG2
-         LvmfEPhSSQ7gPeGhjWYQsMeNiBVm5X+6JG6d0gK6TjbucfWSSC9kgjk6NMOM65QGsZ
-         /OgVUsGSxMy4+ZKJSJ3U6Cdp7ayZbnkot/6ksWkYQJRQRtO8K2dcZGGtg9q+gibars
-         8+Yg4rPQ7n7ZUzM+MiyPTh01GkueVEBr5Q2keoAHQuiqO8IXzWhd/0J8NALs3GHlVB
-         faSiI3d95wb9DigwxDw7wa5d+HOb0NXjsxMEI8UZycysjBheHik6BU05OBWSeRnbRg
-         +P6FmbgfjcQAQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id F205E40CD9; Thu, 18 Feb 2021 16:25:03 -0300 (-03)
-Date:   Thu, 18 Feb 2021 16:25:03 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Jianlin Lv <Jianlin.Lv@arm.com>, will@kernel.org,
-        mathieu.poirier@linaro.org, leo.yan@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
-        namhyung@kernel.org, guoren@kernel.org, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, kjain@linux.ibm.com,
-        atrajeev@linux.vnet.ibm.com, ravi.bangoria@linux.ibm.com,
-        anju@linux.vnet.ibm.com, iecedge@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v5] perf tools: Fix arm64 build error with gcc-11
-Message-ID: <YC6/D1KwxnkEPObJ@kernel.org>
-References: <20210218031245.2078492-1-Jianlin.Lv@arm.com>
- <bd474bfa-2bdb-53ea-5142-3a6570d63b7f@huawei.com>
+        id S231343AbhBRTyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:54:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231124AbhBRT1a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:27:30 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F477C06178B;
+        Thu, 18 Feb 2021 11:26:50 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id ly28so7425081ejb.13;
+        Thu, 18 Feb 2021 11:26:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aw8d5niVaenZLTQo98c2VrT4Pux17Z8Q4Q6X91Kfq3U=;
+        b=GPeAezxLenee31Xo7WYsfzOiXa0RGgJjYiwDgkQiabdq0SY9I2k2+j68t6u6iaPSXv
+         s4Rr7rI86o/M86G+2RpMNdFADz9ws4f7PHovioyYrrCZoTY6kSCShsNa2RRaR1f+FXd3
+         UhvOGRoPHiLb3Ogxf7wDNKNUr2ir1nrfEp/5jW89k8/CpK2qrJ5yYHfePhsjO5RXXO1F
+         lC0I2XVGT4ijrBPtzASr3o1eoNvjkXaCMzX+AxtXUMeMoWHkUTIgIdq3+NPQkolUW+3j
+         l2p8+qIvSCSfQi4DNbf7qxBSGxOvQoZ1Wc0tx9iQ/rHDKzCiTMHW+BzpqtNg9eZvfabi
+         qkYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aw8d5niVaenZLTQo98c2VrT4Pux17Z8Q4Q6X91Kfq3U=;
+        b=ZZIir37JLB2KTkeFoFfzW1M6wpdamSculs2GBhZ7AvxswZXHz4HJ1BgloxHPPYMqvr
+         1/e82/QDEaSXPKuY3gwmAUqwXFE5scpHSYSvqBS0fRFU8WcvDWJsBjAMlRG3YggVTmaw
+         KQwfuMPRS8lFecxk10RQIyrb442hnwx6MTbaZtHLJcGLiJ+i15H+KDttdtjtAMGqF8Uh
+         d4XooNowePW59wpIldq0wleYo3k/SOHRdbtiXbUqPjzEXW3xh/CIAhno7yi9/Rew3k+S
+         1C/maAsdQzyYvpHsLW47n3uYbHXElKFFoz4n7Kz+32R3Y4Xx3piHU5dve5sEyh/VQZ/u
+         WIqw==
+X-Gm-Message-State: AOAM530i3Jbf+ccjrc9G29KEC13qib2JWAwQkFX+D3ExNGj5ibdGkD50
+        oYvV5pVPHgquZSul23QB2qRNWhWlqak=
+X-Google-Smtp-Source: ABdhPJwn4q3cnEBltpPfaLDstDNi1hwtK7htRNC3aZH/s4iY/8SIp4oDQlv04evEjyPrxHkKDYiF7Q==
+X-Received: by 2002:a17:906:ae85:: with SMTP id md5mr5678930ejb.76.1613676409266;
+        Thu, 18 Feb 2021 11:26:49 -0800 (PST)
+Received: from skbuf ([188.25.217.13])
+        by smtp.gmail.com with ESMTPSA id a23sm3113645ejy.60.2021.02.18.11.26.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 11:26:48 -0800 (PST)
+Date:   Thu, 18 Feb 2021 21:26:47 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next v2 0/2] net: phy: at803x: paging support
+Message-ID: <20210218192647.m5l4wkboxms47urw@skbuf>
+References: <20210218185240.23615-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bd474bfa-2bdb-53ea-5142-3a6570d63b7f@huawei.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210218185240.23615-1-michael@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Feb 18, 2021 at 09:26:17AM +0000, John Garry escreveu:
-> On 18/02/2021 03:12, Jianlin Lv wrote:
-> > gcc version: 11.0.0 20210208 (experimental) (GCC)
-> > 
-> > Following build error on arm64:
-> > 
-> > .......
-> > In function ‘printf’,
-> >      inlined from ‘regs_dump__printf’ at util/session.c:1141:3,
-> >      inlined from ‘regs__printf’ at util/session.c:1169:2:
-> > /usr/include/aarch64-linux-gnu/bits/stdio2.h:107:10: \
-> >    error: ‘%-5s’ directive argument is null [-Werror=format-overflow=]
-> > 
-> > 107 |   return __printf_chk (__USE_FORTIFY_LEVEL - 1, __fmt, \
-> >                  __va_arg_pack ());
-> > 
-> > ......
-> > In function ‘fprintf’,
-> >    inlined from ‘perf_sample__fprintf_regs.isra’ at \
-> >      builtin-script.c:622:14:
-> > /usr/include/aarch64-linux-gnu/bits/stdio2.h:100:10: \
-> >      error: ‘%5s’ directive argument is null [-Werror=format-overflow=]
-> >    100 |   return __fprintf_chk (__stream, __USE_FORTIFY_LEVEL - 1, __fmt,
-> >    101 |                         __va_arg_pack ());
-> > 
-> > cc1: all warnings being treated as errors
-> > .......
-> > 
-> > This patch fixes Wformat-overflow warnings. Add helper function to
-> > convert NULL to "unknown".
-> > 
-> > Signed-off-by: Jianlin Lv<Jianlin.Lv@arm.com>
-> 
-> thanks
-> Reviewed-by: John Garry <john.garry@huawei.com>
+On Thu, Feb 18, 2021 at 07:52:38PM +0100, Michael Walle wrote:
+> Add paging support to the QCA AR8031/33 PHY. This will be needed if we
+> add support for the .config_inband_aneg callback, see series [1].
+>
+> The driver itself already accesses the fiber page (without proper locking).
+> The former version of this patchset converted the access to
+> phy_read_paged(), but Vladimir Oltean mentioned that it is dead code.
+> Therefore, the second patch will just remove it.
+>
+> changes since v1:
+>  - second patch will remove at803x_aneg_done() altogether
 
-
-Thanks, applied.
-
-- Arnaldo
-
+I'm pretty sure net-next is closed now, since David sent the pull
+request, and I didn't come to a conclusion yet regarding the final
+form of the phy_config_inband_aneg method either.
