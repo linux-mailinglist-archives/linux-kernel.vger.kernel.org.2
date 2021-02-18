@@ -2,141 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC27C31EE1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E657131EE1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232237AbhBRSSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:18:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbhBRPwh (ORCPT
+        id S231573AbhBRSRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:17:17 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:56000 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232745AbhBRPxD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:52:37 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E727C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:51:18 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id d8so6428440ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:51:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vRWwBoukUWpf3kaTTQrlN4IVGff71cdIbdnfQeS/5Ko=;
-        b=ZVoi+oDtUzlcdEftLSGeZhPJ2XfgGG18MLP6hZBH6xqL/SbYLgcIyQcpiW7B3eIVHg
-         JTUcIBighF7XrK/6WhbfwshV0nZbSMWBiaUICBZhk3Zz6+RZ4mgQXDccbbV+Ow6Cca7x
-         HPHX1sO/l0NCL0FBm5ZR3SVOcOtNa3KF4lq3tJX8OcmA4w7fxoo69WX2hWcOlOlwBIpV
-         RM36Jnkn3ChZmluCRMIg0UHhZsykSrg5Uo4Ygwbd/nJYp9c3aBYyL544OtNbLVYi5oxD
-         tlih6vyHpTm8EAkuDky1TDHxk5jpzgSpksejmXWGu07y959dgwi9LT3ZSSTET4WstBVK
-         /stA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vRWwBoukUWpf3kaTTQrlN4IVGff71cdIbdnfQeS/5Ko=;
-        b=stNOZ027IZ7+oc2SKG2cLwhiStZVXPdnTBunozoLrv/slYTPEvHP/ReA8PC/4LI/4Q
-         6TiU8rV0pmgnYgbkj1LyChCpm9kSxeQeqkpwQ/upgYJ0jGtR3eFM1pKPQfrXm+rbFtlL
-         TZ715u16BPrtxcBZStasR3K3x9K6azIc1j++Rsgjgq875fbVZFmZXvddvhiJVn31ZnQX
-         RCZcOAHvmnVebpb7Z2ZPkzWDjTWOdF5iZbUB55/ePGt0eJSQFfqsO7g5/LRqEdTJCfK2
-         UxxtaP9EbXCnaN594V9T1crXt/cMuQl03qXkFwCv/yOkh2Va5L6Zu/wnFfIHPxJ/LPUQ
-         jJFg==
-X-Gm-Message-State: AOAM532wQK+Pb6yccK3bIqBZxoEunQHfLbrgQ9c5wdgNjFXD5hRKiOXJ
-        dvnmbPA2a8wzqarQi9lWjlECsDcPMyE=
-X-Google-Smtp-Source: ABdhPJzNrYNsEiryeX42XZa3hzTx9KyA3LgRa7pGbNbkTpg207tfQqGq0ygSAb1Fy6rwH14MQpK7wQ==
-X-Received: by 2002:a17:907:da9:: with SMTP id go41mr4666596ejc.326.1613663476797;
-        Thu, 18 Feb 2021 07:51:16 -0800 (PST)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id o4sm2987319edw.78.2021.02.18.07.51.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 07:51:15 -0800 (PST)
-Received: by mail-wr1-f42.google.com with SMTP id b3so3514414wrj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:51:14 -0800 (PST)
-X-Received: by 2002:a5d:4b84:: with SMTP id b4mr5020550wrt.50.1613663474248;
- Thu, 18 Feb 2021 07:51:14 -0800 (PST)
+        Thu, 18 Feb 2021 10:53:03 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFfXiG164203;
+        Thu, 18 Feb 2021 15:52:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=EckJQMJCIrN0lgGMXmDPFBCLlGKJ6+RiOfY/TQd09T0=;
+ b=Be2Rt6vZJe/tUxWhefIS/tlesADf2JYUrjVcHNv7jDP/MttIIG3sQpX7VvK6xhnZLVlL
+ vu3/fVwnNDJWPNu644C6Myl8rwoO/GiXskRXgP7WtA56nW+T4OnL6xZKzIQAyMgUCRbE
+ 7xCIGI9Hdhtw1pydDlUGGw0HAFkaXA+aV5Nvwg0o2klRL//bVK1VbOoHeRe+Ti4/q/gr
+ 1b4k2kzoPJwegI56WEJDfsBnK3Wl+8GG+P1kfFZ2Q8QuIriW+PNZLLP70TR9VzrTHsme
+ /3KFGitWA5j4ImluALoaSuZ9r7WERqkvNWSdc7Q/0WGgpDzSBU74Ffr2YAZ00/2fCGGy IA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36p49bej91-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 15:52:12 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFoTiJ115432;
+        Thu, 18 Feb 2021 15:52:10 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 36prbqx0v3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 15:52:10 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IFq8MT022652;
+        Thu, 18 Feb 2021 15:52:09 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 07:52:08 -0800
+Date:   Thu, 18 Feb 2021 18:51:59 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Atul Gopinathan <atulgopinathan@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
+ variable type
+Message-ID: <20210218155159.GL2087@kadam>
+References: <20210218084404.16591-1-atulgopinathan@gmail.com>
+ <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
+ <20210218104755.GA7571@atulu-nitro>
+ <YC5bsXa+1KSuIh+v@kroah.com>
+ <20210218125220.GA19456@atulu-nitro>
 MIME-Version: 1.0
-References: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
-In-Reply-To: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 18 Feb 2021 10:50:37 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com>
-Message-ID: <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com>
-Subject: Re: [PATCH] net: check if protocol extracted by virtio_net_hdr_set_proto
- is correct
-To:     Balazs Nemeth <bnemeth@redhat.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218125220.GA19456@atulu-nitro>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180139
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180138
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 10:01 AM Balazs Nemeth <bnemeth@redhat.com> wrote:
->
-> For gso packets, virtio_net_hdr_set_proto sets the protocol (if it isn't
-> set) based on the type in the virtio net hdr, but the skb could contain
-> anything since it could come from packet_snd through a raw socket. If
-> there is a mismatch between what virtio_net_hdr_set_proto sets and
-> the actual protocol, then the skb could be handled incorrectly later
-> on by gso.
->
-> The network header of gso packets starts at 14 bytes, but a specially
-> crafted packet could fool the call to skb_flow_dissect_flow_keys_basic
-> as the network header offset in the skb could be incorrect.
-> Consequently, EINVAL is not returned.
->
-> There are even packets that can cause an infinite loop. For example, a
-> packet with ethernet type ETH_P_MPLS_UC (which is unnoticed by
-> virtio_net_hdr_to_skb) that is sent to a geneve interface will be
-> handled by geneve_build_skb. In turn, it calls
-> udp_tunnel_handle_offloads which then calls skb_reset_inner_headers.
-> After that, the packet gets passed to mpls_gso_segment. That function
-> calculates the mpls header length by taking the difference between
-> network_header and inner_network_header. Since the two are equal
-> (due to the earlier call to skb_reset_inner_headers), it will calculate
-> a header of length 0, and it will not pull any headers. Then, it will
-> call skb_mac_gso_segment which will again call mpls_gso_segment, etc...
-> This leads to the infinite loop.
->
-> For that reason, address the root cause of the issue: don't blindly
-> trust the information provided by the virtio net header. Instead,
-> check if the protocol in the packet actually matches the protocol set by
-> virtio_net_hdr_set_proto.
->
-> Fixes: 9274124f023b ("net: stricter validation of untrusted gso packets")
-> Signed-off-by: Balazs Nemeth <bnemeth@redhat.com>
-> ---
->  include/linux/virtio_net.h | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-> index e8a924eeea3d..cf2c53563f22 100644
-> --- a/include/linux/virtio_net.h
-> +++ b/include/linux/virtio_net.h
-> @@ -79,8 +79,13 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
->                 if (gso_type && skb->network_header) {
->                         struct flow_keys_basic keys;
->
-> -                       if (!skb->protocol)
-> +                       if (!skb->protocol) {
-> +                               const struct ethhdr *eth = skb_eth_hdr(skb);
-> +
+On Thu, Feb 18, 2021 at 06:22:20PM +0530, Atul Gopinathan wrote:
+> On Thu, Feb 18, 2021 at 01:21:05PM +0100, Greg KH wrote:
+> > On Thu, Feb 18, 2021 at 04:17:55PM +0530, Atul Gopinathan wrote:
+> > > On Thu, Feb 18, 2021 at 10:31:15AM +0000, Ian Abbott wrote:
+> > > > On 18/02/2021 08:44, Atul Gopinathan wrote:
+> > > > > Fix the following warning generated by sparse:
+> > > > > 
+> > > > > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
+> > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
+> > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
+> > > > > 
+> > > > > compat_ptr() has a return type of "void __user *"
+> > > > > as defined in "include/linux/compat.h"
+> > > > > 
+> > > > > cmd->chanlist is of type "unsigned int *" as defined
+> > > > > in drivers/staging/comedi/comedi.h" in struct
+> > > > > comedi_cmd.
+> > > > > 
+> > > > > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> > > > > ---
+> > > > >   drivers/staging/comedi/comedi_fops.c | 2 +-
+> > > > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> > > > > index e85a99b68f31..fc4ec38012b4 100644
+> > > > > --- a/drivers/staging/comedi/comedi_fops.c
+> > > > > +++ b/drivers/staging/comedi/comedi_fops.c
+> > > > > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+> > > > >   	cmd->scan_end_arg = v32.scan_end_arg;
+> > > > >   	cmd->stop_src = v32.stop_src;
+> > > > >   	cmd->stop_arg = v32.stop_arg;
+> > > > > -	cmd->chanlist = compat_ptr(v32.chanlist);
+> > > > > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+> > > > >   	cmd->chanlist_len = v32.chanlist_len;
+> > > > >   	cmd->data = compat_ptr(v32.data);
+> > > > >   	cmd->data_len = v32.data_len;
+> > > > > 
+> > > > 
+> > > > This patch and the other one in your series clash with commit 9d5d041eebe3
+> > > > ("staging: comedi: comedi_fops.c: added casts to get rid of sparse
+> > > > warnings") by B K Karthik.
+> > > 
+> > > Oh I see. Not sure if this is the right place to ask, but which tree and
+> > > branch should one work with when messing with the code in staging/
+> > > directory? (wanted to avoid such clashes in future)
+> > 
+> > staging-next is the best one to use from the staging.git tree.  But as
+> > the above commit was merged in 5.9-rc1, way back in July of last year, I
+> > have no idea what tree you are currently using to not hit that...
+> 
+> I'm using the staging tree alright, cloned it yesterday. Except I used the
+> --depth parameter. I believe that is the culprit. How bad a mistake is
+> that?
+> 
+> (Why depth? I'm currently staying in a remote area where internet
+> download speeds are less than 100Kbps. I tried a normal git clone of
+> the staging tree and it's estimated time was more than half a day. Not
+> to mention, it fails due to loss of connection midway every time)
 
-Unfortunately, cannot assume that the device type is ARPHRD_ETHER.
+I live in Africa and used to have this problem before Africa got
+connected to fibre optic.  Greg's suggestion of using `wget -c` to
+download a git bundle is a good one.  However, in my experience
+`wget -c` is not 100% accurate on super flakey internet.  Then if it
+fails the verify will fail and you'll have to re-download the entire
+thing.
 
-The underlying approach is sound: packets that have a gso type set in
-the virtio_net_hdr have to be IP packets.
+If you want I have a different option.  What I made a clone of Linus's
+tree.  Then I did:
 
->                                 virtio_net_hdr_set_proto(skb, hdr);
-> +                               if (skb->protocol != eth->h_proto)
-> +                                       return -EINVAL;
-> +                       }
->  retry:
->                         if (!skb_flow_dissect_flow_keys_basic(NULL, skb, &keys,
->                                                               NULL, 0, 0, 0,
-> --
-> 2.29.2
->
+tar cvvf linux.tar linux/.git
+for i in $(seq 0 116) ; do dd if=linux.tar of=linux.tar.${i} ibs=1M count=20 skip=$((20 * $i)) ; done
+
+Now I have put those on a private webserver I have.  You can download
+them by doing:
+
+for i in $(seq 0 116) ; do wget -c http://51.158.124.72/kernel_split/linux.tar.${i} ; done
+md5sum * > my_md5s
+wget http://51.158.124.72/kernel_split/md5sums
+diff -u md5sum my_md5s
+
+Re-download files which don't match
+
+for i in $(seq 0 116) ; do cat linux.tar.${i} >> linux.tar ; done
+cat linux.tar | tar xv
+cd linux
+git reset --hard
+
+Let me know if this works for you.  I will leave the source up for a
+week or two before I delete it.
+
+regards,
+dan carpenter
