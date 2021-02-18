@@ -2,232 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F9231F180
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:04:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C047331F181
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhBRVDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 16:03:39 -0500
-Received: from mail-dm6nam11on2132.outbound.protection.outlook.com ([40.107.223.132]:23072
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229671AbhBRVDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:03:09 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XvJUa7+Bg/qoKbvmPxv2rNGidKocOdpxaGsNV831DLcVSs2MfdpaGQ6+16CTms1VMb1LQEo249iVcD6i3UsGQMD01jq1VKhvamDbQJiNUUKM1wGuUVAoyepbrisqzZfvUMF4uohM2udtCpY8rT+cWvXVx/iZ4z0BvBOkg39KzNCOADN+VAmvbeciIUjUpKz68ryYj1X74qtNFRs9Xge7qnsOKjeo+qmjv/a9lwUbQF234pPAe7opTIUOHd4FGhgUGPreevpcr7vepRaliaK+V6GpcUhVlcD+QDPXG9hU/5rG2n85XgEepGEA5uEG07ouLo+QsqL6doDE58XreAm/uw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kb553JjDFfDPJo9/Pt7OBvdjOTgAfCF3uRWnDI/Q+v4=;
- b=luX4/kKLryQQBTC4jwfDPN1OyBu8xNanF7gdJpJtsSaoiSawF8fy8ePyAL/4wM4Qib3R1vrxwzC4tavl3GUHJwAnFZQyGeMTXFq5gdyfrRV2BnoJ8c8lNn9yeFW4SKa692PTM27BWyFpy2zwmK1HWgmC9wK5ns3tPJth2DBXpFTVB06OBtEBnHQ4S7/CX8c8K+LWi0xTzJYlh+2iNbBv1rZMnI6HA7Wm0QLFaltIm9TytBzrIag35pK+7M9VE6shCWkCu2CZa3FEGwMEfszRkdP3TmFCSO2ik+G+IPhhNS8YV1PiU9iHWTB7Ypjp9W7BfSXmcAut95QETn3YgWgGZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kb553JjDFfDPJo9/Pt7OBvdjOTgAfCF3uRWnDI/Q+v4=;
- b=b1f75KDkG48+ieXJLDHPsVYVgVi0Y4FEpQpQJ1Nb4FnLZUjBJy2QeAkkVTYQCefCLRiqXisKkhgSZmpAgbEoY77TD4Peg0YFaxmWgnRihj2DaOzUGraUG6p78jZJy4Gg5UjB/ol7o3Z9XYqYdNrKqkTs43mmJUTIFG+2DGbLCcc=
-Authentication-Results: microsoft.com; dkim=none (message not signed)
- header.d=none;microsoft.com; dmarc=none action=none
- header.from=microsoft.com;
-Received: from (2603:10b6:5:22d::11) by
- DM5PR21MB1543.namprd21.prod.outlook.com (2603:10b6:4:7a::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.3; Thu, 18 Feb 2021 21:02:21 +0000
-Received: from DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::1c32:e52a:6a36:3ff]) by DM6PR21MB1514.namprd21.prod.outlook.com
- ([fe80::1c32:e52a:6a36:3ff%5]) with mapi id 15.20.3890.002; Thu, 18 Feb 2021
- 21:02:21 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     kys@microsoft.com, martin.petersen@oracle.com,
-        longli@microsoft.com, wei.liu@kernel.org, jejb@linux.ibm.com,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Cc:     mikelley@microsoft.com
-Subject: [PATCH 1/1] scsi: storvsc: Enable scatterlist entry lengths > 4Kbytes
-Date:   Thu, 18 Feb 2021 13:01:27 -0800
-Message-Id: <1613682087-102535-1-git-send-email-mikelley@microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-Originating-IP: [131.107.159.144]
-X-ClientProxiedBy: MW4PR04CA0088.namprd04.prod.outlook.com
- (2603:10b6:303:6b::33) To DM6PR21MB1514.namprd21.prod.outlook.com
- (2603:10b6:5:22d::11)
+        id S229900AbhBRVDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229998AbhBRVDL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 16:03:11 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A6AC061574;
+        Thu, 18 Feb 2021 13:02:30 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id j8so195933qtp.10;
+        Thu, 18 Feb 2021 13:02:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ukyIxqNlJ/LGsj05xWnwfydGXff442c7CxHlqq96hVg=;
+        b=ipq6vSK4PSaQW30PXAL29qutxwxCryHgtsSPnMW12eeYc+VOXg7l+j12EYyBwNjgpf
+         v5Ho0VtgAB+GlvVQ7u6bVQtv/QFR6Vf/X9Zg7bGSo0rgLVLEc2rTpx61Y/e66WMKXzV0
+         Vz2t0jjHBrK2/FUqYqWZtaAI9utm/nlmELZop8A/ICtQVDhEgRwrEJ2FYKFjdNPa45PL
+         Aglkq8gF2K2xmKzFyyvEb0+2/Sn5zYcSRjDskleD9N4WFaTr2WkpdnMeoIzn0TJ0995B
+         fr04rVbS2qGaDsMOAkSLZJVC7ywrUCOjEM8fV367yiJ5tkyS09a7KdiEEjEnZdeaJXpC
+         x12Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ukyIxqNlJ/LGsj05xWnwfydGXff442c7CxHlqq96hVg=;
+        b=Jv0QTRzvOIuhsEVfXCzsZkviFdbCwEm8JSNeZBd/pfuToXchNnGyuwcgTYhkCUe1cB
+         B1Re5FvfKEZURG7e+n6zJCEwkYpAip36THIRgc7wlwnrLKkVCN3dVqM7kDA5PCbB1DM1
+         ZiA6I5oYTfszSmuIL0ZdB0Fr8zxAQsptU2eEPrMqrpN341wLIUBGAMNYe33A6oJFJEPn
+         JfnH9qp3TW6XVxiUP51DXQrCAyynbvb1MHNTh/CK9s2pLDJjSQPXxDD0Xu8C7V8etQkm
+         diwqAyujIGOC5au2fX23riS9qyS4XlkE/JYmhxPQwRg/QEQ7rupNAn/l56dK5mKPjzYy
+         7xng==
+X-Gm-Message-State: AOAM533qKbVLQU3bfN+6xGtRy6RMPHh+qDnMC4IiEGKrfgewluLxOx+9
+        DPBJuaKGrOleyjDBaApcGr4Us7EnV8g=
+X-Google-Smtp-Source: ABdhPJykpOKFmd5L0/p0/zRyiD1D7XlJleX5SVQBF9fKrMYy+ASxS7lhcUYc+buocUFqElG2vCg3bA==
+X-Received: by 2002:ac8:4f11:: with SMTP id b17mr6087502qte.139.1613682150013;
+        Thu, 18 Feb 2021 13:02:30 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id u126sm4694349qkc.107.2021.02.18.13.02.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 13:02:29 -0800 (PST)
+Subject: Re: [PATCH V7 5/6] of: unittest: Create overlay_common.dtsi and
+ testcases_common.dtsi
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
+References: <cover.1611904394.git.viresh.kumar@linaro.org>
+ <585e77b8c8a613103f3251af969514f2aa6d0e0d.1611904394.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <a87385f3-2795-27cc-42bb-d5aab033e9a8@gmail.com>
+Date:   Thu, 18 Feb 2021 15:02:28 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mhkdev.corp.microsoft.com (131.107.159.144) by MW4PR04CA0088.namprd04.prod.outlook.com (2603:10b6:303:6b::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Thu, 18 Feb 2021 21:02:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2d57950e-c7fb-4d2b-7b18-08d8d4507bdb
-X-MS-TrafficTypeDiagnostic: DM5PR21MB1543:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR21MB154314360F904086A13367AFD7859@DM5PR21MB1543.namprd21.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7uW697sJSaTMFy1NMmBB6y1SKV4Y5Wmpm9MsRA+ylsludr4hoQJEfD0suth8qlqDH4M6+CK4OnAky2xD6b4qY/Bd06c+5iysAKgFzLP7RwZczh/BvteqtkTUHJJ4k5N2w+SPwrY0vAKwv+p7mxBGxBOklEm19+m1YckWcgcwGXfmhSxwp+EBeQ3OZyY7FfxvpaPc1LuUYiphBzlcnXHwNrLX0wgju5B4tx1JOA0wpij1wR+yds7KH1PGGJQWiiy9aFe7KuqU5PQocHAJqJqLGsWyXXRfqtDubuPxeBldnV/vDtFAhIU7GTboNVbk7Zh3dmonN6+WKeTilasqIpP/nLYG9CWfS1c1MQwxAW5NBJqWRvXcBJskCHvw1UuQU+1iRIebC9Z15xtPJRLh//3hKXLe+7F/W2FrgG0YyjAblgASGdjNaICXa4gIcbsEMBv4A7VDlja5/RMq2a75aPvUCJHHOcLpD2s0ItvJmF2bClxzNb+dhfBsGYTXbwcYcyqxRjFyNyKntY0yez/uf87qOg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1514.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(396003)(376002)(366004)(5660300002)(6486002)(2906002)(8676002)(316002)(10290500003)(478600001)(36756003)(26005)(107886003)(66476007)(66946007)(52116002)(7696005)(82960400001)(2616005)(66556008)(82950400001)(4326008)(956004)(83380400001)(16526019)(86362001)(8936002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?/lHAcCoKvjJUqPSPRA+JUg/nIULXcR17+nAOZ2h+4rUi3qiMCSYnohMuFv5V?=
- =?us-ascii?Q?VgkTXDbbgX0vMFBBgpQXYfhrHD210QDLBtpnwRJHN21HsjneTOM6GLrgV/pO?=
- =?us-ascii?Q?+3wWxLMZ9VS9V3jjGV+BvrW5a00oKxXZbrT1dzI09/VCW6pjNzjC0RxuhAG2?=
- =?us-ascii?Q?iwRKVB1JuX/QY1UXH+ISoCIzxS5pjyJIaGPFTFR7LZcxQpmCicPbY7nDGWxr?=
- =?us-ascii?Q?dHiVEC84uf1WywtaufSj7t37zzRqCjKShYg2zt9LZXPJ2vYn4hU105awYmpg?=
- =?us-ascii?Q?PcTd+pOD35Wxm7dIfaU7cKWJrpdkUt+NfVdsRnZdOGVtvXZ7iD1IhnFs0fJe?=
- =?us-ascii?Q?p+uMP0fDgD+Px05ODTHtoY8K32NBDmWW27M+LgE27pKNwy5tJGXC0K6p7gTG?=
- =?us-ascii?Q?KoOoGlMsE7ODbWy61C8hQRLxGuXJmv/8ro9oqHFGLQfbyI+9nxo78hk8wCs3?=
- =?us-ascii?Q?BsJJ9myf5KjVqbCqYloI4e2CjDcAKxV2jaOciX/QjVAe5rvrdZ7H1e6podx2?=
- =?us-ascii?Q?wwTTCUgtXUkjw17GPHr14QjqDIQ4l+AzaiCSYeIyh6/dSl2PcOGwkoWpam5R?=
- =?us-ascii?Q?ckjZYrUiswMyPPPA4Irt+GYlQtiztwhwM3UcZC33MucfAuSOIspuScNCLbDr?=
- =?us-ascii?Q?YYmm2QjeLM7fVKzO02wcBeZa9ZE+0VML6630YI/nM0cWSVqrjovzUx2KNVBH?=
- =?us-ascii?Q?wHQ5M+GGPYDIh0cLYm1SUeZXcYSJZTOttW61D+gUHH2rePpj2oNaRJomhgDP?=
- =?us-ascii?Q?5PPEoj/fWTJkBQUzSTJrN/EObqpmhloPB1kZFLvg+9rHP7M095RkWtZiB5Hl?=
- =?us-ascii?Q?LebHTmui3Wt000VSvv3nvlCkbSxVL0e5Wg+Dc08ixak4wn0BmuRsBggzlu+r?=
- =?us-ascii?Q?0gtRJ0hn3Kc9lYYp4cBJKxYYSneWC8Au6izZT6Jqivr1bTAw4uCnnDJ18okl?=
- =?us-ascii?Q?2Hoet6vhSOFZkUjcO8ohjuE+HPhRtuuOsGS/K08Y29RGpUHttc0j5cZSPBm/?=
- =?us-ascii?Q?2xSQzIcIQPIZYWgDY/gYHoDke63Pk3Fe5WNo8kjXxF4SWrOouukS7WtelmqF?=
- =?us-ascii?Q?0G+GU4bNhiClpqZoDiEqIz0CQrSr79fFDlloLzHDKytaoOPXVf5rdocv/QFv?=
- =?us-ascii?Q?l7m9NbvytY40GK0EqUwiRP4V/Fz9obnPLrvjFbCd/Xz5glQDQ7W6kKl0nvQl?=
- =?us-ascii?Q?MsMoH0QWC3cjQbdbExPfUxI0SoI16BLxAz6b66y8rvQwk3WrX0Qlgm5/aHzU?=
- =?us-ascii?Q?M5cY6LYPtiFrOvmDwvjfIS536iyQJlceu0lA8rZW/oslmrQ3u8eV0t+5P4ey?=
- =?us-ascii?Q?4Jwy43jOd+OnTGH/Te0wtrsV?=
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d57950e-c7fb-4d2b-7b18-08d8d4507bdb
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1514.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 21:02:21.5111
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cNkQgEBuI2KY6Q34llTV3gLUx8RipLaiu/yyntLiOnaGPF2EF5lKMZ/d6bRxkd173mQjLSGZrPGU8uECyJ6TmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR21MB1543
+In-Reply-To: <585e77b8c8a613103f3251af969514f2aa6d0e0d.1611904394.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-storvsc currently sets .dma_boundary to limit scatterlist entries
-to 4 Kbytes, which is less efficient with huge pages that offer
-large chunks of contiguous physical memory. Improve the algorithm
-for creating the Hyper-V guest physical address PFN array so
-that scatterlist entries with lengths > 4Kbytes are handled.
-As a result, remove the .dma_boundary setting.
+On 1/29/21 1:24 AM, Viresh Kumar wrote:
+> In order to build-test the same unit-test files using fdtoverlay tool,
+> move the device nodes from the existing overlay_base.dts and
+> testcases_common.dts files to .dtsi counterparts. The .dts files now
+> include the new .dtsi files, resulting in exactly the same behavior as
+> earlier.
+> 
+> The .dtsi files can now be reused for compile time tests using
+> fdtoverlay (will be done by a later commit).
+> 
+> This is required because the base files passed to fdtoverlay tool
+> shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
+> tag).
+> 
+> Note that this commit also moves "testcase-device2" node to
+> testcases.dts from tests-interrupts.dtsi, as this node has a deliberate
+> error in it and is only relevant for runtime testing done with
+> unittest.c.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+>  drivers/of/unittest-data/testcases.dts        | 18 ++--
+>  .../of/unittest-data/testcases_common.dtsi    | 19 ++++
+>  .../of/unittest-data/tests-interrupts.dtsi    |  7 --
+>  5 files changed, 118 insertions(+), 107 deletions(-)
+>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+> 
+> diff --git a/drivers/of/unittest-data/overlay_base.dts b/drivers/of/unittest-data/overlay_base.dts
+> index 99ab9d12d00b..ab9014589c5d 100644
+> --- a/drivers/of/unittest-data/overlay_base.dts
+> +++ b/drivers/of/unittest-data/overlay_base.dts
+> @@ -2,92 +2,4 @@
+>  /dts-v1/;
+>  /plugin/;
+>  
+> -/*
+> - * Base device tree that overlays will be applied against.
+> - *
+> - * Do not add any properties in node "/".
+> - * Do not add any nodes other than "/testcase-data-2" in node "/".
+> - * Do not add anything that would result in dtc creating node "/__fixups__".
+> - * dtc will create nodes "/__symbols__" and "/__local_fixups__".
+> - */
+> -
+> -/ {
+> -	testcase-data-2 {
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -
+> -		electric_1: substation@100 {
+> -			compatible = "ot,big-volts-control";
+> -			reg = < 0x00000100 0x100 >;
+> -			status = "disabled";
+> -
+> -			hvac_1: hvac-medium-1 {
+> -				compatible = "ot,hvac-medium";
+> -				heat-range = < 50 75 >;
+> -				cool-range = < 60 80 >;
+> -			};
+> -
+> -			spin_ctrl_1: motor-1 {
+> -				compatible = "ot,ferris-wheel-motor";
+> -				spin = "clockwise";
+> -				rpm_avail = < 50 >;
+> -			};
+> -
+> -			spin_ctrl_2: motor-8 {
+> -				compatible = "ot,roller-coaster-motor";
+> -			};
+> -		};
+> -
+> -		rides_1: fairway-1 {
+> -			#address-cells = <1>;
+> -			#size-cells = <1>;
+> -			compatible = "ot,rides";
+> -			status = "disabled";
+> -			orientation = < 127 >;
+> -
+> -			ride@100 {
+> -				#address-cells = <1>;
+> -				#size-cells = <1>;
+> -				compatible = "ot,roller-coaster";
+> -				reg = < 0x00000100 0x100 >;
+> -				hvac-provider = < &hvac_1 >;
+> -				hvac-thermostat = < 29 > ;
+> -				hvac-zones = < 14 >;
+> -				hvac-zone-names = "operator";
+> -				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
+> -				spin-controller-names = "track_1", "track_2";
+> -				queues = < 2 >;
+> -
+> -				track@30 {
+> -					reg = < 0x00000030 0x10 >;
+> -				};
+> -
+> -				track@40 {
+> -					reg = < 0x00000040 0x10 >;
+> -				};
+> -
+> -			};
+> -		};
+> -
+> -		lights_1: lights@30000 {
+> -			compatible = "ot,work-lights";
+> -			reg = < 0x00030000 0x1000 >;
+> -			status = "disabled";
+> -		};
+> -
+> -		lights_2: lights@40000 {
+> -			compatible = "ot,show-lights";
+> -			reg = < 0x00040000 0x1000 >;
+> -			status = "disabled";
+> -			rate = < 13 138 >;
+> -		};
+> -
+> -		retail_1: vending@50000 {
+> -			reg = < 0x00050000 0x1000 >;
+> -			compatible = "ot,tickets";
+> -			status = "disabled";
+> -		};
+> -
+> -	};
+> -};
+> -
+> +#include "overlay_common.dtsi"
+> diff --git a/drivers/of/unittest-data/overlay_common.dtsi b/drivers/of/unittest-data/overlay_common.dtsi
+> new file mode 100644
+> index 000000000000..08874a72556e
+> --- /dev/null
+> +++ b/drivers/of/unittest-data/overlay_common.dtsi
+> @@ -0,0 +1,91 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * Base device tree that overlays will be applied against.
+> + *
+> + * Do not add any properties in node "/".
+> + * Do not add any nodes other than "/testcase-data-2" in node "/".
+> + * Do not add anything that would result in dtc creating node "/__fixups__".
+> + * dtc will create nodes "/__symbols__" and "/__local_fixups__".
+> + */
+> +
+> +/ {
+> +	testcase-data-2 {
+> +		#address-cells = <1>;
+> +		#size-cells = <1>;
+> +
+> +		electric_1: substation@100 {
+> +			compatible = "ot,big-volts-control";
+> +			reg = < 0x00000100 0x100 >;
+> +			status = "disabled";
+> +
+> +			hvac_1: hvac-medium-1 {
+> +				compatible = "ot,hvac-medium";
+> +				heat-range = < 50 75 >;
+> +				cool-range = < 60 80 >;
+> +			};
+> +
+> +			spin_ctrl_1: motor-1 {
+> +				compatible = "ot,ferris-wheel-motor";
+> +				spin = "clockwise";
+> +				rpm_avail = < 50 >;
+> +			};
+> +
+> +			spin_ctrl_2: motor-8 {
+> +				compatible = "ot,roller-coaster-motor";
+> +			};
+> +		};
+> +
+> +		rides_1: fairway-1 {
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +			compatible = "ot,rides";
+> +			status = "disabled";
+> +			orientation = < 127 >;
+> +
+> +			ride@100 {
+> +				#address-cells = <1>;
+> +				#size-cells = <1>;
+> +				compatible = "ot,roller-coaster";
+> +				reg = < 0x00000100 0x100 >;
+> +				hvac-provider = < &hvac_1 >;
+> +				hvac-thermostat = < 29 > ;
+> +				hvac-zones = < 14 >;
+> +				hvac-zone-names = "operator";
+> +				spin-controller = < &spin_ctrl_2 5 &spin_ctrl_2 7 >;
+> +				spin-controller-names = "track_1", "track_2";
+> +				queues = < 2 >;
+> +
+> +				track@30 {
+> +					reg = < 0x00000030 0x10 >;
+> +				};
+> +
+> +				track@40 {
+> +					reg = < 0x00000040 0x10 >;
+> +				};
+> +
+> +			};
+> +		};
+> +
+> +		lights_1: lights@30000 {
+> +			compatible = "ot,work-lights";
+> +			reg = < 0x00030000 0x1000 >;
+> +			status = "disabled";
+> +		};
+> +
+> +		lights_2: lights@40000 {
+> +			compatible = "ot,show-lights";
+> +			reg = < 0x00040000 0x1000 >;
+> +			status = "disabled";
+> +			rate = < 13 138 >;
+> +		};
+> +
+> +		retail_1: vending@50000 {
+> +			reg = < 0x00050000 0x1000 >;
+> +			compatible = "ot,tickets";
+> +			status = "disabled";
+> +		};
+> +
+> +	};
+> +};
+> +
+> diff --git a/drivers/of/unittest-data/testcases.dts b/drivers/of/unittest-data/testcases.dts
+> index a85b5e1c381a..04b9e7bb30d9 100644
+> --- a/drivers/of/unittest-data/testcases.dts
+> +++ b/drivers/of/unittest-data/testcases.dts
+> @@ -2,19 +2,15 @@
+>  /dts-v1/;
+>  /plugin/;
+>  
+> +#include "testcases_common.dtsi"
+> +
+>  / {
 
-The improved algorithm also adds support for scatterlist
-entries with offsets >= 4Kbytes, which is supported by many
-other SCSI low-level drivers.  And it retains support for
-architectures where possibly PAGE_SIZE != HV_HYP_PAGE_SIZE
-(such as ARM64).
+Please add:
 
-Signed-off-by: Michael Kelley <mikelley@microsoft.com>
----
- drivers/scsi/storvsc_drv.c | 63 ++++++++++++++++------------------------------
- 1 file changed, 22 insertions(+), 41 deletions(-)
+        /*
+         * testcase data that intentionally results in an error
+         * is located here instead of in testcases_common.dtsi
+         * so that the static overlay apply tests will not include
+         * the error
+         */
 
-diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-index 2e4fa77..5d06061 100644
---- a/drivers/scsi/storvsc_drv.c
-+++ b/drivers/scsi/storvsc_drv.c
-@@ -1678,9 +1678,8 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	struct storvsc_cmd_request *cmd_request = scsi_cmd_priv(scmnd);
- 	int i;
- 	struct scatterlist *sgl;
--	unsigned int sg_count = 0;
-+	unsigned int sg_count;
- 	struct vmscsi_request *vm_srb;
--	struct scatterlist *cur_sgl;
- 	struct vmbus_packet_mpb_array  *payload;
- 	u32 payload_sz;
- 	u32 length;
-@@ -1759,7 +1758,7 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	payload_sz = sizeof(cmd_request->mpb);
- 
- 	if (sg_count) {
--		unsigned int hvpgoff = 0;
-+		unsigned int hvpgoff, sgl_size;
- 		unsigned long offset_in_hvpg = sgl->offset & ~HV_HYP_PAGE_MASK;
- 		unsigned int hvpg_count = HVPFN_UP(offset_in_hvpg + length);
- 		u64 hvpfn;
-@@ -1773,51 +1772,35 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 				return SCSI_MLQUEUE_DEVICE_BUSY;
- 		}
- 
--		/*
--		 * sgl is a list of PAGEs, and payload->range.pfn_array
--		 * expects the page number in the unit of HV_HYP_PAGE_SIZE (the
--		 * page size that Hyper-V uses, so here we need to divide PAGEs
--		 * into HV_HYP_PAGE in case that PAGE_SIZE > HV_HYP_PAGE_SIZE.
--		 * Besides, payload->range.offset should be the offset in one
--		 * HV_HYP_PAGE.
--		 */
- 		payload->range.len = length;
- 		payload->range.offset = offset_in_hvpg;
--		hvpgoff = sgl->offset >> HV_HYP_PAGE_SHIFT;
- 
--		cur_sgl = sgl;
--		for (i = 0; i < hvpg_count; i++) {
-+
-+		for (i = 0; sgl != NULL; sgl = sg_next(sgl)) {
- 			/*
--			 * 'i' is the index of hv pages in the payload and
--			 * 'hvpgoff' is the offset (in hv pages) of the first
--			 * hv page in the the first page. The relationship
--			 * between the sum of 'i' and 'hvpgoff' and the offset
--			 * (in hv pages) in a payload page ('hvpgoff_in_page')
--			 * is as follow:
--			 *
--			 * |------------------ PAGE -------------------|
--			 * |   NR_HV_HYP_PAGES_IN_PAGE hvpgs in total  |
--			 * |hvpg|hvpg| ...              |hvpg|... |hvpg|
--			 * ^         ^                                 ^                 ^
--			 * +-hvpgoff-+                                 +-hvpgoff_in_page-+
--			 *           ^                                                   |
--			 *           +--------------------- i ---------------------------+
-+			 * Init values for the current sgl entry. sgl_size
-+			 * and hvpgoff are in units of Hyper-V size pages.
-+			 * Handling the PAGE_SIZE != HV_HYP_PAGE_SIZE case
-+			 * also handles values of sgl->offset that are
-+			 * larger than PAGE_SIZE. Such offsets are handled
-+			 * even on other than the first sgl entry, provided
-+			 * they are a multiple of PAGE_SIZE.
- 			 */
--			unsigned int hvpgoff_in_page =
--				(i + hvpgoff) % NR_HV_HYP_PAGES_IN_PAGE;
-+			sgl_size = HVPFN_UP(sgl->offset + sgl->length);
-+			hvpgoff = sgl->offset >> HV_HYP_PAGE_SHIFT;
-+			hvpfn = page_to_hvpfn(sg_page(sgl));
- 
- 			/*
--			 * Two cases that we need to fetch a page:
--			 * 1) i == 0, the first step or
--			 * 2) hvpgoff_in_page == 0, when we reach the boundary
--			 *    of a page.
-+			 * Fill the next portion of the PFN array with
-+			 * sequential Hyper-V PFNs for the continguous physical
-+			 * memory described by the sgl entry. The end of the
-+			 * last sgl should be reached at the same time that
-+			 * the PFN array is filled.
- 			 */
--			if (hvpgoff_in_page == 0 || i == 0) {
--				hvpfn = page_to_hvpfn(sg_page(cur_sgl));
--				cur_sgl = sg_next(cur_sgl);
-+			while (hvpgoff != sgl_size) {
-+				payload->range.pfn_array[i++] =
-+							hvpfn + hvpgoff++;
- 			}
--
--			payload->range.pfn_array[i] = hvpfn + hvpgoff_in_page;
- 		}
- 	}
- 
-@@ -1851,8 +1834,6 @@ static int storvsc_queuecommand(struct Scsi_Host *host, struct scsi_cmnd *scmnd)
- 	.slave_configure =	storvsc_device_configure,
- 	.cmd_per_lun =		2048,
- 	.this_id =		-1,
--	/* Make sure we dont get a sg segment crosses a page boundary */
--	.dma_boundary =		PAGE_SIZE-1,
- 	/* Ensure there are no gaps in presented sgls */
- 	.virt_boundary_mask =	PAGE_SIZE-1,
- 	.no_write_same =	1,
--- 
-1.8.3.1
+>  	testcase-data {
+> -		changeset {
+> -			prop-update = "hello";
+> -			prop-remove = "world";
+> -			node-remove {
+> -			};
+> +		testcase-device2 {
+> +			compatible = "testcase-device";
+> +			interrupt-parent = <&test_intc2>;
+> +			interrupts = <1>; /* invalid specifier - too short */
+>  		};
+>  	};
+> +
+>  };
+> -#include "tests-phandle.dtsi"
+> -#include "tests-interrupts.dtsi"
+> -#include "tests-match.dtsi"
+> -#include "tests-address.dtsi"
+> -#include "tests-platform.dtsi"
+> -#include "tests-overlay.dtsi"
+> diff --git a/drivers/of/unittest-data/testcases_common.dtsi b/drivers/of/unittest-data/testcases_common.dtsi
+> new file mode 100644
+> index 000000000000..19292bbb4cbb
+> --- /dev/null
+> +++ b/drivers/of/unittest-data/testcases_common.dtsi
+> @@ -0,0 +1,19 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/ {
+> +	testcase-data {
+> +		changeset {
+> +			prop-update = "hello";
+> +			prop-remove = "world";
+> +			node-remove {
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +#include "tests-phandle.dtsi"
+> +#include "tests-interrupts.dtsi"
+> +#include "tests-match.dtsi"
+> +#include "tests-address.dtsi"
+> +#include "tests-platform.dtsi"
+> +#include "tests-overlay.dtsi"
+> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
+> index ec175e800725..0e5914611107 100644
+> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
+> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
+> @@ -61,12 +61,5 @@ testcase-device1 {
+>  			interrupt-parent = <&test_intc0>;
+>  			interrupts = <1>;
+>  		};
+
+Please add:
+
+                /*
+                 * testcase data that intentionally results in an error
+                 * is located in testcases.dts instead of in this file
+                 * so that the static overlay apply tests will not include
+                 * the error
+                 */
+
+> -
+> -		testcase-device2 {
+> -			compatible = "testcase-device";
+> -			interrupt-parent = <&test_intc2>;
+> -			interrupts = <1>; /* invalid specifier - too short */
+> -		};
+>  	};
+> -
+>  };
+> 
 
