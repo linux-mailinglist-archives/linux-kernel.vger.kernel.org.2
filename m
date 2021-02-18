@@ -2,145 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C50D31EF36
+	by mail.lfdr.de (Postfix) with ESMTP id 1C33931EF35
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233760AbhBRTGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:06:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S233753AbhBRTGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234356AbhBRRcJ (ORCPT
+        with ESMTP id S234365AbhBRRcn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:32:09 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECD3C061574;
-        Thu, 18 Feb 2021 09:31:28 -0800 (PST)
-Date:   Thu, 18 Feb 2021 18:31:24 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613669486;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=nLRBuVVWvc8V3uVW45ibYaABYhWDXpjkZ5kiNjBTKQk=;
-        b=vE8Bl+8aDfr6BdcXD0gj7H/o1sA/w1cOYT0V+8JyW4JtxHErc89pA+Pz0Fk6Wf0PtuEPZF
-        OUbk5JZ6Tnj37TmhRYe8+9ByHXaU9ipZ/aj6qtaNVVRecTQphXzP4a/keZkPzQW2XO5sSs
-        KiFpcT/P/Ag/ZCUWYMYMVgVBdU905FgHIJjhWq18dUwExx0sFUYdWLo0tfTozIU334n+28
-        t7td9yWBl4tSAT0EGD13Oim8HReFtrayyovUbnsPi2/LT84olfqqwJspTMIFO6cIVtpxB/
-        hJHmWgoM++Xo9UATugjrVZAkctW3NGxsOruzmk/lWaLP6xULT1oOEMVMM0+JPQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613669486;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=nLRBuVVWvc8V3uVW45ibYaABYhWDXpjkZ5kiNjBTKQk=;
-        b=r5bBoiddMeojU/BxwZp5Q3JGx4e4u1hPZNUoeV1fuLyrO/Kd20S7+FDo7vfYfc8V9op81O
-        jV+zSj0NPzBS8fDg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        netdev@vger.kernel.org
-Subject: [PATCH] kcov: Remove kcov include from sched.h and move it to its
- users.
-Message-ID: <20210218173124.iy5iyqv3a4oia4vv@linutronix.de>
+        Thu, 18 Feb 2021 12:32:43 -0500
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99100C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:32:02 -0800 (PST)
+Received: by mail-qt1-x82f.google.com with SMTP id b24so1936830qtp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:32:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0/TTwRZM5UWkeVt7hK50tjPjIUS/Pw+aCUTdCE6xC00=;
+        b=R/KR62gElCW/P34+zKXp/hSu2ZY5/ttxG2NPuBugoIHOJgJvFh0N1n5yTEoFM1sm4z
+         zmX0GHIwrq99bVreyqpHUroTjFhGXockDFXTHOb0Leb/rw3G7weLzZi1Vob0MB7Xphfu
+         iMZMyPoBha2eTTQeMYy3ERTKQF0kqG8zysxswJszTOdvgBu5Ed1IvxC3y+aD1iZ7RNbr
+         gudypmPAKl9HtKArAzbyqnrEpm0rXtUwbCbthidw5oCQAMo4ruhQ/6aMbyyZ5nF3fQhN
+         OuS+ovN4PrZYFHYBM10dxgIPHtwey4XdfR/aiSZzlXKnU2ftPFtTQpp1nDFRVjDi2gT8
+         iMQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0/TTwRZM5UWkeVt7hK50tjPjIUS/Pw+aCUTdCE6xC00=;
+        b=tYXpM6eGPNvR0YF5D9zwKwV45zTtj8eS77hNF2GLdlhFov+K7Sc31FJ9zfu9w70IpR
+         +6IP2IBYRQOquOpHqTp4RtN3GtLtXx+GYZZzZ1ZUWprWErcK6vX5p9s2LE7LHPEZ8Blp
+         3hYKJPprE4TtlLx485d+/euJMqdegv2Wc5+1xtyyBTEH1sB+0BYUBuhgs25nnx1OpOz8
+         023yS33PdSmGPWErb/imC6PhttX8CDkMjwpYdDWpQ+hp1J8lRx8+ewkmoqqTc6MXA58j
+         T9EJaZDEQ/5XjxH2qFUqw3sN54XInXzSHq73YXQZVkr7QBmdZz41KKycu4OE4b0dK2dK
+         5KnA==
+X-Gm-Message-State: AOAM531mzHAIxWLI5fLmQilPzz9Cgh7kzntANwMMGAuJXbFhjxiPNWcL
+        bxGaAJFq+fZH+dywDzyTZfX1Ig==
+X-Google-Smtp-Source: ABdhPJwEA6bqbvvkVsfcbWVRnFE/CFIp5IrjcT3JJfF32pFPZja2DfF74jrm0qh5CHPzi5RQB9ireA==
+X-Received: by 2002:ac8:4a83:: with SMTP id l3mr5273238qtq.350.1613669521898;
+        Thu, 18 Feb 2021 09:32:01 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id f188sm4392003qkj.110.2021.02.18.09.32.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 09:32:01 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lCn9k-00B5jy-Tc; Thu, 18 Feb 2021 13:32:00 -0400
+Date:   Thu, 18 Feb 2021 13:32:00 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Davidlohr Bueso <dbueso@suse.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] hugetlb: fix update_and_free_page contig page struct
+ assumption
+Message-ID: <20210218173200.GA2643399@ziepe.ca>
+References: <20210217184926.33567-1-mike.kravetz@oracle.com>
+ <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
+ <20210218144554.GS2858050@casper.infradead.org>
+ <20210218172500.GA4718@ziepe.ca>
+ <19612088-4856-4BE9-A731-BB903511F352@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <19612088-4856-4BE9-A731-BB903511F352@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recent addition of in_serving_softirq() to kconv.h results in
-compile failure on PREEMPT_RT because it requires
-task_struct::softirq_disable_cnt. This is not available if kconv.h is
-included from sched.h.
+On Thu, Feb 18, 2021 at 12:27:58PM -0500, Zi Yan wrote:
+> On 18 Feb 2021, at 12:25, Jason Gunthorpe wrote:
+> 
+> > On Thu, Feb 18, 2021 at 02:45:54PM +0000, Matthew Wilcox wrote:
+> >> On Wed, Feb 17, 2021 at 11:02:52AM -0800, Andrew Morton wrote:
+> >>> On Wed, 17 Feb 2021 10:49:25 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> >>>> page structs are not guaranteed to be contiguous for gigantic pages.  The
+> >>>
+> >>> June 2014.  That's a long lurk time for a bug.  I wonder if some later
+> >>> commit revealed it.
+> >>
+> >> I would suggest that gigantic pages have not seen much use.  Certainly
+> >> performance with Intel CPUs on benchmarks that I've been involved with
+> >> showed lower performance with 1GB pages than with 2MB pages until quite
+> >> recently.
+> >
+> > I suggested in another thread that maybe it is time to consider
+> > dropping this "feature"
+>
+> You mean dropping gigantic page support in hugetlb?
 
-It is not needed to include kconv.h from sched.h. All but the net/ user
-already include the kconv header file.
+No, I mean dropping support for arches that want to do:
 
-Move the include of the kconv.h header from sched.h it its users.
-Additionally include sched.h from kconv.h to ensure that everything
-task_struct related is available.
+   tail_page != head_page + tail_page_nr
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/kcov.h  | 1 +
- include/linux/sched.h | 1 -
- net/core/skbuff.c     | 1 +
- net/mac80211/iface.c  | 1 +
- net/mac80211/rx.c     | 1 +
- 5 files changed, 4 insertions(+), 1 deletion(-)
+because they can't allocate the required page array either virtually
+or physically contiguously.
 
-diff --git a/include/linux/kcov.h b/include/linux/kcov.h
-index 4e3037dc12048..55dc338f6bcdd 100644
---- a/include/linux/kcov.h
-+++ b/include/linux/kcov.h
-@@ -2,6 +2,7 @@
- #ifndef _LINUX_KCOV_H
- #define _LINUX_KCOV_H
- 
-+#include <linux/sched.h>
- #include <uapi/linux/kcov.h>
- 
- struct task_struct;
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 7337630326751..183e9d90841cb 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -14,7 +14,6 @@
- #include <linux/pid.h>
- #include <linux/sem.h>
- #include <linux/shm.h>
--#include <linux/kcov.h>
- #include <linux/mutex.h>
- #include <linux/plist.h>
- #include <linux/hrtimer.h>
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 785daff48030d..e64d0a2e21c31 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -60,6 +60,7 @@
- #include <linux/prefetch.h>
- #include <linux/if_vlan.h>
- #include <linux/mpls.h>
-+#include <linux/kcov.h>
- 
- #include <net/protocol.h>
- #include <net/dst.h>
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index b31417f40bd56..39943c33abbfa 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -15,6 +15,7 @@
- #include <linux/if_arp.h>
- #include <linux/netdevice.h>
- #include <linux/rtnetlink.h>
-+#include <linux/kcov.h>
- #include <net/mac80211.h>
- #include <net/ieee80211_radiotap.h>
- #include "ieee80211_i.h"
-diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
-index 972895e9f22dc..3527b17f235a8 100644
---- a/net/mac80211/rx.c
-+++ b/net/mac80211/rx.c
-@@ -17,6 +17,7 @@
- #include <linux/etherdevice.h>
- #include <linux/rcupdate.h>
- #include <linux/export.h>
-+#include <linux/kcov.h>
- #include <linux/bitops.h>
- #include <net/mac80211.h>
- #include <net/ieee80211_radiotap.h>
--- 
-2.30.0
+It seems like quite a burden on the core mm for a very niche, and
+maybe even non-existant, case. 
 
+It was originally done for PPC, can these PPC systems use VMEMMAP now?
+
+> > The cost to fix GUP to be compatible with this will hurt normal
+> > GUP performance - and again, that nobody has hit this bug in GUP
+> > further suggests the feature isn't used..
+> 
+> A easy fix might be to make gigantic hugetlb page depends on
+> CONFIG_SPARSEMEM_VMEMMAP, which guarantee all struct pages are contiguous.
+
+Yes, exactly.
+
+Jason
