@@ -2,114 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37DB31F098
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7244831F099
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232001AbhBRT5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:57:45 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:46703 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231248AbhBRTji (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:39:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613677177; x=1645213177;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oKsHfUJVhU6NzBcOiwBQNhHOXYxZmcLSOoVnV4tzW8k=;
-  b=rzrG9lN7Q3r0CvAZgoMFUqGCYnpeBEpbpl/jZJk9yNddXvg8Cq8DwQeb
-   KTlkvBeiN4erPCYm8Sf+6cS179atqUDUvM/TGDAwXu/Z3SZmKVHoxTnUx
-   IerTUEOOy9UHu2NzJqR/G4ZDy8BpCw0bs8vCi8D82aoTaNdoTWMnSvpJp
-   Vj5KH9nPT0uvsdOiBwbgEWGSd2kWtN2RfZdDhYTclPml+RojtMXTURyGg
-   l2OuytbatQmmwlHi63Xkkjbg2zeOvpKFDZP8xDjOU2OXavHMKSLq7Xe6v
-   Fs5fEX4JavLq8ZTNscqK1uMqg6G8BUXO5Q88sL904D9rITRaALiMMlPNU
-   A==;
-IronPort-SDR: 5WR+IHikk2vaDf+84YecMb+lbC531azptAkr/7fi37LgZQYo4djotzaeIif36m0EeAdnjNxlG3
- hHTVo6AY5ERg3957cnoeJNC6kwcvTwWkD3kZtZPsE2ClOpSxve2JUukUKvzfOFGJ5rWgn5OgGQ
- RTsGVT8WyJx2UTJ0rK0H/Tu6R3cgDosuwVR6fCHBby0V90fPxzvM4V478tcLPXvQcZMUR6q9IF
- YVu98iIutvJYTofJkiNMIhxyyWY+ubE/gC/PTE9WhyvbeyFhfrzRuTua+XlDVcEF0UfJJ9tGG5
- Xio=
-X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
-   d="scan'208";a="110291652"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 12:38:20 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 12:38:19 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 18 Feb 2021 12:38:19 -0700
-Date:   Thu, 18 Feb 2021 20:38:18 +0100
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
-        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next] net: mscc: Fix MRP switchdev driver
-Message-ID: <20210218193818.r6o2reb3agcv5ovk@soft-dev3.localdomain>
-References: <20210218114726.648927-1-horatiu.vultur@microchip.com>
- <20210218131758.g4vsvmowggxdklfj@skbuf>
+        id S232108AbhBRT5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:57:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59634 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232642AbhBRTkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:40:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A4C464E2F;
+        Thu, 18 Feb 2021 19:39:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613677181;
+        bh=tBD1P8c4rgp4gpHNuXKB5YTNOT6ZZZi8PeaBJ/uIre4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PKUjImZYWKoxUO3W375W+FVN5TiewBliAora8HsCmorQnlhIYk9Pg0Tob/NOOIh9W
+         PKEQGqB2Mieg9DhOjFv/T3oMxdtc6G8yu4FZPG0G4pe3RbOS4X2VcMz0xMNz35sQqy
+         fQ0h0AizuhA92/GVQxjNUsJWE5CNGlvyvd6auPzqgP81H98ianQqbDH+pwhFqOdyP0
+         q59cVB8pjFHp2noKlU6EFxst/f5ku5EAciEc4k2LnfrQRfprQ7FqfGp1Nh+Q2lAqZd
+         EiJWMXVL33fi+enI3DgSU2CikaKiTwpgcuC/AsycUuWkdPMT4yNMtg/EE148psVt9j
+         4v77F1+D9VrqQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 43E7D40CD9; Thu, 18 Feb 2021 16:39:38 -0300 (-03)
+Date:   Thu, 18 Feb 2021 16:39:38 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Nicholas Fraser <nfraser@codeweavers.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        "Frank Ch. Eigler" <fche@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        linux-kernel@vger.kernel.org,
+        Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+Subject: Re: [PATCH 1/2] perf report: Remove redundant libbfd checks
+Message-ID: <YC7CetsRKrZXf8WE@kernel.org>
+References: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
+ <94758ca1-0031-d7c6-6c6a-900fd77ef695@codeweavers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218131758.g4vsvmowggxdklfj@skbuf>
+In-Reply-To: <94758ca1-0031-d7c6-6c6a-900fd77ef695@codeweavers.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 02/18/2021 13:17, Vladimir Oltean wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+Em Tue, Feb 16, 2021 at 03:37:20PM -0500, Nicholas Fraser escreveu:
+> This removes the redundant checks bfd_check_format() and
+> bfd_target_elf_flavour. They were previously checking different files.
+
+you forgot the:
+
+Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+
+I'm adding it, ok?
+
+I'm also addressing Jiri's remark about spaces surrounding |
+
+- Arnaldo
+> ---
+>  tools/perf/util/symbol.c | 9 ---------
+>  1 file changed, 9 deletions(-)
 > 
-
-Hi Vladimir,
-
-> Hi Horatiu,
-> 
-> On Thu, Feb 18, 2021 at 12:47:26PM +0100, Horatiu Vultur wrote:
-> > This patch fixes the ocelot MRP switchdev driver such that also DSA
-> > driver can use these functions. Before the driver presumed that the
-> > net_device uses a 'struct ocelot_port_private' as priv which was wrong.
-> >
-> > The only reason for using ocelot_port_private was to access the
-> > net_device, but this can be passed as an argument because we already
-> > have this information. Therefore update the functions to have also the
-> > net_device parameter.
-> >
-> > Fixes: a026c50b599fa ("net: dsa: felix: Add support for MRP")
-> > Fixes: d8ea7ff3995ea ("net: mscc: ocelot: Add support for MRP")
-> > Reported-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> >
-> > ---
-> 
-> Do you mind if we drop this patch for now (the net-next pull request was
-> already sent) and I will ensure that the MRP assist for Felix DSA works
-> properly when I find the time to compile your mrp/cfp user space
-> packages and give them a try?
-
-Yes is perfectly fine for me.
-
-> 
-> There are more issues to be fixed than your patch addresses. For
-> example, MRP will only work with the NPI-based tagging protocol,
-> somebody needs to reject MRP objects when ocelot-8021q is in use.
-> I think it's better for someone who has access to a DSA setup to ensure
-> that the driver is in a reasonable state.
-
-I agree on that. If this will require any changes to the switchdev part,
-I would definitely like to test those.
-
-> 
-> Sorry for not reviewing the MRP patches in time.
+> diff --git a/tools/perf/util/symbol.c b/tools/perf/util/symbol.c
+> index 492c873713cc..08f6f57c84fd 100644
+> --- a/tools/perf/util/symbol.c
+> +++ b/tools/perf/util/symbol.c
+> @@ -1586,15 +1586,6 @@ int dso__load_bfd_symbols(struct dso *dso, const char *debugfile)
+>  	if (section)
+>  		dso->text_offset = section->vma - section->filepos;
+>  
+> -	if (!bfd_check_format(abfd, bfd_object)) {
+> -		pr_debug2("%s: cannot read %s bfd file.\n", __func__,
+> -			  debugfile);
+> -		goto out_close;
+> -	}
+> -
+> -	if (bfd_get_flavour(abfd) == bfd_target_elf_flavour)
+> -		goto out_close;
+> -
+>  	symbols_size = bfd_get_symtab_upper_bound(abfd);
+>  	if (symbols_size == 0) {
+>  		bfd_close(abfd);
+> -- 
+> 2.30.1
 
 -- 
-/Horatiu
+
+- Arnaldo
