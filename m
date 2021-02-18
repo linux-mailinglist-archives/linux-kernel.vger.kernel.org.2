@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C00631E6CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 08:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC9A31E6D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 08:19:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhBRHQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 02:16:11 -0500
-Received: from mail-eopbgr750052.outbound.protection.outlook.com ([40.107.75.52]:57831
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
+        id S231365AbhBRHSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 02:18:30 -0500
+Received: from mail-mw2nam12on2061.outbound.protection.outlook.com ([40.107.244.61]:15584
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229840AbhBRGpc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:45:32 -0500
+        id S231231AbhBRGsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 01:48:51 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FoYt56xcgm9so4AD6Mdlcjixh5gwVfGWQwnGyvh/soMDU+klYK+Sb1ekrBHtJutMKFScJhHYr7/NZPZeXAWqGYk7qfISey1Gm77cJ/uBXX9VnXM6JDi3LK3OTXtpova3INfzaP7ovCKPgHn9e5hDRpBn0A6La3llepZqlZFLswzhEQx9QhPjsYhdCX0+inK0/2S9RSdjQgZqiULp3Ov5RBvTAKKpb+nCepLiZv1r+Oes/8lEMfeZo5Z9rzlzbvQkf/s81iAwsnoHf2d4Tlbasyrtrf+EAkkU3HhLJtiEgsfuiqgL2jUrcL4aWBg0kILKGXs0da1XJuFKPpGyQ0gWVg==
+ b=FHvIM24G8NBnSgwL4Le+getJ2mBVIEaCkYhf+LUgrUkJkOn5lfWKzM6fgDoWA44SFxzdLqBqVYQhCqKOjaEz6nDzCNF6wJjcl27nLisQ0pZ/kujBIOVJe4dHzPOK4l0kILpBPsRaxJ8Poe3qcclh0x69uYM11xJXj62LNBU9KHHrrF12kfTsMGdS2rjdzp21sUEk/97cdndastFqeIIdljNESlNH9nnVUZRE/sXk2EmB6k839SGSkfL6TstdHfUeAUtSDaLfmRFDQf5tlEOnDS6ku04sn065sPPPBp+U2NIq+l1fJMwHWv6ujcz5C3JiRjuuml8N+aTK1nJuXZlkmg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MH75bMgRvey+23+YPhY1kY4OrluTKKzkggy9KxfMevY=;
- b=XjTBdreK/YzuEbLMCQhP3Jfl9zRlat7maLWd8FumHIVlsu1iPWPrQ14axPNpM3xNpuATU9PZQpORwhJUlt6c3hzVAY3Oj/F0ae7IRc0B3tVV98LMmXdWDlgNXhKl2gjOu/uhs429ucooxPrasRhPbuLBZVyLtI5XEOBp+57B1qaN+PryaicyAgzvF3w+fSN3wtJElD1w2nf60n7H4u2iJ3bAJhmU4m1AZ1SOoAh3xxDHAe/dyOQfVkK05UE9y8MLGmms0V7ZY9aYxtSIsg1mdCHwcIASBZC8MbWMSnZner+/sPSIebMHaph5mj4xoo7698m8WVnT/7p0RyoyRulJRA==
+ bh=Fleb1iBzWsGyuP1NKtPAbxh0lsXBFDXwdSCSN3VjQjI=;
+ b=BzAx9ilRgMYbv4dJFuVOr5FB2eyPsiBJlpqTdwjBBjDqyh6Hi4uA6LBrNi8Mm1qytdI0Qjp4gzc/1pwrVDZeO6zf4fJWAhLBbCHj+yM9jC+h6scpGaEqk+U0YXr64vJf6z875AZS9snkpjGOc1Ohm4TmwB04tJgPesgxbMH8eHhbyiFKIBqt5MXFDOzeu8pZOTWidGIo/tfmz+qrd+tj7R9YMKlVWNanQ7AQoehPRwVDY1nHGAwctf1ahPSX0YpK7zmUxWDppiGXDpszvx2WbynGHJ34Kq7x1QK4Mz3X3fyaZ8OKEypminyOY3O8QRsiLy7ekz654ABLCA8BcKVXEQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
  dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MH75bMgRvey+23+YPhY1kY4OrluTKKzkggy9KxfMevY=;
- b=nQHBVMWDIKr1Uod/Ped45iQ/ymwAdbvkOo2E5BggOkiCpn15mmS5+6HVTR0AuatsPfcicvKcbImyofGx2vUj8tCrEeo9SC/FMmcMq2mbzvCBJa1FHOi4PcLejY+LLAfemwrnIZIGwI4JP7rTfUgKEBLaCIVaGHDVG5bC4sxMZhw=
-Received: from DM6PR02CA0110.namprd02.prod.outlook.com (2603:10b6:5:1b4::12)
- by BYAPR02MB4901.namprd02.prod.outlook.com (2603:10b6:a03:46::12) with
+ bh=Fleb1iBzWsGyuP1NKtPAbxh0lsXBFDXwdSCSN3VjQjI=;
+ b=JMyhezEpGvvhZRSKrEXTUz3PH8SKM2B8J3t4a3SxClI5bMTNk3mxMYOl/yKiTxExGz8eE7eL2p6XY1p2XK5I0CVLbCtBbTb/TrzH8H5sAdHXbG2puDlP36FpteB6nPwI3SAOX83ynzYg0u/gzVmtDDpYmBLVM1Ip1LiLCrvVNDE=
+Received: from CY4PR13CA0046.namprd13.prod.outlook.com (2603:10b6:903:99::32)
+ by SN6PR02MB5536.namprd02.prod.outlook.com (2603:10b6:805:f0::25) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Thu, 18 Feb
- 2021 06:44:41 +0000
-Received: from CY1NAM02FT008.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:1b4:cafe::11) by DM6PR02CA0110.outlook.office365.com
- (2603:10b6:5:1b4::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend
- Transport; Thu, 18 Feb 2021 06:44:40 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.31; Thu, 18 Feb
+ 2021 06:45:49 +0000
+Received: from CY1NAM02FT051.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:903:99:cafe::79) by CY4PR13CA0046.outlook.office365.com
+ (2603:10b6:903:99::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.12 via Frontend
+ Transport; Thu, 18 Feb 2021 06:45:49 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
  smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=bestguesspass action=none
@@ -46,16 +46,16 @@ Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
  149.199.62.198 as permitted sender) receiver=protection.outlook.com;
  client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
 Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT008.mail.protection.outlook.com (10.152.75.59) with Microsoft SMTP
+ CY1NAM02FT051.mail.protection.outlook.com (10.152.74.148) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.3868.27 via Frontend Transport; Thu, 18 Feb 2021 06:44:40 +0000
+ 15.20.3868.27 via Frontend Transport; Thu, 18 Feb 2021 06:45:49 +0000
 Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1913.5; Wed, 17 Feb 2021 22:44:39 -0800
+ 15.1.1913.5; Wed, 17 Feb 2021 22:45:40 -0800
 Received: from smtp.xilinx.com (172.19.127.96) by
  xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.1913.5 via Frontend Transport; Wed, 17 Feb 2021 22:44:39 -0800
+ 15.1.1913.5 via Frontend Transport; Wed, 17 Feb 2021 22:45:40 -0800
 Envelope-to: maxz@xilinx.com,
  max.zhen@xilinx.com,
  michal.simek@xilinx.com,
@@ -68,12 +68,12 @@ Envelope-to: maxz@xilinx.com,
  devicetree@vger.kernel.org,
  linux-fpga@vger.kernel.org,
  linux-kernel@vger.kernel.org
-Received: from [172.19.72.212] (port=40176 helo=xsj-xw9400.xilinx.com)
+Received: from [172.19.72.212] (port=40188 helo=xsj-xw9400.xilinx.com)
         by smtp.xilinx.com with esmtp (Exim 4.90)
         (envelope-from <lizhi.hou@xilinx.com>)
-        id 1lCd3H-0000b8-S5; Wed, 17 Feb 2021 22:44:39 -0800
+        id 1lCd4G-0000l4-2o; Wed, 17 Feb 2021 22:45:40 -0800
 Received: by xsj-xw9400.xilinx.com (Postfix, from userid 21952)
-        id 29A2F600127; Wed, 17 Feb 2021 22:41:06 -0800 (PST)
+        id 795F860012B; Wed, 17 Feb 2021 22:41:06 -0800 (PST)
 From:   Lizhi Hou <lizhi.hou@xilinx.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Lizhi Hou <lizhih@xilinx.com>, <linux-fpga@vger.kernel.org>,
@@ -81,9 +81,9 @@ CC:     Lizhi Hou <lizhih@xilinx.com>, <linux-fpga@vger.kernel.org>,
         <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
         <devicetree@vger.kernel.org>, <trix@redhat.com>, <mdf@kernel.org>,
         <robh@kernel.org>, Max Zhen <max.zhen@xilinx.com>
-Subject: [PATCH V3 XRT Alveo 09/18] fpga: xrt: fpga-mgr and region implementation for xclbin download
-Date:   Wed, 17 Feb 2021 22:40:10 -0800
-Message-ID: <20210218064019.29189-10-lizhih@xilinx.com>
+Subject: [PATCH V3 XRT Alveo 14/18] fpga: xrt: clock platform driver
+Date:   Wed, 17 Feb 2021 22:40:15 -0800
+Message-ID: <20210218064019.29189-15-lizhih@xilinx.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210218064019.29189-1-lizhih@xilinx.com>
 References: <20210218064019.29189-1-lizhih@xilinx.com>
@@ -92,746 +92,732 @@ Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6292f500-a5d7-47be-fb6a-08d8d3d8aad5
-X-MS-TrafficTypeDiagnostic: BYAPR02MB4901:
-X-Microsoft-Antispam-PRVS: <BYAPR02MB49016C605CEBADA9EA3BEF39A1859@BYAPR02MB4901.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:608;
+X-MS-Office365-Filtering-Correlation-Id: 6cb7b324-7a25-4f19-4911-08d8d3d8d3e0
+X-MS-TrafficTypeDiagnostic: SN6PR02MB5536:
+X-Microsoft-Antispam-PRVS: <SN6PR02MB553690C1D48821D574143843A1859@SN6PR02MB5536.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ng/CpkvHhkx9zY2NQ4WhqqAr3BQga9ksW/+7xofQGQG/6nd0U3ukkNwUiahj8vUJfOKoUqrVyPYmOy0z/krVvF72dOJIuZHUv2YLGlydJ0TODub6YGK/HoSKNhr7id7kG7pfTblSnWyLdv8gl5MEgOWQgXdJaSninX9YU3QAcQRusaw4LcDuDB77ZYDvsKNZFjvFRm30KpdNKgxUYO0v/fSo3nUmU3RMS7+eefGdTAof9bkam5ZjaYJ+uRjGudzgqVggY4pp1+JIBb6wlVvqxIVcBCVKJyJQ9qHpGjuosakXpd9mG8/UdHe6B+55/mfmY6IBsapEKQiJpDSMdB3wXda/ED/hl9BNW+8UFIREvyHhcJfYTtwGeCQdit55/Th4Dg0THPIEonRp/5R/9NwSgZ4iwMqRmix8Dz3owK1U9whK+9a78OrElu/WzBUOt5tfgq/bvlDZteR9P+HikVcxzIa+7lnDfA79wy9hWQqqet5KWBMNPHmMmggUWAukGhGYh9CRCESC8ZEwX7HLNBvPi2/k1to4depVn51dTD3rUjORFf2TuZ/LGfGdPvWmsHNR0V2hNErnPPdUByvOc+XQgWQbbKLfAo5wuoy3joD8YApdlblGvaOoSD1VuJK6VhT4kqINk1HUJGBNWiDzX3Z3/Vt8Lq4rdqZ2m7+MYtZN29k=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(346002)(136003)(36840700001)(46966006)(54906003)(478600001)(82310400003)(356005)(70586007)(8936002)(44832011)(70206006)(42186006)(8676002)(36860700001)(7636003)(82740400003)(316002)(36906005)(2906002)(107886003)(426003)(6266002)(6916009)(30864003)(186003)(47076005)(4326008)(336012)(2616005)(83380400001)(1076003)(6666004)(36756003)(5660300002)(26005);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: Q7wdU5+kUoyB8Z+fjIyCkpYXwI297eol5QnHU+v54UnXHtHIs1CVE3DgHY4Vf7wKHw3Xhrg6itSEsGSOygUrftz668KKo9m9Gx/SffIKDgrRatbZ9Z/Zn7KqDUid8sPT01hm91tWvWcZimXB0HUCHiFyNcYI9Tl60VeOm4IoIZ8cIUy/DVttEsl7e2RC02TXRNLNpOXL+T+12p5O4QcTvr3USMHXYni0aZhOBNLY0OSQVE3Tsmdpv1uFaf+01BbPuCqhFgFwV2pHc8jPlLPRIz1qjFh6TGeVlBQFHUCE7+FH5TOXwci5ZHb767VZplUl/GZHhu/6G2N+CQBfupdvduq1KN8/oZrhA/1YJVF7Fd0l5YWhxByAfHC9r/ac0qLbYa/3EB4/huEor8PwkMzgN4JkbceBaV12ZDipSBCx3buC0n5cHVVVsGtAJWXznv8x2Nc3e8tZaAvTV2nBOLxyu16EeBLeKXmyZJej8/cH2Dm2eOwe3KmHS2cXoioWZ81PrBovq+JVNYA0b5wXGKu26BB3pjCnEcpUl35cNS/FA1XeOWXbwO6l05A605XTsMggSPwUNy6mze/zgnW29yH83vWSOMf1vGCW1A8iEp3U0VY/eOK7HeYD27cpKdrqG9+zCiBAX+v4p2ziIXxU89L19VfC1yao+hrqasoJNFX5nYU=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(396003)(39860400002)(46966006)(36840700001)(316002)(8936002)(70206006)(6666004)(6916009)(6266002)(478600001)(1076003)(336012)(36860700001)(42186006)(36756003)(8676002)(2616005)(83380400001)(54906003)(2906002)(30864003)(107886003)(36906005)(82740400003)(4326008)(70586007)(47076005)(426003)(82310400003)(356005)(7636003)(5660300002)(44832011)(26005)(186003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 06:44:40.4842
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 06:45:49.3389
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6292f500-a5d7-47be-fb6a-08d8d3d8aad5
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6cb7b324-7a25-4f19-4911-08d8d3d8d3e0
 X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT008.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT051.eop-nam02.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB4901
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5536
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fpga-mgr and region implementation for xclbin download which will be
-called from main platform driver
+Add clock driver. Clock is a hardware function discovered by walking
+xclbin metadata. A platform device node will be created for it. Other
+part of driver configures clock through clock driver.
 
 Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
 Signed-off-by: Max Zhen <max.zhen@xilinx.com>
 Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
 ---
- drivers/fpga/xrt/mgmt/fmgr-drv.c    | 187 +++++++++++
- drivers/fpga/xrt/mgmt/fmgr.h        |  28 ++
- drivers/fpga/xrt/mgmt/main-region.c | 471 ++++++++++++++++++++++++++++
- 3 files changed, 686 insertions(+)
- create mode 100644 drivers/fpga/xrt/mgmt/fmgr-drv.c
- create mode 100644 drivers/fpga/xrt/mgmt/fmgr.h
- create mode 100644 drivers/fpga/xrt/mgmt/main-region.c
+ drivers/fpga/xrt/include/xleaf/clock.h |  31 ++
+ drivers/fpga/xrt/lib/xleaf/clock.c     | 648 +++++++++++++++++++++++++
+ 2 files changed, 679 insertions(+)
+ create mode 100644 drivers/fpga/xrt/include/xleaf/clock.h
+ create mode 100644 drivers/fpga/xrt/lib/xleaf/clock.c
 
-diff --git a/drivers/fpga/xrt/mgmt/fmgr-drv.c b/drivers/fpga/xrt/mgmt/fmgr-drv.c
+diff --git a/drivers/fpga/xrt/include/xleaf/clock.h b/drivers/fpga/xrt/include/xleaf/clock.h
 new file mode 100644
-index 000000000000..a44d35ecdb60
+index 000000000000..a2da59b32551
 --- /dev/null
-+++ b/drivers/fpga/xrt/mgmt/fmgr-drv.c
-@@ -0,0 +1,187 @@
-+// SPDX-License-Identifier: GPL-2.0
++++ b/drivers/fpga/xrt/include/xleaf/clock.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * FPGA Manager Support for Xilinx Alveo Management Function Driver
++ * Header file for XRT Clock Leaf Driver
 + *
 + * Copyright (C) 2020-2021 Xilinx, Inc.
 + *
-+ * Authors: Sonal.Santan@xilinx.com
++ * Authors:
++ *	Lizhi Hou <Lizhi.Hou@xilinx.com>
 + */
 +
-+#include <linux/cred.h>
-+#include <linux/efi.h>
-+#include <linux/fpga/fpga-mgr.h>
-+#include <linux/platform_device.h>
-+#include <linux/module.h>
-+#include <linux/vmalloc.h>
++#ifndef _XRT_CLOCK_H_
++#define _XRT_CLOCK_H_
 +
-+#include "xclbin-helper.h"
 +#include "xleaf.h"
-+#include "fmgr.h"
-+#include "xleaf/axigate.h"
-+#include "xleaf/icap.h"
-+#include "main-impl.h"
++#include <linux/xrt/xclbin.h>
 +
-+struct xfpga_class {
-+	const struct platform_device *pdev;
-+	char                          name[64];
++/*
++ * CLOCK driver IOCTL calls.
++ */
++enum xrt_clock_ioctl_cmd {
++	XRT_CLOCK_SET = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
++	XRT_CLOCK_GET,
++	XRT_CLOCK_VERIFY,
++};
++
++struct xrt_clock_ioctl_get {
++	u16 freq;
++	u32 freq_cnter;
++};
++
++#endif	/* _XRT_CLOCK_H_ */
+diff --git a/drivers/fpga/xrt/lib/xleaf/clock.c b/drivers/fpga/xrt/lib/xleaf/clock.c
+new file mode 100644
+index 000000000000..a067b501a607
+--- /dev/null
++++ b/drivers/fpga/xrt/lib/xleaf/clock.c
+@@ -0,0 +1,648 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Xilinx Alveo FPGA Clock Wizard Driver
++ *
++ * Copyright (C) 2020-2021 Xilinx, Inc.
++ *
++ * Authors:
++ *      Lizhi Hou<Lizhi.Hou@xilinx.com>
++ *      Sonal Santan <sonals@xilinx.com>
++ *      David Zhang <davidzha@xilinx.com>
++ */
++
++#include <linux/mod_devicetable.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/device.h>
++#include <linux/io.h>
++#include "metadata.h"
++#include "xleaf.h"
++#include "xleaf/clock.h"
++#include "xleaf/clkfreq.h"
++
++/* CLOCK_MAX_NUM_CLOCKS should be a concept from XCLBIN_ in the future */
++#define CLOCK_MAX_NUM_CLOCKS		4
++#define OCL_CLKWIZ_STATUS_OFFSET	0x4
++#define OCL_CLKWIZ_STATUS_MASK		0xffff
++#define OCL_CLKWIZ_STATUS_MEASURE_START	0x1
++#define OCL_CLKWIZ_STATUS_MEASURE_DONE	0x2
++#define OCL_CLKWIZ_CONFIG_OFFSET(n)	(0x200 + 4 * (n))
++#define CLOCK_DEFAULT_EXPIRE_SECS	1
++
++#define CLOCK_ERR(clock, fmt, arg...)	\
++	xrt_err((clock)->pdev, fmt "\n", ##arg)
++#define CLOCK_WARN(clock, fmt, arg...)	\
++	xrt_warn((clock)->pdev, fmt "\n", ##arg)
++#define CLOCK_INFO(clock, fmt, arg...)	\
++	xrt_info((clock)->pdev, fmt "\n", ##arg)
++#define CLOCK_DBG(clock, fmt, arg...)	\
++	xrt_dbg((clock)->pdev, fmt "\n", ##arg)
++
++#define XRT_CLOCK	"xrt_clock"
++
++struct clock {
++	struct platform_device  *pdev;
++	void __iomem		*clock_base;
++	struct mutex		clock_lock; /* clock dev lock */
++
++	const char		*clock_ep_name;
 +};
 +
 +/*
-+ * xclbin download plumbing -- find the download subsystem, ICAP and
-+ * pass the xclbin for heavy lifting
++ * Precomputed table with config0 and config2 register values together with
++ * target frequency. The steps are approximately 5 MHz apart. Table is
++ * generated by wiz.pl.
 + */
-+static int xmgmt_download_bitstream(struct platform_device *pdev,
-+				    const struct axlf *xclbin)
++static const struct xmgmt_ocl_clockwiz {
++	/* target frequency */
++	unsigned short ocl;
++	/* config0 register */
++	unsigned long config0;
++	/* config2 register */
++	unsigned int config2;
++} frequency_table[] = {
++	{/*1275.000*/	10.000,		0x02EE0C01,	0x0001F47F},
++	{/*1575.000*/   15.000,		0x02EE0F01,     0x00000069},
++	{/*1600.000*/   20.000,		0x00001001,     0x00000050},
++	{/*1600.000*/   25.000,		0x00001001,     0x00000040},
++	{/*1575.000*/   30.000,		0x02EE0F01,     0x0001F434},
++	{/*1575.000*/   35.000,		0x02EE0F01,     0x0000002D},
++	{/*1600.000*/   40.000,		0x00001001,     0x00000028},
++	{/*1575.000*/   45.000,		0x02EE0F01,     0x00000023},
++	{/*1600.000*/   50.000,		0x00001001,     0x00000020},
++	{/*1512.500*/   55.000,		0x007D0F01,     0x0001F41B},
++	{/*1575.000*/   60.000,		0x02EE0F01,     0x0000FA1A},
++	{/*1462.500*/   65.000,		0x02710E01,     0x0001F416},
++	{/*1575.000*/   70.000,		0x02EE0F01,     0x0001F416},
++	{/*1575.000*/   75.000,		0x02EE0F01,     0x00000015},
++	{/*1600.000*/   80.000,		0x00001001,     0x00000014},
++	{/*1487.500*/   85.000,		0x036B0E01,     0x0001F411},
++	{/*1575.000*/   90.000,		0x02EE0F01,     0x0001F411},
++	{/*1425.000*/   95.000,		0x00FA0E01,     0x0000000F},
++	{/*1600.000*/   100.000,	0x00001001,     0x00000010},
++	{/*1575.000*/   105.000,	0x02EE0F01,     0x0000000F},
++	{/*1512.500*/   110.000,	0x007D0F01,     0x0002EE0D},
++	{/*1437.500*/   115.000,	0x01770E01,     0x0001F40C},
++	{/*1575.000*/   120.000,	0x02EE0F01,     0x00007D0D},
++	{/*1562.500*/   125.000,	0x02710F01,     0x0001F40C},
++	{/*1462.500*/   130.000,	0x02710E01,     0x0000FA0B},
++	{/*1350.000*/   135.000,	0x01F40D01,     0x0000000A},
++	{/*1575.000*/   140.000,	0x02EE0F01,     0x0000FA0B},
++	{/*1450.000*/   145.000,	0x01F40E01,     0x0000000A},
++	{/*1575.000*/   150.000,	0x02EE0F01,     0x0001F40A},
++	{/*1550.000*/   155.000,	0x01F40F01,     0x0000000A},
++	{/*1600.000*/   160.000,	0x00001001,     0x0000000A},
++	{/*1237.500*/   165.000,	0x01770C01,     0x0001F407},
++	{/*1487.500*/   170.000,	0x036B0E01,     0x0002EE08},
++	{/*1575.000*/   175.000,	0x02EE0F01,     0x00000009},
++	{/*1575.000*/   180.000,	0x02EE0F01,     0x0002EE08},
++	{/*1387.500*/   185.000,	0x036B0D01,     0x0001F407},
++	{/*1425.000*/   190.000,	0x00FA0E01,     0x0001F407},
++	{/*1462.500*/   195.000,	0x02710E01,     0x0001F407},
++	{/*1600.000*/   200.000,	0x00001001,     0x00000008},
++	{/*1537.500*/   205.000,        0x01770F01,     0x0001F407},
++	{/*1575.000*/   210.000,        0x02EE0F01,     0x0001F407},
++	{/*1075.000*/   215.000,        0x02EE0A01,     0x00000005},
++	{/*1512.500*/   220.000,        0x007D0F01,     0x00036B06},
++	{/*1575.000*/   225.000,        0x02EE0F01,     0x00000007},
++	{/*1437.500*/   230.000,        0x01770E01,     0x0000FA06},
++	{/*1175.000*/   235.000,        0x02EE0B01,     0x00000005},
++	{/*1500.000*/   240.000,        0x00000F01,     0x0000FA06},
++	{/*1225.000*/   245.000,        0x00FA0C01,     0x00000005},
++	{/*1562.500*/   250.000,        0x02710F01,     0x0000FA06},
++	{/*1275.000*/   255.000,        0x02EE0C01,     0x00000005},
++	{/*1462.500*/   260.000,        0x02710E01,     0x00027105},
++	{/*1325.000*/   265.000,        0x00FA0D01,     0x00000005},
++	{/*1350.000*/   270.000,        0x01F40D01,     0x00000005},
++	{/*1512.500*/   275.000,        0x007D0F01,     0x0001F405},
++	{/*1575.000*/   280.000,        0x02EE0F01,     0x00027105},
++	{/*1425.000*/   285.000,        0x00FA0E01,     0x00000005},
++	{/*1450.000*/   290.000,        0x01F40E01,     0x00000005},
++	{/*1475.000*/   295.000,        0x02EE0E01,     0x00000005},
++	{/*1575.000*/   300.000,        0x02EE0F01,     0x0000FA05},
++	{/*1525.000*/   305.000,        0x00FA0F01,     0x00000005},
++	{/*1550.000*/   310.000,        0x01F40F01,     0x00000005},
++	{/*1575.000*/   315.000,        0x02EE0F01,     0x00000005},
++	{/*1600.000*/   320.000,        0x00001001,     0x00000005},
++	{/*1462.500*/   325.000,        0x02710E01,     0x0001F404},
++	{/*1237.500*/   330.000,        0x01770C01,     0x0002EE03},
++	{/*837.500*/    335.000,        0x01770801,     0x0001F402},
++	{/*1487.500*/   340.000,        0x036B0E01,     0x00017704},
++	{/*862.500*/    345.000,        0x02710801,     0x0001F402},
++	{/*1575.000*/   350.000,        0x02EE0F01,     0x0001F404},
++	{/*887.500*/    355.000,        0x036B0801,     0x0001F402},
++	{/*1575.000*/   360.000,        0x02EE0F01,     0x00017704},
++	{/*912.500*/    365.000,        0x007D0901,     0x0001F402},
++	{/*1387.500*/   370.000,        0x036B0D01,     0x0002EE03},
++	{/*1500.000*/   375.000,        0x00000F01,     0x00000004},
++	{/*1425.000*/   380.000,        0x00FA0E01,     0x0002EE03},
++	{/*962.500*/    385.000,        0x02710901,     0x0001F402},
++	{/*1462.500*/   390.000,        0x02710E01,     0x0002EE03},
++	{/*987.500*/    395.000,        0x036B0901,     0x0001F402},
++	{/*1600.000*/   400.000,        0x00001001,     0x00000004},
++	{/*1012.500*/   405.000,        0x007D0A01,     0x0001F402},
++	{/*1537.500*/   410.000,        0x01770F01,     0x0002EE03},
++	{/*1037.500*/   415.000,        0x01770A01,     0x0001F402},
++	{/*1575.000*/   420.000,        0x02EE0F01,     0x0002EE03},
++	{/*1487.500*/   425.000,        0x036B0E01,     0x0001F403},
++	{/*1075.000*/   430.000,        0x02EE0A01,     0x0001F402},
++	{/*1087.500*/   435.000,        0x036B0A01,     0x0001F402},
++	{/*1375.000*/   440.000,        0x02EE0D01,     0x00007D03},
++	{/*1112.500*/   445.000,        0x007D0B01,     0x0001F402},
++	{/*1575.000*/   450.000,        0x02EE0F01,     0x0001F403},
++	{/*1137.500*/   455.000,        0x01770B01,     0x0001F402},
++	{/*1437.500*/   460.000,        0x01770E01,     0x00007D03},
++	{/*1162.500*/   465.000,        0x02710B01,     0x0001F402},
++	{/*1175.000*/   470.000,        0x02EE0B01,     0x0001F402},
++	{/*1425.000*/   475.000,        0x00FA0E01,     0x00000003},
++	{/*1500.000*/   480.000,        0x00000F01,     0x00007D03},
++	{/*1212.500*/   485.000,        0x007D0C01,     0x0001F402},
++	{/*1225.000*/   490.000,        0x00FA0C01,     0x0001F402},
++	{/*1237.500*/   495.000,        0x01770C01,     0x0001F402},
++	{/*1562.500*/   500.000,        0x02710F01,     0x00007D03},
++	{/*1262.500*/   505.000,        0x02710C01,     0x0001F402},
++	{/*1275.000*/   510.000,        0x02EE0C01,     0x0001F402},
++	{/*1287.500*/   515.000,        0x036B0C01,     0x0001F402},
++	{/*1300.000*/   520.000,        0x00000D01,     0x0001F402},
++	{/*1575.000*/   525.000,        0x02EE0F01,     0x00000003},
++	{/*1325.000*/   530.000,        0x00FA0D01,     0x0001F402},
++	{/*1337.500*/   535.000,        0x01770D01,     0x0001F402},
++	{/*1350.000*/   540.000,        0x01F40D01,     0x0001F402},
++	{/*1362.500*/   545.000,        0x02710D01,     0x0001F402},
++	{/*1512.500*/   550.000,        0x007D0F01,     0x0002EE02},
++	{/*1387.500*/   555.000,        0x036B0D01,     0x0001F402},
++	{/*1400.000*/   560.000,        0x00000E01,     0x0001F402},
++	{/*1412.500*/   565.000,        0x007D0E01,     0x0001F402},
++	{/*1425.000*/   570.000,        0x00FA0E01,     0x0001F402},
++	{/*1437.500*/   575.000,        0x01770E01,     0x0001F402},
++	{/*1450.000*/   580.000,        0x01F40E01,     0x0001F402},
++	{/*1462.500*/   585.000,        0x02710E01,     0x0001F402},
++	{/*1475.000*/   590.000,        0x02EE0E01,     0x0001F402},
++	{/*1487.500*/   595.000,        0x036B0E01,     0x0001F402},
++	{/*1575.000*/   600.000,        0x02EE0F01,     0x00027102},
++	{/*1512.500*/   605.000,        0x007D0F01,     0x0001F402},
++	{/*1525.000*/   610.000,        0x00FA0F01,     0x0001F402},
++	{/*1537.500*/   615.000,        0x01770F01,     0x0001F402},
++	{/*1550.000*/   620.000,        0x01F40F01,     0x0001F402},
++	{/*1562.500*/   625.000,        0x02710F01,     0x0001F402},
++	{/*1575.000*/   630.000,        0x02EE0F01,     0x0001F402},
++	{/*1587.500*/   635.000,        0x036B0F01,     0x0001F402},
++	{/*1600.000*/   640.000,        0x00001001,     0x0001F402},
++	{/*1290.000*/   645.000,        0x01F44005,     0x00000002},
++	{/*1462.500*/   650.000,        0x02710E01,     0x0000FA02}
++};
 +
++static inline u32 reg_rd(struct clock *clock, u32 offset)
 +{
-+	struct hw_icap_bit_header bit_header = { 0 };
-+	struct platform_device *icap_leaf = NULL;
-+	struct xrt_icap_ioctl_wr arg;
-+	char *bitstream = NULL;
-+	u64 bit_len;
-+	int ret;
++	return ioread32(clock->clock_base + offset);
++}
 +
-+	ret = xrt_xclbin_get_section(xclbin, BITSTREAM, (void **)&bitstream, &bit_len);
-+	if (ret || !bitstream) {
-+		xrt_err(pdev, "bitstream not found");
++static inline void reg_wr(struct clock *clock, u32 val, u32 offset)
++{
++	iowrite32(val, clock->clock_base + offset);
++}
++
++static u32 find_matching_freq_config(unsigned short freq,
++				     const struct xmgmt_ocl_clockwiz *table,
++				     int size)
++{
++	u32 start = 0;
++	u32 end = size - 1;
++	u32 idx = size - 1;
++
++	if (freq < table[0].ocl)
++		return 0;
++
++	if (freq > table[size - 1].ocl)
++		return size - 1;
++
++	while (start < end) {
++		if (freq == table[idx].ocl)
++			break;
++		if (freq < table[idx].ocl)
++			end = idx;
++		else
++			start = idx + 1;
++		idx = start + (end - start) / 2;
++	}
++	if (freq < table[idx].ocl)
++		idx--;
++
++	return idx;
++}
++
++static u32 find_matching_freq(u32 freq,
++			      const struct xmgmt_ocl_clockwiz *freq_table,
++			      int freq_table_size)
++{
++	int idx = find_matching_freq_config(freq, freq_table, freq_table_size);
++
++	return freq_table[idx].ocl;
++}
++
++static inline int clock_wiz_busy(struct clock *clock, int cycle, int interval)
++{
++	u32 val = 0;
++	int count;
++
++	val = reg_rd(clock, OCL_CLKWIZ_STATUS_OFFSET);
++	for (count = 0; val != 1 && count < cycle; count++) {
++		mdelay(interval);
++		val = reg_rd(clock, OCL_CLKWIZ_STATUS_OFFSET);
++	}
++	if (val != 1) {
++		CLOCK_ERR(clock, "clockwiz is (%u) busy after %d ms",
++			  val, cycle * interval);
++		return -ETIMEDOUT;
++	}
++
++	return 0;
++}
++
++static int get_freq(struct clock *clock, u16 *freq)
++{
++#define XCL_INPUT_FREQ 100
++	const u64 input = XCL_INPUT_FREQ;
++	u32 val;
++	u32 mul0, div0;
++	u32 mul_frac0 = 0;
++	u32 div1;
++	u32 div_frac1 = 0;
++
++	WARN_ON(!mutex_is_locked(&clock->clock_lock));
++
++	val = reg_rd(clock, OCL_CLKWIZ_STATUS_OFFSET);
++	if ((val & 0x1) == 0) {
++		CLOCK_ERR(clock, "clockwiz is busy %x", val);
++		*freq = 0;
++		return -EBUSY;
++	}
++
++	val = reg_rd(clock, OCL_CLKWIZ_CONFIG_OFFSET(0));
++
++	div0 = val & 0xff;
++	mul0 = (val & 0xff00) >> 8;
++	if (val & BIT(26)) {
++		mul_frac0 = val >> 16;
++		mul_frac0 &= 0x3ff;
++	}
++
++	/*
++	 * Multiply both numerator (mul0) and the denominator (div0) with 1000
++	 * to account for fractional portion of multiplier
++	 */
++	mul0 *= 1000;
++	mul0 += mul_frac0;
++	div0 *= 1000;
++
++	val = reg_rd(clock, OCL_CLKWIZ_CONFIG_OFFSET(2));
++
++	div1 = val & 0xff;
++	if (val & BIT(18)) {
++		div_frac1 = val >> 8;
++		div_frac1 &= 0x3ff;
++	}
++
++	/*
++	 * Multiply both numerator (mul0) and the denominator (div1) with
++	 * 1000 to account for fractional portion of divider
++	 */
++
++	div1 *= 1000;
++	div1 += div_frac1;
++	div0 *= div1;
++	mul0 *= 1000;
++	if (div0 == 0) {
++		CLOCK_ERR(clock, "clockwiz 0 divider");
++		return 0;
++	}
++
++	*freq = (u16)((input * mul0) / div0);
++
++	return 0;
++}
++
++static int set_freq(struct clock *clock, u16 freq)
++{
++	u32 config;
++	int err;
++	u32 idx = 0;
++	u32 val;
++
++	WARN_ON(!mutex_is_locked(&clock->clock_lock));
++
++	idx = find_matching_freq_config(freq, frequency_table,
++					ARRAY_SIZE(frequency_table));
++
++	CLOCK_INFO(clock, "New: %d Mhz", freq);
++	err = clock_wiz_busy(clock, 20, 50);
++	if (err)
++		return -EBUSY;
++
++	config = frequency_table[idx].config0;
++	reg_wr(clock, config, OCL_CLKWIZ_CONFIG_OFFSET(0));
++
++	config = frequency_table[idx].config2;
++	reg_wr(clock, config, OCL_CLKWIZ_CONFIG_OFFSET(2));
++
++	mdelay(10);
++	reg_wr(clock, 7, OCL_CLKWIZ_CONFIG_OFFSET(23));
++
++	mdelay(1);
++	reg_wr(clock, 2, OCL_CLKWIZ_CONFIG_OFFSET(23));
++
++	CLOCK_INFO(clock, "clockwiz waiting for locked signal");
++
++	err = clock_wiz_busy(clock, 100, 100);
++	if (err) {
++		CLOCK_ERR(clock, "clockwiz MMCM/PLL did not lock");
++		/* restore */
++		reg_wr(clock, 4, OCL_CLKWIZ_CONFIG_OFFSET(23));
++		mdelay(10);
++		reg_wr(clock, 0, OCL_CLKWIZ_CONFIG_OFFSET(23));
++		return err;
++	}
++	val = reg_rd(clock, OCL_CLKWIZ_CONFIG_OFFSET(0));
++	CLOCK_INFO(clock, "clockwiz CONFIG(0) 0x%x", val);
++	val = reg_rd(clock, OCL_CLKWIZ_CONFIG_OFFSET(2));
++	CLOCK_INFO(clock, "clockwiz CONFIG(2) 0x%x", val);
++
++	return 0;
++}
++
++static int get_freq_counter(struct clock *clock, u32 *freq)
++{
++	const void *cnter;
++	struct platform_device *cnter_leaf;
++	struct platform_device *pdev = clock->pdev;
++	struct xrt_subdev_platdata *pdata = DEV_PDATA(clock->pdev);
++	int err = xrt_md_get_prop(DEV(pdev), pdata->xsp_dtb,
++		clock->clock_ep_name, NULL, XRT_MD_PROP_CLK_CNT, &cnter, NULL);
++
++	WARN_ON(!mutex_is_locked(&clock->clock_lock));
++
++	if (err) {
++		xrt_err(pdev, "no counter specified");
++		return err;
++	}
++
++	cnter_leaf = xleaf_get_leaf_by_epname(pdev, cnter);
++	if (!cnter_leaf) {
++		xrt_err(pdev, "can't find counter");
 +		return -ENOENT;
 +	}
-+	ret = xrt_xclbin_parse_bitstream_header(bitstream,
-+						DMA_HWICAP_BITFILE_BUFFER_SIZE,
-+						&bit_header);
-+	if (ret) {
-+		ret = -EINVAL;
-+		xrt_err(pdev, "invalid bitstream header");
-+		goto done;
-+	}
-+	if (bit_header.header_length + bit_header.bitstream_length > bit_len) {
-+		ret = -EINVAL;
-+		xrt_err(pdev, "invalid bitstream length. header %d, bitstream %d, section len %lld",
-+			bit_header.header_length, bit_header.bitstream_length, bit_len);
-+		goto done;
++
++	err = xleaf_ioctl(cnter_leaf, XRT_CLKFREQ_READ, freq);
++	if (err)
++		xrt_err(pdev, "can't read counter");
++	xleaf_put_leaf(clock->pdev, cnter_leaf);
++
++	return err;
++}
++
++static int clock_get_freq(struct clock *clock, u16 *freq, u32 *freq_cnter)
++{
++	int err = 0;
++
++	mutex_lock(&clock->clock_lock);
++
++	if (err == 0 && freq)
++		err = get_freq(clock, freq);
++
++	if (err == 0 && freq_cnter)
++		err = get_freq_counter(clock, freq_cnter);
++
++	mutex_unlock(&clock->clock_lock);
++	return err;
++}
++
++static int clock_set_freq(struct clock *clock, u16 freq)
++{
++	int err;
++
++	mutex_lock(&clock->clock_lock);
++	err = set_freq(clock, freq);
++	mutex_unlock(&clock->clock_lock);
++
++	return err;
++}
++
++static int clock_verify_freq(struct clock *clock)
++{
++	int err = 0;
++	u16 freq;
++	u32 lookup_freq, clock_freq_counter, request_in_khz, tolerance;
++
++	mutex_lock(&clock->clock_lock);
++
++	err = get_freq(clock, &freq);
++	if (err) {
++		xrt_err(clock->pdev, "get freq failed, %d", err);
++		goto end;
 +	}
 +
-+	icap_leaf = xleaf_get_leaf_by_id(pdev, XRT_SUBDEV_ICAP, PLATFORM_DEVID_NONE);
-+	if (!icap_leaf) {
-+		ret = -ENODEV;
-+		xrt_err(pdev, "icap does not exist");
-+		xrt_xclbin_free_header(&bit_header);
-+		goto done;
++	err = get_freq_counter(clock, &clock_freq_counter);
++	if (err) {
++		xrt_err(clock->pdev, "get freq counter failed, %d", err);
++		goto end;
 +	}
-+	arg.xiiw_bit_data = bitstream + bit_header.header_length;
-+	arg.xiiw_data_len = bit_header.bitstream_length;
-+	ret = xleaf_ioctl(icap_leaf, XRT_ICAP_WRITE, &arg);
-+	if (ret)
-+		xrt_err(pdev, "write bitstream failed, ret = %d", ret);
 +
-+	xrt_xclbin_free_header(&bit_header);
-+done:
-+	if (icap_leaf)
-+		xleaf_put_leaf(pdev, icap_leaf);
-+	vfree(bitstream);
++	lookup_freq = find_matching_freq(freq, frequency_table,
++					 ARRAY_SIZE(frequency_table));
++	request_in_khz = lookup_freq * 1000;
++	tolerance = lookup_freq * 50;
++	if (tolerance < abs(clock_freq_counter - request_in_khz)) {
++		CLOCK_ERR(clock,
++			  "set clock(%s) failed, request %ukhz, actual %dkhz",
++			  clock->clock_ep_name, request_in_khz, clock_freq_counter);
++		err = -EDOM;
++	} else {
++		CLOCK_INFO(clock, "verified clock (%s)", clock->clock_ep_name);
++	}
++
++end:
++	mutex_unlock(&clock->clock_lock);
++	return err;
++}
++
++static int clock_init(struct clock *clock)
++{
++	struct xrt_subdev_platdata *pdata = DEV_PDATA(clock->pdev);
++	int err = 0;
++	const u16 *freq;
++
++	err = xrt_md_get_prop(DEV(clock->pdev), pdata->xsp_dtb,
++			      clock->clock_ep_name, NULL, XRT_MD_PROP_CLK_FREQ,
++		(const void **)&freq, NULL);
++	if (err) {
++		xrt_info(clock->pdev, "no default freq");
++		return 0;
++	}
++
++	mutex_lock(&clock->clock_lock);
++	err = set_freq(clock, be16_to_cpu(*freq));
++	mutex_unlock(&clock->clock_lock);
++
++	return err;
++}
++
++static ssize_t freq_show(struct device *dev, struct device_attribute *attr, char *buf)
++{
++	struct clock *clock = platform_get_drvdata(to_platform_device(dev));
++	u16 freq = 0;
++	ssize_t count;
++
++	count = clock_get_freq(clock, &freq, NULL);
++	if (count < 0)
++		return count;
++
++	count = snprintf(buf, 64, "%d\n", freq);
++
++	return count;
++}
++static DEVICE_ATTR_RO(freq);
++
++static struct attribute *clock_attrs[] = {
++	&dev_attr_freq.attr,
++	NULL,
++};
++
++static struct attribute_group clock_attr_group = {
++	.attrs = clock_attrs,
++};
++
++static int
++xrt_clock_leaf_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
++{
++	struct clock		*clock;
++	int			ret = 0;
++
++	clock = platform_get_drvdata(pdev);
++
++	switch (cmd) {
++	case XRT_XLEAF_EVENT:
++		/* Does not handle any event. */
++		break;
++	case XRT_CLOCK_SET: {
++		u16	freq = (u16)(uintptr_t)arg;
++
++		ret = clock_set_freq(clock, freq);
++		break;
++	}
++	case XRT_CLOCK_VERIFY: {
++		ret = clock_verify_freq(clock);
++		break;
++	}
++	case XRT_CLOCK_GET: {
++		struct xrt_clock_ioctl_get *get =
++			(struct xrt_clock_ioctl_get *)arg;
++
++		ret = clock_get_freq(clock, &get->freq, &get->freq_cnter);
++		break;
++	}
++	default:
++		xrt_err(pdev, "unsupported cmd %d", cmd);
++		return -EINVAL;
++	}
 +
 +	return ret;
 +}
 +
-+/*
-+ * There is no HW prep work we do here since we need the full
-+ * xclbin for its sanity check.
-+ */
-+static int xmgmt_pr_write_init(struct fpga_manager *mgr,
-+			       struct fpga_image_info *info,
-+			       const char *buf, size_t count)
++static int clock_remove(struct platform_device *pdev)
 +{
-+	const struct axlf *bin = (const struct axlf *)buf;
-+	struct xfpga_class *obj = mgr->priv;
++	struct clock *clock;
 +
-+	if (!(info->flags & FPGA_MGR_PARTIAL_RECONFIG)) {
-+		xrt_info(obj->pdev, "%s only supports partial reconfiguration\n", obj->name);
++	clock = platform_get_drvdata(pdev);
++	if (!clock) {
++		xrt_err(pdev, "driver data is NULL");
 +		return -EINVAL;
 +	}
 +
-+	if (count < sizeof(struct axlf))
-+		return -EINVAL;
++	platform_set_drvdata(pdev, NULL);
++	devm_kfree(&pdev->dev, clock);
 +
-+	if (count > bin->m_header.m_length)
-+		return -EINVAL;
-+
-+	xrt_info(obj->pdev, "Prepare download of xclbin %pUb of length %lld B",
-+		 &bin->m_header.uuid, bin->m_header.m_length);
-+
++	CLOCK_INFO(clock, "successfully removed Clock subdev");
 +	return 0;
 +}
 +
-+/*
-+ * The implementation requries full xclbin image before we can start
-+ * programming the hardware via ICAP subsystem. Full image is required
-+ * for checking the validity of xclbin and walking the sections to
-+ * discover the bitstream.
-+ */
-+static int xmgmt_pr_write(struct fpga_manager *mgr,
-+			  const char *buf, size_t count)
++static int clock_probe(struct platform_device *pdev)
 +{
-+	const struct axlf *bin = (const struct axlf *)buf;
-+	struct xfpga_class *obj = mgr->priv;
-+
-+	if (bin->m_header.m_length != count)
-+		return -EINVAL;
-+
-+	return xmgmt_download_bitstream((void *)obj->pdev, bin);
-+}
-+
-+static int xmgmt_pr_write_complete(struct fpga_manager *mgr,
-+				   struct fpga_image_info *info)
-+{
-+	const struct axlf *bin = (const struct axlf *)info->buf;
-+	struct xfpga_class *obj = mgr->priv;
-+
-+	xrt_info(obj->pdev, "Finished download of xclbin %pUb",
-+		 &bin->m_header.uuid);
-+	return 0;
-+}
-+
-+static enum fpga_mgr_states xmgmt_pr_state(struct fpga_manager *mgr)
-+{
-+	return FPGA_MGR_STATE_UNKNOWN;
-+}
-+
-+static const struct fpga_manager_ops xmgmt_pr_ops = {
-+	.initial_header_size = sizeof(struct axlf),
-+	.write_init = xmgmt_pr_write_init,
-+	.write = xmgmt_pr_write,
-+	.write_complete = xmgmt_pr_write_complete,
-+	.state = xmgmt_pr_state,
-+};
-+
-+struct fpga_manager *xmgmt_fmgr_probe(struct platform_device *pdev)
-+{
-+	struct xfpga_class *obj = devm_kzalloc(DEV(pdev), sizeof(struct xfpga_class),
-+					       GFP_KERNEL);
-+	struct fpga_manager *fmgr = NULL;
-+	int ret = 0;
-+
-+	if (!obj)
-+		return ERR_PTR(-ENOMEM);
-+
-+	snprintf(obj->name, sizeof(obj->name), "Xilinx Alveo FPGA Manager");
-+	obj->pdev = pdev;
-+	fmgr = fpga_mgr_create(&pdev->dev,
-+			       obj->name,
-+			       &xmgmt_pr_ops,
-+			       obj);
-+	if (!fmgr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ret = fpga_mgr_register(fmgr);
-+	if (ret) {
-+		fpga_mgr_free(fmgr);
-+		return ERR_PTR(ret);
-+	}
-+	return fmgr;
-+}
-+
-+int xmgmt_fmgr_remove(struct fpga_manager *fmgr)
-+{
-+	fpga_mgr_unregister(fmgr);
-+	return 0;
-+}
-diff --git a/drivers/fpga/xrt/mgmt/fmgr.h b/drivers/fpga/xrt/mgmt/fmgr.h
-new file mode 100644
-index 000000000000..e1fc033e2542
---- /dev/null
-+++ b/drivers/fpga/xrt/mgmt/fmgr.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Header file for Xilinx Alveo Management Function Driver
-+ *
-+ * Copyright (C) 2020-2021 Xilinx, Inc.
-+ *
-+ * Authors: Sonal.Santan@xilinx.com
-+ */
-+
-+#ifndef _XMGMT_FMGR_H_
-+#define _XMGMT_FMGR_H_
-+
-+#include <linux/fpga/fpga-mgr.h>
-+#include <linux/mutex.h>
-+
-+#include <linux/xrt/xclbin.h>
-+
-+enum xfpga_sec_level {
-+	XFPGA_SEC_NONE = 0,
-+	XFPGA_SEC_DEDICATE,
-+	XFPGA_SEC_SYSTEM,
-+	XFPGA_SEC_MAX = XFPGA_SEC_SYSTEM,
-+};
-+
-+struct fpga_manager *xmgmt_fmgr_probe(struct platform_device *pdev);
-+int xmgmt_fmgr_remove(struct fpga_manager *fmgr);
-+
-+#endif
-diff --git a/drivers/fpga/xrt/mgmt/main-region.c b/drivers/fpga/xrt/mgmt/main-region.c
-new file mode 100644
-index 000000000000..9779693fe7ae
---- /dev/null
-+++ b/drivers/fpga/xrt/mgmt/main-region.c
-@@ -0,0 +1,471 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * FPGA Region Support for Xilinx Alveo Management Function Driver
-+ *
-+ * Copyright (C) 2020-2021 Xilinx, Inc.
-+ * Bulk of the code borrowed from XRT mgmt driver file, fmgr.c
-+ *
-+ * Authors: Lizhi.Hou@xilinx.com
-+ */
-+
-+#include <linux/uuid.h>
-+#include <linux/fpga/fpga-bridge.h>
-+#include <linux/fpga/fpga-region.h>
-+#include "metadata.h"
-+#include "xleaf.h"
-+#include "xleaf/axigate.h"
-+#include "xclbin-helper.h"
-+#include "main-impl.h"
-+
-+struct xmgmt_bridge {
-+	struct platform_device *pdev;
-+	const char *axigate_name;
-+};
-+
-+struct xmgmt_region {
-+	struct platform_device *pdev;
-+	struct fpga_region *fregion;
-+	uuid_t intf_uuid;
-+	struct fpga_bridge *fbridge;
-+	int grp_inst;
-+	uuid_t dep_uuid;
-+	struct list_head list;
-+};
-+
-+struct xmgmt_region_match_arg {
-+	struct platform_device *pdev;
-+	uuid_t *uuids;
-+	u32 uuid_num;
-+};
-+
-+static int xmgmt_br_enable_set(struct fpga_bridge *bridge, bool enable)
-+{
-+	struct xmgmt_bridge *br_data = (struct xmgmt_bridge *)bridge->priv;
-+	struct platform_device *axigate_leaf;
-+	int rc;
-+
-+	axigate_leaf = xleaf_get_leaf_by_epname(br_data->pdev, br_data->axigate_name);
-+	if (!axigate_leaf) {
-+		xrt_err(br_data->pdev, "failed to get leaf %s",
-+			br_data->axigate_name);
-+		return -ENOENT;
-+	}
-+
-+	if (enable)
-+		rc = xleaf_ioctl(axigate_leaf, XRT_AXIGATE_FREE, NULL);
-+	else
-+		rc = xleaf_ioctl(axigate_leaf, XRT_AXIGATE_FREEZE, NULL);
-+
-+	if (rc) {
-+		xrt_err(br_data->pdev, "failed to %s gate %s, rc %d",
-+			(enable ? "free" : "freeze"), br_data->axigate_name,
-+			rc);
-+	}
-+
-+	xleaf_put_leaf(br_data->pdev, axigate_leaf);
-+
-+	return rc;
-+}
-+
-+const struct fpga_bridge_ops xmgmt_bridge_ops = {
-+	.enable_set = xmgmt_br_enable_set
-+};
-+
-+static void xmgmt_destroy_bridge(struct fpga_bridge *br)
-+{
-+	struct xmgmt_bridge *br_data = br->priv;
-+
-+	if (!br_data)
-+		return;
-+
-+	xrt_info(br_data->pdev, "destroy fpga bridge %s", br_data->axigate_name);
-+	fpga_bridge_unregister(br);
-+
-+	devm_kfree(DEV(br_data->pdev), br_data);
-+
-+	fpga_bridge_free(br);
-+}
-+
-+static struct fpga_bridge *xmgmt_create_bridge(struct platform_device *pdev,
-+					       char *dtb)
-+{
-+	struct xmgmt_bridge *br_data;
-+	struct fpga_bridge *br = NULL;
-+	const char *gate;
-+	int rc;
-+
-+	br_data = devm_kzalloc(DEV(pdev), sizeof(*br_data), GFP_KERNEL);
-+	if (!br_data)
-+		return NULL;
-+	br_data->pdev = pdev;
-+
-+	br_data->axigate_name = XRT_MD_NODE_GATE_ULP;
-+	rc = xrt_md_find_endpoint(&pdev->dev, dtb, XRT_MD_NODE_GATE_ULP,
-+				  NULL, &gate);
-+	if (rc) {
-+		br_data->axigate_name = XRT_MD_NODE_GATE_PLP;
-+		rc = xrt_md_find_endpoint(&pdev->dev, dtb, XRT_MD_NODE_GATE_PLP,
-+					  NULL, &gate);
-+	}
-+	if (rc) {
-+		xrt_err(pdev, "failed to get axigate, rc %d", rc);
-+		goto failed;
-+	}
-+
-+	br = fpga_bridge_create(DEV(pdev), br_data->axigate_name,
-+				&xmgmt_bridge_ops, br_data);
-+	if (!br) {
-+		xrt_err(pdev, "failed to create bridge");
-+		goto failed;
-+	}
-+
-+	rc = fpga_bridge_register(br);
-+	if (rc) {
-+		xrt_err(pdev, "failed to register bridge, rc %d", rc);
-+		goto failed;
-+	}
-+
-+	xrt_info(pdev, "created fpga bridge %s", br_data->axigate_name);
-+
-+	return br;
-+
-+failed:
-+	if (br)
-+		fpga_bridge_free(br);
-+	if (br_data)
-+		devm_kfree(DEV(pdev), br_data);
-+
-+	return NULL;
-+}
-+
-+static void xmgmt_destroy_region(struct fpga_region *re)
-+{
-+	struct xmgmt_region *r_data = re->priv;
-+
-+	xrt_info(r_data->pdev, "destroy fpga region %llx%llx",
-+		 re->compat_id->id_l, re->compat_id->id_h);
-+
-+	fpga_region_unregister(re);
-+
-+	if (r_data->grp_inst > 0)
-+		xleaf_destroy_group(r_data->pdev, r_data->grp_inst);
-+
-+	if (r_data->fbridge)
-+		xmgmt_destroy_bridge(r_data->fbridge);
-+
-+	if (r_data->fregion->info) {
-+		fpga_image_info_free(r_data->fregion->info);
-+		r_data->fregion->info = NULL;
-+	}
-+
-+	fpga_region_free(re);
-+
-+	devm_kfree(DEV(r_data->pdev), r_data);
-+}
-+
-+static int xmgmt_region_match(struct device *dev, const void *data)
-+{
-+	const struct xmgmt_region_match_arg *arg = data;
-+	const struct fpga_region *match_re;
-+	int i;
-+
-+	if (dev->parent != &arg->pdev->dev)
-+		return false;
-+
-+	match_re = to_fpga_region(dev);
-+	/*
-+	 * The device tree provides both parent and child uuids for an
-+	 * xclbin in one array. Here we try both uuids to see if it matches
-+	 * with target region's compat_id. Strictly speaking we should
-+	 * only match xclbin's parent uuid with target region's compat_id
-+	 * but given the uuids by design are unique comparing with both
-+	 * does not hurt.
-+	 */
-+	for (i = 0; i < arg->uuid_num; i++) {
-+		if (!memcmp(match_re->compat_id, &arg->uuids[i],
-+			    sizeof(*match_re->compat_id)))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static int xmgmt_region_match_base(struct device *dev, const void *data)
-+{
-+	const struct xmgmt_region_match_arg *arg = data;
-+	const struct fpga_region *match_re;
-+	const struct xmgmt_region *r_data;
-+
-+	if (dev->parent != &arg->pdev->dev)
-+		return false;
-+
-+	match_re = to_fpga_region(dev);
-+	r_data = match_re->priv;
-+	if (uuid_is_null(&r_data->dep_uuid))
-+		return true;
-+
-+	return false;
-+}
-+
-+static int xmgmt_region_match_by_depuuid(struct device *dev, const void *data)
-+{
-+	const struct xmgmt_region_match_arg *arg = data;
-+	const struct fpga_region *match_re;
-+	const struct xmgmt_region *r_data;
-+
-+	if (dev->parent != &arg->pdev->dev)
-+		return false;
-+
-+	match_re = to_fpga_region(dev);
-+	r_data = match_re->priv;
-+	if (!memcmp(&r_data->dep_uuid, arg->uuids, sizeof(uuid_t)))
-+		return true;
-+
-+	return false;
-+}
-+
-+static void xmgmt_region_cleanup(struct fpga_region *re)
-+{
-+	struct xmgmt_region *r_data = re->priv, *temp;
-+	struct platform_device *pdev = r_data->pdev;
-+	struct fpga_region *match_re = NULL;
-+	struct device *start_dev = NULL;
-+	struct xmgmt_region_match_arg arg;
-+	LIST_HEAD(free_list);
-+
-+	list_add_tail(&r_data->list, &free_list);
-+	arg.pdev = pdev;
-+	arg.uuid_num = 1;
-+
-+	while (!r_data) {
-+		arg.uuids = (uuid_t *)r_data->fregion->compat_id;
-+		match_re = fpga_region_class_find(start_dev, &arg,
-+						  xmgmt_region_match_by_depuuid);
-+		if (match_re) {
-+			r_data = match_re->priv;
-+			list_add_tail(&r_data->list, &free_list);
-+			start_dev = &match_re->dev;
-+			put_device(&match_re->dev);
-+			continue;
-+		}
-+
-+		r_data = list_is_last(&r_data->list, &free_list) ? NULL :
-+			list_next_entry(r_data, list);
-+		start_dev = NULL;
-+	}
-+
-+	list_for_each_entry_safe_reverse(r_data, temp, &free_list, list) {
-+		if (list_is_first(&r_data->list, &free_list)) {
-+			if (r_data->grp_inst > 0) {
-+				xleaf_destroy_group(pdev, r_data->grp_inst);
-+				r_data->grp_inst = -1;
-+			}
-+			if (r_data->fregion->info) {
-+				fpga_image_info_free(r_data->fregion->info);
-+				r_data->fregion->info = NULL;
-+			}
-+			continue;
-+		}
-+		xmgmt_destroy_region(r_data->fregion);
-+	}
-+}
-+
-+void xmgmt_region_cleanup_all(struct platform_device *pdev)
-+{
-+	struct fpga_region *base_re;
-+	struct xmgmt_region_match_arg arg;
-+
-+	arg.pdev = pdev;
-+
-+	for (base_re = fpga_region_class_find(NULL, &arg, xmgmt_region_match_base);
-+	    base_re;
-+	    base_re = fpga_region_class_find(NULL, &arg, xmgmt_region_match_base)) {
-+		put_device(&base_re->dev);
-+
-+		xmgmt_region_cleanup(base_re);
-+		xmgmt_destroy_region(base_re);
-+	}
-+}
-+
-+/*
-+ * Program a given region with given xclbin image. Bring up the subdevs and the
-+ * group object to contain the subdevs.
-+ */
-+static int xmgmt_region_program(struct fpga_region *re, const void *xclbin, char *dtb)
-+{
-+	struct xmgmt_region *r_data = re->priv;
-+	struct platform_device *pdev = r_data->pdev;
-+	struct fpga_image_info *info;
-+	const struct axlf *xclbin_obj = xclbin;
-+	int rc;
-+
-+	info = fpga_image_info_alloc(&pdev->dev);
-+	if (!info)
++	struct clock *clock = NULL;
++	struct resource *res;
++	int ret;
++
++	clock = devm_kzalloc(&pdev->dev, sizeof(*clock), GFP_KERNEL);
++	if (!clock)
 +		return -ENOMEM;
 +
-+	info->buf = xclbin;
-+	info->count = xclbin_obj->m_header.m_length;
-+	info->flags |= FPGA_MGR_PARTIAL_RECONFIG;
-+	re->info = info;
-+	rc = fpga_region_program_fpga(re);
-+	if (rc) {
-+		xrt_err(pdev, "programming xclbin failed, rc %d", rc);
-+		return rc;
-+	}
++	platform_set_drvdata(pdev, clock);
++	clock->pdev = pdev;
++	mutex_init(&clock->clock_lock);
 +
-+	/* free bridges to allow reprogram */
-+	if (re->get_bridges)
-+		fpga_bridges_put(&re->bridge_list);
-+
-+	/*
-+	 * Next bringup the subdevs for this region which will be managed by
-+	 * its own group object.
-+	 */
-+	r_data->grp_inst = xleaf_create_group(pdev, dtb);
-+	if (r_data->grp_inst < 0) {
-+		xrt_err(pdev, "failed to create group, rc %d",
-+			r_data->grp_inst);
-+		rc = r_data->grp_inst;
-+		return rc;
-+	}
-+
-+	rc = xleaf_wait_for_group_bringup(pdev);
-+	if (rc)
-+		xrt_err(pdev, "group bringup failed, rc %d", rc);
-+	return rc;
-+}
-+
-+static int xmgmt_get_bridges(struct fpga_region *re)
-+{
-+	struct xmgmt_region *r_data = re->priv;
-+	struct device *dev = &r_data->pdev->dev;
-+
-+	return fpga_bridge_get_to_list(dev, re->info, &re->bridge_list);
-+}
-+
-+/*
-+ * Program/create FPGA regions based on input xclbin file. This is key function
-+ * stitching the flow together:
-+ * 1. Identify a matching existing region for this xclbin
-+ * 2. Tear down any previous objects for the found region
-+ * 3. Program this region with input xclbin
-+ * 4. Iterate over this region's interface uuids to determine if it defines any
-+ *    child region. Create fpga_region for the child region.
-+ */
-+int xmgmt_process_xclbin(struct platform_device *pdev,
-+			 struct fpga_manager *fmgr,
-+			 const struct axlf *xclbin,
-+			 enum provider_kind kind)
-+{
-+	struct fpga_region *re, *compat_re = NULL;
-+	struct xmgmt_region_match_arg arg;
-+	struct xmgmt_region *r_data;
-+	char *dtb = NULL;
-+	int rc, i;
-+
-+	rc = xrt_xclbin_get_metadata(DEV(pdev), xclbin, &dtb);
-+	if (rc) {
-+		xrt_err(pdev, "failed to get dtb: %d", rc);
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	clock->clock_base = ioremap(res->start, res->end - res->start + 1);
++	if (!clock->clock_base) {
++		CLOCK_ERR(clock, "map base %pR failed", res);
++		ret = -EFAULT;
 +		goto failed;
 +	}
 +
-+	xrt_md_get_intf_uuids(DEV(pdev), dtb, &arg.uuid_num, NULL);
-+	if (arg.uuid_num == 0) {
-+		xrt_err(pdev, "failed to get intf uuid");
-+		rc = -EINVAL;
++	clock->clock_ep_name = res->name;
++
++	ret = clock_init(clock);
++	if (ret)
++		goto failed;
++
++	ret = sysfs_create_group(&pdev->dev.kobj, &clock_attr_group);
++	if (ret) {
++		CLOCK_ERR(clock, "create clock attrs failed: %d", ret);
 +		goto failed;
 +	}
-+	arg.uuids = vzalloc(sizeof(uuid_t) * arg.uuid_num);
-+	if (!arg.uuids) {
-+		rc = -ENOMEM;
-+		goto failed;
-+	}
-+	arg.pdev = pdev;
 +
-+	xrt_md_get_intf_uuids(DEV(pdev), dtb, &arg.uuid_num, arg.uuids);
++	CLOCK_INFO(clock, "successfully initialized Clock subdev");
 +
-+	/* if this is not base firmware, search for a compatible region */
-+	if (kind != XMGMT_BLP) {
-+		compat_re = fpga_region_class_find(NULL, &arg,
-+						   xmgmt_region_match);
-+		if (!compat_re) {
-+			xrt_err(pdev, "failed to get compatible region");
-+			rc = -ENOENT;
-+			goto failed;
-+		}
-+
-+		xmgmt_region_cleanup(compat_re);
-+
-+		rc = xmgmt_region_program(compat_re, xclbin, dtb);
-+		if (rc) {
-+			xrt_err(pdev, "failed to program region");
-+			goto failed;
-+		}
-+	}
-+
-+	/* create all the new regions contained in this xclbin */
-+	for (i = 0; i < arg.uuid_num; i++) {
-+		if (compat_re && !memcmp(compat_re->compat_id, &arg.uuids[i],
-+					 sizeof(*compat_re->compat_id)))
-+			/* region for this interface already exists */
-+			continue;
-+		re = fpga_region_create(DEV(pdev), fmgr, xmgmt_get_bridges);
-+		if (!re) {
-+			xrt_err(pdev, "failed to create fpga region");
-+			rc = -EFAULT;
-+			goto failed;
-+		}
-+		r_data = devm_kzalloc(DEV(pdev), sizeof(*r_data), GFP_KERNEL);
-+		if (!r_data) {
-+			rc = -ENOMEM;
-+			fpga_region_free(re);
-+			goto failed;
-+		}
-+		r_data->pdev = pdev;
-+		r_data->fregion = re;
-+		r_data->grp_inst = -1;
-+		memcpy(&r_data->intf_uuid, &arg.uuids[i],
-+		       sizeof(r_data->intf_uuid));
-+		if (compat_re) {
-+			memcpy(&r_data->dep_uuid, compat_re->compat_id,
-+			       sizeof(r_data->intf_uuid));
-+		}
-+		r_data->fbridge = xmgmt_create_bridge(pdev, dtb);
-+		if (!r_data->fbridge) {
-+			xrt_err(pdev, "failed to create fpga bridge");
-+			rc = -EFAULT;
-+			devm_kfree(DEV(pdev), r_data);
-+			fpga_region_free(re);
-+			goto failed;
-+		}
-+
-+		re->compat_id = (struct fpga_compat_id *)&r_data->intf_uuid;
-+		re->priv = r_data;
-+
-+		rc = fpga_region_register(re);
-+		if (rc) {
-+			xrt_err(pdev, "failed to register fpga region");
-+			xmgmt_destroy_bridge(r_data->fbridge);
-+			fpga_region_free(re);
-+			devm_kfree(DEV(pdev), r_data);
-+			goto failed;
-+		}
-+
-+		xrt_info(pdev, "created fpga region %llx%llx",
-+			 re->compat_id->id_l, re->compat_id->id_h);
-+	}
++	return 0;
 +
 +failed:
-+	if (compat_re)
-+		put_device(&compat_re->dev);
++	clock_remove(pdev);
++	return ret;
++}
 +
-+	if (rc) {
-+		if (compat_re)
-+			xmgmt_region_cleanup(compat_re);
-+	}
++static struct xrt_subdev_endpoints xrt_clock_endpoints[] = {
++	{
++		.xse_names = (struct xrt_subdev_ep_names[]) {
++			{ .regmap_name = "clkwiz" },
++			{ NULL },
++		},
++		.xse_min_ep = 1,
++	},
++	{ 0 },
++};
 +
-+	if (dtb)
-+		vfree(dtb);
++static struct xrt_subdev_drvdata xrt_clock_data = {
++	.xsd_dev_ops = {
++		.xsd_ioctl = xrt_clock_leaf_ioctl,
++	},
++};
 +
-+	return rc;
++static const struct platform_device_id xrt_clock_table[] = {
++	{ XRT_CLOCK, (kernel_ulong_t)&xrt_clock_data },
++	{ },
++};
++
++static struct platform_driver xrt_clock_driver = {
++	.driver = {
++		.name = XRT_CLOCK,
++	},
++	.probe = clock_probe,
++	.remove = clock_remove,
++	.id_table = xrt_clock_table,
++};
++
++void clock_leaf_init_fini(bool init)
++{
++	if (init)
++		xleaf_register_driver(XRT_SUBDEV_CLOCK, &xrt_clock_driver, xrt_clock_endpoints);
++	else
++		xleaf_unregister_driver(XRT_SUBDEV_CLOCK);
 +}
 -- 
 2.18.4
