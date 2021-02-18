@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8796531E77D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:35:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8D2631E796
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:44:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbhBRIcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 03:32:00 -0500
-Received: from mga06.intel.com ([134.134.136.31]:61996 "EHLO mga06.intel.com"
+        id S231435AbhBRIoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 03:44:07 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:56152 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230211AbhBRHaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 02:30:02 -0500
-IronPort-SDR: Ke762VkCXF9ytOeAqK2J2X2sTKNx14u3hZTgQiMoQ5NdEgoYulfk3i+zIj7Je4HaIB1HA1I2aG
- 3RMPRY6WuntA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="244882856"
-X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
-   d="scan'208";a="244882856"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 23:27:13 -0800
-IronPort-SDR: /sCPfWNKE52fh+yCaJ2IFkZ1S2LTiaA22tcHVAEgS89O3W/yKVbJa4uQ6Q22XLdKjY10vAhRse
- dGhgDJfDzvtw==
-X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
-   d="scan'208";a="362331541"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 23:27:09 -0800
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 3A9132036A;
-        Thu, 18 Feb 2021 09:27:07 +0200 (EET)
-Date:   Thu, 18 Feb 2021 09:27:07 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com,
-        mchehab@kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v9 0/4] Add %p4cc printk modifier for V4L2 and DRM fourcc
- codes
-Message-ID: <20210218072707.GD3@paasikivi.fi.intel.com>
-References: <20210216155723.17109-1-sakari.ailus@linux.intel.com>
- <9e279133-298d-433f-0694-5366861a6dbe@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e279133-298d-433f-0694-5366861a6dbe@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230420AbhBRHmW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 02:42:22 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 584D41A15DD;
+        Thu, 18 Feb 2021 08:41:21 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E2D111A1420;
+        Thu, 18 Feb 2021 08:41:17 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id BF528402AC;
+        Thu, 18 Feb 2021 08:41:13 +0100 (CET)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     shawnguo@kernel.org, ping.bai@nxp.com
+Cc:     linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH] clk: imx8mq: Correct the pcie aux sels
+Date:   Thu, 18 Feb 2021 15:29:34 +0800
+Message-Id: <1613633374-30622-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 01:14:42PM +0100, Thomas Zimmermann wrote:
-> Hi
-> 
-> Am 16.02.21 um 16:57 schrieb Sakari Ailus:
-> > Hi all,
-> > 
-> > 	On merging --- it would seem everyone is happy with merging this
-> > 	through the drm-misc tree. The last patch should wait until all
-> > 	users are gone for sure, probably to the next kernel release.
-> > 	There are no users of drm_get_format_name() in linux-next
-> > 	currently after the 3rd patch.
-> 
-> I've merged patches 1 to 3 into drm-misc-next. Patch 4 (and maybe some final
-> fix-up patch) will land when all DRM trees have catched up the changes.
+The sys2_pll_50m should be one of the clock sels of PCIE_AUX clock,
+Change the sys2_pll_500m to sys2_pll_50m.
 
-Thank you!
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+---
+ drivers/clk/imx/clk-imx8mq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/clk/imx/clk-imx8mq.c b/drivers/clk/imx/clk-imx8mq.c
+index 4dd4ae9d022b..93480d8858be 100644
+--- a/drivers/clk/imx/clk-imx8mq.c
++++ b/drivers/clk/imx/clk-imx8mq.c
+@@ -118,7 +118,7 @@ static const char * const imx8mq_pcie1_ctrl_sels[] = {"osc_25m", "sys2_pll_250m"
+ static const char * const imx8mq_pcie1_phy_sels[] = {"osc_25m", "sys2_pll_100m", "sys2_pll_500m", "clk_ext1", "clk_ext2",
+ 					      "clk_ext3", "clk_ext4", };
+ 
+-static const char * const imx8mq_pcie1_aux_sels[] = {"osc_25m", "sys2_pll_200m", "sys2_pll_500m", "sys3_pll_out",
++static const char * const imx8mq_pcie1_aux_sels[] = {"osc_25m", "sys2_pll_200m", "sys2_pll_50m", "sys3_pll_out",
+ 					      "sys2_pll_100m", "sys1_pll_80m", "sys1_pll_160m", "sys1_pll_200m", };
+ 
+ static const char * const imx8mq_dc_pixel_sels[] = {"osc_25m", "video_pll1_out", "audio_pll2_out", "audio_pll1_out", "sys1_pll_800m", "sys2_pll_1000m", "sys3_pll_out", "clk_ext4", };
 -- 
-Sakari Ailus
+2.17.1
+
