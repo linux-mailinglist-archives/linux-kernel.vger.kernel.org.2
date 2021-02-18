@@ -2,105 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 964DC31ECCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:06:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FA3A31ECD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhBRRDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:03:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43106 "EHLO
+        id S231246AbhBRRE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:04:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbhBRORQ (ORCPT
+        with ESMTP id S233599AbhBRORl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:17:16 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038C2C061786;
-        Thu, 18 Feb 2021 06:15:36 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id e9so1557757pjj.0;
-        Thu, 18 Feb 2021 06:15:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=PSqyUdGTB3twfGzpr0rkJfuAQ74/BJdntEYk2Uew8j0=;
-        b=ck8xl5ZO5ojgD4zXc67R7gGKF7xdyJVwl6tcsHOy2lAcTlvB0gFEROTdFMaFeO2FCe
-         Oz0fKsG94vTHd0hEAx4dXr9gGJ0H3wonwZ0IdPjoQRWdEMAm2YSt22+2ju3pakDkUAS9
-         032lELSemywhEgLHRAna6DRdfGOSKPOmdOYjMw8o3zAoRzGZUaVcV1IIrhvM4yPsSHYt
-         mCo2cwDD0aiUOoItU+sHeby+5SbQX0CluJ6qfAEASjWXG4VuwXScuKdSnkBBKoMrfD+d
-         LdgN5421dX09iVKR6qahCBguMoYrtIsToHZ3XmlboPnuWEnuo5Bt+fdtHXT5u7MmvxDX
-         IL2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=PSqyUdGTB3twfGzpr0rkJfuAQ74/BJdntEYk2Uew8j0=;
-        b=LqJBbgm3f9OGlwDnkvnzkOZnD/P2JrTvCcm6Cfv7m+0KsiIiBW0iEoY5PYfR5rh3k6
-         XujpRor2eI70MyP9tJbEvqjik4rYBIznTguMLQljduakM1a0jKG1odifskYpiQjx8JJ5
-         vLD2rihJ5SHDusxGcqeSokC0ARbvh9MD89DGO5dkoumy2qLKrAd61jTpWXshyLATto5w
-         efpihJQ4L7InC1kZMLpeCB3mHf/XwPCQrFAbcBAavJ2nAiSc0mC3ua3DsQIDaRRu0I4x
-         uYb2dF+gGUooiHJT40QUr7uRfqRTt3JvC0toe1BgYPIfm+Ua31dWm92J3Gw6tbfPGyEZ
-         uT2g==
-X-Gm-Message-State: AOAM532JC56KmCP5cpHSpxb6OGRWVorM4JvsoVwycLmx8t0MX5m+NHX/
-        7PbZsDtf2GN54HNwHCe0zEc=
-X-Google-Smtp-Source: ABdhPJz/cGXsUNcWYRM5m4W0CCThC5C9l7KWYZzRgAQFScVlKxvVBmli1ifUZWY1HQtD64OfkBVkZA==
-X-Received: by 2002:a17:90a:77c4:: with SMTP id e4mr4067588pjs.185.1613657735492;
-        Thu, 18 Feb 2021 06:15:35 -0800 (PST)
-Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
-        by smtp.gmail.com with ESMTPSA id g3sm6387903pfq.42.2021.02.18.06.15.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 06:15:34 -0800 (PST)
-Date:   Thu, 18 Feb 2021 22:15:32 +0800
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        corbet@lwn.net, jarkko.nikula@linux.intel.com,
-        mika.westerberg@linux.intel.com, rric@kernel.org,
-        helgaas@kernel.org, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/4] i2c: designware: Use the correct name of
- device-managed function
-Message-ID: <20210218141532.GA783878@nuc8i5>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <20210216160249.749799-4-zhengdejin5@gmail.com>
- <YCwE2cf9X/Gd6lWy@rocinante>
- <20210217114014.GB766103@nuc8i5>
- <YC0eVZf4Xci0IF5+@smile.fi.intel.com>
+        Thu, 18 Feb 2021 09:17:41 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71507C061788;
+        Thu, 18 Feb 2021 06:16:52 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 7159B41E96;
+        Thu, 18 Feb 2021 14:16:44 +0000 (UTC)
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-23-marcan@marcan.st>
+ <20210215191309.k7qkak73usqj7jxp@kozik-lap>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH v2 22/25] tty: serial: samsung_tty: Add support for Apple
+ UARTs
+Message-ID: <f08f4346-e6fd-1487-9b15-f879de4bc59a@marcan.st>
+Date:   Thu, 18 Feb 2021 23:16:40 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <20210215191309.k7qkak73usqj7jxp@kozik-lap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YC0eVZf4Xci0IF5+@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 03:47:01PM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 17, 2021 at 07:40:14PM +0800, Dejin Zheng wrote:
-> > On Tue, Feb 16, 2021 at 06:46:01PM +0100, Krzysztof Wilczyński wrote:
+On 16/02/2021 04.13, Krzysztof Kozlowski wrote:
+> On Mon, Feb 15, 2021 at 09:17:10PM +0900, Hector Martin wrote:
+>> @@ -389,10 +396,12 @@ static void enable_tx_pio(struct s3c24xx_uart_port *ourport)
+>>   	ucon = rd_regl(port, S3C2410_UCON);
+>>   	ucon &= ~(S3C64XX_UCON_TXMODE_MASK);
+>>   	ucon |= S3C64XX_UCON_TXMODE_CPU;
+>> -	wr_regl(port,  S3C2410_UCON, ucon);
+>>   
+>>   	/* Unmask Tx interrupt */
+>>   	switch (ourport->info->type) {
+>> +	case TYPE_APPLE_S5L:
+>> +		ucon |= APPLE_S5L_UCON_TXTHRESH_ENA_MSK;
+>> +		break;
+>>   	case TYPE_S3C6400:
+>>   		s3c24xx_clear_bit(port, S3C64XX_UINTM_TXD, S3C64XX_UINTM);
+>>   		break;
+>> @@ -401,7 +410,16 @@ static void enable_tx_pio(struct s3c24xx_uart_port *ourport)
+>>   		break;
+>>   	}
+>>   
+>> +	wr_regl(port,  S3C2410_UCON, ucon);
 > 
-> ...
-> 
-> > > The change simplifies the error handling path, how?  A line of two which
-> > > explains how it has been achieved might help should someone reads the
-> > > commit message in the future.
-> > > 
-> > To put it simply, if the driver probe fail, the device-managed function
-> > mechanism will automatically call pcim_release(), then the pci_free_irq_vectors()
-> > will be executed. For details, please see the relevant code.
-> 
-> Perhaps as a compromise you may add this short sentence to your commit
-> messages, like "the freeing resources will take automatically when device
-> is gone".
->
-Ok, I will do it. Andy, Thanks for your help. And so sorry for the late
-reply. Yesterday was the last day of the Chinese New Year holiday. There
-were a lot of things to deal with.
+> You are now configuring the PIO mode after unmasking interrupt. I don't
+> think it's a good idea to change the order... and if it were, it
+> would deserve a separate patch.
 
-BR,
-Dejin
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+For v3 I moved the wr_regl back and just write it again in the 
+TYPE_APPLE_S5L branch; that way, setting the PIO mode and unmasking the 
+interrupt are two discrete operations on S5L, like they are on other types.
+
+>>   	/* Keep all interrupts masked and cleared */
+>>   	switch (ourport->info->type) {
+>> +	case TYPE_APPLE_S5L: {
 > 
+> Usually you put TYPE_APPLE at the end of switch, so please keep it
+> consistent. Can be first or last - just everywhere the same, unless you
+> have a fall-through on purpose.
+
+Good point, thanks, moved it for v3. It was actually inconsistent in 
+more places, I made all the orders the same (the enum order, and 
+default: always goes at the end).
+
+>> @@ -2179,6 +2329,32 @@ static int s3c24xx_serial_resume_noirq(struct device *dev)
+>>   	if (port) {
+>>   		/* restore IRQ mask */
+>>   		switch (ourport->info->type) {
+>> +		case TYPE_APPLE_S5L: {
+>> +			unsigned int ucon;
+>> +
+>> +			clk_prepare_enable(ourport->clk);
+>> +			if (!IS_ERR(ourport->baudclk))
+>> +				clk_prepare_enable(ourport->baudclk);
 > 
+> We should start checking the return values of clk operations. I know
+> that existing code does it only in few places, so basically you are not
+> making it worse...
+
+Added error checking for these for v3, thanks.
+
+>> +#define S5L_SERIAL_DRV_DATA ((kernel_ulong_t)&s5l_serial_drv_data)
+>> +#else
+>> +#define S5L_SERIAL_DRV_DATA ((kernel_ulong_t)NULL)
+>> +#endif
+>> +
+>> +
+> 
+> Only one line break.
+
+Fixed in v3.
+
+Thank you for the reviews!
+
+-- 
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
