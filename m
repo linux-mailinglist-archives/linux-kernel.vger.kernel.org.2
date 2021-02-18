@@ -2,103 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A1B31EF6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51CFB31EF6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:15:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233901AbhBRTMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:12:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234643AbhBRRr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:47:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EB8964EAF;
-        Thu, 18 Feb 2021 17:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613670402;
-        bh=mtEHrh0qdtrNn6hE2o602oWOXfVcY2W1TdTnBunJ7hU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LeZ9kdbYYPw5EWOtcB7ZZh8OTTcpSZoGLaWQbAYY8ZDok6MzMj9B11f31/lKWotHD
-         dvBtM7tVPnGvO4XExf0a/zRRkRVR61PHlujG+Lt8X+VUASKjCY3d1XCTTwWBQO0UUi
-         8b37i3wXuOLdJJhxq92K36oDqmcTP51xzSKXU4Yc=
-Date:   Thu, 18 Feb 2021 18:46:39 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Kurt Manucredo <fuzzybritches@protonmail.com>
-Cc:     ross.schm.dev@gmail.com, straube.linux@gmail.com,
-        dan.carpenter@oracle.com, d.straghkov@ispras.ru, tiwai@suse.de,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: rtl8723bs: code-style fix
-Message-ID: <YC6n/6z7EyWBzC/q@kroah.com>
-References: <20210218163204.7-1-fuzzybritches@protonmail.com>
+        id S234010AbhBRTNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:13:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28384 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234559AbhBRRsi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 12:48:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613670431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Vh8JVeAq553dnjUjXxpSp+/x6fHtJkixwlI1e+/bfY8=;
+        b=RqkATTCPSeb2gmGwoVHNHMlg3AkybgX2FvMGHiylUP5xD09ZQ7zHPKMzsqZxZ9EZg5Vtum
+        MgQf8Mx/bMnwHRi0RtVkY/jE0/MT7ZAddj6DU98C0X39/2LrZqSBZ5w7Dyb2ojxiIdh+sP
+        99WeNUegsnNW/3Tyn6/2BPOPr7n5BKk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-348-qum9-M-dOJ-dh4Cpmuan6A-1; Thu, 18 Feb 2021 12:47:10 -0500
+X-MC-Unique: qum9-M-dOJ-dh4Cpmuan6A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C51CF107ACF4;
+        Thu, 18 Feb 2021 17:47:07 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C64060877;
+        Thu, 18 Feb 2021 17:47:01 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210217161358.GM2858050@casper.infradead.org>
+References: <20210217161358.GM2858050@casper.infradead.org> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218163204.7-1-fuzzybritches@protonmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <2083367.1613670420.1@warthog.procyon.org.uk>
+Date:   Thu, 18 Feb 2021 17:47:00 +0000
+Message-ID: <2083368.1613670420@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 04:33:10PM +0000, Kurt Manucredo wrote:
-> Signed-off-by: Kurt Manucredo <fuzzybritches@protonmail.com>
-> ---
-> 
-> Checkpatch complains the constant needs to be on the right side of the
-> comparison. The preferred way is: 
-> 
->  drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> index 089c6ec19373..96feced698ac 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-> @@ -2146,7 +2146,7 @@ void rtw_get_sec_iv(struct adapter *padapter, u8 *pcur_dot11txpn, u8 *StaAddr)
->  	struct security_priv *psecpriv = &padapter->securitypriv;
->  
->  	memset(pcur_dot11txpn, 0, 8);
-> -	if (StaAddr == NULL)
-> +	if (!StaAddr)
->  		return;
->  	psta = rtw_get_stainfo(&padapter->stapriv, StaAddr);
->  	DBG_871X("%s(): StaAddr: %02x %02x %02x %02x %02x %02x\n",
-> -- 
-> 2.20.1
-> 
-> 
-> _______________________________________________
-> devel mailing list
-> devel@linuxdriverproject.org
-> http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Hi,
+> So readahead_expand() needs to adjust the file's f_ra so that when the
+> application gets to 64kB, it kicks off the readahead of 4MB-8MB chunk (and
+> then when we get to 4MB+256kB, it kicks off the readahead of 8MB-12MB,
+> and so on).
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Ummm...  Two questions:
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Firstly, how do I do that?  Set ->async_size?  And to what?  The expansion
+could be 2MB from a ceph stripe, 256k from the cache.  Just to add to the fun,
+the leading edge of the window might also be rounded downwards and the RA
+trigger could be before where the app is going to start reading.
 
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
+Secondly, what happens if, say, a 4MB read is covered by a single 4MB THP?
 
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
+David
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
