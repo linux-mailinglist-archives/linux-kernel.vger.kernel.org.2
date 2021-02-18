@@ -2,150 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA6C31ED5C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C92FA31ED64
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:37:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhBRRb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:31:59 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:26610 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbhBROq7 (ORCPT
+        id S231808AbhBRRex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229840AbhBROtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:46:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613659618; x=1645195618;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dyXayGWuX+Kuke5GEv4XoGnhgT27caNB9nxMLMsNigc=;
-  b=rXkelD3hbRU57XQjv8wB1DwbQgL9c0LYk58v+NjV56kEjCD03EdzaH1o
-   B8Timc3yr/lHLFfd31tUNuYgK24T+xLB9Bs9W4fixV6T2fmS4W7mjnYVA
-   X8L3DnrjsgYUgqNEIKNlqLlrNPN5lFmM1ZQvyWsyBIShpJbX8/1hWO94s
-   ZW1U+rqxrmdSoICR3TehXK8jKdtlKQytDym1u6Hy+6DRq2y69jrMWWgCn
-   2Y5JDqOJInl5jK6K7z3IiI56QYRqvADGEEg3Z6gAoQZJSofg6zzxDs7cf
-   WjkJ1wOuk0kkMWlpbHuNaQw2Srsx/tiTjzwWGjyrh8ZjhthMojpsrY5vb
-   Q==;
-IronPort-SDR: 0G+IookcOZZ6GuoMFIZiJro017YKfvoo7IPmrCY3Y3QoVUoWHqcXGwaKiCVE0xhTWojL787q/q
- f/toLH0x8pOM44IlYaFvUV8PS41kWNMYkp6IyRwUpHWUbyisdZItMsVkiEL3sjqqMpQehh0rYT
- Fnc9Q26MAeFyMA6fkTJq+5H8l8uGmWRq5TnkVr5bpUmE09CuqXAy71d80n082M1EkvaafRvTuz
- X8N4hjQf2K72b/QOpOjuTur7sOYGFD6dpJsTAToybkuyx9AZKx+t1+4wc9CTDGLQOwdYDX+osH
- pNQ=
-X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
-   d="scan'208";a="109758822"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 07:45:32 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 07:45:30 -0700
-Received: from tyr.hegelund-hansen.dk (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 18 Feb 2021 07:45:28 -0700
-Message-ID: <5abbe42602ad92bd4bb0b36b64b8621dee805103.camel@microchip.com>
-Subject: Re: [PATCH v14 2/4] phy: Add media type and speed serdes
- configuration interfaces
-From:   Steen Hegelund <steen.hegelund@microchip.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Andrew Lunn <andrew@lunn.ch>
-CC:     Vinod Koul <vkoul@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Microchip UNG Driver List <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Date:   Thu, 18 Feb 2021 15:45:27 +0100
-In-Reply-To: <d5351524-d02d-0bdb-53ba-b5b9a72673f2@ti.com>
-References: <20210210085255.2006824-1-steen.hegelund@microchip.com>
-         <20210210085255.2006824-3-steen.hegelund@microchip.com>
-         <04d91f6b-775a-8389-b813-31f7b4a778cb@ti.com>
-         <ffa00a2bf83ffa21ffdc61b380ab800c31f8cf28.camel@microchip.com>
-         <704b850f-9345-2e36-e84b-b332fed22270@ti.com> <YCqAMUfinMsnZnrq@lunn.ch>
-         <d5b3ccf9df1968671baadcd3c7a5e068d48867c5.camel@microchip.com>
-         <d5351524-d02d-0bdb-53ba-b5b9a72673f2@ti.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 
+        Thu, 18 Feb 2021 09:49:43 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44957C061756;
+        Thu, 18 Feb 2021 06:48:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1qnqSwl3zPIZ18NfoUqqslAfbYk9l/Wxn1L1wgv0bjQ=; b=MR2z5mqAU4EoGlW9G8W3WH6WlP
+        PDh8ZNDTlp6jKbO+eCxnm4OwDESOyMsjV0rH25bi7qvtsEJfU4gykwYSda0luLWxhcClo2Z7sdqmz
+        zYmaGJqiCM0nFgd5sPKQYv6nGPKgNL2vDKKb+4cQJPgZp6+vDFyxcc8yS8QCSZ9M2PpHn0/AjYuye
+        GzWElpMLh46s6Vr19SdcpbqTildW6Uc/my+AFvYEH8IzTYm+Gdqsg5YZvZGBckHfbNLY7R8ZaFO6N
+        tCFNAmKcVBfrnQlb4vWZNk0ctBMO0yOhalIX03yaPqYznGmeczNNjOGCT1FOzXYOy8L8f1fcXFAuT
+        jzcoNVRw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lCkZ0-001lVL-UI; Thu, 18 Feb 2021 14:46:12 +0000
+Date:   Thu, 18 Feb 2021 14:45:54 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Zi Yan <ziy@nvidia.com>, Davidlohr Bueso <dbueso@suse.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] hugetlb: fix update_and_free_page contig page struct
+ assumption
+Message-ID: <20210218144554.GS2858050@casper.infradead.org>
+References: <20210217184926.33567-1-mike.kravetz@oracle.com>
+ <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kishon,
+On Wed, Feb 17, 2021 at 11:02:52AM -0800, Andrew Morton wrote:
+> On Wed, 17 Feb 2021 10:49:25 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> > page structs are not guaranteed to be contiguous for gigantic pages.  The
+>
+> June 2014.  That's a long lurk time for a bug.  I wonder if some later
+> commit revealed it.
 
-On Tue, 2021-02-16 at 15:54 +0530, Kishon Vijay Abraham I wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you
-> know the content is safe
-> 
-> Hi,
-> 
-> On 16/02/21 2:07 pm, Steen Hegelund wrote:
-> > Hi Andrew and Kishon,
-> > 
-> > On Mon, 2021-02-15 at 15:07 +0100, Andrew Lunn wrote:
-> > > EXTERNAL EMAIL: Do not click links or open attachments unless you
-> > > know the content is safe
-> > > 
-> > > On Mon, Feb 15, 2021 at 05:25:10PM +0530, Kishon Vijay Abraham I
-> > > wrote:
-> > > > Okay. Is it going to be some sort of manual negotiation where
-> > > > the
-> > > > Ethernet controller invokes set_speed with different speeds? Or
-> > > > the
-> > > > Ethernet controller will get the speed using some out of band
-> > > > mechanism
-> > > > and invokes set_speed once with the actual speed?
-> > > 
-> > > Hi Kishon
-> > > 
-> > > There are a few different mechanism possible.
-> > > 
-> > > The SFP has an EEPROM which contains lots of parameters. One is
-> > > the
-> > > maximum baud rate the module supports. PHYLINK will combine this
-> > > information with the MAC capabilities to determine the default
-> > > speed.
-> > > 
-> > > The users can select the mode the MAC works in, e.g. 1000BaseX vs
-> > > 2500BaseX, via ethtool -s. Different modes needs different
-> > > speeds.
-> > > 
-> > > Some copper PHYs will change there host side interface baud rate
-> > > when
-> > > the media side interface changes mode. 10GBASE-X for 10G copper,
-> > > 5GBase-X for 5G COPPER, 2500Base-X for 2.5G copper, and SGMII for
-> > > old school 10/100/1G Ethernet.
-> > > 
-> > > Mainline Linux has no support for it, but some 'vendor crap' will
-> > > do
-> > > a
-> > > manual negotiation, simply trying different speeds and see if the
-> > > SERDES establishes link. There is nothing standardised for this,
-> > > as
-> > > far as i know.
-> > > 
-> > >     Andrew
-> > 
-> > Yes, in case I mention the only way to ensure communication is
-> > human
-> > intervention to set the speed to the highest common denominator.
-> 
-> Okay.. is it the same case for set_media as well?
-
-Yes, but in the media type case, we should be able to get the type from
-the DAC cable EPPROM information as mentioned by Andrew, so human
-intervention should not be needed.
-
-
-> 
-> Thanks
-> Kishon
-
-Thanks for your comments.
-
--- 
-BR
-Steen
-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=
-steen.hegelund@microchip.com
-
+I would suggest that gigantic pages have not seen much use.  Certainly
+performance with Intel CPUs on benchmarks that I've been involved with
+showed lower performance with 1GB pages than with 2MB pages until quite
+recently.
