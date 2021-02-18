@@ -2,103 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C144931E9F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5B2A31EA03
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:48:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhBRMfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:35:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56592 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231129AbhBRK4e (ORCPT
+        id S233218AbhBRMos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:44:48 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:37826 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231254AbhBRK6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:56:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613645703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gcqiQcLIQresUmqBjSfx8mrrnANdscT5bovWT1NTSz4=;
-        b=MhTHGU5QZ7UOIvNh9DjoOnTQeYx3yhFZ0KBQ7TfyCNpRf6nrCWSrPFR+VDO5/qAgtfZlWL
-        LJKoc60uGbTlvr/8cfrDAxkvfRrHmS4ATE5EPBc8y82Ds3TM8Ftinxw2DHdk5azT38KhRv
-        fSvpcdZaWmnHAAouNAhZyMTWKN3fisk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-9O4f9C2-NQaWM_0J6rqvXQ-1; Thu, 18 Feb 2021 05:55:01 -0500
-X-MC-Unique: 9O4f9C2-NQaWM_0J6rqvXQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 032E7107ACC7;
-        Thu, 18 Feb 2021 10:54:58 +0000 (UTC)
-Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 29CF45D9C2;
-        Thu, 18 Feb 2021 10:54:49 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-From:   David Hildenbrand <david@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
- <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <de28b8db-a103-5bc2-8ace-d2907026a95d@redhat.com>
-Date:   Thu, 18 Feb 2021 11:54:48 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 18 Feb 2021 05:58:32 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAsIfn070409;
+        Thu, 18 Feb 2021 10:56:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=UtfpFAuXXKx50YaPgIVvUWoFjdBHQvgA3bRXqMoF/i8=;
+ b=Yt6TcKZ5GmL+0F3NC73R0zDDJdLSDRSQFcLBgJ2A1Mp8b7xRvooO91YX7kkrnoZL00yt
+ OdH3JaC0Kab1YAPzgMLIHZNEtPnatRRBI+RgJJhCJxruG4LrqsZXyvJciT9DbJFZNMJp
+ a+FCJIEZAM9cIgrb7rC7O2LVm9rm2yV1SXP50QdWReIM0++dlqTXdaAhvJJJAeH0O41E
+ g98F+piRRZR9/Zp+DgBreCuFPNMJXd/UfSCmfWAemtyor92TlPv0vzSVEY4mBL2/gZKH
+ zT4fNFM7VligXujLkft5ycywZZ1HQpL1aeReDxkCuVADodQLP6O4UbLyQ0H0GlyJno+H /A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 36pd9ad16a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 10:56:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAkQ8Z188616;
+        Thu, 18 Feb 2021 10:56:08 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 36prbqm8qs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 10:56:08 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11IAu5J1016546;
+        Thu, 18 Feb 2021 10:56:05 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 02:56:05 -0800
+Date:   Thu, 18 Feb 2021 13:55:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v1 07/18] media: hantro: Add a field to distinguish the
+ hardware versions
+Message-ID: <20210218105551.GF2087@kadam>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <20210217080306.157876-8-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217080306.157876-8-benjamin.gaignard@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180095
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>      If we hit
->>>      hardware errors on pages, ignore them - nothing we really can or
->>>      should do.
->>> 3. On errors during MADV_POPULATED, some memory might have been
->>>      populated. Callers have to clean up if they care.
->>
->> How does caller find out? madvise reports 0 on success so how do you
->> find out how much has been populated?
+On Wed, Feb 17, 2021 at 09:02:55AM +0100, Benjamin Gaignard wrote:
+> Decoders hardware blocks could exist in multiple versions: add
+> a field to distinguish them at runtime.
+> Keep the default behavoir to be G1 hardware.
 > 
-> If there is an error, something might have been populated. In my QEMU
-> implementation, I simply discard the range again, good enough. I don't
-> think we need to really indicate "error and populated" or "error and not
-> populated".
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> ---
+>  drivers/staging/media/hantro/hantro.h     | 5 +++++
+>  drivers/staging/media/hantro/hantro_drv.c | 2 ++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index bde65231f22f..2a566dfc2fe3 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -36,6 +36,9 @@ struct hantro_codec_ops;
+>  #define HANTRO_H264_DECODER	BIT(18)
+>  #define HANTRO_DECODERS		0xffff0000
+>  
+> +#define HANTRO_G1_REV		0x6731
+> +#define HANTRO_G2_REV		0x6732
+> +
+>  /**
+>   * struct hantro_irq - irq handler and name
+>   *
+> @@ -170,6 +173,7 @@ hantro_vdev_to_func(struct video_device *vdev)
+>   * @enc_base:		Mapped address of VPU encoder register for convenience.
+>   * @dec_base:		Mapped address of VPU decoder register for convenience.
+>   * @ctrl_base:		Mapped address of VPU control block.
+> + * @core_hw_dec_rev	Runtime detected HW decoder core revision
+>   * @vpu_mutex:		Mutex to synchronize V4L2 calls.
+>   * @irqlock:		Spinlock to synchronize access to data structures
+>   *			shared with interrupt handlers.
+> @@ -189,6 +193,7 @@ struct hantro_dev {
+>  	void __iomem *enc_base;
+>  	void __iomem *dec_base;
+>  	void __iomem *ctrl_base;
+> +	u32 core_hw_dec_rev;
+>  
+>  	struct mutex vpu_mutex;	/* video_device lock */
+>  	spinlock_t irqlock;
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index 0570047c7fa0..e1443c394f62 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -840,6 +840,8 @@ static int hantro_probe(struct platform_device *pdev)
+>  	}
+>  	vpu->enc_base = vpu->reg_bases[0] + vpu->variant->enc_offset;
+>  	vpu->dec_base = vpu->reg_bases[0] + vpu->variant->dec_offset;
+> +	/* by default decoder is G1 */
+> +	vpu->core_hw_dec_rev = HANTRO_G1_REV;
+>  
 
-Clarifying again: if madvise(MADV_POPULATED) succeeds, it returns 0. If 
-there was a problem poopulating memory, it returns -ENOMEM (similar to 
-MADV_WILLNEED). Callers can detect the error and discard.
+This is a write only variable.  :P  Fold it in with the patch that uses
+it.
 
--- 
-Thanks,
-
-David / dhildenb
-
+regards,
+dan carpenter
