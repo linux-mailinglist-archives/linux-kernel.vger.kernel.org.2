@@ -2,92 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79BFB31EC1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5281131EC0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233289AbhBRQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:15:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60774 "EHLO mx2.suse.de"
+        id S233200AbhBRQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:11:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60818 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhBRNd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:33:58 -0500
+        id S231200AbhBRNeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:34:00 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A2CF4AF49;
-        Thu, 18 Feb 2021 13:33:09 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 14:32:50 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
-Message-ID: <20210218133250.GA7983@localhost.localdomain>
-References: <20210217100816.28860-1-osalvador@suse.de>
- <20210217100816.28860-2-osalvador@suse.de>
- <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
- <20210218100917.GA4842@localhost.localdomain>
- <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+        by mx2.suse.de (Postfix) with ESMTP id D2AF6ACE5;
+        Thu, 18 Feb 2021 13:33:12 +0000 (UTC)
+Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
+To:     Gerd Hoffmann <kraxel@redhat.com>
+Cc:     David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel@lists.freedesktop.org,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        Dave Airlie <airlied@redhat.com>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>
+References: <20210217123213.2199186-1-kraxel@redhat.com>
+ <20210217123213.2199186-11-kraxel@redhat.com>
+ <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
+ <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <2d7a649c-bf1d-aa41-8d3c-af9746b94bc0@suse.de>
+Date:   Thu, 18 Feb 2021 14:33:11 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+In-Reply-To: <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 01:52:38PM +0100, Michal Hocko wrote:
-> > Ok, makes sense.
-> > __GFP_THISNODE will not allow fallback to other node's zones.
-> > Since we only allow the nid the page belongs to, nodemask should be
-> > NULL, right?
-> 
-> I would have to double check because hugetlb has a slightly different
-> expectations from nodemask than the page allocator. The later translates
-> that to all possible nodes but hugetlb API tries to dereference nodes.
-> Maybe THIS node special cases it somewhere.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW
+Content-Type: multipart/mixed; boundary="UncSznus3ByHfOkcxonBdJz5e6MeKSXqO";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>
+Cc: David Airlie <airlied@linux.ie>, open list
+ <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>, Dave Airlie
+ <airlied@redhat.com>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>
+Message-ID: <2d7a649c-bf1d-aa41-8d3c-af9746b94bc0@suse.de>
+Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
+References: <20210217123213.2199186-1-kraxel@redhat.com>
+ <20210217123213.2199186-11-kraxel@redhat.com>
+ <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
+ <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
+In-Reply-To: <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
 
-Uhm, I do not quite follow here.
-AFAICS, alloc_fresh_huge_page->alloc_buddy_huge_page does nothing
-with the nodemask, bur rather with nodes_retry mask. That is done
-to not retry on a node we failed to allocate a page.
+--UncSznus3ByHfOkcxonBdJz5e6MeKSXqO
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Now, alloc_buddy_huge_page calls __alloc_pages_nodemask directly.
-If my understanding is correct, it is ok to have a null nodemask
-as __next_zones_zonelist() will go through our own zonelist,
-since __GFP_THISNODE made us take ZONELIST_NOFALLBACK.
+Hi
 
-Actually, I do not see how passing a non-null nodemask migth have
-helped there, unless we allow to specify more nodes.
+Am 18.02.21 um 12:50 schrieb Gerd Hoffmann:
+>    Hi,
+>=20
+>> I'm still trying to wrap my head around the qxl cursor code.
+>>
+>> Getting vmap out of the commit tail is good, but I feel like this isn'=
+t
+>> going in the right direction overall.
+>>
+>> In ast, these helper functions were only good when converting the drvi=
+er to
+>> atomic modesetting. So I removed them in the latst patchset and did al=
+l the
+>> updates in the plane helpers directly.
+>=20
+> I see the helper functions more as a way to get some structure into the=
 
-> > I did. The 'put_page' call should be placed above, right after getting
-> > the page. Otherwise, refcount == 1 and we will fail to dissolve the
-> > new page if we need to (in case old page fails to be dissolved).
-> > I already fixed that locally.
-> 
-> I am not sure I follow. newly allocated pages is unreferenced
-> unconditionally and the old page is not referenced by this path.
+> code flow.  The callbacks are easier to read if they just call helper
+> functions for stuff which needs more than a handful lines of code
+> (patch 9/11 exists for the same reason).
+>=20
+> The helpers also make it easier move work from one callback to another,=
 
-Current code is:
+> but that is just a useful side-effect.
+>=20
+> I had considered making that two separate patches, one factor out code
+> into functions and one moving the calls.  Turned out to not be that eas=
+y
+> though, because the old qxl_cursor_atomic_update() code was a rather
+> hairy mix of qxl_create_cursor() + qxl_primary_apply_cursor() +
+> qxl_primary_move_cursor().
+>=20
+>> For cursor_bo itself, it seems to be transitional state that is only u=
+sed
+>> during the plane update and crtc update . It should probably be stored=
+ in a
+>> plane-state structure.
+>>
+>> Some of the primary plane's functions seem to deal with cursor handlin=
+g.
+>> What's the role of the primary plane in cursor handling?
+>=20
+> It's a quirk.  The qxl device will forget the cursor state on
+> qxl_io_create_primary(), so I have to remember the cursor state
+> and re-establish it by calling qxl_primary_apply_cursor() again.
+>=20
+> So I'm not sure sticking this into plane state would work.  Because of
+> the quirk this is more than just a handover from prepare to commit.
+>=20
+>> For now, I suggest to merge patch 1 to 8 and 11; and move the cursor p=
+atches
+>> into a new patchset.
+>=20
+> I can merge 1-8, but 11 has to wait until the cursor is sorted.
+> There is a reason why 11 is last in the series ;)
+>=20
+>> I'd like ot hear Daniel's opinion on this. Do you have
+>> further plans here?
+>=20
+> Well.  I suspect I could easily spend a month cleaning up and party
+> redesign the qxl driver (specifically qxl_draw.c + qxl_image.c).
+>=20
+> I'm not sure I'll find the time to actually do that anytime soon.
+> I have plenty of other stuff on my TODO list, and given that the
+> world is transitioning to virtio-gpu the priority for qxl isn't
+> that high.
 
- allocate_a_new_page (new_page's refcount = 1)
- dissolve_old_page
-  : if fail
-     dissolve_new_page (we cannot dissolve it refcount != 0)
- put_page(new_page);
+Well, in that case:
 
-It should be:
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 
- allocate_a_new_page (new_page's refcount = 1)
- put_page(new_page); (new_page's refcount = 0)
- dissolve_old_page
-  : if fail
-     dissolve_new_page (we can dissolve it as refcount == 0)
+for patches 9 and 10. Having the vmap calls fixed is at least worth it.
 
-I hope this clarifies it .
+Best regards
+Thomas
 
--- 
-Oscar Salvador
-SUSE L3
+>=20
+> So, no, I have no short-term plans for qxl beyond fixing pins +
+> reservations + lockdep.
+>=20
+> take care,
+>    Gerd
+>=20
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--UncSznus3ByHfOkcxonBdJz5e6MeKSXqO--
+
+--nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAubJcFAwAAAAAACgkQlh/E3EQov+BB
+5BAAiaqEuFQuNX/Edte8pTgw0EtC+8JuFX94XO6ZPE14G7zF8aoqmPSoTZ7mfazDN0kqhCUbOUpX
+jcDLZuRE+KoJEi75UcxkbejxT2/HZiwTwmL/Nq0Lbv6gVq7X4v+mVflSMKeZytS3Xq98IEOn/Y43
+ud9e064McQ0NNgOJb5Fjy2Rjd6rujdFU73B8rE5NumkiaJptCk+qE/TAJipSGXXSJ1zkgvSHSAga
+OutrnKsSUXe8i0BHJUMrK2LaK2Zkheb2GCUe9QxSOThoDEtuEz0NBOU2eoYewkE4IBBO+DXeQ6wp
+Qnd5D0kIkh+qBe8SWwPqXIGNsEhoEdkuEmfdEN/BsqOdr3mL1p1bks8ZHpgqyNSH1UQ/irka0buz
+eTFUnWuirhRrPWJo8lC65LvaINW+BRjcmq5PcZTKLMPPYn7UFzbL/PCNIggAwDbwiaAReHzUiwui
+XqAgB5cchmLxz3OjBiJgPM3rgIldcvOFIt2qu8e44nwnYMG97ifpDDWydfwmGj4VcU2ejV5T3kBN
+eHbbWSTMgKHT6L2IeOIRAeTjc/r5DmuX6uLGz3OXYS/oPlR+zNKpRaxIbgyQxTIlZ2OkzykXl8Sj
+DBeIHA466qiG1dHoWKW/zqNjmgKxFrZ/dAnmGxH7eqbkw/ZymCs4PP8Z1Z5k8+L/0bU50Nonm5bx
+HZc=
+=9OXG
+-----END PGP SIGNATURE-----
+
+--nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW--
