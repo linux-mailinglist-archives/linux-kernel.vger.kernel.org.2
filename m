@@ -2,135 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7912131E893
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FFC31E896
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhBRJsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:48:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231175AbhBRIjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:39:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BDA464E68;
-        Thu, 18 Feb 2021 08:38:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613637513;
-        bh=1hR5BWLjfPV6fbUMbks52LoRUvrgUKHL4ga3m4GQkYo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1EEr5PdcXw8QPVzAoN2V6EuToTn8Gou4iAkDhwzI/XNhGQ/rpSDojuInUHK5CxMzS
-         1Ni9gfha1dFKuVb73lLmCO2XiRiXuXZ4KdGThns3ielCfnWpB6IRA710xx1hSMmDwN
-         rXpH1toXPiKvg2EUb4NGU5RUiDDG46gQXqRD1eMI=
-Date:   Thu, 18 Feb 2021 09:38:30 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH] irqdomain: remove debugfs_file from struct irq_domain
-Message-ID: <YC4nhoc9F59/1drh@kroah.com>
-References: <YCvYV53ZdzQSWY6w@kroah.com>
- <20210217195717.13727-1-michael@walle.cc>
- <4e4d0479b935e60a53f75ef534086476@kernel.org>
- <5c527bfb6f3dfe31b5c25f29418306c6@walle.cc>
- <87czwys6s1.wl-maz@kernel.org>
- <YC4X4iLMCK3tNVsF@kroah.com>
- <8b4de9eae773a43b38f42c8ab6d9d23c@walle.cc>
+        id S230128AbhBRJyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:54:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60479 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231169AbhBRImA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:42:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613637633;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2qT1dk1aGHMRzxn21hoyRJNd+7TB5SutKvcXqZ00fOs=;
+        b=L05T/8+X94V1xiBI3RBB5LwVjunXj7b/Uwqoy76Xh3WvsXVifR6Vs1LWizebEFg3Ul5h+u
+        bK0mm7jqOjfJKjR/u680+FX1NCowfyxm7dC+MPJuJa1DqWaQgGcC0BBM/hqISzFRPzQN/o
+        xF634ym2vxwREDytifVGIUbqVnsJSUE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-269-Jj7_5E49NM2-6xsTsCFijg-1; Thu, 18 Feb 2021 03:40:16 -0500
+X-MC-Unique: Jj7_5E49NM2-6xsTsCFijg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AD37192AB79;
+        Thu, 18 Feb 2021 08:40:13 +0000 (UTC)
+Received: from localhost (ovpn-12-112.pek2.redhat.com [10.72.12.112])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B238B19C47;
+        Thu, 18 Feb 2021 08:40:08 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 16:40:06 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
+        dyoung@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
+        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
+        arnd@arndb.de, james.morse@arm.com, xiexiuqi@huawei.com,
+        guohanjun@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH v14 11/11] kdump: update Documentation about crashkernel
+Message-ID: <20210218083822.GL2871@MiWiFi-R3L-srv>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-12-chenzhou10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8b4de9eae773a43b38f42c8ab6d9d23c@walle.cc>
+In-Reply-To: <20210130071025.65258-12-chenzhou10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 09:27:09AM +0100, Michael Walle wrote:
-> Am 2021-02-18 08:31, schrieb Greg KH:
-> > On Wed, Feb 17, 2021 at 09:50:38PM +0000, Marc Zyngier wrote:
-> > > On Wed, 17 Feb 2021 20:10:50 +0000,
-> > > Michael Walle <michael@walle.cc> wrote:
-> > > >
-> > > > Am 2021-02-17 21:02, schrieb Marc Zyngier:
-> > > > > On 2021-02-17 19:57, Michael Walle wrote:
-> > > > >> Hi Greg,
-> > > > >>
-> > > > >>> There's no need to keep around a dentry pointer to a simple file that
-> > > > >>> debugfs itself can look up when we need to remove it from the system.
-> > > > >>> So simplify the code by deleting the variable and cleaning up the
-> > > > >>> logic
-> > > > >>> around the debugfs file.
-> > > > >>
-> > > > >> This will generate the following oops on my board (arm64,
-> > > > >> freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts). In debugfs_lookup()
-> > > > >> debugfs_mount is NULL.
-> > > > >
-> > > > > That's odd. I gave it a go yesterday, and nothing blew up.
-> > > > > Which makes me wonder whether I had the debug stuff enabled
-> > > > > the first place...
-> > > > >
-> > > > > I've dropped the patch from -next for now until I figure it out
-> > > > > (probably tomorrow).
-> > > >
-> > > > Mh, maybe its my .config, I've attached it. I also noticed that
-> > > > the board boots just fine in our kernel-ci [1].
-> > > 
-> > > I reproduced here. I had disabled GENERIC_IRQ_DEBUGFS for obscure
-> > > reasons, and it caught fire as I re-enabled it.
-> > > 
-> > > Adding this fixes it for me:
-> > > 
-> > > diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-> > > index 367ff1c35f75..d8a14cf1a7b6 100644
-> > > --- a/kernel/irq/irqdomain.c
-> > > +++ b/kernel/irq/irqdomain.c
-> > > @@ -1904,7 +1904,8 @@ static void debugfs_add_domain_dir(struct
-> > > irq_domain *d)
-> > > 
-> > >  static void debugfs_remove_domain_dir(struct irq_domain *d)
-> > >  {
-> > > -	debugfs_remove(debugfs_lookup(d->name, domain_dir));
-> > > +	if (domain_dir)
-> > > +		debugfs_remove(debugfs_lookup(d->name, domain_dir));
-> > >  }
-> > > 
-> > >  void __init irq_domain_debugfs_init(struct dentry *root)
-> > > 
-> > > 
-> > > Could you please check whether it works for you?
-> > 
-> > Can you try this debugfs core change instead?  Callers to debugfs should
-> > not have to do the above type of checking as debugfs should be much more
-> > robust than that.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > 
-> > diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
-> > index 2fcf66473436..5aa798f52b6e 100644
-> > --- a/fs/debugfs/inode.c
-> > +++ b/fs/debugfs/inode.c
-> > @@ -297,7 +297,7 @@ struct dentry *debugfs_lookup(const char *name,
-> > struct dentry *parent)
-> >  {
-> >  	struct dentry *dentry;
-> > 
-> > -	if (IS_ERR(parent))
-> > +	if (IS_ERR_OR_NULL(name) || IS_ERR(parent))
-> >  		return NULL;
-> > 
-> >  	if (!parent)
+On 01/30/21 at 03:10pm, Chen Zhou wrote:
+> For arm64, the behavior of crashkernel=X has been changed, which
+> tries low allocation in DMA zone and fall back to high allocation
+> if it fails.
 > 
-> This doesn't work. name is not NULL when it is called.
+> We can also use "crashkernel=X,high" to select a high region above
+> DMA zone, which also tries to allocate at least 256M low memory in
+> DMA zone automatically and "crashkernel=Y,low" can be used to allocate
+> specified size low memory.
+> 
+> So update the Documentation.
 
-Ok, but it is a good check we need to make anyway, I'll add it to a
-patch series :)
+Nice document adding which also takes care of x86 code implementation,
+thanks. By the way, maybe you can remove John's 'Tested-by' since it
+doesn't make much sense to test a document patch.
 
-> What has to happen before debugfs_lookup() can be called? Looks like
-> someone has to initialize the static debugfs_mount, first.
+Acked-by: Baoquan He <bhe@redhat.com>
 
-Wow, wait, you are removing a debugfs file _before_ debugfs is even
-initialized?  Didn't expect that, ok, let me go try this again...
+> 
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
+> ---
+>  Documentation/admin-guide/kdump/kdump.rst     | 22 ++++++++++++++++---
+>  .../admin-guide/kernel-parameters.txt         | 11 ++++++++--
+>  2 files changed, 28 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+> index 75a9dd98e76e..0877c76f8015 100644
+> --- a/Documentation/admin-guide/kdump/kdump.rst
+> +++ b/Documentation/admin-guide/kdump/kdump.rst
+> @@ -299,7 +299,16 @@ Boot into System Kernel
+>     "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
+>     starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
+>  
+> -   On x86 and x86_64, use "crashkernel=64M@16M".
+> +   On x86 use "crashkernel=64M@16M".
+> +
+> +   On x86_64, use "crashkernel=X" to select a region under 4G first, and
+> +   fall back to reserve region above 4G. And go for high allocation
+> +   directly if the required size is too large.
+> +   We can also use "crashkernel=X,high" to select a region above 4G, which
+> +   also tries to allocate at least 256M below 4G automatically and
+> +   "crashkernel=Y,low" can be used to allocate specified size low memory.
+> +   Use "crashkernel=Y@X" if you really have to reserve memory from specified
+> +   start address X.
+>  
+>     On ppc64, use "crashkernel=128M@32M".
+>  
+> @@ -316,8 +325,15 @@ Boot into System Kernel
+>     kernel will automatically locate the crash kernel image within the
+>     first 512MB of RAM if X is not given.
+>  
+> -   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
+> -   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
+> +   On arm64, use "crashkernel=X" to try low allocation in DMA zone and
+> +   fall back to high allocation if it fails.
+> +   We can also use "crashkernel=X,high" to select a high region above
+> +   DMA zone, which also tries to allocate at least 256M low memory in
+> +   DMA zone automatically.
+> +   "crashkernel=Y,low" can be used to allocate specified size low memory.
+> +   Use "crashkernel=Y@X" if you really have to reserve memory from
+> +   specified start address X. Note that the start address of the kernel,
+> +   X if explicitly specified, must be aligned to 2MiB (0x200000).
+>  
+>  Load the Dump-capture Kernel
+>  ============================
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index a10b545c2070..908e5c8b61ba 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -738,6 +738,9 @@
+>  			[KNL, X86-64] Select a region under 4G first, and
+>  			fall back to reserve region above 4G when '@offset'
+>  			hasn't been specified.
+> +			[KNL, arm64] Try low allocation in DMA zone and fall back
+> +			to high allocation if it fails when '@offset' hasn't been
+> +			specified.
+>  			See Documentation/admin-guide/kdump/kdump.rst for further details.
+>  
+>  	crashkernel=range1:size1[,range2:size2,...][@offset]
+> @@ -754,6 +757,8 @@
+>  			Otherwise memory region will be allocated below 4G, if
+>  			available.
+>  			It will be ignored if crashkernel=X is specified.
+> +			[KNL, arm64] range in high memory.
+> +			Allow kernel to allocate physical memory region from top.
+>  	crashkernel=size[KMG],low
+>  			[KNL, X86-64] range under 4G. When crashkernel=X,high
+>  			is passed, kernel could allocate physical memory region
+> @@ -762,13 +767,15 @@
+>  			requires at least 64M+32K low memory, also enough extra
+>  			low memory is needed to make sure DMA buffers for 32-bit
+>  			devices won't run out. Kernel would try to allocate at
+> -			at least 256M below 4G automatically.
+> +			least 256M below 4G automatically.
+>  			This one let user to specify own low range under 4G
+>  			for second kernel instead.
+>  			0: to disable low allocation.
+>  			It will be ignored when crashkernel=X,high is not used
+>  			or memory reserved is below 4G.
+> -
+> +			[KNL, arm64] range in low memory.
+> +			This one let user to specify a low range in DMA zone for
+> +			crash dump kernel.
+>  	cryptomgr.notests
+>  			[KNL] Disable crypto self-tests
+>  
+> -- 
+> 2.20.1
+> 
 
-thanks,
-
-greg k-h
