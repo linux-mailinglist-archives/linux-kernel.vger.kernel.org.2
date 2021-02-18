@@ -2,126 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 474E631F07D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4406C31F07B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232114AbhBRTwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:52:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbhBRTWW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:22:22 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B40DC061574;
-        Thu, 18 Feb 2021 11:21:41 -0800 (PST)
-Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:851a:1dfb:a143:80e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 91EA71F4589B;
-        Thu, 18 Feb 2021 19:19:10 +0000 (GMT)
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v2 9/9] arm64: dts: imx8mq: Add node to G2 hardware
-Date:   Thu, 18 Feb 2021 20:18:44 +0100
-Message-Id: <20210218191844.297869-10-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
-References: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
+        id S231534AbhBRTw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:52:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48290 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230169AbhBRTWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:22:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AC386AED2;
+        Thu, 18 Feb 2021 19:21:19 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 20:21:17 +0100
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, X86 ML <x86@kernel.org>,
+        stable <stable@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 2/3] x86/sev-es: Check if regs->sp is trusted before
+ adjusting #VC IST stack
+Message-ID: <20210218192117.GL12716@suse.de>
+References: <20210217120143.6106-1-joro@8bytes.org>
+ <20210217120143.6106-3-joro@8bytes.org>
+ <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
+ <20210218112500.GH7302@8bytes.org>
+ <CALCETrUohqQPVTBJZZKh-pj=4aZrwDAu5UFSetj3k5pGLDPbkA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrUohqQPVTBJZZKh-pj=4aZrwDAu5UFSetj3k5pGLDPbkA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split VPU node in two: one for G1 and one for G2 since they are
-different hardware blocks.
+On Thu, Feb 18, 2021 at 09:49:06AM -0800, Andy Lutomirski wrote:
+> I don't understand what this means.  The whole entry mechanism on x86
+> is structured so that we call a C function *and return from that C
+> function without longjmp-like magic* with the sole exception of
+> unwind_stack_do_exit().  This means that you can match up enters and
+> exits, and that unwind_stack_do_exit() needs to unwind correctly.  In
+> the former case, it's normal C and we can use normal local variables.
+> In the latter case, we know exactly what state we're trying to restore
+> and we can restore it directly without any linked lists or similar.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
-version 2:
-- remove useless clocks in VPUs nodes
+Okay, the unwinder will likely get confused by this logic.
 
- arch/arm64/boot/dts/freescale/imx8mq.dtsi | 41 +++++++++++++++++------
- 1 file changed, 31 insertions(+), 10 deletions(-)
+> What do you have in mind that requires a linked list?
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-index d9d9efc8592d..8358e214d696 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-@@ -1287,17 +1287,15 @@ vpu_reset: vpu-reset@38320000 {
- 			#reset-cells = <1>;
- 		};
- 
--		vpu: video-codec@38300000 {
-+		vpu_g1: video-codec@38300000 {
- 			compatible = "nxp,imx8mq-vpu";
--			reg = <0x38300000 0x10000>,
--			      <0x38310000 0x10000>;
--			reg-names = "g1", "g2";
--			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
--				     <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
--			interrupt-names = "g1", "g2";
-+			reg = <0x38300000 0x10000>;
-+			reg-names = "g1";
-+			interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g1";
- 			clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
--				 <&clk IMX8MQ_CLK_VPU_G2_ROOT>;
--			clock-names = "g1", "g2";
-+				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-+			clock-names = "g1", "bus";
- 			assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
- 					  <&clk IMX8MQ_CLK_VPU_G2>,
- 					  <&clk IMX8MQ_CLK_VPU_BUS>,
-@@ -1306,12 +1304,35 @@ vpu: video-codec@38300000 {
- 						 <&clk IMX8MQ_VPU_PLL_OUT>,
- 						 <&clk IMX8MQ_SYS1_PLL_800M>,
- 						 <&clk IMX8MQ_VPU_PLL>;
--			assigned-clock-rates = <600000000>, <600000000>,
-+			assigned-clock-rates = <600000000>, <300000000>,
- 					       <800000000>, <0>;
- 			resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G1>;
- 			power-domains = <&pgc_vpu>;
- 		};
- 
-+		vpu_g2: video-codec@38310000 {
-+			compatible = "nxp,imx8mq-vpu-g2";
-+			reg = <0x38310000 0x10000>;
-+			reg-names = "g2";
-+			interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "g2";
-+			clocks = <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-+				 <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
-+			clock-names = "g2",  "bus";
-+			assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
-+					  <&clk IMX8MQ_CLK_VPU_G2>,
-+					  <&clk IMX8MQ_CLK_VPU_BUS>,
-+					  <&clk IMX8MQ_VPU_PLL_BYPASS>;
-+			assigned-clock-parents = <&clk IMX8MQ_VPU_PLL_OUT>,
-+						 <&clk IMX8MQ_VPU_PLL_OUT>,
-+						 <&clk IMX8MQ_SYS1_PLL_800M>,
-+						 <&clk IMX8MQ_VPU_PLL>;
-+			assigned-clock-rates = <600000000>, <300000000>,
-+					       <800000000>, <0>;
-+			resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G2>;
-+			power-domains = <&pgc_vpu>;
-+		};
-+
- 		pcie0: pcie@33800000 {
- 			compatible = "fsl,imx8mq-pcie";
- 			reg = <0x33800000 0x400000>,
--- 
-2.25.1
+Cases when there are multiple IST vectors besides NMI that can hit while
+the #VC handler is still on its own IST stack. #MCE comes to mind, but
+that is broken anyway. At some point #VC itself will be one of them, but
+when that happens the code will kill the machine.
+This leaves #HV in the list, and I am not sure how that is going to be
+handled yet. I think the goal is that the #HV handler is not allowed to
+cause any #VC exception. In that case the linked-list logic will not be
+needed.
 
+> > I don't see how this would break, can you elaborate?
+> >
+> > What I think happens is:
+> >
+> > SYSCALL gap (RSP is from userspace and untrusted)
+> >
+> >         -> #VC - Handler on #VC IST stack detects that it interrupted
+> >            the SYSCALL gap and switches to the task stack.
+> >
+> 
+> Can you point me to exactly what code you're referring to?  I spent a
+> while digging through the code and macro tangle and I can't find this.
+
+See the entry code in arch/x86/entry/entry_64.S, macro idtentry_vc. It
+creates the assembly code for the handler. At some point it calls
+vc_switch_off_ist(), which is a C function in arch/x86/kernel/traps.c.
+This function tries to find a new stack for the #VC handler.
+
+The first thing it does is checking whether the exception came from the
+SYSCALL gap and just uses the task stack in that case.
+
+Then it will check for other kernel stacks which are safe to switch
+to. If that fails it uses the fall-back stack (VC2), which will direct
+the handler to a separate function which, for now, just calls panic().
+Not safe are the entry or unknown stacks.
+
+The function then copies pt_regs and returns the new stack pointer to
+assembly code, which then writes it to %RSP.
+
+> Unless AMD is more magic than I realize, the MOV SS bug^Wfeature means
+> that #DB is *not* always called in safe places.
+
+You are right, forgot about this. The MOV SS bug can very well
+trigger a #VC(#DB) exception from the syscall gap.
+
+> > And with SNP we need to be able to at least detect a malicious HV so we
+> > can reliably kill the guest. Otherwise the HV could potentially take
+> > control over the guest's execution flow and make it reveal its secrets.
+> 
+> True.  But is the rest of the machinery to be secure against EFLAGS.IF
+> violations and such in place yet?
+
+Not sure what you mean by EFLAGS.IF violations, probably enabling IRQs
+while in the #VC handler? The #VC handler _must_ _not_ enable IRQs
+anywhere in its call-path. If that ever happens it is a bug.
+
+Regards,
+
+	Joerg
