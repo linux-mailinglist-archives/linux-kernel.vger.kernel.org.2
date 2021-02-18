@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F166F31E919
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DBA31E939
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:50:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbhBRLPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 06:15:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232466AbhBRKJM (ORCPT
+        id S232124AbhBRLor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 06:44:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44199 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232289AbhBRJ6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:09:12 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867DEC061788
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:45:17 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id d3so5359169lfg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:45:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lOT726GDeTkYBDL+U26+dhOVVZeOxNE7ULxcRqH6fuo=;
-        b=Sn56qbT33vAvmQB9rn3Wcex2GtvsIAm52SbuuqCwOs7vlUxFHuQsgxpnWTY9MIlDoG
-         JSyhN9z3MOTRf556ohcL/stgep22CxK7oDDQ1QRSWWezQJ7QgYvVAhG/eCuyalmc85PY
-         1FPPVM6OiFFSKqFZO230z36bXDvnjOS0BGtRdmTxDvj4RViwlxPoG0jSurPQhV2xJ6iB
-         XO09ew9a3gsg/Pt93l2KttIdeVSjS9nHcDt7gZtcv5f9Fl9fn5A4REqISL9D/yM5jhlw
-         ZP+aACK15JyTEGDKXPU0Za6nlmjUSYDure9plt/OzMrSOe5peXUF88JtWvqa6LHXRPSx
-         ZdGA==
+        Thu, 18 Feb 2021 04:58:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613642229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LOYUaALkK3IIo+lp//wp5j/HradrMHBgGPIHa0GEm6A=;
+        b=W/K9sSHoYzNrdOefRBnJbIt5hXSzz+dlJaqQvyzlvR21TIlOHukTIoQK3gDRm9U9fZosEp
+        JGvfskkyfF5HqTywQyWXLsiDaXYQl0E634deY515/uW01gD/a/Rqa7OMVO8HzOH2D3Xm7p
+        HdI9m8jWs5qfqfI3EeoWQtdlXYC2/Zs=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-8X1aeaPbNAGimpQpUDSfcQ-1; Thu, 18 Feb 2021 04:45:48 -0500
+X-MC-Unique: 8X1aeaPbNAGimpQpUDSfcQ-1
+Received: by mail-wr1-f70.google.com with SMTP id e12so759387wrw.14
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:45:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=lOT726GDeTkYBDL+U26+dhOVVZeOxNE7ULxcRqH6fuo=;
-        b=LZMAkSXAvu0u+YF/gXDDgcpfSQgIR31e68IUMZKk837MYc7CEdmOt8UEI/roLc41BW
-         aiSqfxGZqhcNMP4nPa+vD2jUmHQEPOHYu2jMUKmPJbAaD9lgNP7plKn5nyT0XEGLPOmH
-         zsQ+0848+R02otWQSULDqY8qpwu0LAvswbO+D7RJBxOZ8rerGXIc+AvuXwNBy90xpkdz
-         mS7IHzuDreLf3rc1CvhK5IBomKun8akVQ6MIG5HGAlvlU9JzMu0qVXor8kEA5ecR4Jod
-         vH3tXm5V6eKdx5l49p8Gzd3R9RNNovd7vhI/fM5qDLWcvnhZzHdqLR1g/ElYAp58/VE1
-         Axhw==
-X-Gm-Message-State: AOAM530S+fmRWQVjlNl5AiQU16nBOlD0WCGOrHOnyJjzczcjxeHY18+O
-        kVKRbhIAx3KXPaWV/7lZfEQ+Kg==
-X-Google-Smtp-Source: ABdhPJzKYEukz/vS4+3+kq5CGm2D6q1FjuII6GbIYlf1EoFX+MuMFTttQO1XHa3zIONlT8PjczdFsg==
-X-Received: by 2002:a05:6512:388c:: with SMTP id n12mr2022121lft.357.1613641515742;
-        Thu, 18 Feb 2021 01:45:15 -0800 (PST)
-Received: from [192.168.118.216] ([85.249.43.69])
-        by smtp.gmail.com with ESMTPSA id x24sm545563lfu.206.2021.02.18.01.45.14
+        bh=LOYUaALkK3IIo+lp//wp5j/HradrMHBgGPIHa0GEm6A=;
+        b=ij8ejjNR3rHnGbyaVhnl2zN3Dgfyqz5h3avi7sTkn5U5xaTBb5H4nLpC4MvB8ZPzCH
+         FcIYp75bW+b79PKx6vmOujVRU3PSq/jGz6Nexib2z7tsXnlojYAmaATea+RUl+9oWtaC
+         X1Frra1TrgVQG7LKsKTis/F72TQJp8upLeLuPC8eabrtik6U2DibrbhgCkCu2fdRvtrX
+         vMRKheLUc5X5doqAJVRfUrC9CQh6o+gJtDp2fRh+lswcVnTVoHeMT/MwcD4yj9G371jw
+         OYrIHhZHhTfSXrCSlPOjXckvvhS3cNdt9nRcfczQN3HyM6S+ITTRBRoI5D+EuiWxrE5J
+         m3JQ==
+X-Gm-Message-State: AOAM5300DJRVIFWRAFKQiF1ohdUEpawVuE9mcxlZY3p0McduP9+wwB0D
+        RD5dhUtNQlPkDG9F6DWdponEMWznwiwO2UpH4cGknNU1h7mhHSMR/m5FSngMcag2Kdo8B2IdHPY
+        zv1t4mbapdTjboeS3mPuk+I8V
+X-Received: by 2002:a5d:6c6d:: with SMTP id r13mr3499965wrz.343.1613641547435;
+        Thu, 18 Feb 2021 01:45:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwak94cWMx7rdkTVuZHKmnNzTDybceXV4ybLRoo/svCRcFVxO+Q6nyQuWw8qHLmH3SkpRo6mA==
+X-Received: by 2002:a5d:6c6d:: with SMTP id r13mr3499943wrz.343.1613641547281;
+        Thu, 18 Feb 2021 01:45:47 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id 36sm8508195wrj.97.2021.02.18.01.45.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 01:45:15 -0800 (PST)
-Subject: Re: [PATCH v2 2/3] media: camss: use v4l2_get_link_freq() to
- calculate the relevant clocks
-To:     Jacopo Mondi <jacopo@jmondi.org>
-Cc:     junak.pub@gmail.com, robert.foss@linaro.org,
-        sakari.ailus@linux.intel.com, todor.too@gmail.com,
-        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
-        laurent.pinchart@ideasonboard.com, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210217221134.2606-1-andrey.konovalov@linaro.org>
- <20210217221134.2606-3-andrey.konovalov@linaro.org>
- <20210218080738.6ett5j2ca2peof3g@uno.localdomain>
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-Message-ID: <e3a9d7d2-8c01-3b2a-21ed-883cb47a4946@linaro.org>
-Date:   Thu, 18 Feb 2021 12:45:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 18 Feb 2021 01:45:45 -0800 (PST)
+Subject: Re: [PATCH 4/7] KVM: nVMX: move inject_page_fault tweak to
+ .complete_mmu_init
+To:     Maxim Levitsky <mlevitsk@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>
+References: <20210217145718.1217358-1-mlevitsk@redhat.com>
+ <20210217145718.1217358-5-mlevitsk@redhat.com> <YC1ShhSZ+6ST63nZ@google.com>
+ <1b9cb222508b9b16b27075745d902e4a40cf9a25.camel@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <eaa92c4a-79c1-8a12-9742-1c9007b63e23@redhat.com>
+Date:   Thu, 18 Feb 2021 10:45:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210218080738.6ett5j2ca2peof3g@uno.localdomain>
+In-Reply-To: <1b9cb222508b9b16b27075745d902e4a40cf9a25.camel@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,350 +82,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
-
-On 18.02.2021 11:07, Jacopo Mondi wrote:
-> Hi Andrey,
+On 17/02/21 19:43, Maxim Levitsky wrote:
+> 1. npt/ept disabled in the host. In this case we have a single shadowing
+> and a nested hypervisor has to do its own shadowing on top of it.
+> In this case the MMU itself has to generate page faults (they are a result
+> of hardware page faults, but are completely different), and in case
+> of nesting these page faults have to be sometimes injected as VM exits.
 > 
-> On Thu, Feb 18, 2021 at 01:11:33AM +0300, Andrey Konovalov wrote:
->> There are places in the camss driver where camss_get_pixel_clock() is
->> called to get the pixel rate (using V4L2_CID_PIXEL_RATE control) and to
->> calculate the link frequency from it. There is a case when this would
->> not work: when V4L2_CID_PIXEL_RATE gets the rate at which the pixels are
->> read (sampled) from the sensor's pixel array, and this rate is different
->> from the pixel transmission rate over the CSI link, the link frequency
->> value can't be calculated from the pixel rate. One needs to use
->> V4L2_CID_LINK_FREQ to get the link frequency in this case.
->>
->> Replace such calls to camss_get_pixel_clock() with calls to a wrapper
->> around v4l2_get_link_freq(). v4l2_get_link_freq() tries V4L2_CID_LINK_FREQ
->> first, and if it is not implemented by the camera sensor driver, falls
->> back to V4L2_CID_PIXEL_RATE to calculate the link frequency value from.
-> 
-> That's nice
-> 
->>
->> Calls to camss_get_pixel_clock() from vfe_[check,set]_clock_rates()
->> are left intact as it looks like this VFE clock does depend on the
->> rate the pixel samples comes out of the camera sensor, not on the
->> frequency at which the link between the sensor and the CSI receiver
->> operates.
-> 
-> Out of curiosity, you have any idea why this happens ?
+> [...] Also if the emulator injects the page fault, then indeed I think the
+> bug will happen.
 
-Unfortunately no.
-There are no any details in the public datasheet on that - just
-the formula itself (less than 1 line of text).
+But in both cases you (ought to) get an injected exception which then 
+becomes a page fault vmexit at next check_nested_events.  That's the 
+part that we are all collectively missing.
 
-> The patch looks good, fwiw given I don't know the platform:
-> Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
+Paolo
 
-Thanks!
-
--- Andrey
-
-> Thanks
->     j
->>
->> Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
->> Acked-by: Robert Foss <robert.foss@linaro.org>
->> ---
->>   .../media/platform/qcom/camss/camss-csid.c    | 20 +++++------
->>   .../qcom/camss/camss-csiphy-2ph-1-0.c         | 22 ++++++------
->>   .../qcom/camss/camss-csiphy-3ph-1-0.c         | 22 ++++++------
->>   .../media/platform/qcom/camss/camss-csiphy.c  | 36 +++++++++----------
->>   .../media/platform/qcom/camss/camss-csiphy.h  |  2 +-
->>   drivers/media/platform/qcom/camss/camss.c     | 23 ++++++++++++
->>   drivers/media/platform/qcom/camss/camss.h     |  2 ++
->>   7 files changed, 71 insertions(+), 56 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
->> index be3fe76f3dc3..cff9759c9158 100644
->> --- a/drivers/media/platform/qcom/camss/camss-csid.c
->> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
->> @@ -462,13 +462,17 @@ static irqreturn_t csid_isr(int irq, void *dev)
->>   static int csid_set_clock_rates(struct csid_device *csid)
->>   {
->>   	struct device *dev = csid->camss->dev;
->> -	u32 pixel_clock;
->> +	const struct csid_format *fmt;
->> +	s64 link_freq;
->>   	int i, j;
->>   	int ret;
->>
->> -	ret = camss_get_pixel_clock(&csid->subdev.entity, &pixel_clock);
->> -	if (ret)
->> -		pixel_clock = 0;
->> +	fmt = csid_get_fmt_entry(csid->formats, csid->nformats,
->> +				 csid->fmt[MSM_CSIPHY_PAD_SINK].code);
->> +	link_freq = camss_get_link_freq(&csid->subdev.entity, fmt->bpp,
->> +					csid->phy.lane_cnt);
->> +	if (link_freq < 0)
->> +		link_freq = 0;
->>
->>   	for (i = 0; i < csid->nclocks; i++) {
->>   		struct camss_clock *clock = &csid->clock[i];
->> @@ -477,13 +481,7 @@ static int csid_set_clock_rates(struct csid_device *csid)
->>   		    !strcmp(clock->name, "csi1") ||
->>   		    !strcmp(clock->name, "csi2") ||
->>   		    !strcmp(clock->name, "csi3")) {
->> -			const struct csid_format *f = csid_get_fmt_entry(
->> -				csid->formats,
->> -				csid->nformats,
->> -				csid->fmt[MSM_CSIPHY_PAD_SINK].code);
->> -			u8 num_lanes = csid->phy.lane_cnt;
->> -			u64 min_rate = pixel_clock * f->bpp /
->> -							(2 * num_lanes * 4);
->> +			u64 min_rate = link_freq / 4;
->>   			long rate;
->>
->>   			camss_add_clock_margin(&min_rate);
->> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
->> index 12bce391d71f..30b454c369ab 100644
->> --- a/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
->> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-2ph-1-0.c
->> @@ -51,16 +51,13 @@ static void csiphy_reset(struct csiphy_device *csiphy)
->>    *
->>    * Helper function to calculate settle count value. This is
->>    * based on the CSI2 T_hs_settle parameter which in turn
->> - * is calculated based on the CSI2 transmitter pixel clock
->> - * frequency.
->> + * is calculated based on the CSI2 transmitter link frequency.
->>    *
->> - * Return settle count value or 0 if the CSI2 pixel clock
->> - * frequency is not available
->> + * Return settle count value or 0 if the CSI2 link frequency
->> + * is not available
->>    */
->> -static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->> -				 u32 timer_clk_rate)
->> +static u8 csiphy_settle_cnt_calc(s64 link_freq, u32 timer_clk_rate)
->>   {
->> -	u32 mipi_clock; /* Hz */
->>   	u32 ui; /* ps */
->>   	u32 timer_period; /* ps */
->>   	u32 t_hs_prepare_max; /* ps */
->> @@ -68,8 +65,10 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->>   	u32 t_hs_settle; /* ps */
->>   	u8 settle_cnt;
->>
->> -	mipi_clock = pixel_clock * bpp / (2 * num_lanes);
->> -	ui = div_u64(1000000000000LL, mipi_clock);
->> +	if (link_freq <= 0)
->> +		return 0;
->> +
->> +	ui = div_u64(1000000000000LL, link_freq);
->>   	ui /= 2;
->>   	t_hs_prepare_max = 85000 + 6 * ui;
->>   	t_hs_prepare_zero_min = 145000 + 10 * ui;
->> @@ -83,15 +82,14 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->>
->>   static void csiphy_lanes_enable(struct csiphy_device *csiphy,
->>   				struct csiphy_config *cfg,
->> -				u32 pixel_clock, u8 bpp, u8 lane_mask)
->> +				s64 link_freq, u8 lane_mask)
->>   {
->>   	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
->>   	u8 settle_cnt;
->>   	u8 val, l = 0;
->>   	int i = 0;
->>
->> -	settle_cnt = csiphy_settle_cnt_calc(pixel_clock, bpp, c->num_data,
->> -					    csiphy->timer_clk_rate);
->> +	settle_cnt = csiphy_settle_cnt_calc(link_freq, csiphy->timer_clk_rate);
->>
->>   	writel_relaxed(0x1, csiphy->base +
->>   		       CAMSS_CSI_PHY_GLBL_T_INIT_CFG0);
->> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
->> index 97cb9de85031..da7c3d3f9a10 100644
->> --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
->> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
->> @@ -107,24 +107,23 @@ static irqreturn_t csiphy_isr(int irq, void *dev)
->>    *
->>    * Helper function to calculate settle count value. This is
->>    * based on the CSI2 T_hs_settle parameter which in turn
->> - * is calculated based on the CSI2 transmitter pixel clock
->> - * frequency.
->> + * is calculated based on the CSI2 transmitter link frequency.
->>    *
->> - * Return settle count value or 0 if the CSI2 pixel clock
->> - * frequency is not available
->> + * Return settle count value or 0 if the CSI2 link frequency
->> + * is not available
->>    */
->> -static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->> -				 u32 timer_clk_rate)
->> +static u8 csiphy_settle_cnt_calc(s64 link_freq, u32 timer_clk_rate)
->>   {
->> -	u32 mipi_clock; /* Hz */
->>   	u32 ui; /* ps */
->>   	u32 timer_period; /* ps */
->>   	u32 t_hs_prepare_max; /* ps */
->>   	u32 t_hs_settle; /* ps */
->>   	u8 settle_cnt;
->>
->> -	mipi_clock = pixel_clock * bpp / (2 * num_lanes);
->> -	ui = div_u64(1000000000000LL, mipi_clock);
->> +	if (link_freq <= 0)
->> +		return 0;
->> +
->> +	ui = div_u64(1000000000000LL, link_freq);
->>   	ui /= 2;
->>   	t_hs_prepare_max = 85000 + 6 * ui;
->>   	t_hs_settle = t_hs_prepare_max;
->> @@ -137,15 +136,14 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->>
->>   static void csiphy_lanes_enable(struct csiphy_device *csiphy,
->>   				struct csiphy_config *cfg,
->> -				u32 pixel_clock, u8 bpp, u8 lane_mask)
->> +				s64 link_freq, u8 lane_mask)
->>   {
->>   	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
->>   	u8 settle_cnt;
->>   	u8 val, l = 0;
->>   	int i;
->>
->> -	settle_cnt = csiphy_settle_cnt_calc(pixel_clock, bpp, c->num_data,
->> -					    csiphy->timer_clk_rate);
->> +	settle_cnt = csiphy_settle_cnt_calc(link_freq, csiphy->timer_clk_rate);
->>
->>   	val = BIT(c->clk.pos);
->>   	for (i = 0; i < c->num_data; i++)
->> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
->> index 509c9a59c09c..40384d7ca78c 100644
->> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
->> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
->> @@ -102,23 +102,23 @@ static u8 csiphy_get_bpp(const struct csiphy_format *formats,
->>   static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
->>   {
->>   	struct device *dev = csiphy->camss->dev;
->> -	u32 pixel_clock;
->> +	s64 link_freq;
->>   	int i, j;
->>   	int ret;
->>
->> -	ret = camss_get_pixel_clock(&csiphy->subdev.entity, &pixel_clock);
->> -	if (ret)
->> -		pixel_clock = 0;
->> +	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
->> +				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
->> +	u8 num_lanes = csiphy->cfg.csi2->lane_cfg.num_data;
->> +
->> +	link_freq = camss_get_link_freq(&csiphy->subdev.entity, bpp, num_lanes);
->> +	if (link_freq < 0)
->> +		link_freq  = 0;
->>
->>   	for (i = 0; i < csiphy->nclocks; i++) {
->>   		struct camss_clock *clock = &csiphy->clock[i];
->>
->>   		if (csiphy->rate_set[i]) {
->> -			u8 bpp = csiphy_get_bpp(csiphy->formats,
->> -					csiphy->nformats,
->> -					csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
->> -			u8 num_lanes = csiphy->cfg.csi2->lane_cfg.num_data;
->> -			u64 min_rate = pixel_clock * bpp / (2 * num_lanes * 4);
->> +			u64 min_rate = link_freq / 4;
->>   			long round_rate;
->>
->>   			camss_add_clock_margin(&min_rate);
->> @@ -238,22 +238,18 @@ static u8 csiphy_get_lane_mask(struct csiphy_lanes_cfg *lane_cfg)
->>   static int csiphy_stream_on(struct csiphy_device *csiphy)
->>   {
->>   	struct csiphy_config *cfg = &csiphy->cfg;
->> -	u32 pixel_clock;
->> +	s64 link_freq;
->>   	u8 lane_mask = csiphy_get_lane_mask(&cfg->csi2->lane_cfg);
->>   	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
->>   				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
->> +	u8 num_lanes = csiphy->cfg.csi2->lane_cfg.num_data;
->>   	u8 val;
->> -	int ret;
->>
->> -	ret = camss_get_pixel_clock(&csiphy->subdev.entity, &pixel_clock);
->> -	if (ret) {
->> -		dev_err(csiphy->camss->dev,
->> -			"Cannot get CSI2 transmitter's pixel clock\n");
->> -		return -EINVAL;
->> -	}
->> -	if (!pixel_clock) {
->> +	link_freq = camss_get_link_freq(&csiphy->subdev.entity, bpp, num_lanes);
->> +
->> +	if (link_freq < 0) {
->>   		dev_err(csiphy->camss->dev,
->> -			"Got pixel clock == 0, cannot continue\n");
->> +			"Cannot get CSI2 transmitter's link frequency\n");
->>   		return -EINVAL;
->>   	}
->>
->> @@ -268,7 +264,7 @@ static int csiphy_stream_on(struct csiphy_device *csiphy)
->>   	writel_relaxed(val, csiphy->base_clk_mux);
->>   	wmb();
->>
->> -	csiphy->ops->lanes_enable(csiphy, cfg, pixel_clock, bpp, lane_mask);
->> +	csiphy->ops->lanes_enable(csiphy, cfg, link_freq, lane_mask);
->>
->>   	return 0;
->>   }
->> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
->> index f7967ef836dc..d71b8bc6ec00 100644
->> --- a/drivers/media/platform/qcom/camss/camss-csiphy.h
->> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
->> @@ -50,7 +50,7 @@ struct csiphy_hw_ops {
->>   	void (*reset)(struct csiphy_device *csiphy);
->>   	void (*lanes_enable)(struct csiphy_device *csiphy,
->>   			     struct csiphy_config *cfg,
->> -			     u32 pixel_clock, u8 bpp, u8 lane_mask);
->> +			     s64 link_freq, u8 lane_mask);
->>   	void (*lanes_disable)(struct csiphy_device *csiphy,
->>   			      struct csiphy_config *cfg);
->>   	irqreturn_t (*isr)(int irq, void *dev);
->> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
->> index 7c0f669f8aa6..eb8fb8c34acd 100644
->> --- a/drivers/media/platform/qcom/camss/camss.c
->> +++ b/drivers/media/platform/qcom/camss/camss.c
->> @@ -548,6 +548,29 @@ struct media_entity *camss_find_sensor(struct media_entity *entity)
->>   	}
->>   }
->>
->> +/**
->> + * camss_get_link_freq - Get link frequency from sensor
->> + * @entity: Media entity in the current pipeline
->> + * @bpp: Number of bits per pixel for the current format
->> + * @lanes: Number of lanes in the link to the sensor
->> + *
->> + * Return link frequency on success or a negative error code otherwise
->> + */
->> +s64 camss_get_link_freq(struct media_entity *entity, unsigned int bpp,
->> +			unsigned int lanes)
->> +{
->> +	struct media_entity *sensor;
->> +	struct v4l2_subdev *subdev;
->> +
->> +	sensor = camss_find_sensor(entity);
->> +	if (!sensor)
->> +		return -ENODEV;
->> +
->> +	subdev = media_entity_to_v4l2_subdev(sensor);
->> +
->> +	return v4l2_get_link_freq(subdev->ctrl_handler, bpp, 2 * lanes);
->> +}
->> +
->>   /*
->>    * camss_get_pixel_clock - Get pixel clock rate from sensor
->>    * @entity: Media entity in the current pipeline
->> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
->> index 3a0484683cd6..86cdc25189eb 100644
->> --- a/drivers/media/platform/qcom/camss/camss.h
->> +++ b/drivers/media/platform/qcom/camss/camss.h
->> @@ -108,6 +108,8 @@ int camss_enable_clocks(int nclocks, struct camss_clock *clock,
->>   			struct device *dev);
->>   void camss_disable_clocks(int nclocks, struct camss_clock *clock);
->>   struct media_entity *camss_find_sensor(struct media_entity *entity);
->> +s64 camss_get_link_freq(struct media_entity *entity, unsigned int bpp,
->> +			unsigned int lanes);
->>   int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
->>   int camss_pm_domain_on(struct camss *camss, int id);
->>   void camss_pm_domain_off(struct camss *camss, int id);
->> --
->> 2.17.1
->>
