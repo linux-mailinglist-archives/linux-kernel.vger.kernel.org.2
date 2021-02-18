@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 677DD31F19B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:20:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB9431F1A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhBRVUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 16:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhBRVUg (ORCPT
+        id S229766AbhBRVVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:21:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37974 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229620AbhBRVVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:20:36 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E20C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:19:56 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lCqiF-00064A-3x; Thu, 18 Feb 2021 22:19:51 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lCqiC-0000LA-C7; Thu, 18 Feb 2021 22:19:48 +0100
-Date:   Thu, 18 Feb 2021 22:19:48 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel@pengutronix.de, Johan Hovold <johan@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v11] leds: trigger: implement a tty trigger
-Message-ID: <20210218211948.4jwhtkhg72kaxx5n@pengutronix.de>
-References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
- <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
- <X/8cwD51DYhzRdDO@kroah.com>
- <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
- <X/89NHn4oJFC7GjM@kroah.com>
- <20210218133352.GA13628@duo.ucw.cz>
+        Thu, 18 Feb 2021 16:21:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613683220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1ewdW74Ea/Q6Basd8TgHUzZo3WsqpwUIBmwyboI5wwo=;
+        b=HJEsFV1Inv0jpVxgr1x8Hu/mDxNNzl7wTQMJYhFxZXSOcyPP+Jqq4PVMWWGv07FT+GNrBd
+        8r8pIWr0Wn0FVurXggWnuOaFPoxoXgB2CYfz1PeEiECnPC2kAkj+oAqSkVRzm/v1kGQTHX
+        HZb8hwFK2DA6huJRRD7RXP4iOps9gIk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-NgMDP51xMAC2331K9yM1qA-1; Thu, 18 Feb 2021 16:20:16 -0500
+X-MC-Unique: NgMDP51xMAC2331K9yM1qA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75171EC1A1;
+        Thu, 18 Feb 2021 21:20:15 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0CFD85D9C2;
+        Thu, 18 Feb 2021 21:20:03 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 16:20:01 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Phil Sutter <phil@nwl.cc>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
+        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
+ events
+Message-ID: <20210218212001.GQ3141668@madcap2.tricolour.ca>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+ <20210211151606.GX3158@orbyte.nwl.cc>
+ <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+ <20210211202628.GP2015948@madcap2.tricolour.ca>
+ <20210211220930.GC2766@breakpoint.cc>
+ <20210217234131.GN3141668@madcap2.tricolour.ca>
+ <20210218082207.GJ2766@breakpoint.cc>
+ <20210218124211.GO3141668@madcap2.tricolour.ca>
+ <20210218125248.GB22944@breakpoint.cc>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pezhfulq2xqxpwpg"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218133352.GA13628@duo.ucw.cz>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210218125248.GB22944@breakpoint.cc>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-18 13:52, Florian Westphal wrote:
+> Richard Guy Briggs <rgb@redhat.com> wrote:
+> > On 2021-02-18 09:22, Florian Westphal wrote:
+> > > > It seems I'd need to filter out the NFT_MSG_GET_* ops.
+> > > 
+> > > No need, the GET ops do not cause changes and will not trigger a
+> > > generation id change.
+> > 
+> > Ah, so it could trigger on generation change.  Would GET ops be included
+> > in any other change
+> 
+> No, GET ops are standalone, they cannot be part of a transaction.
+> If you look at
+> 
+> static const struct nfnl_callback nf_tables_cb[NFT_MSG_MAX] = {
+> 
+> array in nf_tables_api.c, then those ops with a '.call_batch' can
+> appear in transaction (i.e., can cause modification).
+> 
+> The other ones (.call_rcu) are read-only.
+> 
+> If they appear in a batch tehy will be ignored, if the batch consists of
+> such non-modifying ops only then nf_tables_commit() returns early
+> because the transaction list is empty (nothing to do/change).
 
---pezhfulq2xqxpwpg
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ok, one little inconvenient question: what about GETOBJ_RESET?  That
+looks like a hybrid that modifies kernel table counters and reports
+synchronously.  That could be a special case call in
+nf_tables_dump_obj() and nf_tables_getobj().  Will that cause a storm
+per commit?
 
-Hello Pavel,
+> > such that it would be desirable to filter them out
+> > to reduce noise in that single log line if it is attempted to list all
+> > the change ops?  It almost sounds like it would be better to do one
+> > audit log line for each table for each family, and possibly for each op
+> > to avoid the need to change userspace.  This would already be a
+> > significant improvement picking the highest ranking op.
+> 
+> I think i understand what you'd like to do.  Yes, that would reduce
+> the log output a lot.
 
-On Thu, Feb 18, 2021 at 02:33:52PM +0100, Pavel Machek wrote:
-> > > > so that I can queue it up?
-> > >=20
-> > > Oh, so you are LED maintainer now? My congratulations.
-> > > (Honestly, do you plan to apply this without their ack? Not that I'm
-> > > against you doing that, I'm happy if I can archive this patch series =
-as
-> > > done, but I'm a bit surprised.)
-> >=20
-> > It's drug on for so long now, the infrastructure that this driver needs
-> > has now bee merged, so I see no reason why this driver can't be taken
-> > now.  I offered up a "any objections?" in the past, and have gotten
-> > none, so I will take that for quiet acceptance :)
->=20
-> Thanks for taking the infrastructure patches, but please drop this
-> one.
+Coded, testing...
 
-Given it is already part of Greg's pull request I wonder if we need an
-incremental patch instead?
+- RGB
 
-> Its buggy, as were previous versions. I'll handle it.
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
-*sigh*, you're right. I will prepare a fixed version tomorrow.
-Maybe I know until then if I have to prepare a v12 or an incremental
-patch.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---pezhfulq2xqxpwpg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAu2fAACgkQwfwUeK3K
-7AlVNQf9Fntr6+rWEXyxclcvC+5IAhyGh08RdpmV1oOlCfj6mVv4DiBq0zByDZsG
-2bI/ijYNUxbHAwnXmFxFIF7x0ueT34zR8Q0N5I09MpCc6mGdPGjEkdl41iOwAG7D
-A3uLJLpnQE1XABOGI9tPQ7iUFvqp62OYgteOMcZcbitaraMbqHKa90zQchO3uqXv
-17ud+JbuUuI35GHjh3U8pAlulU6l+odBXVnCFcpakNy8FcdOHSE6ISf7grWNCzoc
-/QacO/DS2OiQZ16S6IR77KH2QfZokeH2HtXR9cInVjLOWQ1yyxDrcOFHKOgXar1U
-NHgA0C7gMReuRRVzZqE3KfNUtTvFTg==
-=ca1N
------END PGP SIGNATURE-----
-
---pezhfulq2xqxpwpg--
