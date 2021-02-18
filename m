@@ -2,128 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB3331E700
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 08:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61BFE31E711
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 08:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhBRHd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 02:33:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60454 "EHLO
+        id S231129AbhBRHqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 02:46:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhBRGss (ORCPT
+        with ESMTP id S229745AbhBRG5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:48:48 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D80C061756;
-        Wed, 17 Feb 2021 22:47:55 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id f20so937091ioo.10;
-        Wed, 17 Feb 2021 22:47:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=coiC7DZFnkZ3fn3Had2P/TEGLEiePcjS1aihuXLrqo0=;
-        b=ZP4+TEG3PRI4KEmWy+2KnTG2H1BvtyGd+Ke5l26XaLjHKlxY45DH/t8UDVqQfJqKR9
-         C+5AbhTx6txfQml9o9H6+0wPd1CtzXVrFiy7Iir+JN8/nNut7q6XiE0T0bFQrwgeYzuV
-         dYAQ21uwLbuEW8ThWGmbc7vPtLZJLXIipW3cbXOQgoKnwhCEG46VqaHI1kI8pWkc3oX3
-         kkXevkAisePyXhw/n4ekcR9HrHuXRZHGvGFrwGD5+UKu+DvYky+5plGM7M+o7C/t2NDM
-         EW2Pk3++F4zU8Wkcep/sjSKT5LUosprer1AmYvhU1Aei8XZmepcRftVQkyHwFqWdhgtc
-         JNcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=coiC7DZFnkZ3fn3Had2P/TEGLEiePcjS1aihuXLrqo0=;
-        b=Eevh9XFBS+rChSfLitWnpbkDINbyNsHivKgB3yEecAurgOchAzmOfLgDzVzdugiHvh
-         hxpThYH73sugxQ0t1JotqgCcYu66VgDS0sKlh9VxNkJRYNlaQIQKkFrYqoiF+eLQ4eNA
-         Cbehg3qLE0k2V7lK4y3180kvOeA1tKKt8FbC9/EqmcedtIYJnOO2uFCucj0a2Ye+4Mc+
-         dQzYd5PRqUck9Sdlpx7X+pc0xs0lPhbgnibFwcZ3baM5MmiLofDXu0Wc2u6TrWnlctOb
-         7bPD+g6kzoWvrKhJQcYUfyIIK1fqDEk3YA5wcg1mKUG7SPtYd1evgnMv65U2EWf4/vBy
-         4sEw==
-X-Gm-Message-State: AOAM531nJi+ezDRS8qDfqNO9NpxHmPcV6VKw4hYTe2xBJFfSW9L7tR/e
-        upQbg/QirBsVi9k3ZBQsWOqT2/vPK7Z6zWFWxOM=
-X-Google-Smtp-Source: ABdhPJyXIPnk2aIwWEt6skFJ+WTgQlXts+vv2jLkbhIcChUBX+p0Yv1qMnm1M6CE0tczJ7I9La5fe6dLBQ2kNBQYlkU=
-X-Received: by 2002:a5d:9f4a:: with SMTP id u10mr2457301iot.186.1613630874598;
- Wed, 17 Feb 2021 22:47:54 -0800 (PST)
+        Thu, 18 Feb 2021 01:57:11 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE65C061756;
+        Wed, 17 Feb 2021 22:54:45 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dh56m6cXvz9sVm;
+        Thu, 18 Feb 2021 17:54:40 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613631281;
+        bh=2WLTS8xI37b4cPeMayziac/xZqpKFMBdeJtwePY0Nb8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Fs5w2qsfhL++qLqVtVluc2cdTL6ipytF8dKT6C2Q+JFNfAt2rLMzm80KMFJCHK1Wn
+         QQUiJRR5bVqygmDLf2ijFoXK6bn7nmqU/cf6qarcIbb8n497keqX/s/YgBK8VEZBfR
+         eJ8Tx1vgHImVBq7ZfduCOotEr8R13AvwqLJ10MGRcvpJ5+iGKFFD8wWFH6//Q+6+M0
+         T8KWdNl0AxiLeqwZHQUcrwBQeH9GuX+PWtQHnCM/2v3lI8iO92xVeZfh0vrz4jnpTL
+         9F1R3NaobTITcxCfY55ae6GuimRV9AEgWfinziHCd4YITy9lnF9l2EfxLKv3093lIY
+         H9+1cUvyg7GSA==
+Date:   Thu, 18 Feb 2021 17:54:39 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Maxim Kiselev <bigunclemax@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the gpio-brgl tree
+Message-ID: <20210218175439.4b26b708@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CAOQ4uxii=7KUKv1w32VbjkwS+Z1a0ge0gezNzpn_BiY6MFWkpA@mail.gmail.com>
- <20210217172654.22519-1-lhenriques@suse.de> <CAN-5tyHVOphSkp3n+V=1gGQ40WNZGHQURSMMdFBS3jRVGfEXhA@mail.gmail.com>
-In-Reply-To: <CAN-5tyHVOphSkp3n+V=1gGQ40WNZGHQURSMMdFBS3jRVGfEXhA@mail.gmail.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Thu, 18 Feb 2021 08:47:43 +0200
-Message-ID: <CAOQ4uxi08oG9=Oadvt6spA9+zA=dcb-UK8AL-+o2Fn3d57d7iw@mail.gmail.com>
-Subject: Re: [PATCH v3] vfs: fix copy_file_range regression in cross-fs copies
-To:     Olga Kornievskaia <aglo@umich.edu>
-Cc:     Luis Henriques <lhenriques@suse.de>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nfs <linux-nfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/6dWjXNsf4JzrM1_izMAc1Lg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 7:33 AM Olga Kornievskaia <aglo@umich.edu> wrote:
->
-> On Wed, Feb 17, 2021 at 3:30 PM Luis Henriques <lhenriques@suse.de> wrote:
-> >
-> > A regression has been reported by Nicolas Boichat, found while using the
-> > copy_file_range syscall to copy a tracefs file.  Before commit
-> > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-> > kernel would return -EXDEV to userspace when trying to copy a file across
-> > different filesystems.  After this commit, the syscall doesn't fail anymore
-> > and instead returns zero (zero bytes copied), as this file's content is
-> > generated on-the-fly and thus reports a size of zero.
-> >
-> > This patch restores some cross-filesystems copy restrictions that existed
-> > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-> > devices").  It also introduces a flag (COPY_FILE_SPLICE) that can be used
-> > by filesystems calling directly into the vfs copy_file_range to override
-> > these restrictions.  Right now, only NFS needs to set this flag.
-> >
-> > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-> > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-> > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-> > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-> > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > ---
-> > Ok, I've tried to address all the issues and comments.  Hopefully this v3
-> > is a bit closer to the final fix.
-> >
-> > Changes since v2
-> > - do all the required checks earlier, in generic_copy_file_checks(),
-> >   adding new checks for ->remap_file_range
-> > - new COPY_FILE_SPLICE flag
-> > - don't remove filesystem's fallback to generic_copy_file_range()
-> > - updated commit changelog (and subject)
-> > Changes since v1 (after Amir review)
-> > - restored do_copy_file_range() helper
-> > - return -EOPNOTSUPP if fs doesn't implement CFR
-> > - updated commit description
->
-> In my testing, this patch breaks NFS server-to-server copy file.
+--Sig_/6dWjXNsf4JzrM1_izMAc1Lg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi Olga,
+Hi all,
 
-Can you please provide more details on the failed tests.
+After merging the gpio-brgl tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-Does it fail on the client between two nfs mounts or does it fail
-on the server? If the latter, between which two filesystems on the server?
+drivers/gpio/gpio-pcf857x.c: In function 'pcf857x_probe':
+drivers/gpio/gpio-pcf857x.c:335:41: error: expected ';' before 'if'
+  335 |  gpio->status =3D gpio->read(gpio->client)
+      |                                         ^
+      |                                         ;
+......
+  338 |  if (client->irq) {
+      |  ~~                                     =20
 
-Thanks,
-Amir.
+Caused by commit
+
+  ab94f4c529bc ("gpio: pcf857x: Fix missing first interrupt")
+
+I have used the gpio-brgl tree from next-20210217 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/6dWjXNsf4JzrM1_izMAc1Lg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAuDy8ACgkQAVBC80lX
+0GyDEwf+Jmrs66I/gijK4qIPPj/JSXZarEPkYsR2zJ8jz20VD+4vp4hAWNPu/Fhy
+7KRQOm3TrZHcj2y3vlEWrKAd5xt1FYNo085vOCnbO2gptUG8igPMfN4F7C1o2sGd
+kIXXu7qR8BHr8S/NdUrrgbuoi1OEGcy9yngRG1rIquoSbhibn0Nta9cKJN4XNm3J
+v1eusZ/IoUYGf3GB9T1uHLIAwwgKFGahke/9pE7ED1MWyfIKiqj+UroyLHJ9UiWV
+9ArFo3nwbDWF1BFJhTXZFTB9ZnwDAFgHWW2v+h3JpeN1nmZ7kcCLlMCAE2LeahIh
+CS0h+ihrSM/J+JNjOiL2+L/q/gXuJg==
+=mPzs
+-----END PGP SIGNATURE-----
+
+--Sig_/6dWjXNsf4JzrM1_izMAc1Lg--
