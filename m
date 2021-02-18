@@ -2,73 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 863DE31E8B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0462F31E892
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhBRKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:22:17 -0500
-Received: from mx3.wp.pl ([212.77.101.10]:49974 "EHLO mx3.wp.pl"
+        id S230152AbhBRJqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:46:05 -0500
+Received: from verein.lst.de ([213.95.11.211]:47754 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231592AbhBRJOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 04:14:40 -0500
-Received: (wp-smtpd smtp.wp.pl 24366 invoked from network); 18 Feb 2021 09:13:26 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1613636006; bh=KkhT7BbeRLyA5ExvuQyLE7bMC/m+gzQi2x9NC+J0cbQ=;
-          h=From:To:Cc:Subject;
-          b=LPB+gUEj6LbIGJPUu1hZUAqCz+UnTnwJ2T5bwHksOV13fZJR3yUr+TODYA95QZFxd
-           j4f5aSUm5NgK5QjVdJJ/62lKu7iWuE0Snl5rDftCBjOuxWOmJNgA7/WvSsOFS+LYdK
-           t38lz+4S9m94kwzhtWAg6ngo5GACNr+Kfy9LsgUs=
-Received: from ip4-46-39-164-204.cust.nbox.cz (HELO localhost) (stf_xl@wp.pl@[46.39.164.204])
-          (envelope-sender <stf_xl@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <jiapeng.chong@linux.alibaba.com>; 18 Feb 2021 09:13:26 +0100
-Date:   Thu, 18 Feb 2021 09:13:24 +0100
-From:   Stanislaw Gruszka <stf_xl@wp.pl>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] iwlegacy: 4965-mac: Simplify the calculation of variables
-Message-ID: <20210218081324.GA68220@wp.pl>
-References: <1613632814-37897-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        id S231310AbhBRId3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:33:29 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B425D6736F; Thu, 18 Feb 2021 09:32:30 +0100 (CET)
+Date:   Thu, 18 Feb 2021 09:32:30 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        dm-devel@redhat.com, darrick.wong@oracle.com,
+        dan.j.williams@intel.com, david@fromorbit.com, agk@redhat.com,
+        snitzer@redhat.com, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
+        y-goto@fujitsu.com
+Subject: Re: [PATCH v3 05/11] mm, fsdax: Refactor memory-failure handler
+ for dax mapping
+Message-ID: <20210218083230.GA17913@lst.de>
+References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com> <20210208105530.3072869-6-ruansy.fnst@cn.fujitsu.com> <20210210133347.GD30109@lst.de> <45a20d88-63ee-d678-ad86-6ccd8cdf7453@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1613632814-37897-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-WP-MailID: 000f97803be0c567b530d0823ea2f9e0
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [obPE]                               
+In-Reply-To: <45a20d88-63ee-d678-ad86-6ccd8cdf7453@cn.fujitsu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 03:20:14PM +0800, Jiapeng Chong wrote:
-> Fix the following coccicheck warnings:
-> 
-> ./drivers/net/wireless/intel/iwlegacy/4965-mac.c:2596:54-56: WARNING !A
-> || A && B is equivalent to !A || B.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  drivers/net/wireless/intel/iwlegacy/4965-mac.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/intel/iwlegacy/4965-mac.c b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-> index 28675a4..52db532 100644
-> --- a/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-> +++ b/drivers/net/wireless/intel/iwlegacy/4965-mac.c
-> @@ -2593,8 +2593,7 @@ struct il_mod_params il4965_mod_params = {
->  	 */
->  	if (ret != IL_INVALID_STATION &&
->  	    (!(il->stations[ret].used & IL_STA_UCODE_ACTIVE) ||
-> -	     ((il->stations[ret].used & IL_STA_UCODE_ACTIVE) &&
-> -	      (il->stations[ret].used & IL_STA_UCODE_INPROGRESS)))) {
-> +	      (il->stations[ret].used & IL_STA_UCODE_INPROGRESS))) {
->  		IL_ERR("Requested station info for sta %d before ready.\n",
->  		       ret);
->  		ret = IL_INVALID_STATION;
+On Wed, Feb 17, 2021 at 10:56:11AM +0800, Ruan Shiyang wrote:
+> I'd like to confirm one thing...  I have checked all of this patchset by 
+> checkpatch.pl and it did not report the overly long line warning.  So, I 
+> should still obey the rule of 80 chars one line?
 
-This patch was already applied to wireless-drivers-next.
+checkpatch.pl is completely broken, I would not rely on it.
 
-Stanislaw
+Here is the quote from the coding style document:
+
+"The preferred limit on the length of a single line is 80 columns.
+
+Statements longer than 80 columns should be broken into sensible chunks,
+unless exceeding 80 columns significantly increases readability and does
+not hide information."
