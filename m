@@ -2,85 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAABB31EB55
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC7331EB59
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:14:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBRPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
+        id S230330AbhBRPNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:13:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbhBRM5v (ORCPT
+        with ESMTP id S232835AbhBRM5J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:57:51 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78587C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:56:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=2US+nsacEnNbgxajBHN8gHhIlm17B6eFkEy6wCvISps=; b=C6H5kURGZ35GnV2sfJMKdRIBBr
-        s0806pvqWvxYmulhqLpSCIzCaYys9tg/cselQLoCYAk53i4DB4U4Xi3g9AtbBICOI13m+996lKgZV
-        Onx01Qc56w/MPnO5tzzUKM+mMxGYCpipWlKH3lpmgvrUbNZRkTECMSgmjquWgriJ+XZ4JZCEDc7tP
-        jmjTbdBOtYN4dq3xgvB67VGb7z6LAt370h25rwCtF48cO3eVBxIdVmKh1RadiuARfq5qJ407DGOJU
-        KC4Kzp36w77sxHjYoasmWzHQPwdHSPbK9sLfirxLDIJyhbTKkdcTRDpnLi6T4lPpmh+X3Jjjn69Ax
-        yaDJtCcg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lCipj-001g4k-QU; Thu, 18 Feb 2021 12:55:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3B3E83003E5;
-        Thu, 18 Feb 2021 13:55:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2BA81201F184F; Thu, 18 Feb 2021 13:55:00 +0100 (CET)
-Date:   Thu, 18 Feb 2021 13:55:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <namit@vmware.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v5 1/8] smp: Run functions concurrently in
- smp_call_function_many_cond()
-Message-ID: <YC5jpNts1QDtXyMH@hirez.programming.kicks-ass.net>
-References: <20210209221653.614098-1-namit@vmware.com>
- <20210209221653.614098-2-namit@vmware.com>
- <YCvztEk6sqiCxXZV@hirez.programming.kicks-ass.net>
- <457D8FBC-8F64-48E9-B9E2-1A316DB0C2B6@vmware.com>
- <YCwWLSRVB1RG/NHm@hirez.programming.kicks-ass.net>
- <9093B9DA-D29D-422F-8315-750CFDBF2690@vmware.com>
+        Thu, 18 Feb 2021 07:57:09 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86055C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:56:14 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id w4so3542520wmi.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:56:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dme-org.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:subject:in-reply-to:references:from:date:message-id
+         :mime-version;
+        bh=/PdtB9GdnM4uZcUtX/vK/oFcskTi0VF5AS4GhVieSQw=;
+        b=CCtNumyVHLp3aoY3vhkoP4GbXrJJbXoHo3hOqDdcFgQvQgxaZBo4vW3LRTDFbSP1sr
+         r5Ep2oWPlHOSqGuLUnTZpQgJ9ZzbjxcLirrwLtFR8X0+AKJpNYwML35laDUsIGIX7Quu
+         CeFuVrWYHUJCm+j31nZWBPSt5XRydoqidodTWBb9XGErwmfsvM/h6K6iCfz6OQlwAXuL
+         XOm9O006HWTk6D+qKkRH7FgUljrpUgyFpeGaePmhZMOf60Xeax4inkmH5nvUoyMlq1ap
+         dx6eUcSLVpDL9ax/Vpf3ez5RvQeWRDfByCiEtzl/6FKDm4fd/s5b3OYYKyqwAH+tyQLY
+         4W0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:subject:in-reply-to:references:from:date
+         :message-id:mime-version;
+        bh=/PdtB9GdnM4uZcUtX/vK/oFcskTi0VF5AS4GhVieSQw=;
+        b=iFcIf/RrttTflFqgOpewZBzVEC6fJeIVRubF+mkCvK9U8JG5DhPVALgKYcCngzEue0
+         upO1TkFHfoeTmVtMYN1la5nJS4xiqbeDikeGyFmKNYyDmkGgXRNAeRjtUe9C3BbrNQHC
+         GasDtMuHLbWUDRU8luWSd6nIEbVDjaJ7YbnKWrfrn7ur25V6Jdw2zQBo8PBWsebz/qPr
+         4pkL34++V3sXxwNv+LppufdyM1RsC1405CcIsSKZQlgvLEMUqxrTNjl96nGEPTE1Xoj1
+         tp14NJueZEUTol/cl8BxabnFAyDEJHvOn43fYkD1LjZJ0OzuYajh+Cs+gGztU4mVCEeF
+         fvgQ==
+X-Gm-Message-State: AOAM533jEj5iOTr7ozy3ynsIagVAbbi7HpIT64kKblNRkPUdK0XNgFK2
+        Q/DHM4oVGOFntUXqe8TXTn8cfQ==
+X-Google-Smtp-Source: ABdhPJzlNzvGxcnwPl4Vbi4oycc1mjdxP3bLZVM1I2583IxGpgkiA+DXmqUbJUeG4fJqCG7nKr284Q==
+X-Received: by 2002:a05:600c:19cf:: with SMTP id u15mr3485742wmq.41.1613652972961;
+        Thu, 18 Feb 2021 04:56:12 -0800 (PST)
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net. [2001:8b0:bb71:7140:64::1])
+        by smtp.gmail.com with ESMTPSA id z63sm7703782wme.8.2021.02.18.04.56.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 04:56:12 -0800 (PST)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 58d47431;
+        Thu, 18 Feb 2021 12:56:11 +0000 (UTC)
+To:     Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>, Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH] KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER
+ is valid
+In-Reply-To: <708f2956-fa0f-b008-d3d2-93067f95783c@redhat.com>
+References: <20210218100450.2157308-1-david.edmondson@oracle.com>
+ <708f2956-fa0f-b008-d3d2-93067f95783c@redhat.com>
+X-HGTTG: zarquon
+From:   David Edmondson <dme@dme.org>
+Date:   Thu, 18 Feb 2021 12:56:11 +0000
+Message-ID: <cuntuq9ilg4.fsf@dme.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9093B9DA-D29D-422F-8315-750CFDBF2690@vmware.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 01:02:41AM +0000, Nadav Amit wrote:
-> > On Feb 16, 2021, at 10:59 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > On Tue, Feb 16, 2021 at 06:53:09PM +0000, Nadav Amit wrote:
-> >>> On Feb 16, 2021, at 8:32 AM, Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> >>> I'm not sure I can explain it yet. It did get me looking at
-> >>> on_each_cpu() and it appears that wants to be converted too, something
-> >>> like the below perhaps.
-> >> 
-> >> Looks like a good cleanup, but I cannot say I understand the problem and how
-> >> it would solve it. Err...
-> > 
-> > Yeah, me neither. Bit of a mystery so far.
-> 
-> This stall seems to be real. Intuitively I presumed preemption was
-> mistakenly enabled, but it does not seem so.
-> 
-> Any chance you can build the kernel with “CONFIG_CSD_LOCK_WAIT_DEBUG=Y” and
-> rerun it? Perhaps that output will tell us more.
+On Thursday, 2021-02-18 at 12:54:52 +01, Paolo Bonzini wrote:
 
-Sadly not my system. It's a KernelCI box.
+> On 18/02/21 11:04, David Edmondson wrote:
+>> When dumping the VMCS, retrieve the current guest value of EFER from
+>> the kvm_vcpu structure if neither VM_EXIT_SAVE_IA32_EFER or
+>> VM_ENTRY_LOAD_IA32_EFER is set, which can occur if the processor does
+>> not support the relevant VM-exit/entry controls.
+>
+> Printing vcpu->arch.efer is not the best choice however.  Could we dump 
+> the whole MSR load/store area instead?
+
+I'm happy to do that, and think that it would be useful, but it won't
+help with the original problem (which I should have explained more).
+
+If the guest has EFER_LMA set but we aren't using the entry/exit
+controls, vm_read64(GUEST_IA32_EFER) returns 0, causing dump_vmcs() to
+erroneously dump the PDPTRs.
+
+> Paolo
+>
+>> Fixes: 4eb64dce8d0a ("KVM: x86: dump VMCS on invalid entry")
+>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+>> ---
+>>   arch/x86/kvm/vmx/vmx.c | 14 +++++++++-----
+>>   arch/x86/kvm/vmx/vmx.h |  2 +-
+>>   2 files changed, 10 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>> index eb69fef57485..74ea4fe6f35e 100644
+>> --- a/arch/x86/kvm/vmx/vmx.c
+>> +++ b/arch/x86/kvm/vmx/vmx.c
+>> @@ -5754,7 +5754,7 @@ static void vmx_dump_dtsel(char *name, uint32_t limit)
+>>   	       vmcs_readl(limit + GUEST_GDTR_BASE - GUEST_GDTR_LIMIT));
+>>   }
+>>   
+>> -void dump_vmcs(void)
+>> +void dump_vmcs(struct kvm_vcpu *vcpu)
+>>   {
+>>   	u32 vmentry_ctl, vmexit_ctl;
+>>   	u32 cpu_based_exec_ctrl, pin_based_exec_ctrl, secondary_exec_control;
+>> @@ -5771,7 +5771,11 @@ void dump_vmcs(void)
+>>   	cpu_based_exec_ctrl = vmcs_read32(CPU_BASED_VM_EXEC_CONTROL);
+>>   	pin_based_exec_ctrl = vmcs_read32(PIN_BASED_VM_EXEC_CONTROL);
+>>   	cr4 = vmcs_readl(GUEST_CR4);
+>> -	efer = vmcs_read64(GUEST_IA32_EFER);
+>> +	if ((vmexit_ctl & VM_EXIT_SAVE_IA32_EFER) ||
+>> +	    (vmentry_ctl & VM_ENTRY_LOAD_IA32_EFER))
+>> +		efer = vmcs_read64(GUEST_IA32_EFER);
+>> +	else
+>> +		efer = vcpu->arch.efer;
+>>   	secondary_exec_control = 0;
+>>   	if (cpu_has_secondary_exec_ctrls())
+>>   		secondary_exec_control = vmcs_read32(SECONDARY_VM_EXEC_CONTROL);
+>> @@ -5955,7 +5959,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>>   	}
+>>   
+>>   	if (exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY) {
+>> -		dump_vmcs();
+>> +		dump_vmcs(vcpu);
+>>   		vcpu->run->exit_reason = KVM_EXIT_FAIL_ENTRY;
+>>   		vcpu->run->fail_entry.hardware_entry_failure_reason
+>>   			= exit_reason;
+>> @@ -5964,7 +5968,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>>   	}
+>>   
+>>   	if (unlikely(vmx->fail)) {
+>> -		dump_vmcs();
+>> +		dump_vmcs(vcpu);
+>>   		vcpu->run->exit_reason = KVM_EXIT_FAIL_ENTRY;
+>>   		vcpu->run->fail_entry.hardware_entry_failure_reason
+>>   			= vmcs_read32(VM_INSTRUCTION_ERROR);
+>> @@ -6049,7 +6053,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>>   
+>>   unexpected_vmexit:
+>>   	vcpu_unimpl(vcpu, "vmx: unexpected exit reason 0x%x\n", exit_reason);
+>> -	dump_vmcs();
+>> +	dump_vmcs(vcpu);
+>>   	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>>   	vcpu->run->internal.suberror =
+>>   			KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON;
+>> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+>> index 9d3a557949ac..f8a0ce74798e 100644
+>> --- a/arch/x86/kvm/vmx/vmx.h
+>> +++ b/arch/x86/kvm/vmx/vmx.h
+>> @@ -489,6 +489,6 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
+>>   	return is_unrestricted_guest(vcpu) || __vmx_guest_state_valid(vcpu);
+>>   }
+>>   
+>> -void dump_vmcs(void);
+>> +void dump_vmcs(struct kvm_vcpu *vcpu);
+>>   
+>>   #endif /* __KVM_X86_VMX_H */
+>> 
+
+dme.
+-- 
+Why stay in college? Why go to night school?
