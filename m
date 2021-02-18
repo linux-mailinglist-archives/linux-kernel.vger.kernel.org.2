@@ -2,467 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557EB31E7DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F4D31E7DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhBRJO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:14:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54414 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231409AbhBRIDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:03:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EF7F7AD4E;
-        Thu, 18 Feb 2021 08:02:59 +0000 (UTC)
-To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc:     David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>,
-        Dave Airlie <airlied@redhat.com>
-References: <20210217123213.2199186-1-kraxel@redhat.com>
- <20210217123213.2199186-11-kraxel@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
-Message-ID: <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
-Date:   Thu, 18 Feb 2021 09:02:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231699AbhBRJUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:20:08 -0500
+Received: from relay5.mymailcheap.com ([159.100.241.64]:50619 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhBRIHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:07:55 -0500
+Received: from relay3.mymailcheap.com (relay3.mymailcheap.com [217.182.66.161])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 48E3E200FE;
+        Thu, 18 Feb 2021 08:06:59 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay3.mymailcheap.com (Postfix) with ESMTPS id 8DC353ECDF;
+        Thu, 18 Feb 2021 09:05:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id C808B2A17A;
+        Thu, 18 Feb 2021 03:05:00 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1613635500;
+        bh=vayAPymKDO5arWdIdiTG0Kavs2NltsJBgurWKj2dCH4=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=rueLQUIutrfTxQzTLEcHcbSCYS7tgx5X+7zDo9YtHbUgFqtE1Wt+TX3DJmNiwq9eh
+         SBSzDN6WJbsHMMt54wNuiaF5R6mt5bD3WzDPp7M1jGSOzGuFuEkz25wwUvLG+QTfSf
+         dVsfuV37Y2Hdv8FFZbVzDVpzjyp3NbGYgxWJaw+8=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jOQ1kXehAbxp; Thu, 18 Feb 2021 03:04:58 -0500 (EST)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Thu, 18 Feb 2021 03:04:58 -0500 (EST)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id C9271400B5;
+        Thu, 18 Feb 2021 08:04:56 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="BID+L3Nb";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [10.68.68.85] (unknown [117.136.12.200])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 6D6E8400B5;
+        Thu, 18 Feb 2021 08:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1613635485; bh=vayAPymKDO5arWdIdiTG0Kavs2NltsJBgurWKj2dCH4=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=BID+L3Nb93KYVK7HZjyWKopXYnV0IbcWoZAaLFZXXYBUX+bZhW5qxk1L7ioTYrNqr
+         8ddH5mi9rsZ/RxMdt3xN7E9L8TU80jZ/AHAxzJQlPe9NJf61tXpgJnHOmbaNcLRBzF
+         lNb2EloDoCyyRvR/zmOSXkma+GvEVFXl7u5mVRL8=
+Date:   Thu, 18 Feb 2021 16:04:03 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210218075835.o43tyarpimrcwbvk@gilmour>
+References: <20210212135725.283877-1-t.schramm@manjaro.org> <20210218075835.o43tyarpimrcwbvk@gilmour>
 MIME-Version: 1.0
-In-Reply-To: <20210217123213.2199186-11-kraxel@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] clk: sunxi-ng: v3s: add support for variable rate audio pll output
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Tobias Schramm <t.schramm@manjaro.org>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+From:   Icenowy Zheng <icenowy@aosc.io>
+Message-ID: <C1E55B65-370F-4875-B7D6-7CD7A82A91DD@aosc.io>
+X-Spamd-Result: default: False [2.90 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RECEIVED_SPAMHAUS_XBL(3.00)[117.136.12.200:received];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[117.136.12.200:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         ARC_NA(0.00)[];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1]
+X-Rspamd-Queue-Id: C9271400B5
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ
-Content-Type: multipart/mixed; boundary="x9qCAZEFpMSQcn5cRKCOnzVd9PqQm2ttB";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
-Cc: David Airlie <airlied@linux.ie>, open list
- <linux-kernel@vger.kernel.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <virtualization@lists.linux-foundation.org>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
-Message-ID: <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
-Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
-References: <20210217123213.2199186-1-kraxel@redhat.com>
- <20210217123213.2199186-11-kraxel@redhat.com>
-In-Reply-To: <20210217123213.2199186-11-kraxel@redhat.com>
-
---x9qCAZEFpMSQcn5cRKCOnzVd9PqQm2ttB
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-Am 17.02.21 um 13:32 schrieb Gerd Hoffmann:
-> Add helper functions to create and move the cursor.
-> Create the cursor_bo in prepare_fb callback, in the
-> atomic_commit callback we only send the update command
-> to the host.
-
-I'm still trying to wrap my head around the qxl cursor code.
-
-Getting vmap out of the commit tail is good, but I feel like this isn't=20
-going in the right direction overall.
-
-In ast, these helper functions were only good when converting the drvier =
-
-to atomic modesetting. So I removed them in the latst patchset and did=20
-all the updates in the plane helpers directly.
-
-For cursor_bo itself, it seems to be transitional state that is only=20
-used during the plane update and crtc update . It should probably be=20
-stored in a plane-state structure.
-
-Some of the primary plane's functions seem to deal with cursor handling. =
-
-What's the role of the primary plane in cursor handling?
-
-For now, I suggest to merge patch 1 to 8 and 11; and move the cursor=20
-patches into a new patchset. I'd like ot hear Daniel's opinion on this.=20
-Do you have further plans here?
-
-If you absolutely want patches 9 and 10, I'd rubber-stamp an A-b on them.=
 
 
-Best regards
-Thomas
+=E4=BA=8E 2021=E5=B9=B42=E6=9C=8818=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=883=
+:58:35, Maxime Ripard <maxime@cerno=2Etech> =E5=86=99=E5=88=B0:
+>Hi,
+>
+>On Fri, Feb 12, 2021 at 02:57:25PM +0100, Tobias Schramm wrote:
+>> Previously the variable rate audio pll output was fixed to a divider
+>of
+>> four=2E This is unfortunately incompatible with generating commonly
+>used
+>> I2S core clock rates like 24=2E576MHz from the 24MHz parent clock=2E
+>> This commit adds support for arbitrary audio pll output dividers to
+>fix
+>> that=2E
+>>=20
+>> Signed-off-by: Tobias Schramm <t=2Eschramm@manjaro=2Eorg>
+>
+>It's not really clear to me how that would help=2E
 
->=20
-> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
-> ---
->   drivers/gpu/drm/qxl/qxl_display.c | 248 ++++++++++++++++-------------=
--
->   1 file changed, 133 insertions(+), 115 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qx=
-l_display.c
-> index b315d7484e21..4a3d272e8d6c 100644
-> --- a/drivers/gpu/drm/qxl/qxl_display.c
-> +++ b/drivers/gpu/drm/qxl/qxl_display.c
-> @@ -476,12 +476,11 @@ static int qxl_primary_atomic_check(struct drm_pl=
-ane *plane,
->   	return qxl_check_framebuffer(qdev, bo);
->   }
->  =20
-> -static int qxl_primary_apply_cursor(struct drm_plane *plane)
-> +static int qxl_primary_apply_cursor(struct qxl_device *qdev,
-> +				    struct drm_plane_state *plane_state)
->   {
-> -	struct drm_device *dev =3D plane->dev;
-> -	struct qxl_device *qdev =3D to_qxl(dev);
-> -	struct drm_framebuffer *fb =3D plane->state->fb;
-> -	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane->state->crtc);
-> +	struct drm_framebuffer *fb =3D plane_state->fb;
-> +	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane_state->crtc);
->   	struct qxl_cursor_cmd *cmd;
->   	struct qxl_release *release;
->   	int ret =3D 0;
-> @@ -505,8 +504,8 @@ static int qxl_primary_apply_cursor(struct drm_plan=
-e *plane)
->  =20
->   	cmd =3D (struct qxl_cursor_cmd *)qxl_release_map(qdev, release);
->   	cmd->type =3D QXL_CURSOR_SET;
-> -	cmd->u.set.position.x =3D plane->state->crtc_x + fb->hot_x;
-> -	cmd->u.set.position.y =3D plane->state->crtc_y + fb->hot_y;
-> +	cmd->u.set.position.x =3D plane_state->crtc_x + fb->hot_x;
-> +	cmd->u.set.position.y =3D plane_state->crtc_y + fb->hot_y;
->  =20
->   	cmd->u.set.shape =3D qxl_bo_physical_address(qdev, qcrtc->cursor_bo,=
- 0);
->  =20
-> @@ -523,6 +522,113 @@ static int qxl_primary_apply_cursor(struct drm_pl=
-ane *plane)
->   	return ret;
->   }
->  =20
-> +static int qxl_primary_move_cursor(struct qxl_device *qdev,
-> +				   struct drm_plane_state *plane_state)
-> +{
-> +	struct drm_framebuffer *fb =3D plane_state->fb;
-> +	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane_state->crtc);
-> +	struct qxl_cursor_cmd *cmd;
-> +	struct qxl_release *release;
-> +	int ret =3D 0;
-> +
-> +	if (!qcrtc->cursor_bo)
-> +		return 0;
-> +
-> +	ret =3D qxl_alloc_release_reserved(qdev, sizeof(*cmd),
-> +					 QXL_RELEASE_CURSOR_CMD,
-> +					 &release, NULL);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret =3D qxl_release_reserve_list(release, true);
-> +	if (ret) {
-> +		qxl_release_free(qdev, release);
-> +		return ret;
-> +	}
-> +
-> +	cmd =3D (struct qxl_cursor_cmd *)qxl_release_map(qdev, release);
-> +	cmd->type =3D QXL_CURSOR_MOVE;
-> +	cmd->u.position.x =3D plane_state->crtc_x + fb->hot_x;
-> +	cmd->u.position.y =3D plane_state->crtc_y + fb->hot_y;
-> +	qxl_release_unmap(qdev, release, &cmd->release_info);
-> +
-> +	qxl_release_fence_buffer_objects(release);
-> +	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
-> +	return ret;
-> +}
-> +
-> +static struct qxl_bo *qxl_create_cursor(struct qxl_device *qdev,
-> +					struct qxl_bo *user_bo,
-> +					int hot_x, int hot_y)
-> +{
-> +	static const u32 size =3D 64 * 64 * 4;
-> +	struct qxl_bo *cursor_bo;
-> +	struct dma_buf_map cursor_map;
-> +	struct dma_buf_map user_map;
-> +	struct qxl_cursor cursor;
-> +	int ret;
-> +
-> +	if (!user_bo)
-> +		return NULL;
-> +
-> +	ret =3D qxl_bo_create(qdev, sizeof(struct qxl_cursor) + size,
-> +			    false, true, QXL_GEM_DOMAIN_VRAM, 1,
-> +			    NULL, &cursor_bo);
-> +	if (ret)
-> +		goto err;
-> +
-> +	ret =3D qxl_bo_vmap(cursor_bo, &cursor_map);
-> +	if (ret)
-> +		goto err_unref;
-> +
-> +	ret =3D qxl_bo_vmap(user_bo, &user_map);
-> +	if (ret)
-> +		goto err_unmap;
-> +
-> +	cursor.header.unique =3D 0;
-> +	cursor.header.type =3D SPICE_CURSOR_TYPE_ALPHA;
-> +	cursor.header.width =3D 64;
-> +	cursor.header.height =3D 64;
-> +	cursor.header.hot_spot_x =3D hot_x;
-> +	cursor.header.hot_spot_y =3D hot_y;
-> +	cursor.data_size =3D size;
-> +	cursor.chunk.next_chunk =3D 0;
-> +	cursor.chunk.prev_chunk =3D 0;
-> +	cursor.chunk.data_size =3D size;
-> +	if (cursor_map.is_iomem) {
-> +		memcpy_toio(cursor_map.vaddr_iomem,
-> +			    &cursor, sizeof(cursor));
-> +		memcpy_toio(cursor_map.vaddr_iomem + sizeof(cursor),
-> +			    user_map.vaddr, size);
-> +	} else {
-> +		memcpy(cursor_map.vaddr,
-> +		       &cursor, sizeof(cursor));
-> +		memcpy(cursor_map.vaddr + sizeof(cursor),
-> +		       user_map.vaddr, size);
-> +	}
-> +
-> +	qxl_bo_vunmap(user_bo);
-> +	qxl_bo_vunmap(cursor_bo);
-> +	return cursor_bo;
-> +
-> +err_unmap:
-> +	qxl_bo_vunmap(cursor_bo);
-> +err_unref:
-> +	qxl_bo_unpin(cursor_bo);
-> +	qxl_bo_unref(&cursor_bo);
-> +err:
-> +	return NULL;
-> +}
-> +
-> +static void qxl_free_cursor(struct qxl_bo *cursor_bo)
-> +{
-> +	if (!cursor_bo)
-> +		return;
-> +
-> +	qxl_bo_unpin(cursor_bo);
-> +	qxl_bo_unref(&cursor_bo);
-> +}
-> +
->   static void qxl_primary_atomic_update(struct drm_plane *plane,
->   				      struct drm_plane_state *old_state)
->   {
-> @@ -543,7 +649,7 @@ static void qxl_primary_atomic_update(struct drm_pl=
-ane *plane,
->   		if (qdev->primary_bo)
->   			qxl_io_destroy_primary(qdev);
->   		qxl_io_create_primary(qdev, primary);
-> -		qxl_primary_apply_cursor(plane);
-> +		qxl_primary_apply_cursor(qdev, plane->state);
->   	}
->  =20
->   	if (bo->is_dumb)
-> @@ -574,124 +680,21 @@ static void qxl_primary_atomic_disable(struct dr=
-m_plane *plane,
->   static void qxl_cursor_atomic_update(struct drm_plane *plane,
->   				     struct drm_plane_state *old_state)
->   {
-> -	struct drm_device *dev =3D plane->dev;
-> -	struct qxl_device *qdev =3D to_qxl(dev);
-> +	struct qxl_device *qdev =3D to_qxl(plane->dev);
->   	struct drm_framebuffer *fb =3D plane->state->fb;
-> -	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane->state->crtc);
-> -	struct qxl_release *release;
-> -	struct qxl_cursor_cmd *cmd;
-> -	struct qxl_cursor *cursor;
-> -	struct drm_gem_object *obj;
-> -	struct qxl_bo *cursor_bo =3D NULL, *user_bo =3D NULL, *old_cursor_bo =
-=3D NULL;
-> -	int ret;
-> -	struct dma_buf_map user_map;
-> -	struct dma_buf_map cursor_map;
-> -	void *user_ptr;
-> -	int size =3D 64*64*4;
-> -
-> -	ret =3D qxl_alloc_release_reserved(qdev, sizeof(*cmd),
-> -					 QXL_RELEASE_CURSOR_CMD,
-> -					 &release, NULL);
-> -	if (ret)
-> -		return;
->  =20
->   	if (fb !=3D old_state->fb) {
-> -		obj =3D fb->obj[0];
-> -		user_bo =3D gem_to_qxl_bo(obj);
-> -
-> -		/* pinning is done in the prepare/cleanup framevbuffer */
-> -		ret =3D qxl_bo_vmap_locked(user_bo, &user_map);
-> -		if (ret)
-> -			goto out_free_release;
-> -		user_ptr =3D user_map.vaddr; /* TODO: Use mapping abstraction proper=
-ly */
-> -
-> -		ret =3D qxl_alloc_bo_reserved(qdev, release,
-> -					    sizeof(struct qxl_cursor) + size,
-> -					    &cursor_bo);
-> -		if (ret)
-> -			goto out_kunmap;
-> -
-> -		ret =3D qxl_bo_pin(cursor_bo);
-> -		if (ret)
-> -			goto out_free_bo;
-> -
-> -		ret =3D qxl_release_reserve_list(release, true);
-> -		if (ret)
-> -			goto out_unpin;
-> -
-> -		ret =3D qxl_bo_vmap_locked(cursor_bo, &cursor_map);
-> -		if (ret)
-> -			goto out_backoff;
-> -		if (cursor_map.is_iomem) /* TODO: Use mapping abstraction properly *=
-/
-> -			cursor =3D (struct qxl_cursor __force *)cursor_map.vaddr_iomem;
-> -		else
-> -			cursor =3D (struct qxl_cursor *)cursor_map.vaddr;
-> -
-> -		cursor->header.unique =3D 0;
-> -		cursor->header.type =3D SPICE_CURSOR_TYPE_ALPHA;
-> -		cursor->header.width =3D 64;
-> -		cursor->header.height =3D 64;
-> -		cursor->header.hot_spot_x =3D fb->hot_x;
-> -		cursor->header.hot_spot_y =3D fb->hot_y;
-> -		cursor->data_size =3D size;
-> -		cursor->chunk.next_chunk =3D 0;
-> -		cursor->chunk.prev_chunk =3D 0;
-> -		cursor->chunk.data_size =3D size;
-> -		memcpy(cursor->chunk.data, user_ptr, size);
-> -		qxl_bo_vunmap_locked(cursor_bo);
-> -		qxl_bo_vunmap_locked(user_bo);
-> -
-> -		cmd =3D (struct qxl_cursor_cmd *) qxl_release_map(qdev, release);
-> -		cmd->u.set.visible =3D 1;
-> -		cmd->u.set.shape =3D qxl_bo_physical_address(qdev,
-> -							   cursor_bo, 0);
-> -		cmd->type =3D QXL_CURSOR_SET;
-> -
-> -		old_cursor_bo =3D qcrtc->cursor_bo;
-> -		qcrtc->cursor_bo =3D cursor_bo;
-> -		cursor_bo =3D NULL;
-> +		qxl_primary_apply_cursor(qdev, plane->state);
->   	} else {
-> -
-> -		ret =3D qxl_release_reserve_list(release, true);
-> -		if (ret)
-> -			goto out_free_release;
-> -
-> -		cmd =3D (struct qxl_cursor_cmd *) qxl_release_map(qdev, release);
-> -		cmd->type =3D QXL_CURSOR_MOVE;
-> +		qxl_primary_move_cursor(qdev, plane->state);
->   	}
-> -
-> -	cmd->u.position.x =3D plane->state->crtc_x + fb->hot_x;
-> -	cmd->u.position.y =3D plane->state->crtc_y + fb->hot_y;
-> -
-> -	qxl_release_unmap(qdev, release, &cmd->release_info);
-> -	qxl_release_fence_buffer_objects(release);
-> -	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
-> -
-> -	if (old_cursor_bo !=3D NULL)
-> -		qxl_bo_unpin(old_cursor_bo);
-> -	qxl_bo_unref(&old_cursor_bo);
-> -	qxl_bo_unref(&cursor_bo);
-> -
-> -	return;
-> -
-> -out_backoff:
-> -	qxl_release_backoff_reserve_list(release);
-> -out_unpin:
-> -	qxl_bo_unpin(cursor_bo);
-> -out_free_bo:
-> -	qxl_bo_unref(&cursor_bo);
-> -out_kunmap:
-> -	qxl_bo_vunmap_locked(user_bo);
-> -out_free_release:
-> -	qxl_release_free(qdev, release);
-> -	return;
-> -
->   }
->  =20
->   static void qxl_cursor_atomic_disable(struct drm_plane *plane,
->   				      struct drm_plane_state *old_state)
->   {
->   	struct qxl_device *qdev =3D to_qxl(plane->dev);
-> +	struct qxl_crtc *qcrtc;
->   	struct qxl_release *release;
->   	struct qxl_cursor_cmd *cmd;
->   	int ret;
-> @@ -714,6 +717,10 @@ static void qxl_cursor_atomic_disable(struct drm_p=
-lane *plane,
->  =20
->   	qxl_release_fence_buffer_objects(release);
->   	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
-> +
-> +	qcrtc =3D to_qxl_crtc(old_state->crtc);
-> +	qxl_free_cursor(qcrtc->cursor_bo);
-> +	qcrtc->cursor_bo =3D NULL;
->   }
->  =20
->   static void qxl_update_dumb_head(struct qxl_device *qdev,
-> @@ -822,6 +829,17 @@ static int qxl_plane_prepare_fb(struct drm_plane *=
-plane,
->   		qxl_prepare_shadow(qdev, user_bo, new_state->crtc->index);
->   	}
->  =20
-> +	if (plane->type =3D=3D DRM_PLANE_TYPE_CURSOR &&
-> +	    plane->state->fb !=3D new_state->fb) {
-> +		struct qxl_crtc *qcrtc =3D to_qxl_crtc(new_state->crtc);
-> +		struct qxl_bo *old_cursor_bo =3D qcrtc->cursor_bo;
-> +
-> +		qcrtc->cursor_bo =3D qxl_create_cursor(qdev, user_bo,
-> +						     new_state->fb->hot_x,
-> +						     new_state->fb->hot_y);
-> +		qxl_free_cursor(old_cursor_bo);
-> +	}
-> +
->   	return qxl_bo_pin(user_bo);
->   }
->  =20
->=20
+We have introducee SDM-based accurate audio PLL on several
+other SoCs=2E Some people is quite sensitive about audio-related things=2E
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---x9qCAZEFpMSQcn5cRKCOnzVd9PqQm2ttB--
-
---ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAuHzIFAwAAAAAACgkQlh/E3EQov+Ad
-ZhAAmURmYv4JTvF6N6MEa2GNyXvw6BKxt1E45y4UR6TOx2HITNijCYsxA1mFBie8Eho2n3t3umS0
-o098fbCG45p2kXbe+mRrVASXuKjcMOTxzGrwjB/y7DS02n0dmDCS0bJEqTljLtGgDOnnbD0hpSR+
-j1uB/fwxWLvxbAU9vdqwWr78s3v41PiWIb+/gaC6JW4RLuRoIcHM0TYtZqu+cupiWjVVLyt9rMkz
-3rX4Z9JLMbLgtOAwsxcPIqUoE1Ckxk7gWdm50UJ7REDdOxIu4tYHb8wxQiyTK+YsB4KEzPc5h8Nb
-azmnIVhc9zF6SlOA6GWF/pbPwGLMtAe6dR6PDQbn/7rEiiDzLUnKOe+Z0mQlXb8lmz6V0phekztc
-nyHlHjrJdCskiLeUJPyEisVZx5FIOJ1c/7kTkZcX0YLrSelQu3S33VID2t8P3k0sMbNaU9ONztpX
-EBXMeIu8+tRll8lGUrziW0FerssKBH2I1k/8/hr9jZwb3T+FnHMk0/VoPN9kvRfknWG0VIe5F8p5
-0ZfJ5BMOqWpd5uaea6pZcsBIGxK29lTN+FTM5w8y09BPXtwbw9zLkTsAVE+zCERPpN5tIFItOEVv
-cIXLGfgrmNtd43WGuIBO23nw2sTFyUGokl27On3Q0Hyx5diajvwDwnMvkWuC6Afc3abD+HU7jHny
-Qv8=
-=e5fd
------END PGP SIGNATURE-----
-
---ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ--
+>
+>The closest frequency we can provide for 24=2E576MHz would be 24580645
+>Hz,
+>with N =3D 127, M =3D 31 and P =3D 4, so it would work with what we have
+>already?
+>
+>Maxime
