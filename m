@@ -2,100 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1473E31EDC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:58:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41B7731ED8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbhBRR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:56:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
+        id S233625AbhBRRpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:45:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhBRPNs (ORCPT
+        with ESMTP id S230073AbhBRPFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:13:48 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDAAC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:03:23 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id 81so2328992qkf.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:03:23 -0800 (PST)
+        Thu, 18 Feb 2021 10:05:04 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B56EC061574;
+        Thu, 18 Feb 2021 07:04:18 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id z15so1475332pfc.3;
+        Thu, 18 Feb 2021 07:04:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p89DwoOOsvw+CnJ+KQOJKP+OK4RgyV7iDfRp7yPRuZo=;
-        b=sgctuxKei7vpMxAFsHQIa8x6kCjgbaZvDkmVddN/LebhlxKF/pKp6tjD2DTiXUgLCt
-         1cz7XUznrCNS7chrttB3GVbH2iITgGkEtzHzD1aLraA2mGEz1aU8d0vo+6V19zbzlTQp
-         t4u5OBodgkj8GBJO1U6v4tGZz9yUUMo/kB720eV6RZjLH15grwDdYcBBTitxrohj0hGy
-         HZ4oJUxIow1RUSGGTJttrInJn2tM97F6Ii1y9uIIduW/WO9LxAmlO3z8ZCTcL/jHMFxW
-         Pqgm2El0fVG5MnU9qCwEGnKK7g37Y18a6/jWLnMR7yIruP1Rw4mrmzXr3vQQCSS8Aovn
-         T7AQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SCWX+UOWBBJn4LzW9Yj7QYHcJVlwVskIMygyEWiC3wA=;
+        b=ptTekISckA2jYFmD+CelhT4CRuY+9zmgwQo3vUOOSVTtYU+u8puIb5X6zY9O9vS4Qt
+         1MVrE0TXQvA7aPaTJMlSGwlJCmmU2FjesAbdk6HWoy+6ECmBtkwBHrWfLk340T+lqtUr
+         tdlpQjK67nm7aAClC/zNZtIW5TdxJTr0Nn3H3Zi5ilLW6kUonpRBd8U3ufddQMCY+XKw
+         1u0NzVmgKd2Dtg8j62nf7CIB933MdcHVI+wy0MJaTfX66TYJr4epBwbhuxQ7WDefLkeb
+         IzLkM4Wm9B9CfW/6kCUDReQYeXq3pXwpzi5DKlcM7ZnXDryILmtYSrRE05ziGFtkycuO
+         fPQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p89DwoOOsvw+CnJ+KQOJKP+OK4RgyV7iDfRp7yPRuZo=;
-        b=VAq8nMNIOnMTO32fSIzhzfgGPi5YsCRI0XQmJetf2ksMy6re297KTcTtPvEEmD2+55
-         EHl0w+YPVKKa4VSsILjCwS9Yt5x47b3Gmhoq6A8MUs/4wjBYjBpvMntSTy7t8qNKxyIA
-         tzHaMaYSu8G9tUsFzdBUqTSXgstrI8CMoDdWP9SGlkhgG3ZGsFY/eis8qqiOc4PeppTs
-         K8IOgPBuPFvwv+/U2U2aHJkG4e4+i4qGHYjZMWkT4tM47/iY2YntVchJYVxWW+jr67Ol
-         tCaFBW+4j18nZRFtqSScW26KPSuhBXVP5+sGF/gBJNJ7TKmUVCpH16D8kQCfW7nkyXhW
-         //2g==
-X-Gm-Message-State: AOAM532LJl/YVaxDEHbjy9iPB2S6jrz20tIQd8gMndPPI61VisKVWfCW
-        R09HQ3oojDDQrD76vjJY+2jtlg==
-X-Google-Smtp-Source: ABdhPJwHIjGq2Qhgr/H2XVcUdMeLSumIo6vhlXYJH+GBjSxPPlh97AiMJ2XZSq5xQoedh4g2E5DQBA==
-X-Received: by 2002:a37:8b84:: with SMTP id n126mr4461711qkd.223.1613660602315;
-        Thu, 18 Feb 2021 07:03:22 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id u133sm4135077qka.116.2021.02.18.07.03.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 07:03:21 -0800 (PST)
-Subject: Re: [PATCH] cpufreq: exclude boost frequencies from valid count if
- not enabled
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, bjorn.andersson@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20210217000013.4063289-1-thara.gopinath@linaro.org>
- <20210217055029.a25wjsyoosxageti@vireshk-i7>
- <4c9d9d44-5fa5-3ae1-e9bb-45cf6521b764@linaro.org>
- <20210218084847.743rttqwlmwyx6pz@vireshk-i7>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <d693d999-7734-3e69-edb9-9e03fd2f0d1a@linaro.org>
-Date:   Thu, 18 Feb 2021 10:03:20 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SCWX+UOWBBJn4LzW9Yj7QYHcJVlwVskIMygyEWiC3wA=;
+        b=AsFwABVPeEPUgOK9qEcxcvjpuI4U+Bpb6fMOpx8u8WAg6k2Rr4FAQSXGy3oT3ExNV4
+         1fX72lbpDw9lzkkrpE6muw+/ya8Ek/P3qcROA9rf31JAioBg9VpHvYLRuGABiBa3q6tD
+         iWi2EfRrFpAfSC+OTf0Q1bYaimyt9HjD9QyQWZaWvLvxGxm2BX0IPByNga0maHtow8pG
+         Z7Plf5qhdO3vJS789f+JbaoOLFwRZp4PSYjWNyqIAwsAiNAwx/1MdM9vGoCMqRirFDjN
+         uP3t7U3kKnLtRrYaPb0yDDI+7TXWfKmYqgY7LoHzwTB9wGaFut9SYUM6E0DyW0d63qAr
+         4G1g==
+X-Gm-Message-State: AOAM533f9iAsL51R3dDHoMfbGtX18vTj6LlteRERNl3QeAZGJ9ldCNTr
+        LuBz9OoP3iwslWqfNkM7hrQO8TAIGe34A1XGReM=
+X-Google-Smtp-Source: ABdhPJwG5zE0x+hjJvBnpEznOmm5sOnqdV/YjJZRzgbBogf8unojEji7hX1GRoH0IU+rEawkdJbKxqx0xsaizjPJhNE=
+X-Received: by 2002:a65:4c08:: with SMTP id u8mr4275873pgq.203.1613660658089;
+ Thu, 18 Feb 2021 07:04:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210218084847.743rttqwlmwyx6pz@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210218052654.28995-1-calvin.johnson@oss.nxp.com> <20210218052654.28995-16-calvin.johnson@oss.nxp.com>
+In-Reply-To: <20210218052654.28995-16-calvin.johnson@oss.nxp.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 18 Feb 2021 17:04:02 +0200
+Message-ID: <CAHp75VdUs8_6_bK1-TS2Bi9vQvLJLsr8C+Y5xXF2_FJHsFKeFQ@mail.gmail.com>
+Subject: Re: [net-next PATCH v6 15/15] net: dpaa2-mac: Add ACPI support for
+ DPAA2 MAC driver
+To:     Calvin Johnson <calvin.johnson@oss.nxp.com>
+Cc:     Grant Likely <grant.likely@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Cristi Sovaiala <cristian.sovaiala@nxp.com>,
+        Florin Laurentiu Chiculita <florinlaurentiu.chiculita@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Pieter Jansen Van Vuuren <pieter.jansenvv@bamboosystems.io>,
+        Jon <jon@solid-run.com>, Saravana Kannan <saravanak@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Diana Madalina Craciun <diana.craciun@nxp.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        "linux.cj" <linux.cj@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Feb 18, 2021 at 7:29 AM Calvin Johnson
+<calvin.johnson@oss.nxp.com> wrote:
+>
+> Modify dpaa2_mac_get_node() to get the dpmac fwnode from either
+> DT or ACPI.
+>
+> Modify dpaa2_mac_get_if_mode() to get interface mode from dpmac_node
+> which is a fwnode.
+>
+> Modify dpaa2_pcs_create() to create pcs from dpmac_node fwnode.
+>
+> Modify dpaa2_mac_connect() to support ACPI along with DT.
 
+...
 
-On 2/18/21 3:48 AM, Viresh Kumar wrote:
-> On 17-02-21, 10:32, Thara Gopinath wrote:
->> First of all, I am still unable to find this setting in the sysfs space.
-> 
-> The driver needs to call cpufreq_enable_boost_support() for that.
+> +                       if (is_of_node(fwnode))
 
-Ok. that makes sense.
+Redundant check I think. If it's not an fwnode, the dpmacs is NULL and
+of_node_put() is NULL-aware.
 
-> 
->> Irrespective the ideal behavior here will be to change the cpufreq cooling
->> dev max state when this happens.
-> 
-> Hmm.. recreating it every time boost frequency is enabled is like
-> inviting trouble and it will be tricky. Maybe it can be done, I don't
-> know.:)
+> +                               of_node_put(dpmacs);
 
-Scheduling a notifier for max frequency change from the qos framework 
-should do the work, right?
+...
 
-> 
+> +       if (is_of_node(fwnode))
+> +               of_node_put(dpmacs);
+
+Ditto.
+
+...
+
+>         mac->if_link_type = mac->attr.link_type;
+> -
+
+Do we need to remove this blank line?
+
+...
+
+> +       if (is_of_node(dpmac_node))
+> +               fwnode_handle_put(dpmac_node);
+
+> +       if (is_of_node(dpmac_node))
+> +               fwnode_handle_put(dpmac_node);
+
+Also not sure that you need a check in the above code excerpts.
 
 -- 
-Warm Regards
-Thara
+With Best Regards,
+Andy Shevchenko
