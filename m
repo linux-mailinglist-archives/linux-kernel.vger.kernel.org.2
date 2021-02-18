@@ -2,148 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228E131ECB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7702531ECBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234161AbhBRQ6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:58:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233571AbhBRONC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:13:02 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEF8C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 06:12:21 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id j12so1355658pfj.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 06:12:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/9k5TLG+cSQGO44XklxxRtkxrKg7GM556fliUBGzq6o=;
-        b=CtLo4NL2MqVEC59LE/m04PNwUtXe4pxcA5F5xZ3wVpEC3BuHCeHYBfjX7urIcacvAQ
-         gN/APFPgl/JRtm/T7L+viVjD5ifJbNFrAjZfYPMtr/kpTTElXovfD5Gh+B1tjQ6YxeM8
-         dssckpv2fPSvb7lYDHFmmK2Dq6OvN7w7TrlIbeCRchVhtbGSxYmEgsGbHzYSVNiGBhai
-         W5wdRxxh2oD2VUrytfL2wnwRn11y+YjZ3tjGWAhZPandTw/oxZVkz1HV/gbL9nTHl1SF
-         Dh2zcl7uS9i2Wh7bFkykkmPoW6QHsFbvJqSmi0DLLJuWfJMVr/QXFvlTzs2XaYpcx+CS
-         8nDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/9k5TLG+cSQGO44XklxxRtkxrKg7GM556fliUBGzq6o=;
-        b=OhZdf0nKquouHKX7y3rZNgEINkpfchbZ9oD/8c5oYI2P0TzU3dS6/w8NaH1dQsksT2
-         9dEWQZ5lyQNgOxjiAuNGePU97g341wYHb77JvtUe3eEU20MOHx3iMT+l0PUrnSCX2zw8
-         +DuccDHsmVmMWwgvnthCyKh0Nr9HZsMuox48bJo8HY9SrTGkskwMhagvIuennyVEIIf5
-         AvdGa2RpXjdSQY3y47ggsPJd0BCNB/Z0dOkMrHe46twWCcFXPuBMNS396RlsrzcZK79P
-         N8D422PS626a3YQ1+3r1lwQ6suz9/pSyPQnIfsCOj/sXFqQ0pdG2zGt6F3VxSuuMFAqa
-         zojA==
-X-Gm-Message-State: AOAM532AyCeSQSpsPbuJduXONTSnwy9ZzQ5zjCYJUBAvKJiWOwWmPu1n
-        0xZoQaGROQNsbdY6XT3LEUA=
-X-Google-Smtp-Source: ABdhPJxN6FD07z7UoqhokkRaf7VlnTVOKEaM2MOVnrHA8XEOAhvgeDNFdwmkAYc7YU8Pzw6bt/i2tQ==
-X-Received: by 2002:aa7:8d0d:0:b029:1d7:3c52:e1f6 with SMTP id j13-20020aa78d0d0000b02901d73c52e1f6mr4604555pfe.39.1613657541296;
-        Thu, 18 Feb 2021 06:12:21 -0800 (PST)
-Received: from atulu-ubuntu ([106.200.12.70])
-        by smtp.gmail.com with ESMTPSA id q196sm6850635pfc.162.2021.02.18.06.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 06:12:21 -0800 (PST)
-Date:   Thu, 18 Feb 2021 19:42:15 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
- variable type
-Message-ID: <20210218141215.GB2022@atulu-ubuntu>
-References: <20210218084404.16591-1-atulgopinathan@gmail.com>
- <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
- <20210218104755.GA7571@atulu-nitro>
- <YC5bsXa+1KSuIh+v@kroah.com>
- <20210218125220.GA19456@atulu-nitro>
- <YC5vyPYs6TNOnRZ1@kroah.com>
+        id S234189AbhBRQ7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:59:16 -0500
+Received: from mga07.intel.com ([134.134.136.100]:2130 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233616AbhBROPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:15:33 -0500
+IronPort-SDR: pwiwHWxugM2a+bzzydPk1fmiSSr63fc1ThxU92Y8oss9KlLChdlECzl4K4mO/91bUMak8mrTk/
+ s39UV7z6YFxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247590890"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="247590890"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 06:14:16 -0800
+IronPort-SDR: ElQZXhgmFtC60IIVlW+/UT5UP1hzG5Xt8dnWRP3n5MYhm+tebIYls/GzvQokwvZldIkSO2xR73
+ LRQaLIzyIUtg==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="439822549"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 06:14:15 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1lCk4K-005xt5-EF; Thu, 18 Feb 2021 16:14:12 +0200
+Date:   Thu, 18 Feb 2021 16:14:12 +0200
+From:   "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>
+To:     "Bedel, Alban" <alban.bedel@aerq.com>
+Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2] gpio: pca953x: add support for open drain pins on
+ PCAL6524
+Message-ID: <YC52NFly5b3mxujS@smile.fi.intel.com>
+References: <20210211175140.85391-1-alban.bedel@aerq.com>
+ <CAHp75VfUY5-VtCWjaU6Q=hJY9hyUz8B36C0528RXUxkbnL9yEA@mail.gmail.com>
+ <4d67d5627921b0f7ca6579b81f97691c53ef0c34.camel@aerq.com>
+ <CAHp75Vczzhs=8k9G1FQYvqOV+Xg3GHp2=TykJX+E5ypT8puFqw@mail.gmail.com>
+ <a1f4f5cc14a5037a8b122c811d2f24a8d3068c41.camel@aerq.com>
+ <CAHp75VekEoU3y0iZ9RyfB4887n1hbLMcKfrgzYWfa6_cbKp_iQ@mail.gmail.com>
+ <6018d92d2fc91841e76324adaf9f285e39b6fc00.camel@aerq.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC5vyPYs6TNOnRZ1@kroah.com>
+In-Reply-To: <6018d92d2fc91841e76324adaf9f285e39b6fc00.camel@aerq.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 02:46:48PM +0100, Greg KH wrote:
-> On Thu, Feb 18, 2021 at 06:22:20PM +0530, Atul Gopinathan wrote:
-> > On Thu, Feb 18, 2021 at 01:21:05PM +0100, Greg KH wrote:
-> > > On Thu, Feb 18, 2021 at 04:17:55PM +0530, Atul Gopinathan wrote:
-> > > > On Thu, Feb 18, 2021 at 10:31:15AM +0000, Ian Abbott wrote:
-> > > > > On 18/02/2021 08:44, Atul Gopinathan wrote:
-> > > > > > Fix the following warning generated by sparse:
-> > > > > > 
-> > > > > > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-> > > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-> > > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
-> > > > > > 
-> > > > > > compat_ptr() has a return type of "void __user *"
-> > > > > > as defined in "include/linux/compat.h"
-> > > > > > 
-> > > > > > cmd->chanlist is of type "unsigned int *" as defined
-> > > > > > in drivers/staging/comedi/comedi.h" in struct
-> > > > > > comedi_cmd.
-> > > > > > 
-> > > > > > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> > > > > > ---
-> > > > > >   drivers/staging/comedi/comedi_fops.c | 2 +-
-> > > > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> > > > > > index e85a99b68f31..fc4ec38012b4 100644
-> > > > > > --- a/drivers/staging/comedi/comedi_fops.c
-> > > > > > +++ b/drivers/staging/comedi/comedi_fops.c
-> > > > > > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
-> > > > > >   	cmd->scan_end_arg = v32.scan_end_arg;
-> > > > > >   	cmd->stop_src = v32.stop_src;
-> > > > > >   	cmd->stop_arg = v32.stop_arg;
-> > > > > > -	cmd->chanlist = compat_ptr(v32.chanlist);
-> > > > > > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
-> > > > > >   	cmd->chanlist_len = v32.chanlist_len;
-> > > > > >   	cmd->data = compat_ptr(v32.data);
-> > > > > >   	cmd->data_len = v32.data_len;
-> > > > > > 
-> > > > > 
-> > > > > This patch and the other one in your series clash with commit 9d5d041eebe3
-> > > > > ("staging: comedi: comedi_fops.c: added casts to get rid of sparse
-> > > > > warnings") by B K Karthik.
-> > > > 
-> > > > Oh I see. Not sure if this is the right place to ask, but which tree and
-> > > > branch should one work with when messing with the code in staging/
-> > > > directory? (wanted to avoid such clashes in future)
-> > > 
-> > > staging-next is the best one to use from the staging.git tree.  But as
-> > > the above commit was merged in 5.9-rc1, way back in July of last year, I
-> > > have no idea what tree you are currently using to not hit that...
+On Wed, Feb 17, 2021 at 06:57:20PM +0000, Bedel, Alban wrote:
+> On Wed, 2021-02-17 at 16:19 +0200, Andy Shevchenko wrote:
+> > On Wed, Feb 17, 2021 at 3:11 PM Bedel, Alban <alban.bedel@aerq.com>
+> > wrote:
+> > > On Tue, 2021-02-16 at 19:50 +0200, Andy Shevchenko wrote:
+> > > > On Tue, Feb 16, 2021 at 6:37 PM Bedel, Alban <
+> > > > alban.bedel@aerq.com>
+> > > > wrote:
+> > > > > On Mon, 2021-02-15 at 14:53 +0200, Andy Shevchenko wrote:
+> > > > > > On Thu, Feb 11, 2021 at 7:52 PM Alban Bedel <
+> > > > > > alban.bedel@aerq.com
+> > > > > > wrote:
 > > 
-> > I'm using the staging tree alright, cloned it yesterday. Except I used the
-> > --depth parameter. I believe that is the culprit. How bad a mistake is
-> > that?
+> > ...
+> > 
+> > > > > > > +#define PCAL65xx_REGS          BIT(10)
+> > > > > > 
+> > > > > > Can we have it as a _TYPE, please?
+> > > > > 
+> > > > > Let's please take a closer look at these macros and what they
+> > > > > mean.
+> > > > > Currently we have 3 possible set of functions that are
+> > > > > indicated by
+> > > > > setting bits in driver_data using the PCA_xxx macros:
+> > > > > 
+> > > > > - Basic register only: 0
+> > > > > - With interrupt support: PCA_INT
+> > > > > - With latching interrupt regs: PCA_INT | PCA_PCAL =
+> > > > > PCA_LATCH_INT
+> > > > > 
+> > > > > This patch then add a forth case:
+> > > > > 
+> > > > > - With pin config regs: PCA_INT | PCA_PCAL |
+> > > > > $MACRO_WE_ARE_DICUSSING
+> > > > > 
+> > > > > Then there is the PCA953X_TYPE and PCA957X_TYPE macros which
+> > > > > indicate
+> > > > > the need for a different regmap config and register layout.
+> > > > 
+> > > > Exactly, and you have a different register layout (coincidentally
+> > > > overlaps with the original PCA953x).
+> > > 
+> > > We have 2 layout for the base registers, the "mixed up registers"
+> > > of
+> > > the PCA957x and the "standard" of the PCA953x. Then we have the
+> > > PCALxxxx chips which extend the base PCA953x registers with further
+> > > registers for better interrupt handling. These are not treated as a
+> > > new
+> > > type in the current code, but as an extra feature on top of the
+> > > PCA953x.
+> > 
+> > Yes, because they are about interrupts AFAICS.
 > 
-> I do not know, I do not use that option, sorry.
+> This distinction seems arbitrary, each more advanced version of the
+> chip just has more features along with a new register block.
 > 
-> > (Why depth? I'm currently staying in a remote area where internet
-> > download speeds are less than 100Kbps. I tried a normal git clone of
-> > the staging tree and it's estimated time was more than half a day. Not
-> > to mention, it fails due to loss of connection midway every time)
+> > >  The PCAL65xx we are talking about add a further register
+> > > block, so following the existing concept its not a new layout.
+> > 
+> > Yes, with one important detail, i.e. it extends the "mixed up"
+> > registers, it's not a separate "feature" in this sense. The separate
+> > "feature" can be, for example, PWM registers. I admit that this most
+> > of the angle of preference how to draw a line between the features.
+> > 
+> > I prefer to see it as a type because of two things (in the current
+> > code):
+> >  - OF_9*() macros take only two arguments, second of which is
+> > Interrupt related
+> >  - PCA_INT group of bits is about Interrupt only
 > 
-> If you already have a copy of the kernel git tree, there is never a need
-> to download the whole thing again.  Just add another remote banch and do
-> a pull, the difference should be very tiny now compared to what is in
-> Linus's tree.
+> No, the register set indicated by PCA_PCAL also allow setting pull
+> up/down which is supported by this driver. Furthermore the extra
+> registers of the PCAL65XX also allow configuring edge triggered mode
+> for interrupts. I really don't see why there should be 2 class of
+> features, that only make the code more complex.
 > 
-> Or, to seed the whole thing, download a "git bundle" as described here:
-> 	https://www.kernel.org/best-way-to-do-linux-clones-for-your-ci.html
-> which you can use to work off of locally, and should be easier to handle
-> over slow and flaky download connections.
+> > Your proposal will disrupt the code (more invasive).
 > 
-> hope this helps,
+> I tried to implement what you like to see:
+> 
+>  1 file changed, 105 insertions(+), 20 deletions(-)
+> 
+> vs my proposal:
+> 
+>  1 file changed, 65 insertions(+), 3 deletions(-)
 
-Oh this is great! Will definitely help me. Thanks a lot!
+Do you have any repo to look for both solutions?
 
-Regards,
-Atul
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
