@@ -2,131 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5674931EC73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD4131EC75
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233707AbhBRQmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhBRN6H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:58:07 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9755AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:57:26 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id C0AB541E96;
-        Thu, 18 Feb 2021 13:53:12 +0000 (UTC)
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-20-marcan@marcan.st>
- <20210215184012.sf6p6dbk5c25phdm@kozik-lap>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH v2 19/25] tty: serial: samsung_tty: IRQ rework
-Message-ID: <31068a51-736b-08f6-6c00-1779734465ea@marcan.st>
-Date:   Thu, 18 Feb 2021 22:53:10 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S233858AbhBRQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:44:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232135AbhBROAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:00:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B8F3D64EAE
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613656784;
+        bh=RT4x+beIoOZVYL4jYBlALf8JhbgGOWPj+TpV+50ymjk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Jf7NwF/0QbWiBIprLKL+3WCqlLn9GBFkNhTo5yc62PpJj2/3wvDRkuI3c566Kesz1
+         CTz/cExe7q/cbbiiGmFQrAX9PXxNe0iOsL+99CMtmgrwpA/COQzRWjQ+ljohvCXgDQ
+         jVKtUso9dlL5NZfcC0AqZH+e5//D1HmgKC3eyv/KagylSR47qaSnJvNjQC1FFKV4HK
+         O7eaafKP8n7HvpXiMMK9+Ev3H8HQoHnlLbX5qUCv0/HOdYoT6mbxy9j5d4EmqEQ0Uv
+         GxtbjARdVyFfJwvhOq1o4nW1Cxyze+x4nlmEU2wqHVN+aGUdk0W/TFGh/aU4XL3CiQ
+         +YgH+001Xdr9Q==
+Received: by mail-ot1-f41.google.com with SMTP id b16so1933235otq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:59:44 -0800 (PST)
+X-Gm-Message-State: AOAM53056hJe/53l9R61ZjmJQGvL2EWPcWJhEC4DAX3PhjaQbh8g9gOX
+        pE1Buam2RmRfRnVZte+IpcJnaZLuvBPnBTnCb3M=
+X-Google-Smtp-Source: ABdhPJxC9ZR+yQA7BZhwjrnYxZNyV0JrLHICEmBzVMWp4WwRG3vC4wqCWg5ZPhPF0D8BarTDgRvFWMJsNG1p+fLodjU=
+X-Received: by 2002:a9d:3403:: with SMTP id v3mr2926726otb.305.1613656783870;
+ Thu, 18 Feb 2021 05:59:43 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210215184012.sf6p6dbk5c25phdm@kozik-lap>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
+ <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
+ <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
+ <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
+ <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
+ <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com> <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
+ <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com> <CAMuHMdUFv2r+YAttodcXhLxEVe+2KXgAG=q8Z3vA6WUKQj7zVA@mail.gmail.com>
+In-Reply-To: <CAMuHMdUFv2r+YAttodcXhLxEVe+2KXgAG=q8Z3vA6WUKQj7zVA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 18 Feb 2021 14:59:27 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
+Message-ID: <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
+Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
+ NMI) enabled on some platform
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "funaho@jurai.org" <funaho@jurai.org>,
+        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/02/2021 03.40, Krzysztof Kozlowski wrote:
-> On Mon, Feb 15, 2021 at 09:17:07PM +0900, Hector Martin wrote:
->> * Split out s3c24xx_serial_tx_chars from s3c24xx_serial_tx_irq,
->>    where only the latter acquires the port lock.
-> 
-> I miss here information why you do all this.
+On Thu, Feb 18, 2021 at 1:30 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> The reason drivers/ide is doing that may be related to IDE hard drive
+> quirks.  The old WD Caviar drives didn't obey disabling the IDE interrupt
+> at the drive level.  On PC, that worked fine, as IRQs 14 and 15 weren't
+> shared with other devices.  On systems with shared interrupts, that
+> broke badly, and led to an interrupt storm.
 
-Added an explanation for v3. This is used by a subsequent patch in the 
-series.
+So presumably anyone that has one of those old drives will not be
+able to move to drivers/ata then? I see that drivers/ata doesn't do
+the transfers in interrupt mode, so it would seem to rely on masking
+at the device level.
 
->>
->> * For S3C64xx, return IRQ_NONE if no flag bits were set, so the
->>    interrupt core can detect IRQ storms. Note that both IRQ handlers
->>    always return IRQ_HANDLED anyway, so 'or' logic isn't necessary here,
->>    if either handler ran we are always going to return IRQ_HANDLED.
-> 
-> It looks like separate patch. Your patches should do only one thing at
-> once. The fact that you have here three bullet points is a warning
-> sign. This is even more important if you do some refactorings and
-> cleanups which should not affect functionality. Hiding there changes
-> which could affect functionality is a no-go.
+On the other hand, out of the five m68k specific IDE drivers
+(gayle, buddha, falcon, mac_ide, q40), only the last two don't
+seem to have an ata driver equivalent.
 
-I've reverted this one. I don't think it should affect functionality, 
-but I don't have any way to test on these devices, so I'll leave it to 
-someone else to be safe :)
+mac_ide uses the highest priority interrupts (NUBUS_C, NUBUS_F)
+so it appears to not actually benefit from the nested hardirq but would
+benefit being converted to a sata driver with processing at softirq time.
 
->>
->> * Rename s3c24xx_serial_rx_chars to s3c24xx_serial_rx_irq for
->>    consistency with the above. All it does now is call two other
->>    functions anyway.
-> 
-> Separate patch for trivial renaming.
+q40 in turn doesn't appear to share interrupts, though its irq_disable()
+function probably doesn't do what it should. I could not figure out at
+what priority this one runs, and if it is expected to get interrupted.
 
-I think it makes sense to do this rename together with the first change 
-above, as it keeps both functions symmetric. Otherwise we end up with an 
-inconsistent function naming between both patches. If you really want it 
-separate though, I can do that.
-
-> 
->>
->> Signed-off-by: Hector Martin <marcan@marcan.st>
->> ---
->>   drivers/tty/serial/samsung_tty.c | 41 +++++++++++++++++++-------------
->>   1 file changed, 24 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
->> index 21955be680a4..821cd0e4f870 100644
->> --- a/drivers/tty/serial/samsung_tty.c
->> +++ b/drivers/tty/serial/samsung_tty.c
->> @@ -151,6 +151,9 @@ struct s3c24xx_uart_port {
->>   #endif
->>   };
->>   
->> +static void s3c24xx_serial_start_next_tx(struct s3c24xx_uart_port *ourport);
->> +static void s3c24xx_serial_tx_chars(struct s3c24xx_uart_port *ourport);
->> +
->>   /* conversion functions */
->>   
->>   #define s3c24xx_dev_to_port(__dev) dev_get_drvdata(__dev)
->> @@ -316,8 +319,6 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
->>   	ourport->tx_mode = 0;
->>   }
->>   
->> -static void s3c24xx_serial_start_next_tx(struct s3c24xx_uart_port *ourport);
->> -
-> 
-> Why moving this? Why adding s3c24xx_serial_tx_chars() forward
-> declaration?
-
-This should've gone in the next patch. A previous reviewer told me to 
-put declarations at the top of the file, so I put it there and moved 
-this one along with it, but I'll keep it to the additon only for v3.
-
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+      Arnd
