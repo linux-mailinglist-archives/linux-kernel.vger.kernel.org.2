@@ -2,166 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D8231EFE5
+	by mail.lfdr.de (Postfix) with ESMTP id 97A9831EFE6
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhBRTcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:32:04 -0500
-Received: from mail.codeweavers.com ([50.203.203.244]:54602 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbhBRSrt (ORCPT
+        id S231628AbhBRTcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233015AbhBRSrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:47:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GwVBiojSLSWblI9Bv+rO89T9RfbR0j3pBE8d6PtzHog=; b=SowfVEn1pLeLDAhHcSGSa610+w
-        7MW3JNk8lUFzy9+aPeHUWLKN+wwSbKvA9EFytkZHG6eGGuMM5pTLErpsMu69HMyTf3IQK+FARf4T4
-        JvxSobxiuthWZqX6GHJXQ64zj43cmxKlKmep3o9ivMDr+28lBuaE+pqApm03J5I8OzII=;
-Received: from [10.69.141.136]
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <nfraser@codeweavers.com>)
-        id 1lCoKK-0002Jy-14; Thu, 18 Feb 2021 12:47:00 -0600
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
-Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-From:   Nicholas Fraser <nfraser@codeweavers.com>
-Subject: [PATCH] perf buildid-cache: Add test for PE executable
-Message-ID: <3823ae53-5b6f-1721-4414-35747485d9c4@codeweavers.com>
-Date:   Thu, 18 Feb 2021 13:46:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 18 Feb 2021 13:47:53 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DC4C061793
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:47:13 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id d2so2068937pjs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:47:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=hwGMhFSpUZ+8IXq8QZ1Gz3vsECNheP1SgnkaWXhUlaI=;
+        b=Kg+PGRM3gO7wDPL6kZftJKUY6fnhghWTbGzTjonou2e29fwKEEp4tLMknMlps5QGVK
+         Ayl7L0eGjQ+wvpr+dILJrNVED75qRl3QnWmwdg9FB1ZOGJDMejCfWHwrxnNip6AxOZxg
+         6WqLPlXDR2vCxTVPYkOpgpxL4OgTM/Cm55CTw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=hwGMhFSpUZ+8IXq8QZ1Gz3vsECNheP1SgnkaWXhUlaI=;
+        b=hXpjqJ4UOG7lc/fiaOqbAVKPtUc7yQa6d1NqGUq+4dH9e4c3lxX4u1wWLW4LbUM/1c
+         gxFpXGzy5ycVEVASkciB+EtbWri1t06ePpjH0t0CbI7ecrBZZm2Xw4IH3qAioBuT8jV4
+         l12nq/PnJaStieDe8ang1YYFU7Oi/Ms7UJKZtV8SDSRsBLrkHnCGkNptOrXiR97he4Tl
+         TAIDObWgSXLgDYwcfFbJXv0DfRrUlTvdkAk6PmDY9ZUgoSZ6DfNxGx+Gvx2rWA+1/MV5
+         rui5MQZyyHFwyyfTISsqWGoqHqdntZcOK0d8VTBk9FkK5+u0SFaWy5YrSExbz8bjbHY/
+         JPFg==
+X-Gm-Message-State: AOAM531gDpg4cXm23Yv7ua7FEt+2uBM1apRiTOw8YuMeYcVh+U8uvjPD
+        I0DpbAdauapagrwiJTzTSCnW6g==
+X-Google-Smtp-Source: ABdhPJzXASW7UW1qP+wySWhkiDv0DfzSYH/2XlmgQazxzKYmSoEl0w/SmWQge0xYnKEw7PYvWKuZVg==
+X-Received: by 2002:a17:90a:b292:: with SMTP id c18mr5216701pjr.134.1613674032774;
+        Thu, 18 Feb 2021 10:47:12 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:ec84:ed2b:a796:b756])
+        by smtp.gmail.com with ESMTPSA id 8sm6379722pjl.55.2021.02.18.10.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 10:47:12 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1613603397-21179-1-git-send-email-khsieh@codeaurora.org>
+References: <1613603397-21179-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH 2/2] drm/msm/dp: Drop limit link rate at HBR2
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run
+Date:   Thu, 18 Feb 2021 10:47:11 -0800
+Message-ID: <161367403102.1254594.2276430831177324166@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This builds on the previous changes to tests/shell/buildid.sh, adding
-tests for a PE file. It adds it to the build-id cache manually and, if
-Wine is available, runs it under "perf record" and verifies that it was
-added automatically.
+Quoting Kuogee Hsieh (2021-02-17 15:09:57)
+> Drop limit link rate at HBR2 to support link rate
+> upto HBR3.
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
 
-If wine is not installed, only warnings are printed; the test can still
-exit 0.
+Should also say
 
-(I welcome ways to make the GUID parsing less awful. checkpatch.pl is
-complaining about the line length of the sed command. The re-arranging
-could be done via e.g. id=${id:6:2}{id:4:2}... since this style is
-already used in the script but that turns out to be longer than the sed
-command and anyway it's bash-specific. This uses a hardcoded .exe so we
-could also just hardcode its GUID but I'd worry about making the tests
-too inflexible.)
-
-Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
----
- tools/perf/tests/shell/buildid.sh | 43 +++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 5 deletions(-)
-
-diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-index de02a23b7c7b..55e2168ef26f 100755
---- a/tools/perf/tests/shell/buildid.sh
-+++ b/tools/perf/tests/shell/buildid.sh
-@@ -14,18 +14,41 @@ if ! [ -x "$(command -v cc)" ]; then
- 	exit 2
- fi
- 
-+# check what we need to test windows binaries
-+add_pe=1
-+run_pe=1
-+if ! perf version --build-options | grep -q 'libbfd: .* on '; then
-+    echo "WARNING: perf not built with libbfd. PE binaries will not be tested."
-+    add_pe=0
-+    run_pe=0
-+fi
-+if ! which wine > /dev/null; then
-+    echo "WARNING: wine not found. PE binaries will not be run."
-+    run_pe=0
-+fi
-+
- ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
- ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
-+ex_pe=$(dirname $0)/../pe-file.exe
- 
- echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
- echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
- 
--echo "test binaries: ${ex_sha1} ${ex_md5}"
-+echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
- 
- check()
- {
--	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
--
-+	case $1 in
-+	*.exe)
-+		# the build id must be rearranged into a GUID
-+		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
-+			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
-+			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
-+		;;
-+	*)
-+		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
-+		;;
-+	esac
- 	echo "build id: ${id}"
- 
- 	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
-@@ -50,7 +73,7 @@ check()
- 		exit 1
- 	fi
- 
--	${perf} buildid-cache -l|grep $id
-+	${perf} buildid-cache -l | grep ${id}
- 	if [ $? -ne 0 ]; then
- 		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
- 		exit 1
-@@ -81,7 +104,7 @@ test_record()
- 	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
- 	perf="perf --buildid-dir ${build_id_dir}"
- 
--	${perf} record --buildid-all -o ${data} ${1}
-+	${perf} record --buildid-all -o ${data} ${2} ${1}
- 	if [ $? -ne 0 ]; then
- 		echo "failed: record ${1}"
- 		exit 1
-@@ -96,12 +119,22 @@ test_record()
- # add binaries manual via perf buildid-cache -a
- test_add ${ex_sha1}
- test_add ${ex_md5}
-+if [ $add_pe -eq 1 ]; then
-+    test_add ${ex_pe}
-+fi
- 
- # add binaries via perf record post processing
- test_record ${ex_sha1}
- test_record ${ex_md5}
-+if [ $run_pe -eq 1 ]; then
-+    test_record ${ex_pe} wine
-+fi
- 
- # cleanup
- rm ${ex_sha1} ${ex_md5}
- 
-+if [ $add_pe -eq 0 ] || [ $run_pe -eq 0 ]; then
-+    echo "WARNING: some PE tests were skipped. See previous warnings."
-+fi
-+
- exit ${err}
--- 
-2.30.1
-
+Tested-by: Stephen Boyd <swboyd@chromium.org>
