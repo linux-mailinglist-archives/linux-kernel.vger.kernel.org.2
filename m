@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A90C931EBA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B312E31EB97
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232431AbhBRPjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:39:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56104 "EHLO mail.kernel.org"
+        id S232480AbhBRPaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:30:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231490AbhBRNVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:21:02 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0552764E76;
-        Thu, 18 Feb 2021 13:10:48 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 13:10:45 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
-Subject: Re: [PATCH v4 0/6] iio: core: Add mmap interface infrastructure
-Message-ID: <20210218131045.1a34d0a1@archlinux>
-In-Reply-To: <20210217073638.21681-1-alexandru.ardelean@analog.com>
-References: <20210217073638.21681-1-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230248AbhBRNPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:15:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4285264E92;
+        Thu, 18 Feb 2021 13:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613654052;
+        bh=DICMxhSu9qIwJkZC3lVGDCORd7AqBmihED5o+uDFsVE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pulXCgMOy3JXpT4Cz56rgdtZWEARwMUh6EKE96xVim6pBzIfpeulZCcjfqiPWiHwU
+         /f5I/SPW/NGNfMDN5zDMXPRqyUwMY20p4+8hRT5nzjd35o+D5mCQJzLfTbiZToc0TB
+         k4kIzZwz54WyLmpu6Z4z8sBGkxNDFCHdLl6SSup5i7hiWE0vkzwhd/poAYPpIcGGX3
+         1jWqKjrbij5Ojh7mZuVOXIuX0vd5jV2J/yqNIyBBlVGOdrMeMgISYKYj+1MabyoU8F
+         kqxCf71C1t/x/39BwCmN8F1Rqxqs4oy1citP4TA32iuX5AHolOZCT0jv8Gbpf164QW
+         1vHXL2COSxS7A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 0DCBF40CD9; Thu, 18 Feb 2021 10:14:10 -0300 (-03)
+Date:   Thu, 18 Feb 2021 10:14:10 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        peterz@infradead.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH] perf tools: Simplify the calculation of variables
+Message-ID: <YC5oIkXjJSj/GJpX@kernel.org>
+References: <1612497255-87189-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+ <YB0Um9N4rW8fd+oD@krava>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YB0Um9N4rW8fd+oD@krava>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 09:36:32 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+Em Fri, Feb 05, 2021 at 10:49:15AM +0100, Jiri Olsa escreveu:
+> On Fri, Feb 05, 2021 at 11:54:15AM +0800, Jiapeng Chong wrote:
+> > Fix the following coccicheck warnings:
+> > 
+> > ./tools/perf/util/header.c:3809:18-20: WARNING !A || A && B is
+> > equivalent to !A || B.
+> > 
+> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> > ---
+> >  tools/perf/util/header.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> > index c4ed3dc..4fe9e2a 100644
+> > --- a/tools/perf/util/header.c
+> > +++ b/tools/perf/util/header.c
+> > @@ -3806,7 +3806,7 @@ int perf_session__read_header(struct perf_session *session)
+> >  	 * check for the pipe header regardless of source.
+> >  	 */
+> >  	err = perf_header__read_pipe(session);
+> > -	if (!err || (err && perf_data__is_pipe(data))) {
+> > +	if (!err || perf_data__is_pipe(data)) {
+> 
+> mama mia, thanks
+> 
+> Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-Dropped v3 and applied v4 to the togreg branch of iio.git and pushed
-it out as testing for the autobuilders to poke at it and see what
-else they can find :)
+Thanks, applied.
 
-Jonathan
+- Arnaldo
 
-
-> Changelog v3 -> v4:
-> * https://lore.kernel.org/linux-iio/20210215143234.3248-5-alexandru.ardelean@analog.com/T/
-> * added patch 'iio: buffer-dma: reduce the type of block.size to u32'
->   - resolves error on 64 bit archs; 32 bit block size should be enough
-> * in patch 'iio: buffer-dma: Add mmap support'
->   - added 'linux/types.h' include in uapi buffer.h header; an error
->     shows up when building with 'make allmodconfig'
-> * in patch 'tools: iio: add example for high-speed buffer support'
->   - calling ioctl(BOCK_FREE) only if use_high_speed is true
+ 
+> jirka
 > 
-> Changelog v2 -> v3:
-> * https://lore.kernel.org/linux-iio/20210212101143.18993-1-alexandru.ardelean@analog.com/T/#u
-> * added 'Documentation: iio: add doc for high-speed buffer API'
-> * add 'iio: buffer-dma: split iio_dma_buffer_fileio_free() function'
-> * patch 'iio: buffer-dma: Add mmap support'
->    - unwind free on error path in iio_dma_buffer_alloc_blocks()
->    - removed double mm.h include
-> * patch 'tools: iio: add example for high-speed buffer support'
->    - call IIO_BUFFER_BLOCK_FREE_IOCTL on the error path of the
->      enable_high_speed() function
-> 
-> Changelog v1 -> v2:
-> * https://lore.kernel.org/linux-iio/20210211123353.78963-1-alexandru.ardelean@analog.com/T/#t
-> * removed IIO_BUFFER_BLOCK_FLAG_CYCLIC flag; will be added in a later
->   patch
-> * removed extra line in tools/iio/iio_generic_buffer.c
-> * patch 'iio: core: Add mmap interface infrastructure'
->   added docstrings for new hooks (alloc_blocks, mmap, etc)
-> 
-> This is basically Lars' work adapted from branch:
->   https://github.com/larsclausen/linux/commits/iio-high-speed-5.10
-> [hopefully i got the stuff correctly from that branch]
-> 
-> What is different, is that this one is adapted on top of the multibuffer
-> support (currently at v5) discussed here:
->   https://lore.kernel.org/linux-iio/20210211122452.78106-1-alexandru.ardelean@analog.com/T/#t
-> 
-> Also, adapted an example for high-speed/mmap support in
-> 'tools/iio/iio_generic_buffer.c'
-> 
-> The example is adapted from libiio:
->   https://github.com/analogdevicesinc/libiio/blob/master/local.c#L51
-> but will all the ioctl()s organized after the one that are reserved
-> (hopefully) for IIO
-> 
-> Tested that mmap() works.
-> Moved (artifically) valid buffer0 as buffer2 and the operation still
-> works.
-> 
-> Alexandru Ardelean (4):
->   Documentation: iio: add doc for high-speed buffer API
->   iio: buffer-dma: split iio_dma_buffer_fileio_free() function
->   iio: buffer-dma: reduce the type of block.size to u32
->   tools: iio: add example for high-speed buffer support
-> 
-> Lars-Peter Clausen (2):
->   iio: core: Add mmap interface infrastructure
->   iio: buffer-dma: Add mmap support
-> 
->  Documentation/iio/iio_high_speed_buffers.rst  | 100 ++++++
->  Documentation/iio/index.rst                   |   2 +
->  drivers/iio/buffer/industrialio-buffer-dma.c  | 324 ++++++++++++++++--
->  .../buffer/industrialio-buffer-dmaengine.c    |  28 +-
->  drivers/iio/industrialio-buffer.c             | 158 +++++++++
->  include/linux/iio/buffer-dma.h                |  27 +-
->  include/linux/iio/buffer_impl.h               |  23 ++
->  include/uapi/linux/iio/buffer.h               |  51 +++
->  tools/iio/iio_generic_buffer.c                | 185 +++++++++-
->  9 files changed, 847 insertions(+), 51 deletions(-)
->  create mode 100644 Documentation/iio/iio_high_speed_buffers.rst
+> >  		data->is_pipe = true;
+> >  		return err;
+> >  	}
+> > -- 
+> > 1.8.3.1
+> > 
 > 
 
+-- 
+
+- Arnaldo
