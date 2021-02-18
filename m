@@ -2,74 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F00E31E8B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E071E31E8B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbhBRKbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:31:21 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:47541 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhBRJQr (ORCPT
+        id S231715AbhBRK2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 05:28:09 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12188 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231667AbhBRJPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 04:16:47 -0500
-Received: from [192.168.1.155] ([95.115.65.253]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MwPfX-1m2q222N1x-00sLew; Thu, 18 Feb 2021 10:14:03 +0100
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Subject: of overlay: how to insert new nodes with references to it
-Message-ID: <9b5a8e1f-6359-7658-4851-00d77d1cb8e5@metux.net>
-Date:   Thu, 18 Feb 2021 10:14:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 18 Feb 2021 04:15:08 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dh89d5pSZzlLj5;
+        Thu, 18 Feb 2021 17:12:21 +0800 (CST)
+Received: from [10.174.178.140] (10.174.178.140) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 18 Feb 2021 17:14:09 +0800
+Subject: Re: [PATCH v3 1/2] perf tools: add 'perf irq' to measure the hardware
+ interrupts
+To:     Hagen Paul Pfeifer <hagen@jauu.net>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@redhat.com>, <namhyung@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <john.wanghui@huawei.com>,
+        <abudankov@huawei.com>, <yz.yuzhou@huawei.com>
+References: <20210116011920.34487-1-cuibixuan@huawei.com>
+ <20210116011920.34487-2-cuibixuan@huawei.com> <YBQUZ/LmiZkYSVCg@laniakea>
+From:   Bixuan Cui <cuibixuan@huawei.com>
+Message-ID: <078a209a-087c-3fc3-d568-1a65e450b154@huawei.com>
+Date:   Thu, 18 Feb 2021 17:14:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:7Vkdq4ls2WKZE4Oh7wDHJ3PoBDx+sg+pliid5nWmTuwXzAXZ3Dy
- i0+7nzlKsHnvjRSQAXOG/+GA7UULk4Ic8KADp6BhM3hlLSUU8tGOfVPRxyAivPOM2cpGPOK
- ZtwEchLMFVHCwqisyMl7+ABh/5kRTQXFXeo0ljMpPAmvVDGfnVl//MCrgimraZhg8vCwk63
- TxN22XgApXGP3LVUct9Sg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NQkpasjr68s=:nL2BOtcHme9oDxzxH73ixx
- qgx8LYsWRqqqPIwqhK/zAdzUTsD9SdNlRNU6nW2xTMLCKBSMjWTR1gvKlxYXA2naJiGMgIO6v
- eRs9PdIB9KzAFE6ONo3YpPvl9mlHPZvvJdW7/0LpftpGDPR0catO4otO4JbtLvicDP6rEwZzc
- 1bdQmcCP1fwEOOz5gS6k01JMEa1euwQFY9kKfv3FfYqoLNjIuaJga2AXl3IN43jvnmI/ivFfA
- dZMvB5M3O9bSK6snlQ2irsgbUDzKGXpd6jfSrSNaiVh8ApqokgCicR6fdwzm+XBw7Nt5Ta3zO
- HSJit2vmOizrn6HdLTqouMuCkfZgoRL7E0tYC07L7BCsZ9ofbqzAZ6HyaK2JkofDtVk542xgT
- yAE3f5VkQj29LEMI8J2XxycdtgvsfbGSqYIPz8GuXbiWXxzLvMT2sEfJEadI0
+In-Reply-To: <YBQUZ/LmiZkYSVCg@laniakea>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.140]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello folks,
 
 
-I'm trying to use an overlay to add several new nodes with references
-between them (eg. a gpio controller and devices using the gpios).
+On 2021/1/29 21:57, Hagen Paul Pfeifer wrote:
+> Idea: why now pre-calc the max IRQ name length and adjust the columns
+> dynamically? Time consume us, entry time and exit time can be threatet static
+> in (max) length lenght. This overlong, static ASCII lines are no pleasure! ;-)
+> 
+> Furthermore, why not a --format feature?
+> *perf irq report --format csv* option? Your human readable ASCII version is
+> okay, but often you had thousands of IRQs where just one IRQ is an outliner.
+> Pipe the output to numpy and matplotlib is often the required post-precessing
+> step, but parsing the ASCII output is tortuous.
+> 
+Good idea. In fact, I plan to output part of (maximum) data.
+I'll consider adding '--format csv*' option.
 
-Problem: dtc adds my new 'gpio1' node to the __fixups__ list, which is
-used for resolving symbols against the live tree - obviously it can't
-exist there, since it's added by the overlay. Therefore applying the
-overlay fails:
-
-     "OF: resolver: node label 'gpio1' not found in live devicetree
-      symbols table"
-
-Shouldn't the symbol be added to __local_fixups__ instead of __fixups__
-?
-How can I force dtc to do that ?
-
-
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Thanks
+Bixuan Cui
+> hgn
