@@ -2,109 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA55031EE8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276AE31EE8B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbhBRSmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:42:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41324 "EHLO
+        id S232745AbhBRSnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbhBRQWF (ORCPT
+        with ESMTP id S233274AbhBRQWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:22:05 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BFFC061756;
-        Thu, 18 Feb 2021 08:21:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=pdVzFVF2k1v6i9MjTgFGOmbcK/KECuqu0NlCYtFlsQQ=; b=NVGZK3NZOwb+NmR1Yt9f7RWtyz
-        nyAaI/x/mOJxQBg462DNMvZSWoUEWgIa5MS+yLDxTKA+yj6N7EALOQdXJAHBmVSTiOIFeFiKt1gMh
-        3fekHqJPl7qxVj7ZbG+1+ueDUJTBRcgRYiw+r9op4NWFHgP8OAEy0zgQYX9dY8XCPevQDZ4WUNvV5
-        FMGWE1T7Vjm9DraYM5x9xRB4lvBGRCxziXjjruYumSl1Ti1O2h+mXrtF2sdwJuWTJUAotIyGDtlt+
-        SL7BupLwJExQzVyXaxpA/a1NlnZTSnJIY59EMGioOKgSqJQkAor+z8rx3VSw05OVf8gxCuBmOEBqc
-        /3JVY5dw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lCm3b-0000zL-LY; Thu, 18 Feb 2021 16:21:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 75E53300238;
-        Thu, 18 Feb 2021 17:21:31 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5A444202A3F7E; Thu, 18 Feb 2021 17:21:31 +0100 (CET)
-Date:   Thu, 18 Feb 2021 17:21:31 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-tip-commits@vger.kernel.org, Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org
-Subject: [PATCH] objtool: Fix stack-swizzle for FRAME_POINTER=y
-Message-ID: <YC6UC+rc9KKmQrkd@hirez.programming.kicks-ass.net>
-References: <161298728344.23325.15458416903870844675.tip-bot2@tip-bot2>
+        Thu, 18 Feb 2021 11:22:37 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05354C0613D6;
+        Thu, 18 Feb 2021 08:21:56 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id e9so1794093pjj.0;
+        Thu, 18 Feb 2021 08:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7vviwcmISf9SauaMuvs/shrly/ZIB570cD7CHEN4n8M=;
+        b=aee4RfHC3S11MQQnocAxac6OvJxnqTUJpJs6OeBXqnvBK7VUpL3Rq16ldY2nn4n7Mm
+         Qdqf6nGxbqEbQdiMAY7X0nsfgi/8/O7Osio/lFdO2BdTpVvx/ILfACQpZf59JSfEK8/H
+         aS+i5uAZM/UTzYRHFcUaJI6owz3dZBSCmdFwy2INXL1GtDtHyebkQ4Hph66cUvFQGBfA
+         lerhWNQ/XXlU1Y5hdXQIVa/iZLTaETmlghxAFW4Wh6RmbtgkI4wETNGD3E/iDmVSBa3j
+         z5z9zpGAoAbpuCyDlvWyM0QYJzQRYgwh6AN1+goDsZ5ESYNUh+yfM+pRXPB0tWkLZzO3
+         8UHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=7vviwcmISf9SauaMuvs/shrly/ZIB570cD7CHEN4n8M=;
+        b=p9AcU+pDfnlcXPrBeZZdrdpoWtz9kSIKXFp8Q2dBht7IMDduIKZyZJ2S7qCoEnE/KZ
+         2s7BbLiQzzCvyIvVkfQzaMunFPM8C68d2bpmNhhSPrcoEZA68p9xHBhTV/AIv5DjP9Ph
+         6ZvetPY1/GUbt0afnXvQCKGYa+YsufIy0Pc+bHTDz2zbFq3zm+kgFPRhBZIPU0yH0squ
+         6Ge5xcMcG0BDqjgywGYKmAfZFjrxzuQXeEjCMy44vc6dDTXLiIm8VlXxnQ0IDtA6b2kN
+         V+IUmj4JMLkJmThHN0UxkZZbWg1UGDsb1VYoWGJTMV1l+ZnSxSDmTbq/+6U17BONPISb
+         HHHg==
+X-Gm-Message-State: AOAM533AtQHLWC5qc6WQC4Asujt0hRqs2lKyaCveTRgn6UOCBuwkFA+g
+        MRu64omAmkSYFCkO+JUsFig=
+X-Google-Smtp-Source: ABdhPJxrM9/dyqY4UwBfRlHLEX1b7TPs6emR6tomMd97RsPWpc+hpGIzJXcYC88DpB8T88emHCtCzg==
+X-Received: by 2002:a17:902:6bca:b029:e2:c5d6:973e with SMTP id m10-20020a1709026bcab02900e2c5d6973emr4655370plt.40.1613665315616;
+        Thu, 18 Feb 2021 08:21:55 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:157d:8a19:5427:ea9e])
+        by smtp.gmail.com with ESMTPSA id x17sm6727848pfq.132.2021.02.18.08.21.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 08:21:54 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 18 Feb 2021 08:21:52 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgoldswo@codeaurora.org,
+        linux-fsdevel@vger.kernel.org, david@redhat.com, vbabka@suse.cz,
+        viro@zeniv.linux.org.uk, joaodias@google.com
+Subject: Re: [RFC 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YC6UIEqNyPdRpmiq@google.com>
+References: <20210216170348.1513483-1-minchan@kernel.org>
+ <YCzbCg3+upAo1Kdj@dhcp22.suse.cz>
+ <YC2Am34Fso5Y5SPC@google.com>
+ <20210217211612.GO2858050@casper.infradead.org>
+ <YC2LVXO6e2NVsBqz@google.com>
+ <YC4ifqXYEeWrj4aF@dhcp22.suse.cz>
+ <YC6NOVBy5J4bUjfD@google.com>
+ <YC6RGiemaQHQScsZ@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <161298728344.23325.15458416903870844675.tip-bot2@tip-bot2>
+In-Reply-To: <YC6RGiemaQHQScsZ@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 08:01:23PM -0000, tip-bot2 for Peter Zijlstra wrote:
-> objtool: Support stack-swizzle
+On Thu, Feb 18, 2021 at 05:08:58PM +0100, Michal Hocko wrote:
+> On Thu 18-02-21 07:52:25, Minchan Kim wrote:
+> > On Thu, Feb 18, 2021 at 09:17:02AM +0100, Michal Hocko wrote:
+> > > On Wed 17-02-21 13:32:05, Minchan Kim wrote:
+> > > > On Wed, Feb 17, 2021 at 09:16:12PM +0000, Matthew Wilcox wrote:
+> > > > > On Wed, Feb 17, 2021 at 12:46:19PM -0800, Minchan Kim wrote:
+> > > > > > > I suspect you do not want to add atomic_read inside hot paths, right? Is
+> > > > > > > this really something that we have to microoptimize for? atomic_read is
+> > > > > > > a simple READ_ONCE on many archs.
+> > > > > > 
+> > > > > > It's also spin_lock_irq_save in some arch. If the new synchonization is
+> > > > > > heavily compilcated, atomic would be better for simple start but I thought
+> > > > > > this locking scheme is too simple so no need to add atomic operation in
+> > > > > > readside.
+> > > > > 
+> > > > > What arch uses a spinlock for atomic_read()?  I just had a quick grep and
+> > > > > didn't see any.
+> > > > 
+> > > > Ah, my bad. I was confused with update side.
+> > > > Okay, let's use atomic op to make it simple.
+> > > 
+> > > Thanks. This should make the code much more simple. Before you send
+> > > another version for the review I have another thing to consider. You are
+> > > kind of wiring this into the migration code but control over lru pcp
+> > > caches can be used in other paths as well. Memory offlining would be
+> > > another user. We already disable page allocator pcp caches to prevent
+> > > regular draining. We could do the same with lru pcp caches.
+> > 
+> > I didn't catch your point here. If memory offlining is interested on
+> > disabling lru pcp, it could call migrate_prep and migrate_finish
+> > like other places. Are you suggesting this one?
+> 
+> What I meant to say is that you can have a look at this not as an
+> integral part of the migration code but rather a common functionality
+> that migration and others can use. So instead of an implicit part of
+> migrate_prep this would become disable_lru_cache and migrate_finish
+> would become lruc_cache_enable. See my point? 
+> 
+> An advantage of that would be that this would match the pcp page
+> allocator disabling and we could have it in place for the whole
+> operation to make the page state more stable wrt. LRU state (PageLRU).
 
----
-Subject: objtool: Fix stack-swizzle for FRAME_POINTER=y
-From: Peter Zijlstra <peterz@infradead.org>
-Date: Thu Feb 18 17:14:10 CET 2021
-
-When objtool encounters the stack-swizzle:
-
-	mov %rsp, (%[tos])
-	mov %[tos], %rsp
-	...
-	pop %rsp
-
-Inside a FRAME_POINTER=y build, things go a little screwy because
-clearly we're not adjusting the cfa->base. This then results in the
-pop %rsp not being detected as a restore of cfa->base so it will turn
-into a regular POP and offset the stack, resulting in:
-
-  kernel/softirq.o: warning: objtool: do_softirq()+0xdb: return with modified stack frame
-
-Therefore, have "mov %[tos], %rsp" act like a PUSH (it sorta is
-anyway) to balance the things out. We're not too concerned with the
-actual stack_size for frame-pointer builds, since we don't generate
-ORC data for them anyway.
-
-Fixes: aafeb14e9da2 ("objtool: Support stack-swizzle")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- tools/objtool/check.c |   14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1996,6 +1996,20 @@ static int update_cfi_state(struct instr
- 				}
- 			}
- 
-+			else if (op->dest.reg == CFI_SP &&
-+				 cfi->vals[op->src.reg].base == CFI_SP_INDIRECT &&
-+				 cfi->vals[op->src.reg].offset == cfa->offset) {
-+
-+				/*
-+				 * The same stack swizzle case 2) as above. But
-+				 * because we can't change cfa->base, case 3)
-+				 * will become a regular POP. Pretend we're a
-+				 * PUSH so things don't go unbalanced.
-+				 */
-+				cfi->stack_size += 8;
-+			}
-+
-+
- 			break;
- 
- 		case OP_SRC_ADD:
+Understood. Thanks for the clarification.
