@@ -2,109 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20DA31EA5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D99E31EA4B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:12:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhBRNRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:17:09 -0500
-Received: from mail.manjaro.org ([176.9.38.148]:54994 "EHLO mail.manjaro.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232067AbhBRLmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:42:01 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.manjaro.org (Postfix) with ESMTP id 38D833E600A1;
-        Thu, 18 Feb 2021 12:20:35 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at manjaro.org
-Received: from mail.manjaro.org ([127.0.0.1])
-        by localhost (manjaro.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ful2cswKUM3i; Thu, 18 Feb 2021 12:20:32 +0100 (CET)
-From:   Tobias Schramm <t.schramm@manjaro.org>
-To:     Icenowy Zheng <icenowy@aosc.io>, Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Tobias Schramm <t.schramm@manjaro.org>
-Subject: [PATCH v2 1/1] clk: sunxi-ng: v3s: use sigma-delta modulation for audio-pll
-Date:   Thu, 18 Feb 2021 12:20:01 +0100
-Message-Id: <20210218112001.479018-2-t.schramm@manjaro.org>
-In-Reply-To: <20210218112001.479018-1-t.schramm@manjaro.org>
-References: <20210218112001.479018-1-t.schramm@manjaro.org>
+        id S230389AbhBRNKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:10:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231371AbhBRLjZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:39:25 -0500
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2B7C061756;
+        Thu, 18 Feb 2021 03:28:47 -0800 (PST)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 017B6247; Thu, 18 Feb 2021 12:25:03 +0100 (CET)
+Date:   Thu, 18 Feb 2021 12:25:00 +0100
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        stable <stable@vger.kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH 2/3] x86/sev-es: Check if regs->sp is trusted before
+ adjusting #VC IST stack
+Message-ID: <20210218112500.GH7302@8bytes.org>
+References: <20210217120143.6106-1-joro@8bytes.org>
+ <20210217120143.6106-3-joro@8bytes.org>
+ <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previously it was not possible to achieve clock rates of 24.576MHz and
-22.5792MHz, which are commonly required core clocks for the i2s
-peripheral of v3s based SoCs.
+Hi Andy,
 
-Add support for those clock rates through the audio pll's sigma-delta
-modulator.
+On Wed, Feb 17, 2021 at 10:09:46AM -0800, Andy Lutomirski wrote:
+> Can you get rid of the linked list hack while you're at it?  This code
+> is unnecessarily convoluted right now, and it seems to be just asking
+> for weird bugs.  Just stash the old value in a local variable, please.
 
-Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
----
- drivers/clk/sunxi-ng/ccu-sun8i-v3s.c | 33 ++++++++++++++++++----------
- 1 file changed, 22 insertions(+), 11 deletions(-)
+Yeah, the linked list is not really necessary right now, because of the
+way nested NMI handling works and given that these functions are only
+used in the NMI handler right now.
+The whole #VC handling code was written with future requirements in
+mind, like what is needed when debugging registers get virtualized and
+#HV gets enabled.
+Until its clear whether __sev_es_ist_enter/exit() is needed in any of
+these paths, I'd like to keep the linked list for now. It is more
+complicated but allows nesting.
 
-diff --git a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
-index 0e36ca3bf3d5..a774942cb153 100644
---- a/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
-+++ b/drivers/clk/sunxi-ng/ccu-sun8i-v3s.c
-@@ -40,18 +40,29 @@ static SUNXI_CCU_NKMP_WITH_GATE_LOCK(pll_cpu_clk, "pll-cpu",
-  * the base (2x, 4x and 8x), and one variable divider (the one true
-  * pll audio).
-  *
-- * We don't have any need for the variable divider for now, so we just
-- * hardcode it to match with the clock names
-+ * With sigma-delta modulation for fractional-N on the audio PLL,
-+ * we have to use specific dividers. This means the variable divider
-+ * can no longer be used, as the audio codec requests the exact clock
-+ * rates we support through this mechanism. So we now hard code the
-+ * variable divider to 1. This means the clock rates will no longer
-+ * match the clock names.
-  */
- #define SUN8I_V3S_PLL_AUDIO_REG	0x008
- 
--static SUNXI_CCU_NM_WITH_GATE_LOCK(pll_audio_base_clk, "pll-audio-base",
--				   "osc24M", 0x008,
--				   8, 7,	/* N */
--				   0, 5,	/* M */
--				   BIT(31),	/* gate */
--				   BIT(28),	/* lock */
--				   0);
-+static struct ccu_sdm_setting pll_audio_sdm_table[] = {
-+	{ .rate = 22579200, .pattern = 0xc0010d84, .m = 8, .n = 7 },
-+	{ .rate = 24576000, .pattern = 0xc000ac02, .m = 14, .n = 14 },
-+};
-+
-+static SUNXI_CCU_NM_WITH_SDM_GATE_LOCK(pll_audio_base_clk, "pll-audio-base",
-+				       "osc24M", 0x008,
-+				       8, 7,	/* N */
-+				       0, 5,	/* M */
-+				       pll_audio_sdm_table, BIT(24),
-+				       0x284, BIT(31),
-+				       BIT(31),	/* gate */
-+				       BIT(28),	/* lock */
-+				       CLK_SET_RATE_UNGATE);
- 
- static SUNXI_CCU_NM_WITH_FRAC_GATE_LOCK(pll_video_clk, "pll-video",
- 					"osc24M", 0x0010,
-@@ -524,10 +535,10 @@ static struct ccu_common *sun8i_v3_ccu_clks[] = {
- 	&mipi_csi_clk.common,
- };
- 
--/* We hardcode the divider to 4 for now */
-+/* We hardcode the divider to 1 for SDM support */
- static CLK_FIXED_FACTOR_HWS(pll_audio_clk, "pll-audio",
- 			    clk_parent_pll_audio,
--			    4, 1, CLK_SET_RATE_PARENT);
-+			    1, 1, CLK_SET_RATE_PARENT);
- static CLK_FIXED_FACTOR_HWS(pll_audio_2x_clk, "pll-audio-2x",
- 			    clk_parent_pll_audio,
- 			    2, 1, CLK_SET_RATE_PARENT);
--- 
-2.30.1
+> Meanwhile, I'm pretty sure I can break this whole scheme if the
+> hypervisor is messing with us.  As a trivial example, the sequence
+> SYSCALL gap -> #VC -> NMI -> #VC will go quite poorly.
 
+I don't see how this would break, can you elaborate?
+
+What I think happens is:
+
+SYSCALL gap (RSP is from userspace and untrusted)
+
+	-> #VC - Handler on #VC IST stack detects that it interrupted
+	   the SYSCALL gap and switches to the task stack.
+
+
+	-> NMI - Now running on NMI IST stack. Depending on whether the
+	   stack switch in the #VC handler already happened, the #VC IST
+	   entry is adjusted so that a subsequent #VC will not overwrite
+	   the interrupted handlers stack frame.
+
+	-> #VC - Handler runs on the adjusted #VC IST stack and switches
+	   itself back to the NMI IST stack. This is safe wrt. nested
+	   NMIs as long as nested NMIs itself are safe.
+
+As a rule of thumb, think of the #VC handler as trying to be a non-IST
+handler by switching itself to the interrupted stack or the task stack.
+If it detects that this is not possible (which can't happen right now,
+but with SNP), it will kill the guest.
+
+Also #VC is currently not safe against #MC, but this is the same as with
+NMI and #MC. And more care is needed when SNP gets enabled and #VCs can
+happen in the stack switching/stack adjustment code itself. I will
+probably just add a check then to kill the guest if an SNP related #VC
+comes from noinstr code.
+
+> Is this really better than just turning IST off for #VC and
+> documenting that we are not secure against a malicious hypervisor yet?
+
+It needs to be IST, even without SNP, because #DB is IST too. When the
+hypervisor intercepts #DB then any #DB exception will be turned into
+#VC, so #VC needs to be handled anywhere a #DB can happen.
+
+And with SNP we need to be able to at least detect a malicious HV so we
+can reliably kill the guest. Otherwise the HV could potentially take
+control over the guest's execution flow and make it reveal its secrets.
+
+Regards,
+
+	Joerg
