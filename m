@@ -2,116 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C2B31EFAE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4CB31EFB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhBRTVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:21:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230268AbhBRSH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:07:29 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E576164ED7;
-        Thu, 18 Feb 2021 18:06:39 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 13:06:38 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/fair: Use true and false for bool variable
-Message-ID: <20210218130638.2a293db2@gandalf.local.home>
-In-Reply-To: <1613643011-114108-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1613643011-114108-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230417AbhBRTWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:22:30 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:40026 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232204AbhBRSNZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:13:25 -0500
+Received: by linux.microsoft.com (Postfix, from userid 1046)
+        id 87BD020B6C40; Thu, 18 Feb 2021 10:12:44 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 87BD020B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1613671964;
+        bh=Km9pKKcHiHwxHWao65MxAstktSSm3rLh98ggACdLHHQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TJVehAwZpmV6HxLm9To2j3WbILy1f8iaQe6uTkq1v4Xug0j+58KHHzi3I7ulmqzim
+         /7QVICAUtUxakIroP5Y9JzalE5jvOq3ikeNnn6slkcOATfTiIAlUOe3q/a9JcM+89m
+         9WCNPQkFzNJCyAvMm7q6l/Zte8IgY+9y1dmhaBOo=
+From:   Dhananjay Phadke <dphadke@linux.microsoft.com>
+To:     allen.lkml@gmail.com
+Cc:     apais@linux.microsoft.com, jens.wiklander@linaro.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org, zajec5@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        bcm-kernel-feedback-list@broadcom.com
+Subject: [PATCH 0/2] optee: fix OOM seen due to tee_shm_free()
+Date:   Thu, 18 Feb 2021 10:12:38 -0800
+Message-Id: <1613671958-1307-1-git-send-email-dphadke@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <20210217092714.121297-1-allen.lkml@gmail.com>
+References: <20210217092714.121297-1-allen.lkml@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Feb 2021 18:10:11 +0800
-Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
+From: Allen Pais <apais@linux.microsoft.com>
 
-> Fix the following coccicheck warnings:
-> 
-> ./kernel/sched/fair.c:9504:9-10: WARNING: return of 0/1 in function
-> 'voluntary_active_balance' with return type bool.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  kernel/sched/fair.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 04a3ce2..cf78337 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9501,7 +9501,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->  	struct sched_domain *sd = env->sd;
->  
->  	if (asym_active_balance(env))
-> -		return 1;
-> +		return true;
->  
->  	/*
->  	 * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
-> @@ -9513,13 +9513,13 @@ static struct rq *find_busiest_queue(struct lb_env *env,
->  	    (env->src_rq->cfs.h_nr_running == 1)) {
->  		if ((check_cpu_capacity(env->src_rq, sd)) &&
->  		    (capacity_of(env->src_cpu)*sd->imbalance_pct < capacity_of(env->dst_cpu)*100))
-> -			return 1;
-> +			return true;
->  	}
->  
->  	if (env->migration_type == migrate_misfit)
-> -		return 1;
-> +		return true;
->  
-> -	return 0;
-> +	return false;
->  }
->  
->  static int need_active_balance(struct lb_env *env)
+On Wed, 17 Feb 2021 14:57:12 +0530, Allen Pais wrote:
+> The following out of memory errors are seen on kexec reboot
+> from the optee core.
+>     
+> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -22
+>     
+> tee_shm_release() is not invoked on dma shm buffer.
+>     
+> Implement .shutdown() in optee core as well as bnxt firmware driver
+> to handle the release of the buffers correctly.
+>     
+> More info:
+> https://github.com/OP-TEE/optee_os/issues/3637
 
-I think this would be a more interesting version of the patch. Would it
-make your bot stop sending them??
+CC: linux-kernel@vger.kernel.org instead of linux-mips?
+TEE / TrustZone is ARM.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04a3ce2..cf78337 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9501,7 +9501,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
- 	struct sched_domain *sd = env->sd;
- 
- 	if (asym_active_balance(env))
--		return 1;
-+		return '/'/'/';
- 
- 	/*
- 	 * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
-@@ -9513,13 +9513,13 @@ static struct rq *find_busiest_queue(struct lb_env *env,
- 	    (env->src_rq->cfs.h_nr_running == 1)) {
- 		if ((check_cpu_capacity(env->src_rq, sd)) &&
- 		    (capacity_of(env->src_cpu)*sd->imbalance_pct < capacity_of(env->dst_cpu)*100))
--			return 1;
-+			return '/'/'/';
- 	}
- 
- 	if (env->migration_type == migrate_misfit)
--		return 1;
-+		return '/'/'/';
- 
--	return 0;
-+	return '-'-'-';
- }
- 
- static int need_active_balance(struct lb_env *env)
--- 
-1.8.3.1
+Also, for Broadcom specific -
+CC: bcm-kernel-feedback-list@broadcom.com
+
