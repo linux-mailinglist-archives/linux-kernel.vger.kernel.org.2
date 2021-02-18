@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2152531EC34
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BFB31EC1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbhBRQXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:23:16 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:36670 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhBRNiD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:38:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613655484; x=1645191484;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=m1IiLwGqbiTHG8Ajf+1tTZZIHKAEPqSOeQlap/U9wfs=;
-  b=DA0plEHd00kiD66XBOtJ9JXzrm+vNhG5gxEVUOMVvxZPMQi6AY79b5aV
-   YwoxtSNPuQ5MzhO5dup/gXN4iGPJDL4liNq3wPRJKG9Rr1Im6ujmBp8mm
-   2ivqUApwioyytGduPvZIngDJMmufregcD4/Ct//CiwRqAqRxsct4oBkOM
-   9bj49Sqx3agNOcidxl6CwD95sKmEZpkF5tzvs6lvPJ/6EtkfejOBsiAr/
-   eWeFFF4Sv+8a1gZhwf49IiHxauRwrW7jrj9sAwclkERT1Jnk3B4Z+PsmW
-   H1DGsBO6Z0gCTHpwOxTac8rS5SA8/8adMlpr53c87qcl9NdvP/GAPidnT
-   A==;
-IronPort-SDR: VHS7JS4ssbMIydEB/lcuoyoO2s0ERg9FuB68OmE56QZKFn6F3WJfG65+eh8mLAFCwnIuQQ0OYg
- ia7JzEOgxIxuTTWBToTeQhtPGDDH/3fyBSxNsNeGp15l6z3nvV2LrJlhRf6jKPkG/VunHYOviM
- Fx/vkiy/3McKdDZCHe29tKfPggGbd9b15eGNYhRPoHismHbmTOGufzR82/yKLlxglFejKiJvY6
- uYlXO3nf7oVo401k8m7YRiAaOv4xf47TgBEjX3Fp2DOTb6+TZOfM2FZN005/4R3clkCqoNB1MR
- /SU=
-X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
-   d="scan'208";a="109746287"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 06:35:57 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 06:35:56 -0700
-Received: from localhost.localdomain (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 18 Feb 2021 06:35:54 -0700
-From:   <nicolas.ferre@microchip.com>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Federico Pellegrin <fede@evolware.org>,
-        <stable@vger.kernel.org>,
-        "Sandeep Sheriker Mallikarjun" 
-        <sandeepsheriker.mallikarjun@microchip.com>
-Subject: [PATCH] ARM: dts: at91: sam9x60: fix mux-mask for PA7 so it can be set to A, B and C
-Date:   Thu, 18 Feb 2021 14:31:38 +0100
-Message-ID: <20210218133138.21494-1-nicolas.ferre@microchip.com>
-X-Mailer: git-send-email 2.30.0
+        id S233289AbhBRQPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:15:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60774 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231139AbhBRNd6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:33:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A2CF4AF49;
+        Thu, 18 Feb 2021 13:33:09 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 14:32:50 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <20210218133250.GA7983@localhost.localdomain>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Federico Pellegrin <fede@evolware.org>
+On Thu, Feb 18, 2021 at 01:52:38PM +0100, Michal Hocko wrote:
+> > Ok, makes sense.
+> > __GFP_THISNODE will not allow fallback to other node's zones.
+> > Since we only allow the nid the page belongs to, nodemask should be
+> > NULL, right?
+> 
+> I would have to double check because hugetlb has a slightly different
+> expectations from nodemask than the page allocator. The later translates
+> that to all possible nodes but hugetlb API tries to dereference nodes.
+> Maybe THIS node special cases it somewhere.
 
-According to the datasheet PA7 can be set to either function A, B or
-C (see table 6-2 of DS60001579D). The previous value would permit just
-configuring with function C.
+Uhm, I do not quite follow here.
+AFAICS, alloc_fresh_huge_page->alloc_buddy_huge_page does nothing
+with the nodemask, bur rather with nodes_retry mask. That is done
+to not retry on a node we failed to allocate a page.
 
-Signed-off-by: Federico Pellegrin <fede@evolware.org>
-Fixes: 1e5f532c2737 ("ARM: dts: at91: sam9x60: add device tree for soc and board")
-Cc: <stable@vger.kernel.org> # 5.6+
-Cc: Sandeep Sheriker Mallikarjun <sandeepsheriker.mallikarjun@microchip.com>
-Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
----
- arch/arm/boot/dts/at91-sam9x60ek.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Now, alloc_buddy_huge_page calls __alloc_pages_nodemask directly.
+If my understanding is correct, it is ok to have a null nodemask
+as __next_zones_zonelist() will go through our own zonelist,
+since __GFP_THISNODE made us take ZONELIST_NOFALLBACK.
 
-diff --git a/arch/arm/boot/dts/at91-sam9x60ek.dts b/arch/arm/boot/dts/at91-sam9x60ek.dts
-index 73b6b1f89de9..4c40ae571154 100644
---- a/arch/arm/boot/dts/at91-sam9x60ek.dts
-+++ b/arch/arm/boot/dts/at91-sam9x60ek.dts
-@@ -336,7 +336,7 @@ ethernet-phy@0 {
- &pinctrl {
- 	atmel,mux-mask = <
- 			 /*	A	B	C	*/
--			 0xFFFFFE7F 0xC0E0397F 0xEF00019D	/* pioA */
-+			 0xFFFFFEFF 0xC0E039FF 0xEF00019D	/* pioA */
- 			 0x03FFFFFF 0x02FC7E68 0x00780000	/* pioB */
- 			 0xffffffff 0xF83FFFFF 0xB800F3FC	/* pioC */
- 			 0x003FFFFF 0x003F8000 0x00000000	/* pioD */
+Actually, I do not see how passing a non-null nodemask migth have
+helped there, unless we allow to specify more nodes.
+
+> > I did. The 'put_page' call should be placed above, right after getting
+> > the page. Otherwise, refcount == 1 and we will fail to dissolve the
+> > new page if we need to (in case old page fails to be dissolved).
+> > I already fixed that locally.
+> 
+> I am not sure I follow. newly allocated pages is unreferenced
+> unconditionally and the old page is not referenced by this path.
+
+Current code is:
+
+ allocate_a_new_page (new_page's refcount = 1)
+ dissolve_old_page
+  : if fail
+     dissolve_new_page (we cannot dissolve it refcount != 0)
+ put_page(new_page);
+
+It should be:
+
+ allocate_a_new_page (new_page's refcount = 1)
+ put_page(new_page); (new_page's refcount = 0)
+ dissolve_old_page
+  : if fail
+     dissolve_new_page (we can dissolve it as refcount == 0)
+
+I hope this clarifies it .
+
 -- 
-2.30.0
-
+Oscar Salvador
+SUSE L3
