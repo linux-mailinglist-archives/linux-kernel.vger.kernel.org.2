@@ -2,76 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D27E631E434
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 03:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E09FF31E436
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 03:08:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhBRCGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 21:06:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbhBRCGo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 21:06:44 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204B3C061574;
-        Wed, 17 Feb 2021 18:06:04 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id w1so1047654ejf.11;
-        Wed, 17 Feb 2021 18:06:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZKvtNdB5oWeKB3+Eet9najSt3YeMmxG2xGM7uO5aLws=;
-        b=nKYwmXSATV0YtsHoOQcwbU58hPpWp609qVCUIZD7n2+I6I+x56gcyDz4583RXXnge2
-         285GPoH8n4y8tFfqfgmo+O0fsd1+X5T406b3POiEnwGQD1zTCpDzFky5T0BM/bCdvmTU
-         Nf71JQ7bbF9gwjXu/pnkVQAuuIb7h74wrrs9Yh4/gZDsOHpzSmdx8E4XX8l6ZiWDXDjQ
-         j9uh2QS10/CIFBrEVYeGLqGIIN6QUa5GDBRenAIEbkpbB1ezy3qx98JoQiy3wplX/xzQ
-         tPvmOYQtEQxHVqJ/Lmjewe3Bg7yodBXBXNlsxUndHaTGATxZy/rgt9DjT6s+meW1lvVb
-         SPag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZKvtNdB5oWeKB3+Eet9najSt3YeMmxG2xGM7uO5aLws=;
-        b=bx5LdZ4ny9PRf0l2z362JJR7TH/VuZCoEFNwv8dxgmbZ0/fSVC3OXPaEjEhPba7dtE
-         TUERPLts5z18W2H6eLYx9dzpBnDa2EssELptreypyNOpnvV97RpKjIiXrocQExLYCE86
-         zGrqJijnBUx5diWpj+a9+qFiVXxkH1yryplSHNcj9e58teOoPncgHgKpVlHeuOEJT03s
-         c3rfAlY+wyXjZVaYFi6dBKUVzbmE+QyJ3OvMWdsxKEX53F6Risg4BGp2L354VWPd3eoB
-         F2lxnl4H/IL76PJqOwU1lSxJsm/wGNm/lyksyx2VEffLXou/a3Nvz/1Q2nHZFq17L3JD
-         x41g==
-X-Gm-Message-State: AOAM532xdVKDsaWKVxqWeMmX9h0PUraI2f85CdYjhGKSROSLcQHvNTLh
-        OLL4uqFeBKbqpYmYcLCf8539u6zcRNUJNEwtpcKvn0w=
-X-Google-Smtp-Source: ABdhPJxOHZieN/IYAGPox3s51ea9WJiHnAbKCuYclP73ETDsZIx3teG8b+RFD2Gv1Oinn7uqyfpPgKBocwi6B5DusIY=
-X-Received: by 2002:a17:906:25c4:: with SMTP id n4mr1723870ejb.359.1613613962838;
- Wed, 17 Feb 2021 18:06:02 -0800 (PST)
+        id S230036AbhBRCHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 21:07:51 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:34530 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229806AbhBRCHt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 21:07:49 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lCYiN-0006Z3-Cy; Thu, 18 Feb 2021 13:06:48 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 18 Feb 2021 13:06:47 +1100
+Date:   Thu, 18 Feb 2021 13:06:47 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     liulongfang <liulongfang@huawei.com>
+Cc:     wangzhou1@hisilicon.com, xuzaibo@huawei.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] crypto: hisilicon/sec - fixes shash test error
+Message-ID: <20210218020647.GB30659@gondor.apana.org.au>
+References: <1612692280-11386-1-git-send-email-liulongfang@huawei.com>
+ <1612692280-11386-4-git-send-email-liulongfang@huawei.com>
+ <20210210064328.GA15849@gondor.apana.org.au>
+ <0afaed85-eeb0-236c-817f-a0f9cf02c65a@huawei.com>
 MIME-Version: 1.0
-References: <20210218125657.5cc7bf07@canb.auug.org.au>
-In-Reply-To: <20210218125657.5cc7bf07@canb.auug.org.au>
-From:   Rob Herring <robherring2@gmail.com>
-Date:   Wed, 17 Feb 2021 20:05:51 -0600
-Message-ID: <CAL_Jsq+LQ2ykqK7NT_vQHz-z12uhgXMmm-ZgZECErvCpMiCzYg@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the devicetree tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0afaed85-eeb0-236c-817f-a0f9cf02c65a@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 7:57 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Thu, Feb 18, 2021 at 10:01:58AM +0800, liulongfang wrote:
 >
-> Hi all,
->
-> Commit
->
->   bc5d1d0f8b38 ("Revert "powerpc: Move ima buffer fields to struct kimage"")
->
-> is missing a Signed-off-by from its author and committer.
->
-> Reverts are commits as well.
+> >> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> >> index d2c4a2c..988faf7 100644
+> >> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> >> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
+> >> @@ -7,6 +7,7 @@
+> >>  #include <crypto/des.h>
+> >>  #include <crypto/hash.h>
+> >>  #include <crypto/internal/aead.h>
+> >> +#include <crypto/internal/hash.h>
+> > 
+> > Please explain what exactly in this file needs this header file.
+> > 
+> > As it stands you could just be hiding real bugs.
+> > 
+> > Thanks,
+> > 
+> The crypto_alloc_shash() interface in the header file
+> will be used in the function sec_aead_ctx_init(),
+> If this header file is not added, calling the interface
+> crypto_alloc_shash() during the initialization of the
+> aead algorithm will return an error.
 
-Oops, now dropped.
+This makes no sense whatsoever as crypto_alloc_shash is defiend
+by crypto/hash.h and you've already included that.
 
-Thanks,
-Rob
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
