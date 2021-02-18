@@ -2,106 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460C831F14D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48AAB31F14B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:45:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhBRUou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:44:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48259 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231387AbhBRUme (ORCPT
+        id S231172AbhBRUoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:44:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230209AbhBRUlp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:42:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613680867;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yKbZPfRfjBxv5rHh9BbhUmOccS2Zox4zMDSygTP6AuE=;
-        b=AmmBaZz38zcCtfWgSCCl9CerbVq8IyPMvOZoxP2fiV5qQxJa0VSprQx9Aj5TAXRPk2fTWj
-        WQpsprWCHppKIjOQxsR6P2V9Ln2OyazS3oPD210Tj2dUK9UDOlMYMN4s6mRLTJ6RB9akdY
-        NYjEMy9+JuhbeUsQVefL6yu4SOnWTcg=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-482-rRpgagfyOUa2Iv7r8426Qw-1; Thu, 18 Feb 2021 15:41:05 -0500
-X-MC-Unique: rRpgagfyOUa2Iv7r8426Qw-1
-Received: by mail-qk1-f199.google.com with SMTP id n62so2097588qkn.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:41:05 -0800 (PST)
+        Thu, 18 Feb 2021 15:41:45 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E31AEC0617AA;
+        Thu, 18 Feb 2021 12:41:22 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id r23so8224156ljh.1;
+        Thu, 18 Feb 2021 12:41:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cFyQNASifwQpMLri08Ol4P6yp5dFeoJ6Rz1w04iex40=;
+        b=ad9xrVWwPRJ0Op7IrKvZt0bJXunRvSzb1OGuouK5C/8+63N00msV3K1hURk0ID3R/t
+         ssl6CA+hTMPJX/9Sr62yXSmtN/nkX7ytk1DTXwRHAplmTCj+7VQfEoFCAngSsig6xVOM
+         wafKbDXUw5R9Ib/vN/DgZ2ijnRTaOkMnqgYalC2c0B/3kC9SpKIHNqQGWw3lnfYzPieO
+         zac3ULzHVUiS/CzUScmj8giO7bJNLSWKbHHHzOKPKI6SH4VnXmkz+2bIatpm+3JaeGTu
+         0WNWTxias5zgTTvhLwQyhUtog6ElixtiMQk/UqeRbfJJotEBLzgTg1hkhOl8WsdwHQQR
+         dQIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yKbZPfRfjBxv5rHh9BbhUmOccS2Zox4zMDSygTP6AuE=;
-        b=rm4NNSeI8w/0v+br7FrBynnZ9G9R4VKeJbqOcFTQZDE4pZbizAwWpYJe2Mg5rzvspt
-         HYoBa7uXQ4FRVNBsYbjqEv74c5UnLw4ITDeDDzCEgUPQUmydfNUZO6HHZ5uNSfKUM3GR
-         VjCbUBXaRrXnuTp9zlfCCX5m0sqiHLd1rnS75VWHbTdqRrtEQEDC0F717hGp8OYoxjpW
-         Vd57AYM819/PegVvXTWUOxZtBaGBbsapJxCKTN/QRhRObRPOEhfeuwvvgOPLAlYd2y6A
-         6RJ3x9+NI0kC4UxzS3fuDQiq5SIMN/Rj0+I+FxfPqOSvqYJRNtemm1kygJYeTCQRCaTv
-         +xbQ==
-X-Gm-Message-State: AOAM533btCcIBenDA3rane2UBXNFRr2vBHNmnspRdsHJWQOXJPyT75jr
-        2mI/2SldZ19Uf8nPJ5u5mUjhOC37YXz/Q/0vt/sD72FAcPFylmYJXClGFqGSM48rh4eQPikiCiQ
-        yvNdPJTIyeqSULQLxz3nKe3ec
-X-Received: by 2002:a05:6214:883:: with SMTP id cz3mr6171948qvb.43.1613680865180;
-        Thu, 18 Feb 2021 12:41:05 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyF+f1xE9yEhDOJG4UxtT+ns0Y+9xXv8zVq92FiKmu+S7nGjG/TECSJ03cYyFkcPvUaqLTCBQ==
-X-Received: by 2002:a05:6214:883:: with SMTP id cz3mr6171931qvb.43.1613680865024;
-        Thu, 18 Feb 2021 12:41:05 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id i5sm4083266qtw.3.2021.02.18.12.41.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 12:41:04 -0800 (PST)
-Date:   Thu, 18 Feb 2021 15:41:03 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 4/4] hugetlb/userfaultfd: Unshare all pmds for
- hugetlbfs when register wp
-Message-ID: <20210218204103.GF108961@xz-x1>
-References: <20210217204418.54259-1-peterx@redhat.com>
- <20210217204619.54761-1-peterx@redhat.com>
- <20210217204619.54761-3-peterx@redhat.com>
- <CAJHvVchtVtDHE2iJRAmraL+kbTezgfck0Mgj7xM+7U5yaJ5aCQ@mail.gmail.com>
- <20210218203214.GD108961@xz-x1>
- <CAJHvVch79WBzudS7BU5Lg2et4_2XQM=mEdW=YpbyX1QHHp=tQg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cFyQNASifwQpMLri08Ol4P6yp5dFeoJ6Rz1w04iex40=;
+        b=IMF8hs1ANiNwmmUFisKxbbZcTs+pQ+kfsHDs8++sSHLy/jlSsBwAJoXyzvygKN+heD
+         k+xnaHDu6WxjomuAF89rbDswEt8YRHMi/rzHMFoxNihgeo03580KMcnRFQm+XPUsZsvB
+         2vKG6iVHYzUJbCAtD9E1Qr/is0AGu04GiW4oFA2KfVh/iOj6E+rdqxaOopRkl6Gr4G2Z
+         ENEYiOSD6HFdvw219NDo/Q9MyM0NsRpAbu/fDEFooX8tlNZIAQwrD0oWmU0ZGrKmfxA9
+         RLCIFSzAXDRgeKagtGf8R24L8RjrT8lCOk5w1Bwq7G+Vs8MKHf6zo98MlhLFAty61GLN
+         DggA==
+X-Gm-Message-State: AOAM531vCEE26Ho44XL5x4SyY5MZW0KrH/EtrzKIbal+7RsaaZuBdQTz
+        OYUTeMBfZ33cqzpEbuC64J7PZmHD+PAtw7b4WZI=
+X-Google-Smtp-Source: ABdhPJzIe4u7R8N9hXZ7mZlqZtsMdthHDVWh1IqsLqv46KHoPGGXza+HzvNxYxde5rbeiZfOPb400z4NE3Ei7y3Na8A=
+X-Received: by 2002:a05:6512:1311:: with SMTP id x17mr3289191lfu.307.1613680881337;
+ Thu, 18 Feb 2021 12:41:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJHvVch79WBzudS7BU5Lg2et4_2XQM=mEdW=YpbyX1QHHp=tQg@mail.gmail.com>
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+ <20210215154317.8590-1-lhenriques@suse.de> <20210218074207.GA329605@infradead.org>
+ <CAOQ4uxgreB=TywvWQXfcHYMBcFm5OKSdwUC8YJY1WuVja6PccQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxgreB=TywvWQXfcHYMBcFm5OKSdwUC8YJY1WuVja6PccQ@mail.gmail.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 18 Feb 2021 14:41:10 -0600
+Message-ID: <CAH2r5ms46x-XviHDKRJEsPt64+qW+zDKwHHSO15gxsZ+a0-ToQ@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Luis Henriques <lhenriques@suse.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 12:34:55PM -0800, Axel Rasmussen wrote:
-> On Thu, Feb 18, 2021 at 12:32 PM Peter Xu <peterx@redhat.com> wrote:
+On Thu, Feb 18, 2021 at 4:03 AM Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> On Thu, Feb 18, 2021 at 9:42 AM Christoph Hellwig <hch@infradead.org> wrote:
 > >
-> > On Thu, Feb 18, 2021 at 10:32:00AM -0800, Axel Rasmussen wrote:
-> > > > @@ -1448,6 +1449,9 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
-> > > >                 vma->vm_flags = new_flags;
-> > > >                 vma->vm_userfaultfd_ctx.ctx = ctx;
-> > > >
-> > > > +               if (is_vm_hugetlb_page(vma) && uffd_disable_huge_pmd_share(vma))
-> > > > +                       hugetlb_unshare_all_pmds(vma);
-> > >
-> > > This line yields the following error, if building with:
-> > > # CONFIG_CMA is not set
-> > >
-> > > ./fs/userfaultfd.c:1459: undefined reference to `hugetlb_unshare_all_pmds'
+> > Looks good:
 > >
-> > Ouch..  Axel, you mean CONFIG_HUGETLBFS rather than CONFIG_CMA, am I right?
-> 
-> Surprisingly no, there's a "#ifdef CONFIG_CMA" line ~100 lines above
-> where hugetlb_unshare_all_pmds is defined in hugetlb.c which causes
-> this. My guess is that putting the function inside that block was
-> accidental and it can just be moved.
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> >
+> > This whole idea of cross-device copie has always been a horrible idea,
+> > and I've been arguing against it since the patches were posted.
+>
+> Ok. I'm good with this v2 as well, but need to add the fallback to
+> do_splice_direct()
+> in nfsd_copy_file_range(), because this patch breaks it.
 
-Right, thanks for catching that, I actually need to fix both.  Thanks,
+Interestingly, for ksmbd (cifsd) looks like they already do splice not
+copy_file_range
+
 
 -- 
-Peter Xu
+Thanks,
 
+Steve
