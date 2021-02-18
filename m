@@ -2,170 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D6D31EEE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3920231EEE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:51:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232548AbhBRSt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:49:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        id S232882AbhBRSuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbhBRQkN (ORCPT
+        with ESMTP id S231702AbhBRQkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Feb 2021 11:40:13 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8B1C061574;
-        Thu, 18 Feb 2021 08:39:28 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id e9so1828768pjj.0;
-        Thu, 18 Feb 2021 08:39:28 -0800 (PST)
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B76C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:39:30 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id cl8so1670790pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:39:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XCS1qy8ob7XsXX9kc+oSLC6Sq4kYNTiKKYp1XNnNPYo=;
-        b=tjcsSKlqihVsOaiJCi0Dm5mUG1XxbSeCOuVxJev77g+zYHXf7oeiG93b/J67bVMZa7
-         hBT7A0zdYGkdiuHmE8rIZoRC9wFfFAAqz5tqBGY3KfnEx9r9Bk8+/3Ro5E727CwDQ310
-         mq+6eu5ow3z9AWCz3AYU9MeEuiNZNIXmjzdQE28nX+TsI4bP55s7i+A/USexGPBIIa1O
-         Sow3bx/n9b4/NNdeFUs09TJUwuyYx6jJ2ABMMDflV/jN6VwwdAToLtSvgb8VPWjhHPbQ
-         EgJBC2qgJsg8ltY7Lp2MI6p50teIHF/RiuIumuI43Zdguo5USJyOny1hbria6JP4+qaJ
-         erIg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tAXH7YAvVuou21SXxWV1oEs6Zbi0HoK7NLFcDJuhkUA=;
+        b=RaylJLQWFDukLtP3lYtl5lQ33ROSeOwO/SaAsdJFq7bR03ReAHTpTVKqq1d9ctYIjc
+         r2v02QbKpPOQLqvscd+VcbprwB0nT0FPsGMqfjpZloEhKgSuM0iFQPBUbrItZezAtysL
+         SvyQALCnKYzuBiIcG0KdU28l1ouOFPwyZlIM6i9xKjrsvvSLBJbsgARTfrZZ0dKOZ6tU
+         +ohiKEStWWILnaEYFv/bipW8TYsKNNok211hOpPLeuojZDQsRA8SAF192qdagD57F6jB
+         LK/kN0cHSl+darl9LTLSEPekZiEWjKIQl8MVFRmUW+ueTZdBkieZ99bxhkE/gPRampiG
+         GpOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XCS1qy8ob7XsXX9kc+oSLC6Sq4kYNTiKKYp1XNnNPYo=;
-        b=OBh8FfHI2I8sVdy9RobVoLgDDqaUWkCmJZK/+KyxW8svw+sDN1EGyHYGmkXPdIlZrp
-         nfz2MK7v3aYAAuyqjhtXM5PCMX88Fx0QOfTWecim8rg1maozHOGdw7X3APPQwdyAHHTZ
-         OO6yUlFlrLkbdhz6nmRxh/VwU7HsrN8jBnqX/J7d1qwh3JfBOFYrLasSt006dciKCurL
-         bjbqF2DucBrcZJvtf7f2rCUToZpOSqnl04OLZOTPofrmia/y15xDGjrY9sXLXypoP788
-         /lapXRCvgibHneCPz8sH1BePcfbu5BQ/i1MfrMVmeowvzFM6E+uFeaiTyks468JORJbr
-         WSmw==
-X-Gm-Message-State: AOAM531enpZC0DcfbsaA2GaA2DQGRxUCXhDrCbBQ0KVlkEbn8wTgi6bq
-        PaivQ+zCjRQjLInM4E2C8xkirFJCfhy+oo85
-X-Google-Smtp-Source: ABdhPJy3oyXwsGciCKxueasMwiTAkxzoT3YfWDqrGEQlgBcELCgh3GwtHyYZs20osF6Ai6kEql52Xw==
-X-Received: by 2002:a17:90a:8b83:: with SMTP id z3mr4841731pjn.75.1613666367831;
-        Thu, 18 Feb 2021 08:39:27 -0800 (PST)
-Received: from localhost.localdomain ([122.10.101.135])
-        by smtp.gmail.com with ESMTPSA id s1sm6282938pfe.151.2021.02.18.08.39.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Feb 2021 08:39:21 -0800 (PST)
-From:   Xuesen Huang <hxseverything@gmail.com>
-To:     willemdebruijn.kernel@gmail.com
-Cc:     davem@davemloft.net, bpf@vger.kernel.org, daniel@iogearbox.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuesen Huang <huangxuesen@kuaishou.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
-        Li Wang <wangli09@kuaishou.com>
-Subject: [PATCH/v2] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
-Date:   Fri, 19 Feb 2021 00:39:03 +0800
-Message-Id: <20210218163903.60992-1-hxseverything@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tAXH7YAvVuou21SXxWV1oEs6Zbi0HoK7NLFcDJuhkUA=;
+        b=GVPVPd2j6TDr/PSoohgejsypFIlAWKWWuQ/4yx/MkFju83/hAa1RdXGyz3LShQ/7pF
+         TbR9O3QpSP0ATvbhB/a8jVdyltyZZWyYv0oiIEFRLxo55RWaSVV9XGcMDsM0nSvXHRHZ
+         K8EzQ7RBjH9nELoTHkDtAYrhONtVN9CMpbJDuJcfRWlG9EeNcFzZE+PDbQWViqSRpI+Z
+         hsWefcxV7sR9TVdYVgJ3cqt3EhlVc0x6TfC7Vmv2E/k0h3DeeXVSOthPq+XL2Z4UflEg
+         9ak/ha3FCiFYUlnQTUg4d05s4WG2r4tdDZvbpQLZWE9tCzYkgQoYS+uaGQBHbDODMgSR
+         ghww==
+X-Gm-Message-State: AOAM531hvBN3EhgGE9jmQz2KehReImGcEjX2UdLB745o6yCHecDph42e
+        4wMW0hEvK/pxXh/7gnKLp+xfQA==
+X-Google-Smtp-Source: ABdhPJwubJnoW5ptbBz//HSdFUifLFNVclJakKkrpbIvA9T+sfPDIzNCeNzlNhEjk4nRGe8nE1PkCQ==
+X-Received: by 2002:a17:90a:4083:: with SMTP id l3mr4785105pjg.109.1613666369535;
+        Thu, 18 Feb 2021 08:39:29 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:dc76:757f:9e9e:647c])
+        by smtp.gmail.com with ESMTPSA id l190sm6691625pfl.205.2021.02.18.08.39.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 08:39:29 -0800 (PST)
+Date:   Thu, 18 Feb 2021 08:39:22 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Kalra, Ashish" <Ashish.Kalra@amd.com>
+Cc:     "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "rkrcmar@redhat.com" <rkrcmar@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>, "bp@suse.de" <bp@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "srutherford@google.com" <srutherford@google.com>,
+        "venu.busireddy@oracle.com" <venu.busireddy@oracle.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 10/16] KVM: x86: Introduce KVM_GET_SHARED_PAGES_LIST
+ ioctl
+Message-ID: <YC6YOuJyNlSxKVR4@google.com>
+References: <cover.1612398155.git.ashish.kalra@amd.com>
+ <7266edd714add8ec9d7f63eddfc9bbd4d789c213.1612398155.git.ashish.kalra@amd.com>
+ <YCxrV4u98ZQtInOE@google.com>
+ <SN6PR12MB2767168CA61257A85B29C26D8E869@SN6PR12MB2767.namprd12.prod.outlook.com>
+ <YC1AkNPNET+T928c@google.com>
+ <SN6PR12MB27676C0BF3BBA872E55D5FC78E859@SN6PR12MB2767.namprd12.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SN6PR12MB27676C0BF3BBA872E55D5FC78E859@SN6PR12MB2767.namprd12.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xuesen Huang <huangxuesen@kuaishou.com>
+On Thu, Feb 18, 2021, Kalra, Ashish wrote:
+> From: Sean Christopherson <seanjc@google.com> 
+> 
+> On Wed, Feb 17, 2021, Kalra, Ashish wrote:
+> >> From: Sean Christopherson <seanjc@google.com> On Thu, Feb 04, 2021, 
+> >> Ashish Kalra wrote:
+> >> > From: Brijesh Singh <brijesh.singh@amd.com>
+> >> > 
+> >> > The ioctl is used to retrieve a guest's shared pages list.
+> >> 
+> >> >What's the performance hit to boot time if KVM_HC_PAGE_ENC_STATUS is 
+> >> >passed through to userspace?  That way, userspace could manage the 
+> >> >set of pages >in whatever data structure they want, and these get/set ioctls go away.
+> >> 
+> >> What is the advantage of passing KVM_HC_PAGE_ENC_STATUS through to 
+> >> user-space ?
+> >> 
+> >> As such it is just a simple interface to get the shared page list via 
+> >> the get/set ioctl's. simply an array is passed to these ioctl to 
+> >> get/set the shared pages list.
+> 
+> > It eliminates any probability of the kernel choosing the wrong data
+> > structure, and it's two fewer ioctls to maintain and test.
+> 
+> The set shared pages list ioctl cannot be avoided as it needs to be issued to
+> setup the shared pages list on the migrated VM, it cannot be achieved by
+> passing KVM_HC_PAGE_ENC_STATUS through to user-space.
 
-bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
-encapsulation. But that is not appropriate when pushing Ethernet header.
+Why's that?  AIUI, KVM doesn't do anything with the list other than pass it back
+to userspace.  Assuming that's the case, userspace can just hold onto the list
+for the next migration.
 
-Add an option to further specify encap L2 type and set the inner_protocol
-as ETH_P_TEB.
+> So it makes sense to add both get/set shared pages list ioctl, passing
+> through to user-space is just adding more complexity without any significant
+> gains.
 
-Suggested-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
-Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
-Signed-off-by: Li Wang <wangli09@kuaishou.com>
----
- include/uapi/linux/bpf.h       |  5 +++++
- net/core/filter.c              | 11 ++++++++++-
- tools/include/uapi/linux/bpf.h |  5 +++++
- 3 files changed, 20 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 77d7c1b..d791596 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
-  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
-  *		  type; *len* is the length of the inner MAC header.
-  *
-+ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
-+ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
-+ *		  L2 type as Ethernet.
-+ *
-  * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-@@ -4088,6 +4092,7 @@ enum {
- 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
- 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
- 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
-+	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
- };
- 
- enum {
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 255aeee..8d1fb61 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -3412,6 +3412,7 @@ static u32 bpf_skb_net_base_len(const struct sk_buff *skb)
- 					 BPF_F_ADJ_ROOM_ENCAP_L3_MASK | \
- 					 BPF_F_ADJ_ROOM_ENCAP_L4_GRE | \
- 					 BPF_F_ADJ_ROOM_ENCAP_L4_UDP | \
-+					 BPF_F_ADJ_ROOM_ENCAP_L2_ETH | \
- 					 BPF_F_ADJ_ROOM_ENCAP_L2( \
- 					  BPF_ADJ_ROOM_ENCAP_L2_MASK))
- 
-@@ -3448,6 +3449,10 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- 		    flags & BPF_F_ADJ_ROOM_ENCAP_L4_UDP)
- 			return -EINVAL;
- 
-+		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH &&
-+		    inner_mac_len < ETH_HLEN)
-+			return -EINVAL;
-+
- 		if (skb->encapsulation)
- 			return -EALREADY;
- 
-@@ -3466,7 +3471,11 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
- 		skb->inner_mac_header = inner_net - inner_mac_len;
- 		skb->inner_network_header = inner_net;
- 		skb->inner_transport_header = inner_trans;
--		skb_set_inner_protocol(skb, skb->protocol);
-+
-+		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH)
-+			skb_set_inner_protocol(skb, htons(ETH_P_TEB));
-+		else
-+			skb_set_inner_protocol(skb, skb->protocol);
- 
- 		skb->encapsulation = 1;
- 		skb_set_network_header(skb, mac_len);
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 77d7c1b..d791596 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
-  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
-  *		  type; *len* is the length of the inner MAC header.
-  *
-+ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
-+ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
-+ *		  L2 type as Ethernet.
-+ *
-  * 		A call to this helper is susceptible to change the underlying
-  * 		packet buffer. Therefore, at load time, all checks on pointers
-  * 		previously done by the verifier are invalidated and must be
-@@ -4088,6 +4092,7 @@ enum {
- 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
- 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
- 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
-+	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
- };
- 
- enum {
--- 
-1.8.3.1
-
+No, it reduces complexity for KVM by avoiding locking and memslot dependencies.
