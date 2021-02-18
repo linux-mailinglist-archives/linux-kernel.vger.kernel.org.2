@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 515C531E48D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:32:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F57E31E490
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:36:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhBRDcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 22:32:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229885AbhBRDcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 22:32:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2104F60C3D;
-        Thu, 18 Feb 2021 03:31:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613619101;
-        bh=c7ZJ7SvGbLoYA4yllijdf6qOTWsWiQ5Rkd+YYUthhQo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hubX+h+oP6mb2WCOFKZxsAabsFB2DAoaUej6SLrivWfT8AJMx1aq+9rHLC/+mCfon
-         OVwu6B35eGviudUgWdobiC7T1FE1HtG3hYW6X4jArsY3nhwd2UjhN69sbBG6qRhk3+
-         2gWS+DQJYHhzgXedcryXfkjDnCPMgeu5DEwq9id3drWK5c18Fy5uUXKh6VJndRVcpP
-         vufocbL8024qhD+CizlgqIdIIxJCjr1rdgvrOBLRAgX8+YAARsLw/UaYRcmTTd6auf
-         1GqOajlkS0L22aFAFcLxOCutwLXvoKj0uHgMBGs0uPq/sNCBMztUtHVu5ZyvXJANwW
-         NTTvrA7NJj2RA==
-Date:   Thu, 18 Feb 2021 05:31:29 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
-Subject: [GIT PULL] TPM DEVICE DRIVER changes for v5.12
-Message-ID: <YC3fkU2pLncCkeps@kernel.org>
+        id S230020AbhBRDfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 22:35:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29628 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229885AbhBRDfc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 22:35:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613619246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d9YnNO3MbpPkDoXl8YrBEEv+qOhDiCyZjDCW4nbXIvQ=;
+        b=CFsd87GuAsC9yUTBC9Jmdu8+/tk2VV834Hh70YWJOyeDYaqTECMhwEdRCFId3W+ci8+5rG
+        XtrlAomsaLoZBKgGcIPPuHeOFJZ1ZekkiSJIWo8OGcvOFHh9hcvakoMKh1nwtOxUzoioAi
+        VN8UW6xEMRAhA+tWkwVGGMCbdnYpH4I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-aOSWgkEAPimUDD-8gCggqA-1; Wed, 17 Feb 2021 22:34:02 -0500
+X-MC-Unique: aOSWgkEAPimUDD-8gCggqA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8068710066F1;
+        Thu, 18 Feb 2021 03:33:59 +0000 (UTC)
+Received: from localhost (ovpn-12-112.pek2.redhat.com [10.72.12.112])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 84C09100164C;
+        Thu, 18 Feb 2021 03:33:55 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 11:33:52 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
+        dyoung@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
+        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
+        arnd@arndb.de, james.morse@arm.com, xiexiuqi@huawei.com,
+        guohanjun@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v14 02/11] x86: kdump: make the lower bound of crash
+ kernel reservation consistent
+Message-ID: <20210218033233.GF2871@MiWiFi-R3L-srv>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-3-chenzhou10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210130071025.65258-3-chenzhou10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 01/30/21 at 03:10pm, Chen Zhou wrote:
+> The lower bounds of crash kernel reservation and crash kernel low
+> reservation are different, use the consistent value CRASH_ALIGN.
+> 
+> Suggested-by: Dave Young <dyoung@redhat.com>
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
+> ---
+>  arch/x86/kernel/setup.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index da769845597d..27470479e4a3 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -439,7 +439,8 @@ static int __init reserve_crashkernel_low(void)
+>  			return 0;
+>  	}
+>  
+> -	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, 0, CRASH_ADDR_LOW_MAX);
+> +	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, CRASH_ALIGN,
+> +			CRASH_ADDR_LOW_MAX);
 
-This now my "official" first PR for v5.12. There's still some known issues
-in the tpm_tis driver *not& fixed in this first pull request, which trigger a
-warning but do not overally collapse the kernel by any means.
+Acked-by: Baoquan He <bhe@redhat.com>
 
-The fixes are in good progress, but unfortunately there's still some fine
-tuning required before I can include to a pull request. I'm sure we will
-get them done around rc2/rc3. Better to make sure that the fixes do right
-things right, rather than rush them to a PR.
+>  	if (!low_base) {
+>  		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
+>  		       (unsigned long)(low_size >> 20));
+> -- 
+> 2.20.1
+> 
 
-That's also the reason why this comes so late. Sorry about that. I have
-also kind of "reorg" going on with my maintainer workflows, given the
-increased review activity in keyrings and SGX, which temporarily causes
-a bit overhead until becoming "status quo".
-
-New features
-============
-
-1. Cr50 I2C TPM driver.
-2. Sysfs exports of PCR registers in TPM 2.0 chips.
-
-Bug fixes
-=========
-
-*  This contains bug fixes for tpm_tis driver, which had a racy wait for
-   hardware state change to be ready to send a command to the TPM chip. The
-   bug has existed already since 2006, but has only made itself known in
-   recent past. This is the same as the "last time" :-)
-*  Otherwise there's bunch of fixes for not as alarming regressions. I
-   think the list is about the same as last time, except I added fixes for
-   some disjoint bugs in trusted keys that I found some time ago.
-
-/Jarkko
-
-The following changes since commit f40ddce88593482919761f74910f42f4b84c004b:
-
-  Linux 5.11 (2021-02-14 14:32:24 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.12-rc1-v2
-
-for you to fetch changes up to 8c657a0590de585b1115847c17b34a58025f2f4b:
-
-  KEYS: trusted: Reserve TPM for seal and unseal operations (2021-02-16 10:40:28 +0200)
-
-----------------------------------------------------------------
-tpmdd updates for Linux v5.12-rc1
-
-----------------------------------------------------------------
-Andrew Zaborowski (1):
-      keys: Update comment for restrict_link_by_key_or_keyring_chain
-
-Duncan Laurie (1):
-      char: tpm: add i2c driver for cr50
-
-Gustavo A. R. Silva (1):
-      tpm: Fix fall-through warnings for Clang
-
-James Bottomley (4):
-      tpm_tis: Fix check_locality for correct locality acquisition
-      tpm_tis: Clean up locality release
-      tpm: add sysfs exports for all banks of PCR registers
-      ABI: add sysfs description for tpm exports of PCR registers
-
-Jarkko Sakkinen (3):
-      KEYS: trusted: Fix incorrect handling of tpm_get_random()
-      KEYS: trusted: Fix migratable=1 failing
-      KEYS: trusted: Reserve TPM for seal and unseal operations
-
-Rikard Falkeborn (1):
-      tpm/ppi: Constify static struct attribute_group
-
-Sebastian Andrzej Siewior (1):
-      tpm: Remove tpm_dev_wq_lock
-
- Documentation/ABI/stable/sysfs-class-tpm  |  14 +
- crypto/asymmetric_keys/restrict.c         |   7 +-
- drivers/char/tpm/Kconfig                  |  10 +
- drivers/char/tpm/Makefile                 |   2 +
- drivers/char/tpm/eventlog/tpm1.c          |   1 +
- drivers/char/tpm/tpm-chip.c               |   2 +
- drivers/char/tpm/tpm-dev-common.c         |   1 -
- drivers/char/tpm/tpm-sysfs.c              | 179 +++++++
- drivers/char/tpm/tpm.h                    |   4 -
- drivers/char/tpm/tpm_ppi.c                |   2 +-
- drivers/char/tpm/tpm_tis_core.c           |  50 +-
- drivers/char/tpm/tpm_tis_i2c_cr50.c       | 790 ++++++++++++++++++++++++++++++
- include/linux/tpm.h                       |  14 +-
- security/keys/trusted-keys/trusted_tpm1.c |  22 +-
- security/keys/trusted-keys/trusted_tpm2.c |  22 +-
- 15 files changed, 1054 insertions(+), 66 deletions(-)
- create mode 100644 drivers/char/tpm/tpm_tis_i2c_cr50.c
