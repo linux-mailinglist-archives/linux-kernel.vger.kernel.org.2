@@ -2,122 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D99E31EA4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:12:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCD031EA48
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230389AbhBRNKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:10:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbhBRLjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:39:25 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD2B7C061756;
-        Thu, 18 Feb 2021 03:28:47 -0800 (PST)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 017B6247; Thu, 18 Feb 2021 12:25:03 +0100 (CET)
-Date:   Thu, 18 Feb 2021 12:25:00 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        stable <stable@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 2/3] x86/sev-es: Check if regs->sp is trusted before
- adjusting #VC IST stack
-Message-ID: <20210218112500.GH7302@8bytes.org>
-References: <20210217120143.6106-1-joro@8bytes.org>
- <20210217120143.6106-3-joro@8bytes.org>
- <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
+        id S233384AbhBRNIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:08:06 -0500
+Received: from mga18.intel.com ([134.134.136.126]:65005 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231845AbhBRLjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:39:39 -0500
+IronPort-SDR: oTRBpC3RMXUGHreHaMvcIz4kV1nv4+sw/Nb92WhSXoU7oYXx7prZlzsEHRTd1nk8EH0VK4TA+X
+ FDuEBzTtQUTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="171145597"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="171145597"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 03:26:41 -0800
+IronPort-SDR: BCqCfqWNS2CCLes+t7imig7YkQBfbpE7d78MQK7vM66PmmIPIINwozdSgNeys4E5bCReZHa5l+
+ MHkB0SOSILLQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="367508631"
+Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 18 Feb 2021 03:26:40 -0800
+Received: from kbuild by cd560a204411 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lChSB-0009dG-Qt; Thu, 18 Feb 2021 11:26:39 +0000
+Date:   Thu, 18 Feb 2021 19:25:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:perf/core] BUILD SUCCESS
+ 8bcfdd7cad3dffdd340f9a79098cbf331eb2cd53
+Message-ID: <602e4ec7.sCws0ruIvJTRq6pZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf/core
+branch HEAD: 8bcfdd7cad3dffdd340f9a79098cbf331eb2cd53  Merge branch 'perf/kprobes' into perf/core, to pick up finished branch
 
-On Wed, Feb 17, 2021 at 10:09:46AM -0800, Andy Lutomirski wrote:
-> Can you get rid of the linked list hack while you're at it?  This code
-> is unnecessarily convoluted right now, and it seems to be just asking
-> for weird bugs.  Just stash the old value in a local variable, please.
+elapsed time: 724m
 
-Yeah, the linked list is not really necessary right now, because of the
-way nested NMI handling works and given that these functions are only
-used in the NMI handler right now.
-The whole #VC handling code was written with future requirements in
-mind, like what is needed when debugging registers get virtualized and
-#HV gets enabled.
-Until its clear whether __sev_es_ist_enter/exit() is needed in any of
-these paths, I'd like to keep the linked list for now. It is more
-complicated but allows nesting.
+configs tested: 113
+configs skipped: 61
 
-> Meanwhile, I'm pretty sure I can break this whole scheme if the
-> hypervisor is messing with us.  As a trivial example, the sequence
-> SYSCALL gap -> #VC -> NMI -> #VC will go quite poorly.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I don't see how this would break, can you elaborate?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     asp8347_defconfig
+arm                        keystone_defconfig
+mips                         mpc30x_defconfig
+mips                        bcm47xx_defconfig
+arm                        trizeps4_defconfig
+powerpc                  iss476-smp_defconfig
+mips                         db1xxx_defconfig
+arm                          prima2_defconfig
+arm                       cns3420vb_defconfig
+ia64                         bigsur_defconfig
+arm                  colibri_pxa270_defconfig
+powerpc64                           defconfig
+arm                       netwinder_defconfig
+sparc                       sparc64_defconfig
+xtensa                  cadence_csp_defconfig
+arc                        vdk_hs38_defconfig
+arc                        nsim_700_defconfig
+xtensa                  nommu_kc705_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210216
+i386                 randconfig-a005-20210216
+i386                 randconfig-a002-20210216
+i386                 randconfig-a006-20210216
+i386                 randconfig-a001-20210216
+i386                 randconfig-a004-20210216
+x86_64               randconfig-a016-20210215
+x86_64               randconfig-a013-20210215
+x86_64               randconfig-a012-20210215
+x86_64               randconfig-a015-20210215
+x86_64               randconfig-a014-20210215
+x86_64               randconfig-a011-20210215
+i386                 randconfig-a016-20210216
+i386                 randconfig-a014-20210216
+i386                 randconfig-a012-20210216
+i386                 randconfig-a013-20210216
+i386                 randconfig-a011-20210216
+i386                 randconfig-a015-20210216
+i386                 randconfig-a016-20210217
+i386                 randconfig-a014-20210217
+i386                 randconfig-a012-20210217
+i386                 randconfig-a013-20210217
+i386                 randconfig-a011-20210217
+i386                 randconfig-a015-20210217
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-What I think happens is:
+clang tested configs:
+x86_64               randconfig-a013-20210216
+x86_64               randconfig-a016-20210216
+x86_64               randconfig-a012-20210216
+x86_64               randconfig-a015-20210216
+x86_64               randconfig-a014-20210216
+x86_64               randconfig-a011-20210216
+x86_64               randconfig-a003-20210215
+x86_64               randconfig-a002-20210215
+x86_64               randconfig-a001-20210215
+x86_64               randconfig-a004-20210215
+x86_64               randconfig-a005-20210215
+x86_64               randconfig-a006-20210215
+x86_64               randconfig-a003-20210217
+x86_64               randconfig-a002-20210217
+x86_64               randconfig-a004-20210217
+x86_64               randconfig-a001-20210217
+x86_64               randconfig-a005-20210217
+x86_64               randconfig-a006-20210217
 
-SYSCALL gap (RSP is from userspace and untrusted)
-
-	-> #VC - Handler on #VC IST stack detects that it interrupted
-	   the SYSCALL gap and switches to the task stack.
-
-
-	-> NMI - Now running on NMI IST stack. Depending on whether the
-	   stack switch in the #VC handler already happened, the #VC IST
-	   entry is adjusted so that a subsequent #VC will not overwrite
-	   the interrupted handlers stack frame.
-
-	-> #VC - Handler runs on the adjusted #VC IST stack and switches
-	   itself back to the NMI IST stack. This is safe wrt. nested
-	   NMIs as long as nested NMIs itself are safe.
-
-As a rule of thumb, think of the #VC handler as trying to be a non-IST
-handler by switching itself to the interrupted stack or the task stack.
-If it detects that this is not possible (which can't happen right now,
-but with SNP), it will kill the guest.
-
-Also #VC is currently not safe against #MC, but this is the same as with
-NMI and #MC. And more care is needed when SNP gets enabled and #VCs can
-happen in the stack switching/stack adjustment code itself. I will
-probably just add a check then to kill the guest if an SNP related #VC
-comes from noinstr code.
-
-> Is this really better than just turning IST off for #VC and
-> documenting that we are not secure against a malicious hypervisor yet?
-
-It needs to be IST, even without SNP, because #DB is IST too. When the
-hypervisor intercepts #DB then any #DB exception will be turned into
-#VC, so #VC needs to be handled anywhere a #DB can happen.
-
-And with SNP we need to be able to at least detect a malicious HV so we
-can reliably kill the guest. Otherwise the HV could potentially take
-control over the guest's execution flow and make it reveal its secrets.
-
-Regards,
-
-	Joerg
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
