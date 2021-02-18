@@ -2,192 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC1D31E9BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:26:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31E7231E9A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:25:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhBRMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:25:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32715 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232667AbhBRKq2 (ORCPT
+        id S231286AbhBRMQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:16:55 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:47084 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231438AbhBRKro (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:46:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613645099;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BMH8S4T7u+QFmoTuKd8zzsW1EwjP83j2mvXgWWp0OT0=;
-        b=HBofra4iKdCbY7r1xj9jayR+yXaFThEnxBitgPwMC1wZy17HHq94F9T0wXrbXj8rTz5SOO
-        bmqy7wjsL8g970IGRiupn2a2WBbwTMrXw4kzoYcoyIYepalbRP1Nnf7iMGr0n4Vd9ghrZy
-        dBvU7rAcQbcIUifLDXbgVwyyWbe2uRo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-EbN0LvXNPNW1e9tnCjCIdA-1; Thu, 18 Feb 2021 05:44:55 -0500
-X-MC-Unique: EbN0LvXNPNW1e9tnCjCIdA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11B17107ACE6;
-        Thu, 18 Feb 2021 10:44:52 +0000 (UTC)
-Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4016110016FD;
-        Thu, 18 Feb 2021 10:44:42 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
-Date:   Thu, 18 Feb 2021 11:44:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 18 Feb 2021 05:47:44 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAf8nt191305;
+        Thu, 18 Feb 2021 10:46:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=DkIB6cqMedrzHSkwL1PZcrM4aHbF3RlvHi1R4O/JB1s=;
+ b=jdNHZhY+QWg5MKXzNi9DkiSCQqUTZDjnqRofrInKaGVr1Xc9yYRB322ch/tMUrmViive
+ 9ZQdFqq4wWJ3Tz87Kp/DQ8uwPmTaCmgwFji4e+xaWPpaxurKGDMp8ynLosEnczLXxrgy
+ 0RC/hNY48+YIoWhwvlfZl2TZEnKbIleSttJSA+4WtbI9ta03Xf+/XaQ3GDXrhKvrjeYE
+ h8WQsf1ZVYq4jvA+HnNGkqwMbIC4Zk5wnmOg3ozEenZRvRNrVMwEX79nQrr9HpZuwl7g
+ GDM3pnXTHly5QFwtBEVTtK+pygnh9Bj5cTtnacvQWbvWOU4GYAAmcP6DnIQ87ergbK5j 7w== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 36p7dnne2g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 10:46:27 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAk8hu090043;
+        Thu, 18 Feb 2021 10:46:25 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 36prq0amnd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 10:46:25 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IAkCeM017093;
+        Thu, 18 Feb 2021 10:46:15 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 02:46:11 -0800
+Date:   Thu, 18 Feb 2021 13:45:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v1 03/18] arm64: dts: imx8mq-evk: add reserve memory node
+ for CMA region
+Message-ID: <20210218104558.GD2087@kadam>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <20210217080306.157876-4-benjamin.gaignard@collabora.com>
+ <ab14f5a0bde2bdcd4bb0128f76e5a3ba8e7b0894.camel@collabora.com>
 MIME-Version: 1.0
-In-Reply-To: <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ab14f5a0bde2bdcd4bb0128f76e5a3ba8e7b0894.camel@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180095
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.02.21 11:25, Michal Hocko wrote:
-> On Wed 17-02-21 16:48:44, David Hildenbrand wrote:
->> When we manage sparse memory mappings dynamically in user space - also
->> sometimes involving MADV_NORESERVE - we want to dynamically populate/
+On Wed, Feb 17, 2021 at 04:39:49PM -0300, Ezequiel Garcia wrote:
+> Hi Benjamin,
 > 
-> Just wondering what is MADV_NORESERVE? I do not see anything like that
-> in the Linus tree. Did you mean MAP_NORESERVE?
-
-Most certainly, thanks :)
-
+> On Wed, 2021-02-17 at 09:02 +0100, Benjamin Gaignard wrote:
+> > Define allocation range for the default CMA region.
+> > 
+> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
 > 
->> discard memory inside such a sparse memory region. Example users are
->> hypervisors (especially implementing memory ballooning or similar
->> technologies like virtio-mem) and memory allocators. In addition, we want
->> to fail in a nice way if populating does not succeed because we are out of
->> backend memory (which can happen easily with file-based mappings,
->> especially tmpfs and hugetlbfs).
+> Despite it seems like I signed-off this one...
 > 
-> by "fail in a nice way" you mean before a #PF would fail and SIGBUS
-> which would be harder to handle?
 
-Yes.
+I've been puzzled by this as well.  :P
 
-> 
-> [...]
->> Because we don't have a proper interface, what applications
->> (like QEMU and databases) end up doing is touching (i.e., writing) all
->> individual pages. However, it requires expensive signal handling (SIGBUS);
->> for example, this is problematic in hypervisors like QEMU where SIGBUS
->> handlers might already be used by other subsystems concurrently to e.g,
->> handle hardware errors. "Simply" doing preallocation from another thread
->> is not that easy.
-> 
-> OK, that clarifies my above question.
-> 
->>
->> Let's introduce MADV_POPULATE with the following semantics
->> 1. MADV_POPULATED does not work on PROT_NONE and special VMAs. It works
->>     on everything else.
-> 
-> This would better clarify what "does not work" means. I assume those are
-> ignored and do not report any error?
+Signed-off-by means you either wrote the patch or you handled it in some
+way.  And it is intended as a legally binding document that you didn't
+sneak in any copyrighted code from SCO UNIXWARE (etc).  So like maybe
+the authors snuck some in or maybe a maintainer took the patch and
+sneaked some unixware code in.
 
-I'm currently preparing the man page. "Fail with -ENOMEM" (like 
-MADV_DONTNEED or MADV_REMOVE)
+Obviously if you sign the code, that counts as an Ack and Review as well
+because maintainers are going to only merge stuff if they've looked it
+over a bit.  But the main thing is that it means you didn't didn't
+violate any copyrights.
 
-> 
->> 2. Errors during MADV_POPULATED (especially OOM) are reported.
-> 
-> How do you want to achieve that? gup/page fault handler will allocate
-> memory and trigger the oom without caller noticing that. You would
-> somehow have to weaken the allocation context to GFP_RETRY_MAYFAIL or
-> NORETRY to achieve the error handling.
-
-Okay, I should be more clear here (again, I'm realizing this as well 
-while I create the man page), OOM is confusing: avoid SIGBUS at runtime 
-- like we would get on actual file systems/shmem/hugetlbfs when 
-preallocating.
-
-It cannot save us from the actual OOM killer. To handle anonymous memory 
-more reliable I'll need other means as well (dynamic swap space 
-allocation for sparse mappings).
-
-> 
->>     If we hit
->>     hardware errors on pages, ignore them - nothing we really can or
->>     should do.
->> 3. On errors during MADV_POPULATED, some memory might have been
->>     populated. Callers have to clean up if they care.
-> 
-> How does caller find out? madvise reports 0 on success so how do you
-> find out how much has been populated?
-
-If there is an error, something might have been populated. In my QEMU 
-implementation, I simply discard the range again, good enough. I don't 
-think we need to really indicate "error and populated" or "error and not 
-populated".
-
-
-> 
->> 4. Concurrent changes to the virtual memory layour are tolerated - we
->>     process each and every PFN only once, though.
-> 
-> I do not understand this. madvise is about virtual address space not a
-> physical address space.
-
-What I wanted to express: if we detect a change in the mapping we don't 
-restart at the beginning, we always make forward progress. We process 
-each virtual address once (on a per-page basis, thus I accidentally used 
-"PFN").
-
-> 
->> 5. If MADV_POPULATE succeeds, all memory in the range can be accessed
->>     without SIGBUS. (of course, not if user space changed mappings in the
->>     meantime or KSM kicked in on anonymous memory).
-> 
-> I do not see how KSM would change anything here and maybe it is not
-> really important to mention it. KSM should be really transparent from
-> the users space POV. Parallel and destructive virtual address space
-> operations are also expected to change the outcome and there is nothing
-> kernel do about at and provide any meaningful guarantees. I guess we
-> want to assume a reasonable userspace behavior here.
-
-It's just a note that we cannot protect from someone interfering 
-(discard/ksm/whatever). I'm making that clearer in the cover letter.
-
-Thanks!
-
--- 
-Thanks,
-
-David / dhildenb
+regards,
+dan carpenter
 
