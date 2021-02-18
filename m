@@ -2,63 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92FA31ED64
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:37:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C75F31ED61
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhBRRex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:34:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
+        id S234410AbhBRRdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:33:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbhBROtn (ORCPT
+        with ESMTP id S231172AbhBROtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:49:43 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44957C061756;
-        Thu, 18 Feb 2021 06:48:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1qnqSwl3zPIZ18NfoUqqslAfbYk9l/Wxn1L1wgv0bjQ=; b=MR2z5mqAU4EoGlW9G8W3WH6WlP
-        PDh8ZNDTlp6jKbO+eCxnm4OwDESOyMsjV0rH25bi7qvtsEJfU4gykwYSda0luLWxhcClo2Z7sdqmz
-        zYmaGJqiCM0nFgd5sPKQYv6nGPKgNL2vDKKb+4cQJPgZp6+vDFyxcc8yS8QCSZ9M2PpHn0/AjYuye
-        GzWElpMLh46s6Vr19SdcpbqTildW6Uc/my+AFvYEH8IzTYm+Gdqsg5YZvZGBckHfbNLY7R8ZaFO6N
-        tCFNAmKcVBfrnQlb4vWZNk0ctBMO0yOhalIX03yaPqYznGmeczNNjOGCT1FOzXYOy8L8f1fcXFAuT
-        jzcoNVRw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lCkZ0-001lVL-UI; Thu, 18 Feb 2021 14:46:12 +0000
-Date:   Thu, 18 Feb 2021 14:45:54 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Zi Yan <ziy@nvidia.com>, Davidlohr Bueso <dbueso@suse.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] hugetlb: fix update_and_free_page contig page struct
- assumption
-Message-ID: <20210218144554.GS2858050@casper.infradead.org>
-References: <20210217184926.33567-1-mike.kravetz@oracle.com>
- <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
+        Thu, 18 Feb 2021 09:49:12 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38AA6C061574;
+        Thu, 18 Feb 2021 06:48:31 -0800 (PST)
+Received: from [IPv6:2a01:e0a:4cb:a870:851a:1dfb:a143:80e] (unknown [IPv6:2a01:e0a:4cb:a870:851a:1dfb:a143:80e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id BDA2E1F44926;
+        Thu, 18 Feb 2021 14:48:28 +0000 (GMT)
+Subject: Re: [PATCH v1 17/18] dt-bindings: media: nxp,imx8mq-vpu: Update
+ bindings
+To:     Rob Herring <robh@kernel.org>
+Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, gregkh@linuxfoundation.org,
+        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <20210217080306.157876-18-benjamin.gaignard@collabora.com>
+ <20210217224839.GA2888647@robh.at.kernel.org>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <0a12de91-e6c9-642a-9c43-207041996c22@collabora.com>
+Date:   Thu, 18 Feb 2021 15:48:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
+In-Reply-To: <20210217224839.GA2888647@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 11:02:52AM -0800, Andrew Morton wrote:
-> On Wed, 17 Feb 2021 10:49:25 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> > page structs are not guaranteed to be contiguous for gigantic pages.  The
->
-> June 2014.  That's a long lurk time for a bug.  I wonder if some later
-> commit revealed it.
 
-I would suggest that gigantic pages have not seen much use.  Certainly
-performance with Intel CPUs on benchmarks that I've been involved with
-showed lower performance with 1GB pages than with 2MB pages until quite
-recently.
+Le 17/02/2021 à 23:48, Rob Herring a écrit :
+> On Wed, Feb 17, 2021 at 09:03:05AM +0100, Benjamin Gaignard wrote:
+>> The introduction on HEVC decoder lead to update the bindings
+>> to support it.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+>> ---
+>>   .../bindings/media/nxp,imx8mq-vpu.yaml        | 54 ++++++++++++-------
+>>   1 file changed, 36 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+>> index 762be3f96ce9..468435c70eef 100644
+>> --- a/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+>> +++ b/Documentation/devicetree/bindings/media/nxp,imx8mq-vpu.yaml
+>> @@ -15,24 +15,25 @@ description:
+>>   
+>>   properties:
+>>     compatible:
+>> -    const: nxp,imx8mq-vpu
+>> +    enum:
+>> +      - nxp,imx8mq-vpu
+>> +      - nxp,imx8mq-vpu-g2
+>>   
+>>     reg:
+>> -    maxItems: 3
+>> +    maxItems: 1
+>>   
+>>     reg-names:
+>> -    items:
+>> -      - const: g1
+>> -      - const: g2
+>> -      - const: ctrl
+>> +    enum:
+>> +      - g1
+>> +      - g2
+> This isn't a compatible change. You need to state why that's okay if it
+> is okay.
+
+I will change the commit message to this in the next version:
+The current bindings seem to make the assumption that the
+two VPUs hardware blocks (G1 and G2) are only one set of
+registers.
+After implementing the VPU reset driver and G2 decoder driver
+it shows that all the VPUs are independent and don't need to
+know about the registers of the other blocks.
+Remove from the bindings the need to set all blocks register
+but keep reg-names property because removing it from the driver
+may affect other variants.
+
+Benjamin
+
+>
+>>   
+>>     interrupts:
+>> -    maxItems: 2
+>> +    maxItems: 1
+>>   
+>>     interrupt-names:
+>> -    items:
+>> -      - const: g1
+>> -      - const: g2
+>> +    enum:
+>> +      - g1
+>> +      - g2
+>>   
+>>     clocks:
+>>       maxItems: 3
+>> @@ -46,6 +47,9 @@ properties:
+>>     power-domains:
+>>       maxItems: 1
+>>   
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>>   required:
+>>     - compatible
+>>     - reg
+>> @@ -54,6 +58,7 @@ required:
+>>     - interrupt-names
+>>     - clocks
+>>     - clock-names
+>> +  - resets
+>>   
+>>   additionalProperties: false
+>>   
+>> @@ -61,19 +66,32 @@ examples:
+>>     - |
+>>           #include <dt-bindings/clock/imx8mq-clock.h>
+>>           #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +        #include <dt-bindings/reset/imx8mq-vpu-reset.h>
+>>   
+>> -        vpu: video-codec@38300000 {
+>> +        vpu_g1: video-codec@38300000 {
+>>                   compatible = "nxp,imx8mq-vpu";
+>> -                reg = <0x38300000 0x10000>,
+>> -                      <0x38310000 0x10000>,
+>> -                      <0x38320000 0x10000>;
+>> -                reg-names = "g1", "g2", "ctrl";
+>> -                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
+>> -                             <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+>> -                interrupt-names = "g1", "g2";
+>> +                reg = <0x38300000 0x10000>;
+>> +                reg-names = "g1";
+>> +                interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+>> +                interrupt-names = "g1";
+>> +                clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+>> +                         <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+>> +                         <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+>> +                clock-names = "g1", "g2", "bus";
+>> +                power-domains = <&pgc_vpu>;
+>> +                resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G1>;
+>> +        };
+>> +
+>> +        vpu_g2: video-codec@38310000 {
+>> +                compatible = "nxp,imx8mq-vpu-g2";
+>> +                reg = <0x38310000 0x10000>;
+>> +                reg-names = "g2";
+>> +                interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+>> +                interrupt-names = "g2";
+>>                   clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
+>>                            <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
+>>                            <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
+>>                   clock-names = "g1", "g2", "bus";
+>>                   power-domains = <&pgc_vpu>;
+>> +                resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G2>;
+>>           };
+>> -- 
+>> 2.25.1
+>>
