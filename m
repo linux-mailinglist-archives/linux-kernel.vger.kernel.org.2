@@ -2,146 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDDF31EEB5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD9F31EEA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232433AbhBRSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:46:51 -0500
-Received: from mga18.intel.com ([134.134.136.126]:24502 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233602AbhBRQbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:31:51 -0500
-IronPort-SDR: bEyzum6oA3kRNfGD43MyymPdSDcJ+YLrFnc3BUYF/gw9kptZX4OG1ZwNBsD3WxCrvDUs5uAT7K
- NywfAw+4poJQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="171226748"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="171226748"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 08:28:22 -0800
-IronPort-SDR: 8wV6FNxP8SE0d4WHFpdRVuaFuCTVydh3gBnRbO6D/bXLTESQYwmiHqSvYcvTGhorUg/aee8is/
- q6876h3NGC7Q==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="367582619"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 08:28:21 -0800
-Received: from localhost (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 25BFD6365;
-        Thu, 18 Feb 2021 08:28:21 -0800 (PST)
-Date:   Thu, 18 Feb 2021 08:28:21 -0800
-From:   mark gross <mgross@linux.intel.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [RFC PATCH 0/7] Add managed version of delayed work init
-Message-ID: <20210218162821.GP154917@linux.intel.com>
-Reply-To: mgross@linux.intel.com
-References: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
+        id S232144AbhBRSpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:45:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47571 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231243AbhBRQaF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:30:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613665719;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7n6Dv7TL968Ih5U8eggCJpLl9IZAG+GVZ7m57WR0dUw=;
+        b=DpNOQ1THIN/xINRnoWROYFt0krNk11q0q9JfhJT2e/DPs91vI1QlYg2aNx1gz3VOIlJ6b0
+        ct0GXRxT6wp4Hb1znWxDtybSV3ZB1Rx0bmZymw6wztlMbypRQz+Ww3/mT2zZwKVN2Zpee1
+        QkOsf393L0Vu4Nd0hLgIdOKdaoez17c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-511-NcuK9xVoObOOMUB8lotdwA-1; Thu, 18 Feb 2021 11:28:34 -0500
+X-MC-Unique: NcuK9xVoObOOMUB8lotdwA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71EC980196C;
+        Thu, 18 Feb 2021 16:28:32 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EC39C5C1C4;
+        Thu, 18 Feb 2021 16:28:31 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     jroedel@suse.de, seanjc@google.com, mlevitsk@redhat.com
+Subject: [PATCH] KVM: nSVM: prepare guest save area while is_guest_mode is true
+Date:   Thu, 18 Feb 2021 11:28:31 -0500
+Message-Id: <20210218162831.1407616-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1613216412.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 01:58:17PM +0200, Matti Vaittinen wrote:
-> It's not rare that device drivers need delayed work.
-> It's not rare that this work needs driver's data.
-> 
-> Often this means that driver must ensure the work is not queued when
-> driver exits. Usually this is done by ensuring new work is not added and
-> then calling cancel_delayed_work_sync() at remove(). In many cases this
-> may also require cleanup at probe error path - which is easy to forget.
-> 
-> It might be helpful for (a) few drivers if there was a work init
- why the (a) and not just a?
+Right now, enter_svm_guest_mode is calling nested_prepare_vmcb_save and
+nested_prepare_vmcb_control.  This results in is_guest_mode being false
+until the end of nested_prepare_vmcb_control.
 
-> function which would ensure cancel_delayed_work_sync() is called at
-> driver exit. So this series implements one on top of devm and replaces
-> the obvious cases where only thing remove call-back in a driver does is
-> cancelling the work. There might be other cases where we could switch
-> more than just work cancellation to use managed version and thus get rid
-> of remove.
-> 
-> Main reson why this is RFC is that I had hard time deciding where this
-> function should be introduced. It's not nice to include all device stuff
-> in workqueue - because many workqueue users are not interested in
-> devices. In same way, not all of the devices are interested in WQs.
-> OTOH, adding own file just for this sounds like an overkill.
-s/own/one
+This is a problem because nested_prepare_vmcb_save can in turn cause
+changes to the intercepts and these have to be applied to the "host VMCB"
+(stored in svm->nested.hsave) and then merged with the VMCB12 intercepts
+into svm->vmcb.
 
---mark
+In particular, without this change we forget to set the CR0 read and CR0
+write intercepts when running a real mode L2 guest with NPT disabled.
+The guest is therefore able to see the CR0.PG bit that KVM sets to
+enable "paged real mode".  This patch fixes the svm.flat mode_switch
+test case with npt=0.  There are no other problematic calls in
+nested_prepare_vmcb_save.
 
-> 
-> This time I decided that it is more correct that devices use WQs than
-> that WQs use devices. Hence the function is introduced in
-> include/linux/device.h and drivers/base/devres.c
-> 
-> --
-> 
-> Matti Vaittinen (7):
->   drivers: base: Add resource managed version of delayed work init
->   extconn: Clean-up few drivers by using managed work init
->   hwmon: raspberry-pi: Clean-up few drivers by using managed work init
->   platform/x86: gpd pocket fan: Clean-up by using managed work init
->   power: supply: Clean-up few drivers by using managed work init
->   regulator: qcom_spmi-regulator: Clean-up by using managed work init
->   watchdog: retu_wdt: Clean-up by using managed work init
-> 
->  drivers/base/devres.c                        | 33 ++++++++++++++++++++
->  drivers/extcon/extcon-gpio.c                 | 14 ++-------
->  drivers/extcon/extcon-intel-int3496.c        | 15 ++-------
->  drivers/extcon/extcon-palmas.c               | 16 +++-------
->  drivers/extcon/extcon-qcom-spmi-misc.c       | 16 +++-------
->  drivers/hwmon/raspberrypi-hwmon.c            | 16 +++-------
->  drivers/platform/x86/gpd-pocket-fan.c        | 16 +++-------
->  drivers/power/supply/axp20x_usb_power.c      | 15 +++------
->  drivers/power/supply/bq24735-charger.c       | 17 +++-------
->  drivers/power/supply/ltc2941-battery-gauge.c | 19 ++++-------
->  drivers/power/supply/sbs-battery.c           | 15 +++------
->  drivers/regulator/qcom_spmi-regulator.c      | 33 +++++---------------
->  drivers/watchdog/retu_wdt.c                  | 21 +++----------
->  include/linux/device.h                       |  5 +++
->  14 files changed, 95 insertions(+), 156 deletions(-)
-> 
-> 
-> base-commit: 92bf22614b21a2706f4993b278017e437f7785b3
-> -- 
-> 2.25.4
-> 
-> 
-> -- 
-> Matti Vaittinen, Linux device drivers
-> ROHM Semiconductors, Finland SWDC
-> Kiviharjunlenkki 1E
-> 90220 OULU
-> FINLAND
-> 
-> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-> Simon says - in Latin please.
-> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-> Thanks to Simon Glass for the translation =] 
+The bug is present since commit 06fc7772690d ("KVM: SVM: Activate nested
+state only when guest state is complete", 2010-04-25).  Unfortunately,
+it is not clear from the commit message what issue exactly led to the
+change back then.  It was probably related to svm_set_cr0 however because
+the patch series cover letter[1] mentioned lazy FPU switching.
+
+[1] https://lore.kernel.org/kvm/1266493115-28386-1-git-send-email-joerg.roedel@amd.com/
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/nested.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+index 92d3aaaac612..35891d9a1099 100644
+--- a/arch/x86/kvm/svm/nested.c
++++ b/arch/x86/kvm/svm/nested.c
+@@ -469,8 +469,8 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb12_gpa,
+ 
+ 	svm->nested.vmcb12_gpa = vmcb12_gpa;
+ 	load_nested_vmcb_control(svm, &vmcb12->control);
+-	nested_prepare_vmcb_save(svm, vmcb12);
+ 	nested_prepare_vmcb_control(svm);
++	nested_prepare_vmcb_save(svm, vmcb12);
+ 
+ 	ret = nested_svm_load_cr3(&svm->vcpu, vmcb12->save.cr3,
+ 				  nested_npt_enabled(svm));
+-- 
+2.26.2
+
