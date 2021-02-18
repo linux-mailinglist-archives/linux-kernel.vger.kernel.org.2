@@ -2,158 +2,467 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87D131E7DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 557EB31E7DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:24:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhBRJOv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:14:51 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:57682 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhBRIDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:03:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1613635398; x=1645171398;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=1IIqzTrFWew6DEpjnHbTErK9oOkebajeDSohsiwGl2Y=;
-  b=fkXsOTmew8tXuxoBr4FP+q6IKDa2SKvCio0TNhU9E60tNzCBul6rzyHb
-   txVgqGeR1yZEuH790RH71jd258dS3uPLtUL8E2BDFXBACjTORI9R8OS8A
-   E3ufUg5Kr4JXFgyxFJv4wvpTx8v94Uc+Dg87exO3PXsRpni3h6o5WV6hl
-   G9mVZtwS0EMYffnBDNt4mAQ9daAF+qXBlAD9pRG4CO8YYPchKo4MkjQ0M
-   YZ7WP7/jtvU/3i9+VIIE4zpqRBLsrbPTWEeZIFdF312HjnX5fktMhgHPG
-   BwmZIqoJx23SiHbQDONTcxmPE2tWX63MdPdV8xH0L6lkRO85MKSwImJ/W
-   w==;
-IronPort-SDR: aGLj9VaZig37DZwQ0IcF0yyQqWmC/t56WEzYk8kivTV6bRZNKByLcniljYoOJr/TrrcUwSyVQk
- puWXTGxrrTCTkDaJulHxdZnutHjKXlAhpL/vxgvAUO56j2USSmjCrRMCMq59SE/3J6PTmkv1eC
- WDk4O9iG41iRwwJf7KlG7SFqogidHam5rPTRd+xoVDGg9CnnCmY34lUdokMUGI4v0kHdcfPbfI
- Fwg5d353R+1Vcwvyrz2FAu+VLdV9Cq8NFqtiuHBDZqh/ekJwkuAUkLPIBv5LMS9kFTx3F1xzNj
- zmE=
-X-IronPort-AV: E=Sophos;i="5.81,186,1610380800"; 
-   d="scan'208";a="160232434"
-Received: from mail-dm6nam11lp2175.outbound.protection.outlook.com (HELO NAM11-DM6-obe.outbound.protection.outlook.com) ([104.47.57.175])
-  by ob1.hgst.iphmx.com with ESMTP; 18 Feb 2021 16:01:54 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fkle4VjR8lgDqF0/N8NYggLZrjB53m0aFfQNSNv6xR5VOBCehJCGBOPCpik9W9b8JyPeyMIeKzh8XT2iIA1uUrkqTgHv2pTtMfY17TYZVYS5fnCaapItlmxSel2cSOhxqJJYWgcLV8sZ0qsmscNetAbO03LLuJoIka2HkRlByYJmOMKExvxibGOqZRIntDDe6da6HulBVUJqN03TksnDoVhAVewrOwRraG0mK9uGnPWUOcdvXr7zXSTjKmO5Df7EVxGp9w0bZxYKHLvGmF6XxYvEsBsUhPeFEg7H7t5kxZyDM3AV7VTDP7Bs9B3s4WA1lEvjtXLEo0m2vXw0IdwRJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1IIqzTrFWew6DEpjnHbTErK9oOkebajeDSohsiwGl2Y=;
- b=AxOcsN1oU2OmaDmOXr7vEyebH/10tPIASVdTtDzFRiTtyP398IyCakan2yH7Yk686rRYW4nmQ/V8UaXg39DXo62JHwxaUbCM/CBHRMJde2bQhL9LXf7eEuJ+0uPjMNOQ7gIkCbS1ov6BipMYDSdyzsQrXhCuM8aSnAFBwjdtoXWUYNUBcKB3n5Lp67hzFRlv5oUyrlWylfjlZlN1phiQ0G6u8OeF+dxmOGNMqdXIDyCuhSFmZhYYnW5F0A3UYXG5ZhgAja24ZnyN0+NRhSG6M2Kbtz9E6BR3uz1cntTl6YCGkGqtyrzWIJK7y3oKHUCjqLNqG2E0W2Cu7IYYZw00FQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1IIqzTrFWew6DEpjnHbTErK9oOkebajeDSohsiwGl2Y=;
- b=gu5M7fIr7FTIt3Iy/A/KPGuYXQrlwB76oVOu7C4BWzXoZNmkA/Bnx4Oeq4uYd9WlBHyFCAbZBhkZQ3AsL9ZOQWNYu3PNWY+tntX08Whd8a0TLhNMLg1zhrZKDYCFXgbcKbXvZRmmrEoDZszkfkNi6AmKawyNu4sCaIpwY1tlopE=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB4490.namprd04.prod.outlook.com (2603:10b6:5:22::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.29; Thu, 18 Feb 2021 08:01:53 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::e824:f31b:38cf:ef66%4]) with mapi id 15.20.3846.042; Thu, 18 Feb 2021
- 08:01:52 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-Subject: RE: [PATCH v20 4/4] scsi: ufs: Add HPB 2.0 support
-Thread-Topic: [PATCH v20 4/4] scsi: ufs: Add HPB 2.0 support
-Thread-Index: AQHXBQ10r8vLRE+e90yhApII506PoapdjQAg
-Date:   Thu, 18 Feb 2021 08:01:52 +0000
-Message-ID: <DM6PR04MB6575D2FEEE0EC784BF44E3C8FC859@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210217090853epcms2p17db2903a3a0c1a13e4ee071b9a39dbc8@epcms2p1>
-        <CGME20210217090853epcms2p17db2903a3a0c1a13e4ee071b9a39dbc8@epcms2p1>
- <20210217091517epcms2p1a5ff04e9c1fff2641e7914032c5fa5e7@epcms2p1>
-In-Reply-To: <20210217091517epcms2p1a5ff04e9c1fff2641e7914032c5fa5e7@epcms2p1>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 3d559841-7fd9-4b38-f992-08d8d3e373e6
-x-ms-traffictypediagnostic: DM6PR04MB4490:
-x-microsoft-antispam-prvs: <DM6PR04MB449070897B27638975B8C204FC859@DM6PR04MB4490.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6108;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: C/d4qah5NgD04maDwjhUIg/KO2+sO1MzPDkQdtyKW8nv/o6+IbzYLXNtbOm7GT/lJcEgdWMi0aRZRuVNWPmzWpip6Zcr9WcJez+7hOFd4qvBnmCX/Kj9TeT1Ocgfzqq3U0CZWpgRe01Y1XFhQQS5B2ZwOf/NUKAkhpWzt8lMx1R5GAZwHOZI59xUBLTmmfrLf+cCOIJi7mxF2YJ3idnsxrwbCJ19l0Y1bsTX4wPwHWvuh9Ngdwq1hzbCAswpP/Qm39Esj2lQZpcBvXfnDmMM4lM+8//JQDbEHCqvRB9RYNAoT7DM42PMZIi6ZV1FCXU9OnMVjQO9WDrR1mU4P+uBhhjpkFCXRzLUmtG+bK1gBonlKIZBz1PQeGDnWhPUDCSYoCGgcu1qZhXTd0xW7iBJOF20kFuVmhtNWIl+e5ar6We6ISgNlbcKhcm3czKcEbGnDt26Cm97SIOlI0p+JjjItRpksRpBy02IF0QLDSbbZwJdyK9dyTybL9J9+sjiIKdbs/t7Fo7+17iFzjHPH+G5lgfP536wvk3VogvbDY9XfW1b/7TZ4boAkE8eFTI1KSbZ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(346002)(366004)(376002)(478600001)(7416002)(6506007)(52536014)(33656002)(2906002)(8936002)(54906003)(7696005)(4326008)(316002)(8676002)(186003)(9686003)(64756008)(66476007)(66946007)(66446008)(921005)(66556008)(110136005)(5660300002)(86362001)(71200400001)(76116006)(558084003)(55016002)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?R0FLZnVTUTJnOVNaR1J3OERDb3RXOHVYSUJNdnNTbkt0dUxvMXRZS1N3U2Vo?=
- =?utf-8?B?SHZWUzI2WFhJMFRkMUNDU2FaYzVVbzRZTEFhZXJISStCZVp1dFVJQjFmRTBG?=
- =?utf-8?B?aU9BQTVnMkRDU0xNaitDb1JXMmE0OU1PVGdHWWNQOGdTQTZFYjNkellpbWpm?=
- =?utf-8?B?NVdnU1NpYU5WNDhpajhub2tTNVIxVWIrSWRZT1dTMWp3M2xuMHpKdmhLVVFC?=
- =?utf-8?B?MkJLdDI2OXpIbGk2V0lYMG9GcHBJd000WTRkc1RJV2tpc1ZUR21HVllIR0VC?=
- =?utf-8?B?K3kyMlJnTmVXNGV6WDFic01UWVF2MTlZVmwvNnA0WmEzL20zRElEajZSNUwv?=
- =?utf-8?B?Ky9adjN5cXRvb3FFdFNEVVFlaXhTbnNiMnoxM3FMOUIwVXBmQzdxWVRocnhw?=
- =?utf-8?B?KzI0VytRK1k4eEcrM1ZvM0ZDRW16ZkdseGpqTDFHRE1lMXp0VFVrK29HbHU4?=
- =?utf-8?B?aHpOVnlyVVlTSnJ5cFZvNmVtd09ka1FrTFNZNXUySlc4STl4MTd2djZDcVp0?=
- =?utf-8?B?cE9IeGkrZGt1WUgxL2JoNEN2N3lkTVoyMGJ1bnE2Yk56OUhDUm9ZOGNSSi8y?=
- =?utf-8?B?MUtMaisrMFdpYUZpSmdFNlNXR09aL0VEQnRFZWJBQ0ROVVRwUWl0ZXZpWFdq?=
- =?utf-8?B?L1V2bERFZFJIMnB0SnpmY0ZWVklkNnpBemJONm1GOUh1ZEpmSXZOamRMTWUr?=
- =?utf-8?B?OEdXVHR5NDhyM3AvZytpaVhialJUS1NtaUllUFNxK0lPckZVNG5sYVczejJG?=
- =?utf-8?B?ZEJKOHJ4dmRIOThvTXpuM00zK1RpNldiQzgzb1c0dWx6dUxEYmhwZ2E1Y0do?=
- =?utf-8?B?MUJ3eGd6OUNaSjZ5YVpkV2s3QTBMbE8rakZKOFhNSWl4LzB3d0FtQmdpdkZt?=
- =?utf-8?B?UlE3OGcwNDBsbFcyZ21YTmIvRFVZZ2UyaFNiMjhjSVJJV2FFL3NWTkhaVWxi?=
- =?utf-8?B?R2FYVkpiZk85Z0xGN3JXQlBFOXgxV2xpSGROM3VjOHA1VEFqb05FRGgwRUta?=
- =?utf-8?B?RXlrMG1xT2JCWm5tdGF1M0pzVmtKTEo2RitvS0NkcVBPRHBKQUVzOFVxYnkv?=
- =?utf-8?B?eGs1dXRYWUpNekFHcGJmZTZWMHQ0V0dUN1FDRldLUnc2UFJFc2ZOVGF2SmF6?=
- =?utf-8?B?S0pZVmk2MEFqb2JOVjhnVFVwaFgxK0lDSHlDTDZKK3M1Sm1PM01kMlQrckFC?=
- =?utf-8?B?eFBRRlpHdzJpRFRVRDNiVS9SZ3FNd1J4QXNUSnNrM21sOHhpUENoa1hVa3Bs?=
- =?utf-8?B?Q0pYbWFjcG8yUzZMb1dTRVBYMFNhQ21VVVNJRXBGSHZ5ZCtsZXNZVFlyNWoz?=
- =?utf-8?B?K2t3TlV6bTh5Z2RFNmxOVmRDcnRKSTBOOHBXdmdpazRGL3lWYWgzMG5Sd051?=
- =?utf-8?B?cm1ldG1qV2FXRjVPVXFoTzJET2d1dUpPQzRIbjZFMzFtQmFUenpQdUwrbkR1?=
- =?utf-8?B?RkU0dHBSV1V0UXB1Rko2dEpPbVpLTmYxa3RoNDBkS1NxVTgzdmxERGNCaW5y?=
- =?utf-8?B?MjZDSXJ5Y2ZOanRBVzJORng5b1BBS3A0bHNCNklRSnpmWlBRRUlaeXkvWjBY?=
- =?utf-8?B?UEZJbHRLZDZVK1dFZnBlOUY2aFUvMU5uVzRoWTdaRGFqSENDaGc4WmRFSWFG?=
- =?utf-8?B?eVdVNVZmaU42RW8wWjQ4VDJGM05OSHpZRE1FT0hBSmdxNFF0MnZvcUtnMU80?=
- =?utf-8?B?ZlhPb1Q3NXM1RHd6cW45U0FLdVpsUHVPQ0FQbFNtZU45QmFGaHBGL09zZC9Q?=
- =?utf-8?Q?D4USIL+K2G4tcVljYy685z8BpIApkMexWEmR6+c?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S231660AbhBRJO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:14:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54414 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231409AbhBRIDn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:03:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EF7F7AD4E;
+        Thu, 18 Feb 2021 08:02:59 +0000 (UTC)
+To:     Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc:     David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <virtualization@lists.linux-foundation.org>,
+        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
+        <spice-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@redhat.com>
+References: <20210217123213.2199186-1-kraxel@redhat.com>
+ <20210217123213.2199186-11-kraxel@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
+Message-ID: <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
+Date:   Thu, 18 Feb 2021 09:02:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d559841-7fd9-4b38-f992-08d8d3e373e6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2021 08:01:52.7782
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XYHao6SDCddXBQhcZ5jR+e3THlEnRiYUqyXmCUIZbCf3f9ce6LUA5h6dQVwMQRUpYbQdVrCG9ooMZErALWPbMA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4490
+In-Reply-To: <20210217123213.2199186-11-kraxel@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiANCj4gKyAgICAgICAvKiBmb3IgcHJlX3JlcSAqLw0KPiArICAgICAgIGhwYi0+cHJlX3JlcV9t
-aW5fdHJfbGVuID0gSFBCX01VTFRJX0NIVU5LX0xPVzsNClRoaXMgYWN0dWFsbHkgbmVlZHMgdG8g
-YmUgYk1BWF9EQVRBX1NJWkVfRk9SX0hQQl9TSU5HTEVfQ01ELg0KDQpBbHNvIHdhc24ndCBhYmxl
-IHRvIGZpbmQgYW55IHJlZmVyZW5jZSB0byBmSFBCZW4/DQoNClRoYW5rcywNCkF2cmkNCg==
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ
+Content-Type: multipart/mixed; boundary="x9qCAZEFpMSQcn5cRKCOnzVd9PqQm2ttB";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Gerd Hoffmann <kraxel@redhat.com>, dri-devel@lists.freedesktop.org
+Cc: David Airlie <airlied@linux.ie>, open list
+ <linux-kernel@vger.kernel.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <virtualization@lists.linux-foundation.org>,
+ "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
+ <spice-devel@lists.freedesktop.org>, Dave Airlie <airlied@redhat.com>
+Message-ID: <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
+Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
+References: <20210217123213.2199186-1-kraxel@redhat.com>
+ <20210217123213.2199186-11-kraxel@redhat.com>
+In-Reply-To: <20210217123213.2199186-11-kraxel@redhat.com>
+
+--x9qCAZEFpMSQcn5cRKCOnzVd9PqQm2ttB
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 17.02.21 um 13:32 schrieb Gerd Hoffmann:
+> Add helper functions to create and move the cursor.
+> Create the cursor_bo in prepare_fb callback, in the
+> atomic_commit callback we only send the update command
+> to the host.
+
+I'm still trying to wrap my head around the qxl cursor code.
+
+Getting vmap out of the commit tail is good, but I feel like this isn't=20
+going in the right direction overall.
+
+In ast, these helper functions were only good when converting the drvier =
+
+to atomic modesetting. So I removed them in the latst patchset and did=20
+all the updates in the plane helpers directly.
+
+For cursor_bo itself, it seems to be transitional state that is only=20
+used during the plane update and crtc update . It should probably be=20
+stored in a plane-state structure.
+
+Some of the primary plane's functions seem to deal with cursor handling. =
+
+What's the role of the primary plane in cursor handling?
+
+For now, I suggest to merge patch 1 to 8 and 11; and move the cursor=20
+patches into a new patchset. I'd like ot hear Daniel's opinion on this.=20
+Do you have further plans here?
+
+If you absolutely want patches 9 and 10, I'd rubber-stamp an A-b on them.=
+
+
+Best regards
+Thomas
+
+>=20
+> Signed-off-by: Gerd Hoffmann <kraxel@redhat.com>
+> ---
+>   drivers/gpu/drm/qxl/qxl_display.c | 248 ++++++++++++++++-------------=
+-
+>   1 file changed, 133 insertions(+), 115 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qx=
+l_display.c
+> index b315d7484e21..4a3d272e8d6c 100644
+> --- a/drivers/gpu/drm/qxl/qxl_display.c
+> +++ b/drivers/gpu/drm/qxl/qxl_display.c
+> @@ -476,12 +476,11 @@ static int qxl_primary_atomic_check(struct drm_pl=
+ane *plane,
+>   	return qxl_check_framebuffer(qdev, bo);
+>   }
+>  =20
+> -static int qxl_primary_apply_cursor(struct drm_plane *plane)
+> +static int qxl_primary_apply_cursor(struct qxl_device *qdev,
+> +				    struct drm_plane_state *plane_state)
+>   {
+> -	struct drm_device *dev =3D plane->dev;
+> -	struct qxl_device *qdev =3D to_qxl(dev);
+> -	struct drm_framebuffer *fb =3D plane->state->fb;
+> -	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane->state->crtc);
+> +	struct drm_framebuffer *fb =3D plane_state->fb;
+> +	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane_state->crtc);
+>   	struct qxl_cursor_cmd *cmd;
+>   	struct qxl_release *release;
+>   	int ret =3D 0;
+> @@ -505,8 +504,8 @@ static int qxl_primary_apply_cursor(struct drm_plan=
+e *plane)
+>  =20
+>   	cmd =3D (struct qxl_cursor_cmd *)qxl_release_map(qdev, release);
+>   	cmd->type =3D QXL_CURSOR_SET;
+> -	cmd->u.set.position.x =3D plane->state->crtc_x + fb->hot_x;
+> -	cmd->u.set.position.y =3D plane->state->crtc_y + fb->hot_y;
+> +	cmd->u.set.position.x =3D plane_state->crtc_x + fb->hot_x;
+> +	cmd->u.set.position.y =3D plane_state->crtc_y + fb->hot_y;
+>  =20
+>   	cmd->u.set.shape =3D qxl_bo_physical_address(qdev, qcrtc->cursor_bo,=
+ 0);
+>  =20
+> @@ -523,6 +522,113 @@ static int qxl_primary_apply_cursor(struct drm_pl=
+ane *plane)
+>   	return ret;
+>   }
+>  =20
+> +static int qxl_primary_move_cursor(struct qxl_device *qdev,
+> +				   struct drm_plane_state *plane_state)
+> +{
+> +	struct drm_framebuffer *fb =3D plane_state->fb;
+> +	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane_state->crtc);
+> +	struct qxl_cursor_cmd *cmd;
+> +	struct qxl_release *release;
+> +	int ret =3D 0;
+> +
+> +	if (!qcrtc->cursor_bo)
+> +		return 0;
+> +
+> +	ret =3D qxl_alloc_release_reserved(qdev, sizeof(*cmd),
+> +					 QXL_RELEASE_CURSOR_CMD,
+> +					 &release, NULL);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret =3D qxl_release_reserve_list(release, true);
+> +	if (ret) {
+> +		qxl_release_free(qdev, release);
+> +		return ret;
+> +	}
+> +
+> +	cmd =3D (struct qxl_cursor_cmd *)qxl_release_map(qdev, release);
+> +	cmd->type =3D QXL_CURSOR_MOVE;
+> +	cmd->u.position.x =3D plane_state->crtc_x + fb->hot_x;
+> +	cmd->u.position.y =3D plane_state->crtc_y + fb->hot_y;
+> +	qxl_release_unmap(qdev, release, &cmd->release_info);
+> +
+> +	qxl_release_fence_buffer_objects(release);
+> +	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+> +	return ret;
+> +}
+> +
+> +static struct qxl_bo *qxl_create_cursor(struct qxl_device *qdev,
+> +					struct qxl_bo *user_bo,
+> +					int hot_x, int hot_y)
+> +{
+> +	static const u32 size =3D 64 * 64 * 4;
+> +	struct qxl_bo *cursor_bo;
+> +	struct dma_buf_map cursor_map;
+> +	struct dma_buf_map user_map;
+> +	struct qxl_cursor cursor;
+> +	int ret;
+> +
+> +	if (!user_bo)
+> +		return NULL;
+> +
+> +	ret =3D qxl_bo_create(qdev, sizeof(struct qxl_cursor) + size,
+> +			    false, true, QXL_GEM_DOMAIN_VRAM, 1,
+> +			    NULL, &cursor_bo);
+> +	if (ret)
+> +		goto err;
+> +
+> +	ret =3D qxl_bo_vmap(cursor_bo, &cursor_map);
+> +	if (ret)
+> +		goto err_unref;
+> +
+> +	ret =3D qxl_bo_vmap(user_bo, &user_map);
+> +	if (ret)
+> +		goto err_unmap;
+> +
+> +	cursor.header.unique =3D 0;
+> +	cursor.header.type =3D SPICE_CURSOR_TYPE_ALPHA;
+> +	cursor.header.width =3D 64;
+> +	cursor.header.height =3D 64;
+> +	cursor.header.hot_spot_x =3D hot_x;
+> +	cursor.header.hot_spot_y =3D hot_y;
+> +	cursor.data_size =3D size;
+> +	cursor.chunk.next_chunk =3D 0;
+> +	cursor.chunk.prev_chunk =3D 0;
+> +	cursor.chunk.data_size =3D size;
+> +	if (cursor_map.is_iomem) {
+> +		memcpy_toio(cursor_map.vaddr_iomem,
+> +			    &cursor, sizeof(cursor));
+> +		memcpy_toio(cursor_map.vaddr_iomem + sizeof(cursor),
+> +			    user_map.vaddr, size);
+> +	} else {
+> +		memcpy(cursor_map.vaddr,
+> +		       &cursor, sizeof(cursor));
+> +		memcpy(cursor_map.vaddr + sizeof(cursor),
+> +		       user_map.vaddr, size);
+> +	}
+> +
+> +	qxl_bo_vunmap(user_bo);
+> +	qxl_bo_vunmap(cursor_bo);
+> +	return cursor_bo;
+> +
+> +err_unmap:
+> +	qxl_bo_vunmap(cursor_bo);
+> +err_unref:
+> +	qxl_bo_unpin(cursor_bo);
+> +	qxl_bo_unref(&cursor_bo);
+> +err:
+> +	return NULL;
+> +}
+> +
+> +static void qxl_free_cursor(struct qxl_bo *cursor_bo)
+> +{
+> +	if (!cursor_bo)
+> +		return;
+> +
+> +	qxl_bo_unpin(cursor_bo);
+> +	qxl_bo_unref(&cursor_bo);
+> +}
+> +
+>   static void qxl_primary_atomic_update(struct drm_plane *plane,
+>   				      struct drm_plane_state *old_state)
+>   {
+> @@ -543,7 +649,7 @@ static void qxl_primary_atomic_update(struct drm_pl=
+ane *plane,
+>   		if (qdev->primary_bo)
+>   			qxl_io_destroy_primary(qdev);
+>   		qxl_io_create_primary(qdev, primary);
+> -		qxl_primary_apply_cursor(plane);
+> +		qxl_primary_apply_cursor(qdev, plane->state);
+>   	}
+>  =20
+>   	if (bo->is_dumb)
+> @@ -574,124 +680,21 @@ static void qxl_primary_atomic_disable(struct dr=
+m_plane *plane,
+>   static void qxl_cursor_atomic_update(struct drm_plane *plane,
+>   				     struct drm_plane_state *old_state)
+>   {
+> -	struct drm_device *dev =3D plane->dev;
+> -	struct qxl_device *qdev =3D to_qxl(dev);
+> +	struct qxl_device *qdev =3D to_qxl(plane->dev);
+>   	struct drm_framebuffer *fb =3D plane->state->fb;
+> -	struct qxl_crtc *qcrtc =3D to_qxl_crtc(plane->state->crtc);
+> -	struct qxl_release *release;
+> -	struct qxl_cursor_cmd *cmd;
+> -	struct qxl_cursor *cursor;
+> -	struct drm_gem_object *obj;
+> -	struct qxl_bo *cursor_bo =3D NULL, *user_bo =3D NULL, *old_cursor_bo =
+=3D NULL;
+> -	int ret;
+> -	struct dma_buf_map user_map;
+> -	struct dma_buf_map cursor_map;
+> -	void *user_ptr;
+> -	int size =3D 64*64*4;
+> -
+> -	ret =3D qxl_alloc_release_reserved(qdev, sizeof(*cmd),
+> -					 QXL_RELEASE_CURSOR_CMD,
+> -					 &release, NULL);
+> -	if (ret)
+> -		return;
+>  =20
+>   	if (fb !=3D old_state->fb) {
+> -		obj =3D fb->obj[0];
+> -		user_bo =3D gem_to_qxl_bo(obj);
+> -
+> -		/* pinning is done in the prepare/cleanup framevbuffer */
+> -		ret =3D qxl_bo_vmap_locked(user_bo, &user_map);
+> -		if (ret)
+> -			goto out_free_release;
+> -		user_ptr =3D user_map.vaddr; /* TODO: Use mapping abstraction proper=
+ly */
+> -
+> -		ret =3D qxl_alloc_bo_reserved(qdev, release,
+> -					    sizeof(struct qxl_cursor) + size,
+> -					    &cursor_bo);
+> -		if (ret)
+> -			goto out_kunmap;
+> -
+> -		ret =3D qxl_bo_pin(cursor_bo);
+> -		if (ret)
+> -			goto out_free_bo;
+> -
+> -		ret =3D qxl_release_reserve_list(release, true);
+> -		if (ret)
+> -			goto out_unpin;
+> -
+> -		ret =3D qxl_bo_vmap_locked(cursor_bo, &cursor_map);
+> -		if (ret)
+> -			goto out_backoff;
+> -		if (cursor_map.is_iomem) /* TODO: Use mapping abstraction properly *=
+/
+> -			cursor =3D (struct qxl_cursor __force *)cursor_map.vaddr_iomem;
+> -		else
+> -			cursor =3D (struct qxl_cursor *)cursor_map.vaddr;
+> -
+> -		cursor->header.unique =3D 0;
+> -		cursor->header.type =3D SPICE_CURSOR_TYPE_ALPHA;
+> -		cursor->header.width =3D 64;
+> -		cursor->header.height =3D 64;
+> -		cursor->header.hot_spot_x =3D fb->hot_x;
+> -		cursor->header.hot_spot_y =3D fb->hot_y;
+> -		cursor->data_size =3D size;
+> -		cursor->chunk.next_chunk =3D 0;
+> -		cursor->chunk.prev_chunk =3D 0;
+> -		cursor->chunk.data_size =3D size;
+> -		memcpy(cursor->chunk.data, user_ptr, size);
+> -		qxl_bo_vunmap_locked(cursor_bo);
+> -		qxl_bo_vunmap_locked(user_bo);
+> -
+> -		cmd =3D (struct qxl_cursor_cmd *) qxl_release_map(qdev, release);
+> -		cmd->u.set.visible =3D 1;
+> -		cmd->u.set.shape =3D qxl_bo_physical_address(qdev,
+> -							   cursor_bo, 0);
+> -		cmd->type =3D QXL_CURSOR_SET;
+> -
+> -		old_cursor_bo =3D qcrtc->cursor_bo;
+> -		qcrtc->cursor_bo =3D cursor_bo;
+> -		cursor_bo =3D NULL;
+> +		qxl_primary_apply_cursor(qdev, plane->state);
+>   	} else {
+> -
+> -		ret =3D qxl_release_reserve_list(release, true);
+> -		if (ret)
+> -			goto out_free_release;
+> -
+> -		cmd =3D (struct qxl_cursor_cmd *) qxl_release_map(qdev, release);
+> -		cmd->type =3D QXL_CURSOR_MOVE;
+> +		qxl_primary_move_cursor(qdev, plane->state);
+>   	}
+> -
+> -	cmd->u.position.x =3D plane->state->crtc_x + fb->hot_x;
+> -	cmd->u.position.y =3D plane->state->crtc_y + fb->hot_y;
+> -
+> -	qxl_release_unmap(qdev, release, &cmd->release_info);
+> -	qxl_release_fence_buffer_objects(release);
+> -	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+> -
+> -	if (old_cursor_bo !=3D NULL)
+> -		qxl_bo_unpin(old_cursor_bo);
+> -	qxl_bo_unref(&old_cursor_bo);
+> -	qxl_bo_unref(&cursor_bo);
+> -
+> -	return;
+> -
+> -out_backoff:
+> -	qxl_release_backoff_reserve_list(release);
+> -out_unpin:
+> -	qxl_bo_unpin(cursor_bo);
+> -out_free_bo:
+> -	qxl_bo_unref(&cursor_bo);
+> -out_kunmap:
+> -	qxl_bo_vunmap_locked(user_bo);
+> -out_free_release:
+> -	qxl_release_free(qdev, release);
+> -	return;
+> -
+>   }
+>  =20
+>   static void qxl_cursor_atomic_disable(struct drm_plane *plane,
+>   				      struct drm_plane_state *old_state)
+>   {
+>   	struct qxl_device *qdev =3D to_qxl(plane->dev);
+> +	struct qxl_crtc *qcrtc;
+>   	struct qxl_release *release;
+>   	struct qxl_cursor_cmd *cmd;
+>   	int ret;
+> @@ -714,6 +717,10 @@ static void qxl_cursor_atomic_disable(struct drm_p=
+lane *plane,
+>  =20
+>   	qxl_release_fence_buffer_objects(release);
+>   	qxl_push_cursor_ring_release(qdev, release, QXL_CMD_CURSOR, false);
+> +
+> +	qcrtc =3D to_qxl_crtc(old_state->crtc);
+> +	qxl_free_cursor(qcrtc->cursor_bo);
+> +	qcrtc->cursor_bo =3D NULL;
+>   }
+>  =20
+>   static void qxl_update_dumb_head(struct qxl_device *qdev,
+> @@ -822,6 +829,17 @@ static int qxl_plane_prepare_fb(struct drm_plane *=
+plane,
+>   		qxl_prepare_shadow(qdev, user_bo, new_state->crtc->index);
+>   	}
+>  =20
+> +	if (plane->type =3D=3D DRM_PLANE_TYPE_CURSOR &&
+> +	    plane->state->fb !=3D new_state->fb) {
+> +		struct qxl_crtc *qcrtc =3D to_qxl_crtc(new_state->crtc);
+> +		struct qxl_bo *old_cursor_bo =3D qcrtc->cursor_bo;
+> +
+> +		qcrtc->cursor_bo =3D qxl_create_cursor(qdev, user_bo,
+> +						     new_state->fb->hot_x,
+> +						     new_state->fb->hot_y);
+> +		qxl_free_cursor(old_cursor_bo);
+> +	}
+> +
+>   	return qxl_bo_pin(user_bo);
+>   }
+>  =20
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--x9qCAZEFpMSQcn5cRKCOnzVd9PqQm2ttB--
+
+--ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAuHzIFAwAAAAAACgkQlh/E3EQov+Ad
+ZhAAmURmYv4JTvF6N6MEa2GNyXvw6BKxt1E45y4UR6TOx2HITNijCYsxA1mFBie8Eho2n3t3umS0
+o098fbCG45p2kXbe+mRrVASXuKjcMOTxzGrwjB/y7DS02n0dmDCS0bJEqTljLtGgDOnnbD0hpSR+
+j1uB/fwxWLvxbAU9vdqwWr78s3v41PiWIb+/gaC6JW4RLuRoIcHM0TYtZqu+cupiWjVVLyt9rMkz
+3rX4Z9JLMbLgtOAwsxcPIqUoE1Ckxk7gWdm50UJ7REDdOxIu4tYHb8wxQiyTK+YsB4KEzPc5h8Nb
+azmnIVhc9zF6SlOA6GWF/pbPwGLMtAe6dR6PDQbn/7rEiiDzLUnKOe+Z0mQlXb8lmz6V0phekztc
+nyHlHjrJdCskiLeUJPyEisVZx5FIOJ1c/7kTkZcX0YLrSelQu3S33VID2t8P3k0sMbNaU9ONztpX
+EBXMeIu8+tRll8lGUrziW0FerssKBH2I1k/8/hr9jZwb3T+FnHMk0/VoPN9kvRfknWG0VIe5F8p5
+0ZfJ5BMOqWpd5uaea6pZcsBIGxK29lTN+FTM5w8y09BPXtwbw9zLkTsAVE+zCERPpN5tIFItOEVv
+cIXLGfgrmNtd43WGuIBO23nw2sTFyUGokl27On3Q0Hyx5diajvwDwnMvkWuC6Afc3abD+HU7jHny
+Qv8=
+=e5fd
+-----END PGP SIGNATURE-----
+
+--ApDBxD4nqqySV561QZ7abU2zXJeqh4yMJ--
