@@ -2,205 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D2B31EDBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CFD031EDC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:58:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhBRRya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54336 "EHLO
+        id S234884AbhBRR5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:57:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230439AbhBRPJY (ORCPT
+        with ESMTP id S231387AbhBRPPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:09:24 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A983C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:08:17 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id p6so1021807qvm.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:08:16 -0800 (PST)
+        Thu, 18 Feb 2021 10:15:51 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037FBC061574;
+        Thu, 18 Feb 2021 07:15:07 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id x4so4278382wmi.3;
+        Thu, 18 Feb 2021 07:15:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JSZMhQtFwQmcHJuRQN1k7+NRHL2GRstbwzpb8C4ob/c=;
-        b=fE1sCg7gc4lQ/0DD/xLqQyrfl13aEIdr9kAsgJJ27nQMZaub+6324yTe905ZwAtmX9
-         6v+SDXlrxNn1LlswVlFpJCUOetY9gZzJy8mo11vJH1raarXPf81fYovt1b+h8OwiZnVZ
-         fTtB7kNfZD14wMVfjnXzfzRLrUm/XbdQg6EWxLxrmL9uHxSaVtQAEiYffuwoSJx/d3yS
-         4JhoHod/R7dwtZtR+HQ5xI7cgJsmhUamEJBjL/QdREVTfkmnH0J3PbEkgq2Mcm4S0kQy
-         0/VERD7LBnird+jxhRZZYd3M3FB8hqiBuOv9OgWgnQXEsfLXSHg8hRpKx/NfsCkeLf+o
-         Bdyw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4oZWeumg03d8Z1y5Lnt1KGkf0PD/+G44xxBEli+me8o=;
+        b=vW8TmiLiGX4AAFg/14PsYui7gubBWEMlEkNvBVNmyfwt0+DdrCN6C98O7iPgaxvNKJ
+         fltwCxn0bXoofh7LLDh81dLzYDEyJYpu6RIscxwmcEv5nJnpXKf4mPJ9x0guRRZPGbik
+         dqsTQ6Sda/IVEUZJXPKgOqKlxtQblJWDFaUCMGgCj8oszmAgvQGEiLt+BcgXQR+Y4E1S
+         hZcuSGC3YehlehZr/JtVr8E5dy44XS/T9jDXqxkO2cIVJDpzYC26TNeXyIdxGHBNbYCa
+         MRHA0IoYAogZc3bYDBlL+r5I5qhILBOGTYF7GfIHslHg/hNCFYO9/tRtGeHLqX0yJXWa
+         Z1vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JSZMhQtFwQmcHJuRQN1k7+NRHL2GRstbwzpb8C4ob/c=;
-        b=YeZJ+qTV/qBDQQCVotzguxSVHbK6Ug2+61YX/TZKvOHIydhdnpmbvG73vYKdt635fU
-         r3lZU4ArPJ0VKATZWtJkIm6ki76dmjCJLUSJJOC5rXV0OFGtDS/6QH3zxY1UoFQsEBIu
-         o1ENQ50IPsQqihqp6ZQEf8SiJYghPkE7uIRlv6ruJ+iY6bgRKM5Rq1K6G2Tb/lXh/adR
-         NEnbmyq3UiX2x2Kx95KhaWfYoOwSgKr/oxB8jWw21REwA5q8H9WOssgbEyYC7br6dUbr
-         yZQCcz7MB4SVsmD0WCjoZtv8tu0WjXT47W7ii8/LCdskELWuvZfZs7uqnOrCmu+GNuFp
-         w7UA==
-X-Gm-Message-State: AOAM532gg0aa0Ovf8/IM4eLYu62njKkYAvjDkGDncVPBBW8UdAkTTorj
-        uQJmvvI4ngJwrsk1pF+vIbvZ1+X7zvjb33Wl7CL1Vg==
-X-Google-Smtp-Source: ABdhPJxVVbnGNWMd3ujkcA2sMnOF/xQscxlRWIR0Wf4FXSfzuX2BTwWf+o1aOYkmpP6g+Ako3AIm2KfE6mzJzWqTr2I=
-X-Received: by 2002:a0c:eb92:: with SMTP id x18mr4534399qvo.10.1613660896100;
- Thu, 18 Feb 2021 07:08:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4oZWeumg03d8Z1y5Lnt1KGkf0PD/+G44xxBEli+me8o=;
+        b=OMA+2PFlWu3N+yKwH7nTSyFtJgzvJEZNqJCdFayafd9GLVIME132QQSZoVsMRi94d+
+         Byvf1SY/jig7OVqJraqHDhMWFJya0Seh1YOlyaS4C3y0Q5SkxLTvHInHJtNFfc4+Oghg
+         sLxfPhRmCDPelzJBZmOrPQ6us4gsG3RSR+QYMkUIu4B76cTcBWTu5vllkM4PKyC0QBjs
+         DVpr55v7sIik9SAKA9UNCcFpcQwPvQ4Ded6khRJlOmWTsq8FPvBqKIMPtxiZGoyuiX6B
+         YfmINwhO87sqTRvX1uY1aXvyMcDBZmYqp+CsewPx4xQskXFjrbLrrLUrBTeCJcuR1qlW
+         Lnbg==
+X-Gm-Message-State: AOAM531A+unhTCsSxnOkd14KD6nrnjo0vuMifm7ibcJsEQmvPII0f189
+        1IyNPM/9cjt+y695+cCNU6UJkx4lt984sw==
+X-Google-Smtp-Source: ABdhPJwtIJqjqzAGT9hXk10R/Qa398m5v2JYPqfHkS4B5i+SEsUvq1nXBulTGEu+ecSq189+DIW5sw==
+X-Received: by 2002:a05:600c:3516:: with SMTP id h22mr4076388wmq.35.1613661305650;
+        Thu, 18 Feb 2021 07:15:05 -0800 (PST)
+Received: from localhost.localdomain ([170.253.51.130])
+        by smtp.googlemail.com with ESMTPSA id k128sm3363760wmf.42.2021.02.18.07.15.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 07:15:05 -0800 (PST)
+From:   Alejandro Colomar <alx.manpages@gmail.com>
+To:     mtk.manpages@gmail.com
+Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
+        linux-man@vger.kernel.org, libc-alpha@sourceware.org,
+        Florian Weimer <fweimer@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC v2] execve.2: SYNOPSIS: Document both glibc wrapper and kernel sycalls
+Date:   Thu, 18 Feb 2021 16:13:42 +0100
+Message-Id: <20210218151341.51095-1-alx.manpages@gmail.com>
+X-Mailer: git-send-email 2.30.1.721.g45526154a5
+In-Reply-To: <938df2c0-04b5-f6a4-79c3-b8fe09973828@gmail.com>
+References: <938df2c0-04b5-f6a4-79c3-b8fe09973828@gmail.com>
 MIME-Version: 1.0
-References: <1613652123-19021-1-git-send-email-stefanc@marvell.com>
-In-Reply-To: <1613652123-19021-1-git-send-email-stefanc@marvell.com>
-From:   Marcin Wojtas <mw@semihalf.com>
-Date:   Thu, 18 Feb 2021 16:08:05 +0100
-Message-ID: <CAPv3WKfsmJuV909D+os3ukH5F3X1oRPQrjD6y_t7R7U-AONxFw@mail.gmail.com>
-Subject: Re: [net-next] net: mvpp2: skip RSS configurations on loopback port
-To:     Stefan Chulski <stefanc@marvell.com>
-Cc:     netdev <netdev@vger.kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>, nadavh@marvell.com,
-        Yan Markman <ymarkman@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Russell King <rmk+kernel@armlinux.org.uk>, atenart@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Until now, the manual pages have (usually) documented only either
+the glibc (or another library) wrapper for a syscall, or the
+kernel syscall (this only when there's not a wrapper).
 
+Let's document both prototypes, which many times are slightly
+different.  This will solve a problem where documenting glibc
+wrappers implied shadowing the documentation for the raw syscall.
 
-czw., 18 lut 2021 o 13:42 <stefanc@marvell.com> napisa=C5=82(a):
->
-> From: Stefan Chulski <stefanc@marvell.com>
->
-> PPv2 loopback port doesn't support RSS, so we should
-> skip RSS configurations for this port.
->
-> Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-> ---
->  drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 25 +++++++++++--------=
--
->  1 file changed, 14 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/ne=
-t/ethernet/marvell/mvpp2/mvpp2_main.c
-> index 10c17d1..d415447 100644
-> --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-> @@ -4699,9 +4699,10 @@ static void mvpp2_irqs_deinit(struct mvpp2_port *p=
-ort)
->         }
->  }
->
-> -static bool mvpp22_rss_is_supported(void)
-> +static bool mvpp22_rss_is_supported(struct mvpp2_port *port)
->  {
-> -       return queue_mode =3D=3D MVPP2_QDIST_MULTI_MODE;
-> +       return (queue_mode =3D=3D MVPP2_QDIST_MULTI_MODE) &&
-> +               !(port->flags & MVPP2_F_LOOPBACK);
->  }
->
->  static int mvpp2_open(struct net_device *dev)
-> @@ -5513,7 +5514,7 @@ static int mvpp2_ethtool_get_rxnfc(struct net_devic=
-e *dev,
->         struct mvpp2_port *port =3D netdev_priv(dev);
->         int ret =3D 0, i, loc =3D 0;
->
-> -       if (!mvpp22_rss_is_supported())
-> +       if (!mvpp22_rss_is_supported(port))
->                 return -EOPNOTSUPP;
->
->         switch (info->cmd) {
-> @@ -5548,7 +5549,7 @@ static int mvpp2_ethtool_set_rxnfc(struct net_devic=
-e *dev,
->         struct mvpp2_port *port =3D netdev_priv(dev);
->         int ret =3D 0;
->
-> -       if (!mvpp22_rss_is_supported())
-> +       if (!mvpp22_rss_is_supported(port))
->                 return -EOPNOTSUPP;
->
->         switch (info->cmd) {
-> @@ -5569,7 +5570,9 @@ static int mvpp2_ethtool_set_rxnfc(struct net_devic=
-e *dev,
->
->  static u32 mvpp2_ethtool_get_rxfh_indir_size(struct net_device *dev)
->  {
-> -       return mvpp22_rss_is_supported() ? MVPP22_RSS_TABLE_ENTRIES : 0;
-> +       struct mvpp2_port *port =3D netdev_priv(dev);
-> +
-> +       return mvpp22_rss_is_supported(port) ? MVPP22_RSS_TABLE_ENTRIES :=
- 0;
->  }
->
->  static int mvpp2_ethtool_get_rxfh(struct net_device *dev, u32 *indir, u8=
- *key,
-> @@ -5578,7 +5581,7 @@ static int mvpp2_ethtool_get_rxfh(struct net_device=
- *dev, u32 *indir, u8 *key,
->         struct mvpp2_port *port =3D netdev_priv(dev);
->         int ret =3D 0;
->
-> -       if (!mvpp22_rss_is_supported())
-> +       if (!mvpp22_rss_is_supported(port))
->                 return -EOPNOTSUPP;
->
->         if (indir)
-> @@ -5596,7 +5599,7 @@ static int mvpp2_ethtool_set_rxfh(struct net_device=
- *dev, const u32 *indir,
->         struct mvpp2_port *port =3D netdev_priv(dev);
->         int ret =3D 0;
->
-> -       if (!mvpp22_rss_is_supported())
-> +       if (!mvpp22_rss_is_supported(port))
->                 return -EOPNOTSUPP;
->
->         if (hfunc !=3D ETH_RSS_HASH_NO_CHANGE && hfunc !=3D ETH_RSS_HASH_=
-CRC32)
-> @@ -5617,7 +5620,7 @@ static int mvpp2_ethtool_get_rxfh_context(struct ne=
-t_device *dev, u32 *indir,
->         struct mvpp2_port *port =3D netdev_priv(dev);
->         int ret =3D 0;
->
-> -       if (!mvpp22_rss_is_supported())
-> +       if (!mvpp22_rss_is_supported(port))
->                 return -EOPNOTSUPP;
->         if (rss_context >=3D MVPP22_N_RSS_TABLES)
->                 return -EINVAL;
-> @@ -5639,7 +5642,7 @@ static int mvpp2_ethtool_set_rxfh_context(struct ne=
-t_device *dev,
->         struct mvpp2_port *port =3D netdev_priv(dev);
->         int ret;
->
-> -       if (!mvpp22_rss_is_supported())
-> +       if (!mvpp22_rss_is_supported(port))
->                 return -EOPNOTSUPP;
->
->         if (hfunc !=3D ETH_RSS_HASH_NO_CHANGE && hfunc !=3D ETH_RSS_HASH_=
-CRC32)
-> @@ -5956,7 +5959,7 @@ static int mvpp2_port_init(struct mvpp2_port *port)
->         mvpp2_cls_oversize_rxq_set(port);
->         mvpp2_cls_port_config(port);
->
-> -       if (mvpp22_rss_is_supported())
-> +       if (mvpp22_rss_is_supported(port))
->                 mvpp22_port_rss_init(port);
->
->         /* Provide an initial Rx packet size */
-> @@ -6861,7 +6864,7 @@ static int mvpp2_port_probe(struct platform_device =
-*pdev,
->         dev->hw_features |=3D features | NETIF_F_RXCSUM | NETIF_F_GRO |
->                             NETIF_F_HW_VLAN_CTAG_FILTER;
->
-> -       if (mvpp22_rss_is_supported()) {
-> +       if (mvpp22_rss_is_supported(port)) {
->                 dev->hw_features |=3D NETIF_F_RXHASH;
->                 dev->features |=3D NETIF_F_NTUPLE;
->         }
-> --
-> 1.9.1
->
+Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+---
+ man2/execve.2     | 15 +++++++++++++--
+ man2/membarrier.2 | 14 +++++---------
+ 2 files changed, 18 insertions(+), 11 deletions(-)
 
-Reviewed-by: Marcin Wojtas <mw@semihalf.com>
+diff --git a/man2/execve.2 b/man2/execve.2
+index 027a0efd2..318c71c85 100644
+--- a/man2/execve.2
++++ b/man2/execve.2
+@@ -41,8 +41,8 @@ execve \- execute program
+ .nf
+ .B #include <unistd.h>
+ .PP
+-.BI "int execve(const char *" pathname ", char *const " argv [],
+-.BI "           char *const " envp []);
++.BI "int execve(const char *" pathname ",
++.BI "           char *const " argv "[], char *const " envp []);
+ .fi
+ .SH DESCRIPTION
+ .BR execve ()
+@@ -772,6 +772,17 @@ Thus, this argument list was not directly usable in a further
+ .BR exec ()
+ call.
+ Since UNIX\ V7, both are NULL.
++.SS C library/kernel differences
++.RS 4
++.nf
++/* Kernel system call: */
++.BR "#include <sys/syscall.h>" "        /* For " SYS_* " constants */"
++.B #include <unistd.h>
++.PP
++.BI "int syscall(SYS_execve, const char *" pathname ,
++.BI "            const char *const " argv "[], const char *const " envp []);
++.fi
++.RE
+ .\"
+ .\" .SH BUGS
+ .\" Some Linux versions have failed to check permissions on ELF
+diff --git a/man2/membarrier.2 b/man2/membarrier.2
+index 173195484..25d6add77 100644
+--- a/man2/membarrier.2
++++ b/man2/membarrier.2
+@@ -28,13 +28,12 @@ membarrier \- issue memory barriers on a set of threads
+ .SH SYNOPSIS
+ .nf
+ .PP
+-.B #include <linux/membarrier.h>
++.BR "#include <linux/membarrier.h>" "   /* For " MEMBARRIER_* " constants */"
++.BR "#include <sys/syscall.h>" "        /* For " SYS_* " constants */"
++.B #include <unistd.h>
+ .PP
+-.BI "int membarrier(int " cmd ", unsigned int " flags ", int " cpu_id );
++.BI "int syscall(SYS_membarrier, int " cmd ", unsigned int " flags ", int " cpu_id );
+ .fi
+-.PP
+-.IR Note :
+-There is no glibc wrapper for this system call; see NOTES.
+ .SH DESCRIPTION
+ The
+ .BR membarrier ()
+@@ -295,7 +294,7 @@ was:
+ .PP
+ .in +4n
+ .EX
+-.BI "int membarrier(int " cmd ", int " flags );
++.BI "int syscall(SYS_membarrier, int " cmd ", int " flags );
+ .EE
+ .in
+ .SH CONFORMING TO
+@@ -322,9 +321,6 @@ Examples where
+ .BR membarrier ()
+ can be useful include implementations
+ of Read-Copy-Update libraries and garbage collectors.
+-.PP
+-Glibc does not provide a wrapper for this system call; call it using
+-.BR syscall (2).
+ .SH EXAMPLES
+ Assuming a multithreaded application where "fast_path()" is executed
+ very frequently, and where "slow_path()" is executed infrequently, the
+-- 
+2.30.1.721.g45526154a5
 
-Thanks!
