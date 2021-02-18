@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4AEB31EC33
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BA431EC38
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhBRQWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:22:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231243AbhBRNiD (ORCPT
+        id S233296AbhBRQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:25:55 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33088 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231307AbhBRNj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:38:03 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D46DC061574;
-        Thu, 18 Feb 2021 05:37:16 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 806163FA55;
-        Thu, 18 Feb 2021 13:37:09 +0000 (UTC)
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-19-marcan@marcan.st>
- <20210215182651.rjte67udhk3vhbsk@kozik-lap>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH v2 18/25] tty: serial: samsung_tty: add s3c24xx_port_type
-Message-ID: <a48c407c-67ce-a46f-5678-11a5426cab50@marcan.st>
-Date:   Thu, 18 Feb 2021 22:37:03 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 18 Feb 2021 08:39:58 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 54CDC1C0B96; Thu, 18 Feb 2021 14:37:33 +0100 (CET)
+Date:   Thu, 18 Feb 2021 14:37:33 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
+        kernel@pengutronix.de, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11] leds: trigger: implement a tty trigger
+Message-ID: <20210218133733.GB12948@duo.ucw.cz>
+References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
+ <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
+ <X/8cwD51DYhzRdDO@kroah.com>
+ <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210215182651.rjte67udhk3vhbsk@kozik-lap>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="vGgW1X5XWziG23Ko"
+Content-Disposition: inline
+In-Reply-To: <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/02/2021 03.26, Krzysztof Kozlowski wrote:
->> This removes s3c24xx_serial_has_interrupt_mask, which was just checking
->> for a specific type anyway, and adds the ucon_mask port info member to
->> avoid having S3C2440 as a distinct type.
-> 
-> Please split setting the ucon_mask to separate patch. It's a nice
-> code simplification on its own.
 
-Done for v3.
+--vGgW1X5XWziG23Ko
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->>   	/* Unmask Tx interrupt */
->> -	if (s3c24xx_serial_has_interrupt_mask(port))
->> -		s3c24xx_clear_bit(port, S3C64XX_UINTM_TXD,
->> -				  S3C64XX_UINTM);
->> -	else
->> +	switch (ourport->info->type) {
->> +	case TYPE_S3C6400:
->> +		s3c24xx_clear_bit(port, S3C64XX_UINTM_TXD, S3C64XX_UINTM);
-> 
-> Please do not re-wrap. It makes reviewing more difficult. You can
-> perform proper re-wrapping as a separate cleanup patch.
+Hi!
 
->>   	if (ourport->rx_enabled) {
->>   		dev_dbg(port->dev, "stopping rx\n");
->> -		if (s3c24xx_serial_has_interrupt_mask(port))
->> -			s3c24xx_set_bit(port, S3C64XX_UINTM_RXD,
->> -					S3C64XX_UINTM);
-> 
-> The same.
+Close, but see below:
 
-Reverted those two lines for v3.
+> +static ssize_t ttyname_store(struct device *dev,
+> +			     struct device_attribute *attr, const char *buf,
+> +			     size_t size)
+> +{
+> +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
+> +	char *ttyname;
+> +	ssize_t ret =3D size;
+> +	bool running;
+> +
+> +	if (size > 0 && buf[size - 1] =3D=3D '\n')
+> +		size -=3D 1;
+> +
+> +	if (size) {
+> +		ttyname =3D kmemdup_nul(buf, size, GFP_KERNEL);
+> +		if (!ttyname) {
+> +			ret =3D -ENOMEM;
+> +			goto out_unlock;
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Unlock without a lock:
+
+> +out_unlock:
+> +	mutex_unlock(&trigger_data->mutex);
+> +
+> +	if (ttyname && !running)
+> +		ledtrig_tty_restart(trigger_data);
+> +
+> +	return ret;
+> +}
+
+> +
+> +		tty =3D tty_kopen_shared(devno);
+> +		if (IS_ERR(tty) || !tty)
+> +			/* What to do? retry or abort */
+> +			goto out;
+
+Abort would make sense to me.
+
+> +	if (icount.rx !=3D trigger_data->rx ||
+> +	    icount.tx !=3D trigger_data->tx) {
+> +		led_set_brightness(trigger_data->led_cdev, LED_ON);
+
+Please use _sync version.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--vGgW1X5XWziG23Ko
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC5tnAAKCRAw5/Bqldv6
+8pRZAKDDhPaKHu/d3L/BzvQkd/cxuh0RdACeI7qjDXvHzWha9QIrUjivRsnhSV8=
+=5t8h
+-----END PGP SIGNATURE-----
+
+--vGgW1X5XWziG23Ko--
