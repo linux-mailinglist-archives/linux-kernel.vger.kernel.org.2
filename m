@@ -2,85 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA5B31EE18
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC27C31EE1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhBRSQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:16:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34888 "EHLO
+        id S232237AbhBRSSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:18:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231824AbhBRPuL (ORCPT
+        with ESMTP id S232672AbhBRPwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:50:11 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3326CC0613D6;
-        Thu, 18 Feb 2021 07:49:29 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id z68so1403861pgz.0;
-        Thu, 18 Feb 2021 07:49:29 -0800 (PST)
+        Thu, 18 Feb 2021 10:52:37 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E727C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:51:18 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id d8so6428440ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:51:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q7ZqDu74I7s4QHSiTCiGk48DBodjMdCaiE76tGdwtC4=;
-        b=nrHlxG8InwSr9OaqWtoOCZuwk4cda9K9cRCy3lymuWuM7wIyMzUkqsNycN8AAQ0m6Q
-         fcQNLJKBoTtKMdiSrZN90o4s24veiXOTGSUeaIAqKaHEDC9+TwzR88oKyWgk63kDyAvR
-         cEJMGmZgayF3NJ5sSiuaG481q6tV1v5mt9NlZL1vKZwU1tUMCljT4wfWCarEXmNJuUeV
-         WQGqRLREORM1uraQPJ71fSXQSqW28ElzrnmtXeaUm0cAoUWiMw2GX67RfSpEtF5vHLKf
-         kvB2B5i6uquhYMxm8cTmpHwuonokJ1mSuY00c0BYxrCtSYpSl0MhBSkvavOqTLyItczl
-         EDcQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vRWwBoukUWpf3kaTTQrlN4IVGff71cdIbdnfQeS/5Ko=;
+        b=ZVoi+oDtUzlcdEftLSGeZhPJ2XfgGG18MLP6hZBH6xqL/SbYLgcIyQcpiW7B3eIVHg
+         JTUcIBighF7XrK/6WhbfwshV0nZbSMWBiaUICBZhk3Zz6+RZ4mgQXDccbbV+Ow6Cca7x
+         HPHX1sO/l0NCL0FBm5ZR3SVOcOtNa3KF4lq3tJX8OcmA4w7fxoo69WX2hWcOlOlwBIpV
+         RM36Jnkn3ChZmluCRMIg0UHhZsykSrg5Uo4Ygwbd/nJYp9c3aBYyL544OtNbLVYi5oxD
+         tlih6vyHpTm8EAkuDky1TDHxk5jpzgSpksejmXWGu07y959dgwi9LT3ZSSTET4WstBVK
+         /stA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q7ZqDu74I7s4QHSiTCiGk48DBodjMdCaiE76tGdwtC4=;
-        b=USx1ZMmliW11GjwTgwbGKg7keTiv3PwcxrZT1HGybkHpnV79qMXR38sGUEmEzd0AMl
-         xx16GKV/KgZ+RB5MeOiTGM3tyrXdIUEpPa1C9YLqPIC7oUlF4t0Lcvp/gJXu0j9bCSjP
-         qRUSgyR7xSp5ya34Min8jrvCkfCbkiXF3wx2m46PFJPcmGwRTeqWn276IArXqFcJDVde
-         jwjnSp332dtjLlJ9LfgAkJ6B+/Ur2oa7XNfL9OJEadbxOtDwgsKyWthG7JtkPWNl4XiV
-         rIm+lCB/2nUgePiVbYDIMjh/DnMgvWRBB3fNtxHOarJ6iuM7n1/0NfvXsi/Qorj7U+cU
-         liWQ==
-X-Gm-Message-State: AOAM531Hsioj1C4Z37bAtE5j1ScNJqE9gdh6DvYW+9pUs5PWWlunYjz6
-        IQWbLh7eT0kQbq5jBwx2Ozw=
-X-Google-Smtp-Source: ABdhPJw7ZT2AO0U4ahlqJkQn5M2yWku9+GvK34RXuC/8ZNyZ8K8EzDOpzVTUiEYMpySrnPWNivZXLg==
-X-Received: by 2002:a05:6a00:8f:b029:1e8:6975:395e with SMTP id c15-20020a056a00008fb02901e86975395emr4858185pfj.55.1613663368791;
-        Thu, 18 Feb 2021 07:49:28 -0800 (PST)
-Received: from localhost (185.212.56.4.16clouds.com. [185.212.56.4])
-        by smtp.gmail.com with ESMTPSA id v1sm5869261pjh.29.2021.02.18.07.49.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 07:49:28 -0800 (PST)
-From:   Dejin Zheng <zhengdejin5@gmail.com>
-To:     corbet@lwn.net, linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Dejin Zheng <zhengdejin5@gmail.com>
-Subject: [PATCH v1] Documentation: devres: add missing entry for pcim_set_mwi()
-Date:   Thu, 18 Feb 2021 23:49:20 +0800
-Message-Id: <20210218154920.799515-1-zhengdejin5@gmail.com>
-X-Mailer: git-send-email 2.25.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vRWwBoukUWpf3kaTTQrlN4IVGff71cdIbdnfQeS/5Ko=;
+        b=stNOZ027IZ7+oc2SKG2cLwhiStZVXPdnTBunozoLrv/slYTPEvHP/ReA8PC/4LI/4Q
+         6TiU8rV0pmgnYgbkj1LyChCpm9kSxeQeqkpwQ/upgYJ0jGtR3eFM1pKPQfrXm+rbFtlL
+         TZ715u16BPrtxcBZStasR3K3x9K6azIc1j++Rsgjgq875fbVZFmZXvddvhiJVn31ZnQX
+         RCZcOAHvmnVebpb7Z2ZPkzWDjTWOdF5iZbUB55/ePGt0eJSQFfqsO7g5/LRqEdTJCfK2
+         UxxtaP9EbXCnaN594V9T1crXt/cMuQl03qXkFwCv/yOkh2Va5L6Zu/wnFfIHPxJ/LPUQ
+         jJFg==
+X-Gm-Message-State: AOAM532wQK+Pb6yccK3bIqBZxoEunQHfLbrgQ9c5wdgNjFXD5hRKiOXJ
+        dvnmbPA2a8wzqarQi9lWjlECsDcPMyE=
+X-Google-Smtp-Source: ABdhPJzNrYNsEiryeX42XZa3hzTx9KyA3LgRa7pGbNbkTpg207tfQqGq0ygSAb1Fy6rwH14MQpK7wQ==
+X-Received: by 2002:a17:907:da9:: with SMTP id go41mr4666596ejc.326.1613663476797;
+        Thu, 18 Feb 2021 07:51:16 -0800 (PST)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
+        by smtp.gmail.com with ESMTPSA id o4sm2987319edw.78.2021.02.18.07.51.14
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 07:51:15 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id b3so3514414wrj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:51:14 -0800 (PST)
+X-Received: by 2002:a5d:4b84:: with SMTP id b4mr5020550wrt.50.1613663474248;
+ Thu, 18 Feb 2021 07:51:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
+In-Reply-To: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 18 Feb 2021 10:50:37 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com>
+Message-ID: <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com>
+Subject: Re: [PATCH] net: check if protocol extracted by virtio_net_hdr_set_proto
+ is correct
+To:     Balazs Nemeth <bnemeth@redhat.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pcim_set_mwi() should be documented in devres.rst.
-So add the missing entry.
+On Thu, Feb 18, 2021 at 10:01 AM Balazs Nemeth <bnemeth@redhat.com> wrote:
+>
+> For gso packets, virtio_net_hdr_set_proto sets the protocol (if it isn't
+> set) based on the type in the virtio net hdr, but the skb could contain
+> anything since it could come from packet_snd through a raw socket. If
+> there is a mismatch between what virtio_net_hdr_set_proto sets and
+> the actual protocol, then the skb could be handled incorrectly later
+> on by gso.
+>
+> The network header of gso packets starts at 14 bytes, but a specially
+> crafted packet could fool the call to skb_flow_dissect_flow_keys_basic
+> as the network header offset in the skb could be incorrect.
+> Consequently, EINVAL is not returned.
+>
+> There are even packets that can cause an infinite loop. For example, a
+> packet with ethernet type ETH_P_MPLS_UC (which is unnoticed by
+> virtio_net_hdr_to_skb) that is sent to a geneve interface will be
+> handled by geneve_build_skb. In turn, it calls
+> udp_tunnel_handle_offloads which then calls skb_reset_inner_headers.
+> After that, the packet gets passed to mpls_gso_segment. That function
+> calculates the mpls header length by taking the difference between
+> network_header and inner_network_header. Since the two are equal
+> (due to the earlier call to skb_reset_inner_headers), it will calculate
+> a header of length 0, and it will not pull any headers. Then, it will
+> call skb_mac_gso_segment which will again call mpls_gso_segment, etc...
+> This leads to the infinite loop.
+>
+> For that reason, address the root cause of the issue: don't blindly
+> trust the information provided by the virtio net header. Instead,
+> check if the protocol in the packet actually matches the protocol set by
+> virtio_net_hdr_set_proto.
+>
+> Fixes: 9274124f023b ("net: stricter validation of untrusted gso packets")
+> Signed-off-by: Balazs Nemeth <bnemeth@redhat.com>
+> ---
+>  include/linux/virtio_net.h | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+> index e8a924eeea3d..cf2c53563f22 100644
+> --- a/include/linux/virtio_net.h
+> +++ b/include/linux/virtio_net.h
+> @@ -79,8 +79,13 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+>                 if (gso_type && skb->network_header) {
+>                         struct flow_keys_basic keys;
+>
+> -                       if (!skb->protocol)
+> +                       if (!skb->protocol) {
+> +                               const struct ethhdr *eth = skb_eth_hdr(skb);
+> +
 
-Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
----
- Documentation/driver-api/driver-model/devres.rst | 1 +
- 1 file changed, 1 insertion(+)
+Unfortunately, cannot assume that the device type is ARPHRD_ETHER.
 
-diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
-index cd8b6e657b94..164c9cddc6d2 100644
---- a/Documentation/driver-api/driver-model/devres.rst
-+++ b/Documentation/driver-api/driver-model/devres.rst
-@@ -382,6 +382,7 @@ PCI
-   devm_pci_remap_cfg_resource()	: ioremap PCI configuration space resource
-   pcim_enable_device()		: after success, all PCI ops become managed
-   pcim_pin_device()		: keep PCI device enabled after release
-+  pcim_set_mwi()                : enables memory-write-invalidate PCI transaction
- 
- PHY
-   devm_usb_get_phy()
--- 
-2.25.0
+The underlying approach is sound: packets that have a gso type set in
+the virtio_net_hdr have to be IP packets.
 
+>                                 virtio_net_hdr_set_proto(skb, hdr);
+> +                               if (skb->protocol != eth->h_proto)
+> +                                       return -EINVAL;
+> +                       }
+>  retry:
+>                         if (!skb_flow_dissect_flow_keys_basic(NULL, skb, &keys,
+>                                                               NULL, 0, 0, 0,
+> --
+> 2.29.2
+>
