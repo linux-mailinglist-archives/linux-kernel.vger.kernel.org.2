@@ -2,179 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA24F31EEE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9AF31EF07
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233253AbhBRSua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233679AbhBRQmQ (ORCPT
+        id S231959AbhBRSzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:55:05 -0500
+Received: from smtp114.ord1c.emailsrvr.com ([108.166.43.114]:54066 "EHLO
+        smtp114.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231831AbhBRQrA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:42:16 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59606C06178A
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:41:36 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id l18so1822978pji.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:41:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tV7hlg3a/xcbw+h5u+v8UaZGqFRe1DSPxTh2rWORcsQ=;
-        b=GItZJv4oCbpA1Mc3jm/mM4dqNhu7dMePFVpR5qyi1HvGDg+1m3W6nQMPC4urYvCh47
-         H2Su/N+OKB6TcDvB80etPTmfSXpB55MId7unYcR6o05sB7/IZUq0jH+CT8LSCDQLB64e
-         hmjaq3mYLBw9XRKj04CnMh+kVyMkff5CgheqHiqon1U0FCU7L7wcPRsfWIMc4EnYv2uF
-         qiNt2IbVj5YiUWLKbSUnt+476cgMXlPRF8xLaFNs6AYKZnfWQwEQUtG8ToM7baUV6Ps2
-         3ccJwMFoFUW8wIoL4rUtmNIMLr8Z9j63uY7vlEjNoouQWCL71BBjK/3IQKOboYZ+bsQr
-         sgiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tV7hlg3a/xcbw+h5u+v8UaZGqFRe1DSPxTh2rWORcsQ=;
-        b=cBhfE2SdvvPi/zJGM/YTyaE0d7AD8Dt9Ug7B3X3QO1JOmdD6vi4/2NpDydZGZt4bNn
-         i+vifOi61FZv74WHbYA+yqcKUlgmkJTp+nlsQMchtAz8SMc/pcSns6HuOp740MVVuo3i
-         szmYLME69r8Llgu+LDilqB6pJWZkFcwt2J8G8+KkLmU+mBZeVStR3W1qbZUWG/wINKtd
-         MN0ocX2VWO4npv7piKyG/oD+JI3pQeJRzmpPxxnkbfCgzc/rOeAt5qNvLatJXR6x4rqp
-         hr5RPxliYL72avT3s3H8yJv+G8ruV5XT51zDcD5pHXm5k+UfGZRjBPHyPlj8w6a37LAg
-         lkzQ==
-X-Gm-Message-State: AOAM531RswuOSscZES3hSAJjn+ijEco+3SfsMGL70l07rgq8QIX2MKv0
-        be2KEdaI5NBDsT4yYsw4i6twSjWG65g=
-X-Google-Smtp-Source: ABdhPJxKBkK1is59xf0j2ggYOW1fj4HpPH2bbZHqEkfVXcLbVXwcPuNWrkPu+LqPwZZyEPYH5elrHg==
-X-Received: by 2002:a17:902:6bca:b029:e2:c5d6:973e with SMTP id m10-20020a1709026bcab02900e2c5d6973emr4724523plt.40.1613666495877;
-        Thu, 18 Feb 2021 08:41:35 -0800 (PST)
-Received: from atulu-nitro ([2401:4900:3155:553b:247e:8a1b:ccde:ac6f])
-        by smtp.gmail.com with ESMTPSA id k5sm5945066pjl.50.2021.02.18.08.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 08:41:35 -0800 (PST)
-Date:   Thu, 18 Feb 2021 22:11:28 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
- variable type
-Message-ID: <20210218164128.GA9289@atulu-nitro>
-References: <20210218084404.16591-1-atulgopinathan@gmail.com>
- <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
- <20210218104755.GA7571@atulu-nitro>
- <YC5bsXa+1KSuIh+v@kroah.com>
- <20210218125220.GA19456@atulu-nitro>
- <20210218155159.GL2087@kadam>
+        Thu, 18 Feb 2021 11:47:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1613666733;
+        bh=S1Fq+tox9MWcUqvYO7gs5705kiM9wMsNW7MjUawCZy4=;
+        h=Subject:To:From:Date:From;
+        b=PhgcptYevAjOOqtTfJe9xAWMQ4jHc9GUy2VcDPCvyyjGhOxENORLlzwO0Ekx5sYhs
+         GJHPZan9poZc1GYObbIEhnKkeXd/TAmiZtz0XY84rUdrpXGgg+oZEu00BUu+TuQPLj
+         v/apwnpVZbUpMKBvxR3tIb2JnVHt3jhaoj69u8yc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1613666733;
+        bh=S1Fq+tox9MWcUqvYO7gs5705kiM9wMsNW7MjUawCZy4=;
+        h=Subject:To:From:Date:From;
+        b=auWMYbr66PL4muUl7BX5naim5F3JKkx+n2dvf7romJdMyTRGOgCx6BUhZ29EP+ChQ
+         aAhXw5rsj9Di7QUt8gQy5Kx1Rw6GkAnjBgXKJqEJUJGLGMYj9bV5O9FuWud7kIQTBP
+         X9LAghWP+ec/GctA5gPVU1z0vgW6Anks+YhADaO4=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp7.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 88B10A0225;
+        Thu, 18 Feb 2021 11:45:31 -0500 (EST)
+Subject: Re: [PATCH] Staging: comedi: Replaced strlcpy to strscpy
+To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Michel Lespinasse <walken@google.com>,
+        B K Karthik <bkkarthik@pesu.pes.edu>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20210218143152.3957-1-chakravarthikulkarni2021@gmail.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <43b0f966-9d88-3c92-28ce-6dfce755a1be@mev.co.uk>
+Date:   Thu, 18 Feb 2021 16:45:30 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218155159.GL2087@kadam>
+In-Reply-To: <20210218143152.3957-1-chakravarthikulkarni2021@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: d6d0b856-a613-4e54-8f8c-36e84e572270-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 06:51:59PM +0300, Dan Carpenter wrote:
-> On Thu, Feb 18, 2021 at 06:22:20PM +0530, Atul Gopinathan wrote:
-> > On Thu, Feb 18, 2021 at 01:21:05PM +0100, Greg KH wrote:
-> > > On Thu, Feb 18, 2021 at 04:17:55PM +0530, Atul Gopinathan wrote:
-> > > > On Thu, Feb 18, 2021 at 10:31:15AM +0000, Ian Abbott wrote:
-> > > > > On 18/02/2021 08:44, Atul Gopinathan wrote:
-> > > > > > Fix the following warning generated by sparse:
-> > > > > > 
-> > > > > > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-> > > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-> > > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
-> > > > > > 
-> > > > > > compat_ptr() has a return type of "void __user *"
-> > > > > > as defined in "include/linux/compat.h"
-> > > > > > 
-> > > > > > cmd->chanlist is of type "unsigned int *" as defined
-> > > > > > in drivers/staging/comedi/comedi.h" in struct
-> > > > > > comedi_cmd.
-> > > > > > 
-> > > > > > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> > > > > > ---
-> > > > > >   drivers/staging/comedi/comedi_fops.c | 2 +-
-> > > > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> > > > > > index e85a99b68f31..fc4ec38012b4 100644
-> > > > > > --- a/drivers/staging/comedi/comedi_fops.c
-> > > > > > +++ b/drivers/staging/comedi/comedi_fops.c
-> > > > > > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
-> > > > > >   	cmd->scan_end_arg = v32.scan_end_arg;
-> > > > > >   	cmd->stop_src = v32.stop_src;
-> > > > > >   	cmd->stop_arg = v32.stop_arg;
-> > > > > > -	cmd->chanlist = compat_ptr(v32.chanlist);
-> > > > > > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
-> > > > > >   	cmd->chanlist_len = v32.chanlist_len;
-> > > > > >   	cmd->data = compat_ptr(v32.data);
-> > > > > >   	cmd->data_len = v32.data_len;
-> > > > > > 
-> > > > > 
-> > > > > This patch and the other one in your series clash with commit 9d5d041eebe3
-> > > > > ("staging: comedi: comedi_fops.c: added casts to get rid of sparse
-> > > > > warnings") by B K Karthik.
-> > > > 
-> > > > Oh I see. Not sure if this is the right place to ask, but which tree and
-> > > > branch should one work with when messing with the code in staging/
-> > > > directory? (wanted to avoid such clashes in future)
-> > > 
-> > > staging-next is the best one to use from the staging.git tree.  But as
-> > > the above commit was merged in 5.9-rc1, way back in July of last year, I
-> > > have no idea what tree you are currently using to not hit that...
-> > 
-> > I'm using the staging tree alright, cloned it yesterday. Except I used the
-> > --depth parameter. I believe that is the culprit. How bad a mistake is
-> > that?
-> > 
-> > (Why depth? I'm currently staying in a remote area where internet
-> > download speeds are less than 100Kbps. I tried a normal git clone of
-> > the staging tree and it's estimated time was more than half a day. Not
-> > to mention, it fails due to loss of connection midway every time)
+On 18/02/2021 14:31, chakravarthikulkarni wrote:
+> Warning found by checkpath.pl script.
 > 
-> I live in Africa and used to have this problem before Africa got
-> connected to fibre optic.  Greg's suggestion of using `wget -c` to
-> download a git bundle is a good one.  However, in my experience
-> `wget -c` is not 100% accurate on super flakey internet.  Then if it
-> fails the verify will fail and you'll have to re-download the entire
-> thing.
+> Signed-off-by: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+> ---
+>  drivers/staging/comedi/comedi_fops.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> If you want I have a different option.  What I made a clone of Linus's
-> tree.  Then I did:
+> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> index 80d74cce2a01..df77b6bf5c64 100644
+> --- a/drivers/staging/comedi/comedi_fops.c
+> +++ b/drivers/staging/comedi/comedi_fops.c
+> @@ -939,8 +939,8 @@ static int do_devinfo_ioctl(struct comedi_device *dev,
+>  	/* fill devinfo structure */
+>  	devinfo.version_code = COMEDI_VERSION_CODE;
+>  	devinfo.n_subdevs = dev->n_subdevices;
+> -	strlcpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
+> -	strlcpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
+> +	strscpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
+> +	strscpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
+>  
+>  	s = comedi_file_read_subdevice(file);
+>  	if (s)
 > 
-> tar cvvf linux.tar linux/.git
-> for i in $(seq 0 116) ; do dd if=linux.tar of=linux.tar.${i} ibs=1M count=20 skip=$((20 * $i)) ; done
-> 
-> Now I have put those on a private webserver I have.  You can download
-> them by doing:
-> 
-> for i in $(seq 0 116) ; do wget -c http://51.158.124.72/kernel_split/linux.tar.${i} ; done
-> md5sum * > my_md5s
-> wget http://51.158.124.72/kernel_split/md5sums
-> diff -u md5sum my_md5s
-> 
-> Re-download files which don't match
-> 
-> for i in $(seq 0 116) ; do cat linux.tar.${i} >> linux.tar ; done
-> cat linux.tar | tar xv
-> cd linux
-> git reset --hard
-> 
-> Let me know if this works for you.  I will leave the source up for a
-> week or two before I delete it.
 
-Hi Dan!
-That's a great work you did there. Thank you for trying to help,
-really appreciate it. :D
+Thanks, but you are too late.  It has already been fixed in linux-next.
 
-As of now, I digged into my old backup partitions and found an image
-of an ubuntu VM that I used to mess with linux source a couple of weeks
-ago and luckily I had a clone of both linux-mainline and linux-next
-trees in it. So I have updated those and using them currently.
-
-My internet problems are temporary, as I will move back to my original
-location, which has good internet speeds, next month.
-
-Again, thank you for trying to help me! I will definitely contact you
-if I ever need them. :D
-
-Regards,
-Atul
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
