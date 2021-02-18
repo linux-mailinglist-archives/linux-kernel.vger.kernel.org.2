@@ -2,76 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3B731EB75
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AEFB31EB78
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhBRPX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:23:26 -0500
-Received: from ni.piap.pl ([195.187.100.5]:47468 "EHLO ni.piap.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232885AbhBRNDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229636AbhBRPYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:24:03 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:31890 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232924AbhBRNDL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Feb 2021 08:03:11 -0500
-Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ni.piap.pl (Postfix) with ESMTPSA id 49B8B442FB3;
-        Thu, 18 Feb 2021 13:34:42 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 49B8B442FB3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
-        t=1613651682; bh=V4pv1Jj17FC4YOPVXn6cAR3969CfZNdSYbAHlbXzUXI=;
-        h=From:To:Subject:Date:From;
-        b=fOXLg4YkGuarOvSNkVzRA6PuqaGbk8IBgl4zrNyYyBoAagH5APqb4+faVkr9+de9l
-         hEsrciEBYwgyl1mWaNIqxGZ7VBGrVW+3biS99ss5cIJoB0IvRLF/EVHUj0FixWHhcB
-         1EVlGbi4w1gBWdRXQNM4kNKgiSHeq/YyTPA1p4FE=
-From:   "Krzysztof Halasa" <khalasa@piap.pl>
-To:     Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Marvell Sky2 Ethernet adapter: fix warning messages.
-Sender: khalasa@piap.pl
-Date:   Thu, 18 Feb 2021 13:34:42 +0100
-Message-ID: <m3a6s1r1ul.fsf@t19.piap.pl>
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11ICgG7R025222;
+        Thu, 18 Feb 2021 04:42:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=Wf9nGNGlZL5D6f89oSJlh1oCwj93RrSrls7xCKsb+tw=;
+ b=bukrhnGZJ5rxS96hDwJbFi4lPtIo5U8XREfvYy81ODeJcSoOkKlJ3FpiXwqZOO6zEzMj
+ fRtJmldTP1YX/+aMlaw2wSsjUUUv3lOWMA+3iHN3ga9YJJMbCWKuOxJtrLuvFioY/Bmy
+ uribQXoIZPQiotngIrvz0roaGSjfCZhyp1W8q5isAR5T6sbEj0nPtcL5Nsbiol4Vkp04
+ 3v9J9yP53G+LD/sqOkUaiAkG2L6kFIVixnQFarVueYnC6xNwZS6EoyQ3kZpbaRjei88m
+ N8ZieuEvLq7nuw5s/kwNJQ6GsVbZ7v2uHlIzt/piV3iKopKQLVB1MXbCja8k7yJ13iqD ow== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36sesvsjn4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 18 Feb 2021 04:42:16 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
+ 2021 04:42:14 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
+ 2021 04:42:14 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 18 Feb 2021 04:42:14 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 706663F7040;
+        Thu, 18 Feb 2021 04:42:11 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>
+Subject: [net-next] net: mvpp2: skip RSS configurations on loopback port
+Date:   Thu, 18 Feb 2021 14:42:03 +0200
+Message-ID: <1613652123-19021-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-KLMS-Rule-ID: 4
-X-KLMS-Message-Action: skipped
-X-KLMS-AntiSpam-Status: not scanned, whitelist
-X-KLMS-AntiPhishing: not scanned, whitelist
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-18_05:2021-02-18,2021-02-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sky2.c driver uses netdev_warn() before the net device is initialized.
-Fix it by using dev_warn() instead.
+From: Stefan Chulski <stefanc@marvell.com>
 
-Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
+PPv2 loopback port doesn't support RSS, so we should
+skip RSS configurations for this port.
 
---- a/drivers/net/ethernet/marvell/sky2.c
-+++ b/drivers/net/ethernet/marvell/sky2.c
-@@ -4806,12 +4806,11 @@ static struct net_device *sky2_init_netdev(struct s=
-ky2_hw *hw, unsigned port,
- 	if (!is_valid_ether_addr(dev->dev_addr)) {
- 		struct sockaddr sa =3D { AF_UNSPEC };
-=20
--		netdev_warn(dev,
--			    "Invalid MAC address, defaulting to random\n");
-+		dev_warn(&hw->pdev->dev, "Invalid MAC address, defaulting to random\n");
- 		eth_hw_addr_random(dev);
- 		memcpy(sa.sa_data, dev->dev_addr, ETH_ALEN);
- 		if (sky2_set_mac_address(dev, &sa))
--			netdev_warn(dev, "Failed to set MAC address.\n");
-+			dev_warn(&hw->pdev->dev, "Failed to set MAC address.\n");
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 25 +++++++++++---------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 10c17d1..d415447 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -4699,9 +4699,10 @@ static void mvpp2_irqs_deinit(struct mvpp2_port *port)
  	}
-=20
- 	return dev;
+ }
+ 
+-static bool mvpp22_rss_is_supported(void)
++static bool mvpp22_rss_is_supported(struct mvpp2_port *port)
+ {
+-	return queue_mode == MVPP2_QDIST_MULTI_MODE;
++	return (queue_mode == MVPP2_QDIST_MULTI_MODE) &&
++		!(port->flags & MVPP2_F_LOOPBACK);
+ }
+ 
+ static int mvpp2_open(struct net_device *dev)
+@@ -5513,7 +5514,7 @@ static int mvpp2_ethtool_get_rxnfc(struct net_device *dev,
+ 	struct mvpp2_port *port = netdev_priv(dev);
+ 	int ret = 0, i, loc = 0;
+ 
+-	if (!mvpp22_rss_is_supported())
++	if (!mvpp22_rss_is_supported(port))
+ 		return -EOPNOTSUPP;
+ 
+ 	switch (info->cmd) {
+@@ -5548,7 +5549,7 @@ static int mvpp2_ethtool_set_rxnfc(struct net_device *dev,
+ 	struct mvpp2_port *port = netdev_priv(dev);
+ 	int ret = 0;
+ 
+-	if (!mvpp22_rss_is_supported())
++	if (!mvpp22_rss_is_supported(port))
+ 		return -EOPNOTSUPP;
+ 
+ 	switch (info->cmd) {
+@@ -5569,7 +5570,9 @@ static int mvpp2_ethtool_set_rxnfc(struct net_device *dev,
+ 
+ static u32 mvpp2_ethtool_get_rxfh_indir_size(struct net_device *dev)
+ {
+-	return mvpp22_rss_is_supported() ? MVPP22_RSS_TABLE_ENTRIES : 0;
++	struct mvpp2_port *port = netdev_priv(dev);
++
++	return mvpp22_rss_is_supported(port) ? MVPP22_RSS_TABLE_ENTRIES : 0;
+ }
+ 
+ static int mvpp2_ethtool_get_rxfh(struct net_device *dev, u32 *indir, u8 *key,
+@@ -5578,7 +5581,7 @@ static int mvpp2_ethtool_get_rxfh(struct net_device *dev, u32 *indir, u8 *key,
+ 	struct mvpp2_port *port = netdev_priv(dev);
+ 	int ret = 0;
+ 
+-	if (!mvpp22_rss_is_supported())
++	if (!mvpp22_rss_is_supported(port))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (indir)
+@@ -5596,7 +5599,7 @@ static int mvpp2_ethtool_set_rxfh(struct net_device *dev, const u32 *indir,
+ 	struct mvpp2_port *port = netdev_priv(dev);
+ 	int ret = 0;
+ 
+-	if (!mvpp22_rss_is_supported())
++	if (!mvpp22_rss_is_supported(port))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc != ETH_RSS_HASH_CRC32)
+@@ -5617,7 +5620,7 @@ static int mvpp2_ethtool_get_rxfh_context(struct net_device *dev, u32 *indir,
+ 	struct mvpp2_port *port = netdev_priv(dev);
+ 	int ret = 0;
+ 
+-	if (!mvpp22_rss_is_supported())
++	if (!mvpp22_rss_is_supported(port))
+ 		return -EOPNOTSUPP;
+ 	if (rss_context >= MVPP22_N_RSS_TABLES)
+ 		return -EINVAL;
+@@ -5639,7 +5642,7 @@ static int mvpp2_ethtool_set_rxfh_context(struct net_device *dev,
+ 	struct mvpp2_port *port = netdev_priv(dev);
+ 	int ret;
+ 
+-	if (!mvpp22_rss_is_supported())
++	if (!mvpp22_rss_is_supported(port))
+ 		return -EOPNOTSUPP;
+ 
+ 	if (hfunc != ETH_RSS_HASH_NO_CHANGE && hfunc != ETH_RSS_HASH_CRC32)
+@@ -5956,7 +5959,7 @@ static int mvpp2_port_init(struct mvpp2_port *port)
+ 	mvpp2_cls_oversize_rxq_set(port);
+ 	mvpp2_cls_port_config(port);
+ 
+-	if (mvpp22_rss_is_supported())
++	if (mvpp22_rss_is_supported(port))
+ 		mvpp22_port_rss_init(port);
+ 
+ 	/* Provide an initial Rx packet size */
+@@ -6861,7 +6864,7 @@ static int mvpp2_port_probe(struct platform_device *pdev,
+ 	dev->hw_features |= features | NETIF_F_RXCSUM | NETIF_F_GRO |
+ 			    NETIF_F_HW_VLAN_CTAG_FILTER;
+ 
+-	if (mvpp22_rss_is_supported()) {
++	if (mvpp22_rss_is_supported(port)) {
+ 		dev->hw_features |= NETIF_F_RXHASH;
+ 		dev->features |= NETIF_F_NTUPLE;
+ 	}
+-- 
+1.9.1
 
---=20
-Krzysztof Halasa
-
-Sie=C4=87 Badawcza =C5=81ukasiewicz
-Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
-Al. Jerozolimskie 202, 02-486 Warszawa
