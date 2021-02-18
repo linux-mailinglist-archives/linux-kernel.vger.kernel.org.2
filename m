@@ -2,257 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE24A31E98F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4AA31E994
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:12:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhBRMIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:08:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232974AbhBRKfE (ORCPT
+        id S232460AbhBRMKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:10:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55865 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231135AbhBRKiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:35:04 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13C93C06178A;
-        Thu, 18 Feb 2021 02:34:21 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id q20so989267pfu.8;
-        Thu, 18 Feb 2021 02:34:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=AUARRZLqJ9XX8bbBrOxnTHaZfiYVN+5L37UZ27Nk4KU=;
-        b=mayISz4WKe2Rx7yL5mg7G0ZzdNFWb6mETyRGChJZ9jbpeMtmicOgSpqVpWxGzoU2qk
-         aygH2VGwtkykIq92ohyB24cuOYy7mnMoR5ZBUkQxOUABFaXTOYfczbWy0QwxxOi07wah
-         qiqFsbEvEnsbaIDWd9WjC6O3NpapJF3+/6i2D2jI0b7nQ28mz0jNM6ig66AR2mFwc4KN
-         gjlrFcqz+uof7caPpuzFd+cysFMPcbIfpKqM/Pe2dXREQd4HFGBwO5xHV9tTZrObk+Ke
-         ZH/xgFmnruNIduUnZeTUK98yMgODQYT7Kq75KxZph7kop5swSauAqcbc/knOL38MPgfS
-         0hiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AUARRZLqJ9XX8bbBrOxnTHaZfiYVN+5L37UZ27Nk4KU=;
-        b=oih7UfU5JdTCu+pgfdzlw7gCdMzCfOy7bdV4fT/c1F3mBbSbikhs8KPnvPK1T8pAUp
-         z4YI579p/DCue6YpfSV1z4LhHuL2RkD+u94k35rjIlW3s1hFXuAbm6Q8zjoxvKT/doeW
-         fCiTh9gHbhpi2cMON0F4qxfOvSTJXiWyoGQ8XEX7eYLGmKsjqiN5MvvDr9VpffKUE5oL
-         QTZIyak0O3RU5QowWxYJ/j3KigGOcpAfCQXYSryCIJxdbjDdOjLXC///sTzLHQgydOoO
-         pI5kFGmVdJcgBW7F3h6LhBee9YN9Rv459qdt2T6CKunDbSfkQu+JMJH9jZKhuYiHYXgt
-         RpjQ==
-X-Gm-Message-State: AOAM532LZFNC5Ig9GNFbbYs+gAGCJnTRyJx/EU3TXYjEhQfL4OHbREEv
-        wpsbASA8+tAdwuO88VQyPqw=
-X-Google-Smtp-Source: ABdhPJw8sqq3/6ytTP2sJodQe38x8kS2JSRqOgJ+91HjsndJUWjQUFczaDbwaUFyNFdoqeHAW5ph7w==
-X-Received: by 2002:a05:6a00:16c7:b029:1b6:68a6:985a with SMTP id l7-20020a056a0016c7b02901b668a6985amr3818246pfc.44.1613644460501;
-        Thu, 18 Feb 2021 02:34:20 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id n10sm5449006pgk.91.2021.02.18.02.34.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 18 Feb 2021 02:34:20 -0800 (PST)
-Date:   Thu, 18 Feb 2021 02:35:11 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     will@kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com, thierry.reding@gmail.com,
-        joro@8bytes.org, kernel@collabora.com,
-        Dmitry Osipenko <digetx@gmail.com>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-Subject: Re: [PATCH RESEND v2 4/5] iommu/tegra-smmu: Rework
- tegra_smmu_probe_device()
-Message-ID: <20210218103510.GA13060@Asurada-Nvidia>
-References: <20201125101013.14953-1-nicoleotsuka@gmail.com>
- <20201125101013.14953-5-nicoleotsuka@gmail.com>
- <46a96cf9-91cc-2ad4-702a-e95ba7200375@collabora.com>
- <20210205052422.GA11329@Asurada-Nvidia>
- <20210205094556.GA32677@Asurada-Nvidia>
- <f45c94b4-2949-4eac-5944-85d43a8afef5@collabora.com>
- <20210210082052.GA11455@Asurada-Nvidia>
- <df170d15-f5b5-4238-f998-5b8f8e45849a@collabora.com>
+        Thu, 18 Feb 2021 05:38:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613644561;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UB1lvh6jtSEiESfXxVHnPLX4NRWaq62eBV+yGoiXEsk=;
+        b=G3/8foVD0jLOxqrTwR9ZayiJC18pyT6c+JT3SlTCHnRXntKcwVR8nsx/HIyppf+AvdKeon
+        T1zWmdBbQzrubNAeSVcAbv/1GmU3FCUEwlMYoxUCb5IuX+aZw0rMU8GAiOO56AUJ0aSg5Y
+        XuM41ekSIJgm3hZgQ5KlQ/QUxPCVXno=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-AaxVP747M9OwBRnLxO6nOQ-1; Thu, 18 Feb 2021 05:35:57 -0500
+X-MC-Unique: AaxVP747M9OwBRnLxO6nOQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E53B9CC620;
+        Thu, 18 Feb 2021 10:35:54 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B3DF460877;
+        Thu, 18 Feb 2021 10:35:46 +0000 (UTC)
+Subject: Re: [PATCH v13 02/15] iommu: Introduce bind/unbind_guest_msi
+To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
+        alex.williamson@redhat.com
+Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
+        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
+        zhangfei.gao@linaro.org
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-3-eric.auger@redhat.com>
+ <6a70d93d-329f-4129-bd90-03f8589c5de4@huawei.com>
+ <1ef4f5ae-9ca6-7c6d-f8a9-31240e5688c2@redhat.com>
+ <bc7b223e-7c30-9baa-85e3-2195e03dfe48@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <96edcdf3-baec-7432-529a-567a221d60a3@redhat.com>
+Date:   Thu, 18 Feb 2021 11:35:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="/04w6evG8XlLl3ft"
-Content-Disposition: inline
-In-Reply-To: <df170d15-f5b5-4238-f998-5b8f8e45849a@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <bc7b223e-7c30-9baa-85e3-2195e03dfe48@huawei.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Keqian,
 
---/04w6evG8XlLl3ft
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi Guillaume,
-
-Thank you for the test results! And sorry for my belated reply.
-
-On Thu, Feb 11, 2021 at 03:50:05PM +0000, Guillaume Tucker wrote:
-> > On Sat, Feb 06, 2021 at 01:40:13PM +0000, Guillaume Tucker wrote:
-> >>> It'd be nicer if I can get both logs of the vanilla kernel (failing)
-> >>> and the commit-reverted version (passing), each applying this patch.
-> >>
-> >> Sure, I've run 3 jobs:
-> >>
-> >> * v5.11-rc6 as a reference, to see the original issue:
-> >>   https://lava.collabora.co.uk/scheduler/job/3187848
-> >>
-> >> * + your debug patch:
-> >>   https://lava.collabora.co.uk/scheduler/job/3187849
-> >>
-> >> * + the "breaking" commit reverted, passing the tests:
-> >>   https://lava.collabora.co.uk/scheduler/job/3187851
-> > 
-> > Thanks for the help!
-> > 
-> > I am able to figure out what's probably wrong, yet not so sure
-> > about the best solution at this point.
-> > 
-> > Would it be possible for you to run one more time with another
-> > debugging patch? I'd like to see the same logs as previous:
-> > 1. Vanilla kernel + debug patch
-> > 2. Vanilla kernel + Reverted + debug patch
+On 2/18/21 9:43 AM, Keqian Zhu wrote:
+> Hi Eric,
 > 
-> As it turns out, next-20210210 is passing all the tests again so
-> it looks like this got fixed in the meantime:
+> On 2021/2/12 16:55, Auger Eric wrote:
+>> Hi Keqian,
+>>
+>> On 2/1/21 12:52 PM, Keqian Zhu wrote:
+>>> Hi Eric,
+>>>
+>>> On 2020/11/18 19:21, Eric Auger wrote:
+>>>> On ARM, MSI are translated by the SMMU. An IOVA is allocated
+>>>> for each MSI doorbell. If both the host and the guest are exposed
+>>>> with SMMUs, we end up with 2 different IOVAs allocated by each.
+>>>> guest allocates an IOVA (gIOVA) to map onto the guest MSI
+>>>> doorbell (gDB). The Host allocates another IOVA (hIOVA) to map
+>>>> onto the physical doorbell (hDB).
+>>>>
+>>>> So we end up with 2 untied mappings:
+>>>>          S1            S2
+>>>> gIOVA    ->    gDB
+>>>>               hIOVA    ->    hDB
+>>>>
+>>>> Currently the PCI device is programmed by the host with hIOVA
+>>>> as MSI doorbell. So this does not work.
+>>>>
+>>>> This patch introduces an API to pass gIOVA/gDB to the host so
+>>>> that gIOVA can be reused by the host instead of re-allocating
+>>>> a new IOVA. So the goal is to create the following nested mapping:
+>>> Does the gDB can be reused under non-nested mode?
+>>
+>> Under non nested mode the hIOVA is allocated within the MSI reserved
+>> region exposed by the SMMU driver, [0x8000000, 80fffff]. see
+>> iommu_dma_prepare_msi/iommu_dma_get_msi_page in dma_iommu.c. this hIOVA
+>> is programmed in the physical device so that the physical SMMU
+>> translates it into the physical doorbell (hDB = host physical ITS
+> So, AFAIU, under non-nested mode, at smmu side, we reuse the workflow of non-virtualization scenario.
+Without virtualization, the host kernel also transparently allocates an
+iova to map the doorbell. With standard passthrough withou vIOMMU, the
+iova window is different (MSI RESV region).
+
+Thanks
+
+Eric
 > 
->   https://lava.collabora.co.uk/scheduler/job/3210192
+>> doorbell). The gDB is not used at pIOMMU programming level. It is only
+>> used when setting up the KVM irq route.
+>>
+>> Hope this answers your question.
+> Thanks for your explanation!
+>>
+> 
+> Thanks,
+> Keqian
+> 
+>>>
+>>>>
+>>>>          S1            S2
+>>>> gIOVA    ->    gDB     ->    hDB
+>>>>
+>>>> and program the PCI device with gIOVA MSI doorbell.
+>>>>
+>>>> In case we have several devices attached to this nested domain
+>>>> (devices belonging to the same group), they cannot be isolated
+>>>> on guest side either. So they should also end up in the same domain
+>>>> on guest side. We will enforce that all the devices attached to
+>>>> the host iommu domain use the same physical doorbell and similarly
+>>>> a single virtual doorbell mapping gets registered (1 single
+>>>> virtual doorbell is used on guest as well).
+>>>>
+>>> [...]
+>>>
+>>>> + *
+>>>> + * The associated IOVA can be reused by the host to create a nested
+>>>> + * stage2 binding mapping translating into the physical doorbell used
+>>>> + * by the devices attached to the domain.
+>>>> + *
+>>>> + * All devices within the domain must share the same physical doorbell.
+>>>> + * A single MSI GIOVA/GPA mapping can be attached to an iommu_domain.
+>>>> + */
+>>>> +
+>>>> +int iommu_bind_guest_msi(struct iommu_domain *domain,
+>>>> +			 dma_addr_t giova, phys_addr_t gpa, size_t size)
+>>>> +{
+>>>> +	if (unlikely(!domain->ops->bind_guest_msi))
+>>>> +		return -ENODEV;
+>>>> +
+>>>> +	return domain->ops->bind_guest_msi(domain, giova, gpa, size);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(iommu_bind_guest_msi);
+>>>> +
+>>>> +void iommu_unbind_guest_msi(struct iommu_domain *domain,
+>>>> +			    dma_addr_t iova)
+>>> nit: s/iova/giova
+>> sure
+>>>
+>>>> +{
+>>>> +	if (unlikely(!domain->ops->unbind_guest_msi))
+>>>> +		return;
+>>>> +
+>>>> +	domain->ops->unbind_guest_msi(domain, iova);
+>>>> +}
+>>>> +EXPORT_SYMBOL_GPL(iommu_unbind_guest_msi);
+>>>> +
+>>> [...]
+>>>
+>>> Thanks,
+>>> Keqian
+>>>
+>>
+>> Thanks
+>>
+>> Eric
+>>
+>> .
+>>
+> 
 
-I checked this passing log, however, found that the regression is
-still there though test passed, as the prints below aren't normal:
-  tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-	 EMEM address decode error (SMMU translation error [--S])
-  tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-	 Page fault (SMMU translation error [--S])
-
-I was trying to think of a simpler solution than a revert. However,
-given the fact that the callback sequence could change -- guessing
-likely a recent change in iommu core, I feel it safer to revert my
-previous change, not necessarily being a complete revert though.
-
-I attached my partial reverting change in this email. Would it be
-possible for you to run one more test for me to confirm it? It'd
-keep the tests passing while eliminating all error prints above.
-
-If the fix works, I'll re-send it to mail list by adding a commit
-message.
-
-Thanks!
-Nicolin
-
---/04w6evG8XlLl3ft
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="0001-iommu-tegra-smmu-Fix-mc-errors-on-tegra124-nyan.patch"
-
-From a9950b6e76e279f19d2c9d06aef1e222b020a9e2 Mon Sep 17 00:00:00 2001
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Date: Thu, 18 Feb 2021 01:11:59 -0800
-Subject: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-
-  tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-	 EMEM address decode error (SMMU translation error [--S])
-  tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-	 Page fault (SMMU translation error [--S])
-
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/iommu/tegra-smmu.c | 72 +++++++++++++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 4a3f095a1c26..97eb62f667d2 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -798,10 +798,70 @@ static phys_addr_t tegra_smmu_iova_to_phys(struct iommu_domain *domain,
- 	return SMMU_PFN_PHYS(pfn) + SMMU_OFFSET_IN_PAGE(iova);
- }
- 
-+static struct tegra_smmu *tegra_smmu_find(struct device_node *np)
-+{
-+	struct platform_device *pdev;
-+	struct tegra_mc *mc;
-+
-+	pdev = of_find_device_by_node(np);
-+	if (!pdev)
-+		return NULL;
-+
-+	mc = platform_get_drvdata(pdev);
-+	if (!mc)
-+		return NULL;
-+
-+	return mc->smmu;
-+}
-+
-+static int tegra_smmu_configure(struct tegra_smmu *smmu, struct device *dev,
-+				struct of_phandle_args *args)
-+{
-+	const struct iommu_ops *ops = smmu->iommu.ops;
-+	int err;
-+
-+	err = iommu_fwspec_init(dev, &dev->of_node->fwnode, ops);
-+	if (err < 0) {
-+		dev_err(dev, "failed to initialize fwspec: %d\n", err);
-+		return err;
-+	}
-+
-+	err = ops->of_xlate(dev, args);
-+	if (err < 0) {
-+		dev_err(dev, "failed to parse SW group ID: %d\n", err);
-+		iommu_fwspec_free(dev);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
- static struct iommu_device *tegra_smmu_probe_device(struct device *dev)
- {
--	struct tegra_smmu *smmu = dev_iommu_priv_get(dev);
-+	struct device_node *np = dev->of_node;
-+	struct tegra_smmu *smmu = NULL;
-+	struct of_phandle_args args;
-+	unsigned int index = 0;
-+	int err;
-+
-+	while (of_parse_phandle_with_args(np, "iommus", "#iommu-cells", index,
-+					  &args) == 0) {
-+		smmu = tegra_smmu_find(args.np);
-+		if (smmu) {
-+			err = tegra_smmu_configure(smmu, dev, &args);
-+			of_node_put(args.np);
- 
-+			if (err < 0)
-+				return ERR_PTR(err);
-+
-+			break;
-+		}
-+
-+		of_node_put(args.np);
-+		index++;
-+	}
-+
-+	smmu = dev_iommu_priv_get(dev);
- 	if (!smmu)
- 		return ERR_PTR(-ENODEV);
- 
-@@ -1028,6 +1088,16 @@ struct tegra_smmu *tegra_smmu_probe(struct device *dev,
- 	if (!smmu)
- 		return ERR_PTR(-ENOMEM);
- 
-+	/*
-+	 * This is a bit of a hack. Ideally we'd want to simply return this
-+	 * value. However the IOMMU registration process will attempt to add
-+	 * all devices to the IOMMU when bus_set_iommu() is called. In order
-+	 * not to rely on global variables to track the IOMMU instance, we
-+	 * set it here so that it can be looked up from the .probe_device()
-+	 * callback via the IOMMU device's .drvdata field.
-+	 */
-+	mc->smmu = smmu;
-+
- 	size = BITS_TO_LONGS(soc->num_asids) * sizeof(long);
- 
- 	smmu->asids = devm_kzalloc(dev, size, GFP_KERNEL);
--- 
-2.17.1
-
-
---/04w6evG8XlLl3ft--
