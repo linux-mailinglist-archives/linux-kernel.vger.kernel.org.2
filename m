@@ -2,199 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EF5231F293
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:54:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 907D031F29F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:56:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhBRWw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:52:59 -0500
-Received: from foss.arm.com ([217.140.110.172]:56576 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhBRWw4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:52:56 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 791EEED1;
-        Thu, 18 Feb 2021 14:52:05 -0800 (PST)
-Received: from [10.57.61.241] (unknown [10.57.61.241])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9D4A3F73D;
-        Thu, 18 Feb 2021 14:52:03 -0800 (PST)
-Subject: Re: [PATCH V3 06/14] dts: bindings: Document device tree bindings for
- ETE
-To:     Rob Herring <robh@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        devicetree@vger.kernel.org, mathieu.poirier@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, lcherian@marvell.com,
-        mike.leach@linaro.org
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-7-git-send-email-anshuman.khandual@arm.com>
- <20210209190031.GA4102836@robh.at.kernel.org>
- <4d0e6b88-72c2-be23-f43a-3f541f9ebb86@arm.com>
- <20210218183335.GA915713@robh.at.kernel.org>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <952f91ef-7fd2-a3d4-06d8-b7f433aa4c76@arm.com>
-Date:   Thu, 18 Feb 2021 22:51:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229947AbhBRW4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:56:30 -0500
+Received: from smtpcmd0986.aruba.it ([62.149.156.86]:57998 "EHLO
+        smtpcmd0986.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhBRW42 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 17:56:28 -0500
+Received: from ubuntu.localdomain ([146.241.168.111])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id CsCZl9zcdJFRNCsCalTfMz; Thu, 18 Feb 2021 23:55:20 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1613688920; bh=cevDCnH9VgTnWHFn0Q8N7lYnLdT+VIm0JJfZ3nBgEkA=;
+        h=From:To:Subject:Date:MIME-Version;
+        b=GmhH8h4osOTVrBGEanmklTNAiDz/bXn+5Kjb01kIDZb9xDrAVjeX04wsdWjR8JlJK
+         tv/uldsWA/7HPMfUOgz46max9zaqu39phsqC3PSypkoDrElodT3y8iPh6jj6Z55Wyk
+         s2TsZreCsI72uospadRyHGWs/oSBDERl34Y5JEOXe3wzDcrLlCzrWEdOS0uaray3lc
+         cwP1wPd7K56wwmn1q09fQI2+S8gT5zDIXzarWervXyMDIiYKbXJjfAfPX/1JqO0vFh
+         3ebhvN+Y0XooxjYkVzgaJti6xeEm22lwVPZWPcnD3ItIi67DvkhI2DwoW/djQhy18g
+         mYmFYocAdMcBQ==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Lubomir Rintel <lkundrak@v3.sk>, allen <allen.chen@ite.com.tw>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/9] Add 4 Jenson simple panels
+Date:   Thu, 18 Feb 2021 23:54:48 +0100
+Message-Id: <20210218225458.823773-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210218183335.GA915713@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfHdTWRd/78jkjtTGxaOvGm216CUVCexgY1rAYoipYeZeePYwjHoa0MDE5TcPNsDNMYXxq5yM0D7VG9j8tDYN+1EK8MboyFpH7wskSZDONqmVhVMQ5Hex
+ MMpciBIsw14BgjHLgWZ0E7+thx/Fnv8054SGE8H1FiV36E+9KbJ+THv5QVdlrnkuM9OOxAn69NValpuC9IrZI8Y2Edle+7V/VdKhGpDQnvu2XIjNfNwdmgRr
+ mQjmUTovZ2W37RPlKJud7caCSfbxp+rgzUJFu0LROvRtx5kORFPxh1lyW3Q7liq/M4ilZxcWkWhDXcSRUdAWckuL6i2bRXJmW77pTYB6e1Vv8jmbCAYpZ/Q7
+ 16uGm+CVe190vUtElH7H6iZCZ4qteXd3Wdx/rBFaSZNKpUnLpZQh1ktKQ53UfZ7o/aXtIT8UMcCfVMJeMZ+Wj9pRbR/mW2wcJ2ss3YAhmBNuUSpNXGhjRSKA
+ UnFjPbiosfxMTFqz/yPBqIPeWALIEPgiDbx/tImJpYkHKY7ov3JL8ch1dbNiwD358ix6p/ZPLOM2olPQSaVEqXZtzvl+kHNFUfnvd3PvQq9TZXw0PCTMImeG
+ 1CgYD/gzF9Q8ERvnQWYN5Dr95OuBEnLotI1WYqGzbpeGLPZpslgWJS7yH7KMre6mEb4bDwF4UvM3OgtkJX3PR7OTqxBTkB7eE2MVxRBHhr9IWUdBkYArIm3/
+ HhyBauWt5ohCeQ8h99kfDeTyfWOzLUw6h/LIsDuwutotVIfl8vx501q1QnXZKyCBRNXv7sjm4js=
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/18/21 6:33 PM, Rob Herring wrote:
-> On Wed, Feb 10, 2021 at 12:33:44PM +0000, Suzuki K Poulose wrote:
->> Hi Rob
->>
->> On 2/9/21 7:00 PM, Rob Herring wrote:
->>> On Wed, Jan 27, 2021 at 02:25:30PM +0530, Anshuman Khandual wrote:
->>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>
->>>> Document the device tree bindings for Embedded Trace Extensions.
->>>> ETE can be connected to legacy coresight components and thus
->>>> could optionally contain a connection graph as described by
->>>> the CoreSight bindings.
->>>>
->>>> Cc: devicetree@vger.kernel.org
->>>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>>> Cc: Mike Leach <mike.leach@linaro.org>
->>>> Cc: Rob Herring <robh@kernel.org>
->>>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>>> ---
->>>> Changes in V3:
->>>>
->>>> - Fixed all DT yaml semantics problems
->>>>
->>>>    Documentation/devicetree/bindings/arm/ete.yaml | 74 ++++++++++++++++++++++++++
->>>>    1 file changed, 74 insertions(+)
->>>>    create mode 100644 Documentation/devicetree/bindings/arm/ete.yaml
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/arm/ete.yaml b/Documentation/devicetree/bindings/arm/ete.yaml
->>>> new file mode 100644
->>>> index 0000000..edc1fe2
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/arm/ete.yaml
->>>> @@ -0,0 +1,74 @@
->>>> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
->>>> +# Copyright 2021, Arm Ltd
->>>> +%YAML 1.2
->>>> +---
->>>> +$id: "http://devicetree.org/schemas/arm/ete.yaml#"
->>>> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
->>>> +
->>>> +title: ARM Embedded Trace Extensions
->>>> +
->>>> +maintainers:
->>>> +  - Suzuki K Poulose <suzuki.poulose@arm.com>
->>>> +  - Mathieu Poirier <mathieu.poirier@linaro.org>
->>>> +
->>>> +description: |
->>>> +  Arm Embedded Trace Extension(ETE) is a per CPU trace component that
->>>> +  allows tracing the CPU execution. It overlaps with the CoreSight ETMv4
->>>> +  architecture and has extended support for future architecture changes.
->>>> +  The trace generated by the ETE could be stored via legacy CoreSight
->>>> +  components (e.g, TMC-ETR) or other means (e.g, using a per CPU buffer
->>>> +  Arm Trace Buffer Extension (TRBE)). Since the ETE can be connected to
->>>> +  legacy CoreSight components, a node must be listed per instance, along
->>>> +  with any optional connection graph as per the coresight bindings.
->>>> +  See bindings/arm/coresight.txt.
->>>> +
->>>> +properties:
->>>> +  $nodename:
->>>> +    pattern: "^ete([0-9a-f]+)$"
->>>> +  compatible:
->>>> +    items:
->>>> +      - const: arm,embedded-trace-extension
->>>> +
->>>> +  cpu:
->>>
->>> We've already established 'cpus' for this purpose.
->>>
->>
->> Please see : https://lkml.kernel.org/r/9417218b-6eda-373b-a2cb-869089ffc7cd@arm.com
->> for my response in the previous version to this and the one with out-ports.
-> 
-> Okay, fair enough.
-> 
->>
->>>> +    description: |
->>>> +      Handle to the cpu this ETE is bound to.
->>>> +    $ref: /schemas/types.yaml#/definitions/phandle
->>>> +
->>>> +  out-ports:
->>>> +    type: object
->>>
->>> Replace with: $ref: /schemas/graph.yaml#/properties/ports
->>
->> So, just to confirm again :
->> The CoreSight graph bindings expect the input ports and output ports
->> grouped under in-ports{} and out-ports{} respectively to avoid having
->> to specify the direction of the ports in the individual "port" nodes.
->> i.e
->>
->> in-ports {
->>
->> 	property: ports
->> 	  OR
->> 	property: port
->>
->> 	required:
->> 		OneOf:
->> 			ports
->> 			port
-> 
-> No, 'ports' as a child of in-ports is not correct. There should only be
-> 'port(@[0-9a-f]+)?' nodes. That's why you need the above $ref added. The
-> $ref doesn't define the node name is 'ports', but what a 'ports' or
-> 'foo-ports' contains.
+This patchset introduce Jenson vendor and add 4 of its panels to
+panel-simple driver.
 
-Sorry, it is my bad. We don't expect ports{} under in-ports. So your
-suggestion is the accurate one. I will respin.
+Giulio Benetti (9):
+  dt-bindings: Add Jenson Display vendor prefix
+  dt-bindings: display/panel: add Jenson JT60248-01
+  dt-bindings: display/panel: add Jenson JT60249-01
+  dt-bindings: display/panel: add Jenson JT60245-01
+  dt-bindings: display/panel: add Jenson JT60250-02
+  drm/panel: simple: add Jenson JT60245-01
+  drm/panel: simple: add Jenson JT60248-01
+  drm/panel: simple: add Jenson JT60249-01
+  drm/panel: simple: add Jenson JT60250-02
 
+ .../bindings/display/panel/panel-simple.yaml  |   8 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/gpu/drm/panel/panel-simple.c          | 108 ++++++++++++++++++
+ 3 files changed, 118 insertions(+)
 
-
-> 
->> }
->>
->> out-ports {
->>
->> 	# same as above
->> }
->>
->> So thats why I added out-ports as a new object, where the ports/port
->> could be a child node.
->>
->> Ideally the definition of out-ports /in-ports should go to a common schema
->> for CoreSight bindings, when we move to Yaml for the existing bindings,
->> which will follow in a separate series, later.
-> 
-> Yes, maybe, but I'm not sure something common is going to help here.
-> You'll still have to describe what each 'port' node does in each device
-> specific binding.
-
-For CoreSight components the end-point of the ports are system specific.
-i.e, it could be anything on the other end. There is no fixed end-point
-connection.
-
-e.g, ETM could be connected to a Replicator or a Funnel. Same as here
-above for ETE. Thus the driver must parse the endpoints and make
-the connection path from devices to other devices.
-
-Anyways, will come to that in a different series.
-
-I will fix the in-ports/out-ports for the next version.
-
-Thanks for your guidance.
-
-Cheers
-Suzuki
-
-
-
-> 
-> Rob
-> 
+-- 
+2.25.1
 
