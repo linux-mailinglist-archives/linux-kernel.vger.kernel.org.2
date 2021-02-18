@@ -2,85 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A6B031E9B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7DA631E9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:25:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbhBRMYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:24:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232996AbhBRKrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:47:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 827E864DF0;
-        Thu, 18 Feb 2021 10:46:29 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 10:46:26 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] mm, kasan: don't poison boot memory
-Message-ID: <20210218104626.GA12761@arm.com>
-References: <8d79640cdab4608c454310881b6c771e856dbd2e.1613595522.git.andreyknvl@google.com>
+        id S232433AbhBRMUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:20:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232166AbhBRKsu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:48:50 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E34C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 02:48:02 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id ba1so1052105plb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 02:48:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+4Ty2EC198TjRC3tjzE5cKKjZBp6T/djTh3O24sLzhI=;
+        b=i//we/OJgxeAvuLnkMneVfbe0TSZd+ReXSLdt5P9W0bmimlWZu7mOgTtijigZM70i7
+         caUQbROjdTHl77DWGZlWxPd1aEyJ6od8s7ynMoS6dZD6LT5mKYr+jWahEp5nhNsgk3Hg
+         p+Yc+MoGOx6CtCAJMFRto5Nt0yU8rE5wnhBBggwRrijJufSpLyJ6zrYpW1QVb3FIBpg5
+         p7RUIFrPjgP7P6GHMA5dGLorwyz+S0ypHk6BvBhm2Zv8grjmIYYbipV2ahwBX2bq27o3
+         yj+c3qS6SzoAwbfatCfM8JiDgnUW8vW1dleN+I8PoGuj9o4U3El+aBgCpNoGehlSk1zi
+         bnYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+4Ty2EC198TjRC3tjzE5cKKjZBp6T/djTh3O24sLzhI=;
+        b=kMYdh0n3WUacuu5fmMmia6kRQwjB+o4yQyIATicB9lPvM3CoFWS2Oorh9cH/vt3JlP
+         zqX5Gpf6LQZ0O6bHzNyfBrAkFXuqKslkTAUKvu7tJhh50o8wb1tePfvsfG+a4RieY3Ro
+         +wLyS0EgUiAcjKXSsLyrtRLywWhlLAf89MugSXgvFOr49kcxzH1fLsoYqALmxxX/kpJ0
+         SUN7sV8dfTdyjU/rFdunTdNUB6xy6vsa7Ng73jygd6PT8xXL8Lg9M4tsqyNWUZuc9HEJ
+         pg1ICVUT/Dk52sf4Y4ZZMhlu1bcLrPXl9AQAGX5SU0U4WW0aeIqeCswyyWISyUlgO35G
+         VE3w==
+X-Gm-Message-State: AOAM531usGI/0mI9IKjMO8WcstCD2SjdPSg/LlsZirZQg+1Cf/RjN6TV
+        Gob/EpYZ3wINrQWezM7yz9vn4NiTTGQ=
+X-Google-Smtp-Source: ABdhPJxeHdRECmk1nueMkn3Ncc6IrRQ+cTGJWx1gNCT2bKlWeEOSxOAikP+7f90KUsYupKKGD3YEgA==
+X-Received: by 2002:a17:90a:d48c:: with SMTP id s12mr3548307pju.123.1613645281914;
+        Thu, 18 Feb 2021 02:48:01 -0800 (PST)
+Received: from atulu-nitro ([2401:4900:3155:553b:559f:4399:2a05:67d4])
+        by smtp.gmail.com with ESMTPSA id t15sm5097592pjy.37.2021.02.18.02.47.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 02:48:01 -0800 (PST)
+Date:   Thu, 18 Feb 2021 16:17:55 +0530
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     Ian Abbott <abbotti@mev.co.uk>, gregkh@linuxfoundation.org
+Cc:     hsweeten@visionengravers.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
+ variable type
+Message-ID: <20210218104755.GA7571@atulu-nitro>
+References: <20210218084404.16591-1-atulgopinathan@gmail.com>
+ <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8d79640cdab4608c454310881b6c771e856dbd2e.1613595522.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 09:59:24PM +0100, Andrey Konovalov wrote:
-> During boot, all non-reserved memblock memory is exposed to the buddy
-> allocator. Poisoning all that memory with KASAN lengthens boot time,
-> especially on systems with large amount of RAM. This patch makes
-> page_alloc to not call kasan_free_pages() on all new memory.
+On Thu, Feb 18, 2021 at 10:31:15AM +0000, Ian Abbott wrote:
+> On 18/02/2021 08:44, Atul Gopinathan wrote:
+> > Fix the following warning generated by sparse:
+> > 
+> > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
+> > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
+> > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
+> > 
+> > compat_ptr() has a return type of "void __user *"
+> > as defined in "include/linux/compat.h"
+> > 
+> > cmd->chanlist is of type "unsigned int *" as defined
+> > in drivers/staging/comedi/comedi.h" in struct
+> > comedi_cmd.
+> > 
+> > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> > ---
+> >   drivers/staging/comedi/comedi_fops.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> > index e85a99b68f31..fc4ec38012b4 100644
+> > --- a/drivers/staging/comedi/comedi_fops.c
+> > +++ b/drivers/staging/comedi/comedi_fops.c
+> > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+> >   	cmd->scan_end_arg = v32.scan_end_arg;
+> >   	cmd->stop_src = v32.stop_src;
+> >   	cmd->stop_arg = v32.stop_arg;
+> > -	cmd->chanlist = compat_ptr(v32.chanlist);
+> > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+> >   	cmd->chanlist_len = v32.chanlist_len;
+> >   	cmd->data = compat_ptr(v32.data);
+> >   	cmd->data_len = v32.data_len;
+> > 
 > 
-> __free_pages_core() is used when exposing fresh memory during system
-> boot and when onlining memory during hotplug. This patch adds a new
-> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok() through
-> free_pages_prepare() from __free_pages_core().
-> 
-> This has little impact on KASAN memory tracking.
-> 
-> Assuming that there are no references to newly exposed pages before they
-> are ever allocated, there won't be any intended (but buggy) accesses to
-> that memory that KASAN would normally detect.
-> 
-> However, with this patch, KASAN stops detecting wild and large
-> out-of-bounds accesses that happen to land on a fresh memory page that
-> was never allocated. This is taken as an acceptable trade-off.
-> 
-> All memory allocated normally when the boot is over keeps getting
-> poisoned as usual.
-> 
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> This patch and the other one in your series clash with commit 9d5d041eebe3
+> ("staging: comedi: comedi_fops.c: added casts to get rid of sparse
+> warnings") by B K Karthik.
 
-The approach looks fine to me. If you don't like the trade-off, I think
-you could still leave the kasan poisoning in if CONFIG_DEBUG_KERNEL.
+Oh I see. Not sure if this is the right place to ask, but which tree and
+branch should one work with when messing with the code in staging/
+directory? (wanted to avoid such clashes in future)
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-
-Just curious, have you noticed any issue booting a KASAN_SW_TAGS-enabled
-kernel on a system with sufficiently large RAM? Is the boot slow-down
-significant?
-
-For MTE, we could look at optimising the poisoning code for page size to
-use STGM or DC GZVA but I don't think we can make it unnoticeable for
-large systems (especially with DC GZVA, that's like zeroing the whole
-RAM at boot).
-
--- 
-Catalin
+Thanks,
+Atul
