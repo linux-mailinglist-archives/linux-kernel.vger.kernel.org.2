@@ -2,87 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D98631E98E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC1D31E9BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:26:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232533AbhBRMLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:11:46 -0500
-Received: from ozlabs.org ([203.11.71.1]:60105 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231817AbhBRKpm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:45:42 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S230132AbhBRMZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:25:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32715 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232667AbhBRKq2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:46:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613645099;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BMH8S4T7u+QFmoTuKd8zzsW1EwjP83j2mvXgWWp0OT0=;
+        b=HBofra4iKdCbY7r1xj9jayR+yXaFThEnxBitgPwMC1wZy17HHq94F9T0wXrbXj8rTz5SOO
+        bmqy7wjsL8g970IGRiupn2a2WBbwTMrXw4kzoYcoyIYepalbRP1Nnf7iMGr0n4Vd9ghrZy
+        dBvU7rAcQbcIUifLDXbgVwyyWbe2uRo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-EbN0LvXNPNW1e9tnCjCIdA-1; Thu, 18 Feb 2021 05:44:55 -0500
+X-MC-Unique: EbN0LvXNPNW1e9tnCjCIdA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DhBD64vFvz9sBJ;
-        Thu, 18 Feb 2021 21:44:38 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1613645079;
-        bh=ZsNlPzRZrmg4PFm+VJmNAO7Irdgz1Plpmx+SNgFPZsc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=OHvydnjHKxgHMLUHcND78HFYkWD+xm92BEqIiAhEdc7OJ6TiViZv4g7xrWsiyp+7w
-         kBWgxU4fI565Am8ML/cW78MpEwSWxgfWl3mJhalmuJ6QRn7GyqbMH/4orAq+Uo94TK
-         TG79AOyTlFWpeTnfBBzDIJlqb/cn83/FIzNPNrtIm2HTcKHU5dvhTRJdy3YwKkFCnF
-         RXWK2Sy8wfF4ouZfctD3X2Sa+681bn8Z4F5d6iaeJB8je7D/xdFGI7yvbGRoJStC9X
-         r/Txz5Ije+ogYpJRw2IDcNjxKN2YnFlQny3pHD8S9UF2tlc1hBqx75oJZO94PxwXlM
-         OsvrGFBDcMWoA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Rob Herring <robherring2@gmail.com>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Hari Bathini <hbathini@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: linux-next: manual merge of the devicetree tree with the
- powerpc tree
-In-Reply-To: <20210218144815.5673ae6f@canb.auug.org.au>
-References: <20210218144815.5673ae6f@canb.auug.org.au>
-Date:   Thu, 18 Feb 2021 21:44:37 +1100
-Message-ID: <874ki9vene.fsf@mpe.ellerman.id.au>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11B17107ACE6;
+        Thu, 18 Feb 2021 10:44:52 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4016110016FD;
+        Thu, 18 Feb 2021 10:44:42 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+References: <20210217154844.12392-1-david@redhat.com>
+ <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+Message-ID: <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
+Date:   Thu, 18 Feb 2021 11:44:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> Hi all,
->
-> Today's linux-next merge of the devicetree tree got a conflict in:
->
->   arch/powerpc/kexec/elf_64.c
->
-> between commit:
->
->   2377c92e37fe ("powerpc/kexec_file: fix FDT size estimation for kdump kernel")
->
-> from the powerpc tree and commit:
->
->   130b2d59cec0 ("powerpc: Use common of_kexec_alloc_and_setup_fdt()")
->
-> from the devicetree tree.
->
-> I can't easily see how to resolve these, so for now I have just used
-> the latter' changes to this file.
+On 18.02.21 11:25, Michal Hocko wrote:
+> On Wed 17-02-21 16:48:44, David Hildenbrand wrote:
+>> When we manage sparse memory mappings dynamically in user space - also
+>> sometimes involving MADV_NORESERVE - we want to dynamically populate/
+> 
+> Just wondering what is MADV_NORESERVE? I do not see anything like that
+> in the Linus tree. Did you mean MAP_NORESERVE?
 
-I think it just needs this?
+Most certainly, thanks :)
 
-diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-index 87e34611f93d..0492ca6003f3 100644
---- a/arch/powerpc/kexec/elf_64.c
-+++ b/arch/powerpc/kexec/elf_64.c
-@@ -104,7 +104,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
- 
- 	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
- 					   initrd_len, cmdline,
--					   fdt_totalsize(initial_boot_params));
-+					   kexec_fdt_totalsize_ppc64(image));
- 	if (!fdt) {
- 		pr_err("Error setting up the new device tree.\n");
- 		ret = -EINVAL;
+> 
+>> discard memory inside such a sparse memory region. Example users are
+>> hypervisors (especially implementing memory ballooning or similar
+>> technologies like virtio-mem) and memory allocators. In addition, we want
+>> to fail in a nice way if populating does not succeed because we are out of
+>> backend memory (which can happen easily with file-based mappings,
+>> especially tmpfs and hugetlbfs).
+> 
+> by "fail in a nice way" you mean before a #PF would fail and SIGBUS
+> which would be harder to handle?
+
+Yes.
+
+> 
+> [...]
+>> Because we don't have a proper interface, what applications
+>> (like QEMU and databases) end up doing is touching (i.e., writing) all
+>> individual pages. However, it requires expensive signal handling (SIGBUS);
+>> for example, this is problematic in hypervisors like QEMU where SIGBUS
+>> handlers might already be used by other subsystems concurrently to e.g,
+>> handle hardware errors. "Simply" doing preallocation from another thread
+>> is not that easy.
+> 
+> OK, that clarifies my above question.
+> 
+>>
+>> Let's introduce MADV_POPULATE with the following semantics
+>> 1. MADV_POPULATED does not work on PROT_NONE and special VMAs. It works
+>>     on everything else.
+> 
+> This would better clarify what "does not work" means. I assume those are
+> ignored and do not report any error?
+
+I'm currently preparing the man page. "Fail with -ENOMEM" (like 
+MADV_DONTNEED or MADV_REMOVE)
+
+> 
+>> 2. Errors during MADV_POPULATED (especially OOM) are reported.
+> 
+> How do you want to achieve that? gup/page fault handler will allocate
+> memory and trigger the oom without caller noticing that. You would
+> somehow have to weaken the allocation context to GFP_RETRY_MAYFAIL or
+> NORETRY to achieve the error handling.
+
+Okay, I should be more clear here (again, I'm realizing this as well 
+while I create the man page), OOM is confusing: avoid SIGBUS at runtime 
+- like we would get on actual file systems/shmem/hugetlbfs when 
+preallocating.
+
+It cannot save us from the actual OOM killer. To handle anonymous memory 
+more reliable I'll need other means as well (dynamic swap space 
+allocation for sparse mappings).
+
+> 
+>>     If we hit
+>>     hardware errors on pages, ignore them - nothing we really can or
+>>     should do.
+>> 3. On errors during MADV_POPULATED, some memory might have been
+>>     populated. Callers have to clean up if they care.
+> 
+> How does caller find out? madvise reports 0 on success so how do you
+> find out how much has been populated?
+
+If there is an error, something might have been populated. In my QEMU 
+implementation, I simply discard the range again, good enough. I don't 
+think we need to really indicate "error and populated" or "error and not 
+populated".
 
 
-cheers
+> 
+>> 4. Concurrent changes to the virtual memory layour are tolerated - we
+>>     process each and every PFN only once, though.
+> 
+> I do not understand this. madvise is about virtual address space not a
+> physical address space.
+
+What I wanted to express: if we detect a change in the mapping we don't 
+restart at the beginning, we always make forward progress. We process 
+each virtual address once (on a per-page basis, thus I accidentally used 
+"PFN").
+
+> 
+>> 5. If MADV_POPULATE succeeds, all memory in the range can be accessed
+>>     without SIGBUS. (of course, not if user space changed mappings in the
+>>     meantime or KSM kicked in on anonymous memory).
+> 
+> I do not see how KSM would change anything here and maybe it is not
+> really important to mention it. KSM should be really transparent from
+> the users space POV. Parallel and destructive virtual address space
+> operations are also expected to change the outcome and there is nothing
+> kernel do about at and provide any meaningful guarantees. I guess we
+> want to assume a reasonable userspace behavior here.
+
+It's just a note that we cannot protect from someone interfering 
+(discard/ksm/whatever). I'm making that clearer in the cover letter.
+
+Thanks!
+
+-- 
+Thanks,
+
+David / dhildenb
+
