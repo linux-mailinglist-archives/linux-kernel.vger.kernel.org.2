@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1597F31EF44
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14BCC31EF18
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhBRTId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:08:33 -0500
-Received: from smtp111.ord1c.emailsrvr.com ([108.166.43.111]:43857 "EHLO
-        smtp111.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234451AbhBRRh0 (ORCPT
+        id S231791AbhBRS7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:59:20 -0500
+Received: from smtp113.ord1c.emailsrvr.com ([108.166.43.113]:59184 "EHLO
+        smtp113.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233399AbhBRRRe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:37:26 -0500
+        Thu, 18 Feb 2021 12:17:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1613646257;
-        bh=bRHGiPfH836yATcVWrHjPVJ2UIR0s0z9fjqDlTxmMwU=;
+        s=20190322-9u7zjiwi; t=1613666733;
+        bh=S1Fq+tox9MWcUqvYO7gs5705kiM9wMsNW7MjUawCZy4=;
         h=Subject:To:From:Date:From;
-        b=Uvzbd8pW9YpNoNmRWuZQuU09cnY8OVavkWuRGk0F3AbhSPJdhtlHmvROrP4Jnbrsb
-         ab5z9+KNb4GwTW4oZzBaCFfA0JuLQS8wX56FoL8crrMByJ3sIeSdOZRx+FxTEw/keU
-         XZfD8jBbPBPqYZYdwmnfDyfru3W4ojBqjA83VPCY=
+        b=PhgcptYevAjOOqtTfJe9xAWMQ4jHc9GUy2VcDPCvyyjGhOxENORLlzwO0Ekx5sYhs
+         GJHPZan9poZc1GYObbIEhnKkeXd/TAmiZtz0XY84rUdrpXGgg+oZEu00BUu+TuQPLj
+         v/apwnpVZbUpMKBvxR3tIb2JnVHt3jhaoj69u8yc=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1613646257;
-        bh=bRHGiPfH836yATcVWrHjPVJ2UIR0s0z9fjqDlTxmMwU=;
+        s=20190130-41we5z8j; t=1613666733;
+        bh=S1Fq+tox9MWcUqvYO7gs5705kiM9wMsNW7MjUawCZy4=;
         h=Subject:To:From:Date:From;
-        b=mxHpE7/IfiF+E46WkES6g1s5LsiGUka43NKrw4cDNQ1oOWDf5gpdKlev+EuQnF7ek
-         dVb2VIh2LNXTVLyYdPsdGxzWModMDqePGT4LIBAvtYug/Ai8UYSQdaQFDrCd2JVqti
-         5EEC8exiRZ82Ylp4SHH54PMmcoTQcmTWQHMcJvys=
+        b=auWMYbr66PL4muUl7BX5naim5F3JKkx+n2dvf7romJdMyTRGOgCx6BUhZ29EP+ChQ
+         aAhXw5rsj9Di7QUt8gQy5Kx1Rw6GkAnjBgXKJqEJUJGLGMYj9bV5O9FuWud7kIQTBP
+         X9LAghWP+ec/GctA5gPVU1z0vgW6Anks+YhADaO4=
 X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp22.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id D16F0E0118;
-        Thu, 18 Feb 2021 06:04:16 -0500 (EST)
-Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Atul Gopinathan <atulgopinathan@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210217165907.9777-1-atulgopinathan@gmail.com>
- <YC1T06VCh0K2BBW5@kroah.com> <20210217181000.GB10124@atulu-ubuntu>
- <YC1fzjVOwiqzO1nb@kroah.com>
+Received: by smtp7.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 88B10A0225;
+        Thu, 18 Feb 2021 11:45:31 -0500 (EST)
+Subject: Re: [PATCH] Staging: comedi: Replaced strlcpy to strscpy
+To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Michel Lespinasse <walken@google.com>,
+        B K Karthik <bkkarthik@pesu.pes.edu>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20210218143152.3957-1-chakravarthikulkarni2021@gmail.com>
 From:   Ian Abbott <abbotti@mev.co.uk>
 Organization: MEV Ltd.
-Message-ID: <3cfef23d-8d4a-205c-61e8-cbe8c9a0c0f4@mev.co.uk>
-Date:   Thu, 18 Feb 2021 11:04:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+Message-ID: <43b0f966-9d88-3c92-28ce-6dfce755a1be@mev.co.uk>
+Date:   Thu, 18 Feb 2021 16:45:30 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YC1fzjVOwiqzO1nb@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210218143152.3957-1-chakravarthikulkarni2021@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Classification-ID: 4bf05355-9fc5-4567-9578-f928f84fb8a2-1-1
+X-Classification-ID: d6d0b856-a613-4e54-8f8c-36e84e572270-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/2021 18:26, Greg KH wrote:
-> On Wed, Feb 17, 2021 at 11:40:00PM +0530, Atul Gopinathan wrote:
->> On Wed, Feb 17, 2021 at 06:35:15PM +0100, Greg KH wrote:
->>> On Wed, Feb 17, 2021 at 10:29:08PM +0530, Atul Gopinathan wrote:
->>>> Resolve the following warning generated by sparse:
->>>>
->>>> drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
->>>> drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
->>>> drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
->>>>
->>>> compat_ptr() has a return type of "void __user *"
->>>> as defined in "include/linux/compat.h"
->>>>
->>>> cmd->chanlist is of type "unsigned int *" as defined
->>>> in drivers/staging/comedi/comedi.h" in struct
->>>> comedi_cmd.
->>>>
->>>> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
->>>> ---
->>>>   drivers/staging/comedi/comedi_fops.c | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
->>>> index e85a99b68f31..fc4ec38012b4 100644
->>>> --- a/drivers/staging/comedi/comedi_fops.c
->>>> +++ b/drivers/staging/comedi/comedi_fops.c
->>>> @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
->>>>   	cmd->scan_end_arg = v32.scan_end_arg;
->>>>   	cmd->stop_src = v32.stop_src;
->>>>   	cmd->stop_arg = v32.stop_arg;
->>>> -	cmd->chanlist = compat_ptr(v32.chanlist);
->>>> +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
->>>
->>> __force?  That feels wrong, something is odd if that is ever needed.
->>>
->>> Are you _sure_ this is correct?
->>
->> The same file has instances of "(usigned int __force *)" cast being
->> used on the same "cmd->chanlist". For reference:
->>
->> At line 1797 of comedi_fops.c:
->> 1796                 /* restore chanlist pointer before copying back */
->> 1797                 cmd->chanlist = (unsigned int __force *)user_chanlist;
->> 1798                 cmd->data = NULL;
->>
->> At line 1880:
->> 1879         /* restore chanlist pointer before copying back */
->> 1880         cmd->chanlist = (unsigned int __force *)user_chanlist;
->> 1881         *copy = true;
->>
->> Here "user_chanlist" is of type "unsigned int __user *".
->>
->>
->> Or perhaps, I shouldn't be relying on them?
+On 18/02/2021 14:31, chakravarthikulkarni wrote:
+> Warning found by checkpath.pl script.
 > 
-> I don't know, it still feels wrong.
+> Signed-off-by: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+> ---
+>  drivers/staging/comedi/comedi_fops.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Ian, any thoughts?
+> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> index 80d74cce2a01..df77b6bf5c64 100644
+> --- a/drivers/staging/comedi/comedi_fops.c
+> +++ b/drivers/staging/comedi/comedi_fops.c
+> @@ -939,8 +939,8 @@ static int do_devinfo_ioctl(struct comedi_device *dev,
+>  	/* fill devinfo structure */
+>  	devinfo.version_code = COMEDI_VERSION_CODE;
+>  	devinfo.n_subdevs = dev->n_subdevices;
+> -	strlcpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
+> -	strlcpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
+> +	strscpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
+> +	strscpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
+>  
+>  	s = comedi_file_read_subdevice(file);
+>  	if (s)
+> 
 
-It's kind of moot anyway because the patch is outdated.  But the reason 
-for the ___force is that the same `struct comedi_cmd` is used in both 
-user and kernel contexts.  In user contexts, the `chanlist` member 
-points to user memory and in kernel contexts it points to kernel memory 
-(copied from userspace).
-
-The sparse tagging of this member has flip-flopped a bit over the years:
-
-* commit 92d0127c9d24 ("Staging: comedi: __user markup on 
-comedi_fops.c") (May 2010) tagged it as `__user`.
-
-* commit 9be56c643263 ("staging: comedi: comedi.h: remove __user tag 
-from chanlist") (Sep 2012) removed the `__user` tag.
-
-It is mostly used in a kernel context, for example all the low-level 
-drivers with `do_cmd` and `do_cmdtest` handlers use it in kernel context.
-
-The alternative would be to have a separate kernel version of this 
-struct, but it would be mostly identical to the user version apart from 
-the sparse tagging of this member and perhaps the removal of the unused 
-`data` and `data_len` members (which need to be kept in the user version 
-of the struct for compatibility reasons).
+Thanks, but you are too late.  It has already been fixed in linux-next.
 
 -- 
 -=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
