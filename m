@@ -2,66 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D06D31F0BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFE431F0BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhBRUEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:04:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38132 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231790AbhBRT4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:56:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19A9260238;
-        Thu, 18 Feb 2021 19:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613678115;
-        bh=oGsSE+76wvfx4Nguhyl57l1C40S6Roq7FT74S76ZX3I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n3jvY6awlpjUR2knNqGRq/0lFPTJ56DCEvwXeuxvIyhDlYtbwaAHsgpkfCjbCp8Sj
-         3tGMRcjHoe+pY316qprOQb1a7Hb/qRcKBj1lIMMNUB9qkaYyIfXOg0k6Na0I3cxWJE
-         AsnAo8XujvgZyCU8blZUbzX/1x9Hb21cpg+Ag+pDHd9mSkrvtHmRhxq6pnxKiDzxWp
-         ugMWNprObdSbkqmQbihl6bnNRHxYhg++fbUwblL2rM126nDG+Sw/v/9XYUANvHPh+2
-         LMk8a1ZjCUQBjWWc7UmkJ3lcHjwbpOlu0QQI0TCIrrvFIHKUjozvn4tjh7yWodyH8s
-         783xhFY6j2FJA==
-Date:   Thu, 18 Feb 2021 21:55:10 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-Message-ID: <YC7GHgYfGmL2wVRR@unreal>
-References: <20210216201813.60394-1-xie.he.0141@gmail.com>
- <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal>
- <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
+        id S232096AbhBRUFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:05:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231387AbhBRT4l (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:56:41 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06AF2C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 11:56:01 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id c186so2059049pfa.23
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 11:56:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=7bVBB7/eb43F7sJCb2A73jGKQH5d6crP4qDBABCXugI=;
+        b=MSGiXWGc/XBlhRD4FT6+UEMZ+VJARxb3RibM8Xi7pgr9pz0bgTNlOAetGX3p8x57hC
+         D9NGC/+GSPxXLIuX4N+ZhEma+EfYEksySW3hvgaO5RI92DO3YOkf+l3+Hz/4dRKkCJdf
+         4cMVb+Q2gHQlbE6XqbqTxkfw4bfAhObx0/dyqaDQRbt5/srIvx75jQGbX1PbYcJkSlg8
+         hI0qu06XNCzJQ1hwwZl3Vi7StUkGbOxBPOtK7067VGnDl7Ahv9l8EKanVlB9gfUPJ6gp
+         ChDRajvVL/VyOf74x+UM1yxcIda7D3fmjy8aa7r0MT38Aa/sNHX4SLupLZYl1t5ZYLIJ
+         5EvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=7bVBB7/eb43F7sJCb2A73jGKQH5d6crP4qDBABCXugI=;
+        b=JMoLmahEpr137PAsH8BUv+w7f2uS9q2Mx3X1MUN9jA9XfIR+SkHsU4BLB2hglAfklW
+         TEEN4gtE04kbzdRmN6m62crosGHjZ/a5HlQn7OLH4WV+pjdI0DbASCZE9SKrOhxBNyjX
+         RagARqJSjlw0uBTWzR6Z3jqT+stCiwR1jBBmBSEt3CaREpYQcpyjHuMESEEURa2G3Zsk
+         I962uqj2YUqj60mSSMQvq0Xb9CkdmROhoBrUlaIEIqVbcpM0n6PdFv2IKYtn2CPgQkS0
+         eMLLGEc2Ey9WXm5fJ+tQcpLUAJfWgPLwO7U1coG+akPfu/L11gj4TSEivbSFWAExiO6h
+         /8vQ==
+X-Gm-Message-State: AOAM532oWAjWR3bRRxYGa9rkeHId5VeQHAdmtb3jBqtYLWeToTQhkMai
+        04zCq61g7ft7SaL8pvzb3BnjkiSC6tEs
+X-Google-Smtp-Source: ABdhPJwJ107wMcTLi0gXo6iW/YPA31DgLY3oqSY85ZPspZZPcWLIo/f/8WwkOevVbXHZFcJm+ZFZ40/7R3qQ
+Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
+X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:580f:a4a0:74ce:b3b4])
+ (user=vipinsh job=sendgmr) by 2002:a62:6304:0:b029:1c0:d62d:d213 with SMTP id
+ x4-20020a6263040000b02901c0d62dd213mr5825540pfb.79.1613678160277; Thu, 18 Feb
+ 2021 11:56:00 -0800 (PST)
+Date:   Thu, 18 Feb 2021 11:55:47 -0800
+Message-Id: <20210218195549.1696769-1-vipinsh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [RFC 0/2] cgroup: New misc cgroup controller
+From:   Vipin Sharma <vipinsh@google.com>
+To:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com
+Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 09:36:54AM -0800, Xie He wrote:
-> On Thu, Feb 18, 2021 at 2:37 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > It is not me who didn't explain, it is you who didn't want to write clear
-> > comment that describes the headroom size without need of "3 - 1".
->
-> Why do I need to write unnecessary comments when "3 - 1" and the
-> current comment already explains everything?
+Hello,
 
-This is how we write code, we use defines instead of constant numbers,
-comments to describe tricky parts and assign already preprocessed result.
+This patch is creating a new misc cgroup controller for allocation and
+tracking of resources which are not abstract like other cgroup
+controllers.
 
-There is nothing I can do If you don't like or don't want to use Linux kernel
-style.
+This controller was initially proposed as encryption_id but after
+the feedbacks, it is now changed to misc cgroup.
+https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
+
+Changes from the encryption_id controller are:
+1. There are only 3 files misc.{capacity, max, current} for all
+   resources compared to each resource having their own 3 files in
+   encryption_id cgroup.
+2. If a resource capacity is 0 then it is considered inactive and won't
+   show up in control files.
+2. This is a lockless implementation similar to page counter APIs
+   compared to single lock implementation in encryption_id cgroup.
+
+Please provide any feedback for this RFC or if it is good for
+merging then I can send a patch for merging.
 
 Thanks
+
+Vipin Sharma (2):
+  cgroup: sev: Add misc cgroup controller
+  cgroup: sev: Miscellaneous cgroup documentation.
+
+ Documentation/admin-guide/cgroup-v1/misc.rst |   1 +
+ Documentation/admin-guide/cgroup-v2.rst      |  64 ++-
+ arch/x86/kvm/svm/sev.c                       |  60 ++-
+ arch/x86/kvm/svm/svm.h                       |   1 +
+ include/linux/cgroup_subsys.h                |   4 +
+ include/linux/misc_cgroup.h                  |  75 +++
+ init/Kconfig                                 |  14 +
+ kernel/cgroup/Makefile                       |   1 +
+ kernel/cgroup/misc.c                         | 456 +++++++++++++++++++
+ 9 files changed, 664 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
+ create mode 100644 include/linux/misc_cgroup.h
+ create mode 100644 kernel/cgroup/misc.c
+
+-- 
+2.30.0.617.g56c4b15f3c-goog
+
