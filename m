@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CFB31EF6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:15:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D40FB31EF6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234010AbhBRTNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:13:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28384 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234559AbhBRRsi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:48:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613670431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Vh8JVeAq553dnjUjXxpSp+/x6fHtJkixwlI1e+/bfY8=;
-        b=RqkATTCPSeb2gmGwoVHNHMlg3AkybgX2FvMGHiylUP5xD09ZQ7zHPKMzsqZxZ9EZg5Vtum
-        MgQf8Mx/bMnwHRi0RtVkY/jE0/MT7ZAddj6DU98C0X39/2LrZqSBZ5w7Dyb2ojxiIdh+sP
-        99WeNUegsnNW/3Tyn6/2BPOPr7n5BKk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-qum9-M-dOJ-dh4Cpmuan6A-1; Thu, 18 Feb 2021 12:47:10 -0500
-X-MC-Unique: qum9-M-dOJ-dh4Cpmuan6A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C51CF107ACF4;
-        Thu, 18 Feb 2021 17:47:07 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4C64060877;
-        Thu, 18 Feb 2021 17:47:01 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210217161358.GM2858050@casper.infradead.org>
-References: <20210217161358.GM2858050@casper.infradead.org> <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk> <161340389201.1303470.14353807284546854878.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, Trond Myklebust <trondmy@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
+        id S233973AbhBRTNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:13:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233217AbhBRRsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 12:48:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49D5D64E79;
+        Thu, 18 Feb 2021 17:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613670459;
+        bh=9LOodOlDfKK937+aNt2DSiUuo0WvFvZNR/flDCS5HqQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sy0dJSOeXe0s6Zw2YQ7niEOCQ5pvu8p7QXDFI2Hpkza4Q6xkiMCpndXOYwkrY/2ka
+         FDN9N4qvkY1lqV7vHzBjJSVEJXn95AjEAtEXyzDisbfxZZdPE/hXxGkMcrpR4O4GVn
+         POYTooDHYo7UjG4x9dlHZzvNwJmSIlTEsd934i3s=
+Date:   Thu, 18 Feb 2021 18:47:36 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Suryashankar Das <suryashankardas.2002@gmail.com>
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 03/33] mm: Implement readahead_control pageset expansion
+Subject: Re: [PATCH] staging: rtl8188eu: Align block comments
+Message-ID: <YC6oONjckmrSP2ip@kroah.com>
+References: <20210218172042.44597-1-suryashankardas.2002@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2083367.1613670420.1@warthog.procyon.org.uk>
-Date:   Thu, 18 Feb 2021 17:47:00 +0000
-Message-ID: <2083368.1613670420@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218172042.44597-1-suryashankardas.2002@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
+On Thu, Feb 18, 2021 at 10:50:43PM +0530, Suryashankar Das wrote:
+> This patch fixes the checkpatch.pl warnings:
+> WARNING: Block comments use * on subsequent lines
+> WARNING: Block comments should align the * on each line
+> 
+> Signed-off-by: Suryashankar Das <suryashankardas.2002@gmail.com>
+> ---
+>  drivers/staging/rtl8188eu/core/rtw_security.c | 82 +++++++++----------
+>  1 file changed, 41 insertions(+), 41 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8188eu/core/rtw_security.c b/drivers/staging/rtl8188eu/core/rtw_security.c
+> index 46ba55a8952a..73b78740093b 100644
+> --- a/drivers/staging/rtl8188eu/core/rtw_security.c
+> +++ b/drivers/staging/rtl8188eu/core/rtw_security.c
+> @@ -127,8 +127,8 @@ static __le32 getcrc32(u8 *buf, int len)
+>  }
+>  
+>  /*
+> -	Need to consider the fragment  situation
+> -*/
+> + *	Need to consider the fragment  situation
+> + */
+>  void rtw_wep_encrypt(struct adapter *padapter, struct xmit_frame *pxmitframe)
+>  {
+>  	int	curfragnum, length;
+> @@ -465,23 +465,23 @@ static const unsigned short Sbox1[2][256] = {  /* Sbox for hash (can be in ROM)
+>    }
+>  };
+>  
+> - /*
+> -**********************************************************************
+> -* Routine: Phase 1 -- generate P1K, given TA, TK, IV32
+> -*
+> -* Inputs:
+> -*     tk[]      = temporal key			 [128 bits]
+> -*     ta[]      = transmitter's MAC address	    [ 48 bits]
+> -*     iv32      = upper 32 bits of IV		  [ 32 bits]
+> -* Output:
+> -*     p1k[]     = Phase 1 key			  [ 80 bits]
+> -*
+> -* Note:
+> -*     This function only needs to be called every 2**16 packets,
+> -*     although in theory it could be called every packet.
+> -*
+> -**********************************************************************
+> -*/
+> +/*
+> + **********************************************************************
+> + * Routine: Phase 1 -- generate P1K, given TA, TK, IV32
+> + *
+> + * Inputs:
+> + *     tk[]      = temporal key			 [128 bits]
+> + *     ta[]      = transmitter's MAC address	    [ 48 bits]
+> + *     iv32      = upper 32 bits of IV		  [ 32 bits]
+> + * Output:
+> + *     p1k[]     = Phase 1 key			  [ 80 bits]
+> + *
+> + * Note:
+> + *     This function only needs to be called every 2**16 packets,
+> + *     although in theory it could be called every packet.
+> + *
+> + **********************************************************************
+> + */
 
-> So readahead_expand() needs to adjust the file's f_ra so that when the
-> application gets to 64kB, it kicks off the readahead of 4MB-8MB chunk (and
-> then when we get to 4MB+256kB, it kicks off the readahead of 8MB-12MB,
-> and so on).
+For these, please convert them to the kerneldoc format, don't create a
+custom one as that's not needed and would only require someone else to
+go back and fix it up again.
 
-Ummm...  Two questions:
+thanks,
 
-Firstly, how do I do that?  Set ->async_size?  And to what?  The expansion
-could be 2MB from a ceph stripe, 256k from the cache.  Just to add to the fun,
-the leading edge of the window might also be rounded downwards and the RA
-trigger could be before where the app is going to start reading.
-
-Secondly, what happens if, say, a 4MB read is covered by a single 4MB THP?
-
-David
-
+greg k-h
