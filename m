@@ -2,123 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BED31EFF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71D5531EFF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:37:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231817AbhBRTfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:35:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232001AbhBRSzd (ORCPT
+        id S231879AbhBRTgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:36:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44410 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232629AbhBRTD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:55:33 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267ACC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:55:18 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id s17so3121789ioj.4
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:55:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9vIxghfEoCUvaPhBWJXuhAi7CMYaxeuzzYUrJNnMICk=;
-        b=f/FifjIx9K0uw8mE7Uj/D1pb3YNguyyXh+x1HHBLvCJ3XiOTcjIRskx7DCWAXsbzUa
-         kUDjIQdpjB7J6GQNRuA0uOicOtZJmlZ4AA2w6115thy7p9zzRnVXjj8lO7x3VKVXvZRj
-         05bJzj/E/+FZ5TIj/RKOfDV4kh/bGUdk7355GdzZx4XnfrGVSzY/owsC3qtMjK9DflF+
-         hql+nm2Xa8e5cAYK32f2ZxifRdyX0AyFPjrIWX2bq7e9TUFlx4AhILv5sHtPnLuldpLH
-         lXVI3RTiqw4mL2q2x2cozxwV7cSHfhFWEepH1lv1C/CdfebO54gGaWsj9rkoOltzxsJS
-         XJYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9vIxghfEoCUvaPhBWJXuhAi7CMYaxeuzzYUrJNnMICk=;
-        b=TuFkrqiWOkx4op1qPYcwIBwiuyJMd2gIrKyiMXqtBLFtMvsm4RUwX17KyGoqaSo10F
-         q5n6s1kQBGwJJvkBmZC2n4haRcLHnGPojF9Eu3UT7VlhKkg8FJWYcoxl/sM4zPkivmre
-         RY3LRQsCrWXAA6Q93i+c8AqBPGNjYH28REz3cIGPHWDe/RhnMpDRT/2Yog8Lh8iGmmse
-         pXG6q4qRU55CodztOpH0JlKlE4HWPRyKBPQZHXyA6GWjCoCwr8VSzUrx6HKNRpdUhi4H
-         rEr3fis1NDaayMN97rqX/h8odLVyZC1yWx0WAHPZq4T4qAl/wen+/jMeRo5eUkn5OaY3
-         jp+g==
-X-Gm-Message-State: AOAM531EKG9jX0ICuTynbojb3omjAoHuLsuPiuciMU+pvNpQOSGOzt9/
-        i7rDcO2bbsvpTCahzBkHgNhyoK1i4Pux3dd1HPQi4QnIYss=
-X-Google-Smtp-Source: ABdhPJwEy6flv/s3qSiyuawZgPXP4p15wbLak0d20uK4imXtkBBTugAjAFKe2Ct8Rc+9g1oao2Edt/b5H7LrAeXn9LQ=
-X-Received: by 2002:a02:3b29:: with SMTP id c41mr5921693jaa.4.1613674517424;
- Thu, 18 Feb 2021 10:55:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20210217204418.54259-1-peterx@redhat.com>
-In-Reply-To: <20210217204418.54259-1-peterx@redhat.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 18 Feb 2021 10:54:41 -0800
-Message-ID: <CAJHvVcjgAEk8ABkE0LC=OBsbQYACet7ui6ELqerx-v6KGB+tsg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] hugetlb: Disable huge pmd unshare for uffd-wp
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Thu, 18 Feb 2021 14:03:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613674920;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yu9X6Fkg1PRktBt1patt1k0yU5OsbbRblVF5fVIJPaA=;
+        b=M1D9ydTty92F5/Gp5bkK5skpEbbBuKMW85ezIYzPsLA+oglGw0RkJ50/+m+tIjageJhmNj
+        QLzgkOUSVxRzpqrjuW9uIItfAVgnnzyHwXv3Uujeu2Mi79uBrcMmM4iO3u7m3U/D3rLRxk
+        Uc9WvMMwz7OYdG5s3RmgMa7nui6KHOU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-ZJzca2bkOi67pdXXutphJA-1; Thu, 18 Feb 2021 14:01:58 -0500
+X-MC-Unique: ZJzca2bkOi67pdXXutphJA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48D71100CCC0;
+        Thu, 18 Feb 2021 19:01:57 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EA38160BF3;
+        Thu, 18 Feb 2021 19:01:53 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 12:01:53 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>
-Content-Type: text/plain; charset="UTF-8"
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Steven Sistare <steven.sistare@oracle.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] vfio/type1: batch page pinning
+Message-ID: <20210218120153.4023ae85@omen.home.shazbot.org>
+In-Reply-To: <20210203204756.125734-4-daniel.m.jordan@oracle.com>
+References: <20210203204756.125734-1-daniel.m.jordan@oracle.com>
+        <20210203204756.125734-4-daniel.m.jordan@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I reviewed these patches, rebased my minor fault handling series on
-top of this series, and then ran some stress tests of minor fault
-handling. Other than the one comment I left about !CONFIG_CMA, I
-didn't spot any issues. So:
+On Wed,  3 Feb 2021 15:47:56 -0500
+Daniel Jordan <daniel.m.jordan@oracle.com> wrote:
 
-Tested-By: Axel Rasmussen <axelrasmussen@google.com>
+> Pinning one 4K page at a time is inefficient, so do it in batches of 512
+> instead.  This is just an optimization with no functional change
+> intended, and in particular the driver still calls iommu_map() with the
+> largest physically contiguous range possible.
+> 
+> Add two fields in vfio_batch to remember where to start between calls to
+> vfio_pin_pages_remote(), and use vfio_batch_unpin() to handle remaining
+> pages in the batch in case of error.
+> 
+> qemu pins pages for guests around 8% faster on my test system, a
+> two-node Broadwell server with 128G memory per node.  The qemu process
+> was bound to one node with its allocations constrained there as well.
+> 
+>                              base               test
+>           guest              ----------------   ----------------
+>        mem (GB)   speedup    avg sec    (std)   avg sec    (std)
+>               1      7.4%       0.61   (0.00)      0.56   (0.00)
+>               2      8.3%       0.93   (0.00)      0.85   (0.00)
+>               4      8.4%       1.46   (0.00)      1.34   (0.00)
+>               8      8.6%       2.54   (0.01)      2.32   (0.00)
+>              16      8.3%       4.66   (0.00)      4.27   (0.01)
+>              32      8.3%       8.94   (0.01)      8.20   (0.01)
+>              64      8.2%      17.47   (0.01)     16.04   (0.03)
+>             120      8.5%      32.45   (0.13)     29.69   (0.01)
+> 
+> perf diff confirms less time spent in pup.  Here are the top ten
+> functions:
+> 
+>              Baseline  Delta Abs  Symbol
+> 
+>                78.63%     +6.64%  clear_page_erms
+>                 1.50%     -1.50%  __gup_longterm_locked
+>                 1.27%     -0.78%  __get_user_pages
+>                           +0.76%  kvm_zap_rmapp.constprop.0
+>                 0.54%     -0.53%  vmacache_find
+>                 0.55%     -0.51%  get_pfnblock_flags_mask
+>                 0.48%     -0.48%  __get_user_pages_remote
+>                           +0.39%  slot_rmap_walk_next
+>                           +0.32%  vfio_pin_map_dma
+>                           +0.26%  kvm_handle_hva_range
+>                 ...
+> 
+> Suggested-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Signed-off-by: Daniel Jordan <daniel.m.jordan@oracle.com>
+> ---
+>  drivers/vfio/vfio_iommu_type1.c | 133 +++++++++++++++++++++-----------
+>  1 file changed, 88 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index c26c1a4697e5..ac59bfc4e332 100644
+> --- a/drivers/vfio/vfio_iommu_type1.c
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -101,6 +101,8 @@ struct vfio_batch {
+>  	struct page		**pages;	/* for pin_user_pages_remote */
+>  	struct page		*fallback_page; /* if pages alloc fails */
+>  	int			capacity;	/* length of pages array */
+> +	int			size;		/* of batch currently */
+> +	int			offset;		/* of next entry in pages */
+>  };
+>  
+>  struct vfio_group {
+> @@ -425,6 +427,9 @@ static int put_pfn(unsigned long pfn, int prot)
+>  
+>  static void vfio_batch_init(struct vfio_batch *batch)
+>  {
+> +	batch->size = 0;
+> +	batch->offset = 0;
+> +
+>  	if (unlikely(disable_hugepages))
+>  		goto fallback;
+>  
+> @@ -440,6 +445,17 @@ static void vfio_batch_init(struct vfio_batch *batch)
+>  	batch->capacity = 1;
+>  }
+>  
+> +static void vfio_batch_unpin(struct vfio_batch *batch, struct vfio_dma *dma)
+> +{
+> +	while (batch->size) {
+> +		unsigned long pfn = page_to_pfn(batch->pages[batch->offset]);
+> +
+> +		put_pfn(pfn, dma->prot);
+> +		batch->offset++;
+> +		batch->size--;
+> +	}
+> +}
+> +
+>  static void vfio_batch_fini(struct vfio_batch *batch)
+>  {
+>  	if (batch->capacity == VFIO_BATCH_MAX_CAPACITY)
+> @@ -526,65 +542,88 @@ static long vfio_pin_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
+>  				  long npage, unsigned long *pfn_base,
+>  				  unsigned long limit, struct vfio_batch *batch)
+>  {
+> -	unsigned long pfn = 0;
+> +	unsigned long pfn;
+> +	struct mm_struct *mm = current->mm;
+>  	long ret, pinned = 0, lock_acct = 0;
+>  	bool rsvd;
+>  	dma_addr_t iova = vaddr - dma->vaddr + dma->iova;
+>  
+>  	/* This code path is only user initiated */
+> -	if (!current->mm)
+> +	if (!mm)
+>  		return -ENODEV;
+>  
+> -	ret = vaddr_get_pfns(current->mm, vaddr, 1, dma->prot, pfn_base,
+> -			     batch->pages);
+> -	if (ret < 0)
+> -		return ret;
+> -
+> -	pinned++;
+> -	rsvd = is_invalid_reserved_pfn(*pfn_base);
+> -
+> -	/*
+> -	 * Reserved pages aren't counted against the user, externally pinned
+> -	 * pages are already counted against the user.
+> -	 */
+> -	if (!rsvd && !vfio_find_vpfn(dma, iova)) {
+> -		if (!dma->lock_cap && current->mm->locked_vm + 1 > limit) {
+> -			put_pfn(*pfn_base, dma->prot);
+> -			pr_warn("%s: RLIMIT_MEMLOCK (%ld) exceeded\n", __func__,
+> -					limit << PAGE_SHIFT);
+> -			return -ENOMEM;
+> -		}
+> -		lock_acct++;
+> +	if (batch->size) {
+> +		/* Leftover pages in batch from an earlier call. */
+> +		*pfn_base = page_to_pfn(batch->pages[batch->offset]);
+> +		pfn = *pfn_base;
+> +		rsvd = is_invalid_reserved_pfn(*pfn_base);
+> +	} else {
+> +		*pfn_base = 0;
+>  	}
+>  
+> -	if (unlikely(disable_hugepages))
+> -		goto out;
+> +	while (npage) {
+> +		if (!batch->size) {
+> +			/* Empty batch, so refill it. */
+> +			long req_pages = min_t(long, npage, batch->capacity);
+>  
+> -	/* Lock all the consecutive pages from pfn_base */
+> -	for (vaddr += PAGE_SIZE, iova += PAGE_SIZE; pinned < npage;
+> -	     pinned++, vaddr += PAGE_SIZE, iova += PAGE_SIZE) {
+> -		ret = vaddr_get_pfns(current->mm, vaddr, 1, dma->prot, &pfn,
+> -				     batch->pages);
+> -		if (ret < 0)
+> -			break;
+> +			ret = vaddr_get_pfns(mm, vaddr, req_pages, dma->prot,
+> +					     &pfn, batch->pages);
+> +			if (ret < 0)
+> +				return ret;
 
-(Or Reviewed-By: , if that makes more sense.)
 
-On Wed, Feb 17, 2021 at 12:44 PM Peter Xu <peterx@redhat.com> wrote:
->
-> v2:
-> - patch 4: move hugetlb_unshare_all_pmds() into mm/hugetlb.c, so it can be used
->   even outside userfaultfd.c
->
-> This series tries to disable huge pmd unshare of hugetlbfs backed memory for
-> uffd-wp.  Although uffd-wp of hugetlbfs is still during rfc stage, the idea of
-> this series may be needed for multiple tasks (Axel's uffd minor fault series,
-> and Mike's soft dirty series), so I picked it out from the larger series.
->
-> References works:
->
-> Uffd shmem+hugetlbfs rfc:
-> https://lore.kernel.org/lkml/20210115170907.24498-1-peterx@redhat.com/
->
-> Uffd minor mode for hugetlbfs:
-> https://lore.kernel.org/lkml/20210212215403.3457686-1-axelrasmussen@google.com/
->
-> Soft dirty for hugetlbfs:
-> https://lore.kernel.org/lkml/20210211000322.159437-1-mike.kravetz@oracle.com/
->
-> Please review, thanks.
->
-> Peter Xu (4):
->   hugetlb: Pass vma into huge_pte_alloc() and huge_pmd_share()
->   hugetlb/userfaultfd: Forbid huge pmd sharing when uffd enabled
->   mm/hugetlb: Move flush_hugetlb_tlb_range() into hugetlb.h
->   hugetlb/userfaultfd: Unshare all pmds for hugetlbfs when register wp
->
->  arch/arm64/mm/hugetlbpage.c   |  7 ++-
->  arch/ia64/mm/hugetlbpage.c    |  3 +-
->  arch/mips/mm/hugetlbpage.c    |  4 +-
->  arch/parisc/mm/hugetlbpage.c  |  2 +-
->  arch/powerpc/mm/hugetlbpage.c |  3 +-
->  arch/s390/mm/hugetlbpage.c    |  2 +-
->  arch/sh/mm/hugetlbpage.c      |  2 +-
->  arch/sparc/mm/hugetlbpage.c   |  1 +
->  fs/userfaultfd.c              |  4 ++
->  include/linux/hugetlb.h       | 16 +++++-
->  include/linux/userfaultfd_k.h |  9 ++++
->  mm/hugetlb.c                  | 94 +++++++++++++++++++++++++++--------
->  mm/userfaultfd.c              |  2 +-
->  13 files changed, 114 insertions(+), 35 deletions(-)
->
-> --
-> 2.26.2
->
->
+This might not be the first batch we fill, I think this needs to unwind
+rather than direct return.  Series looks good otherwise.  Thanks,
+
+Alex 
+
+
+>  
+> -		if (pfn != *pfn_base + pinned ||
+> -		    rsvd != is_invalid_reserved_pfn(pfn)) {
+> -			put_pfn(pfn, dma->prot);
+> -			break;
+> +			batch->size = ret;
+> +			batch->offset = 0;
+> +
+> +			if (!*pfn_base) {
+> +				*pfn_base = pfn;
+> +				rsvd = is_invalid_reserved_pfn(*pfn_base);
+> +			}
+>  		}
+>  
+> -		if (!rsvd && !vfio_find_vpfn(dma, iova)) {
+> -			if (!dma->lock_cap &&
+> -			    current->mm->locked_vm + lock_acct + 1 > limit) {
+> -				put_pfn(pfn, dma->prot);
+> -				pr_warn("%s: RLIMIT_MEMLOCK (%ld) exceeded\n",
+> -					__func__, limit << PAGE_SHIFT);
+> -				ret = -ENOMEM;
+> -				goto unpin_out;
+> +		/*
+> +		 * pfn is preset for the first iteration of this inner loop and
+> +		 * updated at the end to handle a VM_PFNMAP pfn.  In that case,
+> +		 * batch->pages isn't valid (there's no struct page), so allow
+> +		 * batch->pages to be touched only when there's more than one
+> +		 * pfn to check, which guarantees the pfns are from a
+> +		 * !VM_PFNMAP vma.
+> +		 */
+> +		while (true) {
+> +			if (pfn != *pfn_base + pinned ||
+> +			    rsvd != is_invalid_reserved_pfn(pfn))
+> +				goto out;
+> +
+> +			/*
+> +			 * Reserved pages aren't counted against the user,
+> +			 * externally pinned pages are already counted against
+> +			 * the user.
+> +			 */
+> +			if (!rsvd && !vfio_find_vpfn(dma, iova)) {
+> +				if (!dma->lock_cap &&
+> +				    mm->locked_vm + lock_acct + 1 > limit) {
+> +					pr_warn("%s: RLIMIT_MEMLOCK (%ld) exceeded\n",
+> +						__func__, limit << PAGE_SHIFT);
+> +					ret = -ENOMEM;
+> +					goto unpin_out;
+> +				}
+> +				lock_acct++;
+>  			}
+> -			lock_acct++;
+> +
+> +			pinned++;
+> +			npage--;
+> +			vaddr += PAGE_SIZE;
+> +			iova += PAGE_SIZE;
+> +			batch->offset++;
+> +			batch->size--;
+> +
+> +			if (!batch->size)
+> +				break;
+> +
+> +			pfn = page_to_pfn(batch->pages[batch->offset]);
+>  		}
+> +
+> +		if (unlikely(disable_hugepages))
+> +			break;
+>  	}
+>  
+>  out:
+> @@ -596,6 +635,7 @@ static long vfio_pin_pages_remote(struct vfio_dma *dma, unsigned long vaddr,
+>  			for (pfn = *pfn_base ; pinned ; pfn++, pinned--)
+>  				put_pfn(pfn, dma->prot);
+>  		}
+> +		vfio_batch_unpin(batch, dma);
+>  
+>  		return ret;
+>  	}
+> @@ -1305,6 +1345,7 @@ static int vfio_pin_map_dma(struct vfio_iommu *iommu, struct vfio_dma *dma,
+>  		if (ret) {
+>  			vfio_unpin_pages_remote(dma, iova + dma->size, pfn,
+>  						npage, true);
+> +			vfio_batch_unpin(&batch, dma);
+>  			break;
+>  		}
+>  
+> @@ -1546,11 +1587,13 @@ static int vfio_iommu_replay(struct vfio_iommu *iommu,
+>  			ret = iommu_map(domain->domain, iova, phys,
+>  					size, dma->prot | domain->prot);
+>  			if (ret) {
+> -				if (!dma->iommu_mapped)
+> +				if (!dma->iommu_mapped) {
+>  					vfio_unpin_pages_remote(dma, iova,
+>  							phys >> PAGE_SHIFT,
+>  							size >> PAGE_SHIFT,
+>  							true);
+> +					vfio_batch_unpin(&batch, dma);
+> +				}
+>  				goto unwind;
+>  			}
+>  
+
