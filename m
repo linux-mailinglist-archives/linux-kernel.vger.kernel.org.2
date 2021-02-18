@@ -2,107 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3014931E54B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 06:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D028931E554
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 06:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhBRFD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 00:03:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51168 "EHLO mail.kernel.org"
+        id S229864AbhBRFWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 00:22:44 -0500
+Received: from inva020.nxp.com ([92.121.34.13]:33794 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229460AbhBRFDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 00:03:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92FBC64DA8;
-        Thu, 18 Feb 2021 05:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613624593;
-        bh=BiZSHcxv8WWzDhcxoQsCPxk7cnJSi3PjK2CmEvrCw6Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WWUnQt3jhz4DBOiq/9gWeyyHj0wq+gYQiCGvLM7QhwozF2wxr960YniXx4RVUPpnY
-         NkonaOKbPTmJL5t+JjymvZxhlm+WAgsaYGqSY9+bNJR0Pjos5zyJz8K7KloaBkaoEX
-         RoYtAJXDMVVCGa8uVoy6QAtnbsb1Lat18fAf7HsfPaoUvtNjCLjeRyNvNDZbZ6ilGT
-         Q1HKljFmlkkw8aBypwbB9cuXqF9EfkGC6wMFrtniTNPUrmP0aKw0qZYd4BUhrqtbq8
-         bJoZJLkiD9oDWmi5mzEl9xnCCuXPNiS0ST0shHQ9BAAjTKQirRuOvJpVg/HyvFlwPZ
-         cusTnFCd9mRuA==
-Date:   Thu, 18 Feb 2021 14:03:07 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     paulmck@kernel.org
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        rostedt@goodmis.org
-Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
-Message-Id: <20210218140307.71f475248ebefa0ca613c09e@kernel.org>
-In-Reply-To: <20210217181738.GE2743@paulmck-ThinkPad-P72>
-References: <20210212192059.wytqwdf4qm4rnq3d@linutronix.de>
-        <20210212211207.GA2046@pc638.lan>
-        <20210212234851.GP2743@paulmck-ThinkPad-P72>
-        <20210213003709.GA27846@paulmck-ThinkPad-P72>
-        <20210213004328.GB27846@paulmck-ThinkPad-P72>
-        <20210213113030.GA1878@pc638.lan>
-        <20210213164554.GS2743@paulmck-ThinkPad-P72>
-        <20210215112826.xc6b4se6ujwvrwco@linutronix.de>
-        <20210216173003.GX2743@paulmck-ThinkPad-P72>
-        <20210217234759.b82e39049a2e99cf6358e1c2@kernel.org>
-        <20210217181738.GE2743@paulmck-ThinkPad-P72>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229460AbhBRFWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 00:22:42 -0500
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CDCDD1A0745;
+        Thu, 18 Feb 2021 06:21:55 +0100 (CET)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 7C7001A0E0C;
+        Thu, 18 Feb 2021 06:21:50 +0100 (CET)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 41C0540291;
+        Thu, 18 Feb 2021 06:21:44 +0100 (CET)
+From:   Richard Zhu <hongxing.zhu@nxp.com>
+To:     l.stach@pengutronix.de, bhelgaas@google.com, stefan@agner.ch,
+        lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>
+Subject: [PATCH] PCI: imx6: Limit DBI register length for imx6qp pcie
+Date:   Thu, 18 Feb 2021 13:09:40 +0800
+Message-Id: <1613624980-29382-1-git-send-email-hongxing.zhu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Feb 2021 10:17:38 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+Refer to commit 075af61c19cd ("PCI: imx6: Limit DBI register length"),
+i.MX6QP PCIe has the similar issue.
+Define the length of the DBI registers and limit config space to its
+length for i.MX6QP PCIe too.
 
-> > > 1.	Spawn ksoftirqd earlier.
-> > > 
-> > > 2.	Suppress attempts to awaken ksoftirqd before it exists,
-> > > 	forcing all ksoftirq execution on the back of interrupts.
-> > > 
-> > > Uladzislau and I each produced patches for #1, and I produced a patch
-> > > for #2.
-> > > 
-> > > The only other option I know of is to push the call to init_kprobes()
-> > > later in the boot sequence, perhaps to its original subsys_initcall(),
-> > > or maybe only as late as core_initcall().  I added Masami and Steve on
-> > > CC for their thoughts on this.
-> > > 
-> > > Is there some other proper fix that I am missing?
-> > 
-> > Oh, I missed that the synchronize_rcu_tasks() will be involved the kprobes
-> > in early stage. Does the problem only exist in the synchronize_rcu_tasks()
-> > instead of synchronize_rcu()? If so I can just stop optimizer in early stage
-> > because I just want to enable kprobes in early stage, but not optprobes.
-> > 
-> > Does the following patch help?
-> 
-> It does look to me like it would!  I clearly should have asked you about
-> this a couple of months ago.  ;-)
-> 
-> The proof of the pudding would be whether the powerpc guys can apply
-> this to v5.10-rc7 and have their kernel come up without hanging at boot.
+Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+---
+ drivers/pci/controller/dwc/pci-imx6.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Who could I ask for testing this patch, Uladzislau?
-I think the test machine which enough slow or the kernel has much initcall
-to run optimization thread while booting.
-In my environment, I could not reproduce that issue because the optimizer
-was sheduled after some tick passed. At that point, ksoftirqd has already
-been initialized.
-
-Thank you,
-
-
+diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+index 0cf1333c0440..853ea8e82952 100644
+--- a/drivers/pci/controller/dwc/pci-imx6.c
++++ b/drivers/pci/controller/dwc/pci-imx6.c
+@@ -1175,6 +1175,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+ 		.variant = IMX6QP,
+ 		.flags = IMX6_PCIE_FLAG_IMX6_PHY |
+ 			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE,
++		.dbi_length = 0x200,
+ 	},
+ 	[IMX7D] = {
+ 		.variant = IMX7D,
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.17.1
+
