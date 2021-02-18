@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C2431EA35
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E99D31EA4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhBRND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:03:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231586AbhBRLjZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:39:25 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2898FC06178A;
-        Thu, 18 Feb 2021 03:37:43 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DhCKd0DFpz9sRN;
-        Thu, 18 Feb 2021 22:34:29 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613648069;
-        bh=VXSHB3U6S26m/drvh4a+pj7NEw/q1khXZJuZz7rXrUE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gSDkhirLQjnW2lGMxOvtuxAzGo2ioIuv5CvfP5rSvUVRaJfJ0/pY+PnvMH7yjbMv6
-         aiUp6KFRUxGgfE6W7DRqdRsqFVq94lAHCeL/AX/V3XKfqxvxTlwtYlMh9a7EUzLbwr
-         QWTYPtWvUvQVU41GTcQpVzX+5OCe0YhyCtvfL0qy8T5PUM6SwWcgcHFR7XHNF+cOU6
-         T+L8ztT6lJiIfcbtbX5OBY4xNJMLRnrVMiH8h0Dt2lqyD/0nRVkyaTt5ZOrfwyPR/m
-         kCK0dLmoDJfwFaObw1b9SltvI1ODpAIPiZq3vZtpzLk9EzP4a8tReJd+47WXOD9Kja
-         I2KjLPCYEMe+A==
-Date:   Thu, 18 Feb 2021 22:34:27 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Rob Herring <robherring2@gmail.com>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: linux-next: manual merge of the devicetree tree with the
- powerpc tree
-Message-ID: <20210218223427.77109d83@canb.auug.org.au>
-In-Reply-To: <874ki9vene.fsf@mpe.ellerman.id.au>
-References: <20210218144815.5673ae6f@canb.auug.org.au>
-        <874ki9vene.fsf@mpe.ellerman.id.au>
+        id S233438AbhBRNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:09:39 -0500
+Received: from mga07.intel.com ([134.134.136.100]:55027 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231937AbhBRLjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:39:49 -0500
+IronPort-SDR: rz4HUxro9R5E3yy3bSVMrBKa69KAfhN2F3u2pM3Pc8Y1CfH/8ddjco3icIx6GphA+oi532wtde
+ ihND+25LbajQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247552824"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="247552824"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 03:36:22 -0800
+IronPort-SDR: hqFTJU+Y+7ssuR7UQVv22NRIYrTZpDuNELPaiFWYF/6MfaSnT/Xs61IHKjeQd/gw6aYeSHeQqQ
+ S1Xm5lSOYigg==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="385861988"
+Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 03:36:20 -0800
+Date:   Thu, 18 Feb 2021 19:35:45 +0800
+From:   kernel test robot <rong.a.chen@intel.com>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Noralf =?utf-8?Q?Tr=C3=B8nnes?= <noralf@tronnes.org>,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Subject: drivers/gpu/drm/drm_mipi_dbi.c:262:52: warning: Either the condition
+ '!fb' is redundant or there is possible null pointer dereference: fb.
+Message-ID: <20210218113545.GU219708@shao2-debian>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Krv4dNl2WGCiT=lWt4ozErY";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Krv4dNl2WGCiT=lWt4ozErY
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f40ddce88593482919761f74910f42f4b84c004b
+commit: 7e06886bbfca73717e45a0f20cdb4053793c191b drm/mipi-dbi: Remove ->enabled
+date:   8 months ago
+compiler: riscv64-linux-gcc (GCC) 9.3.0
 
-Hi Michael,
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-On Thu, 18 Feb 2021 21:44:37 +1100 Michael Ellerman <mpe@ellerman.id.au> wr=
-ote:
->
-> I think it just needs this?
->=20
-> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-> index 87e34611f93d..0492ca6003f3 100644
-> --- a/arch/powerpc/kexec/elf_64.c
-> +++ b/arch/powerpc/kexec/elf_64.c
-> @@ -104,7 +104,7 @@ static void *elf64_load(struct kimage *image, char *k=
-ernel_buf,
-> =20
->  	fdt =3D of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
->  					   initrd_len, cmdline,
-> -					   fdt_totalsize(initial_boot_params));
-> +					   kexec_fdt_totalsize_ppc64(image));
->  	if (!fdt) {
->  		pr_err("Error setting up the new device tree.\n");
->  		ret =3D -EINVAL;
->=20
 
-I thought about that, but the last argument to
-of_kexec_alloc_and_setup_fdt() is extra_fdt_size and the allocation
-done is for this:
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
-fdt_size =3D fdt_totalsize(initial_boot_params) +
-                   (cmdline ? strlen(cmdline) : 0) +
-                   FDT_EXTRA_SPACE +
-                   extra_fdt_size;
+>> drivers/gpu/drm/drm_mipi_dbi.c:262:52: warning: Either the condition '!fb' is redundant or there is possible null pointer dereference: fb. [nullPointerRedundantCheck]
+    struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(fb->dev);
+                                                      ^
+   drivers/gpu/drm/drm_mipi_dbi.c:271:14: note: Assuming that condition '!fb' is not redundant
+    if (WARN_ON(!fb))
+                ^
+   drivers/gpu/drm/drm_mipi_dbi.c:262:52: note: Null pointer dereference
+    struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(fb->dev);
+                                                      ^
 
-and kexec_fdt_totalsize_ppc64() also includes
-fdt_totalsize(initial_boot_params) so I was not sure.  Maybe
-kexec_fdt_totalsize_ppc64() needs modification as well?
+vim +262 drivers/gpu/drm/drm_mipi_dbi.c
 
---=20
-Cheers,
-Stephen Rothwell
+f41a8a69890d08 drivers/gpu/drm/drm_mipi_dbi.c     Geert Uytterhoeven 2020-01-15  257  
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  258  static void mipi_dbi_fb_dirty(struct drm_framebuffer *fb, struct drm_rect *rect)
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  259  {
+7c9f1312cfca15 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  260  	struct drm_gem_object *gem = drm_gem_fb_get_obj(fb, 0);
+7c9f1312cfca15 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  261  	struct drm_gem_cma_object *cma_obj = to_drm_gem_cma_obj(gem);
+84137b866e834a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22 @262  	struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(fb->dev);
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  263  	unsigned int height = rect->y2 - rect->y1;
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  264  	unsigned int width = rect->x2 - rect->x1;
+84137b866e834a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  265  	struct mipi_dbi *dbi = &dbidev->dbi;
+36b5057216236a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  266  	bool swap = dbi->swap_bytes;
+9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  267  	int idx, ret = 0;
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  268  	bool full;
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  269  	void *tr;
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  270  
+7e06886bbfca73 drivers/gpu/drm/drm_mipi_dbi.c     Daniel Vetter      2020-06-12  271  	if (WARN_ON(!fb))
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  272  		return;
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  273  
+9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  274  	if (!drm_dev_enter(fb->dev, &idx))
+9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  275  		return;
+9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  276  
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  277  	full = width == fb->width && height == fb->height;
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  278  
+b051b3459bbae9 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  279  	DRM_DEBUG_KMS("Flushing [FB:%d] " DRM_RECT_FMT "\n", fb->base.id, DRM_RECT_ARG(rect));
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  280  
+36b5057216236a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  281  	if (!dbi->dc || !full || swap ||
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  282  	    fb->format->format == DRM_FORMAT_XRGB8888) {
+440961d20959e8 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  283  		tr = dbidev->tx_buf;
+440961d20959e8 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  284  		ret = mipi_dbi_buf_copy(dbidev->tx_buf, fb, rect, swap);
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  285  		if (ret)
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  286  			goto err_msg;
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  287  	} else {
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  288  		tr = cma_obj->vaddr;
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  289  	}
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  290  
+f41a8a69890d08 drivers/gpu/drm/drm_mipi_dbi.c     Geert Uytterhoeven 2020-01-15  291  	mipi_dbi_set_window_address(dbidev, rect->x1, rect->x2 - 1, rect->y1,
+f41a8a69890d08 drivers/gpu/drm/drm_mipi_dbi.c     Geert Uytterhoeven 2020-01-15  292  				    rect->y2 - 1);
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  293  
+36b5057216236a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  294  	ret = mipi_dbi_command_buf(dbi, MIPI_DCS_WRITE_MEMORY_START, tr,
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  295  				   width * height * 2);
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  296  err_msg:
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  297  	if (ret)
+af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  298  		dev_err_once(fb->dev->dev, "Failed to update display %d\n", ret);
+9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  299  
+9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  300  	drm_dev_exit(idx);
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  301  }
+02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  302  
 
---Sig_/Krv4dNl2WGCiT=lWt4ozErY
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+:::::: The code at line 262 was first introduced by commit
+:::::: 84137b866e834ac937582b04ae9bed0a72356a6a drm/tinydrm: Split struct mipi_dbi in two
 
------BEGIN PGP SIGNATURE-----
+:::::: TO: Noralf Trønnes <noralf@tronnes.org>
+:::::: CC: Noralf Trønnes <noralf@tronnes.org>
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAuUMMACgkQAVBC80lX
-0GzMywf/Vkwbwfcyt2jmZE4boVwAlJBei33m6JzQD/llGlrkrbm66R5c8eGWe32d
-K9z2RTBFuqqc+RAcYHIoh39nP/ENoYXYMlJsxOptGMv3pRGjP5ptI5wJm9BxtZtD
-NJ+zSqPmndklUwNSkzaoZPtbs7d/BpIR+jkLt10w8YMnFeyshBiwPJGcZlhmrUfM
-i9kF3NgF1dQCXWtDValsb0SCVlza1GdMNZGI+g62Ykv2IscKZ1tVfOYgfTZ5DZNZ
-Yfsqs9CaTnLrnQaY8ai0jLplJPojHbZ3CCmInS6/rSo+K3Pa6KpFtYYgXRYLU72E
-Tinhkws2VRmnyOM6lr7w+fhYaaKEqw==
-=Ze8C
------END PGP SIGNATURE-----
-
---Sig_/Krv4dNl2WGCiT=lWt4ozErY--
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
