@@ -2,168 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E657131EE1C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4604031EE20
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbhBRSRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:17:17 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:56000 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232745AbhBRPxD (ORCPT
+        id S232370AbhBRSSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232771AbhBRPxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:53:03 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFfXiG164203;
-        Thu, 18 Feb 2021 15:52:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=EckJQMJCIrN0lgGMXmDPFBCLlGKJ6+RiOfY/TQd09T0=;
- b=Be2Rt6vZJe/tUxWhefIS/tlesADf2JYUrjVcHNv7jDP/MttIIG3sQpX7VvK6xhnZLVlL
- vu3/fVwnNDJWPNu644C6Myl8rwoO/GiXskRXgP7WtA56nW+T4OnL6xZKzIQAyMgUCRbE
- 7xCIGI9Hdhtw1pydDlUGGw0HAFkaXA+aV5Nvwg0o2klRL//bVK1VbOoHeRe+Ti4/q/gr
- 1b4k2kzoPJwegI56WEJDfsBnK3Wl+8GG+P1kfFZ2Q8QuIriW+PNZLLP70TR9VzrTHsme
- /3KFGitWA5j4ImluALoaSuZ9r7WERqkvNWSdc7Q/0WGgpDzSBU74Ffr2YAZ00/2fCGGy IA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36p49bej91-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 15:52:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFoTiJ115432;
-        Thu, 18 Feb 2021 15:52:10 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 36prbqx0v3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 15:52:10 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IFq8MT022652;
-        Thu, 18 Feb 2021 15:52:09 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Feb 2021 07:52:08 -0800
-Date:   Thu, 18 Feb 2021 18:51:59 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Atul Gopinathan <atulgopinathan@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
- variable type
-Message-ID: <20210218155159.GL2087@kadam>
-References: <20210218084404.16591-1-atulgopinathan@gmail.com>
- <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
- <20210218104755.GA7571@atulu-nitro>
- <YC5bsXa+1KSuIh+v@kroah.com>
- <20210218125220.GA19456@atulu-nitro>
+        Thu, 18 Feb 2021 10:53:17 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6838FC061756;
+        Thu, 18 Feb 2021 07:52:29 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id e9so1734636pjj.0;
+        Thu, 18 Feb 2021 07:52:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=trbbw9gkdkd105IaA7h2JtZJ5hEDJNcNLn2bkNlm+4I=;
+        b=SzE6MBiZb5aCdj45XpkSS9tohyDUfNdxO8chVfAf8ilCtUKf6KYwYkUN2cHQs/F476
+         kjlsryICuRkiYgiRUs5fKZoJhIJSTRFb66CV12mFr5V8KNwCw+9Z+QX4my2shC8IMLn7
+         02TYhaVdUI+OEJtOlvBFY50T7s5jcT2uY2cKXog6TKadvdC5MfevYEP5HW9iR727Vwwp
+         d8C3tayt1khUnAq7b4gqilQbHvZfcaTu+OXO/wTEtoZGOz8vo3d8E4gEmHSmOiB7ODIp
+         V03IXdBTha9TEdsMRFNa80eKSLOVDGUUFLnLKu+C19lVAgFP3VPzH2RgSXrZ1/DVOLXY
+         poWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=trbbw9gkdkd105IaA7h2JtZJ5hEDJNcNLn2bkNlm+4I=;
+        b=RzV43YZus5gK5Uh+z1ePsCs1CDo7DYQYInO1LivwWTikccqlNZGmGFDo+gCW+DGpx3
+         +DLuIGkyd9WRMD/5QsdUIz/VlAFL3DRw1clo8NEOZqtX3N3GIcTnZ0vHxSCW4Co5cXCH
+         KUUSp2OuSw2Pw1fvPSl/3Y6wiF69Z/uSW/sOOwyTLVnklc73oCYb+tp5APSbU9Z6b/SL
+         AO+cBi7JQfE8uwZtanSg4zYQSthY9xphrZrDfyn64tBtxPLanKCPWi0QwUTJcSq+4RPn
+         Tdvj+d2vDsN9XsvpnLVXu0b7XeD4osGCNCJdhJFz2Wggwqaj98UMTsp0yZ8fVeVBJbIf
+         dFfg==
+X-Gm-Message-State: AOAM533VdHuQjAwTeXVkTKaiPpFud1YiqErUjqbNSTe2hHOReKL3rHWT
+        mXsNNlqntEEV4+piHS4f/kU=
+X-Google-Smtp-Source: ABdhPJyd3O6GMj59MJrT2TGhOYJO4n8wZwHwSqWUCOe2jnjaDuLrcfqlkBZW8Xuoyik/vStFt7YAow==
+X-Received: by 2002:a17:902:ee46:b029:e3:74e1:24e8 with SMTP id 6-20020a170902ee46b02900e374e124e8mr4639333plo.85.1613663548995;
+        Thu, 18 Feb 2021 07:52:28 -0800 (PST)
+Received: from google.com ([2620:15c:211:201:157d:8a19:5427:ea9e])
+        by smtp.gmail.com with ESMTPSA id y29sm227702pff.81.2021.02.18.07.52.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 07:52:27 -0800 (PST)
+Sender: Minchan Kim <minchan.kim@gmail.com>
+Date:   Thu, 18 Feb 2021 07:52:25 -0800
+From:   Minchan Kim <minchan@kernel.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgoldswo@codeaurora.org,
+        linux-fsdevel@vger.kernel.org, david@redhat.com, vbabka@suse.cz,
+        viro@zeniv.linux.org.uk, joaodias@google.com
+Subject: Re: [RFC 1/2] mm: disable LRU pagevec during the migration
+ temporarily
+Message-ID: <YC6NOVBy5J4bUjfD@google.com>
+References: <20210216170348.1513483-1-minchan@kernel.org>
+ <YCzbCg3+upAo1Kdj@dhcp22.suse.cz>
+ <YC2Am34Fso5Y5SPC@google.com>
+ <20210217211612.GO2858050@casper.infradead.org>
+ <YC2LVXO6e2NVsBqz@google.com>
+ <YC4ifqXYEeWrj4aF@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218125220.GA19456@atulu-nitro>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102180139
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180138
+In-Reply-To: <YC4ifqXYEeWrj4aF@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 06:22:20PM +0530, Atul Gopinathan wrote:
-> On Thu, Feb 18, 2021 at 01:21:05PM +0100, Greg KH wrote:
-> > On Thu, Feb 18, 2021 at 04:17:55PM +0530, Atul Gopinathan wrote:
-> > > On Thu, Feb 18, 2021 at 10:31:15AM +0000, Ian Abbott wrote:
-> > > > On 18/02/2021 08:44, Atul Gopinathan wrote:
-> > > > > Fix the following warning generated by sparse:
-> > > > > 
-> > > > > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-> > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-> > > > > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
-> > > > > 
-> > > > > compat_ptr() has a return type of "void __user *"
-> > > > > as defined in "include/linux/compat.h"
-> > > > > 
-> > > > > cmd->chanlist is of type "unsigned int *" as defined
-> > > > > in drivers/staging/comedi/comedi.h" in struct
-> > > > > comedi_cmd.
-> > > > > 
-> > > > > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> > > > > ---
-> > > > >   drivers/staging/comedi/comedi_fops.c | 2 +-
-> > > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> > > > > index e85a99b68f31..fc4ec38012b4 100644
-> > > > > --- a/drivers/staging/comedi/comedi_fops.c
-> > > > > +++ b/drivers/staging/comedi/comedi_fops.c
-> > > > > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
-> > > > >   	cmd->scan_end_arg = v32.scan_end_arg;
-> > > > >   	cmd->stop_src = v32.stop_src;
-> > > > >   	cmd->stop_arg = v32.stop_arg;
-> > > > > -	cmd->chanlist = compat_ptr(v32.chanlist);
-> > > > > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
-> > > > >   	cmd->chanlist_len = v32.chanlist_len;
-> > > > >   	cmd->data = compat_ptr(v32.data);
-> > > > >   	cmd->data_len = v32.data_len;
-> > > > > 
+On Thu, Feb 18, 2021 at 09:17:02AM +0100, Michal Hocko wrote:
+> On Wed 17-02-21 13:32:05, Minchan Kim wrote:
+> > On Wed, Feb 17, 2021 at 09:16:12PM +0000, Matthew Wilcox wrote:
+> > > On Wed, Feb 17, 2021 at 12:46:19PM -0800, Minchan Kim wrote:
+> > > > > I suspect you do not want to add atomic_read inside hot paths, right? Is
+> > > > > this really something that we have to microoptimize for? atomic_read is
+> > > > > a simple READ_ONCE on many archs.
 > > > > 
-> > > > This patch and the other one in your series clash with commit 9d5d041eebe3
-> > > > ("staging: comedi: comedi_fops.c: added casts to get rid of sparse
-> > > > warnings") by B K Karthik.
+> > > > It's also spin_lock_irq_save in some arch. If the new synchonization is
+> > > > heavily compilcated, atomic would be better for simple start but I thought
+> > > > this locking scheme is too simple so no need to add atomic operation in
+> > > > readside.
 > > > 
-> > > Oh I see. Not sure if this is the right place to ask, but which tree and
-> > > branch should one work with when messing with the code in staging/
-> > > directory? (wanted to avoid such clashes in future)
+> > > What arch uses a spinlock for atomic_read()?  I just had a quick grep and
+> > > didn't see any.
 > > 
-> > staging-next is the best one to use from the staging.git tree.  But as
-> > the above commit was merged in 5.9-rc1, way back in July of last year, I
-> > have no idea what tree you are currently using to not hit that...
+> > Ah, my bad. I was confused with update side.
+> > Okay, let's use atomic op to make it simple.
 > 
-> I'm using the staging tree alright, cloned it yesterday. Except I used the
-> --depth parameter. I believe that is the culprit. How bad a mistake is
-> that?
-> 
-> (Why depth? I'm currently staying in a remote area where internet
-> download speeds are less than 100Kbps. I tried a normal git clone of
-> the staging tree and it's estimated time was more than half a day. Not
-> to mention, it fails due to loss of connection midway every time)
+> Thanks. This should make the code much more simple. Before you send
+> another version for the review I have another thing to consider. You are
+> kind of wiring this into the migration code but control over lru pcp
+> caches can be used in other paths as well. Memory offlining would be
+> another user. We already disable page allocator pcp caches to prevent
+> regular draining. We could do the same with lru pcp caches.
 
-I live in Africa and used to have this problem before Africa got
-connected to fibre optic.  Greg's suggestion of using `wget -c` to
-download a git bundle is a good one.  However, in my experience
-`wget -c` is not 100% accurate on super flakey internet.  Then if it
-fails the verify will fail and you'll have to re-download the entire
-thing.
+I didn't catch your point here. If memory offlining is interested on
+disabling lru pcp, it could call migrate_prep and migrate_finish
+like other places. Are you suggesting this one?
 
-If you want I have a different option.  What I made a clone of Linus's
-tree.  Then I did:
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index a969463bdda4..0ec1c13bfe32 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1425,8 +1425,12 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+                node_clear(mtc.nid, nmask);
+                if (nodes_empty(nmask))
+                        node_set(mtc.nid, nmask);
++
++               migrate_prep();
+                ret = migrate_pages(&source, alloc_migration_target, NULL,
+                        (unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
++
++               migrate_finish();
+                if (ret) {
+                        list_for_each_entry(page, &source, lru) {
+                                pr_warn("migrating pfn %lx failed ret:%d ",
 
-tar cvvf linux.tar linux/.git
-for i in $(seq 0 116) ; do dd if=linux.tar of=linux.tar.${i} ibs=1M count=20 skip=$((20 * $i)) ; done
-
-Now I have put those on a private webserver I have.  You can download
-them by doing:
-
-for i in $(seq 0 116) ; do wget -c http://51.158.124.72/kernel_split/linux.tar.${i} ; done
-md5sum * > my_md5s
-wget http://51.158.124.72/kernel_split/md5sums
-diff -u md5sum my_md5s
-
-Re-download files which don't match
-
-for i in $(seq 0 116) ; do cat linux.tar.${i} >> linux.tar ; done
-cat linux.tar | tar xv
-cd linux
-git reset --hard
-
-Let me know if this works for you.  I will leave the source up for a
-week or two before I delete it.
-
-regards,
-dan carpenter
