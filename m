@@ -2,116 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF2031F10B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:33:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4BF31F115
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhBRUay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:30:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhBRUas (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:30:48 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4919EC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:30:08 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id u4so8084359ljh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:30:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ox1btvjGk59rM0iFdC1MHmi/BBw9yMa71c5TOfzav7s=;
-        b=oI7R0pzgj9KCnSqzCOvslhBEo0GGB5hHCweLk5DtPp5Cj5n4hPHS1HJfhcdN+iL7Fl
-         AHOAs3kJSozfHSUF8+a0vhU0YfMMPhATR0zGI45IgTMsPU8trzzZytlOH/15f0mKeVAd
-         kx4VntGnpixMMcikvIb95fLwsxqUKRUP8JOE9QkVh2XxSR1lXNUxKmwxtJrVz93VyD3I
-         02jpKH1SQqCrVZokIFl/efxaF4jV6ZCRFQS5L9qiZ3kC4LKCz1p3veA/evu0/yLCx8ZP
-         3qY65bQSxrmlP3Hq9m2v4s7ECBOvVNm49ANlCxpGNy8txmwVPpTrqWQFjkbalubmXx1a
-         Xfkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ox1btvjGk59rM0iFdC1MHmi/BBw9yMa71c5TOfzav7s=;
-        b=l+qYp6fvGM8R66JYGOuYn7FlKparj3ZLSwN20SrOwwOfiEIzPPVQImP3sXK6cEeWJl
-         Sh+wWbkLEoPdI2Psel0PBdxMUXQzrJBysAO0Wwlyu0FApr44f01Q0gQsOu8XF/F7fZLS
-         tbtD/xOC+1MSBeHC2dregycRLumnWj7fFOD2rJsF1aAGilYnqVr78tRsvhjDPIhhsHqg
-         eqccnBQJzkq6FS/D8N71xYwcAjpcUPwDSC47XcqzvLtfJuRYsIvbtgFds3zdtNX0RYWD
-         uUAYN18MPK1jxH7hcwpLMNMhEBoRzk7UcGvJaBK9On64x4UDnF2Lq2ch49LWMuj85hQn
-         yXbA==
-X-Gm-Message-State: AOAM531Vn6pascvkyW7avlo7N/thGa8BHUO0W79H7g83xjD3FhPH+vMo
-        pggZb9qQ7kmHW0M3M+kmf82hr80GDAcwig==
-X-Google-Smtp-Source: ABdhPJzJ65gblNIDFUbiJW63dtKAk5r9xjH4j6dImNsNDmQG2MIhoK/hvx+e0l6i06MGcKKuqxO+1Q==
-X-Received: by 2002:a19:f118:: with SMTP id p24mr1623511lfh.4.1613680206841;
-        Thu, 18 Feb 2021 12:30:06 -0800 (PST)
-Received: from msi.localdomain (vmpool.ut.mephi.ru. [85.143.112.90])
-        by smtp.gmail.com with ESMTPSA id s9sm702289lfr.231.2021.02.18.12.30.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 12:30:06 -0800 (PST)
-From:   Nikolay Kyx <knv418@gmail.com>
-To:     gregkh@linuxfoundation.org, sergiu.cuciurean@analog.com
-Cc:     Nikolay Kyx <knv418@gmail.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: kpc2000: code style: fix alignment issues
-Date:   Thu, 18 Feb 2021 23:28:14 +0300
-Message-Id: <20210218202814.14204-1-knv418@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        id S230413AbhBRUe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:34:27 -0500
+Received: from mout.gmx.net ([212.227.15.18]:41749 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231146AbhBRUdq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 15:33:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613680219;
+        bh=Rv2QiztmGCI/+aVrwY7N4QY4dBUgpjxiaRS6N+iq1MY=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=E2gpjhJH7SEnFPlTBjlgR8M1XnLhdkYJT7Nw4mA/s37pwz3lpkcCGvzbOxrxt5oGp
+         lEcKLiJxjx/+FP10zxJR64WL/U1jkvl2SacrZXRTTNU2eplB65bHFEExQsBsv12L58
+         pwTaqOZblJ6/aVWsOlfp3b9u56/j/u204+fx0s1A=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([78.42.220.31]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N5mKP-1lwaw402nL-017Dn6; Thu, 18
+ Feb 2021 21:30:19 +0100
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     peterhuewe@gmx.de, jarkko@kernel.org, jgg@ziepe.ca
+Cc:     stefanb@linux.vnet.ibm.com, James.Bottomley@hansenpartnership.com,
+        David.Laight@ACULAB.COM, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, LinoSanfilippo@gmx.de
+Subject: [PATCH v6] TPM fixes
+Date:   Thu, 18 Feb 2021 21:29:40 +0100
+Message-Id: <1613680181-31920-1-git-send-email-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:XiwFUIsOpBG2o2szLGEPHBKzlWyo836qvtDDLOGT0jKoN4noArT
+ HGpeksKMd3vkLSUsTq1v4EULrip0K3QvBCwerJZStwiYBufsoEoBbRs2c0bOPrAd2Iu7zSy
+ ybDzbYdSr6emdcLe60FmaWvIJ+sCmaFGrLMdV+zuqy1M2e8excBgOrtvJq0RGluTAhwlT/Y
+ PXEMjVxW0l/8Fb0+6r36g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:m81jPigrf5M=:sPZZdSw+p9ZNN01moB3TV+
+ /nGOgMXJ+7XNd0ObKFVKP3i4Xr4F6Tx9x4Bku+A1+Dw9kUJOXuh6jAXmrvUWqi8+8TKl09k8a
+ ZxKY2q0QTvxQ3kz7XtHK3FQ0wFypncbkjzsOoT/s64qe+bSU9XS5bTWyIsmT1nLCrMGvHiQzl
+ +kyuG0KM0fnQR7b2na1U3l8aXKuD09m2J0xsvGr+6D/6VJJh6jRkD67Yvkm1JzhUusYSE562R
+ U7jHfSriuAuPmYFos1zu0SqE3MBDPAsbEg1e0E5ip23PZrFa4k3v2/kOQRBJ5oPHi0MEwYml5
+ rCNHeXp3fL2ZT2Q+TqokCG1dTwwuxJjCCXiifT5U5rTSzqkdCsTI+GVnzvTwpBQElt6ke8nZ8
+ FiuZEAciGqwiUS+KnVuHo6I50DKu39x1hiPAhuHm8ZDB7jPGwRBV8m0ckwvm7HniQdyJplDRe
+ U5eaYXhNy3xicceGflHxZNcAWotIQIVysStjKoUkwAm+GMZYuVRDD8/o2Ygveet9MpRHiayVC
+ bGeC7LiMnxhslqHjS59zClODwQsbgsvYZfuARuX7gviwZ7QEuqyNuRepdW1PASQVIg6LcqL5l
+ Oy0O+Il57KPDwkwlUXvr8rAURnlK9dOUMvQha3f9ElsTG9IhVZ7ll5ivyWiEC4LfAoI2Trbj0
+ DBblcVZpItVJGWUGLnVeybiNqwT2UgdliD/mVo43wOI/sQxhEh3IJe3/uex7Pgknd+6yVzUml
+ lCZU0w9KF7+V9ZpVROwzBj41r2M++ffXP22AzvuhdxH0KUQiLhx0gUPlcHscF2HVFzEm9flsp
+ N0+y4A+WbhXq5CfgNNppl68Aji8ORCKwcknnRiJihoPjkPNFloLfkUi9VwUQD8T+e6EZCeYlD
+ Ag7b9KwuxU587D9zxcJg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kpc2000_i2c.c:
-fix WARNING: line length of 124 exceeds 100 columns
-fix CHECK: Alignment should match open parenthesis
-
-kpc2000_spi.c:
-fix CHECK: Alignment should match open parenthesis
-
-Signed-off-by: Nikolay Kyx <knv418@gmail.com>
----
- drivers/staging/kpc2000/kpc2000_i2c.c | 6 ++++--
- drivers/staging/kpc2000/kpc2000_spi.c | 2 +-
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/staging/kpc2000/kpc2000_i2c.c b/drivers/staging/kpc2000/kpc2000_i2c.c
-index 25bb5c97dd21..14f7940fa4fb 100644
---- a/drivers/staging/kpc2000/kpc2000_i2c.c
-+++ b/drivers/staging/kpc2000/kpc2000_i2c.c
-@@ -200,7 +200,9 @@ static int i801_check_post(struct kpc_i2c *priv, int status, int timeout)
- 		outb_p(status & STATUS_FLAGS, SMBHSTSTS(priv));
- 		status = inb_p(SMBHSTSTS(priv)) & STATUS_FLAGS;
- 		if (status)
--			dev_warn(&priv->adapter.dev, "Failed clearing status flags at end of transaction (%02x)\n", status);
-+			dev_warn(&priv->adapter.dev,
-+				 "Failed clearing status flags at end of transaction (%02x)\n",
-+				 status);
- 	}
- 
- 	return result;
-@@ -269,7 +271,7 @@ static int i801_block_transaction_by_block(struct kpc_i2c *priv,
- 	}
- 
- 	status = i801_transaction(priv,
--			I801_BLOCK_DATA | ENABLE_INT9 | I801_PEC_EN * hwpec);
-+				  I801_BLOCK_DATA | ENABLE_INT9 | I801_PEC_EN * hwpec);
- 	if (status)
- 		return status;
- 
-diff --git a/drivers/staging/kpc2000/kpc2000_spi.c b/drivers/staging/kpc2000/kpc2000_spi.c
-index 44017d523da5..16ca18b8aa15 100644
---- a/drivers/staging/kpc2000/kpc2000_spi.c
-+++ b/drivers/staging/kpc2000/kpc2000_spi.c
-@@ -465,7 +465,7 @@ kp_spi_probe(struct platform_device *pldev)
- 	}
- 
- 	kpspi->base = devm_ioremap(&pldev->dev, r->start,
--					   resource_size(r));
-+				   resource_size(r));
- 
- 	status = spi_register_master(master);
- 	if (status < 0) {
--- 
-2.30.1
-
+VGhpcyBwYXRjaCBmaXhlcyBhIHJlZmVyZW5jZSBjb3VudCBpc3N1ZSBpbiB0aGUgVFBNIGNvcmUg
+Y29kZS4KCkNoYW5nZXMgaW4gdjY6Ci0gcmVuYW1lIGZ1bmN0aW9uIHRwbTJfYWRkX2RldmljZSgp
+IHRvIHRwbV9kZXZzX2FkZCgpIGFzIHJlcXVlc3RlZCBieSBKYXJrbwotIGFkZCBmdW5jdGlvbiBk
+ZXNjcmlwdGlvbnMKLSBmaXggc291cmNlIGNvZGUgZm9ybWF0dGluZwoKQ2hhbmdlcyBpbiB2NToK
+LSBtb3ZlIGZ1bmN0aW9uIHRwbV9hZGRfdHBtMl9jaGFyX2RldmljZSgpIHRvIHRwbTItc3BhY2Uu
+YyBhbmQgcmVuYW1lCml0IHRvIHRwbTJfYWRkX2RldmljZSgpIGFzIHJlcXVlc3RlZCBieSBKYXJr
+bwotIHB1dCAiY2MiIHRhZyBiZWZvcmUgYWxsIG90aGVyIHRhZ3MgCi0gZW5zdXJlIHRoYXQgdGhl
+IGVycm9yIHBhdGggaW4gdHBtMl9hZGRfZGV2aWNlKCkgYWx3YXlzIGNhbGxzIAp0aGUgcmVsZWFz
+ZSgpIGZ1bmN0aW9uIG9mIGNoaXAtPmRldnMgYXMgcmVxdWVzdGVkIGJ5IEphc29uCi0gcmVmb3Jt
+YXQgYSBjb2RlIGxpbmUgYXMgc3VnZ2VzdGVkIGJ5IERhdmlkIExhaWdodAoKQ2hhbmdlcyBpbiB2
+NDoKLSBkcm9wIHBhdGNoIDIgKHRwbTogaW4gdHBtMl9kZWxfc3BhY2UgY2hlY2sgaWYgb3BzIHBv
+aW50ZXIgaXMgc3RpbGwKdmFsaWQpIHNpbmNlIEphbWVzIEJvdHRvbWxleSBvZmZlcmVkIGEgY2xl
+YW5lciBzb2x1dGlvbiBmb3IgdGhpcwotIHJlaW1wbGVtZW50IHBhdGNoIDEgdG8gc2V0dXAgdGhl
+IC9kZXYvdHBtcm0gZGV2aWNlIG9ubHkgaW4gY2FzZSBvZiBUUE0yCmFuZCBhdm9pZCB0aGUgaW5z
+dGFsbGF0aW9uIG9mIGFub3RoZXIgYWN0aW9uIGhhbmRsZXIuIFRoaXMgaXMgYmFzZWQgb24gYQpz
+dWdnZXN0aW9uIGFuZCBiYXNpYyBpbXBsZW1lbnRhdGlvbiBkb25lIGJ5IEphc29uIEd1bnRob3Jw
+ZS4KLSBhZGRlZCB0YWcgdG8gQ0Mgc3RhYmxlCgpDaGFuZ2VzIGluIHYzOgotIGRyb3AgdGhlIHBh
+dGNoIHRoYXQgaW50cm9kdWNlcyB0aGUgbmV3IGZ1bmN0aW9uIHRwbV9jaGlwX2ZyZWUoKQotIHJl
+d29yayB0aGUgY29tbWl0IG1lc3NhZ2VzIGZvciB0aGUgcGF0Y2hlcyAoc3R5bGUsIHR5cG9zLCBl
+dGMuKQotIGFkZCBmaXhlcyB0YWcgdG8gcGF0Y2ggMgotIGFkZCBKYW1lcyBCb3R0b21sZXkgdG8g
+Y2MgbGlzdAotIGFkZCBzdGFibGUgbWFpbGluZyBsaXN0IHRvIGNjIGxpc3QKCkNoYW5nZXMgaW4g
+djI6Ci0gZHJvcCB0aGUgcGF0Y2ggdGhhdCBlcnJvbmVvdXNseSBjbGVhbmVkIHVwIGFmdGVyIGZh
+aWxlZCBpbnN0YWxsYXRpb24gb2YKICBhbiBhY3Rpb24gaGFuZGxlciBpbiB0cG1tX2NoaXBfYWxs
+b2MoKSAocG9pbnRlZCBvdXQgYnkgSmFya2tvIFNha2tpbmVuKQotIG1ha2UgdGhlIGNvbW1pdCBt
+ZXNzYWdlIGZvciBwYXRjaCAxIG1vcmUgZGV0YWlsZWQKLSBhZGQgZml4ZXMgdGFncyBhbmQga2Vy
+bmVsIGxvZ3MKCgpMaW5vIFNhbmZpbGlwcG8gKDEpOgogIHRwbTogZml4IHJlZmVyZW5jZSBjb3Vu
+dGluZyBmb3Igc3RydWN0IHRwbV9jaGlwCgogZHJpdmVycy9jaGFyL3RwbS90cG0tY2hpcC5jICAg
+fCA0OCArKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiBkcml2ZXJzL2NoYXIv
+dHBtL3RwbS5oICAgICAgICB8ICAxICsKIGRyaXZlcnMvY2hhci90cG0vdHBtMi1zcGFjZS5jIHwg
+NTUgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMyBmaWxlcyBj
+aGFuZ2VkLCA2NiBpbnNlcnRpb25zKCspLCAzOCBkZWxldGlvbnMoLSkKCi0tIAoyLjcuNAoK
