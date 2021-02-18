@@ -2,78 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC3831E808
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D0231E80C
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:36:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhBRJ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:27:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230163AbhBRIPt (ORCPT
+        id S231695AbhBRJ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:29:26 -0500
+Received: from relay6-d.mail.gandi.net ([217.70.183.198]:41945 "EHLO
+        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhBRIRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:15:49 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F1ABC061756;
-        Thu, 18 Feb 2021 00:14:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=rFuCEDruQM3ANvsFui7zHQhN7ske9Q4pPXaIkjwguxg=; b=wOct5ZUuVs84BfzGoHAtevMAst
-        U+MwPU+FwceTFebaOa/YfxTXWAlE3yYBCUa2yclPtq7j9EiLnSuhfXTTIzaBsS4IG0tyY2bSG7OMf
-        ONF1GFQSMM2z4xupwsset0+VV+KUGXMmBHkkqrDidEVwMIHh3VUDJtRHUTGsm/QwoVbPCK05OvnsK
-        j5ZpZUanoMV81iB88ONksrXDTSwsSGxznYijhgkbNqo6kixSzXl4Zgbdwm/MzPkujYjFGpZHXkPgr
-        e9HRu8ZxBSaI+o5BItL6q7b87RBFmj9T8aL/hCXUHqmrnB74Tk7YDGjFbhXjugRVAVmMCqaDjHI9w
-        KeHlarkw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lCeRs-001Pgy-9q; Thu, 18 Feb 2021 08:14:14 +0000
-Date:   Thu, 18 Feb 2021 08:14:08 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Nadav Amit <namit@vmware.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Juergen Gross <jgross@suse.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: Re: [PATCH v5 4/8] x86/mm/tlb: Flush remote and local TLBs
- concurrently
-Message-ID: <20210218081408.GB335524@infradead.org>
-References: <20210209221653.614098-1-namit@vmware.com>
- <20210209221653.614098-5-namit@vmware.com>
+        Thu, 18 Feb 2021 03:17:35 -0500
+X-Originating-IP: 93.61.96.190
+Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id AD266C000C;
+        Thu, 18 Feb 2021 08:15:07 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 09:15:33 +0100
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     junak.pub@gmail.com, robert.foss@linaro.org,
+        sakari.ailus@linux.intel.com, todor.too@gmail.com,
+        agross@kernel.org, bjorn.andersson@linaro.org, mchehab@kernel.org,
+        laurent.pinchart@ideasonboard.com, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] media: qcom: camss: Fix overflows in clock rate
+ calculations
+Message-ID: <20210218081533.tbivz52c37327ukp@uno.localdomain>
+References: <20210217221134.2606-1-andrey.konovalov@linaro.org>
+ <20210217221134.2606-4-andrey.konovalov@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210209221653.614098-5-namit@vmware.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210217221134.2606-4-andrey.konovalov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given that the last patch killed the last previously existing
-user of on_each_cpu_cond_mask there are now the only users.
+Hi Andrey,
 
->  	if (info->freed_tables) {
-> -		smp_call_function_many(cpumask, flush_tlb_func,
-> -			       (void *)info, 1);
-> +		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
-> +				      cpumask);
+On Thu, Feb 18, 2021 at 01:11:34AM +0300, Andrey Konovalov wrote:
+> From: Vladimir Lypak <junak.pub@gmail.com>
+>
+> Because of u32 type being used to store pixel clock rate, expression used
+> to calculate pipeline clocks (pixel_clock * bpp) produces wrong value due
+> to integer overflow. This patch changes data type used to store, pass and
+> retrieve pixel_clock from u32 to u64 to make this mistake less likely to
+> be repeated in the future.
 
-.. 
+I see this might be the cause for the overflow
+        tmp = pixel_clock[j] * bpp / 64;
+and anyway PIXEL_RATE is an u64 control, so this seems correct
+Reviewed-by: Jacopo Mondi <jacopo@jmondi.org>
 
-> +		on_each_cpu_cond_mask(NULL, flush_tlb_func, (void *)info, true,
-> +				      cpumask);
+Thanks
+   j
 
-Which means the cond_func is unused, and thus on_each_cpu_cond_mask can
-go away entirely in favor of on_each_cpu_cond.
+>
+> Signed-off-by: Vladimir Lypak <junak.pub@gmail.com>
+> Acked-by: Robert Foss <robert.foss@linaro.org>
+> Signed-off-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+> ---
+>  drivers/media/platform/qcom/camss/camss-vfe.c | 4 ++--
+>  drivers/media/platform/qcom/camss/camss.c     | 2 +-
+>  drivers/media/platform/qcom/camss/camss.h     | 2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
+> index fae2b513b2f9..b2c95b46ce66 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
+> @@ -1112,7 +1112,7 @@ static inline void vfe_isr_halt_ack(struct vfe_device *vfe)
+>  static int vfe_set_clock_rates(struct vfe_device *vfe)
+>  {
+>  	struct device *dev = vfe->camss->dev;
+> -	u32 pixel_clock[MSM_VFE_LINE_NUM];
+> +	u64 pixel_clock[MSM_VFE_LINE_NUM];
+>  	int i, j;
+>  	int ret;
+>
+> @@ -1194,7 +1194,7 @@ static int vfe_set_clock_rates(struct vfe_device *vfe)
+>   */
+>  static int vfe_check_clock_rates(struct vfe_device *vfe)
+>  {
+> -	u32 pixel_clock[MSM_VFE_LINE_NUM];
+> +	u64 pixel_clock[MSM_VFE_LINE_NUM];
+>  	int i, j;
+>  	int ret;
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+> index eb8fb8c34acd..d82bbc2213a6 100644
+> --- a/drivers/media/platform/qcom/camss/camss.c
+> +++ b/drivers/media/platform/qcom/camss/camss.c
+> @@ -578,7 +578,7 @@ s64 camss_get_link_freq(struct media_entity *entity, unsigned int bpp,
+>   *
+>   * Return 0 on success or a negative error code otherwise
+>   */
+> -int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock)
+> +int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock)
+>  {
+>  	struct media_entity *sensor;
+>  	struct v4l2_subdev *subdev;
+> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+> index 86cdc25189eb..e29466d07ad2 100644
+> --- a/drivers/media/platform/qcom/camss/camss.h
+> +++ b/drivers/media/platform/qcom/camss/camss.h
+> @@ -110,7 +110,7 @@ void camss_disable_clocks(int nclocks, struct camss_clock *clock);
+>  struct media_entity *camss_find_sensor(struct media_entity *entity);
+>  s64 camss_get_link_freq(struct media_entity *entity, unsigned int bpp,
+>  			unsigned int lanes);
+> -int camss_get_pixel_clock(struct media_entity *entity, u32 *pixel_clock);
+> +int camss_get_pixel_clock(struct media_entity *entity, u64 *pixel_clock);
+>  int camss_pm_domain_on(struct camss *camss, int id);
+>  void camss_pm_domain_off(struct camss *camss, int id);
+>  void camss_delete(struct camss *camss);
+> --
+> 2.17.1
+>
