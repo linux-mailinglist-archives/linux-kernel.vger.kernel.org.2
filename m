@@ -2,251 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6518031EC87
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47DAF31EC93
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:55:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhBRQtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232916AbhBROCT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:02:19 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDC3C061756;
-        Thu, 18 Feb 2021 06:01:33 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id o24so4021622wmh.5;
-        Thu, 18 Feb 2021 06:01:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n1Boz45aoz9goTvo1QAfgh0ZmavNNRL27w2E8Km4ilM=;
-        b=Ol0MfNa4s2MD5QwvqGnXKo9SuSklwirOZnb+YKpy2yuLdIyi240QNlM7Rl0EuovLk+
-         ko5sGodn+dUsmgXkrkjOTGK5VZ0CFBZjYJmON6hOJ1P0UVUhx3dvjN7dFb1Zpxf5T3s+
-         zdqLxJjO8YrwvKUnlh9zzfxZ1+bH4OZWKhpP/sUjSvyAk08YCOCv4XuoXwoHSVZqJei6
-         /w86sKpucP9m1IOfP5LDbsUFqoCjDVISVUgROznXsPlHDgKgjLQXdD3UZHZMlkxT6qJr
-         JVoUOIb8TOJo+P/qmy9mVbNrA3tgmNaWSLYmhNeQceAPf9A3LIa6DDT7QlCCagzEHDkk
-         SjpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n1Boz45aoz9goTvo1QAfgh0ZmavNNRL27w2E8Km4ilM=;
-        b=kdbGMX0Q4CMz05fdbOWDtq3LHIUIpvPYKVXdGMpKN8I/QOxcTNE6cEYeXiYrgVUgjp
-         DAzshR1MjnFKRzH68szQOCbwSKxbCxLZj3gcYoRLrNlnczr2xVuh4RvN63U/n0YD+wnH
-         UaCXWPfaAWxX5doGz/r5Amqr+OLFaYUyXqGW9pUhGZlexBqzfXtC8om//tAqmziwq7xS
-         UfR35XDbC3JREybV/L1s9O1PNRJZfU8Ab0WF+6aN/PG6eakWrHgfS4+DH0d6rWsc6uaZ
-         Z6ugHxXQWL3V6XDW1R7CVe/E6lVKS1gf9SU88gndLDa/BkUFE6GBEywOrg7EJO+i8mVn
-         dl7Q==
-X-Gm-Message-State: AOAM5300XZNPpGtWf/HoP+KdS5f55UwByNWklQbPbDmpDy65sTXpwR2P
-        9gf+up4TKWY83f9l9KqdYna6kyT0H23NgQ==
-X-Google-Smtp-Source: ABdhPJxGZ6GBxKEAIZJgD2hgsO+WFxdleUd+rS77A52O/fNl36D26OgaxLUX2P3Vfnp4bhoTScRQ9Q==
-X-Received: by 2002:a7b:c747:: with SMTP id w7mr3738812wmk.140.1613656890324;
-        Thu, 18 Feb 2021 06:01:30 -0800 (PST)
-Received: from [192.168.1.143] ([170.253.51.130])
-        by smtp.gmail.com with ESMTPSA id g1sm7942273wmh.9.2021.02.18.06.01.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 06:01:29 -0800 (PST)
-Subject: Re: [RFC] execve.2: SYNOPSIS: Document both glibc wrapper and kernel
- sycalls
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man@vger.kernel.org, linux-kernel@vger.kernel.org,
-        libc-alpha@sourceware.org, Florian Weimer <fweimer@redhat.com>
-References: <20210214133907.157320-1-alx.manpages@gmail.com>
- <1c7043ad-b834-5270-56fc-404d82d5a0a0@gmail.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <938df2c0-04b5-f6a4-79c3-b8fe09973828@gmail.com>
-Date:   Thu, 18 Feb 2021 15:01:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233985AbhBRQxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:53:36 -0500
+Received: from mga07.intel.com ([134.134.136.100]:1093 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232653AbhBROGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:06:11 -0500
+IronPort-SDR: xnK0tsWla3Q1zCbO2NvpDYvJ0RU+1t11yALo6dpz0so1AlA4YUsffvc8KQZKkFl0vi/mBPbVVI
+ XbhKXijZCyjQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247585178"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="247585178"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 06:02:02 -0800
+IronPort-SDR: HiiFi7WXW+xa/kiPFzNBdRoER3V0irwMC05IZpVp3GgeW7pmBBbqIUuExc/xuetwOlNDym4vvt
+ s1+IttZZg81A==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="364840235"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 06:01:59 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lCjsS-005xjl-6S; Thu, 18 Feb 2021 16:01:56 +0200
+Date:   Thu, 18 Feb 2021 16:01:56 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Robert Richter <rric@kernel.org>
+Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
+        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
+        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] Introduce pcim_alloc_irq_vectors()
+Message-ID: <YC5zVHnRog3EX0rl@smile.fi.intel.com>
+References: <20210216160249.749799-1-zhengdejin5@gmail.com>
+ <YC41HD422Mjh1IZK@rric.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <1c7043ad-b834-5270-56fc-404d82d5a0a0@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC41HD422Mjh1IZK@rric.localdomain>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Micahel,
-
-On 2/18/21 1:27 PM, Michael Kerrisk (man-pages) wrote:
-> Hi Alex,
+On Thu, Feb 18, 2021 at 10:36:28AM +0100, Robert Richter wrote:
+> On 17.02.21 00:02:45, Dejin Zheng wrote:
+> > Introduce pcim_alloc_irq_vectors(), a device-managed version of
+> > pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
+> > has been called before, then pci_alloc_irq_vectors() is actually a
+> > device-managed function. It is used as a device-managed function, So
+> > replace it with pcim_alloc_irq_vectors().
+> > 
+> > Changelog
+> > ---------
+> > v2 -> v3:
+> > 	- Add some commit comments for replace some codes in
+> > 	  pcim_release() by pci_free_irq_vectors().
+> > 	- Simplify the error handling path in i2c designware
+> > 	  driver.
+> > v1 -> v2:
+> > 	- Use pci_free_irq_vectors() to replace some code in
+> > 	  pcim_release().
+> > 	- Modify some commit messages.
+> > 
+> > Dejin Zheng (4):
+> >   PCI: Introduce pcim_alloc_irq_vectors()
+> >   Documentation: devres: Add pcim_alloc_irq_vectors()
 > 
-> On 2/14/21 2:39 PM, Alejandro Colomar wrote:
->> Until now, the manual pages have (usually) documented only either
->> the glibc (or another library) wrapper for a syscall, or the raw
->> syscall (this only when there's not a wrapper).
->>
->> Let's document both prototypes, which many times are slightly
->> different.  This will solve a problem where documenting glibc
->> wrappers implied shadowing the documentation for the raw syscall.
->>
->> It will also be much clearer for the reader where the syscall
->> comes from (kernel? glibc? other?), by adding an explicit comment
->> at the beginning of the prototypes.  This removes the need of
->> scrolling down to NOTES to see that info.
->>
->> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
->> ---
->>
->> Hi all,
->>
->> This is a prototype for doing some important changes to the SYNOPSIS
->> of the man-pages.
->>
->> The commit message above explains the idea quite well.  A few details
->> that couldn't be shown on this commit are:
->>
->> For cases where the wrapper is provided by a library other than glibc,
->> I'd simply change the comment.  For example, for move_pages(2),
->> it would say /* libnuma wrapper function: */.
->>
->> I think this would make the samll notes warning that there's no glibc
->> wrapper function deprecated (but we could keep them for some time and
->> decide that later).
->>
->> While changing this, I'd also make sure that the headers are correct,
->> and clearly differentiate which headers are needed for the raw syscall
->> and for the wrapper function.
->>
->> This change will probably take more than one release of the man-pages
->> to complete.
->>
->> Any thoughts?
+> This is already taken care of, see pcim_release():
 > 
-> My first impression is that I'm not keen on this. We'll add extra
-> text to all Section 2 pages, and in many (most?) cases the info
-> will be redundant (i.e., the wrapper and the syscall() notation
-> will express the same info). In other cases, I suspect the info
-> will be largely irrelevant to the user. To take an example: to
-> whom will the difference that you document below for execve()
-> matter, how will it matter, and does it matter enough that we
-> headline the info in the pages? I'd want cogent answers to
-> those questions before considering a wide-ranging change.
-
-It will matter to:
-
-1) Users of old systems where the glibc wrapper is not yet present.
-
-3) Users of some unicorn Linux distributions that use a C library 
-different than glibc and may not have wrappers for some syscalls that 
-glibc provides.
-
-2) Library (libc) developers.
-
-Those won't have the glibc wrapper available for them, and will have to 
-use syscall(2).  The kernel syscall info would be highly valuable for 
-them.  However, the sum of them is probably not a big number of people.
-
-
+>         if (dev->msi_enabled)
+>                 pci_disable_msi(dev);
+>         if (dev->msix_enabled)
+>                 pci_disable_msix(dev);
 > 
-> There are indeed cases where the wrapper API differs in
-> significant ways from the syscall API (and these differences
-> are usually captured in the " C library/kernel differences"
-> subsections, such as for pselect()/pselect6() in select(2)).
-> But I imagine that that is the case in only a smallish
-> minority of the pages.
+> Activated when used with pcim_enable_device().
 > 
-> And indeed there are a very few syscalls that have wrappers
-> provided in another library. But it's a very small percentage
-> I think, and best documented case by case in specific pages.
-> The default presumption is that the wrapper is in the C library.
+> This series is not required.
 
-Agree.
+The problem this series solves is an imbalanced API.
+Christoph IIRC was clear that if we want to use PCI IRQ allocation API the
+caller must know what's going on. Hiding this behind the scenes is not good.
+And this series unhides that.
 
-> 
-> There are other cases where I think it may be worthwhile
-> considering the syscall() notation:
-> 
-> 1. Where the system call has no wrapper. In that case, we might
->     use the syscall() notation in the SYNOPISIS as both
->     (a) a clear indication that there is no wrapper and
->     (b) instructions to the reader about how to call the
->     system call using syscall().
-
-Yes.
-
-> 
-> 2. In cases where there is a "significant" difference between
->     the wrapper and the system call. In this case, we might
->     also place the syscall() notation in the SYNOPSIS, or
->     (perhaps more likely) in the NOTES
-
-Yes.
-
-I think it would be equally good to have the kernel syscall prototype in 
-"C library/kernel ABI differences" in those cases where there is a glibc 
-wrapper (even if it's quite different).  It would be even better, as it 
-would clearly mark the syscall(2) method as a second-class method, that 
-should be avoided if possible.  And also wouldn't add lines to the SYNOPSIS.
-
-However, we should probably have that subsection for all syscalls, 
-including those where the prototype is very similar to the glibc one, to 
-support those who need to use the kernel syscall, and provide them with 
-the exact types that the kernel expects.(except for those unsupported by 
-libraries, of course, which would have the syscall(SYS_xxx) prototype in 
-the SYNOPSIS).
-
-I'll prepare a new RFC with this, with 2 pages:  one with wrapper and 
-one without wrapper.
-
-Thanks,
-
-Alex
-
-
-See also:
-<https://lwn.net/Articles/534682/>
-<https://www.kernel.org/doc/man-pages/todo.html#migrate_to_kernel_source>
-
-
-> 
-> Thanks,
-> 
-> Michael
-> 
->>
->> Thanks,
->>
->> Alex
->>
->> ---
->>   man2/execve.2 | 12 ++++++++++--
->>   1 file changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/man2/execve.2 b/man2/execve.2
->> index 639e3b4b9..87ff022ce 100644
->> --- a/man2/execve.2
->> +++ b/man2/execve.2
->> @@ -39,10 +39,18 @@
->>   execve \- execute program
->>   .SH SYNOPSIS
->>   .nf
->> +/* Glibc wrapper function: */
->>   .B #include <unistd.h>
->>   .PP
->> -.BI "int execve(const char *" pathname ", char *const " argv [],
->> -.BI "           char *const " envp []);
->> +.BI "int execve(const char *" pathname ",
->> +.BI "           char *const " argv "[], char *const " envp []);
->> +.PP
->> + /* Raw system call: */
->> +.B #include <sys/syscall.h>
->> +.B #include <unistd.h>
->> +.PP
->> +.BI "int syscall(SYS_execve, const char *" pathname ,
->> +.BI "           const char *const " argv "[], const char *const " envp []);
->>   .fi
->>   .SH DESCRIPTION
->>   .BR execve ()
->>
-> 
-> 
+Also, you may go and clean up all pci_free_irq_vectors() when
+pcim_enable_device() is called, but I guess you will get painful process and
+rejection in a pile of cases.
 
 -- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
+With Best Regards,
+Andy Shevchenko
+
+
