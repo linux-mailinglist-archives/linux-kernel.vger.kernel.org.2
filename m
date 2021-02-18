@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C9331E51C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 05:19:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E596731E51F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 05:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhBRETB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 23:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbhBRES6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 23:18:58 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C061C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 20:18:18 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id e9so654040pjj.0
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 20:18:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3QtOCBR1uNsMvstvlJGQmLZPz9kZ2BpyJJHfU7ws7Ac=;
-        b=XfW/FE0YCOmxYtDEzfo9gsSp9wzn8/rYRDDgf1sS0aqW7dmI2YS0H8mmi066VffGJY
-         lO5b6oh4MKkwBg+23bpxyyRN49NNpb7MpcW6ySqVs7xX5TyyGEZu3Z3DwGXxV0Old0NR
-         a8xSsubs/+wMzD0O6aumhnnOXdC48W/KebDQLQhsGBI/sTYGYi60IhOxBd1EUR+O+DWK
-         x6e/Y7ak47kYvKnoa8Vpx8tVzfR8gSbiEgCg7F8m7roEmuAa70bQAUl3m/OdHplUo5yO
-         H8WTJIjw48Ny+nwz3b528tg0aNWuv4itvMTNJJfIITpo9+EdWfvKUdl2YNiwOsaFWOg7
-         /fYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3QtOCBR1uNsMvstvlJGQmLZPz9kZ2BpyJJHfU7ws7Ac=;
-        b=SJ8832p9FDX3eP+FBpCxNJCIPt5297bbj3kEujzAIH46tYmpp1tSF8iRG02wxgb4bX
-         vPCruMA1Gea0z1lDg+r5PuBmIW5ZX7Oqoj7FcvjkPTRgTXlAmuQxxguwDWkGoGActub2
-         6SXjRGcwNO+NEFirRZ5/PyJuCDOfNo8vDYIME90lWRfDnF9DH5SQLyLWPdH+rPfBUoOQ
-         IBWpOLRlniNUpVAu9eGxk5FQNcYJeT7amqFQfKSqhWvd2fWsi2zgOg9Ec6L2LoE4r8d3
-         4pNUVNXMhA7l4jYZei7i9odJJflRp8TsD31Tl1U3r7gVie86a0P6uLUaAtFE8aRFs6/V
-         IAjg==
-X-Gm-Message-State: AOAM530emW/4mXNpIaOIVkCcITJgZlFW6EscmaoHeVezzviwv1iiVtX9
-        87wBEHLKBnurQGETVxnHLIkZkg==
-X-Google-Smtp-Source: ABdhPJwm/BhAa527F2yvdN49LTjZgzP8wP9gBP2uuOY0RM5fkz7U7RLOH3pYlcWSPyZqYZXkqznEuA==
-X-Received: by 2002:a17:902:9348:b029:e1:506a:7f67 with SMTP id g8-20020a1709029348b02900e1506a7f67mr2292370plp.71.1613621897664;
-        Wed, 17 Feb 2021 20:18:17 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id w3sm268628pjn.12.2021.02.17.20.18.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 17 Feb 2021 20:18:17 -0800 (PST)
-Date:   Thu, 18 Feb 2021 09:48:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     linux-kernel@vger.kernel.org, javi.merino@kernel.org,
-        daniel.lezcano@linaro.org, thara.gopinath@linaro.org,
-        amitk@kernel.org, rui.zhang@intel.com
-Subject: Re: [RESEND PATCH] MAINTAINERS: update thermal CPU cooling section
-Message-ID: <20210218041812.o2yksgbfdvbgtwc4@vireshk-i7>
-References: <20210217115908.22547-1-lukasz.luba@arm.com>
+        id S230184AbhBREUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 23:20:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48542 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229752AbhBREUV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 23:20:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32B2E64E28;
+        Thu, 18 Feb 2021 04:19:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613621981;
+        bh=GFaBtKmcknpiGdoo8JBOGy+CIuH6tMaUPNstbP+H9zA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y2DUNduYpbRZIzO/Ltb7rfB+SOSLd+hh30GKWbyqDQagaHGMa5pXT7C+ov7vws064
+         c6x2I6eA6vgaH0736X8YZpGVOC9HNvV0CihcdKRdSk8X4xaOdosCJbV64Ay/i4FwIV
+         +K5Kd5sm1LH8wSYFQPTkl/XJTlfSZ5aie6FXv9V6zXmPHyBFwaGpAOPWM0Glz2E1cY
+         qrESh82cMYliyy+IWkNp0EsPq+jr2mxHw7kbIoukOyMMRx3kG1ZwetE9cxpIyl9xPw
+         sCYCt0JGbojFTM13Q7S6wFdwFT8J494soDpbt7GPiTYaIo6bRkyw+KlOQv5eo2DBLh
+         r+mSWBabv41Kw==
+Date:   Thu, 18 Feb 2021 09:49:37 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     =?iso-8859-1?Q?An=EDbal_Lim=F3n?= <anibal.limon@linaro.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: db410c: Update firmware-name for wcnss
+ and mpss
+Message-ID: <20210218041937.GU2774@vkoul-mobl.Dlink>
+References: <20200108055735.660475-1-bjorn.andersson@linaro.org>
+ <20210217223406.1422005-1-anibal.limon@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210217115908.22547-1-lukasz.luba@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210217223406.1422005-1-anibal.limon@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-02-21, 11:59, Lukasz Luba wrote:
-> Update maintainers responsible for CPU cooling on Arm side.
+On 17-02-21, 16:34, Aníbal Limón wrote:
+> From: Bjorn Andersson <bjorn.andersson@linaro.org>
 > 
-> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> Enable the mpss remoteproc node and specify the firmware-name for this
+> and the wcnss remoteproc on the Dragonboard 410c.
+> 
+> Link: https://lore.kernel.org/r/20200108055735.660475-1-bjorn.andersson@linaro.org
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> [rebased and moved to use pronto label]
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Tested-by: Aníbal Limón <anibal.limon@linaro.org>
 > ---
-> Hi Daniel,
+>  arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> Please ignore the previous email and that this change with 'R'.
-> Javi will ack it later.
-> 
-> Regards,
-> Lukasz
-> 
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f32ebcff37d2..fe34f56acb0f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -17774,7 +17774,7 @@ THERMAL/CPU_COOLING
->  M:	Amit Daniel Kachhap <amit.kachhap@gmail.com>
->  M:	Daniel Lezcano <daniel.lezcano@linaro.org>
->  M:	Viresh Kumar <viresh.kumar@linaro.org>
-> -M:	Javi Merino <javi.merino@kernel.org>
-> +R:	Lukasz Luba <lukasz.luba@arm.com>
->  L:	linux-pm@vger.kernel.org
->  S:	Supported
->  F:	Documentation/driver-api/thermal/cpu-cooling-api.rst
+> diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> index 3c7f97539390..8f1ada75d3ed 100644
+> --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> @@ -301,6 +301,11 @@ &lpass {
+>  	status = "okay";
+>  };
+>  
+> +&mpss {
+> +	status = "okay";
+> +	firmware-name = "qcom/msm8916/mba.mbn", "qcom/msm8916/modem.mdt";
 
-Good that we have one more reviewer for this :)
+Shouldn't this one be mba.mdt?
 
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> +};
+> +
+>  &pm8916_resin {
+>  	status = "okay";
+>  	linux,code = <KEY_VOLUMEDOWN>;
+> @@ -308,6 +313,7 @@ &pm8916_resin {
+>  
+>  &pronto {
+>  	status = "okay";
+> +	firmware-name = "qcom/msm8916/wcnss.mdt";
+>  };
+>  
+>  &sdhc_1 {
+> -- 
+> 2.30.0
 
 -- 
-viresh
+~Vinod
