@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4EED31F11F
+	by mail.lfdr.de (Postfix) with ESMTP id 63A9331F11E
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhBRUhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:37:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40126 "EHLO
+        id S230493AbhBRUhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:37:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231312AbhBRUgM (ORCPT
+        with ESMTP id S230121AbhBRUgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:36:12 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E76E0C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:35:31 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id i8so3395131iog.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:35:31 -0800 (PST)
+        Thu, 18 Feb 2021 15:36:03 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1326EC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:35:23 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id d2so2255799pjs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:35:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nbAEG2PifLQ/VqMicX/G7j56UYCqmvzR+QI2lQowe2A=;
-        b=IqbSvbDFA0ZhYx6Yp4mSkEQzRdoLP9FBgpXdaG9uKeVHmJuEWzUs+K5XmX4LxSKWcL
-         IrUZv/Ksp2L+fGJPS3/2i9YBCvwpN/nAzeF2qiG0U2qwAxjahEUxNx8m/c+8l9iP7FoK
-         e1V/0ZRQpXAseW/mNSe5AXTCqtIbjnWmDaN/dxT8DzSEXGtAv56xXKM6F9480NyADYpi
-         80lnYdj2miubYgoBD6HcIwX33zvCV9wrPk+VN+qMX7J/hKlkYBCBoxDNgDUQs641lGzQ
-         vQ1oC6TC0c/ABk1+kFk65R+4x0t4+mofitgRn40e2hNZsY/q4ZaLzo7lo9VpFNoQF/48
-         Y19Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=E2rf1f4vUAq7WMW1yPTNF4SYiERg2//VNqcIBdniMlI=;
+        b=nGpLGZEyqicqR8ncccD/81uXeQcEMbh/WD2/UunOEWfwOWO58ufo3UxQmeGRJUJAqi
+         U839MF06vmqTehU40ZLnW390g1Z3wjSwff9zJHRvK921/r/uzja7+sQVmtdUoIdelVXR
+         WxtYAziDhnD4fmHWu7vZyyXkRzxQMPGVRLJxo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nbAEG2PifLQ/VqMicX/G7j56UYCqmvzR+QI2lQowe2A=;
-        b=i7cS+cDm6gHxOsN1tYOGcT+cJu0WMrOkHZIBGbE3BAiQ4vjHnpCK4qngJKkYZ0h9e+
-         UpiWTnVwwZWgYISNUDVoR1iuOf1K2+mohYyIAgGw3IIO19rbeenLx1EPYQkMa0uREwIN
-         fSWtTgoAzdT49dNGYsi4aLHChcSBibGcGsa45mX7FamdLvKwDBsOhi5ld1rIp6fi5XZ5
-         4NaKktI+UobifOOymqXXd2IJBfrShUpkupu3LT+4fcY4sdQyeWSeVHOV0pS014NiVmV0
-         vqSoO1UMZFG9ayCykTbtcc+TMhMaBwYPVMdrcPznUoKyOfotF8Lv55kU/aQDEP6D+GwO
-         4mfw==
-X-Gm-Message-State: AOAM531edPZS68MmDkSWWjPfI0/Ai+TxGHBYZiRfQTuO/S0TVdeWEPyJ
-        bRTZ/D/8NS2z8JnzbnHdv459Ybr2WZOO2rwS6DDcsg==
-X-Google-Smtp-Source: ABdhPJyWjZ08w2Fog4XJ/edAAhQEhBdT/movvv7vnvK1QF0dLxKTJQLwBbWm4fK0pcrmqL2aOOKubLvFun3le37zzII=
-X-Received: by 2002:a02:6911:: with SMTP id e17mr3303786jac.99.1613680531165;
- Thu, 18 Feb 2021 12:35:31 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=E2rf1f4vUAq7WMW1yPTNF4SYiERg2//VNqcIBdniMlI=;
+        b=cSJvyIcad8f3tAjrIFn9B9LC/Ji9iPKrZGDRS4FbkZmrJNkZZidcshVP9vViojQdw5
+         4UPGFk6D7JPZkIswUNX5qEnvyy5FUBnvqx3O4QiPsCDgwipFZsNneVgxngo2oeKrXWJP
+         KB6vZDZMIV/Q6Nn29FZvVkxGIwdvd/0oyQKmHxL8arWTrXTi3Xkr0rydLLw8XfWEaQ/0
+         asrHsrQJ0BuwRA8yBHAMKaSH4Nn5lWjK0SjUzBOfCAtv1npAauZfFxeDZVXaAt4kHnJw
+         Mpte5it3ZWtGX0xKlWdp3/hKG1YoBIGNfHcox6PGa7meAzfDMqnpSa1rpVIedfJoK9w9
+         a9NQ==
+X-Gm-Message-State: AOAM5305SS/vhXdpvb1UluH64M05YIOEv+EnesAwbNOzd4RLKZI85mmN
+        y4OvRn9SDQvrv2PJ9ojpv1K5wA==
+X-Google-Smtp-Source: ABdhPJwvC+oR3dy1wd7pQ5J+t7FL8XiTDO1HrkQpzsFqxRVU9BJUDKn9G2u1wxdUJAPyHcuACoEkWQ==
+X-Received: by 2002:a17:903:2305:b029:df:c991:8c49 with SMTP id d5-20020a1709032305b02900dfc9918c49mr6053745plh.8.1613680522684;
+        Thu, 18 Feb 2021 12:35:22 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j26sm6890369pfa.35.2021.02.18.12.35.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 12:35:22 -0800 (PST)
+Date:   Thu, 18 Feb 2021 12:35:21 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Jiri Bohac <jbohac@suse.cz>,
+        Kees Cook <keescook@chromium.org>,
+        Matteo Croce <mcroce@microsoft.com>
+Subject: [GIT PULL] pstore update for v5.12-rc1
+Message-ID: <202102181234.5FC6F9CEF@keescook>
 MIME-Version: 1.0
-References: <20210217204418.54259-1-peterx@redhat.com> <20210217204619.54761-1-peterx@redhat.com>
- <20210217204619.54761-3-peterx@redhat.com> <CAJHvVchtVtDHE2iJRAmraL+kbTezgfck0Mgj7xM+7U5yaJ5aCQ@mail.gmail.com>
- <20210218203214.GD108961@xz-x1>
-In-Reply-To: <20210218203214.GD108961@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Thu, 18 Feb 2021 12:34:55 -0800
-Message-ID: <CAJHvVch79WBzudS7BU5Lg2et4_2XQM=mEdW=YpbyX1QHHp=tQg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] hugetlb/userfaultfd: Unshare all pmds for
- hugetlbfs when register wp
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 12:32 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Thu, Feb 18, 2021 at 10:32:00AM -0800, Axel Rasmussen wrote:
-> > > @@ -1448,6 +1449,9 @@ static int userfaultfd_register(struct userfaultfd_ctx *ctx,
-> > >                 vma->vm_flags = new_flags;
-> > >                 vma->vm_userfaultfd_ctx.ctx = ctx;
-> > >
-> > > +               if (is_vm_hugetlb_page(vma) && uffd_disable_huge_pmd_share(vma))
-> > > +                       hugetlb_unshare_all_pmds(vma);
-> >
-> > This line yields the following error, if building with:
-> > # CONFIG_CMA is not set
-> >
-> > ./fs/userfaultfd.c:1459: undefined reference to `hugetlb_unshare_all_pmds'
->
-> Ouch..  Axel, you mean CONFIG_HUGETLBFS rather than CONFIG_CMA, am I right?
 
-Surprisingly no, there's a "#ifdef CONFIG_CMA" line ~100 lines above
-where hugetlb_unshare_all_pmds is defined in hugetlb.c which causes
-this. My guess is that putting the function inside that block was
-accidental and it can just be moved.
+Hi Linus,
 
->
-> --
-> Peter Xu
->
+Please pull this tiny pstore update for v5.12-rc1 to fix a CONFIG typo.
+
+Thanks!
+
+-Kees
+
+The following changes since commit f40ddce88593482919761f74910f42f4b84c004b:
+
+  Linux 5.11 (2021-02-14 14:32:24 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/pstore-v5.12-rc1
+
+for you to fetch changes up to 19d8e9149c27b689c6224f5c84b96a159342195a:
+
+  pstore: Fix typo in compression option name (2021-02-18 12:27:49 -0800)
+
+----------------------------------------------------------------
+pstore update for v5.12-rc1
+
+- Fix a CONFIG typo (Jiri Bohac)
+
+----------------------------------------------------------------
+Jiri Bohac (1):
+      pstore: Fix typo in compression option name
+
+ fs/pstore/platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+-- 
+Kees Cook
