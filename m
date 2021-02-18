@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B8231F0A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB8831F0AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:05:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhBRUAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:00:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232804AbhBRTqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:46:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 973BD64E76;
-        Thu, 18 Feb 2021 19:45:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613677513;
-        bh=UchEpOi5pKxlvSP/2GAgaxqqfJyyZcIjALoqAp1RjFQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gwhbHkQpCag57Pq9CnvL+jn5ViKr0UmbFLdwiYC6lvnZcrsFmG3vJVKUsKwOurhIX
-         RLvSRChjk5bfl506dZN1rgiRuWZZ8bzHRmHYC/gAMSEVcDfGNcQH1qcfb0cwzO3XLW
-         TmtaJSTW+3jYFOdCkG09jRuzp0DtxRF69cpMm7KcXv4IBay4q+7OXaVVBdi2M49AQm
-         50kf6xg6QcI1nsnAJqf9NOQnfuwfxSyW5Xgbdith3ir3F4do87Q7B9W+xeYcY3QOQr
-         r02NdFM+Bh+Yf17OdH5G4uLKOR0SWNoC7960kUvI+Popyz4+eRCG8fkGLO56lOQUOV
-         5oZ2gTiJWD4pA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 7E58140CD9; Thu, 18 Feb 2021 16:45:11 -0300 (-03)
-Date:   Thu, 18 Feb 2021 16:45:11 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Nicholas Fraser <nfraser@codeweavers.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Frank Ch. Eigler" <fche@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        Remi Bernon <rbernon@codeweavers.com>,
-        linux-kernel@vger.kernel.org,
-        Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-Subject: Re: [PATCH 1/2] perf report: Remove redundant libbfd checks
-Message-ID: <YC7Dx9v17Dk33ZY6@kernel.org>
-References: <d1c87379-8837-a5e7-eb44-f063ca0f4766@codeweavers.com>
- <94758ca1-0031-d7c6-6c6a-900fd77ef695@codeweavers.com>
- <YC7CetsRKrZXf8WE@kernel.org>
- <59cd6ab8-52d8-f19f-669c-afef5c9ac8e9@codeweavers.com>
+        id S230456AbhBRUBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:01:20 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:49715 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232770AbhBRTq4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:46:56 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id EF91B2223A;
+        Thu, 18 Feb 2021 20:46:10 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1613677571;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z5S6cwt2CcE8hxMtwivXz5lbV2t0IeOPy56yfgrcEng=;
+        b=R97wNe44Tf/tyV2/2VLt1OJarVrKClHXeJaipYUrI1mbB7H+UmlHAvwUChCfevvgvaPm56
+        gQFePSgL0quElhHtwyxNzfFI421k9fM1csAugQbnjIN39Fu0HxEehz1gsn2+6rmNuUGaeW
+        D4xQw4ZzbVPFBhXhswHZPxQDefONRl0=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59cd6ab8-52d8-f19f-669c-afef5c9ac8e9@codeweavers.com>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Feb 2021 20:46:10 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH net-next v2 0/2] net: phy: at803x: paging support
+In-Reply-To: <20210218192647.m5l4wkboxms47urw@skbuf>
+References: <20210218185240.23615-1-michael@walle.cc>
+ <20210218192647.m5l4wkboxms47urw@skbuf>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <15a6833c0db85fc3871a1d926d6636d6@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Feb 18, 2021 at 02:42:17PM -0500, Nicholas Fraser escreveu:
+Am 2021-02-18 20:26, schrieb Vladimir Oltean:
+> On Thu, Feb 18, 2021 at 07:52:38PM +0100, Michael Walle wrote:
+>> Add paging support to the QCA AR8031/33 PHY. This will be needed if we
+>> add support for the .config_inband_aneg callback, see series [1].
+>> 
+>> The driver itself already accesses the fiber page (without proper 
+>> locking).
+>> The former version of this patchset converted the access to
+>> phy_read_paged(), but Vladimir Oltean mentioned that it is dead code.
+>> Therefore, the second patch will just remove it.
+>> 
+>> changes since v1:
+>>  - second patch will remove at803x_aneg_done() altogether
 > 
-> On 2021-02-18 2:39 p.m., Arnaldo Carvalho de Melo wrote:
-> > you forgot the:
-> > 
-> > Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> > 
-> > I'm adding it, ok?
-> 
-> Ah yes sorry about that, to be explicit here it is:
-> 
-> Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
-> 
-> > 
-> > I'm also addressing Jiri's remark about spaces surrounding |
-> > 
-> 
-> Thanks. I included this fix in my follow-up patch though so
-> you might get a conflict.
+> I'm pretty sure net-next is closed now, since David sent the pull
+> request, and I didn't come to a conclusion yet regarding the final
+> form of the phy_config_inband_aneg method either.
 
-I'm pushing to tmp.perf/core what I have, I think there are missing
-patches and the latest test isn't applying. can you please take a look
-and perhaps refresh patches?
+Yeah I wasn't sure. http://vger.kernel.org/~davem/net-next.html says
+it is still open. But anyway, if not, I'll resend the patch after
+the merge window. I've also thought about splitting it into two
+individual patches, because they aren't dependent on each other
+anymore.
 
-I'll start the tests now so that I can move all this to perf/core
-proper.
+We'll need the page support anyway, even if phy_config_inband_aneg
+will change. Ok granted, the cover letter might be misleading then.
 
-- Arnaldo
+-michael
