@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2798231E9B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:25:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0C731EA07
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:51:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhBRMS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:18:57 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:51251 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229806AbhBRKwr (ORCPT
+        id S232951AbhBRMsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:48:02 -0500
+Received: from smtp86.ord1d.emailsrvr.com ([184.106.54.86]:45844 "EHLO
+        smtp86.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231331AbhBRK6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:52:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=shile.zhang@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0UOtYqqH_1613645468;
-Received: from B-J2UMLVDL-1650.local(mailfrom:shile.zhang@linux.alibaba.com fp:SMTPD_---0UOtYqqH_1613645468)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 18 Feb 2021 18:51:09 +0800
-Subject: Re: [PATCH] misc/pvpanic: Export module FDT device table
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-References: <20210218094024.69354-1-shile.zhang@linux.alibaba.com>
- <YC46tZLAesfSNg40@kroah.com>
-From:   Shile Zhang <shile.zhang@linux.alibaba.com>
-Message-ID: <9dc35ee1-cf67-e434-c641-d2822ad0f6a7@linux.alibaba.com>
-Date:   Thu, 18 Feb 2021 18:51:08 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        Thu, 18 Feb 2021 05:58:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1613644276;
+        bh=8ZWVQO/9PZxft2IdiNPG2quxmA7J4sIfRwugGqJyqUA=;
+        h=Subject:To:From:Date:From;
+        b=OvFu9kgNuzR1i/BkRnPVIovr4XZOMmk3qHLM0i/meDCEyGqqINMiXVZnGgFJzU/tJ
+         rL7w2f2Z8f7z8Y4rvfJrnIjmkawzh4oVfVHFDhAorcciNZn9T0Z99w+S5wTNBoEONe
+         Kib78/o2GqtVADGYAihe+PPZKxjZ+r3P0ySbjQe8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1613644276;
+        bh=8ZWVQO/9PZxft2IdiNPG2quxmA7J4sIfRwugGqJyqUA=;
+        h=Subject:To:From:Date:From;
+        b=Kuns5u1VNsImKPNCPbcBOcBy+5f+p4x8xHmWrbk8dAM/MK8RYVqWiXncROPH0YVJy
+         pGGrXM810BJyCRAuxVXA1ace0G1TDhVVFA0AgfYttltGhd6WTQ4UY4SlRAUFImbr2F
+         WhDpNI0Pzcr3VBQGntUwp5bZJxzMIdyEfgkJYivA=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp3.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 0F9A8601CC;
+        Thu, 18 Feb 2021 05:31:15 -0500 (EST)
+Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
+ variable type
+To:     Atul Gopinathan <atulgopinathan@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     hsweeten@visionengravers.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210218084404.16591-1-atulgopinathan@gmail.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
+Date:   Thu, 18 Feb 2021 10:31:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YC46tZLAesfSNg40@kroah.com>
+In-Reply-To: <20210218084404.16591-1-atulgopinathan@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
+X-Classification-ID: 23395ef8-f0af-4618-b651-66986ee57ebb-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/2/18 18:00, Greg Kroah-Hartman wrote:
-> On Thu, Feb 18, 2021 at 05:40:24PM +0800, Shile Zhang wrote:
->> Export the module FDT device table to ensure the FDT compatible strings
->> are listed in the module alias. This help the pvpanic driver can be
->> loaded on boot automatically not only the ACPI device, but also the FDT
->> device.
->>
->> Signed-off-by: Shile Zhang <shile.zhang@linux.alibaba.com>
->> ---
->>   drivers/misc/pvpanic.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
->> index 41cab297d66e..2356d621967e 100644
->> --- a/drivers/misc/pvpanic.c
->> +++ b/drivers/misc/pvpanic.c
->> @@ -92,6 +92,7 @@ static const struct of_device_id pvpanic_mmio_match[] = {
->>   	{ .compatible = "qemu,pvpanic-mmio", },
->>   	{}
->>   };
->> +MODULE_DEVICE_TABLE(of, pvpanic_mmio_match);
+On 18/02/2021 08:44, Atul Gopinathan wrote:
+> Fix the following warning generated by sparse:
 > 
-> What caused this to not work properly?  I.e. should there be a "Fixes:"
-> tag in the commit changelog as well?
-
-Sorry, I think it should be:
-
-Fixes: 46f934c9a12fc ("misc/pvpanic: add support to get pvpanic device 
-info FDT")
-
-Shall I sent v2 with this update?
-
-Thanks!
-
+> drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
+> drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
+> drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
 > 
-> thanks,
+> compat_ptr() has a return type of "void __user *"
+> as defined in "include/linux/compat.h"
 > 
-> greg k-h
+> cmd->chanlist is of type "unsigned int *" as defined
+> in drivers/staging/comedi/comedi.h" in struct
+> comedi_cmd.
 > 
+> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> ---
+>   drivers/staging/comedi/comedi_fops.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+> index e85a99b68f31..fc4ec38012b4 100644
+> --- a/drivers/staging/comedi/comedi_fops.c
+> +++ b/drivers/staging/comedi/comedi_fops.c
+> @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+>   	cmd->scan_end_arg = v32.scan_end_arg;
+>   	cmd->stop_src = v32.stop_src;
+>   	cmd->stop_arg = v32.stop_arg;
+> -	cmd->chanlist = compat_ptr(v32.chanlist);
+> +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+>   	cmd->chanlist_len = v32.chanlist_len;
+>   	cmd->data = compat_ptr(v32.data);
+>   	cmd->data_len = v32.data_len;
+> 
+
+This patch and the other one in your series clash with commit 
+9d5d041eebe3 ("staging: comedi: comedi_fops.c: added casts to get rid of 
+sparse warnings") by B K Karthik.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9d5d041eebe3dcf7591ff7004896c329eb841ca6
+
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
