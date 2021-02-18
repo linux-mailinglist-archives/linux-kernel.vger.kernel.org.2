@@ -2,178 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BDF31EA7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C4631EA89
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbhBRNbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:31:14 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:34695 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232181AbhBRLpE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:45:04 -0500
-Received: by mail-wr1-f53.google.com with SMTP id n4so2641642wrx.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:44:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uWo8yYtqo2c4AZiM2olPLzWcrY1h7XAQLSU0dGJI4kA=;
-        b=RDOTwqCnTC9F35E766XQnPuTCufIsc82xU7gDfvx8h+LQ4JA80x9RqoAf3dg+5tx7q
-         0OMtDe4TmfPB47IWXQRZFKrcT47jKHxyGU0HHx2g2rL9K2MRP2J1mfPUw0QPe6LM9r0U
-         NUhV6FKiwSSRowNUBQgNd8p504R+hVuff7XPzQvam7cibmbeMEVtPtH0TK2XJ9FgYlQr
-         qY3gLnl2SJOgm4gNkJ1ltbbur5KXItn7+tma5UJQzzJ8y5xHwO22AYpQRiy7ac2btLmS
-         qlYJHjJVqgjw3bl5hVdBxODvXmB/nBHgAHDUp5cGXlkpyzH9ta4v/NlgmkcvefY9KBXT
-         ZNgw==
-X-Gm-Message-State: AOAM530AhK4Iiy0cH0GXnpw7bFJ3Eb/NCIDkaCEQxU6wJ1JJBNR7IlxW
-        YwvLgaMR9KRfVpkUflD1mZKJ264XjqUtBA==
-X-Google-Smtp-Source: ABdhPJyyyfx53LASkeMjm2MZ/hol4PtA4yAuCP6z46pGk0DYkwDnQ4+aNNqGFnD6DAz+mzYm0ZJkcQ==
-X-Received: by 2002:a19:6b19:: with SMTP id d25mr2305731lfa.82.1613648038111;
-        Thu, 18 Feb 2021 03:33:58 -0800 (PST)
-Received: from [10.68.32.147] (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.gmail.com with ESMTPSA id b11sm576394lfi.174.2021.02.18.03.33.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 03:33:57 -0800 (PST)
-Subject: Re: [PATCH] coccinelle: misc: add swap script
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-References: <20210216080133.455456-1-efremov@linux.com>
- <alpine.DEB.2.22.394.2102172224570.3081@hadrien>
- <c2b60288-3e46-14e3-9be2-3f75366a4b47@linux.com>
- <alpine.DEB.2.22.394.2102181114380.2748@hadrien>
- <4e913cc4-cb86-4552-bced-a89cbecca3b2@linux.com>
- <alpine.DEB.2.22.394.2102181227230.2748@hadrien>
-From:   Denis Efremov <efremov@linux.com>
-Message-ID: <afd7f80a-90c9-9d05-cc78-aacc5495174b@linux.com>
-Date:   Thu, 18 Feb 2021 14:34:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231514AbhBRNp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:45:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54008 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230422AbhBRLyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:54:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613648079; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TFxIBRAKMHuHcpBq2IZWUcGVdfo4mM9eHke2Rk/zmNY=;
+        b=d7XJr9r6VY1EV1u4Z0ihCOauHFWxUeg8QU33AfmPFeRO0V1gzx+e3Bjc8K08EEmZEV6rqq
+        XXHaWbNwecRtCLZCeV3AcPhiW6oKYWmVLhd58Wwybh6uheW6983hjb+z2JPytpIvemoJ58
+        h8V2VJk1xhMZ6KwNcZ0ETImqbFSu/X4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7EDBEAEBE;
+        Thu, 18 Feb 2021 11:34:39 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 12:34:38 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: output: was: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YC5QzlkrVp3sPg/4@alley>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCvqdrBc3wLDClhv@alley>
+ <YCv4V5EFeuEmyxSz@chrisdown.name>
+ <YC0n3vRO788sXqud@alley>
+ <YC02GBghuhmlvrXk@chrisdown.name>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2102181227230.2748@hadrien>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC02GBghuhmlvrXk@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 2021-02-17 15:28:24, Chris Down wrote:
+> Petr Mladek writes:
+> > I guess that you already use it internally and have its own tooling
+> > around it.
+> 
+> Hmm, we're actually not using it yet widely because I don't want to backport
+> it to our prod kernel until we're reasonably agreed on the format :-)
+> 
+> My main concern is making sure that parsing is reliable, and there's as
+> little "well, there shouldn't ever be a <char> here" as possible. That's why I
+> preferred originally to use the already well established char array/printk
+> rules where possible, since they're mature and well tested.
+> 
+> I'm not against some other solution though, as long as it meets these
+> requirements. It looks like your proposed format with escaping prior to
+> sending to userspace also meets that requirement.
+
+Great.
+
+> >    $ cat pf.py
+> >    #!/usr/bin/env python
+> >    with open("/sys/kernel/debug/printk/formats/vmlinux") as f:
+> >        raw_fmts = f.read().split("\x00")[:-1]
+> >        for raw_fmt in raw_fmts:
+> >            level, fmt = raw_fmt[1], raw_fmt[2:]
+> >            print(f"Level {level}: {fmt!r}")
+> > 
+> > I wonder how it would look in another scripting languages, like
+> > bash or perl. Any non-printable character is tricky and would
+> > complicate it.
+> 
+> It's really not that complicated there, either. Since you bring up bash, it's
+> even less work than the Python solution:
+> 
+>     while IFS= read -r -d $'\0' fmt; do
+>         printf 'Level %s: %q\n' "${fmt:1:1}" "${fmt:2}"
+>     done < /sys/kernel/debug/printk/formats/vmlinux
+
+I do not see how it handles KERN_SOH. Are they silently ignored?
+Is it caused by -r -d read options?
+
+And this is one big problem. Non-printable characters sucks. And in
+this particular case, we are even disclosing more implementation details
+than it is really necessary.
 
 
-On 2/18/21 2:29 PM, Julia Lawall wrote:
+> The changelog describes the use case: automated detection of printk fmts
+> changing. For that reason, I don't understand why there's a desire to produce a
+> human readable format by default when the only known consumer of this is going
+> to be automation anyway.
 > 
+> If a use case for that comes up, we can always have a directory producing
+> human readable versions. I personally don't see the need though.
 > 
-> On Thu, 18 Feb 2021, Denis Efremov wrote:
+> As long as it's reliably parseable though, I won't die on this hill, I just
+> don't understand the rationale :-)
 > 
->>
->>
->> On 2/18/21 1:17 PM, Julia Lawall wrote:
->>>
->>>
->>> On Thu, 18 Feb 2021, Denis Efremov wrote:
->>>
->>>>
->>>>
->>>> On 2/18/21 12:31 AM, Julia Lawall wrote:
->>>>>> +@depends on patch@
->>>>>> +identifier tmp;
->>>>>> +expression a, b;
->>>>>> +type T;
->>>>>> +@@
->>>>>> +
->>>>>> +(
->>>>>> +- T tmp;
->>>>>> +|
->>>>>> +- T tmp = 0;
->>>>>> +|
->>>>>> +- T *tmp = NULL;
->>>>>> +)
->>>>>> +... when != tmp
->>>>>> +- tmp = a;
->>>>>> +- a = b;
->>>>>> +- b = tmp;
->>>>>> ++ swap(a, b);
->>>>>> +... when != tmp
->>>>>
->>>>> In this rule and the next one, if you remove the final ; from the b = tmp
->>>>> line and from the swap line, and put it into context code afterwards, them
->>>>> the generated code looks better on cases like fs/xfs/xfs_inode.c in the
->>>>> function xfs_lock_two_inodes where two successive swap calls are
->>>>> generated.
->>>>>
->>>>> There are also some cases such as drivers/net/wireless/ath/ath5k/phy.c in
->>>>> the function ath5k_hw_get_median_noise_floor where the swap code makes up
->>>>> a whole if branch.
->>>>
->>>>> In this cases it would be good to remove the {}.
->>>>
->>>> How this can be handled?
->>>>
->>>> If I use this pattern:
->>>> @depends on patch@
->>>> identifier tmp;
->>>> expression a, b;
->>>> @@
->>>>
->>>> (
->>>>   if (...)
->>>> - {
->>>> -       tmp = a;
->>>> -       a = b;
->>>> -       b = tmp
->>>> +       swap(a, b)
->>>>         ;
->>>> - }
->>>> |
->>>> -       tmp = a;
->>>> -       a = b;
->>>> -       b = tmp
->>>> +       swap(a, b)
->>>>         ;
->>>> )
->>>>
->>>> The tool fails with error:
->>>>
->>>> EXN: Failure("rule starting on line 58: already tagged token:\nC code
->>>> context\nFile \"drivers/net/wireless/ath/ath5k/phy.c\", line 1574,
->>>> column 4, charpos = 41650\n around = 'sort',\n whole content =
->>>> \t\t\t\tsort[j - 1] = tmp;") in drivers/net/wireless/ath/ath5k/phy.c
->>>
->>> A disjunction basically says "at this node in the cfg, can I match the
->>> first patter, or can I match the second pattern, etc."  Unfortunately in
->>> this case the two branches start matching at different nodes, so the short
->>> circuit aspect of a disjunction isn't used, and it matches both patterns.
->>>
->>> The solution is to just make two rules.  The first for the if case and the
->>> second for everything else.
->>>
->>
->>   if (...)
->> - {
->> -       tmp = a;
->> -       a = b;
->> -       b = tmp
->> +       swap(a, b)
->>         ;
->> - }
->>
->>
->> This produces "single-line ifs".
->> Maybe generated patches can be improved somehow?
->> Moving -+; doesn't help in this case.
+> > > Re: not being not safe for machine processing because it only works for a
+> > > single digit, I'm a little confused. KERN_* levels are, as far as I know,
+> > > only a single byte wide, and we rely on that already (eg. in
+> > > printk_skip_header()).
+> > 
+> > It is great that you mentioned it. KERN_ levels are implementation
+> > detail.
+> > 
+> > It used to be "<level>". The binary KERN_SOH has been introduced
+> > in v3.6-rc1 by the commit 04d2c8c83d0e3ac5f ("printk: convert
+> > the format for KERN_<LEVEL> to a 2 byte pattern").
+> > 
+> > In v4.9-rc1, the commit 4bcc595ccd80decb4 ("printk: reinstate KERN_CONT
+> > for printing continuation lines") added the possibility to define
+> > both KERN_LEVEL + KERN_CONT at the same time. It is not handled
+> > by your python snippet above.
 > 
-> There is clearly some problem with the management of newlines...
+> Thanks, this is a good callout. I will make sure v5 handles that.
 > 
-> The other alternative is to just have one rule for introducing swap and
-> another for removing the braces around a swap, ie
+> In a hypothetical scenario where we do go towards something human-readable,
+> how do you perceive that should look? Something like this?
 > 
-> if (...)
-> - {
->   swap(...);
-> - }
-> 
-> I don't think it would be motivated to remove the newline in that case.
+>     % less ...
+>     <c, 5> 'Some fmt with cont + level 5\n'
+>     <5> 'Some fmt with only level 5\n'
+>     <c> 'Some fmt with only LOG_CONT\n'
 
-Yes, this works. I'll send v2.
+The main question is whether 'c' is really important. But it might be.
+It is a hint that it might have different log level depending if it
+was successfully connected or not.
 
-Thanks
+Note that it is not connected when messages are printed from another
+context, CPU, or process in the meantime.
+
+The space in <c, 5> makes it more human readable. But it might
+unnecessary complicate machine processing. I would use a compromise
+here:
+
+    <c,5> "Some fmt with cont + level 5\n"
+
+Alternative might be the following format. But it also might be worse
+for machine processing:
+
+	<c><5> "Some fmt with cont + level 5\n"
+
+
+Note, that I used double quotation marks "" instead of single ones ''.
+The quotation marks would make sense. And I would prefer the double
+ones because they are used in the sources and also in other
+interfaces, for example, /sys/kernel/debug/dynamic_debug/control
+
+What about the file name and line number? IMHO, it would be
+pretty useful.
+
+
+> > > We also already have precedent for
+> > > null-separation/control characters in (for example) /proc/pid/cmdline.
+> > 
+> > Yes, there is a precedent. But it does not mean that we should not
+> > try to do it better.
+> 
+> To be clear, I'm actually asserting that I believe the machine-readable
+> version _is_ better, not that it's simply unnecessary to produce a
+> human-readable version :-)
+
+I am sorry but I still haven't hear any convincing arguments why it is better.
+
+> As mentioned earlier in this e-mail though, it's not a hill I want to die
+> on.  If you believe it should be human-readable, as long as its reliably
+> parseable, I'm happy to do that.
+
+I believe that it should be human readable :-)
+
+Best Regards,
+Petr
