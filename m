@@ -2,78 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F7B31E9ED
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88CB31E9CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhBRMel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:34:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59310 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230227AbhBRK4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:56:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A34864E4B;
-        Thu, 18 Feb 2021 10:42:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613644969;
-        bh=ZVEU0Q4v1c0QFBCQIPsDVziRocJEP0A7qMixZrKXSRE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rmUp03bp01fFVhuOtS4zYNrRo05P/MHjCURv84sjfVQ+9zWYsOMpbvWOYpHeuVbAi
-         oQynA6AuV3SFXcUY5F4Q6SqAzxh1AhwfjM+QB4ZBCn9DfCPe/yY/rsk5GUwCkMcoE9
-         dRe+VOjSsRjh4L68f0pVpld/UnKtBpLxuy/wqx0g=
-Date:   Thu, 18 Feb 2021 11:42:46 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Kyle Tso <kyletso@google.com>, USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
- before toggling
-Message-ID: <YC5EpqqNM+gnD6Zg@kroah.com>
-References: <20210218100243.32187-1-badhri@google.com>
- <YC489HGT/yVHykAs@kroah.com>
- <CAPTae5+qhE9uo2s20oEQd0x+nW21zGE3S7QWkR=oqqVX-3uHmg@mail.gmail.com>
+        id S232812AbhBRM2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhBRKpl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:45:41 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B955AC061574;
+        Thu, 18 Feb 2021 02:43:49 -0800 (PST)
+Received: from [IPv6:2a01:e0a:4cb:a870:fd6e:12cd:95d7:3350] (unknown [IPv6:2a01:e0a:4cb:a870:fd6e:12cd:95d7:3350])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id F21B81F45A1F;
+        Thu, 18 Feb 2021 10:43:45 +0000 (GMT)
+Subject: Re: [PATCH v1 13/18] media: hantro: Introduce G2/HEVC decoder
+To:     Ezequiel Garcia <ezequiel@collabora.com>, p.zabel@pengutronix.de,
+        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <20210217080306.157876-14-benjamin.gaignard@collabora.com>
+ <bb410fde0a2f50cc34840e091c3d9c1395601514.camel@collabora.com>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <1fab0734-f1db-21ee-152c-4b289be31e4a@collabora.com>
+Date:   Thu, 18 Feb 2021 11:43:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPTae5+qhE9uo2s20oEQd0x+nW21zGE3S7QWkR=oqqVX-3uHmg@mail.gmail.com>
+In-Reply-To: <bb410fde0a2f50cc34840e091c3d9c1395601514.camel@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 02:38:45AM -0800, Badhri Jagan Sridharan wrote:
-> Hi Greg,
-> 
-> This patch is a bug fix for the following patch which was introduced in 5.11.
-> 
-> commit f321a02caebdd0c56e167610cda2fa148cd96e8b
-> Author: Badhri Jagan Sridharan <badhri@google.com>
-> Date:   Wed Oct 28 23:31:35 2020 -0700
-> 
->     usb: typec: tcpm: Implement enabling Auto Discharge disconnect support
-> 
->     TCPCI spec allows TCPC hardware to autonomously discharge the vbus
->     capacitance upon disconnect. The expectation is that the TCPM enables
->     AutoDischargeDisconnect while entering SNK/SRC_ATTACHED states. Hardware
->     then automously discharges vbus when the vbus falls below a certain
->     threshold i.e. VBUS_SINK_DISCONNECT_THRESHOLD.
-> 
->     Apart from enabling the vbus discharge circuit, AutoDischargeDisconnect
->     is also used a flag to move TCPCI based TCPC implementations into
->     Attached.Snk/Attached.Src state as mentioned in
->     Figure 4-15. TCPC State Diagram before a Connection of the
->     USB Type-C Port Controller Interface Specification.
->     In such TCPC implementations, setting AutoDischargeDisconnect would
->     prevent TCPC into entering "Connection_Invalid" state as well.
-> 
->     Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
->     Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->     Link: https://lore.kernel.org/r/20201029063138.1429760-8-badhri@google.com
->     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Great, then can you resend the patch and add a proper Fixes: tag, along
-with a cc: stable as well?
+Le 17/02/2021 à 21:45, Ezequiel Garcia a écrit :
+> Hi Benjamin,
+>
+> Before I review the implementation in detail,
+> there's one thing that looks suspicious.
+>
+> On Wed, 2021-02-17 at 09:03 +0100, Benjamin Gaignard wrote:
+>> Implement all the logic to get G2 hardware decoding HEVC frames.
+>> It support up level 5.1 HEVC stream.
+>> It doesn't support yet 10 bits formats or scaling feature.
+>>
+>> Add HANTRO HEVC dedicated control to skip some bits at the beginning
+>> of the slice header. That is very specific to this hardware so can't
+>> go into uapi structures. Compute the needed value is complex and require
+>> information from the stream that only the userland knows so let it
+>> provide the correct value to the driver.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+>> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+>> ---
+>>   drivers/staging/media/hantro/Makefile         |   2 +
+>>   drivers/staging/media/hantro/hantro_drv.c     |  41 ++
+>>   .../staging/media/hantro/hantro_g2_hevc_dec.c | 637 ++++++++++++++++++
+>>   drivers/staging/media/hantro/hantro_g2_regs.h | 198 ++++++
+>>   drivers/staging/media/hantro/hantro_hevc.c    | 274 ++++++++
+>>   drivers/staging/media/hantro/hantro_hw.h      |  14 +
+>>   6 files changed, 1166 insertions(+)
+>>   create mode 100644 drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>>   create mode 100644 drivers/staging/media/hantro/hantro_g2_regs.h
+>>   create mode 100644 drivers/staging/media/hantro/hantro_hevc.c
+>>
+>> diff --git a/drivers/staging/media/hantro/Makefile b/drivers/staging/media/hantro/Makefile
+>> index 743ce08eb184..0357f1772267 100644
+>> --- a/drivers/staging/media/hantro/Makefile
+>> +++ b/drivers/staging/media/hantro/Makefile
+>> @@ -9,12 +9,14 @@ hantro-vpu-y += \
+>>                  hantro_h1_jpeg_enc.o \
+>>                  hantro_g1_h264_dec.o \
+>>                  hantro_g1_mpeg2_dec.o \
+>> +               hantro_g2_hevc_dec.o \
+>>                  hantro_g1_vp8_dec.o \
+>>                  rk3399_vpu_hw_jpeg_enc.o \
+>>                  rk3399_vpu_hw_mpeg2_dec.o \
+>>                  rk3399_vpu_hw_vp8_dec.o \
+>>                  hantro_jpeg.o \
+>>                  hantro_h264.o \
+>> +               hantro_hevc.o \
+>>                  hantro_mpeg2.o \
+>>                  hantro_vp8.o
+>>   
+>> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+>> index e1443c394f62..d171fb80876a 100644
+>> --- a/drivers/staging/media/hantro/hantro_drv.c
+>> +++ b/drivers/staging/media/hantro/hantro_drv.c
+>> @@ -280,6 +280,20 @@ static int hantro_jpeg_s_ctrl(struct v4l2_ctrl *ctrl)
+>>          return 0;
+>>   }
+>>   
+>> +static int hantro_extra_s_ctrl(struct v4l2_ctrl *ctrl)
+>> +{
+>> +       const struct hantro_hevc_extra_decode_params *extra_params;
+>> +       struct hantro_ctx *ctx;
+>> +
+>> +       ctx = container_of(ctrl->handler,
+>> +                          struct hantro_ctx, ctrl_handler);
+>> +       extra_params = &ctx->hevc_dec.ctrls.extra_params;
+>> +
+>> +       memcpy((void *)extra_params, ctrl->p_new.p_u8, sizeof(extra_params));
+>> +
+>> +       return 0;
+>> +}
+>> +
+>>   static const struct v4l2_ctrl_ops hantro_ctrl_ops = {
+>>          .try_ctrl = hantro_try_ctrl,
+>>   };
+>> @@ -288,6 +302,10 @@ static const struct v4l2_ctrl_ops hantro_jpeg_ctrl_ops = {
+>>          .s_ctrl = hantro_jpeg_s_ctrl,
+>>   };
+>>   
+>> +static const struct v4l2_ctrl_ops hantro_extra_ctrl_ops = {
+>> +       .s_ctrl = hantro_extra_s_ctrl,
+>> +};
+>> +
+>>   static const struct hantro_ctrl controls[] = {
+>>          {
+>>                  .codec = HANTRO_JPEG_ENCODER,
+>> @@ -413,6 +431,29 @@ static const struct hantro_ctrl controls[] = {
+>>                  .cfg = {
+>>                          .id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
+>>                  },
+>> +       }, {
+>> +               .codec = HANTRO_HEVC_DECODER,
+>> +               .cfg = {
+>> +                       .id = V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS,
+>> +                       .name = "HANTRO extra decode params",
+>> +                       .type = V4L2_CTRL_TYPE_U8,
+>> +                       .min = 0,
+>> +                       .def = 0,
+>> +                       .max = 255,
+>> +                       .step = 1,
+>> +                       .dims = { sizeof(struct hantro_hevc_extra_decode_params) },
+>> +                       .ops = &hantro_extra_ctrl_ops,
+>> +               },
+>> +       }, {
+>> +               .codec = HANTRO_JPEG_ENCODER | HANTRO_MPEG2_DECODER |
+>> +                        HANTRO_VP8_DECODER | HANTRO_H264_DECODER |
+>> +                        HANTRO_HEVC_DECODER,
+>> +               .cfg = {
+>> +                       .id = V4L2_CID_USER_CLASS,
+> Are you sure you need to expose the V4L2_CID_USER_CLASS?
+> Maybe I'm missing something, but this looks odd.
 
-thanks,
+v4l2-compliance complains if this isn't exposed when adding V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS.
+Other drivers with dedicated control have duplicated this definition but I prefer use it directly.
 
-greg k-h
+Benjamin
+
+>
+> Thanks,
+> Ezequiel
+>
+>
