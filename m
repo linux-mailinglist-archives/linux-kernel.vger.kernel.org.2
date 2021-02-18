@@ -2,143 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4616C31E539
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 05:50:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3014931E54B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 06:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhBREtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 23:49:53 -0500
-Received: from ozlabs.org ([203.11.71.1]:37617 "EHLO ozlabs.org"
+        id S229752AbhBRFD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 00:03:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229864AbhBREtv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 23:49:51 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dh2Kk58Ssz9sSC;
-        Thu, 18 Feb 2021 15:48:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613623747;
-        bh=U3pXJmB/9mHsJ9I2grqn2rpy0G5O3rUt2PR33nNR7ts=;
+        id S229460AbhBRFDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 00:03:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 92FBC64DA8;
+        Thu, 18 Feb 2021 05:03:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613624593;
+        bh=BiZSHcxv8WWzDhcxoQsCPxk7cnJSi3PjK2CmEvrCw6Y=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WOdFP5BWDC4PVDQX3aHnTLcUXgg7NgiMvsXIe092iiFP+sItHIJyZ7jqKY/ROhkDV
-         3x7pEEsI9ubfWAtVPJm20Qwx7uxfd4wIsAdLSP2ogvpclA4+H7ek+a3KGoML2Lb32s
-         +CvhmGrJH9t3lGXlY8X06vwaOjIMp3+Ln2OTuk4rP2Te/7AOjbzkEGBG4RKGI9EhIb
-         uz9BnfqBvNx8SKspw9HQGGzbh8jaOUVr4GCCgwH72EQ8zy9Wc1IEhFWXjhIDR+PRRX
-         mlqTZd45h0sOiLALxj/RN9znQ3Sdpc+vIHHhL7jSkmdwXgVWx/ASvUxLZ/j0g4NIoh
-         +B9/sYTlgXRkQ==
-Date:   Thu, 18 Feb 2021 15:48:57 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
+        b=WWUnQt3jhz4DBOiq/9gWeyyHj0wq+gYQiCGvLM7QhwozF2wxr960YniXx4RVUPpnY
+         NkonaOKbPTmJL5t+JjymvZxhlm+WAgsaYGqSY9+bNJR0Pjos5zyJz8K7KloaBkaoEX
+         RoYtAJXDMVVCGa8uVoy6QAtnbsb1Lat18fAf7HsfPaoUvtNjCLjeRyNvNDZbZ6ilGT
+         Q1HKljFmlkkw8aBypwbB9cuXqF9EfkGC6wMFrtniTNPUrmP0aKw0qZYd4BUhrqtbq8
+         bJoZJLkiD9oDWmi5mzEl9xnCCuXPNiS0ST0shHQ9BAAjTKQirRuOvJpVg/HyvFlwPZ
+         cusTnFCd9mRuA==
+Date:   Thu, 18 Feb 2021 14:03:07 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     paulmck@kernel.org
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Marc Zyngier <maz@kernel.org>, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Paul Kocialkowski <contact@paulk.fr>,
-        Samuel Holland <samuel@sholland.org>
-Subject: Re: linux-next: manual merge of the irqchip tree with the sunxi
- tree
-Message-ID: <20210218154857.75bad5df@canb.auug.org.au>
-In-Reply-To: <20210215091124.46c005ad@canb.auug.org.au>
-References: <20210201144259.102ae6ab@canb.auug.org.au>
-        <20210215091124.46c005ad@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/81Mwa=wdGo=IUKVht5j+jdK";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        rostedt@goodmis.org
+Subject: Re: [PATCH 2/2] rcu-tasks: add RCU-tasks self tests
+Message-Id: <20210218140307.71f475248ebefa0ca613c09e@kernel.org>
+In-Reply-To: <20210217181738.GE2743@paulmck-ThinkPad-P72>
+References: <20210212192059.wytqwdf4qm4rnq3d@linutronix.de>
+        <20210212211207.GA2046@pc638.lan>
+        <20210212234851.GP2743@paulmck-ThinkPad-P72>
+        <20210213003709.GA27846@paulmck-ThinkPad-P72>
+        <20210213004328.GB27846@paulmck-ThinkPad-P72>
+        <20210213113030.GA1878@pc638.lan>
+        <20210213164554.GS2743@paulmck-ThinkPad-P72>
+        <20210215112826.xc6b4se6ujwvrwco@linutronix.de>
+        <20210216173003.GX2743@paulmck-ThinkPad-P72>
+        <20210217234759.b82e39049a2e99cf6358e1c2@kernel.org>
+        <20210217181738.GE2743@paulmck-ThinkPad-P72>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/81Mwa=wdGo=IUKVht5j+jdK
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 17 Feb 2021 10:17:38 -0800
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Hi all,
+> > > 1.	Spawn ksoftirqd earlier.
+> > > 
+> > > 2.	Suppress attempts to awaken ksoftirqd before it exists,
+> > > 	forcing all ksoftirq execution on the back of interrupts.
+> > > 
+> > > Uladzislau and I each produced patches for #1, and I produced a patch
+> > > for #2.
+> > > 
+> > > The only other option I know of is to push the call to init_kprobes()
+> > > later in the boot sequence, perhaps to its original subsys_initcall(),
+> > > or maybe only as late as core_initcall().  I added Masami and Steve on
+> > > CC for their thoughts on this.
+> > > 
+> > > Is there some other proper fix that I am missing?
+> > 
+> > Oh, I missed that the synchronize_rcu_tasks() will be involved the kprobes
+> > in early stage. Does the problem only exist in the synchronize_rcu_tasks()
+> > instead of synchronize_rcu()? If so I can just stop optimizer in early stage
+> > because I just want to enable kprobes in early stage, but not optprobes.
+> > 
+> > Does the following patch help?
+> 
+> It does look to me like it would!  I clearly should have asked you about
+> this a couple of months ago.  ;-)
+> 
+> The proof of the pudding would be whether the powerpc guys can apply
+> this to v5.10-rc7 and have their kernel come up without hanging at boot.
 
-On Mon, 15 Feb 2021 09:11:24 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Mon, 1 Feb 2021 14:42:59 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
- wrote:
-> >
-> > Today's linux-next merge of the irqchip tree got a conflict in:
-> >=20
-> >   Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7=
-i-a20-sc-nmi.yaml
-> >=20
-> > between commit:
-> >=20
-> >   752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation=
- for the V3s NMI")
-> >=20
-> > from the sunxi tree and commit:
-> >=20
-> >   ad6b47cdef76 ("dt-bindings: irq: sun6i-r: Split the binding from sun7=
-i-nmi")
-> >=20
-> > from the irqchip tree.
-> >=20
-> > I fixed it up (I think - see below) and can carry the fix as
-> > necessary. This is now fixed as far as linux-next is concerned, but any
-> > non trivial conflicts should be mentioned to your upstream maintainer
-> > when your tree is submitted for merging.  You may also want to consider
-> > cooperating with the maintainer of the conflicting tree to minimise any
-> > particularly complex conflicts.
-> >=20
-> > diff --cc Documentation/devicetree/bindings/interrupt-controller/allwin=
-ner,sun7i-a20-sc-nmi.yaml
-> > index 4fd1e2780026,f34ecc8c7093..000000000000
-> > --- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,=
-sun7i-a20-sc-nmi.yaml
-> > +++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,=
-sun7i-a20-sc-nmi.yaml
-> > @@@ -25,17 -25,7 +25,10 @@@ properties
-> >         - const: allwinner,sun6i-a31-sc-nmi
-> >           deprecated: true
-> >         - const: allwinner,sun7i-a20-sc-nmi
-> > -       - items:
-> > -           - const: allwinner,sun8i-a83t-r-intc
-> > -           - const: allwinner,sun6i-a31-r-intc
-> >  +      - items:
-> >  +          - const: allwinner,sun8i-v3s-nmi
-> >  +          - const: allwinner,sun9i-a80-nmi
-> >         - const: allwinner,sun9i-a80-nmi
-> > -       - items:
-> > -           - const: allwinner,sun50i-a64-r-intc
-> > -           - const: allwinner,sun6i-a31-r-intc
-> >         - items:
-> >             - const: allwinner,sun50i-a100-nmi
-> >             - const: allwinner,sun9i-a80-nmi =20
->=20
-> With the merge window about to open, this is a reminder that this
-> conflict still exists.  It is now between the arm-soc tree and the
-> irqchip tree.
+Who could I ask for testing this patch, Uladzislau?
+I think the test machine which enough slow or the kernel has much initcall
+to run optimization thread while booting.
+In my environment, I could not reproduce that issue because the optimizer
+was sheduled after some tick passed. At that point, ksoftirqd has already
+been initialized.
 
-This is now a conflict between the arm-soc tree and the tip tree.
+Thank you,
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/81Mwa=wdGo=IUKVht5j+jdK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAt8bkACgkQAVBC80lX
-0GxAmgf/QddCsP/621qMYpNzwzYcGTi0/qD4s82f14UQzRZ1/0U60Pj0Bm5hr7Ci
-a4mY58RUibDy/ODyBJI7HfYdiNhH6Dqz6WY2SCKZ+scVMXgKzlJS6qyRlPUFQmCB
-3q64uLJhoMySuvpN34xHu43RwYGnCe3NfpouLu5acOINQAlQFKQy8OtusmEmc3zl
-3l1rv/uIuJwF3Ylt6ukBlt6OThMCWsJ3+WqnN+kCes8QA4OuBbQ2ipGzGqB5qCRd
-bLfYG4HmRByeO1b6SEZgjPtXsMouDUeQE+cDHSlvw04sTs5AHrRecZZ2n0n+druW
-vVFxdE9kgr6Ajr5GVSTiXaOUX7sJKw==
-=NeFd
------END PGP SIGNATURE-----
-
---Sig_/81Mwa=wdGo=IUKVht5j+jdK--
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
