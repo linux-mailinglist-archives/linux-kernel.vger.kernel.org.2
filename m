@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C00731E9FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07C8431EA0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:57:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhBRMmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:42:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231935AbhBRK7q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:59:46 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295ABC061786
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 02:35:43 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id g20so1031003plo.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 02:35:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=tHsrb0DYK4lku3a8AnYlDdd6INw/DQti6oTvXdTAcko=;
-        b=LdDO9eJw/qbgP0/LCpOnbkjSGBMMN2AU6sn65utGj7Jbua7u3RHte1Ox/HaIXhwAa1
-         8WZs8xvJP5LX0JCKAIv0wcvEMVuGI4MBYfuBEEqnBHsMwui4ItoSi7MOzdrCyYXCZMih
-         jmv9VGZOheR15KF2A6NvprAkZD/QpuZXEvvqyvk7bKpmpogMJxwticcQJu1V+D7TE/3c
-         ezkwqo8856MsFmFSJx0NkN0oKzNAEeyiqNjGOOg/ptNajf7WWTog46DrEXXbC5mvNtjv
-         xfhJ5NZ+iDUWHrfYEGRleXN8ft4+SZVzUOB8O0RllCZYf8eaVGm6dbBJoOPG5Enq1Zwk
-         nLYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=tHsrb0DYK4lku3a8AnYlDdd6INw/DQti6oTvXdTAcko=;
-        b=XDjgkfjz9wWfAGfXHYLFCo1FBXeyHyYen+s/yDyUZz5Vu3xYqRkobwybSQLhRGrGV0
-         mqVErix6rHFCO+CVZxKm6pJgq5BdZmXrNEor2r2LziOPtGKJJe9lmt4W/5mbPrldJclE
-         vGLJNeRatpXov+UU/7xUAEzbTbWh9VZvGbKOZ0SemAQaC++ZvjNlemT62JnVtcGzlwIw
-         puDkqWT+htWjuOtUF9hw9mP8QAaHNGcG6DlMc/W4sg8inm4K1dsAF3o0l+kVfCBjUH0d
-         jnE5rCS7dSJPKIJvuTbIuL9boB9EAEqjhd3VHUY0lc70qQXnFNeZOqWGpMpXvafREyF/
-         Q0ow==
-X-Gm-Message-State: AOAM533PUzsm87Ut+DvZGC0YcHheP0kgFsOEvbgXFlPDithV9zwtsxy/
-        c8ggNiMK0by71sCpyERgmxQOZA==
-X-Google-Smtp-Source: ABdhPJxQm2bKWc2RQXMTCauGvO51yB4Estxp63HbHEwUBI1tly6FVkm3dSOXS/hj6Pnmun84byamxA==
-X-Received: by 2002:a17:903:2285:b029:e1:58a2:b937 with SMTP id b5-20020a1709032285b02900e158a2b937mr3536248plh.68.1613644542659;
-        Thu, 18 Feb 2021 02:35:42 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id z2sm5627390pfa.121.2021.02.18.02.35.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Feb 2021 02:35:42 -0800 (PST)
-Date:   Thu, 18 Feb 2021 16:05:39 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        vireshk@kernel.org, cristian.marussi@arm.com,
-        morten.rasmussen@arm.com, chris.redpath@arm.com,
-        ionela.voinescu@arm.com
-Subject: Re: [PATCH v7 1/3] scmi-cpufreq: Remove deferred probe
-Message-ID: <20210218103539.zkxhqxaivhifmjwj@vireshk-i7>
-References: <20210215075139.30772-1-nicola.mazzucato@arm.com>
- <20210215075139.30772-2-nicola.mazzucato@arm.com>
+        id S232106AbhBRMvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:51:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232366AbhBRLF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:05:56 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D4D964E15;
+        Thu, 18 Feb 2021 10:39:41 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lCgih-00EkDd-Em; Thu, 18 Feb 2021 10:39:39 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210215075139.30772-2-nicola.mazzucato@arm.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Feb 2021 10:39:39 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: [PATCH] irqdomain: remove debugfs_file from struct irq_domain
+In-Reply-To: <YC41eWXKjE77zIBo@kroah.com>
+References: <20210217195717.13727-1-michael@walle.cc>
+ <4e4d0479b935e60a53f75ef534086476@kernel.org>
+ <5c527bfb6f3dfe31b5c25f29418306c6@walle.cc> <87czwys6s1.wl-maz@kernel.org>
+ <YC4X4iLMCK3tNVsF@kroah.com> <8b4de9eae773a43b38f42c8ab6d9d23c@walle.cc>
+ <YC4nhoc9F59/1drh@kroah.com> <b5739c15db3d009556abcf9704984dab@kernel.org>
+ <YC4rKOBRuzqfvdHI@kroah.com> <87eehdpx05.wl-maz@kernel.org>
+ <YC41eWXKjE77zIBo@kroah.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <aada952a251b192acbdc163fc35dbd05@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: gregkh@linuxfoundation.org, michael@walle.cc, linux-kernel@vger.kernel.org, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15-02-21, 07:51, Nicola Mazzucato wrote:
-> The current implementation of the scmi_cpufreq_init() function returns
-> -EPROBE_DEFER when the OPP table is not populated. In practice the
-> cpufreq core cannot handle this error code.
-> Therefore, fix the return value and clarify the error message.
+On 2021-02-18 09:38, Greg KH wrote:
+> On Thu, Feb 18, 2021 at 09:04:42AM +0000, Marc Zyngier wrote:
+>> On Thu, 18 Feb 2021 08:54:00 +0000,
+>> Greg KH <gregkh@linuxfoundation.org> wrote:
+>> 
+>> [...]
+>> 
+>> > > > Wow, wait, you are removing a debugfs file _before_ debugfs is even
+>> > > > initialized?  Didn't expect that, ok, let me go try this again...
+>> > >
+>> > > Yeah, that's a poor man's rename (file being deleted and re-created).
+>> >
+>> > True, but that's not happening here, right?  Some driver is being
+>> > initialized and creates a debugfs file, and then decides to unload so it
+>> > removes the debugfs file?
+>> 
+>> No, that's not what is happening.
+>> 
+>> The irqchip driver starts, creates an irqdomain. File gets created, at
+>> least in theory (it fails because debugfs isn't ready, but that's not
+>> the issue).
+>> 
+>> It then changes an attribute to the domain (the so-called bus_token),
+>> which gets reflected in the domain name to avoid aliasing.
+>> Delete/create follows.
+>> 
+>> > Why was it trying to create the file in the first place if it didn't
+>> > properly bind to the hardware?
+>> 
+>> See above. We encode properties of the domain in the filename, and
+>> reflect the change of these properties as they happen.
 > 
-> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
-> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
-> ---
->  drivers/cpufreq/scmi-cpufreq.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> Ah, ok, you really are doing delete/re-create.  Crazy.  And amazing it
+> was working previously without the checks I just added...
 > 
-> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
-> index 491a0a24fb1e..34bf2eb8d465 100644
-> --- a/drivers/cpufreq/scmi-cpufreq.c
-> +++ b/drivers/cpufreq/scmi-cpufreq.c
-> @@ -155,9 +155,11 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
->  
->  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
->  	if (nr_opp <= 0) {
-> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
-> -		ret = -EPROBE_DEFER;
-> -		goto out_free_opp;
+> Funny that you all never were even noticing that the debugfs files are
+> not present in the system because they are tryign to be created before
+> debugfs is present?  Is that an issue or has no one complained?
 
-Why change goto label as well ?
+See how irq_debugfs_init() is called in the middle of the boot sequence,
+and retroactively populates all the debugfs files what we missed during
+the early boot.
 
-> +		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
-> +			__func__, ret);
-> +
-> +		ret = -ENODEV;
-> +		goto out_free_priv;
->  	}
->  
->  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
-> -- 
-> 2.27.0
+So we're not missing anything in the end, it's just delayed.
 
+> Anyway, I'll go turn this into a real patch and get it into 5.12-rc1 so
+> that the irqdomain patch I sent you will not blow anything up.  Feel
+> free to also queue it up in your tree if you want to as well.
+
+Thanks for that.
+
+         M.
 -- 
-viresh
+Jazz is not dead. It just smells funny...
