@@ -2,217 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F55031E7BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:00:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D8331E7D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:23:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhBRI6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 03:58:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230321AbhBRH4R (ORCPT
+        id S231483AbhBRJFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:05:00 -0500
+Received: from relay11.mail.gandi.net ([217.70.178.231]:43905 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231511AbhBRHzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 02:56:17 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20656C061574;
-        Wed, 17 Feb 2021 23:55:37 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id m1so2109288wml.2;
-        Wed, 17 Feb 2021 23:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8VuOr5IRYyD3SOn+5chtalvwQdWPMiTxF9JpEV7axuU=;
-        b=DiTZz/4gmJZPeTC5pv54B/6ep6c4fIy5ngNCoDUIRkkmLho2VvinhJ1mkzcRljbaKw
-         4CJD0yTXHFFSnmhiyBYE4ydfNjhRNJHQ7mYNnqhSS4DeCt4/9PaUd6u48IsL5Qz6nf6p
-         oMrgW9xB+Beq4LiN/xmy0zmV9bThfFonj9oyYnhz1l3I6zmyitlpj6ICdRhN45uMJceG
-         ZvyAVZh9LRLDdbBcH3Bxtk0I3pVm76joUGkkd+A/fglhVxxMtSX5FgisfOVSdQEfXn3Z
-         KOySjv69SsVPdtmtkvy1STkomL3q3xgkqmu9JXTlujoSfZLAH7l9BUcwEH7mjpWdIHVS
-         LN5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8VuOr5IRYyD3SOn+5chtalvwQdWPMiTxF9JpEV7axuU=;
-        b=UarYHgzkbK38jENeWSluZ3kIAxrrobOl+LDH24zCUg3bVhAqrUnFIduMI0AExeik2j
-         46b8X0nXkC+RBFpbGIlf0YJaI1yu9EcJzVWpLlSo1S0qzTeDWmqk7T9ljgCJSmnGjPMe
-         CzoIVVoB8rkbqx0oi4IOgHbA62VIhIDDq/RKNjOtb1LucO1Q3OaNPuK3+wiUdSwZ3jd4
-         R0+HIzsQnZgXdW2rXwcuMJQJ1OWn9ytHSvjgbHU8H2dPMIc1cV5bmlElAoVzoSP2ZE1V
-         PEoQxOy9HT9wolB2g4eX2rgQLvHGFm6XBboCEE3n7gzNMfCZP0Yl4M8EyCGIROPAID9y
-         OrDA==
-X-Gm-Message-State: AOAM533VdgLyAZINtcNTJJcIougqIGnWf/Gbiesh9zOxObpsqZKgHJt6
-        /Xa0XC+Z6Unt6dDDYXK1epY=
-X-Google-Smtp-Source: ABdhPJzB2TIsvhv0bBBak6Op7cXkJ1RH2wz0nb5/aO3RSIANbztDN+kcjVRGxzqpkXPSK0o0IJh9YA==
-X-Received: by 2002:a7b:c2a9:: with SMTP id c9mr2443813wmk.116.1613634935639;
-        Wed, 17 Feb 2021 23:55:35 -0800 (PST)
-Received: from ?IPv6:2001:a61:3a2d:1d01:99ab:4f20:ed7f:402b? ([2001:a61:3a2d:1d01:99ab:4f20:ed7f:402b])
-        by smtp.gmail.com with ESMTPSA id t9sm7401393wrw.76.2021.02.17.23.55.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Feb 2021 23:55:35 -0800 (PST)
-Cc:     mtk.manpages@gmail.com, linux-man <linux-man@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=c3=ada?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH v3 1/1] process_madvise.2: Add process_madvise man page
-To:     Suren Baghdasaryan <surenb@google.com>
-References: <20210202053046.1653012-1-surenb@google.com>
- <079db245-a08c-0dbd-01d4-8065f533652e@gmail.com>
- <CAJuCfpGotx_04Stn5Nw6Au+TVG9LuAJ=CB_s7uxjMLOLerw-GA@mail.gmail.com>
- <2d303517-cdcd-9ec8-e57d-3d065edb573c@gmail.com>
- <CAJuCfpFC0B=jXFEuPYYBZAjgx1B6S8vG-i7_0iBc_RHeWynyzw@mail.gmail.com>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <7fb20d93-92d0-14b3-f7f9-8b9af4ebb584@gmail.com>
-Date:   Thu, 18 Feb 2021 08:55:31 +0100
+        Thu, 18 Feb 2021 02:55:31 -0500
+Received: from [192.168.1.12] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 27C16100009;
+        Thu, 18 Feb 2021 07:54:06 +0000 (UTC)
+Subject: Re: riscv+KASAN does not boot
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Bjorn Topel <bjorn.topel@gmail.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
+        syzkaller <syzkaller@googlegroups.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Tobias Klauser <tklauser@distanz.ch>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
+ <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
+ <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
+ <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
+ <20210118145310.crnqnh6kax5jqicj@distanz.ch>
+ <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
+ <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
+ <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr>
+ <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
+ <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
+ <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
+ <24857bfc-c557-f141-8ae7-2e3da24f67f5@ghiti.fr>
+ <CACT4Y+bmuhR=2u=1bGK+W8ttOn+=bkKrqCRM8_SiDSW1iAX60A@mail.gmail.com>
+ <957f09fb-84f4-2e0a-13ab-f7e4831ee7d0@ghiti.fr>
+ <CACT4Y+ZmuOpyf_0vHTT4t3wkmJuW8Ezvcg7v6yDVd8YOViS=GA@mail.gmail.com>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <c8f072b8-0b8c-fa78-da6c-cac8b6711603@ghiti.fr>
+Date:   Thu, 18 Feb 2021 02:54:06 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CAJuCfpFC0B=jXFEuPYYBZAjgx1B6S8vG-i7_0iBc_RHeWynyzw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <CACT4Y+ZmuOpyf_0vHTT4t3wkmJuW8Ezvcg7v6yDVd8YOViS=GA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Suren,
+Hi Dmitry,
 
->> Thanks. I added a few words to clarify this.>
-> Any link where I can see the final version?
+> On Wed, Feb 17, 2021 at 5:36 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Le 2/16/21 à 11:42 PM, Dmitry Vyukov a écrit :
+>>> On Tue, Feb 16, 2021 at 9:42 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>>>
+>>>> Hi Dmitry,
+>>>>
+>>>> Le 2/16/21 à 6:25 AM, Dmitry Vyukov a écrit :
+>>>>> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>>>>
+>>>>>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>>>>>> I was fixing KASAN support for my sv48 patchset so I took a look at your
+>>>>>>>> issue: I built a kernel on top of the branch riscv/fixes using
+>>>>>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
+>>>>>>>> and Buildroot 2020.11. I have the warnings regarding the use of
+>>>>>>>> __virt_to_phys on wrong addresses (but that's normal since this function
+>>>>>>>> is used in virt_addr_valid) but not the segfaults you describe.
+>>>>>>>
+>>>>>>> Hi Alex,
+>>>>>>>
+>>>>>>> Let me try to rebuild buildroot image. Maybe there was something wrong
+>>>>>>> with my build, though, I did 'make clean' before doing. But at the
+>>>>>>> same time it worked back in June...
+>>>>>>>
+>>>>>>> Re WARNINGs, they indicate kernel bugs. I am working on setting up a
+>>>>>>> syzbot instance on riscv. If there a WARNING during boot then the
+>>>>>>> kernel will be marked as broken. No further testing will happen.
+>>>>>>> Is it a mis-use of WARN_ON? If so, could anybody please remove it or
+>>>>>>> replace it with pr_err.
+>>>>>>
+>>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> I've localized one issue with riscv/KASAN:
+>>>>>> KASAN breaks VDSO and that's I think the root cause of weird faults I
+>>>>>> saw earlier. The following patch fixes it.
+>>>>>> Could somebody please upstream this fix? I don't know how to add/run
+>>>>>> tests for this.
+>>>>>> Thanks
+>>>>>>
+>>>>>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+>>>>>> index 0cfd6da784f84..cf3a383c1799d 100644
+>>>>>> --- a/arch/riscv/kernel/vdso/Makefile
+>>>>>> +++ b/arch/riscv/kernel/vdso/Makefile
+>>>>>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
+>>>>>>     # Disable gcov profiling for VDSO code
+>>>>>>     GCOV_PROFILE := n
+>>>>>>     KCOV_INSTRUMENT := n
+>>>>>> +KASAN_SANITIZE := n
+>>>>>>
+>>>>>>     # Force dependency
+>>>>>>     $(obj)/vdso.o: $(obj)/vdso.so
+>>>>
+>>>> What's weird is that I don't have any issue without this patch with the
+>>>> following config whereas it indeed seems required for KASAN. But when
+>>>> looking at the segfaults you got earlier, the segfault address is 0xbb0
+>>>> and the cause is an instruction page fault: this address is the PLT base
+>>>> address in vdso.so and an instruction page fault would mean that someone
+>>>> tried to jump at this address, which is weird. At first sight, that does
+>>>> not seem related to your patch above, but clearly I may be wrong.
+>>>>
+>>>> Tobias, did you observe the same segfaults as Dmitry ?
+>>>
+>>>
+>>> I noticed that not all buildroot images use VDSO, it seems to be
+>>> dependent on libc settings (at least I think I changed it in the
+>>> past).
+>>
+>> Ok, I used uClibc but then when using glibc, I have the same segfaults,
+>> only when KASAN is enabled. And your patch fixes the problem. I will try
+>> to take a look later to better understand the problem.
+>>
+>>> I also booted an image completely successfully including dhcpd/sshd
+>>> start, but then my executable crashed in clock_gettime. The executable
+>>> was build on linux/amd64 host with "riscv64-linux-gnu-gcc -static"
+>>> (10.2.1).
+>>>
+>>>
+>>>>> Second issue I am seeing seems to be related to text segment size.
+>>>>> I check out v5.11 and use this config:
+>>>>> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
+>>>>
+>>>> This config gave my laptop a hard time ! Finally I was able to boot
+>>>> correctly to userspace, but I realized I used my sv48 branch...Either I
+>>>> fixed your issue along the way or I can't reproduce it, I'll give it a
+>>>> try tomorrow.
+>>>
+>>> Where is your branch? I could also test in my setup on your branch.
+>>>
+>>
+>> You can find my branch int/alex/riscv_kernel_end_of_address_space_v2
+>> here: https://github.com/AlexGhiti/riscv-linux.git
+> 
+> No, it does not work for me.
+> 
+> Source is on b61ab6c98de021398cd7734ea5fc3655e51e70f2 (HEAD,
+> int/alex/riscv_kernel_end_of_address_space_v2)
+> Config is https://gist.githubusercontent.com/dvyukov/6af25474d455437577a84213b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
+> 
+> riscv64-linux-gnu-gcc -v
+> gcc version 10.2.1 20210110 (Debian 10.2.1-6+build1)
+> 
+> qemu-system-riscv64 --version
+> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
+> 
+> qemu-system-riscv64 \
+> -machine virt -smp 2 -m 2G \
+> -device virtio-blk-device,drive=hd0 \
+> -drive file=image-riscv64,if=none,format=raw,id=hd0 \
+> -kernel arch/riscv/boot/Image \
+> -nographic \
+> -device virtio-rng-device,rng=rng0 -object
+> rng-random,filename=/dev/urandom,id=rng0 \
+> -netdev user,id=net0,host=10.0.2.10,hostfwd=tcp::10022-:22 -device
+> virtio-net-device,netdev=net0 \
+> -append "root=/dev/vda earlyprintk=serial console=ttyS0 oops=panic
+> panic_on_warn=1 panic=86400 earlycon"
 
-Sure:
-https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/tree/man2/process_madvise.2
+It still works for me but I had to disable CONFIG_DEBUG_INFO_BTF (I 
+don't think that changes anything at runtime). But your above command 
+line does not work for me as it appears you do not load any firmware, if 
+I add -bios images/fw_jump.elf, it works. But then I don't know where 
+your opensbi output below comes from...
 
-Also rendered below.
+And regarding your issue with calling clock_gettime 'directly' compared 
+to using the syscall, I have the same consistent output from both calls.
+
+I have an older gcc (9.3.0) and the same qemu. I think what is missing 
+here is your buildroot config, so that we have the exact same 
+environment: could you post your buildroot config as well ?
 
 Thanks,
 
-Michael
+> 
+> OpenSBI v0.8
+>     ____                    _____ ____ _____
+>    / __ \                  / ____|  _ \_   _|
+>   | |  | |_ __   ___ _ __ | (___ | |_) || |
+>   | |  | | '_ \ / _ \ '_ \ \___ \|  _ < | |
+>   | |__| | |_) |  __/ | | |____) | |_) || |_
+>    \____/| .__/ \___|_| |_|_____/|____/_____|
+>          | |
+>          |_|
+> 
+> Platform Name       : riscv-virtio,qemu
+> Platform Features   : timer,mfdeleg
+> Platform HART Count : 2
+> Boot HART ID        : 1
+> Boot HART ISA       : rv64imafdcsu
+> BOOT HART Features  : pmp,scounteren,mcounteren,time
+> BOOT HART PMP Count : 16
+> Firmware Base       : 0x80000000
+> Firmware Size       : 104 KB
+> Runtime SBI Version : 0.2
+> 
+> MIDELEG : 0x0000000000000222
+> MEDELEG : 0x000000000000b109
+> PMP0    : 0x0000000080000000-0x000000008001ffff (A)OpenSBI v0.6
 
-NAME
-       process_madvise - give advice about use of memory to a process
-
-SYNOPSIS
-       #include <sys/uio.h>
-
-       ssize_t process_madvise(int pidfd, const struct iovec *iovec,
-                               size_t vlen, int advice,
-                               unsigned int flags);
-
-       Note: There is no glibc wrapper for this system call; see NOTES.
-
-DESCRIPTION
-       The process_madvise() system call is used to give advice or direc‐
-       tions to the kernel about the address ranges of another process or
-       of  the  calling  process.  It provides the advice for the address
-       ranges described by iovec and vlen.  The goal of such advice is to
-       improve system or application performance.
-
-       The  pidfd  argument  is a PID file descriptor (see pidfd_open(2))
-       that specifies the process to which the advice is to be applied.
-
-       The pointer iovec points to an array of iovec structures,  defined
-       in <sys/uio.h> as:
-
-           struct iovec {
-               void  *iov_base;    /* Starting address */
-               size_t iov_len;     /* Length of region */
-           };
-
-       The iovec structure describes address ranges beginning at iov_base
-       address and with the size of iov_len bytes.
-
-       The vlen specifies the number of elements in the iovec  structure.
-       This value must be less than or equal to IOV_MAX (defined in <lim‐
-       its.h> or accessible via the call sysconf(_SC_IOV_MAX)).
-
-       The advice argument is one of the following values:
-
-       MADV_COLD
-              See madvise(2).
-
-       MADV_PAGEOUT
-              See madvise(2).
-
-       The flags argument is reserved for future use; currently, this ar‐
-       gument must be specified as 0.
-
-       The  vlen  and iovec arguments are checked before applying any ad‐
-       vice.  If vlen is too big, or iovec is invalid, then an error will
-       be returned immediately and no advice will be applied.
-
-       The  advice might be applied to only a part of iovec if one of its
-       elements points to an invalid memory region in the remote process.
-       No further elements will be processed beyond that point.  (See the
-       discussion regarding partial advice in RETURN VALUE.)
-
-       Permission to apply advice to another process  is  governed  by  a
-       ptrace   access   mode   PTRACE_MODE_READ_REALCREDS   check   (see
-       ptrace(2)); in addition, because of the  performance  implications
-       of applying the advice, the caller must have the CAP_SYS_ADMIN ca‐
-       pability.
-
-RETURN VALUE
-       On success, process_madvise() returns the number of bytes advised.
-       This  return  value may be less than the total number of requested
-       bytes, if an error occurred after some iovec elements were already
-       processed.   The caller should check the return value to determine
-       whether a partial advice occurred.
-
-       On error, -1 is returned and errno is set to indicate the error.
-
-ERRORS
-       EBADF  pidfd is not a valid PID file descriptor.
-
-       EFAULT The memory described by iovec is outside the accessible ad‐
-              dress space of the process referred to by pidfd.
-
-       EINVAL flags is not 0.
-
-       EINVAL The  sum of the iov_len values of iovec overflows a ssize_t
-              value.
-
-       EINVAL vlen is too large.
-
-       ENOMEM Could not allocate memory for internal copies of the  iovec
-              structures.
-
-       EPERM  The  caller  does not have permission to access the address
-              space of the process pidfd.
-
-       ESRCH  The target process does not exist (i.e., it has  terminated
-              and been waited on).
-
-VERSIONS
-       This  system  call first appeared in Linux 5.10.  Support for this
-       system call is optional, depending on  the  setting  of  the  CON‐
-       FIG_ADVISE_SYSCALLS configuration option.
-
-CONFORMING TO
-       The process_madvise() system call is Linux-specific.
-
-NOTES
-       Glibc does not provide a wrapper for this system call; call it us‐
-       ing syscall(2).
-
-SEE ALSO
-       madvise(2),          pidfd_open(2),           process_vm_readv(2),
-       process_vm_write(2)
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+> 
+> 
+> no output after this
+> PMP1    : 0x0000000000000000-0xffffffffffffffff (A,R,W,X)
+> 
+> 
+> 
+>> Thanks,
+>>
+>>>
+>>>>> Then trying to boot it using:
+>>>>> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
+>>>>> $ qemu-system-riscv64 -machine virt -smp 2 -m 4G ...
+>>>>>
+>>>>> It shows no output from the kernel whatsoever, even though I have
+>>>>> earlycon and output shows very early with other configs.
+>>>>> Kernel boots fine with defconfig and other smaller configs.
+>>>>>
+>>>>> If I enable KASAN_OUTLINE and CC_OPTIMIZE_FOR_SIZE, then this config
+>>>>> also boots fine. Both of these options significantly reduce kernel
+>>>>> size. However, I can also boot the kernel without these 2 configs, if
+>>>>> I disable a whole lot of subsystem configs. This makes me think that
+>>>>> there is an issue related to kernel size somewhere in
+>>>>> qemu/bootloader/kernel bootstrap code.
+>>>>> Does it make sense to you? Can somebody reproduce what I am seeing? >
+>>>>
+>>>> I did not bring any answer to your question, but at least you know I'm
+>>>> working on it, I'll keep you posted.
+>>>>
+>>>> Thanks for taking the time to setup syzkaller.
+>>>>
+>>>> Alex
+>>>>
+>>>>> Thanks
+>>>>>
+>>>>> _______________________________________________
+>>>>> linux-riscv mailing list
+>>>>> linux-riscv@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>>>
+>>>
+>>> _______________________________________________
+>>> linux-riscv mailing list
+>>> linux-riscv@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>>>
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
