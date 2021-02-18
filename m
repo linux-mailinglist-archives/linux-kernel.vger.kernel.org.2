@@ -2,108 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF9931ECE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C55931ECE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:10:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232287AbhBRRIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:08:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52128 "EHLO mx2.suse.de"
+        id S231145AbhBRRJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:09:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231145AbhBRO0Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:26:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613658304; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=C5T3ehENXPR3Dp3wxtz7+m4co+ANYhyC2qUBSrxsMQA=;
-        b=A6otcrdkcGuk6b40y0c2Ep48vXGzabWsPISrtj4Q5FVBXISGZwVSnVyWP2mxlSgh/KPT58
-        Tf9lI02hF0MxBpSUfVajAD1N7RyktXC2tJhZyfAhP6Adn9hC7Z1Ntqu+6Yr68kpUySAdSj
-        L1NvfLGr+Cr4kduxUX0TiXsi74hNUC8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7D216AFF1;
-        Thu, 18 Feb 2021 14:25:04 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 15:25:03 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v4] printk: Userspace format enumeration support
-Message-ID: <YC54vyU8ZZPiaYOQ@alley>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YC5b4+hTjrGwG22o@chrisdown.name>
- <YC5flsiUEZnPs7qz@alley>
- <YC5ggyeC0uqtOD6R@chrisdown.name>
+        id S231879AbhBRO35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:29:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E0264E76;
+        Thu, 18 Feb 2021 14:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613658554;
+        bh=W/vP5B7kuDrYnokP92ychColA8JdWdOs46EX1GvjWFM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=atkky+PvrUMS2jEIL1tOYbPwGA99pLkmcTrYyIl/FmA9pVjRo3Hpa2ZfORr4qJUdd
+         AMIeDbZjjesr+WO//NH9EDXqzfzNoUJbqnRAN3nZwZqKJ77m4o5b/Tjvj/zirbNRGW
+         gGw/9Rix8+I+QKT2h9rLOVg6gYJtQHIZn2Kzgh5U=
+Date:   Thu, 18 Feb 2021 15:29:11 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jari Ruusu <jariruusu@users.sourceforge.net>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <YC55t1vkRuC9uXcx@kroah.com>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
+ <YBBkplRxzzmPYKC+@kroah.com>
+ <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <YC4atKmK7ZqlOGER@kroah.com>
+ <20210218113107.GA12547@1wt.eu>
+ <602E766F.758C74D8@users.sourceforge.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC5ggyeC0uqtOD6R@chrisdown.name>
+In-Reply-To: <602E766F.758C74D8@users.sourceforge.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-18 12:41:39, Chris Down wrote:
-> Petr Mladek writes:
-> > > - See if it's safe to pass a printk_fmt_sec to seq_file instead of a module
-> > 
-> > Also it might be needed to store the pointer to struct module.
+On Thu, Feb 18, 2021 at 04:15:11PM +0200, Jari Ruusu wrote:
+> Willy Tarreau wrote:
+> > The only set of fixes that can be trusted are the "official" stable
+> > kernels, because they are the only ones that are approved by the patches
+> > authors themselves. Adding more stuff on top of stable kernels is fine
+> > (and done at your own risk), but randomly dropping stuff from stable
+> > kernels just because you don't think you need that is totally non-sense
+> > and must not be done anymore!
 > 
-> You mean, have a `struct module` entry for this? I somewhat suspect that
-> module.c maintainers are not likely to be happy about injecting non-generic
-> code into there if it's possible to be avoided, but maybe I'm
-> misunderstanding?
+> This may be little bit off-topic... but stable kernel.org kernels
+> can also bit-rot badly because of "selective" backporting... as in
+> anything that does not apply cleanly gets dropped regardless of
+> how critical they are.
+> 
+> I will give you one example: Intel WiFi (iwlwifi) on 4.19.y
+> kernel.org stable kernels is currently missing many critical
+> locking fixes.
 
-Yes, I suggest to store the pointer into struct module. It includes
-many external entries. It is similar to struct task_struct.
+Why has no one asked for the specific upstream commits to be backported
+if this is the case?
 
-I am active also in the kernel livepatch subsystem. We have added
-there three values:
+> As a result, that in-tree iwlwifi driver causes
+> erratic behavior to random unrelated processes, and has been doing
+> so for many months now. My not-so-politically correct opinion is
+> that in-tree iwlwifi is completely FUBAR unless someone steps up
+> to do professional quality backport of those locking fixes from
+> upstream out-of-tree Intel version [1] [2] of the driver.
 
-#ifdef CONFIG_LIVEPATCH
-	bool klp; /* Is this a livepatch module? */
-	bool klp_alive;
+Why does any out-of-tree driver come into play here?  What is wrong with
+the in-kernel code?
 
-	/* Elf information */
-	struct klp_modinfo *klp_info;
-#endif
+> For me
+> only way to get properly working WiFi on my laptop computer is to
+> compile that Intel out-of-tree version. Sad, but true.
 
-Many other subsystems have their stuff there, for example:
+Why use 4.19.y on a laptop in the firstplace?  That feels very wrong and
+is not the recommended thing to use the LTS kernels for.
 
-#ifdef CONFIG_TRACING
-	unsigned int num_trace_bprintk_fmt;
-	const char **trace_bprintk_fmt_start;
-#endif
-#ifdef CONFIG_EVENT_TRACING
-	struct trace_event_call **trace_events;
-	unsigned int num_trace_events;
-	struct trace_eval_map **trace_evals;
-	unsigned int num_trace_evals;
-#endif
-#ifdef CONFIG_FTRACE_MCOUNT_RECORD
-	unsigned int num_ftrace_callsites;
-	unsigned long *ftrace_callsites;
-#endif
-#ifdef CONFIG_KPROBES
-	void *kprobes_text_start;
-	unsigned int kprobes_text_size;
-	unsigned long *kprobe_blacklist;
-	unsigned int num_kprobe_blacklist;
-#endif
+thanks,
 
-BTW: Jessica originally worked on the kernel livepatching.
-     She became module loader code maintainer because we needed
-     even more hacks there and the original maintainer got
-     busy with other stuff at that time ;-)
-
-     I am pretty sure that she would accept it. We need a per-module
-     value. It is not necessary to maintain separate global list/hash
-     table just to store these values.
-
-Best Regards,
-Petr
+greg k-h
