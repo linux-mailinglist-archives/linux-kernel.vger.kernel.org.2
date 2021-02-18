@@ -2,131 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA3A31ECD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA84131ECDF
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhBRRE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:04:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233599AbhBRORl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:17:41 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71507C061788;
-        Thu, 18 Feb 2021 06:16:52 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 7159B41E96;
-        Thu, 18 Feb 2021 14:16:44 +0000 (UTC)
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        id S231944AbhBRRH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:07:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:51682 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233751AbhBROW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:22:59 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28640ED1;
+        Thu, 18 Feb 2021 06:22:12 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.48.237])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE8663F73B;
+        Thu, 18 Feb 2021 06:22:08 -0800 (PST)
+Date:   Thu, 18 Feb 2021 14:22:05 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Rob Herring <robh@kernel.org>,
         Tony Lindgren <tony@atomide.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Alexander Graf <graf@amazon.com>,
+        Olof Johansson <olof@lixom.net>,
         Mohamed Mediouni <mohamed.mediouni@caramail.com>,
         Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
         Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+        linux-arm-kernel@lists.infradead.org,
+        Mark Kettenis <mark.kettenis@xs4all.nl>
+Subject: Re: [PATCH v2 08/25] arm64: Always keep DAIF.[IF] in sync
+Message-ID: <20210218142205.GB89209@C02TD0UTHF1T.local>
 References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-23-marcan@marcan.st>
- <20210215191309.k7qkak73usqj7jxp@kozik-lap>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH v2 22/25] tty: serial: samsung_tty: Add support for Apple
- UARTs
-Message-ID: <f08f4346-e6fd-1487-9b15-f879de4bc59a@marcan.st>
-Date:   Thu, 18 Feb 2021 23:16:40 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ <20210215121713.57687-9-marcan@marcan.st>
+ <20210217122200.GC5556@C02TD0UTHF1T.local>
+ <e88fa913-e2ae-35d0-056f-2a5079babbc2@marcan.st>
 MIME-Version: 1.0
-In-Reply-To: <20210215191309.k7qkak73usqj7jxp@kozik-lap>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e88fa913-e2ae-35d0-056f-2a5079babbc2@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/02/2021 04.13, Krzysztof Kozlowski wrote:
-> On Mon, Feb 15, 2021 at 09:17:10PM +0900, Hector Martin wrote:
->> @@ -389,10 +396,12 @@ static void enable_tx_pio(struct s3c24xx_uart_port *ourport)
->>   	ucon = rd_regl(port, S3C2410_UCON);
->>   	ucon &= ~(S3C64XX_UCON_TXMODE_MASK);
->>   	ucon |= S3C64XX_UCON_TXMODE_CPU;
->> -	wr_regl(port,  S3C2410_UCON, ucon);
->>   
->>   	/* Unmask Tx interrupt */
->>   	switch (ourport->info->type) {
->> +	case TYPE_APPLE_S5L:
->> +		ucon |= APPLE_S5L_UCON_TXTHRESH_ENA_MSK;
->> +		break;
->>   	case TYPE_S3C6400:
->>   		s3c24xx_clear_bit(port, S3C64XX_UINTM_TXD, S3C64XX_UINTM);
->>   		break;
->> @@ -401,7 +410,16 @@ static void enable_tx_pio(struct s3c24xx_uart_port *ourport)
->>   		break;
->>   	}
->>   
->> +	wr_regl(port,  S3C2410_UCON, ucon);
+On Thu, Feb 18, 2021 at 09:51:40PM +0900, Hector Martin wrote:
+> On 17/02/2021 21.22, Mark Rutland wrote:
+> > > Root irqchip drivers can discriminate between IRQs and FIQs by checking
+> > > the ISR_EL1 system register.
+> > 
+> > I think we can remove this note for now. If we go with seperate handlers
+> > this won't be necessary, and if not this would be better placed on a
+> > commit adding the FIQ handling capability.
 > 
-> You are now configuring the PIO mode after unmasking interrupt. I don't
-> think it's a good idea to change the order... and if it were, it
-> would deserve a separate patch.
-
-For v3 I moved the wr_regl back and just write it again in the 
-TYPE_APPLE_S5L branch; that way, setting the PIO mode and unmasking the 
-interrupt are two discrete operations on S5L, like they are on other types.
-
->>   	/* Keep all interrupts masked and cleared */
->>   	switch (ourport->info->type) {
->> +	case TYPE_APPLE_S5L: {
+> Indeed, this doesn't make sense any more. Changed for v3.
 > 
-> Usually you put TYPE_APPLE at the end of switch, so please keep it
-> consistent. Can be first or last - just everywhere the same, unless you
-> have a fall-through on purpose.
-
-Good point, thanks, moved it for v3. It was actually inconsistent in 
-more places, I made all the orders the same (the enum order, and 
-default: always goes at the end).
-
->> @@ -2179,6 +2329,32 @@ static int s3c24xx_serial_resume_noirq(struct device *dev)
->>   	if (port) {
->>   		/* restore IRQ mask */
->>   		switch (ourport->info->type) {
->> +		case TYPE_APPLE_S5L: {
->> +			unsigned int ucon;
->> +
->> +			clk_prepare_enable(ourport->clk);
->> +			if (!IS_ERR(ourport->baudclk))
->> +				clk_prepare_enable(ourport->baudclk);
+> > Judging by `git grep -Wi daif -- arch/arm64`, with this patch applied,
+> > we'll also need fixups in:
+> > 
+> > * gic_arch_enable_irqs() in arch/arm64/include/asm/arch_gicv3.h
+> > * save_and_disable_irq() in arch/arm64/include/asm/assembler.h (noted below)
+> > * local_daif_save_flags() in arch/arm64/include/asm/daifflags.h
+> >    (the fake DAIF should have F set too)
+> > * __cpu_do_idle_irqprio() in arch/arm64/kernel/process.c
 > 
-> We should start checking the return values of clk operations. I know
-> that existing code does it only in few places, so basically you are not
-> making it worse...
+> Good catches. A few of those are irrelevant for M1 but need to be done now
+> that we're making this change globally, others I just missed from the
+> beginning.
 
-Added error checking for these for v3, thanks.
+Sure; my general view is that we should aim for consistency, and should
+ensure that DAIF.F==DAIF.I at all times on all platforms unless we have
+a strong reason to violate that rule. That generally makes it easier to
+reason about the code and avoid accidentally breaking M1/non-M1 if/when
+we refactor masking logic.
 
->> +#define S5L_SERIAL_DRV_DATA ((kernel_ulong_t)&s5l_serial_drv_data)
->> +#else
->> +#define S5L_SERIAL_DRV_DATA ((kernel_ulong_t)NULL)
->> +#endif
->> +
->> +
+> There's also an incorrect comment in entry.S:
 > 
-> Only one line break.
+> 	/*
+> 	 * DA_F were cleared at start of handling. If anything is set in
+> 	 * DAIF, we come back from an NMI, so skip preemption
+> 	 */
+> 	mrs	x0, daif
+> 	orr	x24, x24, x0
+> 
+> Now only DA__ are cleared. This actually pairs with gic_arch_enable_irqs()
+> and begs the question: in priority masking systems, do we unmask both IRQ
+> and FIQ (the gic_arch_enable_irqs change), or do we leave FIQ masked (which
+> instead would need an AND in that part of entry.S so as to not consider FIQ
+> masked as meaning we're coming back from an NMI)?
 
-Fixed in v3.
+I think that for consistency we always want to keep IRQ and FIQ in-sync,
+even when using GIC priorities. So when handling a pseudo-NMI we should
+unmask DAIF.DA and leave DAIF.IF masked.
 
-Thank you for the reviews!
+> And a minor related one: should init_gic_priority_masking() WARN if FIQ is
+> masked too? This probably goes with the above.
 
--- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+I think it should, yes.
+
+> Either way, this was nontrivial to make sense of, so I'll make that entry.S
+> comment clearer while I'm touching it.
+
+Sounds good; thanks!
+
+> > I think save_and_diable_irq below needs to be updated too, since it
+> > only sets DAIF.I and leaves DAIF.F as-is.
+> 
+> Totally missed this one! Fixed for v3.
+> 
+> > > - * FIQ is never expected, but we mask it when we disable debug exceptions, and
+> > > - * unmask it at all other times.
+> > > + * FIQ is never expected on most platforms, but we keep it synchronized
+> > > + * with the IRQ mask status. On platforms that do not expect FIQ, that vector
+> > > + * triggers a kernel panic. On platforms that do, the FIQ vector is unified
+> > > + * with the IRQ vector.
+> > >    */
+> > 
+> > Can we please delete this bit, though? Now that we say IRQ and FIQ are
+> > masked/unmasked together, I don't think the rest is necessary to
+> > understand the masking logic, and it's one less thing to keep in sync
+> > with changes to the entry code.
+> 
+> Gone :)
+
+Thanks,
+Mark.
