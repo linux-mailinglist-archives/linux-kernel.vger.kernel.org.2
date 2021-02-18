@@ -2,270 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2B331EA7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D9B31EA7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230196AbhBRNfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230493AbhBRLtB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:49:01 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BC3C061788
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:36:27 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id v206so1708465qkb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:36:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wdITicK6JXxZpGr3P+/WWK+hk6TbR/XmnHaEfBjS0V4=;
-        b=T6atSr7VLAVP/Ph1kZBvz50str3UNX2H5Sa+OJVQxSS99ZOsthXeN/nSR7s3glUxr3
-         cvfJJz53mAqjhvewwiSS3ZDwcXb70IM0KjvfIbHh4a8jxEKQ3TSwDu3PFX8AEhh3jFIr
-         BDmJ4er5dV9ihrV+Xe4wYedV0m7u6zzkIWTrvIMfqaSgdid7ZimuZHl1NndINWOrz2My
-         KGV5yiaxJrRFYAX84vqMW0l7Gg6zJSGvJsfWtE1gls4eXr6Ns/pBw/1CxwpKUutnKLDl
-         JeY1tjoV+UAmBXk89LHnWKCqUEvAIO02Zd0SX0mt56EX9P3i/Y885hgcAAbldfxo0mCS
-         aNpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wdITicK6JXxZpGr3P+/WWK+hk6TbR/XmnHaEfBjS0V4=;
-        b=uI9n6CmtGaq3ErR0fJtxTFjcbqzFcgbhic418V2cGkhCjQlkYDrgV7b5E3CIiQsHV2
-         UXInDusiu6OpWJf9MaJUQqhK6bKvAjyGs7pN8wyaBaUx0o5Cl+JgfB0rx4g894mGv8L2
-         5PMh0486RowThAfFBKMBxfpbWyiMBajnQVotn9Q8z0iyoTHqRqKmUl+hxXF0S7d1bjX3
-         hgXDsS+j8RPSjQ89yZH3qu7ONll68wPkdNvBOa5PLMeVWW0ZKnCQ8QsgO7aI39NcPiER
-         OX8GdqGvMDXWhlNopDjzyVXUvWGdJ6umw3RaHBDCi/1Ubcb6BdpDEvDxGTdFrgED2Jqw
-         bKeA==
-X-Gm-Message-State: AOAM531TX1PJHi65bavwNfLijUZZUDrDeVzvNmT1+IGhWtLWuwdw87LG
-        idzhwrJebrJtfDi44w5PGdtTGpNI/Mr9tFDNeQD/yw==
-X-Google-Smtp-Source: ABdhPJwWtQQgGqfBDyRiC0PXFQJ3A4eb+FqFKCHTapniFHk6XTfRO9eGpc+oVVgVQh5BwnbszgZvDzutNOUhOA6XvDc=
-X-Received: by 2002:a37:46cf:: with SMTP id t198mr3736652qka.265.1613648185754;
- Thu, 18 Feb 2021 03:36:25 -0800 (PST)
+        id S230487AbhBRNdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:33:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50114 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229919AbhBRLsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:48:31 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613648825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vP1S07ca3sqxgRiRY6So84F1f0cq3n+/55ZYZDA6jwQ=;
+        b=bbqMqQPt/mCi0FQMo/l8RuuHzWubuWl+3oL3+ISKNpzdVgWomKjvgyFU4aLwfBrO5r6YSB
+        bBsbYGkktn/vBHy77BiKC4W4Wa5m57T8d12DH4zahL7+jS6c92GYd9iAcQZQ1j0dYFgVu2
+        SmPIKAaqojOJEWKS/EnIXqK8M2Zhyv0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6C8E9AD78;
+        Thu, 18 Feb 2021 11:47:05 +0000 (UTC)
+Subject: Re: [PATCH v2 3/8] xen/events: avoid handling the same event on two
+ cpus at the same time
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Julien Grall <julien@xen.org>
+References: <20210211101616.13788-1-jgross@suse.com>
+ <20210211101616.13788-4-jgross@suse.com>
+ <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <63e42922-204d-9d0e-6a02-49f64e7e8885@suse.com>
+Date:   Thu, 18 Feb 2021 12:47:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <mhng-02b88d43-ede8-48f9-82f1-c84201acb7a8@palmerdabbelt-glaptop>
- <CACT4Y+aN3LvgaBc_zmW=t=D7ChU-jrWYnjt5sZ2GEDQhg_BC9A@mail.gmail.com>
- <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
- <20210118145310.crnqnh6kax5jqicj@distanz.ch> <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
- <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
- <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr> <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
- <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
- <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
- <24857bfc-c557-f141-8ae7-2e3da24f67f5@ghiti.fr> <CACT4Y+bmuhR=2u=1bGK+W8ttOn+=bkKrqCRM8_SiDSW1iAX60A@mail.gmail.com>
- <957f09fb-84f4-2e0a-13ab-f7e4831ee7d0@ghiti.fr> <CACT4Y+ZmuOpyf_0vHTT4t3wkmJuW8Ezvcg7v6yDVd8YOViS=GA@mail.gmail.com>
- <c8f072b8-0b8c-fa78-da6c-cac8b6711603@ghiti.fr>
-In-Reply-To: <c8f072b8-0b8c-fa78-da6c-cac8b6711603@ghiti.fr>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 18 Feb 2021 12:36:14 +0100
-Message-ID: <CACT4Y+agHHFsq1fA5dwESf+oZerC3NBM+2kFAFxyHVd+Xu6crQ@mail.gmail.com>
-Subject: Re: riscv+KASAN does not boot
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 8:54 AM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Hi Dmitry,
->
-> > On Wed, Feb 17, 2021 at 5:36 PM Alex Ghiti <alex@ghiti.fr> wrote:
-> >>
-> >> Le 2/16/21 =C3=A0 11:42 PM, Dmitry Vyukov a =C3=A9crit :
-> >>> On Tue, Feb 16, 2021 at 9:42 PM Alex Ghiti <alex@ghiti.fr> wrote:
-> >>>>
-> >>>> Hi Dmitry,
-> >>>>
-> >>>> Le 2/16/21 =C3=A0 6:25 AM, Dmitry Vyukov a =C3=A9crit :
-> >>>>> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com>=
- wrote:
-> >>>>>>
-> >>>>>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com>=
- wrote:
-> >>>>>>>> I was fixing KASAN support for my sv48 patchset so I took a look=
- at your
-> >>>>>>>> issue: I built a kernel on top of the branch riscv/fixes using
-> >>>>>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a89808=
-6a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
-> >>>>>>>> and Buildroot 2020.11. I have the warnings regarding the use of
-> >>>>>>>> __virt_to_phys on wrong addresses (but that's normal since this =
-function
-> >>>>>>>> is used in virt_addr_valid) but not the segfaults you describe.
-> >>>>>>>
-> >>>>>>> Hi Alex,
-> >>>>>>>
-> >>>>>>> Let me try to rebuild buildroot image. Maybe there was something =
-wrong
-> >>>>>>> with my build, though, I did 'make clean' before doing. But at th=
-e
-> >>>>>>> same time it worked back in June...
-> >>>>>>>
-> >>>>>>> Re WARNINGs, they indicate kernel bugs. I am working on setting u=
-p a
-> >>>>>>> syzbot instance on riscv. If there a WARNING during boot then the
-> >>>>>>> kernel will be marked as broken. No further testing will happen.
-> >>>>>>> Is it a mis-use of WARN_ON? If so, could anybody please remove it=
- or
-> >>>>>>> replace it with pr_err.
-> >>>>>>
-> >>>>>>
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> I've localized one issue with riscv/KASAN:
-> >>>>>> KASAN breaks VDSO and that's I think the root cause of weird fault=
-s I
-> >>>>>> saw earlier. The following patch fixes it.
-> >>>>>> Could somebody please upstream this fix? I don't know how to add/r=
-un
-> >>>>>> tests for this.
-> >>>>>> Thanks
-> >>>>>>
-> >>>>>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/v=
-dso/Makefile
-> >>>>>> index 0cfd6da784f84..cf3a383c1799d 100644
-> >>>>>> --- a/arch/riscv/kernel/vdso/Makefile
-> >>>>>> +++ b/arch/riscv/kernel/vdso/Makefile
-> >>>>>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o =3D $(CC_FLAGS_FTR=
-ACE) -Os
-> >>>>>>     # Disable gcov profiling for VDSO code
-> >>>>>>     GCOV_PROFILE :=3D n
-> >>>>>>     KCOV_INSTRUMENT :=3D n
-> >>>>>> +KASAN_SANITIZE :=3D n
-> >>>>>>
-> >>>>>>     # Force dependency
-> >>>>>>     $(obj)/vdso.o: $(obj)/vdso.so
-> >>>>
-> >>>> What's weird is that I don't have any issue without this patch with =
-the
-> >>>> following config whereas it indeed seems required for KASAN. But whe=
-n
-> >>>> looking at the segfaults you got earlier, the segfault address is 0x=
-bb0
-> >>>> and the cause is an instruction page fault: this address is the PLT =
-base
-> >>>> address in vdso.so and an instruction page fault would mean that som=
-eone
-> >>>> tried to jump at this address, which is weird. At first sight, that =
-does
-> >>>> not seem related to your patch above, but clearly I may be wrong.
-> >>>>
-> >>>> Tobias, did you observe the same segfaults as Dmitry ?
-> >>>
-> >>>
-> >>> I noticed that not all buildroot images use VDSO, it seems to be
-> >>> dependent on libc settings (at least I think I changed it in the
-> >>> past).
-> >>
-> >> Ok, I used uClibc but then when using glibc, I have the same segfaults=
-,
-> >> only when KASAN is enabled. And your patch fixes the problem. I will t=
-ry
-> >> to take a look later to better understand the problem.
-> >>
-> >>> I also booted an image completely successfully including dhcpd/sshd
-> >>> start, but then my executable crashed in clock_gettime. The executabl=
-e
-> >>> was build on linux/amd64 host with "riscv64-linux-gnu-gcc -static"
-> >>> (10.2.1).
-> >>>
-> >>>
-> >>>>> Second issue I am seeing seems to be related to text segment size.
-> >>>>> I check out v5.11 and use this config:
-> >>>>> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
-> >>>>
-> >>>> This config gave my laptop a hard time ! Finally I was able to boot
-> >>>> correctly to userspace, but I realized I used my sv48 branch...Eithe=
-r I
-> >>>> fixed your issue along the way or I can't reproduce it, I'll give it=
- a
-> >>>> try tomorrow.
-> >>>
-> >>> Where is your branch? I could also test in my setup on your branch.
-> >>>
-> >>
-> >> You can find my branch int/alex/riscv_kernel_end_of_address_space_v2
-> >> here: https://github.com/AlexGhiti/riscv-linux.git
-> >
-> > No, it does not work for me.
-> >
-> > Source is on b61ab6c98de021398cd7734ea5fc3655e51e70f2 (HEAD,
-> > int/alex/riscv_kernel_end_of_address_space_v2)
-> > Config is https://gist.githubusercontent.com/dvyukov/6af25474d455437577=
-a84213b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
-> >
-> > riscv64-linux-gnu-gcc -v
-> > gcc version 10.2.1 20210110 (Debian 10.2.1-6+build1)
-> >
-> > qemu-system-riscv64 --version
-> > QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
-> >
-> > qemu-system-riscv64 \
-> > -machine virt -smp 2 -m 2G \
-> > -device virtio-blk-device,drive=3Dhd0 \
-> > -drive file=3Dimage-riscv64,if=3Dnone,format=3Draw,id=3Dhd0 \
-> > -kernel arch/riscv/boot/Image \
-> > -nographic \
-> > -device virtio-rng-device,rng=3Drng0 -object
-> > rng-random,filename=3D/dev/urandom,id=3Drng0 \
-> > -netdev user,id=3Dnet0,host=3D10.0.2.10,hostfwd=3Dtcp::10022-:22 -devic=
-e
-> > virtio-net-device,netdev=3Dnet0 \
-> > -append "root=3D/dev/vda earlyprintk=3Dserial console=3DttyS0 oops=3Dpa=
-nic
-> > panic_on_warn=3D1 panic=3D86400 earlycon"
->
-> It still works for me but I had to disable CONFIG_DEBUG_INFO_BTF (I
-> don't think that changes anything at runtime). But your above command
-> line does not work for me as it appears you do not load any firmware, if
-> I add -bios images/fw_jump.elf, it works. But then I don't know where
-> your opensbi output below comes from...
->
-> And regarding your issue with calling clock_gettime 'directly' compared
-> to using the syscall, I have the same consistent output from both calls.
->
-> I have an older gcc (9.3.0) and the same qemu. I think what is missing
-> here is your buildroot config, so that we have the exact same
-> environment: could you post your buildroot config as well ?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E
+Content-Type: multipart/mixed; boundary="aIEYVeglYW0935UFABA3RFn6vG3A7vknV";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+Cc: Stefano Stabellini <sstabellini@kernel.org>, Julien Grall <julien@xen.org>
+Message-ID: <63e42922-204d-9d0e-6a02-49f64e7e8885@suse.com>
+Subject: Re: [PATCH v2 3/8] xen/events: avoid handling the same event on two
+ cpus at the same time
+References: <20210211101616.13788-1-jgross@suse.com>
+ <20210211101616.13788-4-jgross@suse.com>
+ <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
+In-Reply-To: <6cc74d6b-d537-0e9f-9da8-45456f6b703e@oracle.com>
 
-I don't think the image is relevant because I don't even get to kernel
-code. If the kernel will complain about no init later, that's fine.
-Re bios, this version of qemu already has OpenSBI bios builtin, you
-can pass -bios default, but that's, well, the default :)
-Here are more reproducible repro instructions that capture gcc and
-qemu. I think gcc version may be potentially relevant as I suspect
-code size.
+--aIEYVeglYW0935UFABA3RFn6vG3A7vknV
+Content-Type: multipart/mixed;
+ boundary="------------456ECA628170F25D28062DF7"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------456ECA628170F25D28062DF7
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 15.02.21 22:35, Boris Ostrovsky wrote:
+>=20
+> On 2/11/21 5:16 AM, Juergen Gross wrote:
+>=20
+>> @@ -622,6 +623,7 @@ static void xen_irq_lateeoi_locked(struct irq_info=
+ *info, bool spurious)
+>>   	}
+>>  =20
+>>   	info->eoi_time =3D 0;
+>> +	smp_store_release(&info->is_active, 0);
+>=20
+>=20
+> Can this be done in lateeoi_ack_dynirq()/lateeoi_mask_ack_dynirq(), aft=
+er we've masked the channel? Then it will be consistent with how how othe=
+r chips do it, especially with the new helper.
+
+Yes, I think this should work.
 
 
-curl https://gist.githubusercontent.com/dvyukov/6af25474d455437577a84213b0c=
-c9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
-> $KERNEL_SRC/.config
-docker pull gcr.io/syzkaller/syzbot
-docker run -it -v $KERNEL_SRC:/kernel gcr.io/syzkaller/syzbot
-cd /kernel
-make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu- olddefconfig
-make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu-
-qemu-system-riscv64 -machine virt -smp 2 -m 4G -kernel
-arch/riscv/boot/Image -nographic -append "earlycon earlyprintk=3Dserial
-console=3DttyS0"
-[this does not, only OpenSBI output]
+Juergen
 
-scripts/config -d KASAN_INLINE -e KASAN_OUTLINE -d
-CC_OPTIMIZE_FOR_PERFORMANCE -e CC_OPTIMIZE_FOR_SIZE
-make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu-
-qemu-system-riscv64 -machine virt -smp 2 -m 4G -kernel
-arch/riscv/boot/Image -nographic -append "earlycon earlyprintk=3Dserial
-console=3DttyS0"
-[this boots fine, at least at to starting init process]
+--------------456ECA628170F25D28062DF7
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------456ECA628170F25D28062DF7--
+
+--aIEYVeglYW0935UFABA3RFn6vG3A7vknV--
+
+--nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAuU7gFAwAAAAAACgkQsN6d1ii/Ey98
+ogf+OYHpzRVAg+cjmXBOIZ/G9w3jDjtACYbBCL6aLdsTm5mBymNr96GdNITM2eHwIKj2RjY/A9NO
+ZbJFT8kzKZLnKDI7Pz1s/qENqqe2aINBtEeXzln/8IBuZB2dOg236Q+BOtfTuNNK/MljOUm1qRkg
+XwlZbaBB5CGe8xZ4uS9tPWvmrQCWYshArgfg8UEoeZGbBeLzQ7Hdyh8Qj9Kh+oaUnKWjmi3xJ9Xc
+Y0KJ3N0kohBYNneknpMdWf6YmPXXmjud2QGBY85EO1gvjCw0ozxxqjiTzDQg7HUBEMqvHQvp4lT3
+8EzJBjCDsZUk6jbkMzqFJQHYwS9xCPo4EoCFBut7/Q==
+=19YR
+-----END PGP SIGNATURE-----
+
+--nyMyUXtbBYfCQJffcUfegBSEpdoFj1b9E--
