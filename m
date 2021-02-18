@@ -2,141 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31F731F07F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A1B31F07E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhBRTxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:53:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231338AbhBRTZF (ORCPT
+        id S232250AbhBRTxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:53:15 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:47644 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhBRTZF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Feb 2021 14:25:05 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D879C061574;
-        Thu, 18 Feb 2021 11:24:22 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id s10so854878qvl.9;
-        Thu, 18 Feb 2021 11:24:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mXM5l1A/rr2ByJpBGKJkreiRJB4kUscTTSOxZVH+5OE=;
-        b=S/1Zj2rIHDp94Hy7Lrt4L/xh6dTEeTwa+m6A8XtFbEUiecdRcMxUk1NgfIGY2q39AK
-         FzmYw7TJZUIqLjLFIZQpm1IhA43Glh72V3tlgVUnbXmG7chWrLq9i5YnB9GyhSoQdZKE
-         FlQry+iTUyO0pUzY0s3qymVBa/mztuIOExwpxrc1WzGs0GIVA+gLoCmkTsDjixArpIlK
-         V9wewO3y/NPHs66KUMNW8OtgcHb5o1ly+cOiawI8BHmX50kSY7Dx8qQyEf8YMiwaJfa5
-         SCq9Ku2s2wNmZxoCeaYJMLt6jfju1GZKd2fzi6Y7eDR0DQD1hbMOoJJ3yVW2uULSmZhF
-         Cu0g==
+Received: by mail-io1-f71.google.com with SMTP id o4so2060066ioh.14
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 11:24:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mXM5l1A/rr2ByJpBGKJkreiRJB4kUscTTSOxZVH+5OE=;
-        b=eAW3THML+phXszvRpmXxPK6G7lhlask2pEM/+CYDjQN/dFskfwOuS578PLZDxT71Su
-         bTJgcVJEvZ9GxLWNcZ24Exbs8NpA1udz/VVFGaZnI4iMkjMh4+GzU6uCgHAI7WTryWjL
-         xXACoOXL0TyF/ZWYIu6xJU8zv5yeWAtJeb5loGU8VBC7RwFZOEwX5yUjuFnRt6ayW7Cj
-         IsawXjEIQe4kGf032JaG7+KCiOyDGSvkD2NFCmLlgqFWP/EsAFiRymqgiWyzLhmNr+Hu
-         km1MfaW4AHM6dVWlxOa41WmJhlXhEgV9lpH+5i8zMojKzvDep8LSmNLJEPrc+N0kWV+7
-         QoqQ==
-X-Gm-Message-State: AOAM533o3kLrWXdP0lEeDhOzq1dEFjLwQKVoBjukoL8TYtrY7VSjQ9wl
-        BV7GeERbcLEwsr59/w11MtQ=
-X-Google-Smtp-Source: ABdhPJyMSh9g14GV26Z4i40nLxt6vVBDIr9z7jhPcJi5tm6xS2HnR/vD0o8ec2Yg+2YlHh+kg/WzCg==
-X-Received: by 2002:a0c:90c9:: with SMTP id p67mr5761632qvp.14.1613676261132;
-        Thu, 18 Feb 2021 11:24:21 -0800 (PST)
-Received: from localhost (d27-96-190-162.evv.wideopenwest.com. [96.27.162.190])
-        by smtp.gmail.com with ESMTPSA id f26sm4479242qkh.80.2021.02.18.11.24.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 11:24:20 -0800 (PST)
-Date:   Thu, 18 Feb 2021 11:24:19 -0800
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 08/14] lib/Kconfig: introduce FAST_PATH option
-Message-ID: <20210218192419.GA788573@yury-ThinkPad>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-9-yury.norov@gmail.com>
- <YC6EnzFUXDuroy0+@smile.fi.intel.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MNizgv5mvQWhBT/s84w4wVfXhQTCYQ+gD1CNu9mQuu4=;
+        b=RTP8HShzwzryADrrnPqG8NGFQJCqfQaqd5OCUqXnLul6lQRwatwj/c0uAmZyXbhBBD
+         clR3EwtvPBbnFBAa+H8dQrt1SOq5LHnJrC/e39s7yQOaZM8LyJTf/+mjFU9CfTM9laQS
+         GW0ma7SPCsccFdTDkdjDInmTecOJb/UZ2jXr+r+gYW0eyM9kaWMYHmWVj7MTnat9OlM0
+         f7rX2wo0najFBCH7BMfmLGvN6uvnIStLJbI8m5Z8z7v+FjDrY9bqs/pLx5gpflG+6rcN
+         m4P84VTJfVQR9XTfMFeD5pK0nUnAwv3Hi7S9v8LY7Ei7R0f3aZhi2PvKHw+H9l1cpUnS
+         Dt7Q==
+X-Gm-Message-State: AOAM531X3FvpgO11Mh2mGTQESzcevvnLdmlAW9yPDkEr4jWJM8cQJP2J
+        09Nmp9R3fBszC8S6z1TX0koOH5i2WjcRVgHB1Y4ZAFPCfTTU
+X-Google-Smtp-Source: ABdhPJygfiVFf+6UJu1Xxuh6NPoc/nkSTCw7BvJc4CESWo6dfUttZyO9/aMhy4J5sNa+vDjZcwA9lbgm6JUU41SE0YRkBJjt5cKM
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC6EnzFUXDuroy0+@smile.fi.intel.com>
+X-Received: by 2002:a92:cc41:: with SMTP id t1mr594092ilq.27.1613676262080;
+ Thu, 18 Feb 2021 11:24:22 -0800 (PST)
+Date:   Thu, 18 Feb 2021 11:24:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006246f105bba148f9@google.com>
+Subject: BUG: unable to handle kernel paging request in nl802154_del_llsec_key
+From:   syzbot <syzbot+ac5c11d2959a8b3c4806@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 05:15:43PM +0200, Andy Shevchenko wrote:
-> On Wed, Feb 17, 2021 at 08:05:06PM -0800, Yury Norov wrote:
-> > This series introduces fast paths for find_bit() routines. It is
-> > beneficial for typical systems, but those who limited in I-cache
-> > may be concerned about increasing the .text size of the Image.
-> > 
-> > To address this concern, one can disable FAST_PATH option in the config
-> > and some save memory.
-> > 
-> > The effect of this option on my arm64 next-20210217 build is:
-> 
-> (Maybe bloat-o-meter will give better view on this, i.e. more human-readable)
+Hello,
 
-Never heard about this tool, thanks for the hint.
+syzbot found the following issue on:
 
-scripts/bloat-o-meter vmlinux vmlinux.new
-add/remove: 16/13 grow/shrink: 111/439 up/down: 3616/-19352 (-15736)
-Function                                     old     new   delta
-find_next_bit.constprop                        -     220    +220
-apply_wqattrs_cleanup                          -     176    +176
-memcg_free_shrinker_maps                       -     172    +172
-...
-cpuset_hotplug_workfn                       2584    2288    -296
-task_numa_fault                             3640    3320    -320
-kmem_cache_free_bulk                        1684    1280    -404
-Total: Before=26085140, After=26069404, chg -0.06%
+HEAD commit:    f40ddce8 Linux 5.11
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11261a4cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=67894355b1dbeb07
+dashboard link: https://syzkaller.appspot.com/bug?extid=ac5c11d2959a8b3c4806
+userspace arch: arm64
 
-The complete output is here:
-https://pastebin.com/kBSdVJcK
+Unfortunately, I don't have any reproducer for this issue yet.
 
-So if I understand the output correctly, the size of .text is decreased...
-Looks weird, but if it's true, we don't need the FAST_BIT config at all
-because there's no tradeoff, and I should drop the patch.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ac5c11d2959a8b3c4806@syzkaller.appspotmail.com
 
-Hmm...
+netlink: 164 bytes leftover after parsing attributes in process `syz-executor.1'.
+Unable to handle kernel paging request at virtual address dfff800000000000
+Mem abort info:
+  ESR = 0x96000004
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+Data abort info:
+  ISV = 0, ISS = 0x00000004
+  CM = 0, WnR = 0
+[dfff800000000000] address between user and kernel address ranges
+Internal error: Oops: 96000004 [#1] PREEMPT SMP
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Modules linked in:
+CPU: 1 PID: 5366 Comm: syz-executor.1 Not tainted 5.11.0-syzkaller #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
+pc : nla_len include/net/netlink.h:1148 [inline]
+pc : nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
+pc : nl802154_del_llsec_key+0x138/0x2c0 net/ieee802154/nl802154.c:1595
+lr : genl_family_rcv_msg_doit+0x1b8/0x2a0 net/netlink/genetlink.c:739
+sp : ffff000019c57280
+x29: ffff000019c57280 x28: ffff80001aa29cc0 
+x27: ffff000019c576d0 x26: ffff000012280000 
+x25: 1fffe0000338aeb2 x24: 1fffe0000338ae84 
+x23: ffff800018380c80 x22: ffff000016174c10 
+x21: ffff00000fca8000 x20: 0000000000000000 
+x19: 1fffe0000338ae5a x18: 0000000000000001 
+x17: 0000000000000000 x16: 0000000000000000 
+x15: 0000000000000000 x14: 1fffe0000338adf4 
+x13: 0000000000000000 x12: ffff60000338ae55 
+x11: 1fffe0000338ae54 x10: ffff60000338ae54 
+x9 : 000000000000f1f1 x8 : 000000000000f2f2 
+x7 : 00000000f3000000 x6 : 1fffe0000338ae90 
+x5 : 00000000f3f3f3f3 x4 : 0000000000000000 
+x3 : dfff800000000000 x2 : 0000000000000004 
+x1 : ffff000019c57450 x0 : 0000000000000001 
+Call trace:
+ nla_data include/net/netlink.h:1139 [inline]
+ nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
+ nl802154_del_llsec_key+0x138/0x2c0 net/ieee802154/nl802154.c:1595
+ genl_family_rcv_msg_doit+0x1b8/0x2a0 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x24c/0x430 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x198/0x34c net/netlink/af_netlink.c:2494
+ genl_rcv+0x38/0x50 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x3e0/0x670 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x610/0xa20 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xc0/0xf4 net/socket.c:672
+ ____sys_sendmsg+0x548/0x6d0 net/socket.c:2345
+ ___sys_sendmsg+0xf4/0x170 net/socket.c:2399
+ __sys_sendmsg+0xbc/0x14c net/socket.c:2432
+ __do_sys_sendmsg net/socket.c:2441 [inline]
+ __se_sys_sendmsg net/socket.c:2439 [inline]
+ __arm64_sys_sendmsg+0x70/0xa0 net/socket.c:2439
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
+ el0_svc_common.constprop.0+0x110/0x3c0 arch/arm64/kernel/syscall.c:159
+ do_el0_svc+0xa4/0xd0 arch/arm64/kernel/syscall.c:198
+ el0_svc+0x20/0x30 arch/arm64/kernel/entry-common.c:365
+ el0_sync_handler+0x1a4/0x1ac arch/arm64/kernel/entry-common.c:381
+ el0_sync+0x174/0x180 arch/arm64/kernel/entry.S:699
+Code: f2fbffe3 92400a80 11000400 91001282 (38e36883) 
+---[ end trace dde92eef2b40d315 ]---
 
-> > +config FAST_PATH
-> 
-> I think the name is to broad for this cases, perhaps BITS_FAST_PATH? or BITMAP?
 
-My logic was that since SMALL_CONST() is global, and FAST_PATH
-controls the SMALL_CONST, it should also be global. I believe,
-Linux should have a global switch to control the behaviour in
-such cases, similarly to -Os compiler option. And I was surprized
-when I found nothing like FAST_PATH in the config.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-What about having FAST_PATH as a global option, and later if someone
-will request for granularity, we'll introduce nested configs?
-
-> > +	bool "Enable fast path code generation"
-> > +	default y
-> > +	help
-> > +	  This option enables fast path optimization with the cost of increasing
-> > +	  the text section.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
