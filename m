@@ -2,157 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4026631EAD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A844631EAD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbhBROSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 09:18:18 -0500
-Received: from mga14.intel.com ([192.55.52.115]:53323 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232944AbhBRMdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:33:50 -0500
-IronPort-SDR: P7NUZKM5pf8zp/sb9t4t4u0dXxcHyQAm0FJu0SseHLxXSQhfDrCp98IVLdO2dSSg9xGrYauDRa
- DjwNCCbLixHg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="182693074"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="182693074"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 04:32:45 -0800
-IronPort-SDR: ed5149YJl0ZXbm31HhGLGta9Yt3R1kvty+Q4SHPQl8WLZ0lN6ELqr9nrsO5WRq4IaF/wWvKtlC
- 5STVi3XvtOTA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="401640393"
-Received: from lkp-server02.sh.intel.com (HELO cd560a204411) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 18 Feb 2021 04:32:43 -0800
-Received: from kbuild by cd560a204411 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lCiU6-0009fb-Vu; Thu, 18 Feb 2021 12:32:42 +0000
-Date:   Thu, 18 Feb 2021 20:31:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.02.09a] BUILD SUCCESS
- 4d6b82d995eedfdb354e2ce3ff7f7a346f641d03
-Message-ID: <602e5e39.F1MgEDUuO+mWWGdk%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S233684AbhBROUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 09:20:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232984AbhBRMfC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:35:02 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADC85C061574;
+        Thu, 18 Feb 2021 04:33:45 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id n10so3563343wmq.0;
+        Thu, 18 Feb 2021 04:33:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zc+bBISyXXpr0HLyGKIPaYDYfH+oSojiNj1Qu7o39ZE=;
+        b=jv0bgLLDQQB/8FmHplWu56DUPCGVJSfgXxtduuEOPINd+TolnxhB1RV7ILRD00+KNW
+         S8BfxxeR8ni+l53vJAP8mxqPSDEqPf8/G0S92slYW1+KWEYPqzUPfza2AkmaOzcZ3N0r
+         eb8G4pMx43ImFCyJyAiI1rcz1iHCQOMxZXMqva8E1w9kLP8Fasqg+7Tc4hUnzF0Dh7E3
+         wdsNnCneQIHN+dljVmTRa4FmZOyw6TVveDIlHB6c33cghed3l71iWlSEVSReUhNs6nP4
+         DZg3K73oYDcFRxe9Sn0Ke5XV90Lu8JYWsqVzV8WeuFq2xorsV/JU4GigHbDYULs3WU17
+         x/rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zc+bBISyXXpr0HLyGKIPaYDYfH+oSojiNj1Qu7o39ZE=;
+        b=F4eK9dZDT2P8Iex2tE7b7Td0V+f9DlaJVevOc/EKt6VFFmaXuWx/r39ONiGJX3XMI6
+         AO7w0/g8zHhYJ+tL3XO62FV8945lPici2mRpBBkApMZzXp1cFxeAh1z60MtoD4kR8h8m
+         +5w3Rn30QPF5QlDquwatyzOs0dCaEM1di8qdZVYsKSjm/CH6qI1wUDR1KJo7DSBv5jrv
+         VnUzP2e/KE2VRkDVvkDCVoq98ggK2f1jOrfMdFI0s/SwieyI2Wy6MUWI+rnnQIYABGLb
+         jut2f6IgPORU/bkDpSnU1hQUDhb21iNKcSeDDOlM2+x81/xRmJzFTqWFgXpmyY4yHeoM
+         udVw==
+X-Gm-Message-State: AOAM5306h8Jf1PE1pbyG6rTegd7JtdZKsrbjn6oRzP+GBWZ18GR9UeY6
+        Umkp51tD+QFr5ZclGHNfRHE=
+X-Google-Smtp-Source: ABdhPJyZtXtl5M9bLxhQKmtVvEcbzbZexycq/sh/mxaRkLjyUH0Ok2XKwob1WsM7N3Lw3wPxhcdwsg==
+X-Received: by 2002:a7b:c308:: with SMTP id k8mr3414935wmj.54.1613651624439;
+        Thu, 18 Feb 2021 04:33:44 -0800 (PST)
+Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
+        by smtp.gmail.com with ESMTPSA id z2sm7110818wmf.46.2021.02.18.04.33.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 04:33:43 -0800 (PST)
+From:   Heiko Thiery <heiko.thiery@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Michael Walle <michael@walle.cc>,
+        Heiko Thiery <heiko.thiery@gmail.com>
+Subject: [PATCH 0/2] add Kontron pITX-imx8m board
+Date:   Thu, 18 Feb 2021 13:33:25 +0100
+Message-Id: <20210218123327.25486-1-heiko.thiery@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.02.09a
-branch HEAD: 4d6b82d995eedfdb354e2ce3ff7f7a346f641d03  squash! tools/memory-model: Add access-marking documentation
+This patch series adds support for the Kontron pITX-imx8m board:
 
-elapsed time: 724m
+https://www.kontron.com/products/boards-and-standard-form-factors/single-board-computer/pitx-imx8m.html
 
-configs tested: 95
-configs skipped: 2
+Heiko Thiery (2):
+  dt-bindings: arm: fsl: add Kontron pITX-imx8m board
+  arm64: dts: fsl: add support for Kontron pitx-imx8m board
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../freescale/imx8mq-kontron-pitx-imx8m.dts   | 675 ++++++++++++++++++
+ 3 files changed, 677 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-kontron-pitx-imx8m.dts
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     asp8347_defconfig
-arm                        keystone_defconfig
-mips                         mpc30x_defconfig
-mips                        bcm47xx_defconfig
-arm                        trizeps4_defconfig
-powerpc                  iss476-smp_defconfig
-arm                        multi_v5_defconfig
-arm                            u300_defconfig
-powerpc                        icon_defconfig
-sh                          polaris_defconfig
-arm                            lart_defconfig
-powerpc                     rainier_defconfig
-arm                        cerfcube_defconfig
-arm                         lpc32xx_defconfig
-arm                         s3c2410_defconfig
-arc                        vdk_hs38_defconfig
-arc                        nsim_700_defconfig
-xtensa                  nommu_kc705_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210216
-i386                 randconfig-a005-20210216
-i386                 randconfig-a002-20210216
-i386                 randconfig-a006-20210216
-i386                 randconfig-a001-20210216
-i386                 randconfig-a004-20210216
-i386                 randconfig-a016-20210216
-i386                 randconfig-a014-20210216
-i386                 randconfig-a012-20210216
-i386                 randconfig-a013-20210216
-i386                 randconfig-a011-20210216
-i386                 randconfig-a015-20210216
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+-- 
+2.30.0
 
-clang tested configs:
-x86_64               randconfig-a013-20210216
-x86_64               randconfig-a016-20210216
-x86_64               randconfig-a012-20210216
-x86_64               randconfig-a015-20210216
-x86_64               randconfig-a014-20210216
-x86_64               randconfig-a011-20210216
-x86_64               randconfig-a003-20210215
-x86_64               randconfig-a002-20210215
-x86_64               randconfig-a001-20210215
-x86_64               randconfig-a004-20210215
-x86_64               randconfig-a005-20210215
-x86_64               randconfig-a006-20210215
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
