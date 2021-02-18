@@ -2,106 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED9331EFA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C2B31EFAE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhBRTUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:20:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50228 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231566AbhBRSFv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:05:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613671464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=F/NjJm1o0S+ptTSdUddueRD/FVZWiax6r93BjVuqS/A=;
-        b=KpYsrfrBmJ73BqoAod9sCNquiwTBPNvlPa1xvWsE3BRswZvWl7jofivAwqV49XjjM7xk7p
-        PpGWPlXXyxzXEMF2O8K2Ay0mppJpyWr1KI8bZtOeC2J+uJ4AQAjHm4rApNqTJDdM81/uao
-        ioNzD+Uv198nhd94d6uJ3K01/l0dxd4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-26-2Kj9ijxhO1GxKPLOUhFGAA-1; Thu, 18 Feb 2021 13:04:07 -0500
-X-MC-Unique: 2Kj9ijxhO1GxKPLOUhFGAA-1
-Received: by mail-wm1-f70.google.com with SMTP id q24so1545683wmc.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:04:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F/NjJm1o0S+ptTSdUddueRD/FVZWiax6r93BjVuqS/A=;
-        b=H+6zsvl/rJ3TD0D303rUJcnN5lB6bkgrHQ7SMw4goUUwgdzKJXs7MWMaROZHuUeSdx
-         +GEGASvFaLjuku9Mk5AlLIONjOY3XL/7tg/Qxm60mg7/OCnFOKU2bLHdmf8yOfj0Txi/
-         dCe1O1xeUmPexEq/KcnOMRjhZaXo/YP6QN8SS7mpOjIhRnUH7RjriWEO9lHE9B0EhNTK
-         yPB5c3TEAfeb4AmVt5aP2RjvBPag6ZmALgvXT4m/K5aRdlDSGD8pPXABvglxxsHJm90N
-         8cTHDuz9xZxqWmkMU3U1gkTd1d3bvObS6yrfJ+AhuCFQdSlFcfiQh+TRUTLmQfzRTGLR
-         QCYg==
-X-Gm-Message-State: AOAM530TreUhvBaeXvWA3mqxzuOvuBPIQjB8PSJkQahg7N3KRWPN6E4q
-        4OeyqWi4Bng6haCcF/pj/0kRSfX5zBZf1atveSwUB6BPBWt9NAFRX+hPUp/Qgx+5ms0jvPbetUz
-        XoAX3Gg4v0v4DRjuGfoPoX24R
-X-Received: by 2002:a05:600c:41d6:: with SMTP id t22mr4722948wmh.74.1613671446414;
-        Thu, 18 Feb 2021 10:04:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzToIuOaBYg4YsXjWIPNzTToi29MrO1jvQGdbhSJ1/zUpu0V8O/tNhmqRFtToS3jfljw7kFzQ==
-X-Received: by 2002:a05:600c:41d6:: with SMTP id t22mr4722910wmh.74.1613671446175;
-        Thu, 18 Feb 2021 10:04:06 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b2sm10537937wrn.2.2021.02.18.10.04.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 10:04:05 -0800 (PST)
-Subject: Re: [PATCH] KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is
- valid
-To:     Jim Mattson <jmattson@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     David Edmondson <dme@dme.org>, LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm list <kvm@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20210218100450.2157308-1-david.edmondson@oracle.com>
- <708f2956-fa0f-b008-d3d2-93067f95783c@redhat.com> <cuntuq9ilg4.fsf@dme.org>
- <8f9d4ef7-ddad-160b-2d94-69f4370e8702@redhat.com>
- <YC6XVrWPRQJ7V6Nd@google.com>
- <CALMp9eTX4Na2VTY2aU=-SUrGhst5aExdCB3f=4krKj1mFPgcqQ@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <13461f99-09a3-6e9a-d015-2658a46b628a@redhat.com>
-Date:   Thu, 18 Feb 2021 19:04:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232191AbhBRTVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:21:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55366 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230268AbhBRSH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:07:29 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E576164ED7;
+        Thu, 18 Feb 2021 18:06:39 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 13:06:38 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/fair: Use true and false for bool variable
+Message-ID: <20210218130638.2a293db2@gandalf.local.home>
+In-Reply-To: <1613643011-114108-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1613643011-114108-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CALMp9eTX4Na2VTY2aU=-SUrGhst5aExdCB3f=4krKj1mFPgcqQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/21 18:55, Jim Mattson wrote:
->>> Got it now.  It would sort of help, because while dumping the MSR load/store
->>> area you could get hold of the real EFER, and use it to decide whether to
->>> dump the PDPTRs.
->> EFER isn't guaranteed to be in the load list, either, e.g. if guest and host
->> have the same desired value.
->>
->> The proper way to retrieve the effective EFER is to reuse the logic in
->> nested_vmx_calc_efer(), i.e. look at VM_ENTRY_IA32E_MODE if EFER isn't being
->> loaded via VMCS.
->
-> Shouldn't dump_vmcs() simply dump the contents of the VMCS, in its
-> entirety? What does it matter what the value of EFER is?
+On Thu, 18 Feb 2021 18:10:11 +0800
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
 
-Currently it has some conditionals, but it wouldn't be a problem indeed 
-to remove them.
+> Fix the following coccicheck warnings:
+> 
+> ./kernel/sched/fair.c:9504:9-10: WARNING: return of 0/1 in function
+> 'voluntary_active_balance' with return type bool.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  kernel/sched/fair.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 04a3ce2..cf78337 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9501,7 +9501,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+>  	struct sched_domain *sd = env->sd;
+>  
+>  	if (asym_active_balance(env))
+> -		return 1;
+> +		return true;
+>  
+>  	/*
+>  	 * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
+> @@ -9513,13 +9513,13 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+>  	    (env->src_rq->cfs.h_nr_running == 1)) {
+>  		if ((check_cpu_capacity(env->src_rq, sd)) &&
+>  		    (capacity_of(env->src_cpu)*sd->imbalance_pct < capacity_of(env->dst_cpu)*100))
+> -			return 1;
+> +			return true;
+>  	}
+>  
+>  	if (env->migration_type == migrate_misfit)
+> -		return 1;
+> +		return true;
+>  
+> -	return 0;
+> +	return false;
+>  }
+>  
+>  static int need_active_balance(struct lb_env *env)
 
-The MSR load list is missing state that dump_vmcs should print though.
+I think this would be a more interesting version of the patch. Would it
+make your bot stop sending them??
 
-Paolo
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04a3ce2..cf78337 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9501,7 +9501,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 	struct sched_domain *sd = env->sd;
+ 
+ 	if (asym_active_balance(env))
+-		return 1;
++		return '/'/'/';
+ 
+ 	/*
+ 	 * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
+@@ -9513,13 +9513,13 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 	    (env->src_rq->cfs.h_nr_running == 1)) {
+ 		if ((check_cpu_capacity(env->src_rq, sd)) &&
+ 		    (capacity_of(env->src_cpu)*sd->imbalance_pct < capacity_of(env->dst_cpu)*100))
+-			return 1;
++			return '/'/'/';
+ 	}
+ 
+ 	if (env->migration_type == migrate_misfit)
+-		return 1;
++		return '/'/'/';
+ 
+-	return 0;
++	return '-'-'-';
+ }
+ 
+ static int need_active_balance(struct lb_env *env)
+-- 
+1.8.3.1
