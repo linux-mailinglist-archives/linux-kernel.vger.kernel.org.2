@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6416D31F17A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3D3331F17B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhBRVAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 16:00:05 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:48019 "EHLO ozlabs.org"
+        id S230121AbhBRVBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:01:51 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49881 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229652AbhBRU7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:59:38 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DhRrw1S1Zz9sBJ;
-        Fri, 19 Feb 2021 07:58:56 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613681936;
-        bh=QZmrNoUiHrUHOZbgMkUkeCVI5lmFPhODzWot7rpjZiM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=n9H7ljDXyJO1LQC3SDpkXJ+xGGfVOIhitEQZz1o4pck+lUobqLt877PhZesVNiFhS
-         d9pEWywosU9NmP17ZXuCCsmqQA/9JsuhJSzX4b5ozLAmtpd7eUBLvoukwmT5zsrlej
-         OEeqBRMe9dt/XOQDud4jEtoLZ7PlQU2AKIw5iwDlFvsa9jsrcB2FJar15iBMn4XKtK
-         h1n8JyH94PlxpWfLXbyA194mOYzPchITlejD6J6AIzTv8AR8B/KsobU5vj4BP+EAOD
-         HA/dQdHJIj9Qm/idJu/A/PJDzx33BeE3MAOW5zqaNT+xLiUgFVCiy+5SR+QG1EKodh
-         0uvMdUDTvehBQ==
-Date:   Fri, 19 Feb 2021 07:58:53 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Justin Ernst <justin.ernst@hpe.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning in Linus' tree
-Message-ID: <20210219075853.0514c9f9@canb.auug.org.au>
+        id S229587AbhBRVBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 16:01:32 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 11IL0bNG016334;
+        Thu, 18 Feb 2021 22:00:37 +0100
+Date:   Thu, 18 Feb 2021 22:00:37 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <20210218210037.GA16034@1wt.eu>
+References: <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
+ <YBBkplRxzzmPYKC+@kroah.com>
+ <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <20210218165104.GC2013@sasha-vm>
+ <00b9e2fb-d818-58d6-edae-4dbd6aa814f7@gmail.com>
+ <YC6ptKgsMh20tmu6@kroah.com>
+ <20210218182050.GB15217@1wt.eu>
+ <YC6zq3u2jciI2gyZ@kroah.com>
+ <b283eaa5-028f-a3d0-42a1-5b11c48ffe91@broadcom.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Gid4EuZzXzY+gJs8ME8EeM.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b283eaa5-028f-a3d0-42a1-5b11c48ffe91@broadcom.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Gid4EuZzXzY+gJs8ME8EeM.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 18, 2021 at 12:16:50PM -0800, Scott Branden wrote:
+> On 2021-02-18 10:36 a.m., Greg Kroah-Hartman wrote:
+> > On Thu, Feb 18, 2021 at 07:20:50PM +0100, Willy Tarreau wrote:
+> >> On Thu, Feb 18, 2021 at 06:53:56PM +0100, Greg Kroah-Hartman wrote:
+> >>> On Thu, Feb 18, 2021 at 09:21:13AM -0800, Florian Fainelli wrote:
+> >>>> As a company, we are most likely shooting ourselves in the foot by not
+> >>>> having a point of coordination with the Linux Foundation and key people
+> >>>> like you, Greg and other participants in the stable kernel.
+> >>>
+> >>> What does the LF have to do with this?
+> >>>
+> >>> We are here, on the mailing lists, working with everyone.  Just test the
+> >>> -rc releases we make and let us know if they work or not for you, it's
+> >>> not a lot of "coordination" needed at all.
+> >>>
+> >>> Otherwise, if no one is saying that they are going to need these for 6
+> >>> years and are willing to use it in their project (i.e. and test it),
+> >>> there's no need for us to maintain it for that long, right?
+> >>
+> >> Greg, please remember I expressed I really need them for slightly more than
+> >> 3 years (say 3.5-4) :-) I'm fine with helping a bit more as time permits if
+> >> this saves me from having to take over these kernels after you, like in the
+> >> past, but I cannot engage on the regularity of my availability.
+> > 
+> > Ok, great!
+> > 
+> > That's one person/company saying they can help out (along with what CIP
+> > has been stating.)
+> > 
+> > What about others?  Broadcom started this conversation, odd that they
+> > don't seem to want to help out :)
+> Greg, I'm sorry but I'm not in a position to provide such a commitment.
 
-Hi all,
+Are you at least in a position to defend that ? There are necessarily
+some people in your company who understand the benefits of using open
+source provdided for free by others and who understand that devoting
+a few people's time to this task is extremely cheap compared to the
+amount of work required by having to do it entirely yourself for a
+lower quality.
 
-Building Linus' tree, today's linux-next build (htmldocs) produced
-this warning:
+> My original question arose because the 5.10 kernel is declared as 2 years LTS
+> while older LTS kernels are now 6 years.
+(...)
+> If all LTS kernels were declared as 3.5-4 years as Willy commented this would
+> solve a few issues. 6 year LTS kernels would only have a maximum 1 year
+> lifespan over the latest declared LTS kernel. Also, many products take a year
+> or more to develop, there isn't any life left in an LTS kernel if it is only
+> 2 years.
 
-Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected inde=
-ntation.
+We all have the same problem regarding this but how do you want Greg to
+engage into such a task by himself if he's not certain he can count on
+others to help ? The few of us having worked on extended kernels know
+that there's a limit around 2.5 years beyond which backports become much
+harder to perform and to test. Doing it every year would result in 6 LTS
+kernels to maintain in addition to the last 1-2 stable ones. That becomes
+a huge amount of work! I even think that having one LTS kernel every 2
+years but maintained one extra year (e.g. 5 vs 4 in my case) would reduce
+the effort.
 
-Introduced by commit
+> After 1-3 years of kernel age the relevant parties that want to invest and
+> care about supporting specific kernel versions longer should become apparent
+> and could commit to longer support.
 
-  c159376490ee ("x86/platform/uv: Update ABI documentation of /sys/firmware=
-/sgi_uv/")
+But that's exactly what's currently being done. Greg initially commits
+to 2 years hoping to get some help to pursue this longer, and this causes
+trouble to some of us not being certain upfront whether or not we're choosing
+the right kernel. So only the solution I'm seeing is for Greg to know
+early who jumps in so that those of us without the power or skill to
+entirely maintain a kernel by themselves know early which version to
+choose. Quite frankly if we ship an LTS kernel in a product, the least
+we can do is to give back a little bit to make sure the situation remains
+durable.
 
-Or maybe an ealier one.
+As such even if you are not in a position to provide such a commitment,
+I'd appreciate it if you would bring these arguments to those who are in
+such a position, so that I don't end up as one of the too few ones having
+to share a significant part of that task to make sure this valuable kernel
+continues to exist.
 
-This has been around for some time.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Gid4EuZzXzY+gJs8ME8EeM.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAu1Q0ACgkQAVBC80lX
-0Gy/fwgAl/ImXhty0H2kgp1MpIJQcrku4RJ2YpHbgVO+7ztL7jNFw45oObtzjnEo
-iB+SibP465wZs93fRQqjYyZ1veW2chj9w1UTbKiB/Hqv6zJINlOyLdI1OKNarIVX
-NTsj56vbtmxK6L0CHFzJ1reaNgzz9wWwGhj38/dT7t/BMK1EKRKzwZUahnoWp1Tl
-n2aLVfST//Bc/FUW6+T3BhOYQTEYVBAerUlB25wXt48OMD1Rtc0h+u+cWfnuEwwR
-lYIX6gyOCfDLp5k0iOY6YG5cBiLBcoQo0j4WKUm4mN4EMcJ3T+8gxyeLkZl0AAW2
-mkymlcSlIxya9rdKTeSUk+ztUbI7Bg==
-=P/JT
------END PGP SIGNATURE-----
-
---Sig_/Gid4EuZzXzY+gJs8ME8EeM.--
+Thanks,
+Willy
