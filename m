@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD4131EC75
+	by mail.lfdr.de (Postfix) with ESMTP id DE0BC31EC76
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbhBRQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:44:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60674 "EHLO mail.kernel.org"
+        id S233885AbhBRQpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:45:10 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44422 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232135AbhBROAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:00:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8F3D64EAE
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613656784;
-        bh=RT4x+beIoOZVYL4jYBlALf8JhbgGOWPj+TpV+50ymjk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jf7NwF/0QbWiBIprLKL+3WCqlLn9GBFkNhTo5yc62PpJj2/3wvDRkuI3c566Kesz1
-         CTz/cExe7q/cbbiiGmFQrAX9PXxNe0iOsL+99CMtmgrwpA/COQzRWjQ+ljohvCXgDQ
-         jVKtUso9dlL5NZfcC0AqZH+e5//D1HmgKC3eyv/KagylSR47qaSnJvNjQC1FFKV4HK
-         O7eaafKP8n7HvpXiMMK9+Ev3H8HQoHnlLbX5qUCv0/HOdYoT6mbxy9j5d4EmqEQ0Uv
-         GxtbjARdVyFfJwvhOq1o4nW1Cxyze+x4nlmEU2wqHVN+aGUdk0W/TFGh/aU4XL3CiQ
-         +YgH+001Xdr9Q==
-Received: by mail-ot1-f41.google.com with SMTP id b16so1933235otq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:59:44 -0800 (PST)
-X-Gm-Message-State: AOAM53056hJe/53l9R61ZjmJQGvL2EWPcWJhEC4DAX3PhjaQbh8g9gOX
-        pE1Buam2RmRfRnVZte+IpcJnaZLuvBPnBTnCb3M=
-X-Google-Smtp-Source: ABdhPJxC9ZR+yQA7BZhwjrnYxZNyV0JrLHICEmBzVMWp4WwRG3vC4wqCWg5ZPhPF0D8BarTDgRvFWMJsNG1p+fLodjU=
-X-Received: by 2002:a9d:3403:: with SMTP id v3mr2926726otb.305.1613656783870;
- Thu, 18 Feb 2021 05:59:43 -0800 (PST)
+        id S232198AbhBROAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:00:51 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613656781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lgTJXDtHZ7f4SQvSOSpC+i5e37PXzyHNAje7FYKp6bw=;
+        b=JiMLA3jObClwxXa9KllaXZCzOxuB7TceARQau9wmKvnRrtqxycVGASVLWo3jg1tw324L/h
+        uI7mfT14P8CM/KIV2KgJEbTo/jahFQ31xphpsKgRzq0IU50bHlVQppfD0vV7rg10WmvAK1
+        vcxjoWKweF803EXgNPEs8mXfSS2WdhY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3C929AF4C;
+        Thu, 18 Feb 2021 13:59:41 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 14:59:40 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <YC5yzNB9xT76fkod@dhcp22.suse.cz>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+ <20210218133250.GA7983@localhost.localdomain>
 MIME-Version: 1.0
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com> <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
- <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com> <CAMuHMdUFv2r+YAttodcXhLxEVe+2KXgAG=q8Z3vA6WUKQj7zVA@mail.gmail.com>
-In-Reply-To: <CAMuHMdUFv2r+YAttodcXhLxEVe+2KXgAG=q8Z3vA6WUKQj7zVA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 18 Feb 2021 14:59:27 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
-Message-ID: <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218133250.GA7983@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 1:30 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> The reason drivers/ide is doing that may be related to IDE hard drive
-> quirks.  The old WD Caviar drives didn't obey disabling the IDE interrupt
-> at the drive level.  On PC, that worked fine, as IRQs 14 and 15 weren't
-> shared with other devices.  On systems with shared interrupts, that
-> broke badly, and led to an interrupt storm.
+On Thu 18-02-21 14:32:50, Oscar Salvador wrote:
+> On Thu, Feb 18, 2021 at 01:52:38PM +0100, Michal Hocko wrote:
+> > > Ok, makes sense.
+> > > __GFP_THISNODE will not allow fallback to other node's zones.
+> > > Since we only allow the nid the page belongs to, nodemask should be
+> > > NULL, right?
+> > 
+> > I would have to double check because hugetlb has a slightly different
+> > expectations from nodemask than the page allocator. The later translates
+> > that to all possible nodes but hugetlb API tries to dereference nodes.
+> > Maybe THIS node special cases it somewhere.
+> 
+> Uhm, I do not quite follow here.
+> AFAICS, alloc_fresh_huge_page->alloc_buddy_huge_page does nothing
+> with the nodemask, bur rather with nodes_retry mask. That is done
+> to not retry on a node we failed to allocate a page.
+> 
+> Now, alloc_buddy_huge_page calls __alloc_pages_nodemask directly.
+> If my understanding is correct, it is ok to have a null nodemask
+> as __next_zones_zonelist() will go through our own zonelist,
+> since __GFP_THISNODE made us take ZONELIST_NOFALLBACK.
 
-So presumably anyone that has one of those old drives will not be
-able to move to drivers/ata then? I see that drivers/ata doesn't do
-the transfers in interrupt mode, so it would seem to rely on masking
-at the device level.
+As I've said. Page allocator can cope with NULL nodemask just fine.
+I have checked the code and now remember the tricky part. It is
+alloc_gigantic_page which cannot work with NULL nodemask because it
+relies on for_each_node_mask and that, unlike zonelist iterator, cannot
+cope with NULL node mask. This is the case only for !GFP_THISNODE.
 
-On the other hand, out of the five m68k specific IDE drivers
-(gayle, buddha, falcon, mac_ide, q40), only the last two don't
-seem to have an ata driver equivalent.
+> Actually, I do not see how passing a non-null nodemask migth have
+> helped there, unless we allow to specify more nodes.
 
-mac_ide uses the highest priority interrupts (NUBUS_C, NUBUS_F)
-so it appears to not actually benefit from the nested hardirq but would
-benefit being converted to a sata driver with processing at softirq time.
+No, nodemask is doesn't make any difference.
+ 
+> > > I did. The 'put_page' call should be placed above, right after getting
+> > > the page. Otherwise, refcount == 1 and we will fail to dissolve the
+> > > new page if we need to (in case old page fails to be dissolved).
+> > > I already fixed that locally.
+> > 
+> > I am not sure I follow. newly allocated pages is unreferenced
+> > unconditionally and the old page is not referenced by this path.
+> 
+> Current code is:
+> 
+>  allocate_a_new_page (new_page's refcount = 1)
+>  dissolve_old_page
+>   : if fail
+>      dissolve_new_page (we cannot dissolve it refcount != 0)
+>  put_page(new_page);
 
-q40 in turn doesn't appear to share interrupts, though its irq_disable()
-function probably doesn't do what it should. I could not figure out at
-what priority this one runs, and if it is expected to get interrupted.
+OK, new_page would go to the pool rather than get freed as this is
+neither a surplus nnor a temporary page.
 
-      Arnd
+> It should be:
+> 
+>  allocate_a_new_page (new_page's refcount = 1)
+>  put_page(new_page); (new_page's refcount = 0)
+>  dissolve_old_page
+>   : if fail
+>      dissolve_new_page (we can dissolve it as refcount == 0)
+> 
+> I hope this clarifies it .
+
+OK, I see the problem now. And your above solution is not really
+optimal either. Your put_page would add the page to the pool and so it
+could be used by somebody. One way around it would be either directly
+manipulating reference count which is fugly or you can make it a
+temporal page (alloc_migrate_huge_page) or maybe even better not special
+case this here but rather allow migrating free hugetlb pages in the
+migrate_page path.
+-- 
+Michal Hocko
+SUSE Labs
