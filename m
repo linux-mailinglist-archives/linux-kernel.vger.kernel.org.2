@@ -2,119 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30A031EF3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442C931EF26
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbhBRTIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:08:09 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:34044 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232413AbhBRRWZ (ORCPT
+        id S232051AbhBRTCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:02:38 -0500
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:33798 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233574AbhBRRXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 12:22:25 -0500
-Received: by mail-il1-f197.google.com with SMTP id c16so1620871ile.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 09:21:51 -0800 (PST)
+        Thu, 18 Feb 2021 12:23:14 -0500
+Received: by mail-ot1-f52.google.com with SMTP id b16so2573937otq.1;
+        Thu, 18 Feb 2021 09:22:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=70mWA/syeYNv54oaeIaoq9XXAMB6CP00uHj11qVXy7M=;
-        b=Mbdd54M+/l59npJX7ndHAR/Ted6YnLISk90L5uH3fb6eNXukFM/ivJoSG7qN4HHqi0
-         Sp0G6S11bHDQlSosJQfoso6+oEoMcd7Q9mzc9B+tFYEaZILfj8BQL57Lml/3cGI8Ih4u
-         oZ8p/zkA8QGynX12kpPPiQ44AWgPW6dduE+FRH7nhO5w0fW/Ni5fzQMHhIA83/eNO0S1
-         gc64jjrawAdNib1eB4bGh0X77E3gRjep8X9YvCKbfxhIHku49b1NZAbVeM5IVlW/XQHF
-         IfwJDnKaNU/hBnu8OSU6n9zIj1gp1iNXwESThvtSWod97NeQEJ6VG3QpK8ER7r60gHvp
-         VtDw==
-X-Gm-Message-State: AOAM533gzk6Cvu09OPzTm0yHHzGwZ3Am9CAlL3Zqd9I55YNSgeASMMTr
-        kXDdeHKz+C/YTocah0ynAozXPUagDmnn+fRjTpt1tBy4y2g3
-X-Google-Smtp-Source: ABdhPJxlnJ7bZYFsn6UaWciRai5QfxcxAnaFxuVeRtkniCIVTkrAQCl49fqOUvAWa+AoBgbmIj32udtDOaQSEPHidAs54dGew3wF
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NX6EDg3WVwyAV5L0N2YCyGTGVewn44yzxxRjVeIot1Q=;
+        b=qGpUndmKQE00QbO/h/ebGD7GoDZo/vP0E5JpYx00VGk5ukPQxMcKPKyZN8RPs8OM1y
+         krdsmxsuUYwIOYpRsTeC+BBjvmCxuBHId75GhE+MjCyJzNhUfEfMBMgiByEQ9GREUTeG
+         J5+TyFuZl5m/vc4+A8BvvIhWCaYAOiSeC2RXSlC2p/mKn7ikJ2Zo6qen8aTZ8W0VGjq6
+         A2mTYVWWxYX8F4zbN2cMVxzigY90L1ApEoBxxNjcnVjzkvCdjEg9kyAB/Oz6ADfJ37+Z
+         ucXHL1GIKJIvRMkW2R45kDi9zEw5ePiEDfy24cKc8kpv0xvSiWPtD0K++PnV1iHZ+Xyb
+         bOPw==
+X-Gm-Message-State: AOAM530vY0Wq44ZhdRx3ECwtvrQ4N6JdH3x5ky6x/zbdkhtpr7mDTSJ+
+        egr+ZDiU8Yq8qoQaM67jZDyyVlpWEev1j5eY9uY=
+X-Google-Smtp-Source: ABdhPJyL0mcRakFrgJhNrkU9sn6cSFUrR5BucNkiLUT4O9W9lDN6NNlc6aJ2wuf3wy7Wz49hLOKbNxVpTznj1Oz4O68=
+X-Received: by 2002:a9d:a2d:: with SMTP id 42mr3773337otg.321.1613668953665;
+ Thu, 18 Feb 2021 09:22:33 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:11af:: with SMTP id 15mr156835ilj.302.1613668886307;
- Thu, 18 Feb 2021 09:21:26 -0800 (PST)
-Date:   Thu, 18 Feb 2021 09:21:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c0ea2805bb9f9056@google.com>
-Subject: UBSAN: shift-out-of-bounds in netlink_recvmsg
-From:   syzbot <syzbot+cdb35bcbfac5f493e2af@syzkaller.appspotmail.com>
-To:     0x7f454c46@gmail.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        fw@strlen.de, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        mkubecek@suse.cz, netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
+References: <20210217195136.195789-1-colin.king@canonical.com>
+In-Reply-To: <20210217195136.195789-1-colin.king@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 18 Feb 2021 18:22:22 +0100
+Message-ID: <CAJZ5v0gOcLu1=Vn5uqRix=JXy2ucHZVDtiPcbMsaSYgrgf7pxg@mail.gmail.com>
+Subject: Re: [PATCH] drivers/base/cpu: remove redundant initialization of
+ variable retval
+To:     Colin King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Feb 17, 2021 at 8:51 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable retval is being initialized with a value that is never read
+> and it is being updated later with a new value.  The initialization is
+> redundant and can be removed.
+>
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/base/cpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index 8f1d6569564c..2e834cd315d8 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -409,7 +409,7 @@ __cpu_device_create(struct device *parent, void *drvdata,
+>                     const char *fmt, va_list args)
+>  {
+>         struct device *dev = NULL;
+> -       int retval = -ENODEV;
 
-syzbot found the following issue on:
+Might as well init it to -ENOMEM and drop the assignment below.
 
-HEAD commit:    b646acd5 net: re-solve some conflicts after net -> net-nex..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=129fbe04d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=cdb35bcbfac5f493e2af
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bd2e5ad00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12c388f2d00000
-
-The issue was bisected to:
-
-commit b911c97c7dc771633c68ea9b8f15070f8af3d323
-Author: Florian Westphal <fw@strlen.de>
-Date:   Sat Feb 13 00:00:01 2021 +0000
-
-    mptcp: add netlink event support
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=163d5724d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=153d5724d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=113d5724d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cdb35bcbfac5f493e2af@syzkaller.appspotmail.com
-Fixes: b911c97c7dc7 ("mptcp: add netlink event support")
-
-================================================================================
-UBSAN: shift-out-of-bounds in net/netlink/af_netlink.c:160:19
-shift exponent 32 is too large for 32-bit type 'int'
-CPU: 1 PID: 8437 Comm: syz-executor324 Not tainted 5.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- netlink_group_mask net/netlink/af_netlink.c:160 [inline]
- netlink_group_mask net/netlink/af_netlink.c:158 [inline]
- netlink_recvmsg.cold+0x1a/0x1f net/netlink/af_netlink.c:1992
- sock_recvmsg_nosec net/socket.c:886 [inline]
- sock_recvmsg net/socket.c:904 [inline]
- sock_recvmsg net/socket.c:900 [inline]
- ____sys_recvmsg+0x2c4/0x600 net/socket.c:2571
- ___sys_recvmsg+0x127/0x200 net/socket.c:2613
- __sys_recvmsg+0xe2/0x1a0 net/socket.c:2649
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x444bf9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f68a1130318 EFLAGS: 00000246 ORIG_RAX: 000000000000002f
-RAX: ffffffffffffffda RBX: 00000000004ca408 RCX: 0000000000444bf9
-RDX: 0000000000000002 RSI: 0000000020000440 RDI: 0000000000000003
-RBP: 00000000004ca400 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 8001000a373e1537
-R13: 00007ffc4d11dcaf R14: 00007f68a1130400 R15: 0000000000022000
-================================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> +       int retval;
+>
+>         dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+>         if (!dev) {
+> --
