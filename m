@@ -2,90 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781ED31EEBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CE631EEC8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhBRSre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:47:34 -0500
-Received: from smtp.asem.it ([151.1.184.197]:61030 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233644AbhBRQdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:33:22 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000816795.MSG 
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 17:32:08 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 18
- Feb 2021 17:32:06 +0100
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Thu, 18 Feb 2021 17:32:06 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>
-CC:     <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v1] watchdog: wdat: add param. to start wdog on module insertion
-Date:   Thu, 18 Feb 2021 17:32:00 +0100
-Message-ID: <20210218163200.1154812-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.25.1
+        id S233032AbhBRSry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:47:54 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:39313 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233714AbhBRQeA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:34:00 -0500
+Date:   Thu, 18 Feb 2021 16:33:10 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613665996;
+        bh=Xmnm25F8dJtzGykuyOII2OVkiSzMXlVCWeP0bkrqxBQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=TqLoqE2RZew5co5AF2tHpaZ018klI3mwIBQ5srfuK37W3zT0oo4WfBy3dBCK3MavL
+         AXdUw/NZZeirXv4r7beTDYDNJJbjpSOXUN7bjoWuwqPpEwPxUHL0t9gV5LuERiTA0Q
+         RbioLWjVbikyuV7F4RM0ZY8onHxGdVQPI6ERa0AI=
+To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        straube.linux@gmail.com, dan.carpenter@oracle.com,
+        d.straghkov@ispras.ru, tiwai@suse.de
+From:   Kurt Manucredo <fuzzybritches@protonmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Kurt Manucredo <fuzzybritches@protonmail.com>
+Reply-To: Kurt Manucredo <fuzzybritches@protonmail.com>
+Subject: [PATCH] Staging: rtl8723bs: code-style fix
+Message-ID: <20210218163204.7-1-fuzzybritches@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F17.602E9687.0048,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the parameter "start_enable" to start the watchdog
-directly on module insertion.
-
-In an embedded system, for some applications, the watchdog
-must be activated as soon as possible.
-
-In some embedded x86 boards the watchdog can be activated
-directly by the BIOS (with an appropriate setting of the
-BIOS setup). In other cases, when this BIOS feature is not
-present, the possibility to start the watchdog immediately
-after the module loading can be very useful.
-
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+Signed-off-by: Kurt Manucredo <fuzzybritches@protonmail.com>
 ---
- drivers/watchdog/wdat_wdt.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/watchdog/wdat_wdt.c b/drivers/watchdog/wdat_wdt.c
-index cec7917790e5..b990d0197d2e 100644
---- a/drivers/watchdog/wdat_wdt.c
-+++ b/drivers/watchdog/wdat_wdt.c
-@@ -61,6 +61,12 @@ module_param(timeout, int, 0);
- MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds (default="
- 		 __MODULE_STRING(WDAT_DEFAULT_TIMEOUT) ")");
- 
-+#define START_DEFAULT	0
-+static int start_enabled = START_DEFAULT;
-+module_param(start_enabled, int, 0);
-+MODULE_PARM_DESC(start_enabled, "Watchdog is started on module insertion "
-+		 "(default=" __MODULE_STRING(START_DEFAULT) ")");
-+
- static int wdat_wdt_read(struct wdat_wdt *wdat,
- 	 const struct wdat_instruction *instr, u32 *value)
- {
-@@ -437,6 +443,8 @@ static int wdat_wdt_probe(struct platform_device *pdev)
- 	}
- 
- 	wdat_wdt_boot_status(wdat);
-+	if (start_enabled)
-+		wdat_wdt_start(&wdat->wdd);
- 	wdat_wdt_set_running(wdat);
- 
- 	ret = wdat_wdt_enable_reboot(wdat);
--- 
-2.25.1
+Checkpatch complains the constant needs to be on the right side of the
+comparison. The preferred way is:=20
+
+ drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/stagi=
+ng/rtl8723bs/core/rtw_wlan_util.c
+index 089c6ec19373..96feced698ac 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
++++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
+@@ -2146,7 +2146,7 @@ void rtw_get_sec_iv(struct adapter *padapter, u8 *pcu=
+r_dot11txpn, u8 *StaAddr)
+ =09struct security_priv *psecpriv =3D &padapter->securitypriv;
+=20
+ =09memset(pcur_dot11txpn, 0, 8);
+-=09if (StaAddr =3D=3D NULL)
++=09if (!StaAddr)
+ =09=09return;
+ =09psta =3D rtw_get_stainfo(&padapter->stapriv, StaAddr);
+ =09DBG_871X("%s(): StaAddr: %02x %02x %02x %02x %02x %02x\n",
+--=20
+2.20.1
+
 
