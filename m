@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844B231EA6C
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:29:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E350731EA97
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233429AbhBRNXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:23:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38840 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbhBRLov (ORCPT
+        id S229912AbhBRNvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:51:44 -0500
+Received: from fieber.vanmierlo.com ([84.243.197.177]:40423 "EHLO
+        kerio9.vanmierlo.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230283AbhBRL60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:44:51 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87BCC061756;
-        Thu, 18 Feb 2021 03:43:26 -0800 (PST)
-Date:   Thu, 18 Feb 2021 11:43:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613648605;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EXPnHH1CtmNgS2wIvrc2S+SjWgyqtPea6WfzNkaDZHg=;
-        b=RF6unuoeOU1vZcfOK+oAgTC4EQQn8EYc9BpEXAoZ+qufZzHtrkbmsX+IQDScgy8ol98a4/
-        yli+0jGK16bHi821/QJKuFBMtsltKDJAfu8FSQnTW+utQM5DvrNTa8GOhcPx1Ma3GirIuM
-        S9kCr64eAi6wDDF9AJWlF39srQTzmhN53Xcxv1v8AiDkq3PVEsMepU9ek0IVg9QmtHwieh
-        J07X+/Dh86q9mIcl/epv0raKATJlI/SNSizl4BePQ83UZkM8FCLumsha0BhQDTnG18x8tx
-        1vifEg5N8tvvLnd1dC0YfykF4es8JMrudqhxdociKoe+Qj00z3KkqpAfq2KF1g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613648605;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EXPnHH1CtmNgS2wIvrc2S+SjWgyqtPea6WfzNkaDZHg=;
-        b=hWF7khrEh28voazgw41ODHMT6Kzt8pQlVOWTrfRAjr8TK/umB5X10igWQsBhqAc/UfeErc
-        V8HLe40T/EMa9dBw==
-From:   "irqchip-bot for Greg Kroah-Hartman" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-kernel@vger.kernel.org
-Subject: [irqchip: irq/irqchip-next] debugfs: do not attempt to create a new
- file before the filesystem is initalized
-Cc:     Michael Walle <michael@walle.cc>, Marc Zyngier <maz@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        tglx@linutronix.de
-In-Reply-To: <20210218100818.3622317-2-gregkh@linuxfoundation.org>
-References: <20210218100818.3622317-2-gregkh@linuxfoundation.org>
+        Thu, 18 Feb 2021 06:58:26 -0500
+X-Footer: dmFubWllcmxvLmNvbQ==
+Received: from roundcube.vanmierlo.com ([192.168.37.37])
+        (authenticated user m.brock@vanmierlo.com)
+        by kerio9.vanmierlo.com (Kerio Connect 9.3.1) with ESMTPA;
+        Thu, 18 Feb 2021 11:49:42 +0100
 MIME-Version: 1.0
-Message-ID: <161364860439.20312.9107550617720513848.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 18 Feb 2021 11:49:42 +0100
+From:   Maarten Brock <m.brock@vanmierlo.com>
+To:     =?UTF-8?Q?M=C3=A5ns_Rullg=C3=A5rd?= <mans@mansr.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: 8250: add option to disable registration of
+ legacy ISA ports
+In-Reply-To: <yw1xwnvtcki0.fsf@mansr.com>
+References: <20210128172244.22859-1-mans@mansr.com>
+ <YBam2m2VMowH5Yth@kroah.com> <yw1xwnvtcki0.fsf@mansr.com>
+Message-ID: <e0ac606ecc9f116f41fe4fccbf67a6bb@vanmierlo.com>
+X-Sender: m.brock@vanmierlo.com
+User-Agent: Roundcube Webmail/1.3.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/irqchip-next branch of irqchip:
+On 2021-01-31 14:18, Måns Rullgård wrote:
+>> What userspace visable change will be caused by this?
+> 
+> There won't be /dev/ttyS devices for ports that don't exist.
 
-Commit-ID:     fb0757f54bc9259c4c67907fd97ca3ad109d3f6f
-Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/fb0757f54bc9259c4c67907fd97ca3ad109d3f6f
-Author:        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-AuthorDate:    Thu, 18 Feb 2021 11:08:18 +01:00
-Committer:     Marc Zyngier <maz@kernel.org>
-CommitterDate: Thu, 18 Feb 2021 11:39:18 
+Oh yes, please!
 
-debugfs: do not attempt to create a new file before the filesystem is initalized
+That would mean I can create ttyS2 and upward while keeping ttyPS0 and 
+ttyPS1 (which invaded the serial<N> alias namespace) at the lower 
+numbers.
 
-Some subsystems want to add debugfs files at early boot, way before
-debugfs is initialized.  This seems to work somehow as the vfs layer
-will not allow it to happen, but let's be explicit and test to ensure we
-are properly up and running before allowing files to be created.
+>> Will ports get renumbered?
+> 
+> Not if they had predictable numbers to begin with.
 
-Reported-by: Michael Walle <michael@walle.cc>
-Reported-by: Marc Zyngier <maz@kernel.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Link: https://lore.kernel.org/r/20210218100818.3622317-2-gregkh@linuxfoundation.org
----
- fs/debugfs/inode.c | 3 +++
- 1 file changed, 3 insertions(+)
+It is hard to make predictable numbers with the backward operating 
+serial<N> aliases in the device tree. It makes relations in the wrong 
+direction.
 
-diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
-index bbeb563..86c7f04 100644
---- a/fs/debugfs/inode.c
-+++ b/fs/debugfs/inode.c
-@@ -318,6 +318,9 @@ static struct dentry *start_creating(const char *name, struct dentry *parent)
- 	if (!(debugfs_allow & DEBUGFS_ALLOW_API))
- 		return ERR_PTR(-EPERM);
- 
-+	if (!debugfs_initialized())
-+		return ERR_PTR(-ENOENT);
-+
- 	pr_debug("creating file '%s'\n", name);
- 
- 	if (IS_ERR(parent))
+If a system has two ttyPS<N> uarts (xilinx_uartps) and needs them at 
+ttyPS0 and ttyPS1 (or at least <=ttyPS9, due to another bug in 
+start_getty) and 10 ttyS<N> (8250) you can configure the kernel for 10 
+8250 devices and give 8 of them the predictable ttyS2 to ttyS9. The last 
+two will get the remaining ttyS0 and ttyS1. You cannot assign them their 
+number, because the serial0 and serial1 alias are required for the 
+ttyPS0 and ttyPS1.
+
+However with this option it would be possible to configure for 12 8250 
+devices and not use nor see ttyS0 and ttyS1.
+
+The best option would of course be to not even instantiate kernel 
+drivers for non-existing devices.
+
+Maarten
+
