@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE82D31EFC6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:25:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A079131EFD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbhBRTXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:23:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21190 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231411AbhBRSaa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:30:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613672942;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=epfvCT9jrqIjj7Il6iW7EYzFb2mh6dSz2os3H/L544Q=;
-        b=cK9i2BAOH/bU7A31lKPu8ia7c3Lxqy9rnQjA3fIG3bM+q3iULMBh2oxNkdJJjEPvfsdQcQ
-        SfvhYUW3uDDZQHwb6noGdvWe1nPu7/C21IXVLSNvnUn9Hq19RKJfv/e0ZSwtPQAtCuUpvS
-        JcmJjxHM8PlldBf2m5gCaZWaLmJQavg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-349-yNzgP-9CMeWpRbduO2UB-g-1; Thu, 18 Feb 2021 13:29:01 -0500
-X-MC-Unique: yNzgP-9CMeWpRbduO2UB-g-1
-Received: by mail-wr1-f71.google.com with SMTP id b3so1340331wro.8
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:29:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=epfvCT9jrqIjj7Il6iW7EYzFb2mh6dSz2os3H/L544Q=;
-        b=ub2agenkQpmMhFx3epE2SJJkJv+wgVn4hlrFeDMMcIrYjLiMLbv1IZJCSRz72z+8yw
-         lwjh+ygbZzWfxZIAj2I5Ba85vvoSDX9myKMQ17QvPOG6KDBZE3YQ4jPtERsOhMxYW07x
-         /uNftfeqnpO4buuuZOl84PtncNnI+dPmtcLUjPAhLtwQegCt4wx7xMV7jX/0JnsKFHMu
-         HNSi30DdU++eQVPFBCKLYMfb8FusunzZOsVsfR3Cd3TxRL22e41cMU7cHPCvt2ijRp9P
-         1HC+Wd80J89UGP/JUqOVG+wmY3AKH7+MIrQWkh9ktEECrawhU4LiYf4QxfRJSZ9dugmF
-         LjWQ==
-X-Gm-Message-State: AOAM532B/Dv2tJdIH/vHhy9kA3+4TOgYWWeZ6xTDbttW14bZNXjn+OZ7
-        oaIIi58yS7Pg12NhCiS6QCuNzb964wCbv+XxHhkW5dUj9895gMbrGtFSxq+NB8MUHTuDfOw4wHP
-        w+EGEP6F87DKyQhaT91OggBTb
-X-Received: by 2002:adf:a4c8:: with SMTP id h8mr5713590wrb.286.1613672939536;
-        Thu, 18 Feb 2021 10:28:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzH3Meos3s1fNj1v73OLg4ed8bjMQK5hBBhuPoMsOZj43SGrOpZoupj3jdijWQmjlXNAFf1Bw==
-X-Received: by 2002:adf:a4c8:: with SMTP id h8mr5713576wrb.286.1613672939309;
-        Thu, 18 Feb 2021 10:28:59 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d23sm9246030wmd.11.2021.02.18.10.28.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 10:28:58 -0800 (PST)
-Subject: Re: [PATCH] KVM: nSVM: prepare guest save area while is_guest_mode is
- true
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, jroedel@suse.de,
-        mlevitsk@redhat.com
-References: <20210218162831.1407616-1-pbonzini@redhat.com>
- <YC6m8xoRUDtn3V+y@google.com>
- <cf1b338c-68bc-6e7e-1a10-98bc653d34ce@redhat.com>
- <YC6uGgKgImRnuhTA@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <50bcc6e3-5f6e-32a3-6975-db7d857e88f3@redhat.com>
-Date:   Thu, 18 Feb 2021 19:28:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232391AbhBRT17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:27:59 -0500
+Received: from mga02.intel.com ([134.134.136.20]:47036 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232417AbhBRSiT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:38:19 -0500
+IronPort-SDR: OaEJHUpjNaMZwe5N5kbFFW2c7vyWdzewFPtA8KVCuevQCLgaM3QrYu5eazSE4ixungQ6oyGOwT
+ i8ucj0sJGA8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="170740653"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="170740653"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 10:30:26 -0800
+IronPort-SDR: K3prdcyMQiILvxrHbSlBhLyrBhdsusQb3Ie+7kLhrXL3PlDG9elq+aDuhFcd4h4iwFlph3eae9
+ lRpPRtrwhOkQ==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="428315976"
+Received: from schen9-mobl.amr.corp.intel.com ([10.254.101.217])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 10:30:26 -0800
+Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
+ tree
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <c3ffa2cb-cb2c-20b7-d722-c875934992e9@linux.intel.com>
+Date:   Thu, 18 Feb 2021 10:30:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <YC6uGgKgImRnuhTA@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/21 19:12, Sean Christopherson wrote:
->> Yeah, the problem is I don't understand why 06fc7772690d fixed things in 11
->> year old KVM instead of breaking them, because effectively this patch is
->> reverting it.
->
-> 11 year old KVM didn't grab a different VMCB when updating the intercepts, it
-> had already copied/merged L1's stuff to L0's VMCB, and then updated L0's VMCB
-> regardless of is_nested().
 
-Ok, so the bug was introduced when adding recalc_intercepts, which threw 
-away the intercept manipulations that svm_set_cr0 had done in the 
-meanwhile.  That's commit 384c63684397 ("KVM: SVM: Add function to 
-recalculate intercept masks", 2011-01-12).
 
-That piece of information makes me feel less uneasy about missing 
-something.  recalc_intercepts has been there for a long time, but not as 
-long as 06fc7772690d.
+On 2/18/21 12:24 AM, Michal Hocko wrote:
 
-Paolo
+> 
+> I have already acked this patch in the previous version along with Fixes
+> tag. It seems that my review feedback has been completely ignored also
+> for other patches in this series.
+
+Michal,
+
+My apology.  Our mail system screwed up and there are some mail missing
+from our mail system that I completely missed your mail.  
+Only saw them now after I looked into the lore.kernel.org.
+
+Responding to your comment:
+
+>Have you observed this happening in the real life? I do agree that the
+>threshold based updates of the tree is not ideal but the whole soft
+>reclaim code is far from optimal. So why do we care only now? The
+>feature is essentially dead and fine tuning it sounds like a step back
+>to me.
+
+Yes, I did see the issue mentioned in patch 2 breaking soft limit
+reclaim for cgroup v1.  There are still some of our customers using
+cgroup v1 so we will like to fix this if possible.
+
+For patch 3 regarding the uncharge_batch, it
+is more of an observation that we should uncharge in batch of same node
+and not prompted by actual workload.
+Thinking more about this, the worst that could happen
+is we could have some entries in the soft limit tree that overestimate
+the memory used.  The worst that could happen is a soft page reclaim
+on that cgroup.  The overhead from extra memcg event update could
+be more than a soft page reclaim pass.  So let's drop patch 3
+for now.
+
+Let me know if you will like me to resend patch 1 with the fixes tag
+for commit 4e41695356fb ("memory controller: soft limit reclaim on contention")
+and if there are any changes I should make for patch 2.
+
+Thanks.
+
+Tim
 
