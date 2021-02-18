@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EB231EB32
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACED31EB5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhBRO65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 09:58:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36448 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230112AbhBRMyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:54:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613652819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v2M2f1didXi8qZbKbJNpKDVS3nQGtSjoYLz7GZ8G2oA=;
-        b=ajJ7vi+VZU89eb/Xc0CIb/zbZ8fbz4u0n5nZ1PPyXZB1MjEiPGbcoUjg4gO+pEQzZN5oxY
-        iS9PjZxTlHUPjRgYAoph22HnxcE/HR5nPx62wTdId879+BdncP3cqBdQMzcuRtwfE/kF1G
-        TG8YVslckFPZaRMtiH6w0yE1tk8Rlbw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DEE34ACE5;
-        Thu, 18 Feb 2021 12:53:38 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 13:53:38 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] lib: vsprintf: check for NULL device_node name in
- device_node_string()
-Message-ID: <YC5jUqxphRvyuMEv@alley>
-References: <20210217121543.13010-1-info@metux.net>
- <YC0fCAp6wxJfizD7@smile.fi.intel.com>
+        id S230468AbhBRPOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:14:07 -0500
+Received: from smtp107.iad3a.emailsrvr.com ([173.203.187.107]:55318 "EHLO
+        smtp107.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232420AbhBRM14 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:27:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1613643185;
+        bh=m8t/XvYW9G95yu9XimEdQKxasSEtsFIC/kxyuxGznXQ=;
+        h=Subject:To:From:Date:From;
+        b=yA6Z0QaT4Ycd/kgyfT6p/CRzVhqj+XQlFw/KcCy8Rv4VEoufamI5JAaBYjYlShTd+
+         m3WGGaCUINsdB/RxQN8mR3sGCBtdqyFrL//CM178XYRYvSZPLfRNYxMi3ixwbZ9auN
+         GIfQl1dRBA+9+DyeKv2livU6AHcScfGGC6qBEMFI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1613643185;
+        bh=m8t/XvYW9G95yu9XimEdQKxasSEtsFIC/kxyuxGznXQ=;
+        h=Subject:To:From:Date:From;
+        b=EaDRJM9YUnPRxXAlMwcJ+Q/sy4Z6YrgcX+hS6Va3bRlf8DGNKiQwJnpHne+0VxRx8
+         JhcKzWlIXGnvif/45YEpqcLM+4rsmvbXxkAuvjWHuyKaXVHZ1JNCXuLufgFxwlaZ+B
+         m9MLRLgx4R/Cc7zKtZes/7kUYWcUg9sjCp+YTTdo=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp22.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id F1CB8195C;
+        Thu, 18 Feb 2021 05:13:04 -0500 (EST)
+Subject: Re: [PATCH] drivers: staging: comedi: Fixed side effects from macro
+ definition.
+To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ethan Edwards <ethancarteredwards@gmail.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20210217142008.29699-1-chakravarthikulkarni2021@gmail.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <3c1ddf91-da6c-5620-61e7-1ec453b2aa93@mev.co.uk>
+Date:   Thu, 18 Feb 2021 10:13:04 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC0fCAp6wxJfizD7@smile.fi.intel.com>
+In-Reply-To: <20210217142008.29699-1-chakravarthikulkarni2021@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: d7105027-4594-4034-967a-e94a4fffd174-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-02-17 15:50:00, Andy Shevchenko wrote:
-> On Wed, Feb 17, 2021 at 01:15:43PM +0100, Enrico Weigelt, metux IT consult wrote:
-> > Under rare circumstances it may happen that a device node's name is NULL
-> > (most likely kernel bug in some other place).
+On 17/02/2021 14:20, chakravarthikulkarni wrote:
+> Warning found by checkpatch.pl script.
 > 
-> What circumstances? How can I reproduce this? More information, please!
+> Signed-off-by: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
+> ---
+>   drivers/staging/comedi/comedi.h | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> > In such situations anything
-> > but helpful, if the debug printout crashes, and nobody knows what actually
-> > happened here.
-> > 
-> > Therefore protect it by an explicit NULL check and print out an extra
-> > warning.
+> diff --git a/drivers/staging/comedi/comedi.h b/drivers/staging/comedi/comedi.h
+> index b5d00a006dbb..b2af6a88d389 100644
+> --- a/drivers/staging/comedi/comedi.h
+> +++ b/drivers/staging/comedi/comedi.h
+> @@ -1103,9 +1103,12 @@ enum ni_common_signal_names {
+>   
+>   /* *** END GLOBALLY-NAMED NI TERMINALS/SIGNALS *** */
+>   
+> -#define NI_USUAL_PFI_SELECT(x)	(((x) < 10) ? (0x1 + (x)) : (0xb + (x)))
+> -#define NI_USUAL_RTSI_SELECT(x)	(((x) < 7) ? (0xb + (x)) : 0x1b)
+> -
+> +#define NI_USUAL_PFI_SELECT(x) \
+> +	({ typeof(x) _x = x; \
+> +	 (((_x) < 10) ? (0x1 + (_x)) : (0xb + (_x))); })
+> +#define NI_USUAL_RTSI_SELECT(x)	\
+> +	({ typeof(x) _x = x; \
+> +	 (((_x) < 7) ? (0xb + (_x)) : 0x1b); })
+>   /*
+>    * mode bits for NI general-purpose counters, set with
+>    * INSN_CONFIG_SET_COUNTER_MODE
 > 
-> ...
-> 
-> > +				pr_warn("device_node without name. Kernel bug ?\n");
-> 
-> If it's not once, then it's possible to have log spammed with this, right?
-> 
-> ...
-> 
-> > +				p = "<NULL>";
-> 
-> We have different standard de facto for NULL pointers to be printed. Actually
-> if you wish, you may gather them under one definition (maybe somewhere under
-> printk) and export to everybody to use.
 
-Please, use
+I'd rather not do that because this is intended to be a userspace 
+header.  This change adds GCC extensions and prohibits the use of the 
+macros in constant expressions.
 
-	if (check_pointer(&buf, end, p, spec))
-		return buf;
-
-It will print "(null)" instead of the name. It should be enough
-to inform the user this way. The extra pr_warn() does not help
-much to localize the problem anyway. And it is better to avoid
-recursion in this path.
-
-Best Regards,
-Petr
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
