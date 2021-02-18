@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BC031E920
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6787F31E925
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:49:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231409AbhBRLZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 06:25:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54478 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232591AbhBRKKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:10:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B33B864EAD;
-        Thu, 18 Feb 2021 10:09:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613642999;
-        bh=zaWHyoh91bO/x1e3pm+5Nn3sQ06OCkntg0lilcJqvvQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o/FrMqw7434MBE86fAMPULCgRFDVFfB8HEZiAKOYnTJFaYxVc7/k6gVvjBhh2FLvF
-         KwENkVPEvB+F1DHJneutPYhKdLtBIYvBz5H0TIwvq6kkK3EjVZiwrNc2JdC4KiwfTR
-         KBQezUooyiaV+4WfVkXCm5EGokGUWUMODN11/hME=
-Date:   Thu, 18 Feb 2021 11:09:56 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
- before toggling
-Message-ID: <YC489HGT/yVHykAs@kroah.com>
-References: <20210218100243.32187-1-badhri@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218100243.32187-1-badhri@google.com>
+        id S232045AbhBRL3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 06:29:33 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:37560 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232615AbhBRKLA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:11:00 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R971e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UOtCp5d_1613643012;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOtCp5d_1613643012)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 18 Feb 2021 18:10:16 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mingo@redhat.com
+Cc:     peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] sched/fair: Use true and false for bool variable
+Date:   Thu, 18 Feb 2021 18:10:11 +0800
+Message-Id: <1613643011-114108-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 02:02:43AM -0800, Badhri Jagan Sridharan wrote:
-> When vbus auto discharge is enabled, TCPM can sometimes be faster than
-> the TCPC i.e. TCPM can go ahead and move the port to unattached state
-> (involves disabling vbus auto discharge) before TCPC could effectively
-> discharge vbus to VSAFE0V. This leaves vbus with residual charge and
-> increases the decay time which prevents tsafe0v from being met.
-> This change introduces a new state VBUS_DISCHARGE where the TCPM waits
-> for a maximum of tSafe0V(max) for vbus to discharge to VSAFE0V before
-> transitioning to unattached state and re-enable toggling. If vbus
-> discharges to vsafe0v sooner, then, transition to unattached state
-> happens right away.
-> 
-> Also, while in SNK_READY, when auto discharge is enabled, drive
-> disconnect based on vbus turning off instead of Rp disappearing on
-> CC pins. Rp disappearing on CC pins is almost instanteous compared
-> to vbus decay.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 60 +++++++++++++++++++++++++++++++----
->  1 file changed, 53 insertions(+), 7 deletions(-)
+Fix the following coccicheck warnings:
 
-As this seems to be a bugfix, what commit does it fix?  Should it go to
-stable kernels?  If so, how far back?
+./kernel/sched/fair.c:9504:9-10: WARNING: return of 0/1 in function
+'voluntary_active_balance' with return type bool.
 
-And as this is the merge window, I can't do anything with this until
-5.12-rc1 is out, so be prepared for the delay...
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ kernel/sched/fair.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-thanks,
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 04a3ce2..cf78337 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9501,7 +9501,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 	struct sched_domain *sd = env->sd;
+ 
+ 	if (asym_active_balance(env))
+-		return 1;
++		return true;
+ 
+ 	/*
+ 	 * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
+@@ -9513,13 +9513,13 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 	    (env->src_rq->cfs.h_nr_running == 1)) {
+ 		if ((check_cpu_capacity(env->src_rq, sd)) &&
+ 		    (capacity_of(env->src_cpu)*sd->imbalance_pct < capacity_of(env->dst_cpu)*100))
+-			return 1;
++			return true;
+ 	}
+ 
+ 	if (env->migration_type == migrate_misfit)
+-		return 1;
++		return true;
+ 
+-	return 0;
++	return false;
+ }
+ 
+ static int need_active_balance(struct lb_env *env)
+-- 
+1.8.3.1
 
-greg k-h
