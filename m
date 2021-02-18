@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2710231EEE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AD0331EED1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:49:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhBRSuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:50:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233846AbhBRQoN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:44:13 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83142C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:35:42 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id z15so1657281pfc.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:35:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DqLb1nMq14/rKI2+/NThAnihxh+nHxjLWJAo5ipH1Ws=;
-        b=md44/Px+2SYhg3j59P0MfiNu7AvOT5R8yCXllWmXN1HLCn41bzTgMiigaxhw+qQ3nS
-         8Vl0kNQwvSu/lWr12I2+sryWC9Xsu5ecLXdqdqfE8/yxOTBGxxFYvHwOS/C84LQ1u0hf
-         mxdFswTZrTeNLMuTMil8ktlWYBYm8nzG8PThHZvZefb2zVMvdI7jbE9Dmrv3KnrTtQwO
-         ueDZbeL2tBuyZrjKpfd8+hyNtYkuUHaM8qtrpQZk7M+r7jiRjRqNA0nm6vz7+uQ4OmnZ
-         bRpUeHSkaUqRPHLH8sp5vDA1/z1wHWhL9iuWOUqh/tsixm5v9XUMFTxxUVMRtOZwWXSe
-         M9ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DqLb1nMq14/rKI2+/NThAnihxh+nHxjLWJAo5ipH1Ws=;
-        b=btLFu0Ne9Ox1zbCHrGRyqWoIuwAYqw0KYfsoEGEcrvHynyWTTR3yJJ2ihFaa50AbfP
-         20L0MLm/6csIfEaKuLk49clwkeufLHJzhakUSmo6DncmjjnNoeJYBkCBM4HlYwuJ9qic
-         HxX7393h9Gm1QbOqrvXCFVUemTNJ4MYFdPgy3J0A02uZQZ0/OvPysX7l1YMDykN/gUdB
-         uraUD4hxbUpgOjuyXHUdt3NX7jFJtYET5cC2re0bFvLXFDyVwXmxNBbKgTZRdg96rKmP
-         dLEdjk/aB0rHGcim6qpPTueaeE/JlIAHygXmnioyFPiv+egAQFqyO5lMeTmN1hNUnmwI
-         S42w==
-X-Gm-Message-State: AOAM5311ZZb4VUsNA5v2BJioa9u/EduB1eJCwalQE9nxFIHY/OItDy0v
-        YNE4vhdny0yoeTkNtOArZ9TSwQ==
-X-Google-Smtp-Source: ABdhPJx4qmdTfrJEOoVNnYWhC+COxjc2izCvLNNT+7AllgY3YfPaHqJiw+a2Ps64S8Z5Argnnu8NKw==
-X-Received: by 2002:a63:214e:: with SMTP id s14mr4641755pgm.101.1613666141653;
-        Thu, 18 Feb 2021 08:35:41 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:dc76:757f:9e9e:647c])
-        by smtp.gmail.com with ESMTPSA id q7sm3116401pfb.185.2021.02.18.08.35.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 08:35:40 -0800 (PST)
-Date:   Thu, 18 Feb 2021 08:35:34 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     David Edmondson <dme@dme.org>, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is
- valid
-Message-ID: <YC6XVrWPRQJ7V6Nd@google.com>
-References: <20210218100450.2157308-1-david.edmondson@oracle.com>
- <708f2956-fa0f-b008-d3d2-93067f95783c@redhat.com>
- <cuntuq9ilg4.fsf@dme.org>
- <8f9d4ef7-ddad-160b-2d94-69f4370e8702@redhat.com>
+        id S233128AbhBRSsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:48:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54374 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232296AbhBRQfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:35:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E67F5ACF6;
+        Thu, 18 Feb 2021 16:34:33 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id edd07b5a;
+        Thu, 18 Feb 2021 16:35:36 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH v5] vfs: fix copy_file_range regression in cross-fs copies
+References: <CAOQ4uxj=ZeJ0HYtivP=pg5mSDaiQGU8Fz8qw0Egfa2Ert5Ra7A@mail.gmail.com>
+        <20210218151752.26710-1-lhenriques@suse.de>
+        <CAOQ4uxgO45cqKLRsXBxn04fVkqH483G3ngCtV_gZGHMQDFixig@mail.gmail.com>
+Date:   Thu, 18 Feb 2021 16:35:36 +0000
+In-Reply-To: <CAOQ4uxgO45cqKLRsXBxn04fVkqH483G3ngCtV_gZGHMQDFixig@mail.gmail.com>
+        (Amir Goldstein's message of "Thu, 18 Feb 2021 17:53:33 +0200")
+Message-ID: <87blchibaf.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f9d4ef7-ddad-160b-2d94-69f4370e8702@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021, Paolo Bonzini wrote:
-> On 18/02/21 13:56, David Edmondson wrote:
-> > On Thursday, 2021-02-18 at 12:54:52 +01, Paolo Bonzini wrote:
-> > 
-> > > On 18/02/21 11:04, David Edmondson wrote:
-> > > > When dumping the VMCS, retrieve the current guest value of EFER from
-> > > > the kvm_vcpu structure if neither VM_EXIT_SAVE_IA32_EFER or
-> > > > VM_ENTRY_LOAD_IA32_EFER is set, which can occur if the processor does
-> > > > not support the relevant VM-exit/entry controls.
-> > > 
-> > > Printing vcpu->arch.efer is not the best choice however.  Could we dump
-> > > the whole MSR load/store area instead?
-> > 
-> > I'm happy to do that, and think that it would be useful, but it won't
-> > help with the original problem (which I should have explained more).
-> > 
-> > If the guest has EFER_LMA set but we aren't using the entry/exit
-> > controls, vm_read64(GUEST_IA32_EFER) returns 0, causing dump_vmcs() to
-> > erroneously dump the PDPTRs.
-> 
-> Got it now.  It would sort of help, because while dumping the MSR load/store
-> area you could get hold of the real EFER, and use it to decide whether to
-> dump the PDPTRs.
+Amir Goldstein <amir73il@gmail.com> writes:
 
-EFER isn't guaranteed to be in the load list, either, e.g. if guest and host
-have the same desired value.
+> On Thu, Feb 18, 2021 at 5:16 PM Luis Henriques <lhenriques@suse.de> wrote:
+>>
+>> A regression has been reported by Nicolas Boichat, found while using the
+>> copy_file_range syscall to copy a tracefs file.  Before commit
+>> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+>> kernel would return -EXDEV to userspace when trying to copy a file across
+>> different filesystems.  After this commit, the syscall doesn't fail anymore
+>> and instead returns zero (zero bytes copied), as this file's content is
+>> generated on-the-fly and thus reports a size of zero.
+>>
+>> This patch restores some cross-filesystem copy restrictions that existed
+>> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+>> devices").  Filesystems are still allowed to fall-back to the VFS
+>> generic_copy_file_range() implementation, but that has now to be done
+>> explicitly.
+>>
+>> nfsd is also modified to fall-back into generic_copy_file_range() in case
+>> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+>>
+>> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+>> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+>> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+>> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+>> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+>> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> ---
+>> And v5!  Sorry.  Sure, it makes sense to go through the all the vfs_cfr()
+>> checks first.
+>
+> You missed my other comment on v4...
+>
+> not checking NULL copy_file_range case.
 
-The proper way to retrieve the effective EFER is to reuse the logic in
-nested_vmx_calc_efer(), i.e. look at VM_ENTRY_IA32E_MODE if EFER isn't being
-loaded via VMCS.
+Ah, yeah I did missed it.  I'll follow up with yet another revision.
+
+Cheers,
+-- 
+Luis
