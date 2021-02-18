@@ -2,60 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961FD31E85B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1D731E858
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhBRJw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:52:59 -0500
-Received: from mga09.intel.com ([134.134.136.24]:25393 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhBRIkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:40:45 -0500
-IronPort-SDR: Pf9omYLpZCmuPxENbQj2NP0m8pI4Lwxk0CWFm3OXjaB+1s/FeZVsjWQjYVc7+XpDWL9ol2xJ+g
- nSP/FW48Dghg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="183561541"
-X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
-   d="scan'208";a="183561541"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 00:35:15 -0800
-IronPort-SDR: uwBmf4yGcSmtx7h+yFIaOUYqETNcs87WxE3iddYstACQozLswauYt27Nd7xgxrensaeXIaOJgF
- PRAzgaJt9KCQ==
-X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
-   d="scan'208";a="400405752"
-Received: from cklinger-mobl.ger.corp.intel.com (HELO localhost) ([10.249.38.13])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 00:35:09 -0800
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     lyude@redhat.com, Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>, greg.depoire@gmail.com,
-        Sean Paul <seanpaul@chromium.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Dave Airlie <airlied@redhat.com>
-Subject: Re: [Intel-gfx] [RFC v4 10/11] drm/dp: Extract i915's eDP backlight code into DRM helpers
-In-Reply-To: <355ce12ec69a9b5f20b4a856a40c8abf413be5c0.camel@redhat.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20210208233902.1289693-1-lyude@redhat.com> <20210208233902.1289693-11-lyude@redhat.com> <20210211041540.GI82362@intel.com> <355ce12ec69a9b5f20b4a856a40c8abf413be5c0.camel@redhat.com>
-Date:   Thu, 18 Feb 2021 10:35:05 +0200
-Message-ID: <87mtw1ai4m.fsf@intel.com>
+        id S232272AbhBRJ5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:57:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230380AbhBRIy3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:54:29 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C910BC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:44:33 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id t2so1022416pjq.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ed3oT+OewzwPMtx3xp3F8acYmpBybfyINlaZN6Lx5c4=;
+        b=hqjskiM1dcTdIdLHKY6FqQx9B2WAf4ATIFDry3FEwSvqDP2jExxzydONzGn/fwQJnX
+         1mU63R8Z5HstVm8M/AmDpsq8eSGLxz/wOYPf2pvGICbcgu5djbu6A8epIrNqiJL/Tk04
+         C0L5YDCvtU90evEj2rHHYnZTpD3irmUSfW2Ls7gE4b8pc2u3hPH3lNf7UEnLMT1jEvhQ
+         qA0YH+dIXRH6wwIu9zkYi9VmfIuvngWIP8WAZqJhBzst16PkcT5rTwSTU9aAwI/8bl6J
+         rE2Xj7eXOcr60Geok91+1V8yxSY3uUlKvXPL6AhNQd8k2JazEWfrx0MkyuE3+2otg+3+
+         nKtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ed3oT+OewzwPMtx3xp3F8acYmpBybfyINlaZN6Lx5c4=;
+        b=CzmcDnxmO03ZkSMJxqQUD0GuNnMEYbXDffLp8viRpIXgZT0zSaHB5uEwU+xaM5b9K6
+         R/UuMaNHgfgGwMWeHe+o9NjCVC+ZeS66AaKsbLT0Zrvvcd7/ZebpgjRYlVDyrHTpPlK3
+         ioYz1LdkWpdO1e/wRCIV4Uv9nl1p1yclqvwocCkLsTfqk2SJ1tKHFhmYeOmwT3zdsBQc
+         1rrruxCwtQoCRF07D8K1KXyxTKaOlGUJkVG0AvCeoMqPZF+pTPAX1qUSXYUKVaxlzT9H
+         A1YqA5OxRQcAn3WcPLCdfwurQajNdlUbWehNcLv/GIAGTjbwT0MTl2+JUcVWQpQRxwbI
+         4XQQ==
+X-Gm-Message-State: AOAM532ER2LlgXLeJ7CdrPqjsaswhcQpyo/0r/miMrrZQlgN8Tz+2NMg
+        xlFM+Ef6F0mW9EOcZ0xD5qY=
+X-Google-Smtp-Source: ABdhPJwEXv7DYrOjgQZNRGKO+GCDcYpgQpIRlfSpKHeEhbxRz/SXiEM3Uof1IEQ6CiAy/3tYM5XSRA==
+X-Received: by 2002:a17:902:bd85:b029:e3:11d0:367f with SMTP id q5-20020a170902bd85b02900e311d0367fmr3326951pls.12.1613637872814;
+        Thu, 18 Feb 2021 00:44:32 -0800 (PST)
+Received: from localhost.localdomain ([106.200.12.142])
+        by smtp.gmail.com with ESMTPSA id u20sm4941761pjy.36.2021.02.18.00.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 00:44:32 -0800 (PST)
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Subject: [PATCH v2 1/2] staging: comedi: cast function output to assigned variable type
+Date:   Thu, 18 Feb 2021 14:14:03 +0530
+Message-Id: <20210218084404.16591-1-atulgopinathan@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021, Lyude Paul <lyude@redhat.com> wrote:
-> I think it wouldn't be a bad idea to just address this with a followup series
-> instead and use the old DRM_DEBUG_* macros in the mean time.
+Fix the following warning generated by sparse:
 
-aux->dev is there, could also use dev_dbg et al. in the mean time. They
-handle NULL dev gracefully too if the driver didn't set that.
+drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
+drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
+drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
 
-BR,
-Jani.
+compat_ptr() has a return type of "void __user *"
+as defined in "include/linux/compat.h"
 
+cmd->chanlist is of type "unsigned int *" as defined
+in drivers/staging/comedi/comedi.h" in struct
+comedi_cmd.
+
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+---
+ drivers/staging/comedi/comedi_fops.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+index e85a99b68f31..fc4ec38012b4 100644
+--- a/drivers/staging/comedi/comedi_fops.c
++++ b/drivers/staging/comedi/comedi_fops.c
+@@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+ 	cmd->scan_end_arg = v32.scan_end_arg;
+ 	cmd->stop_src = v32.stop_src;
+ 	cmd->stop_arg = v32.stop_arg;
+-	cmd->chanlist = compat_ptr(v32.chanlist);
++	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+ 	cmd->chanlist_len = v32.chanlist_len;
+ 	cmd->data = compat_ptr(v32.data);
+ 	cmd->data_len = v32.data_len;
 -- 
-Jani Nikula, Intel Open Source Graphics Center
+2.27.0
+
