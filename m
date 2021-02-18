@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E705031EBF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F9F31EBFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:05:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbhBRP7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:59:49 -0500
-Received: from muru.com ([72.249.23.125]:35044 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231764AbhBRN05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:26:57 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id CBEA2814A;
-        Thu, 18 Feb 2021 13:24:56 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Suman Anna <s-anna@ti.com>, Tero Kristo <kristo@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Yongqin Liu <yongqin.liu@linaro.org>
-Subject: [PATCH] soc: ti: omap-prm: Fix occasional abort on reset deassert for dra7 iva
-Date:   Thu, 18 Feb 2021 15:24:26 +0200
-Message-Id: <20210218132426.46155-1-tony@atomide.com>
-X-Mailer: git-send-email 2.30.1
+        id S232604AbhBRQC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:02:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229745AbhBRNax (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:30:53 -0500
+Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C046DC061788
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:29:31 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 5984A3FA55;
+        Thu, 18 Feb 2021 13:24:58 +0000 (UTC)
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-18-marcan@marcan.st>
+ <20210215180652.tbccd5dhsfjpdayp@kozik-lap>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH v2 17/25] tty: serial: samsung_tty: Separate S3C64XX ops
+ structure
+Message-ID: <4475513e-ffe5-6064-d37e-8dbc16805dc7@marcan.st>
+Date:   Thu, 18 Feb 2021 22:24:55 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20210215180652.tbccd5dhsfjpdayp@kozik-lap>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On reset deassert, we must wait a bit after the rstst bit change before
-we allow clockdomain autoidle again. Otherwise we get the following oops
-sometimes on dra7 with iva:
+On 16/02/2021 03.06, Krzysztof Kozlowski wrote:
+> On Mon, Feb 15, 2021 at 09:17:05PM +0900, Hector Martin wrote:
+>> +static void s3c64xx_serial_shutdown(struct uart_port *port)
+>> +{
+>> +	struct s3c24xx_uart_port *ourport = to_ourport(port);
+>> +
+>> +	free_irq(port->irq, ourport);
+>> +
+>> +	wr_regl(port, S3C64XX_UINTP, 0xf);
+>> +	wr_regl(port, S3C64XX_UINTM, 0xf);
+>> +
+>> +	ourport->tx_enabled = 0;
+>> +	ourport->tx_mode = 0;
+>> +	ourport->rx_enabled = 0;
+> 
+> For S3C64xx type this is not equivalent: the assignments were
+> happening before free_irq() and wr_regl(). Honestly I don't know whether
+> it matters (except some barriers coming from these functions) but please
+> do not change the order of code in this patch. If needed, the
+> re-ordering should be a patch on its own. With explanation why.
 
-Unhandled fault: imprecise external abort (0x1406) at 0x00000000
-44000000.ocp:L3 Standard Error: MASTER MPU TARGET IVA_CONFIG (Read Link):
-At Address: 0x0005A410 : Data Access in User mode during Functional access
-Internal error: : 1406 [#1] SMP ARM
-...
-(sysc_write_sysconfig) from [<c0782cb0>] (sysc_enable_module+0xcc/0x260)
-(sysc_enable_module) from [<c0782f0c>] (sysc_runtime_resume+0xc8/0x174)
-(sysc_runtime_resume) from [<c0a3e1ac>] (genpd_runtime_resume+0x94/0x224)
-(genpd_runtime_resume) from [<c0a33f0c>] (__rpm_callback+0xd8/0x180)
+Honestly, I think if anything the masking should happen first (to make 
+sure no IRQs go off), but at this point it's probably better to play it 
+safe and not introduce any logic changes, so I've moved the assignments 
+first to retain the old behavior.
 
-It is unclear what all devices this might affect, but presumably other
-devices with the rstst bit too can be affected. So let's just enable the
-delay for all the devices with rstst bit for now. Later on we may want to
-limit the list to the know affected devices if needed.
+> Make the s3c24xx_serial_ops const as well.
 
-Fixes: d30cd83f6853 ("soc: ti: omap-prm: add support for denying idle for reset clockdomain")
-Reported-by: Yongqin Liu <yongqin.liu@linaro.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/soc/ti/omap_prm.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Done for v3, thanks.
 
-diff --git a/drivers/soc/ti/omap_prm.c b/drivers/soc/ti/omap_prm.c
---- a/drivers/soc/ti/omap_prm.c
-+++ b/drivers/soc/ti/omap_prm.c
-@@ -830,8 +830,12 @@ static int omap_reset_deassert(struct reset_controller_dev *rcdev,
- 		       reset->prm->data->name, id);
- 
- exit:
--	if (reset->clkdm)
-+	if (reset->clkdm) {
-+		/* At least dra7 iva needs a delay before clkdm idle */
-+		if (has_rstst)
-+			udelay(1);
- 		pdata->clkdm_allow_idle(reset->clkdm);
-+	}
- 
- 	return ret;
- }
 -- 
-2.30.1
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
