@@ -2,93 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD9F31EEA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:46:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A932331EE99
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhBRSpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:45:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47571 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231243AbhBRQaF (ORCPT
+        id S232729AbhBRSpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:45:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233019AbhBRQ3n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:30:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613665719;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=7n6Dv7TL968Ih5U8eggCJpLl9IZAG+GVZ7m57WR0dUw=;
-        b=DpNOQ1THIN/xINRnoWROYFt0krNk11q0q9JfhJT2e/DPs91vI1QlYg2aNx1gz3VOIlJ6b0
-        ct0GXRxT6wp4Hb1znWxDtybSV3ZB1Rx0bmZymw6wztlMbypRQz+Ww3/mT2zZwKVN2Zpee1
-        QkOsf393L0Vu4Nd0hLgIdOKdaoez17c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-NcuK9xVoObOOMUB8lotdwA-1; Thu, 18 Feb 2021 11:28:34 -0500
-X-MC-Unique: NcuK9xVoObOOMUB8lotdwA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71EC980196C;
-        Thu, 18 Feb 2021 16:28:32 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EC39C5C1C4;
-        Thu, 18 Feb 2021 16:28:31 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     jroedel@suse.de, seanjc@google.com, mlevitsk@redhat.com
-Subject: [PATCH] KVM: nSVM: prepare guest save area while is_guest_mode is true
-Date:   Thu, 18 Feb 2021 11:28:31 -0500
-Message-Id: <20210218162831.1407616-1-pbonzini@redhat.com>
+        Thu, 18 Feb 2021 11:29:43 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8254EC061574;
+        Thu, 18 Feb 2021 08:28:59 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id hs11so6718263ejc.1;
+        Thu, 18 Feb 2021 08:28:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y38daONDwdDmDv1VoddeHBWWftl202hO6P8yucZxYa8=;
+        b=iNFjWjKl+LQN0COFhBnybPiIzwQZeq8Ix9Q6VeVsYt0rK/aNZ2CJ8MGnct0Nn2Uq44
+         HkSGMORn3xukzFLyjCcoKGIp5LxBAd6UeElElN4KqyH6chlqEH2OTZWAMVZey9T/m2ws
+         z9wIkKJaekgRy6SOjUdAjB3t3H8GCoyK4yI0XjwpQmOi4Mdm4DvieCwmo4GzDqp5788B
+         Eg6Y8VCfYsymemfvGfC7VGF7AJty6+2K26GYFtEdYuZhHrdXANbWixTJG329KJFpE8HM
+         Szr4l+twMHlN4WuxLmvOo9yhavF5EE/XWlSHyHrQF+UY3xBcyp9/PSYQQBciIvSR31Y0
+         hq7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y38daONDwdDmDv1VoddeHBWWftl202hO6P8yucZxYa8=;
+        b=Y5o19VpDbqcVFzF6J2Z31otZo0oyeoh2j+6sEpRROLv2GEH68oukY4iezokurCkK8Q
+         gmLQVLfZVwEWdaRgu5nHmRjj3k63FGbuCet0TROfeJGy1vxjlPq2JZkxFEX1E+PETmJG
+         nMRtNB8HbEmDRJr15++DG2VathV2Xw+A37755PtuMAIxateklFv/rWjOMsuRV6sJ968i
+         T+mqjkHsqwjfK4nLsGCTDyKni1RIevgCx6zkYp9Fr7d02taKqt9ARW74dwx+I6nSQfz9
+         iaEekpUT0dNolVKnc8ywBJd0EiMS0Y7BHATtktzSTDvU6Tfua0YGuJCEChcL5wdUJgeu
+         qG+w==
+X-Gm-Message-State: AOAM5313l5uHZwB8VCHhQAiunjfjbyWu6fR3x23LFMe96v7oVeArCs5B
+        Xn0R5RG6suRumiQQ1qYrD6SpXqoeA8hOas6y+ls=
+X-Google-Smtp-Source: ABdhPJzGgUkLYZUEL1Zpo08T7oMdth0EfHuMaJ6hNGLf8X0W8W6hosNZC+ES+g1w9t5wa73zBypNYGQnlkbDPFG7yko=
+X-Received: by 2002:a17:907:35ca:: with SMTP id ap10mr4739637ejc.451.1613665738066;
+ Thu, 18 Feb 2021 08:28:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <CAOQ4uxii=7KUKv1w32VbjkwS+Z1a0ge0gezNzpn_BiY6MFWkpA@mail.gmail.com>
+ <20210217172654.22519-1-lhenriques@suse.de> <CAN-5tyHVOphSkp3n+V=1gGQ40WNZGHQURSMMdFBS3jRVGfEXhA@mail.gmail.com>
+ <CAOQ4uxi08oG9=Oadvt6spA9+zA=dcb-UK8AL-+o2Fn3d57d7iw@mail.gmail.com>
+In-Reply-To: <CAOQ4uxi08oG9=Oadvt6spA9+zA=dcb-UK8AL-+o2Fn3d57d7iw@mail.gmail.com>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Thu, 18 Feb 2021 11:28:47 -0500
+Message-ID: <CAN-5tyExn=N6ii3vK3La9gS_XncrhOqJ5E7QU-T9Tak+EbajLg@mail.gmail.com>
+Subject: Re: [PATCH v3] vfs: fix copy_file_range regression in cross-fs copies
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Luis Henriques <lhenriques@suse.de>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now, enter_svm_guest_mode is calling nested_prepare_vmcb_save and
-nested_prepare_vmcb_control.  This results in is_guest_mode being false
-until the end of nested_prepare_vmcb_control.
+On Thu, Feb 18, 2021 at 1:48 AM Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> On Thu, Feb 18, 2021 at 7:33 AM Olga Kornievskaia <aglo@umich.edu> wrote:
+> >
+> > On Wed, Feb 17, 2021 at 3:30 PM Luis Henriques <lhenriques@suse.de> wrote:
+> > >
+> > > A regression has been reported by Nicolas Boichat, found while using the
+> > > copy_file_range syscall to copy a tracefs file.  Before commit
+> > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> > > kernel would return -EXDEV to userspace when trying to copy a file across
+> > > different filesystems.  After this commit, the syscall doesn't fail anymore
+> > > and instead returns zero (zero bytes copied), as this file's content is
+> > > generated on-the-fly and thus reports a size of zero.
+> > >
+> > > This patch restores some cross-filesystems copy restrictions that existed
+> > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> > > devices").  It also introduces a flag (COPY_FILE_SPLICE) that can be used
+> > > by filesystems calling directly into the vfs copy_file_range to override
+> > > these restrictions.  Right now, only NFS needs to set this flag.
+> > >
+> > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > > ---
+> > > Ok, I've tried to address all the issues and comments.  Hopefully this v3
+> > > is a bit closer to the final fix.
+> > >
+> > > Changes since v2
+> > > - do all the required checks earlier, in generic_copy_file_checks(),
+> > >   adding new checks for ->remap_file_range
+> > > - new COPY_FILE_SPLICE flag
+> > > - don't remove filesystem's fallback to generic_copy_file_range()
+> > > - updated commit changelog (and subject)
+> > > Changes since v1 (after Amir review)
+> > > - restored do_copy_file_range() helper
+> > > - return -EOPNOTSUPP if fs doesn't implement CFR
+> > > - updated commit description
+> >
+> > In my testing, this patch breaks NFS server-to-server copy file.
+>
+> Hi Olga,
+>
+> Can you please provide more details on the failed tests.
+>
+> Does it fail on the client between two nfs mounts or does it fail
+> on the server? If the latter, between which two filesystems on the server?
+>
 
-This is a problem because nested_prepare_vmcb_save can in turn cause
-changes to the intercepts and these have to be applied to the "host VMCB"
-(stored in svm->nested.hsave) and then merged with the VMCB12 intercepts
-into svm->vmcb.
+It was a pilot error. V3 worked. I'm having some other issues with
+server to server copy code but they seem to be unrelated to this. I
+will test the new v6 versions when it comes out.
 
-In particular, without this change we forget to set the CR0 read and CR0
-write intercepts when running a real mode L2 guest with NPT disabled.
-The guest is therefore able to see the CR0.PG bit that KVM sets to
-enable "paged real mode".  This patch fixes the svm.flat mode_switch
-test case with npt=0.  There are no other problematic calls in
-nested_prepare_vmcb_save.
-
-The bug is present since commit 06fc7772690d ("KVM: SVM: Activate nested
-state only when guest state is complete", 2010-04-25).  Unfortunately,
-it is not clear from the commit message what issue exactly led to the
-change back then.  It was probably related to svm_set_cr0 however because
-the patch series cover letter[1] mentioned lazy FPU switching.
-
-[1] https://lore.kernel.org/kvm/1266493115-28386-1-git-send-email-joerg.roedel@amd.com/
-
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index 92d3aaaac612..35891d9a1099 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -469,8 +469,8 @@ int enter_svm_guest_mode(struct vcpu_svm *svm, u64 vmcb12_gpa,
- 
- 	svm->nested.vmcb12_gpa = vmcb12_gpa;
- 	load_nested_vmcb_control(svm, &vmcb12->control);
--	nested_prepare_vmcb_save(svm, vmcb12);
- 	nested_prepare_vmcb_control(svm);
-+	nested_prepare_vmcb_save(svm, vmcb12);
- 
- 	ret = nested_svm_load_cr3(&svm->vcpu, vmcb12->save.cr3,
- 				  nested_npt_enabled(svm));
--- 
-2.26.2
-
+> Thanks,
+> Amir.
