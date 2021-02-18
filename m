@@ -2,55 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0118F31E645
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830C331E649
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhBRGV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 01:21:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37674 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231865AbhBRGCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:02:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27CF7AF4F;
-        Thu, 18 Feb 2021 06:01:10 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 07:01:06 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] mm: Make alloc_contig_range handle in-use hugetlb
- pages
-Message-ID: <20210218060106.GA3375@localhost.localdomain>
-References: <20210217100816.28860-1-osalvador@suse.de>
- <20210217100816.28860-3-osalvador@suse.de>
- <YC0xAmuJLJ6yNbCD@dhcp22.suse.cz>
- <66332742e9f44697212f25061790291e@suse.de>
- <YC03Pmb6/ePK2UPn@dhcp22.suse.cz>
+        id S230415AbhBRGXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 01:23:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22044 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231992AbhBRGGw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 01:06:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613628320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I4q+YxVSVW16DE0+d+Y+BYB1zXwlSir3yUCLZoTFOt0=;
+        b=A76W3x/CdJM6JkRrA0Hma9N2NumsfVZquFLawAFapLZniQEU+dv8N3u2/sf1Ob/aK2Wifa
+        sWM0SjJftBt/tjqGwjy69UETknZiDiTVdlCxEroSuQZMWQmJ0/NEQeWLnBCW3EqlM3hAXI
+        kNGXtJdHoh35plELRDb0ORyCdrbSrGA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-27-PZmTWchaOh2HvEa0I-vBkg-1; Thu, 18 Feb 2021 01:05:15 -0500
+X-MC-Unique: PZmTWchaOh2HvEa0I-vBkg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C659E801965;
+        Thu, 18 Feb 2021 06:05:12 +0000 (UTC)
+Received: from [10.72.13.28] (ovpn-13-28.pek2.redhat.com [10.72.13.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BFAFC6A03D;
+        Thu, 18 Feb 2021 06:05:00 +0000 (UTC)
+Subject: Re: [PATCH] arm64: defconfig: enable modern virtio pci device
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Cc:     SoC Team <soc@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-xtensa@linux-xtensa.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20210210190506.1923684-1-anders.roxell@linaro.org>
+ <CAK8P3a2ysNApoG2FDsLdNoWA7nPXvzLMzkjXWdCig9jaSWwuKw@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <fffdfa8f-38c1-6fd1-d043-8a4f476213dc@redhat.com>
+Date:   Thu, 18 Feb 2021 14:04:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC03Pmb6/ePK2UPn@dhcp22.suse.cz>
+In-Reply-To: <CAK8P3a2ysNApoG2FDsLdNoWA7nPXvzLMzkjXWdCig9jaSWwuKw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 04:33:18PM +0100, Michal Hocko wrote:
-> OK, I have missed that. Maybe just extend the comment. 
-> 
-> 	/*
-> 	 * Hugepage was succesfully isolated and on the tmigratepages
-> 	 * list 
-> 	 */
 
-Sure, I will improve it.
+On 2021/2/11 下午7:52, Arnd Bergmann wrote:
+> On Wed, Feb 10, 2021 at 8:05 PM Anders Roxell <anders.roxell@linaro.org> wrote:
+>> Since patch ("virtio-pci: introduce modern device module") got added it
+>> is not possible to boot a defconfig kernel in qemu with a virtio pci
+>> device.  Add CONFIG_VIRTIO_PCI_MODERN=y fragment makes the kernel able
+>> to boot.
+>>
+>> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+>> ---
+>>   arch/arm/configs/multi_v7_defconfig         | 1 +
+>>   arch/arm64/configs/defconfig                | 1 +
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>
+> Michael, can you pick this up in the vhost tree that introduces the regression?
+>
+>           Arnd
+>
 
-Thanks 
+Hi:
 
--- 
-Oscar Salvador
-SUSE L3
+Based on the discussion previously, the plan is to select 
+VIRTIO_PCI_MODERN, and document the module that select it must depend on 
+PCI.
+
+I will post a patch soon.
+
+Thanks
+
