@@ -2,128 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F0031F21E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E6631F220
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:13:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhBRWMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:12:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhBRWMM (ORCPT
+        id S229945AbhBRWMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:12:20 -0500
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:36004 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229623AbhBRWMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:12:12 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F419CC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:11:31 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id 189so2310081pfy.6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=2BNm2Sy2P6jkCZbThkkqBfZaxS28xMnq4sQPLlpKVSc=;
-        b=oPxQ3zEatebLUJOzFuvXtpdBFNS1aXVvmULx3Vq1K7IH02cgp5JVRon+523RsysY4Q
-         NL9J7g0zml/wR7e9fBS7psfKr4ArmYBon9T+bDMYbNqhpJYgrSpSkKosODNPPkDQPOGs
-         wvHzGkgxOAD0cNO2WG5HTNhMPGRJKfRs66zqmc+9vYJqtewa44HvMOIvSAI5XHj96DFP
-         b3W41c7fU72hO0md5JE3DaJf0oXfJT0xL4E5F8AdwUg6wOi1UBryWr7rQv5nWFMHXe3R
-         5kqiD+FtAkgFcYepvCsIbm+E0j0rdwGm1ZnPuG6pN46/vdEZ5greAcqJkUL/27EBRFYW
-         gBeQ==
+        Thu, 18 Feb 2021 17:12:18 -0500
+Received: by mail-wm1-f46.google.com with SMTP id a207so5277009wmd.1;
+        Thu, 18 Feb 2021 14:12:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2BNm2Sy2P6jkCZbThkkqBfZaxS28xMnq4sQPLlpKVSc=;
-        b=JC5sU4orIVDuyoArJ1lL5ZXx15lw/42IqNUM7p3r1avtbDoZfsyRoT5ktoDidUD+2X
-         5PyFIY8k2Ho3rd5OOYTayQpmHel5iqBtofTfI8n3gcBRcS4+TrXNtkXD6yQtsCWyiLwk
-         3PWELQ6UfJLXwjGZc6ufCkm0ER9QV9siU2lhFqmJkupjC0SGzG1Iq5CqqxinPDEpRP+Q
-         tZu3beQ2ec3UO0uxY/zERqOxS4SUu3Yf8XmL1ewDgB0Jn4C7jjd4xLytCF9Ld6TFP5IA
-         /2gXKmYespFt0uzybE4kl2cYI097FKo8qGdyg+ggjna2r/YasD/6z4w8AX1PPx0tjfJ5
-         sNaQ==
-X-Gm-Message-State: AOAM530cMhGrpmVuLDKDWXctuO2DTxR7f6LKV/Z18GX5hXHrQT2LXls1
-        CtsaT3LuiMum9QwxvEZFyiY3lnKQr+RzCA==
-X-Google-Smtp-Source: ABdhPJxunsRgQ2CCJLlBTWsCnLsHP+9AYoritUi0UOKmRkBpaGRwAA8k6z+KtBvdBCqVxt4KqfftJw==
-X-Received: by 2002:a62:154a:0:b029:1e6:ca6b:d5c6 with SMTP id 71-20020a62154a0000b02901e6ca6bd5c6mr6133870pfv.47.1613686291089;
-        Thu, 18 Feb 2021 14:11:31 -0800 (PST)
-Received: from ?IPv6:2001:df0:0:200c:184:e9f:a921:953a? ([2001:df0:0:200c:184:e9f:a921:953a])
-        by smtp.gmail.com with ESMTPSA id w3sm6233935pjt.24.2021.02.18.14.11.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 14:11:30 -0800 (PST)
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Finn Thain <fthain@telegraphics.com.au>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XldSWzdpAGbaW+QKxGIWAFGcXaBUSbZYr+d14VI3Oes=;
+        b=eU1dUhmGR8grA1XIlhMpuot4J6cxkP7+/VK/8/zGHy2T2RQvakick2cefkezlgfFNC
+         IrZEnftVmiOy+QmXjbzR/NhqQJwK22i70NYX36K5SfjBFkuoWkolqgql7hiWbO1/URSD
+         MS4eB4+LDRC443LLnrNCKGZxcxbR+q2Ad1xAUrY+a/amoj1LSEqgTkKlO4hJTq+svE72
+         Td3lFIU1kF4LQJaTI/tsC1/tyxHntcOi74aDmx3u88hgnnIyWoxcb7lXHNi4HJvhLjSM
+         CyP4aLO3VHcDgqJa0IVnBH/93jkVmbr/WehhgV5RVS/z2EDMh1/VKgxRV21OJyTagsHY
+         p4Mg==
+X-Gm-Message-State: AOAM530YUNtiRu5djKcwEQkBlkxurLy3CAKYGXmWCHUL046QRuLxBrSX
+        tP64QTUvQjZoNaI8tfJ3vYti1v2XnMIQUP32
+X-Google-Smtp-Source: ABdhPJz8jrJhzfPxWhjk8Zf9caa4g6fsazQeYxjRBj1mESjLBNuQoIaAPPIu0ONAOH0R10mW+3+Jaw==
+X-Received: by 2002:a1c:5686:: with SMTP id k128mr5369333wmb.189.1613686296290;
+        Thu, 18 Feb 2021 14:11:36 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id s5sm9379050wmh.45.2021.02.18.14.11.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 14:11:35 -0800 (PST)
+Date:   Thu, 18 Feb 2021 23:11:34 +0100
+From:   'Krzysztof =?utf-8?Q?Wilczy=C5=84ski'?= <kw@linux.com>
+To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com>
- <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com>
- <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com>
- <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
- <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
- <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <a8595ec5-88db-072c-9cc3-7a3a301fe191@gmail.com>
-Date:   Fri, 19 Feb 2021 11:11:20 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+Subject: Re: [PATCH 1/1] PCI/RCEC: Fix failure to inject errors to some RCiEP
+ devices
+Message-ID: <YC7mFsfTlVsW9Uo1@rocinante>
+References: <20210210020516.95292-1-qiuxu.zhuo@intel.com>
+ <YCQT90mK1kacZ7ZA@rocinante>
+ <a5b1aa8ef91a4c71982ad77234932349@intel.com>
+ <YC7lE2Ph/MHxNKs+@rocinante>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YC7lE2Ph/MHxNKs+@rocinante>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/02/21 12:19 am, Arnd Bergmann wrote:
+Hi Qiuxu,
 
-> drivers/net/ethernet/8390/apne.c
-> drivers/net/ethernet/8390/ax88796.c
-> drivers/net/ethernet/8390/hydra.c
-> drivers/net/ethernet/8390/mac8390.c
-> drivers/net/ethernet/8390/ne.c
-> drivers/net/ethernet/8390/zorro8390.c
 [...]
-> Most of these are normal short-lived interrupts that only transfer
-> a few bytes or schedule deferred processing of some sort.
-> Most of the scsi and network drivers process the data in
-> a softirq, so those are generally fine here, but I do see that 8390
-> (ne2000) ethernet and the drivers/ide drivers do transfer their
-> data in hardirq context.
->
->          Arnd
+> > Agree to simplify the commit message. How about the following subject and commit message?
+> > 
+> > Subject:  
+> > Use device number to check RCiEPBitmap of RCEC
+> > 
+> > Commit message: 
+> > rcec_assoc_rciep() used the combination of device number and function
+> > number 'devfn' to check whether the corresponding bit in the
+> > RCiEPBimap of RCEC was set. According to [1], it only needs to use the
+> > device number to check the corresponding bit in the RCiEPBitmap was
+> > set. So fix it by using PCI_SLOT() to convert 'devfn' to device number
+> > for rcec_assoc_rciep(). [1] PCIe r5.0, sec "7.9.10.2 Association
+> > Bitmap for RCiEPs"
+> 
+> I took your suggestion and came up with the following:
+> 
+>   Function rcec_assoc_rciep() incorrectly used "rciep->devfn" (a single
+>   byte encoding the device and function number) as the device number to
+>   check whether the corresponding bit was set in the RCiEPBitmap of the
+>   RCEC (Root Complex Event Collector) while enumerating over each bit of
+>   the RCiEPBitmap.
+> 
+>   As per the PCI Express Base Specification, Revision 5.0, Version 1.0,
+>   Section 7.9.10.2, "Association Bitmap for RCiEPs", p. 935, only needs to
+>   use a device number to check whether the corresponding bit was set in
+>   the RCiEPBitmap.
+> 
+>   Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value
+>   of "rciep->devfn" to a device number to ensure that the RCiEP devices
+>   are associated with the RCEC are linked when the RCEC is enumerated.
+> 
+> Using either of the following as the subject:
+> 
+>   PCI/RCEC: Use device number to check RCiEPBitmap of RCEC
+>   PCI/RCEC: Fix RCiEP capable devices RCEC association
+> 
+> What do you think?  Also, feel free to change whatever you see fit, of
+> course, as tis is only a suggestion.
 
-8390 ethernet drivers are widely used on m68k platforms (Amiga and 
-Atari). At least on Amiga, the corresponding interrupt is a hardirq so 
-I'd advise caution. That said, the 8390 drivers might benefit from some 
-refactoring (the way these drivers are compiled does prevent e.g. the 
-APNE driver from being used with two different variants of PCMCIA 
-interfaces. I had begun some work on making IO primitives runtime 
-selected two years ago but that ended up looking too ugly ...).
+We could probably add the following:
 
-Can't recall what IPL the 8390 interrupts operate at - Geert?
+  Fixes: 507b460f8144 ("PCI/ERR: Add pcie_link_rcec() to associate RCiEPs")
 
-Regarding allowing preemption of hardirqs - at least in 2017, that was 
-considered perfectly OK (see Linus' comment on 
-https://lore.kernel.org/patchwork/patch/794954/). I concur with Finn on 
-this one - we did look for potential issues with the way irqs_disabled() 
-is defined on m68k (for me, in the context of the above bug that caused 
-memory corruption on my system), and found none.
+Since this would where the issue was originally introduced.  I forgot to
+mention this in the previous message, apologies.
 
-Cheers,
-
-     Michael
-
+Krzysztof
