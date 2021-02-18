@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 608C131EE4F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A0E31EE38
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:26:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhBRSaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbhBRQIu (ORCPT
+        id S231592AbhBRS0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:26:04 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:46240 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232999AbhBRQC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:08:50 -0500
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E1FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:00:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:Content-Type:Message-ID:References:
-        In-Reply-To:Subject:Cc:To:From:Date:MIME-Version:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=VLLtZPx/WCVOTnXSsy/JatPvxuCHdJJNlBU9i3LFq9g=; b=S1w2AJl9Qg0k0Ra/KpPo3c83gl
-        RlX5s3YwjMzvXvzCeof48MejpivZbTfHKYq86YuxIDCDZxrIBzUTe9vF9oIwwqRJzrCUQV1BkwV9p
-        22ev3SvWlfwxMQy3ySPomu2EbQHZrZ01kGIZipiqKn234dYp7eICZOcVJWneh3Nkoj7iDOrqIzX/t
-        jbl7kHeOHdwMO7cbks9B0+LubmOQWAfNH1au2KteOMJoNhN/pYiocemzv+dxV6Od25Liz91cVRTDT
-        lRrLSTW1Pb+OPuJgX0mr/QteqoCxAH2QCpLSw74FS2DBL/pDoWjKdWwLCdtchxXUGIDJ2//AomX2x
-        4pRn7GUA==;
-Received: from webng-gw.kapsi.fi ([91.232.154.200] helo=roundcube.kapsi.fi)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <jyri.sarha@iki.fi>)
-        id 1lClj9-0002OX-35; Thu, 18 Feb 2021 18:00:27 +0200
+        Thu, 18 Feb 2021 11:02:57 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFsDZ2112412;
+        Thu, 18 Feb 2021 16:01:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=re0AgduDc5MORj6d0mAbSQpCdoy7EE3lsvXNuGddlUA=;
+ b=glkujHk+UnRLV3HjGI3+ruqbbgQ1mN2uVv2dRbaStOLSpPz0lRWpaYBvmBMewXRzjbq8
+ Tr800OEVtEW4vnCPmCmCzfsy9cLETOTVxeNSPe75rCvtJSvhY27OnYrncmEugUZ6UHap
+ BHrS7WrJ7fuR8mdnTWDPSkbzeoanEyDLwkQJc8b/ciNLdSNyEAtkYZeSfO6xgUcDBe1G
+ DiH+S+QjbTW/P4G/ANDBvE4hkH2jezgM0vNknpkJ97OzKkC2IWJQnse6OqqZ90ZtrroE
+ 15a6F2ptbSm33+sakYRGOWjOjUVqCIlMBn+zrB894T1DrPgVmLAgLOqfQCMxhtsReNr5 2w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 36p7dnpbte-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 16:01:27 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IFoFRO074820;
+        Thu, 18 Feb 2021 16:01:25 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 36prp1q29q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 16:01:25 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IG1N6P013704;
+        Thu, 18 Feb 2021 16:01:24 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 08:01:23 -0800
+Date:   Thu, 18 Feb 2021 19:01:14 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Kurt Manucredo <fuzzybritches@protonmail.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fix comparisons - put constant on right side- eudyptula
+Message-ID: <20210218160114.GM2087@kadam>
+References: <20210218155422.7-1-fuzzybritches@protonmail.com>
 MIME-Version: 1.0
-Date:   Thu, 18 Feb 2021 18:00:23 +0200
-From:   Jyri Sarha <jyri.sarha@iki.fi>
-To:     Dario Binacchi <dariobin@libero.it>
-Cc:     linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [RESEND PATCH] drm/tilcdc: fix raster control register setting
-In-Reply-To: <20210216202225.12861-1-dariobin@libero.it>
-References: <20210216202225.12861-1-dariobin@libero.it>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <0e1595a66d8539339a5e31927ef59857@iki.fi>
-X-Sender: jyri.sarha@iki.fi
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 91.232.154.200
-X-SA-Exim-Mail-From: jyri.sarha@iki.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218155422.7-1-fuzzybritches@protonmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180139
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
+ priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180139
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-16 22:22, Dario Binacchi wrote:
-> The fdd property of the tilcdc_panel_info structure must set the reqdly
-> bit field  (bit 12 to 19) of the raster control register. The previous
-> statement set the least significant bit instead.
+On Thu, Feb 18, 2021 at 03:54:29PM +0000, Kurt Manucredo wrote:
 > 
-> Signed-off-by: Dario Binacchi <dariobin@libero.it>
+> Dear linux kernel developers,
+> 
+> for my eudyptula challenge it is required of me to fix a coding style
+> issue in the staging area in linux-next. I am aware that it is in
+> general frowned upon when submitting these sorts of patches. However, to
+> finish my 10th challenge I was tasked to do exactly that. So I ask you
+> kindly to pull this patch if possible.
+> 
+> Thank you for your time,
 
-Reviewed-by: Jyri Sarha <jyri.sarha@iki.fi>
-Tested-by: Jyri Sarha <jyri.sarha@iki.fi>
+These patches are fine in staging.
 
-Thanks for a good catch. I'll merge to this drm-misc-next soon.
-
-Best regards,
-Jyri
-
-> 
-> ---
-> 
->  drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> index 30213708fc99..238068e28729 100644
-> --- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> +++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-> @@ -393,7 +393,7 @@ static void tilcdc_crtc_set_mode(struct drm_crtc 
-> *crtc)
->  			return;
->  		}
->  	}
-> -	reg |= info->fdd < 12;
-> +	reg |= info->fdd << 12;
->  	tilcdc_write(dev, LCDC_RASTER_CTRL_REG, reg);
-> 
->  	if (info->invert_pxl_clk)
+regards,
+dan carpenter
