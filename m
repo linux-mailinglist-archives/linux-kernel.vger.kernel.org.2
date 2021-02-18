@@ -2,105 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C8431EA0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F7B31E9ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhBRMvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:51:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60188 "EHLO mail.kernel.org"
+        id S232996AbhBRMel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:34:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232366AbhBRLF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:05:56 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D4D964E15;
-        Thu, 18 Feb 2021 10:39:41 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lCgih-00EkDd-Em; Thu, 18 Feb 2021 10:39:39 +0000
+        id S230227AbhBRK4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:56:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A34864E4B;
+        Thu, 18 Feb 2021 10:42:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613644969;
+        bh=ZVEU0Q4v1c0QFBCQIPsDVziRocJEP0A7qMixZrKXSRE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rmUp03bp01fFVhuOtS4zYNrRo05P/MHjCURv84sjfVQ+9zWYsOMpbvWOYpHeuVbAi
+         oQynA6AuV3SFXcUY5F4Q6SqAzxh1AhwfjM+QB4ZBCn9DfCPe/yY/rsk5GUwCkMcoE9
+         dRe+VOjSsRjh4L68f0pVpld/UnKtBpLxuy/wqx0g=
+Date:   Thu, 18 Feb 2021 11:42:46 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Kyle Tso <kyletso@google.com>, USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
+ before toggling
+Message-ID: <YC5EpqqNM+gnD6Zg@kroah.com>
+References: <20210218100243.32187-1-badhri@google.com>
+ <YC489HGT/yVHykAs@kroah.com>
+ <CAPTae5+qhE9uo2s20oEQd0x+nW21zGE3S7QWkR=oqqVX-3uHmg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 18 Feb 2021 10:39:39 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Michael Walle <michael@walle.cc>, linux-kernel@vger.kernel.org,
-        tglx@linutronix.de
-Subject: Re: [PATCH] irqdomain: remove debugfs_file from struct irq_domain
-In-Reply-To: <YC41eWXKjE77zIBo@kroah.com>
-References: <20210217195717.13727-1-michael@walle.cc>
- <4e4d0479b935e60a53f75ef534086476@kernel.org>
- <5c527bfb6f3dfe31b5c25f29418306c6@walle.cc> <87czwys6s1.wl-maz@kernel.org>
- <YC4X4iLMCK3tNVsF@kroah.com> <8b4de9eae773a43b38f42c8ab6d9d23c@walle.cc>
- <YC4nhoc9F59/1drh@kroah.com> <b5739c15db3d009556abcf9704984dab@kernel.org>
- <YC4rKOBRuzqfvdHI@kroah.com> <87eehdpx05.wl-maz@kernel.org>
- <YC41eWXKjE77zIBo@kroah.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <aada952a251b192acbdc163fc35dbd05@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: gregkh@linuxfoundation.org, michael@walle.cc, linux-kernel@vger.kernel.org, tglx@linutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPTae5+qhE9uo2s20oEQd0x+nW21zGE3S7QWkR=oqqVX-3uHmg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-18 09:38, Greg KH wrote:
-> On Thu, Feb 18, 2021 at 09:04:42AM +0000, Marc Zyngier wrote:
->> On Thu, 18 Feb 2021 08:54:00 +0000,
->> Greg KH <gregkh@linuxfoundation.org> wrote:
->> 
->> [...]
->> 
->> > > > Wow, wait, you are removing a debugfs file _before_ debugfs is even
->> > > > initialized?  Didn't expect that, ok, let me go try this again...
->> > >
->> > > Yeah, that's a poor man's rename (file being deleted and re-created).
->> >
->> > True, but that's not happening here, right?  Some driver is being
->> > initialized and creates a debugfs file, and then decides to unload so it
->> > removes the debugfs file?
->> 
->> No, that's not what is happening.
->> 
->> The irqchip driver starts, creates an irqdomain. File gets created, at
->> least in theory (it fails because debugfs isn't ready, but that's not
->> the issue).
->> 
->> It then changes an attribute to the domain (the so-called bus_token),
->> which gets reflected in the domain name to avoid aliasing.
->> Delete/create follows.
->> 
->> > Why was it trying to create the file in the first place if it didn't
->> > properly bind to the hardware?
->> 
->> See above. We encode properties of the domain in the filename, and
->> reflect the change of these properties as they happen.
+On Thu, Feb 18, 2021 at 02:38:45AM -0800, Badhri Jagan Sridharan wrote:
+> Hi Greg,
 > 
-> Ah, ok, you really are doing delete/re-create.  Crazy.  And amazing it
-> was working previously without the checks I just added...
+> This patch is a bug fix for the following patch which was introduced in 5.11.
 > 
-> Funny that you all never were even noticing that the debugfs files are
-> not present in the system because they are tryign to be created before
-> debugfs is present?  Is that an issue or has no one complained?
+> commit f321a02caebdd0c56e167610cda2fa148cd96e8b
+> Author: Badhri Jagan Sridharan <badhri@google.com>
+> Date:   Wed Oct 28 23:31:35 2020 -0700
+> 
+>     usb: typec: tcpm: Implement enabling Auto Discharge disconnect support
+> 
+>     TCPCI spec allows TCPC hardware to autonomously discharge the vbus
+>     capacitance upon disconnect. The expectation is that the TCPM enables
+>     AutoDischargeDisconnect while entering SNK/SRC_ATTACHED states. Hardware
+>     then automously discharges vbus when the vbus falls below a certain
+>     threshold i.e. VBUS_SINK_DISCONNECT_THRESHOLD.
+> 
+>     Apart from enabling the vbus discharge circuit, AutoDischargeDisconnect
+>     is also used a flag to move TCPCI based TCPC implementations into
+>     Attached.Snk/Attached.Src state as mentioned in
+>     Figure 4-15. TCPC State Diagram before a Connection of the
+>     USB Type-C Port Controller Interface Specification.
+>     In such TCPC implementations, setting AutoDischargeDisconnect would
+>     prevent TCPC into entering "Connection_Invalid" state as well.
+> 
+>     Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+>     Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>     Link: https://lore.kernel.org/r/20201029063138.1429760-8-badhri@google.com
+>     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-See how irq_debugfs_init() is called in the middle of the boot sequence,
-and retroactively populates all the debugfs files what we missed during
-the early boot.
+Great, then can you resend the patch and add a proper Fixes: tag, along
+with a cc: stable as well?
 
-So we're not missing anything in the end, it's just delayed.
+thanks,
 
-> Anyway, I'll go turn this into a real patch and get it into 5.12-rc1 so
-> that the irqdomain patch I sent you will not blow anything up.  Feel
-> free to also queue it up in your tree if you want to as well.
-
-Thanks for that.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+greg k-h
