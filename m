@@ -2,82 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F21931EFBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:25:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6D731EFC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232434AbhBRTXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:23:08 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49865 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhBRSOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:14:21 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 11IIDU99015369;
-        Thu, 18 Feb 2021 19:13:30 +0100
-Date:   Thu, 18 Feb 2021 19:13:30 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <20210218181330.GA15217@1wt.eu>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
- <YBBkplRxzzmPYKC+@kroah.com>
- <YCzknUTDytY8gRA8@kroah.com>
- <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
- <f2a03516-0247-522e-184a-7df4840ed345@gmail.com>
+        id S232594AbhBRTXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:23:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53286 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232198AbhBRSSI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:18:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613672199;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/532FGiDmXNyi77yaEvYqqbu5TAEWf0X1UPW7xyxBCc=;
+        b=hlR7xbV24UmP9nVzbT17+n7WFWSwc1+FGHlSe3CDdhyS9oa/Hw5fyfDRpMDNdEjawxWRXL
+        KYMJI6bIga92/9y5KdlxO2dQsDVfoiPwYXUiVNHQG+Sak7mHxiYSDNIDfIK88GG2KXYuZQ
+        vRTxESZJMoggLQhDL83km2AmShWPaNI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-314-p5q90FIUPO--_3QHzV_axQ-1; Thu, 18 Feb 2021 13:16:35 -0500
+X-MC-Unique: p5q90FIUPO--_3QHzV_axQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC4921935780;
+        Thu, 18 Feb 2021 18:16:33 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AECC360BE5;
+        Thu, 18 Feb 2021 18:16:31 +0000 (UTC)
+Subject: Re: [PATCH RFC 0/1] mm: balancing the node zones occupancy
+To:     Charan Teja Reddy <charante@codeaurora.org>,
+        akpm@linux-foundation.org, rientjes@google.com, vbabka@suse.cz,
+        mhocko@suse.com, mgorman@techsingularity.net, linux-mm@kvack.org
+Cc:     vinmenon@codeaurora.org, sudaraja@codeaurora.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1613661472.git.charante@codeaurora.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <82e0e9c2-8187-8e2f-0d5e-304dafcda017@redhat.com>
+Date:   Thu, 18 Feb 2021 19:16:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f2a03516-0247-522e-184a-7df4840ed345@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <cover.1613661472.git.charante@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian!
+On 18.02.21 18:24, Charan Teja Reddy wrote:
+> I would like to start discussion about  balancing the occupancy of
+> memory zones in a node in the system whose imabalance may be caused by
+> migration of pages to other zones during hotremove and then hotadding
+> same memory. In this case there is a lot of free memory in newly hotadd
+> memory which can be filled up by the previous migrated pages(as part of
+> offline/hotremove) thus may free up some pressure in other zones of the
+> node.
 
-On Thu, Feb 18, 2021 at 09:42:00AM -0800, Florian Fainelli wrote:
-> > Other difficulty with the LTS version is the frequency it is updated.  We would not
-> > pickup the changes that frequently to test.  A quarterly, bi-annually, or when a critical fix
-> > is identified would be when we update and perform any meaningful testing when in maintainence.
-> 
-> Well you really have the best of both worlds here, you are not forced to
-> update your downstream fork of the stable kernel every week, though
-> bonus points if you do.
-> 
-> For instance I try to test all the stable release candidates for 4.9,
-> 5.4 and 5.10, and merge the stable tags every week when they show up. We
-> do release to our customers every 6 weeks though, so usually they will
-> jump several stable releases, and they are fine with that.
-> 
-> Yes it takes time, but I would rather do that than have to continuously
-> respond to questions about is this CVE fixed in kernel X.Y.Z like it
-> used to be before we did that. It also helps catch problem faster before
-> customers do, the usual benefits of continuous integration/delivery.
+Why is this specific to memory hot(un)plug? I think the problem is more 
+generic:
 
-Totally agreed! In our use case at haproxy, it's slightly different but
-not that much. We're much less sensitive to kernel bugs except for the
-network parts and any long-term stability issue. However we're extremely
-sensitive to openssl bugs and haproxy bugs. Thus we use them as triggers
-to emit a new release and we systematically update the kernel to the
-latest one. Our local patches usually apply pretty well on top of that.
+Assume
 
-We face maybe 1-3 rejects a year which take half an hour of extra manual
-work, and roughly one regression every 3 years, essentially caused by
-one of our local patches applying to the wrong place due to changes and
-not caught by QA tests before being put online. I think that in ~15 years
-(we started with 2.4), only a single customer was ever affected by a
-regression caused by the kernel, it is so low we could almost laugh about
-it. Quite frankly this is unrivaled, and it illustrates the huge benefit
-in almost blindly following LTS this way! More quality, less work, and
-faster response to critical bugs! For sure there's no "kernel hero" in
-our dev team, but who really wants that anyway ?
+1. Application 1 allocates a lot of memory and gets ZONE_MOVABLE.
+2. Application 2 allocates a lot of memory and gets ZONE_NORMAL.
+3. Application 1 quits.
 
-Cheers,
-Willy
+Same problem, no?
+
+-- 
+Thanks,
+
+David / dhildenb
+
