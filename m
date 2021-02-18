@@ -2,152 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B75531E4D4
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:59:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A155731E496
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:46:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhBRD7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 22:59:05 -0500
-Received: from mail-db8eur05on2045.outbound.protection.outlook.com ([40.107.20.45]:36480
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230321AbhBRD4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 22:56:53 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CuAIJJS75Hm22IH2w382XBqlYDLC2SYqcgh9j2nrsr38wUlUcBmFLlzf38huAECjVS6MDwt1Ja9CjDNOEXtHIhnMw7ZQFnpKkwq6TYGAaaXnU1dE9/ryC7SeHdbFnw093Qw034o3t8uHCFi+nY5d7bWhQ3in1AP6slnJrmSmfGDZPQ4osht2kfgtO2c0u/FE3Lry/6TOZ9sgyvnYuBH3NpTpQMc693dJnTKkVMVqFGEghNwQgz4fGrXnaWc2aF5me+JfjKQCU6RkUtdVRphm/5bRleBWR4XUMxuqLbL4MsamnBCqqZ5WoV4y/M/zdGl8mjJjYzTwV3QWyCS/EyZrBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c1FAawTRS5//5BJvZYZ0c0B8mPY4+tNQeamXe5zvyTk=;
- b=jNQl2rwSjNYAoVd9NXrjw0EJ6GjnIxFDl7qOq/5rdYIXHBRa2nCQGcWsjFEiO6Vjy6bLM2Gl6u5G5DafWjmMOXq1wiLg/1KbWkZz0zrdQWhblbI2BerUnr3BI4pohYQm/gwb3KxvulBaK+6Gj7IrvfeBzOhPq5aKNzJ/8gsQ6usEDZOskegLcDgadACG0ODR/kXmkzIrKTdp+im9kU7CPIe2ygvKhNE5kW9C/YfIctYDQnbE96bapll//evhWji3TWRm/41qaUSTwi5v46PJJsytVjAcX/nMlFKbH4QCWrC110CqhPJQNPHqViyXXpGUy0vlB4/JeZ7/4nI7ZDxsbw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=c1FAawTRS5//5BJvZYZ0c0B8mPY4+tNQeamXe5zvyTk=;
- b=L+qM+EAUkeursmQkI9gy57rDNwMGdEI5Xv53MbB6i5Gm6XtBzyS3H0nH3prRqttmxCa5NKIg51GMcpHHmoLznM9uZ7FQ6+o+ctZbhCPPx7qs174MBXs4d057Yhghq/cM8vb7nNhQg07oIUakzMSOUsDtRxIxQlnQwlps/ex7B/s=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB5709.eurprd04.prod.outlook.com (2603:10a6:803:e3::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27; Thu, 18 Feb
- 2021 03:55:32 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3868.027; Thu, 18 Feb 2021
- 03:55:32 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
-Subject: [PATCH v4 14/14] MAINTAINERS: add maintainer for DRM bridge drivers for i.MX SoCs
-Date:   Thu, 18 Feb 2021 11:41:55 +0800
-Message-Id: <1613619715-28785-15-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613619715-28785-1-git-send-email-victor.liu@nxp.com>
-References: <1613619715-28785-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR06CA0144.apcprd06.prod.outlook.com
- (2603:1096:1:1f::22) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S230080AbhBRDqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 22:46:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBRDqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 22:46:17 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82ED4C061574;
+        Wed, 17 Feb 2021 19:45:37 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id l18so597804pji.3;
+        Wed, 17 Feb 2021 19:45:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h8uMtznD3p3EhqcTbtr8IDaJ/5CTHRJW4vcAG2UKHgc=;
+        b=a/x2jdsRvYukM5hDyg2CEZji4q6K7Crry7yICP4CePs+a2hfVTbr1KrCfv4VCdMv6T
+         JJkGTvHhO757JRsrPMJrAw7dZdUt7rRY92pe7Z5w4lknDCxOVVcK2IXeU0QZ9MTg0jtn
+         IHw1HcxuXNMPlk0SVDDYZZQd4W2B8MBHKaJ4C0+0om9HfctLli2TwNcmXqCxJYsyQI1/
+         mmVm4rbKPZmDEVO2aM6dIn4fNWBTEAKzed+vLl7scNjRjkFTK+FyUG/lfIHiNpzwLIIu
+         s4qoHqVoWJVZ38Og35z9tmdx2N5zEB7x+xKBV86qJk2dpSdaWYIjdQAM6oknokYwhIuK
+         b9gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h8uMtznD3p3EhqcTbtr8IDaJ/5CTHRJW4vcAG2UKHgc=;
+        b=p1r+2Xpu7quUawaWhCmpqTU4H3T0mi41siTbEpfuzCq5EZYNxhdVzLB1Trb1r9feFh
+         zfDHLlkBWCoooRohUcyUuAXtlBt/CQGf8OFCWnXXHRiSqXhsenhlOQ3m+9COstOVzVMF
+         neLpUiBXnQmPL8//Y7Di+PibSh90UdmgobyJ6lGMQ+wVlBP6pIEReWpHMF3WsILPjQp+
+         ZVNz0AU45io331J8ZXARxRmkz88gt8PUW/5AEDQMTezdrSh/jtEaf7f0+B2d1rlbRDuO
+         T5FAzMu9c0FkeqP6n7xADr6jSILp9J0Nmt8Sl9JrO0VJHOyCSlSQz0wDVh7XN3Sqc/V/
+         9FHw==
+X-Gm-Message-State: AOAM531av84QSMgwE4H7X6lDvI9FgI9+SwMbl5eKxqD2K1IUcw7u1p4+
+        BF8e32e0iIRuEegQbqGcl2w=
+X-Google-Smtp-Source: ABdhPJwQzBlJ7daHg7E+sNZLTY3HdbG/nZ6uWXP287NKOtMvLlVmZxdiBoRRW/Xf80v0y9iwsx+4sg==
+X-Received: by 2002:a17:90a:9105:: with SMTP id k5mr2048618pjo.148.1613619936993;
+        Wed, 17 Feb 2021 19:45:36 -0800 (PST)
+Received: from container-ubuntu.lan ([171.211.28.185])
+        by smtp.gmail.com with ESMTPSA id l190sm3876989pfl.205.2021.02.17.19.45.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Feb 2021 19:45:35 -0800 (PST)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Oleksij Rempel <linux@rempel-privat.de>,
+        Chris Snook <chris.snook@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rosen Penev <rosenp@gmail.com>
+Subject: [PATCH net] net: ag71xx: remove unnecessary MTU reservation
+Date:   Thu, 18 Feb 2021 11:45:14 +0800
+Message-Id: <20210218034514.3421-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR06CA0144.apcprd06.prod.outlook.com (2603:1096:1:1f::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3868.27 via Frontend Transport; Thu, 18 Feb 2021 03:55:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: fe0dd624-7f5e-4dfb-670e-08d8d3c109b7
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5709:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5709A053062AB1F9DC2C48E098859@VI1PR04MB5709.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ntflbRiHFVok3O8faSADbQNDOogmfVcu0xzU9spsqLYX/vAyYkfxjdQ1/FTlySEpXTLTJl7aEJUX2o4qdmB851RmxK+5N0fTlcYSVXS6PmnobCdZS6W6MI4VrAujZqu7GRihV8TQAhK6EYx8Cy1L+7GUuldlSy/uHd+DI6MH7/7CFabpswWS4kGbCa7Y9+Y+Y86L3DXud9C1vv1/OXKw9QthQRTb8I0pIxm8ORe5hrSpc/1UA6wQyl+Akfb/4Sa7VmU1015x1LQTqiYRH43p1cczfCw3JD0fzwNiUzNtzRtkj5zt6BbWil3zEG1HVxJ1/1swBQgYhjfStQkaoDl+MsAM1SfJT3K/RoYeJk/Z0D4DhwfuL+54on3lRTdIS441JiVeNdEhkTkrfgaco8lYtcSEj4pYMdYim7vCdOdFkN9HaJbjDUfKaU0RxCX4GeXfdff2ZFHjHmS7YiboowT3X3qpYAr8ZHNek8HSOYjALQlhUicAQ36sbpJWHj7cxl3TWnmpFduiVUCdZXrlbEBFmm0FYDJAhsnCf3qP3HseTaaEHbw5cbzM1fFimTP69VJ4L4xZxkeyyipuSs+j7sG4FA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(396003)(346002)(366004)(39860400002)(376002)(136003)(7416002)(956004)(2616005)(6666004)(52116002)(5660300002)(316002)(6506007)(2906002)(66946007)(6486002)(6512007)(66556008)(186003)(16526019)(26005)(66476007)(69590400012)(86362001)(478600001)(36756003)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?l8oTLrGoQq2MaEiCCA2JL7tK9dAlIeBsRY2g3SPd1/Yp/lMXY9EdYcsNUGMq?=
- =?us-ascii?Q?2maC6Y8Db+gmSKkI7w1PGJ2JQP4In2IRkWaC1tMGiQKIVnhjfZbdZVyj1M6M?=
- =?us-ascii?Q?0b7VAvUgYaMtLI60Jai8wTsB0z8w9wAAtT0mhkNuxUceK9HsC6a3fZPZ2PK3?=
- =?us-ascii?Q?FgCxoM8Tw3ZZwp41knSppB2j2kT/jkgcgKina6tbTgnPVVpU3EI4ZKTYjlzK?=
- =?us-ascii?Q?wjYeP7Zb+r4IFBNh67xN38RJXsHlPKcw3OpfSJmFy+QTm2GPKZfROAWAKOAM?=
- =?us-ascii?Q?5DgIyhqjJuGOadCf9LwuHzPKsNRQEcmaLElO8AiM59iZxPQeSyZKMKPdTVxG?=
- =?us-ascii?Q?tzDbwu6xDqQBu+MiiY79DO6OHbyN3ALBRlb9O/hzVgpEGS3dMIQwOtZvh0v5?=
- =?us-ascii?Q?AoU3TD1UdNfyR2EK1xCkFL33rKohadxI8nf4UMTl8mc4JjDRETHbL2LvzHyS?=
- =?us-ascii?Q?VaM+v+WxP6/FZrPWTyEytLJ7Ouxs9iWQCuxS8H5R3yCT0J8LoVlksJ1jhfP2?=
- =?us-ascii?Q?oXyVEcu6o/WhxpNkoQipNYtjAwdQ2JwWAZPO+Q6+S0bPyke/H0o3LRFo6c7Q?=
- =?us-ascii?Q?w6Lpxmd91Q4565JPyteII8Mg+ujfQinGT3uPo5dkTvdzshAnZwcWZPBKdZ+d?=
- =?us-ascii?Q?VhiTJfar5Zx2wI9WcsKx46BtVrf+2lTo0H3qZ3GszC92P0F70DzLCbOEsTWx?=
- =?us-ascii?Q?/swX30BlPleTtG/ugQkwphs+Kl//VKBrLZHokydL9DAFnzP4QB7Vv8lyW1cm?=
- =?us-ascii?Q?CV9YTrq9pQpr7wiYfWgoFtEMYUC835xNQoG3EQSWRSBKFRpps+Y4kT1bfql9?=
- =?us-ascii?Q?SFVbGE4VsSb66jbfnPMc0yu7zA/N71ACfcr2QIpq9CPPxaC6n9H85VAfLqV7?=
- =?us-ascii?Q?IR6Z9C27n5XkQGn9IxIlAYZMwJzQ9Szu3zaGmyXnmJrAMQn1k3Rj/6o9WBw/?=
- =?us-ascii?Q?7b2bqKYeVBmwA/1BZiBqrJ4LzpGatAd43/nH/vskWpOF7MAGR2Y1eDGvD31F?=
- =?us-ascii?Q?/9j/p8R7mjo4xzICH9Byvu2ruoAH1T6hGXw4XTXE7xsd23Ed32uKl9E2TBmL?=
- =?us-ascii?Q?lwOgORVFhj1AzJPsR/+f/IALj4AsdsLWAop4ydVhylbegvvGmxIJEDhBdtLm?=
- =?us-ascii?Q?JAsuXbKjumQ6mRu+uH7KroV9LVSXm4/rAp0gCou9LMe6fu1KJvzHBC7pxJm8?=
- =?us-ascii?Q?pjHvgCQp7/SDv2mVLuwvCgNhBmBqgaqXUL5Wod1HmtOBorh7k3T20vBmwdV+?=
- =?us-ascii?Q?uHqWp57xQBHpbaOoEYujZpz1sl1ckhDHjElOBRdDtZ/jbSVIXqA9B++8OFkl?=
- =?us-ascii?Q?XfmBQDfZQOjv7OjA81fjLFTY?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe0dd624-7f5e-4dfb-670e-08d8d3c109b7
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 03:55:32.1746
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4vRJfo0iicJ6OZYeU9HG4oH0AK/n5n2DRCAp6mvfGR7Yn0LbndGDuZmOxrRcvsMnIyc0RUHhhZbM6bkK1aNRQA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5709
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add myself as the maintainer of DRM bridge drivers for i.MX SoCs.
+2 bytes of the MTU are reserved for Atheros DSA tag, but DSA core
+has already handled that since commit dc0fe7d47f9f.
+Remove the unnecessary reservation.
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
+Fixes: d51b6ce441d3 ("net: ethernet: add ag71xx driver")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 ---
-v3->v4:
-* No change.
+ drivers/net/ethernet/atheros/ag71xx.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-v2->v3:
-* No change.
-
-v1->v2:
-* No change.
-
- MAINTAINERS | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9d241b8..d96c917 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5892,6 +5892,16 @@ F:	Documentation/devicetree/bindings/display/imx/
- F:	drivers/gpu/drm/imx/
- F:	drivers/gpu/ipu-v3/
+diff --git a/drivers/net/ethernet/atheros/ag71xx.c b/drivers/net/ethernet/atheros/ag71xx.c
+index dd5c8a9038bb..a60ce9030581 100644
+--- a/drivers/net/ethernet/atheros/ag71xx.c
++++ b/drivers/net/ethernet/atheros/ag71xx.c
+@@ -223,8 +223,6 @@
+ #define AG71XX_REG_RX_SM	0x01b0
+ #define AG71XX_REG_TX_SM	0x01b4
  
-+DRM DRIVERS FOR FREESCALE IMX BRIDGE
-+M:	Liu Ying <victor.liu@nxp.com>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
-+F:	Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
-+F:	drivers/gpu/drm/bridge/imx/
-+
- DRM DRIVERS FOR GMA500 (Poulsbo, Moorestown and derivative chipsets)
- M:	Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
- L:	dri-devel@lists.freedesktop.org
+-#define ETH_SWITCH_HEADER_LEN	2
+-
+ #define AG71XX_DEFAULT_MSG_ENABLE	\
+ 	(NETIF_MSG_DRV			\
+ 	| NETIF_MSG_PROBE		\
+@@ -933,7 +931,7 @@ static void ag71xx_hw_setup(struct ag71xx *ag)
+ 
+ static unsigned int ag71xx_max_frame_len(unsigned int mtu)
+ {
+-	return ETH_SWITCH_HEADER_LEN + ETH_HLEN + VLAN_HLEN + mtu + ETH_FCS_LEN;
++	return ETH_HLEN + VLAN_HLEN + mtu + ETH_FCS_LEN;
+ }
+ 
+ static void ag71xx_hw_set_macaddr(struct ag71xx *ag, unsigned char *mac)
 -- 
-2.7.4
+2.25.1
 
