@@ -2,60 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF11731EABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:06:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C26AD31EAC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233085AbhBROFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 09:05:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
+        id S233302AbhBROHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 09:07:14 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41568 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232257AbhBRMNx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:13:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF04364E76;
-        Thu, 18 Feb 2021 12:12:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613650355;
-        bh=290E0e/Zkro+gyvCvFJ4AdtDkL7+CAvuNYPkSe8iUQk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N1DREhqz+PyrRABEP0rPMym15siX9gw5emynX8UocyyV9WDlMnTeGEWqrwu3GbRFG
-         HlPlFQFPHLSgLzIha/4+ajLQM8pGSUIsEnul30n5u8oKcf8XR3JuMkAMNW6PtqRb9b
-         +FLgoUIEapt5E6qtPZ2oIdeF1GVmKAbERcw7Ehj4=
-Date:   Thu, 18 Feb 2021 13:12:32 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jiri Bohac <jbohac@suse.cz>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: pstore: fix compression
-Message-ID: <YC5ZsOjBzEVbMunv@kroah.com>
-References: <20210218111547.johvp5klpv3xrpnn@dwarf.suse.cz>
+        id S231915AbhBRMPP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:15:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 121FCACE5;
+        Thu, 18 Feb 2021 12:14:06 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id e471242a;
+        Thu, 18 Feb 2021 12:15:08 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+        <20210215154317.8590-1-lhenriques@suse.de>
+        <20210218074207.GA329605@infradead.org>
+        <CAOQ4uxgreB=TywvWQXfcHYMBcFm5OKSdwUC8YJY1WuVja6PccQ@mail.gmail.com>
+        <87v9apis97.fsf@suse.de>
+Date:   Thu, 18 Feb 2021 12:15:08 +0000
+In-Reply-To: <87v9apis97.fsf@suse.de> (Luis Henriques's message of "Thu, 18
+        Feb 2021 10:29:08 +0000")
+Message-ID: <87mtw1incj.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218111547.johvp5klpv3xrpnn@dwarf.suse.cz>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 12:15:47PM +0100, Jiri Bohac wrote:
-> pstore_compress() and decompress_record() use a mistyped config option
-> name ("PSTORE_COMPRESSION" instead of "PSTORE_COMPRESS").
-> As a result compression and decompressionm of pstore records is always
-> disabled.
-> 
-> Use the correct config option name.
-> 
-> Signed-off-by: Jiri Bohac <jbohac@suse.cz>
-> Fixes: fd49e03280e596e54edb93a91bc96170f8e97e4a ("pstore: Fix linking when crypto API disabled")
-> 
-<formletter>
+Luis Henriques <lhenriques@suse.de> writes:
 
-This is not the correct way to submit patches for inclusion in the
-stable kernel tree.  Please read:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-for how to do this properly.
+> Amir Goldstein <amir73il@gmail.com> writes:
+>
+>> On Thu, Feb 18, 2021 at 9:42 AM Christoph Hellwig <hch@infradead.org> wrote:
+>>>
+>>> Looks good:
+>>>
+>>> Reviewed-by: Christoph Hellwig <hch@lst.de>
+>>>
+>>> This whole idea of cross-device copie has always been a horrible idea,
+>>> and I've been arguing against it since the patches were posted.
+>>
+>> Ok. I'm good with this v2 as well, but need to add the fallback to
+>> do_splice_direct()
+>> in nfsd_copy_file_range(), because this patch breaks it.
+>>
+>> And the commit message of v3 is better in describing the reported issue.
+>
+> Except that, as I said in a previous email, v2 doesn't really fix the
+> issue: all the checks need to be done earlier in generic_copy_file_checks().
+>
+> I'll work on getting v4, based on v2 and but moving the checks and
+> implementing your review suggestions to v3 (plus this nfs change).
 
-</formletter>
+There's something else:
+
+The filesystems (nfs, ceph, cifs, fuse) rely on the fallback to
+generic_copy_file_range() if something's wrong.  And this "something's
+wrong" is fs specific.  For example: in ceph it is possible to offload the
+file copy to the OSDs even if the files are in different filesystems as
+long as these filesystems are on the *same* ceph cluster.  If the copy
+being done is across two different clusters, then the copy reverts to
+splice.  This means that the boilerplate code being removed in v2 of this
+patch needs to be restored and replace by:
+
+	ret = __ceph_copy_file_range(src_file, src_off, dst_file, dst_off,
+				     len, flags);
+
+	if (ret == -EOPNOTSUPP || ret == -EXDEV)
+		ret = do_splice_direct(src_file, &src_off, dst_file, &dst_off,
+				       len > MAX_RW_COUNT ? MAX_RW_COUNT : len,
+				       flags);
+	return ret;
+
+A quick look at the other filesystems code indicate similar patterns.
+Since at this point we've gone through all the syscall checks already,
+calling do_splice_direct() shouldn't be a huge change.  But I may be
+missing something.  Again.  Which is quite likely :-)
+
+Cheers,
+-- 
+Luis
