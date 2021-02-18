@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9D031EE26
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:24:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 352E431EE2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231484AbhBRSU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:20:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35694 "EHLO
+        id S229952AbhBRSW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:22:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhBRPx7 (ORCPT
+        with ESMTP id S232815AbhBRPy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:53:59 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D1EC061788
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:53:16 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id b3so3521410wrj.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:53:16 -0800 (PST)
+        Thu, 18 Feb 2021 10:54:26 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CE1C06178A;
+        Thu, 18 Feb 2021 07:53:45 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id w1so1844968ilm.12;
+        Thu, 18 Feb 2021 07:53:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=KySOASwa793Ua76KWy5R7JEdwfwwQx7L6/6kuI7w08E=;
-        b=Kw7j+1+m5HcGUvH3ldtEH1oAJrEl8d24WwRUK5K40CYqbAk/Ph1OBaJT1L3xwBfadO
-         CnOmNfNli9YwjbfeZoyN45Wtecpl7hzINT5N+853D0Sf3iddwkDszlP/UEiAQVt5yxf7
-         xf51cE8oPNJnmfVlwGoZBtfHuyfPf8HWeOG6s=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jHTepAlgTB29GedvBS59O+ZCtpomsphnsV6+Q0YzaKA=;
+        b=rh06aKoeJZqVRP33hjROHoKd/qSMoZCoo3TwZOv3WnZOLPIVpCyj9huZGaAx9W0QSc
+         ouVZ+SzP+qYt0nZImmvgN9wE6A0RVITwEniF6KIp9rfrZd05RQG0Tpet2qu9VwMtoN/8
+         YNnBMuxco6dxHVokc4GdEyfwGPixHb9UU1PxOvVU9Frq2KyHIsdg1T+ooHoaIfqIS6nD
+         AORQV/jA9yfxAtwN62q5Z3Fr6NQOptyysokkmb5fJIqtVnFGXTal9XOCDFT1CE3hrt5/
+         T0Fu+YQTNq1sKawIyxv57mKie0SkMpd34/uce7jTxsLDY6BPsLBpTIWRJy7oJxn/jidO
+         JFtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KySOASwa793Ua76KWy5R7JEdwfwwQx7L6/6kuI7w08E=;
-        b=QS71YqOpq2PkfRZagzYxgtkjAGdxikPePWbmOdyQ668Vlcee/9Utux07p4QMoKpy2U
-         /5jrrCp+ckxfWORZ547VmRKIgel/8VsWFQrP4nkHvj+DTxvOGyqjhz8At0893NASagdS
-         RNrrBnl0yHvyeaPhVExgEDoloXHCUKi6R2AJfJNl7GAQOB/lwBQDllgm44OUTF78bGmT
-         Bf++sXy2atLvbRL4hIY9fQLiYJuGLyqZHpW+oPrj3I2kM3LWtOu8PffiV++ym0SQE2sc
-         n5dxN90rJmC3tOOgvqmb7aJYSWw7GsPhUtwdOmMwLxnBLwnFya8Q93KvUcTa9m24OpD/
-         BEtQ==
-X-Gm-Message-State: AOAM531LJmXNQikFszSx51CjrM+KRDGf872CMZ5mV9JRPrW8hbGrd++l
-        9y1wQHQt8XjyXY2GmsmskDqq3Q==
-X-Google-Smtp-Source: ABdhPJzWA99C2yY8n/tMO7JrRQWN+szFE1jLelAnCSWzZtu4KbfxLiuGeLXPRmae9t8LYWkpbAjZqg==
-X-Received: by 2002:a5d:4e0f:: with SMTP id p15mr4928885wrt.312.1613663595406;
-        Thu, 18 Feb 2021 07:53:15 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:f7e9])
-        by smtp.gmail.com with ESMTPSA id n9sm8872645wmi.43.2021.02.18.07.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 07:53:15 -0800 (PST)
-Date:   Thu, 18 Feb 2021 15:53:14 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v4] printk: Userspace format enumeration support
-Message-ID: <YC6NaqZbNibxtS7f@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
- <YC5b4+hTjrGwG22o@chrisdown.name>
- <YC5flsiUEZnPs7qz@alley>
- <YC5ggyeC0uqtOD6R@chrisdown.name>
- <YC54vyU8ZZPiaYOQ@alley>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jHTepAlgTB29GedvBS59O+ZCtpomsphnsV6+Q0YzaKA=;
+        b=hhlzFshOr+4EjHoEex3Uf79OzZSJSjHFdK9OWMpFJ0kkPxpZzN8k0Ha3DsQaiHqMEo
+         0qnJ6tCgH74ik1OlsHfH7v15baF5hXd1ABBzInLIVEyXweOqPvaAMnx0rPFLvwZxQz46
+         7IMH8CUQKlI+xrgEcdb1QlsRLbSHb1HSu7RoAPMkN/M0wYMWYOhWgpBCOAOvkmMC2epo
+         LIXXzWcz68QR993WSSMVMl6AclBPaAVfvIIarIYWjLqzWlsbyOJ80m450rTQnLa4MVoq
+         ePsizHBIkkN/joaDd3mMWxgXavbM9jUVwkGEI/Fm0j48bfplJ0OUPTsqExTk6T76V0Z5
+         T9pg==
+X-Gm-Message-State: AOAM533Xq5v7/JLs68kQ+GRiI3WyeX7Ayy4GpBy9WlpYUQUGR3k+KLHf
+        nUlKLKZ8bE7hHxpk7wOdymD7fhU/mBE22WvAoTE=
+X-Google-Smtp-Source: ABdhPJzX4e5mLMreJslRfH45oHpKARb9BPN/u3cMRDZ7OC9QXf/dJ7aDlICxgGSnOYq4QhM4PQD2699e4RN20kEKijo=
+X-Received: by 2002:a92:8e42:: with SMTP id k2mr4398912ilh.250.1613663624156;
+ Thu, 18 Feb 2021 07:53:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YC54vyU8ZZPiaYOQ@alley>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+References: <CAOQ4uxj=ZeJ0HYtivP=pg5mSDaiQGU8Fz8qw0Egfa2Ert5Ra7A@mail.gmail.com>
+ <20210218151752.26710-1-lhenriques@suse.de>
+In-Reply-To: <20210218151752.26710-1-lhenriques@suse.de>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Thu, 18 Feb 2021 17:53:33 +0200
+Message-ID: <CAOQ4uxgO45cqKLRsXBxn04fVkqH483G3ngCtV_gZGHMQDFixig@mail.gmail.com>
+Subject: Re: [PATCH v5] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Jeff Layton <jlayton@kernel.org>, Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Petr Mladek writes:
->On Thu 2021-02-18 12:41:39, Chris Down wrote:
->> Petr Mladek writes:
->> > > - See if it's safe to pass a printk_fmt_sec to seq_file instead of a module
->> >
->> > Also it might be needed to store the pointer to struct module.
->>
->> You mean, have a `struct module` entry for this? I somewhat suspect that
->> module.c maintainers are not likely to be happy about injecting non-generic
->> code into there if it's possible to be avoided, but maybe I'm
->> misunderstanding?
+On Thu, Feb 18, 2021 at 5:16 PM Luis Henriques <lhenriques@suse.de> wrote:
 >
->Yes, I suggest to store the pointer into struct module. It includes
->many external entries. It is similar to struct task_struct.
+> A regression has been reported by Nicolas Boichat, found while using the
+> copy_file_range syscall to copy a tracefs file.  Before commit
+> 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> kernel would return -EXDEV to userspace when trying to copy a file across
+> different filesystems.  After this commit, the syscall doesn't fail anymore
+> and instead returns zero (zero bytes copied), as this file's content is
+> generated on-the-fly and thus reports a size of zero.
+>
+> This patch restores some cross-filesystem copy restrictions that existed
+> prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> devices").  Filesystems are still allowed to fall-back to the VFS
+> generic_copy_file_range() implementation, but that has now to be done
+> explicitly.
+>
+> nfsd is also modified to fall-back into generic_copy_file_range() in case
+> vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+>
+> Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> ---
+> And v5!  Sorry.  Sure, it makes sense to go through the all the vfs_cfr()
+> checks first.
 
-Ah yes, now you mention it that does look fine. Thanks!
+You missed my other comment on v4...
 
-Expect v5 in the coming days, then. :-)
+not checking NULL copy_file_range case.
+
+Thanks,
+Amir.
