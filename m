@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AF731E9EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DF431EA09
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:51:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhBRMcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:32:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229763AbhBRKx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:53:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 124F264E2F;
-        Thu, 18 Feb 2021 10:51:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613645460;
-        bh=+mauu4zzK516jrXaWPgdNQfATDJSsJ1VUxBGABPlp1o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j0JS1rwmiyvhN/0lV+1Z5jUGa7nTioMWdjfB4udR65b1Ch52/70MFB67tsriI/oKD
-         4MYLIul3t5Lc7ak+l/Glltldd74TdFqHkWQw6uwil/fGFA5s/VO0Ye1JjcQ/9tpQ4b
-         9R4YYLitYA9sAUc+2m8dUsk9UJsIIBgNJKiUfVAkGepleXcdhWftIlfJbMxTIyjGsc
-         P63mchYNNEDAMAeAUyGdEB3UPTsC0k8ycrjZBq+L7eR77pso7KB1nep4w2X3dNdXpA
-         xLEyjZqbnfr7gJeckm7a8GnCgO+aogfOFXPB25dsO2jy7FgzNtNTKvEgMTG4BjF71U
-         HBTVI7Yi1txLw==
-Received: by mail-oi1-f172.google.com with SMTP id l3so1512309oii.2;
-        Thu, 18 Feb 2021 02:51:00 -0800 (PST)
-X-Gm-Message-State: AOAM531dUdnN3/rZ8b1mkNXfSpXeqUqA7lToWBltihhzZchGCh3wn0lb
-        hsd8oelFH0Rra32G8FOpvhZxL+tNfVmXQAXTVF0=
-X-Google-Smtp-Source: ABdhPJw3k+cZ0ogFt7p9NsJQjvWygTosL2+oW0gd17nM8Xh0KvZA0Ew5LcZ0AkgOz/XlSM3h/KeWnPX0Jox9y49NEKY=
-X-Received: by 2002:a54:4007:: with SMTP id x7mr2182283oie.11.1613645459264;
- Thu, 18 Feb 2021 02:50:59 -0800 (PST)
+        id S233283AbhBRMub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:50:31 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:37338 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232387AbhBRKze (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:55:34 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAosOx086946;
+        Thu, 18 Feb 2021 10:54:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=u+EbeWY0kC8yKqPJItRN34NJeUG7sw3ukrKrK2+AkTs=;
+ b=EgOO2Lbi1r9oydC78SZADWrrncDu6rXN8Sdfy/IAoWF/lig4EHku9CJ0b+PLv0MtowBK
+ J1qNK5QoMf60oUQzRs3q0/zGvexsq8X5mARzjYxmD8H1QHleptKmxy20mSMF/sIcJpN8
+ PiA7X0042KbGj1/zDRlKKXgMl9JwVYgxAvDz7b9FWLu4Z1E3JFH+AR8IsYEiHMBr/zin
+ Sv7rBWOdvEaMSUKMNObUng7AI3qm7mLUb4Owbj+cNm//xwe2hHNLpNzDxi8jD9U9Vw1C
+ 3C6VHDqb8l0M+dvevSoIujhBXMLs4B2FRh0czxJuyw3ykgJPTYB1CI21a7IoIkV6gWxd jw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36p49bdpf0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 10:54:14 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAkQAJ188535;
+        Thu, 18 Feb 2021 10:54:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 36prbqm72c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 10:54:13 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11IAs9TV015168;
+        Thu, 18 Feb 2021 10:54:09 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 02:54:08 -0800
+Date:   Thu, 18 Feb 2021 13:53:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
+        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
+        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
+        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v1 06/18] media: hantro: Make sure that ctx->codex_ops is
+ set
+Message-ID: <20210218105352.GE2087@kadam>
+References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
+ <20210217080306.157876-7-benjamin.gaignard@collabora.com>
 MIME-Version: 1.0
-References: <1613012611-8489-1-git-send-email-min.li.xe@renesas.com>
- <CAK8P3a3YhAGEfrvmi4YhhnG_3uWZuQi0ChS=0Cu9c4XCf5oGdw@mail.gmail.com>
- <OSBPR01MB47732017A97D5C911C4528F0BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
- <CAK8P3a2KDO4HutsXNJzjmRJTvW1QW4Kt8H7U53_QqpmgvZtd3A@mail.gmail.com>
- <OSBPR01MB4773B22EA094A362DD807F83BA8B9@OSBPR01MB4773.jpnprd01.prod.outlook.com>
- <CAK8P3a3k5dAF=X3_NrYAAp5gPJ_uvF3XfmC4rKz0oGTrGRriCw@mail.gmail.com>
- <OSBPR01MB47732AFC03DA8A0DDF626706BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
- <CAK8P3a2TeeLfsTNkZPnC3YowdOS=bFM5yYj58crP6F5U9Y_r-Q@mail.gmail.com>
- <OSBPR01MB47739CBDE12E1F3A19649772BA879@OSBPR01MB4773.jpnprd01.prod.outlook.com>
- <CAK8P3a2fRgDJZv-vzy_X6Y5t3daaVdCiXtMwkmXUyG0EQZ0a6Q@mail.gmail.com>
- <OSBPR01MB477394546AE3BC1F186FC0E9BA869@OSBPR01MB4773.jpnprd01.prod.outlook.com>
- <CAK8P3a32jF+iCH5Sk82LaozyPJ0n=f92MRdseZwN9aOtf4DwKQ@mail.gmail.com> <OSBPR01MB47737A11F8BFCC856C4A62DCBA859@OSBPR01MB4773.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSBPR01MB47737A11F8BFCC856C4A62DCBA859@OSBPR01MB4773.jpnprd01.prod.outlook.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 18 Feb 2021 11:50:43 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3LrkAE9MuMkwMpJ6_5ZYM3m_S-0v7V7qrpY6JaAzHUTQ@mail.gmail.com>
-Message-ID: <CAK8P3a3LrkAE9MuMkwMpJ6_5ZYM3m_S-0v7V7qrpY6JaAzHUTQ@mail.gmail.com>
-Subject: Re: [PATCH net-next] misc: Add Renesas Synchronization Management
- Unit (SMU) support
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        gregkh <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217080306.157876-7-benjamin.gaignard@collabora.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180095
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 4:28 AM Min Li <min.li.xe@renesas.com> wrote:
-> > If the driver can use the same algorithm that is in your user space software
-> > today, that would seem to be a nicer way to handle it than requiring a
-> > separate application.
-> >
->
-> Hi Arnd
->
->
-> What is the device driver that you are referring here?
->
-> In summary of your reviews, are you suggesting me to discard this change
-> and go back to PTP subsystem to find a better place for things that I wanna
-> do here?
+On Wed, Feb 17, 2021 at 09:02:54AM +0100, Benjamin Gaignard wrote:
+> Do not try to call ctx->codec_ops->done if ctx->codec_ops is not set.
+> 
 
-Yes, I mean doing it all in the PTP driver.
+When you're writing a patch like this please say in the commit message
+if this can happen or not.  Option 1:
 
-        Arnd
+Option 1: sometimes this is NULL in <some situation>
+Option 2: this can't be NULL, but we are planning to allow that.
+Option 3: I don't know if this can be NULL but do it for consistency
+
+As we review and packport patches we have to figure out why you are
+adding NULL checks so it really helps if you just tell us.
+
+regards,
+dan carpenter
+
