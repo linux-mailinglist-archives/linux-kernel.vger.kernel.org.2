@@ -2,85 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4688931E8AB
+	by mail.lfdr.de (Postfix) with ESMTP id B89AA31E8AC
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 11:59:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhBRKSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:18:07 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:40611 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230303AbhBRJBV (ORCPT
+        id S232774AbhBRKSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 05:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231406AbhBRJBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 04:01:21 -0500
-X-IronPort-AV: E=Sophos;i="5.81,186,1610380800"; 
-   d="scan'208";a="104601999"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 18 Feb 2021 17:00:03 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 2F5E34CE72E3;
-        Thu, 18 Feb 2021 16:59:58 +0800 (CST)
-Received: from irides.mr (10.167.225.141) by G08CNEXMBPEKD05.g08.fujitsu.local
- (10.167.33.204) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
- 2021 16:59:57 +0800
-Subject: Re: [PATCH v3 05/11] mm, fsdax: Refactor memory-failure handler for
- dax mapping
-To:     Christoph Hellwig <hch@lst.de>
-CC:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>,
-        <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <agk@redhat.com>, <snitzer@redhat.com>,
-        <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>, <y-goto@fujitsu.com>
-References: <20210208105530.3072869-1-ruansy.fnst@cn.fujitsu.com>
- <20210208105530.3072869-6-ruansy.fnst@cn.fujitsu.com>
- <20210210133347.GD30109@lst.de>
- <45a20d88-63ee-d678-ad86-6ccd8cdf7453@cn.fujitsu.com>
- <20210218083230.GA17913@lst.de>
-From:   Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Message-ID: <9edffa8e-faf8-3d29-6ec0-69ad512e7bb7@cn.fujitsu.com>
-Date:   Thu, 18 Feb 2021 16:59:56 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 18 Feb 2021 04:01:19 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE90C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 01:00:12 -0800 (PST)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1lCfAH-0002cD-59; Thu, 18 Feb 2021 10:00:01 +0100
+Message-ID: <9b244af36848525e061efa2d85f8d0219fd7652b.camel@pengutronix.de>
+Subject: Re: [PATCH] PCI: imx6: Limit DBI register length for imx6qp pcie
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Richard Zhu <hongxing.zhu@nxp.com>, bhelgaas@google.com,
+        stefan@agner.ch, lorenzo.pieralisi@arm.com
+Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Date:   Thu, 18 Feb 2021 09:59:59 +0100
+In-Reply-To: <1613624980-29382-1-git-send-email-hongxing.zhu@nxp.com>
+References: <1613624980-29382-1-git-send-email-hongxing.zhu@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210218083230.GA17913@lst.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.167.225.141]
-X-ClientProxiedBy: G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) To
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204)
-X-yoursite-MailScanner-ID: 2F5E34CE72E3.AE2D0
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Donnerstag, dem 18.02.2021 um 13:09 +0800 schrieb Richard Zhu:
+> Refer to commit 075af61c19cd ("PCI: imx6: Limit DBI register length"),
+> i.MX6QP PCIe has the similar issue.
+> Define the length of the DBI registers and limit config space to its
+> length for i.MX6QP PCIe too.
+> 
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
 
+Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
 
-On 2021/2/18 下午4:32, Christoph Hellwig wrote:
-> On Wed, Feb 17, 2021 at 10:56:11AM +0800, Ruan Shiyang wrote:
->> I'd like to confirm one thing...  I have checked all of this patchset by
->> checkpatch.pl and it did not report the overly long line warning.  So, I
->> should still obey the rule of 80 chars one line?
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> checkpatch.pl is completely broken, I would not rely on it.
-> 
-> Here is the quote from the coding style document:
-> 
-> "The preferred limit on the length of a single line is 80 columns.
-> 
-> Statements longer than 80 columns should be broken into sensible chunks,
-> unless exceeding 80 columns significantly increases readability and does
-> not hide information."
-> 
-
-OK.  Got it.  Thank you.
-
-
---
-Ruan Shiyang.
-> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 0cf1333c0440..853ea8e82952 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -1175,6 +1175,7 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  		.variant = IMX6QP,
+>  		.flags = IMX6_PCIE_FLAG_IMX6_PHY |
+>  			 IMX6_PCIE_FLAG_IMX6_SPEED_CHANGE,
+> +		.dbi_length = 0x200,
+>  	},
+>  	[IMX7D] = {
+>  		.variant = IMX7D,
 
 
