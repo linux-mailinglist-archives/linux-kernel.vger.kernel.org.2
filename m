@@ -2,92 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F57E31E490
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 211F731E493
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230020AbhBRDfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 22:35:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29628 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229885AbhBRDfc (ORCPT
+        id S230079AbhBRDl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 22:41:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229752AbhBRDlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 22:35:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613619246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=d9YnNO3MbpPkDoXl8YrBEEv+qOhDiCyZjDCW4nbXIvQ=;
-        b=CFsd87GuAsC9yUTBC9Jmdu8+/tk2VV834Hh70YWJOyeDYaqTECMhwEdRCFId3W+ci8+5rG
-        XtrlAomsaLoZBKgGcIPPuHeOFJZ1ZekkiSJIWo8OGcvOFHh9hcvakoMKh1nwtOxUzoioAi
-        VN8UW6xEMRAhA+tWkwVGGMCbdnYpH4I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-447-aOSWgkEAPimUDD-8gCggqA-1; Wed, 17 Feb 2021 22:34:02 -0500
-X-MC-Unique: aOSWgkEAPimUDD-8gCggqA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8068710066F1;
-        Thu, 18 Feb 2021 03:33:59 +0000 (UTC)
-Received: from localhost (ovpn-12-112.pek2.redhat.com [10.72.12.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 84C09100164C;
-        Thu, 18 Feb 2021 03:33:55 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 11:33:52 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
-        dyoung@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
-        arnd@arndb.de, james.morse@arm.com, xiexiuqi@huawei.com,
-        guohanjun@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v14 02/11] x86: kdump: make the lower bound of crash
- kernel reservation consistent
-Message-ID: <20210218033233.GF2871@MiWiFi-R3L-srv>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
- <20210130071025.65258-3-chenzhou10@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130071025.65258-3-chenzhou10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Wed, 17 Feb 2021 22:41:24 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB258C061756
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 19:40:44 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id y7so1107305ybh.20
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 19:40:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=cJg53Dje1zJHUGVNSMHfeUh3OpPCOvr7+/hJB7zf2NU=;
+        b=Xc55D4oyibYHJrF9xxK5ty4qZV5WPl/oyMOo1NIeaW4rzKh2l8T0flog4OHsGT9TkN
+         a6BjFqUMJPcs9oUyXIyZkeFs+6ostr2RLzKjEmJG7P1VRkzC5+h+ZDLBGfAfEqZ3gH+F
+         GNNcRAAC9X8K8uyk5EDzec+7gcNow32K96WyeJHK6yhnjNFAdjZOC6QlXOa2sxHwJOur
+         ECKu1843Tuz2Lj0x+TIwopuBE5n3ZJSnWWokhXox2eZln4EXe2IGz+3nWE9iEfUrTqQQ
+         dv3NwEDazI4LOFkJwSIbMVq7X7iomclZKiA3tbeVdYjK+8gLeXGEiDXdgiJ+JBb41NUF
+         TBBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=cJg53Dje1zJHUGVNSMHfeUh3OpPCOvr7+/hJB7zf2NU=;
+        b=hPP9o7/ml5GnP2qIJbYvsqdThKWVTE+qDXiaVPxq/W0fcqvLOwJfS9zih3tZRrb/5p
+         mcKxTAc1DOLhN4yuqQgutFlYEH4ynXlgdF5nywStsq1j0v9XW7HJ2XU7xoY4rVyilFTG
+         9Yar9iDGYiV2wXQ8q+tJntQS5aE8fNO3rbx78xggSSRSK6WVsrD8cf+hnliT9/5qvGdG
+         tMR4NmDetRkGKxJXMg7ppsasfo81hlYtdW5QWmhD1yZ3ThOIBeMxEj/hIBcpk6AMhxTb
+         K21uVINRPvXJW9YNxd3vNNvbnXodYCxGoS3BwYqI42cBTPDLkxBoTk8LAIxeb9Dj1oEk
+         tRMw==
+X-Gm-Message-State: AOAM5305NHW4/n8Rl4PbWGyLlQbof6Wm+IBA6MCzv7ugqAY39z539Yy0
+        koo2rxzFSoictJb4NoxMwsr55bg=
+X-Google-Smtp-Source: ABdhPJz2WMAVIxhWQ3CvQKch5WlfpnqivVZXx6DjkmgSGtYRxhSSFMhwOvuAimFRTqdovAb2+htK9vs=
+Sender: "wak via sendgmr" <wak@wak-linux.svl.corp.google.com>
+X-Received: from wak-linux.svl.corp.google.com ([2620:15c:2c5:3:b5f3:dab1:c8f5:62df])
+ (user=wak job=sendgmr) by 2002:a25:23c6:: with SMTP id j189mr3854740ybj.211.1613619643954;
+ Wed, 17 Feb 2021 19:40:43 -0800 (PST)
+Date:   Wed, 17 Feb 2021 19:40:40 -0800
+Message-Id: <20210218034040.296869-1-wak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
+Subject: [PATCH] net: ftgmac100: Support phyless operation
+From:   "William A. Kennington III" <wak@google.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Joel Stanley <joel@jms.id.au>,
+        "William A. Kennington III" <wak@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/30/21 at 03:10pm, Chen Zhou wrote:
-> The lower bounds of crash kernel reservation and crash kernel low
-> reservation are different, use the consistent value CRASH_ALIGN.
-> 
-> Suggested-by: Dave Young <dyoung@redhat.com>
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-> ---
->  arch/x86/kernel/setup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index da769845597d..27470479e4a3 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -439,7 +439,8 @@ static int __init reserve_crashkernel_low(void)
->  			return 0;
->  	}
->  
-> -	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, 0, CRASH_ADDR_LOW_MAX);
-> +	low_base = memblock_phys_alloc_range(low_size, CRASH_ALIGN, CRASH_ALIGN,
-> +			CRASH_ADDR_LOW_MAX);
+We have BMC to BMC connections that lack a PHY in between but don't
+want to use the NC-SI state machinery of the kernel. Instead,
+allow for an option to disable the phy detection and mdio logic.
 
-Acked-by: Baoquan He <bhe@redhat.com>
+Signed-off-by: William A. Kennington III <wak@google.com>
+---
+ .../devicetree/bindings/net/ftgmac100.txt     |  2 ++
+ drivers/net/ethernet/faraday/ftgmac100.c      | 30 +++++++++++--------
+ 2 files changed, 19 insertions(+), 13 deletions(-)
 
->  	if (!low_base) {
->  		pr_err("Cannot reserve %ldMB crashkernel low memory, please try smaller size.\n",
->  		       (unsigned long)(low_size >> 20));
-> -- 
-> 2.20.1
-> 
+diff --git a/Documentation/devicetree/bindings/net/ftgmac100.txt b/Documentation/devicetree/bindings/net/ftgmac100.txt
+index 29234021f601..22c729c5fd3e 100644
+--- a/Documentation/devicetree/bindings/net/ftgmac100.txt
++++ b/Documentation/devicetree/bindings/net/ftgmac100.txt
+@@ -19,6 +19,8 @@ Optional properties:
+ - phy-mode: See ethernet.txt file in the same directory. If the property is
+   absent, "rgmii" is assumed. Supported values are "rgmii*" and "rmii" for
+   aspeed parts. Other (unknown) parts will accept any value.
++- no-phy: Disable any MDIO or PHY connection logic and assume the interface
++  is always up.
+ - use-ncsi: Use the NC-SI stack instead of an MDIO PHY. Currently assumes
+   rmii (100bT) but kept as a separate property in case NC-SI grows support
+   for a gigabit link.
+diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
+index 88bfe2107938..f2cf190654c8 100644
+--- a/drivers/net/ethernet/faraday/ftgmac100.c
++++ b/drivers/net/ethernet/faraday/ftgmac100.c
+@@ -1467,18 +1467,18 @@ static int ftgmac100_open(struct net_device *netdev)
+ 		return err;
+ 	}
+ 
+-	/* When using NC-SI we force the speed to 100Mbit/s full duplex,
++	/* When PHYless we force the speed to 100Mbit/s full duplex,
+ 	 *
+ 	 * Otherwise we leave it set to 0 (no link), the link
+ 	 * message from the PHY layer will handle setting it up to
+ 	 * something else if needed.
+ 	 */
+-	if (priv->use_ncsi) {
+-		priv->cur_duplex = DUPLEX_FULL;
+-		priv->cur_speed = SPEED_100;
+-	} else {
++	if (netdev->phydev) {
+ 		priv->cur_duplex = 0;
+ 		priv->cur_speed = 0;
++	} else {
++		priv->cur_duplex = DUPLEX_FULL;
++		priv->cur_speed = SPEED_100;
+ 	}
+ 
+ 	/* Reset the hardware */
+@@ -1506,14 +1506,16 @@ static int ftgmac100_open(struct net_device *netdev)
+ 	if (netdev->phydev) {
+ 		/* If we have a PHY, start polling */
+ 		phy_start(netdev->phydev);
+-	} else if (priv->use_ncsi) {
+-		/* If using NC-SI, set our carrier on and start the stack */
++	} else {
++		/* If PHYless, set our carrier on and start the stack */
+ 		netif_carrier_on(netdev);
+ 
+-		/* Start the NCSI device */
+-		err = ncsi_start_dev(priv->ndev);
+-		if (err)
+-			goto err_ncsi;
++		if (priv->use_ncsi) {
++			/* Start the NCSI device */
++			err = ncsi_start_dev(priv->ndev);
++			if (err)
++				goto err_ncsi;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -1725,8 +1727,8 @@ static int ftgmac100_setup_clk(struct ftgmac100 *priv)
+ 	 * 1000Mbit link speeds. As NCSI is limited to 100Mbit, 25MHz
+ 	 * is sufficient
+ 	 */
+-	rc = clk_set_rate(priv->clk, priv->use_ncsi ? FTGMAC_25MHZ :
+-			  FTGMAC_100MHZ);
++	rc = clk_set_rate(priv->clk, priv->netdev->phydev ? FTGMAC_100MHZ :
++			  FTGMAC_25MHZ);
+ 	if (rc)
+ 		goto cleanup_clk;
+ 
+@@ -1837,6 +1839,8 @@ static int ftgmac100_probe(struct platform_device *pdev)
+ 		priv->ndev = ncsi_register_dev(netdev, ftgmac100_ncsi_handler);
+ 		if (!priv->ndev)
+ 			goto err_phy_connect;
++	} else if (np && of_get_property(np, "no-phy", NULL)) {
++		dev_info(&pdev->dev, "Using PHYless interface\n");
+ 	} else if (np && of_get_property(np, "phy-handle", NULL)) {
+ 		struct phy_device *phy;
+ 
+-- 
+2.30.0.478.g8a0d178c01-goog
 
