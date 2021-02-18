@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B40831EB72
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC3131EB6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhBRPWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:22:12 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:13362 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233231AbhBRNAH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:00:07 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DhF9k0NxTz7lVX;
-        Thu, 18 Feb 2021 20:57:46 +0800 (CST)
-Received: from localhost.localdomain (10.90.52.227) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 18 Feb 2021 20:59:09 +0800
-From:   qiuguorui1 <qiuguorui1@huawei.com>
-To:     <takahiro.akashi@linaro.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <l.stelmach@samsung.com>, <lkml@SDF.ORG>,
-        <akpm@linux-foundation.org>, <bgwin@google.com>, <rppt@kernel.org>,
-        <gustavoars@kernel.org>, <tao.li@vivo.com>, <james.morse@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <zengweilin@huawei.com>,
-        <liuwenliang@huawei.com>, <qiuguorui1@huawei.com>
-Subject: [PATCH] arm64: kexec_file: fix memory leakage in create_dtb() when fdt_open_into() fails
-Date:   Thu, 18 Feb 2021 20:59:00 +0800
-Message-ID: <20210218125900.6810-1-qiuguorui1@huawei.com>
-X-Mailer: git-send-email 2.12.3
+        id S231529AbhBRPTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:19:44 -0500
+Received: from foss.arm.com ([217.140.110.172]:50966 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233189AbhBRM7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:59:03 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C85BE1FB;
+        Thu, 18 Feb 2021 04:58:11 -0800 (PST)
+Received: from [10.57.43.160] (unknown [10.57.43.160])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 203DD3F73B;
+        Thu, 18 Feb 2021 04:58:09 -0800 (PST)
+Subject: Re: [PATCH v7 1/3] scmi-cpufreq: Remove deferred probe
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
+        vireshk@kernel.org, cristian.marussi@arm.com,
+        morten.rasmussen@arm.com, chris.redpath@arm.com,
+        ionela.voinescu@arm.com
+References: <20210215075139.30772-1-nicola.mazzucato@arm.com>
+ <20210215075139.30772-2-nicola.mazzucato@arm.com>
+ <20210218103539.zkxhqxaivhifmjwj@vireshk-i7>
+From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
+Message-ID: <2b8f34cc-5317-f839-5f51-f83c10f571c6@arm.com>
+Date:   Thu, 18 Feb 2021 13:01:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.90.52.227]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210218103539.zkxhqxaivhifmjwj@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-in function create_dtb(), if fdt_open_into() fails, we need to vfree
-buf before return.
+Hi Viresh,
 
-Fixes: 52b2a8af74360 ("arm64: kexec_file: load initrd and device-tree")
-Cc: stable@vger.kernel.org # v5.0
-Signed-off-by: qiuguorui1 <qiuguorui1@huawei.com>
----
- arch/arm64/kernel/machine_kexec_file.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/machine_kexec_file.c b/arch/arm64/kernel/machine_kexec_file.c
-index 03210f644790..0cde47a63beb 100644
---- a/arch/arm64/kernel/machine_kexec_file.c
-+++ b/arch/arm64/kernel/machine_kexec_file.c
-@@ -182,8 +182,10 @@ static int create_dtb(struct kimage *image,
- 
- 		/* duplicate a device tree blob */
- 		ret = fdt_open_into(initial_boot_params, buf, buf_size);
--		if (ret)
-+		if (ret) {
-+			vfree(buf);
- 			return -EINVAL;
-+		}
- 
- 		ret = setup_dtb(image, initrd_load_addr, initrd_len,
- 				cmdline, buf);
--- 
-2.12.3
+On 2/18/21 10:35 AM, Viresh Kumar wrote:
+> On 15-02-21, 07:51, Nicola Mazzucato wrote:
+>> The current implementation of the scmi_cpufreq_init() function returns
+>> -EPROBE_DEFER when the OPP table is not populated. In practice the
+>> cpufreq core cannot handle this error code.
+>> Therefore, fix the return value and clarify the error message.
+>>
+>> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+>> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
+>> ---
+>>  drivers/cpufreq/scmi-cpufreq.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+>> index 491a0a24fb1e..34bf2eb8d465 100644
+>> --- a/drivers/cpufreq/scmi-cpufreq.c
+>> +++ b/drivers/cpufreq/scmi-cpufreq.c
+>> @@ -155,9 +155,11 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>>  
+>>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+>>  	if (nr_opp <= 0) {
+>> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
+>> -		ret = -EPROBE_DEFER;
+>> -		goto out_free_opp;
+> 
+> Why change goto label as well ?
 
+oops! thanks for spotting this :)
+
+> 
+>> +		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
+>> +			__func__, ret);
+>> +
+>> +		ret = -ENODEV;
+>> +		goto out_free_priv;
+>>  	}
+>>  
+>>  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+>> -- 
+>> 2.27.0
+> 
