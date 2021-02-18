@@ -2,83 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B31331EFDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E61C231EFDE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhBRTaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231327AbhBRSrC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:47:02 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1FCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:19 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id d13so1753279plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=drmiTJ2Rk9ucy2iYLORJ+griMgMAYYSsxQgICUqTnik=;
-        b=eYcml0geDRNXaW610yxESdhDgqNum66QY8BF55CxpxFl117dd2xNH0RrujDY2e0r6i
-         NnpiyX4SSmQDyJzHXIMsxQMgMnThVoz0pq1XsPVZw4a1F7l2jB8NHclRgXsXhhb1fxA4
-         3p840Cnu4pcfmWr+yrIGQGHqDFBaJL+QTvWfs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=drmiTJ2Rk9ucy2iYLORJ+griMgMAYYSsxQgICUqTnik=;
-        b=VwRHeq3c1qOuMUNK1CTo15lIjQjWWHrtSfYWdl2XwjhfcYcpjflWZwdtGRrF5LOSb4
-         7Exe2ft/ttRPBLSiyRQY2gkzZwNrYPfdDYg8Gk0bddxrBpHgxpmPOdmlN0c8sAwoA4wz
-         uXCuWFXKEuua7QhuDZAKj0bQ/fy5ezgWsLKz0iqyP549ttwhZYmgMFtbAOIWMufoTiNE
-         4fo8AlBEj55RzpHwJ9Hk8jsftN6lU7c7WH/sNyxViL1AVB8uDAGiy1DXXvIdFzaz3vfV
-         wCZ/oVla2rHaRrjozkknyvOCHyp75kUvqf6ZeSxZ2C1KNMq1mTaP5jppNgk7ACMZgc7m
-         IA0w==
-X-Gm-Message-State: AOAM530CW7LoDsX4EAYVzYprVhHKqqKSoVr0y263fpuOO6gQFUoal46K
-        HFVN0sbbyHgER1fyPhkzRSMCeg==
-X-Google-Smtp-Source: ABdhPJxJni7HMteZ57iewZ7//VvhwYQcbuDCtH1IKTW8sEoD3IMpcVitwBWi/yftGIPLZx0TCCVH1Q==
-X-Received: by 2002:a17:90a:cf82:: with SMTP id i2mr5100794pju.209.1613673979305;
-        Thu, 18 Feb 2021 10:46:19 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:ec84:ed2b:a796:b756])
-        by smtp.gmail.com with ESMTPSA id b17sm6546618pfb.75.2021.02.18.10.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 10:46:18 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S230165AbhBRTan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:30:43 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:53192 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232902AbhBRSr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:47:29 -0500
+Received: from zn.tnic (p200300ec2f0c6200329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:6200:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 766E11EC036C;
+        Thu, 18 Feb 2021 19:46:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1613674001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=bG2ukGdeaJBUIyVoPz3j2HXqZkZj71tMc/X8YRCOFZ8=;
+        b=fSVWz3hJi+/MX62NWM5YVdrVGtnVvHJnJ/02FtGSq8GX9i1OT8Lx7f7TEHDJHCTgZJ4Esf
+        E3LlD2KvJaq0MaOJPbwNoL5kWHa/5hdAoCHCUAUernNayItFmXvRyBO4lhqsTTgihy7B0D
+        GxzTdKARCtZeV+r4yTIoWxpdY87wTtw=
+Date:   Thu, 18 Feb 2021 19:46:39 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, tony.luck@intel.com, pjt@google.com,
+        linux-kernel@vger.kernel.org, r.marek@assembler.cz,
+        jpoimboe@redhat.com, jikos@kernel.org,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: [RFC PATCH] x86/retpolines: Prevent speculation after RET
+Message-ID: <20210218184639.GF4214@zn.tnic>
+References: <20210218165938.213678824@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
-References: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
-Subject: Re: [PATCH v2 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis swing table
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Date:   Thu, 18 Feb 2021 10:46:17 -0800
-Message-ID: <161367397738.1254594.12158219605796616035@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210218165938.213678824@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-02-18 08:51:10)
-> Add hbr3_hbr2 voltage and premphasis swing table to support
-> HBR3 link rate.
->=20
-> Changes in V2:
-> -- replaced upper case with lower case at hbr3_hbr2 table
->=20
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
+On Thu, Feb 18, 2021 at 05:59:38PM +0100, Peter Zijlstra wrote:
+> Hi!
+> 
+> The first patch rearranges the implementation and consolidates unused bytes.
+> The second patch uses INT3 over LFENCE to shrink the retpoline to 15 bytes, by
+> which 4 can live in a cacheline.
+> 
+> Patches have been boot tested on my IVB.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+And here's the patch that prompted all this:
 
-BTW, the DP driver already set rates for HBR2, so does that mean this is
-fixing the voltage and preemphasis settings for HBR2? If so we should
-backport this to stable trees and mark it as fixing commit 52e013d0bffa
-("phy: qcom-qmp: Add support for DP in USB3+DP combo phy").
+---
+From: Borislav Petkov <bp@suse.de>
+Date: Thu, 18 Feb 2021 17:21:24 +0100
+
+Both vendors speculate after a near RET in some way:
+
+Intel:
+
+"Unlike near indirect CALL and near indirect JMP, the processor will not
+speculatively execute the next sequential instruction after a near RET
+unless that instruction is also the target of a jump or is a target in a
+branch predictor."
+
+AMD:
+
+"Some AMD processors when they first encounter a branch do not stall
+dispatch and use the branches dynamic execution to determine the target.
+Therefore, they will speculatively dispatch the sequential instructions
+after the branch. This happens for near return instructions where it is
+not clear what code may exist sequentially after the return instruction.
+This behavior also occurs with jmp/call instructions with indirect
+targets. Software should place a LFENCE or another dispatch serializing
+instruction after the return or jmp/call indirect instruction to prevent
+this sequential speculation."
+
+The AMD side doesn't really need the LFENCE because it'll do LFENCE;
+JMP/CALL <target> due to X86_FEATURE_RETPOLINE_AMD, before it reaches
+the RET.
+
+Objtool bits provided by Peter Zijlstra (Intel) <peterz@infradead.org>
+
+Reported-by: Rudolf Marek <r.marek@assembler.cz>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Co-developed-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/lib/retpoline.S             | 1 +
+ tools/objtool/arch/x86/decode.c      | 5 +++++
+ tools/objtool/check.c                | 6 ++++++
+ tools/objtool/include/objtool/arch.h | 1 +
+ 4 files changed, 13 insertions(+)
+
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 397d408e8244..3f8652aaf84d 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -31,6 +31,7 @@ SYM_FUNC_START_NOALIGN(__x86_retpoline_\reg)
+ 	mov	%\reg, (%_ASM_SP)
+ 	UNWIND_HINT_FUNC
+ 	ret
++	lfence
+ SYM_FUNC_END(__x86_retpoline_\reg)
+ 
+ .endm
+diff --git a/tools/objtool/arch/x86/decode.c b/tools/objtool/arch/x86/decode.c
+index 549813cff8ab..84a5e3cfa72d 100644
+--- a/tools/objtool/arch/x86/decode.c
++++ b/tools/objtool/arch/x86/decode.c
+@@ -464,6 +464,11 @@ int arch_decode_instruction(const struct elf *elf, const struct section *sec,
+ 				op->src.type = OP_SRC_POP;
+ 				op->dest.type = OP_DEST_MEM;
+ 			}
++
++		} else if (op2 == 0xae && modrm == 0xe8) {
++
++			/* lfence */
++			*type = INSN_NOSPEC;
+ 		}
+ 
+ 		break;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 331a763d8775..9ab84f0c4032 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2868,6 +2868,12 @@ static bool ignore_unreachable_insn(struct objtool_file *file, struct instructio
+ 	      insn->jump_dest && insn->jump_dest->type == INSN_BUG)))
+ 		return true;
+ 
++	/*
++	 * We allow speculation traps after RETURN instructions.
++	 */
++	if (prev_insn->type == INSN_RETURN && insn->type == INSN_NOSPEC)
++		return true;
++
+ 	/*
+ 	 * Check if this (or a subsequent) instruction is related to
+ 	 * CONFIG_UBSAN or CONFIG_KASAN.
+diff --git a/tools/objtool/include/objtool/arch.h b/tools/objtool/include/objtool/arch.h
+index 6ff0685f5cc5..faf0c0afd938 100644
+--- a/tools/objtool/include/objtool/arch.h
++++ b/tools/objtool/include/objtool/arch.h
+@@ -26,6 +26,7 @@ enum insn_type {
+ 	INSN_CLAC,
+ 	INSN_STD,
+ 	INSN_CLD,
++	INSN_NOSPEC,
+ 	INSN_OTHER,
+ };
+ 
+-- 
+2.29.2
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
