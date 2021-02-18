@@ -2,63 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B5E31F091
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FE931F092
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231824AbhBRT4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:56:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhBRTaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:30:01 -0500
-Received: from smtp-8fa8.mail.infomaniak.ch (smtp-8fa8.mail.infomaniak.ch [IPv6:2001:1600:4:17::8fa8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8B1C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 11:29:16 -0800 (PST)
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4DhPsP1XX8zMprs5;
-        Thu, 18 Feb 2021 20:29:13 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4DhPsM6kqZzlh8TN;
-        Thu, 18 Feb 2021 20:29:11 +0100 (CET)
-Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
-To:     David Howells <dhowells@redhat.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk>
- <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
- <2031808.1613665474@warthog.procyon.org.uk>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net>
-Date:   Thu, 18 Feb 2021 20:30:12 +0100
-User-Agent: 
+        id S230466AbhBRT4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:56:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230071AbhBRTbj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:31:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0BB364E22;
+        Thu, 18 Feb 2021 19:30:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613676655;
+        bh=lnUB2bONZeJO5S0p4iu2vLKyPBpgxp21eol/4JgnczE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bUX0OEC/R1kLWJddDeZ6/qdwP+N7FS3ddLDaBQg6zQ+MDBTA/BNR1Djir8i5uzPzy
+         /w0LwqdLaCiA9aI4PZRpGkzWpq+GN9Sw7VWrMInTKtP33/rHCQBjtL9lXtY/XB8KQg
+         RPw1qvk/UnxVJUw73hUuQHgeyvaguQny50RPtTgAddoLw23eHG+Z5sVSIzI+uvv4Ol
+         rYGvTGrAawuh+b6prNb30wOWsgP3EDRa3SiCtLNeFdcmyRTzeZ8tJJ9mBlWbU9JCyU
+         AxXlodMkcc6nYFaBigaOb/8wRyGFyTlbUSzNa1PkuKny5CYMJ9GLMr64fYGVLPUaBR
+         Bb+UBZkTrUOkA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id B29CE40CD9; Thu, 18 Feb 2021 16:30:52 -0300 (-03)
+Date:   Thu, 18 Feb 2021 16:30:52 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki Poulouse <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Basil Eljuse <Basil.Eljuse@arm.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] perf test: Output sub testing result in cs-etm
+Message-ID: <YC7AbM4fPBs7DxVo@kernel.org>
+References: <20210215115944.535986-1-leo.yan@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <2031808.1613665474@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215115944.535986-1-leo.yan@linaro.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Em Mon, Feb 15, 2021 at 07:59:42PM +0800, Leo Yan escreveu:
+> The "perf test" can be integrated into testing framework, e.g. Linux
+> kernel functional testing (LKFT) [1].  We are not satisfied with only
+> outputting the summarized result for Arm CoreSight testing but lacking
+> more detailed result for sub testing.
+> 
+> This patch set is to output sub testing result in cs-etm.  Thus the
+> testing framework can extract the detailed info and generates reports
+> for which sub cases causes failure.
+> 
+> This patch set is cleanly applied on perf/core branch with:
+> 
+>   commit 6db59d357e8e ("perf arm64/s390: Fix printf conversion specifier for IP addresses")
+> 
+> After applied the patches, which is tested on Arm Juno-r2 board with
+> option '-v', the output result is shown in below; the introduced sub
+> testing result has the format like:
 
-On 18/02/2021 17:24, David Howells wrote:
-> 
-> Hi Mickaël, Jarkko,
-> 
-> Can I transfer your acks from:
-> 
-> 	https://lore.kernel.org/lkml/20210121155513.539519-5-mic@digikod.net/
-> 
-> to here?
+Thanks, applied.
 
-No, the current thread contains an old version with an error in the
-patch for ima_mok_init(). Please take the last series (fixing this
-patch) that I rebased on your next branch:
-https://lore.kernel.org/keyrings/20210210120410.471693-1-mic@digikod.net/
+- Arnaldo
 
-Regards,
- Mickaël
+ 
+>   "CoreSight path testing (CPU0 -> tmc_etf0): PASS".
+> 
+> 
+>   # perf test 73 -v
+>   73: Check Arm CoreSight trace data recording and synthesized samples:
+>   --- start ---
+>   test child forked, pid 17423
+>   Recording trace (only user mode) with path: CPU0 => tmc_etf0
+>   Looking at perf.data file for dumping branch samples:       
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:     
+>   CoreSight path testing (CPU0 -> tmc_etf0): PASS   
+>   Recording trace (only user mode) with path: CPU0 => tmc_etr0
+>   Looking at perf.data file for dumping branch samples:       
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:     
+>   CoreSight path testing (CPU0 -> tmc_etr0): PASS   
+>   Recording trace (only user mode) with path: CPU1 => tmc_etf0
+>   Looking at perf.data file for dumping branch samples:       
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:     
+>   CoreSight path testing (CPU1 -> tmc_etf0): PASS   
+>   Recording trace (only user mode) with path: CPU1 => tmc_etr0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:     
+>   CoreSight path testing (CPU1 -> tmc_etr0): PASS   
+>   Recording trace (only user mode) with path: CPU2 => tmc_etf0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:     
+>   CoreSight path testing (CPU2 -> tmc_etf0): PASS   
+>   Recording trace (only user mode) with path: CPU2 => tmc_etr0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:                  
+>   CoreSight path testing (CPU2 -> tmc_etr0): PASS        
+>   Recording trace (only user mode) with path: CPU3 => tmc_etf0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight path testing (CPU3 -> tmc_etf0): PASS
+>   Recording trace (only user mode) with path: CPU3 => tmc_etr0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight path testing (CPU3 -> tmc_etr0): PASS
+>   Recording trace (only user mode) with path: CPU4 => tmc_etf0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight path testing (CPU4 -> tmc_etf0): PASS
+>   Recording trace (only user mode) with path: CPU4 => tmc_etr0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight path testing (CPU4 -> tmc_etr0): PASS
+>   Recording trace (only user mode) with path: CPU5 => tmc_etf0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight path testing (CPU5 -> tmc_etf0): PASS
+>   Recording trace (only user mode) with path: CPU5 => tmc_etr0
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight path testing (CPU5 -> tmc_etr0): PASS
+>   Recording trace with system wide mode
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight system wide testing: PASS
+>   Recording trace with snapshot mode
+>   Looking at perf.data file for dumping branch samples:
+>   Looking at perf.data file for reporting branch samples:
+>   Looking at perf.data file for instruction samples:
+>   CoreSight snapshot testing: PASS
+>   test child finished with 0
+>   ---- end ----
+>   Check Arm CoreSight trace data recording and synthesized samples: Ok
+> 
+> [1] https://lkft.linaro.org/
+> 
+> 
+> Leo Yan (2):
+>   perf test: Suppress logs in cs-etm testing
+>   perf test: Output the sub testing result in cs-etm
+> 
+>  tools/perf/tests/shell/test_arm_coresight.sh | 45 ++++++++++----------
+>  1 file changed, 23 insertions(+), 22 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
+
+-- 
+
+- Arnaldo
