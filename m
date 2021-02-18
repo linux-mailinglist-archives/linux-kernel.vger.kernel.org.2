@@ -2,149 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FCF31EA4D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:15:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D44431EA6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhBRNO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:14:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27505 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232027AbhBRLkO (ORCPT
+        id S232419AbhBRNWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:22:15 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:51496 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhBRLou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:40:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613648326;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Thu, 18 Feb 2021 06:44:50 -0500
+Date:   Thu, 18 Feb 2021 11:43:24 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613648604;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3A4zaSGP/jDU0jQya7nJb+PtO132rNXYV3X5vurWHRM=;
-        b=FsnxXWc2e03gNM9vf6/ZY/Yo7E9exlCDot+KyryDAdQ2JH3jarJj+EpjyHE1+DvUCQVup8
-        ruVnGUhFmzEx1y/JrlRJ9ko6K/iUOsnq5hh/NMrucNOPrVVyjvSihc7lQZVxqot01/fVmd
-        8hLWbHxsl5xzjkam9TZ7EQaVOA5WyIk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-280-fC5elPu5OAqWLO01C1hoPg-1; Thu, 18 Feb 2021 06:38:42 -0500
-X-MC-Unique: fC5elPu5OAqWLO01C1hoPg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A5F3801965;
-        Thu, 18 Feb 2021 11:38:39 +0000 (UTC)
-Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B12B16F7EC;
-        Thu, 18 Feb 2021 11:38:28 +0000 (UTC)
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
- <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
- <YC5PEBiGKT5LUt/I@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <740cdd51-137b-2b08-8b7f-9757d8d847cb@redhat.com>
-Date:   Thu, 18 Feb 2021 12:38:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=iQv1Sqtl5nFJsalZQ0bY+3rnaQ7SM7IswiGxq/eT574=;
+        b=TByUlfO26TEK6T5XBYq8K1IsyrIIRWwD3XznJud0mxKKKjFB713wqYvV1NDL3Q2bKkO+kU
+        APYwKcZciralCeR/b6DgYVAUY0NJWGWTPHNVqVUHXXsDgqxKUx3W4hEiRd8MuB+AyWcHTI
+        dEw/vCBrz7blLPiPvu7O4VNCNCidknHq2u9G4qfuCh4M+wF7lK13VnHFNAyXSh3kOEeO4L
+        /bfdQbsybrH80/2RcerC/kV3o0zV7BW06frF4TViyzy6IVEq2uguHSqP0/w3/9WT6UUbxT
+        iObaZkyBRjxApdCAWDWyWL8uAK20GPuOAnTiAaQcLFRljD1s+pgQBbkhOegZoQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613648604;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iQv1Sqtl5nFJsalZQ0bY+3rnaQ7SM7IswiGxq/eT574=;
+        b=2jzhuQGx0lMiYQoer1fn+nIj3YoK2Pp1/aEG5NU8n4aRvtd0eem5cr1Mu9qByfy1oELLe6
+        poPEmNlBCu5cy2CA==
+From:   "irqchip-bot for Greg Kroah-Hartman" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+Subject: [irqchip: irq/irqchip-next] irqdomain: Remove debugfs_file from
+ struct irq_domain
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
+In-Reply-To: <YCvYV53ZdzQSWY6w@kroah.com>
+References: <YCvYV53ZdzQSWY6w@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <YC5PEBiGKT5LUt/I@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Message-ID: <161364860401.20312.8803941418073480334.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>      If we hit
->>>>      hardware errors on pages, ignore them - nothing we really can or
->>>>      should do.
->>>> 3. On errors during MADV_POPULATED, some memory might have been
->>>>      populated. Callers have to clean up if they care.
->>>
->>> How does caller find out? madvise reports 0 on success so how do you
->>> find out how much has been populated?
->>
->> If there is an error, something might have been populated. In my QEMU
->> implementation, I simply discard the range again, good enough. I don't think
->> we need to really indicate "error and populated" or "error and not
->> populated".
-> 
-> Agreed. The wording just suggests that the syscall actually provides any
-> means for an effective way to handle those errors. Maybe you should just
-> stick with the first sentence and drop the second.
+The following commit has been merged into the irq/irqchip-next branch of irqchip:
 
-Makes sense. "On errors during MADV_POPULATE, some memory might have 
-been populated."
+Commit-ID:     c83fd57be3fefa1522e7381f044fe0b702cbc6ad
+Gitweb:        https://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms/c83fd57be3fefa1522e7381f044fe0b702cbc6ad
+Author:        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+AuthorDate:    Tue, 16 Feb 2021 15:36:07 +01:00
+Committer:     Marc Zyngier <maz@kernel.org>
+CommitterDate: Thu, 18 Feb 2021 11:40:04 
 
->   
->>>> 4. Concurrent changes to the virtual memory layour are tolerated - we
->>>>      process each and every PFN only once, though.
->>>
->>> I do not understand this. madvise is about virtual address space not a
->>> physical address space.
->>
->> What I wanted to express: if we detect a change in the mapping we don't
->> restart at the beginning, we always make forward progress. We process each
->> virtual address once (on a per-page basis, thus I accidentally used "PFN").
-> 
-> This is an implicit assumption. Your range can have the same page mapped
-> several times in the given address range and all you care about is that
-> you fault those which are not present during the virtual address space
-> walk. Your syscall can return and large part of the address space might
-> be unpopulated because memory reclaim just dropped those pages and that
-> would be fine. This shouldn't really imply memory presence - mlock does
-> that.
+irqdomain: Remove debugfs_file from struct irq_domain
 
-"Concurrent changes to the virtual memory layout are tolerated. The 
-range is processed exactly once."
+There's no need to keep around a dentry pointer to a simple file that
+debugfs itself can look up when we need to remove it from the system.
+So simplify the code by deleting the variable and cleaning up the logic
+around the debugfs file.
 
-> 
->>>> 5. If MADV_POPULATE succeeds, all memory in the range can be accessed
->>>>      without SIGBUS. (of course, not if user space changed mappings in the
->>>>      meantime or KSM kicked in on anonymous memory).
->>>
->>> I do not see how KSM would change anything here and maybe it is not
->>> really important to mention it. KSM should be really transparent from
->>> the users space POV. Parallel and destructive virtual address space
->>> operations are also expected to change the outcome and there is nothing
->>> kernel do about at and provide any meaningful guarantees. I guess we
->>> want to assume a reasonable userspace behavior here.
->>
->> It's just a note that we cannot protect from someone interfering
->> (discard/ksm/whatever). I'm making that clearer in the cover letter.
-> 
-> Again that is implicit expectation. madvise will not work for anybody
-> shooting an own foot.
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/YCvYV53ZdzQSWY6w@kroah.com
+---
+ include/linux/irqdomain.h |  4 ----
+ kernel/irq/irqdomain.c    |  9 ++++-----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-Okay, I'll drop that part, thanks!
-
--- 
-Thanks,
-
-David / dhildenb
-
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index 42d1968..33cacc8 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -150,7 +150,6 @@ struct irq_domain_chip_generic;
+  *      setting up one or more generic chips for interrupt controllers
+  *      drivers using the generic chip library which uses this pointer.
+  * @parent: Pointer to parent irq_domain to support hierarchy irq_domains
+- * @debugfs_file: dentry for the domain debugfs file
+  *
+  * Revmap data, used internally by irq_domain
+  * @revmap_direct_max_irq: The largest hwirq that can be set for controllers that
+@@ -174,9 +173,6 @@ struct irq_domain {
+ #ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
+ 	struct irq_domain *parent;
+ #endif
+-#ifdef CONFIG_GENERIC_IRQ_DEBUGFS
+-	struct dentry		*debugfs_file;
+-#endif
+ 
+ 	/* reverse map data. The linear map gets appended to the irq_domain */
+ 	irq_hw_number_t hwirq_max;
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 6aacd34..367ff1c 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -1896,16 +1896,15 @@ DEFINE_SHOW_ATTRIBUTE(irq_domain_debug);
+ 
+ static void debugfs_add_domain_dir(struct irq_domain *d)
+ {
+-	if (!d->name || !domain_dir || d->debugfs_file)
++	if (!d->name || !domain_dir)
+ 		return;
+-	d->debugfs_file = debugfs_create_file(d->name, 0444, domain_dir, d,
+-					      &irq_domain_debug_fops);
++	debugfs_create_file(d->name, 0444, domain_dir, d,
++			    &irq_domain_debug_fops);
+ }
+ 
+ static void debugfs_remove_domain_dir(struct irq_domain *d)
+ {
+-	debugfs_remove(d->debugfs_file);
+-	d->debugfs_file = NULL;
++	debugfs_remove(debugfs_lookup(d->name, domain_dir));
+ }
+ 
+ void __init irq_domain_debugfs_init(struct dentry *root)
