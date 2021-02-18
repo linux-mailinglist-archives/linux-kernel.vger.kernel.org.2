@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896F831E843
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD5B31E847
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhBRJgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:36:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbhBRIZt (ORCPT
+        id S231665AbhBRJii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:38:38 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:54585 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231258AbhBRI2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:25:49 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F57C061756
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:25:08 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id f8so842539plg.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:25:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZXmJoWMTsUrH2ZYtYp6YioWvsZMFTlZD5M/gphHqrR0=;
-        b=Hc4WfW2OwdvOfAd4uK/tsJFBw9Y3KnhIHI15RQioABsLIYYJ/F0keIOX4rFXdiTdPA
-         3oF6krSEpCdiFEoF+R6hRv6c10f0Kh77dxSGhGkVvAmNWNnSDsRhtpTX27g6SUtHMZ1D
-         9AEyQTMzteT2PtGkgLjLV9v49y316FbgxGlQzyfRJu+b9PBsYucAf2fIHMBjOZ/G9EbC
-         CGFUXXJ6Lc7VnIG5CDYG+TSwQCi6gS33E+k2WEwpodQP/FyPSC2N/Com0PD5W8xd1003
-         8bjep+nikHR8OdnsB1NdNmPGDMr+B97t3gnaARMA6P7jCmrSRLOrp/7jqSO78BWGq/YN
-         xZVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZXmJoWMTsUrH2ZYtYp6YioWvsZMFTlZD5M/gphHqrR0=;
-        b=grG5j0ZnqLBYUILgmf26/cw+RkdyfJ5LCwAHrvgRYjrLo2B8Go0qxL3RupldZKZlji
-         BWhPyIVTjyJpfJia2g/vzonMFXH+MrRRyLYLw0rDBA9l1vU0qq9jAgQYvAxELwweHQBF
-         QkFdtCw6N3R5rF2zDnaeWc4Rtgv2NzEZxlN5B5vmw/xk6eZJipOXuYji3XkjSxLKl0Zl
-         2EmUyfuzPRrQzmK5Jj5NRbQnjNHAHyiuvv6OPWYPiM+4e7ERN7bAJVzQfK7dLc8B5d4z
-         weh2cY3k7uQfHLNvZ38qsEgoPQy07YWXZ04stLDWERj2iLSlKoDSSxojxrFT9Xr916wx
-         NNOA==
-X-Gm-Message-State: AOAM530aOAVgZ7cygx6+TKAKtTGKMWuQYtwjW37fzB4h5lI7frn4IKYo
-        CQCdEQmDHcGSZ+eAexJnUj4=
-X-Google-Smtp-Source: ABdhPJyhhnf+/pc2nHrJk1TK1bIScUijp1RLFu+59a3U8HAj4ag5pQwqLlGugrMlUa9+kap5neQc+Q==
-X-Received: by 2002:a17:90a:de97:: with SMTP id n23mr2973053pjv.165.1613636708080;
-        Thu, 18 Feb 2021 00:25:08 -0800 (PST)
-Received: from atulu-ubuntu ([27.61.13.238])
-        by smtp.gmail.com with ESMTPSA id l11sm4602059pfd.194.2021.02.18.00.25.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 00:25:07 -0800 (PST)
-Date:   Thu, 18 Feb 2021 13:55:02 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: comedi: cast to (void __user *)
-Message-ID: <20210218082502.GA2257@atulu-ubuntu>
-References: <20210218062839.32650-1-atulgopinathan@gmail.com>
- <YC4S5Pxw341zw9DL@kroah.com>
+        Thu, 18 Feb 2021 03:28:00 -0500
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id A1D1C22237;
+        Thu, 18 Feb 2021 09:27:09 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1613636829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C6ZbUUwv9T7NP9ffAh1wNte4LqGASIxmIr4F8GWCA7w=;
+        b=SXPm7qt685w7wZcv9GHdYeUZVNCIGcKmLTmjWiieUAe5ZW22euByvWUvNL7RsFL8hceqSu
+        A+rwyr6S4oFB+nulbsn4hnV/VcFKHtfZLi7KvSg5/nY/gwXmM1EqOzG7Q01FUe/mO1ksyh
+        3ZDexrFxjuXJHX3/ZRQP5s64rBezfsk=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC4S5Pxw341zw9DL@kroah.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 18 Feb 2021 09:27:09 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        tglx@linutronix.de
+Subject: Re: [PATCH] irqdomain: remove debugfs_file from struct irq_domain
+In-Reply-To: <YC4X4iLMCK3tNVsF@kroah.com>
+References: <YCvYV53ZdzQSWY6w@kroah.com>
+ <20210217195717.13727-1-michael@walle.cc>
+ <4e4d0479b935e60a53f75ef534086476@kernel.org>
+ <5c527bfb6f3dfe31b5c25f29418306c6@walle.cc> <87czwys6s1.wl-maz@kernel.org>
+ <YC4X4iLMCK3tNVsF@kroah.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <8b4de9eae773a43b38f42c8ab6d9d23c@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:10:28AM +0100, Greg KH wrote:
-> On Thu, Feb 18, 2021 at 11:58:40AM +0530, Atul Gopinathan wrote:
-> > Resolve the following sparse warning:
-> > drivers/staging//comedi/comedi_fops.c:2983:41: warning: incorrect type in argument 1 (different address spaces)
-> > drivers/staging//comedi/comedi_fops.c:2983:41:    expected void [noderef] <asn:1> *uptr
-> > drivers/staging//comedi/comedi_fops.c:2983:41:    got unsigned int *chanlist
-> > 
-> > cmd->chanlist is of type (unsigned int *) as defined in
-> > "struct comedi_cmd" in file drivers/staging/comedi/comedi.h
-> > 
-> > The function "ptr_to_compat()" expects argument of type
-> > (void __user *) as defined in include/linux/compat.h
-> > 
-> > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> > ---
-> >  drivers/staging/comedi/comedi_fops.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+Am 2021-02-18 08:31, schrieb Greg KH:
+> On Wed, Feb 17, 2021 at 09:50:38PM +0000, Marc Zyngier wrote:
+>> On Wed, 17 Feb 2021 20:10:50 +0000,
+>> Michael Walle <michael@walle.cc> wrote:
+>> >
+>> > Am 2021-02-17 21:02, schrieb Marc Zyngier:
+>> > > On 2021-02-17 19:57, Michael Walle wrote:
+>> > >> Hi Greg,
+>> > >>
+>> > >>> There's no need to keep around a dentry pointer to a simple file that
+>> > >>> debugfs itself can look up when we need to remove it from the system.
+>> > >>> So simplify the code by deleting the variable and cleaning up the
+>> > >>> logic
+>> > >>> around the debugfs file.
+>> > >>
+>> > >> This will generate the following oops on my board (arm64,
+>> > >> freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts). In debugfs_lookup()
+>> > >> debugfs_mount is NULL.
+>> > >
+>> > > That's odd. I gave it a go yesterday, and nothing blew up.
+>> > > Which makes me wonder whether I had the debug stuff enabled
+>> > > the first place...
+>> > >
+>> > > I've dropped the patch from -next for now until I figure it out
+>> > > (probably tomorrow).
+>> >
+>> > Mh, maybe its my .config, I've attached it. I also noticed that
+>> > the board boots just fine in our kernel-ci [1].
+>> 
+>> I reproduced here. I had disabled GENERIC_IRQ_DEBUGFS for obscure
+>> reasons, and it caught fire as I re-enabled it.
+>> 
+>> Adding this fixes it for me:
+>> 
+>> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+>> index 367ff1c35f75..d8a14cf1a7b6 100644
+>> --- a/kernel/irq/irqdomain.c
+>> +++ b/kernel/irq/irqdomain.c
+>> @@ -1904,7 +1904,8 @@ static void debugfs_add_domain_dir(struct 
+>> irq_domain *d)
+>> 
+>>  static void debugfs_remove_domain_dir(struct irq_domain *d)
+>>  {
+>> -	debugfs_remove(debugfs_lookup(d->name, domain_dir));
+>> +	if (domain_dir)
+>> +		debugfs_remove(debugfs_lookup(d->name, domain_dir));
+>>  }
+>> 
+>>  void __init irq_domain_debugfs_init(struct dentry *root)
+>> 
+>> 
+>> Could you please check whether it works for you?
 > 
-> Is this different from your previous patch:
-> 	https://lore.kernel.org/r/20210217165907.9777-1-atulgopinathan@gmail.com
+> Can you try this debugfs core change instead?  Callers to debugfs 
+> should
+> not have to do the above type of checking as debugfs should be much 
+> more
+> robust than that.
 > 
-> if so, you might need a better subject line here, and for that one, as
-> they look alike at a quick glance.
+> thanks,
 > 
-> Which one goes first?
+> greg k-h
 > 
-> Can you resend both of these as a patch series with better subjects as a
-> v2 patch set?
+> 
+> diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+> index 2fcf66473436..5aa798f52b6e 100644
+> --- a/fs/debugfs/inode.c
+> +++ b/fs/debugfs/inode.c
+> @@ -297,7 +297,7 @@ struct dentry *debugfs_lookup(const char *name,
+> struct dentry *parent)
+>  {
+>  	struct dentry *dentry;
+> 
+> -	if (IS_ERR(parent))
+> +	if (IS_ERR_OR_NULL(name) || IS_ERR(parent))
+>  		return NULL;
+> 
+>  	if (!parent)
 
-Sure! That subject line was a terrible result of me trying really hard
-to make it concise and fit within git's recommended 50 character limit
-for commit headings. I will make sure to prioritize on quality more. :D
+This doesn't work. name is not NULL when it is called.
 
-Thanks for the feedback!
-Atul
+What has to happen before debugfs_lookup() can be called? Looks like
+someone has to initialize the static debugfs_mount, first.
+
+-michael
