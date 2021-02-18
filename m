@@ -2,93 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9E431EE08
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C68231EE0B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhBRSJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:09:37 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:44928 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231584AbhBRPje (ORCPT
+        id S231516AbhBRSKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:10:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232455AbhBRPkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:39:34 -0500
-Received: by mail-oi1-f179.google.com with SMTP id r75so2368646oie.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:39:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HNlmKXcHFwKXZ3lQCip3Cekwn845MPPEly4w3zH9oAw=;
-        b=qY47nFzDnF6IigBIrFMvZbELu3PrTqJlYDUHVW7rCn4MrmukFO4BaHss8A4w3/u2jG
-         0luQMzqQcWOxJxhBAfJEt3oDF4LjGIVljQLEHYvG1GU3oQzdlMALyvWWxYk7C27KASgc
-         JfqfYb4blYb3+4Cm5bUgsAiNjSzLtjumpGbO5Y9NRM3DruMH8giRVlGGlbZ0ukFbLmNw
-         ZXECd9rHHVhmmJLCkeOVYddHNnN0UlFqdG3NAknHvFEvyN5CXRycD2DrpE+BGOGWxBrn
-         GNb2ndt0MwC5ZnlMrd9gEExC9vD06pRjSktx3yVx/iFEaoG+q4jIDNsVs9LFgfgEqhu0
-         LVnA==
-X-Gm-Message-State: AOAM532Y2jHVmVgNsmPVEIN0nd+nbE9/LBBkDb62Y5ClHzBkvjClIwvX
-        vK6wAYsajGLCHdZpLp/Xwsnz8TgR2/2Lp+6Jd+issil+
-X-Google-Smtp-Source: ABdhPJz+hnXV9XKu4Qs5llxekDws7JX+4rMLAVZn4bS4sxC/WmxV29bRbkemdZu88iGtN0DQrzt7zVcSA8HNw2VeFP0=
-X-Received: by 2002:aca:d8c6:: with SMTP id p189mr3206817oig.54.1613662732142;
- Thu, 18 Feb 2021 07:38:52 -0800 (PST)
+        Thu, 18 Feb 2021 10:40:24 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2478C061574;
+        Thu, 18 Feb 2021 07:39:41 -0800 (PST)
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0E3913E7;
+        Thu, 18 Feb 2021 16:39:40 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613662780;
+        bh=DmnvdwZV8yESaBMJksJjQrvF/K8QlpTjEqk5yRbepCU=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=jvXFmBq7P95/RylozLm6qa5y5bZxYWP0ZUAYBEFJKhxMU1NGGi04lR6hXoJnQ60Xf
+         OUaZBTGvg1RC2B99xdWSvAHluasdew8Har76VRc8FEe/V82tNiVH7WvhJ5ToHTBmna
+         cgreUgH0SMcjMXqOrJt3v/nANy0Q67YfqDpoCWQw=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 11/16] media: i2c: max9286: Cache channel amplitude
+To:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        laurent.pinchart+renesas@ideasonboard.com,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-12-jacopo+renesas@jmondi.org>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <2b62ff38-7c9c-c24f-b7a6-8e3a65d3f669@ideasonboard.com>
+Date:   Thu, 18 Feb 2021 15:39:37 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com>
- <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com>
- <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com>
- <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au>
- <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com> <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au>
- <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
- <CAMuHMdUFv2r+YAttodcXhLxEVe+2KXgAG=q8Z3vA6WUKQj7zVA@mail.gmail.com> <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
-In-Reply-To: <CAK8P3a08y3pH6OGtPnPs_HMHRh0Q8xnKr40Lt=vMCW6T1yjz6w@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 18 Feb 2021 16:38:40 +0100
-Message-ID: <CAMuHMdVD+BhxXcmZYvVK5QgtNsmbgyzS_Yx+dbFYmN8xdw0kDA@mail.gmail.com>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210216174146.106639-12-jacopo+renesas@jmondi.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On 16/02/2021 17:41, Jacopo Mondi wrote:
+> Cache the current channel amplitude in a driver variable
+> to skip updating it if the new requested value is the same
+> as the currently configured one.
+> 
+> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
 
-On Thu, Feb 18, 2021 at 2:59 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Thu, Feb 18, 2021 at 1:30 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > The reason drivers/ide is doing that may be related to IDE hard drive
-> > quirks.  The old WD Caviar drives didn't obey disabling the IDE interrupt
-> > at the drive level.  On PC, that worked fine, as IRQs 14 and 15 weren't
-> > shared with other devices.  On systems with shared interrupts, that
-> > broke badly, and led to an interrupt storm.
->
-> So presumably anyone that has one of those old drives will not be
-> able to move to drivers/ata then? I see that drivers/ata doesn't do
-> the transfers in interrupt mode, so it would seem to rely on masking
-> at the device level.
+I like this model better than deciding outside of the call :-)
 
-I don't know.  This was an issue I debugged on a friend's Amiga in 1995
-or so ;-)  All bad WD Caviars may have died in the meantime...
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-BTW, it wouldn't be the first time a drive quirk handling wasn't ported
-from drivers/ide/ to drivers/ata/.
 
-Gr{oetje,eeting}s,
+> ---
+>  drivers/media/i2c/max9286.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
+> index 1f14cd817fbf..4afb5ca06448 100644
+> --- a/drivers/media/i2c/max9286.c
+> +++ b/drivers/media/i2c/max9286.c
+> @@ -164,6 +164,7 @@ struct max9286_priv {
+>  	bool mux_open;
+>  
+>  	u32 init_rev_chan_mv;
+> +	u32 rev_chan_mv;
+>  
+>  	struct v4l2_ctrl_handler ctrls;
+>  	struct v4l2_ctrl *pixelrate;
+> @@ -340,8 +341,15 @@ static void max9286_configure_i2c(struct max9286_priv *priv, bool localack)
+>  static void max9286_reverse_channel_setup(struct max9286_priv *priv,
+>  					  unsigned int chan_amplitude)
+>  {
+> +	u8 chan_config;
+> +
+> +	if (priv->rev_chan_mv == chan_amplitude)
+> +		return;
+> +
+> +	priv->rev_chan_mv = chan_amplitude;
+> +
+>  	/* Reverse channel transmission time: default to 1. */
+> -	u8 chan_config = MAX9286_REV_TRF(1);
+> +	chan_config = MAX9286_REV_TRF(1);
+>  
+>  	/*
+>  	 * Reverse channel setup.
+> @@ -563,8 +571,7 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
+>  	 * - Disable auto-ack as communication on the control channel are now
+>  	 *   stable.
+>  	 */
+> -	if (priv->init_rev_chan_mv < 170)
+> -		max9286_reverse_channel_setup(priv, 170);
+> +	max9286_reverse_channel_setup(priv, 170);
+>  	max9286_check_config_link(priv, priv->source_mask);
+>  
+>  	/*
+> 
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
