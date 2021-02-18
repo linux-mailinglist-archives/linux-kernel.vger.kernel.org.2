@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884D831EA73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C2431EA35
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233568AbhBRN32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:29:28 -0500
-Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49851 "EHLO 1wt.eu"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhBRLq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:46:26 -0500
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 11IBV7Lt013142;
-        Thu, 18 Feb 2021 12:31:07 +0100
-Date:   Thu, 18 Feb 2021 12:31:07 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <20210218113107.GA12547@1wt.eu>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
- <YBBkplRxzzmPYKC+@kroah.com>
- <YCzknUTDytY8gRA8@kroah.com>
- <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
- <YC4atKmK7ZqlOGER@kroah.com>
+        id S232238AbhBRND5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231586AbhBRLjZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:39:25 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2898FC06178A;
+        Thu, 18 Feb 2021 03:37:43 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DhCKd0DFpz9sRN;
+        Thu, 18 Feb 2021 22:34:29 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613648069;
+        bh=VXSHB3U6S26m/drvh4a+pj7NEw/q1khXZJuZz7rXrUE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gSDkhirLQjnW2lGMxOvtuxAzGo2ioIuv5CvfP5rSvUVRaJfJ0/pY+PnvMH7yjbMv6
+         aiUp6KFRUxGgfE6W7DRqdRsqFVq94lAHCeL/AX/V3XKfqxvxTlwtYlMh9a7EUzLbwr
+         QWTYPtWvUvQVU41GTcQpVzX+5OCe0YhyCtvfL0qy8T5PUM6SwWcgcHFR7XHNF+cOU6
+         T+L8ztT6lJiIfcbtbX5OBY4xNJMLRnrVMiH8h0Dt2lqyD/0nRVkyaTt5ZOrfwyPR/m
+         kCK0dLmoDJfwFaObw1b9SltvI1ODpAIPiZq3vZtpzLk9EzP4a8tReJd+47WXOD9Kja
+         I2KjLPCYEMe+A==
+Date:   Thu, 18 Feb 2021 22:34:27 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Rob Herring <robherring2@gmail.com>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: Re: linux-next: manual merge of the devicetree tree with the
+ powerpc tree
+Message-ID: <20210218223427.77109d83@canb.auug.org.au>
+In-Reply-To: <874ki9vene.fsf@mpe.ellerman.id.au>
+References: <20210218144815.5673ae6f@canb.auug.org.au>
+        <874ki9vene.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC4atKmK7ZqlOGER@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/Krv4dNl2WGCiT=lWt4ozErY";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:43:48AM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Feb 17, 2021 at 11:48:21AM -0800, Scott Branden wrote:
-> > Other difficulty with the LTS version is the frequency it is updated.
+--Sig_/Krv4dNl2WGCiT=lWt4ozErY
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-What a stange statement! So basically if fixes come in quickly so that
-customers are not exposed too long to well-known issues, it's a difficulty ?
-I guess by now every serious OS vendor provides at least weekly fixes, and
-at an era where devices are all interconnected, it's really necessary
-(unless of course you don't care about your customer's security).
+Hi Michael,
 
-> > We would not
-> > pickup the changes that frequently to test.  A quarterly, bi-annually, or when a critical fix
-> > is identified would be when we update and perform any meaningful testing when in maintainence.
-> 
-> How are you "identifying" these "critical fixes"?  We fix at least one
-> known security issue a week, and probably multitudes of
-> unknown-at-this-moment ones.  How are you determining when you need to
-> send a new base kernel update off to your customers?  At such long
-> intervals it feels like anyone using your kernel releases is woefully
-> insecure.
+On Thu, 18 Feb 2021 21:44:37 +1100 Michael Ellerman <mpe@ellerman.id.au> wr=
+ote:
+>
+> I think it just needs this?
+>=20
+> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
+> index 87e34611f93d..0492ca6003f3 100644
+> --- a/arch/powerpc/kexec/elf_64.c
+> +++ b/arch/powerpc/kexec/elf_64.c
+> @@ -104,7 +104,7 @@ static void *elf64_load(struct kimage *image, char *k=
+ernel_buf,
+> =20
+>  	fdt =3D of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
+>  					   initrd_len, cmdline,
+> -					   fdt_totalsize(initial_boot_params));
+> +					   kexec_fdt_totalsize_ppc64(image));
+>  	if (!fdt) {
+>  		pr_err("Error setting up the new device tree.\n");
+>  		ret =3D -EINVAL;
+>=20
 
-+1! It seems like this dangerous practice will never end :-(
+I thought about that, but the last argument to
+of_kexec_alloc_and_setup_fdt() is extra_fdt_size and the allocation
+done is for this:
 
-Let me explain a personal experience. When I took over 2.6.32 many years
-ago, Greg asked me to adapt to the new maintenance process involving the
-patch reviews. At first I feared that it would increase my amount of work.
-And it did. But I also discovered how important these reviews were, because
-I started to get lots of "don't take this one in this version" and more
-importantly "if you merge this you'll need these ones as well". And very
-quickly I discovered how bogus the branches I used to maintain before
-had been, given the high feedback ratio!
+fdt_size =3D fdt_totalsize(initial_boot_params) +
+                   (cmdline ? strlen(cmdline) : 0) +
+                   FDT_EXTRA_SPACE +
+                   extra_fdt_size;
 
-So based on this experience, I can assure anyone doing cherry-picks in
-their garage from LTS kernels that they're doing crap and that they must
-not distribute these kernels to anyone because THESE KERNELS ARE DANGEROUS.
-It's even very easy to introduce vulnerabilities by doing this!
+and kexec_fdt_totalsize_ppc64() also includes
+fdt_totalsize(initial_boot_params) so I was not sure.  Maybe
+kexec_fdt_totalsize_ppc64() needs modification as well?
 
-The only set of fixes that can be trusted are the "official" stable
-kernels, because they are the only ones that are approved by the patches
-authors themselves. Adding more stuff on top of stable kernels is fine
-(and done at your own risk), but randomly dropping stuff from stable
-kernels just because you don't think you need that is totally non-sense
-and must not be done anymore!
+--=20
+Cheers,
+Stephen Rothwell
 
-Willy
+--Sig_/Krv4dNl2WGCiT=lWt4ozErY
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAuUMMACgkQAVBC80lX
+0GzMywf/Vkwbwfcyt2jmZE4boVwAlJBei33m6JzQD/llGlrkrbm66R5c8eGWe32d
+K9z2RTBFuqqc+RAcYHIoh39nP/ENoYXYMlJsxOptGMv3pRGjP5ptI5wJm9BxtZtD
+NJ+zSqPmndklUwNSkzaoZPtbs7d/BpIR+jkLt10w8YMnFeyshBiwPJGcZlhmrUfM
+i9kF3NgF1dQCXWtDValsb0SCVlza1GdMNZGI+g62Ykv2IscKZ1tVfOYgfTZ5DZNZ
+Yfsqs9CaTnLrnQaY8ai0jLplJPojHbZ3CCmInS6/rSo+K3Pa6KpFtYYgXRYLU72E
+Tinhkws2VRmnyOM6lr7w+fhYaaKEqw==
+=Ze8C
+-----END PGP SIGNATURE-----
+
+--Sig_/Krv4dNl2WGCiT=lWt4ozErY--
