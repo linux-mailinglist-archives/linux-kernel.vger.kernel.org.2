@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830C331E649
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E83BA31E628
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhBRGXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 01:23:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22044 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231992AbhBRGGw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:06:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613628320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I4q+YxVSVW16DE0+d+Y+BYB1zXwlSir3yUCLZoTFOt0=;
-        b=A76W3x/CdJM6JkRrA0Hma9N2NumsfVZquFLawAFapLZniQEU+dv8N3u2/sf1Ob/aK2Wifa
-        sWM0SjJftBt/tjqGwjy69UETknZiDiTVdlCxEroSuQZMWQmJ0/NEQeWLnBCW3EqlM3hAXI
-        kNGXtJdHoh35plELRDb0ORyCdrbSrGA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-27-PZmTWchaOh2HvEa0I-vBkg-1; Thu, 18 Feb 2021 01:05:15 -0500
-X-MC-Unique: PZmTWchaOh2HvEa0I-vBkg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C659E801965;
-        Thu, 18 Feb 2021 06:05:12 +0000 (UTC)
-Received: from [10.72.13.28] (ovpn-13-28.pek2.redhat.com [10.72.13.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BFAFC6A03D;
-        Thu, 18 Feb 2021 06:05:00 +0000 (UTC)
-Subject: Re: [PATCH] arm64: defconfig: enable modern virtio pci device
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>
-Cc:     SoC Team <soc@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-xtensa@linux-xtensa.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210210190506.1923684-1-anders.roxell@linaro.org>
- <CAK8P3a2ysNApoG2FDsLdNoWA7nPXvzLMzkjXWdCig9jaSWwuKw@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <fffdfa8f-38c1-6fd1-d043-8a4f476213dc@redhat.com>
-Date:   Thu, 18 Feb 2021 14:04:59 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2ysNApoG2FDsLdNoWA7nPXvzLMzkjXWdCig9jaSWwuKw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        id S231209AbhBRF5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 00:57:37 -0500
+Received: from mga07.intel.com ([134.134.136.100]:58031 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231388AbhBRFqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 00:46:46 -0500
+IronPort-SDR: pHucEEVWfKKC7RFNElsYNaDzzWcuLYY3hNAcPh6OCA0TUbVG5IeL63Fmk7hIORtF/x2U+/UfhU
+ dsbThVrJAbDg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247477606"
+X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
+   d="scan'208";a="247477606"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2021 21:45:14 -0800
+IronPort-SDR: 6KtFZd6YYDrNte8uKj3D5WEvS5GCUEtB1bob9HGjlT49/TS5TPigfZfCY5dNMk0QJYPWAnw3Ni
+ xvVbwiXkEY4g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
+   d="scan'208";a="378290130"
+Received: from ssid-ilbpg3.png.intel.com ([10.88.227.36])
+  by orsmga002.jf.intel.com with ESMTP; 17 Feb 2021 21:45:10 -0800
+From:   Song Yoong Siang <yoong.siang.song@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>,
+        Song Yoong Siang <yoong.siang.song@intel.com>
+Subject: [PATCH net 1/1] net: stmmac: fix CBS idleslope and sendslope calculation
+Date:   Thu, 18 Feb 2021 21:40:53 +0800
+Message-Id: <1613655653-11755-1-git-send-email-yoong.siang.song@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "Song, Yoong Siang" <yoong.siang.song@intel.com>
 
-On 2021/2/11 下午7:52, Arnd Bergmann wrote:
-> On Wed, Feb 10, 2021 at 8:05 PM Anders Roxell <anders.roxell@linaro.org> wrote:
->> Since patch ("virtio-pci: introduce modern device module") got added it
->> is not possible to boot a defconfig kernel in qemu with a virtio pci
->> device.  Add CONFIG_VIRTIO_PCI_MODERN=y fragment makes the kernel able
->> to boot.
->>
->> Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
->> ---
->>   arch/arm/configs/multi_v7_defconfig         | 1 +
->>   arch/arm64/configs/defconfig                | 1 +
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
->
-> Michael, can you pick this up in the vhost tree that introduces the regression?
->
->           Arnd
->
+When link speed is not 100 Mbps, port transmit rate and speed divider
+are set to 8 and 1000000 respectively. These values are incorrect for
+CBS idleslope and sendslope HW values calculation if the link speed is
+not 1 Gbps.
 
-Hi:
+This patch adds switch statement to set the values of port transmit rate
+and speed divider for 10 Gbps, 5 Gbps, 2.5 Gbps, 1 Gbps, and 100 Mbps.
+Note that CBS is not supported at 10 Mbps.
 
-Based on the discussion previously, the plan is to select 
-VIRTIO_PCI_MODERN, and document the module that select it must depend on 
-PCI.
+Fixes: bc41a6689b30 ("net: stmmac: tc: Remove the speed dependency")
+Fixes: 1f705bc61aee ("net: stmmac: Add support for CBS QDISC")
+Signed-off-by: Song, Yoong Siang <yoong.siang.song@intel.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 30 +++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-I will post a patch soon.
-
-Thanks
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 5698554..44bb133 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -316,6 +316,32 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
+ 	if (!priv->dma_cap.av)
+ 		return -EOPNOTSUPP;
+ 
++	/* Port Transmit Rate and Speed Divider */
++	switch (priv->speed) {
++	case SPEED_10000:
++		ptr = 32;
++		speed_div = 10000000;
++		break;
++	case SPEED_5000:
++		ptr = 32;
++		speed_div = 5000000;
++		break;
++	case SPEED_2500:
++		ptr = 8;
++		speed_div = 2500000;
++		break;
++	case SPEED_1000:
++		ptr = 8;
++		speed_div = 1000000;
++		break;
++	case SPEED_100:
++		ptr = 4;
++		speed_div = 100000;
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
+ 	mode_to_use = priv->plat->tx_queues_cfg[queue].mode_to_use;
+ 	if (mode_to_use == MTL_QUEUE_DCB && qopt->enable) {
+ 		ret = stmmac_dma_qmode(priv, priv->ioaddr, queue, MTL_QUEUE_AVB);
+@@ -332,10 +358,6 @@ static int tc_setup_cbs(struct stmmac_priv *priv,
+ 		priv->plat->tx_queues_cfg[queue].mode_to_use = MTL_QUEUE_DCB;
+ 	}
+ 
+-	/* Port Transmit Rate and Speed Divider */
+-	ptr = (priv->speed == SPEED_100) ? 4 : 8;
+-	speed_div = (priv->speed == SPEED_100) ? 100000 : 1000000;
+-
+ 	/* Final adjustments for HW */
+ 	value = div_s64(qopt->idleslope * 1024ll * ptr, speed_div);
+ 	priv->plat->tx_queues_cfg[queue].idle_slope = value & GENMASK(31, 0);
+-- 
+2.7.4
 
