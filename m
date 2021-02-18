@@ -2,113 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D927431EB8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:32:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9578F31EB7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhBRP07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:26:59 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:9475 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232613AbhBRNCp (ORCPT
+        id S231439AbhBRPZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:25:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60554 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233004AbhBRNDP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:02:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613653364; x=1645189364;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=1nqJ0Gg1qcZ3QqcAwBdTbK3n07OiNWC0tsX1jcaj+Ls=;
-  b=MoloOZ2BJI+r98u4UTIwE0HUMccz7Axn5FElsAEOr/Tbw3eYkr0YQPFm
-   XHTblqEzLyprWZ/UeQdfuCd6D+hZLTyrt/zANPPvmvJQ7oXAI3zdikTdE
-   SraVeqLOJzZ7T7nF/gOXh5RbVr6fzXkXcYXzryKOoPREib8atNNpBjPm3
-   EhvjG0+BOyYo+6MZCzC1fRUy405ZT0jWiV9z2crk/zyfujZYnw7zkCkWa
-   5Ax21tUYTPjr65zqPJyCoeH7D/xCqf53y/WJTy57U6LS/g27nJjLeRau5
-   j7ggQyKyGgvW/TgrlY2PKl6Z40b3zBypbBAXdSeM3bN7h++TlOVW0xmm9
-   A==;
-IronPort-SDR: Vwr9YfQLqS7VLCApeUuub6YYhDN5Nw+L+zilfNstPubdIlIxDD0wciFQrop9pesDPjaB+RFRT5
- vgSap0m0/EA4G2D9LD0JSMB/48lR4PyQbh+C2F8t8548MLxuB2QG3BJTnzHUJt1iZleIIXa9eN
- BS3Ym+dQG279bOVEPuRXEi1SR/WJ9UFfSUfKxtDOTX7mRKQ/FEDQRJ7eQKqukLbA9KMlNCB7lM
- o8S45aOKViWAJL/F67omfoNhoBaVs0RH9kSq5BTDe0virh44g+aqgwzOt2LygsYkGoGgB+bOfJ
- GQc=
-X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
-   d="scan'208";a="107103315"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 06:01:07 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 06:01:07 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 18 Feb 2021 06:01:05 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <broonie@kernel.org>, <vigneshr@ti.com>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>
-Subject: [PATCH] spi: spi-ti-qspi: Free DMA resources
-Date:   Thu, 18 Feb 2021 15:01:04 +0200
-Message-ID: <20210218130104.89506-1-tudor.ambarus@microchip.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 18 Feb 2021 08:03:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613653308;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HIzCTLGcdpH9yweyVX26alo5WVTt42DCLlyzYYfWqD0=;
+        b=i7JMjJEmi9UbRjn25m84hXJbb2eJdj9Cfy88UOYuFxucnum/Ybea67KuNHCABoxR1ReQLG
+        AmGaZ9jbQZyJd/4EbNxlYxMkB8zHjRjFIu+u0MZ6R1Jq4KVQhwXjfgwh//1EppsMFDP+fZ
+        oig5iVRdB1FUmSr714OlxZV6znbje8U=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-173-kd6DGhRoMJCWVamb7nWkpA-1; Thu, 18 Feb 2021 08:01:43 -0500
+X-MC-Unique: kd6DGhRoMJCWVamb7nWkpA-1
+Received: by mail-wm1-f71.google.com with SMTP id x20so1170449wmc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 05:01:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HIzCTLGcdpH9yweyVX26alo5WVTt42DCLlyzYYfWqD0=;
+        b=f2zhIs+IY/cWXe0HWS8lvtlaA4hzHZGBRAv/TSUwDrbtOCzTgVWTN3IuTE4tzoueaC
+         BWlgmajmbAvANTjJxkjGMOrBY91IpSYosISqfHmAA9k93Sx0oCsn6bgtYiU9TiXW6mND
+         Vjvo+IFKWqIOU64oaY/Gy8k6qkIHXOvYFsEpf53r0rbP3e9huUaW0Kmdgeu5eo4g2DCK
+         SJc4vUnBc04vH52o+I4StoMrDHh+PT2aRV7tRLaEDgPIV7prLfePCU9UCu4n2SzMJdg5
+         fEaVpilfrU63j+vf1wvSWfztfYNZ0c13n83fswd/1SM9SeiAjyqnU0ugKI5dxhfEJH1E
+         NUUw==
+X-Gm-Message-State: AOAM531tn3/4WPbsuiXD4nDNiFLT7XINALEta1nHfCPA1rLNkwb5R1GW
+        d55fXolXLaBOXC7+CNTXzl5ap2Yo4b0pvuTDu3wRonAPoTKzs/2LXNTxIYKb/uL5G2znVMFQCaM
+        mDFhZRviJdMK2Nnocb6BzFpeW
+X-Received: by 2002:a05:600c:4ec6:: with SMTP id g6mr3437041wmq.72.1613653302722;
+        Thu, 18 Feb 2021 05:01:42 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzqfHSoXLDr7poM2jdYtuG1CUggBog4sWwgctH/nc9WiXTRkpSuVLeKzWEDgAkjy1g+74c98Q==
+X-Received: by 2002:a05:600c:4ec6:: with SMTP id g6mr3437012wmq.72.1613653302488;
+        Thu, 18 Feb 2021 05:01:42 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id g184sm7875130wmg.24.2021.02.18.05.01.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 05:01:41 -0800 (PST)
+Subject: Re: [PATCH] KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is
+ valid
+To:     David Edmondson <dme@dme.org>, linux-kernel@vger.kernel.org
+Cc:     Borislav Petkov <bp@alien8.de>, Wanpeng Li <wanpengli@tencent.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20210218100450.2157308-1-david.edmondson@oracle.com>
+ <708f2956-fa0f-b008-d3d2-93067f95783c@redhat.com> <cuntuq9ilg4.fsf@dme.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <8f9d4ef7-ddad-160b-2d94-69f4370e8702@redhat.com>
+Date:   Thu, 18 Feb 2021 14:01:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <cuntuq9ilg4.fsf@dme.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Release the RX channel and free the dma coherent memory when
-devm_spi_register_master() fails
+On 18/02/21 13:56, David Edmondson wrote:
+> On Thursday, 2021-02-18 at 12:54:52 +01, Paolo Bonzini wrote:
+> 
+>> On 18/02/21 11:04, David Edmondson wrote:
+>>> When dumping the VMCS, retrieve the current guest value of EFER from
+>>> the kvm_vcpu structure if neither VM_EXIT_SAVE_IA32_EFER or
+>>> VM_ENTRY_LOAD_IA32_EFER is set, which can occur if the processor does
+>>> not support the relevant VM-exit/entry controls.
+>>
+>> Printing vcpu->arch.efer is not the best choice however.  Could we dump
+>> the whole MSR load/store area instead?
+> 
+> I'm happy to do that, and think that it would be useful, but it won't
+> help with the original problem (which I should have explained more).
+> 
+> If the guest has EFER_LMA set but we aren't using the entry/exit
+> controls, vm_read64(GUEST_IA32_EFER) returns 0, causing dump_vmcs() to
+> erroneously dump the PDPTRs.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
- drivers/spi/spi-ti-qspi.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+Got it now.  It would sort of help, because while dumping the MSR 
+load/store area you could get hold of the real EFER, and use it to 
+decide whether to dump the PDPTRs.
 
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index 9417385c0921..e06aafe169e0 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -733,6 +733,17 @@ static int ti_qspi_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
-+static void ti_qspi_dma_cleanup(struct ti_qspi *qspi)
-+{
-+	if (qspi->rx_bb_addr)
-+		dma_free_coherent(qspi->dev, QSPI_DMA_BUFFER_SIZE,
-+				  qspi->rx_bb_addr,
-+				  qspi->rx_bb_dma_addr);
-+
-+	if (qspi->rx_chan)
-+		dma_release_channel(qspi->rx_chan);
-+}
-+
- static const struct of_device_id ti_qspi_match[] = {
- 	{.compatible = "ti,dra7xxx-qspi" },
- 	{.compatible = "ti,am4372-qspi" },
-@@ -886,6 +897,8 @@ static int ti_qspi_probe(struct platform_device *pdev)
- 	if (!ret)
- 		return 0;
- 
-+	ti_qspi_dma_cleanup(qspi);
-+
- 	pm_runtime_disable(&pdev->dev);
- free_master:
- 	spi_master_put(master);
-@@ -904,12 +917,7 @@ static int ti_qspi_remove(struct platform_device *pdev)
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
--	if (qspi->rx_bb_addr)
--		dma_free_coherent(qspi->dev, QSPI_DMA_BUFFER_SIZE,
--				  qspi->rx_bb_addr,
--				  qspi->rx_bb_dma_addr);
--	if (qspi->rx_chan)
--		dma_release_channel(qspi->rx_chan);
-+	ti_qspi_dma_cleanup(qspi);
- 
- 	return 0;
- }
--- 
-2.25.1
+Thanks,
+
+Paolo
+
+
+>> Paolo
+>>
+>>> Fixes: 4eb64dce8d0a ("KVM: x86: dump VMCS on invalid entry")
+>>> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
+>>> ---
+>>>    arch/x86/kvm/vmx/vmx.c | 14 +++++++++-----
+>>>    arch/x86/kvm/vmx/vmx.h |  2 +-
+>>>    2 files changed, 10 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>>> index eb69fef57485..74ea4fe6f35e 100644
+>>> --- a/arch/x86/kvm/vmx/vmx.c
+>>> +++ b/arch/x86/kvm/vmx/vmx.c
+>>> @@ -5754,7 +5754,7 @@ static void vmx_dump_dtsel(char *name, uint32_t limit)
+>>>    	       vmcs_readl(limit + GUEST_GDTR_BASE - GUEST_GDTR_LIMIT));
+>>>    }
+>>>    
+>>> -void dump_vmcs(void)
+>>> +void dump_vmcs(struct kvm_vcpu *vcpu)
+>>>    {
+>>>    	u32 vmentry_ctl, vmexit_ctl;
+>>>    	u32 cpu_based_exec_ctrl, pin_based_exec_ctrl, secondary_exec_control;
+>>> @@ -5771,7 +5771,11 @@ void dump_vmcs(void)
+>>>    	cpu_based_exec_ctrl = vmcs_read32(CPU_BASED_VM_EXEC_CONTROL);
+>>>    	pin_based_exec_ctrl = vmcs_read32(PIN_BASED_VM_EXEC_CONTROL);
+>>>    	cr4 = vmcs_readl(GUEST_CR4);
+>>> -	efer = vmcs_read64(GUEST_IA32_EFER);
+>>> +	if ((vmexit_ctl & VM_EXIT_SAVE_IA32_EFER) ||
+>>> +	    (vmentry_ctl & VM_ENTRY_LOAD_IA32_EFER))
+>>> +		efer = vmcs_read64(GUEST_IA32_EFER);
+>>> +	else
+>>> +		efer = vcpu->arch.efer;
+>>>    	secondary_exec_control = 0;
+>>>    	if (cpu_has_secondary_exec_ctrls())
+>>>    		secondary_exec_control = vmcs_read32(SECONDARY_VM_EXEC_CONTROL);
+>>> @@ -5955,7 +5959,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>>>    	}
+>>>    
+>>>    	if (exit_reason & VMX_EXIT_REASONS_FAILED_VMENTRY) {
+>>> -		dump_vmcs();
+>>> +		dump_vmcs(vcpu);
+>>>    		vcpu->run->exit_reason = KVM_EXIT_FAIL_ENTRY;
+>>>    		vcpu->run->fail_entry.hardware_entry_failure_reason
+>>>    			= exit_reason;
+>>> @@ -5964,7 +5968,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>>>    	}
+>>>    
+>>>    	if (unlikely(vmx->fail)) {
+>>> -		dump_vmcs();
+>>> +		dump_vmcs(vcpu);
+>>>    		vcpu->run->exit_reason = KVM_EXIT_FAIL_ENTRY;
+>>>    		vcpu->run->fail_entry.hardware_entry_failure_reason
+>>>    			= vmcs_read32(VM_INSTRUCTION_ERROR);
+>>> @@ -6049,7 +6053,7 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>>>    
+>>>    unexpected_vmexit:
+>>>    	vcpu_unimpl(vcpu, "vmx: unexpected exit reason 0x%x\n", exit_reason);
+>>> -	dump_vmcs();
+>>> +	dump_vmcs(vcpu);
+>>>    	vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>>>    	vcpu->run->internal.suberror =
+>>>    			KVM_INTERNAL_ERROR_UNEXPECTED_EXIT_REASON;
+>>> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+>>> index 9d3a557949ac..f8a0ce74798e 100644
+>>> --- a/arch/x86/kvm/vmx/vmx.h
+>>> +++ b/arch/x86/kvm/vmx/vmx.h
+>>> @@ -489,6 +489,6 @@ static inline bool vmx_guest_state_valid(struct kvm_vcpu *vcpu)
+>>>    	return is_unrestricted_guest(vcpu) || __vmx_guest_state_valid(vcpu);
+>>>    }
+>>>    
+>>> -void dump_vmcs(void);
+>>> +void dump_vmcs(struct kvm_vcpu *vcpu);
+>>>    
+>>>    #endif /* __KVM_X86_VMX_H */
+>>>
+> 
+> dme.
+> 
 
