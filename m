@@ -2,108 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51DE231E6E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 08:30:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8051831E69E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 08:04:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhBRH0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 02:26:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:60049 "EHLO
+        id S231232AbhBRHDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 02:03:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53712 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230418AbhBRGux (ORCPT
+        by vger.kernel.org with ESMTP id S230303AbhBRGo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:50:53 -0500
+        Thu, 18 Feb 2021 01:44:29 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613630942;
+        s=mimecast20190719; t=1613630581;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qZsYPo7lFIHJSBW+k62y1pF0Q5iGGVk8F/Ofi1wgySA=;
-        b=D4nn7JodsEGOBvhd5Yb4LKuwB2kq2PTaVbWv5peaz1p1R1cnF7gDs9AoUxeHuYKVEhOK5A
-        2iHl2nR5Ic72SofhNBU6yJP2X7BG2c7i4nkECESB7A9l9ox3jKXjHwADZ3H5kinFov+G/X
-        76w1qAXz0QHW+OwIyvpTvPx/1a7PMbY=
+        bh=3/r6ZrTAwzUnNQ6cScq8XvsWgkFZQZGxH65h7veBqKs=;
+        b=X4nnZ4WX+bfoPZ/tFB2SponqtzaN3V3QSvYOXkPr/aXaM+AoRWDRb5zHC+kFs1p3bvj7ce
+        CsBevJXE8PtTlKDyvL17pXRkwhmoW+qO7vo2Wu3jRIxc6pvo5HnFkM3cGvhI3FZ2ykw4pX
+        vEGuV3sWgyH07CttZiLV6UcaOq6tMKI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-392-uvGEjrB0MqiW0qrg2HcOWQ-1; Thu, 18 Feb 2021 01:37:29 -0500
-X-MC-Unique: uvGEjrB0MqiW0qrg2HcOWQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+ us-mta-388-iyA5BtJkP3K3KF_hZhQTIw-1; Thu, 18 Feb 2021 01:39:23 -0500
+X-MC-Unique: iyA5BtJkP3K3KF_hZhQTIw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DBF3801976;
-        Thu, 18 Feb 2021 06:37:28 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 252F180402E;
+        Thu, 18 Feb 2021 06:39:22 +0000 (UTC)
 Received: from [10.72.13.28] (ovpn-13-28.pek2.redhat.com [10.72.13.28])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 987C6722CF;
-        Thu, 18 Feb 2021 06:37:19 +0000 (UTC)
-Subject: Re: [PATCH v2 3/3] vdpa/mlx5: defer clear_virtqueues to until
- DRIVER_OK
-To:     Si-Wei Liu <si-wei.liu@oracle.com>, Eli Cohen <elic@nvidia.com>,
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 34F6D177F8;
+        Thu, 18 Feb 2021 06:39:16 +0000 (UTC)
+Subject: Re: [PATCH for 5.10] vdpa_sim: fix param validation in
+ vdpasim_get_config()
+To:     Stefano Garzarella <sgarzare@redhat.com>, stable@vger.kernel.org
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
         "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-References: <1612993680-29454-1-git-send-email-si-wei.liu@oracle.com>
- <1612993680-29454-4-git-send-email-si-wei.liu@oracle.com>
- <20210211073314.GB100783@mtl-vdi-166.wap.labs.mlnx>
- <20210216152148.GA99540@mtl-vdi-166.wap.labs.mlnx>
- <88ecbbb6-a339-a5cd-82b7-387225a45d36@oracle.com>
+References: <20210211162519.215418-1-sgarzare@redhat.com>
 From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <27c7858e-67a4-9f22-37e3-f527f1dd85a6@redhat.com>
-Date:   Thu, 18 Feb 2021 14:37:10 +0800
+Message-ID: <d5f8c1b7-9506-6a84-dbba-53bf21897e5f@redhat.com>
+Date:   Thu, 18 Feb 2021 14:39:15 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <88ecbbb6-a339-a5cd-82b7-387225a45d36@oracle.com>
+In-Reply-To: <20210211162519.215418-1-sgarzare@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2021/2/18 上午5:55, Si-Wei Liu wrote:
+On 2021/2/12 上午12:25, Stefano Garzarella wrote:
+> Commit 65b709586e222fa6ffd4166ac7fdb5d5dad113ee upstream.
 >
+> Before this patch, if 'offset + len' was equal to
+> sizeof(struct virtio_net_config), the entire buffer wasn't filled,
+> returning incorrect values to the caller.
 >
-> On 2/16/2021 7:21 AM, Eli Cohen wrote:
->> On Thu, Feb 11, 2021 at 09:33:14AM +0200, Eli Cohen wrote:
->>> On Wed, Feb 10, 2021 at 01:48:00PM -0800, Si-Wei Liu wrote:
->>>> While virtq is stopped,  get_vq_state() is supposed to
->>>> be  called to  get  sync'ed  with  the latest internal
->>>> avail_index from device. The saved avail_index is used
->>>> to restate  the virtq  once device is started.  Commit
->>>> b35ccebe3ef7 introduced the clear_virtqueues() routine
->>>> to  reset  the saved  avail_index,  however, the index
->>>> gets cleared a bit earlier before get_vq_state() tries
->>>> to read it. This would cause consistency problems when
->>>> virtq is restarted, e.g. through a series of link down
->>>> and link up events. We  could  defer  the  clearing of
->>>> avail_index  to  until  the  device  is to be started,
->>>> i.e. until  VIRTIO_CONFIG_S_DRIVER_OK  is set again in
->>>> set_status().
->>>>
->>>> Fixes: b35ccebe3ef7 ("vdpa/mlx5: Restore the hardware used index 
->>>> after change map")
->>>> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
->>>> Acked-by: Jason Wang <jasowang@redhat.com>
->>> Acked-by: Eli Cohen <elic@nvidia.com>
->>>
->> I take it back. I think we don't need to clear the indexes at all. In
->> case we need to restore indexes we'll get the right values through
->> set_vq_state(). If we suspend the virtqueue due to VM being suspended,
->> qemu will query first and will provide the the queried value. In case of
->> VM reboot, it will provide 0 in set_vq_state().
->>
->> I am sending a patch that addresses both reboot and suspend.
-> With set_vq_state() repurposed to restoring used_index I'm fine with 
-> this approach.
+> Since 'vdpasim->config' type is 'struct virtio_net_config', we can
+> safely copy its content under this condition.
 >
-> Do I have to repost a v3 of this series while dropping the 3rd patch?
+> Commit 65b709586e22 ("vdpa_sim: add get_config callback in
+> vdpasim_dev_attr") unintentionally solved it upstream while
+> refactoring vdpa_sim.c to support multiple devices. But we don't want
+> to backport it to stable branches as it contains many changes.
 >
-> -Siwei 
+> Fixes: 2c53d0f64c06 ("vdpasim: vDPA device simulator")
+> Cc: <stable@vger.kernel.org> # 5.10.x
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>   drivers/vdpa/vdpa_sim/vdpa_sim.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> index 6a90fdb9cbfc..8ca178d7b02f 100644
+> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+> @@ -572,7 +572,7 @@ static void vdpasim_get_config(struct vdpa_device *vdpa, unsigned int offset,
+>   {
+>   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
+>   
+> -	if (offset + len < sizeof(struct virtio_net_config))
+> +	if (offset + len <= sizeof(struct virtio_net_config))
+>   		memcpy(buf, (u8 *)&vdpasim->config + offset, len);
+>   }
+>   
 
 
-Yes, please.
-
-Thanks
+Acked-by: Jason Wang <jasowang@redhat.com>
 
 
