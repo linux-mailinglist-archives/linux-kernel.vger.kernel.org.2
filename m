@@ -2,114 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF42A31EFD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B31331EFDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbhBRT3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:29:40 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26566 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230119AbhBRSlm (ORCPT
+        id S231863AbhBRTaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231327AbhBRSrC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:41:42 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11IIXSQV179304;
-        Thu, 18 Feb 2021 13:40:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=26iu0Ri9szM48Q0na4vGUFYyvrkaYkvyhlIX68WERkQ=;
- b=lRNicBhGuReJOTx92PTGnoHbDAoXkGhkv+aXYpT18u7LnMHPEHhNrUEP3EGL9dTiPbIl
- LK2Eoq7NTyRqoDPIXAvI66cp/Fxb2wZ02DsUTGmroFKG7CC3yZB4aYNddrg88iZLzck9
- h6PqGup2ka44iqvNALNfmIC8eVrDD1heolDZI1f+VsBj9dxK75j1aj2a5O3mqh/8sJIh
- YFEBBLQa1h0iURbnkT5X1w6cU8uFT/nyVWa9Zf3n0IIysvpJJ2khK7nHorGGXy5y1Fmk
- TyRRP9tRpYDqkU0D/Y1J8E73u23PmES7lsctPkjvobXTSMfHXvKH3pFgzURdv5zFuZRh EA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36sv2kk7ak-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 13:40:54 -0500
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11IIXihA180049;
-        Thu, 18 Feb 2021 13:40:53 -0500
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36sv2kk7a1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 13:40:53 -0500
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11IIRqoA007599;
-        Thu, 18 Feb 2021 18:40:52 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma04wdc.us.ibm.com with ESMTP id 36p6d9g3uw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 18:40:52 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11IIepO122610334
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 18:40:51 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83EB1136055;
-        Thu, 18 Feb 2021 18:40:51 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5182E136051;
-        Thu, 18 Feb 2021 18:40:51 +0000 (GMT)
-Received: from suka-w540.localdomain (unknown [9.85.163.18])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu, 18 Feb 2021 18:40:51 +0000 (GMT)
-Received: by suka-w540.localdomain (Postfix, from userid 1000)
-        id 52FDA2E1880; Thu, 18 Feb 2021 10:40:48 -0800 (PST)
-Date:   Thu, 18 Feb 2021 10:40:48 -0800
-From:   Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Lijun Pan <lijunp213@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20210218184048.GA1017500@us.ibm.com>
-References: <20210217124337.47db7c69@canb.auug.org.au>
+        Thu, 18 Feb 2021 13:47:02 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF1FCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:19 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d13so1753279plg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:46:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=drmiTJ2Rk9ucy2iYLORJ+griMgMAYYSsxQgICUqTnik=;
+        b=eYcml0geDRNXaW610yxESdhDgqNum66QY8BF55CxpxFl117dd2xNH0RrujDY2e0r6i
+         NnpiyX4SSmQDyJzHXIMsxQMgMnThVoz0pq1XsPVZw4a1F7l2jB8NHclRgXsXhhb1fxA4
+         3p840Cnu4pcfmWr+yrIGQGHqDFBaJL+QTvWfs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=drmiTJ2Rk9ucy2iYLORJ+griMgMAYYSsxQgICUqTnik=;
+        b=VwRHeq3c1qOuMUNK1CTo15lIjQjWWHrtSfYWdl2XwjhfcYcpjflWZwdtGRrF5LOSb4
+         7Exe2ft/ttRPBLSiyRQY2gkzZwNrYPfdDYg8Gk0bddxrBpHgxpmPOdmlN0c8sAwoA4wz
+         uXCuWFXKEuua7QhuDZAKj0bQ/fy5ezgWsLKz0iqyP549ttwhZYmgMFtbAOIWMufoTiNE
+         4fo8AlBEj55RzpHwJ9Hk8jsftN6lU7c7WH/sNyxViL1AVB8uDAGiy1DXXvIdFzaz3vfV
+         wCZ/oVla2rHaRrjozkknyvOCHyp75kUvqf6ZeSxZ2C1KNMq1mTaP5jppNgk7ACMZgc7m
+         IA0w==
+X-Gm-Message-State: AOAM530CW7LoDsX4EAYVzYprVhHKqqKSoVr0y263fpuOO6gQFUoal46K
+        HFVN0sbbyHgER1fyPhkzRSMCeg==
+X-Google-Smtp-Source: ABdhPJxJni7HMteZ57iewZ7//VvhwYQcbuDCtH1IKTW8sEoD3IMpcVitwBWi/yftGIPLZx0TCCVH1Q==
+X-Received: by 2002:a17:90a:cf82:: with SMTP id i2mr5100794pju.209.1613673979305;
+        Thu, 18 Feb 2021 10:46:19 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:ec84:ed2b:a796:b756])
+        by smtp.gmail.com with ESMTPSA id b17sm6546618pfb.75.2021.02.18.10.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 10:46:18 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217124337.47db7c69@canb.auug.org.au>
-X-Operating-System: Linux 2.0.32 on an i486
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-18_09:2021-02-18,2021-02-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 clxscore=1011 suspectscore=0 mlxlogscore=999 bulkscore=0
- priorityscore=1501 phishscore=0 mlxscore=0 adultscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180153
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
+References: <1613667070-27613-1-git-send-email-khsieh@codeaurora.org>
+Subject: Re: [PATCH v2 1/2] phy/qualcomm: add hbr3_hbr2 voltage and premphasis swing table
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
+        vkoul@kernel.org
+Date:   Thu, 18 Feb 2021 10:46:17 -0800
+Message-ID: <161367397738.1254594.12158219605796616035@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell [sfr@canb.auug.org.au] wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the net-next tree got conflicts in:
-> 
->   drivers/net/ethernet/ibm/ibmvnic.c
->   drivers/net/ethernet/ibm/ibmvnic.h
-> 
-> between commit:
-> 
->   4a41c421f367 ("ibmvnic: serialize access to work queue on remove")
-> 
-> from the net tree and commits:
-> 
->   bab08bedcdc3 ("ibmvnic: fix block comments")
->   a369d96ca554 ("ibmvnic: add comments for spinlock_t definitions")
-> 
-> from the net-next tree.
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+Quoting Kuogee Hsieh (2021-02-18 08:51:10)
+> Add hbr3_hbr2 voltage and premphasis swing table to support
+> HBR3 link rate.
+>=20
+> Changes in V2:
+> -- replaced upper case with lower case at hbr3_hbr2 table
+>=20
+> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> ---
 
-The changes look good to me. Thanks.
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
-Sukadev
+BTW, the DP driver already set rates for HBR2, so does that mean this is
+fixing the voltage and preemphasis settings for HBR2? If so we should
+backport this to stable trees and mark it as fixing commit 52e013d0bffa
+("phy: qcom-qmp: Add support for DP in USB3+DP combo phy").
