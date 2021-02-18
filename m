@@ -2,112 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3021931EDF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:06:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2EE31EDED
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBRSFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:05:22 -0500
-Received: from mga07.intel.com ([134.134.136.100]:8917 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231438AbhBRPbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:31:01 -0500
-IronPort-SDR: BmaVB/hvhQSnx6guA3qe2ceWh40Puv2HjI2kkPQoA8BZGL6Gq2G7jYCsLIAwsumxWCfvO4LxLE
- 5iLGP65xQtjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247613518"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="247613518"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 07:28:40 -0800
-IronPort-SDR: KX9DvpxVrcJtQQ9LUit+AWu9KaUP8n+rhs+LWbZAOMPthhLLTBBGBNSHAErVZDOd2gGw+gZPV0
- v3GXUBJYzW9A==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="401689900"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 07:28:36 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lClEG-005yjg-L4; Thu, 18 Feb 2021 17:28:32 +0200
-Date:   Thu, 18 Feb 2021 17:28:32 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 14/14] MAINTAINERS: Add entry for the bitmap API
-Message-ID: <YC6HoF2lhSlrYs3j@smile.fi.intel.com>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-15-yury.norov@gmail.com>
+        id S230154AbhBRSD7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Feb 2021 13:03:59 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:57350 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232533AbhBRPaV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:30:21 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-36-PKrX5I6tNO2MkP4XFBpMfg-1; Thu, 18 Feb 2021 15:28:36 +0000
+X-MC-Unique: PKrX5I6tNO2MkP4XFBpMfg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 18 Feb 2021 15:28:35 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 18 Feb 2021 15:28:35 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'Dmitry V. Levin'" <ldv@altlinux.org>,
+        "David S. Miller" <davem@davemloft.net>
+CC:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Gleb Fotengauer-Malinovskiy <glebfm@altlinux.org>,
+        Anatoly Pugachev <matorola@gmail.com>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] sparc: make copy_thread honor pid namespaces
+Thread-Topic: [PATCH] sparc: make copy_thread honor pid namespaces
+Thread-Index: AQHXBZd//RPPXGWEKk+rLobcOpszAqpeCBzA
+Date:   Thu, 18 Feb 2021 15:28:35 +0000
+Message-ID: <05247c8b0e31420a9e6e7a43831212ff@AcuMS.aculab.com>
+References: <20210217080000.GA25861@altlinux.org>
+In-Reply-To: <20210217080000.GA25861@altlinux.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218040512.709186-15-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 08:05:12PM -0800, Yury Norov wrote:
-> Add myself as maintainer for bitmap API.
+From: Dmitry V. Levin
+> Sent: 17 February 2021 08:00
 > 
-> I'm an author of current implementation of lib/find_bit and an
-> active contributor to lib/bitmap. It was spotted that there's no
-> maintainer for bitmap API. I'm willing to maintain it.
+> On sparc, fork and clone syscalls have an unusual semantics of
+> returning the pid of the parent process to the child process.
 
-Perhaps reviewers as well, like Rasmus, if he is okay with that, of course?
+Isn't that just broken?
+The application expects fork() to return 0 in the child.
+libc would have to do horrid things to convert the result.
 
-Otherwise, why not?
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+It could be comparing against the saved 'current pid' in
+order to save a system call for the first ppid() call.
+But that isn't ever going to work if it is possible to
+create a child in a different pid namespace.
 
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> ---
->  MAINTAINERS | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7bdf12d3e0a8..9f8540a9dabf 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3146,6 +3146,20 @@ F:	Documentation/filesystems/bfs.rst
->  F:	fs/bfs/
->  F:	include/uapi/linux/bfs_fs.h
->  
-> +BITMAP API
-> +M:	Yury Norov <yury.norov@gmail.com>
-> +S:	Maintained
-> +F:	include/asm-generic/bitops/find.h
-> +F:	include/linux/bitmap.h
-> +F:	lib/bitmap.c
-> +F:	lib/find_bit.c
-> +F:	lib/find_find_bit_benchmark.c
-> +F:	lib/test_bitmap.c
-> +F:	tools/include/asm-generic/bitops/find.h
-> +F:	tools/include/linux/bitmap.h
-> +F:	tools/lib/bitmap.c
-> +F:	tools/lib/find_bit.c
-> +
->  BLINKM RGB LED DRIVER
->  M:	Jan-Simon Moeller <jansimon.moeller@gmx.de>
->  S:	Maintained
-> -- 
-> 2.25.1
-> 
+FWIW the test program ought to use syscall() to get the pid
+and ppid - rather than relying on any optimisations in libc.
 
--- 
-With Best Regards,
-Andy Shevchenko
+	David
 
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
