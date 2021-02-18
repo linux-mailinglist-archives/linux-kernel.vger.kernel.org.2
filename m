@@ -2,130 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E1531F12D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F9131F135
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:44:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhBRUlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 15:41:31 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:43248 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhBRUjn (ORCPT
+        id S231243AbhBRUmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:42:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231351AbhBRUkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 15:39:43 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id F168E1F44588
-Subject: Re: [PATCH RESEND v2 4/5] iommu/tegra-smmu: Rework
- tegra_smmu_probe_device()
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     will@kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com, thierry.reding@gmail.com,
-        joro@8bytes.org, kernel@collabora.com,
-        Dmitry Osipenko <digetx@gmail.com>,
-        "kernelci-results@groups.io" <kernelci-results@groups.io>
-References: <20201125101013.14953-1-nicoleotsuka@gmail.com>
- <20201125101013.14953-5-nicoleotsuka@gmail.com>
- <46a96cf9-91cc-2ad4-702a-e95ba7200375@collabora.com>
- <20210205052422.GA11329@Asurada-Nvidia>
- <20210205094556.GA32677@Asurada-Nvidia>
- <f45c94b4-2949-4eac-5944-85d43a8afef5@collabora.com>
- <20210210082052.GA11455@Asurada-Nvidia>
- <df170d15-f5b5-4238-f998-5b8f8e45849a@collabora.com>
- <20210218103510.GA13060@Asurada-Nvidia>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <dc0c4040-469d-b4f6-2be5-59a4e2c7f966@collabora.com>
-Date:   Thu, 18 Feb 2021 20:38:56 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Thu, 18 Feb 2021 15:40:25 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECD0C061788
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:39:45 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id t18so1605831qvn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 12:39:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=izMGeH6dYVvvRYrg+SR4dkbWf4tBjA1jwd/PyFi3k5E=;
+        b=wvbQo9QE9Wp3Chgcgpv7CYoqwp7kuaqfdQiTlgUq1h2J0aIotvMIuP5ipnZFwbxCik
+         8+fQDHd+5vQn9VJ9W7BEr6EmbrgE6VqkqCNPBdmPmWEIUk60ccqRFE1k7UM3MXNmEgDA
+         b05+G2h4KJBlkqJQq9vMrgGM9SoyfU9dQzuhXajoxI2uvdnURdWWsa6wm08CK5jYHofJ
+         yfhVgjvI4gye1JSSsSR8UHHdUyNq1LYs2H+H5JzmMRcxr+CNIUXUaNcNkbCNBvI7+Q93
+         hBouq+CbswlkAnbHkan+su0ONtwzeDED5Vc0O4tZ5i22dBVOlbxXIbSagal8+HQyYlIM
+         5RUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=izMGeH6dYVvvRYrg+SR4dkbWf4tBjA1jwd/PyFi3k5E=;
+        b=qDkgvolbV/JV6lQZt0H2B+ydMilIgzUo02WGi4hAtW+EScPsNVFUwV/HgsD3trACw2
+         21AW5Iw+6WejUhxcxbSOruKLoIxC0qHX13TnaXYpW+ItpCrody/AdRTVeX6Guhy6Sjvk
+         RC83jbaKolsNp4Sewyqg/SF4rhENpVbxeoy/1/LtXU102BoiypNc4wQXm2ASSLjl2Jcq
+         bFQuqLwvo5p0tTMXAx51vuF3TRCqQk7eEPFyrcsmoDXF8HDFLplVsPHm/zy8gSgOEZYA
+         4F1souVKuH71x/VlA2ji/W3el0eSMGc7Y5cP5v5ny0qDtw7LQjZhKtoBgTMJ98sXxbXb
+         cBgw==
+X-Gm-Message-State: AOAM531MwfxS6D5azl5vZlEEHU6SgpNmaENAD2cjknyEB5a2ugA990oa
+        kqclvzCYPL6leipHDoaYwkSrdATydVz3d1F4
+X-Google-Smtp-Source: ABdhPJxztKx9mX1HlP26QR3/cQf+f3xOlIqt2zgVBzeiQy++BDSTSrLA4mV45L/nyeRanv+vk9XGhw==
+X-Received: by 2002:a0c:fc44:: with SMTP id w4mr5848013qvp.55.1613680783943;
+        Thu, 18 Feb 2021 12:39:43 -0800 (PST)
+Received: from ?IPv6:2620:10d:c0a8:11d9::1105? ([2620:10d:c091:480::1:bcfb])
+        by smtp.gmail.com with ESMTPSA id s14sm4068292qtq.97.2021.02.18.12.39.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 12:39:42 -0800 (PST)
+Subject: Re: [PATCH v6 0/2] fix a NULL pointer bug and simplify the code
+To:     Sun Ke <sunke32@huawei.com>, axboe@kernel.dk, Markus.Elfring@web.de
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
+        linux-kernel@vger.kernel.org
+References: <20210218122620.228375-1-sunke32@huawei.com>
+From:   Josef Bacik <josef@toxicpanda.com>
+Message-ID: <4f9d9983-2409-301d-73da-94f0f58c8782@toxicpanda.com>
+Date:   Thu, 18 Feb 2021 15:39:41 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210218103510.GA13060@Asurada-Nvidia>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210218122620.228375-1-sunke32@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/2021 10:35, Nicolin Chen wrote:
-> Hi Guillaume,
+On 2/18/21 7:26 AM, Sun Ke wrote:
+> fix a NULL pointer bug and simplify the code
 > 
-> Thank you for the test results! And sorry for my belated reply.
-
-No worries :)
-
-> On Thu, Feb 11, 2021 at 03:50:05PM +0000, Guillaume Tucker wrote:
->>> On Sat, Feb 06, 2021 at 01:40:13PM +0000, Guillaume Tucker wrote:
->>>>> It'd be nicer if I can get both logs of the vanilla kernel (failing)
->>>>> and the commit-reverted version (passing), each applying this patch.
->>>>
->>>> Sure, I've run 3 jobs:
->>>>
->>>> * v5.11-rc6 as a reference, to see the original issue:
->>>>   https://lava.collabora.co.uk/scheduler/job/3187848
->>>>
->>>> * + your debug patch:
->>>>   https://lava.collabora.co.uk/scheduler/job/3187849
->>>>
->>>> * + the "breaking" commit reverted, passing the tests:
->>>>   https://lava.collabora.co.uk/scheduler/job/3187851
->>>
->>> Thanks for the help!
->>>
->>> I am able to figure out what's probably wrong, yet not so sure
->>> about the best solution at this point.
->>>
->>> Would it be possible for you to run one more time with another
->>> debugging patch? I'd like to see the same logs as previous:
->>> 1. Vanilla kernel + debug patch
->>> 2. Vanilla kernel + Reverted + debug patch
->>
->> As it turns out, next-20210210 is passing all the tests again so
->> it looks like this got fixed in the meantime:
->>
->>   https://lava.collabora.co.uk/scheduler/job/3210192
+> v6: Just add if (nbd->recv_workq) to nbd_disconnect_and_put().
+> v5: Adjust the title and add “Suggested-by”.
+> v4: Share exception handling code for if branches and
+> 	move put_nbd adjustment to a separate patch.
+> v3: Do not use unlock and add put_nbd.
+> v2: Use jump target unlock.
 > 
-> I checked this passing log, however, found that the regression is
-> still there though test passed, as the prints below aren't normal:
->   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> 	 EMEM address decode error (SMMU translation error [--S])
->   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> 	 Page fault (SMMU translation error [--S])
-
-Ah yes sorry, there are other KernelCI checks for kernel errors
-but that wasn't enabled in the bisection so I didn't notice them.
-
-> I was trying to think of a simpler solution than a revert. However,
-> given the fact that the callback sequence could change -- guessing
-> likely a recent change in iommu core, I feel it safer to revert my
-> previous change, not necessarily being a complete revert though.
+> Sun Ke (2):
+>    nbd: Fix NULL pointer in flush_workqueue
+>    nbd: share nbd_put and return by goto put_nbd
 > 
-> I attached my partial reverting change in this email. Would it be
-> possible for you to run one more test for me to confirm it? It'd
-> keep the tests passing while eliminating all error prints above.
+>   drivers/block/nbd.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> If the fix works, I'll re-send it to mail list by adding a commit
-> message.
 
-Sure, here's next-20210218 as a reference:
+You can add
 
-  https://lava.collabora.co.uk/scheduler/job/3241236
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-and here with your patch applied on top of it:
+to both of these, thanks,
 
-  https://lava.collabora.co.uk/scheduler/job/3241246
-
-The git branch I've used where your patch is applied:
-
-  https://gitlab.collabora.com/gtucker/linux/-/commits/next-20210218-nyan-big-drm-read/
-
-The errors seem to have disappeared but I'll let you double check
-that things are all back to a working state.
-
-BTW: This thread is a good example of how having an "on-demand"
-KernelCI service to let developers re-run tests with extra
-patches would allow them to fix issues independently.  We'll keep
-that in mind for the future.
-
-Best wishes,
-Guillaume
+Josef
