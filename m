@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0BA431EC38
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18BF731EC39
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233296AbhBRQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:25:55 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:33088 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231307AbhBRNj6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:39:58 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 54CDC1C0B96; Thu, 18 Feb 2021 14:37:33 +0100 (CET)
-Date:   Thu, 18 Feb 2021 14:37:33 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
-        kernel@pengutronix.de, linux-leds@vger.kernel.org,
-        Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v11] leds: trigger: implement a tty trigger
-Message-ID: <20210218133733.GB12948@duo.ucw.cz>
-References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
- <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
- <X/8cwD51DYhzRdDO@kroah.com>
- <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
+        id S233454AbhBRQ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:26:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231347AbhBRNkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:40:00 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 837EB64E6F;
+        Thu, 18 Feb 2021 13:38:08 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 13:38:04 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
+Subject: Re: [PATCH v2 0/5] iio: Add output buffer support
+Message-ID: <20210218133804.60d7eca7@archlinux>
+In-Reply-To: <20210217083438.37865-1-alexandru.ardelean@analog.com>
+References: <20210217083438.37865-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="vGgW1X5XWziG23Ko"
-Content-Disposition: inline
-In-Reply-To: <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 17 Feb 2021 10:34:33 +0200
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
---vGgW1X5XWziG23Ko
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> This patchset is based on the new multibuffer set.
+> It doesn't require the high-speed/mmap interface.
+> That will come later on a v2.
+> 
+> Changelog v1 -> v2:
+> * https://lore.kernel.org/linux-iio/20210212102021.47276-4-alexandru.ardelean@analog.com/T/#u
+> * removed DMA patches for now
+> * in patch 'iio: Add output buffer support'
+>   - added /sys/bus/iio/devices/iio:deviceX/bufferY/direction attribute
+>   - thinking about this, an update to the new buffer infrastructure is
+>     required when adding ADDAC/MxFE/transceivers; right now there is no
+>     problem, because we have only ADCs and DACs; but when we get
+>     transceivers, a bufferY/ directory needs to filter in/out
+>     scan_elements/ ; this only occured to me recently (it's one of those
+>     things that pops up later in mind)
 
-Hi!
+For that we can rely on review in the short term, but agreed a sanity
+check that everything matches would make sense.
 
-Close, but see below:
+> * added 'iio: Documentation: update definitions for bufferY and scan_elements'
+>   - seems I forgot this on the original multibuffer patchset
 
-> +static ssize_t ttyname_store(struct device *dev,
-> +			     struct device_attribute *attr, const char *buf,
-> +			     size_t size)
-> +{
-> +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev);
-> +	char *ttyname;
-> +	ssize_t ret =3D size;
-> +	bool running;
-> +
-> +	if (size > 0 && buf[size - 1] =3D=3D '\n')
-> +		size -=3D 1;
-> +
-> +	if (size) {
-> +		ttyname =3D kmemdup_nul(buf, size, GFP_KERNEL);
-> +		if (!ttyname) {
-> +			ret =3D -ENOMEM;
-> +			goto out_unlock;
+Likewise. :)  Who needs docs?
 
-Unlock without a lock:
+> * added 'iio: triggered-buffer: extend support to configure output buffers'
+>   - basically output triggered buffer support
+> * added 'iio: dac: ad5686: Add PWM as a trigger source'
+>   - this is a first user of this infrastructure
+> 
+> Alexandru Ardelean (2):
+>   iio: Documentation: update definitions for bufferY and scan_elements
+>   iio: triggered-buffer: extend support to configure output buffers
+> 
+> Lars-Peter Clausen (2):
+>   iio: Add output buffer support
+>   iio: kfifo-buffer: Add output buffer support
+> 
+> Mircea Caprioru (1):
+>   iio: dac: ad5686: Add PWM as a trigger source
+> 
+>  Documentation/ABI/testing/sysfs-bus-iio       |  92 +++++++++++
+>  drivers/iio/accel/adxl372.c                   |   1 +
+>  drivers/iio/accel/bmc150-accel-core.c         |   1 +
+>  drivers/iio/adc/at91-sama5d2_adc.c            |   4 +-
+>  .../buffer/industrialio-triggered-buffer.c    |   8 +-
+>  drivers/iio/buffer/kfifo_buf.c                |  50 ++++++
+>  .../cros_ec_sensors/cros_ec_sensors_core.c    |   1 +
+>  .../common/hid-sensors/hid-sensor-trigger.c   |   5 +-
+>  drivers/iio/dac/ad5686-spi.c                  |   2 +-
+>  drivers/iio/dac/ad5686.c                      | 146 +++++++++++++++++-
+>  drivers/iio/dac/ad5686.h                      |   7 +-
+>  drivers/iio/dac/ad5696-i2c.c                  |   2 +-
+>  drivers/iio/industrialio-buffer.c             | 128 ++++++++++++++-
+>  include/linux/iio/buffer.h                    |   7 +
+>  include/linux/iio/buffer_impl.h               |  11 ++
+>  include/linux/iio/triggered_buffer.h          |  11 +-
+>  16 files changed, 459 insertions(+), 17 deletions(-)
+> 
 
-> +out_unlock:
-> +	mutex_unlock(&trigger_data->mutex);
-> +
-> +	if (ttyname && !running)
-> +		ledtrig_tty_restart(trigger_data);
-> +
-> +	return ret;
-> +}
-
-> +
-> +		tty =3D tty_kopen_shared(devno);
-> +		if (IS_ERR(tty) || !tty)
-> +			/* What to do? retry or abort */
-> +			goto out;
-
-Abort would make sense to me.
-
-> +	if (icount.rx !=3D trigger_data->rx ||
-> +	    icount.tx !=3D trigger_data->tx) {
-> +		led_set_brightness(trigger_data->led_cdev, LED_ON);
-
-Please use _sync version.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---vGgW1X5XWziG23Ko
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC5tnAAKCRAw5/Bqldv6
-8pRZAKDDhPaKHu/d3L/BzvQkd/cxuh0RdACeI7qjDXvHzWha9QIrUjivRsnhSV8=
-=5t8h
------END PGP SIGNATURE-----
-
---vGgW1X5XWziG23Ko--
