@@ -2,206 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5F831EAC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:12:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C3B31EAB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbhBROHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 09:07:54 -0500
-Received: from mail-eopbgr1310057.outbound.protection.outlook.com ([40.107.131.57]:5569
-        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232160AbhBRMTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:19:54 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gL7g0Zu0NlHHpJScqWFWsMI91DaHsBFZfXJl1uIZOqvthtHf71vH0tGtIAsQC2aPkqGPHo9N4S2FgsFB5cpjteri+/WSdtpxC7BHQP6KoTbqkTXcJBaC8gDdc4mjfBdwUwlg4ZLoppNcDWufGFjzGFOAk0SJjrYbL+9BEHV3Ml83eF8kxgk4/Pkdyj70Ie8XsrG3E2TWlY9iFOyNQCD7XPrkTXeaYTrOGiXSIrDJTra5JlgQAKe0NVlSriLcO3vVlZqGdgX3z6C0vLga1OMPqpk8tEqwZQCatlRTgsqT2xgigJ8WR9lDdyzYUmTLV2IhzLY6ESZ8G4k6nzq4O51osA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HM6lAwx8GqbmThr10URRqPNuTJ2iOhWgKDlb5h3mEi8=;
- b=eLl609FdJMRPYvkMmqwzhmg67QvGAu0Yy3hYIQ5GaCS9wKuZjmP2Z86LNZt0WeyaXmzl6pOERDJbeKiQtM5b4YmhgULyjKypCQM6V+ZGA7a6qFT/W43/H5Agdd1foAcAh+Wid/ion5wudOvScb2HQUN2ptDDT0mDZsLZmIBvh2FeNJA8wFFiUV8xL71yagHe7Fv7VBsR+jv6EyHF/bT2T8L4JCsvnR/yDDOV9hmxFgzCDLtvVyGKG1gwYrYd7ue+RLSzerg14O2AZgPs3mgvkVC8lj6Zcfcvhb3ir7rAFTKwiDGB0muJmwYlqz43aTiH0y4rN3Xnh/4s0VNRjTuu+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HM6lAwx8GqbmThr10URRqPNuTJ2iOhWgKDlb5h3mEi8=;
- b=looesBaKZryHWv+wtq1E5QCWGzFcTAxBQQp9A3Io8U8KE/FZo36dKAOph5dEEqwaolqymTmeMaDeoOq5G4aujnLzGzX2K6LEK8CX/hAewTN72Q3d9Dfp0lXhZqQv9F47kPsmSvWUIsdfTJHQ3a/XcWyMPzIxaR5FfK+Ut9u1ZiE=
-Authentication-Results: lists.ozlabs.org; dkim=none (message not signed)
- header.d=none;lists.ozlabs.org; dmarc=none action=none header.from=oppo.com;
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com (2603:1096:4:96::19) by
- SG2PR02MB4107.apcprd02.prod.outlook.com (2603:1096:4:a2::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.38; Thu, 18 Feb 2021 12:01:01 +0000
-Received: from SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::1143:a7b7:6bd4:83b3]) by SG2PR02MB4108.apcprd02.prod.outlook.com
- ([fe80::1143:a7b7:6bd4:83b3%7]) with mapi id 15.20.3868.028; Thu, 18 Feb 2021
- 12:01:01 +0000
-From:   Huang Jianan <huangjianan@oppo.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     huangjianan@oppo.com, guoweichao@oppo.com, zhangshiming@oppo.com,
+        id S232784AbhBROBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 09:01:25 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:44984 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230426AbhBRMGS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:06:18 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IC0kw3000905;
+        Thu, 18 Feb 2021 12:05:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=mzYLSDFdXXIl7ci/FLKSbqpMzibR10demEE2x4c6jmc=;
+ b=Bg72+X7oDxRxUKZRrq60IAY6Y8BWwsWkFAq80oOOx6us4hsbH/Hm9Bjz6FM+JeKHDAk2
+ ApKm72zICMvf74aFl7KmLz5D/mmVX60z71FpIulXYG3QZJo4bAwXFOQbzRfq2Lllvcv5
+ Gr4fd0XC4gRasO/pA4Kn2aISmVG7q86b2PL/pwsDAhmqyaPLZO4507FvfGes483AtWUh
+ 6HuUy2SxqHGL7/KgX6M1CDjcOCAmwWczaJV4fqccWxll+8XQMBTtW1PwO6SozfCiDQ2u
+ iiRhrghmo8f+dA18nbLzDvEi9ghnvLQ3jdqX0RjthfYayE8FnvrNFGzmJ/XnCIe/poGL Xw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36p49bduxt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 12:05:06 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IC0TOo089843;
+        Thu, 18 Feb 2021 12:05:04 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 36prbqpcx5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 12:05:04 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11IC53mM006588;
+        Thu, 18 Feb 2021 12:05:03 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 04:05:02 -0800
+Date:   Thu, 18 Feb 2021 15:04:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pritthijit Nath <pritthijit.nath@icloud.com>
+Cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] erofs: support adjust lz4 history window size
-Date:   Thu, 18 Feb 2021 20:00:49 +0800
-Message-Id: <20210218120049.17265-1-huangjianan@oppo.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [58.255.79.104]
-X-ClientProxiedBy: HK2P15301CA0018.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::28) To SG2PR02MB4108.apcprd02.prod.outlook.com
- (2603:1096:4:96::19)
+Subject: Re: [PATCH] staging: wlan-ng: Fixed incorrect type warning in
+ p80211netdev.c
+Message-ID: <20210218120455.GI2087@kadam>
+References: <20210217154255.112115-1-pritthijit.nath@icloud.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (58.255.79.104) by HK2P15301CA0018.APCP153.PROD.OUTLOOK.COM (2603:1096:202:1::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.2 via Frontend Transport; Thu, 18 Feb 2021 12:01:00 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 66e6d0bd-3721-4294-db7c-08d8d404dbf9
-X-MS-TrafficTypeDiagnostic: SG2PR02MB4107:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SG2PR02MB41074A6481CA1DF7BED49FD2C3859@SG2PR02MB4107.apcprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pXKgKTLqlfoDJCUCnnFquw5LWlCdvITHVveQg3j7HYEPCThmoMHw2LlcssZ5ANbbtRXhk32Wsjka5sT5lg/ZlexrkbUQk3VL9SulL2OtnXf8W+Kxkb319eX87h0IZQduN+8eYluz7yhISKK1pGzOQkQgbkY1UPefSc97NZhZwdyk7feRdcyTtCVZ6uUx7bu5qqhkRhxXasrHpOxtOioy9jALy2i2OOigDsuAuBQNJYW8yQoQlcl4i1hi7wnyqoPvgS6jiSTzMT2cYBuplYlSCf+whxGb75I5x2gdOinT7PpwnocULFPIMb+JzC2ospyTeCakq0iD1jBqhNLAui3qovxgIY0wv8ym7y4uzZTLFLyrveqDCOqdcwxZ7qe0mshF+3W2JBww6T10/Fqy0AM1Rge8imNFD2V9lhLBgSQNTvyL2aMQ7SHUjX/mvMVlWSMagcfiPk/p5GldlbSh9xvZLxTxCjsU9URE0wUWeaR9RuKU6BMr6OFvBxdXLIsClug3Rvfa90bToMgAxt9cMI2kaYgf/g1vyF9/8zIJ2cA/biDIteJPy40o+RE8Pz6wTDnMef6dYzh2qG6xHangZhOvmsC3mGXiisqbJVQY/AIQVRk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR02MB4108.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(39860400002)(366004)(346002)(478600001)(2906002)(36756003)(5660300002)(6506007)(316002)(8936002)(52116002)(6512007)(8676002)(26005)(1076003)(66476007)(66556008)(2616005)(956004)(4326008)(69590400012)(6666004)(66946007)(83380400001)(186003)(6916009)(16526019)(86362001)(6486002)(11606007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9gTg6ov5+VxuuvrEMGwyCm/GFZ9FsPPK8d0qkZuPXuCcr5lfaXLR6vL5hhcW?=
- =?us-ascii?Q?AAw0IGSrtEsGVwviwwh8TvVSwsIUAW6ASvdX7I0Oue24+feeP8umwMq20yCK?=
- =?us-ascii?Q?+ia+BukIOodAfQKO4xPJ4lxyLjQUlauNdTXpTE2h0QOf347C7K1zV4bEFzeh?=
- =?us-ascii?Q?gvfLlZhee15/awCMylWaXvT7rswBA+XAg74TA5Egd1JVmZcL78ZKsLaeXSrP?=
- =?us-ascii?Q?kqDUOk/5de9olcypjpbNAdoPOaiaP45ukS9KrVR2NaAjThUOQ6gWpBDFgDYS?=
- =?us-ascii?Q?XkRHyvIGuPtUc8BYkqThh9AYIUzOq7iOE9G5ROR/yyirkWF2PHyzpQghF5ZW?=
- =?us-ascii?Q?4pwI6mC73DDuHUQN4mtT6sc4d530fg0wn96WN0hMPKhl5HCgFw04ETd8UGZK?=
- =?us-ascii?Q?Ru/moysYyxTSFL9yT0vqlQFsi3zJHPcmxVIz1yZeIfi93MtV4tuWgh+ExRr2?=
- =?us-ascii?Q?VJL+wbVg+K/JThUJDDjLtJ2jNRnLnsDBsH39fgI8CeT+V8QFegEtLWOrRORO?=
- =?us-ascii?Q?g6IuOF5hvhkayzMNmcGQpGWKB+ShyLdlgv2hU3COfD3LBjjNdRT7cVmNxV+K?=
- =?us-ascii?Q?krNY1QUCdk2bFbv9z27FHBpyF+XXHwm+yeiwmO0KDH5RxFU0b4bpQLzD+UZZ?=
- =?us-ascii?Q?bwvCKBgmYoV2eB431UtmXWoeF6TvLC79oW32incx1nUQ1TO+Lz/5J184XTLy?=
- =?us-ascii?Q?o31JObOVWcq0LaBFwX/SyPOirj3k/LmRaCd9Hf6O3N57CVliUXaFMYJaR1tu?=
- =?us-ascii?Q?J/p2SmtcDHxBvT5bD9TkR4PnPu3Q0qhp6QIxmlqlQGcVtjZu1LNzF4wBx+9h?=
- =?us-ascii?Q?lqFUmrU3jmM2pQwtHRKk4Z1HQ+ZRseig2AJ3cokqr2hI2lNFOvaUtFg8NoGf?=
- =?us-ascii?Q?bLSWClGXV7z/C/uenKxTeemq8tueByFjb6rvSVRuqKL9KVsxxgldJ73OD2BL?=
- =?us-ascii?Q?WpzDcbTAfl/yTzkYpiIojR/CYve25MommaFV+BGvXAaUCZU8p0EycELABLcy?=
- =?us-ascii?Q?OSH2I/MzAKtYd8AgMmbDX/EsqB/D2PdpXDck8dc5gBvMf6UuQFchBx3rihvA?=
- =?us-ascii?Q?lVCZi1O5Mv/qePepCJVFUxqrbEAxETxV3I8WnDetbjDkVCdVd3+TSu7gS227?=
- =?us-ascii?Q?6FgYFSy15YOVwJVYJon/hAbvl1IVYnY/Zuj2WRHVhfKSvJ82N3L7h+nQJjmn?=
- =?us-ascii?Q?abnnyyz37Ghvfm7ikwPejuCrIF00aE/CTJaIcGQNP5hmLqDa5QjX5GENwwM7?=
- =?us-ascii?Q?08PZjASlYWCk3ryY0BCTYwmvL1kkmt0Droa9bJQAD9nqyeKyyBz3oGB41auk?=
- =?us-ascii?Q?pF6QJlE8M1OWbA7nDeO+pn0w?=
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 66e6d0bd-3721-4294-db7c-08d8d404dbf9
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR02MB4108.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 12:01:01.0096
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2C4Olps59vLSTPmZ8NVdCCRnNeoO4XaQF32wfhvbsJ27ck8lz1+b/0Lu+rTRSsJ0hyaHV7VX42K5E+fJEmKwCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR02MB4107
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217154255.112115-1-pritthijit.nath@icloud.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102180108
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: huangjianan <huangjianan@oppo.com>
+On Wed, Feb 17, 2021 at 09:12:55PM +0530, Pritthijit Nath wrote:
+> This change fixes a sparse warning "incorrect type in argument 1
+> (different address spaces)".
+> 
+> Signed-off-by: Pritthijit Nath <pritthijit.nath@icloud.com>
+> ---
+>  drivers/staging/wlan-ng/p80211netdev.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+> index 6f9666dc0277..70570e8a5ad2 100644
+> --- a/drivers/staging/wlan-ng/p80211netdev.c
+> +++ b/drivers/staging/wlan-ng/p80211netdev.c
+> @@ -569,7 +569,7 @@ static int p80211knetdev_do_ioctl(struct net_device *dev,
+>  		goto bail;
+>  	}
+>  
+> -	msgbuf = memdup_user(req->data, req->len);
+> +	msgbuf = memdup_user((void __user *)req->data, req->len);
 
-lz4 uses LZ4_DISTANCE_MAX to record history preservation. When
-using rolling decompression, a block with a higher compression
-ratio will cause a larger memory allocation (up to 64k). It may
-cause a large resource burden in extreme cases on devices with
-small memory and a large number of concurrent IOs. So appropriately
-reducing this value can improve performance.
+Probably the correct fix is to just change the type of
+(struct p80211ioctl_req)->data from caddr_t to "void __user *data;".
 
-Decreasing this value will reduce the compression ratio (except
-when input_size <LZ4_DISTANCE_MAX). But considering that erofs
-currently only supports 4k output, reducing this value will not
-significantly reduce the compression benefits.
+I haven't looked at this though, so double check.
 
-Signed-off-by: Huang Jianan <huangjianan@oppo.com>
-Signed-off-by: Guo Weichao <guoweichao@oppo.com>
----
- fs/erofs/decompressor.c | 13 +++++++++----
- fs/erofs/erofs_fs.h     |  3 ++-
- fs/erofs/internal.h     |  3 +++
- fs/erofs/super.c        |  3 +++
- 4 files changed, 17 insertions(+), 5 deletions(-)
-
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 1cb1ffd10569..94ae56b3ff71 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -36,22 +36,27 @@ static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
- 	struct page *availables[LZ4_MAX_DISTANCE_PAGES] = { NULL };
- 	unsigned long bounced[DIV_ROUND_UP(LZ4_MAX_DISTANCE_PAGES,
- 					   BITS_PER_LONG)] = { 0 };
-+	unsigned int lz4_distance_pages = LZ4_MAX_DISTANCE_PAGES;
- 	void *kaddr = NULL;
- 	unsigned int i, j, top;
- 
-+	if (EROFS_SB(rq->sb)->compr_alg)
-+		lz4_distance_pages = DIV_ROUND_UP(EROFS_SB(rq->sb)->compr_alg,
-+						  PAGE_SIZE) + 1;
-+
- 	top = 0;
- 	for (i = j = 0; i < nr; ++i, ++j) {
- 		struct page *const page = rq->out[i];
- 		struct page *victim;
- 
--		if (j >= LZ4_MAX_DISTANCE_PAGES)
-+		if (j >= lz4_distance_pages)
- 			j = 0;
- 
- 		/* 'valid' bounced can only be tested after a complete round */
- 		if (test_bit(j, bounced)) {
--			DBG_BUGON(i < LZ4_MAX_DISTANCE_PAGES);
--			DBG_BUGON(top >= LZ4_MAX_DISTANCE_PAGES);
--			availables[top++] = rq->out[i - LZ4_MAX_DISTANCE_PAGES];
-+			DBG_BUGON(i < lz4_distance_pages);
-+			DBG_BUGON(top >= lz4_distance_pages);
-+			availables[top++] = rq->out[i - lz4_distance_pages];
- 		}
- 
- 		if (page) {
-diff --git a/fs/erofs/erofs_fs.h b/fs/erofs/erofs_fs.h
-index 9ad1615f4474..bffc02991f5a 100644
---- a/fs/erofs/erofs_fs.h
-+++ b/fs/erofs/erofs_fs.h
-@@ -39,7 +39,8 @@ struct erofs_super_block {
- 	__u8 uuid[16];          /* 128-bit uuid for volume */
- 	__u8 volume_name[16];   /* volume name */
- 	__le32 feature_incompat;
--	__u8 reserved2[44];
-+	__le16 compr_alg;	/* compression algorithm specific parameters */
-+	__u8 reserved2[42];
- };
- 
- /*
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 67a7ec945686..f1c99dc2659f 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -70,6 +70,9 @@ struct erofs_sb_info {
- 
- 	/* pseudo inode to manage cached pages */
- 	struct inode *managed_cache;
-+
-+	/* compression algorithm specific parameters */
-+	u16 compr_alg;
- #endif	/* CONFIG_EROFS_FS_ZIP */
- 	u32 blocks;
- 	u32 meta_blkaddr;
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index d5a6b9b888a5..198435e3eb2d 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -174,6 +174,9 @@ static int erofs_read_superblock(struct super_block *sb)
- 	sbi->islotbits = ilog2(sizeof(struct erofs_inode_compact));
- 	sbi->root_nid = le16_to_cpu(dsb->root_nid);
- 	sbi->inos = le64_to_cpu(dsb->inos);
-+#ifdef CONFIG_EROFS_FS_ZIP
-+	sbi->compr_alg = le16_to_cpu(dsb->compr_alg);
-+#endif
- 
- 	sbi->build_time = le64_to_cpu(dsb->build_time);
- 	sbi->build_time_nsec = le32_to_cpu(dsb->build_time_nsec);
--- 
-2.25.1
+regards,
+dan carpenter
 
