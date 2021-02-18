@@ -2,98 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47DAF31EC93
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E36731EC91
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233985AbhBRQxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:53:36 -0500
-Received: from mga07.intel.com ([134.134.136.100]:1093 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232653AbhBROGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:06:11 -0500
-IronPort-SDR: xnK0tsWla3Q1zCbO2NvpDYvJ0RU+1t11yALo6dpz0so1AlA4YUsffvc8KQZKkFl0vi/mBPbVVI
- XbhKXijZCyjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247585178"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="247585178"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 06:02:02 -0800
-IronPort-SDR: HiiFi7WXW+xa/kiPFzNBdRoER3V0irwMC05IZpVp3GgeW7pmBBbqIUuExc/xuetwOlNDym4vvt
- s1+IttZZg81A==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="364840235"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 06:01:59 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lCjsS-005xjl-6S; Thu, 18 Feb 2021 16:01:56 +0200
-Date:   Thu, 18 Feb 2021 16:01:56 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Robert Richter <rric@kernel.org>
-Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] Introduce pcim_alloc_irq_vectors()
-Message-ID: <YC5zVHnRog3EX0rl@smile.fi.intel.com>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <YC41HD422Mjh1IZK@rric.localdomain>
+        id S233491AbhBRQwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:52:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232181AbhBRODn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:03:43 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B01C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 06:03:03 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id g9so1544948ilc.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 06:03:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AQCq51Tg/1SeOfoa+uxrlicnQ4lUT4BdKs1EA+O+j5A=;
+        b=K4c6Sgtezftr+PqnzBKVs6LkPM93OTEBhTNsxmEc+RUHx2CCAoTFj9kdZo0JZWcHlC
+         R/CCuRExlOQk7HkY3shFzz0rhInLITSPPIg81wH/U9pJ+PZFUvs04Ue/cD5pwAHzEbaJ
+         w8M9z3S+b+zlOiIRspADhs1DLYBWzrSvIaV4Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AQCq51Tg/1SeOfoa+uxrlicnQ4lUT4BdKs1EA+O+j5A=;
+        b=Bol0SRxhEKJYC/Gq/Y1v0R7/2SQFIMJSAH8ePUp7TY6NQtPrYU+Cqa/Ntfb+hQ5G5p
+         YapLERBU0gFpjwgPuPK//pioCad9KNSU3ugloAT+SmwWelkZmnhAH/hPdSXI2WpfGOcR
+         n55ublEwklnOa/p2daL0CPpECbBorgSrSblZkQT06r+tcRxGE2QjEBZs/hAL7TfBduGz
+         vMJgX9PVBscNEJMJx7sNZDsiCBw4MoEeQlANYz2QXqhrYw+oPBGeGYw8KKtZEydbdjwt
+         D55WcTWPZFKtbnHgQPSmdTgZOXDOZCma6rPIOjBM0Tjl05dkTaQnDOweErj4ZB19y6VB
+         4kLQ==
+X-Gm-Message-State: AOAM531bbKo4E5L3sSAygT6h9CMnUWsBK9ktl7MceaGF1V2aIW79IuC4
+        KlNi3aTZzvZlXTBO6BpLijemzw==
+X-Google-Smtp-Source: ABdhPJypDmUKD7+s1//4JSq/84zKYS+x9xKDjlAsUmNrZ4bBQ5/yaHrP3fzfw/HwvZ4XEBAkdV9/OA==
+X-Received: by 2002:a05:6e02:1a03:: with SMTP id s3mr3902702ild.178.1613656982796;
+        Thu, 18 Feb 2021 06:03:02 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y1sm4320764ilj.50.2021.02.18.06.03.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 06:03:01 -0800 (PST)
+Subject: Re: [PATCH] Revert "ath9k: fix ath_tx_process_buffer() potential null
+ ptr dereference"
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, nbd@nbd.name,
+        ath9k-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210217211801.22540-1-skhan@linuxfoundation.org>
+ <20210218062333.37872C43462@smtp.codeaurora.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <18c2b014-406f-1976-d3aa-354dc285f134@linuxfoundation.org>
+Date:   Thu, 18 Feb 2021 07:02:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC41HD422Mjh1IZK@rric.localdomain>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210218062333.37872C43462@smtp.codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 10:36:28AM +0100, Robert Richter wrote:
-> On 17.02.21 00:02:45, Dejin Zheng wrote:
-> > Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> > pci_alloc_irq_vectors(), In some i2c drivers, If pcim_enable_device()
-> > has been called before, then pci_alloc_irq_vectors() is actually a
-> > device-managed function. It is used as a device-managed function, So
-> > replace it with pcim_alloc_irq_vectors().
-> > 
-> > Changelog
-> > ---------
-> > v2 -> v3:
-> > 	- Add some commit comments for replace some codes in
-> > 	  pcim_release() by pci_free_irq_vectors().
-> > 	- Simplify the error handling path in i2c designware
-> > 	  driver.
-> > v1 -> v2:
-> > 	- Use pci_free_irq_vectors() to replace some code in
-> > 	  pcim_release().
-> > 	- Modify some commit messages.
-> > 
-> > Dejin Zheng (4):
-> >   PCI: Introduce pcim_alloc_irq_vectors()
-> >   Documentation: devres: Add pcim_alloc_irq_vectors()
+On 2/17/21 11:23 PM, Kalle Valo wrote:
+> Shuah Khan <skhan@linuxfoundation.org> wrote:
 > 
-> This is already taken care of, see pcim_release():
+>> This reverts commit a56c14bb21b296fb6d395164ab62ef2e419e5069.
+>>
+>> ath_tx_process_buffer() doesn't dereference or check sta and passes it
+>> to ath_tx_complete_aggr() and ath_tx_complete_buf().
+>>
+>> ath_tx_complete_aggr() checks the pointer before use. No problem here.
+>>
+>> ath_tx_complete_buf() doesn't check or dereference sta and passes it on
+>> to ath_tx_complete(). ath_tx_complete() doesn't check or dereference sta,
+>> but assigns it to tx_info->status.status_driver_data[0]
+>>
+>> ath_tx_complete_buf() is called from ath_tx_complete_aggr() passing
+>> null ieee80211_sta pointer.
+>>
+>> There is a potential for dereference later on, if and when the
+>> tx_info->status.status_driver_data[0]is referenced. In addition, the
+>> rcu read lock might be released before referencing the contents.
+>>
+>> ath_tx_complete_buf() should be fixed to check sta perhaps? Worth
+>> looking into.
+>>
+>> Reverting this patch because it doesn't solve the problem and introduces
+>> memory leak by skipping buffer completion if the pointer (sta) is NULL.
+>>
+>> Fixes: a56c14bb21b2 ("ath9k: fix ath_tx_process_buffer() potential null ptr dereference")
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+>> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 > 
->         if (dev->msi_enabled)
->                 pci_disable_msi(dev);
->         if (dev->msix_enabled)
->                 pci_disable_msix(dev);
+> Thanks. I added the commit id and Fixes tag to the commit log, see the new version above.
 > 
-> Activated when used with pcim_enable_device().
-> 
-> This series is not required.
 
-The problem this series solves is an imbalanced API.
-Christoph IIRC was clear that if we want to use PCI IRQ allocation API the
-caller must know what's going on. Hiding this behind the scenes is not good.
-And this series unhides that.
+Thanks. Sorry for forgetting the Fixes tag.
 
-Also, you may go and clean up all pci_free_irq_vectors() when
-pcim_enable_device() is called, but I guess you will get painful process and
-rejection in a pile of cases.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+thanks,
+-- Shuah
