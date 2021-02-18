@@ -2,151 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9AE31E76A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4C131E76B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 09:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhBRI0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 03:26:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39842 "EHLO
+        id S230464AbhBRI1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 03:27:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhBRHYV (ORCPT
+        with ESMTP id S231298AbhBRHZB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 02:24:21 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13EFFC0613D6;
-        Wed, 17 Feb 2021 23:23:41 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id z190so1222706qka.9;
-        Wed, 17 Feb 2021 23:23:40 -0800 (PST)
+        Thu, 18 Feb 2021 02:25:01 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE95C061786
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 23:23:50 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id z21so615979pgj.4
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 23:23:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DMQ5f7QLDVBk/p2SiqG1fJ9qgjmg4Wvt4LKaLla7OLk=;
-        b=Qr+3L4Ej72qJJCUzgwXnoe8zPmqTe6qAIrA9wxq09tbDV+0BJsv0uj1Xmt4kN0GWfp
-         UI8iKGh6hST1VZsf2N+jbD5SGBeUIHhc5BCxqighrUK/Ih+wVBhuVZaOd5INd2oqfGL4
-         jJbY8ItUecjLQSUNyn748dNMO4OftT3Uekj7jsQbJ3uvYZmRYdFN+C3dDPjotfTimi3u
-         dYMJgv2G51C8ObnUsBMT550ob0cAYwzlY5ll659v03CFgjroC3k6iIZ0agwfo2X8htYB
-         u4NzgebNkTccMwmDz1tswEL93PqROQQpFRn+XtDWpo+2LWJCwUSnHG7T5rd89nL5ST3h
-         W3Ig==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XZ+7cyfIAMa4qybTYJPAFZXKgOwCxm2f1fhL0vcgILs=;
+        b=zcxNV4rPUkqxVIFX2+P/FTys8pW1F4mnkWDnGADI+Q7Tis+cADSwa1UOZtgCkKASKK
+         CYUn3vaV+t9ey7m29lQ3IsB4A2DAdIigVTKb/iVwLZMZDwyUODjXXkJ9ngm5ghs0xY3n
+         Hrn6M0brC/CxGhMw2J0+tgnSCG5rnMjHKzNATniq1eeXwPesUP/8JtoE32bg/LdispEY
+         xIB2ie6BKy+aU0LybOt91BZEbGixq1SJzyb/IlT19r5lwNzSyMuQf+pLZU/1pwiHrGmG
+         TcgUZJDI0mtF5mBwvpwn1odWmGjrHEKJfYH30+8NhGkcBk8E0lpePdk6+gKwUOPX6IND
+         QVkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DMQ5f7QLDVBk/p2SiqG1fJ9qgjmg4Wvt4LKaLla7OLk=;
-        b=ShvQ3XDs4dZwNLiW25m99cMroo/LMI6aTTSUk0HRia7bKLbMtNAD65VBu5n+rCNuEO
-         OlbjLrD70twp12i+iGnY4ZbSgQCcICuzBk+T+vYgaiJIoibuF0NQr5x8m4MguLPlSBEe
-         BJ1Y2ufw5Ke9xgr+eXYGSg2MJFaL6jkm4iMuRnpQTvyGkYDLZ13cMAMfvUBlvHjZMno6
-         25lsdGBLBFvhRsOyqup3UQ1NUraHCaf9t1LoSljvirbDp+W3B+HdNCRpipXwOvt148lX
-         qZ2vRIaY+gVNcrcYdb/d3thhURUY/CibcP+Vurwz8dGr0VRTVkaRV0GbB/UxF2XbFhed
-         K+NQ==
-X-Gm-Message-State: AOAM531YpnWZg+/ldM752B6ajWf9wHqpyDJpMTHsjWxruqRmceuw0plu
-        zCBHAP8UDGB8PbOnEuIUC7gWgHJ2XufSpWf2RMw=
-X-Google-Smtp-Source: ABdhPJylVF96WbxLINqVRFOjTFAGRMnVEk2QlGKbvhtHZHX/gaUOI3ZLpVhymTMSwzoULhFZK6nK3ZSKpvRjTLfioMc=
-X-Received: by 2002:a37:a896:: with SMTP id r144mr3006847qke.121.1613633020261;
- Wed, 17 Feb 2021 23:23:40 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XZ+7cyfIAMa4qybTYJPAFZXKgOwCxm2f1fhL0vcgILs=;
+        b=VFLTACF5Jz3Gde4W75VqYAVXENsIizsUrtIU7gTGjCr7UsPDFmZ9JcJbUk7hyiEtqL
+         p8I8YGiVTMu2c16B4vzbdhMHI0BCVyC6QLLPcN7dhqRjRPD+/ZYGlSjseQej/VsHq/pC
+         OQyHEt/stkwQDsQNrzmvJaTybF48lAzjL97jlTqEfOaetJW3l9Deb5HihY+5fZLUE/z0
+         j6Ow2rGJJd3GL/TBDDJRxlQ6hClcU3FkDCCsKM3yRTtYY3mT/8APvHF/aYxhZORudIJ0
+         emAvjVUvWg5Q4FYVCFz7DzlpQpXswG2mZphvRXlotSysdIX3sHsyTn+pLIKeflgXNzAp
+         jOCQ==
+X-Gm-Message-State: AOAM532AwVcXTEUpAQrOrvRK8l9gtw97uJIwNytghYVNFptNOmBUO2eI
+        6UJOWtuwWvQwPyad058OGNHuxQ==
+X-Google-Smtp-Source: ABdhPJyay5kfbTBaholo6asX0wF7iLAKXd37i762FtCcYsP3JZWMTcmGy+pyGz15MHaOgt+sI+Tj4Q==
+X-Received: by 2002:a63:1519:: with SMTP id v25mr2932024pgl.217.1613633029702;
+        Wed, 17 Feb 2021 23:23:49 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id u10sm4580386pjr.27.2021.02.17.23.23.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Feb 2021 23:23:49 -0800 (PST)
+Date:   Thu, 18 Feb 2021 12:53:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
+ sched_freq_tick() callback
+Message-ID: <20210218072346.5lvymba35ezuz2do@vireshk-i7>
+References: <cover.1611829953.git.viresh.kumar@linaro.org>
+ <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
+ <20210203114521.GA6380@arm.com>
+ <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
+ <20210217002422.GA17422@arm.com>
+ <20210217042558.o4anjdkayzgqny55@vireshk-i7>
+ <20210217113011.GA22176@arm.com>
+ <20210217114027.ashqh67hrfk4hwib@vireshk-i7>
+ <20210217115726.GA25441@arm.com>
 MIME-Version: 1.0
-References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
- <1612693435-31418-8-git-send-email-shengjiu.wang@nxp.com> <20210210221704.GA2894134@robh.at.kernel.org>
-In-Reply-To: <20210210221704.GA2894134@robh.at.kernel.org>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Thu, 18 Feb 2021 15:23:29 +0800
-Message-ID: <CAA+D8ANOv91jr4381Acz1B2mZ6=Mx2J_2CMTGXmPKztv7bMjPA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] ASoC: dt-bindings: imx-rpmsg: Add binding doc for
- rpmsg machine driver
-To:     Rob Herring <robh@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217115726.GA25441@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 6:18 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Sun, Feb 07, 2021 at 06:23:55PM +0800, Shengjiu Wang wrote:
-> > Imx-rpmsg is a new added machine driver for supporting audio on Cortex-M
-> > core. The Cortex-M core will control the audio interface, DMA and audio
-> > codec, setup the pipeline, the audio driver on Cortex-A core side is just
-> > to communitcate with M core, it is a virtual sound card and don't touch
-> > the hardware.
->
-> I don't understand why there are 2 nodes for this other than you happen
-> to want to split this into 2 Linux drivers. It's 1 h/w thing.
+On 17-02-21, 11:57, Ionela Voinescu wrote:
+> See a very useful comment someone added recently :) :
+> 
+> """
+> +	/*
+> +	 * We don't need to handle CPUFREQ_REMOVE_POLICY event as the AMU
+> +	 * counters don't have any dependency on cpufreq driver once we have
+> +	 * initialized AMU support and enabled invariance. The AMU counters will
+> +	 * keep on working just fine in the absence of the cpufreq driver, and
+> +	 * for the CPUs for which there are no counters available, the last set
+> +	 * value of freq_scale will remain valid as that is the frequency those
+> +	 * CPUs are running at.
+> +	 */
+> """
 
-This one is for the sound card machine driver.  Another one is
-for the sound card cpu dai driver. so there are 2 nodes.
+Lol... 
 
->
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  .../bindings/sound/imx-audio-rpmsg.yaml       | 48 +++++++++++++++++++
-> >  1 file changed, 48 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-> > new file mode 100644
-> > index 000000000000..b941aeb80678
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/imx-audio-rpmsg.yaml
-> > @@ -0,0 +1,48 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/sound/imx-audio-rpmsg.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: NXP i.MX audio complex with rpmsg
-> > +
-> > +maintainers:
-> > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - fsl,imx-audio-rpmsg
-> > +
-> > +  model:
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    description: User specified audio sound card name
-> > +
-> > +  audio-cpu:
-> > +    description: The phandle of an CPU DAI controller
-> > +
-> > +  rpmsg-out:
-> > +    description: |
-> > +      This is a boolean property. If present, the transmitting function
-> > +      will be enabled,
-> > +
-> > +  rpmsg-in:
-> > +    description: |
-> > +      This is a boolean property. If present, the receiving function
-> > +      will be enabled.
-> > +
-> > +required:
-> > +  - compatible
-> > +  - model
-> > +  - audio-cpu
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    sound-rpmsg {
-> > +        compatible = "fsl,imx-audio-rpmsg";
-> > +        model = "ak4497-audio";
-> > +        audio-cpu = <&rpmsg_audio>;
-> > +        rpmsg-out;
-> > +    };
-> > --
-> > 2.27.0
-> >
+-- 
+viresh
