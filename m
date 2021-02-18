@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA06231F044
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E0F31F04A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhBRTou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:44:50 -0500
-Received: from mail.jvpinto.com ([65.49.11.60]:54042 "EHLO mail.JVPinto.com"
+        id S232459AbhBRTpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:45:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44974 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233972AbhBRTNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:13:00 -0500
-Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
- RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Thu, 18 Feb 2021 11:12:15 -0800
-Received: from User (20.48.109.21) by RW-EXC1.JVPinto.com (172.32.1.13) with
- Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Thu, 18 Feb 2021
- 11:12:03 -0800
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <johnpinto@jvpinto.com>
-Subject: Re:ok
-Date:   Thu, 18 Feb 2021 19:12:14 +0000
+        id S232090AbhBRTN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:13:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613675586; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2LEQzo8vyQpA89Pwawhl0KdWDVli2brjorL41NH4bg0=;
+        b=q5SAQAr80eSFU1sPIy6CPtTyAaCdMpHwCM7Gkx4DMHmqb7iSUZx2XB3g4/RHdI4czipuk2
+        sGettzMqvcBp7SCmWZYw0Y5AcV8QnfUtNNaVuiascQ56cekbOUDDKk2RY/AWErk/j5iQ8c
+        p2/P60C3SgKfPh9tyOlO+mt9MUgS07U=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8EDA4ACD4;
+        Thu, 18 Feb 2021 19:13:06 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 20:13:05 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
+ tree
+Message-ID: <YC68QRVsCONXscCl@dhcp22.suse.cz>
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
+ <c3ffa2cb-cb2c-20b7-d722-c875934992e9@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <ab5238a09b984825a50d7b0428610a74@RW-EXC1.JVPinto.com>
-To:     Undisclosed recipients:;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3ffa2cb-cb2c-20b7-d722-c875934992e9@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu 18-02-21 10:30:20, Tim Chen wrote:
+> 
+> 
+> On 2/18/21 12:24 AM, Michal Hocko wrote:
+> 
+> > 
+> > I have already acked this patch in the previous version along with Fixes
+> > tag. It seems that my review feedback has been completely ignored also
+> > for other patches in this series.
+> 
+> Michal,
+> 
+> My apology.  Our mail system screwed up and there are some mail missing
+> from our mail system that I completely missed your mail.  
+> Only saw them now after I looked into the lore.kernel.org.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+I see. My apology for suspecting you from ignoring my review.
+ 
+> Responding to your comment:
+> 
+> >Have you observed this happening in the real life? I do agree that the
+> >threshold based updates of the tree is not ideal but the whole soft
+> >reclaim code is far from optimal. So why do we care only now? The
+> >feature is essentially dead and fine tuning it sounds like a step back
+> >to me.
+> 
+> Yes, I did see the issue mentioned in patch 2 breaking soft limit
+> reclaim for cgroup v1.  There are still some of our customers using
+> cgroup v1 so we will like to fix this if possible.
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+It would be great to see more details.
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+> For patch 3 regarding the uncharge_batch, it
+> is more of an observation that we should uncharge in batch of same node
+> and not prompted by actual workload.
+> Thinking more about this, the worst that could happen
+> is we could have some entries in the soft limit tree that overestimate
+> the memory used.  The worst that could happen is a soft page reclaim
+> on that cgroup.  The overhead from extra memcg event update could
+> be more than a soft page reclaim pass.  So let's drop patch 3
+> for now.
 
-Regards,
-Ms. Reem.
+I would still prefer to handle that in the soft limit reclaim path and
+check each memcg for the soft limit reclaim excess before the reclaim.
+ 
+> Let me know if you will like me to resend patch 1 with the fixes tag
+> for commit 4e41695356fb ("memory controller: soft limit reclaim on contention")
+> and if there are any changes I should make for patch 2.
+
+I will ack and suggest Fixes.
+
+> 
+> Thanks.
+> 
+> Tim
+
+-- 
+Michal Hocko
+SUSE Labs
