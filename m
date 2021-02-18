@@ -2,104 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2CA31EED9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:49:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D6D31EEE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233173AbhBRSs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:48:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:53202 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233306AbhBRQiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:38:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59FDA106F;
-        Thu, 18 Feb 2021 08:36:37 -0800 (PST)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF7E73F73D;
-        Thu, 18 Feb 2021 08:36:36 -0800 (PST)
-Date:   Thu, 18 Feb 2021 16:36:35 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
- sched_freq_tick() callback
-Message-ID: <20210218163635.GA23622@arm.com>
-References: <cover.1611829953.git.viresh.kumar@linaro.org>
- <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
- <20210203114521.GA6380@arm.com>
- <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
- <20210217002422.GA17422@arm.com>
- <20210218093304.3mt3o7kbeymn5ofl@vireshk-i7>
+        id S232548AbhBRSt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:49:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230283AbhBRQkN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 11:40:13 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8B1C061574;
+        Thu, 18 Feb 2021 08:39:28 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id e9so1828768pjj.0;
+        Thu, 18 Feb 2021 08:39:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XCS1qy8ob7XsXX9kc+oSLC6Sq4kYNTiKKYp1XNnNPYo=;
+        b=tjcsSKlqihVsOaiJCi0Dm5mUG1XxbSeCOuVxJev77g+zYHXf7oeiG93b/J67bVMZa7
+         hBT7A0zdYGkdiuHmE8rIZoRC9wFfFAAqz5tqBGY3KfnEx9r9Bk8+/3Ro5E727CwDQ310
+         mq+6eu5ow3z9AWCz3AYU9MeEuiNZNIXmjzdQE28nX+TsI4bP55s7i+A/USexGPBIIa1O
+         Sow3bx/n9b4/NNdeFUs09TJUwuyYx6jJ2ABMMDflV/jN6VwwdAToLtSvgb8VPWjhHPbQ
+         EgJBC2qgJsg8ltY7Lp2MI6p50teIHF/RiuIumuI43Zdguo5USJyOny1hbria6JP4+qaJ
+         erIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XCS1qy8ob7XsXX9kc+oSLC6Sq4kYNTiKKYp1XNnNPYo=;
+        b=OBh8FfHI2I8sVdy9RobVoLgDDqaUWkCmJZK/+KyxW8svw+sDN1EGyHYGmkXPdIlZrp
+         nfz2MK7v3aYAAuyqjhtXM5PCMX88Fx0QOfTWecim8rg1maozHOGdw7X3APPQwdyAHHTZ
+         OO6yUlFlrLkbdhz6nmRxh/VwU7HsrN8jBnqX/J7d1qwh3JfBOFYrLasSt006dciKCurL
+         bjbqF2DucBrcZJvtf7f2rCUToZpOSqnl04OLZOTPofrmia/y15xDGjrY9sXLXypoP788
+         /lapXRCvgibHneCPz8sH1BePcfbu5BQ/i1MfrMVmeowvzFM6E+uFeaiTyks468JORJbr
+         WSmw==
+X-Gm-Message-State: AOAM531enpZC0DcfbsaA2GaA2DQGRxUCXhDrCbBQ0KVlkEbn8wTgi6bq
+        PaivQ+zCjRQjLInM4E2C8xkirFJCfhy+oo85
+X-Google-Smtp-Source: ABdhPJy3oyXwsGciCKxueasMwiTAkxzoT3YfWDqrGEQlgBcELCgh3GwtHyYZs20osF6Ai6kEql52Xw==
+X-Received: by 2002:a17:90a:8b83:: with SMTP id z3mr4841731pjn.75.1613666367831;
+        Thu, 18 Feb 2021 08:39:27 -0800 (PST)
+Received: from localhost.localdomain ([122.10.101.135])
+        by smtp.gmail.com with ESMTPSA id s1sm6282938pfe.151.2021.02.18.08.39.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Feb 2021 08:39:21 -0800 (PST)
+From:   Xuesen Huang <hxseverything@gmail.com>
+To:     willemdebruijn.kernel@gmail.com
+Cc:     davem@davemloft.net, bpf@vger.kernel.org, daniel@iogearbox.net,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuesen Huang <huangxuesen@kuaishou.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Zhiyong Cheng <chengzhiyong@kuaishou.com>,
+        Li Wang <wangli09@kuaishou.com>
+Subject: [PATCH/v2] bpf: add bpf_skb_adjust_room flag BPF_F_ADJ_ROOM_ENCAP_L2_ETH
+Date:   Fri, 19 Feb 2021 00:39:03 +0800
+Message-Id: <20210218163903.60992-1-hxseverything@gmail.com>
+X-Mailer: git-send-email 2.24.3 (Apple Git-128)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218093304.3mt3o7kbeymn5ofl@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+From: Xuesen Huang <huangxuesen@kuaishou.com>
 
-On Thursday 18 Feb 2021 at 15:03:04 (+0530), Viresh Kumar wrote:
-> On 17-02-21, 00:24, Ionela Voinescu wrote:
-> > > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-> > > index 1e47dfd465f8..47fca7376c93 100644
-> > > --- a/arch/arm64/kernel/topology.c
-> > > +++ b/arch/arm64/kernel/topology.c
-> > > @@ -240,7 +240,6 @@ static struct scale_freq_data amu_sfd = {
-> > >  
-> > >  static void amu_fie_setup(const struct cpumask *cpus)
-> > >  {
-> > > -	bool invariant;
-> > >  	int cpu;
-> > >  
-> > >  	/* We are already set since the last insmod of cpufreq driver */
-> > > @@ -257,25 +256,10 @@ static void amu_fie_setup(const struct cpumask *cpus)
-> > >  
-> > >  	cpumask_or(amu_fie_cpus, amu_fie_cpus, cpus);
-> > >  
-> > > -	invariant = topology_scale_freq_invariant();
-> > > -
-> > > -	/* We aren't fully invariant yet */
-> > > -	if (!invariant && !cpumask_equal(amu_fie_cpus, cpu_present_mask))
-> > > -		return;
-> > > -
-> > 
-> > You still need these checks, otherwise you could end up with only part
-> > of the CPUs setting a scale factor, when only part of the CPUs support
-> > AMUs and there is no cpufreq support for FIE.
-> 
-> Another look at it and here goes another reason (hope I don't have
-> another in-code comment somewhere else to kill this one) :)
-> 
-> We don't need to care for the reason you gave (which is a valid reason
-> otherwise), as we are talking specifically about amu_fie_setup() here
-> and it gets called from cpufreq policy-notifier. i.e. we won't support
-> AMUs without cpufreq being there in the first place and the same goes
-> for cppc-driver.
-> 
-> Does that sound reasonable ?
-> 
+bpf_skb_adjust_room sets the inner_protocol as skb->protocol for packets
+encapsulation. But that is not appropriate when pushing Ethernet header.
 
-Yes, we don't care if there is no cpufreq driver, as the use of AMUs won't
-get initialised either. But we do care if there is a cpufreq driver that
-does not support frequency invariance, which is the example above.
+Add an option to further specify encap L2 type and set the inner_protocol
+as ETH_P_TEB.
 
-The intention with the patches that made cpufreq based invariance generic
-a while back was for it to be present, seamlessly, for as many drivers as
-possible, as a less than accurate invariance default method is still
-better than nothing. So only a few drivers today don't support cpufreq
-based FI, but it's not a guarantee that it will stay this way.
+Suggested-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: Xuesen Huang <huangxuesen@kuaishou.com>
+Signed-off-by: Zhiyong Cheng <chengzhiyong@kuaishou.com>
+Signed-off-by: Li Wang <wangli09@kuaishou.com>
+---
+ include/uapi/linux/bpf.h       |  5 +++++
+ net/core/filter.c              | 11 ++++++++++-
+ tools/include/uapi/linux/bpf.h |  5 +++++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
 
-Hope it makes sense,
-Ionela.
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 77d7c1b..d791596 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
+  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
+  *		  type; *len* is the length of the inner MAC header.
+  *
++ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
++ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
++ *		  L2 type as Ethernet.
++ *
+  * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+@@ -4088,6 +4092,7 @@ enum {
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
+ 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
++	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
+ };
+ 
+ enum {
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 255aeee..8d1fb61 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -3412,6 +3412,7 @@ static u32 bpf_skb_net_base_len(const struct sk_buff *skb)
+ 					 BPF_F_ADJ_ROOM_ENCAP_L3_MASK | \
+ 					 BPF_F_ADJ_ROOM_ENCAP_L4_GRE | \
+ 					 BPF_F_ADJ_ROOM_ENCAP_L4_UDP | \
++					 BPF_F_ADJ_ROOM_ENCAP_L2_ETH | \
+ 					 BPF_F_ADJ_ROOM_ENCAP_L2( \
+ 					  BPF_ADJ_ROOM_ENCAP_L2_MASK))
+ 
+@@ -3448,6 +3449,10 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+ 		    flags & BPF_F_ADJ_ROOM_ENCAP_L4_UDP)
+ 			return -EINVAL;
+ 
++		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH &&
++		    inner_mac_len < ETH_HLEN)
++			return -EINVAL;
++
+ 		if (skb->encapsulation)
+ 			return -EALREADY;
+ 
+@@ -3466,7 +3471,11 @@ static int bpf_skb_net_grow(struct sk_buff *skb, u32 off, u32 len_diff,
+ 		skb->inner_mac_header = inner_net - inner_mac_len;
+ 		skb->inner_network_header = inner_net;
+ 		skb->inner_transport_header = inner_trans;
+-		skb_set_inner_protocol(skb, skb->protocol);
++
++		if (flags & BPF_F_ADJ_ROOM_ENCAP_L2_ETH)
++			skb_set_inner_protocol(skb, htons(ETH_P_TEB));
++		else
++			skb_set_inner_protocol(skb, skb->protocol);
+ 
+ 		skb->encapsulation = 1;
+ 		skb_set_network_header(skb, mac_len);
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 77d7c1b..d791596 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1751,6 +1751,10 @@ struct bpf_stack_build_id {
+  *		  Use with ENCAP_L3/L4 flags to further specify the tunnel
+  *		  type; *len* is the length of the inner MAC header.
+  *
++ *		* **BPF_F_ADJ_ROOM_ENCAP_L2_ETH**:
++ *		  Use with BPF_F_ADJ_ROOM_ENCAP_L2 flag to further specify the
++ *		  L2 type as Ethernet.
++ *
+  * 		A call to this helper is susceptible to change the underlying
+  * 		packet buffer. Therefore, at load time, all checks on pointers
+  * 		previously done by the verifier are invalidated and must be
+@@ -4088,6 +4092,7 @@ enum {
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_GRE	= (1ULL << 3),
+ 	BPF_F_ADJ_ROOM_ENCAP_L4_UDP	= (1ULL << 4),
+ 	BPF_F_ADJ_ROOM_NO_CSUM_RESET	= (1ULL << 5),
++	BPF_F_ADJ_ROOM_ENCAP_L2_ETH	= (1ULL << 6),
+ };
+ 
+ enum {
+-- 
+1.8.3.1
 
-> -- 
-> viresh
