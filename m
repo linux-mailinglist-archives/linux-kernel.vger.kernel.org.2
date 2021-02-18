@@ -2,220 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C557C31E98D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5B531E993
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbhBRMKt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Feb 2021 07:10:49 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:2903 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhBRKiE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232446AbhBRMKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:10:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231272AbhBRKiE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Feb 2021 05:38:04 -0500
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DhB0y0GwRz5Snm;
-        Thu, 18 Feb 2021 18:34:58 +0800 (CST)
-Received: from dggema765-chm.china.huawei.com (10.1.198.207) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Thu, 18 Feb 2021 18:36:52 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggema765-chm.china.huawei.com (10.1.198.207) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Thu, 18 Feb 2021 18:36:52 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2106.006; Thu, 18 Feb 2021 10:36:49 +0000
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Eric Auger <eric.auger@redhat.com>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "will@kernel.org" <will@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
-CC:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>,
-        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "yi.l.liu@intel.com" <yi.l.liu@intel.com>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [PATCH v11 12/13] vfio/pci: Register a DMA fault response region
-Thread-Topic: [PATCH v11 12/13] vfio/pci: Register a DMA fault response region
-Thread-Index: AQHWvAgGhwjLBSYC0UyC6ARc2a6ugaoeJVMQgEAkCaA=
-Date:   Thu, 18 Feb 2021 10:36:49 +0000
-Message-ID: <6c00965615844f03954faecb6fcb9294@huawei.com>
-References: <20201116110030.32335-1-eric.auger@redhat.com>
- <20201116110030.32335-13-eric.auger@redhat.com> 
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.95.60]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 768DF64DE9;
+        Thu, 18 Feb 2021 10:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613644633;
+        bh=GC/+qGL4jWqb0AlBV+rnFjuMEIRv27x+lfUlOQ/3QCM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LHZywTMg4ggnBnh7h4rxOOyA9sZaj0kObrbRX3ik6J89xnZQYGoj0GVy/YFtS/BIf
+         eFOP4g90bnhdKzcv4HQTF0x5WOJgJSkKGor9AT7lQyMyzD+RX9sRitFY9BsV4eFP2Z
+         hL6MC4Ps52qUO/P5Mz7p7IYe139BtyTv8LTLsx5rtQaMmlW9oMOk1Q8lW/Xi07xgnb
+         HHRz2QU/vC1lEvtkpf4aPCNAxJq56ysa0w+wgpB6Qi815ploMBwk86E6pUZxGP5bFf
+         Gwdovi+95e3ZsKIbzW0aex+m2WLwo6GCg6vLLXiCQubvVc5YGXQ9KQUP0EfqL5CN8i
+         2ZlX6yAM/EL6A==
+Date:   Thu, 18 Feb 2021 12:37:09 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
+Message-ID: <YC5DVTHHd6OOs459@unreal>
+References: <20210216201813.60394-1-xie.he.0141@gmail.com>
+ <YC4sB9OCl5mm3JAw@unreal>
+ <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+On Thu, Feb 18, 2021 at 01:07:13AM -0800, Xie He wrote:
+> On Thu, Feb 18, 2021 at 12:57 AM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > It is nice that you are resending your patch without the resolution.
+> > However it will be awesome if you don't ignore review comments and fix this "3 - 1"
+> > by writing solid comment above.
+>
+> I thought you already agreed with me? It looks like you didn't?
+>
+> I still don't think there is any problem with my current way.
+>
+> I still don't understand your point. What problem do you think is
+> there? Why is your way better than my way? I've already given multiple
+> reasons about why my way is better than yours. But you didn't explain
+> clearly why yours is better than mine.
 
-> > -----Original Message-----
-> > From: Eric Auger [mailto:eric.auger@redhat.com]
-> > Sent: 16 November 2020 11:00
-> > To: eric.auger.pro@gmail.com; eric.auger@redhat.com;
-> > iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
-> > kvm@vger.kernel.org; kvmarm@lists.cs.columbia.edu; will@kernel.org;
-> > joro@8bytes.org; maz@kernel.org; robin.murphy@arm.com;
-> > alex.williamson@redhat.com
-> > Cc: jean-philippe@linaro.org; zhangfei.gao@linaro.org;
-> > zhangfei.gao@gmail.com; vivek.gautam@arm.com; Shameerali Kolothum
-> > Thodi <shameerali.kolothum.thodi@huawei.com>;
-> > jacob.jun.pan@linux.intel.com; yi.l.liu@intel.com; tn@semihalf.com;
-> > nicoleotsuka@gmail.com; yuzenghui <yuzenghui@huawei.com>
-> > Subject: [PATCH v11 12/13] vfio/pci: Register a DMA fault response
-> > region
-> >
-> > In preparation for vSVA, let's register a DMA fault response region,
-> > where the userspace will push the page responses and increment the
-> > head of the buffer. The kernel will pop those responses and inject
-> > them on iommu side.
-> >
-> > Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> > ---
-> >  drivers/vfio/pci/vfio_pci.c         | 114 +++++++++++++++++++++++++---
-> >  drivers/vfio/pci/vfio_pci_private.h |   5 ++
-> >  drivers/vfio/pci/vfio_pci_rdwr.c    |  39 ++++++++++
-> >  include/uapi/linux/vfio.h           |  32 ++++++++
-> >  4 files changed, 181 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-> > index 65a83fd0e8c0..e9a904ce3f0d 100644
-> > --- a/drivers/vfio/pci/vfio_pci.c
-> > +++ b/drivers/vfio/pci/vfio_pci.c
-> > @@ -318,9 +318,20 @@ static void vfio_pci_dma_fault_release(struct
-> > vfio_pci_device *vdev,
-> >  	kfree(vdev->fault_pages);
-> >  }
-> >
-> > -static int vfio_pci_dma_fault_mmap(struct vfio_pci_device *vdev,
-> > -				   struct vfio_pci_region *region,
-> > -				   struct vm_area_struct *vma)
-> > +static void
-> > +vfio_pci_dma_fault_response_release(struct vfio_pci_device *vdev,
-> > +				    struct vfio_pci_region *region) {
-> > +	if (vdev->dma_fault_response_wq)
-> > +		destroy_workqueue(vdev->dma_fault_response_wq);
-> > +	kfree(vdev->fault_response_pages);
-> > +	vdev->fault_response_pages = NULL;
-> > +}
-> > +
-> > +static int __vfio_pci_dma_fault_mmap(struct vfio_pci_device *vdev,
-> > +				     struct vfio_pci_region *region,
-> > +				     struct vm_area_struct *vma,
-> > +				     u8 *pages)
-> >  {
-> >  	u64 phys_len, req_len, pgoff, req_start;
-> >  	unsigned long long addr;
-> > @@ -333,14 +344,14 @@ static int vfio_pci_dma_fault_mmap(struct
-> > vfio_pci_device *vdev,
-> >  		((1U << (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT)) - 1);
-> >  	req_start = pgoff << PAGE_SHIFT;
-> >
-> > -	/* only the second page of the producer fault region is mmappable */
-> > +	/* only the second page of the fault region is mmappable */
-> >  	if (req_start < PAGE_SIZE)
-> >  		return -EINVAL;
-> >
-> >  	if (req_start + req_len > phys_len)
-> >  		return -EINVAL;
-> >
-> > -	addr = virt_to_phys(vdev->fault_pages);
-> > +	addr = virt_to_phys(pages);
-> >  	vma->vm_private_data = vdev;
-> >  	vma->vm_pgoff = (addr >> PAGE_SHIFT) + pgoff;
-> >
-> > @@ -349,13 +360,29 @@ static int vfio_pci_dma_fault_mmap(struct
-> > vfio_pci_device *vdev,
-> >  	return ret;
-> >  }
-> >
-> > -static int vfio_pci_dma_fault_add_capability(struct vfio_pci_device *vdev,
-> > -					     struct vfio_pci_region *region,
-> > -					     struct vfio_info_cap *caps)
-> > +static int vfio_pci_dma_fault_mmap(struct vfio_pci_device *vdev,
-> > +				   struct vfio_pci_region *region,
-> > +				   struct vm_area_struct *vma)
-> > +{
-> > +	return __vfio_pci_dma_fault_mmap(vdev, region, vma,
-> > vdev->fault_pages);
-> > +}
-> > +
-> > +static int
-> > +vfio_pci_dma_fault_response_mmap(struct vfio_pci_device *vdev,
-> > +				struct vfio_pci_region *region,
-> > +				struct vm_area_struct *vma)
-> > +{
-> > +	return __vfio_pci_dma_fault_mmap(vdev, region, vma,
-> > vdev->fault_response_pages);
-> > +}
-> > +
-> > +static int __vfio_pci_dma_fault_add_capability(struct vfio_pci_device *vdev,
-> > +					       struct vfio_pci_region *region,
-> > +					       struct vfio_info_cap *caps,
-> > +					       u32 cap_id)
-> >  {
-> >  	struct vfio_region_info_cap_sparse_mmap *sparse = NULL;
-> >  	struct vfio_region_info_cap_fault cap = {
-> > -		.header.id = VFIO_REGION_INFO_CAP_DMA_FAULT,
-> > +		.header.id = cap_id,
-> >  		.header.version = 1,
-> >  		.version = 1,
-> >  	};
-> > @@ -383,6 +410,14 @@ static int
-> > vfio_pci_dma_fault_add_capability(struct
-> > vfio_pci_device *vdev,
-> >  	return ret;
-> >  }
-> >
-> > +static int vfio_pci_dma_fault_add_capability(struct vfio_pci_device *vdev,
-> > +					     struct vfio_pci_region *region,
-> > +					     struct vfio_info_cap *caps) {
-> > +	return __vfio_pci_dma_fault_add_capability(vdev, region, caps,
-> > +						   VFIO_REGION_INFO_CAP_DMA_FAULT); }
-> > +
-> >  static const struct vfio_pci_regops vfio_pci_dma_fault_regops = {
-> >  	.rw		= vfio_pci_dma_fault_rw,
-> >  	.release	= vfio_pci_dma_fault_release,
-> > @@ -390,6 +425,13 @@ static const struct vfio_pci_regops
-> > vfio_pci_dma_fault_regops = {
-> >  	.add_capability = vfio_pci_dma_fault_add_capability,
-> >  };
-> >
-> > +static const struct vfio_pci_regops vfio_pci_dma_fault_response_regops = {
-> > +	.rw		= vfio_pci_dma_fault_response_rw,
-> > +	.release	= vfio_pci_dma_fault_response_release,
-> > +	.mmap		= vfio_pci_dma_fault_response_mmap,
-> > +	.add_capability = vfio_pci_dma_fault_add_capability,
+It is not me who didn't explain, it is you who didn't want to write clear
+comment that describes the headroom size without need of "3 - 1".
 
-As I mentioned in the Qemu patch ([RFC v7 26/26] vfio/pci: Implement 
-return_page_response page response callback), it looks like we are using the
-VFIO_REGION_INFO_CAP_DMA_FAULT cap id for the dma_fault_response here
-as well. Is that intentional?
-(Was wondering how it worked in the first place and noted this).
+So in current situation, you added two things: comment and assignment.
+Both of them aren't serve their goals. Your comment doesn't explain
+enough and needs extra help and your assignment is useless without
+comment.
 
-Please check.
-
-Thanks,
-Shameer
-
+Thanks
