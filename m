@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9449831E914
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F12931E91A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhBRLNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 06:13:49 -0500
-Received: from mga18.intel.com ([134.134.136.126]:58033 "EHLO mga18.intel.com"
+        id S232967AbhBRLQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 06:16:14 -0500
+Received: from mga18.intel.com ([134.134.136.126]:58029 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232454AbhBRKJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:09:13 -0500
-IronPort-SDR: tu4VoRaSB5EC8LWs/KwLVvgerWKTchBVasF43fiQQhj7AZqFJPsAXfOBUQF3/vx5LXZBGwH6uq
- ouUCSPGk4LkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="171127939"
+        id S232460AbhBRKJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:09:12 -0500
+IronPort-SDR: Ia1/qv9iiafkP1+b1wzZtSRUrSJ2iY5jZE3581thlW281FA551ZqZ+bljgsJK1aVCBiy+MFPIv
+ 4hfvLlaL0u5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="171127943"
 X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
-   d="scan'208";a="171127939"
+   d="scan'208";a="171127943"
 Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 01:58:17 -0800
-IronPort-SDR: c/LYlWXI7bGDba5slxeRxkT8Rxs2AE6Ml7tZmuBaoGbZOHX76iyFQ2tWpzGYqlD/anDCsVb1SC
- WabmepP+o6DQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 01:58:19 -0800
+IronPort-SDR: 0FHn26u9HhyODkgtzAMZiK/trIPqW0x2YAMMsoyKy82LJUiHIVJkV1i6HmfRWeRSFQAIYvbRON
+ CFlmUmeYKsQQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,186,1610438400"; 
-   d="scan'208";a="400427648"
+   d="scan'208";a="400427683"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.149])
-  by orsmga008.jf.intel.com with ESMTP; 18 Feb 2021 01:58:15 -0800
+  by orsmga008.jf.intel.com with ESMTP; 18 Feb 2021 01:58:17 -0800
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>
 Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 06/11] perf machine: Factor out machine__idle_thread()
-Date:   Thu, 18 Feb 2021 11:57:56 +0200
-Message-Id: <20210218095801.19576-7-adrian.hunter@intel.com>
+Subject: [PATCH 07/11] perf intel-pt: Support decoding of guest kernel
+Date:   Thu, 18 Feb 2021 11:57:57 +0200
+Message-Id: <20210218095801.19576-8-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210218095801.19576-1-adrian.hunter@intel.com>
 References: <20210218095801.19576-1-adrian.hunter@intel.com>
@@ -41,99 +41,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Factor out machine__idle_thread() so it can be re-used for guest machines.
+The guest kernel can be found from any guest thread belonging to the guest
+machine. The guest machine is associated with the current host process pid.
+An idle thread (pid=tid=0) is created as a vehicle from which to find the
+guest kernel map.
 
-A thread is needed to find executable code, even for the guest kernel. To
-avoid possible future pid number conflicts, the idle thread can be used.
+Decoding guest user space is not supported.
+
+Synthesized samples just need the cpumode set for the guest.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
- tools/perf/util/machine.c | 18 ++++++++++++++++++
- tools/perf/util/machine.h |  1 +
- tools/perf/util/session.c | 25 +++----------------------
- 3 files changed, 22 insertions(+), 22 deletions(-)
+ tools/perf/util/intel-pt.c | 81 ++++++++++++++++++++++++++++++++------
+ 1 file changed, 69 insertions(+), 12 deletions(-)
 
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 90703b7ca6de..b5c2d8be4144 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -598,6 +598,24 @@ struct thread *machine__find_thread(struct machine *machine, pid_t pid,
- 	return th;
+diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
+index ddb8e6c3ffb0..29d871718995 100644
+--- a/tools/perf/util/intel-pt.c
++++ b/tools/perf/util/intel-pt.c
+@@ -163,6 +163,9 @@ struct intel_pt_queue {
+ 	int switch_state;
+ 	pid_t next_tid;
+ 	struct thread *thread;
++	struct machine *guest_machine;
++	struct thread *unknown_guest_thread;
++	pid_t guest_machine_pid;
+ 	bool exclude_kernel;
+ 	bool have_sample;
+ 	u64 time;
+@@ -550,13 +553,59 @@ static void intel_pt_cache_invalidate(struct dso *dso, struct machine *machine,
+ 	auxtrace_cache__remove(dso->auxtrace_cache, offset);
  }
  
-+/*
-+ * Threads are identified by pid and tid, and the idle task has pid == tid == 0.
-+ * So here a single thread is created for that, but actually there is a separate
-+ * idle task per cpu, so there should be one 'struct thread' per cpu, but there
-+ * is only 1. That causes problems for some tools, requiring workarounds. For
-+ * example get_idle_thread() in builtin-sched.c, or thread_stack__per_cpu().
-+ */
-+struct thread *machine__idle_thread(struct machine *machine)
-+{
-+	struct thread *thread = machine__findnew_thread(machine, 0, 0);
-+
-+	if (!thread || thread__set_comm(thread, "swapper", 0) ||
-+	    thread__set_namespaces(thread, 0, NULL))
-+		pr_err("problem inserting idle task for machine pid %d\n", machine->pid);
-+
-+	return thread;
+-static inline u8 intel_pt_cpumode(struct intel_pt *pt, uint64_t ip)
++static inline bool intel_pt_guest_kernel_ip(uint64_t ip)
+ {
+-	return ip >= pt->kernel_start ?
++	/* Assumes 64-bit kernel */
++	return ip & (1ULL << 63);
 +}
 +
- struct comm *machine__thread_exec_comm(struct machine *machine,
- 				       struct thread *thread)
- {
-diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
-index 022c19ecd287..7377ed6efdf1 100644
---- a/tools/perf/util/machine.h
-+++ b/tools/perf/util/machine.h
-@@ -106,6 +106,7 @@ u8 machine__addr_cpumode(struct machine *machine, u8 cpumode, u64 addr);
- 
- struct thread *machine__find_thread(struct machine *machine, pid_t pid,
- 				    pid_t tid);
-+struct thread *machine__idle_thread(struct machine *machine);
- struct comm *machine__thread_exec_comm(struct machine *machine,
- 				       struct thread *thread);
- 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 7b0d0c9e3dd1..859832a82496 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -1789,32 +1789,13 @@ struct thread *perf_session__findnew(struct perf_session *session, pid_t pid)
- 	return machine__findnew_thread(&session->machines.host, -1, pid);
++static inline u8 intel_pt_nr_cpumode(struct intel_pt_queue *ptq, uint64_t ip, bool nr)
++{
++	if (nr) {
++		return intel_pt_guest_kernel_ip(ip) ?
++		       PERF_RECORD_MISC_GUEST_KERNEL :
++		       PERF_RECORD_MISC_GUEST_USER;
++	}
++
++	return ip >= ptq->pt->kernel_start ?
+ 	       PERF_RECORD_MISC_KERNEL :
+ 	       PERF_RECORD_MISC_USER;
  }
  
--/*
-- * Threads are identified by pid and tid, and the idle task has pid == tid == 0.
-- * So here a single thread is created for that, but actually there is a separate
-- * idle task per cpu, so there should be one 'struct thread' per cpu, but there
-- * is only 1. That causes problems for some tools, requiring workarounds. For
-- * example get_idle_thread() in builtin-sched.c, or thread_stack__per_cpu().
-- */
- int perf_session__register_idle_thread(struct perf_session *session)
- {
--	struct thread *thread;
--	int err = 0;
--
--	thread = machine__findnew_thread(&session->machines.host, 0, 0);
--	if (thread == NULL || thread__set_comm(thread, "swapper", 0)) {
--		pr_err("problem inserting idle task.\n");
--		err = -1;
--	}
-+	struct thread *thread = machine__idle_thread(&session->machines.host);
++static inline u8 intel_pt_cpumode(struct intel_pt_queue *ptq, uint64_t from_ip, uint64_t to_ip)
++{
++	/* No support for non-zero CS base */
++	if (from_ip)
++		return intel_pt_nr_cpumode(ptq, from_ip, ptq->state->from_nr);
++	return intel_pt_nr_cpumode(ptq, to_ip, ptq->state->to_nr);
++}
++
++static int intel_pt_get_guest(struct intel_pt_queue *ptq)
++{
++	struct machines *machines = &ptq->pt->session->machines;
++	struct machine *machine;
++	pid_t pid = ptq->pid <= 0 ? DEFAULT_GUEST_KERNEL_ID : ptq->pid;
++
++	if (ptq->guest_machine && pid == ptq->guest_machine_pid)
++		return 0;
++
++	ptq->guest_machine = NULL;
++	thread__zput(ptq->unknown_guest_thread);
++
++	machine = machines__find_guest(machines, pid);
++	if (!machine)
++		return -1;
++
++	ptq->unknown_guest_thread = machine__idle_thread(machine);
++	if (!ptq->unknown_guest_thread)
++		return -1;
++
++	ptq->guest_machine = machine;
++	ptq->guest_machine_pid = pid;
++
++	return 0;
++}
++
+ static int intel_pt_walk_next_insn(struct intel_pt_insn *intel_pt_insn,
+ 				   uint64_t *insn_cnt_ptr, uint64_t *ip,
+ 				   uint64_t to_ip, uint64_t max_insn_cnt,
+@@ -573,19 +622,29 @@ static int intel_pt_walk_next_insn(struct intel_pt_insn *intel_pt_insn,
+ 	u64 offset, start_offset, start_ip;
+ 	u64 insn_cnt = 0;
+ 	bool one_map = true;
++	bool nr;
  
--	if (thread == NULL || thread__set_namespaces(thread, 0, NULL)) {
--		pr_err("problem inserting idle task.\n");
--		err = -1;
--	}
--
--	/* machine__findnew_thread() got the thread, so put it */
-+	/* machine__idle_thread() got the thread, so put it */
- 	thread__put(thread);
--	return err;
-+	return thread ? 0 : -1;
- }
+ 	intel_pt_insn->length = 0;
  
- static void
+ 	if (to_ip && *ip == to_ip)
+ 		goto out_no_cache;
+ 
+-	cpumode = intel_pt_cpumode(ptq->pt, *ip);
++	nr = ptq->state->to_nr;
++	cpumode = intel_pt_nr_cpumode(ptq, *ip, nr);
+ 
+-	thread = ptq->thread;
+-	if (!thread) {
+-		if (cpumode != PERF_RECORD_MISC_KERNEL)
++	if (nr) {
++		if (cpumode != PERF_RECORD_MISC_GUEST_KERNEL ||
++		    intel_pt_get_guest(ptq))
+ 			return -EINVAL;
+-		thread = ptq->pt->unknown_thread;
++		machine = ptq->guest_machine;
++		thread = ptq->unknown_guest_thread;
++	} else {
++		thread = ptq->thread;
++		if (!thread) {
++			if (cpumode != PERF_RECORD_MISC_KERNEL)
++				return -EINVAL;
++			thread = ptq->pt->unknown_thread;
++		}
+ 	}
+ 
+ 	while (1) {
+@@ -1101,6 +1160,7 @@ static void intel_pt_free_queue(void *priv)
+ 	if (!ptq)
+ 		return;
+ 	thread__zput(ptq->thread);
++	thread__zput(ptq->unknown_guest_thread);
+ 	intel_pt_decoder_free(ptq->decoder);
+ 	zfree(&ptq->event_buf);
+ 	zfree(&ptq->last_branch);
+@@ -1315,8 +1375,8 @@ static void intel_pt_prep_b_sample(struct intel_pt *pt,
+ 		sample->time = tsc_to_perf_time(ptq->timestamp, &pt->tc);
+ 
+ 	sample->ip = ptq->state->from_ip;
+-	sample->cpumode = intel_pt_cpumode(pt, sample->ip);
+ 	sample->addr = ptq->state->to_ip;
++	sample->cpumode = intel_pt_cpumode(ptq, sample->ip, sample->addr);
+ 	sample->period = 1;
+ 	sample->flags = ptq->flags;
+ 
+@@ -1833,10 +1893,7 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
+ 	else
+ 		sample.ip = ptq->state->from_ip;
+ 
+-	/* No support for guest mode at this time */
+-	cpumode = sample.ip < ptq->pt->kernel_start ?
+-		  PERF_RECORD_MISC_USER :
+-		  PERF_RECORD_MISC_KERNEL;
++	cpumode = intel_pt_cpumode(ptq, sample.ip, 0);
+ 
+ 	event->sample.header.misc = cpumode | PERF_RECORD_MISC_EXACT_IP;
+ 
 -- 
 2.17.1
 
