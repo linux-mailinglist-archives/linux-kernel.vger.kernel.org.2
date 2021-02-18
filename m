@@ -2,98 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0C731EA07
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C00731E9FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhBRMsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:48:02 -0500
-Received: from smtp86.ord1d.emailsrvr.com ([184.106.54.86]:45844 "EHLO
-        smtp86.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231331AbhBRK6b (ORCPT
+        id S230227AbhBRMmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:42:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231935AbhBRK7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:58:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1613644276;
-        bh=8ZWVQO/9PZxft2IdiNPG2quxmA7J4sIfRwugGqJyqUA=;
-        h=Subject:To:From:Date:From;
-        b=OvFu9kgNuzR1i/BkRnPVIovr4XZOMmk3qHLM0i/meDCEyGqqINMiXVZnGgFJzU/tJ
-         rL7w2f2Z8f7z8Y4rvfJrnIjmkawzh4oVfVHFDhAorcciNZn9T0Z99w+S5wTNBoEONe
-         Kib78/o2GqtVADGYAihe+PPZKxjZ+r3P0ySbjQe8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1613644276;
-        bh=8ZWVQO/9PZxft2IdiNPG2quxmA7J4sIfRwugGqJyqUA=;
-        h=Subject:To:From:Date:From;
-        b=Kuns5u1VNsImKPNCPbcBOcBy+5f+p4x8xHmWrbk8dAM/MK8RYVqWiXncROPH0YVJy
-         pGGrXM810BJyCRAuxVXA1ace0G1TDhVVFA0AgfYttltGhd6WTQ4UY4SlRAUFImbr2F
-         WhDpNI0Pzcr3VBQGntUwp5bZJxzMIdyEfgkJYivA=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp3.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 0F9A8601CC;
-        Thu, 18 Feb 2021 05:31:15 -0500 (EST)
-Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
- variable type
-To:     Atul Gopinathan <atulgopinathan@gmail.com>,
-        gregkh@linuxfoundation.org
-Cc:     hsweeten@visionengravers.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-References: <20210218084404.16591-1-atulgopinathan@gmail.com>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
-Date:   Thu, 18 Feb 2021 10:31:15 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 18 Feb 2021 05:59:46 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295ABC061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 02:35:43 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id g20so1031003plo.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 02:35:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=tHsrb0DYK4lku3a8AnYlDdd6INw/DQti6oTvXdTAcko=;
+        b=LdDO9eJw/qbgP0/LCpOnbkjSGBMMN2AU6sn65utGj7Jbua7u3RHte1Ox/HaIXhwAa1
+         8WZs8xvJP5LX0JCKAIv0wcvEMVuGI4MBYfuBEEqnBHsMwui4ItoSi7MOzdrCyYXCZMih
+         jmv9VGZOheR15KF2A6NvprAkZD/QpuZXEvvqyvk7bKpmpogMJxwticcQJu1V+D7TE/3c
+         ezkwqo8856MsFmFSJx0NkN0oKzNAEeyiqNjGOOg/ptNajf7WWTog46DrEXXbC5mvNtjv
+         xfhJ5NZ+iDUWHrfYEGRleXN8ft4+SZVzUOB8O0RllCZYf8eaVGm6dbBJoOPG5Enq1Zwk
+         nLYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=tHsrb0DYK4lku3a8AnYlDdd6INw/DQti6oTvXdTAcko=;
+        b=XDjgkfjz9wWfAGfXHYLFCo1FBXeyHyYen+s/yDyUZz5Vu3xYqRkobwybSQLhRGrGV0
+         mqVErix6rHFCO+CVZxKm6pJgq5BdZmXrNEor2r2LziOPtGKJJe9lmt4W/5mbPrldJclE
+         vGLJNeRatpXov+UU/7xUAEzbTbWh9VZvGbKOZ0SemAQaC++ZvjNlemT62JnVtcGzlwIw
+         puDkqWT+htWjuOtUF9hw9mP8QAaHNGcG6DlMc/W4sg8inm4K1dsAF3o0l+kVfCBjUH0d
+         jnE5rCS7dSJPKIJvuTbIuL9boB9EAEqjhd3VHUY0lc70qQXnFNeZOqWGpMpXvafREyF/
+         Q0ow==
+X-Gm-Message-State: AOAM533PUzsm87Ut+DvZGC0YcHheP0kgFsOEvbgXFlPDithV9zwtsxy/
+        c8ggNiMK0by71sCpyERgmxQOZA==
+X-Google-Smtp-Source: ABdhPJxQm2bKWc2RQXMTCauGvO51yB4Estxp63HbHEwUBI1tly6FVkm3dSOXS/hj6Pnmun84byamxA==
+X-Received: by 2002:a17:903:2285:b029:e1:58a2:b937 with SMTP id b5-20020a1709032285b02900e158a2b937mr3536248plh.68.1613644542659;
+        Thu, 18 Feb 2021 02:35:42 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id z2sm5627390pfa.121.2021.02.18.02.35.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Feb 2021 02:35:42 -0800 (PST)
+Date:   Thu, 18 Feb 2021 16:05:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
+        vireshk@kernel.org, cristian.marussi@arm.com,
+        morten.rasmussen@arm.com, chris.redpath@arm.com,
+        ionela.voinescu@arm.com
+Subject: Re: [PATCH v7 1/3] scmi-cpufreq: Remove deferred probe
+Message-ID: <20210218103539.zkxhqxaivhifmjwj@vireshk-i7>
+References: <20210215075139.30772-1-nicola.mazzucato@arm.com>
+ <20210215075139.30772-2-nicola.mazzucato@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210218084404.16591-1-atulgopinathan@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 23395ef8-f0af-4618-b651-66986ee57ebb-1-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215075139.30772-2-nicola.mazzucato@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/02/2021 08:44, Atul Gopinathan wrote:
-> Fix the following warning generated by sparse:
+On 15-02-21, 07:51, Nicola Mazzucato wrote:
+> The current implementation of the scmi_cpufreq_init() function returns
+> -EPROBE_DEFER when the OPP table is not populated. In practice the
+> cpufreq core cannot handle this error code.
+> Therefore, fix the return value and clarify the error message.
 > 
-> drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-> drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-> drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
-> 
-> compat_ptr() has a return type of "void __user *"
-> as defined in "include/linux/compat.h"
-> 
-> cmd->chanlist is of type "unsigned int *" as defined
-> in drivers/staging/comedi/comedi.h" in struct
-> comedi_cmd.
-> 
-> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> Reviewed-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
 > ---
->   drivers/staging/comedi/comedi_fops.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/cpufreq/scmi-cpufreq.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 > 
-> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> index e85a99b68f31..fc4ec38012b4 100644
-> --- a/drivers/staging/comedi/comedi_fops.c
-> +++ b/drivers/staging/comedi/comedi_fops.c
-> @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
->   	cmd->scan_end_arg = v32.scan_end_arg;
->   	cmd->stop_src = v32.stop_src;
->   	cmd->stop_arg = v32.stop_arg;
-> -	cmd->chanlist = compat_ptr(v32.chanlist);
-> +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
->   	cmd->chanlist_len = v32.chanlist_len;
->   	cmd->data = compat_ptr(v32.data);
->   	cmd->data_len = v32.data_len;
-> 
+> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+> index 491a0a24fb1e..34bf2eb8d465 100644
+> --- a/drivers/cpufreq/scmi-cpufreq.c
+> +++ b/drivers/cpufreq/scmi-cpufreq.c
+> @@ -155,9 +155,11 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>  
+>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+>  	if (nr_opp <= 0) {
+> -		dev_dbg(cpu_dev, "OPP table is not ready, deferring probe\n");
+> -		ret = -EPROBE_DEFER;
+> -		goto out_free_opp;
 
-This patch and the other one in your series clash with commit 
-9d5d041eebe3 ("staging: comedi: comedi_fops.c: added casts to get rid of 
-sparse warnings") by B K Karthik.
+Why change goto label as well ?
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9d5d041eebe3dcf7591ff7004896c329eb841ca6
+> +		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
+> +			__func__, ret);
+> +
+> +		ret = -ENODEV;
+> +		goto out_free_priv;
+>  	}
+>  
+>  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+> -- 
+> 2.27.0
 
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+viresh
