@@ -2,105 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 466C831F2C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D80CB31F2CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 00:08:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhBRXFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 18:05:01 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:13458 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbhBRXEx (ORCPT
+        id S229983AbhBRXIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 18:08:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39124 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229743AbhBRXIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 18:04:53 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B602ef26b0000>; Thu, 18 Feb 2021 15:04:11 -0800
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
- 2021 23:04:10 +0000
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HKMAIL101.nvidia.com
- (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 18 Feb
- 2021 23:04:08 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.174)
- by HKMAIL104.nvidia.com (10.18.16.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Thu, 18 Feb 2021 23:04:08 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=D81oP4IgwGJ3D17AblqhuGFPHcqaZfAoMyoDWqBposxq2EJwkr29V10O/wPpDZkWRuWzRR0r5nNQCzASN1PD5bFOPAy6SaNqfbMbHZnytIQBLftdh6nvSFxchoRR7YM4M+xB0nEdR12Fa8mIpJiIhb42i5LJqIHDsKoF/DmgDYVZABXJjiHOSckIMcUOyDIaNFBK5EYgfrPT/USa4QlJktJFesATFZkxVG8OIyNhKJdP4WZ1nQsOgSKurlWWr6wKKDAdhpSFTOkSwMlovGOyH3jLrjq2P5YslBg58Gas96kjsI/r45X7CKdCrzE7cD4kVvowfnfXziBoVa71CIqCNw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zltih0rs0t8smXYQtMqc3w37XuUToESSe4lFwzNgNgk=;
- b=VES64IBhjN+tud/axuEbKOP3CSFcLDbV8u9d6DY2wQJdslmNX1X72zG+Jb6eM460CVnQIiEoHr8+/azVYCRrj7x9ZDMa+bmbOBjr6kKT46Xir9SvoZ2jpOylzcuHJWxGLjtuL9xA+bz9J+H881GfNAs6TBmz6HC8bT5867Is5JETwWsGFEFQGLXHnslWk9QXwK1k27K6Wq3fksXoPMRxkEUik1ZNlLq/XVj11HyEIP5FfCNIO08mWLvSZKknR47NLDLtMFLG/DuXvWZuWY0WQY2wqaFStpbG9d5Sie9Q0i0L7MxMF2hHns2x4V2QZjy4Hnfrjpdtxbwj+KZrzPDWOw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3210.namprd12.prod.outlook.com (2603:10b6:5:185::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.31; Thu, 18 Feb
- 2021 23:04:06 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.041; Thu, 18 Feb 2021
- 23:04:06 +0000
-Date:   Thu, 18 Feb 2021 19:04:04 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [PATCH 1/3] vfio: Introduce vma ops registration and notifier
-Message-ID: <20210218230404.GD4247@nvidia.com>
-References: <161315658638.7320.9686203003395567745.stgit@gimli.home>
- <161315805248.7320.13358719859656681660.stgit@gimli.home>
- <20210212212057.GW4247@nvidia.com> <20210218011209.GB4247@nvidia.com>
- <20210218145606.09f08044@omen.home.shazbot.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210218145606.09f08044@omen.home.shazbot.org>
-X-ClientProxiedBy: MN2PR13CA0004.namprd13.prod.outlook.com
- (2603:10b6:208:160::17) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Thu, 18 Feb 2021 18:08:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613689598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GV3FE/jRmWIDU2Byyij+J0dLblDpKaJcJNBj8qAB4Uo=;
+        b=YY2jwdxcJIcHou3HsXgDrG+ew5TqHbs/Cdghb9zORsS+tLkgktnRy9fHmgi9xAGMOFziDC
+        DWyX4YdbtaEpiJ/L3mLf0seNv722qCruCsSttaakLd4AWthQVyDu0DaeNm2fFeRpSLo1J1
+        HngDNmfbBV10OvVnBbHa9qUkV9CDvsQ=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-496-_Y3fkQNXN5-gJ83RCVkyTw-1; Thu, 18 Feb 2021 18:06:37 -0500
+X-MC-Unique: _Y3fkQNXN5-gJ83RCVkyTw-1
+Received: by mail-qt1-f199.google.com with SMTP id o20so2128693qtx.22
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 15:06:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GV3FE/jRmWIDU2Byyij+J0dLblDpKaJcJNBj8qAB4Uo=;
+        b=UIwTty4zyexMHos4TxrCAVDeV18rp+4t8w8gu6fP0qvCYa2q5Gxgx4GbagEVYC2iPy
+         Za8sE0YFnFJCABCR8sCkSGDJt+Asol+7U/ayQrgg1MIugU49YFdYu66f7iPPout8kjCK
+         kZOqGmxLpmevJNy2+xeYR5DF2VsSEIkWqbjm93F/Z1zxn9WAi48YkZKV1rGR2Hh4GduN
+         xqyB9inr74LIB9DKAv7DuDWbAkYdPAKR1id268W4yFG9yREh+kMqRpsBAoyz4PgIvWto
+         AaRy/drBpurgOr0LD7tBOGa9GZoL0uNICpriGA58I6JTxx3tvWw45TGLyT2e+OHAP6+M
+         qmSw==
+X-Gm-Message-State: AOAM533HVChgUDNEUvABKxmo46JErszOvtbBbxnU+BNKhPumxudmonw5
+        siTqe2mrftjQWJmQY5SLQ9GtNbwQlfhQeHqra48I1HHBTEF6E0KFv0hvGziOvO2DIWYh5ia0ohI
+        vy5RUlNhugl2oBPlDnbVodEi+B/RWuedh2ez7O87m5fzcpocio2dJCTRQfTrX3PKosWQlrYyBDg
+        ==
+X-Received: by 2002:a37:a151:: with SMTP id k78mr6574378qke.359.1613689596252;
+        Thu, 18 Feb 2021 15:06:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwPrqsgYJKzHr/HODkfu/1u3GuJEBtKDqd45PLibWEiQQEcWHtTMfT4v9Ji/0SungUuXvBO8g==
+X-Received: by 2002:a37:a151:: with SMTP id k78mr6574349qke.359.1613689595954;
+        Thu, 18 Feb 2021 15:06:35 -0800 (PST)
+Received: from xz-x1.redhat.com (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id p81sm4994324qke.18.2021.02.18.15.06.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 15:06:35 -0800 (PST)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, peterx@redhat.com
+Subject: [PATCH v4 0/4] hugetlb: Disable huge pmd unshare for uffd-wp
+Date:   Thu, 18 Feb 2021 18:06:29 -0500
+Message-Id: <20210218230633.15028-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR13CA0004.namprd13.prod.outlook.com (2603:10b6:208:160::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.8 via Frontend Transport; Thu, 18 Feb 2021 23:04:05 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lCsL6-00Bend-D0; Thu, 18 Feb 2021 19:04:04 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1613689451; bh=zltih0rs0t8smXYQtMqc3w37XuUToESSe4lFwzNgNgk=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=B5VUxPTWU97qImEAGiu/4ru1APEfo48/bpa0Wbk8jnp8yPNq9f8ajad6ALOI4fKCT
-         9EOwwJR0ZUrLbKeAJIA1UfEdeO0iB4NeK73YyvXiIVrSnrK58Dq219oP9B9T3bEG7H
-         Zq5JmefELK+tZ7zkuHdOKG1jH5ShlQ9t5RU0J44etDhd7a+uNmyxHY5mjlbTY+phEB
-         u9hbSBp58xnfvxNxS2cv8HzzokWWP7iL8qIpWkh13x3qPOZT/iGtCPoM8Bu9Q6wEsK
-         qhykk7QAGQp3CX37ldNczJcXF/vVoWntScrm8rYrF+s14kzmIIRMTl1A8bykyZa7iu
-         rQjGsZj4pO30g==
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 02:56:06PM -0700, Alex Williamson wrote:
+v4:=0D
+- fix build for sparc by removing extra line in patch 1 [Mike]=0D
+- pick Mike's r-b for patch 4=0D
+=0D
+v3:=0D
+- patch 4:=0D
+  - fix build failure for !CMA and/or !HUGETLBFS [Axel]=0D
+  - Fix mmu notifier range to use start/end [Mike]=0D
+- add more r-bs=0D
+=0D
+v2:=0D
+- patch 4: move hugetlb_unshare_all_pmds() into mm/hugetlb.c, so it can be =
+used=0D
+  even outside userfaultfd.c=0D
+=0D
+This series tries to disable huge pmd unshare of hugetlbfs backed memory fo=
+r=0D
+uffd-wp.  Although uffd-wp of hugetlbfs is still during rfc stage, the idea=
+ of=0D
+this series may be needed for multiple tasks (Axel's uffd minor fault serie=
+s,=0D
+and Mike's soft dirty series), so I picked it out from the larger series.=0D
+=0D
+References works:=0D
+=0D
+Uffd shmem+hugetlbfs rfc:=0D
+https://lore.kernel.org/lkml/20210115170907.24498-1-peterx@redhat.com/=0D
+=0D
+Uffd minor mode for hugetlbfs:=0D
+https://lore.kernel.org/lkml/20210212215403.3457686-1-axelrasmussen@google.=
+com/=0D
+=0D
+Soft dirty for hugetlbfs:=0D
+https://lore.kernel.org/lkml/20210211000322.159437-1-mike.kravetz@oracle.co=
+m/=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (4):=0D
+  hugetlb: Pass vma into huge_pte_alloc() and huge_pmd_share()=0D
+  hugetlb/userfaultfd: Forbid huge pmd sharing when uffd enabled=0D
+  mm/hugetlb: Move flush_hugetlb_tlb_range() into hugetlb.h=0D
+  hugetlb/userfaultfd: Unshare all pmds for hugetlbfs when register wp=0D
+=0D
+ arch/arm64/mm/hugetlbpage.c   |  7 ++-=0D
+ arch/ia64/mm/hugetlbpage.c    |  3 +-=0D
+ arch/mips/mm/hugetlbpage.c    |  4 +-=0D
+ arch/parisc/mm/hugetlbpage.c  |  2 +-=0D
+ arch/powerpc/mm/hugetlbpage.c |  3 +-=0D
+ arch/s390/mm/hugetlbpage.c    |  2 +-=0D
+ arch/sh/mm/hugetlbpage.c      |  2 +-=0D
+ arch/sparc/mm/hugetlbpage.c   |  2 +-=0D
+ fs/userfaultfd.c              |  4 ++=0D
+ include/linux/hugetlb.h       | 18 ++++++-=0D
+ include/linux/userfaultfd_k.h |  9 ++++=0D
+ mm/hugetlb.c                  | 94 +++++++++++++++++++++++++++--------=0D
+ mm/userfaultfd.c              |  2 +-=0D
+ 13 files changed, 116 insertions(+), 36 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-> Looks pretty slick.  I won't claim it's fully gelled in my head yet,
-> but AIUI you're creating these inodes on your new pseudo fs and
-> associating it via the actual user fd via the f_mapping pointer, which
-> allows multiple fds to associate and address space back to this inode
-> when you want to call unmap_mapping_range().  
-
-Yes, from what I can tell all the fs/inode stuff is just mandatory
-overhead to get a unique address_space pointer, as that is the only
-thing this is actually using.
-
-I have to check the mmap flow more carefully, I recall pointing to a
-existing race here with Daniel, but the general idea should hold.
-
-> That clarifies from the previous email how we'd store the inode on
-> the vfio_device without introducing yet another tracking list for
-> device fds.
-
-Right, you can tell from the vma what inode it is for, and the inode
-can tell you if it is a VFIO VMA or not, so no tracking lists needed
-at all.
-
-Jason
