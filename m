@@ -2,89 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C55931ECE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9662331ED2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:22:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbhBRRJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:09:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36094 "EHLO mail.kernel.org"
+        id S232008AbhBRRUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:20:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231879AbhBRO35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 09:29:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9E0264E76;
-        Thu, 18 Feb 2021 14:29:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613658554;
-        bh=W/vP5B7kuDrYnokP92ychColA8JdWdOs46EX1GvjWFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=atkky+PvrUMS2jEIL1tOYbPwGA99pLkmcTrYyIl/FmA9pVjRo3Hpa2ZfORr4qJUdd
-         AMIeDbZjjesr+WO//NH9EDXqzfzNoUJbqnRAN3nZwZqKJ77m4o5b/Tjvj/zirbNRGW
-         gGw/9Rix8+I+QKT2h9rLOVg6gYJtQHIZn2Kzgh5U=
-Date:   Thu, 18 Feb 2021 15:29:11 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jari Ruusu <jariruusu@users.sourceforge.net>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <YC55t1vkRuC9uXcx@kroah.com>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
- <YBBkplRxzzmPYKC+@kroah.com>
- <YCzknUTDytY8gRA8@kroah.com>
- <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
- <YC4atKmK7ZqlOGER@kroah.com>
- <20210218113107.GA12547@1wt.eu>
- <602E766F.758C74D8@users.sourceforge.net>
+        id S231715AbhBROk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 09:40:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A07B564EC2;
+        Thu, 18 Feb 2021 14:29:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613658569;
+        bh=lVrfAWlr82/yipf5AmwiPr8OW5t7oViqE47qo3gopUI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Ds7v2Mj7/IsIVXTYLSfZ3jv3tsiSDpDlBgxJbZnuvXRzMMA+DaUVdKig3Qk7mv8B2
+         GOGFAzPVRBFrvL6LP2scH0KOHR+Q9CAU4vK0xnStN9N7v0tVpweYr0eKbLBzj81f+3
+         1tMLphEK5JDW2nNwdymvMCUezy2BdlAbg5gxYnCh+MSJmrAe/hDcdzmAxW5gTCNSkf
+         EAxJL1y3KB/xNOPHL7503ewwJ7uv2mrDz4ZhEmJsjZFh6fkUxy0ehqW4x9eoqqnvTh
+         lKvZY4WsuY106z+XCcw6XNILFREyLy+Y+x3TviANZgn56NyVtdPeD34vEddKkuUPSL
+         RTfnNNe9wFYzA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Paul E . McKenney" <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Date:   Thu, 18 Feb 2021 23:29:23 +0900
+Message-Id: <161365856280.719838.12423085451287256713.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <602E766F.758C74D8@users.sourceforge.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 04:15:11PM +0200, Jari Ruusu wrote:
-> Willy Tarreau wrote:
-> > The only set of fixes that can be trusted are the "official" stable
-> > kernels, because they are the only ones that are approved by the patches
-> > authors themselves. Adding more stuff on top of stable kernels is fine
-> > (and done at your own risk), but randomly dropping stuff from stable
-> > kernels just because you don't think you need that is totally non-sense
-> > and must not be done anymore!
-> 
-> This may be little bit off-topic... but stable kernel.org kernels
-> can also bit-rot badly because of "selective" backporting... as in
-> anything that does not apply cleanly gets dropped regardless of
-> how critical they are.
-> 
-> I will give you one example: Intel WiFi (iwlwifi) on 4.19.y
-> kernel.org stable kernels is currently missing many critical
-> locking fixes.
+Commit 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+moved the kprobe setup in early_initcall(), which includes kprobe
+jump optimization.
+The kprobes jump optimizer involves synchronize_rcu_tasks() which
+depends on the ksoftirqd and rcu_spawn_tasks_*(). However, since
+those are setup in core_initcall(), kprobes jump optimizer can not
+run at the early_initcall().
 
-Why has no one asked for the specific upstream commits to be backported
-if this is the case?
+To avoid this issue, make the kprobe optimization disabled in the
+early_initcall() and enables it in subsys_initcall().
 
-> As a result, that in-tree iwlwifi driver causes
-> erratic behavior to random unrelated processes, and has been doing
-> so for many months now. My not-so-politically correct opinion is
-> that in-tree iwlwifi is completely FUBAR unless someone steps up
-> to do professional quality backport of those locking fixes from
-> upstream out-of-tree Intel version [1] [2] of the driver.
+Note that non-optimized kprobes is still available after
+early_initcall(). Only jump optimization is delayed.
 
-Why does any out-of-tree driver come into play here?  What is wrong with
-the in-kernel code?
+Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+Reported-by: Paul E. McKenney <paulmck@kernel.org>
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ kernel/kprobes.c |   31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
 
-> For me
-> only way to get properly working WiFi on my laptop computer is to
-> compile that Intel out-of-tree version. Sad, but true.
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index d5a3eb74a657..779d8322e307 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -861,7 +861,6 @@ static void try_to_optimize_kprobe(struct kprobe *p)
+ 	cpus_read_unlock();
+ }
+ 
+-#ifdef CONFIG_SYSCTL
+ static void optimize_all_kprobes(void)
+ {
+ 	struct hlist_head *head;
+@@ -887,6 +886,7 @@ static void optimize_all_kprobes(void)
+ 	mutex_unlock(&kprobe_mutex);
+ }
+ 
++#ifdef CONFIG_SYSCTL
+ static void unoptimize_all_kprobes(void)
+ {
+ 	struct hlist_head *head;
+@@ -2497,18 +2497,14 @@ static int __init init_kprobes(void)
+ 		}
+ 	}
+ 
+-#if defined(CONFIG_OPTPROBES)
+-#if defined(__ARCH_WANT_KPROBES_INSN_SLOT)
+-	/* Init kprobe_optinsn_slots */
+-	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
+-#endif
+-	/* By default, kprobes can be optimized */
+-	kprobes_allow_optimization = true;
+-#endif
+-
+ 	/* By default, kprobes are armed */
+ 	kprobes_all_disarmed = false;
+ 
++#if defined(CONFIG_OPTPROBES) && defined(__ARCH_WANT_KPROBES_INSN_SLOT)
++	/* Init kprobe_optinsn_slots for allocation */
++	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
++#endif
++
+ 	err = arch_init_kprobes();
+ 	if (!err)
+ 		err = register_die_notifier(&kprobe_exceptions_nb);
+@@ -2523,6 +2519,21 @@ static int __init init_kprobes(void)
+ }
+ early_initcall(init_kprobes);
+ 
++#if defined(CONFIG_OPTPROBES)
++static int __init init_optprobes(void)
++{
++	/*
++	 * Enable kprobe optimization - this kicks the optimizer which
++	 * depends on synchronize_rcu_tasks() and ksoftirqd, that is
++	 * not spawned in early initcall. So delay the optimization.
++	 */
++	optimize_all_kprobes();
++
++	return 0;
++}
++subsys_initcall(init_optprobes);
++#endif
++
+ #ifdef CONFIG_DEBUG_FS
+ static void report_probe(struct seq_file *pi, struct kprobe *p,
+ 		const char *sym, int offset, char *modname, struct kprobe *pp)
 
-Why use 4.19.y on a laptop in the firstplace?  That feels very wrong and
-is not the recommended thing to use the LTS kernels for.
-
-thanks,
-
-greg k-h
