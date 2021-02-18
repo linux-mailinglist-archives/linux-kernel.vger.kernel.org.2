@@ -2,432 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C0AA31F1CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:44:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0798831F1CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhBRVoO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Feb 2021 16:44:14 -0500
-Received: from mailoutvs35.siol.net ([185.57.226.226]:37566 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229480AbhBRVoG (ORCPT
+        id S229871AbhBRVof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:44:35 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40620 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhBRVob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:44:06 -0500
-X-Greylist: delayed 503 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Feb 2021 16:44:01 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id B310C52269D;
-        Thu, 18 Feb 2021 22:43:19 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id HnWkJJ_plBwO; Thu, 18 Feb 2021 22:43:19 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 019B85226AC;
-        Thu, 18 Feb 2021 22:43:19 +0100 (CET)
-Received: from kista.localnet (cpe-86-58-17-133.cable.triera.net [86.58.17.133])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Postfix) with ESMTPA id 4DD505226AA;
-        Thu, 18 Feb 2021 22:43:18 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: Re: [PATCH v2 1/9] media: hevc: Modify structures to follow H265 ITU spec
-Date:   Thu, 18 Feb 2021 22:43:18 +0100
-Message-ID: <12182109.SKTadsSyRz@kista>
-In-Reply-To: <20210218191844.297869-2-benjamin.gaignard@collabora.com>
-References: <20210218191844.297869-1-benjamin.gaignard@collabora.com> <20210218191844.297869-2-benjamin.gaignard@collabora.com>
+        Thu, 18 Feb 2021 16:44:31 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ILNggE152465;
+        Thu, 18 Feb 2021 21:43:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=9bDhzuwtJydPK3jDTF/9/JzVxW4gyP+1o+FR3dSelLo=;
+ b=J91JPmuyCRWzpLsM7aly31rH1+URGwKo/4oqM1Mc2cPGXcJsON58KKnLyQfqf/F7rcLN
+ 4/GfcBLWXN5BiToGIKlgRzI5x+Ebnu9oGGpurWeqBVwz7zM1hDcW7vbDukma7Hc2JCbG
+ UYWhYHeB0T7lkKNl5yQ4U4XzMqwvRwZrwgZ5qMWiimuRxlvJt0qmV7PfsznUl7BAgOR5
+ BGTg/Re1clzYA9BaVwLlTKrC8/Y8HE7EKnOQHoOZknJCtDaqe66sccsdE3ZzA0y4G4qE
+ IAbJAEq7HwSSReSHtiUx7b3tS+Wjf04d+IpLpIrvIGCxivshfolcNDF+0vqTp5FuWps1 ng== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 36pd9af0pf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 21:43:33 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11ILeBH9008615;
+        Thu, 18 Feb 2021 21:43:32 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 36prq129m5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 18 Feb 2021 21:43:32 +0000
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11ILhRxe006761;
+        Thu, 18 Feb 2021 21:43:27 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 18 Feb 2021 13:43:26 -0800
+Subject: Re: [PATCH 1/2] hugetlb: fix update_and_free_page contig page struct
+ assumption
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Zi Yan <ziy@nvidia.com>, Davidlohr Bueso <dbueso@suse.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        stable@vger.kernel.org
+References: <20210217184926.33567-1-mike.kravetz@oracle.com>
+ <20210217110252.185c7f5cd5a87c3f7b0c0144@linux-foundation.org>
+ <20210218144554.GS2858050@casper.infradead.org>
+ <20210218172500.GA4718@ziepe.ca>
+ <cc94992a-0eff-bf5e-d904-b23d5facfca3@oracle.com>
+Message-ID: <b7f5944f-c4dd-53d7-2613-1f2f891968e9@oracle.com>
+Date:   Thu, 18 Feb 2021 13:43:25 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cc94992a-0eff-bf5e-d904-b23d5facfca3@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180179
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102180178
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On 2/18/21 9:34 AM, Mike Kravetz wrote:
+> On 2/18/21 9:25 AM, Jason Gunthorpe wrote:
+>> On Thu, Feb 18, 2021 at 02:45:54PM +0000, Matthew Wilcox wrote:
+>>> On Wed, Feb 17, 2021 at 11:02:52AM -0800, Andrew Morton wrote:
+>>>> On Wed, 17 Feb 2021 10:49:25 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>>>> page structs are not guaranteed to be contiguous for gigantic pages.  The
+>>>>
+>>>> June 2014.  That's a long lurk time for a bug.  I wonder if some later
+>>>> commit revealed it.
+>>>
+>>> I would suggest that gigantic pages have not seen much use.  Certainly
+>>> performance with Intel CPUs on benchmarks that I've been involved with
+>>> showed lower performance with 1GB pages than with 2MB pages until quite
+>>> recently.
+>>
+>> I suggested in another thread that maybe it is time to consider
+>> dropping this "feature"
+>>
+>> If it has been slightly broken for 7 years it seems a good bet it
+>> isn't actually being used.
+>>
+>> The cost to fix GUP to be compatible with this will hurt normal
+>> GUP performance - and again, that nobody has hit this bug in GUP
+>> further suggests the feature isn't used..
+> 
+> I was thinking that we could detect these 'unusual' configurations and only
+> do the slower page struct walking in those cases.  However, we would need to
+> do some research to make sure we have taken into account all possible config
+> options which can produce non-contiguous page structs.  That should have zero
+> performance impact in the 'normal' cases.
 
-Dne četrtek, 18. februar 2021 ob 20:18:36 CET je Benjamin Gaignard napisal(a):
-> The H.265 ITU specification (section 7.4) define the general
-> slice segment header semantics.
-> Modified/added fields are:
-> - video_parameter_set_id: (7.4.3.1) identifies the VPS for
-> reference by other syntax elements.
-> - seq_parameter_set_id: (7.4.3.2.1) specifies the value of
-> the vps_video_parameter_set_id of the active VPS.
-> - chroma_format_idc: (7.4.3.2.1) specifies the chroma sampling
->  relative to the luma sampling
-> - pic_parameter_set_id: (7.4.3.3.1) identifies the PPS for
-> reference by other syntax elements
-> - num_ref_idx_l0_default_active_minus1: (7.4.3.3.1) specifies
-> the inferred value of num_ref_idx_l0_active_minus1
-> - num_ref_idx_l1_default_active_minus1: (7.4.3.3.1) specifies
-> the inferred value of num_ref_idx_l1_active_minus1
-> - slice_segment_addr: (7.4.7.1) specifies the address of
-> the first coding tree block in the slice segment
-> - num_entry_point_offsets: (7.4.7.1) specifies the number of
-> entry_point_offset_minus1[ i ] syntax elements in the slice header
-> 
-> Add HEVC decode params contains the information used in section
-> "8.3 Slice decoding process" of the specification to let the hardware
-> perform decoding of a slices.
-> 
-> Adapt Cedrus driver according to these changes.
-> 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> ---
-> version 2:
-> - remove all change related to scaling
-> - squash commits to a coherent split
-> - be more verbose about the added fields
-> 
->  drivers/media/v4l2-core/v4l2-ctrls.c          | 26 ++++++++---
->  drivers/staging/media/sunxi/cedrus/cedrus.c   |  6 +++
->  drivers/staging/media/sunxi/cedrus/cedrus.h   |  1 +
->  .../staging/media/sunxi/cedrus/cedrus_dec.c   |  2 +
->  .../staging/media/sunxi/cedrus/cedrus_h265.c  |  6 ++-
->  include/media/hevc-ctrls.h                    | 45 +++++++++++++++----
->  6 files changed, 69 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/
-v4l2-ctrls.c
-> index 016cf6204cbb..4060b5bcc3c0 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -1028,6 +1028,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_HEVC_SPS:			
-return "HEVC Sequence Parameter Set";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_PPS:			
-return "HEVC Picture Parameter Set";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return 
-"HEVC Slice Parameters";
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:		
-return "HEVC Decode Parameters";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC 
-Decode Mode";
->  	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return 
-"HEVC Start Code";
->  
-> @@ -1482,6 +1483,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum 
-v4l2_ctrl_type *type,
->  	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->  		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->  		break;
-> +	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
-> +		*type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
-> +		break;
->  	case V4L2_CID_UNIT_CELL_SIZE:
->  		*type = V4L2_CTRL_TYPE_AREA;
->  		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
-> @@ -1833,6 +1837,7 @@ static int std_validate_compound(const struct 
-v4l2_ctrl *ctrl, u32 idx,
->  	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
->  	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
->  	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
-> +	struct v4l2_ctrl_hevc_decode_params *p_hevc_decode_params;
->  	struct v4l2_area *area;
->  	void *p = ptr.p + idx * ctrl->elem_size;
->  	unsigned int i;
-> @@ -2108,23 +2113,27 @@ static int std_validate_compound(const struct 
-v4l2_ctrl *ctrl, u32 idx,
->  		zero_padding(*p_hevc_pps);
->  		break;
->  
-> -	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
-> -		p_hevc_slice_params = p;
-> +	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
-> +		p_hevc_decode_params = p;
->  
-> -		if (p_hevc_slice_params->num_active_dpb_entries >
-> +		if (p_hevc_decode_params->num_active_dpb_entries >
->  		    V4L2_HEVC_DPB_ENTRIES_NUM_MAX)
->  			return -EINVAL;
->  
-> -		zero_padding(p_hevc_slice_params->pred_weight_table);
-> -
-> -		for (i = 0; i < p_hevc_slice_params-
->num_active_dpb_entries;
-> +		for (i = 0; i < p_hevc_decode_params-
->num_active_dpb_entries;
->  		     i++) {
->  			struct v4l2_hevc_dpb_entry *dpb_entry =
-> -				&p_hevc_slice_params->dpb[i];
-> +				&p_hevc_decode_params->dpb[i];
->  
->  			zero_padding(*dpb_entry);
->  		}
->  
-> +		break;
-> +
-> +	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
-> +		p_hevc_slice_params = p;
-> +
-> +		zero_padding(p_hevc_slice_params->pred_weight_table);
->  		zero_padding(*p_hevc_slice_params);
->  		break;
->  
-> @@ -2821,6 +2830,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct 
-v4l2_ctrl_handler *hdl,
->  	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->  		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->  		break;
-> +	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
-> +		elem_size = sizeof(struct v4l2_ctrl_hevc_decode_params);
-> +		break;
->  	case V4L2_CTRL_TYPE_AREA:
->  		elem_size = sizeof(struct v4l2_area);
->  		break;
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/
-media/sunxi/cedrus/cedrus.c
-> index 7bd9291c8d5f..4cd3cab1a257 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
-> @@ -151,6 +151,12 @@ static const struct cedrus_control cedrus_controls[] = 
-{
->  		},
->  		.codec		= CEDRUS_CODEC_VP8,
->  	},
-> +	{
-> +		.cfg = {
-> +			.id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
-> +		},
-> +		.codec		= CEDRUS_CODEC_H265,
-> +	},
->  };
->  
->  #define CEDRUS_CONTROLS_COUNT	ARRAY_SIZE(cedrus_controls)
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.h b/drivers/staging/
-media/sunxi/cedrus/cedrus.h
-> index 251a6a660351..2ca33ac38b9a 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus.h
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.h
-> @@ -76,6 +76,7 @@ struct cedrus_h265_run {
->  	const struct v4l2_ctrl_hevc_sps			*sps;
->  	const struct v4l2_ctrl_hevc_pps			*pps;
->  	const struct v4l2_ctrl_hevc_slice_params	*slice_params;
-> +	const struct v4l2_ctrl_hevc_decode_params	*decode_params;
->  };
->  
->  struct cedrus_vp8_run {
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c b/drivers/
-staging/media/sunxi/cedrus/cedrus_dec.c
-> index a9090daf626a..cd821f417a14 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
-> @@ -68,6 +68,8 @@ void cedrus_device_run(void *priv)
->  			V4L2_CID_MPEG_VIDEO_HEVC_PPS);
->  		run.h265.slice_params = cedrus_find_control_data(ctx,
->  			V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS);
-> +		run.h265.decode_params = cedrus_find_control_data(ctx,
-> +			V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS);
->  		break;
->  
->  	case V4L2_PIX_FMT_VP8_FRAME:
-> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/
-staging/media/sunxi/cedrus/cedrus_h265.c
-> index ce497d0197df..dce5db6be13a 100644
-> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
-> @@ -245,6 +245,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->  	const struct v4l2_ctrl_hevc_sps *sps;
->  	const struct v4l2_ctrl_hevc_pps *pps;
->  	const struct v4l2_ctrl_hevc_slice_params *slice_params;
-> +	const struct v4l2_ctrl_hevc_decode_params *decode_params;
->  	const struct v4l2_hevc_pred_weight_table *pred_weight_table;
->  	dma_addr_t src_buf_addr;
->  	dma_addr_t src_buf_end_addr;
-> @@ -256,6 +257,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->  	sps = run->h265.sps;
->  	pps = run->h265.pps;
->  	slice_params = run->h265.slice_params;
-> +	decode_params = run->h265.decode_params;
->  	pred_weight_table = &slice_params->pred_weight_table;
->  
->  	/* MV column buffer size and allocation. */
-> @@ -487,7 +489,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->  
->  	reg = 
-VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_TC_OFFSET_DIV2(slice_params-
->slice_tc_offset_div2) |
->  	      
-VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_BETA_OFFSET_DIV2(slice_params-
->slice_beta_offset_div2) |
-> -	      
-VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(slice_params-
->num_rps_poc_st_curr_after == 0) |
-> +	      
-VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(decode_params-
->num_rps_poc_st_curr_after == 0) |
->  	      
-VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CR_QP_OFFSET(slice_params-
->slice_cr_qp_offset) |
->  	      
-VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CB_QP_OFFSET(slice_params-
->slice_cb_qp_offset) |
->  	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_QP_DELTA(slice_params-
->slice_qp_delta);
-> @@ -528,7 +530,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->  
->  	/* Write decoded picture buffer in pic list. */
->  	cedrus_h265_frame_info_write_dpb(ctx, slice_params->dpb,
-> -					 slice_params-
->num_active_dpb_entries);
-> +					 decode_params-
->num_active_dpb_entries);
->  
->  	/* Output frame. */
->  
-> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-> index b4cb2ef02f17..7fe704a08f77 100644
-> --- a/include/media/hevc-ctrls.h
-> +++ b/include/media/hevc-ctrls.h
-> @@ -19,6 +19,7 @@
->  #define V4L2_CID_MPEG_VIDEO_HEVC_SPS		(V4L2_CID_CODEC_BASE + 
-1008)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_PPS		(V4L2_CID_CODEC_BASE + 
-1009)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS	(V4L2_CID_CODEC_BASE + 
-1010)
-> +#define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS	(V4L2_CID_CODEC_BASE + 
-1012)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE	(V4L2_CID_CODEC_BASE + 
-1015)
->  #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE	(V4L2_CID_CODEC_BASE + 
-1016)
->  
-> @@ -26,6 +27,7 @@
->  #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
->  #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
->  #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
-> +#define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
->  
->  enum v4l2_mpeg_video_hevc_decode_mode {
->  	V4L2_MPEG_VIDEO_HEVC_DECODE_MODE_SLICE_BASED,
-> @@ -54,6 +56,9 @@ enum v4l2_mpeg_video_hevc_start_code {
->  /* The controls are not stable at the moment and will likely be reworked. 
-*/
->  struct v4l2_ctrl_hevc_sps {
->  	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Sequence parameter set */
-> +	__u8	video_parameter_set_id;
-> +	__u8	seq_parameter_set_id;
-> +	__u8	chroma_format_idc;
->  	__u16	pic_width_in_luma_samples;
->  	__u16	pic_height_in_luma_samples;
->  	__u8	bit_depth_luma_minus8;
-> @@ -74,9 +79,9 @@ struct v4l2_ctrl_hevc_sps {
->  	__u8	log2_diff_max_min_pcm_luma_coding_block_size;
->  	__u8	num_short_term_ref_pic_sets;
->  	__u8	num_long_term_ref_pics_sps;
-> -	__u8	chroma_format_idc;
->  
-> -	__u8	padding;
-> +	__u8	num_slices;
-> +	__u8	padding[6];
->  
->  	__u64	flags;
->  };
-> @@ -100,10 +105,15 @@ struct v4l2_ctrl_hevc_sps {
->  #define V4L2_HEVC_PPS_FLAG_PPS_DISABLE_DEBLOCKING_FILTER	(1ULL << 16)
->  #define V4L2_HEVC_PPS_FLAG_LISTS_MODIFICATION_PRESENT		(1ULL << 17)
->  #define V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT (1ULL << 
-18)
-> +#define V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT	(1ULL << 19)
-> +#define V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING			
-(1ULL << 20)
->  
->  struct v4l2_ctrl_hevc_pps {
->  	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Picture parameter set */
-> +	__u8	pic_parameter_set_id;
->  	__u8	num_extra_slice_header_bits;
-> +	__u8	num_ref_idx_l0_default_active_minus1;
-> +	__u8	num_ref_idx_l1_default_active_minus1;
->  	__s8	init_qp_minus26;
->  	__u8	diff_cu_qp_delta_depth;
->  	__s8	pps_cb_qp_offset;
-> @@ -116,7 +126,7 @@ struct v4l2_ctrl_hevc_pps {
->  	__s8	pps_tc_offset_div2;
->  	__u8	log2_parallel_merge_level_minus2;
->  
-> -	__u8	padding[4];
-> +	__u8	padding;
->  	__u64	flags;
->  };
->  
-> @@ -165,6 +175,10 @@ struct v4l2_ctrl_hevc_slice_params {
->  	__u32	bit_size;
->  	__u32	data_bit_offset;
->  
-> +	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header 
-*/
-> +	__u32	slice_segment_addr;
-> +	__u32	num_entry_point_offsets;
-> +
->  	/* ISO/IEC 23008-2, ITU-T Rec. H.265: NAL unit header */
->  	__u8	nal_unit_type;
->  	__u8	nuh_temporal_id_plus1;
-> @@ -190,15 +204,13 @@ struct v4l2_ctrl_hevc_slice_params {
->  	__u8	pic_struct;
->  
->  	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header 
-*/
-> -	__u8	num_active_dpb_entries;
->  	__u8	ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->  	__u8	ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->  
-> -	__u8	num_rps_poc_st_curr_before;
-> -	__u8	num_rps_poc_st_curr_after;
-> -	__u8	num_rps_poc_lt_curr;
-> +	__u16	short_term_ref_pic_set_size;
-> +	__u16	long_term_ref_pic_set_size;
->  
-> -	__u8	padding;
-> +	__u8	padding[5];
->  
->  	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header 
-*/
->  	struct v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
-> @@ -209,4 +221,21 @@ struct v4l2_ctrl_hevc_slice_params {
->  	__u64	flags;
->  };
->  
-> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IRAP_PIC		0x1
-> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IDR_PIC		0x2
-> +#define V4L2_HEVC_DECODE_PARAM_FLAG_NO_OUTPUT_OF_PRIOR  0x4
-> +
-> +struct v4l2_ctrl_hevc_decode_params {
-> +	__s32	pic_order_cnt_val;
-> +	__u8	num_active_dpb_entries;
-> +	struct	v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
-> +	__u8	num_rps_poc_st_curr_before;
-> +	__u8	num_rps_poc_st_curr_after;
-> +	__u8	num_rps_poc_lt_curr;
-> +	__u8	rps_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
-> +	__u8	rps_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
-> +	__u8	rps_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
-> +	__u64	flags;
-> +};
+What about something like the following patch, and making all code that
+wants to scan gigantic page subpages use mem_map_next()?
 
-Current practice is to also add/update controls documentation in 
-Documentation/userspace-api/media/v4l/
+From 95b0384bd5d7f0435546bdd3c01c478724ae0166 Mon Sep 17 00:00:00 2001
+From: Mike Kravetz <mike.kravetz@oracle.com>
+Date: Thu, 18 Feb 2021 13:35:02 -0800
+Subject: [PATCH] mm: define PFN_PAGE_MAP_LINEAR to optimize gigantic page
+ scans
 
-With your changes, v4l2_ctrl_hevc_pps and v4l2_ctrl_hevc_slice_params 
-descriptions are out of sync and v4l2_ctrl_hevc_decode_params description is 
-completely missing.
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ arch/ia64/include/asm/page.h       | 1 +
+ arch/m68k/include/asm/page_no.h    | 1 +
+ include/asm-generic/memory_model.h | 2 ++
+ mm/internal.h                      | 2 ++
+ 4 files changed, 6 insertions(+)
 
-Best regards,
-Jernej
-
-> +
->  #endif
-> -- 
-> 2.25.1
-> 
-> 
-
+diff --git a/arch/ia64/include/asm/page.h b/arch/ia64/include/asm/page.h
+index b69a5499d75b..8f4288862ec8 100644
+--- a/arch/ia64/include/asm/page.h
++++ b/arch/ia64/include/asm/page.h
+@@ -106,6 +106,7 @@ extern struct page *vmem_map;
+ #ifdef CONFIG_DISCONTIGMEM
+ # define page_to_pfn(page)	((unsigned long) (page - vmem_map))
+ # define pfn_to_page(pfn)	(vmem_map + (pfn))
++# define PFN_PAGE_MAP_LINEAR
+ # define __pfn_to_phys(pfn)	PFN_PHYS(pfn)
+ #else
+ # include <asm-generic/memory_model.h>
+diff --git a/arch/m68k/include/asm/page_no.h b/arch/m68k/include/asm/page_no.h
+index 6bbe52025de3..cafc0731a42c 100644
+--- a/arch/m68k/include/asm/page_no.h
++++ b/arch/m68k/include/asm/page_no.h
+@@ -28,6 +28,7 @@ extern unsigned long memory_end;
+ 
+ #define pfn_to_page(pfn)	virt_to_page(pfn_to_virt(pfn))
+ #define page_to_pfn(page)	virt_to_pfn(page_to_virt(page))
++#define PFN_PAGE_MAP_LINEAR
+ #define pfn_valid(pfn)	        ((pfn) < max_mapnr)
+ 
+ #define	virt_addr_valid(kaddr)	(((void *)(kaddr) >= (void *)PAGE_OFFSET) && \
+diff --git a/include/asm-generic/memory_model.h b/include/asm-generic/memory_model.h
+index 7637fb46ba4f..8ac4c48dbf22 100644
+--- a/include/asm-generic/memory_model.h
++++ b/include/asm-generic/memory_model.h
+@@ -33,6 +33,7 @@
+ #define __pfn_to_page(pfn)	(mem_map + ((pfn) - ARCH_PFN_OFFSET))
+ #define __page_to_pfn(page)	((unsigned long)((page) - mem_map) + \
+ 				 ARCH_PFN_OFFSET)
++#define PFN_PAGE_MAP_LINEAR
+ #elif defined(CONFIG_DISCONTIGMEM)
+ 
+ #define __pfn_to_page(pfn)			\
+@@ -53,6 +54,7 @@
+ /* memmap is virtually contiguous.  */
+ #define __pfn_to_page(pfn)	(vmemmap + (pfn))
+ #define __page_to_pfn(page)	(unsigned long)((page) - vmemmap)
++#define PFN_PAGE_MAP_LINEAR
+ 
+ #elif defined(CONFIG_SPARSEMEM)
+ /*
+diff --git a/mm/internal.h b/mm/internal.h
+index 25d2b2439f19..64cc5069047c 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -454,12 +454,14 @@ static inline struct page *mem_map_offset(struct page *base, int offset)
+ static inline struct page *mem_map_next(struct page *iter,
+ 						struct page *base, int offset)
+ {
++#ifndef PFN_PAGE_MAP_LINEAR
+ 	if (unlikely((offset & (MAX_ORDER_NR_PAGES - 1)) == 0)) {
+ 		unsigned long pfn = page_to_pfn(base) + offset;
+ 		if (!pfn_valid(pfn))
+ 			return NULL;
+ 		return pfn_to_page(pfn);
+ 	}
++#endif
+ 	return iter + 1;
+ }
+ 
+-- 
+2.29.2
 
