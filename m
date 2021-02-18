@@ -2,158 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E792331E38F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 01:51:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1388431E394
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 01:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBRAus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 19:50:48 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:63928 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhBRAuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 19:50:44 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613609421; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=FnKVk3kaZBaRiyYEVXIKZGXX4o/DMyHVFd+yjupU7+g=; b=u89B55/yhX9sbaXTa4rBUbQX337w/u/+7YT9DcRznQp/xI4mdYQRGqN07R4qR8mzdrcwX9uK
- wH/aODQq5+S0FnstbrsvgVDsCBz27Zt29ssPreS8ag8cp4wGW9bgfqWUhmT0JHEhCgkN95GH
- pInEPDZ6JnvREhvGbIpVZ9PaFAQ=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 602db9ab666e232b38d48495 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 18 Feb 2021 00:49:47
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 96A70C43462; Thu, 18 Feb 2021 00:49:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.110.74.71] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 126B3C433CA;
-        Thu, 18 Feb 2021 00:49:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 126B3C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-Subject: Re: [PATCH v7 4/5] usb: dwc3: dwc3-qcom: Enable tx-fifo-resize
- property by default
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, balbi@kernel.org, gregkh@linuxfoundation.org,
-        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <1611895604-4496-1-git-send-email-wcheng@codeaurora.org>
- <1611895604-4496-5-git-send-email-wcheng@codeaurora.org>
- <YBl8aszdk1xgbg1i@builder.lan>
-From:   Wesley Cheng <wcheng@codeaurora.org>
-Message-ID: <cd0b5e53-af48-3fd6-bad6-1e165a4f8fb8@codeaurora.org>
-Date:   Wed, 17 Feb 2021 16:49:44 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <YBl8aszdk1xgbg1i@builder.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230218AbhBRAv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 19:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229985AbhBRAvV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 19:51:21 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5343CC0613D6
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 16:50:41 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id z7so281713plk.7
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 16:50:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=zSNf4zEuNYLh9QMwdOefeg3SBSqTSCCjWXcw+CrRYeA=;
+        b=GzVD5J/6dJeN0jK3xbvCkp8GBwAAwhljwRmslFd4muzDOpkujDtF6E5+Zl0WpvCTvE
+         yPV6zN+KMJw5bm0M7KOqLkbeQ/ygxqpRDpOzQjmkOrJgeS1bdnah5aMXIy7TxLHjdV8o
+         i5mAiep1drpAq4ucXVs7JfAtWLqU2bvR0ZRLKAfjop8xup72eaibwmCrUtcwwdhA3nXw
+         h6mk2yS6T/o35qsShtX6IISGJWFwk99clwsgtZokEaiY63g5nfZY6q3gxTQBZAsdGUnb
+         frbN8/+6/uu2WqpEswBsbocNdKM2ZpfahYKnSt9ajNWFt8BJBaHjRKy6ligm/NrA7mrX
+         u0qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=zSNf4zEuNYLh9QMwdOefeg3SBSqTSCCjWXcw+CrRYeA=;
+        b=Gu61PvbZGojanRcGfxQc74OnbWjtd3Ak1xhzTPRo8d8nkyo89m79eT7/EaQlEYzb5S
+         jiUSfNxPrpo1I/1vn/Elqcp3Eyi3zIRhLGwBsEwMHcb9steh2IqXrbmj38Rl6vVK19mf
+         EKQ22b89jzEtcw4sNHl/m2CwiNmjocXjOZMULw6DxDFJdyO1h5TzcN8N9STWbGE1R/43
+         BtirzOo9xNMiclYyLA8ulncGqhFV/YiBD3qkzh7BSm+Mlty9Mq2y7k+hlEWcyea2v20g
+         oLYFo0RJYi2dN9gXAQCx/oUvSvsnvCo++XZHNfTvN7XwgEMmW180l2ugnN6jeEySfjGu
+         8CaA==
+X-Gm-Message-State: AOAM532tgGkN7zN+z1/ugnrUuu92BO0zmx2s8RhG1m7+VutkSfYYpR0I
+        0/iZKdGQcv6WzfLM9GTMWKMNuQ==
+X-Google-Smtp-Source: ABdhPJx5CdTywPoSpnizVseLRqF9GG0p/+HnFFJrSSYPz5qfEFA9aehylKSsOop09UGA3XRGPbYmuw==
+X-Received: by 2002:a17:90b:ec5:: with SMTP id gz5mr1485070pjb.34.1613609440561;
+        Wed, 17 Feb 2021 16:50:40 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id j1sm3507363pfr.78.2021.02.17.16.50.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 17 Feb 2021 16:50:39 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <216103D5-0575-4BFC-9802-2C21A1B12DF9@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_78AEEB9E-A81A-43DA-9A4B-7AC7529D21C3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] vfs: prevent copy_file_range to copy across devices
+Date:   Wed, 17 Feb 2021 17:50:35 -0700
+In-Reply-To: <CAOQ4uxii=7KUKv1w32VbjkwS+Z1a0ge0gezNzpn_BiY6MFWkpA@mail.gmail.com>
+Cc:     Steve French <smfrench@gmail.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Luis Henriques <lhenriques@suse.de>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "drinkcat@chromium.org" <drinkcat@chromium.org>,
+        "iant@google.com" <iant@google.com>,
+        "linux-cifs@vger.kernel.org" <linux-cifs@vger.kernel.org>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jlayton@kernel.org" <jlayton@kernel.org>,
+        "llozano@chromium.org" <llozano@chromium.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "miklos@szeredi.hu" <miklos@szeredi.hu>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "dchinner@redhat.com" <dchinner@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "sfrench@samba.org" <sfrench@samba.org>,
+        "ceph-devel@vger.kernel.org" <ceph-devel@vger.kernel.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+References: <CAOQ4uxiFGjdvX2-zh5o46pn7RZhvbGHH0wpzLPuPOom91FwWeQ@mail.gmail.com>
+ <20210215154317.8590-1-lhenriques@suse.de>
+ <CAOQ4uxgjcCrzDkj-0ukhvHRgQ-D+A3zU5EAe0A=s1Gw2dnTJSA@mail.gmail.com>
+ <73ab4951f48d69f0183548c7a82f7ae37e286d1c.camel@hammerspace.com>
+ <CAOQ4uxgPtqG6eTi2AnAV4jTAaNDbeez+Xi2858mz1KLGMFntfg@mail.gmail.com>
+ <92d27397479984b95883197d90318ee76995b42e.camel@hammerspace.com>
+ <CAOQ4uxjUf15fDjz11pCzT3GkFmw=2ySXR_6XF-Bf-TfUwpj77Q@mail.gmail.com>
+ <87r1lgjm7l.fsf@suse.de>
+ <CAOQ4uxgucdN8hi=wkcvnFhBoZ=L5=ZDc7-6SwKVHYaRODdcFkg@mail.gmail.com>
+ <87blckj75z.fsf@suse.de>
+ <CAOQ4uxiiy_Jdi3V1ait56=zfDQRBu_5gb+UsCo8GjMZ6XRhozw@mail.gmail.com>
+ <874kibkflh.fsf@suse.de>
+ <CAOQ4uxgRK3vXH8uAJKy8cFLL8siKnMMN8h6hx4yZeA5Fe0ZZYA@mail.gmail.com>
+ <CAFX2Jfk0X=jKBpOzjq7k-U6SEwFn1Atw62BK2DzavM8XgeLUaQ@mail.gmail.com>
+ <CAH2r5mvybG3mRUfHUub9B+nk5WrQ5Fvzu5pZ+ZynqZg4c4ct2A@mail.gmail.com>
+ <CAOQ4uxhqaTUwD8Lw+9HWWj61EXRv4X-eE3u4DFeWnv_VOUZF5A@mail.gmail.com>
+ <CAH2r5msmtuk0f8FuZxdRBQ2d_VKXexctcP0OmnLXoDEBien-nQ@mail.gmail.com>
+ <CAOQ4uxii=7KUKv1w32VbjkwS+Z1a0ge0gezNzpn_BiY6MFWkpA@mail.gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--Apple-Mail=_78AEEB9E-A81A-43DA-9A4B-7AC7529D21C3
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-On 2/2/2021 8:23 AM, Bjorn Andersson wrote:
-> On Thu 28 Jan 22:46 CST 2021, Wesley Cheng wrote:
-> 
->> In order to take advantage of the TX fifo resizing logic, manually add
->> these properties to the DWC3 child node by default.  This will allow
->> the DWC3 gadget to resize the TX fifos for the IN endpoints, which
->> help with performance.
->>
->> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
->> ---
->>  drivers/usb/dwc3/dwc3-qcom.c | 10 ++++++++++
->>  1 file changed, 10 insertions(+)
->>
->> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
->> index d803ee9..4ea6be3 100644
->> --- a/drivers/usb/dwc3/dwc3-qcom.c
->> +++ b/drivers/usb/dwc3/dwc3-qcom.c
->> @@ -564,6 +564,7 @@ static int dwc3_qcom_clk_init(struct dwc3_qcom *qcom, int count)
->>  
->>  static const struct property_entry dwc3_qcom_acpi_properties[] = {
->>  	PROPERTY_ENTRY_STRING("dr_mode", "host"),
->> +	PROPERTY_ENTRY_BOOL("tx-fifo-resize"),
-> 
-> I checked the ACPI tables for Lenovo Miix 630, Yoga C630 and Flex 5G and
-> neither one has this property specified. So while we could just add this
-> here, it would have to be done in collaboration with the people who
-> actually define these. And as said before, I believe we want this to
-> always be enabled.
-> 
->>  	{}
->>  };
->>  
->> @@ -634,6 +635,7 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
->>  	struct dwc3_qcom	*qcom = platform_get_drvdata(pdev);
->>  	struct device_node	*np = pdev->dev.of_node, *dwc3_np;
->>  	struct device		*dev = &pdev->dev;
->> +	struct property		*prop;
->>  	int			ret;
->>  
->>  	dwc3_np = of_get_child_by_name(np, "dwc3");
->> @@ -642,6 +644,14 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
->>  		return -ENODEV;
->>  	}
->>  
->> +	prop = kzalloc(sizeof(*prop), GFP_KERNEL);
->> +	if (prop) {
->> +		prop->name = "tx-fifo-resize";
->> +		ret = of_add_property(dwc3_np, prop);
-> 
-> Can't we come up with a way where the platform driver enables this on
-> the core driver without modifying DT?
-> 
-> Regards,
-> Bjorn
+On Feb 17, 2021, at 1:08 AM, Amir Goldstein <amir73il@gmail.com> wrote:
+>=20
+> You are missing my point.
+> Never mind which server. The server does not *need* to rely on
+> vfs_copy_file_range() to copy files from XFS to ext4.
+> The server is very capable of implementing the fallback generic copy
+> in case source/target fs do not support native =
+{copy,remap}_file_range().
+>=20
+> w.r.t semantics of copy_file_range() syscall vs. the fallback to =
+userespace
+> 'cp' tool (check source file size before copy or not), please note =
+that the
+> semantics of CIFS_IOC_COPYCHUNK_FILE are that of the former:
+>=20
+>        rc =3D cifs_file_copychunk_range(xid, src_file.file, 0, =
+dst_file, 0,
+>                                        src_inode->i_size, 0);
+>=20
+> It will copy zero bytes if advertised source file size if zero.
+>=20
+> NFS server side copy semantics are currently de-facto the same
+> because both the client and the server will have to pass through this
+> line in vfs_copy_file_range():
+>=20
+>        if (len =3D=3D 0)
+>                return 0;
+>=20
+> IMO, and this opinion was voiced by several other filesystem =
+developers,
+> the shortend copy semantics are the correct semantics for =
+copy_file_range()
+> syscall as well as for vfs_copy_file_range() for internal kernel =
+users.
+>=20
+> I guess what this means is that if the 'cp' tool ever tries an =
+opportunistic
+> copy_file_range() syscall (e.g. --cfr=3Dauto), it may result in zero =
+size copy.
 
-Hi Bjorn,
+Having a syscall that does the "wrong thing" when called on two files
+doesn't make sense.  Expecting userspace to check whether source/target
+files supports CFR is also not practical.  This is trivial for the
+kernel to determine and return -EOPNOTSUPP to the caller if the source
+file (procfs/sysfs/etc) does not work with CFR properly.
 
-Sorry for the late response.  As you know, its a little difficult to
-access the DWC3 core device during DWC3 qcom probe time, as the DWC3
-core will likely return deferred probe due to the PHY devices not being
-ready.
+Applications must already handle -EOPNOTSUPP with a fallback, but
+expecting all applications that may call copy_file_range() to be
+properly coded to handle corner cases is just asking for trouble.
+That is doubly true given that an existing widely-used tool like
+cp and mv are using this syscall if it is available in the kernel.
 
-This is why I went with the approach to modify the DWC3 node here, so
-that when the DWC3 core is eventually probed, it wouldn't miss this
-property setting.  If I tried to set this dynamically, say in
-dwc3_qcom_vbus_override() (with proper NULL checks), then I'd miss this
-setting for the first enumeration, but if cable plug out/in logic is
-present, the setting would kick in on subsequent cable events.
+Cheers, Andreas
 
-Thanks
-Wesley Cheng
 
-> 
->> +		if (ret < 0)
->> +			dev_info(dev, "unable to add tx-fifo-resize prop\n");
->> +	}
->> +
->>  	ret = of_platform_populate(np, NULL, NULL, dev);
->>  	if (ret) {
->>  		dev_err(dev, "failed to register dwc3 core - %d\n", ret);
->> -- 
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> a Linux Foundation Collaborative Project
->>
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+
+
+
+--Apple-Mail=_78AEEB9E-A81A-43DA-9A4B-7AC7529D21C3
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAtudsACgkQcqXauRfM
+H+CO9g//WwBMyeIl911flDvwfLe5tUQtTs8/bVC4xjWR3LBb+PIqo8UfTbhe+9T6
+18pmJ8bSza18bVv+TKZr0qVgJBb44/5dM9sIlFQth5VCSdQUJiqmLc2sGduO0DGh
+f9tQmw+2wDtzhuAJyxL2Vz1jIDKPMjr91xODblzQ+fBa1d/H8N04vE7TPmI5mbWx
+V3Hs7RlvMoYZ6ZqdQR9SJ2aDmJmMixkOnXVomDM0yEqCftZWLk8tI+n0aLkSfmqz
+aQIYf2mFwJ6q+U6LoaRMqMG1malw75xcS+FkgddxvrYjLII/3ZJ8oe0/zkNuGxIF
+OkQt6ghStT1zi6TU+IxP6Pdk5BPTWhF1EAFtHiKnuezPfCQlhABSmv4sru8jyArD
+7zo7SoH/6Qu+/dSSLXYC1gma3eS6+e0NZrEVR655lBJy4hnssNJNRe5hlobtgTMr
+5Dkim9EXb2qYUdf6SRA4oXA0JVbaL44F/QiPzeFXPcQWa6ACzf33sCSMyuM1KVHR
+Q2o0dNkP3BettePxdN5dq0JkrSbQFVKZ9Tgb6nmw5lVWPXjBA/jU2Oj0zD9n/KbW
+h9FijAV/QQBdylhuxrKZFayeOrk5cz3fGyerKAEjSMyJddFciZNewYv6RjVUYw19
+6aoTk2cTs+9dfT/GDN5Af/QgJHu2J3+hWX2celNzL1ExUENIgtU=
+=sggq
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_78AEEB9E-A81A-43DA-9A4B-7AC7529D21C3--
