@@ -2,124 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE73631F217
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:08:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA3D31F21B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:09:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230218AbhBRWIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:08:24 -0500
-Received: from mail-wr1-f47.google.com ([209.85.221.47]:45275 "EHLO
-        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230190AbhBRWH7 (ORCPT
+        id S229990AbhBRWIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:08:45 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3029 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230228AbhBRWIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:07:59 -0500
-Received: by mail-wr1-f47.google.com with SMTP id f7so3459844wrt.12;
-        Thu, 18 Feb 2021 14:07:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0n+YfZI6F9Ec0xH8pK2WNkYmhD2t2qIeMiAyh4+JUos=;
-        b=odWnqpjjEjNdElBsK8jx1a3z0Fo2blLXJNss9EcZZ7/GI/D7PB+syVNCs6LUKuhnZ2
-         0pAa2KPwoev+IB/XEgmkKjGMLLEbA1Dw2J15CcBJss7prUQAqchqsvTYPPGEeGYYf/Df
-         uS6TcdgqO8aGHiEJIakwiiOPsYdXr1xwlgRBR5HX5IwlxYj7bNAmqX8RAmKLLi9l4xn6
-         d+M+uPOB1WpcUjGEKU53mgi8XVe14/BslYXOD3x7IRjwDqVT5f2UoN3qpDfRyJ5plK/2
-         SH/IpPpmOvT+RE3kmDRLD2k5ZACTjoIERbuZ4Y4zp7nlTatglxWeyUvZYtkWHuhtCoc3
-         W+iw==
-X-Gm-Message-State: AOAM532znqKe6V/LfUPAbhfDNRQYuG+xF450MLCEXihuwgTBzcdTVl7A
-        DMbWfa6/+92iGxRTEwpkzDY=
-X-Google-Smtp-Source: ABdhPJwmnADLdGOpvALWY6RGD5mn/BJw98YjuC7zbBfSacCz/X+q1L92Yl8i46J1TK0tiD2zLB97mg==
-X-Received: by 2002:adf:c785:: with SMTP id l5mr6140263wrg.234.1613686037041;
-        Thu, 18 Feb 2021 14:07:17 -0800 (PST)
-Received: from rocinante ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id j3sm407533wrs.43.2021.02.18.14.07.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 14:07:16 -0800 (PST)
-Date:   Thu, 18 Feb 2021 23:07:15 +0100
-From:   'Krzysztof =?utf-8?Q?Wilczy=C5=84ski'?= <kw@linux.com>
-To:     "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] PCI/RCEC: Fix failure to inject errors to some RCiEP
- devices
-Message-ID: <YC7lE2Ph/MHxNKs+@rocinante>
-References: <20210210020516.95292-1-qiuxu.zhuo@intel.com>
- <YCQT90mK1kacZ7ZA@rocinante>
- <a5b1aa8ef91a4c71982ad77234932349@intel.com>
+        Thu, 18 Feb 2021 17:08:41 -0500
+Received: from DGGEMM402-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DhTLw1WMJzRD7r;
+        Fri, 19 Feb 2021 06:06:32 +0800 (CST)
+Received: from dggemm752-chm.china.huawei.com (10.1.198.58) by
+ DGGEMM402-HUB.china.huawei.com (10.3.20.210) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 19 Feb 2021 06:07:55 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemm752-chm.china.huawei.com (10.1.198.58) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Fri, 19 Feb 2021 06:07:54 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Fri, 19 Feb 2021 06:07:54 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        Meelis Roos <mroos@linux.ee>
+Subject: RE: [Linuxarm]  Re: [PATCH v2] sched/topology: fix the issue groups
+ don't span domain->span for NUMA diameter > 2
+Thread-Topic: [Linuxarm]  Re: [PATCH v2] sched/topology: fix the issue groups
+ don't span domain->span for NUMA diameter > 2
+Thread-Index: AQHW+h42U7QNiWetGE+PWD4uLCFytKpPS20AgAEC7uCAAHUfAIACIcmAgArN4hD//7kYgIABGpMA
+Date:   Thu, 18 Feb 2021 22:07:54 +0000
+Message-ID: <23914b8d7bb74aa9996c1a45b4bb0aed@hisilicon.com>
+References: <20210203111201.20720-1-song.bao.hua@hisilicon.com>
+ <YCKGVBnXzRsE6/Er@hirez.programming.kicks-ass.net>
+ <4bdaa3e1a54f445fa8e629ea392e7bce@hisilicon.com>
+ <YCPByAdQ+rZFzYWp@hirez.programming.kicks-ass.net>
+ <jhjblcqtm5c.mognet@arm.com> <ae3bf4dc465040a4b31e4010fd800408@hisilicon.com>
+ <jhj7dn5sg4q.mognet@arm.com>
+In-Reply-To: <jhj7dn5sg4q.mognet@arm.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.200]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <a5b1aa8ef91a4c71982ad77234932349@intel.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Bjorn as we talked about RCiEP briefly on IRC]
-
-Hello Qiuxu,
-
-[...]
-> Sorry, just back from Chinese New Year holiday.
-
-Welcome back!  I hope you had a nice rest, and also Happy New Year!
-
-[...]
-> > Would this only affect error injection or would this be also a generic problem
-> > with the driver itself causing issues regardless of whether it was an error
-> > injection or not for this particular device?  I am asking, as there is a lot going on
-> > in the commit message.
-> 
-> This is also a generic problem.
-
-Good to know.  Bjorn was also wondering if this is potentially a sign of
-a larger probed with the RCiEP support.
-
-> > I wonder if simplifying this commit message so that it clearly explains what was
-> > broken, why, and how this patch is fixing it, would perhaps be an option?  The
-> > backstory of how you found the issue while doing some testing and error
-> > injection is nice, but not sure if needed.
-> > 
-> > What do you think?
-> 
-> Agree to simplify the commit message. How about the following subject and commit message?
-> 
-> Subject:  
-> Use device number to check RCiEPBitmap of RCEC
-> 
-> Commit message: 
-> rcec_assoc_rciep() used the combination of device number and function
-> number 'devfn' to check whether the corresponding bit in the
-> RCiEPBimap of RCEC was set. According to [1], it only needs to use the
-> device number to check the corresponding bit in the RCiEPBitmap was
-> set. So fix it by using PCI_SLOT() to convert 'devfn' to device number
-> for rcec_assoc_rciep(). [1] PCIe r5.0, sec "7.9.10.2 Association
-> Bitmap for RCiEPs"
-
-I took your suggestion and came up with the following:
-
-  Function rcec_assoc_rciep() incorrectly used "rciep->devfn" (a single
-  byte encoding the device and function number) as the device number to
-  check whether the corresponding bit was set in the RCiEPBitmap of the
-  RCEC (Root Complex Event Collector) while enumerating over each bit of
-  the RCiEPBitmap.
-
-  As per the PCI Express Base Specification, Revision 5.0, Version 1.0,
-  Section 7.9.10.2, "Association Bitmap for RCiEPs", p. 935, only needs to
-  use a device number to check whether the corresponding bit was set in
-  the RCiEPBitmap.
-
-  Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value
-  of "rciep->devfn" to a device number to ensure that the RCiEP devices
-  are associated with the RCEC are linked when the RCEC is enumerated.
-
-Using either of the following as the subject:
-
-  PCI/RCEC: Use device number to check RCiEPBitmap of RCEC
-  PCI/RCEC: Fix RCiEP capable devices RCEC association
-
-What do you think?  Also, feel free to change whatever you see fit, of
-course, as tis is only a suggestion.
-
-Krzysztof
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVmFsZW50aW4gU2NobmVp
+ZGVyIFttYWlsdG86dmFsZW50aW4uc2NobmVpZGVyQGFybS5jb21dDQo+IFNlbnQ6IEZyaWRheSwg
+RmVicnVhcnkgMTksIDIwMjEgMTo0MSBBTQ0KPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBTb25n
+KSA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+OyBQZXRlciBaaWpsc3RyYQ0KPiA8cGV0ZXJ6
+QGluZnJhZGVhZC5vcmc+DQo+IENjOiB2aW5jZW50Lmd1aXR0b3RAbGluYXJvLm9yZzsgbWdvcm1h
+bkBzdXNlLmRlOyBtaW5nb0BrZXJuZWwub3JnOw0KPiBkaWV0bWFyLmVnZ2VtYW5uQGFybS5jb207
+IG1vcnRlbi5yYXNtdXNzZW5AYXJtLmNvbTsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9y
+ZzsgbGludXhhcm1Ab3BlbmV1bGVyLm9yZzsgeHV3ZWkgKE8pDQo+IDx4dXdlaTVAaHVhd2VpLmNv
+bT47IExpZ3Vvemh1IChLZW5uZXRoKSA8bGlndW96aHVAaGlzaWxpY29uLmNvbT47IHRpYW50YW8g
+KEgpDQo+IDx0aWFudGFvNkBoaXNpbGljb24uY29tPjsgd2FuZ2h1aXFpYW5nIDx3YW5naHVpcWlh
+bmdAaHVhd2VpLmNvbT47IFplbmd0YW8gKEIpDQo+IDxwcmltZS56ZW5nQGhpc2lsaWNvbi5jb20+
+OyBKb25hdGhhbiBDYW1lcm9uIDxqb25hdGhhbi5jYW1lcm9uQGh1YXdlaS5jb20+Ow0KPiBndW9k
+b25nLnh1QGxpbmFyby5vcmc7IE1lZWxpcyBSb29zIDxtcm9vc0BsaW51eC5lZT4NCj4gU3ViamVj
+dDogW0xpbnV4YXJtXSBSZTogW1BBVENIIHYyXSBzY2hlZC90b3BvbG9neTogZml4IHRoZSBpc3N1
+ZSBncm91cHMgZG9uJ3QNCj4gc3BhbiBkb21haW4tPnNwYW4gZm9yIE5VTUEgZGlhbWV0ZXIgPiAy
+DQo+IA0KPiANCj4gSGkgQmFycnksDQo+IA0KPiBPbiAxOC8wMi8yMSAwOToxNywgU29uZyBCYW8g
+SHVhIChCYXJyeSBTb25nKSB3cm90ZToNCj4gPiBIaSBWYWxlbnRpbiwNCj4gPg0KPiA+IEkgdW5k
+ZXJzdGFuZCBQZXRlcidzIGNvbmNlcm4gaXMgdGhhdCB0aGUgbG9jYWwgZ3JvdXAgaGFzIGRpZmZl
+cmVudA0KPiA+IHNpemUgd2l0aCByZW1vdGUgZ3JvdXBzLiBJcyB0aGlzIHBhdGNoIHJlc29sdmlu
+ZyBQZXRlcidzIGNvbmNlcm4/DQo+ID4gVG8gbWUsIGl0IHNlZW1zIG5vdCA6LSkNCj4gPg0KPiAN
+Cj4gSWYgeW91IHJlbW92ZSB0aGUgJyYmIGkgIT0gY3B1JyBpbiBidWlsZF9vdmVybGFwX3NjaGVk
+X2dyb3VwcygpIHlvdSBnZXQgdGhhdCwNCj4gYnV0IHRoZW4geW91IGFsc28gZ2V0IHNvbWUgZXh0
+cmEgd2FybmluZ3MgOi0pDQo+IA0KPiBOb3cgeWVzLCBzaG91bGRfd2VfYmFsYW5jZSgpIG9ubHkg
+bWF0dGVycyBmb3IgdGhlIGxvY2FsIGdyb3VwLiBIb3dldmVyIEknbQ0KPiBzb21ld2hhdCB3YXJ5
+IG9mIG1lc3Npbmcgd2l0aCB0aGUgbG9jYWwgZ3JvdXBzOyBmb3Igb25lIGl0IG1lYW5zIHlvdSB3
+b3VsZCBoYXZlDQo+IG1vcmUgdGhhbiBvbmUgdGwgbm93IGFjY2Vzc2luZyB0aGUgc2FtZSBzZ2Mt
+Pm5leHRfdXBkYXRlLCBzZ2MtPnttaW4sDQo+IG1heH1jYXBhY2l0eSwgc2djLT5ncm91cF9pbWJh
+bGFuY2UgKGFzIFZpbmNlbnQgaGFkIHBvaW50ZWQgb3V0KS4NCj4gDQo+IEJ5IGVuc3VyaW5nIG9u
+bHkgcmVtb3RlIChpLmUuICFsb2NhbCkgZ3JvdXBzIGFyZSBtb2RpZmllZCAod2hpY2ggaXMgd2hh
+dCB5b3VyDQo+IHBhdGNoIGRvZXMpLCB3ZSBhYnNvbHZlIG91cnNlbHZlcyBvZiB0aGlzIGlzc3Vl
+LCB3aGljaCBpcyB3aHkgSSBwcmVmZXIgdGhpcw0KPiBhcHByb2FjaCBBVE0uDQoNClllcC4gVGhl
+IGdyYW5kY2hpbGQgYXBwcm9hY2ggc2VlbXMgc3RpbGwgdG8gdGhlIGZlYXNpYmxlIHdheSBmb3Ig
+dGhpcyBtb21lbnQuDQoNCj4gDQo+ID4gVGhvdWdoIEkgZG9u4oCZdCB1bmRlcnN0YW5kIHdoeSBk
+aWZmZXJlbnQgZ3JvdXAgc2l6ZXMgd2lsbCBiZSBoYXJtZnVsDQo+ID4gc2luY2UgYWxsIGdyb3Vw
+cyBhcmUgY2FsY3VsYXRpbmcgYXZnX2xvYWQgYW5kIGdyb3VwX3R5cGUgYmFzZWQgb24NCj4gPiB0
+aGVpciBvd24gY2FwYWNpdGllcy4gVGh1cywgZm9yIGEgc21hbGxlciBncm91cCwgaXRzIGNhcGFj
+aXR5IHdvdWxkIGJlDQo+ID4gc21hbGxlci4NCj4gPg0KPiA+IElzIGl0IGJlY2F1c2UgYSBiaWdn
+ZXIgZ3JvdXAgaGFzIHJlbGF0aXZlbHkgbGVzcyBjaGFuY2UgdG8gcHVsbCwgc28NCj4gPiBsb2Fk
+IGJhbGFuY2luZyB3aWxsIGJlIGNvbXBsZXRlZCBtb3JlIHNsb3dseSB3aGlsZSBzbWFsbCBncm91
+cHMgaGF2ZQ0KPiA+IGhpZ2ggbG9hZD8NCj4gPg0KPiANCj4gUGV0ZXIncyBwb2ludCBpcyB0aGF0
+LCBpZiBhdCBhIGdpdmVuIHRsIHlvdSBoYXZlIGdyb3VwcyB0aGF0IGxvb2sgbGlrZQ0KPiANCj4g
+ZzA6IDAtNCwgZzE6IDUtNiwgZzI6IDctOA0KPiANCj4gVGhlbiBnMCBpcyBoYWxmIGFzIGxpa2Vs
+eSB0byBwdWxsIHRhc2tzIHdpdGggbG9hZF9iYWxhbmNlKCkgdGhhbiBnMSBvciBnMiAoZHVlDQo+
+IHRvIHRoZSBncm91cCBzaXplIHZzIHNob3VsZF93ZV9iYWxhbmNlKCkpDQoNClllcC4gdGhlIGRp
+ZmZlcmVuY2UgaXMgdGhhdCBnMSBhbmQgZzIgd29uJ3QgYmUgbG9jYWwgZ3JvdXBzIG9mIGFueSBD
+UFUgaW4NCnRoaXMgdGwuDQpUaGUgc21hbGxlciBncm91cHMgZzEgYW5kIGcyIGFyZSBvbmx5IHJl
+bW90ZSBncm91cHMsICBzbyBzaG91bGRfd2VfYmFsYW5jZSgpDQpkb2Vzbid0IG1hdHRlciBoZXJl
+IGZvciB0aGVtLg0KDQo+IA0KPiANCj4gSG93ZXZlciwgSSBzdXBwb3NlIG9uZSAidHJpY2siIHRv
+IGJlIGF3YXJlIG9mIGhlcmUgaXMgdGhhdCBzaW5jZSB5b3VyIHBhdGNoDQo+ICpkb2Vzbid0KiBj
+aGFuZ2UgdGhlIGxvY2FsIGdyb3VwLCB3ZSBkbyBoYXZlIGUuZy4gb24gQ1BVMDoNCj4gDQo+IFsg
+ICAgMC4zNzQ4NDBdICAgIGRvbWFpbi0yOiBzcGFuPTAtNSBsZXZlbD1OVU1BDQo+IFsgICAgMC4z
+NzUwNTRdICAgICBncm91cHM6IDA6eyBzcGFuPTAtMyBjYXA9NDAwMyB9LCA0Onsgc3Bhbj00LTUg
+Y2FwPTE5ODggfQ0KPiANCj4gKmJ1dCogb24gQ1BVNCB3ZSBnZXQ6DQo+IA0KPiBbICAgIDAuMzg3
+MDE5XSAgICBkb21haW4tMjogc3Bhbj0wLTEsNC03IGxldmVsPU5VTUENCj4gWyAgICAwLjM4NzIx
+MV0gICAgIGdyb3VwczogNDp7IHNwYW49NC03IGNhcD0zOTg0IH0sIDA6eyBzcGFuPTAtMSBjYXA9
+MjAxMyB9DQo+IA0KPiBJT1csIGF0IGEgZ2l2ZW4gdGwsIGFsbCAqbG9jYWwqIGdyb3VwcyBoYXZl
+IC9yb3VnaGx5LyB0aGUgc2FtZSBzaXplIGFuZCB0aHVzDQo+IHNpbWlsYXIgcHVsbCBwcm9iYWJp
+bGl0eSAoaXQgdG9vayBtZSB3cml0aW5nIHRoaXMgbWFpbCB0byBzZWUgaXQgdGhhdCB3YXkpLg0K
+PiBTbyBwZXJoYXBzIHRoaXMgaXMgYWxsIGZpbmUgYWxyZWFkeT8NCg0KWWVwLiBzaW5jZSBzaG91
+bGRfd2VfYmFsYW5jZSgpIG9ubHkgbWF0dGVycyBmb3IgbG9jYWwgZ3JvdXBzIGFuZCB3ZSBoYXZl
+bid0DQpjaGFuZ2VkIHRoZSBzaXplIG9mIGxvY2FsIGdyb3VwcyBpbiB0aGUgZ3JhbmRjaGlsZCBh
+cHByb2FjaCwgYWxsIGxvY2FsIGdyb3Vwcw0KYXJlIHN0aWxsIGdldHRpbmcgc2ltaWxhciBwdWxs
+IHByb2JhYmlsaXR5IGluIHRoaXMgdG9wb2xvZ3kgbGV2ZWwuDQoNClNpbmNlIHdlIHN0aWxsIHBy
+ZWZlciB0aGUgZ3JhbmRjaGlsZCBhcHByb2FjaCBBVE0sIGlmIFBldGVyIGhhcyBubyBtb3JlIGNv
+bmNlcm4NCm9uIHRoZSB1bmVxdWFsIHNpemUgYmV0d2VlbiBsb2NhbCBncm91cHMgYW5kIHJlbW90
+ZSBncm91cHMsIEkgd291bGQgYmUgZ2xhZA0KdG8gc2VuZCB2NCBvZiBncmFuZGNoaWxkIGFwcHJv
+YWNoIGJ5IHJld3JpdGluZyBjaGFuZ2Vsb2cgdG8gZXhwbGFpbiB0aGUgdXBkYXRlDQppc3N1ZSBv
+ZiBzZ2MtPm5leHRfdXBkYXRlLCBzZ2MtPnttaW4sIG1heH1jYXBhY2l0eSwgc2djLT5ncm91cF9p
+bWJhbGFuY2UNClZpbmNlbnQgcG9pbnRlZCBvdXQgYW5kIGFsc28gZGVzY3JpYmUgdGhlIGxvY2Fs
+X2dyb3VwcyBhcmUgbm90IHRvdWNoZWQsIHRodXMNCnN0aWxsIGluIHRoZSBlcXVhbCBzaXplLg0K
+DQpUaGFua3MNCkJhcnJ5DQoNCg==
