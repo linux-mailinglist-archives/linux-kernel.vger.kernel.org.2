@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D63031E838
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FA731E83A
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhBRJcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:32:43 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:50594 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230281AbhBRITs (ORCPT
+        id S232083AbhBRJdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:33:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230368AbhBRITr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:19:48 -0500
+        Thu, 18 Feb 2021 03:19:47 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C565FC0617A9
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:18:27 -0800 (PST)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1613636303;
@@ -19,30 +22,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TI8jKw/bM8hX+GytHg3FHpvo+uHYr21S5Xx+X0cbFsE=;
-        b=whcAj2EgmUSDhPGvZWLRlmbBRMk80Wk23rB8jODqNCx8js3frYErVBTYla+LC9d3VgGWUl
-        dnfF+Q5huvXilh89ya2R5eTgzgL8JBqQglmjdhVkumnw6FkEB3BovdYNJ0MJo+pVa1Nxru
-        opg2yg9ZzFo6CLuNiZ+8xAQbU6nd3xCOIep0rcKBcHCdBg8Kc6etn9WhiL717Ty4HU1suW
-        vzDvZSDz0pJrw+R0pJeepB6Igh69Jl1O5eoN+yxlRasSEei13pI03BDOxRqysRgkyuazsd
-        q6BSwDpG/z0PITGkBFaKSenoOSR90EiH4g2JYm4k6Fl/Y2kZJodw1jGRYwjZEw==
+        bh=oQVpm6/GtS3qQdRKAxLY1POMX/FeNAh+0ZeUb5oLxLQ=;
+        b=sCeaEEqmjdD8JagTwVjw9Eh/Uks+xwkcoPMS75yuRFTzebH//6/FiEgHfbOUwKf8szvXMi
+        fLjG0XC//ufz5GWnNvUtqAXDlkuAyHqoZUFyx56V5ByvKW4+KUc9kmVUPaV4sEMxnDNzH3
+        8lx7mSxXnlAqaag4G/HaO7JTTygOwTiroa1w14ngKTVlIHN2B3jg7Fqdhlw03w1Us8W7We
+        fF+oKmflx+2tl/2lrOuCMTEkuvAqoWHeUzsGmOG9fiaKj466yeINoo0o0jNr/IhGp7oOSh
+        0V8JrqHk/f3PgNY5IuV/xzCKbzs9HYaLwxnq4iW1E9DrMSubZwgiwd/d/JI5HA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1613636303;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TI8jKw/bM8hX+GytHg3FHpvo+uHYr21S5Xx+X0cbFsE=;
-        b=xz+9TRmHPxpl2HEcttYLa2dvNR6tlr5mv4PQ44/IedanVy//W74VyvrNVGF0dMXTgghelk
-        bwlwUsLPnr+PeJBQ==
+        bh=oQVpm6/GtS3qQdRKAxLY1POMX/FeNAh+0ZeUb5oLxLQ=;
+        b=nJUx/9WxDsJLqe0igUgZicOIZloBlB4Iiv4VcNJne0ctlpfLG30VprdVThGNwSIFHb7CMv
+        6WibwaKPuGIKxfCw==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH printk-rework 13/14] printk: kmsg_dump: use kmsg_dump_rewind
-Date:   Thu, 18 Feb 2021 09:18:16 +0100
-Message-Id: <20210218081817.28849-14-john.ogness@linutronix.de>
+Subject: [PATCH printk-rework 14/14] printk: console: remove unnecessary safe buffer usage
+Date:   Thu, 18 Feb 2021 09:18:17 +0100
+Message-Id: <20210218081817.28849-15-john.ogness@linutronix.de>
 In-Reply-To: <20210218081817.28849-1-john.ogness@linutronix.de>
 References: <20210218081817.28849-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -51,38 +54,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kmsg_dump() is open coding the kmsg_dump_rewind(). Call
-kmsg_dump_rewind() instead.
+Upon registering a console, safe buffers are activated when setting
+up the sequence number to replay the log. However, these are already
+protected by @console_sem and @syslog_lock. Remove the unnecessary
+safe buffer usage.
 
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 ---
- kernel/printk/printk.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ kernel/printk/printk.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 744b806d5457..23d525e885e7 100644
+index 23d525e885e7..78eee6c553a5 100644
 --- a/kernel/printk/printk.c
 +++ b/kernel/printk/printk.c
-@@ -3347,7 +3347,6 @@ void kmsg_dump(enum kmsg_dump_reason reason)
- {
- 	struct kmsg_dumper_iter iter;
- 	struct kmsg_dumper *dumper;
--	unsigned long flags;
- 
- 	rcu_read_lock();
- 	list_for_each_entry_rcu(dumper, &dump_list, list) {
-@@ -3366,10 +3365,7 @@ void kmsg_dump(enum kmsg_dump_reason reason)
- 
- 		/* initialize iterator with data about the stored records */
- 		iter.active = true;
+@@ -2961,9 +2961,7 @@ void register_console(struct console *newcon)
+ 		/*
+ 		 * console_unlock(); will print out the buffered messages
+ 		 * for us.
+-		 */
 -		printk_safe_enter_irqsave(flags);
--		iter.cur_seq = latched_seq_read_nolock(&clear_seq);
--		iter.next_seq = prb_next_seq(prb);
--		printk_safe_exit_irqrestore(flags);
-+		kmsg_dump_rewind(&iter);
+-		/*
++		 *
+ 		 * We're about to replay the log buffer.  Only do this to the
+ 		 * just-registered console to avoid excessive message spam to
+ 		 * the already-registered consoles.
+@@ -2976,11 +2974,9 @@ void register_console(struct console *newcon)
+ 		exclusive_console_stop_seq = console_seq;
  
- 		/* invoke dumper which will iterate over records */
- 		dumper->dump(dumper, reason, &iter);
+ 		/* Get a consistent copy of @syslog_seq. */
+-		raw_spin_lock(&syslog_lock);
++		raw_spin_lock_irqsave(&syslog_lock, flags);
+ 		console_seq = syslog_seq;
+-		raw_spin_unlock(&syslog_lock);
+-
+-		printk_safe_exit_irqrestore(flags);
++		raw_spin_unlock_irqrestore(&syslog_lock, flags);
+ 	}
+ 	console_unlock();
+ 	console_sysfs_notify();
 -- 
 2.20.1
 
