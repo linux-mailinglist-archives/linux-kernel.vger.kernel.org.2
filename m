@@ -2,230 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9559E31E48B
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 515C531E48D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhBRDbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 22:31:01 -0500
-Received: from mail-mw2nam12on2118.outbound.protection.outlook.com ([40.107.244.118]:28769
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229889AbhBRDa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 22:30:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=id015StVCTKxWxBM2zSoPilWJ0vm3JUjdPcqaj3zgA3ZuJjARqo6WoU3UkAqpIoFsss0vq+ad4gw4FZwZ/dscb056MG0+fLqiyDcVJHbl71c0ETk7UuSkUtvaZhApZ1T1TajsmzRs8fqMd0iQqE34dBtQOD/PQ5/s2VrAYLMRuoyXsxhAjbJZJj6EGi85eTfR8uH15foFaLywENsP17iUoUIhRJTm3JccrFinm+HRDD8OkGYmvyd3XCdtKR0y2zOwrnUtztAe84AIzNtdauELqeQo3zfb4TpLKnWmhET00lvEWmGovyKcNaTC3pdmEpc6D9FzFD4E3I9J+g9q03YKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hRQP4SHLMiDmUVwU4TsI8/8I9HFUDs9VTI513DmJOi0=;
- b=abkAuuuAxiMH2MJHs2nnK8x7QNESGBcGhGv+tXKskHkqvL4+gZPWYufqW5TbPEmMUBnl+UzJ/yff3ZGXjhgzoq9VSyVFNMqFp7G2zWl1K0lTM3dcZf/CWcytSrs1uPRjFea5Ak3QoJ9L2cfm0lujJAgzDqtxxCv4QXaOJniQam+0KDdN0Wq/I4exk/+UPyBxSmbtgKie+eE7xs1HY/b4XlZP7emlm3qW/Pf3TiydaDpPQSB9Fg+W/jTf7z3UfbfyO96rcyHvZyi7Dy5m1jCzdRhX4Wglfze8qhcQRSqJCQH/akw8l4n6Yw59MOOJJxN0iazamjoLFi6QWON7sX0AuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hRQP4SHLMiDmUVwU4TsI8/8I9HFUDs9VTI513DmJOi0=;
- b=csGUYcuqEiVGiUpNrYvSSWPms/XcnnKFurPWcz9QvLjZWmtFrIEvlLtcL02q3Akp1bA51SJ2aH792TJuFdJ8tGwAOUd43Iffv3es5HiWTMLQM8whvp91y07oLUTtZNLG+3PGFb/hjoNaFBwKD9yu5Grdqdowry6lhlnQfreF07k=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB3864.namprd04.prod.outlook.com (2603:10b6:a02:b1::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Thu, 18 Feb
- 2021 03:29:49 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6481:f617:8105:491f]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::6481:f617:8105:491f%2]) with mapi id 15.20.3846.038; Thu, 18 Feb 2021
- 03:29:49 +0000
-Date:   Thu, 18 Feb 2021 11:29:41 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Ricardo =?iso-8859-1?Q?Ca=F1uelo?= 
-        <ricardo.canuelo@collabora.com>, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, Bernie Liang <bliang@analogixsemi.com>,
-        Sheng Pan <span@analogixsemi.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings:drm/bridge:anx7625:add vendor define
- flags
-Message-ID: <20210218032941.GA2891@zhaomy-pc>
-References: <cover.1611802321.git.xji@analogixsemi.com>
- <246b8bd6e51ed5c8cb3618f4259adf8aba319511.1611802321.git.xji@analogixsemi.com>
- <20210209193010.GA4675@robh.at.kernel.org>
+        id S229862AbhBRDcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 22:32:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229885AbhBRDcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 22:32:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2104F60C3D;
+        Thu, 18 Feb 2021 03:31:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613619101;
+        bh=c7ZJ7SvGbLoYA4yllijdf6qOTWsWiQ5Rkd+YYUthhQo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hubX+h+oP6mb2WCOFKZxsAabsFB2DAoaUej6SLrivWfT8AJMx1aq+9rHLC/+mCfon
+         OVwu6B35eGviudUgWdobiC7T1FE1HtG3hYW6X4jArsY3nhwd2UjhN69sbBG6qRhk3+
+         2gWS+DQJYHhzgXedcryXfkjDnCPMgeu5DEwq9id3drWK5c18Fy5uUXKh6VJndRVcpP
+         vufocbL8024qhD+CizlgqIdIIxJCjr1rdgvrOBLRAgX8+YAARsLw/UaYRcmTTd6auf
+         1GqOajlkS0L22aFAFcLxOCutwLXvoKj0uHgMBGs0uPq/sNCBMztUtHVu5ZyvXJANwW
+         NTTvrA7NJj2RA==
+Date:   Thu, 18 Feb 2021 05:31:29 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        jmorris@namei.org, dhowells@redhat.com, peterhuewe@gmx.de
+Subject: [GIT PULL] TPM DEVICE DRIVER changes for v5.12
+Message-ID: <YC3fkU2pLncCkeps@kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209193010.GA4675@robh.at.kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Originating-IP: [61.148.116.10]
-X-ClientProxiedBy: HK2PR02CA0161.apcprd02.prod.outlook.com
- (2603:1096:201:1f::21) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from zhaomy-pc (61.148.116.10) by HK2PR02CA0161.apcprd02.prod.outlook.com (2603:1096:201:1f::21) with Microsoft SMTP Server (version=TLS1_0, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.20.3868.27 via Frontend Transport; Thu, 18 Feb 2021 03:29:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 27c9dda9-e54b-4681-03bc-08d8d3bd71ee
-X-MS-TrafficTypeDiagnostic: BYAPR04MB3864:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB3864108DC41E5F9692769136C7859@BYAPR04MB3864.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4s7eSY675ma/5f3xIOfq8oUfemkSu3oTEt9mTIXxA7Wxz8ZuiFJgSxSIfF2gPWQn1Ac2nDlglLqhLi3lb9ieJyqLMK2WO/35vJIYTx4wzX7XP2vVKYrDJleGjZafKmsn2pDPw1+TW3Ll7vsnuzWGCcyUZo2JmRODsJHQ3iwJNj5MvV83hwTh8xcqV07XcgehwJ2nCRts5HEg8U84E6jWYN2F/TVIaSFgZ0zLLeHPVmcoEXb+UcITWY0SbCzV+kBdyv8fzm4vg5Q1k/oWmLjk5pOqkExHnmNgeFMJoILBpRRdSZoH01cykFjUF1vzdDUT3tlAcCUu60vAL6ckIDbqJIrFS6MRYvZsJu3aCye6ZLy1nW80tbUx78jO+KKq+tmLp+FKXI29lpgQQ4LfP6Ooz/G+P3DFuwZFABVLnDcp1zvUtnpIhhvW1YYgNFW/I5X1Ei64arb3bqT4YsHnJ7BwYu52xdrJLcVnxeB91pepjC6KC/1vBKs4y82Jm2j/0EJiheMAuY+wS/ZUndKNJD8nWKH6oGyqVp6W/ZHsjSWLr656IsnOXaMxAlYR1CQlush1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(39840400004)(396003)(366004)(376002)(55016002)(4326008)(9686003)(33656002)(86362001)(52116002)(478600001)(8936002)(316002)(2906002)(6916009)(1076003)(54906003)(5660300002)(16526019)(186003)(8676002)(956004)(66476007)(33716001)(7416002)(83380400001)(66946007)(66556008)(6496006)(26005)(6666004)(16060500005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Be/v4le0NuIrBlkWuzZcfgcorTQQVCl/auI6eMODiNfv7wc2cM3bL85Iu6Fl?=
- =?us-ascii?Q?gaDAoc/g6/ISHLTvrOT1MWduG6He/3CZJaigLATTM3FLA1wO46YPVlFj78gj?=
- =?us-ascii?Q?7CCieR+4XOdfHd2NwgM8edcymm+U5J12bYAkMD37kYfm0fLCkOIc4komSB1T?=
- =?us-ascii?Q?8fAMOtHNvoX8reZrfmiDMIThxRu0GsxeWInj2TEUcO/8NahCdzY+Rwjhwgyp?=
- =?us-ascii?Q?FnX9SmLz+bYtJZLO1c6j8oC92z5ZT3iRBC9A2BblWH67TctQS8olucX87zqE?=
- =?us-ascii?Q?hi/Z6vxaVI7YT90n6AtmlvxIEnGb7fIJAuzFhFnlMwlqHrGCxAZoij9uwtRB?=
- =?us-ascii?Q?kU3EClI74lM4lIOsdhXfnz7Jq8tULkhvqHoiShWZiUM25DKk44JGRFBCe0KK?=
- =?us-ascii?Q?Ex/8f8WXH+lZJBANLgAS6gvizLfR0+ZdTpKRimmhwW10K9gP2egR5btoiGWJ?=
- =?us-ascii?Q?lplh72SSZUi/59UehNgMBfWZc2g1r7JdYryGSaWnf4qXVoS1Rxe7pNzhqtpr?=
- =?us-ascii?Q?V6QTg3oWcn99D3CwXk4WonKpYxj2xSN42Lr+XGEnlIgbnWF2knlGWu0rNRhc?=
- =?us-ascii?Q?+vARuEPmilRgmGopRtu+TobRWp6QPqLyttZ0fMAniAMUVOlA/41ihANzWldy?=
- =?us-ascii?Q?aOEjc7VlYjtsgDySrzplV6o2BeVKDGkE8ErkvuArR8Va9n3teU4ZyX2devJV?=
- =?us-ascii?Q?ZcDyXXzTVLaxIwfeEsM2QYUOAJYIKcJQpNIbUynm2J+SpLSuFgN1iVR6mU8+?=
- =?us-ascii?Q?hcz6X/65nPt2QUyS5FjG5besq5WVU0wIxdOh6/1UbWRFssxhceMFZ3uEL+Wb?=
- =?us-ascii?Q?ZhjGXvEX3CbAZ55e5ug5mNHxZJuXDHIRhnfMvGkMoovf45GwbrvCKo2Hs2yJ?=
- =?us-ascii?Q?9O8kLNZMUGVOOBbweH/iFFtPCqRumm3Cds9WdURFF2+G3SRMhlsgbLCw3iZX?=
- =?us-ascii?Q?FIb/TQRKmFTxfB0ul1l9ISqSUO1cl9dRH6lf5BnIqqBoAOJcdz1/ttpbXh6R?=
- =?us-ascii?Q?lCVNxnFh50np72u3S1pnaWdSWLl6471l7MegW00sMNM/7o7bNKK2TBhbA7NT?=
- =?us-ascii?Q?7x4xdP+J/sg6o+4gWUbAeNEqFlJQks3eDw41ZztidqZCmrHNiwiQzAp4/CER?=
- =?us-ascii?Q?zXwhdS+UcJgXghKxBbuwoDWQlemXcBEC50VkmtYFZ0QppkVW+eITfBjTRSCg?=
- =?us-ascii?Q?r0K4U9BY1ySeqs/I6utmRJxA+95hQHXBuZTNwzqrXaJgFCivZIP+w/DRAYmN?=
- =?us-ascii?Q?bQNC63ytadxFEA520oQmJGBU7tC/Utw+vxUkC9Ndn1ZJAGIHFWFFW+jyIKGD?=
- =?us-ascii?Q?lTD82QXba7I+pywhPvBSIYmC?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27c9dda9-e54b-4681-03bc-08d8d3bd71ee
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 03:29:48.9237
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H0PdouXBlWKCNHxv4TkTzuMo32Njwy59+hSq8KElNmnVSU++7iSRw3FOjgSjXTi8ZFoLg4DB7qsa1q3Stx070A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3864
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob Herring, thanks for the comments.
+Hi Linus,
 
-On Tue, Feb 09, 2021 at 01:30:10PM -0600, Rob Herring wrote:
-> On Thu, Jan 28, 2021 at 11:08:26AM +0800, Xin Ji wrote:
-> > Add 'bus-type' and 'data-lanes' define for port0, add HDCP support
-> > flag and DP tx lane0 and lane1 swing register array define.
-> > 
-> > Signed-off-by: Xin Ji <xji@analogixsemi.com>
-> > ---
-> >  .../bindings/display/bridge/analogix,anx7625.yaml  | 54 +++++++++++++++++++++-
-> >  1 file changed, 53 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > index c789784..048deec 100644
-> > --- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > +++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-> > @@ -34,6 +34,24 @@ properties:
-> >      description: used for reset chip control, RESET_N pin B7.
-> >      maxItems: 1
-> >  
-> > +  analogix,lane0-swing:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    maxItems: 20
-> > +    description:
-> > +      an array of swing register setting for DP tx lane0 PHY, please don't
-> > +      add this property, or contact vendor.
-> > +
-> > +  analogix,lane1-swing:
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-array
-> > +    maxItems: 20
-> > +    description:
-> > +      an array of swing register setting for DP tx lane1 PHY, please don't
-> > +      add this property, or contact vendor.
-> > +
-> > +  analogix,hdcp-support:
-> > +    type: boolean
-> > +    description: indicate the DP tx HDCP support or not.
-> 
-> Please show the new properties in the example.
-OK, I'll add it in the example.
-> 
-> > +
-> >    ports:
-> >      $ref: /schemas/graph.yaml#/properties/ports
-> >  
-> > @@ -41,13 +59,45 @@ properties:
-> >        port@0:
-> >          $ref: /schemas/graph.yaml#/properties/port
-> >          description:
-> > -          Video port for MIPI DSI input.
-> > +          Video port for MIPI input.
-> > +
-> > +        properties:
-> > +          endpoint:
-> > +            type: object
-> > +            additionalProperties: false
-> > +
-> > +            # Properties described in
-> > +            # Documentation/devicetree/bindings/media/video-interfaces.txt
-> 
-> Now video-interfaces.yaml which should have a $ref here. It's currently 
-> in media tree and linux-next. Follow the examples there. You'll also 
-> have to wait for 5.12-rc1 to apply to drm-misc.
-OK.
-> 
-> > +            properties:
-> > +              remote-endpoint: true
-> > +              bus-type: true
-> > +              data-lanes: true
-> > +
-> > +            required:
-> > +              - remote-endpoint
-> > +
-> > +        required:
-> > +          - endpoint
-> > +
-> >  
-> >        port@1:
-> >          $ref: /schemas/graph.yaml#/properties/port
-> >          description:
-> >            Video port for panel or connector.
-> >  
-> > +        properties:
-> > +          endpoint:
-> > +            type: object
-> > +            additionalProperties: false
-> > +
-> > +            # Properties described in
-> > +            # Documentation/devicetree/bindings/media/video-interfaces.txt
-> > +            properties:
-> > +              remote-endpoint: true
-> > +
-> > +            required:
-> > +              - remote-endpoint
-> > +
-> >      required:
-> >        - port@0
-> >        - port@1
-> > @@ -81,6 +131,8 @@ examples:
-> >                      reg = <0>;
-> >                      anx7625_in: endpoint {
-> >                          remote-endpoint = <&mipi_dsi>;
-> > +                        bus-type = <5>;
-> > +                        data-lanes = <0 1 2 3>;
-> >                      };
-> >                  };
-> >  
-> > -- 
-> > 2.7.4
-> > 
+This now my "official" first PR for v5.12. There's still some known issues
+in the tpm_tis driver *not& fixed in this first pull request, which trigger a
+warning but do not overally collapse the kernel by any means.
+
+The fixes are in good progress, but unfortunately there's still some fine
+tuning required before I can include to a pull request. I'm sure we will
+get them done around rc2/rc3. Better to make sure that the fixes do right
+things right, rather than rush them to a PR.
+
+That's also the reason why this comes so late. Sorry about that. I have
+also kind of "reorg" going on with my maintainer workflows, given the
+increased review activity in keyrings and SGX, which temporarily causes
+a bit overhead until becoming "status quo".
+
+New features
+============
+
+1. Cr50 I2C TPM driver.
+2. Sysfs exports of PCR registers in TPM 2.0 chips.
+
+Bug fixes
+=========
+
+*  This contains bug fixes for tpm_tis driver, which had a racy wait for
+   hardware state change to be ready to send a command to the TPM chip. The
+   bug has existed already since 2006, but has only made itself known in
+   recent past. This is the same as the "last time" :-)
+*  Otherwise there's bunch of fixes for not as alarming regressions. I
+   think the list is about the same as last time, except I added fixes for
+   some disjoint bugs in trusted keys that I found some time ago.
+
+/Jarkko
+
+The following changes since commit f40ddce88593482919761f74910f42f4b84c004b:
+
+  Linux 5.11 (2021-02-14 14:32:24 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/ tags/tpmdd-next-v5.12-rc1-v2
+
+for you to fetch changes up to 8c657a0590de585b1115847c17b34a58025f2f4b:
+
+  KEYS: trusted: Reserve TPM for seal and unseal operations (2021-02-16 10:40:28 +0200)
+
+----------------------------------------------------------------
+tpmdd updates for Linux v5.12-rc1
+
+----------------------------------------------------------------
+Andrew Zaborowski (1):
+      keys: Update comment for restrict_link_by_key_or_keyring_chain
+
+Duncan Laurie (1):
+      char: tpm: add i2c driver for cr50
+
+Gustavo A. R. Silva (1):
+      tpm: Fix fall-through warnings for Clang
+
+James Bottomley (4):
+      tpm_tis: Fix check_locality for correct locality acquisition
+      tpm_tis: Clean up locality release
+      tpm: add sysfs exports for all banks of PCR registers
+      ABI: add sysfs description for tpm exports of PCR registers
+
+Jarkko Sakkinen (3):
+      KEYS: trusted: Fix incorrect handling of tpm_get_random()
+      KEYS: trusted: Fix migratable=1 failing
+      KEYS: trusted: Reserve TPM for seal and unseal operations
+
+Rikard Falkeborn (1):
+      tpm/ppi: Constify static struct attribute_group
+
+Sebastian Andrzej Siewior (1):
+      tpm: Remove tpm_dev_wq_lock
+
+ Documentation/ABI/stable/sysfs-class-tpm  |  14 +
+ crypto/asymmetric_keys/restrict.c         |   7 +-
+ drivers/char/tpm/Kconfig                  |  10 +
+ drivers/char/tpm/Makefile                 |   2 +
+ drivers/char/tpm/eventlog/tpm1.c          |   1 +
+ drivers/char/tpm/tpm-chip.c               |   2 +
+ drivers/char/tpm/tpm-dev-common.c         |   1 -
+ drivers/char/tpm/tpm-sysfs.c              | 179 +++++++
+ drivers/char/tpm/tpm.h                    |   4 -
+ drivers/char/tpm/tpm_ppi.c                |   2 +-
+ drivers/char/tpm/tpm_tis_core.c           |  50 +-
+ drivers/char/tpm/tpm_tis_i2c_cr50.c       | 790 ++++++++++++++++++++++++++++++
+ include/linux/tpm.h                       |  14 +-
+ security/keys/trusted-keys/trusted_tpm1.c |  22 +-
+ security/keys/trusted-keys/trusted_tpm2.c |  22 +-
+ 15 files changed, 1054 insertions(+), 66 deletions(-)
+ create mode 100644 drivers/char/tpm/tpm_tis_i2c_cr50.c
