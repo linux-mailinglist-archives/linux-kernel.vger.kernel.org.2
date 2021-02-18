@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6720B31F2A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E17231F2A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhBRW5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:57:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44137 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229908AbhBRW5Q (ORCPT
+        id S230183AbhBRW57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:57:59 -0500
+Received: from smtpcmd0991.aruba.it ([62.149.156.91]:36516 "EHLO
+        smtpcmd0991.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230122AbhBRW5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:57:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613688948;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bto2giLcm9LzJ3vW7pdmAX2pydiCtw2Lsum5Poih1uE=;
-        b=PxYFqBYE8N6v+6GehYOH3/nGbG5WjtBOUXM4TFqqU8fX2suXduuldsJjH73zwEEQOjU/w6
-        dC0gd90PhJiqniHuqANfCSKjXfSRcmx2F8CahcQisoNO5GMFtuCqeuM7P/lozVy1M2fnHN
-        NfOd47BCBpRF5Hxky9Hc5O20npOICFo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-LoTsrVf5Odakt9F_aaswNA-1; Thu, 18 Feb 2021 17:55:46 -0500
-X-MC-Unique: LoTsrVf5Odakt9F_aaswNA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C433C107ACE4;
-        Thu, 18 Feb 2021 22:55:44 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DA2D18F0A;
-        Thu, 18 Feb 2021 22:55:42 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net>
-References: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net> <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk> <2031808.1613665474@warthog.procyon.org.uk>
-To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl=5FSala=3Dc3=3Dbcn=3F?=
-         =?us-ascii?Q?=3D?= <mic@digikod.net>
-Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl?=
-         =?us-ascii?Q?=5FSala=3Dc3=3Dbcn=3F=3D?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
+        Thu, 18 Feb 2021 17:57:22 -0500
+Received: from ubuntu.localdomain ([146.241.168.111])
+        by Aruba Outgoing Smtp  with ESMTPSA
+        id CsDwlA0uUJFRNCsDwlTfoM; Thu, 18 Feb 2021 23:56:40 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
+        t=1613689000; bh=gcK70S0FFOxqIXWnyxiiEzZN/4jx2jpClpkDS0APdYA=;
+        h=From:To:Subject:Date:MIME-Version;
+        b=MQrmAQZMdhfpcrS4HvFBZ4oH+gF1MQzRu0hiOQgUXToaiEvITUkg+g+DiTHfErKit
+         SPzTOgFNoDALGnZtayc5caB7wUa0SaSNpWx7c1nnEnxdyRwU6+IxiqWez7rTKfyQtZ
+         wXkn9rEVHqhkSik6qx/hg9BcDWQ033Vf2Skh4LGnRbRrPyfbMcECjDBfo0PheZE5T6
+         peNAsqoDfToHz6lNrmilSXzyNLhW2Ke0v8zRQDZb2SeJPuOJPoQ7KV5RkLj8WML+95
+         2p7+9O7bQSFfn9trRWAZGW7Z4Iw69ZjN0gcWU5CApbvITCnYKOQ5KFlGUl2k6Rn0oG
+         7yc7qSmGifYNg==
+From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Giulio Benetti <giulio.benetti@micronovasrl.com>,
+        Giulio Benetti <giulio.benetti@benettiengineering.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 8/9] drm/panel: simple: add Jenson JT60249-01
+Date:   Thu, 18 Feb 2021 23:56:38 +0100
+Message-Id: <20210218225639.824094-1-giulio.benetti@benettiengineering.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Thu, 18 Feb 2021 22:55:36 +0000
-Message-ID: <2106667.1613688936@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfDWlyH04O5dwYkBN/neJuyQv4kKg65oGrhs0Tg++fWrZwlTRHyBe8wwWzAbHupDrJLlbV7GCL/SD+0m0p+aH18+mSa2+w3YJlvpr2kcluQfnQntsSdFt
+ Ute8+HVgrhspdsSBvMBVF9tERklfkfjGZ0ee2yAY7825BlAw2WunWU21fw/SbEYoQTk7yu4MdAgjyMoR76yvHocLyFYw7NXfW8B9Za8MiQok/0PO7fqM6WBU
+ t3qpWbjnlTORPX8/lREvP71Udedw9YslgtFkO5e1bk7n96TqzJsuNrrTHdASjQSZv4wneuAmCDFL4PExMQnEBJGMEX6WfaqQLRHs36iJKX5S1Gtq1v4Mf5hY
+ qPvdOzOvxURvGDtO8kPfJBPTlHuKTxnXV1YN1F0rP2fLAremvJ3yWJ1RwLLoeHZ9dD0woMi8y5d2VmYV50LhZfcfzMtwd7dFmtvdoDt6yaPm3VoGPxLaFmcK
+ +e+cC3QK5xHQqCtf
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
+From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-> > Can I transfer your acks from:
-> >=20
-> > 	https://lore.kernel.org/lkml/20210121155513.539519-5-mic@digikod.net/
-> >=20
-> > to here?
->=20
-> No, the current thread contains an old version with an error in the
-> patch for ima_mok_init(). Please take the last series (fixing this
-> patch) that I rebased on your next branch:
-> https://lore.kernel.org/keyrings/20210210120410.471693-1-mic@digikod.net/
+This patch adds support for Jenson JT60249-01 800x480 5" panel to DRM
+simple panel driver.
 
-Is there a quick fix for the error?  If I replace your patches I'll probably
-have to withdraw my pull request for this cycle.
+Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
+Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+---
+ drivers/gpu/drm/panel/panel-simple.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-David
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+index f243087ce89b..995a581f8b2b 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -2444,6 +2444,30 @@ static const struct panel_desc jenson_jt60248_01 = {
+ 	.bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
+ };
+ 
++static const struct drm_display_mode jenson_jt60249_01_mode = {
++	.clock = 25000,
++	.hdisplay = 800,
++	.hsync_start = 800 + 8,
++	.hsync_end = 800 + 8 + 4,
++	.htotal = 800 + 8 + 4 + 8,
++	.vdisplay = 480,
++	.vsync_start = 480 + 8,
++	.vsync_end = 480 + 8 + 4,
++	.vtotal = 480 + 8 + 4 + 8,
++	.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
++};
++
++static const struct panel_desc jenson_jt60249_01 = {
++	.modes = &jenson_jt60249_01_mode,
++	.num_modes = 1,
++	.bpc = 8,
++	.size = {
++		.width = 108,
++		.height = 65,
++	},
++	.bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
++};
++
+ static const struct drm_display_mode kingdisplay_kd116n21_30nv_a010_mode = {
+ 	.clock = 81000,
+ 	.hdisplay = 1366,
+@@ -4216,6 +4240,9 @@ static const struct of_device_id platform_of_match[] = {
+ 	}, {
+ 		.compatible = "jenson,jt60248-01",
+ 		.data = &jenson_jt60248_01,
++	}, {
++		.compatible = "jenson,jt60249-01",
++		.data = &jenson_jt60249_01,
+ 	}, {
+ 		.compatible = "kingdisplay,kd116n21-30nv-a010",
+ 		.data = &kingdisplay_kd116n21_30nv_a010,
+-- 
+2.25.1
 
