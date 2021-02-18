@@ -2,123 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E99D31EA4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0FCF31EA4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 14:15:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhBRNJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 08:09:39 -0500
-Received: from mga07.intel.com ([134.134.136.100]:55027 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231937AbhBRLjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:39:49 -0500
-IronPort-SDR: rz4HUxro9R5E3yy3bSVMrBKa69KAfhN2F3u2pM3Pc8Y1CfH/8ddjco3icIx6GphA+oi532wtde
- ihND+25LbajQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="247552824"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="247552824"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 03:36:22 -0800
-IronPort-SDR: hqFTJU+Y+7ssuR7UQVv22NRIYrTZpDuNELPaiFWYF/6MfaSnT/Xs61IHKjeQd/gw6aYeSHeQqQ
- S1Xm5lSOYigg==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="385861988"
-Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.11])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 03:36:20 -0800
-Date:   Thu, 18 Feb 2021 19:35:45 +0800
-From:   kernel test robot <rong.a.chen@intel.com>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Noralf =?utf-8?Q?Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        Emil Velikov <emil.l.velikov@gmail.com>
-Subject: drivers/gpu/drm/drm_mipi_dbi.c:262:52: warning: Either the condition
- '!fb' is redundant or there is possible null pointer dereference: fb.
-Message-ID: <20210218113545.GU219708@shao2-debian>
+        id S230427AbhBRNO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 08:14:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27505 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232027AbhBRLkO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 06:40:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613648326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3A4zaSGP/jDU0jQya7nJb+PtO132rNXYV3X5vurWHRM=;
+        b=FsnxXWc2e03gNM9vf6/ZY/Yo7E9exlCDot+KyryDAdQ2JH3jarJj+EpjyHE1+DvUCQVup8
+        ruVnGUhFmzEx1y/JrlRJ9ko6K/iUOsnq5hh/NMrucNOPrVVyjvSihc7lQZVxqot01/fVmd
+        8hLWbHxsl5xzjkam9TZ7EQaVOA5WyIk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-280-fC5elPu5OAqWLO01C1hoPg-1; Thu, 18 Feb 2021 06:38:42 -0500
+X-MC-Unique: fC5elPu5OAqWLO01C1hoPg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A5F3801965;
+        Thu, 18 Feb 2021 11:38:39 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B12B16F7EC;
+        Thu, 18 Feb 2021 11:38:28 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+References: <20210217154844.12392-1-david@redhat.com>
+ <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
+ <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
+ <YC5PEBiGKT5LUt/I@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+Message-ID: <740cdd51-137b-2b08-8b7f-9757d8d847cb@redhat.com>
+Date:   Thu, 18 Feb 2021 12:38:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <YC5PEBiGKT5LUt/I@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f40ddce88593482919761f74910f42f4b84c004b
-commit: 7e06886bbfca73717e45a0f20cdb4053793c191b drm/mipi-dbi: Remove ->enabled
-date:   8 months ago
-compiler: riscv64-linux-gcc (GCC) 9.3.0
+>>>>      If we hit
+>>>>      hardware errors on pages, ignore them - nothing we really can or
+>>>>      should do.
+>>>> 3. On errors during MADV_POPULATED, some memory might have been
+>>>>      populated. Callers have to clean up if they care.
+>>>
+>>> How does caller find out? madvise reports 0 on success so how do you
+>>> find out how much has been populated?
+>>
+>> If there is an error, something might have been populated. In my QEMU
+>> implementation, I simply discard the range again, good enough. I don't think
+>> we need to really indicate "error and populated" or "error and not
+>> populated".
+> 
+> Agreed. The wording just suggests that the syscall actually provides any
+> means for an effective way to handle those errors. Maybe you should just
+> stick with the first sentence and drop the second.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Makes sense. "On errors during MADV_POPULATE, some memory might have 
+been populated."
 
+>   
+>>>> 4. Concurrent changes to the virtual memory layour are tolerated - we
+>>>>      process each and every PFN only once, though.
+>>>
+>>> I do not understand this. madvise is about virtual address space not a
+>>> physical address space.
+>>
+>> What I wanted to express: if we detect a change in the mapping we don't
+>> restart at the beginning, we always make forward progress. We process each
+>> virtual address once (on a per-page basis, thus I accidentally used "PFN").
+> 
+> This is an implicit assumption. Your range can have the same page mapped
+> several times in the given address range and all you care about is that
+> you fault those which are not present during the virtual address space
+> walk. Your syscall can return and large part of the address space might
+> be unpopulated because memory reclaim just dropped those pages and that
+> would be fine. This shouldn't really imply memory presence - mlock does
+> that.
 
-cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
+"Concurrent changes to the virtual memory layout are tolerated. The 
+range is processed exactly once."
 
->> drivers/gpu/drm/drm_mipi_dbi.c:262:52: warning: Either the condition '!fb' is redundant or there is possible null pointer dereference: fb. [nullPointerRedundantCheck]
-    struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(fb->dev);
-                                                      ^
-   drivers/gpu/drm/drm_mipi_dbi.c:271:14: note: Assuming that condition '!fb' is not redundant
-    if (WARN_ON(!fb))
-                ^
-   drivers/gpu/drm/drm_mipi_dbi.c:262:52: note: Null pointer dereference
-    struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(fb->dev);
-                                                      ^
+> 
+>>>> 5. If MADV_POPULATE succeeds, all memory in the range can be accessed
+>>>>      without SIGBUS. (of course, not if user space changed mappings in the
+>>>>      meantime or KSM kicked in on anonymous memory).
+>>>
+>>> I do not see how KSM would change anything here and maybe it is not
+>>> really important to mention it. KSM should be really transparent from
+>>> the users space POV. Parallel and destructive virtual address space
+>>> operations are also expected to change the outcome and there is nothing
+>>> kernel do about at and provide any meaningful guarantees. I guess we
+>>> want to assume a reasonable userspace behavior here.
+>>
+>> It's just a note that we cannot protect from someone interfering
+>> (discard/ksm/whatever). I'm making that clearer in the cover letter.
+> 
+> Again that is implicit expectation. madvise will not work for anybody
+> shooting an own foot.
 
-vim +262 drivers/gpu/drm/drm_mipi_dbi.c
+Okay, I'll drop that part, thanks!
 
-f41a8a69890d08 drivers/gpu/drm/drm_mipi_dbi.c     Geert Uytterhoeven 2020-01-15  257  
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  258  static void mipi_dbi_fb_dirty(struct drm_framebuffer *fb, struct drm_rect *rect)
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  259  {
-7c9f1312cfca15 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  260  	struct drm_gem_object *gem = drm_gem_fb_get_obj(fb, 0);
-7c9f1312cfca15 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  261  	struct drm_gem_cma_object *cma_obj = to_drm_gem_cma_obj(gem);
-84137b866e834a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22 @262  	struct mipi_dbi_dev *dbidev = drm_to_mipi_dbi_dev(fb->dev);
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  263  	unsigned int height = rect->y2 - rect->y1;
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  264  	unsigned int width = rect->x2 - rect->x1;
-84137b866e834a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  265  	struct mipi_dbi *dbi = &dbidev->dbi;
-36b5057216236a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  266  	bool swap = dbi->swap_bytes;
-9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  267  	int idx, ret = 0;
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  268  	bool full;
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  269  	void *tr;
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  270  
-7e06886bbfca73 drivers/gpu/drm/drm_mipi_dbi.c     Daniel Vetter      2020-06-12  271  	if (WARN_ON(!fb))
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  272  		return;
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  273  
-9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  274  	if (!drm_dev_enter(fb->dev, &idx))
-9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  275  		return;
-9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  276  
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  277  	full = width == fb->width && height == fb->height;
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  278  
-b051b3459bbae9 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  279  	DRM_DEBUG_KMS("Flushing [FB:%d] " DRM_RECT_FMT "\n", fb->base.id, DRM_RECT_ARG(rect));
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  280  
-36b5057216236a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  281  	if (!dbi->dc || !full || swap ||
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  282  	    fb->format->format == DRM_FORMAT_XRGB8888) {
-440961d20959e8 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  283  		tr = dbidev->tx_buf;
-440961d20959e8 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  284  		ret = mipi_dbi_buf_copy(dbidev->tx_buf, fb, rect, swap);
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  285  		if (ret)
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  286  			goto err_msg;
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  287  	} else {
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  288  		tr = cma_obj->vaddr;
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  289  	}
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  290  
-f41a8a69890d08 drivers/gpu/drm/drm_mipi_dbi.c     Geert Uytterhoeven 2020-01-15  291  	mipi_dbi_set_window_address(dbidev, rect->x1, rect->x2 - 1, rect->y1,
-f41a8a69890d08 drivers/gpu/drm/drm_mipi_dbi.c     Geert Uytterhoeven 2020-01-15  292  				    rect->y2 - 1);
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  293  
-36b5057216236a drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-07-22  294  	ret = mipi_dbi_command_buf(dbi, MIPI_DCS_WRITE_MEMORY_START, tr,
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  295  				   width * height * 2);
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  296  err_msg:
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  297  	if (ret)
-af74138160e194 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-01-15  298  		dev_err_once(fb->dev->dev, "Failed to update display %d\n", ret);
-9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  299  
-9d5645ad1b979c drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2019-02-25  300  	drm_dev_exit(idx);
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  301  }
-02dd95fe316936 drivers/gpu/drm/tinydrm/mipi-dbi.c Noralf Trønnes     2017-01-22  302  
+-- 
+Thanks,
 
-:::::: The code at line 262 was first introduced by commit
-:::::: 84137b866e834ac937582b04ae9bed0a72356a6a drm/tinydrm: Split struct mipi_dbi in two
+David / dhildenb
 
-:::::: TO: Noralf Trønnes <noralf@tronnes.org>
-:::::: CC: Noralf Trønnes <noralf@tronnes.org>
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
