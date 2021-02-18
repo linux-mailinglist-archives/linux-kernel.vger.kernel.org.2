@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1176731E91F
+	by mail.lfdr.de (Postfix) with ESMTP id 81BC031E920
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhBRLZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 06:25:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43712 "EHLO mx2.suse.de"
+        id S231409AbhBRLZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 06:25:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54478 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232566AbhBRKKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:10:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A42DEADE5;
-        Thu, 18 Feb 2021 10:09:20 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 11:09:17 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        id S232591AbhBRKKp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:10:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B33B864EAD;
+        Thu, 18 Feb 2021 10:09:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613642999;
+        bh=zaWHyoh91bO/x1e3pm+5Nn3sQ06OCkntg0lilcJqvvQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/FrMqw7434MBE86fAMPULCgRFDVFfB8HEZiAKOYnTJFaYxVc7/k6gVvjBhh2FLvF
+         KwENkVPEvB+F1DHJneutPYhKdLtBIYvBz5H0TIwvq6kkK3EjVZiwrNc2JdC4KiwfTR
+         KBQezUooyiaV+4WfVkXCm5EGokGUWUMODN11/hME=
+Date:   Thu, 18 Feb 2021 11:09:56 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
-Message-ID: <20210218100917.GA4842@localhost.localdomain>
-References: <20210217100816.28860-1-osalvador@suse.de>
- <20210217100816.28860-2-osalvador@suse.de>
- <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+Subject: Re: [PATCH v1] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
+ before toggling
+Message-ID: <YC489HGT/yVHykAs@kroah.com>
+References: <20210218100243.32187-1-badhri@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+In-Reply-To: <20210218100243.32187-1-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 04:00:11PM +0100, Michal Hocko wrote:
-> Is this really necessary? dissolve_free_huge_page will take care of this
-> and the race windown you are covering is really tiny.
-
-Probably not, I was trying to shrink to race window as much as possible
-but the call to dissolve_free_huge_page might be enough.
-
-> > +	nid = page_to_nid(page);
-> > +	spin_unlock(&hugetlb_lock);
-> > +
-> > +	/*
-> > +	 * Before dissolving the page, we need to allocate a new one,
-> > +	 * so the pool remains stable.
-> > +	 */
-> > +	new_page = alloc_fresh_huge_page(h, gfp_mask, nid, nmask, NULL);
+On Thu, Feb 18, 2021 at 02:02:43AM -0800, Badhri Jagan Sridharan wrote:
+> When vbus auto discharge is enabled, TCPM can sometimes be faster than
+> the TCPC i.e. TCPM can go ahead and move the port to unattached state
+> (involves disabling vbus auto discharge) before TCPC could effectively
+> discharge vbus to VSAFE0V. This leaves vbus with residual charge and
+> increases the decay time which prevents tsafe0v from being met.
+> This change introduces a new state VBUS_DISCHARGE where the TCPM waits
+> for a maximum of tSafe0V(max) for vbus to discharge to VSAFE0V before
+> transitioning to unattached state and re-enable toggling. If vbus
+> discharges to vsafe0v sooner, then, transition to unattached state
+> happens right away.
 > 
-> wrt. fallback to other zones, I haven't realized that the primary
-> usecase is a form of memory offlining (from virt-mem). I am not yet sure
-> what the proper behavior is in that case but if breaking hugetlb pools,
-> similar to the normal hotplug operation, is viable then this needs a
-> special mode. We do not want a random alloc_contig_range user to do the
-> same. So for starter I would go with __GFP_THISNODE here.
-
-Ok, makes sense.
-__GFP_THISNODE will not allow fallback to other node's zones.
-Since we only allow the nid the page belongs to, nodemask should be
-NULL, right?
-
-> > +	if (!h)
-> > +		/*
-> > +		 * The page might have been dissolved from under our feet.
-> > +		 * If that is the case, return success as if we dissolved it
-> > +		 * ourselves.
-> > +		 */
-> > +		return true;
+> Also, while in SNK_READY, when auto discharge is enabled, drive
+> disconnect based on vbus turning off instead of Rp disappearing on
+> CC pins. Rp disappearing on CC pins is almost instanteous compared
+> to vbus decay.
 > 
-> nit I would put the comment above the conditin for both cases. It reads
-> more easily that way. At least without { }.
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 60 +++++++++++++++++++++++++++++++----
+>  1 file changed, 53 insertions(+), 7 deletions(-)
 
-Yes, makes sense.
+As this seems to be a bugfix, what commit does it fix?  Should it go to
+stable kernels?  If so, how far back?
 
-> Other than that I haven't noticed any surprises.
+And as this is the merge window, I can't do anything with this until
+5.12-rc1 is out, so be prepared for the delay...
 
-I did. The 'put_page' call should be placed above, right after getting
-the page. Otherwise, refcount == 1 and we will fail to dissolve the
-new page if we need to (in case old page fails to be dissolved).
-I already fixed that locally.
+thanks,
 
--- 
-Oscar Salvador
-SUSE L3
+greg k-h
