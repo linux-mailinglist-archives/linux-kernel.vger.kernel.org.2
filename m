@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2D331EB73
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:23:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D927431EB8D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:32:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhBRPWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:22:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:50984 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233236AbhBRNAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:00:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C9CDED1;
-        Thu, 18 Feb 2021 04:59:04 -0800 (PST)
-Received: from [10.57.43.160] (unknown [10.57.43.160])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A8A93F73B;
-        Thu, 18 Feb 2021 04:59:02 -0800 (PST)
-Subject: Re: [PATCH v7 2/3] scmi-cpufreq: Get opp_shared_cpus from opp-v2 for
- EM
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
-        vireshk@kernel.org, cristian.marussi@arm.com,
-        morten.rasmussen@arm.com, chris.redpath@arm.com,
-        ionela.voinescu@arm.com
-References: <20210215075139.30772-1-nicola.mazzucato@arm.com>
- <20210215075139.30772-3-nicola.mazzucato@arm.com>
- <20210218110013.2b4ow7fzldra2srj@vireshk-i7>
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-Message-ID: <8efd2c71-847d-398a-5605-1daf9c2a3e75@arm.com>
-Date:   Thu, 18 Feb 2021 13:02:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S231258AbhBRP07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:26:59 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:9475 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232613AbhBRNCp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:02:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1613653364; x=1645189364;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1nqJ0Gg1qcZ3QqcAwBdTbK3n07OiNWC0tsX1jcaj+Ls=;
+  b=MoloOZ2BJI+r98u4UTIwE0HUMccz7Axn5FElsAEOr/Tbw3eYkr0YQPFm
+   XHTblqEzLyprWZ/UeQdfuCd6D+hZLTyrt/zANPPvmvJQ7oXAI3zdikTdE
+   SraVeqLOJzZ7T7nF/gOXh5RbVr6fzXkXcYXzryKOoPREib8atNNpBjPm3
+   EhvjG0+BOyYo+6MZCzC1fRUy405ZT0jWiV9z2crk/zyfujZYnw7zkCkWa
+   5Ax21tUYTPjr65zqPJyCoeH7D/xCqf53y/WJTy57U6LS/g27nJjLeRau5
+   j7ggQyKyGgvW/TgrlY2PKl6Z40b3zBypbBAXdSeM3bN7h++TlOVW0xmm9
+   A==;
+IronPort-SDR: Vwr9YfQLqS7VLCApeUuub6YYhDN5Nw+L+zilfNstPubdIlIxDD0wciFQrop9pesDPjaB+RFRT5
+ vgSap0m0/EA4G2D9LD0JSMB/48lR4PyQbh+C2F8t8548MLxuB2QG3BJTnzHUJt1iZleIIXa9eN
+ BS3Ym+dQG279bOVEPuRXEi1SR/WJ9UFfSUfKxtDOTX7mRKQ/FEDQRJ7eQKqukLbA9KMlNCB7lM
+ o8S45aOKViWAJL/F67omfoNhoBaVs0RH9kSq5BTDe0virh44g+aqgwzOt2LygsYkGoGgB+bOfJ
+ GQc=
+X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
+   d="scan'208";a="107103315"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 06:01:07 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 18 Feb 2021 06:01:07 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 18 Feb 2021 06:01:05 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <broonie@kernel.org>, <vigneshr@ti.com>
+CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH] spi: spi-ti-qspi: Free DMA resources
+Date:   Thu, 18 Feb 2021 15:01:04 +0200
+Message-ID: <20210218130104.89506-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210218110013.2b4ow7fzldra2srj@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+Release the RX channel and free the dma coherent memory when
+devm_spi_register_master() fails
 
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/spi/spi-ti-qspi.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-On 2/18/21 11:00 AM, Viresh Kumar wrote:
-> On 15-02-21, 07:51, Nicola Mazzucato wrote:
->> +	/*
->> +	 * Add OPPs only on those CPUs for which we haven't already done so.
->> +	 */
->>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
-> 
-> Please add a more detailed comment here explaining why you expect OPPs
-> to be present here in advance. i.e. you _may_ have policy per CPU even
-> though OPP core says OPPs are shared.. It is not straight forward to
-> catch otherwise.
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index 9417385c0921..e06aafe169e0 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -733,6 +733,17 @@ static int ti_qspi_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static void ti_qspi_dma_cleanup(struct ti_qspi *qspi)
++{
++	if (qspi->rx_bb_addr)
++		dma_free_coherent(qspi->dev, QSPI_DMA_BUFFER_SIZE,
++				  qspi->rx_bb_addr,
++				  qspi->rx_bb_dma_addr);
++
++	if (qspi->rx_chan)
++		dma_release_channel(qspi->rx_chan);
++}
++
+ static const struct of_device_id ti_qspi_match[] = {
+ 	{.compatible = "ti,dra7xxx-qspi" },
+ 	{.compatible = "ti,am4372-qspi" },
+@@ -886,6 +897,8 @@ static int ti_qspi_probe(struct platform_device *pdev)
+ 	if (!ret)
+ 		return 0;
+ 
++	ti_qspi_dma_cleanup(qspi);
++
+ 	pm_runtime_disable(&pdev->dev);
+ free_master:
+ 	spi_master_put(master);
+@@ -904,12 +917,7 @@ static int ti_qspi_remove(struct platform_device *pdev)
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-	if (qspi->rx_bb_addr)
+-		dma_free_coherent(qspi->dev, QSPI_DMA_BUFFER_SIZE,
+-				  qspi->rx_bb_addr,
+-				  qspi->rx_bb_dma_addr);
+-	if (qspi->rx_chan)
+-		dma_release_channel(qspi->rx_chan);
++	ti_qspi_dma_cleanup(qspi);
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
 
-Sure, I'll put more details, thanks.
-
-> 
->>  	if (nr_opp <= 0) {
->> -		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
->> -			__func__, ret);
->> -
->> -		ret = -ENODEV;
->> -		goto out_free_priv;
->> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
->> +		if (ret) {
->> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
->> +			goto out_free_cpumask;
->> +		}
->> +
->> +		nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
->> +		if (nr_opp <= 0) {
->> +			dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
->> +				__func__, ret);
->> +
->> +			ret = -ENODEV;
->> +			goto out_free_opp;
->> +		}
->> +
->> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
->> +		if (ret) {
->> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
->> +				__func__, ret);
->> +
->> +			goto out_free_opp;
->> +		}
->> +
->> +		power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
->> +		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb,
->> +					    opp_shared_cpus, power_scale_mw);
->>  	}
-> 
