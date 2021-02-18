@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1009931EE12
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C2731EE13
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232235AbhBRSOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:14:19 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:40704 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232640AbhBRPr6 (ORCPT
+        id S230439AbhBRSPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232223AbhBRPt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:47:58 -0500
-Received: from [IPv6:2a01:e0a:4cb:a870:851a:1dfb:a143:80e] (unknown [IPv6:2a01:e0a:4cb:a870:851a:1dfb:a143:80e])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id AFFDF1F45D55;
-        Thu, 18 Feb 2021 15:47:10 +0000 (GMT)
-Subject: Re: [PATCH v1 18/18] arm64: dts: imx8mq: Add node to G2 hardware
-To:     Ezequiel Garcia <ezequiel@collabora.com>, p.zabel@pengutronix.de,
-        mchehab@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
-        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
-        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com
-References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
- <20210217080306.157876-19-benjamin.gaignard@collabora.com>
- <b7338896a344ac06f41d782b6b56db227e359348.camel@collabora.com>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <49b162a6-5b13-5b55-4c84-2d6e354a8ad4@collabora.com>
-Date:   Thu, 18 Feb 2021 16:47:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 18 Feb 2021 10:49:26 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C2DC061793
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:48:24 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id r2so1452294plr.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:48:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5mSfxBVOBRi8bFJ8AYZZL4d/aLlm22/JZaKwGPrt9j0=;
+        b=JA7rzsD5N+KAByAnY3zLVeBOz6mJmi6OxbPaVhkgubiURsywlbrD4mT4gLNrxjkqn0
+         CnM5eHHDy7ZnvvTLu3KvSB2PAnxLms7rMnm5wRR3XyIsGfwwQl2vlqPUndXBfhL/n0AQ
+         q/wwUBtvq3wwQ1kCA9AQa1Vp3sdgzR0CO/GqDhqRhh8VBUHiHRuRELCpExKdTh4GuBO/
+         0aS3fiYlfpHW3+qa1Xi63c2XmJkQDSB6YmNgz4ezKjar0RFC19X1jbpGH7oErcBsMjH1
+         F5GaaWkj/y0C8HVnCuy0ioIWQGZ0LIZpTvAXBG9x0ZU7UFcnFFNpCWoL+cjH0GlaTXAf
+         rvXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5mSfxBVOBRi8bFJ8AYZZL4d/aLlm22/JZaKwGPrt9j0=;
+        b=TTyLjNR44MnbfDCp9atIWarUfGxz3E68wqUdnhhyBLybHGgvOPaHhA5Ay7iu+l1NNe
+         ZG7yLwZ95K6WPvVJi/O4Le9rqFQTTKqHM1vPWl9R5bDZwuKfq4QAWpyPoSTdPQnvKQfS
+         1dFbwaPZ7yP8sgDaDhNDqZfVvKgpMF1fWJ6rVFtI7AoTKylmftWBpZREswGDVy1ZQxh1
+         VCklxGglQBZc9MTL1KNFpai+f3F9j3VlNTdv5g7hMPh+MdPeX+6j1gSbsukswP/f4bBq
+         velxngWB+/1vyxYC4fxLDGRpU+dwi7Vra1F/vDt2RLy0g8dVhGiz4gqWAG7K6ruA5dKk
+         ywyQ==
+X-Gm-Message-State: AOAM533J8dZFeMbS1GUBO/VtJZqi6lTGC6kgYcriSOuMc8C8lc5GeVgK
+        3d0jRWcrhHu+xYUAFC0JGuF2Hg==
+X-Google-Smtp-Source: ABdhPJxdSuV3c8mgl+2RGLWQJpA00YGVg4kYZ0W+FXCpcFGoA2E9jl8z0IOGc+JTMSxOXJBmJSyWBw==
+X-Received: by 2002:a17:902:403:b029:e3:6b9b:9fd6 with SMTP id 3-20020a1709020403b02900e36b9b9fd6mr4563585ple.54.1613663303995;
+        Thu, 18 Feb 2021 07:48:23 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id g6sm6618819pfi.15.2021.02.18.07.48.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Feb 2021 07:48:23 -0800 (PST)
+Date:   Thu, 18 Feb 2021 21:18:20 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: cpufreq: cpufreq-qcom-hw: Document SM8350
+ CPUfreq compatible
+Message-ID: <20210218154820.lkcut7a657s6aqeg@vireshk-i7>
+References: <20210216111251.1838149-1-vkoul@kernel.org>
+ <20210217044955.qmbpd43wis7xtjoj@vireshk-i7>
+ <20210218124457.GW2774@vkoul-mobl.Dlink>
 MIME-Version: 1.0
-In-Reply-To: <b7338896a344ac06f41d782b6b56db227e359348.camel@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218124457.GW2774@vkoul-mobl.Dlink>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18-02-21, 18:14, Vinod Koul wrote:
+> On 17-02-21, 10:19, Viresh Kumar wrote:
+> > On 16-02-21, 16:42, Vinod Koul wrote:
+> > > Add the CPUfreq compatible for SM8350 SoC along with note for using the
+> > > specific compatible for SoCs
+> > > 
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > ---
+> > >  Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> > > index 9299028ee712..3eb3cee59d79 100644
+> > > --- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> > > +++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+> > > @@ -8,7 +8,9 @@ Properties:
+> > >  - compatible
+> > >  	Usage:		required
+> > >  	Value type:	<string>
+> > > -	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss".
+> > > +	Definition:	must be "qcom,cpufreq-hw" or "qcom,cpufreq-epss"
+> > > +			along with SoC specific compatible:
+> > > +			  "qcom,sm8350-cpufreq-epss", "qcom,cpufreq-epss"
+> > 
+> > And why is SoC specific compatible required here ? Is the implementation on
+> > sm8350 any different than the ones using "qcom,cpufreq-epss" compatible ?
+> > 
+> > FWIW, the same compatible string must be reused until the time there is
+> > difference in the hardware. The compatible string must be considered as a marker
+> > for a particular version of the hardware.
+> 
+> Rob has indicated that we should use a SoC specific compatible and I
+> agree with that. We are using both soc and generic one here and driver
+> will be loaded for generic one.
 
-Le 17/02/2021 à 21:43, Ezequiel Garcia a écrit :
-> On Wed, 2021-02-17 at 09:03 +0100, Benjamin Gaignard wrote:
->> Split VPU node in two: one for G1 and one for G2 since they are
->> different hardware blocks.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   arch/arm64/boot/dts/freescale/imx8mq.dtsi | 43 +++++++++++++++++------
->>   1 file changed, 33 insertions(+), 10 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
->> index d9d9efc8592d..3cab3f0b9131 100644
->> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
->> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
->> @@ -1287,17 +1287,16 @@ vpu_reset: vpu-reset@38320000 {
->>                          #reset-cells = <1>;
->>                  };
->>   
->> -               vpu: video-codec@38300000 {
->> +               vpu_g1: video-codec@38300000 {
->>                          compatible = "nxp,imx8mq-vpu";
->> -                       reg = <0x38300000 0x10000>,
->> -                             <0x38310000 0x10000>;
->> -                       reg-names = "g1", "g2";
->> -                       interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>,
->> -                                    <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
->> -                       interrupt-names = "g1", "g2";
->> +                       reg = <0x38300000 0x10000>;
->> +                       reg-names = "g1";
->> +                       interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
->> +                       interrupt-names = "g1";
->>                          clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
->> -                                <&clk IMX8MQ_CLK_VPU_G2_ROOT>;
->> -                       clock-names = "g1", "g2";
->> +                                <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
->> +                                <&clk IMX8MQ_CLK_VPU_DEC_ROOT>;
->> +                       clock-names = "g1", "g2", "bus";
-> How come the G1 block needs the G2 clock?
+I am not sure of the context, lets see what Rob has to say on this. I
+believe we only need 1 compatible string here (whatever it is), as
+this is just one version of the hardware we are talking about. We
+already have 2 somehow and you are trying to add one more and I don't
+fell good about it. :(
 
-It doesn't, I will remove it in v2
-
->
->>                          assigned-clocks = <&clk IMX8MQ_CLK_VPU_G1>,
->>                                            <&clk IMX8MQ_CLK_VPU_G2>,
->>                                            <&clk IMX8MQ_CLK_VPU_BUS>,
->> @@ -1306,12 +1305,36 @@ vpu: video-codec@38300000 {
->>                                                   <&clk IMX8MQ_VPU_PLL_OUT>,
->>                                                   <&clk IMX8MQ_SYS1_PLL_800M>,
->>                                                   <&clk IMX8MQ_VPU_PLL>;
->> -                       assigned-clock-rates = <600000000>, <600000000>,
->> +                       assigned-clock-rates = <600000000>, <300000000>,
->>                                                 <800000000>, <0>;
->>                          resets = <&vpu_reset IMX8MQ_RESET_VPU_RESET_G1>;
->>                          power-domains = <&pgc_vpu>;
->>                  };
->>   
->> +               vpu_g2: video-codec@38310000 {
->> +                       compatible = "nxp,imx8mq-vpu-g2";
->> +                       reg = <0x38310000 0x10000>;
->> +                       reg-names = "g2";
->> +                       interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
->> +                       interrupt-names = "g2";
->> +                       clocks = <&clk IMX8MQ_CLK_VPU_G1_ROOT>,
->> +                                <&clk IMX8MQ_CLK_VPU_G2_ROOT>,
-> Ditto, the G2 block needs the G1 clock?
->
-> Thanks,
-> Ezequiel
->
->
+-- 
+viresh
