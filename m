@@ -2,174 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC91331F29D
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6720B31F2A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 23:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhBRW4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 17:56:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhBRW4L (ORCPT
+        id S230153AbhBRW5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 17:57:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44137 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229908AbhBRW5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 17:56:11 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8F6C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:55:31 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id e9so2699420pjj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 14:55:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mJsWZPsjAvkS9M4UJZDTVheggzJRLXODUCXr3rDhMIc=;
-        b=mBtZCpmyFyj/HF1O+hiWaHTGDHtbjFm/eK7texjxvjVDQl/gGnW2sAY580Tcj1p0hC
-         OkM4uMIHAY5i3KlmV5I7oVdR/anPUeSbeBoqkDSknnB/S35Og858yCBZwvfLH6qYfQqt
-         peraHOGjdEpScSwHFV/ZboaiHeyteolD8z7TA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mJsWZPsjAvkS9M4UJZDTVheggzJRLXODUCXr3rDhMIc=;
-        b=EuIjDfkHX3Q7D52gmXoOIjxrwdX3r8G6nz23mqNR4sI00jbDoxuXKIo/RY7XeXLuZW
-         bYbcep/VxjIKLrpgeipKJmqgNj4fFycJ3lStU8FYx9jX7hsvr3uZl8qIZE15KfXIR4QS
-         um/B9zd3HBf7LFdDNFNeWaJAk+Cpk15s3qBuWTMqjP8kSKiFb+P6K6LlyVZc7acURezb
-         IE/UICzNwtzGPSSYeANwUuMDUcNX+bNusYY6xJa+fMGcX7/nTzlG6wjLbdi5Vmar3bFj
-         KhoH8Dtb02sEHFMY3EHRUUy/5YJIsRtfR7lrHEdLFV8Iec9YqZImO4eBhxQsnfmuy0Wa
-         9zjA==
-X-Gm-Message-State: AOAM530Pf/w3MafzE8Zil8enOhf/j0McfNJF3Ijs/ZqDAn6itWyRVqzN
-        mia3FiND5vp2EtepF2pzphl+Cg==
-X-Google-Smtp-Source: ABdhPJxrFexxJr1zX/X/iHVI3+f5tp6DY/SUfCp54QUf91xqTsVNxyqry+UTpv3W1GOZGtk/H85PJQ==
-X-Received: by 2002:a17:90a:654a:: with SMTP id f10mr6027043pjs.202.1613688931007;
-        Thu, 18 Feb 2021 14:55:31 -0800 (PST)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:1:91a:d4d0:d2d0:9d1c])
-        by smtp.gmail.com with ESMTPSA id x15sm6483563pjq.47.2021.02.18.14.55.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 14:55:30 -0800 (PST)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        swboyd@chromium.org, Douglas Anderson <dianders@chromium.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: qcom: sc7180: Avoid glitching SPI CS at bootup on trogdor
-Date:   Thu, 18 Feb 2021 14:55:09 -0800
-Message-Id: <20210218145456.1.I1da01a075dd86e005152f993b2d5d82dd9686238@changeid>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+        Thu, 18 Feb 2021 17:57:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613688948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Bto2giLcm9LzJ3vW7pdmAX2pydiCtw2Lsum5Poih1uE=;
+        b=PxYFqBYE8N6v+6GehYOH3/nGbG5WjtBOUXM4TFqqU8fX2suXduuldsJjH73zwEEQOjU/w6
+        dC0gd90PhJiqniHuqANfCSKjXfSRcmx2F8CahcQisoNO5GMFtuCqeuM7P/lozVy1M2fnHN
+        NfOd47BCBpRF5Hxky9Hc5O20npOICFo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-LoTsrVf5Odakt9F_aaswNA-1; Thu, 18 Feb 2021 17:55:46 -0500
+X-MC-Unique: LoTsrVf5Odakt9F_aaswNA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C433C107ACE4;
+        Thu, 18 Feb 2021 22:55:44 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DA2D18F0A;
+        Thu, 18 Feb 2021 22:55:42 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net>
+References: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net> <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk> <2031808.1613665474@warthog.procyon.org.uk>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl=5FSala=3Dc3=3Dbcn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>
+Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl?=
+         =?us-ascii?Q?=5FSala=3Dc3=3Dbcn=3F=3D?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 18 Feb 2021 22:55:36 +0000
+Message-ID: <2106667.1613688936@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At boot time the following happens:
-1. Device core gets ready to probe our SPI driver.
-2. Device core applies SPI controller's "default" pinctrl.
-3. Device core calls the SPI driver's probe() function which will
-   eventually setup the chip select GPIO as "unasserted".
+Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
 
-Thinking about the above, we can find:
-a) For SPI devices that the BIOS inits (Cr50 and EC), the BIOS would
-   have had them configured as "GENI" pins and not as "GPIO" pins.
-b) It turns out that our BIOS also happens to init these pins as
-   "output" (even though it doesn't need to since they're not muxed as
-   GPIO) but leaves them at the default state of "low".
-c) As soon as we apply the "default" chip select it'll switch the
-   function to GPIO and stop driving the chip select high (which is
-   how "GENI" was driving it) and start driving it low.
-d) As of commit 9378f46040be ("UPSTREAM: spi: spi-geni-qcom: Use the
-   new method of gpio CS control"), when the SPI core inits things it
-   inits the GPIO to be "deasserted".  Prior to that commit the GPIO
-   was left untouched until first use.
-e) When the first transaction happens we'll assert the chip select and
-   then deassert it after done.
+> > Can I transfer your acks from:
+> >=20
+> > 	https://lore.kernel.org/lkml/20210121155513.539519-5-mic@digikod.net/
+> >=20
+> > to here?
+>=20
+> No, the current thread contains an old version with an error in the
+> patch for ima_mok_init(). Please take the last series (fixing this
+> patch) that I rebased on your next branch:
+> https://lore.kernel.org/keyrings/20210210120410.471693-1-mic@digikod.net/
 
-So before the commit to change us to use gpio descriptors we used to
-have a _really long_ assertion of chip select before our first
-transaction (because it got pulled down and then the first "assert"
-was a no-op).  That wasn't great but (apparently) didn't cause any
-real harm.
+Is there a quick fix for the error?  If I replace your patches I'll probably
+have to withdraw my pull request for this cycle.
 
-After the commit to change us to use gpio descriptors we end up
-glitching the chip select line during probe.  It would go low and then
-high with no data transferred.  The other side ought to be robust
-against this, but it certainly could cause some confusion.  It's known
-to at least cause an error message on the EC console and it's believed
-that, under certain timing conditions, it could be getting the EC into
-a confused state causing the EC driver to fail to probe.
-
-Let's fix things to avoid the glitch.  We'll add an extra pinctrl
-entry that sets the value of the pin to output high (CS deasserted)
-before doing anything else.  We'll do this in its own pinctrl node
-that comes before the normal pinctrl entries to ensure that the order
-is correct and that this gets applied before the mux change.
-
-This change is in the trogdor board file rather than in the SoC dtsi
-file because chip select polarity can be different depending on what's
-hooked up and it doesn't feel worth it to spam the SoC dtsi file with
-both options.  The board file would need to pick the right one anyway.
-
-Fixes: cfbb97fde694 ("arm64: dts: qcom: Switch sc7180-trogdor to control SPI CS via GPIO")
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 27 +++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-index 07c8b2c926c0..e6c58d12dacd 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
-@@ -768,17 +768,17 @@ &sdhc_2 {
- };
- 
- &spi0 {
--	pinctrl-0 = <&qup_spi0_cs_gpio>;
-+	pinctrl-0 = <&qup_spi0_cs_gpio_init_high>, <&qup_spi0_cs_gpio>;
- 	cs-gpios = <&tlmm 37 GPIO_ACTIVE_LOW>;
- };
- 
- &spi6 {
--	pinctrl-0 = <&qup_spi6_cs_gpio>;
-+	pinctrl-0 = <&qup_spi6_cs_gpio_init_high>, <&qup_spi6_cs_gpio>;
- 	cs-gpios = <&tlmm 62 GPIO_ACTIVE_LOW>;
- };
- 
- ap_spi_fp: &spi10 {
--	pinctrl-0 = <&qup_spi10_cs_gpio>;
-+	pinctrl-0 = <&qup_spi10_cs_gpio_init_high>, <&qup_spi10_cs_gpio>;
- 	cs-gpios = <&tlmm 89 GPIO_ACTIVE_LOW>;
- 
- 	cros_ec_fp: ec@0 {
-@@ -1339,6 +1339,27 @@ pinconf {
- 		};
- 	};
- 
-+	qup_spi0_cs_gpio_init_high: qup-spi0-cs-gpio-init-high {
-+		pinconf {
-+			pins = "gpio37";
-+			output-high;
-+		};
-+	};
-+
-+	qup_spi6_cs_gpio_init_high: qup-spi6-cs-gpio-init-high {
-+		pinconf {
-+			pins = "gpio62";
-+			output-high;
-+		};
-+	};
-+
-+	qup_spi10_cs_gpio_init_high: qup-spi10-cs-gpio-init-high {
-+		pinconf {
-+			pins = "gpio89";
-+			output-high;
-+		};
-+	};
-+
- 	qup_uart3_sleep: qup-uart3-sleep {
- 		pinmux {
- 			pins = "gpio38", "gpio39",
--- 
-2.30.0.617.g56c4b15f3c-goog
+David
 
