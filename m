@@ -2,194 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5281131EC0F
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217B331EC1E
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhBRQLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:11:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60818 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231200AbhBRNeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:34:00 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D2AF6ACE5;
-        Thu, 18 Feb 2021 13:33:12 +0000 (UTC)
-Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
-To:     Gerd Hoffmann <kraxel@redhat.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <virtualization@lists.linux-foundation.org>,
-        Dave Airlie <airlied@redhat.com>,
-        "open list:DRM DRIVER FOR QXL VIRTUAL GPU" 
-        <spice-devel@lists.freedesktop.org>
-References: <20210217123213.2199186-1-kraxel@redhat.com>
- <20210217123213.2199186-11-kraxel@redhat.com>
- <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
- <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <2d7a649c-bf1d-aa41-8d3c-af9746b94bc0@suse.de>
-Date:   Thu, 18 Feb 2021 14:33:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232937AbhBRQQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:16:08 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:60952 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230177AbhBRNfU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 08:35:20 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 5FC981C0B81; Thu, 18 Feb 2021 14:33:52 +0100 (CET)
+Date:   Thu, 18 Feb 2021 14:33:52 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
+        kernel@pengutronix.de, linux-leds@vger.kernel.org,
+        Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11] leds: trigger: implement a tty trigger
+Message-ID: <20210218133352.GA13628@duo.ucw.cz>
+References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
+ <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
+ <X/8cwD51DYhzRdDO@kroah.com>
+ <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
+ <X/89NHn4oJFC7GjM@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="+HP7ph2BbKc20aGI"
+Content-Disposition: inline
+In-Reply-To: <X/89NHn4oJFC7GjM@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW
-Content-Type: multipart/mixed; boundary="UncSznus3ByHfOkcxonBdJz5e6MeKSXqO";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Gerd Hoffmann <kraxel@redhat.com>
-Cc: David Airlie <airlied@linux.ie>, open list
- <linux-kernel@vger.kernel.org>, dri-devel@lists.freedesktop.org,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <virtualization@lists.linux-foundation.org>, Dave Airlie
- <airlied@redhat.com>,
- "open list:DRM DRIVER FOR QXL VIRTUAL GPU"
- <spice-devel@lists.freedesktop.org>
-Message-ID: <2d7a649c-bf1d-aa41-8d3c-af9746b94bc0@suse.de>
-Subject: Re: [PATCH v2 10/11] drm/qxl: rework cursor plane
-References: <20210217123213.2199186-1-kraxel@redhat.com>
- <20210217123213.2199186-11-kraxel@redhat.com>
- <6a5581b2-8e62-1310-d42e-abfa301edc88@suse.de>
- <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
-In-Reply-To: <20210218115044.7tsi2szbdlw6lvdi@sirius.home.kraxel.org>
 
---UncSznus3ByHfOkcxonBdJz5e6MeKSXqO
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi
+Hi!
 
-Am 18.02.21 um 12:50 schrieb Gerd Hoffmann:
->    Hi,
+> > > so that I can queue it up?
+> >=20
+> > Oh, so you are LED maintainer now? My congratulations.
+> > (Honestly, do you plan to apply this without their ack? Not that I'm
+> > against you doing that, I'm happy if I can archive this patch series as
+> > done, but I'm a bit surprised.)
 >=20
->> I'm still trying to wrap my head around the qxl cursor code.
->>
->> Getting vmap out of the commit tail is good, but I feel like this isn'=
-t
->> going in the right direction overall.
->>
->> In ast, these helper functions were only good when converting the drvi=
-er to
->> atomic modesetting. So I removed them in the latst patchset and did al=
-l the
->> updates in the plane helpers directly.
->=20
-> I see the helper functions more as a way to get some structure into the=
+> It's drug on for so long now, the infrastructure that this driver needs
+> has now bee merged, so I see no reason why this driver can't be taken
+> now.  I offered up a "any objections?" in the past, and have gotten
+> none, so I will take that for quiet acceptance :)
 
-> code flow.  The callbacks are easier to read if they just call helper
-> functions for stuff which needs more than a handful lines of code
-> (patch 9/11 exists for the same reason).
->=20
-> The helpers also make it easier move work from one callback to another,=
+Thanks for taking the infrastructure patches, but please drop this
+one. Its buggy, as were previous versions. I'll handle it.
 
-> but that is just a useful side-effect.
->=20
-> I had considered making that two separate patches, one factor out code
-> into functions and one moving the calls.  Turned out to not be that eas=
-y
-> though, because the old qxl_cursor_atomic_update() code was a rather
-> hairy mix of qxl_create_cursor() + qxl_primary_apply_cursor() +
-> qxl_primary_move_cursor().
->=20
->> For cursor_bo itself, it seems to be transitional state that is only u=
-sed
->> during the plane update and crtc update . It should probably be stored=
- in a
->> plane-state structure.
->>
->> Some of the primary plane's functions seem to deal with cursor handlin=
-g.
->> What's the role of the primary plane in cursor handling?
->=20
-> It's a quirk.  The qxl device will forget the cursor state on
-> qxl_io_create_primary(), so I have to remember the cursor state
-> and re-establish it by calling qxl_primary_apply_cursor() again.
->=20
-> So I'm not sure sticking this into plane state would work.  Because of
-> the quirk this is more than just a handover from prepare to commit.
->=20
->> For now, I suggest to merge patch 1 to 8 and 11; and move the cursor p=
-atches
->> into a new patchset.
->=20
-> I can merge 1-8, but 11 has to wait until the cursor is sorted.
-> There is a reason why 11 is last in the series ;)
->=20
->> I'd like ot hear Daniel's opinion on this. Do you have
->> further plans here?
->=20
-> Well.  I suspect I could easily spend a month cleaning up and party
-> redesign the qxl driver (specifically qxl_draw.c + qxl_image.c).
->=20
-> I'm not sure I'll find the time to actually do that anytime soon.
-> I have plenty of other stuff on my TODO list, and given that the
-> world is transitioning to virtio-gpu the priority for qxl isn't
-> that high.
-
-Well, in that case:
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-for patches 9 and 10. Having the vmap calls fixed is at least worth it.
-
-Best regards
-Thomas
-
->=20
-> So, no, I have no short-term plans for qxl beyond fixing pins +
-> reservations + lockdep.
->=20
-> take care,
->    Gerd
->=20
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->=20
-
+Best regards,
+								Pavel
 --=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+http://www.livejournal.com/~pavelmachek
 
-
---UncSznus3ByHfOkcxonBdJz5e6MeKSXqO--
-
---nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+--+HP7ph2BbKc20aGI
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAubJcFAwAAAAAACgkQlh/E3EQov+BB
-5BAAiaqEuFQuNX/Edte8pTgw0EtC+8JuFX94XO6ZPE14G7zF8aoqmPSoTZ7mfazDN0kqhCUbOUpX
-jcDLZuRE+KoJEi75UcxkbejxT2/HZiwTwmL/Nq0Lbv6gVq7X4v+mVflSMKeZytS3Xq98IEOn/Y43
-ud9e064McQ0NNgOJb5Fjy2Rjd6rujdFU73B8rE5NumkiaJptCk+qE/TAJipSGXXSJ1zkgvSHSAga
-OutrnKsSUXe8i0BHJUMrK2LaK2Zkheb2GCUe9QxSOThoDEtuEz0NBOU2eoYewkE4IBBO+DXeQ6wp
-Qnd5D0kIkh+qBe8SWwPqXIGNsEhoEdkuEmfdEN/BsqOdr3mL1p1bks8ZHpgqyNSH1UQ/irka0buz
-eTFUnWuirhRrPWJo8lC65LvaINW+BRjcmq5PcZTKLMPPYn7UFzbL/PCNIggAwDbwiaAReHzUiwui
-XqAgB5cchmLxz3OjBiJgPM3rgIldcvOFIt2qu8e44nwnYMG97ifpDDWydfwmGj4VcU2ejV5T3kBN
-eHbbWSTMgKHT6L2IeOIRAeTjc/r5DmuX6uLGz3OXYS/oPlR+zNKpRaxIbgyQxTIlZ2OkzykXl8Sj
-DBeIHA466qiG1dHoWKW/zqNjmgKxFrZ/dAnmGxH7eqbkw/ZymCs4PP8Z1Z5k8+L/0bU50Nonm5bx
-HZc=
-=9OXG
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC5swAAKCRAw5/Bqldv6
+8juFAJ0TZjd2+5522dD5lZlorAgkEx16owCeOsTGUx1TGwtU3nRGluFtJQNJ0sI=
+=vxnK
 -----END PGP SIGNATURE-----
 
---nY8nnbVTZ7BT0N6Kj6baQxQEwgr1cULoW--
+--+HP7ph2BbKc20aGI--
