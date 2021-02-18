@@ -2,66 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2145631E9F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D55C31E9FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233085AbhBRMge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:36:34 -0500
-Received: from elvis.franken.de ([193.175.24.41]:35441 "EHLO elvis.franken.de"
+        id S233151AbhBRMkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:40:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46680 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231440AbhBRLB1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:01:27 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lCh1t-0003dl-00; Thu, 18 Feb 2021 11:59:29 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5BF5AC01A0; Thu, 18 Feb 2021 11:57:10 +0100 (CET)
-Date:   Thu, 18 Feb 2021 11:57:10 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Oleg Nesterov <oleg@redhat.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        kernel test robot <lkp@intel.com>,
-        Xingxing Su <suxingxing@loongson.cn>
-Subject: Re: [PATCH v2] MIPS: Add basic support for ptrace single step
-Message-ID: <20210218105710.GA5814@alpha.franken.de>
-References: <1612939961-8827-1-git-send-email-yangtiezhu@loongson.cn>
- <20210211102905.GE7985@alpha.franken.de>
- <20210212163335.GA12558@alpha.franken.de>
- <alpine.DEB.2.21.2102161433520.1521@angie.orcam.me.uk>
+        id S230306AbhBRK7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 05:59:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613645912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yx8UvHFLOEGyp2IMZSmLxmNPWrPsYDF4mvl1D+05RmM=;
+        b=FHRDnC7nZxhhDmbOuUlR8ZwgW5TILFG68B0oEDs1K23l/u6IRFNjB0G1/xKfgWBeUKyiBm
+        k06uYThkSppb9bqeaC+PInhd3fFXChzCgBfFcsRjvGmcpPlnsXEI4c3M1gav3S4Cmc60Xy
+        7I/0wFWmKG6i1X8IXZYC+R0SIpYUBE8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 38196ACD4;
+        Thu, 18 Feb 2021 10:58:32 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 11:58:31 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: code style: Re: [PATCH v4] printk: Userspace format enumeration
+ support
+Message-ID: <YC5IV9yAAg2t8PoX@alley>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YCv9Xb7ePnDy9xRf@alley>
+ <YCwAbGoVuZJspcx5@chrisdown.name>
+ <YCwycC8hPsPD7ArU@cmpxchg.org>
+ <YCwzrLTaE9PwNihj@chrisdown.name>
+ <YC06LyPGmytXJ8Iu@alley>
+ <YC08tgirtDsZumkK@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2102161433520.1521@angie.orcam.me.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YC08tgirtDsZumkK@chrisdown.name>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 02:55:36PM +0100, Maciej W. Rozycki wrote:
-> On Fri, 12 Feb 2021, Thomas Bogendoerfer wrote:
-> 
-> > > IMHO ptrace single step is for CPUs supporting single stepping and not
-> > > for emulating it in the kernel.
+On Wed 2021-02-17 15:56:38, Chris Down wrote:
+> Petr Mladek writes:
+> > > > How about config PRINTK_INDEX?
+> > > 
+> > > Ah yes, I also like that. PRINTK_INDEX is fine from my perspective and is
+> > > more straightforward than "enumeration", thanks.
 > > 
-> > I've checked other arch how they implement single step, and looks like
-> > I'm wrong. So I'm ok with applying your patch. Can you resend it again,
-> > so I'll get the latest version in patchwork ?
+> > It is better than enumeration. But there is still the same
+> > problem. The word "index" is used neither in the code
+> > nor in the debugfs interface. It is like enabling cars and
+> > seeing apples.
+> > 
+> > What about CONFIG_PRINTK_DEBUGFS?
+> > 
+> > It seems that various subsystems use CONFIG_<SUBSYSTEM>_DEBUGFS
+> > pattern when they expose some internals in debugfs.
 > 
->  [..]
->  This is broken and belongs to the userland anyway.  See how complex the 
-> handling is in GDB, specifically `mips16_next_pc', `micromips_next_pc' and 
-> `mips32_next_pc' in gdb/mips-tdep.c.
+> The thing I don't like about that is that it describes a largely
+> inconsequential implementation detail rather than the semantic intent of the
+> config change, which is what the person deciding what to include in their
+> config is likely to care about.  Often when I see "XXX debug interface" when
+> doing `make oldconfig` I think to myself "yes, but what does the debugfs
+> interface _do_?".
 
-I should have looked closer how other archs are implementing single
-stepping. It's only alpha, which emulates it by setting breakpoints. All 
-others have some type of cpu cupport for getting traps after a single
-intstruction has been issued. So I'm reverting the commit and supporting
-Maciej's statement about putting that stuff into userland (again).
+I see.
 
-Thomas.
+> If someone else was writing this patch, and I saw "CONFIG_PRINTK_DEBUGFS"
+> appear in my prod kernel, I'd probably say N, because I don't need printk
+> debugging information. On the other hand, if I saw "CONFIG_PRINTK_INDEX", I'd
+> immediately understand that it's probably applicable to me.
+> 
+> I'm happy to rename the debugfs structure as <debugfs>/printk/fmt_index if it
+> helps, but personally I really feel CONFIG_PRINTK_{INDEX,ENUMERATION,CATALOGUE}
+> is a lot more descriptive than just saying "it has a debugfs interface" in the
+> config name for that reason.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+PRINTK_INDEX sounds the best to me. Keep in mind that I am not a
+native speaker.
+
+And my concern will be gone when we use it also in the API and debugfs
+hierarchy as suggested by Johannes.
+
+Another compromise might be to have CONFIG_PRINTK_FORMATS_INDEX.
+Then the prefix printk_format_, pf_ would still match the option.
+Or we could use printk_format_index_m, pfi_ indexes.
+
+Best Regards,
+Petr
+
+PS: I feel that I have enough bike-shading. I think that I will be
+    fine with anything that you choose ;-)
