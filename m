@@ -2,93 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECF931EA08
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DAA31E9F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhBRMuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:50:10 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:56118 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhBRLDs (ORCPT
+        id S232308AbhBRMip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:38:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231302AbhBRLDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 06:03:48 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAxTv9003382;
-        Thu, 18 Feb 2021 11:00:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=Mt6WEzbLHUNDGK7TyqjjsRvc/zZnJpboS3ehhw2gAZI=;
- b=a3Uw9oDuo7Was84U+cpymjlmN1e0Q/B//TgQVx0NFGAhhnYFhwBDIlW6aiOfwG2yz4ls
- HYln5lWqTMDTpKJsgkGSEAQbn2T3QrpZ4ElDqeoLclWN8k17aYYG7W6MV3kvtOEJJ2Np
- yat5nWPkVesFpKNB8Czy3kCdTq4SyK/hywVvPxMhVgoWKOiCCmWJyUK0ye6nVHGXXZvO
- o7YjyTCpKwKGuOVJ6wkTXCz58cb8Qid6JT1mg3ZKevj47gIquc/lNfHPt4wexwmtkh4e
- 51Ds5YD/bwJubX46LFGGSneL4T2ftOiwWhJLADHwtuSnz7cVaeroPPGb8WCItwxAItWg qg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 36p66r5j0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 11:00:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IB0FWs017822;
-        Thu, 18 Feb 2021 11:00:27 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 36prp1cy4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 11:00:27 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11IB03Kj028891;
-        Thu, 18 Feb 2021 11:00:03 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Feb 2021 03:00:02 -0800
-Date:   Thu, 18 Feb 2021 13:59:49 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
-        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
-        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v1 09/18] media: hantro: move hantro_needs_postproc
- function
-Message-ID: <20210218105949.GG2087@kadam>
-References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
- <20210217080306.157876-10-benjamin.gaignard@collabora.com>
+        Thu, 18 Feb 2021 06:03:17 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E34C0617AB
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:00:16 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id u143so1037545pfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 03:00:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=WrPoxiKuB7nFteTe2ry4Rsr+lVl96TDbyIvoScKzpUk=;
+        b=u0JdY0rnRdgJqcQlsb1zFqwcow3ij+/ooaP2EcpEjj0IFYGHhHHbw0bgxBpFKS813P
+         OaHrpV8yO9E/OTE+uNVScWHnq+P4SdI9V8+wen8G8elqdLIQIv/37L6YaEApaKLvroDt
+         suLfDqUGqJiWNORsLDOPg4H1lW9eeIeD47R9F5uu+CLrzSxA6TeqzPMcPcFiV1cvnI34
+         kA9/kOl06oiJq0nt5GKDQNYY11xD86DUM5CVfUqmmWWF79WE+ehrJMybNFsoOVac0ezP
+         yY9/aAsWN1KI4coFivxUk4N2td3mLjpGW9dRnecKQEsbNr0hbzsV41QIuL56hHOlRZTP
+         syQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=WrPoxiKuB7nFteTe2ry4Rsr+lVl96TDbyIvoScKzpUk=;
+        b=EUrQf0FTp+eIYR5DZRf+hS755GNR7oWHa0NjfSKDhjOvAmX+YwtLBadmQItPmqUkMH
+         nMcf8Gn9gnWFIJGtGFf8gxlSKgb7v2wFswsWVgLOSrwoAEeoUeukqK1/coiMYa/ZFtHv
+         Nmqw+UWv1JkUyzQSZaChBtycbku2GZkVSMQ8a9KSPb5jPXWU9qKWF3OtqdmdkTLl7I8N
+         BNSNF1W6JjOzt6kcKBgkWlA2HDJyONt03w2hKKxOsAnuUrOmcYIfvfwKcCYLpvuv4tqO
+         QpYLyxBuBNkuYjzZ84iYMVE0/ARnJDHJH08S7yCdOEfDhIdGnBVOAOfxWzQ1189P0Brr
+         Yd0g==
+X-Gm-Message-State: AOAM5338n1oXICl0a3pYpkL/+MuM2/HdC5Eb2AG9KJsfc9N9hPA8zKMG
+        aVQFHcsMeGpQ+BEYH74ifdTIbg==
+X-Google-Smtp-Source: ABdhPJzCCZYNRKK7AWJkW25UkQ5W6waaRkg3G2H5FiP8f7b3uTCeGKCRbXiVu2cw+vZ4+vozE01Y2Q==
+X-Received: by 2002:a05:6a00:22d1:b029:1b4:9bb5:724c with SMTP id f17-20020a056a0022d1b02901b49bb5724cmr3849255pfj.63.1613646015953;
+        Thu, 18 Feb 2021 03:00:15 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id k11sm5301393pfc.22.2021.02.18.03.00.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 18 Feb 2021 03:00:15 -0800 (PST)
+Date:   Thu, 18 Feb 2021 16:30:13 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Nicola Mazzucato <nicola.mazzucato@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
+        vireshk@kernel.org, cristian.marussi@arm.com,
+        morten.rasmussen@arm.com, chris.redpath@arm.com,
+        ionela.voinescu@arm.com
+Subject: Re: [PATCH v7 2/3] scmi-cpufreq: Get opp_shared_cpus from opp-v2 for
+ EM
+Message-ID: <20210218110013.2b4ow7fzldra2srj@vireshk-i7>
+References: <20210215075139.30772-1-nicola.mazzucato@arm.com>
+ <20210215075139.30772-3-nicola.mazzucato@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217080306.157876-10-benjamin.gaignard@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180097
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
- phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102180097
+In-Reply-To: <20210215075139.30772-3-nicola.mazzucato@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 09:02:57AM +0100, Benjamin Gaignard wrote:
-> hantro_needs_postproc function becoming to much complex to
-> stray inline in .h file move it to .c file.
-> 
+On 15-02-21, 07:51, Nicola Mazzucato wrote:
+> +	/*
+> +	 * Add OPPs only on those CPUs for which we haven't already done so.
+> +	 */
+>  	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
 
-Yeah.  I do think this would make more sense folded in with patch 7.
+Please add a more detailed comment here explaining why you expect OPPs
+to be present here in advance. i.e. you _may_ have policy per CPU even
+though OPP core says OPPs are shared.. It is not straight forward to
+catch otherwise.
 
-regards,
-dan carpenter
+>  	if (nr_opp <= 0) {
+> -		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
+> -			__func__, ret);
+> -
+> -		ret = -ENODEV;
+> -		goto out_free_priv;
+> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
+> +		if (ret) {
+> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
+> +			goto out_free_cpumask;
+> +		}
+> +
+> +		nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+> +		if (nr_opp <= 0) {
+> +			dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
+> +				__func__, ret);
+> +
+> +			ret = -ENODEV;
+> +			goto out_free_opp;
+> +		}
+> +
+> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, opp_shared_cpus);
+> +		if (ret) {
+> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
+> +				__func__, ret);
+> +
+> +			goto out_free_opp;
+> +		}
+> +
+> +		power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
+> +		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb,
+> +					    opp_shared_cpus, power_scale_mw);
+>  	}
 
+-- 
+viresh
