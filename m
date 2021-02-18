@@ -2,94 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB6431EE8D
+	by mail.lfdr.de (Postfix) with ESMTP id AB63031EE8E
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:45:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbhBRSnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:43:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233411AbhBRQYn (ORCPT
+        id S230310AbhBRSoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:44:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48583 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233320AbhBRQ0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:24:43 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0010EC061788
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:24:01 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id c19so1637328pjq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:24:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7zsJa5G96QbfzfGP1GUeN5cQ6tflYt1YqBlPzygiUVU=;
-        b=Op9KFq/D8S6hUm3uN8wid54j0rwTGYg0n1s/L5rbJ3861uOm8LFv1Cr0ItlKReGHlm
-         0Oq/cgmC8gF2E/3AAuheF6PlVc8QGi9Y5znFhso54yshc0RKxwBT3MCn2aJGM1hILGoC
-         6EQ8kOnPaQL63Ly34Jg80Lk1gqsBvZwPXJfvdGntgAElCI2fFt/4qmiH/TXwAJsOIpsX
-         9mQVtwHQ4LsZYV1ka4cEuatiwMTW36nREbbXVjOjIQ8VpCQWCPfNLPzShoPrt1QKGOxG
-         VO4wr2X3LawDYhGbTR+eWX3UmFjJ2ydbfhLtNB5SzAji1ijhAAdLV5IC84G1Lntgt2PV
-         F+vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7zsJa5G96QbfzfGP1GUeN5cQ6tflYt1YqBlPzygiUVU=;
-        b=rgR8DNxLhc7vgPMDt7tE8Bv8zqcEoBFvr/AnDcszr7k7rhde2A3olNv/2TVMUOjGLT
-         gblLI9mh265OHkECyrbs0PzDWh/R3g/Q7subvmdMKRCvMfBGBocm3C9i05NTJR9aF43A
-         jBmOkdA1/poMmmGPTSqA6pb/X4jtfuMDkoLmyClzSKBV9W24YT5WMDUeJpjUF/yhWw+D
-         Q4z2wTeeFhg6ZbVn6dme3lBmIDaK2fCWcQEIuakZrUqUhLofOFDXl/+cTENiMpli86mb
-         ULa6CBimRZDmU4kmHqZggioTwXVQzAdd43TB1VhbKyWcnTXam0WSvHjjJq9KZQDBuj2N
-         rqEQ==
-X-Gm-Message-State: AOAM53238335kv75lWDPj0alHlXA/gx0N9VhORfMQ2rxn0T0Zp7JqUVi
-        ZO/JcijqJ8fBvkcNYXOe3znadA==
-X-Google-Smtp-Source: ABdhPJwQbfGU3Wbtmu5ZkDWW8j1ysqNCykojI28OXgaOS4Yu8u6jFFg02JjmGh6SpqzKahhgI7b47g==
-X-Received: by 2002:a17:90a:ac14:: with SMTP id o20mr4668126pjq.171.1613665441048;
-        Thu, 18 Feb 2021 08:24:01 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:dc76:757f:9e9e:647c])
-        by smtp.gmail.com with ESMTPSA id y12sm5736500pjc.56.2021.02.18.08.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 08:24:00 -0800 (PST)
-Date:   Thu, 18 Feb 2021 08:23:54 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Makarand Sonare <makarandsonare@google.com>
-Subject: Re: [PATCH 05/14] KVM: x86/mmu: Consult max mapping level when
- zapping collapsible SPTEs
-Message-ID: <YC6UmukeFlrdWAxe@google.com>
-References: <20210213005015.1651772-1-seanjc@google.com>
- <20210213005015.1651772-6-seanjc@google.com>
- <caa90b6b-c2fa-d8b7-3ee6-263d485c5913@redhat.com>
+        Thu, 18 Feb 2021 11:26:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613665481;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ol04b9SwBsNodyJM22S45r12k9peEbiT8MJxTqE+tN4=;
+        b=XIPU9QS8avCBZQqYaID/j+rT1twJpTjM6YdvhJv77i9lblrM2+7rIS+fhuImZ02t7wPocZ
+        H3Bpiv99IUrqP/U0a4bxUlezpG/Nz3Hc/wsLy0ZLvd/tO/PsAFgFwFWqHb/59R4eiNK0Fe
+        KlKPeO36vdPSm2hyJLUH3J5wm+tLzMc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-416-rW-hvFsBMdK8XUyn30FbIQ-1; Thu, 18 Feb 2021 11:24:37 -0500
+X-MC-Unique: rW-hvFsBMdK8XUyn30FbIQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59FF380364E;
+        Thu, 18 Feb 2021 16:24:36 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 319C519D9F;
+        Thu, 18 Feb 2021 16:24:35 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+In-Reply-To: <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk>
+References: <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>
+Cc:     dhowells@redhat.com, Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <caa90b6b-c2fa-d8b7-3ee6-263d485c5913@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Howells <dhowells@redhat.com>
+Date:   Thu, 18 Feb 2021 16:24:34 +0000
+Message-ID: <2031808.1613665474@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021, Paolo Bonzini wrote:
-> On 13/02/21 01:50, Sean Christopherson wrote:
-> > 
-> >  		pfn = spte_to_pfn(iter.old_spte);
-> >  		if (kvm_is_reserved_pfn(pfn) ||
-> > -		    (!PageTransCompoundMap(pfn_to_page(pfn)) &&
-> > -		     !kvm_is_zone_device_pfn(pfn)))
-> > +		    iter.level >= kvm_mmu_max_mapping_level(kvm, slot, iter.gfn,
-> > +							    pfn, PG_LEVEL_NUM))
-> >  			continue;
-> 
-> 
-> This changes the test to PageCompound.  Is it worth moving the change to
-> patch 1?
 
-Yes?  I originally did that in a separate patch, then changed my mind.
+Hi Micka=C3=ABl, Jarkko,
 
-If PageTransCompoundMap() also detects HugeTLB pages, then it is the "better"
-option as it checks that the page is actually mapped huge.  I dropped the change
-because PageTransCompound() is just a wrapper around PageCompound(), and so I
-assumed PageTransCompoundMap() would detect HugeTLB pages, too.  I'm not so sure
-about that after rereading the code, yet again.
+Can I transfer your acks from:
+
+	https://lore.kernel.org/lkml/20210121155513.539519-5-mic@digikod.net/
+
+to here?
+
+David
+
