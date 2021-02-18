@@ -2,128 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D33831EB43
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:09:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD85331EB38
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbhBRPGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232366AbhBRMxP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:53:15 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7011C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:52:27 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id e9so1214714plh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:52:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WtJG2gNtFvYKB4xLzXdqRCDe6hB+LE9X1M8Q+UfN854=;
-        b=qsd6ryJkDj5inFk6cBr8fDz/aMqdlifJhMcipvy6+zAhzHeA9dvWs4qhOla9ZyeJWw
-         R2rIusjUc0pU25Sw5TOxspkGtTSISes7AGFGvvJuwEi0zoulnf7MyStFjjnMutLr/eJq
-         4QidPwI8F0FmoKAwzsXgnW1tWRq3csUFXQrk0aQ4h1CJsqP6wbwkDwy4Rgt1y41dwq9d
-         Y9HJ6i8td8CPvoT2vcm8Lwv9dnI26LhmFtRdLphwsKVzgDZo/d+7K85XYHY5g7ipV7e5
-         IJpV2qSe0aik9yqRABAMJ9TTFgEQxjhVBzz/E66lo3xRwQblEWuuup1sWZ44KM3B8qqs
-         z5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WtJG2gNtFvYKB4xLzXdqRCDe6hB+LE9X1M8Q+UfN854=;
-        b=mLUEGY5vQu1U1cQhVLUZye+6J6wPWtiX5K06Vqc4YM+uHZdm+3PETh1UNgTkZsMLpV
-         1ugIK8RcDBvYRTAURmTn3Nc5OT4thgbEjvhP9xPIVC401Q43ALGBQmGWyMYnyP8LoMCu
-         jJQY/M4BD3KFnkktcMqxXFNx/LJSxsxZzL9wbR0dLe8NGBsaz7YsBytogMDMsgkNfsSM
-         cVEf7h8YBCXgs2P0gnyE9rXuXhI/xvwtchARk/4BrvccDyP5bbZnGjXu5CXrAoA1rnun
-         1NKjHELvR6d1mrjD4RKix95NBjo9Zoe0g57jO8zv9Nc0nfYTs47nbagBmvaJ27ilnWva
-         bpbQ==
-X-Gm-Message-State: AOAM532cPSrGfqHc90jllyeazj5wcdcdgSENmHGWtHh8cIPNTRmS2PBy
-        Ai5HMa7kwDWzjVtONBj5xQyASf8MnSc=
-X-Google-Smtp-Source: ABdhPJx3lZFklCVME3XvBfaJ8akaMuMBM2dR5+DuJNebs2SzT6FT60D6WqHwEGUqjKov5BSDw4TS1A==
-X-Received: by 2002:a17:90a:6bc5:: with SMTP id w63mr3919763pjj.28.1613652747397;
-        Thu, 18 Feb 2021 04:52:27 -0800 (PST)
-Received: from atulu-nitro ([2401:4900:3155:553b:559f:4399:2a05:67d4])
-        by smtp.gmail.com with ESMTPSA id 184sm5976555pgj.93.2021.02.18.04.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 04:52:26 -0800 (PST)
-Date:   Thu, 18 Feb 2021 18:22:20 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] staging: comedi: cast function output to assigned
- variable type
-Message-ID: <20210218125220.GA19456@atulu-nitro>
-References: <20210218084404.16591-1-atulgopinathan@gmail.com>
- <8f73b7a1-02dd-32ef-8115-ad0f38868692@mev.co.uk>
- <20210218104755.GA7571@atulu-nitro>
- <YC5bsXa+1KSuIh+v@kroah.com>
+        id S231953AbhBRPDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:03:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35714 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232119AbhBRMxq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:53:46 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613652765; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=my7Llvrq4fVu5U4ytT0HWufvyvA3sg6mSRU0ZcpXfMk=;
+        b=lq1e6GlxqqQOwkGrgILpNZyyk4ZcCqyTqKsUuqrd4A7/PG+rF9zLpt2c8n2jE7yWA1TytV
+        AnygHSvglydRiAV+fxNpBPVo5NcY8gqlbtUzLLu3CbgwTuLyn1mZLne0+1JkfWH4lLCpS4
+        Qemt6aycGuU9agUx4tklwXWiUrqpU5I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 26511AD78;
+        Thu, 18 Feb 2021 12:52:45 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 13:52:38 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC5bsXa+1KSuIh+v@kroah.com>
+In-Reply-To: <20210218100917.GA4842@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 01:21:05PM +0100, Greg KH wrote:
-> On Thu, Feb 18, 2021 at 04:17:55PM +0530, Atul Gopinathan wrote:
-> > On Thu, Feb 18, 2021 at 10:31:15AM +0000, Ian Abbott wrote:
-> > > On 18/02/2021 08:44, Atul Gopinathan wrote:
-> > > > Fix the following warning generated by sparse:
-> > > > 
-> > > > drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
-> > > > drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
-> > > > drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
-> > > > 
-> > > > compat_ptr() has a return type of "void __user *"
-> > > > as defined in "include/linux/compat.h"
-> > > > 
-> > > > cmd->chanlist is of type "unsigned int *" as defined
-> > > > in drivers/staging/comedi/comedi.h" in struct
-> > > > comedi_cmd.
-> > > > 
-> > > > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> > > > ---
-> > > >   drivers/staging/comedi/comedi_fops.c | 2 +-
-> > > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
-> > > > index e85a99b68f31..fc4ec38012b4 100644
-> > > > --- a/drivers/staging/comedi/comedi_fops.c
-> > > > +++ b/drivers/staging/comedi/comedi_fops.c
-> > > > @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
-> > > >   	cmd->scan_end_arg = v32.scan_end_arg;
-> > > >   	cmd->stop_src = v32.stop_src;
-> > > >   	cmd->stop_arg = v32.stop_arg;
-> > > > -	cmd->chanlist = compat_ptr(v32.chanlist);
-> > > > +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
-> > > >   	cmd->chanlist_len = v32.chanlist_len;
-> > > >   	cmd->data = compat_ptr(v32.data);
-> > > >   	cmd->data_len = v32.data_len;
-> > > > 
-> > > 
-> > > This patch and the other one in your series clash with commit 9d5d041eebe3
-> > > ("staging: comedi: comedi_fops.c: added casts to get rid of sparse
-> > > warnings") by B K Karthik.
-> > 
-> > Oh I see. Not sure if this is the right place to ask, but which tree and
-> > branch should one work with when messing with the code in staging/
-> > directory? (wanted to avoid such clashes in future)
+On Thu 18-02-21 11:09:17, Oscar Salvador wrote:
+> On Wed, Feb 17, 2021 at 04:00:11PM +0100, Michal Hocko wrote:
+> > Is this really necessary? dissolve_free_huge_page will take care of this
+> > and the race windown you are covering is really tiny.
 > 
-> staging-next is the best one to use from the staging.git tree.  But as
-> the above commit was merged in 5.9-rc1, way back in July of last year, I
-> have no idea what tree you are currently using to not hit that...
+> Probably not, I was trying to shrink to race window as much as possible
+> but the call to dissolve_free_huge_page might be enough.
+> 
+> > > +	nid = page_to_nid(page);
+> > > +	spin_unlock(&hugetlb_lock);
+> > > +
+> > > +	/*
+> > > +	 * Before dissolving the page, we need to allocate a new one,
+> > > +	 * so the pool remains stable.
+> > > +	 */
+> > > +	new_page = alloc_fresh_huge_page(h, gfp_mask, nid, nmask, NULL);
+> > 
+> > wrt. fallback to other zones, I haven't realized that the primary
+> > usecase is a form of memory offlining (from virt-mem). I am not yet sure
+> > what the proper behavior is in that case but if breaking hugetlb pools,
+> > similar to the normal hotplug operation, is viable then this needs a
+> > special mode. We do not want a random alloc_contig_range user to do the
+> > same. So for starter I would go with __GFP_THISNODE here.
+> 
+> Ok, makes sense.
+> __GFP_THISNODE will not allow fallback to other node's zones.
+> Since we only allow the nid the page belongs to, nodemask should be
+> NULL, right?
 
-I'm using the staging tree alright, cloned it yesterday. Except I used the
---depth parameter. I believe that is the culprit. How bad a mistake is
-that?
+I would have to double check because hugetlb has a slightly different
+expectations from nodemask than the page allocator. The later translates
+that to all possible nodes but hugetlb API tries to dereference nodes.
+Maybe THIS node special cases it somewhere.
 
-(Why depth? I'm currently staying in a remote area where internet
-download speeds are less than 100Kbps. I tried a normal git clone of
-the staging tree and it's estimated time was more than half a day. Not
-to mention, it fails due to loss of connection midway every time)
+> > > +	if (!h)
+> > > +		/*
+> > > +		 * The page might have been dissolved from under our feet.
+> > > +		 * If that is the case, return success as if we dissolved it
+> > > +		 * ourselves.
+> > > +		 */
+> > > +		return true;
+> > 
+> > nit I would put the comment above the conditin for both cases. It reads
+> > more easily that way. At least without { }.
+> 
+> Yes, makes sense.
+> 
+> > Other than that I haven't noticed any surprises.
+> 
+> I did. The 'put_page' call should be placed above, right after getting
+> the page. Otherwise, refcount == 1 and we will fail to dissolve the
+> new page if we need to (in case old page fails to be dissolved).
+> I already fixed that locally.
 
-Thanks!
-Atul
+I am not sure I follow. newly allocated pages is unreferenced
+unconditionally and the old page is not referenced by this path.
+
+-- 
+Michal Hocko
+SUSE Labs
