@@ -2,138 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A1B31F07E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ECD31F080
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhBRTxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:53:15 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:47644 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhBRTZF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:25:05 -0500
-Received: by mail-io1-f71.google.com with SMTP id o4so2060066ioh.14
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 11:24:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MNizgv5mvQWhBT/s84w4wVfXhQTCYQ+gD1CNu9mQuu4=;
-        b=RTP8HShzwzryADrrnPqG8NGFQJCqfQaqd5OCUqXnLul6lQRwatwj/c0uAmZyXbhBBD
-         clR3EwtvPBbnFBAa+H8dQrt1SOq5LHnJrC/e39s7yQOaZM8LyJTf/+mjFU9CfTM9laQS
-         GW0ma7SPCsccFdTDkdjDInmTecOJb/UZ2jXr+r+gYW0eyM9kaWMYHmWVj7MTnat9OlM0
-         f7rX2wo0najFBCH7BMfmLGvN6uvnIStLJbI8m5Z8z7v+FjDrY9bqs/pLx5gpflG+6rcN
-         m4P84VTJfVQR9XTfMFeD5pK0nUnAwv3Hi7S9v8LY7Ei7R0f3aZhi2PvKHw+H9l1cpUnS
-         Dt7Q==
-X-Gm-Message-State: AOAM531X3FvpgO11Mh2mGTQESzcevvnLdmlAW9yPDkEr4jWJM8cQJP2J
-        09Nmp9R3fBszC8S6z1TX0koOH5i2WjcRVgHB1Y4ZAFPCfTTU
-X-Google-Smtp-Source: ABdhPJygfiVFf+6UJu1Xxuh6NPoc/nkSTCw7BvJc4CESWo6dfUttZyO9/aMhy4J5sNa+vDjZcwA9lbgm6JUU41SE0YRkBJjt5cKM
+        id S232387AbhBRTxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:53:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232187AbhBRTZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 14:25:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C12164E2F;
+        Thu, 18 Feb 2021 19:25:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613676306;
+        bh=zTgIYlyFaDJGycAett61ACFbsNZyANa5pHJS8Y3xQDg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bxXcMD6Wg3j5UI9wGwDU9FR2+01yr/5Ai+kpVSL+AJ22vI7CyWMfS5PkvvKHKMbG2
+         LvmfEPhSSQ7gPeGhjWYQsMeNiBVm5X+6JG6d0gK6TjbucfWSSC9kgjk6NMOM65QGsZ
+         /OgVUsGSxMy4+ZKJSJ3U6Cdp7ayZbnkot/6ksWkYQJRQRtO8K2dcZGGtg9q+gibars
+         8+Yg4rPQ7n7ZUzM+MiyPTh01GkueVEBr5Q2keoAHQuiqO8IXzWhd/0J8NALs3GHlVB
+         faSiI3d95wb9DigwxDw7wa5d+HOb0NXjsxMEI8UZycysjBheHik6BU05OBWSeRnbRg
+         +P6FmbgfjcQAQ==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id F205E40CD9; Thu, 18 Feb 2021 16:25:03 -0300 (-03)
+Date:   Thu, 18 Feb 2021 16:25:03 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     John Garry <john.garry@huawei.com>
+Cc:     Jianlin Lv <Jianlin.Lv@arm.com>, will@kernel.org,
+        mathieu.poirier@linaro.org, leo.yan@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, guoren@kernel.org, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, kjain@linux.ibm.com,
+        atrajeev@linux.vnet.ibm.com, ravi.bangoria@linux.ibm.com,
+        anju@linux.vnet.ibm.com, iecedge@gmail.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v5] perf tools: Fix arm64 build error with gcc-11
+Message-ID: <YC6/D1KwxnkEPObJ@kernel.org>
+References: <20210218031245.2078492-1-Jianlin.Lv@arm.com>
+ <bd474bfa-2bdb-53ea-5142-3a6570d63b7f@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cc41:: with SMTP id t1mr594092ilq.27.1613676262080;
- Thu, 18 Feb 2021 11:24:22 -0800 (PST)
-Date:   Thu, 18 Feb 2021 11:24:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006246f105bba148f9@google.com>
-Subject: BUG: unable to handle kernel paging request in nl802154_del_llsec_key
-From:   syzbot <syzbot+ac5c11d2959a8b3c4806@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bd474bfa-2bdb-53ea-5142-3a6570d63b7f@huawei.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    f40ddce8 Linux 5.11
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11261a4cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=67894355b1dbeb07
-dashboard link: https://syzkaller.appspot.com/bug?extid=ac5c11d2959a8b3c4806
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ac5c11d2959a8b3c4806@syzkaller.appspotmail.com
-
-netlink: 164 bytes leftover after parsing attributes in process `syz-executor.1'.
-Unable to handle kernel paging request at virtual address dfff800000000000
-Mem abort info:
-  ESR = 0x96000004
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-Data abort info:
-  ISV = 0, ISS = 0x00000004
-  CM = 0, WnR = 0
-[dfff800000000000] address between user and kernel address ranges
-Internal error: Oops: 96000004 [#1] PREEMPT SMP
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Modules linked in:
-CPU: 1 PID: 5366 Comm: syz-executor.1 Not tainted 5.11.0-syzkaller #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-pc : nla_len include/net/netlink.h:1148 [inline]
-pc : nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
-pc : nl802154_del_llsec_key+0x138/0x2c0 net/ieee802154/nl802154.c:1595
-lr : genl_family_rcv_msg_doit+0x1b8/0x2a0 net/netlink/genetlink.c:739
-sp : ffff000019c57280
-x29: ffff000019c57280 x28: ffff80001aa29cc0 
-x27: ffff000019c576d0 x26: ffff000012280000 
-x25: 1fffe0000338aeb2 x24: 1fffe0000338ae84 
-x23: ffff800018380c80 x22: ffff000016174c10 
-x21: ffff00000fca8000 x20: 0000000000000000 
-x19: 1fffe0000338ae5a x18: 0000000000000001 
-x17: 0000000000000000 x16: 0000000000000000 
-x15: 0000000000000000 x14: 1fffe0000338adf4 
-x13: 0000000000000000 x12: ffff60000338ae55 
-x11: 1fffe0000338ae54 x10: ffff60000338ae54 
-x9 : 000000000000f1f1 x8 : 000000000000f2f2 
-x7 : 00000000f3000000 x6 : 1fffe0000338ae90 
-x5 : 00000000f3f3f3f3 x4 : 0000000000000000 
-x3 : dfff800000000000 x2 : 0000000000000004 
-x1 : ffff000019c57450 x0 : 0000000000000001 
-Call trace:
- nla_data include/net/netlink.h:1139 [inline]
- nla_parse_nested_deprecated include/net/netlink.h:1231 [inline]
- nl802154_del_llsec_key+0x138/0x2c0 net/ieee802154/nl802154.c:1595
- genl_family_rcv_msg_doit+0x1b8/0x2a0 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x24c/0x430 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x198/0x34c net/netlink/af_netlink.c:2494
- genl_rcv+0x38/0x50 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x3e0/0x670 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x610/0xa20 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xc0/0xf4 net/socket.c:672
- ____sys_sendmsg+0x548/0x6d0 net/socket.c:2345
- ___sys_sendmsg+0xf4/0x170 net/socket.c:2399
- __sys_sendmsg+0xbc/0x14c net/socket.c:2432
- __do_sys_sendmsg net/socket.c:2441 [inline]
- __se_sys_sendmsg net/socket.c:2439 [inline]
- __arm64_sys_sendmsg+0x70/0xa0 net/socket.c:2439
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
- el0_svc_common.constprop.0+0x110/0x3c0 arch/arm64/kernel/syscall.c:159
- do_el0_svc+0xa4/0xd0 arch/arm64/kernel/syscall.c:198
- el0_svc+0x20/0x30 arch/arm64/kernel/entry-common.c:365
- el0_sync_handler+0x1a4/0x1ac arch/arm64/kernel/entry-common.c:381
- el0_sync+0x174/0x180 arch/arm64/kernel/entry.S:699
-Code: f2fbffe3 92400a80 11000400 91001282 (38e36883) 
----[ end trace dde92eef2b40d315 ]---
+Em Thu, Feb 18, 2021 at 09:26:17AM +0000, John Garry escreveu:
+> On 18/02/2021 03:12, Jianlin Lv wrote:
+> > gcc version: 11.0.0 20210208 (experimental) (GCC)
+> > 
+> > Following build error on arm64:
+> > 
+> > .......
+> > In function ‘printf’,
+> >      inlined from ‘regs_dump__printf’ at util/session.c:1141:3,
+> >      inlined from ‘regs__printf’ at util/session.c:1169:2:
+> > /usr/include/aarch64-linux-gnu/bits/stdio2.h:107:10: \
+> >    error: ‘%-5s’ directive argument is null [-Werror=format-overflow=]
+> > 
+> > 107 |   return __printf_chk (__USE_FORTIFY_LEVEL - 1, __fmt, \
+> >                  __va_arg_pack ());
+> > 
+> > ......
+> > In function ‘fprintf’,
+> >    inlined from ‘perf_sample__fprintf_regs.isra’ at \
+> >      builtin-script.c:622:14:
+> > /usr/include/aarch64-linux-gnu/bits/stdio2.h:100:10: \
+> >      error: ‘%5s’ directive argument is null [-Werror=format-overflow=]
+> >    100 |   return __fprintf_chk (__stream, __USE_FORTIFY_LEVEL - 1, __fmt,
+> >    101 |                         __va_arg_pack ());
+> > 
+> > cc1: all warnings being treated as errors
+> > .......
+> > 
+> > This patch fixes Wformat-overflow warnings. Add helper function to
+> > convert NULL to "unknown".
+> > 
+> > Signed-off-by: Jianlin Lv<Jianlin.Lv@arm.com>
+> 
+> thanks
+> Reviewed-by: John Garry <john.garry@huawei.com>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks, applied.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+- Arnaldo
+
