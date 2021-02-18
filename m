@@ -2,143 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0D7B31E642
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F8D31E63F
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:21:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231290AbhBRGTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 01:19:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
+        id S230512AbhBRGQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 01:16:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230520AbhBRF4o (ORCPT
+        with ESMTP id S231474AbhBRF46 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 00:56:44 -0500
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73458C06178B
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 21:56:04 -0800 (PST)
-Received: by mail-qv1-xf2f.google.com with SMTP id c25so448210qvb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 21:56:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=97xepu+H893Qn2oD7QzEQlF0nqYf2pV6us14XKtvHxU=;
-        b=mgbz52W0JN7xwQftwEtM6NGsY/g84xRLA4xkhTjEINN5my44bcXRu6XD/L38sC1qfB
-         fFk0r+RCj1e1clOhXV7+g4RwblTqhm4rMAYlgBga522+NSBTxYmvRQBy1Wby31qUxspS
-         2o1DQPJXVPiyJh6aiJRdpzWtHvBAg8XR4lxxIg1tkZhIUN+CxS34HLATPmSjYMbryzYh
-         L3gZ0Bmtz2aLr/fB2xjsFlEgfigT7X0md89CHZzGaIwcsqT+wP+5w7Yh09lA+jl/U8NS
-         5ZI43x8+XjOGS5AddwtIoX1G0f0hze4USrUbCr7PTJ7ElbZRW957RBC1kocJFd96cIPp
-         w/sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=97xepu+H893Qn2oD7QzEQlF0nqYf2pV6us14XKtvHxU=;
-        b=DsfeRKU/B8ztsRLdk2xOW0GsXwVoeghbvSK2Chsof8SI9/y6KnglvuVJtOiBcIftNE
-         jRLwZFqVIdMiP0BfG+is6D/1UwrAZ6sL4UXcfQ3/0KotpHC9XOmsS5JfBpa7U9rkkXAg
-         l3i7EXpVeT4t5nwWM5WtddE+le5ALL6epUyQA7bjrZxdYrwZtTrFxuOKduhJ1Pxgl+fR
-         33t2OYTQhIJ+ArN9JoREBsdpBAc7LF912zv7ElTggaPREuyFM01+fm7lOcSzOPReu7o+
-         FK82CJbHoHOTbg4I6YgzX6DE2CTKAX++ISd8RQVo3ZsrJx6zRJTD1yZx8eGpAA6jjNjq
-         5jOg==
-X-Gm-Message-State: AOAM5320EflXLvmQtJqRHthrMs+n6fGNrGlc5fieKanC2UbgT4FfskjS
-        LLugt8UMKhjibtTYRaUxcsA56Q==
-X-Google-Smtp-Source: ABdhPJwsk5IUVrVDg92pl5EyX/4pmGD+gOB1OV30TBrbHpR+IPLGYf7+2OWQg1V2jKga9UiKmLOINw==
-X-Received: by 2002:a05:6214:242f:: with SMTP id gy15mr2624583qvb.17.1613627763640;
-        Wed, 17 Feb 2021 21:56:03 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id p6sm3245805qkg.36.2021.02.17.21.56.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Feb 2021 21:56:03 -0800 (PST)
-Date:   Thu, 18 Feb 2021 00:56:02 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Message-ID: <YC4BcsNFEmW7XeqB@cmpxchg.org>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
+        Thu, 18 Feb 2021 00:56:58 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806FFC061793
+        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 21:56:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=H/cDPG0B7gE2ABwor1sVQQERFc4WqjDiZVGHqYwGuvM=; b=qQYxMH6zRKjeX02UTI5G/Lzps1
+        Xncg8r9B8DHK2fgzpc9aGRfOaBn2dUH+7OIzrVUpoj4UdAx0OKz8759FjC1HTzhzaz2mkkRss+ZgT
+        CHtugHADQtsqL5m/KdypqTSFYtNUpv40gERq+jqBweZpUcMK2mS1duWQIC4SYlOIl1UMeoBZBPkbs
+        VbHa9U2vqdr2EJZ9+Lbn/xumiiST9iqZha8tnpz1l8RC1EFnCRWmb36I3MRpDXnjuwH3cmryoiflU
+        W4KKhytSApGPhddX6I+/emRKiTBZBCwBC0hWsiJI9cjhi60YrK5viUBN8Y/gTrbeW6QwfQidLijCn
+        3qOZK9IA==;
+Received: from [2601:1c0:6280:3f0::f770]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lCcIO-0004qR-Fl; Thu, 18 Feb 2021 05:56:13 +0000
+Subject: Re: arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit
+ declaration of function 'ep_op_has_event'
+To:     kernel test robot <lkp@intel.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+References: <202102181333.BEPRdHZT-lkp@intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8f742b7a-2d8e-8956-ac89-ca8f32e3359f@infradead.org>
+Date:   Wed, 17 Feb 2021 21:56:08 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
+In-Reply-To: <202102181333.BEPRdHZT-lkp@intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 12:41:36PM -0800, Tim Chen wrote:
-> On a per node basis, the mem cgroup soft limit tree on each node tracks
-> how much a cgroup has exceeded its soft limit memory limit and sorts
-> the cgroup by its excess usage.  On page release, the trees are not
-> updated right away, until we have gathered a batch of pages belonging to
-> the same cgroup. This reduces the frequency of updating the soft limit tree
-> and locking of the tree and associated cgroup.
+On 2/17/21 9:26 PM, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f40ddce88593482919761f74910f42f4b84c004b
+> commit: c281634c865202e2776b0250678ff93c771947ff ARM: compat: remove KERNEL_DS usage in sys_oabi_epoll_ctl()
+> date:   10 months ago
+> config: arm-randconfig-m031-20210218 (attached as .config)
+> compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c281634c865202e2776b0250678ff93c771947ff
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout c281634c865202e2776b0250678ff93c771947ff
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=arm 
 > 
-> However, the batch of pages could contain pages from multiple nodes but
-> only the soft limit tree from one node would get updated.  Change the
-> logic so that we update the tree in batch of pages, with each batch of
-> pages all in the same mem cgroup and memory node.  An update is issued for
-> the batch of pages of a node collected till now whenever we encounter
-> a page belonging to a different node.  Note that this batching for
-> the same node logic is only relevant for v1 cgroup that has a memory
-> soft limit.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
 > 
-> Reviewed-by: Ying Huang <ying.huang@intel.com>
-> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+> All errors (new ones prefixed by >>):
+> 
+>    arch/arm/kernel/sys_oabi-compat.c:142:17: warning: no previous prototype for 'sys_oabi_stat64' [-Wmissing-prototypes]
+>      142 | asmlinkage long sys_oabi_stat64(const char __user * filename,
+>          |                 ^~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:152:17: warning: no previous prototype for 'sys_oabi_lstat64' [-Wmissing-prototypes]
+>      152 | asmlinkage long sys_oabi_lstat64(const char __user * filename,
+>          |                 ^~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:162:17: warning: no previous prototype for 'sys_oabi_fstat64' [-Wmissing-prototypes]
+>      162 | asmlinkage long sys_oabi_fstat64(unsigned long fd,
+>          |                 ^~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:172:17: warning: no previous prototype for 'sys_oabi_fstatat64' [-Wmissing-prototypes]
+>      172 | asmlinkage long sys_oabi_fstatat64(int dfd,
+>          |                 ^~~~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:229:17: warning: no previous prototype for 'sys_oabi_fcntl64' [-Wmissing-prototypes]
+>      229 | asmlinkage long sys_oabi_fcntl64(unsigned int fd, unsigned int cmd,
+>          |                 ^~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:251:17: warning: no previous prototype for 'sys_oabi_epoll_ctl' [-Wmissing-prototypes]
+>      251 | asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
+>          |                 ^~~~~~~~~~~~~~~~~~
+>    In file included from include/linux/kernel.h:11,
+>                     from include/linux/list.h:9,
+>                     from include/linux/wait.h:7,
+>                     from include/linux/wait_bit.h:8,
+>                     from include/linux/fs.h:6,
+>                     from include/uapi/linux/aio_abi.h:31,
+>                     from include/linux/syscalls.h:74,
+>                     from arch/arm/kernel/sys_oabi-compat.c:73:
+>    arch/arm/kernel/sys_oabi-compat.c: In function 'sys_oabi_epoll_ctl':
+>>> arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror=implicit-function-declaration]
+>      257 |  if (ep_op_has_event(op) &&
+>          |      ^~~~~~~~~~~~~~~
+>    include/linux/compiler.h:58:52: note: in definition of macro '__trace_if_var'
+>       58 | #define __trace_if_var(cond) (__builtin_constant_p(cond) ? (cond) : __trace_if_value(cond))
+>          |                                                    ^~~~
+>    arch/arm/kernel/sys_oabi-compat.c:257:2: note: in expansion of macro 'if'
+>      257 |  if (ep_op_has_event(op) &&
+>          |  ^~
+>>> arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl'; did you mean 'sys_epoll_ctl'? [-Werror=implicit-function-declaration]
+>      264 |  return do_epoll_ctl(epfd, op, fd, &kernel, false);
+>          |         ^~~~~~~~~~~~
+>          |         sys_epoll_ctl
+>    arch/arm/kernel/sys_oabi-compat.c: At top level:
+>    arch/arm/kernel/sys_oabi-compat.c:267:17: warning: no previous prototype for 'sys_oabi_epoll_wait' [-Wmissing-prototypes]
+>      267 | asmlinkage long sys_oabi_epoll_wait(int epfd,
+>          |                 ^~~~~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:309:17: warning: no previous prototype for 'sys_oabi_semtimedop' [-Wmissing-prototypes]
+>      309 | asmlinkage long sys_oabi_semtimedop(int semid,
+>          |                 ^~~~~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:352:17: warning: no previous prototype for 'sys_oabi_semop' [-Wmissing-prototypes]
+>      352 | asmlinkage long sys_oabi_semop(int semid, struct oabi_sembuf __user *tsops,
+>          |                 ^~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:358:16: warning: no previous prototype for 'sys_oabi_ipc' [-Wmissing-prototypes]
+>      358 | asmlinkage int sys_oabi_ipc(uint call, int first, int second, int third,
+>          |                ^~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:376:17: warning: no previous prototype for 'sys_oabi_bind' [-Wmissing-prototypes]
+>      376 | asmlinkage long sys_oabi_bind(int fd, struct sockaddr __user *addr, int addrlen)
+>          |                 ^~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:386:17: warning: no previous prototype for 'sys_oabi_connect' [-Wmissing-prototypes]
+>      386 | asmlinkage long sys_oabi_connect(int fd, struct sockaddr __user *addr, int addrlen)
+>          |                 ^~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:396:17: warning: no previous prototype for 'sys_oabi_sendto' [-Wmissing-prototypes]
+>      396 | asmlinkage long sys_oabi_sendto(int fd, void __user *buff,
+>          |                 ^~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:409:17: warning: no previous prototype for 'sys_oabi_sendmsg' [-Wmissing-prototypes]
+>      409 | asmlinkage long sys_oabi_sendmsg(int fd, struct user_msghdr __user *msg, unsigned flags)
+>          |                 ^~~~~~~~~~~~~~~~
+>    arch/arm/kernel/sys_oabi-compat.c:435:17: warning: no previous prototype for 'sys_oabi_socketcall' [-Wmissing-prototypes]
+>      435 | asmlinkage long sys_oabi_socketcall(int call, unsigned long __user *args)
+>          |                 ^~~~~~~~~~~~~~~~~~~
+>    cc1: some warnings being treated as errors
+> 
+> 
+> vim +/ep_op_has_event +257 arch/arm/kernel/sys_oabi-compat.c
+> 
+>   > 73	#include <linux/syscalls.h>
+>     74	#include <linux/errno.h>
+>     75	#include <linux/fs.h>
+>     76	#include <linux/cred.h>
+>     77	#include <linux/fcntl.h>
+>     78	#include <linux/eventpoll.h>
+>     79	#include <linux/sem.h>
+>     80	#include <linux/socket.h>
+>     81	#include <linux/net.h>
+>     82	#include <linux/ipc.h>
+>     83	#include <linux/uaccess.h>
+>     84	#include <linux/slab.h>
+>     85	
+>     86	struct oldabi_stat64 {
+>     87		unsigned long long st_dev;
+>     88		unsigned int	__pad1;
+>     89		unsigned long	__st_ino;
+>     90		unsigned int	st_mode;
+>     91		unsigned int	st_nlink;
+>     92	
+>     93		unsigned long	st_uid;
+>     94		unsigned long	st_gid;
+>     95	
+>     96		unsigned long long st_rdev;
+>     97		unsigned int	__pad2;
+>     98	
+>     99		long long	st_size;
+>    100		unsigned long	st_blksize;
+>    101		unsigned long long st_blocks;
+>    102	
+>    103		unsigned long	st_atime;
+>    104		unsigned long	st_atime_nsec;
+>    105	
+>    106		unsigned long	st_mtime;
+>    107		unsigned long	st_mtime_nsec;
+>    108	
+>    109		unsigned long	st_ctime;
+>    110		unsigned long	st_ctime_nsec;
+>    111	
+>    112		unsigned long long st_ino;
+>    113	} __attribute__ ((packed,aligned(4)));
+>    114	
+>    115	static long cp_oldabi_stat64(struct kstat *stat,
+>    116				     struct oldabi_stat64 __user *statbuf)
+>    117	{
+>    118		struct oldabi_stat64 tmp;
+>    119	
+>    120		tmp.st_dev = huge_encode_dev(stat->dev);
+>    121		tmp.__pad1 = 0;
+>    122		tmp.__st_ino = stat->ino;
+>    123		tmp.st_mode = stat->mode;
+>    124		tmp.st_nlink = stat->nlink;
+>    125		tmp.st_uid = from_kuid_munged(current_user_ns(), stat->uid);
+>    126		tmp.st_gid = from_kgid_munged(current_user_ns(), stat->gid);
+>    127		tmp.st_rdev = huge_encode_dev(stat->rdev);
+>    128		tmp.st_size = stat->size;
+>    129		tmp.st_blocks = stat->blocks;
+>    130		tmp.__pad2 = 0;
+>    131		tmp.st_blksize = stat->blksize;
+>    132		tmp.st_atime = stat->atime.tv_sec;
+>    133		tmp.st_atime_nsec = stat->atime.tv_nsec;
+>    134		tmp.st_mtime = stat->mtime.tv_sec;
+>    135		tmp.st_mtime_nsec = stat->mtime.tv_nsec;
+>    136		tmp.st_ctime = stat->ctime.tv_sec;
+>    137		tmp.st_ctime_nsec = stat->ctime.tv_nsec;
+>    138		tmp.st_ino = stat->ino;
+>    139		return copy_to_user(statbuf,&tmp,sizeof(tmp)) ? -EFAULT : 0;
+>    140	}
+>    141	
+>    142	asmlinkage long sys_oabi_stat64(const char __user * filename,
+>    143					struct oldabi_stat64 __user * statbuf)
+>    144	{
+>    145		struct kstat stat;
+>    146		int error = vfs_stat(filename, &stat);
+>    147		if (!error)
+>    148			error = cp_oldabi_stat64(&stat, statbuf);
+>    149		return error;
+>    150	}
+>    151	
+>    152	asmlinkage long sys_oabi_lstat64(const char __user * filename,
+>    153					 struct oldabi_stat64 __user * statbuf)
+>    154	{
+>    155		struct kstat stat;
+>    156		int error = vfs_lstat(filename, &stat);
+>    157		if (!error)
+>    158			error = cp_oldabi_stat64(&stat, statbuf);
+>    159		return error;
+>    160	}
+>    161	
+>    162	asmlinkage long sys_oabi_fstat64(unsigned long fd,
+>    163					 struct oldabi_stat64 __user * statbuf)
+>    164	{
+>    165		struct kstat stat;
+>    166		int error = vfs_fstat(fd, &stat);
+>    167		if (!error)
+>    168			error = cp_oldabi_stat64(&stat, statbuf);
+>    169		return error;
+>    170	}
+>    171	
+>    172	asmlinkage long sys_oabi_fstatat64(int dfd,
+>    173					   const char __user *filename,
+>    174					   struct oldabi_stat64  __user *statbuf,
+>    175					   int flag)
+>    176	{
+>    177		struct kstat stat;
+>    178		int error;
+>    179	
+>    180		error = vfs_fstatat(dfd, filename, &stat, flag);
+>    181		if (error)
+>    182			return error;
+>    183		return cp_oldabi_stat64(&stat, statbuf);
+>    184	}
+>    185	
+>    186	struct oabi_flock64 {
+>    187		short	l_type;
+>    188		short	l_whence;
+>    189		loff_t	l_start;
+>    190		loff_t	l_len;
+>    191		pid_t	l_pid;
+>    192	} __attribute__ ((packed,aligned(4)));
+>    193	
+>    194	static long do_locks(unsigned int fd, unsigned int cmd,
+>    195					 unsigned long arg)
+>    196	{
+>    197		struct flock64 kernel;
+>    198		struct oabi_flock64 user;
+>    199		mm_segment_t fs;
+>    200		long ret;
+>    201	
+>    202		if (copy_from_user(&user, (struct oabi_flock64 __user *)arg,
+>    203				   sizeof(user)))
+>    204			return -EFAULT;
+>    205		kernel.l_type	= user.l_type;
+>    206		kernel.l_whence	= user.l_whence;
+>    207		kernel.l_start	= user.l_start;
+>    208		kernel.l_len	= user.l_len;
+>    209		kernel.l_pid	= user.l_pid;
+>    210	
+>    211		fs = get_fs();
+>    212		set_fs(KERNEL_DS);
+>    213		ret = sys_fcntl64(fd, cmd, (unsigned long)&kernel);
+>    214		set_fs(fs);
+>    215	
+>    216		if (!ret && (cmd == F_GETLK64 || cmd == F_OFD_GETLK)) {
+>    217			user.l_type	= kernel.l_type;
+>    218			user.l_whence	= kernel.l_whence;
+>    219			user.l_start	= kernel.l_start;
+>    220			user.l_len	= kernel.l_len;
+>    221			user.l_pid	= kernel.l_pid;
+>    222			if (copy_to_user((struct oabi_flock64 __user *)arg,
+>    223					 &user, sizeof(user)))
+>    224				ret = -EFAULT;
+>    225		}
+>    226		return ret;
+>    227	}
+>    228	
+>    229	asmlinkage long sys_oabi_fcntl64(unsigned int fd, unsigned int cmd,
+>    230					 unsigned long arg)
+>    231	{
+>    232		switch (cmd) {
+>    233		case F_OFD_GETLK:
+>    234		case F_OFD_SETLK:
+>    235		case F_OFD_SETLKW:
+>    236		case F_GETLK64:
+>    237		case F_SETLK64:
+>    238		case F_SETLKW64:
+>    239			return do_locks(fd, cmd, arg);
+>    240	
+>    241		default:
+>    242			return sys_fcntl64(fd, cmd, arg);
+>    243		}
+>    244	}
+>    245	
+>    246	struct oabi_epoll_event {
+>    247		__u32 events;
+>    248		__u64 data;
+>    249	} __attribute__ ((packed,aligned(4)));
+>    250	
+>    251	asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
+>    252					   struct oabi_epoll_event __user *event)
+>    253	{
+>    254		struct oabi_epoll_event user;
+>    255		struct epoll_event kernel;
+>    256	
+>  > 257		if (ep_op_has_event(op) &&
+>    258		    copy_from_user(&user, event, sizeof(user)))
+>    259			return -EFAULT;
+>    260	
+>    261		kernel.events = user.events;
+>    262		kernel.data   = user.data;
+>    263	
+>  > 264		return do_epoll_ctl(epfd, op, fd, &kernel, false);
+>    265	}
+>    266	
+> 
 > ---
->  mm/memcontrol.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d72449eeb85a..8bddee75f5cb 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6804,6 +6804,7 @@ struct uncharge_gather {
->  	unsigned long pgpgout;
->  	unsigned long nr_kmem;
->  	struct page *dummy_page;
-> +	int nid;
->  };
->  
->  static inline void uncharge_gather_clear(struct uncharge_gather *ug)
-> @@ -6849,7 +6850,13 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  	 * exclusive access to the page.
->  	 */
->  
-> -	if (ug->memcg != page_memcg(page)) {
-> +	if (ug->memcg != page_memcg(page) ||
-> +	    /*
-> +	     * Update soft limit tree used in v1 cgroup in page batch for
-> +	     * the same node. Relevant only to v1 cgroup with a soft limit.
-> +	     */
-> +	    (ug->dummy_page && ug->nid != page_to_nid(page) &&
-> +	     ug->memcg->soft_limit != PAGE_COUNTER_MAX)) {
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-Sorry, I used weird phrasing in my last email.
+I sent a patch for this on 2021-JAN-14.
 
-Can you please preface the checks you're adding with a
-!cgroup_subsys_on_dfl(memory_cgrp_subsys) to static branch for
-cgroup1? The uncharge path is pretty hot, and this would avoid the
-runtime overhead on cgroup2 at least, which doesn't have the SL.
+Russell?
 
-Also, do we need the ug->dummy_page check? It's only NULL on the first
-loop - where ug->memcg is NULL as well and the branch is taken anyway.
+-- 
+~Randy
 
-The soft limit check is also slightly cheaper than the nid check, as
-page_to_nid() might be out-of-line, so we should do it first. This?
-
-	/*
-	 * Batch-uncharge all pages of the same memcg.
-	 *
-	 * Unless we're looking at a cgroup1 with a softlimit
-	 * set: the soft limit trees are maintained per-node
-	 * and updated on uncharge (via dummy_page), so keep
-	 * batches confined to a single node as well.
-	 */
-	if (ug->memcg != page_memcg(page) ||
-	    (!cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
-	     ug->memcg->soft_limit != PAGE_COUNTER_MAX &&
-	     ug->nid != page_to_nid(page)))
