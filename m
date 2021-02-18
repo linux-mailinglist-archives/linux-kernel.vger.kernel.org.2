@@ -2,80 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF67231E7D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C22431E7D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:24:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhBRJNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:13:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40135 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231300AbhBRH7h (ORCPT
+        id S231576AbhBRJJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:09:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231185AbhBRH6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 02:59:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613635047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BwgbTD1RiX92ln5WFKH395xpEWd8VBJvefZ9GEKuK+c=;
-        b=Vc3KZO1MKPZPGgenwOLARktMmZHdYSniJFKzIKKO80qhMA8W9cRrQh0exBC+De45t/DrnO
-        2MVzlxwG8TW4ZqwzKp9ZnXryx36wLda2+EQ5nXyumRUnzOaTJH5R/vDBnNejZ6JPcJ39Oo
-        I2gpA0rP22fMnj/ajA3Re5jwKuOZUYY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-534-Q5JcY8imPzKIzNWdY6MVhQ-1; Thu, 18 Feb 2021 02:57:25 -0500
-X-MC-Unique: Q5JcY8imPzKIzNWdY6MVhQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37857100CCC1;
-        Thu, 18 Feb 2021 07:57:24 +0000 (UTC)
-Received: from T590 (ovpn-13-178.pek2.redhat.com [10.72.13.178])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 820A22E066;
-        Thu, 18 Feb 2021 07:57:13 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 15:57:03 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Ewan D . Milne" <emilne@redhat.com>
-Subject: Re: [PATCH 0/2] block: avoid to drop & re-add partitions if
- partitions aren't changed
-Message-ID: <20210218075703.GD284137@T590>
-References: <20210205021708.1498711-1-ming.lei@redhat.com>
- <20210215040341.GA257964@T590>
- <20210216084430.GA23694@lst.de>
- <20210217030714.GB259250@T590>
- <20210217071629.GA15362@lst.de>
+        Thu, 18 Feb 2021 02:58:13 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD7CC061756;
+        Wed, 17 Feb 2021 23:57:23 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id g24so801718qts.2;
+        Wed, 17 Feb 2021 23:57:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bg6ZSnruXgfVD4jOeLrAxIfhO0SIr3QdWxHbt31ZHm0=;
+        b=TKJDEV3ZCzXyQLPo4690LhuK/JxxBLbOYIkTDeL9v/WmrZ48dcpJnUb1Ovx1uQE0hy
+         LPtmgBNuzWw9zeoKLHom34zDiNUYZKD0RVU4j3HYBlkCv3gLyhSlLwfvEKT1P8uoOwcy
+         ig25aPPybc0vdT1XjIiLbIxPrSC+43ktVqvC9ZzUJoRSCQ7cqUJ/RolVrhAJ+bkg3R9R
+         6koZyw9QHe/TPDGAZzI+tUgkwylUpm2MJNW0oAoWnrLitCxvwFx0S1H0nfXE8lmI80ti
+         0JhtKKrErv6pK1MZnit70/fgA8ULuIfSQamLqFHQ5Zx/lfn/GRQrc0xQdpcyGnTsHANh
+         hDHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bg6ZSnruXgfVD4jOeLrAxIfhO0SIr3QdWxHbt31ZHm0=;
+        b=PSLOU/YIGMq6DzcWOvx8ywE32P/EV4oeVlWg5VwDyN5dPZBH2J+FlJqGM+OZW7FFDD
+         tgQxt+nbXsE6fIE2TYMBFccRPviB4xPCfL27BPleXoq89Pxj7e4ebuJ54WTkK26li9yp
+         k4mcA5VELSrhFlilaTbVd0FZWZth6dIs+PpTUjQsh1uDxAfye9eCz0Zp0UXHJ1zAdaIU
+         1NaHl8XCzSstczzPm2ernCGyE1FlXD3zXGtU4RnT2g4sZNJM8KT9B8ZTqeOJeBnE1RQt
+         H9LajW2iEbKOgMEYQNYZ9n+UF6Dgm398NY3GoT5MoVtUueAAUbmmv1pv0yDDdk6ZuqAZ
+         uHnQ==
+X-Gm-Message-State: AOAM530x+fdBMSLL2ecNaMjrtYqZduvaQ38lbXBWPxziXzBTS5mylFmf
+        rhsrvUDAe7nPcjb5tp7tYdBOXLo6esfvVOr8kxI=
+X-Google-Smtp-Source: ABdhPJwKbxgkU1n6Xn85QkkRx6zEyLGBxhFrkTp3vrGLKMttYXJc3yhMLn21PwynsFE8wZfmeCgV0p192sI9a5vlXCE=
+X-Received: by 2002:ac8:7c98:: with SMTP id y24mr3007479qtv.292.1613635043036;
+ Wed, 17 Feb 2021 23:57:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217071629.GA15362@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <1612693435-31418-1-git-send-email-shengjiu.wang@nxp.com>
+ <1612693435-31418-3-git-send-email-shengjiu.wang@nxp.com> <20210208115112.GD8645@sirena.org.uk>
+ <CAA+D8AMRGRRk6FzdiqaHAP1=dPJngNgmdGmU59vrroXA9BMyXw@mail.gmail.com>
+ <20210209222953.GF4916@sirena.org.uk> <CAA+D8AN=SDMLhuNbstzHL_H2p_L6cr+oCXbauNB0gGs2BW5tmA@mail.gmail.com>
+ <20210210153808.GB4748@sirena.org.uk>
+In-Reply-To: <20210210153808.GB4748@sirena.org.uk>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 18 Feb 2021 15:57:11 +0800
+Message-ID: <CAA+D8ANdqd2W6xvwFuuk=YqUGCfuXCFzwO7tkhuGwzPRgA_A4g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] ASoC: fsl_rpmsg: Add CPU DAI driver for audio base
+ on rpmsg
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
+        Timur Tabi <timur@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Xiubo Li <Xiubo.Lee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 08:16:29AM +0100, Christoph Hellwig wrote:
-> On Wed, Feb 17, 2021 at 11:07:14AM +0800, Ming Lei wrote:
-> > Do you think it is correct for ioctl(BLKRRPART) to always drop/re-add
-> > partition device node?
-> 
-> Yes, that is what it is designed to do.  The only reason to call this
-> ioctl is when userspace software has written new partition table
-> information to the disk.
+On Wed, Feb 10, 2021 at 11:39 PM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, Feb 10, 2021 at 02:35:29PM +0800, Shengjiu Wang wrote:
+> > On Wed, Feb 10, 2021 at 6:30 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> > > Like I say I'd actually recommend moving this control to DAPM.
+>
+> > I may understand your point, you suggest to use the .set_bias_level
+> > interface. But in my case I need to enable the clock in earlier stage
+> > and keep the clock on when system go to suspend.
+>
+> The device can be kept alive over system suspend if that's needed, or
+> possibly it sounds like runtime PM is a better fit?  There's callbacks
+> in the core to keep the device runtime PM enabled while it's open which
+> is probably about the time range you're looking for.
 
-I am wondering how userspace can know this design or implication since
-this behavior wasn't documented anywhere.
+Before enabling the clock, I need to reparent the clock according to
+the sample rate,  Maybe the hw_params is the right place to do
+these things.
 
-For example, 'blockdev --rereadpt' can do it simply, without updating
-partition table at all.
-
-The reality is that almost of all the main userspace consumers of
-ioctl(BLKRRPART) didn't follow such 'rule', then partitions node from
-'bdev' fs can disappear & re-appear anytime. I believe it is one bug
-from userspace view.
-
-
-Thanks,
-Ming
-
+Can I add a flag:
+"rpmsg->mclk_streams & BIT(substream->stream)"
+for avoiding multiple calls of hw_params function before enabling
+clock?
