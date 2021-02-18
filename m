@@ -2,63 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439ED31E8D2
+	by mail.lfdr.de (Postfix) with ESMTP id B54F631E8D3
 	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 12:00:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbhBRKqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 05:46:09 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12557 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbhBRJ3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 04:29:40 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dh8Vb5CWBzMYJS;
-        Thu, 18 Feb 2021 17:27:03 +0800 (CST)
-Received: from localhost (10.174.179.96) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Thu, 18 Feb 2021
- 17:28:48 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <sfrench@samba.org>, <scabrero@suse.de>,
-        <dan.carpenter@oracle.com>, <aaptel@suse.com>
-CC:     <linux-cifs@vger.kernel.org>, <samba-technical@lists.samba.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] cifs: Fix inconsistent IS_ERR and PTR_ERR
-Date:   Thu, 18 Feb 2021 17:28:12 +0800
-Message-ID: <20210218092812.20004-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S232834AbhBRKqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 05:46:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231847AbhBRJ3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 04:29:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A45464E5F;
+        Thu, 18 Feb 2021 09:29:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613640554;
+        bh=i9kUQrGej5nnAqz252u1q780DHC6qw/nrdRa48+5dMI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WYwLGQEAj9r+tSDsRfYFnaoSAv7+3GDGBztVhqPKuiSkb0sBI/NtnT1FqitYczK17
+         MtEtfRgQWHEjkWDpMe9PsVhQ0+w7AEIn/HU6+Lr/qIUXQFDAt8c9r5xbmfb91iS/EW
+         abJKRXNKgnh3cfuRFN16tqbvtCHr9s5Me/3+xs3T8QZy1/ZHb1AY6Hh+34+5Ee1ILH
+         o3lpNde3LL7SLH3Rnr6oNFqNWH0yGbdZA+eIV4z4Yoqbm649HvdH/UqGE1RYuGK4WQ
+         lzptPJuCUAul2Am0LathYzj0olR0IJK/O/uJgm37G2gMbzXXDKilPn+Oht987+3i5c
+         sizpSveadc/ZQ==
+Date:   Thu, 18 Feb 2021 10:29:09 +0100
+From:   Robert Richter <rric@kernel.org>
+To:     Dejin Zheng <zhengdejin5@gmail.com>
+Cc:     wsa+renesas@sang-engineering.com, jan.glauber@gmail.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: thunderx: Fix an issue about missing call to
+ 'pci_free_irq_vectors()'
+Message-ID: <YC4zZNtRi4pql1H1@rric.localdomain>
+References: <20210214143734.591789-1-zhengdejin5@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.96]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210214143734.591789-1-zhengdejin5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix inconsistent IS_ERR and PTR_ERR in cifs_find_swn_reg(). The proper
-pointer to be passed as argument to PTR_ERR() is share_name.
+On 14.02.21 22:37:34, Dejin Zheng wrote:
+> Call to 'pci_free_irq_vectors()' are missing both in the error handling
+> path of the probe function, and in the remove function. So add them.
+> 
+> Fixes: 4c21541d8da17fb ("i2c: thunderx: Replace pci_enable_msix()")
+> Signed-off-by: Dejin Zheng <zhengdejin5@gmail.com>
 
-This bug was detected with the help of Coccinelle.
+This is already taken care of in pcim_release() as the device is
+managed (pcim_enable_device()). Your change is not required.
 
-Fixes: bf80e5d4259a ("cifs: Send witness register and unregister commands to userspace daemon")
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- fs/cifs/cifs_swn.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/cifs/cifs_swn.c b/fs/cifs/cifs_swn.c
-index d35f599aa00e..f2d730fffccb 100644
---- a/fs/cifs/cifs_swn.c
-+++ b/fs/cifs/cifs_swn.c
-@@ -272,7 +272,7 @@ static struct cifs_swn_reg *cifs_find_swn_reg(struct cifs_tcon *tcon)
- 	if (IS_ERR(share_name)) {
- 		int ret;
- 
--		ret = PTR_ERR(net_name);
-+		ret = PTR_ERR(share_name);
- 		cifs_dbg(VFS, "%s: failed to extract share name from target '%s': %d\n",
- 				__func__, tcon->treeName, ret);
- 		kfree(net_name);
--- 
-2.22.0
-
+-Robert
