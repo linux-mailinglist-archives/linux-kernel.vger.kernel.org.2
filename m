@@ -2,107 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA54031EE79
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E68F31EE82
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:42:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232850AbhBRSiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:38:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233248AbhBRQP6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230309AbhBRSkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:40:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43474 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233244AbhBRQP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Feb 2021 11:15:58 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046BDC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:15:18 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id lw17so3053990pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 08:15:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A+5Mc6ykPR3IfEGP3VJhjfuAa6Mt0cwNEOHk30v0jf0=;
-        b=fB/FEapaxzigjjLl4zCOhSefLUVMNN8EIBtfR3LcJMrIBiN1ygW37Yp90vjur8e2l/
-         Rr67H0uSayNyzQvc5iqeWMHIF97c3L4gAn/rpoljICsBWcQRri2t71UkFqDh5RxIWziF
-         3szYWiawplZ+b9mPuUh/g5KKqNl2S5whlTKyQBFQwuz6yZ5dXXGh0yLJDFqEbdNa3Xdg
-         2o7kwGpImm9612ADEZ93vAgOblfdr9d4hNfiwowyKvcY4/6kAGgGVa+5M+NLNJgy5lzE
-         4lCrwXeniJcjgTaqVRxnIwZRC/pgETc51xEX+U7l7hgd55HHA5GtGGuud84uZu02j7fB
-         2ypg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A+5Mc6ykPR3IfEGP3VJhjfuAa6Mt0cwNEOHk30v0jf0=;
-        b=QEjshvW0Ju0Eb6LbeFOofOVDlArSCGAJDV3xQwqjCqwI2STNXpqKaNMr8OQBbygz/2
-         INOXqy4gb57K5uTDIqhX+QqDgv/Rl9rFtGJ52R/4cDQR0LUtfzGk859mRsEeLl9nDHga
-         FcZY/EM2A+MSLpQtk6gtd7VmxtAxXib6OgxbeYDWwMZgC9UYO3BDkVzSrVWkAOqpjfSB
-         5rishh1WV4v5wDqlnqZQElRnZRVJiHj4Iuj5X5GJl1JIwf7tB1Qz454L6O18UwOHX4vU
-         kwGudSiLXu1Vav5yRSxSaZbhm5+397g8bcWiLrhndMW9qXLcM4asZPOnISdNcPzeRMJc
-         GS3w==
-X-Gm-Message-State: AOAM5307CDfV3EKePiuUudGTOCS+/Tu9yXr1+usUS08dHHIprbQZmDh4
-        xdowGQnx/PWQwQ5m/aYYP1q3Ug==
-X-Google-Smtp-Source: ABdhPJw7zrGsk3lH2nKUm+BUZrpwqWXxQ9G6LFBM6DAkMYfBsxP0EaJZZuH7PLr/Hwh8lSeUWEHqAw==
-X-Received: by 2002:a17:90b:3886:: with SMTP id mu6mr4574793pjb.153.1613664917480;
-        Thu, 18 Feb 2021 08:15:17 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:dc76:757f:9e9e:647c])
-        by smtp.gmail.com with ESMTPSA id dw4sm6227643pjb.13.2021.02.18.08.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 08:15:16 -0800 (PST)
-Date:   Thu, 18 Feb 2021 08:15:10 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Makarand Sonare <makarandsonare@google.com>
-Subject: Re: [PATCH 10/14] KVM: x86: Further clarify the logic and comments
- for toggling log dirty
-Message-ID: <YC6SjgYTi+Dr1l0d@google.com>
-References: <20210213005015.1651772-1-seanjc@google.com>
- <20210213005015.1651772-11-seanjc@google.com>
- <2d455c2e-1db4-5aff-45eb-529e68127fe7@redhat.com>
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613664911; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J0NKBCRFWn5alqpNkuoDBrrfu6DDjmvlrvYuUcGThG4=;
+        b=JXhHq6gmFS1ebPfmy76358du2DqVPMm7OCVZ11qEdRbraNWTCckn1ZXpBAr2/3TCQpVKpz
+        sDmKRnnNXhoq6YSqQtdLxM/6f+c46TTXgF9L44Z96t7mZH5aOJ18BfWRpR4fWm1vUP3pE6
+        zXTpaqtiLvVSSw5xihmh6M7L4Wo9vs8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 837BEACD4;
+        Thu, 18 Feb 2021 16:15:11 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 17:15:10 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk-rework 01/14] printk: limit second loop of
+ syslog_print_all
+Message-ID: <YC6SjvU0iCSeHVVI@alley>
+References: <20210218081817.28849-1-john.ogness@linutronix.de>
+ <20210218081817.28849-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2d455c2e-1db4-5aff-45eb-529e68127fe7@redhat.com>
+In-Reply-To: <20210218081817.28849-2-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021, Paolo Bonzini wrote:
-> On 13/02/21 01:50, Sean Christopherson wrote:
-> > 
-> > -	 * Nothing to do for RO slots or CREATE/MOVE/DELETE of a slot.
-> > -	 * See comments below.
-> > +	 * Nothing to do for RO slots (which can't be dirtied and can't be made
-> > +	 * writable) or CREATE/MOVE/DELETE of a slot.  See comments below.
-> >  	 */
-> >  	if ((change != KVM_MR_FLAGS_ONLY) || (new->flags & KVM_MEM_READONLY))
-> >  		return;
-> > +	/*
-> > +	 * READONLY and non-flags changes were filtered out above, and the only
-> > +	 * other flag is LOG_DIRTY_PAGES, i.e. something is wrong if dirty
-> > +	 * logging isn't being toggled on or off.
-> > +	 */
-> > +	if (WARN_ON_ONCE(!((old->flags ^ new->flags) & KVM_MEM_LOG_DIRTY_PAGES)))
-> > +		return;
-> > +
+On Thu 2021-02-18 09:18:04, John Ogness wrote:
+> The second loop of syslog_print_all() subtracts lengths that were
+> added in the first loop. With commit b031a684bfd0 ("printk: remove
+> logbuf_lock writer-protection of ringbuffer") it is possible that
+> records are (over)written during syslog_print_all(). This allows the
+> possibility of the second loop subtracting lengths that were never
+> added in the first loop.
 > 
-> What about readonly -> readwrite changes?
+> This situation can result in syslog_print_all() filling the buffer
+> starting from a later record, even though there may have been room
+> to fit the earlier record(s) as well.
+> 
+> Fixes: b031a684bfd0 ("printk: remove logbuf_lock writer-protection of ringbuffer")
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-Not allowed without first deleting the memslot.  See commit 75d61fbcf563 ("KVM:
-set_memory_region: Disallow changing read-only attribute later").  RW->RO is
-also not supported.
+It makes sense after all. We reach the limit only when many old
+messages has got replaced. It means that there is a flood
+of messages. And this limit looks like a reasonable point where
+to start filling the provided buffer.
 
-	if (!old.npages) {
-		change = KVM_MR_CREATE;
-		new.dirty_bitmap = NULL;
-		memset(&new.arch, 0, sizeof(new.arch));
-	} else { /* Modify an existing slot. */
-		if ((new.userspace_addr != old.userspace_addr) ||
-		    (new.npages != old.npages) ||
-		    ((new.flags ^ old.flags) & KVM_MEM_READONLY))
-			return -EINVAL;
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
+Best Regards,
+Petr
