@@ -2,88 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BF331EB65
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFCB731EB61
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 16:16:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhBRPRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:17:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhBRMXd (ORCPT
+        id S229539AbhBRPPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:15:46 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12978 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232677AbhBRMXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:23:33 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B7BC0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:21:58 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id t11so5160402ejx.6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:21:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2jntTY6KjrXzGhj4wQ8ErItvzH/dYtJsdj3IZjK14aA=;
-        b=xNILjLMKtpGQpmfZrj0WxmAi5N2HXaWpV9UtS+plRZxlLUDMSy/RfRYROetankfVrg
-         p3LEotiu2MjtLEOAKK0XZFhBxuD2oHBcskippngfaDDwA0LMG6HQPI04eDA1c9JH1Y1a
-         V6AX155VYFHHMBKVJMidIlIpX7gTbka+Irfr0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2jntTY6KjrXzGhj4wQ8ErItvzH/dYtJsdj3IZjK14aA=;
-        b=HMuMGlQI+52wSBT1ueLHfWD4lszCda7M9vKixyEy5wxbRj1QZSK/QW2OPwmOpcybDh
-         5oMpHdUZB7Il8GPE80aMJgoJCUK7bWEzA6wb10ERVXj5B+wyndH+8+uAQhgJB+tnqtx/
-         J05fXAb8FDcOschEOaA4DSTKscKtaAg3nNWlSz4uoj4PC+obg+iMN/NUM9Q77uWI+lDO
-         DIovQyjoSbcA9Oj7q0SpW1YA4MtZH486tYrnz+fOA+rTKWN3kc3bzWGbFa6MtYzoDhZt
-         qTiwWM232p7F5YC/o6WXrrdFz+u3MnO4mnY2GgW+v5K/nOINNIeASwv85rc7Fq42wS2f
-         MiFw==
-X-Gm-Message-State: AOAM531wtJ8QBMKcCnKr67fUQQFcQSzaw3m55Hqwy8XSyQ835wjhTxps
-        aZlvCPhUIPum6GFAFEEEep9DBJ/JFbRO/za1
-X-Google-Smtp-Source: ABdhPJzd9C3+00/Cpfa9vGeNmoTvsCeKiiAP+oNZ5VVdoIBFauUJbk5V8/vp3up38Lb38lvx8/GrWA==
-X-Received: by 2002:a17:906:1944:: with SMTP id b4mr3723494eje.342.1613650916905;
-        Thu, 18 Feb 2021 04:21:56 -0800 (PST)
-Received: from localhost ([2620:10d:c093:400::4:f7e9])
-        by smtp.gmail.com with ESMTPSA id an10sm2318681ejc.106.2021.02.18.04.21.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 04:21:56 -0800 (PST)
-Date:   Thu, 18 Feb 2021 12:21:55 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     linux-kernel@vger.kernel.org
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
-Subject: Re: [PATCH v4] printk: Userspace format enumeration support
-Message-ID: <YC5b4+hTjrGwG22o@chrisdown.name>
-References: <YCafCKg2bAlOw08H@chrisdown.name>
+        Thu, 18 Feb 2021 07:23:49 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DhDL91s8kzjPKQ;
+        Thu, 18 Feb 2021 20:20:01 +0800 (CST)
+Received: from huawei.com (10.175.101.6) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 18 Feb 2021
+ 20:21:22 +0800
+From:   Sun Ke <sunke32@huawei.com>
+To:     <josef@toxicpanda.com>, <axboe@kernel.dk>, <Markus.Elfring@web.de>
+CC:     <linux-block@vger.kernel.org>, <nbd@other.debian.org>,
+        <linux-kernel@vger.kernel.org>, <sunke32@huawei.com>
+Subject: [PATCH v6 0/2] fix a NULL pointer bug and simplify the code
+Date:   Thu, 18 Feb 2021 07:26:18 -0500
+Message-ID: <20210218122620.228375-1-sunke32@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <YCafCKg2bAlOw08H@chrisdown.name>
-User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.175.101.6]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for all your feedback, Petr and Steven. :-)
+fix a NULL pointer bug and simplify the code
 
-Petr, I believe this is a comprehensive checklist of everything we discussed 
-for v5 -- any chance you could double check I'm not missing anything you folks 
-wanted? Thanks!
+v6: Just add if (nbd->recv_workq) to nbd_disconnect_and_put().
+v5: Adjust the title and add “Suggested-by”.
+v4: Share exception handling code for if branches and 
+	move put_nbd adjustment to a separate patch.
+v3: Do not use unlock and add put_nbd.
+v2: Use jump target unlock.
 
-- Use seq_file iterator again instead of simple_open + size
-- Remove debugfs file first to avoid ENOENT
-- Tear down datastructures if debugfs fails
-- Human readable output format
-- Display file/line
-- Rename to CONFIG_PRINTK_INDEX, or... something
-- Move to another file, kernel/printk/debug_formats.c or similar
-- Use `struct module *mod` instead of calling it module
-- Add documentation for printk_fmt_sec (or whatever it will be called)
-- Rename things to pf_, pi_, or something
-- See if it's safe to pass a printk_fmt_sec to seq_file instead of a module
-- Handle cont + level
-- Don't expose level/KERN_SOH directly
+Sun Ke (2):
+  nbd: Fix NULL pointer in flush_workqueue
+  nbd: share nbd_put and return by goto put_nbd
+
+ drivers/block/nbd.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+-- 
+2.25.4
+
