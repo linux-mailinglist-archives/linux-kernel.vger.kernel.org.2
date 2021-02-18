@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 888D631F093
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941C031F0C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 21:05:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhBRT4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:56:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24852 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230353AbhBRTgo (ORCPT
+        id S230234AbhBRUFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 15:05:46 -0500
+Received: from smtp108.ord1c.emailsrvr.com ([108.166.43.108]:36185 "EHLO
+        smtp108.ord1c.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231570AbhBRT52 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:36:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613676918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b0idBDK6G4n5u+jujeub1WfEZumTKDrABDdLtoiU3do=;
-        b=G1kbJhoesCH2Llt4nPIfflWfTFewUgMAWZ/55g3SNMgaWNweaOTjF7ttbxmdpp/7i1BXx8
-        2qIW9xbiNldnTa+2LEvNVWnGSCBGhc7Lx0ObNn3RkZ+BAN869bCsYyTmaIsLxSuWgncOsP
-        PtksPlX7SfTTXR/IHKYif9vKEYB1WBI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-VgZPue6QPJiMvqR56o2v6A-1; Thu, 18 Feb 2021 14:35:14 -0500
-X-MC-Unique: VgZPue6QPJiMvqR56o2v6A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57DC4107ACE4;
-        Thu, 18 Feb 2021 19:35:12 +0000 (UTC)
-Received: from treble (ovpn-117-118.rdu2.redhat.com [10.10.117.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C5226E407;
-        Thu, 18 Feb 2021 19:35:10 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 13:35:08 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        live-patching@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Konstantin Khorenko <khorenko@virtuozzo.com>
-Subject: Re: 'perf probe' and symbols from .text.<something>
-Message-ID: <20210218193508.mw6ugmh6bjlplbwe@treble>
-References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
+        Thu, 18 Feb 2021 14:57:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1613646257;
+        bh=bRHGiPfH836yATcVWrHjPVJ2UIR0s0z9fjqDlTxmMwU=;
+        h=Subject:To:From:Date:From;
+        b=Uvzbd8pW9YpNoNmRWuZQuU09cnY8OVavkWuRGk0F3AbhSPJdhtlHmvROrP4Jnbrsb
+         ab5z9+KNb4GwTW4oZzBaCFfA0JuLQS8wX56FoL8crrMByJ3sIeSdOZRx+FxTEw/keU
+         XZfD8jBbPBPqYZYdwmnfDyfru3W4ojBqjA83VPCY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1613646257;
+        bh=bRHGiPfH836yATcVWrHjPVJ2UIR0s0z9fjqDlTxmMwU=;
+        h=Subject:To:From:Date:From;
+        b=mxHpE7/IfiF+E46WkES6g1s5LsiGUka43NKrw4cDNQ1oOWDf5gpdKlev+EuQnF7ek
+         dVb2VIh2LNXTVLyYdPsdGxzWModMDqePGT4LIBAvtYug/Ai8UYSQdaQFDrCd2JVqti
+         5EEC8exiRZ82Ylp4SHH54PMmcoTQcmTWQHMcJvys=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp22.relay.ord1c.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id D16F0E0118;
+        Thu, 18 Feb 2021 06:04:16 -0500 (EST)
+Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+References: <20210217165907.9777-1-atulgopinathan@gmail.com>
+ <YC1T06VCh0K2BBW5@kroah.com> <20210217181000.GB10124@atulu-ubuntu>
+ <YC1fzjVOwiqzO1nb@kroah.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <3cfef23d-8d4a-205c-61e8-cbe8c9a0c0f4@mev.co.uk>
+Date:   Thu, 18 Feb 2021 11:04:15 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <YC1fzjVOwiqzO1nb@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 4bf05355-9fc5-4567-9578-f928f84fb8a2-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:09:17PM +0300, Evgenii Shatokhin wrote:
-> Is there a way to allow probing of functions in .text.<something> ?
+On 17/02/2021 18:26, Greg KH wrote:
+> On Wed, Feb 17, 2021 at 11:40:00PM +0530, Atul Gopinathan wrote:
+>> On Wed, Feb 17, 2021 at 06:35:15PM +0100, Greg KH wrote:
+>>> On Wed, Feb 17, 2021 at 10:29:08PM +0530, Atul Gopinathan wrote:
+>>>> Resolve the following warning generated by sparse:
+>>>>
+>>>> drivers/staging//comedi/comedi_fops.c:2956:23: warning: incorrect type in assignment (different address spaces)
+>>>> drivers/staging//comedi/comedi_fops.c:2956:23:    expected unsigned int *chanlist
+>>>> drivers/staging//comedi/comedi_fops.c:2956:23:    got void [noderef] <asn:1> *
+>>>>
+>>>> compat_ptr() has a return type of "void __user *"
+>>>> as defined in "include/linux/compat.h"
+>>>>
+>>>> cmd->chanlist is of type "unsigned int *" as defined
+>>>> in drivers/staging/comedi/comedi.h" in struct
+>>>> comedi_cmd.
+>>>>
+>>>> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+>>>> ---
+>>>>   drivers/staging/comedi/comedi_fops.c | 2 +-
+>>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+>>>> index e85a99b68f31..fc4ec38012b4 100644
+>>>> --- a/drivers/staging/comedi/comedi_fops.c
+>>>> +++ b/drivers/staging/comedi/comedi_fops.c
+>>>> @@ -2953,7 +2953,7 @@ static int get_compat_cmd(struct comedi_cmd *cmd,
+>>>>   	cmd->scan_end_arg = v32.scan_end_arg;
+>>>>   	cmd->stop_src = v32.stop_src;
+>>>>   	cmd->stop_arg = v32.stop_arg;
+>>>> -	cmd->chanlist = compat_ptr(v32.chanlist);
+>>>> +	cmd->chanlist = (unsigned int __force *)compat_ptr(v32.chanlist);
+>>>
+>>> __force?  That feels wrong, something is odd if that is ever needed.
+>>>
+>>> Are you _sure_ this is correct?
+>>
+>> The same file has instances of "(usigned int __force *)" cast being
+>> used on the same "cmd->chanlist". For reference:
+>>
+>> At line 1797 of comedi_fops.c:
+>> 1796                 /* restore chanlist pointer before copying back */
+>> 1797                 cmd->chanlist = (unsigned int __force *)user_chanlist;
+>> 1798                 cmd->data = NULL;
+>>
+>> At line 1880:
+>> 1879         /* restore chanlist pointer before copying back */
+>> 1880         cmd->chanlist = (unsigned int __force *)user_chanlist;
+>> 1881         *copy = true;
+>>
+>> Here "user_chanlist" is of type "unsigned int __user *".
+>>
+>>
+>> Or perhaps, I shouldn't be relying on them?
 > 
-> Of course, one could place probes using absolute addresses of the functions
-> but that would be less convenient.
+> I don't know, it still feels wrong.
 > 
-> This also affects many livepatch modules where the kernel code can be
-> compiled with -ffunction-sections and each function may end up in a separate
-> section .text.<function_name>. 'perf probe' cannot be used there, except
-> with the absolute addresses.
-> 
-> Moreover, if FGKASLR patches are merged (https://lwn.net/Articles/832434/)
-> and the kernel is built with FGKASLR enabled, -ffunction-sections will be
-> used too. 'perf probe' will be unable to see the kernel functions then.
+> Ian, any thoughts?
 
-A hack fix like the below would probably work, but as you pointed out,
-FGKASLR is going to be a problem.  I suspect the proper fix is for perf
-to learn how to deal with multiple executable ELF sections.
+It's kind of moot anyway because the patch is outdated.  But the reason 
+for the ___force is that the same `struct comedi_cmd` is used in both 
+user and kernel contexts.  In user contexts, the `chanlist` member 
+points to user memory and in kernel contexts it points to kernel memory 
+(copied from userspace).
 
-diff --git a/scripts/module.lds.S b/scripts/module.lds.S
-index 69b9b71a6a47..0c522a87f6ce 100644
---- a/scripts/module.lds.S
-+++ b/scripts/module.lds.S
-@@ -4,6 +4,10 @@
-  * combine them automatically.
-  */
- SECTIONS {
-+	.text : {
-+		*(.text)
-+		*(.text.*)
-+	}
- 	/DISCARD/ : {
- 		*(.discard)
- 		*(.discard.*)
+The sparse tagging of this member has flip-flopped a bit over the years:
 
+* commit 92d0127c9d24 ("Staging: comedi: __user markup on 
+comedi_fops.c") (May 2010) tagged it as `__user`.
+
+* commit 9be56c643263 ("staging: comedi: comedi.h: remove __user tag 
+from chanlist") (Sep 2012) removed the `__user` tag.
+
+It is mostly used in a kernel context, for example all the low-level 
+drivers with `do_cmd` and `do_cmdtest` handlers use it in kernel context.
+
+The alternative would be to have a separate kernel version of this 
+struct, but it would be mostly identical to the user version apart from 
+the sparse tagging of this member and perhaps the removal of the unused 
+`data` and `data_len` members (which need to be kept in the user version 
+of the struct for compatibility reasons).
+
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
