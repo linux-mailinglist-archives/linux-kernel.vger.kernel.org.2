@@ -2,117 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D21C31F192
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:12:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 677DD31F19B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230234AbhBRVKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 16:10:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
+        id S229752AbhBRVUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:20:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbhBRVKq (ORCPT
+        with ESMTP id S229577AbhBRVUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:10:46 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8911C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:10:06 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id a4so1939541pgc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:10:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZFuWVcfezeRuRTof6nz3CYKtFriRYGUNbLlHaDQ4yQE=;
-        b=uzPriHvMWygw1o4JQz8tcuiP433U24qdXJ2/LEzxQtgc5EscpyeZntikbWoOmfRvbT
-         vHNTniMcmcAm6VGtZIjYq/8uGTY7V70sbV8gS5Ybq344MbwiPb0u1n6zG6WJvS7pL63g
-         BZWc+axQ3byJDvmbE7RXB1gHnpePHt3y6Nh/sVHgptOeosiVHh661Xyn/HxjhNA9UMaa
-         ZWTFqdyJfLfF8zNHuubC9uGFMGXSdeQ3aYazxpF4fgT+CGOr70JmRX4xkCzvhEF94hdt
-         5PDO+CLgPqKO/bZdM6DM/BSujkypWUiTdV1t5lPlreaDT3bipZehXMvdUzVB2WFNGwJv
-         1UjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZFuWVcfezeRuRTof6nz3CYKtFriRYGUNbLlHaDQ4yQE=;
-        b=LZB2wUsJpNQaj6qdfswzNTOL0XWOFRuR9KL9v7U/Rai5DmweKn8Dxa5byhiZb1Jo4k
-         lt+Esd54CK2Sx84oa2VgvMHguOxfZE2r/g7c0lxS6dhdSbVc39OrT4Ysor9fzSD6su3s
-         gdHiRT1D5cGc/oKOOb2/7rHrmXQhVsfKrTmdllTNUxlB6xGIPKa7O7YvQHNlYQp6DAMX
-         hxsGWj5eg+6m7z8EGZFD97/et5lwBCptFHg0hdDCZ8zsQmboCWs5o07ZIuzR7ERLsbS+
-         ejGBKohZKBrvj0IT9r78NQcLDSsts/b8vkhBkPxEXu0uD0Pg7kmturrRXM3PkFkKuGUJ
-         9lCQ==
-X-Gm-Message-State: AOAM532b0jPkP0BhLC6qCe6nFJ6PNFpixxMlYl3Lx+19uAGxnSEw9bLk
-        yV2rxck88biAVthCuiNX3Erh3tPraMbnWqt1hv0=
-X-Google-Smtp-Source: ABdhPJzXTY6OPUT4Fd6gxt8z5FXshbJv779uf09xyHaB9soR8yV7wbIOUeeR2ckWeDyoJ7QbXxweunva2KSyW8MvhAU=
-X-Received: by 2002:a62:7a0b:0:b029:1de:7e70:955d with SMTP id
- v11-20020a627a0b0000b02901de7e70955dmr6090753pfc.49.1613682606406; Thu, 18
- Feb 2021 13:10:06 -0800 (PST)
+        Thu, 18 Feb 2021 16:20:36 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E20C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:19:56 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lCqiF-00064A-3x; Thu, 18 Feb 2021 22:19:51 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lCqiC-0000LA-C7; Thu, 18 Feb 2021 22:19:48 +0100
+Date:   Thu, 18 Feb 2021 22:19:48 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel@pengutronix.de, Johan Hovold <johan@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11] leds: trigger: implement a tty trigger
+Message-ID: <20210218211948.4jwhtkhg72kaxx5n@pengutronix.de>
+References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
+ <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
+ <X/8cwD51DYhzRdDO@kroah.com>
+ <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
+ <X/89NHn4oJFC7GjM@kroah.com>
+ <20210218133352.GA13628@duo.ucw.cz>
 MIME-Version: 1.0
-References: <20210212222304.110194-1-mgross@linux.intel.com>
- <20210212222304.110194-4-mgross@linux.intel.com> <CABb+yY1MLxArMY7g7HY06Tn5aABwpmUuXN9KddHZpW-_Mmu2iA@mail.gmail.com>
- <ffc9713e441389d19e7221ad4d16b938fa412361.camel@intel.com>
-In-Reply-To: <ffc9713e441389d19e7221ad4d16b938fa412361.camel@intel.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Thu, 18 Feb 2021 15:09:55 -0600
-Message-ID: <CABb+yY2kxCjHqbBbgcPShyMA-xtcJEpzGXxqnjDAoufhidX-LQ@mail.gmail.com>
-Subject: Re: [PATCH v6 03/34] mailbox: vpu-ipc-mailbox: Add support for Intel
- VPU IPC mailbox
-To:     "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>
-Cc:     "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
-        "markgross@kernel.org" <markgross@kernel.org>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
-        "bp@suse.de" <bp@suse.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "peng.fan@nxp.com" <peng.fan@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pezhfulq2xqxpwpg"
+Content-Disposition: inline
+In-Reply-To: <20210218133352.GA13628@duo.ucw.cz>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 6:02 AM Alessandrelli, Daniele
-<daniele.alessandrelli@intel.com> wrote:
->
-> Hi Jassi,
->
-> Thank you very much for your feedback.
->
-> On Sun, 2021-02-14 at 22:54 -0600, Jassi Brar wrote:
-> > IIUIC, maybe the solution is simpler .... What if we set txdone_poll.
-> > Always return success in send_data(). And check if we overflew the
-> > fifo in last_tx_done(). If we did overflow, try to rewrite the data
-> > and check again. Return true, if not overflew this time, otherwise
-> > return false so that mailbox api can ask us to try again in next
-> > last_tx_done(). This way we can do away with the tasklet and, more
-> > importantly, avoid send_data() failures and retries on clients' part.
->
-> That's a clever solution to avoid the tasklet. The only issue for us is
-> the automatic TX retry from the controller. I understand that's
-> generally a desirable feature, but in our case we'd like the client to
-> have full control on re-transmission attempts.
->
-> That's because some of our data is time-sensitive. For instance, when
-> we process frames from a video stream we prefer dropping a frame rather
-> than re-transmitting it and delaying the processing of the rest.
->
-> Now, I understand that the client can set the 'tx_block' and 'tx_tout'
-> channel fields to specify how long it wishes to wait, but the problem
-> is that our (single) channel is shared between multiple applications
-> having different timing requirements. That's why we prefer to let
-> applications deal we re-transmissions.
->
-> Given the above, do you think it's reasonable to leave the
-> implementation as it is now?
-> (from initial analysis, the tasklet doesn't seem to affect the
-> performance of our use cases significantly, so we are fine with it)
->
-Yup. It is intel specific so, hopefully, we don't have to deal with
-other vendors trying to support their use cases.
-Are you targeting the next merge window or this one?
 
-cheers.
+--pezhfulq2xqxpwpg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Pavel,
+
+On Thu, Feb 18, 2021 at 02:33:52PM +0100, Pavel Machek wrote:
+> > > > so that I can queue it up?
+> > >=20
+> > > Oh, so you are LED maintainer now? My congratulations.
+> > > (Honestly, do you plan to apply this without their ack? Not that I'm
+> > > against you doing that, I'm happy if I can archive this patch series =
+as
+> > > done, but I'm a bit surprised.)
+> >=20
+> > It's drug on for so long now, the infrastructure that this driver needs
+> > has now bee merged, so I see no reason why this driver can't be taken
+> > now.  I offered up a "any objections?" in the past, and have gotten
+> > none, so I will take that for quiet acceptance :)
+>=20
+> Thanks for taking the infrastructure patches, but please drop this
+> one.
+
+Given it is already part of Greg's pull request I wonder if we need an
+incremental patch instead?
+
+> Its buggy, as were previous versions. I'll handle it.
+
+*sigh*, you're right. I will prepare a fixed version tomorrow.
+Maybe I know until then if I have to prepare a v12 or an incremental
+patch.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--pezhfulq2xqxpwpg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAu2fAACgkQwfwUeK3K
+7AlVNQf9Fntr6+rWEXyxclcvC+5IAhyGh08RdpmV1oOlCfj6mVv4DiBq0zByDZsG
+2bI/ijYNUxbHAwnXmFxFIF7x0ueT34zR8Q0N5I09MpCc6mGdPGjEkdl41iOwAG7D
+A3uLJLpnQE1XABOGI9tPQ7iUFvqp62OYgteOMcZcbitaraMbqHKa90zQchO3uqXv
+17ud+JbuUuI35GHjh3U8pAlulU6l+odBXVnCFcpakNy8FcdOHSE6ISf7grWNCzoc
+/QacO/DS2OiQZ16S6IR77KH2QfZokeH2HtXR9cInVjLOWQ1yyxDrcOFHKOgXar1U
+NHgA0C7gMReuRRVzZqE3KfNUtTvFTg==
+=ca1N
+-----END PGP SIGNATURE-----
+
+--pezhfulq2xqxpwpg--
