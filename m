@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B5F31EC3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:30:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D5AF31EC3B
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:30:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbhBRQ0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 11:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBRNlt (ORCPT
+        id S233510AbhBRQ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 11:27:56 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:33466 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231419AbhBRNl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 08:41:49 -0500
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B943EC061756;
-        Thu, 18 Feb 2021 05:41:08 -0800 (PST)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1lCjYI-0006xj-Uv; Thu, 18 Feb 2021 14:41:07 +0100
-Date:   Thu, 18 Feb 2021 14:41:06 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Florian Westphal <fw@strlen.de>, Phil Sutter <phil@nwl.cc>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
-        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
- events
-Message-ID: <20210218134106.GC22944@breakpoint.cc>
-References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
- <20210211151606.GX3158@orbyte.nwl.cc>
- <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
- <20210211202628.GP2015948@madcap2.tricolour.ca>
- <20210211220930.GC2766@breakpoint.cc>
- <20210217234131.GN3141668@madcap2.tricolour.ca>
- <20210218082207.GJ2766@breakpoint.cc>
- <20210218124211.GO3141668@madcap2.tricolour.ca>
- <20210218125248.GB22944@breakpoint.cc>
- <20210218132843.GP3141668@madcap2.tricolour.ca>
+        Thu, 18 Feb 2021 08:41:58 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id EBE5D1C0B81; Thu, 18 Feb 2021 14:41:15 +0100 (CET)
+Date:   Thu, 18 Feb 2021 14:41:15 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Gustave Monce <gustave.monce@outlook.com>
+Subject: Re: [PATCH 11/18] arm64: dts: qcom: msm8994-octagon: Add uSD card
+ and disable HS400 on eMMC
+Message-ID: <20210218134115.GA14087@duo.ucw.cz>
+References: <20210131013853.55810-1-konrad.dybcio@somainline.org>
+ <20210131013853.55810-12-konrad.dybcio@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
 Content-Disposition: inline
-In-Reply-To: <20210218132843.GP3141668@madcap2.tricolour.ca>
+In-Reply-To: <20210131013853.55810-12-konrad.dybcio@somainline.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Richard Guy Briggs <rgb@redhat.com> wrote:
-> Ok, can I get one more clarification on this "hierarchy"?  Is it roughly
-> in the order they appear in nf_tables_commit() after step 3?  It appears
-> it might be mostly already.  If it isn't already, would it be reasonable
-> to re-order them?  Would you suggest a different order?
 
-For audit purposes I think enum nf_tables_msg_types is already in the
-most relevant order, the lower numbers being more imporant.
+--FCuugMFkClbJLl1L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-So e.g. NEWTABLE would be more interesting than DELRULE, if both
-are in same batch.
+On Sun 2021-01-31 02:38:42, Konrad Dybcio wrote:
+> From: Gustave Monce <gustave.monce@outlook.com>
+>=20
+> Lumia 950/XL, like other phones, ship with different storage chips.
+> Some of them are not capable of stable operation at HS400. Disable it.
+>=20
+> Signed-off-by: Gustave Monce <gustave.monce@outlook.com>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  .../dts/qcom/msm8994-msft-lumia-octagon.dtsi  | 21 +++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi b/a=
+rch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+> index bf6e63a23600..004a42261cef 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8994-msft-lumia-octagon.dtsi
+> @@ -684,6 +684,27 @@ vph_pwr_bbyp: boost-bypass {
+> =20
+>  &sdhc1 {
+>  	status =3D "okay";
+> +
+> +	/*
+> +	 * This device is shipped with HS400 capabable eMMCs
 
-> > > such that it would be desirable to filter them out
-> > > to reduce noise in that single log line if it is attempted to list all
-> > > the change ops?  It almost sounds like it would be better to do one
-> > > audit log line for each table for each family, and possibly for each op
-> > > to avoid the need to change userspace.  This would already be a
-> > > significant improvement picking the highest ranking op.
-> > 
-> > I think i understand what you'd like to do.  Yes, that would reduce
-> > the log output a lot.
-> 
-> Would the generation change id be useful outside the kernel?
+Typo, should be "capable"?
 
-Yes, we already announce it to interested parties via nfnetlink.
+> +	 * However various brands have been used in various product batches,
+> +	 * including a Samsung eMMC (BGND3R) which features a quirk with HS400.
+> +	 * Set the speed to HS200 as a safety measure.
+> +	 */
 
-> What
-> exactly does it look like?
+And this makes little sense. "This device is often shipped..."?
 
-Its just a u64 counter that gets incremented whenever there is a change.
+Best regards,
+									Pavel
 
-> I don't quite understand the genmask purpose.
+--=20
+http://www.livejournal.com/~pavelmachek
 
-Thats an implementation detail only.  When we process a transaction,
-changes to the ruleset are being made but they should not have any
-effect until the entire transaction is processed.
+--FCuugMFkClbJLl1L
+Content-Type: application/pgp-signature; name="signature.asc"
 
-So there are two 'generations' at any time:
-1. The active ruleset
-2. The future ruleset
+-----BEGIN PGP SIGNATURE-----
 
-2) is what is being changed/modified.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC5uewAKCRAw5/Bqldv6
+8uLgAKCNV5n0XRhWpoPUEPInRxB89pd5FgCcCx84tBFtuG21PzYbnAc4tRkuB7w=
+=hfLT
+-----END PGP SIGNATURE-----
 
-When the transaction completes, then the future ruleset becomes
-the active ruleset.  If the transaction has to be aborted, the
-pending changes are reverted and the genid/genmasks are not changed.
+--FCuugMFkClbJLl1L--
