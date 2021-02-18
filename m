@@ -2,93 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7F931EE37
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:26:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF5C31EDD3
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:02:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbhBRSZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:25:28 -0500
-Received: from smtp111.iad3a.emailsrvr.com ([173.203.187.111]:34955 "EHLO
-        smtp111.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232883AbhBRP5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:57:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1613643185;
-        bh=m8t/XvYW9G95yu9XimEdQKxasSEtsFIC/kxyuxGznXQ=;
-        h=Subject:To:From:Date:From;
-        b=yA6Z0QaT4Ycd/kgyfT6p/CRzVhqj+XQlFw/KcCy8Rv4VEoufamI5JAaBYjYlShTd+
-         m3WGGaCUINsdB/RxQN8mR3sGCBtdqyFrL//CM178XYRYvSZPLfRNYxMi3ixwbZ9auN
-         GIfQl1dRBA+9+DyeKv2livU6AHcScfGGC6qBEMFI=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1613643185;
-        bh=m8t/XvYW9G95yu9XimEdQKxasSEtsFIC/kxyuxGznXQ=;
-        h=Subject:To:From:Date:From;
-        b=EaDRJM9YUnPRxXAlMwcJ+Q/sy4Z6YrgcX+hS6Va3bRlf8DGNKiQwJnpHne+0VxRx8
-         JhcKzWlIXGnvif/45YEpqcLM+4rsmvbXxkAuvjWHuyKaXVHZ1JNCXuLufgFxwlaZ+B
-         m9MLRLgx4R/Cc7zKtZes/7kUYWcUg9sjCp+YTTdo=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp22.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id F1CB8195C;
-        Thu, 18 Feb 2021 05:13:04 -0500 (EST)
-Subject: Re: [PATCH] drivers: staging: comedi: Fixed side effects from macro
- definition.
-To:     chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
-Cc:     H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ethan Edwards <ethancarteredwards@gmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20210217142008.29699-1-chakravarthikulkarni2021@gmail.com>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <3c1ddf91-da6c-5620-61e7-1ec453b2aa93@mev.co.uk>
-Date:   Thu, 18 Feb 2021 10:13:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S234941AbhBRSB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:01:29 -0500
+Received: from mga04.intel.com ([192.55.52.120]:9026 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231735AbhBRPVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:21:39 -0500
+IronPort-SDR: UsQO0CCBNUu+Z2JvOLJ95sfu/DwkYysC77PY8iyjTUHXMwHXeFpA2Jpc/+T4GOspSsJWs39QS0
+ aQOX/7JGYuSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9898"; a="180967427"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="180967427"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 07:15:52 -0800
+IronPort-SDR: ySyCeo3hHhVVssiuUa+dRq9sIUiHvTQ7v6KnjniuxwRD5SNHv0Bk1sNKh61kvbmQF2g5rC7u+o
+ ruQSlJ1pKQLw==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="419537155"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 07:15:47 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lCl1r-005yaq-Oq; Thu, 18 Feb 2021 17:15:43 +0200
+Date:   Thu, 18 Feb 2021 17:15:43 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
+        Alexey Klimov <aklimov@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jianpeng Ma <jianpeng.ma@intel.com>,
+        Joe Perches <joe@perches.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Rich Felker <dalias@libc.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 08/14] lib/Kconfig: introduce FAST_PATH option
+Message-ID: <YC6EnzFUXDuroy0+@smile.fi.intel.com>
+References: <20210218040512.709186-1-yury.norov@gmail.com>
+ <20210218040512.709186-9-yury.norov@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210217142008.29699-1-chakravarthikulkarni2021@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: d7105027-4594-4034-967a-e94a4fffd174-1-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218040512.709186-9-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/02/2021 14:20, chakravarthikulkarni wrote:
-> Warning found by checkpatch.pl script.
+On Wed, Feb 17, 2021 at 08:05:06PM -0800, Yury Norov wrote:
+> This series introduces fast paths for find_bit() routines. It is
+> beneficial for typical systems, but those who limited in I-cache
+> may be concerned about increasing the .text size of the Image.
 > 
-> Signed-off-by: chakravarthikulkarni <chakravarthikulkarni2021@gmail.com>
-> ---
->   drivers/staging/comedi/comedi.h | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
+> To address this concern, one can disable FAST_PATH option in the config
+> and some save memory.
 > 
-> diff --git a/drivers/staging/comedi/comedi.h b/drivers/staging/comedi/comedi.h
-> index b5d00a006dbb..b2af6a88d389 100644
-> --- a/drivers/staging/comedi/comedi.h
-> +++ b/drivers/staging/comedi/comedi.h
-> @@ -1103,9 +1103,12 @@ enum ni_common_signal_names {
->   
->   /* *** END GLOBALLY-NAMED NI TERMINALS/SIGNALS *** */
->   
-> -#define NI_USUAL_PFI_SELECT(x)	(((x) < 10) ? (0x1 + (x)) : (0xb + (x)))
-> -#define NI_USUAL_RTSI_SELECT(x)	(((x) < 7) ? (0xb + (x)) : 0x1b)
-> -
-> +#define NI_USUAL_PFI_SELECT(x) \
-> +	({ typeof(x) _x = x; \
-> +	 (((_x) < 10) ? (0x1 + (_x)) : (0xb + (_x))); })
-> +#define NI_USUAL_RTSI_SELECT(x)	\
-> +	({ typeof(x) _x = x; \
-> +	 (((_x) < 7) ? (0xb + (_x)) : 0x1b); })
->   /*
->    * mode bits for NI general-purpose counters, set with
->    * INSN_CONFIG_SET_COUNTER_MODE
-> 
+> The effect of this option on my arm64 next-20210217 build is:
 
-I'd rather not do that because this is intended to be a userspace 
-header.  This change adds GCC extensions and prohibits the use of the 
-macros in constant expressions.
+(Maybe bloat-o-meter will give better view on this, i.e. more human-readable)
+
+> Before:
+> 	Sections:
+> 	Idx Name          Size      VMA               LMA               File off  Algn
+> 	  0 .head.text    00010000  ffff800010000000  ffff800010000000  00010000  2**16
+> 			  CONTENTS, ALLOC, LOAD, READONLY, CODE
+> 	  1 .text         0115e3a8  ffff800010010000  ffff800010010000  00020000  2**16
+> 			  CONTENTS, ALLOC, LOAD, READONLY, CODE
+> 	  2 .got.plt      00000018  ffff80001116e3a8  ffff80001116e3a8  0117e3a8  2**3
+> 			  CONTENTS, ALLOC, LOAD, DATA
+> 	  3 .rodata       007a72ca  ffff800011170000  ffff800011170000  01180000  2**12
+> 			  CONTENTS, ALLOC, LOAD, DATA
+> 	  ...
+> 
+> After:
+> 	Sections:
+> 	Idx Name          Size      VMA               LMA               File off  Algn
+> 	  0 .head.text    00010000  ffff800010000000  ffff800010000000  00010000  2**16
+> 			  CONTENTS, ALLOC, LOAD, READONLY, CODE
+> 	  1 .text         011623a8  ffff800010010000  ffff800010010000  00020000  2**16
+> 			  CONTENTS, ALLOC, LOAD, READONLY, CODE
+> 	  2 .got.plt      00000018  ffff8000111723a8  ffff8000111723a8  011823a8  2**3
+> 			  CONTENTS, ALLOC, LOAD, DATA
+> 	  3 .rodata       007a772a  ffff800011180000  ffff800011180000  01190000  2**12
+> 			  CONTENTS, ALLOC, LOAD, DATA
+> 	  ...
+> 
+> Notice that this is the cumulive effect on already existing fast paths
+> controlled by SMALL_CONST() together with ones added by this series.
+
+...
+
+> +config FAST_PATH
+
+I think the name is to broad for this cases, perhaps BITS_FAST_PATH? or BITMAP?
+
+> +	bool "Enable fast path code generation"
+> +	default y
+> +	help
+> +	  This option enables fast path optimization with the cost of increasing
+> +	  the text section.
 
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+With Best Regards,
+Andy Shevchenko
+
+
