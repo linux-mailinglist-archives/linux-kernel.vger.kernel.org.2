@@ -2,69 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB63031EE8E
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:45:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9085331EE93
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbhBRSoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:44:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48583 "EHLO
+        id S232454AbhBRSo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:44:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52802 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233320AbhBRQ0I (ORCPT
+        by vger.kernel.org with ESMTP id S232798AbhBRQ1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 11:26:08 -0500
+        Thu, 18 Feb 2021 11:27:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613665481;
+        s=mimecast20190719; t=1613665576;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ol04b9SwBsNodyJM22S45r12k9peEbiT8MJxTqE+tN4=;
-        b=XIPU9QS8avCBZQqYaID/j+rT1twJpTjM6YdvhJv77i9lblrM2+7rIS+fhuImZ02t7wPocZ
-        H3Bpiv99IUrqP/U0a4bxUlezpG/Nz3Hc/wsLy0ZLvd/tO/PsAFgFwFWqHb/59R4eiNK0Fe
-        KlKPeO36vdPSm2hyJLUH3J5wm+tLzMc=
+        bh=J2X67q8itB+nQRLaZpwWTEn/d/SF56gQm3JBUDCWd+8=;
+        b=R1ZFnnXnzMrdgteI4mjCPxlH3Zi6EUjzyd27BUgxLWKaA3WndEA0QVICelcGLAVundm90V
+        smCv4Tl8XXDXVODq89W8qL6HVC/cbzArsjVo8xF33u2sVQd8UGlNX2r2W6kpBtuu8XQZ6l
+        VcNRnW3MLzBvFgH/aeHIH5rt4mwwUYU=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-416-rW-hvFsBMdK8XUyn30FbIQ-1; Thu, 18 Feb 2021 11:24:37 -0500
-X-MC-Unique: rW-hvFsBMdK8XUyn30FbIQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+ us-mta-519-HfbNI61sPhqZboRszWpnDQ-1; Thu, 18 Feb 2021 11:26:12 -0500
+X-MC-Unique: HfbNI61sPhqZboRszWpnDQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59FF380364E;
-        Thu, 18 Feb 2021 16:24:36 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 319C519D9F;
-        Thu, 18 Feb 2021 16:24:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-In-Reply-To: <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk>
-References: <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
-To:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>
-Cc:     dhowells@redhat.com, Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A170F874983;
+        Thu, 18 Feb 2021 16:26:10 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 286F360C6B;
+        Thu, 18 Feb 2021 16:26:08 +0000 (UTC)
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
+References: <20210217163603.429062-1-minchan@kernel.org>
+ <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
+ <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
+ <YC402s1vqvC4q041@dhcp22.suse.cz>
+ <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
+ <YC6TpqT26dSy11fU@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Message-ID: <dc534e7b-3992-eb37-8399-67258ff03067@redhat.com>
+Date:   Thu, 18 Feb 2021 17:26:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   David Howells <dhowells@redhat.com>
-Date:   Thu, 18 Feb 2021 16:24:34 +0000
-Message-ID: <2031808.1613665474@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <YC6TpqT26dSy11fU@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 18.02.21 17:19, Minchan Kim wrote:
+> On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
+>> On 18.02.21 10:35, Michal Hocko wrote:
+>>> On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
+>>>> On 18.02.21 09:56, Michal Hocko wrote:
+>>>>> On Wed 17-02-21 08:36:03, Minchan Kim wrote:
+>>>>>> alloc_contig_range is usually used on cma area or movable zone.
+>>>>>> It's critical if the page migration fails on those areas so
+>>>>>> dump more debugging message like memory_hotplug unless user
+>>>>>> specifiy __GFP_NOWARN.
+>>>>>
+>>>>> I agree with David that this has a potential to generate a lot of output
+>>>>> and it is not really clear whether it is worth it. Page isolation code
+>>>>> already has REPORT_FAILURE mode which currently used only for the memory
+>>>>> hotplug because this was just too noisy from the CMA path - d381c54760dc
+>>>>> ("mm: only report isolation failures when offlining memory").
+>>>>>
+>>>>> Maybe migration failures are less likely to fail but still.
+>>>>
+>>>> Side note: I really dislike that uncontrolled error reporting on memory
+>>>> offlining path we have enabled as default. Yeah, it might be useful for
+>>>> ZONE_MOVABLE in some cases, but otherwise it's just noise.
+>>>>
+>>>> Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
+>>>
+>>> Anyway we can discuss this in a separate thread but I think this is not
+>>> a representative workload.
+>>
+>> Sure, but the essence is "this is noise", and we'll have more noise on
+>> alloc_contig_range() as we see these calls more frequently. There should be
+>> an explicit way to enable such *debug* messages.
+> 
+> alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
 
-Hi Micka=C3=ABl, Jarkko,
+I am not 100% sure it does.
 
-Can I transfer your acks from:
+> Why shouldn't people use it if they don't care the failure?
 
-	https://lore.kernel.org/lkml/20210121155513.539519-5-mic@digikod.net/
+Because flooding the log with noise maybe a handful of people on this 
+planet care about is absolutely useless. With the warnings in 
+warn_alloc() people can at least conclude something reasonable.
 
-to here?
+> Semantically, it makes sense to me.
+> 
+> About the messeage flooding, shouldn't we go with ratelimiting?
 
-David
+At least that (see warn_alloc()). But I'd even want to see some other 
+trigger to enable this explicitly on demand.
+
+-- 
+Thanks,
+
+David / dhildenb
 
