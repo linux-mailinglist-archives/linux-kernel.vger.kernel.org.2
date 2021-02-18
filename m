@@ -2,98 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D03831E665
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B353931E67D
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 07:52:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhBRGnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 01:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhBRGa1 (ORCPT
+        id S230489AbhBRGrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 01:47:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49239 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230496AbhBRGdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 01:30:27 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2CEC0613D6;
-        Wed, 17 Feb 2021 22:29:46 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id w18so605967pfu.9;
-        Wed, 17 Feb 2021 22:29:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=yHtGxWfPAIZEvBnGmWjlN6rdZWQnYSnX/GzqtFWIJg0=;
-        b=TOewui0lXbhSkNw7mI+ljNrV0hf31Mu/TsPD3Fa99a3Vr6Wnm9DSIF/fn+PxPmZ2lm
-         tCnpqmbQxbbYKPyZ2OPqkaj6iPF5hyQ8q2gKRvD3mQhYO7RH1mLUtxn0q/rU7DEZh/Tk
-         8UXeYOMrr6MU7miSrQLfrsEcrdOWVSbATP8L3D3gyfXYo7wZnYkAhxBTipoRQKbDk3C9
-         GWgh7s/u/U+rg2KvPgji7XIDuKTEWX5JjU/XkNK/F9/9u/QFi4SWv15o96VYRaiH1GLh
-         PnbZTKe0NUeT9DyLjPVv8Z0CAbWHpNI0B+WwpKg6cj6gGW/F5oeygzONeFkGEguL2F2M
-         n/AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=yHtGxWfPAIZEvBnGmWjlN6rdZWQnYSnX/GzqtFWIJg0=;
-        b=QfhDWJzizPCkxYIcxA3Faznt1rnLp0c2VRHwUnfNpqoCphzVSL3uszUDW67jO2d9S6
-         +bJFmUUYeZ0hxO2TEX9pVOAoQbJD14iTYxoBrPhG/m/GnxhjCwJnbTTXNajyQfx80jUx
-         fksBbLboY1mTXaFB279A+TbUDxNsmX3AU/GEdJYaM1QOhvsWgLffMyBGFIJPmNAXKr3K
-         Mba6n5C36JBErS0iLfwYa2AZn7gRuNXdUvqP/aGeedyxmBptBbh3MRFmpalPRs/IkOtN
-         jsV4Ndkc+40qFuzE5MmEXqaL+DyWZDiyvw7vyRoJBXR2IFRFNMPSwuf8bNfWUQS73KUk
-         3Vtg==
-X-Gm-Message-State: AOAM5327N6NMEeT/tBywc48TYyqpMoan+f5LcP70Kvm84bBbm2d51xx9
-        n8C8HeU5T8H8LOpcdRvsdjHRsFVsdSxC6A==
-X-Google-Smtp-Source: ABdhPJz8GKaArYRWqmtdtU85HLb1nnRXNt3gTtJ3OrKL0M5imqMeyfTUhg3Lq3SEzz53Npy/tWIGpA==
-X-Received: by 2002:a63:547:: with SMTP id 68mr2736959pgf.196.1613629786117;
-        Wed, 17 Feb 2021 22:29:46 -0800 (PST)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id l144sm4436954pfd.104.2021.02.17.22.29.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 17 Feb 2021 22:29:45 -0800 (PST)
-Date:   Wed, 17 Feb 2021 22:30:39 -0800
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     Timur Tabi <timur@kernel.org>, kernel-janitors@vger.kernel.org,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] ASoC: fsl: drop unneeded snd_soc_dai_set_drvdata
-Message-ID: <20210218063038.GB13668@Asurada-Nvidia>
-References: <20210213101907.1318496-1-Julia.Lawall@inria.fr>
- <20210213101907.1318496-5-Julia.Lawall@inria.fr>
+        Thu, 18 Feb 2021 01:33:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613629893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SmKJbr1ghRBYuWCVlTYOn3L53WGI5otg/AW/GKJqUOE=;
+        b=b2IDyzNPxojh7VIRUUVaIjVGg4vjPPL/IOaR/mJREnry1SslzDuIxYi4C33+RyoEycNeju
+        WhkkySkpvT6/jZqthNAFU+2qw8jRAh764QRow+Pa2zPyhqss6opvcBE7OwCwNiCuGTAHFR
+        /qkEDlK2FWm/UtjwnrTQC3nwChzfzUw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-oTsIV7GUPRCTIKjvA24gOA-1; Thu, 18 Feb 2021 01:31:29 -0500
+X-MC-Unique: oTsIV7GUPRCTIKjvA24gOA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92F3D1935780;
+        Thu, 18 Feb 2021 06:31:26 +0000 (UTC)
+Received: from localhost (ovpn-12-112.pek2.redhat.com [10.72.12.112])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E21D85C730;
+        Thu, 18 Feb 2021 06:31:21 +0000 (UTC)
+Date:   Thu, 18 Feb 2021 14:31:19 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
+        dyoung@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
+        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
+        arnd@arndb.de, james.morse@arm.com, xiexiuqi@huawei.com,
+        guohanjun@huawei.com, huawei.libin@huawei.com,
+        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v14 06/11] x86/elf: Move vmcore_elf_check_arch_cross to
+ arch/x86/include/asm/elf.h
+Message-ID: <20210218062508.GH2871@MiWiFi-R3L-srv>
+References: <20210130071025.65258-1-chenzhou10@huawei.com>
+ <20210130071025.65258-7-chenzhou10@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210213101907.1318496-5-Julia.Lawall@inria.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210130071025.65258-7-chenzhou10@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 13, 2021 at 11:19:07AM +0100, Julia Lawall wrote:
-> snd_soc_dai_set_drvdata is not needed when the set data comes from
-> snd_soc_dai_get_drvdata or dev_get_drvdata.  The problem was fixed
-> usingthe following semantic patch: (http://coccinelle.lip6.fr/)
+On 01/30/21 at 03:10pm, Chen Zhou wrote:
+> Move macro vmcore_elf_check_arch_cross from arch/x86/include/asm/kexec.h
+> to arch/x86/include/asm/elf.h to fix the following compiling warning:
 > 
-> // <smpl>
-> @@
-> expression x,y,e;
-> @@
-> 	x = dev_get_drvdata(y->dev)
-> 	... when != x = e
-> -	snd_soc_dai_set_drvdata(y,x);
+> make ARCH=i386
+> In file included from arch/x86/kernel/setup.c:39:0:
+> ./arch/x86/include/asm/kexec.h:77:0: warning: "vmcore_elf_check_arch_cross" redefined
+>  # define vmcore_elf_check_arch_cross(x) ((x)->e_machine == EM_X86_64)
 > 
-> @@
-> expression x,y,e;
-> @@
-> 	x = snd_soc_dai_get_drvdata(y)
-> 	... when != x = e
-> -	snd_soc_dai_set_drvdata(y,x);
-> // </smpl>
+> In file included from arch/x86/kernel/setup.c:9:0:
+> ./include/linux/crash_dump.h:39:0: note: this is the location of the previous definition
+>  #define vmcore_elf_check_arch_cross(x) 0
 > 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> The root cause is that vmcore_elf_check_arch_cross under CONFIG_CRASH_CORE
+> depend on CONFIG_KEXEC_CORE. Commit 2db65f1db17d ("x86: kdump: move
+> reserve_crashkernel[_low]() into crash_core.c") triggered the issue.
+> 
+> Suggested by Mike, simply move vmcore_elf_check_arch_cross from
+> arch/x86/include/asm/kexec.h to arch/x86/include/asm/elf.h to fix
+> the warning.
+> 
+> Fixes: 2db65f1db17d ("x86: kdump: move reserve_crashkernel[_low]() into crash_core.c")
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Where does this commit id '2db65f1db17d' come from? Here you are fixing
+another pathc in the same patchset. Please merge this with patch 05/11.
+
+> Reported-by: kernel test robot <lkp@intel.com>
+> Suggested-by: Mike Rapoport <rppt@kernel.org>
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+> ---
+>  arch/x86/include/asm/elf.h   | 3 +++
+>  arch/x86/include/asm/kexec.h | 3 ---
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
+> index 66bdfe838d61..5333777cc758 100644
+> --- a/arch/x86/include/asm/elf.h
+> +++ b/arch/x86/include/asm/elf.h
+> @@ -94,6 +94,9 @@ extern unsigned int vdso32_enabled;
+>  
+>  #define elf_check_arch(x)	elf_check_arch_ia32(x)
+>  
+> +/* We can also handle crash dumps from 64 bit kernel. */
+> +# define vmcore_elf_check_arch_cross(x) ((x)->e_machine == EM_X86_64)
+> +
+>  /* SVR4/i386 ABI (pages 3-31, 3-32) says that when the program starts %edx
+>     contains a pointer to a function which might be registered using `atexit'.
+>     This provides a mean for the dynamic linker to call DT_FINI functions for
+> diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
+> index 2b18f918203e..6fcae01a9cca 100644
+> --- a/arch/x86/include/asm/kexec.h
+> +++ b/arch/x86/include/asm/kexec.h
+> @@ -72,9 +72,6 @@ struct kimage;
+>  
+>  /* The native architecture */
+>  # define KEXEC_ARCH KEXEC_ARCH_386
+> -
+> -/* We can also handle crash dumps from 64 bit kernel. */
+> -# define vmcore_elf_check_arch_cross(x) ((x)->e_machine == EM_X86_64)
+>  #else
+>  /* Maximum physical address we can use pages from */
+>  # define KEXEC_SOURCE_MEMORY_LIMIT      (MAXMEM-1)
+> -- 
+> 2.20.1
+> 
+
