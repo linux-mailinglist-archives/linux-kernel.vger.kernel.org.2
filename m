@@ -2,159 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 211F731E493
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69B8A31E4AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 04:56:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230079AbhBRDl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 22:41:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhBRDlY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 22:41:24 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB258C061756
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 19:40:44 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id y7so1107305ybh.20
-        for <linux-kernel@vger.kernel.org>; Wed, 17 Feb 2021 19:40:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=cJg53Dje1zJHUGVNSMHfeUh3OpPCOvr7+/hJB7zf2NU=;
-        b=Xc55D4oyibYHJrF9xxK5ty4qZV5WPl/oyMOo1NIeaW4rzKh2l8T0flog4OHsGT9TkN
-         a6BjFqUMJPcs9oUyXIyZkeFs+6ostr2RLzKjEmJG7P1VRkzC5+h+ZDLBGfAfEqZ3gH+F
-         GNNcRAAC9X8K8uyk5EDzec+7gcNow32K96WyeJHK6yhnjNFAdjZOC6QlXOa2sxHwJOur
-         ECKu1843Tuz2Lj0x+TIwopuBE5n3ZJSnWWokhXox2eZln4EXe2IGz+3nWE9iEfUrTqQQ
-         dv3NwEDazI4LOFkJwSIbMVq7X7iomclZKiA3tbeVdYjK+8gLeXGEiDXdgiJ+JBb41NUF
-         TBBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=cJg53Dje1zJHUGVNSMHfeUh3OpPCOvr7+/hJB7zf2NU=;
-        b=hPP9o7/ml5GnP2qIJbYvsqdThKWVTE+qDXiaVPxq/W0fcqvLOwJfS9zih3tZRrb/5p
-         mcKxTAc1DOLhN4yuqQgutFlYEH4ynXlgdF5nywStsq1j0v9XW7HJ2XU7xoY4rVyilFTG
-         9Yar9iDGYiV2wXQ8q+tJntQS5aE8fNO3rbx78xggSSRSK6WVsrD8cf+hnliT9/5qvGdG
-         tMR4NmDetRkGKxJXMg7ppsasfo81hlYtdW5QWmhD1yZ3ThOIBeMxEj/hIBcpk6AMhxTb
-         K21uVINRPvXJW9YNxd3vNNvbnXodYCxGoS3BwYqI42cBTPDLkxBoTk8LAIxeb9Dj1oEk
-         tRMw==
-X-Gm-Message-State: AOAM5305NHW4/n8Rl4PbWGyLlQbof6Wm+IBA6MCzv7ugqAY39z539Yy0
-        koo2rxzFSoictJb4NoxMwsr55bg=
-X-Google-Smtp-Source: ABdhPJz2WMAVIxhWQ3CvQKch5WlfpnqivVZXx6DjkmgSGtYRxhSSFMhwOvuAimFRTqdovAb2+htK9vs=
-Sender: "wak via sendgmr" <wak@wak-linux.svl.corp.google.com>
-X-Received: from wak-linux.svl.corp.google.com ([2620:15c:2c5:3:b5f3:dab1:c8f5:62df])
- (user=wak job=sendgmr) by 2002:a25:23c6:: with SMTP id j189mr3854740ybj.211.1613619643954;
- Wed, 17 Feb 2021 19:40:43 -0800 (PST)
-Date:   Wed, 17 Feb 2021 19:40:40 -0800
-Message-Id: <20210218034040.296869-1-wak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.478.g8a0d178c01-goog
-Subject: [PATCH] net: ftgmac100: Support phyless operation
-From:   "William A. Kennington III" <wak@google.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joel Stanley <joel@jms.id.au>,
-        "William A. Kennington III" <wak@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230071AbhBRDzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 22:55:04 -0500
+Received: from mail-vi1eur05on2069.outbound.protection.outlook.com ([40.107.21.69]:38816
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229752AbhBRDy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 22:54:58 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Vn3LoEmoIc6jE5OE5gmZSswdY/+mLH4fJ4F6EXrb2NcHRs3LdWoMzNO5rTk28SdFWCEvWTndeoFPFgsrPq+IYGkaVkDa1y714sxEabVM4pUtXeZd5JOcpmCci5robz2Qjc0mzrZJ1rXTSVEkq2WxHmMfQpe2G8vHvBCsyGX+vTOSNQ1QswmEFHmAT2XsORzPKycgc7/oNcKlE2udz189q4ExerLxe5L9XsLIZIRp/t1ge9r2b6W7Uq09D0lUx4RRf2B2a9nJeh6ZtKpC2UJujMt5UtVcrtmucnoj8iTz3SuJ/Qx7U/CWRQvooNue7vQuPy+xqA9dTaXAzkAb317QCw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nKzgEmi5Af1YMuPFYMKSTpf6aC8Cj5cJl0lEhkz2Nxw=;
+ b=WiappLi1l4kBc0C6Gi0pcacwKhn+vmGT+shkv0HBm/bw8j5M6pKyntCxCyk3fpLRlCi58vW08JKJcMF4ZyhF0Uy0m1FAls49G7qP0X8CF78A9Pqq4McDBmZaE1E5DY4OtFnPQa3PEZ2Gd5UDwhAeV4sq2ijS6oXzMH68Wb5uF9TJURMzgJ9r41wydXvaOfdjtthe3S+v9vROvwYIiKVSyiatMqoiHViacjzCAUyTGwjsgznLksOrkmQkXhe4Ax3cV/3w9n22gLgD3SLm7r2eltTFMxX/aKo0HF14moOeXnpptmPs4farKIlg7MsoMdKc818+46UsapSs2FZbdhw82w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nKzgEmi5Af1YMuPFYMKSTpf6aC8Cj5cJl0lEhkz2Nxw=;
+ b=NdgZ6OZQi3+Vq7xM1gyEcCtxacmZ1wmYXxKgb1QrFKgEXkn5WjG+Q4CXLCqVRu17ftvoN4cq3K2Bz0GFCMr8EJmBAOkeOpb5d8IVMcsvb50U9PNK9gnDoKAwPAQbabS+uUfs2kffQJ33v8VoPiAp1Duo6IOOdP9URPaK/XxpUrs=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
+ by VI1PR0402MB3421.eurprd04.prod.outlook.com (2603:10a6:803:5::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Thu, 18 Feb
+ 2021 03:54:05 +0000
+Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
+ ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3868.027; Thu, 18 Feb 2021
+ 03:54:05 +0000
+From:   Liu Ying <victor.liu@nxp.com>
+To:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Cc:     airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, mchehab@kernel.org,
+        a.hajda@samsung.com, narmstrong@baylibre.com,
+        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
+        jernej.skrabec@siol.net, kishon@ti.com, vkoul@kernel.org
+Subject: [PATCH v4 00/14] Add some DRM bridge drivers support for i.MX8qm/qxp SoCs
+Date:   Thu, 18 Feb 2021 11:41:41 +0800
+Message-Id: <1613619715-28785-1-git-send-email-victor.liu@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR06CA0144.apcprd06.prod.outlook.com
+ (2603:1096:1:1f::22) To VI1PR04MB3983.eurprd04.prod.outlook.com
+ (2603:10a6:803:4c::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR06CA0144.apcprd06.prod.outlook.com (2603:1096:1:1f::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3868.27 via Frontend Transport; Thu, 18 Feb 2021 03:53:59 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ea02861d-1a83-4121-adab-08d8d3c0d5f2
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3421:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB3421181A02F887A0A16D1DC898859@VI1PR0402MB3421.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: J7H3vCYfQv7+3fDb6oeedqgyjkyxEMjzDJPRSraM6D1DfN6zJBiwuAUypeVuTcmVNADMqQDd4pU9cAOXyhr2gLEDKH+NPHHVbQutr/9C+ms/trCvvTSUnnn/kYftYU0IRlTL3XWlVM+vAWbQWCu/AgH7OE8Gzuf3m2fwpmfLcr3MIZ/ZTEQqwSikdKEiI7k1V/c9aHLU4eH/Ym8b1ORv+0HNz8+ZygK3O+P57HzikGAADLah7Bn97OwPiL9jqH1LXnxq+yGipuWQLP082Z5WtTEJKjWnFddKzEg5twG+fVgt+5PF+FvBbE2CUNyFO4EGXhLTCXwu+zqrgrY4fCx3527uJIfuDt33pqwQEkijs1e3Dlbrp7o4qlF/lCuA+S+L3MlXY0r8PBTYYhoHGc87HBIZtn96YQ2v8G+Hxe4IKcibuDVmxr9g+pkZ7pNH89GH086GLo+yrUmipwajWPLeOzmxsjv3NZn0k9ZHF2QjKeMVuKPsUEYywhu8D1yClHJydDfwENF6iuXBwpFNIQsjY5p1MmZaqS23Z1TfZw5+FTCrx/whG8C22mrjwiaCn+WToW1fYM0OiU1hzkzdeaIIDvp1DZq7fNe354GTlfCHW39wNcGqPMs45F777BumpLUPWMhOA6tYIwASMIw8gUqWGA3WF8faw32d7LzvHSm2TGA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(6029001)(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(83380400001)(52116002)(478600001)(86362001)(5660300002)(6666004)(69590400012)(6486002)(8936002)(956004)(186003)(26005)(7416002)(6512007)(2906002)(66946007)(2616005)(8676002)(316002)(66476007)(16526019)(36756003)(66556008)(966005)(4326008)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uFwZ0Htz0lFrz71dTeXZ1hPoo/BsyUdqKBcB3oGTczwJSINCs7vwcu1O5GBK?=
+ =?us-ascii?Q?iG+AbKVR6iOCdjzOVgPzzYuPfw/bNwdGcVX7ULjkKUUuK6iudRYVV1bdAnkA?=
+ =?us-ascii?Q?KEhlTNYri5C90buhFoPtc6GN8eWOyIxiQNzVSh6UEX0FD274cEo4wj5r66eo?=
+ =?us-ascii?Q?RlWlPgO04KIhvh+pafPDdQP8GeL2YElBoAnd55dqIdPSIwQ+nqr5PEdRKHVl?=
+ =?us-ascii?Q?PLTiZkJokZnqjfPyhfJ+xJ9Xj2j2K/Em+P5RSnnNaYue1Jjxxw63zCCUK0Fx?=
+ =?us-ascii?Q?U2dghe16H0OW+hMwl4uwW+5Fc+WwSI4hA1KqB6AHH7AGBhAOp+nMBC6T++Aw?=
+ =?us-ascii?Q?fjs2SG5piBSyeBkDmi9x0Cgn3GZztZs5Umd1rHx/ULVAwqQar3UO8IkDO7Vg?=
+ =?us-ascii?Q?rL0B/Zo14DfMxvGFr+IftlEI/gT4041tXTUjWHQco9qvzus2wykYnv6+Refb?=
+ =?us-ascii?Q?pyE5JAi1ZzI1mfu+93gFndzapy58YNQJfEdRt+OqVpwQK18mYzX5X4AQVC92?=
+ =?us-ascii?Q?VNDgba6cl7Ni8kg+oAoJ8Am4C+HerIhgrAkuXx95wGKI7AkDCdCgNWU6Tzv3?=
+ =?us-ascii?Q?hUA6EpB8K9GVeIrL6bTSUyeOKhFVQclTeAMGAbrV8ONVWDgk3IU2AUPEk6dZ?=
+ =?us-ascii?Q?mOsgd10ZUMcusI1CPs3/NlfSF2C5uvYtYxgsNlinn8FZx35KKUWZau1iJC9f?=
+ =?us-ascii?Q?S7vqYZ3mQNqNUnDjPyZ9K0mpbf2lGOhgjLz6xkfLBcInl+HVdceM2DS/6I4w?=
+ =?us-ascii?Q?deyTcatjJyM6jijQ3AA3PL71cRelj/fH0TyLJ/ZVnhPgydCh3SAbOa3J9lGP?=
+ =?us-ascii?Q?pjDcC+nRPBQRDfK2UnZl4BjqIlyzSCLYFfE4QOMr7rMYG5xZ17WqX8dWaIl2?=
+ =?us-ascii?Q?tY/g2xEUEXFVYVgCD4yn+IPKsiVoU33YtyvaKUeW02WjzDoVYS8r+AQ6hz7q?=
+ =?us-ascii?Q?46s+58TWp9Lvc1Ly4j2ZT2iIKvYeEXBoKenk8tLUQNgsY4sFUshBYQDUnf1u?=
+ =?us-ascii?Q?NbTnv2rN3qDYnKja0tRCBsq8q3gkHjcLjs9p5r42aSL5vYdpX2YTwlGT4kD0?=
+ =?us-ascii?Q?ZpegV4pHAUZ1GDEcZWcnik1iDLaLixW6P07oIHozcu0a4YtvBbqJa9L63oJM?=
+ =?us-ascii?Q?e9yF0/5q6x+SxbxssOG+laq6oM1wVO5009dTcnxHgJFMnfDAUAsHFZoZAxcM?=
+ =?us-ascii?Q?t2Vo7TgjBcZ8Jua6Ra2NtDVyTzo6M1bdQmwoU08XwbqrCl7OAxfiSzWrZbFX?=
+ =?us-ascii?Q?XLglb0maPUfBIKuPorx9fLXpFwMAVZ/0UG51MWiLBxA+0/r+ned7k8wGzbQ/?=
+ =?us-ascii?Q?vCHbgyQBOOodM1uy4NhjOxrS?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea02861d-1a83-4121-adab-08d8d3c0d5f2
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2021 03:54:05.2995
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pGi2TT1aJ+tzEJcSHp+cJf9nqyW4ea/6lJgxvWleBBKRkoIiynpHqKIWEk5dTj41/PUgtzgdXRzYbb4e3KGcPw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3421
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have BMC to BMC connections that lack a PHY in between but don't
-want to use the NC-SI state machinery of the kernel. Instead,
-allow for an option to disable the phy detection and mdio logic.
+Hi,
 
-Signed-off-by: William A. Kennington III <wak@google.com>
----
- .../devicetree/bindings/net/ftgmac100.txt     |  2 ++
- drivers/net/ethernet/faraday/ftgmac100.c      | 30 +++++++++++--------
- 2 files changed, 19 insertions(+), 13 deletions(-)
+This is the v4 series to add some DRM bridge drivers support
+for i.MX8qm/qxp SoCs.
 
-diff --git a/Documentation/devicetree/bindings/net/ftgmac100.txt b/Documentation/devicetree/bindings/net/ftgmac100.txt
-index 29234021f601..22c729c5fd3e 100644
---- a/Documentation/devicetree/bindings/net/ftgmac100.txt
-+++ b/Documentation/devicetree/bindings/net/ftgmac100.txt
-@@ -19,6 +19,8 @@ Optional properties:
- - phy-mode: See ethernet.txt file in the same directory. If the property is
-   absent, "rgmii" is assumed. Supported values are "rgmii*" and "rmii" for
-   aspeed parts. Other (unknown) parts will accept any value.
-+- no-phy: Disable any MDIO or PHY connection logic and assume the interface
-+  is always up.
- - use-ncsi: Use the NC-SI stack instead of an MDIO PHY. Currently assumes
-   rmii (100bT) but kept as a separate property in case NC-SI grows support
-   for a gigabit link.
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 88bfe2107938..f2cf190654c8 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1467,18 +1467,18 @@ static int ftgmac100_open(struct net_device *netdev)
- 		return err;
- 	}
- 
--	/* When using NC-SI we force the speed to 100Mbit/s full duplex,
-+	/* When PHYless we force the speed to 100Mbit/s full duplex,
- 	 *
- 	 * Otherwise we leave it set to 0 (no link), the link
- 	 * message from the PHY layer will handle setting it up to
- 	 * something else if needed.
- 	 */
--	if (priv->use_ncsi) {
--		priv->cur_duplex = DUPLEX_FULL;
--		priv->cur_speed = SPEED_100;
--	} else {
-+	if (netdev->phydev) {
- 		priv->cur_duplex = 0;
- 		priv->cur_speed = 0;
-+	} else {
-+		priv->cur_duplex = DUPLEX_FULL;
-+		priv->cur_speed = SPEED_100;
- 	}
- 
- 	/* Reset the hardware */
-@@ -1506,14 +1506,16 @@ static int ftgmac100_open(struct net_device *netdev)
- 	if (netdev->phydev) {
- 		/* If we have a PHY, start polling */
- 		phy_start(netdev->phydev);
--	} else if (priv->use_ncsi) {
--		/* If using NC-SI, set our carrier on and start the stack */
-+	} else {
-+		/* If PHYless, set our carrier on and start the stack */
- 		netif_carrier_on(netdev);
- 
--		/* Start the NCSI device */
--		err = ncsi_start_dev(priv->ndev);
--		if (err)
--			goto err_ncsi;
-+		if (priv->use_ncsi) {
-+			/* Start the NCSI device */
-+			err = ncsi_start_dev(priv->ndev);
-+			if (err)
-+				goto err_ncsi;
-+		}
- 	}
- 
- 	return 0;
-@@ -1725,8 +1727,8 @@ static int ftgmac100_setup_clk(struct ftgmac100 *priv)
- 	 * 1000Mbit link speeds. As NCSI is limited to 100Mbit, 25MHz
- 	 * is sufficient
- 	 */
--	rc = clk_set_rate(priv->clk, priv->use_ncsi ? FTGMAC_25MHZ :
--			  FTGMAC_100MHZ);
-+	rc = clk_set_rate(priv->clk, priv->netdev->phydev ? FTGMAC_100MHZ :
-+			  FTGMAC_25MHZ);
- 	if (rc)
- 		goto cleanup_clk;
- 
-@@ -1837,6 +1839,8 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 		priv->ndev = ncsi_register_dev(netdev, ftgmac100_ncsi_handler);
- 		if (!priv->ndev)
- 			goto err_phy_connect;
-+	} else if (np && of_get_property(np, "no-phy", NULL)) {
-+		dev_info(&pdev->dev, "Using PHYless interface\n");
- 	} else if (np && of_get_property(np, "phy-handle", NULL)) {
- 		struct phy_device *phy;
- 
+The bridges may chain one by one to form display pipes to support
+LVDS displays.  The relevant display controller is DPU embedded in
+i.MX8qm/qxp SoCs.
+
+The DPU KMS driver can be found at:
+https://www.spinics.net/lists/arm-kernel/msg871357.html
+
+This series supports the following display pipes:
+1) i.MX8qxp:
+prefetch eng -> DPU -> pixel combiner -> pixel link ->
+pixel link to DPI(PXL2DPI) -> LVDS display bridge(LDB)
+
+2) i.MX8qm:
+prefetch eng -> DPU -> pixel combiner -> pixel link -> LVDS display bridge(LDB)
+
+
+Patch 1/14 adds LVDS PHY configuration options, which has already been sent
+with the following series to add Mixel combo PHY found in i.MX8qxp:
+https://www.spinics.net/lists/arm-kernel/msg862560.html
+
+Patch 2/14 and 3/14 add bus formats used by PXL2DPI.
+
+Patch 4/14 ~ 13/14 add drm bridge drivers and dt-bindings support for the bridges.
+
+Patch 14/14 updates MAINTAINERS.
+
+
+I've tested this series with a koe,tx26d202vm0bwa dual link LVDS panel and
+a LVDS to HDMI bridge(with a downstream drm bridge driver).
+
+
+Welcome comments, thanks.
+
+v3->v4:
+* Use 'fsl,sc-resource' DT property to get the SCU resource ID associated with
+  the PXL2DPI instance instead of using alias ID. (Rob)
+* Add Rob's R-b tag on patch 11/14.
+
+v2->v3:
+* Drop 'fsl,syscon' DT properties from fsl,imx8qxp-ldb.yaml and
+  fsl,imx8qxp-pxl2dpi.yaml. (Rob)
+* Mention the CSR module controls LDB and PXL2DPI in fsl,imx8qxp-ldb.yaml and
+  fsl,imx8qxp-pxl2dpi.yaml.
+* Call syscon_node_to_regmap() to get regmaps from LDB bridge helper driver
+  and PXL2DPI bridger driver instead of syscon_regmap_lookup_by_phandle().
+* Drop two macros from pixel link bridge driver which help define functions
+  and define them directly.
+* Properly disable all pixel link controls to POR value by calling
+  imx8qxp_pixel_link_disable_all_controls() from
+  imx8qxp_pixel_link_bridge_probe().
+* Add Rob's R-b tags on patch 4/14 and 6/14.
+
+v1->v2:
+* Rebase the series upon the latest drm-misc-next branch(5.11-rc2 based).
+* Use graph schema in the dt-bindings of the bridges. (Laurent)
+* Require all four pixel link output ports in fsl,imx8qxp-pixel-link.yaml.
+  (Laurent)
+* Side note i.MX8qm/qxp LDB official name 'pixel mapper' in fsl,imx8qxp-ldb.yaml.
+  (Laurent)
+* Mention pixel link is accessed via SCU firmware in fsl,imx8qxp-pixel-link.yaml.
+  (Rob)
+* Use enum instead of oneOf + const for the reg property of pixel combiner
+  channels in fsl,imx8qxp-pixel-combiner.yaml. (Rob)
+* Rewrite the function to find the next bridge in pixel link bridge driver
+  by properly using OF APIs and dropping unnecessary DT validation. (Rob)
+* Drop unnecessary port availability check in i.MX8qxp pixel link to DPI
+  bridge driver.
+* Drop unnecessary DT validation from i.MX8qxp LDB bridge driver.
+* Use of_graph_get_endpoint_by_regs() and of_graph_get_remote_endpoint() to
+  get the input remote endpoint in imx8qxp_ldb_set_di_id() of i.MX8qxp LDB
+  bridge driver.
+* Avoid using companion_port OF node after putting it in
+  imx8qxp_ldb_parse_dt_companion() of i.MX8qxp LDB bridge driver.
+* Drop unnecessary check for maximum available LDB channels from
+  i.MX8qm LDB bridge driver.
+* Mention i.MX8qm/qxp LDB official name 'pixel mapper' in i.MX8qm/qxp LDB
+  bridge drivers and Kconfig help messages.
+Liu Ying (14):
+  phy: Add LVDS configuration options
+  media: uapi: Add some RGB bus formats for i.MX8qm/qxp pixel combiner
+  media: docs: Add some RGB bus formats for i.MX8qm/qxp pixel combiner
+  dt-bindings: display: bridge: Add i.MX8qm/qxp pixel combiner binding
+  drm/bridge: imx: Add i.MX8qm/qxp pixel combiner support
+  dt-bindings: display: bridge: Add i.MX8qm/qxp display pixel link
+    binding
+  drm/bridge: imx: Add i.MX8qm/qxp display pixel link support
+  dt-bindings: display: bridge: Add i.MX8qxp pixel link to DPI binding
+  drm/bridge: imx: Add i.MX8qxp pixel link to DPI support
+  drm/bridge: imx: Add LDB driver helper support
+  dt-bindings: display: bridge: Add i.MX8qm/qxp LVDS display bridge
+    binding
+  drm/bridge: imx: Add LDB support for i.MX8qxp
+  drm/bridge: imx: Add LDB support for i.MX8qm
+  MAINTAINERS: add maintainer for DRM bridge drivers for i.MX SoCs
+
+ .../bindings/display/bridge/fsl,imx8qxp-ldb.yaml   | 173 +++++
+ .../display/bridge/fsl,imx8qxp-pixel-combiner.yaml | 144 +++++
+ .../display/bridge/fsl,imx8qxp-pixel-link.yaml     | 106 +++
+ .../display/bridge/fsl,imx8qxp-pxl2dpi.yaml        | 108 ++++
+ .../userspace-api/media/v4l/subdev-formats.rst     | 156 +++++
+ MAINTAINERS                                        |  10 +
+ drivers/gpu/drm/bridge/Kconfig                     |   2 +
+ drivers/gpu/drm/bridge/Makefile                    |   1 +
+ drivers/gpu/drm/bridge/imx/Kconfig                 |  52 ++
+ drivers/gpu/drm/bridge/imx/Makefile                |   6 +
+ drivers/gpu/drm/bridge/imx/imx-ldb-helper.c        | 248 +++++++
+ drivers/gpu/drm/bridge/imx/imx8qm-ldb.c            | 585 +++++++++++++++++
+ drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c           | 719 +++++++++++++++++++++
+ .../gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c    | 452 +++++++++++++
+ drivers/gpu/drm/bridge/imx/imx8qxp-pixel-link.c    | 426 ++++++++++++
+ drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c       | 485 ++++++++++++++
+ include/drm/bridge/imx_ldb_helper.h                |  98 +++
+ include/linux/phy/phy-lvds.h                       |  48 ++
+ include/linux/phy/phy.h                            |   4 +
+ include/uapi/linux/media-bus-format.h              |   6 +-
+ 20 files changed, 3828 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-ldb.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-combiner.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pixel-link.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/fsl,imx8qxp-pxl2dpi.yaml
+ create mode 100644 drivers/gpu/drm/bridge/imx/Kconfig
+ create mode 100644 drivers/gpu/drm/bridge/imx/Makefile
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx-ldb-helper.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qm-ldb.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-ldb.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pixel-combiner.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pixel-link.c
+ create mode 100644 drivers/gpu/drm/bridge/imx/imx8qxp-pxl2dpi.c
+ create mode 100644 include/drm/bridge/imx_ldb_helper.h
+ create mode 100644 include/linux/phy/phy-lvds.h
+
 -- 
-2.30.0.478.g8a0d178c01-goog
+2.7.4
 
