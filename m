@@ -2,132 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA2A31E51A
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 05:16:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6B931E518
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 05:15:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhBREP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 17 Feb 2021 23:15:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44047 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229806AbhBREPt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 17 Feb 2021 23:15:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613621662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=emJvmHO6K5DoKcle3XfGbvke6XPq47tbyoxFu4GbpOg=;
-        b=V1fJCLTJID2aqb8rKZWsbM8F0gf4muNo4JH3DlgXN92NN5ZJ6+9bhv3Bmhcm7lO6RI1vQY
-        sY842zaD8wLlyBOnkVLqcpnTI9Nnzhzox8b7RHKdJPSMI6uBy7Jhk7fq4c5Wxxhuep0Rif
-        5uYbI1BSp2p6Yj2QK9FJHrU99jsHwSA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-401-wauykghLNGe1NIrrLr8z8Q-1; Wed, 17 Feb 2021 23:14:18 -0500
-X-MC-Unique: wauykghLNGe1NIrrLr8z8Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 334E11020C22;
-        Thu, 18 Feb 2021 04:14:15 +0000 (UTC)
-Received: from localhost (ovpn-12-112.pek2.redhat.com [10.72.12.112])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C7E7A10016F0;
-        Thu, 18 Feb 2021 04:14:10 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 12:14:07 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     mingo@redhat.com, tglx@linutronix.de, rppt@kernel.org,
-        dyoung@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        nsaenzjulienne@suse.de, corbet@lwn.net, John.P.donnelly@oracle.com,
-        prabhakar.pkin@gmail.com, horms@verge.net.au, robh+dt@kernel.org,
-        arnd@arndb.de, james.morse@arm.com, xiexiuqi@huawei.com,
-        guohanjun@huawei.com, huawei.libin@huawei.com,
-        wangkefeng.wang@huawei.com, linux-doc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v14 04/11] x86: kdump: move xen_pv_domain() check and
- insert_resource() to setup_arch()
-Message-ID: <20210218041259.GG2871@MiWiFi-R3L-srv>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
- <20210130071025.65258-5-chenzhou10@huawei.com>
+        id S230401AbhBREPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 17 Feb 2021 23:15:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48088 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230470AbhBREPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 17 Feb 2021 23:15:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1600160C40;
+        Thu, 18 Feb 2021 04:14:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613621659;
+        bh=KZqCNysaKUxYDBTFhnyoUzBwd6wRpQem0qnWTk5rvC4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mrO6b+qe960a1bhW86+pSm8oCnN6gXl8AKSeqKXOFSjqF9FwuJGcy3/LL4L/iAhZD
+         7VRbaD/kDq7R5mmCZxLuVy21jIGsamaZwKrjueom/WCTpZyL/Pr0Jo1UyztkZw+x/q
+         S3BzoY2CgvaCn3e8ikg17iTVmi4ojWKBSQq1VaVGPUJ8eoCrlgOtdfSD/oTZzavD25
+         aj5qIyBhvGKyExXeWzN2OfRC52ogyerDOmmIsAXpxaNqmCjoos0oiZrf7mvJvFK+p7
+         nweGSFBdSMjjTsw2oNd8CzkKAxRHmzkOIGuKsZ1YOinwdvKy0GLlT92i6/qvVp1pWq
+         zJ9+fCeD4oXDg==
+Date:   Thu, 18 Feb 2021 09:44:14 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
+        sean@poorly.run, tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, airlied@linux.ie, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/msm/dp: add support of HBR3 link rate
+Message-ID: <20210218041414.GT2774@vkoul-mobl.Dlink>
+References: <1613581122-8473-1-git-send-email-khsieh@codeaurora.org>
+ <161358337887.1254594.12898848287081049541@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130071025.65258-5-chenzhou10@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <161358337887.1254594.12898848287081049541@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/30/21 at 03:10pm, Chen Zhou wrote:
-> We will make the functions reserve_crashkernel() as generic, the
-> xen_pv_domain() check in reserve_crashkernel() is relevant only to
-> x86, the same as insert_resource() in reserve_crashkernel[_low]().
-> So move xen_pv_domain() check and insert_resource() to setup_arch()
-> to keep them in x86.
+On 17-02-21, 09:36, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-02-17 08:58:42)
+> > Add hbr3_hbr2 voltage and pre-emphasis swing table to support
+> > HBR3 link rate
+> > 
+> > Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+> > ---
+> >  drivers/gpu/drm/msm/dp/dp_panel.c   |  4 ----
+> >  drivers/phy/qualcomm/phy-qcom-qmp.c | 24 ++++++++++++++++++++++--
 > 
-> Suggested-by: Mike Rapoport <rppt@kernel.org>
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-> Tested-by: John Donnelly <John.p.donnelly@oracle.com>
-> ---
->  arch/x86/kernel/setup.c | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
+> This spans to subsystems so at least you should run get_maintainers and
+> include phy maintainers. Maybe it should be split into two patches too
+> so it can go via different trees.
+
+different patches for different subsytem unless we risk breaking bisect
+should be general approach...
+
 > 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 086a04235be4..5d676efc32f6 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -454,7 +454,6 @@ static int __init reserve_crashkernel_low(void)
->  
->  	crashk_low_res.start = low_base;
->  	crashk_low_res.end   = low_base + low_size - 1;
-> -	insert_resource(&iomem_resource, &crashk_low_res);
->  #endif
->  	return 0;
->  }
-> @@ -478,11 +477,6 @@ static void __init reserve_crashkernel(void)
->  		high = true;
->  	}
->  
-> -	if (xen_pv_domain()) {
-> -		pr_info("Ignoring crashkernel for a Xen PV domain\n");
-> -		return;
-> -	}
-> -
->  	/* 0 means: find the address automatically */
->  	if (!crash_base) {
->  		/*
-> @@ -529,7 +523,6 @@ static void __init reserve_crashkernel(void)
->  
->  	crashk_res.start = crash_base;
->  	crashk_res.end   = crash_base + crash_size - 1;
-> -	insert_resource(&iomem_resource, &crashk_res);
->  }
->  #else
->  static void __init reserve_crashkernel(void)
-> @@ -1151,7 +1144,17 @@ void __init setup_arch(char **cmdline_p)
->  	 * Reserve memory for crash kernel after SRAT is parsed so that it
->  	 * won't consume hotpluggable memory.
->  	 */
-> -	reserve_crashkernel();
-> +	if (xen_pv_domain())
-> +		pr_info("Ignoring crashkernel for a Xen PV domain\n");
-> +	else {
-> +		reserve_crashkernel();
-> +#ifdef CONFIG_KEXEC_CORE
-> +		if (crashk_res.end > crashk_res.start)
-> +			insert_resource(&iomem_resource, &crashk_res);
-> +		if (crashk_low_res.end > crashk_low_res.start)
-> +			insert_resource(&iomem_resource, &crashk_low_res);
-> +#endif
-
-Acked-by: Baoquan He <bhe@redhat.com>
-
-> +	}
->  
->  	memblock_find_dma_reserve();
->  
-> -- 
-> 2.20.1
+> >  2 files changed, 22 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
+> > index 9cc8166..63112fa 100644
+> > --- a/drivers/gpu/drm/msm/dp/dp_panel.c
+> > +++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+> > @@ -76,10 +76,6 @@ static int dp_panel_read_dpcd(struct dp_panel *dp_panel)
+> >         if (link_info->num_lanes > dp_panel->max_dp_lanes)
+> >                 link_info->num_lanes = dp_panel->max_dp_lanes;
+> >  
+> > -       /* Limit support upto HBR2 until HBR3 support is added */
+> > -       if (link_info->rate >= (drm_dp_bw_code_to_link_rate(DP_LINK_BW_5_4)))
+> > -               link_info->rate = drm_dp_bw_code_to_link_rate(DP_LINK_BW_5_4);
+> > -
+> >         DRM_DEBUG_DP("version: %d.%d\n", major, minor);
+> >         DRM_DEBUG_DP("link_rate=%d\n", link_info->rate);
+> >         DRM_DEBUG_DP("lane_count=%d\n", link_info->num_lanes);
+> > diff --git a/drivers/phy/qualcomm/phy-qcom-qmp.c b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> > index 0939a9e..cc5ef59 100644
+> > --- a/drivers/phy/qualcomm/phy-qcom-qmp.c
+> > +++ b/drivers/phy/qualcomm/phy-qcom-qmp.c
+> > @@ -2965,6 +2965,21 @@ static void qcom_qmp_phy_dp_aux_init(struct qmp_phy *qphy)
+> >                qphy->pcs + QSERDES_V3_DP_PHY_AUX_INTERRUPT_MASK);
+> >  }
+> >  
+> > +
+> > +static u8 const qmp_dp_v3_pre_emphasis_hbr3_hbr2[4][4] = {
 > 
+> Should be static const u8 qmp_dp...
+> 
+> > +        {0x00, 0x0C, 0x15, 0x1A},
+> > +        {0x02, 0x0E, 0x16, 0xFF},
+> > +        {0x02, 0x11, 0xFF, 0xFF},
+> > +        {0x04, 0xFF, 0xFF, 0xFF}
+> > +};
+> > +
+> > +static u8 const qmp_dp_v3_voltage_swing_hbr3_hbr2[4][4] = {
+> 
+> Same.
+> 
+> > +        {0x02, 0x12, 0x16, 0x1A},
+> 
+> Please add a space after { and before } and use lowercase hex to match
+> the qmp_dp_v3_pre_emphasis_hbr_rbr design.
+> 
+> > +        {0x09, 0x19, 0x1F, 0xFF},
+> > +        {0x10, 0x1F, 0xFF, 0xFF},
+> > +        {0x1F, 0xFF, 0xFF, 0xFF}
+> > +};
+> > +
+> >  static const u8 qmp_dp_v3_pre_emphasis_hbr_rbr[4][4] = {
+> >         { 0x00, 0x0c, 0x14, 0x19 },
+> >         { 0x00, 0x0b, 0x12, 0xff },
+> > @@ -3000,8 +3015,13 @@ static void qcom_qmp_phy_configure_dp_tx(struct qmp_phy *qphy)
+> >                 drvr_en = 0x10;
+> >         }
+> >  
+> > -       voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
+> > -       pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
+> > +       if (dp_opts->link_rate <= 2700) {
+> > +               voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr_rbr[v_level][p_level];
+> > +               pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr_rbr[v_level][p_level];
+> > +       } else {
+> > +               voltage_swing_cfg = qmp_dp_v3_voltage_swing_hbr3_hbr2[v_level][p_level];
+> > +               pre_emphasis_cfg = qmp_dp_v3_pre_emphasis_hbr3_hbr2[v_level][p_level];
+> > +       }
 
+-- 
+~Vinod
