@@ -2,68 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBA531F190
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D21C31F192
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:12:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhBRVJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 16:09:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47324 "EHLO
+        id S230234AbhBRVKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:10:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbhBRVJy (ORCPT
+        with ESMTP id S230172AbhBRVKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:09:54 -0500
-Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC155C061574;
-        Thu, 18 Feb 2021 13:09:04 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        by mail.monkeyblade.net (Postfix) with ESMTPSA id E74FB4D30C708;
-        Thu, 18 Feb 2021 13:09:02 -0800 (PST)
-Date:   Thu, 18 Feb 2021 13:08:58 -0800 (PST)
-Message-Id: <20210218.130858.1480136584674158754.davem@davemloft.net>
-To:     michael@walle.cc
-Cc:     olteanv@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, kuba@kernel.org
-Subject: Re: [PATCH net-next v2 0/2] net: phy: at803x: paging support
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <15a6833c0db85fc3871a1d926d6636d6@walle.cc>
-References: <20210218185240.23615-1-michael@walle.cc>
-        <20210218192647.m5l4wkboxms47urw@skbuf>
-        <15a6833c0db85fc3871a1d926d6636d6@walle.cc>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 18 Feb 2021 13:09:03 -0800 (PST)
+        Thu, 18 Feb 2021 16:10:46 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8911C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:10:06 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id a4so1939541pgc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 13:10:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZFuWVcfezeRuRTof6nz3CYKtFriRYGUNbLlHaDQ4yQE=;
+        b=uzPriHvMWygw1o4JQz8tcuiP433U24qdXJ2/LEzxQtgc5EscpyeZntikbWoOmfRvbT
+         vHNTniMcmcAm6VGtZIjYq/8uGTY7V70sbV8gS5Ybq344MbwiPb0u1n6zG6WJvS7pL63g
+         BZWc+axQ3byJDvmbE7RXB1gHnpePHt3y6Nh/sVHgptOeosiVHh661Xyn/HxjhNA9UMaa
+         ZWTFqdyJfLfF8zNHuubC9uGFMGXSdeQ3aYazxpF4fgT+CGOr70JmRX4xkCzvhEF94hdt
+         5PDO+CLgPqKO/bZdM6DM/BSujkypWUiTdV1t5lPlreaDT3bipZehXMvdUzVB2WFNGwJv
+         1UjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZFuWVcfezeRuRTof6nz3CYKtFriRYGUNbLlHaDQ4yQE=;
+        b=LZB2wUsJpNQaj6qdfswzNTOL0XWOFRuR9KL9v7U/Rai5DmweKn8Dxa5byhiZb1Jo4k
+         lt+Esd54CK2Sx84oa2VgvMHguOxfZE2r/g7c0lxS6dhdSbVc39OrT4Ysor9fzSD6su3s
+         gdHiRT1D5cGc/oKOOb2/7rHrmXQhVsfKrTmdllTNUxlB6xGIPKa7O7YvQHNlYQp6DAMX
+         hxsGWj5eg+6m7z8EGZFD97/et5lwBCptFHg0hdDCZ8zsQmboCWs5o07ZIuzR7ERLsbS+
+         ejGBKohZKBrvj0IT9r78NQcLDSsts/b8vkhBkPxEXu0uD0Pg7kmturrRXM3PkFkKuGUJ
+         9lCQ==
+X-Gm-Message-State: AOAM532b0jPkP0BhLC6qCe6nFJ6PNFpixxMlYl3Lx+19uAGxnSEw9bLk
+        yV2rxck88biAVthCuiNX3Erh3tPraMbnWqt1hv0=
+X-Google-Smtp-Source: ABdhPJzXTY6OPUT4Fd6gxt8z5FXshbJv779uf09xyHaB9soR8yV7wbIOUeeR2ckWeDyoJ7QbXxweunva2KSyW8MvhAU=
+X-Received: by 2002:a62:7a0b:0:b029:1de:7e70:955d with SMTP id
+ v11-20020a627a0b0000b02901de7e70955dmr6090753pfc.49.1613682606406; Thu, 18
+ Feb 2021 13:10:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20210212222304.110194-1-mgross@linux.intel.com>
+ <20210212222304.110194-4-mgross@linux.intel.com> <CABb+yY1MLxArMY7g7HY06Tn5aABwpmUuXN9KddHZpW-_Mmu2iA@mail.gmail.com>
+ <ffc9713e441389d19e7221ad4d16b938fa412361.camel@intel.com>
+In-Reply-To: <ffc9713e441389d19e7221ad4d16b938fa412361.camel@intel.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Thu, 18 Feb 2021 15:09:55 -0600
+Message-ID: <CABb+yY2kxCjHqbBbgcPShyMA-xtcJEpzGXxqnjDAoufhidX-LQ@mail.gmail.com>
+Subject: Re: [PATCH v6 03/34] mailbox: vpu-ipc-mailbox: Add support for Intel
+ VPU IPC mailbox
+To:     "Alessandrelli, Daniele" <daniele.alessandrelli@intel.com>
+Cc:     "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        "markgross@kernel.org" <markgross@kernel.org>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "bp@suse.de" <bp@suse.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "peng.fan@nxp.com" <peng.fan@nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Walle <michael@walle.cc>
-Date: Thu, 18 Feb 2021 20:46:10 +0100
+On Thu, Feb 18, 2021 at 6:02 AM Alessandrelli, Daniele
+<daniele.alessandrelli@intel.com> wrote:
+>
+> Hi Jassi,
+>
+> Thank you very much for your feedback.
+>
+> On Sun, 2021-02-14 at 22:54 -0600, Jassi Brar wrote:
+> > IIUIC, maybe the solution is simpler .... What if we set txdone_poll.
+> > Always return success in send_data(). And check if we overflew the
+> > fifo in last_tx_done(). If we did overflow, try to rewrite the data
+> > and check again. Return true, if not overflew this time, otherwise
+> > return false so that mailbox api can ask us to try again in next
+> > last_tx_done(). This way we can do away with the tasklet and, more
+> > importantly, avoid send_data() failures and retries on clients' part.
+>
+> That's a clever solution to avoid the tasklet. The only issue for us is
+> the automatic TX retry from the controller. I understand that's
+> generally a desirable feature, but in our case we'd like the client to
+> have full control on re-transmission attempts.
+>
+> That's because some of our data is time-sensitive. For instance, when
+> we process frames from a video stream we prefer dropping a frame rather
+> than re-transmitting it and delaying the processing of the rest.
+>
+> Now, I understand that the client can set the 'tx_block' and 'tx_tout'
+> channel fields to specify how long it wishes to wait, but the problem
+> is that our (single) channel is shared between multiple applications
+> having different timing requirements. That's why we prefer to let
+> applications deal we re-transmissions.
+>
+> Given the above, do you think it's reasonable to leave the
+> implementation as it is now?
+> (from initial analysis, the tasklet doesn't seem to affect the
+> performance of our use cases significantly, so we are fine with it)
+>
+Yup. It is intel specific so, hopefully, we don't have to deal with
+other vendors trying to support their use cases.
+Are you targeting the next merge window or this one?
 
-> Am 2021-02-18 20:26, schrieb Vladimir Oltean:
->> On Thu, Feb 18, 2021 at 07:52:38PM +0100, Michael Walle wrote:
->>> Add paging support to the QCA AR8031/33 PHY. This will be needed if we
->>> add support for the .config_inband_aneg callback, see series [1].
->>> The driver itself already accesses the fiber page (without proper
->>> locking).
->>> The former version of this patchset converted the access to
->>> phy_read_paged(), but Vladimir Oltean mentioned that it is dead code.
->>> Therefore, the second patch will just remove it.
->>> changes since v1:
->>>  - second patch will remove at803x_aneg_done() altogether
->> I'm pretty sure net-next is closed now, since David sent the pull
->> request, and I didn't come to a conclusion yet regarding the final
->> form of the phy_config_inband_aneg method either.
-> 
-> Yeah I wasn't sure. http://vger.kernel.org/~davem/net-next.html says
-> it is still open. But anyway, if not, I'll resend the patch after
-> the merge window. I've also thought about splitting it into two
-> individual patches, because they aren't dependent on each other
-> anymore.
-
-It is closed now, so this will have to be deferred.
-
-Thanks.
-
+cheers.
