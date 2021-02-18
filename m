@@ -2,95 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A6C31E844
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 896F831E843
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 10:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhBRJgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 04:36:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47966 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231133AbhBRIZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 03:25:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613636696; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KUTYu5268imgiklm3bMZR/IfsonyJHTyi5EUt0/rAyg=;
-        b=iA+FoNDqGJJyNKtrQaOYMuz2zt2bVm9M0Jbw7OFp5H7WPLCYJ+S5i7/An/7VTj2rxjQyOj
-        6RCbmW8ACQ9JNr0EIN2W7nefIfXopiOgBFGS/gACHv3vLHu5KHwpQMezQMz9YLHkYgqB7l
-        PB0f6FnQeAe8E5zL2G2CKFoX+bgg4WA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 98F7EACD9;
-        Thu, 18 Feb 2021 08:24:56 +0000 (UTC)
-Date:   Thu, 18 Feb 2021 09:24:55 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-Message-ID: <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+        id S230368AbhBRJgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 04:36:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230507AbhBRIZt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 03:25:49 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F57C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:25:08 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id f8so842539plg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 00:25:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZXmJoWMTsUrH2ZYtYp6YioWvsZMFTlZD5M/gphHqrR0=;
+        b=Hc4WfW2OwdvOfAd4uK/tsJFBw9Y3KnhIHI15RQioABsLIYYJ/F0keIOX4rFXdiTdPA
+         3oF6krSEpCdiFEoF+R6hRv6c10f0Kh77dxSGhGkVvAmNWNnSDsRhtpTX27g6SUtHMZ1D
+         9AEyQTMzteT2PtGkgLjLV9v49y316FbgxGlQzyfRJu+b9PBsYucAf2fIHMBjOZ/G9EbC
+         CGFUXXJ6Lc7VnIG5CDYG+TSwQCi6gS33E+k2WEwpodQP/FyPSC2N/Com0PD5W8xd1003
+         8bjep+nikHR8OdnsB1NdNmPGDMr+B97t3gnaARMA6P7jCmrSRLOrp/7jqSO78BWGq/YN
+         xZVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZXmJoWMTsUrH2ZYtYp6YioWvsZMFTlZD5M/gphHqrR0=;
+        b=grG5j0ZnqLBYUILgmf26/cw+RkdyfJ5LCwAHrvgRYjrLo2B8Go0qxL3RupldZKZlji
+         BWhPyIVTjyJpfJia2g/vzonMFXH+MrRRyLYLw0rDBA9l1vU0qq9jAgQYvAxELwweHQBF
+         QkFdtCw6N3R5rF2zDnaeWc4Rtgv2NzEZxlN5B5vmw/xk6eZJipOXuYji3XkjSxLKl0Zl
+         2EmUyfuzPRrQzmK5Jj5NRbQnjNHAHyiuvv6OPWYPiM+4e7ERN7bAJVzQfK7dLc8B5d4z
+         weh2cY3k7uQfHLNvZ38qsEgoPQy07YWXZ04stLDWERj2iLSlKoDSSxojxrFT9Xr916wx
+         NNOA==
+X-Gm-Message-State: AOAM530aOAVgZ7cygx6+TKAKtTGKMWuQYtwjW37fzB4h5lI7frn4IKYo
+        CQCdEQmDHcGSZ+eAexJnUj4=
+X-Google-Smtp-Source: ABdhPJyhhnf+/pc2nHrJk1TK1bIScUijp1RLFu+59a3U8HAj4ag5pQwqLlGugrMlUa9+kap5neQc+Q==
+X-Received: by 2002:a17:90a:de97:: with SMTP id n23mr2973053pjv.165.1613636708080;
+        Thu, 18 Feb 2021 00:25:08 -0800 (PST)
+Received: from atulu-ubuntu ([27.61.13.238])
+        by smtp.gmail.com with ESMTPSA id l11sm4602059pfd.194.2021.02.18.00.25.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 00:25:07 -0800 (PST)
+Date:   Thu, 18 Feb 2021 13:55:02 +0530
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     abbotti@mev.co.uk, hsweeten@visionengravers.com,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: comedi: cast to (void __user *)
+Message-ID: <20210218082502.GA2257@atulu-ubuntu>
+References: <20210218062839.32650-1-atulgopinathan@gmail.com>
+ <YC4S5Pxw341zw9DL@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+In-Reply-To: <YC4S5Pxw341zw9DL@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-02-21 12:41:34, Tim Chen wrote:
-> During soft limit memory reclaim, we will temporarily remove the target
-> mem cgroup from the cgroup soft limit tree.  We then perform memory
-> reclaim, update the memory usage excess count and re-insert the mem
-> cgroup back into the mem cgroup soft limit tree according to the new
-> memory usage excess count.
+On Thu, Feb 18, 2021 at 08:10:28AM +0100, Greg KH wrote:
+> On Thu, Feb 18, 2021 at 11:58:40AM +0530, Atul Gopinathan wrote:
+> > Resolve the following sparse warning:
+> > drivers/staging//comedi/comedi_fops.c:2983:41: warning: incorrect type in argument 1 (different address spaces)
+> > drivers/staging//comedi/comedi_fops.c:2983:41:    expected void [noderef] <asn:1> *uptr
+> > drivers/staging//comedi/comedi_fops.c:2983:41:    got unsigned int *chanlist
+> > 
+> > cmd->chanlist is of type (unsigned int *) as defined in
+> > "struct comedi_cmd" in file drivers/staging/comedi/comedi.h
+> > 
+> > The function "ptr_to_compat()" expects argument of type
+> > (void __user *) as defined in include/linux/compat.h
+> > 
+> > Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> > ---
+> >  drivers/staging/comedi/comedi_fops.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> However, when memory reclaim failed for a maximum number of attempts
-> and we bail out of the reclaim loop, we forgot to put the target mem
-> cgroup chosen for next reclaim back to the soft limit tree. This prevented
-> pages in the mem cgroup from being reclaimed in the future even though
-> the mem cgroup exceeded its soft limit.  Fix the logic and put the mem
-> cgroup back on the tree when page reclaim failed for the mem cgroup.
+> Is this different from your previous patch:
+> 	https://lore.kernel.org/r/20210217165907.9777-1-atulgopinathan@gmail.com
 > 
-> Reviewed-by: Ying Huang <ying.huang@intel.com>
-> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
-
-I have already acked this patch in the previous version along with Fixes
-tag. It seems that my review feedback has been completely ignored also
-for other patches in this series.
-
-> ---
->  mm/memcontrol.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> if so, you might need a better subject line here, and for that one, as
+> they look alike at a quick glance.
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ed5cc78a8dbf..a51bf90732cb 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
->  			break;
->  	} while (!nr_reclaimed);
-> -	if (next_mz)
-> +	if (next_mz) {
-> +		spin_lock_irq(&mctz->lock);
-> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-> +		spin_unlock_irq(&mctz->lock);
->  		css_put(&next_mz->memcg->css);
-> +	}
->  	return nr_reclaimed;
->  }
->  
-> -- 
-> 2.20.1
+> Which one goes first?
+> 
+> Can you resend both of these as a patch series with better subjects as a
+> v2 patch set?
 
--- 
-Michal Hocko
-SUSE Labs
+Sure! That subject line was a terrible result of me trying really hard
+to make it concise and fit within git's recommended 50 character limit
+for commit headings. I will make sure to prioritize on quality more. :D
+
+Thanks for the feedback!
+Atul
