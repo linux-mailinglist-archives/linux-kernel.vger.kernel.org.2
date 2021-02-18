@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273C831EFD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2907331EFD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 20:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBRT2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 14:28:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43002 "EHLO
+        id S231965AbhBRT3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 14:29:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231781AbhBRSkh (ORCPT
+        with ESMTP id S230132AbhBRSlc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 13:40:37 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEF8AC061756
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:38:13 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id b21so1684927pgk.7
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:38:13 -0800 (PST)
+        Thu, 18 Feb 2021 13:41:32 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 187B4C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:40:46 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id l23so2769293otn.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 10:40:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rm3iKJC71AZhcv9cPHX8V7GUbemia6Ju/le2pydValk=;
-        b=eu3pg3nf6z6GeVNgi0Ustk+0RI+1yIUJbeRmSSe+MZpypwBmeEZod/SkghwGJrMYys
-         2WxB9U/Ag314r8ZG2h4THNZ7ZEX3tCDpqVOXrvJksvTwC5KaDFDug9e0vb1powb4Li8Q
-         7BfFv8yDTMeCcOml9aLSBdfn/gTi181dtrvcnu23cXaBoehSyASJOrEr8izIbC114gen
-         0s/YgJJcp/LEUxZyh8dDjCaRQCOF21Jei1gyh7KJnRXNPB8HM2Hg/p8dpOnrmGXWmEr+
-         WBEQQF+aH1OMHDBZsTYBIKeYJAhixJ/04OS/u9sMPvSJ4GjQJ7pHZyaSX0NNnp6HN4Ff
-         JGuw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lKc7ZspagPR2F1k2fhzcSExhZXGUtyluR76nOC+AMmU=;
+        b=MPSrTvgmuhmGRFVaprGSkR/fjPIL6wO9YDZX+esMkvv2liwxxbRN6Y8/YEkXcdZPum
+         OV28GaadKDtRe6SHfgFyIhW7GFuIcHbhkZSagqQqoB7btr6trc5ZfEWdnbxYFZkRwCtk
+         pAmW4gyTYHbCAjisATpdmFDhXb2dSRrObP4iI2igsbTEOVQeCCvxRTs3gPtbYsbA5S9N
+         Ecok0m41skRBDeKft6BCmZ8qsX+Npv0tx3wrNRYvT9pv/eD2U1R8WqI2l1lGiecNk9fT
+         YNLfNMtSQFyIZk74HhYlQi4MHcj8T41dyy7vSeCodjSNXvIepHax72HsKRLGyCHEPoLV
+         WXYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Rm3iKJC71AZhcv9cPHX8V7GUbemia6Ju/le2pydValk=;
-        b=WaUIZYmY4gytOKHl9IbBgXMJ/EUxJP9TwIUGqkmcYpEhZ2LmqJ+6tCuyJS1D5GH6NB
-         x8n/by0c9wTDjTcqAeES0apqg0UvX54wGCs+TGzF+2gwH3dIB2yCj5NPwP2TPWkADbKR
-         9wKKg849FPk9/Gp4rWqNI0pSOqsvjEQCFVXCNQhl1atLH88LLNrcbF66Co6exVT9kbm4
-         GD8ZhkKkAWZobR4KESf6D+yuWXwiQ1jqwmRjgYWxxph+/9WKuaWGZDqj0nzxFOVE0DM9
-         tElr7+mpuXAjoWKJoIa9K9b3+QTOqQubbBM+No3FnBx8JOBDbx3oz1jdRfSO1OJ8gyKq
-         YVDw==
-X-Gm-Message-State: AOAM533Zm9SRTVEHBKAZTI04XCtFYejjaHPcdPvqqSJry9Al3OSCD6Qw
-        23Fz+CFjjZWTTVeW+F4Yn+o=
-X-Google-Smtp-Source: ABdhPJwnr5VExSrM3WtwOAYbaZQZBI3qaxRGPcwS7bL5drTQPqfvzdC/R194Lzguk3ylDED2mgfaaw==
-X-Received: by 2002:a62:b516:0:b029:1ea:34a:a70e with SMTP id y22-20020a62b5160000b02901ea034aa70emr5540906pfe.38.1613673493395;
-        Thu, 18 Feb 2021 10:38:13 -0800 (PST)
-Received: from novachrono.domain.name ([223.235.222.137])
-        by smtp.gmail.com with ESMTPSA id f3sm6545240pgh.75.2021.02.18.10.38.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 10:38:12 -0800 (PST)
-From:   Rajat Asthana <thisisrast7@gmail.com>
-To:     gregkh@linuxfoundation.org, jerome.pouiller@silabs.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Cc:     Rajat Asthana <thisisrast7@gmail.com>
-Subject: [PATCH] staging: wfx: Fix alignment style issue in sta.c
-Date:   Fri, 19 Feb 2021 00:07:57 +0530
-Message-Id: <20210218183757.72995-1-thisisrast7@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lKc7ZspagPR2F1k2fhzcSExhZXGUtyluR76nOC+AMmU=;
+        b=ND/+KCT4zg0EfxUVQ9AqIwFYYCzqvzeFo8vKZh2m5N0RToldAbVT/0C1jA2PqxSKZT
+         e9N2Opmzjx9cOc0V1Glz3OzERLMdGzvosNi8iQUm6ONGSB+g7ngKKNpBz0H7kDZwq6p3
+         WtfVRKh2auIzed43dMoVl92OUWu4510pdOVuJPM/O/iLGWaEq5abTvx2XGpfq7vgFJ2V
+         jdBhyHzd7aKqIQF8GF5nP7DH8ZorNaq9ici8G/1vbEiQlbBmlPEI8Lvq4WqCL+8jBS3v
+         x3ER0Z381tC3Dnrfv6q0U2E6p1B+hvqwNcKINxoBR0REWIFtjBZyHiqD1pt3w7LoWQp4
+         M1zA==
+X-Gm-Message-State: AOAM530zykIElsj1pErqkTEVRCnTUCI2vFHvFpOHUlaVFhVxxPI4Rrxf
+        zojIPmETlr9204ftc7YYaAAsA55umGjAMpH8Z1iTQveO
+X-Google-Smtp-Source: ABdhPJyA35NN7DMVZeaKjW1bfa4oI1GShogpGaEoB30n2A6mojiKd25eT0cjrMQjlPUHAcKuaTiZYagn4wlV2Chlzis=
+X-Received: by 2002:a9d:760a:: with SMTP id k10mr3972185otl.23.1613673645475;
+ Thu, 18 Feb 2021 10:40:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1613633644-52961-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1613633644-52961-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 18 Feb 2021 13:40:34 -0500
+Message-ID: <CADnq5_Nva6t5RrDzLPr60jc+nA8KpQCudnm+AyaoosSEvZzh3Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display: Simplify bool conversion
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        "Wentland, Harry" <harry.wentland@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change fixes a checkpatch error for "Alignment should match
-open parenthesis".
+Applied.  Thanks!
 
-Signed-off-by: Rajat Asthana <thisisrast7@gmail.com>
----
- drivers/staging/wfx/sta.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Alex
 
-diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
-index 5585f9e876e1..8c57338efc71 100644
---- a/drivers/staging/wfx/sta.c
-+++ b/drivers/staging/wfx/sta.c
-@@ -193,7 +193,7 @@ int wfx_update_pm(struct wfx_vif *wvif)
- }
- 
- int wfx_conf_tx(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
--		   u16 queue, const struct ieee80211_tx_queue_params *params)
-+		u16 queue, const struct ieee80211_tx_queue_params *params)
- {
- 	struct wfx_dev *wdev = hw->priv;
- 	struct wfx_vif *wvif = (struct wfx_vif *)vif->drv_priv;
--- 
-2.27.0
-
+On Thu, Feb 18, 2021 at 9:23 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
+>
+> Fix the following coccicheck warning:
+> ./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c:8142:16-21: WARNING:
+> conversion to bool not needed here
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 961abf1..f163e54 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -8138,8 +8138,7 @@ static void amdgpu_dm_atomic_commit_tail(struct drm_atomic_state *state)
+>                         hdcp_update_display(
+>                                 adev->dm.hdcp_workqueue, aconnector->dc_link->link_index, aconnector,
+>                                 new_con_state->hdcp_content_type,
+> -                               new_con_state->content_protection == DRM_MODE_CONTENT_PROTECTION_DESIRED ? true
+> -                                                                                                        : false);
+> +                               new_con_state->content_protection == DRM_MODE_CONTENT_PROTECTION_DESIRED);
+>         }
+>  #endif
+>
+> --
+> 1.8.3.1
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
