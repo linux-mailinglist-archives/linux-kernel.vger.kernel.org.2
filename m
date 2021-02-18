@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DF431EA09
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C144931E9F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 13:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233283AbhBRMub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 07:50:31 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:37338 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232387AbhBRKze (ORCPT
+        id S233050AbhBRMfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 07:35:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56592 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231129AbhBRK4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 05:55:34 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAosOx086946;
-        Thu, 18 Feb 2021 10:54:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=u+EbeWY0kC8yKqPJItRN34NJeUG7sw3ukrKrK2+AkTs=;
- b=EgOO2Lbi1r9oydC78SZADWrrncDu6rXN8Sdfy/IAoWF/lig4EHku9CJ0b+PLv0MtowBK
- J1qNK5QoMf60oUQzRs3q0/zGvexsq8X5mARzjYxmD8H1QHleptKmxy20mSMF/sIcJpN8
- PiA7X0042KbGj1/zDRlKKXgMl9JwVYgxAvDz7b9FWLu4Z1E3JFH+AR8IsYEiHMBr/zin
- Sv7rBWOdvEaMSUKMNObUng7AI3qm7mLUb4Owbj+cNm//xwe2hHNLpNzDxi8jD9U9Vw1C
- 3C6VHDqb8l0M+dvevSoIujhBXMLs4B2FRh0czxJuyw3ykgJPTYB1CI21a7IoIkV6gWxd jw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36p49bdpf0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 10:54:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11IAkQAJ188535;
-        Thu, 18 Feb 2021 10:54:13 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 36prbqm72c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 18 Feb 2021 10:54:13 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11IAs9TV015168;
-        Thu, 18 Feb 2021 10:54:09 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 18 Feb 2021 02:54:08 -0800
-Date:   Thu, 18 Feb 2021 13:53:52 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, krzk@kernel.org, shengjiu.wang@nxp.com,
-        adrian.ratiu@collabora.com, aisheng.dong@nxp.com, peng.fan@nxp.com,
-        Anson.Huang@nxp.com, hverkuil-cisco@xs4all.nl,
-        devel@driverdev.osuosl.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v1 06/18] media: hantro: Make sure that ctx->codex_ops is
- set
-Message-ID: <20210218105352.GE2087@kadam>
-References: <20210217080306.157876-1-benjamin.gaignard@collabora.com>
- <20210217080306.157876-7-benjamin.gaignard@collabora.com>
+        Thu, 18 Feb 2021 05:56:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613645703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=gcqiQcLIQresUmqBjSfx8mrrnANdscT5bovWT1NTSz4=;
+        b=MhTHGU5QZ7UOIvNh9DjoOnTQeYx3yhFZ0KBQ7TfyCNpRf6nrCWSrPFR+VDO5/qAgtfZlWL
+        LJKoc60uGbTlvr/8cfrDAxkvfRrHmS4ATE5EPBc8y82Ds3TM8Ftinxw2DHdk5azT38KhRv
+        fSvpcdZaWmnHAAouNAhZyMTWKN3fisk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-290-9O4f9C2-NQaWM_0J6rqvXQ-1; Thu, 18 Feb 2021 05:55:01 -0500
+X-MC-Unique: 9O4f9C2-NQaWM_0J6rqvXQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 032E7107ACC7;
+        Thu, 18 Feb 2021 10:54:58 +0000 (UTC)
+Received: from [10.36.114.59] (ovpn-114-59.ams2.redhat.com [10.36.114.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 29CF45D9C2;
+        Thu, 18 Feb 2021 10:54:49 +0000 (UTC)
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+From:   David Hildenbrand <david@redhat.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+References: <20210217154844.12392-1-david@redhat.com>
+ <YC5Am6a4KMSA8XoK@dhcp22.suse.cz>
+ <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <de28b8db-a103-5bc2-8ace-d2907026a95d@redhat.com>
+Date:   Thu, 18 Feb 2021 11:54:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217080306.157876-7-benjamin.gaignard@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102180095
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9898 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 phishscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180095
+In-Reply-To: <3763a505-02d6-5efe-a9f5-40381acfbdfd@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 09:02:54AM +0100, Benjamin Gaignard wrote:
-> Do not try to call ctx->codec_ops->done if ctx->codec_ops is not set.
+>>>      If we hit
+>>>      hardware errors on pages, ignore them - nothing we really can or
+>>>      should do.
+>>> 3. On errors during MADV_POPULATED, some memory might have been
+>>>      populated. Callers have to clean up if they care.
+>>
+>> How does caller find out? madvise reports 0 on success so how do you
+>> find out how much has been populated?
 > 
+> If there is an error, something might have been populated. In my QEMU
+> implementation, I simply discard the range again, good enough. I don't
+> think we need to really indicate "error and populated" or "error and not
+> populated".
 
-When you're writing a patch like this please say in the commit message
-if this can happen or not.  Option 1:
+Clarifying again: if madvise(MADV_POPULATED) succeeds, it returns 0. If 
+there was a problem poopulating memory, it returns -ENOMEM (similar to 
+MADV_WILLNEED). Callers can detect the error and discard.
 
-Option 1: sometimes this is NULL in <some situation>
-Option 2: this can't be NULL, but we are planning to allow that.
-Option 3: I don't know if this can be NULL but do it for consistency
+-- 
+Thanks,
 
-As we review and packport patches we have to figure out why you are
-adding NULL checks so it really helps if you just tell us.
-
-regards,
-dan carpenter
+David / dhildenb
 
