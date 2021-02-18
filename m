@@ -2,74 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8172931F1A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D131631F1A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 22:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhBRVWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 16:22:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhBRVVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 16:21:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F87664E28;
-        Thu, 18 Feb 2021 21:21:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613683272;
-        bh=F38hwkHyfKSDu2J+PLX7hPwqasvhF04vGCChBgLQGDc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WoskCoMRyncdDNKyKiJnbJFJnRxU+IPWTXvy8jcc6dJ5ckyjLGQYGR+stdl1Jib4n
-         Q+inxNsiXKWsA3/RgqUT69xJwoSghVJgQIqiXpL+zNu9sfLHcC3pmQWbOiAFsOqqdZ
-         l7nK5/KucCpvDMk27TlKkgak7YKeSR8bWSLXgYkw=
-Date:   Thu, 18 Feb 2021 22:21:07 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Pavel Machek <pavel@ucw.cz>, kernel@pengutronix.de,
-        Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
-        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
-Subject: Re: [PATCH v11] leds: trigger: implement a tty trigger
-Message-ID: <YC7aQ7LKjr+ZRo8w@kroah.com>
-References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
- <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
- <X/8cwD51DYhzRdDO@kroah.com>
- <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
- <X/89NHn4oJFC7GjM@kroah.com>
- <20210218133352.GA13628@duo.ucw.cz>
- <20210218211948.4jwhtkhg72kaxx5n@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210218211948.4jwhtkhg72kaxx5n@pengutronix.de>
+        id S229944AbhBRVY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 16:24:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhBRVYY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 16:24:24 -0500
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792BBC061574;
+        Thu, 18 Feb 2021 13:23:44 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id 726AF4D30C708;
+        Thu, 18 Feb 2021 13:23:43 -0800 (PST)
+Date:   Thu, 18 Feb 2021 13:23:43 -0800 (PST)
+Message-Id: <20210218.132343.783073170729991220.davem@davemloft.net>
+To:     steen.hegelund@microchip.com
+Cc:     kishon@ti.com, vkoul@kernel.org, alexandre.belloni@bootlin.com,
+        lars.povlsen@microchip.com, bjarni.jonasson@microchip.com,
+        UNGLinuxDriver@microchip.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v15 0/4] Adding the Sparx5 Serdes driver
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20210218161451.3489955-1-steen.hegelund@microchip.com>
+References: <20210218161451.3489955-1-steen.hegelund@microchip.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Thu, 18 Feb 2021 13:23:43 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 10:19:48PM +0100, Uwe Kleine-König wrote:
-> Hello Pavel,
-> 
-> On Thu, Feb 18, 2021 at 02:33:52PM +0100, Pavel Machek wrote:
-> > > > > so that I can queue it up?
-> > > > 
-> > > > Oh, so you are LED maintainer now? My congratulations.
-> > > > (Honestly, do you plan to apply this without their ack? Not that I'm
-> > > > against you doing that, I'm happy if I can archive this patch series as
-> > > > done, but I'm a bit surprised.)
-> > > 
-> > > It's drug on for so long now, the infrastructure that this driver needs
-> > > has now bee merged, so I see no reason why this driver can't be taken
-> > > now.  I offered up a "any objections?" in the past, and have gotten
-> > > none, so I will take that for quiet acceptance :)
-> > 
-> > Thanks for taking the infrastructure patches, but please drop this
-> > one.
-> 
-> Given it is already part of Greg's pull request I wonder if we need an
-> incremental patch instead?
+From: Steen Hegelund <steen.hegelund@microchip.com>
+Date: Thu, 18 Feb 2021 17:14:47 +0100
 
-An incremental patch is easier, thanks, I can't "drop" a patch already
-in my public tree.
+> Adding the Sparx5 Serdes driver
+> 
+The net-next tree is closed so this will have to wait until the next merge window.
 
-greg k-h
+Thanks.
+
