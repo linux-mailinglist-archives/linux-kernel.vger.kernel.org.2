@@ -2,106 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D91931EDD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:02:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD9731EDD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 19:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhBRSBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 13:01:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43522 "EHLO mail.kernel.org"
+        id S230175AbhBRSBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 13:01:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38652 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230194AbhBRPSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:18:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09DD864E6F;
-        Thu, 18 Feb 2021 15:17:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613661453;
-        bh=CDfkNKuqFSHlmgCFOXtVGshhVMYojd1WS1YEotdlQys=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ku2gDfilTAXpCoBYanruco8Y8LF5nfV0Hzx6FNLRR6DqUH5slVHUdYWLs20/Ud5iu
-         9lb73cPBEP7d0QG8413w+0ZJwYQEUb5TEnQ2u7J01PJ/yHJQVhBSE0OUxMgiQQd/3W
-         zHkkdZdh3JIlOptIjT1bd4WsrPV9bJ12jFgiWtnOFNo+ZmOKR/2kxRFDC9u/NuDxcP
-         yqx72g9fAtOhJYgnPyCx/gFxIdjmrNzi+OjfsTIFikWSSYtmRJtlVBqG08A8ocQ6B1
-         e04Mnooui3/j18VLkjAVik4emgHbxevSvBWtXGF+gc0xwQGaxy9MQ96qGUX+x28JIs
-         ZlI5AsP9EJOBg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id A240E35226A0; Thu, 18 Feb 2021 07:17:32 -0800 (PST)
-Date:   Thu, 18 Feb 2021 07:17:32 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     "Zhang, Qiang" <qiang.zhang@windriver.com>,
-        Tejun Heo <tj@kernel.org>, Tejun Heo <htejun@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] workqueue: Remove rcu_read_lock/unlock() in
- workqueue_congested()
-Message-ID: <20210218151732.GR2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210217115802.49580-1-qiang.zhang@windriver.com>
- <CAJhGHyDE18PwQtS_W-aZA4Z6SAX3ZiCr6bA1Gqpu=XMN2n724w@mail.gmail.com>
+        id S230340AbhBRPWL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:22:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4CB24AD57;
+        Thu, 18 Feb 2021 15:21:28 +0000 (UTC)
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@redhat.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <ef15869a-fe87-aef2-591d-2ca909a66217@suse.de>
+ <20210218150746.GA18220@lst.de>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: Regression: 6eb0233ec2d0 ("usb: don't inherity DMA properties for
+ USB devices")
+Message-ID: <ef51698a-cd93-47b3-b79f-8c86a4c215fc@suse.de>
+Date:   Thu, 18 Feb 2021 16:21:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyDE18PwQtS_W-aZA4Z6SAX3ZiCr6bA1Gqpu=XMN2n724w@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210218150746.GA18220@lst.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="VSWlDvtYdfOL7Tl8R4iE5C8FzFqKh6JnP"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 11:04:00AM +0800, Lai Jiangshan wrote:
-> +CC Paul
-> 
-> 
-> On Wed, Feb 17, 2021 at 7:58 PM <qiang.zhang@windriver.com> wrote:
-> >
-> > From: Zqiang <qiang.zhang@windriver.com>
-> >
-> > The RCU read critical area already by preempt_disable/enable()
-> > (equivalent to rcu_read_lock_sched/unlock_sched()) mark, so remove
-> > rcu_read_lock/unlock().
-> 
-> I think we can leave it which acks like document, especially
-> workqueue_congested() is not performance crucial.  Either way
-> is Ok for me.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--VSWlDvtYdfOL7Tl8R4iE5C8FzFqKh6JnP
+Content-Type: multipart/mixed; boundary="mJWIti817m0Z6jMfS36ap1UGHc6CI4WQi";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Greg KH <gregkh@linuxfoundation.org>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@redhat.com>,
+ dri-devel <dri-devel@lists.freedesktop.org>,
+ USB list <linux-usb@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-ID: <ef51698a-cd93-47b3-b79f-8c86a4c215fc@suse.de>
+Subject: Re: Regression: 6eb0233ec2d0 ("usb: don't inherity DMA properties for
+ USB devices")
+References: <ef15869a-fe87-aef2-591d-2ca909a66217@suse.de>
+ <20210218150746.GA18220@lst.de>
+In-Reply-To: <20210218150746.GA18220@lst.de>
 
-If the rcu_read_lock() is removed, should there be a comment saying that
-it interacts with synchronize_rcu()?  Just in case one of the real-time
-guys figures out a way to get the job done without disabling preemption...
+--mJWIti817m0Z6jMfS36ap1UGHc6CI4WQi
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-							Thanx, Paul
+Hi
 
-> If it needs to be changed, please also do the same for
-> rcu_read_lock() in wq_watchdog_timer_fn().
-> 
-> And __queue_work() and try_to_grab_pending() also use local_irq_save()
-> and rcu_read_lock() at the same time, but I don't know will these
-> local_irq_save() be changed to raw_local_irq_save() in PREEMPT_RT.
-> 
-> 
-> >
-> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> > ---
-> >  kernel/workqueue.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> > index 0d150da252e8..c599835ad6c3 100644
-> > --- a/kernel/workqueue.c
-> > +++ b/kernel/workqueue.c
-> > @@ -4540,7 +4540,6 @@ bool workqueue_congested(int cpu, struct workqueue_struct *wq)
-> >         struct pool_workqueue *pwq;
-> >         bool ret;
-> >
-> > -       rcu_read_lock();
-> >         preempt_disable();
-> >
-> >         if (cpu == WORK_CPU_UNBOUND)
-> > @@ -4553,7 +4552,6 @@ bool workqueue_congested(int cpu, struct workqueue_struct *wq)
-> >
-> >         ret = !list_empty(&pwq->delayed_works);
-> >         preempt_enable();
-> > -       rcu_read_unlock();
-> >
-> >         return ret;
-> >  }
-> > --
-> > 2.25.1
-> >
+Am 18.02.21 um 16:07 schrieb Christoph Hellwig:
+> On Thu, Feb 18, 2021 at 03:56:00PM +0100, Thomas Zimmermann wrote:
+>> I only have udl devices, but I expect that other DRM USB adapters are =
+also
+>> affected.
+>=20
+> Find where the driver calls dma_map_* itself instead of using the USB
+> wrappers and fix that..
+>=20
+
+Sure, it's at [1]. For udl, the dmabuf would need to be in system=20
+memory. The driver creates urbs from the framebuffer content and sends=20
+them to the device for displaying.
+
+My question is more: what's the best interface to do this? Is there=20
+example code somewhere?
+
+Best regards
+Thomas
+
+[1]=20
+https://elixir.bootlin.com/linux/v5.11/source/drivers/gpu/drm/drm_prime.c=
+#L630
+
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--mJWIti817m0Z6jMfS36ap1UGHc6CI4WQi--
+
+--VSWlDvtYdfOL7Tl8R4iE5C8FzFqKh6JnP
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAuhfYFAwAAAAAACgkQlh/E3EQov+DA
+6A//QdhPXebD7M+EzYUQ/FPnqUMNZAPP2uEP6VWwQQg1LkyhE45S3Cij4JD0ulGEvFZ63QMIAOz6
+U+eHXkKSX8vum5Ns9lHXgaQLiF+30j+FeB47XKWNNyBGJwysN5lIe4RI63CA30fJC+PEZGsNGPnk
+7wh1Fvp2mgo5SAe0OsZB/5D030s7sV48YQ2dU0z8vIdsNGWVseuRf12oq6jlB18KOW4Ypw5J6o0/
+HSc+uMqAVhNyDDTUVNqkOQobgZ0uyjoaj0rdonUcCXOPQHDc6HeU2eeKMgAD87xrLw2h/Ghl2z+F
+aQl8WTb7+NsE1sW8jjx0bhIBPj0K1A+v5HN2NdhycbUbnEHhaeVnzvO5sdn2hPVBc3rWfAl3+2Ax
+pK/KtpSoqZv4dagLcLMVDwXbGOPKqCIGEizPXr58t2gKV7SrTTILb22FVQv9nTIu1foRKyyUaaSz
+Y+djErr5PMrAf78kBAJ8UFFz6RZ5TxDypzkqSeifhZWziz9ZSf7MExV+ZHGQZ2lXonOp4RuK3+6p
+89OHWkSdZL/SH0VcrbpZDiGh9Iyur1KMjo6kndylvXJPh31ZuBHEGglNSAPP6888XefHunWjlx/N
+nw4l8F54ln8byP0IWJGJ7VVHRYWaxU6R+4FjhwWs/TJsoSZ/i4H/p7m5kFQRG8mqBMbRefVJtWfg
+xQw=
+=bR7v
+-----END PGP SIGNATURE-----
+
+--VSWlDvtYdfOL7Tl8R4iE5C8FzFqKh6JnP--
