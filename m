@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A2D31EDCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:58:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1473E31EDC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 18:58:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhBRR6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 12:58:16 -0500
-Received: from mail.a-eberle.de ([213.95.140.213]:51378 "EHLO mail.a-eberle.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231408AbhBRPQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 10:16:11 -0500
-X-Greylist: delayed 789 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Feb 2021 10:16:10 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.a-eberle.de (Postfix) with ESMTP id C7799380537;
-        Thu, 18 Feb 2021 16:01:47 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at aeberle-mx.softwerk.noris.de
-Received: from mail.a-eberle.de ([127.0.0.1])
-        by localhost (ebl-mx-02.a-eberle.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id mYqigv7O4NS2; Thu, 18 Feb 2021 16:01:46 +0100 (CET)
-Received: from localhost.localdomain (unknown [188.194.194.169])
-        (Authenticated sender: marco.wenzel@a-eberle.de)
-        by mail.a-eberle.de (Postfix) with ESMTPA;
-        Thu, 18 Feb 2021 16:01:46 +0100 (CET)
-From:   Marco Wenzel <marco.wenzel@a-eberle.de>
-To:     george.mccollister@gmail.com
-Cc:     Marco Wenzel <marco.wenzel@a-eberle.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        Amol Grover <frextrite@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Arvid Brodin <Arvid.Brodin@xdin.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net: hsr: add support for EntryForgetTime
-Date:   Thu, 18 Feb 2021 16:01:12 +0100
-Message-Id: <20210218150116.1521-1-marco.wenzel@a-eberle.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <CAFSKS=Ncr-9s1Oi0GTqQ74sUaDjoHR-1P-yM+rNqjF-Hb+cPCA@mail.gmail.com>
-References: <CAFSKS=Ncr-9s1Oi0GTqQ74sUaDjoHR-1P-yM+rNqjF-Hb+cPCA@mail.gmail.com>
+        id S234720AbhBRR4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 12:56:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230351AbhBRPNs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 10:13:48 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABDAAC061756
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:03:23 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id 81so2328992qkf.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 07:03:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p89DwoOOsvw+CnJ+KQOJKP+OK4RgyV7iDfRp7yPRuZo=;
+        b=sgctuxKei7vpMxAFsHQIa8x6kCjgbaZvDkmVddN/LebhlxKF/pKp6tjD2DTiXUgLCt
+         1cz7XUznrCNS7chrttB3GVbH2iITgGkEtzHzD1aLraA2mGEz1aU8d0vo+6V19zbzlTQp
+         t4u5OBodgkj8GBJO1U6v4tGZz9yUUMo/kB720eV6RZjLH15grwDdYcBBTitxrohj0hGy
+         HZ4oJUxIow1RUSGGTJttrInJn2tM97F6Ii1y9uIIduW/WO9LxAmlO3z8ZCTcL/jHMFxW
+         Pqgm2El0fVG5MnU9qCwEGnKK7g37Y18a6/jWLnMR7yIruP1Rw4mrmzXr3vQQCSS8Aovn
+         T7AQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p89DwoOOsvw+CnJ+KQOJKP+OK4RgyV7iDfRp7yPRuZo=;
+        b=VAq8nMNIOnMTO32fSIzhzfgGPi5YsCRI0XQmJetf2ksMy6re297KTcTtPvEEmD2+55
+         EHl0w+YPVKKa4VSsILjCwS9Yt5x47b3Gmhoq6A8MUs/4wjBYjBpvMntSTy7t8qNKxyIA
+         tzHaMaYSu8G9tUsFzdBUqTSXgstrI8CMoDdWP9SGlkhgG3ZGsFY/eis8qqiOc4PeppTs
+         K8IOgPBuPFvwv+/U2U2aHJkG4e4+i4qGHYjZMWkT4tM47/iY2YntVchJYVxWW+jr67Ol
+         tCaFBW+4j18nZRFtqSScW26KPSuhBXVP5+sGF/gBJNJ7TKmUVCpH16D8kQCfW7nkyXhW
+         //2g==
+X-Gm-Message-State: AOAM532LJl/YVaxDEHbjy9iPB2S6jrz20tIQd8gMndPPI61VisKVWfCW
+        R09HQ3oojDDQrD76vjJY+2jtlg==
+X-Google-Smtp-Source: ABdhPJwHIjGq2Qhgr/H2XVcUdMeLSumIo6vhlXYJH+GBjSxPPlh97AiMJ2XZSq5xQoedh4g2E5DQBA==
+X-Received: by 2002:a37:8b84:: with SMTP id n126mr4461711qkd.223.1613660602315;
+        Thu, 18 Feb 2021 07:03:22 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id u133sm4135077qka.116.2021.02.18.07.03.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 07:03:21 -0800 (PST)
+Subject: Re: [PATCH] cpufreq: exclude boost frequencies from valid count if
+ not enabled
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, bjorn.andersson@linaro.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20210217000013.4063289-1-thara.gopinath@linaro.org>
+ <20210217055029.a25wjsyoosxageti@vireshk-i7>
+ <4c9d9d44-5fa5-3ae1-e9bb-45cf6521b764@linaro.org>
+ <20210218084847.743rttqwlmwyx6pz@vireshk-i7>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <d693d999-7734-3e69-edb9-9e03fd2f0d1a@linaro.org>
+Date:   Thu, 18 Feb 2021 10:03:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210218084847.743rttqwlmwyx6pz@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In IEC 62439-3 EntryForgetTime is defined with a value of 400 ms. When a
-node does not send any frame within this time, the sequence number check
-for can be ignored. This solves communication issues with Cisco IE 2000
-in Redbox mode.
 
-Fixes: f421436a591d ("net/hsr: Add support for the High-availability Seamless Redundancy protocol (HSRv0)")
-Signed-off-by: Marco Wenzel <marco.wenzel@a-eberle.de>
----
- net/hsr/hsr_framereg.c | 9 +++++++--
- net/hsr/hsr_framereg.h | 1 +
- net/hsr/hsr_main.h     | 1 +
- 3 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/net/hsr/hsr_framereg.c b/net/hsr/hsr_framereg.c
-index 5c97de459905..805f974923b9 100644
---- a/net/hsr/hsr_framereg.c
-+++ b/net/hsr/hsr_framereg.c
-@@ -164,8 +164,10 @@ static struct hsr_node *hsr_add_node(struct hsr_priv *hsr,
- 	 * as initialization. (0 could trigger an spurious ring error warning).
- 	 */
- 	now = jiffies;
--	for (i = 0; i < HSR_PT_PORTS; i++)
-+	for (i = 0; i < HSR_PT_PORTS; i++) {
- 		new_node->time_in[i] = now;
-+		new_node->time_out[i] = now;
-+	}
- 	for (i = 0; i < HSR_PT_PORTS; i++)
- 		new_node->seq_out[i] = seq_out;
- 
-@@ -411,9 +413,12 @@ void hsr_register_frame_in(struct hsr_node *node, struct hsr_port *port,
- int hsr_register_frame_out(struct hsr_port *port, struct hsr_node *node,
- 			   u16 sequence_nr)
- {
--	if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]))
-+	if (seq_nr_before_or_eq(sequence_nr, node->seq_out[port->type]) &&
-+	    time_is_after_jiffies(node->time_out[port->type] +
-+	    msecs_to_jiffies(HSR_ENTRY_FORGET_TIME)))
- 		return 1;
- 
-+	node->time_out[port->type] = jiffies;
- 	node->seq_out[port->type] = sequence_nr;
- 	return 0;
- }
-diff --git a/net/hsr/hsr_framereg.h b/net/hsr/hsr_framereg.h
-index 86b43f539f2c..d9628e7a5f05 100644
---- a/net/hsr/hsr_framereg.h
-+++ b/net/hsr/hsr_framereg.h
-@@ -75,6 +75,7 @@ struct hsr_node {
- 	enum hsr_port_type	addr_B_port;
- 	unsigned long		time_in[HSR_PT_PORTS];
- 	bool			time_in_stale[HSR_PT_PORTS];
-+	unsigned long		time_out[HSR_PT_PORTS];
- 	/* if the node is a SAN */
- 	bool			san_a;
- 	bool			san_b;
-diff --git a/net/hsr/hsr_main.h b/net/hsr/hsr_main.h
-index 7dc92ce5a134..f79ca55d6986 100644
---- a/net/hsr/hsr_main.h
-+++ b/net/hsr/hsr_main.h
-@@ -21,6 +21,7 @@
- #define HSR_LIFE_CHECK_INTERVAL		 2000 /* ms */
- #define HSR_NODE_FORGET_TIME		60000 /* ms */
- #define HSR_ANNOUNCE_INTERVAL		  100 /* ms */
-+#define HSR_ENTRY_FORGET_TIME		  400 /* ms */
- 
- /* By how much may slave1 and slave2 timestamps of latest received frame from
-  * each node differ before we notify of communication problem?
+On 2/18/21 3:48 AM, Viresh Kumar wrote:
+> On 17-02-21, 10:32, Thara Gopinath wrote:
+>> First of all, I am still unable to find this setting in the sysfs space.
+> 
+> The driver needs to call cpufreq_enable_boost_support() for that.
+
+Ok. that makes sense.
+
+> 
+>> Irrespective the ideal behavior here will be to change the cpufreq cooling
+>> dev max state when this happens.
+> 
+> Hmm.. recreating it every time boost frequency is enabled is like
+> inviting trouble and it will be tricky. Maybe it can be done, I don't
+> know.:)
+
+Scheduling a notifier for max frequency change from the qos framework 
+should do the work, right?
+
+> 
+
 -- 
-2.30.0
-
+Warm Regards
+Thara
