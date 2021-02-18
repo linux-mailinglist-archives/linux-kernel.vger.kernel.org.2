@@ -2,118 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E3D31EBF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A8731EBF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 17:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhBRP4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 10:56:38 -0500
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:21955 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233438AbhBRN0l (ORCPT
+        id S232937AbhBRP7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 10:59:01 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:6594 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231609AbhBRN0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 18 Feb 2021 08:26:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1613654801; x=1645190801;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1613654800; x=1645190800;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=a73GG6FM0Icm2GR7U293i2N7W7TlhbendQ/I0wVoeak=;
-  b=WTJaGWjIJOQbb6+nfaltk1EqTyx/0uICObRwePpIT62dWL5zL6BwKsXk
-   oHOSLCd3dMS3tOeqHAAA1HopFotFTo4Uo682L0g9LtR4nFDwyRmc4gN61
-   E6sQeQpAvWOam5YYqikF4I2MuaGpgHgoGvwpfogpLxnJQn3LlZ4GfSTLC
-   1GfuEgloa/6X3qm7oWgaRJPiQvbmjbFKl0E5y3HrFDHsFtdmBowaD706e
-   dVsYX/1B1XUEo1TqM1J9mOqktEX23RElhR/1/gww0Fo1bSckTFNCkswpV
-   jU2Dj5yawDy9psc+cv97ygwFruIu2LxVNscLeiCNLp/pqjF6rMxo2sDIE
-   w==;
-IronPort-SDR: zxbKzXfTRozYBZ29N2SyxEocNyZHrfTag6LqqaZUU5k5xzvcOV+QVKoFAKsE2r/OXr+NvvksmH
- xt6kNoYF9jZSHo9z96g2UWl2kjq3+gt4pEL5iaq9cdJ8/RC9W35ZUhCT5ya3HNB/PATw/yevE5
- 0tdQix+zCEBFBAh8UB6fEHyNaP0Qwl/GWBY4Vr8GFuOJZSVS/pTtIA2ripNS2p4vMLEh+VsPCy
- xt0BwkGJHrRuIpCG1ZUmv9Zzh6p6Mbrq8FeLRYhMhZp4urmyNhDp+bBUeIrUMbuDVGL22rx238
- o7M=
-X-IronPort-AV: E=Sophos;i="5.81,187,1610434800"; 
-   d="scan'208";a="109744715"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Feb 2021 06:19:59 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 18 Feb 2021 06:09:54 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 18 Feb 2021 06:09:52 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     <broonie@kernel.org>, <vigneshr@ti.com>
-CC:     <linux-spi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v2] spi: spi-ti-qspi: Free DMA resources
-Date:   Thu, 18 Feb 2021 15:09:50 +0200
-Message-ID: <20210218130950.90155-1-tudor.ambarus@microchip.com>
+  bh=QOa5ixnCqhM+bPFADmmyHuxCKbAUkxZT3eEhoaKInYk=;
+  b=b5xq42UoA314eb/uTcfJz1bqFRAOv96FYuWiMPzKmLEq8GDN7KlPrJxk
+   ga7gSl0Mr2PaqicF56G5ohURnL9HJlQbhXSsli+r+//CILQs54hECtqxU
+   wId+GXu9z8RSgxtgnCGeho7PM0kqz2WSLQeijjhyDM3IzgQWl5jiNESQS
+   RPPnKcY7yiej7xrPMws0M8IZrLjPJJ7DIeVcXbCmIfOymORaHZIEuioiZ
+   PtRjJnbzYJK42A0ZB2J5oPxaJv8GbihTcb1OwwVxtvvPsScUeMavBUILb
+   qM9QjxVdGvGfgwprJjUQhKHDuhOazL3J+IhDAonEv/kWmJVRzUSHIqtsv
+   Q==;
+IronPort-SDR: X46HlWzErCdvNWPs+XPdZWxlMH8cyXiWxte/BEWI7PeQADLfnj7mk8HmjHGQ8pbz45gdMJ/qeG
+ qRwAbhbHDJmrDIeiZaR9V57+S363MAU6NQXhtaRvXTnudHNvNaQmnaYW7b9bHM5lmxFi+NGrdT
+ 31q9RKyDkPGubLiapamT3iNjmLeyj8rhl0tYySqKqnvNRnOx4S5ir475CZ1wgwK/uSd8Ng+/Ah
+ 8hNYti/KrHz5yLALDLSjYNFSD4n+NFPIyZU0vKzD2/UX3Q4dPXh87ePsPRKS8ZGn+ylQTNd6kw
+ hUU=
+X-IronPort-AV: E=Sophos;i="5.81,187,1610380800"; 
+   d="scan'208";a="160250962"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Feb 2021 21:19:57 +0800
+IronPort-SDR: ATupfsGKPT0ahy+Me/FxNfV86nWNr81VTcdD8qhuIy4jx3ma847DDAWaRbquUzdOBDqYNQX6Dm
+ eRo4Yuhn0fL/fHP0stA6ps62p27vhp2hC2SrWFnSgZaYQ2ZeO3nZR2JcwtaTUG2W4afN6fRC2N
+ rPHvuDiVvthXRlVnk0FUu3PHUlPCmlDSq89iV4TI/DYtxg7eCgM3h1j3102uFndOTVrpQuOaQd
+ oqBRuAgZir9fF+BWiOtEMjRLlR8ZontWZb9p2T5yuBBkRbVrTYpVEfn7FmxqpvhrUH55ZeLXbb
+ oTTXZ1jzjVOBwKWGb5wRuE7D
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 05:03:23 -0800
+IronPort-SDR: gSCr7VWBZIOQvlXl3GZOaGP3SpEDzYSbkcArpL0kzinwgyLyN6HXW8si945P3HEwkfMOnNzbts
+ fvw6GUYqC0i/L6Um+pCDlQoh4rlgMFKPOpRA+ypGU8lmVJCfnl4mDMH/B4j+2HyRSk8caIIi5K
+ k1SBXSM2YUM7AFPDPbmibYK7hVwjO9i1qOLX78wGlDkEURctBRAXv22PGFzptH4f4unrzePS1l
+ G/1aVezA6WpYR/S8UJYFGmWSmt5f38qP7g/OMZrxXQSZ/N6PM97PIkqRW3H1DNndWOBuRwb7Fq
+ 6wE=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 18 Feb 2021 05:19:53 -0800
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v3 0/9] Add Host control mode to HPB
+Date:   Thu, 18 Feb 2021 15:19:23 +0200
+Message-Id: <20210218131932.106997-1-avri.altman@wdc.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Release the RX channel and free the dma coherent memory when
-devm_spi_register_master() fails.
+v2 -> v3:
+ - Attend Greg's and Can's comments
+ - rebase on Daejun's v21
 
-Fixes: 5720ec0a6d26 ("spi: spi-ti-qspi: Add DMA support for QSPI mmap read")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
----
-v2: Add Fixes tag and Cc stable.
+v1 -> v2:
+ - attend Greg's and Daejun's comments
+ - add patch 9 making host mode parameters configurable
+ - rebase on Daejun's v19
 
- drivers/spi/spi-ti-qspi.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
-index 9417385c0921..e06aafe169e0 100644
---- a/drivers/spi/spi-ti-qspi.c
-+++ b/drivers/spi/spi-ti-qspi.c
-@@ -733,6 +733,17 @@ static int ti_qspi_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
-+static void ti_qspi_dma_cleanup(struct ti_qspi *qspi)
-+{
-+	if (qspi->rx_bb_addr)
-+		dma_free_coherent(qspi->dev, QSPI_DMA_BUFFER_SIZE,
-+				  qspi->rx_bb_addr,
-+				  qspi->rx_bb_dma_addr);
-+
-+	if (qspi->rx_chan)
-+		dma_release_channel(qspi->rx_chan);
-+}
-+
- static const struct of_device_id ti_qspi_match[] = {
- 	{.compatible = "ti,dra7xxx-qspi" },
- 	{.compatible = "ti,am4372-qspi" },
-@@ -886,6 +897,8 @@ static int ti_qspi_probe(struct platform_device *pdev)
- 	if (!ret)
- 		return 0;
- 
-+	ti_qspi_dma_cleanup(qspi);
-+
- 	pm_runtime_disable(&pdev->dev);
- free_master:
- 	spi_master_put(master);
-@@ -904,12 +917,7 @@ static int ti_qspi_remove(struct platform_device *pdev)
- 	pm_runtime_put_sync(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
--	if (qspi->rx_bb_addr)
--		dma_free_coherent(qspi->dev, QSPI_DMA_BUFFER_SIZE,
--				  qspi->rx_bb_addr,
--				  qspi->rx_bb_dma_addr);
--	if (qspi->rx_chan)
--		dma_release_channel(qspi->rx_chan);
-+	ti_qspi_dma_cleanup(qspi);
- 
- 	return 0;
- }
+The HPB spec defines 2 control modes - device control mode and host
+control mode. In oppose to device control mode, in which the host obey
+to whatever recommendation received from the device - In host control
+mode, the host uses its own algorithms to decide which regions should
+be activated or inactivated.
+
+We kept the host managed heuristic simple and concise.
+
+Aside from adding a by-spec functionality, host control mode entails
+some further potential benefits: makes the hpb logic transparent and
+readable, while allow tuning / scaling its various parameters, and
+utilize system-wide info to optimize HPB potential.
+
+This series is based on Samsung's V19 device-control HPB2.0 driver, see
+msg-id: 20210218090853epcms2p8ccac0b5611dec22afd04ecc06e74498e@epcms2p8
+in lore.kernel.org. The patches are also available in wdc ufs repo:
+https://github.com/westerndigitalcorporation/WDC-UFS-REPO/tree/hpb-v21
+
+This version was tested on Galaxy S20, and Xiaomi Mi10 pro.
+Your meticulous review and testing is mostly welcome and appreciated.
+
+Thanks,
+Avri
+
+Avri Altman (9):
+  scsi: ufshpb: Cache HPB Control mode on init
+  scsi: ufshpb: Add host control mode support to rsp_upiu
+  scsi: ufshpb: Add region's reads counter
+  scsi: ufshpb: Make eviction depends on region's reads
+  scsi: ufshpb: Region inactivation in host mode
+  scsi: ufshpb: Add hpb dev reset response
+  scsi: ufshpb: Add "Cold" regions timer
+  scsi: ufshpb: Add support for host control mode
+  scsi: ufshpb: Make host mode parameters configurable
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  68 +++
+ drivers/scsi/ufs/ufshcd.h                  |   2 +
+ drivers/scsi/ufs/ufshpb.c                  | 622 +++++++++++++++++++--
+ drivers/scsi/ufs/ufshpb.h                  |  44 +-
+ 4 files changed, 691 insertions(+), 45 deletions(-)
+
 -- 
 2.25.1
 
