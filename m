@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17AE31EB01
-	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:40:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEB131EAFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 18 Feb 2021 15:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232515AbhBROgh convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Feb 2021 09:36:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:50768 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232923AbhBRMmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 07:42:18 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3502B1FB;
-        Thu, 18 Feb 2021 04:41:05 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1A92E3F73D;
-        Thu, 18 Feb 2021 04:41:02 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     "Song Bao Hua \(Barry Song\)" <song.bao.hua@hisilicon.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     "vincent.guittot\@linaro.org" <vincent.guittot@linaro.org>,
-        "mgorman\@suse.de" <mgorman@suse.de>,
-        "mingo\@kernel.org" <mingo@kernel.org>,
-        "dietmar.eggemann\@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen\@arm.com" <morten.rasmussen@arm.com>,
-        "linux-kernel\@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm\@openeuler.org" <linuxarm@openeuler.org>,
-        "xuwei \(O\)" <xuwei5@huawei.com>,
-        "Liguozhu \(Kenneth\)" <liguozhu@hisilicon.com>,
-        "tiantao \(H\)" <tiantao6@hisilicon.com>,
-        wanghuiqiang <wanghuiqiang@huawei.com>,
-        "Zengtao \(B\)" <prime.zeng@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "guodong.xu\@linaro.org" <guodong.xu@linaro.org>,
-        Meelis Roos <mroos@linux.ee>
-Subject: RE: [Linuxarm]  Re: [PATCH v2] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
-In-Reply-To: <ae3bf4dc465040a4b31e4010fd800408@hisilicon.com>
-References: <20210203111201.20720-1-song.bao.hua@hisilicon.com> <YCKGVBnXzRsE6/Er@hirez.programming.kicks-ass.net> <4bdaa3e1a54f445fa8e629ea392e7bce@hisilicon.com> <YCPByAdQ+rZFzYWp@hirez.programming.kicks-ass.net> <jhjblcqtm5c.mognet@arm.com> <ae3bf4dc465040a4b31e4010fd800408@hisilicon.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Thu, 18 Feb 2021 12:40:53 +0000
-Message-ID: <jhj7dn5sg4q.mognet@arm.com>
+        id S232306AbhBROdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 09:33:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232937AbhBRMmW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 07:42:22 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1311AC06178A
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:41:41 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id o82so3494924wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 04:41:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=2yM4QIJUWbnv3qV7hB4p/81CEeJSilGooTOMXeB9PUs=;
+        b=ZgM2FNfs7o9TAWAekIEDSwUHlRQJ/N6cfdg7dInG++laCTbXZDcPCcwEpAnqkQE5Xq
+         bZybIRR8lSn+BT6HcZ2Xi3HWsdyPVwV4BtOPvGBrX9beN4qTvI2CuZVxt3+2UPlEDHcO
+         xF24S8tJpaHtJ7EngNI+Acgobz1M8IEpuwC3c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=2yM4QIJUWbnv3qV7hB4p/81CEeJSilGooTOMXeB9PUs=;
+        b=T6yvc0JehTO09COJ2nt3GshTSz3q3nIlLdMODRihNikmH47ediNid+TuGyR8+QOFg4
+         o7TRMyM2T4k7HrNbN/JadUGIThpS/VTRTbzE9vWWfX0mB/TN7YkpCWv1AxaBBf/A+CyL
+         9XVog8euXg7NSdaYpJxfUg2xYs1csaCxy3FU1QbwOqNlmiZkOauNoK4LfoZMxjfa/orI
+         XmRQAuqoThyH+/ejvPp1OekIUkiErwjt43cy/e3nBpD2RxI9K46VX6+oFaLFQm6dOkZq
+         5759Gahr0ubA/f9NLDpgALRtdbF4QgR+PZhnzjRAyRJ/vVdnEsXkm+NGdjWGmUZf07Qt
+         A+ZQ==
+X-Gm-Message-State: AOAM533DugjjEkoeuBY2R0XZLewdDfWjEyjqTN9qOJaRrBdGbCpccwJu
+        tD5X7rJtRr/gaRtxDVbWSofaVw==
+X-Google-Smtp-Source: ABdhPJwQMeBhuVXrSgkkQURsWUYGotN7xdnkauFq9ofOY1yaOMlv971ciD9cGMV+0Vw/Lkn1PJqjew==
+X-Received: by 2002:a1c:60c1:: with SMTP id u184mr3515552wmb.22.1613652099731;
+        Thu, 18 Feb 2021 04:41:39 -0800 (PST)
+Received: from localhost ([2620:10d:c093:400::4:f7e9])
+        by smtp.gmail.com with ESMTPSA id o13sm9699836wro.15.2021.02.18.04.41.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 04:41:39 -0800 (PST)
+Date:   Thu, 18 Feb 2021 12:41:39 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>, kernel-team@fb.com
+Subject: Re: [PATCH v4] printk: Userspace format enumeration support
+Message-ID: <YC5ggyeC0uqtOD6R@chrisdown.name>
+References: <YCafCKg2bAlOw08H@chrisdown.name>
+ <YC5b4+hTjrGwG22o@chrisdown.name>
+ <YC5flsiUEZnPs7qz@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YC5flsiUEZnPs7qz@alley>
+User-Agent: Mutt/2.0.5 (da5e3282) (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-Hi Barry,
-
-On 18/02/21 09:17, Song Bao Hua (Barry Song) wrote:
-> Hi Valentin,
+Petr Mladek writes:
+>> - Move to another file, kernel/printk/debug_formats.c or similar
 >
-> I understand Peter's concern is that the local group has different
-> size with remote groups. Is this patch resolving Peter's concern?
-> To me, it seems not :-)
+>Just to be sure. The filename should be ideally based on the configure
+>option and API names, e.g. formats_index.c or so.
 >
+>The printk_ prefix is not strictly necessary. The file is in printk/
+>directory. IMHO, we should have used ringbuffer.c but ...
 
-If you remove the '&& i != cpu' in build_overlap_sched_groups() you get
-that, but then you also get some extra warnings :-)
+Sure thing.
 
-Now yes, should_we_balance() only matters for the local group. However I'm
-somewhat wary of messing with the local groups; for one it means you would
-have more than one tl now accessing the same sgc->next_update, sgc->{min,
-max}capacity, sgc->group_imbalance (as Vincent had pointed out).
-
-By ensuring only remote (i.e. !local) groups are modified (which is what
-your patch does), we absolve ourselves of this issue, which is why I prefer
-this approach ATM.
-
-> Though I don’t understand why different group sizes will be harmful
-> since all groups are calculating avg_load and group_type based on
-> their own capacities. Thus, for a smaller group, its capacity would
-> be smaller.
+>> - Use `struct module *mod` instead of calling it module
+>> - Add documentation for printk_fmt_sec (or whatever it will be called)
+>> - Rename things to pf_, pi_, or something
+>> - See if it's safe to pass a printk_fmt_sec to seq_file instead of a module
 >
-> Is it because a bigger group has relatively less chance to pull, so
-> load balancing will be completed more slowly while small groups have
-> high load?
+>Also it might be needed to store the pointer to struct module.
+
+You mean, have a `struct module` entry for this? I somewhat suspect that 
+module.c maintainers are not likely to be happy about injecting non-generic 
+code into there if it's possible to be avoided, but maybe I'm misunderstanding? 
+
+>Both things together might allow to remove the global hash table and likely
+>even the mutex.
 >
+>> - Handle cont + level
+>> - Don't expose level/KERN_SOH directly
+>
+>I can't remember anything else. I am curious how v5 would look like.
 
-Peter's point is that, if at a given tl you have groups that look like
+You can join the club on that one... ;-)
 
-g0: 0-4, g1: 5-6, g2: 7-8
-
-Then g0 is half as likely to pull tasks with load_balance() than g1 or g2
-(due to the group size vs should_we_balance())
-
-
-However, I suppose one "trick" to be aware of here is that since your patch
-*doesn't* change the local group, we do have e.g. on CPU0:
-
-[    0.374840]    domain-2: span=0-5 level=NUMA
-[    0.375054]     groups: 0:{ span=0-3 cap=4003 }, 4:{ span=4-5 cap=1988 }
-
-*but* on CPU4 we get:
-
-[    0.387019]    domain-2: span=0-1,4-7 level=NUMA
-[    0.387211]     groups: 4:{ span=4-7 cap=3984 }, 0:{ span=0-1 cap=2013 }
-
-IOW, at a given tl, all *local* groups have /roughly/ the same size and thus
-similar pull probability (it took me writing this mail to see it that
-way). So perhaps this is all fine already? 
+Let me know if I understood you correctly on the `struct module` point, and 
+after that I'll start work on v5. Thanks!
