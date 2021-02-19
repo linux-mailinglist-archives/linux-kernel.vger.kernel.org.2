@@ -2,58 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0571531F67D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:24:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708DA31F684
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:26:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229880AbhBSJYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:24:31 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:40767 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229691AbhBSJY1 (ORCPT
+        id S229774AbhBSJZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:25:33 -0500
+Received: from mail-lj1-f176.google.com ([209.85.208.176]:34610 "EHLO
+        mail-lj1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSJZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:24:27 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOxr5iR_1613726624;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UOxr5iR_1613726624)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 19 Feb 2021 17:23:44 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     martin.petersen@oracle.com
-Cc:     jejb@linux.ibm.com, dick.kennedy@broadcom.com,
-        james.smart@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] scsi: lpfc: Fix different base types in assignment
-Date:   Fri, 19 Feb 2021 17:23:42 +0800
-Message-Id: <1613726622-38442-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 19 Feb 2021 04:25:28 -0500
+Received: by mail-lj1-f176.google.com with SMTP id r23so16735675ljh.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:25:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7+1XXFxtp0NTyFOGv6KWqg5UlcFRsTicQF0RpwlPL7Q=;
+        b=bqAReWQi2wI37yqPkCrtF3x+u6uGay/HRllodhOnp/ez84abIlN64gx04Rcb2ZnBU4
+         9GHWJqWvOzhR2MIl+BqAFris53jyqcgYCicZow4ipiqgMj07e4Oj9y8yXUmz+PR+gMsC
+         mWHsgnLaquXyKRjc6hpq6bQIzYJHOmm7FZHGULrgM0+mhlexxYvWT8kznWbWapmdAGa0
+         lboEFh6ZUGuWSVhz7lt/qB+0BopHzuxXl9c8wonUsbhYIOI7M5eWVBtes4Ex8PvQMN8P
+         ZAoedJRmEaA+UUjJNSx0MSpCB8Mnt1pVT+ZL7pVipbrmJAjirHQrLBztNOjD3TaE+Ay7
+         r4Zw==
+X-Gm-Message-State: AOAM532SzBZiVSgxDX68QSDchvtB1DhGZDJ6jCNWhCF/iTBkZElWEEq5
+        /JV3YQSvQ8G3jTQxkwCLTiUpbdMptylXtg==
+X-Google-Smtp-Source: ABdhPJy1UPI6F6L2u+sjkmiZ9cEBWFrfgN8EzY9HIRoikI0eGFQFvwW2jgOdsDrq84Z/XyGJMHrw6A==
+X-Received: by 2002:ac2:4a72:: with SMTP id q18mr5212436lfp.335.1613726686615;
+        Fri, 19 Feb 2021 01:24:46 -0800 (PST)
+Received: from localhost.localdomain (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.googlemail.com with ESMTPSA id 21sm868769lfo.238.2021.02.19.01.24.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 01:24:46 -0800 (PST)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] coccinelle: misc: add swap script
+Date:   Fri, 19 Feb 2021 12:24:48 +0300
+Message-Id: <20210219092448.13760-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210216080133.455456-1-efremov@linux.com>
+References: <20210216080133.455456-1-efremov@linux.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warnings:
-drivers/scsi/lpfc/lpfc_nvme.c:833:22: warning: incorrect type in
-assignment (different base types)
+Check for opencoded swap() implementation.
 
-cpu_to_le32() returns __le32, but sgl->sge_len is uint32_t type.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Signed-off-by: Denis Efremov <efremov@linux.com>
 ---
- drivers/scsi/lpfc/lpfc_nvme.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+ - additional patch rule to drop excessive {}
+ - fix indentation in patch mode by anchoring ;
 
-diff --git a/drivers/scsi/lpfc/lpfc_nvme.c b/drivers/scsi/lpfc/lpfc_nvme.c
-index 39d147e..b916a20 100644
---- a/drivers/scsi/lpfc/lpfc_nvme.c
-+++ b/drivers/scsi/lpfc/lpfc_nvme.c
-@@ -833,7 +833,7 @@
- 	 * operation.
- 	 */
- 	sgl = lpfc_ncmd->dma_sgl;
--	sgl->sge_len = cpu_to_le32(nCmd->cmdlen);
-+	sgl->sge_len = (__force uint32_t)cpu_to_le32(nCmd->cmdlen);
- 	if (phba->cfg_nvme_embed_cmd) {
- 		sgl->addr_hi = 0;
- 		sgl->addr_lo = 0;
+ scripts/coccinelle/misc/swap.cocci | 101 +++++++++++++++++++++++++++++
+ 1 file changed, 101 insertions(+)
+ create mode 100644 scripts/coccinelle/misc/swap.cocci
+
+diff --git a/scripts/coccinelle/misc/swap.cocci b/scripts/coccinelle/misc/swap.cocci
+new file mode 100644
+index 000000000000..d5da9888c222
+--- /dev/null
++++ b/scripts/coccinelle/misc/swap.cocci
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Check for opencoded swap() implementation.
++///
++// Confidence: High
++// Copyright: (C) 2021 Denis Efremov ISPRAS
++// Options: --no-includes --include-headers
++//
++// Keywords: swap
++//
++
++virtual patch
++virtual org
++virtual report
++virtual context
++
++@r depends on !patch@
++identifier tmp;
++expression a, b;
++type T;
++position p;
++@@
++
++(
++* T tmp;
++|
++* T tmp = 0;
++|
++* T *tmp = NULL;
++)
++... when != tmp
++* tmp = a;
++* a = b;@p
++* b = tmp;
++... when != tmp
++
++@rpvar depends on patch@
++identifier tmp;
++expression a, b;
++type T;
++@@
++
++(
++- T tmp;
++|
++- T tmp = 0;
++|
++- T *tmp = NULL;
++)
++... when != tmp
++- tmp = a;
++- a = b;
++- b = tmp
+++ swap(a, b)
++  ;
++... when != tmp
++
++
++@rp depends on patch@
++identifier tmp;
++expression a, b;
++@@
++
++- tmp = a;
++- a = b;
++- b = tmp
+++ swap(a, b)
++  ;
++
++@depends on (rpvar || rp)@
++@@
++
++(
++  for (...;...;...)
++- {
++	swap(...);
++- }
++|
++  while (...)
++- {
++	swap(...);
++- }
++|
++  if (...)
++- {
++	swap(...);
++- }
++)
++
++
++@script:python depends on report@
++p << r.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for swap()")
++
++@script:python depends on org@
++p << r.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for swap()")
 -- 
-1.8.3.1
+2.26.2
 
