@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33EA31FA23
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE86B31FA27
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhBSNyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 08:54:01 -0500
-Received: from mga09.intel.com ([134.134.136.24]:64464 "EHLO mga09.intel.com"
+        id S230021AbhBSN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 08:57:23 -0500
+Received: from mga11.intel.com ([192.55.52.93]:52104 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230177AbhBSNxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:53:51 -0500
-IronPort-SDR: rgeTPppgYXTdSDu3AekE3jDHvYWRaxXYgGRdWWsCcaM9OGYuFAVDVQ2nH8H6J+TRu/gJ1TYzQZ
- 0EMhq3XPfIhA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="183960797"
+        id S229636AbhBSN5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 08:57:20 -0500
+IronPort-SDR: U0L9glj0LbjFDdYTjqkrTB81FrhDgNV6Y6RR2xPGjlklLhxYJOJB0nD0ZmSgu7VR/rEJGAzSNy
+ +4fKCju/bupg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="180331905"
 X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="183960797"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:52:05 -0800
-IronPort-SDR: EK5Wgt/62jce1ymNozB9AcLEBud6htWOyYNWoERO8THhqspUe0CsaFjRRSoEWukDrsRVFVcpjq
- L+uCGTd68/zg==
+   d="scan'208";a="180331905"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:55:34 -0800
+IronPort-SDR: mQlPCQFL5QGufihX8XucWzipo9ErMQ6qnRGrAuoIqyVY3rOgxVUqz30tDQJiYU6X5PWtBHZczS
+ snFMella6euA==
 X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="378874125"
+   d="scan'208";a="496299341"
 Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:52:02 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:55:33 -0800
 Received: from andy by smile with local (Exim 4.94)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lD6CN-006DxP-8c; Fri, 19 Feb 2021 15:51:59 +0200
-Date:   Fri, 19 Feb 2021 15:51:59 +0200
+        id 1lD6Fn-006E2l-07; Fri, 19 Feb 2021 15:55:31 +0200
+Date:   Fri, 19 Feb 2021 15:55:30 +0200
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Robert Richter <rric@kernel.org>
-Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] Introduce pcim_alloc_irq_vectors()
-Message-ID: <YC/CfxHM2RMZLejc@smile.fi.intel.com>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <YC41HD422Mjh1IZK@rric.localdomain>
- <YC5zVHnRog3EX0rl@smile.fi.intel.com>
- <YC+euDIrR5apkAqp@rric.localdomain>
+To:     Sven Schuchmann <schuchmann@schleissheimer.de>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity
+ from DT
+Message-ID: <YC/DUmhXate4NhML@smile.fi.intel.com>
+References: <20210204143738.28036-1-schuchmann@schleissheimer.de>
+ <20210204145308.GC14305@duo.ucw.cz>
+ <DB8P190MB0634587826F57667BB3BBB6CD9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210205103438.GB27854@amd>
+ <DB8P190MB063473FEA37E69E6DF6BC5F6D9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210219111659.GI19207@duo.ucw.cz>
+ <DB8P190MB06340AA6D789A80A4CE2B6C6D9849@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YC+euDIrR5apkAqp@rric.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DB8P190MB06340AA6D789A80A4CE2B6C6D9849@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:19:20PM +0100, Robert Richter wrote:
-> On 18.02.21 16:01:56, Andy Shevchenko wrote:
-> > The problem this series solves is an imbalanced API.
+On Fri, Feb 19, 2021 at 11:38:09AM +0000, Sven Schuchmann wrote:
+> Hello Pavel, hello Andy,
 > 
-> This (added) API is bloated and incomplete. It adds functions without
-> benefit, the only is to have a single pcim alloc function in addition
-> to the pairing of alloc/free functions. I agree, it is hard to detect
-> which parts are released if pcim_enable_device() is used.
-
-No, this API solves the above mentioned problem (what makes so special about
-pci_free_irq_vectors() that it should be present?) Why do we have pcim_iomap*()
-variations and not the rest?
-
-The PCIm API is horrible in the sense of being used properly. Yes, I know how
-it works and I was trying to help with that, the problem is that people didn't
-and don't get how it works and stream of patches like the ones that add
-pci_free_irq_vectors() are coming.
-
-> Additional, you need to go through pcim_release() to add other
-> pcim_*() functions for everything else that is released there.
-> Otherwise that new API is still incomplete.
-
-True. And here is the part that most annoying right now.
-Btw, I never saw you fought against these small clean ups here and there, that
-*add* explicit calls to freeing resources. Also I haven't noticed anybody
-trying to correct documentation.
-
-This series is a step to a right direction.
-
-> But this adds another
-> bunch of useless functions.
-
-Wrong. This is quite useful to have balanced APIs. How many patches you have
-seen related to the PCIm imbalanced APIs? I could tell from my experience, I
-saw plenty and each time I'm trying to explain how it works people don't easily
-get.
-
-> > Christoph IIRC was clear that if we want to use PCI IRQ allocation API the
-> > caller must know what's going on. Hiding this behind the scenes is not good.
-> > And this series unhides that.
+> > -----Ursprüngliche Nachricht-----
+> > Von: Pavel Machek <pavel@ucw.cz>
+> > Gesendet: Freitag, 19. Februar 2021 12:17
+> > An: Sven Schuchmann <schuchmann@schleissheimer.de>
+> > Cc: Dan Murphy <dmurphy@ti.com>; linux-leds@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Betreff: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity from DT
+> > 
+> > > > Can you or Dan submit patch getting the regulator support to work? If
+> > > > not, I guess we should remove the regulator support after all.
+> > >
+> > > To be true I am fairly new to the kernel and have no idea
+> > > how to test this. So no, I don't want provide a patch (except
+> > > for removing), sorry.
+> > 
+> > No problem. It seems Andy submitted series for this.
+> > 
 > 
-> IMO, this is more a documentation issue. pcim_enable_device() must be
-> better documented and list all enable/alloc functions that are going
-> to be released out of the box later.
-> 
-> Even better, make sure everything is managed and thus all of a pci_dev
-> is released, no matter how it was setup (this could even already be
-> the case).
-> 
-> In addition you could implement a static code checker.
+> To me it seems that patches from Andy don't make
+> the regulator work. Maybe I am wrong?
 
-It's open source, why should we do that and not what we are proposing here?
-Propose your ideas and we will discuss the patches, right?
+I;m not sure I understand this correctly. Do you mean that my patches broke
+something? Which one explicitly and what is broken?
 
-> > Also, you may go and clean up all pci_free_irq_vectors() when
-> > pcim_enable_device() is called, but I guess you will get painful process and
-> > rejection in a pile of cases.
-> 
-> Why should something be rejected if it is not correctly freed?
-
-Why it's not correctly freed? The function is idempotent.
-
-> Even if pci_free_irq_vectors() is called, pcim_release() will not
-> complain if it was already freed before. So using
-> pci_free_irq_vectors() is ok even in conjunction with
-> pcim_enable_device().
-
-No, it's not okay from API namespace / semantics perspective.
-
-> In the end, let's make sure everything is released in pci_dev if it is
-> managed and document this.
-
-Feel free to submit a patch!
+> I am very busy right now but hopefully I will find some more
+> time next week to submit some new patches. On my list so far
+> for the lp50xx:
+> * Remove unused variable https://www.spinics.net/lists/linux-leds/msg17654.html
+> * Enable-GPIO not working (used before init, reset/enable order wrong)
+> * Add default setting from DT https://www.spinics.net/lists/linux-leds/msg17596.html
+> * Fix regulator https://www.spinics.net/lists/linux-leds/msg17631.html
 
 -- 
 With Best Regards,
