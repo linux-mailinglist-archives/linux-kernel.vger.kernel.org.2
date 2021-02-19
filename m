@@ -2,92 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB7631F691
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:31:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B6631F693
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:32:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhBSJa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:30:26 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:52378 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBSJaU (ORCPT
+        id S230077AbhBSJbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:31:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59740 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229927AbhBSJbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:30:20 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9OGcV136160;
-        Fri, 19 Feb 2021 09:29:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=uEvDR6iEpvcnB2NVWUiZUFmWvogbhov45lrrnx2ri0g=;
- b=atzN55G24QS1hqwNj/djdC8BksvwywD7eX/pPiInGMNpMG7iYTP2vGunD0F50eN3q8Eq
- zOHMwvZBGz7PC0FnCK0qEqOAl6tFScE2ul6szAtZbSP5TjBxIUntw6GxJKoSoGu3Uaen
- sJLXfwJaW66if0uPWMJN/Vya0rslmqEQ5fqkXRqrHsZNa/aCWbwIitQoKal1dcxtI6l9
- uJJ598HKICxj1jR7/xLUHH+hYyflfgLhmSIYeIZv82JkBZtnUJbqpyxghBp+P0Gtxf0x
- DwcTLWOhAxTz8zgnSaACJMdqjb2pvhfvVoq9JdUZiaJ3mrHQRY2DJa0NdGumUJ3Zus32 wA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 36p7dnrq2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:29:35 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9KVNw115305;
-        Fri, 19 Feb 2021 09:29:34 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 36prbrxf3x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:29:33 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11J9TSv1016782;
-        Fri, 19 Feb 2021 09:29:28 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Feb 2021 01:29:28 -0800
-Date:   Fri, 19 Feb 2021 12:29:18 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Nikolay Kyx <knv418@gmail.com>
-Cc:     gregkh@linuxfoundation.org, adawesomeguy222@gmail.com,
-        dinghao.liu@zju.edu.cn, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] staging: fwserial: match alignment with open
- parenthesis
-Message-ID: <20210219092918.GV2087@kadam>
-References: <YC9zX1aIgj/sVnQY@kroah.com>
- <20210219090318.20795-1-knv418@gmail.com>
+        Fri, 19 Feb 2021 04:31:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613727020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q3JTcUNa5wlSteHsee83SOzVlisb9YCuNoGlOsx95po=;
+        b=W3SGjBOUJstfR5ULx3yz8iVAPg7ZPB21kJ2I6jL25nqvaEZeXbbwuatk2pMfvjjiXYPZg8
+        ICmf2w2PIpaEipNn2fmgqVV/jVazD8gN40z4EXfYdAq1w22tT36CFvY4VOsse/1IDYNAU4
+        dmxN7Y6k+u+j+43h9oqJajD+k35kKhw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-376-wkwvDw66MRCzjmK3m0DxnA-1; Fri, 19 Feb 2021 04:30:16 -0500
+X-MC-Unique: wkwvDw66MRCzjmK3m0DxnA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA4EC1020C39;
+        Fri, 19 Feb 2021 09:30:14 +0000 (UTC)
+Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 551E6171FE;
+        Fri, 19 Feb 2021 09:30:13 +0000 (UTC)
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+To:     Michal Hocko <mhocko@suse.com>, Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
+References: <20210217163603.429062-1-minchan@kernel.org>
+ <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
+ <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
+ <YC402s1vqvC4q041@dhcp22.suse.cz>
+ <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
+ <YC6TpqT26dSy11fU@google.com> <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <45f1bffe-8a0b-2969-32d4-e24a911a647d@redhat.com>
+Date:   Fri, 19 Feb 2021 10:30:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219090318.20795-1-knv418@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190073
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190073
+In-Reply-To: <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:03:18PM +0300, Nikolay Kyx wrote:
-> This patch fixes the following checkpatch.pl check:
+On 19.02.21 10:28, Michal Hocko wrote:
+> On Thu 18-02-21 08:19:50, Minchan Kim wrote:
+>> On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
+>>> On 18.02.21 10:35, Michal Hocko wrote:
+>>>> On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
+>>>>> On 18.02.21 09:56, Michal Hocko wrote:
+>>>>>> On Wed 17-02-21 08:36:03, Minchan Kim wrote:
+>>>>>>> alloc_contig_range is usually used on cma area or movable zone.
+>>>>>>> It's critical if the page migration fails on those areas so
+>>>>>>> dump more debugging message like memory_hotplug unless user
+>>>>>>> specifiy __GFP_NOWARN.
+>>>>>>
+>>>>>> I agree with David that this has a potential to generate a lot of output
+>>>>>> and it is not really clear whether it is worth it. Page isolation code
+>>>>>> already has REPORT_FAILURE mode which currently used only for the memory
+>>>>>> hotplug because this was just too noisy from the CMA path - d381c54760dc
+>>>>>> ("mm: only report isolation failures when offlining memory").
+>>>>>>
+>>>>>> Maybe migration failures are less likely to fail but still.
+>>>>>
+>>>>> Side note: I really dislike that uncontrolled error reporting on memory
+>>>>> offlining path we have enabled as default. Yeah, it might be useful for
+>>>>> ZONE_MOVABLE in some cases, but otherwise it's just noise.
+>>>>>
+>>>>> Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
+>>>>
+>>>> Anyway we can discuss this in a separate thread but I think this is not
+>>>> a representative workload.
+>>>
+>>> Sure, but the essence is "this is noise", and we'll have more noise on
+>>> alloc_contig_range() as we see these calls more frequently. There should be
+>>> an explicit way to enable such *debug* messages.
+>>
+>> alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
+>> Why shouldn't people use it if they don't care the failure?
+>> Semantically, it makes sense to me.
 > 
-> CHECK: Alignment should match open parenthesis
+> Well, alloc_contig_range doesn't really have to implement all the gfp
+> flags. This is a matter of practicality. alloc_contig_range is quite
+> different from the page allocator because it is to be expected that it
+> can fail the request. This is avery optimistic allocation request. That
+> would suggest that complaining about allocation failures is rather
+> noisy.
 > 
-> in file fwserial.c
+> Now I do understand that some users would like to see why those
+> allocations have failed. The question is whether that information is
+> generally useful or it is more of a debugging aid. The amount of
+> information is also an important aspect. It would be rather unfortunate
+> to dump thousands of pages just because they cannot be migrated.
 > 
-> Additionally some style warnings remain valid here and could be fixed by
-> another patch.
-> 
+> I do not have a strong opinion here. We can make all alloc_contig_range
+> users use GFP_NOWARN by default and only skip the flag from the cma
+> allocator but I am slowly leaning towards (ab)using dynamic debugging
+> infrastructure for this.
 
-Don't put comments like this in the git log, put them under the ---
-cut off line.
+Just so I understand what you are referring to - trace points?
 
-> Signed-off-by: Nikolay Kyx <knv418@gmail.com>
-> ---
-> 
+-- 
+Thanks,
+
+David / dhildenb
 
