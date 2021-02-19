@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A7331FA1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:50:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0197D31FA16
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbhBSNri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 08:47:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54523 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229681AbhBSNrb (ORCPT
+        id S230223AbhBSNrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 08:47:05 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:38175 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhBSNrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:47:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613742365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oDE8EGVP9c1Qbtjtup3fFBceglrA202LnWw25MLTf5g=;
-        b=NO9pVoVNHGCmLjNSS/BS5FZEZMFN4hZ3LuEZ7gk9iSqKRFQ7TqzzTNwPc8ySRB6Vb7yH8V
-        5y0ZQrYS480qkA3Q4SmfJ65bHPrMlwqkTTQNt5wYPzeu06j4CdRtE2ZtWGVRAhE6H/ySrV
-        01H9DIhA4b+m0WU+pV0rS53omTpNW0c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-75-JZrauFMCM1e2KTyxmYmZEg-1; Fri, 19 Feb 2021 08:46:03 -0500
-X-MC-Unique: JZrauFMCM1e2KTyxmYmZEg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E5CF100A67A;
-        Fri, 19 Feb 2021 13:46:02 +0000 (UTC)
-Received: from gondolin (ovpn-113-92.ams2.redhat.com [10.36.113.92])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1C0B5D9C2;
-        Fri, 19 Feb 2021 13:45:56 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 14:45:54 +0100
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
-Subject: Re: [PATCH v2 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-Message-ID: <20210219144554.3857a034.cohuck@redhat.com>
-In-Reply-To: <20210216011547.22277-2-akrowiak@linux.ibm.com>
-References: <20210216011547.22277-1-akrowiak@linux.ibm.com>
-        <20210216011547.22277-2-akrowiak@linux.ibm.com>
-Organization: Red Hat GmbH
+        Fri, 19 Feb 2021 08:47:01 -0500
+Received: by mail-ot1-f46.google.com with SMTP id s3so1927063otg.5;
+        Fri, 19 Feb 2021 05:46:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=N87u3s4tu/lot3REjHTTkliSBZT6KlVyweiixUFivig=;
+        b=LRRTAnZzOkrk8OAXNFBvsxT+sOKCiKmSp9rZRXzLVs6TlIkahGYYTa2MVkLLbZFLPW
+         hAr6EjFsk6f3VSOBu0huZL/uG3wdFOYSLseAQYxgFri6gfIx12knIFpCXGKjMsmE7g7L
+         9PVkN61qCtzwGDPVkRSWtpCh+WY7mhu1gwXit/FK50cUj9busSGbgFMerk/SAeq7ujrK
+         syDBZaFSUdE4L8PaNTztSqjrMq9LMPECEUF6K2Og2+oZg8hiKXtBKhq4wmUBpbV2b6tm
+         s6ACJ6UFztugvpdpAa5jfsL4xZG3lSW6y8gzm3L0C4V1mqKW3fkilrs9vVY5s30ipxzM
+         VFuQ==
+X-Gm-Message-State: AOAM533LUfsMn+ddT45HxgraHB0kjjSFa3m4AhCpW9zrLFgw9URLR9Or
+        Fz6kWTByKCYB1gSxAb74nFGlGJnneju0FxLZPtk=
+X-Google-Smtp-Source: ABdhPJxII/q4/GNmq5MAWnP8pwaesn/5iH3kJjObe4JJa517d72g2yY+hEP7Dkrw6hLE7jGwlZAmN9frgTqniK3cSZ8=
+X-Received: by 2002:a05:6830:2106:: with SMTP id i6mr6825709otc.260.1613742380552;
+ Fri, 19 Feb 2021 05:46:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210218202837.516231-1-colin.king@canonical.com>
+In-Reply-To: <20210218202837.516231-1-colin.king@canonical.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 19 Feb 2021 14:46:08 +0100
+Message-ID: <CAJZ5v0johrMqzCpu7jYtJX8OFWcw+yrNaQo0BKh-CZvsuVkHGw@mail.gmail.com>
+Subject: Re: [PATCH][V2] drivers/base/cpu: remove redundant assignment of
+ variable retval
+To:     Colin King <colin.king@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 15 Feb 2021 20:15:47 -0500
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Thu, Feb 18, 2021 at 9:28 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The variable retval is being initialized with a value that is never read
+> and it is being updated later with a new value.  Clean this up by
+> initializing retval to -ENOMEM and remove the assignment to retval
+> on the !dev failure path.
+>
+> Kudos to Rafael for the improved fix suggestion.
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-> This patch fixes a circular locking dependency in the CI introduced by
-> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
-> pointer invalidated"). The lockdep only occurs when starting a Secure
-> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
-> SE guests; however, in order to avoid CI errors, this fix is being
-> provided.
-> 
-> The circular lockdep was introduced when the masks in the guest's APCB
-> were taken under the matrix_dev->lock. While the lock is definitely
-> needed to protect the setting/unsetting of the KVM pointer, it is not
-> necessarily critical for setting the masks, so this will not be done under
-> protection of the matrix_dev->lock.
-> 
-> Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+
 > ---
->  drivers/s390/crypto/vfio_ap_ops.c | 119 +++++++++++++++++++++---------
->  1 file changed, 84 insertions(+), 35 deletions(-)
-
-I've been looking at the patch for a bit now and tried to follow down
-the various paths; and while I think it's ok, I do not really have
-enough confidence about that for a R-b. But have an
-
-Acked-by: Cornelia Huck <cohuck@redhat.com>
-
+> V1: Remove initialization of retval
+> V2: Initialiation of retval with -ENOMEM and remove assignment in
+>     !dev failure path.
+> ---
+>  drivers/base/cpu.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
+> index 8f1d6569564c..2b9e41377a07 100644
+> --- a/drivers/base/cpu.c
+> +++ b/drivers/base/cpu.c
+> @@ -409,13 +409,11 @@ __cpu_device_create(struct device *parent, void *drvdata,
+>                     const char *fmt, va_list args)
+>  {
+>         struct device *dev = NULL;
+> -       int retval = -ENODEV;
+> +       int retval = -ENOMEM;
+>
+>         dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+> -       if (!dev) {
+> -               retval = -ENOMEM;
+> +       if (!dev)
+>                 goto error;
+> -       }
+>
+>         device_initialize(dev);
+>         dev->parent = parent;
+> --
+> 2.30.0
+>
