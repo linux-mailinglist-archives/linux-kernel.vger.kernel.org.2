@@ -2,96 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 471E631F6A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:40:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EBE231F6AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhBSJjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:39:44 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:49240 "EHLO honk.sigxcpu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229636AbhBSJjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:39:40 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id D5EB0FB04;
-        Fri, 19 Feb 2021 10:38:55 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
-Received: from honk.sigxcpu.org ([127.0.0.1])
-        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id iW_gueEqE_pP; Fri, 19 Feb 2021 10:38:54 +0100 (CET)
-Date:   Fri, 19 Feb 2021 10:38:53 +0100
-From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v3 0/1] phy: fsl-imx8-mipi-dphy: Hook into runtime pm
-Message-ID: <YC+HLW9pw7hFbFrD@bogon.m.sigxcpu.org>
-References: <cover.1608142884.git.agx@sigxcpu.org>
+        id S230125AbhBSJoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:44:15 -0500
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:45463 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhBSJoH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:44:07 -0500
+Received: by mail-ed1-f46.google.com with SMTP id p2so8623115edm.12;
+        Fri, 19 Feb 2021 01:43:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NuBGqICC+95wAYpH1uDMaRfEyp5FKDDvT+kNTfJaJ7Q=;
+        b=keVzVcVlWw43UX9iy9CKMUSXLQ/1BNT5uvVB8ucgQRSQzcMeBSBInD5zw06OyDXdQO
+         TJAVmpFM8Vgg/+MjAJNwdMUqRtow2kOOV39Z0gk7C+h6+Px4qoTziGxo51g/3CD1j7+V
+         iLVEbR/rsUPVPTMydvN5QQ6QKt8AmA814u9Dx95gI2bxmqwe2wO1rijtHpK54CgEWMZo
+         TStpQ/Y/+TJexXK2Tk+cPWvP5jlvXgHrw5OuQ6vbtbDH/ErT88fOjYV1bCli4eVdGfOm
+         iJ9K+uT9WmXIPFLYu52kpDU47jmQ24lREsP0BbbX72PJhWhakBh1PX2fIFIH+EhMm2rs
+         autA==
+X-Gm-Message-State: AOAM5338sOHtAIm2SEc11+dJrJJCSl11a+rb2IPQHfl1hh+lzQXgD93z
+        3RUwZhx3aUfH86xb+PlqCZQ=
+X-Google-Smtp-Source: ABdhPJxOSz36mtchaYVHlW+F54VkE7/jOJwnpqm26Nw9+JatNCFWQKysxYeEFMpNpc5IUOdjkZXF5Q==
+X-Received: by 2002:a05:6402:50ce:: with SMTP id h14mr8216082edb.283.1613727803314;
+        Fri, 19 Feb 2021 01:43:23 -0800 (PST)
+Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
+        by smtp.gmail.com with ESMTPSA id y11sm2071075edw.18.2021.02.19.01.43.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 01:43:22 -0800 (PST)
+Subject: Re: [PATCH v3 2/2] serial: 8250: Add new 8250-core based Broadcom STB
+ driver
+To:     Al Cooper <alcooperx@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210212195736.45328-1-alcooperx@gmail.com>
+ <20210212195736.45328-3-alcooperx@gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <d891e5bf-4fd8-fc44-7256-35ffa9d0931a@kernel.org>
+Date:   Fri, 19 Feb 2021 10:43:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1608142884.git.agx@sigxcpu.org>
+In-Reply-To: <20210212195736.45328-3-alcooperx@gmail.com>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Wed, Dec 16, 2020 at 07:22:32PM +0100, Guido Günther wrote:
-> This allows us to shut down the mipi power domain on the imx8. The alternative
-> would be to drop the dphy from the mipi power domain in the SOCs device tree
-> and only have the DSI host controller visible there but since the PD is mostly
-> about the PHY that would defeat it's purpose.
+On 12. 02. 21, 20:57, Al Cooper wrote:
+> Add a UART driver for the new Broadcom 8250 based STB UART. The new
+> UART is backward compatible with the standard 8250, but has some
+> additional features. The new features include a high accuracy baud
+> rate clock system and DMA support.
+> 
+> The driver will use the new optional BAUD MUX clock to select the best
+> one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
+> the baud rate selection logic for any requested baud rate.  This allows
+> for more accurate BAUD rates when high speed baud rates are selected.
+...
+> --- /dev/null
+> +++ b/drivers/tty/serial/8250/8250_bcm7271.c
+...
+> +static void brcmuart_rx_isr(struct uart_port *up, u32 rx_isr)
+> +{
+> +	struct brcmuart_priv *priv = up->private_data;
+> +	struct device *dev = up->dev;
+> +	u32 rx_done_isr;
+> +	u32 check_isr;
+> +	char seq_err[] = "RX buffer ready out of sequence, restarting RX DMA\n";
 
-Is there anything I can do to move that forward. I assume this needs to
-go via the phy/ subsystem not drm?
-Cheers,
- -- Guido
+What's the purpose of this on-stack variable?
 
-> 
-> This is basically a resend from February 2020 which went without feedback.
-> 
-> This allows to shut off the power domain hen blanking the LCD panel:
-> 
-> pm_genpd_summary before:
-> 
-> domain                          status          slaves
->     /device                                             runtime status
-> ----------------------------------------------------------------------
-> mipi                            on
->     /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  unsupported
->     /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
-> 
-> after:
-> 
-> mipi                            off-0
->     /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  suspended
->     /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
-> 
-> Changes from v1:
->  - Tweak commit message slightly
-> 
-> Changes from v2:
->   - As pre review comment by Lucas Stach
->     https://lore.kernel.org/linux-arm-kernel/ee22b072e0abe07559a3e6a63ccf6ece064a46cb.camel@pengutronix.de/
->     Check for pm_runtime_get_sync failure
-> 
-> Guido Günther (1):
->   phy: fsl-imx8-mipi-dphy: Hook into runtime pm
-> 
->  .../phy/freescale/phy-fsl-imx8-mipi-dphy.c    | 25 ++++++++++++++++++-
->  1 file changed, 24 insertions(+), 1 deletion(-)
-> 
-> -- 
-> 2.29.2
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> +static void init_real_clk_rates(struct device *dev, struct brcmuart_priv *priv)
+> +{
+> +	int x;
+> +	int rc;
+> +
+> +	priv->default_mux_rate = clk_get_rate(priv->baud_mux_clk);
+> +	dev_dbg(dev, "Default BAUD MUX Clock rate is %lu\n",
+> +		priv->default_mux_rate);
+> +
+> +	for (x = 0; x < ARRAY_SIZE(priv->real_rates); x++) {
+> +		if (priv->rate_table[x] == 0) {
+> +			priv->real_rates[x] = 0;
+> +			continue;
+> +		}
+> +		rc = clk_set_rate(priv->baud_mux_clk, priv->rate_table[x]);
+> +		if (rc) {
+> +			dev_err(dev, "Error selecting BAUD MUX clock for %u\n",
+> +				priv->rate_table[x]);
+> +			priv->real_rates[x] = priv->rate_table[x];
+> +		} else {
+> +			priv->real_rates[x] = clk_get_rate(priv->baud_mux_clk);
+> +		}
+> +	}
+> +	 clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
+
+This is only weirdly indented.
+
+> +}
+> +
+> +static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
+> +			u32 baud)
+> +{
+> +	u32 percent;
+> +	u32 best_percent = UINT_MAX;
+> +	u32 quot;
+> +	u32 best_quot = 1;
+> +	u32 rate;
+> +	int best_index = -1;
+> +	u64 hires_rate;
+> +	u64 hires_baud;
+> +	u64 hires_err;
+> +	int rc;
+> +	int i;
+> +	int real_baud;
+> +
+> +	/* If the Baud Mux Clock was not specified, just return */
+> +	if (priv->baud_mux_clk == NULL)
+> +		return;
+> +
+> +	/* Find the closest match for specified baud */
+> +	for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
+> +		if (priv->real_rates[i] == 0)
+> +			continue;
+> +		rate = priv->real_rates[i] / 16;
+> +		quot = DIV_ROUND_CLOSEST(rate, baud);
+> +		if (!quot)
+> +			continue;
+> +
+> +		/* increase resolution to get xx.xx percent */
+> +		hires_rate = (u64)rate * 10000;
+> +		hires_baud = (u64)baud * 10000;
+> +
+> +		hires_err = div_u64(hires_rate, (u64)quot);
+> +
+> +		/* get the delta */
+> +		if (hires_err > hires_baud)
+> +			hires_err = (hires_err - hires_baud);
+> +		else
+> +			hires_err = (hires_baud - hires_err);
+> +
+> +		percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
+> +		dev_dbg(up->dev,
+> +			"Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
+> +			baud, priv->real_rates[i], percent / 100,
+> +			percent % 100);
+> +		if (percent < best_percent) {
+> +			best_percent = percent;
+> +			best_index = i;
+> +			best_quot = quot;
+> +		}
+> +	}
+> +	if (best_index == -1) {
+> +		dev_err(up->dev, "Error, %d BAUD rate is too fast.\n", baud);
+> +		return;
+> +	}
+> +	rate = priv->real_rates[best_index];
+> +	rc = clk_set_rate(priv->baud_mux_clk, rate);
+> +	if (rc)
+> +		dev_err(up->dev, "Error selecting BAUD MUX clock\n");
+> +
+> +	/* Error over 3 percent will cause data errors */
+> +	if (best_percent > 300)
+> +		dev_err(up->dev, "Error, baud: %d has %u.%u%% error\n",
+> +			baud, percent / 100, percent % 100);
+> +
+> +	real_baud = rate / 16 / best_quot;
+> +	dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", rate);
+> +	dev_dbg(up->dev, "Requested baud: %u, Actual baud: %u\n",
+> +		baud, real_baud);
+> +
+> +	/* calc nanoseconds for 1.5 characters time at the given baud rate */
+> +	i = 1000000000 / real_baud / 10;
+
+NSEC_PER_SEC here?
+
+> +	i += (i / 2);
+> +	priv->char_wait = ns_to_ktime(i);
+> +
+> +	up->uartclk = rate;
+> +}
+
+...
+
+> +static int __maybe_unused brcmuart_resume(struct device *dev)
+> +{
+> +	struct brcmuart_priv *priv = dev_get_drvdata(dev);
+> +	int ret;
+> +
+> +	ret = clk_prepare_enable(priv->baud_mux_clk);
+> +	if (ret)
+> +		dev_err(dev, "Error enabling BAUD MUX clock\n");
+> +
+> +	/*
+> +	 * The hardware goes back to it's default after suspend
+> +	 * so get the "clk" back in sync.
+> +	 */
+> +	ret = clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
+> +	if (ret)
+> +		dev_err(dev, "Error restoring default BAUD MUX clock\n");
+> +	if (priv->dma_enabled) {
+> +		brcmuart_arbitration(priv, 1);
+> +		brcmuart_init_dma_hardware(priv);
+> +		start_rx_dma(serial8250_get_port(priv->line));
+> +	}
+> +	serial8250_resume_port(priv->line);
+
+All these cannot fail? Or the above can, so does proceeding further 
+without an error make sense?
+
+> +	return 0;
+> +}
+....
+> --- a/drivers/tty/serial/8250/Kconfig
+> +++ b/drivers/tty/serial/8250/Kconfig
+> @@ -501,6 +501,7 @@ config SERIAL_8250_PXA
+>   	  applicable to both devicetree and legacy boards, and early console is
+>   	  part of its support.
+>   
+> +
+
+Why adding a newline here?
+
+>   config SERIAL_8250_TEGRA
+>   	tristate "8250 support for Tegra serial ports"
+>   	default SERIAL_8250
+
+regards,
+-- 
+js
+suse labs
