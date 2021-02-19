@@ -2,1441 +2,571 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6880931FFEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAC031FFF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbhBSUio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:38:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37546 "EHLO
+        id S229725AbhBSUoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:44:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229743AbhBSUi0 (ORCPT
+        with ESMTP id S229553AbhBSUod (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:38:26 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13638C06178A;
-        Fri, 19 Feb 2021 12:37:46 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id kr16so4370426pjb.2;
-        Fri, 19 Feb 2021 12:37:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=K8deTJ9p5MCcl0GTBmPYi+CtuVIyI3fw7c72EJSMrUc=;
-        b=NxotRFYH9mL7VUacUxzz/TLhsc5PgAyg/yGTmBWtXGACEIFQ1Ckove8z8HWxIPP0Hf
-         QGc3XlyC0c9UAS51SznTblnwWzyOLHOWMOaKd1/mChliRLrJe7rCvLvKt3M+vtk+D/j9
-         DELndPVxiRtpeFFy6SvtwJwH353l36BjVUnA6JTe1AxiXn0/bJZdM8mwe0Wpk2lqJjof
-         aIMYu8WvS0uwnyfMOs3TuDKEwymkrfO/VhoPKhlT97jUu8n6Po+KWwz4qDjbv5Vxg7uP
-         XCakIrcdFTOjDlf+QgX41JMVdkc+qeUwtdVJURswFm3kJVIUqGVpvc0iqqIENz7pQyh3
-         F19A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=K8deTJ9p5MCcl0GTBmPYi+CtuVIyI3fw7c72EJSMrUc=;
-        b=MGHDpyb8s8R5cs0T1GJCH6446Nf6M0OolYGcp7DaE6S0PfQghjNSiP5zq27aK8DRz1
-         NJ0aA1Aw01cWhghSjrbgQso5iytKIRtUqWlT+kTqkBDu/L0f3shxbHYZ5z2Bz5NaS+PG
-         AFsZH983hikPVdp3/3gJqCIuHxTw1WBvjlgjQs1PjKi1qO8t8O3W5RRfo9ek+XxW/rMC
-         ltDxTIjeDrBYr4oE6csLorvbpK0dzRS0PRCuyQKUFbnV3pT9VE17VFD8hM714n1/DZ59
-         BuS0S6UFbs1JR6gxeyH7BN39bdCLszKZkYtMoUF7j0o4k5XEDyzGYQEkLmXDwtM1ALvD
-         3wPg==
-X-Gm-Message-State: AOAM531My39KHYtTIDMPGrw3GwBj+Nyvs6I+Bci+2Nak97/5lB++J7NS
-        kVQZpabCnJB7UFoytWOJ68wYeolzd7s=
-X-Google-Smtp-Source: ABdhPJyXHB07M3yyap5OmnLOhPgFC3qf1Cev3kEJwJhmMxZahqB6Ggq+8okNyrQBnTgbneGdesJgxA==
-X-Received: by 2002:a17:90a:bd84:: with SMTP id z4mr10684913pjr.179.1613767064664;
-        Fri, 19 Feb 2021 12:37:44 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id i2sm9040152pjj.35.2021.02.19.12.37.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 12:37:44 -0800 (PST)
-From:   Al Cooper <alcooperx@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, devicetree@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v4 2/2] serial: 8250: Add new 8250-core based Broadcom STB driver
-Date:   Fri, 19 Feb 2021 15:37:08 -0500
-Message-Id: <20210219203708.49056-3-alcooperx@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210219203708.49056-1-alcooperx@gmail.com>
-References: <20210219203708.49056-1-alcooperx@gmail.com>
+        Fri, 19 Feb 2021 15:44:33 -0500
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3736EC061574;
+        Fri, 19 Feb 2021 12:43:53 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6F8E8128012F;
+        Fri, 19 Feb 2021 12:43:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1613767431;
+        bh=kXII2V/u9/sr1OMzsGP36xSy8iuFwlqTQQr6OPN+Ad8=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=W/AlT0DoY71KxvvhBP56i5BcoaKpGk4Mi1xbMqShvqv7JwfmGb1ZE1MzNr7MvNtFo
+         dWYkNKZv/RwgWDawMr3o4CoSAouYHXbQPXXl3lsz8YfMLQM+jAwXBwc13lZDHT7h83
+         K0o/i1riu9a1i8V9YwxRADokUYOzyMGClktNRI6Y=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yGnc8WjStanL; Fri, 19 Feb 2021 12:43:51 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 07EC11280113;
+        Fri, 19 Feb 2021 12:43:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1613767431;
+        bh=kXII2V/u9/sr1OMzsGP36xSy8iuFwlqTQQr6OPN+Ad8=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=W/AlT0DoY71KxvvhBP56i5BcoaKpGk4Mi1xbMqShvqv7JwfmGb1ZE1MzNr7MvNtFo
+         dWYkNKZv/RwgWDawMr3o4CoSAouYHXbQPXXl3lsz8YfMLQM+jAwXBwc13lZDHT7h83
+         K0o/i1riu9a1i8V9YwxRADokUYOzyMGClktNRI6Y=
+Message-ID: <7cb83383873d766c41d798948635be883ec5ed9b.camel@HansenPartnership.com>
+Subject: [GIT PULL] first round of SCSI updates for the 5.11+ merge window
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Fri, 19 Feb 2021 12:43:50 -0800
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a UART driver for the new Broadcom 8250 based STB UART. The new
-UART is backward compatible with the standard 8250, but has some
-additional features. The new features include a high accuracy baud
-rate clock system and DMA support.
+This series consists of the usual driver updates (ufs, ibmvfc, qla2xxx,
+hisi_sas, pm80xx) plus the removal of the gdth driver (which is bound
+to cause conflicts with a trivial change somewhere).  The only big
+major rework of note is the one from Hannes trying to clean up our
+result handling code in the drivers to make it consistent.
 
-The driver will use the new optional BAUD MUX clock to select the best
-one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
-the baud rate selection logic for any requested baud rate.  This allows
-for more accurate BAUD rates when high speed baud rates are selected.
+The patch is available here:
 
-The driver will use the new UART DMA hardware if the UART DMA registers
-are specified in Device Tree "reg" property.
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
 
-The driver also sets the UPSTAT_AUTOCTS flag when hardware flow control
-is enabled. This flag is needed for UARTs that don't assert a CTS
-changed interrupt when CTS changes and AFE (Hardware Flow Control) is
-enabled.
+The short changelog is:
 
-The driver also contains a workaround for a bug in the Synopsis 8250
-core. The problem is that at high baud rates, the RX partial FIFO
-timeout interrupt can occur but there is no RX data (DR not set in
-the LSR register). In this case the driver will not read the Receive
-Buffer Register, which clears the interrupt, and the system will get
-continuous UART interrupts until the next RX character arrives. The
-fix originally suggested by Synopsis was to read the Receive Buffer
-Register and discard the character when the DR bit in the LSR was
-not set, to clear the interrupt. The problem was that occasionally
-a character would arrive just after the DR bit check and a valid
-character would be discarded. The fix that was added will clear
-receive interrupts to stop the interrupt, deassert RTS to insure
-that no new data can arrive, wait for 1.5 character times for the
-sender to react to RTS and then check for data and either do a dummy
-read or a valid read. Sysfs error counters were also added and were
-used to help create test software that would cause the error condition.
-The counters can be found at:
-/sys/devices/platform/rdb/*serial/rx_bad_timeout_late_char
-/sys/devices/platform/rdb/*serial/rx_bad_timeout_no_char
+Adrian Hunter (2):
+      scsi: ufs: ufs-debugfs: Add error counters
+      scsi: docs: ABI: sysfs-driver-ufs: Add DeepSleep power mode
 
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
----
- MAINTAINERS                            |    8 +
- drivers/tty/serial/8250/8250_bcm7271.c | 1100 ++++++++++++++++++++++++
- drivers/tty/serial/8250/Kconfig        |   10 +
- drivers/tty/serial/8250/Makefile       |    1 +
- drivers/tty/serial/8250/bcm7271_uart.h |  158 ++++
- 5 files changed, 1277 insertions(+)
- create mode 100644 drivers/tty/serial/8250/8250_bcm7271.c
- create mode 100644 drivers/tty/serial/8250/bcm7271_uart.h
+Ahmed S. Darwish (19):
+      scsi: libsas: Remove temporarily-added _gfp() API variants
+      scsi: mvsas: Switch back to original libsas event notifiers
+      scsi: isci: Switch back to original libsas event notifiers
+      scsi: libsas: Switch back to original event notifiers API
+      scsi: pm80xx: Switch back to original libsas event notifiers
+      scsi: aic94xx: Switch back to original libsas event notifiers
+      scsi: hisi_sas: Switch back to original libsas event notifiers
+      scsi: libsas: Add gfp_t flags parameter to event notifications
+      scsi: hisi_sas: Pass gfp_t flags to libsas event notifiers
+      scsi: aic94xx: Pass gfp_t flags to libsas event notifiers
+      scsi: pm80xx: Pass gfp_t flags to libsas event notifiers
+      scsi: libsas: Pass gfp_t flags to event notifiers
+      scsi: isci: Pass gfp_t flags in isci_port_bc_change_received()
+      scsi: isci: Pass gfp_t flags in isci_port_link_up()
+      scsi: isci: Pass gfp_t flags in isci_port_link_down()
+      scsi: mvsas: Pass gfp_t flags to libsas event notifiers
+      scsi: libsas: Introduce a _gfp() variant of event notifiers
+      scsi: libsas: docs: Remove notify_ha_event()
+      scsi: target: core: Remove in_interrupt() check in transport_handle_cdb_direct()
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bfc1b86e3e73..ba61f6e05752 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3582,6 +3582,14 @@ S:	Supported
- F:	Documentation/devicetree/bindings/i2c/brcm,brcmstb-i2c.yaml
- F:	drivers/i2c/busses/i2c-brcmstb.c
- 
-+BROADCOM BRCMSTB UART DRIVER
-+M:	Al Cooper <alcooperx@gmail.com>
-+L:	linux-serial@vger.kernel.org
-+L:	bcm-kernel-feedback-list@broadcom.com
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/serial/brcm,bcm7271-uart.yaml
-+F:	drivers/tty/serial/8250/8250_bcm7271.c
-+
- BROADCOM BRCMSTB USB EHCI DRIVER
- M:	Al Cooper <alcooperx@gmail.com>
- L:	linux-usb@vger.kernel.org
-diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
-new file mode 100644
-index 000000000000..e3369617cbcd
---- /dev/null
-+++ b/drivers/tty/serial/8250/8250_bcm7271.c
-@@ -0,0 +1,1100 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2020, Broadcom */
-+/*
-+ * 8250-core based driver for Broadcom ns16550a UARTs
-+ *
-+ * This driver uses the standard 8250 driver core but adds additional
-+ * optional features including the ability to use a baud rate clock
-+ * mux for more accurate high speed baud rate selection and also
-+ * an optional DMA engine.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/tty.h>
-+#include <linux/errno.h>
-+#include <linux/device.h>
-+#include <linux/io.h>
-+#include <linux/of.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/tty_flip.h>
-+#include <linux/delay.h>
-+#include <linux/clk.h>
-+
-+#include "8250.h"
-+#include "bcm7271_uart.h"
-+
-+#define REGS_8250 0
-+#define REGS_DMA_RX 1
-+#define REGS_DMA_TX 2
-+#define REGS_DMA_ISR 3
-+#define REGS_DMA_ARB 4
-+#define REGS_MAX 5
-+
-+#define TX_BUF_SIZE 4096
-+#define RX_BUF_SIZE 4096
-+#define RX_BUFS_COUNT 2
-+#define KHZ    1000
-+#define MHZ(x) ((x) * KHZ * KHZ)
-+
-+static const u32 brcmstb_rate_table[] = {
-+	MHZ(81),
-+	MHZ(108),
-+	MHZ(64),		/* Actually 64285715 for some chips */
-+	MHZ(48),
-+};
-+
-+static const u32 brcmstb_rate_table_7278[] = {
-+	MHZ(81),
-+	MHZ(108),
-+	0,
-+	MHZ(48),
-+};
-+
-+struct brcmuart_priv {
-+	int		line;
-+	struct clk	*baud_mux_clk;
-+	unsigned long	default_mux_rate;
-+	u32		real_rates[ARRAY_SIZE(brcmstb_rate_table)];
-+	const u32	*rate_table;
-+	ktime_t		char_wait;
-+	struct uart_port *up;
-+	struct hrtimer	hrt;
-+	u32		flags;
-+#define BRCMUART_PRIV_FLAGS_SHUTDOWN 1
-+	bool		dma_enabled;
-+	struct uart_8250_dma dma;
-+	void __iomem	*regs[REGS_MAX];
-+	dma_addr_t	rx_addr;
-+	void		*rx_bufs;
-+	size_t		rx_size;
-+	int		rx_next_buf;
-+	dma_addr_t	tx_addr;
-+	void		*tx_buf;
-+	size_t		tx_size;
-+	bool		tx_running;
-+	bool		rx_running;
-+
-+	/* sysfs attributes */
-+	u64		dma_rx_partial_buf;
-+	u64		dma_rx_full_buf;
-+	u32		rx_bad_timeout_late_char;
-+	u32		rx_bad_timeout_no_char;
-+	u32		rx_missing_close_timeout;
-+};
-+
-+/*
-+ * Register access routines
-+ */
-+static u32 udma_readl(struct brcmuart_priv *priv,
-+		int reg_type, int offset)
-+{
-+	return readl(priv->regs[reg_type] + offset);
-+}
-+
-+static void udma_writel(struct brcmuart_priv *priv,
-+			int reg_type, int offset, u32 value)
-+{
-+	writel(value, priv->regs[reg_type] + offset);
-+}
-+
-+static void udma_set(struct brcmuart_priv *priv,
-+		int reg_type, int offset, u32 bits)
-+{
-+	void __iomem *reg = priv->regs[reg_type] + offset;
-+	u32 value;
-+
-+	value = readl(reg);
-+	value |= bits;
-+	writel(value, reg);
-+}
-+
-+static void udma_unset(struct brcmuart_priv *priv,
-+		int reg_type, int offset, u32 bits)
-+{
-+	void __iomem *reg = priv->regs[reg_type] + offset;
-+	u32 value;
-+
-+	value = readl(reg);
-+	value &= ~bits;
-+	writel(value, reg);
-+}
-+
-+/*
-+ * The UART DMA engine hardware can be used by multiple UARTS, but
-+ * only one at a time. Sharing is not currently supported so
-+ * the first UART to request the DMA engine will get it and any
-+ * subsequent requests by other UARTS will fail.
-+ */
-+static int brcmuart_arbitration(struct brcmuart_priv *priv, bool acquire)
-+{
-+	u32 rx_grant;
-+	u32 tx_grant;
-+	int waits;
-+	int ret = 0;
-+
-+	if (acquire) {
-+		udma_set(priv, REGS_DMA_ARB, UDMA_ARB_RX, UDMA_ARB_REQ);
-+		udma_set(priv, REGS_DMA_ARB, UDMA_ARB_TX, UDMA_ARB_REQ);
-+
-+		waits = 1;
-+		while (1) {
-+			rx_grant = udma_readl(priv, REGS_DMA_ARB, UDMA_ARB_RX);
-+			tx_grant = udma_readl(priv, REGS_DMA_ARB, UDMA_ARB_TX);
-+			if (rx_grant & tx_grant & UDMA_ARB_GRANT)
-+				return 0;
-+			if (waits-- == 0)
-+				break;
-+			msleep(1);
-+		}
-+		ret = 1;
-+	}
-+
-+	udma_unset(priv, REGS_DMA_ARB, UDMA_ARB_RX, UDMA_ARB_REQ);
-+	udma_unset(priv, REGS_DMA_ARB, UDMA_ARB_TX, UDMA_ARB_REQ);
-+	return ret;
-+}
-+
-+static void brcmuart_init_dma_hardware(struct brcmuart_priv *priv)
-+{
-+	u32 daddr;
-+	u32 value;
-+	int x;
-+
-+	/* Start with all interrupts disabled */
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_SET, 0xffffffff);
-+
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFFER_SIZE, RX_BUF_SIZE);
-+
-+	/*
-+	 * Setup buffer close to happen when 32 character times have
-+	 * elapsed since the last character was received.
-+	 */
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFFER_CLOSE, 16*10*32);
-+	value = (RX_BUFS_COUNT << UDMA_RX_CTRL_NUM_BUF_USED_SHIFT)
-+		| UDMA_RX_CTRL_BUF_CLOSE_MODE
-+		| UDMA_RX_CTRL_BUF_CLOSE_ENA;
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_CTRL, value);
-+
-+	udma_writel(priv, REGS_DMA_RX, UDMA_RX_BLOCKOUT_COUNTER, 0);
-+	daddr = priv->rx_addr;
-+	for (x = 0; x < RX_BUFS_COUNT; x++) {
-+
-+		/* Set RX transfer length to 0 for unknown */
-+		udma_writel(priv, REGS_DMA_RX, UDMA_RX_TRANSFER_LEN, 0);
-+
-+		udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFx_PTR_LO(x),
-+			    lower_32_bits(daddr));
-+		udma_writel(priv, REGS_DMA_RX, UDMA_RX_BUFx_PTR_HI(x),
-+			    upper_32_bits(daddr));
-+		daddr += RX_BUF_SIZE;
-+	}
-+
-+	daddr = priv->tx_addr;
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_BUFx_PTR_LO(0),
-+		    lower_32_bits(daddr));
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_BUFx_PTR_HI(0),
-+		    upper_32_bits(daddr));
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_CTRL,
-+		    UDMA_TX_CTRL_NUM_BUF_USED_1);
-+
-+	/* clear all interrupts then enable them */
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_CLEAR, 0xffffffff);
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_CLEAR,
-+		UDMA_RX_INTERRUPTS | UDMA_TX_INTERRUPTS);
-+
-+}
-+
-+static void start_rx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+	struct device *dev = p->port.dev;
-+	int x;
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	udma_unset(priv, REGS_DMA_RX, UDMA_RX_CTRL, UDMA_RX_CTRL_ENA);
-+
-+	/* Clear the RX ready bit for all buffers */
-+	for (x = 0; x < RX_BUFS_COUNT; x++)
-+		udma_unset(priv, REGS_DMA_RX, UDMA_RX_BUFx_STATUS(x),
-+			UDMA_RX_BUFX_STATUS_DATA_RDY);
-+
-+	/* always start with buffer 0 */
-+	udma_unset(priv, REGS_DMA_RX, UDMA_RX_STATUS,
-+		   UDMA_RX_STATUS_ACTIVE_BUF_MASK);
-+	priv->rx_next_buf = 0;
-+
-+	udma_set(priv, REGS_DMA_RX, UDMA_RX_CTRL, UDMA_RX_CTRL_ENA);
-+	priv->rx_running = true;
-+}
-+
-+static void stop_rx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+	struct device *dev = p->port.dev;
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	/* If RX is running, set the RX ABORT */
-+	if (priv->rx_running)
-+		udma_set(priv, REGS_DMA_RX, UDMA_RX_CTRL, UDMA_RX_CTRL_ABORT);
-+}
-+
-+static int stop_tx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+	struct device *dev = p->port.dev;
-+	u32 value;
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	/* If TX is running, set the TX ABORT */
-+	value = udma_readl(priv, REGS_DMA_TX, UDMA_TX_CTRL);
-+	if (value & UDMA_TX_CTRL_ENA)
-+		udma_set(priv, REGS_DMA_TX, UDMA_TX_CTRL, UDMA_TX_CTRL_ABORT);
-+	priv->tx_running = false;
-+	return 0;
-+}
-+
-+/*
-+ * NOTE: printk's in this routine will hang the system if this is
-+ * the console tty
-+ */
-+static int brcmuart_tx_dma(struct uart_8250_port *p)
-+{
-+	struct brcmuart_priv *priv = p->port.private_data;
-+	struct circ_buf *xmit = &p->port.state->xmit;
-+	struct device *dev = p->port.dev;
-+	u32 tx_size;
-+
-+	if (uart_tx_stopped(&p->port) || priv->tx_running ||
-+		uart_circ_empty(xmit)) {
-+		return 0;
-+	}
-+	tx_size = CIRC_CNT_TO_END(xmit->head, xmit->tail, UART_XMIT_SIZE);
-+
-+	dev_dbg(dev, "%s: size: %d\n", __func__, tx_size);
-+
-+	priv->dma.tx_err = 0;
-+	memcpy(priv->tx_buf, &xmit->buf[xmit->tail], tx_size);
-+	xmit->tail += tx_size;
-+	xmit->tail &= UART_XMIT_SIZE - 1;
-+	p->port.icount.tx += tx_size;
-+
-+	if (uart_circ_chars_pending(xmit) < WAKEUP_CHARS)
-+		uart_write_wakeup(&p->port);
-+
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_TRANSFER_LEN, tx_size);
-+	udma_writel(priv, REGS_DMA_TX, UDMA_TX_BUF0_DATA_LEN, tx_size);
-+	udma_unset(priv, REGS_DMA_TX, UDMA_TX_BUF0_STATUS, UDMA_TX_BUFX_EMPTY);
-+	udma_set(priv, REGS_DMA_TX, UDMA_TX_CTRL, UDMA_TX_CTRL_ENA);
-+	priv->tx_running = true;
-+
-+	return 0;
-+}
-+
-+static void brcmuart_rx_buf_done_isr(struct uart_port *up, int index)
-+{
-+	struct brcmuart_priv *priv = up->private_data;
-+	struct tty_port *tty_port = &up->state->port;
-+	u32 status;
-+	u32 length;
-+	u32 copied;
-+
-+	/* Make sure we're still in sync with the hardware */
-+	status = udma_readl(priv, REGS_DMA_RX, UDMA_RX_BUFx_STATUS(index));
-+	length = udma_readl(priv, REGS_DMA_RX, UDMA_RX_BUFx_DATA_LEN(index));
-+
-+	if ((status & UDMA_RX_BUFX_STATUS_DATA_RDY) == 0) {
-+		dev_err(up->dev, "RX done interrupt but DATA_RDY not found\n");
-+		return;
-+	}
-+	if (status & (UDMA_RX_BUFX_STATUS_OVERRUN_ERR |
-+		      UDMA_RX_BUFX_STATUS_FRAME_ERR |
-+		      UDMA_RX_BUFX_STATUS_PARITY_ERR)) {
-+		if (status & UDMA_RX_BUFX_STATUS_OVERRUN_ERR) {
-+			up->icount.overrun++;
-+			dev_warn(up->dev, "RX OVERRUN Error\n");
-+		}
-+		if (status & UDMA_RX_BUFX_STATUS_FRAME_ERR) {
-+			up->icount.frame++;
-+			dev_warn(up->dev, "RX FRAMING Error\n");
-+		}
-+		if (status & UDMA_RX_BUFX_STATUS_PARITY_ERR) {
-+			up->icount.parity++;
-+			dev_warn(up->dev, "RX PARITY Error\n");
-+		}
-+	}
-+	copied = (u32)tty_insert_flip_string(
-+		tty_port,
-+		priv->rx_bufs + (index * RX_BUF_SIZE),
-+		length);
-+	if (copied != length) {
-+		dev_warn(up->dev, "Flip buffer overrun of %d bytes\n",
-+			 length - copied);
-+		up->icount.overrun += length - copied;
-+	}
-+	up->icount.rx += length;
-+	if (status & UDMA_RX_BUFX_STATUS_CLOSE_EXPIRED)
-+		priv->dma_rx_partial_buf++;
-+	else if (length != RX_BUF_SIZE)
-+		/*
-+		 * This is a bug in the controller that doesn't cause
-+		 * any problems but will be fixed in the future.
-+		 */
-+		priv->rx_missing_close_timeout++;
-+	else
-+		priv->dma_rx_full_buf++;
-+
-+	tty_flip_buffer_push(tty_port);
-+
-+	dev_dbg(up->dev, "RX: %d chars, chan %d, stat: 0x%x, 0x%x\n",
-+		length, index, status,
-+		(unsigned int)((unsigned char *)priv->rx_bufs)[index *
-+							       RX_BUF_SIZE]);
-+}
-+
-+static void brcmuart_rx_isr(struct uart_port *up, u32 rx_isr)
-+{
-+	struct brcmuart_priv *priv = up->private_data;
-+	struct device *dev = up->dev;
-+	u32 rx_done_isr;
-+	u32 check_isr;
-+
-+	rx_done_isr = (rx_isr & UDMA_INTR_RX_READY_MASK);
-+	dev_dbg(dev, "Got RX interrupt: 0x%x, next: %d\n", rx_done_isr,
-+		priv->rx_next_buf);
-+	while (rx_done_isr) {
-+		check_isr = UDMA_INTR_RX_READY_BUF0 << priv->rx_next_buf;
-+		if (check_isr & rx_done_isr) {
-+			brcmuart_rx_buf_done_isr(up, priv->rx_next_buf);
-+		} else {
-+			dev_err(dev,
-+				"RX buffer ready out of sequence, restarting RX DMA\n");
-+			start_rx_dma(up_to_u8250p(up));
-+			break;
-+		}
-+		if (rx_isr & UDMA_RX_ERR_INTERRUPTS) {
-+			if (rx_isr & UDMA_INTR_RX_ERROR)
-+				dev_dbg(dev, "RX FRAME/OVERRUN/PARITY Error\n");
-+			if (rx_isr & UDMA_INTR_RX_TIMEOUT)
-+				dev_err(dev, "RX TIMEOUT Error\n");
-+			if (rx_isr & UDMA_INTR_RX_ABORT)
-+				dev_dbg(dev, "RX ABORT\n");
-+			priv->rx_running = false;
-+		}
-+		/* If not ABORT, re-enable RX buffer */
-+		if (!(rx_isr & UDMA_INTR_RX_ABORT))
-+			udma_unset(priv, REGS_DMA_RX,
-+				   UDMA_RX_BUFx_STATUS(priv->rx_next_buf),
-+				   UDMA_RX_BUFX_STATUS_DATA_RDY);
-+		dev_dbg(dev, "RX interrupt DONE for channel %d\n",
-+			priv->rx_next_buf);
-+		rx_done_isr &= ~check_isr;
-+		priv->rx_next_buf++;
-+		if (priv->rx_next_buf == RX_BUFS_COUNT)
-+			priv->rx_next_buf = 0;
-+	}
-+}
-+
-+static void brcmuart_tx_isr(struct uart_port *up, u32 isr)
-+{
-+	struct brcmuart_priv *priv = up->private_data;
-+	struct device *dev = up->dev;
-+	struct uart_8250_port *port_8250 = up_to_u8250p(up);
-+	struct circ_buf	*xmit = &port_8250->port.state->xmit;
-+	int length;
-+
-+	length = udma_readl(priv, REGS_DMA_TX, UDMA_TX_TRANSFER_TOTAL);
-+	dev_dbg(dev, "Got TX interrupt, length %d\n", length);
-+
-+	if (isr & UDMA_INTR_TX_ABORT) {
-+		if (priv->tx_running)
-+			dev_err(dev, "Unexpected TX_ABORT interrupt\n");
-+		return;
-+	}
-+	priv->tx_running = false;
-+	if (!uart_circ_empty(xmit) && !uart_tx_stopped(up))
-+		brcmuart_tx_dma(port_8250);
-+}
-+
-+static irqreturn_t brcmuart_isr(int irq, void *dev_id)
-+{
-+	struct uart_port *up = dev_id;
-+	struct device *dev = up->dev;
-+	struct brcmuart_priv *priv = up->private_data;
-+	unsigned long flags;
-+	u32 interrupts;
-+	u32 rval;
-+	u32 tval;
-+
-+	interrupts = udma_readl(priv, REGS_DMA_ISR, UDMA_INTR_STATUS);
-+	dev_dbg(up->dev, "ISR: interrupts: 0x%x\n", interrupts);
-+	if (interrupts == 0)
-+		return IRQ_NONE;
-+
-+	spin_lock_irqsave(&up->lock, flags);
-+
-+	/* Clear all interrupts */
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_CLEAR, interrupts);
-+
-+	rval = UDMA_IS_RX_INTERRUPT(interrupts);
-+	if (rval)
-+		brcmuart_rx_isr(up, rval);
-+	tval = UDMA_IS_TX_INTERRUPT(interrupts);
-+	if (tval)
-+		brcmuart_tx_isr(up, tval);
-+	if ((rval | tval) == 0)
-+		dev_warn(dev, "Spurious interrupt: 0x%x\n", interrupts);
-+
-+	spin_unlock_irqrestore(&up->lock, flags);
-+	return IRQ_HANDLED;
-+}
-+
-+static int brcmuart_startup(struct uart_port *port)
-+{
-+	int res;
-+	struct uart_8250_port *up = up_to_u8250p(port);
-+	struct brcmuart_priv *priv = up->port.private_data;
-+	struct device *dev = port->dev;
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	priv->flags &= ~BRCMUART_PRIV_FLAGS_SHUTDOWN;
-+
-+	/*
-+	 * prevent serial8250_do_startup() from allocating non-existent
-+	 * DMA resources
-+	 */
-+	up->dma = NULL;
-+
-+	res = serial8250_do_startup(port);
-+	if (!priv->dma_enabled)
-+		return res;
-+	/*
-+	 * Disable the Receive Data Interrupt because the DMA engine
-+	 * will handle this.
-+	 */
-+	up->ier &= ~UART_IER_RDI;
-+	serial_port_out(port, UART_IER, up->ier);
-+
-+	priv->tx_running = false;
-+	priv->dma.rx_dma = NULL;
-+	priv->dma.tx_dma = brcmuart_tx_dma;
-+	up->dma = &priv->dma;
-+
-+	brcmuart_init_dma_hardware(priv);
-+	start_rx_dma(up);
-+	return res;
-+}
-+
-+static void brcmuart_shutdown(struct uart_port *port)
-+{
-+	struct uart_8250_port *up = up_to_u8250p(port);
-+	struct brcmuart_priv *priv = up->port.private_data;
-+	struct device *dev = port->dev;
-+	unsigned long flags;
-+
-+	dev_dbg(dev, "%s\n", __func__);
-+
-+	spin_lock_irqsave(&port->lock, flags);
-+	priv->flags |= BRCMUART_PRIV_FLAGS_SHUTDOWN;
-+	if (priv->dma_enabled) {
-+		stop_rx_dma(up);
-+		stop_tx_dma(up);
-+		/* disable all interrupts */
-+		udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_SET,
-+			UDMA_RX_INTERRUPTS | UDMA_TX_INTERRUPTS);
-+	}
-+
-+	/*
-+	 * prevent serial8250_do_shutdown() from trying to free
-+	 * DMA resources that we never alloc'd for this driver.
-+	 */
-+	up->dma = NULL;
-+
-+	spin_unlock_irqrestore(&port->lock, flags);
-+	serial8250_do_shutdown(port);
-+}
-+
-+/*
-+ * Not all clocks run at the exact specified rate, so set each requested
-+ * rate and then get the actual rate.
-+ */
-+static void init_real_clk_rates(struct device *dev, struct brcmuart_priv *priv)
-+{
-+	int x;
-+	int rc;
-+
-+	priv->default_mux_rate = clk_get_rate(priv->baud_mux_clk);
-+	dev_dbg(dev, "Default BAUD MUX Clock rate is %lu\n",
-+		priv->default_mux_rate);
-+
-+	for (x = 0; x < ARRAY_SIZE(priv->real_rates); x++) {
-+		if (priv->rate_table[x] == 0) {
-+			priv->real_rates[x] = 0;
-+			continue;
-+		}
-+		rc = clk_set_rate(priv->baud_mux_clk, priv->rate_table[x]);
-+		if (rc) {
-+			dev_err(dev, "Error selecting BAUD MUX clock for %u\n",
-+				priv->rate_table[x]);
-+			priv->real_rates[x] = priv->rate_table[x];
-+		} else {
-+			priv->real_rates[x] = clk_get_rate(priv->baud_mux_clk);
-+		}
-+	}
-+	clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
-+}
-+
-+static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
-+			u32 baud)
-+{
-+	u32 percent;
-+	u32 best_percent = UINT_MAX;
-+	u32 quot;
-+	u32 best_quot = 1;
-+	u32 rate;
-+	int best_index = -1;
-+	u64 hires_rate;
-+	u64 hires_baud;
-+	u64 hires_err;
-+	int rc;
-+	int i;
-+	int real_baud;
-+
-+	/* If the Baud Mux Clock was not specified, just return */
-+	if (priv->baud_mux_clk == NULL)
-+		return;
-+
-+	/* Find the closest match for specified baud */
-+	for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
-+		if (priv->real_rates[i] == 0)
-+			continue;
-+		rate = priv->real_rates[i] / 16;
-+		quot = DIV_ROUND_CLOSEST(rate, baud);
-+		if (!quot)
-+			continue;
-+
-+		/* increase resolution to get xx.xx percent */
-+		hires_rate = (u64)rate * 10000;
-+		hires_baud = (u64)baud * 10000;
-+
-+		hires_err = div_u64(hires_rate, (u64)quot);
-+
-+		/* get the delta */
-+		if (hires_err > hires_baud)
-+			hires_err = (hires_err - hires_baud);
-+		else
-+			hires_err = (hires_baud - hires_err);
-+
-+		percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
-+		dev_dbg(up->dev,
-+			"Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
-+			baud, priv->real_rates[i], percent / 100,
-+			percent % 100);
-+		if (percent < best_percent) {
-+			best_percent = percent;
-+			best_index = i;
-+			best_quot = quot;
-+		}
-+	}
-+	if (best_index == -1) {
-+		dev_err(up->dev, "Error, %d BAUD rate is too fast.\n", baud);
-+		return;
-+	}
-+	rate = priv->real_rates[best_index];
-+	rc = clk_set_rate(priv->baud_mux_clk, rate);
-+	if (rc)
-+		dev_err(up->dev, "Error selecting BAUD MUX clock\n");
-+
-+	/* Error over 3 percent will cause data errors */
-+	if (best_percent > 300)
-+		dev_err(up->dev, "Error, baud: %d has %u.%u%% error\n",
-+			baud, percent / 100, percent % 100);
-+
-+	real_baud = rate / 16 / best_quot;
-+	dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", rate);
-+	dev_dbg(up->dev, "Requested baud: %u, Actual baud: %u\n",
-+		baud, real_baud);
-+
-+	/* calc nanoseconds for 1.5 characters time at the given baud rate */
-+	i = NSEC_PER_SEC / real_baud / 10;
-+	i += (i / 2);
-+	priv->char_wait = ns_to_ktime(i);
-+
-+	up->uartclk = rate;
-+}
-+
-+static void brcmstb_set_termios(struct uart_port *up,
-+				struct ktermios *termios,
-+				struct ktermios *old)
-+{
-+	struct uart_8250_port *p8250 = up_to_u8250p(up);
-+	struct brcmuart_priv *priv = up->private_data;
-+
-+	if (priv->dma_enabled)
-+		stop_rx_dma(p8250);
-+	set_clock_mux(up, priv, tty_termios_baud_rate(termios));
-+	serial8250_do_set_termios(up, termios, old);
-+	if (p8250->mcr & UART_MCR_AFE)
-+		p8250->port.status |= UPSTAT_AUTOCTS;
-+	if (priv->dma_enabled)
-+		start_rx_dma(p8250);
-+}
-+
-+static int brcmuart_handle_irq(struct uart_port *p)
-+{
-+	unsigned int iir = serial_port_in(p, UART_IIR);
-+	struct brcmuart_priv *priv = p->private_data;
-+	struct uart_8250_port *up = up_to_u8250p(p);
-+	unsigned int status;
-+	unsigned long flags;
-+	unsigned int ier;
-+	unsigned int mcr;
-+	int handled = 0;
-+
-+	/*
-+	 * There's a bug in some 8250 cores where we get a timeout
-+	 * interrupt but there is no data ready.
-+	 */
-+	if (((iir & UART_IIR_ID) == UART_IIR_RX_TIMEOUT) &&
-+	    ((priv->flags & BRCMUART_PRIV_FLAGS_SHUTDOWN) == 0)) {
-+		spin_lock_irqsave(&p->lock, flags);
-+		status = serial_port_in(p, UART_LSR);
-+		if ((status & UART_LSR_DR) == 0) {
-+
-+			ier = serial_port_in(p, UART_IER);
-+			/*
-+			 * if Receive Data Interrupt is enabled and
-+			 * we're uing hardware flow control, deassert
-+			 * RTS and wait for any chars in the pipline to
-+			 * arrive and then check for DR again.
-+			 */
-+			if ((ier & UART_IER_RDI) && (up->mcr & UART_MCR_AFE)) {
-+				ier &= ~(UART_IER_RLSI | UART_IER_RDI);
-+				serial_port_out(p, UART_IER, ier);
-+				mcr = serial_port_in(p, UART_MCR);
-+				mcr &= ~UART_MCR_RTS;
-+				serial_port_out(p, UART_MCR, mcr);
-+				hrtimer_start(&priv->hrt, priv->char_wait,
-+					      HRTIMER_MODE_REL);
-+			} else {
-+				serial_port_in(p, UART_RX);
-+			}
-+
-+			handled = 1;
-+		}
-+		spin_unlock_irqrestore(&p->lock, flags);
-+		if (handled)
-+			return 1;
-+	}
-+	return serial8250_handle_irq(p, iir);
-+}
-+
-+static enum hrtimer_restart brcmuart_hrtimer_func(struct hrtimer *t)
-+{
-+	struct brcmuart_priv *priv = container_of(t, struct brcmuart_priv, hrt);
-+	struct uart_port *p = priv->up;
-+	struct uart_8250_port *up = up_to_u8250p(p);
-+	unsigned int status;
-+	unsigned long flags;
-+
-+	if (priv->flags & BRCMUART_PRIV_FLAGS_SHUTDOWN)
-+		return HRTIMER_NORESTART;
-+
-+	spin_lock_irqsave(&p->lock, flags);
-+	status = serial_port_in(p, UART_LSR);
-+
-+	/*
-+	 * If a character did not arrive after the timeout, clear the false
-+	 * receive timeout.
-+	 */
-+	if ((status & UART_LSR_DR) == 0) {
-+		serial_port_in(p, UART_RX);
-+		priv->rx_bad_timeout_no_char++;
-+	} else {
-+		priv->rx_bad_timeout_late_char++;
-+	}
-+
-+	/* re-enable receive unless upper layer has disabled it */
-+	if ((up->ier & (UART_IER_RLSI | UART_IER_RDI)) ==
-+	    (UART_IER_RLSI | UART_IER_RDI)) {
-+		status = serial_port_in(p, UART_IER);
-+		status |= (UART_IER_RLSI | UART_IER_RDI);
-+		serial_port_out(p, UART_IER, status);
-+		status = serial_port_in(p, UART_MCR);
-+		status |= UART_MCR_RTS;
-+		serial_port_out(p, UART_MCR, status);
-+	}
-+	spin_unlock_irqrestore(&p->lock, flags);
-+	return HRTIMER_NORESTART;
-+}
-+
-+static ssize_t rx_bad_timeout_no_char_show(struct device *dev,
-+					   struct device_attribute *attr,
-+					   char *buf)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+
-+	return sprintf(buf, "%d\n", priv->rx_bad_timeout_no_char);
-+}
-+static DEVICE_ATTR_RO(rx_bad_timeout_no_char);
-+
-+static ssize_t rx_bad_timeout_late_char_show(struct device *dev,
-+					     struct device_attribute *attr,
-+					     char *buf)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+
-+	return sprintf(buf, "%d\n", priv->rx_bad_timeout_late_char);
-+}
-+static DEVICE_ATTR_RO(rx_bad_timeout_late_char);
-+
-+static ssize_t rx_missing_close_timeout_show(struct device *dev,
-+					     struct device_attribute *attr,
-+					     char *buf)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+
-+	return sprintf(buf, "%d\n", priv->rx_missing_close_timeout);
-+}
-+static DEVICE_ATTR_RO(rx_missing_close_timeout);
-+
-+static ssize_t dma_rx_partial_buf_show(struct device *dev,
-+				       struct device_attribute *attr,
-+				       char *buf)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+
-+	return sprintf(buf, "%lld\n", priv->dma_rx_partial_buf);
-+}
-+static DEVICE_ATTR_RO(dma_rx_partial_buf);
-+
-+static ssize_t dma_rx_full_buf_show(struct device *dev,
-+				    struct device_attribute *attr,
-+				    char *buf)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+
-+	return sprintf(buf, "%lld\n", priv->dma_rx_full_buf);
-+}
-+static DEVICE_ATTR_RO(dma_rx_full_buf);
-+
-+static struct attribute *brcmuart_dev_attrs[] = {
-+	&dev_attr_rx_bad_timeout_no_char.attr,
-+	&dev_attr_rx_bad_timeout_late_char.attr,
-+	&dev_attr_rx_missing_close_timeout.attr,
-+	&dev_attr_dma_rx_partial_buf.attr,
-+	&dev_attr_dma_rx_full_buf.attr,
-+	NULL,
-+};
-+
-+static const struct attribute_group brcmuart_dev_attr_group = {
-+	.attrs = brcmuart_dev_attrs,
-+};
-+
-+static const struct of_device_id brcmuart_dt_ids[] = {
-+	{
-+		.compatible = "brcm,bcm7278-uart",
-+		.data = brcmstb_rate_table_7278,
-+	},
-+	{
-+		.compatible = "brcm,bcm7271-uart",
-+		.data = brcmstb_rate_table,
-+	},
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(of, brcmuart_dt_ids);
-+
-+static void brcmuart_free_bufs(struct device *dev, struct brcmuart_priv *priv)
-+{
-+	if (priv->rx_bufs)
-+		dma_free_coherent(dev, priv->rx_size, priv->rx_bufs,
-+				  priv->rx_addr);
-+	if (priv->tx_buf)
-+		dma_free_coherent(dev, priv->tx_size, priv->tx_buf,
-+				  priv->tx_addr);
-+}
-+
-+static void brcmuart_throttle(struct uart_port *port)
-+{
-+	struct brcmuart_priv *priv = port->private_data;
-+
-+	dev_dbg(port->dev, "%s\n", __func__);
-+
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_SET, UDMA_RX_INTERRUPTS);
-+}
-+
-+static void brcmuart_unthrottle(struct uart_port *port)
-+{
-+	struct brcmuart_priv *priv = port->private_data;
-+
-+	dev_dbg(port->dev, "%s\n", __func__);
-+
-+	udma_writel(priv, REGS_DMA_ISR, UDMA_INTR_MASK_CLEAR,
-+		    UDMA_RX_INTERRUPTS);
-+}
-+
-+static int brcmuart_probe(struct platform_device *pdev)
-+{
-+	struct resource *regs;
-+	struct device_node *np = pdev->dev.of_node;
-+	const struct of_device_id *of_id = NULL;
-+	struct uart_8250_port *new_port;
-+	struct device *dev = &pdev->dev;
-+	struct brcmuart_priv *priv;
-+	struct clk *baud_mux_clk;
-+	struct uart_8250_port up;
-+	struct resource *irq;
-+	void __iomem *membase = 0;
-+	resource_size_t mapbase = 0;
-+	u32 clk_rate = 0;
-+	int ret;
-+	int x;
-+	int dma_irq;
-+	static const char * const reg_names[REGS_MAX] = {
-+		"uart", "dma_rx", "dma_tx", "dma_intr2", "dma_arb"
-+	};
-+
-+	irq = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!irq) {
-+		dev_err(dev, "missing irq\n");
-+		return -EINVAL;
-+	}
-+	priv = devm_kzalloc(dev, sizeof(struct brcmuart_priv),
-+			GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	of_id = of_match_node(brcmuart_dt_ids, np);
-+	if (!of_id || !of_id->data)
-+		priv->rate_table = brcmstb_rate_table;
-+	else
-+		priv->rate_table = of_id->data;
-+
-+	for (x = 0; x < REGS_MAX; x++) {
-+		regs = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-+						reg_names[x]);
-+		if (!regs)
-+			break;
-+		priv->regs[x] =	devm_ioremap(dev, regs->start,
-+					     resource_size(regs));
-+		if (IS_ERR(priv->regs[x]))
-+			return PTR_ERR(priv->regs[x]);
-+		if (x == REGS_8250) {
-+			mapbase = regs->start;
-+			membase = priv->regs[x];
-+		}
-+	}
-+
-+	/* We should have just the uart base registers or all the registers */
-+	if (x != 1 && x != REGS_MAX) {
-+		dev_warn(dev, "%s registers not specified\n", reg_names[x]);
-+		return -EINVAL;
-+	}
-+
-+	/* if the DMA registers were specified, try to enable DMA */
-+	if (x > REGS_DMA_RX) {
-+		if (brcmuart_arbitration(priv, 1) == 0) {
-+			u32 txrev = 0;
-+			u32 rxrev = 0;
-+
-+			txrev = udma_readl(priv, REGS_DMA_RX, UDMA_RX_REVISION);
-+			rxrev = udma_readl(priv, REGS_DMA_TX, UDMA_TX_REVISION);
-+			if ((txrev >= UDMA_TX_REVISION_REQUIRED) &&
-+				(rxrev >= UDMA_RX_REVISION_REQUIRED)) {
-+
-+				/* Enable the use of the DMA hardware */
-+				priv->dma_enabled = true;
-+			} else {
-+				brcmuart_arbitration(priv, 0);
-+				dev_err(dev,
-+					"Unsupported DMA Hardware Revision\n");
-+			}
-+		} else {
-+			dev_err(dev,
-+				"Timeout arbitrating for UART DMA hardware\n");
-+		}
-+	}
-+
-+	of_property_read_u32(np, "clock-frequency", &clk_rate);
-+
-+	/* See if a Baud clock has been specified */
-+	baud_mux_clk = of_clk_get_by_name(np, "sw_baud");
-+	if (IS_ERR(baud_mux_clk)) {
-+		if (PTR_ERR(baud_mux_clk) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_info(dev, "BAUD MUX clock not specified\n");
-+	} else {
-+		dev_info(dev, "BAUD MUX clock found\n");
-+		ret = clk_prepare_enable(baud_mux_clk);
-+		if (ret)
-+			return ret;
-+		priv->baud_mux_clk = baud_mux_clk;
-+		init_real_clk_rates(dev, priv);
-+		clk_rate = priv->default_mux_rate;
-+	}
-+
-+	if (clk_rate == 0) {
-+		dev_err(dev, "clock-frequency or clk not defined\n");
-+		return -EINVAL;
-+	}
-+
-+	dev_info(dev, "DMA is %senabled\n", priv->dma_enabled ? "" : "not ");
-+
-+	memset(&up, 0, sizeof(up));
-+	up.port.type = PORT_16550A;
-+	up.port.uartclk = clk_rate;
-+	up.port.dev = dev;
-+	up.port.mapbase = mapbase;
-+	up.port.membase = membase;
-+	up.port.irq = irq->start;
-+	up.port.handle_irq = brcmuart_handle_irq;
-+	up.port.regshift = 2;
-+	up.port.iotype = of_device_is_big_endian(np) ?
-+		UPIO_MEM32BE : UPIO_MEM32;
-+	up.port.flags = UPF_SHARE_IRQ | UPF_BOOT_AUTOCONF
-+		| UPF_FIXED_PORT | UPF_FIXED_TYPE;
-+	up.port.dev = dev;
-+	up.port.private_data = priv;
-+	up.capabilities = UART_CAP_FIFO | UART_CAP_AFE;
-+	up.port.fifosize = 32;
-+
-+	/* Check for a fixed line number */
-+	ret = of_alias_get_id(np, "serial");
-+	if (ret >= 0)
-+		up.port.line = ret;
-+
-+	/* setup HR timer */
-+	hrtimer_init(&priv->hrt, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
-+	priv->hrt.function = brcmuart_hrtimer_func;
-+
-+	up.port.shutdown = brcmuart_shutdown;
-+	up.port.startup = brcmuart_startup;
-+	up.port.throttle = brcmuart_throttle;
-+	up.port.unthrottle = brcmuart_unthrottle;
-+	up.port.set_termios = brcmstb_set_termios;
-+
-+	if (priv->dma_enabled) {
-+		priv->rx_size = RX_BUF_SIZE * RX_BUFS_COUNT;
-+		priv->rx_bufs = dma_alloc_coherent(dev,
-+						   priv->rx_size,
-+						   &priv->rx_addr, GFP_KERNEL);
-+		if (!priv->rx_bufs)
-+			goto err;
-+		priv->tx_size = UART_XMIT_SIZE;
-+		priv->tx_buf = dma_alloc_coherent(dev,
-+						  priv->tx_size,
-+						  &priv->tx_addr, GFP_KERNEL);
-+		if (!priv->tx_buf)
-+			goto err;
-+	}
-+
-+	ret = serial8250_register_8250_port(&up);
-+	if (ret < 0) {
-+		dev_err(dev, "unable to register 8250 port\n");
-+		goto err;
-+	}
-+	priv->line = ret;
-+	new_port = serial8250_get_port(ret);
-+	priv->up = &new_port->port;
-+	if (priv->dma_enabled) {
-+		dma_irq = platform_get_irq_byname(pdev,  "dma");
-+		if (dma_irq < 0) {
-+			dev_err(dev, "no IRQ resource info\n");
-+			goto err1;
-+		}
-+		ret = devm_request_irq(dev, dma_irq, brcmuart_isr,
-+				IRQF_SHARED, "uart DMA irq", &new_port->port);
-+		if (ret) {
-+			dev_err(dev, "unable to register IRQ handler\n");
-+			goto err1;
-+		}
-+	}
-+	platform_set_drvdata(pdev, priv);
-+	ret = sysfs_create_group(&dev->kobj, &brcmuart_dev_attr_group);
-+	if (ret)
-+		dev_warn(dev, "Error creating sysfs attributes\n");
-+
-+	return 0;
-+
-+err1:
-+	serial8250_unregister_port(priv->line);
-+err:
-+	brcmuart_free_bufs(dev, priv);
-+	brcmuart_arbitration(priv, 0);
-+	return -ENODEV;
-+}
-+
-+static int brcmuart_remove(struct platform_device *pdev)
-+{
-+	struct brcmuart_priv *priv = platform_get_drvdata(pdev);
-+
-+	sysfs_remove_group(&pdev->dev.kobj, &brcmuart_dev_attr_group);
-+	hrtimer_cancel(&priv->hrt);
-+	serial8250_unregister_port(priv->line);
-+	brcmuart_free_bufs(&pdev->dev, priv);
-+	brcmuart_arbitration(priv, 0);
-+	return 0;
-+}
-+
-+static int __maybe_unused brcmuart_suspend(struct device *dev)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+
-+	serial8250_suspend_port(priv->line);
-+	clk_disable_unprepare(priv->baud_mux_clk);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused brcmuart_resume(struct device *dev)
-+{
-+	struct brcmuart_priv *priv = dev_get_drvdata(dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(priv->baud_mux_clk);
-+	if (ret)
-+		dev_err(dev, "Error enabling BAUD MUX clock\n");
-+
-+	/*
-+	 * The hardware goes back to it's default after suspend
-+	 * so get the "clk" back in sync.
-+	 */
-+	ret = clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
-+	if (ret)
-+		dev_err(dev, "Error restoring default BAUD MUX clock\n");
-+	if (priv->dma_enabled) {
-+		if (brcmuart_arbitration(priv, 1)) {
-+			dev_err(dev, "Timeout arbitrating for DMA hardware on resume\n");
-+			return(-EBUSY);
-+		}
-+		brcmuart_init_dma_hardware(priv);
-+		start_rx_dma(serial8250_get_port(priv->line));
-+	}
-+	serial8250_resume_port(priv->line);
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops brcmuart_dev_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(brcmuart_suspend, brcmuart_resume)
-+};
-+
-+static struct platform_driver brcmuart_platform_driver = {
-+	.driver = {
-+		.name	= "bcm7271-uart",
-+		.pm		= &brcmuart_dev_pm_ops,
-+		.of_match_table = brcmuart_dt_ids,
-+	},
-+	.probe		= brcmuart_probe,
-+	.remove		= brcmuart_remove,
-+};
-+module_platform_driver(brcmuart_platform_driver);
-+
-+MODULE_AUTHOR("Al Cooper");
-+MODULE_DESCRIPTION("Broadcom NS16550A compatible serial port driver");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
-index 603137da4736..d8891d03e8d1 100644
---- a/drivers/tty/serial/8250/Kconfig
-+++ b/drivers/tty/serial/8250/Kconfig
-@@ -510,6 +510,16 @@ config SERIAL_8250_TEGRA
- 	  Select this option if you have machine with an NVIDIA Tegra SoC and
- 	  wish to enable 8250 serial driver for the Tegra serial interfaces.
- 
-+config SERIAL_8250_BCM7271
-+	bool "Broadcom 8250 based serial port"
-+	depends on SERIAL_8250 && (ARCH_BRCMSTB || COMPILE_TEST)
-+	default ARCH_BRCMSTB
-+	help
-+	  If you have a Broadcom STB based board and want to use the
-+	  enhanced features of the Broadcom 8250 based serial port,
-+	  including DMA support and high accuracy BAUD rates, say
-+	  Y to this option. If unsure, say N.
-+
- config SERIAL_OF_PLATFORM
- 	tristate "Devicetree based probing for 8250 ports"
- 	depends on SERIAL_8250 && OF
-diff --git a/drivers/tty/serial/8250/Makefile b/drivers/tty/serial/8250/Makefile
-index a8bfb654d490..b9bcd73c8997 100644
---- a/drivers/tty/serial/8250/Makefile
-+++ b/drivers/tty/serial/8250/Makefile
-@@ -38,6 +38,7 @@ obj-$(CONFIG_SERIAL_8250_LPSS)		+= 8250_lpss.o
- obj-$(CONFIG_SERIAL_8250_MID)		+= 8250_mid.o
- obj-$(CONFIG_SERIAL_8250_PXA)		+= 8250_pxa.o
- obj-$(CONFIG_SERIAL_8250_TEGRA)		+= 8250_tegra.o
-+obj-$(CONFIG_SERIAL_8250_BCM7271)	+= 8250_bcm7271.o
- obj-$(CONFIG_SERIAL_OF_PLATFORM)	+= 8250_of.o
- 
- CFLAGS_8250_ingenic.o += -I$(srctree)/scripts/dtc/libfdt
-diff --git a/drivers/tty/serial/8250/bcm7271_uart.h b/drivers/tty/serial/8250/bcm7271_uart.h
-new file mode 100644
-index 000000000000..78cce03f9e17
---- /dev/null
-+++ b/drivers/tty/serial/8250/bcm7271_uart.h
-@@ -0,0 +1,158 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/* Copyright (c) 2020, Broadcom */
-+#ifndef __BCM7271_UART_H__
-+#define __BCM7271_UART_H__
-+
-+/* Register definitions for UART DMA block. Version 1.1 or later. */
-+#define UDMA_ARB_RX		0x00
-+#define UDMA_ARB_TX		0x04
-+#define		UDMA_ARB_REQ				0x00000001
-+#define		UDMA_ARB_GRANT				0x00000002
-+
-+#define UDMA_RX_REVISION	0x00
-+#define UDMA_RX_REVISION_REQUIRED			0x00000101
-+#define UDMA_RX_CTRL		0x04
-+#define		UDMA_RX_CTRL_BUF_CLOSE_MODE		0x00010000
-+#define		UDMA_RX_CTRL_MASK_WR_DONE		0x00008000
-+#define		UDMA_RX_CTRL_ENDIAN_OVERRIDE		0x00004000
-+#define		UDMA_RX_CTRL_ENDIAN			0x00002000
-+#define		UDMA_RX_CTRL_OE_IS_ERR			0x00001000
-+#define		UDMA_RX_CTRL_PE_IS_ERR			0x00000800
-+#define		UDMA_RX_CTRL_FE_IS_ERR			0x00000400
-+#define		UDMA_RX_CTRL_NUM_BUF_USED_MASK		0x000003c0
-+#define		UDMA_RX_CTRL_NUM_BUF_USED_SHIFT	6
-+#define		UDMA_RX_CTRL_BUF_CLOSE_CLK_SEL_SYS	0x00000020
-+#define		UDMA_RX_CTRL_BUF_CLOSE_ENA		0x00000010
-+#define		UDMA_RX_CTRL_TIMEOUT_CLK_SEL_SYS	0x00000008
-+#define		UDMA_RX_CTRL_TIMEOUT_ENA		0x00000004
-+#define		UDMA_RX_CTRL_ABORT			0x00000002
-+#define		UDMA_RX_CTRL_ENA			0x00000001
-+#define UDMA_RX_STATUS		0x08
-+#define		UDMA_RX_STATUS_ACTIVE_BUF_MASK		0x0000000f
-+#define UDMA_RX_TRANSFER_LEN	0x0c
-+#define UDMA_RX_TRANSFER_TOTAL	0x10
-+#define UDMA_RX_BUFFER_SIZE	0x14
-+#define UDMA_RX_SRC_ADDR	0x18
-+#define UDMA_RX_TIMEOUT		0x1c
-+#define UDMA_RX_BUFFER_CLOSE	0x20
-+#define UDMA_RX_BLOCKOUT_COUNTER 0x24
-+#define UDMA_RX_BUF0_PTR_LO	0x28
-+#define UDMA_RX_BUF0_PTR_HI	0x2c
-+#define UDMA_RX_BUF0_STATUS	0x30
-+#define		UDMA_RX_BUFX_STATUS_OVERRUN_ERR		0x00000010
-+#define		UDMA_RX_BUFX_STATUS_FRAME_ERR		0x00000008
-+#define		UDMA_RX_BUFX_STATUS_PARITY_ERR		0x00000004
-+#define		UDMA_RX_BUFX_STATUS_CLOSE_EXPIRED	0x00000002
-+#define		UDMA_RX_BUFX_STATUS_DATA_RDY		0x00000001
-+#define UDMA_RX_BUF0_DATA_LEN	0x34
-+#define UDMA_RX_BUF1_PTR_LO	0x38
-+#define UDMA_RX_BUF1_PTR_HI	0x3c
-+#define UDMA_RX_BUF1_STATUS	0x40
-+#define UDMA_RX_BUF1_DATA_LEN	0x44
-+
-+#define UDMA_TX_REVISION	0x00
-+#define UDMA_TX_REVISION_REQUIRED			0x00000101
-+#define UDMA_TX_CTRL		0x04
-+#define		UDMA_TX_CTRL_ENDIAN_OVERRIDE		0x00000080
-+#define		UDMA_TX_CTRL_ENDIAN			0x00000040
-+#define		UDMA_TX_CTRL_NUM_BUF_USED_MASK		0x00000030
-+#define		UDMA_TX_CTRL_NUM_BUF_USED_1		0x00000010
-+#define		UDMA_TX_CTRL_ABORT			0x00000002
-+#define		UDMA_TX_CTRL_ENA			0x00000001
-+#define UDMA_TX_DST_ADDR	0x08
-+#define UDMA_TX_BLOCKOUT_COUNTER 0x10
-+#define UDMA_TX_TRANSFER_LEN	0x14
-+#define UDMA_TX_TRANSFER_TOTAL	0x18
-+#define UDMA_TX_STATUS		0x20
-+#define UDMA_TX_BUF0_PTR_LO	0x24
-+#define UDMA_TX_BUF0_PTR_HI	0x28
-+#define UDMA_TX_BUF0_STATUS	0x2c
-+#define		UDMA_TX_BUFX_LAST			0x00000002
-+#define		UDMA_TX_BUFX_EMPTY			0x00000001
-+#define UDMA_TX_BUF0_DATA_LEN	0x30
-+#define UDMA_TX_BUF0_DATA_SENT	0x34
-+#define UDMA_TX_BUF1_PTR_LO	0x38
-+
-+#define UDMA_INTR_STATUS	0x00
-+#define		UDMA_INTR_ARB_TX_GRANT			0x00040000
-+#define		UDMA_INTR_ARB_RX_GRANT			0x00020000
-+#define		UDMA_INTR_TX_ALL_EMPTY			0x00010000
-+#define		UDMA_INTR_TX_EMPTY_BUF1			0x00008000
-+#define		UDMA_INTR_TX_EMPTY_BUF0			0x00004000
-+#define		UDMA_INTR_TX_ABORT			0x00002000
-+#define		UDMA_INTR_TX_DONE			0x00001000
-+#define		UDMA_INTR_RX_ERROR			0x00000800
-+#define		UDMA_INTR_RX_TIMEOUT			0x00000400
-+#define		UDMA_INTR_RX_READY_BUF7			0x00000200
-+#define		UDMA_INTR_RX_READY_BUF6			0x00000100
-+#define		UDMA_INTR_RX_READY_BUF5			0x00000080
-+#define		UDMA_INTR_RX_READY_BUF4			0x00000040
-+#define		UDMA_INTR_RX_READY_BUF3			0x00000020
-+#define		UDMA_INTR_RX_READY_BUF2			0x00000010
-+#define		UDMA_INTR_RX_READY_BUF1			0x00000008
-+#define		UDMA_INTR_RX_READY_BUF0			0x00000004
-+#define		UDMA_INTR_RX_READY_MASK			0x000003fc
-+#define		UDMA_INTR_RX_READY_SHIFT		2
-+#define		UDMA_INTR_RX_ABORT			0x00000002
-+#define		UDMA_INTR_RX_DONE			0x00000001
-+#define UDMA_INTR_SET		0x04
-+#define UDMA_INTR_CLEAR		0x08
-+#define UDMA_INTR_MASK_STATUS	0x0c
-+#define UDMA_INTR_MASK_SET	0x10
-+#define UDMA_INTR_MASK_CLEAR	0x14
-+
-+
-+#define UDMA_RX_INTERRUPTS ( \
-+	UDMA_INTR_RX_ERROR | \
-+	UDMA_INTR_RX_TIMEOUT | \
-+	UDMA_INTR_RX_READY_BUF0 | \
-+	UDMA_INTR_RX_READY_BUF1 | \
-+	UDMA_INTR_RX_READY_BUF2 | \
-+	UDMA_INTR_RX_READY_BUF3 | \
-+	UDMA_INTR_RX_READY_BUF4 | \
-+	UDMA_INTR_RX_READY_BUF5 | \
-+	UDMA_INTR_RX_READY_BUF6 | \
-+	UDMA_INTR_RX_READY_BUF7 | \
-+	UDMA_INTR_RX_ABORT | \
-+	UDMA_INTR_RX_DONE)
-+
-+#define UDMA_RX_ERR_INTERRUPTS ( \
-+	UDMA_INTR_RX_ERROR | \
-+	UDMA_INTR_RX_TIMEOUT | \
-+	UDMA_INTR_RX_ABORT | \
-+	UDMA_INTR_RX_DONE)
-+
-+#define UDMA_TX_INTERRUPTS ( \
-+	UDMA_INTR_TX_ABORT | \
-+	UDMA_INTR_TX_DONE)
-+
-+#define UDMA_IS_RX_INTERRUPT(status) ((status) & UDMA_RX_INTERRUPTS)
-+#define UDMA_IS_TX_INTERRUPT(status) ((status) & UDMA_TX_INTERRUPTS)
-+
-+
-+/* Current devices have 8 sets of RX buffer registers */
-+#define UDMA_RX_BUFS_COUNT	8
-+#define UDMA_RX_BUFS_REG_OFFSET (UDMA_RX_BUF1_PTR_LO - UDMA_RX_BUF0_PTR_LO)
-+#define UDMA_RX_BUFx_PTR_LO(x)	(UDMA_RX_BUF0_PTR_LO + \
-+				 ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+#define UDMA_RX_BUFx_PTR_HI(x)	(UDMA_RX_BUF0_PTR_HI + \
-+				 ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+#define UDMA_RX_BUFx_STATUS(x)	(UDMA_RX_BUF0_STATUS + \
-+				 ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+#define UDMA_RX_BUFx_DATA_LEN(x) (UDMA_RX_BUF0_DATA_LEN + \
-+				  ((x) * UDMA_RX_BUFS_REG_OFFSET))
-+
-+/* Current devices have 2 sets of TX buffer registers */
-+#define UDMA_TX_BUFS_COUNT	2
-+#define UDMA_TX_BUFS_REG_OFFSET (UDMA_TX_BUF1_PTR_LO - UDMA_TX_BUF0_PTR_LO)
-+#define UDMA_TX_BUFx_PTR_LO(x)	(UDMA_TX_BUF0_PTR_LO + \
-+				 ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_PTR_HI(x)	(UDMA_TX_BUF0_PTR_HI + \
-+				 ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_STATUS(x)	(UDMA_TX_BUF0_STATUS + \
-+				 ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_DATA_LEN(x) (UDMA_TX_BUF0_DATA_LEN + \
-+				  ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#define UDMA_TX_BUFx_DATA_SENT(x) (UDMA_TX_BUF0_DATA_SENT + \
-+				   ((x) * UDMA_TX_BUFS_REG_OFFSET))
-+#endif /* __BCM7271_UART_H__ */
--- 
-2.17.1
+Anastasia Kovaleva (2):
+      scsi: target: core: Change ASCQ for residual write
+      scsi: target: core: Signal WRITE residuals
+
+Andrea Parri (Microsoft) (3):
+      scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()
+      scsi: storvsc: Resolve data race in storvsc_probe()
+      scsi: storvsc: Fix max_outstanding_req_per_channel for Win8 and newer
+
+Arnd Bergmann (1):
+      scsi: megaraid_sas: Fix MEGASAS_IOC_FIRMWARE regression
+
+Avri Altman (1):
+      scsi: ufs: A tad optimization in query upiu trace
+
+Bean Huo (15):
+      scsi: ufs: Cleanup WB buffer flush toggle implementation
+      scsi: ufs: Group UFS WB related flags in struct ufs_dev_info
+      scsi: ufs: Remove two WB related fields from struct ufs_dev_info
+      scsi: ufs: Update comment in the function ufshcd_wb_probe()
+      scsi: ufs: docs: ABI: Add wb_on documentation for new entry wb_on
+      scsi: ufs: Add "wb_on" sysfs node to control WB on/off
+      scsi: ufs: Delete redundant if statement in ufshcd_intr()
+      scsi: ufs: Remove unnecessary devm_kfree()
+      scsi: ufs: Replace sprintf and snprintf with sysfs_emit
+      scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
+      scsi: ufs: Distinguish between TM request UPIU and response UPIU in TM UPIU trace
+      scsi: ufs: Distinguish between query REQ and query RSP in query trace
+      scsi: ufs: Don't call trace_ufshcd_upiu() in case trace poit is disabled
+      scsi: ufs: Use __print_symbolic() for UFS trace string print
+      scsi: ufs: Remove stringize operator '#' restriction
+
+Bhavesh Jashnani (1):
+      scsi: pm80xx: Simultaneous poll for all FW readiness
+
+Bikash Hazarika (1):
+      scsi: qla2xxx: Wait for ABTS response on I/O timeouts for NVMe
+
+Bjorn Helgaas (2):
+      scsi: lpfc: Fix 'physical' typos
+      scsi: message: fusion: Fix 'physical' typos
+
+Brian King (1):
+      scsi: ibmvfc: Set default timeout to avoid crash during migration
+
+Can Guo (7):
+      scsi: ufs: Give clk scaling min gear a value
+      Revert "Make sure clk scaling happens only when HBA is runtime ACTIVE"
+      scsi: ufs: Refactor ufshcd_init/exit_clk_scaling/gating()
+      scsi: ufs: Protect some contexts from unexpected clock scaling
+      scsi: ufs: Protect PM ops and err_handler from user access through sysfs
+      scsi: ufs: Fix a possible NULL pointer issue
+      scsi: ufs: Correct the LUN used in eh_device_reset_handler() callback
+
+Christophe JAILLET (1):
+      scsi: pm80xx: Switch from 'pci_' to 'dma_' API
+
+Colin Ian King (3):
+      scsi: ibmvfc: Fix spelling mistake "succeded" -> "succeeded"
+      scsi: pm80xx: Clean up indentation of a code block
+      scsi: mpt3sas: Fix spelling mistake in Kconfig "compatiblity" -> "compatibility"
+
+Dan Carpenter (3):
+      scsi: lpfc: Fix ancient double free
+      scsi: qla2xxx: Fix some memory corruption
+      scsi: qla2xxx: Remove unnecessary NULL check
+
+Dinghao Liu (2):
+      scsi: fnic: Fix memleak in vnic_dev_init_devcmd2
+      scsi: scsi_debug: Fix memleak in scsi_debug_init()
+
+Enzo Matsumiya (1):
+      scsi: qla2xxx: Fix description for parameter ql2xenforce_iocb_limit
+
+Eric Curtin (1):
+      scsi: lpfc: Fix kerneldoc inconsistency in lpfc_sli4_dump_page_a0()
+
+Ewan D. Milne (1):
+      scsi: sd: Suppress spurious errors when WRITE SAME is being disabled
+
+Hannes Reinecke (36):
+      scsi: ncr53c8xx: Fix typos
+      scsi: ncr53c8xx: Use SAM status values
+      scsi: advansys: Kill driver-defined status byte accessors
+      scsi: qla2xxx: fc_remote_port_chkready() returns a SCSI result value
+      scsi: storvsc: Return DID_ERROR for invalid commands
+      scsi: ips: Use correct command completion on error
+      scsi: wd33c93: Use SCSI status
+      scsi: esp_scsi: Do not set SCSI message byte
+      scsi: esp_scsi: Use host byte as last argument to esp_cmd_is_done()
+      scsi: core: Add 'set_status_byte()' accessor
+      scsi: dpt_i2o: Use DID_ERROR instead of INITIATOR_ERROR message
+      scsi: mac53c94: Do not set invalid command result
+      scsi: atp870u: Use standard definitions
+      scsi: ufs: ufshcd: Do not set COMMAND_COMPLETE
+      scsi: scsi_debug: Do not set COMMAND_COMPLETE
+      scsi: initio: Drop internal SCSI message definition
+      scsi: dc395x: Drop internal SCSI message definitions
+      scsi: aic7xxx: aic79xx: Drop internal SCSI message definition
+      scsi: nsp_cs: Drop internal SCSI message definition
+      scsi: stex: Do not set COMMAND_COMPLETE
+      scsi: hpsa: Do not set COMMAND_COMPLETE
+      scsi: aacraid: Avoid setting message byte on completion
+      scsi: zfcp: Do not set COMMAND_COMPLETE
+      scsi: qla4xxx: Use standard SAM status definitions
+      scsi: dc395: Drop private SAM status code definitions
+      scsi: nsp32: Fixup status handling
+      scsi: acornscsi: Use standard defines
+      scsi: bfa: Drop driver-defined SCSI status codes
+      scsi: aic7xxx: aic79xx: Remove driver-defined SAM status definitions
+      scsi: aic7xxx: aic79xx: Kill pointless forward declarations
+      scsi: aic7xxx: aic79xx: Whitespace cleanup
+      scsi: atp870u: Whitespace cleanup
+      scsi: 3w-sas: Whitespace cleanup
+      scsi: 3w-9xxx: Whitespace cleanup
+      scsi: 3w-xxxx: Whitespace cleanup
+      scsi: Drop gdth driver
+
+Jaegeuk Kim (3):
+      scsi: ufs: WB is only available on LUN #0 to #7
+      scsi: ufs: Fix tm request when non-fatal error happens
+      scsi: ufs: Fix livelock of ufshcd_clear_ua_wluns()
+
+James Smart (15):
+      scsi: lpfc: Update lpfc version to 12.8.0.7
+      scsi: lpfc: Enhancements to LOG_TRACE_EVENT for better readability
+      scsi: lpfc: Implement health checking when aborting I/O
+      scsi: lpfc: Fix crash when nvmet transport calls host_release
+      scsi: lpfc: Fix vport create logging
+      scsi: lpfc: Fix NVMe recovery after mailbox timeout
+      scsi: lpfc: Fix target reset failing
+      scsi: lpfc: Fix error log messages being logged following SCSI task mgnt
+      scsi: lpfc: Prevent duplicate requests to unregister with cpuhp framework
+      scsi: lpfc: Fix FW reset action if I/Os are outstanding
+      scsi: lpfc: Use the nvme-fc transport supplied timeout for LS requests
+      scsi: lpfc: Fix crash when a fabric node is released prematurely
+      scsi: lpfc: Refresh ndlp when a new PRLI is received in the PRLI issue state
+      scsi: lpfc: Fix auto sli_mode and its effect on CONFIG_PORT for SLI3
+      scsi: lpfc: Fix PLOGI S_ID of 0 on pt2pt config
+
+Javed Hasan (1):
+      scsi: libfc: Avoid invoking response handler twice if ep is already completed
+
+Jiapeng Zhong (2):
+      scsi: qla2xxx: Simplify the calculation of variables
+      scsi: qla2xxx: Assign boolean values to a bool variable
+
+John Garry (6):
+      scsi: hisi_sas: Don't check .nr_hw_queues in hisi_sas_task_prep()
+      scsi: hisi_sas: Remove deferred probe check in hisi_sas_v2_probe()
+      scsi: libsas: Remove notifier indirection
+      scsi: MAINTAINERS: Remove intel-linux-scu@intel.com for INTEL C600 SAS DRIVER
+      scsi: hisi_sas: Remove auto_affine_msi_experimental module_param
+      scsi: hisi_sas: Expose HW queues for v2 hw
+
+Kiwoong Kim (5):
+      scsi: ufs: ufs-exynos: Use UFSHCD_QUIRK_ALIGN_SG_WITH_PAGE_SIZE
+      scsi: ufs: Introduce a quirk to allow only page-aligned sg entries
+      scsi: ufs: ufs-exynos: Apply vendor-specific values for three timeouts
+      scsi: ufs: Add a quirk to permit overriding UniPro defaults
+      scsi: ufs: Relocate flush of exceptional event
+
+Lukas Bulwahn (3):
+      scsi: MAINTAINERS: Adjust to reflect gdth scsi driver removal
+      scsi: docs: ABI: sysfs-driver-ufs: Rectify table formatting
+      scsi: sd: Remove obsolete variable in sd_remove()
+
+Luo Jiaxing (3):
+      scsi: hisi_sas: Add trace FIFO debugfs support
+      scsi: hisi_sas: Flush workqueue in hisi_sas_v3_remove()
+      scsi: hisi_sas: Enable debugfs support by default
+
+Martin K. Petersen (1):
+      Revert "Revert "scsi: megaraid_sas: Added support for shared host tagset for cpuhotplug""
+
+Martin Wilck (1):
+      scsi: scsi_transport_srp: Don't block target in failfast state
+
+Muneendra Kumar (5):
+      scsi: lpfc: Add support for eh_should_retry_cmd()
+      scsi: scsi_transport_fc: Add store capability to rport port_state in sysfs
+      scsi: scsi_transport_fc: Add a new rport state FC_PORTSTATE_MARGINAL
+      scsi: core: No retries on abort success
+      scsi: core: Add a new error code DID_TRANSPORT_MARGINAL in scsi.h
+
+Nilesh Javali (2):
+      scsi: qla2xxx: Update version to 10.02.00.105-k
+      scsi: qedi: Correct max length of CHAP secret
+
+Pavel Begunkov (1):
+      scsi: target: file: Don't zero iter before iov_iter_bvec
+
+Quinn Tran (1):
+      scsi: qla2xxx: Fix mailbox Ch erroneous error
+
+Randy Dunlap (2):
+      scsi: ufs: Fix all Kconfig help text indentation
+      scsi: ufs: ufshcd-pltfrm depends on HAS_IOMEM
+
+René Rebe (1):
+      scsi: qla1280: Fix printk regression
+
+Roman Bolshakov (1):
+      scsi: target: core: Set residuals for 4Kn devices
+
+Saurav Kashyap (4):
+      scsi: qla2xxx: Enable NVMe CONF (BIT_7) when enabling SLER
+      scsi: qla2xxx: Move some messages from debug to normal log level
+      scsi: qla2xxx: Add error counters to debugfs node
+      scsi: qla2xxx: Implementation to get and manage host, target stats and initiator port
+
+Sebastian Andrzej Siewior (5):
+      scsi: target: core: Replace in_interrupt() usage in target_submit_cmd_map_sgls()
+      scsi: target: alua: Remove in_interrupt() usage in core_alua_check_nonop_delay()
+      scsi: target: iscsi: Redo iscsit_check_session_usage_count() return code
+      scsi: target: iscsi: Avoid in_interrupt() usage in iscsit_check_session_usage_count()
+      scsi: target: iscsi: Avoid in_interrupt() usage in iscsit_close_session()
+
+Sergey Shtylyov (3):
+      scsi: aha1542: Fix multi-line comment style
+      scsi: aha1542: Kill trailing whitespace
+      scsi: aha1542: Clarify 'struct ccb' comments
+
+Shin'ichiro Kawasaki (1):
+      scsi: target: tcmu: Fix use-after-free of se_cmd->priv
+
+Stanley Chu (6):
+      scsi: ufs: Clean up and refactor clk-scaling feature
+      scsi: ufs: Remove redundant null checking of devfreq instance
+      scsi: ufs: Refactor cancelling clkscaling works
+      scsi: ufs-mediatek: Enable UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
+      scsi: ufs: Relax the condition of UFSHCI_QUIRK_SKIP_MANUAL_WB_FLUSH_CTRL
+      scsi: ufs: Fix possible power drain during system suspend
+
+Tong Zhang (1):
+      scsi: lpfc: Add auto select on IRQ_POLL
+
+Tyrel Datwyler (27):
+      scsi: ibmvfc: Provide modules parameters for MQ settings
+      scsi: ibmvfc: Enable MQ and set reasonable defaults
+      scsi: ibmvfc: Purge SCSI channels after transport loss/reset
+      scsi: ibmvfc: Send Cancel MAD down each hw SCSI channel
+      scsi: ibmvfc: Add cancel mad initialization helper
+      scsi: ibmvfc: Register Sub-CRQ handles with VIOS during channel setup
+      scsi: ibmvfc: Send commands down HW Sub-CRQ when channelized
+      scsi: ibmvfc: Set and track hw queue in ibmvfc_event struct
+      scsi: ibmvfc: Advertise client support for using hardware channels
+      scsi: ibmvfc: Implement channel enquiry and setup commands
+      scsi: ibmvfc: Map/request irq and register Sub-CRQ interrupt handler
+      scsi: ibmvfc: Define Sub-CRQ interrupt handler routine
+      scsi: ibmvfc: Add handlers to drain and complete Sub-CRQ responses
+      scsi: ibmvfc: Add Sub-CRQ IRQ enable/disable routine
+      scsi: ibmvfc: Add alloc/dealloc routines for SCSI Sub-CRQ Channels
+      scsi: ibmvfc: Add Subordinate CRQ definitions
+      scsi: ibmvfc: Define hcall wrapper for registering a Sub-CRQ
+      scsi: ibmvfc: Add size parameter to ibmvfc_init_event_pool()
+      scsi: ibmvfc: Init/free event pool during queue allocation/free
+      scsi: ibmvfc: Move event pool init/free routines
+      scsi: ibmvfc: Add vhost fields and defaults for MQ enablement
+      scsi: ibmvfc: Relax locking around ibmvfc_queuecommand()
+      scsi: ibmvfc: Complete commands outside the host/queue lock
+      scsi: ibmvfc: Define per-queue state/list locks
+      scsi: ibmvfc: Make command event pool queue specific
+      scsi: ibmvfc: Define generic queue structure for CRQs
+      scsi: ibmvfc: Fix missing cast of ibmvfc_event pointer to u64 handle
+
+Valdis Kletnieks (1):
+      scsi: target: iscsi: Fix typo in comment
+
+Vishakha Channapattan (1):
+      scsi: pm80xx: Log SATA IOMB completion status on failure
+
+Viswas G (1):
+      scsi: pm80xx: Fix driver fatal dump failure
+
+YANG LI (4):
+      scsi: mpt3sas: Simplify bool comparison
+      scsi: lpfc: Simplify bool comparison
+      scsi: qedf: Simplify bool comparison
+      scsi: isci: Remove the unneeded variable "status"
+
+Yang Li (1):
+      scsi: qla2xxx: Remove redundant NULL check
+
+Ziqi Chen (2):
+      scsi: ufs-qcom: Fix ufs RST_n spec violation
+      scsi: ufs: core: Fix ufs clk specs violation
+
+akshatzen (4):
+      scsi: pm80xx: Fix missing tag_free in NVMD DATA req
+      scsi: pm80xx: Check main config table address
+      scsi: pm80xx: Check for fatal error
+      scsi: pm80xx: Do not busy wait in MPI init check
+
+dingsenjie (1):
+      scsi: megaraid_mbox: Fix spelling of 'allocated'
+
+kernel test robot (1):
+      scsi: megaraid: Fix ifnullfree.cocci warnings
+
+And the diffstat:
+
+ Documentation/ABI/testing/sysfs-driver-ufs         |   47 +-
+ Documentation/kbuild/makefiles.rst                 |    4 +-
+ Documentation/process/magic-number.rst             |    2 -
+ Documentation/scsi/libsas.rst                      |    9 +-
+ Documentation/scsi/scsi-parameters.rst             |    3 -
+ Documentation/userspace-api/ioctl/ioctl-number.rst |    1 -
+ MAINTAINERS                                        |    8 -
+ drivers/message/fusion/lsi/mpi_cnfg.h              |    2 +-
+ drivers/message/fusion/lsi/mpi_history.txt         |    2 +-
+ drivers/s390/scsi/zfcp_fc.h                        |    1 -
+ drivers/scsi/3w-9xxx.c                             |   56 +-
+ drivers/scsi/3w-9xxx.h                             |  156 +-
+ drivers/scsi/3w-sas.c                              |   52 +-
+ drivers/scsi/3w-sas.h                              |  118 +-
+ drivers/scsi/3w-xxxx.c                             |  251 +-
+ drivers/scsi/3w-xxxx.h                             |  199 +-
+ drivers/scsi/Kconfig                               |   16 +-
+ drivers/scsi/Makefile                              |    2 -
+ drivers/scsi/aacraid/aachba.c                      |  173 +-
+ drivers/scsi/advansys.c                            |   84 +-
+ drivers/scsi/aha1542.c                             |  133 +-
+ drivers/scsi/aha1542.h                             |   33 +-
+ drivers/scsi/aic7xxx/aic79xx.h                     |   36 +-
+ drivers/scsi/aic7xxx/aic79xx_core.c                |  257 +-
+ drivers/scsi/aic7xxx/aic79xx_osm.c                 |   20 +-
+ drivers/scsi/aic7xxx/aic79xx_osm.h                 |   37 +-
+ drivers/scsi/aic7xxx/aic79xx_osm_pci.c             |    6 +-
+ drivers/scsi/aic7xxx/aic79xx_proc.c                |   13 +-
+ drivers/scsi/aic7xxx/aic7xxx_93cx6.c               |    4 +-
+ drivers/scsi/aic7xxx/aic7xxx_core.c                |  263 +-
+ drivers/scsi/aic7xxx/aic7xxx_osm.c                 |   88 +-
+ drivers/scsi/aic7xxx/aic7xxx_osm.h                 |   39 +-
+ drivers/scsi/aic7xxx/aic7xxx_proc.c                |   15 +-
+ drivers/scsi/aic7xxx/aiclib.h                      |   15 -
+ drivers/scsi/aic7xxx/scsi_message.h                |   41 -
+ drivers/scsi/aic94xx/aic94xx_scb.c                 |   24 +-
+ drivers/scsi/arm/acornscsi.c                       |   14 +-
+ drivers/scsi/atp870u.c                             |  451 +-
+ drivers/scsi/atp870u.h                             |   14 +-
+ drivers/scsi/bfa/bfa_fc.h                          |   15 -
+ drivers/scsi/bfa/bfa_fcpim.c                       |    2 +-
+ drivers/scsi/bfa/bfad_im.c                         |    2 +-
+ drivers/scsi/dc395x.c                              |   28 +-
+ drivers/scsi/dc395x.h                              |   38 -
+ drivers/scsi/dpt_i2o.c                             |    2 +-
+ drivers/scsi/esp_scsi.c                            |   23 +-
+ drivers/scsi/fnic/vnic_dev.c                       |    8 +-
+ drivers/scsi/gdth.c                                | 4322 --------------------
+ drivers/scsi/gdth.h                                |  981 -----
+ drivers/scsi/gdth_ioctl.h                          |  251 --
+ drivers/scsi/gdth_proc.c                           |  586 ---
+ drivers/scsi/gdth_proc.h                           |   18 -
+ drivers/scsi/hisi_sas/Kconfig                      |    6 +
+ drivers/scsi/hisi_sas/hisi_sas.h                   |   22 +-
+ drivers/scsi/hisi_sas/hisi_sas_main.c              |   59 +-
+ drivers/scsi/hisi_sas/hisi_sas_v1_hw.c             |    7 +-
+ drivers/scsi/hisi_sas/hisi_sas_v2_hw.c             |   85 +-
+ drivers/scsi/hisi_sas/hisi_sas_v3_hw.c             |  264 +-
+ drivers/scsi/hpsa.c                                |    4 +-
+ drivers/scsi/ibmvscsi/ibmvfc.c                     | 1278 ++++--
+ drivers/scsi/ibmvscsi/ibmvfc.h                     |   91 +-
+ drivers/scsi/initio.c                              |   64 +-
+ drivers/scsi/initio.h                              |   25 -
+ drivers/scsi/ips.c                                 |    9 +-
+ drivers/scsi/isci/port.c                           |   11 +-
+ drivers/scsi/isci/request.c                        |    4 +-
+ drivers/scsi/libfc/fc_exch.c                       |   16 +-
+ drivers/scsi/libsas/sas_event.c                    |   27 +-
+ drivers/scsi/libsas/sas_init.c                     |   19 +-
+ drivers/scsi/libsas/sas_internal.h                 |    6 +-
+ drivers/scsi/lpfc/lpfc.h                           |    4 +-
+ drivers/scsi/lpfc/lpfc_attr.c                      |    9 +-
+ drivers/scsi/lpfc/lpfc_bsg.c                       |    4 +-
+ drivers/scsi/lpfc/lpfc_crtn.h                      |    6 +-
+ drivers/scsi/lpfc/lpfc_disc.h                      |   15 +-
+ drivers/scsi/lpfc/lpfc_els.c                       |   49 +-
+ drivers/scsi/lpfc/lpfc_hbadisc.c                   |   36 +-
+ drivers/scsi/lpfc/lpfc_init.c                      |  241 +-
+ drivers/scsi/lpfc/lpfc_mbox.c                      |    2 +-
+ drivers/scsi/lpfc/lpfc_nportdisc.c                 |   21 +-
+ drivers/scsi/lpfc/lpfc_nvme.c                      |   45 +-
+ drivers/scsi/lpfc/lpfc_nvmet.c                     |   33 +-
+ drivers/scsi/lpfc/lpfc_scsi.c                      |   59 +-
+ drivers/scsi/lpfc/lpfc_sli.c                       |  141 +-
+ drivers/scsi/lpfc/lpfc_version.h                   |    2 +-
+ drivers/scsi/lpfc/lpfc_vport.c                     |    2 +-
+ drivers/scsi/mac53c94.c                            |    1 -
+ drivers/scsi/megaraid/megaraid_mbox.c              |    2 +-
+ drivers/scsi/megaraid/megaraid_sas_base.c          |   45 +-
+ drivers/scsi/megaraid/megaraid_sas_fusion.c        |   32 +-
+ drivers/scsi/mpt3sas/Kconfig                       |    2 +-
+ drivers/scsi/mpt3sas/mpt3sas_base.c                |    4 +-
+ drivers/scsi/mvsas/mv_sas.c                        |   25 +-
+ drivers/scsi/ncr53c8xx.c                           |   83 +-
+ drivers/scsi/ncr53c8xx.h                           |   16 -
+ drivers/scsi/nsp32.c                               |    2 +-
+ drivers/scsi/pcmcia/nsp_cs.c                       |   12 +-
+ drivers/scsi/pcmcia/nsp_cs.h                       |   11 -
+ drivers/scsi/pm8001/pm8001_hwi.c                   |   69 +-
+ drivers/scsi/pm8001/pm8001_init.c                  |   20 +-
+ drivers/scsi/pm8001/pm8001_sas.c                   |   21 +-
+ drivers/scsi/pm8001/pm8001_sas.h                   |    2 +
+ drivers/scsi/pm8001/pm80xx_hwi.c                   |  280 +-
+ drivers/scsi/pm8001/pm80xx_hwi.h                   |   17 +-
+ drivers/scsi/qedf/qedf_main.c                      |    2 +-
+ drivers/scsi/qedi/qedi_main.c                      |    4 +-
+ drivers/scsi/qla1280.c                             |   12 +-
+ drivers/scsi/qla2xxx/qla_attr.c                    |    9 +
+ drivers/scsi/qla2xxx/qla_bsg.c                     |  342 ++
+ drivers/scsi/qla2xxx/qla_bsg.h                     |    5 +
+ drivers/scsi/qla2xxx/qla_dbg.c                     |    1 +
+ drivers/scsi/qla2xxx/qla_def.h                     |   83 +
+ drivers/scsi/qla2xxx/qla_dfs.c                     |   28 +
+ drivers/scsi/qla2xxx/qla_fw.h                      |   27 +-
+ drivers/scsi/qla2xxx/qla_gbl.h                     |   29 +
+ drivers/scsi/qla2xxx/qla_gs.c                      |    1 +
+ drivers/scsi/qla2xxx/qla_init.c                    |  245 +-
+ drivers/scsi/qla2xxx/qla_iocb.c                    |    8 +
+ drivers/scsi/qla2xxx/qla_isr.c                     |   87 +-
+ drivers/scsi/qla2xxx/qla_mbx.c                     |   18 +-
+ drivers/scsi/qla2xxx/qla_nvme.c                    |   93 +-
+ drivers/scsi/qla2xxx/qla_os.c                      |   29 +-
+ drivers/scsi/qla2xxx/qla_version.h                 |    4 +-
+ drivers/scsi/qla4xxx/ql4_fw.h                      |    1 -
+ drivers/scsi/qla4xxx/ql4_isr.c                     |    2 +-
+ drivers/scsi/scsi_debug.c                          |    7 +-
+ drivers/scsi/scsi_error.c                          |   23 +-
+ drivers/scsi/scsi_lib.c                            |    1 +
+ drivers/scsi/scsi_transport_fc.c                   |  118 +-
+ drivers/scsi/scsi_transport_srp.c                  |    9 +-
+ drivers/scsi/sd.c                                  |    6 +-
+ drivers/scsi/stex.c                                |   25 +-
+ drivers/scsi/storvsc_drv.c                         |   60 +-
+ drivers/scsi/ufs/Kconfig                           |   15 +-
+ drivers/scsi/ufs/Makefile                          |   13 +-
+ drivers/scsi/ufs/ufs-debugfs.c                     |   56 +
+ drivers/scsi/ufs/ufs-debugfs.h                     |   22 +
+ drivers/scsi/ufs/ufs-exynos.c                      |    9 +-
+ drivers/scsi/ufs/ufs-mediatek.c                    |    1 +
+ drivers/scsi/ufs/ufs-qcom.c                        |   18 +-
+ drivers/scsi/ufs/ufs-sysfs.c                       |  175 +-
+ drivers/scsi/ufs/ufs.h                             |   52 +-
+ drivers/scsi/ufs/ufshcd-crypto.c                   |    4 +-
+ drivers/scsi/ufs/ufshcd.c                          |  629 +--
+ drivers/scsi/ufs/ufshcd.h                          |   41 +-
+ drivers/scsi/wd33c93.c                             |    6 +-
+ drivers/target/iscsi/iscsi_target.c                |   20 +-
+ drivers/target/iscsi/iscsi_target.h                |    2 +-
+ drivers/target/iscsi/iscsi_target_erl0.c           |    2 +-
+ drivers/target/iscsi/iscsi_target_login.c          |    2 +-
+ drivers/target/iscsi/iscsi_target_util.c           |   11 +-
+ drivers/target/iscsi/iscsi_target_util.h           |    2 +-
+ drivers/target/target_core_alua.c                  |    2 -
+ drivers/target/target_core_file.c                  |    2 +-
+ drivers/target/target_core_transport.c             |   65 +-
+ drivers/target/target_core_user.c                  |   11 +-
+ include/scsi/libsas.h                              |    9 +-
+ include/scsi/scsi.h                                |    2 +
+ include/scsi/scsi_cmnd.h                           |    5 +
+ include/scsi/scsi_host.h                           |    6 +
+ include/scsi/scsi_transport_fc.h                   |    4 +-
+ include/target/target_core_base.h                  |    1 +
+ include/trace/events/ufs.h                         |  108 +-
+ 163 files changed, 5729 insertions(+), 9120 deletions(-)
+ delete mode 100644 drivers/scsi/gdth.c
+ delete mode 100644 drivers/scsi/gdth.h
+ delete mode 100644 drivers/scsi/gdth_ioctl.h
+ delete mode 100644 drivers/scsi/gdth_proc.c
+ delete mode 100644 drivers/scsi/gdth_proc.h
+ create mode 100644 drivers/scsi/ufs/ufs-debugfs.c
+ create mode 100644 drivers/scsi/ufs/ufs-debugfs.h
+
+James
+
 
