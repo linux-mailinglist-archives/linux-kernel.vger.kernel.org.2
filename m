@@ -2,174 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F13A31FF60
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:25:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB8131FF64
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbhBSTYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:24:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23768 "EHLO
+        id S229943AbhBST0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:26:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24170 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229658AbhBSTYm (ORCPT
+        by vger.kernel.org with ESMTP id S229840AbhBST0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:24:42 -0500
+        Fri, 19 Feb 2021 14:26:53 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613762595;
+        s=mimecast20190719; t=1613762727;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=fdCSAN64npUd+P1YDfJ63MqsRK7B7rJbfhaQ54M1yUc=;
-        b=UB1kTviubUmLmit1ExQoe6Ps1l/QqotAnFIrwA/4wyXXOafBwpSqGohS2uaZ21LALMYZy4
-        J2N+gSI/27XoLHCIcw/OlHgz797flJz26uFzknDWLgWhwqrw/0vbJu5vcTC+RYz15mg7+O
-        Oz2adYb5WxS1V/jQIr/i//BNQriWDsI=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-341-EO6wkSiQPnyhOTc6r1Uwdw-1; Fri, 19 Feb 2021 14:23:14 -0500
-X-MC-Unique: EO6wkSiQPnyhOTc6r1Uwdw-1
-Received: by mail-qk1-f197.google.com with SMTP id h126so942556qkd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:23:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fdCSAN64npUd+P1YDfJ63MqsRK7B7rJbfhaQ54M1yUc=;
-        b=LgSpkzCpQIdna9yK0P9R3Yr3pZYbyvZyMDYQzmPDEb+XW4Lh+6ASLP0EywmKGttYkf
-         IvJJcyV514a1FeOCLmOOxt2w+6zk6931CyQIQgWF/EQsS2m7tagyapadta7UfGEkFTqX
-         TTxfdYn1vg/lbsY3e+zy0/Y4eO0co7gjLF7I2f5j3fOZlMydpxD5621N+munssnHxH2X
-         rWpzFD/LA/RXC7cN5/AsS6cz1qJnC7l1M7LpCgVfz2cEyJ7/8hFX/K9HZdZYN9NYqjKL
-         CRFgXHVI0unZfXBDK20EavnsFibL63mkcqQfuG650V2zc7A+NMxKHxWuwiLFOielTRRc
-         t4bA==
-X-Gm-Message-State: AOAM532M7eXgsW2fLYtAEbkl7ooXA1X24l36+e3LmL7NUxba4P8xuIsh
-        L8MexCQqAjD+zphveFOzaYU4SbNoENusRjhQzmgOtSmF/N6mrrHSo3QOnL184PvHL+N/1qwkHeH
-        3N4EeT89kBg7Gu4RQvEB7db5B
-X-Received: by 2002:a05:622a:354:: with SMTP id r20mr10488491qtw.99.1613762593477;
-        Fri, 19 Feb 2021 11:23:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwlUOJtda3AQE2S/fUnpHXarn/y+dc9GJx5VJzTxxMAuX0PQH2qaOfwl33zpotPFLv912Hqlg==
-X-Received: by 2002:a05:622a:354:: with SMTP id r20mr10488454qtw.99.1613762593193;
-        Fri, 19 Feb 2021 11:23:13 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-25-174-95-95-253.dsl.bell.ca. [174.95.95.253])
-        by smtp.gmail.com with ESMTPSA id l24sm5994647qtj.50.2021.02.19.11.23.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 11:23:12 -0800 (PST)
-Date:   Fri, 19 Feb 2021 14:23:10 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <20210219192310.GI6669@xz-x1>
-References: <20210217154844.12392-1-david@redhat.com>
- <20210218225904.GB6669@xz-x1>
- <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
- <20210219163157.GF6669@xz-x1>
- <41444eb8-8bb8-8d5b-4cec-be7fa7530d0e@redhat.com>
+        bh=W0XtyFoYPd45tbMHV7KimVZYYJ5vrSX8aHkAnlZNZqc=;
+        b=UdoOLbGYfzbLYdS/ziLp1ItHjw6iTSTiQRx223rHD93rfifh6hvrhE0+rLAQzr237875jn
+        Ps1vbH1eOWYTT+3GWB60jSmtizMLHp6XXNPGTDRVKI5SFTMKPwYYxOZJZtX/+AwYQw+dGz
+        n65MNBxzTV/g6qA5mPXt9Jw0pUVwzfg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-nWc5juIFPaOU-fRjooDamw-1; Fri, 19 Feb 2021 14:25:25 -0500
+X-MC-Unique: nWc5juIFPaOU-fRjooDamw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 846F28799EB;
+        Fri, 19 Feb 2021 19:25:22 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 096186A035;
+        Fri, 19 Feb 2021 19:25:14 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 14:25:12 -0500
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Florian Westphal <fw@strlen.de>
+Cc:     Phil Sutter <phil@nwl.cc>, LKML <linux-kernel@vger.kernel.org>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
+        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
+ events
+Message-ID: <20210219192512.GR3141668@madcap2.tricolour.ca>
+References: <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
+ <20210211202628.GP2015948@madcap2.tricolour.ca>
+ <20210211220930.GC2766@breakpoint.cc>
+ <20210217234131.GN3141668@madcap2.tricolour.ca>
+ <20210218082207.GJ2766@breakpoint.cc>
+ <20210218124211.GO3141668@madcap2.tricolour.ca>
+ <20210218125248.GB22944@breakpoint.cc>
+ <20210218212001.GQ3141668@madcap2.tricolour.ca>
+ <20210218224200.GF22944@breakpoint.cc>
+ <20210219062651.GR2015948@madcap2.tricolour.ca>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <41444eb8-8bb8-8d5b-4cec-be7fa7530d0e@redhat.com>
+In-Reply-To: <20210219062651.GR2015948@madcap2.tricolour.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 06:13:47PM +0100, David Hildenbrand wrote:
-> On 19.02.21 17:31, Peter Xu wrote:
-> > On Fri, Feb 19, 2021 at 09:20:16AM +0100, David Hildenbrand wrote:
-> > > On 18.02.21 23:59, Peter Xu wrote:
-> > > > Hi, David,
-> > > > 
-> > > > On Wed, Feb 17, 2021 at 04:48:44PM +0100, David Hildenbrand wrote:
-> > > > > When we manage sparse memory mappings dynamically in user space - also
-> > > > > sometimes involving MADV_NORESERVE - we want to dynamically populate/
-> > > > > discard memory inside such a sparse memory region. Example users are
-> > > > > hypervisors (especially implementing memory ballooning or similar
-> > > > > technologies like virtio-mem) and memory allocators. In addition, we want
-> > > > > to fail in a nice way if populating does not succeed because we are out of
-> > > > > backend memory (which can happen easily with file-based mappings,
-> > > > > especially tmpfs and hugetlbfs).
-
-[1]
-
-> > E.g., can we simply ask the kernel "how much memory this process can still
-> > allocate", then get a number out of it?  I'm not sure whether it can be done
-> 
-> Anything like that is completely racy and unreliable.
-
-The failure path won't be racy imho - If we can detect current process doesn't
-have enough memory budget, it'll be more efficient to fail even before trying
-to populate any memory and then drop part of them again.
-
-But I see your point - indeed it's good to guarantee the guest won't crash at
-any point of further guest side memory access.
-
-Another question: can the user actually specify arbitrary max-length for the
-virtio-mem device (which decides the maximum memory this device could possibly
-consume)?  I thought we should check that first before realizing the device and
-we really shouldn't fail any guest memory access if that check passed. Feel
-free to correct me..
-
-[...]
-
+On 2021-02-19 01:26, Richard Guy Briggs wrote:
+> On 2021-02-18 23:42, Florian Westphal wrote:
+> > Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > > If they appear in a batch tehy will be ignored, if the batch consists of
+> > > > such non-modifying ops only then nf_tables_commit() returns early
+> > > > because the transaction list is empty (nothing to do/change).
+> > > 
+> > > Ok, one little inconvenient question: what about GETOBJ_RESET?  That
+> > > looks like a hybrid that modifies kernel table counters and reports
+> > > synchronously.  That could be a special case call in
+> > > nf_tables_dump_obj() and nf_tables_getobj().  Will that cause a storm
+> > > per commit?
 > > 
-> > I think there's a special case if QEMU fork() with a MAP_PRIVATE hugetlbfs
-> > mapping, that could cause the memory accouting to be delayed until COW happens.
+> > No, since they can't be part of a commit (they don't implement the
+> > 'call_batch' function).
 > 
-> That would be kind of weird. I'd assume the reservation gets properly done
-> during fork() - just like for VM_ACCOUNT.
+> Ok, good, so they should be safe (but still needs the gfp param to
+> audit_log_nfcfg() for atomic alloc in that obj reset callback).
 
-AFAIK VM_ACCOUNT is never applied for hugetlbfs.  Neither do I know any
-accounting done for hugetlbfs during fork(), if not taking the pinned pages
-into account - that is definitely a special case.
+I just noticed that nft_quota_obj_eval() misses logging NFT_MSG_NEWOBJ
+in nf_tables_commit(), so that looks like it should be added.
 
-> 
-> > However that's definitely not the case for QEMU since QEMU won't work at all as
-> > late as that point.
-> > 
-> > IOW, for hugetlbfs I don't know why we need to populate the pages at all if we
-> > simply want to know "whether we do still have enough space"..  And IIUC 2)
-> > above is the major issue you'd like to solve too.
-> 
-> To avoid page faults at runtime on access I think. Reservation <=
-> Preallocation.
+> - RGB
 
-Yes.  Besides my above question regarding max-length of virtio-mem device: we
-care most about private mappings of hugetlbfs/shmem here, am I right?
+- RGB
 
-I'm thinking why we'd need MAP_PRIVATE of these at all for VM context.
-
-It's definitely not the major scenario when they're used shared with either ovs
-or any non-qemu process, because then MAP_SHARED is a must. Then if we use them
-privately, can we simply always make it MAP_SHARED?
-
-IMHO MAP_PRIVATE could be helpful only if we'd like the COW scemantics, so it
-means when there're something already, we'd like to keep that snapshot but
-trigger page copy when writes.  But is that the case for a VM memory backend
-which should be always zeroed by default?  Then, I'm wondering can we simply
-avoid bothering with VM_PRIVATE on these file-backed memory at all - then we'll
-naturally get fallocate() on hand, which seems already working for us.
-
-Thanks,
-
--- 
-Peter Xu
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
