@@ -2,165 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F3F31F94C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:17:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAFB31F95B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbhBSMRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 07:17:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhBSMRb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 07:17:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70E7464E4B;
-        Fri, 19 Feb 2021 12:16:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613737010;
-        bh=ef9ld/jUIIITmvNh9Iwq7dWVJqG4UovRPT/9I/w+vzo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Amtc2gmUW+ggX56i8J7yZ23KQBjPdd4/Pwy5DVkrNzQBWHui0E6Cv+wxCC9WQapgt
-         Rwwux56cpSBaHb0dApsZTTPLr5xvFtkYyBt6dSahgtyy5tpYlicasnIBBV337Q8cKi
-         cyvC2Edar7ea7mfJNK0c+9PIaLDUumgpQ0KQU/E6C7CGrz69bW2fPOKoZzzE5ktOyz
-         4RD1IwGIId+ypWDB3bpf2NgkJa1d/k2F905yAwpiJ06QnC061MpNtc9VeJ66TQUamr
-         7ikg+IcyVm2nV4t9uuMvqF339NYQdcXZI9J4Y/NkoXvA3iBQI9BgVDRsC7bZMPFS7V
-         7URBFSnPOwOYw==
-Date:   Fri, 19 Feb 2021 13:16:47 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Yunfeng Ye <yeyunfeng@huawei.com>
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-Subject: Re: nohz: Update tick instead of restarting tick in
- tick_nohz_idle_exit()
-Message-ID: <20210219121647.GB51281@lothringen>
-References: <66014fea-7b84-358b-137d-d15190241528@huawei.com>
+        id S230288AbhBSMVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 07:21:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230184AbhBSMV2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 07:21:28 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA409C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 04:20:48 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id o7so4345815ils.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 04:20:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EEb1UJDvgCRWaCo3f0yPJzWzHS0WltOW5+cgoN1g8l0=;
+        b=Rsn1RPwp1k60poOFHRWlw9M0/3JIL7NmKup0Ycj2Y4wQ5N9BYDy4RrtoLGbCOdKSBn
+         ofgbLOTOCrbuFYub/HgUpaduHvVVUg05A6aUTdOwdwLtsi8qNOo5TGn6FhiYdAwutOgE
+         CJF0ECtGRrWb7NyqjaOhFfmnFZJI4pbF/HiRbkrhrvnpXM3fbzP5bq+7KQ59NFZ2nGo/
+         YbjgH2n8wIm1czRnP5vawyWPAyRRqgncy9Kf9ubY89bXf+3yGfRrDWt6Pozm6I2Kq7kA
+         fawGTEk14rTx+74R1c2/1H1lftOFttqJeianooi/h2DhgOXnaNCD0kB9UC13kiWGECqy
+         IoEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EEb1UJDvgCRWaCo3f0yPJzWzHS0WltOW5+cgoN1g8l0=;
+        b=GA/QPCOEyJHNiAqY+Z6fza0JsAn5yZ8QqzPwI1jCpfpJRyl8fwVs490gPZxLjxJN/y
+         M5XGMEd8Ml4MfA2K0vn3dqhAmlAl3WP7JGtyCBSVQJcXBQyBUIkY2TVoiukKEyVy0sMX
+         qzO8MMxkvA6HCw6vLH46bgMcRqWlUbtBrbDexh2CpyxFPpBn/g4RRgyKeTYJDOKIFQRo
+         NDyZ7u/pF2TLOWWSFfi7DLNQ/5uPX7W3rQvElJOV/LmGHy5nV/8mkiYIRKn0s+Hk59QT
+         cJfqdEbqqMX/c56sfzvJ/Pg2EZUipCynUEaxtXxdnZSWVNJIlQjgUGdHmfycPglM4c4z
+         TSPA==
+X-Gm-Message-State: AOAM532pPf4uoXgnOHqAaCLrdS7lZ2POWowJ9uFa3vZEvcuNAI/jqNv3
+        49Bt/SdHJy5MgPSLHAEBS9cOAtPF3GMnalSljtA=
+X-Google-Smtp-Source: ABdhPJw5G19nuIDpQC28jqcYTsaptWnbhNgKMn4wtxZ1408VLOIBY66rOT/CjgJZRXEIEMrWCtgMmmvtLxmRvIXQVNE=
+X-Received: by 2002:a05:6e02:20ca:: with SMTP id 10mr3793892ilq.14.1613737248080;
+ Fri, 19 Feb 2021 04:20:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <66014fea-7b84-358b-137d-d15190241528@huawei.com>
+References: <20210219095835.9687-1-selvakumar16197@gmail.com> <20210219121219.GZ2087@kadam>
+In-Reply-To: <20210219121219.GZ2087@kadam>
+From:   Selvakumar E <selvakumar16197@gmail.com>
+Date:   Fri, 19 Feb 2021 17:50:37 +0530
+Message-ID: <CAD=cR89QCJ_6a20Pn9f2V6Zc5dTx86MbdwyrokjHbg70KmC1qw@mail.gmail.com>
+Subject: Re: [PATCH] staging: vt6656: fixed a CamelCase coding style issue.
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
+        tvboxspy@gmail.com, oscar.carter@gmx.com,
+        devel@driverdev.osuosl.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 23, 2020 at 09:22:08PM +0800, Yunfeng Ye wrote:
-> In realtime scenarios, the "nohz_full" parameter is configured. Tick
-> interference is not expected when there is only one realtime thread.
-> But when the idle thread is switched to the realtime thread, the tick
-> timer is restarted always.
-> 
-> So on the nohz full mode, it is unnecessary to restart the tick timer
-> when there is only one realtime thread. Adding can_stop_full_tick()
-> before restarting the tick, if it return true, keep tick stopped.
-> 
-> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
+Hi Dan Carpenter
 
-Hi,
+Thanks for the feedback, I'll work on the suggestion and come back with a fix.
 
-After reworking the codebase a bit, I've edited your patch and
-changelog and then queued it. I'll post it in a series after the
-merge window. See the result:
+Regards
+Selvakumar Elangovan
 
----
-From: Yunfeng Ye <yeyunfeng@huawei.com>
-Date: Tue, 9 Feb 2021 23:59:19 +0100
-Subject: [PATCH] tick/nohz: Conditionally restart tick on idle exit
-
-In nohz_full mode, switching from idle to a task will unconditionally
-issue a tick restart. If the task is alone in the runqueue or is the
-highest priority, the tick will fire once then eventually stop. But that
-alone is still undesired noise.
-
-Therefore, only restart the tick on idle exit when it's strictly
-necessary.
-
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/time/tick-sched.c | 44 ++++++++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 17 deletions(-)
-
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 3e272490fe2e..79796286a4ba 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -923,24 +923,28 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
- 	tick_nohz_restart(ts, now);
- }
- 
--static void tick_nohz_full_update_tick(struct tick_sched *ts)
-+static void __tick_nohz_full_update_tick(struct tick_sched *ts,
-+					 ktime_t now)
- {
- #ifdef CONFIG_NO_HZ_FULL
--	int cpu;
-+	int cpu = smp_processor_id();
- 
-+	if (can_stop_full_tick(cpu, ts))
-+		tick_nohz_stop_sched_tick(ts, cpu);
-+	else if (ts->tick_stopped)
-+		tick_nohz_restart_sched_tick(ts, now);
-+#endif
-+}
-+
-+static void tick_nohz_full_update_tick(struct tick_sched *ts)
-+{
- 	if (!tick_nohz_full_this_cpu())
- 		return;
- 
- 	if (!ts->tick_stopped && ts->nohz_mode == NOHZ_MODE_INACTIVE)
- 		return;
- 
--	cpu = smp_processor_id();
--
--	if (can_stop_full_tick(cpu, ts))
--		tick_nohz_stop_sched_tick(ts, cpu);
--	else if (ts->tick_stopped)
--		tick_nohz_restart_sched_tick(ts, ktime_get());
--#endif
-+	__tick_nohz_full_update_tick(ts, ktime_get());
- }
- 
- static bool can_stop_idle_tick(int cpu, struct tick_sched *ts)
-@@ -1210,18 +1214,24 @@ static void tick_nohz_account_idle_ticks(struct tick_sched *ts)
- #endif
- }
- 
--static void __tick_nohz_idle_restart_tick(struct tick_sched *ts, ktime_t now)
-+void tick_nohz_idle_restart_tick(void)
- {
--	tick_nohz_restart_sched_tick(ts, now);
--	tick_nohz_account_idle_ticks(ts);
-+	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
-+
-+	if (ts->tick_stopped) {
-+		tick_nohz_restart_sched_tick(ts, ktime_get());
-+		tick_nohz_account_idle_ticks(ts);
-+	}
- }
- 
--void tick_nohz_idle_restart_tick(void)
-+static void tick_nohz_idle_update_tick(struct tick_sched *ts, ktime_t now)
- {
--	struct tick_sched *ts = this_cpu_ptr(&tick_cpu_sched);
-+	if (tick_nohz_full_this_cpu())
-+		__tick_nohz_full_update_tick(ts, now);
-+	else
-+		tick_nohz_restart_sched_tick(ts, now);
- 
--	if (ts->tick_stopped)
--		__tick_nohz_idle_restart_tick(ts, ktime_get());
-+	tick_nohz_account_idle_ticks(ts);
- }
- 
- /**
-@@ -1253,7 +1263,7 @@ void tick_nohz_idle_exit(void)
- 		tick_nohz_stop_idle(ts, now);
- 
- 	if (tick_stopped)
--		__tick_nohz_idle_restart_tick(ts, now);
-+		tick_nohz_idle_update_tick(ts, now);
- 
- 	local_irq_enable();
- }
--- 
-2.25.1
-
+On Fri, Feb 19, 2021 at 5:42 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> You're not asking the right questions.
+>
+> On Fri, Feb 19, 2021 at 03:28:35PM +0530, Selvakumar Elangovan wrote:
+> > This patch renames CamelCase macros uVar and uModulo into u_var and
+> > u_module in device.h
+> >
+>
+> Is "u_var" a good name?  What does the "u_" even mean?
+>
+> > This issue was reported by checkpatch.pl
+> >
+> > Signed-off-by: Selvakumar Elangovan <selvakumar16197@gmail.com>
+> > ---
+> >  drivers/staging/vt6656/device.h | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/staging/vt6656/device.h b/drivers/staging/vt6656/device.h
+> > index 947530fefe94..6615d356f74a 100644
+> > --- a/drivers/staging/vt6656/device.h
+> > +++ b/drivers/staging/vt6656/device.h
+> > @@ -385,11 +385,11 @@ struct vnt_private {
+> >       struct ieee80211_low_level_stats low_stats;
+> >  };
+> >
+> > -#define ADD_ONE_WITH_WRAP_AROUND(uVar, uModulo) {    \
+> > -     if ((uVar) >= ((uModulo) - 1))                  \
+> > -             (uVar) = 0;                             \
+> > +#define ADD_ONE_WITH_WRAP_AROUND(u_var, u_modulo) {  \
+> > +     if ((u_var) >= ((u_modulo) - 1))                        \
+>
+> The \ is not aligned any more.
+>
+> > +             (u_var) = 0;                            \
+> >       else                                            \
+> > -             (uVar)++;                               \
+> > +             (u_var)++;                              \
+> >  }
+>
+>
+> This macro is rubbish.  How does the wrap around even make sense?
+> I hope that if you review the code a bit I think you will find that the
+> wrap around is impossible?  Just fix the two callers and delete this
+> macro.
+>
+> regards,
+> dan carpenter
+>
