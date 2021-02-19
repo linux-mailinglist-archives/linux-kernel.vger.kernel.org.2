@@ -2,172 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8469D31FC7F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:59:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6404931FC9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:02:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhBSP6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhBSP6m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:58:42 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47800C061756;
-        Fri, 19 Feb 2021 07:58:00 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id a132so7543406wmc.0;
-        Fri, 19 Feb 2021 07:58:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qMZ4T/DWgmeoiwup80mZoXSNYYDssI+UdcXH8JaCWFU=;
-        b=gvKI2fsce65EeRVFAWAo8HjQN6wcirq5oyrYGiOhmQRNbbyqgvXPQ1WTJxGqlq/QQL
-         SkPpDKcERkv3OV8sVlY78p0zTuKWbqS+pv9f0k1FyEmExvZljCMQX95T5AoHC4XsFQCP
-         RWSyKguizmQIoIofZJbi/MMIC6AWkMGzAJf5dwUn4TEhlxQjR9Dyy5bOy8zvDrRFkPAB
-         FH/I3APeuqxe3DEXgMxImDGwvOCQ6dLQNdbzBYwOnD84Ci2lBrM2hCEfwQZv3xx0v/ah
-         9EB3t5tVgj3Ty/PjT5THSd1cuhpCrTJEMf19INPyJO/s9GhgbCRLqtHG5tS2nPHWtSz1
-         dGHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qMZ4T/DWgmeoiwup80mZoXSNYYDssI+UdcXH8JaCWFU=;
-        b=HkBTRxA/dEsmE8xlJXm01qpYjMG1f1p/+Njng11Ok0uKgTwKEvjG4xlnDGmFxA+MwH
-         w4k0+tFHA3HuT4kRjtJLcfLU4BshFE8ThMYVmE8mmnQL/YUKIH8ZkYPbVTpg8eFzJOIQ
-         F/YPwMXDsSDCS31KKa3swE3QnCr6tln4DZdQvJ/uP6p8DEdJQPX1gGaNmGuKHW+ASrc5
-         uA7n9Icy0m5O/IbuZKNV8IV5YGbQACoWLOT00Ed0yZ55qNSfvGAPNZZO279mvjKyET4u
-         N/I9nN5KrAhMSBPlipPZTtqT+cDTvhlcTdiXSmLvDG29/MshbxTf9dNKVgosmdmXqYaE
-         yUxw==
-X-Gm-Message-State: AOAM530qcE8u0oWSVCnMoP3qQhUkuAxvxPxjSk1OrKygG06BsoTXExsN
-        7ELoiYcHrTBmLsVgRbdtuL7xEopOu4HzMyjPIG9QMII2yN4=
-X-Google-Smtp-Source: ABdhPJx0b9vc8OK17qJny+577I/OC7tIUQWMCjpVdGoSm/+OGT5pJYnoBA03KMmt6U3TRcT9OT9dhTJVxfSI8t34PKw=
-X-Received: by 2002:a05:600c:21ca:: with SMTP id x10mr9067662wmj.94.1613750278833;
- Fri, 19 Feb 2021 07:57:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210216200909.19039-1-jonathan@marek.ca> <CAF6AEGv53nnzqMgTfSA6t2YpHx1dDW8UqnH9Gw0w3p8bf0mTLw@mail.gmail.com>
- <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org> <20210217190820.GA2229@jcrouse1-lnx.qualcomm.com>
- <CAF6AEGsHws23ozeJ8G23LFQ8J=CVVrx5xvkSgBuE_uSwT4YurQ@mail.gmail.com>
- <74d1277e-295f-0996-91c3-05cfce8d3a0e@marek.ca> <e4b62857-bd4d-cca6-0d6b-b9cc960b52a2@codeaurora.org>
- <CAF6AEGsWCrkOgMVxnx53k8b_o7xy3KWv9VaNRoY44+4GfXtWdg@mail.gmail.com> <757b557a-b5f6-6018-caa4-34bffb1b60b7@codeaurora.org>
-In-Reply-To: <757b557a-b5f6-6018-caa4-34bffb1b60b7@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 19 Feb 2021 08:00:53 -0800
-Message-ID: <CAF6AEGv-A5=4z7ZO-SytmivZTfKPYxhAjmRLVsQnrT7_pYCDtQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/a6xx: fix for kernels without CONFIG_NVMEM
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     Jonathan Marek <jonathan@marek.ca>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Eric Anholt <eric@anholt.net>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S229945AbhBSQCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:02:01 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:55588 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229746AbhBSQBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 11:01:47 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 527112000AA;
+        Fri, 19 Feb 2021 17:00:57 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 413E72000E5;
+        Fri, 19 Feb 2021 17:00:57 +0100 (CET)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 9DCC22042F;
+        Fri, 19 Feb 2021 17:00:56 +0100 (CET)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     NXP Linux Team <linux-imx@nxp.com>, Abel Vesa <abel.vesa@nxp.com>
+Subject: [RFC 00/19] Rework support for i.MX8MQ interconnect with devfreq
+Date:   Fri, 19 Feb 2021 17:59:57 +0200
+Message-Id: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 2:44 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
->
-> On 2/18/2021 9:41 PM, Rob Clark wrote:
-> > On Thu, Feb 18, 2021 at 4:28 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
-> >>
-> >> On 2/18/2021 2:05 AM, Jonathan Marek wrote:
-> >>> On 2/17/21 3:18 PM, Rob Clark wrote:
-> >>>> On Wed, Feb 17, 2021 at 11:08 AM Jordan Crouse
-> >>>> <jcrouse@codeaurora.org> wrote:
-> >>>>>
-> >>>>> On Wed, Feb 17, 2021 at 07:14:16PM +0530, Akhil P Oommen wrote:
-> >>>>>> On 2/17/2021 8:36 AM, Rob Clark wrote:
-> >>>>>>> On Tue, Feb 16, 2021 at 12:10 PM Jonathan Marek <jonathan@marek.ca>
-> >>>>>>> wrote:
-> >>>>>>>>
-> >>>>>>>> Ignore nvmem_cell_get() EOPNOTSUPP error in the same way as a
-> >>>>>>>> ENOENT error,
-> >>>>>>>> to fix the case where the kernel was compiled without CONFIG_NVMEM.
-> >>>>>>>>
-> >>>>>>>> Fixes: fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
-> >>>>>>>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> >>>>>>>> ---
-> >>>>>>>>    drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
-> >>>>>>>>    1 file changed, 3 insertions(+), 3 deletions(-)
-> >>>>>>>>
-> >>>>>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>> index ba8e9d3cf0fe..7fe5d97606aa 100644
-> >>>>>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-> >>>>>>>> @@ -1356,10 +1356,10 @@ static int a6xx_set_supported_hw(struct
-> >>>>>>>> device *dev, struct a6xx_gpu *a6xx_gpu,
-> >>>>>>>>
-> >>>>>>>>           cell = nvmem_cell_get(dev, "speed_bin");
-> >>>>>>>>           /*
-> >>>>>>>> -        * -ENOENT means that the platform doesn't support
-> >>>>>>>> speedbin which is
-> >>>>>>>> -        * fine
-> >>>>>>>> +        * -ENOENT means no speed bin in device tree,
-> >>>>>>>> +        * -EOPNOTSUPP means kernel was built without CONFIG_NVMEM
-> >>>>>>>
-> >>>>>>> very minor nit, it would be nice to at least preserve the gist of the
-> >>>>>>> "which is fine" (ie. some variation of "this is an optional thing and
-> >>>>>>> things won't catch fire without it" ;-))
-> >>>>>>>
-> >>>>>>> (which is, I believe, is true, hopefully Akhil could confirm.. if not
-> >>>>>>> we should have a harder dependency on CONFIG_NVMEM..)
-> >>>>>> IIRC, if the gpu opp table in the DT uses the 'opp-supported-hw'
-> >>>>>> property,
-> >>>>>> we will see some error during boot up if we don't call
-> >>>>>> dev_pm_opp_set_supported_hw(). So calling "nvmem_cell_get(dev,
-> >>>>>> "speed_bin")"
-> >>>>>> is a way to test this.
-> >>>>>>
-> >>>>>> If there is no other harm, we can put a hard dependency on
-> >>>>>> CONFIG_NVMEM.
-> >>>>>
-> >>>>> I'm not sure if we want to go this far given the squishiness about
-> >>>>> module
-> >>>>> dependencies. As far as I know we are the only driver that uses this
-> >>>>> seriously
-> >>>>> on QCOM SoCs and this is only needed for certain targets. I don't
-> >>>>> know if we
-> >>>>> want to force every target to build NVMEM and QFPROM on our behalf.
-> >>>>> But maybe
-> >>>>> I'm just saying that because Kconfig dependencies tend to break my
-> >>>>> brain (and
-> >>>>> then Arnd has to send a patch to fix it).
-> >>>>>
-> >>>>
-> >>>> Hmm, good point.. looks like CONFIG_NVMEM itself doesn't have any
-> >>>> other dependencies, so I suppose it wouldn't be the end of the world
-> >>>> to select that.. but I guess we don't want to require QFPROM
-> >>>>
-> >>>> I guess at the end of the day, what is the failure mode if you have a
-> >>>> speed-bin device, but your kernel config misses QFPROM (and possibly
-> >>>> NVMEM)?  If the result is just not having the highest clk rate(s)
-> >>
-> >> Atleast on sc7180's gpu, using an unsupported FMAX breaks gmu. It won't
-> >> be very obvious what went wrong when this happens!
-> >
-> > Ugg, ok..
-> >
-> > I suppose we could select NVMEM, but not QFPROM, and then the case
-> > where QFPROM is not enabled on platforms that have the speed-bin field
-> > in DT will fail gracefully and all other platforms would continue on
-> > happily?
-> >
-> > BR,
-> > -R
->
-> Sounds good to me.
->
+This has been on my queue for quite some time now. It is more of a
+proof-of-concept.
 
-You probably should do a quick test with NVMEM enabled but QFPROM
-disabled to confirm my theory, but I *think* that should work
+This rework is done with the compatibility of future i.MX platforms in
+mind. For example, the i.MX8MP platform has multiple NoCs. This
+patchsets prepares the imx interconnect and imx devfreq for that too.
 
-BR,
--R
+As of now, none of the drivers involved are being used and there is no
+icc consumer on any off the i.MX platforms.
+
+Basically, the steps taken here are the following:
+
+1. Make the dram_apb clock "reparantable" from kernel.
+This is needed in order to keep track of the actual parent of the 
+dram_apb clock in the kernel clock hierarchy. Note that the actual
+switch is done EL3 (TF-A).
+
+2. Rework the imx-bus so the actual link between the icc and the 
+NoCs or the pl301s is not tightly coupled. This allows us to have
+as many NoCs as necessary but also allows as to use the same driver
+for the pl301s. The pl301s have their own clocks too, so we need to
+reduce their rates too.
+
+3. Rework the imx8m-ddrc driver. Remove the support for dts defined
+OPPs. The EL3 provides those. So instead of havingi to keep the OPP table in
+both EL3 and kernel in sync, we rely on what the EL3 gives us.
+Also, when the platform suspends, the bus needs to be running at highest
+rate, otherwise there is a chance it might not resume anymore.
+By adding the late system sleep PM ops we can handle that easily.
+
+4. Rework the imx interconnect driver to use the fsl,icc-id instead
+of the robust imx_icc_node_adj_desc for linking with the target node.
+By adding the fsl,icc-id property to all the NoC and pl301 dts nodes,
+we can link each icc node to their corresponding NoC, pl301 or dram.
+Basically, when the imx interconnect platform specific driver probes,
+it will take each node defined for that platform and look-up the
+corresponding dts node based on the id and add that as the qos device.
+
+5. Added the fec and usdhc as icc consumers. This is just as an example.
+All the other consumers can be added later. Basically, each consumer
+will add a path to their device node and in the driver will have to
+handle that icc path accordingly.
+
+Abel Vesa (19):
+  clk: imx8mq: Replace critical with ignore_unused flag for dram_apb
+    clock
+  dt-bindings: interconnect: imx8mq: Add missing pl301 and SAI ids
+  devfreq: imx-bus: Switch governor to powersave
+  devfreq: imx-bus: Decouple imx-bus from icc made
+  devfreq: imx8m-ddrc: Change governor to powersave
+  devfreq: imx8m-ddrc: Use the opps acquired from EL3
+  devfreq: imx8m-ddrc: Add late system sleep PM ops
+  interconnect: imx: Switch from imx_icc_node_adj_desc to fsl,icc-id
+    node assignment
+  interconnect: imx8: Remove the imx_icc_node_adj_desc
+  interconnect: imx8mq: Add the pl301_per_m and pl301_wakeup nodes and
+    subnodes
+  interconnect: imx8mq: Add of_match_table
+  interconnect: imx: Add imx_icc_get_bw and imx_icc_aggregate functions
+  arm64: dts: imx8mq: Add fsl,icc-id property to ddrc node
+  arm64: dts: imx8mq: Add fsl,icc-id to noc node
+  arm64: dts: imx8mq: Add all pl301 nodes
+  arm64: dts: imx8mq: Add the interconnect node
+  arm64: dts: imx8mq: Add interconnect properties to icc consumer nodes
+  net: ethernet: fec_main: Add interconnect support
+  mmc: sdhci-esdhc-imx: Add interconnect support
+
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 200 +++++++++++++++++++++-
+ drivers/clk/imx/clk-imx8mq.c              |   2 +-
+ drivers/devfreq/imx-bus.c                 |  42 +----
+ drivers/devfreq/imx8m-ddrc.c              |  75 +++-----
+ drivers/interconnect/imx/imx.c            |  92 +++++-----
+ drivers/interconnect/imx/imx.h            |  19 +-
+ drivers/interconnect/imx/imx8mm.c         |  32 ++--
+ drivers/interconnect/imx/imx8mn.c         |  28 +--
+ drivers/interconnect/imx/imx8mq.c         |  59 ++++---
+ drivers/mmc/host/sdhci-esdhc-imx.c        |  26 +++
+ drivers/net/ethernet/freescale/fec.h      |   3 +
+ drivers/net/ethernet/freescale/fec_main.c |  19 ++
+ include/dt-bindings/interconnect/imx8mq.h |   9 +
+ scripts/dtc/fdtoverlay                    | Bin 0 -> 61280 bytes
+ 14 files changed, 393 insertions(+), 213 deletions(-)
+ create mode 100755 scripts/dtc/fdtoverlay
+
+-- 
+2.29.2
+
