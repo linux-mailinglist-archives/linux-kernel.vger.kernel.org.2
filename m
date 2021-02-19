@@ -2,119 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5244631FA56
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2FDC31FA5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:11:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbhBSOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:09:28 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:14239 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230378AbhBSOJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:09:22 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613743746; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=gOrw/UcHmWNkjl8nq8znMxGNRdkcx/fwcPGuRWypqVE=; b=k/Ky5IFlhiXccUrJIPwGPCpWzxpZKzUDrserkgDEzYqDZzYHVLTtrHBIAFQLrFE4GFXTeC/Y
- v28/T2U/xbSUu3Q+3IhAvgDjQ4h53o2NF5tk2km75St4bHXV2SoOna0P7yC3m1o2pGvIt7hw
- YPg/xyFWd+zEF2KKtblT9/tTrkw=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 602fc65337f02eb714dad4e9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 14:08:19
- GMT
-Sender: kgunda=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 36BF3C43461; Fri, 19 Feb 2021 14:08:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from kgunda-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kgunda)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3201C43462;
-        Fri, 19 Feb 2021 14:08:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3201C43462
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kgunda@codeaurora.org
-From:   Kiran Gunda <kgunda@codeaurora.org>
-To:     bjorn.andersson@linaro.org, jingoohan1@gmail.com,
-        lee.jones@linaro.org, b.zolnierkie@samsung.com,
-        dri-devel@lists.freedesktop.org, daniel.thompson@linaro.org,
-        jacek.anaszewski@gmail.com, pavel@ucw.cz, robh+dt@kernel.org,
-        mark.rutland@arm.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Cc:     Kiran Gunda <kgunda@codeaurora.org>
-Subject: [PATCH V1 2/2] backlight: qcom-wled: Correct the sync_toggle sequence
-Date:   Fri, 19 Feb 2021 19:37:39 +0530
-Message-Id: <1613743659-4726-3-git-send-email-kgunda@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613743659-4726-1-git-send-email-kgunda@codeaurora.org>
-References: <1613743659-4726-1-git-send-email-kgunda@codeaurora.org>
+        id S229958AbhBSOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:10:18 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16266 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230228AbhBSOKJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:10:09 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JE1ld1070546;
+        Fri, 19 Feb 2021 09:09:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=hEiNmOVPSOEglYa38shUn7O7VSY0u7cREb5g4ai2Ocs=;
+ b=KdURzBzq4H2nTG+I9QyCHkbqIPuNa5JCdpBTrBKO8IiAlSiz2PUyxXwJTRl4FivsiDLx
+ FI5eL2YqxoqOHfGR1uBEeXFa7DqHUCoY7iV1tzwY5M8dWhjjgkEDhdjKy9xreDOyfyJR
+ 8B366w0yoEjLLWpoxwUoHW++jK4ejNhBVl0oYsCNsZ2SdLsVHrB1DhigBHrzt4LG3II4
+ HU5eGORsBra7GOvDMB92WwcpGOwwr+zJlVn/Eb2038sqXutJaICYHWR8yNftS43nwq9E
+ bYQtLXYzetnr/BacC3Nv+hijh9IoGdDq/fMP6t1r9ZdZJYDm0yBgHbYy2Q1Dc6HW3tqb Dw== 
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tenqgh49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 09:09:02 -0500
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11JE7cI1006622;
+        Fri, 19 Feb 2021 14:09:01 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma03dal.us.ibm.com with ESMTP id 36p6da1bb1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 14:09:01 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11JE90Rl9437826
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 14:09:00 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C5252AC05E;
+        Fri, 19 Feb 2021 14:09:00 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24783AC05F;
+        Fri, 19 Feb 2021 14:08:57 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.85.174.98])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Fri, 19 Feb 2021 14:08:56 +0000 (GMT)
+References: <20210218223305.2044-1-nramas@linux.microsoft.com>
+ <c6490f6a126a2f10e3e3445b51ea552a26f896a9.camel@linux.ibm.com>
+ <8b8c0b70-c7ab-33f3-b66c-9ea03388497b@linux.microsoft.com>
+ <87k0r4yi4s.fsf@manicouagan.localdomain>
+ <3ca0aa87-ca83-8024-4067-c2382a360db9@linux.microsoft.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, robh@kernel.org,
+        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
+        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
+        mpe@ellerman.id.au, sfr@canb.auug.org.au, james.morse@arm.com,
+        sashal@kernel.org, benh@kernel.crashing.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] of: error: 'const struct kimage' has no member named
+ 'arch'
+In-reply-to: <3ca0aa87-ca83-8024-4067-c2382a360db9@linux.microsoft.com>
+Date:   Fri, 19 Feb 2021 11:08:55 -0300
+Message-ID: <87eehcxi88.fsf@manicouagan.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_05:2021-02-18,2021-02-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ mlxscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the FSC SYNC_BIT and MOD_SYNC_BIT are toggled
-from 1 to 0 to update the FSC and brightenss settings.
-Change this sequence form 0 to 1 as per the hardware team
-recommendation to update the FSC and brightness correctly.
 
-Signed-off-by: Kiran Gunda <kgunda@codeaurora.org>
----
- drivers/video/backlight/qcom-wled.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index aef52b9..19f83ac 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -337,13 +337,13 @@ static int wled3_sync_toggle(struct wled *wled)
- 
- 	rc = regmap_update_bits(wled->regmap,
- 				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
--				mask, mask);
-+				mask, WLED3_SINK_REG_SYNC_CLEAR);
- 	if (rc < 0)
- 		return rc;
- 
- 	rc = regmap_update_bits(wled->regmap,
- 				wled->ctrl_addr + WLED3_SINK_REG_SYNC,
--				mask, WLED3_SINK_REG_SYNC_CLEAR);
-+				mask, mask);
- 
- 	return rc;
- }
-@@ -353,17 +353,17 @@ static int wled5_mod_sync_toggle(struct wled *wled)
- 	int rc;
- 	u8 val;
- 
--	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
--					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
- 	rc = regmap_update_bits(wled->regmap,
- 				wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
--				WLED5_SINK_REG_SYNC_MASK, val);
-+				WLED5_SINK_REG_SYNC_MASK, 0);
- 	if (rc < 0)
- 		return rc;
- 
-+	val = (wled->cfg.mod_sel == MOD_A) ? WLED5_SINK_REG_SYNC_MOD_A_BIT :
-+					     WLED5_SINK_REG_SYNC_MOD_B_BIT;
- 	return regmap_update_bits(wled->regmap,
- 				  wled->sink_addr + WLED5_SINK_REG_MOD_SYNC_BIT,
--				  WLED5_SINK_REG_SYNC_MASK, 0);
-+				  WLED5_SINK_REG_SYNC_MASK, val);
- }
- 
- static int wled_ovp_fault_status(struct wled *wled, bool *fault_set)
+> On 2/18/21 5:13 PM, Thiago Jung Bauermann wrote:
+>> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+>> 
+>>> On 2/18/21 4:07 PM, Mimi Zohar wrote:
+>>>
+>>> Hi Mimi,
+>>>
+>>>> On Thu, 2021-02-18 at 14:33 -0800, Lakshmi Ramasubramanian wrote:
+>>>>> of_kexec_alloc_and_setup_fdt() defined in drivers/of/kexec.c builds
+>>>>> a new device tree object that includes architecture specific data
+>>>>> for kexec system call.  This should be defined only if the architecture
+>>>>> being built defines kexec architecture structure "struct kimage_arch".
+>>>>>
+>>>>> Define a new boolean config OF_KEXEC that is enabled if
+>>>>> CONFIG_KEXEC_FILE and CONFIG_OF_FLATTREE are enabled, and
+>>>>> the architecture is arm64 or powerpc64.  Build drivers/of/kexec.c
+>>>>> if CONFIG_OF_KEXEC is enabled.
+>>>>>
+>>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>>>> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
+>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>> ---
+>>>>>    drivers/of/Kconfig  | 6 ++++++
+>>>>>    drivers/of/Makefile | 7 +------
+>>>>>    2 files changed, 7 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+>>>>> index 18450437d5d5..f2e8fa54862a 100644
+>>>>> --- a/drivers/of/Kconfig
+>>>>> +++ b/drivers/of/Kconfig
+>>>>> @@ -100,4 +100,10 @@ config OF_DMA_DEFAULT_COHERENT
+>>>>>    	# arches should select this if DMA is coherent by default for OF devices
+>>>>>    	bool
+>>>>>    +config OF_KEXEC
+>>>>> +	bool
+>>>>> +	depends on KEXEC_FILE
+>>>>> +	depends on OF_FLATTREE
+>>>>> +	default y if ARM64 || PPC64
+>>>>> +
+>>>>>    endif # OF
+>>>>> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+>>>>> index c13b982084a3..287579dd1695 100644
+>>>>> --- a/drivers/of/Makefile
+>>>>> +++ b/drivers/of/Makefile
+>>>>> @@ -13,11 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
+>>>>>    obj-$(CONFIG_OF_RESOLVE)  += resolver.o
+>>>>>    obj-$(CONFIG_OF_OVERLAY) += overlay.o
+>>>>>    obj-$(CONFIG_OF_NUMA) += of_numa.o
+>>>>> -
+>>>>> -ifdef CONFIG_KEXEC_FILE
+>>>>> -ifdef CONFIG_OF_FLATTREE
+>>>>> -obj-y	+= kexec.o
+>>>>> -endif
+>>>>> -endif
+>>>>> +obj-$(CONFIG_OF_KEXEC) += kexec.o
+>>>>>      obj-$(CONFIG_OF_UNITTEST) += unittest-data/
+>>>> Is it possible to reuse CONFIG_HAVE_IMA_KEXEC here?
+>>>>
+>>>
+>>> For ppc64 CONFIG_HAVE_IMA_KEXEC is selected when CONFIG_KEXEC_FILE is enabled.
+>>> So I don't see a problem in reusing CONFIG_HAVE_IMA_KEXEC for ppc.
+>>>
+>>> But for arm64, CONFIG_HAVE_IMA_KEXEC is enabled in the final patch in the patch
+>>> set (the one for carrying forward IMA log across kexec for arm64). arm64 calls
+>>> of_kexec_alloc_and_setup_fdt() prior to enabling CONFIG_HAVE_IMA_KEXEC and hence
+>>> breaks the build for arm64.
+>> One problem is that I believe that this patch won't placate the robot,
+>> because IIUC it generates config files at random and this change still
+>> allows hppa and s390 to enable CONFIG_OF_KEXEC.
+>
+> I enabled CONFIG_OF_KEXEC for s390. With my patch applied, CONFIG_OF_KEXEC is
+> removed. So I think the robot enabling this config would not be a problem.
+>
+>> Perhaps a new CONFIG_HAVE_KIMAGE_ARCH option? Not having that option
+>> would still allow building kexec.o, but would be used inside kexec.c to
+>> avoid accessing kimage.arch members.
+>> 
+>
+> I think this is a good idea - a new CONFIG_HAVE_KIMAGE_ARCH, which will be
+> selected by arm64 and ppc for now. I tried this, and it fixes the build issue.
+>
+> Although, the name for the new config can be misleading since PARISC, for
+> instance, also defines "struct kimage_arch". Perhaps,
+> CONFIG_HAVE_ELF_KIMAGE_ARCH since of_kexec_alloc_and_setup_fdt() is 
+> accessing ELF specific fields in "struct kimage_arch"?
+
+Ah, right. I should have digged into the code before making my
+suggestion. CONFIG_HAVE_KIMAGE_ARCH isn't appropriate, indeed.
+
+>
+> Rob/Mimi - please let us know which approach you think is better.
+
+Ah! We can actually use the existing CONFIG_HAVE_IMA_KEXEC, no? I don't
+know why I didn't think of it before.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
- a Linux Foundation Collaborative Project
-
+Thiago Jung Bauermann
+IBM Linux Technology Center
