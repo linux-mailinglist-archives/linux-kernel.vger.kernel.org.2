@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B2D31F54F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 109B331F551
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:15:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbhBSHML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 02:12:11 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:55876 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBSHMI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 02:12:08 -0500
-Date:   Fri, 19 Feb 2021 07:10:35 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1613718643;
-        bh=IilQbrURoxVGYoN+0YWmzRSHrM3TBzF2c3XiNCRyIgY=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=aHfU/SAiY+R+mCYhf1t+QIce+4+reHlaNon2wOC90r1/pIi4yLuezWsBfeFy9ENVe
-         vR9E65cSJ4RQdEPIG8v/IqaHWZ7dBp8BDCNoFINl0cTnz9Ngj0jnTCzBmCQJxAWwnr
-         rlULu/HqCLHLDsRYVkO6jgog0ednUDxyfLhCJLLQ=
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Jari Ruusu <jariruusu@users.sourceforge.net>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com>
-In-Reply-To: <YC6nZH/4CkLLsxxB@kroah.com>
-References: <YA/E1bHRmZb50MlS@kroah.com> <YCzknUTDytY8gRA8@kroah.com> <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com> <YC4atKmK7ZqlOGER@kroah.com> <20210218113107.GA12547@1wt.eu> <602E766F.758C74D8@users.sourceforge.net> <20210218143341.GB13671@1wt.eu> <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC6nZH/4CkLLsxxB@kroah.com>
+        id S229683AbhBSHPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 02:15:25 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:56066 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhBSHPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 02:15:23 -0500
+Received: from zn.tnic (p200300ec2f046700b7f7c11af57b3c30.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:6700:b7f7:c11a:f57b:3c30])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 012101EC030F;
+        Fri, 19 Feb 2021 08:14:41 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1613718882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Lc/b9W+3h+xWmr5smQ3gv/hU4hGpEacEf7tLiNc9UJ4=;
+        b=cBrDAliCNAldpT8USSGX68Vfw4LADXxTFYS32YBdNC+pTrAmFpHJWtA3OLWLtv7b889Tyv
+        GJfy3KuilF6y+CUpZ+XmsW1VSRAFa9Q/LphlY0GfVk4JbJqmfrg7vdlikcWwDzY0EpB+EC
+        2ZTlZzwIt2M1+oe6+8XlBmW9Vr4IVY8=
+Date:   Fri, 19 Feb 2021 08:14:39 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, tony.luck@intel.com, pjt@google.com,
+        linux-kernel@vger.kernel.org, r.marek@assembler.cz,
+        jpoimboe@redhat.com, jikos@kernel.org
+Subject: Re: [RFC][PATCH 2/2] x86/retpoline: Compress retpolines
+Message-ID: <20210219071439.GA26778@zn.tnic>
+References: <20210218165938.213678824@infradead.org>
+ <20210218172151.942060087@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Disposition: inline
+In-Reply-To: <20210218172151.942060087@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, February 18, 2021 7:44 PM, Greg Kroah-Hartman <gregkh@linuxfou=
-ndation.org> wrote:
-> > It was the other way around. Fine working in-tree driver got
-> > broken by backported "fixes". I did mention bit-rot.
->
-> It did? Please let us stable maintainers know about, we will always
-> gladly revert problems patches. What commits caused the problem?
+On Thu, Feb 18, 2021 at 05:59:40PM +0100, Peter Zijlstra wrote:
+> By using int3 as a speculation fence instead of lfence, we can shrink
+> the longest alternative to just 15 bytes:
+> 
+>   0:   e8 05 00 00 00          callq  a <.altinstr_replacement+0xa>
+>   5:   f3 90                   pause  
+>   7:   cc                      int3   
+>   8:   eb fb                   jmp    5 <.altinstr_replacement+0x5>
+>   a:   48 89 04 24             mov    %rax,(%rsp)
+>   e:   c3                      retq   
+> 
+> This means we can change the alignment from 32 to 16 bytes and get 4
+> retpolines per cacheline, $I win.
 
-I don't have a list of commits for you. It took me long time to
-figure out that it was iwlwifi that was causing those problems.
+You mean I$ :)
 
-In-tree iwlwifi on 4.19.y kernels needs professional quality
-locking audit and backporting of necessary fixes from upstream
-Intel out-of-tree version.
+In any case, for both:
 
-> So something in the 4.9.y and 4.14.y stable kernels caused a regression,
-> can you please do 'git bisect' to let us know what broke?
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-My ability to do WiFi tests on that laptop computer are limited
-for now. Earlier that laptop's connectivity to world was through
-mobile WiFi router. That mobile WiFi router no longer has a
-SIM-card, so no connectivity through that anymore. That laptop's
-connectivity to world is now through wired ethernet to fiber.
+and it looks real nice here, the size:
 
-It was actually this switch to ethernet/fiber that made me realize
-the brokenness on in-tree iwlwifi on 4.19.y kernels. When in-tree
-WiFi was not used, those problems never triggered. Switched back
-to in-tree WiFi, and problems came back. Switched to out-of-tree
-Intel version of iwlwifi, problems went away again. Then I looked
-at the fixes in out-of-tree Intel version of iwlwifi that were
-missing in in-tree version, and I understood why that was so.
+ readelf -s vmlinux | grep __x86_indirect
+ 78966: ffffffff81c023e0    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 81653: ffffffff81c02390    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 82338: ffffffff81c02430    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 82955: ffffffff81c02380    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 85057: ffffffff81c023f0    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 89996: ffffffff81c023a0    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 91094: ffffffff81c02400    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 91278: ffffffff81c023b0    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 92015: ffffffff81c02360    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 92722: ffffffff81c023c0    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 97062: ffffffff81c02410    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 98687: ffffffff81c023d0    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 99076: ffffffff81c02350    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+ 99500: ffffffff81c02370    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
+100579: ffffffff81c02420    15 FUNC    GLOBAL DEFAULT    1 __x86_indirect_t[...]
 
-Those stability issues on in-tree iwlwifi on 4.19.y kernels are
-difficult to trigger. Sometimes it may take days to trigger it
-once. Sometimes I was unlucky enough to trigger them more than
-once a day. I say that two weeks of operation without issues are
-needed to pronounce those issues gone.
+-- 
+Regards/Gruss,
+    Boris.
 
-Currently, special arrangements are needed for me to test WiFi at
-all on that laptop computer, and those arrangements are something
-I am not willing to commit for multi-week testing run. Sorry.
-
-> And if 4.19.0 was always broken, why didn't you report that as well?
-
-I didn't test early 4.19.y kernels.
-
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
-
+https://people.kernel.org/tglx/notes-about-netiquette
