@@ -2,97 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF43431F8AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569D131F8AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhBSLxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:53:25 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:59368 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhBSLxU (ORCPT
+        id S230408AbhBSLzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:55:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhBSLzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:53:20 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JBmato050666;
-        Fri, 19 Feb 2021 11:52:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=+8bfzoRhaDwROuEZgt+Kzx6XCu4t+OtL05aUyZz0JUE=;
- b=EISFXHFw7ksoSz7lPqC/m1k0hKtjKQQuLlyGIyF6lENl6YL8QebU2W0QA35HHP3+wlZ+
- laG+SBvIiec7YyKRUiHiP7NW/7M057BIeZfjLjCummiOkYkhRINCBhFQpxNSNMi+e6h4
- Yo3JJFtBcKfPbBtL5+uSAupCKuya/MHKkU28YzksDM9uWF8t/dh2X5VoyZPLMQzYRe1v
- n2c76LV4dAldnzROX80VX2YrrFqaUCwA37Ohf4G6q5S+yauXYEL4xONWOU/LaqtK3twH
- Lp0a2swWJfei21P0HqW/0E/cKJUflDwiARv3DeUhoP6iawE2wIFWdJeS5XdPz+475ZCO nQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 36p49bhdds-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 11:52:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JBoDWU043814;
-        Fri, 19 Feb 2021 11:52:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 36prq1tev2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 11:52:33 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11JBqWRD017112;
-        Fri, 19 Feb 2021 11:52:32 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Feb 2021 03:52:31 -0800
-Date:   Fri, 19 Feb 2021 14:52:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     17UCS047_Prakash Dubey <prakashdubey1999@gmail.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: fwserial: Fix alignment of function parameters
-Message-ID: <20210219115221.GW2087@kadam>
-References: <20210218102851.GA20810@gmail.com>
- <YC9zNVWX7R9kD0Rq@kroah.com>
- <CALVjNJP=iXH+u2zUB93UZo+1+Ly0g23k5JtPXFbx=vaO+5-0Gw@mail.gmail.com>
- <YC+VX4NpOWX1z3+V@kroah.com>
+        Fri, 19 Feb 2021 06:55:37 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3079CC061756
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 03:54:57 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id n8so7977696wrm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 03:54:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=WVap+CgS0aKP4VB39WJ3ROwZ5qQnMNgJg14pvUUYfLM=;
+        b=WJ5bALL8CDSUuxSPCnH33fOSEwekh0NISWkzhmQfaBd2jVVNNc+GIbewK6wTihahvC
+         eIV8PougWWOdMT1NuP5Iav7dGKP/LEPLleTPpbVm2beXKbApbpCIARMqakrPl2KbIx6H
+         PeKdNJRzTTJEePxfkfutw1OGohMXAJepMkwr4hFZmGCe1RKoGlO6hOCpFFgdvBKni/9a
+         /pohVTwQsmVzhjEaCOgaAABdwxuz6n2WeG1jNI09tAOq/aT6M8BoUZkiJkEJVC7DOObP
+         jvBg6bgoVzYOlqm/RLhdI7bXyH2zbDuO4pzPtJyKO8EQuaG3tVhEgQSoWLbl+4f56pb6
+         Qkpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=WVap+CgS0aKP4VB39WJ3ROwZ5qQnMNgJg14pvUUYfLM=;
+        b=R+mZ1IYDBXNhiMCZV/vzyhaSAqeNv35DwQyqLr141Jn4PW1Zs7TFO4IDd0s6RUAHL5
+         VOGsY3Xjil5WXxjAM5z5iYIG2Dk12YMym/y/vQTsqoE/nPT4uHkJGmE8khtZB5CM+vtM
+         nJCctZ8XeFaxNL5hSuLSuN1ofrRI3sjGAERsta2W814B/ADHsI6S+vpcUem1t3OqzDOD
+         KJplSsaJsneUNPcd1pxb2aS1WxEkMH5Ez8Ji7zKCpfXCF0jKEUsDEnaqzzLPmT4bkK/i
+         4ktTd4eguEA7QHDyMOrfYFSTRFW2vfk2b4jF+GX+FWk2Dkawn0YDMcbdDj7dBvtpjblT
+         2VTA==
+X-Gm-Message-State: AOAM531ZUZqDd/DHnXjZ7WSx4AwIKnHwdikAcs5cpWWoP/oEddYIAYQS
+        pqMbWcgWFXo6Ke8q10Qa6i+pgA==
+X-Google-Smtp-Source: ABdhPJwTvfhzpasaVE3SxdtLzXJnSqK85eR9miUwxJ/bVWscpSumktEeu1xI/d230pouuqeArMsZNA==
+X-Received: by 2002:adf:a384:: with SMTP id l4mr8963178wrb.228.1613735695704;
+        Fri, 19 Feb 2021 03:54:55 -0800 (PST)
+Received: from ?IPv6:2a01:e34:ed2f:f020:7551:7d42:6e1e:750? ([2a01:e34:ed2f:f020:7551:7d42:6e1e:750])
+        by smtp.googlemail.com with ESMTPSA id l17sm1569567wmq.46.2021.02.19.03.54.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 03:54:55 -0800 (PST)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Lukasz Luba <Lukasz.Luba@arm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Colin King <colin.king@canonical.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM mailing list <linux-pm@vger.kernel.org>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject: [GIT PULL] thermal for v5.12-rc1
+Message-ID: <ace202cb-b9bc-c43a-8023-9c45946af3bf@linaro.org>
+Date:   Fri, 19 Feb 2021 12:54:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC+VX4NpOWX1z3+V@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190096
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190096
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:39:27AM +0100, Greg KH wrote:
-> On Fri, Feb 19, 2021 at 03:25:38PM +0530, 17UCS047_Prakash Dubey wrote:
-> > I was unable to align it right below the opening parenthesis, just by using
-> > tabs. And when I did that with spaces, the checkpatch yelled at me for
-> > using spaces. Any suggestions how to do this without using spaces? I am
-> > using vim, I will try to find a workaround meanwhile.
-> 
 
-Your comment hasn't made it to the list yet.  Sometimes there is a delay
-or maybe it was blocked for some reason (html email?).
+Hi Linus,
 
-You are allowed to use spaces but you can't have 8 consecutive spaces
-and spaces are not allowed before a tab character.  The way to align it
-is:
+please consider pulling these thermal changes for v5.12-rc1
 
-		ret = wait_event_interruptible_timeout(port->wait_tx,
-						       !test_bit(IN_TX, &port->flags),
-						       10);
+Note a set of changes for the qcom adc driver rely on an immutable
+branch from the iio tree:
+	https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git/log/?h=ib-iio-thermal-5.11-rc1
 
-[tab x6][space x7]!test_bit(IN_TX, &port->flags)
 
-regards,
-dan carpenter
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+
+  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+
+are available in the Git repository at:
+
+
+ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/thermal/linux.git
+tags/thermal-v5.12-rc1
+
+for you to fetch changes up to a51afb13311cd85b2f638c691b2734622277d8f5:
+
+  thermal: cpufreq_cooling: freq_qos_update_request() returns < 0 on
+error (2021-02-17 18:53:19 +0100)
+
+----------------------------------------------------------------
+- Use the newly introduced 'hot' and 'critical' ops for the acpi
+  thermal driver (Daniel Lezcano)
+
+- Remove the notify ops as it is no longer used (Daniel Lezcano)
+
+- Remove the 'forced passive' option and the unused bind/unbind
+  functions (Daniel Lezcano)
+
+- Remove the THERMAL_TRIPS_NONE and the code cleanup around this
+  macro (Daniel Lezcano)
+
+- Rework the delays to make them pre-computed instead of computing
+  them again and again at each polling interval (Daniel Lezcano)
+
+- Remove the pointless 'thermal_zone_device_reset' function (Daniel
+  Lezcano)
+
+- Use the critical and hot ops to prevent an unexpected system
+  shutdown on int340x (Kai-Heng Feng)
+
+- Make the cooling device state private to the thermal subsystem
+  (Daniel Lezcano)
+
+- Prevent to use not-power-aware actor devices with the power
+  allocator governor (Lukasz Luba)
+
+- Remove 'zx' and 'tango' support along with the corresponding
+  platforms (Arnd Bergman)
+
+- Fix several issues on the Omap thermal driver (Tony Lindgren)
+
+- Add support for adc-tm5 PMIC thermal monitor for Qcom
+  platforms. Please note those changes rely on an immutable branch:
+  iio-thermal-5.11-rc1/ib-iio-thermal-5.11-rc1 from the iio tree
+  (Dmitry Baryshkov)
+
+- Fix an initialization loop in the adc-tm5 (Colin Ian King)
+
+- Fix a return error check in the cpufreq cooling device (Viresh Kumar)
+
+----------------------------------------------------------------
+Arnd Bergmann (2):
+      thermal/drivers/tango: Remove tango driver
+      thermal/drivers/zx: Remove zx driver
+
+Colin Ian King (1):
+      thermal: qcom: Fix comparison with uninitialized variable
+channels_available
+
+Craig Tatlor (1):
+      fixp-arith: add a linear interpolation function
+
+Daniel Lezcano (14):
+      thermal/drivers/acpi: Use hot and critical ops
+      thermal/core: Remove notify ops
+      thermal/core: Remove the 'forced_passive' option
+      thermal/core: Remove unused functions rebind/unbind exception
+      thermal/core: Remove pointless test with the THERMAL_TRIPS_NONE macro
+      acpi/drivers/thermal: Remove TRIPS_NONE cooling device binding
+      thermal/core: Remove THERMAL_TRIPS_NONE test
+      thermal/core: Remove unused macro THERMAL_TRIPS_NONE
+      thermal/core: Precompute the delays from msecs to jiffies
+      thermal/core: Use precomputed jiffies for the polling
+      thermal/core: Remove ms based delay fields
+      thermal/core: Remove pointless thermal_zone_device_reset() function
+      thermal/core: Make cooling device state change private
+      Merge remote-tracking branch
+'iio-thermal-5.11-rc1/ib-iio-thermal-5.11-rc1' into testing
+
+Dmitry Baryshkov (11):
+      iio: adc: qcom-vadc: move several adc5 functions to common file
+      iio: adc: qcom-vadc-common: use fixp_linear_interpolate
+      iio: adc: move qcom-vadc-common.h to include dir
+      iio: adc: qcom-spmi-adc5: use of_device_get_match_data
+      iio: provide of_iio_channel_get_by_name() and devm_ version it
+      iio: adc: move vadc_map_pt from header to the source file
+      iio: adc: qcom-vadc-common: rewrite vadc7 die temp calculation
+      iio: adc: qcom-vadc-common: simplify qcom_vadc_map_voltage_temp
+      iio: adc: qcom-vadc-common: scale adcmap_100k_104ef_104fb
+      dt-bindings: thermal: qcom: add adc-thermal monitor bindings
+      thermal: qcom: add support for adc-tm5 PMIC thermal monitor
+
+Kai-Heng Feng (2):
+      thermal: int340x: Fix unexpected shutdown at critical temperature
+      thermal: intel: pch: Fix unexpected shutdown at critical temperature
+
+Lukasz Luba (1):
+      thermal: power allocator: fail binding for non-power actor devices
+
+Tony Lindgren (4):
+      thermal: ti-soc-thermal: Skip pointless register access for dra7
+      thermal: ti-soc-thermal: Fix stuck sensor with continuous mode for
+4430
+      thermal: ti-soc-thermal: Simplify polling with iopoll
+      thermal: ti-soc-thermal: Use non-inverted define for omap4
+
+Viresh Kumar (1):
+      thermal: cpufreq_cooling: freq_qos_update_request() returns < 0 on
+error
+
+ .../bindings/thermal/qcom-spmi-adc-tm5.yaml        | 153 +++++
+ .../devicetree/bindings/thermal/tango-thermal.txt  |  17 -
+ .../devicetree/bindings/thermal/zx2967-thermal.txt | 116 ----
+ Documentation/driver-api/thermal/sysfs-api.rst     |  13 -
+ drivers/acpi/thermal.c                             |  49 +-
+ drivers/hwmon/pwm-fan.c                            |   1 -
+ drivers/iio/adc/qcom-pm8xxx-xoadc.c                |   3 +-
+ drivers/iio/adc/qcom-spmi-adc5.c                   |  95 +---
+ drivers/iio/adc/qcom-spmi-vadc.c                   |   3 +-
+ drivers/iio/adc/qcom-vadc-common.c                 | 279 +++++----
+ drivers/iio/inkern.c                               |  34 +-
+ drivers/platform/x86/acerhdf.c                     |   3 +-
+ drivers/thermal/Kconfig                            |  17 -
+ drivers/thermal/Makefile                           |   2 -
+ drivers/thermal/cpufreq_cooling.c                  |   2 +-
+ drivers/thermal/da9062-thermal.c                   |   4 +-
+ drivers/thermal/gov_power_allocator.c              |  37 +-
+ drivers/thermal/gov_step_wise.c                    |  14 +-
+ .../intel/int340x_thermal/int340x_thermal_zone.c   |   6 +
+ drivers/thermal/intel/intel_pch_thermal.c          |   6 +
+ drivers/thermal/khadas_mcu_fan.c                   |   1 -
+ drivers/thermal/qcom/Kconfig                       |  11 +
+ drivers/thermal/qcom/Makefile                      |   1 +
+ drivers/thermal/qcom/qcom-spmi-adc-tm5.c           | 623
++++++++++++++++++++++
+ drivers/thermal/tango_thermal.c                    | 126 -----
+ drivers/thermal/thermal_core.c                     |  72 +--
+ drivers/thermal/thermal_core.h                     |   7 +-
+ drivers/thermal/thermal_helpers.c                  |   7 +
+ drivers/thermal/thermal_sysfs.c                    |  85 +--
+ .../thermal/ti-soc-thermal/omap4-thermal-data.c    |   7 +-
+ drivers/thermal/ti-soc-thermal/omap4xxx-bandgap.h  |   4 +-
+ drivers/thermal/ti-soc-thermal/ti-bandgap.c        |  54 +-
+ drivers/thermal/ti-soc-thermal/ti-bandgap.h        |   2 +
+ drivers/thermal/ti-soc-thermal/ti-thermal-common.c |   6 +-
+ drivers/thermal/zx2967_thermal.c                   | 256 ---------
+ include/linux/fixp-arith.h                         |  19 +
+ .../linux}/iio/adc/qcom-vadc-common.h              |  31 +-
+ include/linux/iio/consumer.h                       |  36 ++
+ include/linux/thermal.h                            |  18 +-
+ 39 files changed, 1218 insertions(+), 1002 deletions(-)
+ create mode 100644
+Documentation/devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml
+ delete mode 100644
+Documentation/devicetree/bindings/thermal/tango-thermal.txt
+ delete mode 100644
+Documentation/devicetree/bindings/thermal/zx2967-thermal.txt
+ create mode 100644 drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+ delete mode 100644 drivers/thermal/tango_thermal.c
+ delete mode 100644 drivers/thermal/zx2967_thermal.c
+ rename {drivers => include/linux}/iio/adc/qcom-vadc-common.h (92%)
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
