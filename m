@@ -2,61 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75C131F86A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F25531F86F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:30:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhBSL2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:28:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44124 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhBSL1X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:27:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 451EEACCF;
-        Fri, 19 Feb 2021 11:26:42 +0000 (UTC)
-Subject: Re: [PATCH RFC 0/1] mm: balancing the node zones occupancy
-To:     Charan Teja Reddy <charante@codeaurora.org>,
-        akpm@linux-foundation.org, rientjes@google.com, mhocko@suse.com,
-        david@redhat.com, mgorman@techsingularity.net, linux-mm@kvack.org
-Cc:     vinmenon@codeaurora.org, sudaraja@codeaurora.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>
-References: <cover.1613661472.git.charante@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <1c445421-ddeb-8768-03d0-81537b0d1875@suse.cz>
-Date:   Fri, 19 Feb 2021 12:26:41 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230029AbhBSL33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:29:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhBSL2g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 06:28:36 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5682DC061788;
+        Fri, 19 Feb 2021 03:27:55 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id a17so18421837ljq.2;
+        Fri, 19 Feb 2021 03:27:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=HAm3b1BxNMJwHYQdwhTOSEndOZP55AielTvmaxsP3Gw=;
+        b=XhiG+o4gJ+xpYPbUoUkovutIBMeiHZNB9MjcBaqA57JnlygJYMb/rP6zisqfaa5eyX
+         RdhAX54klI4VK/lFW798lySdYyVKriy2E3x4FtrJBvL7Dk7ml0g2f8uogSbKTCveIVjN
+         uXJH9nrwm0/dQXEQjw1EkGKP2P0ZJfNKSqcQjxpqkFISpwld7RL3DrTOGy/eX0vLWgsK
+         9u69AXSxxbV1mDQv4/yHXp2IphXJRyxxOwsTLXYdO6bjAmCH48NlOwcQCbiS9YfhSiaQ
+         3E5wKT7pQVPD89SAVmksgN4b3FM9lVXTaNldD+hs+rH7Yuj89k9KEt1yR9ypZ+Yk/fao
+         8nYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=HAm3b1BxNMJwHYQdwhTOSEndOZP55AielTvmaxsP3Gw=;
+        b=PMYmwDUOpoOErvMMups4W66VkVRrDtWS7mODeZuOPU2qqvVjZUzyi0OWFMvVVWBnyR
+         q0eOGXR4Jv8ZgNN/UVQpSubizrm2OgVgsq0ECmZuvyYejpyojpwthefqiwCue0X7QxPV
+         Cp3VM7VnaB4enUjY5EUZji479ac8SIz4xI3J31Kuz6FJzw0SLTa6ANkH6+tMDADWAlWz
+         bdOcLliRvhijtq2aW9yRle4pnLc///Xfv4q6kd2bJ2++Gvus+O7QtcCKrVO81Wvfr2T3
+         1yzVUCzu92UyIV+Dx8vycmBZCtE5UytVlTI7hW9MTsxQ6LAcZ1LeR0eMpUgBV2/i+6Dw
+         1jzQ==
+X-Gm-Message-State: AOAM532LR6xQj1mVozkWIlbCgpqTyy+hlm5DiZgdQfuuqLOCld+k/ypf
+        gcr3ic7A4tQvTcj/YRiu3vo=
+X-Google-Smtp-Source: ABdhPJy749jfYojCrXQSs3otKCtA1NfcEr6dxV27xpZu8c6qGTOK0tNFWdEWgA6qW7+gzo5Jx8vicw==
+X-Received: by 2002:a05:6512:10c9:: with SMTP id k9mr5703622lfg.532.1613734073813;
+        Fri, 19 Feb 2021 03:27:53 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id c18sm329583lfr.140.2021.02.19.03.27.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 03:27:53 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 19 Feb 2021 12:27:51 +0100
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210219112751.GA34528@pc638.lan>
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
 MIME-Version: 1.0
-In-Reply-To: <cover.1613661472.git.charante@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219112357.GA34462@pc638.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/18/21 6:24 PM, Charan Teja Reddy wrote:
-> I would like to start discussion about  balancing the occupancy of
-> memory zones in a node in the system whose imabalance may be caused by
-> migration of pages to other zones during hotremove and then hotadding
-> same memory. In this case there is a lot of free memory in newly hotadd
-> memory which can be filled up by the previous migrated pages(as part of
-> offline/hotremove) thus may free up some pressure in other zones of the
-> node.
+On Fri, Feb 19, 2021 at 12:23:57PM +0100, Uladzislau Rezki wrote:
+> On Fri, Feb 19, 2021 at 12:17:38PM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2021-02-19 12:13:01 [+0100], Uladzislau Rezki wrote:
+> > > I or Paul will ask for a test once it is settled down :) Looks like
+> > > it is, so we should fix for v5.12.
+> > 
+> > Okay. Since Paul asked for powerpc test on v5.11-rc I wanted check if
+> > parts of it are also -stable material.
+> > 
+> OK, i see. It will be broken starting from v5.12-rc unless we fix it.
+> 
+Sorry it is broken since 5.11 kernel already, i messed it up.
 
-Can you share the use case for doing this? If it's to replace a failed RAM, then
-it's probably extremely rare, right.
-
-> We have the proof-of-concept code tried on the Snapdragon systems with
-> the system configuration, single memory node of just 2 zones, 6GB normal
-> zone and 2GB movable zone. And this Movable zone is such that hot-added
-> once and there after offline/online based on the need.
-
-Hm, snapdragon... so is this some kind of power saving thing?
-
-Anyway, shouln't auto NUMA balancing help here, and especially "Migrate Pages in
-lieu of discard" (CC'd Dave) as a generic mechanism, so we wouldn't need to have
-hotplug-specific actions?
-
+--
+Vlad Rezki
