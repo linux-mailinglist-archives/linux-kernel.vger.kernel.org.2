@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2B831F689
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47C7731F68A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229979AbhBSJ1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:27:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhBSJ1D (ORCPT
+        id S230015AbhBSJ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:27:33 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:36504 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhBSJ13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:27:03 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C329DC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:26:21 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id t26so3535518pgv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:26:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E3lKUpNPgWtCHRkjPYUdcYm0hE3joAAMdlvhD8+x+v4=;
-        b=UbX9vWQ7ohQgaFTxTWAwoYny8yk5EeM8U+zlUXpqZvpQx0orKYrNGBrieSzRpVPQkK
-         wo4D66bVDZ1rdHtWQT2M4cMTwY987PBqKLwxY831u2F2nIZiZRLcCe7/LOmLHFOYjCgv
-         EqTqM0roJ95mwUk+wV15vDqcYMVMyeUCwArEvqGrW0KnMqsnFWGazTuH3v3NHaYj4tAv
-         ApeFGKM5WmWP0UnxiA/oo5QSo9A8TrfvaKchW/mqqy6Lj4xtXGsD7w2xyEuFHO4Yt1Cy
-         SzP2rUWuoXUis59c6XO1c+0d+LCBg5sk/EcYUsLc+3w+AZlNLnm1nE+rh4WaQXHci3mQ
-         Dn/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=E3lKUpNPgWtCHRkjPYUdcYm0hE3joAAMdlvhD8+x+v4=;
-        b=YuxoWeoTLQkXubQTb4ofpfXvYU3PfPhqmA7qzLm0qUOTLPiMVxpuE37WKQ+w5K/l6p
-         IrW3aUTEV+0ZUWcBsSwA80TIFHUqERQefQVeR1twlgRN4HzX4gPFuKjHbST/ALpXpDEC
-         pwbvEn4Cvumz9fITSXZaEMs2bWd6OXPeokP1ieeCYFqKSesp/074y/rorb1oM0zVq39R
-         0cwmZtz1gEaZBRW4FkdSXwAgMPKtGoaY7BAepMddqrvMTqZ/GPjoXFNuYDDghaRYG/PF
-         Fnztq7s583QdYe05JV4U/xve36+RnwGhh98WixaouLKNZc1iKeThDqbj2sSoXcnu4IdM
-         CYyw==
-X-Gm-Message-State: AOAM531/cRkTeWZlMwmReltq+fiPsdziAERhNSQJsiDuyf73aWdewd4O
-        Mm9cRP5QagMGPjmiIyeY/cgUxXugbvAgVg==
-X-Google-Smtp-Source: ABdhPJw0Dp8YYvQGiDBF9iPKrRfduTFHM/4DbEN4bolQMsN7NcaXnJc70jyh+dIOgSXDbsFUsmCr8w==
-X-Received: by 2002:a63:2009:: with SMTP id g9mr7756927pgg.219.1613726781414;
-        Fri, 19 Feb 2021 01:26:21 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id r23sm8544337pgl.42.2021.02.19.01.26.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Feb 2021 01:26:21 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, Yejune Deng <yejune.deng@gmail.com>
-Subject: [PATCH] virt: acrn: Use vfs_poll() instead of f_op->poll()
-Date:   Fri, 19 Feb 2021 17:26:12 +0800
-Message-Id: <20210219092612.7533-1-yejune.deng@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        Fri, 19 Feb 2021 04:27:29 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9OqRU022352;
+        Fri, 19 Feb 2021 09:26:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=+jSkHsONTkTAseVQX+sbaAc6sHzUxCQX5x/sMxZIGnw=;
+ b=VWWO5tkc6ARoeLA2pZ2HJX/Cx2EZlcWKG94D1ZVPy5oY2slSwJQDd3DcGSq3gaQfdh8Q
+ QeoFEOPKQtEacgT1TPVKpHYXV9CaZljb2iGe7+RNzQL4lljkGVbKgjWA474ccJ3APoZQ
+ FUKiXCh8qPWm9AyBfRvX2wd1CQ6R58lZ7PFb4Gkl6KcYslQdTh2KI8lVclm4HctnGaE9
+ fuCBAXhczlwXtJ9OWbhoyjbVL68aPu+buKitrHX4chhXarzuhyS8yXnsehhaemqlMOYY
+ 1zKA4IM7vAJkkNJl7YylOqINM2DyLuL+HQn5hWIdQsb4tNalFBgJurhd8ghM9dWQAUSd sA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 36p49bgxhu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 09:26:38 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9KVhH115387;
+        Fri, 19 Feb 2021 09:26:36 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 36prbrxcvr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 09:26:36 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11J9QX7b022082;
+        Fri, 19 Feb 2021 09:26:33 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 19 Feb 2021 01:26:32 -0800
+Date:   Fri, 19 Feb 2021 12:26:21 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     "'Ian Abbott'" <abbotti@mev.co.uk>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Atul Gopinathan <atulgopinathan@gmail.com>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
+Message-ID: <20210219092621.GU2087@kadam>
+References: <20210217165907.9777-1-atulgopinathan@gmail.com>
+ <YC1T06VCh0K2BBW5@kroah.com>
+ <20210217181000.GB10124@atulu-ubuntu>
+ <YC1fzjVOwiqzO1nb@kroah.com>
+ <3cfef23d-8d4a-205c-61e8-cbe8c9a0c0f4@mev.co.uk>
+ <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190073
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In acrn_irqfd_assign(), use vfs_poll() is a more advanced function,
-as the same time, modify the definition of events.
+On Fri, Feb 19, 2021 at 09:03:59AM +0000, David Laight wrote:
+> > It's kind of moot anyway because the patch is outdated.  But the reason
+> > for the ___force is that the same `struct comedi_cmd` is used in both
+> > user and kernel contexts.  In user contexts, the `chanlist` member
+> > points to user memory and in kernel contexts it points to kernel memory
+> > (copied from userspace).
+> 
+> Can't you use a union of the user and kernel pointers?
+> (Possibly even anonymous?)
+> Although, ideally, keeping them in separate fields is better.
+> 8 bytes for a pointer isn't going make a fat lot of difference.
+> 
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- drivers/virt/acrn/irqfd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Creating a union is worse than adding casts.  With the casts, at least
+you know that you're doing something dangerous.  It's good that it looks
+scary because it is scary.
 
-diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
-index a8766d528e29..19890396e174 100644
---- a/drivers/virt/acrn/irqfd.c
-+++ b/drivers/virt/acrn/irqfd.c
-@@ -112,9 +112,9 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
- {
- 	struct eventfd_ctx *eventfd = NULL;
- 	struct hsm_irqfd *irqfd, *tmp;
--	unsigned int events;
- 	struct fd f;
- 	int ret = 0;
-+	__poll_t events;
- 
- 	irqfd = kzalloc(sizeof(*irqfd), GFP_KERNEL);
- 	if (!irqfd)
-@@ -158,7 +158,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
- 	mutex_unlock(&vm->irqfds_lock);
- 
- 	/* Check the pending event in this stage */
--	events = f.file->f_op->poll(f.file, &irqfd->pt);
-+	events = vfs_poll(f.file, &irqfd->pt);
- 
- 	if (events & POLLIN)
- 		acrn_irqfd_inject(irqfd);
--- 
-2.29.0
+Keeping them in separate fields is a good idea, but this is part of the
+user space API so it's not possible.
+
+The best we can do is adding some more comments so people know why we
+are doing the scary casts.
+
+regards,
+dan carpenter
 
