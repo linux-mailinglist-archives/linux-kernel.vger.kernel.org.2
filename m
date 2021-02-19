@@ -2,205 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CCB320D57
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 234E5320D7F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:13:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhBUT6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:58:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:43214 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230315AbhBUT6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:58:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 852DAAE03;
-        Sun, 21 Feb 2021 19:57:30 +0000 (UTC)
-Received: from localhost (brahms [local])
-        by brahms (OpenSMTPD) with ESMTPA id 24d1b77a;
-        Sun, 21 Feb 2021 19:58:34 +0000 (UTC)
-From:   Luis Henriques <lhenriques@suse.de>
-To:     Amir Goldstein <amir73il@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
-        Luis Henriques <lhenriques@suse.de>
-Subject: [PATCH v7] vfs: fix copy_file_range regression in cross-fs copies
-Date:   Sun, 21 Feb 2021 19:58:33 +0000
-Message-Id: <20210221195833.23828-1-lhenriques@suse.de>
-In-Reply-To: <CAN-5tyGs9skFZ=ghd8Vz2F35S70QYi+kujdyRYLSkcEi8Jm9gw@mail.gmail.com>
-References: <CAN-5tyGs9skFZ=ghd8Vz2F35S70QYi+kujdyRYLSkcEi8Jm9gw@mail.gmail.com>
+        id S231351AbhBUUMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 15:12:38 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:59375 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231311AbhBUUMY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 15:12:24 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id C7BA05C008D;
+        Sun, 21 Feb 2021 15:11:18 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 21 Feb 2021 15:11:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=erQ4aLlXdSLCQDO88xDFv3qgQA
+        2+7qeoglQ68NDOqi8=; b=hu30NFH4CXD2PDv0+5Sj/mH+unPN1XmNDIgWqxZOli
+        PcEwSHbnDToAbJyP7iqZkz/OfJB2Nn+03zmdwHpcXKkQsCy+0TRifRLMBCnAX5ZX
+        nNm28aAQxfoEBSqGqk+V5jnoCOCzo67WnnNlTvgrpuhFJKIfnW+aXzYteyCpszWN
+        3thidWC1t+iaRSaqGTPJGlfnFIczcw+G9fz12TmHjaLk9gLLG1YRVc2HVDHI+9LA
+        k4bew172fwob8Hu5XNxz5gazQDQX/LrQNQvg9sRlUvhCwD2qVaMaFkfwQX7uAU69
+        pTPNrqQzx6qxcq9wQgvWDLGfnScDvUePC7lxQ4mSvVMA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=erQ4aLlXdSLCQDO88
+        xDFv3qgQA2+7qeoglQ68NDOqi8=; b=BrilrTiSuv6m0zheL1WbYVluGWbC148hB
+        y1YhtbJ14WHcfnW1df7u4FDDq8N+csP4uR94XzKKCyZLg/kxcATKagFG+lvALL/D
+        uPw89jLkSDahWDdK2ckFO9P9pV0rlUFw77PV97k1Te2TSF/ZhSMc+quDV5/TaA8L
+        GR9eknnt/mBExIw9xlF+l0cFbrBiuFYRKp849XlKkj5/QDtpKrcUDQJ4xLmjzKSh
+        ITRWidfV1ZmK+uuv8Jn9Jk0kuC/RKVrBvrb/N/j6YnMqKbZaeKSgGgtADMLlFVtF
+        6L8sVWzpPLK3r21jrToauCzIhpWYTs/g4R6FT367qBfrT9ST4YhGA==
+X-ME-Sender: <xms:Zr4yYDUgijwNm8XFk0gsjDDKGGyCXGz3ZR-47ArIX3aRPFVPia4EmA>
+    <xme:Zr4yYLlwkc7KGDlU_TE8Dqc1ld9hAT62Sx64wolNzaBkr3p7_P8OZgbi8GUvB5u3W
+    xeeFdAWnuZrY2EfAg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkedugddufedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeghihhllhhirghm
+    ucffuhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrthhtvg
+    hrnhepffehieekueeileeufeeuteegveeugeejfeelhfevkefhhfdvtddvjedufeekfeeu
+    necukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
+X-ME-Proxy: <xmx:Zr4yYPaMH-85EMCjpwcrqqVjdPSq06_At0bzAQAwS8pEQA3RPIGizQ>
+    <xmx:Zr4yYOV0v7SLhNc5wam0o8jq-_pOyZVpyydjv3ih1irPbYBD1m6jdA>
+    <xmx:Zr4yYNlH6o1N-6uZW-4bxilq9xI1cB8OMMkCI2n18qWvTXHsENQOWg>
+    <xmx:Zr4yYMsSeb2cGk12_P4s3K17C9qKUapplpMx2cP5Yk3HprITWL9UVQ>
+Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E55B7108005F;
+        Sun, 21 Feb 2021 15:11:17 -0500 (EST)
+From:   William Durand <will+git@drnd.me>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] staging: rtl8192e: ba_record struct cleanups
+Date:   Fri, 19 Feb 2021 23:11:21 +0000
+Message-Id: <20210219231128.27119-1-will+git@drnd.me>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A regression has been reported by Nicolas Boichat, found while using the
-copy_file_range syscall to copy a tracefs file.  Before commit
-5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
-kernel would return -EXDEV to userspace when trying to copy a file across
-different filesystems.  After this commit, the syscall doesn't fail anymore
-and instead returns zero (zero bytes copied), as this file's content is
-generated on-the-fly and thus reports a size of zero.
+This patchset fixes the checkpatch issues related to the `ba_record`
+struct defined in `rtl8192e/rtl819x_BA.h` (avoid camelcase). The last
+patch reformats the struct a bit to be more consistent with the other
+types defined in the same file.
 
-This patch restores some cross-filesystem copy restrictions that existed
-prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
-devices").  Filesystems are still allowed to fall-back to the VFS
-generic_copy_file_range() implementation, but that has now to be done
-explicitly.
+William Durand (7):
+  staging: rtl8192e: rename Timer to timer in ba_record struct
+  staging: rtl8192e: rename bValid to b_valid in ba_record struct
+  staging: rtl8192e: rename DialogToken to dialog_token in ba_record struct
+  staging: rtl8192e: rename BaParamSet to ba_param_set in ba_record struct
+  staging: rtl8192e: rename BaTimeoutValue to ba_timeout_value in ba_record struct
+  staging: rtl8192e: rename BaStartSeqCtrl to ba_start_seq_ctrl in ba_record struct
+  staging: rtl8192e: reformat ba_record struct
 
-nfsd is also modified to fall-back into generic_copy_file_range() in case
-vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+ drivers/staging/rtl8192e/rtl819x_BA.h     | 12 +--
+ drivers/staging/rtl8192e/rtl819x_BAProc.c | 96 +++++++++++------------
+ drivers/staging/rtl8192e/rtl819x_TSProc.c |  6 +-
+ drivers/staging/rtl8192e/rtllib_tx.c      |  4 +-
+ 4 files changed, 59 insertions(+), 59 deletions(-)
 
-Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
-Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
-Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-Signed-off-by: Luis Henriques <lhenriques@suse.de>
----
-Changes since v6
-- restored i_sb checks for the clone operation
-Changes since v5
-- check if ->copy_file_range is NULL before calling it
-Changes since v4
-- nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
-  or -EXDEV.
-Changes since v3
-- dropped the COPY_FILE_SPLICE flag
-- kept the f_op's checks early in generic_copy_file_checks, implementing
-  Amir's suggestions
-- modified nfsd to use generic_copy_file_range()
-Changes since v2
-- do all the required checks earlier, in generic_copy_file_checks(),
-  adding new checks for ->remap_file_range
-- new COPY_FILE_SPLICE flag
-- don't remove filesystem's fallback to generic_copy_file_range()
-- updated commit changelog (and subject)
-Changes since v1 (after Amir review)
-- restored do_copy_file_range() helper
-- return -EOPNOTSUPP if fs doesn't implement CFR
-- updated commit description
+--
+2.30.0
 
- fs/nfsd/vfs.c   |  8 +++++++-
- fs/read_write.c | 50 ++++++++++++++++++++++++-------------------------
- 2 files changed, 32 insertions(+), 26 deletions(-)
-
-diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
-index 04937e51de56..23dab0fa9087 100644
---- a/fs/nfsd/vfs.c
-+++ b/fs/nfsd/vfs.c
-@@ -568,6 +568,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
- ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
- 			     u64 dst_pos, u64 count)
- {
-+	ssize_t ret;
- 
- 	/*
- 	 * Limit copy to 4MB to prevent indefinitely blocking an nfsd
-@@ -578,7 +579,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
- 	 * limit like this and pipeline multiple COPY requests.
- 	 */
- 	count = min_t(u64, count, 1 << 22);
--	return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-+	ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
-+
-+	if (ret == -EOPNOTSUPP || ret == -EXDEV)
-+		ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
-+					      count, 0);
-+	return ret;
- }
- 
- __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 75f764b43418..463345c0ee30 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -1388,28 +1388,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
- }
- EXPORT_SYMBOL(generic_copy_file_range);
- 
--static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
--				  struct file *file_out, loff_t pos_out,
--				  size_t len, unsigned int flags)
--{
--	/*
--	 * Although we now allow filesystems to handle cross sb copy, passing
--	 * a file of the wrong filesystem type to filesystem driver can result
--	 * in an attempt to dereference the wrong type of ->private_data, so
--	 * avoid doing that until we really have a good reason.  NFS defines
--	 * several different file_system_type structures, but they all end up
--	 * using the same ->copy_file_range() function pointer.
--	 */
--	if (file_out->f_op->copy_file_range &&
--	    file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
--		return file_out->f_op->copy_file_range(file_in, pos_in,
--						       file_out, pos_out,
--						       len, flags);
--
--	return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
--				       flags);
--}
--
- /*
-  * Performs necessary checks before doing a file copy
-  *
-@@ -1427,6 +1405,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
- 	loff_t size_in;
- 	int ret;
- 
-+	/*
-+	 * Although we now allow filesystems to handle cross sb copy, passing
-+	 * a file of the wrong filesystem type to filesystem driver can result
-+	 * in an attempt to dereference the wrong type of ->private_data, so
-+	 * avoid doing that until we really have a good reason.  NFS defines
-+	 * several different file_system_type structures, but they all end up
-+	 * using the same ->copy_file_range() function pointer.
-+	 */
-+	if (file_out->f_op->copy_file_range) {
-+		if (file_in->f_op->copy_file_range !=
-+		    file_out->f_op->copy_file_range)
-+			return -EXDEV;
-+	} else if (file_in->f_op->remap_file_range) {
-+		if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
-+			return -EXDEV;
-+	} else {
-+                return -EOPNOTSUPP;
-+	}
-+
- 	ret = generic_file_rw_checks(file_in, file_out);
- 	if (ret)
- 		return ret;
-@@ -1511,11 +1508,14 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
- 			ret = cloned;
- 			goto done;
- 		}
-+		/* Resort to copy_file_range if implemented. */
-+		ret = -EOPNOTSUPP;
- 	}
- 
--	ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
--				flags);
--	WARN_ON_ONCE(ret == -EOPNOTSUPP);
-+	if (file_out->f_op->copy_file_range)
-+		ret = file_out->f_op->copy_file_range(file_in, pos_in,
-+						      file_out, pos_out,
-+						      len, flags);
- done:
- 	if (ret > 0) {
- 		fsnotify_access(file_in);
