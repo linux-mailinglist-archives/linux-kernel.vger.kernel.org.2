@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC2231F8F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:05:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF9F31F908
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhBSMDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 07:03:55 -0500
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:32939 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231136AbhBSMCf (ORCPT
+        id S230450AbhBSMHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 07:07:07 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:57014 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230516AbhBSMGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 07:02:35 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 6CE863E5;
-        Fri, 19 Feb 2021 07:01:27 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 19 Feb 2021 07:01:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=zO2+KACVCBF9wPIu/yH5KH2QXWS
-        QL5/8EumXFIR8eo8=; b=LN63jKfwAVfkQhPkAmtvaCtkvElndUggyWlDn85P1+l
-        Am7hTq5ErVfhIxbh/6rjeipmAWJCimTpOoveZcjlLeSieUkPJ7hzYd72C8/kP6mo
-        5KCKycRxRHWUQ2UOdApkEfRJM65DJGyN7QAMBx/Sg4u02KsculdyaVuQw4zqVTZO
-        O/rytldqLwsHyRtRggoJ/yhpnuTsEMl1W5LRiSzKZBtHZk+URIjGFQJAHeLlQQY7
-        2KLpDhalEgBe2Hh4A2ObusuP+GMWOtV2J+iBKIdsK2i8bFDU025HvDEXy/yUj+e3
-        gDortjNdut6uNB5dYz6eU1wIA17vjrS8OzPpBZuyC+g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=zO2+KA
-        CVCBF9wPIu/yH5KH2QXWSQL5/8EumXFIR8eo8=; b=FTYfYQ8/8+88oq9ECKRWCq
-        RFVnwCt99ZtOfsZMpiE/xg8DdBypsGfCaTIZTEBSNsTOtWOcWKS8oKumtBsl4IWw
-        wugBSSycxlqwuzJSQhG7ZM8q70d6SAI9ly8wypF1bGnumWLKXEY6sYrkbhQEy9I3
-        0r1+74PCeuCwCOEOIOyjtdlT+q0MLNxZ1p7ypcLN8cU0xDATHcK9QWo0qDNwggQk
-        ie2JnXMdhNOqeupPLIC69CglsG5EiYgmARWzP51pAwxNqZsfE6r3QlI94xRqDNLX
-        BWVDjjjlWq5Vsgct919vI6lKes8XPUbhgCoiXhbFeMAnszIgoDaydiTN4X0azjCQ
-        ==
-X-ME-Sender: <xms:lKgvYEdvgIXhs2p0j4b0XnoEABZfeFW51cyZdj_PRgQQssUX9GsUXw>
-    <xme:lKgvYPKEGWeIrV4OPfwEXIR-XBWSq3A1PY12D23TctqXAvliooi5V1CPeQIITz63e
-    5wRf6p4PYXatB7exWc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjeeigdefhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:lKgvYBFPoJTadOhRLZOploO2qxizfkxuk5ulJ4oJWgI56tpeJTamvA>
-    <xmx:lKgvYKAxaOi581VsH_ynDaUj7XdaOC2qk-oiP9QoTK_AsxJbuqnieA>
-    <xmx:lKgvYM87Nlle8X6aN8fMqeQ8X-Hg9WRe5zRSbTvOA6cxiZmONV4oyw>
-    <xmx:l6gvYPkcOyBDFmWcA1QplWZ8ePSM7t6K4Ep5gF88iXIymQVkjIIpGg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id AE1501080057;
-        Fri, 19 Feb 2021 07:01:24 -0500 (EST)
-Date:   Fri, 19 Feb 2021 13:01:23 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Tobias Schramm <t.schramm@manjaro.org>
-Cc:     Icenowy Zheng <icenowy@aosc.io>, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v2 1/1] clk: sunxi-ng: v3s: use sigma-delta modulation
- for audio-pll
-Message-ID: <20210219120123.4q5m27byxylpsrtb@gilmour>
-References: <20210218112001.479018-1-t.schramm@manjaro.org>
- <20210218112001.479018-2-t.schramm@manjaro.org>
+        Fri, 19 Feb 2021 07:06:07 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JC5E0K169152;
+        Fri, 19 Feb 2021 12:05:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=imsrzSSI/vvBI5ueuekT+d9U8MRYf+FdzBwlN96lu2Q=;
+ b=pfU+gXbnZyi2ZqFhvGJkKXk1/sgWKgIa5EuI4IGCmU/FSKRIVgjNCRi7kEZjgII7K1gT
+ XPfvLVM2JQCgGAF3cOPD0OBkMgfycnPSyQ96LUyBAcXbyIj6/2ENfkf1ulRDYykcWuG6
+ LXSqzT5Nd0wkCrHUl1mCdsjIZo7AmxfEQWoFDFHRkzjq9RsvSNJFovYDopJVX9VeIrqQ
+ ss5kHJ5IHl5o9urVczrZEpqAwvk7PjNoO5tW5zp3mpnYAXY/rHG528CZ6Zp2oifJvgBK
+ /dl76C7MK2b2JUtA/iTWzqXgNAs6oxmnQirF4Z8uzDbjVvJBO6sPmbKSnDaCtGHaKw1X Dw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36p66r99jb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 12:05:14 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JC0GhI084445;
+        Fri, 19 Feb 2021 12:05:12 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 36prq1tvbv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 12:05:12 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11JC5Acf004245;
+        Fri, 19 Feb 2021 12:05:11 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 19 Feb 2021 04:05:10 -0800
+Date:   Fri, 19 Feb 2021 15:04:58 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Amrit Khera <amritkhera98@gmail.com>
+Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, joel@joelfernandes.org, christian@brauner.io,
+        hridya@google.com, surenb@google.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: android: Fix const keyword style issue in
+ ashmem.c
+Message-ID: <20210219120457.GY2087@kadam>
+References: <20210219114237.5720-1-amritkhera98@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="oyfqdg5wwwj4kjco"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218112001.479018-2-t.schramm@manjaro.org>
+In-Reply-To: <20210219114237.5720-1-amritkhera98@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190098
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1011 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 05:12:38PM +0530, Amrit Khera wrote:
+> This change fixes a checkpatch warning for "struct file_operations
+> should normally be const".
+> 
+> Signed-off-by: Amrit Khera <amritkhera98@gmail.com>
+> ---
+> Changes in v2:
+>  - Wrapped the commit description
+>  - Build tested
+     ^^^^^^^^^^^^
+Heh.  Nope.
 
---oyfqdg5wwwj4kjco
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This breaks the build.
 
-On Thu, Feb 18, 2021 at 12:20:01PM +0100, Tobias Schramm wrote:
-> Previously it was not possible to achieve clock rates of 24.576MHz and
-> 22.5792MHz, which are commonly required core clocks for the i2s
-> peripheral of v3s based SoCs.
->=20
-> Add support for those clock rates through the audio pll's sigma-delta
-> modulator.
->=20
-> Signed-off-by: Tobias Schramm <t.schramm@manjaro.org>
+regards,
+dan carpenter
 
-Applied, thanks
-Maxime
-
---oyfqdg5wwwj4kjco
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYC+okwAKCRDj7w1vZxhR
-xWUPAP9UlOHIEd8Mmjjo0yVzV4BlzO+qFihrLW4LloAikQ6UYAD/fvjjkFGKwNzi
-dliEhvNt3GxZ/wy5dEbCJrAgdYNiVQM=
-=RVBT
------END PGP SIGNATURE-----
-
---oyfqdg5wwwj4kjco--
