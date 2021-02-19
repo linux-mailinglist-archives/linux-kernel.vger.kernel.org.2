@@ -2,91 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DABE31F61B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B6231F624
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:00:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhBSIzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:55:21 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:12928 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBSIzR (ORCPT
+        id S229712AbhBSJAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:00:05 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:19442 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229535AbhBSI76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:55:17 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DhljB2ByCzjNVp;
-        Fri, 19 Feb 2021 16:53:18 +0800 (CST)
-Received: from [10.174.178.147] (10.174.178.147) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 19 Feb 2021 16:54:24 +0800
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>
-CC:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        PEIXIN HOU <PEIXIN.HOU@huawei.com>,
-        Yanjin <yanjin.yan@huawei.com>,
-        "Zhangdianfang (Dianfang, OS Lab)" <zhangdianfang@huawei.com>,
-        Zhaohongjiang <zhaohongjiang@huawei.com>,
-        Huxinwei <huxinwei@huawei.com>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
-Date:   Fri, 19 Feb 2021 16:54:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Fri, 19 Feb 2021 03:59:58 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11J8scOx028670;
+        Fri, 19 Feb 2021 03:59:05 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 36p9gb9wam-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 03:59:04 -0500
+Received: from SCSQMBX10.ad.analog.com (SCSQMBX10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 11J8x376010902
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 19 Feb 2021 03:59:03 -0500
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Fri, 19 Feb 2021 00:59:01 -0800
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
+ Fri, 19 Feb 2021 00:59:01 -0800
+Received: from zeus.spd.analog.com (10.66.68.11) by scsqmbx10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
+ Fri, 19 Feb 2021 00:59:01 -0800
+Received: from saturn.ad.analog.com ([10.48.65.120])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11J8wx48029584;
+        Fri, 19 Feb 2021 03:58:59 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
+        <jic23@kernel.org>, <nuno.sa@analog.com>,
+        <dragos.bogdan@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 0/2] iio: core,buffer-dma: 2 fixes for the recent IIO buffer series
+Date:   Fri, 19 Feb 2021 10:58:24 +0200
+Message-ID: <20210219085826.46622-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YA/E1bHRmZb50MlS@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.147]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_02:2021-02-18,2021-02-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 clxscore=1015
+ mlxscore=0 priorityscore=1501 impostorscore=0 adultscore=0 spamscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+Patchset contains 2 fixes for some patches that are present in the
+iio/testing branch.
 
-On 2021/1/26 15:29, Greg Kroah-Hartman wrote:
-[...]
-> 
-> I want to see companies _using_ the kernel, and most importantly,
-> _updating_ their devices with it, to know if it is worth to keep around
-> for longer than 2 years.  I also, hopefully, want to see how those
-> companies will help me out in the testing and maintenance of that kernel
-> version in order to make supporting it for 6 years actually possible.
-> 
-> So, are you planning on using 5.10?  Will you will be willing to help
-> out in testing the -rc releases I make to let me know if there are any
-> problems, and to help in pointing out and backporting any specific
-> patches that your platforms need for that kernel release?
+No idea what's best now, either to re-send the series or to just send these
+fixes on their own.
+For now I chose to send the fixes on their (due to lack of time).
 
-We(Huawei) are willing to commit resources to help out in testing the
-stable -rc releases, and to help to backport patches for stable kernels.
+These could be squashed into the original.
 
-5.10 stable kernel will be used for openEuler [1] kernel and also inside
-Huawei. From customer's feedback, it's very important to see the stable
-kernel we used to be maintained for 6 years in the community, and we
-will use 5.10 kernel for at least 6 years, so we are willing to help
-you and help ourselves :)
+I can also re-send the series, but not from an Analog email; since I will
+not have access to it.
 
-In specific, we will start from the testing work, using HULK robot
-(reports lots of bugs to mainline kernel) testing framework to test
-compile, reboot, functional testing, and will extend to basic
-performance regression testing in the future.
+Alexandru Ardelean (2):
+  iio: core: use kfree_const in iio_free_chan_devattr_list() to free
+    names
+  iio: buffer-dma: fix type of 'i' in iio_dma_buffer_alloc_blocks()
 
-And we will start from ARM64 and X86 architecture first, and then extend
-to other platforms.
+ drivers/iio/buffer/industrialio-buffer-dma.c | 3 +--
+ drivers/iio/industrialio-core.c              | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-For patch backporting, will send the bugfix patches (from mainline)
-we spotted, but I think this work may not doing in regular but will
-be triggered as needed.
+-- 
+2.27.0
 
-Does this sound good to you?
-
-Thanks
-Hanjun
-
-[1]: https://openeuler.org/en/
