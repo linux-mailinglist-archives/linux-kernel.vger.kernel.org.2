@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97A231FF3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECC631FF40
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhBSTN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:13:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhBSTNZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:13:25 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8FAC061756;
-        Fri, 19 Feb 2021 11:12:44 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id e9so3890921plh.3;
-        Fri, 19 Feb 2021 11:12:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=xHL0tcHTSbkROx1RrvQTYjKwNbQ4sW6lJ5aTU43rCIw=;
-        b=KYmXa/Q4n0R52taiNdJf/nwL7etIdULvA82reWG/HosC4LGgR79RhasxU63VqiYsPI
-         +VI5l2SGoXn95lNSI+65kUt9vzQ57AqReq5uKX/T9ZU18sKTQFiG/ZcBXILG073ho4gN
-         Ht+ekVV3NAL475uKkMSGrZOw+FdQFlGtvXe3NEs7iVa3Tuvm9ui9Nt3Z76kQ8Yj/TLlV
-         rza8DouePj5Pf1u5sHOYcGSZrYf429zBeG3L+t/MCvPNnJMkJs5DJGveX2kNwCYPUm9E
-         eF/TmbpMPgguoho4W9cd43Rs+nUSCSmF6/ANl8usZb3WNkXkJ5BD1zdbL5vOS3mZO/PE
-         HWEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=xHL0tcHTSbkROx1RrvQTYjKwNbQ4sW6lJ5aTU43rCIw=;
-        b=HIH5h7/g+xkOAI487PS0vkEvaXankkaVt+6QqNNWXo3q/AHCUXz0ci3ib0cI9R7IoD
-         DxTVEplje3DNlwVERpYoiKWChP/rubnmxK1CVEK95C+K2BaHAW0S8G9cToBGCVqowfBT
-         oaGx2Tyd8FYNqfGDqWBMsipiJwU8hizaDnSjxEOZ9lHgCwVCD3zadDrLvcic2jTCCmoX
-         VWIR5XkGT6vi8ROGT2WQTwKMjvajIOIaaj997lUrwwg4ehzbYzohjmvfR8gp02+6qIrE
-         0sDkcr0A24XQDlOOE/hpMAWnpjP9s9Mcax5MykZwb0pqZ4oL09XjbJa0+ohIE6LBekqk
-         RJKw==
-X-Gm-Message-State: AOAM5322ALgEmi4w6qqH/xGBGAlQqB79JaLPmWOFRfVkZl7gZ0xzvTua
-        EBE0CPAtBH0nQ7ZN/D58saZUD3wnw8w=
-X-Google-Smtp-Source: ABdhPJwbGJqK4z8CD+NbJMbo0tiKt2fonW8LWvYQJiKZkqmupHu8kAesXYTBdplRYFEqltap4zFuXg==
-X-Received: by 2002:a17:902:704c:b029:e3:1bd3:6318 with SMTP id h12-20020a170902704cb02900e31bd36318mr10368729plt.20.1613761964501;
-        Fri, 19 Feb 2021 11:12:44 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:7d43:dae1:3b24:51b7])
-        by smtp.gmail.com with ESMTPSA id 188sm8766404pfc.98.2021.02.19.11.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 11:12:43 -0800 (PST)
-Date:   Fri, 19 Feb 2021 11:12:41 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Ronald =?iso-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sergiu Cuciurean <sergiu.cuciurean@analog.com>,
-        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] Input: applespi: Fix occasional crc errors under
- load.
-Message-ID: <YDANqSjtjwSYvqsj@google.com>
-References: <20210217190718.11035-1-ronald@innovation.ch>
- <20210217190718.11035-2-ronald@innovation.ch>
+        id S229931AbhBSTOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:14:15 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:47379 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229652AbhBSTON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 14:14:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613762030; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=lhn8TVO1gUI2MG+vp5dxOFczztpu4wvavm9jaFIgGO4=;
+ b=aNHz6OO5ntzpZEguClxC7xic8MzZRXjbAoCCszAMmAqiWrdfe10w++W4J4kPY9SKiw/ib3KB
+ n3in3bcKneEsUjWgtDa3CycvAXwES401SraJ0DuT4ML+z7tuRXdpGG6IyYnCdzNrBLhb67Rf
+ E+LpBCcTHk8TslGcd6paVOYyoqg=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60300dcc37f02eb71442a757 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 19:13:16
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BD4F8C43461; Fri, 19 Feb 2021 19:13:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1DF40C433C6;
+        Fri, 19 Feb 2021 19:13:16 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210217190718.11035-2-ronald@innovation.ch>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 19 Feb 2021 11:13:16 -0800
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Jeffrey Hugo <jhugo@codeaurora.org>
+Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, carl.yin@quectel.com,
+        naveen.kumar@quectel.com, jhugo=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH v4 1/3] bus: mhi: core: Clear devices when moving
+ execution environments
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <3b3476ff-3126-097a-5d1b-130ac570cce6@codeaurora.org>
+References: <1613701052-38885-1-git-send-email-bbhatt@codeaurora.org>
+ <1613701052-38885-2-git-send-email-bbhatt@codeaurora.org>
+ <3b3476ff-3126-097a-5d1b-130ac570cce6@codeaurora.org>
+Message-ID: <f031ea65fa4eecb97d4b7a21ac7e52af@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 11:07:17AM -0800, Ronald Tschalär wrote:
-> For some reason, when the system is under heavy CPU load, the read
-> following the write sometimes occurs unusually quickly, resulting in
-> the read data not being quite ready and hence a bad packet getting read.
-> Adding another delay after reading the status message appears to fix
-> this.
+On 2021-02-19 08:10 AM, Jeffrey Hugo wrote:
+> On 2/18/2021 7:17 PM, Bhaumik Bhatt wrote:
+>> When moving from SBL to mission mode execution environment, there
+>> is no remove callback notification to MHI client drivers which
+>> operate on SBL mode only. Client driver devices are being created
+>> in SBL or AMSS(mission mode) and only destroyed after power down
+>> or SYS_ERROR. If there exist any SBL-specific channels, those are
+>> left open and client drivers are thus unaware of the new execution
+>> environment where those channels cannot operate. Close the gap and
+>> issue remove callbacks to SBL-specific client drivers once device
+>> enters mission mode.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
 > 
-> Signed-off-by: Ronald Tschalär <ronald@innovation.ch>
+> I like the idea, but I question where this is limited to the
+> transition to mission mode.  Feels like something that should occur on
+> all EE changes.  We might not have a current usecase that is outside
+> what you've implemented here, but I don't think there is anything
+> preventing that in future.
 
-Applied, thank you.
+You're right. It should not be limited to any single EE transition and 
+that's
+how the code is written. I see my commit message gives the impression 
+that it's
+only for SBL -> AMSS. I can correct that and mention it to be EE 
+transition
+agnostic with SBL to AMSS as the currently usable example.
 
--- 
-Dmitry
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
