@@ -2,101 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF16331FD32
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A5031FD30
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBSQhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:37:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbhBSQhD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:37:03 -0500
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09042C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:36:21 -0800 (PST)
-Received: by mail-lj1-x22d.google.com with SMTP id a22so23142587ljp.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:36:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=V8gjkSXbyN+GwM8OVf0FOHVFNyFJ51dH9JSVHbOdelQ=;
-        b=XJ1BlLOnpjEK9L1nPSVKong5qJF/14qvE7jBAD/vtPPETVCDCzjupANifjpL1Lhtqi
-         LQJ3NcwUOXjPHWyHlvAuOpie4bueXx/Bl1lz4WhqfypwlcDTEYEdm9e3ebWcIpXBv9wY
-         YgaDyyY3R8TrDcCeoYKQqpign40NoavYvkYltE0LHIq+pKJiZnJWhoaAWLeBJGlhJCnf
-         KaESBoT0fBY3SZhmP3/pmubGj5zkKu/DtPzqjYqsgGToWgNVY/gTMczeMrKtyljSrvS1
-         JI54qkXr6+KiXPG59lVdLE7RNo09/GOhmA3qiXrXzCZ+leElylz479FsKDHtAvYz8iJU
-         CSLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=V8gjkSXbyN+GwM8OVf0FOHVFNyFJ51dH9JSVHbOdelQ=;
-        b=G56J5U2Hk7QCWdublYd9USyNbfhZ+CJkmF7WL3hA5iHmMv9Ha9hcZoCPdimD7LRj2M
-         KTVpLh+rpHxuhBB4z+vt/fFunB04lwAPR+0PVTS5xUXRIXMIazA5kYUCE78i360eLN84
-         GgjVbPLoi5tGEcEhBU7Kuhj0GIIQpTFpBXVpWwKjRvr8Ob396NPqMeycptaTCzkIH+Bo
-         qX8RudAagYWvCVy0Q/xFlIJFr4/r+Edoh4dogsn/FMNvRE/SksGPwwIAojkbU00cYR89
-         xzmpFvTXbKVrOre37mraqMHaHTI/2saZzcy75r+t4kRY54KqtcTZar8Z0AqLLIFL332S
-         zVbw==
-X-Gm-Message-State: AOAM532s0y05ZSoxoyg3/GcAcKhd+n769YnssSnvNiBtRWO2ASy55aS3
-        HzxDod8+zTKewWCGwn3xI3U=
-X-Google-Smtp-Source: ABdhPJxzK9YLgeZDUqoYrZKiABKGnpRnbNOzSr4yR06BgBUXtxzRU94rnc0LPmnK9w/QMoyO7+qWrQ==
-X-Received: by 2002:a19:7d7:: with SMTP id 206mr5904459lfh.135.1613752579546;
-        Fri, 19 Feb 2021 08:36:19 -0800 (PST)
-Received: from msi.localdomain (vmpool.ut.mephi.ru. [85.143.112.90])
-        by smtp.gmail.com with ESMTPSA id n14sm970877lfi.219.2021.02.19.08.36.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 08:36:19 -0800 (PST)
-From:   Nikolay Kyx <knv418@gmail.com>
-To:     gregkh@linuxfoundation.org, sergiu.cuciurean@analog.com
-Cc:     Nikolay Kyx <knv418@gmail.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 02/02] staging: kpc2000: code style: fix alignment issues
-Date:   Fri, 19 Feb 2021 19:34:20 +0300
-Message-Id: <20210219163420.24930-1-knv418@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <YC92OIgh6HTEexu4@kroah.com>
-References: <YC92OIgh6HTEexu4@kroah.com>
+        id S230004AbhBSQgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:36:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229868AbhBSQgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 11:36:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DE4564DF0;
+        Fri, 19 Feb 2021 16:35:24 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 16:35:21 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>
+Subject: Re: [PATCH RESEND] mm, kasan: don't poison boot memory
+Message-ID: <20210219163520.GA18049@arm.com>
+References: <8d79640cdab4608c454310881b6c771e856dbd2e.1613595522.git.andreyknvl@google.com>
+ <20210218104626.GA12761@arm.com>
+ <CAAeHK+z-Vsuombjed8OYYpFoL4rENpf1J5F3AzQF8+LsqjDHUg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAeHK+z-Vsuombjed8OYYpFoL4rENpf1J5F3AzQF8+LsqjDHUg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following checkpatch.pl warning:
+On Thu, Feb 18, 2021 at 09:24:49PM +0100, Andrey Konovalov wrote:
+> On Thu, Feb 18, 2021 at 11:46 AM Catalin Marinas
+> <catalin.marinas@arm.com> wrote:
+> >
+> > The approach looks fine to me. If you don't like the trade-off, I think
+> > you could still leave the kasan poisoning in if CONFIG_DEBUG_KERNEL.
+> 
+> This won't work, Android enables CONFIG_DEBUG_KERNEL in GKI as it
+> turns out :)
 
-WARNING: line length of 124 exceeds 100 columns
+And does this option go into production kernels?
 
-in file kpc2000_i2c.c
+> > For MTE, we could look at optimising the poisoning code for page size to
+> > use STGM or DC GZVA but I don't think we can make it unnoticeable for
+> > large systems (especially with DC GZVA, that's like zeroing the whole
+> > RAM at boot).
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=211817
 
-Signed-off-by: Nikolay Kyx <knv418@gmail.com>
----
+A quick hack here if you can give it a try. It can be made more optimal,
+maybe calling the set_mem_tag_page directly from kasan:
 
-Additionally some style warnings remain valid here and could be fixed by
-another patch.
-
-v2: Edited changelog, as suggested by Greg KH <gregkh@linuxfoundation.org>
-v3: Splitted patch in two parts, as suggested by Greg KH <gregkh@linuxfoundation.org>
-
- drivers/staging/kpc2000/kpc2000_i2c.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/staging/kpc2000/kpc2000_i2c.c b/drivers/staging/kpc2000/kpc2000_i2c.c
-index 25bb5c97dd21..68f5ec000365 100644
---- a/drivers/staging/kpc2000/kpc2000_i2c.c
-+++ b/drivers/staging/kpc2000/kpc2000_i2c.c
-@@ -200,7 +200,9 @@ static int i801_check_post(struct kpc_i2c *priv, int status, int timeout)
- 		outb_p(status & STATUS_FLAGS, SMBHSTSTS(priv));
- 		status = inb_p(SMBHSTSTS(priv)) & STATUS_FLAGS;
- 		if (status)
--			dev_warn(&priv->adapter.dev, "Failed clearing status flags at end of transaction (%02x)\n", status);
-+			dev_warn(&priv->adapter.dev,
-+				 "Failed clearing status flags at end of transaction (%02x)\n",
-+				 status);
- 	}
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+index 7ab500e2ad17..b9b9ca1976eb 100644
+--- a/arch/arm64/include/asm/mte-kasan.h
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -48,6 +48,20 @@ static inline u8 mte_get_random_tag(void)
+ 	return mte_get_ptr_tag(addr);
+ }
  
- 	return result;
--- 
-2.30.1
++static inline void __mte_set_mem_tag_page(u64 curr, u64 end)
++{
++	u64 bs = 4 << (read_cpuid(DCZID_EL0) & 0xf);
++
++	do {
++		asm volatile(__MTE_PREAMBLE "dc gva, %0"
++			     :
++			     : "r" (curr)
++			     : "memory");
++
++		curr += bs;
++	} while (curr != end);
++}
++
+ /*
+  * Assign allocation tags for a region of memory based on the pointer tag.
+  * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
+@@ -63,6 +77,11 @@ static inline void mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+ 	curr = (u64)__tag_set(addr, tag);
+ 	end = curr + size;
+ 
++	if (IS_ALIGNED((unsigned long)addr, PAGE_SIZE) && size == PAGE_SIZE) {
++		__mte_set_mem_tag_page(curr, end);
++		return;
++	}
++
+ 	do {
+ 		/*
+ 		 * 'asm volatile' is required to prevent the compiler to move
 
