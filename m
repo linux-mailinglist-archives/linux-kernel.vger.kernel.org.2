@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F35FF31F632
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA83A31F62E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:03:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhBSJDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:03:50 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:11414 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229599AbhBSJCg (ORCPT
+        id S229974AbhBSJDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:03:16 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:57160 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSJCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:02:36 -0500
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11J8tJlg031999;
-        Fri, 19 Feb 2021 04:01:44 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 36pcjb1qaf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 04:01:44 -0500
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 11J91hiP047876
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Feb 2021 04:01:43 -0500
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Fri, 19 Feb 2021 04:01:42 -0500
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2;
- Fri, 19 Feb 2021 04:01:42 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
- Fri, 19 Feb 2021 04:01:42 -0500
-Received: from saturn.ad.analog.com ([10.48.65.120])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 11J91dgL030328;
-        Fri, 19 Feb 2021 04:01:40 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-CC:     <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <jic23@kernel.org>, <nuno.sa@analog.com>,
-        <dragos.bogdan@analog.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH] iio: adc: adi-axi-adc: fix typo in doc-string
-Date:   Fri, 19 Feb 2021 11:01:34 +0200
-Message-ID: <20210219090134.48057-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 19 Feb 2021 04:02:22 -0500
+Date:   Fri, 19 Feb 2021 10:01:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613725300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sYMGdW4tGOh6IMOmWxCR9Phs/sS0FjTOFTf7PQrG6oI=;
+        b=gir2DZ0wP8bxN9dHORw8D3+mvJZh1CTbn86oQQ2TJl4WLkJhoYABpoCKoEzZ1VmA9++KeL
+        JsuVvptcepy6skOBehV0KRVpbQYqzmGC4lkdJ5/KT9R+51sm9nE88lfTys/+NKPBrwF15E
+        J6H54/iLAGX+Nm98w37D7IhYlMFGUplQM+g9Tymtfy4TIm/ORQ3sFmq6CdaHVrkGr0oNDK
+        edD/7xitnMm8poVwB+0CjJp3LOfN0DY53Os+lv1HDE0NCFIfNDK++rQK+BQYpH9EaPy/mg
+        qK0cZ/bOck6QSW7wXl0+BL6eWfvn+w5WF3b7B/FpD6BXCILmDV/yEKyXZVFZsA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613725300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sYMGdW4tGOh6IMOmWxCR9Phs/sS0FjTOFTf7PQrG6oI=;
+        b=cnhYW2LGCMeyzE+bK/JwqeT8ncoeasHmG5Ij57QrePvmlINfXPYKRoln4aGihuCrTajOqH
+        CjRRuRuh7C+CzDBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Trond Myklebust <trondmy@hammerspace.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        Jeff Layton <jlayton@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-cachefs@redhat.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>, linux-mm@kvack.org,
+        linux-afs@lists.infradead.org,
+        v9fs-developer@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 34/33] netfs: Pass flag rather than use in_softirq()
+Message-ID: <20210219090138.c5w7dnf7llaw4rar@linutronix.de>
+References: <20210216093044.GA24615@lst.de>
+ <20210216084230.GA23669@lst.de>
+ <161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk>
+ <1376938.1613429183@warthog.procyon.org.uk>
+ <1419965.1613467771@warthog.procyon.org.uk>
+ <2017129.1613656956@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-19_02:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0 mlxscore=0
- malwarescore=0 suspectscore=0 adultscore=0 clxscore=1015 phishscore=0
- mlxlogscore=848 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190070
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2017129.1613656956@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The channels are of type iio_chan_spec, not axi_adc_chan_spec. They were in
-some earlier version, but forgot to rename in the doc-string.
+On 2021-02-18 14:02:36 [+0000], David Howells wrote:
+> How about the attached instead?
 
-Fixes: ef04070692a21 ("iio: adc: adi-axi-adc: add support for AXI ADC IP core")
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
- include/linux/iio/adc/adi-axi-adc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you for that flag.
 
-diff --git a/include/linux/iio/adc/adi-axi-adc.h b/include/linux/iio/adc/adi-axi-adc.h
-index c5d48e1c2d36..52620e5b8052 100644
---- a/include/linux/iio/adc/adi-axi-adc.h
-+++ b/include/linux/iio/adc/adi-axi-adc.h
-@@ -15,7 +15,7 @@ struct iio_chan_spec;
-  * struct adi_axi_adc_chip_info - Chip specific information
-  * @name		Chip name
-  * @id			Chip ID (usually product ID)
-- * @channels		Channel specifications of type @struct axi_adc_chan_spec
-+ * @channels		Channel specifications of type @struct iio_chan_spec
-  * @num_channels	Number of @channels
-  * @scale_table		Supported scales by the chip; tuples of 2 ints
-  * @num_scales		Number of scales in the table
--- 
-2.27.0
+> David
 
+Sebastian
