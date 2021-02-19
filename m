@@ -2,144 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74E731F7C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A2431F79D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhBSK6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:58:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53536 "EHLO
+        id S230101AbhBSKus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:50:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhBSKyb (ORCPT
+        with ESMTP id S229878AbhBSKun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:54:31 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 363DBC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 02:53:43 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id d2so3925823pjs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 02:53:43 -0800 (PST)
+        Fri, 19 Feb 2021 05:50:43 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D7C9C061756;
+        Fri, 19 Feb 2021 02:50:02 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id c8so17802915ljd.12;
+        Fri, 19 Feb 2021 02:50:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yUS9qNpkZbJSnIup5wcCJPaYw6pSjle5WwxW0514c70=;
-        b=lwq4w0mNryxcojF1AHwzPzs/dz5mdKgGkbf7trkVA1vm92+chl3bthuADEito25Ba3
-         y6A3UHQmXzxnCiLm4Dms8CVG1fD4zTmnVnTFkMsV0Ibon8eCOz+WrM5bdJg++DygMUv2
-         WIuEl4P59gqZ5+K/Lyw80O9nhHivuU14jAec6CTD480EPu/muFtYKuZ2yXSFDf1N0hE7
-         Hum2QFGypeRwjrcnvPe6fsu3EI8e3/D9k4cle1OfWr3wrJx+iISqtj/RdAbeao7eZD+v
-         tIB5iU3v/K1FoNAWfKzPx5EPZYVxzhoi0oFXJTw/xO7VcBDn9r2wgeqrqDACsluSwoTc
-         V2pQ==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Y0Yx7VVnU/W2+L2dh6W1FITCqjGsxYkHil+6YG9in0k=;
+        b=msbNF1ONnsEShcFrdua+cfZoCXOUij7q0SMsPSaeDRXeLRDncODD9ce4hoIzVYpACc
+         Ai5gQXmQeqxCsW9tS2/PL/5tG33GCr8Xa31T0xQ+6Q4bUXJexFtBoUVXoAVp15zUBDDh
+         em5LTD8dnMxsFKKpOj3ey+0mAOx05Vi6LaRsBvnJ9JNXowuVGwNZBHgGP+BlyO67L39f
+         JiRbFkuIwaHC4DnmpgXRza4nwcYJ4De91VWM6l2YPx8WchovXxfgDcIXSpfDnnJcPOkH
+         XP0g2AZnm4YDBtRWVfe6R40p/3WEGXTm4JpxKdyPzaCWIAHmKzNylQXxj1hYx+EIj7vP
+         FL4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yUS9qNpkZbJSnIup5wcCJPaYw6pSjle5WwxW0514c70=;
-        b=Mf9ltCbcDxMURRqbHGs6NG93sL7+SN1dMCok6zyJX1KLRY6JTXb02w/WokrG/ENqxs
-         gGJCSrPO3/JH0h/q9Z1uK7WaRq3/0h11UmNiUI0mSCFKuAn1wUC7DQkDUlmcip7bsTuK
-         PfFgayz9stfW6QnNZ68F1X2zeFyCXPK8oZfdP4BkLYHw8ryUsqZxfXxEiaWWqDzNmIm5
-         eIWWDA55hcsJkeog4q0/5Pp4fNJpWqghReQADIHvHkzXKCIISFtfVp070ZbmG8gWR5ha
-         BAIkv5oBuyBwhhmKIxp4J0IWzTq45HhNdkC68APzOv+OOVRL/r7sQZo1t5p5jU0kqeEU
-         hS5g==
-X-Gm-Message-State: AOAM5333Bx0dlBOwf9Ih8P1t8PLhHEdjzAMzPhZJZjFAf1YMaE/uxsxH
-        LkaDk/QJKN/+CJUpE+ggY9qIWQ==
-X-Google-Smtp-Source: ABdhPJyB5WZMeDWoyUkjPOMlachVxvvFod144fxl8bbB0lmthUAShtFzj3K5VoXcb0cR5XGI9WC6WQ==
-X-Received: by 2002:a17:902:e989:b029:e2:8c9d:78ba with SMTP id f9-20020a170902e989b02900e28c9d78bamr1281160plb.81.1613732022712;
-        Fri, 19 Feb 2021 02:53:42 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.250])
-        by smtp.gmail.com with ESMTPSA id x1sm9662193pgj.37.2021.02.19.02.53.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Feb 2021 02:53:42 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, mhocko@suse.com, song.bao.hua@hisilicon.com,
-        david@redhat.com, naoya.horiguchi@nec.com,
-        joao.m.martins@oracle.com
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: [PATCH v16 9/9] mm: hugetlb: optimize the code with the help of the compiler
-Date:   Fri, 19 Feb 2021 18:49:54 +0800
-Message-Id: <20210219104954.67390-10-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210219104954.67390-1-songmuchun@bytedance.com>
-References: <20210219104954.67390-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Y0Yx7VVnU/W2+L2dh6W1FITCqjGsxYkHil+6YG9in0k=;
+        b=m2th8xqVx8bRe5ISheQjjLHr7DL8ifoAgCpjVeVEtTzU1ywWa7oqYqTJCTGVTTthsy
+         u6FuLnkfmSfv1w4GolLg26SwrzuF269QfW60WC73wgqmTePyZq7dR5f+BZA/ZbRTiGIH
+         /OCrV2V5KGbCC2hyv2DFbrsfGJtNEVZNSrY6GClmoYa2WVj6RzheynAOMX02W+tQb+pA
+         jxGV1B2pnQ2n30XTiu4XQzkEXP6B1M2xQRVRCT4+uJr9efdZXRhKYVkFLOTcp3xpcyNo
+         QDfd7ooy4En6fTQr8lRUhupTq4bs7lTaa08Mdlz1OL2KQxL6HIk3BLt+CEfS55mUfFKm
+         ZThA==
+X-Gm-Message-State: AOAM532cKN2oTLx8ZXIe48iUS/C8GWQulzvo5gtZBLnz84qslGI6XRix
+        MPxfwdrC8bJCjqt2uxLi7Bg=
+X-Google-Smtp-Source: ABdhPJwY506EqwNoo46pMPEhxNoBnvKa7HC9qr2YAjyy8WR4AgzfglUReP8TrV7MZtRdKXu577P4EQ==
+X-Received: by 2002:a05:6512:39c5:: with SMTP id k5mr1974743lfu.478.1613731800568;
+        Fri, 19 Feb 2021 02:50:00 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id j16sm366852lfk.68.2021.02.19.02.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 02:50:00 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 19 Feb 2021 11:49:58 +0100
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210219104958.GA34308@pc638.lan>
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the "struct page size" crosses page boundaries we cannot
-make use of this feature. Let free_vmemmap_pages_per_hpage()
-return zero if that is the case, most of the functions can be
-optimized away.
+On Fri, Feb 19, 2021 at 09:17:55AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-02-18 07:15:54 [-0800], Paul E. McKenney wrote:
+> > Thank you, but the original report of a problem was from Sebastian
+> > and the connection to softirq was Uladzislau.  So could you please
+> > add these before (or even in place of) my Reported-by?
+> > 
+> > Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Reported-by: Uladzislau Rezki <urezki@gmail.com>
+> > 
+> > Other than that, looks good!
+> 
+> Perfect. I'm kind of lost here, nevertheless ;) Does this mean that the
+> RCU selftest can now be delayed?
+> 
+If above fix works, we can initialize rcu_init_tasks_generic() from the
+core_initcall() including selftst. It means that such initialization can
+be done later:
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
----
- include/linux/hugetlb.h | 3 ++-
- mm/hugetlb_vmemmap.c    | 7 +++++++
- mm/hugetlb_vmemmap.h    | 6 ++++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index caeef778526a..8d684edc3bf9 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -882,7 +882,8 @@ extern bool hugetlb_free_vmemmap_enabled;
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 5cc6deaa5df2..ae7d0cdfa9bd 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -88,12 +88,6 @@ void rcu_sched_clock_irq(int user);
+ void rcu_report_dead(unsigned int cpu);
+ void rcutree_migrate_callbacks(int cpu);
  
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
+-#ifdef CONFIG_TASKS_RCU_GENERIC
+-void rcu_init_tasks_generic(void);
+-#else
+-static inline void rcu_init_tasks_generic(void) { }
+-#endif
+-
+ #ifdef CONFIG_RCU_STALL_COMMON
+ void rcu_sysrq_start(void);
+ void rcu_sysrq_end(void);
+diff --git a/init/main.c b/init/main.c
+index c68d784376ca..3024c4db17a9 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -1512,7 +1512,6 @@ static noinline void __init kernel_init_freeable(void)
+ 
+ 	init_mm_internals();
+ 
+-	rcu_init_tasks_generic();
+ 	do_pre_smp_initcalls();
+ 	lockup_detector_init();
+ 
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 17c8ebe131af..2797f9a042f4 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -966,11 +966,6 @@ static void rcu_tasks_trace_pregp_step(void)
+ static void rcu_tasks_trace_pertask(struct task_struct *t,
+ 				    struct list_head *hop)
  {
--	return hugetlb_free_vmemmap_enabled;
-+	return hugetlb_free_vmemmap_enabled &&
-+	       is_power_of_2(sizeof(struct page));
- }
- #else
- static inline bool is_hugetlb_free_vmemmap_enabled(void)
-diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
-index 33e42678abe3..1ba1ef45c48c 100644
---- a/mm/hugetlb_vmemmap.c
-+++ b/mm/hugetlb_vmemmap.c
-@@ -265,6 +265,13 @@ void __init hugetlb_vmemmap_init(struct hstate *h)
- 	BUILD_BUG_ON(__NR_USED_SUBPAGE >=
- 		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
+-	// During early boot when there is only the one boot CPU, there
+-	// is no idle task for the other CPUs. Just return.
+-	if (unlikely(t == NULL))
+-		return;
+-
+ 	WRITE_ONCE(t->trc_reader_special.b.need_qs, false);
+ 	WRITE_ONCE(t->trc_reader_checked, false);
+ 	t->trc_ipi_to_cpu = -1;
+@@ -1300,7 +1295,7 @@ late_initcall(rcu_tasks_verify_self_tests);
+ static void rcu_tasks_initiate_self_tests(void) { }
+ #endif /* #else #ifdef CONFIG_PROVE_RCU */
  
-+	/*
-+	 * The compiler can help us to optimize this function to null
-+	 * when the size of the struct page is not power of 2.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return;
-+
- 	if (!hugetlb_free_vmemmap_enabled)
- 		return;
- 
-diff --git a/mm/hugetlb_vmemmap.h b/mm/hugetlb_vmemmap.h
-index cb2bef8f9e73..29aaaf7b741e 100644
---- a/mm/hugetlb_vmemmap.h
-+++ b/mm/hugetlb_vmemmap.h
-@@ -21,6 +21,12 @@ void hugetlb_vmemmap_init(struct hstate *h);
-  */
- static inline unsigned int free_vmemmap_pages_per_hpage(struct hstate *h)
+-void __init rcu_init_tasks_generic(void)
++static void __init rcu_init_tasks_generic(void)
  {
-+	/*
-+	 * This check aims to let the compiler help us optimize the code as
-+	 * much as possible.
-+	 */
-+	if (!is_power_of_2(sizeof(struct page)))
-+		return 0;
- 	return h->nr_free_vmemmap_pages;
+ #ifdef CONFIG_TASKS_RCU
+ 	rcu_spawn_tasks_kthread();
+@@ -1318,6 +1313,7 @@ void __init rcu_init_tasks_generic(void)
+ 	rcu_tasks_initiate_self_tests();
  }
- #else
--- 
-2.11.0
+ 
++core_initcall(rcu_init_tasks_generic);
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
+ static inline void rcu_tasks_bootup_oddness(void) {}
+ void show_rcu_tasks_gp_kthreads(void) {}
 
+
+--
+Vlad Rezki
