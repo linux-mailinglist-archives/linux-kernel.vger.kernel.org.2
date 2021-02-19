@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F6B31F68D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:29:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9FB31F690
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhBSJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:29:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55892 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBSJ27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:28:59 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613726893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=etBn5V1fBhgd5ONghlz/8lq7lbVTQi6zy8ox4GBOZ00=;
-        b=nvwnuVBtVcz9qfyEF2Cino+n+jhNIXXygW3mHkb2EM64MukPOVTtaNW71uYYJGpI+CM4kq
-        NiYNVpqkkFsB1le5Ol5t/sij9v+8qYEvWrwbroIlmYHiGmN+jo56ARNNX27oqQZdsoguHD
-        JW/AJ4bHjB70Q0QcM1QeOv0DsiofVTY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D377DACCF;
-        Fri, 19 Feb 2021 09:28:12 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 10:28:12 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-Message-ID: <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
-References: <20210217163603.429062-1-minchan@kernel.org>
- <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
- <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
- <YC402s1vqvC4q041@dhcp22.suse.cz>
- <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
- <YC6TpqT26dSy11fU@google.com>
+        id S229867AbhBSJaH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Feb 2021 04:30:07 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:35731 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229524AbhBSJaD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:30:03 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-49-gBzBo3n-MJCTw_rt9xe6Ig-1; Fri, 19 Feb 2021 09:28:21 +0000
+X-MC-Unique: gBzBo3n-MJCTw_rt9xe6Ig-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 19 Feb 2021 09:28:21 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 19 Feb 2021 09:28:21 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+CC:     "x86@kernel.org" <x86@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "pjt@google.com" <pjt@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "r.marek@assembler.cz" <r.marek@assembler.cz>,
+        "jpoimboe@redhat.com" <jpoimboe@redhat.com>,
+        "jikos@kernel.org" <jikos@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: RE: [RFC PATCH] x86/retpolines: Prevent speculation after RET
+Thread-Topic: [RFC PATCH] x86/retpolines: Prevent speculation after RET
+Thread-Index: AQHXBi5g7piH/x085kS63Daiz9b9tKpfMjCw
+Date:   Fri, 19 Feb 2021 09:28:21 +0000
+Message-ID: <bed0382c5588439284b36e47fbac4321@AcuMS.aculab.com>
+References: <20210218165938.213678824@infradead.org>
+ <20210218184639.GF4214@zn.tnic>
+ <20210218190231.GA59023@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210218190231.GA59023@worktop.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC6TpqT26dSy11fU@google.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 18-02-21 08:19:50, Minchan Kim wrote:
-> On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
-> > On 18.02.21 10:35, Michal Hocko wrote:
-> > > On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
-> > > > On 18.02.21 09:56, Michal Hocko wrote:
-> > > > > On Wed 17-02-21 08:36:03, Minchan Kim wrote:
-> > > > > > alloc_contig_range is usually used on cma area or movable zone.
-> > > > > > It's critical if the page migration fails on those areas so
-> > > > > > dump more debugging message like memory_hotplug unless user
-> > > > > > specifiy __GFP_NOWARN.
-> > > > > 
-> > > > > I agree with David that this has a potential to generate a lot of output
-> > > > > and it is not really clear whether it is worth it. Page isolation code
-> > > > > already has REPORT_FAILURE mode which currently used only for the memory
-> > > > > hotplug because this was just too noisy from the CMA path - d381c54760dc
-> > > > > ("mm: only report isolation failures when offlining memory").
-> > > > > 
-> > > > > Maybe migration failures are less likely to fail but still.
-> > > > 
-> > > > Side note: I really dislike that uncontrolled error reporting on memory
-> > > > offlining path we have enabled as default. Yeah, it might be useful for
-> > > > ZONE_MOVABLE in some cases, but otherwise it's just noise.
-> > > > 
-> > > > Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
-> > > 
-> > > Anyway we can discuss this in a separate thread but I think this is not
-> > > a representative workload.
-> > 
-> > Sure, but the essence is "this is noise", and we'll have more noise on
-> > alloc_contig_range() as we see these calls more frequently. There should be
-> > an explicit way to enable such *debug* messages.
+From: Peter Zijlstra
+> Sent: 18 February 2021 19:03
 > 
-> alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
-> Why shouldn't people use it if they don't care the failure?
-> Semantically, it makes sense to me.
+> On Thu, Feb 18, 2021 at 07:46:39PM +0100, Borislav Petkov wrote:
+> > Both vendors speculate after a near RET in some way:
+> >
+> > Intel:
+> >
+> > "Unlike near indirect CALL and near indirect JMP, the processor will not
+> > speculatively execute the next sequential instruction after a near RET
+> > unless that instruction is also the target of a jump or is a target in a
+> > branch predictor."
+> 
+> Right, the way I read that means it's not a problem for us here.
 
-Well, alloc_contig_range doesn't really have to implement all the gfp
-flags. This is a matter of practicality. alloc_contig_range is quite
-different from the page allocator because it is to be expected that it
-can fail the request. This is avery optimistic allocation request. That
-would suggest that complaining about allocation failures is rather
-noisy.
+They got a lawyer to write that sentence :-)
+What on earth is that 'unless' clause about?
+Either:
+1) The instructions might be speculatively executed for some entirely
+   different reason.
+or:
+2) The cpu might use the BTB to determine the instruction that follows the
+   RET - and so might happen to execute the instruction that follows it.
 
-Now I do understand that some users would like to see why those
-allocations have failed. The question is whether that information is
-generally useful or it is more of a debugging aid. The amount of
-information is also an important aspect. It would be rather unfortunate
-to dump thousands of pages just because they cannot be migrated.
+I can't manage to read it in any way that suggests that the cpu will
+ignore the fact it is a RET and start executing the instruction that
+follows.
+(Unlike some ARM cpus which do seem to do that.)
 
-I do not have a strong opinion here. We can make all alloc_contig_range
-users use GFP_NOWARN by default and only skip the flag from the cma
-allocator but I am slowly leaning towards (ab)using dynamic debugging
-infrastructure for this.
--- 
-Michal Hocko
-SUSE Labs
+> > AMD:
+> >
+> > "Some AMD processors when they first encounter a branch do not stall
+> > dispatch and use the branches dynamic execution to determine the target.
+> > Therefore, they will speculatively dispatch the sequential instructions
+> > after the branch. This happens for near return instructions where it is
+> > not clear what code may exist sequentially after the return instruction.
+
+Sounds like the conditional branch prediction (and the BTB?) get used for RET
+instructions when the 'return address stack' is invalid.
+
+> > This behavior also occurs with jmp/call instructions with indirect
+> > targets. Software should place a LFENCE or another dispatch serializing
+> > instruction after the return or jmp/call indirect instruction to prevent
+> > this sequential speculation."
+> >
+> > The AMD side doesn't really need the LFENCE because it'll do LFENCE;
+> > JMP/CALL <target> due to X86_FEATURE_RETPOLINE_AMD, before it reaches
+> > the RET.
+> 
+> It never reached the RET.
+> 
+> So all in all, I really don't see why we'd need this.
+
+I read that as implying that some AMD cpu can sometimes treat the RET as
+a conditional branch and so speculatively assume it isn't taken.
+So you need an LFENCE (or ???) following the RET at the end of every function.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
