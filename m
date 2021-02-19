@@ -2,207 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6C731F939
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4397431F92F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229678AbhBSMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 07:14:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhBSMOe (ORCPT
+        id S230253AbhBSMNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 07:13:31 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:53252 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229985AbhBSMNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 07:14:34 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AC7C061574;
-        Fri, 19 Feb 2021 04:13:53 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id u14so8146167wri.3;
-        Fri, 19 Feb 2021 04:13:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lC/6S83UE9attWdnqa03ItP217AkvthfimlIDH5xWFs=;
-        b=brJlnn3xF6MW/eG0I+HvUdhngEosoUpud/ndzmgrqq8oJxhRolwfYO7aFlWMlbHOZV
-         LoRs7m7ARL0l7Ol5Pvs37drZZ2L+H7droL5DjqKQsa22Di0ALYUmymkx7N9yiJiXwxYI
-         RuOCt1iw6NgTh8SVYOZlWFlFlNMcQQIpvWLEtmZ1+nk6bDeG4zKRRrl9doT7Uf7xtFLh
-         cR0ad3NSnMtsURwk+Y8JPVlYp3PLAc/mcGU810Vh95BGt3iI2qML2eUHx7Tyx3UDHgsh
-         GeUDZ2eHLRG/nAyJ2vLarmW2KxfrHhNK2NOAaEM0jNgJ9uvOM//UvvCrfr1P3y9DCrhK
-         SBJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=lC/6S83UE9attWdnqa03ItP217AkvthfimlIDH5xWFs=;
-        b=ZXbEFzC+XOtrMEqvW4p8eieOHT5O7RjxSRGbz3zBQibHZqFTp5g+e20bAksR15ybm6
-         UoylO+js+nZFLwS41oBXXw9g4uZb0nflAFT3gvWqNQz+xqQQ30cF7itS8XY/taCRkKAV
-         KP660ucayea9bhRuFN7NbylkusVkKe9Zv+550XE0fCeIpgLO9LdEN39GffQgwQ/t88mv
-         4FY+ucx7gHk1dn7yazlzUnR1QXtxJWAhoM1zRgiysYBv6dFUaSgbcJJxxXXB4ZN/gJSi
-         dCm3PBJtrgZc6oPD9ZOh5tNwAXblpyHuOjwExchdrBLRjaSNI9KgpXEbT8Y1kezKr4qD
-         25uw==
-X-Gm-Message-State: AOAM533QH/JLk5CrWK+Jz7ErWrVymionZUzYPet+y0vO74hJhYq91HiJ
-        UqH4oGrI9kmJ33qT+PCVamSE62LzvagkQQ==
-X-Google-Smtp-Source: ABdhPJwmsf4IxChnW/5o1gUo1cm9flbMjcJC3Z8KarywzK08wJtwzMaCYaygzvAKG8q16oYYzqyVAA==
-X-Received: by 2002:adf:d229:: with SMTP id k9mr2662390wrh.112.1613736832368;
-        Fri, 19 Feb 2021 04:13:52 -0800 (PST)
-Received: from [192.168.8.137] ([85.255.236.139])
-        by smtp.gmail.com with ESMTPSA id o13sm16033673wrs.45.2021.02.19.04.13.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 04:13:52 -0800 (PST)
-Subject: Re: [PATCH v3 2/2] io_uring: add support for IORING_OP_GETDENTS
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Lennert Buytenhek <buytenh@wantstofly.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        io-uring@vger.kernel.org
-Cc:     David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>
-References: <20210218122640.GA334506@wantstofly.org>
- <20210218122755.GC334506@wantstofly.org>
- <9a6fb59b-be85-c36b-3c83-26cff37bcb87@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <8b675c3d-3d25-aaca-7796-e02bba2da01a@gmail.com>
-Date:   Fri, 19 Feb 2021 12:10:02 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        Fri, 19 Feb 2021 07:13:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JC9s9N061889;
+        Fri, 19 Feb 2021 12:12:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=seAu6hg07cIlZfvQDfSyx2dnNqdr2n5wbaEVfoJZhRY=;
+ b=L9FpuGVSc2Z8+0gsbfmX0LVLN42Ifr/TKggD1k39cwL8CLF7Hz5Fi1WxE8Xta2ZTnusi
+ M+sJIzfnaW4Rvuj0Rih4i/X8i6rBeOYnRNK+cfLCLj3hf3nUbZeSDyHX/kEn5Pr9eBaH
+ 4ofv002iT58846F6ZNXzVciXjOiOuY2RbGjZ4MCiSEGbzriEYq9Uy2hJFPAS+wpUpw+Q
+ e0V2APTRyJtiz+OxksMlHq9KOBlMoMu6iluNYs9QeEtDKR2izhPDuSMYBYjBlOuwkuom
+ 39pudXaxolmeTBu9MB1ISb2Ki7XxqkqxcPk8kei277hERVpMMqSVB4bYbTPdkQR/gsD1 aw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 36pd9agt00-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 12:12:34 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JCAE8f119071;
+        Fri, 19 Feb 2021 12:12:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 36prq1u49b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 12:12:31 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11JCCUkN010043;
+        Fri, 19 Feb 2021 12:12:30 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 19 Feb 2021 04:12:29 -0800
+Date:   Fri, 19 Feb 2021 15:12:19 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Selvakumar Elangovan <selvakumar16197@gmail.com>
+Cc:     forest@alittletooquiet.net, gregkh@linuxfoundation.org,
+        tvboxspy@gmail.com, oscar.carter@gmx.com,
+        devel@driverdev.osuosl.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: vt6656: fixed a CamelCase coding style issue.
+Message-ID: <20210219121219.GZ2087@kadam>
+References: <20210219095835.9687-1-selvakumar16197@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <9a6fb59b-be85-c36b-3c83-26cff37bcb87@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219095835.9687-1-selvakumar16197@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190100
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/02/2021 12:05, Pavel Begunkov wrote:
-> On 18/02/2021 12:27, Lennert Buytenhek wrote:
->> IORING_OP_GETDENTS behaves much like getdents64(2) and takes the same
->> arguments, but with a small twist: it takes an additional offset
->> argument, and reading from the specified directory starts at the given
->> offset.
->>
->> For the first IORING_OP_GETDENTS call on a directory, the offset
->> parameter can be set to zero, and for subsequent calls, it can be
->> set to the ->d_off field of the last struct linux_dirent64 returned
->> by the previous IORING_OP_GETDENTS call.
->>
->> Internally, if necessary, IORING_OP_GETDENTS will vfs_llseek() to
->> the right directory position before calling vfs_getdents().
->>
->> IORING_OP_GETDENTS may or may not update the specified directory's
->> file offset, and the file offset should not be relied upon having
->> any particular value during or after an IORING_OP_GETDENTS call.
->>
->> Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
->> ---
->>  fs/io_uring.c                 | 73 +++++++++++++++++++++++++++++++++++
->>  include/uapi/linux/io_uring.h |  1 +
->>  2 files changed, 74 insertions(+)
->>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index 056bd4c90ade..6853bf48369a 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -635,6 +635,13 @@ struct io_mkdir {
->>  	struct filename			*filename;
->>  };
->>  
-> [...]
->> +static int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
->> +{
->> +	struct io_getdents *getdents = &req->getdents;
->> +	bool pos_unlock = false;
->> +	int ret = 0;
->> +
->> +	/* getdents always requires a blocking context */
->> +	if (issue_flags & IO_URING_F_NONBLOCK)
->> +		return -EAGAIN;
->> +
->> +	/* for vfs_llseek and to serialize ->iterate_shared() on this file */
->> +	if (file_count(req->file) > 1) {
-> 
-> Looks racy, is it safe? E.g. can be concurrently dupped and used, or just
-> several similar IORING_OP_GETDENTS requests.
-> 
->> +		pos_unlock = true;
->> +		mutex_lock(&req->file->f_pos_lock);
->> +	}
->> +
->> +	if (req->file->f_pos != getdents->pos) {
->> +		loff_t res = vfs_llseek(req->file, getdents->pos, SEEK_SET);
-> 
-> I may be missing the previous discussions, but can this ever become
-> stateless, like passing an offset? Including readdir.c and beyond. 
+You're not asking the right questions.
 
-I mean without those seeks. An emulation would look like rewinding
-pos back after vfs_getdents, though might be awful on performance. 
-
-> 
->> +		if (res < 0)
->> +			ret = res;
->> +	}
->> +
->> +	if (ret == 0) {
->> +		ret = vfs_getdents(req->file, getdents->dirent,
->> +				   getdents->count);
->> +	}
->> +
->> +	if (pos_unlock)
->> +		mutex_unlock(&req->file->f_pos_lock);
->> +
->> +	if (ret < 0) {
->> +		if (ret == -ERESTARTSYS)
->> +			ret = -EINTR;
->> +		req_set_fail_links(req);
->> +	}
->> +	io_req_complete(req, ret);
->> +	return 0;
->> +}
-> [...]
+On Fri, Feb 19, 2021 at 03:28:35PM +0530, Selvakumar Elangovan wrote:
+> This patch renames CamelCase macros uVar and uModulo into u_var and
+> u_module in device.h
 > 
 
--- 
-Pavel Begunkov
+Is "u_var" a good name?  What does the "u_" even mean?
+
+> This issue was reported by checkpatch.pl
+> 
+> Signed-off-by: Selvakumar Elangovan <selvakumar16197@gmail.com>
+> ---
+>  drivers/staging/vt6656/device.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/vt6656/device.h b/drivers/staging/vt6656/device.h
+> index 947530fefe94..6615d356f74a 100644
+> --- a/drivers/staging/vt6656/device.h
+> +++ b/drivers/staging/vt6656/device.h
+> @@ -385,11 +385,11 @@ struct vnt_private {
+>  	struct ieee80211_low_level_stats low_stats;
+>  };
+>  
+> -#define ADD_ONE_WITH_WRAP_AROUND(uVar, uModulo) {	\
+> -	if ((uVar) >= ((uModulo) - 1))			\
+> -		(uVar) = 0;				\
+> +#define ADD_ONE_WITH_WRAP_AROUND(u_var, u_modulo) {	\
+> +	if ((u_var) >= ((u_modulo) - 1))			\
+
+The \ is not aligned any more.
+
+> +		(u_var) = 0;				\
+>  	else						\
+> -		(uVar)++;				\
+> +		(u_var)++;				\
+>  }
+
+
+This macro is rubbish.  How does the wrap around even make sense?
+I hope that if you review the code a bit I think you will find that the
+wrap around is impossible?  Just fix the two callers and delete this
+macro.
+
+regards,
+dan carpenter
+
