@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EC031F43A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 04:39:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E079031F43C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 04:39:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBSDgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 22:36:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44960 "EHLO
+        id S229762AbhBSDiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 22:38:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhBSDgl (ORCPT
+        with ESMTP id S229471AbhBSDix (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 22:36:41 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8B3C061574;
-        Thu, 18 Feb 2021 19:36:01 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id s16so2596654plr.9;
-        Thu, 18 Feb 2021 19:36:01 -0800 (PST)
+        Thu, 18 Feb 2021 22:38:53 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0905EC061574;
+        Thu, 18 Feb 2021 19:38:13 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 75so2694490pgf.13;
+        Thu, 18 Feb 2021 19:38:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Bwui8jRScVwKr0ZT6q3CS0JkmV/YSF8KwvuD/o3Daac=;
-        b=jxvT9loR4JAcMRScbE/sWr6VPhYv57R5sAN9pWv/8e7jNCKZJJ7WR3jBsdAzB2ft+3
-         UKYFZ08efrQzCp7QZCmLbYvNK1+zeN4IXV41yUHjbiVlpjTVQteewwsFdmnwEyT+M30A
-         icGHbRmm+hH3YSRBruuCxvodxxE7LBYMPaqny4QnOodwYMP2NkP5cTUBubZ2yB4MDbIO
-         surAohDFylkApDemH0+tCXeHcpT5mgZnsuREgkdV909h73AdnccwkZAZXLwD8zrvw+LM
-         GZD7HKuVp16JBzMggmihvxfUMW5onpVSIOcgwH1qN0fqxT8qlYH4uotvlr27fB7pFbrj
-         KJaQ==
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=vW7QGTkoOi2XDxjLsMalRoDFkj6U8fLmlA2rW//tPic=;
+        b=iNZLEKSK2EAXZ9oiD8ZvJX6H3vFs2uRjvJRz4yr3+BvIcQokun6mPSO/V8L9ioxUO2
+         jA7u7RgRt/fCYxj04TNY7nLW+3kkzBp6M9wB6E25mBBumoAv9bIFmnoWnjZhDmYZQPwB
+         x1ogLvfmdwHmwDP3591E9prOv/zXKV7wotgkMclYmIDXjzHVK3ntv1eoW9uLYHOY5IDz
+         8ZRV5GLPC0Fy3jC9/S0sVC+R/GjBN0yXT8XcGbYsd4C2Qh7ckl1yUGrJk5eLE0uCod9o
+         UBS/xM4O6zLL0ebKjAOcE5IUZXHiPw+sXzi86C44c7YiGuXRjd0dmgZ1x65g71fMO9Bc
+         A3Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Bwui8jRScVwKr0ZT6q3CS0JkmV/YSF8KwvuD/o3Daac=;
-        b=OR6l/kU+ZgHDkP9zhc8SFO74oqUObAV1G0a9uzeyRnvQ5qOTK0ifmv/uuqd7ILZDAW
-         BpUaK+u85RPnzSBxGTXgrPzsPkIhu/g+FmB9tOpu+M2ZSlypkk1Oz5tIqQd/6+15J9ac
-         ppHa+uAOM7zZOnbPNfDLdMtLNHLVaf9OZ4E608xVBfLXxP57JXxFBAynYaEDlTp0l/bB
-         2MdwBjUEwghqYX5bk6Kk5rFnBPUwFiRTBffnGMTWdiWh50Na3dlg8UtoEcd98uCgRB7c
-         F7trenoi4n6Ljv4nK0Ew/C49gzhArf5baInkzuaEq4YXcVC7edyXm2tRWMQ7ArkWOdnA
-         zSbg==
-X-Gm-Message-State: AOAM533OZJIXyeqC3WD6oT9PdI+x6zS07dArt/xyIz3eXaS5POx771JO
-        OGX+DVOHavPbfuoNWxLNo8M=
-X-Google-Smtp-Source: ABdhPJwce5FwMDtYrnUSFpL98MPO27Ip0K7LrWJtBtNXRvtVgoM+CFkj1Kj2eG8Hvtj8SblaLBYeHw==
-X-Received: by 2002:a17:90b:4b0f:: with SMTP id lx15mr7072656pjb.183.1613705761056;
-        Thu, 18 Feb 2021 19:36:01 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:8d20:87b2:91b7:7f7b])
-        by smtp.gmail.com with ESMTPSA id g3sm7622802pfq.42.2021.02.18.19.35.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 19:36:00 -0800 (PST)
-Date:   Thu, 18 Feb 2021 19:35:57 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Michael Srba <Michael.Srba@seznam.cz>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH] Input: fix boolreturn.cocci warnings
-Message-ID: <YC8yHSYnLIJaRnR2@google.com>
-References: <202102181739.Tb984rzG-lkp@intel.com>
- <20210218095953.GA24768@4e7c6a388622>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=vW7QGTkoOi2XDxjLsMalRoDFkj6U8fLmlA2rW//tPic=;
+        b=GXW/f/4nNm9Nfpuwi3jzg9cB/v9rZ6NAaoVCCuS88QCPrrCmBhRevhz5uLCYFI0Bus
+         uYuG5826XQJx9ru+Ok+uUttVsb2zzgXYc7FciuNW2FL28W9lnNJZ/IDJthb7+8rhQkdI
+         aI+p0dmvFT/CgqdUC9kWA3MJ8RCMOi4DV5kutgoJXM9rb06IOR5dWMTkpQ9eap89bkqT
+         yxAzvvLIticqCgQFl/OPsi6HpQdYI3dwd7bsiBYi3C00FHHjV+umnaxMlVOykWg62CbF
+         mV7o3m5qF2uFwpIc1GtIr55H7NvQElFrbeqychF9e58a0onRr85KPBx+RNDmeoN2oqYH
+         QdbQ==
+X-Gm-Message-State: AOAM531N7ZOQtpn275HGtRpmQWIAAupz+WrhnZkLc2rRRGTUI7d60xc4
+        He+oMhbiFOTYShYOmLol9UM=
+X-Google-Smtp-Source: ABdhPJyShZ5ikxNDWbl4CJBezHrxoWlOLVPxABwg6LdDteEMS2sr/OT8tqrf1PzB/2Sb1TVop1nGFw==
+X-Received: by 2002:aa7:9e90:0:b029:1dd:3cd6:9dde with SMTP id p16-20020aa79e900000b02901dd3cd69ddemr7268618pfq.57.1613705892622;
+        Thu, 18 Feb 2021 19:38:12 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id e17sm6609267pjh.39.2021.02.18.19.38.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 18 Feb 2021 19:38:12 -0800 (PST)
+Date:   Fri, 19 Feb 2021 11:38:04 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
+ busy CPU if need_freq_update is set
+Message-ID: <20210219113804.00004a7e.zbestahu@gmail.com>
+In-Reply-To: <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
+References: <20210218082514.1437-1-zbestahu@gmail.com>
+        <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218095953.GA24768@4e7c6a388622>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 18 Feb 2021 15:50:29 +0530
+Viresh Kumar <viresh.kumar@linaro.org> wrote:
 
-On Thu, Feb 18, 2021 at 05:59:53PM +0800, kernel test robot wrote:
-> From: kernel test robot <lkp@intel.com>
+> On 18-02-21, 16:25, Yue Hu wrote:
+> > From: Yue Hu <huyue2@yulong.com>
+> > 
+> > For busy CPU case, we do not need to avoid freq reduction if limits
+> > change since commit 600f5badb78c ("cpufreq: schedutil: Don't skip
+> > freq update when limits change").
+> > 
+> > Later, commit 23a881852f3e ("cpufreq: schedutil: Don't skip freq
+> > update if need_freq_update is set") discarded the need_freq_update
+> > check for special case of busy CPU because we won't abort a
+> > frequency update anymore if need_freq_update is set.
+> > 
+> > That is nonlogical since we will not reduce the freq for busy CPU
+> > if the computed next_f is really reduced when limits change.  
 > 
-> drivers/input/touchscreen/zinitix.c:250:8-9: WARNING: return of 0/1 in function 'zinitix_init_touch' with return type bool
+> Schedutil governor will probably ask for a higher frequency than
+> allowed, but cpufreq core will clamp the request between policy
+> min/max before updating the frequency here.
 > 
->  Return statements in functions returning bool should use
->  true/false instead of 1/0.
-> Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> We added the check in 600f5badb78c here earlier as there were chances
+> that we will abort the operation without reaching to cpufreq core,
+> which won't happen now.
 > 
-> Fixes: 26822652c85e ("Input: add zinitix touchscreen driver")
-> CC: Michael Srba <Michael.Srba@seznam.cz>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> ---
-> 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f40ddce88593482919761f74910f42f4b84c004b
-> commit: 26822652c85eff14e40115255727b2693400c524 Input: add zinitix touchscreen driver
-> 
->  zinitix.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> --- a/drivers/input/touchscreen/zinitix.c
-> +++ b/drivers/input/touchscreen/zinitix.c
-> @@ -247,7 +247,7 @@ static bool zinitix_init_touch(struct bt
->  		udelay(10);
->  	}
->  
-> -	return 0;
-> +	return false;
 
-This is incorrect as function is trying to return error codes. It needs
-to be changed to return int. I'll take care of it.
+There's a possibility: we will use the previous freq to update if next_f
+is reduced for busy CPU if need_freq_update is set in
+sugov_update_next_freq(). This possibility would happen now? And this
+update is what we want if it happens? This is related to another
+possible patch ready to send.
 
-Thanks.
-
--- 
-Dmitry
+Thank you.
