@@ -2,92 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8487F31FB02
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7B231FB09
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:38:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhBSOga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:36:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
+        id S231190AbhBSOh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:37:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhBSOdd (ORCPT
+        with ESMTP id S231132AbhBSOhP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:33:33 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58772C0617A7;
-        Fri, 19 Feb 2021 06:30:43 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id n8so8762342wrm.10;
-        Fri, 19 Feb 2021 06:30:43 -0800 (PST)
+        Fri, 19 Feb 2021 09:37:15 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D4BC061574;
+        Fri, 19 Feb 2021 06:36:34 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id cl8so3810109pjb.0;
+        Fri, 19 Feb 2021 06:36:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kTr1/mv6nsyXy8Axrc2R950ucaShXBUxnX7juCfyHPA=;
-        b=t88LcLHteis949B5uVW1zBZUZAlG27ufw5MxoV20tXzEsuscKM1hvlZ6lPsJkzn/Jl
-         gAuoikLxan6FUYfNp3pqjcRtEXgIlwq2iSP4acq4BJzQNEKNRvc5Oq0jQxsQEwkKBZbC
-         nTEHtvIyhHT9wBtHxSOwNeCh6S0rqWEv93iey5opiOhK66SfKAKepZ/j8+UzMD36ah/K
-         GSksSDLvvkU1e5V1MZz6fpWUyyHkvI4765fCkvXqHpUTBNtKBqsuJrgx2oiD+nxVE+AY
-         jnSJgKV1iWE3Z+oyXm7Ch51xrqAAB1RaqkdvmYfOkFVRzKaI6EsERfe4vXSlR9uW6E/S
-         sydQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=O7ionRp1ZXY9IYkwj7KvTSuR30BkQ1bSGX68omoJKK0=;
+        b=dsczfc2hrIrRhMQivoGf1eEDCs+l0usQ197IIlpx8FruhL3GtfZF1U99hQjXs866+c
+         s5MyrfANo5j/yY/179tALVh8p2q+MuCBnEhvMj6+6Bt/r3URTDtFrSEbayK4LcYPGa5F
+         mEBGEBjCBykmVTmZ13jj2xVWz78DwbIY7AaDvL+8WHBGALS/w8SVDfMYKyltAnF6hcWq
+         oq5xbVkROKrfH6l+kM8BYtTLOIppaSFFhuGtzaowr0xyqtNSin+vkIx7VX+QKssx5yJt
+         Zbru3FdJ/qT8LPMv5cJFkyu6Cl8kp+5nzhmK9FqqoEnAZVloaDofnnb+pxxYg+Dkxfj+
+         CJYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kTr1/mv6nsyXy8Axrc2R950ucaShXBUxnX7juCfyHPA=;
-        b=Ncf2RB7NFPC0ltfM3RxvEGECy89LnNqVu8B2wQiToq0pEIHkmB/C3R7BK8E5HAH0e5
-         BC4Kt2AUezrKrPns3uAdoZ8VMgsu528l36B4AL35a7eGHSbKIGz4/zKMLnBlAzfo4Wq/
-         ilDJEEB4vFs/2MmwPa+8u+n7K/afgsgnHyRzfobMvMdgY5zxuyY4JPaa6TlZCG7E/5gO
-         hyH1ipYs/nhDsrfvmZhDKQ4EmGWpqQaN6SODzd68rqqOeINfk3aTQ24Fvmfs/ppoxRK/
-         rue9/OB5eMmUak979aUsed25/I8NfnQHV7uThWeWegESo+vJPbLj4uDlUvnNGz20JaPc
-         RKJA==
-X-Gm-Message-State: AOAM5325zKfITGDPTKMti1o6WHZ9l1dpVdqyj2BBgQ1/6Me1kRks7qok
-        ffCQ07i5FzRk2c5bjocdEJo=
-X-Google-Smtp-Source: ABdhPJyTknvkyvkH4w21Y5QGLaXRS8XwiK13m1rvqXAW5hWkEPUj7fDH4Ax/3xzKFGEdKk4HOwa72g==
-X-Received: by 2002:adf:d239:: with SMTP id k25mr9806163wrh.308.1613745042106;
-        Fri, 19 Feb 2021 06:30:42 -0800 (PST)
-Received: from localhost.localdomain (2a01cb0008bd27003cf54d240f3b36ef.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:3cf5:4d24:f3b:36ef])
-        by smtp.gmail.com with ESMTPSA id v9sm8348215wrn.86.2021.02.19.06.30.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 06:30:41 -0800 (PST)
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     krzk@kernel.org, robh+dt@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, catalin.marinas@arm.com, will@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Adrien Grassein <adrien.grassein@gmail.com>
-Subject: [PATCH v3 9/9] arm64: defconfig: Enable wm8960 audio driver.
-Date:   Fri, 19 Feb 2021 15:30:28 +0100
-Message-Id: <20210219143028.207975-10-adrien.grassein@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210219143028.207975-1-adrien.grassein@gmail.com>
-References: <20210219143028.207975-1-adrien.grassein@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=O7ionRp1ZXY9IYkwj7KvTSuR30BkQ1bSGX68omoJKK0=;
+        b=NzQB5Tm5GmRBnEmYY4AzHCqpq4gW38SgLm0MJlhaQIdgC9f3iwPm6kf2AMaTXvTK6d
+         cN791xldXlfE+mMjDJJcqqFk/Kt954C2KxbETUgHZyR7nNBcW/4fIkklTbaglTkeLDNW
+         MDCZMZuJzoXE/K44ycUGmAoQseSCFPDM2dLlcyjY98vHcm7XNvw+bMpUmw0gU0FzNsO2
+         LDczkrGdGZ/MnsWbvrhDtMePNf4QnNYbwzde1iUNaRoQpiUqLEq4bqTFSkzdJHjcHERN
+         oS59U/eRZaeAPsQcJiAfcN085yKt4XGWQbwS0+6x6NZeIyu6q126u+VmlRYGOxGyisRt
+         sNcQ==
+X-Gm-Message-State: AOAM533jKKtTPNd792pNK1wopUYelQthAtao2af9Crdr3HhScqMMbdEq
+        eGincJZz4Qw5TXvu5dg346I/ol6zlIX0TfMVolC8yVCp5yyImQ==
+X-Google-Smtp-Source: ABdhPJxrTA0lztIb7xlyyu35/+p99yEb7EYJ9tqucNlAPtN+to9iDaASOxnOSTGROXOkZgIa43SRRXPo5vBSUF60D1Y=
+X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr9737822pja.228.1613745394346;
+ Fri, 19 Feb 2021 06:36:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210216160525.5028-1-maciej.kwapulinski@linux.intel.com>
+ <20210216160525.5028-2-maciej.kwapulinski@linux.intel.com>
+ <CAHp75Vep0Fm1k_7gJcozk4t316QmUgt5Qe3PauwDg=py5VnHfQ@mail.gmail.com> <85blcgw5v6.fsf@linux.intel.com>
+In-Reply-To: <85blcgw5v6.fsf@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 19 Feb 2021 16:36:18 +0200
+Message-ID: <CAHp75VfvHGPC8bvDUDt0ge9dh-YEnH8ob5xV6iPQwODjWETqPg@mail.gmail.com>
+Subject: Re: [PATCH v1 01/12] gna: add driver module
+To:     Maciej Kwapulinski <maciej.kwapulinski@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Tomasz Jankowski <tomasz1.jankowski@intel.com>,
+        Savo Novakovic <savox.novakovic@intel.com>,
+        Jianxun Zhang <jianxun.zhang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver is used by the Nitrogen8m Mini SBC.
+On Fri, Feb 19, 2021 at 3:21 PM Maciej Kwapulinski
+<maciej.kwapulinski@linux.intel.com> wrote:
+> Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> > On Tue, Feb 16, 2021 at 6:11 PM Maciej Kwapulinski
+> > <maciej.kwapulinski@linux.intel.com> wrote:
+> >>
+> ....
+> >> +err_clear_master:
+> >> +       pci_clear_master(pcidev);
+> >> +err_release_regions:
+> >> +       pci_release_regions(pcidev);
+> >> +end:
+> >> +       dev_err(&pcidev->dev, "gna probe failed with %d\n", ret);
+> >> +       return ret;
+> >
+> > These are all completely redundant.
+> >
+>
+> following is refactor of gna_probe(), but without pci_release_regions(),
+> smatch (v7fcfe259) produces warning:
+>   drivers/misc/gna/gna_device.c:78 gna_probe() warn: 'pcidev' not
+>   released on lines: 56,65.
 
-Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Then the tool is mistaken.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 292c00f893fc..bd310e91d4ed 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -764,6 +764,7 @@ CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
- CONFIG_SND_SOC_TAS571X=m
- CONFIG_SND_SOC_WCD934X=m
- CONFIG_SND_SOC_WM8904=m
-+CONFIG_SND_SOC_WM8960=m
- CONFIG_SND_SOC_WM8962=m
- CONFIG_SND_SOC_WSA881X=m
- CONFIG_SND_SOC_LPASS_WSA_MACRO=m
+> here's the code refactored:
+>
+> int gna_probe(struct pci_dev *pcidev, const struct pci_device_id *pci_id)
+> {
+>         struct gna_private *gna_priv;
+>         int ret;
+>
+>         ret = pcim_enable_device(pcidev);
+>         if (ret) {
+>                 dev_err(&pcidev->dev, "pci device can't be enabled\n");
+>                 return ret;
+>         }
+>
+>         ret = pci_request_regions(pcidev, GNA_DRV_NAME);
+>         if (ret)
+>                 return ret;
+>
+>         ret = pci_set_dma_mask(pcidev, DMA_BIT_MASK(64));
+>         if (ret) {
+>                 dev_err(&pcidev->dev, "pci_set_dma_mask returned error %d\n", ret);
+>                 return ret;
+>         }
+>
+>         pci_set_master(pcidev);
+>
+>         /* init gna device */
+>         gna_priv = devm_kzalloc(&pcidev->dev, sizeof(*gna_priv), GFP_KERNEL);
+>         if (!gna_priv) {
+>                 //pci_release_regions(pcidev);
+>                 return -ENOMEM;                 // line 56
+>         }
+>         /* Map BAR0 */
+>         gna_priv->bar0.iostart = pci_resource_start(pcidev, 0);
+>         gna_priv->bar0.iosize = pci_resource_len(pcidev, 0);
+>         gna_priv->bar0.mem_addr = pcim_iomap(pcidev, 0, 0);
+>         if (!gna_priv->bar0.mem_addr) {
+>                 //pci_release_regions(pcidev);
+>                 dev_err(&pcidev->dev, "could not map BAR 0\n");
+>                 return -EINVAL;               // line 65
+>         }
+>
+>         dev_dbg(&pcidev->dev, "bar0 io start: 0x%llx\n", (unsigned long long)gna_priv->bar0.iostart);
+>         dev_dbg(&pcidev->dev, "bar0 io size: %llu\n", (unsigned long long)gna_priv->bar0.iosize);
+>         dev_dbg(&pcidev->dev, "bar0 memory address: %p\n", gna_priv->bar0.mem_addr);
+>
+>         ret = gna_dev_init(gna_priv, pcidev, pci_id);
+>         if (ret) {
+>                 dev_err(&pcidev->dev, "could not initialize gna private structure\n");
+>                 return ret;
+>         }
+>
+>         return 0;
+> }
+>
+> I've also added 'noinline' directive to pci_release_regions(), to see if
+> it is called by the core code on "rmmod gna", but can't see the call.
+>
+> Is the smatch tool that causes problems here?
+> Do You suggest other way to handle the problem?
+
+File a bug against that tool.
+
+Before you are doing v2, I would suggest you to go thru all comments
+and address them. Above "refactored" code doesn't even have a half of
+the comments I gave being addressed. If you have concerns, please,
+reply to the review email with a specific excerpt as a context.
+
 -- 
-2.25.1
-
+With Best Regards,
+Andy Shevchenko
