@@ -2,197 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB92731FFA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:02:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CEC31FF9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:02:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhBSUCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:02:52 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:59852 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhBSUCh (ORCPT
+        id S229907AbhBSUCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:02:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhBSUCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:02:37 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JJx4OG137599;
-        Fri, 19 Feb 2021 20:00:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=9EG9dsW7YDXOvpPwSpF0HHItE+7aQt/L8/7zOcNevHo=;
- b=ragRQmgBPBIlaaztXMubuCC8eqqBH7RZ/Ikw6ebhNZiwUoW+qu5w2MqTMirJmfPcWlGr
- CYeOmbzEZdu08iPFjh+NKTtgqWERrleG5Pv6mK+B/vLrCYDZx4Ley/koJXgldSsNhq6p
- QmIpXsLdhETK8MxK/VFpruiRr0AVg4YAEDlruM0x44//12CrlMjP+UWhO9hVMGEzYvzC
- d/MLc5profmOGVjV8wsE2duMeoagp3Ig/164Dz0hBMFjItxv7Wt+bp+YGBiyhUYnEEWm
- p4D/f7iReROLaUxY88fZfZVaqoAJK0Qerl48ae+Id2Aom0QC/zBRZtB4RgNf609dAdxB zw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 36p66rap5n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 20:00:43 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JK0N8S099928;
-        Fri, 19 Feb 2021 20:00:42 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
-        by aserp3020.oracle.com with ESMTP id 36prp3a17f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 20:00:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dbrfzqt8X4I+mTqpIgnMw5G1Hh+YZvlvUPs30FMB4OXWA6Hv+afZyZiiKrE7+hvStcimTN0yfRCvJaCYS2zjXNGrnLsQqyrXEHXRWFKxjIalgdyTeeDODkeCfqy5mZew8W1drOd+RMdgqkw8EXv3cK15PA1hm+9tot+WTN2SAH99oghiL8grXjnIkk20RMF6r/PFAoFsYR5RKIZJrmf0Ug7i4w7PS12Mu2q5NFoU1HLkIg++DmJU13YlB6T1laRnWD+GvbtjZGwr6hvsA75lH1g5Qx+gqJyWZZLUf8z6UeQlV+ax/bc1WTKH7z+4z8DFqlRiXGtTBHRrN1ASDoGcCw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9EG9dsW7YDXOvpPwSpF0HHItE+7aQt/L8/7zOcNevHo=;
- b=nHYynE2Pg1YgUsZyYE8VeOPgFlNfjIsJzUn+gs545cfBa/PVDheAxfvYQx8Lqs5kfEPadOp/73AO+DJY6Lu/PYZR4Jy9QQzl5cID1nJTo4yOeBoaoSb8mEJzBhK3p8lnC5HkrkwqlBVYZqTD/ZIXsJ7/+P9hYVn1m5VonVWHexsqemC8Bzr+jl/ljMho9v70lVkcyjKyKXqkqShdzbG+ZyVtUbhomBSmfTISxd64NHqvsKEOS3863h7BLfuZFgCWYsIDzFC3JI7eSW6ANpa8X7nvVgiXwgmGXw0Inj2M/1+FUP8/Y2hZjvAzJtS/UWYmbIlqKKC4u4Birhq/Ew2/KQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 19 Feb 2021 15:02:36 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE26C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 12:01:55 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id r127so6684980ybr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 12:01:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9EG9dsW7YDXOvpPwSpF0HHItE+7aQt/L8/7zOcNevHo=;
- b=YijDVCXC7ztsUL7Xd3fUeETPF6IvGFjKk1xyuk63CYAucypN6ku283MUbVcBbuPn6yDH6YBYI9JK/qZtpywqHQlm39TRXL1SCVfLgcAkMcfuVvXRzLBrMZULMvb059wvEra7jSEB7xzsKsOg/96a9Fl24H9FlTortXEJXGz4NxA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from DM6PR10MB4201.namprd10.prod.outlook.com (2603:10b6:5:216::10)
- by DS7PR10MB5214.namprd10.prod.outlook.com (2603:10b6:5:3a0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Fri, 19 Feb
- 2021 20:00:40 +0000
-Received: from DM6PR10MB4201.namprd10.prod.outlook.com
- ([fe80::ad89:6caa:4481:b733]) by DM6PR10MB4201.namprd10.prod.outlook.com
- ([fe80::ad89:6caa:4481:b733%3]) with mapi id 15.20.3846.042; Fri, 19 Feb 2021
- 20:00:40 +0000
-Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
-To:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210217100816.28860-1-osalvador@suse.de>
- <20210217100816.28860-2-osalvador@suse.de> <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
- <20210218100917.GA4842@localhost.localdomain>
- <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
- <20210218133250.GA7983@localhost.localdomain>
- <YC5yzNB9xT76fkod@dhcp22.suse.cz> <20210219090548.GA17266@linux>
- <YC+LWksScdiuPw7X@dhcp22.suse.cz> <20210219101427.GA19588@linux>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <b72cf63d-b559-25fb-056a-b0403cf41911@oracle.com>
-Date:   Fri, 19 Feb 2021 12:00:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-In-Reply-To: <20210219101427.GA19588@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: MW4PR03CA0216.namprd03.prod.outlook.com
- (2603:10b6:303:b9::11) To DM6PR10MB4201.namprd10.prod.outlook.com
- (2603:10b6:5:216::10)
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eoXGYc5qzYeLLPalBpsK3/KHuUr/nmxz4/RxMgxVXWY=;
+        b=PQqSXAazlPMGiygBDRbvVeTMtj+h9RMX2tiWH8mbs5cCsltDdu5MkYabDlYQGf7S01
+         9o6U0wIOitV+OUUMUrJ+H/F9RusYSq+AFeK++MFHzOmGhRGwOd9Iw2FeWSCu63Qj7hSJ
+         3qf3klHZfLibY7bq8gKet2yw5TrB4q4uti0eY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eoXGYc5qzYeLLPalBpsK3/KHuUr/nmxz4/RxMgxVXWY=;
+        b=Biol+kFifTauFYIc5G0GTrjsypAfeXMc5yXyGoKq0cU/fcLZSG5/rFxgMB0rx96o0R
+         yHxHpuRUiJto+okDAbrwnqCLH0L148akLc7unS2mgXtIHBRRYk4QamnUIhOws8qzMjqj
+         AH8QjUExocLA0Gq8GLffUgmk6CIJwNxDkrgtmEInF9+OwesY5+dG0byJqDriPyM2DP77
+         UXte+vPnFZSjHukC6yAXqxUkpt8dGWI9Fet+uKKxXoR5tzmi0Vu3LQ4yYRvUlKn5TOWH
+         gcY6EYBMPSXMYclrwfWUBZNpsohh29QRK73o9Wg5OojziLWhycztUsOIE4hxVv4mR2df
+         laig==
+X-Gm-Message-State: AOAM533kn0nQFYgeyz0Xne+w5ja1Oqyf0cs5ypYYJ3ysY4cGKxIS8o0G
+        3h3c3/nYxUz3ryLQwvVCslSi6cg6sOV3DiXLBlfy
+X-Google-Smtp-Source: ABdhPJxxXeDo/c9E4D29ULaD4VmVHtgWzSwK6UeyzH3iKbahW+SFSZi7vIkF/gEm0lWR2LCrZx7oGV0YbXT4aisb1QM=
+X-Received: by 2002:a05:6902:706:: with SMTP id k6mr15938059ybt.87.1613764914757;
+ Fri, 19 Feb 2021 12:01:54 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.2.112] (50.38.35.18) by MW4PR03CA0216.namprd03.prod.outlook.com (2603:10b6:303:b9::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Fri, 19 Feb 2021 20:00:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7d291be2-de69-45bd-10ca-08d8d511084a
-X-MS-TrafficTypeDiagnostic: DS7PR10MB5214:
-X-Microsoft-Antispam-PRVS: <DS7PR10MB5214056339A2C085130E354DE2849@DS7PR10MB5214.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tiWatY73YjKZOSg6Bdg99iT+XQZPIX2t4z8HiMnId/EhlAolIXIt/bhsXQn5qKUStBwOTqYhCVak5D0pOCMIlJmaHn8S6uynW8xmtrfOc8cchBzINFl1TgdY2VAFRGY6lgi2njjuEsNl8ZZCiFii/IRUSaOnRy5iVQbLjgCX142nhMP6ffYCpKyYShcjfz84jMn36WExcR3W389/o49FPZ/0a+y+uVPziQ4gFbM++VKeoo72Aa6rvpnHfWYL0gUeh2Hslk8pN+erOF9t3ppYCNii6B+F7m8eDdX4hAmGfF2/CBdRmprZhaaSxTRrwY2nXmMgTmVT0iki8GF12X/8+JTOMWZmujgu7al0Wa3GtfHmJqFeK28ZuxZKRxWjgWmaiXMzPdKfxAPAeYmNpzaQ7IkUuIVXwdGfRVFh2wBjUlj1xEKsb7gD4I/hYEJNwEJ9b3VyFzrJ7dQoIjhnpepZpXsXl12i8+Nr8u7QbhYVrtNuFMVszEHIObe78SD/AXsYyO8G7sWJ1k+PqzWGD/zm8JvvIxgBVXDCenEaLbaXsSbBXVGvEM/pFoc6R+SXDQYplhUPD7AqbR9/LbS9Sw0dxYVJKm8J7cFxovVFEt5QJrQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4201.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(366004)(136003)(396003)(39860400002)(8676002)(110136005)(8936002)(66556008)(53546011)(2906002)(83380400001)(66476007)(6486002)(4326008)(16576012)(31696002)(54906003)(316002)(5660300002)(31686004)(44832011)(478600001)(16526019)(26005)(186003)(36756003)(956004)(66946007)(86362001)(2616005)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?c0xDRXRJSkswYlZoY3ppbzB5U1htMFhiMkQzY3lCMG50QWlhM3F5UnFNaWFo?=
- =?utf-8?B?R1hTZUh0bStnRXhmUkJpK3gxVEYvb1RtellPM3lIcGdXMVF1RzRXdHJTVWRD?=
- =?utf-8?B?RCtmMFUvVVk3NFk0N3dSZmlPeWNUdUt4QkJsTXZ2blUzTHptWVY0SVBLLzg0?=
- =?utf-8?B?NWJFbFMyWGYySGRzZTgrZnVkTGtWclJYNmJwd3hUSXBoQVlMSE9CRnBwazA5?=
- =?utf-8?B?YnBwOFUreUZJNXhXZlJwb2VOK28xaVJtOHNJRHAyV0s2Yk1kZWFrZzk5ajA0?=
- =?utf-8?B?RVdxNTZnaVpCbURUZ1VLaEszSjFaSWp6dTI0djA5dWpudmlJU1FBWjlWalRO?=
- =?utf-8?B?UnBPU3lqNW1LbGRsTmxZV1lNNlNOUkZlREFFdGxNSWdGdndyRGp6bEFzR0I0?=
- =?utf-8?B?bVFwWEF2aEY5MHZ5cFRuV0dBd0JSZ21UcFgvQ0tramRLbzd1TEw5VzAzZkc4?=
- =?utf-8?B?alh5L1k5MTFsWFZZK003aVNNdEpPSGlNZkd3QTFEYk8zWjFhcXhwUkVKdmli?=
- =?utf-8?B?M3Zwekg1V2NCOHlVTmFrZloxODVNWnN4S3NzK0JnNnNMd1U5L1kxUWFOVGo0?=
- =?utf-8?B?T0pBSjRIRlJraFJNMXNKMkIxZEJtMWZnZkdkQXdzRWd3N0M5L3hSQ29kNEx1?=
- =?utf-8?B?RXVrM1h2ekVucWNDNnBKbUJ0aWw4L0tTNXpKZ1p1Mk9GZ1NxdmRnVERUN1l0?=
- =?utf-8?B?ZHlJUE1OYXdjdDRiK2lxbThud25zTVVrUHlFVS9IcEhWb1ZuVHRYYzgxNFBa?=
- =?utf-8?B?Mk5KVVduWWtOM1hxTU9XbHhkd3FlSTNRYnZZcEt5aTNUZVEwcmxRWlYzTWsx?=
- =?utf-8?B?YkwzVGluU0ZHOTRPRVdmaW42cnFJcHBHU2JGOUE2bytTTkJTVnBJMWpGL1lh?=
- =?utf-8?B?WEpVYTI5SXRpQlZKWTh6L0VNcXMzcHBvNzRwOHlZczI4Q1pmS3MxaXp4cGwr?=
- =?utf-8?B?OTZwdTVydzJmbHl3YkFzMy8wNTZhdmpWRHpEMHA3c2NabUNRVUJHdHFLR0xS?=
- =?utf-8?B?MUZLMjRqNnJLT2Z0V0o0UEgvR085bFdyLzVDUWhwKzZnZDFMUmZzQmRRLzlX?=
- =?utf-8?B?SElxaE1mUkM0VjM5WStySDJHVG9lbVUyMUVHTWdNMGNxMDhXRjdaakFKbXZY?=
- =?utf-8?B?azVIVGFxd0FxU0Q4cjJKVWYrVjZ2SVA1OHpYVkNQVWxRcytJcHBYeHpoYXlR?=
- =?utf-8?B?M3l3YldxalBtOHl1MlVXcjlYWVdVM1ZINHczZ3hPTUNEbVQ4VFI0SFdLN2VM?=
- =?utf-8?B?bzNWdjlxSC8xb2l0bnNGUitqM2h1d2c0K1FqdHc3MlYvMTRDT0I2cnZ3Q01j?=
- =?utf-8?B?MGorVHV4QTlYUy9wc0pDZnZCUjFkVVpEZ2YvZzdINXpWR3YzNCtPWXk5ZjFT?=
- =?utf-8?B?ckF5c3NsQlB0bmFUU1d4TXJDV2N4ZC9uelJNSy9sV2Rnd3ZhYWhnWW02YmNK?=
- =?utf-8?B?RXhoZG41OXkxTXM5S2FmSEVGakRjcmVUVjgzN2NhZGtQV0tNSXlEaHdFSHQ5?=
- =?utf-8?B?VkFTN05xSm53cVc2MkNwSDN6OUIyS01zb3oyRXdzYTQ5OEFsVWZEd3p0ekZ2?=
- =?utf-8?B?ZTZsbU0rUk5BRWk0WFk0M3JSNFptMHNING1oNjVRZVg4SEVMalQ4ZTFNRGpT?=
- =?utf-8?B?SjNOQjFpUmJabnJ6UlZxZFFpa1VSTU1kZEEwRzlOOEtFNGgySjhNT0lYODdV?=
- =?utf-8?B?UkpGSi9YWG5nQ3RhREV3VGNLK0NYU09HOWJYNXZwaTlTbHZhQ3dNM292S3RU?=
- =?utf-8?Q?Rvgnp0kPwIsX5Ix01/BZdFY8pevuc6XSVh+RYfB?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7d291be2-de69-45bd-10ca-08d8d511084a
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4201.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 20:00:40.4650
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CViBSoznvrN98df4npWrH49vbE78Cl3vteokXRhuyVg8rsTJ6lHTnKR5FV9ygJv0slOd43oKznlaLE8oRW8QbQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5214
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190159
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
- phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190159
+References: <20210212195736.45328-1-alcooperx@gmail.com> <20210212195736.45328-3-alcooperx@gmail.com>
+ <d891e5bf-4fd8-fc44-7256-35ffa9d0931a@kernel.org>
+In-Reply-To: <d891e5bf-4fd8-fc44-7256-35ffa9d0931a@kernel.org>
+From:   Al Cooper <al.cooper@broadcom.com>
+Date:   Fri, 19 Feb 2021 15:01:43 -0500
+Message-ID: <CAGh=XABS6zvDKyRVqYVq6j=9rdpZvwuj9ienm59tW1Buc5vzzQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] serial: 8250: Add new 8250-core based Broadcom STB driver
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Al Cooper <alcooperx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000882c0905bbb5ecfa"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/19/21 2:14 AM, Oscar Salvador wrote:
-> On Fri, Feb 19, 2021 at 10:56:42AM +0100, Michal Hocko wrote:
->> OK, this should work but I am really wondering whether it wouldn't be
->> just simpler to replace the old page by a new one in the free list
->> directly. Or is there any reason we have to go through the generic
->> helpers path? I mean something like this
->>
->> 	new_page = alloc_fresh_huge_page();
->> 	if (!new_page)
->> 		goto fail;
->> 	spin_lock(hugetlb_lock);
->> 	if (!PageHuge(old_page)) {
+--000000000000882c0905bbb5ecfa
+Content-Type: text/plain; charset="UTF-8"
 
-Yes, something like this should work.  I'll let Oscar work out the details.
-One thing to note is that you also need to check for old_page not on the
-free list here.  It could have been allocated and in use.  In addition,
-make sure to check the new flag HPageFreed to ensure page is on free list
-before doing any type of update_and_free_page call.
--- 
-Mike Kravetz
+On Fri, Feb 19, 2021 at 4:43 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+>
+> On 12. 02. 21, 20:57, Al Cooper wrote:
+> > Add a UART driver for the new Broadcom 8250 based STB UART. The new
+> > UART is backward compatible with the standard 8250, but has some
+> > additional features. The new features include a high accuracy baud
+> > rate clock system and DMA support.
+> >
+> > The driver will use the new optional BAUD MUX clock to select the best
+> > one of the four master clocks (81MHz, 108MHz, 64MHz and 48MHz) to feed
+> > the baud rate selection logic for any requested baud rate.  This allows
+> > for more accurate BAUD rates when high speed baud rates are selected.
+> ...
+> > --- /dev/null
+> > +++ b/drivers/tty/serial/8250/8250_bcm7271.c
+> ...
+> > +static void brcmuart_rx_isr(struct uart_port *up, u32 rx_isr)
+> > +{
+> > +     struct brcmuart_priv *priv = up->private_data;
+> > +     struct device *dev = up->dev;
+> > +     u32 rx_done_isr;
+> > +     u32 check_isr;
+> > +     char seq_err[] = "RX buffer ready out of sequence, restarting RX DMA\n";
+>
+> What's the purpose of this on-stack variable?
 
->> 		/* freed from under us, nothing to do */ 
->> 		__update_and_free_page(new_page);
->> 		goto unlock;
->> 	}
->> 	list_del(&old_page->lru);
->> 	__update_and_free_page(old_page);
->> 	__enqueue_huge_page(new_page);
->> unlock:
->> 	spin_unlock(hugetlb_lock);
->>
->> This will require to split update_and_free_page and enqueue_huge_page to
->> counters independent parts but that shouldn't be a big deal. But it will
->> also protect from any races. Not an act of beauty but seems less hackish
->> to me.
-> 
-> Yes, I think this would to the trick, and it is race-free.
-> Let me play with it a bit and see what I can come up with.
-> 
-> Thanks for the valuable insight.
-> 
+This was done to make the line fit in 80 columns. Now that the rule
+has been relaxed, I'll move it.
+
+>
+>
+> > +static void init_real_clk_rates(struct device *dev, struct brcmuart_priv *priv)
+> > +{
+> > +     int x;
+> > +     int rc;
+> > +
+> > +     priv->default_mux_rate = clk_get_rate(priv->baud_mux_clk);
+> > +     dev_dbg(dev, "Default BAUD MUX Clock rate is %lu\n",
+> > +             priv->default_mux_rate);
+> > +
+> > +     for (x = 0; x < ARRAY_SIZE(priv->real_rates); x++) {
+> > +             if (priv->rate_table[x] == 0) {
+> > +                     priv->real_rates[x] = 0;
+> > +                     continue;
+> > +             }
+> > +             rc = clk_set_rate(priv->baud_mux_clk, priv->rate_table[x]);
+> > +             if (rc) {
+> > +                     dev_err(dev, "Error selecting BAUD MUX clock for %u\n",
+> > +                             priv->rate_table[x]);
+> > +                     priv->real_rates[x] = priv->rate_table[x];
+> > +             } else {
+> > +                     priv->real_rates[x] = clk_get_rate(priv->baud_mux_clk);
+> > +             }
+> > +     }
+> > +      clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
+>
+> This is only weirdly indented.
+
+Fixed.
+
+>
+>
+> > +}
+> > +
+> > +static void set_clock_mux(struct uart_port *up, struct brcmuart_priv *priv,
+> > +                     u32 baud)
+> > +{
+> > +     u32 percent;
+> > +     u32 best_percent = UINT_MAX;
+> > +     u32 quot;
+> > +     u32 best_quot = 1;
+> > +     u32 rate;
+> > +     int best_index = -1;
+> > +     u64 hires_rate;
+> > +     u64 hires_baud;
+> > +     u64 hires_err;
+> > +     int rc;
+> > +     int i;
+> > +     int real_baud;
+> > +
+> > +     /* If the Baud Mux Clock was not specified, just return */
+> > +     if (priv->baud_mux_clk == NULL)
+> > +             return;
+> > +
+> > +     /* Find the closest match for specified baud */
+> > +     for (i = 0; i < ARRAY_SIZE(priv->real_rates); i++) {
+> > +             if (priv->real_rates[i] == 0)
+> > +                     continue;
+> > +             rate = priv->real_rates[i] / 16;
+> > +             quot = DIV_ROUND_CLOSEST(rate, baud);
+> > +             if (!quot)
+> > +                     continue;
+> > +
+> > +             /* increase resolution to get xx.xx percent */
+> > +             hires_rate = (u64)rate * 10000;
+> > +             hires_baud = (u64)baud * 10000;
+> > +
+> > +             hires_err = div_u64(hires_rate, (u64)quot);
+> > +
+> > +             /* get the delta */
+> > +             if (hires_err > hires_baud)
+> > +                     hires_err = (hires_err - hires_baud);
+> > +             else
+> > +                     hires_err = (hires_baud - hires_err);
+> > +
+> > +             percent = (unsigned long)DIV_ROUND_CLOSEST_ULL(hires_err, baud);
+> > +             dev_dbg(up->dev,
+> > +                     "Baud rate: %u, MUX Clk: %u, Error: %u.%u%%\n",
+> > +                     baud, priv->real_rates[i], percent / 100,
+> > +                     percent % 100);
+> > +             if (percent < best_percent) {
+> > +                     best_percent = percent;
+> > +                     best_index = i;
+> > +                     best_quot = quot;
+> > +             }
+> > +     }
+> > +     if (best_index == -1) {
+> > +             dev_err(up->dev, "Error, %d BAUD rate is too fast.\n", baud);
+> > +             return;
+> > +     }
+> > +     rate = priv->real_rates[best_index];
+> > +     rc = clk_set_rate(priv->baud_mux_clk, rate);
+> > +     if (rc)
+> > +             dev_err(up->dev, "Error selecting BAUD MUX clock\n");
+> > +
+> > +     /* Error over 3 percent will cause data errors */
+> > +     if (best_percent > 300)
+> > +             dev_err(up->dev, "Error, baud: %d has %u.%u%% error\n",
+> > +                     baud, percent / 100, percent % 100);
+> > +
+> > +     real_baud = rate / 16 / best_quot;
+> > +     dev_dbg(up->dev, "Selecting BAUD MUX rate: %u\n", rate);
+> > +     dev_dbg(up->dev, "Requested baud: %u, Actual baud: %u\n",
+> > +             baud, real_baud);
+> > +
+> > +     /* calc nanoseconds for 1.5 characters time at the given baud rate */
+> > +     i = 1000000000 / real_baud / 10;
+>
+> NSEC_PER_SEC here?
+
+Fixed.
+
+>
+>
+> > +     i += (i / 2);
+> > +     priv->char_wait = ns_to_ktime(i);
+> > +
+> > +     up->uartclk = rate;
+> > +}
+>
+> ...
+>
+> > +static int __maybe_unused brcmuart_resume(struct device *dev)
+> > +{
+> > +     struct brcmuart_priv *priv = dev_get_drvdata(dev);
+> > +     int ret;
+> > +
+> > +     ret = clk_prepare_enable(priv->baud_mux_clk);
+> > +     if (ret)
+> > +             dev_err(dev, "Error enabling BAUD MUX clock\n");
+> > +
+> > +     /*
+> > +      * The hardware goes back to it's default after suspend
+> > +      * so get the "clk" back in sync.
+> > +      */
+> > +     ret = clk_set_rate(priv->baud_mux_clk, priv->default_mux_rate);
+> > +     if (ret)
+> > +             dev_err(dev, "Error restoring default BAUD MUX clock\n");
+> > +     if (priv->dma_enabled) {
+> > +             brcmuart_arbitration(priv, 1);
+> > +             brcmuart_init_dma_hardware(priv);
+> > +             start_rx_dma(serial8250_get_port(priv->line));
+> > +     }
+> > +     serial8250_resume_port(priv->line);
+>
+> All these cannot fail? Or the above can, so does proceeding further
+> without an error make sense?
+
+brcmuart_arbitration() can return a failure and I'll print an error
+message and return EBUSY if it does.
+The other functions always return 0 and I'll change them to return void.
+
+>
+> > +     return 0;
+> > +}
+> ....
+> > --- a/drivers/tty/serial/8250/Kconfig
+> > +++ b/drivers/tty/serial/8250/Kconfig
+> > @@ -501,6 +501,7 @@ config SERIAL_8250_PXA
+> >         applicable to both devicetree and legacy boards, and early console is
+> >         part of its support.
+> >
+> > +
+>
+> Why adding a newline here?
+
+Fixed
+
+>
+>
+> >   config SERIAL_8250_TEGRA
+> >       tristate "8250 support for Tegra serial ports"
+> >       default SERIAL_8250
+>
+> regards,
+> --
+> js
+> suse labs
+
+Jira, thanks for the review.
+Al
+
+--000000000000882c0905bbb5ecfa
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+yXmUToMxtlREK8ddtKO4bV6ekA5Mxh5jo4JcHCHlgaNowvQgrCTX+FCX8utZUxwNAgMBAAGjggHN
+MIIByTAOBgNVHQ8BAf8EBAMCBaAwgZ4GCCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAChkFodHRw
+Oi8vc2VjdXJlLmdsb2JhbHNpZ24uY29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEyZzNvY3Nw
+LmNydDA9BggrBgEFBQcwAYYxaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxz
+aWduMnNoYTJnMzBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6
+Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8EPTA7MDmg
+N6A1hjNodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJnMy5jcmww
+IQYDVR0RBBowGIEWYWwuY29vcGVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUgzDqs/CvVCxhgdEnsBOO
+IpL3nHAwDQYJKoZIhvcNAQELBQADggEBACPmJjK2ALJm+IX2DvRRxd7cn7ZA10wn9zxy4ifd84Y7
+MSoFpkcgMBFNZB0BF05H/KXZGTFlQm+DdKIIhg/LbPsca/s1i8rXgk1mo2wqn+/mNCtwllAfHe8j
+gvBuVbTIhYXp5o/JC2AX639UdQaVAV66YQUpyj5KiMA79MRQU3fbd62/7ynokd5Ufw7XbkhqG7uK
+8H7iL6o7IlMM8F5Mf22eZB8hM3WZGYFEyl8V2uYLFWiUDXcp4RiNeCV45AnT+Jg83AWNwTr0TxuE
+tlnxwkojsM1vKTuxUQ5kNI8Aq3v/obzat389kqxBjAd7HTjWDFso5KRS9ZVH2tsbKB1dZtAxggJv
+MIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYD
+VQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDEzVwUNs2XQM
+HDSO3jANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgg6V10zMGRhGj+TM/hTfVeTZ9
+MtknAXhb94G/EJ9P46swGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcN
+MjEwMjE5MjAwMTU1WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYw
+CwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZI
+AWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBABFa+bffiBpZQXfBLsFqaTB23oigP+rn8ULNXrQH/Mrf
+/XizmLe4lrckRhdVJAzE+F6uWtERNl6qlt3UxOblrA7c659BxjTkzpZSIx6Sq2i1O7neryIeRByj
+zPS1RTh1Aocumq3FOB0PJKHYbJzmA5FQZVs5OnedL0ot8h+cv+tR2WdTUEM83s6eEEr5cINGBV8s
+u9pHXhajQVTWaJvDSnpR6E0T6goyQclqGj4zVDkAshq/UxUD+u1bXh35koOJCsGNcXqQMpHiN+z1
+gu5Scwqb30oQw4Zmg3gbbwAMgQFFdIo/3+NiBhI38sSl+OYYJlBdVoDoQcDdqWutLIjBTQc=
+--000000000000882c0905bbb5ecfa--
