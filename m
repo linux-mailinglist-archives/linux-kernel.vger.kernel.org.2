@@ -2,166 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A2A031FCDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:12:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E6F31FCE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhBSQLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:11:41 -0500
-Received: from mail.codeweavers.com ([50.203.203.244]:37764 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229891AbhBSQLg (ORCPT
+        id S230006AbhBSQOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:14:41 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46672 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSQOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:11:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=3N5FmuI7Akza+jdh6VfOjQ9znwDFUbT6JCb1EWUpxCw=; b=jtCYK7hhbaLJSWsHjHzeqes+rh
-        hxTWwHbTYWST/girWycLvWDvL4QEiPJu4qp9hlBzmyrJjz2J+r9XC+Qzws9fQNWc+gvMrgYZT6grj
-        SlLwZ2APePyyn3uqv/1dBPxFb+00fLONpGTkbC5IjwR+2Y6Ygh9xCw7TAMJi0n3d846k=;
-Received: from [10.69.141.136]
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <nfraser@codeweavers.com>)
-        id 1lD8Ml-0003Ld-0i; Fri, 19 Feb 2021 10:10:51 -0600
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
-Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-From:   Nicholas Fraser <nfraser@codeweavers.com>
-Subject: [PATCH 2/2] perf buildid-cache: Add test for PE executable
-Message-ID: <295f5380-93a1-78fa-884b-afd4319b96d7@codeweavers.com>
-Date:   Fri, 19 Feb 2021 11:10:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Feb 2021 11:14:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JG9kIc047729;
+        Fri, 19 Feb 2021 16:13:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=bVjF1+RjAnffvnw7iAX0KyOJrk/f9r164jRnov3l7qE=;
+ b=kowaW01je9JNDxC+EjxnMRGkhRAXGEWllCR/e4JEIy4RQmdiHJ9zO8S1YkjWnSsTnaDk
+ pDUzyD0b7Cmz7ni3UT2Q0B2Na39IIwCyHb3hXGEEGzZX4asbfT4ZPTWiqDWUkc5MQFI1
+ uR0o9d3Ebdg+jMkk5bIlkbsRVlca5g+bC/MJBsnDVtIsJycQOhL8SEIk87Jq3S8+Tre7
+ 35F2fZz9+MJcgJla95fTv4R6O01is84SauvYE+KSxnJEWCD+6jq4lABT1BHFRCgh+0gZ
+ T/h/obE85OsbUYrFH9uS2hnFxMzmfQf2gMVWVlxNSZ+XmWKtiumXro+oObu1JJxai96I nw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 36pd9ahj5n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 16:13:22 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JGAHqc113531;
+        Fri, 19 Feb 2021 16:13:22 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by userp3030.oracle.com with ESMTP id 36prq226rn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 16:13:21 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eefgWqWZoFrMvktIlGSoUsy1dpiIRHoibZewghIVgXU6R3nvdgdv3Cme+A9uovW/5HTVXw/9WuOn/JGefU4XpILmY+vfYf1S9oHI/2/iEF+mZHeSTpgQyhKgz6/AAiQf27PIGBQYZ2Pez4MtLHMZy/m7eCIfjbMnVWAyRA4GGDTdoVFtKBuDAkXGMyvvUjRK2lrDjQW4nP9s+j7apzFkcLSKGa9ljo5hY3KdI9i+0G9ZL+69G1et2yTaRYcRbn7ln0x9hKv+y9WKKMkguyDI6xwdUa0ow3pMsYecCu0/tJLBm0LwdszaUl91QKPWXaMiePQzUCOOpAjGwvFfgTsyng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bVjF1+RjAnffvnw7iAX0KyOJrk/f9r164jRnov3l7qE=;
+ b=VhkQz3RBFMlzUu23aGim6qQ+1Qvg2+zAntWrY4gzHSKl411X8McH42CujWi1yhqa8vFGXMD7NSwonhsxf/gdRtQtZpsIK+Sy76w0wWNXUEPVZpcTfL7THNRDApbRcVxuPImFeXfgYsQFRSAkJx98qusqrjXcrfOjiwcvfVEFBRMPwJm0XDzk3aZdaOTc/oVo9tcZXBW94aYxe7I5SoVMgAgx33HwksDQ2N3OqxXQe44Vl9U8yXZBsnDCX7QIp7EdJORUEcJFN9UJEH1UQ3uVdLF8WS32D8zLK4J3ZnSLWfgDkL1b50bBdQ6KRecDv8wSR4t6R63DQXfVYWTFccSZDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bVjF1+RjAnffvnw7iAX0KyOJrk/f9r164jRnov3l7qE=;
+ b=o/az6rCpRFncgmJU72DSMMfe3XFHQwTa1hibmy4hVlatoV3bPrgWeTWk8PahQ/h+yNAN5tDestFOXrNGJnet5Lwramgpx7VU06PcRE4blUWjG6KyZCLzJBlo78VshHnQbXYbizglrb+u4iwWErUfBLBvzHQag0q5hvvUk3TAqYE=
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com (2603:10b6:301:9::13)
+ by MWHPR1001MB2157.namprd10.prod.outlook.com (2603:10b6:301:32::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.27; Fri, 19 Feb
+ 2021 16:13:19 +0000
+Received: from MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183]) by MWHPR10MB1774.namprd10.prod.outlook.com
+ ([fe80::24eb:1300:dd70:4183%3]) with mapi id 15.20.3846.042; Fri, 19 Feb 2021
+ 16:13:19 +0000
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Steven Sistare <steven.sistare@oracle.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Jordan <daniel.m.jordan@oracle.com>
+Subject: [PATCH v2 0/3] vfio/type1: Batch page pinning
+Date:   Fri, 19 Feb 2021 11:13:02 -0500
+Message-Id: <20210219161305.36522-1-daniel.m.jordan@oracle.com>
+X-Mailer: git-send-email 2.30.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [98.229.125.203]
+X-ClientProxiedBy: BL0PR0102CA0052.prod.exchangelabs.com
+ (2603:10b6:208:25::29) To MWHPR10MB1774.namprd10.prod.outlook.com
+ (2603:10b6:301:9::13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (98.229.125.203) by BL0PR0102CA0052.prod.exchangelabs.com (2603:10b6:208:25::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.28 via Frontend Transport; Fri, 19 Feb 2021 16:13:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e11312b1-1146-42ea-070d-08d8d4f145a9
+X-MS-TrafficTypeDiagnostic: MWHPR1001MB2157:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR1001MB215781D75E9EE81DAD4F3041D9849@MWHPR1001MB2157.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U3CttiRU4H6WM9KUzWCRZG4ljEz38tLIpavZ9WqCMjlJvL1GdLJoHBsZqNGn0OigXxkOW//wV/my4VsNuhZ8vae/gpVMwR1291tCT9C+nsOhW9crn44VY44vLQErkh/VNM32HHcCMRyL8ZTtmBnJsdxu5mf91GuE8AyAa2gJm/UPd6ruZsntvw0xkux2FUJpErVaaQoy0HzapwfpGpo57x/vG1wWVF/QLsNPO3T36nB1j9AQU1zBKOi9A4z1ZWsMi8CFuCpo2pNy8q8jIb0N1DThqwtYUBRWcvvHftXIBfZ9/jQW4S58ZDbuGqYqC7p06zVIerCdXhPvuf3yWkfkpRyyP1X3IQ9OG9DRBv2D/6q8Njt0WSZd3P+qp/EMTwaA35vV03zi/ysgWM20Fp5W0EMRBs1X46P/gWm2kDYts3nAEXq4zbvTWU6aZti06LaB7kkjPjz9aw0/dx8mFdEIoaHAmoB5+TmCUaaN0Nf1GpB8b96piFrxj57aliqEKXHPk57UQgZdFg+aRQU5bFJdtBoOXC2ejquswdB4uMOHnJ2AHKN5ERdXDh7LonqMthkR8MiTVDR210kB4FLTd+cRxg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1774.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(346002)(136003)(366004)(376002)(8936002)(107886003)(66946007)(1076003)(6486002)(6506007)(956004)(5660300002)(86362001)(83380400001)(8676002)(66556008)(54906003)(478600001)(103116003)(2616005)(110136005)(6666004)(69590400012)(2906002)(52116002)(26005)(186003)(36756003)(6512007)(66476007)(16526019)(316002)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7PrW7/G2xdlLBTUnbwTC+acsu/Dj4U4sAAu8gFE7A3Uj9s0pVj7h35H+jWrp?=
+ =?us-ascii?Q?yn/Hyl3DJ4LA3ij6RJANnqEIFfnh2fSNNzNFkayPmicMdosZ5SNgP+ZKHwBf?=
+ =?us-ascii?Q?Pf93HwkvOLA+ytbbdXhc9NViZP3GrxAEszKZl1zPgDhdhmsDygjyL8wY2ScH?=
+ =?us-ascii?Q?wpqp+fZPR7U5f/PO7Yu/+Dm85Z9ejVO3AV6HrYRIm60vcjxkMt18jLvZFwg1?=
+ =?us-ascii?Q?RJI1N6pXki3N6Xm6gE+b23T6a6hK1EUvmkgVuwshYEhzPst8Ev7/XnfsnoEf?=
+ =?us-ascii?Q?BIq8LtY08cdN7nYemR5mnyt4s4bxesB0BW5LUHBpgQ6kXGXpDEFRelhK3p4+?=
+ =?us-ascii?Q?fa5yBrtixOJAPBvl4wLVoVUlEP8Ica0VkywViWM8e5/J8YEuElHHrlm2Gq5n?=
+ =?us-ascii?Q?wp+9UOEa0RisPApu2gLwhQbEKT53/fh2PJCF7mBv8Q/Ue1OuYhf7ARQ6++zl?=
+ =?us-ascii?Q?idBk7+RxYwF0DXaYRcRZ3sBHO9l7dX4pp7KRY2PyOv/aur12aonbKl+S75OL?=
+ =?us-ascii?Q?L1FhP+yf/DKZWoiW8UXdRNLhv9jcgo8gNuKucNaRR3QRtrjJyU850Dmeb5we?=
+ =?us-ascii?Q?VYrkFfn+x/QnznWOeliIjMHEoffBui+mUyGTpuwMsPirhkPgpYjBP/8yAZwe?=
+ =?us-ascii?Q?kQnVikFgUW1qymi4XMLnpIrgRPFhpFW3E35wyi/3gQSAOFH2r8Qm6F/dFBuD?=
+ =?us-ascii?Q?/kV2shwiAvlDCQ8AfFOnOCzwnP+FYMhAwS1R1RxFJA092P9oEe5X7n/PIWR+?=
+ =?us-ascii?Q?csi6KJRNvuDk9kihDCkXMKNgLRi67Z4zeIEt+nQGYqyQEl7yEcTbVMuaCGxu?=
+ =?us-ascii?Q?1u2SLKITLrnC8wFq6rFDmxFe9DshCSVGbICgRU7jWfAYMgBSDpHeIdZ0iWhO?=
+ =?us-ascii?Q?0Exvtqq+WyszoN3OrhW6P1Jh+OZ27tqlUIivEOOgNxnIQwNhlyFOS+v4DCkt?=
+ =?us-ascii?Q?k3Bx5se+AKIKUoNrMd4nbacCHfjDVi3LLH+toj4lezaHKW9bUdnupwlf2LZW?=
+ =?us-ascii?Q?E6rP7zekfXdMpPpj8teHDMdfGUh125Pd40gt2E73IHi/TOUbPlqBe3YTbsdC?=
+ =?us-ascii?Q?dom0iH1yRFNF4IJNoKsD42hsOAhQ3gI4PVMypgaRDlikOIM1dUIVWffL3aG9?=
+ =?us-ascii?Q?fxW1n1BhFU9G25vMBvCegWflnKgwiHY3Z3+Jxb0ucQnOYPULdkCux5hpKJNw?=
+ =?us-ascii?Q?BeTecH1fadXRlBQbnnXxtjTjJhp8LrpXMXTK9b6gtvABvIvtQktonxkBsF2a?=
+ =?us-ascii?Q?/HGOgl4+3V75OBP1XWqAU2HgCVIMWydsbUril7hfUR2JY0EtTJE+ls9l6ShS?=
+ =?us-ascii?Q?BC2dtyzOzbUuhS2Q7BqzbfML?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e11312b1-1146-42ea-070d-08d8d4f145a9
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1774.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 16:13:19.5816
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5ned8SBIbiHAp76DLCTpDA/4sQ+8JM0bVMIHUD+u8BGZCjq+ulmlqjxslql2eTECPxBQNcMc/1/Lo8HqNY0iaIxR5Se/6cho7njSsHxhX1k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1001MB2157
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190127
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 suspectscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This builds on the previous changes to tests/shell/buildid.sh, adding
-tests for a PE file. It adds it to the build-id cache manually and, if
-Wine is available, runs it under "perf record" and verifies that it was
-added automatically.
+v2:
+ - Fixed missing error unwind in patch 3 (Alex).  After more thought,
+   the ENODEV case is fine, so it stayed the same.
 
-If wine is not installed, only warnings are printed; the test can still
-exit 0.
+ - Rebased on linux-vfio.git/next (no conflicts).
 
-(I welcome ways to make the GUID parsing less awful. checkpatch.pl is
-complaining about the line length of the sed command. The re-arranging
-could be done via e.g. id=${id:6:2}{id:4:2}... since this style is
-already used in the script but that turns out to be longer than the sed
-command and anyway it's bash-specific. This uses a hardcoded .exe so we
-could also just hardcode its GUID but I'd worry about making the tests
-too inflexible.)
-
-Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
 ---
- tools/perf/tests/shell/buildid.sh | 43 +++++++++++++++++++++++++++----
- 1 file changed, 38 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
-index 416af614bbe0..55e2168ef26f 100755
---- a/tools/perf/tests/shell/buildid.sh
-+++ b/tools/perf/tests/shell/buildid.sh
-@@ -14,18 +14,41 @@ if ! [ -x "$(command -v cc)" ]; then
- 	exit 2
- fi
- 
-+# check what we need to test windows binaries
-+add_pe=1
-+run_pe=1
-+if ! perf version --build-options | grep -q 'libbfd: .* on '; then
-+    echo "WARNING: perf not built with libbfd. PE binaries will not be tested."
-+    add_pe=0
-+    run_pe=0
-+fi
-+if ! which wine > /dev/null; then
-+    echo "WARNING: wine not found. PE binaries will not be run."
-+    run_pe=0
-+fi
-+
- ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
- ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
-+ex_pe=$(dirname $0)/../pe-file.exe
- 
- echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
- echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
- 
--echo "test binaries: ${ex_sha1} ${ex_md5}"
-+echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
- 
- check()
- {
--	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
--
-+	case $1 in
-+	*.exe)
-+		# the build id must be rearranged into a GUID
-+		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
-+			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
-+			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
-+		;;
-+	*)
-+		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
-+		;;
-+	esac
- 	echo "build id: ${id}"
- 
- 	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
-@@ -50,7 +73,7 @@ check()
- 		exit 1
- 	fi
- 
--	${perf} buildid-cache -l | grep $id
-+	${perf} buildid-cache -l | grep ${id}
- 	if [ $? -ne 0 ]; then
- 		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
- 		exit 1
-@@ -81,7 +104,7 @@ test_record()
- 	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
- 	perf="perf --buildid-dir ${build_id_dir}"
- 
--	${perf} record --buildid-all -o ${data} ${1}
-+	${perf} record --buildid-all -o ${data} ${2} ${1}
- 	if [ $? -ne 0 ]; then
- 		echo "failed: record ${1}"
- 		exit 1
-@@ -96,12 +119,22 @@ test_record()
- # add binaries manual via perf buildid-cache -a
- test_add ${ex_sha1}
- test_add ${ex_md5}
-+if [ $add_pe -eq 1 ]; then
-+    test_add ${ex_pe}
-+fi
- 
- # add binaries via perf record post processing
- test_record ${ex_sha1}
- test_record ${ex_md5}
-+if [ $run_pe -eq 1 ]; then
-+    test_record ${ex_pe} wine
-+fi
- 
- # cleanup
- rm ${ex_sha1} ${ex_md5}
- 
-+if [ $add_pe -eq 0 ] || [ $run_pe -eq 0 ]; then
-+    echo "WARNING: some PE tests were skipped. See previous warnings."
-+fi
-+
- exit ${err}
+The VFIO type1 driver is calling pin_user_pages_remote() once per 4k page, so
+let's do it once per 512 4k pages to bring VFIO in line with other drivers such
+as IB and vDPA.
+
+qemu guests with at least 2G memory start about 8% faster on a Xeon server,
+with more detailed results in the last changelog.
+
+Thanks to Matthew, who first suggested the idea to me.
+
+Daniel
+
+
+Test Cases
+----------
+
+ 1) qemu passthrough with IOMMU-capable PCI device
+
+ 2) standalone program to hit
+        vfio_pin_map_dma() -> vfio_pin_pages_remote()
+
+ 3) standalone program to hit
+        vfio_iommu_replay() -> vfio_pin_pages_remote()
+
+Each was run...
+
+ - with varying sizes
+ - with/without disable_hugepages=1
+ - with/without LOCKED_VM exceeded
+
+I didn't test vfio_pin_page_external() because there was no readily available
+hardware, but the changes there are pretty minimal.
+
+Daniel Jordan (3):
+  vfio/type1: Change success value of vaddr_get_pfn()
+  vfio/type1: Prepare for batched pinning with struct vfio_batch
+  vfio/type1: Batch page pinning
+
+ drivers/vfio/vfio_iommu_type1.c | 215 +++++++++++++++++++++++---------
+ 1 file changed, 155 insertions(+), 60 deletions(-)
+
+base-commit: 76adb20f924f8d27ed50d02cd29cadedb59fd88f
 -- 
 2.30.1
 
