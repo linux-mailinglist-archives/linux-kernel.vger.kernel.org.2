@@ -2,273 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF45631FDD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:26:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 639D031FDE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:31:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229743AbhBSR01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:26:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbhBSR0Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:26:24 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091BDC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 09:25:44 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 68DD041EF0;
-        Fri, 19 Feb 2021 17:25:39 +0000 (UTC)
-From:   Hector Martin <marcan@marcan.st>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hector Martin <marcan@marcan.st>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 7/8 v1.5] arm64: Always keep DAIF.[IF] in sync
-Date:   Sat, 20 Feb 2021 02:25:30 +0900
-Message-Id: <20210219172530.45805-1-marcan@marcan.st>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210219113904.41736-8-mark.rutland@arm.com>
-References: <20210219113904.41736-8-mark.rutland@arm.com>
+        id S229524AbhBSRba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:31:30 -0500
+Received: from mail-dm6nam11on2111.outbound.protection.outlook.com ([40.107.223.111]:27993
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229515AbhBSRbZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 12:31:25 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E2x2vNa/ScqxiDV4iqOUJyvQIWB34djGLfP2L6OktnwldyU0DfSOUr9VrT3WEPYVwervAFdRE2DRSZE2H5a5Mx154m6kXMlDlq+8gjb4Cml+JnYlgU5jmXroDRq/L4/810EQHy2pzpV/I8YihQAWnaRLtfpdx6ZrHRQ5+UnDSuVlvZxUplMWvOZ1KHkkAJ0hGxmAWcSGF4OetNBMRqLcszz32IiQiLjXHzcI+bkWlB3psfPIRGVMLA3DgcWMtGKd4QCHeCNKpHemZZaloQAG5igfFlBJZKWcmWzVCZ6hZplcDDM0vlmN3/Utw73y/m60U8wFtvfroGlKNQ3fdrRVcw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KUVM91d3DA7yOz173unk0v82dcHCuIrBKUgBSEZbGpo=;
+ b=KoyS4C0tvFYQsUeQFXePHphywMdspXpGnXnquxkyoP6wCDGwU3YPse3+6rPkL3BUPnSl/RmvkqocROOB6IxwYWkaPXvoxiUh1roJ5ZQTGH4sgNaA/NQ4UZeKdgp28YylddtlMaBZr+5OPPzP0mazxeFiCRVc3+QZZCNge1bMREm9sqx8HKRs6o5XeyPzI07rG/wSK5d/vpAhCIv+eIAnhX1KIEk+vM2kA73ZBHBGzRQ6PPb0L7WKXTE3opGnE9QR0nazLmrQBDC/69smbmeGNaa5Sj/PQUU3gKfsKK3HWUj+BBIngb74vve70J6KYnesuSIAGOTEHH62xu8vKuYoRA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KUVM91d3DA7yOz173unk0v82dcHCuIrBKUgBSEZbGpo=;
+ b=e6ewm2YOnhqH8lcYuqnXrx21tSsRlvSiwAGcVx6aY+awbq+BmpzSZwEEXfEJqzRZoeJ/X442+BqND2KGhQ7nZqISir8nylbYnEBfbU2IYHvP5GVK6+HmuOEzLr4M0HTbx90OJlikIOMaIuAjPC8A5dHq3spV/EPDUUiAK0CiUBM=
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com (2603:10b6:301:7c::11)
+ by MW2PR2101MB1769.namprd21.prod.outlook.com (2603:10b6:302:2::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.3; Fri, 19 Feb
+ 2021 17:30:37 +0000
+Received: from MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
+ ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3890.013; Fri, 19 Feb 2021
+ 17:30:37 +0000
+From:   Michael Kelley <mikelley@microsoft.com>
+To:     Vasanth <vasanth3g@gmail.com>, KY Srinivasan <kys@microsoft.com>
+CC:     Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3] drivers: hv: Fix whitespace errors
+Thread-Topic: [PATCH v3] drivers: hv: Fix whitespace errors
+Thread-Index: AQHXBuK1vN/4Mv5KIkKdRWZD1RSN46pfu95w
+Date:   Fri, 19 Feb 2021 17:30:36 +0000
+Message-ID: <MWHPR21MB1593D140BF3619028762324AD7849@MWHPR21MB1593.namprd21.prod.outlook.com>
+References: <20210219171311.421961-1-vasanth3g@gmail.com>
+In-Reply-To: <20210219171311.421961-1-vasanth3g@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-19T17:30:35Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=2307f511-0bbb-4449-99ff-5c5fd917c3b1;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [24.22.167.197]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bcb3ea08-215d-4c75-b4d7-08d8d4fc11e9
+x-ms-traffictypediagnostic: MW2PR2101MB1769:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR2101MB176904F5E5126F617C9F18CDD7849@MW2PR2101MB1769.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:213;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: chCU+ODWk1NsUwqlh/ABEtG0WJ7+OaiLJIPe7SqdA7CD9+hyo2B/omau31JOkQ5Lqu0YKCPQ9i66rLq5NtuHucQjYU22uWaFmtXqWxgCGPuGuxk8QYhRkZGn8TYHr5yzwMcjl22JLgT9M6nIbXU0vpCvEINLQ3gpK4zwBdYgMSaaFwUM3ojQv5ZsWLBcZbqTQtANq414apc7/vklx12BtMXKNuKLESGCaeyzgGW0fO6vxTAEOXv0Rga0uaPL8xVbtui0AGDksdUbT4pRxLc0035+pSX0glLYR4y5q1mik2SzMSEeHu0m9ezRDQcyHRcCaRrYj68//YRczIcgGUTxEA3qoS0sXKFML9aE34iqNZaL5wdNrhzP7hwAtHZSl6FTe7F16kUPRb03G1UUDGb5irSUDv7tMltddZ/COVUhsCXe5VaH5Nsbin9RX8Yff16QmZzfN+3TK8A05af3z5M+INU8+IkGNBFjob9A8ywk4UFhP4NI8+gN4d5EQVMa5HRLUqG9xsvA3x3seZgepNB8+g==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(366004)(39860400002)(346002)(86362001)(7696005)(6506007)(4326008)(53546011)(8676002)(10290500003)(83380400001)(54906003)(110136005)(316002)(6636002)(66946007)(186003)(8936002)(64756008)(66446008)(26005)(66556008)(66476007)(71200400001)(52536014)(76116006)(478600001)(8990500004)(55016002)(2906002)(5660300002)(9686003)(82960400001)(33656002)(82950400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?bY1mlPXpycQsDdKQF5LbNwQI8fSdnwXqVJIHtkdh8vBvHXGY3Tj2SHEC4qb+?=
+ =?us-ascii?Q?gL92rATFkcyh/W+aojVIjbfJlUw76YD/XdAEitQve8HCGH32Shq/J1IkJhjy?=
+ =?us-ascii?Q?XccpPKExEnkfD+PZc3f8/gVPTKFPIbHylQL6Lix5Uzjh2w+lEoQ7n6GkBAdl?=
+ =?us-ascii?Q?Q09U9kTMKHB0ZaLarj0VGdbrrTgn2Z3eBh/urWn8QB2qxWwFr93B2D/fFo4W?=
+ =?us-ascii?Q?dJekann+j65p5YwoPA8B6r323tBHmWf0zZGyfINEP59ynRkEi0KHYl/rGfY3?=
+ =?us-ascii?Q?OgjFtZTWsQfyXdcVfKR/nPtFgu4zm0MSjuk1cUDEQPiSnlntAhRV9pWrgIWS?=
+ =?us-ascii?Q?SpYs72btT/hEfS/AUNyxi6OHBgaC5A45RIlLopJN8IKRhx0WAchXfbkGapO7?=
+ =?us-ascii?Q?/8Stnxy+2Lw8uAft46vofu32D342UbakYp+a3jxxUYv5uE0h+c3g5GYPbag6?=
+ =?us-ascii?Q?hJ5n+Y+mEyyp1kMokq0l0IM+RsjbQZAdDmlfYUbm03SKzTpST9u9BarxT/WQ?=
+ =?us-ascii?Q?TRQW5EbNyJRlhLOl9rmWJqcm4E3c2p14vMmyFWoMWe+m2yn0dyG6gGa+PHI/?=
+ =?us-ascii?Q?Mzcsy/Z2K77wS/shggqJppGrFXmMixdWCHfi1kgbkisoQWU0ce96w3PMblso?=
+ =?us-ascii?Q?ewYz23+QnWkLmrgkU9cA8T1GpKxIeqrsVGtGDVsClcUECbgDWTPimWdkJASg?=
+ =?us-ascii?Q?5yZDIYh8cOnWvJ8hxLQ9BTRxZntys/Qg9V3l64sfQKtdKkJQG5ZqczR605mD?=
+ =?us-ascii?Q?dgjAsu+kw8M4nRzyjSN1FQNqbgPbCOYLas5nCBkH68UC5sgpnkmd9HuOwDaT?=
+ =?us-ascii?Q?Qyyoeg74C9tf+A9bDrI/vR4ldDkKNYeUqSL6ch2GOcFW06xDTY7EjMXPLlBU?=
+ =?us-ascii?Q?7ApDg5TRz/rxdABlNjzUTP0hOYR7Klco7t8S+zspk2dwCMzRSymm1vMNM/42?=
+ =?us-ascii?Q?PcGg3kVdzGzHi9IomETIExPk2D7Y5HzXFoIQ/oUgw3z/djNt/pSg+cs0zMlc?=
+ =?us-ascii?Q?vsPkc0HWEkMBmop+qPRLDEGUlRABqUuU4v3bH4VWio8r5Hkhu9nXSWQhcmWF?=
+ =?us-ascii?Q?FIK5y9Ff7lMiGPh0nTiQU+F0Ub+5JEiOAK8SrkeNfZ757csRVcYG7xvvYb/y?=
+ =?us-ascii?Q?4Lghj+9YscaOVwT+IoVBKAY+GKWlphsnsnPzHnR0ySCIuWpROL3w+KRPN1GF?=
+ =?us-ascii?Q?Itg6HnWIW+IOwz3c6KhuT+xgt+15Ce9UXmPr9PCb4BXN0wq2CW50WFLmgwLD?=
+ =?us-ascii?Q?wWbqPsHeV9DrkYdR7770mp99jERZf9dfz9nUasM4Ux0Az28Wg+CGlebgY0mk?=
+ =?us-ascii?Q?9soY3Pdquyg1zeB4lWA82FMR?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bcb3ea08-215d-4c75-b4d7-08d8d4fc11e9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2021 17:30:36.9361
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OuOUBXSUf+WjAvDS+8DJ44Vsb551V6Yn++fO8KVoaih/+p9BHcPTVTcYgAMo9bhLVKhF2I+Gx8V7wan6sOcYtXwUafJQw/zzSLCbAyrTl/s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB1769
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apple SoCs (A11 and newer) have some interrupt sources hardwired to the
-FIQ line. We implement support for this by simply treating IRQs and FIQs
-the same way in the interrupt vectors.
+From: Vasanth <vasanth3g@gmail.com> Sent: Friday, February 19, 2021 9:13 AM
+> To: KY Srinivasan <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>; Stephen Hemminger
+> <sthemmin@microsoft.com>; wei.liu@kernel.org; linux-hyperv@vger.kernel.or=
+g; linux-
+> kernel@vger.kernel.org; Vasanth <vasanth3g@gmail.com>
+> Subject: [PATCH v3] drivers: hv: Fix whitespace errors
+>=20
+> Fixed checkpatch warning and errors on hv driver.
+>=20
+> Signed-off-by: Vasanth <vasanth3g@gmail.com>
+> ---
+>=20
+> changes in v2:
+> *  Added commit message
+> *  Revised Subject
+>=20
+>  drivers/hv/channel.c    | 2 +-
+>  drivers/hv/connection.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/hv/channel.c b/drivers/hv/channel.c
+> index 6fb0c76bfbf8..587234065e37 100644
+> --- a/drivers/hv/channel.c
+> +++ b/drivers/hv/channel.c
+> @@ -385,7 +385,7 @@ static int create_gpadl_header(enum hv_gpadl_type typ=
+e, void
+> *kbuffer,
+>   * @kbuffer: from kmalloc or vmalloc
+>   * @size: page-size multiple
+>   * @send_offset: the offset (in bytes) where the send ring buffer starts=
+,
+> - * 		 should be 0 for BUFFER type gpadl
+> + *              should be 0 for BUFFER type gpadl
+>   * @gpadl_handle: some funky thing
+>   */
+>  static int __vmbus_establish_gpadl(struct vmbus_channel *channel,
+> diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
+> index 11170d9a2e1a..3760cbb6ffaf 100644
+> --- a/drivers/hv/connection.c
+> +++ b/drivers/hv/connection.c
+> @@ -28,7 +28,7 @@ struct vmbus_connection vmbus_connection =3D {
+>  	.conn_state		=3D DISCONNECTED,
+>  	.next_gpadl_handle	=3D ATOMIC_INIT(0xE1E10),
+>=20
+> -	.ready_for_suspend_event=3D COMPLETION_INITIALIZER(
+> +	.ready_for_suspend_event =3D COMPLETION_INITIALIZER(
+>  				  vmbus_connection.ready_for_suspend_event),
+>  	.ready_for_resume_event	=3D COMPLETION_INITIALIZER(
+>  				  vmbus_connection.ready_for_resume_event),
+> --
+> 2.25.1
 
-To support these systems, the FIQ mask bit needs to be kept in sync with
-the IRQ mask bit, so both kinds of exceptions are masked together. No
-other platforms should be delivering FIQ exceptions right now, and we
-already unmask FIQ in normal process context, so this should not have an
-effect on other systems - if spurious FIQs were arriving, they would
-already panic the kernel.
-
-Signed-off-by: Hector Martin <marcan@marcan.st>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Will Deacon <will@kernel.org>
-
----
- arch/arm64/include/asm/arch_gicv3.h |  2 +-
- arch/arm64/include/asm/assembler.h  |  8 ++++----
- arch/arm64/include/asm/daifflags.h  | 10 +++++-----
- arch/arm64/include/asm/irqflags.h   | 16 +++++++---------
- arch/arm64/kernel/entry.S           | 12 +++++++-----
- arch/arm64/kernel/process.c         |  2 +-
- arch/arm64/kernel/smp.c             |  1 +
- 7 files changed, 26 insertions(+), 25 deletions(-)
-
-This is the updated patch after addressing the comments in the original
-v2 review; we're moving it to this series now, so please review it in
-this context.
-
-diff --git a/arch/arm64/include/asm/arch_gicv3.h b/arch/arm64/include/asm/arch_gicv3.h
-index 880b9054d75c..934b9be582d2 100644
---- a/arch/arm64/include/asm/arch_gicv3.h
-+++ b/arch/arm64/include/asm/arch_gicv3.h
-@@ -173,7 +173,7 @@ static inline void gic_pmr_mask_irqs(void)
-
- static inline void gic_arch_enable_irqs(void)
- {
--	asm volatile ("msr daifclr, #2" : : : "memory");
-+	asm volatile ("msr daifclr, #3" : : : "memory");
- }
-
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index bf125c591116..53ff8c71eed7 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -40,9 +40,9 @@
- 	msr	daif, \flags
- 	.endm
-
--	/* IRQ is the lowest priority flag, unconditionally unmask the rest. */
--	.macro enable_da_f
--	msr	daifclr, #(8 | 4 | 1)
-+	/* IRQ/FIQ are the lowest priority flags, unconditionally unmask the rest. */
-+	.macro enable_da
-+	msr	daifclr, #(8 | 4)
- 	.endm
-
- /*
-@@ -50,7 +50,7 @@
-  */
- 	.macro	save_and_disable_irq, flags
- 	mrs	\flags, daif
--	msr	daifset, #2
-+	msr	daifset, #3
- 	.endm
-
- 	.macro	restore_irq, flags
-diff --git a/arch/arm64/include/asm/daifflags.h b/arch/arm64/include/asm/daifflags.h
-index 1c26d7baa67f..5eb7af9c4557 100644
---- a/arch/arm64/include/asm/daifflags.h
-+++ b/arch/arm64/include/asm/daifflags.h
-@@ -13,8 +13,8 @@
- #include <asm/ptrace.h>
-
- #define DAIF_PROCCTX		0
--#define DAIF_PROCCTX_NOIRQ	PSR_I_BIT
--#define DAIF_ERRCTX		(PSR_I_BIT | PSR_A_BIT)
-+#define DAIF_PROCCTX_NOIRQ	(PSR_I_BIT | PSR_F_BIT)
-+#define DAIF_ERRCTX		(PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
- #define DAIF_MASK		(PSR_D_BIT | PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
-
-
-@@ -47,7 +47,7 @@ static inline unsigned long local_daif_save_flags(void)
- 	if (system_uses_irq_prio_masking()) {
- 		/* If IRQs are masked with PMR, reflect it in the flags */
- 		if (read_sysreg_s(SYS_ICC_PMR_EL1) != GIC_PRIO_IRQON)
--			flags |= PSR_I_BIT;
-+			flags |= PSR_I_BIT | PSR_F_BIT;
- 	}
-
- 	return flags;
-@@ -69,7 +69,7 @@ static inline void local_daif_restore(unsigned long flags)
- 	bool irq_disabled = flags & PSR_I_BIT;
-
- 	WARN_ON(system_has_prio_mask_debugging() &&
--		!(read_sysreg(daif) & PSR_I_BIT));
-+		(read_sysreg(daif) & (PSR_I_BIT | PSR_F_BIT)) != (PSR_I_BIT | PSR_F_BIT));
-
- 	if (!irq_disabled) {
- 		trace_hardirqs_on();
-@@ -86,7 +86,7 @@ static inline void local_daif_restore(unsigned long flags)
- 			 * If interrupts are disabled but we can take
- 			 * asynchronous errors, we can take NMIs
- 			 */
--			flags &= ~PSR_I_BIT;
-+			flags &= ~(PSR_I_BIT | PSR_F_BIT);
- 			pmr = GIC_PRIO_IRQOFF;
- 		} else {
- 			pmr = GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET;
-diff --git a/arch/arm64/include/asm/irqflags.h b/arch/arm64/include/asm/irqflags.h
-index ff328e5bbb75..b57b9b1e4344 100644
---- a/arch/arm64/include/asm/irqflags.h
-+++ b/arch/arm64/include/asm/irqflags.h
-@@ -12,15 +12,13 @@
-
- /*
-  * Aarch64 has flags for masking: Debug, Asynchronous (serror), Interrupts and
-- * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'dai'
-+ * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'daif'
-  * order:
-  * Masking debug exceptions causes all other exceptions to be masked too/
-- * Masking SError masks irq, but not debug exceptions. Masking irqs has no
-- * side effects for other flags. Keeping to this order makes it easier for
-- * entry.S to know which exceptions should be unmasked.
-- *
-- * FIQ is never expected, but we mask it when we disable debug exceptions, and
-- * unmask it at all other times.
-+ * Masking SError masks IRQ/FIQ, but not debug exceptions. IRQ and FIQ are
-+ * always masked and unmasked together, and have no side effects for other
-+ * flags. Keeping to this order makes it easier for entry.S to know which
-+ * exceptions should be unmasked.
-  */
-
- /*
-@@ -35,7 +33,7 @@ static inline void arch_local_irq_enable(void)
- 	}
-
- 	asm volatile(ALTERNATIVE(
--		"msr	daifclr, #2		// arch_local_irq_enable",
-+		"msr	daifclr, #3		// arch_local_irq_enable",
- 		__msr_s(SYS_ICC_PMR_EL1, "%0"),
- 		ARM64_HAS_IRQ_PRIO_MASKING)
- 		:
-@@ -54,7 +52,7 @@ static inline void arch_local_irq_disable(void)
- 	}
-
- 	asm volatile(ALTERNATIVE(
--		"msr	daifset, #2		// arch_local_irq_disable",
-+		"msr	daifset, #3		// arch_local_irq_disable",
- 		__msr_s(SYS_ICC_PMR_EL1, "%0"),
- 		ARM64_HAS_IRQ_PRIO_MASKING)
- 		:
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index acc677672277..af04ce5088ca 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -533,7 +533,7 @@ alternative_endif
-
- 	.macro el1_interrupt_handler, handler:req
- 	gic_prio_irq_setup pmr=x20, tmp=x1
--	enable_da_f
-+	enable_da
-
- 	mov	x0, sp
- 	bl	enter_el1_irq_or_nmi
-@@ -544,8 +544,10 @@ alternative_endif
- 	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
- alternative_if ARM64_HAS_IRQ_PRIO_MASKING
- 	/*
--	 * DA_F were cleared at start of handling. If anything is set in DAIF,
--	 * we come back from an NMI, so skip preemption
-+	 * DA were cleared at start of handling, and IF are cleared by
-+	 * the GIC irqchip driver using gic_arch_enable_irqs() for
-+	 * normal IRQs. If anything is set, it means we come back from
-+	 * an NMI instead of a normal IRQ, so skip preemption
- 	 */
- 	mrs	x0, daif
- 	orr	x24, x24, x0
-@@ -562,7 +564,7 @@ alternative_else_nop_endif
- 	.macro el0_interrupt_handler, handler:req
- 	gic_prio_irq_setup pmr=x20, tmp=x0
- 	user_exit_irqoff
--	enable_da_f
-+	enable_da
-
- 	tbz	x22, #55, 1f
- 	bl	do_el0_irq_bp_hardening
-@@ -763,7 +765,7 @@ el0_error_naked:
- 	mov	x0, sp
- 	mov	x1, x25
- 	bl	do_serror
--	enable_da_f
-+	enable_da
- 	b	ret_to_user
- SYM_CODE_END(el0_error)
-
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 6616486a58fe..34ec400288d0 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -84,7 +84,7 @@ static void noinstr __cpu_do_idle_irqprio(void)
- 	unsigned long daif_bits;
-
- 	daif_bits = read_sysreg(daif);
--	write_sysreg(daif_bits | PSR_I_BIT, daif);
-+	write_sysreg(daif_bits | PSR_I_BIT | PSR_F_BIT, daif);
-
- 	/*
- 	 * Unmask PMR before going idle to make sure interrupts can
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index ad00f99ee9b0..9dee8a17b1ac 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -188,6 +188,7 @@ static void init_gic_priority_masking(void)
- 	cpuflags = read_sysreg(daif);
-
- 	WARN_ON(!(cpuflags & PSR_I_BIT));
-+	WARN_ON(!(cpuflags & PSR_F_BIT));
-
- 	gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
- }
---
-2.30.0
-
+Reviewed-by: Michael Kelley <mikelley@microsoft.com>
