@@ -2,288 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0954C31FEAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996CB31FEA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhBSSTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:19:00 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:55504 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhBSSS6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:18:58 -0500
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_smtp) via UNIX with SMTP (IdeaSmtpServer 0.83.537)
- id 816e0173f029b67d; Fri, 19 Feb 2021 19:18:13 +0100
-Received: from kreacher.localnet (89-64-81-29.dynamic.chello.pl [89.64.81.29])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id AB2AD661E07;
-        Fri, 19 Feb 2021 19:18:12 +0100 (CET)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>
-Subject: [PATCH v1 4/4] ACPI: PCI: Replace direct printk() invocations in pci_link.c
-Date:   Fri, 19 Feb 2021 19:17:44 +0100
-Message-ID: <2246899.HyxBmBtjVt@kreacher>
-In-Reply-To: <4822757.tvZ08WQ2Gl@kreacher>
-References: <4822757.tvZ08WQ2Gl@kreacher>
+        id S229811AbhBSSSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:18:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229607AbhBSSSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 13:18:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0639F64E76;
+        Fri, 19 Feb 2021 18:18:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613758692;
+        bh=1kw76tUCM5N3cRF8kMsvJxuvxZEFY9o2d9Nv/Wk+OCc=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=AdYYFfwWDP0+El+ji0XVAO/LHv0udcSkYK4DFCffbebNmh1+8TAiMX/7TMiaXTwIp
+         EhGD4Mb3GvP1uYv9csphOTkl8G9hT/omGTSL6sSPa9FWQFKOEpX9bZ4BmXSlPsc7GG
+         CoQb3Fwyx3fdn4VX/3MYwetzdQp3/X1o4/EeB5hPCz2Ak7AZnCPfBCxBI3yO1ROEr6
+         Z10iRSZzT3WpCwPC5vSjSrbuiojB1Au2BTJQo47rMdb1UHWmCHbppBPnzNUI2HK5pp
+         hPXi9nh7ja6L7dsH9VwSSNB6wvkqZ/W1PLcYa8cvjC5RRnkTAaYOH2Qg4WRExsKr2M
+         o9hLiJitTHFhg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id A3C233520E6A; Fri, 19 Feb 2021 10:18:11 -0800 (PST)
+Date:   Fri, 19 Feb 2021 10:18:11 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210219181811.GY2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
+ <20210219112751.GA34528@pc638.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrjeeigddutdelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtvdenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpefgleehfffhtefflefhleetjeffteettefgteekjedvhfeffedtueefveegveeiveenucfkphepkeelrdeigedrkedurddvleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekuddrvdelpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqphgtihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhvghlghgrrghssehkvghrnhgvlhdrohhrghdprhgtphhtthhopehguhhohhgrnhhjuhhnsehhuhgrfigvihdrtgho
- mh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=5 Fuz1=5 Fuz2=5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219112751.GA34528@pc638.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri, Feb 19, 2021 at 12:27:51PM +0100, Uladzislau Rezki wrote:
+> On Fri, Feb 19, 2021 at 12:23:57PM +0100, Uladzislau Rezki wrote:
+> > On Fri, Feb 19, 2021 at 12:17:38PM +0100, Sebastian Andrzej Siewior wrote:
+> > > On 2021-02-19 12:13:01 [+0100], Uladzislau Rezki wrote:
+> > > > I or Paul will ask for a test once it is settled down :) Looks like
+> > > > it is, so we should fix for v5.12.
+> > > 
+> > > Okay. Since Paul asked for powerpc test on v5.11-rc I wanted check if
+> > > parts of it are also -stable material.
 
-Replace the direct printk() invocations in pci_link.c with (mostly
-corresponding) acpi_handle_*() calls relative to the ACPI handle of
-the given link device, which allows the AML corresponding to those
-messages to be identified more easily, or with pr_*() calls.
+If Masami's patch works for the PowerPC guys on v5.10-rc7, then it can
+be backported.  The patch making RCU Tasks initialize itself early won't
+have any effect and can be left or reverted, as we choose.  The self-test
+patch will need to be either adjusted or reverted.
 
-While at it, add a pr_fmt() definition ot pci_link.c, make
-acpi_pci_link_check_possible() print all messages with
-acpi_handle_debug() for consistency and replace the (not-so-
-reliable) KERN_CONT-based message line composition in
-acpi_pci_link_add() with two pr_info() and a series of
-acpi_handle_debug() calls (the latter for the possible IRQs).
+However...
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/pci_link.c |   86 +++++++++++++++++++++---------------------------
- 1 file changed, 38 insertions(+), 48 deletions(-)
+The root cause of this problem is that softirq only kind-of works
+during a window of time during boot.  It works only if the number and
+duration of softirq handlers during this time is small enough, for some
+ill-defined notion of "small enough".  If there are too many, whatever
+that means exactly, then we get failed attempt to awaken ksoftirqd, which
+(sometimes!) results in a silent hang.  Which, as you pointed out earlier,
+is a really obnoxious error message.  And any minor change could kick
+us into silent-hang state because of the heuristics used to hand off
+to ksoftirqd.  The straw that broke the camel's back and all that.
 
-Index: linux-pm/drivers/acpi/pci_link.c
-===================================================================
---- linux-pm.orig/drivers/acpi/pci_link.c
-+++ linux-pm/drivers/acpi/pci_link.c
-@@ -12,6 +12,8 @@
-  *	   for IRQ management (e.g. start()->_SRS).
-  */
- 
-+#define pr_fmt(fmt) "ACPI: PCI: " fmt
-+
- #include <linux/syscore_ops.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -102,9 +104,9 @@ static acpi_status acpi_pci_link_check_p
- 			     (i < p->interrupt_count
- 			      && i < ACPI_PCI_LINK_MAX_POSSIBLE); i++) {
- 				if (!p->interrupts[i]) {
--					printk(KERN_WARNING PREFIX
--					       "Invalid _PRS IRQ %d\n",
--					       p->interrupts[i]);
-+					acpi_handle_debug(handle,
-+							  "Invalid _PRS IRQ %d\n",
-+							  p->interrupts[i]);
- 					continue;
- 				}
- 				link->irq.possible[i] = p->interrupts[i];
-@@ -120,17 +122,17 @@ static acpi_status acpi_pci_link_check_p
- 			struct acpi_resource_extended_irq *p =
- 			    &resource->data.extended_irq;
- 			if (!p || !p->interrupt_count) {
--				printk(KERN_WARNING PREFIX
--					      "Blank _PRS EXT IRQ resource\n");
-+				acpi_handle_debug(handle,
-+						  "Blank _PRS EXT IRQ resource\n");
- 				return AE_OK;
- 			}
- 			for (i = 0;
- 			     (i < p->interrupt_count
- 			      && i < ACPI_PCI_LINK_MAX_POSSIBLE); i++) {
- 				if (!p->interrupts[i]) {
--					printk(KERN_WARNING PREFIX
--					       "Invalid _PRS IRQ %d\n",
--					       p->interrupts[i]);
-+					acpi_handle_debug(handle,
-+							  "Invalid _PRS IRQ %d\n",
-+							  p->interrupts[i]);
- 					continue;
- 				}
- 				link->irq.possible[i] = p->interrupts[i];
-@@ -142,8 +144,8 @@ static acpi_status acpi_pci_link_check_p
- 			break;
- 		}
- 	default:
--		printk(KERN_ERR PREFIX "_PRS resource type 0x%x isn't an IRQ\n",
--		       resource->type);
-+		acpi_handle_debug(handle, "_PRS resource type 0x%x is not IRQ\n",
-+				  resource->type);
- 		return AE_OK;
- 	}
- 
-@@ -527,6 +529,7 @@ static int acpi_irq_balance = -1;	/* 0:
- 
- static int acpi_pci_link_allocate(struct acpi_pci_link *link)
- {
-+	acpi_handle handle = link->device->handle;
- 	int irq;
- 	int i;
- 
-@@ -549,8 +552,8 @@ static int acpi_pci_link_allocate(struct
- 	 */
- 	if (i == link->irq.possible_count) {
- 		if (acpi_strict)
--			printk(KERN_WARNING PREFIX "_CRS %d not found"
--				      " in _PRS\n", link->irq.active);
-+			acpi_handle_warn(handle, "_CRS %d not found in _PRS\n",
-+					 link->irq.active);
- 		link->irq.active = 0;
- 	}
- 
-@@ -574,28 +577,23 @@ static int acpi_pci_link_allocate(struct
- 		}
- 	}
- 	if (acpi_irq_get_penalty(irq) >= PIRQ_PENALTY_ISA_ALWAYS) {
--		printk(KERN_ERR PREFIX "No IRQ available for %s [%s]. "
--			    "Try pci=noacpi or acpi=off\n",
--			    acpi_device_name(link->device),
--			    acpi_device_bid(link->device));
-+		acpi_handle_err(handle,
-+				"No IRQ available. Try pci=noacpi or acpi=off\n");
- 		return -ENODEV;
- 	}
- 
- 	/* Attempt to enable the link device at this IRQ. */
- 	if (acpi_pci_link_set(link, irq)) {
--		printk(KERN_ERR PREFIX "Unable to set IRQ for %s [%s]. "
--			    "Try pci=noacpi or acpi=off\n",
--			    acpi_device_name(link->device),
--			    acpi_device_bid(link->device));
-+		acpi_handle_err(handle,
-+				"Unable to set IRQ. Try pci=noacpi or acpi=off\n");
- 		return -ENODEV;
- 	} else {
- 		if (link->irq.active < ACPI_MAX_ISA_IRQS)
- 			acpi_isa_irq_penalty[link->irq.active] +=
- 				PIRQ_PENALTY_PCI_USING;
- 
--		pr_info("%s [%s] enabled at IRQ %d\n",
--		       acpi_device_name(link->device),
--		       acpi_device_bid(link->device), link->irq.active);
-+		acpi_handle_info(handle, "Enabled at IRQ %d\n",
-+				 link->irq.active);
- 	}
- 
- 	link->irq.initialized = 1;
-@@ -616,19 +614,19 @@ int acpi_pci_link_allocate_irq(acpi_hand
- 
- 	result = acpi_bus_get_device(handle, &device);
- 	if (result) {
--		printk(KERN_ERR PREFIX "Invalid link device\n");
-+		acpi_handle_err(handle, "Invalid link device\n");
- 		return -1;
- 	}
- 
- 	link = acpi_driver_data(device);
- 	if (!link) {
--		printk(KERN_ERR PREFIX "Invalid link context\n");
-+		acpi_handle_err(handle, "Invalid link context\n");
- 		return -1;
- 	}
- 
- 	/* TBD: Support multiple index (IRQ) entries per Link Device */
- 	if (index) {
--		printk(KERN_ERR PREFIX "Invalid index %d\n", index);
-+		acpi_handle_err(handle, "Invalid index %d\n", index);
- 		return -1;
- 	}
- 
-@@ -640,7 +638,7 @@ int acpi_pci_link_allocate_irq(acpi_hand
- 
- 	if (!link->irq.active) {
- 		mutex_unlock(&acpi_link_lock);
--		printk(KERN_ERR PREFIX "Link active IRQ is 0!\n");
-+		acpi_handle_err(handle, "Link active IRQ is 0!\n");
- 		return -1;
- 	}
- 	link->refcnt++;
-@@ -668,20 +666,20 @@ int acpi_pci_link_free_irq(acpi_handle h
- 
- 	result = acpi_bus_get_device(handle, &device);
- 	if (result) {
--		printk(KERN_ERR PREFIX "Invalid link device\n");
-+		acpi_handle_err(handle, "Invalid link device\n");
- 		return -1;
- 	}
- 
- 	link = acpi_driver_data(device);
- 	if (!link) {
--		printk(KERN_ERR PREFIX "Invalid link context\n");
-+		acpi_handle_err(handle, "Invalid link context\n");
- 		return -1;
- 	}
- 
- 	mutex_lock(&acpi_link_lock);
- 	if (!link->irq.initialized) {
- 		mutex_unlock(&acpi_link_lock);
--		printk(KERN_ERR PREFIX "Link isn't initialized\n");
-+		acpi_handle_err(handle, "Link isn't initialized\n");
- 		return -1;
- 	}
- #ifdef	FUTURE_USE
-@@ -712,10 +710,10 @@ int acpi_pci_link_free_irq(acpi_handle h
- static int acpi_pci_link_add(struct acpi_device *device,
- 			     const struct acpi_device_id *not_used)
- {
--	int result;
-+	acpi_handle handle = device->handle;
- 	struct acpi_pci_link *link;
-+	int result;
- 	int i;
--	int found = 0;
- 
- 	link = kzalloc(sizeof(struct acpi_pci_link), GFP_KERNEL);
- 	if (!link)
-@@ -734,31 +732,23 @@ static int acpi_pci_link_add(struct acpi
- 	/* query and set link->irq.active */
- 	acpi_pci_link_get_current(link);
- 
--	printk(KERN_INFO PREFIX "%s [%s] (IRQs", acpi_device_name(device),
--	       acpi_device_bid(device));
-+	pr_info("Interrupt link %s configured for IRQ %d\n",
-+		acpi_device_bid(device), link->irq.active);
-+
- 	for (i = 0; i < link->irq.possible_count; i++) {
--		if (link->irq.active == link->irq.possible[i]) {
--			printk(KERN_CONT " *%d", link->irq.possible[i]);
--			found = 1;
--		} else
--			printk(KERN_CONT " %d", link->irq.possible[i]);
-+		if (link->irq.active != link->irq.possible[i])
-+			acpi_handle_debug(handle, "Possible IRQ %d\n",
-+					  link->irq.possible[i]);
- 	}
- 
--	printk(KERN_CONT ")");
--
--	if (!found)
--		printk(KERN_CONT " *%d", link->irq.active);
--
- 	if (!link->device->status.enabled)
--		printk(KERN_CONT ", disabled.");
--
--	printk(KERN_CONT "\n");
-+		pr_info("Interrupt link %s disabled\n", acpi_device_bid(device));
- 
- 	list_add_tail(&link->list, &acpi_link_list);
- 
-       end:
- 	/* disable all links -- to be activated on use */
--	acpi_evaluate_object(device->handle, "_DIS", NULL, NULL);
-+	acpi_evaluate_object(handle, "_DIS", NULL, NULL);
- 	mutex_unlock(&acpi_link_lock);
- 
- 	if (result)
+One approach would be to add WARN_ON_ONCE() so that if softirq tries
+to awaken ksoftirqd before it is spawned, we get a nice obvious splat.
+Unfortunately, this gives false positives because there is code that
+needs a softirq handler to run eventually, but is OK with that handler
+being delayed until some random point in the early_initcall() sequence.
 
+Besides which, if we are going to add a check, why not use that check
+just make things work by forcing handler execution to remain within the
+softirq back-of-interrupt context instead of awakening a not-yet-spawned
+ksoftirqd?  We can further prevent entry into dyntick-idle state until
+the ksoftirqd kthreads have been spawned, which means that if softirq
+handlers must be deferred, they will be resumed within one jiffy by the
+next scheduler-clock interrupt.
 
+Yes, this can allow softirq handlers to impose large latencies, but only
+during early boot, long before any latency-sensitive applications can
+possibly have been created.  So this does not seem like a real problem.
 
+Am I missing something here?
+
+							Thanx, Paul
+
+> > OK, i see. It will be broken starting from v5.12-rc unless we fix it.
+> > 
+> Sorry it is broken since 5.11 kernel already, i messed it up.
+> 
+> --
+> Vlad Rezki
