@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26F231FB65
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE5031FB58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbhBSOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:51:56 -0500
-Received: from mga04.intel.com ([192.55.52.120]:31939 "EHLO mga04.intel.com"
+        id S229953AbhBSOuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:50:39 -0500
+Received: from smtp-out.xnet.cz ([178.217.244.18]:31330 "EHLO smtp-out.xnet.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229930AbhBSOuy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:50:54 -0500
-IronPort-SDR: +4RF03nIyHPZi7UhDcYVMIbSKvTEB1wYhL2NAhGScX5KBXK6Wz0XFJ+6z1reYsZsYxCG3dr0bz
- BtnlyA8UglYA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="181303765"
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="181303765"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 06:49:03 -0800
-IronPort-SDR: Uq9BrER0cYtgb3PBefjRQKbz28uOWaMWnMGEDOB/EltjgHv47bgZ+ybyeMZfqASp/GoPK6lv8A
- uWJy/okfay3w==
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="428864916"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 06:48:59 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lD75V-006EgV-5R; Fri, 19 Feb 2021 16:48:57 +0200
-Date:   Fri, 19 Feb 2021 16:48:57 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Robert Richter <rric@kernel.org>
-Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] PCI: Introduce pcim_alloc_irq_vectors()
-Message-ID: <YC/P2VF8ki28Hqnp@smile.fi.intel.com>
-References: <20210218150458.798347-1-zhengdejin5@gmail.com>
- <20210218150458.798347-2-zhengdejin5@gmail.com>
- <YC/NxfsQn2RKkrp8@rric.localdomain>
+        id S229925AbhBSOt5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:49:57 -0500
+Received: from meh.true.cz (meh.true.cz [108.61.167.218])
+        (Authenticated sender: petr@true.cz)
+        by smtp-out.xnet.cz (Postfix) with ESMTPSA id 7F09A18404;
+        Fri, 19 Feb 2021 15:49:08 +0100 (CET)
+Received: by meh.true.cz (OpenSMTPD) with ESMTP id 3ba7593b;
+        Fri, 19 Feb 2021 15:48:50 +0100 (CET)
+Date:   Fri, 19 Feb 2021 15:49:06 +0100
+From:   Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        stable@vger.kernel.org,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: chemical: scd30: fix Oops due to missing parent
+ device
+Message-ID: <20210219144906.GA28573@meh.true.cz>
+Reply-To: Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
+References: <20210208223947.32344-1-ynezz@true.cz>
+ <20210212191219.7b16abbb@archlinux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC/NxfsQn2RKkrp8@rric.localdomain>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210212191219.7b16abbb@archlinux>
+X-PGP-Key: https://gist.githubusercontent.com/ynezz/477f6d7a1623a591b0806699f9fc8a27/raw/a0878b8ed17e56f36ebf9e06a6b888a2cd66281b/pgp-key.pub
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:40:05PM +0100, Robert Richter wrote:
-> On 18.02.21 23:04:55, Dejin Zheng wrote:
-> > Introduce pcim_alloc_irq_vectors(), a device-managed version of
-> > pci_alloc_irq_vectors(). Introducing this function can simplify
-> > the error handling path in many drivers.
-> > 
-> > And use pci_free_irq_vectors() to replace some code in pcim_release(),
-> > they are equivalent, and no functional change. It is more explicit
-> > that pcim_alloc_irq_vectors() is a device-managed function.
+Jonathan Cameron <jic23@kernel.org> [2021-02-12 19:12:19]:
 
-...
+Hi Jonathan,
 
-> If it is just about having a pcim-* counterpart why not just an inline
-> function like the one below.
+> >  CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.4.96+ #473
+> 
+> So, we moved this into the core a while back (to avoid exactly this sort of issue).
+> That change predates this introduction of this driver as it went in
+> in v5.8
 
-It's a good suggestion, thanks!
+sorry for the noise, I've missed that commit 8525df47b3d1 ("iio: core:
+fix/re-introduce back parent assignment"), thank you for the hint.
 
-Still we need to amend pcim_release() to explicitly show that we call
-pci_free_irq_vectors().
+> So I think you've hit an issue with a backport here to an earlier kernel?
 
--- 
-With Best Regards,
-Andy Shevchenko
+Indeed, I've backported it to 5.4.96 as you can see in the dmesg output above.
+I'll try to reproduce it again on 5.10 in the upcoming days.
 
+Cheers,
 
+Petr
