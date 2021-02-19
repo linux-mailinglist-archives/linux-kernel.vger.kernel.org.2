@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E22A31F542
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 07:59:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2746631F546
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229700AbhBSG6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 01:58:36 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:50720 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBSG6Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 01:58:25 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J6sQn9002518;
-        Fri, 19 Feb 2021 06:57:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=OuWv1NOCvL6KLKV8PTGUfvktlcxHtE9DUHDQ4QTOEpk=;
- b=CRaLHCbNxmB1mN2SSQAVpZB8SELkmHkqytgwqC4Da6l4MU08h6zKlCqYtGVjSGbunhZ+
- PdGHToGWlxpmkXuEAXgZQlTlT04pa4W6W5eDWa4BakLBsgy4xKSiN2o++kWvVDC2pYy5
- jdrALpzBqIX+M3JUwO2NLyXh+v3TMOGXLOEKDn12VVdubrhvfGNB8Fa4211xJcg/Cvnv
- KFuZRPdIvG5oROngufLrHjzhvJBhFJDbWEYnuH+dERtXOOLYA4Fl7unOt2S1s86cZI7c
- Y6OyA7exCXcCEqCvALJuYKqlU+pNeaGQpcQSadwSlf/se/ZGaGl41ltrgAVHAuryqqvY lQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36p49bgkxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 06:57:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J6uUMr112833;
-        Fri, 19 Feb 2021 06:57:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 36prbrswnp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 06:57:31 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 11J6vQ9j003078;
-        Fri, 19 Feb 2021 06:57:26 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Feb 2021 06:57:25 +0000
-Date:   Fri, 19 Feb 2021 09:57:17 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Kurt Manucredo <fuzzybritches@protonmail.com>
-Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        straube.linux@gmail.com, d.straghkov@ispras.ru, tiwai@suse.de,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: rtl8723bs: code-style fix
-Message-ID: <20210219065717.GO2222@kadam>
-References: <20210218163204.7-1-fuzzybritches@protonmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218163204.7-1-fuzzybritches@protonmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190050
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190050
+        id S229607AbhBSHCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 02:02:39 -0500
+Received: from mga14.intel.com ([192.55.52.115]:1624 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhBSHCg (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 02:02:36 -0500
+IronPort-SDR: Msa6xTfY7DKziBWH/YG7OVR4fGYYW2hZmcJdZijhC4atSrtLb7dbjcqTw8WooKFd6K+gyJ6HDi
+ HeB1IBmkl8tQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="182969067"
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="182969067"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 23:00:46 -0800
+IronPort-SDR: OoSkKFpDMCjVy7J1iY8HyeFHTwXDMeO2oOHxvszqtkrkFvuDAItXSnMmGi8tMi2WTnqDfqJ8gV
+ jx1JsxDyHnbA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="419864899"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga004.fm.intel.com with ESMTP; 18 Feb 2021 23:00:41 -0800
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf report: Create option to disable raw event ordering
+Date:   Fri, 19 Feb 2021 15:00:05 +0800
+Message-Id: <20210219070005.12397-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The subject is too vague.
+Warning "dso not found" is reported when using "perf report -D".
 
-On Thu, Feb 18, 2021 at 04:33:10PM +0000, Kurt Manucredo wrote:
-> Signed-off-by: Kurt Manucredo <fuzzybritches@protonmail.com>
-> ---
-> 
-> Checkpatch complains the constant needs to be on the right side of the
-> comparison. The preferred way is: 
-> 
+ 66702781413407 0x32c0 [0x30]: PERF_RECORD_SAMPLE(IP, 0x2): 28177/28177: 0x55e493e00563 period: 106578 addr: 0
+  ... thread: perf:28177
+  ...... dso: <not found>
 
-The commit message isn't complete and it has to go above the Signed-off-by
-line.
+ 66702727832429 0x9dd8 [0x38]: PERF_RECORD_COMM exec: triad_loop:28177/28177
 
-regards,
-dan carpenter
+The PERF_RECORD_SAMPLE event (timestamp: 66702781413407) should be after the
+PERF_RECORD_COMM event (timestamp: 66702727832429), but it's early processed.
+
+So for most of cases, it makes sense to keep the event ordered even for dump
+mode. But it would be also useful to disable ordered_events for reporting raw
+dump to see events as they are stored in the perf.data file.
+
+So now, set ordered_events by default to true and add a new option
+'disable-order' to disable it. For example,
+
+perf report -D --disable-order
+
+Fixes: 977f739b7126b ("perf report: Disable ordered_events for raw dump")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/Documentation/perf-report.txt | 3 +++
+ tools/perf/builtin-report.c              | 5 ++++-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
+index f546b5e9db05..87112e8d904e 100644
+--- a/tools/perf/Documentation/perf-report.txt
++++ b/tools/perf/Documentation/perf-report.txt
+@@ -224,6 +224,9 @@ OPTIONS
+ --dump-raw-trace::
+         Dump raw trace in ASCII.
+ 
++--disable-order::
++	Disable raw trace ordering.
++
+ -g::
+ --call-graph=<print_type,threshold[,print_limit],order,sort_key[,branch],value>::
+         Display call chains using type, min percent threshold, print limit,
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 2a845d6cac09..0d65c98794a8 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -84,6 +84,7 @@ struct report {
+ 	bool			nonany_branch_mode;
+ 	bool			group_set;
+ 	bool			stitch_lbr;
++	bool			disable_order;
+ 	int			max_stack;
+ 	struct perf_read_values	show_threads_values;
+ 	struct annotation_options annotation_opts;
+@@ -1296,6 +1297,8 @@ int cmd_report(int argc, const char **argv)
+ 	OPTS_EVSWITCH(&report.evswitch),
+ 	OPT_BOOLEAN(0, "total-cycles", &report.total_cycles_mode,
+ 		    "Sort all blocks by 'Sampled Cycles%'"),
++	OPT_BOOLEAN(0, "disable-order", &report.disable_order,
++		    "Disable raw trace ordering"),
+ 	OPT_END()
+ 	};
+ 	struct perf_data data = {
+@@ -1329,7 +1332,7 @@ int cmd_report(int argc, const char **argv)
+ 	if (report.mmaps_mode)
+ 		report.tasks_mode = true;
+ 
+-	if (dump_trace)
++	if (dump_trace && report.disable_order)
+ 		report.tool.ordered_events = false;
+ 
+ 	if (quiet)
+-- 
+2.17.1
 
