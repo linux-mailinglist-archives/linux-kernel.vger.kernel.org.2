@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDF431F7CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:00:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 598E531F7CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhBSK7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:59:36 -0500
-Received: from mga14.intel.com ([192.55.52.115]:27169 "EHLO mga14.intel.com"
+        id S230174AbhBSK7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:59:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51392 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhBSK4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:56:46 -0500
-IronPort-SDR: YV3AQiQ/gnk/fNfRwoTCTLUCbHMMj9ajNTjQllYcA5F6ijeCsG5Nb+FlYCOgbmDIVDFiSV6Kam
- byH+Hj1HD8nw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="183019374"
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="183019374"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:54:53 -0800
-IronPort-SDR: p7C/p6MzoO4uNm4ocqFIV/LXDOUjmHqH6MR922Yg7RRcUiPYvSzMvCZ0FcEs2O9wtGFFAcLB2P
- D1EPvlFhMhnQ==
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="590601518"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:54:50 -0800
-Received: by lahna (sSMTP sendmail emulation); Fri, 19 Feb 2021 12:54:47 +0200
-Date:   Fri, 19 Feb 2021 12:54:47 +0200
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] watchdog: wdat: add param. to start wdog on module
- insertion
-Message-ID: <20210219105447.GI2542@lahna.fi.intel.com>
-References: <20210218163200.1154812-1-f.suligoi@asem.it>
+        id S230196AbhBSKzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:55:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613732100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rFG8P9Ie0qeQWrQfmu4nspdfkX+zgZBg6iq8S0zq+4o=;
+        b=ghVSU2tWyDJjeKNm5dWJOkhOE1GmVzyU5Kd5XS6Z6dAMvi2zK52pQ2xaoAg4rbS+X++Krs
+        OEyro5aWmQQydkGWFVzt4byaWoGkUYeNv1Bu7a3hAatcXr7cxbZbyF4WdX+9c1MM/1gisl
+        LfYdpToQoAW+6AQT7JzjYgmF0G1Pvf8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A8714AC6E;
+        Fri, 19 Feb 2021 10:55:00 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 11:55:00 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <YC+ZBIwXKEZCy1Bk@dhcp22.suse.cz>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+ <20210218133250.GA7983@localhost.localdomain>
+ <YC5yzNB9xT76fkod@dhcp22.suse.cz>
+ <20210219090548.GA17266@linux>
+ <YC+LWksScdiuPw7X@dhcp22.suse.cz>
+ <20210219103943.GA19945@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218163200.1154812-1-f.suligoi@asem.it>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210219103943.GA19945@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri 19-02-21 11:40:30, Oscar Salvador wrote:
+> On Fri, Feb 19, 2021 at 10:56:42AM +0100, Michal Hocko wrote:
+> > OK, this should work but I am really wondering whether it wouldn't be
+> > just simpler to replace the old page by a new one in the free list
+> > directly. Or is there any reason we have to go through the generic
+> > helpers path? I mean something like this
+> > 
+> > 	new_page = alloc_fresh_huge_page();
+> > 	if (!new_page)
+> > 		goto fail;
+> > 	spin_lock(hugetlb_lock);
+> > 	if (!PageHuge(old_page)) {
+> > 		/* freed from under us, nothing to do */ 
+> > 		__update_and_free_page(new_page);
+> > 		goto unlock;
+> > 	}
+> > 	list_del(&old_page->lru);
+> > 	__update_and_free_page(old_page);
+> > 	__enqueue_huge_page(new_page);
+> > unlock:
+> > 	spin_unlock(hugetlb_lock);
+> > 
+> > This will require to split update_and_free_page and enqueue_huge_page to
+> > counters independent parts but that shouldn't be a big deal. But it will
+> > also protect from any races. Not an act of beauty but seems less hackish
+> > to me.
+> 
+> On a closer look, do we really need to decouple update_and_free_page and
+> enqueue_huge_page? These two functions do not handle the lock, but rather
+> the functions that call them (as would be in our case).
+> Only update_and_free_page drops the lock during the freeing of a gigantic page
+> and then it takes it again, as the caller is who took the lock.
+> 
+> am I missing anything obvious here?
 
-On Thu, Feb 18, 2021 at 05:32:00PM +0100, Flavio Suligoi wrote:
-> Add the parameter "start_enable" to start the watchdog
-> directly on module insertion.
-> 
-> In an embedded system, for some applications, the watchdog
-> must be activated as soon as possible.
-> 
-> In some embedded x86 boards the watchdog can be activated
-> directly by the BIOS (with an appropriate setting of the
-> BIOS setup). In other cases, when this BIOS feature is not
-> present, the possibility to start the watchdog immediately
-> after the module loading can be very useful.
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  drivers/watchdog/wdat_wdt.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/watchdog/wdat_wdt.c b/drivers/watchdog/wdat_wdt.c
-> index cec7917790e5..b990d0197d2e 100644
-> --- a/drivers/watchdog/wdat_wdt.c
-> +++ b/drivers/watchdog/wdat_wdt.c
-> @@ -61,6 +61,12 @@ module_param(timeout, int, 0);
->  MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds (default="
->  		 __MODULE_STRING(WDAT_DEFAULT_TIMEOUT) ")");
->  
-> +#define START_DEFAULT	0
-> +static int start_enabled = START_DEFAULT;
-> +module_param(start_enabled, int, 0);
-> +MODULE_PARM_DESC(start_enabled, "Watchdog is started on module insertion "
-> +		 "(default=" __MODULE_STRING(START_DEFAULT) ")");
-> +
->  static int wdat_wdt_read(struct wdat_wdt *wdat,
->  	 const struct wdat_instruction *instr, u32 *value)
->  {
-> @@ -437,6 +443,8 @@ static int wdat_wdt_probe(struct platform_device *pdev)
->  	}
->  
->  	wdat_wdt_boot_status(wdat);
-> +	if (start_enabled)
-> +		wdat_wdt_start(&wdat->wdd);
-
-No objections to this if it is really needed. However, I think it is
-better start the watchdog after devm_watchdog_register_device() has been
-called so we have everything initialized.
-
->  	wdat_wdt_set_running(wdat);
->  
->  	ret = wdat_wdt_enable_reboot(wdat);
-> -- 
-> 2.25.1
+It is not the lock that I care about but more about counters. The
+intention was that there is a single place to handle both enqueing and
+dequeing. As not all places require counters to be updated. E.g. the
+migration which just replaces one page by another.
+-- 
+Michal Hocko
+SUSE Labs
