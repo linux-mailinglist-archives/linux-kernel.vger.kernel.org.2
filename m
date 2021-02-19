@@ -2,76 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48DC31FE8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EF731FE8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbhBSSHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:07:50 -0500
-Received: from hmm.wantstofly.org ([213.239.204.108]:59320 "EHLO
-        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhBSSHr (ORCPT
+        id S229577AbhBSSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:08:33 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:32828 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229862AbhBSSI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:07:47 -0500
-Received: by mail.wantstofly.org (Postfix, from userid 1000)
-        id 967BD7F4BD; Fri, 19 Feb 2021 20:07:04 +0200 (EET)
-Date:   Fri, 19 Feb 2021 20:07:04 +0200
-From:   Lennert Buytenhek <buytenh@wantstofly.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        io-uring@vger.kernel.org, David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH v3 2/2] io_uring: add support for IORING_OP_GETDENTS
-Message-ID: <20210219180704.GD342512@wantstofly.org>
-References: <20210218122640.GA334506@wantstofly.org>
- <20210218122755.GC334506@wantstofly.org>
- <20210219123403.GT2858050@casper.infradead.org>
+        Fri, 19 Feb 2021 13:08:27 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id CB3E41C0B96; Fri, 19 Feb 2021 19:07:21 +0100 (CET)
+Date:   Fri, 19 Feb 2021 19:07:21 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Sven Schuchmann <schuchmann@schleissheimer.de>,
+        Dan Murphy <dmurphy@ti.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity
+ from DT
+Message-ID: <20210219180721.GA8596@duo.ucw.cz>
+References: <20210204143738.28036-1-schuchmann@schleissheimer.de>
+ <20210204145308.GC14305@duo.ucw.cz>
+ <DB8P190MB0634587826F57667BB3BBB6CD9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210205103438.GB27854@amd>
+ <DB8P190MB063473FEA37E69E6DF6BC5F6D9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210219111659.GI19207@duo.ucw.cz>
+ <CAHp75VeE5vpfAXeppOkfAmQS=dwexW8SuWj3ovFmeCQ9kuQ5sg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
 Content-Disposition: inline
-In-Reply-To: <20210219123403.GT2858050@casper.infradead.org>
+In-Reply-To: <CAHp75VeE5vpfAXeppOkfAmQS=dwexW8SuWj3ovFmeCQ9kuQ5sg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:34:03PM +0000, Matthew Wilcox wrote:
 
-> > IORING_OP_GETDENTS may or may not update the specified directory's
-> > file offset, and the file offset should not be relied upon having
-> > any particular value during or after an IORING_OP_GETDENTS call.
-> 
-> This doesn't give me the warm fuzzies.  What I might suggest
-> is either passing a parameter to iterate_dir() or breaking out an
-> iterate_dir_nofpos() to make IORING_OP_GETDENTS more of a READV operation.
-> ie the equivalent of this:
-> 
-> @@ -37,7 +37,7 @@
->  } while (0)
->  
->  
-> -int iterate_dir(struct file *file, struct dir_context *ctx)
-> +int iterate_dir(struct file *file, struct dir_context *ctx, bool use_fpos)
->  {
->         struct inode *inode = file_inode(file);
->         bool shared = false;
-> @@ -60,12 +60,14 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
->  
->         res = -ENOENT;
->         if (!IS_DEADDIR(inode)) {
-> -               ctx->pos = file->f_pos;
-> +               if (use_fpos)
-> +                       ctx->pos = file->f_pos;
->                 if (shared)
->                         res = file->f_op->iterate_shared(file, ctx);
->                 else
->                         res = file->f_op->iterate(file, ctx);
-> -               file->f_pos = ctx->pos;
-> +               if (use_fpos)
-> +                       file->f_pos = ctx->pos;
->                 fsnotify_access(file);
->                 file_accessed(file);
->         }
-> 
-> That way there's no need to play with llseek or take a mutex on the
-> f_pos of the directory.
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'll try this!
+On Fri 2021-02-19 16:18:38, Andy Shevchenko wrote:
+> On Fri, Feb 19, 2021 at 1:19 PM Pavel Machek <pavel@ucw.cz> wrote:
+> > > > > > ? Does not make sense and changelog does not help.
+> > > > >
+> > > > > This is an unused variable which is in the driver
+> > > > > (same as the regulator). Should I provide a patch on its own for =
+that
+> > > > > or just describe in the changelog?
+> > > >
+> > > > Lets do separate patch here. DT changes will need Ack from Rob, this
+> > > > can go in directly.
+> > >
+> > > Okay, I will submit a separate patch
+> > >
+> > > > Can you or Dan submit patch getting the regulator support to work? =
+If
+> > > > not, I guess we should remove the regulator support after all.
+> > >
+> > > To be true I am fairly new to the kernel and have no idea
+> > > how to test this. So no, I don't want provide a patch (except
+> > > for removing), sorry.
+> >
+> > No problem. It seems Andy submitted series for this.
+>=20
+> Ah, now I understand what you, Sven, meant.
+> I didn't touch regulator code, so it left the same, but making it work
+> probably needs just enabling during ->probe().
+
+Yep, sorry, I was confused.
+
+Anyway, I'd rather seen patch fixing the regulator code than removing
+it completely.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC/+WQAKCRAw5/Bqldv6
+8s47AJ9B29ODs8eeOD4ETDuATohadploFwCeOw0I8KvtEGmmfh18eOvP0/6KqZQ=
+=GaJg
+-----END PGP SIGNATURE-----
+
+--xHFwDpU9dbj6ez1V--
