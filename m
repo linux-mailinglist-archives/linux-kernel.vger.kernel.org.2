@@ -2,175 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B894D320323
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:26:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBAD320347
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229953AbhBTCZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 21:25:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhBTCZU (ORCPT
+        id S229999AbhBTCsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 21:48:42 -0500
+Received: from mail.mpcb.gov.in ([125.17.249.59]:50116 "EHLO
+        fortimail.email.mpcb.gov.in" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229796AbhBTCsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 21:25:20 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F840C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:24:40 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id u14so11354919wri.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:24:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UoU4tpvF69vvvt1X/oNX9U45MXD4nIA/xhwKBjIoiM4=;
-        b=i5SvSNPxpFV0SP2RexUvRcZ/V7GJjPefhgRTAdSd7hi7rrqDZo3+Jj3PWDpN4BTFVb
-         SjPzPSlFjWYV7c6OqI1CKT9+z7W8/GwQaPnPIek1oftL6HSoNkAmesC4x/uKWbJttSpc
-         lXfuIMSZ5mV0VW1TXXv6n63ksw+XB60a29pxX8z6j3uLz07hQhw5BAsCbHRlV2Vml2Ym
-         LXjbYM1bWgOcQjEMyFmXKPM5Yr96AAsfx1ZLKHl/kAmzE/zplATkvYeuZAQiMXIUPnVH
-         pwtkbEhF+t8PKSXE3GxRA0H9Ff8K4WV5AwzPcO93FfwuCw4Vh0+AFM46zruBv+K6BVCA
-         RFcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UoU4tpvF69vvvt1X/oNX9U45MXD4nIA/xhwKBjIoiM4=;
-        b=Vz7W7ZZZVJg6L7v1LvEAze+rVduevT2PtXFA/2y7lBRgReOPmwrZBtqZAUIrL0gYhg
-         Sk5z9qpTXnZ6ttdO62U0CaUUikwjsmtU+MuZUmDitizCOEYYg5h+gAawIaHc0yRYWDI3
-         XmKt1cdr7JekLXh2r25Erfrf93CMBTvPjALwWZT8x+JbExpTGIQtB+3vRgLnJAmETx/K
-         P7ziCC5ET8fG2n/fxHp5Zcam31XRudzOSrwCNWhUtDo67SYDvtwNCdIX3RYo2sYD9X2K
-         dqMrI7GfVF/a4OXSXUqX+QAzc82yatgIaYSBh2rNeJqh2nE6D51kj0vJjHvnjzzOlO7I
-         MP5A==
-X-Gm-Message-State: AOAM532MeHXrUSLCaBWVErnhWNs7Ygz1jKQWBbdVhmRUsfW7ebhVVdyV
-        uXBUYEL532NmnQ0WqH+Wr5iUcMZ2UeKcJ9ZWTbuKtw==
-X-Google-Smtp-Source: ABdhPJwPefi9vd6ur48vMAuvT3Pa4HeV3aINqGAtBbKyOpINYpGVueoIWtPxI8ksetdYneRMByBl8PnmUCHmxyswaqQ=
-X-Received: by 2002:adf:8084:: with SMTP id 4mr11637816wrl.49.1613787878514;
- Fri, 19 Feb 2021 18:24:38 -0800 (PST)
+        Fri, 19 Feb 2021 21:48:38 -0500
+X-Greylist: delayed 69771 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Feb 2021 21:48:31 EST
+Received: from User (rain-197-185-102-182.rain.network [197.185.102.182])
+        (user=feedback.consent@mpcb.gov.in mech=LOGIN bits=0)
+        by fortimail.email.mpcb.gov.in  with ESMTP id 11J7IVmK031284-11J7IVmM031284;
+        Fri, 19 Feb 2021 12:48:34 +0530
+Message-Id: <202102190718.11J7IVmK031284-11J7IVmM031284@fortimail.email.mpcb.gov.in>
+Reply-To: <brightwayfinanceloan01@protonmail.com>
+From:   "Brightway Finance Loan" <brightwayfinanceloan@gmail.com>
+Subject: Apply for loan at 5% interest rate per year
+Date:   Fri, 19 Feb 2021 09:18:30 +0200
 MIME-Version: 1.0
-References: <20210220005447.GA93678@localhost.localdomain>
-In-Reply-To: <20210220005447.GA93678@localhost.localdomain>
-From:   Yuchung Cheng <ycheng@google.com>
-Date:   Fri, 19 Feb 2021 18:24:00 -0800
-Message-ID: <CAK6E8=err50_ob6r99eXw++0D84yJe66Lzsz6F7KWbU5=ii_ew@mail.gmail.com>
-Subject: Re: [PATCH net] tcp: fix keepalive when data remain undelivered
-To:     Enke Chen <enkechen2020@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Neal Cardwell <ncardwell@google.com>, enkechen2020@gmai.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+        charset="Windows-1251"
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+X-FEAS-Auth-User: feedback.consent@mpcb.gov.in
+X-FE-Policy-ID: 0:1:2:SYSTEM
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 4:54 PM Enke Chen <enkechen2020@gmail.com> wrote:
->
-> From: Enke Chen <enchen@paloaltonetworks.com>
->
-> TCP keepalive does not timeout under the condition that network connection
-> is lost and data remain undelivered (incl. retransmit). A very simple
-> scenarios of the failure is to write data to a tcp socket after the network
-> connection is lost.
+BrightWay Finance offers Loans ranging from (R10, 000.00 - R60, 000,000.00). Loan duration is from 1 to 20 years (Maximum) No collateral,
+No ITC CHECK and Blacklisted are welcome. If you wish to apply kindly send your full names, ID number, 
+email address and cellphone number to brightwayfinanceloan01@protonmail.com
 
-AFAIK current Linux TCP KA implementation does not violate the
-RFC793bis (Section 3.7.4 Keep-Alives)
-https://tools.ietf.org/html/draft-ietf-tcpm-rfc793bis-20#section-3.7.4
 
-We have even raised that in IETF tcpm list to get more clarity
-https://mailarchive.ietf.org/arch/msg/tcpm/KxcEsLtDuDNhcP8UjbyPkJqpzsE/
+Yours in Service,
 
-I believe you interpret the keep-alive differently -- so this is
-arguably a subjective "bug-fix". As Neal and I have expressed in our
-private communications, current Linux KA has been implemented for more
-than a decade. Changing this behavior may break many existing
-applications even if it may benefit certain.
-
->
-> Under the specified condition the keepalive timeout is not evaluated in
-> the keepalive timer. That is the primary cause of the failure. In addition,
-> the keepalive probe is not sent out in the keepalive timer. Although packet
-> retransmit or 0-window probe can serve a similar purpose, they have their
-> own timers and backoffs that are generally not aligned with the keepalive
-> parameters for probes and timeout.
->
-> As the timing and conditions of the events involved are random, the tcp
-> keepalive can fail randomly. Given the randomness of the failures, fixing
-> the issue would not cause any backward compatibility issues. As was well
-> said, "Determinism is a special case of randomness".
->
-> The fix in this patch consists of the following:
->
->   a. Always evaluate the keepalive timeout in the keepalive timer.
->
->   b. Always send out the keepalive probe in the keepalive timer (post the
->      keepalive idle time). Given that the keepalive intervals are usually
->      in the range of 30 - 60 seconds, there is no need for an optimization
->      to further reduce the number of keepalive probes in the presence of
->      packet retransmit.
->
->   c. Use the elapsed time (instead of the 0-window probe counter) in
->      evaluating tcp keepalive timeout.
->
-> Thanks to Eric Dumazet, Neal Cardwell, and Yuchung Cheng for helpful
-> discussions about the issue and options for fixing it.
->
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2 Initial git repository build")
-> Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
-> ---
->  net/ipv4/tcp_timer.c | 20 ++++++--------------
->  1 file changed, 6 insertions(+), 14 deletions(-)
->
-> diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
-> index 4ef08079ccfa..16a044da20db 100644
-> --- a/net/ipv4/tcp_timer.c
-> +++ b/net/ipv4/tcp_timer.c
-> @@ -708,29 +708,23 @@ static void tcp_keepalive_timer (struct timer_list *t)
->             ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_SYN_SENT)))
->                 goto out;
->
-> -       elapsed = keepalive_time_when(tp);
-> -
-> -       /* It is alive without keepalive 8) */
-> -       if (tp->packets_out || !tcp_write_queue_empty(sk))
-> -               goto resched;
-> -
->         elapsed = keepalive_time_elapsed(tp);
->
->         if (elapsed >= keepalive_time_when(tp)) {
->                 /* If the TCP_USER_TIMEOUT option is enabled, use that
->                  * to determine when to timeout instead.
->                  */
-> -               if ((icsk->icsk_user_timeout != 0 &&
-> -                   elapsed >= msecs_to_jiffies(icsk->icsk_user_timeout) &&
-> -                   icsk->icsk_probes_out > 0) ||
-> -                   (icsk->icsk_user_timeout == 0 &&
-> -                   icsk->icsk_probes_out >= keepalive_probes(tp))) {
-> +               u32 timeout = icsk->icsk_user_timeout ?
-> +                 msecs_to_jiffies(icsk->icsk_user_timeout) :
-> +                 keepalive_intvl_when(tp) * keepalive_probes(tp) +
-> +                 keepalive_time_when(tp);
-> +
-> +               if (elapsed >= timeout) {
->                         tcp_send_active_reset(sk, GFP_ATOMIC);
->                         tcp_write_err(sk);
->                         goto out;
->                 }
->                 if (tcp_write_wakeup(sk, LINUX_MIB_TCPKEEPALIVE) <= 0) {
-> -                       icsk->icsk_probes_out++;
->                         elapsed = keepalive_intvl_when(tp);
->                 } else {
->                         /* If keepalive was lost due to local congestion,
-> @@ -744,8 +738,6 @@ static void tcp_keepalive_timer (struct timer_list *t)
->         }
->
->         sk_mem_reclaim(sk);
-> -
-> -resched:
->         inet_csk_reset_keepalive_timer (sk, elapsed);
->         goto out;
->
-> --
-> 2.29.2
->
+Jane Cooper
+MARKETING TEAM
+Tel No: +27(0)622541582
+BrightWay Finance Loan(PTY) LTD.
+brightwayfinanceloan01@protonmail.com
