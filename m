@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C2931F5FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:42:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D607231F60B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhBSIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:41:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhBSIlO (ORCPT
+        id S229743AbhBSIth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 03:49:37 -0500
+Received: from us2-ob3-3.mailhostbox.com ([208.91.199.218]:44415 "EHLO
+        us2-ob3-3.mailhostbox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhBSItY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:41:14 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B488DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 00:40:33 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id t15so1608056ual.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 00:40:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KAX4LYl0kG8JmUeTzz+wEYqEQj0XL2YyaDiep9J2YS8=;
-        b=gd/7FyckxK787QDZNsZVd1QllF5rpLh64V2h2mv5C+8wsia4dfy1uM3w2MoG50n4cI
-         4N2ZTX8/CsqKCmT5oZnH2SKk8ICiBcJ4a0TyxUth24i6SmxTnVOSzXuUHOlVTkEW1oP2
-         T6+IHONQVolDO0REMDZI9A2ijbKT/e6jCzD4Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KAX4LYl0kG8JmUeTzz+wEYqEQj0XL2YyaDiep9J2YS8=;
-        b=GCHirI8fupMPCnsq7uQ3+t+FXwjbjkT5WIfEkkbnOv2wsw9TdWtelzDiSRrwDS/dHr
-         V3W/Dnp0dJEUbJ+UrKEL04Ut4iMk+huGt956lt+8v3rvs3HP4hd1UNookwy/LSVPG+0n
-         aJrfczm9obeN0Qj5RkoC8YFGaTt+UqyfEb+cC3tSM3AAtMUtYCqvRD8Fnva+o8dH6Okj
-         zH7+S4XqWwBp9GpM+DfxFtYNram/SvFsHRMTxM02Qf26qLrM5sKywoCRiqn572Tr4AJY
-         FuUyBoVfOL2ftTXO6b1gCuytfNdjDAZKK5U7O++ZJPidBkHAFczDZHxMnBShP9n6eupt
-         OyIw==
-X-Gm-Message-State: AOAM530xKU8LeTK8I6VGdMA/Hn/NZiAnGMCM06cqbLpckhdbqw5nXLAY
-        aWk9R6w0IiXlAQxYGfaAzkmOLE1soA/qEswZvOGdvA==
-X-Google-Smtp-Source: ABdhPJzJH+5GI9QWwC1IyLsbDQuQfFymjQa1dh4IP0OeySwY17q+wAUhAUf8XUPUqrbpG/3gI3rWoc04RvisEarqvio=
-X-Received: by 2002:ab0:5963:: with SMTP id o32mr6378901uad.11.1613724032852;
- Fri, 19 Feb 2021 00:40:32 -0800 (PST)
+        Fri, 19 Feb 2021 03:49:24 -0500
+X-Greylist: delayed 464 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Feb 2021 03:49:23 EST
+Received: from g3.oswalpalash.com (unknown [49.36.75.42])
+        (Authenticated sender: hello@oswalpalash.com)
+        by us2.outbound.mailhostbox.com (Postfix) with ESMTPA id 18B5ED7950;
+        Fri, 19 Feb 2021 08:40:47 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oswalpalash.com;
+        s=20160715; t=1613724058;
+        bh=w/MXL5PWmCp6/RiRm7vqAcjP+5e8CSmCtNdJkAowHAs=;
+        h=Date:From:To:Subject;
+        b=RUooY/WU58HYaVw2VLZRyGk0gPGIrnWEfh9vecP0GJ+iMAauzMJd/Q8hpLq0a0Wlz
+         RGpymqgRDQqRhd7eLkq2GaGLQsfkaM4hbR6nVBpiAZAWYjbWbV0wMLrLedgt8IAiJS
+         sbxFTnoOpYWp1Egb+dt0czPbuHun3PLDivZl6lsA=
+Date:   Fri, 19 Feb 2021 14:10:38 +0530
+From:   Palash Oswal <hello@oswalpalash.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ima: Replacing deprecated strlcpy with strscpy
+Message-ID: <20210219084038.GA7564@g3.oswalpalash.com>
 MIME-Version: 1.0
-References: <20210125153057.3623715-1-balsini@android.com> <20210125153057.3623715-4-balsini@android.com>
- <CAJfpegs4=NYn9k4F4HvZK3mqLehhxCFKgVxctNGf1f2ed0gfqg@mail.gmail.com> <CA+a=Yy5=4SJJoDLOPCYDh-Egk8gTv0JgCU-w-AT+Hxhua3_B2w@mail.gmail.com>
-In-Reply-To: <CA+a=Yy5=4SJJoDLOPCYDh-Egk8gTv0JgCU-w-AT+Hxhua3_B2w@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 19 Feb 2021 09:40:21 +0100
-Message-ID: <CAJfpegtmXegm0FFxs-rs6UhJq4raktiyuzO483wRatj5HKZvYA@mail.gmail.com>
-Subject: Re: [PATCH RESEND V12 3/8] fuse: Definitions and ioctl for passthrough
-To:     Peng Tao <bergwolf@gmail.com>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>, wuyan <wu-yan@tcl.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=R5t95uZX c=1 sm=1 tr=0
+        a=CHsQ1LQruS7B59iI9LpjmQ==:117 a=CHsQ1LQruS7B59iI9LpjmQ==:17
+        a=kj9zAlcOel0A:10 a=xUbBMDKt3BKPAhSvupEA:9 a=CjuIK1q_8ugA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 8:05 AM Peng Tao <bergwolf@gmail.com> wrote:
->
-> On Wed, Feb 17, 2021 at 9:41 PM Miklos Szeredi <miklos@szeredi.hu> wrote:
+The strlcpy() function is unsafe in that the source buffer length
+is unbounded or possibly be non NULL terminated. This can cause
+memory over-reads, crashes, etc.
 
-> > What I think would be useful is to have an explicit
-> > FUSE_DEV_IOC_PASSTHROUGH_CLOSE ioctl, that would need to be called
-> > once the fuse server no longer needs this ID.   If this turns out to
-> > be a performance problem, we could still add the auto-close behavior
-> > with an explicit FOPEN_PASSTHROUGH_AUTOCLOSE flag later.
-> Hi Miklos,
->
-> W/o auto closing, what happens if user space daemon forgets to call
-> FUSE_DEV_IOC_PASSTHROUGH_CLOSE? Do we keep the ID alive somewhere?
+Link: https://github.com/KSPP/linux/issues/89
+Signed-off-by: Palash Oswal <hello@oswalpalash.com>
+---
+ security/integrity/ima/ima_api.c    | 2 +-
+ security/integrity/ima/ima_policy.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Kernel would keep the ID open until explicit close or fuse connection
-is released.
+diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
+index 1dd70dc68ffd..2f3b8257181d 100644
+--- a/security/integrity/ima/ima_api.c
++++ b/security/integrity/ima/ima_api.c
+@@ -399,7 +399,7 @@ const char *ima_d_path(const struct path *path, char **pathbuf, char *namebuf)
+ 	}
+ 
+ 	if (!pathname) {
+-		strlcpy(namebuf, path->dentry->d_name.name, NAME_MAX);
++		strscpy(namebuf, path->dentry->d_name.name, NAME_MAX);
+ 		pathname = namebuf;
+ 	}
+ 
+diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
+index 9b45d064a87d..010839aef6ba 100644
+--- a/security/integrity/ima/ima_policy.c
++++ b/security/integrity/ima/ima_policy.c
+@@ -791,7 +791,7 @@ static int __init ima_init_arch_policy(void)
+ 		char rule[255];
+ 		int result;
+ 
+-		result = strlcpy(rule, *rules, sizeof(rule));
++		strscpy(rule, *rules, sizeof(rule));
+ 
+ 		INIT_LIST_HEAD(&arch_policy_entry[i].list);
+ 		result = ima_parse_rule(rule, &arch_policy_entry[i]);
 
-There should be some limit on the max open files referenced through
-ID's, though.   E.g. inherit RLIMIT_NOFILE from mounting task.
+base-commit: f6692213b5045dc461ce0858fb18cf46f328c202
+-- 
+2.27.0
 
-Thanks,
-Miklos
