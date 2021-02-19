@@ -2,137 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02C631F970
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7851E31F975
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:37:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhBSMdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 07:33:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhBSMdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 07:33:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B373664E54;
-        Fri, 19 Feb 2021 12:33:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613737992;
-        bh=pZIQqFujw5R6jSZxYrLEFYhYSZcD29FIGY6b7nQuEy0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=To+UdOopDsJaN/V46ujKSg9JZNVwaZIMT8PuYqagR+6ZwP2+gETbiIcijlnq5brTk
-         LDhpLGZP01yzUiv0KrDbABnDTDTfOlL//EIBDJK/eVxOk1zgPEUnTtdRYyiMrSuCmr
-         0xguMliizKlpr66WKuoGtHe7KcxsfGlR6KE9MGU6TQdmiJjbSWxvTBdG1vHdBq0iWA
-         wNDc5I1JglhFVVyKOV3bEmvJWAKNTSSFPVHU5EM2YFUhloDfNHbSLjfoCRsZ1J10K0
-         fRTyN7E/ovOKUoG5zh0BExytT9ZXtEeDPHBxleESYlyRNPSGvb9qckG65Fk25JArjX
-         1NiUgvKjJ+0SQ==
-Date:   Fri, 19 Feb 2021 13:33:09 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Yunfeng Ye <yeyunfeng@huawei.com>
-Cc:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        linux-kernel@vger.kernel.org, Shiyuan Hu <hushiyuan@huawei.com>,
-        Hewenliang <hewenliang4@huawei.com>
-Subject: Re: [PATCH] tick/nohz: Make the idle_exittime update correctly
-Message-ID: <20210219123309.GC51281@lothringen>
-References: <2e194669-c074-069c-4fda-ad5bc313a611@huawei.com>
+        id S230315AbhBSMfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 07:35:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230180AbhBSMfe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 07:35:34 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09694C061574;
+        Fri, 19 Feb 2021 04:34:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nL98NaEUG65NknpBy9GUqIWGRsbF73KZx2JYEgSxoFU=; b=Q4YFIshmnmtF49HHFoM/CY6k5w
+        ymxpEqO/5tsL68tNH3SuI0KZVmjsvrGpYy8opVP5p7B3F2jhdRmcU5/FEbdGFT4tEzT2o+BnKqEVY
+        cBwbAjXyUovorINQWgGJ1OuuML4889mhPJ1KfEjKvxhdniRRgUU8bTYWvcnyR1PP5zSzKjJygLHYK
+        PQPQV+kT0/8onp9azO5bU7ZceuoN6rzJYfmawXNQB9pV4M0WOvDheZgPZfV4nIgitNxoawmVuLrgB
+        VkNRc4kr6uIWGNZB2aKeXY+blRK/hgQnhAiMFFZIKK9HRbtYHwn71USfrXyVXxmO89Sa3kfOs/qps
+        cvemhCHw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lD4yx-002rvc-31; Fri, 19 Feb 2021 12:34:17 +0000
+Date:   Fri, 19 Feb 2021 12:34:03 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Lennert Buytenhek <buytenh@wantstofly.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        io-uring@vger.kernel.org, David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH v3 2/2] io_uring: add support for IORING_OP_GETDENTS
+Message-ID: <20210219123403.GT2858050@casper.infradead.org>
+References: <20210218122640.GA334506@wantstofly.org>
+ <20210218122755.GC334506@wantstofly.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2e194669-c074-069c-4fda-ad5bc313a611@huawei.com>
+In-Reply-To: <20210218122755.GC334506@wantstofly.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 05, 2020 at 05:41:52PM +0800, Yunfeng Ye wrote:
-> The idle_exittime field of tick_sched is used to record the time when
-> the idle state was left. but currently the idle_exittime is updated in
-> the function tick_nohz_restart_sched_tick(), which is not always in idle
-> state when nohz_full is configured.
-> 
->   tick_irq_exit
->     tick_nohz_irq_exit
->       tick_nohz_full_update_tick
->         tick_nohz_restart_sched_tick
->           ts->idle_exittime = now;
-> 
-> So move to tick_nohz_stop_idle() to make the idle_exittime update
-> correctly.
-> 
-> Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-> ---
->  kernel/time/tick-sched.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index 749ec2a583de..be2e5d772d50 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -591,6 +591,7 @@ static void tick_nohz_stop_idle(struct tick_sched *ts, ktime_t now)
->  {
->  	update_ts_time_stats(smp_processor_id(), ts, now, NULL);
->  	ts->idle_active = 0;
-> +	ts->idle_exittime = now;
-> 
->  	sched_clock_idle_wakeup_event();
->  }
-> @@ -901,7 +902,6 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
->  	 * Cancel the scheduled timer and restore the tick
->  	 */
->  	ts->tick_stopped  = 0;
-> -	ts->idle_exittime = now;
-> 
->  	tick_nohz_restart(ts, now);
->  }
+On Thu, Feb 18, 2021 at 02:27:55PM +0200, Lennert Buytenhek wrote:
+> IORING_OP_GETDENTS may or may not update the specified directory's
+> file offset, and the file offset should not be relied upon having
+> any particular value during or after an IORING_OP_GETDENTS call.
 
-Hi,
+This doesn't give me the warm fuzzies.  What I might suggest
+is either passing a parameter to iterate_dir() or breaking out an
+iterate_dir_nofpos() to make IORING_OP_GETDENTS more of a READV operation.
+ie the equivalent of this:
 
-I've edited and queued on top of latest changes, see below. I'll post it after
-the merge window.
-
----
-From: Yunfeng Ye <yeyunfeng@huawei.com>
-Date: Wed, 10 Feb 2021 00:08:54 +0100
-Subject: [PATCH] tick/nohz: Update idle_exittime on actual idle exit
-
-The idle_exittime field of tick_sched is used to record the time when
-the idle state was left. but currently the idle_exittime is updated in
-the function tick_nohz_restart_sched_tick(), which is not always in idle
-state when nohz_full is configured:
-
-  tick_irq_exit
-    tick_nohz_irq_exit
-      tick_nohz_full_update_tick
-        tick_nohz_restart_sched_tick
-          ts->idle_exittime = now;
-
-It's thus overwritten by mistake on nohz_full tick restart. Move the
-update to the appropriate idle exit path instead.
-
-Signed-off-by: Yunfeng Ye <yeyunfeng@huawei.com>
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- kernel/time/tick-sched.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 79796286a4ba..2907c762a8fe 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -918,8 +918,6 @@ static void tick_nohz_restart_sched_tick(struct tick_sched *ts, ktime_t now)
- 	 * Cancel the scheduled timer and restore the tick
- 	 */
- 	ts->tick_stopped  = 0;
--	ts->idle_exittime = now;
--
- 	tick_nohz_restart(ts, now);
- }
+@@ -37,7 +37,7 @@
+ } while (0)
  
-@@ -1231,6 +1229,7 @@ static void tick_nohz_idle_update_tick(struct tick_sched *ts, ktime_t now)
- 	else
- 		tick_nohz_restart_sched_tick(ts, now);
  
-+	ts->idle_exittime = now;
- 	tick_nohz_account_idle_ticks(ts);
- }
+-int iterate_dir(struct file *file, struct dir_context *ctx)
++int iterate_dir(struct file *file, struct dir_context *ctx, bool use_fpos)
+ {
+        struct inode *inode = file_inode(file);
+        bool shared = false;
+@@ -60,12 +60,14 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
  
--- 
-2.25.1
+        res = -ENOENT;
+        if (!IS_DEADDIR(inode)) {
+-               ctx->pos = file->f_pos;
++               if (use_fpos)
++                       ctx->pos = file->f_pos;
+                if (shared)
+                        res = file->f_op->iterate_shared(file, ctx);
+                else
+                        res = file->f_op->iterate(file, ctx);
+-               file->f_pos = ctx->pos;
++               if (use_fpos)
++                       file->f_pos = ctx->pos;
+                fsnotify_access(file);
+                file_accessed(file);
+        }
 
-
+That way there's no need to play with llseek or take a mutex on the
+f_pos of the directory.
