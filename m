@@ -2,151 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14BE831FFAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2059F31FFC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:19:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhBSUGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:06:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20192 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229862AbhBSUGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:06:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613765106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RdrWHXNP81cMfcwVYdcPmRXG0LMOXCcx5D2s5+R9i9E=;
-        b=GzLQ5nsRCsO/LGzymoklCo9Kn5gBnDPtXNNzxyrx3SMEs1fMBJCBXtUSY1Rwc2qxtuJYcL
-        MaXdFZ+/PVSobrIWVgsZNd39aBIJeroNegCgc6xFGhZBYUyAs0aLuWpB6MarKpWNLt4F8i
-        BX41FsCVzkFmcEuYmsuWPWwX8C0oiSk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-kbtrUWp-NLmwrTJzGZseGA-1; Fri, 19 Feb 2021 15:05:02 -0500
-X-MC-Unique: kbtrUWp-NLmwrTJzGZseGA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E211F80364B;
-        Fri, 19 Feb 2021 20:04:58 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BB7325D9C2;
-        Fri, 19 Feb 2021 20:04:58 +0000 (UTC)
-Received: from zmail19.collab.prod.int.phx2.redhat.com (zmail19.collab.prod.int.phx2.redhat.com [10.5.83.22])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 6DDEA4A7C6;
-        Fri, 19 Feb 2021 20:04:58 +0000 (UTC)
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: base64
-From:   David Hildenbrand <dhildenb@redhat.com>
+        id S229689AbhBSUTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:19:34 -0500
+Received: from mail.katalix.com ([3.9.82.81]:33452 "EHLO mail.katalix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhBSUTc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 15:19:32 -0500
+X-Greylist: delayed 407 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Feb 2021 15:19:30 EST
+Received: from localhost (82-69-49-219.dsl.in-addr.zen.co.uk [82.69.49.219])
+        (Authenticated sender: tom)
+        by mail.katalix.com (Postfix) with ESMTPSA id 45E4B7D3E9;
+        Fri, 19 Feb 2021 20:12:02 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=katalix.com; s=mail;
+        t=1613765522; bh=P7Lcrbr257xogzIurGn37yTXv6fSVBT0Lqyc2B7mOQ0=;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+         Content-Disposition:In-Reply-To:From;
+        z=Date:=20Fri,=2019=20Feb=202021=2020:12:02=20+0000|From:=20Tom=20P
+         arkin=20<tparkin@katalix.com>|To:=20Matthias=20Schiffer=20<mschiff
+         er@universe-factory.net>|Cc:=20netdev@vger.kernel.org,=20"David=20
+         S.=20Miller"=20<davem@davemloft.net>,=0D=0A=09Jakub=20Kicinski=20<
+         kuba@kernel.org>,=20linux-kernel@vger.kernel.org|Subject:=20Re:=20
+         [PATCH=20net]=20net:=20l2tp:=20reduce=20log=20level=20when=20passi
+         ng=20up=20invalid=0D=0A=20packets|Message-ID:=20<20210219201201.GA
+         4974@katalix.com>|References:=20<f2a482212eed80b5ba22cb590e89d3edb
+         290a872.1613760125.git.mschiffer@universe-factory.net>|MIME-Versio
+         n:=201.0|Content-Disposition:=20inline|In-Reply-To:=20<f2a482212ee
+         d80b5ba22cb590e89d3edb290a872.1613760125.git.mschiffer@universe-fa
+         ctory.net>;
+        b=EBDyLC3Thd0Mc01ldtVMByZGvLuayiozIO/ffe1wyYp+W1Fx9qNhn2452b6FqsOZz
+         9noLinWDDF1Z6MzsuBXObgD5bkJb8Ocwm7Ub1J2jGA1ZrM2pntg9aHCd9HbJjf5hQe
+         ASarwxT6UUp22wM0/9bnWb60Mt4PXMeJYgSb0VjZgRu6Or/GAFOmk4QrSCr7+rwx01
+         PO+u9rGWX0HDy1y4vG81A4xQzshRBzfmXgFDYLcPQDsieLswbxhd0Fh1D6nuDFS74g
+         K65nQ0fIO10RfgcPo6FkmRh58XzwqZAB8JAohtJenLiUJMIuU4Lio/ay/ZcVED7e6C
+         knzriOGh2HOqA==
+Date:   Fri, 19 Feb 2021 20:12:02 +0000
+From:   Tom Parkin <tparkin@katalix.com>
+To:     Matthias Schiffer <mschiffer@universe-factory.net>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: l2tp: reduce log level when passing up invalid
+ packets
+Message-ID: <20210219201201.GA4974@katalix.com>
+References: <f2a482212eed80b5ba22cb590e89d3edb290a872.1613760125.git.mschiffer@universe-factory.net>
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to prefault/prealloc memory
-Date:   Fri, 19 Feb 2021 15:04:58 -0500 (EST)
-Message-Id: <382EFE9E-86CB-4C0C-B0C8-4EAE8A5281D9@redhat.com>
-References: <20210219192310.GI6669@xz-x1>
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-In-Reply-To: <20210219192310.GI6669@xz-x1>
-To:     Peter Xu <peterx@redhat.com>
-Thread-Topic: mm/madvise: introduce MADV_POPULATE to prefault/prealloc memory
-Thread-Index: 1GhocwMB+h3nwFkPzKnrEoxU5kTmpw==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
+In-Reply-To: <f2a482212eed80b5ba22cb590e89d3edb290a872.1613760125.git.mschiffer@universe-factory.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IEFtIDE5LjAyLjIwMjEgdW0gMjA6MjMgc2NocmllYiBQZXRlciBYdSA8cGV0ZXJ4QHJlZGhh
-dC5jb20+Og0KPiANCj4g77u/T24gRnJpLCBGZWIgMTksIDIwMjEgYXQgMDY6MTM6NDdQTSArMDEw
-MCwgRGF2aWQgSGlsZGVuYnJhbmQgd3JvdGU6DQo+Pj4gT24gMTkuMDIuMjEgMTc6MzEsIFBldGVy
-IFh1IHdyb3RlOg0KPj4+IE9uIEZyaSwgRmViIDE5LCAyMDIxIGF0IDA5OjIwOjE2QU0gKzAxMDAs
-IERhdmlkIEhpbGRlbmJyYW5kIHdyb3RlOg0KPj4+PiBPbiAxOC4wMi4yMSAyMzo1OSwgUGV0ZXIg
-WHUgd3JvdGU6DQo+Pj4+PiBIaSwgRGF2aWQsDQo+Pj4+PiANCj4+Pj4+IE9uIFdlZCwgRmViIDE3
-LCAyMDIxIGF0IDA0OjQ4OjQ0UE0gKzAxMDAsIERhdmlkIEhpbGRlbmJyYW5kIHdyb3RlOg0KPj4+
-Pj4+IFdoZW4gd2UgbWFuYWdlIHNwYXJzZSBtZW1vcnkgbWFwcGluZ3MgZHluYW1pY2FsbHkgaW4g
-dXNlciBzcGFjZSAtIGFsc28NCj4+Pj4+PiBzb21ldGltZXMgaW52b2x2aW5nIE1BRFZfTk9SRVNF
-UlZFIC0gd2Ugd2FudCB0byBkeW5hbWljYWxseSBwb3B1bGF0ZS8NCj4+Pj4+PiBkaXNjYXJkIG1l
-bW9yeSBpbnNpZGUgc3VjaCBhIHNwYXJzZSBtZW1vcnkgcmVnaW9uLiBFeGFtcGxlIHVzZXJzIGFy
-ZQ0KPj4+Pj4+IGh5cGVydmlzb3JzIChlc3BlY2lhbGx5IGltcGxlbWVudGluZyBtZW1vcnkgYmFs
-bG9vbmluZyBvciBzaW1pbGFyDQo+Pj4+Pj4gdGVjaG5vbG9naWVzIGxpa2UgdmlydGlvLW1lbSkg
-YW5kIG1lbW9yeSBhbGxvY2F0b3JzLiBJbiBhZGRpdGlvbiwgd2Ugd2FudA0KPj4+Pj4+IHRvIGZh
-aWwgaW4gYSBuaWNlIHdheSBpZiBwb3B1bGF0aW5nIGRvZXMgbm90IHN1Y2NlZWQgYmVjYXVzZSB3
-ZSBhcmUgb3V0IG9mDQo+Pj4+Pj4gYmFja2VuZCBtZW1vcnkgKHdoaWNoIGNhbiBoYXBwZW4gZWFz
-aWx5IHdpdGggZmlsZS1iYXNlZCBtYXBwaW5ncywNCj4+Pj4+PiBlc3BlY2lhbGx5IHRtcGZzIGFu
-ZCBodWdldGxiZnMpLg0KPiANCj4gWzFdDQo+IA0KPj4+IEUuZy4sIGNhbiB3ZSBzaW1wbHkgYXNr
-IHRoZSBrZXJuZWwgImhvdyBtdWNoIG1lbW9yeSB0aGlzIHByb2Nlc3MgY2FuIHN0aWxsDQo+Pj4g
-YWxsb2NhdGUiLCB0aGVuIGdldCBhIG51bWJlciBvdXQgb2YgaXQ/ICBJJ20gbm90IHN1cmUgd2hl
-dGhlciBpdCBjYW4gYmUgZG9uZQ0KPj4gDQo+PiBBbnl0aGluZyBsaWtlIHRoYXQgaXMgY29tcGxl
-dGVseSByYWN5IGFuZCB1bnJlbGlhYmxlLg0KPiANCj4gVGhlIGZhaWx1cmUgcGF0aCB3b24ndCBi
-ZSByYWN5IGltaG8gLSBJZiB3ZSBjYW4gZGV0ZWN0IGN1cnJlbnQgcHJvY2VzcyBkb2Vzbid0DQo+
-IGhhdmUgZW5vdWdoIG1lbW9yeSBidWRnZXQsIGl0J2xsIGJlIG1vcmUgZWZmaWNpZW50IHRvIGZh
-aWwgZXZlbiBiZWZvcmUgdHJ5aW5nDQo+IHRvIHBvcHVsYXRlIGFueSBtZW1vcnkgYW5kIHRoZW4g
-ZHJvcCBwYXJ0IG9mIHRoZW0gYWdhaW4uDQo+IA0KPiBCdXQgSSBzZWUgeW91ciBwb2ludCAtIGlu
-ZGVlZCBpdCdzIGdvb2QgdG8gZ3VhcmFudGVlIHRoZSBndWVzdCB3b24ndCBjcmFzaCBhdA0KPiBh
-bnkgcG9pbnQgb2YgZnVydGhlciBndWVzdCBzaWRlIG1lbW9yeSBhY2Nlc3MuDQo+IA0KPiBBbm90
-aGVyIHF1ZXN0aW9uOiBjYW4gdGhlIHVzZXIgYWN0dWFsbHkgc3BlY2lmeSBhcmJpdHJhcnkgbWF4
-LWxlbmd0aCBmb3IgdGhlDQo+IHZpcnRpby1tZW0gZGV2aWNlICh3aGljaCBkZWNpZGVzIHRoZSBt
-YXhpbXVtIG1lbW9yeSB0aGlzIGRldmljZSBjb3VsZCBwb3NzaWJseQ0KPiBjb25zdW1lKT8gIEkg
-dGhvdWdodCB3ZSBzaG91bGQgY2hlY2sgdGhhdCBmaXJzdCBiZWZvcmUgcmVhbGl6aW5nIHRoZSBk
-ZXZpY2UgYW5kDQo+IHdlIHJlYWxseSBzaG91bGRuJ3QgZmFpbCBhbnkgZ3Vlc3QgbWVtb3J5IGFj
-Y2VzcyBpZiB0aGF0IGNoZWNrIHBhc3NlZC4gRmVlbA0KPiBmcmVlIHRvIGNvcnJlY3QgbWUuDQoN
-Ck1heC1sZW5ndGggaXMgY3VycmVudGx5IGxpbWl0ZWQgYnkgdGhlIG1tYXAoKSB3ZeKAmHJlIGFs
-bG93ZWQgdG8gY3JlYXRlLiBXaXRoIE1BUF9OT1JFU0VSVkUgdGhpcyBjYW4gYmUgYmlnIChub3Qg
-bWVyZ2VkIHlldCkuDQoNCkNoZWNraW5nIG1heC1sZW5naHQgYXQgaW5pdGlhbGl6YXRpb24gdGlt
-ZSBkb2VzIG5vdCBtYWtlIHRvbyBtdWNoIHNlbnNlLiBKdXN0IGltYWdpbmUgc2hyaW5raW5nL3Jl
-bG9jYXRpbmcgb3RoZXIgVk1zIHNvIHlvdSBjYW4gZ3JvdyB0aGlzIFZNIGZ1cnRoZXIuIE9yIG1p
-Z3JhdGluZyB0aGUgVk0gdG8gYW5vdGhlciBtYWNoaW5lIHdoZXJlIHlvdSBtaWdodCBncm93IGl0
-IGZ1cnRoZXIuDQoNClRoZSB1bHRpbWF0ZSBnb2FsIGlzIHRvIGFkanVzdCB0aGUgbWFwcGluZyBz
-aXplIGR5bmFtaWNhbGx5IG9uIGRlbWFuZCwgYnV0IHRoYXTigJhzIHN0dWZmIGZvciB0aGUgZnV0
-dXJlIGFzIGl0IHR1cm5zIG91dCBjb21wbGljYXRlZC4gRm9yIGV4YW1wbGUsIGh1Z2V0bGJmcyBW
-TUFzIGNhbm5vdCBiZSBtZXJnZWQgeWV0IChhbHRob3VnaCBJIHRoaW5rIGl0IHNob3VsZG7igJh0
-IGJlIHRvbyBoYXJkIHRvIGltcGxlbWVudCkuDQoNClRoZSBzaG9ydCB0ZXJtIGFwcHJvYWNoIGlz
-IG9ubHkgZXhwb3NpbmcgYSBzbWFsbCB3aW5kb3cgb2YgdGhlIGJpZ2dlciBtbWFwIHRvIHRoZSBn
-dWVzdC4NCg0KPj4gDQo+PiBUaGF0IHdvdWxkIGJlIGtpbmQgb2Ygd2VpcmQuIEknZCBhc3N1bWUg
-dGhlIHJlc2VydmF0aW9uIGdldHMgcHJvcGVybHkgZG9uZQ0KPj4gZHVyaW5nIGZvcmsoKSAtIGp1
-c3QgbGlrZSBmb3IgVk1fQUNDT1VOVC4NCj4gDQo+IEFGQUlLIFZNX0FDQ09VTlQgaXMgbmV2ZXIg
-YXBwbGllZCBmb3IgaHVnZXRsYmZzLiAgTmVpdGhlciBkbyBJIGtub3cgYW55DQo+IGFjY291bnRp
-bmcgZG9uZSBmb3IgaHVnZXRsYmZzIGR1cmluZyBmb3JrKCksIGlmIG5vdCB0YWtpbmcgdGhlIHBp
-bm5lZCBwYWdlcw0KPiBpbnRvIGFjY291bnQgLSB0aGF0IGlzIGRlZmluaXRlbHkgYSBzcGVjaWFs
-IGNhc2UuDQo+IA0KDQpZZXMsIGl0IGlzbuKAmHQgLSBJIG1lYW50IOKAnmxpa2XigJwgYXMgaW4g
-4oCec2ltaWxhciB0byBzd2FwIHJlc2VydmF0aW9u4oCcLg0KDQo+PiANCj4+PiBIb3dldmVyIHRo
-YXQncyBkZWZpbml0ZWx5IG5vdCB0aGUgY2FzZSBmb3IgUUVNVSBzaW5jZSBRRU1VIHdvbid0IHdv
-cmsgYXQgYWxsIGFzDQo+Pj4gbGF0ZSBhcyB0aGF0IHBvaW50Lg0KPj4+IA0KPj4+IElPVywgZm9y
-IGh1Z2V0bGJmcyBJIGRvbid0IGtub3cgd2h5IHdlIG5lZWQgdG8gcG9wdWxhdGUgdGhlIHBhZ2Vz
-IGF0IGFsbCBpZiB3ZQ0KPj4+IHNpbXBseSB3YW50IHRvIGtub3cgIndoZXRoZXIgd2UgZG8gc3Rp
-bGwgaGF2ZSBlbm91Z2ggc3BhY2UiLi4gIEFuZCBJSVVDIDIpDQo+Pj4gYWJvdmUgaXMgdGhlIG1h
-am9yIGlzc3VlIHlvdSdkIGxpa2UgdG8gc29sdmUgdG9vLg0KPj4gDQo+PiBUbyBhdm9pZCBwYWdl
-IGZhdWx0cyBhdCBydW50aW1lIG9uIGFjY2VzcyBJIHRoaW5rLiBSZXNlcnZhdGlvbiA8PQ0KPj4g
-UHJlYWxsb2NhdGlvbi4NCj4gDQo+IFllcy4gIEJlc2lkZXMgbXkgYWJvdmUgcXVlc3Rpb24gcmVn
-YXJkaW5nIG1heC1sZW5ndGggb2YgdmlydGlvLW1lbSBkZXZpY2U6IHdlDQo+IGNhcmUgbW9zdCBh
-Ym91dCBwcml2YXRlIG1hcHBpbmdzIG9mIGh1Z2V0bGJmcy9zaG1lbSBoZXJlLCBhbSBJIHJpZ2h0
-Pw0KPiANCj4gSSdtIHRoaW5raW5nIHdoeSB3ZSdkIG5lZWQgTUFQX1BSSVZBVEUgb2YgdGhlc2Ug
-YXQgYWxsIGZvciBWTSBjb250ZXh0Lg0KDQpPbmUgcmVhc29uIGlzIHRoYXQgTUFQX1NIQVJFRCBk
-b2VzIG5vdCBzdXBwb3J0IG1iaW5kKCkgLSB3aGljaCBzaG91bGQgaW5jbHVkZSBodWdldGxiZnMu
-IEkgZGlkIG5vdCBpbnZlc3RpZ2F0ZSBvdGhlciBzaWRlIGVmZmVjdHMgLyBwZXJmb3JtYW5jZSBj
-b25zaWRlcmF0aW9ucyBvbiBhbGxvY2F0aW9uLg0KDQpTaW1pbGFybHksIGZhbGxvY2F0ZSgpIGRv
-ZXMgbm90IHJlc3BlY3QvY2FyZSBhYm91dCBOVU1BLg0KDQooQW5kIHllcywgTlVNQSBmb3Igdmly
-dGlvLW1lbSB3aWxsIGJlIGltcG9ydGFudCku
 
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Matthias,
+
+Thanks for your patch!
+
+On  Fri, Feb 19, 2021 at 20:06:15 +0100, Matthias Schiffer wrote:
+> Before commit 5ee759cda51b ("l2tp: use standard API for warning log
+> messages"), it was possible for userspace applications to use their own
+> control protocols on the backing sockets of an L2TP kernel device, and as
+> long as a packet didn't look like a proper L2TP data packet, it would be
+> passed up to userspace just fine.
+
+Hum.  I appreciate we're now logging where we previously were not, but
+I would say these warning messages are valid.
+
+It's still perfectly possible to use the L2TP socket for the L2TP control
+protocol: packets per the RFCs won't trigger these warnings to the
+best of my knowledge, although I'm happy to be proven wrong!
+
+I wonder whether your application is sending non-L2TP packets over the
+L2TP socket?  Could you describe the usecase?
+
+> After the mentioned change, this approach would lead to significant log
+> spam, as the previously hidden warnings are now shown by default. Not
+> even setting the T flag on the custom control packets is sufficient to
+> surpress these warnings, as packet length and L2TP version are checked
+> before the T flag.
+
+Possibly we could sidestep some of these warnings by moving the T flag
+check further up in the function.
+
+The code would need to pull the first byte of the header, check the type
+bit, and skip further processing if the bit was set.  Otherwise go on to
+pull the rest of the header.
+
+I think I'd prefer this approach assuming the warnings are not
+triggered by valid L2TP messages.
+
+>=20
+> Reduce all warnings debug level when packets are passed to userspace.
+>=20
+> Fixes: 5ee759cda51b ("l2tp: use standard API for warning log messages")
+> Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
+> ---
+>=20
+> I'm unsure what to do about the pr_warn_ratelimited() in
+> l2tp_recv_common(). It feels wrong to me that an incoming network packet
+> can trigger a kernel message above debug level at all, so maybe they
+> should be downgraded as well? I believe the only reason these were ever
+> warnings is that they were not shown by default.
+>=20
+>=20
+>  net/l2tp/l2tp_core.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
+> index 7be5103ff2a8..40852488c62a 100644
+> --- a/net/l2tp/l2tp_core.c
+> +++ b/net/l2tp/l2tp_core.c
+> @@ -809,8 +809,8 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tun=
+nel, struct sk_buff *skb)
+> =20
+>  	/* Short packet? */
+>  	if (!pskb_may_pull(skb, L2TP_HDR_SIZE_MAX)) {
+> -		pr_warn_ratelimited("%s: recv short packet (len=3D%d)\n",
+> -				    tunnel->name, skb->len);
+> +		pr_debug_ratelimited("%s: recv short packet (len=3D%d)\n",
+> +				     tunnel->name, skb->len);
+>  		goto error;
+>  	}
+> @@ -824,8 +824,8 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tun=
+nel, struct sk_buff *skb)
+>  	/* Check protocol version */
+>  	version =3D hdrflags & L2TP_HDR_VER_MASK;
+>  	if (version !=3D tunnel->version) {
+> -		pr_warn_ratelimited("%s: recv protocol version mismatch: got %d expect=
+ed %d\n",
+> -				    tunnel->name, version, tunnel->version);
+> +		pr_debug_ratelimited("%s: recv protocol version mismatch: got %d expec=
+ted %d\n",
+> +				     tunnel->name, version, tunnel->version);
+>  		goto error;
+>  	}
+> =20
+> @@ -863,8 +863,8 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tun=
+nel, struct sk_buff *skb)
+>  			l2tp_session_dec_refcount(session);
+> =20
+>  		/* Not found? Pass to userspace to deal with */
+> -		pr_warn_ratelimited("%s: no session found (%u/%u). Passing up.\n",
+> -				    tunnel->name, tunnel_id, session_id);
+> +		pr_debug_ratelimited("%s: no session found (%u/%u). Passing up.\n",
+> +				     tunnel->name, tunnel_id, session_id);
+>  		goto error;
+>  	}
+> =20
+
+--rwEMma7ioTxnRzrJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEsUkgyDzMwrj81nq0lIwGZQq6i9AFAmAwG4oACgkQlIwGZQq6
+i9A47gf/VffJsF47C1/H+rReeMCzD5XLkWVrx9mwEgQiaRcbh4peQjHFUvecTWI8
+ivHrZGL7JGNpSdfCvXbfhhqyVpXN2n24OVPQp79uGSte2w2jtWhHw8aVhm1c6DGx
+IaTRDju6owErgDdJ075ClceAIYv1VbpsQ13fjhqVfzxmRnqyLcWWAhgLYFRYdDxJ
+gC25E9KQSySq4uEtk29Khvs7YHtWODSB/1TKkK6mQkDzn5V+omu//WZi6cEXVY9z
+B0DpdDbYhBfm1XMX31IcJLW+KJXOsBatK1RGGOtI+3b8P+pEs+4ErVs3jQbU7t1Z
+HzHjU5zBh8r0CoO1CuTUk4rclb0JmQ==
+=yRXz
+-----END PGP SIGNATURE-----
+
+--rwEMma7ioTxnRzrJ--
