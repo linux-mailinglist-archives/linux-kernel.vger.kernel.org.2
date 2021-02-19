@@ -2,89 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364A831F85E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E021A31F85F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhBSLZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:25:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhBSLUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:20:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CCB464E77;
-        Fri, 19 Feb 2021 11:19:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613733566;
-        bh=YFg4Atmp59pHQeT8wPbE/amvEYcgx1e0rb0E2V1wsVI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CPQwToA/EWAwk27hMnWle2hs4utfQvNVMPw1h0h7/qLa3RjmZqFsCUAdKuqBxjEjQ
-         yTmpuyV5C1bZEZQHFpRr9SB0d0dXuaxrfTED3E+DWTQkP+ntQDhgehhhqn386QsGP2
-         jvBtwfPVRF2KLV5Eb8ylf6V3hxPOgqwlaMGC0A4x3kIIYgf0W2/JwEu8rDFAxC4pkf
-         /ZUAcJKvqdHgfoB+rrUqCCEgeHPPjZ3R3edCI71vugtkZCWJxwKPSEiw6or/YaBQ5v
-         13BOdBO1SlfmZGzpTXR2pi72xB9WzPoMd1wYX4BrvU6mncI2DbMS8rkJPmgOB4qcKM
-         JLBnXKeqdc3/w==
-Date:   Fri, 19 Feb 2021 12:19:20 +0100
-From:   Robert Richter <rric@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
-        jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com,
-        bhelgaas@google.com, wsa@kernel.org, linux-doc@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org, kw@linux.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] Introduce pcim_alloc_irq_vectors()
-Message-ID: <YC+euDIrR5apkAqp@rric.localdomain>
-References: <20210216160249.749799-1-zhengdejin5@gmail.com>
- <YC41HD422Mjh1IZK@rric.localdomain>
- <YC5zVHnRog3EX0rl@smile.fi.intel.com>
+        id S230140AbhBSLZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:25:49 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49490 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230439AbhBSLUo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 06:20:44 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 648001C0B80; Fri, 19 Feb 2021 12:20:00 +0100 (CET)
+Date:   Fri, 19 Feb 2021 12:20:00 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>
+Subject: Re: [GIT PULL 5.11-rc8] LED fix
+Message-ID: <20210219112000.GJ19207@duo.ucw.cz>
+References: <20210214171328.GA5314@duo.ucw.cz>
+ <CAHk-=wgCp5n3sB_hDmOLSPiJcwJm9RErBHN_6ABhRWyVEkY4Xw@mail.gmail.com>
+ <20210214203138.GA22191@amd>
+ <CAHk-=wgmB6qH7Ho433B066S0=B-CtDNFtaZWOM3PMGWB0ERKSw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="DesjdUuHQDwS2t4N"
 Content-Disposition: inline
-In-Reply-To: <YC5zVHnRog3EX0rl@smile.fi.intel.com>
+In-Reply-To: <CAHk-=wgmB6qH7Ho433B066S0=B-CtDNFtaZWOM3PMGWB0ERKSw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.02.21 16:01:56, Andy Shevchenko wrote:
-> The problem this series solves is an imbalanced API.
 
-This (added) API is bloated and incomplete. It adds functions without
-benefit, the only is to have a single pcim alloc function in addition
-to the pairing of alloc/free functions. I agree, it is hard to detect
-which parts are released if pcim_enable_device() is used.
+--DesjdUuHQDwS2t4N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Additional, you need to go through pcim_release() to add other
-pcim_*() functions for everything else that is released there.
-Otherwise that new API is still incomplete. But this adds another
-bunch of useless functions.
+Hi!
 
-> Christoph IIRC was clear that if we want to use PCI IRQ allocation API the
-> caller must know what's going on. Hiding this behind the scenes is not good.
-> And this series unhides that.
+> On Sun, Feb 14, 2021 at 12:31 PM Pavel Machek <pavel@ucw.cz> wrote:
+> >
+> > 92bf22614b21 is my rc7, and it is parent of the commit I want you to
+> > apply.
+>=20
+> Oh, right you are. I looked at your leds-cleanup-for-pavel branch for
+> some reason, which was much older.
+>=20
+> Anyway, it does the remote lookup with git ls-remote, and doesn't find
+> any matching ref for that 92bf22614 commit you gave it as a base, so
+> that's why it complains. You _could_ fix that by just pushing all the
+> tags you have locally to your remote too.
+>=20
+> Have you changed your behavior wrt git request-pull lately? Because
+> that whole model you use is broken.
 
-IMO, this is more a documentation issue. pcim_enable_device() must be
-better documented and list all enable/alloc functions that are going
-to be released out of the box later.
+This was really one-off and I found the git messages quite confusing.
+>=20
+> The "end" commit shouldn't be my tag (and it shouldn't be a SHA1). It
+> should be *your* branch name.
+>=20
+> So what you *should* have used is something like
+>=20
+>     git request-pull master
+> git://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/
+> for-rc8-5.11
+>=20
+> (assuming "master" is the upstream branch - which would be my
+> v5.11-rc7) without any odd SHA games or anything like that.
 
-Even better, make sure everything is managed and thus all of a pci_dev
-is released, no matter how it was setup (this could even already be
-the case).
+Yes, pushing master should work. I tried to fall back to SHAs as I
+find them less confusing.
 
-In addition you could implement a static code checker.
+Best regards,
+								Pavel
 
-> Also, you may go and clean up all pci_free_irq_vectors() when
-> pcim_enable_device() is called, but I guess you will get painful process and
-> rejection in a pile of cases.
+--=20
+http://www.livejournal.com/~pavelmachek
 
-Why should something be rejected if it is not correctly freed?
+--DesjdUuHQDwS2t4N
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Even if pci_free_irq_vectors() is called, pcim_release() will not
-complain if it was already freed before. So using
-pci_free_irq_vectors() is ok even in conjunction with
-pcim_enable_device().
+-----BEGIN PGP SIGNATURE-----
 
-In the end, let's make sure everything is released in pci_dev if it is
-managed and document this.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+e4AAKCRAw5/Bqldv6
+8hfCAKCSGEICjqzvoR7vNLOKfRDRQBlssQCeI77qs2TbTjC9buuP6WBTk1yprcY=
+=ougf
+-----END PGP SIGNATURE-----
 
-Thanks,
-
--Robert
+--DesjdUuHQDwS2t4N--
