@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BDAD31F9EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE7231F9F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhBSNbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 08:31:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44626 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhBSNb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:31:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613741441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aK2ILRLf8YuM5i5fQZRYdq2o3A8u9wye0ZbzUZCnAAA=;
-        b=SBSSfvHHryGLCMHzhHX00YnE9GQ68eLmpmyGVvYoV5f2WVW5Wm/7H8AbOg6uIE7vaPQAxR
-        6kti20J9CziOcMjib+LCvoUXyeSnYl3eq9fHgmr7Bxe1aDZs9oB3k69gempQwVh+fy2sam
-        kZXRU5M5mIAPMTLBI8CXpb35soai/AM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 898C2ABAE;
-        Fri, 19 Feb 2021 13:30:41 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 14:30:41 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
-Message-ID: <YC+9gc/IR8PzeIFf@alley>
-References: <20210218081817.28849-1-john.ogness@linutronix.de>
- <20210218081817.28849-9-john.ogness@linutronix.de>
+        id S230237AbhBSNd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 08:33:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229999AbhBSNdw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 08:33:52 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5ADAC06178A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 05:33:12 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lD5u9-0007P5-88; Fri, 19 Feb 2021 14:33:09 +0100
+Received: from ukl by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lD5u8-0001aI-P2; Fri, 19 Feb 2021 14:33:08 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel@pengutronix.de, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: [PATCH v2 0/2] Fixes for the tty ledtrigger
+Date:   Fri, 19 Feb 2021 14:33:05 +0100
+Message-Id: <20210219133307.4840-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218081817.28849-9-john.ogness@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-18 09:18:11, John Ogness wrote:
-> The global variables @syslog_seq, @syslog_partial, @syslog_time
-> and write access to @clear_seq are protected by @logbuf_lock.
-> Once @logbuf_lock is removed, these variables will need their
-> own synchronization method. Introduce @syslog_lock for this
-> purpose.
-> 
-> @syslog_lock is a raw_spin_lock for now. This simplifies the
-> transition to removing @logbuf_lock. Once @logbuf_lock and the
-> safe buffers are removed, @syslog_lock can change to spin_lock.
-> ---
->  kernel/printk/printk.c | 41 +++++++++++++++++++++++++++++++++++++----
->  1 file changed, 37 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 20c21a25143d..401df370832b 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> +/* Return a consistent copy of @syslog_seq. */
-> +static u64 read_syslog_seq_irq(void)
-> +{
-> +	u64 seq;
-> +
-> +	raw_spin_lock_irq(&syslog_lock);
-> +	seq = syslog_seq;
-> +	raw_spin_unlock_irq(&syslog_lock);
+Hello,
 
-Is there any particular reason to disable interrupts here?
+this drops the unused label that the kernel test robot found. Thanks for
+catching that.
 
-It would make sense only when the lock could be taken in IRQ
-context. Then we would need to always disable interrupts when
-the lock is taken. And if it is taken in IRQ context, we would
-need to safe flags.
+I also added Pavel's Ack.
 
-I guess that you got confused because it is used in
-wait_event_interruptible(). The name is misleading.
-"interruptible" means wake_up_process() and not IRQ here.
+Best regards
+Uwe
 
-IMHO, we should remove _irq suffix from the lock operations
-and also from the function name.
+Uwe Kleine-König (2):
+  leds: trigger: Fix error path to not unlock the unlocked mutex
+  leds: trigger/tty: Use led_set_brightness_sync() from workqueue
 
-> +
-> +	return seq;
-> +}
-> +
->  int do_syslog(int type, char __user *buf, int len, int source)
->  {
->  	struct printk_info info;
-> @@ -1664,8 +1688,9 @@ int do_syslog(int type, char __user *buf, int len, int source)
->  			return 0;
->  		if (!access_ok(buf, len))
->  			return -EFAULT;
-> +
->  		error = wait_event_interruptible(log_wait,
-> -				prb_read_valid(prb, syslog_seq, NULL));
-> +				prb_read_valid(prb, read_syslog_seq_irq(), NULL));
->  		if (error)
->  			return error;
->  		error = syslog_print(buf, len);
+ drivers/leds/trigger/ledtrig-tty.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-Otherwise, the patch looks good to me.
+Range-diff against v1:
+1:  7fc10ce8eb8b ! 1:  ed39ad41cd91 leds: trigger: Fix error path to not unlock the unlocked mutex
+    @@ Commit message
+     
+         Reported-by: Pavel Machek <pavel@ucw.cz>
+         Fixes: fd4a641ac88f ("leds: trigger: implement a tty trigger")
+    +    Acked-by: Pavel Machek <pavel@ucw.cz>
+         Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+     
+      ## drivers/leds/trigger/ledtrig-tty.c ##
+    @@ drivers/leds/trigger/ledtrig-tty.c: static ssize_t ttyname_store(struct device *
+      	} else {
+      		ttyname = NULL;
+      	}
+    +@@ drivers/leds/trigger/ledtrig-tty.c: static ssize_t ttyname_store(struct device *dev,
+    + 
+    + 	trigger_data->ttyname = ttyname;
+    + 
+    +-out_unlock:
+    + 	mutex_unlock(&trigger_data->mutex);
+    + 
+    + 	if (ttyname && !running)
+2:  fe3d28f4a786 ! 2:  a812318f4cfc leds: trigger/tty: Use led_set_brightness_sync() from workqueue
+    @@ Commit message
+     
+         Reported-by: Pavel Machek <pavel@ucw.cz>
+         Fixes: fd4a641ac88f ("leds: trigger: implement a tty trigger")
+    +    Acked-by: Pavel Machek <pavel@ucw.cz>
+         Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+     
+      ## drivers/leds/trigger/ledtrig-tty.c ##
+-- 
+2.29.2
 
-Best Regards,
-Petr
