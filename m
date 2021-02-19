@@ -2,79 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B2331FEBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:26:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53FBF31FEC9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:29:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229722AbhBSSYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:24:47 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:15204 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhBSSYo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:24:44 -0500
-Date:   Fri, 19 Feb 2021 18:23:54 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1613759038;
-        bh=INaW8+67y2Qr+AIhL2pM7hrEvl532xeKD+BY3hq66KE=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=ZeIXOuhZLe2y1vN9M39L7Bs8Vnq3W5g3wQeoAHeKPcVy5k4zNwxfUav5KXrBBHBSN
-         UPTAbLBTbY5ni3uOkGp1CDe3o2CnQPXTL/npHxLfhwtIt+bJ91j86J9Jmjh61C4ISF
-         32boGRavG0K//mFdcGin2L/kPcaOrQtL5S/O9X+g=
-To:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
-        straube.linux@gmail.com, dan.carpenter@oracle.com,
-        d.straghkov@ispras.ru, tiwai@suse.de
-From:   Kurt Manucredo <fuzzybritches@protonmail.com>
-Cc:     Kurt Manucredo <fuzzybritches@protonmail.com>,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Reply-To: Kurt Manucredo <fuzzybritches@protonmail.com>
-Subject: [PATCH v3] staging: rtl8723bs: fix code style comparison warning
-Message-ID: <20210219182331.8-1-fuzzybritches@protonmail.com>
+        id S229945AbhBSS1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:27:35 -0500
+Received: from foss.arm.com ([217.140.110.172]:42198 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229802AbhBSS1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 13:27:32 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BDF68ED1;
+        Fri, 19 Feb 2021 10:26:46 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.45.200])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B361D3F73D;
+        Fri, 19 Feb 2021 10:26:44 -0800 (PST)
+Date:   Fri, 19 Feb 2021 18:26:41 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 7/8 v1.5] arm64: Always keep DAIF.[IF] in sync
+Message-ID: <20210219182641.GB84857@C02TD0UTHF1T.local>
+References: <20210219113904.41736-8-mark.rutland@arm.com>
+ <20210219172530.45805-1-marcan@marcan.st>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219172530.45805-1-marcan@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Feb 20, 2021 at 02:25:30AM +0900, Hector Martin wrote:
+> Apple SoCs (A11 and newer) have some interrupt sources hardwired to the
+> FIQ line. We implement support for this by simply treating IRQs and FIQs
+> the same way in the interrupt vectors.
+> 
+> To support these systems, the FIQ mask bit needs to be kept in sync with
+> the IRQ mask bit, so both kinds of exceptions are masked together. No
+> other platforms should be delivering FIQ exceptions right now, and we
+> already unmask FIQ in normal process context, so this should not have an
+> effect on other systems - if spurious FIQs were arriving, they would
+> already panic the kernel.
 
+This looks good to me; I've picked this up and pushed out my arm64/fiq
+branch [1,2] incorporating this, tagged as arm64-fiq-20210219.
 
-checkpatch gives the following WARNING:
-WARNING: Comparisons should place the constant on the right side of the tes=
-t
-this patch fixes the coding style warning.
+I'll give this version a few days to gather comments before I post a v2.
 
-Signed-off-by: Kurt Manucredo <fuzzybritches@protonmail.com>
----
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/fiq
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/fiqA
 
-changes since previous version:
-- put version chatter below the --- cut off line.
+Thanks,
+Mark.
 
-thank you very much for your help Mr. Dan Carpenter.
-
- drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c b/drivers/stagi=
-ng/rtl8723bs/core/rtw_wlan_util.c
-index 975f2830e29e..96feced698ac 100644
---- a/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_wlan_util.c
-@@ -2146,7 +2146,7 @@ void rtw_get_sec_iv(struct adapter *padapter, u8 *pcu=
-r_dot11txpn, u8 *StaAddr)
- =09struct security_priv *psecpriv =3D &padapter->securitypriv;
-=20
- =09memset(pcur_dot11txpn, 0, 8);
--=09if (NULL =3D=3D StaAddr)
-+=09if (!StaAddr)
- =09=09return;
- =09psta =3D rtw_get_stainfo(&padapter->stapriv, StaAddr);
- =09DBG_871X("%s(): StaAddr: %02x %02x %02x %02x %02x %02x\n",
---=20
-2.20.1
-
-
+> 
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: James Morse <james.morse@arm.com>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Will Deacon <will@kernel.org>
+> 
+> ---
+>  arch/arm64/include/asm/arch_gicv3.h |  2 +-
+>  arch/arm64/include/asm/assembler.h  |  8 ++++----
+>  arch/arm64/include/asm/daifflags.h  | 10 +++++-----
+>  arch/arm64/include/asm/irqflags.h   | 16 +++++++---------
+>  arch/arm64/kernel/entry.S           | 12 +++++++-----
+>  arch/arm64/kernel/process.c         |  2 +-
+>  arch/arm64/kernel/smp.c             |  1 +
+>  7 files changed, 26 insertions(+), 25 deletions(-)
+> 
+> This is the updated patch after addressing the comments in the original
+> v2 review; we're moving it to this series now, so please review it in
+> this context.
+> 
+> diff --git a/arch/arm64/include/asm/arch_gicv3.h b/arch/arm64/include/asm/arch_gicv3.h
+> index 880b9054d75c..934b9be582d2 100644
+> --- a/arch/arm64/include/asm/arch_gicv3.h
+> +++ b/arch/arm64/include/asm/arch_gicv3.h
+> @@ -173,7 +173,7 @@ static inline void gic_pmr_mask_irqs(void)
+> 
+>  static inline void gic_arch_enable_irqs(void)
+>  {
+> -	asm volatile ("msr daifclr, #2" : : : "memory");
+> +	asm volatile ("msr daifclr, #3" : : : "memory");
+>  }
+> 
+>  #endif /* __ASSEMBLY__ */
+> diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
+> index bf125c591116..53ff8c71eed7 100644
+> --- a/arch/arm64/include/asm/assembler.h
+> +++ b/arch/arm64/include/asm/assembler.h
+> @@ -40,9 +40,9 @@
+>  	msr	daif, \flags
+>  	.endm
+> 
+> -	/* IRQ is the lowest priority flag, unconditionally unmask the rest. */
+> -	.macro enable_da_f
+> -	msr	daifclr, #(8 | 4 | 1)
+> +	/* IRQ/FIQ are the lowest priority flags, unconditionally unmask the rest. */
+> +	.macro enable_da
+> +	msr	daifclr, #(8 | 4)
+>  	.endm
+> 
+>  /*
+> @@ -50,7 +50,7 @@
+>   */
+>  	.macro	save_and_disable_irq, flags
+>  	mrs	\flags, daif
+> -	msr	daifset, #2
+> +	msr	daifset, #3
+>  	.endm
+> 
+>  	.macro	restore_irq, flags
+> diff --git a/arch/arm64/include/asm/daifflags.h b/arch/arm64/include/asm/daifflags.h
+> index 1c26d7baa67f..5eb7af9c4557 100644
+> --- a/arch/arm64/include/asm/daifflags.h
+> +++ b/arch/arm64/include/asm/daifflags.h
+> @@ -13,8 +13,8 @@
+>  #include <asm/ptrace.h>
+> 
+>  #define DAIF_PROCCTX		0
+> -#define DAIF_PROCCTX_NOIRQ	PSR_I_BIT
+> -#define DAIF_ERRCTX		(PSR_I_BIT | PSR_A_BIT)
+> +#define DAIF_PROCCTX_NOIRQ	(PSR_I_BIT | PSR_F_BIT)
+> +#define DAIF_ERRCTX		(PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
+>  #define DAIF_MASK		(PSR_D_BIT | PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
+> 
+> 
+> @@ -47,7 +47,7 @@ static inline unsigned long local_daif_save_flags(void)
+>  	if (system_uses_irq_prio_masking()) {
+>  		/* If IRQs are masked with PMR, reflect it in the flags */
+>  		if (read_sysreg_s(SYS_ICC_PMR_EL1) != GIC_PRIO_IRQON)
+> -			flags |= PSR_I_BIT;
+> +			flags |= PSR_I_BIT | PSR_F_BIT;
+>  	}
+> 
+>  	return flags;
+> @@ -69,7 +69,7 @@ static inline void local_daif_restore(unsigned long flags)
+>  	bool irq_disabled = flags & PSR_I_BIT;
+> 
+>  	WARN_ON(system_has_prio_mask_debugging() &&
+> -		!(read_sysreg(daif) & PSR_I_BIT));
+> +		(read_sysreg(daif) & (PSR_I_BIT | PSR_F_BIT)) != (PSR_I_BIT | PSR_F_BIT));
+> 
+>  	if (!irq_disabled) {
+>  		trace_hardirqs_on();
+> @@ -86,7 +86,7 @@ static inline void local_daif_restore(unsigned long flags)
+>  			 * If interrupts are disabled but we can take
+>  			 * asynchronous errors, we can take NMIs
+>  			 */
+> -			flags &= ~PSR_I_BIT;
+> +			flags &= ~(PSR_I_BIT | PSR_F_BIT);
+>  			pmr = GIC_PRIO_IRQOFF;
+>  		} else {
+>  			pmr = GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET;
+> diff --git a/arch/arm64/include/asm/irqflags.h b/arch/arm64/include/asm/irqflags.h
+> index ff328e5bbb75..b57b9b1e4344 100644
+> --- a/arch/arm64/include/asm/irqflags.h
+> +++ b/arch/arm64/include/asm/irqflags.h
+> @@ -12,15 +12,13 @@
+> 
+>  /*
+>   * Aarch64 has flags for masking: Debug, Asynchronous (serror), Interrupts and
+> - * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'dai'
+> + * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'daif'
+>   * order:
+>   * Masking debug exceptions causes all other exceptions to be masked too/
+> - * Masking SError masks irq, but not debug exceptions. Masking irqs has no
+> - * side effects for other flags. Keeping to this order makes it easier for
+> - * entry.S to know which exceptions should be unmasked.
+> - *
+> - * FIQ is never expected, but we mask it when we disable debug exceptions, and
+> - * unmask it at all other times.
+> + * Masking SError masks IRQ/FIQ, but not debug exceptions. IRQ and FIQ are
+> + * always masked and unmasked together, and have no side effects for other
+> + * flags. Keeping to this order makes it easier for entry.S to know which
+> + * exceptions should be unmasked.
+>   */
+> 
+>  /*
+> @@ -35,7 +33,7 @@ static inline void arch_local_irq_enable(void)
+>  	}
+> 
+>  	asm volatile(ALTERNATIVE(
+> -		"msr	daifclr, #2		// arch_local_irq_enable",
+> +		"msr	daifclr, #3		// arch_local_irq_enable",
+>  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
+>  		ARM64_HAS_IRQ_PRIO_MASKING)
+>  		:
+> @@ -54,7 +52,7 @@ static inline void arch_local_irq_disable(void)
+>  	}
+> 
+>  	asm volatile(ALTERNATIVE(
+> -		"msr	daifset, #2		// arch_local_irq_disable",
+> +		"msr	daifset, #3		// arch_local_irq_disable",
+>  		__msr_s(SYS_ICC_PMR_EL1, "%0"),
+>  		ARM64_HAS_IRQ_PRIO_MASKING)
+>  		:
+> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> index acc677672277..af04ce5088ca 100644
+> --- a/arch/arm64/kernel/entry.S
+> +++ b/arch/arm64/kernel/entry.S
+> @@ -533,7 +533,7 @@ alternative_endif
+> 
+>  	.macro el1_interrupt_handler, handler:req
+>  	gic_prio_irq_setup pmr=x20, tmp=x1
+> -	enable_da_f
+> +	enable_da
+> 
+>  	mov	x0, sp
+>  	bl	enter_el1_irq_or_nmi
+> @@ -544,8 +544,10 @@ alternative_endif
+>  	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
+>  alternative_if ARM64_HAS_IRQ_PRIO_MASKING
+>  	/*
+> -	 * DA_F were cleared at start of handling. If anything is set in DAIF,
+> -	 * we come back from an NMI, so skip preemption
+> +	 * DA were cleared at start of handling, and IF are cleared by
+> +	 * the GIC irqchip driver using gic_arch_enable_irqs() for
+> +	 * normal IRQs. If anything is set, it means we come back from
+> +	 * an NMI instead of a normal IRQ, so skip preemption
+>  	 */
+>  	mrs	x0, daif
+>  	orr	x24, x24, x0
+> @@ -562,7 +564,7 @@ alternative_else_nop_endif
+>  	.macro el0_interrupt_handler, handler:req
+>  	gic_prio_irq_setup pmr=x20, tmp=x0
+>  	user_exit_irqoff
+> -	enable_da_f
+> +	enable_da
+> 
+>  	tbz	x22, #55, 1f
+>  	bl	do_el0_irq_bp_hardening
+> @@ -763,7 +765,7 @@ el0_error_naked:
+>  	mov	x0, sp
+>  	mov	x1, x25
+>  	bl	do_serror
+> -	enable_da_f
+> +	enable_da
+>  	b	ret_to_user
+>  SYM_CODE_END(el0_error)
+> 
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 6616486a58fe..34ec400288d0 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -84,7 +84,7 @@ static void noinstr __cpu_do_idle_irqprio(void)
+>  	unsigned long daif_bits;
+> 
+>  	daif_bits = read_sysreg(daif);
+> -	write_sysreg(daif_bits | PSR_I_BIT, daif);
+> +	write_sysreg(daif_bits | PSR_I_BIT | PSR_F_BIT, daif);
+> 
+>  	/*
+>  	 * Unmask PMR before going idle to make sure interrupts can
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index ad00f99ee9b0..9dee8a17b1ac 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -188,6 +188,7 @@ static void init_gic_priority_masking(void)
+>  	cpuflags = read_sysreg(daif);
+> 
+>  	WARN_ON(!(cpuflags & PSR_I_BIT));
+> +	WARN_ON(!(cpuflags & PSR_F_BIT));
+> 
+>  	gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
+>  }
+> --
+> 2.30.0
+> 
