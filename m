@@ -2,181 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24034320196
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 00:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E926F3201A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 00:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhBSXMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 18:12:37 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:33782 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229623AbhBSXMe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 18:12:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613776335; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=n9Q2Slfpt0bLzawp5/5pYwJa30+QMw/nOXwKnjMXLJ0=; b=WJMPkKHG9PgVtfmoy4UoBDkjZUGmavga9kUCLPlE7DRYggOf2WRhmLYHflXZ9M9ALgB4cN8R
- 13FsRtI/OEB5zMcFKnsaJWZCBuObtW6HPbZGDnA86NW6j7w4idH549ny/iZ7Q4k+LlMfCsbK
- ZtyVnxUsSsdJqy15CWozc9Eu5QM=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 603045b37237f827dc2c8463 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 23:11:47
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 939A8C433CA; Fri, 19 Feb 2021 23:11:47 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 540BAC43463;
-        Fri, 19 Feb 2021 23:11:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 540BAC43463
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, carl.yin@quectel.com,
-        naveen.kumar@quectel.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v5 3/3] bus: mhi: core: Process execution environment changes serially
-Date:   Fri, 19 Feb 2021 15:11:38 -0800
-Message-Id: <1613776298-35560-4-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1613776298-35560-1-git-send-email-bbhatt@codeaurora.org>
-References: <1613776298-35560-1-git-send-email-bbhatt@codeaurora.org>
+        id S229796AbhBSXPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 18:15:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229658AbhBSXP2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 18:15:28 -0500
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B26C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 15:15:03 -0800 (PST)
+Received: by mail-oo1-xc34.google.com with SMTP id h38so1650608ooi.8
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 15:15:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FokzymhQLiyG9lWtimk6QhqigfPpSjreUpNCE9+O32k=;
+        b=cSrWn5Z4ZzSVM6OOht5m5nb0EGf6LWC5pS1Bj2PMUNb65V/kRb6WZG5nc/2oetHbT+
+         JRJWpwH9g6mEJ2NQbo4aCayaK+0sNY9y6TtphL0j3MOhbbfuEwFdG3FWZmrNKUOLuw9X
+         B3m+KKUKzU+zH0vcZH6eHItmixlxg+Pkzk0jzCcVbJ3KdqF/CMWIc++V1KSU6vf7bMO5
+         MOdCWeyQ5jN2lWTwbM08uDDEO0DFx5EcUFyO7SlOzJTjCk7zLjL0N95U6CI3YMKREoBX
+         wEZbyXjS1UUSP1y5wdtxM+TCxGh3Uu+2Ub9Efj3wjXpakYkSZq8jMCjjXXEWZOGRG+ei
+         rq9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=FokzymhQLiyG9lWtimk6QhqigfPpSjreUpNCE9+O32k=;
+        b=RwrL4Q+i0FzhFC8zgZr9RrmKhl17A/Y4ocB6featby7wH5/FyT4XXLnG7Mw4ZN8mOJ
+         xsVIJYq69NeDowWJdwUystCDvbNRCQlOetWpFu/dzWS5z/fYVHMvblfzZ4dXcxi3YDcd
+         hqXo7o4woK2h4kazwHOYyph0tDelInxWRAsL3R6cZnYBwN7HzCwXfXb1jj5+ITxyrz7E
+         3ye6N/UzDmm3JrYQFJP6T5uAOYEB/bGqlfV2czyf2a7FWq4JABFsbVGzLyPbc+soJO7U
+         lIa3+SXqKQWG/0JxNmt9TTmZai52XDJsxbDlyx7CgAj5L2WrBqOz9wixl96ucajbY6HQ
+         H4kA==
+X-Gm-Message-State: AOAM532udHtmdXAu0pgdR1SbrsmShPhE7sf1AOqPtaa5K8fYImvdDq0U
+        i0HMijFu0L0PjTPfk9oWLu5l2PRCduAsjOtr
+X-Google-Smtp-Source: ABdhPJx4UhnGK92AFwLqDi6ieNtkEaXF+yBN6kVA5iNPerBPgS70bvnHHJTeWWAaTAx7yJpXyjD25A==
+X-Received: by 2002:a4a:be01:: with SMTP id l1mr3889892oop.89.1613776502420;
+        Fri, 19 Feb 2021 15:15:02 -0800 (PST)
+Received: from ubuntu-mate-laptop.localnet ([208.64.158.253])
+        by smtp.gmail.com with ESMTPSA id f29sm2012467ook.7.2021.02.19.15.15.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 15:15:02 -0800 (PST)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
+Subject: [PATCH] Staging: rtl8192e: fix kconfig dependency on CRYPTO
+Date:   Fri, 19 Feb 2021 18:14:57 -0500
+Message-ID: <8483722.hVsnvgcxvV@ubuntu-mate-laptop>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In current design, whenever the BHI interrupt is fired, the
-execution environment is updated. This can cause race conditions
-and impede ongoing power up/down processing. For example, if a
-power down is in progress, MHI host updates to a local "disabled"
-execution environment. If a BHI interrupt fires later, that value
-gets replaced with one from the BHI EE register. This impacts the
-controller as it does not expect multiple RDDM execution
-environment change status callbacks as an example. Another issue
-would be that the device can enter mission mode and the execution
-environment is updated, while device creation for SBL channels is
-still going on due to slower PM state worker thread run, leading
-to multiple attempts at opening the same channel.
+commit 1a3f343027d7f5a6475a019aa20be89795b8c8e0
+Author: Julian Braha <julianbraha@gmail.com>
+Date:   Fri Feb 19 17:02:24 2021 -0500
 
-We must handle and wait for SYS_ERROR in any case to facilitate
-clean-up for the controller and handle RDDM. Ensure that EE
-changes are handled only from appropriate places and occur one
-after another and handle only PBL modes or RDDM EE changes as
-critical events directly from the interrupt handler. This also
-makes sure that we use the correct execution environment to notify
-the controller driver when the device resets to one of the PBL
-execution environments.
+    staging: rtl8192e: fix kconfig dependency on CRYPTO
+    
+    When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
+    Kbuild gives the following warning:
+    
+    WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
+      Depends on [n]: CRYPTO [=n]
+      Selected by [m]:
+      - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+    
+    WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
+      Depends on [n]: CRYPTO [=n]
+      Selected by [m]:
+      - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+      - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
+    
+    This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and CRYPTO_LIB_ARC4,
+    without depending on or selecting CRYPTO, despite those config options
+    being subordinate to CRYPTO.
+    
+    Signed-off-by: Julian Braha <julianbraha@gmail.com>
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/main.c | 38 +++++++++++++++++++-------------------
- drivers/bus/mhi/core/pm.c   |  5 +++--
- 2 files changed, 22 insertions(+), 21 deletions(-)
+diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+index 03fcc23516fd..6e7d84ac06f5 100644
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
+ config RTLLIB_CRYPTO_TKIP
+        tristate "Support for rtllib TKIP crypto"
+        depends on RTLLIB
++      select CRYPTO
+        select CRYPTO_LIB_ARC4
+        select CRYPTO_MICHAEL_MIC
+        default y
 
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index 58f1425..c55d6ec 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -428,7 +428,7 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
- 	enum mhi_state state = MHI_STATE_MAX;
- 	enum mhi_pm_state pm_state = 0;
--	enum mhi_ee_type ee = 0;
-+	enum mhi_ee_type ee = MHI_EE_MAX;
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 	if (!MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state)) {
-@@ -437,8 +437,7 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 	}
- 
- 	state = mhi_get_mhi_state(mhi_cntrl);
--	ee = mhi_cntrl->ee;
--	mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
-+	ee = mhi_get_exec_env(mhi_cntrl);
- 	dev_dbg(dev, "local ee:%s device ee:%s dev_state:%s\n",
- 		TO_MHI_EXEC_STR(mhi_cntrl->ee), TO_MHI_EXEC_STR(ee),
- 		TO_MHI_STATE_STR(state));
-@@ -450,27 +449,28 @@ irqreturn_t mhi_intvec_threaded_handler(int irq_number, void *priv)
- 	}
- 	write_unlock_irq(&mhi_cntrl->pm_lock);
- 
--	 /* If device supports RDDM don't bother processing SYS error */
--	if (mhi_cntrl->rddm_image) {
--		/* host may be performing a device power down already */
--		if (!mhi_is_active(mhi_cntrl))
--			goto exit_intvec;
-+	if (pm_state != MHI_PM_SYS_ERR_DETECT || ee == mhi_cntrl->ee)
-+		goto exit_intvec;
- 
--		if (mhi_cntrl->ee == MHI_EE_RDDM && mhi_cntrl->ee != ee) {
-+	switch (ee) {
-+	case MHI_EE_RDDM:
-+		/* proceed if power down is not already in progress */
-+		if (mhi_cntrl->rddm_image && mhi_is_active(mhi_cntrl)) {
- 			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_EE_RDDM);
-+			mhi_cntrl->ee = ee;
- 			wake_up_all(&mhi_cntrl->state_event);
- 		}
--		goto exit_intvec;
--	}
--
--	if (pm_state == MHI_PM_SYS_ERR_DETECT) {
-+		break;
-+	case MHI_EE_PBL:
-+	case MHI_EE_EDL:
-+	case MHI_EE_PTHRU:
-+		mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
-+		mhi_cntrl->ee = ee;
-+	/* continue */
-+	default:
-+		mhi_pm_sys_err_handler(mhi_cntrl);
- 		wake_up_all(&mhi_cntrl->state_event);
--
--		/* For fatal errors, we let controller decide next step */
--		if (MHI_IN_PBL(ee))
--			mhi_cntrl->status_cb(mhi_cntrl, MHI_CB_FATAL_ERROR);
--		else
--			mhi_pm_sys_err_handler(mhi_cntrl);
-+		break;
- 	}
- 
- exit_intvec:
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 44aa7eb..c870fa8 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -384,14 +384,15 @@ static int mhi_pm_mission_mode_transition(struct mhi_controller *mhi_cntrl)
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 	if (MHI_REG_ACCESS_VALID(mhi_cntrl->pm_state))
--		mhi_cntrl->ee = mhi_get_exec_env(mhi_cntrl);
-+		ee = mhi_get_exec_env(mhi_cntrl);
- 
--	if (!MHI_IN_MISSION_MODE(mhi_cntrl->ee)) {
-+	if (!MHI_IN_MISSION_MODE(ee)) {
- 		mhi_cntrl->pm_state = MHI_PM_LD_ERR_FATAL_DETECT;
- 		write_unlock_irq(&mhi_cntrl->pm_lock);
- 		wake_up_all(&mhi_cntrl->state_event);
- 		return -EIO;
- 	}
-+	mhi_cntrl->ee = ee;
- 	write_unlock_irq(&mhi_cntrl->pm_lock);
- 
- 	wake_up_all(&mhi_cntrl->state_event);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
 
