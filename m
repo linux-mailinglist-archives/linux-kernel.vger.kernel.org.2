@@ -2,78 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C17C331F734
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:16:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3D7E31F738
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhBSKQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:16:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55640 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230380AbhBSKPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:15:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D735FACCF;
-        Fri, 19 Feb 2021 10:14:34 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 11:14:32 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
-Message-ID: <20210219101427.GA19588@linux>
-References: <20210217100816.28860-1-osalvador@suse.de>
- <20210217100816.28860-2-osalvador@suse.de>
- <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
- <20210218100917.GA4842@localhost.localdomain>
- <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
- <20210218133250.GA7983@localhost.localdomain>
- <YC5yzNB9xT76fkod@dhcp22.suse.cz>
- <20210219090548.GA17266@linux>
- <YC+LWksScdiuPw7X@dhcp22.suse.cz>
+        id S230454AbhBSKSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:18:04 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:57951 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230415AbhBSKQO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:16:14 -0500
+Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 11JAFWId022465;
+        Fri, 19 Feb 2021 19:15:32 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
+ Fri, 19 Feb 2021 19:15:32 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 11JAFVNb022462
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 19 Feb 2021 19:15:31 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Jan Kara <jack@suse.cz>
+Cc:     jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, mhocko@suse.cz, linux-mm@kvack.org,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
+References: <000000000000563a0205bafb7970@google.com>
+ <20210211104947.GL19070@quack2.suse.cz>
+ <bf1088e3-b051-6361-57dd-6b836b1c3b46@i-love.sakura.ne.jp>
+ <20210215124519.GA22417@quack2.suse.cz>
+ <aaee5d61-f988-84c3-4d16-f8b7987f3a83@i-love.sakura.ne.jp>
+ <20210215142935.GB22417@quack2.suse.cz>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <34341830-f74f-57fa-2d21-c141f239b017@i-love.sakura.ne.jp>
+Date:   Fri, 19 Feb 2021 19:15:33 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC+LWksScdiuPw7X@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210215142935.GB22417@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 10:56:42AM +0100, Michal Hocko wrote:
-> OK, this should work but I am really wondering whether it wouldn't be
-> just simpler to replace the old page by a new one in the free list
-> directly. Or is there any reason we have to go through the generic
-> helpers path? I mean something like this
+On 2021/02/15 23:29, Jan Kara wrote:
+> On Mon 15-02-21 23:06:15, Tetsuo Handa wrote:
+>> On 2021/02/15 21:45, Jan Kara wrote:
+>>> On Sat 13-02-21 23:26:37, Tetsuo Handa wrote:
+>>>> Excuse me, but it seems to me that nothing prevents
+>>>> ext4_xattr_set_handle() from reaching ext4_xattr_inode_lookup_create()
+>>>> without memalloc_nofs_save() when hitting ext4_get_nojournal() path.
+>>>> Will you explain when ext4_get_nojournal() path is executed?
+>>>
+>>> That's a good question but sadly I don't think that's it.
+>>> ext4_get_nojournal() is called when the filesystem is created without a
+>>> journal. In that case we also don't acquire jbd2_handle lockdep map. In the
+>>> syzbot report we can see:
+>>
+>> Since syzbot can test filesystem images, syzbot might have tested a filesystem
+>> image created both with and without journal within this boot.
 > 
-> 	new_page = alloc_fresh_huge_page();
-> 	if (!new_page)
-> 		goto fail;
-> 	spin_lock(hugetlb_lock);
-> 	if (!PageHuge(old_page)) {
-> 		/* freed from under us, nothing to do */ 
-> 		__update_and_free_page(new_page);
-> 		goto unlock;
-> 	}
-> 	list_del(&old_page->lru);
-> 	__update_and_free_page(old_page);
-> 	__enqueue_huge_page(new_page);
-> unlock:
-> 	spin_unlock(hugetlb_lock);
+> a) I think that syzbot reboots the VM between executing different tests to
+> get reproducible conditions. But in theory I agree the test may have
+> contained one image with and one image without a journal.
+
+syzkaller reboots the VM upon a crash.
+syzkaller can test multiple filesystem images within one boot.
+
+https://storage.googleapis.com/syzkaller/cover/ci-qemu-upstream-386.html (this
+statistic snapshot is volatile) reports that ext4_get_nojournal() is partially covered
+( https://github.com/google/syzkaller/blob/master/docs/coverage.md ) by syzkaller.
+
+      /* Just increment the non-pointer handle value */
+      static handle_t *ext4_get_nojournal(void)
+      {
+   86         handle_t *handle = current->journal_info;
+              unsigned long ref_cnt = (unsigned long)handle;
+      
+              BUG_ON(ref_cnt >= EXT4_NOJOURNAL_MAX_REF_COUNT);
+      
+   86         ref_cnt++;
+              handle = (handle_t *)ref_cnt;
+      
+              current->journal_info = handle;
+ 2006         return handle;
+      }
+      
+      
+      /* Decrement the non-pointer handle value */
+      static void ext4_put_nojournal(handle_t *handle)
+      {
+              unsigned long ref_cnt = (unsigned long)handle;
+      
+   85         BUG_ON(ref_cnt == 0);
+      
+   85         ref_cnt--;
+              handle = (handle_t *)ref_cnt;
+      
+              current->journal_info = handle;
+      }
+
+
+      handle_t *__ext4_journal_start_sb(struct super_block *sb, unsigned int line,
+                                        int type, int blocks, int rsv_blocks,
+                                        int revoke_creds)
+      {
+              journal_t *journal;
+              int err;
+      
+ 2006         trace_ext4_journal_start(sb, blocks, rsv_blocks, revoke_creds,
+ 2006                                  _RET_IP_);
+ 2006         err = ext4_journal_check_start(sb);
+              if (err < 0)
+                      return ERR_PTR(err);
+      
+ 2005         journal = EXT4_SB(sb)->s_journal;
+ 1969         if (!journal || (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
+ 2006                 return ext4_get_nojournal();
+ 1969         return jbd2__journal_start(journal, blocks, rsv_blocks, revoke_creds,
+                                         GFP_NOFS, type, line);
+      }
+
 > 
-> This will require to split update_and_free_page and enqueue_huge_page to
-> counters independent parts but that shouldn't be a big deal. But it will
-> also protect from any races. Not an act of beauty but seems less hackish
-> to me.
+> *but*
+> 
+> b) as I wrote in the email you are replying to, the jbd2_handle key is
+> private per filesystem. Thus for lockdep to complain about
+> jbd2_handle->fs_reclaim->jbd2_handle deadlock, those jbd2_handle lockdep
+> maps must come from the same filesystem.
+> 
+> *and*
+> 
+> c) filesystem without journal doesn't use jbd2_handle lockdep map at all so
+> for such filesystems lockdep creates no dependency for jbd2_handle map.
+> 
 
-Yes, I think this would to the trick, and it is race-free.
-Let me play with it a bit and see what I can come up with.
+What about "EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)" case?
+Does this case happen on filesystem with journal, and can this case be executed
+by fuzzing a crafted (a sort of erroneous) filesystem with journal, and are
+the jbd2_handle for calling ext4_get_nojournal() case and the jbd2_handle for
+calling jbd2__journal_start() case the same?
 
-Thanks for the valuable insight.
+Also, I worry that jbd2__journal_restart() is problematic, for it calls
+stop_this_handle() (which calls memalloc_nofs_restore()) and then calls
+start_this_handle() (which fails to call memalloc_nofs_save() if an error
+occurs). An error from start_this_handle() from journal restart operation
+might need special handling (i.e. either remount-ro or panic) ?
 
--- 
-Oscar Salvador
-SUSE L3
