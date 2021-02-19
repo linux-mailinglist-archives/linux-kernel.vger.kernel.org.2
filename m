@@ -2,108 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1127831FCD1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDF831FCD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBSQJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:09:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229808AbhBSQJU (ORCPT
+        id S229771AbhBSQKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:10:36 -0500
+Received: from mail.codeweavers.com ([50.203.203.244]:37606 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSQKe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:09:20 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A836C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:08:39 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id v22so10758558edx.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:08:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=p7Qeq2s5Xnq9l0SeDvPjf0XHN3FRE6tEzdDl2ybtrE8=;
-        b=La2J+a6v9usT3u6H9nSsx6mX/B7G1xzcjtvBWy0mQZVxr6VqQKalpmPhTgFcgOD4Vu
-         HXlygKNzkKKBr6DdDrdft4DJO2zdsPc47LkPmIpZBG8rYVm0ktjRGMvIeUf/hhJp9QWi
-         qCBPRLjozKe0opoP3Ng9Mmtz1s0kzKOQvp1cijTFRn3oTfuzRuFzhoYyLBMDZ3s9mW1m
-         hFd9Wx+etS7Htm8sdz2N1DzpvcRs7axOm7kl8j7mYdmlMNnemgXakbEOXx+gmxfG9wHj
-         8ipbajako4VqmFrb+R/KsG4fTov3KLFe0kLdy/Yym5lp3JmcZahwBtflqAL4vUrHUIu/
-         fpLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=p7Qeq2s5Xnq9l0SeDvPjf0XHN3FRE6tEzdDl2ybtrE8=;
-        b=KLIpwv5sC+vnTAcwSsuZyfLvRcYGDHsA2sF8devAxHHkz6BLLcGuvDmRpIk5MmjW6T
-         A/ez/8+ajz7pF9hd/lgRRq+8/9KzN7kkjLXCfrbpdiLOp45teaL1BMVXFM/81gaAcDS/
-         UY3zkmtv1FKUphppNuOFIXR6pC/w2Q9d1YBB35caeahUetZkt/XDAVS/D3WwJQK4lPkT
-         xAD8MpCByXnQTRHr+fWSImeuBxlrh4EE4SBzVrxRs2yYuiSZ9uuY1TOu4kcKf+vku97n
-         m3SVXC85LsZ0Smi2TA4NTn+lrnUNcYQqZIWVDSFpp1PMdqDN0oqlj2kKRuplnO4itGWR
-         oH2A==
-X-Gm-Message-State: AOAM530EUOZ6jcan2La85gFHRSUkYEQT5lJYN7Z+zwxR1FQyjCdFfQ5i
-        +YQzIx8uWsxDp6538vZARMMiYvpRPIDvHUVFfBcAw2pr20nJ5f6z
-X-Google-Smtp-Source: ABdhPJxBmySrnWZ/vg0O8Qkfho1wlcFSgXK2V4Ud9uDDW6ULyimn6/qyiCiMbqfas5SmTbq1t+NM1VoYsO4dC2dF+00=
-X-Received: by 2002:a05:6402:5107:: with SMTP id m7mr9901048edd.52.1613750917592;
- Fri, 19 Feb 2021 08:08:37 -0800 (PST)
+        Fri, 19 Feb 2021 11:10:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=jT5f4TpoKfVTfDMBAhV54XTxsbl0u6l9viXqS/JqH9s=; b=k3PPX17zXtUx2v6qvyZSoouE4m
+        7YunB+IJX5R9tJwFju9QBP0gxser4+++Z7WA/s0Cm0TgQXXaO5YGItKmrGIATz2VNkKdmw8OHid6D
+        14e/0gCqfPThf64QpgJJdLI4JSXGTefO44/zuD1fj8RpBXeuIuHRLUDD1WP9NFlK8rbk=;
+Received: from [10.69.141.136]
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <nfraser@codeweavers.com>)
+        id 1lD8Lk-0003In-ER; Fri, 19 Feb 2021 10:09:48 -0600
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
+Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+From:   Nicholas Fraser <nfraser@codeweavers.com>
+Subject: [PATCH 1/2] perf archive: Fix filtering of empty build-ids
+Message-ID: <442bffc7-ac5c-0975-b876-a549efce2413@codeweavers.com>
+Date:   Fri, 19 Feb 2021 11:09:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 19 Feb 2021 21:38:26 +0530
-Message-ID: <CA+G9fYt1Bk=DW1VoPgWe9ZHHoHu+6OyZi7ndMJHmoR14uJePyQ@mail.gmail.com>
-Subject: [next]: fs/io_uring.c:6171:10: error: implicit declaration of
- function 'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
-To:     linux-mips@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        io-uring@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux next tag 20210219 arm and mips builds failed due to below error.
+A non-existent build-id used to be treated as all-zero SHA-1 hash.
+Build-ids are now variable width. A non-existent build-id is an empty
+string and "perf buildid-list" pads this with spaces. This is true even
+when using old perf.data files recorded from older versions of perf;
+"perf buildid-list" never reports an all-zero hash anymore.
 
-Following build configs failed
-arm (s3c6400_defconfig) with gcc-8
-arm (s3c6400_defconfig) with gcc-9
-arm (s3c6400_defconfig) with gcc-10
+This fixes "perf-archive" to skip missing build-ids by skipping lines
+that start with a padding space rather than with zeroes.
 
-mips (e55_defconfig) with gcc-8
-mips (e55_defconfig) with gcc-9
-mips (e55_defconfig) with gcc-10
+Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+---
+ tools/perf/perf-archive.sh | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-fs/io_uring.c:6171:10: error: implicit declaration of function
-'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
-[-Werror=implicit-function-declaration]
-   return io_sendmsg_prep_async(req);
-          ^~~~~~~~~~~~~~~~~~~~~
-          io_req_prep_async
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Steps to reproduce:
------------------------------
-# TuxMake is a command line tool and Python library that provides
-# portable and repeatable Linux kernel builds across a variety of
-# architectures, toolchains, kernel configurations, and make targets.
-#
-# TuxMake supports the concept of runtimes.
-# See https://docs.tuxmake.org/runtimes/, for that to work it requires
-# that you install podman or docker on your system.
-#
-# To install tuxmake on your system globally:
-# sudo pip3 install -U tuxmake
-#
-# See https://docs.tuxmake.org/ for complete documentation.
-
-
-tuxmake --runtime podman --target-arch arm --toolchain gcc-10
---kconfig s3c6400_defconfig
-or
-tuxmake --runtime podman --target-arch mips --toolchain gcc-9
---kconfig e55_defconfig
-
-
+diff --git a/tools/perf/perf-archive.sh b/tools/perf/perf-archive.sh
+index 0cfb3e2cefef..133f0eddbcc4 100644
+--- a/tools/perf/perf-archive.sh
++++ b/tools/perf/perf-archive.sh
+@@ -20,9 +20,8 @@ else
+ fi
+ 
+ BUILDIDS=$(mktemp /tmp/perf-archive-buildids.XXXXXX)
+-NOBUILDID=0000000000000000000000000000000000000000
+ 
+-perf buildid-list -i $PERF_DATA --with-hits | grep -v "^$NOBUILDID " > $BUILDIDS
++perf buildid-list -i $PERF_DATA --with-hits | grep -v "^ " > $BUILDIDS
+ if [ ! -s $BUILDIDS ] ; then
+ 	echo "perf archive: no build-ids found"
+ 	rm $BUILDIDS || true
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+2.30.1
+
