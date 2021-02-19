@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBD0531F9FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDF0231FA0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229535AbhBSNef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 08:34:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59640 "EHLO
+        id S230268AbhBSNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 08:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhBSNed (ORCPT
+        with ESMTP id S229681AbhBSNnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:34:33 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2B7C06178C
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 05:33:13 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lD5u9-0007P7-8B; Fri, 19 Feb 2021 14:33:09 +0100
-Received: from ukl by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lD5u8-0001aN-Q6; Fri, 19 Feb 2021 14:33:08 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     kernel@pengutronix.de, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: [PATCH v2 2/2] leds: trigger/tty: Use led_set_brightness_sync() from workqueue
-Date:   Fri, 19 Feb 2021 14:33:07 +0100
-Message-Id: <20210219133307.4840-3-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210219133307.4840-1-u.kleine-koenig@pengutronix.de>
-References: <20210219133307.4840-1-u.kleine-koenig@pengutronix.de>
+        Fri, 19 Feb 2021 08:43:41 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE224C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 05:43:00 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id o7so4286855pgl.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 05:43:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fF/l9GNDkFGA7iWke5utB4iGCtSkQ0+416veSvVe1Xc=;
+        b=Ls+CxRRjfhhnhwhZ86f/IoT6Mf5Y2cn9JQfrMvKEjmb7DXLNUYyR0hFyMkn0nWJESz
+         FF7wAVCvZJnhE4FQpxAnpCHXwHlXdVOX6BeRg4DT9zOSqqTTImxYNUd3b6A2Q7NJnowX
+         oB8IEt7vf1mTCkL80bdzKw2ZQQFy3nX/1h4b/PQDF2xzgE5DqT37FgFuXVwL1oJU9+lG
+         U1ddBHqIPQ8Ps+G3liJxCAN/8eFga0wPsqJfv+Bxyl/YdLs8Pc+GKss4CvYxDbvC7c31
+         iBHC9Fs/gDcC9Pyw9KpyQ00/OaM+FnEZlRHa/YjZKVq4B+ePs9AIBYpqPl+LXvSmazUL
+         i5HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fF/l9GNDkFGA7iWke5utB4iGCtSkQ0+416veSvVe1Xc=;
+        b=DmlcBmsidYwoYN0zzMDQWVSlhhk7qF7+FvGljeLiaJCXFnOvCs9W/mG2rmyn6orybu
+         jcWRG/s6MR4pSbtnCfoiTIgV3VQSGmW6EmY8Sm9K4MHrXxtvmO67+U9awccTnzUaSKx/
+         DTuvB3irkdTgrThKQLmrarB5SkoHC5+3xsvvrXpptoQ9TKWmEq2vof3sBMux1MMEb3Cu
+         xYI2B/SsfPxSUATq58BvQAmROMVBtrS1ML063NnPgykdx4obvoJe9fnksFI+tzrzR9qw
+         S6sTovO0xMgCbO2PyYAIjlAK3aVBEzW68aObHA8kBN1WBSVOpgHmW4ZNUWyxRDvTSTM+
+         BraQ==
+X-Gm-Message-State: AOAM533xpZAEqGXeCcqk2vgjQ12soQg2hdH0R858Q8ZGXhYlmwpsJPrN
+        8leTMGuJKemaU8IC0NG0YiQ=
+X-Google-Smtp-Source: ABdhPJyZcXFAu9Vo0fwlCIcLHRFiIPRLTt+cK56Il2JoY/G8Xa9b+8HCXYB7Zhv8BhkJlXTodQfAAA==
+X-Received: by 2002:a65:4781:: with SMTP id e1mr8635474pgs.30.1613742180006;
+        Fri, 19 Feb 2021 05:43:00 -0800 (PST)
+Received: from amrit ([49.36.144.93])
+        by smtp.gmail.com with ESMTPSA id w187sm9251403pfb.208.2021.02.19.05.42.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 05:42:59 -0800 (PST)
+From:   Amrit Khera <amritkhera98@gmail.com>
+X-Google-Original-From: Amrit Khera <amritk10>
+Date:   Fri, 19 Feb 2021 19:10:03 +0530
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Amrit Khera <amritkhera98@gmail.com>, arve@android.com,
+        tkjos@android.com, maco@android.com, joel@joelfernandes.org,
+        christian@brauner.io, hridya@google.com, surenb@google.com,
+        dan.carpenter@oracle.com, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: android: Fix const keyword style issue in
+ ashmem.c
+Message-ID: <20210219134000.GA25666@amrit>
+References: <20210219114237.5720-1-amritkhera98@gmail.com>
+ <YC+rQZoFaT+mPxVL@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC+rQZoFaT+mPxVL@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-led_set_brightness() involves scheduling a workqueue. As here the led's
-brightness setting is done in context of the trigger's workqueue this is
-unjustified overhead and it's more sensible to use
-led_set_brightness_sync().
+On Fri, Feb 19, 2021 at 01:12:49PM +0100, Greg KH wrote:
+> On Fri, Feb 19, 2021 at 05:12:38PM +0530, Amrit Khera wrote:
+> > This change fixes a checkpatch warning for "struct file_operations
+> > should normally be const".
+> > 
+> > Signed-off-by: Amrit Khera <amritkhera98@gmail.com>
+> > ---
+> > Changes in v2:
+> >  - Wrapped the commit description
+> >  - Build tested
+> 
+> If you tested it, what changed in the diff itself?  Looks the same to
+> me...
+> 
 
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Fixes: fd4a641ac88f ("leds: trigger: implement a tty trigger")
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/leds/trigger/ledtrig-tty.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+After further investigating I found that the particular kernel module
+was not set in the config file. This did not build it when I built the
+kernel. This was making me think that the module was building correctly.
 
-diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
-index af61281dc6a1..f62db7e520b5 100644
---- a/drivers/leds/trigger/ledtrig-tty.c
-+++ b/drivers/leds/trigger/ledtrig-tty.c
-@@ -122,12 +122,12 @@ static void ledtrig_tty_work(struct work_struct *work)
- 
- 	if (icount.rx != trigger_data->rx ||
- 	    icount.tx != trigger_data->tx) {
--		led_set_brightness(trigger_data->led_cdev, LED_ON);
-+		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
- 
- 		trigger_data->rx = icount.rx;
- 		trigger_data->tx = icount.tx;
- 	} else {
--		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-+		led_set_brightness_sync(trigger_data->led_cdev, LED_OFF);
- 	}
- 
- out:
--- 
-2.29.2
+After updating the config, the build indeed breaks. The reason is that
+the const keyword cannot be applied here without changing the structure
+and flow of the code as the particular variable is later being set in a
+condition. Hence, I will be dropping this path for now.
 
+Apologies for the inconvenience caused and thank you for the prompt
+replies.
+
+Best Regards,
+Amrit Khera
