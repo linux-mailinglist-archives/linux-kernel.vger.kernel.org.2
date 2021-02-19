@@ -2,87 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD20231F375
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 01:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CB631F379
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 01:57:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhBSAzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 19:55:06 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60570 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhBSAzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 19:55:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 996CCABAE;
-        Fri, 19 Feb 2021 00:54:23 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 01:54:23 +0100
-From:   Jiri Bohac <jbohac@suse.cz>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Tony Luck <tony.luck@intel.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: pstore: fix compression
-Message-ID: <20210219005423.p2y5ob6637pp245n@dwarf.suse.cz>
-References: <20210218111547.johvp5klpv3xrpnn@dwarf.suse.cz>
- <161368019685.305632.7880211837303066992.b4-ty@chromium.org>
+        id S229746AbhBSA4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 19:56:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhBSA4a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 19:56:30 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA12C061786
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:55:48 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id r77so4096339qka.12
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:55:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=apjhumUat3NAbjLhxDf0sfvDj5HYfNoWzUP7Ib3pj2w=;
+        b=NNzBm8KEm527LO5xCGrc89inWBErH3vti2O/scd9JQfr4RVY/LeJBzHUByDjYNxzoi
+         e23cAEeErnY5SK0FknxEM28oWILkuJpsMX6f5Npqea6xND5MUOrdisuDmS4rOzLeQCUW
+         T9E6YAI9b5Qi3FPkXPoV/fakGz/MDW5PFv+QI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=apjhumUat3NAbjLhxDf0sfvDj5HYfNoWzUP7Ib3pj2w=;
+        b=SgArVGtgCijBEZce7YfjHpvCScitDA2PoK6nEiFhEI3Ghy713352VjgnxikQ8U9jyC
+         EYRvd1iPcSrNUUffXDPMCXJR6uRgObreQ6bOX+n4w8++2iHgF0rbgGnBrA2CHHM7udLW
+         NU5ctDx6tysaD54o8AV/ci+o5Tm7GwZiLl5LjS0oVvrYSmx247lekp9skKx6Q/YCy584
+         wE+vcqJVfHP7NdE7gpFZMZcgaVERPO0aR33HaUVlnnDGr1AaGWarp8KrdMV7BrusVuxy
+         jLNPhtsVCLtAUrjW9dTlHE+IRy2ymyNEx7BvUh26QRuVO+8N0E8+2zYnl7MmrpkJC1ch
+         I70g==
+X-Gm-Message-State: AOAM532uAvXu9dIc5RMSvGpQtxe76NCFcdUXJPhqwlqFDsvIQjMd8mXH
+        YeAmbqzipogw/H8qMIzQcz10RgUJO4/oQA==
+X-Google-Smtp-Source: ABdhPJwxxze0LXBarEEPoN/3IFoHULZuV38UmHbjkNuTVYoKkvp/jtBELS5f+apxsikEemiOroIMxA==
+X-Received: by 2002:a05:620a:a4a:: with SMTP id j10mr7482765qka.372.1613696147606;
+        Thu, 18 Feb 2021 16:55:47 -0800 (PST)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id x9sm4460009qtr.74.2021.02.18.16.55.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 16:55:46 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id u75so3997589ybi.10
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:55:46 -0800 (PST)
+X-Received: by 2002:a25:b74d:: with SMTP id e13mr10284347ybm.405.1613696146315;
+ Thu, 18 Feb 2021 16:55:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161368019685.305632.7880211837303066992.b4-ty@chromium.org>
+References: <20210218145456.1.I1da01a075dd86e005152f993b2d5d82dd9686238@changeid>
+In-Reply-To: <20210218145456.1.I1da01a075dd86e005152f993b2d5d82dd9686238@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 18 Feb 2021 16:55:33 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Xh5foM_RYCneVUJZmX39KPt22guopVyZpzLWHSt4T+Ww@mail.gmail.com>
+Message-ID: <CAD=FV=Xh5foM_RYCneVUJZmX39KPt22guopVyZpzLWHSt4T+Ww@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Avoid glitching SPI CS at
+ bootup on trogdor
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 12:30:03PM -0800, Kees Cook wrote:
-> Eek; thanks for the catch!
+Hi,
 
-thanks for applying the fix;
+On Thu, Feb 18, 2021 at 2:55 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> it's believed
+> that, under certain timing conditions, it could be getting the EC into
+> a confused state causing the EC driver to fail to probe.
 
-BTW, with the compression broken, I was not getting any dmesg
-stored in ERST at all, not even uncompressed. After instrumenting
-the code with a lot of debug printks I found that writing
-erst_erange.size worth of data into the ERST fails and the
-maximum writeable size is 98 bytes smaler:
+Believed => confirmed
 
-Details: 
+I _think_ <https://issuetracker.google.com/180655198> is public.  It
+explains why this was causing the EC driver to fail to prove.  In
+short: it turns out that when we glitched the EC it printed to its
+console.  If the EC's uptime was long enough then it would spend
+enough time printing the timestamp for this error message (a bunch of
+64-bit divide by 10) that it wouldn't be ready for the message we sent
+to it.  Doh!
 
-	- erst_erange.size = 65536
-	- this results in  erst_info.bufsize = 65336
-	- pstore_compress() returned -EINVAL (because of the
-	  just-fixed typo), zipped_len = -EINVAL.
-	- pstore_dump calls copy_kmsg_to_buffer to only copy bufsize
-	  bytes from big_oops_buf to psinfo->buf;
-	  record.size = bufsize = 65336
-
-	psinfo->write(&record) then fails with -EINVAL;
-	by more tracing inside the ERST code I found the -EINVAL was
-	produced by __erst_write_to_storage()
-	after apei_exec_ctx_get_output() returned
-	val=ERST_STATUS_FAILED=3 and this got translated into -EINVAL by
-	erst_errno().
-
-	Once the compression was fixed everything started working because
-	the records are much smaller after the compression (~30kB).
-
-	My next thought was to find the largest possible record that
-	could be written successfully.
-	I modified the ERST init code to decrease erst_info.bufsize by a
-	value specified on the cmdline. The maximum writable record was
-	65238 bytes long (i.e. erst_erange.size - sizeof(struct
-	cper_pstore_record) - 98). With this hack I got
-	65238 bytes of uncompressed dmesg stored to ERST.
-
-Any idea what might be causing this?
-As far as I can tell, there are no other records in the ERST
-(checked through the erst-dbg interface).
-Tested on a HPE ProLiant DL120 Gen10 server.
-
-Thanks!
-
-
--- 
-Jiri Bohac <jbohac@suse.cz>
-SUSE Labs, Prague, Czechia
-
+-Doug
