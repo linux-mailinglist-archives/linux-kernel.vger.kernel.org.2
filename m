@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037F931F538
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 07:42:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6191A31F53F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 07:56:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhBSGmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 01:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
+        id S229577AbhBSGzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 01:55:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBSGma (ORCPT
+        with ESMTP id S229481AbhBSGzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 01:42:30 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40726C061574;
-        Thu, 18 Feb 2021 22:41:50 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id f8so2826313plg.5;
-        Thu, 18 Feb 2021 22:41:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=irQ99fwvyT3B4IXadbKZ2UTqLLi0pPWPv3qC3rVkQS4=;
-        b=KUWkEvGk2DoZBtwIH+TOaLF02h1TEf8NR2b33z6uu+BUZpu43B6bNPgZgymYZhQmOW
-         v9X8FtgFDnUiv35ItVlfq10yNeNKA7gLk6GLdn2YVXnKjLeKsJOcUe/6vj67Pk2rJW6e
-         vKVhvlEdLXIDSeDLBvGeypdwVfxZRR1eeYem8WkVaCVjQOpPOpQsioYvflVDzF1sBceX
-         SfkoEeJrKjEtjzmg+lGOoJf/FJBD8HJF4gb35GRvastjZESIwidOAaYwZ8h/wOQJ9OR8
-         020Vj7k7EEqYE4P8jTLPCZ9NvU3MfjZNtQwRqucJDP86Gf+dUqygguYP023+Zyjg9mRX
-         E/Mw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=irQ99fwvyT3B4IXadbKZ2UTqLLi0pPWPv3qC3rVkQS4=;
-        b=MiyapQl2Xhf2dp0FMow9wORh2ipJ8O7UBdcr2f1VbJ4qxoxD0uLwlOHNlZTiD/nO8m
-         pr5JuqkCIsz9qdZ8OsupwBg9e7+CLiTQhQAwoMNWiYvwiCbCkc0TnN8D6s+lnX8enmdm
-         uA4Z5V8K3SpEYOM11TiCO90McfvDJ0K9Zu0/Cg0ZeooYKIHFktd8nsPnk54GW0Zw3Qv6
-         xxhswVH+UEuZuvYyeRrNMncwHj0pMUBwE+GvDXZlNpORXUL64yl9ASqz8br+OCYJKlo/
-         fpH+ITMeiUp/npGyPXmBrSgbwFwdK/YUdHwausTZb0RE/onEYCMA5QCMQBJLsfPlAg/C
-         sV/Q==
-X-Gm-Message-State: AOAM532SDaWkU1CDzTOYjq0ifbko/qjqA4S6oZAG/5TW7HF+3rp6nCX6
-        32pYZnQv7Ywye8owcRKL/Ew=
-X-Google-Smtp-Source: ABdhPJxE1DBe94IXWhawvDRdgvIhjbUVDqMUhgvUVrgaVZxDygq6F/07BjsER0aL8AMyvAB7/Z4Tsw==
-X-Received: by 2002:a17:90b:4c43:: with SMTP id np3mr5249398pjb.33.1613716909692;
-        Thu, 18 Feb 2021 22:41:49 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id g19sm7371936pjv.43.2021.02.18.22.41.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 18 Feb 2021 22:41:49 -0800 (PST)
-Date:   Fri, 19 Feb 2021 14:41:40 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
- busy CPU if need_freq_update is set
-Message-ID: <20210219144140.00004de9.zbestahu@gmail.com>
-In-Reply-To: <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
-References: <20210218082514.1437-1-zbestahu@gmail.com>
-        <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
-        <20210219113804.00004a7e.zbestahu@gmail.com>
-        <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        Fri, 19 Feb 2021 01:55:09 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9193BC061574;
+        Thu, 18 Feb 2021 22:54:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=1mfFJhjbGRTGxljzOUB7yrAH7F+AvN4xjV2BD7KJnJo=; b=2/VIk3XYD2RP1fNnYRtlCtxCDo
+        e3aOPBNo5OaKC2aFpRl/6GmdqiftjCEjsfraBJE+2qmbdL0LlztGvOKDw0vPwJJR7g1T8juNAID4N
+        ORvZMYx17m/v2qM53/8PDL/+UQ1HWgzrfKP9GzgUQkEBBVQD+7ZsAFJ3iYixZmZAICRsH1sVscWM5
+        UDgToZNVcAKn9SaLy3V40uuf0/69G0ITfLTBWSmGHIeGooC7PCnuH27EpiCqBKQ6YZb1V6o3v6dzZ
+        R742DNmpPtfdVT+6JC+wdcW9iqFRn6ZVlGwv07qY71pAwa0+juLQr/I66t60PpG/eQYvWmvmP7fN6
+        zBZ7sNsQ==;
+Received: from [2601:1c0:6280:3f0::d05b] (helo=merlin.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lCzgH-0002Cl-2k; Fri, 19 Feb 2021 06:54:25 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Josef Bacik <jbacik@fb.com>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        linux-btrfs@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] btrfs: ref-verify: use 'inline void' keyword ordering
+Date:   Thu, 18 Feb 2021 22:54:17 -0800
+Message-Id: <20210219065417.1834-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021 09:39:33 +0530
-Viresh Kumar <viresh.kumar@linaro.org> wrote:
+Fix build warnings of function signature when CONFIG_STACKTRACE is not
+enabled by reordering the 'inline' and 'void' keywords.
 
-> On 19-02-21, 11:38, Yue Hu wrote:
-> > There's a possibility: we will use the previous freq to update if
-> > next_f is reduced for busy CPU if need_freq_update is set in
-> > sugov_update_next_freq().  
-> 
-> Right.
-> 
-> > This possibility would happen now? And this
-> > update is what we want if it happens?  
-> 
-> This is exactly what we want here, don't reduce speed for busy CPU,
+../fs/btrfs/ref-verify.c:221:1: warning: ‘inline’ is not at beginning of declaration [-Wold-style-declaration]
+ static void inline __save_stack_trace(struct ref_action *ra)
+../fs/btrfs/ref-verify.c:225:1: warning: ‘inline’ is not at beginning of declaration [-Wold-style-declaration]
+ static void inline __print_stack_trace(struct btrfs_fs_info *fs_info,
 
-I understand it should not skip this update but set the same freq as
-previous one again for the specail case if need_freq_update is set. Am
-i rt?
+Fixes: fd708b81d972 ("Btrfs: add a extent ref verify tool")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Josef Bacik <jbacik@fb.com>
+Cc: David Sterba <dsterba@suse.com>
+Cc: Chris Mason <clm@fb.com>
+Cc: linux-btrfs@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+Found in mmotm; applies to mainline.
 
-> but we also need to make sure we are in the policy's valid range
-> which cpufreq core will take care of.
-> 
-> > This is related to another possible patch ready to send.  
-> 
-> I am not sure what's there to send now.
+Apparently we are doing more '-W' checking than when this change was
+made in 2017.
 
-I will send later after figure out the doubt above.
+ fs/btrfs/ref-verify.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-
+--- mmotm-2021-0218-1829.orig/fs/btrfs/ref-verify.c
++++ mmotm-2021-0218-1829/fs/btrfs/ref-verify.c
+@@ -218,11 +218,11 @@ static void __print_stack_trace(struct b
+ 	stack_trace_print(ra->trace, ra->trace_len, 2);
+ }
+ #else
+-static void inline __save_stack_trace(struct ref_action *ra)
++static inline void __save_stack_trace(struct ref_action *ra)
+ {
+ }
+ 
+-static void inline __print_stack_trace(struct btrfs_fs_info *fs_info,
++static inline void __print_stack_trace(struct btrfs_fs_info *fs_info,
+ 				       struct ref_action *ra)
+ {
+ 	btrfs_err(fs_info, "  ref-verify: no stacktrace support");
