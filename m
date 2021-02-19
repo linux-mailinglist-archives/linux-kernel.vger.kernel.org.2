@@ -2,91 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA9531FCD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:12:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43FF931FCEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhBSQLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:11:19 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:30074 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229806AbhBSQLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:11:15 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613751051; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=7ZuDOC16WFXeHrlAiwdEtHp1HAj1cxOU733fDvCOiy8=; b=m59l7rwDXkfINnvp4hVVxoWwIaPPGg+zWvuX0TCDqaeJ/f660+20Dpmd2/clPTRVWobUfng8
- gueA3KCopRm0+DmScUgQ8oCNFCDEGQH8VgkCoUSyycBk2UY8JZCRE88AVRlwLnZyyiu0+SvV
- 4o4jVeyn6r6uwTqnqVuizV1mUII=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 602fe2e6e87943df301bb8b4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 16:10:14
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id DE4B9C43464; Fri, 19 Feb 2021 16:10:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94A14C433ED;
-        Fri, 19 Feb 2021 16:10:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94A14C433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v4 1/3] bus: mhi: core: Clear devices when moving
- execution environments
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com
-References: <1613701052-38885-1-git-send-email-bbhatt@codeaurora.org>
- <1613701052-38885-2-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <3b3476ff-3126-097a-5d1b-130ac570cce6@codeaurora.org>
-Date:   Fri, 19 Feb 2021 09:10:11 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230064AbhBSQPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:15:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230015AbhBSQOo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 11:14:44 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341CBC061574;
+        Fri, 19 Feb 2021 08:14:02 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id x4so8127792wmi.3;
+        Fri, 19 Feb 2021 08:14:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yVy/7Nx7zT1yYtIAJfKr+SPBx3LrKurorTKSzKCBBHE=;
+        b=NwUWnQXp2M/vKTNz95oWeDLzskThaCuRZBJerbYdB6s9OWmEaSbRiMB8XljBPWRBCV
+         2vY0HoHXRrMjxUl0zi45YUcWU4ftruQ2Gu3pxsO+3Vgkx6ZgJ0KeElOr/NEBZ2RHOeG6
+         r4IgVQSrqIHKdtSFlodj1PpcI92X6idoop3DdqUaMgU7WxUlGlaqSjOCFcMbSKyiRruQ
+         7Oa5CJKpEKKwii92m1Mp67GqZmpbYRvieIgONtevy6SAKPXF0KFiA0sMUZUWJYE3vGa5
+         6xhBwrLcpbRRVa+6nXibmUXg0GrAcKRWxvu1dXBZn3JfxZHnjHKiEhslyJQP8NDQrEwl
+         CrCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=yVy/7Nx7zT1yYtIAJfKr+SPBx3LrKurorTKSzKCBBHE=;
+        b=LEwfR/U5zX15YFVaRnLcPNsmf49GW3B+h4R2Pn0lR65rULyk9r6bFSCErcQBY1SYmQ
+         AnLF+HfCZ1OL/h6W6RLEIjYMbd5fnt3sS63yMkdFoJrJjmbpBTQVQFmEvyrUH90HVSTy
+         HWQJqqOQY/zVTjd0xU0Bo8feGmCjfpZbE5tVvNX9vCg3wsl2nDfXNfr7gPQ2/gptHf/W
+         M9z8ABC0bj7alz4G85kQx/aNfUJKON/AS2U/2VNaJvZYWvio+uGaCGKidmuE2P2lV2+Y
+         Rqou5dgHeBlWybZvdsCVlQH4TolbO9BnzFnTq8eTSYQziA+Jts48iT8+gwBV3gb+028z
+         GHeA==
+X-Gm-Message-State: AOAM5328GQpMdcLjkuwUvY3IAYpfiIh+K4KjJZUg3K0h3JRShBwjEKHO
+        Q6FjmISFPkQ4LhYxCzKEDATXoegwPgY=
+X-Google-Smtp-Source: ABdhPJyYIPwXhEzYrYupaZapMsnE3j7gA6rUK7/3h9VEaJU3xnNL42dTX5yJINm9BlxDUBhkyljPpQ==
+X-Received: by 2002:a05:600c:47c4:: with SMTP id l4mr8777716wmo.83.1613751240952;
+        Fri, 19 Feb 2021 08:14:00 -0800 (PST)
+Received: from [192.168.8.138] ([85.255.236.139])
+        by smtp.gmail.com with ESMTPSA id t198sm12758288wmt.7.2021.02.19.08.13.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 08:14:00 -0800 (PST)
+Subject: Re: [next]: fs/io_uring.c:6171:10: error: implicit declaration of
+ function 'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-mips@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        io-uring@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jens Axboe <axboe@kernel.dk>
+References: <CA+G9fYt1Bk=DW1VoPgWe9ZHHoHu+6OyZi7ndMJHmoR14uJePyQ@mail.gmail.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
+ bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
+ 6uqVkK1OMb7qRvKH0i7HYP4WJzYbEWVyLiAxUj611mC9tgd73oqZ2pLYzGTqF2j6a/obaqha
+ +hXuWTvpDQXqcOZJXIW43atprH03G1tQs7VwR21Q1eq6Yvy2ESLdc38EqCszBfQRMmKy+cfp
+ W3U9Mb1w0L680pXrONcnlDBCN7/sghGeMHjGKfNANjPc+0hzz3rApPxpoE7HC1uRiwC4et83
+ CKnncH1l7zgeBT9Oa3qEiBlaa1ZCBqrA4dY+z5fWJYjMpwI1SNp37RtF8fKXbKQg+JuUjAa9
+ Y6oXeyEvDHMyJYMcinl6xCqCBAXPHnHmawkMMgjr3BBRzODmMr+CPVvnYe7BFYfoajzqzq+h
+ EyXSl3aBf0IDPTqSUrhbmjj5OEOYgRW5p+mdYtY1cXeK8copmd+fd/eTkghok5li58AojCba
+ jRjp7zVOLOjDlpxxiKhuFmpV4yWNh5JJaTbwCRSd04sCcDNlJj+TehTr+o1QiORzc2t+N5iJ
+ NbILft19Izdn8U39T5oWiynqa1qCLgbuFtnYx1HlUq/HvAm+kwARAQABtDFQYXZlbCBCZWd1
+ bmtvdiAoc2lsZW5jZSkgPGFzbWwuc2lsZW5jZUBnbWFpbC5jb20+iQJOBBMBCAA4FiEE+6Ju
+ PTjTbx479o3OWt5b1Glr+6UFAlmKBOQCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AACgkQ
+ Wt5b1Glr+6WxZA//QueaKHzgdnOikJ7NA/Vq8FmhRlwgtP0+E+w93kL+ZGLzS/cUCIjn2f4Q
+ Mcutj2Neg0CcYPX3b2nJiKr5Vn0rjJ/suiaOa1h1KzyNTOmxnsqE5fmxOf6C6x+NKE18I5Jy
+ xzLQoktbdDVA7JfB1itt6iWSNoOTVcvFyvfe5ggy6FSCcP+m1RlR58XxVLH+qlAvxxOeEr/e
+ aQfUzrs7gqdSd9zQGEZo0jtuBiB7k98t9y0oC9Jz0PJdvaj1NZUgtXG9pEtww3LdeXP/TkFl
+ HBSxVflzeoFaj4UAuy8+uve7ya/ECNCc8kk0VYaEjoVrzJcYdKP583iRhOLlZA6HEmn/+Gh9
+ 4orG67HNiJlbFiW3whxGizWsrtFNLsSP1YrEReYk9j1SoUHHzsu+ZtNfKuHIhK0sU07G1OPN
+ 2rDLlzUWR9Jc22INAkhVHOogOcc5ajMGhgWcBJMLCoi219HlX69LIDu3Y34uIg9QPZIC2jwr
+ 24W0kxmK6avJr7+n4o8m6sOJvhlumSp5TSNhRiKvAHB1I2JB8Q1yZCIPzx+w1ALxuoWiCdwV
+ M/azguU42R17IuBzK0S3hPjXpEi2sK/k4pEPnHVUv9Cu09HCNnd6BRfFGjo8M9kZvw360gC1
+ reeMdqGjwQ68o9x0R7NBRrtUOh48TDLXCANAg97wjPoy37dQE7e5Ag0EWYoE5AEQAMWS+aBV
+ IJtCjwtfCOV98NamFpDEjBMrCAfLm7wZlmXy5I6o7nzzCxEw06P2rhzp1hIqkaab1kHySU7g
+ dkpjmQ7Jjlrf6KdMP87mC/Hx4+zgVCkTQCKkIxNE76Ff3O9uTvkWCspSh9J0qPYyCaVta2D1
+ Sq5HZ8WFcap71iVO1f2/FEHKJNz/YTSOS/W7dxJdXl2eoj3gYX2UZNfoaVv8OXKaWslZlgqN
+ jSg9wsTv1K73AnQKt4fFhscN9YFxhtgD/SQuOldE5Ws4UlJoaFX/yCoJL3ky2kC0WFngzwRF
+ Yo6u/KON/o28yyP+alYRMBrN0Dm60FuVSIFafSqXoJTIjSZ6olbEoT0u17Rag8BxnxryMrgR
+ dkccq272MaSS0eOC9K2rtvxzddohRFPcy/8bkX+t2iukTDz75KSTKO+chce62Xxdg62dpkZX
+ xK+HeDCZ7gRNZvAbDETr6XI63hPKi891GeZqvqQVYR8e+V2725w+H1iv3THiB1tx4L2bXZDI
+ DtMKQ5D2RvCHNdPNcZeldEoJwKoA60yg6tuUquvsLvfCwtrmVI2rL2djYxRfGNmFMrUDN1Xq
+ F3xozA91q3iZd9OYi9G+M/OA01husBdcIzj1hu0aL+MGg4Gqk6XwjoSxVd4YT41kTU7Kk+/I
+ 5/Nf+i88ULt6HanBYcY/+Daeo/XFABEBAAGJAjYEGAEIACAWIQT7om49ONNvHjv2jc5a3lvU
+ aWv7pQUCWYoE5AIbDAAKCRBa3lvUaWv7pfmcEACKTRQ28b1y5ztKuLdLr79+T+LwZKHjX++P
+ 4wKjEOECCcB6KCv3hP+J2GCXDOPZvdg/ZYZafqP68Yy8AZqkfa4qPYHmIdpODtRzZSL48kM8
+ LRzV8Rl7J3ItvzdBRxf4T/Zseu5U6ELiQdCUkPGsJcPIJkgPjO2ROG/ZtYa9DvnShNWPlp+R
+ uPwPccEQPWO/NP4fJl2zwC6byjljZhW5kxYswGMLBwb5cDUZAisIukyAa8Xshdan6C2RZcNs
+ rB3L7vsg/R8UCehxOH0C+NypG2GqjVejNZsc7bgV49EOVltS+GmGyY+moIzxsuLmT93rqyII
+ 5rSbbcTLe6KBYcs24XEoo49Zm9oDA3jYvNpeYD8rDcnNbuZh9kTgBwFN41JHOPv0W2FEEWqe
+ JsCwQdcOQ56rtezdCJUYmRAt3BsfjN3Jn3N6rpodi4Dkdli8HylM5iq4ooeb5VkQ7UZxbCWt
+ UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
+ m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
+ OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
+Message-ID: <87798def-0526-0a1e-6bcc-e5ee3970bd48@gmail.com>
+Date:   Fri, 19 Feb 2021 16:10:11 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <1613701052-38885-2-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CA+G9fYt1Bk=DW1VoPgWe9ZHHoHu+6OyZi7ndMJHmoR14uJePyQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/18/2021 7:17 PM, Bhaumik Bhatt wrote:
-> When moving from SBL to mission mode execution environment, there
-> is no remove callback notification to MHI client drivers which
-> operate on SBL mode only. Client driver devices are being created
-> in SBL or AMSS(mission mode) and only destroyed after power down
-> or SYS_ERROR. If there exist any SBL-specific channels, those are
-> left open and client drivers are thus unaware of the new execution
-> environment where those channels cannot operate. Close the gap and
-> issue remove callbacks to SBL-specific client drivers once device
-> enters mission mode.
+On 19/02/2021 16:08, Naresh Kamboju wrote:
+> Linux next tag 20210219 arm and mips builds failed due to below error.
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
+> Following build configs failed
+> arm (s3c6400_defconfig) with gcc-8
+> arm (s3c6400_defconfig) with gcc-9
+> arm (s3c6400_defconfig) with gcc-10
+> 
+> mips (e55_defconfig) with gcc-8
+> mips (e55_defconfig) with gcc-9
+> mips (e55_defconfig) with gcc-10
+> 
+> fs/io_uring.c:6171:10: error: implicit declaration of function
+> 'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
+> [-Werror=implicit-function-declaration]
+>    return io_sendmsg_prep_async(req);
+>           ^~~~~~~~~~~~~~~~~~~~~
+>           io_req_prep_async
 
-I like the idea, but I question where this is limited to the transition 
-to mission mode.  Feels like something that should occur on all EE 
-changes.  We might not have a current usecase that is outside what 
-you've implemented here, but I don't think there is anything preventing 
-that in future.
+!CONFIG_NET, I guess. Thanks for letting know
+
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> Steps to reproduce:
+> -----------------------------
+> # TuxMake is a command line tool and Python library that provides
+> # portable and repeatable Linux kernel builds across a variety of
+> # architectures, toolchains, kernel configurations, and make targets.
+> #
+> # TuxMake supports the concept of runtimes.
+> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
+> # that you install podman or docker on your system.
+> #
+> # To install tuxmake on your system globally:
+> # sudo pip3 install -U tuxmake
+> #
+> # See https://docs.tuxmake.org/ for complete documentation.
+> 
+> 
+> tuxmake --runtime podman --target-arch arm --toolchain gcc-10
+> --kconfig s3c6400_defconfig
+> or
+> tuxmake --runtime podman --target-arch mips --toolchain gcc-9
+> --kconfig e55_defconfig
+> 
+> 
 
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+Pavel Begunkov
