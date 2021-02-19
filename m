@@ -2,166 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA9631F75E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CEF31F75D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229546AbhBSKgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:36:24 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39766 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229535AbhBSKgO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:36:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613730927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7EbNQMFcSNI0oMItBkDkX6r6vOi1t5rzTfwIGyjH8mk=;
-        b=NNrBTsfniB4NnydtCSgc8ZsIFoWLIMNsTMJUjTrG2N9/X9kOUGuSMsm0kIrNGWfZy8Ik0c
-        V2RTEJyYrvOlxtcC7JiV4cm5jwugeQTy+CvzXaXIFvOJRB3HCp9B4g3N2Gc7kfqiWAwgGp
-        9Bjxeh8YcPgEkWrYVdU3mSW+cXWDcUg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9AEDBAC6E;
-        Fri, 19 Feb 2021 10:35:27 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 11:35:21 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <YC+UaTVUn0o4Zynz@dhcp22.suse.cz>
-References: <20210217154844.12392-1-david@redhat.com>
+        id S229953AbhBSKgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:36:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSKga (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:36:30 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D1BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 02:35:49 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id o15so6574955wmq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 02:35:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GJzyDbQEHvg9RkTSSUWmUHNbCY2ZbX3arjdVS2a1MdA=;
+        b=Y3dqrshqF9TfTg9lBFRHAc4MLVimbvqcVUlP5n5yYvGF9QcGBOl13ZvykEFpZDSIl3
+         ZsQdKHSOIGEH98YBVHAY91xzaVGwxYMmbHBht0DmbQqXBbr45Sa9VApxzOBYGOuev5tQ
+         +HG5fxBpQ8PuymjEvpo8mDxSEf+4oryltPfuVi+ExU8l92UtsUKQY48aEcgJzWcdeAqp
+         mDuvl/c23FaZnMcbRL7k5yR8rhgcA6S8LnrdRQpwwKdT0rnC57Bo/ZXKu7FAJ9Or7L3a
+         a+AXFq/Z7P4pzOQwMx8xhgylQ0a1zrT7Jf/vP7W51E8w9go36Gw+R8vcbladaO2TJ667
+         xM5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GJzyDbQEHvg9RkTSSUWmUHNbCY2ZbX3arjdVS2a1MdA=;
+        b=H6JOiH4NXbw6nfmOH2JtDD/5BDd3ps/oC42D4QLyo8zzclN6m9IzvN7rMBoTAHUp+Y
+         5pOVe54S+a+ItuMKBPeMLRzisMfQ5vEPgsnU/8/zx9Hv9vUg0fFzenYKWxkRWVvJhRG1
+         wKyvr0iLx5Hv2jWXDtU02+3XKovfWl7lO0DJ4H2qyYFtk9rnUAfTVy7/k4k+qbf+UzWc
+         mDGmizqd1KYMfh1Iev1Z3cvxlclLbqBa90ASmzW7g9npRrrDFcVeFlKojHQiYiUMk2LG
+         q1GJOazxrklEBj2PNM6kYGCPBlatHSC2eeZz6XFuydGe3GL9n4sAchb5crV8HJb2+x+W
+         bcKg==
+X-Gm-Message-State: AOAM532htMEqPUkxARBLgfWRk7ZwSky9+1beLst1y6ZfgZaUU4ge6KT9
+        7/5IZOCh8AbIzFn+0VEMtjFZdpU7wcQ+nQ==
+X-Google-Smtp-Source: ABdhPJwRUf2mIwFss3MVliBzY3n+8PXZU8YQpwkoTd/sxal4PHFIG7rtsGlvWyEAajW6SS8eX89mjA==
+X-Received: by 2002:a7b:c756:: with SMTP id w22mr7568203wmk.116.1613730947917;
+        Fri, 19 Feb 2021 02:35:47 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id q140sm14326786wme.0.2021.02.19.02.35.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Feb 2021 02:35:47 -0800 (PST)
+Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        yung-chuan.liao@linux.intel.com, gregkh@linuxfoundation.org,
+        sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
+ <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
+ <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
+ <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
+ <eaf13d70-86fe-3e18-7a5a-4043f2d8a22d@linux.intel.com>
+ <aaf34f07-5eed-3045-e4c6-dc9416689b20@linaro.org>
+ <f960757f-ec8b-6d3f-f00e-27242c687926@linux.intel.com>
+ <e962caa8-89c3-4a22-5932-4498c406e8f8@linaro.org>
+ <adb91730-35db-db7a-75b3-4771723de945@linux.intel.com>
+ <31ff9d2b-760a-374e-5b37-45d8e8116f7b@linaro.org>
+ <20210201102709.GT2771@vkoul-mobl>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <c8bb718d-c06d-2942-9c0b-2a6f97031e10@linaro.org>
+Date:   Fri, 19 Feb 2021 10:35:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210217154844.12392-1-david@redhat.com>
+In-Reply-To: <20210201102709.GT2771@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17-02-21 16:48:44, David Hildenbrand wrote:
-[...]
+Hi Pierre/Vinod,
 
-I only got  to the implementation now.
+On 01/02/2021 10:27, Vinod Koul wrote:
+>>> It seems you are in a different solution-space, where the codec driver
+>>> needs to notify the master of which ports it needs to use?
+>> Correct! As Codec is the place where we have mixer controls ant it can
+>> clearly tell which master ports should be used for that particular
+>> configuration.
+> And that should come from firmware (DT etc) and driver should pass on
+> this info
 
-> +static long madvise_populate(struct vm_area_struct *vma,
-> +			     struct vm_area_struct **prev,
-> +			     unsigned long start, unsigned long end)
-> +{
-> +	struct mm_struct *mm = vma->vm_mm;
-> +	unsigned long tmp_end;
-> +	int locked = 1;
-> +	long pages;
-> +
-> +	*prev = vma;
-> +
-> +	while (start < end) {
-> +		/*
-> +		 * We might have temporarily dropped the lock. For example,
-> +		 * our VMA might have been split.
-> +		 */
-> +		if (!vma || start >= vma->vm_end) {
-> +			vma = find_vma(mm, start);
-> +			if (!vma)
-> +				return -ENOMEM;
-> +		}
+Are you okay with the patch as it is, provided this information is 
+populated from DT?
 
-Why do you need to find a vma when you already have one. do_madvise will
-give you your vma already. I do understand that you want to finish the
-vma for some errors but that shouldn't require handling vmas. You should
-be in the shope of one here unless I miss anything.
 
-> +
-> +		/* Bail out on incompatible VMA types. */
-> +		if (vma->vm_flags & (VM_IO | VM_PFNMAP) ||
-> +		    !vma_is_accessible(vma)) {
-> +			return -EINVAL;
-> +		}
-> +
-> +		/*
-> +		 * Populate pages and take care of VM_LOCKED: simulate user
-> +		 * space access.
-> +		 *
-> +		 * For private, writable mappings, trigger a write fault to
-> +		 * break COW (i.e., shared zeropage). For other mappings (i.e.,
-> +		 * read-only, shared), trigger a read fault.
-> +		 */
-> +		tmp_end = min_t(unsigned long, end, vma->vm_end);
-> +		pages = populate_vma_page_range(vma, start, tmp_end, &locked);
-> +		if (!locked) {
-> +			mmap_read_lock(mm);
-> +			*prev = NULL;
-> +			vma = NULL;
-> +		}
-> +		if (pages < 0) {
-> +			switch (pages) {
-> +			case -EINTR:
-> +			case -ENOMEM:
-> +				return pages;
-> +			case -EHWPOISON:
-> +				/* Skip over any poisoned pages. */
-> +				start += PAGE_SIZE;
-> +				continue;
-> +			case -EBUSY:
-> +			case -EAGAIN:
-> +				continue;
-> +			default:
-> +				pr_warn_once("%s: unhandled return value: %ld\n",
-> +					     __func__, pages);
-> +				return -ENOMEM;
-> +			}
-> +		}
-> +		start += pages * PAGE_SIZE;
-> +	}
-> +	return 0;
-> +}
-> +
->  /*
->   * Application wants to free up the pages and associated backing store.
->   * This is effectively punching a hole into the middle of a file.
-> @@ -934,6 +1001,8 @@ madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
->  	case MADV_FREE:
->  	case MADV_DONTNEED:
->  		return madvise_dontneed_free(vma, prev, start, end, behavior);
-> +	case MADV_POPULATE:
-> +		return madvise_populate(vma, prev, start, end);
->  	default:
->  		return madvise_behavior(vma, prev, start, end, behavior);
->  	}
-> @@ -954,6 +1023,7 @@ madvise_behavior_valid(int behavior)
->  	case MADV_FREE:
->  	case MADV_COLD:
->  	case MADV_PAGEOUT:
-> +	case MADV_POPULATE:
->  #ifdef CONFIG_KSM
->  	case MADV_MERGEABLE:
->  	case MADV_UNMERGEABLE:
-> -- 
-> 2.29.2
+
+--srini
 > 
-
--- 
-Michal Hocko
-SUSE Labs
