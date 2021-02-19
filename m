@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA2731F518
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 07:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 037F931F538
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 07:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhBSGaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 01:30:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
+        id S229599AbhBSGmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 01:42:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBSGaQ (ORCPT
+        with ESMTP id S229498AbhBSGma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 01:30:16 -0500
-Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A333C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 22:29:36 -0800 (PST)
-Received: by mail-qv1-xf34.google.com with SMTP id g3so2164850qvl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 22:29:36 -0800 (PST)
+        Fri, 19 Feb 2021 01:42:30 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40726C061574;
+        Thu, 18 Feb 2021 22:41:50 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id f8so2826313plg.5;
+        Thu, 18 Feb 2021 22:41:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8QbOeYSHoSBYRxmS8POCx9jwvefT3QjgtdlEKLIWRhs=;
-        b=hOGE2ImC/+HsdcBOo8ZcsyMxmHF+KAh4wWz2br/79rUxvlQrPDr85SdB4FUleX+rE2
-         BcZBtaCnpsTeI2kL/HGdzfJDiauWi+l2v7U0HcgqokBkcFyH5csNxpBaNIUqoVQX5TA4
-         TgasZtrqe//wW7O2Jp0E8D9AdpACA6lBwEttDaik9XBfgmCCacKBSuCALc/Yq4ISoHNt
-         9p1M2A9fHTprp3SKBOuQMw0Cr0IPkU8jgQRoYXYxhdZmL6BqF4loV4xOYs/6szIvFz2c
-         yeeObXtJBzpWtevCDK6H4zhrgiI8TocPW6VSahNfOWDZ7DQoxiH62MWQ0KCk/YTbaPwy
-         ew4w==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=irQ99fwvyT3B4IXadbKZ2UTqLLi0pPWPv3qC3rVkQS4=;
+        b=KUWkEvGk2DoZBtwIH+TOaLF02h1TEf8NR2b33z6uu+BUZpu43B6bNPgZgymYZhQmOW
+         v9X8FtgFDnUiv35ItVlfq10yNeNKA7gLk6GLdn2YVXnKjLeKsJOcUe/6vj67Pk2rJW6e
+         vKVhvlEdLXIDSeDLBvGeypdwVfxZRR1eeYem8WkVaCVjQOpPOpQsioYvflVDzF1sBceX
+         SfkoEeJrKjEtjzmg+lGOoJf/FJBD8HJF4gb35GRvastjZESIwidOAaYwZ8h/wOQJ9OR8
+         020Vj7k7EEqYE4P8jTLPCZ9NvU3MfjZNtQwRqucJDP86Gf+dUqygguYP023+Zyjg9mRX
+         E/Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8QbOeYSHoSBYRxmS8POCx9jwvefT3QjgtdlEKLIWRhs=;
-        b=YpPjQq07NTHkvkoI73oUI/2LvTKhqNZTp0c9aRCFt+QeEl714cUkzeUmtEn6Y4Zik1
-         sz9DmH+DgGwGpa21V+WQPf5a8n868t8RxbDUKB9cZ7Wm2M27S84r/ura6ysgIIll2CzJ
-         Df50vOi4xTTspzQrNDL0ppitg7Lc0OI+LeuIxmhFjH8ottI+SHrrrkigKrNiSe+CkqKo
-         c3EdbX5o6ivoZu5a1q1yzx3CwFrSROxxzw0KY42zd8s2XJSJoZlqs2VaaOT2BbwKgxR4
-         PiSmfowkaPyPU1ih7HKfJtJCmWMkM/z1d3QbmlfEmDBsDa8ve+aLvg1Vkh5mrIIHoqkA
-         bE6g==
-X-Gm-Message-State: AOAM532V9iW1P+8Dh0k+eqecSSYK0sFE9MQ4yN7/+tObMbNiGOMN4F+h
-        HzI53qvzmKqui7unztBes/1CgzFeCe2j+xbYYQQcGA==
-X-Google-Smtp-Source: ABdhPJwOntCz7gq+5LgnwvQI04RShCe63RIEhKJRAFPqvLgZE7jBdojjaXo9zKTXiRNLGleD2sNST3aT750CIxCVYvk=
-X-Received: by 2002:a0c:e80d:: with SMTP id y13mr7811702qvn.2.1613716175541;
- Thu, 18 Feb 2021 22:29:35 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=irQ99fwvyT3B4IXadbKZ2UTqLLi0pPWPv3qC3rVkQS4=;
+        b=MiyapQl2Xhf2dp0FMow9wORh2ipJ8O7UBdcr2f1VbJ4qxoxD0uLwlOHNlZTiD/nO8m
+         pr5JuqkCIsz9qdZ8OsupwBg9e7+CLiTQhQAwoMNWiYvwiCbCkc0TnN8D6s+lnX8enmdm
+         uA4Z5V8K3SpEYOM11TiCO90McfvDJ0K9Zu0/Cg0ZeooYKIHFktd8nsPnk54GW0Zw3Qv6
+         xxhswVH+UEuZuvYyeRrNMncwHj0pMUBwE+GvDXZlNpORXUL64yl9ASqz8br+OCYJKlo/
+         fpH+ITMeiUp/npGyPXmBrSgbwFwdK/YUdHwausTZb0RE/onEYCMA5QCMQBJLsfPlAg/C
+         sV/Q==
+X-Gm-Message-State: AOAM532SDaWkU1CDzTOYjq0ifbko/qjqA4S6oZAG/5TW7HF+3rp6nCX6
+        32pYZnQv7Ywye8owcRKL/Ew=
+X-Google-Smtp-Source: ABdhPJxE1DBe94IXWhawvDRdgvIhjbUVDqMUhgvUVrgaVZxDygq6F/07BjsER0aL8AMyvAB7/Z4Tsw==
+X-Received: by 2002:a17:90b:4c43:: with SMTP id np3mr5249398pjb.33.1613716909692;
+        Thu, 18 Feb 2021 22:41:49 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id g19sm7371936pjv.43.2021.02.18.22.41.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 18 Feb 2021 22:41:49 -0800 (PST)
+Date:   Fri, 19 Feb 2021 14:41:40 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
+ busy CPU if need_freq_update is set
+Message-ID: <20210219144140.00004de9.zbestahu@gmail.com>
+In-Reply-To: <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
+References: <20210218082514.1437-1-zbestahu@gmail.com>
+        <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
+        <20210219113804.00004a7e.zbestahu@gmail.com>
+        <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-References: <20210214000611.2169820-1-zzyiwei@android.com> <20210216091128.GA3973504@infradead.org>
- <CAKB3++aXuCS3WRf1mfrM2oZ0KiJ4xP4ib-ZbJXr8cXVEkU-sXw@mail.gmail.com> <YCz6nz4i136z1+H1@alley>
-In-Reply-To: <YCz6nz4i136z1+H1@alley>
-From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
-Date:   Thu, 18 Feb 2021 22:29:24 -0800
-Message-ID: <CAKB3++b+n=VWuXZqZqyZJvAf1+Wqogvi07L21GqdRwThSRdf2w@mail.gmail.com>
-Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ilias Stamatis <stamatis.iliass@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> 2. User triggered clean up races with the clean up triggered by
->   timeout. You try to handle this scenario by this patch.
-Yes, exactly.
+On Fri, 19 Feb 2021 09:39:33 +0530
+Viresh Kumar <viresh.kumar@linaro.org> wrote:
 
-> 3. User does clean up after the clean up has already been done
->   by the timeout.
-This case is well handled. So only (2) has a potential race.
+> On 19-02-21, 11:38, Yue Hu wrote:
+> > There's a possibility: we will use the previous freq to update if
+> > next_f is reduced for busy CPU if need_freq_update is set in
+> > sugov_update_next_freq().  
+> 
+> Right.
+> 
+> > This possibility would happen now? And this
+> > update is what we want if it happens?  
+> 
+> This is exactly what we want here, don't reduce speed for busy CPU,
 
-Let me clarify a bit more here. The "clean up" is not the clean up
-when a process tears down, but it's actually a "post-work" to cancel
-out an early "pre-work". The "pre-work" enqueues the delayed "post
-work" for the timeout purpose. That pair of operations can repeatedly
-happen.
+I understand it should not skip this update but set the same freq as
+previous one again for the specail case if need_freq_update is set. Am
+i rt?
 
-The racing is currently worked around by refcounting the delayed_work
-container, and the later "post-work" will take care of the work
-deallocation.
+> but we also need to make sure we are in the policy's valid range
+> which cpufreq core will take care of.
+> 
+> > This is related to another possible patch ready to send.  
+> 
+> I am not sure what's there to send now.
 
-I mainly want to reach out to see if we agree that this is a valid API
-to be supported by kthread. Or we extend the existing
-kthread_mod_delayed_work api to take another option to not re-queue if
-the cancel failed.
+I will send later after figure out the doubt above.
 
-Best,
-Yiwei
+> 
+
