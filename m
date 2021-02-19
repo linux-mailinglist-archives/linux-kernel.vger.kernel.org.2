@@ -2,96 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 925A631FB25
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0395931FB30
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:48:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhBSOqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBSOqD (ORCPT
+        id S229689AbhBSOrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:47:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56858 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhBSOrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:46:03 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D89C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:45:23 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1613745921;
+        Fri, 19 Feb 2021 09:47:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613745953;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fWPAM6U+VW0lbgRd8l+oMbmlE0aCg9RRcSxOAGsnt2w=;
-        b=JUNAbDB6jsKDGpmQ/9Cut4oMckD6NSBtuMVbL6DaYpHhqS/AhG8Y8GUqukyEw4G9hTE/R9
-        nfNut92IB8YV/dGjhSzBA+sM02C5Kmch0tmhOC2OzpidMHdVfpX1FhIO2DgW4pRaNRsMwQ
-        tumgbNFNJKTyh4RqVjNWiSuKW4p6FDi59N/fXJ13V6VtQmQIc/O4v3tyMAuIUzBoMaquoG
-        Q0Go9ZQHJFScAiOS9yg8F1oZzLr0y4xy+2wmYuddiqotGKGdMaWkJrPFn7DOHXbn3E0mHz
-        i6fzhWPG4jnKQxC+OMJt1DGmmsKlcX4YUbx0V/HmDjMGWLKFrcktXxILDSjVhg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1613745921;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fWPAM6U+VW0lbgRd8l+oMbmlE0aCg9RRcSxOAGsnt2w=;
-        b=9uPJG8kUq/9yrFFZBCMbuBqnW6t6hBPkKuyVUhGGkSIOqfRTqq3gBdwmeFMePK5bAMyPXJ
-        RoNONtsUOH7w8VBA==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
-In-Reply-To: <YC+9gc/IR8PzeIFf@alley>
-References: <20210218081817.28849-1-john.ogness@linutronix.de> <20210218081817.28849-9-john.ogness@linutronix.de> <YC+9gc/IR8PzeIFf@alley>
-Date:   Fri, 19 Feb 2021 15:45:21 +0100
-Message-ID: <875z2o15ha.fsf@jogness.linutronix.de>
+        bh=4c+qZYHckGTx1tTFDNJ70MwWPI4v8lbqr4E8l5bbSS4=;
+        b=XVMqciK8Pbq9ZB+3ZN90YE18YbDJ1Ud82Tx+3tWI9hLBsijSNQlxk32WIqzK0/vQOozRg9
+        Xvsryg7DupZaGq+AHT+VTW9iZ0KYrZcDV0xtz8CbvprkmmlGZ0dqzSTS4D/2bzZsZHli6d
+        Xw+AHt4Y4rNEt7z13vYjLvLK09d0lwQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-1acmZWfYNwaAHYpTRUjdiA-1; Fri, 19 Feb 2021 09:45:49 -0500
+X-MC-Unique: 1acmZWfYNwaAHYpTRUjdiA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BBCB3FFC;
+        Fri, 19 Feb 2021 14:45:47 +0000 (UTC)
+Received: from [10.36.116.11] (ovpn-116-11.ams2.redhat.com [10.36.116.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7255D5C1C2;
+        Fri, 19 Feb 2021 14:45:44 +0000 (UTC)
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+To:     Hanjun Guo <guohanjun@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Huxinwei <huxinwei@huawei.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yanjin <yanjin.yan@huawei.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Zhaohongjiang <zhaohongjiang@huawei.com>,
+        "Zhangdianfang (Dianfang, OS Lab)" <zhangdianfang@huawei.com>,
+        PEIXIN HOU <PEIXIN.HOU@huawei.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        kernelci@groups.io
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
+From:   Nikolai Kondrashov <Nikolai.Kondrashov@redhat.com>
+Message-ID: <2a7ff382-1d35-0eeb-6fb6-bad37aa4c1d7@redhat.com>
+Date:   Fri, 19 Feb 2021 16:45:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-19, Petr Mladek <pmladek@suse.com> wrote:
->> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
->> index 20c21a25143d..401df370832b 100644
->> --- a/kernel/printk/printk.c
->> +++ b/kernel/printk/printk.c
->> +/* Return a consistent copy of @syslog_seq. */
->> +static u64 read_syslog_seq_irq(void)
->> +{
->> +	u64 seq;
->> +
->> +	raw_spin_lock_irq(&syslog_lock);
->> +	seq = syslog_seq;
->> +	raw_spin_unlock_irq(&syslog_lock);
->
-> Is there any particular reason to disable interrupts here?
->
-> It would make sense only when the lock could be taken in IRQ
-> context. Then we would need to always disable interrupts when
-> the lock is taken. And if it is taken in IRQ context, we would
-> need to safe flags.
+Hi Hanjun,
 
-All other instances of locking @syslog_lock are done with interrupts
-disabled. And we have:
+On 2/19/21 10:54 AM, Hanjun Guo wrote:
+ > In specific, we will start from the testing work, using HULK robot
+ > (reports lots of bugs to mainline kernel) testing framework to test
+ > compile, reboot, functional testing, and will extend to basic
+ > performance regression testing in the future.
 
-register_console()
-  logbuf_lock_irqsave()
-    raw_spin_lock(&syslog_lock)
+I heard about Huawei ramping up kernel testing from someone at FOSDEM
+2019. I wonder if it was you :) Nice to see your progress and the company
+stepping up to help with testing!
 
-Looking back through history, I found that locking of the "console lock"
-in register_console() was changed from spin_lock_irq() to
-spin_lock_irqsave() for 2.3.15pre1 [0]. The only reason I can find why
-that was done is because sparc64 was regstering its console in a PROM
-callback (the comments there: "Pretty sick eh?").
+Would you be interested in working with the Linux Foundation KernelCI project
+on submitting your build and test results to the common database - KCIDB?
 
-Today sparc64 is setting up the console in init code. I suppose I need
-to go through all the console drivers to see if any register in
-interrupt context. If not, that logbuf_lock_irqsave() should be replaced
-with logbuf_lock_irq(). And then locking @syslog_lock will not need to
-disable interrupts.
+We are working on aggregating results from various testing systems so we can
+provide a dashboard, and a single, aggregated e-mail report to subscribed
+maintainers and developers.
 
-John Ogness
+We have a prototype dashboard at https://staging.kernelci.org:3000/ and are
+working hard on making the e-mail reports good enough to start reaching out to
+maintainers.
 
-[0] https://github.com/schwabe/davej-history/commit/f91c3404ba16c88cdb33824bf0249c6263cd4465#diff-84036d1e27f4207c783a3b876aef4e45340d30f43b1319bca382f5775a9b14beL348
+We already have ARM, Google Syzbot, Gentoo GKernelCI, Red Hat CKI, and, of
+course, KernelCI native tests sending data to the database. Linaro Tuxsuite is
+starting sending today. We could use your data, and of course any development
+help you could spare :)
+
+I wish I could show you my today's KCIDB presentation at DevConf.cz, but the
+recording is not out yet. Meanwhile you can take a look at our presentation at
+last year's Linux Plumbers: https://youtu.be/y9Glc90WUN0?t=10739
+
+Or see our intro in an older blog post:
+https://foundation.kernelci.org/blog/2020/08/21/introducing-common-reporting/
+
+Anyone wishing to contribute to KCIDB gets credentials and permissions to
+submit to our "playground" setup where they can send their data, see it in a
+dashboard, experiment without worrying about breaking anything, and decide if
+they like it or not.
+
+If you're interested, take a look at our Submission HOWTO:
+https://github.com/kernelci/kcidb/blob/v8/SUBMISSION_HOWTO.md
+and send an email to kernelci@groups.io (CC'd), or come over to the #kernelci
+channel on freenode.net!
+
+Nick
+
+On 2/19/21 10:54 AM, Hanjun Guo wrote:
+ > Hi Greg,
+ >
+ > On 2021/1/26 15:29, Greg Kroah-Hartman wrote:
+ > [...]
+ >>
+ >> I want to see companies _using_ the kernel, and most importantly,
+ >> _updating_ their devices with it, to know if it is worth to keep around
+ >> for longer than 2 years.  I also, hopefully, want to see how those
+ >> companies will help me out in the testing and maintenance of that kernel
+ >> version in order to make supporting it for 6 years actually possible.
+ >>
+ >> So, are you planning on using 5.10?  Will you will be willing to help
+ >> out in testing the -rc releases I make to let me know if there are any
+ >> problems, and to help in pointing out and backporting any specific
+ >> patches that your platforms need for that kernel release?
+ >
+ > We(Huawei) are willing to commit resources to help out in testing the
+ > stable -rc releases, and to help to backport patches for stable kernels.
+ >
+ > 5.10 stable kernel will be used for openEuler [1] kernel and also inside
+ > Huawei. From customer's feedback, it's very important to see the stable
+ > kernel we used to be maintained for 6 years in the community, and we
+ > will use 5.10 kernel for at least 6 years, so we are willing to help
+ > you and help ourselves :)
+ >
+ > In specific, we will start from the testing work, using HULK robot
+ > (reports lots of bugs to mainline kernel) testing framework to test
+ > compile, reboot, functional testing, and will extend to basic
+ > performance regression testing in the future.
+ >
+ > And we will start from ARM64 and X86 architecture first, and then extend
+ > to other platforms.
+ >
+ > For patch backporting, will send the bugfix patches (from mainline)
+ > we spotted, but I think this work may not doing in regular but will
+ > be triggered as needed.
+ >
+ > Does this sound good to you?
+ >
+ > Thanks
+ > Hanjun
+ >
+ > [1]: https://openeuler.org/en/
+ >
+ > _______________________________________________
+ > linux-arm-kernel mailing list
+ > linux-arm-kernel@lists.infradead.org
+ > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+ >
+
