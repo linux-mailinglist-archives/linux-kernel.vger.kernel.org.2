@@ -2,151 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CCC931F476
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 05:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A4831F482
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 05:31:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhBSEYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 23:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229691AbhBSEYa (ORCPT
+        id S229722AbhBSEa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 23:30:29 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:15893 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhBSEa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 23:24:30 -0500
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4509C061574;
-        Thu, 18 Feb 2021 20:23:50 -0800 (PST)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lCxKV-00FgYw-Pp; Fri, 19 Feb 2021 04:23:47 +0000
-Date:   Fri, 19 Feb 2021 04:23:47 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Denis Kirjanov <kda@linux-powerpc.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: [PATCH 8/8] __unix_find_socket_byname(): don't pass hash and type
- separately
-Message-ID: <YC89U4dM2xX17FwT@zeniv-ca.linux.org.uk>
-References: <20210125154937.26479-1-kda@linux-powerpc.org>
- <20210127175742.GA1744861@infradead.org>
- <CAOJe8K0MC-TCURE2Gpci1SLnLXCbUkE7q6SS0fznzBA+Pf-B8Q@mail.gmail.com>
- <20210129082524.GA2282796@infradead.org>
- <CAOJe8K0iG91tm8YBRmE_rdMMMbc4iRsMGYNxJk0p9vEedNHEkg@mail.gmail.com>
- <20210129131855.GA2346744@infradead.org>
- <YClpVIfHYyzd6EWu@zeniv-ca.linux.org.uk>
- <CAOJe8K00srtuD+VAJOFcFepOqgNUm0mC8C=hLq2=qhUFSfhpuw@mail.gmail.com>
- <YCwIQmsxWxuw+dnt@zeniv-ca.linux.org.uk>
- <YC86WeSTkYZqRlJY@zeniv-ca.linux.org.uk>
+        Thu, 18 Feb 2021 23:30:26 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602f3eb90000>; Thu, 18 Feb 2021 20:29:45 -0800
+Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 19 Feb
+ 2021 04:29:40 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     kernel test robot <lkp@intel.com>
+CC:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>,
+        <kbuild-all@lists.01.org>, <clang-built-linux@googlegroups.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>
+Subject: Re: [PATCH v2 1/4] hmm: Device exclusive memory access
+Date:   Fri, 19 Feb 2021 15:29:38 +1100
+Message-ID: <1921856.ipnSDt8Uia@nvdebian>
+In-Reply-To: <202102191104.8PwQ82Oi-lkp@intel.com>
+References: <20210219020750.16444-2-apopple@nvidia.com> <202102191104.8PwQ82Oi-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC86WeSTkYZqRlJY@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613708985; bh=4RazHhYqMl6rmlDW/rVNtyCfznld0Neua58X8WgGEoM=;
+        h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Transfer-Encoding:Content-Type:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=hixsgKwaFwRN/pvvcDEYFWyB9b+6JHrdLv+OCJqTzicl0H7fZI31GEePmnGCaKfQ0
+         lDj35EPoLqgh66iHSJzVo51l08GvJVLlmNwaKQBQQJDqBv64DHLsDUZ9Fe3kJNkZGz
+         YZ0X/U36bbjR9RLdwmHEr4aDjnmxc8nSRolMQ7b7V1YbNtAhO5vVBNxCj1Uacyz9g4
+         W8Rv7xEP+oSt6CMshsG3BtULfyElkQLvEGsfJkgYi2aps4Jmxgymb3bb6gUOWZLSSZ
+         hyH5n5qOH4LfWI2HMixvFT3fNfCOI4u5o8oNQBQXHKcZAhhpFcT0hERApSzUqEV344
+         YRfy3tseBPWWg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only care about exclusive or of those, so pass that directly.
-Makes life simpler for callers as well...
+Apologies for the noise, looks like I don't have a CONFIG_DEVICE_PRIVATE=n 
+build in my tests and missed creating definitions for the new static inline 
+functions for that configuration.
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- net/unix/af_unix.c | 23 ++++++++++-------------
- 1 file changed, 10 insertions(+), 13 deletions(-)
+I'll wait for some feedback on the overall approach and fix this in a v3.
 
-diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-index bb4c6200953d..a7e20fcadfcc 100644
---- a/net/unix/af_unix.c
-+++ b/net/unix/af_unix.c
-@@ -288,11 +288,11 @@ static inline void unix_insert_socket(struct hlist_head *list, struct sock *sk)
- 
- static struct sock *__unix_find_socket_byname(struct net *net,
- 					      struct sockaddr_un *sunname,
--					      int len, int type, unsigned int hash)
-+					      int len, unsigned int hash)
- {
- 	struct sock *s;
- 
--	sk_for_each(s, &unix_socket_table[hash ^ type]) {
-+	sk_for_each(s, &unix_socket_table[hash]) {
- 		struct unix_sock *u = unix_sk(s);
- 
- 		if (!net_eq(sock_net(s), net))
-@@ -307,13 +307,12 @@ static struct sock *__unix_find_socket_byname(struct net *net,
- 
- static inline struct sock *unix_find_socket_byname(struct net *net,
- 						   struct sockaddr_un *sunname,
--						   int len, int type,
--						   unsigned int hash)
-+						   int len, unsigned int hash)
- {
- 	struct sock *s;
- 
- 	spin_lock(&unix_table_lock);
--	s = __unix_find_socket_byname(net, sunname, len, type, hash);
-+	s = __unix_find_socket_byname(net, sunname, len, hash);
- 	if (s)
- 		sock_hold(s);
- 	spin_unlock(&unix_table_lock);
-@@ -900,12 +899,12 @@ static int unix_autobind(struct socket *sock)
- retry:
- 	addr->len = sprintf(addr->name->sun_path+1, "%05x", ordernum) + 1 + sizeof(short);
- 	addr->hash = unix_hash_fold(csum_partial(addr->name, addr->len, 0));
-+	addr->hash ^= sk->sk_type;
- 
- 	spin_lock(&unix_table_lock);
- 	ordernum = (ordernum+1)&0xFFFFF;
- 
--	if (__unix_find_socket_byname(net, addr->name, addr->len, sock->type,
--				      addr->hash)) {
-+	if (__unix_find_socket_byname(net, addr->name, addr->len, addr->hash)) {
- 		spin_unlock(&unix_table_lock);
- 		/*
- 		 * __unix_find_socket_byname() may take long time if many names
-@@ -920,7 +919,6 @@ static int unix_autobind(struct socket *sock)
- 		}
- 		goto retry;
- 	}
--	addr->hash ^= sk->sk_type;
- 
- 	__unix_set_addr(sk, addr, addr->hash);
- 	err = 0;
-@@ -966,7 +964,7 @@ static struct sock *unix_find_other(struct net *net,
- 		}
- 	} else {
- 		err = -ECONNREFUSED;
--		u = unix_find_socket_byname(net, sunname, len, type, hash);
-+		u = unix_find_socket_byname(net, sunname, len, type ^ hash);
- 		if (u) {
- 			struct dentry *dentry;
- 			dentry = unix_sk(u)->path.dentry;
-@@ -1036,8 +1034,7 @@ static int unix_bind_bsd(struct sock *sk, struct unix_address *addr)
- 	return err == -EEXIST ? -EADDRINUSE : err;
- }
- 
--static int unix_bind_abstract(struct sock *sk, unsigned hash,
--			      struct unix_address *addr)
-+static int unix_bind_abstract(struct sock *sk, struct unix_address *addr)
- {
- 	struct unix_sock *u = unix_sk(sk);
- 	int err;
-@@ -1053,7 +1050,7 @@ static int unix_bind_abstract(struct sock *sk, unsigned hash,
- 
- 	spin_lock(&unix_table_lock);
- 	if (__unix_find_socket_byname(sock_net(sk), addr->name, addr->len,
--				      sk->sk_type, hash)) {
-+				      addr->hash)) {
- 		spin_unlock(&unix_table_lock);
- 		mutex_unlock(&u->bindlock);
- 		return -EADDRINUSE;
-@@ -1095,7 +1092,7 @@ static int unix_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
- 	if (sun_path[0])
- 		err = unix_bind_bsd(sk, addr);
- 	else
--		err = unix_bind_abstract(sk, hash, addr);
-+		err = unix_bind_abstract(sk, addr);
- 	if (err)
- 		unix_release_addr(addr);
- 	return err;
--- 
-2.11.0
+ - Alistair
+
+On Friday, 19 February 2021 3:04:07 PM AEDT kernel test robot wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> Hi Alistair,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on kselftest/next]
+> [also build test ERROR on linus/master v5.11 next-20210218]
+> [cannot apply to hnaz-linux-mm/master]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Alistair-Popple/Add-support-for-SVM-atomics-in-Nouveau/20210219-100858
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
+> config: mips-randconfig-r036-20210218 (attached as .config)
+> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 
+c9439ca36342fb6013187d0a69aef92736951476)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/
+make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install mips cross compiling tool for clang build
+>         # apt-get install binutils-mips-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/
+bb5444811772d30b2e3bbaa44baeb8a4b3f03cec
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Alistair-Popple/Add-support-for-
+SVM-atomics-in-Nouveau/20210219-100858
+>         git checkout bb5444811772d30b2e3bbaa44baeb8a4b3f03cec
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=mips
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All error/warnings (new ones prefixed by >>):
+> 
+> >> fs/proc/task_mmu.c:521:12: error: implicit declaration of function 
+'is_device_exclusive_entry' [-Werror,-Wimplicit-function-declaration]
+>                    else if (is_device_exclusive_entry(swpent))
+>                             ^
+>    fs/proc/task_mmu.c:521:12: note: did you mean 'is_device_private_entry'?
+>    include/linux/swapops.h:176:20: note: 'is_device_private_entry' declared 
+here
+>    static inline bool is_device_private_entry(swp_entry_t entry)
+>                       ^
+> >> fs/proc/task_mmu.c:522:11: error: implicit declaration of function 
+'device_exclusive_entry_to_page' [-Werror,-Wimplicit-function-declaration]
+>                            page = device_exclusive_entry_to_page(swpent);
+>                                   ^
+>    fs/proc/task_mmu.c:522:11: note: did you mean 
+'device_private_entry_to_page'?
+>    include/linux/swapops.h:191:28: note: 'device_private_entry_to_page' 
+declared here
+>    static inline struct page *device_private_entry_to_page(swp_entry_t 
+entry)
+>                               ^
+> >> fs/proc/task_mmu.c:522:9: warning: incompatible integer to pointer 
+conversion assigning to 'struct page *' from 'int' [-Wint-conversion]
+>                            page = device_exclusive_entry_to_page(swpent);
+>                                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    fs/proc/task_mmu.c:1395:7: error: implicit declaration of function 
+'is_device_exclusive_entry' [-Werror,-Wimplicit-function-declaration]
+>                    if (is_device_exclusive_entry(entry))
+>                        ^
+>    fs/proc/task_mmu.c:1396:11: error: implicit declaration of function 
+'device_exclusive_entry_to_page' [-Werror,-Wimplicit-function-declaration]
+>                            page = device_exclusive_entry_to_page(entry);
+>                                   ^
+>    fs/proc/task_mmu.c:1396:9: warning: incompatible integer to pointer 
+conversion assigning to 'struct page *' from 'int' [-Wint-conversion]
+>                            page = device_exclusive_entry_to_page(entry);
+>                                 ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>    2 warnings and 4 errors generated.
+> 
+> 
+> vim +/is_device_exclusive_entry +521 fs/proc/task_mmu.c
+> 
+>    490
+>    491  static void smaps_pte_entry(pte_t *pte, unsigned long addr,
+>    492                  struct mm_walk *walk)
+>    493  {
+>    494          struct mem_size_stats *mss = walk->private;
+>    495          struct vm_area_struct *vma = walk->vma;
+>    496          bool locked = !!(vma->vm_flags & VM_LOCKED);
+>    497          struct page *page = NULL;
+>    498
+>    499          if (pte_present(*pte)) {
+>    500                  page = vm_normal_page(vma, addr, *pte);
+>    501          } else if (is_swap_pte(*pte)) {
+>    502                  swp_entry_t swpent = pte_to_swp_entry(*pte);
+>    503
+>    504                  if (!non_swap_entry(swpent)) {
+>    505                          int mapcount;
+>    506
+>    507                          mss->swap += PAGE_SIZE;
+>    508                          mapcount = swp_swapcount(swpent);
+>    509                          if (mapcount >= 2) {
+>    510                                  u64 pss_delta = (u64)PAGE_SIZE << 
+PSS_SHIFT;
+>    511
+>    512                                  do_div(pss_delta, mapcount);
+>    513                                  mss->swap_pss += pss_delta;
+>    514                          } else {
+>    515                                  mss->swap_pss += (u64)PAGE_SIZE << 
+PSS_SHIFT;
+>    516                          }
+>    517                  } else if (is_migration_entry(swpent))
+>    518                          page = migration_entry_to_page(swpent);
+>    519                  else if (is_device_private_entry(swpent))
+>    520                          page = device_private_entry_to_page(swpent);
+>  > 521                  else if (is_device_exclusive_entry(swpent))
+>  > 522                          page = 
+device_exclusive_entry_to_page(swpent);
+>    523          } else if (unlikely(IS_ENABLED(CONFIG_SHMEM) && mss-
+>check_shmem_swap
+>    524                                                          && 
+pte_none(*pte))) {
+>    525                  page = xa_load(&vma->vm_file->f_mapping->i_pages,
+>    526                                                  
+linear_page_index(vma, addr));
+>    527                  if (xa_is_value(page))
+>    528                          mss->swap += PAGE_SIZE;
+>    529                  return;
+>    530          }
+>    531
+>    532          if (!page)
+>    533                  return;
+>    534
+>    535          smaps_account(mss, page, false, pte_young(*pte), 
+pte_dirty(*pte), locked);
+>    536  }
+>    537
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+
 
