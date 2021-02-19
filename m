@@ -2,138 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 922D431F342
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 01:11:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18F9031F343
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 01:11:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhBSAJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 19:09:07 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:21872 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229535AbhBSAJE (ORCPT
+        id S229868AbhBSAKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 19:10:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhBSAKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 19:09:04 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11J04edt137194;
-        Thu, 18 Feb 2021 19:07:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Hc7iP0dSCjCglGy8CL0I7K1Mp2bmFJnmdPntjscntUw=;
- b=PHIUdKmmbrq3yFv6zQJdZqijTiJOtkqsmCwwDHsDFGWnX3OW2ooy8J4NExhd4A6+/kd3
- 4rvDVpDk7TnlMgazxPv9bW1iujhHifrALZ6J9jZAQk3b63yYTV9L2YqtlA6hHSCEd4B4
- J4UjA5fgGAdlHaNOk4XvYBS1fhzFuePHfxx/SdKwAppg1mC7NlxTYiIS7HfYiFgDk9jb
- rLOgVOmFdZMf7N3d4YO0+DXyuKuVG5S9k/jD/bIwE9TvNLmnaVn2ULXnU6v+TbPZDz0q
- ljCGQweIddjonRkud2pi9DDCXKy9szN7aILJdisbSrVb7lGBEs9J3NfEBglGXE9i75bm lw== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36sy3aw41b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 18 Feb 2021 19:07:54 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11J07qIc004692;
-        Fri, 19 Feb 2021 00:07:52 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 36p6d8jp3f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 00:07:52 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11J07nYa18809186
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 00:07:49 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id ABC4611C04C;
-        Fri, 19 Feb 2021 00:07:49 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8011511C04A;
-        Fri, 19 Feb 2021 00:07:45 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.66.70])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 19 Feb 2021 00:07:45 +0000 (GMT)
-Message-ID: <c6490f6a126a2f10e3e3445b51ea552a26f896a9.camel@linux.ibm.com>
-Subject: Re: [PATCH] of: error: 'const struct kimage' has no member named
- 'arch'
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
-        mpe@ellerman.id.au, sfr@canb.auug.org.au
-Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 18 Feb 2021 19:07:44 -0500
-In-Reply-To: <20210218223305.2044-1-nramas@linux.microsoft.com>
-References: <20210218223305.2044-1-nramas@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-18_14:2021-02-18,2021-02-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- adultscore=0 spamscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1011 impostorscore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102180203
+        Thu, 18 Feb 2021 19:10:41 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F50AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:10:01 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id q20so2616019pfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:10:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7mNeKDWUCPWRjksxHsm0Sl4Ar+FMbcH9wO3bpUG9+dU=;
+        b=BC6tuzv20jq0nQ0piEbqyLgRX7rhaCxUkZrHw37Vmfz/7XgquLlxAHC/1EohAiv3Rb
+         fcb9rMYbpw48pogIU8JjxT55d1pYGBnmAnG7gQxNn/iMBEPtPCmTje74BGwi1zKsRzg9
+         KpIkMLTiypUKUGiP+kFemDmsIhQPV/cv1vkfKC5otpQ9WG646Y6RnI7vok74axJFpJuD
+         CY4yJXp9tVBiUZHmuTBt9v6tHNhKTqSSm1KXcDWbUSRtkvSv4ygeYzD4jaaf4NorfdD7
+         jowW5zj0AzpS1zbka09mozIdiyO7yP1MUfgSIutoXIUCSEqrkXrI2WzWRAV+F41StTg+
+         mL8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7mNeKDWUCPWRjksxHsm0Sl4Ar+FMbcH9wO3bpUG9+dU=;
+        b=MMQDegmgIr1hIOfVSNtjqCTpqKFXs9DZBZmitScnUA2xMKRVBtHDgKboEKHEcLi/d7
+         1zuBhORN97zjBuX3U+VvRmjAhMu6gR5sCw8d+wNsiVLXM0sfx6GYYiIAdA3a/fWvx+8O
+         m+dOVd7UOFB2q/B9nXV/PiM4CyJEGzeCgxW7SiVTEoLeX4LSwXytkjtuyeUjftpQyJVq
+         wLklVxzSIPSLmGeqKiEpIkbb/tkVz/oS5kbuVasxNybVnlPK8hXLnHUEtocQLjlRvdDo
+         y8SJ9JqUzEUCR9SlHv7IrTGNj5s5IM3xbFzF7WZKz3Z6Mu17FGB3hT2REkPCrOV7skxm
+         iKDA==
+X-Gm-Message-State: AOAM533JJuc75fo6WqG8YXLZr0+o6n07r7gE0r87piUBv4cS9dL9mb37
+        6k2S/jdTKs5wU6W5fp2y5OsRIUVPQn2M6u7BQWqbfg==
+X-Google-Smtp-Source: ABdhPJx/0Kfxw/jydMgdKkoVJGQ9Mem1OgH2yeF1tAZyCD1927v/1Bq1MDPv64DdN//p27FkkBMA80WqL4Ci3Ou7p0I=
+X-Received: by 2002:a62:7c55:0:b029:1dd:8c65:1ed8 with SMTP id
+ x82-20020a627c550000b02901dd8c651ed8mr6639950pfc.24.1613693400570; Thu, 18
+ Feb 2021 16:10:00 -0800 (PST)
+MIME-Version: 1.0
+References: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
+ <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com> <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
+In-Reply-To: <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 19 Feb 2021 01:09:49 +0100
+Message-ID: <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
+Subject: Re: [PATCH] mm, kasan: don't poison boot memory
+To:     George Kennedy <george.kennedy@oracle.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dhaval Giani <dhaval.giani@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-02-18 at 14:33 -0800, Lakshmi Ramasubramanian wrote:
-> of_kexec_alloc_and_setup_fdt() defined in drivers/of/kexec.c builds
-> a new device tree object that includes architecture specific data
-> for kexec system call.  This should be defined only if the architecture
-> being built defines kexec architecture structure "struct kimage_arch".
-> 
-> Define a new boolean config OF_KEXEC that is enabled if
-> CONFIG_KEXEC_FILE and CONFIG_OF_FLATTREE are enabled, and
-> the architecture is arm64 or powerpc64.  Build drivers/of/kexec.c
-> if CONFIG_OF_KEXEC is enabled.
-> 
-> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  drivers/of/Kconfig  | 6 ++++++
->  drivers/of/Makefile | 7 +------
->  2 files changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
-> index 18450437d5d5..f2e8fa54862a 100644
-> --- a/drivers/of/Kconfig
-> +++ b/drivers/of/Kconfig
-> @@ -100,4 +100,10 @@ config OF_DMA_DEFAULT_COHERENT
->  	# arches should select this if DMA is coherent by default for OF devices
->  	bool
->  
-> +config OF_KEXEC
-> +	bool
-> +	depends on KEXEC_FILE
-> +	depends on OF_FLATTREE
-> +	default y if ARM64 || PPC64
-> +
->  endif # OF
-> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
-> index c13b982084a3..287579dd1695 100644
-> --- a/drivers/of/Makefile
-> +++ b/drivers/of/Makefile
-> @@ -13,11 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
->  obj-$(CONFIG_OF_RESOLVE)  += resolver.o
->  obj-$(CONFIG_OF_OVERLAY) += overlay.o
->  obj-$(CONFIG_OF_NUMA) += of_numa.o
-> -
-> -ifdef CONFIG_KEXEC_FILE
-> -ifdef CONFIG_OF_FLATTREE
-> -obj-y	+= kexec.o
-> -endif
-> -endif
-> +obj-$(CONFIG_OF_KEXEC) += kexec.o
->  
->  obj-$(CONFIG_OF_UNITTEST) += unittest-data/
+On Fri, Feb 19, 2021 at 1:06 AM George Kennedy
+<george.kennedy@oracle.com> wrote:
+>
+>
+>
+> On 2/18/2021 3:55 AM, David Hildenbrand wrote:
+> > On 17.02.21 21:56, Andrey Konovalov wrote:
+> >> During boot, all non-reserved memblock memory is exposed to the buddy
+> >> allocator. Poisoning all that memory with KASAN lengthens boot time,
+> >> especially on systems with large amount of RAM. This patch makes
+> >> page_alloc to not call kasan_free_pages() on all new memory.
+> >>
+> >> __free_pages_core() is used when exposing fresh memory during system
+> >> boot and when onlining memory during hotplug. This patch adds a new
+> >> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok() through
+> >> free_pages_prepare() from __free_pages_core().
+> >>
+> >> This has little impact on KASAN memory tracking.
+> >>
+> >> Assuming that there are no references to newly exposed pages before they
+> >> are ever allocated, there won't be any intended (but buggy) accesses to
+> >> that memory that KASAN would normally detect.
+> >>
+> >> However, with this patch, KASAN stops detecting wild and large
+> >> out-of-bounds accesses that happen to land on a fresh memory page that
+> >> was never allocated. This is taken as an acceptable trade-off.
+> >>
+> >> All memory allocated normally when the boot is over keeps getting
+> >> poisoned as usual.
+> >>
+> >> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> >> Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
+> >
+> > Not sure this is the right thing to do, see
+> >
+> > https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com
+> >
+> > Reversing the order in which memory gets allocated + used during boot
+> > (in a patch by me) might have revealed an invalid memory access during
+> > boot.
+> >
+> > I suspect that that issue would no longer get detected with your
+> > patch, as the invalid memory access would simply not get detected.
+> > Now, I cannot prove that :)
+>
+> Since David's patch we're having trouble with the iBFT ACPI table, which
+> is mapped in via kmap() - see acpi_map() in "drivers/acpi/osl.c". KASAN
+> detects that it is being used after free when ibft_init() accesses the
+> iBFT table, but as of yet we can't find where it get's freed (we've
+> instrumented calls to kunmap()).
 
-Is it possible to reuse CONFIG_HAVE_IMA_KEXEC here?
-
-Mimi
-
-
+Maybe it doesn't get freed, but what you see is a wild or a large
+out-of-bounds access. Since KASAN marks all memory as freed during the
+memblock->page_alloc transition, such bugs can manifest as
+use-after-frees.
