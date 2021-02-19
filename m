@@ -2,156 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB6531FBA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 478D931FBA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:07:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229752AbhBSPGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:06:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhBSPGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:06:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC63C64EB2;
-        Fri, 19 Feb 2021 15:05:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613747149;
-        bh=TFnkMI7UMPE4haMLe6s3+bb5ZQ9eOM3Ey+RTradDiDw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ty/5YzIJLHmMx8pxXU6Xc7TCwPBY6RbIS1pQ4CF6uDiuX+7FxIhwy+nCphfhw8t1D
-         DF5259hbST/ddPx6JoNwaTwrgoLgE9mWvRGY73dXjcc9Ckv75Pwut5lqeMWH4FB1Vg
-         6IEmPCVOZkyHBc0FipmPYOE9+eIgmc1syhp+DjL9fzogqV4fEHL1b4e2Zis2U6Es6R
-         mBjEoFwJUsApP4sKTP0OsobfOXTLP2RWLdtkelJmn8dkQr3sFcQKIiFDvdOBMjffSM
-         vYEvq9Q5b9USTWMAojfaOklBNLa1/O3wi8GM77UwP2uvPGQ0Z3mUZ0zWOKD8JoGUct
-         ucaYhVS1Qbvuw==
-Received: by mail-ej1-f42.google.com with SMTP id jt13so14050110ejb.0;
-        Fri, 19 Feb 2021 07:05:48 -0800 (PST)
-X-Gm-Message-State: AOAM532k1MrC2Nm/leb3RSWT894h2DQ8m8OJLHM9mscfwkLhV6Caeo+j
-        2LBfbvvRjaQfu55d6FoR8LCmpG2vAnqKhohvRQ==
-X-Google-Smtp-Source: ABdhPJxwf92OLiYw/F0K/zCoeETq2eLzpqjZQCpW2a8fUC6ug9uXCBJkRGGcFN3inDyFBjc6U9JNrumZ23ohXOLG+BQ=
-X-Received: by 2002:a17:906:d1d0:: with SMTP id bs16mr9376281ejb.468.1613747147168;
- Fri, 19 Feb 2021 07:05:47 -0800 (PST)
+        id S229681AbhBSPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:06:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhBSPG3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 10:06:29 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF43DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:05:45 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id ba1so3526972plb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:05:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XiaBGnefPGVZiyojOjiX+s6W4j/8HRWeaHwUaEvX3fc=;
+        b=Bx1NkyZMHAyZDfmo5hgwsduVDXIrfyfb2POhnhkcVDHh9IY/YaLRluW1in1fg6Xnw8
+         ylll6X9unFr9/sy/SPV0JLpPge6MOoRWcWbrDrtv2fFjDvSYeueaP15cXjvOw0GnnNOP
+         TqTfGWJOERAffqs0TTLlZza+YRdRPWaL3qzZrbFzKFGMvr7y+LBfptWMU1CbmvTD1lSL
+         EXKjSrP63trB+VIAKo4RrYf1sDhppnkkLuiHN7m2m0F6/9O7/K2gHEp9cO8MvuT18+Qc
+         cxE6+SIzdL+OXN992mJnSl7705567Oc2FUlfTH2uPsaC5tDQ8NqqAbphm+CRV6sQ4QgS
+         v/CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XiaBGnefPGVZiyojOjiX+s6W4j/8HRWeaHwUaEvX3fc=;
+        b=SVGEAG+BYjzDbsxFrx5u+9rssYIMEu6/GEB9JZrQxwDhupj3bPl5qm36d+6wWaHmNN
+         cNM9mDLMOrUnI6BCIOUO/BzGKwTBRGvtsV0wSUr7KLzLYy6zampNriAypdnmp8FRSvDX
+         wdCMWEwzjI6beE5z9oNJ8pXSsE/VjvEJZ/0g+Dh5sphvdfRh1V0RAdRCI5pIQgze2N7Z
+         8FYdJz2/pENVoWdeg6Yi5lnyCLbPUtREytpAOrVzTWeA6G3Mas7dzeosE5LsSVtfG4RI
+         5MALECoYjgjMele4XdBfyu8xZcQ1OcfX5jmrfSLuOvvJRNTSrA/q5NUUcVVxqR6d+KXl
+         gozA==
+X-Gm-Message-State: AOAM533o916GEG0tnWKyOJJ4l0bIJ/70AAeSGeyBnGjSQtybWg4FtDYy
+        HrZhIessjrB7pV1/3ueoxUo=
+X-Google-Smtp-Source: ABdhPJz+6CD/YYOF6fSfyH4wNB/jxtQZvi5Da41tCFzko3AKufFgrGNHA8A7ANh3PZs0kxQRgFDkRg==
+X-Received: by 2002:a17:902:aa4b:b029:e2:bb4b:a63 with SMTP id c11-20020a170902aa4bb02900e2bb4b0a63mr9430913plr.7.1613747145225;
+        Fri, 19 Feb 2021 07:05:45 -0800 (PST)
+Received: from [10.230.29.30] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id 194sm9625165pfu.165.2021.02.19.07.05.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 07:05:43 -0800 (PST)
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Willy Tarreau <w@1wt.eu>, Florian Fainelli <f.fainelli@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
+ <YBBkplRxzzmPYKC+@kroah.com> <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <20210218165104.GC2013@sasha-vm>
+ <00b9e2fb-d818-58d6-edae-4dbd6aa814f7@gmail.com> <YC6ptKgsMh20tmu6@kroah.com>
+ <20210218182050.GB15217@1wt.eu> <YC6zq3u2jciI2gyZ@kroah.com>
+ <b283eaa5-028f-a3d0-42a1-5b11c48ffe91@broadcom.com>
+ <YC915N/9YNqePueL@kroah.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <cf9323b7-71c8-dd96-1755-ce90370af6d5@gmail.com>
+Date:   Fri, 19 Feb 2021 07:05:41 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210210171040.684659-1-mka@chromium.org> <20210210091015.v5.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
- <20210217210441.GA2709172@robh.at.kernel.org> <YC3D/+DZYFjgHQ3H@google.com>
-In-Reply-To: <YC3D/+DZYFjgHQ3H@google.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 19 Feb 2021 09:05:32 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+=LOwOiorpR85UYwYgXCGT-Ai2MbBPWNf+t3X0tLYhqA@mail.gmail.com>
-Message-ID: <CAL_Jsq+=LOwOiorpR85UYwYgXCGT-Ai2MbBPWNf+t3X0tLYhqA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/4] dt-bindings: usb: Add binding for discrete onboard
- USB hubs
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Linux USB List <linux-usb@vger.kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YC915N/9YNqePueL@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 7:33 PM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Hi Rob,
->
-> thanks for your review!
->
-> On Wed, Feb 17, 2021 at 03:04:41PM -0600, Rob Herring wrote:
-> > On Wed, Feb 10, 2021 at 09:10:36AM -0800, Matthias Kaehlcke wrote:
-> > > Discrete onboard USB hubs (an example for such a hub is the Realtek
-> > > RTS5411) need to be powered and may require initialization of other
-> > > resources (like GPIOs or clocks) to work properly. This adds a device
-> > > tree binding for these hubs.
-> > >
-> > > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > > ---
-> > >
-> > > Changes in v5:
-> > > - updated 'title'
-> > > - only use standard USB compatible strings
-> > > - deleted 'usb_hub' node
-> > > - renamed 'usb_controller' node to 'usb-controller'
-> > > - removed labels from USB nodes
-> > > - added 'vdd-supply' to USB nodes
-> > >
-> > > Changes in v4:
-> > > - none
-> > >
-> > > Changes in v3:
-> > > - updated commit message
-> > > - removed recursive reference to $self
-> > > - adjusted 'compatible' definition to support multiple entries
-> > > - changed USB controller phandle to be a node
-> > >
-> > > Changes in v2:
-> > > - removed 'wakeup-source' and 'power-off-in-suspend' properties
-> > > - consistently use spaces for indentation in example
-> > >
-> > >  .../bindings/usb/onboard_usb_hub.yaml         | 49 +++++++++++++++++++
-> > >  1 file changed, 49 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> > > new file mode 100644
-> > > index 000000000000..bf4ec52e6c7b
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/usb/onboard_usb_hub.yaml
-> > > @@ -0,0 +1,49 @@
-> > > +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/usb/onboard_usb_hub.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Binding for discrete onboard USB hubs
-> >
-> > This isn't really generic. Maybe there's a set of hubs with only a
-> > single supply much like 'simple-panel', but I kind of doubt that here.
-> > There aren't hundreds of hub chips like panels. Though, we should put
-> > this into bindings/usb/hub/ so we start collecting hub bindings in one
-> > place.
->
-> Ok, I agree that the name of the binding is too generic, I anticipated that
-> the power supply section would need to be extended to support other hub
-> chips.
->
-> > A generic driver doesn't have to have a generic binding.
->
-> That's a good point, it seems to make sense to have separate bindings in
-> this case.
->
-> > You can have a specific device binding which is handled by a generic
-> > driver. Or not. Who knows. Maybe a simple user like u-boot has a generic
-> > driver while something more feature rich has a device specific binding.
-> >
-> > > +
-> > > +maintainers:
-> > > +  - Matthias Kaehlcke <mka@chromium.org>
-> >
-> > Now we have usb-device.yaml, you need:
-> >
-> > allOf:
-> >   - $ref: usb-device.yaml#
->
-> ok
->
-> So with your comments addressed it seems we have a binding that could be
-> acceptable. I'll still hold back a bit to see if we can make progress with
-> the discussion about using the 'graph' binding (https://lore.kernel.org/patchwork/patch/1379002/#1578294).
-> The one thing I don't like about the current binding is that it wouldn't
-> work out of the box with a hierarchy of hubs. To make that work on the
-> driver side an additional property would be needed to indicate that two
-> (or more) USB hub devices are related (i.e. are provided by the same
-> chip). This is needed to be able to decide whether the hub should be
-> powered down during system suspend.
 
-How about a 'hub-companion' property or similar?
 
-Rob
+On 2/19/2021 12:25 AM, Greg Kroah-Hartman wrote:
+> On Thu, Feb 18, 2021 at 12:16:50PM -0800, Scott Branden wrote:
+>> On 2021-02-18 10:36 a.m., Greg Kroah-Hartman wrote:
+>>> On Thu, Feb 18, 2021 at 07:20:50PM +0100, Willy Tarreau wrote:
+>>>> On Thu, Feb 18, 2021 at 06:53:56PM +0100, Greg Kroah-Hartman wrote:
+>>>>> On Thu, Feb 18, 2021 at 09:21:13AM -0800, Florian Fainelli wrote:
+>>>>>> As a company, we are most likely shooting ourselves in the foot by not
+>>>>>> having a point of coordination with the Linux Foundation and key people
+>>>>>> like you, Greg and other participants in the stable kernel.
+>>>>>
+>>>>> What does the LF have to do with this?
+>>>>>
+>>>>> We are here, on the mailing lists, working with everyone.  Just test the
+>>>>> -rc releases we make and let us know if they work or not for you, it's
+>>>>> not a lot of "coordination" needed at all.
+>>>>>
+>>>>> Otherwise, if no one is saying that they are going to need these for 6
+>>>>> years and are willing to use it in their project (i.e. and test it),
+>>>>> there's no need for us to maintain it for that long, right?
+>>>>
+>>>> Greg, please remember I expressed I really need them for slightly more than
+>>>> 3 years (say 3.5-4) :-) I'm fine with helping a bit more as time permits if
+>>>> this saves me from having to take over these kernels after you, like in the
+>>>> past, but I cannot engage on the regularity of my availability.
+>>>
+>>> Ok, great!
+>>>
+>>> That's one person/company saying they can help out (along with what CIP
+>>> has been stating.)
+>>>
+>>> What about others?  Broadcom started this conversation, odd that they
+>>> don't seem to want to help out :)
+>> Greg, I'm sorry but I'm not in a position to provide such a commitment.
+> 
+> Ok, who at Broadcom do I need to talk to to get that type of commitment?
+
+I am not sure if I was too subtle before, we (Broadcom) cannot give you
+an unified voice to speak with because we are divided in silos/business
+units that make their independent decisions.
+
+The group I work in (STB/CM, different from Scott's) is committed to
+using the 5.10 kernel for 6 years and that is a decision that has been
+taken.
+
+I could give you names of other decision makers in other business units
+I know who also deliver Linux for their respective business units
+however some of them may not make public appearances on mailing lists,
+let alone care about upstreaming their changes so I do not know whether
+a 6 years 5.10 kernel is even something they remotely entertain.
+
+Hope this helps.
+-- 
+Florian
