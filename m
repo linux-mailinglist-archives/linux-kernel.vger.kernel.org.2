@@ -2,420 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17BB31F90B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:08:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B50731F911
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230106AbhBSMH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 07:07:59 -0500
-Received: from elvis.franken.de ([193.175.24.41]:37666 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229998AbhBSMHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 07:07:51 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lD4Yq-000233-00; Fri, 19 Feb 2021 13:07:04 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id F1D34C059F; Fri, 19 Feb 2021 13:06:38 +0100 (CET)
-Date:   Fri, 19 Feb 2021 13:06:38 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     torvalds@linux-foundation.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] MIPS changes for v5.12-rc1
-Message-ID: <20210219120638.GA5950@alpha.franken.de>
+        id S230152AbhBSMJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 07:09:58 -0500
+Received: from esa5.hc3370-68.iphmx.com ([216.71.155.168]:25666 "EHLO
+        esa5.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhBSMJy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 07:09:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1613736593;
+  h=subject:to:cc:references:from:message-id:date:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=Q+QJjhNLMxS21jlay2vItPyDNF0wh7KFcr3kFihjy3g=;
+  b=exg//ASMwRBRi5oNNNorSLhWT3iC6lnPu6b2+ox8RX+sOj/+gB2D3sRr
+   ih1mOevV3qRBI0DpOi5hCpptKSR9aPInEASDY48e/idy2e6UIjNkE0DEb
+   Jje9y+Ia5CJEYr7uTWkXoqORrqqoFEAQ0pYjuIv+k16MsPUkYlFemMAi/
+   k=;
+Authentication-Results: esa5.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: ikky6QEoKrAcd2hJlTMddxqxApNw6jrNQnGu2NEYkhWKdgCYlOBxO1Wpxr/hg5f6fjHBL3ciEX
+ tTrNkc93SA//1lktzYainR+BCM+SYltwn+bvoQIHtd7aKDbp6fnVcYAvsYRiJXzUD+D+dtM/bP
+ gKgsNC5BiwK3oAqdvTGYNqBItjcdBdTpgkfgAjmPowbeu5HBm6FG0XISrDn42sACxbE/92T40M
+ vfwrDVgdL0905ELdFRjCEIMW4mPIaLgdqxny77lF++JgSEFk9EUPWjbIFe0dOsCt1jvMMI/6Li
+ qpY=
+X-SBRS: 5.2
+X-MesageID: 37534729
+X-Ironport-Server: esa5.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.156.83
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.81,189,1610427600"; 
+   d="scan'208";a="37534729"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WPHOMBzGr2h8+5sQrEujoiRwDW+tuNniz2XeNPPRSaH4weOHQhpy8/mE/myJrjwBB+pRqRCN/Pd+PIJ1+4QsHYkvKqwgBMPj8oH64x6WOm5YD/8WGpUMBgaBq1ByEbHgZS/sUvSL1h05k39EfUBX2ydoV1edNW6Yij0Dyc/XIEx2vPiJ0bH7S68apoNzYtO0yOi+uAoy4dfwfafBrbOHQWC/GIsc8/aFXU2tmfJhqYvnFCWfC9qSIKZT6bK58bfs3o7xnlv9HWHZDGNPqDKTZmumee/06g0cnv8ajpscrWhaXMn7Gm6UppM8ohBwpJdxo1nDKx46pebN1LTx4Hr/KQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+QJjhNLMxS21jlay2vItPyDNF0wh7KFcr3kFihjy3g=;
+ b=bGaUr0hlht/4Zpr9bVxUUO9qjeQV96cNkJzehqfDUmlm4IMZ7g95w+PiDyY32ZMsTFOIRG6zy8nQ87KZi2E65UU7jnAAyv+46AEe5m+vYjIe+DNrqUU6kt7xXUQs4I9GOxnALSL9/EJUu9DQ65wsAZMyMXbsja80FNfp9IVo5qIJoSjn9CI5o0BLt06+6XDIx50FQIAjdY7c00s6vrw5hTbPVI+tkTifC5qhRzhZN4LlAsB78Rrh0clZZKjUR7dJ9w3uA6i3AkpRdDgSfIwtR88lN4PyTj/kKwSCv+rY35zX5A9YitjcC2MnKETGfVKLUujdMiua9rUt/ght2nZoDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+QJjhNLMxS21jlay2vItPyDNF0wh7KFcr3kFihjy3g=;
+ b=aFwltNCO5+K2TFO9fWKzn4Slow8OBy/KMle9Ny4gEfcVx8YQIlwR2N5FdO2RsrXstTKu93oaB/F0mgUwwja5a/yJ7ijZLN9Qpei7RtlitX8JCtYd2WmTTcQuws1a08yfcZfnXLZqDRNOJnJauPlZG64sbKrRYAz6eQJi5MYvImA=
+Subject: Re: [RFC PATCH] x86/retpolines: Prevent speculation after RET
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>
+CC:     <x86@kernel.org>, <tony.luck@intel.com>, <pjt@google.com>,
+        <linux-kernel@vger.kernel.org>, <r.marek@assembler.cz>,
+        <jpoimboe@redhat.com>, <jikos@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+References: <20210218165938.213678824@infradead.org>
+ <20210218184639.GF4214@zn.tnic>
+ <20210218190231.GA59023@worktop.programming.kicks-ass.net>
+ <20210218191138.GH4214@zn.tnic>
+ <20210219081507.GC59023@worktop.programming.kicks-ass.net>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <b09d81b3-30b0-972f-aa88-132b0e153673@citrix.com>
+Date:   Fri, 19 Feb 2021 12:08:36 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210219081507.GC59023@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: LO4P123CA0012.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:150::17) To BYAPR03MB3623.namprd03.prod.outlook.com
+ (2603:10b6:a02:aa::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c83f6033-ee6f-49b2-6f40-08d8d4cf1a12
+X-MS-TrafficTypeDiagnostic: BYAPR03MB4487:
+X-Microsoft-Antispam-PRVS: <BYAPR03MB44870BD300BCF58EE0EBB23ABA849@BYAPR03MB4487.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BI839z8b4MEn/mlgmQFbLC2wspLmrbAuQJEOd9Fq1ONex+71rJwi54Ix+yCFH9jnoDNQMyI09horwdhcNA0Kao2c63WZ4zwjCKlDBmHf6qlk8Vix5kymgzX1eMyI1KFNQIcSWbg4ezN3ZBmJ5klLve3uI2D/7luMXHg06tPB8743f2RWhmbSh5FohcbKyduHN5KM3AxR9jr5Vzk78B7mrg/oHI48yea6WeGxyx5Wt1ihJQN0FegaJZtMXGevb+Jn8OaGjqzR3Q/TpJVYldKqZ7zu0Wc3oy5nqCZ2tcgJfysj+B6g/fBshuNADt+ytnOfWUxfp6dBe7jA3jbtofTjG5eXyOJRxSOl8kohkUnYM/SGup/f/m7gzDEkChSzY+4f6NGuJkUGOwCNsfhbjD3GpYcpyXuNAcyjGUSSuPK3ZtORjV4C1Oo6eygNbdI1URtW7Sufa1g5ZApdAOcoYx2Zh3qXRlsKB0gkAV5bBXslrSrPJ5dXuQLeE1J8be6DanGcBffYPob/6RS/SjpRgNve1M61H5h0UfEfNuC/gEewDttvp5Mi4jeO70Y1zsmPGqx1xizz+rFrS3oekNjvALC+5RGtwt5SNSANcbK7oBeRXoMQNnKe7g3JvlxNCVLG+x972IH6NlIicar5TTHiIqw4lwiCCta0hxkdpLPeubj7/FVv9YEN9L3GBqmLFPhIhBI9
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3623.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(366004)(136003)(396003)(66476007)(110136005)(66946007)(66556008)(4326008)(8936002)(83380400001)(8676002)(5660300002)(16576012)(316002)(956004)(6666004)(2616005)(966005)(478600001)(186003)(7416002)(16526019)(53546011)(26005)(31686004)(86362001)(31696002)(6486002)(2906002)(36756003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?SU4wQ1VFVko4SERoTW11bnBKd0lVYUZPZndKNENOUy84YU1xUnFFblg0Mis5?=
+ =?utf-8?B?SEtFd29TVXJsY0dGcG1lcnlLME9ER0dDQVdtZTFyNDVqMTFqWlQ3ZDUvRmVF?=
+ =?utf-8?B?eWtiM0FpbndPNndJZDNpby9ET3F4SmNjRWl1c0J4UnlEcVgxTjQ4b2ZXRnQv?=
+ =?utf-8?B?UTBZNjBXQ0htTlNDcGdqR0Z2OUVHdEhBTFdKYUliUmswb2xySlJBY0hRS2Jy?=
+ =?utf-8?B?R0hneFEzV20wcFdkVU5SbkxxeXJUN01PVnU2eEJGTzFhb0JZVzZRNkFYYTU1?=
+ =?utf-8?B?a2h0dkMyWjIyNWNOcjRMUkJXcjFrZnAxVnpHT2dZSGRmTHdwNkZZQVY2WlFW?=
+ =?utf-8?B?Zko0UmpOclNYZXRBVEt3bHgwdzVDQjZMR1NEZ2lLc3NFVkJGbVNCbnpDamxI?=
+ =?utf-8?B?bSthNWZ3VVliYzlEY3RMb0FGV2RFM3FpZjIxOEtaaUk3T1hFSjd6Nk45UzZE?=
+ =?utf-8?B?VWZYd3VsejFSSkZPQklrOXhhajdYMFhERTFEVHUrTVViajhPbXAyNjFKRUM5?=
+ =?utf-8?B?T01MMFJUU3Y2TmZ1WVlESk00Y2RidkJYRDdJSko5M3kwWEs4cnpiQUtJK1pj?=
+ =?utf-8?B?amtJQzlFOG14ZVJYekszWDQwMEExL1JSb0w5VHZZYXJOb0c0Y0lSZkxRK0d0?=
+ =?utf-8?B?dkFCVC9IZC9MTFIxc1I5a1FuY3piY3huQkNBMWZHMkhQVDkvNDlVWTlQb245?=
+ =?utf-8?B?VzFyMVVUV2RLa1loYjJJUzNwaGJ5L0huVkt2aVlocGNVa2Z0cEYvVDV4bFFK?=
+ =?utf-8?B?MWlZaEUzLzh2NDVzY2tSUXloUGdWcjl4SWVMaVpvc0ZaVU92eTdqaHd1SnNh?=
+ =?utf-8?B?TFdnb3FsVk5TbkYvWGl2ZmgrZVVOeFVvTTJLL29rSzN5R1dSYXB0TVRBMGlm?=
+ =?utf-8?B?OHlpclI2aXB6WWRGNUVQMWpQV0h1WllDbExzZE5DQ1UyK3lhdlhjSGFEWXJt?=
+ =?utf-8?B?a1BLODVyK29hYmVkVGtiT1Y4T1ZQdWorTHIxdDE5WEw5NW1aMlBLS2dOV0Q0?=
+ =?utf-8?B?WVZwZUlmQlRoUzUrV1V5cmZUYnVjR2ZHWUxuTFJQN1VvK1lMNkFwZW5GbVQ1?=
+ =?utf-8?B?ZHVvOFZPU0JZcjNUOWdhRUVXUm5sQS9TbjdBeVV4elF5Tm9yVTllWU0wdmZL?=
+ =?utf-8?B?VGVWVUNrRGN2ZE0zK0FERjFUVllEaXNhbHJ6YXUzTzJoWHYrbkpSVWNhSkdF?=
+ =?utf-8?B?ZTZBWTYxUjBDNmcraHl0TG84U2pzWENoMEVoY08wSktYTk1zd081WCtqbmh5?=
+ =?utf-8?B?YndSWUtSRFg1akRRTFRqVEExMm9MR1R2MjE4d1BnSGZZdmJnU2l1U0loQVNa?=
+ =?utf-8?B?YTlISEgyWWVCQTE2ZlB2TldBaktQQ2lpNThxZHRJNzI3SHkwT1hrZGQyM0Yz?=
+ =?utf-8?B?NHB4TTRERTZKWk1uZXl4ZE9OUWFhd29KeXhGZHl1N2lFVTEzQ2hhN0kvWElv?=
+ =?utf-8?B?L1htR1pmRytSdkU2SjhaMWJKaHNHVDA4ckJPTElwTVJybjd1c28wWTRZWkNE?=
+ =?utf-8?B?SnZTNXc1bjBhb1RFM25Jdk5nTVVqSHd0MS8vSGZmc0xqN1NxOEtFckl6WjRp?=
+ =?utf-8?B?bDdxMy9SZm1WRHhOaXNTVUt1QWJOUk5wTmJZUGplbXA3eTFjbTRaQmFnOWIv?=
+ =?utf-8?B?STJ0T2E0YzdGVjI4Y1pzSTMvaGJzbW1JYnB1Nk0xQVFMdnhpeVl4S0FEUjF4?=
+ =?utf-8?B?YlNvTGErYmlTOEJId29raEFXZ1RmZ1J6c3UyNGVxZGorRzYzSWR6aFNxWXNQ?=
+ =?utf-8?Q?N2hHENMfCX4NNOouCIOpAwXO3khVpI2/TRLfMin?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c83f6033-ee6f-49b2-6f40-08d8d4cf1a12
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3623.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 12:08:43.5528
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: URGZJDpjBuogSzg817x8w7FD3zJpmiWQ1StTIt5IwtGfhQMIRhBtBltYpvNMMImN1mAJdtMFPmx08eAXzLDCUX2OdK6aVwLfOjLrEADuoU0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR03MB4487
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 19/02/2021 08:15, Peter Zijlstra wrote:
+> On Thu, Feb 18, 2021 at 08:11:38PM +0100, Borislav Petkov wrote:
+>> On Thu, Feb 18, 2021 at 08:02:31PM +0100, Peter Zijlstra wrote:
+>>> On Thu, Feb 18, 2021 at 07:46:39PM +0100, Borislav Petkov wrote:
+>>>> Both vendors speculate after a near RET in some way:
+>>>>
+>>>> Intel:
+>>>>
+>>>> "Unlike near indirect CALL and near indirect JMP, the processor will not
+>>>> speculatively execute the next sequential instruction after a near RET
+>>>> unless that instruction is also the target of a jump or is a target in a
+>>>> branch predictor."
+>>> Right, the way I read that means it's not a problem for us here.
+>> Look at that other thread: the instruction *after* the RET can be
+>> speculatively executed if that instruction is the target of a jump or it
+>> is in a branch predictor.
+> Right, but that has nothing to do with the RET instruction itself. You
+> can speculatively execute any random instruction by training the BTB,
+> which is I suppose the entire point of things :-)
+>
+> So the way I read it is that: RET does not 'leak' speculation, but if
+> you target the instruction after RET with any other speculation crud,
+> ofcourse you can get it to 'run'.
+>
+> And until further clarified, I'll stick with that :-)
 
-a test merge with v5.11 shows a conflict in .mailmap, which I resolved with
+https://developer.amd.com/wp-content/resources/Managing-Speculation-on-AMD-Processors.pdf
+Final page, Mitigation G-5
 
-diff --cc .mailmap
-index 7fdf87b24fe8,d942f9493a47..ade90fc9140a
---- a/.mailmap
-+++ b/.mailmap
-@@@ -202,8 -200,7 +202,9 @@@ Li Yang <leoyang.li@nxp.com> <leoli@fre
-  Li Yang <leoyang.li@nxp.com> <leo@zh-kernel.org>
-  Lukasz Luba <lukasz.luba@arm.com> <l.luba@partner.samsung.com>
-  Maciej W. Rozycki <macro@mips.com> <macro@imgtec.com>
-+ Maciej W. Rozycki <macro@orcam.me.uk> <macro@linux-mips.org>
- +Manivannan Sadhasivam <mani@kernel.org> <manivannanece23@gmail.com>
- +Manivannan Sadhasivam <mani@kernel.org> <manivannan.sadhasivam@linaro.org>
-  Marcin Nowakowski <marcin.nowakowski@mips.com> <marcin.nowakowski@imgtec.com>
-  Marc Zyngier <maz@kernel.org> <marc.zyngier@arm.com>
-  Mark Brown <broonie@sirena.org.uk>
+Some parts (before Milan I believe that CPUID rule translates into) may
+speculatively execute the instructions sequentially following a call/jmp
+indirect or ret instruction.
 
+For Intel, its just call/jmp instructions.  From SDM Vol2 for CALL (and
+similar for JMP)
 
-Another conflict showed up in linux-next between mips-next tree and
-kspp tree. Stephan resolved the conflict with
-
-diff --cc include/asm-generic/vmlinux.lds.h
-index 0a5c9305c3c4,8988a2e445d8..fbc0ca8d903b
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@@ -93,9 -96,9 +96,9 @@@
-   * RODATA_MAIN is not used because existing code already defines .rodata.x
-   * sections to be brought in with rodata.
-   */
-- #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-+ #if defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || defined(CONFIG_LTO_CLANG)
-  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
- -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral*
- +#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral* .data.$__unnamed_* .data.$Lubsan_*
-  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
-  #define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
-  #define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+"Certain situations may lead to the next sequential instruction after a
+near indirect CALL being speculatively executed. If software needs to
+prevent this (e.g., in order to prevent a speculative execution side
+channel), then an LFENCE instruction opcode can be placed after the near
+indirect CALL in order to block speculative execution."
 
 
-Thomas.
+In both cases, the reason LFENCE is given is for the CALL case, where
+there is sequential architectural execution.  JMP and RET do not have
+architectural execution following them, so can use a shorter speculation
+blocker.
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+When compiling with retpoline, all CALL/JMP indirects are removed, other
+than within the __x86_indirect_thunk_%reg blocks, and those can be fixed
+by hand.  That just leaves RET speculation, which has no following
+architectural execution, at which point `ret; int3` is the shortest way
+of halting speculation, at half the size of `ret; lfence`.
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+With a gcc toolchain, it does actually work if you macro 'ret' (and
+retl/q) to be .byte 0xc3, 0xcc, but this doesn't work for Clang IAS
+which refuses to macro real instructions.
 
-are available in the Git repository at:
+What would be massively helpful if is the toolchains could have their
+existing ARM straight-line-speculation support hooked up appropriately
+so we get some new code gen options on x86, and don't have to resort to
+the macro bodges above.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.12
-
-for you to fetch changes up to b0c2793bad0b5f10be2fc5f56df827e0c1bbf4af:
-
-  Revert "MIPS: Add basic support for ptrace single step" (2021-02-18 11:57:44 +0100)
-
-----------------------------------------------------------------
-- added support for Nintendo N64
-- added support for Realtek RTL83XX SoCs
-- kaslr support for Loongson64
-- first steps to get rid of set_fs()
-- DMA runtime coherent/non-coherent selection cleanup
-- cleanups and fixes
-
-----------------------------------------------------------------
-Aleksander Jan Bajkowski (4):
-      dt-bindings: mips: lantiq: Document Lantiq Xway PMU bindings
-      dt-bindings: mips: lantiq: Document Lantiq Xway CGU bindings
-      dt-bindings: mips: lantiq: Document Lantiq Xway EBU bindings
-      dt-bindings: mips: lantiq: Document Lantiq Xway DMA bindings
-
-Alexander Lobakin (17):
-      MIPS: UAPI: unexport unistd_nr_{n32,n64,o32}.h
-      MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
-      MIPS: CPS: don't create redundant .text.cps-vec section
-      MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
-      MIPS: properly stop .eh_frame generation
-      MIPS: vmlinux.lds.S: explicitly catch .rel.dyn symbols
-      MIPS: vmlinux.lds.S: explicitly declare .got table
-      vmlinux.lds.h: catch compound literals into data and BSS
-      vmlinux.lds.h: catch UBSAN's "unnamed data" into data
-      MIPS: select ARCH_WANT_LD_ORPHAN_WARN
-      MIPS: bitops: fix -Wshadow in asm/bitops.h
-      MIPS: pgtable: fix -Wshadow in asm/pgtable.h
-      MIPS: module: optimize module relocations processing
-      MIPS: relocatable: optimize the relocation process
-      MIPS: pistachio: remove obsolete include/asm/mach-pistachio
-      MIPS: compressed: fix build with enabled UBSAN
-      vmlinux.lds.h: catch more UBSAN symbols into .data
-
-Arnd Bergmann (2):
-      MIPS: jazz: always allow little-endian builds
-      MIPS: make kgdb depend on FPU support
-
-Aurelien Jarno (1):
-      MIPS: Support binutils configured with --enable-mips-fix-loongson3-llsc=yes
-
-Bert Vermeulen (5):
-      dt-bindings: mips: Add support for RTL83xx SoC series
-      Add support for Realtek RTL838x/RTL839x switch SoCs
-      MIPS: Add Realtek RTL838x/RTL839x support as generic MIPS system
-      dt-bindings: Add Cisco prefix to vendor list
-      mips: dts: Add support for Cisco SG220-26 switch
-
-Bhaskar Chowdhury (1):
-      arch: mips: kernel: Fix two spelling in smp.c
-
-Chengyang Fan (1):
-      MIPS: asm: spram: remove unneeded semicolon
-
-Christoph Hellwig (6):
-      MIPS/malta: simplify plat_setup_iocoherency
-      MIPS/alchemy: factor out the DMA coherent setup
-      MIPS: refactor the runtime coherent vs noncoherent DMA indicators
-      driver core: lift dma_default_coherent into common code
-      MIPS: remove CONFIG_DMA_MAYBE_COHERENT
-      MIPS: remove CONFIG_DMA_PERDEV_COHERENT
-
-Geert Uytterhoeven (1):
-      MIPS: bitops: Fix reference to ffz location
-
-Huang Pei (1):
-      MIPS: fix kernel_stack_pointer()
-
-Jia Qingtong (1):
-      MIPS: perf: Add support for OCTEON III perf events.
-
-Jiaxun Yang (4):
-      MIPS: zboot: head.S clean up
-      MIPS: cacheinfo: Add missing VCache
-      MIPS: Loongson64: Set cluster for cores
-      MIPS: Kill RM7K & RM9K IRQ Code
-
-Jinyang He (9):
-      MIPS: zboot: Avoid endless loop in clear BSS.
-      MIPS: process: Remove unnecessary headers inclusion
-      MIPS: microMIPS: Fix the judgment of mm_jr16_op and mm_jalr_op
-      MIPS: Fix get_frame_info() handing of function size
-      MIPS: Add is_jr_ra_ins() to end the loop early
-      MIPS: relocatable: Provide kaslr_offset() to get the kernel offset
-      MIPS: relocatable: Use __kaslr_offset in show_kernel_relocation
-      MIPS: process: Fix no previous prototype warning
-      MIPS: Use common way to parse elfcorehdr
-
-Kees Cook (1):
-      mips: Replace lkml.org links with lore
-
-Kevin Hao (1):
-      Revert "MIPS: Octeon: Remove special handling of CONFIG_MIPS_ELF_APPENDED_DTB=y"
-
-Lauri Kasanen (3):
-      Revert "MIPS: Remove unused R4300 CPU support"
-      mips: Add N64 machine type
-      sound: Add n64 driver
-
-Lukas Bulwahn (1):
-      MAINTAINERS: replace non-matching patterns for loongson{2,3}
-
-Maciej W. Rozycki (1):
-      MAINTAINERS: Update my e-mail address throughout
-
-Martin Blumenstingl (1):
-      MIPS: lantiq: irq: register the interrupt controllers with irqchip_init
-
-Nathan Chancellor (5):
-      MIPS: Use address-of operator on section symbols
-      MIPS: c-r4k: Fix section mismatch for loongson2_sc_init
-      MIPS: lantiq: Explicitly compare LTQ_EBU_PCC_ISTAT against 0
-      MIPS: Compare __SYNC_loongson3_war against 0
-      MIPS: VDSO: Use CLANG_FLAGS instead of filtering out '--target='
-
-Paul Cercueil (1):
-      MIPS: Ingenic: Disable HPTLB for D0 XBurst CPUs too
-
-Sander Vanheule (1):
-      MIPS: ralink: manage low reset lines
-
-Serge Semin (1):
-      Revert "mips: Manually call fdt_init_reserved_mem() method"
-
-Souptick Joarder (1):
-      mips: cacheinfo: Remove unnecessary increment of level
-
-Thomas Bogendoerfer (9):
-      MIPS: Remove empty prom_free_prom_memory functions
-      MIPS: mm: abort uaccess retries upon fatal signal
-      MIPS: vpe: Remove vpe_getcwd
-      MIPS: of: Introduce helper function to get DTB
-      Revert "MIPS: microMIPS: Fix the judgment of mm_jr16_op and mm_jalr_op"
-      Revert "MIPS: kernel: {ftrace,kgdb}: Set correct address limit for cache flushes"
-      MIPS: Simplify EVA cache handling
-      MIPS: kernel: Drop kgdb_call_nmi_hook
-      Revert "MIPS: Add basic support for ptrace single step"
-
-Tiezhu Yang (8):
-      MIPS: No need to check CPU 0 in cps_cpu_disable()
-      MIPS: Loongson64: Give chance to build under !CONFIG_NUMA and !CONFIG_SMP
-      MIPS: Make definitions of MIPSInst_FMA_{FUNC,FMTM} consistent with MIPS64 manual
-      MIPS: Fix inline asm input/output type mismatch in checksum.h used with Clang
-      MIPS: kernel: Support extracting off-line stack traces from user-space with perf
-      MIPS: Make check condition for SDBBP consistent with EJTAG spec
-      MIPS: Add basic support for ptrace single step
-      MAINTAINERS: Add git tree for KVM/mips
-
-Yang Li (2):
-      KVM: MIPS: remove unneeded semicolon
-      MIPS: malta-time: remove unneeded semicolon
-
-Yanteng Si (5):
-      MIPS: init: move externs to header file
-      MIPS: IRQ: Add prototype for function init_IRQ
-      MIPS: mm: Add prototype for function __update_cache
-      MIPS: loongson2ef: remove function __uncached_access()
-      MIPS: mm:remove function __uncached_access()
-
-Youling Tang (1):
-      MIPS: crash_dump.c: Simplify copy_oldmem_page()
-
-Zheng Yongjun (2):
-      mips: kernel: convert comma to semicolon
-      mips: pci: convert comma to semicolon
-
-siyanteng (1):
-      MIPS: loongson64: smp.c: Fix block comment coding style
-
- .mailmap                                           |   1 +
- .../bindings/mips/lantiq/lantiq,cgu.yaml           |  32 ++
- .../bindings/mips/lantiq/lantiq,dma-xway.yaml      |  32 ++
- .../bindings/mips/lantiq/lantiq,ebu.yaml           |  32 ++
- .../bindings/mips/lantiq/lantiq,pmu.yaml           |  32 ++
- .../devicetree/bindings/mips/realtek-rtl.yaml      |  24 ++
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- MAINTAINERS                                        |  19 +-
- arch/mips/Kbuild.platforms                         |   1 +
- arch/mips/Kconfig                                  |  69 +++-
- arch/mips/Makefile                                 |  20 ++
- arch/mips/alchemy/common/prom.c                    |   4 -
- arch/mips/alchemy/common/setup.c                   |  34 +-
- arch/mips/ar7/memory.c                             |   5 -
- arch/mips/ath25/prom.c                             |   4 -
- arch/mips/ath79/prom.c                             |   5 -
- arch/mips/ath79/setup.c                            |  13 +-
- arch/mips/bcm47xx/prom.c                           |   4 -
- arch/mips/bcm63xx/prom.c                           |   4 -
- arch/mips/bmips/setup.c                            |  11 +-
- arch/mips/boot/compressed/Makefile                 |   1 +
- arch/mips/boot/compressed/head.S                   |  20 +-
- arch/mips/boot/dts/Makefile                        |   1 +
- arch/mips/boot/dts/realtek/Makefile                |   2 +
- arch/mips/boot/dts/realtek/cisco_sg220-26.dts      |  25 ++
- arch/mips/boot/dts/realtek/rtl838x.dtsi            |  21 ++
- arch/mips/boot/dts/realtek/rtl83xx.dtsi            |  59 ++++
- arch/mips/cavium-octeon/setup.c                    |   9 +-
- arch/mips/cobalt/setup.c                           |   5 -
- arch/mips/configs/loongson3_defconfig              |   2 +
- arch/mips/fw/arc/memory.c                          |   2 +-
- arch/mips/fw/sni/sniprom.c                         |   4 -
- arch/mips/generic/init.c                           |   9 +-
- arch/mips/include/asm/Kbuild                       |   4 +
- arch/mips/include/asm/asm.h                        |  18 +
- arch/mips/include/asm/atomic.h                     |   2 +-
- arch/mips/include/asm/bitops.h                     |  12 +-
- arch/mips/include/asm/bootinfo.h                   |  22 +-
- arch/mips/include/asm/checksum.h                   |   6 +-
- arch/mips/include/asm/cmpxchg.h                    |   6 +-
- arch/mips/include/asm/cpu-type.h                   |   5 +
- arch/mips/include/asm/cpu.h                        |   2 +-
- arch/mips/include/asm/dma-coherence.h              |  38 ---
- arch/mips/include/asm/inst.h                       |   6 +-
- arch/mips/include/asm/irq.h                        |   1 +
- arch/mips/include/asm/irq_cpu.h                    |   2 -
- arch/mips/include/asm/mach-generic/irq.h           |   6 -
- arch/mips/include/asm/mach-loongson64/loongson.h   |   2 +-
- arch/mips/include/asm/mach-n64/irq.h               |   9 +
- arch/mips/include/asm/mach-n64/kmalloc.h           |   8 +
- arch/mips/include/asm/mach-pistachio/irq.h         |  15 -
- arch/mips/include/asm/mipsregs.h                   |   4 +
- arch/mips/include/asm/octeon/octeon.h              |   1 -
- arch/mips/include/asm/page.h                       |  17 +-
- arch/mips/include/asm/pgtable.h                    |  14 +-
- arch/mips/include/asm/ptrace.h                     |   2 +-
- arch/mips/include/asm/r4kcache.h                   |  67 +---
- arch/mips/include/asm/spram.h                      |   2 +-
- arch/mips/include/asm/traps.h                      |   1 +
- arch/mips/include/asm/vermagic.h                   |   2 +
- arch/mips/include/asm/vpe.h                        |   3 -
- arch/mips/include/uapi/asm/Kbuild                  |   3 -
- arch/mips/include/uapi/asm/perf_regs.h             |  40 +++
- arch/mips/jazz/Kconfig                             |   3 -
- arch/mips/kernel/Makefile                          |   3 +-
- arch/mips/kernel/cacheinfo.c                       |  30 +-
- arch/mips/kernel/cevt-txx9.c                       |   2 +-
- arch/mips/kernel/cps-vec.S                         |   1 -
- arch/mips/kernel/cpu-probe.c                       |  24 +-
- arch/mips/kernel/crash_dump.c                      |  41 +--
- arch/mips/kernel/ftrace.c                          |   4 -
- arch/mips/kernel/genex.S                           |   4 +-
- arch/mips/kernel/head.S                            |  31 --
- arch/mips/kernel/idle.c                            |   1 +
- arch/mips/kernel/irq-rm7000.c                      |  45 ---
- arch/mips/kernel/kgdb.c                            |  23 +-
- arch/mips/kernel/module.c                          | 109 +++---
- arch/mips/kernel/perf_event_mipsxx.c               |  22 +-
- arch/mips/kernel/perf_regs.c                       |  68 ++++
- arch/mips/kernel/process.c                         |  83 +++--
- arch/mips/kernel/relocate.c                        |  72 ++--
- arch/mips/kernel/setup.c                           |  71 ++--
- arch/mips/kernel/smp-cps.c                         |   3 -
- arch/mips/kernel/smp.c                             |   6 +-
- arch/mips/kernel/syscalls/Makefile                 |  16 +-
- arch/mips/kernel/vmlinux.lds.S                     |  11 +-
- arch/mips/kernel/vpe-cmp.c                         |   4 +-
- arch/mips/kernel/vpe-mt.c                          |   4 +-
- arch/mips/kernel/vpe.c                             |  33 --
- arch/mips/kvm/mips.c                               |   2 +-
- arch/mips/lantiq/irq.c                             |  10 +-
- arch/mips/lantiq/prom.c                            |  11 +-
- arch/mips/loongson2ef/common/init.c                |   5 -
- arch/mips/loongson2ef/common/mem.c                 |  11 -
- arch/mips/loongson32/common/prom.c                 |   4 -
- arch/mips/loongson64/Platform                      |  22 --
- arch/mips/loongson64/init.c                        |  54 ++-
- arch/mips/loongson64/numa.c                        |  52 +--
- arch/mips/loongson64/smp.c                         |   8 +-
- arch/mips/mm/c-r4k.c                               |  13 +-
- arch/mips/mm/cache.c                               |   9 +-
- arch/mips/mm/dma-noncoherent.c                     |   3 +-
- arch/mips/mm/fault.c                               |   5 +-
- arch/mips/mm/init.c                                |   5 +
- arch/mips/mm/tlbex.c                               |   1 +
- arch/mips/mti-malta/malta-init.c                   |   1 -
- arch/mips/mti-malta/malta-memory.c                 |   4 -
- arch/mips/mti-malta/malta-setup.c                  |  34 +-
- arch/mips/mti-malta/malta-time.c                   |   2 +-
- arch/mips/n64/Makefile                             |   6 +
- arch/mips/n64/Platform                             |   7 +
- arch/mips/n64/init.c                               | 164 +++++++++
- arch/mips/n64/irq.c                                |  16 +
- arch/mips/netlogic/xlp/setup.c                     |   5 -
- arch/mips/netlogic/xlr/setup.c                     |   5 -
- arch/mips/pci/pci-alchemy.c                        |   7 +-
- arch/mips/pci/pci-ar2315.c                         |   6 +-
- arch/mips/pic32/pic32mzda/init.c                   |  19 +-
- arch/mips/pistachio/Platform                       |   2 -
- arch/mips/pistachio/init.c                         |   6 -
- arch/mips/ralink/of.c                              |  11 +-
- arch/mips/ralink/prom.c                            |   4 -
- arch/mips/ralink/reset.c                           |   4 +-
- arch/mips/rb532/prom.c                             |   5 -
- arch/mips/sgi-ip27/ip27-memory.c                   |   5 -
- arch/mips/sgi-ip32/ip32-memory.c                   |   5 -
- arch/mips/sibyte/common/cfe.c                      |   5 -
- arch/mips/txx9/generic/setup.c                     |   4 -
- arch/mips/vdso/Makefile                            |   5 +-
- arch/mips/vr41xx/common/init.c                     |   4 -
- drivers/base/core.c                                |   6 +
- drivers/char/mem.c                                 |   7 -
- include/asm-generic/vmlinux.lds.h                  |   6 +-
- include/linux/dma-map-ops.h                        |   5 +-
- kernel/dma/Kconfig                                 |   3 -
- kernel/dma/mapping.c                               |   2 +
- sound/mips/Kconfig                                 |   7 +
- sound/mips/Makefile                                |   1 +
- sound/mips/snd-n64.c                               | 372 +++++++++++++++++++++
- 139 files changed, 1577 insertions(+), 925 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,cgu.yaml
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,dma-xway.yaml
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,ebu.yaml
- create mode 100644 Documentation/devicetree/bindings/mips/lantiq/lantiq,pmu.yaml
- create mode 100644 Documentation/devicetree/bindings/mips/realtek-rtl.yaml
- create mode 100644 arch/mips/boot/dts/realtek/Makefile
- create mode 100644 arch/mips/boot/dts/realtek/cisco_sg220-26.dts
- create mode 100644 arch/mips/boot/dts/realtek/rtl838x.dtsi
- create mode 100644 arch/mips/boot/dts/realtek/rtl83xx.dtsi
- delete mode 100644 arch/mips/include/asm/dma-coherence.h
- create mode 100644 arch/mips/include/asm/mach-n64/irq.h
- create mode 100644 arch/mips/include/asm/mach-n64/kmalloc.h
- delete mode 100644 arch/mips/include/asm/mach-pistachio/irq.h
- create mode 100644 arch/mips/include/uapi/asm/perf_regs.h
- delete mode 100644 arch/mips/kernel/irq-rm7000.c
- create mode 100644 arch/mips/kernel/perf_regs.c
- create mode 100644 arch/mips/n64/Makefile
- create mode 100644 arch/mips/n64/Platform
- create mode 100644 arch/mips/n64/init.c
- create mode 100644 arch/mips/n64/irq.c
- create mode 100644 sound/mips/snd-n64.c
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+~Andrew
