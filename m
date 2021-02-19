@@ -2,267 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DEA31FDC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 102F231FDCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhBSRWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:22:39 -0500
-Received: from marcansoft.com ([212.63.210.85]:42284 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229553AbhBSRWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:22:36 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: hector@marcansoft.com)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 432C141EF0;
-        Fri, 19 Feb 2021 17:21:49 +0000 (UTC)
-From:   Hector Martin <marcan@marcan.st>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Hector Martin <marcan@marcan.st>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>
-Subject: [PATCH 7/8 v1.5] arm64: Always keep DAIF.[IF] in sync
-Date:   Sat, 20 Feb 2021 02:21:45 +0900
-Message-Id: <20210219172145.45264-1-marcan@marcan.st>
-X-Mailer: git-send-email 2.30.0
+        id S229908AbhBSRXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:23:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229810AbhBSRXe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 12:23:34 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4913C061786;
+        Fri, 19 Feb 2021 09:22:53 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id s11so11194709edd.5;
+        Fri, 19 Feb 2021 09:22:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sgU+CZrZZFSzovqSyineFZB7+11lz5F3oYA1vP9Voos=;
+        b=DgFFBkrTUxhDKqBc6NMwr3FK5oMKtJ15gVXVqduWj0Y1A8uS1hSqupLxAYb3aQpyVL
+         GS+swZY/to4LUQTCf2Nl9IQ0pBwW3zLwhc7zbTZPmA+l1MStI13B9aqtH1ncNIvX14JR
+         dllviE88TtijXXYJl+zCQauMtvOod9ZvKhYxODIyMyyG4+HjIJOSI4VPAI7vTnC+8DT7
+         7Fs6xl27RpiJCsgoR3Vdw1EMKz0/o80HQAF+I1CXWb9qNrlb0MfsdcnkRoi6y7qberff
+         w22WN5uhD5Fa/1x1n2GeGEYp+b7KIPaRy1Zzl14us+XVti1Gnhj0p7yDc2SfUJJIDyQs
+         2Spw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sgU+CZrZZFSzovqSyineFZB7+11lz5F3oYA1vP9Voos=;
+        b=kjq8A0ctmPrdF5yYeqpdMW1s0z0xoy71kaNcTFDsgKqMPV24PuLlZHlSZ1zDTT3NKY
+         wNpjiCeHH+maNugg2fMFowPjpc7qhD6yqPV4OQ8q20lmoGBYhROJfNzJgUbggmrHfoqi
+         yo5yxwQCmOc/L0q0mydF/Yn1r311fio4TZTZ+NPdsik0cGEC+B4cdvRk7XzWDwbl8hn9
+         lgODqyZn1o+7RZkJmKbFxCaWeUedPFywbfWBWq89AEnQMV5uYD3IBku3GiDopOsHfIS0
+         PXpQuMCl9qElMAVm9R2w+KofF/3wmE4eco9CuKeUf5G+IS5szIN48gbnq92zkHO1roTc
+         l7bw==
+X-Gm-Message-State: AOAM530AtGIYx2jLcaSZmuRJ3ctdy5Av2it46/HDKuVhhlj1mTINqyt/
+        bumyCu0NOQ7Gt9o1NaAWBaMusZn76QO2Zm58FeQ=
+X-Google-Smtp-Source: ABdhPJy67UmNC7MuGtqmBdm241YUWMlRoCz49DCXlPS6TV1pzEQVBYCbomneUctTxYFwYBmvcPF3PGxNy18J/Wj9ui4=
+X-Received: by 2002:aa7:da0c:: with SMTP id r12mr2088959eds.362.1613755372428;
+ Fri, 19 Feb 2021 09:22:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <000000000000563a0205bafb7970@google.com> <20210211104947.GL19070@quack2.suse.cz>
+ <bf1088e3-b051-6361-57dd-6b836b1c3b46@i-love.sakura.ne.jp>
+ <20210215124519.GA22417@quack2.suse.cz> <aaee5d61-f988-84c3-4d16-f8b7987f3a83@i-love.sakura.ne.jp>
+ <20210215142935.GB22417@quack2.suse.cz> <34341830-f74f-57fa-2d21-c141f239b017@i-love.sakura.ne.jp>
+In-Reply-To: <34341830-f74f-57fa-2d21-c141f239b017@i-love.sakura.ne.jp>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Fri, 19 Feb 2021 09:22:40 -0800
+Message-ID: <CAD+ocbynNULCAPuYyVaBThdvQxUy_Zg8phDNn_wnD4bqPBW1uw@mail.gmail.com>
+Subject: Re: possible deadlock in start_this_handle (2)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Jan Kara <jack@suse.cz>, jack@suse.com,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        "Theodore Y. Ts'o" <tytso@mit.edu>, mhocko@suse.cz,
+        linux-mm@kvack.org,
+        syzbot <syzbot+bfdded10ab7dcd7507ae@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apple SoCs (A11 and newer) have some interrupt sources hardwired to the
-FIQ line. We implement support for this by simply treating IRQs and FIQs
-the same way in the interrupt vectors.
+On Fri, Feb 19, 2021 at 2:20 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> On 2021/02/15 23:29, Jan Kara wrote:
+> > On Mon 15-02-21 23:06:15, Tetsuo Handa wrote:
+> >> On 2021/02/15 21:45, Jan Kara wrote:
+> >>> On Sat 13-02-21 23:26:37, Tetsuo Handa wrote:
+> >>>> Excuse me, but it seems to me that nothing prevents
+> >>>> ext4_xattr_set_handle() from reaching ext4_xattr_inode_lookup_create()
+> >>>> without memalloc_nofs_save() when hitting ext4_get_nojournal() path.
+> >>>> Will you explain when ext4_get_nojournal() path is executed?
+> >>>
+> >>> That's a good question but sadly I don't think that's it.
+> >>> ext4_get_nojournal() is called when the filesystem is created without a
+> >>> journal. In that case we also don't acquire jbd2_handle lockdep map. In the
+> >>> syzbot report we can see:
+> >>
+> >> Since syzbot can test filesystem images, syzbot might have tested a filesystem
+> >> image created both with and without journal within this boot.
+> >
+> > a) I think that syzbot reboots the VM between executing different tests to
+> > get reproducible conditions. But in theory I agree the test may have
+> > contained one image with and one image without a journal.
+>
+> syzkaller reboots the VM upon a crash.
+> syzkaller can test multiple filesystem images within one boot.
+>
+> https://storage.googleapis.com/syzkaller/cover/ci-qemu-upstream-386.html (this
+> statistic snapshot is volatile) reports that ext4_get_nojournal() is partially covered
+> ( https://github.com/google/syzkaller/blob/master/docs/coverage.md ) by syzkaller.
+>
+>       /* Just increment the non-pointer handle value */
+>       static handle_t *ext4_get_nojournal(void)
+>       {
+>    86         handle_t *handle = current->journal_info;
+>               unsigned long ref_cnt = (unsigned long)handle;
+>
+>               BUG_ON(ref_cnt >= EXT4_NOJOURNAL_MAX_REF_COUNT);
+>
+>    86         ref_cnt++;
+>               handle = (handle_t *)ref_cnt;
+>
+>               current->journal_info = handle;
+>  2006         return handle;
+>       }
+>
+>
+>       /* Decrement the non-pointer handle value */
+>       static void ext4_put_nojournal(handle_t *handle)
+>       {
+>               unsigned long ref_cnt = (unsigned long)handle;
+>
+>    85         BUG_ON(ref_cnt == 0);
+>
+>    85         ref_cnt--;
+>               handle = (handle_t *)ref_cnt;
+>
+>               current->journal_info = handle;
+>       }
+>
+>
+>       handle_t *__ext4_journal_start_sb(struct super_block *sb, unsigned int line,
+>                                         int type, int blocks, int rsv_blocks,
+>                                         int revoke_creds)
+>       {
+>               journal_t *journal;
+>               int err;
+>
+>  2006         trace_ext4_journal_start(sb, blocks, rsv_blocks, revoke_creds,
+>  2006                                  _RET_IP_);
+>  2006         err = ext4_journal_check_start(sb);
+>               if (err < 0)
+>                       return ERR_PTR(err);
+>
+>  2005         journal = EXT4_SB(sb)->s_journal;
+>  1969         if (!journal || (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY))
+>  2006                 return ext4_get_nojournal();
+>  1969         return jbd2__journal_start(journal, blocks, rsv_blocks, revoke_creds,
+>                                          GFP_NOFS, type, line);
+>       }
+>
+> >
+> > *but*
+> >
+> > b) as I wrote in the email you are replying to, the jbd2_handle key is
+> > private per filesystem. Thus for lockdep to complain about
+> > jbd2_handle->fs_reclaim->jbd2_handle deadlock, those jbd2_handle lockdep
+> > maps must come from the same filesystem.
+> >
+> > *and*
+> >
+> > c) filesystem without journal doesn't use jbd2_handle lockdep map at all so
+> > for such filesystems lockdep creates no dependency for jbd2_handle map.
+> >
+>
+> What about "EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)" case?
+> Does this case happen on filesystem with journal, and can this case be executed
+> by fuzzing a crafted (a sort of erroneous) filesystem with journal, and are
+> the jbd2_handle for calling ext4_get_nojournal() case and the jbd2_handle for
+> calling jbd2__journal_start() case the same?
+EXT4_FC_REPLAY is a mount state that is only set during jbd2 journal
+recovery. The only way for jbd2 journal recovery to set EXT4_FC_REPLAY
+option is if after a journal crash there are special fast_commit
+blocks present in the journal. For these fast_commit blocks to be
+present in the journal, the Ext4 file system prior to crash should
+have had "fast_commit" feature enabled.
 
-To support these systems, the FIQ mask bit needs to be kept in sync with
-the IRQ mask bit, so both kinds of exceptions are masked together. No
-other platforms should be delivering FIQ exceptions right now, and we
-already unmask FIQ in normal process context, so this should not have an
-effect on other systems - if spurious FIQs were arriving, they would
-already panic the kernel.
+If we have a way to look at the Ext4 partition that syzbot used for
+reporting this bug, it is very easy to see if this FC_REPLAY will ever
+be set or not. Just running "debugfs <image>" and inside debugfs,
+running logdump will show us if there are any fast commit blocks
+present in the journal.
 
-Signed-off-by: Hector Martin <marcan@marcan.st>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Will Deacon <will@kernel.org>
+Having said that, I have following reason to believe that this option
+wasn't set during the syzbot failure:
 
----
- arch/arm64/include/asm/arch_gicv3.h |  2 +-
- arch/arm64/include/asm/assembler.h  |  8 ++++----
- arch/arm64/include/asm/daifflags.h  | 10 +++++-----
- arch/arm64/include/asm/irqflags.h   | 16 +++++++---------
- arch/arm64/kernel/entry.S           | 12 +++++++-----
- arch/arm64/kernel/process.c         |  2 +-
- arch/arm64/kernel/smp.c             |  1 +
- 7 files changed, 26 insertions(+), 25 deletions(-)
+EXT4_FC_REPLAY will only be set during journal recovery and is cleared
+immediately after. Which means EXT4_FC_REPLAY will only be set during
+mount and as soon as mount returns the option will be cleared. Looking
+at the stack trace, it shows no evidence that we are in the journal
+recovery phase. It seems like most of the traces are resulting from
+system calls made by the user. I checked if we are accidentally
+setting this flag even after journal recovery, but that doesn't seem
+to be the case. On a successfully mounted file system, we
+unconditionally clear this flag.
 
-This is the updated patch after addressing the comments in the original
-v2 review; we're moving it to this series now, so please review it in
-this context.
+- Harshad
 
-diff --git a/arch/arm64/include/asm/arch_gicv3.h b/arch/arm64/include/asm/arch_gicv3.h
-index 880b9054d75c..934b9be582d2 100644
---- a/arch/arm64/include/asm/arch_gicv3.h
-+++ b/arch/arm64/include/asm/arch_gicv3.h
-@@ -173,7 +173,7 @@ static inline void gic_pmr_mask_irqs(void)
-
- static inline void gic_arch_enable_irqs(void)
- {
--	asm volatile ("msr daifclr, #2" : : : "memory");
-+	asm volatile ("msr daifclr, #3" : : : "memory");
- }
-
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/arm64/include/asm/assembler.h b/arch/arm64/include/asm/assembler.h
-index bf125c591116..53ff8c71eed7 100644
---- a/arch/arm64/include/asm/assembler.h
-+++ b/arch/arm64/include/asm/assembler.h
-@@ -40,9 +40,9 @@
- 	msr	daif, \flags
- 	.endm
-
--	/* IRQ is the lowest priority flag, unconditionally unmask the rest. */
--	.macro enable_da_f
--	msr	daifclr, #(8 | 4 | 1)
-+	/* IRQ/FIQ are the lowest priority flags, unconditionally unmask the rest. */
-+	.macro enable_da
-+	msr	daifclr, #(8 | 4)
- 	.endm
-
- /*
-@@ -50,7 +50,7 @@
-  */
- 	.macro	save_and_disable_irq, flags
- 	mrs	\flags, daif
--	msr	daifset, #2
-+	msr	daifset, #3
- 	.endm
-
- 	.macro	restore_irq, flags
-diff --git a/arch/arm64/include/asm/daifflags.h b/arch/arm64/include/asm/daifflags.h
-index 1c26d7baa67f..5eb7af9c4557 100644
---- a/arch/arm64/include/asm/daifflags.h
-+++ b/arch/arm64/include/asm/daifflags.h
-@@ -13,8 +13,8 @@
- #include <asm/ptrace.h>
-
- #define DAIF_PROCCTX		0
--#define DAIF_PROCCTX_NOIRQ	PSR_I_BIT
--#define DAIF_ERRCTX		(PSR_I_BIT | PSR_A_BIT)
-+#define DAIF_PROCCTX_NOIRQ	(PSR_I_BIT | PSR_F_BIT)
-+#define DAIF_ERRCTX		(PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
- #define DAIF_MASK		(PSR_D_BIT | PSR_A_BIT | PSR_I_BIT | PSR_F_BIT)
-
-
-@@ -47,7 +47,7 @@ static inline unsigned long local_daif_save_flags(void)
- 	if (system_uses_irq_prio_masking()) {
- 		/* If IRQs are masked with PMR, reflect it in the flags */
- 		if (read_sysreg_s(SYS_ICC_PMR_EL1) != GIC_PRIO_IRQON)
--			flags |= PSR_I_BIT;
-+			flags |= PSR_I_BIT | PSR_F_BIT;
- 	}
-
- 	return flags;
-@@ -69,7 +69,7 @@ static inline void local_daif_restore(unsigned long flags)
- 	bool irq_disabled = flags & PSR_I_BIT;
-
- 	WARN_ON(system_has_prio_mask_debugging() &&
--		!(read_sysreg(daif) & PSR_I_BIT));
-+		(read_sysreg(daif) & (PSR_I_BIT | PSR_F_BIT)) != (PSR_I_BIT | PSR_F_BIT));
-
- 	if (!irq_disabled) {
- 		trace_hardirqs_on();
-@@ -86,7 +86,7 @@ static inline void local_daif_restore(unsigned long flags)
- 			 * If interrupts are disabled but we can take
- 			 * asynchronous errors, we can take NMIs
- 			 */
--			flags &= ~PSR_I_BIT;
-+			flags &= ~(PSR_I_BIT | PSR_F_BIT);
- 			pmr = GIC_PRIO_IRQOFF;
- 		} else {
- 			pmr = GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET;
-diff --git a/arch/arm64/include/asm/irqflags.h b/arch/arm64/include/asm/irqflags.h
-index ff328e5bbb75..b57b9b1e4344 100644
---- a/arch/arm64/include/asm/irqflags.h
-+++ b/arch/arm64/include/asm/irqflags.h
-@@ -12,15 +12,13 @@
-
- /*
-  * Aarch64 has flags for masking: Debug, Asynchronous (serror), Interrupts and
-- * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'dai'
-+ * FIQ exceptions, in the 'daif' register. We mask and unmask them in 'daif'
-  * order:
-  * Masking debug exceptions causes all other exceptions to be masked too/
-- * Masking SError masks irq, but not debug exceptions. Masking irqs has no
-- * side effects for other flags. Keeping to this order makes it easier for
-- * entry.S to know which exceptions should be unmasked.
-- *
-- * FIQ is never expected, but we mask it when we disable debug exceptions, and
-- * unmask it at all other times.
-+ * Masking SError masks IRQ/FIQ, but not debug exceptions. IRQ and FIQ are
-+ * always masked and unmasked together, and have no side effects for other
-+ * flags. Keeping to this order makes it easier for entry.S to know which
-+ * exceptions should be unmasked.
-  */
-
- /*
-@@ -35,7 +33,7 @@ static inline void arch_local_irq_enable(void)
- 	}
-
- 	asm volatile(ALTERNATIVE(
--		"msr	daifclr, #2		// arch_local_irq_enable",
-+		"msr	daifclr, #3		// arch_local_irq_enable",
- 		__msr_s(SYS_ICC_PMR_EL1, "%0"),
- 		ARM64_HAS_IRQ_PRIO_MASKING)
- 		:
-@@ -54,7 +52,7 @@ static inline void arch_local_irq_disable(void)
- 	}
-
- 	asm volatile(ALTERNATIVE(
--		"msr	daifset, #2		// arch_local_irq_disable",
-+		"msr	daifset, #3		// arch_local_irq_disable",
- 		__msr_s(SYS_ICC_PMR_EL1, "%0"),
- 		ARM64_HAS_IRQ_PRIO_MASKING)
- 		:
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index acc677672277..af04ce5088ca 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -533,7 +533,7 @@ alternative_endif
-
- 	.macro el1_interrupt_handler, handler:req
- 	gic_prio_irq_setup pmr=x20, tmp=x1
--	enable_da_f
-+	enable_da
-
- 	mov	x0, sp
- 	bl	enter_el1_irq_or_nmi
-@@ -544,8 +544,10 @@ alternative_endif
- 	ldr	x24, [tsk, #TSK_TI_PREEMPT]	// get preempt count
- alternative_if ARM64_HAS_IRQ_PRIO_MASKING
- 	/*
--	 * DA_F were cleared at start of handling. If anything is set in DAIF,
--	 * we come back from an NMI, so skip preemption
-+	 * DA were cleared at start of handling, and IF are cleared by
-+	 * the GIC irqchip driver using gic_arch_enable_irqs() for
-+	 * normal IRQs. If anything is set, it means we come back from
-+	 * an NMI instead of a normal IRQ, so skip preemption
- 	 */
- 	mrs	x0, daif
- 	orr	x24, x24, x0
-@@ -562,7 +564,7 @@ alternative_else_nop_endif
- 	.macro el0_interrupt_handler, handler:req
- 	gic_prio_irq_setup pmr=x20, tmp=x0
- 	user_exit_irqoff
--	enable_da_f
-+	enable_da
-
- 	tbz	x22, #55, 1f
- 	bl	do_el0_irq_bp_hardening
-@@ -763,7 +765,7 @@ el0_error_naked:
- 	mov	x0, sp
- 	mov	x1, x25
- 	bl	do_serror
--	enable_da_f
-+	enable_da
- 	b	ret_to_user
- SYM_CODE_END(el0_error)
-
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 6616486a58fe..34ec400288d0 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -84,7 +84,7 @@ static void noinstr __cpu_do_idle_irqprio(void)
- 	unsigned long daif_bits;
-
- 	daif_bits = read_sysreg(daif);
--	write_sysreg(daif_bits | PSR_I_BIT, daif);
-+	write_sysreg(daif_bits | PSR_I_BIT | PSR_F_BIT, daif);
-
- 	/*
- 	 * Unmask PMR before going idle to make sure interrupts can
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index ad00f99ee9b0..9dee8a17b1ac 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -188,6 +188,7 @@ static void init_gic_priority_masking(void)
- 	cpuflags = read_sysreg(daif);
-
- 	WARN_ON(!(cpuflags & PSR_I_BIT));
-+	WARN_ON(!(cpuflags & PSR_F_BIT));
-
- 	gic_write_pmr(GIC_PRIO_IRQON | GIC_PRIO_PSR_I_SET);
- }
---
-2.30.0
-
+>
+> Also, I worry that jbd2__journal_restart() is problematic, for it calls
+> stop_this_handle() (which calls memalloc_nofs_restore()) and then calls
+> start_this_handle() (which fails to call memalloc_nofs_save() if an error
+> occurs). An error from start_this_handle() from journal restart operation
+> might need special handling (i.e. either remount-ro or panic) ?
+>
