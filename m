@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5893200EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F8F3200EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhBSVzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 16:55:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40968 "EHLO
+        id S229849AbhBSVzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 16:55:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41935 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229649AbhBSVzj (ORCPT
+        by vger.kernel.org with ESMTP id S229796AbhBSVze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 16:55:39 -0500
+        Fri, 19 Feb 2021 16:55:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613771653;
+        s=mimecast20190719; t=1613771646;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=z5cOikk7Dn1pZpQyq/vuZUV78NfThhlat10M7LZW1ck=;
-        b=H/H4uLNqwqbbo/2UiyLNHxtD7zD0ZKrHh/NJGjV2g243VpKEvo+QDIgmxc2/nswaFjHXDW
-        Kr1ZnEC4CwZOHjBopSD6/eE9w9jGZzutVgikX2+YQaKaN2H/tn5Dkx3Hk9XvzD/kYjokeI
-        z9YJtOEguoWY9JbNLOx8TVcyu4dK7WY=
+        bh=xF0OfrnlVmd/DfJPvqmHtCe3vZ4VRsC929jG9IY3Pkw=;
+        b=NBXLJC7gYRb7+Pim1zsi3OLxgq5Q1nilaFXNIYR8tnNtJiOl9MUrzSFpkFtUnkqRC+UsDh
+        UE1QNm95L/ZGehdpcsgkmLrxv4E/GwtYXBKW5+usQORmhxFbP1QB42nm6AOCeTSm4a9V2c
+        K8Zz1JJTTtDV5cH1v/vGTc8rMhnmKdI=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-O6KSchbwO9eiHP1mA92Pkg-1; Fri, 19 Feb 2021 16:53:57 -0500
-X-MC-Unique: O6KSchbwO9eiHP1mA92Pkg-1
+ us-mta-459-mA2a1WUFNcaPO_UpkM-fRA-1; Fri, 19 Feb 2021 16:54:04 -0500
+X-MC-Unique: mA2a1WUFNcaPO_UpkM-fRA-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E4A52801B0F;
-        Fri, 19 Feb 2021 21:53:52 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 58DF9107ACE3;
+        Fri, 19 Feb 2021 21:54:01 +0000 (UTC)
 Received: from Whitewolf.redhat.com (ovpn-118-5.rdu2.redhat.com [10.10.118.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 66B376A03C;
-        Fri, 19 Feb 2021 21:53:50 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A18266A03C;
+        Fri, 19 Feb 2021 21:53:58 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
@@ -49,10 +49,14 @@ Cc:     Andrzej Hajda <a.hajda@samsung.com>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 04/30] drm/bridge/tc358767: Don't register DP AUX channel until bridge is attached
-Date:   Fri, 19 Feb 2021 16:53:00 -0500
-Message-Id: <20210219215326.2227596-5-lyude@redhat.com>
+Subject: [PATCH 05/30] drm/bridge/cdns-mhdp8546: Register DP aux channel with userspace
+Date:   Fri, 19 Feb 2021 16:53:01 -0500
+Message-Id: <20210219215326.2227596-6-lyude@redhat.com>
 In-Reply-To: <20210219215326.2227596-1-lyude@redhat.com>
 References: <20210219215326.2227596-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -62,79 +66,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since this is a bridge, we don't start out with a respective DRM device.
-Likewise this means we don't have a connector, which also means that we
-should be following drm_dp_aux_register()'s documentation advice and not
-call drm_dp_aux_register() until we have a matching connector. Instead,
-call drm_dp_aux_init() in tc_probe() and wait until tc_bridge_attach() to
-register our AUX channel. We also add tc_bridge_detach() to handle
-unregistering the AUX adapter once the bridge has been disconnected.
+Just adds some missing calls to
+drm_dp_aux_register()/drm_dp_aux_unregister() for when we attach/detach the
+bridge.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- drivers/gpu/drm/bridge/tc358767.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
-index 34a3e4e9f717..da89922721ed 100644
---- a/drivers/gpu/drm/bridge/tc358767.c
-+++ b/drivers/gpu/drm/bridge/tc358767.c
-@@ -1414,11 +1414,15 @@ static int tc_bridge_attach(struct drm_bridge *bridge,
- 	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
- 		return 0;
+diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+index 989a05bc8197..d966a33743b5 100644
+--- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
++++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+@@ -1674,10 +1674,14 @@ static int cdns_mhdp_attach(struct drm_bridge *bridge,
  
-+	ret = drm_dp_aux_register(&tc->aux);
+ 	dev_dbg(mhdp->dev, "%s\n", __func__);
+ 
++	ret = drm_dp_aux_register(&mhdp->aux);
 +	if (ret < 0)
 +		return ret;
 +
- 	/* Create DP/eDP connector */
- 	drm_connector_helper_add(&tc->connector, &tc_connector_helper_funcs);
- 	ret = drm_connector_init(drm, &tc->connector, &tc_connector_funcs, tc->bridge.type);
- 	if (ret)
--		return ret;
-+		goto aux_unregister;
+ 	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
+ 		ret = cdns_mhdp_connector_init(mhdp);
+ 		if (ret)
+-			return ret;
++			goto aux_unregister;
+ 	}
  
- 	/* Don't poll if don't have HPD connected */
- 	if (tc->hpd_pin >= 0) {
-@@ -1438,10 +1442,19 @@ static int tc_bridge_attach(struct drm_bridge *bridge,
- 	drm_connector_attach_encoder(&tc->connector, tc->bridge.encoder);
+ 	spin_lock(&mhdp->start_lock);
+@@ -1693,6 +1697,9 @@ static int cdns_mhdp_attach(struct drm_bridge *bridge,
+ 		       mhdp->regs + CDNS_APB_INT_MASK);
  
  	return 0;
 +aux_unregister:
-+	drm_dp_aux_unregister(&tc->aux);
++	drm_dp_aux_unregister(&mhdp->aux);
 +	return ret;
-+}
+ }
+ 
+ static void cdns_mhdp_configure_video(struct cdns_mhdp_device *mhdp,
+@@ -2025,6 +2032,8 @@ static void cdns_mhdp_detach(struct drm_bridge *bridge)
+ 
+ 	dev_dbg(mhdp->dev, "%s\n", __func__);
+ 
++	drm_dp_aux_unregister(&mhdp->aux);
 +
-+static void tc_bridge_detach(struct drm_bridge *bridge)
-+{
-+	drm_dp_aux_unregister(&bridge_to_tc(bridge)->aux);
- }
+ 	spin_lock(&mhdp->start_lock);
  
- static const struct drm_bridge_funcs tc_bridge_funcs = {
- 	.attach = tc_bridge_attach,
-+	.detach = tc_bridge_detach,
- 	.mode_valid = tc_mode_valid,
- 	.mode_set = tc_bridge_mode_set,
- 	.enable = tc_bridge_enable,
-@@ -1680,9 +1693,7 @@ static int tc_probe(struct i2c_client *client, const struct i2c_device_id *id)
- 	tc->aux.name = "TC358767 AUX i2c adapter";
- 	tc->aux.dev = tc->dev;
- 	tc->aux.transfer = tc_aux_transfer;
--	ret = drm_dp_aux_register(&tc->aux);
--	if (ret)
--		return ret;
-+	drm_dp_aux_init(&tc->aux);
- 
- 	tc->bridge.funcs = &tc_bridge_funcs;
- 	if (tc->hpd_pin >= 0)
-@@ -1702,7 +1713,6 @@ static int tc_remove(struct i2c_client *client)
- 	struct tc_data *tc = i2c_get_clientdata(client);
- 
- 	drm_bridge_remove(&tc->bridge);
--	drm_dp_aux_unregister(&tc->aux);
- 
- 	return 0;
- }
+ 	mhdp->bridge_attached = false;
 -- 
 2.29.2
 
