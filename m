@@ -2,87 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2499931F73F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:21:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D60331F748
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbhBSKUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:20:05 -0500
-Received: from foss.arm.com ([217.140.110.172]:32838 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230281AbhBSKUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:20:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5F79D6E;
-        Fri, 19 Feb 2021 02:19:16 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C73F3F694;
-        Fri, 19 Feb 2021 02:19:15 -0800 (PST)
-Subject: Re: [PATCH] sched/pelt: Fix task util_est update filtering
-To:     vincent.donnefort@arm.com, peterz@infradead.org,
-        tglx@linutronix.de, vincent.guittot@linaro.org
-Cc:     linux-kernel@vger.kernel.org, patrick.bellasi@matbug.net,
-        valentin.schneider@arm.com
-References: <20210216163921.572228-1-vincent.donnefort@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <16e1de11-d221-c572-aec7-4e9a638105a9@arm.com>
-Date:   Fri, 19 Feb 2021 11:19:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210216163921.572228-1-vincent.donnefort@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230399AbhBSKYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:24:14 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:49763 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229726AbhBSKYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:24:09 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UOxlXPK_1613730199;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UOxlXPK_1613730199)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Feb 2021 18:23:25 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu/swsmu/navi1x: Remove unnecessary conversion to bool
+Date:   Fri, 19 Feb 2021 18:23:18 +0800
+Message-Id: <1613730198-107418-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/02/2021 17:39, vincent.donnefort@arm.com wrote:
-> From: Vincent Donnefort <vincent.donnefort@arm.com>
-> 
-> Being called for each dequeue, util_est reduces the number of its updates
-> by filtering out when the EWMA signal is different from the task util_avg
-> by less than 1%. It is a problem for a sudden util_avg ramp-up. Due to the
-> decay from a previous high util_avg, EWMA might now be close enough to
-> the new util_avg. No update would then happen while it would leave
-> ue.enqueued with an out-of-date value.
+Fix the following coccicheck warnings:
 
-(1) enqueued[x-1] < ewma[x-1]
+./drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c:900:47-52: WARNING:
+conversion to bool not needed here.
 
-(2) diff(enqueued[x], ewma[x]) < 1024/100 && enqueued[x] < ewma[x] (*)
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-with ewma[x-1] == ewma[x]
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+index cd7efa9..dc9ce86 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+@@ -897,7 +897,7 @@ static bool navi10_is_support_fine_grained_dpm(struct smu_context *smu, enum smu
+ 	dpm_desc = &pptable->DpmDescriptor[clk_index];
+ 
+ 	/* 0 - Fine grained DPM, 1 - Discrete DPM */
+-	return dpm_desc->SnapToDiscrete == 0 ? true : false;
++	return !(dpm_desc->SnapToDiscrete == 0);
+ }
+ 
+ static inline bool navi10_od_feature_is_supported(struct smu_11_0_overdrive_table *od_table, enum SMU_11_0_ODFEATURE_CAP cap)
+-- 
+1.8.3.1
 
-(*) enqueued[x] must still be less than ewma[x] w/ default
-UTIL_EST_FASTUP. Otherwise we would already 'goto done' (write the new
-util_est) via the previous if condition.
-
-> 
-> Taking into consideration the two util_est members, EWMA and enqueued for
-> the filtering, ensures, for both, an up-to-date value.
-> 
-> This is for now an issue only for the trace probe that might return the
-> stale value. Functional-wise, it isn't (yet) a problem, as the value is
-> always accessed through max(enqueued, ewma).
-
-Yeah, I remember that the ue.enqueued plots looked weird in these
-sections with stale ue.enqueued values.
-
-> This problem has been observed using LISA's UtilConvergence:test_means on
-> the sd845c board.
-
-I ran the test a couple of times on my juno board and I never hit this
-path (util_est_within_margin(last_ewma_diff) &&
-!util_est_within_margin(last_enqueued_diff)) for a test task.
-
-I can't see how this issue can be board specific? Does it happen
-reliably on sd845c or is it just that it happens very, very occasionally?
-
-I saw it a couple of times but always with a (non-test) tasks migrating
-from one CPU to another.
-
-> Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
-
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-
-[...]
