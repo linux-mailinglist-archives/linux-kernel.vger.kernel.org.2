@@ -2,110 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E33631FF95
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC97131FF97
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhBSTw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:52:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
+        id S229726AbhBSTzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:55:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhBSTwZ (ORCPT
+        with ESMTP id S229515AbhBSTzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:52:25 -0500
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26715C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:51:45 -0800 (PST)
-Received: by mail-qt1-x82d.google.com with SMTP id g24so4826650qts.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:51:45 -0800 (PST)
+        Fri, 19 Feb 2021 14:55:00 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C5AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:54:19 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id w1so15596641ejf.11
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:54:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=soleen.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UqokZIMMK8aC34B+KeiFCW275H8P/pPHySRTbbLs8og=;
-        b=iwXazviBnhZbDsAGWJ5xN0xWYMsrMY8hW7aaidkSL8gG1ktLKKJah9783TJZe87anL
-         8OfebB7HAKZsup0izD0dbrIlIJWaMgevxubMMovv6zDmMhg/jEnnbEeLhecN0TiiKIso
-         CvXPxhwxSDLdF8P5D5er1s4ghaYtBCoM66oGhRPEyH6L8XmVh+8PK8o7ZlX1VxXN4Uj/
-         EKboaR1l/m8sINFC29RhOQ8AMm5xA6xBUKR9zsnxIVBNscMLtCv34LtkOJNKGQdEqiSn
-         +mkIIWRi/ZVWR4bU/sNKM8AMr7e6Vosp8BlvU1nfZBlEAoffJIuoQaW/nuvVtMj1IRid
-         CKhw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZjT0uVggNbwgGx3cUhsa/Lc/9GbU7e2hAEdj1ODBpfE=;
+        b=a/1LBpSJMULVC3uKX+PgpfK1IabihJDp+/nfA+NlXqSyquvnxBqw6bfTtoSr63try8
+         NzavLxZCnwD/D/Dn0XIX/B8HyNP0MHKaMN2iPhaDjBAktQc5jV28ufRdcn+f0he3IJFG
+         yEJUedvLSVG1biOjYQL1ufg4gfvBfeY7jt1VMSIle4VXDkF6ft9CObg+PIy+/dmKyxFF
+         nI7r0y/Hl5rRKwE8QpxjAcd+1s8crZFvsph9Zxy60RYnpub+NqkGUHEI0Oaqauq2T7n2
+         c7uCC9rWS0HbY/FYLd/47R371zyK9XsJIid5L//VftSm9Prhl+IQi2bSo5MMw8CbSOlv
+         vkWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UqokZIMMK8aC34B+KeiFCW275H8P/pPHySRTbbLs8og=;
-        b=M7YE708SS5tms5xd8h4YDRqi8R1mSMbti475rY0q4D617lOqIxjBwxt9SRuzHDyIoa
-         b9WaogZWO+M/UgTZbiT8ZhSjyAK/vAwMM1JTiXDNJAVmbnJv6nZH4B7npbT1OHIXs8yh
-         K6tHplW/2hShqwkMmuHxT6xjqZY0sqEzBF482OLo+SRpk6N7/16on+bfWJTMQHdaErOB
-         yrnHi+3S38ADy6sYJ6bZ0RV43+2l6KbPLDKszZK+xDy5iXqsLttxMPlOgfDM9HdZwMns
-         0fjTsmxvhfD74tR+I8RgteKxHqXLcz7ZTNigxX+asx1LiRX7/AuDLMhpnPjmUOFOKCc3
-         mdeA==
-X-Gm-Message-State: AOAM533SycWkqRyPGgks7TnTIarER6FzRb+zkKRqsK3QvKnh4QMwMeYM
-        fPIMB/yRK6wBju2rd/e46Fs3Ag==
-X-Google-Smtp-Source: ABdhPJx20Qu9QiZKnKzdV1KMAiyS4BsADc5EBP+5RQ4Gig0FhAXp9osZQT5d3yaqLiMvIbDB8FNsAw==
-X-Received: by 2002:ac8:5995:: with SMTP id e21mr10295910qte.294.1613764304102;
-        Fri, 19 Feb 2021 11:51:44 -0800 (PST)
-Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
-        by smtp.gmail.com with ESMTPSA id b7sm7022848qkj.115.2021.02.19.11.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 11:51:43 -0800 (PST)
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-To:     pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        jmorris@namei.org, linux-kernel@vger.kernel.org,
-        tyhicks@linux.microsoft.com, will@kernel.org, james.morse@arm.com,
-        ebiederm@xmission.com, kexec@lists.infradead.org
-Subject: [PATCH v2] kexec: move machine_kexec_post_load() to public interface
-Date:   Fri, 19 Feb 2021 14:51:42 -0500
-Message-Id: <20210219195142.13571-1-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZjT0uVggNbwgGx3cUhsa/Lc/9GbU7e2hAEdj1ODBpfE=;
+        b=lUWPHCEEYZJmgAsbbYRKLEO21dgMncin+0XpvxcMS1E7Hwo3A1gVRpUY4WOHdjviSV
+         gQpl64csyXKjS1dXRUCo8c7XuvcVAu7cdNqWEY63W3ajXRZ9wMeweWroztbnBc5dBVtb
+         gKZ/+mZNNTjV5F11oM0qJncpmF8cT/xT5O1UclzaoIXB/yiP0DTgNGPvemcM+aEutzaB
+         BZm3E7kjNqvA1gphr4pBgS6eV/jeHDgtQZsB+5/QSON+ChAybH9abxSH+Jt8RE3Np8+s
+         rfoPSjNwud4bbqvsDBHiH9cxNVmIT6RXEl1AamLlymzsOTkEkvzIg5rY9oTuwUIL0deu
+         +QMQ==
+X-Gm-Message-State: AOAM531Dy/zIdCjT+dJFldEH9vrY/5agH65bkbqPag2tMAMhFXBrsK+p
+        LepI8n/O5kuURjK8JBI3EiECQ9csGlx0DSzn1+1MTg==
+X-Google-Smtp-Source: ABdhPJzDy3bqwBKuzzbRyTnwxvgTOaDw3KZ5xgs64G0spC9/uyZ+JvXTY8rwC930ccRsl+9qv3AZ8jzKwWF6xu2V2mE=
+X-Received: by 2002:a17:906:17d5:: with SMTP id u21mr10422133eje.541.1613764458106;
+ Fri, 19 Feb 2021 11:54:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210215185908.257724-1-pasha.tatashin@soleen.com>
+ <20210215185908.257724-2-pasha.tatashin@soleen.com> <20210219175341.GC6352@willie-the-truck>
+ <CA+CK2bBpXyobT=rjVtY_pFhug4RcveGk_XB4zDBTX=vZBOkaLw@mail.gmail.com> <20210219191436.GA6683@willie-the-truck>
+In-Reply-To: <20210219191436.GA6683@willie-the-truck>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 19 Feb 2021 14:53:41 -0500
+Message-ID: <CA+CK2bC0m5=1TW350hZfvd0poujaQ0VTOGnyeUc+sPvLfT+tdw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] kexec: move machine_kexec_post_load() to public interface
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        James Morris <jmorris@namei.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        James Morse <james.morse@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-machine_kexec_post_load() is called after kexec load is finished. It must
-declared in public header not in kexec_internal.h
+On Fri, Feb 19, 2021 at 2:14 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, Feb 19, 2021 at 02:06:31PM -0500, Pavel Tatashin wrote:
+> > On Fri, Feb 19, 2021 at 12:53 PM Will Deacon <will@kernel.org> wrote:
+> > >
+> > > On Mon, Feb 15, 2021 at 01:59:08PM -0500, Pavel Tatashin wrote:
+> > > > machine_kexec_post_load() is called after kexec load is finished. It must
+> > > > be declared in public header not in kexec_internal.h
+> > >
+> > > Could you provide a log of what goes wrong without this patch, please?
+> > >
+> > > > Reported-by: kernel test robot <lkp@intel.com>
+> > >
+> > > Do you have a link to the report, or did it not go to the list?
+> >
+> > Hi Will,
+> >
+> > https://lore.kernel.org/linux-arm-kernel/202102030727.gqTokACH-lkp@intel.com/
+> >
+> > It is also linked in the cover letter.
+>
+> Ah, great. Please add that as a Link: tag in the patch, and in-line the
+> compiler warning.
 
-Fixes the following compiler warning:
+Version 2 of this fix:
+https://lore.kernel.org/lkml/20210219195142.13571-1-pasha.tatashin@soleen.com/
 
-arch/arm64/kernel/machine_kexec.c:62:5: warning: no previous prototype for
-function 'machine_kexec_post_load' [-Wmissing-prototypes]
-   int machine_kexec_post_load(struct kimage *kimage)
+With the tag link, and warning in-lined.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/linux-arm-kernel/202102030727.gqTokACH-lkp@intel.com
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
----
- include/linux/kexec.h   | 2 ++
- kernel/kexec_internal.h | 2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 9e93bef52968..3671b845cf28 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -309,6 +309,8 @@ extern void machine_kexec_cleanup(struct kimage *image);
- extern int kernel_kexec(void);
- extern struct page *kimage_alloc_control_pages(struct kimage *image,
- 						unsigned int order);
-+int machine_kexec_post_load(struct kimage *image);
-+
- extern void __crash_kexec(struct pt_regs *);
- extern void crash_kexec(struct pt_regs *);
- int kexec_should_crash(struct task_struct *);
-diff --git a/kernel/kexec_internal.h b/kernel/kexec_internal.h
-index 39d30ccf8d87..48aaf2ac0d0d 100644
---- a/kernel/kexec_internal.h
-+++ b/kernel/kexec_internal.h
-@@ -13,8 +13,6 @@ void kimage_terminate(struct kimage *image);
- int kimage_is_destination_range(struct kimage *image,
- 				unsigned long start, unsigned long end);
- 
--int machine_kexec_post_load(struct kimage *image);
--
- extern struct mutex kexec_mutex;
- 
- #ifdef CONFIG_KEXEC_FILE
--- 
-2.25.1
-
+Thank you,
+Pasha
