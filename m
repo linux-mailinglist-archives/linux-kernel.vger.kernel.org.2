@@ -2,437 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C48F631FD59
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:46:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4951A31FD5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:48:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhBSQpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:45:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBSQpv (ORCPT
+        id S230017AbhBSQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:47:19 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:51682 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhBSQrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:45:51 -0500
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA38C061574;
-        Fri, 19 Feb 2021 08:45:11 -0800 (PST)
-Received: from [IPv6:2a01:e0a:4cb:a870:9157:afa6:f219:3c2c] (unknown [IPv6:2a01:e0a:4cb:a870:9157:afa6:f219:3c2c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id A8DEB1F464EB;
-        Fri, 19 Feb 2021 16:45:08 +0000 (GMT)
-Subject: Re: [PATCH v2 1/9] media: hevc: Modify structures to follow H265 ITU
- spec
-To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@siol.net>,
-        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org, peng.fan@nxp.com,
-        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-References: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
- <20210218191844.297869-2-benjamin.gaignard@collabora.com>
- <12182109.SKTadsSyRz@kista>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <5e4d5ff0-ab10-b402-2652-d956214b3fa8@collabora.com>
-Date:   Fri, 19 Feb 2021 17:45:05 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <12182109.SKTadsSyRz@kista>
+        Fri, 19 Feb 2021 11:47:14 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JGiRh0127440;
+        Fri, 19 Feb 2021 16:46:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=RudEtBmNOTkeC4drR/LZ365BhC2NxIcUnsMDrj9p8Pw=;
+ b=ci0uDVJSdesScN1x1HPzAE0tZJ5XAebKPnFOctoEsfA2WdmNyVFfp/FySx255A9fVIA/
+ NIjzlFVQ/hrj7LS5T/i2SA8OOhZORZwpG8ogIV6bLwCWIq+NZk6jD7ioOuvybnk4xJXR
+ S6fXOOoiJ4Hc7MNEprpwHAUxNC2ll8a2HJxHpHIht8C2van44bXn7SMh02ugqpvh2X5M
+ oIQ041WkTvQSnAySfi8bQo4xACuO05TALg/Ut7MBlOKWIuEaktK/yNUoL9R7/I3w9CEB
+ Ekrx0zc3BE3NchP25suVLUfYNZLofROsAhZc8riJu2toZWpm+fqFXCUJaHDJbmyDV1oV lg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 36p49bja32-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 16:46:01 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JGjlwX105216;
+        Fri, 19 Feb 2021 16:46:00 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2051.outbound.protection.outlook.com [104.47.46.51])
+        by userp3020.oracle.com with ESMTP id 36prhvufr3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 16:46:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DZKb5Ahc14vzn3GNEhj91tF/BrWQdLVfBkDPfl7N/lp95tNW41a/x0bwMuC48ghgTY1jdpyAKe8WuwJCmQpmoWUkd4mGqe5AcuQbaAp+GiAKVHc09Z63aMzaKWJylBIrd5aqnGa9u3A10h6G1V+YSTzvMDWyuqI4Rg3TKkIV2mbIbRA1uImwjLRacVuR/xlS7VQbPAC2NkJnNBVl+kDx6mh8l08PblGKZxQChPLu1MdhobqsTxQmGWLgCHac24RTBYBqGz/62aXxqYvfatcwPybifaP2Eqde4/pW2Z9iVAduCoSel+8VSFruvlsbSlxFobx7WbzQ2QMQAOTPIT1rkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RudEtBmNOTkeC4drR/LZ365BhC2NxIcUnsMDrj9p8Pw=;
+ b=L4KBjwZbQEyCMksYLKJ/nNlBgmP52ZVI6gHoPEpMdnxHN4DZlElDMRvGY9pSyp+44IB4RVHTKtE6TYWm4V3EDzhYHK1GT1iWyutoj83RQ8D/TVrW5Q2FnFCQPhscNvZUz6UupDmLhsc0Db2Fd1kpRvEudwlU4LMt73YFrpA2yLMsxw4BiHzCbp0RVE/lfzEM5AXksM19uOXBWv4WKv+fatw5DHh3qdaGtN6B9PhAXsm9uIrzsTBicEobCfqeOVke+f/RgACh9aAfxL+xWVLeTUXJ+KhlAsd55mIgfUeFCrH356GqS5PdJHh5r3wmuG4zvUdLf5U6Pa6c+Iq6R0IFsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RudEtBmNOTkeC4drR/LZ365BhC2NxIcUnsMDrj9p8Pw=;
+ b=lPR7pYHErXlQafEbX57EfDiYJE2KCpg0Vrl14vJRJ7oZ9G5Dv2KwdReZwFnnSXWsOHZX+jD9kDDOv4YKX/NCbQ7lv+8Se87rPr9rtk7gu0G57dxWBYZVLc4zmSXHuEK4Ohz3oOkhAIqxAl2N2o56QVrU2uLqUzfoFtEf1hXgwjg=
+Received: from DM6PR10MB3851.namprd10.prod.outlook.com (2603:10b6:5:1fb::17)
+ by DM5PR1001MB2394.namprd10.prod.outlook.com (2603:10b6:4:34::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 19 Feb
+ 2021 16:45:56 +0000
+Received: from DM6PR10MB3851.namprd10.prod.outlook.com
+ ([fe80::5c53:869:7452:46da]) by DM6PR10MB3851.namprd10.prod.outlook.com
+ ([fe80::5c53:869:7452:46da%3]) with mapi id 15.20.3846.041; Fri, 19 Feb 2021
+ 16:45:56 +0000
+Subject: Re: [PATCH] mm, kasan: don't poison boot memory
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dhaval Giani <dhaval.giani@oracle.com>
+References: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
+ <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com>
+ <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
+ <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
+From:   George Kennedy <george.kennedy@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <c7166cae-bf89-8bdd-5849-72b5949fc6cc@oracle.com>
+Date:   Fri, 19 Feb 2021 11:45:50 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+In-Reply-To: <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+X-Originating-IP: [108.20.187.119]
+X-ClientProxiedBy: SA0PR11CA0151.namprd11.prod.outlook.com
+ (2603:10b6:806:1bb::6) To DM6PR10MB3851.namprd10.prod.outlook.com
+ (2603:10b6:5:1fb::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.246] (108.20.187.119) by SA0PR11CA0151.namprd11.prod.outlook.com (2603:10b6:806:1bb::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Fri, 19 Feb 2021 16:45:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3efe1386-b3a9-4471-a2ed-08d8d4f5d431
+X-MS-TrafficTypeDiagnostic: DM5PR1001MB2394:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1001MB2394868EFC48B9099B5E1D7EE6849@DM5PR1001MB2394.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Cz5nBgbPSRZzAf0fGUpSrQFeXKwDbq+SX4ZESOLsKCHXSCETzBHn5yZ1459Hn8pbvDtQ3rXRXB7Ro/aQ/oXlE2r8OisQQ9PYKUT3teyTEl5/W5WU4lYORU0VNk096fWIvomuZoRl9UYMJSfXSjrBoaXWpAavk1mn1kQuiHZmcOMtLJqMqwo2hEYn9xlVExbOTGkOGeDgAkw9Jqry0xCOlhMROImEwEoQ1bt20qMaEvn5XNObl/PCsJa0dOigtPPyrfUwSqIAf43Y+FY8NL+30FyX9QmsMJjC+R4jDYt46hDJhHMfJmAsudyshW7MR2VQUYYH8sacTq9qxL4ziyMd6CKOrOBrlg4sf8Zu+OR1ytrdf8CoYZ4UjZC4EWUzNkJd0wzv0kfFuBccoN4x5qonnQudEOONtS9Ucw+cSqpiGs6ObB+N1i8UidbhyjEzA45+pjIEnyN1Enq4wdmXsH6oGBLaXfVNwLpSWVi8Hn8pPF4ZiVWxDkJUaQFeisder9C8vamat6a0VQHZQMwQG1aM6DI5coafX3dyrE5ktGKHlE1l0QifC/PfzC5jywQQEdl50bmBNPQ/fXksOs2khuHLB/Pa3iopX/+mJP8RkQ2oAwPmVUMb5cmpSqcKJ0SDDrnFRS7XBsJgRdrftZjScZyZJmK4hHMRWYYYZyb5eg2ngdnrqirqLsZWV4fp9smxE+Py
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3851.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(366004)(136003)(376002)(396003)(2906002)(6666004)(16526019)(36916002)(54906003)(66946007)(66556008)(66476007)(6486002)(16576012)(186003)(53546011)(26005)(4326008)(8936002)(478600001)(107886003)(7416002)(86362001)(83380400001)(31696002)(31686004)(44832011)(8676002)(316002)(966005)(5660300002)(6916009)(36756003)(956004)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OHgvd1R1emdQK29TcE8vTk1jT3V1OVpNZ0RuMlBKNjRsMGNESjFXamNvSXVF?=
+ =?utf-8?B?YnNqcGdzdW1tNlMwWWNnNytYNXBwWUpkQ3JwOE5OSDgrbEhrUG8zeHJESTdq?=
+ =?utf-8?B?Ujk5VmxPMnFxVWdaMTk4MDRWdE56UUQwMXhEblFKT2hwSDBQOE9JZlR0TDRB?=
+ =?utf-8?B?NUZlVStQQXVrL3NMMXo3Yi9mWWxJU1Vyc1Q2OTJPSE1mRThEYWVIVjZHY1gx?=
+ =?utf-8?B?alJyV21BYUViZzhxN3hPVm9HUndEWkY1alp2bk95TitJODhIZkhESUR1TGsr?=
+ =?utf-8?B?NVZZK1VyNXk3MnlsUHhqVm15cXFFZ0FwZWxDc29BUFpBMWR4LzNUSGdZZ29p?=
+ =?utf-8?B?MzZNMzJERmtsV2pDTUhoMTRnSXdvbElVRWZJN1ZkRDV1SlIyalF6Z1FpVzdT?=
+ =?utf-8?B?MjN0UjdoTXEyTTNKWXFUS2xVbExlZkIxK1Z0WEJsVWs0bkxtZks0bUR2UnJq?=
+ =?utf-8?B?SXB2cHMrYVFxcHFTa0dEeUxtS3NEbDZvcGZnRjQzOEdLV0g1clVMWUU3UlpZ?=
+ =?utf-8?B?MkRpQVhQZ2R6aXJxN1VTaFdQcU1MQ2t0MWlnY2NIc3IwcHVTYkhOMGxVYkZx?=
+ =?utf-8?B?ekFaSjhGU1lHSDBTVmIyb1doNHNtcWx0aEZSdUF5WWdCK3oreExvbFh1dEdU?=
+ =?utf-8?B?elRobHZuRHd4R0ZpTjRBUTZ4QzN4NkNIY1d4L3gvc2dHYVZha21wK3lTUFRv?=
+ =?utf-8?B?RW5TQXdpbWxOWVZqOHYzSkZ3eS8zeWVFT0lZTGtjaWFxNUpuSmtxUkU3Uy9i?=
+ =?utf-8?B?bG1RUGp4NDRhV3lWU1hRSXJRNlhUdU1vcjAvYUo2dVhYVkdTRVc1Y2h3SXJt?=
+ =?utf-8?B?T1Q4T3VqeUl2NEJXQ0lPUXhwMmhiTjdBUGRkY2twTFEwd2xVRjk4VXlOd3B2?=
+ =?utf-8?B?ZG1uMllHWXBIY1BISnVMTE9RRWk0ZldXelorZXRrVzNkTHU3d0ZNNXJvZDUy?=
+ =?utf-8?B?aFRwRnEvdnJYdjQyZTh3NVRQRDdNbU9tQjlyamU4YWNRWndPdDdsaGdiRUtI?=
+ =?utf-8?B?ajBPSnJldWxhZndZNW1KdW1ueUVhY0Y1c0FFU3ZNVUhyUXZtOXhrcUtveDY3?=
+ =?utf-8?B?VzU4aFVFWGU1M2VNeU5DRXNLdTBON09VcmdEM2lKb1A3R1IyWGVLZHV0VW13?=
+ =?utf-8?B?Szd0QVNnd285aGZrT21HRFhCQngvV2NUcGtlQmoyeERWck0vOS9xK2FvaGlN?=
+ =?utf-8?B?VC9PdEg0THNCbFZIMWZIWXlFaXFTQzlQVkZ2a1pTTWpOVTh4VDM5UnlEWEZV?=
+ =?utf-8?B?ZmUvMFBZOTd6VXFpY1krWStLU2xpYUd1RnRvRUd2QVc5V0xlMHZCZVJ1UWw5?=
+ =?utf-8?B?dVNCWHZ4WlFSeFo3UzRuNE9oSWkvZVNFd0VUdU1SV3BRTU94MVdHZFdRQS9M?=
+ =?utf-8?B?V3JlSWFwTTY5YlNKbkRYNUMrdG9XdWgxZWVrd2RKZHBhNWkvUDlCYzZkaFFR?=
+ =?utf-8?B?Zm9ZTm52UFBMRWlhS0NYbnJhTTgyU0NSamxOOUgwYy9vZm1sbks5WTFtRnBP?=
+ =?utf-8?B?RnVTbHVRSTdQQ0p0VlNLalJ0RVd0cmVEU3MxRUYxRUNCUmkzVzRvMnplZ0FM?=
+ =?utf-8?B?djhGK3dISUVPNGJPTXlTZkVEZmY0SjBPMXBFZHhzN3h6MXB0NUxKZW10aGJ4?=
+ =?utf-8?B?c1ZBRHVQMUR5K1ZEbDlpM0FIVy9DTStudTc4djFXcWhuWnhmMllmS3ZPbC9F?=
+ =?utf-8?B?WDhjeXNaYXliaC94aDhvOVpFMFM0d0MwTFYrVU4zTVRUeGE1TnMyVHhPeU9W?=
+ =?utf-8?Q?JwXdci0uhwa+zhS0QLp272Pq+tIsNqWbnQP+EYU?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3efe1386-b3a9-4471-a2ed-08d8d4f5d431
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3851.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 16:45:56.7492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cu9heShPiyTJzMdC36pqyS5o4cXat77545ebNjQmfssUZpyc7cAvOx+GguMe/rwj2AGNgqPZzz+MnX+hlc9CUBqQsqChnIQKF9BcaEMI3s0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1001MB2394
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190129
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 phishscore=0 clxscore=1015 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190129
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Le 18/02/2021 à 22:43, Jernej Škrabec a écrit :
-> Hi!
->
-> Dne četrtek, 18. februar 2021 ob 20:18:36 CET je Benjamin Gaignard napisal(a):
->> The H.265 ITU specification (section 7.4) define the general
->> slice segment header semantics.
->> Modified/added fields are:
->> - video_parameter_set_id: (7.4.3.1) identifies the VPS for
->> reference by other syntax elements.
->> - seq_parameter_set_id: (7.4.3.2.1) specifies the value of
->> the vps_video_parameter_set_id of the active VPS.
->> - chroma_format_idc: (7.4.3.2.1) specifies the chroma sampling
->>   relative to the luma sampling
->> - pic_parameter_set_id: (7.4.3.3.1) identifies the PPS for
->> reference by other syntax elements
->> - num_ref_idx_l0_default_active_minus1: (7.4.3.3.1) specifies
->> the inferred value of num_ref_idx_l0_active_minus1
->> - num_ref_idx_l1_default_active_minus1: (7.4.3.3.1) specifies
->> the inferred value of num_ref_idx_l1_active_minus1
->> - slice_segment_addr: (7.4.7.1) specifies the address of
->> the first coding tree block in the slice segment
->> - num_entry_point_offsets: (7.4.7.1) specifies the number of
->> entry_point_offset_minus1[ i ] syntax elements in the slice header
->>
->> Add HEVC decode params contains the information used in section
->> "8.3 Slice decoding process" of the specification to let the hardware
->> perform decoding of a slices.
->>
->> Adapt Cedrus driver according to these changes.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->> version 2:
->> - remove all change related to scaling
->> - squash commits to a coherent split
->> - be more verbose about the added fields
->>
->>   drivers/media/v4l2-core/v4l2-ctrls.c          | 26 ++++++++---
->>   drivers/staging/media/sunxi/cedrus/cedrus.c   |  6 +++
->>   drivers/staging/media/sunxi/cedrus/cedrus.h   |  1 +
->>   .../staging/media/sunxi/cedrus/cedrus_dec.c   |  2 +
->>   .../staging/media/sunxi/cedrus/cedrus_h265.c  |  6 ++-
->>   include/media/hevc-ctrls.h                    | 45 +++++++++++++++----
->>   6 files changed, 69 insertions(+), 17 deletions(-)
->>
->> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/
-> v4l2-ctrls.c
->> index 016cf6204cbb..4060b5bcc3c0 100644
->> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
->> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
->> @@ -1028,6 +1028,7 @@ const char *v4l2_ctrl_get_name(u32 id)
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SPS:			
-> return "HEVC Sequence Parameter Set";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_PPS:			
-> return "HEVC Picture Parameter Set";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:		return
-> "HEVC Slice Parameters";
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:		
-> return "HEVC Decode Parameters";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE:		return "HEVC
-> Decode Mode";
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_START_CODE:		return
-> "HEVC Start Code";
->>   
->> @@ -1482,6 +1483,9 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum
-> v4l2_ctrl_type *type,
->>   	case V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS:
->>   		*type = V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS;
->>   		break;
->> +	case V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS:
->> +		*type = V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS;
->> +		break;
->>   	case V4L2_CID_UNIT_CELL_SIZE:
->>   		*type = V4L2_CTRL_TYPE_AREA;
->>   		*flags |= V4L2_CTRL_FLAG_READ_ONLY;
->> @@ -1833,6 +1837,7 @@ static int std_validate_compound(const struct
-> v4l2_ctrl *ctrl, u32 idx,
->>   	struct v4l2_ctrl_hevc_sps *p_hevc_sps;
->>   	struct v4l2_ctrl_hevc_pps *p_hevc_pps;
->>   	struct v4l2_ctrl_hevc_slice_params *p_hevc_slice_params;
->> +	struct v4l2_ctrl_hevc_decode_params *p_hevc_decode_params;
->>   	struct v4l2_area *area;
->>   	void *p = ptr.p + idx * ctrl->elem_size;
->>   	unsigned int i;
->> @@ -2108,23 +2113,27 @@ static int std_validate_compound(const struct
-> v4l2_ctrl *ctrl, u32 idx,
->>   		zero_padding(*p_hevc_pps);
->>   		break;
->>   
->> -	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->> -		p_hevc_slice_params = p;
->> +	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
->> +		p_hevc_decode_params = p;
->>   
->> -		if (p_hevc_slice_params->num_active_dpb_entries >
->> +		if (p_hevc_decode_params->num_active_dpb_entries >
->>   		    V4L2_HEVC_DPB_ENTRIES_NUM_MAX)
->>   			return -EINVAL;
->>   
->> -		zero_padding(p_hevc_slice_params->pred_weight_table);
->> -
->> -		for (i = 0; i < p_hevc_slice_params-
->> num_active_dpb_entries;
->> +		for (i = 0; i < p_hevc_decode_params-
->> num_active_dpb_entries;
->>   		     i++) {
->>   			struct v4l2_hevc_dpb_entry *dpb_entry =
->> -				&p_hevc_slice_params->dpb[i];
->> +				&p_hevc_decode_params->dpb[i];
->>   
->>   			zero_padding(*dpb_entry);
->>   		}
->>   
->> +		break;
->> +
->> +	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->> +		p_hevc_slice_params = p;
->> +
->> +		zero_padding(p_hevc_slice_params->pred_weight_table);
->>   		zero_padding(*p_hevc_slice_params);
->>   		break;
->>   
->> @@ -2821,6 +2830,9 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct
-> v4l2_ctrl_handler *hdl,
->>   	case V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS:
->>   		elem_size = sizeof(struct v4l2_ctrl_hevc_slice_params);
->>   		break;
->> +	case V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS:
->> +		elem_size = sizeof(struct v4l2_ctrl_hevc_decode_params);
->> +		break;
->>   	case V4L2_CTRL_TYPE_AREA:
->>   		elem_size = sizeof(struct v4l2_area);
->>   		break;
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.c b/drivers/staging/
-> media/sunxi/cedrus/cedrus.c
->> index 7bd9291c8d5f..4cd3cab1a257 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus.c
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.c
->> @@ -151,6 +151,12 @@ static const struct cedrus_control cedrus_controls[] =
-> {
->>   		},
->>   		.codec		= CEDRUS_CODEC_VP8,
->>   	},
->> +	{
->> +		.cfg = {
->> +			.id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
->> +		},
->> +		.codec		= CEDRUS_CODEC_H265,
->> +	},
->>   };
->>   
->>   #define CEDRUS_CONTROLS_COUNT	ARRAY_SIZE(cedrus_controls)
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus.h b/drivers/staging/
-> media/sunxi/cedrus/cedrus.h
->> index 251a6a660351..2ca33ac38b9a 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus.h
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus.h
->> @@ -76,6 +76,7 @@ struct cedrus_h265_run {
->>   	const struct v4l2_ctrl_hevc_sps			*sps;
->>   	const struct v4l2_ctrl_hevc_pps			*pps;
->>   	const struct v4l2_ctrl_hevc_slice_params	*slice_params;
->> +	const struct v4l2_ctrl_hevc_decode_params	*decode_params;
->>   };
->>   
->>   struct cedrus_vp8_run {
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c b/drivers/
-> staging/media/sunxi/cedrus/cedrus_dec.c
->> index a9090daf626a..cd821f417a14 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
->> @@ -68,6 +68,8 @@ void cedrus_device_run(void *priv)
->>   			V4L2_CID_MPEG_VIDEO_HEVC_PPS);
->>   		run.h265.slice_params = cedrus_find_control_data(ctx,
->>   			V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS);
->> +		run.h265.decode_params = cedrus_find_control_data(ctx,
->> +			V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS);
->>   		break;
->>   
->>   	case V4L2_PIX_FMT_VP8_FRAME:
->> diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c b/drivers/
-> staging/media/sunxi/cedrus/cedrus_h265.c
->> index ce497d0197df..dce5db6be13a 100644
->> --- a/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> +++ b/drivers/staging/media/sunxi/cedrus/cedrus_h265.c
->> @@ -245,6 +245,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->>   	const struct v4l2_ctrl_hevc_sps *sps;
->>   	const struct v4l2_ctrl_hevc_pps *pps;
->>   	const struct v4l2_ctrl_hevc_slice_params *slice_params;
->> +	const struct v4l2_ctrl_hevc_decode_params *decode_params;
->>   	const struct v4l2_hevc_pred_weight_table *pred_weight_table;
->>   	dma_addr_t src_buf_addr;
->>   	dma_addr_t src_buf_end_addr;
->> @@ -256,6 +257,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->>   	sps = run->h265.sps;
->>   	pps = run->h265.pps;
->>   	slice_params = run->h265.slice_params;
->> +	decode_params = run->h265.decode_params;
->>   	pred_weight_table = &slice_params->pred_weight_table;
->>   
->>   	/* MV column buffer size and allocation. */
->> @@ -487,7 +489,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->>   
->>   	reg =
-> VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_TC_OFFSET_DIV2(slice_params-
->> slice_tc_offset_div2) |
->>   	
-> VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_BETA_OFFSET_DIV2(slice_params-
->> slice_beta_offset_div2) |
->> -	
-> VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(slice_params-
->> num_rps_poc_st_curr_after == 0) |
->> +	
-> VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_POC_BIGEST_IN_RPS_ST(decode_params-
->> num_rps_poc_st_curr_after == 0) |
->>   	
-> VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CR_QP_OFFSET(slice_params-
->> slice_cr_qp_offset) |
->>   	
-> VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_CB_QP_OFFSET(slice_params-
->> slice_cb_qp_offset) |
->>   	      VE_DEC_H265_DEC_SLICE_HDR_INFO1_SLICE_QP_DELTA(slice_params-
->> slice_qp_delta);
->> @@ -528,7 +530,7 @@ static void cedrus_h265_setup(struct cedrus_ctx *ctx,
->>   
->>   	/* Write decoded picture buffer in pic list. */
->>   	cedrus_h265_frame_info_write_dpb(ctx, slice_params->dpb,
->> -					 slice_params-
->> num_active_dpb_entries);
->> +					 decode_params-
->> num_active_dpb_entries);
->>   
->>   	/* Output frame. */
->>   
->> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->> index b4cb2ef02f17..7fe704a08f77 100644
->> --- a/include/media/hevc-ctrls.h
->> +++ b/include/media/hevc-ctrls.h
->> @@ -19,6 +19,7 @@
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_SPS		(V4L2_CID_CODEC_BASE +
-> 1008)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_PPS		(V4L2_CID_CODEC_BASE +
-> 1009)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_SLICE_PARAMS	(V4L2_CID_CODEC_BASE +
-> 1010)
->> +#define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS	(V4L2_CID_CODEC_BASE +
-> 1012)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_DECODE_MODE	(V4L2_CID_CODEC_BASE +
-> 1015)
->>   #define V4L2_CID_MPEG_VIDEO_HEVC_START_CODE	(V4L2_CID_CODEC_BASE +
-> 1016)
->>   
->> @@ -26,6 +27,7 @@
->>   #define V4L2_CTRL_TYPE_HEVC_SPS 0x0120
->>   #define V4L2_CTRL_TYPE_HEVC_PPS 0x0121
->>   #define V4L2_CTRL_TYPE_HEVC_SLICE_PARAMS 0x0122
->> +#define V4L2_CTRL_TYPE_HEVC_DECODE_PARAMS 0x0124
->>   
->>   enum v4l2_mpeg_video_hevc_decode_mode {
->>   	V4L2_MPEG_VIDEO_HEVC_DECODE_MODE_SLICE_BASED,
->> @@ -54,6 +56,9 @@ enum v4l2_mpeg_video_hevc_start_code {
->>   /* The controls are not stable at the moment and will likely be reworked.
-> */
->>   struct v4l2_ctrl_hevc_sps {
->>   	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Sequence parameter set */
->> +	__u8	video_parameter_set_id;
->> +	__u8	seq_parameter_set_id;
->> +	__u8	chroma_format_idc;
->>   	__u16	pic_width_in_luma_samples;
->>   	__u16	pic_height_in_luma_samples;
->>   	__u8	bit_depth_luma_minus8;
->> @@ -74,9 +79,9 @@ struct v4l2_ctrl_hevc_sps {
->>   	__u8	log2_diff_max_min_pcm_luma_coding_block_size;
->>   	__u8	num_short_term_ref_pic_sets;
->>   	__u8	num_long_term_ref_pics_sps;
->> -	__u8	chroma_format_idc;
->>   
->> -	__u8	padding;
->> +	__u8	num_slices;
->> +	__u8	padding[6];
->>   
->>   	__u64	flags;
->>   };
->> @@ -100,10 +105,15 @@ struct v4l2_ctrl_hevc_sps {
->>   #define V4L2_HEVC_PPS_FLAG_PPS_DISABLE_DEBLOCKING_FILTER	(1ULL << 16)
->>   #define V4L2_HEVC_PPS_FLAG_LISTS_MODIFICATION_PRESENT		(1ULL << 17)
->>   #define V4L2_HEVC_PPS_FLAG_SLICE_SEGMENT_HEADER_EXTENSION_PRESENT (1ULL <<
-> 18)
->> +#define V4L2_HEVC_PPS_FLAG_DEBLOCKING_FILTER_CONTROL_PRESENT	(1ULL << 19)
->> +#define V4L2_HEVC_PPS_FLAG_UNIFORM_SPACING			
-> (1ULL << 20)
->>   
->>   struct v4l2_ctrl_hevc_pps {
->>   	/* ISO/IEC 23008-2, ITU-T Rec. H.265: Picture parameter set */
->> +	__u8	pic_parameter_set_id;
->>   	__u8	num_extra_slice_header_bits;
->> +	__u8	num_ref_idx_l0_default_active_minus1;
->> +	__u8	num_ref_idx_l1_default_active_minus1;
->>   	__s8	init_qp_minus26;
->>   	__u8	diff_cu_qp_delta_depth;
->>   	__s8	pps_cb_qp_offset;
->> @@ -116,7 +126,7 @@ struct v4l2_ctrl_hevc_pps {
->>   	__s8	pps_tc_offset_div2;
->>   	__u8	log2_parallel_merge_level_minus2;
->>   
->> -	__u8	padding[4];
->> +	__u8	padding;
->>   	__u64	flags;
->>   };
->>   
->> @@ -165,6 +175,10 @@ struct v4l2_ctrl_hevc_slice_params {
->>   	__u32	bit_size;
->>   	__u32	data_bit_offset;
->>   
->> +	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header
-> */
->> +	__u32	slice_segment_addr;
->> +	__u32	num_entry_point_offsets;
->> +
->>   	/* ISO/IEC 23008-2, ITU-T Rec. H.265: NAL unit header */
->>   	__u8	nal_unit_type;
->>   	__u8	nuh_temporal_id_plus1;
->> @@ -190,15 +204,13 @@ struct v4l2_ctrl_hevc_slice_params {
->>   	__u8	pic_struct;
->>   
->>   	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header
-> */
->> -	__u8	num_active_dpb_entries;
->>   	__u8	ref_idx_l0[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>   	__u8	ref_idx_l1[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->>   
->> -	__u8	num_rps_poc_st_curr_before;
->> -	__u8	num_rps_poc_st_curr_after;
->> -	__u8	num_rps_poc_lt_curr;
->> +	__u16	short_term_ref_pic_set_size;
->> +	__u16	long_term_ref_pic_set_size;
->>   
->> -	__u8	padding;
->> +	__u8	padding[5];
->>   
->>   	/* ISO/IEC 23008-2, ITU-T Rec. H.265: General slice segment header
-> */
->>   	struct v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> @@ -209,4 +221,21 @@ struct v4l2_ctrl_hevc_slice_params {
->>   	__u64	flags;
->>   };
->>   
->> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IRAP_PIC		0x1
->> +#define V4L2_HEVC_DECODE_PARAM_FLAG_IDR_PIC		0x2
->> +#define V4L2_HEVC_DECODE_PARAM_FLAG_NO_OUTPUT_OF_PRIOR  0x4
->> +
->> +struct v4l2_ctrl_hevc_decode_params {
->> +	__s32	pic_order_cnt_val;
->> +	__u8	num_active_dpb_entries;
->> +	struct	v4l2_hevc_dpb_entry dpb[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u8	num_rps_poc_st_curr_before;
->> +	__u8	num_rps_poc_st_curr_after;
->> +	__u8	num_rps_poc_lt_curr;
->> +	__u8	rps_st_curr_before[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u8	rps_st_curr_after[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u8	rps_lt_curr[V4L2_HEVC_DPB_ENTRIES_NUM_MAX];
->> +	__u64	flags;
->> +};
-> Current practice is to also add/update controls documentation in
-> Documentation/userspace-api/media/v4l/
->
-> With your changes, v4l2_ctrl_hevc_pps and v4l2_ctrl_hevc_slice_params
-> descriptions are out of sync and v4l2_ctrl_hevc_decode_params description is
-> completely missing.
 
-Thanks for your comment.
-That will be fix in v3.
-
-Benjamin
-
-> Best regards,
-> Jernej
->
->> +
->>   #endif
->> -- 
->> 2.25.1
+On 2/18/2021 7:09 PM, Andrey Konovalov wrote:
+> On Fri, Feb 19, 2021 at 1:06 AM George Kennedy
+> <george.kennedy@oracle.com> wrote:
 >>
 >>
->
->
+>> On 2/18/2021 3:55 AM, David Hildenbrand wrote:
+>>> On 17.02.21 21:56, Andrey Konovalov wrote:
+>>>> During boot, all non-reserved memblock memory is exposed to the buddy
+>>>> allocator. Poisoning all that memory with KASAN lengthens boot time,
+>>>> especially on systems with large amount of RAM. This patch makes
+>>>> page_alloc to not call kasan_free_pages() on all new memory.
+>>>>
+>>>> __free_pages_core() is used when exposing fresh memory during system
+>>>> boot and when onlining memory during hotplug. This patch adds a new
+>>>> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok() through
+>>>> free_pages_prepare() from __free_pages_core().
+>>>>
+>>>> This has little impact on KASAN memory tracking.
+>>>>
+>>>> Assuming that there are no references to newly exposed pages before they
+>>>> are ever allocated, there won't be any intended (but buggy) accesses to
+>>>> that memory that KASAN would normally detect.
+>>>>
+>>>> However, with this patch, KASAN stops detecting wild and large
+>>>> out-of-bounds accesses that happen to land on a fresh memory page that
+>>>> was never allocated. This is taken as an acceptable trade-off.
+>>>>
+>>>> All memory allocated normally when the boot is over keeps getting
+>>>> poisoned as usual.
+>>>>
+>>>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+>>>> Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
+>>> Not sure this is the right thing to do, see
+>>>
+>>> https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com
+>>>
+>>> Reversing the order in which memory gets allocated + used during boot
+>>> (in a patch by me) might have revealed an invalid memory access during
+>>> boot.
+>>>
+>>> I suspect that that issue would no longer get detected with your
+>>> patch, as the invalid memory access would simply not get detected.
+>>> Now, I cannot prove that :)
+>> Since David's patch we're having trouble with the iBFT ACPI table, which
+>> is mapped in via kmap() - see acpi_map() in "drivers/acpi/osl.c". KASAN
+>> detects that it is being used after free when ibft_init() accesses the
+>> iBFT table, but as of yet we can't find where it get's freed (we've
+>> instrumented calls to kunmap()).
+> Maybe it doesn't get freed, but what you see is a wild or a large
+> out-of-bounds access. Since KASAN marks all memory as freed during the
+> memblock->page_alloc transition, such bugs can manifest as
+> use-after-frees.
+
+It gets freed and re-used. By the time the iBFT table is accessed by 
+ibft_init() the page has been over-written.
+
+Setting page flags like the following before the call to kmap() prevents 
+the iBFT table page from being freed:
+
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 0418feb..41c1bbd 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -287,9 +287,14 @@ static void __iomem *acpi_map(acpi_physical_address 
+pg_off, unsigned long pg_sz)
+
+         pfn = pg_off >> PAGE_SHIFT;
+         if (should_use_kmap(pfn)) {
++               struct page *page =  pfn_to_page(pfn);
++
+                 if (pg_sz > PAGE_SIZE)
+                         return NULL;
+-               return (void __iomem __force *)kmap(pfn_to_page(pfn));
++
++               page->flags |= ((1UL << PG_unevictable) | (1UL << 
+PG_reserved) | (1UL << PG_locked));
++
++               return (void __iomem __force *)kmap(page);
+         } else
+                 return acpi_os_ioremap(pg_off, pg_sz);
+  }
+
+Just not sure of the correct way to set the page flags.
+
+George
+
