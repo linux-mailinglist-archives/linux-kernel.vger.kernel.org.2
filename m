@@ -2,113 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B971320174
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD50320179
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhBSWr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 17:47:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
+        id S229746AbhBSWuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 17:50:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhBSWrY (ORCPT
+        with ESMTP id S229658AbhBSWuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 17:47:24 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB64C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:46:44 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 75so5994716pgf.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:46:44 -0800 (PST)
+        Fri, 19 Feb 2021 17:50:04 -0500
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5ADC061786
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:49:22 -0800 (PST)
+Received: by mail-il1-x12f.google.com with SMTP id e7so5834369ile.7
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:49:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=77aFN3X3B8ZOa2LFV3nt5PPEdkKjE+anr2eIHArGBZI=;
-        b=mNayBvgQSMayniwbb1d97dRJpctfMgOIorNOVhijMSM+SLYhY7+q7UyttewTf9a2Hp
-         B3Jp3CFUjbYUJfipkc3GFgul0vtBVKZAasjqy/DQskZ8j9FkqI0Wvgx3wDdMzisNK43X
-         YkWW/eknmby9epgU1tvmCJXUYmOHkCdklRSmE=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H1+QL0ZJy98i2Loy47lzBuvz+WCAjo4otcQSOPkGKDA=;
+        b=RBW0QcSz6mlJhrzmI044HVf7H33xiie7VtzMqoPyUVPUiCzWMDQlVd+JAdD4kCeq8E
+         uCfrpsfg9/5IaESjoFjbMc7Dh2FA52tNPJgq8D+hfk8e2j6UptbbK1+yVtlABlPBTJvO
+         hLA6qmg4uxx8NEq1MkKiLPMcBd0MbSt97SKQgU8UP710+LCCkKHNeEFwhLvmFSOvSFBd
+         RcWplb3E9ycnwIszyXRY+ynXKuCvanhLGgsAYYN5OubASSVn7DlAfsf1HD/h9j3D4Hme
+         nLdx+H4S3kDYJ1gVVEHElHZg4/JXwWbspaMQpkdIo46ruSd+SyMMT13vFr0BiPhQMVRa
+         LSsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=77aFN3X3B8ZOa2LFV3nt5PPEdkKjE+anr2eIHArGBZI=;
-        b=Q8GRZPpDzqri3L/AMs8xmT32wWr2SNXdcng0WXZndbsPzj7oPnvKT3Eoi79LlIDbEb
-         s4scWQtz/wK2ng9zYqYS3/9sohGd1dlfNfe2NFk0WXIQNiShFwHUhC87U8cGOxlk+h3W
-         GNGEC6+qDpoUJBhCezJbgjFIGx0sv5HRv46xScFWzKjk73qqZSfEjnOt41OcszHwSoq/
-         rMoAp4hsN4TxYbTT4xIFNdvsaJUC04DOvYaV0eN6IfWpdExsRr81mABB6rARjcspB5Ap
-         aOzZPW4sVvWR1zluZR9FRmEbLikGwxcGGZTzkT6a5mh8bkWuUE8f5b9HLhCvvEkunNLy
-         oxsQ==
-X-Gm-Message-State: AOAM533yqUsKXcMVXA54Erv7fjKfP+FbajMG0XP7siTf/O8i0A5374jm
-        GbCX/iMIrqE7/x7mV41V0PMQtQ==
-X-Google-Smtp-Source: ABdhPJyphuJcAQ8DmrcSWPjKefON0H2PGIBTxC+RlzDXEyHoy4w2bBE6hWP83maxY6SZS9eKqjnzGw==
-X-Received: by 2002:a62:e703:0:b029:1ed:5a8b:4308 with SMTP id s3-20020a62e7030000b02901ed5a8b4308mr2846228pfh.67.1613774804277;
-        Fri, 19 Feb 2021 14:46:44 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:dd53:b29e:3c8:33ae])
-        by smtp.gmail.com with ESMTPSA id x9sm9342392pjp.29.2021.02.19.14.46.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 14:46:43 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H1+QL0ZJy98i2Loy47lzBuvz+WCAjo4otcQSOPkGKDA=;
+        b=tzaPi6afbM/ZJ1hGvGDBwK36dSuL9qoJr6yFtCIsDptryxBnjwoqZJ0WVlW1W5AJBx
+         yUC76ORZ9m+d32WbhGw2bSflTM1EibDGWOSFfoPhkKcXnFPjS5BlioNn/DlMgFl/VEAi
+         ti6PcSXh4q4WcbdkKuI1glLX24zwxeSErvNnW61VDaY4Roo/Dc1YUemZ/kqNaiIBwT9K
+         8490tYXrf4HhQ1HAeWHG732L/yTTWUCgH5AF06b1rjPBX7HJzqV0svkJ56x8xabVcDpj
+         PBThCIk57GoOWNekeGb5+4ZjeMxxRm0rmDBzjX4tuNoTNTRLqRoguQEUfS05pYbYcQGb
+         YhcQ==
+X-Gm-Message-State: AOAM533IWdXa+3mfwKPNl04L+9gnMSX0iQtSZHgC+tVZAXZKnMbz4rmy
+        2uEYUsPgRIwUnTlADa0HupPUTitlj5Y4AIHaTqprhA==
+X-Google-Smtp-Source: ABdhPJw0SO//jD+r4I3M20a9EPa+9uGZVnB6XKrlcrUvMNeZndLvUnGSJzFS9rPtoxR1/EERC+V5IL4d74bVTGOqqRs=
+X-Received: by 2002:a05:6e02:214f:: with SMTP id d15mr5964595ilv.180.1613774961367;
+ Fri, 19 Feb 2021 14:49:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <7af07dcacd5b68087cc61e467e9c57ea@codeaurora.org>
-References: <1613681704-12539-1-git-send-email-khsieh@codeaurora.org> <161368935031.1254594.14384765673800900954@swboyd.mtv.corp.google.com> <7af07dcacd5b68087cc61e467e9c57ea@codeaurora.org>
-Subject: Re: [PATCH v2 2/2] drm/msm/dp: add supported max link rate specified from dtsi
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     robdclark@gmail.com, sean@poorly.run, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-To:     khsieh@codeaurora.org
-Date:   Fri, 19 Feb 2021 14:46:41 -0800
-Message-ID: <161377480166.1254594.16557636343276220817@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210219224405.1544597-1-shakeelb@google.com>
+In-Reply-To: <20210219224405.1544597-1-shakeelb@google.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 19 Feb 2021 14:49:09 -0800
+Message-ID: <CALvZod5-wiSX8BkUAxNAOU-61e+0KNWm0hdQKhe+qtrFgPsb1g@mail.gmail.com>
+Subject: Re: [PATCH] memcg: charge before adding to swapcache on swapin
+To:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting khsieh@codeaurora.org (2021-02-19 08:39:38)
-> On 2021-02-18 15:02, Stephen Boyd wrote:
-> > Quoting Kuogee Hsieh (2021-02-18 12:55:04)
-> >> Allow supported link rate to be limited to the value specified at
-> >> dtsi. If it is not specified, then link rate is derived from dpcd
-> >> directly. Below are examples,
-> >> link-rate =3D <162000> for max link rate limited at 1.62G
-> >> link-rate =3D <270000> for max link rate limited at 2.7G
-> >> link-rate =3D <540000> for max link rate limited at 5.4G
-> >> link-rate =3D <810000> for max link rate limited at 8.1G
-> >>=20
-> >> Changes in V2:
-> >> -- allow supported max link rate specified from dtsi
-> >=20
-> > Please don't roll this into the patch that removes the limit. The
-> > previous version of this patch was fine. The part that lowers the limit
-> > back down should be another patch.
-> >=20
-> > We rejected link-rate in DT before and we should reject it upstream
-> > again. As far as I can tell, the maximum link rate should be determined
-> > based on the panel or the type-c port on the board. The dp controller
-> > can always achieve HBR3, so limiting it at the dp controller is
-> > incorrect. The driver should query the endpoints to figure out if they
-> > want to limit the link rate. Is that done automatically sometimes by
-> > intercepting the DPCD?
->=20
-> ok, i will roll back to original patch and add the second patch for max=20
-> link rate limited purpose.
-> panel dpcd specified max link rate it supported.
-> At driver, link rate is derived from dpcd directly since driver will try =
+On Fri, Feb 19, 2021 at 2:44 PM Shakeel Butt <shakeelb@google.com> wrote:
+[snip]
+>  mode change 100644 => 100755 scripts/cc-version.sh
+[snip
+> diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
+> old mode 100644
+> new mode 100755
 
-> to use the maximum supported link rate and less lane to save power.
-> Therefore it is not possible that limit link rate base on dpcd.
-> AS i understand we are going to do max link rate limitation is due to=20
-> old redriver chip can not support HBR3.
-> How can I acquire which type-c port on the board so that I can trigger=20
-> max link rate limitation?
->=20
->=20
-
-The driver already seems to support lowering the link rate during link
-training. Can't we try to train at the highest rate and then downgrade
-the link speed until it trains properly? I sort of fail to see why we
-need to introduce a bunch of complexity around limiting the link rate on
-certain boards if the driver can figure out that link training doesn't
-work at HBR3 so it should try to train at HBR2 instead.
+Please ignore these unintended mode changes. I will remove these in
+the next version.
