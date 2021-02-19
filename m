@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAADF31FC4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E100D31FC52
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhBSPnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:43:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48184 "EHLO mx2.suse.de"
+        id S229804AbhBSPpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:45:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48182 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229943AbhBSPmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229809AbhBSPmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Feb 2021 10:42:14 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
@@ -17,23 +17,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nYiBLOOS0jKaGXZR/xdp5WHTi+5sOW1v2m88NDrZNbI=;
-        b=mqlyaLZe/YgvYSsQIvPpN9XoaMOuiHW3Pbur9d3Wz3NOMHY4Oy4s66u3aQWq9fxarixX/O
-        Ey3afn8U9k0KK6JKqUCXGc1zWME5EppFL1W/JOkfTp3ilVzkPrWMZUrxql+Y+EqqtO2aWl
-        dpSxPChifLttkm90i7WQkWP8NL1KFr4=
+        bh=dflticAMbc09PwXAGDjeFedypgLhrYxdjLRQqHKEDDU=;
+        b=cAj/RR/Np2Vu9mTDqZssOVj4+tOadc3EcJK5OUtUYHgAsHlAkUaM7EnBllZPfqdGIbJiFN
+        EixYe2DRhOopG/yuDiYRwWsU8do5usxDeCMFtoxvVAkcN6xMoINQmWwvZIObrIh6jbFbvN
+        GI/e8gT4izrCIcwyQ6tiv+FG6FYEIsA=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8FC36B114;
+        by mx2.suse.de (Postfix) with ESMTP id B65E9B115;
         Fri, 19 Feb 2021 15:40:39 +0000 (UTC)
 From:   Juergen Gross <jgross@suse.com>
 To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
 Cc:     Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH v3 7/8] xen/evtchn: use smp barriers for user event ring
-Date:   Fri, 19 Feb 2021 16:40:29 +0100
-Message-Id: <20210219154030.10892-8-jgross@suse.com>
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: [PATCH v3 8/8] xen/evtchn: use READ/WRITE_ONCE() for accessing ring indices
+Date:   Fri, 19 Feb 2021 16:40:30 +0100
+Message-Id: <20210219154030.10892-9-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210219154030.10892-1-jgross@suse.com>
 References: <20210219154030.10892-1-jgross@suse.com>
@@ -43,38 +41,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ring buffer for user events is local to the given kernel instance,
-so smp barriers are fine for ensuring consistency.
+For avoiding read- and write-tearing by the compiler use READ_ONCE()
+and WRITE_ONCE() for accessing the ring indices in evtchn.c.
 
-Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
 Signed-off-by: Juergen Gross <jgross@suse.com>
-Reviewed-by: Jan Beulich <jbeulich@suse.com>
 ---
- drivers/xen/evtchn.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+V2:
+- modify all accesses (Julien Grall)
+V3:
+- fix incrementing producer index (Ross Lagerwall)
+---
+ drivers/xen/evtchn.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/xen/evtchn.c b/drivers/xen/evtchn.c
-index a7a85719a8c8..421382c73d88 100644
+index 421382c73d88..c99415a70051 100644
 --- a/drivers/xen/evtchn.c
 +++ b/drivers/xen/evtchn.c
-@@ -173,7 +173,7 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
+@@ -162,6 +162,7 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
+ {
+ 	struct user_evtchn *evtchn = data;
+ 	struct per_user_data *u = evtchn->user;
++	unsigned int prod, cons;
  
- 	if ((u->ring_prod - u->ring_cons) < u->ring_size) {
- 		*evtchn_ring_entry(u, u->ring_prod) = evtchn->port;
--		wmb(); /* Ensure ring contents visible */
-+		smp_wmb(); /* Ensure ring contents visible */
- 		if (u->ring_cons == u->ring_prod++) {
+ 	WARN(!evtchn->enabled,
+ 	     "Interrupt for port %u, but apparently not enabled; per-user %p\n",
+@@ -171,10 +172,14 @@ static irqreturn_t evtchn_interrupt(int irq, void *data)
+ 
+ 	spin_lock(&u->ring_prod_lock);
+ 
+-	if ((u->ring_prod - u->ring_cons) < u->ring_size) {
+-		*evtchn_ring_entry(u, u->ring_prod) = evtchn->port;
++	prod = READ_ONCE(u->ring_prod);
++	cons = READ_ONCE(u->ring_cons);
++
++	if ((prod - cons) < u->ring_size) {
++		*evtchn_ring_entry(u, prod) = evtchn->port;
+ 		smp_wmb(); /* Ensure ring contents visible */
+-		if (u->ring_cons == u->ring_prod++) {
++		WRITE_ONCE(u->ring_prod, prod + 1);
++		if (cons == prod) {
  			wake_up_interruptible(&u->evtchn_wait);
  			kill_fasync(&u->evtchn_async_queue,
-@@ -245,7 +245,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
- 	}
+ 				    SIGIO, POLL_IN);
+@@ -210,8 +215,8 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
+ 		if (u->ring_overflow)
+ 			goto unlock_out;
  
- 	rc = -EFAULT;
--	rmb(); /* Ensure that we see the port before we copy it. */
-+	smp_rmb(); /* Ensure that we see the port before we copy it. */
- 	if (copy_to_user(buf, evtchn_ring_entry(u, c), bytes1) ||
- 	    ((bytes2 != 0) &&
+-		c = u->ring_cons;
+-		p = u->ring_prod;
++		c = READ_ONCE(u->ring_cons);
++		p = READ_ONCE(u->ring_prod);
+ 		if (c != p)
+ 			break;
+ 
+@@ -221,7 +226,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
+ 			return -EAGAIN;
+ 
+ 		rc = wait_event_interruptible(u->evtchn_wait,
+-					      u->ring_cons != u->ring_prod);
++			READ_ONCE(u->ring_cons) != READ_ONCE(u->ring_prod));
+ 		if (rc)
+ 			return rc;
+ 	}
+@@ -251,7 +256,7 @@ static ssize_t evtchn_read(struct file *file, char __user *buf,
  	     copy_to_user(&buf[bytes1], &u->ring[0], bytes2)))
+ 		goto unlock_out;
+ 
+-	u->ring_cons += (bytes1 + bytes2) / sizeof(evtchn_port_t);
++	WRITE_ONCE(u->ring_cons, c + (bytes1 + bytes2) / sizeof(evtchn_port_t));
+ 	rc = bytes1 + bytes2;
+ 
+  unlock_out:
+@@ -552,7 +557,9 @@ static long evtchn_ioctl(struct file *file,
+ 		/* Initialise the ring to empty. Clear errors. */
+ 		mutex_lock(&u->ring_cons_mutex);
+ 		spin_lock_irq(&u->ring_prod_lock);
+-		u->ring_cons = u->ring_prod = u->ring_overflow = 0;
++		WRITE_ONCE(u->ring_cons, 0);
++		WRITE_ONCE(u->ring_prod, 0);
++		u->ring_overflow = 0;
+ 		spin_unlock_irq(&u->ring_prod_lock);
+ 		mutex_unlock(&u->ring_cons_mutex);
+ 		rc = 0;
+@@ -595,7 +602,7 @@ static __poll_t evtchn_poll(struct file *file, poll_table *wait)
+ 	struct per_user_data *u = file->private_data;
+ 
+ 	poll_wait(file, &u->evtchn_wait, wait);
+-	if (u->ring_cons != u->ring_prod)
++	if (READ_ONCE(u->ring_cons) != READ_ONCE(u->ring_prod))
+ 		mask |= EPOLLIN | EPOLLRDNORM;
+ 	if (u->ring_overflow)
+ 		mask = EPOLLERR;
 -- 
 2.26.2
 
