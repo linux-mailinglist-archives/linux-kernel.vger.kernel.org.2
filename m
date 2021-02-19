@@ -2,148 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E8BA31F616
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:53:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37EE531F61A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:53:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhBSIwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:52:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhBSIw1 (ORCPT
+        id S229970AbhBSIxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 03:53:05 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12192 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhBSIw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:52:27 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FEAC061756;
-        Fri, 19 Feb 2021 00:51:46 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id z68so3439821pgz.0;
-        Fri, 19 Feb 2021 00:51:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZX/0vn+4d0GadCfE6C+zcMHKBe8kMLF0TT0FFLEZWko=;
-        b=gp4UIalZOAkD+9D6/YZrYAsj+BWkWdjYpymhbfYsJdSc12qD46kAFL5uvCxfrFjTbW
-         NcDYnMQx1ZWnR3ySqHQa3vtiWKgIcZVF3XZJd9w4bkUwiOdkKPZoLlLMmOW2vIDLKfzb
-         7zjfoWmNZG7CeLrWRX09+llAZjfJqGUvPME8IT+n631hYDJmWqsMDAvgJSUKgioqBMOT
-         /tI+Jdo3RCp3jQ4QioB0NrgHMFA9A8XPPgvDv9Ey+E4FLGUribU3P8NorDCvTXkE9wyx
-         1Je/Gw/CDt2XdROS6IEmxswI4ITvAXcHy9uCGGxcdokOtjn7yP4hUSA9rOFvAZFnsTgp
-         I22A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZX/0vn+4d0GadCfE6C+zcMHKBe8kMLF0TT0FFLEZWko=;
-        b=UREsU149zeudQUZay8akY0MNFnp/TgpZNYhTdIcRKaHs4P3jWsf1C3BSfzoFU3iJ7K
-         uSYvLAakIMWGDYhijckqxf0RuU1kb42O/MQuXgBt5KRL+jRfsXlaN6RAVJVECpX6CFCW
-         XP+BMEDlwvfmk60ZaHGY5A1TMfAApqLXvrxH16pvuTjpImIvMoiTpm//j4sjamVPrXM2
-         hN1Bzf3clDHPtq4201AXQUf+Y1aeJYMsyn/dBvxk0dPVMB7ILl44/EuB3QJfNPsQze3h
-         QawF/0sR+OIvAbAiLOwqhyQSDC/XrzsUyjb4HvHRiqRWDOecelOJJWcpgXaRAWukBDDy
-         20Gw==
-X-Gm-Message-State: AOAM531lvrPIfC3M8Sgu0uaPefKf4/77aB+97xONpiFIQTWi4zc9IpUO
-        pPi50GaJpo+LN7liBaOVqg4=
-X-Google-Smtp-Source: ABdhPJz1tkjQ5wEB6PWfTQeIvZWmVYTed76QBMR8Bc1Hd5itPLBAQDEmnH8GyFqWxdto3uAN+Stk0g==
-X-Received: by 2002:a63:ca45:: with SMTP id o5mr7730598pgi.48.1613724706449;
-        Fri, 19 Feb 2021 00:51:46 -0800 (PST)
-Received: from shinobu (113x37x72x20.ap113.ftth.ucom.ne.jp. [113.37.72.20])
-        by smtp.gmail.com with ESMTPSA id u20sm8301896pjy.36.2021.02.19.00.51.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 00:51:45 -0800 (PST)
-Date:   Fri, 19 Feb 2021 17:51:37 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v8 19/22] counter: Implement extension*_name sysfs
- attributes
-Message-ID: <YC98GTwzwt+pkzMO@shinobu>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
- <c9b55d1cff6acac692a7853b0a25777ecf017b12.1613131238.git.vilhelm.gray@gmail.com>
- <20210214180913.05bd3498@archlinux>
+        Fri, 19 Feb 2021 03:52:57 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dhldj4s0gzlMgR;
+        Fri, 19 Feb 2021 16:50:17 +0800 (CST)
+Received: from [10.174.177.80] (10.174.177.80) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 19 Feb 2021 16:52:05 +0800
+Subject: Re: [PATCH v12 13/14] mm/vmalloc: Hugepage vmalloc mappings
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
+CC:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        <linux-arch@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210202110515.3575274-1-npiggin@gmail.com>
+ <20210202110515.3575274-14-npiggin@gmail.com>
+ <e18ef38c-ecef-b15c-29b1-bd4acf0e7fe5@huawei.com>
+ <1613720396.pnvmwaa8om.astroid@bobo.none>
+From:   Ding Tianhong <dingtianhong@huawei.com>
+Message-ID: <913cd34a-453c-ae66-ff87-4b0c74c98eb6@huawei.com>
+Date:   Fri, 19 Feb 2021 16:52:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Z+ATVKzf56OJTET9"
-Content-Disposition: inline
-In-Reply-To: <20210214180913.05bd3498@archlinux>
+In-Reply-To: <1613720396.pnvmwaa8om.astroid@bobo.none>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.80]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/2/19 15:45, Nicholas Piggin wrote:
+> Excerpts from Ding Tianhong's message of February 19, 2021 1:45 pm:
+>> Hi Nicholas:
+>>
+>> I met some problem for this patch, like this:
+>>
+>> kva = vmalloc(3*1024k);
+>>
+>> remap_vmalloc_range(xxx, kva, xxx)
+>>
+>> It failed because that the check for page_count(page) is null so return, it break the some logic for current modules.
+>> because the new huge page is not valid for composed page.
+> 
+> Hey Ding, that's a good catch. How are you testing this stuff, do you 
+> have a particular driver that does this?
+> 
 
---Z+ATVKzf56OJTET9
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+yes, The driver would get a memory from the vmalloc in kernel space, and then the physical same memory will mmap to the user space. The drivers could not work when applying this patch.
 
-On Sun, Feb 14, 2021 at 06:09:13PM +0000, Jonathan Cameron wrote:
-> On Fri, 12 Feb 2021 21:13:43 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
->=20
-> > The Generic Counter chrdev interface expects users to supply extension
-> > IDs in order to select extensions for requests. In order for users to
-> > know what extension ID belongs to which extension this information must
-> > be exposed. The extension*_name attribute provides a way for users to
-> > discover what extension ID belongs to which extension by reading the
-> > respective extension name for an extension ID.
-> >=20
-> > Cc: David Lechner <david@lechnology.com>
-> > Cc: Gwendal Grignou <gwendal@chromium.org>
-> > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > ---
-> >  Documentation/ABI/testing/sysfs-bus-counter |  9 ++++
-> >  drivers/counter/counter-sysfs.c             | 51 +++++++++++++++++----
-> >  2 files changed, 50 insertions(+), 10 deletions(-)
-> >=20
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentatio=
-n/ABI/testing/sysfs-bus-counter
-> > index 6353f0a2f8f8..847e96f19d19 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-counter
-> > +++ b/Documentation/ABI/testing/sysfs-bus-counter
-> > @@ -100,6 +100,15 @@ Description:
-> >  		Read-only attribute that indicates whether excessive noise is
-> >  		present at the channel Y counter inputs.
-> > =20
-> > +What:		/sys/bus/counter/devices/counterX/countY/extensionZ_name
-> > +What:		/sys/bus/counter/devices/counterX/extensionZ_name
-> > +What:		/sys/bus/counter/devices/counterX/signalY/extensionZ_name
-> > +KernelVersion:	5.13
-> > +Contact:	linux-iio@vger.kernel.org
-> > +Description:
-> > +		Read-only attribute that indicates the component name of
-> > +		Extension Z.
->=20
-> Good to say what form this takes.
+>> I think some guys really don't get used to the changes for the vmalloc that the small pages was transparency to the hugepage
+>> when the size is bigger than the PMD_SIZE.
+> 
+> I think in this case vmalloc could allocate the large page as a compound
+> page which would solve this problem I think? (without having actually 
+> tested it)
+> 
 
-Do you mean a description like this: "Read-only string attribute that
-indicates the component name of Extension Z"?
+yes, i think the __GFP_COMP flag could fix this.
 
-William Breathitt Gray
+>> can we think about give a new static huge page to fix it? just like use a a new vmalloc_huge_xxx function to disginguish the current function,
+>> the user could choose to use the transparent hugepage or static hugepage for vmalloc.
+> 
+> Yeah that's a good question, there are a few things in the huge vmalloc 
+> code that accounts things as small pages and you can't assume large or 
+> small. If there is benefit from forcing large pages that could certainly
+> be added.
+> 
 
---Z+ATVKzf56OJTET9
-Content-Type: application/pgp-signature; name="signature.asc"
+The vmalloc transparent is good, but not fit every user scenes, some guys like to use the deterministic function
+for performance critical area.
 
------BEGIN PGP SIGNATURE-----
+Thanks
+Ding
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAvfBkACgkQhvpINdm7
-VJIzrRAAiZ+eMLbJ0vaW9ezjJpkSnHfiyB5JKIbYfzn7RticBncbdaXLrFHbq9y/
-cWxBrgijMQ9h2SwX8gW+ovh6u7cfCW+FFvLtS9UAb9jiM/jTangdAASyMmjLTFDb
-04zodzHmS88tT+Wd5AQICiAR3MRAglHfyED3Utq2DSDvSkgB6vMo3JfuVrdQaKaS
-haOt0+djMIYtjoqk6HuvokA3Fwq4SBh2Ey8miBy9TXedsiMpeEMv7BO/rOoMIyJH
-OsKqnvQVR0OncdCYzWL1ENnu8NQo/4GIgDrwHTQXMTYXune1u8oM8vAkLXeJ8tlU
-TLUBRTjQaHt5E5Qz+vyxYsahSyZ6G/qDJ4oDRApSpfHhXuZmF4a1yqzzWOoFviuh
-kqubzCcDzYb5svEbp1T5N9Wqi1Q4By8r2Y3JQA6kt4Y0YGqlRZP5uMbwS0kvplYS
-AMqnslpxOWbEBQgxpjEHhAP3iB1yHmopGBvBWJX4X2oTOslVK9tv3BpRXIHDOCz4
-1+cxy4DNAS0KdskIv0jOhEfbyPzEYi7n424aA+Mhgs0LSgkDjCXw4WqPmJX2CS+Q
-pCgwMJfgqW61pZBeMfv6HaqKw1DKzESf1DUrqgWry1zvdO43xozbqdvat8iAJO/N
-UIm9sFwsQDTAym3cvbPuNCePtvb0rqN7Wo4QnZfOBHBa+9Oifgc=
-=Rifk
------END PGP SIGNATURE-----
+> Interestingly, remap_vmalloc_range in theory could map the pages as 
+> large in userspace as well. That takes more work but if something
+> really needs that for performance, it could be done.
+> 
+> Thanks,
+> Nick
+> .
+> 
 
---Z+ATVKzf56OJTET9--
