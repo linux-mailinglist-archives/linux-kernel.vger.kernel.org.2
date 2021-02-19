@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9F331FE3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:49:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2108C31FE50
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhBSRsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:48:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBSRsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:48:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFD3964E15;
-        Fri, 19 Feb 2021 17:47:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613756849;
-        bh=m6rAWAFgOM3ef0SD8I84idRS7AgJL+jWbMk1gCQij+o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bGHuD922XC1b45O1tiaggLTuMTRp7NKr7H1mV4tmsmPqeQr4B2pw2FVTl9kmO9MHF
-         xGROBgGp1QL6pu43GCxIyU/02C3EERLfWmpSxCyexdKsAXpPJh2FHwD+p+34tFKOw7
-         8a433nSSRoFXaSMSKA0xuu8mrHxOq4cydZw/Qh7/NiPD4ofijUxSpwoidpWHVZnwao
-         Y57cxop8pYJzwcQneiL3e+pDahWhNBdX7MUNvi6uwrnprnquULBpuS/AVHTkPdxC9/
-         pdtBMNeQXUy5b2i4M8wUCqLSMRrCxPG2bO5KeEddECdZs8oA7gbSgXilwDc0upM9HL
-         o8r+f2mFf1cVQ==
-Date:   Fri, 19 Feb 2021 19:47:14 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>, keyrings@vger.kernel.org,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        mchehab+huawei@kernel.org, linux-doc@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] watch_queue: rectify kernel-doc for init_watch()
-Message-ID: <YC/5ojC2fwkY5Y9T@kernel.org>
-References: <161373161298.2157082.10755433120775444271.stgit@warthog.procyon.org.uk>
+        id S230016AbhBSRto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:49:44 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37599 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229546AbhBSRsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 12:48:35 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11JHgYZ0008252;
+        Fri, 19 Feb 2021 18:47:42 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=loIA3esYt/3shriHTJz+2fSOwQFG2K336Aa8gSHwP6I=;
+ b=0kGfbam1bIRwLSW/7zqqo5xRV11Y9stvRP2Fjj/iBLedOUexpuiTq+f8quiGLpUcFo6z
+ vkClfBKpsC7xtslq5eZensZfJ4kVLen1xsjCrs7m9liUvAN1BLi0y4bKEvvxUfC8sx7P
+ viLgCm+Rs0xSuMEGpF6egRM1I7X5y+KZjjj/Uc795RHE08ol85W2t+dkMyoDKVtxduhY
+ Q+d8QmAJQbxTUZFXQ7y98/Pznvr+9+B5kP72SWTkJcDT+vMABxtMeHSYfJSBFj1arjfB
+ 4i1ONc8ZEhZp/om09i55xNFsAe2TsZuB5/xaS9+uxV7RtEC1u9igX6TdVBcompjbmsc4 9Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36sqadhawq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 18:47:42 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AB51610002A;
+        Fri, 19 Feb 2021 18:47:40 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 99A4C25F3FB;
+        Fri, 19 Feb 2021 18:47:40 +0100 (CET)
+Received: from localhost (10.75.127.45) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 19 Feb 2021 18:47:40
+ +0100
+From:   Erwan Le Ray <erwan.leray@foss.st.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-serial@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+Subject: [PATCH 00/13] stm32 usart various fixes
+Date:   Fri, 19 Feb 2021 18:47:23 +0100
+Message-ID: <20210219174736.1022-1-erwan.leray@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161373161298.2157082.10755433120775444271.stgit@warthog.procyon.org.uk>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.45]
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 10:46:53AM +0000, David Howells wrote:
-> From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> 
-> The command './scripts/kernel-doc -none kernel/watch_queue.c'
-> reported a mismatch in the kernel-doc of init_watch().
-> 
-> Rectify the kernel-doc, such that no issues remain for watch_queue.c.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: David Howells <dhowells@redhat.com>
-> Link: https://lore.kernel.org/lkml/20210125161409.8478-1-lukas.bulwahn@gmail.com
-> ---
-> 
->  kernel/watch_queue.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/watch_queue.c b/kernel/watch_queue.c
-> index 0ef8f65bd2d7..9c9eb20dd2c5 100644
-> --- a/kernel/watch_queue.c
-> +++ b/kernel/watch_queue.c
-> @@ -413,7 +413,7 @@ static void put_watch(struct watch *watch)
->  }
->  
->  /**
-> - * init_watch_queue - Initialise a watch
-> + * init_watch - Initialise a watch
->   * @watch: The watch to initialise.
->   * @wqueue: The queue to assign.
->   *
-> 
-> 
-> 
+This series brings various fixes to stm32-usart driver.
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Erwan Le Ray (13):
+  serial: stm32: fix probe and remove order for dma
+  serial: stm32: fix startup by enabling usart for reception
+  serial: stm32: fix incorrect characters on console
+  serial: stm32: fix TX and RX FIFO thresholds
+  serial: stm32: fix a deadlock condition with wakeup event
+  serial: stm32: fix wake-up flag handling
+  serial: stm32: fix a deadlock in set_termios
+  serial: stm32: fix tx dma completion, release channel
+  serial: stm32: call stm32_transmit_chars locked
+  serial: stm32: fix FIFO flush in startup and set_termios
+  serial: stm32: add FIFO flush when port is closed
+  serial: stm32: fix tx_empty condition
+  serial: stm32: add support for "flush_buffer" ops
 
-/Jarkko
+ drivers/tty/serial/stm32-usart.c | 198 +++++++++++++++++++++----------
+ drivers/tty/serial/stm32-usart.h |   3 -
+ 2 files changed, 135 insertions(+), 66 deletions(-)
+
+-- 
+2.17.1
+
