@@ -2,123 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E26320003
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA4F320010
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhBSUuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:50:46 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60656 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229620AbhBSUum (ORCPT
+        id S229658AbhBSVAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 16:00:08 -0500
+Received: from smtpx.feld.cvut.cz ([147.32.210.153]:34503 "EHLO
+        smtpx.feld.cvut.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhBSVAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:50:42 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JKW7XO097860;
-        Fri, 19 Feb 2021 15:50:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=IADvMw5EkLNvVCZI6eQLEJk0jPkK8tm9MArQxptSjos=;
- b=ZklpezGsdKtJHtIZrmdSk57DzVWWhmXKKWdq+BbUB8W1/eS/Nzc7QwIKFMrzzrsEZXiq
- uB4V2Yu0JQYbrTLpSebv271mytM8LuH+n8Kw3MF9vPaiAmgagyQNe1IFc/Hn18A6Qf+F
- 1uuQZxbCeBtF1bDTrowjZR0HW7YgJy4I5v82+AnudjFg3TisqjZ41/GnZQstYbZCmHoT
- GTm/bXt9o1ujm/PEerYehpZSDl9ySODorA/aWDLzyK0dLhHxlDjkcrgQoS2dtXy06Kgk
- tc8i14+GTmCzK6Jnb3veTmXl6I65OGPQz1KhsG3JJzT5iFP73GJnDp9YTPuCRR/Nnrnh Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36tm9jgw1h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 15:50:01 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11JKfVfv137795;
-        Fri, 19 Feb 2021 15:50:01 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36tm9jgw13-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 15:50:00 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11JKnKPY010073;
-        Fri, 19 Feb 2021 20:49:59 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma01wdc.us.ibm.com with ESMTP id 36p6d9g41c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 20:49:59 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11JKnwaI28705188
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 20:49:58 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C829BC6055;
-        Fri, 19 Feb 2021 20:49:58 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5D34C6057;
-        Fri, 19 Feb 2021 20:49:57 +0000 (GMT)
-Received: from cpe-66-24-58-13.stny.res.rr.com (unknown [9.85.198.77])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 19 Feb 2021 20:49:57 +0000 (GMT)
-Subject: Re: [PATCH v2 1/1] s390/vfio-ap: fix circular lockdep when
- setting/clearing crypto masks
-To:     Cornelia Huck <cohuck@redhat.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, stable@vger.kernel.org,
-        borntraeger@de.ibm.com, kwankhede@nvidia.com, pbonzini@redhat.com,
-        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
-References: <20210216011547.22277-1-akrowiak@linux.ibm.com>
- <20210216011547.22277-2-akrowiak@linux.ibm.com>
- <20210219144554.3857a034.cohuck@redhat.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <567bb57c-1b3d-721e-b622-4026a8df2d31@linux.ibm.com>
-Date:   Fri, 19 Feb 2021 15:49:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
-MIME-Version: 1.0
-In-Reply-To: <20210219144554.3857a034.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 impostorscore=0 bulkscore=0
- priorityscore=1501 suspectscore=0 clxscore=1015 malwarescore=0
- lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102190160
+        Fri, 19 Feb 2021 16:00:06 -0500
+X-Greylist: delayed 440 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Feb 2021 16:00:04 EST
+Received: from localhost (styx [192.168.200.7])
+        by smtpx.feld.cvut.cz (Postfix) with ESMTP id C8A8141700;
+        Fri, 19 Feb 2021 21:52:02 +0100 (CET)
+X-Virus-Scanned: IMAP STYX AMAVIS
+Received: from smtpx.feld.cvut.cz ([192.168.200.2])
+        by localhost (styx.feld.cvut.cz [192.168.200.7]) (amavisd-new, port 10060)
+        with ESMTP id mPBEzbQL2z-M; Fri, 19 Feb 2021 21:52:00 +0100 (CET)
+Received: from imap.feld.cvut.cz (imap.feld.cvut.cz [147.32.210.222])
+        by smtpx.feld.cvut.cz (Postfix) with ESMTP id 88EFE413F8;
+        Fri, 19 Feb 2021 21:52:00 +0100 (CET)
+From:   =?utf-8?Q?Zbyn=C4=9Bk_Kocur?= <zbynek.kocur@fel.cvut.cz>
+Message-Id: <1E2EF21D-A304-46C4-9370-4FEBFD4767D2@fel.cvut.cz>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_2E8DA451-B76B-4368-A7CA-EC6180EA1C5C";
+        protocol="application/pkcs7-signature";
+        micalg=sha-256
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2] leds: apu: extend support for PC Engines APU1 with
+ newer firmware
+Date:   Fri, 19 Feb 2021 21:51:58 +0100
+In-Reply-To: <20210219143711.GA28202@meh.true.cz>
+Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Andreas Eberlein <foodeas@aeberlein.de>,
+        Pavel Machek <pavel@ucw.cz>, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+To:     =?utf-8?Q?Petr_=C5=A0tetiar?= <ynezz@true.cz>
+References: <20210216133028.4025-1-foodeas@aeberlein.de>
+ <c7eebbb6-df0c-51df-7701-ecb8f6543466@metux.net>
+ <20210219143711.GA28202@meh.true.cz>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--Apple-Mail=_2E8DA451-B76B-4368-A7CA-EC6180EA1C5C
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
 
-On 2/19/21 8:45 AM, Cornelia Huck wrote:
-> On Mon, 15 Feb 2021 20:15:47 -0500
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
->
->> This patch fixes a circular locking dependency in the CI introduced by
->> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
->> pointer invalidated"). The lockdep only occurs when starting a Secure
->> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
->> SE guests; however, in order to avoid CI errors, this fix is being
->> provided.
->>
->> The circular lockdep was introduced when the masks in the guest's APCB
->> were taken under the matrix_dev->lock. While the lock is definitely
->> needed to protect the setting/unsetting of the KVM pointer, it is not
->> necessarily critical for setting the masks, so this will not be done under
->> protection of the matrix_dev->lock.
->>
->> Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
->> ---
->>   drivers/s390/crypto/vfio_ap_ops.c | 119 +++++++++++++++++++++---------
->>   1 file changed, 84 insertions(+), 35 deletions(-)
-> I've been looking at the patch for a bit now and tried to follow down
-> the various paths; and while I think it's ok, I do not really have
-> enough confidence about that for a R-b. But have an
->
-> Acked-by: Cornelia Huck <cohuck@redhat.com>
+Petr =C5=A0tetiar <ynezz@true.cz>
 
-Thanks for the review.
 
->
+Hi Peter,
 
+Thanks for adding to the discussion. I tested the proposed modification =
+on APU1 with different versions of bios.=20
+The LED subsystem now behaves the same as the APU2 and higher. If it =
+needs more tests on various boards
+ from PCengines, I'm available.
+
+
+Tested-by: Zbyn=C4=9Bk Kocur <zbynek.kocur@fel.cvut.cz>
+
+
+Zbyn=C4=9Bk=
+
+--Apple-Mail=_2E8DA451-B76B-4368-A7CA-EC6180EA1C5C
+Content-Disposition: attachment;
+	filename=smime.p7s
+Content-Type: application/pkcs7-signature;
+	name=smime.p7s
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCDXow
+ggaMMIIEdKADAgECAhEAjccpAsDT9VGQNkn5saQIvjANBgkqhkiG9w0BAQwFADBGMQswCQYDVQQG
+EwJOTDEZMBcGA1UEChMQR0VBTlQgVmVyZW5pZ2luZzEcMBoGA1UEAxMTR0VBTlQgUGVyc29uYWwg
+Q0EgNDAeFw0yMTAyMDEwMDAwMDBaFw0yNDAyMDEyMzU5NTlaMIH9MQ8wDQYDVQQREwYxNjAgMDAx
+MzAxBgNVBAoMKsSMZXNrw6kgdnlzb2vDqSB1xI1lbsOtIHRlY2huaWNrw6kgdiBQcmF6ZTErMCkG
+A1UECQwiSnVnb3Nsw6F2c2vDvWNoIHBhcnR5esOhbsWvIDE1ODAvMzEeMBwGA1UECAwVUHJhaGEs
+IEhsYXZuw60gbcSbc3RvMRowGAYDVQQHExFQcmFoYSA2IC0gRGVqdmljZTELMAkGA1UEBhMCQ1ox
+FjAUBgNVBAMMDVpieW7Em2sgS29jdXIxJzAlBgkqhkiG9w0BCQEWGHpieW5lay5rb2N1ckBmZWwu
+Y3Z1dC5jejCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIdRN/oFd1DLnU4WMVitQMzz
+OciHSW3JqzYkby5eWv1pkFnlpeqnIjEtZIC2DKSLBw0MfLfCUpjnT5C73I5DECfK3EEN+7OsccpG
+Za6fhIUH8c1/l/QgqYnoa3gXotJ6eLg3E7DUc72Y7LeB0DKpow9Js8lXgbWzbKsOW95Qkd8bO+bS
+tQsekAbiyk5F73jFujOZ8eb2zc6vZMa+aPxnrAcrijC43Z9NTKydKqThUX9/vI9CqWL+U3ryxY2K
+zNr/TEkBP1S2g4xFuse5yj4cL9Hue+uIwj0EOJ6u4oaADBa6bm/BcfKrdJOWvm8/GVC/avVjv1M3
+9dIZ6WiVaqmPxFcCAwEAAaOCAbswggG3MB8GA1UdIwQYMBaAFGkAocchWPjgxRsgsArdp1G/E9nk
+MB0GA1UdDgQWBBQeADUgMaLLH0FsuNkwTK7lPPjEDzAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/
+BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwPwYDVR0gBDgwNjA0BgsrBgEEAbIx
+AQICTzAlMCMGCCsGAQUFBwIBFhdodHRwczovL3NlY3RpZ28uY29tL0NQUzBCBgNVHR8EOzA5MDeg
+NaAzhjFodHRwOi8vR0VBTlQuY3JsLnNlY3RpZ28uY29tL0dFQU5UUGVyc29uYWxDQTQuY3JsMHgG
+CCsGAQUFBwEBBGwwajA9BggrBgEFBQcwAoYxaHR0cDovL0dFQU5ULmNydC5zZWN0aWdvLmNvbS9H
+RUFOVFBlcnNvbmFsQ0E0LmNydDApBggrBgEFBQcwAYYdaHR0cDovL0dFQU5ULm9jc3Auc2VjdGln
+by5jb20wOQYDVR0RBDIwMIEUWmJ5bmVrLktvY3VyQGN2dXQuY3qBGHpieW5lay5rb2N1ckBmZWwu
+Y3Z1dC5jejANBgkqhkiG9w0BAQwFAAOCAgEAFQ/cuZ8vH8nfnkb+vZg3WOIYsEdHdXq5TS7ZKOvM
+5KHGL2YZ6VTTPMOMSDR8zKT7w0scWKMlPURv6tlehIjDQsJ+pdkkq5WjHUM7av5jap0lazd3bTiU
+gxQxQfQhsevs6Nq2tf5tQmwRrROezy+5Fvf3k3gv1csviLszVMVUCFx6tWkAdfIaxl1pXIG+Kl/S
+fLdWsxaJxhlh6lknaP+UHS/N0aCcQwBja1NSEt8emK/ehk+DfyqLr1hrXKSj44wm5xRuZ2FdYTo7
+32XW2IACEyGCufi95UVIzdCyXFiRKrfII+KhUFf3nCcnfIDPCLm4Xz5YMv2xQHxxoVk1OkTjeczx
+/OC6VlyTORc+q2JHGrTTEFKnb+9fzDQgtFcvzhmt9P1+Js5w6O51UnNN/cA2nJTFknLZlsBXBc0O
+ctx145dmLfw+hvVcWWuaiFhIX0MOD9KZ9Dc36NteaV8gyq7G8c1pHna8XBH873pWixZf0UiZ4IF7
+ajvxE97KBVzS+iVTF0JDA09F5KINBSS6HiUKyBamGAzkaM3xRyxcJSu4bzX2qG9gioLw671PSvVU
+2ebMT8a5LZnnqrkoHQnv0YKZ/4ijtQVc1iYaRgj1emq/sRe616159u0Y/lkmIo67MOTF4xcCjGjA
+DKGVeTh6mCIZPpTYqHSlWyQ5Mz0SKxKfjKgwggbmMIIEzqADAgECAhAxAnDUNb6bJJr4VtDh4oVJ
+MA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQGEwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIG
+A1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UE
+AxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0yMDAyMTgwMDAwMDBa
+Fw0zMzA1MDEyMzU5NTlaMEYxCzAJBgNVBAYTAk5MMRkwFwYDVQQKExBHRUFOVCBWZXJlbmlnaW5n
+MRwwGgYDVQQDExNHRUFOVCBQZXJzb25hbCBDQSA0MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIIC
+CgKCAgEAs0riIl4nW+kEWxQENTIgFK600jFAxs1QwB6hRMqvnkphfy2Q3mKbM2otpELKlgE8/3AQ
+PYBo7p7yeORuPMnAuA+oMGRb2wbeSaLcZbpwXgfCvnKxmq97/kQkOFX706F9O7/h0yehHhDjUdyM
+yT0zMs4AMBDRrAFn/b2vR3j0BSYgoQs16oSqadM3p+d0vvH/YrRMtOhkvGpLuzL8m+LTAQWvQJ92
+NwCyKiHspoP4mLPJvVpEpDMnpDbRUQdftSpZzVKTNORvPrGPRLnJ0EEVCHR82LL6oz915WkrgeCY
+9ImuulBn4uVsd9ZpubCgM/EXvVBlViKqusChSsZEn7juIsGIiDyaIhhLsd3amm8BS3bgK6AxdSMR
+OND6hiHT182Lmf8C+gRHxQG9McvG35uUvRu8v7bPZiJRaT7ZC2f50P4lTlnbLvWpXv5yv7hheO8b
+MXltiyLweLB+VNvg+GnfL6TW3Aq1yF1yrZAZzR4MbpjTWdEdSLKvz8+0wCwscQ81nbDOwDt9vyZ+
+0eJXbRkWZiqScnwAg5/B1NUD4TrYlrI4n6zFp2pyYUOiuzP+as/AZnz63GvjFK69WODR2W/TK4D7
+VikEMhg18vhuRf4hxnWZOy0vhfDR/g3aJbdsGac+diahjEwzyB+UKJOCyzvecG8bZ/u/U8PsEMZg
+07iIPi8CAwEAAaOCAYswggGHMB8GA1UdIwQYMBaAFFN5v1qqK0rPVIDh2JvAnfKyA2bLMB0GA1Ud
+DgQWBBRpAKHHIVj44MUbILAK3adRvxPZ5DAOBgNVHQ8BAf8EBAMCAYYwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHSUEFjAUBggrBgEFBQcDAgYIKwYBBQUHAwQwOAYDVR0gBDEwLzAtBgRVHSAAMCUw
+IwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFAGA1UdHwRJMEcwRaBDoEGGP2h0
+dHA6Ly9jcmwudXNlcnRydXN0LmNvbS9VU0VSVHJ1c3RSU0FDZXJ0aWZpY2F0aW9uQXV0aG9yaXR5
+LmNybDB2BggrBgEFBQcBAQRqMGgwPwYIKwYBBQUHMAKGM2h0dHA6Ly9jcnQudXNlcnRydXN0LmNv
+bS9VU0VSVHJ1c3RSU0FBZGRUcnVzdENBLmNydDAlBggrBgEFBQcwAYYZaHR0cDovL29jc3AudXNl
+cnRydXN0LmNvbTANBgkqhkiG9w0BAQwFAAOCAgEACgVOew2PHxM5AP1v7GLGw+3tF6rjAcx43D9H
+l110Q+BABABglkrPkES/VyMZsfuds8fcDGvGE3o5UfjSno4sij0xdKut8zMazv8/4VMKPCA3EUS0
+tDUoL01ugDdqwlyXuYizeXyH2ICAQfXMtS+raz7mf741CZvO50OxMUMxqljeRfVPDJQJNHOYi2px
+uxgjKDYx4hdZ9G2o+oLlHhu5+anMDkE8g0tffjRKn8I1D1BmrDdWR/IdbBOj6870abYvqys1qYlP
+otv5N5dm+XxQ8vlrvY7+kfQaAYeO3rP1DM8BGdpEqyFVa+I0rpJPhaZkeWW7cImDQFerHW9bKzBr
+CC815a3WrEhNpxh72ZJZNs1HYJ+29NTB6uu4NJjaMxpk+g2puNSm4b9uVjBbPO9V6sFSG+IBqE9c
+kX/1XjzJtY8Grqoo4SiRb6zcHhp3mxj3oqWi8SKNohAOKnUc7RIP6ss1hqIFyv0xXZor4N9tnzD0
+Fo0JDIURjDPEgo5WTdti/MdGTmKFQNqxyZuT9uSI2Xvhz8p+4pCYkiZqpahZlHqMFxdw9XRZQgrP
++cgtOkWEaiNkRBbvtvLdp7MCL2OsQhQEdEbUvDM9slzZXdI7NjJokVBq3O4pls3VD2z3L/bHVBe0
+rBERjyM2C/HSIh84rfmAqBgklzIOqXhd+4RzadUxggLNMIICyQIBATBbMEYxCzAJBgNVBAYTAk5M
+MRkwFwYDVQQKExBHRUFOVCBWZXJlbmlnaW5nMRwwGgYDVQQDExNHRUFOVCBQZXJzb25hbCBDQSA0
+AhEAjccpAsDT9VGQNkn5saQIvjANBglghkgBZQMEAgEFAKCCAUMwGAYJKoZIhvcNAQkDMQsGCSqG
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwMjE5MjA1MTU4WjAvBgkqhkiG9w0BCQQxIgQgNg1E
+X9PxS+x/aFCCEmVS+X9ZyTFc1m3mQlbS5EDu9XQwagYJKwYBBAGCNxAEMV0wWzBGMQswCQYDVQQG
+EwJOTDEZMBcGA1UEChMQR0VBTlQgVmVyZW5pZ2luZzEcMBoGA1UEAxMTR0VBTlQgUGVyc29uYWwg
+Q0EgNAIRAI3HKQLA0/VRkDZJ+bGkCL4wbAYLKoZIhvcNAQkQAgsxXaBbMEYxCzAJBgNVBAYTAk5M
+MRkwFwYDVQQKExBHRUFOVCBWZXJlbmlnaW5nMRwwGgYDVQQDExNHRUFOVCBQZXJzb25hbCBDQSA0
+AhEAjccpAsDT9VGQNkn5saQIvjANBgkqhkiG9w0BAQsFAASCAQBzM6RZM3sRXE5uF0zOaK6/VNGJ
+LMoC3W2Y+w8i41XfacV8T/AmcgBl8rJa26ArzeGuo75ivoSKFx62a8NGirUz+Hz4LlgRpQJQTKjJ
+S0XWI/1iKmMyJjaMZy954BfAUg7GbFMM9CYr6nDqVUvTRgXG2r6FLT8AX1h1joaoAaAomjSUYLf/
+1Z9iMlY2LwU5BNOhbhW+urzieWN8Qt4Fl37PgK0W6iraoHd0tF61ESp2yMtYIfpq58niDIBeV4ko
+KzfMRncZt17CQux6p1tqsC0v8HkFvRY/FzXaSdJ3s02kKxi4q/VPWZk7QkvnZ+DX4GXOuXcM88O/
+38bjcDk1AgFeAAAAAAAA
+--Apple-Mail=_2E8DA451-B76B-4368-A7CA-EC6180EA1C5C--
