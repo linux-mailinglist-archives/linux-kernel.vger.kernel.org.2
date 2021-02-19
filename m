@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2865D31F6CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8AF31F6DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:55:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhBSJuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:50:35 -0500
-Received: from smtp-8fae.mail.infomaniak.ch ([83.166.143.174]:44803 "EHLO
-        smtp-8fae.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229527AbhBSJuO (ORCPT
+        id S230207AbhBSJyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:54:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229927AbhBSJyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:50:14 -0500
-Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dhmxv3GCqzMq8xf;
-        Fri, 19 Feb 2021 10:49:23 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dhmxt6plYzlh8Tf;
-        Fri, 19 Feb 2021 10:49:22 +0100 (CET)
-Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
-To:     David Howells <dhowells@redhat.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net>
- <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk>
- <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
- <2031808.1613665474@warthog.procyon.org.uk>
- <2152657.1613727952@warthog.procyon.org.uk>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <5c158c89-e7da-6ac4-9479-3c00f9e8b912@digikod.net>
-Date:   Fri, 19 Feb 2021 10:50:26 +0100
-User-Agent: 
+        Fri, 19 Feb 2021 04:54:01 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02D8C0617AA
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:52:59 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lD2T2-0000Yz-2i; Fri, 19 Feb 2021 10:52:56 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lD2T1-00010Y-Lb; Fri, 19 Feb 2021 10:52:55 +0100
+Date:   Fri, 19 Feb 2021 10:52:54 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     kernel@pengutronix.de, linux-leds@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Subject: Re: [PATCH 2/2] leds: trigger/tty: Use led_set_brightness_sync()
+ from workqueue
+Message-ID: <20210219095254.ky33qlb3cvy5btpe@pengutronix.de>
+References: <20210219082955.5007-1-u.kleine-koenig@pengutronix.de>
+ <20210219082955.5007-2-u.kleine-koenig@pengutronix.de>
+ <20210219094632.GB5641@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <2152657.1613727952@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cyunj7rgpbaisqx6"
+Content-Disposition: inline
+In-Reply-To: <20210219094632.GB5641@duo.ucw.cz>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--cyunj7rgpbaisqx6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 19/02/2021 10:45, David Howells wrote:
-> 
-> Mickaël Salaün <mic@digikod.net> wrote:
-> 
->> No, the current thread contains an old version with an error in the
->> patch for ima_mok_init(). Please take the last series (fixing this
->> patch) that I rebased on your next branch:
->> https://lore.kernel.org/keyrings/20210210120410.471693-1-mic@digikod.net/
-> 
-> Are you referring to the comma rather than a bar here?
+On Fri, Feb 19, 2021 at 10:46:32AM +0100, Pavel Machek wrote:
+> On Fri 2021-02-19 09:29:55, Uwe Kleine-K=F6nig wrote:
+> > led_set_brightness() involves scheduling a workqueue. As here the led's
+> > brightness setting is done in context of the trigger's workqueue this is
+> > unjustified overhead and it's more sensible to use
+> > led_set_brightness_sync().
+>=20
+> Acked-by: Pavel Machek <pavel@ucw.cz>
 
-Yes, it is correct now, I just replied to the previous email. :)
+Who is expected to pick these two up? I assume Greg as the commit that
+is fixed here is only in his try for now?
 
-> 
->  				KEY_ALLOC_NOT_IN_QUOTA,
-> +				KEY_ALLOC_SET_KEEP,
-> 
-> I fixed that in my branch:
-> 
-> -                               KEY_ALLOC_NOT_IN_QUOTA,
-> +                               KEY_ALLOC_NOT_IN_QUOTA |
-> +                               KEY_ALLOC_SET_KEEP,
-> 
-> I'll repost the series.
+Best regards
+Uwe
 
-No need for that, I checked your commits, they're good:
-https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/commit/?h=keys-misc&id=508f44ffefbf879fbb82fdbc8bf1e6023b85158a
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-> 
-> David
-> 
+--cyunj7rgpbaisqx6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAvinMACgkQwfwUeK3K
+7Am9Cgf/dPaXYBI/smn1ucrFOeRQrSii8j4/iNzs1sj1ITzKh8CW2XXQfRqmMJrZ
+Zga25pglYn0+rg2E1WY7ac62SW5W58a1k1F/Ib/1W6IEXu2bEB/a38kRqnTcsgRh
+ELBQb7U+9Nlv/qK5k/4TCUhnwqQ713eYvvE5l2Jt75EL3VbW7AcCLGJ84okXVlfZ
+FV8nhoMyPHbXmr/hNFQy04xHdc2hWyevVC6kQbuhvXFZhumcJ+idMj1OnFUz03JL
+Mr0fGuxHORCxorYT+bJjI8CDoBVPftW9c9foJHL9IBWqA1GYwBpw8YRzKvEwROe7
+kuBShrLaA6lzhsiJLFwSWaxDacTukg==
+=2Xnq
+-----END PGP SIGNATURE-----
+
+--cyunj7rgpbaisqx6--
