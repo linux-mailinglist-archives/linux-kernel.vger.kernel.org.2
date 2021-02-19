@@ -2,130 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3704B31F65A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F9D31F656
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBSJNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:13:39 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:37638 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229958AbhBSJHo (ORCPT
+        id S230175AbhBSJMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:12:38 -0500
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:35713 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229656AbhBSJHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:07:44 -0500
-Received: by mail-oi1-f172.google.com with SMTP id y199so5163022oia.4;
-        Fri, 19 Feb 2021 01:07:28 -0800 (PST)
+        Fri, 19 Feb 2021 04:07:32 -0500
+Received: by mail-lj1-f174.google.com with SMTP id a17so16457006ljq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:07:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WMmV+pg/AZEmOZWqm+tCw4vrAAYkC3Vrjkj4xpthz5Q=;
-        b=qBgKiSZjiy+AsAFN0BRkVX/1Gy66LIv9oVg43bXGptf9YINb+E7sgU0ToL2VYJ3dxc
-         0qV/aSF5W7UNUtpxSHLlmkS+3aYaboSAksG5lfQnxDtwSdFsJcw6brf4/9cUTYT17mUY
-         5T4EHvWPojdCgLThd42rOlV3H8qRXMLrw409zEDTbmScYOlaqI9M8CJcFcd1MofGyZ5j
-         ArwzDuquJmA97UVRvVWPY4ecCiWWgEw8dVbWeeFxThvAU6O1M3kRia6glxTCCcYTdYcz
-         QjPzzbpjmbzupL/egG/ShZHTCYbqMZVdvuY2geEjMORCLXq8tUqH25fRNS58pidM/ziL
-         7hNw==
-X-Gm-Message-State: AOAM530nNbtcIbOCFXE8B1KJ1u4mg0NyC5TSKwWTqDZDlBrOoNJ8oubT
-        k3mtI/rQMLFocNPmukrDzPL18rU+FY49bcfGUdA=
-X-Google-Smtp-Source: ABdhPJxUDGyEvmeXZSHKn0xtxAcKCVUH2HgwBut5V3rBKZFoINqT1AaIOH4mYn/CXF7oGXnaG4WgBw+wf8B4k5R8xDM=
-X-Received: by 2002:aca:744:: with SMTP id 65mr5682790oih.153.1613725622900;
- Fri, 19 Feb 2021 01:07:02 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4SYuc31NBuKizkQQlJfdfOc2gXxQ85QiVTeukEPxaJo=;
+        b=LDfJwjT//iM9e7GQjotd14NXgXFfnBXi1fUnN/nq4ba/ZJtSKHke+TFqt8lkbe34XI
+         4T9aWaJL85Mz9kXgJACfvMqR3Y2TqnDBQE5dueFEyqwMdzr9O7vW38g20gA9KJw//1dr
+         NaN/bd7qczDbTP5qMx5gaAqLC86kvHCnUrPGbOInYyY0MS86KyU6WwKYBDtINyANm1hF
+         jGuj9YaEWoJHKd/zCj3fSGKbOKcs12/f9rUSRYmHD7WORDp9cEueGdfptlTMzkgvdUHG
+         dDNEbLtHuOrLHgPhxwdBiG6JkRT/2hdBm+QqnQYylFzWYXopn/zbGf+WT/COlY1cQdYC
+         G5/w==
+X-Gm-Message-State: AOAM53102d7SBBQ2lOsg4Tfb3FScGskFSByoaMHbLh68vNVRBQJzioxe
+        Jf7+2p3AFiTpWsgMrUAfIqk=
+X-Google-Smtp-Source: ABdhPJyIr4pTFDSmke4G+1GbuqxxKbKpF9BGX1DDqXlPLYXDGwLdp2OQf47rvm9/PnFToJGmQhhu9A==
+X-Received: by 2002:a19:ae02:: with SMTP id f2mr4955335lfc.129.1613725608666;
+        Fri, 19 Feb 2021 01:06:48 -0800 (PST)
+Received: from localhost.localdomain (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
+        by smtp.googlemail.com with ESMTPSA id a10sm304097lfd.135.2021.02.19.01.06.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 01:06:48 -0800 (PST)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 RESEND] coccinelle: misc: add minmax script
+Date:   Fri, 19 Feb 2021 12:06:55 +0300
+Message-Id: <20210219090655.8985-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210216160326.1341741-1-efremov@linux.com>
+References: <20210216160326.1341741-1-efremov@linux.com>
 MIME-Version: 1.0
-References: <20210217221457.1827266-1-drew@beagleboard.org> <20210217221457.1827266-3-drew@beagleboard.org>
-In-Reply-To: <20210217221457.1827266-3-drew@beagleboard.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 19 Feb 2021 10:06:51 +0100
-Message-ID: <CAMuHMdXNz8ZbFXRgYCGuAd1+Cz8xTvMc-rkwXXiE-E-Fb5XXNA@mail.gmail.com>
-Subject: Re: [PATCH v7 2/3] pinctrl: pinmux: Add pinmux-select debugfs file
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Drew,
+Check for opencoded min(), max() implementations.
 
-On Wed, Feb 17, 2021 at 11:15 PM Drew Fustini <drew@beagleboard.org> wrote:
-> Add "pinmux-select" to debugfs which will activate a function and group:
->
->   echo "<function-name group-name>" > pinmux-select
->
-> The write operation pinmux_select() handles this by checking that the
-> names map to valid selectors and then calling ops->set_mux().
->
-> The existing "pinmux-functions" debugfs file lists the pin functions
-> registered for the pin controller. For example:
->
->   function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
->   function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
->   function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
->   function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
->   function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
->   function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
->
-> To activate function pinmux-i2c1 and group pinmux-i2c1-pins:
->
->   echo "pinmux-i2c1 pinmux-i2c1-pins" > pinmux-select
->
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Tony Lindgren <tony@atomide.com>
-> Signed-off-by: Drew Fustini <drew@beagleboard.org>
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
 
-Thanks for your patch!
+Changes in v2:
+ - <... ...> instead of ... when any
+ - org mode reports fixed
+ - patch rule to drop excessive ()
 
-On R-Car M2-W, which does not use pinctrl-single, I have:
+ scripts/coccinelle/misc/minmax.cocci | 224 +++++++++++++++++++++++++++
+ 1 file changed, 224 insertions(+)
+ create mode 100644 scripts/coccinelle/misc/minmax.cocci
 
-    # cat pinmux-functions
-    ...
-    function 14: i2c2, groups = [ i2c2 i2c2_b i2c2_c i2c2_d ]
-    ...
-    function 51: ssi, groups = [ ssi0_data ssi0_data_b ssi0129_ctrl
-ssi0129_ctrl_b ssi1_data ssi1_data_b ssi1_ctrl ssi1_ctrl_b ssi2_data
-ssi2_ctrl ssi3_data ssi34_ctrl ssi4_data ssi4_ctrl ssi5_data ssi5_ctrl
-ssi6_data ssi6_ctrl ssi7_data ssi7_data_b ssi78_ctrl ssi78_ctrl_b
-ssi8_data ssi8_data_b ssi9_data ssi9_data_b ssi9_ctrl ssi9_ctrl_b ]
-    ...
+diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
+new file mode 100644
+index 000000000000..61d6b61fd82c
+--- /dev/null
++++ b/scripts/coccinelle/misc/minmax.cocci
+@@ -0,0 +1,224 @@
++// SPDX-License-Identifier: GPL-2.0-only
++///
++/// Check for opencoded min(), max() implementations.
++/// Generated patches sometimes require adding a cast to fix compile warning.
++/// Warnings/patches scope intentionally limited to a function body.
++///
++// Confidence: Medium
++// Copyright: (C) 2021 Denis Efremov ISPRAS
++// Options: --no-includes --include-headers
++//
++// Keywords: min, max
++//
++
++
++virtual report
++virtual org
++virtual context
++virtual patch
++
++@rmax depends on !patch@
++identifier func;
++expression x, y;
++binary operator cmp = {>, >=};
++position p;
++@@
++
++func(...)
++{
++	<...
++*	x cmp@p y ? x : y
++	...>
++}
++
++@rmaxif depends on !patch@
++identifier func;
++expression x, y;
++expression max_val;
++binary operator cmp = {>, >=};
++position p;
++@@
++
++func(...)
++{
++	<...
++*	if (x cmp@p y) {
++*		max_val = x;
++*	} else {
++*		max_val = y;
++*	}
++	...>
++}
++
++@rmin depends on !patch@
++identifier func;
++expression x, y;
++binary operator cmp = {<, <=};
++position p;
++@@
++
++func(...)
++{
++	<...
++*	x cmp@p y ? x : y
++	...>
++}
++
++@rminif depends on !patch@
++identifier func;
++expression x, y;
++expression min_val;
++binary operator cmp = {<, <=};
++position p;
++@@
++
++func(...)
++{
++	<...
++*	if (x cmp@p y) {
++*		min_val = x;
++*	} else {
++*		min_val = y;
++*	}
++	...>
++}
++
++@pmax depends on patch@
++identifier func;
++expression x, y;
++binary operator cmp = {>=, >};
++position p;
++@@
++
++func@p(...)
++{
++	<...
++-	x cmp y ? x : y
+++	max(x, y)
++	...>
++}
++
++@pmaxif depends on patch@
++identifier func;
++expression x, y;
++expression max_val;
++binary operator cmp = {>=, >};
++position p;
++@@
++
++func@p(...)
++{
++	<...
++-	if (x cmp y) {
++-		max_val = x;
++-	} else {
++-		max_val = y;
++-	}
+++	max_val = max(x, y);
++	...>
++}
++
++@pmin depends on patch@
++identifier func;
++expression x, y;
++binary operator cmp = {<=, <};
++position p;
++@@
++
++func@p(...)
++{
++	<...
++-	x cmp y ? x : y
+++	min(x, y)
++	...>
++}
++
++@pminif depends on patch@
++identifier func;
++expression x, y;
++expression min_val;
++binary operator cmp = {<=, <};
++position p;
++@@
++
++func@p(...)
++{
++	<...
++-	if (x cmp y) {
++-		min_val = x;
++-	} else {
++-		min_val = y;
++-	}
+++	min_val = min(x, y);
++	...>
++}
++
++@depends on (pmax || pmaxif || pmin || pminif)@
++identifier func;
++expression x, y;
++position p;
++// FIXME: Coccinelle consumes all available ram and
++// and timeouts on every file.
++// position p = { pmin.p, pminif.p, pmax.p, pmaxif.p };
++@@
++
++func@p(...)
++{
++	<...
++(
++-	(min((x), (y)))
+++	min(x, y)
++|
++-	(max((x), (y)))
+++	max(x, y)
++)
++	...>
++}
++
++@script:python depends on report@
++p << rmax.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for max()")
++
++@script:python depends on org@
++p << rmax.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for max()")
++
++@script:python depends on report@
++p << rmaxif.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for max()")
++
++@script:python depends on org@
++p << rmaxif.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for max()")
++
++@script:python depends on report@
++p << rmin.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for min()")
++
++@script:python depends on org@
++p << rmin.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for min()")
++
++@script:python depends on report@
++p << rminif.p;
++@@
++
++coccilib.report.print_report(p[0], "WARNING opportunity for min()")
++
++@script:python depends on org@
++p << rminif.p;
++@@
++
++coccilib.org.print_todo(p[0], "WARNING opportunity for min()")
+-- 
+2.26.2
 
-On the Koelsch board:
-
-    # cd /sys/kernel/debug/pinctrl/e6060000.pinctrl-sh-pfc/
-    # echo ssi ssi2_ctrl > pinmux-select # Configure i2c2 pins for ssi
-    # i2cdetect -y -a 2                  # Fails
-    # echo i2c2 i2c2 > pinmux-select     # Restore i2c2
-    # i2cdetect -y -a 2                  # Works again
-
-The order of the 2 parameters looks a bit odd to me, as the operation
-configures the pins from "group" to be used for "function".
-See also arch/arm/boot/dts/r8a7791-koelsch.dts
-For the i2c2 example it's not that obvious, but for ssi it is.
-Might feel different for pinctrl-single, and perhaps I just need to get
-used to it ;-)
-
-Anyway:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
