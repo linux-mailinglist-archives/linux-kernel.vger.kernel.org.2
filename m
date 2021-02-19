@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83ABB3200F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:57:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0263200F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhBSV4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 16:56:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36063 "EHLO
+        id S229896AbhBSVzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 16:55:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28945 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229879AbhBSVzq (ORCPT
+        by vger.kernel.org with ESMTP id S229812AbhBSVzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 16:55:46 -0500
+        Fri, 19 Feb 2021 16:55:39 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613771659;
+        s=mimecast20190719; t=1613771653;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oCCyEyE/y3zObvu+bRfJb2l/VIGWvI14fJQfmx2ackQ=;
-        b=hHKWTgI6kra+wibRCXa+oZfFLnJ+HHFWFL4Wq0shaXwief3oZIwsf9Y6JapE+XppZ755AA
-        kwvsV/OabmXarAA2I5oEqKSYeYYULn/+TOyfMWurZ2C/D2RZyM5zrDOhD7foyYOnPYUmLR
-        t+L5EV1F9lVEDax6G3pwoaZKLpzfFAA=
+        bh=wm4oY60HDEi6MJ6NUR2B395ZKlrMFtTCO2to+5mcRtw=;
+        b=hN7L/3CjslxNvaWvoGbG5SLLOlILYfnGzfrYlljt2mueycY3UayQ4l5b5upou9EFj23U9f
+        mjF+rDnbokXzEQmyGhk37HlVHwSzRCtllreWnMTLQ1wcpuAIw7BFYOQmCUr4QtQEJGO2I8
+        M7gButMbVxa3JJQSBpa7Zml1hyVSlUc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-TPQDW13xPke2YSCoktMa_g-1; Fri, 19 Feb 2021 16:54:06 -0500
-X-MC-Unique: TPQDW13xPke2YSCoktMa_g-1
+ us-mta-446-c3LkErexM3We81p-4siIng-1; Fri, 19 Feb 2021 16:54:10 -0500
+X-MC-Unique: c3LkErexM3We81p-4siIng-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75645100B3B3;
-        Fri, 19 Feb 2021 21:54:03 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 110AE1B2C98A;
+        Fri, 19 Feb 2021 21:54:07 +0000 (UTC)
 Received: from Whitewolf.redhat.com (ovpn-118-5.rdu2.redhat.com [10.10.118.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B80496A03C;
-        Fri, 19 Feb 2021 21:54:01 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BDAE16A03C;
+        Fri, 19 Feb 2021 21:54:04 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
@@ -49,10 +49,14 @@ Cc:     Andrzej Hajda <a.hajda@samsung.com>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Torsten Duwe <duwe@lst.de>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 06/30] drm/bridge/ti-sn65dsi86: (Un)register aux device on bridge attach/detach
-Date:   Fri, 19 Feb 2021 16:53:02 -0500
-Message-Id: <20210219215326.2227596-7-lyude@redhat.com>
+Subject: [PATCH 07/30] drm/bridge/analogix/anx78xx: Add missing drm_dp_aux_unregister() call
+Date:   Fri, 19 Feb 2021 16:53:03 -0500
+Message-Id: <20210219215326.2227596-8-lyude@redhat.com>
 In-Reply-To: <20210219215326.2227596-1-lyude@redhat.com>
 References: <20210219215326.2227596-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -62,75 +66,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we're about to add a back-pointer to drm_dev in drm_dp_aux, let's
-move the AUX adapter registration to the first point where we know which
-DRM device we'll be working with - when the drm_bridge is attached.
-Likewise, we unregister the AUX adapter on bridge detachment by adding a
-ti_sn_bridge_detach() callback.
+Surprisingly, this bridge actually registers it's AUX adapter at the
+correct time already. Nice job! However, it does forget to actually
+unregister the AUX adapter, so let's add a bridge function to handle that.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index f27306c51e4d..88df4dd0f39d 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -362,12 +362,18 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- 		return -EINVAL;
- 	}
- 
-+	ret = drm_dp_aux_register(&pdata->aux);
-+	if (ret < 0) {
-+		drm_err(bridge->dev, "Failed to register DP AUX channel: %d\n", ret);
-+		return ret;
-+	}
-+
- 	ret = drm_connector_init(bridge->dev, &pdata->connector,
- 				 &ti_sn_bridge_connector_funcs,
- 				 DRM_MODE_CONNECTOR_eDP);
- 	if (ret) {
- 		DRM_ERROR("Failed to initialize connector with drm\n");
--		return ret;
-+		goto err_conn_init;
- 	}
- 
- 	drm_connector_helper_add(&pdata->connector,
-@@ -424,9 +430,16 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
- 	mipi_dsi_device_unregister(dsi);
- err_dsi_host:
- 	drm_connector_cleanup(&pdata->connector);
-+err_conn_init:
-+	drm_dp_aux_unregister(&pdata->aux);
- 	return ret;
+diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+index 81debd02c169..ec4607dc01eb 100644
+--- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
++++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+@@ -942,6 +942,11 @@ static int anx78xx_bridge_attach(struct drm_bridge *bridge,
+ 	return 0;
  }
  
-+static void ti_sn_bridge_detach(struct drm_bridge *bridge)
++static void anx78xx_bridge_detach(struct drm_bridge *bridge)
 +{
-+	drm_dp_aux_unregister(&bridge_to_ti_sn_bridge(bridge)->aux);
++	drm_dp_aux_unregister(&bridge_to_anx78xx(bridge)->aux);
 +}
 +
- static void ti_sn_bridge_disable(struct drm_bridge *bridge)
- {
- 	struct ti_sn_bridge *pdata = bridge_to_ti_sn_bridge(bridge);
-@@ -863,6 +876,7 @@ static void ti_sn_bridge_post_disable(struct drm_bridge *bridge)
+ static enum drm_mode_status
+ anx78xx_bridge_mode_valid(struct drm_bridge *bridge,
+ 			  const struct drm_display_info *info,
+@@ -1013,6 +1018,7 @@ static void anx78xx_bridge_enable(struct drm_bridge *bridge)
  
- static const struct drm_bridge_funcs ti_sn_bridge_funcs = {
- 	.attach = ti_sn_bridge_attach,
-+	.detach = ti_sn_bridge_detach,
- 	.pre_enable = ti_sn_bridge_pre_enable,
- 	.enable = ti_sn_bridge_enable,
- 	.disable = ti_sn_bridge_disable,
-@@ -1287,7 +1301,7 @@ static int ti_sn_bridge_probe(struct i2c_client *client,
- 	pdata->aux.name = "ti-sn65dsi86-aux";
- 	pdata->aux.dev = pdata->dev;
- 	pdata->aux.transfer = ti_sn_aux_transfer;
--	drm_dp_aux_register(&pdata->aux);
-+	drm_dp_aux_init(&pdata->aux);
- 
- 	pdata->bridge.funcs = &ti_sn_bridge_funcs;
- 	pdata->bridge.of_node = client->dev.of_node;
+ static const struct drm_bridge_funcs anx78xx_bridge_funcs = {
+ 	.attach = anx78xx_bridge_attach,
++	.detach = anx78xx_bridge_detach,
+ 	.mode_valid = anx78xx_bridge_mode_valid,
+ 	.disable = anx78xx_bridge_disable,
+ 	.mode_set = anx78xx_bridge_mode_set,
 -- 
 2.29.2
 
