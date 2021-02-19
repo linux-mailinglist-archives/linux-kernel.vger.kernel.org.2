@@ -2,312 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B69D320184
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 00:07:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E28CD32018E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 00:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhBSXFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 18:05:54 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:53048 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhBSXFt (ORCPT
+        id S229767AbhBSXKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 18:10:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhBSXKj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 18:05:49 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JN4XOG029585;
-        Fri, 19 Feb 2021 23:04:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=T1Pf7WpLNH5E4jFhK2IUStMlmWS7Q9wot4HrRySeEz8=;
- b=eyu7sxXaBj78I6NqVdtylTad5x8coeiH5nB5MaFLbTJwkgeVuvk/zGxeMJRfH6WK/qfU
- DdmD1S+8isAnfZzd+xJ5Uuy/KclK9WcGHVGHu/l/pNr6ccl7WRpv1JeJ1HlKs/AaP6ye
- 748TAn7nx4c9IpTawQYTEISaMVEy2iitYOmK80wWtMR28D9XDAsufqqoHm6HVdV5TWRb
- CU8r1zWkUKJAsfbStnRkz0QMMR8yECoMDeY/h4ujtJjZEdVc7j9zCUAD1xQrQKE4z40i
- 03eSxORyxEsahLJs3CoMLgQouaSwNXtR2Guuk5/DsZdu5R+EogURTVy0BbAzVjs2/fC7 Mw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36p7dntxhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 23:04:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JMxmA2100274;
-        Fri, 19 Feb 2021 23:04:33 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
-        by userp3020.oracle.com with ESMTP id 36prhw7re5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 23:04:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KOWHqj4FLAoS+5lT98SWdK3t3cnWAW2LH+cyNleBXUNSEUP2zXIoZ33jhEGmUatoYDMq+bxH6LTqEeek6ZktQSL4XbABIL1cxiQTJj8LEvp3gnycXbxOLAD8Ss0+PII1kvs/9WEzs++6R2FazIlNYUw3mQ26f61xKWp9WI6JyjPjCgge9NbQRum8qFmXvgOndpjgT9r1w3xlp2xky1GrRzYAo9020xnil48433xzRGK/Wrh/hYlJYpxthTcAI/wiRYr9hHkt0NQD4VQzPsN+f335tYxSiqd+Ync5h6A/XK6hoafp4THrLlAnnLEYkiHFCfcuGe1t9zq8tUxYRhxUKQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T1Pf7WpLNH5E4jFhK2IUStMlmWS7Q9wot4HrRySeEz8=;
- b=llWqNmvroSacDK4tXOZXE0dYHzmkEtqeYZmmm4agxsVvaCDUtG9mk/AlpixgUHKp16irYAZhCLabsybQ5wBIYwfXCIVHpRE4kri0qOl+D3MtkqNEH81+5Z0pmpqoCLj6rJg8z4GiBplGUyVR8UGYzL28LXduaDIqwdpN8qTu2dDbxJWl/xAc6W/MP2f+jPDStRY1q43NbizD2EYjqwlVvFfnxC3xxwKgzcK+AoA/KlQ6wMaRCgjONDKI2Mnx/aRSzjj9GEiuLX+MxfBKip8J54sXSSTqXy9VBUmGj2uNOoRwLF4gnUW+hMQmGjG0lbs6UqMu11x9zm/2mZIxQSEOOg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 19 Feb 2021 18:10:39 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD31C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 15:09:59 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id u17so8550322ybi.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 15:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T1Pf7WpLNH5E4jFhK2IUStMlmWS7Q9wot4HrRySeEz8=;
- b=pN4FkB9oIP332SOwkhBYX2Q/W0OHnh9VWApZvft69RwWT4uwFl6mQachkZoVN+M9DzOj/YRzT9V9rLoif1yY+gQkpvHGFOB8A3wDehbof5oYTNLw9bUnRzDSgCXG0x5/unDP+KjG6OJRZ6CNVyGJfnv7UyxvV8xOqr1ge1fTCLM=
-Received: from DM6PR10MB3851.namprd10.prod.outlook.com (2603:10b6:5:1fb::17)
- by DS7PR10MB5087.namprd10.prod.outlook.com (2603:10b6:5:3b0::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Fri, 19 Feb
- 2021 23:04:31 +0000
-Received: from DM6PR10MB3851.namprd10.prod.outlook.com
- ([fe80::5c53:869:7452:46da]) by DM6PR10MB3851.namprd10.prod.outlook.com
- ([fe80::5c53:869:7452:46da%3]) with mapi id 15.20.3846.041; Fri, 19 Feb 2021
- 23:04:31 +0000
-Subject: Re: [PATCH] mm, kasan: don't poison boot memory
-From:   George Kennedy <george.kennedy@oracle.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:cc;
+        bh=vrPuPHAH+xMVowYwEx41742LbyJOqhVnyw71QmqUBj8=;
+        b=PeNarQe7ZiwXQ4wW6LB9scuGCymurZMZzTDqG32azcLU8SZlTKOB58xAz3Bi0U3M3N
+         lxpthe0e1LFpHrOSv7/Nl6N5XhR1WeqL8PxwOy1aRU8BbVM+sWMz9T71y2Mg9r+5+saR
+         SuyG+gdIBZXAP0Pysat8Ranavjv0i+1oc9RKf/oPuOyuOXpYgEsUDno+AZOZYj2fcB0+
+         YS0ZyG5qkMjduyZiy4j29Q69qZh+YsHZ/pSzFYRsMa0JQgAuXGx0D+S1is5lXmZgRw7G
+         339rGK8zUdErRTmdi9VIwBh/QmrsiHFB2Ce/9dip6FHYmMdR6X5tU7NHqjOfCkMc1n0l
+         pWsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:cc;
+        bh=vrPuPHAH+xMVowYwEx41742LbyJOqhVnyw71QmqUBj8=;
+        b=tbbGsICmHVj2Lr82cI3JPpRerLTRn322Wg0aorRqG/plAe8QQjTLS4lQGijGNqlaDR
+         ++7qSwImWYHvbWw4JLXfDsL3tr8CfdqgdIxX6EAhiVrEmhXYz8OjgpPnPDT6FPdfO4mY
+         AuFmvaL6BcqqtyBB1quh0R6TR6XUC/HcBO7Eh2gYbDCsKtn7FGiRv3fNmYr9jM/Hyuuj
+         bdHwswkg++BFERfS/0kwdyuUusHMFoXjcB3XhkCaQGI4aaA5KdRKTN5ubF/go1Aepxn0
+         RKAzZwHjpMOLFn3ckrUdP+yZ3ySGW0JcbjIVzpH8kbZFa9SrcDDz4HtqSO6Y0YqxhpIS
+         JU2Q==
+X-Gm-Message-State: AOAM530muvMPeGSxbAefrGnAWbu4vLgluiP3Y9WW4iOn8oE+manWHikz
+        8xUHIyMcjffGBhARbLNM05H1ctSHbciL
+X-Google-Smtp-Source: ABdhPJyM0ua3ElvZJE192OqKUKdrFKz/zW6QcCT6p3cm8Hvv6hJ31BKpdoPIt2iWnjsgulPHIlSdq8OoH5Fd
+Sender: "jiancai via sendgmr" <jiancai@jiancai.svl.corp.google.com>
+X-Received: from jiancai.svl.corp.google.com ([2620:15c:2ce:0:6578:8d7f:50d0:55c8])
+ (user=jiancai job=sendgmr) by 2002:a25:1fc5:: with SMTP id
+ f188mr17059740ybf.389.1613776198078; Fri, 19 Feb 2021 15:09:58 -0800 (PST)
+Date:   Fri, 19 Feb 2021 15:08:13 -0800
+In-Reply-To: <20210219201852.3213914-1-jiancai@google.com>
+Message-Id: <20210219230841.875875-1-jiancai@google.com>
+Mime-Version: 1.0
+References: <20210219201852.3213914-1-jiancai@google.com>
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [PATCH v4] ARM: Implement SLS mitigation
+From:   Jian Cai <jiancai@google.com>
+Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
+        clang-built-linux@googlegroups.com, Jian Cai <jiancai@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dhaval Giani <dhaval.giani@oracle.com>
-References: <487751e1ccec8fcd32e25a06ce000617e96d7ae1.1613595269.git.andreyknvl@google.com>
- <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com>
- <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
- <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
- <c7166cae-bf89-8bdd-5849-72b5949fc6cc@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <797fae72-e3ea-c0b0-036a-9283fa7f2317@oracle.com>
-Date:   Fri, 19 Feb 2021 18:04:23 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-In-Reply-To: <c7166cae-bf89-8bdd-5849-72b5949fc6cc@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [108.20.187.119]
-X-ClientProxiedBy: BYAPR02CA0020.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::33) To DM6PR10MB3851.namprd10.prod.outlook.com
- (2603:10b6:5:1fb::17)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.246] (108.20.187.119) by BYAPR02CA0020.namprd02.prod.outlook.com (2603:10b6:a02:ee::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Fri, 19 Feb 2021 23:04:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4fd063a8-27cf-4c7e-b455-08d8d52ab6d3
-X-MS-TrafficTypeDiagnostic: DS7PR10MB5087:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DS7PR10MB50870CEBEAA518EA868660BAE6849@DS7PR10MB5087.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PxvYfWrB3qRDIYvqP5YoFBvhFoxTvzcpfJvB58Qdzox3GLpvzXX/I0zhhdsb8vumaIwiqpCbzYis997gfuhj4gZO1Sh09y/i8uxIsGMces/RmS3retCaHPTg6rEVBDPuafMbq5stWvpJS1Xqvkq6UfeZ9rtjbNHvpIaWhqg7XBf15IJZQI65tXgkkfppBlNAbfgs0VstiJpYro6No1NutV2T3/dlA9OFWqf7/H2RI1km7/d2IHGuxojQuMpU7LVa9/NjdP6lU3Z4cu5Gwa61lTe2F1Vab0C+XhChhStimdlzwkCdYe8sKZo43hm2cJgERhpz79ZoZOxU8kE3lxhd9ytxfXZWZxMSFZVavcrjjgx63d+XNmIbxNxH2CGofuJO/jS+91HCELuoyYZYczgAoE0lIkblLQ2RcnrlUi2864YyZm0I/piTM5d7e0DNS3KWBGtjk0MSmQ5aQMC77WqYspYSheYewRNHE/r9tdBhaUcZPIQ0y0aVDhUYFVr3+602NJ6McMH961kf3dHISCM3ojSN51TPpntMfNcM25SOt3p133UEgPwrtHnWCQJTsCBHhuf5yaPZqBKJugRrCZRyFwN7r7H5CmoEifLwEcRoFtnPNdAL8nHpwD/X78xkslnR+r7oyUQe11OlU4444MBF1TyVPYkTx6+BJkgpwFFv9AsGzfqGzxTQzE3bY5FgUpG4
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3851.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(39860400002)(136003)(366004)(36916002)(2616005)(966005)(66476007)(5660300002)(36756003)(6916009)(7416002)(44832011)(26005)(31686004)(54906003)(8936002)(16576012)(53546011)(6666004)(66946007)(86362001)(4326008)(16526019)(83380400001)(956004)(186003)(6486002)(2906002)(31696002)(107886003)(316002)(66556008)(8676002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZGgxR3NhbldmNklyM2lLOFhzNTRWanB3STJ4Sm9yYWhhL0JnT0phUldveUVl?=
- =?utf-8?B?eWd1bW00OHJMUEJNcVVDYzhQSm9lZ0NYRGJJbFNweS9YcUF4REk4MURacW8x?=
- =?utf-8?B?NGJnb3I4M1hqYWhOVVBCZDYzd1JneGRua1krZVh0NmFCUm5aVTRBdzJuYVFV?=
- =?utf-8?B?UUpLK0hEZ1FWZFdmTFdBM2liV1p4ZlpFenhsK1dPRzRJc2htSWxUMmhFaEQy?=
- =?utf-8?B?ajR5WWNGWjJlNXUzQnhySXlFZERsTUNIZE9ZRWRvbzRldUZ4ZXQ0bW9uc282?=
- =?utf-8?B?ZTMxa3cwdTZnTG9RRmloVWNWMDVVU0VhNDhYVE9jRHBmbnh6QVRRVFVrR09R?=
- =?utf-8?B?bHA3L3dwMmpGYjdJN2xUcnMxdjcrUFFLcnRaeGdYNTBQRUptVVVwRlNvUFIw?=
- =?utf-8?B?bXFkb0FjSlkwTTRwYVlwUmhLQm9sK1UwNG1PdHAyaUlDWnBRQko2S0FYZHhh?=
- =?utf-8?B?QTgvZ080Q0pCeWFDRlRQY3lUR2dzWDZDanBjWHlKRUhYOXY4bk9wRG5uM2s4?=
- =?utf-8?B?R1FkZ1V5NWFpMXB6bEozQzE2NjZuc1hwZVBWQk0vamRseTJxaTJmSmRQQlFw?=
- =?utf-8?B?Q3cxcmhVZyt6WlpJMFZ6elo4TWhSZ2h5QktIeE9zZ0xLY3Bqb2M3R2g2TThO?=
- =?utf-8?B?WWl4ZWRna2s4UjcxK3lzRHppRzk0Ymc2QWdkQkFlT0N3RUZ4WjAwRkFHL3Z1?=
- =?utf-8?B?a0VBbmRIdlRZYUFiTjlYVEtLaE5xU3F1eDJpRUxNMjlBNlNPenYyNUtlUnBX?=
- =?utf-8?B?eklkbytOU1N3SjdtWDJ1eHlNZE9DUCs1S1dSc2RQNk96MnJFRVNjL0cxTnFR?=
- =?utf-8?B?Wlo1d1hnZzFJMGpObmdDQVR1ZXFDZE1IM0RhVldQbE1QUUdRYXhGbS80dEk2?=
- =?utf-8?B?WWdYNUUrZi9oQXlzdHQxL1kwQlo5SG5Fb0NqVlpEUTVrZTdlb001L2xJNkQr?=
- =?utf-8?B?WDR1M0pWQXNRclIwMGU5NUlZVTZkR1g1cGEyVSttOXNrU1FheUxpbVBucCtU?=
- =?utf-8?B?TnNVckdCby9lb2Fsby85M0NEc1MxbnR4aU9rYklUWG9MaW9WUklSc0tjTjM5?=
- =?utf-8?B?cnl2WEFpbkNZTWNuUHZkT2ViMWZjL3MwK3RDbkxOTy80VVRZbXFSdVRWSGtR?=
- =?utf-8?B?akVQZTNDVldhc1dUVEM3bzhKT3R1ekEwWkNkV2ZVL0xkK1FZY3ZjbXN0bDJo?=
- =?utf-8?B?VDlFeURoNmZBQWI3UTRqMWdqSEc5ajVjd1hBU1UrOXJGWUljNU0vQ3lkcEZy?=
- =?utf-8?B?TG5tTXU3U2dNbTBQOHIrT1pVbE9Idmo4WGdhWlRxMTNaMkM0UVpkT0gwMmVN?=
- =?utf-8?B?UlZzMVJtOXV4NW9acEQ0MW02N3pkb291SkJsUlVDT0FLVEdXa1VLYi9wQXY2?=
- =?utf-8?B?bTFWaHMxb3NYc3crUmJNWkFjQlpIbDMrc0tBT3UzWDc0am1iNnpHUmVvOEtL?=
- =?utf-8?B?MVVnVnBZQ2NTTnpLU0twTnlqMlk4ODdveWhKSWxtM0NUUHJaa3AwTXduK0lZ?=
- =?utf-8?B?SWNUQlVVTDM3UUVTZSs2NnRPTVZ4Lzk1Rjd2bFBDRjZQUk4yaVR5N1pQSXJq?=
- =?utf-8?B?clVycW5razU4MGZ2QU5LRzFMcWRLTHB5K0FCMDlzQWVITFBGU3lndFRvY0s3?=
- =?utf-8?B?aUhCSmpUSW81dXRjSEFQSDlEWVdieHJvVHQ2WEhDT0VFNUZFU3IwblBSRDl4?=
- =?utf-8?B?bHhVaHh1bUZ5eUVndGIzN3ZrSnhPbnFhL29pck10QTU0cldvbm9lV1NEMEk5?=
- =?utf-8?Q?UHqtBSUFqsNnFZtoDR1dLCH6J/lqiPYvcPTqJic?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4fd063a8-27cf-4c7e-b455-08d8d52ab6d3
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3851.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 23:04:30.8943
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iZVfAi6pReqbANmjg0VHrdOSm2twugcRW3+Qvz7dQnAerzHb4KHJEH5OjB2CJX+KxlwKvkoadXlbjpP21/dSovRdA4siKOVlMZylAWoM/xs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5087
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190186
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0 mlxscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1015 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190187
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "=?UTF-8?q?Andreas=20F=C3=A4rber?=" <afaerber@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+-mharden-sls=all, which mitigates the straight-line speculation
+vulnerability, speculative execution of the instruction following some
+unconditional jumps. Notice -mharden-sls= has other options as below,
+and this config turns on the strongest option.
 
+all: enable all mitigations against Straight Line Speculation that are implemented.
+none: disable all mitigations against Straight Line Speculation.
+retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+blr: enable the mitigation against Straight Line Speculation for BLR instructions.
 
-On 2/19/2021 11:45 AM, George Kennedy wrote:
->
->
-> On 2/18/2021 7:09 PM, Andrey Konovalov wrote:
->> On Fri, Feb 19, 2021 at 1:06 AM George Kennedy
->> <george.kennedy@oracle.com> wrote:
->>>
->>>
->>> On 2/18/2021 3:55 AM, David Hildenbrand wrote:
->>>> On 17.02.21 21:56, Andrey Konovalov wrote:
->>>>> During boot, all non-reserved memblock memory is exposed to the buddy
->>>>> allocator. Poisoning all that memory with KASAN lengthens boot time,
->>>>> especially on systems with large amount of RAM. This patch makes
->>>>> page_alloc to not call kasan_free_pages() on all new memory.
->>>>>
->>>>> __free_pages_core() is used when exposing fresh memory during system
->>>>> boot and when onlining memory during hotplug. This patch adds a new
->>>>> FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok() through
->>>>> free_pages_prepare() from __free_pages_core().
->>>>>
->>>>> This has little impact on KASAN memory tracking.
->>>>>
->>>>> Assuming that there are no references to newly exposed pages 
->>>>> before they
->>>>> are ever allocated, there won't be any intended (but buggy) 
->>>>> accesses to
->>>>> that memory that KASAN would normally detect.
->>>>>
->>>>> However, with this patch, KASAN stops detecting wild and large
->>>>> out-of-bounds accesses that happen to land on a fresh memory page 
->>>>> that
->>>>> was never allocated. This is taken as an acceptable trade-off.
->>>>>
->>>>> All memory allocated normally when the boot is over keeps getting
->>>>> poisoned as usual.
->>>>>
->>>>> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
->>>>> Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
->>>> Not sure this is the right thing to do, see
->>>>
->>>> https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com 
->>>>
->>>>
->>>> Reversing the order in which memory gets allocated + used during boot
->>>> (in a patch by me) might have revealed an invalid memory access during
->>>> boot.
->>>>
->>>> I suspect that that issue would no longer get detected with your
->>>> patch, as the invalid memory access would simply not get detected.
->>>> Now, I cannot prove that :)
->>> Since David's patch we're having trouble with the iBFT ACPI table, 
->>> which
->>> is mapped in via kmap() - see acpi_map() in "drivers/acpi/osl.c". KASAN
->>> detects that it is being used after free when ibft_init() accesses the
->>> iBFT table, but as of yet we can't find where it get's freed (we've
->>> instrumented calls to kunmap()).
->> Maybe it doesn't get freed, but what you see is a wild or a large
->> out-of-bounds access. Since KASAN marks all memory as freed during the
->> memblock->page_alloc transition, such bugs can manifest as
->> use-after-frees.
->
-> It gets freed and re-used. By the time the iBFT table is accessed by 
-> ibft_init() the page has been over-written.
->
-> Setting page flags like the following before the call to kmap() 
-> prevents the iBFT table page from being freed:
+Links:
+https://reviews.llvm.org/D93221
+https://reviews.llvm.org/D81404
+https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
+https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
 
-Cleaned up version:
+Suggested-by: Manoj Gupta <manojgupta@google.com>
+Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+Suggested-by: Nathan Chancellor  <nathan@kernel.org>
+Suggested-by: David Laight <David.Laight@aculab.com>
+Suggested-by: Will Deacon <will@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Jian Cai <jiancai@google.com>
+---
 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 0418feb..8f0a8e7 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -287,9 +287,12 @@ static void __iomem *acpi_map(acpi_physical_address 
-pg_off, unsigned long pg_sz)
+Changes v3 -> v4:
+  Address Nathan's comment and replace def_bool with depends on in
+  HARDEN_SLS_ALL.
 
-      pfn = pg_off >> PAGE_SHIFT;
-      if (should_use_kmap(pfn)) {
-+        struct page *page = pfn_to_page(pfn);
+ arch/arm/Makefile                  |  4 ++++
+ arch/arm/include/asm/vmlinux.lds.h |  4 ++++
+ arch/arm/kernel/vmlinux.lds.S      |  1 +
+ arch/arm64/Makefile                |  4 ++++
+ arch/arm64/kernel/vmlinux.lds.S    |  5 +++++
+ security/Kconfig.hardening         | 10 ++++++++++
+ 6 files changed, 28 insertions(+)
+
+diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+index 4aaec9599e8a..11d89ef32da9 100644
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
+ KBUILD_LDFLAGS	+= -EL
+ endif
+ 
++ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
++KBUILD_CFLAGS  += -mharden-sls=all
++endif
 +
-          if (pg_sz > PAGE_SIZE)
-              return NULL;
--        return (void __iomem __force *)kmap(pfn_to_page(pfn));
-+        SetPageReserved(page);
-+        return (void __iomem __force *)kmap(page);
-      } else
-          return acpi_os_ioremap(pg_off, pg_sz);
-  }
-@@ -299,9 +302,12 @@ static void acpi_unmap(acpi_physical_address 
-pg_off, void __iomem *vaddr)
-      unsigned long pfn;
-
-      pfn = pg_off >> PAGE_SHIFT;
--    if (should_use_kmap(pfn))
--        kunmap(pfn_to_page(pfn));
--    else
-+    if (should_use_kmap(pfn)) {
-+        struct page *page = pfn_to_page(pfn);
+ #
+ # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
+ # later may result in code being generated that handles signed short and signed
+diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
+index 4a91428c324d..c7f9717511ca 100644
+--- a/arch/arm/include/asm/vmlinux.lds.h
++++ b/arch/arm/include/asm/vmlinux.lds.h
+@@ -145,3 +145,7 @@
+ 		__edtcm_data = .;					\
+ 	}								\
+ 	. = __dtcm_start + SIZEOF(.data_dtcm);
 +
-+        ClearPageReserved(page);
-+        kunmap(page);
-+    } else
-          iounmap(vaddr);
-  }
-
-David, the above works, but wondering why it is now necessary. kunmap() 
-is not hit. What other ways could a page mapped via kmap() be unmapped?
-
-Thank you,
-George
-
->
-> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-> index 0418feb..41c1bbd 100644
-> --- a/drivers/acpi/osl.c
-> +++ b/drivers/acpi/osl.c
-> @@ -287,9 +287,14 @@ static void __iomem 
-> *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
->
->         pfn = pg_off >> PAGE_SHIFT;
->         if (should_use_kmap(pfn)) {
-> +               struct page *page =  pfn_to_page(pfn);
-> +
->                 if (pg_sz > PAGE_SIZE)
->                         return NULL;
-> -               return (void __iomem __force *)kmap(pfn_to_page(pfn));
-> +
-> +               page->flags |= ((1UL << PG_unevictable) | (1UL << 
-> PG_reserved) | (1UL << PG_locked));
-> +
-> +               return (void __iomem __force *)kmap(page);
->         } else
->                 return acpi_os_ioremap(pg_off, pg_sz);
->  }
->
-> Just not sure of the correct way to set the page flags.
->
-> George
->
++#define SLS_TEXT							\
++		ALIGN_FUNCTION();					\
++		*(.text.__llvm_slsblr_thunk_*)
+diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
+index f7f4620d59c3..e71f2bc97bae 100644
+--- a/arch/arm/kernel/vmlinux.lds.S
++++ b/arch/arm/kernel/vmlinux.lds.S
+@@ -63,6 +63,7 @@ SECTIONS
+ 	.text : {			/* Real text segment		*/
+ 		_stext = .;		/* Text and read-only data	*/
+ 		ARM_TEXT
++		SLS_TEXT
+ 	}
+ 
+ #ifdef CONFIG_DEBUG_ALIGN_RODATA
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 90309208bb28..ca7299b356a9 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
+   endif
+ endif
+ 
++ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
++KBUILD_CFLAGS  += -mharden-sls=all
++endif
++
+ cc_has_k_constraint := $(call try-run,echo				\
+ 	'int main(void) {						\
+ 		asm volatile("and w0, w0, %w0" :: "K" (4294967295));	\
+diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+index 4c0b0c89ad59..f8912e42ffcd 100644
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -93,6 +93,10 @@ jiffies = jiffies_64;
+ #define TRAMP_TEXT
+ #endif
+ 
++#define SLS_TEXT					\
++	ALIGN_FUNCTION();				\
++	*(.text.__llvm_slsblr_thunk_*)
++
+ /*
+  * The size of the PE/COFF section that covers the kernel image, which
+  * runs from _stext to _edata, must be a round multiple of the PE/COFF
+@@ -144,6 +148,7 @@ SECTIONS
+ 			HIBERNATE_TEXT
+ 			TRAMP_TEXT
+ 			*(.fixup)
++			SLS_TEXT
+ 			*(.gnu.warning)
+ 		. = ALIGN(16);
+ 		*(.got)			/* Global offset table		*/
+diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+index 269967c4fc1b..146b75a79d9e 100644
+--- a/security/Kconfig.hardening
++++ b/security/Kconfig.hardening
+@@ -121,6 +121,16 @@ choice
+ 
+ endchoice
+ 
++config HARDEN_SLS_ALL
++	bool "enable SLS vulnerability hardening"
++	default n
++	depends on $(cc-option,-mharden-sls=all)
++	help
++	  Enables straight-line speculation vulnerability hardening on ARM and ARM64
++	  architectures. It inserts speculation barrier sequences (SB or DSB+ISB
++	  depending on the target architecture) after RET and BR, and replacing
++	  BLR with BL+BR sequence.
++
+ config GCC_PLUGIN_STRUCTLEAK_VERBOSE
+ 	bool "Report forcefully initialized variables"
+ 	depends on GCC_PLUGIN_STRUCTLEAK
+-- 
+2.30.0.617.g56c4b15f3c-goog
 
