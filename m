@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B765D31FB7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E1E31FB85
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229745AbhBSO6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:58:51 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:25088 "EHLO z11.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhBSO6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:58:47 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613746706; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=xF5d0AE+xCt+zGgDt1pFO1QgGtL9JnfLXGOvSzH34zc=; b=aOqLOjXf9vzOfaM8g7zatwxW2XkuX/3sDP+ig5AocLl/5zIhaaSlEL8fOayCoEP/mX3wcN1E
- Ww7LykMnPBpYhC6D++JoEc3+gxEEww3pFkNImOYcHHgmJAXcyl3XqjbnajLJfg/lxx84GOZH
- GdbvLOv8PHF2AEQBuZAXAkRgYgs=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 602fd1efe87943df30d1ad8f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 14:57:51
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 25331C43464; Fri, 19 Feb 2021 14:57:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tynnyri.adurom.net (tynnyri.adurom.net [51.15.11.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 51166C433CA;
-        Fri, 19 Feb 2021 14:57:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 51166C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warnings after merge of the net-next tree
-References: <20210219075256.7af60fb0@canb.auug.org.au>
-        <20210219194416.3376050f@canb.auug.org.au>
-Date:   Fri, 19 Feb 2021 16:57:44 +0200
-In-Reply-To: <20210219194416.3376050f@canb.auug.org.au> (Stephen Rothwell's
-        message of "Fri, 19 Feb 2021 19:44:16 +1100")
-Message-ID: <87czwwf6l3.fsf@tynnyri.adurom.net>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        id S229796AbhBSPAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:00:16 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19814 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhBSPAL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 10:00:11 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JEXBNf046343;
+        Fri, 19 Feb 2021 09:59:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DmjTMspybTAP0gLH018aBzVAdBBAVLNG8P4fmWI/iCo=;
+ b=AI6N8PGwkswNFf0P5iMjAUt+Rpc3AlYlKpcJZJjL4AnmeIopLtB6sFGPTWmKWFWuHMSb
+ wLkTLnQYkI8RIMb/7MgmC67kb8zOmf3xbK8x4bgaO4XM7b4b72oYWnxrZ3y5hobDRFkN
+ hf6n1bdVYKOAeyNKOV3iJb+Pb2bNk7v1TpgOvRpLzi8HjMJXs1E6m9Vy9WDDZJormEGW
+ oYs5d/rBO4Lc0UnjyAiHFo4RMjomWndHzmK6WHKMJ0A5ZIUu2pQvfG98OfGFiq4157hG
+ SQuIkRo34r7IT2lYVjhXrDjYoXvGpGCMkTLoWp3+yfBV8D9RatEaFGs5hFd4l1dJ7QsE dw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tf488u05-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 09:59:27 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11JEXdfJ047284;
+        Fri, 19 Feb 2021 09:59:22 -0500
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tf488ttv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 09:59:21 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11JEpo8e007086;
+        Fri, 19 Feb 2021 14:59:09 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma05wdc.us.ibm.com with ESMTP id 36p6d9x4s0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 14:59:09 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11JEx9QW22151452
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 14:59:09 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3E59A12405B;
+        Fri, 19 Feb 2021 14:59:09 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0EF00124053;
+        Fri, 19 Feb 2021 14:59:09 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Feb 2021 14:59:08 +0000 (GMT)
+Subject: Re: [PATCH v2 5/5] ima: enable loading of build time generated key on
+ .ima keyring
+To:     Nayna Jain <nayna@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        keyrings@vger.kernel.org
+Cc:     linux-security-module@vger.kernel.org,
+        David Howells <dhowells@redhat.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210218220011.67625-1-nayna@linux.ibm.com>
+ <20210218220011.67625-6-nayna@linux.ibm.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <c53a186b-23ca-f27d-44f3-e8b308886ea8@linux.ibm.com>
+Date:   Fri, 19 Feb 2021 09:59:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210218220011.67625-6-nayna@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_05:2021-02-18,2021-02-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ mlxlogscore=999 lowpriorityscore=0 priorityscore=1501 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-
-> Hi all,
+On 2/18/21 5:00 PM, Nayna Jain wrote:
+> The kernel currently only loads the kernel module signing key onto
+> the builtin trusted keyring. To support IMA, load the module signing
+> key selectively either onto the builtin or IMA keyring based on MODULE_SIG
+> or MODULE_APPRAISE_MODSIG config respectively; and loads the CA kernel
+> key onto the builtin trusted keyring.
 >
-> On Fri, 19 Feb 2021 07:52:56 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->>
->> After merging the net-next tree, today's linux-next build (htmldocs)
->> produced these warnings:
->> 
->> Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-string without end-string.
->> Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-string without end-string.
->> Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-string without end-string.
->> Documentation/networking/filter.rst:1053: WARNING: Inline emphasis start-string without end-string.
->> 
->> Introduced by commit
->> 
->>   91c960b00566 ("bpf: Rename BPF_XADD and prepare to encode other atomics in .imm")
->> 
->> Sorry that I missed these earlier.
->
-> These have been fixed in the net-next tree, actually.  I was fooled
-> because an earlier part of the net-next tree has been included in the
-> wireless-drivers (not -next) tree today so these warnings popped up
-> earlier, but are gone one the rest of the net-next tree is merged.
->
-> Sorry for the noise.
+> Signed-off-by: Nayna Jain <nayna@linux.ibm.com>
 
-Argh, sorry about that Stephen. I was preparing wireless-drivers for
-followup fixes sent during the merge window, but didn't realise that it
-will mess up your tree building. I need to avoid this in the future and
-wireless-drivers should only follow the net tree.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
