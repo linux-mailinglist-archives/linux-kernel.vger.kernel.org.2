@@ -2,136 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0413C31FB77
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:57:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F2D31FB75
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhBSO4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhBSO4v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:56:51 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB554C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:56:09 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id d2so10404164edq.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9KW+1lIwPV9FPrnZg5vNSqypATsMZae7KiNb0eudmHM=;
-        b=fWlizlEuP6fQFXcSfr57FExVLI3CPIV2N2m+q43FPhwTzlg8qFqVtR2ot7crvh/QW2
-         Qs8fcmRxZoRaSthNGmlfJA5Rv1YBC4S9VvZN9TBF+pu585Yd1tSv+dganVhM4259iily
-         Wk8X2dC0CiMSntdm2q50kxGpwkPvEF2mKeZbx3Rd9w0aV1hEjvzOeSYK91djuqD/9uRz
-         IybFBgnlTsOuU0j8UxqZHZhzAmejyXt6wOt88B/zjfNk8g3b8pKf0IPPwq3gTBJNFb6m
-         sZQFyr10ifWODIk6m67nbAeupaz3rX9483lUva4ErH/Z1+sVoqOuBKu+W0aPvF0RE7bF
-         LqFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9KW+1lIwPV9FPrnZg5vNSqypATsMZae7KiNb0eudmHM=;
-        b=OhBxO+VbPtVLSzRz8VqPIRkbRDiGzVntowa8afxdxOeLAN4gFz//u4eJLnu5yXOCSZ
-         GOCmHVYfXSvOi9lCygQTD6mlWrHYAny50AVlgNrwDH9yrHWWjAEqmzXoL5c7odGmBPo9
-         OtrzZXiSYVUmzWqSWy/m4+i1IQrc9MCLiEiisuqpOGkT3MwLEVTFWlzgODkRAjboyia8
-         nyKrB5oGlcUpuKdHYxiyGBpsl6jrfemtwPzbFvh2N+o0WxyEd3G+aupSxkv5qx7dndq2
-         vD69e0ItImUZRSUyA5obbOh57WTKWcbD3Xv5Ajnj/bwxDl9TKiGHBCNvm9VWj5dAwjVZ
-         cdjQ==
-X-Gm-Message-State: AOAM533iyYVm9dGZHe+YeHiHTBpdH4gN4IGNJZc7hGI0k1lmWh4NWmx+
-        xTQHFlxQS4xi9QFjfG4ZU2Q5/3OlD2k=
-X-Google-Smtp-Source: ABdhPJwECNXQtyaRXME9hzCpWZK5UUDqzGIyDifRI3kfxfWd4bVuX0zMwxtk3HXgtDoqfOJgbLRENQ==
-X-Received: by 2002:a50:be8b:: with SMTP id b11mr9547463edk.145.1613746568138;
-        Fri, 19 Feb 2021 06:56:08 -0800 (PST)
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
-        by smtp.gmail.com with ESMTPSA id r6sm5331879edm.23.2021.02.19.06.56.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 06:56:06 -0800 (PST)
-Received: by mail-wr1-f49.google.com with SMTP id n4so8962758wrx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:56:06 -0800 (PST)
-X-Received: by 2002:a5d:4488:: with SMTP id j8mr8312106wrq.12.1613746565793;
- Fri, 19 Feb 2021 06:56:05 -0800 (PST)
+        id S229681AbhBSO4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:56:32 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:15309 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229594AbhBSO4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:56:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613746563; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=8FZEp2OZfVO47LVdb5u4zBEqXzFcNcGsWdEeX5D0hk4=; b=qOGAPlhR682y5siot1x+tXoNIikzCgTO3lb9kUzOmUsxQEmLhfGhbx3spVHzLGRgpsbFGiXo
+ tFcEo4ZzHSXlPU8/fH7EU4pRxdVRqU6Do62pYEbVoNDwp9DfNgIvSZS3s3EhW19bMq2y2zSc
+ gIKCTFKBghhsByFRIN4s43iiscM=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 602fd1654511108a8105d4c3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 14:55:33
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BD97BC433C6; Fri, 19 Feb 2021 14:55:32 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 36D14C433C6;
+        Fri, 19 Feb 2021 14:55:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 36D14C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH] bus: mhi: core: Move to polling method to wait for MHI
+ ready
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com
+References: <1613701126-38995-1-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <3071a65e-8ab2-8e88-e87e-50c71602904c@codeaurora.org>
+Date:   Fri, 19 Feb 2021 07:55:30 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
- <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com> <2cc06597-8005-7be8-4094-b20f525afde8@redhat.com>
-In-Reply-To: <2cc06597-8005-7be8-4094-b20f525afde8@redhat.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 19 Feb 2021 09:55:28 -0500
-X-Gmail-Original-Message-ID: <CA+FuTSf2GCi+RzpkFeBgtSOyhjsBFfApjekzupHLfyeYDn-JYQ@mail.gmail.com>
-Message-ID: <CA+FuTSf2GCi+RzpkFeBgtSOyhjsBFfApjekzupHLfyeYDn-JYQ@mail.gmail.com>
-Subject: Re: [PATCH] net: check if protocol extracted by virtio_net_hdr_set_proto
- is correct
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Balazs Nemeth <bnemeth@redhat.com>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Miller <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1613701126-38995-1-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 3:53 AM Jason Wang <jasowang@redhat.com> wrote:
->
->
-> On 2021/2/18 11:50 =E4=B8=8B=E5=8D=88, Willem de Bruijn wrote:
-> > On Thu, Feb 18, 2021 at 10:01 AM Balazs Nemeth <bnemeth@redhat.com> wro=
-te:
-> >> For gso packets, virtio_net_hdr_set_proto sets the protocol (if it isn=
-'t
-> >> set) based on the type in the virtio net hdr, but the skb could contai=
-n
-> >> anything since it could come from packet_snd through a raw socket. If
-> >> there is a mismatch between what virtio_net_hdr_set_proto sets and
-> >> the actual protocol, then the skb could be handled incorrectly later
-> >> on by gso.
-> >>
-> >> The network header of gso packets starts at 14 bytes, but a specially
-> >> crafted packet could fool the call to skb_flow_dissect_flow_keys_basic
-> >> as the network header offset in the skb could be incorrect.
-> >> Consequently, EINVAL is not returned.
-> >>
-> >> There are even packets that can cause an infinite loop. For example, a
-> >> packet with ethernet type ETH_P_MPLS_UC (which is unnoticed by
-> >> virtio_net_hdr_to_skb) that is sent to a geneve interface will be
-> >> handled by geneve_build_skb. In turn, it calls
-> >> udp_tunnel_handle_offloads which then calls skb_reset_inner_headers.
-> >> After that, the packet gets passed to mpls_gso_segment. That function
-> >> calculates the mpls header length by taking the difference between
-> >> network_header and inner_network_header. Since the two are equal
-> >> (due to the earlier call to skb_reset_inner_headers), it will calculat=
-e
-> >> a header of length 0, and it will not pull any headers. Then, it will
-> >> call skb_mac_gso_segment which will again call mpls_gso_segment, etc..=
-.
-> >> This leads to the infinite loop.
->
->
-> I remember kernel will validate dodgy gso packets in gso ops. I wonder
-> why not do the check there? The reason is that virtio/TUN is not the
-> only source for those packets.
+On 2/18/2021 7:18 PM, Bhaumik Bhatt wrote:
+> In certain devices, it is likely that there is no incoming MHI
+> interrupt for a transition to MHI READY state. One such example
+> is the move from Pass Through to an SBL or AMSS execution
+> environment. In order to facilitate faster bootup times as there
+> is no need to wait until timeout_ms completes, MHI host can poll
+> every 25 milliseconds to check if device has entered MHI READY
+> until a maximum timeout of twice the timeout_ms is reached.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
+>   drivers/bus/mhi/core/pm.c | 32 ++++++++++++++++----------------
+>   1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index 65ebca8..ec0060c 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -9,6 +9,7 @@
+>   #include <linux/dma-direction.h>
+>   #include <linux/dma-mapping.h>
+>   #include <linux/interrupt.h>
+> +#include <linux/iopoll.h>
+>   #include <linux/list.h>
+>   #include <linux/mhi.h>
+>   #include <linux/module.h>
+> @@ -157,30 +158,29 @@ int mhi_ready_state_transition(struct mhi_controller *mhi_cntrl)
+>   	struct mhi_event *mhi_event;
+>   	enum mhi_pm_state cur_state;
+>   	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> -	u32 reset = 1, ready = 0;
+> +	u32 reset, ready;
+>   	int ret, i;
+>   
+> -	/* Wait for RESET to be cleared and READY bit to be set by the device */
+> -	wait_event_timeout(mhi_cntrl->state_event,
+> -			   MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state) ||
+> -			   mhi_read_reg_field(mhi_cntrl, base, MHICTRL,
+> -					      MHICTRL_RESET_MASK,
+> -					      MHICTRL_RESET_SHIFT, &reset) ||
+> -			   mhi_read_reg_field(mhi_cntrl, base, MHISTATUS,
+> -					      MHISTATUS_READY_MASK,
+> -					      MHISTATUS_READY_SHIFT, &ready) ||
+> -			   (!reset && ready),
+> -			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
+> -
+>   	/* Check if device entered error state */
+>   	if (MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
+>   		dev_err(dev, "Device link is not accessible\n");
+>   		return -EIO;
+>   	}
+>   
+> -	/* Timeout if device did not transition to ready state */
+> -	if (reset || !ready) {
+> -		dev_err(dev, "Device Ready timeout\n");
+> +	/* Wait for RESET to be cleared and READY bit to be set by the device */
+> +	ret = readl_relaxed_poll_timeout(base + MHICTRL, reset,
+> +					 !(reset & MHICTRL_RESET_MASK), 25000,
+> +					 mhi_cntrl->timeout_ms * 1000);
+> +	if (ret) {
+> +		dev_err(dev, "Device failed to clear MHI Reset\n");
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	ret = readl_relaxed_poll_timeout(base + MHISTATUS, ready,
+> +					 (ready & MHISTATUS_READY_MASK), 25000,
+> +					 mhi_cntrl->timeout_ms * 1000);
+> +	if (ret) {
+> +		dev_err(dev, "Device failed to enter MHI Ready\n");
+>   		return -ETIMEDOUT;
+>   	}
+>   
+> 
 
-It is? All other GSO packets are generated by the stack itself, either
-locally or through GRO.
+I think this gets a NACK from me.
 
-But indeed some checks are better performed in the GSO layer. Such as
-likely the 0-byte mpls header length.
+mhi_read_reg_field() uses the controller defined accessor method 
+read_reg().  readl_relaxed_poll_timeout() does not.  If, say, MHI was 
+implemented over I2C, direct readl() accesses wouldn't be valid, and 
+this would break.
 
-If we cannot trust virtio_net_hdr.gso_type passed from userspace, then
-we can also not trust the eth.h_proto coming from the same source. But
-it makes sense to require them to be consistent. There is a
-dev_parse_header_protocol that may return the link layer type in a
-more generic fashion than casting to skb_eth_hdr.
+Also, if the link ever goes down in the middle if the timeout, the 
+controller read_reg() should detect that, but 
+readl_relaxed_poll_timeout() would not.
 
-Question remains what to do for the link layer types that do not implement
-header_ops->parse_protocol, and so we cannot validate the packet's
-network protocol. Drop will cause false positives, accepts will leave a
-potential path, just closes it for Ethernet.
+I'm fine with this concept, but I think the implementation needs to be 
+adjusted.
 
-This might call for multiple fixes, both on first ingest and inside the sta=
-ck?
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
