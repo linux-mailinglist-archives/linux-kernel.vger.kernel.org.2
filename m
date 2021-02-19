@@ -2,298 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AD031F657
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:13:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF59431F653
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:13:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhBSJMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:12:48 -0500
-Received: from mail-lj1-f177.google.com ([209.85.208.177]:41298 "EHLO
-        mail-lj1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhBSJGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:06:18 -0500
-Received: by mail-lj1-f177.google.com with SMTP id e17so16393658ljl.8
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:06:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4SYuc31NBuKizkQQlJfdfOc2gXxQ85QiVTeukEPxaJo=;
-        b=OtfIxw/DfDVc+6BAY+gMIohc1u5WLtTiX2MpzILOV1OzN9v5DoPHTtW6dYWeqrfLae
-         8iPzc9Uoi8sP64CjZ6L9oMoNSd9ZXS6AkCj1Ch5l4Oedr3vvxOMuJJEw7ebiMJkJEfwK
-         wPZywKiT9ZoRS8U9UnYTTOZnFzltpEwMOg2sdVmpoU4y9IxQzooNeJXWX45MLc1qu0ke
-         Y7mgNFtFuTOvLXpe9y4ktShDQ4EM6dVG1Q0FIME7QRDcgIMMMD8CfRt0G8i++YqiU1/C
-         +mSkY93V+DDXK81AvunEpLaD5i3KmesOzqKhKc9utuhVxBnPpIupd0DRjsft0I/M1Yg6
-         lW4A==
-X-Gm-Message-State: AOAM531ba+iDsB23D82dpLcBXiI6FixbxmGzA0nBbPliDFtjCDLCWe9d
-        DkHOZuQkFFfY7WcrJh+1md4Sf5rRRx5aBw==
-X-Google-Smtp-Source: ABdhPJxk/zPhW0YoA4R5eXWF9hptagCSADw59N9qPWU/Z5oCVrDLkYhTL8UTXmkD8zdkmp8hXAetfA==
-X-Received: by 2002:a2e:95c8:: with SMTP id y8mr2486238ljh.419.1613725535773;
-        Fri, 19 Feb 2021 01:05:35 -0800 (PST)
-Received: from localhost.localdomain (broadband-188-32-236-56.ip.moscow.rt.ru. [188.32.236.56])
-        by smtp.googlemail.com with ESMTPSA id a20sm162635lji.77.2021.02.19.01.05.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 01:05:34 -0800 (PST)
-From:   Denis Efremov <efremov@linux.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        id S230211AbhBSJL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:11:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41234 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229867AbhBSJGj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:06:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 48FC6AEDA;
+        Fri, 19 Feb 2021 09:05:56 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 10:05:53 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2] coccinelle: misc: add minmax script
-Date:   Fri, 19 Feb 2021 12:05:20 +0300
-Message-Id: <20210219090520.8812-1-efremov@linux.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210216080133.455456-1-efremov@linux.com>
-References: <20210216080133.455456-1-efremov@linux.com>
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <20210219090548.GA17266@linux>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+ <20210218133250.GA7983@localhost.localdomain>
+ <YC5yzNB9xT76fkod@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YC5yzNB9xT76fkod@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check for opencoded min(), max() implementations.
+On Thu, Feb 18, 2021 at 02:59:40PM +0100, Michal Hocko wrote:
+> > It should be:
+> > 
+> >  allocate_a_new_page (new_page's refcount = 1)
+> >  put_page(new_page); (new_page's refcount = 0)
+> >  dissolve_old_page
+> >   : if fail
+> >      dissolve_new_page (we can dissolve it as refcount == 0)
+> > 
+> > I hope this clarifies it .
+> 
+> OK, I see the problem now. And your above solution is not really
+> optimal either. Your put_page would add the page to the pool and so it
+> could be used by somebody. One way around it would be either directly
+> manipulating reference count which is fugly or you can make it a
+> temporal page (alloc_migrate_huge_page) or maybe even better not special
+> case this here but rather allow migrating free hugetlb pages in the
+> migrate_page path.
 
-Signed-off-by: Denis Efremov <efremov@linux.com>
----
+I have been weighting up this option because it seemed the most clean way to
+proceed. Having the hability to migrate free hugepages directly from migrate_page
+would spare us this function.
+But there is a problem. migrate_pages needs the pages to be on a list (by
+page->lru). That is no problem for used pages, but for freehugepages we would
+have to remove the page from hstate->hugepage_freelists, meaning that if userspace
+comes along and tries to get a hugepage (a hugepage he previously allocated by
+e.g: /proc/sys/.../nr_hugepages), it will fail.
 
-Changes in v2:
- - <... ...> instead of ... when any
- - org mode reports fixed
- - patch rule to drop excessive ()
+So I am not really sure we can go this way. Unless we are willing to accept
+that temporary userspace can get ENOMEM if it tries to use a hugepage, which
+I do not think it is a good idea.
+Another way to go would be to make up for the free hugepages to be migrated and
+allocate the same amount, but that starts to go down a rabbit hole.
 
- scripts/coccinelle/misc/minmax.cocci | 224 +++++++++++++++++++++++++++
- 1 file changed, 224 insertions(+)
- create mode 100644 scripts/coccinelle/misc/minmax.cocci
+I yet need to give it some more spins, but all in all, I think the easiest way
+forward way might be to do something like:
 
-diff --git a/scripts/coccinelle/misc/minmax.cocci b/scripts/coccinelle/misc/minmax.cocci
-new file mode 100644
-index 000000000000..61d6b61fd82c
---- /dev/null
-+++ b/scripts/coccinelle/misc/minmax.cocci
-@@ -0,0 +1,224 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+///
-+/// Check for opencoded min(), max() implementations.
-+/// Generated patches sometimes require adding a cast to fix compile warning.
-+/// Warnings/patches scope intentionally limited to a function body.
-+///
-+// Confidence: Medium
-+// Copyright: (C) 2021 Denis Efremov ISPRAS
-+// Options: --no-includes --include-headers
-+//
-+// Keywords: min, max
-+//
-+
-+
-+virtual report
-+virtual org
-+virtual context
-+virtual patch
-+
-+@rmax depends on !patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {>, >=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	<...
-+*	x cmp@p y ? x : y
-+	...>
-+}
-+
-+@rmaxif depends on !patch@
-+identifier func;
-+expression x, y;
-+expression max_val;
-+binary operator cmp = {>, >=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	<...
-+*	if (x cmp@p y) {
-+*		max_val = x;
-+*	} else {
-+*		max_val = y;
-+*	}
-+	...>
-+}
-+
-+@rmin depends on !patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {<, <=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	<...
-+*	x cmp@p y ? x : y
-+	...>
-+}
-+
-+@rminif depends on !patch@
-+identifier func;
-+expression x, y;
-+expression min_val;
-+binary operator cmp = {<, <=};
-+position p;
-+@@
-+
-+func(...)
-+{
-+	<...
-+*	if (x cmp@p y) {
-+*		min_val = x;
-+*	} else {
-+*		min_val = y;
-+*	}
-+	...>
-+}
-+
-+@pmax depends on patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {>=, >};
-+position p;
-+@@
-+
-+func@p(...)
-+{
-+	<...
-+-	x cmp y ? x : y
-++	max(x, y)
-+	...>
-+}
-+
-+@pmaxif depends on patch@
-+identifier func;
-+expression x, y;
-+expression max_val;
-+binary operator cmp = {>=, >};
-+position p;
-+@@
-+
-+func@p(...)
-+{
-+	<...
-+-	if (x cmp y) {
-+-		max_val = x;
-+-	} else {
-+-		max_val = y;
-+-	}
-++	max_val = max(x, y);
-+	...>
-+}
-+
-+@pmin depends on patch@
-+identifier func;
-+expression x, y;
-+binary operator cmp = {<=, <};
-+position p;
-+@@
-+
-+func@p(...)
-+{
-+	<...
-+-	x cmp y ? x : y
-++	min(x, y)
-+	...>
-+}
-+
-+@pminif depends on patch@
-+identifier func;
-+expression x, y;
-+expression min_val;
-+binary operator cmp = {<=, <};
-+position p;
-+@@
-+
-+func@p(...)
-+{
-+	<...
-+-	if (x cmp y) {
-+-		min_val = x;
-+-	} else {
-+-		min_val = y;
-+-	}
-++	min_val = min(x, y);
-+	...>
-+}
-+
-+@depends on (pmax || pmaxif || pmin || pminif)@
-+identifier func;
-+expression x, y;
-+position p;
-+// FIXME: Coccinelle consumes all available ram and
-+// and timeouts on every file.
-+// position p = { pmin.p, pminif.p, pmax.p, pmaxif.p };
-+@@
-+
-+func@p(...)
-+{
-+	<...
-+(
-+-	(min((x), (y)))
-++	min(x, y)
-+|
-+-	(max((x), (y)))
-++	max(x, y)
-+)
-+	...>
-+}
-+
-+@script:python depends on report@
-+p << rmax.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on org@
-+p << rmax.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on report@
-+p << rmaxif.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on org@
-+p << rmaxif.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING opportunity for max()")
-+
-+@script:python depends on report@
-+p << rmin.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for min()")
-+
-+@script:python depends on org@
-+p << rmin.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING opportunity for min()")
-+
-+@script:python depends on report@
-+p << rminif.p;
-+@@
-+
-+coccilib.report.print_report(p[0], "WARNING opportunity for min()")
-+
-+@script:python depends on org@
-+p << rminif.p;
-+@@
-+
-+coccilib.org.print_todo(p[0], "WARNING opportunity for min()")
+alloc_and_dissolve_huge_page {
+
+   new_page = alloc_fresh_huge_page(h, gfp_mask, nid, NULL, NULL);
+   if (new_page) {
+           /*
+            * Put the page in the freelist hugepage pool.
+            * We might race with someone coming by and grabbing the page,
+            * but that is fine since we mark the page as Temporary in case
+            * both old and new_page fail to be dissolved, so new_page
+            * will be freed when its last reference is gone.
+            */
+           put_page(new_page);
+      
+           if (!dissolve_free_huge_page(page)) {
+                   /*
+                    * Old page could be dissolved.
+                    */
+                   ret = true;
+           } else if (dissolve_free_huge_page(new_page)) {
+                  /*
+                   * Page might have been dissolved by admin by doing
+                   * "echo 0 > /proc/../nr_hugepages". Check it before marking
+                   * the page.
+                   */
+                  spin_lock(&hugetlb_lock);
+                  /* Mark the page Temporary in case we fail to dissolve both
+                   * the old page and new_page. It will be freed when the last
+                   * user drops it.
+                   */
+                  if (PageHuge(new_page))
+                          SetPageHugeTemporary(new_page);
+                  spin_unlock(&hugetlb_lock);
+           }
+   }
+
+There is one more thing to cover though.
+Between the dissolve_free_huge_page(new_page) and the PageHuge check, the
+page might have been freed, and so enqueued (because we did not mark it as 
+Temporary yet). If that is the case, we would later mark the page as Temporary
+being in the freepool, not nice.
+
+One way out would be to pass a boolean parameter to dissolve_free_huge_page(),
+that tells whether the page should be marked Temporary in case the operation fails.
+That would ease things a lot because __everything__ is being done under the lock,
+which means the page cannot go away in the meantime.
+
+Just my thoughts.
+
+What do you think?
+
+
 -- 
-2.26.2
-
+Oscar Salvador
+SUSE L3
