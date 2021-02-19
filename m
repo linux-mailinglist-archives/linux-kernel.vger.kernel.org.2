@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCBD31F864
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8AC631F869
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230482AbhBSL07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:26:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230487AbhBSLYm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:24:42 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B7C061574;
-        Fri, 19 Feb 2021 03:24:01 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id e17so18330518ljl.8;
-        Fri, 19 Feb 2021 03:24:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=RFA5bf1h8EQA7SRcg6dIjyB28rNd3wzpvWShfnUUMhI=;
-        b=vRRLT+H16oJx9Yd1pVNwh54SLDLDwhsVDjZiYhkQc7HjQrqrwLhEC8p3Sul4rsmFuT
-         9vkEwf6/Gu4G/X+VWgvCOcg2Gk7gjkghSpj8U2h9nLnIghHUVRNFcht5OKO8kttd7Uwb
-         rwiAqjl0+bPGnpV/IA0piPrTghfzMA2e0RN/ZDdQn/rgrx9Op8BEbDEF9srZnh0x02KH
-         9NmS9gSEKwXaWcywLff7rIJ5JkytczmVMbRTlfJ7vYFwzEC25cVl6/RJmkqHp9IfPd/H
-         hGLW5dQIXUysqJHpDoNDuE27M6RySOmr7GamBwahVCDjuG5R2tw6q6Htc78FGO4o+qG5
-         3DsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=RFA5bf1h8EQA7SRcg6dIjyB28rNd3wzpvWShfnUUMhI=;
-        b=lAo7FWU9zC6KeqyPdRa5QYLU+32i0ifxvdy+PuaxyPKRo1BkBuf/E1bAv7Xln63dCu
-         1ppLok1VZBTVSOSmLv4G8EhYiA6EbNb5HcLuCo72ICkj2IMOpAlnXaU1zgIwhd+v9dAN
-         rKkOwWwOoqTx7gZIq5zR8S5FuTvEAqZBEZW2TbRAoo6mqq7uZ+SlnyAiBSAmkOPUG+Bc
-         j59fF6wUL8dqx2DwqXWeKPhZsq/3yL9w/JYsxEylZyVaq56FOQJk0ci5UqQr/sFNcv/H
-         APQRv2FVH23wT0kcFdSlA26i9WZajjGosIumkq8xnzOQAAma0aweUbLm49y5FmeALJpy
-         GX6Q==
-X-Gm-Message-State: AOAM532L64Gjrrb34BEBm55xRBxQ1FN3pEoYvu1bAPonEifHVVvRgxSp
-        8AU3P2smrJsniTGEcaM8eQU=
-X-Google-Smtp-Source: ABdhPJxP2OMw7jgbXy9Tqse8W7medU+/E6iZh4OhyZbfm21RUPNUhlqDJAJ5wTNWLZI5IS3rSciutw==
-X-Received: by 2002:a2e:7811:: with SMTP id t17mr5551509ljc.86.1613733839962;
-        Fri, 19 Feb 2021 03:23:59 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id f1sm939184ljj.124.2021.02.19.03.23.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 03:23:59 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 19 Feb 2021 12:23:57 +0100
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210219112357.GA34462@pc638.lan>
-References: <161365856280.719838.12423085451287256713.stgit@devnote2>
- <20210218151554.GQ2743@paulmck-ThinkPad-P72>
- <20210219081755.eucq4srbam6wg2gm@linutronix.de>
- <20210219104958.GA34308@pc638.lan>
- <20210219105710.d626zexj6vzt6k6y@linutronix.de>
- <20210219111301.GA34441@pc638.lan>
- <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+        id S229527AbhBSL2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:28:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40834 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230475AbhBSLZr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 06:25:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613733895; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lOOtfoPKE3BcGeguv92jXUEX7ahJX8CXJnXAjcq1auM=;
+        b=vUpLLFtX5pt3E4q+IV/bVp4EkvDSaSxxtdGK8F/wywLbQpB4b8oEuL9pF4S5+pA7Jx2EWQ
+        KGznwrWK9yktMtcxy/YWUsbUsaJkknjj5y5k2m1hP2SCReKR5ykl8/mdFs+2Ljo+DY8WSf
+        A6s2KB45GB/wVlZsZn7QW9M9/FHHhbI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BA0A1ACBF;
+        Fri, 19 Feb 2021 11:24:55 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 12:24:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <YC+gBtcN1bE/kYFc@dhcp22.suse.cz>
+References: <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+ <20210218133250.GA7983@localhost.localdomain>
+ <YC5yzNB9xT76fkod@dhcp22.suse.cz>
+ <20210219090548.GA17266@linux>
+ <YC+LWksScdiuPw7X@dhcp22.suse.cz>
+ <20210219103943.GA19945@linux>
+ <YC+ZBIwXKEZCy1Bk@dhcp22.suse.cz>
+ <20210219111703.GA20286@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219111738.go6i2fdzvavpotxd@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210219111703.GA20286@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:17:38PM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-02-19 12:13:01 [+0100], Uladzislau Rezki wrote:
-> > I or Paul will ask for a test once it is settled down :) Looks like
-> > it is, so we should fix for v5.12.
+On Fri 19-02-21 12:17:11, Oscar Salvador wrote:
+> On Fri, Feb 19, 2021 at 11:55:00AM +0100, Michal Hocko wrote:
+> > It is not the lock that I care about but more about counters. The
+> > intention was that there is a single place to handle both enqueing and
+> > dequeing. As not all places require counters to be updated. E.g. the
+> > migration which just replaces one page by another.
 > 
-> Okay. Since Paul asked for powerpc test on v5.11-rc I wanted check if
-> parts of it are also -stable material.
+> I see.
+> alloc_fresh_huge_page->prep_new_huge_page increments h->nr_huge_pages{_node}
+> counters.
+> Which means:
 > 
-OK, i see. It will be broken starting from v5.12-rc unless we fix it.
+> >       new_page = alloc_fresh_huge_page();
+> >       if (!new_page)
+> >               goto fail;
+> >       spin_lock(hugetlb_lock);
+> >       if (!PageHuge(old_page)) {
+> >               /* freed from under us, nothing to do */ 
+> >               __update_and_free_page(new_page);
+> 
+> Here we need update_and_free_page, otherwise we would be leaving a stale value
+> in h->nr_huge_pages{_node}. 
+> 
+> >               goto unlock;
+> >       }
+> >       list_del(&old_page->lru);
+> >       __update_and_free_page(old_page);
+> 
+> Same here.
+> 
+> >       __enqueue_huge_page(new_page);
+> 
+> This is ok since h->free_huge_pages{_node} do not need to be updated.
 
---
-Vlad Rezki
+Fair enough. I didn't get to think this through obviously, but you
+should get the idea ;)
+-- 
+Michal Hocko
+SUSE Labs
