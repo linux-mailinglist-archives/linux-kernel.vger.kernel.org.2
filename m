@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B6631F693
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:32:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD9531F6A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:45:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBSJbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:31:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59740 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229927AbhBSJbq (ORCPT
+        id S229908AbhBSJmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:42:42 -0500
+Received: from smtp88.iad3b.emailsrvr.com ([146.20.161.88]:33740 "EHLO
+        smtp88.iad3b.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229527AbhBSJmi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:31:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613727020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q3JTcUNa5wlSteHsee83SOzVlisb9YCuNoGlOsx95po=;
-        b=W3SGjBOUJstfR5ULx3yz8iVAPg7ZPB21kJ2I6jL25nqvaEZeXbbwuatk2pMfvjjiXYPZg8
-        ICmf2w2PIpaEipNn2fmgqVV/jVazD8gN40z4EXfYdAq1w22tT36CFvY4VOsse/1IDYNAU4
-        dmxN7Y6k+u+j+43h9oqJajD+k35kKhw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-376-wkwvDw66MRCzjmK3m0DxnA-1; Fri, 19 Feb 2021 04:30:16 -0500
-X-MC-Unique: wkwvDw66MRCzjmK3m0DxnA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA4EC1020C39;
-        Fri, 19 Feb 2021 09:30:14 +0000 (UTC)
-Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 551E6171FE;
-        Fri, 19 Feb 2021 09:30:13 +0000 (UTC)
-Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
-To:     Michal Hocko <mhocko@suse.com>, Minchan Kim <minchan@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
-References: <20210217163603.429062-1-minchan@kernel.org>
- <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
- <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
- <YC402s1vqvC4q041@dhcp22.suse.cz>
- <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
- <YC6TpqT26dSy11fU@google.com> <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <45f1bffe-8a0b-2969-32d4-e24a911a647d@redhat.com>
-Date:   Fri, 19 Feb 2021 10:30:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 19 Feb 2021 04:42:38 -0500
+X-Greylist: delayed 630 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Feb 2021 04:42:37 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
+        s=20190322-9u7zjiwi; t=1613727077;
+        bh=S+dJPTKN+EhVQm/f0xJ8YQU7u1kFlh0tuWCSQHpuENE=;
+        h=Subject:To:From:Date:From;
+        b=lEfK3pruzk2zZpa4BZXgeGnwnjIM7Y/46Fl/vxL+TLPnKWBCJplQoVHKiTtWQeybW
+         4cdUA7KZbSMlzS/7VV+gRm24rydkj/Ozh1CGV2e3oDzbq851iIWViFUOQYrXLqugN3
+         4GWW5tyQLyBg+08f1WPnAmxZyE/pTXHvNC/2cLKE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1613727077;
+        bh=S+dJPTKN+EhVQm/f0xJ8YQU7u1kFlh0tuWCSQHpuENE=;
+        h=Subject:To:From:Date:From;
+        b=C8o0taraGqg6XxLTopMmXgB8CtZj3WjK+ewkvHM4PLSa+tRxcgLJwHBIyM+Igvfav
+         /I7l6zqfcTBb72oN4jGy8wJhS/GToGjp2Sf0ZcsJuhmzU/QncZsXbKMBFoMfxHhKjh
+         Gc2OiY1KtOCxb/8tR6cv4gWIMgZ+IESvgC9yLf80=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp4.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 1ADB52071B;
+        Fri, 19 Feb 2021 04:31:16 -0500 (EST)
+Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Cc:     "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210217165907.9777-1-atulgopinathan@gmail.com>
+ <YC1T06VCh0K2BBW5@kroah.com> <20210217181000.GB10124@atulu-ubuntu>
+ <YC1fzjVOwiqzO1nb@kroah.com> <3cfef23d-8d4a-205c-61e8-cbe8c9a0c0f4@mev.co.uk>
+ <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <94917044-ba8f-7044-42f6-7e8d5ef1e10b@mev.co.uk>
+Date:   Fri, 19 Feb 2021 09:31:16 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Classification-ID: 859589ae-0f4d-437d-8685-e5f2ac50e4f5-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.02.21 10:28, Michal Hocko wrote:
-> On Thu 18-02-21 08:19:50, Minchan Kim wrote:
->> On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
->>> On 18.02.21 10:35, Michal Hocko wrote:
->>>> On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
->>>>> On 18.02.21 09:56, Michal Hocko wrote:
->>>>>> On Wed 17-02-21 08:36:03, Minchan Kim wrote:
->>>>>>> alloc_contig_range is usually used on cma area or movable zone.
->>>>>>> It's critical if the page migration fails on those areas so
->>>>>>> dump more debugging message like memory_hotplug unless user
->>>>>>> specifiy __GFP_NOWARN.
->>>>>>
->>>>>> I agree with David that this has a potential to generate a lot of output
->>>>>> and it is not really clear whether it is worth it. Page isolation code
->>>>>> already has REPORT_FAILURE mode which currently used only for the memory
->>>>>> hotplug because this was just too noisy from the CMA path - d381c54760dc
->>>>>> ("mm: only report isolation failures when offlining memory").
->>>>>>
->>>>>> Maybe migration failures are less likely to fail but still.
->>>>>
->>>>> Side note: I really dislike that uncontrolled error reporting on memory
->>>>> offlining path we have enabled as default. Yeah, it might be useful for
->>>>> ZONE_MOVABLE in some cases, but otherwise it's just noise.
->>>>>
->>>>> Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
->>>>
->>>> Anyway we can discuss this in a separate thread but I think this is not
->>>> a representative workload.
->>>
->>> Sure, but the essence is "this is noise", and we'll have more noise on
->>> alloc_contig_range() as we see these calls more frequently. There should be
->>> an explicit way to enable such *debug* messages.
->>
->> alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
->> Why shouldn't people use it if they don't care the failure?
->> Semantically, it makes sense to me.
+On 19/02/2021 09:03, David Laight wrote:
+>> It's kind of moot anyway because the patch is outdated.  But the reason
+>> for the ___force is that the same `struct comedi_cmd` is used in both
+>> user and kernel contexts.  In user contexts, the `chanlist` member
+>> points to user memory and in kernel contexts it points to kernel memory
+>> (copied from userspace).
 > 
-> Well, alloc_contig_range doesn't really have to implement all the gfp
-> flags. This is a matter of practicality. alloc_contig_range is quite
-> different from the page allocator because it is to be expected that it
-> can fail the request. This is avery optimistic allocation request. That
-> would suggest that complaining about allocation failures is rather
-> noisy.
-> 
-> Now I do understand that some users would like to see why those
-> allocations have failed. The question is whether that information is
-> generally useful or it is more of a debugging aid. The amount of
-> information is also an important aspect. It would be rather unfortunate
-> to dump thousands of pages just because they cannot be migrated.
-> 
-> I do not have a strong opinion here. We can make all alloc_contig_range
-> users use GFP_NOWARN by default and only skip the flag from the cma
-> allocator but I am slowly leaning towards (ab)using dynamic debugging
-> infrastructure for this.
+> Can't you use a union of the user and kernel pointers?
+> (Possibly even anonymous?)
+> Although, ideally, keeping them in separate fields is better.
+> 8 bytes for a pointer isn't going make a fat lot of difference.
 
-Just so I understand what you are referring to - trace points?
+This is for a UAPI header (eventually), so cannot add a new field.  For
+an anonymous union, one tagged with __user and one not, the __user tag
+would be removed during conversion from UAPI headers to
+/usr/include/linux headers, leaving a union of two identically typed
+members, which would look a bit odd.  The union also kind of hides the
+problem.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
