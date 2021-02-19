@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91A4A31FFCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:27:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2986B31FFD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhBSU0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
+        id S230019AbhBSU3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:29:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhBSU0g (ORCPT
+        with ESMTP id S229658AbhBSU3D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:26:36 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD6AC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 12:25:53 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id m2so5635119pgq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 12:25:53 -0800 (PST)
+        Fri, 19 Feb 2021 15:29:03 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D394C061786;
+        Fri, 19 Feb 2021 12:28:23 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id o63so5635630pgo.6;
+        Fri, 19 Feb 2021 12:28:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6dVHk96AcArKaN/SteHJiGOj0BkhTaJ4SHAFKAMGMno=;
-        b=US8UsJfdfwgQ5VJMv+ws5DQdc7kWG+09VFpbjL8+QlLWWI4BEGXOdeRn59ENUfPza3
-         LARhRjYeoO5MoA4+Gxyl2KuUUNjmtsOXlNa9i91ENpAp0DvCTELgAtTIamw8ELLtUhKw
-         2EKkb8GqyPZmrS24NOI97ZF1zsIQzzGUvFXPjk4c7F5ChrdWlvpiagQDunNuTEo18SoL
-         Lz8GB7amTN9R8sXnXqh2hwL0BQy8fLnlKChlzTEaoA+eZw3wY/J67aTmxWyKvQDKXfGO
-         gItrkElzsyLHdvYUxWmehMfUnjjPfUxIoTGHVlaalIycqBeCAHCOVY8pVCZE6V9IvJBb
-         4ISg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s4EqFO0bHbbTwpYb76+dNzJNfpMa1CvcusLleWdgGeU=;
+        b=FjbQtzavC+F6wFZFWqI/3sC7jEEjVbmpIItbY6mJdmalBiaERgiiTrttCFz6vibxqB
+         ACzjaHvFiyT4LhlkZXHDFX41AvRRqzGRm3kyo1oP9dnjhEUCN9+yTn0tk0KmGQfRFPxi
+         jSZ37aKyRXYnmrKrgVTxKRxeH/Y9G0gUepagvWzflo/A5CDWZcUaWf0+VE43qvrFfTtj
+         LoMrthb51/s29XZifhv+MklYAlO4isQtEC3eDKR8ACfPCkLi9en75RqU3qVDUlMA+Tcg
+         tXP5A6V7wIiqhECOAnBYymtn7F5J6yo/veej9rXon1y7MbY6zXYRTDvoSS7WRVJxGnrY
+         +EzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6dVHk96AcArKaN/SteHJiGOj0BkhTaJ4SHAFKAMGMno=;
-        b=Vu17yicGFs542tkd1HCKRYJNfHRWpJeFZtV2Y7OxP6jITMFP+bPzMZhk+0D7kVUS5d
-         VOugrKZFFM93awJC46MKUlxkXFybpYIP8oyYBxHDBr20fBtK+S07ngOS8cIrr0ADi9gw
-         U35hXKlFuiZZ1fMSjXKH/Mrj5jmELQjZA8MI1suz6sViKYaqR4LMN4n1igiJ/XK7PLE0
-         XQ/EflXwhM6JSA4UX1HSI+vKL/qj0nyzBYC6cRd+IhPA3FvaVSxdKb5sRn8Pjbpq7/+m
-         LPgwqDywAipXcw5TlodIQBCOZEWGJfGEYKOSJo14bzXRTG3fKLaqOKkAmkDO1TIX/kDm
-         gQiw==
-X-Gm-Message-State: AOAM533EVnurenXe+tXVQsAk01+64HXPrWYcKs19oIlAXb3XRP1V9Yq+
-        B0Ep7FqLvHEjmlwF3DmvwbU=
-X-Google-Smtp-Source: ABdhPJxlFJJmRCqw1LJ4pqMIv8LiowF3wCbrm7Xzuz9QimAsiezEFTTBfr9clmbpjYdjjIIcXIwD6A==
-X-Received: by 2002:aa7:82cf:0:b029:1cc:5393:ad8e with SMTP id f15-20020aa782cf0000b02901cc5393ad8emr11258170pfn.3.1613766353128;
-        Fri, 19 Feb 2021 12:25:53 -0800 (PST)
-Received: from localhost.localdomain ([49.36.144.93])
-        by smtp.gmail.com with ESMTPSA id g62sm10504199pgc.32.2021.02.19.12.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 12:25:52 -0800 (PST)
-From:   Amrit Khera <amritkhera98@gmail.com>
-To:     gregkh@linuxfoundation.org, lee.jones@linaro.org, arnd@arndb.de,
-        kuba@kernel.org, mail@anirudhrb.com, ayush@disroot.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Amrit Khera <amritkhera98@gmail.com>
-Subject: [PATCH] staging: wimax: Fix block comment style issue in stack.c
-Date:   Sat, 20 Feb 2021 01:55:25 +0530
-Message-Id: <20210219202524.14642-1-amritkhera98@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s4EqFO0bHbbTwpYb76+dNzJNfpMa1CvcusLleWdgGeU=;
+        b=rV6dcjRepkmEwbQvXgLzs2px9KvUSSyL8fspuQtK/+/1XL4Miy3S1Cs6dFZRdqmdyu
+         r3sZLoT1Zbz0uV/TViooxn4SPRJcBZdgH+59tCSv1d7eQgIu2xEN6dxLw21fc48LvLUF
+         oipwqgdIPU/WvqbS8qWfkw7eu/MWroY3hP3YBGXIB9FqVrt8nSUmSw8WuBmVSNMVPpS0
+         MQDPN3nHTdJQsyfJGe48Kriz0fiEGm936T9/43zhI+RoiKmP/NaAxAjf20F+H9oInJjX
+         gC6ZUqwP/x+Vw6tVEt5IBVEN5M1v+oRGH4w4lXyhR1S1rkhyROPi5HD6DS6jIRtgZ2nl
+         7irQ==
+X-Gm-Message-State: AOAM532+azrM5zw3Aj//9kOBSeXAIJP56L5hNJ82Hs5qd9bz32trgR9M
+        AKsYkDQ0AO4pPOnFeveliDVx7eFNPppjWbaJqXUyLsXpEWQ=
+X-Google-Smtp-Source: ABdhPJzJPzoRjCcfakTT18WRUTXj85l7X9izRxh5eUWA6sishY22bISBIHuRsK9jJeYlc21Ds0rZjaijFpndyVVH3jk=
+X-Received: by 2002:a65:56c6:: with SMTP id w6mr10005007pgs.368.1613766503127;
+ Fri, 19 Feb 2021 12:28:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210216201813.60394-1-xie.he.0141@gmail.com> <YC4sB9OCl5mm3JAw@unreal>
+ <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
+ <YC5DVTHHd6OOs459@unreal> <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
+ <YC7GHgYfGmL2wVRR@unreal> <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
+ <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com> <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 19 Feb 2021 12:28:12 -0800
+Message-ID: <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
+Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin Schiller <ms@dev.tdt.de>,
+        Krzysztof Halasa <khc@pm.waw.pl>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change fixes a checkpatch warning for "Block comments
-use * on subsequent lines".
+On Fri, Feb 19, 2021 at 10:39 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> Not entirely sure what the argument is about but adding constants would
+> certainly help.
 
-Signed-off-by: Amrit Khera <amritkhera98@gmail.com>
----
- drivers/staging/wimax/stack.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Leon wants me to replace this:
 
-diff --git a/drivers/staging/wimax/stack.c b/drivers/staging/wimax/stack.c
-index ace24a6dfd2d..781426000015 100644
---- a/drivers/staging/wimax/stack.c
-+++ b/drivers/staging/wimax/stack.c
-@@ -62,11 +62,12 @@ MODULE_PARM_DESC(debug,
-  * close to where the data is generated.
-  */
- /*
--static const struct nla_policy wimax_gnl_re_status_change[WIMAX_GNL_ATTR_MAX + 1] = {
--	[WIMAX_GNL_STCH_STATE_OLD] = { .type = NLA_U8 },
--	[WIMAX_GNL_STCH_STATE_NEW] = { .type = NLA_U8 },
--};
--*/
-+ * static const struct nla_policy
-+ * wimax_gnl_re_status_change[WIMAX_GNL_ATTR_MAX + 1] = {
-+ *	[WIMAX_GNL_STCH_STATE_OLD] = { .type = NLA_U8 },
-+ *	[WIMAX_GNL_STCH_STATE_NEW] = { .type = NLA_U8 },
-+ * };
-+ */
- 
- 
- /*
--- 
-2.20.1
+dev->needed_headroom = 3 - 1;
 
+with this:
+
+/* 2 is the result of 3 - 1 */
+dev->needed_headroom = 2;
+
+But I don't feel his way is better than my way.
+
+> More fundamentally IDK if we can make such a fundamental change here.
+> When users upgrade from older kernel are all their scripts going to
+> work the same? Won't they have to bring the new netdev up?
+
+Yes, this patch will break backward compatibility. Users with old
+scripts will find them no longer working.
+
+However, it's hard for me to find a better way to solve the problem
+described in the commit message.
+
+So I sent this as an RFC to see what people think about this. (Martin
+Schiller seems to be OK with this.)
+
+I think users who don't use scripts can adapt quickly and users who
+use scripts can also trivally fix their scripts.
+
+Actually many existing commits in the kernel also (more or less) cause
+some user-visible changes. But I admit this patch is a really big
+change.
