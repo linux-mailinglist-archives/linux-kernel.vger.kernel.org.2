@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B61031F58D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAE431F592
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:01:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhBSIBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:01:14 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:51194 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBSIBM (ORCPT
+        id S229725AbhBSIBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 03:01:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBSIB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:01:12 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id F1B751C0B8A; Fri, 19 Feb 2021 09:00:27 +0100 (CET)
-Date:   Fri, 19 Feb 2021 09:00:27 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jari Ruusu <jariruusu@users.sourceforge.net>,
-        Willy Tarreau <w@1wt.eu>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <20210219080027.GA12434@amd>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YC55t1vkRuC9uXcx@kroah.com>
- <20210218205534.GA10201@duo.ucw.cz>
- <202102182343.36276.linux@zary.sk>
+        Fri, 19 Feb 2021 03:01:28 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6288BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 00:00:48 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lD0iP-00065p-7l; Fri, 19 Feb 2021 09:00:41 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lD0iN-0002Mb-Aj; Fri, 19 Feb 2021 09:00:39 +0100
+Date:   Fri, 19 Feb 2021 09:00:38 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     kernel@pengutronix.de,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        linux-serial@vger.kernel.org, Jiri Slaby <jslaby@suse.com>,
+        linux-leds@vger.kernel.org, Dan Murphy <dmurphy@ti.com>
+Subject: Re: [PATCH v11] leds: trigger: implement a tty trigger
+Message-ID: <20210219080038.et46fcrha7ymw6b3@pengutronix.de>
+References: <20201218104246.591315-1-u.kleine-koenig@pengutronix.de>
+ <20201218104246.591315-4-u.kleine-koenig@pengutronix.de>
+ <X/8cwD51DYhzRdDO@kroah.com>
+ <20210113173018.bq2fkea2o3yp6rf6@pengutronix.de>
+ <20210218133733.GB12948@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="q6kwadylrbth3xza"
 Content-Disposition: inline
-In-Reply-To: <202102182343.36276.linux@zary.sk>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210218133733.GB12948@duo.ucw.cz>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---+QahgC5+KEYLbs62
-Content-Type: text/plain; charset=us-ascii
+--q6kwadylrbth3xza
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Hi Pavel,
 
-> > > > For me
-> > > > only way to get properly working WiFi on my laptop computer is to
-> > > > compile that Intel out-of-tree version. Sad, but true.
-> > >=20
-> > > Why use 4.19.y on a laptop in the firstplace?  That feels very wrong =
-and
-> > > is not the recommended thing to use the LTS kernels for.
-> >=20
-> > Well, that's actually what distributions are doing, for example Debian
-> > 10.8 is on 4.19...
+On Thu, Feb 18, 2021 at 02:37:33PM +0100, Pavel Machek wrote:
+> Close, but see below:
 >=20
-> There's 5.10 in buster-backports. That's probably the easiest way to get =
-support for new HW.
-> =20
+> > +static ssize_t ttyname_store(struct device *dev,
+> > +			     struct device_attribute *attr, const char *buf,
+> > +			     size_t size)
+> > +{
+> > +	struct ledtrig_tty_data *trigger_data =3D led_trigger_get_drvdata(dev=
+);
+> > +	char *ttyname;
+> > +	ssize_t ret =3D size;
+> > +	bool running;
+> > +
+> > +	if (size > 0 && buf[size - 1] =3D=3D '\n')
+> > +		size -=3D 1;
+> > +
+> > +	if (size) {
+> > +		ttyname =3D kmemdup_nul(buf, size, GFP_KERNEL);
+> > +		if (!ttyname) {
+> > +			ret =3D -ENOMEM;
+> > +			goto out_unlock;
+>=20
+> Unlock without a lock:
+>=20
+> > +out_unlock:
+> > +	mutex_unlock(&trigger_data->mutex);
 
-I can compile my own kernel, too. But if you go up the thread, it is
-about iwlwifi becoming broken in 4.19, and Greg saying it is wrong
-to put -stable on laptop. And -stable on laptop is norm, not the
-exception.
+Indeed, I prepare an incremental patch that does return -ENOMEM instead
+of goto out_unlock.
 
-								Pavel
+> > +
+> > +	if (ttyname && !running)
+> > +		ledtrig_tty_restart(trigger_data);
+> > +
+> > +	return ret;
+> > +}
+>=20
+> > +
+> > +		tty =3D tty_kopen_shared(devno);
+> > +		if (IS_ERR(tty) || !tty)
+> > +			/* What to do? retry or abort */
+> > +			goto out;
+>=20
+> Abort would make sense to me.
+
+In this case it would IMHO be sensible to already try the
+tty_kopen_shared() in ttyname_store() and let that one fail if the tty
+doesn't exist. I'll have to go through the history of this patch set, if
+I remember correctly it was like that at one point.
+
+> > +	if (icount.rx !=3D trigger_data->rx ||
+> > +	    icount.tx !=3D trigger_data->tx) {
+> > +		led_set_brightness(trigger_data->led_cdev, LED_ON);
+>=20
+> Please use _sync version.
+
+OK, there are too many variants for me. I'll just believe you that
+led_set_brightness_sync is the right one. (Hmm, on the other hand I'll
+have to understand the difference for a good commit log. I'll dig into
+that. "Pavel said so" probably isn't good enough :-))
+
+Best regards and thanks for your review,
+Uwe
+
 --=20
-http://www.livejournal.com/~pavelmachek
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---+QahgC5+KEYLbs62
+--q6kwadylrbth3xza
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
 
-iEYEARECAAYFAmAvcBsACgkQMOfwapXb+vKULQCgryFXGNNKGnpKT+FWWox4Hbfm
-9zMAoMHBptdPbLf7wAbiADdEp2IiWZB9
-=kl2U
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAvcCMACgkQwfwUeK3K
+7Ak6kAf+ORfjH9Vt/IPGPAcl1T1fJrGcnokGruItFNxB3+WdEIPBZsw9iLkunAAO
+tTkxGrn2tJuwkfJMsaucERnbM9daBXoAqQmDBEjp0JBWris2SfparsDnDPcSIJMG
+RY9pN+1ChEPVm1hWiXd9S73jr8aMOjxJ1DppjtZeuzbwXDmujdnDCqcQ1dxZ+1TJ
+4b55YZtTe8CGTfpKcX4/LpaUXII8wF4Iy7F+vM5axNoTpJYxViJEJimgHLoXQwaH
+pj8R5oWMqzWN/9Cg+yGxDO4bDvGhQ5VNpNWTdiCh4reDo3rNzt7LjM7nbpgAYcgv
+bvq0/yAwrMeakYN7NTJL827JWDWEXg==
+=QeMs
 -----END PGP SIGNATURE-----
 
---+QahgC5+KEYLbs62--
+--q6kwadylrbth3xza--
