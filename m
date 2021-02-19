@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C48331F654
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:13:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDC731F659
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhBSJMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:12:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229953AbhBSJGu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:06:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B86F64E5C;
-        Fri, 19 Feb 2021 09:06:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613725569;
-        bh=9gCM57rLof4KH7lXmy+UmvuKw9FROg+FI9WlxlntM6k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HF6TCyaLMin7eWw4jcFe+dmeJli3eaPGNiRqFJOdifpw3v3jT+JZYAaUBeXZy74Go
-         aeiwwSMCGDPuDcaeovq08+UTBhBykv6GzjbK79+AN4G3Z294+JgpaFB6c2ldOXfDGH
-         KGoZJ2CBsqQSsqeQ3wVPGEav0wxTPIPxyuxdIew4rJ2erUfLcnJ2GE8PMM1ofzS5dy
-         hqLP0Et4AKssHZqw1fH+RJNZDAe0vFzDiJ91PXDYRg2nSQ/1VkTFxka46a4mvxtP7F
-         OjPhJ+HLcsd7zYl/fiwPqNZft4tb1qzXCfzpUGYAqjgCY16xVibPybPOMfK79UnnCy
-         7B20K57epD1kw==
-Date:   Fri, 19 Feb 2021 11:05:54 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
-Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
-        James.Bottomley@hansenpartnership.com, David.Laight@aculab.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH RESEND v5] tpm: fix reference counting for struct tpm_chip
-Message-ID: <YC9/cr9Km/jWzmon@kernel.org>
-References: <1613505191-4602-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613505191-4602-2-git-send-email-LinoSanfilippo@gmx.de>
- <YC2WRJfNbY22yIOn@kernel.org>
- <5d0f7222-a9ef-809b-cd9a-86bbacb03790@gmx.de>
+        id S230248AbhBSJNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:13:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhBSJHn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:07:43 -0500
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B310C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:07:02 -0800 (PST)
+Received: by mail-vk1-xa34.google.com with SMTP id v66so1055628vkd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:07:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yN01wuFruNiwvlR4nWVGFgREmWX9yHFllXRmh8fxIwU=;
+        b=n3/LrxpsC2OkD6fPu/ezlq1VjEsvFGYJCOYMZ5J88dLnqxxoYyPe/rKQNxUSuLuIln
+         TboExNJt5RX7XuGOjmi+CHKe6KOg5bie9RLclwxE3Q4HU2pBjN5yUBxmLXGv/qXtdTzy
+         MpfapeRfJRJbCHj8diZP+lGSH91/hn+uqS+3gVGv1FxG9HaqX6VQT4tcqbtNGe2oSXdq
+         /KgFhgNC5V/3RY7KAh9QYiCZX8bS/0YHl2cmxmEPnH7oKP6zWE97Q+kH976uyz5/bjbc
+         QUbRHoubY6M68u+Sa/nKnoblkNOdmXGg+F/r/yZ7D7RTHrhoHZWxurwm3JvN7AUYAJiQ
+         tJXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yN01wuFruNiwvlR4nWVGFgREmWX9yHFllXRmh8fxIwU=;
+        b=JqvT4cdI06mHN61UHwrK/F6rfgwHo64watYqrVSgE3N6dX+RKw8Fs/4Gkrbh8bfDJy
+         OhCt+qwzkTPsYjw7Q2h8ZnGAtPgrIQ970U46YMOczIBcwouRQCKO/mxpUU9innI7BePy
+         fJ7zXVSl99MuMzRnP/DNp+gDui5m54Bl7GnN0l9KhsXoYuOpJSB8f7r0psQ11rfnp0O4
+         Ob9XI/rzYxwSvS+scwE94SDw2cSWSpByqvShJ6yswp+VbX64Fk6ub1CQThmhJRei+Lbw
+         ssFn8BeMxRJ6sYzLzfHPeKIcXI4yOAMEt6nBHkTtvBBLPuzOR8YKV281d12ZngDbP2WH
+         gbCA==
+X-Gm-Message-State: AOAM530rC+kddjEwm8fxb283+6VOHxFLAYq5AyI5kSNQZy3Cvjyk6r1N
+        IdtcrgUUoxyxh+vV1/XoK99kCzK3WQ2nFCiTJKQvYg==
+X-Google-Smtp-Source: ABdhPJzKUm/xh7nllJxIUI73WY+U82eO0Jix5S18RtlTJR4/AkvhLw5A7tcATq+17s+Blm6SA10wg4ku1I2I3uRkAKE=
+X-Received: by 2002:a1f:9c55:: with SMTP id f82mr235371vke.22.1613725621204;
+ Fri, 19 Feb 2021 01:07:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d0f7222-a9ef-809b-cd9a-86bbacb03790@gmx.de>
+References: <20210218100243.32187-1-badhri@google.com> <YC489HGT/yVHykAs@kroah.com>
+ <CAPTae5+qhE9uo2s20oEQd0x+nW21zGE3S7QWkR=oqqVX-3uHmg@mail.gmail.com> <YC5EpqqNM+gnD6Zg@kroah.com>
+In-Reply-To: <YC5EpqqNM+gnD6Zg@kroah.com>
+From:   Badhri Jagan Sridharan <badhri@google.com>
+Date:   Fri, 19 Feb 2021 01:06:24 -0800
+Message-ID: <CAPTae5LuxPw+4DKt4_NFmBnZxgvM7nTDFtXJsTiqsevi4krLjQ@mail.gmail.com>
+Subject: Re: [PATCH v1] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
+ before toggling
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Kyle Tso <kyletso@google.com>, USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 08:13:57PM +0100, Lino Sanfilippo wrote:
-> 
-> Hi,
-> 
-> On 17.02.21 at 23:18, Jarkko Sakkinen wrote:
-> 
-> >> +
-> >
-> > /*
-> >  * Please describe what the heck the function does. No need for full on
-> >  * kdoc.
-> >  */
-> 
-> Ok.
-> 
-> >> +int tpm2_add_device(struct tpm_chip *chip)
-> >
-> > Please, rename as tpm_devs_add for coherency sake.
-> >
-> 
-> Sorry I confused this and renamed it wrongly. I will fix it in the next
-> patch version.
-> 
-> >> +{
-> >> +	int rc;
-> >> +
-> >> +	device_initialize(&chip->devs);
-> >> +	chip->devs.parent = chip->dev.parent;
-> >> +	chip->devs.class = tpmrm_class;
-> >
-> > Empty line. Cannot recall, if I stated before.
-> >> +	/* +	 * get extra reference on main device to hold on behalf of devs.
-> >> +	 * This holds the chip structure while cdevs is in use. The
-> >> +	 * corresponding put is in the tpm_devs_release.
-> >> +	 */
-> >> +	get_device(&chip->dev);
-> >> +	chip->devs.release = tpm_devs_release;
-> >> +	chip->devs.devt = MKDEV(MAJOR(tpm_devt),
-> >> +					chip->dev_num + TPM_NUM_DEVICES);
-> >
-> > NAK, same comment as before.
-> >
-> 
-> Thx for the review, I will fix these issues.
+Done. Just sent out the following patch and CCed stable@vger.kernel.org as well.
 
-Yeah, I mean I'm going to collect this fix anyway after rc1 has been
-released so there's a lot of time to polish small details. I.e. I'm
-doing a PR for rc2 with the fix included.
+[PATCH v2] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V before toggling
 
-> Regards,
-> Lino
+Thanks,
+Badhri
 
-/Jarkko
+
+On Thu, Feb 18, 2021 at 2:42 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Feb 18, 2021 at 02:38:45AM -0800, Badhri Jagan Sridharan wrote:
+> > Hi Greg,
+> >
+> > This patch is a bug fix for the following patch which was introduced in 5.11.
+> >
+> > commit f321a02caebdd0c56e167610cda2fa148cd96e8b
+> > Author: Badhri Jagan Sridharan <badhri@google.com>
+> > Date:   Wed Oct 28 23:31:35 2020 -0700
+> >
+> >     usb: typec: tcpm: Implement enabling Auto Discharge disconnect support
+> >
+> >     TCPCI spec allows TCPC hardware to autonomously discharge the vbus
+> >     capacitance upon disconnect. The expectation is that the TCPM enables
+> >     AutoDischargeDisconnect while entering SNK/SRC_ATTACHED states. Hardware
+> >     then automously discharges vbus when the vbus falls below a certain
+> >     threshold i.e. VBUS_SINK_DISCONNECT_THRESHOLD.
+> >
+> >     Apart from enabling the vbus discharge circuit, AutoDischargeDisconnect
+> >     is also used a flag to move TCPCI based TCPC implementations into
+> >     Attached.Snk/Attached.Src state as mentioned in
+> >     Figure 4-15. TCPC State Diagram before a Connection of the
+> >     USB Type-C Port Controller Interface Specification.
+> >     In such TCPC implementations, setting AutoDischargeDisconnect would
+> >     prevent TCPC into entering "Connection_Invalid" state as well.
+> >
+> >     Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> >     Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> >     Link: https://lore.kernel.org/r/20201029063138.1429760-8-badhri@google.com
+> >     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>
+> Great, then can you resend the patch and add a proper Fixes: tag, along
+> with a cc: stable as well?
+>
+> thanks,
+>
+> greg k-h
