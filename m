@@ -2,105 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986B31FFD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:29:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D56E31FFD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbhBSU3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:29:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhBSU3D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:29:03 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D394C061786;
-        Fri, 19 Feb 2021 12:28:23 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id o63so5635630pgo.6;
-        Fri, 19 Feb 2021 12:28:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=s4EqFO0bHbbTwpYb76+dNzJNfpMa1CvcusLleWdgGeU=;
-        b=FjbQtzavC+F6wFZFWqI/3sC7jEEjVbmpIItbY6mJdmalBiaERgiiTrttCFz6vibxqB
-         ACzjaHvFiyT4LhlkZXHDFX41AvRRqzGRm3kyo1oP9dnjhEUCN9+yTn0tk0KmGQfRFPxi
-         jSZ37aKyRXYnmrKrgVTxKRxeH/Y9G0gUepagvWzflo/A5CDWZcUaWf0+VE43qvrFfTtj
-         LoMrthb51/s29XZifhv+MklYAlO4isQtEC3eDKR8ACfPCkLi9en75RqU3qVDUlMA+Tcg
-         tXP5A6V7wIiqhECOAnBYymtn7F5J6yo/veej9rXon1y7MbY6zXYRTDvoSS7WRVJxGnrY
-         +EzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=s4EqFO0bHbbTwpYb76+dNzJNfpMa1CvcusLleWdgGeU=;
-        b=rV6dcjRepkmEwbQvXgLzs2px9KvUSSyL8fspuQtK/+/1XL4Miy3S1Cs6dFZRdqmdyu
-         r3sZLoT1Zbz0uV/TViooxn4SPRJcBZdgH+59tCSv1d7eQgIu2xEN6dxLw21fc48LvLUF
-         oipwqgdIPU/WvqbS8qWfkw7eu/MWroY3hP3YBGXIB9FqVrt8nSUmSw8WuBmVSNMVPpS0
-         MQDPN3nHTdJQsyfJGe48Kriz0fiEGm936T9/43zhI+RoiKmP/NaAxAjf20F+H9oInJjX
-         gC6ZUqwP/x+Vw6tVEt5IBVEN5M1v+oRGH4w4lXyhR1S1rkhyROPi5HD6DS6jIRtgZ2nl
-         7irQ==
-X-Gm-Message-State: AOAM532+azrM5zw3Aj//9kOBSeXAIJP56L5hNJ82Hs5qd9bz32trgR9M
-        AKsYkDQ0AO4pPOnFeveliDVx7eFNPppjWbaJqXUyLsXpEWQ=
-X-Google-Smtp-Source: ABdhPJzJPzoRjCcfakTT18WRUTXj85l7X9izRxh5eUWA6sishY22bISBIHuRsK9jJeYlc21Ds0rZjaijFpndyVVH3jk=
-X-Received: by 2002:a65:56c6:: with SMTP id w6mr10005007pgs.368.1613766503127;
- Fri, 19 Feb 2021 12:28:23 -0800 (PST)
+        id S229849AbhBSUbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:31:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhBSUbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 15:31:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FF7164EBF;
+        Fri, 19 Feb 2021 20:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613766655;
+        bh=t60MtijxFQRBj7x3qDETkxU78fn61+W8UwCXWCiwnQY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xb+ScodtC5g1cJwFwirDpie276j9W21+W9T9eLgOfC1SHJHdUX8DF1ZTbCMDDl2b1
+         CtXaFvrALlvelQT3VHb1fb1I86UFmxhQJyn5fh0c5IL6LWz6mIIwNz+tYoqzxdOJCy
+         6d+orlD4NDIUUVKmW0I/71fEFGtMTUbKQZ5aFKuMbZsoy2xe+LETtfBDJfJx7Akyt6
+         B4/WgocoAhw4iwSgoLn7iqvcsyLrqgMXRTbsL4BkCDMasEqQH5I1SXRzoM8xQ9zOkA
+         tbpYniBMZUEMcoUiVFHqZS0Tz2GL7muRsPcEn1dxAxfQEk+fPjQ7WLqspYcsb7Nrs3
+         Mdc9Pm/eMthbg==
+Date:   Fri, 19 Feb 2021 13:30:53 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jian Cai <jiancai@google.com>
+Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
+        clang-built-linux@googlegroups.com,
+        David Laight <David.Laight@aculab.com>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Olof Johansson <olof@lixom.net>, Marc Zyngier <maz@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        David Brazdil <dbrazdil@google.com>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v3] ARM: Implement SLS mitigation
+Message-ID: <20210219203053.GA53507@24bbad8f3778>
+References: <20210212195255.1321544-1-jiancai@google.com>
+ <20210219201852.3213914-1-jiancai@google.com>
 MIME-Version: 1.0
-References: <20210216201813.60394-1-xie.he.0141@gmail.com> <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal> <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
- <YC7GHgYfGmL2wVRR@unreal> <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
- <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com> <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 19 Feb 2021 12:28:12 -0800
-Message-ID: <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219201852.3213914-1-jiancai@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 10:39 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Not entirely sure what the argument is about but adding constants would
-> certainly help.
+Hi Jian,
 
-Leon wants me to replace this:
+On Fri, Feb 19, 2021 at 12:18:40PM -0800, 'Jian Cai' via Clang Built Linux wrote:
+> This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+> -mharden-sls=all, which mitigates the straight-line speculation
+> vulnerability, speculative execution of the instruction following some
+> unconditional jumps. Notice -mharden-sls= has other options as below,
+> and this config turns on the strongest option.
+> 
+> all: enable all mitigations against Straight Line Speculation that are implemented.
+> none: disable all mitigations against Straight Line Speculation.
+> retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+> blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+> 
+> Links:
+> https://reviews.llvm.org/D93221
+> https://reviews.llvm.org/D81404
+> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
+> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
+> 
+> Suggested-by: Manoj Gupta <manojgupta@google.com>
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Suggested-by: Nathan Chancellor  <nathan@kernel.org>
+> Suggested-by: David Laight <David.Laight@aculab.com>
+> Suggested-by: Will Deacon <will@kernel.org>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-dev->needed_headroom = 3 - 1;
+My review still stands but in the future, if you significantly change
+how a patch is structured or works, please drop my tag and let me re-add
+it.
 
-with this:
+One comment below.
 
-/* 2 is the result of 3 - 1 */
-dev->needed_headroom = 2;
+> Signed-off-by: Jian Cai <jiancai@google.com>
+> ---
+> 
+> Changes v2 -> v3:
+>   Modify linker scripts as Nick suggested to address boot failure
+>   (verified with qemu). Added more details in Kconfig.hardening
+>   description. Disable the config by default.
+> 
+>  arch/arm/Makefile                  |  4 ++++
+>  arch/arm/include/asm/vmlinux.lds.h |  4 ++++
+>  arch/arm/kernel/vmlinux.lds.S      |  1 +
+>  arch/arm64/Makefile                |  4 ++++
+>  arch/arm64/kernel/vmlinux.lds.S    |  5 +++++
+>  security/Kconfig.hardening         | 10 ++++++++++
+>  6 files changed, 28 insertions(+)
+> 
+> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
+> index 4aaec9599e8a..11d89ef32da9 100644
+> --- a/arch/arm/Makefile
+> +++ b/arch/arm/Makefile
+> @@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
+>  KBUILD_LDFLAGS	+= -EL
+>  endif
+>  
+> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
+> +KBUILD_CFLAGS  += -mharden-sls=all
+> +endif
+> +
+>  #
+>  # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
+>  # later may result in code being generated that handles signed short and signed
+> diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
+> index 4a91428c324d..c7f9717511ca 100644
+> --- a/arch/arm/include/asm/vmlinux.lds.h
+> +++ b/arch/arm/include/asm/vmlinux.lds.h
+> @@ -145,3 +145,7 @@
+>  		__edtcm_data = .;					\
+>  	}								\
+>  	. = __dtcm_start + SIZEOF(.data_dtcm);
+> +
+> +#define SLS_TEXT							\
+> +		ALIGN_FUNCTION();					\
+> +		*(.text.__llvm_slsblr_thunk_*)
+> diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
+> index f7f4620d59c3..e71f2bc97bae 100644
+> --- a/arch/arm/kernel/vmlinux.lds.S
+> +++ b/arch/arm/kernel/vmlinux.lds.S
+> @@ -63,6 +63,7 @@ SECTIONS
+>  	.text : {			/* Real text segment		*/
+>  		_stext = .;		/* Text and read-only data	*/
+>  		ARM_TEXT
+> +		SLS_TEXT
+>  	}
+>  
+>  #ifdef CONFIG_DEBUG_ALIGN_RODATA
+> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+> index 90309208bb28..ca7299b356a9 100644
+> --- a/arch/arm64/Makefile
+> +++ b/arch/arm64/Makefile
+> @@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
+>    endif
+>  endif
+>  
+> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
+> +KBUILD_CFLAGS  += -mharden-sls=all
+> +endif
+> +
+>  cc_has_k_constraint := $(call try-run,echo				\
+>  	'int main(void) {						\
+>  		asm volatile("and w0, w0, %w0" :: "K" (4294967295));	\
+> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
+> index 4c0b0c89ad59..f8912e42ffcd 100644
+> --- a/arch/arm64/kernel/vmlinux.lds.S
+> +++ b/arch/arm64/kernel/vmlinux.lds.S
+> @@ -93,6 +93,10 @@ jiffies = jiffies_64;
+>  #define TRAMP_TEXT
+>  #endif
+>  
+> +#define SLS_TEXT					\
+> +	ALIGN_FUNCTION();				\
+> +	*(.text.__llvm_slsblr_thunk_*)
+> +
+>  /*
+>   * The size of the PE/COFF section that covers the kernel image, which
+>   * runs from _stext to _edata, must be a round multiple of the PE/COFF
+> @@ -144,6 +148,7 @@ SECTIONS
+>  			HIBERNATE_TEXT
+>  			TRAMP_TEXT
+>  			*(.fixup)
+> +			SLS_TEXT
+>  			*(.gnu.warning)
+>  		. = ALIGN(16);
+>  		*(.got)			/* Global offset table		*/
+> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+> index 269967c4fc1b..e70f227019e1 100644
+> --- a/security/Kconfig.hardening
+> +++ b/security/Kconfig.hardening
+> @@ -121,6 +121,16 @@ choice
+>  
+>  endchoice
+>  
+> +config HARDEN_SLS_ALL
+> +	bool "enable SLS vulnerability hardening"
+> +	default n
+> +	def_bool $(cc-option,-mharden-sls=all)
 
-But I don't feel his way is better than my way.
+This is a much more convoluted way of writing:
 
-> More fundamentally IDK if we can make such a fundamental change here.
-> When users upgrade from older kernel are all their scripts going to
-> work the same? Won't they have to bring the new netdev up?
+depends on $(cc-option,-mharden-sls=all)
 
-Yes, this patch will break backward compatibility. Users with old
-scripts will find them no longer working.
+"default n" is the default and "def_bool" is short for:
 
-However, it's hard for me to find a better way to solve the problem
-described in the commit message.
+bool
+default <expr>
 
-So I sent this as an RFC to see what people think about this. (Martin
-Schiller seems to be OK with this.)
+which is defeated by the "default n".
 
-I think users who don't use scripts can adapt quickly and users who
-use scripts can also trivally fix their scripts.
-
-Actually many existing commits in the kernel also (more or less) cause
-some user-visible changes. But I admit this patch is a really big
-change.
+> +	help
+> +	  Enables straight-line speculation vulnerability hardening on ARM and ARM64
+> +	  architectures. It inserts speculation barrier sequences (SB or DSB+ISB
+> +	  depending on the target architecture) after RET and BR, and replacing
+> +	  BLR with BL+BR sequence.
+> +
+>  config GCC_PLUGIN_STRUCTLEAK_VERBOSE
+>  	bool "Report forcefully initialized variables"
+>  	depends on GCC_PLUGIN_STRUCTLEAK
+> -- 
+> 2.30.0.617.g56c4b15f3c-goog
+> 
