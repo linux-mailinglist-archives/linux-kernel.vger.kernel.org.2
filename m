@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2BB831FE6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:58:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902C931FE71
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBSR55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:57:57 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57084 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhBSR5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:57:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613757429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fWY8xI+Usm9FV+xcYQhWMtFPe+LVM4soL0lhsTn6/js=;
-        b=uGBIvPWMGF04XRRNYBtjJUEXBabwr8fLio76PssWIdQlU7tRTk9Hx04po2xW+eicyjXrpr
-        d2P0RNhnYWG7u0g6UPYQm6OH1/yO4KKyrfqYiwgjLeeEcYqHeZ/vlfU0FVJ7/D5XWK3zTA
-        VlNpkEQh+a7qStcCuNtBVQCdYazUJ4c=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ECBE8ABAE;
-        Fri, 19 Feb 2021 17:57:08 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 18:57:08 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: synchronization model: was: Re: [PATCH printk-rework 09/14] printk:
- introduce a kmsg_dump iterator
-Message-ID: <YC/79JPVKcVaSEEH@alley>
-References: <20210218081817.28849-1-john.ogness@linutronix.de>
- <20210218081817.28849-10-john.ogness@linutronix.de>
+        id S230048AbhBSR6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:58:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230020AbhBSR6B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 12:58:01 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C723C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 09:57:21 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id a132so7834387wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 09:57:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wSDGwoocflGRIUHKyKkTZr409vUlF3AWV+fTAIOXUPE=;
+        b=AbfIdFqm4xyNtnKCriEj3ztzc1Gjd0MbqggKgNzwhkA6aOPx4NDOMFXEbkrYmINjj+
+         OQJPGkY1UUu8x/fxguDXcyrrmF49OM/RHXgd6Sx3aZHa+CJl4T/2OnbwQ5L7ekAc6M1O
+         IfRGreUXZxsoxJV/XuAcGQ5c12V3pS5+ymb4O66tkz8SnvrOu2D2h3sp4vwdnkn8oEMK
+         bPmvFRBOLUC1OospurDh44uj/mV8ZMWnixELHFmVBA6m46hKDa389j7U9f2+T3BROkpm
+         lj+fo31DFiEsNYIWeNVM0CIqFRZj4Kv5LO2Ngx2paI/QjR7ITufSwvouov6dBeZcBdQU
+         Lhyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wSDGwoocflGRIUHKyKkTZr409vUlF3AWV+fTAIOXUPE=;
+        b=U3DOTVcRKhX3odaUK83go2v8Aqrclq0sMbKKsglv2Lg//LstlpdUwd5j2Cm0FXx4Sz
+         gtTurWFcVgut4TIHcGW8bDU9dterNbPFoVKrioPyiFpKtwdMGH+6w6pese9uHv/BJ/8h
+         vp8aHq1l1nGqXl25/MRcrWABrzcJHfh+EA9Zt+qERbYZfjz4HHMjUcFYDidub9wtdcPf
+         nRXkgKaU/z55r2HAQIeb4MHClnXXFUi4K7KXTRwLQvzVGGxrUpMYvWCyBulL8ZoT4gHW
+         iTuwHgXoUN3gigQW3G3FOC4tZLLLuscyfSXUU9+AnLwrjhla4VSWqxXyA+oxVn5/CdAh
+         LtZg==
+X-Gm-Message-State: AOAM531gn02arc6lrDp/ND1CKlWre5Hr4PNfjmB/i/0Eqx2GB+tMGKzF
+        ydK3Mphoh1DgYVffCgLN1A5R3g==
+X-Google-Smtp-Source: ABdhPJxsiiByL8wUUfnZSNR07gNAM/FJ7VrbvCTpRolHBc5LKfAskVcQmZEzfpvfHkY0MiFCvM+Z4Q==
+X-Received: by 2002:a05:600c:48a8:: with SMTP id j40mr9105297wmp.57.1613757439910;
+        Fri, 19 Feb 2021 09:57:19 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id c2sm14302124wrx.70.2021.02.19.09.57.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 09:57:19 -0800 (PST)
+Date:   Fri, 19 Feb 2021 17:57:17 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 00/26] KVM/arm64: A stage 2 for the host
+Message-ID: <YC/7/fOJ7IAfo61D@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <YC/7XuB30N8C3sNx@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210218081817.28849-10-john.ogness@linutronix.de>
+In-Reply-To: <YC/7XuB30N8C3sNx@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-02-18 09:18:12, John Ogness wrote:
-> Rather than store the iterator information into the registered
-> kmsg_dump structure, create a separate iterator structure. The
-> kmsg_dump_iter structure can reside on the stack of the caller,
-> thus allowing lockless use of the kmsg_dump functions.
+On Friday 19 Feb 2021 at 09:54:38 (-0800), Sean Christopherson wrote:
+> On Fri, Jan 08, 2021, Quentin Perret wrote:
+> > [2] https://kvmforum2020.sched.com/event/eE24/virtualization-for-the-masses-exposing-kvm-on-android-will-deacon-google
 > 
-> This is in preparation for removal of @logbuf_lock.
+> I couldn't find any slides on the official KVM forum site linked above.  I was
+> able to track down a mirror[1] and the recorded presentation[2].
 > 
-> diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-> index 4095a34db0fa..2fdb10ab1799 100644
-> --- a/include/linux/kmsg_dump.h
-> +++ b/include/linux/kmsg_dump.h
-> @@ -29,6 +29,18 @@ enum kmsg_dump_reason {
->  	KMSG_DUMP_MAX
->  };
->  
-> +/**
-> + * struct kmsg_dumper_iter - iterator for kernel crash message dumper
-> + * @active:	Flag that specifies if this is currently dumping
-> + * @cur_seq:	Points to the oldest message to dump (private)
-> + * @next_seq:	Points after the newest message to dump (private)
-> + */
-> +struct kmsg_dumper_iter {
-> +	bool	active;
-> +	u64	cur_seq;
-> +	u64	next_seq;
-> +};
-> +
+> [1] https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/slides/kvmforum-2020-edited.pdf
+> [2] https://youtu.be/wY-u6n75iXc
 
-This is likely beyond the scope of this patchset.
+Much nicer, I'll make sure to link those in the next cover letter.
 
-I am still scratching my head about the synchronization if these dumpers.
-
-There is the "active" flag. It has been introduced by the commit
-e2ae715d66bf4becfb ("kmsg - kmsg_dump() use iterator to receive log
-buffer content"). I do not see any explanation there.
-
-It might prevent some misuse of the API. But the synchronization
-model is not much clear:
-
-	+ cur_seq and next_seq might be manipulated by
-	  kmsg_dump_rewind() even when the flag is not set.
-
-	+ It is possible to use the same dumper more times in parallel.
-	  The API will fill the provided buffer of all callers
-	  as long as the active flag is set.
-
-	+ The "active" flag does not synchronize other operations with
-	  the provided buffer. The "dump" callback is responsible
-	  to provide some synchronization on its own.
-
-In fact, it is not much clear how struct kmsg_dumper_iter, struct kmsg_dumper,
-and the used buffers are connected with each other and synchronized.
-
-It might some sense to have the iterator in a separate structure.
-But the only safe scenario seems to be when all these three things
-(both structures and the buffer) are connected together and
-synchronized by the same lock. Also the "active" flag does not look
-much helpful and can be removed.
-
-As I said, this is likely beyond this patchset. This patch does more
-or less just a refactoring and helps to understand the dependencies.
-
-It is possible that it will be more clear the following week
-with a fresh mind.
-
-Best Regards,
-Petr
+Thanks Sean!
+Quentin
