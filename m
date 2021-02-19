@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27F631FF42
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5AA31FF45
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:16:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229998AbhBSTPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:15:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55682 "EHLO mail.kernel.org"
+        id S230074AbhBSTPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:15:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229649AbhBSTPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:15:13 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F07464EB3;
-        Fri, 19 Feb 2021 19:14:30 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 14:14:29 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210219141429.53def012@gandalf.local.home>
-In-Reply-To: <20210219181811.GY2743@paulmck-ThinkPad-P72>
-References: <161365856280.719838.12423085451287256713.stgit@devnote2>
-        <20210218151554.GQ2743@paulmck-ThinkPad-P72>
-        <20210219081755.eucq4srbam6wg2gm@linutronix.de>
-        <20210219104958.GA34308@pc638.lan>
-        <20210219105710.d626zexj6vzt6k6y@linutronix.de>
-        <20210219111301.GA34441@pc638.lan>
-        <20210219111738.go6i2fdzvavpotxd@linutronix.de>
-        <20210219112357.GA34462@pc638.lan>
-        <20210219112751.GA34528@pc638.lan>
-        <20210219181811.GY2743@paulmck-ThinkPad-P72>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230001AbhBSTPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 14:15:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D86DB64EB7;
+        Fri, 19 Feb 2021 19:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613762082;
+        bh=dpcbT77jfkOzIwpOHnf9SwWfg9htEnnplr/Lo9Hn0/I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SoYwTAoOjSi/D9d1kM1mT4gSyO9zcBmJM2KLzNaXr1eOH/vPiu8dgC8i2FScqSTEW
+         ssUoJzKmSeSvHoThhdICz1UA0Aoo7KYeVkfRNs+etaHnn7wUMSGKYhq7two3o4CW6/
+         8xS+Pz44JRZ+hvzhPDFIEjF7rvGzsrGNaZT2pbGxtUz+0xfESHGomNgR6wKa4Vu/Su
+         KMA95kSyKjAHPUDftHUh/dn5Le/QCvP5k7VpfgHU/NOWuvwxb0JKo7sAdfC7wDk68B
+         s8Fyn3k8kzLnjNpdyXd9RjXf2ZFM/bUSz3uQkJuyEp4azaV7xH/hNuQK4jJ+BDrj7e
+         W+4Yn3xP994iA==
+Date:   Fri, 19 Feb 2021 19:14:37 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        James Morris <jmorris@namei.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        James Morse <james.morse@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>
+Subject: Re: [PATCH 1/1] kexec: move machine_kexec_post_load() to public
+ interface
+Message-ID: <20210219191436.GA6683@willie-the-truck>
+References: <20210215185908.257724-1-pasha.tatashin@soleen.com>
+ <20210215185908.257724-2-pasha.tatashin@soleen.com>
+ <20210219175341.GC6352@willie-the-truck>
+ <CA+CK2bBpXyobT=rjVtY_pFhug4RcveGk_XB4zDBTX=vZBOkaLw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bBpXyobT=rjVtY_pFhug4RcveGk_XB4zDBTX=vZBOkaLw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021 10:18:11 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+On Fri, Feb 19, 2021 at 02:06:31PM -0500, Pavel Tatashin wrote:
+> On Fri, Feb 19, 2021 at 12:53 PM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Mon, Feb 15, 2021 at 01:59:08PM -0500, Pavel Tatashin wrote:
+> > > machine_kexec_post_load() is called after kexec load is finished. It must
+> > > be declared in public header not in kexec_internal.h
+> >
+> > Could you provide a log of what goes wrong without this patch, please?
+> >
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > Do you have a link to the report, or did it not go to the list?
+> 
+> Hi Will,
+> 
+> https://lore.kernel.org/linux-arm-kernel/202102030727.gqTokACH-lkp@intel.com/
+> 
+> It is also linked in the cover letter.
 
-> We can further prevent entry into dyntick-idle state until
-> the ksoftirqd kthreads have been spawned, which means that if softirq
-> handlers must be deferred, they will be resumed within one jiffy by the
-> next scheduler-clock interrupt.
+Ah, great. Please add that as a Link: tag in the patch, and in-line the
+compiler warning.
 
-Why not just prevent entry into dyntick-idle state until the system is
-finished booting? As you said; There should be no latency-sensitive
-applications running, until after we started the system.
-
--- Steve
+Will
