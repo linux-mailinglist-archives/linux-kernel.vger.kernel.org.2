@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9686031FF94
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E33631FF95
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhBSTs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:48:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhBSTsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:48:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8570D64EAF;
-        Fri, 19 Feb 2021 19:47:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613764064;
-        bh=lmxz4Kw1dYoWbImqI8vdI4znpPPVecXgCXugHd/TVYo=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=CTnx4oMB1vy+y4M7xx0X235vuR6J/1dtvCknq5QzDtTLvHid5ukw00aVj4Vm86K6Z
-         QBc83dtnXL+HYtqVMq7XzyNWBEMDCUrYtUV7ozo/oxxCVU3UYk7hILFCu5mXJJrxsk
-         5yWE4p0TnKRSf7kjHEceTSa9p4Teyet8SyqaToDy/iEj2HW5H11dFTBFLhfe2FA8E5
-         eYn9FJF5edzwTNxLe1L/VX0LZJEEzf9JMVJ20ROreHHyXP7DthgoRggAoLfhGNGU9o
-         MUtV5ZyD7/zgmMiqt5r0XW+DgjMZa3JL7nLtp+PSaWwctQtuDAMwryX8c5gaXoqI16
-         uDSoSXNoDgNsg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3CB9C3520E6A; Fri, 19 Feb 2021 11:47:44 -0800 (PST)
-Date:   Fri, 19 Feb 2021 11:47:44 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210219194744.GA2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <161365856280.719838.12423085451287256713.stgit@devnote2>
- <20210219143607.3cdf9ed8@gandalf.local.home>
+        id S229803AbhBSTw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhBSTwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 14:52:25 -0500
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26715C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:51:45 -0800 (PST)
+Received: by mail-qt1-x82d.google.com with SMTP id g24so4826650qts.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:51:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UqokZIMMK8aC34B+KeiFCW275H8P/pPHySRTbbLs8og=;
+        b=iwXazviBnhZbDsAGWJ5xN0xWYMsrMY8hW7aaidkSL8gG1ktLKKJah9783TJZe87anL
+         8OfebB7HAKZsup0izD0dbrIlIJWaMgevxubMMovv6zDmMhg/jEnnbEeLhecN0TiiKIso
+         CvXPxhwxSDLdF8P5D5er1s4ghaYtBCoM66oGhRPEyH6L8XmVh+8PK8o7ZlX1VxXN4Uj/
+         EKboaR1l/m8sINFC29RhOQ8AMm5xA6xBUKR9zsnxIVBNscMLtCv34LtkOJNKGQdEqiSn
+         +mkIIWRi/ZVWR4bU/sNKM8AMr7e6Vosp8BlvU1nfZBlEAoffJIuoQaW/nuvVtMj1IRid
+         CKhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UqokZIMMK8aC34B+KeiFCW275H8P/pPHySRTbbLs8og=;
+        b=M7YE708SS5tms5xd8h4YDRqi8R1mSMbti475rY0q4D617lOqIxjBwxt9SRuzHDyIoa
+         b9WaogZWO+M/UgTZbiT8ZhSjyAK/vAwMM1JTiXDNJAVmbnJv6nZH4B7npbT1OHIXs8yh
+         K6tHplW/2hShqwkMmuHxT6xjqZY0sqEzBF482OLo+SRpk6N7/16on+bfWJTMQHdaErOB
+         yrnHi+3S38ADy6sYJ6bZ0RV43+2l6KbPLDKszZK+xDy5iXqsLttxMPlOgfDM9HdZwMns
+         0fjTsmxvhfD74tR+I8RgteKxHqXLcz7ZTNigxX+asx1LiRX7/AuDLMhpnPjmUOFOKCc3
+         mdeA==
+X-Gm-Message-State: AOAM533SycWkqRyPGgks7TnTIarER6FzRb+zkKRqsK3QvKnh4QMwMeYM
+        fPIMB/yRK6wBju2rd/e46Fs3Ag==
+X-Google-Smtp-Source: ABdhPJx20Qu9QiZKnKzdV1KMAiyS4BsADc5EBP+5RQ4Gig0FhAXp9osZQT5d3yaqLiMvIbDB8FNsAw==
+X-Received: by 2002:ac8:5995:: with SMTP id e21mr10295910qte.294.1613764304102;
+        Fri, 19 Feb 2021 11:51:44 -0800 (PST)
+Received: from localhost.localdomain (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id b7sm7022848qkj.115.2021.02.19.11.51.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 11:51:43 -0800 (PST)
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+To:     pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        jmorris@namei.org, linux-kernel@vger.kernel.org,
+        tyhicks@linux.microsoft.com, will@kernel.org, james.morse@arm.com,
+        ebiederm@xmission.com, kexec@lists.infradead.org
+Subject: [PATCH v2] kexec: move machine_kexec_post_load() to public interface
+Date:   Fri, 19 Feb 2021 14:51:42 -0500
+Message-Id: <20210219195142.13571-1-pasha.tatashin@soleen.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219143607.3cdf9ed8@gandalf.local.home>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 02:36:07PM -0500, Steven Rostedt wrote:
-> On Thu, 18 Feb 2021 23:29:23 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Commit 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-> > moved the kprobe setup in early_initcall(), which includes kprobe
-> > jump optimization.
-> > The kprobes jump optimizer involves synchronize_rcu_tasks() which
-> > depends on the ksoftirqd and rcu_spawn_tasks_*(). However, since
-> > those are setup in core_initcall(), kprobes jump optimizer can not
-> > run at the early_initcall().
-> > 
-> > To avoid this issue, make the kprobe optimization disabled in the
-> > early_initcall() and enables it in subsys_initcall().
-> > 
-> > Note that non-optimized kprobes is still available after
-> > early_initcall(). Only jump optimization is delayed.
-> > 
-> > Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-> > Reported-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: stable@vger.kernel.org
-> > ---
-> 
-> I pulled this into my queue to be tested, and when that completes
-> (hopefully without failure), I'll add this to my pull request for the
-> current merge window (which I still need to send).
+machine_kexec_post_load() is called after kexec load is finished. It must
+declared in public header not in kexec_internal.h
 
-Thank you, Steve!
+Fixes the following compiler warning:
 
-Could you please add the following Reported-by tags?
+arch/arm64/kernel/machine_kexec.c:62:5: warning: no previous prototype for
+function 'machine_kexec_post_load' [-Wmissing-prototypes]
+   int machine_kexec_post_load(struct kimage *kimage)
 
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Reported-by: Uladzislau Rezki <urezki@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://lore.kernel.org/linux-arm-kernel/202102030727.gqTokACH-lkp@intel.com
+Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
+---
+ include/linux/kexec.h   | 2 ++
+ kernel/kexec_internal.h | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Sebastian first noticed the problem, and Uladzislau figured out
-how softirqs were involved.
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 9e93bef52968..3671b845cf28 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -309,6 +309,8 @@ extern void machine_kexec_cleanup(struct kimage *image);
+ extern int kernel_kexec(void);
+ extern struct page *kimage_alloc_control_pages(struct kimage *image,
+ 						unsigned int order);
++int machine_kexec_post_load(struct kimage *image);
++
+ extern void __crash_kexec(struct pt_regs *);
+ extern void crash_kexec(struct pt_regs *);
+ int kexec_should_crash(struct task_struct *);
+diff --git a/kernel/kexec_internal.h b/kernel/kexec_internal.h
+index 39d30ccf8d87..48aaf2ac0d0d 100644
+--- a/kernel/kexec_internal.h
++++ b/kernel/kexec_internal.h
+@@ -13,8 +13,6 @@ void kimage_terminate(struct kimage *image);
+ int kimage_is_destination_range(struct kimage *image,
+ 				unsigned long start, unsigned long end);
+ 
+-int machine_kexec_post_load(struct kimage *image);
+-
+ extern struct mutex kexec_mutex;
+ 
+ #ifdef CONFIG_KEXEC_FILE
+-- 
+2.25.1
 
-						Thanx, Paul
