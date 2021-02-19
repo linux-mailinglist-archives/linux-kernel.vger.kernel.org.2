@@ -2,135 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478D931FBA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C605F31FBBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:13:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhBSPGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:06:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBSPG3 (ORCPT
+        id S229683AbhBSPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:13:32 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:39349 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhBSPN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:06:29 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF43DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:05:45 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id ba1so3526972plb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:05:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XiaBGnefPGVZiyojOjiX+s6W4j/8HRWeaHwUaEvX3fc=;
-        b=Bx1NkyZMHAyZDfmo5hgwsduVDXIrfyfb2POhnhkcVDHh9IY/YaLRluW1in1fg6Xnw8
-         ylll6X9unFr9/sy/SPV0JLpPge6MOoRWcWbrDrtv2fFjDvSYeueaP15cXjvOw0GnnNOP
-         TqTfGWJOERAffqs0TTLlZza+YRdRPWaL3qzZrbFzKFGMvr7y+LBfptWMU1CbmvTD1lSL
-         EXKjSrP63trB+VIAKo4RrYf1sDhppnkkLuiHN7m2m0F6/9O7/K2gHEp9cO8MvuT18+Qc
-         cxE6+SIzdL+OXN992mJnSl7705567Oc2FUlfTH2uPsaC5tDQ8NqqAbphm+CRV6sQ4QgS
-         v/CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XiaBGnefPGVZiyojOjiX+s6W4j/8HRWeaHwUaEvX3fc=;
-        b=SVGEAG+BYjzDbsxFrx5u+9rssYIMEu6/GEB9JZrQxwDhupj3bPl5qm36d+6wWaHmNN
-         cNM9mDLMOrUnI6BCIOUO/BzGKwTBRGvtsV0wSUr7KLzLYy6zampNriAypdnmp8FRSvDX
-         wdCMWEwzjI6beE5z9oNJ8pXSsE/VjvEJZ/0g+Dh5sphvdfRh1V0RAdRCI5pIQgze2N7Z
-         8FYdJz2/pENVoWdeg6Yi5lnyCLbPUtREytpAOrVzTWeA6G3Mas7dzeosE5LsSVtfG4RI
-         5MALECoYjgjMele4XdBfyu8xZcQ1OcfX5jmrfSLuOvvJRNTSrA/q5NUUcVVxqR6d+KXl
-         gozA==
-X-Gm-Message-State: AOAM533o916GEG0tnWKyOJJ4l0bIJ/70AAeSGeyBnGjSQtybWg4FtDYy
-        HrZhIessjrB7pV1/3ueoxUo=
-X-Google-Smtp-Source: ABdhPJz+6CD/YYOF6fSfyH4wNB/jxtQZvi5Da41tCFzko3AKufFgrGNHA8A7ANh3PZs0kxQRgFDkRg==
-X-Received: by 2002:a17:902:aa4b:b029:e2:bb4b:a63 with SMTP id c11-20020a170902aa4bb02900e2bb4b0a63mr9430913plr.7.1613747145225;
-        Fri, 19 Feb 2021 07:05:45 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 194sm9625165pfu.165.2021.02.19.07.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 07:05:43 -0800 (PST)
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Cc:     Willy Tarreau <w@1wt.eu>, Florian Fainelli <f.fainelli@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <8cf503db-ac4c-a546-13c0-aac6da5c073b@broadcom.com>
- <YBBkplRxzzmPYKC+@kroah.com> <YCzknUTDytY8gRA8@kroah.com>
- <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
- <20210218165104.GC2013@sasha-vm>
- <00b9e2fb-d818-58d6-edae-4dbd6aa814f7@gmail.com> <YC6ptKgsMh20tmu6@kroah.com>
- <20210218182050.GB15217@1wt.eu> <YC6zq3u2jciI2gyZ@kroah.com>
- <b283eaa5-028f-a3d0-42a1-5b11c48ffe91@broadcom.com>
- <YC915N/9YNqePueL@kroah.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cf9323b7-71c8-dd96-1755-ce90370af6d5@gmail.com>
-Date:   Fri, 19 Feb 2021 07:05:41 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Fri, 19 Feb 2021 10:13:28 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 93E225801D8;
+        Fri, 19 Feb 2021 10:12:41 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Fri, 19 Feb 2021 10:12:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=Emd+iGXCpjhCIuGJ6kINzMtdOjP
+        Vb1dtj8cLvd3w9uQ=; b=NGfSf1xCTv59Q/62lzFrQUe3OfzHicY7PdlXFseZ+fo
+        CXaps5k96MCo/y6dXa/ePCUiVr/+yd+bY0z6zZBYrTTK2YzzxM1J8iqD3y6W62cZ
+        rXBdZ7f2+aX04uHfX4St/hRD2mvVDoQ+/wu5mb+Q5x907WZ9caEJ8KHfdT1nr2yD
+        JLP64gaaabo7m5fSkBVWV9SDIr/uh0mJgEZZlhBIJuPlE67fksWmT4qsGXSXnPqG
+        CKVo2kTnbLrkMB9P1EmlLJdgH0orL2bJxv6jphPeJpe+zESq+2OJKnDQBxs0UL06
+        x/1RFeKzSAsBixLgniCd+pZnvp+IstVDQldHmokucVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Emd+iG
+        XCpjhCIuGJ6kINzMtdOjPVb1dtj8cLvd3w9uQ=; b=YkCuJYja0uX4TkD2rzV21h
+        g8ng0jTMGlNLgjp3ibUk89EXpzsGrxEJjWRxIIHh3CLNVbOWazk2yrYzBXJ23kBR
+        4wFbAgUarW3c96/qt+aEbZfVXEvUxH9PdikMlzxmtt9xyHWiVQpqsVbo6jcEa6iJ
+        S5ASjZRNk11V2LP36XYPaue+cGDQy5dTRhUanBnB/KPmSuAVAvVr8FxbpG1DM4QP
+        EabMeDUOtfQ6sWdaKB/kFRqXUJOra2iCGagkBurhMfRmM3t0wgIxbfA3h4kbSzIy
+        MuzVRTwFasgPMG+HDe+aFmQxFNJJYD06GCyMfq7EAN1LPbPmuQhzaHFugwqkspHQ
+        ==
+X-ME-Sender: <xms:ZtUvYPGywbwb_W_X_rHD8PzuY-T32APXk_hW92aAe8msQObxCrKUFQ>
+    <xme:ZtUvYMXSX6H4Zazn71SMqbZfKo75Xu2WSlL0lAD23b9Owys2Pdmw7rhPL-VpNd91z
+    4S9PFdrk7Wctr0bo40>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjeeigdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:ZtUvYBIUJuioxxraj3nflffP1AzbRkhnaIOVnlX3XwS9zmyHZ2byOg>
+    <xmx:ZtUvYNEjum8w0L68Xo84cpFdfo-7BdSTnTSZf3vOsIFddzRi7AVUcg>
+    <xmx:ZtUvYFXKXk3ywwLCh1ihNeDgTUlKEVDBbKVFdkJQ50WK-22UnG9MHg>
+    <xmx:adUvYGbtXseOPET8eQPCaGa5NONIe4S195vIixBTbFd4se4gga4qQA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C72DF1080057;
+        Fri, 19 Feb 2021 10:12:37 -0500 (EST)
+Date:   Fri, 19 Feb 2021 16:12:35 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "James (Qian) Wang" <james.qian.wang@arm.com>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Mihail Atanassov <mihail.atanassov@arm.com>,
+        Brian Starkey <brian.starkey@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Dave Airlie <airlied@redhat.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Alison Wang <alison.wang@nxp.com>,
+        Xinliang Liu <xinliang.liu@linaro.org>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
+        Chen Feng <puck.chen@hisilicon.com>,
+        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
+        Edmund Dea <edmund.j.dea@intel.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Tomi Valkeinen <tomba@kernel.org>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jyri Sarha <jyri.sarha@iki.fi>, Eric Anholt <eric@anholt.net>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        Melissa Wen <melissa.srw@gmail.com>,
+        Haneen Mohammed <hamohammed.sa@gmail.com>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        spice-devel@lists.freedesktop.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v3 02/11] drm: Rename plane atomic_check state names
+Message-ID: <20210219151235.dsv4mujqyrzndhsn@gilmour>
+References: <20210219120032.260676-1-maxime@cerno.tech>
+ <20210219120032.260676-2-maxime@cerno.tech>
+ <51bb5aaf-f771-020b-9a48-77d8679de6a2@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <YC915N/9YNqePueL@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="x6inkztb7pnxs2gu"
+Content-Disposition: inline
+In-Reply-To: <51bb5aaf-f771-020b-9a48-77d8679de6a2@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--x6inkztb7pnxs2gu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2/19/2021 12:25 AM, Greg Kroah-Hartman wrote:
-> On Thu, Feb 18, 2021 at 12:16:50PM -0800, Scott Branden wrote:
->> On 2021-02-18 10:36 a.m., Greg Kroah-Hartman wrote:
->>> On Thu, Feb 18, 2021 at 07:20:50PM +0100, Willy Tarreau wrote:
->>>> On Thu, Feb 18, 2021 at 06:53:56PM +0100, Greg Kroah-Hartman wrote:
->>>>> On Thu, Feb 18, 2021 at 09:21:13AM -0800, Florian Fainelli wrote:
->>>>>> As a company, we are most likely shooting ourselves in the foot by not
->>>>>> having a point of coordination with the Linux Foundation and key people
->>>>>> like you, Greg and other participants in the stable kernel.
->>>>>
->>>>> What does the LF have to do with this?
->>>>>
->>>>> We are here, on the mailing lists, working with everyone.  Just test the
->>>>> -rc releases we make and let us know if they work or not for you, it's
->>>>> not a lot of "coordination" needed at all.
->>>>>
->>>>> Otherwise, if no one is saying that they are going to need these for 6
->>>>> years and are willing to use it in their project (i.e. and test it),
->>>>> there's no need for us to maintain it for that long, right?
->>>>
->>>> Greg, please remember I expressed I really need them for slightly more than
->>>> 3 years (say 3.5-4) :-) I'm fine with helping a bit more as time permits if
->>>> this saves me from having to take over these kernels after you, like in the
->>>> past, but I cannot engage on the regularity of my availability.
->>>
->>> Ok, great!
->>>
->>> That's one person/company saying they can help out (along with what CIP
->>> has been stating.)
->>>
->>> What about others?  Broadcom started this conversation, odd that they
->>> don't seem to want to help out :)
->> Greg, I'm sorry but I'm not in a position to provide such a commitment.
-> 
-> Ok, who at Broadcom do I need to talk to to get that type of commitment?
+Hi Thomas,
 
-I am not sure if I was too subtle before, we (Broadcom) cannot give you
-an unified voice to speak with because we are divided in silos/business
-units that make their independent decisions.
+Thanks for your review!
 
-The group I work in (STB/CM, different from Scott's) is committed to
-using the 5.10 kernel for 6 years and that is a decision that has been
-taken.
+On Fri, Feb 19, 2021 at 03:49:22PM +0100, Thomas Zimmermann wrote:
+> > diff --git a/drivers/gpu/drm/imx/ipuv3-plane.c b/drivers/gpu/drm/imx/ip=
+uv3-plane.c
+> > index 075508051b5f..1873a155bb26 100644
+> > --- a/drivers/gpu/drm/imx/ipuv3-plane.c
+> > +++ b/drivers/gpu/drm/imx/ipuv3-plane.c
+> > @@ -337,12 +337,12 @@ static const struct drm_plane_funcs ipu_plane_fun=
+cs =3D {
+> >   };
+> >   static int ipu_plane_atomic_check(struct drm_plane *plane,
+> > -				  struct drm_plane_state *state)
+> > +				  struct drm_plane_state *new_state)
+>=20
+> This function uses a different naming convention then the others?
+>=20
+> >   {
+> >   	struct drm_plane_state *old_state =3D plane->state;
 
-I could give you names of other decision makers in other business units
-I know who also deliver Linux for their respective business units
-however some of them may not make public appearances on mailing lists,
-let alone care about upstreaming their changes so I do not know whether
-a 6 years 5.10 kernel is even something they remotely entertain.
+So, the function already had a variable named old_state, so I was
+actually trying to make the drivers consistent here: having one variable
+with old_state and new_plane_state felt weird.
 
-Hope this helps.
--- 
-Florian
+The heuristic is thus to use the convention of the driver if one exists
+already, and if there's none pick new_plane_state.
+
+It makes it indeed inconsistent across drivers, but it felt more natural
+to be consistent within a single driver.
+
+Maxime
+
+--x6inkztb7pnxs2gu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYC/VYwAKCRDj7w1vZxhR
+xXb7AP9dLYZ0ol4FnTyS9ndvGPPXpijdNPtrfZDs40BKL//eEgEA8HMiYKjgufNK
+Zn4QIsaErGpt9UM9/IC6ZwJ7lvoIrQ0=
+=ygPX
+-----END PGP SIGNATURE-----
+
+--x6inkztb7pnxs2gu--
