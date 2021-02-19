@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A65C31F54B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:10:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B2D31F54F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhBSHIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 02:08:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhBSHIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 02:08:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC9DF64EC7;
-        Fri, 19 Feb 2021 07:07:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613718479;
-        bh=0IwgKLcCN57+liMx+xqKFJRTOI0mvqEbd1JQc1Ng4Aw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t7FLszEWf28OFG18AnvJ567RCAUvF5SnZoFhu2troOhIOEOa4rKOaJ3Ei622scVuH
-         hW/dyQjyhpuHF5xu+AwqRNPpM4IEONKKDf8EQs1B4889LYUj3TsawARZ3LVUC3LKlG
-         +rFUQrnLcEz58J/O5Qcown12I7z2EIPXyVEmETU1APwd+VFxhfOjEjtobbBCo2Z0ez
-         cShQGqBAmfFNLs/PlMw04AciNRIMuvzm+3WZDtlurlZDMxvsZGLp+CkDGipQKosxDW
-         GfQw42j+5Wh8BDiU0Qqwv2jlalrFCWo1RGCECCWIsfTfc6kQVk5vEmkXhnPjvOr8sO
-         6SHeZlZNCWCiA==
-Date:   Fri, 19 Feb 2021 09:07:44 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        "peterhuewe@gmx.de" <peterhuewe@gmx.de>,
-        "stefanb@linux.vnet.ibm.com" <stefanb@linux.vnet.ibm.com>,
-        "James.Bottomley@hansenpartnership.com" 
-        <James.Bottomley@hansenpartnership.com>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Subject: Re: [PATCH v4] tpm: fix reference counting for struct tpm_chip
-Message-ID: <YC9jwIFUzP+aRal0@kernel.org>
-References: <1613435460-4377-1-git-send-email-LinoSanfilippo@gmx.de>
- <1613435460-4377-2-git-send-email-LinoSanfilippo@gmx.de>
- <20210216125342.GU4718@ziepe.ca>
- <YCvtF4qfG35tHM5e@kernel.org>
- <74bbc76260594a8a8f7993ab66cca104@AcuMS.aculab.com>
- <YC2VM1JI0tECPs7g@kernel.org>
- <20210218012702.GX4718@ziepe.ca>
+        id S229594AbhBSHML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 02:12:11 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:55876 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBSHMI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 02:12:08 -0500
+Date:   Fri, 19 Feb 2021 07:10:35 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613718643;
+        bh=IilQbrURoxVGYoN+0YWmzRSHrM3TBzF2c3XiNCRyIgY=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=aHfU/SAiY+R+mCYhf1t+QIce+4+reHlaNon2wOC90r1/pIi4yLuezWsBfeFy9ENVe
+         vR9E65cSJ4RQdEPIG8v/IqaHWZ7dBp8BDCNoFINl0cTnz9Ngj0jnTCzBmCQJxAWwnr
+         rlULu/HqCLHLDsRYVkO6jgog0ednUDxyfLhCJLLQ=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com>
+In-Reply-To: <YC6nZH/4CkLLsxxB@kroah.com>
+References: <YA/E1bHRmZb50MlS@kroah.com> <YCzknUTDytY8gRA8@kroah.com> <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com> <YC4atKmK7ZqlOGER@kroah.com> <20210218113107.GA12547@1wt.eu> <602E766F.758C74D8@users.sourceforge.net> <20210218143341.GB13671@1wt.eu> <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC6nZH/4CkLLsxxB@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218012702.GX4718@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 09:27:02PM -0400, Jason Gunthorpe wrote:
-> On Thu, Feb 18, 2021 at 12:14:11AM +0200, Jarkko Sakkinen wrote:
-> > On Tue, Feb 16, 2021 at 04:31:26PM +0000, David Laight wrote:
-> > > ...
-> > > > > > +	get_device(&chip->dev);
-> > > > > > +	chip->devs.release = tpm_devs_release;
-> > > > > > +	chip->devs.devt =
-> > > > > > +		MKDEV(MAJOR(tpm_devt), chip->dev_num + TPM_NUM_DEVICES);
-> > > > 
-> > > > Isn't this less than 100 chars?
-> > > 
-> > > Still best kept under 80 if 'reasonable'?
-> > > 
-> > > Really it is just split in the wrong place:
-> > > 	chip->devs.devt = MKDEV(MAJOR(tpm_devt),
-> > > 					chip->dev_num + TPM_NUM_DEVICES);
-> > 
-> > 
-> > Well it looks crap IMHO. Would be more reasonable to have it in a single 
-> > like. And it is legit too, since it is accepted by checkpatch.
-> > 
-> > You might break the lines within 80 chars if it is somehow "logically"
-> > consistent.
-> 
-> FWIW, I've become kind of tired of the style wishywashyness I've
-> mostly been happy to accept anything that clang-format spits out for
-> ordinary C constructs.
+On Thursday, February 18, 2021 7:44 PM, Greg Kroah-Hartman <gregkh@linuxfou=
+ndation.org> wrote:
+> > It was the other way around. Fine working in-tree driver got
+> > broken by backported "fixes". I did mention bit-rot.
+>
+> It did? Please let us stable maintainers know about, we will always
+> gladly revert problems patches. What commits caused the problem?
 
-A. I would not mind if it was already merged. Since it isn't, I don't
-   see the point not fixing it.
+I don't have a list of commits for you. It took me long time to
+figure out that it was iwlwifi that was causing those problems.
 
-> It is good enough and universally usable. If devs don't have it linked
-> to their editor to format single expression or format selected blocks,
-> they are missing out :)
-> 
-> The community consensus on style is quite unclear. Is 1 or 2 above the
-> majority preference? Does this case fall under the new "use more than
-> 80 cols if it improves readability?" I have no idea.
+In-tree iwlwifi on 4.19.y kernels needs professional quality
+locking audit and backporting of necessary fixes from upstream
+Intel out-of-tree version.
 
-B. I need to maintain this, once it's merged.
-C. A smaller diff for a critical bug fix. I actually allow style
-   compromises for fixes to be backported *when* it makes the overall
-   diff smaller.
-D. Has more odds to make future changes smaller as the whole thing is
-   in a single code line.
+> So something in the 4.9.y and 4.14.y stable kernels caused a regression,
+> can you please do 'git bisect' to let us know what broke?
 
-> Frankly, for most people writing driver code, if they consistently use
-> clang-format their work will be alot better than if they try to do it
-> by hand. It takes a lot of experiance to reliably eyeball something
-> close to the kernel style..
+My ability to do WiFi tests on that laptop computer are limited
+for now. Earlier that laptop's connectivity to world was through
+mobile WiFi router. That mobile WiFi router no longer has a
+SIM-card, so no connectivity through that anymore. That laptop's
+connectivity to world is now through wired ethernet to fiber.
 
-For me it gives a framework to review patches in multiple subsystems.
-If I have to constantly think whether to allow this and that shift
-from the kernel coding style, it makes the whole process for me more
-fuzzy and chaotic.
+It was actually this switch to ethernet/fiber that made me realize
+the brokenness on in-tree iwlwifi on 4.19.y kernels. When in-tree
+WiFi was not used, those problems never triggered. Switched back
+to in-tree WiFi, and problems came back. Switched to out-of-tree
+Intel version of iwlwifi, problems went away again. Then I looked
+at the fixes in out-of-tree Intel version of iwlwifi that were
+missing in in-tree version, and I understood why that was so.
 
-As I said (A), it would not be end of the world if this had been
-merged already. I also want to state that I do sometimes make mistakes
-when reviewing code, and am happy to take critique from that :-)
+Those stability issues on in-tree iwlwifi on 4.19.y kernels are
+difficult to trigger. Sometimes it may take days to trigger it
+once. Sometimes I was unlucky enough to trigger them more than
+once a day. I say that two weeks of operation without issues are
+needed to pronounce those issues gone.
 
-> Jason
+Currently, special arrangements are needed for me to test WiFi at
+all on that laptop computer, and those arrangements are something
+I am not willing to commit for multi-week testing run. Sorry.
 
-/Jarkko
+> And if 4.19.0 was always broken, why didn't you report that as well?
+
+I didn't test early 4.19.y kernels.
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
+
