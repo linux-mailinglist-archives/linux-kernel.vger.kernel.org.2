@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B9A3200EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A193200F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhBSVzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 16:55:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44316 "EHLO
+        id S229952AbhBSV4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 16:56:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35442 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229649AbhBSVze (ORCPT
+        by vger.kernel.org with ESMTP id S229826AbhBSVzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 16:55:34 -0500
+        Fri, 19 Feb 2021 16:55:40 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613771645;
+        s=mimecast20190719; t=1613771654;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=wY9mEXFe2P3a0UdkWqTDHpIbQAWcFhFpSw+CZuX2ZC4=;
-        b=eG1dCADCCoFhC7s1Bh3r0GlfC0zlqFemQ9d+TW+m2s5lF+In8Zgy6RMOKYRLVhVNpj6FIm
-        m7uvUb5YB78zNyFpW/BN4O/SozCWZK+g/Ek/TdTUK6NvkqqpnjlTLWhqTR/WkTC7OSWBgs
-        kIxEs9X2qFTmIljOn/zD4MvinDL9BIM=
+        bh=mwr/7745edaINwZA4dlwwSAjIeKZ15zcC0nPCnpIvtU=;
+        b=e9BpzVQup1R9Z9X/ZAY3MejuhZTfCt2YabukJ7qEaLvo9Nya3np0ZG19noGhWo2+10/0Lq
+        RD9QJ7sPFKxyBw05TXQPBTvugQEy9o0aK+jqwAVfdU+He3Bw4ZHmmsS2YvnCyzlZDCxXSf
+        rMhnYR6lXAjnoEaKhvHIoK4s5UXRMug=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-8bqZ_ET2Ouy6p7BA7OKfog-1; Fri, 19 Feb 2021 16:53:57 -0500
-X-MC-Unique: 8bqZ_ET2Ouy6p7BA7OKfog-1
+ us-mta-246-cJ3jjQMmOLyzdGSFUzrotA-1; Fri, 19 Feb 2021 16:53:58 -0500
+X-MC-Unique: cJ3jjQMmOLyzdGSFUzrotA-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73A13192FDB0;
-        Fri, 19 Feb 2021 21:53:47 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08E721934124;
+        Fri, 19 Feb 2021 21:53:50 +0000 (UTC)
 Received: from Whitewolf.redhat.com (ovpn-118-5.rdu2.redhat.com [10.10.118.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D9C0C6A03C;
-        Fri, 19 Feb 2021 21:53:45 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CFBFD6EF55;
+        Fri, 19 Feb 2021 21:53:47 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
@@ -42,14 +42,15 @@ To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         Jani Nikula <jani.nikula@linux.intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-tegra@vger.kernel.org (open list:DRM DRIVERS FOR NVIDIA TEGRA),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 02/30] drm/dp: Fixup kernel docs for struct drm_dp_aux
-Date:   Fri, 19 Feb 2021 16:52:58 -0500
-Message-Id: <20210219215326.2227596-3-lyude@redhat.com>
+Subject: [PATCH 03/30] drm/tegra: Don't register DP AUX channels before connectors
+Date:   Fri, 19 Feb 2021 16:52:59 -0500
+Message-Id: <20210219215326.2227596-4-lyude@redhat.com>
 In-Reply-To: <20210219215326.2227596-1-lyude@redhat.com>
 References: <20210219215326.2227596-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -59,60 +60,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Make sure that struct members are referred to using @, otherwise they
-  won't be formatted as such
-* Make sure to refer to other struct types using & so they link back to
-  each struct's definition
-* Make sure to precede constant values with % so they're formatted
-  correctly
+As pointed out by the documentation for drm_dp_aux_register(),
+drm_dp_aux_init() should be used in situations where the AUX channel for a
+display driver can potentially be registered before it's respective DRM
+driver. This is the case with Tegra, since the DP aux channel exists as a
+platform device instead of being a grandchild of the DRM device.
+
+Since we're about to add a backpointer to a DP AUX channel's respective DRM
+device, let's fix this so that we don't potentially allow userspace to use
+the AUX channel before we've associated it with it's DRM connector.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- include/drm/drm_dp_helper.h | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/tegra/dpaux.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-index 2891a98eebc8..b35a1c1339e8 100644
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@ -1839,28 +1839,28 @@ struct drm_dp_aux_cec {
-  * @crc_count: counter of captured frame CRCs
-  * @transfer: transfers a message representing a single AUX transaction
-  *
-- * The .dev field should be set to a pointer to the device that implements the AUX channel.
-+ * The @dev field should be set to a pointer to the device that implements the AUX channel.
-  *
-- * The .name field may be used to specify the name of the I2C adapter. If set to NULL, dev_name() of
-- * .dev will be used.
-+ * The @name field may be used to specify the name of the I2C adapter. If set to %NULL, dev_name()
-+ * of @dev will be used.
-  *
-  * Drivers provide a hardware-specific implementation of how transactions are executed via the
-- * .transfer() function. A pointer to a drm_dp_aux_msg structure describing the transaction is
-+ * @transfer() function. A pointer to a &drm_dp_aux_msg structure describing the transaction is
-  * passed into this function. Upon success, the implementation should return the number of payload
-  * bytes that were transferred, or a negative error-code on failure. Helpers propagate errors from
-- * the .transfer() function, with the exception of the -EBUSY error, which causes a transaction to
-- * be retried. On a short, helpers will return -EPROTO to make it simpler to check for failure.
-+ * the @transfer() function, with the exception of the %-EBUSY error, which causes a transaction to
-+ * be retried. On a short, helpers will return %-EPROTO to make it simpler to check for failure.
-  *
-  * An AUX channel can also be used to transport I2C messages to a sink. A typical application of
-- * that is to access an EDID that's present in the sink device. The .transfer() function can also be
-+ * that is to access an EDID that's present in the sink device. The @transfer() function can also be
-  * used to execute such transactions. The drm_dp_aux_register() function registers an I2C adapter
-  * that can be passed to drm_probe_ddc(). Upon removal, drivers should call drm_dp_aux_unregister()
-  * to remove the I2C adapter. The I2C adapter uses long transfers by default; if a partial response
-  * is received, the adapter will drop down to the size given by the partial response for this
-  * transaction only.
-  *
-- * Note that the aux helper code assumes that the .transfer() function only modifies the reply field
-- * of the drm_dp_aux_msg structure. The retry logic and i2c helpers assume this is the case.
-+ * Note that the aux helper code assumes that the @transfer() function only modifies the reply field
-+ * of the &drm_dp_aux_msg structure. The retry logic and i2c helpers assume this is the case.
-  */
- struct drm_dp_aux {
- 	const char *name;
+diff --git a/drivers/gpu/drm/tegra/dpaux.c b/drivers/gpu/drm/tegra/dpaux.c
+index 105fb9cdbb3b..ea56c6ec25e4 100644
+--- a/drivers/gpu/drm/tegra/dpaux.c
++++ b/drivers/gpu/drm/tegra/dpaux.c
+@@ -534,9 +534,7 @@ static int tegra_dpaux_probe(struct platform_device *pdev)
+ 	dpaux->aux.transfer = tegra_dpaux_transfer;
+ 	dpaux->aux.dev = &pdev->dev;
+ 
+-	err = drm_dp_aux_register(&dpaux->aux);
+-	if (err < 0)
+-		return err;
++	drm_dp_aux_init(&dpaux->aux);
+ 
+ 	/*
+ 	 * Assume that by default the DPAUX/I2C pads will be used for HDMI,
+@@ -589,8 +587,6 @@ static int tegra_dpaux_remove(struct platform_device *pdev)
+ 	pm_runtime_put_sync(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+ 
+-	drm_dp_aux_unregister(&dpaux->aux);
+-
+ 	mutex_lock(&dpaux_lock);
+ 	list_del(&dpaux->list);
+ 	mutex_unlock(&dpaux_lock);
+@@ -723,6 +719,10 @@ int drm_dp_aux_attach(struct drm_dp_aux *aux, struct tegra_output *output)
+ 	unsigned long timeout;
+ 	int err;
+ 
++	err = drm_dp_aux_register(aux);
++	if (err < 0)
++		return err;
++
+ 	output->connector.polled = DRM_CONNECTOR_POLL_HPD;
+ 	dpaux->output = output;
+ 
+@@ -760,6 +760,7 @@ int drm_dp_aux_detach(struct drm_dp_aux *aux)
+ 	unsigned long timeout;
+ 	int err;
+ 
++	drm_dp_aux_unregister(aux);
+ 	disable_irq(dpaux->irq);
+ 
+ 	if (dpaux->output->panel) {
 -- 
 2.29.2
 
