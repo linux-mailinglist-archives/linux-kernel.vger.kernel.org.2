@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775431FC27
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:40:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631F731FC3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:43:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhBSPkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhBSPkP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:40:15 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB5F9C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:39:32 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id gg8so2822255ejb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tLTA7FtePU+dZNp41QMgufF0dTfbm8VBzRM8fJ89BRY=;
-        b=sDnU+xsNSISI47NUzHuG6iz1qb+e3QU8NY5m3se39I6xdjgfmz4soMB4C40+NDA8FM
-         7OMisFUw0H588yRKLFcET4zTiGMFL7okEuFTJrx2id6MeSnX91GvssNIzVMUEROnkT82
-         lZuecmk4c5WqOo2klU3VagkRPxXypCnBb6XApE27ZfZzfWkY6ThBmWfTfPJ5bvLjcIB7
-         2JZA8+kxPc7QWlVke8mbDE0WB6OgsRYBLD+R8qQ/EJlpoNsIu6t/ZrRDaYUj+R+KRFe9
-         G9PTQAFDjoPx5jYkpTnXpWvmddJOBZE3CoiWMBtQskuVBVSZOWPffafd3hNx8y4RJAr8
-         6SSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tLTA7FtePU+dZNp41QMgufF0dTfbm8VBzRM8fJ89BRY=;
-        b=q1tyNqJswNXVucp7jEEdPSNo/H1uzgir3vt7kTvxOCOveltH4RbifqFETM9IRau94F
-         5NuvZoddCeRhyj/i3mIKaGOlcQwMrKPNmx6DC1FxGt0e51xrDJyxNUZfMkDwhf2+93B9
-         Y7wbyaeQ2wzGhQT2lKwWLX188RuaLlFHdW2r25yj8WuiVNQRXAuCGkRYJYSC09kUCokZ
-         GCXdOMG9k0My3lgMRnWulhp2RAxV8cgCvgycEjkWHjZ0XkciUAqr+6J57pPCAKakgZey
-         6h6holuKxGj8d3uxgYGVPXDYAm6K+vSUurSjdRFAaIRj2famvY3fRqROlDY505DZLDgf
-         Qh/w==
-X-Gm-Message-State: AOAM530TRdwyop8vFaOVuS6rrwL+cApulUt3Cyuutr33lD0si3xeKW1Z
-        e9KPie1cYYcz5Z1shmP8d1byrivYeOff3Lp7/Sn3Hg==
-X-Google-Smtp-Source: ABdhPJwh1/ZWcZ2N8I4xU2iWDfMsnReGdFlU4wq/EF39Z40noDKMmZJCBlRafzsDbQZHsTP0uMuOyikCYSEzh3laL2M=
-X-Received: by 2002:a17:906:cc91:: with SMTP id oq17mr9053192ejb.45.1613749171563;
- Fri, 19 Feb 2021 07:39:31 -0800 (PST)
+        id S229755AbhBSPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:41:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47414 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229681AbhBSPl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 10:41:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613749238; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=MHxag6mUxa0dootKy2U+lJVR2k8UiaKbpKfVyKM/EZ4=;
+        b=jjsdawg1KZYf+nItuzbxyqaXeDKHiLv6YoeaErBu4tJer4zXSytLV7xk92MixdQUnvPRED
+        iXUz6DrGfs47sGkqcF453+W0zBJW6WReMsknyI3WKg9iAusmhGukYAazPdCEFJ6k8mopm3
+        ZGwTClr2lapCAwa2bLNQ99xzaXwou3k=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 17FFFAED2;
+        Fri, 19 Feb 2021 15:40:38 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        stable@vger.kernel.org, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH v3 0/8] xen/events: bug fixes and some diagnostic aids
+Date:   Fri, 19 Feb 2021 16:40:22 +0100
+Message-Id: <20210219154030.10892-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <YC+K3kgzqm20zCWY@mwanda>
-In-Reply-To: <YC+K3kgzqm20zCWY@mwanda>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 19 Feb 2021 07:39:23 -0800
-Message-ID: <CAPcyv4jCAcZH3C-kSbYVjBu34g60aYzQpwANjXecY-ziUKxguQ@mail.gmail.com>
-Subject: Re: [PATCH] cxl/mem: return -EFAULT if copy_to_user() fails
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Alison Schofield <alison.schofield@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 1:55 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> The copy_to_user() function returns the number of bytes remaining to be
-> copied, but we want to return -EFAULT if the copy doesn't complete.
->
-> Fixes: b754ffbbc0ee ("cxl/mem: Add basic IOCTL interface")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
+The first four patches are fixes for XSA-332. The avoid WARN splats
+and a performance issue with interdomain events.
 
-Looks good, Dan, thanks!
+Patches 5 and 6 are some additions to event handling in order to add
+some per pv-device statistics to sysfs and the ability to have a per
+backend device spurious event delay control.
+
+Patches 7 and 8 are minor fixes I had lying around.
+
+Juergen Gross (8):
+  xen/events: reset affinity of 2-level event when tearing it down
+  xen/events: don't unmask an event channel when an eoi is pending
+  xen/events: avoid handling the same event on two cpus at the same time
+  xen/netback: fix spurious event detection for common event case
+  xen/events: link interdomain events to associated xenbus device
+  xen/events: add per-xenbus device event statistics and settings
+  xen/evtchn: use smp barriers for user event ring
+  xen/evtchn: use READ/WRITE_ONCE() for accessing ring indices
+
+ .../ABI/testing/sysfs-devices-xenbus          |  41 ++++
+ drivers/block/xen-blkback/xenbus.c            |   2 +-
+ drivers/net/xen-netback/interface.c           |  24 ++-
+ drivers/xen/events/events_2l.c                |  22 +-
+ drivers/xen/events/events_base.c              | 199 +++++++++++++-----
+ drivers/xen/events/events_fifo.c              |   7 -
+ drivers/xen/events/events_internal.h          |  14 +-
+ drivers/xen/evtchn.c                          |  29 ++-
+ drivers/xen/pvcalls-back.c                    |   4 +-
+ drivers/xen/xen-pciback/xenbus.c              |   2 +-
+ drivers/xen/xen-scsiback.c                    |   2 +-
+ drivers/xen/xenbus/xenbus_probe.c             |  66 ++++++
+ include/xen/events.h                          |   7 +-
+ include/xen/xenbus.h                          |   7 +
+ 14 files changed, 327 insertions(+), 99 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-devices-xenbus
+
+-- 
+2.26.2
+
