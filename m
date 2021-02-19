@@ -2,222 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE1E31FDBC
+	by mail.lfdr.de (Postfix) with ESMTP id D0EC731FDBD
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:16:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhBSRPu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:15:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229886AbhBSRPl (ORCPT
+        id S229970AbhBSRQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:16:04 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:44360 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhBSRPo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:15:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613754853;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nOq6obPMpKNx+xpOHX66/BOR1Jhu9sxgWKkPOBd406Y=;
-        b=H7UHUbwnBldHPIGhR2Q3B2txTrPfqlQFCAjGNlA2RxvXEvfpvt+ZkTQv86YfUM51PJv0Aw
-        OJK/Dn5+yRLacYMf6uDG6pSgdyJAZx5EDvmgBbSCnOFjpp76itX050C7fyZBgumop6QVz5
-        z7F0akmVA0twzjutlpYAKoVzn5ouI/k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-1-nldniRpjOUixcYtuqIdmbw-1; Fri, 19 Feb 2021 12:14:10 -0500
-X-MC-Unique: nldniRpjOUixcYtuqIdmbw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 595B3107ACE3;
-        Fri, 19 Feb 2021 17:14:05 +0000 (UTC)
-Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C71895D9C2;
-        Fri, 19 Feb 2021 17:13:50 +0000 (UTC)
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <20210218225904.GB6669@xz-x1>
- <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
- <20210219163157.GF6669@xz-x1>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <41444eb8-8bb8-8d5b-4cec-be7fa7530d0e@redhat.com>
-Date:   Fri, 19 Feb 2021 18:13:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 19 Feb 2021 12:15:44 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JH928T060455;
+        Fri, 19 Feb 2021 17:14:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=mmc+9jh3DlnpvQDmKTq0Eb72B6qDkY4YnrhNxDoCtmM=;
+ b=lKLeh9R1dirOQZ9cd4AqXSlAVJOX2cVONP9bE9Xg3+2sgCZnv6W5L/2G0YFk99JYze56
+ oJqvkYv/9cfQEWewtklSDqG+ITbRQi6X6BU/vwFWppMKO7y3mCn6vjdjGKM9WnSX3Aoy
+ cRIsZarq7qJapTyg0nJctf3jPUl1t3PVj4CKc5oFB4udb3biKzRipkzOynSB3QfPoFi0
+ LwmvMbBbV4qua6odVW5TmmuqHFK0Jyrua44rj3fE+Bs0dI+g3Sa5PNCInAvvVLSuek+o
+ 1f1ar1TsoUf8tQvnLFDwWUEVJu3Rjj+LjdF+s6Tyhq8G6EQe7kFPRrux5eduARI0f7xH Jg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 36p66ra8am-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 17:14:50 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JHEXMr069451;
+        Fri, 19 Feb 2021 17:14:48 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 36prbsbq4u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 17:14:48 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11JHEis3005778;
+        Fri, 19 Feb 2021 17:14:45 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 19 Feb 2021 09:14:43 -0800
+Date:   Fri, 19 Feb 2021 20:14:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Kurt Manucredo <fuzzybritches@protonmail.com>
+Cc:     gregkh@linuxfoundation.org, ross.schm.dev@gmail.com,
+        straube.linux@gmail.com, d.straghkov@ispras.ru, tiwai@suse.de,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] staging: rtl8723bs: fix code style comparison warning
+Message-ID: <20210219171432.GA2087@kadam>
+References: <20210219144928.8-1-fuzzybritches@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210219163157.GF6669@xz-x1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219144928.8-1-fuzzybritches@protonmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
+ phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190134
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.02.21 17:31, Peter Xu wrote:
-> On Fri, Feb 19, 2021 at 09:20:16AM +0100, David Hildenbrand wrote:
->> On 18.02.21 23:59, Peter Xu wrote:
->>> Hi, David,
->>>
->>> On Wed, Feb 17, 2021 at 04:48:44PM +0100, David Hildenbrand wrote:
->>>> When we manage sparse memory mappings dynamically in user space - also
->>>> sometimes involving MADV_NORESERVE - we want to dynamically populate/
->>>> discard memory inside such a sparse memory region. Example users are
->>>> hypervisors (especially implementing memory ballooning or similar
->>>> technologies like virtio-mem) and memory allocators. In addition, we want
->>>> to fail in a nice way if populating does not succeed because we are out of
->>>> backend memory (which can happen easily with file-based mappings,
->>>> especially tmpfs and hugetlbfs).
->>>
->>> Could you explain a bit more on how do you plan to use this new interface for
->>> the virtio-balloon scenario?
->>
->> Sure, that will bring up an interesting point to discuss
->> (MADV_POPULATE_WRITE).
->>
->> I'm planning on using it in virtio-mem: whenever the guests requests the
->> hypervisor (via a virtio-mem device) to make specific blocks available
->> ("plug"), I want to have a configurable option ("populate=on" /
->> "prealloc="on") to perform safety checks ("prealloc") and populate page
->> tables.
+On Fri, Feb 19, 2021 at 02:50:53PM +0000, Kurt Manucredo wrote:
 > 
-> As you mentioned in the commit message, the original goal for MADV_POPULATE
-> should be for performance's sake, which I can understand.  But for safety
-> check, I'm curious whether we'd have better way to do that besides populating
-> the whole memory.
-
-Well, it's 100% what I want for "populate=on"/"prealloc=on" semantics.
-
-There is no real memory overcommit for huge pages, so any lacy 
-allocation ("reserve only") only saves you boot time - which is not 
-really an issue for virtio-mem, as the memory gets added and initialized 
-asynchronously as the guest boots up.
-
-"reserve=on,prealloc=off" is another future use case I have in mind - 
-possible only for some memory backends (esp. anonymous memory - below).
-
-
 > 
-> E.g., can we simply ask the kernel "how much memory this process can still
-> allocate", then get a number out of it?  I'm not sure whether it can be done
-
-Anything like that is completely racy and unreliable.
-
-> already by either cgroup or any other facilities, or maybe it's still missing.
-> But I'd raise this question up, since these two requirements seem to be two
-> standalone issues to solve at least to me.  It could be an overkill to populate
-> all the memory just for a sanity check.
-
-For anonymous memory I have something in the works to dynamically 
-reserve swap space per process for the memory reservation for not 
-accounted private writable MAP_DONTRESERVE memory.
-
-However, it works because swap space is per-system, not per-node or 
-anything else. Doing that for file systems/hugetlbfs is a different beast.
-
-And anonymous memory is right now less of my concern, as we're used to 
-overcommitting there - limited pool sizes are more of an issue.
-
->> --- Ways to populate/preallocate ---
->>
->> I see the following ways to populate/preallocate:
->>
->> a) MADV_POPULATE: write fault on writable MAP_PRIVATE, read fault on
->>     MAP_SHARED
->> b) Writing to MAP_PRIVATE | MAP_SHARED from user space.
->> c) (below) MADV_POPULATE_WRITE: write fault on writable MAP_PRIVATE |
->>     MAP_SHARED
->>
->> Especially, 2) is kind of weird as implemented in QEMU
->> (util/oslib-posix.c:do_touch_pages):
->>
->> "Read & write back the same value, so we don't corrupt existing user/app
->> data ... TODO: get a better solution from kernel so we don't need to write
->> at all so we don't cause wear on the storage backing the region..."
+> changes since previous version:
+> - change Subject line
+> - change commit message
+> - change commit message position to above signed-off-by
 > 
-> It's interesting to know about commit 1e356fc14be ("mem-prealloc: reduce large
-> guest start-up and migration time.", 2017-03-14).  It seems for speeding up VM
-> boot, but what I can't understand is why it would cause the delay of hugetlb
-> accounting - I thought we'd fail even earlier at either fallocate() on the
-> hugetlb file (when we use /dev/hugepages) or on mmap() of the memfd which
-> contains the huge pages.  See hugetlb_reserve_pages() and its callers.  Or did
-> I miss something?
 
-We should fail on mmap() when the reservation happens (unless 
-MAP_NORESERVE is passed) I think.
+These comments need to go below the --- cut off line.
 
+> checkpatch gives the following WARNING:
+> WARNING: Comparisons should place the constant on the right side of the test
+> this patch fixes the coding style warning.
 > 
-> I think there's a special case if QEMU fork() with a MAP_PRIVATE hugetlbfs
-> mapping, that could cause the memory accouting to be delayed until COW happens.
+> Signed-off-by: Kurt Manucredo <fuzzybritches@protonmail.com>
+> ---
+  ^^^
 
-That would be kind of weird. I'd assume the reservation gets properly 
-done during fork() - just like for VM_ACCOUNT.
+This one here.
 
-> However that's definitely not the case for QEMU since QEMU won't work at all as
-> late as that point.
+>  drivers/staging/rtl8723bs/core/rtw_wlan_util.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> IOW, for hugetlbfs I don't know why we need to populate the pages at all if we
-> simply want to know "whether we do still have enough space"..  And IIUC 2)
-> above is the major issue you'd like to solve too.
 
-To avoid page faults at runtime on access I think. Reservation <= 
-Preallocation.
-
-[...]
-
->> --- HOW MADV_POPULATE_WRITE might be useful ---
->>
->> With 3) 4) 5) MADV_POPULATE does partially what I want: preallocate memory
->> and populate page tables. But as it's a read fault, I think we'll have
->> another minor fault on access. Not perfect, but better than failing with
->> SIGBUS. One way around that would be having an additional
->> MADV_POPULATE_WRITE, to use in cases where it makes sense (I think at least
->> 3) and 4), most probably not on actual files like 5) ).
-> 
-> Right, it seems when populating memories we'll read-fault on file-backed.
-> However that'll be another performance issue to think about.  So I'd hope we
-> can start with the current virtio-mem issue on memory accounting, then we can
-> discuss them separately.
-
-MADV_POPULATE is certainly something I want and what fits nicely into 
-the existing model of MAP_POPULATE. Doing reservation only is a 
-different topic - and is most probably only possible for anonymous 
-memory in a clean way.
-
-> Btw, thanks for the long write-up, it definitely helps me to understand what
-> you wanted to achieve.
-
-Sure! Thanks!
-
-
--- 
-Thanks,
-
-David / dhildenb
+regards,
+dan carpenter
 
