@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B2931FD68
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3362231FD6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhBSQwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:52:19 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43163 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229577AbhBSQwR (ORCPT
+        id S230138AbhBSQx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:53:27 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8104 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229890AbhBSQxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:52:17 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 11JGog0G026060
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 11:50:42 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id E836615C342A; Fri, 19 Feb 2021 11:50:41 -0500 (EST)
-Date:   Fri, 19 Feb 2021 11:50:41 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jari Ruusu <jariruusu@protonmail.com>, Willy Tarreau <w@1wt.eu>,
-        Jari Ruusu <jariruusu@users.sourceforge.net>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <YC/sYe2vyES0pYQC@mit.edu>
-References: <602E766F.758C74D8@users.sourceforge.net>
- <20210218143341.GB13671@1wt.eu>
- <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com>
- <YC6nZH/4CkLLsxxB@kroah.com>
- <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com>
- <YC91OWVGAfyorRbc@kroah.com>
- <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com>
- <YC+U+beaI91aXh5z@kroah.com>
- <OurD0pqDIPLLZlt1kk-JE57wXeMoh0NFPKKcBrbY3ValknDXcpLwAJz6x1DMbB6LNZ6FDdeUrPM-pX60VF5FERTiDK_gzgHy4tq7iG3MFAM=@protonmail.com>
- <YC+d/NyXDebGSHwN@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC+d/NyXDebGSHwN@kroah.com>
+        Fri, 19 Feb 2021 11:53:25 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JGYdxj117101;
+        Fri, 19 Feb 2021 11:52:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=kaAqwSwiV9bHR5MZ/ojgaoy1ShCOB01Lxp/uWhkct/8=;
+ b=kr+AbqfQfzTQFmwWaRc08BbeXQz306Oo60AzwZVJDBPoaxyhSAqQVeIrJbZcNGjxkl/m
+ G/3vOvxqg2HZ0DE25t0LKxWMtbKukp3JePmCh+2Kdp2pjSgud7LP3iHdhxE0xpxXkcYb
+ uhlG2eaOhhOS9hIE5u8gK0huaOhfGp1CgdqL3jndRruFVf9bgxZ/aYtarHUfNS/VPfls
+ 6Vi/tgxs/dxk/RYOQansX7eaYfsPcGCCZQn+9D+E7f3Rd8GvKxCu3V16+KjrO/ZQo4Wh
+ oGFUEr2NQwtgf06lTRBX1Qw0WDtpF3ZhNATzwTvde8Msbala8eOSVfmkLSoky4R3zhak lg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tgna1am2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 11:52:39 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11JGZHU9120830;
+        Fri, 19 Feb 2021 11:52:39 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36tgna1ak1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 11:52:39 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11JGm6c6028923;
+        Fri, 19 Feb 2021 16:52:37 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 36spsn8mk1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 16:52:36 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11JGqYKq48103746
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 16:52:34 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 09EF6AE058;
+        Fri, 19 Feb 2021 16:52:34 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8ED08AE045;
+        Fri, 19 Feb 2021 16:52:31 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.144.116])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Feb 2021 16:52:31 +0000 (GMT)
+Message-ID: <0e2a789456a970ebdde9a65717b15d478af73ae3.camel@linux.ibm.com>
+Subject: Re: [PATCH] certs: Add support for using elliptic curve keys for
+ signing modules
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, dhowells@redhat.com, dwmw2@infradead.org,
+        linux-security-module@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        nayna@linux.ibm.com, saulo.alessandre@gmail.com,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Fri, 19 Feb 2021 11:52:30 -0500
+In-Reply-To: <20210219154114.2416778-1-stefanb@linux.vnet.ibm.com>
+References: <20210219154114.2416778-1-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_07:2021-02-18,2021-02-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 malwarescore=0 impostorscore=0 suspectscore=0 clxscore=1015
+ spamscore=0 adultscore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:16:12PM +0100, Greg Kroah-Hartman wrote:
+On Fri, 2021-02-19 at 10:41 -0500, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
 > 
-> Great!  Can you run 'git bisect' on the 4.14.y stable tree to find the
-> offending change?
+> This patch adds support for using elliptic curve keys for signing
+> modules. It uses a NIST P256 (prime256v1) key if the user chooses an
+> elliptic curve key.
+> 
+> A developer choosing an ECDSA key for signing modules has to manually
+> delete the signing key (rm certs/signing_key.*) when falling back to
+> an older version of a kernel that only supports RSA key since otherwise
+> ECDSA-signed modules will not be usable when that older kernel runs.
+> 
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-To be fair, especially with WiFi bugs, you may need to run for hours
-or days before you are absolutely sure that a particular bisection
-point will result in the the locking/kernel crash bug to manifest
-itself.  Worse, you have to be actively using the Wifi in order to see
-the problem, and in some cases, it only triggers when you switch
-between AP's, so you have to be actively using it in the work office,
-and taking it between conference rooms, only to see your machine crash
-taking your unsaved work, email drafts, etc. with it.
+Thanks, Stefan!
 
-That being said, users should at least report the bug.  (That's what I
-did, when I ran into this a bunch of years ago, with an explanation of
-"I'm trying to do a bisect, but it may take a few weeks for me to
-figure out what the !@#!? is going on.  In my case, I was trying to
-use upstream -rcX kernels to dogfood on my work laptop, but the
-principle is the same.)
+Tested with this patch applied on top of "[PATCH v8 0/4] Add support
+for x509 certs with NIST p256 and p192" and "[PATCH v2 0/5] ima: kernel
+build support for loading the kernel module" patch sets.
 
-Ultiumately, I solved the problem, by switching laptops to one that
-didn't use an NVidia GPU (which sometimes forced me to stay 1-2
-upstream versions behind, making life even more difficult when
-debugging these issues, until the out-of-tree video driver got updated
-to work with newer upstream), and which also had WiFi hardware which
-was less subject to these issues.
+Tested-by: Mimi Zohar <zohar@linux.ibm.com>
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 
-It's unfortunate, but not all hardware is as well supported on Linux.
-And in my case, because $WORK was using Enterprise WiFi systems with
-AP's that don't get as much testing by developers, very few other
-people could repro the bugs.  That's life, and sometimes the only
-solution is to switch hardware.  And/or you just use a Chromebook in
-those sorts of situations, separating your work/enterprise and
-upstream development hardware, and be done with it.  :-)
-
-Cheers,
-
-						- Ted
