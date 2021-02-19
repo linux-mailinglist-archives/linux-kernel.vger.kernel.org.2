@@ -2,56 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2526C31FE66
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF03431FE6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:56:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229767AbhBSRye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:54:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229774AbhBSRy2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:54:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4838B64E86;
-        Fri, 19 Feb 2021 17:53:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613757226;
-        bh=FX13Zn983HudfRRhXLlwksuMK8K2kTf+GC5FFze6dW0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AS48eQBy3qg5fbju5705xyjB84tDvxxqOM/o85qwfo25QQ+AHQ2196vl5gzUede5h
-         d7ZJKeG8j/Ee6vIspMFpwTmkABFwPQ8t8rz3yh/3JoMGuKzh5QfGTiH3LgEiw1yqo2
-         IMGVz6UozE5vRgrrEAAgQkj1GAzWzZC67mO/Drnxj5SISRZIaWZsUQ/4tI6aqSOF6p
-         rkwa/2CXZrVh/qPIGNRcYwdmWszUkwM8mDOFWL3u/gCsxSIHZ7vUtn1NOkWbcqoFaa
-         Oblwe3TTSCVpXBfLdxweScFRtER04PyQekvtfGjadRY0tHrMBXu2mvGAb7iZc+jONO
-         4a2vA8Sm6VxpA==
-Date:   Fri, 19 Feb 2021 17:53:42 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     linux-arm-kernel@lists.infradead.org, jmorris@namei.org,
-        linux-kernel@vger.kernel.org, tyhicks@linux.microsoft.com,
-        james.morse@arm.com, ebiederm@xmission.com,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH 1/1] kexec: move machine_kexec_post_load() to public
- interface
-Message-ID: <20210219175341.GC6352@willie-the-truck>
-References: <20210215185908.257724-1-pasha.tatashin@soleen.com>
- <20210215185908.257724-2-pasha.tatashin@soleen.com>
+        id S229804AbhBSRzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:55:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhBSRz1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 12:55:27 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37489C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 09:54:47 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id o38so5119446pgm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 09:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=glvZ+nCfB9TtbAroDymQkDFhBNuKdCgNd2JMzbDR3kI=;
+        b=OCyoHdUAUdv7opL3EZFA7lTMEfk3yF8FryLxCsvYVnjGDzjyo3IU/c24JBfeqd7Wek
+         htlrq3CI2X7xA4XR6tgBgRmcOimlCZyvreXpDi0cBn0e7Op3Gtb9GT+mvag2vQoL86sf
+         J0f5gDbks/Dkv/ld51c1f0GgMocBOlWoIoOEdzcEOPTTrwnF/h8V0l0WfEqpLvGWNdWX
+         pRsJzlcOFdUHpbWX4cx1FCRdE1h+ASi7U36zIZ2gY/fAR3a14ZS2bBkxXS4Pg3/6hmRG
+         uxDTlXeWoVGVQ+nqd4wJZsOKg5SJvzrp201YnPYTjQuRSLi2j+7jVMsSPZO2TUloFe1t
+         ZqWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=glvZ+nCfB9TtbAroDymQkDFhBNuKdCgNd2JMzbDR3kI=;
+        b=MdkhdOFxUAVb9h1pBwWbmCI2C9d43dix7gfmCI9rxHOBns0608DtS5Iy0/6bU8od3x
+         n8fUsD8MPJisgjdxizXs8pB4OzRyrv5R6Vk+wQ6Y3Bou/ZyGTLbiDnAYz3oDTIRD9GmK
+         2lSHgrq+4NFWY0GjVzh6rh03uWA40wzX+sY4WSzSvZfY+8wRHQgV1rKfCKZgB1JoJC3w
+         5+W1SXMZYr/yinDDS4k1MsvlpDuzpVcTf0n+YQfLCQwZNB1BZrCE4PiLAfoFhPl9TrOP
+         5JuGgIUlHY20vCRrPCOXqO4JK++jvMGBXNu6XsPSydn6f0+BgtKJ08ShI8JYnyzYOxqo
+         242w==
+X-Gm-Message-State: AOAM533fn0Jrneq34ksGvpj/V/U3v6GdZj1LLVQ70wnN9mdpx0HlO3Zv
+        Y5eN1jRGVpRkm37uLAuo9JBX+g==
+X-Google-Smtp-Source: ABdhPJx6LkZZbRlVWvf8Qceg5jpRQTiPkyf5Y3+HD6ZGTTavt9ztCUZdCVv8/v9Y3O4vJmgK1tv/Fw==
+X-Received: by 2002:a62:7985:0:b029:1e1:1703:c2e7 with SMTP id u127-20020a6279850000b02901e11703c2e7mr10602461pfc.69.1613757286450;
+        Fri, 19 Feb 2021 09:54:46 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:903f:bec1:f9d:479b])
+        by smtp.gmail.com with ESMTPSA id t2sm5997590pfg.152.2021.02.19.09.54.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 09:54:45 -0800 (PST)
+Date:   Fri, 19 Feb 2021 09:54:38 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 00/26] KVM/arm64: A stage 2 for the host
+Message-ID: <YC/7XuB30N8C3sNx@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210215185908.257724-2-pasha.tatashin@soleen.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210108121524.656872-1-qperret@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 01:59:08PM -0500, Pavel Tatashin wrote:
-> machine_kexec_post_load() is called after kexec load is finished. It must
-> be declared in public header not in kexec_internal.h
+On Fri, Jan 08, 2021, Quentin Perret wrote:
+> [2] https://kvmforum2020.sched.com/event/eE24/virtualization-for-the-masses-exposing-kvm-on-android-will-deacon-google
 
-Could you provide a log of what goes wrong without this patch, please?
+I couldn't find any slides on the official KVM forum site linked above.  I was
+able to track down a mirror[1] and the recorded presentation[2].
 
-> Reported-by: kernel test robot <lkp@intel.com>
-
-Do you have a link to the report, or did it not go to the list?
-
-Will
+[1] https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/slides/kvmforum-2020-edited.pdf
+[2] https://youtu.be/wY-u6n75iXc
