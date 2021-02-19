@@ -2,114 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AEC931FCFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6461431FD06
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhBSQSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:18:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38328 "EHLO
+        id S229927AbhBSQTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:19:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230077AbhBSQRt (ORCPT
+        with ESMTP id S229725AbhBSQTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:17:49 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 435BEC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:17:02 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id h10so10873516edl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:17:02 -0800 (PST)
+        Fri, 19 Feb 2021 11:19:43 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20590C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:19:02 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id m20so4907662ilj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 08:19:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vanguardiasur-com-ar.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bwqh7eek7Wc+3t3YTsL7G0gagoVwzjjdPhWUeI8RZbw=;
-        b=tLHcAE1h3wJEOF7Tn/PXq5/G5/ZviBHkahcb6WVBi6IuqnG+M48af//6lBqp38dM7U
-         R3iMdRzk2DCDK9NRDoRa/TNeyl2LNPMKCUH+pJ9eYUpUHU1l7H9RBrnh5RTzpKJr7Ys0
-         YLMiHEffWL8BCLfcbAkUVyTlqREKm8HDdx/DBcLoo8Rzy8xOqIbPH1g2PQbQECBOEz3T
-         8eP5/mLDedi/805m/JhjWdsObXwNK114p9Z3I42ltnG3tUj+nAPMqEyXz++vC7dHGnTf
-         FAWrI8RlCK6qY9lx+jFXvXDV566rKtTP4V7TDrqULfpQOM7jgsc6agylb4RaPsmkJEtq
-         Uw1g==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=EcaqTWCSfVXsMoTGzYmFHrJ3PSTdaSO3AS0apxN4KlY=;
+        b=Q4j3s0GwyjFaf20JY5B2RYgKSyiP4Wrwdl75NuiIhl/VleDzjZdpTy/sbpE3yp22OZ
+         OGQU8pxHmxDZ9wP79VILef4QDfC8c7sqz8R7ReXUElDXjx4M2cNbiWLkaUVs5+T20fS3
+         z/GpZL5UFUy4SBGzpn8xFfu7qe5ToaSIhZEE2WD71yCJkfrBD3qCXvFo7NzizOWcwNxb
+         8lAf1vzP8VDMHLmUxhU7sCLnLoPgENR9vFrxOEDPvhdtWoBUVzW40ij+HnIDqlge0fl5
+         vzXwMq1sQ+cRGShtxGyyJd3nmKVWd8XawU1ssaT25hSJrCSFy8r02amanAj6z5hNxd8s
+         WaOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bwqh7eek7Wc+3t3YTsL7G0gagoVwzjjdPhWUeI8RZbw=;
-        b=MGL1WKOMUMt4xSLLBWhYDlpl3EULbIk5lF9fmEkigkWrLJSUfw+KB3DZKbNLflum8B
-         W+UMIXrs/j573hBnbzvx70EK0xWooP2Bc+TxKigSRD/zJqh0fxwi7gCPFrQir4pB94sf
-         o5FT1IMxhfUxr3Vz7u/x5O+nl8oE7IjM+CU/0+N9SqL1f+VXU4FIMXGD9B211SmpsUhY
-         m26A3gbDQ4ozbVooVCmBqwP5vyDSVBMQHAPDPpFw0f/FHqckmsD2LgyZ2njME2JYyiEu
-         Q2KyS6ybUVd4kISwee/vGPBQimwM+hp3IRR/fibG8Q7nFyS3d7icRyIxuXBjJff0h6GV
-         Y6mQ==
-X-Gm-Message-State: AOAM531YuIriWjYhBepWpWz6ejJSWs50gskLwzzpdupEyOzO28pNS2ty
-        qgNx5SkAhm6dyRsMWd5LflsgPej7Ve3kaKcr7BgS1w==
-X-Google-Smtp-Source: ABdhPJwIWQ+j+RjmbGJA+kXahou9TCnyEzCx6el1aPMaVHS9Q9CO/yV3evNcaZ5G/993fNKXKux4thxwumcQ7ZpUl2o=
-X-Received: by 2002:a50:cbc7:: with SMTP id l7mr9930057edi.134.1613751421015;
- Fri, 19 Feb 2021 08:17:01 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EcaqTWCSfVXsMoTGzYmFHrJ3PSTdaSO3AS0apxN4KlY=;
+        b=Fr5RAaV89jCZZhg7O6tV1XMxf4P+gHapmjly4oO4aVPSr3bkwDv1YIEvKcqv9np1Br
+         rOJcgpiwaxAtyemXsig/HOHBNWRyWGZ/cQoISTJVqFdACMF3s+qkNJC5ouZyfat/ab5E
+         EU3SE/xQU9SI90I7dJ2o1/bJ6EZkaU3wexdQYZHoUr2qWXVYcVXVMB9guI1UPH6BaTDv
+         bRqrQjj47h3ckZc6nfKi2gZ7PMhMyjkijD2G7eccIrYxnaUE1toKEUJZ05ZCRvjCANH3
+         ti6debmUntLUPFVBRC14JqZlmEWcigaQbByCdib0BpqQJggGMgkH7VZKEdjn2JxPTiOL
+         YEog==
+X-Gm-Message-State: AOAM531KJZrS+ZrQK6lpsGV6WM/MCbeEFYxhPHws5HdcxrvtEC17SnWO
+        BvUj8U1nXpc1SuNsCSQlWy5wJg==
+X-Google-Smtp-Source: ABdhPJypDZOBBqEoSDVnkHvN0UvyZj33F/CLcJ/LaWrT2uOKZprfsGvk161Tv1kIDvFT2cC+I00Aqw==
+X-Received: by 2002:a92:de4b:: with SMTP id e11mr4306981ilr.123.1613751541399;
+        Fri, 19 Feb 2021 08:19:01 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id q10sm497286iop.10.2021.02.19.08.19.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 08:19:01 -0800 (PST)
+Subject: Re: [next]: fs/io_uring.c:6171:10: error: implicit declaration of
+ function 'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-mips@vger.kernel.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        io-uring@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>
+References: <CA+G9fYt1Bk=DW1VoPgWe9ZHHoHu+6OyZi7ndMJHmoR14uJePyQ@mail.gmail.com>
+ <87798def-0526-0a1e-6bcc-e5ee3970bd48@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a6c9a1f0-43a2-4c8d-a574-827e85e3c314@kernel.dk>
+Date:   Fri, 19 Feb 2021 09:18:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210206135020.1991820-1-heiko@sntech.de>
-In-Reply-To: <20210206135020.1991820-1-heiko@sntech.de>
-From:   Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>
-Date:   Fri, 19 Feb 2021 13:16:49 -0300
-Message-ID: <CAAEAJfB44mBxbdHgXFV1m6774O+6jYR6jG2qYz_15+Vc1dNejA@mail.gmail.com>
-Subject: Re: [PATCH] drm/panel: kd35t133: allow using non-continuous dsi clock
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Chris Morgan <macromorgan@hotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87798def-0526-0a1e-6bcc-e5ee3970bd48@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 6 Feb 2021 at 10:50, Heiko Stuebner <heiko@sntech.de> wrote:
->
-> The panel is able to work when dsi clock is non-continuous, thus
-> the system power consumption can be reduced using such feature.
->
-> Add MIPI_DSI_CLOCK_NON_CONTINUOUS to panel's mode_flags.
->
-> Also the flag actually becomes necessary after
-> commit c6d94e37bdbb ("drm/bridge/synopsys: dsi: add support for non-continuous HS clock")
-> and without it the panel only emits stripes instead of output.
->
+On 2/19/21 9:10 AM, Pavel Begunkov wrote:
+> On 19/02/2021 16:08, Naresh Kamboju wrote:
+>> Linux next tag 20210219 arm and mips builds failed due to below error.
+>>
+>> Following build configs failed
+>> arm (s3c6400_defconfig) with gcc-8
+>> arm (s3c6400_defconfig) with gcc-9
+>> arm (s3c6400_defconfig) with gcc-10
+>>
+>> mips (e55_defconfig) with gcc-8
+>> mips (e55_defconfig) with gcc-9
+>> mips (e55_defconfig) with gcc-10
+>>
+>> fs/io_uring.c:6171:10: error: implicit declaration of function
+>> 'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
+>> [-Werror=implicit-function-declaration]
+>>    return io_sendmsg_prep_async(req);
+>>           ^~~~~~~~~~~~~~~~~~~~~
+>>           io_req_prep_async
+> 
+> !CONFIG_NET, I guess. Thanks for letting know
 
-Looks like c6d94e37bdbb landed in v5.10, so we should add:
+Yep, I'm making a cleanup for that.
 
-Fixes: c6d94e37bdbb ("drm/bridge/synopsys: dsi: add support for
-non-continuous HS clock")
-Cc: stable@vger.kernel.org # 5.10+
+-- 
+Jens Axboe
 
-With this fix, my Odroid Go2 has display.
-
-Tested-by: Ezequiel Garcia <ezequiel@collabora.com>
-
-Thanks,
-Ezequiel
-
-> Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-> ---
->  drivers/gpu/drm/panel/panel-elida-kd35t133.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/panel/panel-elida-kd35t133.c b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
-> index bc36aa3c1123..fe5ac3ef9018 100644
-> --- a/drivers/gpu/drm/panel/panel-elida-kd35t133.c
-> +++ b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
-> @@ -265,7 +265,8 @@ static int kd35t133_probe(struct mipi_dsi_device *dsi)
->         dsi->lanes = 1;
->         dsi->format = MIPI_DSI_FMT_RGB888;
->         dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-> -                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
-> +                         MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET |
-> +                         MIPI_DSI_CLOCK_NON_CONTINUOUS;
->
->         drm_panel_init(&ctx->panel, &dsi->dev, &kd35t133_funcs,
->                        DRM_MODE_CONNECTOR_DSI);
-> --
-> 2.29.2
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
