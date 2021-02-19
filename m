@@ -2,146 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D0B31FF4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1397D31FF52
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230081AbhBSTQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:16:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21366 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229636AbhBSTQe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:16:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613762106;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GuikDQq1sciUIXGoinMOJrB+j3nRzQ2K1NXhrcaqYcg=;
-        b=AixfeM0DCKu5tz4MU6wE5nUxFWYQVfVY2vYVMRhCFIpFYSygZlzLuAaHM0X5nFAWzUHyPo
-        2A+TH4MgyVKAL07SaASh/fyA8Vx2JmA6DjekLJ9LyggP6FHak2QOqatzNOacdFOPJ0fl3w
-        4p483vFSdC0dnUjnPoYtk1wmwjvgFqw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-On0zvAUYOq6qvarRhkE3xg-1; Fri, 19 Feb 2021 14:15:04 -0500
-X-MC-Unique: On0zvAUYOq6qvarRhkE3xg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC82A8030BB;
-        Fri, 19 Feb 2021 19:15:00 +0000 (UTC)
-Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8671B5C1BB;
-        Fri, 19 Feb 2021 19:14:46 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <20210218225904.GB6669@xz-x1>
- <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
- <20210219163157.GF6669@xz-x1>
- <41444eb8-8bb8-8d5b-4cec-be7fa7530d0e@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <4d8e6f55-66a6-d701-6a94-79f5e2b23e46@redhat.com>
-Date:   Fri, 19 Feb 2021 20:14:45 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230138AbhBSTSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:18:01 -0500
+Received: from foss.arm.com ([217.140.110.172]:42964 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230101AbhBSTRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 14:17:46 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1976D1FB;
+        Fri, 19 Feb 2021 11:17:01 -0800 (PST)
+Received: from bogus (unknown [10.57.7.148])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6B5163F73D;
+        Fri, 19 Feb 2021 11:16:59 -0800 (PST)
+Date:   Fri, 19 Feb 2021 19:16:50 +0000
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Nicola Mazzucato <nicola.mazzucato@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, rjw@rjwysocki.net, vireshk@kernel.org,
+        cristian.marussi@arm.com, morten.rasmussen@arm.com,
+        chris.redpath@arm.com, ionela.voinescu@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: [PATCH v8 0/3] CPUFreq: Add support for opp-sharing cpus
+Message-ID: <20210219191650.q7bu6ogbhh2hcmww@bogus>
+References: <20210218222326.15788-1-nicola.mazzucato@arm.com>
+ <20210219041944.uox45mesrabvfm72@vireshk-i7>
 MIME-Version: 1.0
-In-Reply-To: <41444eb8-8bb8-8d5b-4cec-be7fa7530d0e@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219041944.uox45mesrabvfm72@vireshk-i7>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> It's interesting to know about commit 1e356fc14be ("mem-prealloc: reduce large
->> guest start-up and migration time.", 2017-03-14).  It seems for speeding up VM
->> boot, but what I can't understand is why it would cause the delay of hugetlb
->> accounting - I thought we'd fail even earlier at either fallocate() on the
->> hugetlb file (when we use /dev/hugepages) or on mmap() of the memfd which
->> contains the huge pages.  See hugetlb_reserve_pages() and its callers.  Or did
->> I miss something?
+Hi Viresh,
+
+On Fri, Feb 19, 2021 at 09:49:44AM +0530, Viresh Kumar wrote:
+> On 18-02-21, 22:23, Nicola Mazzucato wrote:
+> > Hi Viresh,
+> > 
+> > In this V8 I have addressed your comments:
+> > - correct the goto in patch 1/3
+> > - improve comment in patch 2/3 for dev_pm_opp_get_opp_count()
 > 
-> We should fail on mmap() when the reservation happens (unless
-> MAP_NORESERVE is passed) I think.
-> 
->>
->> I think there's a special case if QEMU fork() with a MAP_PRIVATE hugetlbfs
->> mapping, that could cause the memory accouting to be delayed until COW happens.
-> 
-> That would be kind of weird. I'd assume the reservation gets properly
-> done during fork() - just like for VM_ACCOUNT.
-> 
->> However that's definitely not the case for QEMU since QEMU won't work at all as
->> late as that point.
->>
->> IOW, for hugetlbfs I don't know why we need to populate the pages at all if we
->> simply want to know "whether we do still have enough space"..  And IIUC 2)
->> above is the major issue you'd like to solve too.
-> 
-> To avoid page faults at runtime on access I think. Reservation <=
-> Preallocation.
+> LGTM. I will apply them after the merge window is over. Thanks.
 
-I just learned that there is more to it: (test done on v5.9)
+I am planning to merge the series on scmi[1] which changes scmi-cpufreq.c
+and will conflict with these changes I think. If possible either,
 
-# echo 512 > /sys/devices/system/node/node0/hugepages/hugepages-2048kB/nr_hugepages
-# cat /sys/devices/system/node/node*/meminfo | grep HugePages_
-Node 0 HugePages_Total:   512
-Node 0 HugePages_Free:    512
-Node 0 HugePages_Surp:      0
-Node 1 HugePages_Total:     0
-Node 1 HugePages_Free:      0
-Node 1 HugePages_Surp:      0
-# cat /proc/meminfo  | grep HugePages_
-HugePages_Total:     512
-HugePages_Free:      512
-HugePages_Rsvd:        0
-HugePages_Surp:        0
+1. Share a branch with these changes that I can merge or
+2. I can take patch 1/3 and 2/3 with other scmi changes with your Ack.
 
-# /usr/libexec/qemu-kvm -m 1G -smp 1 -object memory-backend-memfd,id=mem0,size=1G,hugetlb=on,hugetlbsize=2M,policy=bind,host-nodes=0 -numa node,nodeid=0,memdev=mem0 -hda Fedora-Cloud-Base-Rawhide-20201004.n.1.x86_64.qcow2 -nographic
--> works just fine
+I am fine either way, let me know by v5.12-rc1
 
-# /usr/libexec/qemu-kvm -m 1G -smp 1 -object memory-backend-memfd,id=mem0,size=1G,hugetlb=on,hugetlbsize=2M,policy=bind,host-nodes=1 -numa node,nodeid=0,memdev=mem0 -hda Fedora-Cloud-Base-Rawhide-20201004.n.1.x86_64.qcow2 -nographic
--> Does not fail nicely but crashes!
+--
+Regards,
+Sudeep
 
-
-See https://bugzilla.redhat.com/show_bug.cgi?id=1686261 for something similar, however, it no longer applies like that on more recent kernels.
-
-Hugetlbfs reservations don't always protect you (especially with NUMA) - that's why e.g., libvirt always tells QEMU to prealloc.
-
-I think the "issue" is that the reservation happens on mmap(). mbind() runs afterwards. Preallocation saves you from that.
-
-I suspect something similar will happen with anonymous memory with mbind() even if we reserved swap space. Did not test yet, though.
-
--- 
-Thanks,
-
-David / dhildenb
-
+[1] https://lore.kernel.org/linux-arm-kernel/20210202221555.41167-1-cristian.marussi@arm.com/
