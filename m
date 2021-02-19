@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE86B31FA27
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D54831FA3A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:02:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhBSN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 08:57:23 -0500
-Received: from mga11.intel.com ([192.55.52.93]:52104 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229636AbhBSN5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:57:20 -0500
-IronPort-SDR: U0L9glj0LbjFDdYTjqkrTB81FrhDgNV6Y6RR2xPGjlklLhxYJOJB0nD0ZmSgu7VR/rEJGAzSNy
- +4fKCju/bupg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="180331905"
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="180331905"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:55:34 -0800
-IronPort-SDR: mQlPCQFL5QGufihX8XucWzipo9ErMQ6qnRGrAuoIqyVY3rOgxVUqz30tDQJiYU6X5PWtBHZczS
- snFMella6euA==
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="496299341"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:55:33 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lD6Fn-006E2l-07; Fri, 19 Feb 2021 15:55:31 +0200
-Date:   Fri, 19 Feb 2021 15:55:30 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity
- from DT
-Message-ID: <YC/DUmhXate4NhML@smile.fi.intel.com>
-References: <20210204143738.28036-1-schuchmann@schleissheimer.de>
- <20210204145308.GC14305@duo.ucw.cz>
- <DB8P190MB0634587826F57667BB3BBB6CD9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
- <20210205103438.GB27854@amd>
- <DB8P190MB063473FEA37E69E6DF6BC5F6D9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
- <20210219111659.GI19207@duo.ucw.cz>
- <DB8P190MB06340AA6D789A80A4CE2B6C6D9849@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+        id S230160AbhBSOBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:01:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229553AbhBSOBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:01:49 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59614C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:01:09 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id g24so3954425qts.2
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:01:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Uy9+p8EYLZ+2upxXdnXYCqgGljKcN5wTbKwGZwnqinY=;
+        b=I5flSyH/gLTP7kfpLHlSgh5tXtA+Jh1EsK+6uIgyy09vUXp0IZUoyofNXle2UG8+9x
+         6bQcZMjTHGSnCjsIADBeVZNPoafr3TSU4gbVUKm8tx7gxct5TAh1oqibAjgx2ny24Qlv
+         nA8b7dO5wJoNvKGJUaq5YdpKB1knNz20AuCjHXqPKjX/HXDnk9GUA8KprUxsiW5TqfOU
+         9o+5AHrQgpJl5wOCAeVJMcNlnBgpfbhD2hv2/vQ80bpHkUbm4gdpFUasgTAZI9JejzbF
+         hWMAig8ep9wZI5JeASo7p/0n5GOB7qV6LVTspTVmRmVoA3TvIzBilhfwzcUDD73XF8lP
+         SRsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Uy9+p8EYLZ+2upxXdnXYCqgGljKcN5wTbKwGZwnqinY=;
+        b=iM4FdNtVl7U5CLgnPIuJE1Ln9en+ortt77lmNS5CcKKWjDZSfvXa/xOpZtozNHBuTQ
+         5rsSboPYTBgWlFySuluqO1/Of3k6DMWdao9qWoTpGjSAguJEF/c07qcBAD1LS0y6o5s4
+         D9DvEKIvlYcR7Fz8YPLhnRZzshGsYfmv71F3+TFHR3BOA4Yqm8YUvFUMOZEZpqPqTlU+
+         Kab5OQGdMdO8YThqQAvxWcan7h5abkUAFrrBhDvPBvOcTnNtoa7BreAKTsSZwrQYLdmg
+         rvnxeNgo9VgtTozftMsSf7qt5DHUUgsD8Pb0fSwYhuo4FpoB7DZgjZh1zZ8+87qGvDtt
+         1mHQ==
+X-Gm-Message-State: AOAM5336pN3JUEKAxbH7pZGMAAF+qCeQw3ecjVt6P91Vzrl7AvmO6UDe
+        aQd4ii8d6wNM/6qWfT0+fzdU4kYsyLkZYD5a
+X-Google-Smtp-Source: ABdhPJwvDnWgEME/UBp5mpDqS0tmSE99XXBjYe+mDgcmjGaB5orYQxdcs7Ze95f3nVqD5XVW9Zc5qg==
+X-Received: by 2002:a05:622a:306:: with SMTP id q6mr8969998qtw.15.1613743266418;
+        Fri, 19 Feb 2021 06:01:06 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id 14sm5338161qtx.84.2021.02.19.06.01.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 06:01:05 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lD6LB-00CPnQ-2t; Fri, 19 Feb 2021 10:01:05 -0400
+Date:   Fri, 19 Feb 2021 10:01:05 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alistair Popple <apopple@nvidia.com>, linux-mm@kvack.org,
+        nouveau@lists.freedesktop.org, bskeggs@redhat.com,
+        akpm@linux-foundation.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm-ppc@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, jhubbard@nvidia.com,
+        rcampbell@nvidia.com, jglisse@redhat.com, daniel@ffwll.ch
+Subject: Re: [PATCH v2 1/4] hmm: Device exclusive memory access
+Message-ID: <20210219140105.GE2643399@ziepe.ca>
+References: <20210219020750.16444-1-apopple@nvidia.com>
+ <20210219020750.16444-2-apopple@nvidia.com>
+ <20210219094741.GA641389@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DB8P190MB06340AA6D789A80A4CE2B6C6D9849@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210219094741.GA641389@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:38:09AM +0000, Sven Schuchmann wrote:
-> Hello Pavel, hello Andy,
+On Fri, Feb 19, 2021 at 09:47:41AM +0000, Christoph Hellwig wrote:
+
+> > diff --git a/include/linux/hmm.h b/include/linux/hmm.h
+> > index 866a0fa104c4..5d28ff6d4d80 100644
+> > +++ b/include/linux/hmm.h
+> > @@ -109,6 +109,10 @@ struct hmm_range {
+> >   */
+> >  int hmm_range_fault(struct hmm_range *range);
+> >  
+> > +int hmm_exclusive_range(struct mm_struct *mm, unsigned long start,
+> > +			unsigned long end, struct page **pages);
+> > +vm_fault_t hmm_remove_exclusive_entry(struct vm_fault *vmf);
 > 
-> > -----Ursprüngliche Nachricht-----
-> > Von: Pavel Machek <pavel@ucw.cz>
-> > Gesendet: Freitag, 19. Februar 2021 12:17
-> > An: Sven Schuchmann <schuchmann@schleissheimer.de>
-> > Cc: Dan Murphy <dmurphy@ti.com>; linux-leds@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Betreff: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity from DT
-> > 
-> > > > Can you or Dan submit patch getting the regulator support to work? If
-> > > > not, I guess we should remove the regulator support after all.
-> > >
-> > > To be true I am fairly new to the kernel and have no idea
-> > > how to test this. So no, I don't want provide a patch (except
-> > > for removing), sorry.
-> > 
-> > No problem. It seems Andy submitted series for this.
-> > 
-> 
-> To me it seems that patches from Andy don't make
-> the regulator work. Maybe I am wrong?
+> Can we avoid the hmm naming for new code (we should probably also kill
+> it off for the existing code)?
 
-I;m not sure I understand this correctly. Do you mean that my patches broke
-something? Which one explicitly and what is broken?
+Yes please, I'd prefer it if hmm.c was just the special page walker
+and not a grab bag of unrelated things
 
-> I am very busy right now but hopefully I will find some more
-> time next week to submit some new patches. On my list so far
-> for the lp50xx:
-> * Remove unused variable https://www.spinics.net/lists/linux-leds/msg17654.html
-> * Enable-GPIO not working (used before init, reset/enable order wrong)
-> * Add default setting from DT https://www.spinics.net/lists/linux-leds/msg17596.html
-> * Fix regulator https://www.spinics.net/lists/linux-leds/msg17631.html
+Is there is a more natural place to put this in the mm for this idea?
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Jason
