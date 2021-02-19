@@ -2,70 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448E831FFC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A4A31FFCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:27:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhBSUZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:25:52 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:52799 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbhBSUZt (ORCPT
+        id S229891AbhBSU0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhBSU0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:25:49 -0500
-Received: by mail-io1-f69.google.com with SMTP id x17so4607159iov.19
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 12:25:34 -0800 (PST)
+        Fri, 19 Feb 2021 15:26:36 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD6AC061786
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 12:25:53 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id m2so5635119pgq.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 12:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6dVHk96AcArKaN/SteHJiGOj0BkhTaJ4SHAFKAMGMno=;
+        b=US8UsJfdfwgQ5VJMv+ws5DQdc7kWG+09VFpbjL8+QlLWWI4BEGXOdeRn59ENUfPza3
+         LARhRjYeoO5MoA4+Gxyl2KuUUNjmtsOXlNa9i91ENpAp0DvCTELgAtTIamw8ELLtUhKw
+         2EKkb8GqyPZmrS24NOI97ZF1zsIQzzGUvFXPjk4c7F5ChrdWlvpiagQDunNuTEo18SoL
+         Lz8GB7amTN9R8sXnXqh2hwL0BQy8fLnlKChlzTEaoA+eZw3wY/J67aTmxWyKvQDKXfGO
+         gItrkElzsyLHdvYUxWmehMfUnjjPfUxIoTGHVlaalIycqBeCAHCOVY8pVCZE6V9IvJBb
+         4ISg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=hjZbSKSdJoVbeXQb2cKTUlfTuBF1xCsCTBC7HaDhAqc=;
-        b=Po/seFMtzg1v4lrqm96HoioubhHCJKZAdmvuIl8oo8AVxNaZ62hCmbmLWUQjWcQIWL
-         sAZZRp9yZlm2Vs8fftAGbpfdnI/X+dSS5ve3RWhdahEHqmKV1SH7qzieKXFOpxzAwQJc
-         SiNQ2FRI6ueVyYTU43qaJ/Nf7BcU4jBUVjMS3NC7KrowM/9GgyeaWvyqZq6qrkxyBuER
-         Q4tekZNAR3/MsqFF0MxNKQLf5+xTOuusgiGk7zkiVwW8AbNq210GbuPGU/r9x1+Lxa7t
-         IDAHs9w//UauT8wK+s+X/gCoxIPavIYinFJBRr7jHB4H+kCYzmKMI7HEEA0SMlhF99fs
-         BuuA==
-X-Gm-Message-State: AOAM533dhuWvgfT55K1Y3m6KW0hMtRXb7AR5jKMk0SKxpOnjOYMUFqXC
-        2g/4btq6LsHpPnvPiT4U7m6NZoNruM2fTyKvaetZbwgQEt1P
-X-Google-Smtp-Source: ABdhPJzaNZrVsv/ryRJA4dYhFRa7Wl7b8vkqC9i7fTKA8LG8K0bIRf6d4VRk5Ctco+HNQXG4iijusTwsrvVnvfJWIrj+T4KamXcH
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6dVHk96AcArKaN/SteHJiGOj0BkhTaJ4SHAFKAMGMno=;
+        b=Vu17yicGFs542tkd1HCKRYJNfHRWpJeFZtV2Y7OxP6jITMFP+bPzMZhk+0D7kVUS5d
+         VOugrKZFFM93awJC46MKUlxkXFybpYIP8oyYBxHDBr20fBtK+S07ngOS8cIrr0ADi9gw
+         U35hXKlFuiZZ1fMSjXKH/Mrj5jmELQjZA8MI1suz6sViKYaqR4LMN4n1igiJ/XK7PLE0
+         XQ/EflXwhM6JSA4UX1HSI+vKL/qj0nyzBYC6cRd+IhPA3FvaVSxdKb5sRn8Pjbpq7/+m
+         LPgwqDywAipXcw5TlodIQBCOZEWGJfGEYKOSJo14bzXRTG3fKLaqOKkAmkDO1TIX/kDm
+         gQiw==
+X-Gm-Message-State: AOAM533EVnurenXe+tXVQsAk01+64HXPrWYcKs19oIlAXb3XRP1V9Yq+
+        B0Ep7FqLvHEjmlwF3DmvwbU=
+X-Google-Smtp-Source: ABdhPJxlFJJmRCqw1LJ4pqMIv8LiowF3wCbrm7Xzuz9QimAsiezEFTTBfr9clmbpjYdjjIIcXIwD6A==
+X-Received: by 2002:aa7:82cf:0:b029:1cc:5393:ad8e with SMTP id f15-20020aa782cf0000b02901cc5393ad8emr11258170pfn.3.1613766353128;
+        Fri, 19 Feb 2021 12:25:53 -0800 (PST)
+Received: from localhost.localdomain ([49.36.144.93])
+        by smtp.gmail.com with ESMTPSA id g62sm10504199pgc.32.2021.02.19.12.25.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 12:25:52 -0800 (PST)
+From:   Amrit Khera <amritkhera98@gmail.com>
+To:     gregkh@linuxfoundation.org, lee.jones@linaro.org, arnd@arndb.de,
+        kuba@kernel.org, mail@anirudhrb.com, ayush@disroot.org
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Amrit Khera <amritkhera98@gmail.com>
+Subject: [PATCH] staging: wimax: Fix block comment style issue in stack.c
+Date:   Sat, 20 Feb 2021 01:55:25 +0530
+Message-Id: <20210219202524.14642-1-amritkhera98@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2d0d:: with SMTP id c13mr5543282iow.51.1613766308788;
- Fri, 19 Feb 2021 12:25:08 -0800 (PST)
-Date:   Fri, 19 Feb 2021 12:25:08 -0800
-In-Reply-To: <000000000000e29ec405bb8b9251@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000096022805bbb63f35@google.com>
-Subject: Re: general protection fault in mptcp_sendmsg_frag
-From:   syzbot <syzbot+409b0354a6ba83a86aaf@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, fw@strlen.de, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mathew.j.martineau@linux.intel.com,
-        matthieu.baerts@tessares.net, mptcp@lists.01.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+This change fixes a checkpatch warning for "Block comments
+use * on subsequent lines".
 
-commit 40947e13997a1cba4e875893ca6e5d5e61a0689d
-Author: Florian Westphal <fw@strlen.de>
-Date:   Fri Feb 12 23:59:56 2021 +0000
+Signed-off-by: Amrit Khera <amritkhera98@gmail.com>
+---
+ drivers/staging/wimax/stack.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-    mptcp: schedule worker when subflow is closed
+diff --git a/drivers/staging/wimax/stack.c b/drivers/staging/wimax/stack.c
+index ace24a6dfd2d..781426000015 100644
+--- a/drivers/staging/wimax/stack.c
++++ b/drivers/staging/wimax/stack.c
+@@ -62,11 +62,12 @@ MODULE_PARM_DESC(debug,
+  * close to where the data is generated.
+  */
+ /*
+-static const struct nla_policy wimax_gnl_re_status_change[WIMAX_GNL_ATTR_MAX + 1] = {
+-	[WIMAX_GNL_STCH_STATE_OLD] = { .type = NLA_U8 },
+-	[WIMAX_GNL_STCH_STATE_NEW] = { .type = NLA_U8 },
+-};
+-*/
++ * static const struct nla_policy
++ * wimax_gnl_re_status_change[WIMAX_GNL_ATTR_MAX + 1] = {
++ *	[WIMAX_GNL_STCH_STATE_OLD] = { .type = NLA_U8 },
++ *	[WIMAX_GNL_STCH_STATE_NEW] = { .type = NLA_U8 },
++ * };
++ */
+ 
+ 
+ /*
+-- 
+2.20.1
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1541a434d00000
-start commit:   773dc50d Merge branch 'Xilinx-axienet-updates'
-git tree:       net-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1741a434d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1341a434d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dbc1ca9e55dc1f9f
-dashboard link: https://syzkaller.appspot.com/bug?extid=409b0354a6ba83a86aaf
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16548404d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150c2914d00000
-
-Reported-by: syzbot+409b0354a6ba83a86aaf@syzkaller.appspotmail.com
-Fixes: 40947e13997a ("mptcp: schedule worker when subflow is closed")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
