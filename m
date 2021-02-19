@@ -2,64 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA2431F44A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 05:03:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7361731F44C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 05:03:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbhBSEAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 23:00:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBSEAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 23:00:32 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29FB3C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 19:59:52 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id f4so4311437ybk.11
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 19:59:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=PUiW2NtM90NP9SKSkbb+6C7va0FmsquqAL9/lx/YoODC30fjEgSPKBcNKU32bMe/dc
-         F9dTkdhrfJ+/VtgmF7i4PM/Fyx7yzy0P0u/CojEKK+nVwrbN0JtXWLtKtoBxybZFYmZq
-         idR9kQbINy/SVWMPqDRNJbUSWvJghac3SmQuvo5FLyyratInSNA8drGuMjnRHoousUJZ
-         Ba4QLv3FXd8V02wlz+rKbm9YXB64AHDiqX20w56U75jqTxx7gbbaA8h60YWwQ4FumEBb
-         dSDWb2l0VTOzJcpb7uxwV1BoMSIG/jGBh/cCSG1LIGtfaUYlU0cjRKjuX0rsfeETAx0w
-         Uosw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=H3bGT1ZyGPu3PRQJlJHyQI9TvTjBPuNSyHjFOzNfiP0=;
-        b=Avd8LN22fKZRkg6Hg2M4DArBYta4GzYP8KeGy5PSb3bYjzwphZM/05IW15IoCP804X
-         Jqij2XDbEbyJiSwuxlRrLLb4hF8/UZKNplFzYp8thu0lHictBpVD8t3oDHSrTZjcA4V9
-         P9KDWrSBotnpTKiRmKl0hCMYvr8VrkmVA1n6aqWMMK7o19qecekj1Yc6BmBHiuC+dNLw
-         BFNftMxL6T9bPJTrVD2Gst2lR9InVgss1224TUKtE5IaoK/KnkhNnKpRd5+0YyMEJ3Mz
-         ELAHIyHI0iZ4eSEY1y5hs7dTgg0W7t9cGyc5kAqYmlbo+JGkRGANyYLk0gDxlKXSF13v
-         T0RA==
-X-Gm-Message-State: AOAM530jvn4dUBJjQOtIL5EyLhx/g3olV+feTLV72h330g/w7eCp0L7q
-        uCFAALZrKW9sJhyeZe7QV7jn7O3Q6dxcVWkyndY=
-X-Google-Smtp-Source: ABdhPJzEAjs+YdAm/MdMFkhXZZs2BCM2olCBkHugxBOoIJM6kGvV9mAhitYy8b+HglyERVx6CMl2u1lqeey1jZkyirM=
-X-Received: by 2002:a25:c105:: with SMTP id r5mr11561809ybf.413.1613707191437;
- Thu, 18 Feb 2021 19:59:51 -0800 (PST)
+        id S229683AbhBSEDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 23:03:03 -0500
+Received: from helcar.hmeau.com ([216.24.177.18]:41010 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhBSEC6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 23:02:58 -0500
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1lCwzD-0000s7-Jq; Fri, 19 Feb 2021 15:01:48 +1100
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 19 Feb 2021 15:01:47 +1100
+Date:   Fri, 19 Feb 2021 15:01:47 +1100
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     yumeng <yumeng18@huawei.com>
+Cc:     davem@davemloft.net, marcel@holtmann.org, johan.hedberg@gmail.com,
+        luiz.dentz@gmail.com, tudor.ambarus@microchip.com,
+        linux-crypto@vger.kernel.org, xuzaibo@huawei.com,
+        wangzhou1@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 7/9] crypto: hisilicon/hpre - add 'ECDH' algorithm
+Message-ID: <20210219040147.GA2074@gondor.apana.org.au>
+References: <1612777137-51067-1-git-send-email-yumeng18@huawei.com>
+ <1612777137-51067-8-git-send-email-yumeng18@huawei.com>
+ <20210210045756.GB7510@gondor.apana.org.au>
+ <a92a1b89-75f2-e275-9a84-004072aadf66@huawei.com>
+ <20210218200121.GA932@gondor.apana.org.au>
+ <5e1264cf-30ae-cbbd-21bc-90b09b8aa8f2@huawei.com>
 MIME-Version: 1.0
-Received: by 2002:a05:7110:5115:b029:35:23e6:215d with HTTP; Thu, 18 Feb 2021
- 19:59:51 -0800 (PST)
-Reply-To: abdwabbomaddahm@gmail.com
-From:   Abdwabbo Maddah <maddahabdwabbo208@gmail.com>
-Date:   Fri, 19 Feb 2021 04:59:51 +0100
-Message-ID: <CADx+Zf7xBQmqnABgCzH7cDt31ZKL=ugODzfiKLUZ_nj6DmaQ9g@mail.gmail.com>
-Subject: DID YOU RECEIVE MY MAIL?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5e1264cf-30ae-cbbd-21bc-90b09b8aa8f2@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 09:25:13AM +0800, yumeng wrote:
+>
+> And p224 and p521 are the same as p384 (has no user and no
+> generic implementation), so they should be supported by HPRE later,
+> is it?
+
+Right.
+
+Thanks,
 -- 
-Dear,
-I had sent you a mail but i don't think you received it that's why am
-writing you again.It is important you get back to me as soon as you
-can.
-Abd-Wabbo Maddah
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
