@@ -2,164 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4E431FE82
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:07:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFD131FE85
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:07:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhBSSG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:06:57 -0500
-Received: from m42-2.mailgun.net ([69.72.42.2]:38893 "EHLO m42-2.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhBSSGw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:06:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613757989; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=kXbF7w0R9PC06ofMJ92nb80MCqGt/jkEAMA0b9SbA00=;
- b=nuDhsI8JDFnQ+aRILerhtHtyXkh9ZvgDzfwKkGn61HbSVflKXHSx++gyBWFYHQ4bPFKxUlMj
- yuo0PgRe6/kYnaZqXFPTQezKjCTQ1Fg4QNYOojBcwSCDV2td12agXU4e44ou5UFINUndn4zf
- 5aKfcPqIwLHyKuO43/A5ElnngJg=
-X-Mailgun-Sending-Ip: 69.72.42.2
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 602ffe04f33d74123f82e358 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 18:05:56
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5C8C1C43462; Fri, 19 Feb 2021 18:05:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 76657C433CA;
-        Fri, 19 Feb 2021 18:05:54 +0000 (UTC)
+        id S229799AbhBSSHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:07:30 -0500
+Received: from hmm.wantstofly.org ([213.239.204.108]:59298 "EHLO
+        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229720AbhBSSHV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 13:07:21 -0500
+Received: by mail.wantstofly.org (Postfix, from userid 1000)
+        id C7D207F4AC; Fri, 19 Feb 2021 20:06:37 +0200 (EET)
+Date:   Fri, 19 Feb 2021 20:06:37 +0200
+From:   Lennert Buytenhek <buytenh@wantstofly.org>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        io-uring@vger.kernel.org, David Laight <David.Laight@aculab.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH v3 2/2] io_uring: add support for IORING_OP_GETDENTS
+Message-ID: <20210219180637.GC342512@wantstofly.org>
+References: <20210218122640.GA334506@wantstofly.org>
+ <20210218122755.GC334506@wantstofly.org>
+ <9a6fb59b-be85-c36b-3c83-26cff37bcb87@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 19 Feb 2021 10:05:54 -0800
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Jeffrey Hugo <jhugo@codeaurora.org>
-Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, carl.yin@quectel.com,
-        naveen.kumar@quectel.com, jhugo=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] bus: mhi: core: Move to polling method to wait for MHI
- ready
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <3071a65e-8ab2-8e88-e87e-50c71602904c@codeaurora.org>
-References: <1613701126-38995-1-git-send-email-bbhatt@codeaurora.org>
- <3071a65e-8ab2-8e88-e87e-50c71602904c@codeaurora.org>
-Message-ID: <74842b01810974326cbbbd718a77f98d@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a6fb59b-be85-c36b-3c83-26cff37bcb87@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-19 06:55 AM, Jeffrey Hugo wrote:
-> On 2/18/2021 7:18 PM, Bhaumik Bhatt wrote:
->> In certain devices, it is likely that there is no incoming MHI
->> interrupt for a transition to MHI READY state. One such example
->> is the move from Pass Through to an SBL or AMSS execution
->> environment. In order to facilitate faster bootup times as there
->> is no need to wait until timeout_ms completes, MHI host can poll
->> every 25 milliseconds to check if device has entered MHI READY
->> until a maximum timeout of twice the timeout_ms is reached.
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>   drivers/bus/mhi/core/pm.c | 32 ++++++++++++++++----------------
->>   1 file changed, 16 insertions(+), 16 deletions(-)
->> 
->> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
->> index 65ebca8..ec0060c 100644
->> --- a/drivers/bus/mhi/core/pm.c
->> +++ b/drivers/bus/mhi/core/pm.c
->> @@ -9,6 +9,7 @@
->>   #include <linux/dma-direction.h>
->>   #include <linux/dma-mapping.h>
->>   #include <linux/interrupt.h>
->> +#include <linux/iopoll.h>
->>   #include <linux/list.h>
->>   #include <linux/mhi.h>
->>   #include <linux/module.h>
->> @@ -157,30 +158,29 @@ int mhi_ready_state_transition(struct 
->> mhi_controller *mhi_cntrl)
->>   	struct mhi_event *mhi_event;
->>   	enum mhi_pm_state cur_state;
->>   	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->> -	u32 reset = 1, ready = 0;
->> +	u32 reset, ready;
->>   	int ret, i;
->>   -	/* Wait for RESET to be cleared and READY bit to be set by the 
->> device */
->> -	wait_event_timeout(mhi_cntrl->state_event,
->> -			   MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state) ||
->> -			   mhi_read_reg_field(mhi_cntrl, base, MHICTRL,
->> -					      MHICTRL_RESET_MASK,
->> -					      MHICTRL_RESET_SHIFT, &reset) ||
->> -			   mhi_read_reg_field(mhi_cntrl, base, MHISTATUS,
->> -					      MHISTATUS_READY_MASK,
->> -					      MHISTATUS_READY_SHIFT, &ready) ||
->> -			   (!reset && ready),
->> -			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
->> -
->>   	/* Check if device entered error state */
->>   	if (MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
->>   		dev_err(dev, "Device link is not accessible\n");
->>   		return -EIO;
->>   	}
->>   -	/* Timeout if device did not transition to ready state */
->> -	if (reset || !ready) {
->> -		dev_err(dev, "Device Ready timeout\n");
->> +	/* Wait for RESET to be cleared and READY bit to be set by the 
->> device */
->> +	ret = readl_relaxed_poll_timeout(base + MHICTRL, reset,
->> +					 !(reset & MHICTRL_RESET_MASK), 25000,
->> +					 mhi_cntrl->timeout_ms * 1000);
->> +	if (ret) {
->> +		dev_err(dev, "Device failed to clear MHI Reset\n");
->> +		return -ETIMEDOUT;
->> +	}
->> +
->> +	ret = readl_relaxed_poll_timeout(base + MHISTATUS, ready,
->> +					 (ready & MHISTATUS_READY_MASK), 25000,
->> +					 mhi_cntrl->timeout_ms * 1000);
->> +	if (ret) {
->> +		dev_err(dev, "Device failed to enter MHI Ready\n");
->>   		return -ETIMEDOUT;
->>   	}
->> 
-> 
-> I think this gets a NACK from me.
-> 
-> mhi_read_reg_field() uses the controller defined accessor method
-> read_reg().  readl_relaxed_poll_timeout() does not.  If, say, MHI was
-> implemented over I2C, direct readl() accesses wouldn't be valid, and
-> this would break.
-> 
-> Also, if the link ever goes down in the middle if the timeout, the
-> controller read_reg() should detect that, but
-> readl_relaxed_poll_timeout() would not.
-> 
-> I'm fine with this concept, but I think the implementation needs to be 
-> adjusted.
-I agree. I will think on this and plan it around the controller defined 
-method.
+On Fri, Feb 19, 2021 at 12:05:58PM +0000, Pavel Begunkov wrote:
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+> > IORING_OP_GETDENTS behaves much like getdents64(2) and takes the same
+> > arguments, but with a small twist: it takes an additional offset
+> > argument, and reading from the specified directory starts at the given
+> > offset.
+> > 
+> > For the first IORING_OP_GETDENTS call on a directory, the offset
+> > parameter can be set to zero, and for subsequent calls, it can be
+> > set to the ->d_off field of the last struct linux_dirent64 returned
+> > by the previous IORING_OP_GETDENTS call.
+> > 
+> > Internally, if necessary, IORING_OP_GETDENTS will vfs_llseek() to
+> > the right directory position before calling vfs_getdents().
+> > 
+> > IORING_OP_GETDENTS may or may not update the specified directory's
+> > file offset, and the file offset should not be relied upon having
+> > any particular value during or after an IORING_OP_GETDENTS call.
+> > 
+> > Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+> > ---
+> >  fs/io_uring.c                 | 73 +++++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/io_uring.h |  1 +
+> >  2 files changed, 74 insertions(+)
+> > 
+> > diff --git a/fs/io_uring.c b/fs/io_uring.c
+> > index 056bd4c90ade..6853bf48369a 100644
+> > --- a/fs/io_uring.c
+> > +++ b/fs/io_uring.c
+> > @@ -635,6 +635,13 @@ struct io_mkdir {
+> >  	struct filename			*filename;
+> >  };
+> >  
+> [...]
+> > +static int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
+> > +{
+> > +	struct io_getdents *getdents = &req->getdents;
+> > +	bool pos_unlock = false;
+> > +	int ret = 0;
+> > +
+> > +	/* getdents always requires a blocking context */
+> > +	if (issue_flags & IO_URING_F_NONBLOCK)
+> > +		return -EAGAIN;
+> > +
+> > +	/* for vfs_llseek and to serialize ->iterate_shared() on this file */
+> > +	if (file_count(req->file) > 1) {
+> 
+> Looks racy, is it safe? E.g. can be concurrently dupped and used, or
+> just several similar IORING_OP_GETDENTS requests.
+
+I thought that it was safe, but I thought about it a bit more, and it
+seems that it is unsafe -- if you IORING_REGISTER_FILES to register the
+dirfd and then close the dirfd, you'll get a file_count of 1, while you
+can submit concurrent operations.  So I'll remove the conditional
+locking.  Thanks!
+
+(If not for IORING_REGISTER_FILES, it seems safe, because then
+io_file_get() will hold a(t least one) reference on the file while the
+operation is in flight, so then if file_count(req->file) == 1 here,
+then it means that the file is no longer referenced by any fdtable,
+and nobody else should be able to get a reference to it -- but that's
+a bit of a useless optimization.)
+
+(Logic was taken from __fdget_pos, where it is safe for a different
+reason, i.e. __fget_light will not bump the refcount iff current->files
+is unshared.)
+
+
+> > +		pos_unlock = true;
+> > +		mutex_lock(&req->file->f_pos_lock);
+> > +	}
+> > +
+> > +	if (req->file->f_pos != getdents->pos) {
+> > +		loff_t res = vfs_llseek(req->file, getdents->pos, SEEK_SET);
+> 
+> I may be missing the previous discussions, but can this ever become
+> stateless, like passing an offset? Including readdir.c and beyond. 
+
+My aim was to only make the minimally required change initially, but
+to make that optimization possible in the future (e.g. by reserving the
+right to either update or not update the file position) -- but I'll
+try doing the optimization now.
+
+
+> > +		if (res < 0)
+> > +			ret = res;
+> > +	}
+> > +
+> > +	if (ret == 0) {
+> > +		ret = vfs_getdents(req->file, getdents->dirent,
+> > +				   getdents->count);
+> > +	}
+> > +
+> > +	if (pos_unlock)
+> > +		mutex_unlock(&req->file->f_pos_lock);
+> > +
+> > +	if (ret < 0) {
+> > +		if (ret == -ERESTARTSYS)
+> > +			ret = -EINTR;
+> > +		req_set_fail_links(req);
+> > +	}
+> > +	io_req_complete(req, ret);
+> > +	return 0;
+> > +}
+> [...]
+> 
+> -- 
+> Pavel Begunkov
