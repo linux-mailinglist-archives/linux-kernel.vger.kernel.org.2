@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADDF831FCD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA9531FCD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:12:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229771AbhBSQKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:10:36 -0500
-Received: from mail.codeweavers.com ([50.203.203.244]:37606 "EHLO
-        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhBSQKe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:10:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=jT5f4TpoKfVTfDMBAhV54XTxsbl0u6l9viXqS/JqH9s=; b=k3PPX17zXtUx2v6qvyZSoouE4m
-        7YunB+IJX5R9tJwFju9QBP0gxser4+++Z7WA/s0Cm0TgQXXaO5YGItKmrGIATz2VNkKdmw8OHid6D
-        14e/0gCqfPThf64QpgJJdLI4JSXGTefO44/zuD1fj8RpBXeuIuHRLUDD1WP9NFlK8rbk=;
-Received: from [10.69.141.136]
-        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <nfraser@codeweavers.com>)
-        id 1lD8Lk-0003In-ER; Fri, 19 Feb 2021 10:09:48 -0600
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Nicholas Fraser <nfraser@codeweavers.com>,
-        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
-Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
-        Huw Davies <huw@codeweavers.com>
-From:   Nicholas Fraser <nfraser@codeweavers.com>
-Subject: [PATCH 1/2] perf archive: Fix filtering of empty build-ids
-Message-ID: <442bffc7-ac5c-0975-b876-a549efce2413@codeweavers.com>
-Date:   Fri, 19 Feb 2021 11:09:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229842AbhBSQLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:11:19 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:30074 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229806AbhBSQLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 11:11:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613751051; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=7ZuDOC16WFXeHrlAiwdEtHp1HAj1cxOU733fDvCOiy8=; b=m59l7rwDXkfINnvp4hVVxoWwIaPPGg+zWvuX0TCDqaeJ/f660+20Dpmd2/clPTRVWobUfng8
+ gueA3KCopRm0+DmScUgQ8oCNFCDEGQH8VgkCoUSyycBk2UY8JZCRE88AVRlwLnZyyiu0+SvV
+ 4o4jVeyn6r6uwTqnqVuizV1mUII=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 602fe2e6e87943df301bb8b4 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 16:10:14
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id DE4B9C43464; Fri, 19 Feb 2021 16:10:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 94A14C433ED;
+        Fri, 19 Feb 2021 16:10:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 94A14C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v4 1/3] bus: mhi: core: Clear devices when moving
+ execution environments
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com
+References: <1613701052-38885-1-git-send-email-bbhatt@codeaurora.org>
+ <1613701052-38885-2-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <3b3476ff-3126-097a-5d1b-130ac570cce6@codeaurora.org>
+Date:   Fri, 19 Feb 2021 09:10:11 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <1613701052-38885-2-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A non-existent build-id used to be treated as all-zero SHA-1 hash.
-Build-ids are now variable width. A non-existent build-id is an empty
-string and "perf buildid-list" pads this with spaces. This is true even
-when using old perf.data files recorded from older versions of perf;
-"perf buildid-list" never reports an all-zero hash anymore.
+On 2/18/2021 7:17 PM, Bhaumik Bhatt wrote:
+> When moving from SBL to mission mode execution environment, there
+> is no remove callback notification to MHI client drivers which
+> operate on SBL mode only. Client driver devices are being created
+> in SBL or AMSS(mission mode) and only destroyed after power down
+> or SYS_ERROR. If there exist any SBL-specific channels, those are
+> left open and client drivers are thus unaware of the new execution
+> environment where those channels cannot operate. Close the gap and
+> issue remove callbacks to SBL-specific client drivers once device
+> enters mission mode.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
 
-This fixes "perf-archive" to skip missing build-ids by skipping lines
-that start with a padding space rather than with zeroes.
+I like the idea, but I question where this is limited to the transition 
+to mission mode.  Feels like something that should occur on all EE 
+changes.  We might not have a current usecase that is outside what 
+you've implemented here, but I don't think there is anything preventing 
+that in future.
 
-Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
----
- tools/perf/perf-archive.sh | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/tools/perf/perf-archive.sh b/tools/perf/perf-archive.sh
-index 0cfb3e2cefef..133f0eddbcc4 100644
---- a/tools/perf/perf-archive.sh
-+++ b/tools/perf/perf-archive.sh
-@@ -20,9 +20,8 @@ else
- fi
- 
- BUILDIDS=$(mktemp /tmp/perf-archive-buildids.XXXXXX)
--NOBUILDID=0000000000000000000000000000000000000000
- 
--perf buildid-list -i $PERF_DATA --with-hits | grep -v "^$NOBUILDID " > $BUILDIDS
-+perf buildid-list -i $PERF_DATA --with-hits | grep -v "^ " > $BUILDIDS
- if [ ! -s $BUILDIDS ] ; then
- 	echo "perf archive: no build-ids found"
- 	rm $BUILDIDS || true
 -- 
-2.30.1
-
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
