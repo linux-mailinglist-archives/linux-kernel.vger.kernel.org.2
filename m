@@ -2,105 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47C7731F68A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F6B31F68D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhBSJ1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:27:33 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:36504 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBSJ13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:27:29 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9OqRU022352;
-        Fri, 19 Feb 2021 09:26:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=+jSkHsONTkTAseVQX+sbaAc6sHzUxCQX5x/sMxZIGnw=;
- b=VWWO5tkc6ARoeLA2pZ2HJX/Cx2EZlcWKG94D1ZVPy5oY2slSwJQDd3DcGSq3gaQfdh8Q
- QeoFEOPKQtEacgT1TPVKpHYXV9CaZljb2iGe7+RNzQL4lljkGVbKgjWA474ccJ3APoZQ
- FUKiXCh8qPWm9AyBfRvX2wd1CQ6R58lZ7PFb4Gkl6KcYslQdTh2KI8lVclm4HctnGaE9
- fuCBAXhczlwXtJ9OWbhoyjbVL68aPu+buKitrHX4chhXarzuhyS8yXnsehhaemqlMOYY
- 1zKA4IM7vAJkkNJl7YylOqINM2DyLuL+HQn5hWIdQsb4tNalFBgJurhd8ghM9dWQAUSd sA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 36p49bgxhu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:26:38 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9KVhH115387;
-        Fri, 19 Feb 2021 09:26:36 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 36prbrxcvr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:26:36 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11J9QX7b022082;
-        Fri, 19 Feb 2021 09:26:33 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Feb 2021 01:26:32 -0800
-Date:   Fri, 19 Feb 2021 12:26:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "'Ian Abbott'" <abbotti@mev.co.uk>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Atul Gopinathan <atulgopinathan@gmail.com>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
-Message-ID: <20210219092621.GU2087@kadam>
-References: <20210217165907.9777-1-atulgopinathan@gmail.com>
- <YC1T06VCh0K2BBW5@kroah.com>
- <20210217181000.GB10124@atulu-ubuntu>
- <YC1fzjVOwiqzO1nb@kroah.com>
- <3cfef23d-8d4a-205c-61e8-cbe8c9a0c0f4@mev.co.uk>
- <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
+        id S230028AbhBSJ3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:29:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55892 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhBSJ27 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:28:59 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613726893; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=etBn5V1fBhgd5ONghlz/8lq7lbVTQi6zy8ox4GBOZ00=;
+        b=nvwnuVBtVcz9qfyEF2Cino+n+jhNIXXygW3mHkb2EM64MukPOVTtaNW71uYYJGpI+CM4kq
+        NiYNVpqkkFsB1le5Ol5t/sij9v+8qYEvWrwbroIlmYHiGmN+jo56ARNNX27oqQZdsoguHD
+        JW/AJ4bHjB70Q0QcM1QeOv0DsiofVTY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D377DACCF;
+        Fri, 19 Feb 2021 09:28:12 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 10:28:12 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, joaodias@google.com
+Subject: Re: [PATCH] mm: be more verbose for alloc_contig_range faliures
+Message-ID: <YC+ErI8KIJV4Wd7u@dhcp22.suse.cz>
+References: <20210217163603.429062-1-minchan@kernel.org>
+ <YC4rsr9zkNAvdL4T@dhcp22.suse.cz>
+ <2f167b3c-5f0a-444a-c627-49181fc8fe0d@redhat.com>
+ <YC402s1vqvC4q041@dhcp22.suse.cz>
+ <fa8195f9-4d1b-7a77-1a02-d69710f4208b@redhat.com>
+ <YC6TpqT26dSy11fU@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0 mlxscore=0
- phishscore=0 adultscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190073
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 phishscore=0 clxscore=1011 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190073
+In-Reply-To: <YC6TpqT26dSy11fU@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 09:03:59AM +0000, David Laight wrote:
-> > It's kind of moot anyway because the patch is outdated.  But the reason
-> > for the ___force is that the same `struct comedi_cmd` is used in both
-> > user and kernel contexts.  In user contexts, the `chanlist` member
-> > points to user memory and in kernel contexts it points to kernel memory
-> > (copied from userspace).
+On Thu 18-02-21 08:19:50, Minchan Kim wrote:
+> On Thu, Feb 18, 2021 at 10:43:21AM +0100, David Hildenbrand wrote:
+> > On 18.02.21 10:35, Michal Hocko wrote:
+> > > On Thu 18-02-21 10:02:43, David Hildenbrand wrote:
+> > > > On 18.02.21 09:56, Michal Hocko wrote:
+> > > > > On Wed 17-02-21 08:36:03, Minchan Kim wrote:
+> > > > > > alloc_contig_range is usually used on cma area or movable zone.
+> > > > > > It's critical if the page migration fails on those areas so
+> > > > > > dump more debugging message like memory_hotplug unless user
+> > > > > > specifiy __GFP_NOWARN.
+> > > > > 
+> > > > > I agree with David that this has a potential to generate a lot of output
+> > > > > and it is not really clear whether it is worth it. Page isolation code
+> > > > > already has REPORT_FAILURE mode which currently used only for the memory
+> > > > > hotplug because this was just too noisy from the CMA path - d381c54760dc
+> > > > > ("mm: only report isolation failures when offlining memory").
+> > > > > 
+> > > > > Maybe migration failures are less likely to fail but still.
+> > > > 
+> > > > Side note: I really dislike that uncontrolled error reporting on memory
+> > > > offlining path we have enabled as default. Yeah, it might be useful for
+> > > > ZONE_MOVABLE in some cases, but otherwise it's just noise.
+> > > > 
+> > > > Just do a "sudo stress-ng --memhotplug 1" and see the log getting flooded
+> > > 
+> > > Anyway we can discuss this in a separate thread but I think this is not
+> > > a representative workload.
+> > 
+> > Sure, but the essence is "this is noise", and we'll have more noise on
+> > alloc_contig_range() as we see these calls more frequently. There should be
+> > an explicit way to enable such *debug* messages.
 > 
-> Can't you use a union of the user and kernel pointers?
-> (Possibly even anonymous?)
-> Although, ideally, keeping them in separate fields is better.
-> 8 bytes for a pointer isn't going make a fat lot of difference.
-> 
+> alloc_contig_range already has gfp_mask and it respects __GFP_NOWARN.
+> Why shouldn't people use it if they don't care the failure?
+> Semantically, it makes sense to me.
 
-Creating a union is worse than adding casts.  With the casts, at least
-you know that you're doing something dangerous.  It's good that it looks
-scary because it is scary.
+Well, alloc_contig_range doesn't really have to implement all the gfp
+flags. This is a matter of practicality. alloc_contig_range is quite
+different from the page allocator because it is to be expected that it
+can fail the request. This is avery optimistic allocation request. That
+would suggest that complaining about allocation failures is rather
+noisy.
 
-Keeping them in separate fields is a good idea, but this is part of the
-user space API so it's not possible.
+Now I do understand that some users would like to see why those
+allocations have failed. The question is whether that information is
+generally useful or it is more of a debugging aid. The amount of
+information is also an important aspect. It would be rather unfortunate
+to dump thousands of pages just because they cannot be migrated.
 
-The best we can do is adding some more comments so people know why we
-are doing the scary casts.
-
-regards,
-dan carpenter
-
+I do not have a strong opinion here. We can make all alloc_contig_range
+users use GFP_NOWARN by default and only skip the flag from the cma
+allocator but I am slowly leaning towards (ab)using dynamic debugging
+infrastructure for this.
+-- 
+Michal Hocko
+SUSE Labs
