@@ -2,104 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D46731FC68
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:52:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CE7B31FC6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:54:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBSPv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:51:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBSPvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:51:54 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F0CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:51:13 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id r23so22695670ljh.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 07:51:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/DFMlkrlKAPVKNGX9tkzf+XGf19LwdcZfmqYome26jY=;
-        b=uBS2cKH9qW9PEmRZFYHgD0+04R9BLox8kgC/Css492pBnVKv/ojUQwDUhd1D/tTVur
-         33CMGsq/TNFRoRLBLu7dGJWObDrIU2radpUKhwmuJZsThdlY3LIRjtfgMzcbobw7B09q
-         NAiRv5Ora91RRO7vLcxBYGer1tvxzjru+gxLXGyRPMqe3aCxB8PfRu524iFh8EniPrU+
-         871izwGyROvY6O7md5RmrF11iRuPuobq9d93DiRoDFZQQSQ2Kdkfo8NJ0EEmgZ4aPGxQ
-         O8n//+HyM9DatnqoDv1ErxSOF/vbb96Ora3ksXgS7lH32Jvjl3dOpY3pABWJn22ju+hq
-         lPIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/DFMlkrlKAPVKNGX9tkzf+XGf19LwdcZfmqYome26jY=;
-        b=B3QyZmttiPI4iTlVffeirk5FaJU2+W6kaTZB/2WUs8cPDXiShjFPA6cmm8FyokaAvd
-         IVENmSXCpQ/GtoyhWU6Br9cXCUeKCOX3hqDeY81Fye+xRVNnJWI1qIuAvAFX05eYCj1D
-         NP4YqG4QcTU6auZCUssgAmgv3L+VvehO6trwcAxKKmNsMNr+R1v31HjdniO1O3a5gPwW
-         0s83l8D/MVuyzQpV5ZK6+9iWyhZbyqcMD15SV0e0c5AIeLayF2XKHz2kMEY1R0/zGeCf
-         PzGKkp8RJLkfYQwTP1C/zNWo4tltnkve+RXZj7vQIpo6mYDZRNGG36AFq6prqHVFPBvz
-         vpJA==
-X-Gm-Message-State: AOAM531+JdBUZ3FfkhCCsd2PozoBUU4jx5Bnsk7by2F3qzBTXROE7tJd
-        HJU9U2D+HP9bZ2UQMZjgrm8=
-X-Google-Smtp-Source: ABdhPJw95RAgf6JuPma0lqmnaUwqpYDJfnfVpbmoTqLjPufexGNReFxhevmJ5qYAetj3hSlIzo4Hcw==
-X-Received: by 2002:a19:c201:: with SMTP id l1mr5776989lfc.613.1613749871514;
-        Fri, 19 Feb 2021 07:51:11 -0800 (PST)
-Received: from msi.localdomain (vmpool.ut.mephi.ru. [85.143.112.90])
-        by smtp.gmail.com with ESMTPSA id v25sm1011690ljc.92.2021.02.19.07.51.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 07:51:11 -0800 (PST)
-From:   Nikolay Kyx <knv418@gmail.com>
-To:     gregkh@linuxfoundation.org, adawesomeguy222@gmail.com,
-        dinghao.liu@zju.edu.cn
-Cc:     Nikolay Kyx <knv418@gmail.com>, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3] staging: fwserial: match alignment with open parenthesis
-Date:   Fri, 19 Feb 2021 18:49:17 +0300
-Message-Id: <20210219154917.23388-1-knv418@gmail.com>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210219092918.GV2087@kadam>
-References: <20210219092918.GV2087@kadam>
+        id S229700AbhBSPyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:54:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhBSPyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 10:54:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B2D064EAF;
+        Fri, 19 Feb 2021 15:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613750010;
+        bh=EH8b9ukogYGAiNb+Z4fCszO4iJkHMWzL/zD2TZFlvkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZjMA2sI9o0UYM+dp+b2BNQ5wWzpfEacidLFUiQgRSJV4vi7W/jAbenqYA9EZN8ElU
+         APspdvgRVz4VNDNsY2RyFiynUW8A7Z0pXFxH3BKyiIOesoawWBanYdy+uuja54Rw2e
+         Fgfa4KIGuvwSQsP9AEq29nPjU4YDjllfrPu+8WvM=
+Date:   Fri, 19 Feb 2021 16:53:27 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Scott Branden <scott.branden@broadcom.com>,
+        Willy Tarreau <w@1wt.eu>, Sasha Levin <sashal@kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <YC/e93UHxa8V9Q6I@kroah.com>
+References: <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <20210218165104.GC2013@sasha-vm>
+ <00b9e2fb-d818-58d6-edae-4dbd6aa814f7@gmail.com>
+ <YC6ptKgsMh20tmu6@kroah.com>
+ <20210218182050.GB15217@1wt.eu>
+ <YC6zq3u2jciI2gyZ@kroah.com>
+ <b283eaa5-028f-a3d0-42a1-5b11c48ffe91@broadcom.com>
+ <YC915N/9YNqePueL@kroah.com>
+ <cf9323b7-71c8-dd96-1755-ce90370af6d5@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf9323b7-71c8-dd96-1755-ce90370af6d5@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following checkpatch.pl check:
+On Fri, Feb 19, 2021 at 07:05:41AM -0800, Florian Fainelli wrote:
+> 
+> 
+> On 2/19/2021 12:25 AM, Greg Kroah-Hartman wrote:
+> > On Thu, Feb 18, 2021 at 12:16:50PM -0800, Scott Branden wrote:
+> >> On 2021-02-18 10:36 a.m., Greg Kroah-Hartman wrote:
+> >>> On Thu, Feb 18, 2021 at 07:20:50PM +0100, Willy Tarreau wrote:
+> >>>> On Thu, Feb 18, 2021 at 06:53:56PM +0100, Greg Kroah-Hartman wrote:
+> >>>>> On Thu, Feb 18, 2021 at 09:21:13AM -0800, Florian Fainelli wrote:
+> >>>>>> As a company, we are most likely shooting ourselves in the foot by not
+> >>>>>> having a point of coordination with the Linux Foundation and key people
+> >>>>>> like you, Greg and other participants in the stable kernel.
+> >>>>>
+> >>>>> What does the LF have to do with this?
+> >>>>>
+> >>>>> We are here, on the mailing lists, working with everyone.  Just test the
+> >>>>> -rc releases we make and let us know if they work or not for you, it's
+> >>>>> not a lot of "coordination" needed at all.
+> >>>>>
+> >>>>> Otherwise, if no one is saying that they are going to need these for 6
+> >>>>> years and are willing to use it in their project (i.e. and test it),
+> >>>>> there's no need for us to maintain it for that long, right?
+> >>>>
+> >>>> Greg, please remember I expressed I really need them for slightly more than
+> >>>> 3 years (say 3.5-4) :-) I'm fine with helping a bit more as time permits if
+> >>>> this saves me from having to take over these kernels after you, like in the
+> >>>> past, but I cannot engage on the regularity of my availability.
+> >>>
+> >>> Ok, great!
+> >>>
+> >>> That's one person/company saying they can help out (along with what CIP
+> >>> has been stating.)
+> >>>
+> >>> What about others?  Broadcom started this conversation, odd that they
+> >>> don't seem to want to help out :)
+> >> Greg, I'm sorry but I'm not in a position to provide such a commitment.
+> > 
+> > Ok, who at Broadcom do I need to talk to to get that type of commitment?
+> 
+> I am not sure if I was too subtle before, we (Broadcom) cannot give you
+> an unified voice to speak with because we are divided in silos/business
+> units that make their independent decisions.
 
-CHECK: Alignment should match open parenthesis
+That's fine, I'm totally used to that, large (and even small) companies
+always have different groups with different roadmaps and policies.
 
-in file fwserial.c
+> The group I work in (STB/CM, different from Scott's) is committed to
+> using the 5.10 kernel for 6 years and that is a decision that has been
+> taken.
 
-Signed-off-by: Nikolay Kyx <knv418@gmail.com>
----
+Great!  Will you all be testing the -rc releases and letting me know how
+they work for your systems?
 
-Additionally some style warnings remain valid here and could be fixed by
-another patch.
+> I could give you names of other decision makers in other business units
+> I know who also deliver Linux for their respective business units
+> however some of them may not make public appearances on mailing lists,
+> let alone care about upstreaming their changes so I do not know whether
+> a 6 years 5.10 kernel is even something they remotely entertain.
 
-v2: Edited changelog, as suggested by Greg KH <gregkh@linuxfoundation.org>
+That's fine, I'm not expecting emails from the list, we can take this
+off-list if you like as it sounds like I need to talk to some different
+managers there, right?  :)
 
-v3: Moved comment about remaining warnings under the cut-off line,
-as suggested by Dan Carpenter <dan.carpenter@oracle.com> 
+thanks,
 
- drivers/staging/fwserial/fwserial.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
-index c368082aae1a..137e97c9406c 100644
---- a/drivers/staging/fwserial/fwserial.c
-+++ b/drivers/staging/fwserial/fwserial.c
-@@ -1318,8 +1318,8 @@ static int fwtty_break_ctl(struct tty_struct *tty, int state)
- 	if (state == -1) {
- 		set_bit(STOP_TX, &port->flags);
- 		ret = wait_event_interruptible_timeout(port->wait_tx,
--					       !test_bit(IN_TX, &port->flags),
--					       10);
-+						       !test_bit(IN_TX, &port->flags),
-+						       10);
- 		if (ret == 0 || ret == -ERESTARTSYS) {
- 			clear_bit(STOP_TX, &port->flags);
- 			fwtty_restart_tx(port);
--- 
-2.30.1
-
+greg k-h
