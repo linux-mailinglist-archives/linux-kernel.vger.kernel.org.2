@@ -2,74 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C51431F3B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 02:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1705A31F3B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 02:57:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBSBxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 20:53:15 -0500
-Received: from mga01.intel.com ([192.55.52.88]:41825 "EHLO mga01.intel.com"
+        id S229652AbhBSBzs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Feb 2021 20:55:48 -0500
+Received: from mgw-01.mpynet.fi ([82.197.21.90]:55090 "EHLO mgw-01.mpynet.fi"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhBSBxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 20:53:10 -0500
-IronPort-SDR: /4rcr095hnP4ag+JxC2+DxIHHyrCxqc2DXLSJwz2qLRG3H5/4tfpgLGYQn31ViSLWagr2xNpfi
- f53MoLWlky5A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="202975690"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="202975690"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 17:52:29 -0800
-IronPort-SDR: R3T2gbK7ggMFNSKElvyfp0fP31wM0R3CD9B4c8X5eawnjirPxlMaZPh9OFI90riO3iTxZxLHBO
- TwpD+dGOh6eQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="378637916"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga002.jf.intel.com with ESMTP; 18 Feb 2021 17:52:28 -0800
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Feb 2021 17:52:28 -0800
-Received: from shsmsx605.ccr.corp.intel.com (10.109.6.215) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 18 Feb 2021 17:52:27 -0800
-Received: from shsmsx605.ccr.corp.intel.com ([10.109.6.215]) by
- SHSMSX605.ccr.corp.intel.com ([10.109.6.215]) with mapi id 15.01.2106.002;
- Fri, 19 Feb 2021 09:52:24 +0800
-From:   "Zhuo, Qiuxu" <qiuxu.zhuo@intel.com>
-To:     =?utf-8?B?J0tyenlzenRvZiBXaWxjennFhHNraSc=?= <kw@linux.com>
-CC:     Bjorn Helgaas <helgaas@kernel.org>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] PCI/RCEC: Fix failure to inject errors to some RCiEP
- devices
-Thread-Topic: [PATCH 1/1] PCI/RCEC: Fix failure to inject errors to some RCiEP
- devices
-Thread-Index: AQHW/1FxyeRWMorsOUa/1MhtBDu8kapRGxsAgAwb9fCAAMkFgIAAATQAgADDjjA=
-Date:   Fri, 19 Feb 2021 01:52:24 +0000
-Message-ID: <57a7bbc1ba294ce39c309e519fe45842@intel.com>
-References: <20210210020516.95292-1-qiuxu.zhuo@intel.com>
- <YCQT90mK1kacZ7ZA@rocinante> <a5b1aa8ef91a4c71982ad77234932349@intel.com>
- <YC7lE2Ph/MHxNKs+@rocinante> <YC7mFsfTlVsW9Uo1@rocinante>
-In-Reply-To: <YC7mFsfTlVsW9Uo1@rocinante>
-Accept-Language: en-US
+        id S229459AbhBSBzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 20:55:47 -0500
+Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
+        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 11J1sWv7126920;
+        Fri, 19 Feb 2021 03:54:32 +0200
+Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
+        by mgw-01.mpynet.fi with ESMTP id 36t3dpg1bw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 03:54:32 +0200
+Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
+ tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 19 Feb 2021 03:54:31 +0200
+Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
+ tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
+ 15.00.1497.010; Fri, 19 Feb 2021 03:54:31 +0200
+From:   Anton Altaparmakov <anton@tuxera.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     "linux-ntfs-dev@lists.sourceforge.net" 
+        <linux-ntfs-dev@lists.sourceforge.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Rustam Kovhaev <rkovhaev@gmail.com>
+Subject: Re: [PATCH] ntfs: check for valid standard information attribute
+Thread-Topic: [PATCH] ntfs: check for valid standard information attribute
+Thread-Index: AQHXBUX43Bx0ygm+wEC4t5YdRoTv2qpemD8A
+Date:   Fri, 19 Feb 2021 01:54:30 +0000
+Message-ID: <42B686E5-92C1-4AD3-8CF4-E9AB39CBDB7B@tuxera.com>
+References: <20210217155930.1506815-1-rkovhaev@gmail.com>
+In-Reply-To: <20210217155930.1506815-1-rkovhaev@gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [109.155.251.193]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <24CC84ECF93335439462256E65680542@ex13.tuxera.com>
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-18_14:2021-02-18,2021-02-18 signatures=0
+X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 phishscore=0 spamscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190009
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pi4uLg0KPiANCj4gV2UgY291bGQgcHJvYmFibHkgYWRkIHRoZSBmb2xsb3dpbmc6DQo+IA0KPiAg
-IEZpeGVzOiA1MDdiNDYwZjgxNDQgKCJQQ0kvRVJSOiBBZGQgcGNpZV9saW5rX3JjZWMoKSB0byBh
-c3NvY2lhdGUgUkNpRVBzIikNCj4gDQoNCk9LLiBXaWxsIGFkZCB0aGlzIHRvIHRoZSB2Mi4NCg0K
-VGhhbmtzIQ0KLVFpdXh1DQo=
+Hi Andrew,
+
+Can you please push this one upstream?  Thanks a lot in advance!
+
+Best regards,
+
+	Anton
+
+> On 17 Feb 2021, at 15:59, Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> 
+> we should check for valid STANDARD_INFORMATION attribute offset and
+> length before trying to access it
+> 
+> Reported-and-tested-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
+> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
+> Acked-by: Anton Altaparmakov <anton@tuxera.com>
+> Link: https://syzkaller.appspot.com/bug?extid=c584225dabdea2f71969
+> ---
+> fs/ntfs/inode.c | 6 ++++++
+> 1 file changed, 6 insertions(+)
+> 
+> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
+> index f7e4cbc26eaf..be4ff9386ec0 100644
+> --- a/fs/ntfs/inode.c
+> +++ b/fs/ntfs/inode.c
+> @@ -629,6 +629,12 @@ static int ntfs_read_locked_inode(struct inode *vi)
+> 	}
+> 	a = ctx->attr;
+> 	/* Get the standard information attribute value. */
+> +	if ((u8 *)a + le16_to_cpu(a->data.resident.value_offset)
+> +			+ le32_to_cpu(a->data.resident.value_length) >
+> +			(u8 *)ctx->mrec + vol->mft_record_size) {
+> +		ntfs_error(vi->i_sb, "Corrupt standard information attribute in inode.");
+> +		goto unm_err_out;
+> +	}
+> 	si = (STANDARD_INFORMATION*)((u8*)a +
+> 			le16_to_cpu(a->data.resident.value_offset));
+> 
+> -- 
+> 2.30.0
+> 
+
+
+-- 
+Anton Altaparmakov <anton at tuxera.com> (replace at with @)
+Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
+Linux NTFS maintainer
+
