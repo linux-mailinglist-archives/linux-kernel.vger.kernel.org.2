@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DDC731F659
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3704B31F65A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhBSJNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:13:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229947AbhBSJHn (ORCPT
+        id S230063AbhBSJNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:13:39 -0500
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:37638 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhBSJHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:07:43 -0500
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B310C061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:07:02 -0800 (PST)
-Received: by mail-vk1-xa34.google.com with SMTP id v66so1055628vkd.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:07:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yN01wuFruNiwvlR4nWVGFgREmWX9yHFllXRmh8fxIwU=;
-        b=n3/LrxpsC2OkD6fPu/ezlq1VjEsvFGYJCOYMZ5J88dLnqxxoYyPe/rKQNxUSuLuIln
-         TboExNJt5RX7XuGOjmi+CHKe6KOg5bie9RLclwxE3Q4HU2pBjN5yUBxmLXGv/qXtdTzy
-         MpfapeRfJRJbCHj8diZP+lGSH91/hn+uqS+3gVGv1FxG9HaqX6VQT4tcqbtNGe2oSXdq
-         /KgFhgNC5V/3RY7KAh9QYiCZX8bS/0YHl2cmxmEPnH7oKP6zWE97Q+kH976uyz5/bjbc
-         QUbRHoubY6M68u+Sa/nKnoblkNOdmXGg+F/r/yZ7D7RTHrhoHZWxurwm3JvN7AUYAJiQ
-         tJXw==
+        Fri, 19 Feb 2021 04:07:44 -0500
+Received: by mail-oi1-f172.google.com with SMTP id y199so5163022oia.4;
+        Fri, 19 Feb 2021 01:07:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=yN01wuFruNiwvlR4nWVGFgREmWX9yHFllXRmh8fxIwU=;
-        b=JqvT4cdI06mHN61UHwrK/F6rfgwHo64watYqrVSgE3N6dX+RKw8Fs/4Gkrbh8bfDJy
-         OhCt+qwzkTPsYjw7Q2h8ZnGAtPgrIQ970U46YMOczIBcwouRQCKO/mxpUU9innI7BePy
-         fJ7zXVSl99MuMzRnP/DNp+gDui5m54Bl7GnN0l9KhsXoYuOpJSB8f7r0psQ11rfnp0O4
-         Ob9XI/rzYxwSvS+scwE94SDw2cSWSpByqvShJ6yswp+VbX64Fk6ub1CQThmhJRei+Lbw
-         ssFn8BeMxRJ6sYzLzfHPeKIcXI4yOAMEt6nBHkTtvBBLPuzOR8YKV281d12ZngDbP2WH
-         gbCA==
-X-Gm-Message-State: AOAM530rC+kddjEwm8fxb283+6VOHxFLAYq5AyI5kSNQZy3Cvjyk6r1N
-        IdtcrgUUoxyxh+vV1/XoK99kCzK3WQ2nFCiTJKQvYg==
-X-Google-Smtp-Source: ABdhPJzKUm/xh7nllJxIUI73WY+U82eO0Jix5S18RtlTJR4/AkvhLw5A7tcATq+17s+Blm6SA10wg4ku1I2I3uRkAKE=
-X-Received: by 2002:a1f:9c55:: with SMTP id f82mr235371vke.22.1613725621204;
- Fri, 19 Feb 2021 01:07:01 -0800 (PST)
+        bh=WMmV+pg/AZEmOZWqm+tCw4vrAAYkC3Vrjkj4xpthz5Q=;
+        b=qBgKiSZjiy+AsAFN0BRkVX/1Gy66LIv9oVg43bXGptf9YINb+E7sgU0ToL2VYJ3dxc
+         0qV/aSF5W7UNUtpxSHLlmkS+3aYaboSAksG5lfQnxDtwSdFsJcw6brf4/9cUTYT17mUY
+         5T4EHvWPojdCgLThd42rOlV3H8qRXMLrw409zEDTbmScYOlaqI9M8CJcFcd1MofGyZ5j
+         ArwzDuquJmA97UVRvVWPY4ecCiWWgEw8dVbWeeFxThvAU6O1M3kRia6glxTCCcYTdYcz
+         QjPzzbpjmbzupL/egG/ShZHTCYbqMZVdvuY2geEjMORCLXq8tUqH25fRNS58pidM/ziL
+         7hNw==
+X-Gm-Message-State: AOAM530nNbtcIbOCFXE8B1KJ1u4mg0NyC5TSKwWTqDZDlBrOoNJ8oubT
+        k3mtI/rQMLFocNPmukrDzPL18rU+FY49bcfGUdA=
+X-Google-Smtp-Source: ABdhPJxUDGyEvmeXZSHKn0xtxAcKCVUH2HgwBut5V3rBKZFoINqT1AaIOH4mYn/CXF7oGXnaG4WgBw+wf8B4k5R8xDM=
+X-Received: by 2002:aca:744:: with SMTP id 65mr5682790oih.153.1613725622900;
+ Fri, 19 Feb 2021 01:07:02 -0800 (PST)
 MIME-Version: 1.0
-References: <20210218100243.32187-1-badhri@google.com> <YC489HGT/yVHykAs@kroah.com>
- <CAPTae5+qhE9uo2s20oEQd0x+nW21zGE3S7QWkR=oqqVX-3uHmg@mail.gmail.com> <YC5EpqqNM+gnD6Zg@kroah.com>
-In-Reply-To: <YC5EpqqNM+gnD6Zg@kroah.com>
-From:   Badhri Jagan Sridharan <badhri@google.com>
-Date:   Fri, 19 Feb 2021 01:06:24 -0800
-Message-ID: <CAPTae5LuxPw+4DKt4_NFmBnZxgvM7nTDFtXJsTiqsevi4krLjQ@mail.gmail.com>
-Subject: Re: [PATCH v1] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V
- before toggling
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Kyle Tso <kyletso@google.com>, USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210217221457.1827266-1-drew@beagleboard.org> <20210217221457.1827266-3-drew@beagleboard.org>
+In-Reply-To: <20210217221457.1827266-3-drew@beagleboard.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 19 Feb 2021 10:06:51 +0100
+Message-ID: <CAMuHMdXNz8ZbFXRgYCGuAd1+Cz8xTvMc-rkwXXiE-E-Fb5XXNA@mail.gmail.com>
+Subject: Re: [PATCH v7 2/3] pinctrl: pinmux: Add pinmux-select debugfs file
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Done. Just sent out the following patch and CCed stable@vger.kernel.org as well.
+Hi Drew,
 
-[PATCH v2] usb: typec: tcpm: Wait for vbus discharge to VSAFE0V before toggling
+On Wed, Feb 17, 2021 at 11:15 PM Drew Fustini <drew@beagleboard.org> wrote:
+> Add "pinmux-select" to debugfs which will activate a function and group:
+>
+>   echo "<function-name group-name>" > pinmux-select
+>
+> The write operation pinmux_select() handles this by checking that the
+> names map to valid selectors and then calling ops->set_mux().
+>
+> The existing "pinmux-functions" debugfs file lists the pin functions
+> registered for the pin controller. For example:
+>
+>   function: pinmux-uart0, groups = [ pinmux-uart0-pins ]
+>   function: pinmux-mmc0, groups = [ pinmux-mmc0-pins ]
+>   function: pinmux-mmc1, groups = [ pinmux-mmc1-pins ]
+>   function: pinmux-i2c0, groups = [ pinmux-i2c0-pins ]
+>   function: pinmux-i2c1, groups = [ pinmux-i2c1-pins ]
+>   function: pinmux-spi1, groups = [ pinmux-spi1-pins ]
+>
+> To activate function pinmux-i2c1 and group pinmux-i2c1-pins:
+>
+>   echo "pinmux-i2c1 pinmux-i2c1-pins" > pinmux-select
+>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Tony Lindgren <tony@atomide.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
 
-Thanks,
-Badhri
+Thanks for your patch!
+
+On R-Car M2-W, which does not use pinctrl-single, I have:
+
+    # cat pinmux-functions
+    ...
+    function 14: i2c2, groups = [ i2c2 i2c2_b i2c2_c i2c2_d ]
+    ...
+    function 51: ssi, groups = [ ssi0_data ssi0_data_b ssi0129_ctrl
+ssi0129_ctrl_b ssi1_data ssi1_data_b ssi1_ctrl ssi1_ctrl_b ssi2_data
+ssi2_ctrl ssi3_data ssi34_ctrl ssi4_data ssi4_ctrl ssi5_data ssi5_ctrl
+ssi6_data ssi6_ctrl ssi7_data ssi7_data_b ssi78_ctrl ssi78_ctrl_b
+ssi8_data ssi8_data_b ssi9_data ssi9_data_b ssi9_ctrl ssi9_ctrl_b ]
+    ...
+
+On the Koelsch board:
+
+    # cd /sys/kernel/debug/pinctrl/e6060000.pinctrl-sh-pfc/
+    # echo ssi ssi2_ctrl > pinmux-select # Configure i2c2 pins for ssi
+    # i2cdetect -y -a 2                  # Fails
+    # echo i2c2 i2c2 > pinmux-select     # Restore i2c2
+    # i2cdetect -y -a 2                  # Works again
+
+The order of the 2 parameters looks a bit odd to me, as the operation
+configures the pins from "group" to be used for "function".
+See also arch/arm/boot/dts/r8a7791-koelsch.dts
+For the i2c2 example it's not that obvious, but for ssi it is.
+Might feel different for pinctrl-single, and perhaps I just need to get
+used to it ;-)
+
+Anyway:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 
-On Thu, Feb 18, 2021 at 2:42 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Thu, Feb 18, 2021 at 02:38:45AM -0800, Badhri Jagan Sridharan wrote:
-> > Hi Greg,
-> >
-> > This patch is a bug fix for the following patch which was introduced in 5.11.
-> >
-> > commit f321a02caebdd0c56e167610cda2fa148cd96e8b
-> > Author: Badhri Jagan Sridharan <badhri@google.com>
-> > Date:   Wed Oct 28 23:31:35 2020 -0700
-> >
-> >     usb: typec: tcpm: Implement enabling Auto Discharge disconnect support
-> >
-> >     TCPCI spec allows TCPC hardware to autonomously discharge the vbus
-> >     capacitance upon disconnect. The expectation is that the TCPM enables
-> >     AutoDischargeDisconnect while entering SNK/SRC_ATTACHED states. Hardware
-> >     then automously discharges vbus when the vbus falls below a certain
-> >     threshold i.e. VBUS_SINK_DISCONNECT_THRESHOLD.
-> >
-> >     Apart from enabling the vbus discharge circuit, AutoDischargeDisconnect
-> >     is also used a flag to move TCPCI based TCPC implementations into
-> >     Attached.Snk/Attached.Src state as mentioned in
-> >     Figure 4-15. TCPC State Diagram before a Connection of the
-> >     USB Type-C Port Controller Interface Specification.
-> >     In such TCPC implementations, setting AutoDischargeDisconnect would
-> >     prevent TCPC into entering "Connection_Invalid" state as well.
-> >
-> >     Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> >     Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >     Link: https://lore.kernel.org/r/20201029063138.1429760-8-badhri@google.com
-> >     Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->
-> Great, then can you resend the patch and add a proper Fixes: tag, along
-> with a cc: stable as well?
->
-> thanks,
->
-> greg k-h
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
