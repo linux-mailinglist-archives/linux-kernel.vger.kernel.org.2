@@ -2,73 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC85E31F774
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 224F431F777
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbhBSKlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:41:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55278 "EHLO mail.kernel.org"
+        id S230001AbhBSKlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:41:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42242 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBSKkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:40:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A173264EB7;
-        Fri, 19 Feb 2021 10:40:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613731213;
-        bh=RErC9QubHxzQe6XsyUGu3rb6BZK6OYuteFLCp8HvQek=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vGK43yxv3kz5h9SA9UZG1tcj6GOBLFZeMtjfjuCFnDzFpb440fVwmDdNpouB9mXHv
-         s+c6SMKum2sA6x1Y97jcipBUrupBIMNL6Sp2gZC5vI19/ZWsFE/dxlouxKr7dxATFL
-         E2pKQNs/XNptXI9blNNzv3OY8wdQDrm6c1UZ63wY=
-Date:   Fri, 19 Feb 2021 11:40:10 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Selvakumar Elangovan <selvakumar16197@gmail.com>
-Cc:     forest@alittletooquiet.net, tvboxspy@gmail.com,
-        oscar.carter@gmx.com, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] staging: vt6656: fixed a CamelCase coding style issue.
-Message-ID: <YC+Vii75qR3Mz48k@kroah.com>
-References: <20210219095835.9687-1-selvakumar16197@gmail.com>
+        id S229998AbhBSKlN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:41:13 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7D483AC6E;
+        Fri, 19 Feb 2021 10:40:32 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 11:40:30 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <20210219103943.GA19945@linux>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+ <20210218133250.GA7983@localhost.localdomain>
+ <YC5yzNB9xT76fkod@dhcp22.suse.cz>
+ <20210219090548.GA17266@linux>
+ <YC+LWksScdiuPw7X@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219095835.9687-1-selvakumar16197@gmail.com>
+In-Reply-To: <YC+LWksScdiuPw7X@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:28:35PM +0530, Selvakumar Elangovan wrote:
-> This patch renames CamelCase macros uVar and uModulo into u_var and
-> u_module in device.h
+On Fri, Feb 19, 2021 at 10:56:42AM +0100, Michal Hocko wrote:
+> OK, this should work but I am really wondering whether it wouldn't be
+> just simpler to replace the old page by a new one in the free list
+> directly. Or is there any reason we have to go through the generic
+> helpers path? I mean something like this
 > 
-> This issue was reported by checkpatch.pl
+> 	new_page = alloc_fresh_huge_page();
+> 	if (!new_page)
+> 		goto fail;
+> 	spin_lock(hugetlb_lock);
+> 	if (!PageHuge(old_page)) {
+> 		/* freed from under us, nothing to do */ 
+> 		__update_and_free_page(new_page);
+> 		goto unlock;
+> 	}
+> 	list_del(&old_page->lru);
+> 	__update_and_free_page(old_page);
+> 	__enqueue_huge_page(new_page);
+> unlock:
+> 	spin_unlock(hugetlb_lock);
 > 
-> Signed-off-by: Selvakumar Elangovan <selvakumar16197@gmail.com>
-> ---
->  drivers/staging/vt6656/device.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/vt6656/device.h b/drivers/staging/vt6656/device.h
-> index 947530fefe94..6615d356f74a 100644
-> --- a/drivers/staging/vt6656/device.h
-> +++ b/drivers/staging/vt6656/device.h
-> @@ -385,11 +385,11 @@ struct vnt_private {
->  	struct ieee80211_low_level_stats low_stats;
->  };
->  
-> -#define ADD_ONE_WITH_WRAP_AROUND(uVar, uModulo) {	\
-> -	if ((uVar) >= ((uModulo) - 1))			\
-> -		(uVar) = 0;				\
-> +#define ADD_ONE_WITH_WRAP_AROUND(u_var, u_modulo) {	\
+> This will require to split update_and_free_page and enqueue_huge_page to
+> counters independent parts but that shouldn't be a big deal. But it will
+> also protect from any races. Not an act of beauty but seems less hackish
+> to me.
 
-"u_" does not really make any sense, right?
+On a closer look, do we really need to decouple update_and_free_page and
+enqueue_huge_page? These two functions do not handle the lock, but rather
+the functions that call them (as would be in our case).
+Only update_and_free_page drops the lock during the freeing of a gigantic page
+and then it takes it again, as the caller is who took the lock.
 
-Just use "var" and "modulo" please.
+am I missing anything obvious here?
 
-But first, why is this needed at all?  Isn't there an in-kernel function
-that should be used instead?
-
-thanks,
-
-greg k-h
+-- 
+Oscar Salvador
+SUSE L3
