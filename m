@@ -2,97 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2ACF31F878
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:33:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CB831F879
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhBSLcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:32:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35665 "EHLO
+        id S230071AbhBSLhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:37:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22167 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230389AbhBSLcr (ORCPT
+        by vger.kernel.org with ESMTP id S229524AbhBSLhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:32:47 -0500
+        Fri, 19 Feb 2021 06:37:20 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613734280;
+        s=mimecast20190719; t=1613734554;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=e0NLLJQnD1mjdZ9kK1sCMRFgwk44auieBeOGjPb7N3k=;
-        b=HEo1cAWHw8Fzig2spCuZJb6Eg/7ksjUZPljEvkbFi08HfFy4Rj4qZ539MtB26piXsm5W4W
-        8wbWd+oxwnc0q2wjIGYD4RsAKZnT2JBB9+lvcH3+XY3uatPQ4LOI1GUxgZDNUQC2t0ESHZ
-        nKS69qiAFrNJEnnwRgmLdeOLTOpVnwE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-r9Y6r0keMUGd8lrEd7wYog-1; Fri, 19 Feb 2021 06:31:17 -0500
-X-MC-Unique: r9Y6r0keMUGd8lrEd7wYog-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C2A7107ACE3;
-        Fri, 19 Feb 2021 11:31:16 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5AABA6267C;
-        Fri, 19 Feb 2021 11:31:10 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 2/2] genirq/matrix: WARN_ON_ONCE() when cm->allocated/m->total_allocated go negative
-Date:   Fri, 19 Feb 2021 12:31:01 +0100
-Message-Id: <20210219113101.967508-3-vkuznets@redhat.com>
-In-Reply-To: <20210219113101.967508-1-vkuznets@redhat.com>
-References: <20210219113101.967508-1-vkuznets@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=xn1ULpHqjYib2erd8HgDp+bnvgqHCYqsU53nsfSrm1E=;
+        b=M5UltLR4Awei/2wwRz4sarKRUSPqtb/0LHy391PYqPqvohUXtAbQpfLp+R5WSZDEQmb6bL
+        focqADOO+lKZV2DGhRPm5VtT3LKH1pVqREv8NRcvS9ZZ4LHT/eB3xUwZ6KLAStt68HujZb
+        WPe3sgP3IltWXY1wb9zX6QOHyHSloW0=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-243-jI2XVixWMa2WWhqkYu7IJQ-1; Fri, 19 Feb 2021 06:35:52 -0500
+X-MC-Unique: jI2XVixWMa2WWhqkYu7IJQ-1
+Received: by mail-pg1-f200.google.com with SMTP id n2so3430909pgj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 03:35:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=xn1ULpHqjYib2erd8HgDp+bnvgqHCYqsU53nsfSrm1E=;
+        b=GXutmPmRgsaBo2etSdAE1Mq5MDBoV1oOnIBM8pLxKGBMEjwtCUIfIlG8ZGNkCGy2ZQ
+         0CgMNSG6X2T39AS+NoxaY2cSBRWXl3J13LdNh9xM2tsKbLeaQqDX3HwalYIfhHWZyrB1
+         T1NtCNfmlEr3JVNU6SYkW5y7elHDCiuWWqqPgw8ZxbGpNpsjf0kidRTC9qfwC4uNjHqG
+         Q6ysF+prdJqsVng0UhJUAAaeEjXb75FiVDr63aIeaumyuzwOOxU2afDogA4QZCZ6Z53C
+         S7zfdFqsyJWEyyZJrjulcpq9Gj8nILVnNvjIVcADANffFsmU8RVKmhM7iswiyM46UwHz
+         /K0g==
+X-Gm-Message-State: AOAM533u0X7SLYx2NGh9WLA0P0s5QuxEXaw+Ly2w5KycKIzjxyGJbrQR
+        TA76mAVo3lkeg4G5gldYVnEBU6ZnAODFa1OcJk5QkG5yS4EmAwANjfXJyn3Dwm6ZXRxPUck2Caa
+        cU5ueNmWEittbdXIB7t4SpjFh
+X-Received: by 2002:a62:7a0b:0:b029:1de:7e70:955d with SMTP id v11-20020a627a0b0000b02901de7e70955dmr1552746pfc.49.1613734551558;
+        Fri, 19 Feb 2021 03:35:51 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzJ4N/87dUKkv79oaKb1TdgD+7zCbqUbQNPc48eJdnHyHp82QLrzhF66Kh7W0cIjvCa2LqetQ==
+X-Received: by 2002:a62:7a0b:0:b029:1de:7e70:955d with SMTP id v11-20020a627a0b0000b02901de7e70955dmr1552727pfc.49.1613734551296;
+        Fri, 19 Feb 2021 03:35:51 -0800 (PST)
+Received: from xiangao.remote.csb ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id ke13sm8360941pjb.44.2021.02.19.03.35.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 03:35:50 -0800 (PST)
+Date:   Fri, 19 Feb 2021 19:35:37 +0800
+From:   Gao Xiang <hsiangkao@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>,
+        Fang Wei <fangwei1@huawei.com>,
+        Li Guifu <bluce.liguifu@huawei.com>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Guo Weichao <guoweichao@oppo.com>,
+        Gao Xiang <hsiangkao@redhat.com>
+Subject: [GIT PULL] erofs update for 5.12-rc1
+Message-ID: <20210219113537.GA492321@xiangao.remote.csb>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When irq_matrix_assign()/irq_matrix_free() calls get unsynced, weird
-effects are possible, e.g. when cm->allocated goes negative CPU hotplug
-may get blocked. Add WARN_ON_ONCE() to simplify detecting such situations.
+Hi Linus,
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- kernel/irq/matrix.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Could you consider this pull request for 5.12-rc1?
 
-diff --git a/kernel/irq/matrix.c b/kernel/irq/matrix.c
-index 651a4ad6d711..2438a4f9d726 100644
---- a/kernel/irq/matrix.c
-+++ b/kernel/irq/matrix.c
-@@ -189,7 +189,9 @@ void irq_matrix_assign_system(struct irq_matrix *m, unsigned int bit,
- 	set_bit(bit, m->system_map);
- 	if (replace) {
- 		BUG_ON(!test_and_clear_bit(bit, cm->alloc_map));
-+		WARN_ON_ONCE(!cm->allocated);
- 		cm->allocated--;
-+		WARN_ON_ONCE(!m->total_allocated);
- 		m->total_allocated--;
- 	}
- 	if (bit >= m->alloc_start && bit < m->alloc_end)
-@@ -424,12 +426,17 @@ void irq_matrix_free(struct irq_matrix *m, unsigned int cpu,
- 		return;
- 
- 	clear_bit(bit, cm->alloc_map);
-+	WARN_ON_ONCE(!cm->allocated);
- 	cm->allocated--;
--	if(managed)
-+	if (managed) {
-+		WARN_ON_ONCE(!cm->managed_allocated);
- 		cm->managed_allocated--;
-+	}
- 
--	if (cm->online)
-+	if (cm->online) {
-+		WARN_ON_ONCE(!m->total_allocated);
- 		m->total_allocated--;
-+	}
- 
- 	if (!managed) {
- 		cm->available++;
--- 
-2.29.2
+This contains a somewhat important but rarely reproduced fix
+reported month ago for platforms which have weak memory model
+(e.g. arm64). The root cause is that test_bit/set_bit atomic
+operations are actually implemented in relaxed forms, and
+uninitialized fields governed by an atomic bit could be observed
+in advance due to memory reordering thus memory barrier pairs
+should be used. There is also a trivial fix of crafted blkszbits
+generated by syzkaller.
+
+All commits have been tested and have been in linux-next for
+more than a week. This merges cleanly with master.
+
+Thanks,
+Gao Xiang
+
+The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
+
+  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.12-rc1
+
+for you to fetch changes up to ce063129181312f8781a047a50be439c5859747b:
+
+  erofs: initialized fields can only be observed after bit is set (2021-02-11 11:55:28 +0800)
+
+----------------------------------------------------------------
+Changes since last update:
+
+ - fix shift-out-of-bounds of crafted blkszbits generated by syzkaller;
+
+ - ensure initialized fields can only be observed after bit is set.
+
+----------------------------------------------------------------
+Gao Xiang (2):
+      erofs: fix shift-out-of-bounds of blkszbits
+      erofs: initialized fields can only be observed after bit is set
+
+ fs/erofs/super.c |  4 ++--
+ fs/erofs/xattr.c | 10 +++++++++-
+ fs/erofs/zmap.c  | 10 +++++++++-
+ 3 files changed, 20 insertions(+), 4 deletions(-)
 
