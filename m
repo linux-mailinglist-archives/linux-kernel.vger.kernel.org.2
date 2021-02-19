@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662FF31F814
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D9131F812
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhBSLSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:18:07 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49270 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhBSLR5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:17:57 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 927501C0B80; Fri, 19 Feb 2021 12:16:59 +0100 (CET)
-Date:   Fri, 19 Feb 2021 12:16:59 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Dan Murphy <dmurphy@ti.com>,
-        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity
- from DT
-Message-ID: <20210219111659.GI19207@duo.ucw.cz>
-References: <20210204143738.28036-1-schuchmann@schleissheimer.de>
- <20210204145308.GC14305@duo.ucw.cz>
- <DB8P190MB0634587826F57667BB3BBB6CD9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
- <20210205103438.GB27854@amd>
- <DB8P190MB063473FEA37E69E6DF6BC5F6D9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+        id S230124AbhBSLR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:17:56 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36512 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhBSLRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 06:17:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7CDC7AC6E;
+        Fri, 19 Feb 2021 11:17:13 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 12:17:11 +0100
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <20210219111703.GA20286@linux>
+References: <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+ <20210218133250.GA7983@localhost.localdomain>
+ <YC5yzNB9xT76fkod@dhcp22.suse.cz>
+ <20210219090548.GA17266@linux>
+ <YC+LWksScdiuPw7X@dhcp22.suse.cz>
+ <20210219103943.GA19945@linux>
+ <YC+ZBIwXKEZCy1Bk@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="poJSiGMzRSvrLGLs"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DB8P190MB063473FEA37E69E6DF6BC5F6D9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+In-Reply-To: <YC+ZBIwXKEZCy1Bk@dhcp22.suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 11:55:00AM +0100, Michal Hocko wrote:
+> It is not the lock that I care about but more about counters. The
+> intention was that there is a single place to handle both enqueing and
+> dequeing. As not all places require counters to be updated. E.g. the
+> migration which just replaces one page by another.
 
---poJSiGMzRSvrLGLs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I see.
+alloc_fresh_huge_page->prep_new_huge_page increments h->nr_huge_pages{_node}
+counters.
+Which means:
 
-Hi!
+>       new_page = alloc_fresh_huge_page();
+>       if (!new_page)
+>               goto fail;
+>       spin_lock(hugetlb_lock);
+>       if (!PageHuge(old_page)) {
+>               /* freed from under us, nothing to do */ 
+>               __update_and_free_page(new_page);
 
-> > > > ? Does not make sense and changelog does not help.
-> > >
-> > > This is an unused variable which is in the driver
-> > > (same as the regulator). Should I provide a patch on its own for that
-> > > or just describe in the changelog?
-> >=20
-> > Lets do separate patch here. DT changes will need Ack from Rob, this
-> > can go in directly.
->=20
-> Okay, I will submit a separate patch
->=20
-> > Can you or Dan submit patch getting the regulator support to work? If
-> > not, I guess we should remove the regulator support after all.
->=20
-> To be true I am fairly new to the kernel and have no idea
-> how to test this. So no, I don't want provide a patch (except
-> for removing), sorry.
+Here we need update_and_free_page, otherwise we would be leaving a stale value
+in h->nr_huge_pages{_node}. 
 
-No problem. It seems Andy submitted series for this.
+>               goto unlock;
+>       }
+>       list_del(&old_page->lru);
+>       __update_and_free_page(old_page);
 
-Best regards,
-								Pavel
+Same here.
 
---=20
-http://www.livejournal.com/~pavelmachek
+>       __enqueue_huge_page(new_page);
 
---poJSiGMzRSvrLGLs
-Content-Type: application/pgp-signature; name="signature.asc"
+This is ok since h->free_huge_pages{_node} do not need to be updated.
 
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+eKwAKCRAw5/Bqldv6
-8k0GAJ9eBnOqKXpNbD64WsGkaDn2QJtn9QCfZh77uCdQ3ZmsZvhJHWa9JpKOqrg=
-=ztOQ
------END PGP SIGNATURE-----
-
---poJSiGMzRSvrLGLs--
+-- 
+Oscar Salvador
+SUSE L3
