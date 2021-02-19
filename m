@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1705A31F3B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 02:57:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF6331F3DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 03:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhBSBzs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 18 Feb 2021 20:55:48 -0500
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:55090 "EHLO mgw-01.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229459AbhBSBzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 20:55:47 -0500
-Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 11J1sWv7126920;
-        Fri, 19 Feb 2021 03:54:32 +0200
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 36t3dpg1bw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 03:54:32 +0200
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 19 Feb 2021 03:54:31 +0200
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.010; Fri, 19 Feb 2021 03:54:31 +0200
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: Re: [PATCH] ntfs: check for valid standard information attribute
-Thread-Topic: [PATCH] ntfs: check for valid standard information attribute
-Thread-Index: AQHXBUX43Bx0ygm+wEC4t5YdRoTv2qpemD8A
-Date:   Fri, 19 Feb 2021 01:54:30 +0000
-Message-ID: <42B686E5-92C1-4AD3-8CF4-E9AB39CBDB7B@tuxera.com>
-References: <20210217155930.1506815-1-rkovhaev@gmail.com>
-In-Reply-To: <20210217155930.1506815-1-rkovhaev@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [109.155.251.193]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <24CC84ECF93335439462256E65680542@ex13.tuxera.com>
-Content-Transfer-Encoding: 8BIT
+        id S229752AbhBSCIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 21:08:43 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2721 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229587AbhBSCIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 21:08:41 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B602f1d810001>; Thu, 18 Feb 2021 18:08:01 -0800
+Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 19 Feb
+ 2021 02:08:00 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     <linux-mm@kvack.org>, <nouveau@lists.freedesktop.org>,
+        <bskeggs@redhat.com>, <akpm@linux-foundation.org>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kvm-ppc@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
+        <jglisse@redhat.com>, <jgg@nvidia.com>, <hch@infradead.org>,
+        <daniel@ffwll.ch>, Alistair Popple <apopple@nvidia.com>
+Subject: [PATCH v2 0/4] Add support for SVM atomics in Nouveau
+Date:   Fri, 19 Feb 2021 13:07:46 +1100
+Message-ID: <20210219020750.16444-1-apopple@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-18_14:2021-02-18,2021-02-18 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 phishscore=0 spamscore=0 adultscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102190009
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1613700481; bh=5OrVHikvQYHHvCBqjLvpLd1/wujsuMHrn59MGSbB4U8=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=QZzxAptqC9yZxIAmGC2CizywepnAeNH/FXMAYREg1kl+419LRnhO3RfNIiaasjLzo
+         MO+T4y29Md6+e0pm4fwbXJK56zd8AMa2CyyTRErWST1mEqte8lG5RaO1z3SYnJFCD2
+         NiTwdbUCKd/kgxKQCjVw2/feRuvtspwv/3FP8HanEccPirZrj1ZywaKo9YQ8BpETqx
+         7dRc+hE5QM9my9gMF8BF9U4nzS1xSVOzQbZxk3LClRf7rgTUrFBPGn2nLe/P0dvDt/
+         AQMp4reYdQg+ijQ0rSvtLGabW/vzVVprXlxQ55azJ+3knwPbhz9J4rMJVDMBZyy20t
+         wjVSt58ckMImg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+This is the second version of a series to add support to Nouveau for atomic
+memory operations on OpenCL shared virtual memory (SVM) regions. This is
+achieved using the atomic PTE bits on the GPU to only permit atomic
+operations to system memory when a page is not mapped in userspace on the
+CPU. The previous version of this series used an unmap and pin page
+migration, however this resulted in problems with ZONE_MOVABLE and other
+issues so this series uses a different approach.
 
-Can you please push this one upstream?  Thanks a lot in advance!
+Instead exclusive device access is implemented by adding a new swap entry
+type (SWAP_DEVICE_EXCLUSIVE) which is similar to a migration entry. The
+main difference is that on fault the original entry is immediately restored
+by the fault handler instead of waiting.
 
-Best regards,
+Restoring the entry triggers calls to MMU notifers which allows a device
+driver to revoke the atomic access permission from the GPU prior to the CPU
+finalising the entry.
 
-	Anton
+Patch 1 contains the bulk of the memory management changes required to
+implement the new entry type.
 
-> On 17 Feb 2021, at 15:59, Rustam Kovhaev <rkovhaev@gmail.com> wrote:
-> 
-> we should check for valid STANDARD_INFORMATION attribute offset and
-> length before trying to access it
-> 
-> Reported-and-tested-by: syzbot+c584225dabdea2f71969@syzkaller.appspotmail.com
-> Signed-off-by: Rustam Kovhaev <rkovhaev@gmail.com>
-> Acked-by: Anton Altaparmakov <anton@tuxera.com>
-> Link: https://syzkaller.appspot.com/bug?extid=c584225dabdea2f71969
-> ---
-> fs/ntfs/inode.c | 6 ++++++
-> 1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/ntfs/inode.c b/fs/ntfs/inode.c
-> index f7e4cbc26eaf..be4ff9386ec0 100644
-> --- a/fs/ntfs/inode.c
-> +++ b/fs/ntfs/inode.c
-> @@ -629,6 +629,12 @@ static int ntfs_read_locked_inode(struct inode *vi)
-> 	}
-> 	a = ctx->attr;
-> 	/* Get the standard information attribute value. */
-> +	if ((u8 *)a + le16_to_cpu(a->data.resident.value_offset)
-> +			+ le32_to_cpu(a->data.resident.value_length) >
-> +			(u8 *)ctx->mrec + vol->mft_record_size) {
-> +		ntfs_error(vi->i_sb, "Corrupt standard information attribute in inode.");
-> +		goto unm_err_out;
-> +	}
-> 	si = (STANDARD_INFORMATION*)((u8*)a +
-> 			le16_to_cpu(a->data.resident.value_offset));
-> 
-> -- 
-> 2.30.0
-> 
+Patch 2 contains some additions to the HMM selftests to ensure everything
+works as expected.
 
+Patch 3 was posted previously and has not changed.
 
--- 
-Anton Altaparmakov <anton at tuxera.com> (replace at with @)
-Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
-Linux NTFS maintainer
+Patch 4 is similar to what was posted previously but updated to use the new
+swap entries instread of migration.
+
+This has been tested using the latest upstream Mesa userspace with a simple
+OpenCL test program which checks the results of atomic GPU operations on a
+SVM buffer whilst also writing to the same buffer from the CPU.
+
+Alistair Popple (4):
+  hmm: Device exclusive memory access
+  hmm: Selftests for exclusive device memory
+  nouveau/svm: Refactor nouveau_range_fault
+  nouveau/svm: Implement atomic SVM access
+
+ Documentation/vm/hmm.rst                      |  15 ++
+ drivers/gpu/drm/nouveau/include/nvif/if000c.h |   1 +
+ drivers/gpu/drm/nouveau/nouveau_svm.c         | 118 +++++++---
+ drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h |   1 +
+ .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    |   6 +
+ fs/proc/task_mmu.c                            |   7 +
+ include/linux/hmm.h                           |   4 +
+ include/linux/rmap.h                          |   1 +
+ include/linux/swap.h                          |  10 +-
+ include/linux/swapops.h                       |  32 +++
+ lib/test_hmm.c                                | 124 ++++++++++
+ lib/test_hmm_uapi.h                           |   2 +
+ mm/hmm.c                                      | 206 ++++++++++++++++
+ mm/memory.c                                   |  34 ++-
+ mm/mprotect.c                                 |   7 +
+ mm/page_vma_mapped.c                          |  14 +-
+ mm/rmap.c                                     |  29 ++-
+ tools/testing/selftests/vm/hmm-tests.c        | 219 ++++++++++++++++++
+ 18 files changed, 792 insertions(+), 38 deletions(-)
+
+--=20
+2.20.1
 
