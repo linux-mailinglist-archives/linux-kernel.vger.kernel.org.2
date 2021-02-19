@@ -2,64 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E49B32012C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1553320127
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:05:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBSWHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 17:07:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhBSWHk (ORCPT
+        id S230026AbhBSWEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 17:04:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37268 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229927AbhBSWDx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 17:07:40 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20CEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:06:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=g0Jvmf6LJ034kDLDkJfT+bSPIXgjmaXr0o0s3eOCRhM=; b=RCVbswE43uXOxQNX1MtLJ8xQTA
-        MwkwjHxE2f/5OQVocPJPX6ACr108oIgP/H4OIFeDRzLYzuAeKo8z38qKFsTNQ0CYR9dLbrqqXcSlE
-        EoYiju2x5JkMneW7OrBjcKe+1iUfB2Zmii4GbM0cplWPFrR0oUbqJfV54v9au+T1mfwh59Vn8hJ8x
-        SVBLPRAJCDCYRMJeWoHh6Q2DSwK5ven2cLs0Rrg8FqTwo7ZR7pLC5CqA/iZPEohzKqgBiAxTEyHxr
-        IvyMiYjv6uyXrWxH0YkB6tfSM36dGsHaQ+vNWL7YZjFzMBSZDqkhkRpzIztNg0q9A6OY3zfb0yQ4S
-        t/u6gvSA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lDDqZ-003K80-MB; Fri, 19 Feb 2021 22:03:21 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DD4BD9864D6; Fri, 19 Feb 2021 23:01:58 +0100 (CET)
-Date:   Fri, 19 Feb 2021 23:01:58 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, pjt@google.com, mbenes@suze.cz, jgross@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 6/6] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <20210219220158.GD59023@worktop.programming.kicks-ass.net>
-References: <20210219204300.749932493@infradead.org>
- <20210219210535.492733466@infradead.org>
- <20210219215530.ivzzv3oavhuip6un@treble>
+        Fri, 19 Feb 2021 17:03:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613772147;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VMwl2ARrFtttYnheAWs2MecA8KG8y/PoCZqgvarbQAM=;
+        b=MG34wcoAyWvJJenEpLwbjFgCpvdSBWZ5ivZpj7hmZRk14M5DJq3QLbnrrcf5jzgMdV+jOB
+        /ZyPDDs2jh9hExFZJiHrwF13sMccK5MLCBI7r2u1RONAgOlODJlQkrLD1uzYesZE48WrN5
+        +HuE9LWILj6Q7pspZEmE7JyrtM7tvAo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-NBe4Qgu4OJyT7FX1GSzsEA-1; Fri, 19 Feb 2021 17:02:24 -0500
+X-MC-Unique: NBe4Qgu4OJyT7FX1GSzsEA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 227AD804023;
+        Fri, 19 Feb 2021 22:02:23 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9842A100239F;
+        Fri, 19 Feb 2021 22:02:19 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 15:02:19 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
+Subject: Re: [PATCH 1/3] vfio: Introduce vma ops registration and notifier
+Message-ID: <20210219150219.7c0de5ad@omen.home.shazbot.org>
+In-Reply-To: <20210218230404.GD4247@nvidia.com>
+References: <161315658638.7320.9686203003395567745.stgit@gimli.home>
+        <161315805248.7320.13358719859656681660.stgit@gimli.home>
+        <20210212212057.GW4247@nvidia.com>
+        <20210218011209.GB4247@nvidia.com>
+        <20210218145606.09f08044@omen.home.shazbot.org>
+        <20210218230404.GD4247@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219215530.ivzzv3oavhuip6un@treble>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:55:30PM -0600, Josh Poimboeuf wrote:
-> On Fri, Feb 19, 2021 at 09:43:06PM +0100, Peter Zijlstra wrote:
-> > Arguably it would be simpler to do the other way around, but
-> > unfortunately alternatives don't work that way, we cannot say:
-> > 
-> > 	ALTERNATIVE "call __x86_indirect_thunk_\reg",
-> > 		    "call *%reg", ~X86_FEATURE_RETPOLINE
-> > 
-> > That is, there is no negative form of alternatives.
-> 
-> X86_FEATURE_NO_RETPOLINE?
+On Thu, 18 Feb 2021 19:04:04 -0400
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-We could, but it so happens Joerg is also wanting negative features. So
-I was thikning that perhaps we can convince Boris they're not really all
-that aweful after all :-)
+> On Thu, Feb 18, 2021 at 02:56:06PM -0700, Alex Williamson wrote:
+> 
+> > Looks pretty slick.  I won't claim it's fully gelled in my head yet,
+> > but AIUI you're creating these inodes on your new pseudo fs and
+> > associating it via the actual user fd via the f_mapping pointer, which
+> > allows multiple fds to associate and address space back to this inode
+> > when you want to call unmap_mapping_range().    
+> 
+> Yes, from what I can tell all the fs/inode stuff is just mandatory
+> overhead to get a unique address_space pointer, as that is the only
+> thing this is actually using.
+> 
+> I have to check the mmap flow more carefully, I recall pointing to a
+> existing race here with Daniel, but the general idea should hold.
+> 
+> > That clarifies from the previous email how we'd store the inode on
+> > the vfio_device without introducing yet another tracking list for
+> > device fds.  
+> 
+> Right, you can tell from the vma what inode it is for, and the inode
+> can tell you if it is a VFIO VMA or not, so no tracking lists needed
+> at all.
+
+Seems to be a nice cleanup for vfio as well, more testing and analysis
+required, but here are a few (4) wip commits that re-implement the
+current vma zapping scheme following your example: 
+
+https://github.com/awilliam/linux-vfio/commits/vfio-unmap-mapping-range
+
+Thanks,
+Alex
+
