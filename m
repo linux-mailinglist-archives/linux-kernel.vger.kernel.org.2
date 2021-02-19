@@ -2,135 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D869331F7E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:07:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4443531F7F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhBSLGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:06:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhBSLGh (ORCPT
+        id S230169AbhBSLMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:12:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48092 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229985AbhBSLMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:06:37 -0500
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5589CC061574;
-        Fri, 19 Feb 2021 03:05:57 -0800 (PST)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id AAE9A295; Fri, 19 Feb 2021 12:05:54 +0100 (CET)
-Date:   Fri, 19 Feb 2021 12:05:49 +0100
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Joerg Roedel <jroedel@suse.de>, X86 ML <x86@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH 2/3] x86/sev-es: Check if regs->sp is trusted before
- adjusting #VC IST stack
-Message-ID: <20210219110549.GI7302@8bytes.org>
-References: <20210217120143.6106-1-joro@8bytes.org>
- <20210217120143.6106-3-joro@8bytes.org>
- <CALCETrWw-we3O4_upDoXJ4NzZHsBqNO69ht6nBp3y+QFhwPgKw@mail.gmail.com>
- <20210218112500.GH7302@8bytes.org>
- <CALCETrUohqQPVTBJZZKh-pj=4aZrwDAu5UFSetj3k5pGLDPbkA@mail.gmail.com>
- <20210218192117.GL12716@suse.de>
- <CALCETrUaOLwO51Js+OGNY03aep8BHoncZKTMr8sG1guUhLk40A@mail.gmail.com>
+        Fri, 19 Feb 2021 06:12:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613733035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5AVjhEI1tw86vUOw/9aIZh6BTcpMrggeQLiNZ3oUAgQ=;
+        b=W5XZ6CFykvo+6PQCpO2TiEfraObaY4Eu8uwP6ccGWYFhl1ikBjB/qkesABANjrSDJazNVy
+        7D88NT879qj8wu67pdRmqNGvNGky4L2eVtopq3a0t9wMSw9M73Qu6rYI3pAIbnT4lCvq8a
+        o0lGi2P6KTbdvaeaqAeyINsIpib6Llc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476--rl0D7HYOzaShKF10--1KQ-1; Fri, 19 Feb 2021 06:10:31 -0500
+X-MC-Unique: -rl0D7HYOzaShKF10--1KQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDCBD835E2C;
+        Fri, 19 Feb 2021 11:10:27 +0000 (UTC)
+Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CEB7310027A5;
+        Fri, 19 Feb 2021 11:10:05 +0000 (UTC)
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+References: <20210217154844.12392-1-david@redhat.com>
+ <YC+UaTVUn0o4Zynz@dhcp22.suse.cz>
+ <6e5a5bde-cedb-9d0a-f8c1-22406085b6b9@redhat.com>
+ <YC+bKSQdepXhqo0T@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <472f3bf1-595e-54e7-3022-0562cb6b3eb2@redhat.com>
+Date:   Fri, 19 Feb 2021 12:10:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALCETrUaOLwO51Js+OGNY03aep8BHoncZKTMr8sG1guUhLk40A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YC+bKSQdepXhqo0T@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 04:28:36PM -0800, Andy Lutomirski wrote:
-> On Thu, Feb 18, 2021 at 11:21 AM Joerg Roedel <jroedel@suse.de> wrote:
-> Can you give me an example, even artificial, in which the linked-list
-> logic is useful?
+On 19.02.21 12:04, Michal Hocko wrote:
+> On Fri 19-02-21 11:43:48, David Hildenbrand wrote:
+>> On 19.02.21 11:35, Michal Hocko wrote:
+>>> On Wed 17-02-21 16:48:44, David Hildenbrand wrote:
+>>> [...]
+>>>
+>>> I only got  to the implementation now.
+>>>
+>>>> +static long madvise_populate(struct vm_area_struct *vma,
+>>>> +			     struct vm_area_struct **prev,
+>>>> +			     unsigned long start, unsigned long end)
+>>>> +{
+>>>> +	struct mm_struct *mm = vma->vm_mm;
+>>>> +	unsigned long tmp_end;
+>>>> +	int locked = 1;
+>>>> +	long pages;
+>>>> +
+>>>> +	*prev = vma;
+>>>> +
+>>>> +	while (start < end) {
+>>>> +		/*
+>>>> +		 * We might have temporarily dropped the lock. For example,
+>>>> +		 * our VMA might have been split.
+>>>> +		 */
+>>>> +		if (!vma || start >= vma->vm_end) {
+>>>> +			vma = find_vma(mm, start);
+>>>> +			if (!vma)
+>>>> +				return -ENOMEM;
+>>>> +		}
+>>>
+>>> Why do you need to find a vma when you already have one. do_madvise will
+>>> give you your vma already. I do understand that you want to finish the
+>>> vma for some errors but that shouldn't require handling vmas. You should
+>>> be in the shope of one here unless I miss anything.
+>>
+>> See below, we might temporary drop the lock while not having processed all
+>> pages
+>>
+>>>
+>>>> +
+>>>> +		/* Bail out on incompatible VMA types. */
+>>>> +		if (vma->vm_flags & (VM_IO | VM_PFNMAP) ||
+>>>> +		    !vma_is_accessible(vma)) {
+>>>> +			return -EINVAL;
+>>>> +		}
+>>>> +
+>>>> +		/*
+>>>> +		 * Populate pages and take care of VM_LOCKED: simulate user
+>>>> +		 * space access.
+>>>> +		 *
+>>>> +		 * For private, writable mappings, trigger a write fault to
+>>>> +		 * break COW (i.e., shared zeropage). For other mappings (i.e.,
+>>>> +		 * read-only, shared), trigger a read fault.
+>>>> +		 */
+>>>> +		tmp_end = min_t(unsigned long, end, vma->vm_end);
+>>>> +		pages = populate_vma_page_range(vma, start, tmp_end, &locked);
+>>>> +		if (!locked) {
+>>>> +			mmap_read_lock(mm);
+>>>> +			*prev = NULL;
+>>>> +			vma = NULL;
+>>
+>> ^ here
+>>
+>> so, the VMA might have been replaced/split/... in the meantime.
+>>
+>> So to make forward progress, I have to lookup again. (similar. but different
+>> to madvise_dontneed_free()).
+> 
+> Right. Missed that.
 
-So here we go, its of course artificial, but still:
+It would look more natural if we'd just be processing the whole range - 
+but then it would not fit into the generic infrastructure and would 
+result in even more code.
 
-	1. #VC happens, not important where
-	2. NMI in the #VC prologue before it moved off its IST stack
-	   - first VC IST adjustment happening here
-	3. #VC in the NMI handler
-	4. #HV in the #VC prologue again
-	   - second VC IST adjustment happening here, so the #HV handler
-	     can cause its own #VC exceptions.
-
-Can only happen if the #HV handler is allowed to cause #VC exceptions.
-But even if its not allowed, it can happen with SNP and a malicious
-Hypervisor. But in this case the only option is to reliably panic.
-
-> Can you explain your reasoning in considering the entry stack unsafe?
-> It's 4k bytes these days.
-
-I wasn't aware that it is 4k in size now. I still thought it was just
-these 64 words large and one can not simply execute C code on it.
-
-> You forgot about entry_SYSCALL_compat.
-
-Right, thanks for pointing this out.
-
-> Your 8-byte alignment is confusing to me.  In valid kernel code, SP
-> should be 8-byte-aligned already, and, if you're trying to match
-> architectural behavior, the CPU aligns to 16 bytes.
-
-Yeah, I was just being cautious. The explicit alignment can be removed,
-Boris also pointed this out.
-
-> We're not robust against #VC, NMI in the #VC prologue before the magic
-> stack switch, and a new #VC in the NMI prologue.  Nor do we appear to
-> have any detection of the case where #VC nests directly inside its own
-> prologue.  Or did I miss something else here?
-
-No, you don't miss anything here. At the moment #VC can't happen at
-those places, so this is not handled yet. With SNP it can happen and
-needs to be handled in a way to at least allow a reliable panic (because
-if it really happens the Hypervisor is messing with us).
-
-> If we get NMI and get #VC in the NMI *asm*, the #VC magic stack switch
-> looks like it will merrily run itself in the NMI special-stack-layout
-> section, and that sounds really quite bad.
-
-Yes, I havn't looked at the details yet, but if a #VC happens there it
-probably better not returns.
+I decided to go with "process the passed range and treat the given VMA 
+as an initial VMA that is invalidated as soon as we drop the lock".
 
 
-> I mean that, IIRC, a malicious hypervisor can inject inappropriate
-> vectors at inappropriate times if the #HV mechanism isn't enabled.
-> For example, it could inject a page fault or an interrupt in a context
-> in which we have the wrong GSBASE loaded.
+-- 
+Thanks,
 
-Yes, a malicious Hypervisor can do that, and without #HV there is no
-real protection against this besides turning all vectors (even IRQs)
-into paranoid entries. Maybe even more care is needed, but I think its
-not worth to care about this. 
+David / dhildenb
 
-> But the #DB issue makes this moot.  We have to use IST unless we turn
-> off SCE.  But I admit I'm leaning toward turning off SCE until we have
-> a solution that seems convincingly robust.
-
-Turning off SCE might be tempting, but I guess doing so would break a
-quite some user-space code, no?
-
-Regards,
-
-	Joerg
