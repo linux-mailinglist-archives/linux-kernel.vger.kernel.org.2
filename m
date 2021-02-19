@@ -2,87 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FCD31FB6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:53:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0413C31FB77
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:57:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhBSOxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:53:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        id S229803AbhBSO4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:56:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhBSOxC (ORCPT
+        with ESMTP id S229620AbhBSO4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:53:02 -0500
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1826C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:52:21 -0800 (PST)
-Received: by mail-ua1-x929.google.com with SMTP id c44so1905062uad.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:52:21 -0800 (PST)
+        Fri, 19 Feb 2021 09:56:51 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB554C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:56:09 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id d2so10404164edq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:56:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GkGdSPTq5AeCuNf8n2PzqaV7C84m+n/ihm8WMfF3VPQ=;
-        b=aK4C27J5C8bDRXf/IDvGgxI9YiczGQSQCBBNuQplZZXpnfxTC0oPhGfIbfoUAlwkxU
-         B7roDMXktTHhLZw1Zj6avE1hUYFdj2FQSteShrS8WLR27TD22+v7Y2sE2pAF2uzSXWXj
-         kfhVjzdzBD/EreWNDmYCJWuJ3E6IVKQWxInOeugI1P/dn1YqUx6Pln2GWPatrKDThPK+
-         b4Qab/KkUC4kPt6W8Yi8w8ILq6wX6cpEqU9wtNQOdvCkY6ABZHqzjZXN4irWttLuNQ9R
-         4hYpzUMdR1NlwLGP4CdyZrAlxC9DtfXu8eZm+JJtsS+7XLDUYJaLM7ccdYKETvc0XjAM
-         i2iA==
+         :cc:content-transfer-encoding;
+        bh=9KW+1lIwPV9FPrnZg5vNSqypATsMZae7KiNb0eudmHM=;
+        b=fWlizlEuP6fQFXcSfr57FExVLI3CPIV2N2m+q43FPhwTzlg8qFqVtR2ot7crvh/QW2
+         Qs8fcmRxZoRaSthNGmlfJA5Rv1YBC4S9VvZN9TBF+pu585Yd1tSv+dganVhM4259iily
+         Wk8X2dC0CiMSntdm2q50kxGpwkPvEF2mKeZbx3Rd9w0aV1hEjvzOeSYK91djuqD/9uRz
+         IybFBgnlTsOuU0j8UxqZHZhzAmejyXt6wOt88B/zjfNk8g3b8pKf0IPPwq3gTBJNFb6m
+         sZQFyr10ifWODIk6m67nbAeupaz3rX9483lUva4ErH/Z1+sVoqOuBKu+W0aPvF0RE7bF
+         LqFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GkGdSPTq5AeCuNf8n2PzqaV7C84m+n/ihm8WMfF3VPQ=;
-        b=n7DeYr7Ni6pCBHQ3aoc9x97bSjD/oHUab+3UT/C3KtjGHjZ0cmkSVVxzoBRdPta9ob
-         4doODl6Csy/JDNMwW6VugATSQ71E2E8NYJO7MglTtEid2qr4WK+yW7+6e6vUX7kFNJqI
-         kWXoXFtJ/HUiHtlB69DVzVosawRmWwCVDqsm8ffuKDD4pXYJbjsaytlbGpVCk6aPg4Yp
-         ZfmvztyxIc7NdsqTdeF9wTflNk6Qwi0RYzkY9S3Xa0bFu3KiU2eGmvBb0NBFgbDbsfUH
-         fZOCRFvegVjJTv357u4/xTqRdFewOCzUpyeVhUcqeFZbN8BugsRZQH6a107bsqE6rqTa
-         r3rw==
-X-Gm-Message-State: AOAM530nOfvYaxU0IeSDANmG6e5ntqmH6EoFKsbULoIYTqCHNtPmXFYI
-        dVh0i8CVpZyTwkOh8Sz8dU0McHYMy7d3B9AY+DjNCQ==
-X-Google-Smtp-Source: ABdhPJya37spnD+A3eGgX6QxzKyNmD2K0/jPU84Rh07UrGrvm53fQm1K7ltqEMVRNrFZpknUCo+XTC/KG/nVhfC+H8E=
-X-Received: by 2002:ab0:2619:: with SMTP id c25mr7380583uao.46.1613746340724;
- Fri, 19 Feb 2021 06:52:20 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9KW+1lIwPV9FPrnZg5vNSqypATsMZae7KiNb0eudmHM=;
+        b=OhBxO+VbPtVLSzRz8VqPIRkbRDiGzVntowa8afxdxOeLAN4gFz//u4eJLnu5yXOCSZ
+         GOCmHVYfXSvOi9lCygQTD6mlWrHYAny50AVlgNrwDH9yrHWWjAEqmzXoL5c7odGmBPo9
+         OtrzZXiSYVUmzWqSWy/m4+i1IQrc9MCLiEiisuqpOGkT3MwLEVTFWlzgODkRAjboyia8
+         nyKrB5oGlcUpuKdHYxiyGBpsl6jrfemtwPzbFvh2N+o0WxyEd3G+aupSxkv5qx7dndq2
+         vD69e0ItImUZRSUyA5obbOh57WTKWcbD3Xv5Ajnj/bwxDl9TKiGHBCNvm9VWj5dAwjVZ
+         cdjQ==
+X-Gm-Message-State: AOAM533iyYVm9dGZHe+YeHiHTBpdH4gN4IGNJZc7hGI0k1lmWh4NWmx+
+        xTQHFlxQS4xi9QFjfG4ZU2Q5/3OlD2k=
+X-Google-Smtp-Source: ABdhPJwECNXQtyaRXME9hzCpWZK5UUDqzGIyDifRI3kfxfWd4bVuX0zMwxtk3HXgtDoqfOJgbLRENQ==
+X-Received: by 2002:a50:be8b:: with SMTP id b11mr9547463edk.145.1613746568138;
+        Fri, 19 Feb 2021 06:56:08 -0800 (PST)
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com. [209.85.221.49])
+        by smtp.gmail.com with ESMTPSA id r6sm5331879edm.23.2021.02.19.06.56.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 06:56:06 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id n4so8962758wrx.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 06:56:06 -0800 (PST)
+X-Received: by 2002:a5d:4488:: with SMTP id j8mr8312106wrq.12.1613746565793;
+ Fri, 19 Feb 2021 06:56:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20210219014852.GA16580@xsang-OptiPlex-9020>
-In-Reply-To: <20210219014852.GA16580@xsang-OptiPlex-9020>
-From:   Neal Cardwell <ncardwell@google.com>
-Date:   Fri, 19 Feb 2021 09:52:04 -0500
-Message-ID: <CADVnQym38g5fjMU-S7fqoRS6sxDjK4y7-9c3XZeGVXjLTN5Xog@mail.gmail.com>
-Subject: Re: [tcp] 9d9b1ee0b2: packetdrill.packetdrill/gtests/net/tcp/user_timeout/user-timeout-probe_ipv4-mapped-v6.fail
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Enke Chen <enchen@paloaltonetworks.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        William McCall <william.mccall@gmail.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kbuild test robot <lkp@intel.com>
+References: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
+ <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com> <2cc06597-8005-7be8-4094-b20f525afde8@redhat.com>
+In-Reply-To: <2cc06597-8005-7be8-4094-b20f525afde8@redhat.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Fri, 19 Feb 2021 09:55:28 -0500
+X-Gmail-Original-Message-ID: <CA+FuTSf2GCi+RzpkFeBgtSOyhjsBFfApjekzupHLfyeYDn-JYQ@mail.gmail.com>
+Message-ID: <CA+FuTSf2GCi+RzpkFeBgtSOyhjsBFfApjekzupHLfyeYDn-JYQ@mail.gmail.com>
+Subject: Re: [PATCH] net: check if protocol extracted by virtio_net_hdr_set_proto
+ is correct
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     Balazs Nemeth <bnemeth@redhat.com>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 8:33 PM kernel test robot <oliver.sang@intel.com> wrote:
+On Fri, Feb 19, 2021 at 3:53 AM Jason Wang <jasowang@redhat.com> wrote:
 >
 >
-> Greeting,
+> On 2021/2/18 11:50 =E4=B8=8B=E5=8D=88, Willem de Bruijn wrote:
+> > On Thu, Feb 18, 2021 at 10:01 AM Balazs Nemeth <bnemeth@redhat.com> wro=
+te:
+> >> For gso packets, virtio_net_hdr_set_proto sets the protocol (if it isn=
+'t
+> >> set) based on the type in the virtio net hdr, but the skb could contai=
+n
+> >> anything since it could come from packet_snd through a raw socket. If
+> >> there is a mismatch between what virtio_net_hdr_set_proto sets and
+> >> the actual protocol, then the skb could be handled incorrectly later
+> >> on by gso.
+> >>
+> >> The network header of gso packets starts at 14 bytes, but a specially
+> >> crafted packet could fool the call to skb_flow_dissect_flow_keys_basic
+> >> as the network header offset in the skb could be incorrect.
+> >> Consequently, EINVAL is not returned.
+> >>
+> >> There are even packets that can cause an infinite loop. For example, a
+> >> packet with ethernet type ETH_P_MPLS_UC (which is unnoticed by
+> >> virtio_net_hdr_to_skb) that is sent to a geneve interface will be
+> >> handled by geneve_build_skb. In turn, it calls
+> >> udp_tunnel_handle_offloads which then calls skb_reset_inner_headers.
+> >> After that, the packet gets passed to mpls_gso_segment. That function
+> >> calculates the mpls header length by taking the difference between
+> >> network_header and inner_network_header. Since the two are equal
+> >> (due to the earlier call to skb_reset_inner_headers), it will calculat=
+e
+> >> a header of length 0, and it will not pull any headers. Then, it will
+> >> call skb_mac_gso_segment which will again call mpls_gso_segment, etc..=
+.
+> >> This leads to the infinite loop.
 >
-> FYI, we noticed the following commit (built with gcc-9):
 >
-> commit: 9d9b1ee0b2d1c9e02b2338c4a4b0a062d2d3edac ("tcp: fix TCP_USER_TIMEOUT with zero window")
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> I remember kernel will validate dodgy gso packets in gso ops. I wonder
+> why not do the check there? The reason is that virtio/TUN is not the
+> only source for those packets.
 
-I have pushed to the packetdrill repo a commit that should fix this test:
+It is? All other GSO packets are generated by the stack itself, either
+locally or through GRO.
 
-094da3bc77e5 (HEAD, packetdrill/master) net-test: update TCP tests for
-USER_TIMEOUT ZWP fix
-https://github.com/google/packetdrill/commit/094da3bc77e518d820ebc0ef8b94a5b4cf707a39
+But indeed some checks are better performed in the GSO layer. Such as
+likely the 0-byte mpls header length.
 
-Can someone please pull that commit into the repo used by the test
-bot, if needed? (Or does it automatically use the latest packetdrill
-master branch?)
+If we cannot trust virtio_net_hdr.gso_type passed from userspace, then
+we can also not trust the eth.h_proto coming from the same source. But
+it makes sense to require them to be consistent. There is a
+dev_parse_header_protocol that may return the link layer type in a
+more generic fashion than casting to skb_eth_hdr.
 
-thanks,
-neal
+Question remains what to do for the link layer types that do not implement
+header_ops->parse_protocol, and so we cannot validate the packet's
+network protocol. Drop will cause false positives, accepts will leave a
+potential path, just closes it for Ethernet.
+
+This might call for multiple fixes, both on first ingest and inside the sta=
+ck?
