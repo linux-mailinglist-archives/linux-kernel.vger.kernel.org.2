@@ -2,56 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E8C831F6CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2865D31F6CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhBSJtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:49:52 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60753 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230172AbhBSJtm (ORCPT
+        id S230185AbhBSJuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:50:35 -0500
+Received: from smtp-8fae.mail.infomaniak.ch ([83.166.143.174]:44803 "EHLO
+        smtp-8fae.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229527AbhBSJuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:49:42 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UOxr8rh_1613728136;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UOxr8rh_1613728136)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 19 Feb 2021 17:48:56 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     steffen.klassert@secunet.com
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] xfrm: Fix incorrect types in assignment
-Date:   Fri, 19 Feb 2021 17:48:54 +0800
-Message-Id: <1613728134-66887-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 19 Feb 2021 04:50:14 -0500
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dhmxv3GCqzMq8xf;
+        Fri, 19 Feb 2021 10:49:23 +0100 (CET)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dhmxt6plYzlh8Tf;
+        Fri, 19 Feb 2021 10:49:22 +0100 (CET)
+Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
+To:     David Howells <dhowells@redhat.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net>
+ <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk>
+ <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
+ <2031808.1613665474@warthog.procyon.org.uk>
+ <2152657.1613727952@warthog.procyon.org.uk>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <5c158c89-e7da-6ac4-9479-3c00f9e8b912@digikod.net>
+Date:   Fri, 19 Feb 2021 10:50:26 +0100
+User-Agent: 
+MIME-Version: 1.0
+In-Reply-To: <2152657.1613727952@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warnings:
-net/xfrm/xfrm_policy.c:1303:22: warning: incorrect type in assignment
-(different address spaces)
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- net/xfrm/xfrm_policy.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index b74f28c..5c67407 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -1225,7 +1225,7 @@ static void xfrm_hash_rebuild(struct work_struct *work)
- 	struct xfrm_policy *pol;
- 	struct xfrm_policy *policy;
- 	struct hlist_head *chain;
--	struct hlist_head *odst;
-+	struct hlist_head __rcu *odst;
- 	struct hlist_node *newpos;
- 	int i;
- 	int dir;
--- 
-1.8.3.1
+On 19/02/2021 10:45, David Howells wrote:
+> 
+> Mickaël Salaün <mic@digikod.net> wrote:
+> 
+>> No, the current thread contains an old version with an error in the
+>> patch for ima_mok_init(). Please take the last series (fixing this
+>> patch) that I rebased on your next branch:
+>> https://lore.kernel.org/keyrings/20210210120410.471693-1-mic@digikod.net/
+> 
+> Are you referring to the comma rather than a bar here?
 
+Yes, it is correct now, I just replied to the previous email. :)
+
+> 
+>  				KEY_ALLOC_NOT_IN_QUOTA,
+> +				KEY_ALLOC_SET_KEEP,
+> 
+> I fixed that in my branch:
+> 
+> -                               KEY_ALLOC_NOT_IN_QUOTA,
+> +                               KEY_ALLOC_NOT_IN_QUOTA |
+> +                               KEY_ALLOC_SET_KEEP,
+> 
+> I'll repost the series.
+
+No need for that, I checked your commits, they're good:
+https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/commit/?h=keys-misc&id=508f44ffefbf879fbb82fdbc8bf1e6023b85158a
+
+> 
+> David
+> 
