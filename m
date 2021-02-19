@@ -2,1089 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0274D32015E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BB532015B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229809AbhBSW1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 17:27:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42121 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229515AbhBSW1o (ORCPT
+        id S229683AbhBSW0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 17:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhBSW0v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 17:27:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613773574;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=booiSpwr312i4Xe7EpLAR4Y/+Mr5Af8dcnoiunOkOh4=;
-        b=KorD0rWfQDYG69hUUEP9iei8vUYDjyQHbra7K7wE09noozbHlYmOw4keBfg9BqkK0PbDID
-        9wAdZeFK8/Smu59OmREi8egmAikW16VKnGiQ3G7/gHixYsF1FEiEfzg6Cc8fo7qCVEJUtB
-        3ENm92N0ZXDJPAwA6dj0Um3X3cZGoDI=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-52-2zBGcX9KM4CFDt1OoSBu-Q-1; Fri, 19 Feb 2021 17:26:09 -0500
-X-MC-Unique: 2zBGcX9KM4CFDt1OoSBu-Q-1
-Received: by mail-qt1-f198.google.com with SMTP id t5so4226149qti.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:26:09 -0800 (PST)
+        Fri, 19 Feb 2021 17:26:51 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2975BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:26:11 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id o63so5965785pgo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:26:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xXMCjR4qc+hZHcRfNvatBV5AxcztKz30JljE3qZjG8g=;
+        b=i/yhfRQbu3LhFovmMrZSlEEDe+gZH+9i0CKbsRWlAlZ2qNpTWsxo4mt83KVGG79Bo6
+         ++tl75k2rvW8/P5Q/LxzhIa6PJ1yx5Lk9E6F9tH7fA2rp8IuaiYLEfQbeiqxEpZUWnHj
+         N9UCtGAITyDcYSmcxNFDKHreGpWG9jxCgpFvIWXwUCutxF3bX1bkaFVUGaapmX9DWcEI
+         GZ+UnGs7mJJGZYES2U8kkcjhUXAsV3B7LAce/hCgSsIfGVmPQTJh64Wh1L7Z+8f0GV6T
+         5HK5YiXGJTBwN9hFH5abMkFp9y7aktk51/mhv3uaBZMDPgeNwgCdAYfrqct9sQDjRcbT
+         ZZvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=booiSpwr312i4Xe7EpLAR4Y/+Mr5Af8dcnoiunOkOh4=;
-        b=mljOAVBLRwCVx5oqq0iWtJE7ckwE9QS6sqk1Dj8FyQ9msqPmQsUUQhlwUHGPfycgQZ
-         6WUJTXrofgCqULLXZh9+BaMKj4XrieG7bo4cgYx4o2TwV7t7hSMCXcsh7kMW9cewthSZ
-         s9MtJJzf4NcegIJmca4LV+p9CnRyy/Qrz/ADQusZaROhY+1zG8PwdgihY/mDdtt4djcD
-         uE4DoaeOD7BnwuCo7ndYtTFIMdq+BCNFE65O+NA+k8zNitFgBls5Ox01px0dCUG44enm
-         AdBPhI3WEEaERsUGvER6RSerfgFTccf1hpeK6RLXXfRE4gnx6Cz6QMtol0vWMhrNUGUR
-         p3gQ==
-X-Gm-Message-State: AOAM533kGSFO4VZVsDhPQyYJlA6kDrzBZcQR+ATHaqIg7/7gztIArjcd
-        NPJX4TpoYTQkK4l5QhbS2aJtAV4GB1V8LVTnTfPbSJy52dtsAB8iwJONamtrYwTQYXrzZyCkDs6
-        wwciyTsFP1UiWSWW6FypPO2Tu
-X-Received: by 2002:ac8:58c5:: with SMTP id u5mr11106298qta.94.1613773566915;
-        Fri, 19 Feb 2021 14:26:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwQr0BSBKhofEo4sPMfEwNwSDANrnUdNzcfodgyXAK2amwE3pIm4x/YD9knkJUjNeApIhV8hA==
-X-Received: by 2002:ac8:58c5:: with SMTP id u5mr11106260qta.94.1613773566319;
-        Fri, 19 Feb 2021 14:26:06 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 6sm7408876qkv.24.2021.02.19.14.26.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 14:26:05 -0800 (PST)
-Subject: Re: [PATCH V3 XRT Alveo 01/18] Documentation: fpga: Add a document
- describing XRT Alveo drivers
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-2-lizhih@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <3d3028aa-163f-7e5c-8730-1eb94ebf61c5@redhat.com>
-Date:   Fri, 19 Feb 2021 14:26:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210218064019.29189-2-lizhih@xilinx.com>
-Content-Type: text/plain; charset=utf-8
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=xXMCjR4qc+hZHcRfNvatBV5AxcztKz30JljE3qZjG8g=;
+        b=Xbw9mQJCDsdpuHKAO2CDJHsuV20hYSrQpss8Pd8BpAik1WcUuXXqsNbQ7UvoLe9nXK
+         e4Y9vMJ8Y2zdiayz9UA/5dtEwPRTFjEWzeJyvEKGNv5idUIuzVvMDy9kG6JN7UCXUfuq
+         dpMgrsmnGV3Yn2F0RVJ9Cxp4LSA2pgkCEX0Tn+r+H2PiF5MMq1QDWo+7RMRAeQkwAgan
+         Fywiy9gNTpW512+g0+UA8QRDZ9ycBjgp5gaRxnyFgdjKltZ8uFbxL0pFiPjotyhf+Cid
+         esLO3pv0BlhoUzdrNb+otNuvPiZwe6bMHWJKedFk6a0iehsEcOt0O0repG0Tv8WGObGW
+         Vrug==
+X-Gm-Message-State: AOAM532amvVXLtPqlNtOWj5F/A7rYjQx79CpC6cXU8DHjXj2qAqbV3dt
+        +LwQnoLJ5LUNNH9K3ivx8v7ZYw==
+X-Google-Smtp-Source: ABdhPJwUtajwA6bte90OA52l7vXwvq8zTpA++THQ1J+OhWJ5NQS8yUstgmpCzjW6wZ3TXMYW0TvD7g==
+X-Received: by 2002:a63:c84f:: with SMTP id l15mr10386110pgi.170.1613773570143;
+        Fri, 19 Feb 2021 14:26:10 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id w196sm10879397pfd.23.2021.02.19.14.26.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 14:26:09 -0800 (PST)
+Date:   Fri, 19 Feb 2021 14:26:09 -0800 (PST)
+X-Google-Original-Date: Fri, 19 Feb 2021 14:25:47 PST (-0800)
+Subject:     Re: riscv+KASAN does not boot
+In-Reply-To: <CACT4Y+bNzJtwwrHsOa7Ftnaj7B+TPd35=QRLKDE-UuaPJoaDkw@mail.gmail.com>
+CC:     alex@ghiti.fr, aou@eecs.berkeley.edu,
+        Bjorn Topel <bjorn.topel@gmail.com>,
+        linux-kernel@vger.kernel.org, nylon7@andestech.com,
+        syzkaller@googlegroups.com, schwab@linux-m68k.org,
+        Paul Walmsley <paul.walmsley@sifive.com>, tklauser@distanz.ch,
+        linux-riscv@lists.infradead.org
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     dvyukov@google.com
+Message-ID: <mhng-4c96338e-14e4-4583-8b9d-a99aa6c03eaf@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From the documentation, there are a couple of big questions and a bunch of word smithing.
-
-pseudo-bus : do we need a bus ?
-
-xrt-lib real platform devices that aren't fpga, do they need to move to another subsystem ?
-
-Overall looks good, love the ascii art!
-
-On 2/17/21 10:40 PM, Lizhi Hou wrote:
-> Describe XRT driver architecture and provide basic overview of
-> Xilinx Alveo platform.
+On Fri, 19 Feb 2021 10:53:43 PST (-0800), dvyukov@google.com wrote:
+> On Fri, Feb 19, 2021 at 6:01 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>>
+>> Hi Dmitry,
+>>
+>> Le 2/18/21 à 6:36 AM, Dmitry Vyukov a écrit :
+>> > On Thu, Feb 18, 2021 at 8:54 AM Alex Ghiti <alex@ghiti.fr> wrote:
+>> >>
+>> >> Hi Dmitry,
+>> >>
+>> >>> On Wed, Feb 17, 2021 at 5:36 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>> >>>>
+>> >>>> Le 2/16/21 à 11:42 PM, Dmitry Vyukov a écrit :
+>> >>>>> On Tue, Feb 16, 2021 at 9:42 PM Alex Ghiti <alex@ghiti.fr> wrote:
+>> >>>>>>
+>> >>>>>> Hi Dmitry,
+>> >>>>>>
+>> >>>>>> Le 2/16/21 à 6:25 AM, Dmitry Vyukov a écrit :
+>> >>>>>>> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>> >>>>>>>>
+>> >>>>>>>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>> >>>>>>>>>> I was fixing KASAN support for my sv48 patchset so I took a look at your
+>> >>>>>>>>>> issue: I built a kernel on top of the branch riscv/fixes using
+>> >>>>>>>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a898086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
+>> >>>>>>>>>> and Buildroot 2020.11. I have the warnings regarding the use of
+>> >>>>>>>>>> __virt_to_phys on wrong addresses (but that's normal since this function
+>> >>>>>>>>>> is used in virt_addr_valid) but not the segfaults you describe.
+>> >>>>>>>>>
+>> >>>>>>>>> Hi Alex,
+>> >>>>>>>>>
+>> >>>>>>>>> Let me try to rebuild buildroot image. Maybe there was something wrong
+>> >>>>>>>>> with my build, though, I did 'make clean' before doing. But at the
+>> >>>>>>>>> same time it worked back in June...
+>> >>>>>>>>>
+>> >>>>>>>>> Re WARNINGs, they indicate kernel bugs. I am working on setting up a
+>> >>>>>>>>> syzbot instance on riscv. If there a WARNING during boot then the
+>> >>>>>>>>> kernel will be marked as broken. No further testing will happen.
+>> >>>>>>>>> Is it a mis-use of WARN_ON? If so, could anybody please remove it or
+>> >>>>>>>>> replace it with pr_err.
+>> >>>>>>>>
+>> >>>>>>>>
+>> >>>>>>>> Hi,
+>> >>>>>>>>
+>> >>>>>>>> I've localized one issue with riscv/KASAN:
+>> >>>>>>>> KASAN breaks VDSO and that's I think the root cause of weird faults I
+>> >>>>>>>> saw earlier. The following patch fixes it.
+>> >>>>>>>> Could somebody please upstream this fix? I don't know how to add/run
+>> >>>>>>>> tests for this.
+>> >>>>>>>> Thanks
+>> >>>>>>>>
+>> >>>>>>>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+>> >>>>>>>> index 0cfd6da784f84..cf3a383c1799d 100644
+>> >>>>>>>> --- a/arch/riscv/kernel/vdso/Makefile
+>> >>>>>>>> +++ b/arch/riscv/kernel/vdso/Makefile
+>> >>>>>>>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
+>> >>>>>>>>      # Disable gcov profiling for VDSO code
+>> >>>>>>>>      GCOV_PROFILE := n
+>> >>>>>>>>      KCOV_INSTRUMENT := n
+>> >>>>>>>> +KASAN_SANITIZE := n
+>> >>>>>>>>
+>> >>>>>>>>      # Force dependency
+>> >>>>>>>>      $(obj)/vdso.o: $(obj)/vdso.so
+>> >>>>>>
+>> >>>>>> What's weird is that I don't have any issue without this patch with the
+>> >>>>>> following config whereas it indeed seems required for KASAN. But when
+>> >>>>>> looking at the segfaults you got earlier, the segfault address is 0xbb0
+>> >>>>>> and the cause is an instruction page fault: this address is the PLT base
+>> >>>>>> address in vdso.so and an instruction page fault would mean that someone
+>> >>>>>> tried to jump at this address, which is weird. At first sight, that does
+>> >>>>>> not seem related to your patch above, but clearly I may be wrong.
+>> >>>>>>
+>> >>>>>> Tobias, did you observe the same segfaults as Dmitry ?
+>> >>>>>
+>> >>>>>
+>> >>>>> I noticed that not all buildroot images use VDSO, it seems to be
+>> >>>>> dependent on libc settings (at least I think I changed it in the
+>> >>>>> past).
+>> >>>>
+>> >>>> Ok, I used uClibc but then when using glibc, I have the same segfaults,
+>> >>>> only when KASAN is enabled. And your patch fixes the problem. I will try
+>> >>>> to take a look later to better understand the problem.
+>> >>>>
+>> >>>>> I also booted an image completely successfully including dhcpd/sshd
+>> >>>>> start, but then my executable crashed in clock_gettime. The executable
+>> >>>>> was build on linux/amd64 host with "riscv64-linux-gnu-gcc -static"
+>> >>>>> (10.2.1).
+>> >>>>>
+>> >>>>>
+>> >>>>>>> Second issue I am seeing seems to be related to text segment size.
+>> >>>>>>> I check out v5.11 and use this config:
+>> >>>>>>> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
+>> >>>>>>
+>> >>>>>> This config gave my laptop a hard time ! Finally I was able to boot
+>> >>>>>> correctly to userspace, but I realized I used my sv48 branch...Either I
+>> >>>>>> fixed your issue along the way or I can't reproduce it, I'll give it a
+>> >>>>>> try tomorrow.
+>> >>>>>
+>> >>>>> Where is your branch? I could also test in my setup on your branch.
+>> >>>>>
+>> >>>>
+>> >>>> You can find my branch int/alex/riscv_kernel_end_of_address_space_v2
+>> >>>> here: https://github.com/AlexGhiti/riscv-linux.git
+>> >>>
+>> >>> No, it does not work for me.
+>> >>>
+>> >>> Source is on b61ab6c98de021398cd7734ea5fc3655e51e70f2 (HEAD,
+>> >>> int/alex/riscv_kernel_end_of_address_space_v2)
+>> >>> Config is https://gist.githubusercontent.com/dvyukov/6af25474d455437577a84213b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
+>> >>>
+>> >>> riscv64-linux-gnu-gcc -v
+>> >>> gcc version 10.2.1 20210110 (Debian 10.2.1-6+build1)
+>> >>>
+>> >>> qemu-system-riscv64 --version
+>> >>> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
+>> >>>
+>> >>> qemu-system-riscv64 \
+>> >>> -machine virt -smp 2 -m 2G \
+>> >>> -device virtio-blk-device,drive=hd0 \
+>> >>> -drive file=image-riscv64,if=none,format=raw,id=hd0 \
+>> >>> -kernel arch/riscv/boot/Image \
+>> >>> -nographic \
+>> >>> -device virtio-rng-device,rng=rng0 -object
+>> >>> rng-random,filename=/dev/urandom,id=rng0 \
+>> >>> -netdev user,id=net0,host=10.0.2.10,hostfwd=tcp::10022-:22 -device
+>> >>> virtio-net-device,netdev=net0 \
+>> >>> -append "root=/dev/vda earlyprintk=serial console=ttyS0 oops=panic
+>> >>> panic_on_warn=1 panic=86400 earlycon"
+>> >>
+>> >> It still works for me but I had to disable CONFIG_DEBUG_INFO_BTF (I
+>> >> don't think that changes anything at runtime). But your above command
+>> >> line does not work for me as it appears you do not load any firmware, if
+>> >> I add -bios images/fw_jump.elf, it works. But then I don't know where
+>> >> your opensbi output below comes from...
+>> >>
+>> >> And regarding your issue with calling clock_gettime 'directly' compared
+>> >> to using the syscall, I have the same consistent output from both calls.
+>> >>
+>> >> I have an older gcc (9.3.0) and the same qemu. I think what is missing
+>> >> here is your buildroot config, so that we have the exact same
+>> >> environment: could you post your buildroot config as well ?
+>> >
+>> > I don't think the image is relevant because I don't even get to kernel
+>> > code. If the kernel will complain about no init later, that's fine.
+>> > Re bios, this version of qemu already has OpenSBI bios builtin, you
+>> > can pass -bios default, but that's, well, the default :)
+>> > Here are more reproducible repro instructions that capture gcc and
+>> > qemu. I think gcc version may be potentially relevant as I suspect
+>> > code size.
+>> >
+>> >
+>> > curl https://gist.githubusercontent.com/dvyukov/6af25474d455437577a84213b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
+>> >> $KERNEL_SRC/.config
+>> > docker pull gcr.io/syzkaller/syzbot
+>> > docker run -it -v $KERNEL_SRC:/kernel gcr.io/syzkaller/syzbot
+>> > cd /kernel
+>> > make -j72 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- olddefconfig
+>> > make -j72 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-
+>> > qemu-system-riscv64 -machine virt -smp 2 -m 4G -kernel
+>> > arch/riscv/boot/Image -nographic -append "earlycon earlyprintk=serial
+>> > console=ttyS0"
+>> > [this does not, only OpenSBI output]
+>> >
+>>
+>> Indeed the issue was code size, please find the fix below. I will send a
+>> proper patch once I made sure the fix is the right one, but I'm pretty
+>> confident, there's no reason to limit the mapping size to 128MB whereas
+>> we have a whole pgdir.
 >
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
-> ---
->  Documentation/fpga/index.rst |   1 +
->  Documentation/fpga/xrt.rst   | 842 +++++++++++++++++++++++++++++++++++
->  2 files changed, 843 insertions(+)
->  create mode 100644 Documentation/fpga/xrt.rst
+> Great you get to the bottom of this!
+> Riscv kernels are going to be YUGE!
+
+IIRC I tried that a while ago and it didn't work.  It's possible I was just
+running into some other bug, but I'm just build testing allyesconfig as opposed
+to boot testing it.
+
+If you've got a setup that does boot I'm happy to take a patch, though.  It'll
+at least be one step forward.
+
 >
-> diff --git a/Documentation/fpga/index.rst b/Documentation/fpga/index.rst
-> index f80f95667ca2..30134357b70d 100644
-> --- a/Documentation/fpga/index.rst
-> +++ b/Documentation/fpga/index.rst
-> @@ -8,6 +8,7 @@ fpga
->      :maxdepth: 1
->  
->      dfl
-> +    xrt
->  
->  .. only::  subproject and html
->  
-> diff --git a/Documentation/fpga/xrt.rst b/Documentation/fpga/xrt.rst
-> new file mode 100644
-> index 000000000000..9bc2d2785cb9
-> --- /dev/null
-> +++ b/Documentation/fpga/xrt.rst
-> @@ -0,0 +1,842 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +==================================
-> +XRTV2 Linux Kernel Driver Overview
-> +==================================
-> +
-> +Authors:
-> +
-> +* Sonal Santan <sonal.santan@xilinx.com>
-> +* Max Zhen <max.zhen@xilinx.com>
-> +* Lizhi Hou <lizhi.hou@xilinx.com>
-> +
-> +XRTV2 drivers are second generation `XRT <https://github.com/Xilinx/XRT>`_
-> +drivers which support `Alveo <https://www.xilinx.com/products/boards-and-kits/alveo.html>`_
-> +PCIe platforms from Xilinx.
-> +
-> +XRTV2 drivers support *subsystem* style data driven platforms where driver's
-where the driver's
-> +configuration and behavior is determined by meta data provided by the platform
-> +(in *device tree* format). Primary management physical function (MPF) driver
-> +is called **xmgmt**. Primary user physical function (UPF) driver is called
-> +**xuser** and is under development. xrt driver framework and HW subsystem
-> +drivers are packaged into a library module called **xrt-lib**, which is
-> +shared by **xmgmt** and **xuser** (under development). The xrt driver framework
-xuser still under development ?
-> +implements a pseudo-bus which is used to discover HW subsystems and facilitate
-
-A pseudo-bus.
-
-It would be good if this was close to what was done for dfl here
-
-https://lore.kernel.org/linux-fpga/1605159759-3439-1-git-send-email-yilun.xu@intel.com/
-
-> +inter HW subsystem interaction.
-> +
-> +Driver Modules
-> +==============
-> +
-> +xrt-lib.ko
-> +----------
-> +
-> +Repository of all subsystem drivers and pure software modules that can potentially
-
-subsystem drivers
-
-drivers in fpga/ should be for managing just the fpganess of the fpga.
-
-soft devices ex/ a soft tty should go to their respective subsystem location
-
-Are there any in this patchset you think might move ?
-
-Maybe we can defer reviewing those now.
-
-> +be shared between xmgmt and xuser. All these drivers are structured as Linux
-> +*platform driver* and are instantiated by xmgmt (or xuser under development) based
-> +on meta data associated with hardware. The metadata is in the form of device tree
-
-with the hardware
-
-form of a device tree
-
-> +as mentioned before. Each platform driver statically defines a subsystem node
-> +array by using node name or a string in its ``compatible`` property. And this
-> +array is eventually translated to IOMEM resources of the platform device.
-> +
-> +The xrt-lib core infrastructure provides hooks to platform drivers for device node
-> +management, user file operations and ioctl callbacks. The core also provides pseudo-bus
-> +functionality for platform driver registration, discovery and inter platform driver
-> +ioctl calls.
-
-core infrastructure.
-
-The interfaces to the infrastructure are not in include/linux/fpga/
-
-Maybe this needs to change.
-
-> +
-> +.. note::
-> +   See code in ``include/xleaf.h``
-> +
-> +
-> +xmgmt.ko
-> +--------
-> +
-> +The xmgmt driver is a PCIe device driver driving MPF found on Xilinx's Alveo
-> +PCIE device. It consists of one *root* driver, one or more *group* drivers
-> +and one or more *xleaf* drivers. The root and MPF specific xleaf drivers are
-> +in xmgmt.ko. The group driver and other xleaf drivers are in xrt-lib.ko.
-I am not sure if *.ko is correct, these will also be intree.
-> +
-> +The instantiation of specific group driver or xleaf driver is completely data
-of a specific
-> +driven based on meta data (mostly in device tree format) found through VSEC
-mostly ? what is the deviation from device tree ?
-> +capability and inside firmware files, such as platform xsabin or user xclbin file.
-> +The root driver manages life cycle of multiple group drivers, which, in turn,
-the life cycle
-> +manages multiple xleaf drivers. This allows a single set of driver code to support
-
-set of drivers
-
-drop 'code'
-
-> +all kinds of subsystems exposed by different shells. The difference among all
-> +these subsystems will be handled in xleaf drivers with root and group drivers
-> +being part of the infrastructure and provide common services for all leaves
-> +found on all platforms.
-> +
-> +The driver object model looks like the following::
-> +
-> +                    +-----------+
-> +                    |   xroot   |
-> +                    +-----+-----+
-> +                          |
-> +              +-----------+-----------+
-> +              |                       |
-> +              v                       v
-> +        +-----------+          +-----------+
-> +        |   group   |    ...   |   group   |
-> +        +-----+-----+          +------+----+
-> +              |                       |
-> +              |                       |
-> +        +-----+----+            +-----+----+
-> +        |          |            |          |
-> +        v          v            v          v
-> +    +-------+  +-------+    +-------+  +-------+
-> +    | xleaf |..| xleaf |    | xleaf |..| xleaf |
-> +    +-------+  +-------+    +-------+  +-------+
-> +
-> +As an example for Xilinx Alveo U50 before user xclbin download, the tree
-> +looks like the following::
-> +
-> +                                +-----------+
-> +                                |   xmgmt   |
-> +                                +-----+-----+
-> +                                      |
-> +            +-------------------------+--------------------+
-> +            |                         |                    |
-> +            v                         v                    v
-> +       +--------+                +--------+            +--------+
-> +       | group0 |                | group1 |            | group2 |
-> +       +----+---+                +----+---+            +---+----+
-> +            |                         |                    |
-> +            |                         |                    |
-> +      +-----+-----+        +----+-----+---+    +-----+-----+----+--------+
-> +      |           |        |    |         |    |     |          |        |
-> +      v           v        |    v         v    |     v          v        |
-> + +------------+  +------+  | +------+ +------+ |  +------+ +-----------+ |
-> + | xmgmt_main |  | VSEC |  | | GPIO | | QSPI | |  |  CMC | | AXI-GATE0 | |
-> + +------------+  +------+  | +------+ +------+ |  +------+ +-----------+ |
-> +                           | +---------+       |  +------+ +-----------+ |
-> +                           +>| MAILBOX |       +->| ICAP | | AXI-GATE1 |<+
-> +                             +---------+       |  +------+ +-----------+
-> +                                               |  +-------+
-> +                                               +->| CALIB |
-> +                                                  +-------+
-> +
-Nice ascii art!
-> +After an xclbin is download, group3 will be added and the tree looks like the
-> +following::
-> +
-> +                                +-----------+
-> +                                |   xmgmt   |
-> +                                +-----+-----+
-> +                                      |
-> +            +-------------------------+--------------------+-----------------+
-> +            |                         |                    |                 |
-> +            v                         v                    v                 |
-> +       +--------+                +--------+            +--------+            |
-> +       | group0 |                | group1 |            | group2 |            |
-> +       +----+---+                +----+---+            +---+----+            |
-> +            |                         |                    |                 |
-> +            |                         |                    |                 |
-> +      +-----+-----+       +-----+-----+---+    +-----+-----+----+--------+   |
-> +      |           |       |     |         |    |     |          |        |   |
-> +      v           v       |     v         v    |     v          v        |   |
-> + +------------+  +------+ | +------+ +------+  |  +------+ +-----------+ |   |
-> + | xmgmt_main |  | VSEC | | | GPIO | | QSPI |  |  |  CMC | | AXI-GATE0 | |   |
-> + +------------+  +------+ | +------+ +------+  |  +------+ +-----------+ |   |
-> +                          | +---------+        |  +------+ +-----------+ |   |
-> +                          +>| MAILBOX |        +->| ICAP | | AXI-GATE1 |<+   |
-> +                            +---------+        |  +------+ +-----------+     |
-> +                                               |  +-------+                  |
-> +                                               +->| CALIB |                  |
-> +                                                  +-------+                  |
-> +                      +---+----+                                             |
-> +                      | group3 |<--------------------------------------------+
-> +                      +--------+
-> +                          |
-> +                          |
-> +     +-------+--------+---+--+--------+------+-------+
-> +     |       |        |      |        |      |       |
-> +     v       |        v      |        v      |       v
-> + +--------+  |   +--------+  |   +--------+  |    +-----+
-> + | CLOCK0 |  |   | CLOCK1 |  |   | CLOCK2 |  |    | UCS |
-> + +--------+  v   +--------+  v   +--------+  v    +-----+
-> + +-------------+ +-------------+ +-------------+
-> + | CLOCK-FREQ0 | | CLOCK-FREQ1 | | CLOCK-FREQ2 |
-> + +-------------+ +-------------+ +-------------+
-> +
-> +
-> +xmgmt-root
-> +^^^^^^^^^^
-> +
-> +The xmgmt-root driver is a PCIe device driver attached to MPF. It's part of the
-> +infrastructure of the MPF driver and resides in xmgmt.ko. This driver
-> +
-> +* manages one or more group drivers
-> +* provides access to functionalities that requires pci_dev, such as PCIE config
-> +  space access, to other xleaf drivers through root calls
-> +* together with group driver, facilities event callbacks for other xleaf drivers
-> +* together with group driver, facilities inter-leaf driver calls for other xleaf
-Maybe drop 'together with group driver'
-> +  drivers
-> +
-> +When root driver starts, it will explicitly create an initial group instance,
-> +which contains xleaf drivers that will trigger the creation of other group
-> +instances. The root driver will wait for all group and leaves to be created
-> +before it returns from it's probe routine and claim success of the
-> +initialization of the entire xmgmt driver.
-What happens if there a failure in one leaf ? Does the whole board go down ?
-> +
-> +.. note::
-> +   See code in ``lib/xroot.c`` and ``mgmt/root.c``
-> +
-> +
-> +group
-> +^^^^^
-> +
-> +The group driver is a platform device driver whose life cycle is managed by
-Maybe call this a 'pseudo device'
-> +root and does not have real IO mem or IRQ resources. It's part of the
-> +infrastructure of the MPF driver and resides in xrt-lib.ko. This driver
-> +
-> +* manages one or more xleaf drivers so that multiple leaves can be managed as a
-> +  group
-can drop 'so that multiple leaves can be managed as a group' to me, this is the same as 'one or more'
-> +* provides access to root from leaves, so that root calls, event notifications
-> +  and inter-leaf calls can happen
-> +
-> +In xmgmt, an initial group driver instance will be created by root, which
-by the root
-> +contains leaves that will trigger group instances to be created to manage
-> +groups of leaves found on different partitions on hardware, such as VSEC, Shell,
-> +and User.
-> +
-> +Every *fpga_region* has a group object associated with it. The group is
-> +created when xclbin image is loaded on the fpga_region. The existing group
-> +is destroyed when a new xclbin image is loaded. The fpga_region persists
-> +across xclbin downloads.
-The connection of a 'group' node to a fpga region region is fairly important, maybe move this section earlier. 'group' as an fpganess thing would be kept in fpga/ subsystem.
-> +
-> +.. note::
-> +   See code in ``lib/group.c``
-> +
-> +
-> +xleaf
-> +^^^^^
-> +
-> +The xleaf driver is a platform device driver whose life cycle is managed by
-> +a group driver and may or may not have real IO mem or IRQ resources. They
-> +are the real meat of xmgmt and contains platform specific code to Shell and
-> +User found on a MPF.
-> +
-
-Maybe a split is pseudo device leaves, those without real IO mem, stay in fpga/  others go ?
-
-> +A xleaf driver may not have real hardware resources when it merely acts as a
-> +driver that manages certain in-memory states for xmgmt. These in-memory states
-> +could be shared by multiple other leaves.
-> +
-This implies locking and some message passing.
-> +Leaf drivers assigned to specific hardware resources drive specific subsystem in
-drive a specific
-> +the device. To manipulate the subsystem or carry out a task, a xleaf driver may
-> +ask help from root via root calls and/or from other leaves via inter-leaf calls.
-> +
-> +A xleaf can also broadcast events through infrastructure code for other leaves
-> +to process. It can also receive event notification from infrastructure about
-> +certain events, such as post-creation or pre-exit of a particular xleaf.
-I would like to see some examples of how the inter node communications work.
-> +
-> +.. note::
-> +   See code in ``lib/xleaf/*.c``
-> +
-> +
-> +FPGA Manager Interaction
-> +========================
-> +
-> +fpga_manager
-> +------------
-> +
-> +An instance of fpga_manager is created by xmgmt_main and is used for xclbin
-for the xclbin
-> +image download. fpga_manager requires the full xclbin image before it can
-> +start programming the FPGA configuration engine via ICAP platform driver.
-
-via the ICAP
-
-what is ICAP ?
-
-> +
-> +fpga_region
-> +-----------
-> +
-> +For every interface exposed by currently loaded xclbin/xsabin in the *parent*
-by the currently
-> +fpga_region a new instance of fpga_region is created like a *child* region.
-fpga_region,
-> +The device tree of the *parent* fpga_region defines the
-> +resources for a new instance of fpga_bridge which isolates the parent from
-and isolates
-> +child fpga_region. This new instance of fpga_bridge will be used when a
-> +xclbin image is loaded on the child fpga_region. After the xclbin image is
-> +downloaded to the fpga_region, an instance of group is created for the
-> +fpga_region using the device tree obtained as part of xclbin. If this device
-of the xclbin
-> +tree defines any child interfaces then it can trigger the creation of
-interfaces, then
-> +fpga_bridge and fpga_region for the next region in the chain.
-a fpga_bridge and a fpga_region
-> +
-> +fpga_bridge
-> +-----------
-> +
-> +Like fpga_region, matching fpga_bridge is also created by walking the device
-Like the fpga_region, a matchin
-> +tree of the parent group.
-> +
-> +Driver Interfaces
-> +=================
-> +
-> +xmgmt Driver Ioctls
-> +-------------------
-> +
-> +Ioctls exposed by xmgmt driver to user space are enumerated in the following
-> +table:
-> +
-> +== ===================== ============================ ==========================
-> +#  Functionality         ioctl request code            data format
-> +== ===================== ============================ ==========================
-> +1  FPGA image download   XMGMT_IOCICAPDOWNLOAD_AXLF    xmgmt_ioc_bitstream_axlf
-> +== ===================== ============================ ==========================
-
-This data format is described below, maybe swap this section with that so
-
-folks will know what xmgmnt_ioc_bitstream_axlf is before this section.
-
-> +
-> +User xclbin can be downloaded by using xbmgmt tool from XRT open source suite. See
-
-A user xclbin
-
-using the xbmgmt
-
-from the XRT
-
-> +example usage below::
-> +
-> +  xbmgmt partition --program --path /lib/firmware/xilinx/862c7020a250293e32036f19956669e5/test/verify.xclbin --force
-> +
-> +xmgmt Driver Sysfs
-> +------------------
-> +
-> +xmgmt driver exposes a rich set of sysfs interfaces. Subsystem platform
-> +drivers export sysfs node for every platform instance.
-> +
-> +Every partition also exports its UUIDs. See below for examples::
-> +
-> +  /sys/bus/pci/devices/0000:06:00.0/xmgmt_main.0/interface_uuids
-> +  /sys/bus/pci/devices/0000:06:00.0/xmgmt_main.0/logic_uuids
-> +
-> +
-> +hwmon
-> +-----
-> +
-> +xmgmt driver exposes standard hwmon interface to report voltage, current,
-> +temperature, power, etc. These can easily be viewed using *sensors* command
-> +line utility.
-> +
-> +Alveo Platform Overview
-> +=======================
-> +
-> +Alveo platforms are architected as two physical FPGA partitions: *Shell* and
-> +*User*. The Shell provides basic infrastructure for the Alveo platform like
-> +PCIe connectivity, board management, Dynamic Function Exchange (DFX), sensors,
-> +clocking, reset, and security. User partition contains user compiled FPGA
-the user compiled
-> +binary which is loaded by a process called DFX also known as partial
-> +reconfiguration.
-> +
-> +Physical partitions require strict HW compatibility with each other for DFX to
-> +work properly. 
-
-swap order
-
-For DFX to work properly physical partitions ..
-
-
-> Every physical partition has two interface UUIDs: *parent* UUID
-> +and *child* UUID. For simple single stage platforms, Shell → User forms parent
-> +child relationship. For complex two stage platforms, Base → Shell → User forms
-> +the parent child relationship chain.
-this bit is confusing. is this related to uuid?
-> +
-> +.. note::
-> +   Partition compatibility matching is key design component of Alveo platforms
-> +   and XRT. Partitions have child and parent relationship. A loaded partition
-have a child
-> +   exposes child partition UUID to advertise its compatibility requirement for
-
-the child's
-
-can drop 'for child partition'
-
-> +   child partition. When loading a child partition the xmgmt management driver
-When loading a child partition,
-> +   matches parent UUID of the child partition against child UUID exported by
-> +   the parent. Parent and child partition UUIDs are stored in the *xclbin*
-> +   (for user) or *xsabin* (for base and shell).
-
-this is confusing, is this part of the file image format ?
-
-Maybe save/move till the image layout.
-
->  Except for root UUID, VSEC,
-> +   hardware itself does not know about UUIDs. UUIDs are stored in xsabin and
-> +   xclbin.
-This is confusing too, not sure how to untangle.
-> +
-> +
-> +The physical partitions and their loading is illustrated below::
-> +
-> +           SHELL                               USER
-> +        +-----------+                  +-------------------+
-> +        |           |                  |                   |
-> +        | VSEC UUID | CHILD     PARENT |    LOGIC UUID     |
-> +        |           o------->|<--------o                   |
-> +        |           | UUID       UUID  |                   |
-> +        +-----+-----+                  +--------+----------+
-> +              |                                 |
-> +              .                                 .
-> +              |                                 |
-> +          +---+---+                      +------+--------+
-> +          |  POR  |                      | USER COMPILED |
-> +          | FLASH |                      |    XCLBIN     |
-> +          +-------+                      +---------------+
-> +
-> +
-> +Loading Sequence
-> +----------------
-> +
-> +The Shell partition is loaded from flash at system boot time. It establishes the
-> +PCIe link and exposes two physical functions to the BIOS. After OS boot, xmgmt
-the OS boots, the xmgmt
-> +driver attaches to PCIe physical function 0 exposed by the Shell and then looks
-> +for VSEC in PCIe extended configuration space. Using VSEC it determines the logic
-
-the PCIe
-
-The driver uses VSEC to determine the UUID of Shell.  The UUID is also used to load a matching ...
-
-> +UUID of Shell and uses the UUID to load matching *xsabin* file from Linux firmware
-> +directory. The xsabin file contains metadata to discover peripherals that are part
-> +of Shell and firmware(s) for any embedded soft processors in Shell.
-the firmware needed for any ...
-> +
-> +The Shell exports child interface UUID which is used for compatibility check when
-
-export a child
-
-for a compatibility check
-
-> +loading user compiled xclbin over the User partition as part of DFX. When a user
-> +requests loading of a specific xclbin the xmgmt management driver reads the parent
-xclbin, the
-> +interface UUID specified in the xclbin and matches it with child interface UUID
-> +exported by Shell to determine if xclbin is compatible with the Shell. If match
-> +fails loading of xclbin is denied.
-> +
-> +xclbin loading is requested using ICAP_DOWNLOAD_AXLF ioctl command. When loading
-> +xclbin, xmgmt driver performs the following *logical* operations:
-> +
-> +1. Copy xclbin from user to kernel memory
-> +2. Sanity check the xclbin contents
-> +3. Isolate the User partition
-> +4. Download the bitstream using the FPGA config engine (ICAP)
-> +5. De-isolate the User partition
-> +6. Program the clocks (ClockWiz) driving the User partition
-maybe drop '(ClockWiz)'
-> +7. Wait for memory controller (MIG) calibration
-for the
-> +8. Return the loading status back to the caller
-> +
-> +`Platform Loading Overview <https://xilinx.github.io/XRT/master/html/platforms_partitions.html>`_
-> +provides more detailed information on platform loading.
-> +
-the link works.
-> +
-> +xsabin
-> +------
-> +
-> +Each Alveo platform comes packaged with its own xsabin. The xsabin is trusted
-is a trusted
-> +component of the platform. For format details refer to :ref:`xsabin_xclbin_container_format`
-> +below. xsabin contains basic information like UUIDs, platform name and metadata in the
-> +form of device tree. See :ref:`device_tree_usage` below for details and example.
-of a device
-> +
-> +xclbin
-> +------
-> +
-> +xclbin is compiled by end user using
-> +`Vitis <https://www.xilinx.com/products/design-tools/vitis/vitis-platform.html>`_
-this link works, seems reasonable landing
-> +tool set from Xilinx. The xclbin contains sections describing user compiled
-> +acceleration engines/kernels, memory subsystems, clocking information etc. It also
-> +contains bitstream for the user partition, UUIDs, platform name, etc. xclbin uses
-bitstreams
-> +the same container format as xsabin which is described below.
-> +
-> +
-> +.. _xsabin_xclbin_container_format:
-> +
-> +xsabin/xclbin Container Format
-> +------------------------------
-> +
-> +xclbin/xsabin is ELF-like binary container format. It is structured as series of
-> +sections. There is a file header followed by several section headers which is
-> +followed by sections. A section header points to an actual section. There is an
-> +optional signature at the end. The format is defined by header file ``xclbin.h``.
-> +The following figure illustrates a typical xclbin::
-> +
-> +
-> +           +---------------------+
-> +           |                     |
-> +           |       HEADER        |
-> +           +---------------------+
-> +           |   SECTION  HEADER   |
-> +           |                     |
-> +           +---------------------+
-> +           |         ...         |
-> +           |                     |
-> +           +---------------------+
-> +           |   SECTION  HEADER   |
-> +           |                     |
-> +           +---------------------+
-> +           |       SECTION       |
-> +           |                     |
-> +           +---------------------+
-> +           |         ...         |
-> +           |                     |
-> +           +---------------------+
-> +           |       SECTION       |
-> +           |                     |
-> +           +---------------------+
-> +           |      SIGNATURE      |
-> +           |      (OPTIONAL)     |
-> +           +---------------------+
-> +
-> +
-> +xclbin/xsabin files can be packaged, un-packaged and inspected using XRT utility
-> +called **xclbinutil**. xclbinutil is part of XRT open source software stack. The
-> +source code for xclbinutil can be found at
-> +https://github.com/Xilinx/XRT/tree/master/src/runtime_src/tools/xclbinutil
-> +
-Works, but maybe the location of a manpage or doc would be better.
-> +For example to enumerate the contents of a xclbin/xsabin use the *--info* switch
-> +as shown below::
-> +
-> +
-> +  xclbinutil --info --input /opt/xilinx/firmware/u50/gen3x16-xdma/blp/test/bandwidth.xclbin
-> +  xclbinutil --info --input /lib/firmware/xilinx/862c7020a250293e32036f19956669e5/partition.xsabin
-> +
-> +
-> +.. _device_tree_usage:
-> +
-> +Device Tree Usage
-> +-----------------
-> +
-> +As mentioned previously xsabin stores metadata which advertise HW subsystems present
-> +in a partition. The metadata is stored in device tree format with well defined schema.
-> +XRT management driver uses this information to bind *platform drivers* to the subsystem
-> +instantiations. The platform drivers are found in **xrt-lib.ko** kernel module defined
-> +later.
-> +
-> +Logic UUID
-> +^^^^^^^^^^
-> +A partition is identified uniquely through ``logic_uuid`` property::
-> +
-> +  /dts-v1/;
-> +  / {
-> +      logic_uuid = "0123456789abcdef0123456789abcdef";
-> +      ...
-> +    }
-> +
-> +Schema Version
-> +^^^^^^^^^^^^^^
-> +Schema version is defined through ``schema_version`` node. And it contains ``major``
-> +and ``minor`` properties as below::
-> +
-> +  /dts-v1/;
-> +  / {
-> +       schema_version {
-> +           major = <0x01>;
-> +           minor = <0x00>;
-> +       };
-> +       ...
-> +    }
-> +
-> +Partition UUIDs
-> +^^^^^^^^^^^^^^^
-> +As said earlier, each partition may have parent and child UUIDs. These UUIDs are
-> +defined by ``interfaces`` node and ``interface_uuid`` property::
-> +
-> +  /dts-v1/;
-> +  / {
-> +       interfaces {
-> +           @0 {
-> +                  interface_uuid = "0123456789abcdef0123456789abcdef";
-> +           };
-> +           @1 {
-> +                  interface_uuid = "fedcba9876543210fedcba9876543210";
-> +           };
-> +           ...
-> +        };
-> +       ...
-> +    }
-> +
-> +
-> +Subsystem Instantiations
-> +^^^^^^^^^^^^^^^^^^^^^^^^
-> +Subsystem instantiations are captured as children of ``addressable_endpoints``
-> +node::
-> +
-> +  /dts-v1/;
-> +  / {
-> +       addressable_endpoints {
-> +           abc {
-> +               ...
-> +           };
-> +           def {
-> +               ...
-> +           };
-> +           ...
-> +       }
-> +  }
-> +
-> +Subnode 'abc' and 'def' are the name of subsystem nodes
-> +
-> +Subsystem Node
-> +^^^^^^^^^^^^^^
-> +Each subsystem node and its properties define a hardware instance::
-> +
-> +
-> +  addressable_endpoints {
-> +      abc {
-> +          reg = <0xa 0xb>
-> +          pcie_physical_function = <0x0>;
-> +          pcie_bar_mapping = <0x2>;
-> +          compatible = "abc def";
-> +          firmware {
-> +              firmware_product_name = "abc"
-> +              firmware_branch_name = "def"
-> +              firmware_version_major = <1>
-> +              firmware_version_minor = <2>
-> +          };
-> +      }
-> +      ...
-> +  }
-> +
-> +:reg:
-> + Property defines address range. '<0xa 0xb>' is BAR offset and length pair, both
-> + are 64-bit integer.
-> +:pcie_physical_function:
-> + Property specifies which PCIe physical function the subsystem node resides.
-> +:pcie_bar_mapping:
-> + Property specifies which PCIe BAR the subsystem node resides. '<0x2>' is BAR
-> + index and it is 0 if this property is not defined.
-> +:compatible:
-> + Property is a list of strings. The first string in the list specifies the exact
-> + subsystem node. The following strings represent other devices that the device
-> + is compatible with.
-> +:firmware:
-> + Subnode defines the firmware required by this subsystem node.
-> +
-> +Alveo U50 Platform Example
-> +^^^^^^^^^^^^^^^^^^^^^^^^^^
-> +::
-> +
-> +  /dts-v1/;
-> +
-> +  /{
-> +        logic_uuid = "f465b0a3ae8c64f619bc150384ace69b";
-> +
-> +        schema_version {
-> +                major = <0x01>;
-> +                minor = <0x00>;
-> +        };
-> +
-> +        interfaces {
-> +
-> +                @0 {
-> +                        interface_uuid = "862c7020a250293e32036f19956669e5";
-> +                };
-> +        };
-> +
-> +        addressable_endpoints {
-> +
-> +                ep_blp_rom_00 {
-> +                        reg = <0x00 0x1f04000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +                };
-> +
-> +                ep_card_flash_program_00 {
-> +                        reg = <0x00 0x1f06000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_quad_spi-1.0\0axi_quad_spi";
-> +                        interrupts = <0x03 0x03>;
-> +                };
-> +
-> +                ep_cmc_firmware_mem_00 {
-> +                        reg = <0x00 0x1e20000 0x00 0x20000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +                        firmware {
-> +                                firmware_product_name = "cmc";
-> +                                firmware_branch_name = "u50";
-> +                                firmware_version_major = <0x01>;
-> +                                firmware_version_minor = <0x00>;
-> +                        };
-> +                };
-> +
-> +                ep_cmc_intc_00 {
-> +                        reg = <0x00 0x1e03000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
-> +                        interrupts = <0x04 0x04>;
-> +                };
-> +
-> +                ep_cmc_mutex_00 {
-> +                        reg = <0x00 0x1e02000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_cmc_regmap_00 {
-> +                        reg = <0x00 0x1e08000 0x00 0x2000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +                        firmware {
-> +                                firmware_product_name = "sc-fw";
-> +                                firmware_branch_name = "u50";
-> +                                firmware_version_major = <0x05>;
-> +                        };
-> +                };
-> +
-> +                ep_cmc_reset_00 {
-> +                        reg = <0x00 0x1e01000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_ddr_mem_calib_00 {
-> +                        reg = <0x00 0x63000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_debug_bscan_mgmt_00 {
-> +                        reg = <0x00 0x1e90000 0x00 0x10000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-debug_bridge-1.0\0debug_bridge";
-> +                };
-> +
-> +                ep_ert_base_address_00 {
-> +                        reg = <0x00 0x21000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_ert_command_queue_mgmt_00 {
-> +                        reg = <0x00 0x40000 0x00 0x10000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
-> +                };
-> +
-> +                ep_ert_command_queue_user_00 {
-> +                        reg = <0x00 0x40000 0x00 0x10000>;
-> +                        pcie_physical_function = <0x01>;
-> +                        compatible = "xilinx.com,reg_abs-ert_command_queue-1.0\0ert_command_queue";
-> +                };
-> +
-> +                ep_ert_firmware_mem_00 {
-> +                        reg = <0x00 0x30000 0x00 0x8000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +
-> +                        firmware {
-> +                                firmware_product_name = "ert";
-> +                                firmware_branch_name = "v20";
-> +                                firmware_version_major = <0x01>;
-> +                        };
-> +                };
-> +
-> +                ep_ert_intc_00 {
-> +                        reg = <0x00 0x23000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_intc-1.0\0axi_intc";
-> +                        interrupts = <0x05 0x05>;
-> +                };
-> +
-> +                ep_ert_reset_00 {
-> +                        reg = <0x00 0x22000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_ert_sched_00 {
-> +                        reg = <0x00 0x50000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x01>;
-> +                        compatible = "xilinx.com,reg_abs-ert_sched-1.0\0ert_sched";
-> +                        interrupts = <0x09 0x0c>;
-> +                };
-> +
-> +                ep_fpga_configuration_00 {
-> +                        reg = <0x00 0x1e88000 0x00 0x8000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_hwicap-1.0\0axi_hwicap";
-> +                        interrupts = <0x02 0x02>;
-> +                };
-> +
-> +                ep_icap_reset_00 {
-> +                        reg = <0x00 0x1f07000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_msix_00 {
-> +                        reg = <0x00 0x00 0x00 0x20000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-msix-1.0\0msix";
-> +                        pcie_bar_mapping = <0x02>;
-> +                };
-> +
-> +                ep_pcie_link_mon_00 {
-> +                        reg = <0x00 0x1f05000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_pr_isolate_plp_00 {
-> +                        reg = <0x00 0x1f01000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_pr_isolate_ulp_00 {
-> +                        reg = <0x00 0x1000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_gpio-1.0\0axi_gpio";
-> +                };
-> +
-> +                ep_uuid_rom_00 {
-> +                        reg = <0x00 0x64000 0x00 0x1000>;
-> +                        pcie_physical_function = <0x00>;
-> +                        compatible = "xilinx.com,reg_abs-axi_bram_ctrl-1.0\0axi_bram_ctrl";
-> +                };
-> +
-> +                ep_xdma_00 {
-> +                        reg = <0x00 0x00 0x00 0x10000>;
-> +                        pcie_physical_function = <0x01>;
-> +                        compatible = "xilinx.com,reg_abs-xdma-1.0\0xdma";
-> +                        pcie_bar_mapping = <0x02>;
-> +                };
-> +        };
-> +
-> +  }
-> +
-> +
-> +
-> +Deployment Models
-> +=================
-> +
-> +Baremetal
-> +---------
-> +
-> +In bare-metal deployments both MPF and UPF are visible and accessible. xmgmt
-In bare-meta deployments,
-> +driver binds to MPF. xmgmt driver operations are privileged and available to
-> +system administrator. The full stack is illustrated below::
-> +
-> +                            HOST
-> +
-> +                 [XMGMT]            [XUSER]
-> +                    |                  |
-> +                    |                  |
-> +                 +-----+            +-----+
-> +                 | MPF |            | UPF |
-> +                 |     |            |     |
-> +                 | PF0 |            | PF1 |
-> +                 +--+--+            +--+--+
-> +          ......... ^................. ^..........
-> +                    |                  |
-> +                    |   PCIe DEVICE    |
-> +                    |                  |
-> +                 +--+------------------+--+
-> +                 |         SHELL          |
-> +                 |                        |
-> +                 +------------------------+
-> +                 |         USER           |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 +------------------------+
-> +
-> +
-> +
-> +Virtualized
-> +-----------
-> +
-> +In virtualized deployments privileged MPF is assigned to host but unprivileged
-In virtualized deployments, the
-> +UPF is assigned to guest VM via PCIe pass-through. xmgmt driver in host binds
-in the host
-> +to MPF. xmgmt driver operations are privileged and only accessible by hosting
-to the MPF
-> +service provider. The full stack is illustrated below::
-> +
-> +
-> +                                 .............
-> +                  HOST           .    VM     .
-> +                                 .           .
-> +                 [XMGMT]         .  [XUSER]  .
-> +                    |            .     |     .
-> +                    |            .     |     .
-> +                 +-----+         .  +-----+  .
-> +                 | MPF |         .  | UPF |  .
-> +                 |     |         .  |     |  .
-> +                 | PF0 |         .  | PF1 |  .
-> +                 +--+--+         .  +--+--+  .
-> +          ......... ^................. ^..........
-> +                    |                  |
-> +                    |   PCIe DEVICE    |
-> +                    |                  |
-> +                 +--+------------------+--+
-> +                 |         SHELL          |
-> +                 |                        |
-> +                 +------------------------+
-> +                 |         USER           |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 |                        |
-> +                 +------------------------+
-> +
-> +
-> +
-> +
-> +
-> +Platform Security Considerations
-> +================================
-> +
-> +`Security of Alveo Platform <https://xilinx.github.io/XRT/master/html/security.html>`_
-> +discusses the deployment options and security implications in great detail.
-
-This link works and looks great.
-
-Tom
-
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index 9b0592b11a9f..ff2495707edb 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -287,7 +287,7 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+>>   pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+>>
+>> -#define MAX_EARLY_MAPPING_SIZE SZ_128M
+>> +#define MAX_EARLY_MAPPING_SIZE PGDIR_SIZE
+>>
+>>   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+>>
+>> --
+>> 2.20.1
+>>
+>> Thanks,
+>>
+>> Alex
+>>
+>> > scripts/config -d KASAN_INLINE -e KASAN_OUTLINE -d
+>> > CC_OPTIMIZE_FOR_PERFORMANCE -e CC_OPTIMIZE_FOR_SIZE
+>> > make -j72 ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-
+>> > qemu-system-riscv64 -machine virt -smp 2 -m 4G -kernel
+>> > arch/riscv/boot/Image -nographic -append "earlycon earlyprintk=serial
+>> > console=ttyS0"
+>> > [this boots fine, at least at to starting init process]
+>> >
+>> > _______________________________________________
+>> > linux-riscv mailing list
+>> > linux-riscv@lists.infradead.org
+>> > http://lists.infradead.org/mailman/listinfo/linux-riscv
+>> >
