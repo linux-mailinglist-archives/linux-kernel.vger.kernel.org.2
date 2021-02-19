@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A97832003D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59B732002D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhBSVSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 16:18:34 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:39469 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229689AbhBSVS1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 16:18:27 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7F9645C0106;
-        Fri, 19 Feb 2021 16:16:54 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 19 Feb 2021 16:16:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=ELOAyBeEhh0VX
-        4FOdjIKAD/nMXMiE1K9Yu4E4QgOwvQ=; b=id2YL8MjvYrr5Mlmc9KbgdDG+5Wxz
-        fz3EllcDxRSZVp9O2JbGK5LU620HmFGOc1/xCut8nZxi6PnOhuzCUgMhwNeHqHu0
-        rDKNektEs9pBXbx/AbXzixoj4zK/k2vh8GDHHgpODOtP/VE42XVo01fjr5FGVnPF
-        OqkOKx2OVM6MPnNSEA7RhzLZ+KtQzV7+3hxhHHW4wnDLOIE+ZmBYXUAy9pNNXeyw
-        52t0qGdlAjJtWTKmix3wDnsydbQLvdplypKUhH1d6L/4wj+XlkNo1GB/MqOVzYDv
-        46lagoMyveRW2IbstewoZKuFQM5bRfy0exRfrEW0HODaJECABSllaHJhw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=ELOAyBeEhh0VX4FOdjIKAD/nMXMiE1K9Yu4E4QgOwvQ=; b=p0VKuUjA
-        lZSJlNLkg+xUxPrFV1m40HGNHtnthCFRloQJh9Ii1nGP9zEXYuCoWVYL3SmF5fo2
-        dUDvAxwKoTN+wXXmytqMKTtDEkO1hLKJq4GE6lnWMGAxC4Om3kYIG2QsLWfkjIx/
-        T1xspHbHiRvKopfiwO7qL33ZqY99Ukz6Dc5otng8FQzQYunNQGDp7ckV3vTnBi3c
-        d8wu/xPWOZUtg4gdxLawG3mKeCLLcCBgk5phkXv3iObw8HX4EBPQiQp32MDgjQml
-        F6XYnfnt1vnS34If3RIEG8IdKs0BrjXOQUr/KXeCPqmRmgeefescv2d9ZYg/RclQ
-        cNJIyduvCBxu7A==
-X-ME-Sender: <xms:xiowYG0dFTif4IfFZ4Q38YESGSU30JAKv0j8FqLxfB-HOWEvWu2Q0g>
-    <xme:xiowYJGR38ehb7aqctP4m_OqlJad56pR8KRvjl2a3OdqQUdqXjY_GDg-WxxS8R_2w
-    dM_2Zr2Vl1CieVdcA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrjeeigddugeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeghihhllhhi
-    rghmucffuhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrth
-    htvghrnhepjedvgeffieeivdefleekvddvudffvefhiefgueeujedvgfegfeelkeduffel
-    ffefnecukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpe
-    egnecurfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
-X-ME-Proxy: <xmx:xiowYO6YBd4gk1-EvEWWIHphNisAQ-qWzoXQytyqFgJlRWtPi2x_hQ>
-    <xmx:xiowYH1dEzSIIG3PbyNSpL8dqGPToiuRmWbsp2LMDvPKK4FHu0MMHg>
-    <xmx:xiowYJHgvGNU0Wgav4gPfK-HgDOBgEIkxcoyrgT00JAFP-rHzddBCQ>
-    <xmx:xiowYMOlZy3WDkwJiFKIiE6GuabrO2gPi5rr9u9yG-mDfNmrzB4ESw>
-Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E8E77240057;
-        Fri, 19 Feb 2021 16:16:53 -0500 (EST)
-From:   William Durand <will+git@drnd.me>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] staging: rtl8192e: rename TID to tid in delba_param_set union
-Date:   Fri, 19 Feb 2021 16:14:00 +0000
-Message-Id: <20210219161400.29316-6-will+git@drnd.me>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210219161400.29316-1-will+git@drnd.me>
-References: <20210219161400.29316-1-will+git@drnd.me>
+        id S229746AbhBSVPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 16:15:12 -0500
+Received: from mga11.intel.com ([192.55.52.93]:24936 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229577AbhBSVPJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 16:15:09 -0500
+IronPort-SDR: cxrU2MfgzdnCgVys+N/CZHvJwLZaW181f8SZU9aAquP5R0P6Nh4ZkSvAdP/SfWKZFT9RfWe/dW
+ PDSpeGYZf9qQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="180453250"
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; 
+   d="scan'208";a="180453250"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 13:13:24 -0800
+IronPort-SDR: HsXOnOiOE04PK4hZwZxbkf9Ni5x5InjymCk2606Ilyk0sKhTY8fo4pabPMIxfRsjAVOx7+S7iC
+ V7+eHMAKL4AA==
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; 
+   d="scan'208";a="440422875"
+Received: from cnolsen-mobl1.amr.corp.intel.com (HELO [10.209.128.197]) ([10.209.128.197])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 13:13:22 -0800
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, sanyog.r.kale@intel.com,
+        yung-chuan.liao@linux.intel.com
+References: <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
+ <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
+ <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
+ <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
+ <eaf13d70-86fe-3e18-7a5a-4043f2d8a22d@linux.intel.com>
+ <aaf34f07-5eed-3045-e4c6-dc9416689b20@linaro.org>
+ <f960757f-ec8b-6d3f-f00e-27242c687926@linux.intel.com>
+ <e962caa8-89c3-4a22-5932-4498c406e8f8@linaro.org>
+ <adb91730-35db-db7a-75b3-4771723de945@linux.intel.com>
+ <31ff9d2b-760a-374e-5b37-45d8e8116f7b@linaro.org>
+ <20210201102709.GT2771@vkoul-mobl>
+ <c8bb718d-c06d-2942-9c0b-2a6f97031e10@linaro.org>
+Message-ID: <64d2537a-bd60-e0a3-c4aa-4f802c34102b@linux.intel.com>
+Date:   Fri, 19 Feb 2021 13:52:04 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c8bb718d-c06d-2942-9c0b-2a6f97031e10@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change uses lowercase for a field name to be more consistent with
-the rest of the union.
 
-Signed-off-by: William Durand <will+git@drnd.me>
----
- drivers/staging/rtl8192e/rtl819x_BA.h     | 2 +-
- drivers/staging/rtl8192e/rtl819x_BAProc.c | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_BA.h b/drivers/staging/rtl8192e/rtl819x_BA.h
-index f94ce2d7d166..67574e26cdfc 100644
---- a/drivers/staging/rtl8192e/rtl819x_BA.h
-+++ b/drivers/staging/rtl8192e/rtl819x_BA.h
-@@ -44,7 +44,7 @@ union delba_param_set {
- 	struct {
- 		u16 reserved:11;
- 		u16 initiator:1;
--		u16 TID:4;
-+		u16 tid:4;
- 	} field;
- };
+>>>> It seems you are in a different solution-space, where the codec driver
+>>>> needs to notify the master of which ports it needs to use?
+>>> Correct! As Codec is the place where we have mixer controls ant it can
+>>> clearly tell which master ports should be used for that particular
+>>> configuration.
+>> And that should come from firmware (DT etc) and driver should pass on
+>> this info
+> 
+> Are you okay with the patch as it is, provided this information is 
+> populated from DT?
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_BAProc.c b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-index 3594d432b2a2..3455fd210372 100644
---- a/drivers/staging/rtl8192e/rtl819x_BAProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_BAProc.c
-@@ -142,7 +142,7 @@ static struct sk_buff *rtllib_DELBA(struct rtllib_device *ieee, u8 *dst,
- 	memset(&DelbaParamSet, 0, 2);
+I am fine with the direction at a high-level. The premise for SoundWire 
+is that the bus is simple enough that it can be used in different 
+contexts and architectures, so if Qualcomm need something that differs 
+from what is needed for Intel we are really not in a position to object.
 
- 	DelbaParamSet.field.initiator = (TxRxSelect == TX_DIR) ? 1 : 0;
--	DelbaParamSet.field.TID	= pBA->BaParamSet.field.tid;
-+	DelbaParamSet.field.tid	= pBA->BaParamSet.field.tid;
+That said, I could use more explanations on how the mapping is defined: 
+I don't think we have the same definition of 'static port mapping'. For 
+SDCA integration, we plan to have a static mapping in some sort of ACPI 
+table that will describe which port on the Manager side is connected to 
+which ports on Peripheral XYZ. That's static as in set in stone in 
+platform firmware. I understand the reference to DT settings as the same 
+idea.
 
- 	skb = dev_alloc_skb(len + sizeof(struct rtllib_hdr_3addr));
- 	if (!skb)
-@@ -444,11 +444,11 @@ int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb)
- 		struct rx_ts_record *pRxTs;
+But if the mapping depends on the value of mixer controls as you 
+describe it, then it's not static and defined by DT settings, but 
+run-time defined.
 
- 		if (!GetTs(ieee, (struct ts_common_info **)&pRxTs, dst,
--		    (u8)pDelBaParamSet->field.TID, RX_DIR, false)) {
-+		    (u8)pDelBaParamSet->field.tid, RX_DIR, false)) {
- 			netdev_warn(ieee->dev,
- 				    "%s(): can't get TS for RXTS. dst:%pM TID:%d\n",
- 				    __func__, dst,
--				    (u8)pDelBaParamSet->field.TID);
-+				    (u8)pDelBaParamSet->field.tid);
- 			return -1;
- 		}
+Also maybe we'd want to have a more opaque way of passing the 
+information, maybe with a stream private data or a callback, instead of 
+hard-coding fields that are only used by Qualcomm.
 
-@@ -457,7 +457,7 @@ int rtllib_rx_DELBA(struct rtllib_device *ieee, struct sk_buff *skb)
- 		struct tx_ts_record *pTxTs;
-
- 		if (!GetTs(ieee, (struct ts_common_info **)&pTxTs, dst,
--			   (u8)pDelBaParamSet->field.TID, TX_DIR, false)) {
-+			   (u8)pDelBaParamSet->field.tid, TX_DIR, false)) {
- 			netdev_warn(ieee->dev, "%s(): can't get TS for TXTS\n",
- 				    __func__);
- 			return -1;
---
-2.30.0
 
