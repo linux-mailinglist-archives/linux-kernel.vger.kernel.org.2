@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C5F31F437
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 04:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DE6331F43D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 04:39:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhBSDds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 22:33:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229480AbhBSDdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 22:33:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8EB764ECA;
-        Fri, 19 Feb 2021 03:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613705583;
-        bh=j5rx9nRCiYG3qpKeTXd2kCmumKSrhK+DrOLzzfUjbp0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cFQJOnFprE2zPmMCVvUPAwBU7xZZuIddWTs6fgCGm/G5DvxbZMYCmpL6TWbfEEigI
-         BEmnQ69kEIRfR53FPtBAQvX5HvrFkxSZzl/Be4Lh+A3c0OrrxnFYOUe7iCUmhq3ngN
-         /RP6j5Nq0nZhyYYlBSpH+gyiIXaqwoLgXl7Mx9kzg/hbv9qZDyX1C62CnI/Kk5mjdC
-         12EaVYVveRhwQdBytsuDcD2/4q5duq1UzQCC1ChH+OuTTbttV1qJnq7vIb23PlM4fO
-         WS4VWnS7Tbcdwk+MDYv6rUoNl7IeMUsOZWaAB4I5dTxXyiM5iYsGfYkyU5vGnxcP/9
-         uYwGZH9XO6ZXQ==
-Date:   Thu, 18 Feb 2021 19:33:02 -0800
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de, linux-btrfs@vger.kernel.org,
-        naohiro.aota@wdc.com
-Subject: [GIT PULL] iomap: new code for 5.12-rc1
-Message-ID: <20210219033302.GY7193@magnolia>
+        id S229700AbhBSDfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 22:35:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhBSDfI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 22:35:08 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA04C061574;
+        Thu, 18 Feb 2021 19:34:27 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id s16so2594848plr.9;
+        Thu, 18 Feb 2021 19:34:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Rh/oSk8woDzhMcxGvDnFOJ03XjGV7BI5BPA5myV9isc=;
+        b=C3t0oHXN4wAB9/LdbmYTJWD2bVF4iWyvQVkSjdggb2MLyf8hB0BJdJIKTMY/leTncG
+         tCsDlmbufPcKAMbiz4A/AXRlahZNZ0VdttbQe5jn8qP8p7Nezxw1XzaddaIsr/+LxIJ1
+         V0wx9rkBNttA0CFcTmnBBhf19nib0CYLyqCf3djVKaeFNRu9i65JzH8QlsR54fVP7/6T
+         jv8HHZT/5XORXkUdCU/NHhqcXW1XL10fMB5WiEPFYS0rJwPUl2oB0x1m/Usg0IXO1Lp0
+         4TpDYUcXakbmivf3sxUzHIqPCATJZOjWI6Afgf1AdcB41vE2VOo7XJIoz8qqiFZqhwFQ
+         wUzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Rh/oSk8woDzhMcxGvDnFOJ03XjGV7BI5BPA5myV9isc=;
+        b=XJMg0swDEzmYrRRxsWy+AoXoaImpXZ/5sfVrsf5niU7HYdENYSkUGztdY/7+5FPJf6
+         bEyxF72uD54ml2z20aM4KGbePJc9kRDNxw+4F7HWBILXtPHtyuWCG4kqDKrPqVjJrgkX
+         wmpoLPIXsk5Y5079vinWqf/Kvt6S5W7xIglWpYGWQeSIrT+5PxGaoBFQhQe6WYcaT5YF
+         zL6p0SFbXkt11vynMUAM5dOPTv0eqAXqF4qApp/csta00XWMreGiYVk80fc4eqdweRMH
+         QvYySMYYEW5hsST9bdvFsXg22RbvEEUIkxAZ3CYryOIDdmaJjLLuGY98rel/4V+ZnmUz
+         Vnmw==
+X-Gm-Message-State: AOAM532JCCwFLyiZ1TM6EKUAM6KFnRJxJkRDjbZAoMikhBrLmj3iFVDS
+        h7ziLZIM6Ir/Gtb0TjPkJVnL9lo76ms=
+X-Google-Smtp-Source: ABdhPJz9JfX63LDo/ER51CrqgMOVZDMVMKLqAZuOYcxBN5lwpI+eRl2vCVilKJYslp/uMAaWQprIMw==
+X-Received: by 2002:a17:90a:ea88:: with SMTP id h8mr7074671pjz.175.1613705667206;
+        Thu, 18 Feb 2021 19:34:27 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:8d20:87b2:91b7:7f7b])
+        by smtp.gmail.com with ESMTPSA id y23sm7465947pfo.50.2021.02.18.19.34.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 19:34:26 -0800 (PST)
+Date:   Thu, 18 Feb 2021 19:34:23 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     rydberg@bitmath.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: Use true and false for bool variable
+Message-ID: <YC8xvyj48UKonhXI@google.com>
+References: <1613643835-1147-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1613643835-1147-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-Please pull these new changes to the iomap code for 5.12.  The big
-change in this cycle is some new code to make it possible for XFS to try
-unaligned directio overwrites without taking locks.  If the block is
-fully written and within EOF (i.e. doesn't require any further fs
-intervention) then we can let the unlocked write proceed.  If not, we
-fall back to synchronizing direct writes.
+On Thu, Feb 18, 2021 at 06:23:55PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./drivers/input/touchscreen/zinitix.c:250:8-9: WARNING: return of 0/1 in
+> function 'zinitix_init_touch' with return type bool.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/input/touchscreen/zinitix.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/input/touchscreen/zinitix.c b/drivers/input/touchscreen/zinitix.c
+> index a3e3adb..acb1d53 100644
+> --- a/drivers/input/touchscreen/zinitix.c
+> +++ b/drivers/input/touchscreen/zinitix.c
+> @@ -247,7 +247,7 @@ static bool zinitix_init_touch(struct bt541_ts_data *bt541)
+>  		udelay(10);
+>  	}
+>  
+> -	return 0;
+> +	return false;
 
-Note that the btrfs developers have been working on supporting zoned
-block devices, and their 5.12 pull request has a single iomap patch to
-adjust directio writes to support REQ_OP_APPEND.
+This is incorrect, as earlier we try to return error codes from this
+function. It needs to be changed to return int, I'll take care of it.
 
-The branch merges cleanly with 5.11 and has been soaking in for-next for
-quite a while now.  Please let me know if there are any strange
-problems.  It's been a pretty quiet cycle, so I don't anticipate any
-more iomap pulls other than whatever new bug fixes show up.
+Thanks.
 
---D (whose pull requests are delayed by last weekend's wild ride :( )
-
-The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
-
-  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.12-merge-2
-
-for you to fetch changes up to ed1128c2d0c87e5ff49c40f5529f06bc35f4251b:
-
-  xfs: reduce exclusive locking on unaligned dio (2021-02-01 09:47:19 -0800)
-
-----------------------------------------------------------------
-New code for 5.12:
-- Adjust the final parameter of iomap_dio_rw.
-- Add a new flag to request that iomap directio writes return EAGAIN if
-  the write is not a pure overwrite within EOF; this will be used to
-  reduce lock contention with unaligned direct writes on XFS.
-- Amend XFS' directio code to eliminate exclusive locking for unaligned
-  direct writes if the circumstances permit
-
-----------------------------------------------------------------
-Christoph Hellwig (9):
-      iomap: rename the flags variable in __iomap_dio_rw
-      iomap: pass a flags argument to iomap_dio_rw
-      iomap: add a IOMAP_DIO_OVERWRITE_ONLY flag
-      xfs: factor out a xfs_ilock_iocb helper
-      xfs: make xfs_file_aio_write_checks IOCB_NOWAIT-aware
-      xfs: cleanup the read/write helper naming
-      xfs: remove the buffered I/O fallback assert
-      xfs: simplify the read/write tracepoints
-      xfs: improve the reflink_bounce_dio_write tracepoint
-
-Dave Chinner (2):
-      xfs: split the unaligned DIO write code out
-      xfs: reduce exclusive locking on unaligned dio
-
- fs/btrfs/file.c       |   7 +-
- fs/ext4/file.c        |   5 +-
- fs/gfs2/file.c        |   7 +-
- fs/iomap/direct-io.c  |  26 ++--
- fs/xfs/xfs_file.c     | 351 ++++++++++++++++++++++++++++----------------------
- fs/xfs/xfs_iomap.c    |  29 +++--
- fs/xfs/xfs_trace.h    |  22 ++--
- fs/zonefs/super.c     |   4 +-
- include/linux/iomap.h |  18 ++-
- 9 files changed, 269 insertions(+), 200 deletions(-)
+-- 
+Dmitry
