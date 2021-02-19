@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498A231F382
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 02:01:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B344D31F386
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 02:09:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhBSBBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 20:01:35 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:33454 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229480AbhBSBBd (ORCPT
+        id S229459AbhBSBIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 20:08:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhBSBIm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 20:01:33 -0500
-Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AD43D20B6C40;
-        Thu, 18 Feb 2021 17:00:52 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AD43D20B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1613696452;
-        bh=VSKfsGKaNp2Nzzv3zZO3rFJoPhGfwklUdZdX8IsxSiw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VIuRXNLyG6SZEWqNFcypmGcWZBg9LIC+uDcXekXYUYhx4yTTsB6m0PgfgmnZjShII
-         Cq+S3pU039f/43ucLkOdNAHSEHpagFKh6cRaRzEId+5kAMsn4Te9/p3+oHBjtSfFxa
-         vJV+s4SPm4SuaX1PJfRchy44Je01UWxo/bq/sSsI=
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-To:     zohar@linux.ibm.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        Thu, 18 Feb 2021 20:08:42 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93999C061756
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 17:08:02 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id d2so3114972pjs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 17:08:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=gtRvuZllWLJvgWkeOsFOqRZkywemAhOtgZ0A+r5rKzo=;
+        b=1rCm2Q6LKW2K4r62YbXikCf6EHSI+PRLfvD0EeO6aVgu0VWCMbnaswKJ1KxPknmeur
+         eyMW2XR0k1h1e+NdfgndIBdoxZUjL9kF9TaH4X42BTdnit/KY/WuBYHfUK+UVdipQUGn
+         oL2OkOMHz5t1KDX/ReKBX/8x99NdwJVSVr9A8Fi62rOeHAgyrLSNRJzXw+60h9Kw7bmm
+         xFdfmJj6Q0IRkQSTH9c3SBz0AL6ZP8Y+VnaYE6w86XZkmsqNZtXzx+7iDpfsxvuxUlwH
+         KhTXhyn2gPbsihEtDpAeg9hN82jsDzPcyemAl2c2Hw4RMCdER8Ox0GPzHOmxfAd+yNr8
+         hsNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=gtRvuZllWLJvgWkeOsFOqRZkywemAhOtgZ0A+r5rKzo=;
+        b=IBF2XnYhR+ITyRyDv9fWT9TOZRC1+avN6ZK6uX/vF64YP4nMmyYBILYWsuzIkirgi6
+         92K1S2PieWwsrfmPBoyVLNFNqGlQoVEW27JdQ6GBmhfRGJdcTDGwWiVImpmLjY0KvR4i
+         thYv0Jlc/M6/qdi5hvekTyiCXnQmyieEi9sAL0xgoxxzcwXC4eaBPJpFVx6InHJu+xau
+         C5E85u0L7LRsCnoa7ZwFmenLRhOVH/7H4/m8WdxBupfpjkhdwmxKzyDDW/rHBWp9g1cL
+         mNdJw/fiyHJDLO1p7PijbFDIJuMxiNUTPhy+Ne7n45MLc0/UCdCRghVZO2blKtCaNIyJ
+         SrLA==
+X-Gm-Message-State: AOAM531FMdJ6KH+EB3NOsOEhm0a6oIVBYUbUxGm/4r3OHze37O+OvN5T
+        gnHVLScSgGmFAyKdwHjXFhYj03DiatxU8A==
+X-Google-Smtp-Source: ABdhPJziquv0hmp3TbynLdn+U1SvAQttZ4o7yWpkhxeqGtYB4aKOtXYhWdB87Ue2cR3BnkJf+jXw5g==
+X-Received: by 2002:a17:902:7887:b029:e3:8ef0:9a9d with SMTP id q7-20020a1709027887b02900e38ef09a9dmr6351472pll.2.1613696881718;
+        Thu, 18 Feb 2021 17:08:01 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id h11sm6387043pjc.27.2021.02.18.17.08.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 17:08:01 -0800 (PST)
+Subject: Re: [PATCH v6 0/2] fix a NULL pointer bug and simplify the code
+To:     Sun Ke <sunke32@huawei.com>, josef@toxicpanda.com,
+        Markus.Elfring@web.de
+Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3] IMA: support for duplicate measurement records
-Date:   Thu, 18 Feb 2021 17:00:45 -0800
-Message-Id: <20210219010045.5509-1-tusharsu@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
+References: <20210218122620.228375-1-sunke32@huawei.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6df9a13d-b876-976f-ad48-884c88815269@kernel.dk>
+Date:   Thu, 18 Feb 2021 18:07:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210218122620.228375-1-sunke32@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMA does not include duplicate file, buffer, or critical data
-measurement records since TPM extend is a very expensive
-operation.  However, in some cases, the measurement of duplicate
-records is necessary to accurately determine the current state of the
-system.  For instance - the file, buffer, or critical data measurement
-record may change from some value 'val#1', to 'val#2', and then back
-to 'val#1'.  Currently, IMA will not measure the last change to 'val#1',
-since the hash of 'val#1' for the given record is already present in the
-measurement log.  This limits the ability of the attestation service to
-accurately determine the current state of the system, because it would
-be interpreted as the system having 'val#2' for the given record.
+On 2/18/21 5:26 AM, Sun Ke wrote:
+> fix a NULL pointer bug and simplify the code
+> 
+> v6: Just add if (nbd->recv_workq) to nbd_disconnect_and_put().
+> v5: Adjust the title and add “Suggested-by”.
+> v4: Share exception handling code for if branches and 
+> 	move put_nbd adjustment to a separate patch.
+> v3: Do not use unlock and add put_nbd.
+> v2: Use jump target unlock.
+> 
+> Sun Ke (2):
+>   nbd: Fix NULL pointer in flush_workqueue
+>   nbd: share nbd_put and return by goto put_nbd
+> 
+>  drivers/block/nbd.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-Update ima_add_template_entry() to support measurement of duplicate
-records, driven by a Kconfig option - IMA_DISABLE_HTABLE.
+Applied for 5.12, thanks.
 
-Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
----
-Change Log v3:
- - Incorporated feedback from Mimi on v2.
- - Updated patch title and description to make it generic.
- - Changed config description word 'data' to 'records'.
- - Tested use cases for boot param "ima_policy=tcb".
-
-Change Log v2:
- - Incorporated feedback from Mimi on v1.
- - The fix is not just applicable to measurement of critical data,
-   it now applies to other buffers and file data as well.
- - the fix is driven by a Kconfig option IMA_DISABLE_HTABLE, rather
-   than a IMA policy condition - allow_dup.
-
- security/integrity/ima/Kconfig     | 7 +++++++
- security/integrity/ima/ima_queue.c | 5 +++--
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index 12e9250c1bec..d0ceada99243 100644
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -334,3 +334,10 @@ config IMA_SECURE_AND_OR_TRUSTED_BOOT
-        help
-           This option is selected by architectures to enable secure and/or
-           trusted boot based on IMA runtime policies.
-+
-+config IMA_DISABLE_HTABLE
-+	bool "Disable htable to allow measurement of duplicate records"
-+	depends on IMA
-+	default n
-+	help
-+	   This option disables htable to allow measurement of duplicate records.
-diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
-index c096ef8945c7..532da87ce519 100644
---- a/security/integrity/ima/ima_queue.c
-+++ b/security/integrity/ima/ima_queue.c
-@@ -168,7 +168,7 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 	int result = 0, tpmresult = 0;
- 
- 	mutex_lock(&ima_extend_list_mutex);
--	if (!violation) {
-+	if (!violation && !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE)) {
- 		if (ima_lookup_digest_entry(digest, entry->pcr)) {
- 			audit_cause = "hash_exists";
- 			result = -EEXIST;
-@@ -176,7 +176,8 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 		}
- 	}
- 
--	result = ima_add_digest_entry(entry, 1);
-+	result = ima_add_digest_entry(entry,
-+				      !IS_ENABLED(CONFIG_IMA_DISABLE_HTABLE));
- 	if (result < 0) {
- 		audit_cause = "ENOMEM";
- 		audit_info = 0;
 -- 
-2.17.1
+Jens Axboe
 
