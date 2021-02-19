@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A2B31F9A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E42931F9A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230313AbhBSNFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 08:05:06 -0500
-Received: from foss.arm.com ([217.140.110.172]:35952 "EHLO foss.arm.com"
+        id S230352AbhBSNFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 08:05:18 -0500
+Received: from foss.arm.com ([217.140.110.172]:35954 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230228AbhBSNEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230232AbhBSNEC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Feb 2021 08:04:02 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC57C13D5;
-        Fri, 19 Feb 2021 05:02:39 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8266D142F;
+        Fri, 19 Feb 2021 05:02:41 -0800 (PST)
 Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 23AF83F73B;
-        Fri, 19 Feb 2021 05:02:38 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F065D3F73B;
+        Fri, 19 Feb 2021 05:02:39 -0800 (PST)
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Qais Yousef <qais.yousef@arm.com>,
@@ -29,9 +29,9 @@ Cc:     Qais Yousef <qais.yousef@arm.com>,
         Pavan Kondeti <pkondeti@codeaurora.org>,
         Rik van Riel <riel@surriel.com>,
         Lingutla Chandrasekhar <clingutla@codeaurora.org>
-Subject: [PATCH v2 5/7] sched/fair: Employ capacity_greater() throughout load_balance()
-Date:   Fri, 19 Feb 2021 13:00:01 +0000
-Message-Id: <20210219130003.2890-6-valentin.schneider@arm.com>
+Subject: [PATCH v2 6/7] sched/fair: Filter out locally-unsolvable misfit imbalances
+Date:   Fri, 19 Feb 2021 13:00:02 +0000
+Message-Id: <20210219130003.2890-7-valentin.schneider@arm.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210219130003.2890-1-valentin.schneider@arm.com>
 References: <20210219130003.2890-1-valentin.schneider@arm.com>
@@ -41,82 +41,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While at it, replace group_smaller_{min, max}_cpu_capacity() with
-comparisons of the source group's min/max capacity and the destination
-CPU's capacity.
+Consider the following (hypothetical) asymmetric CPU capacity topology,
+with some amount of capacity pressure (RT | DL | IRQ | thermal):
+
+  DIE [          ]
+  MC  [    ][    ]
+       0  1  2  3
+
+  | CPU | capacity_orig | capacity |
+  |-----+---------------+----------|
+  |   0 |           870 |      860 |
+  |   1 |           870 |      600 |
+  |   2 |          1024 |      850 |
+  |   3 |          1024 |      860 |
+
+If CPU1 has a misfit task, then CPU0, CPU2 and CPU3 are valid candidates to
+grant the task an uplift in CPU capacity. Consider CPU0 and CPU3 as
+sufficiently busy, i.e. don't have enough spare capacity to accommodate
+CPU1's misfit task. This would then fall on CPU2 to pull the task.
+
+This currently won't happen, because CPU2 will fail
+
+  capacity_greater(capacity_of(CPU2), sg->sgc->max_capacity)
+
+in update_sd_pick_busiest(), where 'sg' is the [0, 1] group at DIE
+level. In this case, the max_capacity is that of CPU0's, which is at this
+point in time greater than that of CPU2's. This comparison doesn't make
+much sense, given that the only CPUs we should care about in this scenario
+are CPU1 (the CPU with the misfit task) and CPU2 (the load-balance
+destination CPU).
+
+Aggregate a misfit task's load into sgs->group_misfit_task_load only if
+env->dst_cpu would grant it a capacity uplift. Separately track whether a
+sched_group contains a misfit task to still classify it as
+group_misfit_task and not pick it as busiest group when pulling from a
+lower-capacity CPU (which is the current behaviour and prevents
+down-migration).
+
+Since find_busiest_queue() can now iterate over CPUs with a higher capacity
+than the local CPU's, add a capacity check there.
 
 Reviewed-by: Qais Yousef <qais.yousef@arm.com>
 Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 ---
- kernel/sched/fair.c | 33 ++++-----------------------------
- 1 file changed, 4 insertions(+), 29 deletions(-)
+ kernel/sched/fair.c | 39 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 30 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cc16d0e0b9fb..af5ce083c982 100644
+index af5ce083c982..ee172b384e29 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -8320,26 +8320,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
- 	return false;
+@@ -5747,6 +5747,12 @@ static unsigned long capacity_of(int cpu)
+ 	return cpu_rq(cpu)->cpu_capacity;
  }
  
--/*
-- * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity than sched_group ref.
-- */
--static inline bool
--group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
--}
--
--/*
-- * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
-- * per-CPU capacity_orig than sched_group ref.
-- */
--static inline bool
--group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
--{
--	return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
--}
--
- static inline enum
- group_type group_classify(unsigned int imbalance_pct,
- 			  struct sched_group *group,
-@@ -8491,15 +8471,10 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	if (!sgs->sum_h_nr_running)
- 		return false;
++/* Is CPU a's capacity noticeably greater than CPU b's? */
++static inline bool cpu_capacity_greater(int a, int b)
++{
++	return capacity_greater(capacity_of(a), capacity_of(b));
++}
++
+ static void record_wakee(struct task_struct *p)
+ {
+ 	/*
+@@ -8061,7 +8067,8 @@ struct sg_lb_stats {
+ 	unsigned int group_weight;
+ 	enum group_type group_type;
+ 	unsigned int group_asym_packing; /* Tasks should be moved to preferred CPU */
+-	unsigned long group_misfit_task_load; /* A CPU has a task too big for its capacity */
++	unsigned long group_misfit_task_load; /* Task load that can be uplifted */
++	int           group_has_misfit_task; /* A CPU has a task too big for its capacity */
+ #ifdef CONFIG_NUMA_BALANCING
+ 	unsigned int nr_numa_running;
+ 	unsigned int nr_preferred_running;
+@@ -8334,7 +8341,7 @@ group_type group_classify(unsigned int imbalance_pct,
+ 	if (sgs->group_asym_packing)
+ 		return group_asym_packing;
  
--	/*
--	 * Don't try to pull misfit tasks we can't help.
--	 * We can use max_capacity here as reduction in capacity on some
--	 * CPUs in the group should either be possible to resolve
--	 * internally or be covered by avg_load imbalance (eventually).
--	 */
-+	/* Don't try to pull misfit tasks we can't help */
+-	if (sgs->group_misfit_task_load)
++	if (sgs->group_has_misfit_task)
+ 		return group_misfit_task;
+ 
+ 	if (!group_has_capacity(imbalance_pct, sgs))
+@@ -8420,10 +8427,21 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+ 			continue;
+ 
+ 		/* Check for a misfit task on the cpu */
+-		if (sd_has_asym_cpucapacity(env->sd) &&
+-		    sgs->group_misfit_task_load < rq->misfit_task_load) {
+-			sgs->group_misfit_task_load = rq->misfit_task_load;
+-			*sg_status |= SG_OVERLOAD;
++		if (!sd_has_asym_cpucapacity(env->sd) ||
++		    !rq->misfit_task_load)
++			continue;
++
++		*sg_status |= SG_OVERLOAD;
++		sgs->group_has_misfit_task = true;
++
++		/*
++		 * Don't attempt to maximize load for misfit tasks that can't be
++		 * granted a CPU capacity uplift.
++		 */
++		if (cpu_capacity_greater(env->dst_cpu, i)) {
++			sgs->group_misfit_task_load = max(
++				sgs->group_misfit_task_load,
++				rq->misfit_task_load);
+ 		}
+ 	}
+ 
+@@ -8474,7 +8492,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 	/* Don't try to pull misfit tasks we can't help */
  	if (static_branch_unlikely(&sched_asym_cpucapacity) &&
  	    sgs->group_type == group_misfit_task &&
--	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
-+	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
+-	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
++	    (!sgs->group_misfit_task_load ||
  	     sds->local_stat.group_type != group_has_spare))
  		return false;
  
-@@ -8583,7 +8558,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
- 	 */
- 	if (sd_has_asym_cpucapacity(env->sd) &&
- 	    (sgs->group_type <= group_fully_busy) &&
--	    (group_smaller_min_cpu_capacity(sds->local, sg)))
-+	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
- 		return false;
+@@ -9434,15 +9452,18 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 		case migrate_misfit:
+ 			/*
+ 			 * For ASYM_CPUCAPACITY domains with misfit tasks we
+-			 * simply seek the "biggest" misfit task.
++			 * simply seek the "biggest" misfit task we can
++			 * accommodate.
+ 			 */
++			if (!cpu_capacity_greater(env->dst_cpu, i))
++				continue;
++
+ 			if (rq->misfit_task_load > busiest_load) {
+ 				busiest_load = rq->misfit_task_load;
+ 				busiest = rq;
+ 			}
  
- 	return true;
-@@ -9396,7 +9371,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
- 		 * average load.
- 		 */
- 		if (sd_has_asym_cpucapacity(env->sd) &&
--		    capacity_of(env->dst_cpu) < capacity &&
-+		    !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
- 		    nr_running == 1)
- 			continue;
+ 			break;
+-
+ 		}
+ 	}
  
 -- 
 2.27.0
