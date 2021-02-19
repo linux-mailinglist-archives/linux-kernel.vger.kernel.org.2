@@ -2,224 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D56E31FFD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DABD31FFE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:35:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBSUbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:31:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229683AbhBSUbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:31:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FF7164EBF;
-        Fri, 19 Feb 2021 20:30:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613766655;
-        bh=t60MtijxFQRBj7x3qDETkxU78fn61+W8UwCXWCiwnQY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Xb+ScodtC5g1cJwFwirDpie276j9W21+W9T9eLgOfC1SHJHdUX8DF1ZTbCMDDl2b1
-         CtXaFvrALlvelQT3VHb1fb1I86UFmxhQJyn5fh0c5IL6LWz6mIIwNz+tYoqzxdOJCy
-         6d+orlD4NDIUUVKmW0I/71fEFGtMTUbKQZ5aFKuMbZsoy2xe+LETtfBDJfJx7Akyt6
-         B4/WgocoAhw4iwSgoLn7iqvcsyLrqgMXRTbsL4BkCDMasEqQH5I1SXRzoM8xQ9zOkA
-         tbpYniBMZUEMcoUiVFHqZS0Tz2GL7muRsPcEn1dxAxfQEk+fPjQ7WLqspYcsb7Nrs3
-         Mdc9Pm/eMthbg==
-Date:   Fri, 19 Feb 2021 13:30:53 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com,
-        David Laight <David.Laight@aculab.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Olof Johansson <olof@lixom.net>, Marc Zyngier <maz@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        David Brazdil <dbrazdil@google.com>,
-        James Morse <james.morse@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v3] ARM: Implement SLS mitigation
-Message-ID: <20210219203053.GA53507@24bbad8f3778>
-References: <20210212195255.1321544-1-jiancai@google.com>
- <20210219201852.3213914-1-jiancai@google.com>
-MIME-Version: 1.0
+        id S229889AbhBSUeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:34:50 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:32768 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229555AbhBSUem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 15:34:42 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JKT68O184358;
+        Fri, 19 Feb 2021 20:32:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=Q+tlPGJKqF6UYVHJtf4RiU4j3D0HGkZd1GdqLyhGl5k=;
+ b=OUnX7abV7Zl+u6KIti9+pbFfcT8EvxiyocwczAX0CXSRN86hcLIM6VwLU3654x/i28Z+
+ 3pSPYNElBGBgxhm1F+DZ2L2IZNG/+wtb6C89OpKs1ZpYVrw29cpL8uUfqbPfGIAkPMGe
+ ahyW6qfPTtx6uDTss0Dc0nPtD8x40Ro+xSRxK1BE2z+fsl6D3kdHk6aX4I8zg+BBEFkl
+ pbM0GElbZhULPCH8rNgBnFdzffC4q4B9F84TxSvJG/1eLxDmm/oiulbvjcce/he7qvTM
+ CyAem6teIK5wc2P1vvIz9Jl0RRnmO16Wz+E+rPPghfZABFAxtq9xQVs7KsFK148ojUf1 DQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 36p66rarke-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 20:32:26 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JKUHor088829;
+        Fri, 19 Feb 2021 20:32:26 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam08lp2173.outbound.protection.outlook.com [104.47.73.173])
+        by userp3030.oracle.com with ESMTP id 36prq2bevu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 20:32:25 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cilLbaU5P1EZKHhQFZ/tXoZgv5UWAMFelQ7A/weacmzr72UFTnUSEeSa9kbGIBPRfw+6dJkNoCJu/MPdyLRkSaeodwlghJ3gpIx2a5Q6Yps8t9IsmyODpIogyhDzB2KcPigx1t/PLQjQ0aY9BV2YOwMmp9HQ6YsPHvYjtLbQFQ3feLnZ8Oq18m9XCdU7miOfErH1S1+Jiupd7/6I3LF/Tx21dshT7ObtSCxkmD0/yYxFZyIp1NJMRAOd6BN9oqOUdO0mN+Lf41BrXyMtnu4Z4QuZg7LYxa9iIoc+Ik+Te2TTm46doh2faynP3k5BQa8PFLS3OG4xcS3kzxunHTzp5w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+tlPGJKqF6UYVHJtf4RiU4j3D0HGkZd1GdqLyhGl5k=;
+ b=Ld4ESsnTlUH2IkkNza53+IbGAgGHaPJeYH9fktWs41vjynoJKfwrL6UESpbkf32rqtcpn2ZLZgTE1Af7r5IglEeGhNRYYhj+VtX7jZ6PJSJ+lACZVLEP6W0LpvNQV6UOa7W12GukpzMz7BYCboUt91Mf6IH25VTO5W1bRfMgPbAAnq0urCVvyYOflMsJ2eeiFpcSRVqzoUW9HtR7q90JyioiJiXgZ+KaeRf44blAJAaWy3Qgplp2I/z7msFr/Ofgri3wWlCOFIydrFoNl8pAhTvCCkFrLRLOmI7FVQAMSzAFbg++ouoLQMvdZGofr5TVDmhRCPi94+/Udr7rf/s4hQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Q+tlPGJKqF6UYVHJtf4RiU4j3D0HGkZd1GdqLyhGl5k=;
+ b=F+sfZVS3Rip00Puw598dxvLwI0SZH9jdU6wPTnP4wU6cp305cuTuHpI9o/LXTC/M9CZjn8s/xz/OpZheMhlUPtP4H0Fji8o+DsqZtfMW5l3bnrdlJo5BHx4TYawG8khET8l1kZ1xquvYuXEYmes0eLUgl8wWIcDLt2iR8Rsjews=
+Authentication-Results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by SJ0PR10MB4509.namprd10.prod.outlook.com (2603:10b6:a03:2d9::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.41; Fri, 19 Feb
+ 2021 20:32:23 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3846.039; Fri, 19 Feb 2021
+ 20:32:23 +0000
+Date:   Fri, 19 Feb 2021 15:32:15 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>, jgross@suse.com
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        iommu@lists.linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-pci@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, nouveau@lists.freedesktop.org,
+        x86@kernel.org, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, adrian.hunter@intel.com,
+        akpm@linux-foundation.org, benh@kernel.crashing.org,
+        bskeggs@redhat.com, bhelgaas@google.com, bp@alien8.de,
+        boris.ostrovsky@oracle.com, chris@chris-wilson.co.uk,
+        daniel@ffwll.ch, airlied@linux.ie, hpa@zytor.com, mingo@kernel.org,
+        mingo@redhat.com, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, jgross@suse.com,
+        m.szyprowski@samsung.com, matthew.auld@intel.com,
+        mpe@ellerman.id.au, rppt@kernel.org, paulus@samba.org,
+        peterz@infradead.org, robin.murphy@arm.com, rodrigo.vivi@intel.com,
+        sstabellini@kernel.org, bauerman@linux.ibm.com,
+        tsbogend@alpha.franken.de, tglx@linutronix.de,
+        ulf.hansson@linaro.org, joe.jin@oracle.com, thomas.lendacky@amd.com
+Subject: Re: [PATCH RFC v1 5/6] xen-swiotlb: convert variables to arrays
+Message-ID: <YDAgT2ZIdncNwNlf@Konrads-MacBook-Pro.local>
+References: <20210203233709.19819-1-dongli.zhang@oracle.com>
+ <20210203233709.19819-6-dongli.zhang@oracle.com>
+ <20210204084023.GA32328@lst.de>
+ <20210207155601.GA25111@lst.de>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219201852.3213914-1-jiancai@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210207155601.GA25111@lst.de>
+X-Originating-IP: [209.6.208.110]
+X-ClientProxiedBy: BY3PR05CA0044.namprd05.prod.outlook.com
+ (2603:10b6:a03:39b::19) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Konrads-MacBook-Pro.local (209.6.208.110) by BY3PR05CA0044.namprd05.prod.outlook.com (2603:10b6:a03:39b::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.11 via Frontend Transport; Fri, 19 Feb 2021 20:32:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 02501154-d7eb-497a-1b24-08d8d5157639
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4509:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB45090C51834820E7AEC49FF889849@SJ0PR10MB4509.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q3AKZuSZrPy0l4j4hWsGLN91LmBcmN6L9XURIPwwIX8OLjOW8X9ie9CdRLsIHYJ5S6uVl+O5krhJr4Ar14pPq0XLUXmnKkh/l23ObS2ne6YtXZP5gqz28uvkQBwX5Zsu8irHIUN8Y0shwtWJwdxIck0IxATrWeTvTMLpmNK3zp0wCJQQrlzTVBblVvH/s80GXOqbqqHAeQ5LMgWUJJt2shu6IF17ZowjSiv/yIEhl8ZYRsl0QyRaecku/1me5R6pV5iBb8vtvhglxjEeK9/huSAOTuNNo0Jg66noqDxWOWSl9eKKbIVvqaQlcOKDjTo5IDw0U73GgVT6PE//t34detm1NixfMcgu4+mLfUlwTy/IVfr80V/rFdnsNbiJc872pu9T9e68wX6aO3WaX64AuXjDfkQR/dBhQFnNv2yqam314cWubFUl3Z5jFyzsox8mv6mMyMiFm8mk5DZNdtuwCOjglNRN2aWGVYiAtLu2sPfiihTzfjT+zBK/H4JAq0nADkKVcU4422BUXu6BmTZZ2A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(366004)(136003)(39860400002)(7416002)(7406005)(4326008)(6666004)(9686003)(186003)(478600001)(2906002)(6506007)(66556008)(8936002)(66946007)(66476007)(55016002)(52116002)(86362001)(26005)(5660300002)(110136005)(7696005)(956004)(16526019)(8676002)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?GVVmae2fpuGK2oJ5KRrSOfjoBXyS2Pg6fOS1yhTmwR5t21OZNx0gNSxNnwKz?=
+ =?us-ascii?Q?xCZljSlABLs9fpLftdNzoQBBKHLxdGxuEqJURx3md2LOtjv8DvcpOEwS7Q/U?=
+ =?us-ascii?Q?8tNziK8wPFcFNYllZ5wYBi5Tne09kfBsc/Qy6PJ4kTG70juZ77SCL9eRg6q0?=
+ =?us-ascii?Q?hbwlFxCdnfJVsSYzFar/IaHe0nPmcL/UtUMo0ZxfsID9Sm0pfo1GrB0KUtM5?=
+ =?us-ascii?Q?5Iu4vSFMArDie4dIURUlmsm472x2phgzCgacrW1Rd6EpII9py2v1wI8ws1dp?=
+ =?us-ascii?Q?3ba6tem8ZSHhemhUOCqTT0M0NEacqGBSiYkuaD9M0stR4FooFNNN/WyaIbtr?=
+ =?us-ascii?Q?RFcI8MRHtwAzAPDdYYBW4B8DSy6FJdsJQ0wfNnZXsAmVj+Zx7JdA8So3zMib?=
+ =?us-ascii?Q?UtOERUWChlHlXkBq/N89p2QxI0G6ndF94I7oVRxP5OG3Jbw90SC1ZEDMwbEd?=
+ =?us-ascii?Q?yTyNyjMgIy+Jy4E4WrohdQka34alXB3bH8VBYPOk7P4tKVCE8IPSYrted8u5?=
+ =?us-ascii?Q?0/+gQsoQI4lwU8NRhaxqf/rQsfxuD+qaBkLeZngBAyP9+KAvwloFwo7+JzBM?=
+ =?us-ascii?Q?DgYRycv5ljXceUTn9N9xoVaJlEBvAd/GrDrTCG9QNB6xMbuj2fy+MmXwihjB?=
+ =?us-ascii?Q?RVGL+zIxlahMqr8Z2XtrRzl7GQpb96dEXZ7TCEs7T6Vme/l/10JdQYrTdeXy?=
+ =?us-ascii?Q?VaAsOVS2CByBrRKHTt1OnvBJQhE5cyZtLKb7Vj/Sij7WmI24f7etqZ4YgfAV?=
+ =?us-ascii?Q?Wr6QBu0lJYKikAYevHB8+M/1uRpqCgVh29xywXbN92Aq417HHsByqyVvGNJG?=
+ =?us-ascii?Q?qHrY5UtscdVwfe6fncSsNVDqQ60o5Wr3PGIoCsniWYd6D1S/mUb5qdd4R/r4?=
+ =?us-ascii?Q?sgT/6px9QpnG5eP9oWkDBrAvKO0hLG1XCajoe/C5EG7r/y0uPZazA/Uyd0Lk?=
+ =?us-ascii?Q?KwRc+iSav/ptjm/cghiR+oeiEwTGZJFXEKUbkuRDprEYLJyJCEWgKvBUpBJ3?=
+ =?us-ascii?Q?/NXgvB/mC1eufG7Ai7wm0w6BdW4uhqp9+qqXfzFv949sEqQSwhcGf1kaeFey?=
+ =?us-ascii?Q?66b9XwnvB8+DmmIDIIPuXCHdn82G/nHoPSHOGrIjiso8Q1THv5yWuiKrcuWu?=
+ =?us-ascii?Q?yB1EpvfnFmlQVs+ERIOHkrS8P8I6NSVSE5ys7G2Achogq6KDl/VB9qA6vvct?=
+ =?us-ascii?Q?fgV5PzU2YGckjxjud0bZ9FsU5uzM9eJ2wz8Nnne8eM3Cuam4HmU0LwYf5Ssq?=
+ =?us-ascii?Q?9ky1JFpa55/sKnGKlAcLx+88xBVHdaj5R22181NygkreA0I/8KjiFwBDRfKC?=
+ =?us-ascii?Q?0ppzetP+TZkgHVuGsp0JnRaX?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02501154-d7eb-497a-1b24-08d8d5157639
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 20:32:23.1896
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oVdORDfZ29f7RAUpUN8XHDQ0O+4tk/o7h5eZ4IZtxStx6v91wvjKmdTWWJmN34CKJjicL60LgzclWhVJE0D7zg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4509
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=938
+ phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190164
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190164
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jian,
-
-On Fri, Feb 19, 2021 at 12:18:40PM -0800, 'Jian Cai' via Clang Built Linux wrote:
-> This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
-> -mharden-sls=all, which mitigates the straight-line speculation
-> vulnerability, speculative execution of the instruction following some
-> unconditional jumps. Notice -mharden-sls= has other options as below,
-> and this config turns on the strongest option.
+On Sun, Feb 07, 2021 at 04:56:01PM +0100, Christoph Hellwig wrote:
+> On Thu, Feb 04, 2021 at 09:40:23AM +0100, Christoph Hellwig wrote:
+> > So one thing that has been on my mind for a while:  I'd really like
+> > to kill the separate dma ops in Xen swiotlb.  If we compare xen-swiotlb
+> > to swiotlb the main difference seems to be:
+> > 
+> >  - additional reasons to bounce I/O vs the plain DMA capable
+> >  - the possibility to do a hypercall on arm/arm64
+> >  - an extra translation layer before doing the phys_to_dma and vice
+> >    versa
+> >  - an special memory allocator
+> > 
+> > I wonder if inbetween a few jump labels or other no overhead enablement
+> > options and possibly better use of the dma_range_map we could kill
+> > off most of swiotlb-xen instead of maintaining all this code duplication?
 > 
-> all: enable all mitigations against Straight Line Speculation that are implemented.
-> none: disable all mitigations against Straight Line Speculation.
-> retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-> blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+> So I looked at this a bit more.
 > 
-> Links:
-> https://reviews.llvm.org/D93221
-> https://reviews.llvm.org/D81404
-> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
+> For x86 with XENFEAT_auto_translated_physmap (how common is that?)
+
+Juergen, Boris please correct me if I am wrong, but that XENFEAT_auto_translated_physmap
+only works for PVH guests?
+
+> pfn_to_gfn is a nop, so plain phys_to_dma/dma_to_phys do work as-is.
 > 
-> Suggested-by: Manoj Gupta <manojgupta@google.com>
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Suggested-by: Nathan Chancellor  <nathan@kernel.org>
-> Suggested-by: David Laight <David.Laight@aculab.com>
-> Suggested-by: Will Deacon <will@kernel.org>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> xen_arch_need_swiotlb always returns true for x86, and
+> range_straddles_page_boundary should never be true for the
+> XENFEAT_auto_translated_physmap case.
 
-My review still stands but in the future, if you significantly change
-how a patch is structured or works, please drop my tag and let me re-add
-it.
-
-One comment below.
-
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
+Correct. The kernel should have no clue of what the real MFNs are
+for PFNs.
 > 
-> Changes v2 -> v3:
->   Modify linker scripts as Nick suggested to address boot failure
->   (verified with qemu). Added more details in Kconfig.hardening
->   description. Disable the config by default.
+> So as far as I can tell the mapping fast path for the
+> XENFEAT_auto_translated_physmap can be trivially reused from swiotlb.
 > 
->  arch/arm/Makefile                  |  4 ++++
->  arch/arm/include/asm/vmlinux.lds.h |  4 ++++
->  arch/arm/kernel/vmlinux.lds.S      |  1 +
->  arch/arm64/Makefile                |  4 ++++
->  arch/arm64/kernel/vmlinux.lds.S    |  5 +++++
->  security/Kconfig.hardening         | 10 ++++++++++
->  6 files changed, 28 insertions(+)
+> That leaves us with the next more complicated case, x86 or fully cache
+> coherent arm{,64} without XENFEAT_auto_translated_physmap.  In that case
+> we need to patch in a phys_to_dma/dma_to_phys that performs the MFN
+> lookup, which could be done using alternatives or jump labels.
+> I think if that is done right we should also be able to let that cover
+> the foreign pages in is_xen_swiotlb_buffer/is_swiotlb_buffer, but
+> in that worst case that would need another alternative / jump label.
 > 
-> diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-> index 4aaec9599e8a..11d89ef32da9 100644
-> --- a/arch/arm/Makefile
-> +++ b/arch/arm/Makefile
-> @@ -48,6 +48,10 @@ CHECKFLAGS	+= -D__ARMEL__
->  KBUILD_LDFLAGS	+= -EL
->  endif
->  
-> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-> +KBUILD_CFLAGS  += -mharden-sls=all
-> +endif
-> +
->  #
->  # The Scalar Replacement of Aggregates (SRA) optimization pass in GCC 4.9 and
->  # later may result in code being generated that handles signed short and signed
-> diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-> index 4a91428c324d..c7f9717511ca 100644
-> --- a/arch/arm/include/asm/vmlinux.lds.h
-> +++ b/arch/arm/include/asm/vmlinux.lds.h
-> @@ -145,3 +145,7 @@
->  		__edtcm_data = .;					\
->  	}								\
->  	. = __dtcm_start + SIZEOF(.data_dtcm);
-> +
-> +#define SLS_TEXT							\
-> +		ALIGN_FUNCTION();					\
-> +		*(.text.__llvm_slsblr_thunk_*)
-> diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-> index f7f4620d59c3..e71f2bc97bae 100644
-> --- a/arch/arm/kernel/vmlinux.lds.S
-> +++ b/arch/arm/kernel/vmlinux.lds.S
-> @@ -63,6 +63,7 @@ SECTIONS
->  	.text : {			/* Real text segment		*/
->  		_stext = .;		/* Text and read-only data	*/
->  		ARM_TEXT
-> +		SLS_TEXT
->  	}
->  
->  #ifdef CONFIG_DEBUG_ALIGN_RODATA
-> diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> index 90309208bb28..ca7299b356a9 100644
-> --- a/arch/arm64/Makefile
-> +++ b/arch/arm64/Makefile
-> @@ -34,6 +34,10 @@ $(warning LSE atomics not supported by binutils)
->    endif
->  endif
->  
-> +ifeq ($(CONFIG_HARDEN_SLS_ALL), y)
-> +KBUILD_CFLAGS  += -mharden-sls=all
-> +endif
-> +
->  cc_has_k_constraint := $(call try-run,echo				\
->  	'int main(void) {						\
->  		asm volatile("and w0, w0, %w0" :: "K" (4294967295));	\
-> diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-> index 4c0b0c89ad59..f8912e42ffcd 100644
-> --- a/arch/arm64/kernel/vmlinux.lds.S
-> +++ b/arch/arm64/kernel/vmlinux.lds.S
-> @@ -93,6 +93,10 @@ jiffies = jiffies_64;
->  #define TRAMP_TEXT
->  #endif
->  
-> +#define SLS_TEXT					\
-> +	ALIGN_FUNCTION();				\
-> +	*(.text.__llvm_slsblr_thunk_*)
-> +
->  /*
->   * The size of the PE/COFF section that covers the kernel image, which
->   * runs from _stext to _edata, must be a round multiple of the PE/COFF
-> @@ -144,6 +148,7 @@ SECTIONS
->  			HIBERNATE_TEXT
->  			TRAMP_TEXT
->  			*(.fixup)
-> +			SLS_TEXT
->  			*(.gnu.warning)
->  		. = ALIGN(16);
->  		*(.got)			/* Global offset table		*/
-> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-> index 269967c4fc1b..e70f227019e1 100644
-> --- a/security/Kconfig.hardening
-> +++ b/security/Kconfig.hardening
-> @@ -121,6 +121,16 @@ choice
->  
->  endchoice
->  
-> +config HARDEN_SLS_ALL
-> +	bool "enable SLS vulnerability hardening"
-> +	default n
-> +	def_bool $(cc-option,-mharden-sls=all)
-
-This is a much more convoluted way of writing:
-
-depends on $(cc-option,-mharden-sls=all)
-
-"default n" is the default and "def_bool" is short for:
-
-bool
-default <expr>
-
-which is defeated by the "default n".
-
-> +	help
-> +	  Enables straight-line speculation vulnerability hardening on ARM and ARM64
-> +	  architectures. It inserts speculation barrier sequences (SB or DSB+ISB
-> +	  depending on the target architecture) after RET and BR, and replacing
-> +	  BLR with BL+BR sequence.
-> +
->  config GCC_PLUGIN_STRUCTLEAK_VERBOSE
->  	bool "Report forcefully initialized variables"
->  	depends on GCC_PLUGIN_STRUCTLEAK
-> -- 
-> 2.30.0.617.g56c4b15f3c-goog
+> For non-coherent arm{,64} we'd also need to use alternatives or jump
+> labels to for the cache maintainance ops, but that isn't a hard problem
+> either.
+> 
 > 
