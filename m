@@ -2,72 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 458D931FA0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:44:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A7331FA1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 14:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229967AbhBSNoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 08:44:07 -0500
-Received: from mga01.intel.com ([192.55.52.88]:8794 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhBSNn7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 08:43:59 -0500
-IronPort-SDR: zFU465set7nEVqTudvGcSn+AvXkOd5/0sUGqhJ+JV2HUmSKVGgl5Q09Ux2IMTeovMiPHyDbyZo
- SJCM/xxqRr6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="203127216"
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="203127216"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:42:11 -0800
-IronPort-SDR: ClK7nKCC1NulLIONlpcICidg6Ynxo/EEYGHIufPxGJaaeBPafFG6nuKeA6I6Ai7mbltlmZCe6Q
- YCRPUvHOeB+w==
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="440260183"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 05:42:09 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lD62o-006Dr5-O8; Fri, 19 Feb 2021 15:42:06 +0200
-Date:   Fri, 19 Feb 2021 15:42:06 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Dan Murphy <dmurphy@ti.com>, linux-leds@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 6/7] leds: lp50xx: Add missed bits.h and convert to
- BIT()
-Message-ID: <YC/ALoRpoov/JaQN@smile.fi.intel.com>
-References: <20210216155050.29322-1-andriy.shevchenko@linux.intel.com>
- <20210216155050.29322-6-andriy.shevchenko@linux.intel.com>
- <20210219112755.GN19207@duo.ucw.cz>
+        id S230353AbhBSNri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 08:47:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54523 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229681AbhBSNrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 08:47:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613742365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oDE8EGVP9c1Qbtjtup3fFBceglrA202LnWw25MLTf5g=;
+        b=NO9pVoVNHGCmLjNSS/BS5FZEZMFN4hZ3LuEZ7gk9iSqKRFQ7TqzzTNwPc8ySRB6Vb7yH8V
+        5y0ZQrYS480qkA3Q4SmfJ65bHPrMlwqkTTQNt5wYPzeu06j4CdRtE2ZtWGVRAhE6H/ySrV
+        01H9DIhA4b+m0WU+pV0rS53omTpNW0c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-75-JZrauFMCM1e2KTyxmYmZEg-1; Fri, 19 Feb 2021 08:46:03 -0500
+X-MC-Unique: JZrauFMCM1e2KTyxmYmZEg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E5CF100A67A;
+        Fri, 19 Feb 2021 13:46:02 +0000 (UTC)
+Received: from gondolin (ovpn-113-92.ams2.redhat.com [10.36.113.92])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D1C0B5D9C2;
+        Fri, 19 Feb 2021 13:45:56 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 14:45:54 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, stable@vger.kernel.org,
+        borntraeger@de.ibm.com, kwankhede@nvidia.com, pbonzini@redhat.com,
+        alex.williamson@redhat.com, pasic@linux.vnet.ibm.com
+Subject: Re: [PATCH v2 1/1] s390/vfio-ap: fix circular lockdep when
+ setting/clearing crypto masks
+Message-ID: <20210219144554.3857a034.cohuck@redhat.com>
+In-Reply-To: <20210216011547.22277-2-akrowiak@linux.ibm.com>
+References: <20210216011547.22277-1-akrowiak@linux.ibm.com>
+        <20210216011547.22277-2-akrowiak@linux.ibm.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219112755.GN19207@duo.ucw.cz>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 12:27:55PM +0100, Pavel Machek wrote:
-> Hi!
+On Mon, 15 Feb 2021 20:15:47 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> This patch fixes a circular locking dependency in the CI introduced by
+> commit f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM
+> pointer invalidated"). The lockdep only occurs when starting a Secure
+> Execution guest. Crypto virtualization (vfio_ap) is not yet supported for
+> SE guests; however, in order to avoid CI errors, this fix is being
+> provided.
 > 
-> > Add missed bits.h and convert to BIT() in lp50xx_set_banks().
-> > 
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> The circular lockdep was introduced when the masks in the guest's APCB
+> were taken under the matrix_dev->lock. While the lock is definitely
+> needed to protect the setting/unsetting of the KVM pointer, it is not
+> necessarily critical for setting the masks, so this will not be done under
+> protection of the matrix_dev->lock.
 > 
-> Thanks,
+> Fixes: f21916ec4826 ("s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/vfio_ap_ops.c | 119 +++++++++++++++++++++---------
+>  1 file changed, 84 insertions(+), 35 deletions(-)
 
-Thanks!
+I've been looking at the patch for a bit now and tried to follow down
+the various paths; and while I think it's ok, I do not really have
+enough confidence about that for a R-b. But have an
 
->	I applied whole series except this one...
-> 
-> << is well known C, it can stay.
-
-Shall we drop BIT() in the other place?
-Otherwise it is inconsistency.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Acked-by: Cornelia Huck <cohuck@redhat.com>
 
