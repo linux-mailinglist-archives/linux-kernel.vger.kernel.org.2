@@ -2,124 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A867531F5C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF84331F5CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:24:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhBSIV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:21:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBSIVS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:21:18 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71963C061574;
-        Fri, 19 Feb 2021 00:20:38 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id o7so3341270pgl.1;
-        Fri, 19 Feb 2021 00:20:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=70Qa5qu8viWhbYhSFeFN5ri6nlE2GDV9Vz/0GH/LwDI=;
-        b=nrt+Y2WsvVO0D7cEhHYbFVm0q+96VOptxWKQwqyw4svU8f973uAX31MK9onlwcdO9v
-         RqjDxQ6FTcJoaIBVV9lakZRhmpVL+ihOnc9pBq4CuAtqZlk7NXzTZ6fW1lnhh3iajsah
-         dCeNg73G9FESua4DIA7pmDP7uS1xM1fbBVH7ebdRWCaDRRZxPhbQqeeJb06nISnfceeU
-         bAuW44hyx+0oPC54nwn/RHi7gjhAZOsdUMCfSZ1jDgsU34jN7waEDww54W7gJu3y/5N9
-         z8h7yMki2Tv/G0SjumM2swR5n38nLQY2wlb9ngZs5kyRcf9OhvI5N8Jk0AQLA6bWIn/S
-         eUyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=70Qa5qu8viWhbYhSFeFN5ri6nlE2GDV9Vz/0GH/LwDI=;
-        b=sqRGFXnDXtXLEhPw0gBMRyPTcUbn3051unrbAiwZ1k4wEDWmCd1S4nIhzOOH8IbqOM
-         i0Av+vjusnqE9ghQ64KjvGIaZ+sZMDCxj1fnbs4sNBurVIbgt/O5VWE64RpxWx0GmWM3
-         mKIII/R5NIOOk1eUPlonvFL4R+MYeL6JIEhoTIMt52vnAOOK/hkp7NS5e6ZtObXdN65q
-         AIzZSp4Mt08+GqDqTQaUeooLJFkRAGCZHsRw1vpKRQtoaQmqqZdTUi51yBgmdhVz12Cy
-         CwMghUoNc74x+pJW5AoD2nYoEanVygOADnfATOaA+UVyfgT5vWbyeMelcC0bJ1n/7geL
-         d+aw==
-X-Gm-Message-State: AOAM532k+hCKnAC71t4YnjL8Yb8KOPaZ8Pk8YprYjQkxzBTWr8a1ktMK
-        oZX9JdRdPuEhHdOjALsmONo=
-X-Google-Smtp-Source: ABdhPJzr731i/EYr4+IPpMCED5W29KVSVCbX+ktyWcwNydJX70PCgqCLgby31rXUSjBrLHgGAJY+2g==
-X-Received: by 2002:a63:28c3:: with SMTP id o186mr7625185pgo.206.1613722837915;
-        Fri, 19 Feb 2021 00:20:37 -0800 (PST)
-Received: from localhost ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id f23sm1329061pfa.5.2021.02.19.00.20.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 19 Feb 2021 00:20:37 -0800 (PST)
-Date:   Fri, 19 Feb 2021 16:20:26 +0800
-From:   Yue Hu <zbestahu@gmail.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
- busy CPU if need_freq_update is set
-Message-ID: <20210219162026.00002e2b.zbestahu@gmail.com>
-In-Reply-To: <20210219074249.2hcwcnakihor343h@vireshk-i7>
-References: <20210218082514.1437-1-zbestahu@gmail.com>
-        <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
-        <20210219113804.00004a7e.zbestahu@gmail.com>
-        <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
-        <20210219144140.00004de9.zbestahu@gmail.com>
-        <20210219074249.2hcwcnakihor343h@vireshk-i7>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S229891AbhBSIX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 03:23:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229880AbhBSIXA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 03:23:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4179464EB8;
+        Fri, 19 Feb 2021 08:22:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613722939;
+        bh=YcfM6Nd6zgmghDPB1XXn5JJry5eIgHdHD9ec4/vuPwY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=krnU5a09BP8y4DKtPeof+p1H+UMbuCwjswokyJf96obEIff/MC9I5J4xCWttOBthX
+         bUT4GMUDaolg/nWmybNAyNLhW6B/rp57aet7urN7ytPyy+PkdSfn0V1xcKx2AOBmCw
+         JnEFt/AeuMum/JOncetSBk/8B/fUvNY6w+bCH7fg=
+Date:   Fri, 19 Feb 2021 09:22:17 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jari Ruusu <jariruusu@protonmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <YC91OWVGAfyorRbc@kroah.com>
+References: <YA/E1bHRmZb50MlS@kroah.com>
+ <YCzknUTDytY8gRA8@kroah.com>
+ <c731b65a-e118-9d37-79d1-d0face334fc4@broadcom.com>
+ <YC4atKmK7ZqlOGER@kroah.com>
+ <20210218113107.GA12547@1wt.eu>
+ <602E766F.758C74D8@users.sourceforge.net>
+ <20210218143341.GB13671@1wt.eu>
+ <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com>
+ <YC6nZH/4CkLLsxxB@kroah.com>
+ <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021 13:12:49 +0530
-Viresh Kumar <viresh.kumar@linaro.org> wrote:
-
-> On 19-02-21, 14:41, Yue Hu wrote:
-> > On Fri, 19 Feb 2021 09:39:33 +0530
-> > Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >   
-> > > On 19-02-21, 11:38, Yue Hu wrote:  
-> > > > There's a possibility: we will use the previous freq to update
-> > > > if next_f is reduced for busy CPU if need_freq_update is set in
-> > > > sugov_update_next_freq().    
-> > > 
-> > > Right.
-> > >   
-> > > > This possibility would happen now? And this
-> > > > update is what we want if it happens?    
-> > > 
-> > > This is exactly what we want here, don't reduce speed for busy
-> > > CPU,  
-> > 
-> > I understand it should not skip this update but set the same freq as
-> > previous one again for the special case if need_freq_update is set.
-> > Am i rt?  
+On Fri, Feb 19, 2021 at 07:10:35AM +0000, Jari Ruusu wrote:
+> On Thursday, February 18, 2021 7:44 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > > It was the other way around. Fine working in-tree driver got
+> > > broken by backported "fixes". I did mention bit-rot.
+> >
+> > It did? Please let us stable maintainers know about, we will always
+> > gladly revert problems patches. What commits caused the problem?
 > 
-> The special check, about not reducing freq if CPU had been busy
-> recently, doesn't have anything to do with need_freq_update.
-
-However, we will skip the update if need_freq_update is not set. And do
-the update if need_freq_update is set.
-
-Note that there are unnecessary fast switch check and spin lock/unlock
-operations in freq skip path.
-
-If we consider unnecessary behaviors above, then we should return right
-away rather than continue to execute following code.
-
-Consequently, we also need to consider need_update_freq flag since we
-need to update freq currently if it is set.
-
+> I don't have a list of commits for you. It took me long time to
+> figure out that it was iwlwifi that was causing those problems.
 > 
-> Though previously we added the need_freq_update check there to make
-> sure we account for any recent policy min/max change and don't skip
-> freq update anymore. That won't happen anymore and so we don't need
-> any check here related to need_freq_update.
-> 
-> If you still have doubt, please explain your concern in detail with an
-> example as I am failing to understand it.
-> 
+> In-tree iwlwifi on 4.19.y kernels needs professional quality
+> locking audit and backporting of necessary fixes from upstream
+> Intel out-of-tree version.
 
+That's not the goal of stable kernel releases/trees.  If the driver
+version that is in 4.19.y does not work for you on release 4.19.0, odds
+of that "changing" in later stable releases is slim to none.
+
+Especially without any specific bug reports or emails to the developers
+to tell them what is broken and not working for you.
+
+If however, you wish to stick with an out-of-tree driver, wonderful,
+that's your choice.  But don't claim that somehow the stable kernel
+process is broken because of that, as it has nothing to do with this
+type of thing.
+
+Best of luck!
+
+greg k-h
