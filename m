@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD6D31F750
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:32:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6649A31F753
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:34:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229639AbhBSKcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:32:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBSKcJ (ORCPT
+        id S229913AbhBSKdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:33:22 -0500
+Received: from mail-03.mail-europe.com ([91.134.188.129]:49494 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229849AbhBSKdQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:32:09 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2BB1C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 02:31:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+EquK8bSN07/OaknMcvmJmBUh7h4jPsI6nqfokxx5e0=; b=oIFrPrHwjaQWB06vySuiwcC6Il
-        tA6e1xCqk8V0ZnrW67cq6MCaZPkOYJ/KGRiwoxBxhgsGX/hB2pKNk3AZ+/nXiNEYKbCEOfn9ZQI7J
-        TCcbmirg/kUSKAClh/7lXpuclYW8ARDo73pZFM48d+kmEQAH5GZNwoX5f9zX3uQvj81y8bhJcqP7x
-        7SJM8jkChPZM51VolBtn6d1vSZGKoW/eEstcxtrBHQliaOBtcxKqlY+IThHZ/J7aA7EIXI2lXvLGR
-        Jy8/82BMSeWG73xJk6WNlP90otJ39o7JfVdccsNDHjlKzuCQR3axD3IjLFq22bjxetH1QMxEzbyqi
-        e3lutBwA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lD33T-002kud-A5; Fri, 19 Feb 2021 10:30:42 +0000
-Date:   Fri, 19 Feb 2021 10:30:35 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Yiwei Zhang <zzyiwei@android.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        "J. Bruce Fields" <bfields@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Ilias Stamatis <stamatis.iliass@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Liang Chen <cl@rock-chips.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
-Message-ID: <20210219103035.GA656626@infradead.org>
-References: <20210214000611.2169820-1-zzyiwei@android.com>
- <20210216091128.GA3973504@infradead.org>
- <CAKB3++aXuCS3WRf1mfrM2oZ0KiJ4xP4ib-ZbJXr8cXVEkU-sXw@mail.gmail.com>
- <YCz6nz4i136z1+H1@alley>
- <CAKB3++b+n=VWuXZqZqyZJvAf1+Wqogvi07L21GqdRwThSRdf2w@mail.gmail.com>
- <YC+SgVZdm5gfSqFg@alley>
+        Fri, 19 Feb 2021 05:33:16 -0500
+Date:   Fri, 19 Feb 2021 10:31:49 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613730712;
+        bh=Ma3I+SGzZJqYcMeaWe7/7hREWS08/LF4MRWzS6XAPMA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=sdNC+sFY3ZZVwkHQCWDH9DzcYTTWCHxrTPn8alws9dqbxxUhom1R1RhJrgqmE0o/r
+         0+oCEBQ5mBBGDJ5PBSokfG/4LVGE+86YcKacVvV+2qHRYj7B0sVt9zcL8vjptUgaeB
+         L1ywzZjb5t8lawN1gGSDKk61ejxFnLEUjuMvQfy0=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com>
+In-Reply-To: <YC91OWVGAfyorRbc@kroah.com>
+References: <YA/E1bHRmZb50MlS@kroah.com> <YC4atKmK7ZqlOGER@kroah.com> <20210218113107.GA12547@1wt.eu> <602E766F.758C74D8@users.sourceforge.net> <20210218143341.GB13671@1wt.eu> <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC6nZH/4CkLLsxxB@kroah.com> <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com> <YC91OWVGAfyorRbc@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YC+SgVZdm5gfSqFg@alley>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:27:13AM +0100, Petr Mladek wrote:
-> I am personally fine with adding this API. I am going to
-> comment the original code. Well, there might be a push-back
-> from other people because there will be no in-tree user.
+On Friday, February 19, 2021 10:22 AM, Greg Kroah-Hartman <gregkh@linuxfoun=
+dation.org> wrote:
+> That's not the goal of stable kernel releases/trees. If the driver
+> version that is in 4.19.y does not work for you on release 4.19.0, odds
+> of that "changing" in later stable releases is slim to none.
 
-Adding a new API without an intree user is a complete no-go.
+But in-tree iwlwifi worked fine on 4.9.y and 4.14.y , and then got broken
+in later 4.14.y versions. I tried later versions of 4.19.y in an attempt to
+fix the breakage. Basically you are are saying that I should have NOT
+attempted to upgrage 4.9.y -> 4.14.y -> 4.19.y
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
+
