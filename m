@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC76D31F7C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44D7831F7C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhBSK4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:56:50 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47370 "EHLO
+        id S230199AbhBSK6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:58:44 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47502 "EHLO
         jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhBSKyC (ORCPT
+        with ESMTP id S230306AbhBSKzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:54:02 -0500
+        Fri, 19 Feb 2021 05:55:16 -0500
 Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 2AAE61C0B8B; Fri, 19 Feb 2021 11:53:04 +0100 (CET)
-Date:   Fri, 19 Feb 2021 11:53:03 +0100
+        id BE18A1C0B80; Fri, 19 Feb 2021 11:54:31 +0100 (CET)
+Date:   Fri, 19 Feb 2021 11:54:31 +0100
 From:   Pavel Machek <pavel@ucw.cz>
 To:     Gene Chen <gene.chen.richtek@gmail.com>
 Cc:     jacek.anaszewski@gmail.com, robh+dt@kernel.org,
@@ -24,71 +24,52 @@ Cc:     jacek.anaszewski@gmail.com, robh+dt@kernel.org,
         gene_chen@richtek.com, Wilma.Wu@mediatek.com,
         shufan_lee@richtek.com, cy_huang@richtek.com,
         benjamin.chao@mediatek.com
-Subject: Re: [PATCH v13 5/5] leds: mt6360: Add LED driver for MT6360
-Message-ID: <20210219105303.GD19207@duo.ucw.cz>
+Subject: Re: [PATCH v13 2/5] leds: flash: Fix multicolor no-ops registration
+ by return 0
+Message-ID: <20210219105431.GE19207@duo.ucw.cz>
 References: <1608547554-6602-1-git-send-email-gene.chen.richtek@gmail.com>
- <1608547554-6602-6-git-send-email-gene.chen.richtek@gmail.com>
+ <1608547554-6602-3-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Km1U/tdNT/EmXiR1"
+        protocol="application/pgp-signature"; boundary="5xSkJheCpeK0RUEJ"
 Content-Disposition: inline
-In-Reply-To: <1608547554-6602-6-git-send-email-gene.chen.richtek@gmail.com>
+In-Reply-To: <1608547554-6602-3-git-send-email-gene.chen.richtek@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Km1U/tdNT/EmXiR1
+--5xSkJheCpeK0RUEJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi!
-
+On Mon 2020-12-21 18:45:51, Gene Chen wrote:
 > From: Gene Chen <gene_chen@richtek.com>
 >=20
-> Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
-> 3-channel RGB LED support Register/Flash/Breath Mode, and 1-channel for
-> moonlight LED.
+> Fix multicolor no-ops registration by return 0,
+> and move the same registration functions outside of #ifdef block.
+>=20
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
 
-What kind of ninja mutant hardware is this?
-
-Can we make this go to  drivers/leds/flash?
-
-> +static int mt6360_flash_brightness_set(struct led_classdev_flash *fl_cde=
-v, u32 brightness)
-> +{
-> +	/*
-> +	 * Due to the current spike when turning on flash, let brightness to be=
- kept by framework.
-> +	 * This empty function is used to prevent led_classdev_flash register o=
-ps check failure.
-> +	 */
-
-Please stick to 80 columns.
-
-> +static int mt6360_init_common_properties(struct mt6360_led *led, struct =
-led_init_data *init_data)
-> +{
-> +	const char * const states[] =3D { "off", "keep", "on" };
-
-No need for space between * and const.
+I applied the first two.
 
 Best regards,
 									Pavel
-
+								=09
 --=20
 http://www.livejournal.com/~pavelmachek
 
---Km1U/tdNT/EmXiR1
+--5xSkJheCpeK0RUEJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+YjwAKCRAw5/Bqldv6
-8renAJ0fPFfR2F+/nrLVIeNTWJMfpcfluwCgknpgj5y/xjX67RIYZ+WE4vP0BqA=
-=J0FT
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+Y5wAKCRAw5/Bqldv6
+8qb1AJ9XxeNlZH+EPgrXOniC/RLIiLZs7QCgxLA9z8wbAPEn/KIJHJ6l4gOaNmM=
+=5iwm
 -----END PGP SIGNATURE-----
 
---Km1U/tdNT/EmXiR1--
+--5xSkJheCpeK0RUEJ--
