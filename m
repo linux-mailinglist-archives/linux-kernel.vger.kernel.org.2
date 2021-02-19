@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7851E31F975
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:37:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952CF31F96D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 13:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230315AbhBSMfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 07:35:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbhBSMfe (ORCPT
+        id S229985AbhBSMcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 07:32:04 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12624 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhBSMcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 07:35:34 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09694C061574;
-        Fri, 19 Feb 2021 04:34:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nL98NaEUG65NknpBy9GUqIWGRsbF73KZx2JYEgSxoFU=; b=Q4YFIshmnmtF49HHFoM/CY6k5w
-        ymxpEqO/5tsL68tNH3SuI0KZVmjsvrGpYy8opVP5p7B3F2jhdRmcU5/FEbdGFT4tEzT2o+BnKqEVY
-        cBwbAjXyUovorINQWgGJ1OuuML4889mhPJ1KfEjKvxhdniRRgUU8bTYWvcnyR1PP5zSzKjJygLHYK
-        PQPQV+kT0/8onp9azO5bU7ZceuoN6rzJYfmawXNQB9pV4M0WOvDheZgPZfV4nIgitNxoawmVuLrgB
-        VkNRc4kr6uIWGNZB2aKeXY+blRK/hgQnhAiMFFZIKK9HRbtYHwn71USfrXyVXxmO89Sa3kfOs/qps
-        cvemhCHw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lD4yx-002rvc-31; Fri, 19 Feb 2021 12:34:17 +0000
-Date:   Fri, 19 Feb 2021 12:34:03 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Lennert Buytenhek <buytenh@wantstofly.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        io-uring@vger.kernel.org, David Laight <David.Laight@aculab.com>
-Subject: Re: [PATCH v3 2/2] io_uring: add support for IORING_OP_GETDENTS
-Message-ID: <20210219123403.GT2858050@casper.infradead.org>
-References: <20210218122640.GA334506@wantstofly.org>
- <20210218122755.GC334506@wantstofly.org>
+        Fri, 19 Feb 2021 07:32:01 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DhrVz1qNyz168ly;
+        Fri, 19 Feb 2021 20:29:47 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 19 Feb 2021 20:31:12 +0800
+From:   Chen Wandun <chenwandun@huawei.com>
+To:     <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+CC:     Chen Wandun <chenwandun@huawei.com>
+Subject: [PATCH] mm/hugetlb: suppress wrong warning info when alloc gigantic page
+Date:   Fri, 19 Feb 2021 20:39:09 +0800
+Message-ID: <20210219123909.13130-1-chenwandun@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218122755.GC334506@wantstofly.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.112.125]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 02:27:55PM +0200, Lennert Buytenhek wrote:
-> IORING_OP_GETDENTS may or may not update the specified directory's
-> file offset, and the file offset should not be relied upon having
-> any particular value during or after an IORING_OP_GETDENTS call.
+If hugetlb_cma is enabled, it will skip boot time allocation
+when allocating gigantic page, that doesn't means allocation
+failure, so suppress this warning info.
 
-This doesn't give me the warm fuzzies.  What I might suggest
-is either passing a parameter to iterate_dir() or breaking out an
-iterate_dir_nofpos() to make IORING_OP_GETDENTS more of a READV operation.
-ie the equivalent of this:
+Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
+Signed-off-by: Chen Wandun <chenwandun@huawei.com>
+---
+ mm/hugetlb.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-@@ -37,7 +37,7 @@
- } while (0)
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index b6992297aa16..98a49cb9250c 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -2465,7 +2465,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 		if (hstate_is_gigantic(h)) {
+ 			if (hugetlb_cma_size) {
+ 				pr_warn_once("HugeTLB: hugetlb_cma is enabled, skip boot time allocation\n");
+-				break;
++				goto free;
+ 			}
+ 			if (!alloc_bootmem_huge_page(h))
+ 				break;
+@@ -2483,7 +2483,7 @@ static void __init hugetlb_hstate_alloc_pages(struct hstate *h)
+ 			h->max_huge_pages, buf, i);
+ 		h->max_huge_pages = i;
+ 	}
+-
++free:
+ 	kfree(node_alloc_noretry);
+ }
  
- 
--int iterate_dir(struct file *file, struct dir_context *ctx)
-+int iterate_dir(struct file *file, struct dir_context *ctx, bool use_fpos)
- {
-        struct inode *inode = file_inode(file);
-        bool shared = false;
-@@ -60,12 +60,14 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
- 
-        res = -ENOENT;
-        if (!IS_DEADDIR(inode)) {
--               ctx->pos = file->f_pos;
-+               if (use_fpos)
-+                       ctx->pos = file->f_pos;
-                if (shared)
-                        res = file->f_op->iterate_shared(file, ctx);
-                else
-                        res = file->f_op->iterate(file, ctx);
--               file->f_pos = ctx->pos;
-+               if (use_fpos)
-+                       file->f_pos = ctx->pos;
-                fsnotify_access(file);
-                file_accessed(file);
-        }
+-- 
+2.25.1
 
-That way there's no need to play with llseek or take a mutex on the
-f_pos of the directory.
