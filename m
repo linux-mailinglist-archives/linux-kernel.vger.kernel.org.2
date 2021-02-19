@@ -2,109 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C73EC31FCE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:15:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED58F31FCF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhBSQOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:14:10 -0500
-Received: from foss.arm.com ([217.140.110.172]:39596 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBSQOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:14:08 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82305ED1;
-        Fri, 19 Feb 2021 08:13:20 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.45.200])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 718DE3F73B;
-        Fri, 19 Feb 2021 08:13:18 -0800 (PST)
-Date:   Fri, 19 Feb 2021 16:13:15 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Hector Martin <marcan@marcan.st>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        catalin.marinas@arm.com, james.morse@arm.com, maz@kernel.org,
-        tglx@linutronix.de, will@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH 0/8] arm64: Support FIQ controller registration
-Message-ID: <20210219161315.GB78721@C02TD0UTHF1T.local>
-References: <20210219113904.41736-1-mark.rutland@arm.com>
- <d714eee3-2746-d607-622c-184eadb480a1@marcan.st>
+        id S230124AbhBSQQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:16:47 -0500
+Received: from mail-lj1-f169.google.com ([209.85.208.169]:34483 "EHLO
+        mail-lj1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhBSQQf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 11:16:35 -0500
+Received: by mail-lj1-f169.google.com with SMTP id r23so22999084ljh.1;
+        Fri, 19 Feb 2021 08:16:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8ihu7RMD09CA5Sxv7Lq20UHk6yx8JzKzN1kPmi0JrkQ=;
+        b=nEW9l4nPugf4QX8uk7cQG1uK7KK9jTGngP6MWX3p5WkC1x6YgFRJJS9Lr24ehVNQQj
+         g7cvDrwOeHoMdVPEkvOR4/DDkOiKGaUob6M7y4xqQmCEFEs+xqIwwpjft+ScGfK3H1+I
+         SqtteKpaoXz0qCU9sonMOk6UFDFTS5MsQEfupXuM2Zja4g+uMznRqbSpwRkid/PKKN+h
+         d+enPziA2MP4QRgKx1UWTZQREx/4gjlg3AbDB/X81CWq+NbPdmr+7U4u4cjhnWpVi9R7
+         vA101hRN0/cSzVtKONPY3LWhypQybBNwZI6TFf7tNvrzM1vp84qj4ZnTOKEK1dLS/pJ9
+         k9+g==
+X-Gm-Message-State: AOAM5336UUya48nb9pzS0u8T48voMHwodlYIFqFiLjb6rPjG8FNfB8X/
+        ibZurruekWPSKUf97IZwMYU=
+X-Google-Smtp-Source: ABdhPJxhNHtPHX8XCP+A4iney0+X7eNHNXGkFLPlnadqWxmrs9zTtSiTyQUTz9iybhncnae+5ihaEA==
+X-Received: by 2002:a05:6512:945:: with SMTP id u5mr5747411lft.229.1613751352019;
+        Fri, 19 Feb 2021 08:15:52 -0800 (PST)
+Received: from rocinante ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id b11sm967616lfi.174.2021.02.19.08.15.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 08:15:51 -0800 (PST)
+Date:   Fri, 19 Feb 2021 17:15:50 +0100
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Robert Richter <rric@kernel.org>
+Cc:     Dejin Zheng <zhengdejin5@gmail.com>, corbet@lwn.net,
+        jarkko.nikula@linux.intel.com, andriy.shevchenko@linux.intel.com,
+        mika.westerberg@linux.intel.com, helgaas@kernel.org,
+        wsa@kernel.org, linux-doc@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] PCI: Introduce pcim_alloc_irq_vectors()
+Message-ID: <YC/kNnkusVHg8S0H@rocinante>
+References: <20210218150458.798347-1-zhengdejin5@gmail.com>
+ <20210218150458.798347-2-zhengdejin5@gmail.com>
+ <YC/NxfsQn2RKkrp8@rric.localdomain>
+ <YC/PoOOgRVHa1HIH@rric.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d714eee3-2746-d607-622c-184eadb480a1@marcan.st>
+In-Reply-To: <YC/PoOOgRVHa1HIH@rric.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 12:41:01AM +0900, Hector Martin wrote:
-> Hi Mark,
+Hi Robert,
+
+[...]
+> Obiously this is meant here:
 > 
-> Thanks for tackling this side of the problem!
+> 	if (!pci_is_managed(dev))
+[...]
 
-No problem -- I have a vested interest in the arm64 exception management
-code lookin the way I expect/prefer! ;)
+A question to improve my understanding for future reference.  Was the
+previous approach of checking for "enabled" flag from struct pci_devres
+was not a good choice here?
 
-> On 19/02/2021 20.38, Mark Rutland wrote:
-
-> > I'm hoping that we can somehow queue the first 6 patches of this series as a
-> > base for the M1 support. With that we can either cherry-pick a later version of
-> > the DAIF.IF patch here, or the M1 support series can take the FIQ handling
-> > patch. I've pushed the series out to my arm64/fiq branch [4] on kernel.org,
-> > atop v5.11.
-> 
-> Looks good! I cherry picked my updated version of the DAIF.IF patch into
-> your series at [1] (3322522d), and then rebased the M1 series on top of it
-> (with the change to use set_handle_fiq(), minus all the other obsoleted FIQ
-> stuff) at [2]. It all boots and works as expected.
-> 
-> I think it makes sense for you to take the DAIF.IF patch, as it goes along
-> with this series. Then we can base the M1 series off of it. 
-
-Sure; that works for me!
-
-> If you think that works, I can send it off as a one-off reply to the
-> version in this series and we can review it here if you want, or
-> otherwise feel free to cherry-pick it into a v2 (CC as appropriate).
-
-If you could do a one-off reply, that'd be fantastic -- that way
-lore.kernel.org will archive it and it gives people a chance to provide
-any tags or comments before the next respin of the whole series.
-
-> If this all makes sense, the v3 of the M1 series will then be based off of
-> this patchset as in [2], and I'll link to your tree in the cover letter so
-> others know where to apply it.
-
-As a heads-up, I'm currently treating my arm64/fiq branch as unstable
-(and I've already applied a typo fix since this posting), but I can tag
-versions of that to make it possible to refer to a specific version.
-
-I'll make sure to do that once I fold in the new DAIF.[IF] patch, since
-I assume that's the first version worth noting as a base.
-
-> Arnd (CCed) is going to be merging that one via the SoC tree, so as
-> long as we coordinate a stable base once everything is reviewed and
-> ready to merge, I believe it should all work out fine on the way up.
-
-That sounds about right to me.
-
-I think the first step is for Marc and I to figure out how the core IRQ
-bits go in (some of that might be an fix early in the current v5.12
-cycle), and I'd expect to have a stable branch atop somewhere between
-v5.12-rc1 and v5.12-rc4. For context, usually the arm64 core bits get
-based on the previous rc3/rc4.
-
-Thanks,
-Mark.
-
-> Just for completeness, the current DAIF.IF patch in the context of the
-> original series is at [3] (4dd6330f), in case that's useful to someone for
-> some reason (since there were conflicts due to the refactoring happening
-> before it, it changed a bit).
-> 
-> [1] https://github.com/AsahiLinux/linux/tree/fiq
-> [2] https://github.com/AsahiLinux/linux/tree/upstream-bringup-v3
-> [3] https://github.com/AsahiLinux/linux/tree/upstream-bringup-v2.5
-> 
-> -- 
-> Hector Martin (marcan@marcan.st)
-> Public Key: https://mrcn.st/pub
+Krzysztof
