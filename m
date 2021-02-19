@@ -2,95 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD0731FC48
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 429C031FC4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBSPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:43:02 -0500
-Received: from marcansoft.com ([212.63.210.85]:44616 "EHLO mail.marcansoft.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhBSPlt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:41:49 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 80DC5419B4;
-        Fri, 19 Feb 2021 15:41:03 +0000 (UTC)
-To:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, james.morse@arm.com, maz@kernel.org,
-        tglx@linutronix.de, will@kernel.org,
-        Arnd Bergmann <arnd@kernel.org>
-References: <20210219113904.41736-1-mark.rutland@arm.com>
-From:   Hector Martin <marcan@marcan.st>
-Subject: Re: [PATCH 0/8] arm64: Support FIQ controller registration
-Message-ID: <d714eee3-2746-d607-622c-184eadb480a1@marcan.st>
-Date:   Sat, 20 Feb 2021 00:41:01 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S230017AbhBSPnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:43:37 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48608 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229800AbhBSPmG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 10:42:06 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JFUkv8051856;
+        Fri, 19 Feb 2021 10:41:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=W/3NgxUmfYxZtO+paNk0oK9prvw2sBrJNHkEhc2t+mU=;
+ b=pYXP/XYz7ev9yp4dtLlabathFttlN1apW02qsInLJ+QvWFR88MHJgKkHVPtyOn5dJxbN
+ EkFmWvPsy3TMxH7SviXK8o4bs8FuMkjS3acQu8JImIR4Ny+H1dMf+0NaHLNcDK2ozjCL
+ LGaJ94l45fuBhpE3j4+IcrORdsMPCL32bA+aYkkGMc9XzCe1zWe5O6b5pj54XgJoTNL2
+ SZI/5GQa8bWHGKKURfeVvHMrZvh4kJTQgyGZiBjMnUmiFG1Dd3l4sVtvncSjvRqU/CqZ
+ mjRNrkM+Whxy0qD1E0A7Y30EE1MBBCvxaorJOLpGMm/K8JTMYWMo5dLuvF55BY6lAcQU Vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36tfy8gh0y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 10:41:19 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 11JFV53w053798;
+        Fri, 19 Feb 2021 10:41:18 -0500
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36tfy8gh0t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 10:41:18 -0500
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11JFRt6t015687;
+        Fri, 19 Feb 2021 15:41:18 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma04wdc.us.ibm.com with ESMTP id 36p6d9pfgp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 15:41:18 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11JFfHQ521758238
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 15:41:17 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C198F28058;
+        Fri, 19 Feb 2021 15:41:17 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6A2E28059;
+        Fri, 19 Feb 2021 15:41:17 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Feb 2021 15:41:17 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
+To:     keyrings@vger.kernel.org, dhowells@redhat.com, dwmw2@infradead.org,
+        linux-security-module@vger.kernel.org
+Cc:     zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
+        linux-integrity@vger.kernel.org, nayna@linux.ibm.com,
+        saulo.alessandre@gmail.com, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH] certs: Add support for using elliptic curve keys for signing modules
+Date:   Fri, 19 Feb 2021 10:41:14 -0500
+Message-Id: <20210219154114.2416778-1-stefanb@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20210219113904.41736-1-mark.rutland@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_07:2021-02-18,2021-02-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 suspectscore=0 impostorscore=0
+ priorityscore=1501 phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190123
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+From: Stefan Berger <stefanb@linux.ibm.com>
 
-Thanks for tackling this side of the problem!
+This patch adds support for using elliptic curve keys for signing
+modules. It uses a NIST P256 (prime256v1) key if the user chooses an
+elliptic curve key.
 
-On 19/02/2021 20.38, Mark Rutland wrote:
-> The only functional difference here is that if an IRQ
-> is somehow taken prior to set_handle_irq() the default handler will directly
-> panic() rather than the vector branching to NULL.
+A developer choosing an ECDSA key for signing modules has to manually
+delete the signing key (rm certs/signing_key.*) when falling back to
+an older version of a kernel that only supports RSA key since otherwise
+ECDSA-signed modules will not be usable when that older kernel runs.
 
-That sounds like the right thing to do, certainly.
+Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-> The penultimate patch is cherry-picked from the v2 M1 series, and as per
-> discussion there [3] will need a few additional fixups. I've included it for
-> now as the DAIF.IF alignment is necessary for the FIQ exception handling added
-> in the final patch.
+---
 
-> The final patch adds the low-level FIQ exception handling and registration
-> mechanism atop the prior rework.
-> 
-> I'm hoping that we can somehow queue the first 6 patches of this series as a
-> base for the M1 support. With that we can either cherry-pick a later version of
-> the DAIF.IF patch here, or the M1 support series can take the FIQ handling
-> patch. I've pushed the series out to my arm64/fiq branch [4] on kernel.org,
-> atop v5.11.
+This patch builds on top of my ECDSA patch series and Nayna's
+series for 'kernel build support for loading the kernel module
+signing key'.
+- https://lkml.org/lkml/2021/2/15/766
+- https://lkml.org/lkml/2021/2/18/856
+---
+ certs/Kconfig                         | 17 +++++++++++++++++
+ certs/Makefile                        | 14 ++++++++++++++
+ crypto/asymmetric_keys/pkcs7_parser.c |  4 ++++
+ 3 files changed, 35 insertions(+)
 
-Looks good! I cherry picked my updated version of the DAIF.IF patch into 
-your series at [1] (3322522d), and then rebased the M1 series on top of 
-it (with the change to use set_handle_fiq(), minus all the other 
-obsoleted FIQ stuff) at [2]. It all boots and works as expected.
-
-I think it makes sense for you to take the DAIF.IF patch, as it goes 
-along with this series. Then we can base the M1 series off of it. If you 
-think that works, I can send it off as a one-off reply to the version in 
-this series and we can review it here if you want, or otherwise feel 
-free to cherry-pick it into a v2 (CC as appropriate).
-
-If this all makes sense, the v3 of the M1 series will then be based off 
-of this patchset as in [2], and I'll link to your tree in the cover 
-letter so others know where to apply it. Arnd (CCed) is going to be 
-merging that one via the SoC tree, so as long as we coordinate a stable 
-base once everything is reviewed and ready to merge, I believe it should 
-all work out fine on the way up.
-
-Just for completeness, the current DAIF.IF patch in the context of the 
-original series is at [3] (4dd6330f), in case that's useful to someone 
-for some reason (since there were conflicts due to the refactoring 
-happening before it, it changed a bit).
-
-[1] https://github.com/AsahiLinux/linux/tree/fiq
-[2] https://github.com/AsahiLinux/linux/tree/upstream-bringup-v3
-[3] https://github.com/AsahiLinux/linux/tree/upstream-bringup-v2.5
-
+diff --git a/certs/Kconfig b/certs/Kconfig
+index 48675ad319db..5e2dd5c24d31 100644
+--- a/certs/Kconfig
++++ b/certs/Kconfig
+@@ -15,6 +15,23 @@ config MODULE_SIG_KEY
+          then the kernel will automatically generate the private key and
+          certificate as described in Documentation/admin-guide/module-signing.rst
+ 
++choice
++       prompt "Type of module signing key to be generated"
++       default MODULE_SIG_KEY_TYPE_RSA
++       help
++         The type of module signing key type to generated. This option
++         does not apply if a #PKCS11 URI is used.
++
++config MODULE_SIG_KEY_TYPE_RSA
++       bool "RSA"
++       depends on MODULE_SIG || IMA_APPRAISE_MODSIG
++
++config MODULE_SIG_KEY_TYPE_ECDSA
++       bool "ECDSA"
++       depends on (MODULE_SIG || IMA_APPRAISE_MODSIG) && CRYPTO_ECDSA
++
++endchoice
++
+ config SYSTEM_TRUSTED_KEYRING
+ 	bool "Provide system-wide ring of trusted keys"
+ 	depends on KEYS
+diff --git a/certs/Makefile b/certs/Makefile
+index 3fe6b73786fa..2d5fd4720d07 100644
+--- a/certs/Makefile
++++ b/certs/Makefile
+@@ -69,6 +69,18 @@ else
+ SIGNER = -signkey $(obj)/signing_key.key
+ endif # CONFIG_IMA_APPRAISE_MODSIG
+ 
++X509TEXT=$(shell openssl x509 -in $(CONFIG_MODULE_SIG_KEY) -text)
++
++# Support user changing key type
++ifdef CONFIG_MODULE_SIG_KEY_TYPE_ECDSA
++keytype_openssl = -newkey ec -pkeyopt ec_paramgen_curve:prime256v1
++$(if $(findstring ecdsa-with-,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
++endif
++
++ifdef CONFIG_MODULE_SIG_KEY_TYPE_RSA
++$(if $(findstring rsaEncryption,$(X509TEXT)),,$(shell rm -f $(CONFIG_MODULE_SIG_KEY)))
++endif
++
+ $(obj)/signing_key.pem: $(obj)/x509.genkey
+ 	@$(kecho) "###"
+ 	@$(kecho) "### Now generating an X.509 key pair to be used for signing modules."
+@@ -86,12 +98,14 @@ ifeq ($(CONFIG_IMA_APPRAISE_MODSIG),y)
+ 		-batch -x509 -config $(obj)/x509.genkey \
+ 		-outform PEM -out $(CA_KEY) \
+ 		-keyout $(CA_KEY) -extensions ca_ext \
++		$(keytype_openssl) \
+ 		$($(quiet)redirect_openssl)
+ endif # CONFIG_IMA_APPRAISE_MODSIG
+ 	$(Q)openssl req -new -nodes -utf8 \
+ 		-batch -config $(obj)/x509.genkey \
+ 		-outform PEM -out $(obj)/signing_key.csr \
+ 		-keyout $(obj)/signing_key.key -extensions myexts \
++		$(keytype_openssl) \
+ 		$($(quiet)redirect_openssl)
+ 	$(Q)openssl x509 -req -days 36500 -in $(obj)/signing_key.csr \
+ 		-outform PEM -out $(obj)/signing_key.crt $(SIGNER) \
+diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_keys/pkcs7_parser.c
+index 967329e0a07b..2546ec6a0505 100644
+--- a/crypto/asymmetric_keys/pkcs7_parser.c
++++ b/crypto/asymmetric_keys/pkcs7_parser.c
+@@ -269,6 +269,10 @@ int pkcs7_sig_note_pkey_algo(void *context, size_t hdrlen,
+ 		ctx->sinfo->sig->pkey_algo = "rsa";
+ 		ctx->sinfo->sig->encoding = "pkcs1";
+ 		break;
++	case OID_id_ecdsa_with_sha256:
++		ctx->sinfo->sig->pkey_algo = "ecdsa";
++		ctx->sinfo->sig->encoding = "x962";
++		break;
+ 	default:
+ 		printk("Unsupported pkey algo: %u\n", ctx->last_oid);
+ 		return -ENOPKG;
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+2.29.2
+
