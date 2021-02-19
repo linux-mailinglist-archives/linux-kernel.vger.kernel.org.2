@@ -2,164 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C080931FC86
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCCFD31FCB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBSQAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:00:47 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:55924 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhBSQAr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:00:47 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id BEFE220B6C40;
-        Fri, 19 Feb 2021 08:00:03 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BEFE220B6C40
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1613750403;
-        bh=gWO09POLpbRs3/EzLyGBCNzjamt7jL02WPeWTp/RZMM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=HaaRbJuhrAjvvBhGOuR/dbZ7vG7nycnwhtUQrt56KCA5pjF2GLTBGeHfs/mATyroP
-         1yr3MLwn6jxIxHnnz7k8hh1ZwCTMgF9I81bZ88j4NZtxr6GH0NBtAue8K0mdkJ4W7R
-         cEjzn7s92rpJlEHrUZH3IWrQnSvJDkNsQJdwIPLk=
-Subject: Re: [PATCH] powerpc/kexec_file: Restore FDT size estimation for kdump
- kernel
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     kexec@lists.infradead.org, Hari Bathini <hbathini@linux.ibm.com>,
-        Rob Herring <robh@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org
-References: <20210219142552.762608-1-bauerman@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <5a28907e-9231-7a19-62ff-3ed1c0282642@linux.microsoft.com>
-Date:   Fri, 19 Feb 2021 08:00:03 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210219142552.762608-1-bauerman@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230132AbhBSQDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:03:51 -0500
+Received: from inva021.nxp.com ([92.121.34.21]:55742 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229862AbhBSQBv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 11:01:51 -0500
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 30002200113;
+        Fri, 19 Feb 2021 17:01:02 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 1FBA52001B3;
+        Fri, 19 Feb 2021 17:01:02 +0100 (CET)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 807ED2042F;
+        Fri, 19 Feb 2021 17:01:01 +0100 (CET)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Georgi Djakov <djakov@kernel.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Martin Kepplinger <martink@posteo.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     NXP Linux Team <linux-imx@nxp.com>, Abel Vesa <abel.vesa@nxp.com>
+Subject: [RFC 07/19] devfreq: imx8m-ddrc: Add late system sleep PM ops
+Date:   Fri, 19 Feb 2021 18:00:04 +0200
+Message-Id: <1613750416-11901-8-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/19/21 6:25 AM, Thiago Jung Bauermann wrote:
+Seems that, in order to be able to resume from suspend, the dram rate
+needs to be the highest one available. Therefore, add the late system
+suspend/resume PM ops which set the highest rate on suspend and the
+latest one used before suspending on resume.
 
-One small nit in the function header (please see below), but otherwise 
-the change looks good.
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+---
+ drivers/devfreq/imx8m-ddrc.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-
-> Commit 2377c92e37fe ("powerpc/kexec_file: fix FDT size estimation for kdump
-> kernel") fixed how elf64_load() estimates the FDT size needed by the
-> crashdump kernel.
-> 
-> At the same time, commit 130b2d59cec0 ("powerpc: Use common
-> of_kexec_alloc_and_setup_fdt()") changed the same code to use the generic
-> function of_kexec_alloc_and_setup_fdt() to calculate the FDT size. That
-> change made the code overestimate it a bit by counting twice the space
-> required for the kernel command line and /chosen properties.
-> 
-> Therefore change kexec_fdt_totalsize_ppc64() to calculate just the extra
-> space needed by the kdump kernel, and change the function name so that it
-> better reflects what the function is now doing.
-> 
-> Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> ---
->   arch/powerpc/include/asm/kexec.h  |  2 +-
->   arch/powerpc/kexec/elf_64.c       |  2 +-
->   arch/powerpc/kexec/file_load_64.c | 26 ++++++++------------------
->   3 files changed, 10 insertions(+), 20 deletions(-)
-> 
-> Applies on top of next-20210219.
-> 
-> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
-> index baab158e215c..5a11cc8d2350 100644
-> --- a/arch/powerpc/include/asm/kexec.h
-> +++ b/arch/powerpc/include/asm/kexec.h
-> @@ -128,7 +128,7 @@ int load_crashdump_segments_ppc64(struct kimage *image,
->   int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
->   			  const void *fdt, unsigned long kernel_load_addr,
->   			  unsigned long fdt_load_addr);
-> -unsigned int kexec_fdt_totalsize_ppc64(struct kimage *image);
-> +unsigned int kexec_extra_fdt_size_ppc64(struct kimage *image);
->   int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
->   			unsigned long initrd_load_addr,
->   			unsigned long initrd_len, const char *cmdline);
-> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-> index 0492ca6003f3..5a569bb51349 100644
-> --- a/arch/powerpc/kexec/elf_64.c
-> +++ b/arch/powerpc/kexec/elf_64.c
-> @@ -104,7 +104,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
->   
->   	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
->   					   initrd_len, cmdline,
-> -					   kexec_fdt_totalsize_ppc64(image));
-> +					   kexec_extra_fdt_size_ppc64(image));
->   	if (!fdt) {
->   		pr_err("Error setting up the new device tree.\n");
->   		ret = -EINVAL;
-> diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
-> index 3609de30a170..8541ba731908 100644
-> --- a/arch/powerpc/kexec/file_load_64.c
-> +++ b/arch/powerpc/kexec/file_load_64.c
-> @@ -927,37 +927,27 @@ int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
->   }
->   
->   /**
-> - * kexec_fdt_totalsize_ppc64 - Return the estimated size needed to setup FDT
-> - *                             for kexec/kdump kernel.
-> - * @image:                     kexec image being loaded.
-> + * kexec_extra_fdt_size_ppc63 - Return the estimated size needed to setup FDT
-
-Perhaps change to
-
-"Return the estimated additional size needed to setup FDT for 
-kexec/kdump kernel"?
-
-  -lakshmi
-
-> + *                              for kexec/kdump kernel.
-> + * @image:                      kexec image being loaded.
->    *
-> - * Returns the estimated size needed for kexec/kdump kernel FDT.
-> + * Returns the estimated extra size needed for kexec/kdump kernel FDT.
->    */
-> -unsigned int kexec_fdt_totalsize_ppc64(struct kimage *image)
-> +unsigned int kexec_extra_fdt_size_ppc64(struct kimage *image)
->   {
-> -	unsigned int fdt_size;
->   	u64 usm_entries;
->   
-> -	/*
-> -	 * The below estimate more than accounts for a typical kexec case where
-> -	 * the additional space is to accommodate things like kexec cmdline,
-> -	 * chosen node with properties for initrd start & end addresses and
-> -	 * a property to indicate kexec boot..
-> -	 */
-> -	fdt_size = fdt_totalsize(initial_boot_params) + (2 * COMMAND_LINE_SIZE);
->   	if (image->type != KEXEC_TYPE_CRASH)
-> -		return fdt_size;
-> +		return 0;
->   
->   	/*
-> -	 * For kdump kernel, also account for linux,usable-memory and
-> +	 * For kdump kernel, account for linux,usable-memory and
->   	 * linux,drconf-usable-memory properties. Get an approximate on the
->   	 * number of usable memory entries and use for FDT size estimation.
->   	 */
->   	usm_entries = ((memblock_end_of_DRAM() / drmem_lmb_size()) +
->   		       (2 * (resource_size(&crashk_res) / drmem_lmb_size())));
-> -	fdt_size += (unsigned int)(usm_entries * sizeof(u64));
-> -
-> -	return fdt_size;
-> +	return (unsigned int)(usm_entries * sizeof(u64));
->   }
->   
->   /**
-> 
+diff --git a/drivers/devfreq/imx8m-ddrc.c b/drivers/devfreq/imx8m-ddrc.c
+index 33de83acfd8b..04347dee781b 100644
+--- a/drivers/devfreq/imx8m-ddrc.c
++++ b/drivers/devfreq/imx8m-ddrc.c
+@@ -72,6 +72,8 @@ struct imx8m_ddrc {
+ 	struct clk *dram_alt;
+ 	struct clk *dram_apb;
+ 
++	unsigned long suspend_rate;
++	unsigned long resume_rate;
+ 	int freq_count;
+ 	struct imx8m_ddrc_freq freq_table[IMX8M_DDRC_MAX_FREQ_COUNT];
+ };
+@@ -271,6 +273,22 @@ static int imx8m_ddrc_target(struct device *dev, unsigned long *freq, u32 flags)
+ 	return ret;
+ }
+ 
++static int imx8m_ddrc_suspend(struct device *dev)
++{
++	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
++
++	priv->resume_rate = clk_get_rate(priv->dram_core);
++
++	return imx8m_ddrc_target(dev, &priv->suspend_rate, 0);
++}
++
++static int imx8m_ddrc_resume(struct device *dev)
++{
++	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
++
++	return imx8m_ddrc_target(dev, &priv->resume_rate, 0);
++}
++
+ static int imx8m_ddrc_get_cur_freq(struct device *dev, unsigned long *freq)
+ {
+ 	struct imx8m_ddrc *priv = dev_get_drvdata(dev);
+@@ -336,6 +354,9 @@ static int imx8m_ddrc_init_freq_info(struct device *dev)
+ 
+ 		if (dev_pm_opp_add(dev, freq->rate * 250000, 0))
+ 			return -ENODEV;
++
++		if (index ==  0)
++			priv->suspend_rate = freq->rate * 250000;
+ 	}
+ 
+ 	return 0;
+@@ -412,10 +433,15 @@ static const struct of_device_id imx8m_ddrc_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, imx8m_ddrc_of_match);
+ 
++static const struct dev_pm_ops imx8m_ddrc_pm_ops = {
++	SET_LATE_SYSTEM_SLEEP_PM_OPS(imx8m_ddrc_suspend, imx8m_ddrc_resume)
++};
++
+ static struct platform_driver imx8m_ddrc_platdrv = {
+ 	.probe		= imx8m_ddrc_probe,
+ 	.driver = {
+ 		.name	= "imx8m-ddrc-devfreq",
++		.pm = &imx8m_ddrc_pm_ops,
+ 		.of_match_table = of_match_ptr(imx8m_ddrc_of_match),
+ 	},
+ };
+-- 
+2.29.2
 
