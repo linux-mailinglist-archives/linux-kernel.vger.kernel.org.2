@@ -2,81 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D9131F812
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13E831F815
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhBSLR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:17:56 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36512 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229678AbhBSLRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:17:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7CDC7AC6E;
-        Fri, 19 Feb 2021 11:17:13 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 12:17:11 +0100
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
-Message-ID: <20210219111703.GA20286@linux>
-References: <20210217100816.28860-2-osalvador@suse.de>
- <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
- <20210218100917.GA4842@localhost.localdomain>
- <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
- <20210218133250.GA7983@localhost.localdomain>
- <YC5yzNB9xT76fkod@dhcp22.suse.cz>
- <20210219090548.GA17266@linux>
- <YC+LWksScdiuPw7X@dhcp22.suse.cz>
- <20210219103943.GA19945@linux>
- <YC+ZBIwXKEZCy1Bk@dhcp22.suse.cz>
+        id S230231AbhBSLSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:18:25 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:57966 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230071AbhBSLSW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 06:18:22 -0500
+Date:   Fri, 19 Feb 2021 12:17:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613733460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3gXxVy4DaRNO7v21ruxk6GY+4axiURV9Ra9AYEdoq3k=;
+        b=lfEzXjnQnH4CONBJpKdvsJ8C4/Ka2bcAyWbHRs/qui2Ewq8j3K3XqAjOUWMxgrJeI3mL+M
+        6xjDpBAKGT9c88Kcyt0H22J2urj4X87Q4bBppZ/Q7iwVP/jGp4pnvLDQqabC1zkcF3XREE
+        FeUeFGMFtTgWigugYDXsQFsp978i4fBiw5Feu9KeOraJ84LCrKkKYI2fcz7IxyZ61eQY5L
+        8mMgfxe5ZZERCtWe3uhrU1acS22F1Lb36yevAxADg3VnZVJNrZvtAVl1rWGJ6g3QYqcUh2
+        c7FllEDmL1scCo9DelG7o7maS4MGyU5MMb5swvRvFrafxkmg1y/IPtky4mqhlg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613733460;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3gXxVy4DaRNO7v21ruxk6GY+4axiURV9Ra9AYEdoq3k=;
+        b=QGPD6BVNUOBq35ALcLfeKuYa92yCC4MuxV5VuZ0A5orNUm0I1AnaZoV14z6qM/Fi75fUYQ
+        0dy0wlAwjepKg8DQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YC+ZBIwXKEZCy1Bk@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210219111301.GA34441@pc638.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:55:00AM +0100, Michal Hocko wrote:
-> It is not the lock that I care about but more about counters. The
-> intention was that there is a single place to handle both enqueing and
-> dequeing. As not all places require counters to be updated. E.g. the
-> migration which just replaces one page by another.
+On 2021-02-19 12:13:01 [+0100], Uladzislau Rezki wrote:
+> I or Paul will ask for a test once it is settled down :) Looks like
+> it is, so we should fix for v5.12.
 
-I see.
-alloc_fresh_huge_page->prep_new_huge_page increments h->nr_huge_pages{_node}
-counters.
-Which means:
+Okay. Since Paul asked for powerpc test on v5.11-rc I wanted check if
+parts of it are also -stable material.
 
->       new_page = alloc_fresh_huge_page();
->       if (!new_page)
->               goto fail;
->       spin_lock(hugetlb_lock);
->       if (!PageHuge(old_page)) {
->               /* freed from under us, nothing to do */ 
->               __update_and_free_page(new_page);
-
-Here we need update_and_free_page, otherwise we would be leaving a stale value
-in h->nr_huge_pages{_node}. 
-
->               goto unlock;
->       }
->       list_del(&old_page->lru);
->       __update_and_free_page(old_page);
-
-Same here.
-
->       __enqueue_huge_page(new_page);
-
-This is ok since h->free_huge_pages{_node} do not need to be updated.
-
--- 
-Oscar Salvador
-SUSE L3
+Sebastian
