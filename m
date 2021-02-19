@@ -2,65 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4867331F56F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B38431F571
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhBSHqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 02:46:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBSHqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 02:46:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 29FFA64EBD;
-        Fri, 19 Feb 2021 07:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613720753;
-        bh=xz57ASSCwFW9OVFs0ygUe6Dsqey95Dp2LttOtZ4n3LI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=GyqpNrZ62jdFY5AUsmcqbnIDCOyt/EZdW3uNNxQzKo0DinSXH8vghu7o/OFp3xqnT
-         nZw86xqicSR/y73rJEI+kQll8xxUhtKtE5qgVD9DxDA5oyYkcPM2w06UOIkUagHi7Q
-         4UUwFBJVn2K1YimdAA4y5Dh+UEtb6GRaq41nUH1I=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>
-Subject: [PATCH] Revert "driver core: Set fw_devlink=on by default"
-Date:   Fri, 19 Feb 2021 08:45:49 +0100
-Message-Id: <20210219074549.1506936-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.1
+        id S229745AbhBSHqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 02:46:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSHqj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 02:46:39 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD44AC061574;
+        Thu, 18 Feb 2021 23:45:58 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id d13so2925097plg.0;
+        Thu, 18 Feb 2021 23:45:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=NT29Aq6GZEcythHq+8xV0bdKo/+iRT415c6oc0P2LMM=;
+        b=jkCRi8fw6mKJu2CJVxprPAlpsVPevMqO82EY4jJLdgDTuZVfK+cFcf6N04sds0NWIG
+         g2K1qEcDYGaCPVIaLUOUvFJqshuJWH95kgkNAkrvgEs9e3AxnBKZNkPl91O2qJXxKjtO
+         39m5bumf3eoBQIysURVFRtASsCZ7sosNd81cNGCEUVrYEUAJaZyoY2NXj24lt4HGE8tN
+         ym0U7IgAW/twVDi+kzmRkoHgE12bfG7UHtNzC6rzQG2kloxXSg6vqv8gJ5tdPgUPi76K
+         WrowOqaj63HjnTxD6sVIqhcTwM8N0Tey4EJtf8NuluPptIh4PZJJWvBFTWLSVQBMVgFz
+         4u3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=NT29Aq6GZEcythHq+8xV0bdKo/+iRT415c6oc0P2LMM=;
+        b=St0G9IMRFcOAwdsKFlm+jYeK+SABdzwJ21XmathpJDo/bwWm86a2tm8z0TnNEjdip/
+         6wStLFVmf6pVWG9NsoBP+bdGRPmMQJM7sH94v7kJ8zuKaUv98+W0eYFSPvvfi5RDVTem
+         wdshjFb19P21fhovBfRpFupTS4DOXxLPRtR2GbL/PebN1boS7Ns+5U29W7ceisip5rzo
+         r1a1d7E3XlMhShXUPL6n8yhjP22d6IY+79m1Pk9eqWMoFUMrtNdM6tyx/go293OUk3kr
+         eFfIcKklrpL4bDny9RbpaWpzPAkyqqXuczVDp400BX4d7q6fkmbl+j0JvoY+EueZAthe
+         /2dQ==
+X-Gm-Message-State: AOAM533NrteSJjWkBwRC+PE1uRiVYEJYKnwuN18Nu2m1AsCdpeXd//EP
+        6oKVUBjhGKL71QWFqvry4Zk=
+X-Google-Smtp-Source: ABdhPJw+jFkauS9YW6sy6aFIkTwI+asLmyHYBTpOgq6M/ukmSzhFYihO1OShoOb3e1vitsi8p7WftA==
+X-Received: by 2002:a17:902:7b96:b029:de:7ae6:b8db with SMTP id w22-20020a1709027b96b02900de7ae6b8dbmr712101pll.0.1613720758458;
+        Thu, 18 Feb 2021 23:45:58 -0800 (PST)
+Received: from localhost (14-201-150-91.tpgi.com.au. [14.201.150.91])
+        by smtp.gmail.com with ESMTPSA id 184sm9079328pfc.176.2021.02.18.23.45.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Feb 2021 23:45:57 -0800 (PST)
+Date:   Fri, 19 Feb 2021 17:45:52 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH v12 13/14] mm/vmalloc: Hugepage vmalloc mappings
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Ding Tianhong <dingtianhong@huawei.com>, linux-mm@kvack.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>
+References: <20210202110515.3575274-1-npiggin@gmail.com>
+        <20210202110515.3575274-14-npiggin@gmail.com>
+        <e18ef38c-ecef-b15c-29b1-bd4acf0e7fe5@huawei.com>
+In-Reply-To: <e18ef38c-ecef-b15c-29b1-bd4acf0e7fe5@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-Id: <1613720396.pnvmwaa8om.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit e590474768f1cc04852190b61dec692411b22e2a.
+Excerpts from Ding Tianhong's message of February 19, 2021 1:45 pm:
+> Hi Nicholas:
+>=20
+> I met some problem for this patch, like this:
+>=20
+> kva =3D vmalloc(3*1024k);
+>=20
+> remap_vmalloc_range(xxx, kva, xxx)
+>=20
+> It failed because that the check for page_count(page) is null so return, =
+it break the some logic for current modules.
+> because the new huge page is not valid for composed page.
 
-While things are _almost_ there and working for almost all systems,
-there are still reported regressions happening, so let's revert this
-default for 5.12.  We can bring it back in linux-next after 5.12-rc1 is
-out to get more testing and hopefully solve the remaining different
-subsystem and driver issues that people are running into.
+Hey Ding, that's a good catch. How are you testing this stuff, do you=20
+have a particular driver that does this?
 
-Cc: Saravana Kannan <saravanak@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/base/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> I think some guys really don't get used to the changes for the vmalloc th=
+at the small pages was transparency to the hugepage
+> when the size is bigger than the PMD_SIZE.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index ea710b33bda6..afc6f9ce6235 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -1502,7 +1502,7 @@ static void device_links_purge(struct device *dev)
- #define FW_DEVLINK_FLAGS_RPM		(FW_DEVLINK_FLAGS_ON | \
- 					 DL_FLAG_PM_RUNTIME)
- 
--static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_ON;
-+static u32 fw_devlink_flags = FW_DEVLINK_FLAGS_PERMISSIVE;
- static int __init fw_devlink_setup(char *arg)
- {
- 	if (!arg)
--- 
-2.30.1
+I think in this case vmalloc could allocate the large page as a compound
+page which would solve this problem I think? (without having actually=20
+tested it)
 
+> can we think about give a new static huge page to fix it? just like use a=
+ a new vmalloc_huge_xxx function to disginguish the current function,
+> the user could choose to use the transparent hugepage or static hugepage =
+for vmalloc.
+
+Yeah that's a good question, there are a few things in the huge vmalloc=20
+code that accounts things as small pages and you can't assume large or=20
+small. If there is benefit from forcing large pages that could certainly
+be added.
+
+Interestingly, remap_vmalloc_range in theory could map the pages as=20
+large in userspace as well. That takes more work but if something
+really needs that for performance, it could be done.
+
+Thanks,
+Nick
