@@ -2,100 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABBF31FF24
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3A4E31FF22
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBSTBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:01:15 -0500
-Received: from mga17.intel.com ([192.55.52.151]:31784 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhBSTBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:01:08 -0500
-IronPort-SDR: PaqsFw1mDJiPp332sbO256QKgggWn8YKVNiusLijRBsPLBLoJMFUqOeI1Ff0Q+h8pmPS7sc4MN
- DWLHf26T2I5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="163714562"
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="163714562"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 10:59:07 -0800
-IronPort-SDR: ydQjHIvRVWQzSbtxEkBhnUQPSo9AYdN4OeN+tifCiaNeCb1Aj2HAAXQSv7DrzF4eB5Hl8v+5wj
- jAl7jBKIZnaw==
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="378989329"
-Received: from schen9-mobl.amr.corp.intel.com ([10.251.10.112])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 10:59:07 -0800
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
-Date:   Fri, 19 Feb 2021 10:59:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S229587AbhBSTAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:00:44 -0500
+Received: from hmm.wantstofly.org ([213.239.204.108]:59362 "EHLO
+        mail.wantstofly.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229636AbhBSTA2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 14:00:28 -0500
+Received: by mail.wantstofly.org (Postfix, from userid 1000)
+        id 537FD7F4AC; Fri, 19 Feb 2021 20:59:42 +0200 (EET)
+Date:   Fri, 19 Feb 2021 20:59:42 +0200
+From:   Lennert Buytenhek <buytenh@wantstofly.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        io-uring@vger.kernel.org, David Laight <David.Laight@aculab.com>
+Subject: Re: [PATCH v3 2/2] io_uring: add support for IORING_OP_GETDENTS
+Message-ID: <20210219185942.GE342512@wantstofly.org>
+References: <20210218122640.GA334506@wantstofly.org>
+ <20210218122755.GC334506@wantstofly.org>
+ <20210219123403.GT2858050@casper.infradead.org>
+ <20210219180704.GD342512@wantstofly.org>
 MIME-Version: 1.0
-In-Reply-To: <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219180704.GD342512@wantstofly.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 08:07:04PM +0200, Lennert Buytenhek wrote:
 
-
-On 2/19/21 1:11 AM, Michal Hocko wrote:
-> On Wed 17-02-21 12:41:35, Tim Chen wrote:
-
->> Memory is accessed at a much lower frequency
->> for the second cgroup.  The memcg event update was not triggered for the
->> second cgroup as the memcg event update didn't happened on the 1024th sample.
->> The second cgroup was not placed on the soft limit tree and we didn't
->> try to reclaim the excess pages.
->>
->> As time goes on, we saw that the first cgroup was kept close to its
->> soft limit due to reclaim activities, while the second cgroup's memory
->> usage slowly creep up as it keeps getting missed from the soft limit tree
->> update as the update didn't fall on the modulo 1024 sample.  As a result,
->> the memory usage of the second cgroup keeps growing over the soft limit
->> for a long time due to its relatively rare occurrence.
+> > > IORING_OP_GETDENTS may or may not update the specified directory's
+> > > file offset, and the file offset should not be relied upon having
+> > > any particular value during or after an IORING_OP_GETDENTS call.
+> > 
+> > This doesn't give me the warm fuzzies.  What I might suggest
+> > is either passing a parameter to iterate_dir() or breaking out an
+> > iterate_dir_nofpos() to make IORING_OP_GETDENTS more of a READV operation.
+> > ie the equivalent of this:
+> > 
+> > @@ -37,7 +37,7 @@
+> >  } while (0)
+> >  
+> >  
+> > -int iterate_dir(struct file *file, struct dir_context *ctx)
+> > +int iterate_dir(struct file *file, struct dir_context *ctx, bool use_fpos)
+> >  {
+> >         struct inode *inode = file_inode(file);
+> >         bool shared = false;
+> > @@ -60,12 +60,14 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
+> >  
+> >         res = -ENOENT;
+> >         if (!IS_DEADDIR(inode)) {
+> > -               ctx->pos = file->f_pos;
+> > +               if (use_fpos)
+> > +                       ctx->pos = file->f_pos;
+> >                 if (shared)
+> >                         res = file->f_op->iterate_shared(file, ctx);
+> >                 else
+> >                         res = file->f_op->iterate(file, ctx);
+> > -               file->f_pos = ctx->pos;
+> > +               if (use_fpos)
+> > +                       file->f_pos = ctx->pos;
+> >                 fsnotify_access(file);
+> >                 file_accessed(file);
+> >         }
+> > 
+> > That way there's no need to play with llseek or take a mutex on the
+> > f_pos of the directory.
 > 
-> Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
-> If all events correspond with a newly charged memory and the last event
-> was just about the soft limit boundary then we should be bound by 128k
-> pages (512M and much more if this were huge pages) which is a lot!
-> I haven't realized this was that much. Now I see the problem. This would
-> be a useful information for the changelog.
-> 
-> Your fix is focusing on the over-the-limit boundary which will solve the
-> problem but wouldn't that lead to to updates happening too often in
-> pathological situation when a memcg would get reclaimed immediatelly?
+> I'll try this!
 
-Not really immediately.  The memcg that has the most soft limit excess will
-be chosen for page reclaim, which is the way it should be.  
-It is less likely that a memcg that just exceeded
-the soft limit becomes the worst offender immediately.  With the fix, we make
-sure that it is on the bad guys list and will not be ignored and be chosen
-eventually for reclaim.  It will not sneakily increase its memory usage
-slowly.   
+The patch below (on top of v3) does what you suggest, and it removes
+the vfs_llseek() call, but there's two issues:
 
-> 
-> One way around that would be to lower the SOFTLIMIT_EVENTS_TARGET. Have
-> you tried that? Do we even need a separate treshold for soft limit, why
-> cannot we simply update the tree each MEM_CGROUP_TARGET_THRESH?
->  
+- We still need to take some sort of mutex on the directory, because,
+  while ->iterate_shared() can be called concurrently on different
+  struct files that point to the same underlying dir inode, it cannot
+  be called concurrently on the same struct file.  From
+  Documentation/filesystems/porting.rst:
 
-Lowering the threshold is a band aid that really doesn't fix the problem.
-I found that if the cgroup touches the memory infrequently enough, you
-could still miss the update of it.  And in the mean time, you are updating
-things a lot more frequently with added overhead.
+	->iterate_shared() is added; it's a parallel variant of ->iterate().
+	Exclusion on struct file level is still provided (as well as that
+	between it and lseek on the same struct file) but if your directory
+	has been opened several times, you can get these called in parallel.
+	[...]
 
-Tim
+- Calling a filesystem's ->iterate_shared() on the same dir with changing
+  file positions but without calling the directory's ->llseek() in between
+  to notify the filesystem of changes in the file position seems to violate
+  an (unstated?) guarantee.  It works on my btrfs root fs, since that uses
+  generic_file_llseek() for directory ->llseek(), but e.g. ceph does:
+
+| static loff_t ceph_dir_llseek(struct file *file, loff_t offset, int whence)
+| {
+|         struct ceph_dir_file_info *dfi = file->private_data;
+|         struct inode *inode = file->f_mapping->host;
+|         loff_t retval;
+|
+|         inode_lock(inode);
+|         retval = -EINVAL;
+|         switch (whence) {
+|         case SEEK_CUR:
+|                 offset += file->f_pos;
+|         case SEEK_SET:
+|                 break;
+|         case SEEK_END:
+|                 retval = -EOPNOTSUPP;
+|         default:
+|                 goto out;
+|         }
+|
+|         if (offset >= 0) {
+|                 if (need_reset_readdir(dfi, offset)) {
+|                         dout("dir_llseek dropping %p content\n", file);
+|                         reset_readdir(dfi);
+|                 } else if (is_hash_order(offset) && offset > file->f_pos) {
+|                         /* for hash offset, we don't know if a forward seek
+|                          * is within same frag */
+|                         dfi->dir_release_count = 0;
+|                         dfi->readdir_cache_idx = -1;
+|                 }
+|
+|                 if (offset != file->f_pos) {
+|                         file->f_pos = offset;
+|                         file->f_version = 0;
+|                         dfi->file_info.flags &= ~CEPH_F_ATEND;
+|                 }
+|                 retval = offset;
+|         }
+| out:
+|         inode_unlock(inode);
+|         return retval;
+| }
+
+So I think we probably can't get rid of the conditional vfs_llseek()
+call for now (and we'll probably have to keep taking the dir's
+->f_pos_lock) -- what do you think?
+
+(The caveat about that the file pointer may or may not be updated by
+IORING_OP_GETDENTS would allow making this optimization in the future,
+and for now it would mean that you can't mix getdents64() and
+IORING_OP_GETDENTS calls on the same dirfd, which would seem like an
+unusual thing to do anyway.)
+
+Thanks!
+
+
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index 3362e812928d..97bf0965de30 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -4709,25 +4709,17 @@ static int io_getdents_prep(struct io_kiocb *req,
+ static int io_getdents(struct io_kiocb *req, unsigned int issue_flags)
+ {
+ 	struct io_getdents *getdents = &req->getdents;
+-	int ret = 0;
++	int ret;
+
+ 	/* getdents always requires a blocking context */
+ 	if (issue_flags & IO_URING_F_NONBLOCK)
+ 		return -EAGAIN;
+ 
+-	/* for vfs_llseek and to serialize ->iterate_shared() on this file */
++	/* to serialize ->iterate_shared() on this file */
+ 	mutex_lock(&req->file->f_pos_lock);
+ 
+-	if (req->file->f_pos != getdents->pos) {
+-		loff_t res = vfs_llseek(req->file, getdents->pos, SEEK_SET);
+-		if (res < 0)
+-			ret = res;
+-	}
+-
+-	if (ret == 0) {
+-		ret = vfs_getdents(req->file, getdents->dirent,
+-				   getdents->count);
+-	}
++	ret = vfs_getdents(req->file, getdents->dirent,
++			   getdents->count, &getdents->pos);
+ 
+ 	mutex_unlock(&req->file->f_pos_lock);
+ 
+diff --git a/fs/readdir.c b/fs/readdir.c
+index f52167c1eb61..ffdc70fe5dcf 100644
+--- a/fs/readdir.c
++++ b/fs/readdir.c
+@@ -37,7 +37,7 @@
+ } while (0)
+ 
+ 
+-int iterate_dir(struct file *file, struct dir_context *ctx)
++int __iterate_dir(struct file *file, struct dir_context *ctx, bool use_fpos)
+ {
+ 	struct inode *inode = file_inode(file);
+ 	bool shared = false;
+@@ -60,12 +60,14 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
+ 
+ 	res = -ENOENT;
+ 	if (!IS_DEADDIR(inode)) {
+-		ctx->pos = file->f_pos;
++		if (use_fpos)
++			ctx->pos = file->f_pos;
+ 		if (shared)
+ 			res = file->f_op->iterate_shared(file, ctx);
+ 		else
+ 			res = file->f_op->iterate(file, ctx);
+-		file->f_pos = ctx->pos;
++		if (use_fpos)
++			file->f_pos = ctx->pos;
+ 		fsnotify_access(file);
+ 		file_accessed(file);
+ 	}
+@@ -76,6 +78,11 @@ int iterate_dir(struct file *file, struct dir_context *ctx)
+ out:
+ 	return res;
+ }
++
++int iterate_dir(struct file *file, struct dir_context *ctx)
++{
++	return __iterate_dir(file, ctx, true);
++}
+ EXPORT_SYMBOL(iterate_dir);
+ 
+ /*
+@@ -349,7 +356,7 @@ static int filldir64(struct dir_context *ctx, const char *name, int namlen,
+ }
+ 
+ int vfs_getdents(struct file *file, struct linux_dirent64 __user *dirent,
+-		 unsigned int count)
++		 unsigned int count, loff_t *f_pos)
+ {
+ 	struct getdents_callback64 buf = {
+ 		.ctx.actor = filldir64,
+@@ -358,7 +365,13 @@ int vfs_getdents(struct file *file, struct linux_dirent64 __user *dirent,
+ 	};
+ 	int error;
+ 
+-	error = iterate_dir(file, &buf.ctx);
++	if (f_pos == NULL) {
++		error = __iterate_dir(file, &buf.ctx, true);
++	} else {
++		buf.ctx.pos = *f_pos;
++		error = __iterate_dir(file, &buf.ctx, false);
++	}
++
+ 	if (error >= 0)
+ 		error = buf.error;
+ 	if (buf.prev_reclen) {
+@@ -384,7 +397,7 @@ SYSCALL_DEFINE3(getdents64, unsigned int, fd,
+ 	if (!f.file)
+ 		return -EBADF;
+ 
+-	error = vfs_getdents(f.file, dirent, count);
++	error = vfs_getdents(f.file, dirent, count, NULL);
+ 	fdput_pos(f);
+ 	return error;
+ }
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 114885d3f6c4..7104cd9b26ca 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3107,11 +3107,12 @@ const char *simple_get_link(struct dentry *, struct inode *,
+ 			    struct delayed_call *);
+ extern const struct inode_operations simple_symlink_inode_operations;
+ 
++extern int __iterate_dir(struct file *, struct dir_context *, bool);
+ extern int iterate_dir(struct file *, struct dir_context *);
+ 
+ struct linux_dirent64;
+ int vfs_getdents(struct file *file, struct linux_dirent64 __user *dirent,
+-		 unsigned int count);
++		 unsigned int count, loff_t *f_pos);
+ 
+ int vfs_fstatat(int dfd, const char __user *filename, struct kstat *stat,
+ 		int flags);
