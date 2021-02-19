@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D7831F7C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDF431F7CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230199AbhBSK6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:58:44 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:47502 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhBSKzQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:55:16 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id BE18A1C0B80; Fri, 19 Feb 2021 11:54:31 +0100 (CET)
-Date:   Fri, 19 Feb 2021 11:54:31 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     jacek.anaszewski@gmail.com, robh+dt@kernel.org,
-        matthias.bgg@gmail.com, dmurphy@ti.com, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v13 2/5] leds: flash: Fix multicolor no-ops registration
- by return 0
-Message-ID: <20210219105431.GE19207@duo.ucw.cz>
-References: <1608547554-6602-1-git-send-email-gene.chen.richtek@gmail.com>
- <1608547554-6602-3-git-send-email-gene.chen.richtek@gmail.com>
+        id S230128AbhBSK7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:59:36 -0500
+Received: from mga14.intel.com ([192.55.52.115]:27169 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229691AbhBSK4q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:56:46 -0500
+IronPort-SDR: YV3AQiQ/gnk/fNfRwoTCTLUCbHMMj9ajNTjQllYcA5F6ijeCsG5Nb+FlYCOgbmDIVDFiSV6Kam
+ byH+Hj1HD8nw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="183019374"
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="183019374"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:54:53 -0800
+IronPort-SDR: p7C/p6MzoO4uNm4ocqFIV/LXDOUjmHqH6MR922Yg7RRcUiPYvSzMvCZ0FcEs2O9wtGFFAcLB2P
+ D1EPvlFhMhnQ==
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="590601518"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:54:50 -0800
+Received: by lahna (sSMTP sendmail emulation); Fri, 19 Feb 2021 12:54:47 +0200
+Date:   Fri, 19 Feb 2021 12:54:47 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] watchdog: wdat: add param. to start wdog on module
+ insertion
+Message-ID: <20210219105447.GI2542@lahna.fi.intel.com>
+References: <20210218163200.1154812-1-f.suligoi@asem.it>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="5xSkJheCpeK0RUEJ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1608547554-6602-3-git-send-email-gene.chen.richtek@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210218163200.1154812-1-f.suligoi@asem.it>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---5xSkJheCpeK0RUEJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Feb 18, 2021 at 05:32:00PM +0100, Flavio Suligoi wrote:
+> Add the parameter "start_enable" to start the watchdog
+> directly on module insertion.
+> 
+> In an embedded system, for some applications, the watchdog
+> must be activated as soon as possible.
+> 
+> In some embedded x86 boards the watchdog can be activated
+> directly by the BIOS (with an appropriate setting of the
+> BIOS setup). In other cases, when this BIOS feature is not
+> present, the possibility to start the watchdog immediately
+> after the module loading can be very useful.
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+>  drivers/watchdog/wdat_wdt.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/watchdog/wdat_wdt.c b/drivers/watchdog/wdat_wdt.c
+> index cec7917790e5..b990d0197d2e 100644
+> --- a/drivers/watchdog/wdat_wdt.c
+> +++ b/drivers/watchdog/wdat_wdt.c
+> @@ -61,6 +61,12 @@ module_param(timeout, int, 0);
+>  MODULE_PARM_DESC(timeout, "Watchdog timeout in seconds (default="
+>  		 __MODULE_STRING(WDAT_DEFAULT_TIMEOUT) ")");
+>  
+> +#define START_DEFAULT	0
+> +static int start_enabled = START_DEFAULT;
+> +module_param(start_enabled, int, 0);
+> +MODULE_PARM_DESC(start_enabled, "Watchdog is started on module insertion "
+> +		 "(default=" __MODULE_STRING(START_DEFAULT) ")");
+> +
+>  static int wdat_wdt_read(struct wdat_wdt *wdat,
+>  	 const struct wdat_instruction *instr, u32 *value)
+>  {
+> @@ -437,6 +443,8 @@ static int wdat_wdt_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	wdat_wdt_boot_status(wdat);
+> +	if (start_enabled)
+> +		wdat_wdt_start(&wdat->wdd);
 
-On Mon 2020-12-21 18:45:51, Gene Chen wrote:
-> From: Gene Chen <gene_chen@richtek.com>
->=20
-> Fix multicolor no-ops registration by return 0,
-> and move the same registration functions outside of #ifdef block.
->=20
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+No objections to this if it is really needed. However, I think it is
+better start the watchdog after devm_watchdog_register_device() has been
+called so we have everything initialized.
 
-I applied the first two.
-
-Best regards,
-									Pavel
-								=09
---=20
-http://www.livejournal.com/~pavelmachek
-
---5xSkJheCpeK0RUEJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+Y5wAKCRAw5/Bqldv6
-8qb1AJ9XxeNlZH+EPgrXOniC/RLIiLZs7QCgxLA9z8wbAPEn/KIJHJ6l4gOaNmM=
-=5iwm
------END PGP SIGNATURE-----
-
---5xSkJheCpeK0RUEJ--
+>  	wdat_wdt_set_running(wdat);
+>  
+>  	ret = wdat_wdt_enable_reboot(wdat);
+> -- 
+> 2.25.1
