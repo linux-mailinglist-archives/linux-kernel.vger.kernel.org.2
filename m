@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BED131F516
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 07:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA2731F518
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 07:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhBSG2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 01:28:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56565 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229571AbhBSG2f (ORCPT
+        id S229571AbhBSGaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 01:30:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBSGaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 01:28:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613716028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gCPs0LwfLBhsO+47Q+nJV6cHRznWTPxUnG+Icxobtog=;
-        b=QI+XOSX1SUNDtJ3kDaLK3poHuFYfqWL9S6vLWoMboWtv66rH6jutX6kLhtcyGP28A1nwfX
-        WaBnbWXKsOn6djN0EizxAidkHE34dyrFQfU31wk7l65+E94era3WrmjFj9S898okYtq4th
-        5iKSeeflSFrPeQt2i46bIHTvHqbSgs4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-cCyYogliOfy_i-FSH-lNHg-1; Fri, 19 Feb 2021 01:27:03 -0500
-X-MC-Unique: cCyYogliOfy_i-FSH-lNHg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 24542801965;
-        Fri, 19 Feb 2021 06:27:02 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id ABEC45D9C2;
-        Fri, 19 Feb 2021 06:26:53 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 01:26:51 -0500
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Phil Sutter <phil@nwl.cc>, LKML <linux-kernel@vger.kernel.org>,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        netfilter-devel@vger.kernel.org, twoerner@redhat.com,
-        Eric Paris <eparis@parisplace.org>, tgraf@infradead.org
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
- events
-Message-ID: <20210219062651.GR2015948@madcap2.tricolour.ca>
-References: <20210211151606.GX3158@orbyte.nwl.cc>
- <CAHC9VhTNQW9d=8GCW-70vAEMh8-LXviP+JHFC2-YkuitokLLMQ@mail.gmail.com>
- <20210211202628.GP2015948@madcap2.tricolour.ca>
- <20210211220930.GC2766@breakpoint.cc>
- <20210217234131.GN3141668@madcap2.tricolour.ca>
- <20210218082207.GJ2766@breakpoint.cc>
- <20210218124211.GO3141668@madcap2.tricolour.ca>
- <20210218125248.GB22944@breakpoint.cc>
- <20210218212001.GQ3141668@madcap2.tricolour.ca>
- <20210218224200.GF22944@breakpoint.cc>
+        Fri, 19 Feb 2021 01:30:16 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A333C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 22:29:36 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id g3so2164850qvl.2
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 22:29:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8QbOeYSHoSBYRxmS8POCx9jwvefT3QjgtdlEKLIWRhs=;
+        b=hOGE2ImC/+HsdcBOo8ZcsyMxmHF+KAh4wWz2br/79rUxvlQrPDr85SdB4FUleX+rE2
+         BcZBtaCnpsTeI2kL/HGdzfJDiauWi+l2v7U0HcgqokBkcFyH5csNxpBaNIUqoVQX5TA4
+         TgasZtrqe//wW7O2Jp0E8D9AdpACA6lBwEttDaik9XBfgmCCacKBSuCALc/Yq4ISoHNt
+         9p1M2A9fHTprp3SKBOuQMw0Cr0IPkU8jgQRoYXYxhdZmL6BqF4loV4xOYs/6szIvFz2c
+         yeeObXtJBzpWtevCDK6H4zhrgiI8TocPW6VSahNfOWDZ7DQoxiH62MWQ0KCk/YTbaPwy
+         ew4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8QbOeYSHoSBYRxmS8POCx9jwvefT3QjgtdlEKLIWRhs=;
+        b=YpPjQq07NTHkvkoI73oUI/2LvTKhqNZTp0c9aRCFt+QeEl714cUkzeUmtEn6Y4Zik1
+         sz9DmH+DgGwGpa21V+WQPf5a8n868t8RxbDUKB9cZ7Wm2M27S84r/ura6ysgIIll2CzJ
+         Df50vOi4xTTspzQrNDL0ppitg7Lc0OI+LeuIxmhFjH8ottI+SHrrrkigKrNiSe+CkqKo
+         c3EdbX5o6ivoZu5a1q1yzx3CwFrSROxxzw0KY42zd8s2XJSJoZlqs2VaaOT2BbwKgxR4
+         PiSmfowkaPyPU1ih7HKfJtJCmWMkM/z1d3QbmlfEmDBsDa8ve+aLvg1Vkh5mrIIHoqkA
+         bE6g==
+X-Gm-Message-State: AOAM532V9iW1P+8Dh0k+eqecSSYK0sFE9MQ4yN7/+tObMbNiGOMN4F+h
+        HzI53qvzmKqui7unztBes/1CgzFeCe2j+xbYYQQcGA==
+X-Google-Smtp-Source: ABdhPJwOntCz7gq+5LgnwvQI04RShCe63RIEhKJRAFPqvLgZE7jBdojjaXo9zKTXiRNLGleD2sNST3aT750CIxCVYvk=
+X-Received: by 2002:a0c:e80d:: with SMTP id y13mr7811702qvn.2.1613716175541;
+ Thu, 18 Feb 2021 22:29:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210218224200.GF22944@breakpoint.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210214000611.2169820-1-zzyiwei@android.com> <20210216091128.GA3973504@infradead.org>
+ <CAKB3++aXuCS3WRf1mfrM2oZ0KiJ4xP4ib-ZbJXr8cXVEkU-sXw@mail.gmail.com> <YCz6nz4i136z1+H1@alley>
+In-Reply-To: <YCz6nz4i136z1+H1@alley>
+From:   =?UTF-8?B?WWl3ZWkgWmhhbmfigI4=?= <zzyiwei@android.com>
+Date:   Thu, 18 Feb 2021 22:29:24 -0800
+Message-ID: <CAKB3++b+n=VWuXZqZqyZJvAf1+Wqogvi07L21GqdRwThSRdf2w@mail.gmail.com>
+Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ilias Stamatis <stamatis.iliass@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Liang Chen <cl@rock-chips.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-18 23:42, Florian Westphal wrote:
-> Richard Guy Briggs <rgb@redhat.com> wrote:
-> > > If they appear in a batch tehy will be ignored, if the batch consists of
-> > > such non-modifying ops only then nf_tables_commit() returns early
-> > > because the transaction list is empty (nothing to do/change).
-> > 
-> > Ok, one little inconvenient question: what about GETOBJ_RESET?  That
-> > looks like a hybrid that modifies kernel table counters and reports
-> > synchronously.  That could be a special case call in
-> > nf_tables_dump_obj() and nf_tables_getobj().  Will that cause a storm
-> > per commit?
-> 
-> No, since they can't be part of a commit (they don't implement the
-> 'call_batch' function).
+> 2. User triggered clean up races with the clean up triggered by
+>   timeout. You try to handle this scenario by this patch.
+Yes, exactly.
 
-Ok, good, so they should be safe (but still needs the gfp param to
-audit_log_nfcfg() for atomic alloc in that obj reset callback).
+> 3. User does clean up after the clean up has already been done
+>   by the timeout.
+This case is well handled. So only (2) has a potential race.
 
-> I'm not sure GETOBJ_RESET should be reported in the first place:
-> RESET only affects expr internal state, and that state changes all the time
-> anyway in response to network traffic.
+Let me clarify a bit more here. The "clean up" is not the clean up
+when a process tears down, but it's actually a "post-work" to cancel
+out an early "pre-work". The "pre-work" enqueues the delayed "post
+work" for the timeout purpose. That pair of operations can repeatedly
+happen.
 
-We report audit lost messages reset as a config change since it affects
-the view that an admin has about a system.  An unaccounted for reset
-could mislead an administrator into thinking things are alright when
-some messages were lost and there was nothing to show for it.  I could
-see similar situations with network entity counters.
+The racing is currently worked around by refcounting the delayed_work
+container, and the later "post-work" will take care of the work
+deallocation.
 
-- RGB
+I mainly want to reach out to see if we agree that this is a valid API
+to be supported by kthread. Or we extend the existing
+kthread_mod_delayed_work api to take another option to not re-queue if
+the cancel failed.
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+Best,
+Yiwei
