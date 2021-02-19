@@ -2,73 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBD50320179
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:50:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E4332017B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhBSWuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 17:50:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhBSWuE (ORCPT
+        id S229755AbhBSWvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 17:51:17 -0500
+Received: from vmicros1.altlinux.org ([194.107.17.57]:60876 "EHLO
+        vmicros1.altlinux.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229577AbhBSWvP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 17:50:04 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5ADC061786
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:49:22 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id e7so5834369ile.7
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:49:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H1+QL0ZJy98i2Loy47lzBuvz+WCAjo4otcQSOPkGKDA=;
-        b=RBW0QcSz6mlJhrzmI044HVf7H33xiie7VtzMqoPyUVPUiCzWMDQlVd+JAdD4kCeq8E
-         uCfrpsfg9/5IaESjoFjbMc7Dh2FA52tNPJgq8D+hfk8e2j6UptbbK1+yVtlABlPBTJvO
-         hLA6qmg4uxx8NEq1MkKiLPMcBd0MbSt97SKQgU8UP710+LCCkKHNeEFwhLvmFSOvSFBd
-         RcWplb3E9ycnwIszyXRY+ynXKuCvanhLGgsAYYN5OubASSVn7DlAfsf1HD/h9j3D4Hme
-         nLdx+H4S3kDYJ1gVVEHElHZg4/JXwWbspaMQpkdIo46ruSd+SyMMT13vFr0BiPhQMVRa
-         LSsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H1+QL0ZJy98i2Loy47lzBuvz+WCAjo4otcQSOPkGKDA=;
-        b=tzaPi6afbM/ZJ1hGvGDBwK36dSuL9qoJr6yFtCIsDptryxBnjwoqZJ0WVlW1W5AJBx
-         yUC76ORZ9m+d32WbhGw2bSflTM1EibDGWOSFfoPhkKcXnFPjS5BlioNn/DlMgFl/VEAi
-         ti6PcSXh4q4WcbdkKuI1glLX24zwxeSErvNnW61VDaY4Roo/Dc1YUemZ/kqNaiIBwT9K
-         8490tYXrf4HhQ1HAeWHG732L/yTTWUCgH5AF06b1rjPBX7HJzqV0svkJ56x8xabVcDpj
-         PBThCIk57GoOWNekeGb5+4ZjeMxxRm0rmDBzjX4tuNoTNTRLqRoguQEUfS05pYbYcQGb
-         YhcQ==
-X-Gm-Message-State: AOAM533IWdXa+3mfwKPNl04L+9gnMSX0iQtSZHgC+tVZAXZKnMbz4rmy
-        2uEYUsPgRIwUnTlADa0HupPUTitlj5Y4AIHaTqprhA==
-X-Google-Smtp-Source: ABdhPJw0SO//jD+r4I3M20a9EPa+9uGZVnB6XKrlcrUvMNeZndLvUnGSJzFS9rPtoxR1/EERC+V5IL4d74bVTGOqqRs=
-X-Received: by 2002:a05:6e02:214f:: with SMTP id d15mr5964595ilv.180.1613774961367;
- Fri, 19 Feb 2021 14:49:21 -0800 (PST)
+        Fri, 19 Feb 2021 17:51:15 -0500
+Received: from mua.local.altlinux.org (mua.local.altlinux.org [192.168.1.14])
+        by vmicros1.altlinux.org (Postfix) with ESMTP id 20AF88A309F;
+        Sat, 20 Feb 2021 01:50:31 +0300 (MSK)
+Received: by mua.local.altlinux.org (Postfix, from userid 508)
+        id E7F7A7CC8A2; Sat, 20 Feb 2021 01:50:30 +0300 (MSK)
+Date:   Sat, 20 Feb 2021 01:50:30 +0300
+From:   "Dmitry V. Levin" <ldv@altlinux.org>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Alexey Gladkov <gladkov.alexey@gmail.com>,
+        Gleb Fotengauer-Malinovskiy <glebfm@altlinux.org>,
+        Anatoly Pugachev <matorola@gmail.com>,
+        sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] sparc: make copy_thread honor pid namespaces
+Message-ID: <20210219225030.GA23520@altlinux.org>
+References: <20210217080000.GA25861@altlinux.org>
+ <m1tuq9nsnf.fsf@fess.ebiederm.org>
 MIME-Version: 1.0
-References: <20210219224405.1544597-1-shakeelb@google.com>
-In-Reply-To: <20210219224405.1544597-1-shakeelb@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 19 Feb 2021 14:49:09 -0800
-Message-ID: <CALvZod5-wiSX8BkUAxNAOU-61e+0KNWm0hdQKhe+qtrFgPsb1g@mail.gmail.com>
-Subject: Re: [PATCH] memcg: charge before adding to swapcache on swapin
-To:     Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <m1tuq9nsnf.fsf@fess.ebiederm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 2:44 PM Shakeel Butt <shakeelb@google.com> wrote:
-[snip]
->  mode change 100644 => 100755 scripts/cc-version.sh
-[snip
-> diff --git a/scripts/cc-version.sh b/scripts/cc-version.sh
-> old mode 100644
-> new mode 100755
+On sparc, fork and clone syscalls have an unusual semantics of
+returning the pid of the parent process to the child process.
 
-Please ignore these unintended mode changes. I will remove these in
-the next version.
+Apparently, the implementation did not honor pid namespaces at all,
+so the child used to get the pid of its parent in the init namespace.
+
+Fortunately, most users of these syscalls are not affected by this bug
+because they use another register to distinguish the parent process
+from its child, and the pid of the parent process is often discarded.
+
+Reproducer:
+
+  $ gcc -Wall -O2 -xc - <<'EOF'
+  #define _GNU_SOURCE
+  #include <err.h>
+  #include <errno.h>
+  #include <sched.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <sys/wait.h>
+  #include <unistd.h>
+  #include <asm/unistd.h>
+  #include <linux/sched.h>
+  static void test_fork(void)
+  {
+  	int pid = syscall(__NR_fork);
+  	if (pid < 0)
+  		err(1, "fork");
+  	fprintf(stderr, "current: %d, parent: %d, fork returned: %d\n",
+  		getpid(), getppid(), pid);
+  	int status;
+  	if (wait(&status) < 0) {
+  		if (errno == ECHILD)
+  			_exit(0);
+  		err(1, "wait");
+  	}
+  	if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
+  		errx(1, "wait: %#x", status);
+  }
+  int main(void)
+  {
+  	test_fork();
+  	if (unshare(CLONE_NEWPID | CLONE_NEWUSER) < 0)
+  		err(1, "unshare");
+  	test_fork();
+  	return 0;
+  }
+  EOF
+  $ sh -c ./a.out
+  current: 10001, parent: 10000, fork returned: 10002
+  current: 10002, parent: 10001, fork returned: 10001
+  current: 10001, parent: 10000, fork returned: 10003
+  current: 1, parent: 0, fork returned: 10001
+
+This bug was found by strace test suite.
+
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
+---
+
+v2: Replaced task_active_pid_ns(p) with current->nsproxy->pid_ns_for_children
+    as suggested by Eric.
+
+ arch/sparc/kernel/process_32.c | 3 ++-
+ arch/sparc/kernel/process_64.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/sparc/kernel/process_32.c b/arch/sparc/kernel/process_32.c
+index a02363735915..3be653e40204 100644
+--- a/arch/sparc/kernel/process_32.c
++++ b/arch/sparc/kernel/process_32.c
+@@ -368,7 +368,8 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ #endif
+ 
+ 	/* Set the return value for the child. */
+-	childregs->u_regs[UREG_I0] = current->pid;
++	childregs->u_regs[UREG_I0] =
++		task_pid_nr_ns(current, current->nsproxy->pid_ns_for_children);
+ 	childregs->u_regs[UREG_I1] = 1;
+ 
+ 	/* Set the return value for the parent. */
+diff --git a/arch/sparc/kernel/process_64.c b/arch/sparc/kernel/process_64.c
+index 6f8c7822fc06..f53ef5cff46a 100644
+--- a/arch/sparc/kernel/process_64.c
++++ b/arch/sparc/kernel/process_64.c
+@@ -629,7 +629,8 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 		t->utraps[0]++;
+ 
+ 	/* Set the return value for the child. */
+-	t->kregs->u_regs[UREG_I0] = current->pid;
++	t->kregs->u_regs[UREG_I0] =
++		task_pid_nr_ns(current, current->nsproxy->pid_ns_for_children);
+ 	t->kregs->u_regs[UREG_I1] = 1;
+ 
+ 	/* Set the second return value for the parent. */
+-- 
+ldv
