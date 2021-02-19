@@ -2,122 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04CB831F879
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DC931F87A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBSLhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:37:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22167 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229524AbhBSLhU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:37:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613734554;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=xn1ULpHqjYib2erd8HgDp+bnvgqHCYqsU53nsfSrm1E=;
-        b=M5UltLR4Awei/2wwRz4sarKRUSPqtb/0LHy391PYqPqvohUXtAbQpfLp+R5WSZDEQmb6bL
-        focqADOO+lKZV2DGhRPm5VtT3LKH1pVqREv8NRcvS9ZZ4LHT/eB3xUwZ6KLAStt68HujZb
-        WPe3sgP3IltWXY1wb9zX6QOHyHSloW0=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-jI2XVixWMa2WWhqkYu7IJQ-1; Fri, 19 Feb 2021 06:35:52 -0500
-X-MC-Unique: jI2XVixWMa2WWhqkYu7IJQ-1
-Received: by mail-pg1-f200.google.com with SMTP id n2so3430909pgj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 03:35:52 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=xn1ULpHqjYib2erd8HgDp+bnvgqHCYqsU53nsfSrm1E=;
-        b=GXutmPmRgsaBo2etSdAE1Mq5MDBoV1oOnIBM8pLxKGBMEjwtCUIfIlG8ZGNkCGy2ZQ
-         0CgMNSG6X2T39AS+NoxaY2cSBRWXl3J13LdNh9xM2tsKbLeaQqDX3HwalYIfhHWZyrB1
-         T1NtCNfmlEr3JVNU6SYkW5y7elHDCiuWWqqPgw8ZxbGpNpsjf0kidRTC9qfwC4uNjHqG
-         Q6ysF+prdJqsVng0UhJUAAaeEjXb75FiVDr63aIeaumyuzwOOxU2afDogA4QZCZ6Z53C
-         S7zfdFqsyJWEyyZJrjulcpq9Gj8nILVnNvjIVcADANffFsmU8RVKmhM7iswiyM46UwHz
-         /K0g==
-X-Gm-Message-State: AOAM533u0X7SLYx2NGh9WLA0P0s5QuxEXaw+Ly2w5KycKIzjxyGJbrQR
-        TA76mAVo3lkeg4G5gldYVnEBU6ZnAODFa1OcJk5QkG5yS4EmAwANjfXJyn3Dwm6ZXRxPUck2Caa
-        cU5ueNmWEittbdXIB7t4SpjFh
-X-Received: by 2002:a62:7a0b:0:b029:1de:7e70:955d with SMTP id v11-20020a627a0b0000b02901de7e70955dmr1552746pfc.49.1613734551558;
-        Fri, 19 Feb 2021 03:35:51 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzJ4N/87dUKkv79oaKb1TdgD+7zCbqUbQNPc48eJdnHyHp82QLrzhF66Kh7W0cIjvCa2LqetQ==
-X-Received: by 2002:a62:7a0b:0:b029:1de:7e70:955d with SMTP id v11-20020a627a0b0000b02901de7e70955dmr1552727pfc.49.1613734551296;
-        Fri, 19 Feb 2021 03:35:51 -0800 (PST)
-Received: from xiangao.remote.csb ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id ke13sm8360941pjb.44.2021.02.19.03.35.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 03:35:50 -0800 (PST)
-Date:   Fri, 19 Feb 2021 19:35:37 +0800
-From:   Gao Xiang <hsiangkao@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>,
-        Fang Wei <fangwei1@huawei.com>,
-        Li Guifu <bluce.liguifu@huawei.com>,
-        Huang Jianan <huangjianan@oppo.com>,
-        Guo Weichao <guoweichao@oppo.com>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [GIT PULL] erofs update for 5.12-rc1
-Message-ID: <20210219113537.GA492321@xiangao.remote.csb>
+        id S230158AbhBSLhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:37:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230240AbhBSLhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 06:37:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0675664E86;
+        Fri, 19 Feb 2021 11:37:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613734624;
+        bh=gHEQU1XxqU4aw2PyVE3yrc+QG1v7YGb4x9pQeqe0F+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JXQB7A65neqXQ3sM1T3YsTZM4QChDAjvr2nqf/1kftUrVdxQaRwvMaSITtStOJvGL
+         qjvL66DXk1056QyauvNYqcXA7+pmZ5ZuaQz5wCIHT7YkcHL6Gp6A8ZiVbpUeakrYBr
+         1/LZJgURpodH5eJgCwKHzXtGY6zvEsEEvzxqVs3y2enHn1gbbxNSPcXVGejwlNU1kZ
+         bz0c7d0lMmfz14xOMWXVAesCeMHoGbGdIIrXVfk4p7M4KXxZC7Ng60ErFTs3qjjtSV
+         FShhDl9/Sqkgaa+T5WC7hrhQIaY4oDDmAZ8lH5KQKNzrDrAKowgMnlKkVuCYS7tuuI
+         rC5T+1MpYcS0A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D672F40CD9; Fri, 19 Feb 2021 08:37:00 -0300 (-03)
+Date:   Fri, 19 Feb 2021 08:37:00 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH 3/3] tools/lib/fs: Cache cgroupfs mount point
+Message-ID: <YC+i3HDX2H4fB9ea@kernel.org>
+References: <20201216090556.813996-1-namhyung@kernel.org>
+ <20201216090556.813996-3-namhyung@kernel.org>
+ <20201229115158.GH521329@kernel.org>
+ <CAM9d7cidFuM5gmjq8=uy+mJjHHEVE=q6qESkc_OeTeGEQkGbnA@mail.gmail.com>
+ <CAM9d7chBmkG6S1QzF+gDU8=5ce8zQo2xM5Jr1t_iptsh_+t7NQ@mail.gmail.com>
+ <YC0S858hMZG6o/tt@kernel.org>
+ <CAM9d7cj=XrpTDQuJ1vhax0drpO8rcbjQgUi3Gj8Q2476U7SmgQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAM9d7cj=XrpTDQuJ1vhax0drpO8rcbjQgUi3Gj8Q2476U7SmgQ@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Em Fri, Feb 19, 2021 at 07:05:59PM +0900, Namhyung Kim escreveu:
+> On Wed, Feb 17, 2021 at 9:58 PM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> > Em Fri, Jan 08, 2021 at 02:51:44PM +0900, Namhyung Kim escreveu:
+> > > On Wed, Jan 6, 2021 at 10:33 AM Namhyung Kim <namhyung@kernel.org> wrote:
 
-Could you consider this pull request for 5.12-rc1?
+> > > As you said, I think mostly we don't care as the accesses will happen
+> > > in a short period of time.  But if you really care, maybe for the upcoming
+> > > perf daemon changes, I think we can add an API to invalidate the cache
+> > > or internal time-based invalidation logic (like remove it after 10 sec.).
 
-This contains a somewhat important but rarely reproduced fix
-reported month ago for platforms which have weak memory model
-(e.g. arm64). The root cause is that test_bit/set_bit atomic
-operations are actually implemented in relaxed forms, and
-uninitialized fields governed by an atomic bit could be observed
-in advance due to memory reordering thus memory barrier pairs
-should be used. There is also a trivial fix of crafted blkszbits
-generated by syzkaller.
+> > Ok, we can have something in 'perf daemon' to periodically invalidate
+> > this, maybe do a poor man inotify and when asking for the cgroup
+> > mountpoint, check some characteristic of that file that changes when it
+> > is modified, or plain use a timestamp and have some threshold.
+ 
+> I thought about this again.
+ 
+> We don't directly access the cgroups in the perf daemon.  It just
+> creates new record processes so they'll see a new mountpoint whenever
+> they started since this cache is shared within the process only.
+ 
+> That means we don't need to care about the invalidate in the daemon
+> but each perf record and perf stat should do it when they are required
+> to do the work repeatedly.
+ 
+> But looking at the code, the cgroup is set during event parsing (-G
+> option) or early in the command (--for-each-cgroup option).  So cgroup
+> info would not be changed even if the command runs repeatedly.
+ 
+> So I think you can take the patch as is.
 
-All commits have been tested and have been in linux-next for
-more than a week. This merges cleanly with master.
+Its in perf/core branch on its way to Linus soon :-)
 
-Thanks,
-Gao Xiang
+Thanks for checking it.
 
-The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
-
-  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.12-rc1
-
-for you to fetch changes up to ce063129181312f8781a047a50be439c5859747b:
-
-  erofs: initialized fields can only be observed after bit is set (2021-02-11 11:55:28 +0800)
-
-----------------------------------------------------------------
-Changes since last update:
-
- - fix shift-out-of-bounds of crafted blkszbits generated by syzkaller;
-
- - ensure initialized fields can only be observed after bit is set.
-
-----------------------------------------------------------------
-Gao Xiang (2):
-      erofs: fix shift-out-of-bounds of blkszbits
-      erofs: initialized fields can only be observed after bit is set
-
- fs/erofs/super.c |  4 ++--
- fs/erofs/xattr.c | 10 +++++++++-
- fs/erofs/zmap.c  | 10 +++++++++-
- 3 files changed, 20 insertions(+), 4 deletions(-)
-
+- Arnaldo
