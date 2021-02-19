@@ -2,94 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 598E531F7CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F0831F7CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhBSK7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:59:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51392 "EHLO mx2.suse.de"
+        id S230364AbhBSK7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:59:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52158 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230196AbhBSKzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:55:47 -0500
+        id S230305AbhBSK4s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:56:48 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613732100; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1613732161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=rFG8P9Ie0qeQWrQfmu4nspdfkX+zgZBg6iq8S0zq+4o=;
-        b=ghVSU2tWyDJjeKNm5dWJOkhOE1GmVzyU5Kd5XS6Z6dAMvi2zK52pQ2xaoAg4rbS+X++Krs
-        OEyro5aWmQQydkGWFVzt4byaWoGkUYeNv1Bu7a3hAatcXr7cxbZbyF4WdX+9c1MM/1gisl
-        LfYdpToQoAW+6AQT7JzjYgmF0G1Pvf8=
+        bh=oCiE5hkBgOQtGTwVoz0fI2p0EypbZJmyNY/Y9H09j0E=;
+        b=lzD9V9SjlcXTEeEYfaSNFb5Cl3CsT2jNHi5FNPK/hbqrD0/EyR97lrFSvgonR8olw9Aexo
+        FqOL6w+JNXKy9QNv0fjj9BJZb4PYbGdfIKwcW5J5DQvh4Kc9gMFd73loZ4zDbvVtUy80TG
+        9crD9fRgAHJYdthzq8j8QzcEzGgDNqc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A8714AC6E;
-        Fri, 19 Feb 2021 10:55:00 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 11:55:00 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Oscar Salvador <osalvador@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 4988CACBF;
+        Fri, 19 Feb 2021 10:56:01 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 11:56:00 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yiwei Zhang <zzyiwei@android.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
-Message-ID: <YC+ZBIwXKEZCy1Bk@dhcp22.suse.cz>
-References: <20210217100816.28860-1-osalvador@suse.de>
- <20210217100816.28860-2-osalvador@suse.de>
- <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
- <20210218100917.GA4842@localhost.localdomain>
- <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
- <20210218133250.GA7983@localhost.localdomain>
- <YC5yzNB9xT76fkod@dhcp22.suse.cz>
- <20210219090548.GA17266@linux>
- <YC+LWksScdiuPw7X@dhcp22.suse.cz>
- <20210219103943.GA19945@linux>
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        "J. Bruce Fields" <bfields@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ilias Stamatis <stamatis.iliass@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Liang Chen <cl@rock-chips.com>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH] kthread: add kthread_mod_pending_delayed_work api
+Message-ID: <YC+ZQAwwb4RGgjDf@alley>
+References: <20210214000611.2169820-1-zzyiwei@android.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219103943.GA19945@linux>
+In-Reply-To: <20210214000611.2169820-1-zzyiwei@android.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-02-21 11:40:30, Oscar Salvador wrote:
-> On Fri, Feb 19, 2021 at 10:56:42AM +0100, Michal Hocko wrote:
-> > OK, this should work but I am really wondering whether it wouldn't be
-> > just simpler to replace the old page by a new one in the free list
-> > directly. Or is there any reason we have to go through the generic
-> > helpers path? I mean something like this
-> > 
-> > 	new_page = alloc_fresh_huge_page();
-> > 	if (!new_page)
-> > 		goto fail;
-> > 	spin_lock(hugetlb_lock);
-> > 	if (!PageHuge(old_page)) {
-> > 		/* freed from under us, nothing to do */ 
-> > 		__update_and_free_page(new_page);
-> > 		goto unlock;
-> > 	}
-> > 	list_del(&old_page->lru);
-> > 	__update_and_free_page(old_page);
-> > 	__enqueue_huge_page(new_page);
-> > unlock:
-> > 	spin_unlock(hugetlb_lock);
-> > 
-> > This will require to split update_and_free_page and enqueue_huge_page to
-> > counters independent parts but that shouldn't be a big deal. But it will
-> > also protect from any races. Not an act of beauty but seems less hackish
-> > to me.
-> 
-> On a closer look, do we really need to decouple update_and_free_page and
-> enqueue_huge_page? These two functions do not handle the lock, but rather
-> the functions that call them (as would be in our case).
-> Only update_and_free_page drops the lock during the freeing of a gigantic page
-> and then it takes it again, as the caller is who took the lock.
-> 
-> am I missing anything obvious here?
+On Sun 2021-02-14 00:06:11, Yiwei Zhang wrote:
+> The existing kthread_mod_delayed_work api will queue a new work if
+> failing to cancel the current work due to no longer being pending.
+> However, there's a case that the same work can be enqueued from both
+> an async request and a delayed work, and a racing could happen if the
+> async request comes right after the timeout delayed work gets scheduled,
+> because the clean up work may not be safe to run twice.
 
-It is not the lock that I care about but more about counters. The
-intention was that there is a single place to handle both enqueing and
-dequeing. As not all places require counters to be updated. E.g. the
-migration which just replaces one page by another.
--- 
-Michal Hocko
-SUSE Labs
+Please, provide more details about the use case. Why the work is
+originally sheduled with a delay. And and why it suddenly can/should
+be proceed immediately.
+
+> 
+> Signed-off-by: Yiwei Zhang <zzyiwei@android.com>
+> ---
+>  include/linux/kthread.h |  3 +++
+>  kernel/kthread.c        | 48 +++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 51 insertions(+)
+> 
+> --- a/kernel/kthread.c
+> +++ b/kernel/kthread.c
+> @@ -1142,6 +1142,54 @@ bool kthread_mod_delayed_work(struct kthread_worker *worker,
+>  }
+>  EXPORT_SYMBOL_GPL(kthread_mod_delayed_work);
+>  
+> +/**
+> + * kthread_mod_pending_delayed_work - modify delay of a pending delayed work
+> + * @worker: kthread worker to use
+> + * @dwork: kthread delayed work to queue
+> + * @delay: number of jiffies to wait before queuing
+> + *
+> + * If @dwork is still pending modify @dwork's timer so that it expires after
+> + * @delay. If @dwork is still pending and @delay is zero, @work is guaranteed to
+> + * be queued immediately.
+> + *
+> + * Return: %true if @dwork was pending and its timer was modified,
+> + * %false otherwise.
+> + *
+> + * A special case is when the work is being canceled in parallel.
+> + * It might be caused either by the real kthread_cancel_delayed_work_sync()
+> + * or yet another kthread_mod_delayed_work() call. We let the other command
+> + * win and return %false here. The caller is supposed to synchronize these
+> + * operations a reasonable way.
+> + *
+> + * This function is safe to call from any context including IRQ handler.
+> + * See __kthread_cancel_work() and kthread_delayed_work_timer_fn()
+> + * for details.
+> + */
+> +bool kthread_mod_pending_delayed_work(struct kthread_worker *worker,
+> +				      struct kthread_delayed_work *dwork,
+> +				      unsigned long delay)
+> +{
+
+kthread_worker API tries to follow the workqueue API. It helps to use and
+switch between them easily.
+
+workqueue API does not provide this possibility. Instead it has
+flush_delayed_work(). It queues the work when it was pending and
+waits until the work is procced. So, we might do:
+
+bool kthread_flush_delayed_work(struct kthread_delayed_work *dwork)
+
+
+> +	struct kthread_work *work = &dwork->work;
+> +	unsigned long flags;
+> +	int ret = true;
+> +
+> +	raw_spin_lock_irqsave(&worker->lock, flags);
+> +	if (!work->worker || work->canceling ||
+> +	    !__kthread_cancel_work(work, true, &flags)) {
+> +		ret = false;
+> +		goto out;
+> +	}
+
+Please, use separate checks with comments as it is done, for example,
+in kthread_mod_delayed_work()
+
+	struct kthread_work *work = &dwork->work;
+	unsigned long flags;
+	int ret;
+
+	raw_spin_lock_irqsave(&worker->lock, flags);
+
+	/* Do not bother with canceling when never queued. */
+	if (!work->worker)
+		goto nope;
+
+	/* Do not fight with another command that is canceling this work. */
+	if (work->canceling)
+		goto nope;
+
+	/* Nope when the work was not pending. */
+	ret = __kthread_cancel_work(work, true, &flags);
+	if (!ret)
+		nope;
+
+	/* Queue the work immediately. */
+	kthread_insert_work(worker, work, &worker->work_list);
+	raw_spin_unlock_irqrestore(&worker->lock, flags);
+
+	return kthread_flush_work(work);
+nope:
+	raw_spin_unlock_irqrestore(&worker->lock, flags);
+	return false;
+
+
+Will this work for you?
+
+Best Regards,
+Petr
