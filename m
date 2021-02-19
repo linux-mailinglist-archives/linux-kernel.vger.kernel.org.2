@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD9531F6A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 605AE31F695
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:32:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhBSJmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:42:42 -0500
-Received: from smtp88.iad3b.emailsrvr.com ([146.20.161.88]:33740 "EHLO
-        smtp88.iad3b.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229527AbhBSJmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:42:38 -0500
-X-Greylist: delayed 630 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Feb 2021 04:42:37 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=g001.emailsrvr.com;
-        s=20190322-9u7zjiwi; t=1613727077;
-        bh=S+dJPTKN+EhVQm/f0xJ8YQU7u1kFlh0tuWCSQHpuENE=;
-        h=Subject:To:From:Date:From;
-        b=lEfK3pruzk2zZpa4BZXgeGnwnjIM7Y/46Fl/vxL+TLPnKWBCJplQoVHKiTtWQeybW
-         4cdUA7KZbSMlzS/7VV+gRm24rydkj/Ozh1CGV2e3oDzbq851iIWViFUOQYrXLqugN3
-         4GWW5tyQLyBg+08f1WPnAmxZyE/pTXHvNC/2cLKE=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1613727077;
-        bh=S+dJPTKN+EhVQm/f0xJ8YQU7u1kFlh0tuWCSQHpuENE=;
-        h=Subject:To:From:Date:From;
-        b=C8o0taraGqg6XxLTopMmXgB8CtZj3WjK+ewkvHM4PLSa+tRxcgLJwHBIyM+Igvfav
-         /I7l6zqfcTBb72oN4jGy8wJhS/GToGjp2Sf0ZcsJuhmzU/QncZsXbKMBFoMfxHhKjh
-         Gc2OiY1KtOCxb/8tR6cv4gWIMgZ+IESvgC9yLf80=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp4.relay.iad3b.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 1ADB52071B;
-        Fri, 19 Feb 2021 04:31:16 -0500 (EST)
-Subject: Re: [PATCH] staging: comedi: cast to (unsigned int *)
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Atul Gopinathan <atulgopinathan@gmail.com>
-Cc:     "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210217165907.9777-1-atulgopinathan@gmail.com>
- <YC1T06VCh0K2BBW5@kroah.com> <20210217181000.GB10124@atulu-ubuntu>
- <YC1fzjVOwiqzO1nb@kroah.com> <3cfef23d-8d4a-205c-61e8-cbe8c9a0c0f4@mev.co.uk>
- <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <94917044-ba8f-7044-42f6-7e8d5ef1e10b@mev.co.uk>
-Date:   Fri, 19 Feb 2021 09:31:16 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230024AbhBSJc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:32:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229876AbhBSJcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:32:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 82C2F614A7;
+        Fri, 19 Feb 2021 09:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613727104;
+        bh=KfoE8Rmr0IxukoOBwdP3XRkzUvE+piUGHia/TAIvQQ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=swphxQbtR9Y0Rl0V0RCrJIvbKHNdokDcF72NLenq5m2D9iZtOKVzGwyZbjyFjkMPy
+         5AzD09jb+mwBvkT593FL+clJavNscNeB4Pe+e5WH3uI6WEmCyQOqTmCDcC27RNXk36
+         hGkYGj/MiYuWlwSnDCgpaGp0xh09OYAFFH8EJtjIicaPBBnHJie6Y5FF9S18Z9W4n3
+         aFfyKYX09FQXMANuFXZrcweO46RcuzTvmJYyOW6r/MtMXm4Z/QRlMJfTqtrhld2d+9
+         zcr4sj6fAb3f/oCK/j36pgIwBmQ1j4GYIJkUqAl4ybQbNiHzhwBHWBMDCaKyufH5Xq
+         axYo17sLNskdA==
+Date:   Fri, 19 Feb 2021 11:31:29 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
+Message-ID: <YC+FcZaurTMWDeNm@kernel.org>
+References: <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk>
+ <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk>
+ <2031808.1613665474@warthog.procyon.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <21a953261eb44e7ba302cfe74d8efa2d@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Classification-ID: 859589ae-0f4d-437d-8685-e5f2ac50e4f5-1-1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2031808.1613665474@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/02/2021 09:03, David Laight wrote:
->> It's kind of moot anyway because the patch is outdated.  But the reason
->> for the ___force is that the same `struct comedi_cmd` is used in both
->> user and kernel contexts.  In user contexts, the `chanlist` member
->> points to user memory and in kernel contexts it points to kernel memory
->> (copied from userspace).
+On Thu, Feb 18, 2021 at 04:24:34PM +0000, David Howells wrote:
 > 
-> Can't you use a union of the user and kernel pointers?
-> (Possibly even anonymous?)
-> Although, ideally, keeping them in separate fields is better.
-> 8 bytes for a pointer isn't going make a fat lot of difference.
+> Hi Mickaël, Jarkko,
+> 
+> Can I transfer your acks from:
+> 
+> 	https://lore.kernel.org/lkml/20210121155513.539519-5-mic@digikod.net/
+> 
+> to here?
+> 
+> David
 
-This is for a UAPI header (eventually), so cannot add a new field.  For
-an anonymous union, one tagged with __user and one not, the __user tag
-would be removed during conversion from UAPI headers to
-/usr/include/linux headers, leaving a union of two identically typed
-members, which would look a bit odd.  The union also kind of hides the
-problem.
+Yes, thanks.
 
--- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+/Jarkko
