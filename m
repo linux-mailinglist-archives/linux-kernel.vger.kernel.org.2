@@ -2,184 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2FDC31FA5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:11:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B5131FA58
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229958AbhBSOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:10:18 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16266 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230228AbhBSOKJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:10:09 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11JE1ld1070546;
-        Fri, 19 Feb 2021 09:09:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=hEiNmOVPSOEglYa38shUn7O7VSY0u7cREb5g4ai2Ocs=;
- b=KdURzBzq4H2nTG+I9QyCHkbqIPuNa5JCdpBTrBKO8IiAlSiz2PUyxXwJTRl4FivsiDLx
- FI5eL2YqxoqOHfGR1uBEeXFa7DqHUCoY7iV1tzwY5M8dWhjjgkEDhdjKy9xreDOyfyJR
- 8B366w0yoEjLLWpoxwUoHW++jK4ejNhBVl0oYsCNsZ2SdLsVHrB1DhigBHrzt4LG3II4
- HU5eGORsBra7GOvDMB92WwcpGOwwr+zJlVn/Eb2038sqXutJaICYHWR8yNftS43nwq9E
- bYQtLXYzetnr/BacC3Nv+hijh9IoGdDq/fMP6t1r9ZdZJYDm0yBgHbYy2Q1Dc6HW3tqb Dw== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36tenqgh49-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 09:09:02 -0500
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11JE7cI1006622;
-        Fri, 19 Feb 2021 14:09:01 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma03dal.us.ibm.com with ESMTP id 36p6da1bb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 14:09:01 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11JE90Rl9437826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 14:09:00 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5252AC05E;
-        Fri, 19 Feb 2021 14:09:00 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24783AC05F;
-        Fri, 19 Feb 2021 14:08:57 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.85.174.98])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Fri, 19 Feb 2021 14:08:56 +0000 (GMT)
-References: <20210218223305.2044-1-nramas@linux.microsoft.com>
- <c6490f6a126a2f10e3e3445b51ea552a26f896a9.camel@linux.ibm.com>
- <8b8c0b70-c7ab-33f3-b66c-9ea03388497b@linux.microsoft.com>
- <87k0r4yi4s.fsf@manicouagan.localdomain>
- <3ca0aa87-ca83-8024-4067-c2382a360db9@linux.microsoft.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
-        mpe@ellerman.id.au, sfr@canb.auug.org.au, james.morse@arm.com,
-        sashal@kernel.org, benh@kernel.crashing.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] of: error: 'const struct kimage' has no member named
- 'arch'
-In-reply-to: <3ca0aa87-ca83-8024-4067-c2382a360db9@linux.microsoft.com>
-Date:   Fri, 19 Feb 2021 11:08:55 -0300
-Message-ID: <87eehcxi88.fsf@manicouagan.localdomain>
+        id S230415AbhBSOJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:09:57 -0500
+Received: from mail-eopbgr50120.outbound.protection.outlook.com ([40.107.5.120]:36835
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230228AbhBSOJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:09:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ebZI4L0MQVUvl1egrEC/273Q5l9SGNz+dq2kf+BM5sjGD4hZV8eo1iVvfytDk4KJMtCkWskQ+mlBLbWDpthBNlRRNc75DvBbYYQxLrysGl2UWVJRzcToRT863yMAMGfD6vy6rxKt/u9IBdaR/iYuzaJJeSFOIuwHt4mNICIuyVgDIRiboR1DtlxnwgVHFYk4oO1zM0bLuM+U3maK0qSZoD6rhPd2RTZKeoUrKQ7Vq7giv7xOzKfOFgAvXhwnXJ9wh70Jf3vbIWOr8OhaWD0zVL21Vvi1fp6CGusawnEiagLxHt/dDPMVCJvw9wUigVamwX0PbrTDkbogZ2PosXl0jA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=URJrheZzropLzt97xZBoaSqxEuEnJmYnsF4bQ5gE4Nw=;
+ b=OQgDvqwI4nk0ip49zftr7eouNkEv6+Ee/fkmlKIeAhlG+nrZW0xsIwy1LjpMGDaJyxtQRkT+q30dlzMEwQyyiX6Vr4hqnZl8dW/0nMZtpPe64fzaBC7ZNbb3BQ9srEIjrFtESflcMQ4Wkui7CsmHv6lcDasXm9aZCWF/E1CQlJlpVS6JoPsLOSMR65r954/Zq/jU1up87ALvAxB4o1rZ/TQk8hEkqaDd/+8TiWO2feEidgHxDcvF6i6OUl6e+x2V0JFP0ltUX0PUHdGVcQ7hPLPfRaNr26xd92OQqmtOk9ReQwwy2X2qmicT14jwlg2Se9HsSZcDQ95Y4lh7Qhlv0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=schleissheimer.de; dmarc=pass action=none
+ header.from=schleissheimer.de; dkim=pass header.d=schleissheimer.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=schleissheimer.onmicrosoft.com; s=selector1-schleissheimer-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=URJrheZzropLzt97xZBoaSqxEuEnJmYnsF4bQ5gE4Nw=;
+ b=iNyZqnEjsNfS7S1uQYMxyvnMbC9podgevjIFs8tgtO1e2e+6LSznLnjbqIPBn04WjSIYFO17E8GZhHwFYr5sWBim9X7Ka9FYe6KjFCPgd+FUADfNzR/Hx32lZyhBcvqJndihIVe+WrgiZdpa+zZcQmAtodbCPo+uqMN2PyRsqNU=
+Received: from DB8P190MB0634.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:12d::21)
+ by DB8P190MB0666.EURP190.PROD.OUTLOOK.COM (2603:10a6:10:127::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.28; Fri, 19 Feb
+ 2021 14:09:03 +0000
+Received: from DB8P190MB0634.EURP190.PROD.OUTLOOK.COM
+ ([fe80::64eb:97b0:de3c:4c5d]) by DB8P190MB0634.EURP190.PROD.OUTLOOK.COM
+ ([fe80::64eb:97b0:de3c:4c5d%6]) with mapi id 15.20.3846.041; Fri, 19 Feb 2021
+ 14:09:03 +0000
+From:   Sven Schuchmann <schuchmann@schleissheimer.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: AW: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity
+ from DT
+Thread-Topic: [PATCH v2 2/4] leds: lp50xx: add setting of default intensity
+ from DT
+Thread-Index: AQHW+wNMX/Qkt5m5zEyD/i/lN5kehqpIFN8AgAE/3tCAAAo+AIAADCTwgBYAVICAAAMvgIAAKRsAgAACjCA=
+Date:   Fri, 19 Feb 2021 14:09:03 +0000
+Message-ID: <DB8P190MB063470370E6CD67900726B5DD9849@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+References: <20210204143738.28036-1-schuchmann@schleissheimer.de>
+ <20210204145308.GC14305@duo.ucw.cz>
+ <DB8P190MB0634587826F57667BB3BBB6CD9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210205103438.GB27854@amd>
+ <DB8P190MB063473FEA37E69E6DF6BC5F6D9B29@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <20210219111659.GI19207@duo.ucw.cz>
+ <DB8P190MB06340AA6D789A80A4CE2B6C6D9849@DB8P190MB0634.EURP190.PROD.OUTLOOK.COM>
+ <YC/DUmhXate4NhML@smile.fi.intel.com>
+In-Reply-To: <YC/DUmhXate4NhML@smile.fi.intel.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux.intel.com; dkim=none (message not signed)
+ header.d=none;linux.intel.com; dmarc=none action=none
+ header.from=schleissheimer.de;
+x-originating-ip: [62.153.209.162]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c3d6a600-2bd5-41ba-76f6-08d8d4dfe9d7
+x-ms-traffictypediagnostic: DB8P190MB0666:
+x-microsoft-antispam-prvs: <DB8P190MB06667BF2C45DD3FC40480766D9849@DB8P190MB0666.EURP190.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 35yYViW1uXeLMqwRemx9dE26MeCz4gXHBU0m+p/UouvmeBwckf5aqU9goIDkF+m+CuSO9M4QN/FH1oXk6D6sxMgmS6KK3wJwljALFw/Yy7edLrLT075VHgeSbPWstsr5PIAGT4ceGioFr86/redsZtChkUQDlYtSrCtzmeDUXuEA7SCbFfREr7epNldqg3mT0suKm5HDjwa9ck20tYFXRBSbYUFuNp2x+3Iyj5eSxZY+mb1GevSdUYHY5FHiRNUFkT1mhbUtZnSok4AC5QL3dCmhgNUlO/PS1aMPGku7EvmayBQCKL+esl49ZAoVpAqlTe81V6yZVrJuomtmns2KzP0P4dVGPNU9wvJRXvsp8Z+Ne0lJFe9Zn148jk3lygti43Mxz/8b9EQOLBx6UAnEEPMlC68E0LHRZFFWHmRaket4znM3sdHjIvzzwGeKX2aFUg2CwEYTt6IhYQDI4cpTjL5lmc5LRhyqP9U7JJj6Vv6veu8LbQ/oS+zbELJzdHQs8fVeHIcHIwObkSPxTSLSyA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8P190MB0634.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(376002)(366004)(39830400003)(346002)(396003)(136003)(55016002)(186003)(9686003)(2906002)(54906003)(86362001)(26005)(4326008)(33656002)(478600001)(66946007)(52536014)(66476007)(66446008)(66556008)(64756008)(5660300002)(7696005)(71200400001)(316002)(6916009)(8936002)(76116006)(8676002)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?IyVh/6EQnRx0EjZNVyjmnXi66Im8FJyEPzqefR1o2cE6oQ+CzLuxg+60S6NK?=
+ =?us-ascii?Q?1U6dKHaf2VRefyzQl8FIcGT4Z0A7EBNzRo6E1off+9WKdQ6C0rai0ipqQ5ot?=
+ =?us-ascii?Q?Hlb1Hjo6rNyEB/tvqcBoxYgjuSaBeKy2hTs2tu8kzG7rFTNK9AAQLDv94V1f?=
+ =?us-ascii?Q?4NI91vSg/zogNLRKER/ZmNcNBg5MwD0cU2oOIodYfbDsgqvoiCwSmk37O/hA?=
+ =?us-ascii?Q?l62EBmev9hmas5JNRm2RgtBFWFaatcrld9KQDez+3N85cIW70JQBCoHjgMbS?=
+ =?us-ascii?Q?ENKj2k3wPRJbolz7bY5Msam/HVA8gIGS/9NjFayN2oJzoXHKkWGSZGHxVAr9?=
+ =?us-ascii?Q?4aZU3F+qJNcSFfrQSVfm7fnpde5BgdqdQ7MlM7pCZw3mm2+duCHV3FTVX+aj?=
+ =?us-ascii?Q?1g61ZLEqAau2YdS6IY1XFKUtQJQCDlcw/LFHCb73EgVfoGbqLKZDEDHv5S0P?=
+ =?us-ascii?Q?+zAuRF4BgGIvNkRA2bzfbv2VpHVpqgpodJGlrt6yXjbvHzUURjAsB5QK54SB?=
+ =?us-ascii?Q?locamhgjuZ0ILEftvlWr/8bnf49jUUmV4dS4IKRdTLFD+h9VIMzUCQiCNcvZ?=
+ =?us-ascii?Q?XExrVFaUuvHJW68w39WKKXCql8G0rhgNKHS4ohAHfISTuXyDrywfXh31vekv?=
+ =?us-ascii?Q?mB2pbZCa2/LUiTovu3dWgbJAN2UbKmFKF0OFHKOQqkkGcjSmqqRKsboClxc1?=
+ =?us-ascii?Q?iFmp0sYGe+C9iDTfWqpMqF2Ym/87pLklzgCYDYZVUEzTEuIxl6W5fwka7w56?=
+ =?us-ascii?Q?4faWWN9j6pONIImth2b0PDahJNbj/4QXr/zITkXDQhdPfLgVCtpNaekw3J+r?=
+ =?us-ascii?Q?q8Dvn5ZJtbvxjs2MsYaGWEc/bYQof1DxziThhaQ9Bl5ADeSxfcu01znVybv8?=
+ =?us-ascii?Q?G5VkBpx0JxztbuJq2TbH3I8hj1kboBUuVrGCHRgdZkbHKiv90Jr6ZBH0TvxY?=
+ =?us-ascii?Q?Kqqt0WEBkrvv7klTx0CLR1qELcGbp4GK/+cwB+09NBquTTMhyhc3T5Fzb76O?=
+ =?us-ascii?Q?Zd7A58YLe5TRlNZSnN8f2kHAKUsdiw5VzfC3HMJquZ2xSKOEn2IowwINM1Wo?=
+ =?us-ascii?Q?IT+q22tdBrjdbXadfxupLYtcMUPmGJNCNdYJH4DX79EYKQChKljUF1sdpcKl?=
+ =?us-ascii?Q?3xJV6uri9VNuBKo9FPTgwEG8sALoRm4JoLJOPwTmADU9mXsAeyLZ+Gj2h36Q?=
+ =?us-ascii?Q?ftYrdqD3pEupcvmsOjQD07DLrMIK475715k1RAEvPRBaGWH7PK84mrLfP3SB?=
+ =?us-ascii?Q?qgg53u9nR6WYCqflQ+MCyIO/httanpLf9fci+MX6OU5ez6gijJDFMQ6zIrMd?=
+ =?us-ascii?Q?KXRoMEovZAcPNyUZfmoIxak3?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-19_05:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- mlxscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- bulkscore=0 priorityscore=1501 impostorscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190109
+X-OriginatorOrg: schleissheimer.de
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8P190MB0634.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c3d6a600-2bd5-41ba-76f6-08d8d4dfe9d7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2021 14:09:03.8325
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: ba05321a-a007-44df-8805-c7e62d5887b5
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: onTX9X9v53aG1xhyZ0F2+DyRz4/MWCSw+1qZHqEIs58dc1nmeZI6bQdpPcEa1pEVROWkHsFXsrfJAJmR4GpcHykMWpU0+P6HTs5Gziop9hI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8P190MB0666
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Andy,
 
-Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+> Von: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Gesendet: Freitag, 19. Februar 2021 14:56
+> An: Sven Schuchmann <schuchmann@schleissheimer.de>
+> Cc: Pavel Machek <pavel@ucw.cz>; Dan Murphy <dmurphy@ti.com>; linux-leds@=
+vger.kernel.org;
+> linux-kernel@vger.kernel.org
+> Betreff: Re: [PATCH v2 2/4] leds: lp50xx: add setting of default intensit=
+y from DT
+>=20
+> > > > > Can you or Dan submit patch getting the regulator support to work=
+? If
+> > > > > not, I guess we should remove the regulator support after all.
+> > > >
+> > > > To be true I am fairly new to the kernel and have no idea
+> > > > how to test this. So no, I don't want provide a patch (except
+> > > > for removing), sorry.
+> > >
+> > > No problem. It seems Andy submitted series for this.
+> > >
+> >
+> > To me it seems that patches from Andy don't make
+> > the regulator work. Maybe I am wrong?
+>=20
+> I;m not sure I understand this correctly. Do you mean that my patches bro=
+ke
+> something? Which one explicitly and what is broken?
 
-> On 2/18/21 5:13 PM, Thiago Jung Bauermann wrote:
->> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
->> 
->>> On 2/18/21 4:07 PM, Mimi Zohar wrote:
->>>
->>> Hi Mimi,
->>>
->>>> On Thu, 2021-02-18 at 14:33 -0800, Lakshmi Ramasubramanian wrote:
->>>>> of_kexec_alloc_and_setup_fdt() defined in drivers/of/kexec.c builds
->>>>> a new device tree object that includes architecture specific data
->>>>> for kexec system call.  This should be defined only if the architecture
->>>>> being built defines kexec architecture structure "struct kimage_arch".
->>>>>
->>>>> Define a new boolean config OF_KEXEC that is enabled if
->>>>> CONFIG_KEXEC_FILE and CONFIG_OF_FLATTREE are enabled, and
->>>>> the architecture is arm64 or powerpc64.  Build drivers/of/kexec.c
->>>>> if CONFIG_OF_KEXEC is enabled.
->>>>>
->>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>>>> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
->>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>> ---
->>>>>    drivers/of/Kconfig  | 6 ++++++
->>>>>    drivers/of/Makefile | 7 +------
->>>>>    2 files changed, 7 insertions(+), 6 deletions(-)
->>>>>
->>>>> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
->>>>> index 18450437d5d5..f2e8fa54862a 100644
->>>>> --- a/drivers/of/Kconfig
->>>>> +++ b/drivers/of/Kconfig
->>>>> @@ -100,4 +100,10 @@ config OF_DMA_DEFAULT_COHERENT
->>>>>    	# arches should select this if DMA is coherent by default for OF devices
->>>>>    	bool
->>>>>    +config OF_KEXEC
->>>>> +	bool
->>>>> +	depends on KEXEC_FILE
->>>>> +	depends on OF_FLATTREE
->>>>> +	default y if ARM64 || PPC64
->>>>> +
->>>>>    endif # OF
->>>>> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
->>>>> index c13b982084a3..287579dd1695 100644
->>>>> --- a/drivers/of/Makefile
->>>>> +++ b/drivers/of/Makefile
->>>>> @@ -13,11 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
->>>>>    obj-$(CONFIG_OF_RESOLVE)  += resolver.o
->>>>>    obj-$(CONFIG_OF_OVERLAY) += overlay.o
->>>>>    obj-$(CONFIG_OF_NUMA) += of_numa.o
->>>>> -
->>>>> -ifdef CONFIG_KEXEC_FILE
->>>>> -ifdef CONFIG_OF_FLATTREE
->>>>> -obj-y	+= kexec.o
->>>>> -endif
->>>>> -endif
->>>>> +obj-$(CONFIG_OF_KEXEC) += kexec.o
->>>>>      obj-$(CONFIG_OF_UNITTEST) += unittest-data/
->>>> Is it possible to reuse CONFIG_HAVE_IMA_KEXEC here?
->>>>
->>>
->>> For ppc64 CONFIG_HAVE_IMA_KEXEC is selected when CONFIG_KEXEC_FILE is enabled.
->>> So I don't see a problem in reusing CONFIG_HAVE_IMA_KEXEC for ppc.
->>>
->>> But for arm64, CONFIG_HAVE_IMA_KEXEC is enabled in the final patch in the patch
->>> set (the one for carrying forward IMA log across kexec for arm64). arm64 calls
->>> of_kexec_alloc_and_setup_fdt() prior to enabling CONFIG_HAVE_IMA_KEXEC and hence
->>> breaks the build for arm64.
->> One problem is that I believe that this patch won't placate the robot,
->> because IIUC it generates config files at random and this change still
->> allows hppa and s390 to enable CONFIG_OF_KEXEC.
->
-> I enabled CONFIG_OF_KEXEC for s390. With my patch applied, CONFIG_OF_KEXEC is
-> removed. So I think the robot enabling this config would not be a problem.
->
->> Perhaps a new CONFIG_HAVE_KIMAGE_ARCH option? Not having that option
->> would still allow building kexec.o, but would be used inside kexec.c to
->> avoid accessing kimage.arch members.
->> 
->
-> I think this is a good idea - a new CONFIG_HAVE_KIMAGE_ARCH, which will be
-> selected by arm64 and ppc for now. I tried this, and it fixes the build issue.
->
-> Although, the name for the new config can be misleading since PARISC, for
-> instance, also defines "struct kimage_arch". Perhaps,
-> CONFIG_HAVE_ELF_KIMAGE_ARCH since of_kexec_alloc_and_setup_fdt() is 
-> accessing ELF specific fields in "struct kimage_arch"?
+No, your patches do not break something (as far as I can see).
+Pavel asked for a patch to fix the regulator. The regulator
+at this time is only initialized but never used in the lp50xx.
+I told him (see above) that I cannot provide a patch which
+fixes this. He answered that you fixed this in your series,
+but to me it doesn't seem so.
+or did you fix the regulator usage in your patch series?
 
-Ah, right. I should have digged into the code before making my
-suggestion. CONFIG_HAVE_KIMAGE_ARCH isn't appropriate, indeed.
+Best Regards,
 
->
-> Rob/Mimi - please let us know which approach you think is better.
+   Sven=20
 
-Ah! We can actually use the existing CONFIG_HAVE_IMA_KEXEC, no? I don't
-know why I didn't think of it before.
-
--- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
