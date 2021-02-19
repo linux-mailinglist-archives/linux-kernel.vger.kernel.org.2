@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879AF31F5E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:31:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBBA31F5ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:32:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhBSIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:30:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhBSIal (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:30:41 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10984C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 00:30:01 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lD1Al-0000ge-0w; Fri, 19 Feb 2021 09:29:59 +0100
-Received: from ukl by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lD1Ak-0001Ja-Nu; Fri, 19 Feb 2021 09:29:58 +0100
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-leds@vger.kernel.org, kernel@pengutronix.de
-Subject: [PATCH 2/2] leds: trigger/tty: Use led_set_brightness_sync() from workqueue
-Date:   Fri, 19 Feb 2021 09:29:55 +0100
-Message-Id: <20210219082955.5007-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210219082955.5007-1-u.kleine-koenig@pengutronix.de>
-References: <20210219082955.5007-1-u.kleine-koenig@pengutronix.de>
+        id S230088AbhBSIbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 03:31:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32922 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229641AbhBSIbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 03:31:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 172AB64D5D;
+        Fri, 19 Feb 2021 08:30:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613723421;
+        bh=4uu0gNzwTseegLPeh2iXdcKxfYm/OeqwPyRxyV58Igs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lg9TqfHKoH+Lw4jL/Dxn/rOOxR+cKsbbp8S9CUYXqgn2P2M05FaK9BBZ39tvLIWS9
+         B2rR2VT2Cy715nJpZdTreYumUVjtlFdLqFEUJkpWcdrCmAK5OD2hyExu13/nn3pgfO
+         Ab96tgGjXp4xwR4LiFY12ql9xIlqMt3YpXkaI1rs=
+Date:   Fri, 19 Feb 2021 09:30:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Ondrej Zary <linux@zary.sk>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Willy Tarreau <w@1wt.eu>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <YC93GmcBnJwVYKG7@kroah.com>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YC55t1vkRuC9uXcx@kroah.com>
+ <20210218205534.GA10201@duo.ucw.cz>
+ <202102182343.36276.linux@zary.sk>
+ <20210219080027.GA12434@amd>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219080027.GA12434@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-led_set_brightness() involves scheduling a workqueue. As here the led's
-brightness setting is done in context of the trigger's workqueue this is
-unjustified overhead and it's more sensible to use
-led_set_brightness_sync().
+On Fri, Feb 19, 2021 at 09:00:27AM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > > > > For me
+> > > > > only way to get properly working WiFi on my laptop computer is to
+> > > > > compile that Intel out-of-tree version. Sad, but true.
+> > > > 
+> > > > Why use 4.19.y on a laptop in the firstplace?  That feels very wrong and
+> > > > is not the recommended thing to use the LTS kernels for.
+> > > 
+> > > Well, that's actually what distributions are doing, for example Debian
+> > > 10.8 is on 4.19...
+> > 
+> > There's 5.10 in buster-backports. That's probably the easiest way to get support for new HW.
+> >  
+> 
+> I can compile my own kernel, too. But if you go up the thread, it is
+> about iwlwifi becoming broken in 4.19, and Greg saying it is wrong
+> to put -stable on laptop. And -stable on laptop is norm, not the
+> exception.
 
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Fixes: fd4a641ac88f ("leds: trigger: implement a tty trigger")
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/leds/trigger/ledtrig-tty.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+If distros want to "camp out" on an old kernel version, that's fine, as
+I describe in:
+	http://www.kroah.com/log/blog/2018/08/24/what-stable-kernel-should-i-use/
+many years ago.
 
-diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
-index 68ed2c87a65c..ee57b5b95959 100644
---- a/drivers/leds/trigger/ledtrig-tty.c
-+++ b/drivers/leds/trigger/ledtrig-tty.c
-@@ -123,12 +123,12 @@ static void ledtrig_tty_work(struct work_struct *work)
- 
- 	if (icount.rx != trigger_data->rx ||
- 	    icount.tx != trigger_data->tx) {
--		led_set_brightness(trigger_data->led_cdev, LED_ON);
-+		led_set_brightness_sync(trigger_data->led_cdev, LED_ON);
- 
- 		trigger_data->rx = icount.rx;
- 		trigger_data->tx = icount.tx;
- 	} else {
--		led_set_brightness(trigger_data->led_cdev, LED_OFF);
-+		led_set_brightness_sync(trigger_data->led_cdev, LED_OFF);
- 	}
- 
- out:
--- 
-2.29.2
+But for someone using a device where they want to use "new" hardware,
+that was made _after_ the kernel version was released, that's just
+someone who needs to pick a better distro :)
 
+thanks,
+
+greg k-h
