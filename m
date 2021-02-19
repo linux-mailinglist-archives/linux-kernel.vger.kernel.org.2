@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9B331FE3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:49:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A39AC31FE4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhBSRsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:48:47 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:23570 "EHLO
+        id S230175AbhBSRtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:49:15 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37746 "EHLO
         mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229515AbhBSRsf (ORCPT
+        by vger.kernel.org with ESMTP id S229913AbhBSRsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Feb 2021 12:48:35 -0500
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11JHgSl8008222;
-        Fri, 19 Feb 2021 18:47:43 +0100
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11JHkOhs017974;
+        Fri, 19 Feb 2021 18:47:44 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=selector1;
- bh=SDtiqzVwKsf+YjFTaNS2i0bX7wxYrmzVYHBSUD03uSo=;
- b=2ctwL0BNb90eqS8bSxXV4gNi3qGPWTdy9JsItMQ8NCGegr6/fRN376r2tRj4DFVabhrq
- eAV6N6fXVTR05g38ErahgvUabGGhg2d9ebTI1S5DyjN0HTwm8naxpbHgNTMSwDsZsd7i
- 89sh5AVgp12+QEvb+kC/h0kwa8yKaoNgaiUZ6/DSUFxbRpQj/Fteiz1Um8wpqCduAAuu
- 2KmRJdggh9qmO6h2RfMiikuvm47MoOg+f7oO7CE944ozKVX6ZVNjx7a20e2QbIAXbvKp
- 9uNi/4zvswAOs7Gp9PiqkNfTSO6Y6ZYwikKFtFbIhwAC+ADY7whA7qfR1o1rFTo3qzVg Bw== 
+ bh=40JNfwcKJM4W8b7rMc25tq2v2aMGmR9uqOSCN2OFziU=;
+ b=tU5zjTFW4w4/4YGQKN0y+RWKi2gEEbK5E1qZsy5jcZG31VLj+0zzT3iecJT67rBmHuJV
+ our5pRsWQTwxjrNueQ2x2jznEDShRixgGA0LoVkjf6IeCSO/lSdyxFbUZwRLZ6adZ+hX
+ YjVTQezTc1CLUfFeCtR1gzbqO0Et56gilMEHf+m/pH5hUhqwRcUTFgpoQJXrQoeLWbQ8
+ +t5tfjY1GO36xHQHBfpqODfbkXnENTaiNc+2UAt0sNLVF7UvSjEdnRJ6Cd42tacBbNnB
+ UrsbZ8u5Dzo2YNKRJhCKs9BtFBV+HFWrKF0KGiGZ1e4XH1GFdVoCbFpVJ1QZS9NiJ3tQ SA== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36sqadhaws-1
+        by mx07-00178001.pphosted.com with ESMTP id 36p707550m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 18:47:43 +0100
+        Fri, 19 Feb 2021 18:47:44 +0100
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6A275100034;
-        Fri, 19 Feb 2021 18:47:43 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5ECAD100034;
+        Fri, 19 Feb 2021 18:47:44 +0100 (CET)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 5EA1425F3FC;
-        Fri, 19 Feb 2021 18:47:43 +0100 (CET)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 522ED25F3FC;
+        Fri, 19 Feb 2021 18:47:44 +0100 (CET)
 Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
  with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 19 Feb 2021 18:47:43
  +0100
@@ -49,16 +49,16 @@ CC:     <linux-serial@vger.kernel.org>,
         Erwan Le Ray <erwan.leray@foss.st.com>,
         Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
         Valentin Caron <valentin.caron@foss.st.com>
-Subject: [PATCH 03/13] serial: stm32: fix incorrect characters on console
-Date:   Fri, 19 Feb 2021 18:47:26 +0100
-Message-ID: <20210219174736.1022-4-erwan.leray@foss.st.com>
+Subject: [PATCH 04/13] serial: stm32: fix TX and RX FIFO thresholds
+Date:   Fri, 19 Feb 2021 18:47:27 +0100
+Message-ID: <20210219174736.1022-5-erwan.leray@foss.st.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210219174736.1022-1-erwan.leray@foss.st.com>
 References: <20210219174736.1022-1-erwan.leray@foss.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
  definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
@@ -66,47 +66,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Incorrect characters are observed on console during boot. This issue occurs
-when init/main.c is modifying termios settings to open /dev/console on the
-rootfs.
+TX and RX FIFO thresholds may be cleared after suspend/resume, depending
+on the low power mode.
 
-This patch adds a waiting loop in set_termios to wait for TX shift register
-empty (and TX FIFO if any) before stopping serial port.
+Those configurations (done in startup) are not effective for UART console,
+as:
+- the reference manual indicates that FIFOEN bit can only be written when
+  the USART is disabled (UE=0)
+- a set_termios (where UE is set) is requested firstly for console
+  enabling, before the startup.
 
-Fixes: 48a6092fb41f ("serial: stm32-usart: Add STM32 USART Driver")
+Fixes: 84872dc448fe ("serial: stm32: add RX and TX FIFO flush")
 Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
 
 diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 33a479062948..7710de947aa3 100644
+index 7710de947aa3..d409a23806b1 100644
 --- a/drivers/tty/serial/stm32-usart.c
 +++ b/drivers/tty/serial/stm32-usart.c
-@@ -738,8 +738,9 @@ static void stm32_usart_set_termios(struct uart_port *port,
- 	unsigned int baud, bits;
- 	u32 usartdiv, mantissa, fraction, oversampling;
- 	tcflag_t cflag = termios->c_cflag;
--	u32 cr1, cr2, cr3;
-+	u32 cr1, cr2, cr3, isr;
- 	unsigned long flags;
-+	int ret;
+@@ -649,19 +649,8 @@ static int stm32_usart_startup(struct uart_port *port)
+ 	if (ofs->rqr != UNDEF_REG)
+ 		stm32_usart_set_bits(port, ofs->rqr, USART_RQR_RXFRQ);
  
- 	if (!stm32_port->hw_flow_control)
- 		cflag &= ~CRTSCTS;
-@@ -748,6 +749,15 @@ static void stm32_usart_set_termios(struct uart_port *port,
+-	/* Tx and RX FIFO configuration */
+-	if (stm32_port->fifoen) {
+-		val = readl_relaxed(port->membase + ofs->cr3);
+-		val &= ~(USART_CR3_TXFTCFG_MASK | USART_CR3_RXFTCFG_MASK);
+-		val |= USART_CR3_TXFTCFG_HALF << USART_CR3_TXFTCFG_SHIFT;
+-		val |= USART_CR3_RXFTCFG_HALF << USART_CR3_RXFTCFG_SHIFT;
+-		writel_relaxed(val, port->membase + ofs->cr3);
+-	}
+-
+-	/* RX FIFO enabling */
++	/* RX enabling */
+ 	val = stm32_port->cr1_irq | USART_CR1_RE | BIT(cfg->uart_enable_bit);
+-	if (stm32_port->fifoen)
+-		val |= USART_CR1_FIFOEN;
+ 	stm32_usart_set_bits(port, ofs->cr1, val);
  
- 	spin_lock_irqsave(&port->lock, flags);
- 
-+	ret = readl_relaxed_poll_timeout_atomic(port->membase + ofs->isr,
-+						isr,
-+						(isr & USART_SR_TC),
-+						10, 100000);
+ 	return 0;
+@@ -770,9 +759,15 @@ static void stm32_usart_set_termios(struct uart_port *port,
+ 	if (stm32_port->fifoen)
+ 		cr1 |= USART_CR1_FIFOEN;
+ 	cr2 = 0;
 +
-+	/* Send the TC error message only when ISR_TC is not set. */
-+	if (ret)
-+		dev_err(port->dev, "Transmission is not complete\n");
-+
- 	/* Stop serial port and reset value */
- 	writel_relaxed(0, port->membase + ofs->cr1);
++	/* Tx and RX FIFO configuration */
+ 	cr3 = readl_relaxed(port->membase + ofs->cr3);
+-	cr3 &= USART_CR3_TXFTIE | USART_CR3_RXFTCFG_MASK | USART_CR3_RXFTIE
+-		| USART_CR3_TXFTCFG_MASK;
++	cr3 &= USART_CR3_TXFTIE | USART_CR3_RXFTIE;
++	if (stm32_port->fifoen) {
++		cr3 &= ~(USART_CR3_TXFTCFG_MASK | USART_CR3_RXFTCFG_MASK);
++		cr3 |= USART_CR3_TXFTCFG_HALF << USART_CR3_TXFTCFG_SHIFT;
++		cr3 |= USART_CR3_RXFTCFG_HALF << USART_CR3_RXFTCFG_SHIFT;
++	}
  
+ 	if (cflag & CSTOPB)
+ 		cr2 |= USART_CR2_STOP_2B;
 -- 
 2.17.1
 
