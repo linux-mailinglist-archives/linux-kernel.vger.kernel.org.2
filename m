@@ -2,114 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43FF931FCEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2A031FCDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 17:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhBSQPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 11:15:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhBSQOo (ORCPT
+        id S229990AbhBSQLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 11:11:41 -0500
+Received: from mail.codeweavers.com ([50.203.203.244]:37764 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229891AbhBSQLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 11:14:44 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341CBC061574;
-        Fri, 19 Feb 2021 08:14:02 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id x4so8127792wmi.3;
-        Fri, 19 Feb 2021 08:14:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yVy/7Nx7zT1yYtIAJfKr+SPBx3LrKurorTKSzKCBBHE=;
-        b=NwUWnQXp2M/vKTNz95oWeDLzskThaCuRZBJerbYdB6s9OWmEaSbRiMB8XljBPWRBCV
-         2vY0HoHXRrMjxUl0zi45YUcWU4ftruQ2Gu3pxsO+3Vgkx6ZgJ0KeElOr/NEBZ2RHOeG6
-         r4IgVQSrqIHKdtSFlodj1PpcI92X6idoop3DdqUaMgU7WxUlGlaqSjOCFcMbSKyiRruQ
-         7Oa5CJKpEKKwii92m1Mp67GqZmpbYRvieIgONtevy6SAKPXF0KFiA0sMUZUWJYE3vGa5
-         6xhBwrLcpbRRVa+6nXibmUXg0GrAcKRWxvu1dXBZn3JfxZHnjHKiEhslyJQP8NDQrEwl
-         CrCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=yVy/7Nx7zT1yYtIAJfKr+SPBx3LrKurorTKSzKCBBHE=;
-        b=LEwfR/U5zX15YFVaRnLcPNsmf49GW3B+h4R2Pn0lR65rULyk9r6bFSCErcQBY1SYmQ
-         AnLF+HfCZ1OL/h6W6RLEIjYMbd5fnt3sS63yMkdFoJrJjmbpBTQVQFmEvyrUH90HVSTy
-         HWQJqqOQY/zVTjd0xU0Bo8feGmCjfpZbE5tVvNX9vCg3wsl2nDfXNfr7gPQ2/gptHf/W
-         M9z8ABC0bj7alz4G85kQx/aNfUJKON/AS2U/2VNaJvZYWvio+uGaCGKidmuE2P2lV2+Y
-         Rqou5dgHeBlWybZvdsCVlQH4TolbO9BnzFnTq8eTSYQziA+Jts48iT8+gwBV3gb+028z
-         GHeA==
-X-Gm-Message-State: AOAM5328GQpMdcLjkuwUvY3IAYpfiIh+K4KjJZUg3K0h3JRShBwjEKHO
-        Q6FjmISFPkQ4LhYxCzKEDATXoegwPgY=
-X-Google-Smtp-Source: ABdhPJyYIPwXhEzYrYupaZapMsnE3j7gA6rUK7/3h9VEaJU3xnNL42dTX5yJINm9BlxDUBhkyljPpQ==
-X-Received: by 2002:a05:600c:47c4:: with SMTP id l4mr8777716wmo.83.1613751240952;
-        Fri, 19 Feb 2021 08:14:00 -0800 (PST)
-Received: from [192.168.8.138] ([85.255.236.139])
-        by smtp.gmail.com with ESMTPSA id t198sm12758288wmt.7.2021.02.19.08.13.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 08:14:00 -0800 (PST)
-Subject: Re: [next]: fs/io_uring.c:6171:10: error: implicit declaration of
- function 'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-mips@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        io-uring@vger.kernel.org, open list <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        lkft-triage@lists.linaro.org
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jens Axboe <axboe@kernel.dk>
-References: <CA+G9fYt1Bk=DW1VoPgWe9ZHHoHu+6OyZi7ndMJHmoR14uJePyQ@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <87798def-0526-0a1e-6bcc-e5ee3970bd48@gmail.com>
-Date:   Fri, 19 Feb 2021 16:10:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        Fri, 19 Feb 2021 11:11:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=3N5FmuI7Akza+jdh6VfOjQ9znwDFUbT6JCb1EWUpxCw=; b=jtCYK7hhbaLJSWsHjHzeqes+rh
+        hxTWwHbTYWST/girWycLvWDvL4QEiPJu4qp9hlBzmyrJjz2J+r9XC+Qzws9fQNWc+gvMrgYZT6grj
+        SlLwZ2APePyyn3uqv/1dBPxFb+00fLONpGTkbC5IjwR+2Y6Ygh9xCw7TAMJi0n3d846k=;
+Received: from [10.69.141.136]
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <nfraser@codeweavers.com>)
+        id 1lD8Ml-0003Ld-0i; Fri, 19 Feb 2021 10:10:51 -0600
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nicholas Fraser <nfraser@codeweavers.com>,
+        Ian Rogers <irogers@google.com>, linux-kernel@vger.kernel.org
+Cc:     Ulrich Czekalla <uczekalla@codeweavers.com>,
+        Huw Davies <huw@codeweavers.com>
+From:   Nicholas Fraser <nfraser@codeweavers.com>
+Subject: [PATCH 2/2] perf buildid-cache: Add test for PE executable
+Message-ID: <295f5380-93a1-78fa-884b-afd4319b96d7@codeweavers.com>
+Date:   Fri, 19 Feb 2021 11:10:34 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYt1Bk=DW1VoPgWe9ZHHoHu+6OyZi7ndMJHmoR14uJePyQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -117,53 +51,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/02/2021 16:08, Naresh Kamboju wrote:
-> Linux next tag 20210219 arm and mips builds failed due to below error.
-> 
-> Following build configs failed
-> arm (s3c6400_defconfig) with gcc-8
-> arm (s3c6400_defconfig) with gcc-9
-> arm (s3c6400_defconfig) with gcc-10
-> 
-> mips (e55_defconfig) with gcc-8
-> mips (e55_defconfig) with gcc-9
-> mips (e55_defconfig) with gcc-10
-> 
-> fs/io_uring.c:6171:10: error: implicit declaration of function
-> 'io_sendmsg_prep_async'; did you mean 'io_req_prep_async'?
-> [-Werror=implicit-function-declaration]
->    return io_sendmsg_prep_async(req);
->           ^~~~~~~~~~~~~~~~~~~~~
->           io_req_prep_async
+This builds on the previous changes to tests/shell/buildid.sh, adding
+tests for a PE file. It adds it to the build-id cache manually and, if
+Wine is available, runs it under "perf record" and verifies that it was
+added automatically.
 
-!CONFIG_NET, I guess. Thanks for letting know
+If wine is not installed, only warnings are printed; the test can still
+exit 0.
 
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> 
-> Steps to reproduce:
-> -----------------------------
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
-> 
-> 
-> tuxmake --runtime podman --target-arch arm --toolchain gcc-10
-> --kconfig s3c6400_defconfig
-> or
-> tuxmake --runtime podman --target-arch mips --toolchain gcc-9
-> --kconfig e55_defconfig
-> 
-> 
+(I welcome ways to make the GUID parsing less awful. checkpatch.pl is
+complaining about the line length of the sed command. The re-arranging
+could be done via e.g. id=${id:6:2}{id:4:2}... since this style is
+already used in the script but that turns out to be longer than the sed
+command and anyway it's bash-specific. This uses a hardcoded .exe so we
+could also just hardcode its GUID but I'd worry about making the tests
+too inflexible.)
 
+Signed-off-by: Nicholas Fraser <nfraser@codeweavers.com>
+---
+ tools/perf/tests/shell/buildid.sh | 43 +++++++++++++++++++++++++++----
+ 1 file changed, 38 insertions(+), 5 deletions(-)
+
+diff --git a/tools/perf/tests/shell/buildid.sh b/tools/perf/tests/shell/buildid.sh
+index 416af614bbe0..55e2168ef26f 100755
+--- a/tools/perf/tests/shell/buildid.sh
++++ b/tools/perf/tests/shell/buildid.sh
+@@ -14,18 +14,41 @@ if ! [ -x "$(command -v cc)" ]; then
+ 	exit 2
+ fi
+ 
++# check what we need to test windows binaries
++add_pe=1
++run_pe=1
++if ! perf version --build-options | grep -q 'libbfd: .* on '; then
++    echo "WARNING: perf not built with libbfd. PE binaries will not be tested."
++    add_pe=0
++    run_pe=0
++fi
++if ! which wine > /dev/null; then
++    echo "WARNING: wine not found. PE binaries will not be run."
++    run_pe=0
++fi
++
+ ex_md5=$(mktemp /tmp/perf.ex.MD5.XXX)
+ ex_sha1=$(mktemp /tmp/perf.ex.SHA1.XXX)
++ex_pe=$(dirname $0)/../pe-file.exe
+ 
+ echo 'int main(void) { return 0; }' | cc -Wl,--build-id=sha1 -o ${ex_sha1} -x c -
+ echo 'int main(void) { return 0; }' | cc -Wl,--build-id=md5 -o ${ex_md5} -x c -
+ 
+-echo "test binaries: ${ex_sha1} ${ex_md5}"
++echo "test binaries: ${ex_sha1} ${ex_md5} ${ex_pe}"
+ 
+ check()
+ {
+-	id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
+-
++	case $1 in
++	*.exe)
++		# the build id must be rearranged into a GUID
++		id=`objcopy -O binary --only-section=.buildid $1 /dev/stdout | \
++			cut -c 33-48 | hexdump -ve '/1 "%02x"' | \
++			sed 's@^\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(..\)\(.*\)0a$@\4\3\2\1\6\5\8\7\9@'`
++		;;
++	*)
++		id=`readelf -n ${1} 2>/dev/null | grep 'Build ID' | awk '{print $3}'`
++		;;
++	esac
+ 	echo "build id: ${id}"
+ 
+ 	link=${build_id_dir}/.build-id/${id:0:2}/${id:2}
+@@ -50,7 +73,7 @@ check()
+ 		exit 1
+ 	fi
+ 
+-	${perf} buildid-cache -l | grep $id
++	${perf} buildid-cache -l | grep ${id}
+ 	if [ $? -ne 0 ]; then
+ 		echo "failed: ${id} is not reported by \"perf buildid-cache -l\""
+ 		exit 1
+@@ -81,7 +104,7 @@ test_record()
+ 	build_id_dir=$(mktemp -d /tmp/perf.debug.XXX)
+ 	perf="perf --buildid-dir ${build_id_dir}"
+ 
+-	${perf} record --buildid-all -o ${data} ${1}
++	${perf} record --buildid-all -o ${data} ${2} ${1}
+ 	if [ $? -ne 0 ]; then
+ 		echo "failed: record ${1}"
+ 		exit 1
+@@ -96,12 +119,22 @@ test_record()
+ # add binaries manual via perf buildid-cache -a
+ test_add ${ex_sha1}
+ test_add ${ex_md5}
++if [ $add_pe -eq 1 ]; then
++    test_add ${ex_pe}
++fi
+ 
+ # add binaries via perf record post processing
+ test_record ${ex_sha1}
+ test_record ${ex_md5}
++if [ $run_pe -eq 1 ]; then
++    test_record ${ex_pe} wine
++fi
+ 
+ # cleanup
+ rm ${ex_sha1} ${ex_md5}
+ 
++if [ $add_pe -eq 0 ] || [ $run_pe -eq 0 ]; then
++    echo "WARNING: some PE tests were skipped. See previous warnings."
++fi
++
+ exit ${err}
 -- 
-Pavel Begunkov
+2.30.1
+
