@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00ED3201D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 00:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A52F3201EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 00:41:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhBSXc4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 18:32:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46444 "EHLO
+        id S229683AbhBSXkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 18:40:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbhBSXcy (ORCPT
+        with ESMTP id S229577AbhBSXkg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 18:32:54 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13B8C061574;
-        Fri, 19 Feb 2021 15:32:28 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id e15so5209995qte.9;
-        Fri, 19 Feb 2021 15:32:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NbsiN2mOIgFrYHoicdtwfPgIlAbigIWiM/ybhi0WMds=;
-        b=DdFaizl54sLru+iLJVV5msd7jTcBPmRjPcoIO7Siisb17Msir48LZeQJfdTyFAsNHp
-         uYeMd2Am9QkntpRCNEI66FN3zQCSwEba58N8ixzNMf4qlm7YpPMpDBAscJqEz7jT/goj
-         o6NDvzSd7rfzBhvdfbDE3JgkObYY2bxnT0QlAjDTqCkdzGva6dbPNadAw4JHKRKQFJL+
-         plLUPgG1vgJjjtIYMOJYJ1FOAwpdlcVR1G5VMAlwl0koraTQ1QnbRTZNxO/9TMBvxgCD
-         xNkKnLhEXRIl9KIHaMIxQ0tNTs9vXwWa3+pAbU3oC+nzy13z3x1lZY4+eCfgGbt8qTLY
-         YdgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=NbsiN2mOIgFrYHoicdtwfPgIlAbigIWiM/ybhi0WMds=;
-        b=JTaTHOCW662++5oVrjbkrm69bKtoeRcACc0i/XVHezHjamRe2W4/ix4j1btRhpjj7e
-         esRvLWyGo1ZC7zueUQnmDGFqhlRt+SjBg/qMG6C0Yospb46w1hjQE3zo0kv2gqSyDZT9
-         NiSSzwMXzstEWg5UISZfH+R3JY7Qo728mJgp3+pGp1L5ypABApHBQxzZ/gfssWrVY43C
-         z66/Dv9PdtKXxJt7dHsJmQNOxaW5o08Cj23cJU5xQVz8MQNghFb2Q/bbLmm0xCOhVcHa
-         iQdUFmDOJmNm8x0rtfYrWN0FSHKZ3sj9EW1fTg/dvehJzY0XMtVqQUBHYiSeiKKXqRbi
-         8jGg==
-X-Gm-Message-State: AOAM5321eHS30a4YgLi8+KviC6Ma+74MwWNWveJyfYzwof8Vg4KajCT6
-        wLELXkPvW5x2FroyDGF+Thg=
-X-Google-Smtp-Source: ABdhPJwFOuVQKvHVIRi+7JqxGldbjMafENc3bpZW4wnTxNZ5b4iWrZYYbiP5t0QGGflSbfS02NGG3g==
-X-Received: by 2002:ac8:6f06:: with SMTP id g6mr11083280qtv.360.1613777547936;
-        Fri, 19 Feb 2021 15:32:27 -0800 (PST)
-Received: from ubuntu-mate-laptop.localnet ([208.64.158.253])
-        by smtp.gmail.com with ESMTPSA id 199sm7761763qkj.9.2021.02.19.15.32.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 15:32:27 -0800 (PST)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
-Date:   Fri, 19 Feb 2021 18:32:26 -0500
-Message-ID: <21525878.NYvzQUHefP@ubuntu-mate-laptop>
+        Fri, 19 Feb 2021 18:40:36 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 538DFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 15:39:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=drUX1L4FnwH0YXuvppFKi9GxlvGkvlyFOpyqxV7ospU=; b=kVBW0CdoLkRlt2hEbQWYfv2W7F
+        qywJb4NqFj1MEIoxFf/FIDlD0ihlfCXEFvJ/YVBndHGVL1/fkEnvqn9wLd2rR+mdJXUnJY836wp/s
+        Hn1M7/tZ8zfCwsQJ75C3eLE5kAOBX/NsJ+obrjXBc2euLdWItMzrER/HeqMXz17wKkvTyqWiMM5k5
+        xqiGBj3Gdk62QpgQyhWbXWiNapjIWN12UQFoXMtOvZMLK7JDbZFngtqRPlkxv3cKaBZT853+K3wlR
+        I1tSkcPcZPsa6ZgV9YZD72LZROzNN/dGjDYy3Qy9ikyzdRXdO17DFXYo4QakR/15DQ33G6x++U5NC
+        UC5ekJJQ==;
+Received: from [2601:1c0:6280:3f0::d05b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lDFNF-00083v-Iy; Fri, 19 Feb 2021 23:39:49 +0000
+Subject: Re: [PATCH 02/30] drm/dp: Fixup kernel docs for struct drm_dp_aux
+To:     Lyude Paul <lyude@redhat.com>, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        nouveau@lists.freedesktop.org,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210219215326.2227596-1-lyude@redhat.com>
+ <20210219215326.2227596-3-lyude@redhat.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6f4c606f-684a-4d17-e978-2d414e07e73b@infradead.org>
+Date:   Fri, 19 Feb 2021 15:39:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <20210219215326.2227596-3-lyude@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 6e61907779ba99af785f5b2397a84077c289888a
-Author: Julian Braha <julianbraha@gmail.com>
-Date:   Fri Feb 19 18:20:57 2021 -0500
+On 2/19/21 1:52 PM, Lyude Paul wrote:
+> * Make sure that struct members are referred to using @, otherwise they
+>   won't be formatted as such
+> * Make sure to refer to other struct types using & so they link back to
+>   each struct's definition
+> * Make sure to precede constant values with % so they're formatted
+>   correctly
+> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
 
-    drivers: infiniband: sw: rxe: fix kconfig dependency on CRYPTO
-    
-    When RDMA_RXE is enabled and CRYPTO is disabled,
-    Kbuild gives the following warning:
-    
-    WARNING: unmet direct dependencies detected for CRYPTO_CRC32
-      Depends on [n]: CRYPTO [=n]
-      Selected by [y]:
-      - RDMA_RXE [=y] && (INFINIBAND_USER_ACCESS [=y] || !INFINIBAND_USER_ACCESS [=y]) && INET [=y] && PCI [=y] && INFINIBAND [=y] && INFINIBAND_VIRT_DMA [=y]
-    
-    This is because RDMA_RXE selects CRYPTO_CRC32,
-    without depending on or selecting CRYPTO, despite that config option
-    being subordinate to CRYPTO.
-    
-    Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/drivers/infiniband/sw/rxe/Kconfig b/drivers/infiniband/sw/rxe/Kconfig
-index 452149066792..06b8dc5093f7 100644
---- a/drivers/infiniband/sw/rxe/Kconfig
-+++ b/drivers/infiniband/sw/rxe/Kconfig
-@@ -4,6 +4,7 @@ config RDMA_RXE
-        depends on INET && PCI && INFINIBAND
-        depends on INFINIBAND_VIRT_DMA
-        select NET_UDP_TUNNEL
-+      select CRYPTO
-        select CRYPTO_CRC32
-        help
-        This driver implements the InfiniBand RDMA transport over
+Thanks.
+
+> ---
+>  include/drm/drm_dp_helper.h | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> 
 
 
+-- 
+~Randy
 
