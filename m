@@ -2,319 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8493B31FF00
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:54:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6751A31FF11
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229840AbhBSSyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:54:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43682 "EHLO
+        id S229876AbhBSS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:58:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhBSSyg (ORCPT
+        with ESMTP id S229515AbhBSS6m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:54:36 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B7EAC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:53:55 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id 81so6545217qkf.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:53:55 -0800 (PST)
+        Fri, 19 Feb 2021 13:58:42 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5C0C061574;
+        Fri, 19 Feb 2021 10:58:02 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id g3so3093715qvl.2;
+        Fri, 19 Feb 2021 10:58:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=y2ldnUb4nw3qm3loSiner0qi237zYJGyc/9RsX2NuUQ=;
-        b=u+XYV0cbX09MEuP7UgTx9MPpmBzHSAF0r+Anbg4Wmz44sTPbPVavuyisA3LAmRQMPs
-         dmyO8OV4A6WMzbHsVeYkGEB40gCl4YzCTP9ul/k+EOR+/yPuCkIMhhwJuqWV/m0LKYIF
-         2ddcRT5mBYSMaJLoTdzCPZKDepdVGYl/dvivKzP73hGYJaUOXAazRVsfRoUOrS/LrLey
-         cQ+WKWc16h6aQI0mdhSuoM+Jqum75tWxs0M3dpGfk9D+OtAByc/7WF+FYOpeAGg7KOT6
-         2NsWgimkA/zl/jMGTHsm4Y/b34q/AZxgjOE6ASQTsXgPrmbqYBS5cisthzsYnSfLtIaG
-         gZdg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KrQXwiQOrYdmdBeohS17LUCH0SNmxvLabDc2BiEUeQw=;
+        b=fH7HKQayIzBQ3LevQNi/ie01oLvIK9J53z57icngzEB7RnMm5HzTYnVM/jnkFZ2s89
+         JiMeFZgID/bPOuqgYqORXMvTzoSLurbsnn9Spz0Nu0iYRJZ1nhzfEJtx0dbzhjF+AUm2
+         LjFFx3Mh52aWOxMf780nOpohF5g8ejzOAXmxa8+XVbu80CssUrUgmAJtc38kTD9WQbzh
+         BdB5lKjN1UxBNC2jOZ/2zV9Vb5xaULDBQzBpBU8qK4yANwEjGFmhzLGGSHyaTXVolvaO
+         +Zk9fy3iU1+j+Hs0TDsccMAgDLzkkdMsw9V30v9JEyB19w33XGh/TEPtMV53A2KCzN0t
+         XGBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y2ldnUb4nw3qm3loSiner0qi237zYJGyc/9RsX2NuUQ=;
-        b=BMOLJ8xQBqIuRYZh41XF8ixSXa042eDzxaFsHszjP6R9l4QtsOMSoXnZKU8w1dS6Oy
-         jGOCsPMT5eMzV/MpdKbvHanVpDFYqSb/Hdhz6t8+9+PMM9E4X2q1GqZrYn1y2CVSy/FR
-         h0QtvRR1AVU5QAk3wcRC96SuZW1zWkD90lDwRtpUDgWSuTIz4sQCNn7tuo7hGN86Z3EL
-         qepk3RkweV69Nm5Q/fs1PzPfd1ki5jiMeNpKq1TYiL/91O77+QUggIi2xWkiOGvamlL/
-         HjbGbmCKMpGufaeRXYSX8Nc8y6XQpZBfBTkuoPgg4156YWyTm7/f682w4mo0JVSi1I/5
-         L1Ig==
-X-Gm-Message-State: AOAM533MF+KYoC9HhKfKK8dV9BzGGUZqO5R4yAk8Zmz2Gj9x9PdjxLOm
-        kDRIc8dKyLmj56+UIc5Ikzp0x0Q0lNO3MZO5nJrpzQ==
-X-Google-Smtp-Source: ABdhPJxiltfL9a/F8qzqd1yIqTolah1trITzPV/4LTTKfwHzCRS/D0xADfgJPvBgmVj8DjdDbyFECVDHK3QzSMxSJJc=
-X-Received: by 2002:a05:620a:410f:: with SMTP id j15mr11057203qko.424.1613760834343;
- Fri, 19 Feb 2021 10:53:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KrQXwiQOrYdmdBeohS17LUCH0SNmxvLabDc2BiEUeQw=;
+        b=VRX/Ous1M9kCvL0XEk+HgMDTRj84zlZCFzB165AuzRpcNAJ9xO0FxfJKqLvFtL/TMG
+         bIFUVZ+pHunOEG5DwVy9en8Ex0dHh9XudL4ht623qrjZPgAjzxhj/zQKC6QeBAlJpLbx
+         7DEmPjE1KiyQpPXgfXMdqdde1Bb28/JdkJAu+cYtNhiylt6fWd79knG4NZWJwXZZYKHd
+         T/lkjGoDIueZL29gQS7tXIhS476ydyPMRv0mECQ3fc4drk43o2++X9GRPxujaU+pHvcO
+         NcXvqld4vwIKae2ZkHObHjMYEGckc6R7CIqqMBj8VQYbObVTXyChPYBRMDTkSoGhErqI
+         ZmnQ==
+X-Gm-Message-State: AOAM530rWPiyXBq7NvBR1nh3iftGbnJIQHjX5kqohxPQBzVSyabQHg7U
+        9eTlCvH7FR0Xck9X5dUtijZd4cXxVQPNT6m1
+X-Google-Smtp-Source: ABdhPJyOvUqZuIpoGzXzBjceSpFrDAYTnw3ytIQiq79XOlTVRoBGR1reosVfaA/xvvWa6r4Wp4i5Xg==
+X-Received: by 2002:a05:6214:1a4a:: with SMTP id fi10mr2812078qvb.5.1613761081494;
+        Fri, 19 Feb 2021 10:58:01 -0800 (PST)
+Received: from localhost.localdomain ([189.61.66.20])
+        by smtp.gmail.com with ESMTPSA id p20sm5925216qtx.12.2021.02.19.10.56.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 10:56:30 -0800 (PST)
+From:   Saulo Alessandre <saulo.alessandre@gmail.com>
+To:     stefanb@linux.ibm.com
+Cc:     davem@davemloft.net, dhowells@redhat.com,
+        herbert@gondor.apana.org.au, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        zohar@linux.ibm.com, Saulo Alessandre <saulo.alessandre@tse.jus.br>
+Subject: [PATCH 1/3] add params and ids to support nist_p384
+Date:   Fri, 19 Feb 2021 15:56:13 -0300
+Message-Id: <20210219185615.1033593-1-saulo.alessandre@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210215162532.1077098-1-stefanb@linux.ibm.com>
+References: <20210215162532.1077098-1-stefanb@linux.ibm.com>
 MIME-Version: 1.0
-References: <CACT4Y+bDqMiC+ou5ghb=XB3Oyjw3p-GTDvNw4NkkQqQthw1yuQ@mail.gmail.com>
- <CACT4Y+aC19DaNOm87EO3cER2=MEmO9pmtUxzVmRtg9YhZKuMVA@mail.gmail.com>
- <20210118145310.crnqnh6kax5jqicj@distanz.ch> <CACT4Y+bFV6m1LCYb1nO7ioKJK99916D76sJ+H-LgBjWx6biF5w@mail.gmail.com>
- <CACT4Y+bmDKNnykeTP9yKjje3XZjbXY3De+_e3fMFOMoe0dnARw@mail.gmail.com>
- <6e9ee3a1-0e16-b1fc-a690-f1ca8e9823a5@ghiti.fr> <CACT4Y+adSjve7bXRPh5UybCQx6ubOUu5RbwuT620wdcxHzVYJg@mail.gmail.com>
- <CACT4Y+ZNJBnkKHXUf=tm_yuowvZvHwN=0rmJ=7J+xFd+9r_6pQ@mail.gmail.com>
- <CACT4Y+awHrJfFo+g33AiAnCj3vq6t6PqbL-3=Qbciy6dAJfVWg@mail.gmail.com>
- <24857bfc-c557-f141-8ae7-2e3da24f67f5@ghiti.fr> <CACT4Y+bmuhR=2u=1bGK+W8ttOn+=bkKrqCRM8_SiDSW1iAX60A@mail.gmail.com>
- <957f09fb-84f4-2e0a-13ab-f7e4831ee7d0@ghiti.fr> <CACT4Y+ZmuOpyf_0vHTT4t3wkmJuW8Ezvcg7v6yDVd8YOViS=GA@mail.gmail.com>
- <c8f072b8-0b8c-fa78-da6c-cac8b6711603@ghiti.fr> <CACT4Y+agHHFsq1fA5dwESf+oZerC3NBM+2kFAFxyHVd+Xu6crQ@mail.gmail.com>
- <31dfbbbf-79ff-1204-2e9d-dc62630acd36@ghiti.fr>
-In-Reply-To: <31dfbbbf-79ff-1204-2e9d-dc62630acd36@ghiti.fr>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 19 Feb 2021 19:53:43 +0100
-Message-ID: <CACT4Y+bNzJtwwrHsOa7Ftnaj7B+TPd35=QRLKDE-UuaPJoaDkw@mail.gmail.com>
-Subject: Re: riscv+KASAN does not boot
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Bjorn Topel <bjorn.topel@gmail.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, nylon7@andestech.com,
-        syzkaller <syzkaller@googlegroups.com>,
-        Andreas Schwab <schwab@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Tobias Klauser <tklauser@distanz.ch>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 6:01 PM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Hi Dmitry,
->
-> Le 2/18/21 =C3=A0 6:36 AM, Dmitry Vyukov a =C3=A9crit :
-> > On Thu, Feb 18, 2021 at 8:54 AM Alex Ghiti <alex@ghiti.fr> wrote:
-> >>
-> >> Hi Dmitry,
-> >>
-> >>> On Wed, Feb 17, 2021 at 5:36 PM Alex Ghiti <alex@ghiti.fr> wrote:
-> >>>>
-> >>>> Le 2/16/21 =C3=A0 11:42 PM, Dmitry Vyukov a =C3=A9crit :
-> >>>>> On Tue, Feb 16, 2021 at 9:42 PM Alex Ghiti <alex@ghiti.fr> wrote:
-> >>>>>>
-> >>>>>> Hi Dmitry,
-> >>>>>>
-> >>>>>> Le 2/16/21 =C3=A0 6:25 AM, Dmitry Vyukov a =C3=A9crit :
-> >>>>>>> On Tue, Feb 16, 2021 at 12:17 PM Dmitry Vyukov <dvyukov@google.co=
-m> wrote:
-> >>>>>>>>
-> >>>>>>>> On Fri, Jan 29, 2021 at 9:11 AM Dmitry Vyukov <dvyukov@google.co=
-m> wrote:
-> >>>>>>>>>> I was fixing KASAN support for my sv48 patchset so I took a lo=
-ok at your
-> >>>>>>>>>> issue: I built a kernel on top of the branch riscv/fixes using
-> >>>>>>>>>> https://github.com/google/syzkaller/blob/269d24e857a757d09a898=
-086a2fa6fa5d827c3e1/dashboard/config/linux/upstream-riscv64-kasan.config
-> >>>>>>>>>> and Buildroot 2020.11. I have the warnings regarding the use o=
-f
-> >>>>>>>>>> __virt_to_phys on wrong addresses (but that's normal since thi=
-s function
-> >>>>>>>>>> is used in virt_addr_valid) but not the segfaults you describe=
-.
-> >>>>>>>>>
-> >>>>>>>>> Hi Alex,
-> >>>>>>>>>
-> >>>>>>>>> Let me try to rebuild buildroot image. Maybe there was somethin=
-g wrong
-> >>>>>>>>> with my build, though, I did 'make clean' before doing. But at =
-the
-> >>>>>>>>> same time it worked back in June...
-> >>>>>>>>>
-> >>>>>>>>> Re WARNINGs, they indicate kernel bugs. I am working on setting=
- up a
-> >>>>>>>>> syzbot instance on riscv. If there a WARNING during boot then t=
-he
-> >>>>>>>>> kernel will be marked as broken. No further testing will happen=
-.
-> >>>>>>>>> Is it a mis-use of WARN_ON? If so, could anybody please remove =
-it or
-> >>>>>>>>> replace it with pr_err.
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> Hi,
-> >>>>>>>>
-> >>>>>>>> I've localized one issue with riscv/KASAN:
-> >>>>>>>> KASAN breaks VDSO and that's I think the root cause of weird fau=
-lts I
-> >>>>>>>> saw earlier. The following patch fixes it.
-> >>>>>>>> Could somebody please upstream this fix? I don't know how to add=
-/run
-> >>>>>>>> tests for this.
-> >>>>>>>> Thanks
-> >>>>>>>>
-> >>>>>>>> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel=
-/vdso/Makefile
-> >>>>>>>> index 0cfd6da784f84..cf3a383c1799d 100644
-> >>>>>>>> --- a/arch/riscv/kernel/vdso/Makefile
-> >>>>>>>> +++ b/arch/riscv/kernel/vdso/Makefile
-> >>>>>>>> @@ -35,6 +35,7 @@ CFLAGS_REMOVE_vgettimeofday.o =3D $(CC_FLAGS_F=
-TRACE) -Os
-> >>>>>>>>      # Disable gcov profiling for VDSO code
-> >>>>>>>>      GCOV_PROFILE :=3D n
-> >>>>>>>>      KCOV_INSTRUMENT :=3D n
-> >>>>>>>> +KASAN_SANITIZE :=3D n
-> >>>>>>>>
-> >>>>>>>>      # Force dependency
-> >>>>>>>>      $(obj)/vdso.o: $(obj)/vdso.so
-> >>>>>>
-> >>>>>> What's weird is that I don't have any issue without this patch wit=
-h the
-> >>>>>> following config whereas it indeed seems required for KASAN. But w=
-hen
-> >>>>>> looking at the segfaults you got earlier, the segfault address is =
-0xbb0
-> >>>>>> and the cause is an instruction page fault: this address is the PL=
-T base
-> >>>>>> address in vdso.so and an instruction page fault would mean that s=
-omeone
-> >>>>>> tried to jump at this address, which is weird. At first sight, tha=
-t does
-> >>>>>> not seem related to your patch above, but clearly I may be wrong.
-> >>>>>>
-> >>>>>> Tobias, did you observe the same segfaults as Dmitry ?
-> >>>>>
-> >>>>>
-> >>>>> I noticed that not all buildroot images use VDSO, it seems to be
-> >>>>> dependent on libc settings (at least I think I changed it in the
-> >>>>> past).
-> >>>>
-> >>>> Ok, I used uClibc but then when using glibc, I have the same segfaul=
-ts,
-> >>>> only when KASAN is enabled. And your patch fixes the problem. I will=
- try
-> >>>> to take a look later to better understand the problem.
-> >>>>
-> >>>>> I also booted an image completely successfully including dhcpd/sshd
-> >>>>> start, but then my executable crashed in clock_gettime. The executa=
-ble
-> >>>>> was build on linux/amd64 host with "riscv64-linux-gnu-gcc -static"
-> >>>>> (10.2.1).
-> >>>>>
-> >>>>>
-> >>>>>>> Second issue I am seeing seems to be related to text segment size=
-.
-> >>>>>>> I check out v5.11 and use this config:
-> >>>>>>> https://gist.github.com/dvyukov/6af25474d455437577a84213b0cc9178
-> >>>>>>
-> >>>>>> This config gave my laptop a hard time ! Finally I was able to boo=
-t
-> >>>>>> correctly to userspace, but I realized I used my sv48 branch...Eit=
-her I
-> >>>>>> fixed your issue along the way or I can't reproduce it, I'll give =
-it a
-> >>>>>> try tomorrow.
-> >>>>>
-> >>>>> Where is your branch? I could also test in my setup on your branch.
-> >>>>>
-> >>>>
-> >>>> You can find my branch int/alex/riscv_kernel_end_of_address_space_v2
-> >>>> here: https://github.com/AlexGhiti/riscv-linux.git
-> >>>
-> >>> No, it does not work for me.
-> >>>
-> >>> Source is on b61ab6c98de021398cd7734ea5fc3655e51e70f2 (HEAD,
-> >>> int/alex/riscv_kernel_end_of_address_space_v2)
-> >>> Config is https://gist.githubusercontent.com/dvyukov/6af25474d4554375=
-77a84213b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
-> >>>
-> >>> riscv64-linux-gnu-gcc -v
-> >>> gcc version 10.2.1 20210110 (Debian 10.2.1-6+build1)
-> >>>
-> >>> qemu-system-riscv64 --version
-> >>> QEMU emulator version 5.2.0 (Debian 1:5.2+dfsg-3)
-> >>>
-> >>> qemu-system-riscv64 \
-> >>> -machine virt -smp 2 -m 2G \
-> >>> -device virtio-blk-device,drive=3Dhd0 \
-> >>> -drive file=3Dimage-riscv64,if=3Dnone,format=3Draw,id=3Dhd0 \
-> >>> -kernel arch/riscv/boot/Image \
-> >>> -nographic \
-> >>> -device virtio-rng-device,rng=3Drng0 -object
-> >>> rng-random,filename=3D/dev/urandom,id=3Drng0 \
-> >>> -netdev user,id=3Dnet0,host=3D10.0.2.10,hostfwd=3Dtcp::10022-:22 -dev=
-ice
-> >>> virtio-net-device,netdev=3Dnet0 \
-> >>> -append "root=3D/dev/vda earlyprintk=3Dserial console=3DttyS0 oops=3D=
-panic
-> >>> panic_on_warn=3D1 panic=3D86400 earlycon"
-> >>
-> >> It still works for me but I had to disable CONFIG_DEBUG_INFO_BTF (I
-> >> don't think that changes anything at runtime). But your above command
-> >> line does not work for me as it appears you do not load any firmware, =
-if
-> >> I add -bios images/fw_jump.elf, it works. But then I don't know where
-> >> your opensbi output below comes from...
-> >>
-> >> And regarding your issue with calling clock_gettime 'directly' compare=
-d
-> >> to using the syscall, I have the same consistent output from both call=
-s.
-> >>
-> >> I have an older gcc (9.3.0) and the same qemu. I think what is missing
-> >> here is your buildroot config, so that we have the exact same
-> >> environment: could you post your buildroot config as well ?
-> >
-> > I don't think the image is relevant because I don't even get to kernel
-> > code. If the kernel will complain about no init later, that's fine.
-> > Re bios, this version of qemu already has OpenSBI bios builtin, you
-> > can pass -bios default, but that's, well, the default :)
-> > Here are more reproducible repro instructions that capture gcc and
-> > qemu. I think gcc version may be potentially relevant as I suspect
-> > code size.
-> >
-> >
-> > curl https://gist.githubusercontent.com/dvyukov/6af25474d455437577a8421=
-3b0cc9178/raw/55b116522c14a8a98a7626d76df740d54f648ce5/gistfile1.txt
-> >> $KERNEL_SRC/.config
-> > docker pull gcr.io/syzkaller/syzbot
-> > docker run -it -v $KERNEL_SRC:/kernel gcr.io/syzkaller/syzbot
-> > cd /kernel
-> > make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu- olddefconfig
-> > make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu-
-> > qemu-system-riscv64 -machine virt -smp 2 -m 4G -kernel
-> > arch/riscv/boot/Image -nographic -append "earlycon earlyprintk=3Dserial
-> > console=3DttyS0"
-> > [this does not, only OpenSBI output]
-> >
->
-> Indeed the issue was code size, please find the fix below. I will send a
-> proper patch once I made sure the fix is the right one, but I'm pretty
-> confident, there's no reason to limit the mapping size to 128MB whereas
-> we have a whole pgdir.
+From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
 
-Great you get to the bottom of this!
-Riscv kernels are going to be YUGE!
+* crypto/asymmetric_keys/x509_cert_parser.c
+  - prepare x509 parser to load nist_secpp384r1
 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 9b0592b11a9f..ff2495707edb 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -287,7 +287,7 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss=
-;
->   pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
->   pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
->
-> -#define MAX_EARLY_MAPPING_SIZE SZ_128M
-> +#define MAX_EARLY_MAPPING_SIZE PGDIR_SIZE
->
->   pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
->
-> --
-> 2.20.1
->
-> Thanks,
->
-> Alex
->
-> > scripts/config -d KASAN_INLINE -e KASAN_OUTLINE -d
-> > CC_OPTIMIZE_FOR_PERFORMANCE -e CC_OPTIMIZE_FOR_SIZE
-> > make -j72 ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu-
-> > qemu-system-riscv64 -machine virt -smp 2 -m 4G -kernel
-> > arch/riscv/boot/Image -nographic -append "earlycon earlyprintk=3Dserial
-> > console=3DttyS0"
-> > [this boots fine, at least at to starting init process]
-> >
-> > _______________________________________________
-> > linux-riscv mailing list
-> > linux-riscv@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-riscv
-> >
+* crypto/ecc_curve_defs.h
+  - add nist_p384 params
+
+* include/crypto/ecdh.h
+  - add ECC_CURVE_NIST_P384
+
+* include/linux/oid_registry.h
+  - reorder OID_id_ecdsa_with_sha1
+  - add OID_id_secp384r1
+---
+ crypto/asymmetric_keys/x509_cert_parser.c |  3 +++
+ crypto/ecc_curve_defs.h                   | 32 +++++++++++++++++++++++
+ include/crypto/ecdh.h                     |  1 +
+ include/linux/oid_registry.h              |  3 ++-
+ 4 files changed, 38 insertions(+), 1 deletion(-)
+
+diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+index d6d72420307c..03535bd8b8ef 100644
+--- a/crypto/asymmetric_keys/x509_cert_parser.c
++++ b/crypto/asymmetric_keys/x509_cert_parser.c
+@@ -512,6 +512,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+ 		case OID_id_prime256v1:
+ 			ctx->cert->pub->pkey_algo = "ecdsa-nist-p256";
+ 			break;
++		case OID_id_secp384r1:
++			ctx->cert->pub->pkey_algo = "ecdsa-nist-p384";
++			break;
+ 		default:
+ 			return -ENOPKG;
+ 		}
+diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
+index 69be6c7d228f..b327732f6ef5 100644
+--- a/crypto/ecc_curve_defs.h
++++ b/crypto/ecc_curve_defs.h
+@@ -54,4 +54,36 @@ static struct ecc_curve nist_p256 = {
+ 	.b = nist_p256_b
+ };
+ 
++/* NIST P-384 */
++static u64 nist_p384_g_x[] = { 0x3A545E3872760AB7ull, 0x5502F25DBF55296Cull,
++				0x59F741E082542A38ull, 0x6E1D3B628BA79B98ull,
++				0x8Eb1C71EF320AD74ull, 0xAA87CA22BE8B0537ull };
++static u64 nist_p384_g_y[] = { 0x7A431D7C90EA0E5Full, 0x0A60B1CE1D7E819Dull,
++				0xE9DA3113B5F0B8C0ull, 0xF8F41DBD289A147Cull,
++				0x5D9E98BF9292DC29ull, 0x3617DE4A96262C6Full };
++static u64 nist_p384_p[] = { 0x00000000FFFFFFFFull, 0xFFFFFFFF00000000ull,
++				0xFFFFFFFFFFFFFFFEull, 0xFFFFFFFFFFFFFFFFull,
++				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFFull };
++static u64 nist_p384_n[] = { 0xECEC196ACCC52973ull, 0x581A0DB248B0A77Aull,
++				0xC7634D81F4372DDFull, 0xFFFFFFFFFFFFFFFFull,
++				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFFull };
++static u64 nist_p384_a[] = { 0x00000000FFFFFFFCull, 0xFFFFFFFF00000000ull,
++				0xFFFFFFFFFFFFFFFEull, 0xFFFFFFFFFFFFFFFFull,
++				0xFFFFFFFFFFFFFFFFull, 0xFFFFFFFFFFFFFFFFull };
++static u64 nist_p384_b[] = { 0x2a85c8edd3ec2aefull, 0xc656398d8a2ed19dull,
++				0x0314088f5013875aull, 0x181d9c6efe814112ull,
++				0x988e056be3f82d19ull, 0xb3312fa7e23ee7e4ull };
++static struct ecc_curve nist_p384 = {
++	.name = "nist_384",
++	.g = {
++		.x = nist_p384_g_x,
++		.y = nist_p384_g_y,
++		.ndigits = 6,
++	},
++	.p = nist_p384_p,
++	.n = nist_p384_n,
++	.a = nist_p384_a,
++	.b = nist_p384_b
++};
++
+ #endif
+diff --git a/include/crypto/ecdh.h b/include/crypto/ecdh.h
+index a5b805b5526d..e4ba1de961e4 100644
+--- a/include/crypto/ecdh.h
++++ b/include/crypto/ecdh.h
+@@ -25,6 +25,7 @@
+ /* Curves IDs */
+ #define ECC_CURVE_NIST_P192	0x0001
+ #define ECC_CURVE_NIST_P256	0x0002
++#define ECC_CURVE_NIST_P384	0x0003
+ 
+ /**
+  * struct ecdh - define an ECDH private key
+diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+index ff3cad9f8c1f..d656450dfc66 100644
+--- a/include/linux/oid_registry.h
++++ b/include/linux/oid_registry.h
+@@ -19,10 +19,10 @@
+ enum OID {
+ 	OID_id_dsa_with_sha1,		/* 1.2.840.10030.4.3 */
+ 	OID_id_dsa,			/* 1.2.840.10040.4.1 */
+-	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
+ 	OID_id_ecPublicKey,		/* 1.2.840.10045.2.1 */
+ 	OID_id_prime192v1,		/* 1.2.840.10045.3.1.1 */
+ 	OID_id_prime256v1,		/* 1.2.840.10045.3.1.7 */
++	OID_id_ecdsa_with_sha1,		/* 1.2.840.10045.4.1 */
+ 	OID_id_ecdsa_with_sha224,	/* 1.2.840.10045.4.3.1 */
+ 	OID_id_ecdsa_with_sha256,	/* 1.2.840.10045.4.3.2 */
+ 	OID_id_ecdsa_with_sha384,	/* 1.2.840.10045.4.3.3 */
+@@ -64,6 +64,7 @@ enum OID {
+ 
+ 	OID_certAuthInfoAccess,		/* 1.3.6.1.5.5.7.1.1 */
+ 	OID_sha1,			/* 1.3.14.3.2.26 */
++	OID_id_secp384r1,		/* 1.3.132.0.34 */
+ 	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
+ 	OID_sha384,			/* 2.16.840.1.101.3.4.2.2 */
+ 	OID_sha512,			/* 2.16.840.1.101.3.4.2.3 */
+-- 
+2.25.1
+
