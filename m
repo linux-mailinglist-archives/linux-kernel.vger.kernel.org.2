@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764E731FECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BABC931FED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhBSS37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:29:59 -0500
-Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:8782 "EHLO
-        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229587AbhBSS3y (ORCPT
+        id S229799AbhBSSdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhBSSdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:29:54 -0500
-Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11JINR7V028016;
-        Fri, 19 Feb 2021 18:28:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=+yteBGQhTSmN52lelYK5WiyBCGtEKupWRyLUK8gtESs=;
- b=H4uJLbRzspu5e4MT0IAODBRcbDg1uAIDfGyUpzZvDiMzmagy8bprB0rVSoUz9gcfHWMr
- PtXVJfSvjaoNbmsH2i0flxJTgX+2vQNAAJpuawAY8Ldu0a9x1TtZrIy3wjxEZhLHvLjD
- qhf2ioGD8rJgdw4zDBwCWYW5vK+YRWZdy52FWFrRJdh5D9yxwF4Gk40PSmvDf0FGYMG0
- WvTaJjkovzmh9LWpPYfqDoAe2NeYFgQxOsf/zi7eWKb2DtDVRfWfo2rJuEXiHNv8CSin
- ZLQ33uJKgh2Fu6neBMN7VO4NqsLUGP77LzL9xmCpVOfbidQDzD0diZn3s7GwWRsDmKbD 2g== 
-Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
-        by mx0b-002e3701.pphosted.com with ESMTP id 36s65q9k05-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 18:28:54 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 455014F;
-        Fri, 19 Feb 2021 18:28:53 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id DEE164B;
-        Fri, 19 Feb 2021 18:28:52 +0000 (UTC)
-Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 605001)
-        id 5DEA730001CF0; Fri, 19 Feb 2021 12:28:52 -0600 (CST)
-From:   Justin Ernst <justin.ernst@hpe.com>
-To:     Borislav Petkov <bp@suse.de>, Hans de Goede <hdegoede@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Tom Rix <trix@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mike Travis <mike.travis@hpe.com>,
-        Justin Ernst <justin.ernst@hpe.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/platform/uv: Fix indentation warning in Documentation/ABI/testing/sysfs-firmware-sgi_uv
-Date:   Fri, 19 Feb 2021 12:28:52 -0600
-Message-Id: <20210219182852.385297-1-justin.ernst@hpe.com>
-X-Mailer: git-send-email 2.26.2
+        Fri, 19 Feb 2021 13:33:47 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40136C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:33:07 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id e9so3833557plh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:33:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=apaYLCgpKww0D9oOCdL1/leTpd02z3P4w+UfyB0qUtE=;
+        b=cNzmU6RwCi2M7zc1iN6kXALpuF4Dr3p9TUe2IZrVSxDRNZxj43w4OZN9GBVNUyVoGY
+         H1RXDjVYIy/K8yNu7pM4zNUC+X8IPbISNDZkI7CMRH6NW31SInd7dD92i1llEAJIpNl9
+         iWbI8rgOSf7uQmj0SebJ6NcX/Ooy0yvSHYo1XyOoSpU19UIDftAZr4ACUicBtUMeLzOs
+         JxUyV+lfMm+gr31mLh9yWgpO+USuw7r8q/XR26xRmrLSWdm95R71UclAbHcjdoD9mUVg
+         /RXbSkNXY3aLx0dVZoac6BkHs3HET/aQxjW2WzpvO3e5JjAUaXvXTBmMVyOyA+7Xdb05
+         6Cfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=apaYLCgpKww0D9oOCdL1/leTpd02z3P4w+UfyB0qUtE=;
+        b=V4LIKjsOnl9ghSn3bo6dRPi2LdkrxydFN40gongp49/0WGUhbn4IIsUFl2toYGqU4H
+         O1KIojWyUi/XT+mVToQwHLj/d78Oicx7CmnBpwMqRoB4IJo5WXBACG2RoJxXhQ6h0uaI
+         9CioF0U52FmP+NZF5XWUh1wUig0my9EpSktTL3mstpXoQtbrho4MRxRbluHuMi9bArM+
+         fTgkAM7QwrBEgr4brZoJu+Iizr0J+tfXC1s764LZqQ1I9Um8FAVcHzysVW6jP6oFkIZF
+         twsRmLiMxCKb1C0A8LLF9xcrh1wP48sNAa0Hy+IlVDny6jAwUlV6KBPS660o5Vfv0qXS
+         wMaQ==
+X-Gm-Message-State: AOAM533AyirA6tXotAkP0W0T/VSo4bD1arq8+tc2T2xmHpdsWVOH0t85
+        MisVwjs9z7gLwQsi3tPl9L14eQ==
+X-Google-Smtp-Source: ABdhPJzGsluCsG7fkC2FvoTQGUbPeiWB8QuireUSeDuRRKhKexRWjsorjPjofN2X3s0CAIhvLZ+5ZQ==
+X-Received: by 2002:a17:902:9894:b029:e3:7aa3:a499 with SMTP id s20-20020a1709029894b02900e37aa3a499mr3088340plp.11.1613759586653;
+        Fri, 19 Feb 2021 10:33:06 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:fc4d:e9c3:d7d:9cb3])
+        by smtp.gmail.com with ESMTPSA id 3sm9467713pjk.26.2021.02.19.10.33.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 10:33:06 -0800 (PST)
+Date:   Fri, 19 Feb 2021 10:32:58 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Quentin Perret <qperret@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 16/26] KVM: arm64: Prepare Hyp memory protection
+Message-ID: <YDAEWu7RkG1OBFed@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-17-qperret@google.com>
+ <20210203143709.GA18907@willie-the-truck>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 impostorscore=0 bulkscore=0
- phishscore=0 malwarescore=0 spamscore=0 suspectscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102190144
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210203143709.GA18907@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
+On Wed, Feb 03, 2021, Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 12:15:14PM +0000, Quentin Perret wrote:
 
-misplaced the first line of a codeblock section, causing the reported
-warning message:
-Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
+...
 
-Move the misplaced line below the required blank line to remove the
-warning message.
+> > +static inline unsigned long hyp_s1_pgtable_size(void)
+> > +{
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Fixes: c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
-Acked-by: Mike Travis <mike.travis@hpe.com>
-Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
----
- Documentation/ABI/testing/sysfs-firmware-sgi_uv | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+...
 
-diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-index 637c668cbe45..12ed843e1d3e 100644
---- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-+++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
-@@ -39,8 +39,8 @@ Description:
+> > +		res += nr_pages << PAGE_SHIFT;
+> > +	}
+> > +
+> > +	/* Allow 1 GiB for private mappings */
+> > +	nr_pages = (1 << 30) >> PAGE_SHIFT;
+> 
+> SZ_1G >> PAGE_SHIFT
+
+Where does the 1gb magic number come from?  IIUC, this is calculating the number
+of pages needed for the hypervisor's Stage-1 page tables.  The amount of memory
+needed for those page tables should be easily calculated, and assuming huge
+pages can be used, should be far less the 1gb.
  
- 		The uv_type entry contains the hub revision number.
- 		This value can be used to identify the UV system version::
--			"0.*" = Hubless UV ('*' is subtype)
- 
-+			"0.*" = Hubless UV ('*' is subtype)
- 			"3.0" = UV2
- 			"5.0" = UV3
- 			"7.0" = UV4
--- 
-2.26.2
+> > +	nr_pages = __hyp_pgtable_max_pages(nr_pages);
+> > +	res += nr_pages << PAGE_SHIFT;
+> > +
+> > +	return res;
 
+...
+
+> > +void __init kvm_hyp_reserve(void)
+> > +{
+> > +	u64 nr_pages, prev;
+> > +
+> > +	if (!is_hyp_mode_available() || is_kernel_in_hyp_mode())
+> > +		return;
+> > +
+> > +	if (kvm_get_mode() != KVM_MODE_PROTECTED)
+> > +		return;
+> > +
+> > +	if (kvm_nvhe_sym(hyp_memblock_nr) < 0) {
+> > +		kvm_err("Failed to register hyp memblocks\n");
+> > +		return;
+> > +	}
+> > +
+> > +	sort_memblock_regions();
+> > +
+> > +	/*
+> > +	 * We don't know the number of possible CPUs yet, so allocate for the
+> > +	 * worst case.
+> > +	 */
+> > +	hyp_mem_size += NR_CPUS << PAGE_SHIFT;
+
+Is this for per-cpu stack?
+
+If so, what guarantees a single page is sufficient?  Mostly a curiosity question,
+since it looks like this is an existing assumption by init_hyp_mode().  Shouldn't
+the required stack size be defined in bytes and converted to pages, or is there a
+guarantee that 64kb pages will be used?
+
+> There was a recent patch bumping NR_CPUs to 512, so this would be 32MB
+> with 64k pages. Is it possible to return memory to the host later on once
+> we have a better handle on the number of CPUs in the system?
+
+Does kvm_hyp_reserve() really need to be called during bootmem_init()?  What
+prevents doing the reservation during init_hyp_mode()?  If the problem is that
+pKVM needs a single contiguous chunk of memory, then it might be worth solving
+_that_ problem, e.g. letting the host donate memory in N-byte chunks instead of
+requiring a single huge blob of memory.
+ 
+> > +	hyp_mem_size += hyp_s1_pgtable_size();
