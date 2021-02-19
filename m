@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776FF31F3F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 03:20:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E4F531F3FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 03:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhBSCTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 21:19:23 -0500
-Received: from z11.mailgun.us ([104.130.96.11]:37832 "EHLO z11.mailgun.us"
+        id S229656AbhBSCZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 21:25:25 -0500
+Received: from mga17.intel.com ([192.55.52.151]:59705 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhBSCTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 21:19:17 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1613701136; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=lL9gibp6cY8+EUvn2ClOv5HoDvqFRSwkISfjLKh+noU=; b=odqmanCeyFbrL5Zg2Hl6MQz61g6QKfzxSbrEifK445kzRI4Pp2fWAbLGCd0p4ariCfzKJFFP
- L9cBEIugtXQYUR2woO+PHx3kSddmwvyiMPWgvUfuv62cim9skmFjDtobPE6jEtzpzuNqxcG4
- jNeVr7nzLQvXV9z8dDxvmZrT9eg=
-X-Mailgun-Sending-Ip: 104.130.96.11
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 602f2010090a77428711782b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Feb 2021 02:18:56
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 018B2C43461; Fri, 19 Feb 2021 02:18:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2363AC433C6;
-        Fri, 19 Feb 2021 02:18:55 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2363AC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, carl.yin@quectel.com,
-        naveen.kumar@quectel.com, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH] bus: mhi: core: Move to polling method to wait for MHI ready
-Date:   Thu, 18 Feb 2021 18:18:46 -0800
-Message-Id: <1613701126-38995-1-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229535AbhBSCZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 21:25:23 -0500
+IronPort-SDR: SdkfUqqtNLkhT8HhhHceBHIRPjCcPt/J90dRISrW6P8v59V79153pAWX83RDL5VHCquX7ya4P8
+ lS2Iyc2R0zWQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="163496464"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="163496464"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 18:24:42 -0800
+IronPort-SDR: wridYpnCfqyWboBlmTMXUpYK/L+B6bq2R9zDkep7T1n9mtxU6ktvQ5/3xBnRyOXQLBbQhtrI7f
+ bPrSmqKF1VbQ==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="400797364"
+Received: from qiuxu-lab.sh.intel.com ([10.239.53.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 18:24:40 -0800
+From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC association
+Date:   Fri, 19 Feb 2021 10:23:59 +0800
+Message-Id: <20210219022359.435-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <57a7bbc1ba294ce39c309e519fe45842@intel.com>
+References: <57a7bbc1ba294ce39c309e519fe45842@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In certain devices, it is likely that there is no incoming MHI
-interrupt for a transition to MHI READY state. One such example
-is the move from Pass Through to an SBL or AMSS execution
-environment. In order to facilitate faster bootup times as there
-is no need to wait until timeout_ms completes, MHI host can poll
-every 25 milliseconds to check if device has entered MHI READY
-until a maximum timeout of twice the timeout_ms is reached.
+Function rcec_assoc_rciep() incorrectly used "rciep->devfn" (a single
+byte encoding the device and function number) as the device number to
+check whether the corresponding bit was set in the RCiEPBitmap of the
+RCEC (Root Complex Event Collector) while enumerating over each bit of
+the RCiEPBitmap.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+As per the PCI Express Base Specification, Revision 5.0, Version 1.0,
+Section 7.9.10.2, "Association Bitmap for RCiEPs", p. 935, only needs to
+use a device number to check whether the corresponding bit was set in
+the RCiEPBitmap.
+
+Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value
+of "rciep->devfn" to a device number to ensure that the RCiEP devices
+associated with the RCEC are linked when the RCEC is enumerated.
+
+[ Krzysztof: Update commit message. ]
+
+Fixes: 507b460f8144 ("PCI/ERR: Add pcie_link_rcec() to associate RCiEPs")
+Reported-and-tested-by: Wen Jin <wen.jin@intel.com>
+Reviewed-by: Sean V Kelley <sean.v.kelley@intel.com>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 ---
- drivers/bus/mhi/core/pm.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+v1->v2:
+  - Update the subject and the commit message.
+  - Add 'Reviewed-by: Sean V Kelley <sean.v.kelley@intel.com>' to the SoB chain.
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 65ebca8..ec0060c 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -9,6 +9,7 @@
- #include <linux/dma-direction.h>
- #include <linux/dma-mapping.h>
- #include <linux/interrupt.h>
-+#include <linux/iopoll.h>
- #include <linux/list.h>
- #include <linux/mhi.h>
- #include <linux/module.h>
-@@ -157,30 +158,29 @@ int mhi_ready_state_transition(struct mhi_controller *mhi_cntrl)
- 	struct mhi_event *mhi_event;
- 	enum mhi_pm_state cur_state;
- 	struct device *dev = &mhi_cntrl->mhi_dev->dev;
--	u32 reset = 1, ready = 0;
-+	u32 reset, ready;
- 	int ret, i;
+ drivers/pci/pcie/rcec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+index 2c5c552994e4..d0bcd141ac9c 100644
+--- a/drivers/pci/pcie/rcec.c
++++ b/drivers/pci/pcie/rcec.c
+@@ -32,7 +32,7 @@ static bool rcec_assoc_rciep(struct pci_dev *rcec, struct pci_dev *rciep)
  
--	/* Wait for RESET to be cleared and READY bit to be set by the device */
--	wait_event_timeout(mhi_cntrl->state_event,
--			   MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state) ||
--			   mhi_read_reg_field(mhi_cntrl, base, MHICTRL,
--					      MHICTRL_RESET_MASK,
--					      MHICTRL_RESET_SHIFT, &reset) ||
--			   mhi_read_reg_field(mhi_cntrl, base, MHISTATUS,
--					      MHISTATUS_READY_MASK,
--					      MHISTATUS_READY_SHIFT, &ready) ||
--			   (!reset && ready),
--			   msecs_to_jiffies(mhi_cntrl->timeout_ms));
--
- 	/* Check if device entered error state */
- 	if (MHI_PM_IN_FATAL_STATE(mhi_cntrl->pm_state)) {
- 		dev_err(dev, "Device link is not accessible\n");
- 		return -EIO;
- 	}
+ 	/* Same bus, so check bitmap */
+ 	for_each_set_bit(devn, &bitmap, 32)
+-		if (devn == rciep->devfn)
++		if (devn == PCI_SLOT(rciep->devfn))
+ 			return true;
  
--	/* Timeout if device did not transition to ready state */
--	if (reset || !ready) {
--		dev_err(dev, "Device Ready timeout\n");
-+	/* Wait for RESET to be cleared and READY bit to be set by the device */
-+	ret = readl_relaxed_poll_timeout(base + MHICTRL, reset,
-+					 !(reset & MHICTRL_RESET_MASK), 25000,
-+					 mhi_cntrl->timeout_ms * 1000);
-+	if (ret) {
-+		dev_err(dev, "Device failed to clear MHI Reset\n");
-+		return -ETIMEDOUT;
-+	}
-+
-+	ret = readl_relaxed_poll_timeout(base + MHISTATUS, ready,
-+					 (ready & MHISTATUS_READY_MASK), 25000,
-+					 mhi_cntrl->timeout_ms * 1000);
-+	if (ret) {
-+		dev_err(dev, "Device failed to enter MHI Ready\n");
- 		return -ETIMEDOUT;
- 	}
- 
+ 	return false;
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.17.1
 
