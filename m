@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C38831F6BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9322331F6B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhBSJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:47:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60851 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229958AbhBSJr1 (ORCPT
+        id S229945AbhBSJrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:47:13 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42006 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSJrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:47:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613727960;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6750kAKaPhDhZsGVTXRm//lcDc2aIOL0pby2BbIRZu4=;
-        b=iDCScewCRDKxBTSioCc2JSp1zIDxbpSVyRRPJeJ8muswsMryE/ZU9s4T+XIRf6+EWJgdKI
-        7+cqqGNdhhUybeRBV4PtUaONrtdb9nRXUNjh2n5xHvThxAkLbzQvbW741yLbWyJVVij4sG
-        cDXxPGfdeoAQ/iuSCUnRdUcBjYABsS0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-6UWakb5WPqKC9DI7zpEG0g-1; Fri, 19 Feb 2021 04:45:56 -0500
-X-MC-Unique: 6UWakb5WPqKC9DI7zpEG0g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACD86804036;
-        Fri, 19 Feb 2021 09:45:54 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 270E56267C;
-        Fri, 19 Feb 2021 09:45:52 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net>
-References: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net> <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk> <2031808.1613665474@warthog.procyon.org.uk>
-To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl=5FSala=3Dc3=3Dbcn=3F?=
-         =?us-ascii?Q?=3D?= <mic@digikod.net>
-Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl?=
-         =?us-ascii?Q?=5FSala=3Dc3=3Dbcn=3F=3D?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
+        Fri, 19 Feb 2021 04:47:04 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 8F9D81C0B80; Fri, 19 Feb 2021 10:46:21 +0100 (CET)
+Date:   Fri, 19 Feb 2021 10:46:21 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-leds@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH 1/2] leds: trigger: Fix error path to not unlock the
+ unlocked mutex
+Message-ID: <20210219094621.GA5641@duo.ucw.cz>
+References: <20210219082955.5007-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 19 Feb 2021 09:45:52 +0000
-Message-ID: <2152657.1613727952@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
+In-Reply-To: <20210219082955.5007-1-u.kleine-koenig@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> No, the current thread contains an old version with an error in the
-> patch for ima_mok_init(). Please take the last series (fixing this
-> patch) that I rebased on your next branch:
-> https://lore.kernel.org/keyrings/20210210120410.471693-1-mic@digikod.net/
+On Fri 2021-02-19 09:29:54, Uwe Kleine-K=F6nig wrote:
+> ttyname is allocated before the mutex is taken, so it must not be
+> unlocked in the error path.
+>=20
 
-Are you referring to the comma rather than a bar here?
+Acked-by: Pavel Machek <pavel@ucw.cz>
 
- 				KEY_ALLOC_NOT_IN_QUOTA,
-+				KEY_ALLOC_SET_KEEP,
+--=20
+http://www.livejournal.com/~pavelmachek
 
-I fixed that in my branch:
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
 
--                               KEY_ALLOC_NOT_IN_QUOTA,
-+                               KEY_ALLOC_NOT_IN_QUOTA |
-+                               KEY_ALLOC_SET_KEEP,
+-----BEGIN PGP SIGNATURE-----
 
-I'll repost the series.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+I7QAKCRAw5/Bqldv6
+8lDQAKC6RnFOnSLK4XZFGvrX+5EyTcu6fgCgnQ2bPOWU4CI+59NCUW4TYIdtKpU=
+=TZpc
+-----END PGP SIGNATURE-----
 
-David
-
+--EeQfGwPcQSOJBaQU--
