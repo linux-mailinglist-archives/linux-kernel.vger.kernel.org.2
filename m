@@ -2,118 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6B0320111
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD01320113
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhBSWAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 17:00:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37414 "EHLO
+        id S230019AbhBSWAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 17:00:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32733 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230026AbhBSV4z (ORCPT
+        by vger.kernel.org with ESMTP id S230020AbhBSV5E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 16:56:55 -0500
+        Fri, 19 Feb 2021 16:57:04 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613771728;
+        s=mimecast20190719; t=1613771738;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=zclcGhBebxWuIXHAjlo9mT06zAX+1h0X9CYLSNBGkec=;
-        b=YWiHl0N7T8e6iuA03EVjo1XMLZJDvzRLRNahh8Bw0wtYF16l41kPH7pJL2fVlgF4FKVdRg
-        JTxRbgOdiwEGKm5lDqtmtt6IdSecae1g9YeXj0PPq9KU82qiw7adhkWfmizQmLvbSxIska
-        IL0vPmcwQWQYBS9R27Ru42LyTJN0Xa0=
+        bh=KVG0whDdlMFBJekRHUR7N55fu1AUMWMhyCg/ZyhU7g8=;
+        b=MUiYkHmdRTd5CQ0xwZe2jk54pu0NyJbWMBDPJHM5lTJg2bg30iE5vmNCNm03Z+QUrY0eet
+        OcjYy0RCO1E2a7S2eZTFKXrO4ACMjbdbYHfv3Ej6LhPeHH38scOx6PNENByzU2DsAwOhqm
+        MHGRWGJOWD1THdXt4w5PayjtTypq5Pk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-lwqWOTsYMzyY2O4rqgFPVg-1; Fri, 19 Feb 2021 16:55:27 -0500
-X-MC-Unique: lwqWOTsYMzyY2O4rqgFPVg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-483-tvU_WTcTNyq2-_WMheOehg-1; Fri, 19 Feb 2021 16:55:36 -0500
+X-MC-Unique: tvU_WTcTNyq2-_WMheOehg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1936E1020C20;
-        Fri, 19 Feb 2021 21:55:25 +0000 (UTC)
-Received: from Whitewolf.redhat.com (ovpn-118-5.rdu2.redhat.com [10.10.118.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 983F96A03C;
-        Fri, 19 Feb 2021 21:55:23 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 21/30] drm/dp: Always print aux channel name in logs
-Date:   Fri, 19 Feb 2021 16:53:17 -0500
-Message-Id: <20210219215326.2227596-22-lyude@redhat.com>
-In-Reply-To: <20210219215326.2227596-1-lyude@redhat.com>
-References: <20210219215326.2227596-1-lyude@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7DB7F1020C22;
+        Fri, 19 Feb 2021 21:55:34 +0000 (UTC)
+Received: from treble (ovpn-115-143.rdu2.redhat.com [10.10.115.143])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 792131971E;
+        Fri, 19 Feb 2021 21:55:32 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 15:55:30 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, pjt@google.com, mbenes@suze.cz, jgross@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 6/6] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <20210219215530.ivzzv3oavhuip6un@treble>
+References: <20210219204300.749932493@infradead.org>
+ <20210219210535.492733466@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210219210535.492733466@infradead.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we're about to convert everything in drm_dp_helper.c over to using
-drm_dbg_*(), let's also make our logging more consistent in drm_dp_helper.c
-while we're at it to ensure that we always print the name of the AUX
-channel in question.
+On Fri, Feb 19, 2021 at 09:43:06PM +0100, Peter Zijlstra wrote:
+> Arguably it would be simpler to do the other way around, but
+> unfortunately alternatives don't work that way, we cannot say:
+> 
+> 	ALTERNATIVE "call __x86_indirect_thunk_\reg",
+> 		    "call *%reg", ~X86_FEATURE_RETPOLINE
+> 
+> That is, there is no negative form of alternatives.
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/drm_dp_helper.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+X86_FEATURE_NO_RETPOLINE?
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index a9316c1ecb52..b5e2671baf22 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -139,8 +139,8 @@ void drm_dp_link_train_clock_recovery_delay(const struct drm_dp_aux *aux,
- 					 DP_TRAINING_AUX_RD_MASK;
- 
- 	if (rd_interval > 4)
--		DRM_DEBUG_KMS("AUX interval %lu, out of range (max 4)\n",
--			      rd_interval);
-+		DRM_DEBUG_KMS("%s: AUX interval %lu, out of range (max 4)\n",
-+			      aux->name, rd_interval);
- 
- 	if (rd_interval == 0 || dpcd[DP_DPCD_REV] >= DP_DPCD_REV_14)
- 		rd_interval = 100;
-@@ -155,8 +155,8 @@ static void __drm_dp_link_train_channel_eq_delay(const struct drm_dp_aux *aux,
- 						 unsigned long rd_interval)
- {
- 	if (rd_interval > 4)
--		DRM_DEBUG_KMS("AUX interval %lu, out of range (max 4)\n",
--			      rd_interval);
-+		DRM_DEBUG_KMS("%s: AUX interval %lu, out of range (max 4)\n",
-+			      aux->name, rd_interval);
- 
- 	if (rd_interval == 0)
- 		rd_interval = 400;
-@@ -2769,7 +2769,7 @@ int drm_dp_pcon_frl_enable(struct drm_dp_aux *aux)
- 	if (ret < 0)
- 		return ret;
- 	if (!(buf & DP_PCON_ENABLE_SOURCE_CTL_MODE)) {
--		DRM_DEBUG_KMS("PCON in Autonomous mode, can't enable FRL\n");
-+		DRM_DEBUG_KMS("%s: PCON in Autonomous mode, can't enable FRL\n", aux->name);
- 		return -EINVAL;
- 	}
- 	buf |= DP_PCON_ENABLE_HDMI_LINK;
-@@ -2864,7 +2864,8 @@ void drm_dp_pcon_hdmi_frl_link_error_count(struct drm_dp_aux *aux,
- 			num_error = 0;
- 		}
- 
--		DRM_ERROR("More than %d errors since the last read for lane %d", num_error, i);
-+		DRM_ERROR("%s: More than %d errors since the last read for lane %d",
-+			  aux->name, num_error, i);
- 	}
- }
- EXPORT_SYMBOL(drm_dp_pcon_hdmi_frl_link_error_count);
 -- 
-2.29.2
+Josh
 
