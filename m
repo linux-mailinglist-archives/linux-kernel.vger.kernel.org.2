@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8C531F863
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:27:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDCBD31F864
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbhBSL0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:26:42 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49856 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbhBSLY1 (ORCPT
+        id S230482AbhBSL07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:26:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230487AbhBSLYm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:24:27 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1E8951C0B8F; Fri, 19 Feb 2021 12:23:44 +0100 (CET)
-Date:   Fri, 19 Feb 2021 12:23:43 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, kernel@pengutronix.de,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH 2/2] leds: trigger/tty: Use led_set_brightness_sync()
- from workqueue
-Message-ID: <20210219112343.GM19207@duo.ucw.cz>
-References: <20210219082955.5007-1-u.kleine-koenig@pengutronix.de>
- <20210219082955.5007-2-u.kleine-koenig@pengutronix.de>
- <20210219094632.GB5641@duo.ucw.cz>
- <20210219095254.ky33qlb3cvy5btpe@pengutronix.de>
- <YC+V7bkdq1SAPYs9@kroah.com>
+        Fri, 19 Feb 2021 06:24:42 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8B7C061574;
+        Fri, 19 Feb 2021 03:24:01 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id e17so18330518ljl.8;
+        Fri, 19 Feb 2021 03:24:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=RFA5bf1h8EQA7SRcg6dIjyB28rNd3wzpvWShfnUUMhI=;
+        b=vRRLT+H16oJx9Yd1pVNwh54SLDLDwhsVDjZiYhkQc7HjQrqrwLhEC8p3Sul4rsmFuT
+         9vkEwf6/Gu4G/X+VWgvCOcg2Gk7gjkghSpj8U2h9nLnIghHUVRNFcht5OKO8kttd7Uwb
+         rwiAqjl0+bPGnpV/IA0piPrTghfzMA2e0RN/ZDdQn/rgrx9Op8BEbDEF9srZnh0x02KH
+         9NmS9gSEKwXaWcywLff7rIJ5JkytczmVMbRTlfJ7vYFwzEC25cVl6/RJmkqHp9IfPd/H
+         hGLW5dQIXUysqJHpDoNDuE27M6RySOmr7GamBwahVCDjuG5R2tw6q6Htc78FGO4o+qG5
+         3DsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=RFA5bf1h8EQA7SRcg6dIjyB28rNd3wzpvWShfnUUMhI=;
+        b=lAo7FWU9zC6KeqyPdRa5QYLU+32i0ifxvdy+PuaxyPKRo1BkBuf/E1bAv7Xln63dCu
+         1ppLok1VZBTVSOSmLv4G8EhYiA6EbNb5HcLuCo72ICkj2IMOpAlnXaU1zgIwhd+v9dAN
+         rKkOwWwOoqTx7gZIq5zR8S5FuTvEAqZBEZW2TbRAoo6mqq7uZ+SlnyAiBSAmkOPUG+Bc
+         j59fF6wUL8dqx2DwqXWeKPhZsq/3yL9w/JYsxEylZyVaq56FOQJk0ci5UqQr/sFNcv/H
+         APQRv2FVH23wT0kcFdSlA26i9WZajjGosIumkq8xnzOQAAma0aweUbLm49y5FmeALJpy
+         GX6Q==
+X-Gm-Message-State: AOAM532L64Gjrrb34BEBm55xRBxQ1FN3pEoYvu1bAPonEifHVVvRgxSp
+        8AU3P2smrJsniTGEcaM8eQU=
+X-Google-Smtp-Source: ABdhPJxP2OMw7jgbXy9Tqse8W7medU+/E6iZh4OhyZbfm21RUPNUhlqDJAJ5wTNWLZI5IS3rSciutw==
+X-Received: by 2002:a2e:7811:: with SMTP id t17mr5551509ljc.86.1613733839962;
+        Fri, 19 Feb 2021 03:23:59 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id f1sm939184ljj.124.2021.02.19.03.23.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 03:23:59 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 19 Feb 2021 12:23:57 +0100
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210219112357.GA34462@pc638.lan>
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="OGW1Z2JKiS9bXo17"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YC+V7bkdq1SAPYs9@kroah.com>
+In-Reply-To: <20210219111738.go6i2fdzvavpotxd@linutronix.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 12:17:38PM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-02-19 12:13:01 [+0100], Uladzislau Rezki wrote:
+> > I or Paul will ask for a test once it is settled down :) Looks like
+> > it is, so we should fix for v5.12.
+> 
+> Okay. Since Paul asked for powerpc test on v5.11-rc I wanted check if
+> parts of it are also -stable material.
+> 
+OK, i see. It will be broken starting from v5.12-rc unless we fix it.
 
---OGW1Z2JKiS9bXo17
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri 2021-02-19 11:41:49, Greg Kroah-Hartman wrote:
-> On Fri, Feb 19, 2021 at 10:52:54AM +0100, Uwe Kleine-K=F6nig wrote:
-> > On Fri, Feb 19, 2021 at 10:46:32AM +0100, Pavel Machek wrote:
-> > > On Fri 2021-02-19 09:29:55, Uwe Kleine-K=F6nig wrote:
-> > > > led_set_brightness() involves scheduling a workqueue. As here the l=
-ed's
-> > > > brightness setting is done in context of the trigger's workqueue th=
-is is
-> > > > unjustified overhead and it's more sensible to use
-> > > > led_set_brightness_sync().
-> > >=20
-> > > Acked-by: Pavel Machek <pavel@ucw.cz>
-> >=20
-> > Who is expected to pick these two up? I assume Greg as the commit that
-> > is fixed here is only in his try for now?
->=20
-> I will do so once Linus takes my existing pull request, don't worry,
-> they will make it into 5.12-final.
-
-It seems like the label is now unused, so this causes warnings... see
-the bot output.
-
-Best regards,
-									Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---OGW1Z2JKiS9bXo17
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+fvwAKCRAw5/Bqldv6
-8v6OAKCKVEUvoMRrXOlNNd45DyYSeXMJXQCgqnbS0QHMKQ/Hy0E4szHMucpA5zw=
-=67mF
------END PGP SIGNATURE-----
-
---OGW1Z2JKiS9bXo17--
+--
+Vlad Rezki
