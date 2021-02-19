@@ -2,102 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A083B31F800
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4578F31F834
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:20:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230290AbhBSLNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhBSLNq (ORCPT
+        id S230416AbhBSLTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:19:53 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:58869 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230239AbhBSLSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:13:46 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420FFC061574;
-        Fri, 19 Feb 2021 03:13:06 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id a22so18160608ljp.10;
-        Fri, 19 Feb 2021 03:13:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=P0byXqzM+Zc4/Gl9DjXiSfs91CO2J92qhMxAg8TAMLI=;
-        b=uV/y8yzjoZTboINvZT8E7qZLEZUobVSAll67AKd91yz2ML/e4ZwydlTFn9mneO8NQ5
-         siWcaZwLcz+9tw42crghN8kHYG1KLBp6KS11uDZmQWcE6XXBr7Zh5PsR+jQyqflEUdjS
-         OOqwGyVrkV4qFnjcyyRgcyEGjcaYAIjm5PNqPfweytQSma4uMAm6jetqIFqNrNBmxLn6
-         SHDpmG1oWpK2wqnonsmw2Vlj7IPIg2VrVFpSP6EKEFvsbUKfWKsH7h/mLNef7EF8Ykt9
-         D53iiGcgYPYN4U3htKIsKdnIB2WYTV/UXovYki4vXnSRToG8ZFfO/mIFxNaVCWPVBUo3
-         +u8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P0byXqzM+Zc4/Gl9DjXiSfs91CO2J92qhMxAg8TAMLI=;
-        b=WrqyqEyhyHaN7t8VIHTsdfhRVRD4KQR2coBSz5aEWOzQK8aisOWJCqplNf4tVykgvz
-         vLkp6HM7IQiPtXv/+GzXpatkfcDBKabalX4mJSd+yeV+dxEsqfje+1bjfFpCfhL2uogH
-         Iy3noEj2fJsaoHOXJ2xknWqvGfAo/Gl56iiRtoFtoESUnYpEO13BqXvJlubsnssSvpkJ
-         INaev+JBcN9hKDHpptvWWH32figXWbT0NdtutaqIS2DQzL89ZgwOr+MGTbKSPiZJ1HFr
-         9HoLT7T/Sy0FObUyv0TqTqLI4JuixNY1MwO7tlFFR7SQ5Vf8NLfkgWPDRaGLwHYlDuA/
-         LCMA==
-X-Gm-Message-State: AOAM5338dr4RUQ9CHQk/SyfoY6Qecyq/gxKuSCJC2VejTl3GFal0DBsF
-        kKoALeYlCGljS1FZePB63WI=
-X-Google-Smtp-Source: ABdhPJzYnQcFySx46h87XYSBUvdZCQ+CSAtC312TKOXS8RGFBMgZgxfILJF7iZFJHJQtTLRkSg9Zyw==
-X-Received: by 2002:a2e:9795:: with SMTP id y21mr2994420lji.226.1613733184642;
-        Fri, 19 Feb 2021 03:13:04 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id g3sm925135ljj.43.2021.02.19.03.13.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 03:13:04 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Fri, 19 Feb 2021 12:13:01 +0100
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210219111301.GA34441@pc638.lan>
-References: <161365856280.719838.12423085451287256713.stgit@devnote2>
- <20210218151554.GQ2743@paulmck-ThinkPad-P72>
- <20210219081755.eucq4srbam6wg2gm@linutronix.de>
- <20210219104958.GA34308@pc638.lan>
- <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+        Fri, 19 Feb 2021 06:18:49 -0500
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11JBCOi5009228;
+        Fri, 19 Feb 2021 12:17:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=aNSiq1WuZ5PT7Y3v8+mQF2IY08hpA6ycnBtHBmLuxKI=;
+ b=VDjFFxmOTtTMt5hIWGnNdA6OM5xDDe+ivSbjqjy2D88iaBhJc65JNI7gSZ1ztgYQUxws
+ cUDe6JeRF+Ep7YgaeRbDRBqcdhSAXJGC7eZjcaPWy4FAkUCqOm+YEO/n8ci7Layw8UnI
+ IaTqw51Fm9AbcHasZzgsURnZteIeTOqzG14OZJ0SHGwpQ0lilzgTu4WR4VWesoQly595
+ H9UYH6bDmwg5v6CoSAuCBsHPm2misoy86xfwMbx8h6+7Mpq95JIDu9VdZdpLEmDo6cJ2
+ h9pzt5BQlDfGbev77iaWkFtcPToixBARNQxGOZKhi2+gdc+F+eGei4LkHJGig3Rhfam6 FA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36sqadeymx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 12:17:59 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D282110002A;
+        Fri, 19 Feb 2021 12:17:58 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BEDA82266D7;
+        Fri, 19 Feb 2021 12:17:58 +0100 (CET)
+Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 19 Feb 2021 12:17:58
+ +0100
+From:   Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>
+CC:     <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-msm@vger.kernel.org>, <arnaud.pouliquen@foss.st.com>
+Subject: [PATCH v5 00/16] introduce a generic IOCTL interface for RPMsg channels management
+Date:   Fri, 19 Feb 2021 12:14:45 +0100
+Message-ID: <20210219111501.14261-1-arnaud.pouliquen@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219105710.d626zexj6vzt6k6y@linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG3NODE1.st.com (10.75.127.7) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_04:2021-02-18,2021-02-19 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:57:10AM +0100, Sebastian Andrzej Siewior wrote:
-> On 2021-02-19 11:49:58 [+0100], Uladzislau Rezki wrote:
-> > If above fix works, we can initialize rcu_init_tasks_generic() from the
-> > core_initcall() including selftst. It means that such initialization can
-> > be done later:
-> 
-> Good. Please let me know once there is something for me to test.
-> Do I assume correctly that the self-test, I stumbled upon, is v5.12
-> material?
-> 
-I or Paul will ask for a test once it is settled down :) Looks like
-it is, so we should fix for v5.12.
+This series restructures the RPMsg char driver to decorrelate the control part and to
+create a generic RPMsg ioctl interface compatible with other RPMsg services.
 
---
-Vlad Rezki
+The V4 and V5 fix compilation issues reported by the kernel test robot <lkp@intel.com>
+and analyzed by Dan Carpenter <dan.carpenter@oracle.com>.
+
+The V3 is based on the guideline proposed by Mathieu Poirier to keep as much as possible
+the legacy implementation of the rpmsg_char used by the GLINK and SMD platforms.
+
+Objectives of the series:
+- Allow to create a service from Linux user application:
+  - with a specific name
+  - with or without name service announcement.
+- Allow to probe the same service by receiving either a NS announcement from the remote firmware
+  or a Linux user application request.
+- Use these services independently of the RPMsg transport implementation (e.g be able to use
+  RPMSg char with the RPMsg virtio bus).
+
+Steps in the series:
+  - Extract the control part of the char dev and create the rpmsg_ctrl.c file (patches 1 to 6)
+  - Enable the use of the chardev with the virtio backend (patches 7 to 11)
+  - Introduce the RPMSG_CREATE_DEV_IOCTL IOCTL to instantiate RPMsg devices (patch 12)
+    The application can then create or release a channel by specifying:
+       - the name service of the device to instantiate.   
+       - the source address.
+       - the destination address.
+  - Instantiate the /dev/rpmsg interface on remote NS announcement (patches 13 to 16)
+
+In this revision, I do not divide the series into several parts in order to show a complete
+picture of the proposed evolution. To simplify the review, if requested, I can send it in
+several steps listed above.
+
+Known current Limitations:
+- Tested only with virtio RPMsg bus. The glink and smd drivers adaptations have not been tested
+  (not able to test it).
+- For the virtio backend: No NS announcement is sent to the remote processor if the source
+  address is set to RPMSG_ADDR_ANY.
+- For the virtio backend: the existing RPMSG_CREATE_EPT_IOCTL is working but the endpoints are
+  not attached to an exiting channel.
+- to limit patches the pending RPMSG_DESTROY_DEV_IOCTL has not ben implemented. This will be
+  proposed in a second step.
+
+This series can be applied on git/andersson/remoteproc.git for-next branch (d9ff3a5789cb).
+
+This series can be tested using rpmsgexport, rpmsgcreatedev and ping tools available here:
+https://github.com/arnopo/rpmsgexport.git
+
+Reference to the V4 discussion thread: https://lkml.org/lkml/2021/2/17/384
+
+Arnaud Pouliquen (16):
+  rpmsg: char: rename rpmsg_char_init to rpmsg_chrdev_init
+  rpmsg: move RPMSG_ADDR_ANY in user API
+  rpmsg: add short description of the IOCTL defined in UAPI.
+  rpmsg: char: export eptdev create an destroy functions
+  rpmsg: char: dissociate the control device from the rpmsg class
+  rpmsg: move the rpmsg control device from rpmsg_char to rpmsg_ctrl
+  rpmsg: update rpmsg_chrdev_register_device function
+  rpmsg: glink: add sendto and trysendto ops
+  rpmsg: smd: add sendto and trysendto ops
+  rpmsg: char: use sendto to specify the message destination address
+  rpmsg: virtio: register the rpmsg_ctrl device
+  rpmsg: ctrl: introduce RPMSG_CREATE_DEV_IOCTL
+  rpmsg: char: introduce __rpmsg_chrdev_create_eptdev function
+  rpmsg: char: introduce a RPMsg driver for the RPMsg char device
+  rpmsg: char: no dynamic endpoint management for the default one
+  rpmsg: char: return an error if device already open
+
+ drivers/rpmsg/Kconfig             |   9 ++
+ drivers/rpmsg/Makefile            |   1 +
+ drivers/rpmsg/qcom_glink_native.c |  18 ++-
+ drivers/rpmsg/qcom_smd.c          |  18 ++-
+ drivers/rpmsg/rpmsg_char.c        | 237 +++++++++++-------------------
+ drivers/rpmsg/rpmsg_char.h        |  51 +++++++
+ drivers/rpmsg/rpmsg_ctrl.c        | 229 +++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_internal.h    |  10 +-
+ drivers/rpmsg/virtio_rpmsg_bus.c  |  57 ++++++-
+ include/linux/rpmsg.h             |   3 +-
+ include/uapi/linux/rpmsg.h        |  18 ++-
+ 11 files changed, 485 insertions(+), 166 deletions(-)
+ create mode 100644 drivers/rpmsg/rpmsg_char.h
+ create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+
+-- 
+2.17.1
+
