@@ -2,108 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8764231FE62
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E7E131FE63
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 18:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhBSRwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 12:52:31 -0500
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:37820 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230101AbhBSRsn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 12:48:43 -0500
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11JHkUH3018180;
-        Fri, 19 Feb 2021 18:47:53 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=selector1;
- bh=zy1EbYrt/cGzcvtGhzDvwy8smSDarjqQyjUb30S6vmo=;
- b=egPhgpKW1d2P7T+AFixcdA9HGKykKqTX6L6PvygwdeGMnOYPAnlFWH1uy2TiCtv85sc0
- O8VxmQI9zn9z8rObrtdFJx2h5S2ajLg70OZdVLGSFnhvaW73LEgCxTRqvjaZfdchgDaO
- G5WBMBxwL4D2mdrAuVBx09RxRTXRbxizpMiwjnCP5U7jkmhTGWeQmx5lSD8l19KyMz1A
- lGjFUnpJnHD+0UUxeOKLVwOvp2As8KHhmtOjeNUhKe3kTGaEiT2YerDHzJfNghxq17Oa
- VhciBTqe1MFoBXAt+kN7sGXGmSUnzFuw9iJPNFrqNPJPRpEZT1FZ9GV6GLQfMJqsBnZG HQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 36p707551p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 18:47:53 +0100
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id A280010002A;
-        Fri, 19 Feb 2021 18:47:52 +0100 (CET)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9612925F3FD;
-        Fri, 19 Feb 2021 18:47:52 +0100 (CET)
-Received: from localhost (10.75.127.44) by SFHDAG2NODE3.st.com (10.75.127.6)
- with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 19 Feb 2021 18:47:52
- +0100
-From:   Erwan Le Ray <erwan.leray@foss.st.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-CC:     <linux-serial@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Erwan Le Ray <erwan.leray@foss.st.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>
-Subject: [PATCH 13/13] serial: stm32: add support for "flush_buffer" ops
-Date:   Fri, 19 Feb 2021 18:47:36 +0100
-Message-ID: <20210219174736.1022-14-erwan.leray@foss.st.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210219174736.1022-1-erwan.leray@foss.st.com>
-References: <20210219174736.1022-1-erwan.leray@foss.st.com>
+        id S230307AbhBSRxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 12:53:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40576 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230321AbhBSRxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 12:53:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99C2364ED9;
+        Fri, 19 Feb 2021 17:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613757146;
+        bh=mn9kn5Bs6DUDViauax7d710EWCSTYspffhf6L+06LIg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fzJ+FvVBQdPVf1lj9RM113HrwU01U1xj2WtvxuSkI4qgGUg2Ivrgg9zoYHe5aOwGE
+         /AXWl68s6fAYoZZAnH/3ZPxYleclaytuzBtAc9lf4q8Da1Fu9HnnxAH+ZdMCfM0+Xo
+         iIBz8iepMfnUTRTiDQf6waJbc15RFxaz79CNUupt4d7t2cMc0m8CCD161pYPY/Xx3i
+         LRLVR1ZFAhb4pRqnChY5RZC59L8eLdKwQ/Sh1Jr0oZIgE+8VXGT1a02DUb27ekyB9i
+         eerllH9Bnk8SKM7/fk5EhrLXisY5A4++EC9I4AYM7GRNSy7ePRAVWF51oCl3da0ba7
+         ZMSTYn8NhuUsQ==
+Date:   Fri, 19 Feb 2021 17:52:21 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     catalin.marinas@arm.com, saiprakash.ranjan@codeaurora.org,
+        robh@kernel.org, konrad.dybcio@somainline.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: Add part number for Arm Cortex-A78
+Message-ID: <20210219175220.GB6352@willie-the-truck>
+References: <1613580251-12694-1-git-send-email-neeraju@codeaurora.org>
+ <20210217170612.GA4254@willie-the-truck>
+ <c43d8eed-2665-9e9b-c6b5-799b5281c657@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c43d8eed-2665-9e9b-c6b5-799b5281c657@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the support for "flush_buffer" ops in order to flush any write buffers,
-reset any DMA state and stop any ongoing DMA transfers when the
-port->state->xmit circular buffer is cleared.
+On Wed, Feb 17, 2021 at 11:37:04PM +0530, Neeraj Upadhyay wrote:
+> 
+> 
+> On 2/17/2021 10:36 PM, Will Deacon wrote:
+> > On Wed, Feb 17, 2021 at 10:14:11PM +0530, Neeraj Upadhyay wrote:
+> > > Add the MIDR part number info for the Arm Cortex-A78.
+> > > 
+> > > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > > ---
+> > >   arch/arm64/include/asm/cputype.h | 2 ++
+> > >   1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/include/asm/cputype.h b/arch/arm64/include/asm/cputype.h
+> > > index ef5b040..3aced88 100644
+> > > --- a/arch/arm64/include/asm/cputype.h
+> > > +++ b/arch/arm64/include/asm/cputype.h
+> > > @@ -72,6 +72,7 @@
+> > >   #define ARM_CPU_PART_CORTEX_A76		0xD0B
+> > >   #define ARM_CPU_PART_NEOVERSE_N1	0xD0C
+> > >   #define ARM_CPU_PART_CORTEX_A77		0xD0D
+> > > +#define ARM_CPU_PART_CORTEX_A78		0xD41
+> > >   #define APM_CPU_PART_POTENZA		0x000
+> > > @@ -109,6 +110,7 @@
+> > >   #define MIDR_CORTEX_A76	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A76)
+> > >   #define MIDR_NEOVERSE_N1 MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_NEOVERSE_N1)
+> > >   #define MIDR_CORTEX_A77	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A77)
+> > > +#define MIDR_CORTEX_A78	MIDR_CPU_MODEL(ARM_CPU_IMP_ARM, ARM_CPU_PART_CORTEX_A78)
+> > >   #define MIDR_THUNDERX	MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX)
+> > >   #define MIDR_THUNDERX_81XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_81XX)
+> > >   #define MIDR_THUNDERX_83XX MIDR_CPU_MODEL(ARM_CPU_IMP_CAVIUM, CAVIUM_CPU_PART_THUNDERX_83XX)
+> > 
+> > This usually means there's an erratum to work around. What are you hiding ;)
+> > 
+> > Will
+> > 
+> 
+> :) . This is needed for supporting implementation defined AMU counters in
+> A78 [1]. However, there is no upstream user of it.
 
-Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+I don't think we should add this upstream without a user.
 
-diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
-index 114408f3892a..92836068e5ec 100644
---- a/drivers/tty/serial/stm32-usart.c
-+++ b/drivers/tty/serial/stm32-usart.c
-@@ -597,6 +597,19 @@ static void stm32_usart_start_tx(struct uart_port *port)
- 	stm32_usart_transmit_chars(port);
- }
- 
-+/* Flush the transmit buffer. */
-+static void stm32_usart_flush_buffer(struct uart_port *port)
-+{
-+	struct stm32_port *stm32_port = to_stm32_port(port);
-+	struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
-+
-+	if (stm32_port->tx_ch) {
-+		dmaengine_terminate_async(stm32_port->tx_ch);
-+		stm32_usart_clr_bits(port, ofs->cr3, USART_CR3_DMAT);
-+		stm32_port->tx_dma_busy = false;
-+	}
-+}
-+
- /* Throttle the remote when input buffer is about to overflow. */
- static void stm32_usart_throttle(struct uart_port *port)
- {
-@@ -992,6 +1005,7 @@ static const struct uart_ops stm32_uart_ops = {
- 	.break_ctl	= stm32_usart_break_ctl,
- 	.startup	= stm32_usart_startup,
- 	.shutdown	= stm32_usart_shutdown,
-+	.flush_buffer	= stm32_usart_flush_buffer,
- 	.set_termios	= stm32_usart_set_termios,
- 	.pm		= stm32_usart_pm,
- 	.type		= stm32_usart_type,
--- 
-2.17.1
-
+Will
