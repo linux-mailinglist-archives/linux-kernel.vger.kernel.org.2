@@ -2,71 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE44D31FECE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 764E731FECF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhBSS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:29:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBSS3e (ORCPT
+        id S229874AbhBSS37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:29:59 -0500
+Received: from mx0a-002e3701.pphosted.com ([148.163.147.86]:8782 "EHLO
+        mx0a-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229587AbhBSS3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:29:34 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7280BC061574;
-        Fri, 19 Feb 2021 10:28:54 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 12CE5372;
-        Fri, 19 Feb 2021 18:28:54 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 12CE5372
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1613759334; bh=n3p+IX/s+VfEyw21LgCGvV7L1okdca73+xJRAZxNUqc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=OzM8h9qyyqsB2Y7SVNULu8jAY5pt4IAJeVmU8/XB/1S1Xu5m0PynXWQZzy8xC4Gaq
-         tkBdqQX7Gosss101txq5HFpS1KGuX11hpNNoN2z2B8n7mq7/6HyEOoZ/LXKpn7SdRj
-         R52NaS+Zb9VPall4Aqv/zU8wp8VJp/Uvyp08yQPaYsgJoXr8ZewCRUgTRkExMiYURP
-         cNccbKA/sEJOBpfHjqyQ64rJ6WjxJyuHvKGpfFZeFwAPI9dRK+Faj2JoyuOFQmEhCj
-         iqP577lS8FVzef+ZSaWtVohl82K5c4ZvMAVpW5m+LgJg3+IRBnK/Ie7vEz4uU76oE0
-         ODhEH6+/UAIjw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     hjh <huangjianghui@uniontech.com>
-Cc:     Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] [PATCH] Documentation/translations: Translate
- sound/hd-audio/controls.rst into Chinese
-In-Reply-To: <20210219144856.27362-1-huangjianghui@uniontech.com>
-References: <20210219144856.27362-1-huangjianghui@uniontech.com>
-Date:   Fri, 19 Feb 2021 11:28:53 -0700
-Message-ID: <874ki7oqsa.fsf@meer.lwn.net>
+        Fri, 19 Feb 2021 13:29:54 -0500
+Received: from pps.filterd (m0134421.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11JINR7V028016;
+        Fri, 19 Feb 2021 18:28:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=+yteBGQhTSmN52lelYK5WiyBCGtEKupWRyLUK8gtESs=;
+ b=H4uJLbRzspu5e4MT0IAODBRcbDg1uAIDfGyUpzZvDiMzmagy8bprB0rVSoUz9gcfHWMr
+ PtXVJfSvjaoNbmsH2i0flxJTgX+2vQNAAJpuawAY8Ldu0a9x1TtZrIy3wjxEZhLHvLjD
+ qhf2ioGD8rJgdw4zDBwCWYW5vK+YRWZdy52FWFrRJdh5D9yxwF4Gk40PSmvDf0FGYMG0
+ WvTaJjkovzmh9LWpPYfqDoAe2NeYFgQxOsf/zi7eWKb2DtDVRfWfo2rJuEXiHNv8CSin
+ ZLQ33uJKgh2Fu6neBMN7VO4NqsLUGP77LzL9xmCpVOfbidQDzD0diZn3s7GwWRsDmKbD 2g== 
+Received: from g9t5008.houston.hpe.com (g9t5008.houston.hpe.com [15.241.48.72])
+        by mx0b-002e3701.pphosted.com with ESMTP id 36s65q9k05-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Feb 2021 18:28:54 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g9t5008.houston.hpe.com (Postfix) with ESMTP id 455014F;
+        Fri, 19 Feb 2021 18:28:53 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id DEE164B;
+        Fri, 19 Feb 2021 18:28:52 +0000 (UTC)
+Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 605001)
+        id 5DEA730001CF0; Fri, 19 Feb 2021 12:28:52 -0600 (CST)
+From:   Justin Ernst <justin.ernst@hpe.com>
+To:     Borislav Petkov <bp@suse.de>, Hans de Goede <hdegoede@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, Tom Rix <trix@redhat.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Justin Ernst <justin.ernst@hpe.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] x86/platform/uv: Fix indentation warning in Documentation/ABI/testing/sysfs-firmware-sgi_uv
+Date:   Fri, 19 Feb 2021 12:28:52 -0600
+Message-Id: <20210219182852.385297-1-justin.ernst@hpe.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 bulkscore=0
+ phishscore=0 malwarescore=0 spamscore=0 suspectscore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102190144
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hjh <huangjianghui@uniontech.com> writes:
+commit c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
 
-> Signed-off-by: hjh <huangjianghui@uniontech.com>
-> ---
->  .../zh_CN/sound/hd-audio/controls.txt         | 117 ++++++++++++++++++
->  1 file changed, 117 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/sound/hd-audio/controls.txt
+misplaced the first line of a codeblock section, causing the reported
+warning message:
+Documentation/ABI/testing/sysfs-firmware-sgi_uv:2: WARNING: Unexpected indentation.
 
-Thanks for working to improve the documentation.
+Move the misplaced line below the required blank line to remove the
+warning message.
 
-When you add a new file, you need to put it into an index.rst file
-somewhere so that it gets built with the rest of the kernel docs.
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Fixes: c9624cb7db1c ("x86/platform/uv: Update sysfs documentation")
+Acked-by: Mike Travis <mike.travis@hpe.com>
+Signed-off-by: Justin Ernst <justin.ernst@hpe.com>
+---
+ Documentation/ABI/testing/sysfs-firmware-sgi_uv | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As for *which* index.rst...I kind of wonder how you chose that document,
-in particular, to translate?  If we want to start translating the sound
-documentation, I think it would be better to start with the top-level
-page and build the structure downward.  So can I please ask you to start
-in Documentation/translations/zh_CN/sound, with some sort of basic
-index.rst file there, then add onto it from there?
+diff --git a/Documentation/ABI/testing/sysfs-firmware-sgi_uv b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+index 637c668cbe45..12ed843e1d3e 100644
+--- a/Documentation/ABI/testing/sysfs-firmware-sgi_uv
++++ b/Documentation/ABI/testing/sysfs-firmware-sgi_uv
+@@ -39,8 +39,8 @@ Description:
+ 
+ 		The uv_type entry contains the hub revision number.
+ 		This value can be used to identify the UV system version::
+-			"0.*" = Hubless UV ('*' is subtype)
+ 
++			"0.*" = Hubless UV ('*' is subtype)
+ 			"3.0" = UV2
+ 			"5.0" = UV3
+ 			"7.0" = UV4
+-- 
+2.26.2
 
-Thanks,
-
-jon
