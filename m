@@ -2,200 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62CF031F5CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A867531F5C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:21:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhBSIWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:22:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53522 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229886AbhBSIWG (ORCPT
+        id S229863AbhBSIV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 03:21:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBSIVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:22:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613722838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rjPfJdHvh7od31Gt2k9bHEivBC+h3on21GgJt1VAVlM=;
-        b=aqv3qUnEUggzU+5QVgiqt/uFzdulMQmZBkRpqWQELnuLQAAoomrXI5l9gBJPoflkljKy1V
-        IwgyDgdM7F/Z2XJ/3HrX/cSj0t4FJgHwQmhiY2b/nM5nj+Ha6mRzx7d9OxShJrSvOd1O8I
-        8J1XoiMGbjSroiOS8spA22W5tfvmyYo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-iXfvwTnJMSCq6d2scrfVLg-1; Fri, 19 Feb 2021 03:20:34 -0500
-X-MC-Unique: iXfvwTnJMSCq6d2scrfVLg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40C6ABBEE2;
-        Fri, 19 Feb 2021 08:20:30 +0000 (UTC)
-Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F1396F95B;
-        Fri, 19 Feb 2021 08:20:17 +0000 (UTC)
-To:     Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <20210218225904.GB6669@xz-x1>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-Message-ID: <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
-Date:   Fri, 19 Feb 2021 09:20:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Fri, 19 Feb 2021 03:21:18 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71963C061574;
+        Fri, 19 Feb 2021 00:20:38 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id o7so3341270pgl.1;
+        Fri, 19 Feb 2021 00:20:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=70Qa5qu8viWhbYhSFeFN5ri6nlE2GDV9Vz/0GH/LwDI=;
+        b=nrt+Y2WsvVO0D7cEhHYbFVm0q+96VOptxWKQwqyw4svU8f973uAX31MK9onlwcdO9v
+         RqjDxQ6FTcJoaIBVV9lakZRhmpVL+ihOnc9pBq4CuAtqZlk7NXzTZ6fW1lnhh3iajsah
+         dCeNg73G9FESua4DIA7pmDP7uS1xM1fbBVH7ebdRWCaDRRZxPhbQqeeJb06nISnfceeU
+         bAuW44hyx+0oPC54nwn/RHi7gjhAZOsdUMCfSZ1jDgsU34jN7waEDww54W7gJu3y/5N9
+         z8h7yMki2Tv/G0SjumM2swR5n38nLQY2wlb9ngZs5kyRcf9OhvI5N8Jk0AQLA6bWIn/S
+         eUyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=70Qa5qu8viWhbYhSFeFN5ri6nlE2GDV9Vz/0GH/LwDI=;
+        b=sqRGFXnDXtXLEhPw0gBMRyPTcUbn3051unrbAiwZ1k4wEDWmCd1S4nIhzOOH8IbqOM
+         i0Av+vjusnqE9ghQ64KjvGIaZ+sZMDCxj1fnbs4sNBurVIbgt/O5VWE64RpxWx0GmWM3
+         mKIII/R5NIOOk1eUPlonvFL4R+MYeL6JIEhoTIMt52vnAOOK/hkp7NS5e6ZtObXdN65q
+         AIzZSp4Mt08+GqDqTQaUeooLJFkRAGCZHsRw1vpKRQtoaQmqqZdTUi51yBgmdhVz12Cy
+         CwMghUoNc74x+pJW5AoD2nYoEanVygOADnfATOaA+UVyfgT5vWbyeMelcC0bJ1n/7geL
+         d+aw==
+X-Gm-Message-State: AOAM532k+hCKnAC71t4YnjL8Yb8KOPaZ8Pk8YprYjQkxzBTWr8a1ktMK
+        oZX9JdRdPuEhHdOjALsmONo=
+X-Google-Smtp-Source: ABdhPJzr731i/EYr4+IPpMCED5W29KVSVCbX+ktyWcwNydJX70PCgqCLgby31rXUSjBrLHgGAJY+2g==
+X-Received: by 2002:a63:28c3:: with SMTP id o186mr7625185pgo.206.1613722837915;
+        Fri, 19 Feb 2021 00:20:37 -0800 (PST)
+Received: from localhost ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id f23sm1329061pfa.5.2021.02.19.00.20.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 19 Feb 2021 00:20:37 -0800 (PST)
+Date:   Fri, 19 Feb 2021 16:20:26 +0800
+From:   Yue Hu <zbestahu@gmail.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
+ busy CPU if need_freq_update is set
+Message-ID: <20210219162026.00002e2b.zbestahu@gmail.com>
+In-Reply-To: <20210219074249.2hcwcnakihor343h@vireshk-i7>
+References: <20210218082514.1437-1-zbestahu@gmail.com>
+        <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
+        <20210219113804.00004a7e.zbestahu@gmail.com>
+        <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
+        <20210219144140.00004de9.zbestahu@gmail.com>
+        <20210219074249.2hcwcnakihor343h@vireshk-i7>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210218225904.GB6669@xz-x1>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18.02.21 23:59, Peter Xu wrote:
-> Hi, David,
+On Fri, 19 Feb 2021 13:12:49 +0530
+Viresh Kumar <viresh.kumar@linaro.org> wrote:
+
+> On 19-02-21, 14:41, Yue Hu wrote:
+> > On Fri, 19 Feb 2021 09:39:33 +0530
+> > Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >   
+> > > On 19-02-21, 11:38, Yue Hu wrote:  
+> > > > There's a possibility: we will use the previous freq to update
+> > > > if next_f is reduced for busy CPU if need_freq_update is set in
+> > > > sugov_update_next_freq().    
+> > > 
+> > > Right.
+> > >   
+> > > > This possibility would happen now? And this
+> > > > update is what we want if it happens?    
+> > > 
+> > > This is exactly what we want here, don't reduce speed for busy
+> > > CPU,  
+> > 
+> > I understand it should not skip this update but set the same freq as
+> > previous one again for the special case if need_freq_update is set.
+> > Am i rt?  
 > 
-> On Wed, Feb 17, 2021 at 04:48:44PM +0100, David Hildenbrand wrote:
->> When we manage sparse memory mappings dynamically in user space - also
->> sometimes involving MADV_NORESERVE - we want to dynamically populate/
->> discard memory inside such a sparse memory region. Example users are
->> hypervisors (especially implementing memory ballooning or similar
->> technologies like virtio-mem) and memory allocators. In addition, we want
->> to fail in a nice way if populating does not succeed because we are out of
->> backend memory (which can happen easily with file-based mappings,
->> especially tmpfs and hugetlbfs).
+> The special check, about not reducing freq if CPU had been busy
+> recently, doesn't have anything to do with need_freq_update.
+
+However, we will skip the update if need_freq_update is not set. And do
+the update if need_freq_update is set.
+
+Note that there are unnecessary fast switch check and spin lock/unlock
+operations in freq skip path.
+
+If we consider unnecessary behaviors above, then we should return right
+away rather than continue to execute following code.
+
+Consequently, we also need to consider need_update_freq flag since we
+need to update freq currently if it is set.
+
 > 
-> Could you explain a bit more on how do you plan to use this new interface for
-> the virtio-balloon scenario?
-
-Sure, that will bring up an interesting point to discuss 
-(MADV_POPULATE_WRITE).
-
-I'm planning on using it in virtio-mem: whenever the guests requests the 
-hypervisor (via a virtio-mem device) to make specific blocks available 
-("plug"), I want to have a configurable option ("populate=on" / 
-"prealloc="on") to perform safety checks ("prealloc") and populate page 
-tables.
-
-This becomes especially relevant for private/shared hugetlbfs and shared 
-files/shmem where we have a limited pool size (e.g., huge pages, tmpfs 
-size, filesystem size). But it will also come in handy when just 
-preallocating (esp. zeroing) anonymous memory.
-
-For virito-balloon it is not applicable because it really only supports 
-anonymous memory and we cannot fail requests to deflate ...
-
---- Example ---
-
-Example: Assume the guests requests to make 128 MB available and we're 
-using hugetlbfs. Assume we're out of huge pages in the hypervisor - we 
-want to fail the request - I want to do some kind of preallocation.
-
-So I could do fallocate() on anything that's MAP_SHARED, but not on 
-anything that's MAP_PRIVATE. hugetlbfs via memfd() cannot be 
-preallocated without going via SIGBUS handlers.
-
---- QEMU memory configurations ---
-
-I see the following combinations relevant in QEMU that I want to support 
-with virito-mem:
-
-1) MAP_PRIVATE anonymous memory
-2) MAP_PRIVATE on hugetlbfs (esp. via memfd)
-3) MAP_SHARED on hugetlbfs (esp. via memfd)
-4) MAP_SHARED on shmem (file / memfd)
-5) MAP_SHARED on some sparse file.
-
-Other MAP_PRIVATE mappings barely make any sense to me - "read the file 
-and write to page cache" is not really applicable to VM RAM (not to 
-mention doing fallocate(PUNCH_HOLE) that invalidates the private copies 
-of all other mappings on that file).
-
---- Ways to populate/preallocate ---
-
-I see the following ways to populate/preallocate:
-
-a) MADV_POPULATE: write fault on writable MAP_PRIVATE, read fault on
-    MAP_SHARED
-b) Writing to MAP_PRIVATE | MAP_SHARED from user space.
-c) (below) MADV_POPULATE_WRITE: write fault on writable MAP_PRIVATE |
-    MAP_SHARED
-
-Especially, 2) is kind of weird as implemented in QEMU 
-(util/oslib-posix.c:do_touch_pages):
-
-"Read & write back the same value, so we don't corrupt existing user/app 
-data ... TODO: get a better solution from kernel so we don't need to 
-write at all so we don't cause wear on the storage backing the region..."
-
-So if we have zero, we write zero. We'll COW pages, triggering a write 
-fault - and that's the only good thing about it. For example, similar to 
-MADV_POPULATE, nothing stops KSM from merging anonymous pages again. So 
-for anonymous memory the actual write is not helpful at all. Similarly 
-for hugetlbfs, the actual write is not necessary - but there is no other 
-way to really achieve the goal.
-
---- How MADV_POPULATE is useful ---
-
-With virito-mem, our VM will usually write to memory before it reads it.
-
-With 1) and 2) it does exactly what I want: trigger COW / allocate 
-memory and trigger a write fault. The only issue with 1) is that KSM 
-might come around and undo our work - but that could only be avoided by 
-writing random numbers to all pages from user space. Or we could simply 
-rather disable KSM in that setup ...
-
---- How MADV_POPULATE is not perfect ---
-
-KSM can merge anonymous pages again. Just like the current QEMU 
-implementation. The only way around that is writing random numbers to 
-the pages or mlocking all memory. No big news.
-
-Nothing stops reclaim/swap code from depopulating when using files. 
-Again, no big new - we have to mlock.
-
---- HOW MADV_POPULATE_WRITE might be useful ---
-
-With 3) 4) 5) MADV_POPULATE does partially what I want: preallocate 
-memory and populate page tables. But as it's a read fault, I think we'll 
-have another minor fault on access. Not perfect, but better than failing 
-with SIGBUS. One way around that would be having an additional 
-MADV_POPULATE_WRITE, to use in cases where it makes sense (I think at 
-least 3) and 4), most probably not on actual files like 5) ).
-
-Trigger a write fault without actually writing.
-
-
-Makes sense?
-
--- 
-Thanks,
-
-David / dhildenb
+> Though previously we added the need_freq_update check there to make
+> sure we account for any recent policy min/max change and don't skip
+> freq update anymore. That won't happen anymore and so we don't need
+> any check here related to need_freq_update.
+> 
+> If you still have doubt, please explain your concern in detail with an
+> example as I am failing to understand it.
+> 
 
