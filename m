@@ -2,164 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4443531F7F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A083B31F800
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 12:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhBSLMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 06:12:13 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229985AbhBSLMC (ORCPT
+        id S230290AbhBSLNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 06:13:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229985AbhBSLNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 06:12:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613733035;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5AVjhEI1tw86vUOw/9aIZh6BTcpMrggeQLiNZ3oUAgQ=;
-        b=W5XZ6CFykvo+6PQCpO2TiEfraObaY4Eu8uwP6ccGWYFhl1ikBjB/qkesABANjrSDJazNVy
-        7D88NT879qj8wu67pdRmqNGvNGky4L2eVtopq3a0t9wMSw9M73Qu6rYI3pAIbnT4lCvq8a
-        o0lGi2P6KTbdvaeaqAeyINsIpib6Llc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476--rl0D7HYOzaShKF10--1KQ-1; Fri, 19 Feb 2021 06:10:31 -0500
-X-MC-Unique: -rl0D7HYOzaShKF10--1KQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BDCBD835E2C;
-        Fri, 19 Feb 2021 11:10:27 +0000 (UTC)
-Received: from [10.36.113.117] (ovpn-113-117.ams2.redhat.com [10.36.113.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CEB7310027A5;
-        Fri, 19 Feb 2021 11:10:05 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Fri, 19 Feb 2021 06:13:46 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420FFC061574;
+        Fri, 19 Feb 2021 03:13:06 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id a22so18160608ljp.10;
+        Fri, 19 Feb 2021 03:13:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=P0byXqzM+Zc4/Gl9DjXiSfs91CO2J92qhMxAg8TAMLI=;
+        b=uV/y8yzjoZTboINvZT8E7qZLEZUobVSAll67AKd91yz2ML/e4ZwydlTFn9mneO8NQ5
+         siWcaZwLcz+9tw42crghN8kHYG1KLBp6KS11uDZmQWcE6XXBr7Zh5PsR+jQyqflEUdjS
+         OOqwGyVrkV4qFnjcyyRgcyEGjcaYAIjm5PNqPfweytQSma4uMAm6jetqIFqNrNBmxLn6
+         SHDpmG1oWpK2wqnonsmw2Vlj7IPIg2VrVFpSP6EKEFvsbUKfWKsH7h/mLNef7EF8Ykt9
+         D53iiGcgYPYN4U3htKIsKdnIB2WYTV/UXovYki4vXnSRToG8ZFfO/mIFxNaVCWPVBUo3
+         +u8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=P0byXqzM+Zc4/Gl9DjXiSfs91CO2J92qhMxAg8TAMLI=;
+        b=WrqyqEyhyHaN7t8VIHTsdfhRVRD4KQR2coBSz5aEWOzQK8aisOWJCqplNf4tVykgvz
+         vLkp6HM7IQiPtXv/+GzXpatkfcDBKabalX4mJSd+yeV+dxEsqfje+1bjfFpCfhL2uogH
+         Iy3noEj2fJsaoHOXJ2xknWqvGfAo/Gl56iiRtoFtoESUnYpEO13BqXvJlubsnssSvpkJ
+         INaev+JBcN9hKDHpptvWWH32figXWbT0NdtutaqIS2DQzL89ZgwOr+MGTbKSPiZJ1HFr
+         9HoLT7T/Sy0FObUyv0TqTqLI4JuixNY1MwO7tlFFR7SQ5Vf8NLfkgWPDRaGLwHYlDuA/
+         LCMA==
+X-Gm-Message-State: AOAM5338dr4RUQ9CHQk/SyfoY6Qecyq/gxKuSCJC2VejTl3GFal0DBsF
+        kKoALeYlCGljS1FZePB63WI=
+X-Google-Smtp-Source: ABdhPJzYnQcFySx46h87XYSBUvdZCQ+CSAtC312TKOXS8RGFBMgZgxfILJF7iZFJHJQtTLRkSg9Zyw==
+X-Received: by 2002:a2e:9795:: with SMTP id y21mr2994420lji.226.1613733184642;
+        Fri, 19 Feb 2021 03:13:04 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id g3sm925135ljj.43.2021.02.19.03.13.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 03:13:04 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 19 Feb 2021 12:13:01 +0100
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <YC+UaTVUn0o4Zynz@dhcp22.suse.cz>
- <6e5a5bde-cedb-9d0a-f8c1-22406085b6b9@redhat.com>
- <YC+bKSQdepXhqo0T@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <472f3bf1-595e-54e7-3022-0562cb6b3eb2@redhat.com>
-Date:   Fri, 19 Feb 2021 12:10:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210219111301.GA34441@pc638.lan>
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YC+bKSQdepXhqo0T@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.02.21 12:04, Michal Hocko wrote:
-> On Fri 19-02-21 11:43:48, David Hildenbrand wrote:
->> On 19.02.21 11:35, Michal Hocko wrote:
->>> On Wed 17-02-21 16:48:44, David Hildenbrand wrote:
->>> [...]
->>>
->>> I only got  to the implementation now.
->>>
->>>> +static long madvise_populate(struct vm_area_struct *vma,
->>>> +			     struct vm_area_struct **prev,
->>>> +			     unsigned long start, unsigned long end)
->>>> +{
->>>> +	struct mm_struct *mm = vma->vm_mm;
->>>> +	unsigned long tmp_end;
->>>> +	int locked = 1;
->>>> +	long pages;
->>>> +
->>>> +	*prev = vma;
->>>> +
->>>> +	while (start < end) {
->>>> +		/*
->>>> +		 * We might have temporarily dropped the lock. For example,
->>>> +		 * our VMA might have been split.
->>>> +		 */
->>>> +		if (!vma || start >= vma->vm_end) {
->>>> +			vma = find_vma(mm, start);
->>>> +			if (!vma)
->>>> +				return -ENOMEM;
->>>> +		}
->>>
->>> Why do you need to find a vma when you already have one. do_madvise will
->>> give you your vma already. I do understand that you want to finish the
->>> vma for some errors but that shouldn't require handling vmas. You should
->>> be in the shope of one here unless I miss anything.
->>
->> See below, we might temporary drop the lock while not having processed all
->> pages
->>
->>>
->>>> +
->>>> +		/* Bail out on incompatible VMA types. */
->>>> +		if (vma->vm_flags & (VM_IO | VM_PFNMAP) ||
->>>> +		    !vma_is_accessible(vma)) {
->>>> +			return -EINVAL;
->>>> +		}
->>>> +
->>>> +		/*
->>>> +		 * Populate pages and take care of VM_LOCKED: simulate user
->>>> +		 * space access.
->>>> +		 *
->>>> +		 * For private, writable mappings, trigger a write fault to
->>>> +		 * break COW (i.e., shared zeropage). For other mappings (i.e.,
->>>> +		 * read-only, shared), trigger a read fault.
->>>> +		 */
->>>> +		tmp_end = min_t(unsigned long, end, vma->vm_end);
->>>> +		pages = populate_vma_page_range(vma, start, tmp_end, &locked);
->>>> +		if (!locked) {
->>>> +			mmap_read_lock(mm);
->>>> +			*prev = NULL;
->>>> +			vma = NULL;
->>
->> ^ here
->>
->> so, the VMA might have been replaced/split/... in the meantime.
->>
->> So to make forward progress, I have to lookup again. (similar. but different
->> to madvise_dontneed_free()).
+On Fri, Feb 19, 2021 at 11:57:10AM +0100, Sebastian Andrzej Siewior wrote:
+> On 2021-02-19 11:49:58 [+0100], Uladzislau Rezki wrote:
+> > If above fix works, we can initialize rcu_init_tasks_generic() from the
+> > core_initcall() including selftst. It means that such initialization can
+> > be done later:
 > 
-> Right. Missed that.
+> Good. Please let me know once there is something for me to test.
+> Do I assume correctly that the self-test, I stumbled upon, is v5.12
+> material?
+> 
+I or Paul will ask for a test once it is settled down :) Looks like
+it is, so we should fix for v5.12.
 
-It would look more natural if we'd just be processing the whole range - 
-but then it would not fit into the generic infrastructure and would 
-result in even more code.
-
-I decided to go with "process the passed range and treat the given VMA 
-as an initial VMA that is invalidated as soon as we drop the lock".
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+--
+Vlad Rezki
