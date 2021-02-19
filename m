@@ -2,65 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2969E31F55D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C701531F564
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 08:39:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhBSHaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 02:30:12 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:42127 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229481AbhBSHaK (ORCPT
+        id S229700AbhBSHhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 02:37:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhBSHhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 02:30:10 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UOxD3N8_1613719765;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UOxD3N8_1613719765)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 19 Feb 2021 15:29:25 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     airlied@linux.ie
-Cc:     daniel@ffwll.ch, alexander.deucher@amd.com,
-        christian.koenig@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] drm/radeon/dpm: fix non-restricted types with le16_to_cpu()
-Date:   Fri, 19 Feb 2021 15:29:20 +0800
-Message-Id: <1613719760-42773-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 19 Feb 2021 02:37:43 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD247C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 23:37:02 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id y7so13120368lji.7
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 23:37:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hMFTSQVEQdn8VWL0ezmTYZhJ794Avz6LQ2YGElVmR+g=;
+        b=J5ZjRaRYv9jAGNuog88pH01utfrJHP9eb8F+rg+agHiWogWsXTJTbBzOHIRFC/d8uD
+         UANShOhkCnFg6wLMZ3m7ZZ07bII2n5QrFVzL/KK0DTMHuee2ePW9mzkcueGnamJciNCw
+         7nKAlAs5ljEWGeAU/8XQQY6lCbODrn03KxYVo6UF2T1gLY836OQXIGxtZjBGTspcAXmJ
+         IZ/AekqQaJkb6prwgBj9YmZnYcreUGxvStvxlpafSWHMlmB4yLPSBe1fSbtmlDaIul4P
+         ukMo/KsVgwUd2Cx4FwF+ndys5Q4pvQw2asQlxzu3LS/1g4ua+3/g7EvCQLdzhbU7odi7
+         9fDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hMFTSQVEQdn8VWL0ezmTYZhJ794Avz6LQ2YGElVmR+g=;
+        b=KPOqKDa/rwOgTzcF4i8DeFLG19txJzIeLPMHPKtkgQKqx6b78bLDV1IyPurXospv8l
+         80neAy7Qo40LHri/roOVEo0llKQyCXiAn/hOxcjzB/310GCDK6uebtrc1kjPpNyoaDsS
+         hOataucaTrI1MVuSz61lcucdHGLDkhLlYtF3W/uvE2KgVWXGQs0Y7kJg5yIB62cQaf6a
+         TyfnvkVbMyakA0HtD+KBCYaE3mzZ0O5u8681E43OIGMXElDRfdEo/7ADOMedII/UKAwL
+         kUrt7GtEhREymoX8S7E1CAadb5HaOgWbba0vYfHUHU5qfwOgUlUHXDkBV+2B/6bKwzJX
+         ZO7g==
+X-Gm-Message-State: AOAM533BtT7J5i3MJUZjmwLxXYUpjbzKqmfCF9soFLfFZUSt0N6hpMqf
+        7EnxnhQm00tLoallMEKEb8Y=
+X-Google-Smtp-Source: ABdhPJw88JAS94euyyb7uOlXgZYpRNzmJje7834JAO9tSY5FyJTv314ZupV4vwoS+s7zRSY5WelwFA==
+X-Received: by 2002:a2e:878a:: with SMTP id n10mr4719780lji.418.1613720221307;
+        Thu, 18 Feb 2021 23:37:01 -0800 (PST)
+Received: from [192.168.0.160] (10.177.smarthome.spb.ru. [109.71.177.10])
+        by smtp.gmail.com with ESMTPSA id c18sm842938lft.258.2021.02.18.23.37.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Feb 2021 23:37:00 -0800 (PST)
+Subject: Re: [PATCH] staging: wlan-ng: Fixed incorrect type warning in
+ p80211netdev.c
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210217154255.112115-1-pritthijit.nath@icloud.com>
+Cc:     devel@driverdev.osuosl.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Pritthijit Nath <pritthijit.nath@icloud.com>
+From:   Ivan Safonov <insafonov@gmail.com>
+Message-ID: <71a79d2e-6f03-c2c6-738a-8b862f52e48f@gmail.com>
+Date:   Fri, 19 Feb 2021 10:37:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210217154255.112115-1-pritthijit.nath@icloud.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following sparse warnings:
-drivers/gpu/drm/radeon/rv6xx_dpm.c:1798:21: warning: cast to restricted
-__le32
-drivers/gpu/drm/radeon/rv6xx_dpm.c:1799:22: warning: cast to restricted
-__le16
-drivers/gpu/drm/radeon/rv6xx_dpm.c:1800:23: warning: cast to restricted
-__le16
+On 2/17/21 6:42 PM, pritthijit.nath at icloud.com (Pritthijit Nath) wrote:
+> This change fixes a sparse warning "incorrect type in argument 1
+> (different address spaces)".
+> 
+> Signed-off-by: Pritthijit Nath <pritthijit.nath at icloud.com>
+> ---
+>   drivers/staging/wlan-ng/p80211netdev.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/wlan-ng/p80211netdev.c b/drivers/staging/wlan-ng/p80211netdev.c
+> index 6f9666dc0277..70570e8a5ad2 100644
+> --- a/drivers/staging/wlan-ng/p80211netdev.c
+> +++ b/drivers/staging/wlan-ng/p80211netdev.c
+> @@ -569,7 +569,7 @@ static int p80211knetdev_do_ioctl(struct net_device *dev,
+>                  goto bail;
+>          }
+>   
+> -       msgbuf = memdup_user(req->data, req->len);
+> +       msgbuf = memdup_user((void __user *)req->data, req->len);
+>          if (IS_ERR(msgbuf)) {
+>                  result = PTR_ERR(msgbuf);
+>                  goto bail;
+> 
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/gpu/drm/radeon/rv6xx_dpm.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/radeon/rv6xx_dpm.c b/drivers/gpu/drm/radeon/rv6xx_dpm.c
-index 69d380f..e6ab99e 100644
---- a/drivers/gpu/drm/radeon/rv6xx_dpm.c
-+++ b/drivers/gpu/drm/radeon/rv6xx_dpm.c
-@@ -1795,9 +1795,9 @@ static void rv6xx_parse_pplib_non_clock_info(struct radeon_device *rdev,
- 					     struct radeon_ps *rps,
- 					     struct _ATOM_PPLIB_NONCLOCK_INFO *non_clock_info)
- {
--	rps->caps = le32_to_cpu(non_clock_info->ulCapsAndSettings);
--	rps->class = le16_to_cpu(non_clock_info->usClassification);
--	rps->class2 = le16_to_cpu(non_clock_info->usClassification2);
-+	rps->caps = le32_to_cpu((__le32 __force)non_clock_info->ulCapsAndSettings);
-+	rps->class = le16_to_cpu((__le16 __force)non_clock_info->usClassification);
-+	rps->class2 = le16_to_cpu((__le16 __force)non_clock_info->usClassification2);
- 
- 	if (r600_is_uvd_state(rps->class, rps->class2)) {
- 		rps->vclk = RV6XX_DEFAULT_VCLK_FREQ;
--- 
-1.8.3.1
-
+Reviewed-by: Ivan Safonov <insafonov@gmail.com>
