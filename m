@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21B631FFA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0D2A31FFA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 21:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhBSUEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 15:04:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34062 "EHLO mail.kernel.org"
+        id S230100AbhBSUFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 15:05:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhBSUEs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 15:04:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DA9E64EAF;
-        Fri, 19 Feb 2021 20:04:07 +0000 (UTC)
+        id S229515AbhBSUFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 15:05:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A8BD64EB3;
+        Fri, 19 Feb 2021 20:04:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613765047;
-        bh=Zlci/AmdKj0FlBYDWFBN2+f3PZab3/D9d+nTODN6EFA=;
+        s=k20201202; t=1613765082;
+        bh=nr+McG2ADGSNEQqYSZT5Z/cC8I652e0cpk0XJSpfvyI=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Y7Z3/p7LBPRUIx0+KnL8gQEeNW60J4AxXN08vWXeRabAfn7bgCNn4U8Hl9c0Vn2i8
-         Y9Q0AZ6I66evTtzNwD1RDKzz3Nt5DuDAPquJlgpymDMFxBPR3g7npnL75l1N69zS0M
-         gcCt1JFvgodYUMcDg8EC9t8N51Zg5XdWzbOdWXB+5xfApoMehsQ9Jqd1+WBOgitSaY
-         YjiKd8Q+DcmYcjrjpzMjBr9drmsz04E1QIuGsn3Myg9xaoNyA68DrddNb/OrrHTHWy
-         Xfc1dUbv2mVLMsNcaihcpH+W6871y7o0D6NcEwSaWVkC28/dEp/jKMCGdAoPTuTHUv
-         LElUZIG9jjt1w==
+        b=gjO1SX2n2XDnTFozMVJbRg/lE3fjxDcWDX+Xp1v6pMU7g5s/k4ugP5SAL+wxToKrI
+         9cO1IhHUfwDvSqVYN6aUWGmaPxOVrvugRFnM7CN+GdLpqlIDNMA3LY01ht3A2t/Sjz
+         lmxEqkvloNzTN38T+zoAwXyUAOYRuJLQjXVRu7nyI+gVibqZMUXhJAUXC+ghIpD3/W
+         W1TUGFgkaHq3YdDqBMZQOeulf951c0H4rA1fKRywf2CTM3dmOKGdj0F6frQN3NriIZ
+         NU1mk/EmqLpWVqF4ozo8MUqAfahV3BFJ2urHYgMV2N4pOdl3uRmGFvC5+qG5aTH97z
+         v9YqxD0eX8pnQ==
 Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 3834F3520E6A; Fri, 19 Feb 2021 12:04:07 -0800 (PST)
-Date:   Fri, 19 Feb 2021 12:04:07 -0800
+        id 24A333520E6A; Fri, 19 Feb 2021 12:04:42 -0800 (PST)
+Date:   Fri, 19 Feb 2021 12:04:42 -0800
 From:   "Paul E. McKenney" <paulmck@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Uladzislau Rezki <urezki@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -45,54 +45,36 @@ Cc:     Uladzislau Rezki <urezki@gmail.com>,
         "Theodore Y . Ts'o" <tytso@mit.edu>,
         Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
 Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-ID: <20210219200407.GA18400@paulmck-ThinkPad-P72>
+Message-ID: <20210219200442.GB2743@paulmck-ThinkPad-P72>
 Reply-To: paulmck@kernel.org
-References: <20210219081755.eucq4srbam6wg2gm@linutronix.de>
- <20210219104958.GA34308@pc638.lan>
- <20210219105710.d626zexj6vzt6k6y@linutronix.de>
- <20210219111301.GA34441@pc638.lan>
- <20210219111738.go6i2fdzvavpotxd@linutronix.de>
- <20210219112357.GA34462@pc638.lan>
- <20210219112751.GA34528@pc638.lan>
- <20210219181811.GY2743@paulmck-ThinkPad-P72>
- <20210219141429.53def012@gandalf.local.home>
- <20210219194539.GZ2743@paulmck-ThinkPad-P72>
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210219143607.3cdf9ed8@gandalf.local.home>
+ <20210219194744.GA2743@paulmck-ThinkPad-P72>
+ <20210219145830.0baca550@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219194539.GZ2743@paulmck-ThinkPad-P72>
+In-Reply-To: <20210219145830.0baca550@gandalf.local.home>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:45:39AM -0800, Paul E. McKenney wrote:
-> On Fri, Feb 19, 2021 at 02:14:29PM -0500, Steven Rostedt wrote:
-> > On Fri, 19 Feb 2021 10:18:11 -0800
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
-> > > We can further prevent entry into dyntick-idle state until
-> > > the ksoftirqd kthreads have been spawned, which means that if softirq
-> > > handlers must be deferred, they will be resumed within one jiffy by the
-> > > next scheduler-clock interrupt.
-> > 
-> > Why not just prevent entry into dyntick-idle state until the system is
-> > finished booting? As you said; There should be no latency-sensitive
-> > applications running, until after we started the system.
+On Fri, Feb 19, 2021 at 02:58:30PM -0500, Steven Rostedt wrote:
+> On Fri, 19 Feb 2021 11:47:44 -0800
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
 > 
-> Exactly, and that is the effect of patch to rcu_needs_cpu() that I just
-> now posted.
+> > Could you please add the following Reported-by tags?
+> > 
+> > Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > Reported-by: Uladzislau Rezki <urezki@gmail.com>
+> > 
+> > Sebastian first noticed the problem, and Uladzislau figured out
+> > how softirqs were involved.
 > 
-> Ah, your point is that if the tick keeps running, there is no need to
-> modify softirq?  Good point, and I will test that, thank you!!!
+> These were already added. They must have appeared in the thread somewhere,
+> as my internal patchwork picked them up already.
 
-But sadly keeping the tick on without also modifying softirq still
-results in a hang.  The problem is that when the kernel is booted with
-threadirqs=1, invoke_softirq() will avoid ever running the softirq
-handlers on the backside of an interrupt.
-
-So is this where Sebastian tells me that some -rt transformation can
-result in locking-based deadlocks if softirq handlers are ever run on
-the backside of an interrupt?  ;-)
+Even better, thank you!
 
 							Thanx, Paul
