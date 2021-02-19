@@ -2,100 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3760331F6E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A5931F6E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:58:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230267AbhBSJ4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:56:39 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:54680 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbhBSJzk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:55:40 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9suD7069315;
-        Fri, 19 Feb 2021 09:54:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=zFeZlCMv0GcrrKfoJN2RHKvkvjn5aO1djUUFAyQbRH0=;
- b=MgyCFFnBes08tvnLwmSXGhoGVFVw3qoiWVcd2xTWgWnc2/yzOFKunVEaOBVJsQafmT5z
- dG6PukapGDdTsJrS85e/8tKxB3yT1zux8OlB/uyNaZrMJYsejGsNLe7A83aUF70nd044
- Y3COTZf+VaEAPCS5wwFpO+hKc1n1eyTlRPUAxAQlNOiGLvVz3/LUUn4h1keNZLfO4CAb
- KHmn55qNJYcpvAFiYSocNGXW96cPiNvMGL6ueZIlyFnL35SiEK/hZRXXH+Pmu86tTITc
- j8D5wL/OHfYeImj0L2/wxRbWM+33FBk9EZm0hrncR0U1d76sx3xXGq2a3Q3dMWfkT86w ng== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 36p49bh2n3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:54:56 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11J9oCRj180246;
-        Fri, 19 Feb 2021 09:54:54 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 36prq1q8fa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Feb 2021 09:54:54 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 11J9srff003650;
-        Fri, 19 Feb 2021 09:54:53 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Feb 2021 01:54:52 -0800
-Date:   Fri, 19 Feb 2021 12:54:38 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alison Schofield <alison.schofield@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH] cxl/mem: return -EFAULT if copy_to_user() fails
-Message-ID: <YC+K3kgzqm20zCWY@mwanda>
+        id S230256AbhBSJ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:57:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48752 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230186AbhBSJ5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:57:30 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613728603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+pSIhQidfu0Q5u3LjyNZr9MXzltQyM//XcNXBDgi7F4=;
+        b=kpQ8XcU0aoviZ9pVMeuuBUzY6fz6Q9b+o4iTGbAA1ERcc5Awt+ZtIEnTNkFgVad6aAsswk
+        nH803hFI+HUS7rLEGYZklC+5wJEeqkdBAdSF2Kj7sfON/9e7p9xY9oQc2hRsNB5yIZLs0K
+        LWNo8AwWLVJTD9rdV9AsAEN6T47r+Jg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ACD74ACBF;
+        Fri, 19 Feb 2021 09:56:43 +0000 (UTC)
+Date:   Fri, 19 Feb 2021 10:56:42 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] mm: Make alloc_contig_range handle free hugetlb pages
+Message-ID: <YC+LWksScdiuPw7X@dhcp22.suse.cz>
+References: <20210217100816.28860-1-osalvador@suse.de>
+ <20210217100816.28860-2-osalvador@suse.de>
+ <YC0ve4PP+VTrEEtw@dhcp22.suse.cz>
+ <20210218100917.GA4842@localhost.localdomain>
+ <YC5jFrwegRVkMkBQ@dhcp22.suse.cz>
+ <20210218133250.GA7983@localhost.localdomain>
+ <YC5yzNB9xT76fkod@dhcp22.suse.cz>
+ <20210219090548.GA17266@linux>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- phishscore=0 adultscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190076
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 phishscore=0 clxscore=1015 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190076
+In-Reply-To: <20210219090548.GA17266@linux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The copy_to_user() function returns the number of bytes remaining to be
-copied, but we want to return -EFAULT if the copy doesn't complete.
+On Fri 19-02-21 10:05:53, Oscar Salvador wrote:
+> On Thu, Feb 18, 2021 at 02:59:40PM +0100, Michal Hocko wrote:
+> > > It should be:
+> > > 
+> > >  allocate_a_new_page (new_page's refcount = 1)
+> > >  put_page(new_page); (new_page's refcount = 0)
+> > >  dissolve_old_page
+> > >   : if fail
+> > >      dissolve_new_page (we can dissolve it as refcount == 0)
+> > > 
+> > > I hope this clarifies it .
+> > 
+> > OK, I see the problem now. And your above solution is not really
+> > optimal either. Your put_page would add the page to the pool and so it
+> > could be used by somebody. One way around it would be either directly
+> > manipulating reference count which is fugly or you can make it a
+> > temporal page (alloc_migrate_huge_page) or maybe even better not special
+> > case this here but rather allow migrating free hugetlb pages in the
+> > migrate_page path.
+> 
+> I have been weighting up this option because it seemed the most clean way to
+> proceed. Having the hability to migrate free hugepages directly from migrate_page
+> would spare us this function.
+> But there is a problem. migrate_pages needs the pages to be on a list (by
+> page->lru). That is no problem for used pages, but for freehugepages we would
+> have to remove the page from hstate->hugepage_freelists, meaning that if userspace
+> comes along and tries to get a hugepage (a hugepage he previously allocated by
+> e.g: /proc/sys/.../nr_hugepages), it will fail.
 
-Fixes: b754ffbbc0ee ("cxl/mem: Add basic IOCTL interface")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/cxl/mem.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Good point. I should have realized that.
+ 
+> So I am not really sure we can go this way. Unless we are willing to accept
+> that temporary userspace can get ENOMEM if it tries to use a hugepage, which
+> I do not think it is a good idea.
 
-diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-index 8331a2fc7667..d73ab363ad71 100644
---- a/drivers/cxl/mem.c
-+++ b/drivers/cxl/mem.c
-@@ -745,7 +745,10 @@ static int cxl_send_cmd(struct cxl_memdev *cxlmd,
- 	if (rc)
- 		return rc;
- 
--	return copy_to_user(s, &send, sizeof(send));
-+	if (copy_to_user(s, &send, sizeof(send)))
-+		return -EFAULT;
-+
-+	return 0;
- }
- 
- static long __cxl_memdev_ioctl(struct cxl_memdev *cxlmd, unsigned int cmd,
+No, this is not acceptable.
+
+> Another way to go would be to make up for the free hugepages to be migrated and
+> allocate the same amount, but that starts to go down a rabbit hole.
+> 
+> I yet need to give it some more spins, but all in all, I think the easiest way
+> forward way might be to do something like:
+> 
+> alloc_and_dissolve_huge_page {
+> 
+>    new_page = alloc_fresh_huge_page(h, gfp_mask, nid, NULL, NULL);
+>    if (new_page) {
+>            /*
+>             * Put the page in the freelist hugepage pool.
+>             * We might race with someone coming by and grabbing the page,
+>             * but that is fine since we mark the page as Temporary in case
+>             * both old and new_page fail to be dissolved, so new_page
+>             * will be freed when its last reference is gone.
+>             */
+>            put_page(new_page);
+>       
+>            if (!dissolve_free_huge_page(page)) {
+>                    /*
+>                     * Old page could be dissolved.
+>                     */
+>                    ret = true;
+>            } else if (dissolve_free_huge_page(new_page)) {
+>                   /*
+>                    * Page might have been dissolved by admin by doing
+>                    * "echo 0 > /proc/../nr_hugepages". Check it before marking
+>                    * the page.
+>                    */
+>                   spin_lock(&hugetlb_lock);
+>                   /* Mark the page Temporary in case we fail to dissolve both
+>                    * the old page and new_page. It will be freed when the last
+>                    * user drops it.
+>                    */
+>                   if (PageHuge(new_page))
+>                           SetPageHugeTemporary(new_page);
+>                   spin_unlock(&hugetlb_lock);
+>            }
+>    }
+
+OK, this should work but I am really wondering whether it wouldn't be
+just simpler to replace the old page by a new one in the free list
+directly. Or is there any reason we have to go through the generic
+helpers path? I mean something like this
+
+	new_page = alloc_fresh_huge_page();
+	if (!new_page)
+		goto fail;
+	spin_lock(hugetlb_lock);
+	if (!PageHuge(old_page)) {
+		/* freed from under us, nothing to do */ 
+		__update_and_free_page(new_page);
+		goto unlock;
+	}
+	list_del(&old_page->lru);
+	__update_and_free_page(old_page);
+	__enqueue_huge_page(new_page);
+unlock:
+	spin_unlock(hugetlb_lock);
+
+This will require to split update_and_free_page and enqueue_huge_page to
+counters independent parts but that shouldn't be a big deal. But it will
+also protect from any races. Not an act of beauty but seems less hackish
+to me.
 -- 
-2.30.0
-
+Michal Hocko
+SUSE Labs
