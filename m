@@ -2,127 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AACA31FA62
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3F431FA76
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhBSONT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:13:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60188 "EHLO mx2.suse.de"
+        id S230303AbhBSORz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:17:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229799AbhBSONJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:13:09 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613743942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=E+USPRqgN/Kvs1vKcFSGjJ866vTEg0TvC4G84Ip+KFg=;
-        b=VVGs6Gzbps3TiRPDVnJniqgF440MGZD562bPBpZzHg+L/83JMZABxDLxLUuNh8RyIQ5FX+
-        5do62w8Y5b3/gjk2YbNAJXSAyXbdysChF7Ep7U6HlDVLE96BgnFmUfYI6DzRGzStyPuCh6
-        /UscW72CNfGAS+2RP13mtY4I8/woSKg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A889FABAE;
-        Fri, 19 Feb 2021 14:12:22 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 15:12:21 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        osalvador@suse.de, song.bao.hua@hisilicon.com, david@redhat.com,
-        naoya.horiguchi@nec.com, joao.m.martins@oracle.com,
-        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap pages associated
- with each HugeTLB page
-Message-ID: <YC/HRTq1MRaDWn7O@dhcp22.suse.cz>
-References: <20210219104954.67390-1-songmuchun@bytedance.com>
- <20210219104954.67390-5-songmuchun@bytedance.com>
+        id S229808AbhBSORw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 09:17:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D2AC64E46;
+        Fri, 19 Feb 2021 14:17:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613744231;
+        bh=/+2b2FPgpVlufmh4ou91Mqrxg25dANUoad9GzuPY3QM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hpkdWLkXS4r9zMnMbRgfiAqJUL/KX6NZRfDUz5f24bqhOJAvuNQpG2eR3cqSV4FPP
+         X0+GeMRwnTShjEsTP3+zqR1wrAXn1CNjRGFjK1/zI+wJc3UGOX54Pxat+7NKkWxuUS
+         Ms2w+MsTo3JMUtRhZll9QYsSTorsSO7MOoT4l6DTGTRc+sYLiO3suZYOmK8ktSRz4i
+         9JcuWqm6WZwELL56dxvs54v7F9+UGjNl4nvuy4AlHsgCi18iFryaiBbHaiVK3VuDq1
+         xl8uf2dwcNNrgMNtZ5NpC7Z6bNyqdcSZa24H9G5LXRygMG+ZcaDbgvb5Omvc7rUKIY
+         Yr4w6lIhJdMAQ==
+Received: by mail-ed1-f53.google.com with SMTP id c6so10310845ede.0;
+        Fri, 19 Feb 2021 06:17:11 -0800 (PST)
+X-Gm-Message-State: AOAM530L6OwA0vnSAU//a6Ie5eEQigsoEdLrARfX6ECwk5NnYyi8IBEn
+        km2zkVhTAvLb1Ozkk4/wfXHuDD3NrkAlnwuZvA==
+X-Google-Smtp-Source: ABdhPJy5YMi65AggF+97f34pmKOko3c6auf7j3NtKv4xgM4ETK+XS7z2sblhE2YkPD2nLGwZdf6zqpXv2RkL4KtPM0Y=
+X-Received: by 2002:aa7:c7c8:: with SMTP id o8mr9390177eds.137.1613744229946;
+ Fri, 19 Feb 2021 06:17:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219104954.67390-5-songmuchun@bytedance.com>
+References: <20210218223305.2044-1-nramas@linux.microsoft.com>
+ <c6490f6a126a2f10e3e3445b51ea552a26f896a9.camel@linux.ibm.com>
+ <8b8c0b70-c7ab-33f3-b66c-9ea03388497b@linux.microsoft.com>
+ <87k0r4yi4s.fsf@manicouagan.localdomain> <3ca0aa87-ca83-8024-4067-c2382a360db9@linux.microsoft.com>
+In-Reply-To: <3ca0aa87-ca83-8024-4067-c2382a360db9@linux.microsoft.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 19 Feb 2021 08:16:46 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqJiRV5xShOgso0PH2pFhv-yozay58i1uGQC0dJCVxkJPA@mail.gmail.com>
+Message-ID: <CAL_JsqJiRV5xShOgso0PH2pFhv-yozay58i1uGQC0dJCVxkJPA@mail.gmail.com>
+Subject: Re: [PATCH] of: error: 'const struct kimage' has no member named 'arch'
+To:     Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Cc:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 19-02-21 18:49:49, Muchun Song wrote:
-> When we free a HugeTLB page to the buddy allocator, we should allocate
-> the vmemmap pages associated with it. But we may cannot allocate vmemmap
-> pages when the system is under memory pressure, in this case, we just
-> refuse to free the HugeTLB page instead of looping forever trying to
-> allocate the pages. This changes some behavior (list below) on some
-> corner cases.
-> 
->  1) Failing to free a huge page triggered by the user (decrease nr_pages).
-> 
->     Need try again later by the user.
-> 
->  2) Failing to free a surplus huge page when freed by the application.
-> 
->     Try again later when freeing a huge page next time.
+On Thu, Feb 18, 2021 at 8:53 PM Lakshmi Ramasubramanian
+<nramas@linux.microsoft.com> wrote:
+>
+> On 2/18/21 5:13 PM, Thiago Jung Bauermann wrote:
+> >
+> > Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+> >
+> >> On 2/18/21 4:07 PM, Mimi Zohar wrote:
+> >>
+> >> Hi Mimi,
+> >>
+> >>> On Thu, 2021-02-18 at 14:33 -0800, Lakshmi Ramasubramanian wrote:
+> >>>> of_kexec_alloc_and_setup_fdt() defined in drivers/of/kexec.c builds
+> >>>> a new device tree object that includes architecture specific data
+> >>>> for kexec system call.  This should be defined only if the architecture
+> >>>> being built defines kexec architecture structure "struct kimage_arch".
+> >>>>
+> >>>> Define a new boolean config OF_KEXEC that is enabled if
+> >>>> CONFIG_KEXEC_FILE and CONFIG_OF_FLATTREE are enabled, and
+> >>>> the architecture is arm64 or powerpc64.  Build drivers/of/kexec.c
+> >>>> if CONFIG_OF_KEXEC is enabled.
+> >>>>
+> >>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+> >>>> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
+> >>>> Reported-by: kernel test robot <lkp@intel.com>
+> >>>> ---
+> >>>>    drivers/of/Kconfig  | 6 ++++++
+> >>>>    drivers/of/Makefile | 7 +------
+> >>>>    2 files changed, 7 insertions(+), 6 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> >>>> index 18450437d5d5..f2e8fa54862a 100644
+> >>>> --- a/drivers/of/Kconfig
+> >>>> +++ b/drivers/of/Kconfig
+> >>>> @@ -100,4 +100,10 @@ config OF_DMA_DEFAULT_COHERENT
+> >>>>            # arches should select this if DMA is coherent by default for OF devices
+> >>>>            bool
+> >>>>    +config OF_KEXEC
+> >>>> +  bool
+> >>>> +  depends on KEXEC_FILE
+> >>>> +  depends on OF_FLATTREE
+> >>>> +  default y if ARM64 || PPC64
+> >>>> +
+> >>>>    endif # OF
+> >>>> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+> >>>> index c13b982084a3..287579dd1695 100644
+> >>>> --- a/drivers/of/Makefile
+> >>>> +++ b/drivers/of/Makefile
+> >>>> @@ -13,11 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
+> >>>>    obj-$(CONFIG_OF_RESOLVE)  += resolver.o
+> >>>>    obj-$(CONFIG_OF_OVERLAY) += overlay.o
+> >>>>    obj-$(CONFIG_OF_NUMA) += of_numa.o
+> >>>> -
+> >>>> -ifdef CONFIG_KEXEC_FILE
+> >>>> -ifdef CONFIG_OF_FLATTREE
+> >>>> -obj-y     += kexec.o
+> >>>> -endif
+> >>>> -endif
+> >>>> +obj-$(CONFIG_OF_KEXEC) += kexec.o
+> >>>>      obj-$(CONFIG_OF_UNITTEST) += unittest-data/
+> >>> Is it possible to reuse CONFIG_HAVE_IMA_KEXEC here?
+> >>>
+> >>
+> >> For ppc64 CONFIG_HAVE_IMA_KEXEC is selected when CONFIG_KEXEC_FILE is enabled.
+> >> So I don't see a problem in reusing CONFIG_HAVE_IMA_KEXEC for ppc.
+> >>
+> >> But for arm64, CONFIG_HAVE_IMA_KEXEC is enabled in the final patch in the patch
+> >> set (the one for carrying forward IMA log across kexec for arm64). arm64 calls
+> >> of_kexec_alloc_and_setup_fdt() prior to enabling CONFIG_HAVE_IMA_KEXEC and hence
+> >> breaks the build for arm64.
+> >
+> > One problem is that I believe that this patch won't placate the robot,
+> > because IIUC it generates config files at random and this change still
+> > allows hppa and s390 to enable CONFIG_OF_KEXEC.
+>
+> I enabled CONFIG_OF_KEXEC for s390. With my patch applied,
+> CONFIG_OF_KEXEC is removed. So I think the robot enabling this config
+> would not be a problem.
+>
+> >
+> > Perhaps a new CONFIG_HAVE_KIMAGE_ARCH option? Not having that option
+> > would still allow building kexec.o, but would be used inside kexec.c to
+> > avoid accessing kimage.arch members.
+> >
+>
+> I think this is a good idea - a new CONFIG_HAVE_KIMAGE_ARCH, which will
+> be selected by arm64 and ppc for now. I tried this, and it fixes the
+> build issue.
+>
+> Although, the name for the new config can be misleading since PARISC,
+> for instance, also defines "struct kimage_arch". Perhaps,
+> CONFIG_HAVE_ELF_KIMAGE_ARCH since of_kexec_alloc_and_setup_fdt() is
+> accessing ELF specific fields in "struct kimage_arch"?
+>
+> Rob/Mimi - please let us know which approach you think is better.
 
-This means that surplus pages can accumulate right? This should be
-rather unlikely because one released huge page could then be reused for
-normal allocations - including vmemmap. Unlucky timing might still end
-up in the accumulation though. Not something critical though.
+I'd just move the fields to kimage.
 
->  3) Failing to dissolve a free huge page on ZONE_MOVABLE via
->     offline_pages().
-> 
->     This is a bit unfortunate if we have plenty of ZONE_MOVABLE memory
->     but are low on kernel memory. For example, migration of huge pages
->     would still work, however, dissolving the free page does not work.
->     This is a corner cases. When the system is that much under memory
->     pressure, offlining/unplug can be expected to fail.
-
-Please mention that this is unfortunate because it prevents from the
-memory offlining which shouldn't happen for movable zones. People
-depending on the memory hotplug and movable zone should carefuly
-consider whether savings on unmovable memory are worth losing their
-hotplug functionality in some situations.
-
->  4) Failing to dissolve a huge page on CMA/ZONE_MOVABLE via
->     alloc_contig_range() - once we have that handling in place. Mainly
->     affects CMA and virtio-mem.
-
-What about hugetlb page poisoning on HW failure (resp. soft offlining)?
-
-> 
->     Similar to 3). virito-mem will handle migration errors gracefully.
->     CMA might be able to fallback on other free areas within the CMA
->     region.
-> 
-> We do not want to use GFP_ATOMIC to allocate vmemmap pages. Because it
-> grants access to memory reserves and we do not think it is reasonable
-> to use memory reserves. We use GFP_KERNEL in alloc_huge_page_vmemmap().
-
-This likely needs more context around. Maybe something like
-"
-Vmemmap pages are allocated from the page freeing context. In order for
-those allocations to be not disruptive (e.g. trigger oom killer)
-__GFP_NORETRY is used. hugetlb_lock is dropped for the allocation
-because a non sleeping allocation would be too fragile and it could fail
-too easily under memory pressure. GFP_ATOMIC or other modes to access
-memory reserves is not used because we want to prevent consuming
-reserves under heavy hugetlb freeing.
-"
-
-I haven't gone through the patch in a great detail yet, from a high
-level POV it looks good although the counter changes and reshuffling
-seems little wild. That requires a more detailed look I do not have time
-for right now. Mike would be much better for that anywya ;)
-
-I do not see any check for an atomic context in free_huge_page path. I
-have suggested to replace in_task by in_atomic check (with a gotcha that
-the later doesn't work without preempt_count but there is a work to
-address that).
--- 
-Michal Hocko
-SUSE Labs
+Rob
