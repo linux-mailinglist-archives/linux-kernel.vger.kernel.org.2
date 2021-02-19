@@ -2,140 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E56F31FEE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9258331FEEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBSSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229587AbhBSSn5 (ORCPT
+        id S229932AbhBSSo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:44:29 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:48768 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229766AbhBSSoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:43:57 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117CDC061756
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:43:17 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 75so5276915pgf.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:43:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+RaWaFyQSNsA+BxQXW757bzb1+DDQjnWqIXCvU1FnZg=;
-        b=IB29ZKHRAnXgcgKwwmK3w5ghZp9HfMsnWzT6RFS62Y6zWIwZ7CCJoSrSE7Lg9NrBWc
-         w3M5BI+zftcVbIRviRSOQBzakRnjADebkJudOi7J3tUkw1XQX3LOPRrE+ySS2IkAoqAl
-         LUXX/GGA03GCbGSfve4PsfyrSVEQIP9s5eo7qx+yK893mNAI4xECCPr+aKwY06NXsvws
-         mNnSAM7s9OHQ39a9jjq5hjMhTp5AuXx4HVRwmHUNnFYhFuiNdD03FkH+f3h5YjY9k+mJ
-         6kzbUdNXnlDEVviIN6uWtNGf4MQjaStZ6k4IhvGguZypfVl+wHWN9z4ndGnhdjCEIbZv
-         NaLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+RaWaFyQSNsA+BxQXW757bzb1+DDQjnWqIXCvU1FnZg=;
-        b=RBAKMck0PovjJvLMbTv3oztt5VMJsAmOziv+oYuBjrtFCfIyafXcKY9ct+og1MeS7h
-         ry+A1dYQed8C23p9gMgefFkf2QfkrinkXRfreRJQ7S4aJZGSLrY0sgHan1VazVkogbFz
-         FFnJz4TONG0XG6HiyWBM7sBnO+q8Z0PS7SMRzDk/QdGw3dL0qN8S/UyBKvS0OeN6kSWL
-         OANMe27vbP3e88EUUc8x19ebVA8GayT1BcPdx41i8apRGe6ivvv5JR6G/yK3jwGiuW8T
-         1Q1RpY6iNCvXZGHDt9mm6T1UYsgx5nXwYQXvrw5COLCae0KP6S82TVxhgwYPxunnHo/A
-         JTgQ==
-X-Gm-Message-State: AOAM532oluztqSTRRE4A6FF/zYFG3aBJP305OBNUI9gXwiFyTW+rHUs5
-        xwvSsh4zOiOB3Z2LAs+bqxF1JgfGYLYbCA==
-X-Google-Smtp-Source: ABdhPJzN3Ygk8eCkB5+wa7JUByPcyaxHt1dR5NpZBx7GgeX6f5K0ZJD27MStvkvvMK9kb4CZFXlcxA==
-X-Received: by 2002:a63:545f:: with SMTP id e31mr9763184pgm.212.1613760196381;
-        Fri, 19 Feb 2021 10:43:16 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id w128sm3601162pfw.86.2021.02.19.10.43.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 10:43:15 -0800 (PST)
-Date:   Fri, 19 Feb 2021 11:43:13 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-doc@vger.kernel.org, suzuki.poulose@arm.com,
-        yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 02/10] coresight: syscfg: Add registration and feature
- loading for cs devices
-Message-ID: <20210219184313.GA3065106@xps15>
-References: <20210128170936.9222-1-mike.leach@linaro.org>
- <20210128170936.9222-3-mike.leach@linaro.org>
+        Fri, 19 Feb 2021 13:44:25 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E64C320B6C40;
+        Fri, 19 Feb 2021 10:43:43 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E64C320B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1613760224;
+        bh=RpoWA2PbFDErkfUWKl6VSFbD3TUWfdKkFK+7BkYE/ys=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=FlbyhI2Xx5mSUqc+dtPCr1ZNHjpTO6Tn25jhljruSYMaU/5beEb3QGpF/DTglDlmI
+         wyLj1wEGIGBXSeFWRo4d74jYBlp7L96wnIZoy2aKaM3fVfYCQe0V06BYJO1kd51IOO
+         DL8EvziJi44wvruN+qwLNb1clHef+A/MMP5m7XCg=
+Subject: Re: [PATCH] of: error: 'const struct kimage' has no member named
+ 'arch'
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        "AKASHI, Takahiro" <takahiro.akashi@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Joe Perches <joe@perches.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        James Morse <james.morse@arm.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-integrity@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20210218223305.2044-1-nramas@linux.microsoft.com>
+ <c6490f6a126a2f10e3e3445b51ea552a26f896a9.camel@linux.ibm.com>
+ <8b8c0b70-c7ab-33f3-b66c-9ea03388497b@linux.microsoft.com>
+ <87k0r4yi4s.fsf@manicouagan.localdomain>
+ <3ca0aa87-ca83-8024-4067-c2382a360db9@linux.microsoft.com>
+ <CAL_JsqJiRV5xShOgso0PH2pFhv-yozay58i1uGQC0dJCVxkJPA@mail.gmail.com>
+ <98a061d1-05ea-eff2-5c5c-a59f491fe924@linux.microsoft.com>
+ <CAL_Jsq+R-zOT581_W0Ar5H58rfPnGiWeetoF_b+BaW7er22bPA@mail.gmail.com>
+ <6a197963deb8e44c71384ea9b89d7f3f13c947bf.camel@linux.ibm.com>
+ <87blcgx72l.fsf@manicouagan.localdomain>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <a683ac0e-5717-d419-7ae2-7cd9f2ec2ffb@linux.microsoft.com>
+Date:   Fri, 19 Feb 2021 10:43:43 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128170936.9222-3-mike.leach@linaro.org>
+In-Reply-To: <87blcgx72l.fsf@manicouagan.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[...]
-
-> +/**
-> + * List entry for Coresight devices that are registered as supporting complex
-> + * config operations.
-> + *
-> + * @csdev:	The registered device.
-> + * @match_info: The matching type information.
-> + * @ops:	Operations supported by the registered device.
-> + * @item:	list entry.
-> + */
-> +struct cscfg_csdev_register {
-> +	struct coresight_device *csdev;
-> +	struct cscfg_match_desc match_info;
-> +	struct cscfg_csdev_feat_ops ops;
-> +	struct list_head item;
-> +};
-
-I would call this structure cscfg_registered_csdev and move it to
-coresight-config.h.  That way it is consistent with cscfg_config_csdev and
-cscfg_feature_csdev and located all in the same file.
-
-I may have to come back to this patch but for now it holds together.
-
-More comments to come on Monday.
-
-Thanks,
-Mathieu
-
-> +
->  /* internal core operations for cscfg */
->  int __init cscfg_init(void);
->  void __exit cscfg_exit(void);
-> @@ -33,6 +49,10 @@ void __exit cscfg_exit(void);
->  /* syscfg manager external API */
->  int cscfg_load_config_sets(struct cscfg_config_desc **cfg_descs,
->  			   struct cscfg_feature_desc **feat_descs);
-> +int cscfg_register_csdev(struct coresight_device *csdev,
-> +			 struct cscfg_match_desc *info,
-> +			 struct cscfg_csdev_feat_ops *ops);
-> +void cscfg_unregister_csdev(struct coresight_device *csdev);
->  
->  /**
->   * System configuration manager device.
-> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
-> index 976ec2697610..d0126ed326a6 100644
-> --- a/include/linux/coresight.h
-> +++ b/include/linux/coresight.h
-> @@ -219,6 +219,8 @@ struct coresight_sysfs_link {
->   * @nr_links:   number of sysfs links created to other components from this
->   *		device. These will appear in the "connections" group.
->   * @has_conns_grp: Have added a "connections" group for sysfs links.
-> + * @feature_csdev_list: List of complex feature programming added to the device.
-> + * @config_csdev_list:  List of system configurations added to the device.
->   */
->  struct coresight_device {
->  	struct coresight_platform_data *pdata;
-> @@ -240,6 +242,9 @@ struct coresight_device {
->  	int nr_links;
->  	bool has_conns_grp;
->  	bool ect_enabled; /* true only if associated ect device is enabled */
-> +	/* system configuration and feature lists */
-> +	struct list_head feature_csdev_list;
-> +	struct list_head config_csdev_list;
->  };
->  
->  /*
-> -- 
-> 2.17.1
+On 2/19/21 10:09 AM, Thiago Jung Bauermann wrote:
 > 
+> Mimi Zohar <zohar@linux.ibm.com> writes:
+> 
+>> On Fri, 2021-02-19 at 11:43 -0600, Rob Herring wrote:
+>>> On Fri, Feb 19, 2021 at 10:57 AM Lakshmi Ramasubramanian
+>>> <nramas@linux.microsoft.com> wrote:
+>>>>
+>>>> On 2/19/21 6:16 AM, Rob Herring wrote:
+>>>>> On Thu, Feb 18, 2021 at 8:53 PM Lakshmi Ramasubramanian
+>>>>> <nramas@linux.microsoft.com> wrote:
+>>>>>>
+>>>>>> On 2/18/21 5:13 PM, Thiago Jung Bauermann wrote:
+>>>>>>>
+>>>>>>> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+>>>>>>>
+>>>>>>>> On 2/18/21 4:07 PM, Mimi Zohar wrote:
+>>>>>>>>
+>>>>>>>> Hi Mimi,
+>>>>>>>>
+>>>>>>>>> On Thu, 2021-02-18 at 14:33 -0800, Lakshmi Ramasubramanian wrote:
+>>>>>>>>>> of_kexec_alloc_and_setup_fdt() defined in drivers/of/kexec.c builds
+>>>>>>>>>> a new device tree object that includes architecture specific data
+>>>>>>>>>> for kexec system call.  This should be defined only if the architecture
+>>>>>>>>>> being built defines kexec architecture structure "struct kimage_arch".
+>>>>>>>>>>
+>>>>>>>>>> Define a new boolean config OF_KEXEC that is enabled if
+>>>>>>>>>> CONFIG_KEXEC_FILE and CONFIG_OF_FLATTREE are enabled, and
+>>>>>>>>>> the architecture is arm64 or powerpc64.  Build drivers/of/kexec.c
+>>>>>>>>>> if CONFIG_OF_KEXEC is enabled.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>>>>>>>>> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
+>>>>>>>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>>>>>>>> ---
+>>>>>>>>>>      drivers/of/Kconfig  | 6 ++++++
+>>>>>>>>>>      drivers/of/Makefile | 7 +------
+>>>>>>>>>>      2 files changed, 7 insertions(+), 6 deletions(-)
+>>>>>>>>>>
+>>>>>>>>>> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+>>>>>>>>>> index 18450437d5d5..f2e8fa54862a 100644
+>>>>>>>>>> --- a/drivers/of/Kconfig
+>>>>>>>>>> +++ b/drivers/of/Kconfig
+>>>>>>>>>> @@ -100,4 +100,10 @@ config OF_DMA_DEFAULT_COHERENT
+>>>>>>>>>>              # arches should select this if DMA is coherent by default for OF devices
+>>>>>>>>>>              bool
+>>>>>>>>>>      +config OF_KEXEC
+>>>>>>>>>> +  bool
+>>>>>>>>>> +  depends on KEXEC_FILE
+>>>>>>>>>> +  depends on OF_FLATTREE
+>>>>>>>>>> +  default y if ARM64 || PPC64
+>>>>>>>>>> +
+>>>>>>>>>>      endif # OF
+>>>>>>>>>> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+>>>>>>>>>> index c13b982084a3..287579dd1695 100644
+>>>>>>>>>> --- a/drivers/of/Makefile
+>>>>>>>>>> +++ b/drivers/of/Makefile
+>>>>>>>>>> @@ -13,11 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
+>>>>>>>>>>      obj-$(CONFIG_OF_RESOLVE)  += resolver.o
+>>>>>>>>>>      obj-$(CONFIG_OF_OVERLAY) += overlay.o
+>>>>>>>>>>      obj-$(CONFIG_OF_NUMA) += of_numa.o
+>>>>>>>>>> -
+>>>>>>>>>> -ifdef CONFIG_KEXEC_FILE
+>>>>>>>>>> -ifdef CONFIG_OF_FLATTREE
+>>>>>>>>>> -obj-y     += kexec.o
+>>>>>>>>>> -endif
+>>>>>>>>>> -endif
+>>>>>>>>>> +obj-$(CONFIG_OF_KEXEC) += kexec.o
+>>>>>>>>>>        obj-$(CONFIG_OF_UNITTEST) += unittest-data/
+>>>>>>>>> Is it possible to reuse CONFIG_HAVE_IMA_KEXEC here?
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> For ppc64 CONFIG_HAVE_IMA_KEXEC is selected when CONFIG_KEXEC_FILE is enabled.
+>>>>>>>> So I don't see a problem in reusing CONFIG_HAVE_IMA_KEXEC for ppc.
+>>>>>>>>
+>>>>>>>> But for arm64, CONFIG_HAVE_IMA_KEXEC is enabled in the final patch in the patch
+>>>>>>>> set (the one for carrying forward IMA log across kexec for arm64). arm64 calls
+>>>>>>>> of_kexec_alloc_and_setup_fdt() prior to enabling CONFIG_HAVE_IMA_KEXEC and hence
+>>>>>>>> breaks the build for arm64.
+>>>>>>>
+>>>>>>> One problem is that I believe that this patch won't placate the robot,
+>>>>>>> because IIUC it generates config files at random and this change still
+>>>>>>> allows hppa and s390 to enable CONFIG_OF_KEXEC.
+>>>>>>
+>>>>>> I enabled CONFIG_OF_KEXEC for s390. With my patch applied,
+>>>>>> CONFIG_OF_KEXEC is removed. So I think the robot enabling this config
+>>>>>> would not be a problem.
+>>>>>>
+>>>>>>>
+>>>>>>> Perhaps a new CONFIG_HAVE_KIMAGE_ARCH option? Not having that option
+>>>>>>> would still allow building kexec.o, but would be used inside kexec.c to
+>>>>>>> avoid accessing kimage.arch members.
+>>>>>>>
+>>>>>>
+>>>>>> I think this is a good idea - a new CONFIG_HAVE_KIMAGE_ARCH, which will
+>>>>>> be selected by arm64 and ppc for now. I tried this, and it fixes the
+>>>>>> build issue.
+>>>>>>
+>>>>>> Although, the name for the new config can be misleading since PARISC,
+>>>>>> for instance, also defines "struct kimage_arch". Perhaps,
+>>>>>> CONFIG_HAVE_ELF_KIMAGE_ARCH since of_kexec_alloc_and_setup_fdt() is
+>>>>>> accessing ELF specific fields in "struct kimage_arch"?
+>>>>>>
+>>>>>> Rob/Mimi - please let us know which approach you think is better.
+>>>>>
+>>>>> I'd just move the fields to kimage.
+>>>>>
+>>>>
+>>>> I think Mimi's suggestion to use CONFIG_HAVE_IMA_KEXEC for building
+>>>> drivers/of/kexec.c would work and also avoid the bisect issue if we do
+>>>> the following:
+>>>
+>>> That seems wrong given only a portion of the file depends on IMA. And
+>>> it reduces our compile coverage.
+>>   
+>> I agree with you this is the wrong solution.  Lakshmi's patch
+>> introduced a new option to prevent other arch's from including kexec.o,
+>> which is the same functionality as CONFIG_HAVE_IMA_KEXEC.  I'm just not
+>> sure what the right solution would be.
+> 
+> I think Rob's suggestion of just moving the elf_load_addr,
+> elf_headers_sz fields (and for consistency, elf_headers as well even though it
+> isn't used in tihs file) from kimage_arch to kimage.
+> 
+> The downside is that these fields will go unused on a number of
+> architectures, but it's not worth complicating the code just because of
+> it.
+> 
+> The patch to do that would have to go before "of: Add a common kexec FDT
+> setup function". That should be enough to preserve bisectability for all arches.
+> 
+
+Agreed. I'll make this change and update.
+
+  -lakshmi
