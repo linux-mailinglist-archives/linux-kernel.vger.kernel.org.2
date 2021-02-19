@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5BB3200FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:57:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0904E320100
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 22:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhBSV4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 16:56:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20820 "EHLO
+        id S230036AbhBSV5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 16:57:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51772 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229891AbhBSVzu (ORCPT
+        by vger.kernel.org with ESMTP id S229907AbhBSVzv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 16:55:50 -0500
+        Fri, 19 Feb 2021 16:55:51 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613771664;
+        s=mimecast20190719; t=1613771665;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ZeO6dGDcVVQslU15WHLCN2NmXYQX/e4e0CmvCEgQ3cM=;
-        b=I/yTpklaSWFizV/BOyYoXTqRdPDUjQ0FW7x1pWaOeKo4muwqv6tF4farMp2SGtrUEG4zGq
-        UN7GOCwuxEn4EsnwN+UymVtZfcFzgHWHHgTwDYdhbjkUt7NS8+Qw4DVT+t5RGtI7xs2Hpd
-        0QfpByVLp2zmWloTVbPX5rq7fr3tDYU=
+        bh=Uk6DZT7TNUGw7YR8fKa6KekVHXLB1t7YOqK+pDP8C8Q=;
+        b=AN06IyzOt8Vmui8wnwz+kNSXm6L0WWF6R/tXbrwX1rZQ7MIhyvRBiFcarmy04vI2Bx8bR3
+        qZdZ1l6CD4BvuAzt6Z4IMoBcc0+E4kHVlLBlYV5qmNqwEGrHwhcbTCKk1g0etvzviR4lR0
+        dfoX9tlXNZ2TaFVmVmZXVNBhwk9lu1g=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-344-mn2AwyrSNJiQs8B3u0fSkg-1; Fri, 19 Feb 2021 16:54:20 -0500
-X-MC-Unique: mn2AwyrSNJiQs8B3u0fSkg-1
+ us-mta-86--XRwb9wpOmuITkdCQmPxng-1; Fri, 19 Feb 2021 16:54:24 -0500
+X-MC-Unique: -XRwb9wpOmuITkdCQmPxng-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A57DDEC1A0;
-        Fri, 19 Feb 2021 21:54:17 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 55AB31020C27;
+        Fri, 19 Feb 2021 21:54:21 +0000 (UTC)
 Received: from Whitewolf.redhat.com (ovpn-118-5.rdu2.redhat.com [10.10.118.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2A82D6A03C;
-        Fri, 19 Feb 2021 21:54:15 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 11F966A03C;
+        Fri, 19 Feb 2021 21:54:18 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
@@ -50,14 +50,14 @@ Cc:     Andrzej Hajda <a.hajda@samsung.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Sam Ravnborg <sam@ravnborg.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
         Vasily Khoruzhick <anarsoul@gmail.com>,
-        Torsten Duwe <duwe@lst.de>, Joe Perches <joe@perches.com>,
-        Icenowy Zheng <icenowy@aosc.io>,
+        Icenowy Zheng <icenowy@aosc.io>, Torsten Duwe <duwe@lst.de>,
+        Joe Perches <joe@perches.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 10/30] drm/bridge/analogix/anx6345: Add missing drm_dp_aux_unregister() call
-Date:   Fri, 19 Feb 2021 16:53:06 -0500
-Message-Id: <20210219215326.2227596-11-lyude@redhat.com>
+Subject: [PATCH 11/30] drm/bridge/analogix/anx6345: Don't link encoder until after connector registration
+Date:   Fri, 19 Feb 2021 16:53:07 -0500
+Message-Id: <20210219215326.2227596-12-lyude@redhat.com>
 In-Reply-To: <20210219215326.2227596-1-lyude@redhat.com>
 References: <20210219215326.2227596-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -67,38 +67,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Another driver I found that seems to forget to unregister it's DP AUX
-device. Let's fix this by adding anx6345_bridge_detach().
+Another case of linking an encoder to a connector after the connector's
+been registered. The proper place to do this is before connector
+registration, so let's fix that.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- drivers/gpu/drm/bridge/analogix/analogix-anx6345.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/bridge/analogix/analogix-anx6345.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
-index d9164fab044d..8e016ba7c54a 100644
+index 8e016ba7c54a..6258f16da0e8 100644
 --- a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
 +++ b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
-@@ -574,6 +574,11 @@ static int anx6345_bridge_attach(struct drm_bridge *bridge,
+@@ -556,12 +556,6 @@ static int anx6345_bridge_attach(struct drm_bridge *bridge,
+ 	drm_connector_helper_add(&anx6345->connector,
+ 				 &anx6345_connector_helper_funcs);
+ 
+-	err = drm_connector_register(&anx6345->connector);
+-	if (err) {
+-		DRM_ERROR("Failed to register connector: %d\n", err);
+-		return err;
+-	}
+-
+ 	anx6345->connector.polled = DRM_CONNECTOR_POLL_HPD;
+ 
+ 	err = drm_connector_attach_encoder(&anx6345->connector,
+@@ -571,6 +565,12 @@ static int anx6345_bridge_attach(struct drm_bridge *bridge,
+ 		return err;
+ 	}
+ 
++	err = drm_connector_register(&anx6345->connector);
++	if (err) {
++		DRM_ERROR("Failed to register connector: %d\n", err);
++		return err;
++	}
++
  	return 0;
  }
  
-+static void anx6345_bridge_detach(struct drm_bridge *bridge)
-+{
-+	drm_dp_aux_unregister(&bridge_to_anx6345(bridge)->aux);
-+}
-+
- static enum drm_mode_status
- anx6345_bridge_mode_valid(struct drm_bridge *bridge,
- 			  const struct drm_display_info *info,
-@@ -624,6 +629,7 @@ static void anx6345_bridge_enable(struct drm_bridge *bridge)
- 
- static const struct drm_bridge_funcs anx6345_bridge_funcs = {
- 	.attach = anx6345_bridge_attach,
-+	.detach = anx6345_bridge_detach,
- 	.mode_valid = anx6345_bridge_mode_valid,
- 	.disable = anx6345_bridge_disable,
- 	.enable = anx6345_bridge_enable,
 -- 
 2.29.2
 
