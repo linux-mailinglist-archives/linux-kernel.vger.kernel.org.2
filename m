@@ -2,189 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A70131F676
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:21:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9FC31F674
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhBSJUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:20:55 -0500
-Received: from mail-db8eur05on2050.outbound.protection.outlook.com ([40.107.20.50]:45362
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229527AbhBSJUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:20:49 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RkEfSE3Z1BVjZpBGo1+3sx2lx17O7YVfhw/WaNzxBwToEPBpox25x0YMvnv9iwAYGgFD50mdBYMjTBNDjIf7Uba2IoMNRPr7gasTb9/rUeIxgiOx5w6o+aeQXPEKYnhu3x4icsdMENAgF3+upIzxYnMs4Quck92v8MdG4l6mfS6jwVtPKTnyNZKaiOW6y1Tev5hu9G9o+r/QlkGyhsXY8PqEAzbTRLatsWDSKpgWes04AAEUGP9NmUnslLRwkwJVV8AYhBfkrVCQuVSVU5/y/2L0bcy6gBSAwqCNem/ygU1L5zNECwXVP2KJZtadZluVUkbC1bXEEzHDJyWVM8yR4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J3hRf7g8i9gtGcvis3Fn4kxmQ6pxSOnudiiqc6+QEnk=;
- b=GIq2arOKHA86+nedChntmpx6ukzSqlPtin2d4EqHwjt55nlCM6JpHPFMQHnYarQwP27JjY3e40+xElRiRl3KL0kfseLTsevAy4o+t/1dOVmIW0wjGHVlo+QjSsVaBx/Auw4NXWrH4hDQprtKUFYjoRZc2bafW5Vdr0qk2OlFZRyEyr+9Vr49hPd7dMdn24CW8LvP7JxCB7BTW+V2HTqaihd/qdv1bN2OVPhjXHe+3wkMaO1TVLNy1vPifPNOimP1nLaFmXXRDSwh1OEAFP4nMvgXry7Rpph4X8CHQt8QGFdFZRTOGTqmgiGeyRaB6RFk+xYRV1fdVk6zFKuFHgPkIA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=J3hRf7g8i9gtGcvis3Fn4kxmQ6pxSOnudiiqc6+QEnk=;
- b=JYukrAG7K4mWcxlqgct+LKq3r0dZPloMoF224XrvrZs+C9PXfNulksx/20rBR12DhKvTSfq7rnhHi/6UehTwLDgjF7yGtvicaHhGJQfz6OGqbkbC8DZfAZG472rWRcJblyVeknvVjd9RhIjAU5Qua/r3tG7te3o2LVhHVL/2v1E=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB7086.eurprd04.prod.outlook.com (2603:10a6:800:121::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Fri, 19 Feb
- 2021 09:19:57 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3868.027; Fri, 19 Feb 2021
- 09:19:57 +0000
-Message-ID: <a89d5c08c9f0793acfb9d056d5748e4a3cf16c2f.camel@nxp.com>
-Subject: Re: [PATCH v3 0/5] phy: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS
- PHY mode support
-From:   Liu Ying <victor.liu@nxp.com>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     kishon@ti.com, vkoul@kernel.org, robh+dt@kernel.org,
-        a.hajda@samsung.com, narmstrong@baylibre.com,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@siol.net, airlied@linux.ie, daniel@ffwll.ch,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, agx@sigxcpu.org,
-        robert.chiras@nxp.com, martin.kepplinger@puri.sm
-Date:   Fri, 19 Feb 2021 17:18:18 +0800
-In-Reply-To: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
-References: <1607651182-12307-1-git-send-email-victor.liu@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR02CA0105.apcprd02.prod.outlook.com
- (2603:1096:4:92::21) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S229931AbhBSJVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:21:18 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:41156 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSJVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:21:11 -0500
+Received: by mail-ot1-f51.google.com with SMTP id s107so4510226otb.8;
+        Fri, 19 Feb 2021 01:20:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SYEpGoDgvI1QlzJlU8ePdTmRC3GRxsqITcqVy9n45cY=;
+        b=KU7VHZPtJ2P5KynNLFYEVRwAgW5VKEcobysHO4UPsWA8NP5ROEDHWWdFud/Ifz/KOE
+         knZ2CvMxYthS/W+IQKGI4o5M3sCLEhNIIMOtdNOt3oII5jtNMexU7z7puZbuZhGBNNW/
+         w3AeQKUCoQmuyv3jaIfJPabwXbnIq7R9HnvHjv3P0ZuufSjKn3GI3xUjEGik6BQvWvsU
+         ZYV/Odkqyad9ZFqI4UTrFbaQIa4G/YdEZGtlDbKsi65OHVVjsF70/K7xNmM1+sHEnr5P
+         NmXacrF3VOr2wyRpii2KtqDkQK4urrmeJbfNAY+g5P6YtXAWtcp3a5P7kK5PkGJFcbZ6
+         UMaw==
+X-Gm-Message-State: AOAM531pHefkQGAVazUcLroHqMG/l0sRWZ+KWRoqbZ8Tl3sB1F5JEjpg
+        Nh4OX7/JKn4pGJA7E3K1rDhHe/tGTP+HeVee53A=
+X-Google-Smtp-Source: ABdhPJy7q8P2LtwfPYQgkPIegG+jc5n3oogMK/uGMAfvC/1FRtz16dPDqNjkj5uhgwUBUnTzcQR/PzqNDGCa3koXHlc=
+X-Received: by 2002:a05:6830:148d:: with SMTP id s13mr6076963otq.250.1613726429698;
+ Fri, 19 Feb 2021 01:20:29 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry.ap.freescale.net (119.31.174.66) by SG2PR02CA0105.apcprd02.prod.outlook.com (2603:1096:4:92::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Fri, 19 Feb 2021 09:19:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: c0c03831-4fc0-4eb2-77f2-08d8d4b7866f
-X-MS-TrafficTypeDiagnostic: VI1PR04MB7086:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB70869DB3ACB3157E3565F88A98849@VI1PR04MB7086.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RxVK+d8lXvf9W3fJ0wDtRk/+f8eWneW3s6/6YLMABPQDVIRAwxqI1I6e/DJqr6Yjyp+lttF8FnhMIbaSNI5fgCJtAjNFOE4F+K4nSJNw9wvEfTlxC7Z4bN10tfFeTaJpChewT0G+FrFfmDqRVKsPBcfFGpwujL6UMv60RO5O6pjzcd52TdmJYlpThkestDMjwDGNpfr47UZkHNyXOcrCfpcUuUKyuFGjCijMYHW7dvdzReLxVZ7qZQSDkv7Vfqo10ePhUNWuz6K1Zk2rW01bcwqFvfI+DfAHdRcB9QQEzNplJRUI2MKvOglt8bQV6zdtw4FZ67vA/dxsohwaRfA8KG+noac3vdv+0GqylGZMPTuuINfOj9CXfumNIf8ZTXN9PJYYiFhcNpPHTJPQRw1HA/DvKlqlh0bl75HE6fNoffOzpF3FsE+UvFT4n4bQhYEzwz2lrBJ8QYBK0KEd60u7Qx3LbMI9cLB4FkDaOGC76yPi7sGYe88b5bgfCN+ynchgZ9WU1ZE8bbUzMzi3s9W3Wg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(376002)(39860400002)(2616005)(478600001)(8676002)(5660300002)(6486002)(26005)(956004)(52116002)(66946007)(16526019)(186003)(66556008)(66476007)(7416002)(6512007)(316002)(6506007)(8936002)(83380400001)(4001150100001)(86362001)(2906002)(36756003)(4326008)(6666004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?KzdpRGdsYy90cEwvcklMZDMxbHlQV25ZN215V3JQcmkzcW0zeWNOSnlLODVa?=
- =?utf-8?B?NVpqeE9TeGQ4MW9RYWh4aFpMVWZ6SkgvdlhnQklzYm9RNFhNZnZoQTNwOHZQ?=
- =?utf-8?B?ejljSi9yR29XS0N5WTcycTNkd2lUQUtFeXZTTWhlTEJEVUNvcEphQzV0ZU83?=
- =?utf-8?B?aTlHR0gydzYvckdRT0pXTkRtYVpoVGNsRWgzTmIyZCtNZXlHZGJDNkhxSFZR?=
- =?utf-8?B?OG1Dc2pBN3hqb3I2d2w2MUdvMEpWTExBSFk3V1BPcTZFdjlJbUpBbVhFUStS?=
- =?utf-8?B?OExGcnMwY2NqQVpBU3IwaURQRjhxTlVZSlBnL24yM3lhRnZMcitBRHpUeUo1?=
- =?utf-8?B?MU9vbmhMNzV0OHFOUGQ5MEhMT1NYejBNL2hiQUpqQjFMdTk1djkwYkdtMkdJ?=
- =?utf-8?B?Wmh1aEpRK3UzZVlBRUNGMm5VSGRqdFEvN1lHa2dqdVRQZC9zTElXSjh4RVZW?=
- =?utf-8?B?S2kvRDFzVjk3ZjRyOEFvWmpBL2pBOGRWZE1FTXZ0VXlMd3htZUIyYU4xR2lh?=
- =?utf-8?B?K0lWcTA4ek1ZWGRIT2pVTzV1RjJMWnJkTXN6b202MnVyV1RTN2FnR0FiZnlY?=
- =?utf-8?B?ZHhEaDJqL1RDaW5ZcVNVaTBmSDZFa3lBd0JXbjJmUUl3NkVvb1lCY21jRytl?=
- =?utf-8?B?dU40N1BXRjFuMWcrTURUbjJRYW1ZSGpYTTcrSHhiR1EvbFc0L0VGbXhYZnlZ?=
- =?utf-8?B?RmVlaUVUK2NUVnhQVjV5UFBiakhWb1NCYjAxaWdyVTVzN1lNcXlHMXRsb0Nr?=
- =?utf-8?B?TWFEUEFrNDRNbU9HYjFhd0dkQ29OWmlwd2pUQU1SK3lKZUlJOEhpbWx5cXd5?=
- =?utf-8?B?UDVXN3hSQzZEWUl5OVJvcCtUVXp1RkVmQWdlUkJENjVYK0hiMitDNncvbjE3?=
- =?utf-8?B?WmVaMFc5RU9OeUdjaS9pRkdrYlNvMUhPUTZ2WlVZRnJFYzV4SldYb0R3ajBo?=
- =?utf-8?B?MWJ2YjBkYkJlaUpuNVJqMVUzRllEbmpmNVRQRmVYVlVka3JIeWQwODFHQWRj?=
- =?utf-8?B?bXJpL2Y1bGZFS2twZCtNWW0yYXVacFFCbWxSczZNSmYwVDdKS1JtdGxaSXlD?=
- =?utf-8?B?d0lLS2hMZ0JhOFp1THhxYk5uVmVzQWFCQkN1UW9UVzh5bks4eHYzU0w1aEkz?=
- =?utf-8?B?b0ZYeWVWL1Mzc0t3YThJVXJ2OEVkdnpnOFZWeHkwbUJoWWFrVW42RE5nLzU3?=
- =?utf-8?B?Y3hxSEtBdnlzWUxQQnJqQlBRYTJzUG9odW8rL3QxSEE5bjBHTFNiNmZSUDNx?=
- =?utf-8?B?S1dCdHVCOWNXNWJ6ZVF1dStZUlJRbHRZdHVnREpZSGVlNklwMm1xNGVkU2Rq?=
- =?utf-8?B?d2lhWkp1aGFpMzYrQ0Rydm5EWExCOFdSd005Y3dva3hsdWpUZE1mekgxUVZ6?=
- =?utf-8?B?N3Y1VlRRR3hBUU5XOStweCtFUU00NVh6WXJScWdxb3FqemFPOTZZTFZkRFpk?=
- =?utf-8?B?akduTHdQRDBHdmpvMk82RWtiTEpQWTZOL2ppdFVKVkkvNGZJa1pWVVdPSkxI?=
- =?utf-8?B?eE1UdWtrckVCUTFicm5LWS9SQzFIU3pyRDViU3hVZWRhS1gxRlZEMUlHUHNK?=
- =?utf-8?B?MFRsTTJsaTIrUVQ4NVlFR0k1K3pGcVNqT1VJelpjVGdDTC9jRm55V2o3UlVH?=
- =?utf-8?B?RjFlRi8rcWFPNk92dS9wUzAzN3FQd0o1VHd2b3pWeVRrTFkxVEpYZ2JlYXh0?=
- =?utf-8?B?bmJmeGpSeU1Ec0VVc1FlQzh6NFhqMTVkK2VxRGN0VXBqUjBNdVFUcnd3anRT?=
- =?utf-8?Q?Nt2krgbHt00YIGR27j3Ch55oOcdMgKjiHYDhP4O?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0c03831-4fc0-4eb2-77f2-08d8d4b7866f
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 09:19:57.6728
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4kiIKSASNkO6aoNpGW42GjrFNbVFSR2Ua+hKsVdpjYFXrrkeF9NzBRtXADMcI9Qfr6Zrc8gLitS2zzp7sJEkJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7086
+References: <20210217221457.1827266-1-drew@beagleboard.org> <20210217221457.1827266-4-drew@beagleboard.org>
+In-Reply-To: <20210217221457.1827266-4-drew@beagleboard.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 19 Feb 2021 10:20:18 +0100
+Message-ID: <CAMuHMdXrD4-bcTR0ioY20qZOMaDparyFDqCzQr71te1_Uqw4eQ@mail.gmail.com>
+Subject: Re: [PATCH v7 3/3] docs/pinctrl: document debugfs files
+To:     Drew Fustini <drew@beagleboard.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@beagleboard.org>,
+        Joe Perches <joe@perches.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A gentle ping.
+Hi Drew,
 
-Vinod, Kishon, it would be nice if you may help review this.
+On Wed, Feb 17, 2021 at 11:15 PM Drew Fustini <drew@beagleboard.org> wrote:
+> Document debugfs directories and files created for pinctrl subsystem.
+>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Tony Lindgren <tony@atomide.com>
+> Signed-off-by: Drew Fustini <drew@beagleboard.org>
 
-Thanks,
-Liu Ying
+Thanks for your patch!
 
-On Fri, 2020-12-11 at 09:46 +0800, Liu Ying wrote:
-> Hi,
-> 
-> This series adds i.MX8qxp LVDS PHY mode support for the Mixel PHY in the
-> Freescale i.MX8qxp SoC.
-> 
-> The Mixel PHY is MIPI DPHY + LVDS PHY combo, which can works in either
-> MIPI DPHY mode or LVDS PHY mode.  The PHY mode is controlled by i.MX8qxp
-> SCU firmware.  The PHY driver would call a SCU function to configure the
-> mode.
-> 
-> The PHY driver is already supporting the Mixel MIPI DPHY in i.MX8mq SoC,
-> where it appears to be a single MIPI DPHY.
-> 
-> 
-> Patch 1/5 sets PHY mode in the Northwest Logic MIPI DSI host controller
-> bridge driver, since i.MX8qxp SoC embeds this controller IP to support
-> MIPI DSI displays together with the Mixel PHY.
-> 
-> Patch 2/5 allows LVDS PHYs to be configured through the generic PHY functions
-> and through a custom structure added to the generic PHY configuration union.
-> 
-> Patch 3/5 converts mixel,mipi-dsi-phy plain text dt binding to json-schema.
-> 
-> Patch 4/5 adds dt binding support for the Mixel combo PHY in i.MX8qxp SoC.
-> 
-> Patch 5/5 adds the i.MX8qxp LVDS PHY mode support in the Mixel PHY driver.
-> 
-> 
-> Welcome comments, thanks.
-> 
-> v2->v3:
-> * Improve readability of mixel_dphy_set_mode() in the Mixel PHY driver. (Guido)
-> * Improve the 'clock-names' property in the PHY dt binding.
-> 
-> v1->v2:
-> * Convert mixel,mipi-dsi-phy plain text dt binding to json-schema. (Guido)
-> * Print invalid PHY mode in dmesg from the Mixel PHY driver. (Guido)
-> * Add Guido's R-b tag on the patch for the nwl-dsi drm bridge driver.
-> 
-> Liu Ying (5):
->   drm/bridge: nwl-dsi: Set PHY mode in nwl_dsi_enable()
->   phy: Add LVDS configuration options
->   dt-bindings: phy: Convert mixel,mipi-dsi-phy to json-schema
->   dt-bindings: phy: mixel: mipi-dsi-phy: Add Mixel combo PHY support for
->     i.MX8qxp
->   phy: freescale: phy-fsl-imx8-mipi-dphy: Add i.MX8qxp LVDS PHY mode
->     support
-> 
->  .../devicetree/bindings/phy/mixel,mipi-dsi-phy.txt |  29 ---
->  .../bindings/phy/mixel,mipi-dsi-phy.yaml           | 107 ++++++++
->  drivers/gpu/drm/bridge/nwl-dsi.c                   |   6 +
->  drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c     | 269 ++++++++++++++++++++-
->  include/linux/phy/phy-lvds.h                       |  48 ++++
->  include/linux/phy/phy.h                            |   4 +
->  6 files changed, 423 insertions(+), 40 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.txt
->  create mode 100644 Documentation/devicetree/bindings/phy/mixel,mipi-dsi-phy.yaml
->  create mode 100644 include/linux/phy/phy-lvds.h
-> 
+> --- a/Documentation/driver-api/pinctl.rst
+> +++ b/Documentation/driver-api/pinctl.rst
+> @@ -1428,3 +1428,40 @@ on the pins defined by group B::
+>  The above has to be done from process context. The reservation of the pins
+>  will be done when the state is activated, so in effect one specific pin
+>  can be used by different functions at different times on a running system.
+> +
+> +
+> +Debugfs files
+> +=============
+> +These files are created in ``/sys/kernel/debug/pinctrl``:
+> +
+> +- ``pinctrl-devices``: prints each pin controller device along with columns to
+> +  indicate support for pinmux and pinconf
+> +
+> +- ``pinctrl-handles``: iterate through the list of pin controller handles and
+> +  print the corresponding pinmux maps
 
+Do you need the iterate part?
+
+"prints each configured pin controller handle and the corresponding
+ pinmux maps"?
+
+> +
+> +- ``pinctrl-maps``: print all pinctrl maps
+> +
+> +A sub-directory is created inside of ``/sys/kernel/debug/pinctrl`` for each pin
+> +controller device containing these files:
+
+Sort the below alphabetically?
+
+> +
+> +- ``pins``: prints a line for each pin registered on the pin controller. The
+> +  pinctrl driver may add additional information such as register contents.
+> +
+> +- ``gpio-ranges``: print ranges that map gpio lines to pins on the controller
+> +
+> +- ``pingroups``: print all pin groups registered on the pin controller
+> +
+> +- ``pinconf-pins``: print pin config settings for each pin
+> +
+> +- ``pinconf-groups``: print pin config settings per pin group
+> +
+> +- ``pinmux-functions``: print each pin function along with the pin groups that
+> +  map to the pin function
+> +
+> +- ``pinmux-pins``: iterate through all pins and print mux owner, gpio owner
+> +  and if the pin is a hog
+> +
+> +- ``pinmux-select``: write to this file to activate a pin function and group::
+
+a pin function for a group?
+
+> +
+> +        echo "<function-name group-name>" > pinmux-select
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
