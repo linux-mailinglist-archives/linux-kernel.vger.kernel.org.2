@@ -2,69 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87D9231F397
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 02:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD8F31F39B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 02:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhBSB0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 20:26:07 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12558 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhBSB0G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 20:26:06 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DhYk80WCdzMbXD;
-        Fri, 19 Feb 2021 09:23:28 +0800 (CST)
-Received: from [10.67.103.10] (10.67.103.10) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Fri, 19 Feb 2021
- 09:25:13 +0800
-Subject: Re: [PATCH v8 7/9] crypto: hisilicon/hpre - add 'ECDH' algorithm
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <marcel@holtmann.org>,
-        <johan.hedberg@gmail.com>, <luiz.dentz@gmail.com>,
-        <tudor.ambarus@microchip.com>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
-        <linux-kernel@vger.kernel.org>
-References: <1612777137-51067-1-git-send-email-yumeng18@huawei.com>
- <1612777137-51067-8-git-send-email-yumeng18@huawei.com>
- <20210210045756.GB7510@gondor.apana.org.au>
- <a92a1b89-75f2-e275-9a84-004072aadf66@huawei.com>
- <20210218200121.GA932@gondor.apana.org.au>
-From:   yumeng <yumeng18@huawei.com>
-Message-ID: <5e1264cf-30ae-cbbd-21bc-90b09b8aa8f2@huawei.com>
-Date:   Fri, 19 Feb 2021 09:25:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S229691AbhBSB0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 20:26:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229639AbhBSB0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Feb 2021 20:26:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0FDD64EDE
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 01:26:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613697971;
+        bh=fJwtJB/HDR3ilN4vGWzecz9MdjUktr8sE8/8Lj+agnk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NuoPwIT6jPCvq7CVpE/RtirLulnNpdzGlK68XaOpM3R2YKEuoOh4eUnIJ144K9FeD
+         6mIwP/zrONWtPFo6OHrcsNp1aXfjgcNLWNwFLsX3H5Scj914pyJNKvFBWOWApvATtw
+         7h6NlWL1eYUnrkN9HRAyHFOdSPrb+CXmf0yr8Sp5OFGWvade7pZLgsqt0ht7KqatCl
+         CiqO6oW2LnJtN0PrpEbJXPdv8Zp4RFmd17DwZFZfaXQFJu3ESBjCDyEhmhcY+0jUQ/
+         4uGPniGZBe40KP38/d4NEbZM3D1QtWNuvnMzHnZu3f71z+GXGjUUcC3uYpTQQdwWQ0
+         xFTMhRK9xtSIQ==
+Received: by mail-ed1-f47.google.com with SMTP id i14so6430735eds.8
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 17:26:10 -0800 (PST)
+X-Gm-Message-State: AOAM531y22s/RVvbgklrANkXS+P1G5yonSxI1wyqQTxh+4/SqtbgUGmv
+        3U1ufv5BCbUPbWJ8EN+em4coKOuCXXABupjpWO8crg==
+X-Google-Smtp-Source: ABdhPJz9RKmMCDP9wSoKObG17qi1NUro62wHOW6LLChZ1Op/hEl2UrY5iiGTy+gNcjBpcwId0RTiDEISDMvJE8ODtTI=
+X-Received: by 2002:a05:6402:1bc7:: with SMTP id ch7mr6925128edb.84.1613697969219;
+ Thu, 18 Feb 2021 17:26:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210218200121.GA932@gondor.apana.org.au>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.103.10]
-X-CFilter-Loop: Reflected
+References: <20210203172242.29644-1-chang.seok.bae@intel.com> <20210203172242.29644-5-chang.seok.bae@intel.com>
+In-Reply-To: <20210203172242.29644-5-chang.seok.bae@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 18 Feb 2021 17:25:58 -0800
+X-Gmail-Original-Message-ID: <CALCETrXuFrHUU-L=HMofTgEDZk9muPnVtK=EjsTHqQ01XhbRYg@mail.gmail.com>
+Message-ID: <CALCETrXuFrHUU-L=HMofTgEDZk9muPnVtK=EjsTHqQ01XhbRYg@mail.gmail.com>
+Subject: Re: [PATCH v5 4/5] x86/signal: Detect and prevent an alternate signal
+ stack overflow
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "H. J. Lu" <hjl.tools@gmail.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Jann Horn <jannh@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Carlos O'Donell" <carlos@redhat.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Feb 3, 2021 at 9:27 AM Chang S. Bae <chang.seok.bae@intel.com> wrote:
+>
+> The kernel pushes context on to the userspace stack to prepare for the
+> user's signal handler. When the user has supplied an alternate signal
+> stack, via sigaltstack(2), it is easy for the kernel to verify that the
+> stack size is sufficient for the current hardware context.
+>
+> Check if writing the hardware context to the alternate stack will exceed
+> it's size. If yes, then instead of corrupting user-data and proceeding with
+> the original signal handler, an immediate SIGSEGV signal is delivered.
+>
+> While previous patches in this series allow new source code to discover and
+> use a sufficient alternate signal stack size, this check is still necessary
+> to protect binaries with insufficient alternate signal stack size from data
+> corruption.
+>
+> Suggested-by: Jann Horn <jannh@google.com>
+> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
+> Reviewed-by: Len Brown <len.brown@intel.com>
+> Reviewed-by: Jann Horn <jannh@google.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: x86@kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+> Changes from v3:
+> * Updated the changelog (Borislav Petkov)
+>
+> Changes from v2:
+> * Simplified the implementation (Jann Horn)
+> ---
+>  arch/x86/kernel/signal.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+> index 0d24f64d0145..8e2df070dbfd 100644
+> --- a/arch/x86/kernel/signal.c
+> +++ b/arch/x86/kernel/signal.c
+> @@ -242,7 +242,7 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+>         unsigned long math_size = 0;
+>         unsigned long sp = regs->sp;
+>         unsigned long buf_fx = 0;
+> -       int onsigstack = on_sig_stack(sp);
+> +       bool onsigstack = on_sig_stack(sp);
+>         int ret;
+>
+>         /* redzone */
+> @@ -251,8 +251,11 @@ get_sigframe(struct k_sigaction *ka, struct pt_regs *regs, size_t frame_size,
+>
+>         /* This is the X/Open sanctioned signal stack switching.  */
+>         if (ka->sa.sa_flags & SA_ONSTACK) {
+> -               if (sas_ss_flags(sp) == 0)
+> +               if (sas_ss_flags(sp) == 0) {
+>                         sp = current->sas_ss_sp + current->sas_ss_size;
+> +                       /* On the alternate signal stack */
+> +                       onsigstack = true;
 
+This is buggy.  The old code had a dubious special case for
+SS_AUTODISARM, and this interacts poorly with it.  I think you could
+fix it by separating the case in which you are already on the altstack
+from the case in which you're switching to the altstack, or you could
+fix it by changing the check at the end of the function to literally
+check whether the sp value is in bounds instead of calling
+on_sig_stack.
 
-ÔÚ 2021/2/19 4:01, Herbert Xu Ð´µÀ:
-> On Thu, Feb 18, 2021 at 10:24:40AM +0800, yumeng wrote:
->>
->> Ecdh-nist-p384 is supported by HPRE now, currently there is no patch of
->> the generic ecdh-nist-p384.
-> 
-> In that case please leave it out until there is:
-> 
-> 1) An in-kernel user of p384.
-> 2) There is a generic implementation.
-> 
-> Thanks,
-> 
-
-  OK, I will, thanks.
-
-And p224 and p521 are the same as p384 (has no user and no
-generic implementation), so they should be supported by HPRE later,
-is it?
-
-thanks.
+Arguably the generic helpers could be adjusted to make this less annoying.
