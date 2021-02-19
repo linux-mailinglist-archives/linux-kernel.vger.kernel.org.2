@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F20E31FF44
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:16:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192431FF36
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 20:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbhBSTPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 14:15:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48126 "EHLO
+        id S229796AbhBSTHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 14:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbhBSTPV (ORCPT
+        with ESMTP id S229515AbhBSTHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:15:21 -0500
-X-Greylist: delayed 452 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 19 Feb 2021 11:14:40 PST
-Received: from orthanc.universe-factory.net (orthanc.universe-factory.net [IPv6:2001:19f0:6c01:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6064C061574;
-        Fri, 19 Feb 2021 11:14:40 -0800 (PST)
-Received: from avalon.. (unknown [IPv6:2001:19f0:6c01:100::2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by orthanc.universe-factory.net (Postfix) with ESMTPSA id D026D1F4A7;
-        Fri, 19 Feb 2021 20:06:23 +0100 (CET)
-From:   Matthias Schiffer <mschiffer@universe-factory.net>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tom Parkin <tparkin@katalix.com>, linux-kernel@vger.kernel.org,
-        Matthias Schiffer <mschiffer@universe-factory.net>
-Subject: [PATCH net] net: l2tp: reduce log level when passing up invalid packets
-Date:   Fri, 19 Feb 2021 20:06:15 +0100
-Message-Id: <f2a482212eed80b5ba22cb590e89d3edb290a872.1613760125.git.mschiffer@universe-factory.net>
-X-Mailer: git-send-email 2.30.1
+        Fri, 19 Feb 2021 14:07:49 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7578C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:07:08 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id w1so15358144ejf.11
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 11:07:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=77PV6s4gIH9a1VzZckQTu3z67SAfM9/Sc+3Js4Gjgvo=;
+        b=hCTdHliF5L9G8ZuMk18k/qMgmy17gjoxP8UWTiDwyICwg1HB9FW28guF/3Tk3XtuYC
+         1ldBQfAkIODBQCCfslAl4sv9BFXHdhTAwkQMHbkvVRf/HrnJBuoztJoCaal05tXrj9Qw
+         qPzpDZd114JOtfAalnAx/VTYTkk/4RHmqB5yNWQk379dcsgI2ux3Gd2ArwdKvuCEBfWe
+         usqCPbgDNcX0PcOzaeI6dDRPvK/J9nmwvJLhlzovMTLHJu2pzR/KC+Z9K7qlXSwryPLZ
+         curCdxPuQa4rvnxnnE2RIVuqtk76O62+YJwF69chHR7hHf9THjscOXSZT7ZY8s5t4tqG
+         pb6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=77PV6s4gIH9a1VzZckQTu3z67SAfM9/Sc+3Js4Gjgvo=;
+        b=ZsTo1DCcG1HtXo2usehtdSqOLoQrrTrbVBao9fPadqsWL/FHnR9USSj+FB/tOx/BPe
+         MXDJI1Ruxkg5mQC48x7e+EvyOLum2/3B0Tyu1Rmk33HaGxMNEk9YdCXLD10FboqolwHx
+         9rC/iGrnlbEcZNcJLtqymy6DFvglKBHw5IK0KQAJFH0WJPg9eFq95rW8UrS+vcFISJqd
+         slg1TcguBRg0LaRp4+m6QRvpa8u514FIRRipYAQoNpyvPmiZli3oWidhJsStEMHlWf2W
+         JQP+17XfK09Zn17L27VuJwYE7thZC5mrj1dRc6McaN5A2YDvOI0g5MzX9Sgb67DXmcds
+         I14Q==
+X-Gm-Message-State: AOAM533bh/2q6czR7hLodpGiXqTJ6nETE9fV9RTHplBrZeYHEsWDKci3
+        EyDYYBNEoemo8BrUF3Db7DBbJyKR/VHw0BKLr0gn3A==
+X-Google-Smtp-Source: ABdhPJzR/lDvqtJqbIDmLhn0O9ySj8OmzkPHoknmUinPK2eIBAAft6YfYF0ouX9fR9U2QYr3Wa7RMjAc3EwHMJYLDaA=
+X-Received: by 2002:a17:906:3c58:: with SMTP id i24mr4285681ejg.383.1613761627426;
+ Fri, 19 Feb 2021 11:07:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210215185908.257724-1-pasha.tatashin@soleen.com>
+ <20210215185908.257724-2-pasha.tatashin@soleen.com> <20210219175341.GC6352@willie-the-truck>
+In-Reply-To: <20210219175341.GC6352@willie-the-truck>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 19 Feb 2021 14:06:31 -0500
+Message-ID: <CA+CK2bBpXyobT=rjVtY_pFhug4RcveGk_XB4zDBTX=vZBOkaLw@mail.gmail.com>
+Subject: Re: [PATCH 1/1] kexec: move machine_kexec_post_load() to public interface
+To:     Will Deacon <will@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        James Morris <jmorris@namei.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        James Morse <james.morse@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        kexec mailing list <kexec@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before commit 5ee759cda51b ("l2tp: use standard API for warning log
-messages"), it was possible for userspace applications to use their own
-control protocols on the backing sockets of an L2TP kernel device, and as
-long as a packet didn't look like a proper L2TP data packet, it would be
-passed up to userspace just fine.
+On Fri, Feb 19, 2021 at 12:53 PM Will Deacon <will@kernel.org> wrote:
+>
+> On Mon, Feb 15, 2021 at 01:59:08PM -0500, Pavel Tatashin wrote:
+> > machine_kexec_post_load() is called after kexec load is finished. It must
+> > be declared in public header not in kexec_internal.h
+>
+> Could you provide a log of what goes wrong without this patch, please?
+>
+> > Reported-by: kernel test robot <lkp@intel.com>
+>
+> Do you have a link to the report, or did it not go to the list?
 
-After the mentioned change, this approach would lead to significant log
-spam, as the previously hidden warnings are now shown by default. Not
-even setting the T flag on the custom control packets is sufficient to
-surpress these warnings, as packet length and L2TP version are checked
-before the T flag.
+Hi Will,
 
-Reduce all warnings debug level when packets are passed to userspace.
+https://lore.kernel.org/linux-arm-kernel/202102030727.gqTokACH-lkp@intel.com/
 
-Fixes: 5ee759cda51b ("l2tp: use standard API for warning log messages")
-Signed-off-by: Matthias Schiffer <mschiffer@universe-factory.net>
----
+It is also linked in the cover letter.
 
-I'm unsure what to do about the pr_warn_ratelimited() in
-l2tp_recv_common(). It feels wrong to me that an incoming network packet
-can trigger a kernel message above debug level at all, so maybe they
-should be downgraded as well? I believe the only reason these were ever
-warnings is that they were not shown by default.
-
-
- net/l2tp/l2tp_core.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/net/l2tp/l2tp_core.c b/net/l2tp/l2tp_core.c
-index 7be5103ff2a8..40852488c62a 100644
---- a/net/l2tp/l2tp_core.c
-+++ b/net/l2tp/l2tp_core.c
-@@ -809,8 +809,8 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
- 
- 	/* Short packet? */
- 	if (!pskb_may_pull(skb, L2TP_HDR_SIZE_MAX)) {
--		pr_warn_ratelimited("%s: recv short packet (len=%d)\n",
--				    tunnel->name, skb->len);
-+		pr_debug_ratelimited("%s: recv short packet (len=%d)\n",
-+				     tunnel->name, skb->len);
- 		goto error;
- 	}
- 
-@@ -824,8 +824,8 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
- 	/* Check protocol version */
- 	version = hdrflags & L2TP_HDR_VER_MASK;
- 	if (version != tunnel->version) {
--		pr_warn_ratelimited("%s: recv protocol version mismatch: got %d expected %d\n",
--				    tunnel->name, version, tunnel->version);
-+		pr_debug_ratelimited("%s: recv protocol version mismatch: got %d expected %d\n",
-+				     tunnel->name, version, tunnel->version);
- 		goto error;
- 	}
- 
-@@ -863,8 +863,8 @@ static int l2tp_udp_recv_core(struct l2tp_tunnel *tunnel, struct sk_buff *skb)
- 			l2tp_session_dec_refcount(session);
- 
- 		/* Not found? Pass to userspace to deal with */
--		pr_warn_ratelimited("%s: no session found (%u/%u). Passing up.\n",
--				    tunnel->name, tunnel_id, session_id);
-+		pr_debug_ratelimited("%s: no session found (%u/%u). Passing up.\n",
-+				     tunnel->name, tunnel_id, session_id);
- 		goto error;
- 	}
- 
--- 
-2.30.1
-
+Thank you,
+Pasha
