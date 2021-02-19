@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79BC31FC18
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3276831FC1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:36:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbhBSPfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:35:11 -0500
-Received: from mail.hallyn.com ([178.63.66.53]:51598 "EHLO mail.hallyn.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhBSPfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:35:04 -0500
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 679722BF; Fri, 19 Feb 2021 09:34:14 -0600 (CST)
-Date:   Fri, 19 Feb 2021 09:34:14 -0600
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>, Jann Horn <jannh@google.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Jeff Dike <jdike@addtoit.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Richard Weinberger <richard@nod.at>,
-        Shuah Khan <shuah@kernel.org>,
-        Vincent Dagonneau <vincent.dagonneau@ssi.gouv.fr>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-security-module@vger.kernel.org, x86@kernel.org,
-        =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v28 07/12] landlock: Support filesystem access-control
-Message-ID: <20210219153414.GA18061@mail.hallyn.com>
-References: <20210202162710.657398-1-mic@digikod.net>
- <20210202162710.657398-8-mic@digikod.net>
- <20210210193624.GA29893@mail.hallyn.com>
- <aeba97b6-37cd-4870-0a40-3e7aa84ebd36@digikod.net>
+        id S229890AbhBSPgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:36:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhBSPfw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 10:35:52 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E14C061574;
+        Fri, 19 Feb 2021 07:35:11 -0800 (PST)
+Received: from [IPv6:2a01:e0a:4cb:a870:9157:afa6:f219:3c2c] (unknown [IPv6:2a01:e0a:4cb:a870:9157:afa6:f219:3c2c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id D16F01F46406;
+        Fri, 19 Feb 2021 15:34:54 +0000 (GMT)
+Subject: Re: [PATCH v2 4/9] media: uapi: Add a control for HANTRO driver
+To:     =?UTF-8?Q?Jernej_=c5=a0krabec?= <jernej.skrabec@siol.net>,
+        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org, peng.fan@nxp.com,
+        hverkuil-cisco@xs4all.nl, dan.carpenter@oracle.com
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20210218191844.297869-1-benjamin.gaignard@collabora.com>
+ <20210218191844.297869-5-benjamin.gaignard@collabora.com>
+ <2850677.34AhzSeaHW@kista>
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Message-ID: <3ec0c7ba-7492-02d1-8beb-fe692ba7d265@collabora.com>
+Date:   Fri, 19 Feb 2021 16:34:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <2850677.34AhzSeaHW@kista>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <aeba97b6-37cd-4870-0a40-3e7aa84ebd36@digikod.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 09:17:25PM +0100, Mickaël Salaün wrote:
-> 
-> On 10/02/2021 20:36, Serge E. Hallyn wrote:
-> > On Tue, Feb 02, 2021 at 05:27:05PM +0100, Mickaël Salaün wrote:
-> >> From: Mickaël Salaün <mic@linux.microsoft.com>
-> >>
-> >> Thanks to the Landlock objects and ruleset, it is possible to identify
-> >> inodes according to a process's domain.  To enable an unprivileged
-> > 
-> > This throws me off a bit.  "identify inodes according to a process's domain".
-> > What exactly does it mean?  "identify" how ?
-> 
-> A domain is a set of rules (i.e. layers of rulesets) enforced on a set
-> of threads. Inodes are tagged per domain (i.e. not system-wide) and
-> actions are restricted thanks to these tags, which form rules. It means
-> that the created access-controls are scoped to a set of threads.
 
-Thanks, that's helpful.  To me it would be much clearer if you used the word
-'tagged' :
+Le 18/02/2021 Ã  22:34, Jernej Å krabec a Ã©critÂ :
+> Hi!
+>
+> Dne Äetrtek, 18. februar 2021 ob 20:18:39 CET je Benjamin Gaignard napisal(a):
+>> The HEVC HANTRO driver needs to know the number of bits to skip at
+>> the beginning of the slice header.
+>> That is a hardware specific requirement so create a dedicated control
+>> that this purpose.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>   include/uapi/linux/hantro-v4l2-controls.h | 20 ++++++++++++++++++++
+>>   include/uapi/linux/v4l2-controls.h        |  5 +++++
+>>   2 files changed, 25 insertions(+)
+>>   create mode 100644 include/uapi/linux/hantro-v4l2-controls.h
+>>
+>> diff --git a/include/uapi/linux/hantro-v4l2-controls.h b/include/uapi/linux/
+> hantro-v4l2-controls.h
+>> new file mode 100644
+>> index 000000000000..30b1999b7af3
+>> --- /dev/null
+>> +++ b/include/uapi/linux/hantro-v4l2-controls.h
+>> @@ -0,0 +1,20 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +
+>> +#ifndef __UAPI_HANTRO_V4L2_CONYTROLS_H__
+>> +#define __UAPI_HANTRO_V4L2_CONYTROLS_H__
+>> +
+>> +#include <linux/v4l2-controls.h>
+>> +#include <media/hevc-ctrls.h>
+>> +
+>> +#define V4L2_CID_HANTRO_HEVC_EXTRA_DECODE_PARAMS	
+> (V4L2_CID_USER_HANTRO_BASE + 0)
+>> +
+>> +/**
+>> + * struct hantro_hevc_extra_decode_params - extra decode parameters for
+> hantro driver
+>> + * @hevc_hdr_skip_lenght:	header first bits offset
+>> + */
+>> +struct hantro_hevc_extra_decode_params {
+>> +	__u32	hevc_hdr_skip_lenght;
+> typo: lenght -> length
+>
+> Same mistake in description above.
 
-  Using the Landlock objects and ruleset, it is possible to tag inodes
-  according to a process's domain.
+Thanks I will fix that in v3
 
-> >> process to express a file hierarchy, it first needs to open a directory
-> >> (or a file) and pass this file descriptor to the kernel through
-> >> landlock_add_rule(2).  When checking if a file access request is
-> >> allowed, we walk from the requested dentry to the real root, following
-> >> the different mount layers.  The access to each "tagged" inodes are
-> >> collected according to their rule layer level, and ANDed to create
-> >> access to the requested file hierarchy.  This makes possible to identify
-> >> a lot of files without tagging every inodes nor modifying the
-> >> filesystem, while still following the view and understanding the user
-> >> has from the filesystem.
-> >>
-> >> Add a new ARCH_EPHEMERAL_INODES for UML because it currently does not
-> >> keep the same struct inodes for the same inodes whereas these inodes are
-> >> in use.
-> > 
-> > -serge
-> > 
+Benjamin
+
+>
+> Best regards,
+> Jernej
+>
+>> +	__u8	padding[4];
+>> +};
+>> +
+>> +#endif
+>> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-
+> controls.h
+>> index 039c0d7add1b..ced7486c7f46 100644
+>> --- a/include/uapi/linux/v4l2-controls.h
+>> +++ b/include/uapi/linux/v4l2-controls.h
+>> @@ -209,6 +209,11 @@ enum v4l2_colorfx {
+>>    * We reserve 128 controls for this driver.
+>>    */
+>>   #define V4L2_CID_USER_CCS_BASE			(V4L2_CID_USER_BASE +
+> 0x10f0)
+>> +/*
+>> + * The base for HANTRO driver controls.
+>> + * We reserve 32 controls for this driver.
+>> + */
+>> +#define V4L2_CID_USER_HANTRO_BASE		(V4L2_CID_USER_BASE +
+> 0x1170)
+>>   
+>>   /* MPEG-class control IDs */
+>>   /* The MPEG controls are applicable to all codec controls
+>> -- 
+>> 2.25.1
+>>
+>>
+>
+>
