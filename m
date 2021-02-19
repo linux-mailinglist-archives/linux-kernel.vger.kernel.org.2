@@ -2,95 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23EA31F6B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:46:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C38831F6BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 10:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhBSJpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 04:45:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:60446 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhBSJp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:45:29 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA595D6E;
-        Fri, 19 Feb 2021 01:44:42 -0800 (PST)
-Received: from localhost (unknown [10.1.195.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 686C13F694;
-        Fri, 19 Feb 2021 01:44:42 -0800 (PST)
-Date:   Fri, 19 Feb 2021 09:44:40 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-pm@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH V3 1/2] topology: Allow multiple entities to provide
- sched_freq_tick() callback
-Message-ID: <20210219094440.GA29843@arm.com>
-References: <cover.1611829953.git.viresh.kumar@linaro.org>
- <d398729676f3d2b0d2ab024a2c9ea6e9ee1d0dca.1611829953.git.viresh.kumar@linaro.org>
- <20210203114521.GA6380@arm.com>
- <20210205091424.3od3tme3f7mh7ebp@vireshk-i7>
- <20210217002422.GA17422@arm.com>
- <20210218093304.3mt3o7kbeymn5ofl@vireshk-i7>
- <20210218163635.GA23622@arm.com>
- <20210219045823.beeijwaymd63prk7@vireshk-i7>
+        id S230153AbhBSJrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 04:47:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229958AbhBSJr1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 04:47:27 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613727960;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6750kAKaPhDhZsGVTXRm//lcDc2aIOL0pby2BbIRZu4=;
+        b=iDCScewCRDKxBTSioCc2JSp1zIDxbpSVyRRPJeJ8muswsMryE/ZU9s4T+XIRf6+EWJgdKI
+        7+cqqGNdhhUybeRBV4PtUaONrtdb9nRXUNjh2n5xHvThxAkLbzQvbW741yLbWyJVVij4sG
+        cDXxPGfdeoAQ/iuSCUnRdUcBjYABsS0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-6UWakb5WPqKC9DI7zpEG0g-1; Fri, 19 Feb 2021 04:45:56 -0500
+X-MC-Unique: 6UWakb5WPqKC9DI7zpEG0g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACD86804036;
+        Fri, 19 Feb 2021 09:45:54 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-68.rdu2.redhat.com [10.10.119.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 270E56267C;
+        Fri, 19 Feb 2021 09:45:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net>
+References: <ca631011-08c2-d44d-cce9-436a6a08405f@digikod.net> <160751619550.1238376.2380930476046994051.stgit@warthog.procyon.org.uk> <160751606428.1238376.14935502103503420781.stgit@warthog.procyon.org.uk> <2031808.1613665474@warthog.procyon.org.uk>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl=5FSala=3Dc3=3Dbcn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>
+Cc:     dhowells@redhat.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl?=
+         =?us-ascii?Q?=5FSala=3Dc3=3Dbcn=3F=3D?= <mic@linux.microsoft.com>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/18] certs: Fix blacklist flag type confusion
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219045823.beeijwaymd63prk7@vireshk-i7>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 19 Feb 2021 09:45:52 +0000
+Message-ID: <2152657.1613727952@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 19 Feb 2021 at 10:28:23 (+0530), Viresh Kumar wrote:
-> On 18-02-21, 16:36, Ionela Voinescu wrote:
-> > Yes, we don't care if there is no cpufreq driver, as the use of AMUs won't
-> > get initialised either. But we do care if there is a cpufreq driver that
-> > does not support frequency invariance, which is the example above.
-> > 
-> > The intention with the patches that made cpufreq based invariance generic
-> > a while back was for it to be present, seamlessly, for as many drivers as
-> > possible, as a less than accurate invariance default method is still
-> > better than nothing.
-> 
-> Right.
-> 
-> > So only a few drivers today don't support cpufreq based FI
-> 
-> Only two AFAICT, both x86, and the AMU stuff doesn't conflict with
-> them.
-> 
-> drivers/cpufreq/intel_pstate.c
-> drivers/cpufreq/longrun.c
-> 
-> > but it's not a guarantee that it will stay this way.
-> 
-> What do you mean by "no guarantee" here ?
-> 
-> The very core routines (cpufreq_freq_transition_end() and
-> cpufreq_driver_fast_switch()) of the cpufreq core call
-> arch_set_freq_scale() today and this isn't going to change anytime
-> soon. If something gets changed there someone will need to see other
-> parts of the kernel which may get broken with that.
-> 
 
-Yes, but it won't really be straightforward to notice this breakage if
-that happens, so in my opinion it was worth to keep that condition.
+Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
 
-> I don't see any need of complicating other parts of the kernel like,
-> amu or cppc code for that. They should be kept simple and they should
-> assume cpufreq invariance will be supported as it is today.
-> 
+> No, the current thread contains an old version with an error in the
+> patch for ima_mok_init(). Please take the last series (fixing this
+> patch) that I rebased on your next branch:
+> https://lore.kernel.org/keyrings/20210210120410.471693-1-mic@digikod.net/
 
-Fair enough! It is a corner case after all.
+Are you referring to the comma rather than a bar here?
 
-Thanks,
-Ionela.
+ 				KEY_ALLOC_NOT_IN_QUOTA,
++				KEY_ALLOC_SET_KEEP,
 
-> -- 
-> viresh
+I fixed that in my branch:
+
+-                               KEY_ALLOC_NOT_IN_QUOTA,
++                               KEY_ALLOC_NOT_IN_QUOTA |
++                               KEY_ALLOC_SET_KEEP,
+
+I'll repost the series.
+
+David
+
