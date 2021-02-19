@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5558C31F7C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:58:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC76D31F7C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 11:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230314AbhBSK5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 05:57:43 -0500
-Received: from mga01.intel.com ([192.55.52.88]:42742 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230195AbhBSKya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 05:54:30 -0500
-IronPort-SDR: Pan4+RQ6X3mXLM4cNGlD8lxrtQq+KXGFLqmGJNkfP8TA6reWleoVhSFQ9jtd/7XuxFBBCZoGxu
- MXaCa4JYUWRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="203089882"
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="203089882"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:52:40 -0800
-IronPort-SDR: bVGrXxe3odPkq9jl2SHFPpUZx8yAK/e9ZiGCRHn1OpRte+3Sh+PsSwyKsbrFvOjG6dK3qKDY9E
- 30CHMP0KncJQ==
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="581637660"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 02:52:35 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lD3Oh-006C0D-KD; Fri, 19 Feb 2021 12:52:31 +0200
-Date:   Fri, 19 Feb 2021 12:52:31 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-arch@vger.kernel.org, linux-sh@vger.kernel.org,
-        Alexey Klimov <aklimov@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, David Sterba <dsterba@suse.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jianpeng Ma <jianpeng.ma@intel.com>,
-        Joe Perches <joe@perches.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Rich Felker <dalias@libc.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: Re: [PATCH 08/14] lib/Kconfig: introduce FAST_PATH option
-Message-ID: <YC+Yby6dbFnC81pu@smile.fi.intel.com>
-References: <20210218040512.709186-1-yury.norov@gmail.com>
- <20210218040512.709186-9-yury.norov@gmail.com>
- <YC6EnzFUXDuroy0+@smile.fi.intel.com>
- <20210218192419.GA788573@yury-ThinkPad>
+        id S230202AbhBSK4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 05:56:50 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47370 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230257AbhBSKyC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 05:54:02 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 2AAE61C0B8B; Fri, 19 Feb 2021 11:53:04 +0100 (CET)
+Date:   Fri, 19 Feb 2021 11:53:03 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     jacek.anaszewski@gmail.com, robh+dt@kernel.org,
+        matthias.bgg@gmail.com, dmurphy@ti.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v13 5/5] leds: mt6360: Add LED driver for MT6360
+Message-ID: <20210219105303.GD19207@duo.ucw.cz>
+References: <1608547554-6602-1-git-send-email-gene.chen.richtek@gmail.com>
+ <1608547554-6602-6-git-send-email-gene.chen.richtek@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Km1U/tdNT/EmXiR1"
 Content-Disposition: inline
-In-Reply-To: <20210218192419.GA788573@yury-ThinkPad>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1608547554-6602-6-git-send-email-gene.chen.richtek@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 11:24:19AM -0800, Yury Norov wrote:
-> On Thu, Feb 18, 2021 at 05:15:43PM +0200, Andy Shevchenko wrote:
-> > On Wed, Feb 17, 2021 at 08:05:06PM -0800, Yury Norov wrote:
-> > > This series introduces fast paths for find_bit() routines. It is
-> > > beneficial for typical systems, but those who limited in I-cache
-> > > may be concerned about increasing the .text size of the Image.
-> > > 
-> > > To address this concern, one can disable FAST_PATH option in the config
-> > > and some save memory.
-> > > 
-> > > The effect of this option on my arm64 next-20210217 build is:
-> > 
-> > (Maybe bloat-o-meter will give better view on this, i.e. more human-readable)
-> 
-> Never heard about this tool, thanks for the hint.
-> 
-> scripts/bloat-o-meter vmlinux vmlinux.new
-> add/remove: 16/13 grow/shrink: 111/439 up/down: 3616/-19352 (-15736)
-> Function                                     old     new   delta
-> find_next_bit.constprop                        -     220    +220
-> apply_wqattrs_cleanup                          -     176    +176
-> memcg_free_shrinker_maps                       -     172    +172
-> ...
-> cpuset_hotplug_workfn                       2584    2288    -296
-> task_numa_fault                             3640    3320    -320
-> kmem_cache_free_bulk                        1684    1280    -404
-> Total: Before=26085140, After=26069404, chg -0.06%
-> 
-> The complete output is here:
-> https://pastebin.com/kBSdVJcK
-> 
-> So if I understand the output correctly, the size of .text is decreased...
-> Looks weird, but if it's true, we don't need the FAST_BIT config at all
-> because there's no tradeoff, and I should drop the patch.
 
-I actually expected the text size decrease when it's about constants.
-I remember that in PCI case we discussed with Bjorn the use of
-for_each_set_bit() that brought entire function into the object file that
-increased it by ~300 bytes (or so). But the code is something like
+--Km1U/tdNT/EmXiR1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	for_each_set_bit(i, &addr, 32)
+Hi!
 
-...
+> From: Gene Chen <gene_chen@richtek.com>
+>=20
+> Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mode,
+> 3-channel RGB LED support Register/Flash/Breath Mode, and 1-channel for
+> moonlight LED.
 
-> > I think the name is to broad for this cases, perhaps BITS_FAST_PATH? or BITMAP?
-> 
-> My logic was that since SMALL_CONST() is global, and FAST_PATH
-> controls the SMALL_CONST, it should also be global. I believe,
-> Linux should have a global switch to control the behaviour in
-> such cases, similarly to -Os compiler option. And I was surprized
-> when I found nothing like FAST_PATH in the config.
-> 
-> What about having FAST_PATH as a global option, and later if someone
-> will request for granularity, we'll introduce nested configs?
+What kind of ninja mutant hardware is this?
 
-I think it is too far from now. Let's do one step at a time.
+Can we make this go to  drivers/leds/flash?
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +static int mt6360_flash_brightness_set(struct led_classdev_flash *fl_cde=
+v, u32 brightness)
+> +{
+> +	/*
+> +	 * Due to the current spike when turning on flash, let brightness to be=
+ kept by framework.
+> +	 * This empty function is used to prevent led_classdev_flash register o=
+ps check failure.
+> +	 */
 
+Please stick to 80 columns.
 
+> +static int mt6360_init_common_properties(struct mt6360_led *led, struct =
+led_init_data *init_data)
+> +{
+> +	const char * const states[] =3D { "off", "keep", "on" };
+
+No need for space between * and const.
+
+Best regards,
+									Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--Km1U/tdNT/EmXiR1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYC+YjwAKCRAw5/Bqldv6
+8renAJ0fPFfR2F+/nrLVIeNTWJMfpcfluwCgknpgj5y/xjX67RIYZ+WE4vP0BqA=
+=J0FT
+-----END PGP SIGNATURE-----
+
+--Km1U/tdNT/EmXiR1--
