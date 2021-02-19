@@ -2,164 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0395931FB30
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:48:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72CC731FB33
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 15:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhBSOrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 09:47:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56858 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229498AbhBSOrU (ORCPT
+        id S229824AbhBSOsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 09:48:45 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:39166 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhBSOsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 09:47:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613745953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4c+qZYHckGTx1tTFDNJ70MwWPI4v8lbqr4E8l5bbSS4=;
-        b=XVMqciK8Pbq9ZB+3ZN90YE18YbDJ1Ud82Tx+3tWI9hLBsijSNQlxk32WIqzK0/vQOozRg9
-        Xvsryg7DupZaGq+AHT+VTW9iZ0KYrZcDV0xtz8CbvprkmmlGZ0dqzSTS4D/2bzZsZHli6d
-        Xw+AHt4Y4rNEt7z13vYjLvLK09d0lwQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-239-1acmZWfYNwaAHYpTRUjdiA-1; Fri, 19 Feb 2021 09:45:49 -0500
-X-MC-Unique: 1acmZWfYNwaAHYpTRUjdiA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5BBCB3FFC;
-        Fri, 19 Feb 2021 14:45:47 +0000 (UTC)
-Received: from [10.36.116.11] (ovpn-116-11.ams2.redhat.com [10.36.116.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7255D5C1C2;
-        Fri, 19 Feb 2021 14:45:44 +0000 (UTC)
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-To:     Hanjun Guo <guohanjun@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>
-Cc:     Huxinwei <huxinwei@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yanjin <yanjin.yan@huawei.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        Zhaohongjiang <zhaohongjiang@huawei.com>,
-        "Zhangdianfang (Dianfang, OS Lab)" <zhangdianfang@huawei.com>,
-        PEIXIN HOU <PEIXIN.HOU@huawei.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        kernelci@groups.io
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
-From:   Nikolai Kondrashov <Nikolai.Kondrashov@redhat.com>
-Message-ID: <2a7ff382-1d35-0eeb-6fb6-bad37aa4c1d7@redhat.com>
-Date:   Fri, 19 Feb 2021 16:45:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 19 Feb 2021 09:48:35 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JEjQEd029382;
+        Fri, 19 Feb 2021 14:46:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : content-transfer-encoding : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=YMJqVqao4ydj1ukxOpSEj8SNvF7Jt/Ioka1r/ab2XRw=;
+ b=gadFsUe9LLKdH5pH0cQJMOE9iWs9ennMJDlGQxc09zlB36s7b2ErEywUXkWaRY/ElSOQ
+ JPWe8aIIoCgCFIEi8jjwqgv2+aIQ7NFi2LV+bZ5s0cvGAN8Cx3j6L0s8SYDjrjKwSbBn
+ LqYp6dlVMRJIzCBSPXLHDNoLYqXGmJQpv5eicskITqqdqZ0E6SBoaeL4ISPhmNP/EU5E
+ gLuer3ge81OXdxPoDrpOYL/exY3NKzayLoLmRkmdnBm63nnmBtXQW4XbrLw3JYuoegZw
+ HOl/fC7plqc7lRvUVWlPNfKpIqEbibNz9Z8MdWLUvYr1aC+WmtbZqMCT4QCyl/BF19cB +g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 36p66r9r5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 14:46:41 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11JEkKfS112347;
+        Fri, 19 Feb 2021 14:46:41 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
+        by aserp3020.oracle.com with ESMTP id 36prp2yfrq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Feb 2021 14:46:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nHlqz1b/qszlJ39dCbMPu+tB9MH5aPqMjxAGCdGt1lPM+o0suYMFatJG9uFIv0xCPw5FVPuGIujBsnA3P0QQPLsbob3rK9qmDVDKStZxiKYltLA2AVICvZ9bJn7nlv4RCoQ1ZnaMVSIuZdnoI7UXxX4OtaVZvxeup7dR5gKktxllRfKgxlSV321FVhjmN+MxcUZxGaYM4+bMJNBC1IpcgIXOly+f/9sv2VMp4IIB+hSxL2kPM3QBPI1WecZaAYx+XlehzzRST8IXKPd3T35UtA7h1COqDF2HrI+Fs2JW5Ofwy/m70RwFAHPRGtiJhGNXjRFiJf9R6chE21B1gWJjAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YMJqVqao4ydj1ukxOpSEj8SNvF7Jt/Ioka1r/ab2XRw=;
+ b=hvqnsDYSn9FGldzN54d4u52iX9W6UDGyfPHC3nieJmov7EkxUOANJLgPmh5aK7ienZ9TrX4XJnS6Y9creb42aj9kMmBarnxAIBW/YXnEoMT4lmAH1i3oXrwHp70iC7zzgVNPUCeAS6qT2YviCeWHaO0scu/55PhzpTPMI5kygID4aivvFuw/RhIXj2a2394oLgybJ/koqu/kA4yZGEzg8p6HFbblo/t3GRy1mG+FaeGjkzd1HuD8lgK9b9prAqeThrJ+W83VVrscVqigj8kv9hVE/dglqXc5zZP/m5T8908ToN9ApqmrdI6IE3hYFuqUM4KMurIxamJKScRy55ryTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YMJqVqao4ydj1ukxOpSEj8SNvF7Jt/Ioka1r/ab2XRw=;
+ b=jV3QFJ6Us4feUbWTRtqURZkJcw60veMy3muo1fQXZ6QLi3DSmfrR/cMtmhhtiAekJNKODbo27iUTQdi/+kmAMlBCbpbl+43GCeMKxdpISS4HtpHROmvGO84WM0PRcowT1lXtVZSfR19Fn/B4cN3Ls9hR5m30BXWQaiDueWsvRBk=
+Authentication-Results: zytor.com; dkim=none (message not signed)
+ header.d=none;zytor.com; dmarc=none action=none header.from=oracle.com;
+Received: from DM6PR10MB3148.namprd10.prod.outlook.com (2603:10b6:5:1a4::21)
+ by DM6PR10MB3067.namprd10.prod.outlook.com (2603:10b6:5:6e::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Fri, 19 Feb
+ 2021 14:46:39 +0000
+Received: from DM6PR10MB3148.namprd10.prod.outlook.com
+ ([fe80::f871:5965:2081:3934]) by DM6PR10MB3148.namprd10.prod.outlook.com
+ ([fe80::f871:5965:2081:3934%5]) with mapi id 15.20.3846.027; Fri, 19 Feb 2021
+ 14:46:39 +0000
+From:   David Edmondson <david.edmondson@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Edmondson <david.edmondson@oracle.com>
+Subject: [PATCH v2 0/3] KVM: x86: dump_vmcs: don't assume GUEST_IA32_EFER, show MSR autoloads/autosaves
+Date:   Fri, 19 Feb 2021 14:46:29 +0000
+Message-Id: <20210219144632.2288189-1-david.edmondson@oracle.com>
+X-Mailer: git-send-email 2.30.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [2001:8b0:bb71:7140:64::1]
+X-ClientProxiedBy: LO4P123CA0496.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1ab::15) To DM6PR10MB3148.namprd10.prod.outlook.com
+ (2603:10b6:5:1a4::21)
 MIME-Version: 1.0
-In-Reply-To: <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from disaster-area.hh.sledj.net (2001:8b0:bb71:7140:64::1) by LO4P123CA0496.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:1ab::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.38 via Frontend Transport; Fri, 19 Feb 2021 14:46:36 +0000
+Received: from localhost (disaster-area.hh.sledj.net [local])   by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id 98123fb1;      Fri, 19 Feb 2021 14:46:32 +0000 (UTC)
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 17cd4398-b5e6-4042-435f-08d8d4e529a9
+X-MS-TrafficTypeDiagnostic: DM6PR10MB3067:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR10MB3067BEE0D143916AD255C81188849@DM6PR10MB3067.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3826;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: I+udt5Gw0z8n7Z8SdPTHzQnSu1X8HvoxFQlZfTFMby4UExILAgslWDCsp6vXhRjg89levh/Mm28kDBBU0PgRI7EjpI2j+X2OAoIrCIEIUXu0L9aPqvjimv8Oe+zDFQ7F9qi2r+Bsy5KXGMPZ/m+MLpaOyexKyX6M2lP5vsoFM7fSm3clMI63lW+Xz6oWrJ3tGo88vGUQtqSab525f+z9ozWdHnOUIcWMIWeNlLGO5hyYpewFuBlk+w04cwZjoYH5sBhyvX0n8IhERba0gxracPbNzAFj1AWwbEOCFgUoKAmAjFh1ZGMrICq5K7gwN5+gJ8HZdgYMuAlDajXDW1tGuHPCo2XXfspsTBjRH5GJHSPDo/eekAEN9FifjPzInjjQMC2TWCWFZQfqrkiS6cSBfNF+h+g03xdvNXF0YwlPEl/e+0iC6lOLkhRIsBO8LADLJAYTUexAoEJPOeR3aq5+hus3zLfJ/S4Hn8fqzuMTtHRRLyIIQEaoAqoNmKsN+lfFPm1PCWl1qH5mlo9v6tOXaQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3148.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(136003)(346002)(366004)(376002)(2616005)(36756003)(5660300002)(316002)(6916009)(83380400001)(186003)(66946007)(44832011)(7416002)(4744005)(2906002)(8936002)(1076003)(6666004)(478600001)(86362001)(66556008)(107886003)(8676002)(54906003)(4326008)(66476007)(52116002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?3XHmd7yD+72FgeLv6pklhbIGNzjkh5qCnj+EGuS/7Foz/hy9sY+kH3Zk/+Th?=
+ =?us-ascii?Q?+ZIuKHCG0IDCSi0sXlCoKETINwNZmLGAuP8i91ZPjHFFLzxy4mi5RUJEd9d8?=
+ =?us-ascii?Q?o0McC8iiINV9rqxyqVLYp+JVaq3b0WL3upUJkcOqKQNzkblc1l1htQyjsYB+?=
+ =?us-ascii?Q?meO9yuWas3Zc6rzD/uofEEzbMBQOL5jyfouMW3cuzKa5Sry2p669dXPduesB?=
+ =?us-ascii?Q?5IoTT38EL/JWy2k4n+DcYtTS+k1TWcmVjs9FuWzuMzK77K1YpfKRAJhUSAm9?=
+ =?us-ascii?Q?7GtdzHm6YkoMm84zkpWUQA9vj7r5z43ocomZ4DO4IqkaAd/YrNwi9uhs5QWw?=
+ =?us-ascii?Q?tMaEH9kZwJAn0FzNvS0t9N8BSaJ76XKTpgla7JyAa57lafgodr7Rg/9Vl6CS?=
+ =?us-ascii?Q?FIfBZGwJmOM5Qz4R+2nVWZsAQUQJdiOdj9t01asGRAbFYETXSMyf0MRSnqjK?=
+ =?us-ascii?Q?kxrhqAKOUx9mefc7MU96Vn2tFKoLKwfv5obJCGE5hCCurOecCyRhZQld0+KE?=
+ =?us-ascii?Q?KN5PccKHaPT6ufHSZ88tHCNQJX6b+qyTe1u2V1YurG1lJZJWYLK06TLFNiLD?=
+ =?us-ascii?Q?D0QjKoNUTu1BdxhXWiELyHnKE4+zicOIPlJGVAdWZXR7/5WFr+TlUd2O4q1W?=
+ =?us-ascii?Q?boLkx6D+dKGAiY/1lsea0bWv1FaWSWCDvtEvzYr1DJ6Z+o34VrCC1XyXp1mA?=
+ =?us-ascii?Q?C53qnTzOL3jtPvKTyaP+KxT5u2szzueBIY73oOecd8sWAJBBnZOgbE6379PJ?=
+ =?us-ascii?Q?ZFT1W34rYDEFkSgEAPkChv4gaB27Hzj3itloGQBVMbcOPDb0Du1wDe00zvdR?=
+ =?us-ascii?Q?ry2lacaxmFHeYJ62oNeSwJOKNjwlcdTflgken0QiTcCMJ8B1m0bfnNpQd1+v?=
+ =?us-ascii?Q?bZoAnGK41CsA8rysRx8r293nsjqVZdVfkCzqJTdFnL9iFRsAagD3aP+nFYQ6?=
+ =?us-ascii?Q?eqeWHtEvrfG2fTO9EewSuFlwNNUG2bO+ggPhsBDgGy+kp0dprRjfSKpFyv7+?=
+ =?us-ascii?Q?cXWSr7YKWHakZYWKqoIw7FRSljlOEu8Dy2MdIZaNMQNsNDP2qWsUEYk32UnV?=
+ =?us-ascii?Q?QSswK6OPiV89wylzE/vMTnScqKMytR1mwDPL0EBB/uOxJaVwf26BU3MIizl2?=
+ =?us-ascii?Q?WS06PYa23vHR/g+CbuDqRezKRwgypYGfyVhqNUFndHCi5tA3Tv2szPBAsww/?=
+ =?us-ascii?Q?oA1BajaCasfWMlHfwn45vd2ud4YV7kjs8zw/odt72M/bANEj5OFjw3m/1K43?=
+ =?us-ascii?Q?EzIH1VFm/VjzZFiwV2vlvac6WCaYVFZyfQLG+P2xWOUYUclYNrW/LdjXLKkl?=
+ =?us-ascii?Q?832AA9Ytu9H0chU1bxzZntACggXTk5wCeZfkMUYVc7GdZw=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17cd4398-b5e6-4042-435f-08d8d4e529a9
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3148.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2021 14:46:39.2338
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: X90W9Fed8ZmcbMT6ET4KVbDEI2TPgaAgPTW+0f7oh1hWhwhGirsBQwPlWKEP8zvEL3MdnKUoScrRtLEEpf4xiLWtDbC/6YiuektjD3gitjw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB3067
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=778
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102190119
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9899 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102190119
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hanjun,
+v2:
+- Don't use vcpu->arch.efer when GUEST_IA32_EFER is not available (Paolo).
+- Show EFER and PAT seperately, as appropriate.
+- Dump the MSR autoload/autosave lists (Paolo).
 
-On 2/19/21 10:54 AM, Hanjun Guo wrote:
- > In specific, we will start from the testing work, using HULK robot
- > (reports lots of bugs to mainline kernel) testing framework to test
- > compile, reboot, functional testing, and will extend to basic
- > performance regression testing in the future.
+David Edmondson (3):
+  KVM: x86: dump_vmcs should not assume GUEST_IA32_EFER is valid
+  KVM: x86: dump_vmcs should not conflate EFER and PAT presence in VMCS
+  KVM: x86: dump_vmcs should include the autoload/autostore MSR lists
 
-I heard about Huawei ramping up kernel testing from someone at FOSDEM
-2019. I wonder if it was you :) Nice to see your progress and the company
-stepping up to help with testing!
+ arch/x86/kvm/vmx/vmx.c | 48 ++++++++++++++++++++++++++++--------------
+ arch/x86/kvm/vmx/vmx.h |  2 +-
+ 2 files changed, 33 insertions(+), 17 deletions(-)
 
-Would you be interested in working with the Linux Foundation KernelCI project
-on submitting your build and test results to the common database - KCIDB?
-
-We are working on aggregating results from various testing systems so we can
-provide a dashboard, and a single, aggregated e-mail report to subscribed
-maintainers and developers.
-
-We have a prototype dashboard at https://staging.kernelci.org:3000/ and are
-working hard on making the e-mail reports good enough to start reaching out to
-maintainers.
-
-We already have ARM, Google Syzbot, Gentoo GKernelCI, Red Hat CKI, and, of
-course, KernelCI native tests sending data to the database. Linaro Tuxsuite is
-starting sending today. We could use your data, and of course any development
-help you could spare :)
-
-I wish I could show you my today's KCIDB presentation at DevConf.cz, but the
-recording is not out yet. Meanwhile you can take a look at our presentation at
-last year's Linux Plumbers: https://youtu.be/y9Glc90WUN0?t=10739
-
-Or see our intro in an older blog post:
-https://foundation.kernelci.org/blog/2020/08/21/introducing-common-reporting/
-
-Anyone wishing to contribute to KCIDB gets credentials and permissions to
-submit to our "playground" setup where they can send their data, see it in a
-dashboard, experiment without worrying about breaking anything, and decide if
-they like it or not.
-
-If you're interested, take a look at our Submission HOWTO:
-https://github.com/kernelci/kcidb/blob/v8/SUBMISSION_HOWTO.md
-and send an email to kernelci@groups.io (CC'd), or come over to the #kernelci
-channel on freenode.net!
-
-Nick
-
-On 2/19/21 10:54 AM, Hanjun Guo wrote:
- > Hi Greg,
- >
- > On 2021/1/26 15:29, Greg Kroah-Hartman wrote:
- > [...]
- >>
- >> I want to see companies _using_ the kernel, and most importantly,
- >> _updating_ their devices with it, to know if it is worth to keep around
- >> for longer than 2 years.  I also, hopefully, want to see how those
- >> companies will help me out in the testing and maintenance of that kernel
- >> version in order to make supporting it for 6 years actually possible.
- >>
- >> So, are you planning on using 5.10?  Will you will be willing to help
- >> out in testing the -rc releases I make to let me know if there are any
- >> problems, and to help in pointing out and backporting any specific
- >> patches that your platforms need for that kernel release?
- >
- > We(Huawei) are willing to commit resources to help out in testing the
- > stable -rc releases, and to help to backport patches for stable kernels.
- >
- > 5.10 stable kernel will be used for openEuler [1] kernel and also inside
- > Huawei. From customer's feedback, it's very important to see the stable
- > kernel we used to be maintained for 6 years in the community, and we
- > will use 5.10 kernel for at least 6 years, so we are willing to help
- > you and help ourselves :)
- >
- > In specific, we will start from the testing work, using HULK robot
- > (reports lots of bugs to mainline kernel) testing framework to test
- > compile, reboot, functional testing, and will extend to basic
- > performance regression testing in the future.
- >
- > And we will start from ARM64 and X86 architecture first, and then extend
- > to other platforms.
- >
- > For patch backporting, will send the bugfix patches (from mainline)
- > we spotted, but I think this work may not doing in regular but will
- > be triggered as needed.
- >
- > Does this sound good to you?
- >
- > Thanks
- > Hanjun
- >
- > [1]: https://openeuler.org/en/
- >
- > _______________________________________________
- > linux-arm-kernel mailing list
- > linux-arm-kernel@lists.infradead.org
- > http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
- >
+-- 
+2.30.0
 
