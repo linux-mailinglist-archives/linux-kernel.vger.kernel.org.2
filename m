@@ -2,129 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09029320124
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E49B32012C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 23:08:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230073AbhBSWDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 17:03:20 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:53186 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbhBSV6y (ORCPT
+        id S230210AbhBSWHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 17:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229983AbhBSWHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 16:58:54 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B64A01C0BC2; Fri, 19 Feb 2021 22:57:53 +0100 (CET)
-Date:   Fri, 19 Feb 2021 22:57:53 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-omap@vger.kernel.org, sre@kernel.org, nekit1000@gmail.com,
-        mpartap@gmx.net, merlijn@wizzup.org, martin_rysavy@centrum.cz,
-        phone-devel@vger.kernel.org, maemo-leste@lists.dyne.org,
-        Carl Philipp Klemm <philipp@uvos.xyz>
-Subject: Re: Droid 4 charging
-Message-ID: <20210219215752.GA31435@amd>
-References: <20210206131415.GA4499@amd>
- <YCn5+ZPdPojwCz8g@atomide.com>
+        Fri, 19 Feb 2021 17:07:40 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20CEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 14:06:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=g0Jvmf6LJ034kDLDkJfT+bSPIXgjmaXr0o0s3eOCRhM=; b=RCVbswE43uXOxQNX1MtLJ8xQTA
+        MwkwjHxE2f/5OQVocPJPX6ACr108oIgP/H4OIFeDRzLYzuAeKo8z38qKFsTNQ0CYR9dLbrqqXcSlE
+        EoYiju2x5JkMneW7OrBjcKe+1iUfB2Zmii4GbM0cplWPFrR0oUbqJfV54v9au+T1mfwh59Vn8hJ8x
+        SVBLPRAJCDCYRMJeWoHh6Q2DSwK5ven2cLs0Rrg8FqTwo7ZR7pLC5CqA/iZPEohzKqgBiAxTEyHxr
+        IvyMiYjv6uyXrWxH0YkB6tfSM36dGsHaQ+vNWL7YZjFzMBSZDqkhkRpzIztNg0q9A6OY3zfb0yQ4S
+        t/u6gvSA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lDDqZ-003K80-MB; Fri, 19 Feb 2021 22:03:21 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DD4BD9864D6; Fri, 19 Feb 2021 23:01:58 +0100 (CET)
+Date:   Fri, 19 Feb 2021 23:01:58 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     x86@kernel.org, pjt@google.com, mbenes@suze.cz, jgross@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 6/6] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <20210219220158.GD59023@worktop.programming.kicks-ass.net>
+References: <20210219204300.749932493@infradead.org>
+ <20210219210535.492733466@infradead.org>
+ <20210219215530.ivzzv3oavhuip6un@treble>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="qMm9M+Fa2AknHoGS"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YCn5+ZPdPojwCz8g@atomide.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210219215530.ivzzv3oavhuip6un@treble>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 03:55:30PM -0600, Josh Poimboeuf wrote:
+> On Fri, Feb 19, 2021 at 09:43:06PM +0100, Peter Zijlstra wrote:
+> > Arguably it would be simpler to do the other way around, but
+> > unfortunately alternatives don't work that way, we cannot say:
+> > 
+> > 	ALTERNATIVE "call __x86_indirect_thunk_\reg",
+> > 		    "call *%reg", ~X86_FEATURE_RETPOLINE
+> > 
+> > That is, there is no negative form of alternatives.
+> 
+> X86_FEATURE_NO_RETPOLINE?
 
---qMm9M+Fa2AknHoGS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> > (I'm using Leste 5.10 kernel here).
-> >=20
-> > When battery is full, green light is off and 0.00A being drawn from
-> > USB.
-> >=20
-> > But that means that phone is now powered from battery, discharging
-> > it... And soon charging starts again. (Pretty much immediately, for me)
-> >=20
-> > That's bad ... right? It wears the battery out.
->=20
-> Well maintenance charging at 4.2V sure is better for the battery than
-> what android is doing charging it at 4.31V contantly..
-
-Well, 4.2 is better than 4.3, but I'm not sure about the rest.
-
-> > If I turn off charging with echo 0 > input_current_limit, 0.2 to 0.4A
-> > is drawn from USB, and battery is not discharged:
-> >=20
-> > root@devuan-droid4:/sys/class/power_supply/usb# echo 0 >  input_current=
-_limit
-> > root@devuan-droid4:/sys/class/power_supply/usb# cat current_now
-> > 0
->=20
-> Hmm so have you measured that setting the current limit to 0 actually
-> draws something from the USB?
-
-Yes, it does, if I do the echo when charge is done. (I have small USB
-passthrough with volt and amp meters). It has been behaving weirdly in
-other cases.p
-
-> I recall clearing the ichrgr bits stops the vbus draw completely, but
-> I could be wrong.
->=20
-> > Is that a better way to handle full battery?
->=20
-> We could experiment with switching over to usb power when the battery is
-> full. Looking at the docs for mc1378 it might be possible that setting
-> CPCAP_REG_CRM_FET_OVRD and clearing CPCAP_REG_CRM_FET_CTRL after the
-> battery is full disables charging but still keep drawing power from
-> the usb. I'd assume the current limit still needs to be nonzero there
-> too? Totally untested..
-
-I may be able to test patches...
-
-> And switching back to battery power on usb disconnect will potentially
-> only give us very little time based on the different line length for
-> vbus and ground pins compared to data pins on the usb connector.. And
-> uvos had some concerns about the battery capacity putting it back online,
-> so adding him to Cc also.
-
-You mean, we'd have to take interrupt and switch registers in order to
-switch back to battery power, and system would crash if we did not
-make it in time?
-
-> Maybe just clearing ichrgr does all this already though and is enough.
-> It should be measured on the vbus line.
-
-It works for me... measuring current at the usb connector.
-
-> And then we still need to restart the charger at some point, but that
-> could happen based on much longer timeouts that what we currently have.
-
-Li-ion batteries are very slow to self-discharge. This could timeout
-could be week... or maybe a year.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---qMm9M+Fa2AknHoGS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAwNGAACgkQMOfwapXb+vLZhACggmJ4K5ld7AzSt/1ows58as6s
-FKoAn3gFfGas6Mpw6BnpPiX/jRUU1ROZ
-=sZv1
------END PGP SIGNATURE-----
-
---qMm9M+Fa2AknHoGS--
+We could, but it so happens Joerg is also wanting negative features. So
+I was thikning that perhaps we can convince Boris they're not really all
+that aweful after all :-)
