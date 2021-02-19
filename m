@@ -2,146 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B9631F611
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:51:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3605C31F618
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 09:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhBSIuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 03:50:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbhBSIuL (ORCPT
+        id S229943AbhBSIw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 03:52:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25021 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229878AbhBSIwn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 03:50:11 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B96C061756;
-        Fri, 19 Feb 2021 00:49:30 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id i8so4852162iog.7;
-        Fri, 19 Feb 2021 00:49:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U1m2t+2Cr5XW59fZQXL2Ptf07zXdD3ynAJLB/90q3UY=;
-        b=pKskMy6XCjr2RzlkaFO3Bnw1I0duXwJE5uoawrowZ4/nGSfePBbqhSngbf1NH6tgBR
-         SC6NawJIXCDqwiXWqUinfhBrd+OxPhsODUqVzgLDL9TKeOaisnqWa8EsUEnSfqjP1cRC
-         qdUEfuNhq0DAMdZljZBqkYNso8UB82gJf5kyy62kRXjof6DInAwsMWXraZVhU1bm5y9C
-         t3v3G4hvb6fgfsclQWd8YhEwkuLvoqsjbogFSYRYNcJglaA1xXnVmDBRUO9+7+sy91BQ
-         l0D1AcVzZGB5r1CGRV63/cRI2BGKcOTMD1x0RI1hPjHsxzzIN8uMx8zRq9A/1eXCxMgS
-         WLkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U1m2t+2Cr5XW59fZQXL2Ptf07zXdD3ynAJLB/90q3UY=;
-        b=S3AyJ1mRfCLY3BM8pisZThN20MiVPiJW2/7x7p5gFmDKdz03nD3CRCQCW56T9ofv4h
-         7T3AkV2kOK6NvEt/Yqa0xe1u1uMVfChPEM1tVOU9+2/uGVXdii5RcmLhYEddvemGeTBE
-         1thupk/eviqG1OWSqDaafD4PFycWTy+xMC0q20cfFaOftGPPpBwaUzEyHr1W1UdYXHcd
-         yufQpGhIKXwRJPPMwSqP+XY9kLvHb3SDD1ecXogMg5D81C7aeMgJPTVyXC8HTFHJ7y2J
-         Wj7thk/o/T8JQr6WdkMd1fYrRJGTtsnqa4dJUxY+8zWq7vkupmuxZYBPHCfyFdqd7WoA
-         JCDw==
-X-Gm-Message-State: AOAM533XWfC06EpaBavDw5CXDUS0vwSbwM5PmzeCzR+A1ZTaZ4Hb/cs9
-        H+l3pXiTbDqxi0wHZDT97RtV96oy8NDJ81qu0YkkuysfQIQ=
-X-Google-Smtp-Source: ABdhPJxKWMQ2Qbbihq9Ol9+OAaAEKBVHrHMjfkI45lUIjAMR/7S/8oQxX72sHe2L1l8dTzH8zB9+NCuulwCec6AOY0s=
-X-Received: by 2002:a5d:854b:: with SMTP id b11mr2969967ios.105.1613724570261;
- Fri, 19 Feb 2021 00:49:30 -0800 (PST)
+        Fri, 19 Feb 2021 03:52:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613724677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=bzW38bag0aKrL8zMi/Uhja163ywErKOZZj1OgGSNVuk=;
+        b=JgJPqFdCT90GMDkz//sFa0Y0AxhUQjFpuf2xhZ26LUvzftdNiCdw6sVHh6+46MZxe9MMbG
+        EUiGHll78NWDS7/b3REYdyEMhduwx/s8Xkwt5HrjESJGlyHp4uQUDu5g7bpvqiPnAkvVFJ
+        VdulWdWiKi69CX4z+JnUWC6kLDZ8wWs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-567-_fgkeNYdPoevbhB3Idx16A-1; Fri, 19 Feb 2021 03:51:15 -0500
+X-MC-Unique: _fgkeNYdPoevbhB3Idx16A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B59F107ACE6;
+        Fri, 19 Feb 2021 08:51:14 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-12-40.pek2.redhat.com [10.72.12.40])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 41A675D9C2;
+        Fri, 19 Feb 2021 08:51:06 +0000 (UTC)
+Subject: Re: [PATCH] net: check if protocol extracted by
+ virtio_net_hdr_set_proto is correct
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Balazs Nemeth <bnemeth@redhat.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Miller <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org
+References: <5e910d11a14da17c41317417fc41d3a9d472c6e7.1613659844.git.bnemeth@redhat.com>
+ <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <2cc06597-8005-7be8-4094-b20f525afde8@redhat.com>
+Date:   Fri, 19 Feb 2021 16:51:05 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210217083438.37865-1-alexandru.ardelean@analog.com>
- <20210217083438.37865-6-alexandru.ardelean@analog.com> <20210218140506.02b28d8a@archlinux>
- <CAL_Jsq+_HYQ1KT7L34nuM2RENnX1A5J8LCazCV2aeNFmkeskGw@mail.gmail.com>
-In-Reply-To: <CAL_Jsq+_HYQ1KT7L34nuM2RENnX1A5J8LCazCV2aeNFmkeskGw@mail.gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Fri, 19 Feb 2021 10:49:19 +0200
-Message-ID: <CA+U=Dsrt8bJgLJ_tvsf9p07-7kG4rEWvYBa02movJkWU6sfZ_w@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] iio: dac: ad5686: Add PWM as a trigger source
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Dragos Bogdan <dragos.bogdan@analog.com>,
-        Mircea Caprioru <mircea.caprioru@analog.com>,
-        Mihail Chindris <Mihail.Chindris@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+FuTSe7srSBnAmFNFBFkDrLmPL5XtxhbXEs1mBytUBuuym2fg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 5:31 PM Rob Herring <robh+dt@kernel.org> wrote:
->
-> On Thu, Feb 18, 2021 at 8:05 AM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Wed, 17 Feb 2021 10:34:38 +0200
-> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> >
-> > > From: Mircea Caprioru <mircea.caprioru@analog.com>
-> > >
-> > > A PWM signal will be used as a trigger source to have a deterministic
-> > > sampling frequency since this family of DAC has no hardware interrupt
-> > > source.
-> > >
-> > > This feature is made optional however, as there are some board setups where
-> > > this isn't used.
-> > >
-> >
-> > So this is taking a very generic setup, but then implementing it
-> > as a bit of a hack within the driver.
-> >
-> > It's effectively a PWM connected up to an instance
-> > of iio/triggers/iio-trig-interrupt.c
-> >
-> > Now, I've not looked at that trigger driver for a while, so you may well
-> > need to figure out how to add a binding to instantiate it.
-> > (looks like no one has used it since board file days, or via instantiation
-> > from another driver).
-> >
-> > It's a slightly odd corner case as what it reflects is that we have
-> > an interrupt available that is intended to drive some sort of data
-> > capture or output (it's a trigger signal) - but exactly what is done
-> > is a runtime configurable.  In this particular case that interrupt
-> > is hooked up to a PWM and we also want to represent that.
-> >
-> > The fact it's being driven via a PWM is interesting but we should be
-> > able to extend that trigger driver to optionally accept a pwm provider
-> > and if it has one provide frequency control.
-> >
 
-So, the main intent here was to provide a user for this new output kfifo.
-I don't think I have time to re-spin this into a proper solution.
-Someone else may come about and do it.
+On 2021/2/18 11:50 下午, Willem de Bruijn wrote:
+> On Thu, Feb 18, 2021 at 10:01 AM Balazs Nemeth <bnemeth@redhat.com> wrote:
+>> For gso packets, virtio_net_hdr_set_proto sets the protocol (if it isn't
+>> set) based on the type in the virtio net hdr, but the skb could contain
+>> anything since it could come from packet_snd through a raw socket. If
+>> there is a mismatch between what virtio_net_hdr_set_proto sets and
+>> the actual protocol, then the skb could be handled incorrectly later
+>> on by gso.
+>>
+>> The network header of gso packets starts at 14 bytes, but a specially
+>> crafted packet could fool the call to skb_flow_dissect_flow_keys_basic
+>> as the network header offset in the skb could be incorrect.
+>> Consequently, EINVAL is not returned.
+>>
+>> There are even packets that can cause an infinite loop. For example, a
+>> packet with ethernet type ETH_P_MPLS_UC (which is unnoticed by
+>> virtio_net_hdr_to_skb) that is sent to a geneve interface will be
+>> handled by geneve_build_skb. In turn, it calls
+>> udp_tunnel_handle_offloads which then calls skb_reset_inner_headers.
+>> After that, the packet gets passed to mpls_gso_segment. That function
+>> calculates the mpls header length by taking the difference between
+>> network_header and inner_network_header. Since the two are equal
+>> (due to the earlier call to skb_reset_inner_headers), it will calculate
+>> a header of length 0, and it will not pull any headers. Then, it will
+>> call skb_mac_gso_segment which will again call mpls_gso_segment, etc...
+>> This leads to the infinite loop.
 
-I'll drop this from the series [for now].
 
-> > Binding might look something like the following..
-> >
-> > interrupt-trigger {
-> >    interrupts = <>;
-> >    pwms = <&pwm 0 4000 PWM_POLARITY_INVERTED>;
-> > };
-> >
-> > @Rob, what do you think of this odd beast?
+I remember kernel will validate dodgy gso packets in gso ops. I wonder 
+why not do the check there? The reason is that virtio/TUN is not the 
+only source for those packets.
+
+Thanks
+
+
+>>
+>> For that reason, address the root cause of the issue: don't blindly
+>> trust the information provided by the virtio net header. Instead,
+>> check if the protocol in the packet actually matches the protocol set by
+>> virtio_net_hdr_set_proto.
+>>
+>> Fixes: 9274124f023b ("net: stricter validation of untrusted gso packets")
+>> Signed-off-by: Balazs Nemeth <bnemeth@redhat.com>
+>> ---
+>>   include/linux/virtio_net.h | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+>> index e8a924eeea3d..cf2c53563f22 100644
+>> --- a/include/linux/virtio_net.h
+>> +++ b/include/linux/virtio_net.h
+>> @@ -79,8 +79,13 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+>>                  if (gso_type && skb->network_header) {
+>>                          struct flow_keys_basic keys;
+>>
+>> -                       if (!skb->protocol)
+>> +                       if (!skb->protocol) {
+>> +                               const struct ethhdr *eth = skb_eth_hdr(skb);
+>> +
+> Unfortunately, cannot assume that the device type is ARPHRD_ETHER.
 >
-> So a PWM routed back to a GPIO interrupt? It needs a compatible, but
-> otherwise I wouldn't object to the binding if that's what the h/w
-> looks like. But from an OS perspective, I don't think you need it.
+> The underlying approach is sound: packets that have a gso type set in
+> the virtio_net_hdr have to be IP packets.
 >
-> > So all in all, this generic facility needs a generic implementation, not
-> > one buried in a driver.
-> >
-> > Another open question here is whether you really can't just use an hrtimer
-> > to get similar precision?  Way back at the dawn of time in IIO we had
-> > code to use the RTC periodic ticks as a trigger with the theory that they
-> > would give very precise and even timing.  In the end it turned out that
-> > hrtimers worked just as well (and RTCs drivers emulated the periodic
-> > ticks via hrtimers, dropping their use of the hardware periodic timers).
->
-> +100
->
-> A hrtimer is likely going to be more precise. IIRC, timers are
-> serviced first. Either way, you're going to have some amount of
-> interrupt service latency, so any precision you think you are gaining
-> by 'doing it in h/w' isn't really there.
->
-> Rob
+>>                                  virtio_net_hdr_set_proto(skb, hdr);
+>> +                               if (skb->protocol != eth->h_proto)
+>> +                                       return -EINVAL;
+>> +                       }
+>>   retry:
+>>                          if (!skb_flow_dissect_flow_keys_basic(NULL, skb, &keys,
+>>                                                                NULL, 0, 0, 0,
+>> --
+>> 2.29.2
+>>
+
