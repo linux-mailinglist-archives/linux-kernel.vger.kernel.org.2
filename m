@@ -2,150 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABC931FED2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90AE931FED4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 19:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229799AbhBSSdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 13:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBSSdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 13:33:47 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40136C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:33:07 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id e9so3833557plh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 10:33:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=apaYLCgpKww0D9oOCdL1/leTpd02z3P4w+UfyB0qUtE=;
-        b=cNzmU6RwCi2M7zc1iN6kXALpuF4Dr3p9TUe2IZrVSxDRNZxj43w4OZN9GBVNUyVoGY
-         H1RXDjVYIy/K8yNu7pM4zNUC+X8IPbISNDZkI7CMRH6NW31SInd7dD92i1llEAJIpNl9
-         iWbI8rgOSf7uQmj0SebJ6NcX/Ooy0yvSHYo1XyOoSpU19UIDftAZr4ACUicBtUMeLzOs
-         JxUyV+lfMm+gr31mLh9yWgpO+USuw7r8q/XR26xRmrLSWdm95R71UclAbHcjdoD9mUVg
-         /RXbSkNXY3aLx0dVZoac6BkHs3HET/aQxjW2WzpvO3e5JjAUaXvXTBmMVyOyA+7Xdb05
-         6Cfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=apaYLCgpKww0D9oOCdL1/leTpd02z3P4w+UfyB0qUtE=;
-        b=V4LIKjsOnl9ghSn3bo6dRPi2LdkrxydFN40gongp49/0WGUhbn4IIsUFl2toYGqU4H
-         O1KIojWyUi/XT+mVToQwHLj/d78Oicx7CmnBpwMqRoB4IJo5WXBACG2RoJxXhQ6h0uaI
-         9CioF0U52FmP+NZF5XWUh1wUig0my9EpSktTL3mstpXoQtbrho4MRxRbluHuMi9bArM+
-         fTgkAM7QwrBEgr4brZoJu+Iizr0J+tfXC1s764LZqQ1I9Um8FAVcHzysVW6jP6oFkIZF
-         twsRmLiMxCKb1C0A8LLF9xcrh1wP48sNAa0Hy+IlVDny6jAwUlV6KBPS660o5Vfv0qXS
-         wMaQ==
-X-Gm-Message-State: AOAM533AyirA6tXotAkP0W0T/VSo4bD1arq8+tc2T2xmHpdsWVOH0t85
-        MisVwjs9z7gLwQsi3tPl9L14eQ==
-X-Google-Smtp-Source: ABdhPJzGsluCsG7fkC2FvoTQGUbPeiWB8QuireUSeDuRRKhKexRWjsorjPjofN2X3s0CAIhvLZ+5ZQ==
-X-Received: by 2002:a17:902:9894:b029:e3:7aa3:a499 with SMTP id s20-20020a1709029894b02900e37aa3a499mr3088340plp.11.1613759586653;
-        Fri, 19 Feb 2021 10:33:06 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:fc4d:e9c3:d7d:9cb3])
-        by smtp.gmail.com with ESMTPSA id 3sm9467713pjk.26.2021.02.19.10.33.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 10:33:06 -0800 (PST)
-Date:   Fri, 19 Feb 2021 10:32:58 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Quentin Perret <qperret@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 16/26] KVM: arm64: Prepare Hyp memory protection
-Message-ID: <YDAEWu7RkG1OBFed@google.com>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-17-qperret@google.com>
- <20210203143709.GA18907@willie-the-truck>
+        id S229819AbhBSSeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 13:34:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47536 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhBSSeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 13:34:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A57764DA8;
+        Fri, 19 Feb 2021 18:33:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613759616;
+        bh=aDLieP9Nv595mZZtf5nSBkL71qYHU+2D4DSiEH8NmSw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=nNMXwOD6mhtW+8LnJCYUnwmcIvmNFcyenX04KvhYgQOrYPXz8IKHjYHCZzHtat15y
+         OhdFd462HlSnkRGQDbpV65ysdBuAcoOzrLtTTw6DCD4fS/Ml2SGbKjfrJAh/lQj5id
+         0VUZ73TT8q21T8MVuh1IpuDoj1KKs5IbuoEZz9hy6ET73TC8Sscdn3MXapccqtU/O/
+         BaY2nB6iuf4j4SJIZoMnkVKCaoH4QzvscLyKvZam23bfBtri+P/ToyARKqq/YJYHJd
+         6YkI30NIS4S3q8q78KOUYKLVwOAEUPILXmH2keVXyHGb29NhD+p6MMUfCpJ5nx2TQc
+         /3VJFYEDPMhRQ==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 3FCF93520E6A; Fri, 19 Feb 2021 10:33:36 -0800 (PST)
+Date:   Fri, 19 Feb 2021 10:33:36 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210219183336.GA23049@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <161365856280.719838.12423085451287256713.stgit@devnote2>
+ <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
+ <20210219112751.GA34528@pc638.lan>
+ <20210219181811.GY2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210203143709.GA18907@willie-the-truck>
+In-Reply-To: <20210219181811.GY2743@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 03, 2021, Will Deacon wrote:
-> On Fri, Jan 08, 2021 at 12:15:14PM +0000, Quentin Perret wrote:
-
-...
-
-> > +static inline unsigned long hyp_s1_pgtable_size(void)
-> > +{
-
-...
-
-> > +		res += nr_pages << PAGE_SHIFT;
-> > +	}
-> > +
-> > +	/* Allow 1 GiB for private mappings */
-> > +	nr_pages = (1 << 30) >> PAGE_SHIFT;
+On Fri, Feb 19, 2021 at 10:18:11AM -0800, Paul E. McKenney wrote:
+> On Fri, Feb 19, 2021 at 12:27:51PM +0100, Uladzislau Rezki wrote:
+> > On Fri, Feb 19, 2021 at 12:23:57PM +0100, Uladzislau Rezki wrote:
+> > > On Fri, Feb 19, 2021 at 12:17:38PM +0100, Sebastian Andrzej Siewior wrote:
+> > > > On 2021-02-19 12:13:01 [+0100], Uladzislau Rezki wrote:
+> > > > > I or Paul will ask for a test once it is settled down :) Looks like
+> > > > > it is, so we should fix for v5.12.
+> > > > 
+> > > > Okay. Since Paul asked for powerpc test on v5.11-rc I wanted check if
+> > > > parts of it are also -stable material.
 > 
-> SZ_1G >> PAGE_SHIFT
+> If Masami's patch works for the PowerPC guys on v5.10-rc7, then it can
+> be backported.  The patch making RCU Tasks initialize itself early won't
+> have any effect and can be left or reverted, as we choose.  The self-test
+> patch will need to be either adjusted or reverted.
+> 
+> However...
+> 
+> The root cause of this problem is that softirq only kind-of works
+> during a window of time during boot.  It works only if the number and
+> duration of softirq handlers during this time is small enough, for some
+> ill-defined notion of "small enough".  If there are too many, whatever
+> that means exactly, then we get failed attempt to awaken ksoftirqd, which
+> (sometimes!) results in a silent hang.  Which, as you pointed out earlier,
+> is a really obnoxious error message.  And any minor change could kick
+> us into silent-hang state because of the heuristics used to hand off
+> to ksoftirqd.  The straw that broke the camel's back and all that.
+> 
+> One approach would be to add WARN_ON_ONCE() so that if softirq tries
+> to awaken ksoftirqd before it is spawned, we get a nice obvious splat.
+> Unfortunately, this gives false positives because there is code that
+> needs a softirq handler to run eventually, but is OK with that handler
+> being delayed until some random point in the early_initcall() sequence.
+> 
+> Besides which, if we are going to add a check, why not use that check
+> just make things work by forcing handler execution to remain within the
+> softirq back-of-interrupt context instead of awakening a not-yet-spawned
+> ksoftirqd?  We can further prevent entry into dyntick-idle state until
+> the ksoftirqd kthreads have been spawned, which means that if softirq
+> handlers must be deferred, they will be resumed within one jiffy by the
+> next scheduler-clock interrupt.
+> 
+> Yes, this can allow softirq handlers to impose large latencies, but only
+> during early boot, long before any latency-sensitive applications can
+> possibly have been created.  So this does not seem like a real problem.
+> 
+> Am I missing something here?
 
-Where does the 1gb magic number come from?  IIUC, this is calculating the number
-of pages needed for the hypervisor's Stage-1 page tables.  The amount of memory
-needed for those page tables should be easily calculated, and assuming huge
-pages can be used, should be far less the 1gb.
+For definiteness, here is the first part of the change, posted earlier.
+The commit log needs to be updated.  I will post the change that keeps
+the tick going as a reply to this email.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 4f659bf04fc4610523544493d6db92fc8670b086
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Fri Feb 12 16:20:40 2021 -0800
+
+    softirq: Don't try waking ksoftirqd before it has been spawned
+    
+    If there is heavy softirq activity, the softirq system will attempt
+    to awaken ksoftirqd and will stop the traditional back-of-interrupt
+    softirq processing.  This is all well and good, but only if the
+    ksoftirqd kthreads already exist, which is not the case during early
+    boot, in which case the system hangs.
+    
+    One reproducer is as follows:
+    
+    tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
+    
+    This commit therefore adds a couple of existence checks for ksoftirqd
+    and forces back-of-interrupt softirq processing when ksoftirqd does not
+    yet exist.  With this change, the above test passes.
+    
+    Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    Reported-by: Uladzislau Rezki <urezki@gmail.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/softirq.c b/kernel/softirq.c
+index 9d71046..ba78e63 100644
+--- a/kernel/softirq.c
++++ b/kernel/softirq.c
+@@ -209,7 +209,7 @@ static inline void invoke_softirq(void)
+ 	if (ksoftirqd_running(local_softirq_pending()))
+ 		return;
  
-> > +	nr_pages = __hyp_pgtable_max_pages(nr_pages);
-> > +	res += nr_pages << PAGE_SHIFT;
-> > +
-> > +	return res;
-
-...
-
-> > +void __init kvm_hyp_reserve(void)
-> > +{
-> > +	u64 nr_pages, prev;
-> > +
-> > +	if (!is_hyp_mode_available() || is_kernel_in_hyp_mode())
-> > +		return;
-> > +
-> > +	if (kvm_get_mode() != KVM_MODE_PROTECTED)
-> > +		return;
-> > +
-> > +	if (kvm_nvhe_sym(hyp_memblock_nr) < 0) {
-> > +		kvm_err("Failed to register hyp memblocks\n");
-> > +		return;
-> > +	}
-> > +
-> > +	sort_memblock_regions();
-> > +
-> > +	/*
-> > +	 * We don't know the number of possible CPUs yet, so allocate for the
-> > +	 * worst case.
-> > +	 */
-> > +	hyp_mem_size += NR_CPUS << PAGE_SHIFT;
-
-Is this for per-cpu stack?
-
-If so, what guarantees a single page is sufficient?  Mostly a curiosity question,
-since it looks like this is an existing assumption by init_hyp_mode().  Shouldn't
-the required stack size be defined in bytes and converted to pages, or is there a
-guarantee that 64kb pages will be used?
-
-> There was a recent patch bumping NR_CPUs to 512, so this would be 32MB
-> with 64k pages. Is it possible to return memory to the host later on once
-> we have a better handle on the number of CPUs in the system?
-
-Does kvm_hyp_reserve() really need to be called during bootmem_init()?  What
-prevents doing the reservation during init_hyp_mode()?  If the problem is that
-pKVM needs a single contiguous chunk of memory, then it might be worth solving
-_that_ problem, e.g. letting the host donate memory in N-byte chunks instead of
-requiring a single huge blob of memory.
+-	if (!force_irqthreads) {
++	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
+ #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+ 		/*
+ 		 * We can safely execute softirq on the current stack if
+@@ -358,8 +358,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
  
-> > +	hyp_mem_size += hyp_s1_pgtable_size();
+ 	pending = local_softirq_pending();
+ 	if (pending) {
+-		if (time_before(jiffies, end) && !need_resched() &&
+-		    --max_restart)
++		if (!__this_cpu_read(ksoftirqd) ||
++		    (time_before(jiffies, end) && !need_resched() && --max_restart))
+ 			goto restart;
+ 
+ 		wakeup_softirqd();
