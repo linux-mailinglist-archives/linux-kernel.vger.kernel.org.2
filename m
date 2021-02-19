@@ -2,70 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C35B31FBE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B92BF31FBEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 16:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhBSPWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 10:22:41 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54553 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229527AbhBSPWh (ORCPT
+        id S229689AbhBSPYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 10:24:53 -0500
+Received: from mail-03.mail-europe.com ([91.134.188.129]:33304 "EHLO
+        mail-03.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBSPYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 10:22:37 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 11JFLdRM016190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 10:21:40 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id A22D415C39E2; Fri, 19 Feb 2021 10:21:39 -0500 (EST)
-Date:   Fri, 19 Feb 2021 10:21:39 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Andreas Dilger <adilger@dilger.ca>
-Cc:     Daniel Rosenberg <drosen@google.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Paul Lawrence <paullawrence@google.com>
-Subject: Re: [PATCH 1/2] ext4: Handle casefolding with encryption
-Message-ID: <YC/Xg4I+2ppIQ2gW@mit.edu>
-References: <20210203090745.4103054-2-drosen@google.com>
- <56BC7E2D-A303-45AE-93B6-D8921189F604@dilger.ca>
- <YBrP4NXAsvveIpwA@mit.edu>
- <YCMZSjgUDtxaVem3@mit.edu>
- <42511E9D-3786-4E70-B6BE-D7CB8F524912@dilger.ca>
- <YCNbIdCsAsNcPuAL@mit.edu>
- <CA+PiJmT2hfdRLztCdp3-tYBqAo+-ibmuyqLvq5nb+asFj4vL7A@mail.gmail.com>
- <YC0/ZsQbKntSpl97@mit.edu>
- <01918C7B-9D9B-4BD8-8ED1-BA1CBF53CA95@dilger.ca>
+        Fri, 19 Feb 2021 10:24:49 -0500
+Date:   Fri, 19 Feb 2021 15:23:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613748198;
+        bh=MueneSwKDccF8X96BfyJ3qZPMNE2w94bTNHVduNARbg=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=pE2OQnnLhRBWcydc1IOD+/mwIkFzr3fFrUw31hz7kT55R9Dqgd2rHA87xF8IC+bmE
+         FB17O3YtzQH/qNnbOG3wG3BiN81XOrA2SHHb0XSv3xJi+LZaP3IczMqqRwHJFBwpmw
+         m9aIis1BhyQ1+EROHUAe3dElemmXRH+6mBuOMn3Q=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com>
+In-Reply-To: <YC+d/NyXDebGSHwN@kroah.com>
+References: <YA/E1bHRmZb50MlS@kroah.com> <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC6nZH/4CkLLsxxB@kroah.com> <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com> <YC91OWVGAfyorRbc@kroah.com> <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com> <YC+U+beaI91aXh5z@kroah.com> <OurD0pqDIPLLZlt1kk-JE57wXeMoh0NFPKKcBrbY3ValknDXcpLwAJz6x1DMbB6LNZ6FDdeUrPM-pX60VF5FERTiDK_gzgHy4tq7iG3MFAM=@protonmail.com> <YC+d/NyXDebGSHwN@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01918C7B-9D9B-4BD8-8ED1-BA1CBF53CA95@dilger.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 03:48:39PM -0700, Andreas Dilger wrote:
-> It would be possible to detect if the encrypted/casefold+dirdata
-> variant is in use, because the dirdata variant would have the 0x40
-> bit set in the file_type byte.  It isn't possible to positively
-> identify the "raw" non-dirdata variant, but the assumption would be
-> if (rec_len >= round_up(name_len, 4) + 8) in an encrypted+casefold
-> directory that the "raw" hash must be present in the dirent.
+On Friday, February 19, 2021 1:16 PM, Greg Kroah-Hartman <gregkh@linuxfound=
+ation.org> wrote:
+> Great! Can you run 'git bisect' on the 4.14.y stable tree to find the
+> offending change?
 
-Consider a 4k directory directory block which has only three entries,
-".", "..", and "a".  The directory entry for "a" will have a rec_len
-substantially larger than name_len.
+As I tried to explain earlier, that laptop's connection to world is no
+longer iwlwifi based but ethernet connection to fibre. I can't do much
+bisecting when iwlwifi is not being used at all. Sorry. My contribution
+here is trying to point you guys to right direction.
 
-Fortunatelly, the "raw" non-dirdata variant case easily can be
-detected.  If the directory has the encryption and casefold set, and
-the 0x40 bit is not set, then raw must be present, assuming that the
-directory block has not been corrupted (but if it's corrupted, all
-bets are off).
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
 
-	       	       		      	       - Ted
-					       
