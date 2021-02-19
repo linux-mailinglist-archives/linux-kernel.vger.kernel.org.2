@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08CB631F379
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 01:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A9431F37D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Feb 2021 01:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhBSA4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Feb 2021 19:56:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39262 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhBSA4a (ORCPT
+        id S229774AbhBSA6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Feb 2021 19:58:05 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:33010 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhBSA6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Feb 2021 19:56:30 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA12C061786
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:55:48 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id r77so4096339qka.12
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:55:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=apjhumUat3NAbjLhxDf0sfvDj5HYfNoWzUP7Ib3pj2w=;
-        b=NNzBm8KEm527LO5xCGrc89inWBErH3vti2O/scd9JQfr4RVY/LeJBzHUByDjYNxzoi
-         e23cAEeErnY5SK0FknxEM28oWILkuJpsMX6f5Npqea6xND5MUOrdisuDmS4rOzLeQCUW
-         T9E6YAI9b5Qi3FPkXPoV/fakGz/MDW5PFv+QI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=apjhumUat3NAbjLhxDf0sfvDj5HYfNoWzUP7Ib3pj2w=;
-        b=SgArVGtgCijBEZce7YfjHpvCScitDA2PoK6nEiFhEI3Ghy713352VjgnxikQ8U9jyC
-         EYRvd1iPcSrNUUffXDPMCXJR6uRgObreQ6bOX+n4w8++2iHgF0rbgGnBrA2CHHM7udLW
-         NU5ctDx6tysaD54o8AV/ci+o5Tm7GwZiLl5LjS0oVvrYSmx247lekp9skKx6Q/YCy584
-         wE+vcqJVfHP7NdE7gpFZMZcgaVERPO0aR33HaUVlnnDGr1AaGWarp8KrdMV7BrusVuxy
-         jLNPhtsVCLtAUrjW9dTlHE+IRy2ymyNEx7BvUh26QRuVO+8N0E8+2zYnl7MmrpkJC1ch
-         I70g==
-X-Gm-Message-State: AOAM532uAvXu9dIc5RMSvGpQtxe76NCFcdUXJPhqwlqFDsvIQjMd8mXH
-        YeAmbqzipogw/H8qMIzQcz10RgUJO4/oQA==
-X-Google-Smtp-Source: ABdhPJwxxze0LXBarEEPoN/3IFoHULZuV38UmHbjkNuTVYoKkvp/jtBELS5f+apxsikEemiOroIMxA==
-X-Received: by 2002:a05:620a:a4a:: with SMTP id j10mr7482765qka.372.1613696147606;
-        Thu, 18 Feb 2021 16:55:47 -0800 (PST)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id x9sm4460009qtr.74.2021.02.18.16.55.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Feb 2021 16:55:46 -0800 (PST)
-Received: by mail-yb1-f178.google.com with SMTP id u75so3997589ybi.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Feb 2021 16:55:46 -0800 (PST)
-X-Received: by 2002:a25:b74d:: with SMTP id e13mr10284347ybm.405.1613696146315;
- Thu, 18 Feb 2021 16:55:46 -0800 (PST)
+        Thu, 18 Feb 2021 19:58:02 -0500
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 9004020B6C40;
+        Thu, 18 Feb 2021 16:57:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9004020B6C40
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1613696239;
+        bh=92SrUjkup5p1F5h8A/AvMURhXO2QfPEeasqchX9Zh1s=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PIbQlWxzz/ubspxUXdcK0rAjNqWNBN4rhKPiLitk5tHGTMwG8Vfv0ydP9kkkJ/Gqe
+         /H+M01P6kj0Ba8RCZAD3ACzzmmQrM3ZQmzM6bksRRFhpHrDQe3usQklSnEiUKehUoh
+         JYhd6eVF4/rwqCtqhohSQOitBY+hw1w1DhjVhuQc=
+Subject: Re: [PATCH] of: error: 'const struct kimage' has no member named
+ 'arch'
+To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
+        robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, will@kernel.org, joe@perches.com,
+        catalin.marinas@arm.com, mpe@ellerman.id.au, sfr@canb.auug.org.au
+Cc:     james.morse@arm.com, sashal@kernel.org, benh@kernel.crashing.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+References: <20210218223305.2044-1-nramas@linux.microsoft.com>
+ <c6490f6a126a2f10e3e3445b51ea552a26f896a9.camel@linux.ibm.com>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <8b8c0b70-c7ab-33f3-b66c-9ea03388497b@linux.microsoft.com>
+Date:   Thu, 18 Feb 2021 16:57:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210218145456.1.I1da01a075dd86e005152f993b2d5d82dd9686238@changeid>
-In-Reply-To: <20210218145456.1.I1da01a075dd86e005152f993b2d5d82dd9686238@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 18 Feb 2021 16:55:33 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Xh5foM_RYCneVUJZmX39KPt22guopVyZpzLWHSt4T+Ww@mail.gmail.com>
-Message-ID: <CAD=FV=Xh5foM_RYCneVUJZmX39KPt22guopVyZpzLWHSt4T+Ww@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Avoid glitching SPI CS at
- bootup on trogdor
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c6490f6a126a2f10e3e3445b51ea552a26f896a9.camel@linux.ibm.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 2/18/21 4:07 PM, Mimi Zohar wrote:
 
-On Thu, Feb 18, 2021 at 2:55 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> it's believed
-> that, under certain timing conditions, it could be getting the EC into
-> a confused state causing the EC driver to fail to probe.
+Hi Mimi,
 
-Believed => confirmed
+> On Thu, 2021-02-18 at 14:33 -0800, Lakshmi Ramasubramanian wrote:
+>> of_kexec_alloc_and_setup_fdt() defined in drivers/of/kexec.c builds
+>> a new device tree object that includes architecture specific data
+>> for kexec system call.  This should be defined only if the architecture
+>> being built defines kexec architecture structure "struct kimage_arch".
+>>
+>> Define a new boolean config OF_KEXEC that is enabled if
+>> CONFIG_KEXEC_FILE and CONFIG_OF_FLATTREE are enabled, and
+>> the architecture is arm64 or powerpc64.  Build drivers/of/kexec.c
+>> if CONFIG_OF_KEXEC is enabled.
+>>
+>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>> Fixes: 33488dc4d61f ("of: Add a common kexec FDT setup function")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> ---
+>>   drivers/of/Kconfig  | 6 ++++++
+>>   drivers/of/Makefile | 7 +------
+>>   2 files changed, 7 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+>> index 18450437d5d5..f2e8fa54862a 100644
+>> --- a/drivers/of/Kconfig
+>> +++ b/drivers/of/Kconfig
+>> @@ -100,4 +100,10 @@ config OF_DMA_DEFAULT_COHERENT
+>>   	# arches should select this if DMA is coherent by default for OF devices
+>>   	bool
+>>   
+>> +config OF_KEXEC
+>> +	bool
+>> +	depends on KEXEC_FILE
+>> +	depends on OF_FLATTREE
+>> +	default y if ARM64 || PPC64
+>> +
+>>   endif # OF
+>> diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+>> index c13b982084a3..287579dd1695 100644
+>> --- a/drivers/of/Makefile
+>> +++ b/drivers/of/Makefile
+>> @@ -13,11 +13,6 @@ obj-$(CONFIG_OF_RESERVED_MEM) += of_reserved_mem.o
+>>   obj-$(CONFIG_OF_RESOLVE)  += resolver.o
+>>   obj-$(CONFIG_OF_OVERLAY) += overlay.o
+>>   obj-$(CONFIG_OF_NUMA) += of_numa.o
+>> -
+>> -ifdef CONFIG_KEXEC_FILE
+>> -ifdef CONFIG_OF_FLATTREE
+>> -obj-y	+= kexec.o
+>> -endif
+>> -endif
+>> +obj-$(CONFIG_OF_KEXEC) += kexec.o
+>>   
+>>   obj-$(CONFIG_OF_UNITTEST) += unittest-data/
+> 
+> Is it possible to reuse CONFIG_HAVE_IMA_KEXEC here?
+> 
 
-I _think_ <https://issuetracker.google.com/180655198> is public.  It
-explains why this was causing the EC driver to fail to prove.  In
-short: it turns out that when we glitched the EC it printed to its
-console.  If the EC's uptime was long enough then it would spend
-enough time printing the timestamp for this error message (a bunch of
-64-bit divide by 10) that it wouldn't be ready for the message we sent
-to it.  Doh!
+For ppc64 CONFIG_HAVE_IMA_KEXEC is selected when CONFIG_KEXEC_FILE is 
+enabled. So I don't see a problem in reusing CONFIG_HAVE_IMA_KEXEC for ppc.
 
--Doug
+But for arm64, CONFIG_HAVE_IMA_KEXEC is enabled in the final patch in 
+the patch set (the one for carrying forward IMA log across kexec for 
+arm64). arm64 calls of_kexec_alloc_and_setup_fdt() prior to enabling 
+CONFIG_HAVE_IMA_KEXEC and hence breaks the build for arm64.
+
+thanks,
+  -lakshmi
+
+
+
+
+
