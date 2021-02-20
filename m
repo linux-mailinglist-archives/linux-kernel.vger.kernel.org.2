@@ -2,163 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BD332042D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE779320430
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:30:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBTG2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 01:28:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhBTG2d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 01:28:33 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD640C061574;
-        Fri, 19 Feb 2021 22:27:52 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id u8so7966789ior.13;
-        Fri, 19 Feb 2021 22:27:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cbhfHHRIUaZy8yAJGu8fLFh9WOmxHPl60f50bXM7zwo=;
-        b=HRXdEKtvf9vgz47G1cFkpU6z5Ea5Es/FYQdYNgksGTbBybgWgmNmEkp4rUNyeQZCoF
-         j6O3IUwc75w4wBH7Mh1bZt9eDpgg2aqGR6cesxUI0p9xbwSq/zffQ8GHbt2PuYoJrk6I
-         W7yvIBxQ3dSb7b1UItfnH1RnIHgJZDWLvBXP30LSV+PFE8SGhHTTyCS+JISfl4fC/79b
-         EV3286239qCeESz+SfqysFOcyp5r7GCJw1NOaS/cl0qQnsmI/MoScMoTyO6SqpgiQLmT
-         rscaBLSg2JhOjzaTEn4t++VDAds0L0ho3+jeNtiVleoC8BVL+AmKMc/vp6GCrX+urqBl
-         PPVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cbhfHHRIUaZy8yAJGu8fLFh9WOmxHPl60f50bXM7zwo=;
-        b=Zw2q+ts/WTKJWA55LWuuoxssoF1Uj9iocuCKi1a8LTyh3x0z8uVRQadnOWCwmhNL1a
-         a+0D9WCxrtQMECoX1kJeQWFWh2cGJotZoLPI9/rOQ4IgCYdyCCbJ2WOTcO5yu1FJNA3c
-         GR1CY/8OMoGovSfZu7xMaio2PlmKf6riz/aj1TFl8w+0I6DigL0sUSLS1ApHiSbMuV8C
-         6Jy4vkNXhdgylUo6A7iOlBFPq6nBH3LawW912BSXzv1MJFFr8UPPR/qbqGiZSBTImp+i
-         eoCa3VJCTCd4yRPaHa3mi0ayuryhc6Hb8A/k990eXNd74gTQTO3vm4P7W/xky0DP4aTC
-         KGLg==
-X-Gm-Message-State: AOAM533FJ025fLmsCA4U9vokFzgyJy5lPB/ctt+l+43bAAbHmAQiPRBt
-        H3h9qhDcZeuk4Pd6Aw3vHNCkM0kD6RnrLQkzB8w=
-X-Google-Smtp-Source: ABdhPJx1RfWuVeA2Vy5Otxd772m3nvFKCMmiiHWZ/qHRV3FMId+h+cZs0K/hWTNXSAQ3KtWeZysSnHoTexLEyyMZJc8=
-X-Received: by 2002:a5e:8f49:: with SMTP id x9mr7220367iop.189.1613802472221;
- Fri, 19 Feb 2021 22:27:52 -0800 (PST)
+        id S229771AbhBTGah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 01:30:37 -0500
+Received: from mout.gmx.net ([212.227.17.20]:56515 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhBTGaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 01:30:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613802527;
+        bh=i+orHWYknbmkAFlKb49VSrdzDr4jIPTYmyhYyjeiasA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=JWXvoeFg1Z/OEKTPiAs/LZWsxb0tv+YytkPPP8sb3htienb3N9AedIpt2aMdgKwgp
+         C5aH0hovRMZbaODh+ARM7zfKdtYh2bRAP+iTMXyw/78B+sR5c4pFDcHbt94Twdp0LA
+         u+JGyUpyjkedkZdubTsx9VZCgGUU3JF7IHUrr5U4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from LT02.fritz.box ([62.143.246.89]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MvK4f-1m4M3D3pOz-00rFLl; Sat, 20
+ Feb 2021 07:28:47 +0100
+From:   Heinrich Schuchardt <xypron.glpk@gmx.de>
+To:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Heinrich Schuchardt <xypron.glpk@gmx.de>
+Subject: [BUG] checkpatch: false positive unwrapped commit description
+Date:   Sat, 20 Feb 2021 07:28:40 +0100
+Message-Id: <20210220062840.15846-1-xypron.glpk@gmx.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210217145625.14006-1-yashsri421@gmail.com>
-In-Reply-To: <20210217145625.14006-1-yashsri421@gmail.com>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sat, 20 Feb 2021 07:27:41 +0100
-Message-ID: <CAKXUXMx+DEh6Mso_dxA1-NbYZaugUQ9JBfjb4+yyouw2AFPdfA@mail.gmail.com>
-Subject: Re: [RFC] scripts: kernel-doc: fix array element capture in
- pointer-to-func parsing
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:x/2CRERKOEG/v09yuj3advTG3Mja2X7GDC4i3mqoyafr0mbbItR
+ yaCBd4wql/mwtclvIYCWHV0cckwR+5Y+9evN9ZWTK6lLQrQfNLgs6jRlQwOeWftJbwDa24+
+ v6xVFR+CTBo3p8ezP+QghR1zf2KnVRl/l7VP3hgT4+0xvcGKA/XCxD2tSOAUlroMw4/ARRf
+ kkqRmdyMQrEVgKoTsfVaw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tY/mBnRfQvM=:RfZK25b4eLj4XJyDNvjyJF
+ rTTLbYepvEYzeqwsXqINjkGthX47IUqpNRHdDgFgV3fM6V1MI2eqeqSRlpDvB0dGV9No1eCaq
+ +L+MpXQ/NPnN4QEPTN66p58jiuSDP8Fjxadj2+xEhoFIk5nGeJSZl0X/8H5tzHpj8npV8z+aP
+ nkWAWW0HZ+7PrUWFPXQWQIfy729lePTjSofa4rJ6iIRGGrvS11oaM3MPpm916mt3t/H05HXWy
+ oTH/FTZdvC+IrKFIWYyiya0Cw752f3MWdRP98hERwchouM7cI2az2Y1QN6qMcsXRkHYmFYcEf
+ 4DHbtuuplY7cPZVhvvOpKXmWdYQifvXd4Ji4DdjHZRyljjlR5Z8pfWkslLoSu1O+3/PPN27q2
+ L+qjAFdTVtRStBoppPv2HYQYMZOeLbjSoQRJuAiN4ccxhiwKNkwarCTRAjGbsPeCFd36tT+zk
+ msyHieYIsvZjLZq7VhOAQ05M5q8YWLjPu7QxMKtalOeCjrwesQoXm3LINl4OnOdJCqcU6rWjJ
+ JMcgA45wqT6h0DE0R6sBIFZQY1jPvz2Xl7irMJ8+gt/9hpBoeS5g7u3NdqvaW4VoVJC4mof3r
+ OCDTNq+e4yhzwIWTwlkKalDdHRC++AKLeuJnIrUoFBDRVhZ0cxWwjNjfFFR+LFCZznMqYDd/U
+ eF+Xkfih7NDBPKM4/Lfdnc5feIPXFs6CvitFldvzPg6d+cXYcrwQH2GFWXOZeg4MqLeGtc9NX
+ MRDujE/QAGjcPZhUIPvr+DWsQRl17jPwAGB6EIJRRXqHPNFyohJHQMVdPVpBuEHStNmKYfa2R
+ aNw5AJCh7Fjx/a8NJPVNRpUjYAg49pxIwfViaNZ85B4mWB2TvpIW0ytmk62pNs3ZthdGXS2U1
+ FTfOu7DVrap3GVgtb/qQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 17, 2021 at 3:56 PM Aditya Srivastava <yashsri421@gmail.com> wrote:
->
-> Currently, kernel-doc causes an unexpected error when array element (i.e.,
-> "type (*foo[bar])(args)") is present as pointer parameter in
-> pointer-to-function parsing.
->
-> For e.g., running kernel-doc -none on kernel/gcov/gcc_4_7.c causes this
-> error:
-> "Use of uninitialized value $param in regexp compilation at ...", in
-> combination with:
-> "warning: Function parameter or member '' not described in 'gcov_info'"
->
-> Here, the parameter parsing does not take into account the presence of
-> array element (i.e. square brackets) in $param.
->
-> Provide a simple fix by adding square brackets in the regex, responsible
-> for capturing $param.
->
-> A quick evaluation, by running 'kernel-doc -none' on entire kernel-tree,
-> reveals that no additional warning or error has been added or removed by
-> the fix.
->
-> Suggested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
-> * Applies perfectly over next-20210217
->
+The next line leads to a false positive
+Possible unwrapped commit description
+(prefer a maximum 75 chars per line)
 
-Aditya, Jonathan,
+element type is =E2=80=98struct reg_info=E2=80=98, not =E2=80=98u32=E2=80=
+=98 {aka =E2=80=98unsigned int=E2=80=98}
 
-I have tested this change with:
++++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|+++++++++|
+        10        20        30        40        50        60        70
 
-git ls-files | xargs ./scripts/kernel-doc -none 2>&1 | tee kernel-doc-output
+Unicode code point 0x2018 (=E2=80=98) is counted as three characters
+instead of one.
 
-Applied the patch, and re-ran that command and compared the diff.
+This code point is used in the GCC 11 warning sizeof-array-div.
+Citing the warning verbatim lead to the observation.
 
-First, I observed that ./scripts/kernel-doc is not fully deterministic
-on my machine, although I could not really pinpoint it to the exact
-reason where that comes in.
+Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
+=2D--
+ foo.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 foo.txt
 
-Secondly, more importantly, the relevant diff affected by this patch is:
+diff --git a/foo.txt b/foo.txt
+new file mode 100644
+index 000000000000..e69de29bb2d1
+=2D-
+2.30.0
 
-< Use of uninitialized value $param in regexp compilation at
-./scripts/kernel-doc line 1559, <IN_FILE> line 308.
-< Use of uninitialized value $actual in substitution (s///) at
-./scripts/kernel-doc line 1523, <IN_FILE> line 308.
-< Use of uninitialized value $actual in substitution (s///) at
-./scripts/kernel-doc line 1523, <IN_FILE> line 308.
-< Use of uninitialized value $param in substitution (s///) at
-./scripts/kernel-doc line 1617, <IN_FILE> line 308.
-< Use of uninitialized value $param in hash element at
-./scripts/kernel-doc line 1651, <IN_FILE> line 308.
-< Use of uninitialized value $param in pattern match (m//) at
-./scripts/kernel-doc line 1651, <IN_FILE> line 308.
-< Use of uninitialized value $param in hash element at
-./scripts/kernel-doc line 1652, <IN_FILE> line 308.
-< Use of uninitialized value $param in pattern match (m//) at
-./scripts/kernel-doc line 1654, <IN_FILE> line 308.
-< Use of uninitialized value $param in concatenation (.) or string at
-./scripts/kernel-doc line 1655, <IN_FILE> line 308.
-< drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.h:308:
-warning: Function parameter or member '' not described in
-'brcmf_fweh_info'
-< Use of uninitialized value $param in hash element at
-./scripts/kernel-doc line 1672, <IN_FILE> line 308.
-
-
-< Use of uninitialized value $param in regexp compilation at
-./scripts/kernel-doc line 1559, <IN_FILE> line 96.
-< Use of uninitialized value $actual in substitution (s///) at
-./scripts/kernel-doc line 1523, <IN_FILE> line 96.
-< Use of uninitialized value $actual in substitution (s///) at
-./scripts/kernel-doc line 1523, <IN_FILE> line 96.
-< Use of uninitialized value $param in substitution (s///) at
-./scripts/kernel-doc line 1617, <IN_FILE> line 96.
-< Use of uninitialized value $param in hash element at
-./scripts/kernel-doc line 1651, <IN_FILE> line 96.
-< Use of uninitialized value $param in pattern match (m//) at
-./scripts/kernel-doc line 1651, <IN_FILE> line 96.
-< Use of uninitialized value $param in hash element at
-./scripts/kernel-doc line 1652, <IN_FILE> line 96.
-< Use of uninitialized value $param in pattern match (m//) at
-./scripts/kernel-doc line 1654, <IN_FILE> line 96.
-< Use of uninitialized value $param in concatenation (.) or string at
-./scripts/kernel-doc line 1655, <IN_FILE> line 96.
-< kernel/gcov/gcc_4_7.c:96: warning: Function parameter or member ''
-not described in 'gcov_info'
-< Use of uninitialized value $param in hash element at
-./scripts/kernel-doc line 1672, <IN_FILE> line 96.
-
-So, I can confirm that the mentioned issue is really resolved with
-this patch, and that deserves a tag:
-
-Tested-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Thanks, Aditya. When can we expect the next patch for ./scripts/kernel-doc?
-
-Looking forward to running the next test :)
-
-Lukas
