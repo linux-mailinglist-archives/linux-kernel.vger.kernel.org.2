@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5333205D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 15:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9023205D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 15:57:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229525AbhBTOvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 09:51:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229543AbhBTOvD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 09:51:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90FC0614A7;
-        Sat, 20 Feb 2021 14:50:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613832620;
-        bh=sEgZZeFlsjMhvx4/IaxNjgfQb/5lJnlNMe12FkxtARM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R0w8ZN9az4icRd0HwdeQcPC/o35/bV+Qu+guCJzFztERSQPhD3cj2JlyPuCHBZ8Yl
-         wfAq3KajtuJO2/yraiADg5jwOoJvwVS9iztHSG4Xn/YakTBXUJEkxjNVM089QXf+U8
-         QnK7ELLMfGn9lRH17qic4G1cAoS+0/vttoDG9Z9zrLApKt4XiX4bBqEGuujKEh7zTP
-         HlQ1K9r/I5oq5QTeIJ5vHi7JQTatYWBUq+/Kjg+OlfK2Xomajg5QB6cA7fFzMAYAff
-         54JckfnnYw2kQ31hCB2SqjkoP8mH53fkZ449IxEv4cOi4rhGq3gdO+F4bhQPrRXQcK
-         ktA+mddF8Sy1Q==
-Received: by mail-ot1-f52.google.com with SMTP id g6so3746081otk.11;
-        Sat, 20 Feb 2021 06:50:20 -0800 (PST)
-X-Gm-Message-State: AOAM532nj2JcWVPqltaAM57xWzRJFhw9QJ7bwSXvVYHk7jIU4VFckPxr
-        ioka+46FQa0Sj6nMqScXcs53ygfn3amIjhU91/Q=
-X-Google-Smtp-Source: ABdhPJykDLP2b0F0XbtrV+D+jbkui7LQuGNc9eItQ90SqbZrnyfZxfJsU2R7aCiPco1EGnFIZrLf6iCSOOt29ymcOPg=
-X-Received: by 2002:a05:6830:11:: with SMTP id c17mr10535926otp.77.1613832619962;
- Sat, 20 Feb 2021 06:50:19 -0800 (PST)
+        id S229734AbhBTOyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 09:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhBTOyo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 09:54:44 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CF5C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 06:54:02 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id t9so772945pjl.5
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 06:54:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+ONWndi/ymoXM48nCRrDbCP/DsC1CRxO7WJjCq9Zsb8=;
+        b=GGGNvrnm7XlXEiPBW7Tj6pBL8B0dQZoO1PY7u1xYv/uO7Dztf+wzuTLoh80oJaPifT
+         YHamXnmYgCz9ey0K4p+1LjjpebVkTDX6W/ojNdyf1WM/2w0Wmyg709apYCeP2YTeF4AN
+         DienmVYlZOs0SbrPPh8Ne2OX4blBopagJkEX9Bt2RUKP0OMk+sbGpPE04KB36StmRytv
+         fKt6jQaxmv18yB447uVvRSYSNlnDufVq0VAIIh5wxEF1ewWF9BbaV+5zj2BPxsRiOoEE
+         +fgWMG558vRq0zqZxBEg6Y49IcPc4COcVX7x/iV6MipVrc6d8fhwj216MvxK4hYDDWpB
+         cjtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+ONWndi/ymoXM48nCRrDbCP/DsC1CRxO7WJjCq9Zsb8=;
+        b=HbqxXvrJsjBksw55fQaUpOKMC3iJx3XcxL+5UVPwk4gCf5jcy6tApY2YG1WQxISE/W
+         tJ0OzNdkXXz++dsaYlCe9zW4HZkVZInEtPkAnM97ZdfhiTUkbpRimzfjONpr2FJjlX83
+         Gm0EF0mkxPYRiBOA6R7aMFowDZHDpDWxhdGEJOBqIiuob4loQNxPRGCrAV13qlhHBuWB
+         6+RXIIH/IBxKoOkaDXndfSltG+Kdbve8jpuXIzqHfxmfbXqilu4vzoIv2r/ojC1zpJ/g
+         GrOsMzfXrxZFwK5hY8hXS2WC7jTO06aDpYhUbt4Eh1Q/jkXtNFDBQJrOoVdwWh1hdBOZ
+         o9Vw==
+X-Gm-Message-State: AOAM5315ClZJkzigCLX1oTPsEUbfUWMX1OZgPNsMpXZJT0XsE3O0CT5R
+        g5v5Owq9Ozp+quUXsGuCAUs=
+X-Google-Smtp-Source: ABdhPJx4OxBRxnDMGJsjtb6SMSvU67RivLwUrSzBqrRNHBjMQHXBgcoOuPF2abG5BgoIix2E9yohig==
+X-Received: by 2002:a17:90a:bd90:: with SMTP id z16mr14948548pjr.88.1613832842130;
+        Sat, 20 Feb 2021 06:54:02 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id v1sm12065313pjh.29.2021.02.20.06.54.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 20 Feb 2021 06:54:01 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     shuo.a.liu@intel.com
+Cc:     linux-kernel@vger.kernel.org, yejune.deng@gmail.com
+Subject: [PATCH] virt: acrn: Use vfs_poll() instead of f_op->poll()
+Date:   Sat, 20 Feb 2021 22:53:51 +0800
+Message-Id: <20210220145351.14464-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210218201849.2805-1-xypron.glpk@gmx.de>
-In-Reply-To: <20210218201849.2805-1-xypron.glpk@gmx.de>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sat, 20 Feb 2021 15:50:08 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEaqUdKeWSgAeJsnk7HNt2478PzhjC6+Ehv2qg8uVpzSg@mail.gmail.com>
-Message-ID: <CAMj1kXEaqUdKeWSgAeJsnk7HNt2478PzhjC6+Ehv2qg8uVpzSg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] efi/efivars: ConInDev, ConOutDev, ConErrDev are volatile
-To:     Heinrich Schuchardt <xypron.glpk@gmx.de>,
-        Peter Jones <pjones@redhat.com>
-Cc:     linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc Peter)
+Use vfs_poll() is a more advanced function in acrn_irqfd_assign().
+as the same time, modify the definition of events.
 
-On Thu, 18 Feb 2021 at 21:18, Heinrich Schuchardt <xypron.glpk@gmx.de> wrote:
->
-> UEFI variables ConInDev, ConOutDev, ConErrDev are volatile variables that
-> are set by the firmware on every reset. It does not make sense to set these
-> variables via the efivarfs filesystem.
->
-> Signed-off-by: Heinrich Schuchardt <xypron.glpk@gmx.de>
-> ---
->  drivers/firmware/efi/vars.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-> index 41c1d00bf933..561e0a01093b 100644
-> --- a/drivers/firmware/efi/vars.c
-> +++ b/drivers/firmware/efi/vars.c
-> @@ -180,11 +180,8 @@ static const struct variable_validate variable_validate[] = {
->         { EFI_GLOBAL_VARIABLE_GUID, "DriverOrder", validate_boot_order },
->         { EFI_GLOBAL_VARIABLE_GUID, "Driver*", validate_load_option },
->         { EFI_GLOBAL_VARIABLE_GUID, "ConIn", validate_device_path },
-> -       { EFI_GLOBAL_VARIABLE_GUID, "ConInDev", validate_device_path },
->         { EFI_GLOBAL_VARIABLE_GUID, "ConOut", validate_device_path },
-> -       { EFI_GLOBAL_VARIABLE_GUID, "ConOutDev", validate_device_path },
->         { EFI_GLOBAL_VARIABLE_GUID, "ErrOut", validate_device_path },
-> -       { EFI_GLOBAL_VARIABLE_GUID, "ErrOutDev", validate_device_path },
->         { EFI_GLOBAL_VARIABLE_GUID, "Lang", validate_ascii_string },
->         { EFI_GLOBAL_VARIABLE_GUID, "OsIndications", NULL },
->         { EFI_GLOBAL_VARIABLE_GUID, "PlatformLang", validate_ascii_string },
-> --
-> 2.30.0
->
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ drivers/virt/acrn/irqfd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
+index a8766d528e29..98d6e9b18f9e 100644
+--- a/drivers/virt/acrn/irqfd.c
++++ b/drivers/virt/acrn/irqfd.c
+@@ -112,7 +112,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
+ {
+ 	struct eventfd_ctx *eventfd = NULL;
+ 	struct hsm_irqfd *irqfd, *tmp;
+-	unsigned int events;
++	__poll_t events;
+ 	struct fd f;
+ 	int ret = 0;
+ 
+@@ -158,7 +158,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
+ 	mutex_unlock(&vm->irqfds_lock);
+ 
+ 	/* Check the pending event in this stage */
+-	events = f.file->f_op->poll(f.file, &irqfd->pt);
++	events = vfs_poll(f.file, &irqfd->pt);
+ 
+ 	if (events & POLLIN)
+ 		acrn_irqfd_inject(irqfd);
+-- 
+2.29.0
+
