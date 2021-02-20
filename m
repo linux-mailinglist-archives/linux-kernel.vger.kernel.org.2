@@ -2,169 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4637C320436
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F561320439
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:36:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhBTGeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 01:34:31 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:44067 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229645AbhBTGeW (ORCPT
+        id S229819AbhBTGfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 01:35:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229678AbhBTGfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 01:34:22 -0500
-X-UUID: a1cf49f638f24f0ca1a738f6dd3be683-20210220
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=vNvKWXaLVsNfYfp/yjKIyUMJfnM46rdL37hgDLSjDWA=;
-        b=Bf+ZUa9Du2MC27LUzAsA2wlSBxYb/cc9L38ZRJpKODoTKynf3y5N8Sp9BO4ogcYFF8X8nNeSADllIRSvAHxrlESCq2zpYzNmdmGZohkVwy3QVM1uwJpFua2Wbd+HiMsT6IN6f3WNypjr+oBcvZoaNW72+wTwnnr09iBtHntQoYM=;
-X-UUID: a1cf49f638f24f0ca1a738f6dd3be683-20210220
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <irui.wang@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 804606797; Sat, 20 Feb 2021 14:33:32 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 20 Feb
- 2021 14:33:25 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 20 Feb 2021 14:33:23 +0800
-Message-ID: <1613802803.896.8.camel@mhfsdcap03>
-Subject: Re: [PATCH 1/3] dt-bindings: media: mtk-vcodec: Separating mtk
- vcodec encoder node
-From:   Irui Wang <irui.wang@mediatek.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Tomasz Figa" <tfiga@google.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
-Date:   Sat, 20 Feb 2021 14:33:23 +0800
-In-Reply-To: <20210209155350.GA3827709@robh.at.kernel.org>
-References: <20210121061804.26423-1-irui.wang@mediatek.com>
-         <20210209155350.GA3827709@robh.at.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sat, 20 Feb 2021 01:35:40 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B280EC061574;
+        Fri, 19 Feb 2021 22:35:00 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id u11so4569643plg.13;
+        Fri, 19 Feb 2021 22:35:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4RIxyBHK+8zO4I11nCRFeoVahQ/6VE8SCYvUVT1y3Pw=;
+        b=ePmGQ0GUUpe1Iv2EihgVd96SrZilVHwLdq+f9zcM1fb1wpqArFbnj7UjewiPNq7u+3
+         CUgSceUeUQVj2329n4J7frIlOnfDBXdhetbQUKsb5DU/XAweDOyXvRzB9Vv+pWyO4CYM
+         hTsUL+6IKzrVWWCCsBODI/nCPw/xXCPaZ76vS0CIatq4QX9fHHMN5BtKs7PR9UL63+Lw
+         HrCWAzA6sAzW6iwZ6OvZWsbj4zgsG2frQThhWJix0uTAnjT0WTMJ9msysfCMCwZxPTm1
+         vYJsCPOTEKW6lkjxLb0B9sO4s8wTpeFsVBYe13kV7Mb6oFemrVVVYiYTZVBuo/ZfMKxH
+         6iIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4RIxyBHK+8zO4I11nCRFeoVahQ/6VE8SCYvUVT1y3Pw=;
+        b=h7i5cDW/kvSfAyhIoxUDJkCBlyN4yLC+2s/vgicM6OvDa1DoFkr9r1xFaNhgPZAri3
+         vJXV0JltWnCNwcbGl1Lpu+wSvN4rzAmZu5a0ScR1GjHanzvaZ6u512c2y5+TuqW8WLXU
+         4ttGuBFdvGvz0bmZrwncgN4/PKyQY0N8H/W0g6ci+12hda3G1klHIw+sRmWuY/D/svKb
+         jn9nFhKdcbh9p9nerDARAInlCoA+/XPXIcEMG/knxor/KhER6xQb+NwC7nBs6i0uOXms
+         qQt95JM6CiNByftbekCps8ys0CxttjKZzVyD/uo+G4dxUI5GYJ6EUsjFCwjuANtqZhxG
+         cu8A==
+X-Gm-Message-State: AOAM531OiLb7It1oMHk0yItLS0+kPGEGVi25GtpAOGjgrnQSy832GUtX
+        jCDusP1SGXmn2X9iZt/C+ws=
+X-Google-Smtp-Source: ABdhPJzm9Yc8vZbVrF3qKt4T4efG58Ks+gaKo+YUcZB1BVsEwMAOiECEaXyGFSmNjN8op36zNjhbew==
+X-Received: by 2002:a17:90b:1b4a:: with SMTP id nv10mr12561642pjb.169.1613802899483;
+        Fri, 19 Feb 2021 22:34:59 -0800 (PST)
+Received: from [172.30.1.11] ([14.32.163.5])
+        by smtp.gmail.com with ESMTPSA id n21sm11837181pgf.26.2021.02.19.22.34.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Feb 2021 22:34:58 -0800 (PST)
+Subject: Re: [RESEND PATCH v6 3/3] extcon: qcom-spmi: Add support for VBUS
+ detection
+To:     Guru Das Srinagesh <gurus@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        Kavya Nunna <knunna@codeaurora.org>
+References: <cover.1611621365.git.gurus@codeaurora.org>
+ <683693bdfaa14a72550f466da8b26a6126317c4d.1611621365.git.gurus@codeaurora.org>
+From:   Chanwoo Choi <cwchoi00@gmail.com>
+Message-ID: <7f45f184-1a8f-df08-5b45-0e88426c549d@gmail.com>
+Date:   Sat, 20 Feb 2021 15:34:52 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 85AA0E7ED4C3C79C25C20767B9DC4302CF53518326B6918097B00A7D2E041E9B2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <683693bdfaa14a72550f466da8b26a6126317c4d.1611621365.git.gurus@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAyLTA5IGF0IDA5OjUzIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
-T24gVGh1LCBKYW4gMjEsIDIwMjEgYXQgMDI6MTg6MDJQTSArMDgwMCwgSXJ1aSBXYW5nIHdyb3Rl
-Og0KPiA+IFVwZGF0ZXMgYmluZGluZyBkb2N1bWVudCBzaW5jZSB0aGUgYXZjIGFuZCB2cDggaGFy
-ZHdhcmUgZW5jb2RlciBpbg0KPiA+IE1UODE3MyBhcmUgbm93IHNlcGFyYXRlZC4gU2VwYXJhdGUg
-Im1lZGlhdGVrLG10ODE3My12Y29kZWMtZW5jIiB0bw0KPiA+ICJtZWRpYXRlayxtdDgxNzMtdmNv
-ZGVjLXZwOC1lbmMiIGFuZCAibWVkaWF0ZWssbXQ4MTczLXZjb2RlYy1hdmMtZW5jIi4NCj4gDQo+
-IFRoaXMgaXMgbm90IGEgY29tcGF0aWJsZSBjaGFuZ2UuIFlvdSBuZWVkIHRvIGRldGFpbCB0aGF0
-IGFuZCB3aHkgdGhhdCdzIA0KPiBva2F5IChhc3N1bWluZyBpdCBpcykuDQo+IA0KdGhpcyBwYXRj
-aCBzZXBhcmF0ZXMgdGhlIHR3byBkZXZpY2VzLCBpdCdzIGEgcHJlcGFyaW5nIHBhdGNoIGZvciBh
-ZGRpbmcNCmRldmljZV9saW5rIGJldHdlZW4gdGhlIGxhcmJzIGFuZCB2ZW5jLWRldmljZS4gSXQn
-cyBtYWlubHkgZm9yIGZpeGluZw0KdGhlIHByb2JsZW06DQpodHRwczovL2xrbWwub3JnL2xrbWwv
-MjAxOS85LzMvMzE2DQoNCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhz
-aW55aUBjaHJvbWl1bS5vcmc+DQo+ID4gU2lnbmVkLW9mZi1ieTogTWFvZ3VhbmcgTWVuZyA8bWFv
-Z3VhbmcubWVuZ0BtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogSXJ1aSBXYW5nIDxp
-cnVpLndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IC0tLQ0KPiA+ICAuLi4vYmluZGluZ3Mv
-bWVkaWEvbWVkaWF0ZWstdmNvZGVjLnR4dCAgICAgICAgfCA1OCArKysrKysrKysrLS0tLS0tLS0t
-DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzMSBpbnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkN
-Cj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L21lZGlhL21lZGlhdGVrLXZjb2RlYy50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvbWVkaWEvbWVkaWF0ZWstdmNvZGVjLnR4dA0KPiA+IGluZGV4IDgyMTc0MjRmZDRiZC4u
-Zjg1Mjc2ZTYyOWJmIDEwMDY0NA0KPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9tZWRpYS9tZWRpYXRlay12Y29kZWMudHh0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlv
-bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lZGlhL21lZGlhdGVrLXZjb2RlYy50eHQNCj4gPiBAQCAt
-NCw3ICs0LDkgQEAgTWVkaWF0ZWsgVmlkZW8gQ29kZWMgaXMgdGhlIHZpZGVvIGNvZGVjIGh3IHBy
-ZXNlbnQgaW4gTWVkaWF0ZWsgU29DcyB3aGljaA0KPiA+ICBzdXBwb3J0cyBoaWdoIHJlc29sdXRp
-b24gZW5jb2RpbmcgYW5kIGRlY29kaW5nIGZ1bmN0aW9uYWxpdGllcy4NCj4gPiAgDQo+ID4gIFJl
-cXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gLS0gY29tcGF0aWJsZSA6ICJtZWRpYXRlayxtdDgxNzMt
-dmNvZGVjLWVuYyIgZm9yIE1UODE3MyBlbmNvZGVyDQo+ID4gKy0gY29tcGF0aWJsZSA6IG11c3Qg
-YmUgb25lIG9mIHRoZSBmb2xsb3dpbmcgc3RyaW5nOg0KPiA+ICsgICJtZWRpYXRlayxtdDgxNzMt
-dmNvZGVjLXZwOC1lbmMiIGZvciBtdDgxNzMgdnA4IGVuY29kZXIuDQo+ID4gKyAgIm1lZGlhdGVr
-LG10ODE3My12Y29kZWMtYXZjLWVuYyIgZm9yIG10ODE3MyBhdmMgZW5jb2Rlci4NCj4gPiAgICAi
-bWVkaWF0ZWssbXQ4MTgzLXZjb2RlYy1lbmMiIGZvciBNVDgxODMgZW5jb2Rlci4NCj4gPiAgICAi
-bWVkaWF0ZWssbXQ4MTczLXZjb2RlYy1kZWMiIGZvciBNVDgxNzMgZGVjb2Rlci4NCj4gPiAgLSBy
-ZWcgOiBQaHlzaWNhbCBiYXNlIGFkZHJlc3Mgb2YgdGhlIHZpZGVvIGNvZGVjIHJlZ2lzdGVycyBh
-bmQgbGVuZ3RoIG9mDQo+ID4gQEAgLTEzLDEwICsxNSwxMSBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVz
-Og0KPiA+ICAtIG1lZGlhdGVrLGxhcmIgOiBtdXN0IGNvbnRhaW4gdGhlIGxvY2FsIGFyYml0ZXJz
-IGluIHRoZSBjdXJyZW50IFNvY3MuDQo+ID4gIC0gY2xvY2tzIDogbGlzdCBvZiBjbG9jayBzcGVj
-aWZpZXJzLCBjb3JyZXNwb25kaW5nIHRvIGVudHJpZXMgaW4NCj4gPiAgICB0aGUgY2xvY2stbmFt
-ZXMgcHJvcGVydHkuDQo+ID4gLS0gY2xvY2stbmFtZXM6IGVuY29kZXIgbXVzdCBjb250YWluICJ2
-ZW5jX3NlbF9zcmMiLCAidmVuY19zZWwiLCwNCj4gPiAtICAidmVuY19sdF9zZWxfc3JjIiwgInZl
-bmNfbHRfc2VsIiwgZGVjb2RlciBtdXN0IGNvbnRhaW4gInZjb2RlY3BsbCIsDQo+ID4gLSAgInVu
-aXZwbGxfZDIiLCAiY2xrX2NjaTQwMF9zZWwiLCAidmRlY19zZWwiLCAidmRlY3BsbCIsICJ2ZW5j
-cGxsIiwNCj4gPiAtICAidmVuY19sdF9zZWwiLCAidmRlY19idXNfY2xrX3NyYyIuDQo+ID4gKy0g
-Y2xvY2stbmFtZXM6DQo+ID4gKyAgIGF2YyB2ZW5jIG11c3QgY29udGFpbiAidmVuY19zZWwiOw0K
-PiA+ICsgICB2cDggdmVuYyBtdXN0IGNvbnRhaW4gInZlbmNfbHRfc2VsIjsNCj4gPiArICAgZGVj
-b2RlciAgbXVzdCBjb250YWluICJ2Y29kZWNwbGwiLCAidW5pdnBsbF9kMiIsICJjbGtfY2NpNDAw
-X3NlbCIsDQo+ID4gKyAgICJ2ZGVjX3NlbCIsICJ2ZGVjcGxsIiwgInZlbmNwbGwiLCAidmVuY19s
-dF9zZWwiLCAidmRlY19idXNfY2xrX3NyYyIuDQo+ID4gIC0gaW9tbXVzIDogc2hvdWxkIHBvaW50
-IHRvIHRoZSByZXNwZWN0aXZlIElPTU1VIGJsb2NrIHdpdGggbWFzdGVyIHBvcnQgYXMNCj4gPiAg
-ICBhcmd1bWVudCwgc2VlIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pb21tdS9t
-ZWRpYXRlayxpb21tdS50eHQNCj4gPiAgICBmb3IgZGV0YWlscy4NCj4gPiBAQCAtODAsMTQgKzgz
-LDEwIEBAIHZjb2RlY19kZWM6IHZjb2RlY0AxNjAwMDAwMCB7DQo+ID4gICAgICBhc3NpZ25lZC1j
-bG9jay1yYXRlcyA9IDwwPiwgPDA+LCA8MD4sIDwxNDgyMDAwMDAwPiwgPDgwMDAwMDAwMD47DQo+
-ID4gICAgfTsNCj4gPiAgDQo+ID4gLSAgdmNvZGVjX2VuYzogdmNvZGVjQDE4MDAyMDAwIHsNCj4g
-PiAtICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLXZjb2RlYy1lbmMiOw0KPiA+IC0g
-ICAgcmVnID0gPDAgMHgxODAwMjAwMCAwIDB4MTAwMD4sICAgIC8qVkVOQ19TWVMqLw0KPiA+IC0g
-ICAgICAgICAgPDAgMHgxOTAwMjAwMCAwIDB4MTAwMD47ICAgIC8qVkVOQ19MVF9TWVMqLw0KPiA+
-IC0gICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE5OCBJUlFfVFlQRV9MRVZFTF9MT1c+LA0KPiA+
-IC0JCSA8R0lDX1NQSSAyMDIgSVJRX1RZUEVfTEVWRUxfTE9XPjsNCj4gPiAtICAgIG1lZGlhdGVr
-LGxhcmIgPSA8JmxhcmIzPiwNCj4gPiAtCQkgICAgPCZsYXJiNT47DQo+ID4gK3Zjb2RlY19lbmM6
-IHZjb2RlY0AxODAwMjAwMCB7DQo+ID4gKyAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3
-My12Y29kZWMtYXZjLWVuYyI7DQo+ID4gKyAgICByZWcgPSA8MCAweDE4MDAyMDAwIDAgMHgxMDAw
-PjsNCj4gPiArICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSAxOTggSVJRX1RZUEVfTEVWRUxfTE9X
-PjsNCj4gPiAgICAgIGlvbW11cyA9IDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SQ1BVPiwNCj4gPiAg
-ICAgICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SRUM+LA0KPiA+ICAgICAgICAgICAg
-ICAgPCZpb21tdSBNNFVfUE9SVF9WRU5DX0JTRE1BPiwNCj4gPiBAQCAtOTgsOCArOTcsMjAgQEAg
-dmNvZGVjX2RlYzogdmNvZGVjQDE2MDAwMDAwIHsNCj4gPiAgICAgICAgICAgICAgIDwmaW9tbXUg
-TTRVX1BPUlRfVkVOQ19SRUZfTFVNQT4sDQo+ID4gICAgICAgICAgICAgICA8JmlvbW11IE00VV9Q
-T1JUX1ZFTkNfUkVGX0NIUk9NQT4sDQo+ID4gICAgICAgICAgICAgICA8JmlvbW11IE00VV9QT1JU
-X1ZFTkNfTkJNX1JETUE+LA0KPiA+IC0gICAgICAgICAgICAgPCZpb21tdSBNNFVfUE9SVF9WRU5D
-X05CTV9XRE1BPiwNCj4gPiAtICAgICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SQ1BV
-X1NFVDI+LA0KPiA+ICsgICAgICAgICAgICAgPCZpb21tdSBNNFVfUE9SVF9WRU5DX05CTV9XRE1B
-PjsNCj4gPiArICAgIG1lZGlhdGVrLGxhcmIgPSA8JmxhcmIzPjsNCj4gPiArICAgIG1lZGlhdGVr
-LHZwdSA9IDwmdnB1PjsNCj4gPiArICAgIGNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5D
-X1NFTD47DQo+ID4gKyAgICBjbG9jay1uYW1lcyA9ICJ2ZW5jX3NlbCI7DQo+ID4gKyAgICBhc3Np
-Z25lZC1jbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkVOQ19TRUw+Ow0KPiA+ICsgICAgYXNz
-aWduZWQtY2xvY2stcGFyZW50cyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WQ09ERUNQTEw+Ow0KPiA+
-ICsgIH07DQo+ID4gKw0KPiA+ICt2Y29kZWNfZW5jX2x0OiB2Y29kZWNAMTkwMDIwMDAgew0KPiA+
-ICsgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtdmNvZGVjLXZwOC1lbmMiOw0KPiA+
-ICsgICAgcmVnID0gIDwwIDB4MTkwMDIwMDAgMCAweDEwMDA+OwkvKiBWRU5DX0xUX1NZUyAqLw0K
-PiA+ICsgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDIwMiBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0K
-PiA+ICsgICAgaW9tbXVzID0gPCZpb21tdSBNNFVfUE9SVF9WRU5DX1JDUFVfU0VUMj4sDQo+ID4g
-ICAgICAgICAgICAgICA8JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVDX0ZSTV9TRVQyPiwNCj4gPiAg
-ICAgICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19CU0RNQV9TRVQyPiwNCj4gPiAgICAg
-ICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19TVl9DT01BX1NFVDI+LA0KPiA+IEBAIC0x
-MDgsMTcgKzExOSwxMCBAQCB2Y29kZWNfZGVjOiB2Y29kZWNAMTYwMDAwMDAgew0KPiA+ICAgICAg
-ICAgICAgICAgPCZpb21tdSBNNFVfUE9SVF9WRU5DX0NVUl9DSFJPTUFfU0VUMj4sDQo+ID4gICAg
-ICAgICAgICAgICA8JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVGX0xVTUFfU0VUMj4sDQo+ID4gICAg
-ICAgICAgICAgICA8JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVDX0NIUk9NQV9TRVQyPjsNCj4gPiAr
-ICAgIG1lZGlhdGVrLGxhcmIgPSA8JmxhcmI1PjsNCj4gPiAgICAgIG1lZGlhdGVrLHZwdSA9IDwm
-dnB1PjsNCj4gPiAtICAgIGNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5DUExMX0QyPiwN
-Cj4gPiAtICAgICAgICAgICAgIDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5DX1NFTD4sDQo+ID4gLSAg
-ICAgICAgICAgICA8JnRvcGNrZ2VuIENMS19UT1BfVU5JVlBMTDFfRDI+LA0KPiA+IC0gICAgICAg
-ICAgICAgPCZ0b3Bja2dlbiBDTEtfVE9QX1ZFTkNfTFRfU0VMPjsNCj4gPiAtICAgIGNsb2NrLW5h
-bWVzID0gInZlbmNfc2VsX3NyYyIsDQo+ID4gLSAgICAgICAgICAgICAgICAgICJ2ZW5jX3NlbCIs
-DQo+ID4gLSAgICAgICAgICAgICAgICAgICJ2ZW5jX2x0X3NlbF9zcmMiLA0KPiA+IC0gICAgICAg
-ICAgICAgICAgICAidmVuY19sdF9zZWwiOw0KPiA+IC0gICAgYXNzaWduZWQtY2xvY2tzID0gPCZ0
-b3Bja2dlbiBDTEtfVE9QX1ZFTkNfU0VMPiwNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgIDwm
-dG9wY2tnZW4gQ0xLX1RPUF9WRU5DX0xUX1NFTD47DQo+ID4gLSAgICBhc3NpZ25lZC1jbG9jay1w
-YXJlbnRzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX1ZFTkNQTExfRDI+LA0KPiA+IC0gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIDwmdG9wY2tnZW4gQ0xLX1RPUF9VTklWUExMMV9EMj47DQo+ID4g
-KyAgICBjbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkVOQ19MVF9TRUw+Ow0KPiA+ICsgICAg
-Y2xvY2stbmFtZXMgPSAidmVuY19sdF9zZWwiOw0KPiA+ICsgICAgYXNzaWduZWQtY2xvY2tzID0g
-PCZ0b3Bja2dlbiBDTEtfVE9QX1ZFTkNfTFRfU0VMPjsNCj4gPiArICAgIGFzc2lnbmVkLWNsb2Nr
-LXBhcmVudHMgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkNPREVDUExMXzM3MFA1PjsNCj4gPiAgICB9
-Ow0KPiA+IC0tIA0KPiA+IDIuMTguMA0KPiA+IA0KDQo=
+Hi,
 
+Please use get_maintainer.pl script when you send the patches.
+I didn't receive the patches.  I'll review.
+
+Thanks,
+Chanwoo Choi
+
+On 21. 1. 26. 오전 9:38, Guru Das Srinagesh wrote:
+> From: Anirudh Ghayal <aghayal@codeaurora.org>
+> 
+> VBUS can be detected via a dedicated PMIC pin. Add support
+> for reporting the VBUS status.
+> 
+> Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
+> Signed-off-by: Kavya Nunna <knunna@codeaurora.org>
+> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> ---
+>   drivers/extcon/extcon-qcom-spmi-misc.c | 99 +++++++++++++++++++++++++++-------
+>   1 file changed, 80 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/extcon/extcon-qcom-spmi-misc.c b/drivers/extcon/extcon-qcom-spmi-misc.c
+> index 6b836ae..9e8ccfb 100644
+> --- a/drivers/extcon/extcon-qcom-spmi-misc.c
+> +++ b/drivers/extcon/extcon-qcom-spmi-misc.c
+> @@ -1,7 +1,7 @@
+>   // SPDX-License-Identifier: GPL-2.0-only
+>   /**
+>    * extcon-qcom-spmi-misc.c - Qualcomm USB extcon driver to support USB ID
+> - *				detection based on extcon-usb-gpio.c.
+> + *			and VBUS detection based on extcon-usb-gpio.c.
+>    *
+>    * Copyright (C) 2016 Linaro, Ltd.
+>    * Stephen Boyd <stephen.boyd@linaro.org>
+> @@ -21,30 +21,56 @@
+>   
+>   struct qcom_usb_extcon_info {
+>   	struct extcon_dev *edev;
+> -	int irq;
+> +	int id_irq;
+> +	int vbus_irq;
+>   	struct delayed_work wq_detcable;
+>   	unsigned long debounce_jiffies;
+>   };
+>   
+>   static const unsigned int qcom_usb_extcon_cable[] = {
+> +	EXTCON_USB,
+>   	EXTCON_USB_HOST,
+>   	EXTCON_NONE,
+>   };
+>   
+>   static void qcom_usb_extcon_detect_cable(struct work_struct *work)
+>   {
+> -	bool id;
+> +	bool state = false;
+>   	int ret;
+> +	union extcon_property_value val;
+>   	struct qcom_usb_extcon_info *info = container_of(to_delayed_work(work),
+>   						    struct qcom_usb_extcon_info,
+>   						    wq_detcable);
+>   
+> -	/* check ID and update cable state */
+> -	ret = irq_get_irqchip_state(info->irq, IRQCHIP_STATE_LINE_LEVEL, &id);
+> -	if (ret)
+> -		return;
+> +	if (info->id_irq > 0) {
+> +		/* check ID and update cable state */
+> +		ret = irq_get_irqchip_state(info->id_irq,
+> +				IRQCHIP_STATE_LINE_LEVEL, &state);
+> +		if (ret)
+> +			return;
+> +
+> +		if (!state) {
+> +			val.intval = true;
+> +			extcon_set_property(info->edev, EXTCON_USB_HOST,
+> +						EXTCON_PROP_USB_SS, val);
+> +		}
+> +		extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !state);
+> +	}
+>   
+> -	extcon_set_state_sync(info->edev, EXTCON_USB_HOST, !id);
+> +	if (info->vbus_irq > 0) {
+> +		/* check VBUS and update cable state */
+> +		ret = irq_get_irqchip_state(info->vbus_irq,
+> +				IRQCHIP_STATE_LINE_LEVEL, &state);
+> +		if (ret)
+> +			return;
+> +
+> +		if (state) {
+> +			val.intval = true;
+> +			extcon_set_property(info->edev, EXTCON_USB,
+> +						EXTCON_PROP_USB_SS, val);
+> +		}
+> +		extcon_set_state_sync(info->edev, EXTCON_USB, state);
+> +	}
+>   }
+>   
+>   static irqreturn_t qcom_usb_irq_handler(int irq, void *dev_id)
+> @@ -79,21 +105,48 @@ static int qcom_usb_extcon_probe(struct platform_device *pdev)
+>   		return ret;
+>   	}
+>   
+> +	ret = extcon_set_property_capability(info->edev,
+> +			EXTCON_USB, EXTCON_PROP_USB_SS);
+> +	ret |= extcon_set_property_capability(info->edev,
+> +			EXTCON_USB_HOST, EXTCON_PROP_USB_SS);
+> +	if (ret) {
+> +		dev_err(dev, "failed to register extcon props rc=%d\n",
+> +						ret);
+> +		return ret;
+> +	}
+> +
+>   	info->debounce_jiffies = msecs_to_jiffies(USB_ID_DEBOUNCE_MS);
+>   	INIT_DELAYED_WORK(&info->wq_detcable, qcom_usb_extcon_detect_cable);
+>   
+> -	info->irq = platform_get_irq_byname(pdev, "usb_id");
+> -	if (info->irq < 0)
+> -		return info->irq;
+> +	info->id_irq = platform_get_irq_byname(pdev, "usb_id");
+> +	if (info->id_irq > 0) {
+> +		ret = devm_request_threaded_irq(dev, info->id_irq, NULL,
+> +					qcom_usb_irq_handler,
+> +					IRQF_TRIGGER_RISING |
+> +					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+> +					pdev->name, info);
+> +		if (ret < 0) {
+> +			dev_err(dev, "failed to request handler for ID IRQ\n");
+> +			return ret;
+> +		}
+> +	}
+>   
+> -	ret = devm_request_threaded_irq(dev, info->irq, NULL,
+> +	info->vbus_irq = platform_get_irq_byname(pdev, "usb_vbus");
+> +	if (info->vbus_irq > 0) {
+> +		ret = devm_request_threaded_irq(dev, info->vbus_irq, NULL,
+>   					qcom_usb_irq_handler,
+>   					IRQF_TRIGGER_RISING |
+>   					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
+>   					pdev->name, info);
+> -	if (ret < 0) {
+> -		dev_err(dev, "failed to request handler for ID IRQ\n");
+> -		return ret;
+> +		if (ret < 0) {
+> +			dev_err(dev, "failed to request handler for VBUS IRQ\n");
+> +			return ret;
+> +		}
+> +	}
+> +
+> +	if (info->id_irq < 0 && info->vbus_irq < 0) {
+> +		dev_err(dev, "ID and VBUS IRQ not found\n");
+> +		return -EINVAL;
+>   	}
+>   
+>   	platform_set_drvdata(pdev, info);
+> @@ -120,8 +173,12 @@ static int qcom_usb_extcon_suspend(struct device *dev)
+>   	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
+>   	int ret = 0;
+>   
+> -	if (device_may_wakeup(dev))
+> -		ret = enable_irq_wake(info->irq);
+> +	if (device_may_wakeup(dev)) {
+> +		if (info->id_irq > 0)
+> +			ret = enable_irq_wake(info->id_irq);
+> +		if (info->vbus_irq > 0)
+> +			ret = enable_irq_wake(info->vbus_irq);
+> +	}
+>   
+>   	return ret;
+>   }
+> @@ -131,8 +188,12 @@ static int qcom_usb_extcon_resume(struct device *dev)
+>   	struct qcom_usb_extcon_info *info = dev_get_drvdata(dev);
+>   	int ret = 0;
+>   
+> -	if (device_may_wakeup(dev))
+> -		ret = disable_irq_wake(info->irq);
+> +	if (device_may_wakeup(dev)) {
+> +		if (info->id_irq > 0)
+> +			ret = disable_irq_wake(info->id_irq);
+> +		if (info->vbus_irq > 0)
+> +			ret = disable_irq_wake(info->vbus_irq);
+> +	}
+>   
+>   	return ret;
+>   }
+> 
