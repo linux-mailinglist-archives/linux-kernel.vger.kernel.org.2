@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E673C3204EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 12:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D408A3204F0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 12:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbhBTKtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 05:49:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48888 "EHLO
+        id S229732AbhBTLBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 06:01:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhBTKtE (ORCPT
+        with ESMTP id S229657AbhBTLBC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 05:49:04 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BE3C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 02:48:23 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id c11so3545566pfp.10
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 02:48:23 -0800 (PST)
+        Sat, 20 Feb 2021 06:01:02 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92395C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 03:00:22 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id v206so8156630qkb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 03:00:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=27sxJ01JG4xpWs2LBAyPY5QwB2Gx3zDdlzLfkDIVGhU=;
-        b=dc+usyKj/aUWIjprXvqwf8GvnAWdOgoAMkpyDKeGaawQebPS5dwGERuoNu7Cw3zfAr
-         08DhZXlCfdcbiWDPgn7l/N0P/nxoSjDw5HLzepqxP8W4tH52nHT9IFtuJP1CxMgp4jFg
-         SgNV+/9Dlc9of5Nh3qD7PE+1NpyNPj6Zx+faYKcRssuRQHwokYnNt8gIg+7r+5Wb4V/O
-         UgyYWpJcmTuFeHn0Q/fpnSJ0tGfys2DIW2CyQ+/Hn0v7ggbUPRDhPn3AYVamn6si9VXD
-         r7888l5nuo9f4OoxOwx+talXAGfBzbJlvWL0tSsSq9r1SlCYq/9TfpwJddfJTFfZMaLb
-         nmPg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=+MmfP0UEIaM34M083O5vR1KagrZ87TZKkla5El07xno=;
+        b=bZJbxzekqWW3/HUlJ99gHdFwErx6Lu19YWJhwgLGZ7Mnd/iAv0gkcfJ97UsWwgYHIf
+         EtmUb0sCqMUEKWsvAjxhME2JW4ytnSoox4UrqVSFTuwik4w7vrYn+AfmP/0GDFE+q8Ho
+         A9t4zsqQvd3lwaZaN5XfBBPI5ON89C8he330NcBoyOUcB4VfsDKUcMi3oqRER4IeDbg8
+         gsSYSuv2kwMLqa3prxxLTpJ6C28XUbg4uWAxHEeOzV5MKSQlELkyEXWUhJZaOBQe14Zx
+         eT01XBOgMTb7lwQTi2SQBwSNSFchv0nGPudga1iBU0azDnj6vV0yS62wjCfP3sdmU3v7
+         WKXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=27sxJ01JG4xpWs2LBAyPY5QwB2Gx3zDdlzLfkDIVGhU=;
-        b=Tw6oshik3RSlKBqYUKAoEacjMbQo4Nl3cvLdlRRcqfShS8wPdAugcGHXQ5FdMLj0Dj
-         XrXAFvSTDVe592i4hjSn6AeKthf06jOmHZ4vBpHTKFgtkTINykDkJdNKeSGjeXESWDfo
-         0lC51fhBpcYb90rRWuqhk82m/KrtFOU38O4dvVmEdsJ/5bHXd9hVdihtQznHs5IGpyaZ
-         LT5tx7prztsGOx5LubTQDH3cBJ9YgP7bUkwLCrpoQa2w2bk2fQvHiO+4DumjT4BiAvEM
-         5vNjtGND2XdfF5nNcXGE4h3zIwdG9RYCvWCoX+RUrCGxFEI7TP1CH+W0WlFqQZwT0RrA
-         lGLw==
-X-Gm-Message-State: AOAM53031xDlmn93mVhc2gVdm8EX5+A4W0IYidqi7mVYiPJBziYvsf1y
-        wlmyJ8xhX/uX9mnkuJ5RcUI=
-X-Google-Smtp-Source: ABdhPJzIsOeuKDoXE0qwQxclfn7exL0CZHFCtYWuZFm55Kk3xM6PyDwUOuBQfdhH1yNjg1liDzwS+w==
-X-Received: by 2002:a62:e315:0:b029:1e6:2f2e:a5e7 with SMTP id g21-20020a62e3150000b02901e62f2ea5e7mr13501341pfh.81.1613818103152;
-        Sat, 20 Feb 2021 02:48:23 -0800 (PST)
-Received: from localhost ([103.106.200.55])
-        by smtp.gmail.com with ESMTPSA id q18sm13857136pfg.72.2021.02.20.02.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 02:48:22 -0800 (PST)
-From:   Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
-To:     gregkh@linuxfoundation.org, sfr@canb.auug.org.au
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
-Subject: [PATCH] staging: wimax: i2400m: add space before open parenthesis
-Date:   Sat, 20 Feb 2021 02:48:16 -0800
-Message-Id: <20210220104816.13263-1-sssraj.sssraj@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=+MmfP0UEIaM34M083O5vR1KagrZ87TZKkla5El07xno=;
+        b=KLt3aG0k6BcTMI8macfXx00wlxA2k3Cs0qIHe0PIbDsYkNeLIFR202Osf6WedzhdMz
+         59CmpdsE7DQ1gHAv9kYY8pRtdyvZNd620BWxSLQZthCfEy5jYMpVyoNQjqAoW56XFSHf
+         uj8gQ3nXD8Mf4Q5ZKpb01dimRUFBouEPvCeh9iVzkeFW1iZcaY1VBCzULXXjtDUaSvYD
+         0Al49V9VQntBrfmJcIOGT5dUgqj6V1/ywmzZd2SNGSQMvIGQv43F0HGII2i2eZCVPtDZ
+         UmVDuhBvEfFL48LSYl4u3jvC7ryI1E60P+/OMYKpBrBSulL3OLAPo50TLWk4mlTrqxYk
+         b7SA==
+X-Gm-Message-State: AOAM530lAkuOoC38qT1o7rZBo/4wnlqiWOl8jphKh1xNcqPJukXo5T5I
+        fz0HJCt5xr8NFCWP+uoACwAV0z9Y26a3Vno7NRM=
+X-Google-Smtp-Source: ABdhPJyjmi3yOphbKMo3iCPzqekNRAa0kxAP/bFBYdZXMACyqmFV6xWNyc062iLd8bzzMHu6cWV/gIlQ98Jf5Dt8YZI=
+X-Received: by 2002:a37:6116:: with SMTP id v22mr13531736qkb.38.1613818821493;
+ Sat, 20 Feb 2021 03:00:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210219092612.7533-1-yejune.deng@gmail.com> <20210220094842.GB30008@shuo-intel.sh.intel.com>
+In-Reply-To: <20210220094842.GB30008@shuo-intel.sh.intel.com>
+From:   Yejune Deng <yejune.deng@gmail.com>
+Date:   Sat, 20 Feb 2021 19:00:10 +0800
+Message-ID: <CABWKuGXT25bZQT3Ct7eEHsQYrWcfq3kuB6stWh5-MDgDRWNFTw@mail.gmail.com>
+Subject: Re: [PATCH] virt: acrn: Use vfs_poll() instead of f_op->poll()
+To:     Shuo A Liu <shuo.a.liu@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-netdev.c
+OK=EF=BC=8CI will adopt it and resubmit.
 
-fixing style ERROR: space required before the open parenthesis '('
 
-Signed-off-by: Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
----
- drivers/staging/wimax/i2400m/netdev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/staging/wimax/i2400m/netdev.c b/drivers/staging/wimax/i2400m/netdev.c
-index cd06eaf75e8b..5b53e59084c8 100644
---- a/drivers/staging/wimax/i2400m/netdev.c
-+++ b/drivers/staging/wimax/i2400m/netdev.c
-@@ -523,7 +523,7 @@ void i2400m_net_erx(struct i2400m *i2400m, struct sk_buff *skb,
- 
- 	d_fnstart(2, dev, "(i2400m %p skb %p [%u] cs %d)\n",
- 		  i2400m, skb, skb->len, cs);
--	switch(cs) {
-+	switch (cs) {
- 	case I2400M_CS_IPV4_0:
- 	case I2400M_CS_IPV4:
- 		i2400m_rx_fake_eth_header(i2400m->wimax_dev.net_dev,
--- 
-2.25.1
-
+On Sat, Feb 20, 2021 at 5:48 PM Shuo A Liu <shuo.a.liu@intel.com> wrote:
+>
+> Thanks for the patch.
+>
+> On Fri 19.Feb'21 at 17:26:12 +0800, Yejune Deng wrote:
+> >In acrn_irqfd_assign(), use vfs_poll() is a more advanced function,
+> >as the same time, modify the definition of events.
+> >
+> >Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> >---
+> > drivers/virt/acrn/irqfd.c | 4 ++--
+> > 1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> >diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
+> >index a8766d528e29..19890396e174 100644
+> >--- a/drivers/virt/acrn/irqfd.c
+> >+++ b/drivers/virt/acrn/irqfd.c
+> >@@ -112,9 +112,9 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, str=
+uct acrn_irqfd *args)
+> > {
+> >       struct eventfd_ctx *eventfd =3D NULL;
+> >       struct hsm_irqfd *irqfd, *tmp;
+> >-      unsigned int events;
+> >       struct fd f;
+> >       int ret =3D 0;
+> >+      __poll_t events;
+>
+> Can you keep variable declarations is reverse fir tree order which this
+> driver follows?
+>
+> >
+> >       irqfd =3D kzalloc(sizeof(*irqfd), GFP_KERNEL);
+> >       if (!irqfd)
+> >@@ -158,7 +158,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, str=
+uct acrn_irqfd *args)
+> >       mutex_unlock(&vm->irqfds_lock);
+> >
+> >       /* Check the pending event in this stage */
+> >-      events =3D f.file->f_op->poll(f.file, &irqfd->pt);
+> >+      events =3D vfs_poll(f.file, &irqfd->pt);
+> >
+> >       if (events & POLLIN)
+> >               acrn_irqfd_inject(irqfd);
+> >--
+> >2.29.0
+> >
