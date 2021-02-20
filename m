@@ -2,146 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC0F32041A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6F732041C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229633AbhBTGGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 01:06:04 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:36461 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhBTGGB (ORCPT
+        id S229732AbhBTGJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 01:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhBTGI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 01:06:01 -0500
-Received: by mail-il1-f197.google.com with SMTP id v11so4812520ilc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:05:45 -0800 (PST)
+        Sat, 20 Feb 2021 01:08:58 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F85C06178A
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:08:17 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id w18so3284712pfu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:08:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4J7s0mPNjGFe1vyjC7N5XGIE26jPZq4Ak09pPR0Twms=;
+        b=lyDJdkqCpdi60gGZAPVkdzWgGNquPY2yhkZ9S3Ua8ZTSPznkX+1MGAagKtkECNAEu2
+         OzC5O/A+0iAOf53nRQeNbxa0Mvaa9mpeiXCJvmN3/xD0m5vwFoQxpeSMmBJ8hEfmTE02
+         /nwVYAKMMMf+tHeGC7IbORuTcGQaRend6ehfM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=xR2lYrl2rO31/7brBFYZKgpp4LvejpyF05dbAyouGuc=;
-        b=gt90PswlzHOMw8sRLbYEwjN4Oyh2lNtasUfmxAobM/AWrp1WHdaMXTFAdMHPOy4IJd
-         B4Pkc5St3Wor3kQJBStlyMzDkQUkW0EwOmN2BI9nLe+1gvIHa9Qp02SlOP4Qydf35u3j
-         ens4aBmSCgYKjxHeCP7W/OpaMbCpW7wEsFep03SwAbHJZk1IT6QoxWCi96bq60417SuP
-         AsKUC1Lh2wEiRT1P8hmyI9RJbyKyhbMCH0rHoNE9M6t1BgJKM+yVXCW53yO6rEG4w7X5
-         sVaBq+ySE2RgQ+XM2f0IDnHYfeXrId2qbAYydUaT07Gd2UDgg+M32UX+wZmWIaOToTfR
-         sX+A==
-X-Gm-Message-State: AOAM533ASvcGREDjdnQAqghOIaEsJxozW8MNmJBXCcJvbp9dlM9NNEna
-        ZEU/PDHVcnfqVOKXUfsQ6b4yP+O2I1cecQ4WzrgNSQ37b3eK
-X-Google-Smtp-Source: ABdhPJy8Q4OwZuXZgBB7AZPMCrtvxNicI+ZGkGM8KdL0dONVA621Xr735lZGB2YntR+/Ej5+1GSOmM/dvkIkxYnpG9wsdrjSM38g
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4J7s0mPNjGFe1vyjC7N5XGIE26jPZq4Ak09pPR0Twms=;
+        b=WVKZmUmHqFvHaWcOvduFvO/SkchhdRUrauEhRQxxFqvtspkIEqF7VaGJoj0yA6FZ7D
+         jMiId1O2UamHfF2ubBJoKX/VY2PhQDXBlT9P1UA2Zs4olPvE4LV8x+tRBhxtzkW/K7w9
+         kxDWYS5IuBLrevzdpLKKYPR3AuSUG6N56C9xZCCbGPwPBLOxCJ1uOBBaHBlIV8r2Bd2i
+         xxEocjdPJAz9UugSkVAY5Tr4LFzla59aUa9oybMdK+9uTexDM13Ak6xK13JdmCIXUtUv
+         Lb4r33/LWylTQk4aA3wl4hVK6wwf/BXoUVc1CEmfrQVmnRr4JSnSzIqTghUOi1PSF/z8
+         Mbbw==
+X-Gm-Message-State: AOAM531APP1nRioasNyQ5sKmzFxwrnW3Uj5ZXJH0hs1wQ4i0yGUegzla
+        4aLzT2u2tjWvcD6B2AGIgI1+zD5UWcifpQ==
+X-Google-Smtp-Source: ABdhPJzeo47hIWNCTY8rScYv5CJmQh6LqfmJhCPz8jxmAxv/V7hM+by1CxBxc4OvbSGHZDyjtYyo0w==
+X-Received: by 2002:aa7:93ac:0:b029:1e5:b52e:314f with SMTP id x12-20020aa793ac0000b02901e5b52e314fmr12473630pff.45.1613801297317;
+        Fri, 19 Feb 2021 22:08:17 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:537:d36b:e4d6:54fb])
+        by smtp.gmail.com with ESMTPSA id w187sm10943697pfb.208.2021.02.19.22.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 22:08:16 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Xin Ji <xji@analogixsemi.com>, David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org
+Cc:     Sam Ravnborg <sam@ravnborg.org>, Rob Herring <robh+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Subject: [RESEND v3 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
+Date:   Sat, 20 Feb 2021 14:08:10 +0800
+Message-Id: <20210220060811.2500081-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:200e:: with SMTP id y14mr1465878iod.94.1613801120415;
- Fri, 19 Feb 2021 22:05:20 -0800 (PST)
-Date:   Fri, 19 Feb 2021 22:05:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000085468e05bbbe5a7a@google.com>
-Subject: KASAN: out-of-bounds Read in leaf_paste_entries
-From:   syzbot <syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+anx7625 requires 3 power supply regulators.
 
-syzbot found the following issue on:
-
-HEAD commit:    f40ddce8 Linux 5.11
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16c21204d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=51ab7ccaffffc30c
-dashboard link: https://syzkaller.appspot.com/bug?extid=c31a48e6702ccb3d64c9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ede514d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f9f338d00000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=141b8882d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=161b8882d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=121b8882d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com
-
-REISERFS (device loop0): journal params: device loop0, size 15748, journal first block 18, max trans len 1024, max batch 900, max commit age 30, max trans age 30
-REISERFS (device loop0): checking transaction log (loop0)
-REISERFS (device loop0): Using tea hash to sort names
-==================================================================
-BUG: KASAN: out-of-bounds in memmove include/linux/string.h:462 [inline]
-BUG: KASAN: out-of-bounds in leaf_paste_entries+0x449/0x910 fs/reiserfs/lbalance.c:1377
-Read of size 18446744073709551584 at addr ffff888040a03fa4 by task syz-executor585/8424
-
-CPU: 1 PID: 8424 Comm: syz-executor585 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2c6 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- check_memory_region_inline mm/kasan/generic.c:179 [inline]
- check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
- memmove+0x20/0x60 mm/kasan/shadow.c:53
- memmove include/linux/string.h:462 [inline]
- leaf_paste_entries+0x449/0x910 fs/reiserfs/lbalance.c:1377
- balance_leaf_finish_node_paste_dirent fs/reiserfs/do_balan.c:1295 [inline]
- balance_leaf_finish_node_paste fs/reiserfs/do_balan.c:1321 [inline]
- balance_leaf_finish_node fs/reiserfs/do_balan.c:1364 [inline]
- balance_leaf+0x951e/0xd8b0 fs/reiserfs/do_balan.c:1452
- do_balance+0x315/0x810 fs/reiserfs/do_balan.c:1888
- reiserfs_paste_into_item+0x762/0x8e0 fs/reiserfs/stree.c:2138
- reiserfs_add_entry+0x8cb/0xcf0 fs/reiserfs/namei.c:566
- reiserfs_mkdir+0x66e/0x980 fs/reiserfs/namei.c:858
- create_privroot fs/reiserfs/xattr.c:889 [inline]
- reiserfs_xattr_init+0x4de/0xb60 fs/reiserfs/xattr.c:1011
- reiserfs_fill_super+0x215d/0x2e00 fs/reiserfs/super.c:2177
- mount_bdev+0x34d/0x410 fs/super.c:1366
- legacy_get_tree+0x105/0x220 fs/fs_context.c:592
- vfs_get_tree+0x89/0x2f0 fs/super.c:1496
- do_new_mount fs/namespace.c:2881 [inline]
- path_mount+0x13ad/0x20c0 fs/namespace.c:3211
- do_mount fs/namespace.c:3224 [inline]
- __do_sys_mount fs/namespace.c:3432 [inline]
- __se_sys_mount fs/namespace.c:3409 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3409
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x445b8a
-Code: 48 c7 c2 c0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 a8 00 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff8c7af438 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fff8c7af490 RCX: 0000000000445b8a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fff8c7af450
-RBP: 00007fff8c7af450 R08: 00007fff8c7af490 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000286 R12: 00000000200002a8
-R13: 0000000000000003 R14: 0000000000000004 R15: 0000000000000007
-
-The buggy address belongs to the page:
-page:000000008f17f20f refcount:3 mapcount:0 mapping:000000009acfcc32 index:0x3d97 pfn:0x40a03
-aops:def_blk_aops ino:700000
-flags: 0xfff00000002022(referenced|active|private)
-raw: 00fff00000002022 dead000000000100 dead000000000122 ffff88801795cb50
-raw: 0000000000003d97 ffff888038f7c4c8 00000003ffffffff ffff8881407ac000
-page dumped because: kasan: bad access detected
-pages's memcg:ffff8881407ac000
-
-Memory state around the buggy address:
- ffff888040a03e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888040a03f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888040a03f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-                               ^
- ffff888040a04000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888040a04080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../bindings/display/bridge/analogix,anx7625.yaml | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+index 60585a4fc22bc..3ae97d9523e56 100644
+--- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
+@@ -34,6 +34,15 @@ properties:
+     description: used for reset chip control, RESET_N pin B7.
+     maxItems: 1
+ 
++  vdd10-supply:
++    description: Regulator that provides the supply 1.0V power.
++
++  vdd18-supply:
++    description: Regulator that provides the supply 1.8V power.
++
++  vdd33-supply:
++    description: Regulator that provides the supply 3.3V power.
++
+   ports:
+     type: object
+ 
+@@ -55,6 +64,9 @@ properties:
+ required:
+   - compatible
+   - reg
++  - vdd10-supply
++  - vdd18-supply
++  - vdd33-supply
+   - ports
+ 
+ additionalProperties: false
+@@ -72,6 +84,9 @@ examples:
+             reg = <0x58>;
+             enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
+             reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
++            vdd10-supply = <&pp1000_mipibrdg>;
++            vdd18-supply = <&pp1800_mipibrdg>;
++            vdd33-supply = <&pp3300_mipibrdg>;
+ 
+             ports {
+                 #address-cells = <1>;
+-- 
+2.30.0.617.g56c4b15f3c-goog
+
