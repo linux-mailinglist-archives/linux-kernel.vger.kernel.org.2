@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D9B320550
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 13:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9131320554
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 13:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229614AbhBTM1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 07:27:40 -0500
-Received: from mail-pj1-f45.google.com ([209.85.216.45]:33553 "EHLO
-        mail-pj1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhBTM1e (ORCPT
+        id S229804AbhBTM31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 07:29:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhBTM3Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 07:27:34 -0500
-Received: by mail-pj1-f45.google.com with SMTP id lw17so5117573pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 04:27:19 -0800 (PST)
+        Sat, 20 Feb 2021 07:29:24 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1387C061786
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 04:28:43 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id z6so3685077pfq.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 04:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=ESd3043vocdc8o+OeJoJOtt6T7G5G9i+TGIhSY83bdM=;
+        b=O7Xx0RKI+1/JnOfIoVGJmtCZwf+0Dp1zFYpyjiykwhuswrHpx+VuGiIaWUBeM1wImv
+         e55KOygqLjHSqdLw2E5CgVBLia9d6uQljC3yBaYSPohHIisNTPuNCjE2F3R6l+KyFl+4
+         yho+e/fwHKoALn6uH48VKxBVTDgnSjqKEusOVX/dxRyx0fcvyG66VoWRIxVav3yfTVsJ
+         wUhpILcIrKbVBz01Q1dIhKSLEiSoWUmTtUu9cqBF5HO3ASK4GoHS1EXdwrnYqcU4hZ7P
+         dmoUt/pAjrPBv0qKJqzX05uaWnPDfWRHuYChI6BB76v4EZNl7GzPcXzNJo2tkMUmx15a
+         XEhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=H9Ru2ZbdAQdDUxPfVhs1CR+d0Ly3rgFfBwARSfwqmPA=;
-        b=UY5NzAURfCWnuPYUFPxVBr93gGmxfhEPXPP43D8SOo+MGJOHzEajqFwmJ2TaGSZuqc
-         G77AXYOVPDQPaDTz3yZnK8FBwUiK427tAH+JcLLtCgRapGHqdHLf/JY6QSjzwfapNBxm
-         47rDmOTWippSkOt9W7koPL+TWcfEJ266VVDpJO56brFdJH/wFO5uNzAhP1UPtwrBihRW
-         okkpcoYDzZyI5qtrSNyZdIcETHChn4szBwIyJBhX+2pWFPZJkPQWwiX5emmke7Q9I1m/
-         nSXxEW3IvyuYE6TMjmO5JoMTUTzDQb1E2BkyLJ/5UHZhyiFAbluOW0YiWDWpHpVhHgNS
-         ClZg==
-X-Gm-Message-State: AOAM5303SSVJeMaKQJ1fOpZGqrg79QBwcnYiQsNe5hBRHiLrR1hyrRab
-        gOhKEU8RTnM4MSM27XSvi5k=
-X-Google-Smtp-Source: ABdhPJxGPL7qGyT4nK1k/eBERoAK5bAEIU4O4G67GioCeHqTih2Vi81fKawX7e/GFJxt7uobDSeONA==
-X-Received: by 2002:a17:902:b68f:b029:e3:b18:7a48 with SMTP id c15-20020a170902b68fb02900e30b187a48mr13549715pls.65.1613824014031;
-        Sat, 20 Feb 2021 04:26:54 -0800 (PST)
-Received: from karthik-strix-linux.karthek.com ([192.140.155.84])
-        by smtp.gmail.com with ESMTPSA id x24sm11624615pjk.7.2021.02.20.04.26.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 04:26:53 -0800 (PST)
-Date:   Sat, 20 Feb 2021 17:56:47 +0530
-From:   karthik alapati <mail@karthek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        shivang upadhyay <oroz3x@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wimax/i2400m: fix byte-order issue
-Message-ID: <YDEAB/QatfBX9vQN@karthik-strix-linux.karthek.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=ESd3043vocdc8o+OeJoJOtt6T7G5G9i+TGIhSY83bdM=;
+        b=fmOpl5uIjwkNRRjLfBi4rBpWAgjHTXxibpdwZoogEom9DtzfUF2qgu1wNZpgk0H634
+         7PctyZf67cV4Oh4VA5GAhLwSXpRm9RnCEalJK0z/M6D2DOcfm2K3t7hwo07asXHPIcwW
+         mJtvoJ+qLhLwqCHzoiKH5gAmhIVxd7L/rbyK4W41nWq4Ngkdjw+m6oPnZ1/9Zb1QysQ2
+         FSTxqK2M+LqeoshaGm5J8HOcXo4KFEmuqvUbePlm7g5EPDT6Sx4MEQP52h9IgKu4cde2
+         NbXPwMUolSR0bZ6d4RkWAJnlzM+TS+CdlPSiKxCNUFztCdykyFYeesmUNXIk7Fbqmlnz
+         9Mlw==
+X-Gm-Message-State: AOAM530K0cObcfzpS/Ub2zQeiM6+nfuDKSJ9F8xAlKHg/rcU44juNRVF
+        lB6vY+5U0FqOgKkGd/2m3GcoCpi9tIt+HQ7Yy9s=
+X-Google-Smtp-Source: ABdhPJzjFC7oBDbOFW0hddXcBIOMRD9hX84QPMywDHk0Wxq+Q2yBnPOkRI4xvJPZXsuSAmDyK6kvSA==
+X-Received: by 2002:a63:f156:: with SMTP id o22mr12664617pgk.384.1613824123064;
+        Sat, 20 Feb 2021 04:28:43 -0800 (PST)
+Received: from ?IPv6:2409:4064:2e1c:74bc:95c:a666:3473:ade0? ([2409:4064:2e1c:74bc:95c:a666:3473:ade0])
+        by smtp.gmail.com with ESMTPSA id x15sm11873597pjq.47.2021.02.20.04.28.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Feb 2021 04:28:42 -0800 (PST)
+Subject: Re: [PATCH] staging: wimax: i2400m: add space before open parenthesis
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     sfr@canb.auug.org.au, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+References: <20210220104816.13263-1-sssraj.sssraj@gmail.com>
+ <YDDuu6sRtSfWhnbY@kroah.com>
+From:   RajMAIN <sssraj.sssraj@gmail.com>
+Message-ID: <5dbde654-386b-2011-0020-729e41043f45@gmail.com>
+Date:   Sat, 20 Feb 2021 17:58:35 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <YDDuu6sRtSfWhnbY@kroah.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix sparse byte-order warnings by converting host byte-order
-types to le32 types
 
-Signed-off-by: karthik alapati <mail@karthek.com>
----
- drivers/staging/wimax/i2400m/op-rfkill.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 20-02-2021 16:42, Greg KH wrote:
+> On Sat, Feb 20, 2021 at 02:48:16AM -0800, Rajesh Kumbhakar wrote:
+>> netdev.c
+> Why is this here?
 
-diff --git a/drivers/staging/wimax/i2400m/op-rfkill.c b/drivers/staging/wimax/i2400m/op-rfkill.c
-index a159808f0..0f438ae6a 100644
---- a/drivers/staging/wimax/i2400m/op-rfkill.c
-+++ b/drivers/staging/wimax/i2400m/op-rfkill.c
-@@ -86,7 +86,7 @@ int i2400m_op_rfkill_sw_toggle(struct wimax_dev *wimax_dev,
- 	if (cmd == NULL)
- 		goto error_alloc;
- 	cmd->hdr.type = cpu_to_le16(I2400M_MT_CMD_RF_CONTROL);
--	cmd->hdr.length = sizeof(cmd->sw_rf);
-+	cmd->hdr.length = cpu_to_le16(sizeof(cmd->sw_rf));
- 	cmd->hdr.version = cpu_to_le16(I2400M_L3L4_VERSION);
- 	cmd->sw_rf.hdr.type = cpu_to_le16(I2400M_TLV_RF_OPERATION);
- 	cmd->sw_rf.hdr.length = cpu_to_le16(sizeof(cmd->sw_rf.status));
--- 
-2.30.1
+You mean that filename? I thought I should mention it. Should I remove 
+it and resubmit?
 
