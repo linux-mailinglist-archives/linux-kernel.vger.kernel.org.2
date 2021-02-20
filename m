@@ -2,193 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6530432065F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:14:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78BF320662
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhBTROG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 12:14:06 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27586 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229809AbhBTROD (ORCPT
+        id S229811AbhBTRXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 12:23:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229796AbhBTRXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:14:03 -0500
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11KH4X30110456;
-        Sat, 20 Feb 2021 12:13:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=5h/r7cKUsp0cobrNKkVCw6WpdLp0rAxXksScajR9jyU=;
- b=DAQJ+2zQD81YMcC7xIKvsYIPUAJDxRrOUn6cJn4+KQGkeioHFvx5kollsE3bvckz0/p5
- hj9pa4Q0KltOPsMWH5KbxGk7pujB46Mo1FK9eRRK971vS2KvLRoNBNooxZGvyXgN8vhj
- J2/8dLxPUUgybgh3gSptPxKwFHkuOiDPdbK+mDLNsbPxFRmxcUw7/ZjTJJzxeqCuUDzL
- hb6DTDgaGtuVCE6wXU524J5jGKqrJATd+Sgl30LoJ15+N8pF1TLhJj5kU00PKhWGiYrC
- +cdfGdDDLDoObTM6lmIv65UT6jnT6LsmTmgCgIXebSE+YqS3EVgCoiD7kxOTJf7apvdA 9A== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36u6gq88gq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 20 Feb 2021 12:13:12 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11KHC2tL021592;
-        Sat, 20 Feb 2021 17:13:10 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma04ams.nl.ibm.com with ESMTP id 36tt288c5f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 20 Feb 2021 17:13:10 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11KHD7hf33095946
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Feb 2021 17:13:07 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C29674203F;
-        Sat, 20 Feb 2021 17:13:07 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0627B42041;
-        Sat, 20 Feb 2021 17:13:04 +0000 (GMT)
-Received: from [9.211.126.148] (unknown [9.211.126.148])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 20 Feb 2021 17:13:03 +0000 (GMT)
-Subject: Re: [PATCH v2] powerpc/kexec_file: Restore FDT size estimation for
- kdump kernel
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     Rob Herring <robh@kernel.org>, kexec@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-References: <20210220005204.1417200-1-bauerman@linux.ibm.com>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-Message-ID: <1739b7f8-2b2f-1ae2-1785-4fedc7a973ed@linux.ibm.com>
-Date:   Sat, 20 Feb 2021 22:43:01 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sat, 20 Feb 2021 12:23:14 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A92AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:22:49 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id z6so5820057qts.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:22:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=R0A6YOTC5OENL7axcZ+QpFZ8S/KWCKBZLWbggOyg4tU=;
+        b=nUksVtlGmG2giMPchAu/ssZ/ot36wJafNSX9iiXZvnSADLAE/yl8rlPaQXhff5ufx2
+         jz8xxma8IvwnfgMJDNGK1jQO0RIU9a2FNs8lcCvDv9rwveWz1QoY93X1ni5DmH7yyPnu
+         zRMqOeB3ypAnl6WsGPLvVa8pRsihkt7wGIom/ZJoTA/C8WxaNT0ZYt1RZeUNvH7W46Dn
+         0EsmIbJ4RuxHZD0/djWiueJx6IXOmX5/Kfa0B9IZFWBhDn1S2rwruEdsflr3pQAUx7KK
+         77JJBplnJPA1u7TG6B+YiPbp6ztSaTaOoTeGGmEqDb8g4N8PVSZTBsPwGUPUMkLCzVGK
+         4zig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=R0A6YOTC5OENL7axcZ+QpFZ8S/KWCKBZLWbggOyg4tU=;
+        b=Zi3DPmb2RuPr0/ewgU6HmWR7A1UhDJS4Tq0AjN6i1rfnBJ6NqVVVpfzK3hLycY/khd
+         X50Hz4LT6e0+UZO+6EU8OOpdrLMB6Rp1p1cVOgj8GX46K7EvcWs3rEHKRPSjjoex84Q4
+         S45QmS/gsmj1AgrAx+Bp5gpmK29+4iA+hAxcdWOwhuPSwfkhV9XW+TEQ63ziANy+i28U
+         JYCP9y+Msficbe0DNUf9SVr90B39iGItWqx9ljHsMaaEtLEucXluJlDqKQMTrTq1uXwB
+         pTUPqVDYpvDpI+EBJDhAaK6/IqP2/mXUxPqUm15VUEBIBu7WKN4qzNNRJnum6RjkNFbr
+         7qaA==
+X-Gm-Message-State: AOAM532P0cj+BoMHd2aPC6EeZMx1TFk0a6gel4uJ/t5GCwmWYl5E+2CD
+        4ORRepZMaAiC+HktCUK9u3txXUKW4Q7UPJWr
+X-Google-Smtp-Source: ABdhPJyBSt/Uf47WC79Gf+MXiDIPX9YElY5QrMheyVFzM85zZggudjy9Ny2qUze4d+k6cqhI9ssKOg==
+X-Received: by 2002:ac8:6b57:: with SMTP id x23mr11069661qts.278.1613841768284;
+        Sat, 20 Feb 2021 09:22:48 -0800 (PST)
+Received: from ubuntu-mate-laptop.localnet ([208.64.158.253])
+        by smtp.gmail.com with ESMTPSA id i5sm7685949qtw.3.2021.02.20.09.22.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 09:22:47 -0800 (PST)
+Sender: Julian Braha <julian.braha@gmail.com>
+From:   Julian Braha <julianbraha@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org
+Subject: [PATCH v1] Staging: rtl8192e: fix kconfig dependency on CRYPTO
+Date:   Sat, 20 Feb 2021 12:22:43 -0500
+Message-ID: <4036376.6NakBfNh49@ubuntu-mate-laptop>
+In-Reply-To: <YDCz/6gQgp07NGw2@kroah.com>
+References: <8483722.hVsnvgcxvV@ubuntu-mate-laptop> <YDCz/6gQgp07NGw2@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210220005204.1417200-1-bauerman@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-20_02:2021-02-18,2021-02-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 spamscore=0 adultscore=0 impostorscore=0
- priorityscore=1501 phishscore=0 suspectscore=0 mlxscore=0
- lowpriorityscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102200159
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From fd949b204eeb6b685bbf5dc9a329c931fcf8b0da Mon Sep 17 00:00:00 2001
+From: Julian Braha <julianbraha@gmail.com>
+Date: Sat, 20 Feb 2021 12:07:30 -0500
+Subject: [PATCH] staging: rtl8192e: fix kconfig dependency on CRYPTO
+
+When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
+Kbuild gives the following warning:
+
+WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+
+WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
+  Depends on [n]: CRYPTO [=n]
+  Selected by [m]:
+  - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+  - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
+
+This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and 
+CRYPTO_LIB_ARC4, without depending on or selecting CRYPTO, 
+despite those config options being subordinate to CRYPTO.
+
+Signed-off-by: Julian Braha <julianbraha@gmail.com>
+---
+ drivers/staging/rtl8192e/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+index 03fcc23516fd..6e7d84ac06f5 100644
+--- a/drivers/staging/rtl8192e/Kconfig
++++ b/drivers/staging/rtl8192e/Kconfig
+@@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
+ config RTLLIB_CRYPTO_TKIP
+ 	tristate "Support for rtllib TKIP crypto"
+ 	depends on RTLLIB
++	select CRYPTO
+ 	select CRYPTO_LIB_ARC4
+ 	select CRYPTO_MICHAEL_MIC
+ 	default y
 
 
-On 20/02/21 6:22 am, Thiago Jung Bauermann wrote:
-> Commit 2377c92e37fe ("powerpc/kexec_file: fix FDT size estimation for kdump
-> kernel") fixed how elf64_load() estimates the FDT size needed by the
-> crashdump kernel.
-> 
-> At the same time, commit 130b2d59cec0 ("powerpc: Use common
-> of_kexec_alloc_and_setup_fdt()") changed the same code to use the generic
-> function of_kexec_alloc_and_setup_fdt() to calculate the FDT size. That
-> change made the code overestimate it a bit by counting twice the space
-> required for the kernel command line and /chosen properties.
-> 
-> Therefore change kexec_fdt_totalsize_ppc64() to calculate just the extra
-> space needed by the kdump kernel, and change the function name so that it
-> better reflects what the function is now doing.
-
-Thanks for fixing this, Thiago.
-
-Reviewed-by: Hari Bathini <hbathini@linux.ibm.com>
-
-> 
-> Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-> Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> ---
->   arch/powerpc/include/asm/kexec.h  |  2 +-
->   arch/powerpc/kexec/elf_64.c       |  2 +-
->   arch/powerpc/kexec/file_load_64.c | 26 ++++++++------------------
->   3 files changed, 10 insertions(+), 20 deletions(-)
-> 
-> Applies on top of next-20210219.
-> 
-> Changes since v1:
-> 
-> - Adjusted comment describing kexec_extra_fdt_size_ppc64() as suggested
->    by Lakshmi.
-> 
-> diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
-> index baab158e215c..5a11cc8d2350 100644
-> --- a/arch/powerpc/include/asm/kexec.h
-> +++ b/arch/powerpc/include/asm/kexec.h
-> @@ -128,7 +128,7 @@ int load_crashdump_segments_ppc64(struct kimage *image,
->   int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
->   			  const void *fdt, unsigned long kernel_load_addr,
->   			  unsigned long fdt_load_addr);
-> -unsigned int kexec_fdt_totalsize_ppc64(struct kimage *image);
-> +unsigned int kexec_extra_fdt_size_ppc64(struct kimage *image);
->   int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
->   			unsigned long initrd_load_addr,
->   			unsigned long initrd_len, const char *cmdline);
-> diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-> index 0492ca6003f3..5a569bb51349 100644
-> --- a/arch/powerpc/kexec/elf_64.c
-> +++ b/arch/powerpc/kexec/elf_64.c
-> @@ -104,7 +104,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
->   
->   	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
->   					   initrd_len, cmdline,
-> -					   kexec_fdt_totalsize_ppc64(image));
-> +					   kexec_extra_fdt_size_ppc64(image));
->   	if (!fdt) {
->   		pr_err("Error setting up the new device tree.\n");
->   		ret = -EINVAL;
-> diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
-> index 3609de30a170..297f73795a1f 100644
-> --- a/arch/powerpc/kexec/file_load_64.c
-> +++ b/arch/powerpc/kexec/file_load_64.c
-> @@ -927,37 +927,27 @@ int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
->   }
->   
->   /**
-> - * kexec_fdt_totalsize_ppc64 - Return the estimated size needed to setup FDT
-> - *                             for kexec/kdump kernel.
-> - * @image:                     kexec image being loaded.
-> + * kexec_extra_fdt_size_ppc64 - Return the estimated additional size needed to
-> + *                              setup FDT for kexec/kdump kernel.
-> + * @image:                      kexec image being loaded.
->    *
-> - * Returns the estimated size needed for kexec/kdump kernel FDT.
-> + * Returns the estimated extra size needed for kexec/kdump kernel FDT.
->    */
-> -unsigned int kexec_fdt_totalsize_ppc64(struct kimage *image)
-> +unsigned int kexec_extra_fdt_size_ppc64(struct kimage *image)
->   {
-> -	unsigned int fdt_size;
->   	u64 usm_entries;
->   
-> -	/*
-> -	 * The below estimate more than accounts for a typical kexec case where
-> -	 * the additional space is to accommodate things like kexec cmdline,
-> -	 * chosen node with properties for initrd start & end addresses and
-> -	 * a property to indicate kexec boot..
-> -	 */
-> -	fdt_size = fdt_totalsize(initial_boot_params) + (2 * COMMAND_LINE_SIZE);
->   	if (image->type != KEXEC_TYPE_CRASH)
-> -		return fdt_size;
-> +		return 0;
->   
->   	/*
-> -	 * For kdump kernel, also account for linux,usable-memory and
-> +	 * For kdump kernel, account for linux,usable-memory and
->   	 * linux,drconf-usable-memory properties. Get an approximate on the
->   	 * number of usable memory entries and use for FDT size estimation.
->   	 */
->   	usm_entries = ((memblock_end_of_DRAM() / drmem_lmb_size()) +
->   		       (2 * (resource_size(&crashk_res) / drmem_lmb_size())));
-> -	fdt_size += (unsigned int)(usm_entries * sizeof(u64));
-> -
-> -	return fdt_size;
-> +	return (unsigned int)(usm_entries * sizeof(u64));
->   }
->   
->   /**
-> 
