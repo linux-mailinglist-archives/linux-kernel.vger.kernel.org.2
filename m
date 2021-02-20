@@ -2,166 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 835A23206F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12ECD3206F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229847AbhBTTqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 14:46:38 -0500
-Received: from st43p00im-ztfb10071701.me.com ([17.58.63.173]:57786 "EHLO
-        st43p00im-ztfb10071701.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229808AbhBTTqg (ORCPT
+        id S229907AbhBTTq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 14:46:58 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:53176 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229808AbhBTTqy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:46:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1613850333; bh=Qi878eYyG4TdAPbifSnuWM5PboJzJlSyg87HYP5nMF4=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=0K1XG5kCfms6Ol1kUfFA3w72dH9gqCAMibNaxG0ExQQPaSegX9zedrFD0h6hDVi6N
-         /PjvOR+DGNOcZJFvaXxTmySTET+X9NRMxGIhFYoVz8Rl2jckPKWqJFP420QNEXJCl2
-         3Vbw+Xple+SvhyQ6UqQ6GuooLtfTFk+hferrGbu6VX4Pbhb1JWZ6XnodUwOv5V8yE/
-         sgrJZHOuHcBj3bPRzUE/txA0E5EYGPSEm1kCGNQ/KTdN0wSFy5zaySOoG67wbLG82C
-         Mnl/7ahbN8ilI4EtyrwMq6xCvamKx+Uk7dqpEC8OVWbvRQTPbh9yVISBh7AMjdkRHT
-         YyMEk0DMh0O/w==
-Received: from gnbcxl0029.gnb.st.com (101.220.150.77.rev.sfr.net [77.150.220.101])
-        by st43p00im-ztfb10071701.me.com (Postfix) with ESMTPSA id 8C9898A0559;
-        Sat, 20 Feb 2021 19:45:29 +0000 (UTC)
-Date:   Sat, 20 Feb 2021 20:45:25 +0100
-From:   Alain Volmat <avolmat@me.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the arm-soc tree with the arm tree
-Message-ID: <20210220194524.GA4200@gnbcxl0029.gnb.st.com>
-Mail-Followup-To: Stephen Rothwell <sfr@canb.auug.org.au>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210202090135.04b9890e@canb.auug.org.au>
- <20210215091444.3300fb43@canb.auug.org.au>
+        Sat, 20 Feb 2021 14:46:54 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 3CF381C0B77; Sat, 20 Feb 2021 20:46:11 +0100 (CET)
+Date:   Sat, 20 Feb 2021 20:46:10 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     syzbot <syzbot+bdf710cfc41c186fdff3@syzkaller.appspotmail.com>,
+        syzkaller@googlegroups.com
+Cc:     davem@davemloft.net, kernel@pengutronix.de, kuba@kernel.org,
+        linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@rempel-privat.de, mkl@pengutronix.de, netdev@vger.kernel.org,
+        robin@protonic.nl, socketcan@hartkopp.net,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: use-after-free Write in j1939_can_recv
+Message-ID: <20210220194610.GA16558@amd>
+References: <000000000000c086a505bbc1a238@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
 Content-Disposition: inline
-In-Reply-To: <20210215091444.3300fb43@canb.auug.org.au>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-20_02:2021-02-18,2021-02-20 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2006250000 definitions=main-2102200183
+In-Reply-To: <000000000000c086a505bbc1a238@google.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
 
-sorry for the delay, is there anything I should do concerning this issue
-?
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Cheers,
-Alain
-
-On Mon, Feb 15, 2021 at 09:14:44AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> On Tue, 2 Feb 2021 09:01:35 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Today's linux-next merge of the arm-soc tree got a conflict in:
-> > 
-> >   arch/arm/Kconfig.debug
-> > 
-> > between commits:
-> > 
-> >   9ca4efec0aba ("ARM: 9040/1: use DEBUG_UART_PHYS and DEBUG_UART_VIRT for sti LL_UART")
-> >   6e959ad8bb90 ("ARM: 9041/1: sti LL_UART: add STiH418 SBC UART0 support")
-> > 
-> > from the arm tree and commits:
-> > 
-> >   f3a732843acc ("ARM: remove sirf prima2/atlas platforms")
-> >   89d4f98ae90d ("ARM: remove zte zx platform")
-> > 
-> > from the arm-soc tree.
-> > 
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> > 
-> > diff --cc arch/arm/Kconfig.debug
-> > index 7a8697a97c98,c36c5d4c6e9c..000000000000
-> > --- a/arch/arm/Kconfig.debug
-> > +++ b/arch/arm/Kconfig.debug
-> > @@@ -1623,10 -1546,7 +1550,9 @@@ config DEBUG_LL_INCLUD
-> >   	default "debug/renesas-scif.S" if DEBUG_RMOBILE_SCIFA4
-> >   	default "debug/s3c24xx.S" if DEBUG_S3C24XX_UART || DEBUG_S3C64XX_UART
-> >   	default "debug/s5pv210.S" if DEBUG_S5PV210_UART
-> > - 	default "debug/sirf.S" if DEBUG_SIRFSOC_UART
-> >  -	default "debug/sti.S" if DEBUG_STI_UART
-> >  +	default "debug/sti.S" if DEBUG_STIH41X_ASC2
-> >  +	default "debug/sti.S" if DEBUG_STIH41X_SBC_ASC1
-> >  +	default "debug/sti.S" if DEBUG_STIH418_SBC_ASC0
-> >   	default "debug/stm32.S" if DEBUG_STM32_UART
-> >   	default "debug/tegra.S" if DEBUG_TEGRA_UART
-> >   	default "debug/ux500.S" if DEBUG_UX500_UART
-> > @@@ -1659,8 -1579,6 +1585,7 @@@ config DEBUG_UART_PHY
-> >   	default 0x02531000 if DEBUG_KEYSTONE_UART1
-> >   	default 0x03010fe0 if ARCH_RPC
-> >   	default 0x07000000 if DEBUG_SUN9I_UART0
-> > - 	default 0x09405000 if DEBUG_ZTE_ZX
-> >  +	default 0x09530000 if DEBUG_STIH418_SBC_ASC0
-> >   	default 0x10009000 if DEBUG_REALVIEW_STD_PORT || \
-> >   				DEBUG_VEXPRESS_UART0_CA9
-> >   	default 0x1010c000 if DEBUG_REALVIEW_PB1176_PORT
-> > @@@ -1789,10 -1698,8 +1707,10 @@@
-> >   		DEBUG_RMOBILE_SCIFA4 || DEBUG_S3C24XX_UART || \
-> >   		DEBUG_S3C64XX_UART || \
-> >   		DEBUG_BCM63XX_UART || DEBUG_ASM9260_UART || \
-> > - 		DEBUG_SIRFSOC_UART || DEBUG_DIGICOLOR_UA0 || \
-> > + 		DEBUG_DIGICOLOR_UA0 || \
-> >  -		DEBUG_AT91_UART || DEBUG_STM32_UART
-> >  +		DEBUG_AT91_UART || DEBUG_STM32_UART || \
-> >  +		DEBUG_STIH41X_ASC2 || DEBUG_STIH41X_SBC_ASC1 || \
-> >  +		DEBUG_STIH418_SBC_ASC0
-> >   
-> >   config DEBUG_UART_VIRT
-> >   	hex "Virtual base address of debug UART"
-> > @@@ -1854,12 -1760,9 +1772,11 @@@
-> >   	default 0xfb020000 if DEBUG_OMAP3UART3
-> >   	default 0xfb042000 if DEBUG_OMAP3UART4
-> >   	default 0xfb10c000 if DEBUG_REALVIEW_PB1176_PORT
-> > - 	default 0xfc705000 if DEBUG_ZTE_ZX
-> >   	default 0xfcfe8600 if DEBUG_BCM63XX_UART
-> >   	default 0xfd000000 if DEBUG_SPEAR3XX || DEBUG_SPEAR13XX
-> >  +	default 0xfd531000 if DEBUG_STIH41X_SBC_ASC1
-> >   	default 0xfd883000 if DEBUG_ALPINE_UART0
-> >  +	default 0xfdd32000 if DEBUG_STIH41X_ASC2
-> >   	default 0xfe010000 if STM32MP1_DEBUG_UART
-> >   	default 0xfe017000 if DEBUG_MMP_UART2
-> >   	default 0xfe018000 if DEBUG_MMP_UART3
-> > @@@ -1904,10 -1802,8 +1816,10 @@@
-> >   		DEBUG_QCOM_UARTDM || DEBUG_S3C24XX_UART || \
-> >   		DEBUG_S3C64XX_UART || \
-> >   		DEBUG_BCM63XX_UART || DEBUG_ASM9260_UART || \
-> > - 		DEBUG_SIRFSOC_UART || DEBUG_DIGICOLOR_UA0 || \
-> > + 		DEBUG_DIGICOLOR_UA0 || \
-> >  -		DEBUG_AT91_UART || DEBUG_STM32_UART
-> >  +		DEBUG_AT91_UART || DEBUG_STM32_UART || \
-> >  +		DEBUG_STIH41X_ASC2 || DEBUG_STIH41X_SBC_ASC1 || \
-> >  +		DEBUG_STIH418_SBC_ASC0
-> >   
-> >   config DEBUG_UART_8250_SHIFT
-> >   	int "Register offset shift for the 8250 debug UART"
-> 
-> With the merge window about to open, this is a reminder that this
-> conflict still exists.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
+Can we get some kind of common prefix for the subjects?
 
 
+> This report is generated by a bot. It may contain errors.
+
+It is less useful than average lkml mail, so it should be easy to
+filter.
+
+
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>=20
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmAxZwIACgkQMOfwapXb+vI86wCfZ202w77Ojknu6Bac+jZOgpUK
+8h0AoJMKeqGWB3HVOVU4BRvXsDBAD70K
+=dFMv
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
