@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33B03207A4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 00:23:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494763207A5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 00:28:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhBTXXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 18:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39620 "EHLO
+        id S229945AbhBTXXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 18:23:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhBTXWt (ORCPT
+        with ESMTP id S229817AbhBTXWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 18:22:49 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A00EC061786
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:24 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id c19so5893313pjq.3
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:24 -0800 (PST)
+        Sat, 20 Feb 2021 18:22:51 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D7EC06178A
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:25 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id d2so6415082pjs.4
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tV4RBrfHWy0xgCRmlWyctyDTYGwi60ErDkvqvfIJvYA=;
-        b=ZY1b1OaNu0bPV649/ceNNCnFEe3oWGyX4Q84+CIJDjWbrl4iPum0uvX/0kjaznLj35
-         6JBOmriiTVAKOycLJ6RyLeRrlZO1izo8R0sKhcY58RaAcMPYqoolsWZttR+t/+hGIHkh
-         TvgGIbMiVvi5wGkg8/cCcQJBGBMF0jZcPKBp0ZJCole+nM10UQUnvxnlkFa9hhUHaAco
-         QH7lccrU0wR1s/LAaNFqC2WpK4fOdHDSMx46twwmB8ZLEB5nsF1CROS+1JnN7pgKN41e
-         m8LKvVRVSl35ZVc0E7cNVSMs56yP4Tp/luo9HkObeFOgo1J1hkS+YfQwXP8EuGjhPkfd
-         w6rg==
+        bh=w3dquYqjy1xaDtn2H8fjB2EN1gbFMjXQuNyBoarAWH8=;
+        b=OmfPVDEHO5FYVeckkk3LIQ6Z6leiGOXqGYkCEYyMEvVVUhpq+eTjvHyMeXP3S69Z7l
+         7Qw75bRMmaHjzYeZ3cg8ucxAJCpldF0k66N2I1bJDOeq/Aeoehh+GfJNr+Pyeg2Ngcz0
+         XVmDIKBYcejSoaF372plv8LWxqspowb467fSc8fz+9qRAG1WXYWDAbVo31mmH7qS/yuM
+         f0kCTCmgJpgwgjOXbYkX82vuNwUWxAGTK0Hb0FhQaiWezAn/Mwx/9MlSI5R7A3/AJAUp
+         8E2JaRBdR9F3C9tMbXD+VTHIJB8Yhhqj1N7tktqAnHz6k6SZHVbN8FD+YFjrNUQCgDEf
+         WDUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tV4RBrfHWy0xgCRmlWyctyDTYGwi60ErDkvqvfIJvYA=;
-        b=A89CCGm44kZjkNqPiEcUdUrt0GaPkw5VaAOynqCWrRbqbvaFfWialIPkSJhw9duGJF
-         wyEwGHMzAC5l+klarqV/oJDO9HliMWlJIK+RK00R8IEYOqMQrSZ88MRjEtw1xzsoe35/
-         U8s4OY00PGPfsTocgd+zjxahoJNaU1n9R6kOpthEymk6fS6KIQce/J2TVJ3plRr1y15y
-         +nC5biTzF2RMzcN7kNvi7LUJb9hWy4gNOm1a7LPm97x/yI20qh+tYa9np5IlCGqbmBp6
-         03nkjO2uuBE2GdTvLpRJD4+mnxWP0Pu9yOD2+yGk4Sat+8+vEJnqE/Lf4GDeraU9ytM9
-         B12Q==
-X-Gm-Message-State: AOAM532mgRLZF4ji+xy1OyNXKUbb0Mek+6AWCgMkX6hfHrBljyMFa1+8
-        9SrbE8HviB5t/v8eicl7PWm7rFIoQxOQaA==
-X-Google-Smtp-Source: ABdhPJwTE4XbBxYpzMI/ddz7P4v8h1x5AERfoI/Gr/20YF+TR+/v8SuUzjTQSfw2/7gJ2jQYkOJV+A==
-X-Received: by 2002:a17:90a:e603:: with SMTP id j3mr15963155pjy.161.1613863343467;
-        Sat, 20 Feb 2021 15:22:23 -0800 (PST)
+        bh=w3dquYqjy1xaDtn2H8fjB2EN1gbFMjXQuNyBoarAWH8=;
+        b=bH88AoaX4isGEk00htdaJPEejTLZfEr9GW7atfRTtu9lH1zLMxbNQTbAPvHT7/V0R0
+         dg65vpztgMBHv9XwbYjO/Fm9s1l4lpHIpxllsFt3Fo763h3APGYYsAvKTiAoxLyJ4gqZ
+         PhyVxEc9taQUtzpa5+I+WrlMAa+aE7XglM8GVV6Gpu60triBHv2MWENWMu7hES4JxDeN
+         Fc5kur/6OkHhZ6imD4UAdfM1nNn3UsGyhqt66FZvGWUhUXJeP1IZ9HGzDji3dHLmlIG+
+         cfHH2ybLE92lC2qCzWXdSslisOBpqyxyWdfRuEoqEiWCvgm6JFPRsmILZGKqBBbAApZS
+         7Qyg==
+X-Gm-Message-State: AOAM531vbFnE8x1MKT5gvZ/YYvDjA1DfdBM2bv5K5u0DqYCfHvtCZZuX
+        MXBJBbFy8aQmAoJvbUKNlr9mFZTgDaU4/A==
+X-Google-Smtp-Source: ABdhPJzUGVOPqqAOl9eIAKpvaAt9uM9XYi3sLQpdoGZWNwdoQD5njYRZRiVw2h+KMqtUg+R/Ppqarg==
+X-Received: by 2002:a17:902:8a88:b029:e3:1bd0:2c29 with SMTP id p8-20020a1709028a88b02900e31bd02c29mr7992730plo.5.1613863344708;
+        Sat, 20 Feb 2021 15:22:24 -0800 (PST)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id 4sm13171538pjc.23.2021.02.20.15.22.22
+        by smtp.gmail.com with ESMTPSA id 4sm13171538pjc.23.2021.02.20.15.22.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 15:22:23 -0800 (PST)
+        Sat, 20 Feb 2021 15:22:24 -0800 (PST)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     linux-kernel@vger.kernel.org
@@ -58,9 +58,9 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Rik van Riel <riel@surriel.com>,
         Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH v6 1/9] smp: Run functions concurrently in smp_call_function_many_cond()
-Date:   Sat, 20 Feb 2021 15:17:04 -0800
-Message-Id: <20210220231712.2475218-2-namit@vmware.com>
+Subject: [PATCH v6 2/9] x86/mm/tlb: Unify flush_tlb_func_local() and flush_tlb_func_remote()
+Date:   Sat, 20 Feb 2021 15:17:05 -0800
+Message-Id: <20210220231712.2475218-3-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210220231712.2475218-1-namit@vmware.com>
 References: <20210220231712.2475218-1-namit@vmware.com>
@@ -72,28 +72,18 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Currently, on_each_cpu() and similar functions do not exploit the
-potential of concurrency: the function is first executed remotely and
-only then it is executed locally. Functions such as TLB flush can take
-considerable time, so this provides an opportunity for performance
-optimization.
+The unification of these two functions allows to use them in the updated
+SMP infrastrucutre.
 
-To do so, modify smp_call_function_many_cond(), to allows the callers to
-provide a function that should be executed (remotely/locally), and run
-them concurrently. Keep other smp_call_function_many() semantic as it is
-today for backward compatibility: the called function is not executed in
-this case locally.
+To do so, remove the reason argument from flush_tlb_func_local(), add
+a member to struct tlb_flush_info that says which CPU initiated the
+flush and act accordingly. Optimize the size of flush_tlb_info while we
+are at it.
 
-smp_call_function_many_cond() does not use the optimized version for a
-single remote target that smp_call_function_single() implements. For
-synchronous function call, smp_call_function_single() keeps a
-call_single_data (which is used for synchronization) on the stack.
-Interestingly, it seems that not using this optimization provides
-greater performance improvements (greater speedup with a single remote
-target than with multiple ones). Presumably, holding data structures
-that are intended for synchronization on the stack can introduce
-overheads due to TLB misses and false-sharing when the stack is used for
-other purposes.
+Unfortunately, this prevents us from using a constant tlb_flush_info for
+arch_tlbbatch_flush(), but in a later stage we may be able to inline
+tlb_flush_info into the IPI data, so it should not have an impact
+eventually.
 
 Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -102,247 +92,221 @@ Cc: Thomas Gleixner <tglx@linutronix.de>
 Cc: Andy Lutomirski <luto@kernel.org>
 Cc: Josh Poimboeuf <jpoimboe@redhat.com>
 Signed-off-by: Nadav Amit <namit@vmware.com>
-
 ---
-v5 -> v6:
-* on_each_cpu_cond_mask() was missing preempt_disable/enable() [PeterZ]
-* use multiplication instead of condition [PeterZ]
-* assert preempt disabled on smp_call_function_many_cond()
-* Break 80-char lines (Christoph)
----
- kernel/smp.c | 156 +++++++++++++++++++++++++++++----------------------
- 1 file changed, 88 insertions(+), 68 deletions(-)
+ arch/x86/include/asm/tlbflush.h |  5 +-
+ arch/x86/mm/tlb.c               | 81 +++++++++++++++------------------
+ 2 files changed, 39 insertions(+), 47 deletions(-)
 
-diff --git a/kernel/smp.c b/kernel/smp.c
-index aeb0adfa0606..c8a5a1facc1a 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -608,12 +608,28 @@ int smp_call_function_any(const struct cpumask *mask,
+diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+index 8c87a2e0b660..a7a598af116d 100644
+--- a/arch/x86/include/asm/tlbflush.h
++++ b/arch/x86/include/asm/tlbflush.h
+@@ -201,8 +201,9 @@ struct flush_tlb_info {
+ 	unsigned long		start;
+ 	unsigned long		end;
+ 	u64			new_tlb_gen;
+-	unsigned int		stride_shift;
+-	bool			freed_tables;
++	unsigned int		initiating_cpu;
++	u8			stride_shift;
++	u8			freed_tables;
+ };
+ 
+ void flush_tlb_local(void);
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 569ac1d57f55..bf12371db6c4 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -439,7 +439,7 @@ void switch_mm_irqs_off(struct mm_struct *prev, struct mm_struct *next,
+ 	 * NB: leave_mm() calls us with prev == NULL and tsk == NULL.
+ 	 */
+ 
+-	/* We don't want flush_tlb_func_* to run concurrently with us. */
++	/* We don't want flush_tlb_func() to run concurrently with us. */
+ 	if (IS_ENABLED(CONFIG_PROVE_LOCKING))
+ 		WARN_ON_ONCE(!irqs_disabled());
+ 
+@@ -647,14 +647,13 @@ void initialize_tlbstate_and_flush(void)
  }
- EXPORT_SYMBOL_GPL(smp_call_function_any);
  
-+/*
-+ * Flags to be used as scf_flags argument of smp_call_function_many_cond().
-+ *
-+ * %SCF_WAIT:		Wait until function execution is completed
-+ * %SCF_RUN_LOCAL:	Run also locally if local cpu is set in cpumask
-+ */
-+#define SCF_WAIT	(1U << 0)
-+#define SCF_RUN_LOCAL	(1U << 1)
-+
- static void smp_call_function_many_cond(const struct cpumask *mask,
- 					smp_call_func_t func, void *info,
--					bool wait, smp_cond_func_t cond_func)
-+					unsigned int scf_flags,
-+					smp_cond_func_t cond_func)
+ /*
+- * flush_tlb_func_common()'s memory ordering requirement is that any
++ * flush_tlb_func()'s memory ordering requirement is that any
+  * TLB fills that happen after we flush the TLB are ordered after we
+  * read active_mm's tlb_gen.  We don't need any explicit barriers
+  * because all x86 flush operations are serializing and the
+  * atomic64_read operation won't be reordered by the compiler.
+  */
+-static void flush_tlb_func_common(const struct flush_tlb_info *f,
+-				  bool local, enum tlb_flush_reason reason)
++static void flush_tlb_func(void *info)
  {
-+	int cpu, last_cpu, this_cpu = smp_processor_id();
- 	struct call_function_data *cfd;
--	int cpu, next_cpu, this_cpu = smp_processor_id();
-+	bool wait = scf_flags & SCF_WAIT;
-+	bool run_remote = false;
-+	bool run_local = false;
-+	int nr_cpus = 0;
-+
-+	lockdep_assert_preemption_disabled();
- 
  	/*
- 	 * Can deadlock when called with interrupts disabled.
-@@ -621,8 +637,9 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
- 	 * send smp call function interrupt to this cpu and as such deadlocks
- 	 * can't happen.
+ 	 * We have three different tlb_gen values in here.  They are:
+@@ -665,14 +664,26 @@ static void flush_tlb_func_common(const struct flush_tlb_info *f,
+ 	 * - f->new_tlb_gen: the generation that the requester of the flush
+ 	 *                   wants us to catch up to.
  	 */
--	WARN_ON_ONCE(cpu_online(this_cpu) && irqs_disabled()
--		     && !oops_in_progress && !early_boot_irqs_disabled);
-+	if (cpu_online(this_cpu) && !oops_in_progress &&
-+	    !early_boot_irqs_disabled)
-+		lockdep_assert_irqs_enabled();
++	const struct flush_tlb_info *f = info;
+ 	struct mm_struct *loaded_mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 	u32 loaded_mm_asid = this_cpu_read(cpu_tlbstate.loaded_mm_asid);
+ 	u64 mm_tlb_gen = atomic64_read(&loaded_mm->context.tlb_gen);
+ 	u64 local_tlb_gen = this_cpu_read(cpu_tlbstate.ctxs[loaded_mm_asid].tlb_gen);
++	bool local = smp_processor_id() == f->initiating_cpu;
++	unsigned long nr_invalidate = 0;
  
- 	/*
- 	 * When @wait we can deadlock when we interrupt between llist_add() and
-@@ -632,60 +649,65 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
- 	 */
- 	WARN_ON_ONCE(!in_task());
+ 	/* This code cannot presently handle being reentered. */
+ 	VM_WARN_ON(!irqs_disabled());
  
--	/* Try to fastpath.  So, what's a CPU they want? Ignoring this one. */
-+	/* Check if we need local execution. */
-+	if ((scf_flags & SCF_RUN_LOCAL) && cpumask_test_cpu(this_cpu, mask))
-+		run_local = true;
++	if (!local) {
++		inc_irq_stat(irq_tlb_count);
++		count_vm_tlb_event(NR_TLB_REMOTE_FLUSH_RECEIVED);
 +
-+	/* Check if we need remote execution, i.e., any CPU excluding this one. */
- 	cpu = cpumask_first_and(mask, cpu_online_mask);
- 	if (cpu == this_cpu)
- 		cpu = cpumask_next_and(cpu, mask, cpu_online_mask);
-+	if (cpu < nr_cpu_ids)
-+		run_remote = true;
- 
--	/* No online cpus?  We're done. */
--	if (cpu >= nr_cpu_ids)
--		return;
--
--	/* Do we have another CPU which isn't us? */
--	next_cpu = cpumask_next_and(cpu, mask, cpu_online_mask);
--	if (next_cpu == this_cpu)
--		next_cpu = cpumask_next_and(next_cpu, mask, cpu_online_mask);
--
--	/* Fastpath: do that cpu by itself. */
--	if (next_cpu >= nr_cpu_ids) {
--		if (!cond_func || cond_func(cpu, info))
--			smp_call_function_single(cpu, func, info, wait);
--		return;
--	}
--
--	cfd = this_cpu_ptr(&cfd_data);
-+	if (run_remote) {
-+		cfd = this_cpu_ptr(&cfd_data);
-+		cpumask_and(cfd->cpumask, mask, cpu_online_mask);
-+		__cpumask_clear_cpu(this_cpu, cfd->cpumask);
- 
--	cpumask_and(cfd->cpumask, mask, cpu_online_mask);
--	__cpumask_clear_cpu(this_cpu, cfd->cpumask);
--
--	/* Some callers race with other cpus changing the passed mask */
--	if (unlikely(!cpumask_weight(cfd->cpumask)))
--		return;
-+		cpumask_clear(cfd->cpumask_ipi);
-+		for_each_cpu(cpu, cfd->cpumask) {
-+			call_single_data_t *csd = per_cpu_ptr(cfd->csd, cpu);
- 
--	cpumask_clear(cfd->cpumask_ipi);
--	for_each_cpu(cpu, cfd->cpumask) {
--		call_single_data_t *csd = per_cpu_ptr(cfd->csd, cpu);
-+			if (cond_func && !cond_func(cpu, info))
-+				continue;
- 
--		if (cond_func && !cond_func(cpu, info))
--			continue;
--
--		csd_lock(csd);
--		if (wait)
--			csd->node.u_flags |= CSD_TYPE_SYNC;
--		csd->func = func;
--		csd->info = info;
-+			csd_lock(csd);
-+			if (wait)
-+				csd->node.u_flags |= CSD_TYPE_SYNC;
-+			csd->func = func;
-+			csd->info = info;
- #ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
--		csd->node.src = smp_processor_id();
--		csd->node.dst = cpu;
-+			csd->node.src = smp_processor_id();
-+			csd->node.dst = cpu;
- #endif
--		if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu)))
--			__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
-+			if (llist_add(&csd->node.llist, &per_cpu(call_single_queue, cpu))) {
-+				__cpumask_set_cpu(cpu, cfd->cpumask_ipi);
-+				nr_cpus++;
-+				last_cpu = cpu;
-+			}
-+		}
-+
-+		/*
-+		 * Choose the most efficient way to send an IPI. Note that the
-+		 * number of CPUs might be zero due to concurrent changes to the
-+		 * provided mask.
-+		 */
-+		if (nr_cpus == 1)
-+			arch_send_call_function_single_ipi(last_cpu);
-+		else if (likely(nr_cpus > 1))
-+			arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
- 	}
- 
--	/* Send a message to all CPUs in the map */
--	arch_send_call_function_ipi_mask(cfd->cpumask_ipi);
-+	if (run_local && (!cond_func || cond_func(this_cpu, info))) {
-+		unsigned long flags;
- 
--	if (wait) {
-+		local_irq_save(flags);
-+		func(info);
-+		local_irq_restore(flags);
++		/* Can only happen on remote CPUs */
++		if (f->mm && f->mm != loaded_mm)
++			return;
 +	}
 +
-+	if (run_remote && wait) {
- 		for_each_cpu(cpu, cfd->cpumask) {
- 			call_single_data_t *csd;
+ 	if (unlikely(loaded_mm == &init_mm))
+ 		return;
  
-@@ -696,12 +718,14 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
- }
+@@ -700,8 +711,7 @@ static void flush_tlb_func_common(const struct flush_tlb_info *f,
+ 		 * be handled can catch us all the way up, leaving no work for
+ 		 * the second flush.
+ 		 */
+-		trace_tlb_flush(reason, 0);
+-		return;
++		goto done;
+ 	}
  
- /**
-- * smp_call_function_many(): Run a function on a set of other CPUs.
-+ * smp_call_function_many(): Run a function on a set of CPUs.
-  * @mask: The set of cpus to run on (only runs on online subset).
-  * @func: The function to run. This must be fast and non-blocking.
-  * @info: An arbitrary pointer to pass to the function.
-- * @wait: If true, wait (atomically) until function has completed
-- *        on other CPUs.
-+ * @flags: Bitmask that controls the operation. If %SCF_WAIT is set, wait
-+ *        (atomically) until function has completed on other CPUs. If
-+ *        %SCF_RUN_LOCAL is set, the function will also be run locally
-+ *        if the local CPU is set in the @cpumask.
-  *
-  * If @wait is true, then returns once @func has returned.
-  *
-@@ -712,7 +736,7 @@ static void smp_call_function_many_cond(const struct cpumask *mask,
- void smp_call_function_many(const struct cpumask *mask,
- 			    smp_call_func_t func, void *info, bool wait)
- {
--	smp_call_function_many_cond(mask, func, info, wait, NULL);
-+	smp_call_function_many_cond(mask, func, info, wait * SCF_WAIT, NULL);
- }
- EXPORT_SYMBOL(smp_call_function_many);
+ 	WARN_ON_ONCE(local_tlb_gen > mm_tlb_gen);
+@@ -748,46 +758,34 @@ static void flush_tlb_func_common(const struct flush_tlb_info *f,
+ 	    f->new_tlb_gen == local_tlb_gen + 1 &&
+ 	    f->new_tlb_gen == mm_tlb_gen) {
+ 		/* Partial flush */
+-		unsigned long nr_invalidate = (f->end - f->start) >> f->stride_shift;
+ 		unsigned long addr = f->start;
  
-@@ -860,16 +884,15 @@ EXPORT_SYMBOL(on_each_cpu);
- void on_each_cpu_mask(const struct cpumask *mask, smp_call_func_t func,
- 			void *info, bool wait)
- {
--	int cpu = get_cpu();
-+	unsigned int scf_flags;
- 
--	smp_call_function_many(mask, func, info, wait);
--	if (cpumask_test_cpu(cpu, mask)) {
--		unsigned long flags;
--		local_irq_save(flags);
--		func(info);
--		local_irq_restore(flags);
--	}
--	put_cpu();
-+	scf_flags = SCF_RUN_LOCAL;
-+	if (wait)
-+		scf_flags |= SCF_WAIT;
++		nr_invalidate = (f->end - f->start) >> f->stride_shift;
 +
-+	preempt_disable();
-+	smp_call_function_many_cond(mask, func, info, scf_flags, NULL);
-+	preempt_enable();
- }
- EXPORT_SYMBOL(on_each_cpu_mask);
+ 		while (addr < f->end) {
+ 			flush_tlb_one_user(addr);
+ 			addr += 1UL << f->stride_shift;
+ 		}
+ 		if (local)
+ 			count_vm_tlb_events(NR_TLB_LOCAL_FLUSH_ONE, nr_invalidate);
+-		trace_tlb_flush(reason, nr_invalidate);
+ 	} else {
+ 		/* Full flush. */
++		nr_invalidate = TLB_FLUSH_ALL;
++
+ 		flush_tlb_local();
+ 		if (local)
+ 			count_vm_tlb_event(NR_TLB_LOCAL_FLUSH_ALL);
+-		trace_tlb_flush(reason, TLB_FLUSH_ALL);
+ 	}
  
-@@ -898,17 +921,14 @@ EXPORT_SYMBOL(on_each_cpu_mask);
- void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
- 			   void *info, bool wait, const struct cpumask *mask)
+ 	/* Both paths above update our state to mm_tlb_gen. */
+ 	this_cpu_write(cpu_tlbstate.ctxs[loaded_mm_asid].tlb_gen, mm_tlb_gen);
+-}
+-
+-static void flush_tlb_func_local(const void *info, enum tlb_flush_reason reason)
+-{
+-	const struct flush_tlb_info *f = info;
+-
+-	flush_tlb_func_common(f, true, reason);
+-}
+ 
+-static void flush_tlb_func_remote(void *info)
+-{
+-	const struct flush_tlb_info *f = info;
+-
+-	inc_irq_stat(irq_tlb_count);
+-
+-	if (f->mm && f->mm != this_cpu_read(cpu_tlbstate.loaded_mm))
+-		return;
+-
+-	count_vm_tlb_event(NR_TLB_REMOTE_FLUSH_RECEIVED);
+-	flush_tlb_func_common(f, false, TLB_REMOTE_SHOOTDOWN);
++	/* Tracing is done in a unified manner to reduce the code size */
++done:
++	trace_tlb_flush(!local ? TLB_REMOTE_SHOOTDOWN :
++				(f->mm == NULL) ? TLB_LOCAL_SHOOTDOWN :
++						  TLB_LOCAL_MM_SHOOTDOWN,
++			nr_invalidate);
+ }
+ 
+ static bool tlb_is_not_lazy(int cpu, void *data)
+@@ -816,10 +814,10 @@ STATIC_NOPV void native_flush_tlb_others(const struct cpumask *cpumask,
+ 	 * doing a speculative memory access.
+ 	 */
+ 	if (info->freed_tables)
+-		smp_call_function_many(cpumask, flush_tlb_func_remote,
++		smp_call_function_many(cpumask, flush_tlb_func,
+ 			       (void *)info, 1);
+ 	else
+-		on_each_cpu_cond_mask(tlb_is_not_lazy, flush_tlb_func_remote,
++		on_each_cpu_cond_mask(tlb_is_not_lazy, flush_tlb_func,
+ 				(void *)info, 1, cpumask);
+ }
+ 
+@@ -869,6 +867,7 @@ static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
+ 	info->stride_shift	= stride_shift;
+ 	info->freed_tables	= freed_tables;
+ 	info->new_tlb_gen	= new_tlb_gen;
++	info->initiating_cpu	= smp_processor_id();
+ 
+ 	return info;
+ }
+@@ -908,7 +907,7 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsigned long start,
+ 	if (mm == this_cpu_read(cpu_tlbstate.loaded_mm)) {
+ 		lockdep_assert_irqs_enabled();
+ 		local_irq_disable();
+-		flush_tlb_func_local(info, TLB_LOCAL_MM_SHOOTDOWN);
++		flush_tlb_func(info);
+ 		local_irq_enable();
+ 	}
+ 
+@@ -1119,34 +1118,26 @@ void __flush_tlb_all(void)
+ }
+ EXPORT_SYMBOL_GPL(__flush_tlb_all);
+ 
+-/*
+- * arch_tlbbatch_flush() performs a full TLB flush regardless of the active mm.
+- * This means that the 'struct flush_tlb_info' that describes which mappings to
+- * flush is actually fixed. We therefore set a single fixed struct and use it in
+- * arch_tlbbatch_flush().
+- */
+-static const struct flush_tlb_info full_flush_tlb_info = {
+-	.mm = NULL,
+-	.start = 0,
+-	.end = TLB_FLUSH_ALL,
+-};
+-
+ void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
  {
--	int cpu = get_cpu();
-+	unsigned int scf_flags = SCF_RUN_LOCAL;
++	struct flush_tlb_info *info;
++
+ 	int cpu = get_cpu();
  
--	smp_call_function_many_cond(mask, func, info, wait, cond_func);
--	if (cpumask_test_cpu(cpu, mask) && cond_func(cpu, info)) {
--		unsigned long flags;
-+	if (wait)
-+		scf_flags |= SCF_WAIT;
++	info = get_flush_tlb_info(NULL, 0, TLB_FLUSH_ALL, 0, false, 0);
+ 	if (cpumask_test_cpu(cpu, &batch->cpumask)) {
+ 		lockdep_assert_irqs_enabled();
+ 		local_irq_disable();
+-		flush_tlb_func_local(&full_flush_tlb_info, TLB_LOCAL_SHOOTDOWN);
++		flush_tlb_func(info);
+ 		local_irq_enable();
+ 	}
  
--		local_irq_save(flags);
--		func(info);
--		local_irq_restore(flags);
--	}
--	put_cpu();
-+	preempt_disable();
-+	smp_call_function_many_cond(mask, func, info, scf_flags, cond_func);
-+	preempt_enable();
+ 	if (cpumask_any_but(&batch->cpumask, cpu) < nr_cpu_ids)
+-		flush_tlb_others(&batch->cpumask, &full_flush_tlb_info);
++		flush_tlb_others(&batch->cpumask, info);
+ 
+ 	cpumask_clear(&batch->cpumask);
+ 
++	put_flush_tlb_info();
+ 	put_cpu();
  }
- EXPORT_SYMBOL(on_each_cpu_cond_mask);
  
 -- 
 2.25.1
