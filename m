@@ -2,75 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D24320575
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 13:55:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF4132058B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 14:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhBTMxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 07:53:24 -0500
-Received: from mail-pl1-f172.google.com ([209.85.214.172]:41767 "EHLO
-        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhBTMxS (ORCPT
+        id S229632AbhBTNaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 08:30:10 -0500
+Received: from mail-40138.protonmail.ch ([185.70.40.138]:49288 "EHLO
+        mail-40138.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhBTNaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 07:53:18 -0500
-Received: by mail-pl1-f172.google.com with SMTP id a9so4902126plh.8
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 04:53:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=I2x/1eBHyF4wxSC0+Ir6eONCS4VYMPs0yre9gwyu+Xo=;
-        b=GZMKUKmlEiw7BeyBcMHvgBKsszBApOe4YHmJE5zInc6ihBRGFpy0GnTPri8FC8depc
-         bEyJJgW7atlBazZSphA2ghklewT2OF9MrOgQEQTLD1EHUyuf4XkTiz74948YuWKyTZT9
-         AH/Ihb5wOLEbGxNCo/TOyVimdBuE3qmztyrDk1jVYyegTTp7o9cIWQNfTse0ds0gJHD1
-         2G+qzVXequ80tooKBctMXVTyan0YsrSwAssfvIB4n72xcj1dD/pHmCXk8ftK7nlcDBHk
-         LVrB5Pt9O4PGRqCB7qmGtXFYFzdtzEXQSWA2WZXFLtR/bLVSAnIhRYOUrYW+ZbTpRj4P
-         f35A==
-X-Gm-Message-State: AOAM532Kf/uoHYHfwHudLamw8wbvzI9UA79LCgeLqSVlpOn2b/9J2Ym5
-        dlyRd0Ra7RO0mfF2awgCF5rS4Y+GafEbbA==
-X-Google-Smtp-Source: ABdhPJzAjU5pE8VJGJgJCT8/48g7vz75+OPdFzZb8QRXU51H4wAg3VgWIx1CATA+2OZymwJwbsTuJw==
-X-Received: by 2002:a17:90a:5793:: with SMTP id g19mr14264823pji.32.1613825557024;
-        Sat, 20 Feb 2021 04:52:37 -0800 (PST)
-Received: from karthik-strix-linux.karthek.com ([192.140.155.84])
-        by smtp.gmail.com with ESMTPSA id i15sm7826309pjl.54.2021.02.20.04.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 04:52:36 -0800 (PST)
-Date:   Sat, 20 Feb 2021 18:22:31 +0530
-From:   karthik alapati <mail@karthek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wimax/i2400m: fix byte-order type issue
-Message-ID: <YDEGD7pFyTi+CTXy@karthik-strix-linux.karthek.com>
+        Sat, 20 Feb 2021 08:30:08 -0500
+X-Greylist: delayed 109123 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 08:30:08 EST
+Date:   Sat, 20 Feb 2021 13:29:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613827765;
+        bh=nBN6LG4sLZ4L3bMupaUJy01he70RPBUnzyMU2l20OWs=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=XfPuUb9GYzZwart2A+TiOfpJpDr1OfnrO2u8jxpCST7s++naA1GH6zRsPxP9X63Ln
+         VDSeM16yFsgc9YAtSqHw0BQyj8EZSdpND4KoUfCxQ1+8FNmwqFa+qjL0hHe7c/mcQO
+         vFKQl4zzUoPTPVlQy0QsSRUAVnQiSfRwUj4qIBIo=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <RpmkVZBUhx36C8VTTIM1SZz6jf46qBoOL4rMaBMuTMRTe-TQGmEfgeMcrGhXWt1N6SSPrHfFERM_hzHRBod7Xn9XV6d0cyEHoQ8nqXi7rXA=@protonmail.com>
+In-Reply-To: <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com>
+References: <YA/E1bHRmZb50MlS@kroah.com> <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC6nZH/4CkLLsxxB@kroah.com> <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com> <YC91OWVGAfyorRbc@kroah.com> <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com> <YC+U+beaI91aXh5z@kroah.com> <OurD0pqDIPLLZlt1kk-JE57wXeMoh0NFPKKcBrbY3ValknDXcpLwAJz6x1DMbB6LNZ6FDdeUrPM-pX60VF5FERTiDK_gzgHy4tq7iG3MFAM=@protonmail.com> <YC+d/NyXDebGSHwN@kroah.com> <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix sparse type warning by converting le32 types to
-host byte-order types before comparison
+On Friday, February 19, 2021 5:23 PM, Jari Ruusu <jariruusu@protonmail.com>=
+ wrote:
+> My contribution here is trying to point you guys to right direction.
 
-Signed-off-by: karthik alapati <mail@karthek.com>
----
- drivers/staging/wimax/i2400m/fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I have been able to narrow the beginning of the problem to these kernels:
+4.14.188 ... 4.14.202
 
-diff --git a/drivers/staging/wimax/i2400m/fw.c b/drivers/staging/wimax/i2400m/fw.c
-index 92ea5c101..f09de1810 100644
---- a/drivers/staging/wimax/i2400m/fw.c
-+++ b/drivers/staging/wimax/i2400m/fw.c
-@@ -511,7 +511,7 @@ ssize_t __i2400m_bm_ack_verify(struct i2400m *i2400m, int opcode,
- 			opcode, i2400m_brh_get_response(ack));
- 		goto error_ack_failed;
- 	}
--	if (ack_size < ack->data_size + sizeof(*ack)) {
-+	if (ack_size < le32_to_cpu(ack->data_size) + sizeof(*ack)) {
- 		dev_err(dev, "boot-mode cmd %d: SW BUG "
- 			"driver provided only %zu bytes for %zu bytes "
- 			"of data\n", opcode, ack_size,
--- 
-2.30.1
+Same "fix" that went info 4.14.y is also bugging 4.19.y kernels.
+
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
 
