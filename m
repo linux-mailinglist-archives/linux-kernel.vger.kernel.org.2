@@ -2,57 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61153204AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255933204BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhBTJZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 04:25:19 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12627 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBTJZQ (ORCPT
+        id S229696AbhBTJdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 04:33:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhBTJdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 04:25:16 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DjNK04Q6Gz169bw;
-        Sat, 20 Feb 2021 17:23:00 +0800 (CST)
-Received: from [10.174.178.147] (10.174.178.147) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 20 Feb 2021 17:24:30 +0800
-Subject: Re: [PATCH v1 0/4] ACPI: PCI: Unify printing of messages
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ACPI <linux-acpi@vger.kernel.org>
-CC:     Linux PCI <linux-pci@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>
-References: <4822757.tvZ08WQ2Gl@kreacher>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <7de92ec8-3a15-6165-2384-15d301e7b568@huawei.com>
-Date:   Sat, 20 Feb 2021 17:24:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sat, 20 Feb 2021 04:33:13 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F2CC061786
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 01:32:33 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id u8so8212319ior.13
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 01:32:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=aU6EkxCmwm7ZBRSmBHpzJ3NMym8iTR9+L0yAeuHl2no=;
+        b=JKdp44i6/7tt87YblVoGu5BePf6hR8nDWAOdFU858sv4zx8DCezAdMEhOkLkRdwR0Z
+         aRnbX2auMDWY1leI9eHXymj55Kc/0zIJeLIFD0OTphIlB7fVgYBom5qZYqnSH8KdkKf3
+         5d2QXWOS01+YxTcMfEz+3rXETLNPHvyIPp39g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=aU6EkxCmwm7ZBRSmBHpzJ3NMym8iTR9+L0yAeuHl2no=;
+        b=ji71n1aLp+IlMVYiYRGQTDk8W8uJkD+ItYuoQocK9iHwlasNe8Ca/KHmGvNCbPtYyV
+         ZGjf9yjuJo60KH3x9sJao+O6eXfXFHR8oTWXlZOnjWIAI8wKX+EFDTGPLECkWnDMqEAO
+         XjKz4x2P2SC9FR71v64XR8ZubXwkMZHn8gwDV8alMoEk822KGGk+WP/1CmoLnj7xVXqU
+         /0uFokeu44TprBy7KU9mOcuEKqaD4JGg7UFGvZ4ERLhBnhzEQs97B7HulEW3EKP8CXt5
+         rw4gVGEQei4e4BNxKnpYwLvql28IIk1rdKXoKwPbnUZPTLZFZuYUD9exBwZDnuQOLoaI
+         /w9w==
+X-Gm-Message-State: AOAM530wjCuPZByP7nH6HFDQSS+XUNdiBNdOvxsJ6ccGMd3PSn3jzuwf
+        qP2mZT1Qh2wB1T+58it83ALkkM+bxg5a6agnfG3CM5qDOYL2Gw==
+X-Google-Smtp-Source: ABdhPJy9+8rFJRyqb13qpXN/WGIXGRMB+TI4QoPX4sEJyIu3pwNk0TzxUxWso0+gt/5AMbiV2W47tZ+iUUVpFZjnxhg=
+X-Received: by 2002:a5d:8719:: with SMTP id u25mr7657714iom.103.1613813552699;
+ Sat, 20 Feb 2021 01:32:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4822757.tvZ08WQ2Gl@kreacher>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.147]
-X-CFilter-Loop: Reflected
+From:   Sargun Dhillon <sargun@sargun.me>
+Date:   Sat, 20 Feb 2021 01:31:57 -0800
+Message-ID: <CAMp4zn9oEb6bJJLQWjSE1AFg6TqwkF3FOvFk2VSkKd+0Kj7TCg@mail.gmail.com>
+Subject: seccomp: Delay filter activation
+To:     Kees Cook <keescook@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Hariharan Ananthakrishnan <hari@netflix.com>,
+        Keerti Lakshminarayan <keerti@netflix.com>,
+        Kyle Anderson <kylea@netflix.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/20 2:14, Rafael J. Wysocki wrote:
-> Hi All,
-> 
-> This series gets rid of ACPICA debugging from non-ACPICA code related to PCI
-> (patches [1-3/4]) and replaces direct printk() usage in pci_link.c with
-> pr_*() or acpi_handle_*().
-> 
-> Please refer to the patch changelogs for details.
+We've run into a problem where attaching a filter can be quite messy
+business because the filter itself intercepts sendmsg, and other
+syscalls related to exfiltrating the listener FD. I believe that this
+problem set has been brought up before, and although there are
+"simpler" methods of exfiltrating the listener, like clone3 or
+pidfd_getfd, but these are still less than ideal.
 
-Looks good to me,
+One of the ideas that's been talked about (I want to say back at LSS
+NA) is the idea of "delayed activation". I was thinking that it might
+be nice to have a mechanism to do delayed attach, either activated on
+execve / fork, or an ioctl on the listenerfd to activate the filter
+and have a flag like SECCOMP_FILTER_FLAG_NEW_LISTENER_INACTIVE, which
+indicates that the listener should be setup, but not enforcing, and
+another ioctl to activate it.
 
-Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+The later approach is preferred due to simplicity, but I can see a
+situation where you could accidentally get into a state where the
+filter is not being enforced. Additionally, this may have unforeseen
+implications with CRIU.
 
-Thanks
-Hanjun
+I'm curious whether this is a problem others share, and whether any of
+the aforementioned approaches seem reasonable.
+
+-Thanks,
+Sargun
