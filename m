@@ -2,60 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF4132058B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 14:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 167D7320595
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 14:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbhBTNaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 08:30:10 -0500
-Received: from mail-40138.protonmail.ch ([185.70.40.138]:49288 "EHLO
-        mail-40138.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBTNaI (ORCPT
+        id S229630AbhBTNrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 08:47:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhBTNrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 08:30:08 -0500
-X-Greylist: delayed 109123 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 08:30:08 EST
-Date:   Sat, 20 Feb 2021 13:29:21 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1613827765;
-        bh=nBN6LG4sLZ4L3bMupaUJy01he70RPBUnzyMU2l20OWs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=XfPuUb9GYzZwart2A+TiOfpJpDr1OfnrO2u8jxpCST7s++naA1GH6zRsPxP9X63Ln
-         VDSeM16yFsgc9YAtSqHw0BQyj8EZSdpND4KoUfCxQ1+8FNmwqFa+qjL0hHe7c/mcQO
-         vFKQl4zzUoPTPVlQy0QsSRUAVnQiSfRwUj4qIBIo=
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Jari Ruusu <jariruusu@users.sourceforge.net>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <RpmkVZBUhx36C8VTTIM1SZz6jf46qBoOL4rMaBMuTMRTe-TQGmEfgeMcrGhXWt1N6SSPrHfFERM_hzHRBod7Xn9XV6d0cyEHoQ8nqXi7rXA=@protonmail.com>
-In-Reply-To: <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com>
-References: <YA/E1bHRmZb50MlS@kroah.com> <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC6nZH/4CkLLsxxB@kroah.com> <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com> <YC91OWVGAfyorRbc@kroah.com> <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com> <YC+U+beaI91aXh5z@kroah.com> <OurD0pqDIPLLZlt1kk-JE57wXeMoh0NFPKKcBrbY3ValknDXcpLwAJz6x1DMbB6LNZ6FDdeUrPM-pX60VF5FERTiDK_gzgHy4tq7iG3MFAM=@protonmail.com> <YC+d/NyXDebGSHwN@kroah.com> <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com>
+        Sat, 20 Feb 2021 08:47:40 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD62AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 05:46:59 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id e9so4963535plh.3
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 05:46:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KuncKa8C7Gvbsww59N/7E5WQogHVX0cQD50aQgpuM4s=;
+        b=lhC00UCfipfGQhYiAb6ePsNuvNobif3fZc3QnfdM6cNy3RCSaGXxHVHyp90EsTcxqy
+         APiApES0eh1q12T4f8bp6A3H20uMM5q96nsBBv0uv+m964uJh/0ZZx/vNOsg3Jps46IR
+         Jml1zrjd8a1rMgWskPRaYgkaOJQ6ATBQ61AtF9n6pv/p38WUgCBhHDlLjlA84V0HOCEK
+         ie0oItrFq5U+NgKaaWpj5JeJHWc3NjImy16qD0KmPCLPZJn+Lm++r5zNg38x4ofb3tL2
+         ZlK+nkmtY1oE/InEz/uaQw3w6+/LqYbhHq+HfmlagprKzfInAUHZ304vFkr35/GldPma
+         65dQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KuncKa8C7Gvbsww59N/7E5WQogHVX0cQD50aQgpuM4s=;
+        b=KZRd1g7ngacidISzu6ar/Qg1N9c2DFWSKyqjpvPKxjCJWhU6aofRKiQz/oQn40vBpr
+         oV0sKKJyZglC1glCOqB2b51wGdlOhpKLC5YE+iPCL8lcVD02zHdaXJTjMFf1JV9sB/ic
+         q11R5hHY7BMy5nJn9c5rwUh+O9X1jxHEmTxlLMsSMqjDCUNRitYSyWJcpkTrTzuhQb7o
+         IYeUfqfuPGZ+Cc21FRYrjKA7u0ATq7AU+nW4vqhY/KY/NGqQQN20HLmygO/EXaE1DpX0
+         uoyzmg0AvFK4dr8HIzfEjXKRuvjkuGkbbCN8ulAygwL6ka917HGsxUaJn5i4jUq5un2m
+         Dwow==
+X-Gm-Message-State: AOAM530mwH5jroyDGVQ1w2OTUFoLImk6wzcm2QrvrwKroZ/hVFtFORYZ
+        TmCh4hMgqIwUtDo8jz0O1zI=
+X-Google-Smtp-Source: ABdhPJzTKUmKdoiUvNJ25OfQwFhi1G7FDq8tDvEdBcvzCfdwDBrjef+hJzlod9NiU7ca4ads0kaq0A==
+X-Received: by 2002:a17:90a:12c5:: with SMTP id b5mr14260985pjg.89.1613828819059;
+        Sat, 20 Feb 2021 05:46:59 -0800 (PST)
+Received: from localhost ([103.106.200.56])
+        by smtp.gmail.com with ESMTPSA id d19sm7216921pjz.0.2021.02.20.05.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 05:46:58 -0800 (PST)
+From:   Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+To:     gregkh@linuxfoundation.org, sfr@canb.auug.org.au
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+Subject: [PATCH v2] staging: wimax: i2400m: add space before open parenthesis
+Date:   Sat, 20 Feb 2021 05:46:52 -0800
+Message-Id: <20210220134652.16127-1-sssraj.sssraj@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210220104816.13263-1-sssraj.sssraj@gmail.com>
+References: <20210220104816.13263-1-sssraj.sssraj@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, February 19, 2021 5:23 PM, Jari Ruusu <jariruusu@protonmail.com>=
- wrote:
-> My contribution here is trying to point you guys to right direction.
+netdev.c
 
-I have been able to narrow the beginning of the problem to these kernels:
-4.14.188 ... 4.14.202
+fixing style ERROR: space required before the open parenthesis '('
 
-Same "fix" that went info 4.14.y is also bugging 4.19.y kernels.
+Signed-off-by: Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+---
+Changes in v2:
+	- Removed filename from commit message.
 
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
+ drivers/staging/wimax/i2400m/netdev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/wimax/i2400m/netdev.c b/drivers/staging/wimax/i2400m/netdev.c
+index cd06eaf75e8b..5b53e59084c8 100644
+--- a/drivers/staging/wimax/i2400m/netdev.c
++++ b/drivers/staging/wimax/i2400m/netdev.c
+@@ -523,7 +523,7 @@ void i2400m_net_erx(struct i2400m *i2400m, struct sk_buff *skb,
+ 
+ 	d_fnstart(2, dev, "(i2400m %p skb %p [%u] cs %d)\n",
+ 		  i2400m, skb, skb->len, cs);
+-	switch(cs) {
++	switch (cs) {
+ 	case I2400M_CS_IPV4_0:
+ 	case I2400M_CS_IPV4:
+ 		i2400m_rx_fake_eth_header(i2400m->wimax_dev.net_dev,
+-- 
+2.25.1
 
