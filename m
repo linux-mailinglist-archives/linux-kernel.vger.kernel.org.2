@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 745323204B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:27:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F341A32048F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbhBTJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 04:25:35 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12559 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBTJZb (ORCPT
+        id S229849AbhBTJDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 04:03:32 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42094 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229824AbhBTJCv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 04:25:31 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DjNJq2PzBzMc4Z;
-        Sat, 20 Feb 2021 17:22:51 +0800 (CST)
-Received: from huawei.com (10.151.151.241) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Sat, 20 Feb 2021
- 17:24:40 +0800
-From:   Luo Longjun <luolongjun@huawei.com>
-To:     <viro@zeniv.linux.org.uk>, <jlayton@kernel.org>,
-        <bfields@fieldses.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <sangyan@huawei.com>, <luchunhua@huawei.com>
-Subject: [PATCH] fs/locks: print full locks information
-Date:   Sat, 20 Feb 2021 01:32:50 -0500
-Message-ID: <20210220063250.742164-1-luolongjun@huawei.com>
-X-Mailer: git-send-email 2.28.0
+        Sat, 20 Feb 2021 04:02:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613811684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JgoL6yAU+V/ArfjxO3XDCSurXdtNKbGCFrJc0uCVVRc=;
+        b=Eqny4QLbWroe99WbRgPEczS3QxqJ6zCAmUpNo1NVkWpylk1yb1153M2AwyqGLFwHRNsTQf
+        eA1KfWdtP8TwzdO2suo6ileRW0Q8tMarqtNJW8zV94w32FRI0IJbW4GQbiHXRScqNwojOx
+        LYdJVkdm9OrluYJgh+ww3fR+M+6jL7o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-EtcmsycmMP6Ck3kTppQAqg-1; Sat, 20 Feb 2021 04:01:20 -0500
+X-MC-Unique: EtcmsycmMP6Ck3kTppQAqg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91037107ACE3;
+        Sat, 20 Feb 2021 09:01:16 +0000 (UTC)
+Received: from [10.36.112.45] (ovpn-112-45.ams2.redhat.com [10.36.112.45])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 60B415D9C2;
+        Sat, 20 Feb 2021 09:01:01 +0000 (UTC)
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+To:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+References: <20210217154844.12392-1-david@redhat.com>
+ <20210218225904.GB6669@xz-x1>
+ <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
+ <20210219163157.GF6669@xz-x1>
+ <41444eb8-8bb8-8d5b-4cec-be7fa7530d0e@redhat.com>
+ <4d8e6f55-66a6-d701-6a94-79f5e2b23e46@redhat.com>
+ <15da147c-e440-ee87-c505-a4684a5b29dc@oracle.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <2073702b-9e09-2033-2915-628c7b7ccb3d@redhat.com>
+Date:   Sat, 20 Feb 2021 10:01:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.151.151.241]
-X-CFilter-Loop: Reflected
+In-Reply-To: <15da147c-e440-ee87-c505-a4684a5b29dc@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit fd7732e033e3 ("fs/locks: create a tree of dependent requests.")
-has put blocked locks into a tree.
+> Sorry, for jumping in late ... hugetlb keyword just hit my mail filters :)
+> 
 
-So, with a for loop, we can't check all locks information.
+Sorry for not realizing to cc you before I sent out the man page update :)
 
-To solve this problem, we should traverse the tree by DFS.
+> Yes, it is true that hugetlb reservations are not numa aware.  So, even if
+> pages are reserved at mmap time one could still SIGBUS if a fault is
+> restricted to a node with insufficient pages.
+> 
+> I looked into this some years ago, and there really is not a good way to
+> make hugetlb reservations numa aware.  preallocation, or on demand
+> populating as proposed here is a way around the issue.
 
-Signed-off-by: Luo Longjun <luolongjun@huawei.com>
----
- fs/locks.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 99ca97e81b7a..1f7b6683ed54 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -2828,9 +2828,10 @@ struct locks_iterator {
- };
- 
- static void lock_get_status(struct seq_file *f, struct file_lock *fl,
--			    loff_t id, char *pfx)
-+			    loff_t id, char *pfx, int repeat)
- {
- 	struct inode *inode = NULL;
-+	int i;
- 	unsigned int fl_pid;
- 	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
- 
-@@ -2844,7 +2845,13 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
- 	if (fl->fl_file != NULL)
- 		inode = locks_inode(fl->fl_file);
- 
--	seq_printf(f, "%lld:%s ", id, pfx);
-+	seq_printf(f, "%lld: ", id);
-+	for (i = 1; i < repeat; i++)
-+		seq_puts(f, " ");
-+
-+	if (repeat)
-+		seq_printf(f, "%s", pfx);
-+
- 	if (IS_POSIX(fl)) {
- 		if (fl->fl_flags & FL_ACCESS)
- 			seq_puts(f, "ACCESS");
-@@ -2906,6 +2913,19 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
- 	}
- }
- 
-+static int __locks_show(struct seq_file *f, struct file_lock *fl, int level)
-+{
-+	struct locks_iterator *iter = f->private;
-+	struct file_lock *bfl;
-+
-+	lock_get_status(f, fl, iter->li_pos, "-> ", level);
-+
-+	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
-+		__locks_show(f, bfl, level + 1);
-+
-+	return 0;
-+}
-+
- static int locks_show(struct seq_file *f, void *v)
- {
- 	struct locks_iterator *iter = f->private;
-@@ -2917,10 +2937,10 @@ static int locks_show(struct seq_file *f, void *v)
- 	if (locks_translate_pid(fl, proc_pidns) == 0)
- 		return 0;
- 
--	lock_get_status(f, fl, iter->li_pos, "");
-+	lock_get_status(f, fl, iter->li_pos, "", 0);
- 
- 	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
--		lock_get_status(f, bfl, iter->li_pos, " ->");
-+		__locks_show(f, bfl, 1);
- 
- 	return 0;
- }
-@@ -2941,7 +2961,7 @@ static void __show_fd_locks(struct seq_file *f,
- 
- 		(*id)++;
- 		seq_puts(f, "lock:\t");
--		lock_get_status(f, fl, *id, "");
-+		lock_get_status(f, fl, *id, "", 0);
- 	}
- }
- 
+Thanks for confirming, this makes a lot of sense to me now.
+
+
 -- 
-2.17.1
+Thanks,
+
+David / dhildenb
 
