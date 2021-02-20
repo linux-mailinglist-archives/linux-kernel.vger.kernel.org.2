@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF61320683
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29304320687
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:51:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhBTRsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 12:48:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53284 "EHLO
+        id S229931AbhBTRtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 12:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbhBTRs2 (ORCPT
+        with ESMTP id S229847AbhBTRtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:48:28 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592DBC061574;
-        Sat, 20 Feb 2021 09:47:45 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id v15so14381048wrx.4;
-        Sat, 20 Feb 2021 09:47:45 -0800 (PST)
+        Sat, 20 Feb 2021 12:49:12 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E29C06178B
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:48:31 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id w1so21846792ejf.11
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:48:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a1BxLT6TTwR7kgXfpKHC0HTJGnheN1Wm7GXvvk+jB+Y=;
-        b=uMW3cRB1DkbL39Ci6QxiBQIjIcYRu/1aG4KKIoyItDROE8XmHTW75sUkW2urRgS+DA
-         aRMpayha90JQJaTcC0j7+RoZIYejr3n8M1EkOL9+YnQ95YAAplxpBOpb8qe1bpPmwNnS
-         fmIB2PPzgzniPU8H6kndz9n4xVnGEtlxTkusQjGhHyiNPjPOMAA26+hDWV87E5Q+eF03
-         CNo+0Q0G/Tfi+Kl1y5SpaVOifjKjky3YpOdodzFpp+7ywg6y534SxXiqlIG4JY9rchFe
-         NW0Tczs7SkqYekvMoex/TFZUL/6FD8L1L9vcsoJ4brVU5ZCl4ox7Jqc3Cz+8EGVDVDKg
-         AO3g==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=niF1k3dVyqWcVFhX7Jys8F/FWOuqyr/3JpoSyGWUad4=;
+        b=SJiJGOm92EOLuEmD8ZxINHCPgWL9FHxOSQ3VIYWX9zoyH2E9wOjXIS9rFt4qflATpv
+         hSN/bjk3gMWmOoic96yidZvVl7/B4XMCsqfh0PkuMvTvPzxsbnnAAzqFwvJBX/EHx6Jq
+         lEXEZ04J4mAMFF3qpTPsBe+t1d1hZCpoZ1tHexVfyV6BEj3IJZ6FxOnS5w7SFjV4xaQB
+         bzdJovpxJgMpQMBdOPWU4kOe8uTftngZHfL80X3V4NBKw6dQvwl3+V0eAaAFtkaj7Nyw
+         q6pWkVkKDyqb9Tw8d5bxJN+VZ9kPSu7gfMjLM+uXAWL9W050qu1qq3zAwkiaymsFO0Qm
+         BLwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a1BxLT6TTwR7kgXfpKHC0HTJGnheN1Wm7GXvvk+jB+Y=;
-        b=el6KVekPYAJeZ9PZ5v1lJeupKwUIUavRAwe9PlRq8+7/Ujyc/CUlWcMg3/hliEagOn
-         ML++nHcUj622nmo3M1GhCpjCUn++jKJCQFwgbEWCtE7JsqOKHkJ2qIOE5tAxmjxyiy4Z
-         9m3vWmfaC9OCAK8dOXtVSvj9suAs9ITCatsNAKihFoIGTAcH7BiE9EgJaPh2DKrjr5Sk
-         3e8NdqpH+CnIQv8SGxE9u9aGV/rNLBS3thEx+A17Br+f6FSw9b2SoCXUyOHKerft0VXg
-         lHNJchvCBSmqGeOGWpR0fxBm+OxrE6BUoC2FCJpkrTEk/zdb+qlBP9c5wBLu10p6gLX6
-         rzYg==
-X-Gm-Message-State: AOAM530TTJ4Zmn9x1Q0dADLMakSL01xRueRQIz4z0KW3klKhP3UFvHY1
-        +OLw+J0PlLkvMwFVmWsIK78=
-X-Google-Smtp-Source: ABdhPJyJq7oTgyPIzNjMsvHM/GF5ZcPuKuzQYDKYmPp78cTcvZM6aOMkhcLR18NdhtKrE6nzdrWqcQ==
-X-Received: by 2002:adf:ed87:: with SMTP id c7mr741974wro.113.1613843264108;
-        Sat, 20 Feb 2021 09:47:44 -0800 (PST)
-Received: from skynet.lan (23.red-2-137-25.dynamicip.rima-tde.net. [2.137.25.23])
-        by smtp.gmail.com with ESMTPSA id t15sm17903083wmi.48.2021.02.20.09.47.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 09:47:43 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     mpm@selenic.com, herbert@gondor.apana.org.au,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        rikard.falkeborn@gmail.com, noltari@gmail.com,
-        linux-crypto@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stijn@linux-ipv6.be, ynezz@true.cz
-Subject: [PATCH] hwrng: bcm2835: set quality to 1000
-Date:   Sat, 20 Feb 2021 18:47:40 +0100
-Message-Id: <20210220174741.23665-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=niF1k3dVyqWcVFhX7Jys8F/FWOuqyr/3JpoSyGWUad4=;
+        b=gsepjtsoTOFvXHYI0fIhs9/T4ZOYai76XTDYUhDc4YvHxGEWXGraheG06XxZGFXtB1
+         dKjC9os9gx36tj3C2l+0g2SQNuqQd+DdghwMcbiI492//LZ2QzJOUf0bCucUCQbFycUf
+         jEh3Sxuzt6BPTitW/z/qVhlbQvCQAIJZqSePIHjkNaCrCZwJ6sQWHYKJZFJ1EfB0WBzV
+         ptWZcE1h13c1GJ0oBAoWCG2mzwmLmTHFNxnxOgcL8mM5DyS0NuBgwHhd71HC9L0SgmEZ
+         y6E7+EmuIIV395im+d4hMEDkudfhvclritGAs7c/gKoiKN4Iwky7d2WP9hA2Ygd+Lk6f
+         8AkA==
+X-Gm-Message-State: AOAM530J18K22LugLzxvwFVXZktIcM51CjP+twnKYTh/jOlqkPbh/AFu
+        Q/dOHZF9yfbDgjwKWOVWySWCqtAIE9kXsVOSw02lNw==
+X-Google-Smtp-Source: ABdhPJzMFtM3V/tSlVTUOFi/gy4tLf3ErLDeRmJYFtXE81s7f90uq338SYuA8goZna9AO+QqkY89+APsjw6TJdTe694=
+X-Received: by 2002:a17:907:373:: with SMTP id rs19mr1248541ejb.341.1613843310167;
+ Sat, 20 Feb 2021 09:48:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210217040958.1354670-1-ben.widawsky@intel.com>
+ <20210217040958.1354670-5-ben.widawsky@intel.com> <YDBkOB3K8UqVakFf@Konrads-MacBook-Pro.local>
+ <20210220163344.csczmkyxkpu4fxah@intel.com>
+In-Reply-To: <20210220163344.csczmkyxkpu4fxah@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sat, 20 Feb 2021 09:48:22 -0800
+Message-ID: <CAPcyv4jWnW_i=jaGP_nXRuGgwmngObw_V8AOPY3k_YMHkL-8Eg@mail.gmail.com>
+Subject: Re: [PATCH v5 4/9] cxl/mem: Add basic IOCTL interface
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows devices without a high precission timer to reduce boot from >100s
-to <30s.
+On Sat, Feb 20, 2021 at 8:33 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 21-02-19 20:22:00, Konrad Rzeszutek Wilk wrote:
+> > ..snip..
+> > > +static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
+> > > +                                   const struct cxl_mem_command *cmd,
+> > > +                                   u64 in_payload, u64 out_payload,
+> > > +                                   s32 *size_out, u32 *retval)
+> > > +{
+> > > +   struct device *dev = &cxlm->pdev->dev;
+> > > +   struct mbox_cmd mbox_cmd = {
+> > > +           .opcode = cmd->opcode,
+> > > +           .size_in = cmd->info.size_in,
+> > > +           .size_out = cmd->info.size_out,
+> > > +   };
+> > > +   int rc;
+> > > +
+> > > +   if (cmd->info.size_out) {
+> > > +           mbox_cmd.payload_out = kvzalloc(cmd->info.size_out, GFP_KERNEL);
+> > > +           if (!mbox_cmd.payload_out)
+> > > +                   return -ENOMEM;
+> > > +   }
+> > > +
+> > > +   if (cmd->info.size_in) {
+> > > +           mbox_cmd.payload_in = vmemdup_user(u64_to_user_ptr(in_payload),
+> > > +                                              cmd->info.size_in);
+> > > +           if (IS_ERR(mbox_cmd.payload_in))
+> > > +                   return PTR_ERR(mbox_cmd.payload_in);
+> >
+> > Not that this should happen, but what if info.size_out was set? Should
+> > you also free mbox_cmd.payload_out?
+> >
+>
+> Thanks Konrad.
+>
+> Dan, do you want me to send a fixup patch? This bug was introduced from v4->v5.
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- drivers/char/hw_random/bcm2835-rng.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
-index 1a7c43b43c6b..4b48cb7176b0 100644
---- a/drivers/char/hw_random/bcm2835-rng.c
-+++ b/drivers/char/hw_random/bcm2835-rng.c
-@@ -163,6 +163,7 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
- 	priv->rng.init = bcm2835_rng_init;
- 	priv->rng.read = bcm2835_rng_read;
- 	priv->rng.cleanup = bcm2835_rng_cleanup;
-+	priv->rng.quality = 1000;
- 
- 	if (dev_of_node(dev)) {
- 		rng_id = of_match_node(bcm2835_rng_of_match, dev->of_node);
--- 
-2.20.1
-
+Yes, please, incremental to libnvdimm-for-next which I'm planning to
+send to Linus on Tuesday.
