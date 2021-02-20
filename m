@@ -2,102 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3363206D2
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3A13206D3
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBTTNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 14:13:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43128 "EHLO
+        id S230015AbhBTTNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 14:13:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhBTTNY (ORCPT
+        with ESMTP id S229812AbhBTTNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:13:24 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E2CC061574;
-        Sat, 20 Feb 2021 11:12:44 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id b145so4069667pfb.4;
-        Sat, 20 Feb 2021 11:12:44 -0800 (PST)
+        Sat, 20 Feb 2021 14:13:33 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE95C061786;
+        Sat, 20 Feb 2021 11:12:49 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id 7so14572117wrz.0;
+        Sat, 20 Feb 2021 11:12:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RCUJuiuY9ImPZDy5gp8HkT1sX9iXGmZBVPPpZjV0Ekk=;
-        b=qzN/R/a4nQ4sWoBSqu8DusatbUCaG9iu98obAWoqdH89gN5BTbKJ0EphpRPKVU9JdH
-         SulpF7DRdLV9jgmNQtYBZjjoVADUu0oD9tjVuju7p59tbe3N9f2u3bNHljMlVOzED9TM
-         b/1S4wzAUQwGBK3ToBfZeHekI7oujbkRSWRuylQY+F8aPvxmeouOJSuoCfi38S0wH1XY
-         PfWli9UEWmMerM4rE/3NE+le8EDuPX3QddDrFUk3KhacPUNd+G2+8uOPE+magTHcX3LC
-         Z28GyHEcJiVti3tcSKa6ifZsQVxC1umOjCxg9rSRMNEfUvWixb99RkWQNgXdizE3mumh
-         MKuA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qrC9ugpTSFJhkRwNI6sJByWWg907u86/Upjg3HOk4D0=;
+        b=Hp515hymLEetLq9ONPca46+wj+BWbhIYyqsKw35C6b8hV75FdrFL78b7u+VQ8GkZ0W
+         dEEuUDm4wmI1Ny9jpg/AxGfDEV2oDYeUFazTZPtMPuVYDGRPzuhOde/DjN/1Yjz5oQoQ
+         6ovOX6ddBoRHp8KUmxJAowBTQ/Q4eLr6dviQ/Vr0UdLc/IP7k7r7Wci9JhVjtSASgIkY
+         OomnA8iznkkjvuKVhAAteqlOAnQzLQUg7ENIjCGIU7/n+hPGDvQPm2bObTrEfpGasr4I
+         aVSbN6TPnDNlgXmviXZzPw5gSgsm9klouQUAUYj628DlclmBWK458p+J80ktsA6dONII
+         R2XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RCUJuiuY9ImPZDy5gp8HkT1sX9iXGmZBVPPpZjV0Ekk=;
-        b=E5qunurTE6SzgPtNz7ZIjlmeH/bSU49Usn3F15xG7Px1ZRIeJkK8Er1bqnQP3bYo/N
-         hSEDvPoNDKOV3tgLGgK7TV+763O9CwERgQ/D3A19z3JA5tsmvz2+9wtFa3dGrbJZMag2
-         /WqZimtoSVdY49c1Kh6uT/7At0mdDs5Y4ueXrScajEvNEMs+lk8i/rJ6su43EMW4jY+r
-         cTLFZ8krL+WuzLCrDlIoENMWfo9WJo498hcbxQ1eDEfPVoD9fFxPnoV0f7ccKAdzHlFX
-         oYFgkNoocxmMJFtQeG+XfLbzBtfaa0urh3/bHQruItMLvgBPlowsnNTBGchdRjgCN1M0
-         ZeXg==
-X-Gm-Message-State: AOAM530BMkju7GBwOGIN9Wcd6++HF/EcpnRVUg0qd4d/uoVntJCN2fZt
-        mr8j5xa6gGWxHQukwTUo5Z3IV4sIxO7lbFQoaX8=
-X-Google-Smtp-Source: ABdhPJyp4HlnmV7Eqn8Xr8nC6MPAVuIsRn/kjr8NVF51K5no/1Ln7G+vr/KHutSBYQFlI7UuJqXgwJK9fOD9NWpqWXg=
-X-Received: by 2002:a63:e109:: with SMTP id z9mr13566082pgh.5.1613848364207;
- Sat, 20 Feb 2021 11:12:44 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qrC9ugpTSFJhkRwNI6sJByWWg907u86/Upjg3HOk4D0=;
+        b=iiltZ3JJy1x6zrc14aZ/fZ2Hcj+ULgocBKj5MKuNNvmP8iZ8QHfT9GUDgN+Hmo6bjp
+         YIhniTDWTyBLCwG7PoOnRoV8XCuGXy1Q5ePypn93Uie02F89yYDZ8X5/OXjRJkV7U4rm
+         BCGaDFaws2h+izDJArkG2FerdJRjuK7tgs/Gb4/9H0BcJu7wVtDzt5zE/fWYm0eVXAlL
+         3CedhS/ze0uY1VmdTx2cBcHoR5s4svnaZJ9IJLfYOTE5L4RdS2Um8a55b3AWJAuP7Zbw
+         kFh7fdAGscFTbESRVvSx12bD8qZS2kZp+yWcoK+Ka2qNj1tg2vIEcRgMD57T3mTJshJo
+         7VKQ==
+X-Gm-Message-State: AOAM531iAs2INk7NYHFTedUW6GIDiMjVP3EBDyUGE/N0ctIKZHLiwnf9
+        K3XWh/odolUt28aazBoFxNc=
+X-Google-Smtp-Source: ABdhPJwONz0TGGNpJOR78cmtrhV6BpLoc4v6UgNQOaVFSOHTj9Hy1TQuN0eZ40BJcE7rMraXJPfFIg==
+X-Received: by 2002:adf:f750:: with SMTP id z16mr12357490wrp.108.1613848366898;
+        Sat, 20 Feb 2021 11:12:46 -0800 (PST)
+Received: from [192.168.1.10] (23.red-2-137-25.dynamicip.rima-tde.net. [2.137.25.23])
+        by smtp.gmail.com with ESMTPSA id h12sm24987060wru.18.2021.02.20.11.12.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Feb 2021 11:12:46 -0800 (PST)
+Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     mpm@selenic.com, herbert@gondor.apana.org.au,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        rikard.falkeborn@gmail.com, linux-crypto@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stijn@linux-ipv6.be, ynezz@true.cz
+References: <20210220174741.23665-1-noltari@gmail.com>
+ <YDFeao/bOxvoXI9D@lunn.ch>
+From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
+Message-ID: <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
+Date:   Sat, 20 Feb 2021 20:12:45 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210125154937.26479-1-kda@linux-powerpc.org> <20210127175742.GA1744861@infradead.org>
- <CAOJe8K0MC-TCURE2Gpci1SLnLXCbUkE7q6SS0fznzBA+Pf-B8Q@mail.gmail.com>
- <20210129082524.GA2282796@infradead.org> <CAOJe8K0iG91tm8YBRmE_rdMMMbc4iRsMGYNxJk0p9vEedNHEkg@mail.gmail.com>
- <20210129131855.GA2346744@infradead.org> <YClpVIfHYyzd6EWu@zeniv-ca.linux.org.uk>
- <CAOJe8K00srtuD+VAJOFcFepOqgNUm0mC8C=hLq2=qhUFSfhpuw@mail.gmail.com>
- <YCwIQmsxWxuw+dnt@zeniv-ca.linux.org.uk> <YC86WeSTkYZqRlJY@zeniv-ca.linux.org.uk>
- <YC88acS6dN6cU1y0@zeniv-ca.linux.org.uk>
-In-Reply-To: <YC88acS6dN6cU1y0@zeniv-ca.linux.org.uk>
-From:   Cong Wang <xiyou.wangcong@gmail.com>
-Date:   Sat, 20 Feb 2021 11:12:33 -0800
-Message-ID: <CAM_iQpVpJwRNKjKo3p1jFvCjYAXAY83ux09rd2Mt0hKmvx=RgQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] af_unix: take address assignment/hash insertion into
- a new helper
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Denis Kirjanov <kda@linux-powerpc.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YDFeao/bOxvoXI9D@lunn.ch>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 8:22 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> Duplicated logics in all bind variants (autobind, bind-to-path,
-> bind-to-abstract) gets taken into a common helper.
->
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
->  net/unix/af_unix.c | 30 +++++++++++++++---------------
->  1 file changed, 15 insertions(+), 15 deletions(-)
->
-> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> index 41c3303c3357..179b4fe837e6 100644
-> --- a/net/unix/af_unix.c
-> +++ b/net/unix/af_unix.c
-> @@ -262,6 +262,16 @@ static void __unix_insert_socket(struct hlist_head *list, struct sock *sk)
->         sk_add_node(sk, list);
->  }
->
-> +static void __unix_set_addr(struct sock *sk, struct unix_address *addr,
-> +                           unsigned hash)
-> +       __releases(&unix_table_lock)
-> +{
-> +       __unix_remove_socket(sk);
-> +       smp_store_release(&unix_sk(sk)->addr, addr);
-> +       __unix_insert_socket(&unix_socket_table[hash], sk);
-> +       spin_unlock(&unix_table_lock);
+Hi Andrew,
 
-Please take the unlock out, it is clearly an anti-pattern.
+I ran rngtest and this is what I got:
+root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
+rngtest 6.10
+Copyright (c) 2004 by Henrique de Moraes Holschuh
+This is free software; see the source for copying conditions.  There is 
+NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE.
 
-And please Cc netdev for networking changes.
+rngtest: starting FIPS tests...
+rngtest: bits received from input: 20000032
+rngtest: FIPS 140-2 successes: 996
+rngtest: FIPS 140-2 failures: 4
+rngtest: FIPS 140-2(2001-10-10) Monobit: 0
+rngtest: FIPS 140-2(2001-10-10) Poker: 0
+rngtest: FIPS 140-2(2001-10-10) Runs: 1
+rngtest: FIPS 140-2(2001-10-10) Long run: 3
+rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
+rngtest: input channel speed: (min=146.002; avg=349.394; 
+max=1302083.333)Kibits/s
+rngtest: FIPS tests speed: (min=12.126; avg=22.750; max=23.432)Mibits/s
+rngtest: Program run time: 56826982 microseconds
 
-Thanks.
+996 successes and 4 failures -> 99.6% success rate
+1024 * 99.6% = 1019 (rounded down to 1000)
+
+I'm not sure if I can rely on rngtest for that...
+
+Best regards,
+Álvaro.
+
+El 20/02/2021 a las 20:09, Andrew Lunn escribió:
+> On Sat, Feb 20, 2021 at 06:47:40PM +0100, Álvaro Fernández Rojas wrote:
+>> This allows devices without a high precission timer to reduce boot from >100s
+>> to <30s.
+>> diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
+>> index 1a7c43b43c6b..4b48cb7176b0 100644
+>> --- a/drivers/char/hw_random/bcm2835-rng.c
+>> +++ b/drivers/char/hw_random/bcm2835-rng.c
+>> @@ -163,6 +163,7 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
+>>   	priv->rng.init = bcm2835_rng_init;
+>>   	priv->rng.read = bcm2835_rng_read;
+>>   	priv->rng.cleanup = bcm2835_rng_cleanup;
+>> +	priv->rng.quality = 1000;
+> 
+> Hi Alvero
+> 
+>   * @quality:		Estimation of true entropy in RNG's bitstream
+>   *			(in bits of entropy per 1024 bits of input;
+>   *			valid values: 1 to 1024, or 0 for unknown).
+> 
+> How did you determine this device produces 1000 bits of true entropy
+> per 1024?
+> 
+>      Andrew
+> 
