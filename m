@@ -2,148 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E063207B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 00:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E266D3207BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 00:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhBTXeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 18:34:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhBTXdr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 18:33:47 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F404FC061574;
-        Sat, 20 Feb 2021 15:33:06 -0800 (PST)
+        id S229876AbhBTX4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 18:56:50 -0500
+Received: from vern.gendns.com ([98.142.107.122]:47060 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229809AbhBTX4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 18:56:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=oMktDWRKXyoBFa7CtiuawGTrjQqJNKUNw1j4Qpf7tLQ=; b=KrW9CdHrNeeaD0CH7+mhlWCYHf
-        RHtbrBLi0NpdCZ2uUDqeblPvzZRxHCqjFKNewXGfpM8R0LeLCpyE9TmWC/JQKSNBSpVkfJVSr1pMz
-        lsPGkv7QyPeM/Ifw/KmCpTeEpm7Dghjp1WutT+ILL0nWyPHqfo+wi2y20Gem3JQw28PbjaGsArQ04
-        bjO2BYQvTKeOFNofeJnFSd3zpXYL2WdvJkQqBcn30ez9HWB3ySBOZn91kklXWCSFlR4V3glxiNl5Y
-        nrzLiOhKczeLrtf3xnwcu+T3UEQa93XKNot2+DY0iUjxaEPZkhGTA13BQl9Ka9xK8oOM2jUPx+UQ5
-        HinEZHog==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lDbkE-0004ZU-3j; Sat, 20 Feb 2021 23:33:02 +0000
-Subject: Re: [PATCH] video: fbdev: pm2fb: avoid stall on fb_sync
-To:     Tong Zhang <ztong0001@gmail.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210220230248.320870-1-ztong0001@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ea1c5ff3-0b24-71c9-7a44-08b184c4854d@infradead.org>
-Date:   Sat, 20 Feb 2021 15:32:57 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=NJQ3qK7kZJOYMEo7d0WhHsoE9tRggHBugk1o8Rn0Puk=; b=UHZYZ8Fb5qcAmWUz4aohA2ymLS
+        bpK78s9h9IJza4cpjY15MBJraMUTuoijR2VraCwQ2RB+tqZAzdMS2vZCv5QI+AvRJYtRzeIiyjHAn
+        2xe3E0HnsuB7yO03MxNIJggG8+02vSM+NKI493+47b3QRlHIMUtRq5wT3pl3xhs2eNUfzeZ1pJC7u
+        YWtU6qsDra19HpAyrdNqo4eVek2wKSgwGHIRW+nttxGQGyJhh17ncLYgXx7/bkCwH52PA+jZqQHVs
+        G1N1tpyLLwB35XeWNb9CbtmyE2H95IM/eui3EK7duSouZFnkkKmDM+4ZpULroPdcVIZT+lbKCYgwf
+        v162vb8Q==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:37044 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1lDc6S-0005os-Os; Sat, 20 Feb 2021 18:56:00 -0500
+Subject: Re: [PATCH v8 16/22] counter: Move counter enums to uapi header
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        o.rempel@pengutronix.de
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+ <eeb79725eca9c299dee166d38347b6722804d8b5.1613131238.git.vilhelm.gray@gmail.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <fb1a996b-02e7-2328-4e56-6d724c41e433@lechnology.com>
+Date:   Sat, 20 Feb 2021 17:55:59 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210220230248.320870-1-ztong0001@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <eeb79725eca9c299dee166d38347b6722804d8b5.1613131238.git.vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
-
-On 2/20/21 3:02 PM, Tong Zhang wrote:
-> pm2fb_sync is called when doing /dev/fb read or write.
-> The original pm2fb_sync wait indefinitely on hardware flags which can
-> possibly stall kernel and make everything unresponsive.
-> Instead of waiting indefinitely, we can timeout to give user a chance to
-> get back control.
-
-Is this a real problem or theoretical?
-Does someone still use this driver?
-
-
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+On 2/12/21 6:13 AM, William Breathitt Gray wrote:
+> This is in preparation for a subsequent patch implementing a character
+> device interface for the Counter subsystem.
+> 
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 > ---
->  drivers/video/fbdev/pm2fb.c | 29 ++++++++++++++++++++++++++---
->  1 file changed, 26 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/video/fbdev/pm2fb.c b/drivers/video/fbdev/pm2fb.c
-> index 27893fa139b0..8578c64a0c54 100644
-> --- a/drivers/video/fbdev/pm2fb.c
-> +++ b/drivers/video/fbdev/pm2fb.c
-> @@ -183,12 +183,23 @@ static inline void pm2v_RDAC_WR(struct pm2fb_par *p, s32 idx, u32 v)
->  
->  #ifdef CONFIG_FB_PM2_FIFO_DISCONNECT
->  #define WAIT_FIFO(p, a)
-> +#define WAIT_FIFO_TIMEOUT(p, a) (0)
->  #else
->  static inline void WAIT_FIFO(struct pm2fb_par *p, u32 a)
->  {
->  	while (pm2_RD(p, PM2R_IN_FIFO_SPACE) < a)
->  		cpu_relax();
->  }
-> +static int inline void WAIT_FIFO_TIMEOUT(struct pm2fb_par *p, u32 a)
 
-drop      void       ^^^
-It's already "int".
-Did you compile this?
-
-> +{
-> +	int timeout = 10000;
-> +	while (pm2_RD(p, PM2R_IN_FIFO_SPACE) < a) {
-> +		cpu_relax();
-> +		if (--timeout==0)
-
-spaces around ==
-
-> +			return 1;
-> +	}
-> +	return 0;
-> +}
->  #endif
->  
->  /*
-> @@ -1031,15 +1042,27 @@ static int pm2fb_blank(int blank_mode, struct fb_info *info)
->  static int pm2fb_sync(struct fb_info *info)
->  {
->  	struct pm2fb_par *par = info->par;
-> +	int timeout_sync = 10000;
-> +	int timeout_fifo;
->  
-> -	WAIT_FIFO(par, 1);
-> +	if (WAIT_FIFO_TIMEOUT(par, 1))
-> +		goto end;
->  	pm2_WR(par, PM2R_SYNC, 0);
->  	mb();
->  	do {
-> -		while (pm2_RD(par, PM2R_OUT_FIFO_WORDS) == 0)
-> +		timeout_fifo = 10000;
-> +		while (pm2_RD(par, PM2R_OUT_FIFO_WORDS) == 0) {
->  			cpu_relax();
-> -	} while (pm2_RD(par, PM2R_OUT_FIFO) != PM2TAG(PM2R_SYNC));
-> +			if (--timeout_fifo==0)
-
-spaces around ==
-
-> +				goto end;
-> +		}
-> +		if (pm2_RD(par, PM2R_OUT_FIFO) == PM2TAG(PM2R_SYNC))
-> +			break;
-> +	} while (--timeout_sync>0);
-
-spaces around >
-
->  
-> +end:
-> +	if ((!timeout_sync) || (!timeout_fifo))
-> +		printk_ratelimited(KERN_WARNING "pm2fb: sync timeout!\n");
->  	return 0;
->  }
->  
-> 
+Reviewed-by: David Lechner <david@lechnology.com>
 
 
-thanks.
--- 
-~Randy
