@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F3E320491
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2371432049C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:12:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBTJF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 04:05:26 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:56342 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhBTJDy (ORCPT
+        id S229678AbhBTJHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 04:07:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229645AbhBTJFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 04:03:54 -0500
-Date:   Sat, 20 Feb 2021 12:02:48 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 01/20] net: phy: realtek: Fix events detection failure in
- LPI mode
-Message-ID: <20210220090248.oiyonlfucvmgzw6d@mobilestation>
-References: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
- <20210208140341.9271-2-Sergey.Semin@baikalelectronics.ru>
- <8300d9ca-b877-860f-a975-731d6d3a93a5@gmail.com>
- <20210209101528.3lf47ouaedfgq74n@mobilestation>
- <a652c69b-94d3-9dc6-c529-1ebc0ed407ac@gmail.com>
- <20210209105646.GP1463@shell.armlinux.org.uk>
- <20210210164720.migzigazyqsuxwc6@mobilestation>
- <20210211103941.GW1463@shell.armlinux.org.uk>
+        Sat, 20 Feb 2021 04:05:52 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB3E4C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 01:05:06 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id a9so4706926plh.8
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 01:05:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sargun.me; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ndod0SKs53DoouSdXHyF0CmTt+j+rMCAZ9tnPJESopM=;
+        b=QjB1Nxc4ywJRLTx9HaVrpbljgBRGmnEsfaNukEUqOHjHViUDS2tM3XzMVRJHY7Oe4E
+         o5pVmVpAuJUXZT5miqEw6XxVoPPcMfznVLtA5iN/ibuzFLyw45x5zIpqTVaAX27xgodG
+         KM+sEifyExnfEF4mzJIlS4kSONlE1hHHtxsK8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ndod0SKs53DoouSdXHyF0CmTt+j+rMCAZ9tnPJESopM=;
+        b=EtEGJRd9aEzTOhN5XlBm4aRIqVXCtgJkrlQOiMer9WdxjVfWKejfMLasLHnC0hAUsL
+         UJBfz6VgeZgqM8sF/W8s15CVNrtKKyXpEU35J8gAmJCxPQZguVG6wnzzvdR7gBWHhgRt
+         hiYZPsrKQjeuQyNi6/SKfXfyIPnIo16Qh2c4pQbkolbL1LphGvU57ZfanIfDvJ+5DBCe
+         wv0aCwAIf3yUzzMsJEMOrN9I/Au1xyH2C0kIDCHxiLjtVBufJuLyLRfAm7i/0oUknNDd
+         xacHPRHYKtGZw1Xe873sMMPRNNvoJ9XDajLSqTWXofpmBXLCXUl0jr2SrBmEsBaPugOI
+         TPTg==
+X-Gm-Message-State: AOAM532j0AQWbfOaArBwH1wacOVwe8UxI54TAIxWkkY8Wl6utp0Bdyon
+        fimpzUDXzhAj9ihCRIXK6tG68Q==
+X-Google-Smtp-Source: ABdhPJw4zQv/KdqhfaP8jiaNEc7ce9WHZ6hI4p2HSr3DJWVeW1Kxjfa49GF4nYmsLq3DtCJB0mlpbQ==
+X-Received: by 2002:a17:90a:2848:: with SMTP id p8mr13172691pjf.55.1613811905938;
+        Sat, 20 Feb 2021 01:05:05 -0800 (PST)
+Received: from ubuntu.netflix.com (136-25-20-203.cab.webpass.net. [136.25.20.203])
+        by smtp.gmail.com with ESMTPSA id g62sm12226727pgc.32.2021.02.20.01.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 01:05:05 -0800 (PST)
+From:   Sargun Dhillon <sargun@sargun.me>
+To:     Kees Cook <keescook@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>
+Cc:     Sargun Dhillon <sargun@sargun.me>,
+        =?UTF-8?q?Mauricio=20V=C3=A1squez=20Bernal?= <mauricio@kinvolk.io>,
+        Rodrigo Campos <rodrigo@kinvolk.io>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Giuseppe Scrivano <gscrivan@redhat.com>
+Subject: [RFC PATCH 0/3] Seccomp non-preemptible notifier
+Date:   Sat, 20 Feb 2021 01:04:59 -0800
+Message-Id: <20210220090502.7202-1-sargun@sargun.me>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210211103941.GW1463@shell.armlinux.org.uk>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 11, 2021 at 10:39:41AM +0000, Russell King - ARM Linux admin wrote:
-> On Wed, Feb 10, 2021 at 07:47:20PM +0300, Serge Semin wrote:
-> > On Tue, Feb 09, 2021 at 10:56:46AM +0000, Russell King - ARM Linux admin wrote:
-> > > On Tue, Feb 09, 2021 at 11:37:29AM +0100, Heiner Kallweit wrote:
-> > > > Right, adding something like a genphy_{read,write}_mmd() doesn't make
-> > > > too much sense for now. What I meant is just exporting mmd_phy_indirect().
-> > > > Then you don't have to open-code the first three steps of a mmd read/write.
-> > > > And it requires no additional code in phylib.
-> > > 
-> > > ... but at the cost that the compiler can no longer inline that code,
-> > > as I mentioned in my previous reply. (However, the cost of the accesses
-> > > will be higher.) On the plus side, less I-cache footprint, and smaller
-> > > kernel code.
-> > 
-> > Just to note mmd_phy_indirect() isn't defined with inline specifier,
-> > but just as static and it's used twice in the
-> > drivers/net/phy/phy-core.c unit. So most likely the compiler won't
-> > inline the function code in there.
-> 
-> You can't always tell whether the compiler will inline a static function
-> or not.
+This patchset addresses a race condition we've dealt with recently with
+seccomp. Specifically programs interrupting syscalls while they're in
+progress. This was exacerbated by Golang's recent adoption of "async
+preemption", in which they try to interrupt any syscall that's been
+running for more than 10ms during GC. During certain syscalls, it's
+non-trivial to write them in a reetrant manner in userspace (mount).
 
-Andrew, Heiner, Russell, what is your final decision about this? Shall
-we export the mmd_phy_indirect() method, implement new
-genphy_{read,write}_mmd() or just leave the patch as is manually
-accessing the MMD register in the driver?
+This has a couple semantic changes, and relaxes a check on seccomp_data.
+I can deal with these, but this was a first cut. I also expect that the
+patch would be squashed down, but it's split out for easier review.
 
--Sergey
+Sargun Dhillon (3):
+  seccomp: Refactor notification handler to prepare for new semantics
+  seccomp: Add wait_killable semantic to seccomp user notifier
+  selftests/seccomp: Add test for wait killable notifier
 
-> 
-> > Anyway it's up to the PHY
-> > library maintainers to decide. Please settle the issue with Heiner and
-> > Andrew then. I am ok with both solutions and will do as you decide.
-> 
-> FYI, *I* am one of the phylib maintainers.
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+ include/uapi/linux/seccomp.h                  | 10 +++
+ kernel/seccomp.c                              | 63 +++++++++++++------
+ tools/testing/selftests/seccomp/seccomp_bpf.c | 60 ++++++++++++++++++
+ 3 files changed, 114 insertions(+), 19 deletions(-)
+
+-- 
+2.25.1
+
