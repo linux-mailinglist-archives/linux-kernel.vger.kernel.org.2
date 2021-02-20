@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 204303203C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 06:15:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C740D3203C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 06:17:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhBTFPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 00:15:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S229657AbhBTFRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 00:17:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhBTFPU (ORCPT
+        with ESMTP id S229441AbhBTFRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 00:15:20 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCD3C061574;
-        Fri, 19 Feb 2021 21:14:40 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id k22so4517162pll.6;
-        Fri, 19 Feb 2021 21:14:40 -0800 (PST)
+        Sat, 20 Feb 2021 00:17:05 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0C2C061574;
+        Fri, 19 Feb 2021 21:16:25 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id k22so35370357ljg.3;
+        Fri, 19 Feb 2021 21:16:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=o9reUPtchiVg8+dPYDuDLwMmtsy0TiLmDYyaeL4F0T8=;
-        b=G3zIdIPVpuc6woYpa//v9zo+I4FCvqhbaJf/1f41pzRhCHOGLCTpyRIzmh86yFDlWv
-         /MKKnk2Pw+EkmJQQT9P6H0wIWTsAh68WWM9128yv7oRAvppLZZ4ySItphxcs/jzQeyZB
-         WnGIWxkwy2ZylnYzV3IhF73F9SdwY5+OTKZ4JO6Kiz53kyvoPM8HJ4VcCRQp7uwiB7SV
-         wHliPlLU2JIDKvVh3EluTggJEXpXHP2z+lmtQHs0RWUWKUpiCJD9cMOqz0qdpSAmncfF
-         lUB34hgYZ6u3aEQNC2ZMSGexK2Ojb3ZViuZx7dGYW59OzqChYOd0OfBRLeBDF8SiuIRI
-         eImg==
+        bh=75WgM4j7TpcglCJIQaidtSvYuszmMtipi4ZJU85Xubs=;
+        b=s+91Q/NxEOWWfiT2BbVxo3Htl8db0wjaq1enuCFCFswR75Spv5EtSIqCwZqc68F+iO
+         Dy3RLT413GvOqNnrhKPD/Vg8AoZA2PRWZq6DXoJsO1VDHzsmp7UpveYPwRPCMfnNLVRd
+         p/4Zt6sLr+G0bKCgBzhF5CUSOML3nCnLzfQDepoBJvdZ2vlgy3uQDWeQt1ajuMd1zE0B
+         U5CRBES1msaKbgxJCpElsC9vYP2AV8szpwT6wlsoM6t4PbHIe7FG0UwkRYS9ynZ89v/9
+         TDlmuP8IceGw3ja00kM9W1Krj26CbsF99tXj2Sh9P9RE1smQPG80GH5HZxCQkA+GcuAC
+         VoTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=o9reUPtchiVg8+dPYDuDLwMmtsy0TiLmDYyaeL4F0T8=;
-        b=GdRrrFltyq6WLs5CBFr+ofW22PHcgujOGpGo3zJitwwNNEqVErqmuKdf2eudaABIGA
-         XVIaiXo4nz8oev47M1LrSphRXuUtqwKWRIcrJrEv7V8MCpuLDB7lypQPGVFnT80pmP6J
-         RRICupu24mQTjAcAtDwFAMf4erp0edu1IBU8DxCDS/dK7yRT5pybc2BwNvWBy61VmjyO
-         4r0Ie8IBs3HJ2+VbYnMx64w0GUIofkch+F5DxI1RWWQtXTjt6uiB7h6xfl9vcuZnQoNE
-         RpUBDJfl1jlkPDEEfY1m6Wv07Ou+0HGjPc7vqnkaVJ/N7m55OwPR667QuPZO4oiO0P74
-         2f2w==
-X-Gm-Message-State: AOAM531UUYn2+cgTmk9Jt4WwIjP1TEbB72zEhJoeJE9SxnXR9leDn8c+
-        BgTPOEMOgkRChfhpg8ZRDzvcconsPyk=
-X-Google-Smtp-Source: ABdhPJz5swjqiw0YiiHcQcUn/tnwMvLZy3pi2GObJGw7Kbs0bDGTS3HcCcX442+k3WjHbZDUfp6LlA==
-X-Received: by 2002:a17:903:188:b029:e3:dd4b:f6c1 with SMTP id z8-20020a1709030188b02900e3dd4bf6c1mr241837plg.81.1613798079330;
-        Fri, 19 Feb 2021 21:14:39 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id u142sm11918394pfc.37.2021.02.19.21.14.37
+        bh=75WgM4j7TpcglCJIQaidtSvYuszmMtipi4ZJU85Xubs=;
+        b=FJ6b3twa3eRSfoUKWkt0sqTp8HSWdGHWxxfzJqy1JIhsrT28PQy4WXfM1opxdlcACT
+         5yRFCYGjYNCy1JvSHEaHchXmyc6F4PeOGAxKZFQ4rZotlanhN1yYlXbecSD1j5pX4JbG
+         QLgi0rT0KcOFyrTx25ssjXglcxacFKq3lomGiJ9E3OOFxf6PnLZgARh3YHycd8dB+5fM
+         GMGycUhxggIURFLIDV04uirw+qANafu4NCvxBliG/UWuTEX6FYahatOu83d2IO/bfX7a
+         TDJPehGyJzgL+A4gRit4IdeYEUOQrLGUjKIGpMhETGIOTAmTyRRSACpuDj9Qbu+yfpPU
+         LIBA==
+X-Gm-Message-State: AOAM530z5qjfP5b7xqjgz9VqtD67kB6q+7/ij6UkCt6aenXiRg1fOjOn
+        XMBdLsIfqQbLaqRsveQCizIKzJ0PXZY=
+X-Google-Smtp-Source: ABdhPJwjsq3TDQS5wEjqyDwFxuQJ5k1GaYHDBbikWFxv6QHUKfYn86ehN4RvF+ueagBaOHj5rxLwTQ==
+X-Received: by 2002:a19:500a:: with SMTP id e10mr7503522lfb.241.1613798183645;
+        Fri, 19 Feb 2021 21:16:23 -0800 (PST)
+Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
+        by smtp.googlemail.com with ESMTPSA id o16sm284804lfn.252.2021.02.19.21.16.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 21:14:38 -0800 (PST)
-Subject: Re: [PATCH net-next] net: dsa: Fix dependencies with HSR
-To:     netdev@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        George McCollister <george.mccollister@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210220051222.15672-1-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <22f9e6b7-c65a-7bfb-ee8d-7763c2a7fe74@gmail.com>
-Date:   Fri, 19 Feb 2021 21:14:36 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        Fri, 19 Feb 2021 21:16:23 -0800 (PST)
+Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
+        thierry.reding@gmail.com, will@kernel.org,
+        guillaume.tucker@collabora.com
+Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
+        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <9d6445c0-9574-1650-e327-32b11716f87e@gmail.com>
+Date:   Sat, 20 Feb 2021 08:16:22 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <20210220051222.15672-1-f.fainelli@gmail.com>
+In-Reply-To: <20210218220702.1962-1-nicoleotsuka@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/19/2021 9:12 PM, Florian Fainelli wrote:
-> The core DSA framework uses hsr_is_master() which would not resolve to a
-> valid symbol if HSR is built-into the kernel and DSA is a module.
+19.02.2021 01:07, Nicolin Chen пишет:
+> Commit 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
+> removed certain hack in the tegra_smmu_probe() by relying on IOMMU core to
+> of_xlate SMMU's SID per device, so as to get rid of tegra_smmu_find() and
+> tegra_smmu_configure() that are typically done in the IOMMU core also.
 > 
-> Fixes: 18596f504a3e ("net: dsa: add support for offloading HSR")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
-> David, Jakub,
+> This approach works for both existing devices that have DT nodes and other
+> devices (like PCI device) that don't exist in DT, on Tegra210 and Tegra3
+> upon testing. However, Page Fault errors are reported on tegra124-Nyan:
 > 
-> This showed up in linux-next which means it will show up in Linus' tree
-> soon as well when your pull request gets sent out.
+>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
+> 	 EMEM address decode error (SMMU translation error [--S])
+>   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
+> 	 Page fault (SMMU translation error [--S])
+> 
+> After debugging, I found that the mentioned commit changed some function
+> callback sequence of tegra-smmu's, resulting in enabling SMMU for display
+> client before display driver gets initialized. I couldn't reproduce exact
+> same issue on Tegra210 as Tegra124 (arm-32) differs at arch-level code.
 
-I had initially considered making is_hsr_master() a static inline that
-would compare dev->dev.type->name with "hsr" since the HSR master would
-set a custom dev_type, however the xrs700x driver would still fail to
-link because it calls hsr_get_version() and for that one there is no
-easy solution.
--- 
-Florian
+Hello Nicolin,
+
+Could you please explain in a more details what exactly makes the
+difference for the callback sequence?
