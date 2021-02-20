@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5300C3206DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678AC3206DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhBTTSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 14:18:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229808AbhBTTS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:18:28 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 416FE61481;
-        Sat, 20 Feb 2021 19:17:47 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lDXlB-00F6Qi-4p; Sat, 20 Feb 2021 19:17:45 +0000
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 20 Feb 2021 19:17:44 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Hector Martin <marcan@marcan.st>,
+        id S229876AbhBTTUD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 20 Feb 2021 14:20:03 -0500
+Received: from mail-ed1-f42.google.com ([209.85.208.42]:37949 "EHLO
+        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhBTTT7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 14:19:59 -0500
+Received: by mail-ed1-f42.google.com with SMTP id s11so16615603edd.5;
+        Sat, 20 Feb 2021 11:19:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=OBKL52x1c+0wtBbYVRakXBkOcTFo42BB6g8G38t5+3w=;
+        b=ZuzjdN0IkhSLeo3ZDnyf0ZaEoeIdVXkYwBIaz/3fYBDR3+0FZuv3paz135VNUlMId4
+         M2izgsLgussNK28qlom5K12cOg6qn7OTpCMN+BPBlldnlpGWPkLhNeKIc2f4ccPIXBlI
+         mgSpkgy+rm1p9F/uK6LRqRJxRK+r0R2mfa3cqdU4JcLNvCvUPnS5GRvPLIq53Yvci+Qb
+         NdzF9LuYr4cMj114LAY21D/dTCtqyfIyPPGdieo23FDDWvRb7b9vnlvy+Kd+i+GvnVmz
+         Sacb9rGdDsOe69pkO0HSaP4VUdUyoN8TEROGMutNbnxHtJnXlinO3PhxxhgtaC8ySEkm
+         SXjw==
+X-Gm-Message-State: AOAM532+hs1c0NV3TpXtY1FnmUkkTmMPUNTK2F6U2c9p3utZz9idtKDY
+        IsgqlScHsi8fPQyHt5G2XCOmc2MuJ8Q=
+X-Google-Smtp-Source: ABdhPJwcQ7jmMKc3nguM404IJLKp3QhifbcjgDcH43iCNTW/Pm4ga706Kg6F+Bjpt68nSxKeuZk/9Q==
+X-Received: by 2002:a05:6402:190a:: with SMTP id e10mr15292700edz.110.1613848757108;
+        Sat, 20 Feb 2021 11:19:17 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id r23sm6843913ejd.56.2021.02.20.11.19.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 11:19:16 -0800 (PST)
+Date:   Sat, 20 Feb 2021 20:19:14 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        dl-linux-imx <linux-imx@nxp.com>, catalin.marinas@arm.com,
+        will@kernel.org, DTML <devicetree@vger.kernel.org>,
         linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 20/25] tty: serial: samsung_tty: Use
- devm_ioremap_resource
-In-Reply-To: <20210220191323.ugmzrtkvcxyqqolj@kozik-lap>
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-21-marcan@marcan.st>
- <20210215185135.onivzktfscv5myh2@kozik-lap>
- <20274436-7275-9734-5a07-d6da46b45c5f@marcan.st>
- <20210220191323.ugmzrtkvcxyqqolj@kozik-lap>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <5a4b3d7095d1ec4be97ec154109632dc@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: krzk@kernel.org, marcan@marcan.st, linux-arm-kernel@lists.infradead.org, robh@kernel.org, arnd@kernel.org, olof@lixom.net, mark.kettenis@xs4all.nl, tony@atomide.com, mohamed.mediouni@caramail.com, stan@corellium.com, graf@amazon.com, will@kernel.org, linus.walleij@linaro.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/8] arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
+Message-ID: <20210220191914.pir3ep3utz6uwyrb@kozik-lap>
+References: <20210217161052.877877-1-adrien.grassein@gmail.com>
+ <20210217161052.877877-2-adrien.grassein@gmail.com>
+ <20210219131825.niiftfm5r32qc6m3@kozik-lap>
+ <CABkfQAH75N1k0bDEGzo0mRtoqP=-9p9hzBo43f6gQnSmGsXQUw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CABkfQAH75N1k0bDEGzo0mRtoqP=-9p9hzBo43f6gQnSmGsXQUw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-20 19:13, Krzysztof Kozlowski wrote:
-> On Thu, Feb 18, 2021 at 11:01:21PM +0900, Hector Martin wrote:
->> On 16/02/2021 03.51, Krzysztof Kozlowski wrote:
->> > > Also fix a bug checking the return value, which should use IS_ERR().
->> >
->> > No, no, no. We never, never combine fixing bugs with some rework.
->> > However devm_ioremap() returns NULL so where is the error?
->> 
->> Sorry, this was a commit message mistake. The code is correct and so 
->> is the
->> patch: just the NULL check is correct for the previous variant and 
->> IS_ERR is
->> correct for devm_ioremap_resource. I confused myself while writing the
->> commit message after the fact.
->> 
->> > Did you test your patches on existing platforms? If not, please mark all
->> > of them as RFT on next submission, so Greg does not pick them too fast.
->> 
->> I unfortunately don't have any Exynos devices where I could test the 
->> code (I
->> have a couple but no serial connections, and I have no idea if mailine 
->> would
->> run on them). I'll mark v3 as RFT.
+On Fri, Feb 19, 2021 at 03:03:55PM +0100, Adrien Grassein wrote:
+> Le ven. 19 févr. 2021 à 14:18, Krzysztof Kozlowski <krzk@kernel.org> a écrit :
+> >
+> > On Wed, Feb 17, 2021 at 05:10:45PM +0100, Adrien Grassein wrote:
+> > > Add usdhc3 description which corresponds to the wifi/bt chip
+> > >
+> > > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
+> > > ---
+> > >  .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 31 +++++++++++++++++++
+> > >  1 file changed, 31 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
+> > > index c0c384d76147..212dc9e5e85d 100644
+> > > --- a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
+> > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
+> > > @@ -9,6 +9,17 @@
+> > >  / {
+> > >       model = "Boundary Devices i.MX8MMini Nitrogen8MM Rev2";
+> > >       compatible = "boundary,imx8mm-nitrogen8mm", "fsl,imx8mm";
+> > > +
+> > > +     reg_wlan_vmmc: regulator-wlan-vmmc {
+> > > +             compatible = "regulator-fixed";
+> > > +             pinctrl-names = "default";
+> > > +             pinctrl-0 = <&pinctrl_reg_wlan_vmmc>;
+> > > +             regulator-name = "reg_wlan_vmmc";
+> > > +             regulator-min-microvolt = <3300000>;
+> > > +             regulator-max-microvolt = <3300000>;
+> > > +             gpio = <&gpio3 20 GPIO_ACTIVE_HIGH>;
+> > > +             enable-active-high;
+> > > +     };
+> > >  };
+> > >
+> > >  &A53_0 {
+> > > @@ -206,6 +217,20 @@ &usdhc2 {
+> > >       status = "okay";
+> > >  };
+> > >
+> > > +/* wlan */
+> > > +&usdhc3 {
+> > > +     bus-width = <4>;
+> > > +     sdhci-caps-mask = <0x2 0x0>;
+> > > +     non-removable;
+> > > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
+> > > +     pinctrl-0 = <&pinctrl_usdhc3>;
+> > > +     pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
+> > > +     pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
+> > > +     vmmc-supply = <&reg_wlan_vmmc>;
+> > > +     vqmmc-1-8-v;
+> >
+> > There is no such property in the bindings.
+> >
 > 
-> If you have one of Odroid boards with Exynos, then you can nicely test
-> Exynos. Others - depends, on board.
-> Anyway I can test them for you. I just want to be sure that Greg waits
-> for this testing.
+> Sorry, I copied a property from the FSL kernel.
+> I will fix this with a "fixed-regulator".
 
-Worse case, QEMU has some Exynos4210 emulation that is usable.
+I would assume this goes from PMIC, so check your schematics. There is
+little point in adding a fixed regulator which is non-controllable.
+I think bindings don't require it.
 
-Thanks,
+Best regards,
+Krzysztof
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
