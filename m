@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C746F324501
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:13:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9C9324509
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhBXUMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:12:16 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:40527 "EHLO
+        id S235297AbhBXUOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:14:43 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:58505 "EHLO
         wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235397AbhBXUKF (ORCPT
+        by vger.kernel.org with ESMTP id S235461AbhBXUKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:10:05 -0500
+        Wed, 24 Feb 2021 15:10:25 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 944406DC;
-        Wed, 24 Feb 2021 15:07:48 -0500 (EST)
+        by mailout.west.internal (Postfix) with ESMTP id 357A44D0;
+        Wed, 24 Feb 2021 15:07:49 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 24 Feb 2021 15:07:48 -0500
+  by compute3.internal (MEProxy); Wed, 24 Feb 2021 15:07:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
         :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=cZGraN8a3MamW
-        JsGqYEosC8WQUI+osVcZnJUo8NNTcI=; b=Cwq+pyxBvH0d33t9RqrK+7VUPL2ue
-        IuqzJtk2PgCOIe3Js+N6LXGgNLBt4W9CFNUdt5CVpblJyHIUEcXV3NP3ZrTDBqkS
-        kWoKvD9uQtOTALag4FL3EjRPyZrxEfqAorg12OzvAQ6xgUX/D9OBZiVTcI/30cwX
-        Iwi9U9o0dv8zEqbZb5wkR6eUFV5i7R2Hczp8SzMaTmhGXHB9Qj1i6CQPYQoHwvUx
-        1e1MqKRM7l11CmpM7yb/W9858z3kyQbDAhrRgvS8raCc64qlRf94xqcMqB+9va/u
-        /If2Y/OHKTqw0mzWVVli8IOTIQbz5oWcx4tBjQP2KVydW9g+zAFi1HTxQ==
+        :mime-version:content-transfer-encoding; s=fm2; bh=E/P5gV6zRUBQ4
+        rUew5IDSwKzE8wQGU3wXlHM2U9z7ow=; b=DwhbqbjGe1e5kfBJopOJeP+Ej/ACp
+        Jw3GSkuWTDM6n5xVt5g1Zdbwog+krvwrfFJOx8UEDbUndy7Y38QGOX+D4xs5jR8k
+        xyPKnNTFaWCY6r6vHfXigeRHGd9IMrwLGvm3CST4AOSUAtZEt0sAuG381eXVa9oy
+        CYGVrgo+sXzZFblBanRoNktNvfRSaqSCGNtrICIxFK23vh2E48ACE9jlyTYI7Lt5
+        iK8bPuvn/xytFSUFABbuX1waPfpOncwz09xCsRGA5xwvK/fHa9Olw16ot0Xcj8Tu
+        TA4Kj7BHjgtH5zzJuTSDJuuKHSob1cz5WfuQjHOJ6Q6ae7004LelRZ56Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=cZGraN8a3MamWJsGqYEosC8WQUI+osVcZnJUo8NNTcI=; b=M/WwK53d
-        tDzuVbS4kbQO0zPMxMa4yF1m3la/MwVHQnULmZhAhg4NeKTzQLGy0Q4VxeE23qqo
-        fyHPSwMsj4vkFHJijtGHCbeiGxiBN5fXyZRLNg4gGrYBuw/tu2yOewW0n9HEBdqu
-        eT5nekiHsqarUPlg0FHEP+7/n4UV4drvBUkh6v0TXg4lj7ZeeedeVDLzAP7kZgqQ
-        L+xtYFaLvmdYst9kte/D6uGbDJtaB5EDnnE8WlmigURUqYCJsGrJc8dfxOPwvzmU
-        lP1M6az9nriUgTgNKYm4hD3QDmeefe9wZm33H8BBJgdg1iufok0+0Vm/7X5CmO72
-        gDB8oeCs3VrfTA==
-X-ME-Sender: <xms:FLI2YOsvJI-qfBWlwMBerhxrJ9ACkbelyXf_K7_U_EnFK-R-ABCXoQ>
-    <xme:FLI2YGuRl6BuwKIDF9sfSBGoovaC91Q2KRVpHvxglTAxgX_uebIWhdxxIn9uDMHKv
-    6_Mwx0BNjZedjCzeg>
+        fm2; bh=E/P5gV6zRUBQ4rUew5IDSwKzE8wQGU3wXlHM2U9z7ow=; b=cMrbh5gV
+        ZhVDem+pDusM0l2qIDov+30r2mcmVvPAZVVisHA3kR1i9YKyByNfN1ebdQgSs5xq
+        9WOSFNPC5Qi3xbeHGBcYZ1OQ4XwwYQhYoZnzSY48RKvN+vk76T1Qe0GW1+cvM+nO
+        k5EfFTrjN7DJa0qyORdO/eyg9kX7HdDNy/Ks9QuMzfOUpsxo01xBIXByjtnF1ao1
+        +fGgiqWfuiYYHmCutJQp9me6mMRJ9reCHZLrFmVk/KPucgsn1fmmvCVQbrU0VVO9
+        UEZJf5dWbYaflGH7UjQ7Fmv1xSRkUgLl0+atBdLE0l4RdEHbu4l6flzWXwtXvaRL
+        czels42QNVN7Mg==
+X-ME-Sender: <xms:FLI2YHjFox3NG6TiCPNFvE_E9m85qI3B4IhYRruDtwx02BXIjWO3PA>
+    <xme:FLI2YFgOZmKkv_lIgLcBD3xQjlAL5wklPCdCn6Mq_EXvuaik7rmJbqwPm58WyvB8Y
+    iI1aO3-56QW_q_g-Q>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgddufeduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -48,19 +48,19 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgddufeduucetufdoteggod
     htvghrnhepjedvgeffieeivdefleekvddvudffvefhiefgueeujedvgfegfeelkeduffel
     ffefnecukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpe
     dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
-X-ME-Proxy: <xmx:FLI2YDOQnU4OGXnQy77S7uEKwoZEecyd7hMzBUdpDG7_S6bTUP6z6A>
-    <xmx:FLI2YE2zCZxaV8HpcPkKlO5Awt-L7dyxtSdI8BrZzvylYBYBPkv0kw>
-    <xmx:FLI2YPMGxkLwpK_0apVYJd8wWgk4h9MsK7cg1upigNeIVzabcz32MQ>
-    <xmx:FLI2YHXWdltbO-k-MLCvvC5Rm1_NdHBr8pbQn00nEfUKlkqkV6AFig>
+X-ME-Proxy: <xmx:FLI2YHLojFRau8mZcQfPSi-R477nx-KmcYfx7inhYEp3cQZYdncqog>
+    <xmx:FLI2YEG-6cEZJINizyHpq1Qa9pgE2dIvOmEBCh8sBnEscM0jkJ1SlQ>
+    <xmx:FLI2YLSvmakTZfDh2FBSDkPCzuXmM3M7DjCf7UaVzCpbPs_LXXnyxA>
+    <xmx:FLI2YGiYmxFsgINrXt7oh6qx0i0N_dV3d-chh_ZF1IqqSJX8ova99g>
 Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BB7A71080057;
-        Wed, 24 Feb 2021 15:07:47 -0500 (EST)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5EB971080059;
+        Wed, 24 Feb 2021 15:07:48 -0500 (EST)
 From:   William Durand <will+git@drnd.me>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 07/13] staging: rtl8192e: rename bdHTSpecVer to bd_ht_spec_ver in bss_ht struct
-Date:   Sat, 20 Feb 2021 17:29:03 +0000
-Message-Id: <20210220172909.15812-8-will+git@drnd.me>
+Subject: [PATCH v2 08/13] staging: rtl8192e: rename bdBandWidth to bd_bandwidth in bss_ht struct
+Date:   Sat, 20 Feb 2021 17:29:04 +0000
+Message-Id: <20210220172909.15812-9-will+git@drnd.me>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210220172909.15812-1-will+git@drnd.me>
 References: <20210220172909.15812-1-will+git@drnd.me>
@@ -70,100 +70,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename bdHTSpecVer to bd_ht_spec_ver to silence a checkpatch warning
-about CamelCase.
+Rename bdBandWidth to bd_bandwidth to silence a checkpatch warning about
+CamelCase.
 
 Signed-off-by: William Durand <will+git@drnd.me>
 ---
- drivers/staging/rtl8192e/rtl819x_HT.h     |  2 +-
- drivers/staging/rtl8192e/rtl819x_HTProc.c |  4 ++--
- drivers/staging/rtl8192e/rtllib_rx.c      | 10 +++++-----
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/staging/rtl8192e/rtl819x_HT.h | 2 +-
+ drivers/staging/rtl8192e/rtllib_rx.c  | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
-index 1f1bca10753d..b3856044b52f 100644
+index b3856044b52f..b44fd8e39263 100644
 --- a/drivers/staging/rtl8192e/rtl819x_HT.h
 +++ b/drivers/staging/rtl8192e/rtl819x_HT.h
-@@ -186,7 +186,7 @@ struct bss_ht {
- 	u8					bd_ht_info_buf[32];
+@@ -187,7 +187,7 @@ struct bss_ht {
  	u16					bd_ht_info_len;
 
--	enum ht_spec_ver bdHTSpecVer;
-+	enum ht_spec_ver bd_ht_spec_ver;
- 	enum ht_channel_width bdBandWidth;
+ 	enum ht_spec_ver bd_ht_spec_ver;
+-	enum ht_channel_width bdBandWidth;
++	enum ht_channel_width bd_bandwidth;
 
  	u8					bdRT2RTAggregation;
-diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-index 1fd912d1cbe2..48a63706b8ba 100644
---- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-@@ -695,7 +695,7 @@ void HTInitializeBssDesc(struct bss_ht *pBssHT)
- 	memset(pBssHT->bd_ht_info_buf, 0, sizeof(pBssHT->bd_ht_info_buf));
- 	pBssHT->bd_ht_info_len = 0;
-
--	pBssHT->bdHTSpecVer = HT_SPEC_VER_IEEE;
-+	pBssHT->bd_ht_spec_ver = HT_SPEC_VER_IEEE;
-
- 	pBssHT->bdRT2RTAggregation = false;
- 	pBssHT->bdRT2RTLongSlotTime = false;
-@@ -714,7 +714,7 @@ void HTResetSelfAndSavePeerSetting(struct rtllib_device *ieee,
- 	 */
- 	if (pNetwork->bssht.bd_support_ht) {
- 		pHTInfo->bCurrentHTSupport = true;
--		pHTInfo->ePeerHTSpecVer = pNetwork->bssht.bdHTSpecVer;
-+		pHTInfo->ePeerHTSpecVer = pNetwork->bssht.bd_ht_spec_ver;
-
- 		if (pNetwork->bssht.bd_ht_cap_len > 0 &&
- 		    pNetwork->bssht.bd_ht_cap_len <= sizeof(pHTInfo->PeerHTCapBuf))
+ 	u8					bdRT2RTLongSlotTime;
 diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
-index 8c7b0e21de95..0b2618df86aa 100644
+index 0b2618df86aa..e95be64edffb 100644
 --- a/drivers/staging/rtl8192e/rtllib_rx.c
 +++ b/drivers/staging/rtl8192e/rtllib_rx.c
-@@ -1850,7 +1850,7 @@ static void rtllib_parse_mife_generic(struct rtllib_device *ieee,
- 			*tmp_htcap_len = min_t(u8, info_element->len,
- 					       MAX_IE_LEN);
- 			if (*tmp_htcap_len != 0) {
--				network->bssht.bdHTSpecVer = HT_SPEC_VER_EWC;
-+				network->bssht.bd_ht_spec_ver = HT_SPEC_VER_EWC;
- 				network->bssht.bd_ht_cap_len = min_t(u16, *tmp_htcap_len,
- 								  sizeof(network->bssht.bd_ht_cap_buf));
- 				memcpy(network->bssht.bd_ht_cap_buf,
-@@ -1877,7 +1877,7 @@ static void rtllib_parse_mife_generic(struct rtllib_device *ieee,
- 			*tmp_htinfo_len = min_t(u8, info_element->len,
- 						MAX_IE_LEN);
- 			if (*tmp_htinfo_len != 0) {
--				network->bssht.bdHTSpecVer = HT_SPEC_VER_EWC;
-+				network->bssht.bd_ht_spec_ver = HT_SPEC_VER_EWC;
- 				network->bssht.bd_ht_info_len = min_t(u16, *tmp_htinfo_len,
- 								      sizeof(network->bssht.bd_ht_info_buf));
- 				memcpy(network->bssht.bd_ht_info_buf,
-@@ -2022,7 +2022,7 @@ static void rtllib_parse_mfie_ht_cap(struct rtllib_info_element *info_element,
+@@ -2031,13 +2031,13 @@ static void rtllib_parse_mfie_ht_cap(struct rtllib_info_element *info_element,
+ 		ht->bdHT1R = ((((struct ht_capab_ele *)
+ 				ht->bd_ht_cap_buf))->MCS[1]) == 0;
 
- 	*tmp_htcap_len = min_t(u8, info_element->len, MAX_IE_LEN);
- 	if (*tmp_htcap_len != 0) {
--		ht->bdHTSpecVer = HT_SPEC_VER_EWC;
-+		ht->bd_ht_spec_ver = HT_SPEC_VER_EWC;
- 		ht->bd_ht_cap_len = min_t(u16, *tmp_htcap_len,
- 				       sizeof(ht->bd_ht_cap_buf));
- 		memcpy(ht->bd_ht_cap_buf, info_element->data, ht->bd_ht_cap_len);
-@@ -2234,7 +2234,7 @@ int rtllib_parse_info_param(struct rtllib_device *ieee,
- 			tmp_htinfo_len = min_t(u8, info_element->len,
- 					       MAX_IE_LEN);
- 			if (tmp_htinfo_len) {
--				network->bssht.bdHTSpecVer = HT_SPEC_VER_IEEE;
-+				network->bssht.bd_ht_spec_ver = HT_SPEC_VER_IEEE;
- 				network->bssht.bd_ht_info_len = tmp_htinfo_len >
- 					sizeof(network->bssht.bd_ht_info_buf) ?
- 					sizeof(network->bssht.bd_ht_info_buf) :
-@@ -2466,7 +2466,7 @@ static inline void update_network(struct rtllib_device *ieee,
- 	dst->bssht.bd_ht_info_len = src->bssht.bd_ht_info_len;
- 	memcpy(dst->bssht.bd_ht_info_buf, src->bssht.bd_ht_info_buf,
- 	       src->bssht.bd_ht_info_len);
--	dst->bssht.bdHTSpecVer = src->bssht.bdHTSpecVer;
-+	dst->bssht.bd_ht_spec_ver = src->bssht.bd_ht_spec_ver;
- 	dst->bssht.bdRT2RTLongSlotTime = src->bssht.bdRT2RTLongSlotTime;
- 	dst->broadcom_cap_exist = src->broadcom_cap_exist;
- 	dst->ralink_cap_exist = src->ralink_cap_exist;
+-		ht->bdBandWidth = (enum ht_channel_width)
++		ht->bd_bandwidth = (enum ht_channel_width)
+ 					     (((struct ht_capab_ele *)
+ 					     (ht->bd_ht_cap_buf))->ChlWidth);
+ 	} else {
+ 		ht->bd_support_ht = false;
+ 		ht->bdHT1R = false;
+-		ht->bdBandWidth = HT_CHANNEL_WIDTH_20;
++		ht->bd_bandwidth = HT_CHANNEL_WIDTH_20;
+ 	}
+ }
+
 --
 2.30.0
 
