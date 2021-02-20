@@ -2,117 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8970032068C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B73C320690
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 19:05:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbhBTRvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 12:51:45 -0500
-Received: from vern.gendns.com ([98.142.107.122]:39320 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhBTRvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:51:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=cxAy898ikaXB5b80r/PivtPGuAM/Ddrpj1pSL31gbP0=; b=MBv+GmIm+3Sdm5COSX/SJIdBQa
-        CfnIkjFxBaCtDGZKCRL4aQU00LYN2sl+rRK0MDg/r/8P4r1nXT1Q0pQQEz4Kyi++M/Jw09h2PW/zc
-        /K/HtuKLEaioCv/L4Enmj+OqH9Jl+VEmA1Oj4xzl4L2tdkMSMLwZ1DO1Cx+B5Up2rIZ+YwdIM7TEq
-        geK5tuR/ivVFJqeViOGeTBXy/IVTXhUy/6M9FsGidExjULnmvtz0f4nPqM/0zHYnNTIGGvhAPWL5g
-        +800y493IiiTVPr3suSdrJ5fmCKBpVov8H8skohMScjucnGPqXTBshhOSmPoRmC/sYX/ipLpRIop3
-        gCgBNraQ==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:58766 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1lDWP8-0001tJ-DN; Sat, 20 Feb 2021 12:50:54 -0500
-Subject: Re: [PATCH v8 13/22] counter: Internalize sysfs interface code
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
- <3fc2580af0efd6312a64a0e107bd6fa758f0d466.1613131238.git.vilhelm.gray@gmail.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <2d9c7cfe-1f26-22b4-281f-63a7a1801452@lechnology.com>
-Date:   Sat, 20 Feb 2021 11:50:53 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229808AbhBTSDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 13:03:41 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:39245 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229804AbhBTSDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 13:03:38 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-246-SoJwM6GlPY20W1KbkIBHGQ-1; Sat, 20 Feb 2021 18:01:58 +0000
+X-MC-Unique: SoJwM6GlPY20W1KbkIBHGQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 20 Feb 2021 18:01:57 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 20 Feb 2021 18:01:57 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'SelvaKumar S' <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
+CC:     "kbusch@kernel.org" <kbusch@kernel.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "selvajove@gmail.com" <selvajove@gmail.com>,
+        "joshiiitr@gmail.com" <joshiiitr@gmail.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>,
+        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
+        "kch@kernel.org" <kch@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: RE: [RFC PATCH v5 0/4] add simple copy support
+Thread-Topic: [RFC PATCH v5 0/4] add simple copy support
+Thread-Index: AQHXByyi0XMTfmzR3kSGd6ttkW2CGaphVhLg
+Date:   Sat, 20 Feb 2021 18:01:56 +0000
+Message-ID: <146c47907c2446d4a896830de400dd81@AcuMS.aculab.com>
+References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
+ <20210219124517.79359-1-selvakuma.s1@samsung.com>
+In-Reply-To: <20210219124517.79359-1-selvakuma.s1@samsung.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <3fc2580af0efd6312a64a0e107bd6fa758f0d466.1613131238.git.vilhelm.gray@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/12/21 6:13 AM, William Breathitt Gray wrote:
-> This is a reimplementation of the Generic Counter driver interface.
-> There are no modifications to the Counter subsystem userspace interface,
-> so existing userspace applications should continue to run seamlessly.
-> 
-> The purpose of this patch is to internalize the sysfs interface code
-> among the various counter drivers into a shared module. Counter drivers
-> pass and take data natively (i.e. u8, u64, etc.) and the shared counter
-> module handles the translation between the sysfs interface and the
-> device drivers. This guarantees a standard userspace interface for all
-> counter drivers, and helps generalize the Generic Counter driver ABI in
-> order to support the Generic Counter chrdev interface (introduced in a
-> subsequent patch) without significant changes to the existing counter
-> drivers.
-> 
-> Note, Counter device registration is the same as before: drivers
-> populate a struct counter_device with components and callbacks, then
-> pass the structure to the devm_counter_register function. However,
-> what's different now is how the Counter subsystem code handles this
-> registration internally.
-> 
-> Whereas before callbacks would interact directly with sysfs data, this
-> interaction is now abstracted and instead callbacks interact with native
-> C data types. The counter_comp structure forms the basis for Counter
-> extensions.
-> 
-> The counter-sysfs.c file contains the code to parse through the
-> counter_device structure and register the requested components and
-> extensions. Attributes are created and populated based on type, with
-> respective translation functions to handle the mapping between sysfs and
-> the counter driver callbacks.
-> 
-> The translation performed for each attribute is straightforward: the
-> attribute type and data is parsed from the counter_attribute structure,
-> the respective counter driver read/write callback is called, and sysfs
-> I/O is handled before or after the driver read/write function is called.
-> 
-> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
-> Cc: Patrick Havelange <patrick.havelange@essensium.com>
-> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
-> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@st.com>
-> Cc: David Lechner <david@lechnology.com>
-> Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> ---
+RnJvbTogU2VsdmFLdW1hciBTDQo+IFNlbnQ6IDE5IEZlYnJ1YXJ5IDIwMjEgMTI6NDUNCj4gDQo+
+IFRoaXMgcGF0Y2hzZXQgdHJpZXMgdG8gYWRkIHN1cHBvcnQgZm9yIFRQNDA2NWEgKCJTaW1wbGUg
+Q29weSBDb21tYW5kIiksDQo+IHYyMDIwLjA1LjA0ICgiUmF0aWZpZWQiKQ0KPiANCj4gVGhlIFNw
+ZWNpZmljYXRpb24gY2FuIGJlIGZvdW5kIGluIGZvbGxvd2luZyBsaW5rLg0KPiBodHRwczovL252
+bWV4cHJlc3Mub3JnL3dwLWNvbnRlbnQvdXBsb2Fkcy9OVk0tRXhwcmVzcy0xLjQtUmF0aWZpZWQt
+VFBzLTEuemlwDQo+IA0KPiBTaW1wbGUgY29weSBjb21tYW5kIGlzIGEgY29weSBvZmZsb2FkaW5n
+IG9wZXJhdGlvbiBhbmQgaXMgIHVzZWQgdG8gY29weQ0KPiBtdWx0aXBsZSBjb250aWd1b3VzIHJh
+bmdlcyAoc291cmNlX3Jhbmdlcykgb2YgTEJBJ3MgdG8gYSBzaW5nbGUgZGVzdGluYXRpb24NCj4g
+TEJBIHdpdGhpbiB0aGUgZGV2aWNlIHJlZHVjaW5nIHRyYWZmaWMgYmV0d2VlbiBob3N0IGFuZCBk
+ZXZpY2UuDQoNClNvdW5kcyB0byBtZSBsaWtlIHRoZSByZWFsIHJlYXNvbiBpcyB0aGF0IHRoZSBj
+b3B5IGp1c3QgZW5kcyB1cCBjaGFuZ2luZw0Kc29tZSBpbmRpcmVjdCBibG9jayBwb2ludGVycyBy
+YXRoZXIgdGhhbiBoYXZpbmcgdG8gYWN0dWFsbHkgY29weSB0aGUgZGF0YS4NCg0KCURhdmlkDQoN
+Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
+LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
+YWxlcykNCg==
 
-For TI eQEP bits...
-
-Reviewed-by: David Lechner <david@lechnology.com>
-Tested-by: David Lechner <david@lechnology.com>
