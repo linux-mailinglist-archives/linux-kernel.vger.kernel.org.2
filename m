@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 271F53207B1
+	by mail.lfdr.de (Postfix) with ESMTP id 98F353207B2
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 00:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229991AbhBTXbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 18:31:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39734 "EHLO
+        id S229844AbhBTXbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 18:31:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhBTXXT (ORCPT
+        with ESMTP id S229926AbhBTXXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 18:23:19 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D841C0617A7
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:33 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id 189so4291430pfy.6
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:33 -0800 (PST)
+        Sat, 20 Feb 2021 18:23:22 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D860DC0617A9
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:34 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id t25so7782462pga.2
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 15:22:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1JGB1oXcTP6A9qfRlJJHY1vEAgYu+PGPpWjnbejswhI=;
-        b=PaajKGy553lkCbsCnUfhwWlEOK6SRkLYpM8aWlfxQ1XAwtXaDHVJiiM1PiIorA5prK
-         /WZMWtfm1AnmBcyhZP9yTphAjpqfRA9wsq6cYgNDa9p39D18eE7xjLNy0kWA54q84hMa
-         DnxXsW/UAj+rmaEX0brpipL36pSp7k1B9o8dfSUNfS0FoAXSVNCmtSlQimPjw68hqvyN
-         KeqQuutFLBbYC8y3R5AnLlODfDSoX/kjUYoyaJ/4q1lrkj37k94zR9WXWsdIqY5eR6J1
-         z9aHWgSXh5fNIFqKvd/QaSq/9mWrqnr6doU3NiOKT8Lk5NjTeFEJ1GtbKjdrN/F5xpJ3
-         bb+Q==
+        bh=7M+92SgST0WvDA4OozZDloQac7xs4/nLD+KIsErn5co=;
+        b=jpyVOblqrhBJhysj61sDEaWuP3uNMnPmmGPmeRxkHlgoY1JlEmx/Ngem7bIQASCq3o
+         7rxUFlSHzvUt8N+m46OFrl4i5uQ1P6sMjzGm6BshhpcKXtxzpR7hmYzRQ/xUucjW+V2r
+         jAPgqTfk22Da/WuKRQ2NE337UwqOnCKxT8EYbRP/6ych0LvyY5cGj2rmPjMjTUsIZGPw
+         lx7z87xLwXnyMUc56LDjucvQpM0wYZSYxM+7D9V7Phz2fPl8QK/wkUUPHpSjf3iYLYc2
+         jkC+T2cJQ8aXjbX/kBgYXrnlISr5CeKalnjTVkcvnkRgGfA3+49vGuRS1pBi9mAgd4Kr
+         RPhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1JGB1oXcTP6A9qfRlJJHY1vEAgYu+PGPpWjnbejswhI=;
-        b=oK92t/wW1+zFq+iLucLMGAt78i5oSqEHjIBfjLeAYpD9vWsE/s5QYKVXv/uSj1/7Ar
-         6CyCPe/vgaj11udo7Q13Y7hu6F7xFB8vLr3NVzOruqJ1UZpKLliG/jOk57ciRUB3v0Zr
-         dQF1ZrOjaCZwHHK/rXMvG8JFU2XplgKMNPjQYSXbch49rzSf6j+RCUoEKi8EsWJvbHEb
-         m0fPf8QQBeM+3jQbYpWVG7gmm+dLDUxVb2vbq4DF0XbamK+J1w765fqBJw9u3CuMZ+mc
-         jgLL8Dk064emWNbcaO7Qg296iHvHlts3I3hQ8MAlXQFfgxbcXhmz1JPJP95yezBaL+gS
-         01Lw==
-X-Gm-Message-State: AOAM530UO2s6Ob+if+mfHNkr+cUPQWekQxp68ULCwV4G1RDJuABaKnl5
-        cDDs0ycDutD2egK4R+nq2Tz1BfHi7URxMw==
-X-Google-Smtp-Source: ABdhPJxLsF5MraGiEpfjn7UzH7bpjhzdpLz3RCpIJFtRapoOUGIE7G56p5H1HvrY0C2YsFiXLK7GqQ==
-X-Received: by 2002:aa7:991c:0:b029:1e8:b29:cd69 with SMTP id z28-20020aa7991c0000b02901e80b29cd69mr8296832pff.50.1613863352804;
-        Sat, 20 Feb 2021 15:22:32 -0800 (PST)
+        bh=7M+92SgST0WvDA4OozZDloQac7xs4/nLD+KIsErn5co=;
+        b=q/UoNG2Bwguz4+20nOR+HZYqaOIARUfIwx++RdbN/ci7KhW/XuKgXsbG8yKq5VxRMj
+         1ThQB6d4NuFbaEXVkvNBnU9M5RK7TQU75rd8ybmc1Ojm0s+f64GqNhS5sQn6vm3ms2Kl
+         tweeElRbBLDM91ukZtgBFPMhMaRHruSJqPDOeXnNtecDhoZ2W+mWnQptVaKMz3lqOggF
+         yo26PuPx54wZFvfcrzgb9PEcVbXjo3fPrAworLw3cQ6oJ7GNeYKWx4CFKJ2AiMallolT
+         I39SfBsBFrDxLuYxqU57c4g88Tiaf2o8B90pNk2U1O0OzSXDLd4q5RYOZaGNJnqVdRtA
+         WGcQ==
+X-Gm-Message-State: AOAM53141xPK5JkNsD0oTEBldKC5aeGHwpIHL9fyWB2tJZXqfLKvpZji
+        Wm70CZg1+2PBZyjUkgZTm7bcGgRIpMW/WQ==
+X-Google-Smtp-Source: ABdhPJxR6DKm+ypePtXJH7jAr7A41rGfB13cNV8t41wg6+F1nCyEsZq7H7gnjkSysMFsIP1jnOVD2g==
+X-Received: by 2002:aa7:8d04:0:b029:1ed:2328:f677 with SMTP id j4-20020aa78d040000b02901ed2328f677mr8028075pfe.26.1613863353878;
+        Sat, 20 Feb 2021 15:22:33 -0800 (PST)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id 4sm13171538pjc.23.2021.02.20.15.22.31
+        by smtp.gmail.com with ESMTPSA id 4sm13171538pjc.23.2021.02.20.15.22.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 15:22:32 -0800 (PST)
+        Sat, 20 Feb 2021 15:22:33 -0800 (PST)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     linux-kernel@vger.kernel.org
 Cc:     Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Nadav Amit <namit@vmware.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH v6 8/9] x86/mm/tlb: Remove unnecessary uses of the inline keyword
-Date:   Sat, 20 Feb 2021 15:17:11 -0800
-Message-Id: <20210220231712.2475218-9-namit@vmware.com>
+        Nadav Amit <namit@vmware.com>
+Subject: [PATCH v6 9/9] smp: inline on_each_cpu_cond() and on_each_cpu()
+Date:   Sat, 20 Feb 2021 15:17:12 -0800
+Message-Id: <20210220231712.2475218-10-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210220231712.2475218-1-namit@vmware.com>
 References: <20210220231712.2475218-1-namit@vmware.com>
@@ -70,48 +69,163 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-The compiler is smart enough without these hints.
+Simplify the code and avoid having an additional function on the stack
+by inlining on_each_cpu_cond() and on_each_cpu().
 
 Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Nadav Amit <namit@vmware.com>
 ---
- arch/x86/mm/tlb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/linux/smp.h | 50 ++++++++++++++++++++++++++++------------
+ kernel/smp.c        | 56 ---------------------------------------------
+ 2 files changed, 36 insertions(+), 70 deletions(-)
 
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 17ec4bfeee67..f4b162f273f5 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -316,7 +316,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 	local_irq_restore(flags);
+diff --git a/include/linux/smp.h b/include/linux/smp.h
+index 70c6f6284dcf..84a0b4828f66 100644
+--- a/include/linux/smp.h
++++ b/include/linux/smp.h
+@@ -50,30 +50,52 @@ extern unsigned int total_cpus;
+ int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
+ 			     int wait);
+ 
++void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
++			   void *info, bool wait, const struct cpumask *mask);
++
++int smp_call_function_single_async(int cpu, call_single_data_t *csd);
++
+ /*
+  * Call a function on all processors
+  */
+-void on_each_cpu(smp_call_func_t func, void *info, int wait);
++static inline void on_each_cpu(smp_call_func_t func, void *info, int wait)
++{
++	on_each_cpu_cond_mask(NULL, func, info, wait, cpu_online_mask);
++}
+ 
+-/*
+- * Call a function on processors specified by mask, which might include
+- * the local one.
++/**
++ * on_each_cpu_mask(): Run a function on processors specified by
++ * cpumask, which may include the local processor.
++ * @mask: The set of cpus to run on (only runs on online subset).
++ * @func: The function to run. This must be fast and non-blocking.
++ * @info: An arbitrary pointer to pass to the function.
++ * @wait: If true, wait (atomically) until function has completed
++ *        on other CPUs.
++ *
++ * If @wait is true, then returns once @func has returned.
++ *
++ * You must not call this function with disabled interrupts or from a
++ * hardware interrupt handler or from a bottom half handler.  The
++ * exception is that it may be used during early boot while
++ * early_boot_irqs_disabled is set.
+  */
+-void on_each_cpu_mask(const struct cpumask *mask, smp_call_func_t func,
+-		void *info, bool wait);
++static inline void on_each_cpu_mask(const struct cpumask *mask,
++				    smp_call_func_t func, void *info, bool wait)
++{
++	on_each_cpu_cond_mask(NULL, func, info, wait, mask);
++}
+ 
+ /*
+  * Call a function on each processor for which the supplied function
+  * cond_func returns a positive value. This may include the local
+- * processor.
++ * processor.  May be used during early boot while early_boot_irqs_disabled is
++ * set. Use local_irq_save/restore() instead of local_irq_disable/enable().
+  */
+-void on_each_cpu_cond(smp_cond_func_t cond_func, smp_call_func_t func,
+-		      void *info, bool wait);
+-
+-void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
+-			   void *info, bool wait, const struct cpumask *mask);
+-
+-int smp_call_function_single_async(int cpu, call_single_data_t *csd);
++static inline void on_each_cpu_cond(smp_cond_func_t cond_func,
++				    smp_call_func_t func, void *info, bool wait)
++{
++	on_each_cpu_cond_mask(cond_func, func, info, wait, cpu_online_mask);
++}
+ 
+ #ifdef CONFIG_SMP
+ 
+diff --git a/kernel/smp.c b/kernel/smp.c
+index c8a5a1facc1a..b6375d775e93 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -847,55 +847,6 @@ void __init smp_init(void)
+ 	smp_cpus_done(setup_max_cpus);
  }
  
--static inline unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
-+static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
- {
- 	unsigned long next_tif = task_thread_info(next)->flags;
- 	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
-@@ -880,7 +880,7 @@ static DEFINE_PER_CPU_SHARED_ALIGNED(struct flush_tlb_info, flush_tlb_info);
- static DEFINE_PER_CPU(unsigned int, flush_tlb_info_idx);
- #endif
- 
--static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
-+static struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
- 			unsigned long start, unsigned long end,
- 			unsigned int stride_shift, bool freed_tables,
- 			u64 new_tlb_gen)
-@@ -907,7 +907,7 @@ static inline struct flush_tlb_info *get_flush_tlb_info(struct mm_struct *mm,
- 	return info;
+-/*
+- * Call a function on all processors.  May be used during early boot while
+- * early_boot_irqs_disabled is set.  Use local_irq_save/restore() instead
+- * of local_irq_disable/enable().
+- */
+-void on_each_cpu(smp_call_func_t func, void *info, int wait)
+-{
+-	unsigned long flags;
+-
+-	preempt_disable();
+-	smp_call_function(func, info, wait);
+-	local_irq_save(flags);
+-	func(info);
+-	local_irq_restore(flags);
+-	preempt_enable();
+-}
+-EXPORT_SYMBOL(on_each_cpu);
+-
+-/**
+- * on_each_cpu_mask(): Run a function on processors specified by
+- * cpumask, which may include the local processor.
+- * @mask: The set of cpus to run on (only runs on online subset).
+- * @func: The function to run. This must be fast and non-blocking.
+- * @info: An arbitrary pointer to pass to the function.
+- * @wait: If true, wait (atomically) until function has completed
+- *        on other CPUs.
+- *
+- * If @wait is true, then returns once @func has returned.
+- *
+- * You must not call this function with disabled interrupts or from a
+- * hardware interrupt handler or from a bottom half handler.  The
+- * exception is that it may be used during early boot while
+- * early_boot_irqs_disabled is set.
+- */
+-void on_each_cpu_mask(const struct cpumask *mask, smp_call_func_t func,
+-			void *info, bool wait)
+-{
+-	unsigned int scf_flags;
+-
+-	scf_flags = SCF_RUN_LOCAL;
+-	if (wait)
+-		scf_flags |= SCF_WAIT;
+-
+-	preempt_disable();
+-	smp_call_function_many_cond(mask, func, info, scf_flags, NULL);
+-	preempt_enable();
+-}
+-EXPORT_SYMBOL(on_each_cpu_mask);
+-
+ /*
+  * on_each_cpu_cond(): Call a function on each processor for which
+  * the supplied function cond_func returns true, optionally waiting
+@@ -932,13 +883,6 @@ void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
  }
+ EXPORT_SYMBOL(on_each_cpu_cond_mask);
  
--static inline void put_flush_tlb_info(void)
-+static void put_flush_tlb_info(void)
+-void on_each_cpu_cond(smp_cond_func_t cond_func, smp_call_func_t func,
+-		      void *info, bool wait)
+-{
+-	on_each_cpu_cond_mask(cond_func, func, info, wait, cpu_online_mask);
+-}
+-EXPORT_SYMBOL(on_each_cpu_cond);
+-
+ static void do_nothing(void *unused)
  {
- #ifdef CONFIG_DEBUG_VM
- 	/* Complete reentrency prevention checks */
+ }
 -- 
 2.25.1
 
