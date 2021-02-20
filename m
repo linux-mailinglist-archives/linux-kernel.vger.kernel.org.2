@@ -2,153 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B17A8320654
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8FE32065E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhBTRA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 12:00:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38854 "EHLO mail.kernel.org"
+        id S229826AbhBTRNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 12:13:43 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49901 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhBTRA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:00:56 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 713C764D9A;
-        Sat, 20 Feb 2021 17:00:15 +0000 (UTC)
-Date:   Sat, 20 Feb 2021 12:00:13 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>
-Subject: [for-next][PATCH] kprobes: Fix to delay the kprobes jump
- optimization
-Message-ID: <20210220120013.59c07876@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229766AbhBTRNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 12:13:42 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 11KH60NN007214;
+        Sat, 20 Feb 2021 18:06:00 +0100
+Date:   Sat, 20 Feb 2021 18:06:00 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jari Ruusu <jariruusu@protonmail.com>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <20210220170600.GB7159@1wt.eu>
+References: <YC6nZH/4CkLLsxxB@kroah.com>
+ <sjYC-8XCIa2KTTlzjXs95LPnYQJvJe3Lrz4tR9NZTLLIfQpWLquW6W2siZAP7wtgHXOsK5bSxo8JqJp7iPLQ_NtDhh8GbES8J3dUlB5sqYs=@protonmail.com>
+ <YC91OWVGAfyorRbc@kroah.com>
+ <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com>
+ <YC+U+beaI91aXh5z@kroah.com>
+ <OurD0pqDIPLLZlt1kk-JE57wXeMoh0NFPKKcBrbY3ValknDXcpLwAJz6x1DMbB6LNZ6FDdeUrPM-pX60VF5FERTiDK_gzgHy4tq7iG3MFAM=@protonmail.com>
+ <YC+d/NyXDebGSHwN@kroah.com>
+ <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com>
+ <RpmkVZBUhx36C8VTTIM1SZz6jf46qBoOL4rMaBMuTMRTe-TQGmEfgeMcrGhXWt1N6SSPrHfFERM_hzHRBod7Xn9XV6d0cyEHoQ8nqXi7rXA=@protonmail.com>
+ <YDEzOg4WTRWBC7DS@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDEzOg4WTRWBC7DS@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Feb 20, 2021 at 05:05:14PM +0100, Greg Kroah-Hartman wrote:
+> On Sat, Feb 20, 2021 at 01:29:21PM +0000, Jari Ruusu wrote:
+> > On Friday, February 19, 2021 5:23 PM, Jari Ruusu <jariruusu@protonmail.com> wrote:
+> > > My contribution here is trying to point you guys to right direction.
+> > 
+> > I have been able to narrow the beginning of the problem to these kernels:
+> > 4.14.188 ... 4.14.202
+> > 
+> > Same "fix" that went info 4.14.y is also bugging 4.19.y kernels.
+> 
+> Great, any chance you can narrow this down to the commit itself?
 
-Masami Hiramatsu (1):
-      kprobes: Fix to delay the kprobes jump optimization
+What is strnage is that there was no iwlwifi driver change in this
+interval. Only iwlegacy (don't know if this one was used instead).
 
-----
- kernel/kprobes.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
----------------------------
-commit c85c9a2c6e368dc94907e63babb18a9788e5c9b6
-Author: Masami Hiramatsu <mhiramat@kernel.org>
-Date:   Thu Feb 18 23:29:23 2021 +0900
+Note, my laptop uses iwlwifi as well. I've met random issues with it
+a year ago when I started to use wifi, such as wifi randomly freezing
+during audio meetings, and automatically fixing itself after 1 minute.
+I also found that a down-up cycle on the interface would fix it. It
+happened less than once a day so it was not easy to diagnose, and given
+how crappy all wifi chips are, I naturally attributed this to the
+hardware. But since I upgraded to 5.4 months ago, I don't remember having
+met that issue anymore, so it was likely related to the driver. All I can
+say is that 4.19.68 was exhibiting this issue. I can't say for older ones
+because I didn't use wifi before.
 
-    kprobes: Fix to delay the kprobes jump optimization
-    
-    Commit 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-    moved the kprobe setup in early_initcall(), which includes kprobe
-    jump optimization.
-    The kprobes jump optimizer involves synchronize_rcu_tasks() which
-    depends on the ksoftirqd and rcu_spawn_tasks_*(). However, since
-    those are setup in core_initcall(), kprobes jump optimizer can not
-    run at the early_initcall().
-    
-    To avoid this issue, make the kprobe optimization disabled in the
-    early_initcall() and enables it in subsys_initcall().
-    
-    Note that non-optimized kprobes is still available after
-    early_initcall(). Only jump optimization is delayed.
-    
-    Link: https://lkml.kernel.org/r/161365856280.719838.12423085451287256713.stgit@devnote2
-    
-    Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
-    Cc: Ingo Molnar <mingo@kernel.org>
-    Cc: Peter Zijlstra <peterz@infradead.org>
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: RCU <rcu@vger.kernel.org>
-    Cc: Michael Ellerman <mpe@ellerman.id.au>
-    Cc: Andrew Morton <akpm@linux-foundation.org>
-    Cc: Daniel Axtens <dja@axtens.net>
-    Cc: Frederic Weisbecker <frederic@kernel.org>
-    Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-    Cc: Joel Fernandes <joel@joelfernandes.org>
-    Cc: Michal Hocko <mhocko@suse.com>
-    Cc: "Theodore Y . Ts'o" <tytso@mit.edu>
-    Cc: Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-    Cc: stable@vger.kernel.org
-    Reported-by: Paul E. McKenney <paulmck@kernel.org>
-    Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-    Reported-by: Uladzislau Rezki <urezki@gmail.com>
-    Acked-by: Paul E. McKenney <paulmck@kernel.org>
-    Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index dd1d027455c4..745f08fdd7a6 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -861,7 +861,6 @@ static void try_to_optimize_kprobe(struct kprobe *p)
- 	cpus_read_unlock();
- }
- 
--#ifdef CONFIG_SYSCTL
- static void optimize_all_kprobes(void)
- {
- 	struct hlist_head *head;
-@@ -887,6 +886,7 @@ static void optimize_all_kprobes(void)
- 	mutex_unlock(&kprobe_mutex);
- }
- 
-+#ifdef CONFIG_SYSCTL
- static void unoptimize_all_kprobes(void)
- {
- 	struct hlist_head *head;
-@@ -2500,18 +2500,14 @@ static int __init init_kprobes(void)
- 		}
- 	}
- 
--#if defined(CONFIG_OPTPROBES)
--#if defined(__ARCH_WANT_KPROBES_INSN_SLOT)
--	/* Init kprobe_optinsn_slots */
--	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
--#endif
--	/* By default, kprobes can be optimized */
--	kprobes_allow_optimization = true;
--#endif
--
- 	/* By default, kprobes are armed */
- 	kprobes_all_disarmed = false;
- 
-+#if defined(CONFIG_OPTPROBES) && defined(__ARCH_WANT_KPROBES_INSN_SLOT)
-+	/* Init kprobe_optinsn_slots for allocation */
-+	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
-+#endif
-+
- 	err = arch_init_kprobes();
- 	if (!err)
- 		err = register_die_notifier(&kprobe_exceptions_nb);
-@@ -2526,6 +2522,21 @@ static int __init init_kprobes(void)
- }
- early_initcall(init_kprobes);
- 
-+#if defined(CONFIG_OPTPROBES)
-+static int __init init_optprobes(void)
-+{
-+	/*
-+	 * Enable kprobe optimization - this kicks the optimizer which
-+	 * depends on synchronize_rcu_tasks() and ksoftirqd, that is
-+	 * not spawned in early initcall. So delay the optimization.
-+	 */
-+	optimize_all_kprobes();
-+
-+	return 0;
-+}
-+subsys_initcall(init_optprobes);
-+#endif
-+
- #ifdef CONFIG_DEBUG_FS
- static void report_probe(struct seq_file *pi, struct kprobe *p,
- 		const char *sym, int offset, char *modname, struct kprobe *pp)
+Just my two cents,
+Willy
