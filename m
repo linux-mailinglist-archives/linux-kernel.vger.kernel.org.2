@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F873204D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FA63204D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:52:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbhBTJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 04:48:42 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12986 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBTJs0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 04:48:26 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DjNqk29NDzjQNd;
-        Sat, 20 Feb 2021 17:46:10 +0800 (CST)
-Received: from [10.67.102.118] (10.67.102.118) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 20 Feb 2021 17:47:35 +0800
-Subject: Re: [PATCH v2 3/3] crypto: hisilicon/sec - fixes shash test error
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <wangzhou1@hisilicon.com>, <xuzaibo@huawei.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1612692280-11386-1-git-send-email-liulongfang@huawei.com>
- <1612692280-11386-4-git-send-email-liulongfang@huawei.com>
- <20210210064328.GA15849@gondor.apana.org.au>
- <0afaed85-eeb0-236c-817f-a0f9cf02c65a@huawei.com>
- <20210218020647.GB30659@gondor.apana.org.au>
-From:   liulongfang <liulongfang@huawei.com>
-Message-ID: <a235fc8b-6ff4-cf6e-84f5-ed6019e752db@huawei.com>
-Date:   Sat, 20 Feb 2021 17:47:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S229804AbhBTJth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 04:49:37 -0500
+Received: from mga05.intel.com ([192.55.52.43]:40939 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhBTJt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 04:49:26 -0500
+IronPort-SDR: lFj1AzefuRA5ACqTegbYsNQqx8EwJlr+RDD2JB3lQLLmBF8M/F9/XMqEWqUSjOPh6qzhgSMDbt
+ OpKzNW92946g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="268940687"
+X-IronPort-AV: E=Sophos;i="5.81,192,1610438400"; 
+   d="scan'208";a="268940687"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 01:48:45 -0800
+IronPort-SDR: 9adtJopHLObI4Buw1EoCxcKSFXrM6VkDSAQxB4py9rQVCnGk4bB+hKlo2vcqMwfKTEZH4ybIjp
+ cRDL7Ap/sFWA==
+X-IronPort-AV: E=Sophos;i="5.81,192,1610438400"; 
+   d="scan'208";a="387633482"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 01:48:44 -0800
+Date:   Sat, 20 Feb 2021 17:48:42 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Yejune Deng <yejune.deng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virt: acrn: Use vfs_poll() instead of f_op->poll()
+Message-ID: <20210220094842.GB30008@shuo-intel.sh.intel.com>
+References: <20210219092612.7533-1-yejune.deng@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210218020647.GB30659@gondor.apana.org.au>
-Content-Type: text/plain; charset="gbk"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.118]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210219092612.7533-1-yejune.deng@gmail.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/18 10:06, Herbert Xu wrote:
-> On Thu, Feb 18, 2021 at 10:01:58AM +0800, liulongfang wrote:
->>
->>>> diff --git a/drivers/crypto/hisilicon/sec2/sec_crypto.c b/drivers/crypto/hisilicon/sec2/sec_crypto.c
->>>> index d2c4a2c..988faf7 100644
->>>> --- a/drivers/crypto/hisilicon/sec2/sec_crypto.c
->>>> +++ b/drivers/crypto/hisilicon/sec2/sec_crypto.c
->>>> @@ -7,6 +7,7 @@
->>>>  #include <crypto/des.h>
->>>>  #include <crypto/hash.h>
->>>>  #include <crypto/internal/aead.h>
->>>> +#include <crypto/internal/hash.h>
->>>
->>> Please explain what exactly in this file needs this header file.
->>>
->>> As it stands you could just be hiding real bugs.
->>>
->>> Thanks,
->>>
->> The crypto_alloc_shash() interface in the header file
->> will be used in the function sec_aead_ctx_init(),
->> If this header file is not added, calling the interface
->> crypto_alloc_shash() during the initialization of the
->> aead algorithm will return an error.
-> 
-> This makes no sense whatsoever as crypto_alloc_shash is defiend
-> by crypto/hash.h and you've already included that.
-> 
-> Cheers,
-> 
-On this kernel version, those modules set to Y will not use the sha512 algorithm.
-And our SEC module selects it "select CRYPTO_SHA512", so it is compiled into
-ko: "sha512_generic.ko".
-Because we did not load the "sha512_generic.ko" when we loaded the ko of SEC,
-the sha512 algorithm test failed, Therefore, before using SEC,
-we need to load this ko first, so this patch is not required, please ignore it.
-Thanks
-Longfang.
+Thanks for the patch.
+
+On Fri 19.Feb'21 at 17:26:12 +0800, Yejune Deng wrote:
+>In acrn_irqfd_assign(), use vfs_poll() is a more advanced function,
+>as the same time, modify the definition of events.
+>
+>Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+>---
+> drivers/virt/acrn/irqfd.c | 4 ++--
+> 1 file changed, 2 insertions(+), 2 deletions(-)
+>
+>diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
+>index a8766d528e29..19890396e174 100644
+>--- a/drivers/virt/acrn/irqfd.c
+>+++ b/drivers/virt/acrn/irqfd.c
+>@@ -112,9 +112,9 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
+> {
+> 	struct eventfd_ctx *eventfd = NULL;
+> 	struct hsm_irqfd *irqfd, *tmp;
+>-	unsigned int events;
+> 	struct fd f;
+> 	int ret = 0;
+>+	__poll_t events;
+
+Can you keep variable declarations is reverse fir tree order which this
+driver follows?
+
+>
+> 	irqfd = kzalloc(sizeof(*irqfd), GFP_KERNEL);
+> 	if (!irqfd)
+>@@ -158,7 +158,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
+> 	mutex_unlock(&vm->irqfds_lock);
+>
+> 	/* Check the pending event in this stage */
+>-	events = f.file->f_op->poll(f.file, &irqfd->pt);
+>+	events = vfs_poll(f.file, &irqfd->pt);
+>
+> 	if (events & POLLIN)
+> 		acrn_irqfd_inject(irqfd);
+>-- 
+>2.29.0
+>
