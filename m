@@ -2,180 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704FF32024F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 01:55:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B1C320256
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 01:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhBTAxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 19:53:21 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55056 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229700AbhBTAxU (ORCPT
+        id S229871AbhBTA4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 19:56:44 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:60360 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229658AbhBTA4k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 19:53:20 -0500
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 11K0VtFv132651;
-        Fri, 19 Feb 2021 19:52:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=OSByV+b1Nklm13aT9EiqD6ae/H4Zz6W+SPfdmBvZsCo=;
- b=sioyeRChu6DdQVvOTKELFPFyQqnfbJWwwM6frENi3CcszG7xR8/DjHYzU6WzJL9cFfs3
- m1BVf7yP49lg4LhS8Rf0sHkygsSVnXPmRiJw7DoFldGIEI+AV8sh7J8Xuwr3WCIIskAH
- dYFdJgrlD9/fR12bXi5pZNcDWI6BkL+rwReSOAKFRII3BZR7heQqvv/UcrhMyRvHvN4g
- /QZjgqxmmtsktBnjU4qoTKzK4QkiUDliwkxXINnI58MtQFWVnrLREEVsYFdugcNDlIvU
- B1cmlf5uh1KzQoJOUWephOtwKQ22Y2NQDlQU7Aj756J/652/oMOGQ1b3bdDOyfmm9lXF MQ== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36tqp7rj09-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 Feb 2021 19:52:22 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11K0qBD1014875;
-        Sat, 20 Feb 2021 00:52:21 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma04dal.us.ibm.com with ESMTP id 36p6dadmu9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 20 Feb 2021 00:52:21 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11K0qKFb33751520
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Feb 2021 00:52:20 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9E79FAC05F;
-        Sat, 20 Feb 2021 00:52:20 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 68FFCAC060;
-        Sat, 20 Feb 2021 00:52:17 +0000 (GMT)
-Received: from manicouagan.localdomain.com (unknown [9.85.174.98])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Sat, 20 Feb 2021 00:52:17 +0000 (GMT)
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     kexec@lists.infradead.org, Hari Bathini <hbathini@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Rob Herring <robh@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Subject: [PATCH v2] powerpc/kexec_file: Restore FDT size estimation for kdump kernel
-Date:   Fri, 19 Feb 2021 21:52:04 -0300
-Message-Id: <20210220005204.1417200-1-bauerman@linux.ibm.com>
-X-Mailer: git-send-email 2.29.2
+        Fri, 19 Feb 2021 19:56:40 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11K0ngC0174660;
+        Sat, 20 Feb 2021 00:54:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=RYl3Y3X/AkFzOkcEi2tJufGb8xFZ+DOgq9HkaHQEUlI=;
+ b=OTdjfP0TuC3/li58Ae7/oj27jQg14F6qG/g/LMrDj1pETqDQ/7J/6USYrMevcP1CYjvi
+ A1uAw2g7PCFhKzLvEgkDKZeNd0dEd27pAj1R/DsBIooCxCaY7KfiEY0ZWeB1FpKXsGZq
+ sRyncJQ3UMAyJJJRk832Ls1+zF+xn3cenuIyw0XmTyz27J6HTBYlUxDiLBde1wKlzNBx
+ dhldId1c1ISRYgQ3HFCIzPYYHqg22o9qaELgDR8obwUHsPn15twvRc5t6yRpOrwu3aF1
+ /tDt8M5WmnfyGc5MIcxoJPNQpUaLNqikkD467ZrQDvXFFZzqHtkCu5Vppc3X6B4XsxSz rQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 36p66rb5m9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 20 Feb 2021 00:54:52 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11K0noZl079971;
+        Sat, 20 Feb 2021 00:54:52 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2055.outbound.protection.outlook.com [104.47.46.55])
+        by userp3020.oracle.com with ESMTP id 36prhwa7rr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 20 Feb 2021 00:54:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kdJGhe/R7k9Bt39ZfVTD6tFxOKtb3y5oicPbQsjs+37dMH41bDNmVj4n8EXLU5JCAK4Ipkt2aDhqf2vimDZyBQw9pNFatv4+dGed7qD5B/gqxUaTvGuFKKfUXH79arCXF2MBK7oCXLDwRfvwfxP42h4tHXGyA5WFS2JdjRvDx4BqvuzWHt41jtssAKYgde1jHSSwkOQS/E1J8ULJzvPlR1LU4LpsRPTfBARpA2A3yZHHubd7/TP+H9sZeHxMU5I4VnRtuSfw/QwKdydzJcSAjwvXSqfvQGBZGZOOHSIyvgXp9dB+P0fPlg5O4Ea/urhg3OfZDeCrzO1kQ+CdkLnm8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RYl3Y3X/AkFzOkcEi2tJufGb8xFZ+DOgq9HkaHQEUlI=;
+ b=DF0mamQhFt5ZnTFcPW32PbbHj37gQbO05XTCpaWhVsAwJs/rPRn11qNGKiskP18E5YLhYODp3FwyRmV8DoMowUmPobW+I/SYi643dxpZun+4gCjVVVhtVCOPTgZ2xm2EtoL7nKPoE3+tNzaqFxYysnj11dAkupUfJUgUNde8Bh7WYYLF56FKpdhP4j17Oe+tSnZdS4LTemSpaB45f6eSXKRn4M8oc/+tQpI78HaqvxKwHRHS18AF3hEFzwj8LB9mHlRuRKMfSgMW9f4mVVdklBIEiXeTAxseY58BYSKVgYfqulGSqMZ2XMH2qwlXLCzcSfeHCcbHO4OXOGKuiRABBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RYl3Y3X/AkFzOkcEi2tJufGb8xFZ+DOgq9HkaHQEUlI=;
+ b=vAIXRhMGGEAuVaX7/j/TVWJEn3UaDVZBsvRYEQ4ME2QI0ts0JLXG/H+rsLh59VSvS12ZZM+bqJU45EZpc7xqIvi/E2qVj4nsd2U2uaSmI4ALQ2xvlqFCKeThXflGos5BLrynkQfPpz9hF4hn5sNWMHEhoS87BKKzasdGBVtL6/0=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BYAPR10MB2551.namprd10.prod.outlook.com (2603:10b6:a02:b6::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Sat, 20 Feb
+ 2021 00:54:49 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3846.039; Sat, 20 Feb 2021
+ 00:54:49 +0000
+Date:   Fri, 19 Feb 2021 19:54:44 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v5 1/9] cxl/mem: Introduce a driver for CXL-2.0-Type-3
+ endpoints
+Message-ID: <YDBd1J98VJM0dLvE@Konrads-MacBook-Pro.local>
+References: <20210217040958.1354670-1-ben.widawsky@intel.com>
+ <20210217040958.1354670-2-ben.widawsky@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210217040958.1354670-2-ben.widawsky@intel.com>
+X-Originating-IP: [209.6.208.110]
+X-ClientProxiedBy: SN4PR0501CA0034.namprd05.prod.outlook.com
+ (2603:10b6:803:40::47) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-19_08:2021-02-18,2021-02-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0
- impostorscore=0 priorityscore=1501 adultscore=0 spamscore=0 phishscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102190196
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Konrads-MacBook-Pro.local (209.6.208.110) by SN4PR0501CA0034.namprd05.prod.outlook.com (2603:10b6:803:40::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.11 via Frontend Transport; Sat, 20 Feb 2021 00:54:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 65c47051-b1c3-4260-64a6-08d8d53a1fdc
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2551:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB2551DDB86FC97148F322186089839@BYAPR10MB2551.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LYGRuwEWMWFelWojFbjLkQdlMgsm7yW20GMsCm70uwAtVzSciFM5Arzio9wcm+yotO2PBi6mCqX/T4K4AcnyXcqH/5WUyeDuEE2muqeRVXGhKwXnIyD8E7ThpSYAigqOorVJJ5lPBHeFsJQb5gl/SNPU54XGb9QD2oNOVOiJzylr8iR7PD5hXZilbkSKCoa2drWZ/Ssevb4U+zbFicVdLsFo+8YI2eFtPiGBKfbJIfQdXAFIk0QvTHe9G2ylxfaRMj4REpVxPIqQA1UdXKgebLK0pANRLlQu7q/umAKaAGGmoJ3Wmc8JeMQ/ZOEEt7MgTQCSpDhDpyzqyQDbXwhCsUNTge503wPqoz3lPM7uJKcHPPtqzpoM1rp7re66HyxDPyX1oqWv2wmd1uCNuCUDjZjprWJT41Z7HizaHj4BP0mcBI/aLw+gyFx2YawJ1wBmeilrQ+p8bhBcSPjVNEqsyWEcSJwA0l4ZpW7aOguyxaMWYGzfdvsBPsMDZDNb1fLsdaFVPz38erwU42LPAoeg41jYII0rGSaV4eCAKW8Ae/24srCl6oGU2GKhIvYcN57XUrucGaklIBaYjingFbOHbbhS/l9hiYHxBDe3pf1FG+g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(396003)(376002)(136003)(6506007)(26005)(5660300002)(4326008)(956004)(66946007)(16526019)(83380400001)(52116002)(7416002)(186003)(2906002)(8676002)(66476007)(8936002)(478600001)(316002)(7696005)(966005)(86362001)(66556008)(54906003)(9686003)(6916009)(55016002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?v1khhlDI+IQUVEaM598yURUL+0Gm6EU3rcoOMjQfRciaSNI1OZJjbnGCwmSc?=
+ =?us-ascii?Q?eVKWz6FgJDvzBxIFqui8evKNTY7uBinenwECmTRtopdKgU9zkQbFI3u12jSC?=
+ =?us-ascii?Q?EByQ3l4cdU+IsM+d96dGVAz3xO3v3IM6Ycox/6iJ9PJgL66TvIp46t9saRd1?=
+ =?us-ascii?Q?M0/kVkkXWXamRhDRf7nHm/qIMaPpXaE7RFiyw9LxSClsSx1Rg+EkPWH6h2sm?=
+ =?us-ascii?Q?dCIn5o6I9TLy7731bWGUKHe63DcdOtUz/IrTFf8ORELJ58Eiy8tVCa9nwY6A?=
+ =?us-ascii?Q?ru9G2I/iKHo9HNR1R/zPHyRxbt1IIJG75nkVrY8TQFaGcbMRG0AJImiZpyBb?=
+ =?us-ascii?Q?Dgbthx2ea8wM3zqM/j2hGwIf1xR5Q/oyRHmuPlPzmqca1Oa4Ae17Mc3c7ARO?=
+ =?us-ascii?Q?wcJAma3Nuhlag4EqcU3OnRvnofi7E4OlUF4F1kUPehM3rKZCnnQO2+ww8wqb?=
+ =?us-ascii?Q?J2cppZHMgXbwhOCpBwJEVQHWtCfxj5lH6JbWEVz5VAXEnkGyRe7sIVzGr7Pk?=
+ =?us-ascii?Q?KAJCvWjU9sI1BJ/buXVGvwZpT9bi/qiB+QnzBrEhDpEqem8ZrjMBG6gbUcjL?=
+ =?us-ascii?Q?AcNvH9kzurafvEqxmnp9hXEuAZjBqnf9547rd1BsimLINCEfm28SRmXHgYOe?=
+ =?us-ascii?Q?bSSC1MLD8pw8OickSMk8oFdDy7W+6sAcih/gPMwyv/PFbVGi6XNd0Quzh+5W?=
+ =?us-ascii?Q?N9uLVkLq0WQUbsrN0Z1mF9k5B0wrDucWi+YCtx8bBxmYnccgeTPn1wCy+uZ5?=
+ =?us-ascii?Q?/nLHWL+Gk2DP++hGXHVU/OA6LhneXxUslrcTA/8F37HZjd72AbpZZO+ivJLY?=
+ =?us-ascii?Q?SPkOd8J0lztehn6efxZ5eBMhRfUjwPhYTVOMeugvjR3Xvs2P8VxjRsrVd1X6?=
+ =?us-ascii?Q?NQu1jDwz2ub9tjMg1jbWRZRmt4L7yc+pOndsIZgxr+28NZH2I76nHqVk/+BK?=
+ =?us-ascii?Q?dGLKvUZbcEbwIQxagHHSNxK8LD2h1LonkkPNKMsinZsB7FyfEQJMq58Y9qhs?=
+ =?us-ascii?Q?euLamJiWbgGc+oJ5I+w1ABdwzHNY9CkSbPfB65048hil/6iLdkbEeiYmj95a?=
+ =?us-ascii?Q?XYwFmrs/TsEKrQ//qnfIE9tqoOjAMPXI7y7966ZT8AfM6+z0s1CSYgOIHcXk?=
+ =?us-ascii?Q?4KKd92NFJiD/mz6GzyEf/oQK7TUZcvH1GbA7+zJZwezUj/WYZZGzL29ZbL4r?=
+ =?us-ascii?Q?RlimhMLVrLhcgc4YAEiq6cOhfrZ/voFuMDgYMz6JZkvO7NWoEz4IGN6n8nn4?=
+ =?us-ascii?Q?VOcKFh0YzsEjZLsTOu3P1ZRrCDdGTlFdeR0fI8RvwVfyGudY8VYy+Uea0iY+?=
+ =?us-ascii?Q?V6awvuBmwZYDxL7PwRWGTJbb?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65c47051-b1c3-4260-64a6-08d8d53a1fdc
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2021 00:54:49.3771
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nPlCvED8JPGtSZXpQlMyEPzdhxr9z1MGHMtGu2hE+j7fWmGmaZTR5U47nhGCMNMwQs5lMvRXzo5c17vWp0wOWw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2551
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102200002
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102200002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2377c92e37fe ("powerpc/kexec_file: fix FDT size estimation for kdump
-kernel") fixed how elf64_load() estimates the FDT size needed by the
-crashdump kernel.
+On Tue, Feb 16, 2021 at 08:09:50PM -0800, Ben Widawsky wrote:
+> From: Dan Williams <dan.j.williams@intel.com>
+> 
+> The CXL.mem protocol allows a device to act as a provider of "System
+> RAM" and/or "Persistent Memory" that is fully coherent as if the memory
+> was attached to the typical CPU memory controller.
+> 
+> With the CXL-2.0 specification a PCI endpoint can implement a "Type-3"
+> device interface and give the operating system control over "Host
+> Managed Device Memory". See section 2.3 Type 3 CXL Device.
+> 
+> The memory range exported by the device may optionally be described by
+> the platform firmware memory map, or by infrastructure like LIBNVDIMM to
+> provision persistent memory capacity from one, or more, CXL.mem devices.
+> 
+> A pre-requisite for Linux-managed memory-capacity provisioning is this
+> cxl_mem driver that can speak the mailbox protocol defined in section
+> 8.2.8.4 Mailbox Registers.
+> 
+> For now just land the initial driver boiler-plate and Documentation/
+> infrastructure.
+> 
+> Link: https://www.computeexpresslink.org/download-the-specification
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
+> Acked-by: David Rientjes <rientjes@google.com> (v1)
+Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 
-At the same time, commit 130b2d59cec0 ("powerpc: Use common
-of_kexec_alloc_and_setup_fdt()") changed the same code to use the generic
-function of_kexec_alloc_and_setup_fdt() to calculate the FDT size. That
-change made the code overestimate it a bit by counting twice the space
-required for the kernel command line and /chosen properties.
-
-Therefore change kexec_fdt_totalsize_ppc64() to calculate just the extra
-space needed by the kdump kernel, and change the function name so that it
-better reflects what the function is now doing.
-
-Signed-off-by: Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Reviewed-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
----
- arch/powerpc/include/asm/kexec.h  |  2 +-
- arch/powerpc/kexec/elf_64.c       |  2 +-
- arch/powerpc/kexec/file_load_64.c | 26 ++++++++------------------
- 3 files changed, 10 insertions(+), 20 deletions(-)
-
-Applies on top of next-20210219.
-
-Changes since v1:
-
-- Adjusted comment describing kexec_extra_fdt_size_ppc64() as suggested
-  by Lakshmi.
-
-diff --git a/arch/powerpc/include/asm/kexec.h b/arch/powerpc/include/asm/kexec.h
-index baab158e215c..5a11cc8d2350 100644
---- a/arch/powerpc/include/asm/kexec.h
-+++ b/arch/powerpc/include/asm/kexec.h
-@@ -128,7 +128,7 @@ int load_crashdump_segments_ppc64(struct kimage *image,
- int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
- 			  const void *fdt, unsigned long kernel_load_addr,
- 			  unsigned long fdt_load_addr);
--unsigned int kexec_fdt_totalsize_ppc64(struct kimage *image);
-+unsigned int kexec_extra_fdt_size_ppc64(struct kimage *image);
- int setup_new_fdt_ppc64(const struct kimage *image, void *fdt,
- 			unsigned long initrd_load_addr,
- 			unsigned long initrd_len, const char *cmdline);
-diff --git a/arch/powerpc/kexec/elf_64.c b/arch/powerpc/kexec/elf_64.c
-index 0492ca6003f3..5a569bb51349 100644
---- a/arch/powerpc/kexec/elf_64.c
-+++ b/arch/powerpc/kexec/elf_64.c
-@@ -104,7 +104,7 @@ static void *elf64_load(struct kimage *image, char *kernel_buf,
- 
- 	fdt = of_kexec_alloc_and_setup_fdt(image, initrd_load_addr,
- 					   initrd_len, cmdline,
--					   kexec_fdt_totalsize_ppc64(image));
-+					   kexec_extra_fdt_size_ppc64(image));
- 	if (!fdt) {
- 		pr_err("Error setting up the new device tree.\n");
- 		ret = -EINVAL;
-diff --git a/arch/powerpc/kexec/file_load_64.c b/arch/powerpc/kexec/file_load_64.c
-index 3609de30a170..297f73795a1f 100644
---- a/arch/powerpc/kexec/file_load_64.c
-+++ b/arch/powerpc/kexec/file_load_64.c
-@@ -927,37 +927,27 @@ int setup_purgatory_ppc64(struct kimage *image, const void *slave_code,
- }
- 
- /**
-- * kexec_fdt_totalsize_ppc64 - Return the estimated size needed to setup FDT
-- *                             for kexec/kdump kernel.
-- * @image:                     kexec image being loaded.
-+ * kexec_extra_fdt_size_ppc64 - Return the estimated additional size needed to
-+ *                              setup FDT for kexec/kdump kernel.
-+ * @image:                      kexec image being loaded.
-  *
-- * Returns the estimated size needed for kexec/kdump kernel FDT.
-+ * Returns the estimated extra size needed for kexec/kdump kernel FDT.
-  */
--unsigned int kexec_fdt_totalsize_ppc64(struct kimage *image)
-+unsigned int kexec_extra_fdt_size_ppc64(struct kimage *image)
- {
--	unsigned int fdt_size;
- 	u64 usm_entries;
- 
--	/*
--	 * The below estimate more than accounts for a typical kexec case where
--	 * the additional space is to accommodate things like kexec cmdline,
--	 * chosen node with properties for initrd start & end addresses and
--	 * a property to indicate kexec boot..
--	 */
--	fdt_size = fdt_totalsize(initial_boot_params) + (2 * COMMAND_LINE_SIZE);
- 	if (image->type != KEXEC_TYPE_CRASH)
--		return fdt_size;
-+		return 0;
- 
- 	/*
--	 * For kdump kernel, also account for linux,usable-memory and
-+	 * For kdump kernel, account for linux,usable-memory and
- 	 * linux,drconf-usable-memory properties. Get an approximate on the
- 	 * number of usable memory entries and use for FDT size estimation.
- 	 */
- 	usm_entries = ((memblock_end_of_DRAM() / drmem_lmb_size()) +
- 		       (2 * (resource_size(&crashk_res) / drmem_lmb_size())));
--	fdt_size += (unsigned int)(usm_entries * sizeof(u64));
--
--	return fdt_size;
-+	return (unsigned int)(usm_entries * sizeof(u64));
- }
- 
- /**
+Albeit you may want to modify 2020 to 2021 in the Copyright sections.
