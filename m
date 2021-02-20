@@ -2,87 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0559320487
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:00:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74DBC32047F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 09:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhBTI6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 03:58:31 -0500
-Received: from lucky1.263xmail.com ([211.157.147.134]:52820 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbhBTI62 (ORCPT
+        id S229809AbhBTIsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 03:48:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56303 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229476AbhBTIsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 03:58:28 -0500
-X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 03:58:22 EST
-Received: from localhost (unknown [192.168.167.235])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 01BFDC78E1;
-        Sat, 20 Feb 2021 16:46:05 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [113.57.152.160])
-        by smtp.263.net (postfix) whith ESMTP id P19729T140184970585856S1613810765103785_;
-        Sat, 20 Feb 2021 16:46:05 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <04315e02bf5ca4945840c9eb391ee223>
-X-RL-SENDER: chenhaoa@uniontech.com
-X-SENDER: chenhaoa@uniontech.com
-X-LOGIN-NAME: chenhaoa@uniontech.com
-X-FST-TO: tony0620emma@gmail.com
-X-SENDER-IP: 113.57.152.160
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Hao Chen <chenhaoa@uniontech.com>
-To:     tony0620emma@gmail.com
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hao Chen <chenhaoa@uniontech.com>
-Subject: [PATCH] rtw88: 8822ce: fix wifi disconnect after S3/S4 on HONOR laptop
-Date:   Sat, 20 Feb 2021 16:46:02 +0800
-Message-Id: <20210220084602.22386-1-chenhaoa@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+        Sat, 20 Feb 2021 03:48:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613810800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zORzgLNQwO5lxbztLsKp7s13i+nOx6UmKJ+iNn0Boxc=;
+        b=Cw9+DCL/fOEsOCkERx8mb0q5GQgmTdipba4DvsvCb9if9ql11gvha7xy0jyn27Z0gPyZ8Q
+        NS3VpUYyBJ9h+qMCAF4+MAjS+/XXAjDDbBgHkAdO8gHCK2g7oIkWbawoB0u9yKZexoRyZt
+        QVsaO0ECvcHBPEke4/U4gpHMNp2Hu7U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-507-kqJb9T8HOgCKf66ficOnWw-1; Sat, 20 Feb 2021 03:46:38 -0500
+X-MC-Unique: kqJb9T8HOgCKf66ficOnWw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 893AB803F4B;
+        Sat, 20 Feb 2021 08:46:37 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-12-128.pek2.redhat.com [10.72.12.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B8F4E60C04;
+        Sat, 20 Feb 2021 08:46:31 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, shahafs@mellanox.com,
+        lulu@redhat.com, sgarzare@redhat.com, rdunlap@infradead.org
+Subject: [PATCH V4 0/2] virtio-pci: introduce modern device module
+Date:   Sat, 20 Feb 2021 16:46:27 +0800
+Message-Id: <20210220084629.282432-1-jasowang@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the laptop HONOR MagicBook 14 sleep to S3/S4, the laptop can't
-resume.
-The dmesg of kernel report:
-"[   99.990168] pcieport 0000:00:01.2: can't change power state
-from D3hot to D0 (config space inaccessible)
-[   99.993334] rtw_pci 0000:01:00.0: can't change power state
-from D3hot to D0 (config space inaccessible)
-[  104.435004] rtw_pci 0000:01:00.0: mac power on failed
-[  104.435010] rtw_pci 0000:01:00.0: failed to power on mac"
-When try to pointer the driver.pm to NULL, the problem is fixed.
-This driver hasn't implemented pm ops yet.It makes the sleep and
-wake procedure expected when pm's ops not NULL.
+Hi all:
 
-Fixed: commit e3037485c68e ("rtw88: new Realtek 802.11ac driver")
+This series tries to implement a vDPA driver for virtio-pci device
+which will bridge between vDPA bus and virtio-pci device.
 
-Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
----
- drivers/net/wireless/realtek/rtw88/rtw8822ce.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This could be used for future feature prototyping and testing.
 
-diff --git a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
-index 3845b1333dc3..b4c6762ba7ac 100644
---- a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
-+++ b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
-@@ -25,7 +25,7 @@ static struct pci_driver rtw_8822ce_driver = {
- 	.id_table = rtw_8822ce_id_table,
- 	.probe = rtw_pci_probe,
- 	.remove = rtw_pci_remove,
--	.driver.pm = &rtw_pm_ops,
-+	.driver.pm = NULL,
- 	.shutdown = rtw_pci_shutdown,
- };
- module_pci_driver(rtw_8822ce_driver);
+Please review
+
+Changes since V3:
+- rebase to vhost.git
+
+Changes since V2:
+
+- tweak config prompt
+- switch from 'cb' to 'config_cb' for vp_vdpa config interrupt
+- use a macro for vp_vdpa msix name length
+
+Changes since V1:
+
+- don't try to use devres for virtio-pci core
+- tweak the commit log
+- split the patches furtherly to ease the reviewing
+
+Changes since RFC:
+
+- Split common codes from virito-pci and share it with vDPA driver
+- Use dynamic id in order to be less confusing with virtio-pci driver
+- No feature whitelist, supporting any features (mq, config etc)
+
+Jason Wang (2):
+  vdpa: set the virtqueue num during register
+  vdpa: introduce virtio pci driver
+
+ drivers/vdpa/Kconfig                 |   7 +
+ drivers/vdpa/Makefile                |   1 +
+ drivers/vdpa/ifcvf/ifcvf_main.c      |   5 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c    |   4 +-
+ drivers/vdpa/vdpa.c                  |  18 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim.c     |   2 +-
+ drivers/vdpa/vdpa_sim/vdpa_sim_net.c |   2 +-
+ drivers/vdpa/virtio_pci/Makefile     |   2 +
+ drivers/vdpa/virtio_pci/vp_vdpa.c    | 456 +++++++++++++++++++++++++++
+ include/linux/vdpa.h                 |  10 +-
+ 10 files changed, 487 insertions(+), 20 deletions(-)
+ create mode 100644 drivers/vdpa/virtio_pci/Makefile
+ create mode 100644 drivers/vdpa/virtio_pci/vp_vdpa.c
+
 -- 
-2.20.1
-
-
+2.25.1
 
