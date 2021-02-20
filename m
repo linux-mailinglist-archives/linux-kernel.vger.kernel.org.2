@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D5932080D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 02:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2158B320815
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 03:10:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhBUB41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 20:56:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhBUB4Q (ORCPT
+        id S229925AbhBUCHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 21:07:43 -0500
+Received: from m15114.mail.126.com ([220.181.15.114]:46428 "EHLO
+        m15114.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhBUCHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 20:56:16 -0500
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CE9C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 17:55:36 -0800 (PST)
-Received: by mail-vk1-xa30.google.com with SMTP id u141so2081783vkb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 17:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
-        b=VekUdwd8+AAukW9MxzdqP6MNWFl9txlu3LhwYFKscDMsYlPl9V9Xma9Dgizg1P9Ljr
-         vyy5PHN2IdwBQsQywleCWi5fN6DnTDlerDYAMzagw/10xgOrenrggyoCjnsXyemc8aOM
-         DFNF3jsrYcDE9MClrBaHcxmNAsjJpl/Z5oIIj9Gy0Rkrl6fpZ4aNay62jdqdLhj1nBEO
-         Ldx+UJBQs+LIVoENGsgoJtUynz/ZDRsZKPjBGM5d3VR7Jp1Mfw6eonM/wDd8YQtsJgqB
-         69BDPX5Qa8FzPFxXKToPPePzLGt8NB4UOaV2sl+ZAtNLRCJQwzV+NwridqgTWLGcnh9D
-         m/kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
-        b=Kmei//7hV10R5ybFt+i89/ZorAC1KuQrZ0dT/9vvQVPGzmWVW3vQwk7rVIOpIb5idG
-         6V8pxVk2mI0f9G5A17tYdpukl8sAvd6O8ro4do6t0459tVwjOiC/kUezaRzz+9dohTkr
-         iQDRRF6X5KU7YWPX8yiDAMU2Fubt3GcxcxIkpp0AhzzwBYk8CaXWwXWP+kKVTFf9wpxc
-         ZSqNRU4hTI2jO1Pr1DxP+QTcutvMJV2elaTieZ38As5JSqBlUwGPuwy61hbfuCTRh795
-         BDYsAKK8bCh8bbO/T0AQvqVmRw754ArYNfXvCDBvt2sQ+mQlaUFf4tI8W07fR5OVzXo6
-         dtig==
-X-Gm-Message-State: AOAM53119hD5TX1DxTmQy3gyiazhNp1sTtrRlMHpOg8uYpENNohCC9a5
-        Hbr93IH5h9j7BrD3tLegbLlQ5c53FePgCANRG+Q=
-X-Google-Smtp-Source: ABdhPJzISXr1XxrFCIPwMrNJhtnG83O9ehtvfts5k6J6KycJ/KqtVnc4N9lht9Sqw+FY/fpyTzEItLqwv24/NC9l0eE=
-X-Received: by 2002:a1f:8d54:: with SMTP id p81mr11069985vkd.10.1613872535328;
- Sat, 20 Feb 2021 17:55:35 -0800 (PST)
-MIME-Version: 1.0
-Sender: mrobert1442@gmail.com
-Received: by 2002:a67:ed87:0:0:0:0:0 with HTTP; Sat, 20 Feb 2021 17:55:34
- -0800 (PST)
-From:   Alexandra Kelly <alexandrakelly779@gmail.com>
-Date:   Sun, 21 Feb 2021 02:55:34 +0100
-X-Google-Sender-Auth: _ghTLriqp7WRFN6dLBAuUEUwHZw
-Message-ID: <CAMWe3GuwuZDJ2Oms_XRh0V78VhVsqnOwr0BJwS_hqNJpxBemog@mail.gmail.com>
-Subject: Urgent Response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 20 Feb 2021 21:07:34 -0500
+X-Greylist: delayed 5583 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 21:07:33 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=G9gwKZta4TeKG9dXje
+        SByg2i5Ouo5RFeGkqM2bZkx+U=; b=e+ZM/o3v4mbwZu9pYC8h59qJfWDbKqSf2R
+        GNq6E6ho9m386rvjma6QcmMkv227ODc2YdzBvTyp3Rnt5u77YQ239gj4zgvt8JBD
+        sJJLHUKgz13WVx28i4QhB4EiGbtPhdYAj98bX7MbnyWCLz3seVFSX/NhIRTN1eGF
+        YDWY09Ui8=
+Received: from 192.168.137.133 (unknown [112.10.84.6])
+        by smtp7 (Coremail) with SMTP id DsmowACXuyDCODFgbzKtOA--.7768S3;
+        Sun, 21 Feb 2021 00:28:52 +0800 (CST)
+From:   Xianting Tian <xianting_tian@126.com>
+To:     mst@redhat.com, jasowang@redhat.com
+Cc:     guoren@linux.alibaba.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] virtio: remove export for virtio_config_{enable, disable}
+Date:   Sat, 20 Feb 2021 11:28:18 -0500
+Message-Id: <1613838498-8791-1-git-send-email-xianting_tian@126.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DsmowACXuyDCODFgbzKtOA--.7768S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW7KFy8XF17JrWDXF1UKF1fXrb_yoW8ury3pF
+        n7AFyFy3yUJF4fGa95Ja48u3WavanFk3yxJ34Fgwn8Wr12yr9Fyr1kA34xZa17ArWDAF1r
+        JFyIgFyjv34DuFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jwTmhUUUUU=
+X-Originating-IP: [112.10.84.6]
+X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbi5gQ-pFpEAOOBrQAAso
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear friend,
+virtio_config_enable(), virtio_config_disable() are only used inside
+drivers/virtio/virtio.c, so it doesn't need export the symbols.
 
-I am contacting you independently of my investigation in
-my bank and no one is informed of this communication. I need your
-urgent assistance in transferring the sum of $5.3 million dollars to
-your private account,that belongs to one of our foreign customers who
-died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
-money has been here in our Bank lying dormant for years now without
-anybody coming for the claim of it.
+Signed-off-by: Xianting Tian <xianting_tian@126.com>
+---
+ drivers/virtio/virtio.c | 6 ++----
+ include/linux/virtio.h  | 2 --
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-I want to release the money to you as the relative to our deceased
-customer , the Banking laws here does not allow such money to stay
-more than 18 years, because the money will be recalled to the Bank
-treasury account as unclaimed fund. I am ready to share with you 40%
-for you and 60% will be kept for me, by indicating your interest i
-will send you the full details on how the business will be executed, i
-will be waiting for your urgent response.
+diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+index 42e09cc..4b15c00 100644
+--- a/drivers/virtio/virtio.c
++++ b/drivers/virtio/virtio.c
+@@ -141,15 +141,14 @@ void virtio_config_changed(struct virtio_device *dev)
+ }
+ EXPORT_SYMBOL_GPL(virtio_config_changed);
+ 
+-void virtio_config_disable(struct virtio_device *dev)
++static void virtio_config_disable(struct virtio_device *dev)
+ {
+ 	spin_lock_irq(&dev->config_lock);
+ 	dev->config_enabled = false;
+ 	spin_unlock_irq(&dev->config_lock);
+ }
+-EXPORT_SYMBOL_GPL(virtio_config_disable);
+ 
+-void virtio_config_enable(struct virtio_device *dev)
++static void virtio_config_enable(struct virtio_device *dev)
+ {
+ 	spin_lock_irq(&dev->config_lock);
+ 	dev->config_enabled = true;
+@@ -158,7 +157,6 @@ void virtio_config_enable(struct virtio_device *dev)
+ 	dev->config_change_pending = false;
+ 	spin_unlock_irq(&dev->config_lock);
+ }
+-EXPORT_SYMBOL_GPL(virtio_config_enable);
+ 
+ void virtio_add_status(struct virtio_device *dev, unsigned int status)
+ {
+diff --git a/include/linux/virtio.h b/include/linux/virtio.h
+index 55ea329..b1894e0 100644
+--- a/include/linux/virtio.h
++++ b/include/linux/virtio.h
+@@ -132,8 +132,6 @@ static inline struct virtio_device *dev_to_virtio(struct device *_dev)
+ void virtio_break_device(struct virtio_device *dev);
+ 
+ void virtio_config_changed(struct virtio_device *dev);
+-void virtio_config_disable(struct virtio_device *dev);
+-void virtio_config_enable(struct virtio_device *dev);
+ int virtio_finalize_features(struct virtio_device *dev);
+ #ifdef CONFIG_PM_SLEEP
+ int virtio_device_freeze(struct virtio_device *dev);
+-- 
+1.8.3.1
+
