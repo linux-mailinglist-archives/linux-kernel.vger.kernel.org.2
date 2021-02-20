@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6F732041C
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6989032041F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:09:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhBTGJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 01:09:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45986 "EHLO
+        id S229771AbhBTGJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 01:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhBTGI6 (ORCPT
+        with ESMTP id S229667AbhBTGJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 01:08:58 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F85C06178A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:08:17 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id w18so3284712pfu.9
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:08:17 -0800 (PST)
+        Sat, 20 Feb 2021 01:09:00 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C91C06178B
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:08:19 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id n10so6723355pgl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:08:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4J7s0mPNjGFe1vyjC7N5XGIE26jPZq4Ak09pPR0Twms=;
-        b=lyDJdkqCpdi60gGZAPVkdzWgGNquPY2yhkZ9S3Ua8ZTSPznkX+1MGAagKtkECNAEu2
-         OzC5O/A+0iAOf53nRQeNbxa0Mvaa9mpeiXCJvmN3/xD0m5vwFoQxpeSMmBJ8hEfmTE02
-         /nwVYAKMMMf+tHeGC7IbORuTcGQaRend6ehfM=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=e6H0vIyJ02JtJQR7yExVBxVczRblZOa+3EfhTLKjQOc=;
+        b=KOwQB5Ln07mnRQn0VVBDY7Su6Qe78dbZZsxHc80eg3lrR6jNVuGjFlIZffY1V0+8PT
+         DWWiXNVy75rHSL6Rh6XbG10SSkv8E2srtMGreqQg3VDRHPAXZj0n3vfsi8Zt2llae8D5
+         gt3vmMfJgXKiJXCKcAlO2AHLpw3UYMwb2RTX0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4J7s0mPNjGFe1vyjC7N5XGIE26jPZq4Ak09pPR0Twms=;
-        b=WVKZmUmHqFvHaWcOvduFvO/SkchhdRUrauEhRQxxFqvtspkIEqF7VaGJoj0yA6FZ7D
-         jMiId1O2UamHfF2ubBJoKX/VY2PhQDXBlT9P1UA2Zs4olPvE4LV8x+tRBhxtzkW/K7w9
-         kxDWYS5IuBLrevzdpLKKYPR3AuSUG6N56C9xZCCbGPwPBLOxCJ1uOBBaHBlIV8r2Bd2i
-         xxEocjdPJAz9UugSkVAY5Tr4LFzla59aUa9oybMdK+9uTexDM13Ak6xK13JdmCIXUtUv
-         Lb4r33/LWylTQk4aA3wl4hVK6wwf/BXoUVc1CEmfrQVmnRr4JSnSzIqTghUOi1PSF/z8
-         Mbbw==
-X-Gm-Message-State: AOAM531APP1nRioasNyQ5sKmzFxwrnW3Uj5ZXJH0hs1wQ4i0yGUegzla
-        4aLzT2u2tjWvcD6B2AGIgI1+zD5UWcifpQ==
-X-Google-Smtp-Source: ABdhPJzeo47hIWNCTY8rScYv5CJmQh6LqfmJhCPz8jxmAxv/V7hM+by1CxBxc4OvbSGHZDyjtYyo0w==
-X-Received: by 2002:aa7:93ac:0:b029:1e5:b52e:314f with SMTP id x12-20020aa793ac0000b02901e5b52e314fmr12473630pff.45.1613801297317;
-        Fri, 19 Feb 2021 22:08:17 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=e6H0vIyJ02JtJQR7yExVBxVczRblZOa+3EfhTLKjQOc=;
+        b=S6QL7UsUpril7o+hywbrMQWajTaNg10xsD3y3lVWPJx+x7voaGs9NQoOU6T3MbKJL0
+         ozcdNUwxUauHKeCn3lmkoSMbOfh17zCbgQaX6jEOEZpfewUfQoO2nu+fH/0gw+FAxJnx
+         J+K7alOB7cFq4pl87ksxzPb1vHGt0uGnYqU5u9z+5KhBXovZaoRvXCwZFxw1wqHmnIqc
+         7t4lmGQabyu4aVKlBnQZ5uKRbTV9kfbKmkx00OM0SiCOV9hqHw/+yrwt0lkQTqdudlK/
+         XNo13hoQ7ExgTyKy+2XQL00TEQAnOSp5kgW+vXYF4kQUNFytqRGJ3nwLeEI43nUsc1gM
+         IKJg==
+X-Gm-Message-State: AOAM532V6xNGvpXYUlOvjJbg5WP3oDfWuVtrOZIZcdAz8/bSj7Gs9aaA
+        yofgjOECRp4iRF/JrbRHoGmTzw==
+X-Google-Smtp-Source: ABdhPJwypyymS2xVuiv8T2DQ59bYm3LPH70kPJr0h0taKwARkMRdR1iKIn6ooDUpAmNO4Prty9xUag==
+X-Received: by 2002:a63:155b:: with SMTP id 27mr11245526pgv.269.1613801299402;
+        Fri, 19 Feb 2021 22:08:19 -0800 (PST)
 Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:537:d36b:e4d6:54fb])
-        by smtp.gmail.com with ESMTPSA id w187sm10943697pfb.208.2021.02.19.22.08.15
+        by smtp.gmail.com with ESMTPSA id w187sm10943697pfb.208.2021.02.19.22.08.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 22:08:16 -0800 (PST)
+        Fri, 19 Feb 2021 22:08:19 -0800 (PST)
 From:   Hsin-Yi Wang <hsinyi@chromium.org>
 To:     Xin Ji <xji@analogixsemi.com>, David Airlie <airlied@linux.ie>,
         dri-devel@lists.freedesktop.org
@@ -53,64 +53,128 @@ Cc:     Sam Ravnborg <sam@ravnborg.org>, Rob Herring <robh+dt@kernel.org>,
         linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>,
         Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Subject: [RESEND v3 1/2] dt-bindings: drm/bridge: anx7625: Add power supplies
-Date:   Sat, 20 Feb 2021 14:08:10 +0800
-Message-Id: <20210220060811.2500081-1-hsinyi@chromium.org>
+Subject: [RESEND v3 2/2] drm/bridge: anx7625: disable regulators when power off
+Date:   Sat, 20 Feb 2021 14:08:11 +0800
+Message-Id: <20210220060811.2500081-2-hsinyi@chromium.org>
 X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+In-Reply-To: <20210220060811.2500081-1-hsinyi@chromium.org>
+References: <20210220060811.2500081-1-hsinyi@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-anx7625 requires 3 power supply regulators.
+When suspending the driver, anx7625_power_standby() will be called to
+turn off reset-gpios and enable-gpios. However, power supplies are not
+disabled. To save power, the driver can get the power supply regulators
+and turn off them in anx7625_power_standby().
 
 Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/display/bridge/analogix,anx7625.yaml | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Change:
+v3: add delays between regulators power on
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 34 +++++++++++++++++++++++
+ drivers/gpu/drm/bridge/analogix/anx7625.h |  1 +
+ 2 files changed, 35 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-index 60585a4fc22bc..3ae97d9523e56 100644
---- a/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-+++ b/Documentation/devicetree/bindings/display/bridge/analogix,anx7625.yaml
-@@ -34,6 +34,15 @@ properties:
-     description: used for reset chip control, RESET_N pin B7.
-     maxItems: 1
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 65cc05982f826..23283ba0c4f93 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -11,6 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+ #include <linux/workqueue.h>
+@@ -875,12 +876,25 @@ static int sp_tx_edid_read(struct anx7625_data *ctx,
+ static void anx7625_power_on(struct anx7625_data *ctx)
+ {
+ 	struct device *dev = &ctx->client->dev;
++	int ret, i;
  
-+  vdd10-supply:
-+    description: Regulator that provides the supply 1.0V power.
+ 	if (!ctx->pdata.low_power_mode) {
+ 		DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
+ 		return;
+ 	}
+ 
++	for (i = 0; i < ARRAY_SIZE(ctx->pdata.supplies); i++) {
++		ret = regulator_enable(ctx->pdata.supplies[i].consumer);
++		if (ret < 0) {
++			DRM_DEV_DEBUG_DRIVER(dev, "cannot enable supply %d: %d\n",
++					     i, ret);
++			goto reg_err;
++		}
++		usleep_range(2000, 2100);
++	}
 +
-+  vdd18-supply:
-+    description: Regulator that provides the supply 1.8V power.
++	usleep_range(4000, 4100);
 +
-+  vdd33-supply:
-+    description: Regulator that provides the supply 3.3V power.
+ 	/* Power on pin enable */
+ 	gpiod_set_value(ctx->pdata.gpio_p_on, 1);
+ 	usleep_range(10000, 11000);
+@@ -889,11 +903,16 @@ static void anx7625_power_on(struct anx7625_data *ctx)
+ 	usleep_range(10000, 11000);
+ 
+ 	DRM_DEV_DEBUG_DRIVER(dev, "power on !\n");
++	return;
++reg_err:
++	for (--i; i >= 0; i--)
++		regulator_disable(ctx->pdata.supplies[i].consumer);
+ }
+ 
+ static void anx7625_power_standby(struct anx7625_data *ctx)
+ {
+ 	struct device *dev = &ctx->client->dev;
++	int ret;
+ 
+ 	if (!ctx->pdata.low_power_mode) {
+ 		DRM_DEV_DEBUG_DRIVER(dev, "not low power mode!\n");
+@@ -904,6 +923,12 @@ static void anx7625_power_standby(struct anx7625_data *ctx)
+ 	usleep_range(1000, 1100);
+ 	gpiod_set_value(ctx->pdata.gpio_p_on, 0);
+ 	usleep_range(1000, 1100);
 +
-   ports:
-     type: object
++	ret = regulator_bulk_disable(ARRAY_SIZE(ctx->pdata.supplies),
++				     ctx->pdata.supplies);
++	if (ret < 0)
++		DRM_DEV_DEBUG_DRIVER(dev, "cannot disable supplies %d\n", ret);
++
+ 	DRM_DEV_DEBUG_DRIVER(dev, "power down\n");
+ }
  
-@@ -55,6 +64,9 @@ properties:
- required:
-   - compatible
-   - reg
-+  - vdd10-supply
-+  - vdd18-supply
-+  - vdd33-supply
-   - ports
+@@ -1742,6 +1767,15 @@ static int anx7625_i2c_probe(struct i2c_client *client,
+ 	platform->client = client;
+ 	i2c_set_clientdata(client, platform);
  
- additionalProperties: false
-@@ -72,6 +84,9 @@ examples:
-             reg = <0x58>;
-             enable-gpios = <&pio 45 GPIO_ACTIVE_HIGH>;
-             reset-gpios = <&pio 73 GPIO_ACTIVE_HIGH>;
-+            vdd10-supply = <&pp1000_mipibrdg>;
-+            vdd18-supply = <&pp1800_mipibrdg>;
-+            vdd33-supply = <&pp3300_mipibrdg>;
++	pdata->supplies[0].supply = "vdd10";
++	pdata->supplies[1].supply = "vdd18";
++	pdata->supplies[2].supply = "vdd33";
++	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(pdata->supplies),
++				      pdata->supplies);
++	if (ret) {
++		DRM_DEV_ERROR(dev, "fail to get power supplies: %d\n", ret);
++		return ret;
++	}
+ 	anx7625_init_gpio(platform);
  
-             ports {
-                 #address-cells = <1>;
+ 	atomic_set(&platform->power_status, 0);
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+index 193ad86c54503..e4a086b3a3d7b 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.h
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+@@ -350,6 +350,7 @@ struct s_edid_data {
+ struct anx7625_platform_data {
+ 	struct gpio_desc *gpio_p_on;
+ 	struct gpio_desc *gpio_reset;
++	struct regulator_bulk_data supplies[3];
+ 	struct drm_bridge *panel_bridge;
+ 	int intp_irq;
+ 	u32 low_power_mode;
 -- 
 2.30.0.617.g56c4b15f3c-goog
 
