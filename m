@@ -2,68 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5963206E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5EF3206ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:31:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhBTTX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 14:23:59 -0500
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:46165 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhBTTXz (ORCPT
+        id S229817AbhBTTau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 14:30:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhBTTat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:23:55 -0500
-Received: by mail-wr1-f53.google.com with SMTP id t15so14508925wrx.13;
-        Sat, 20 Feb 2021 11:23:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wjcAAhp7e/J1VNiXN4Mtg1xfP+ppLRV9qlA7b1kEebM=;
-        b=NHNmA1er/26nyyId5OycIPtM2sHlge41u6ZbHzWKkNs35VlpG/Vnhz2YxNRSkuq0v7
-         oMHrC0pS85/sRIXS2t+HLjWcMM06SmmgxjLTSL2gwJd5JIu5PW73gweQjRuMqStFbJSd
-         MF/bwNJMP02D4m+Ocpbe0Z0f+xVkW4xajqxB8KKSDlso20ev4dGpnIejdgSOpTfb2Hv7
-         BE7kwGBrQZbmhGCc4I/fojpuhYYE+uEXq+YcwOpF6dPP5z3M3tVsyvrAGt9D0VU+pW6j
-         BYYpqC24PgIpvUf+R1ypnld1c6vIdZfk8a1KsEryUkwEQ+2DfzH+c4tapjKc3qDGoASk
-         Qnow==
-X-Gm-Message-State: AOAM533Ni74ofT+L0HlgXbmzgqZ8EBWbnu9rDHDuOgOToRtRU9oE6f7o
-        tE4TK9eS//4i4YQb2hpO19MdwLn+iK8=
-X-Google-Smtp-Source: ABdhPJwtBkseTyta32gKfHH3bWGwGiMgjEfDcJ8t4+GH81KpIa4XTOEON2bSLXwcZQw/4SXsG8CZuA==
-X-Received: by 2002:a05:6000:107:: with SMTP id o7mr14445651wrx.87.1613848993020;
-        Sat, 20 Feb 2021 11:23:13 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id y6sm18393789wma.10.2021.02.20.11.23.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 11:23:12 -0800 (PST)
-Date:   Sat, 20 Feb 2021 20:23:10 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 4/9] arm64: dts: imx8mm-nitrogen-r2: add UARTs
-Message-ID: <20210220192310.dyufl3i3mzidahaw@kozik-lap>
-References: <20210219143028.207975-1-adrien.grassein@gmail.com>
- <20210219143028.207975-5-adrien.grassein@gmail.com>
+        Sat, 20 Feb 2021 14:30:49 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9277C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 11:30:08 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lDXwz-00GPTD-HA; Sat, 20 Feb 2021 19:29:57 +0000
+Date:   Sat, 20 Feb 2021 19:29:57 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     syzbot <syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, snovitoll@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING in iov_iter_revert (2)
+Message-ID: <YDFjNRv+DNL/Xh8W@zeniv-ca.linux.org.uk>
+References: <0000000000001fb73f05bb767334@google.com>
+ <0000000000000ca18b05bbc556d6@google.com>
+ <CAHk-=wiEBTD884i-U9DU7aDdRxXuz66Q1r-rKTiJUzZoYFgp+g@mail.gmail.com>
+ <YDFJKR5uG1N+g9TL@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210219143028.207975-5-adrien.grassein@gmail.com>
+In-Reply-To: <YDFJKR5uG1N+g9TL@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:30:23PM +0100, Adrien Grassein wrote:
-> Add description and pin muxing for UARTs.
+On Sat, Feb 20, 2021 at 05:38:49PM +0000, Al Viro wrote:
+> On Sat, Feb 20, 2021 at 08:56:40AM -0800, Linus Torvalds wrote:
+> > Al,
+> >  This is the "FIXME! Have Al check this!" case in do_tty_write(). You were
+> > in on that whole discussion, but we never did get to that issue...
+> > 
+> > There are some subtle rules about doing the iov_iter_revert(), but what's
+> > the best way to do this properly? Instead of doing a copy_from_iter() and
+> > then reverting the part that didn't fit in the buffer, doing a
+> > non-advancing copy and then advancing the amount that did fit, or what?
+> > 
+> > I still don't have power, so this is all me on mobile with html email
+> > (sorry), and limited ability to really look closer.
+> > 
+> > "Help me, Albi-wan Viro, you're my only hope"
 > 
-> Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> ---
->  .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
+> Will check...  BTW, when you get around to doing pulls, could you pick
+> the replacement (in followup) instead of the first pull request for
+> work.namei?  Jens has caught a braino in the last commit there...
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+It turned out to be really amusing.  What happens is write(fd, NULL, 0)
+on /dev/ttyprintk, with N_GSM0710 for ldisc (== "pass the data as
+is to tty->op->write()".  And that's the first write since opening
+that sucker, so we end up with
+        /* write_buf/write_cnt is protected by the atomic_write_lock mutex */
+        if (tty->write_cnt < chunk) {
+                unsigned char *buf_chunk;
 
-Best regards,
-Krzysztof
+                if (chunk < 1024)
+                        chunk = 1024;
+
+                buf_chunk = kmalloc(chunk, GFP_KERNEL);
+                if (!buf_chunk) {
+                        ret = -ENOMEM;
+                        goto out;
+                }
+                kfree(tty->write_buf);
+                tty->write_cnt = chunk;
+                tty->write_buf = buf_chunk;
+        }
+doing nothing - ->write_cnt is still 0 and ->write_buf - NULL.  Then
+we copy 0 bytes from source to ->write_buf(), which reports that 0
+bytes had been copied, TYVM.  Then we call
+                ret = write(tty, file, tty->write_buf, size);
+i.e.
+                ret = gsm_write(tty, file, NULL, 0);
+which calls
+	tpk_write(tty, NULL, 0)
+which does
+	tpk_printk(NULL, 0);
+and _that_ has a very special semantics:
+        int i = tpk_curr;
+
+        if (buf == NULL) {
+                tpk_flush();
+                return i;
+        }  
+i.e. it *can* return a positive number that gets propagated all way
+back to do_tty_write().  And then you notice that it has reports
+successful write of amount other than what you'd passed and tries
+to pull back.  By amount passed - amount written.  With iov_iter_revert()
+saying that some tosser has asked it to revert by something close to
+~(size_t)0.
+
+IOW, it's not iov_iter_revert() being weird or do_tty_write() misuing it -
+it's tpk_write() playing silly buggers.  Note that old tree would've
+gone through seriously weird contortions on the same call:
+	// chunk and count are 0, ->write_buf is NULL
+        for (;;) {
+                size_t size = count;
+                if (size > chunk)
+                        size = chunk;
+                ret = -EFAULT;
+                if (copy_from_user(tty->write_buf, buf, size))
+                        break;
+                ret = write(tty, file, tty->write_buf, size);
+                if (ret <= 0)
+                        break;
+                written += ret;
+                buf += ret;
+                count -= ret;
+                if (!count)
+                        break;
+                ret = -ERESTARTSYS;
+                if (signal_pending(current))
+                        break;
+                cond_resched();
+        }
+and we get written = ret = small positive, count = - that amount,
+buf = NULL + that mount.  On the next iteration size = 0 (since
+chunk is still 0), with same no-op copy_from_user() of 0 bytes,
+then gsm_write(tty, file, NULL, 0) and since tpk_flush() zeroes
+tpk_curr we finally get 0 out of tpk_printk/tpk_write/gsm_write
+and bugger off on if (ret <= 0).  Then we have the value in written
+returned.
+
+So yeah, this return value *was* returned to userland.  Except that
+if we had done any writes before that, we'd find ->write_buf
+non-NULL and the magical semantics of write(fd, NULL, 0) would
+*not* have triggered - we would've gotten zero.
+
+Do we want to preserve that weirdness of /dev/ttyprintk writes?
+That's orthogonal to the iov_iter uses in there.
