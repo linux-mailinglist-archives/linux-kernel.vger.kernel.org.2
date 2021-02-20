@@ -2,65 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9926A320472
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 09:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0559320487
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:00:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbhBTIgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 03:36:04 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37162 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229476AbhBTIgA (ORCPT
+        id S229804AbhBTI6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 03:58:31 -0500
+Received: from lucky1.263xmail.com ([211.157.147.134]:52820 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhBTI62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 03:36:00 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UP0VNdn_1613810111;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UP0VNdn_1613810111)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 20 Feb 2021 16:35:16 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     alexander.deucher@amd.com
-Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] drm/amdgpu/sdma5.2: Remove unnecessary conversion to bool
-Date:   Sat, 20 Feb 2021 16:35:10 +0800
-Message-Id: <1613810110-106402-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 20 Feb 2021 03:58:28 -0500
+X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 03:58:22 EST
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 01BFDC78E1;
+        Sat, 20 Feb 2021 16:46:05 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [113.57.152.160])
+        by smtp.263.net (postfix) whith ESMTP id P19729T140184970585856S1613810765103785_;
+        Sat, 20 Feb 2021 16:46:05 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <04315e02bf5ca4945840c9eb391ee223>
+X-RL-SENDER: chenhaoa@uniontech.com
+X-SENDER: chenhaoa@uniontech.com
+X-LOGIN-NAME: chenhaoa@uniontech.com
+X-FST-TO: tony0620emma@gmail.com
+X-SENDER-IP: 113.57.152.160
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   Hao Chen <chenhaoa@uniontech.com>
+To:     tony0620emma@gmail.com
+Cc:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Hao Chen <chenhaoa@uniontech.com>
+Subject: [PATCH] rtw88: 8822ce: fix wifi disconnect after S3/S4 on HONOR laptop
+Date:   Sat, 20 Feb 2021 16:46:02 +0800
+Message-Id: <20210220084602.22386-1-chenhaoa@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warnings:
+When the laptop HONOR MagicBook 14 sleep to S3/S4, the laptop can't
+resume.
+The dmesg of kernel report:
+"[   99.990168] pcieport 0000:00:01.2: can't change power state
+from D3hot to D0 (config space inaccessible)
+[   99.993334] rtw_pci 0000:01:00.0: can't change power state
+from D3hot to D0 (config space inaccessible)
+[  104.435004] rtw_pci 0000:01:00.0: mac power on failed
+[  104.435010] rtw_pci 0000:01:00.0: failed to power on mac"
+When try to pointer the driver.pm to NULL, the problem is fixed.
+This driver hasn't implemented pm ops yet.It makes the sleep and
+wake procedure expected when pm's ops not NULL.
 
-./drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c:1621:40-45: WARNING: conversion
-to bool not needed here.
+Fixed: commit e3037485c68e ("rtw88: new Realtek 802.11ac driver")
 
-./drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c:1619:40-45: WARNING: conversion
-to bool not needed here.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Signed-off-by: Hao Chen <chenhaoa@uniontech.com>
 ---
- drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/realtek/rtw88/rtw8822ce.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
-index f1ba36a..9ed79a9 100644
---- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
-+++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
-@@ -1616,9 +1616,9 @@ static int sdma_v5_2_set_clockgating_state(void *handle,
- 	case CHIP_VANGOGH:
- 	case CHIP_DIMGREY_CAVEFISH:
- 		sdma_v5_2_update_medium_grain_clock_gating(adev,
--				state == AMD_CG_STATE_GATE ? true : false);
-+				state == AMD_CG_STATE_GATE);
- 		sdma_v5_2_update_medium_grain_light_sleep(adev,
--				state == AMD_CG_STATE_GATE ? true : false);
-+				state == AMD_CG_STATE_GATE);
- 		break;
- 	default:
- 		break;
+diff --git a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
+index 3845b1333dc3..b4c6762ba7ac 100644
+--- a/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
++++ b/drivers/net/wireless/realtek/rtw88/rtw8822ce.c
+@@ -25,7 +25,7 @@ static struct pci_driver rtw_8822ce_driver = {
+ 	.id_table = rtw_8822ce_id_table,
+ 	.probe = rtw_pci_probe,
+ 	.remove = rtw_pci_remove,
+-	.driver.pm = &rtw_pm_ops,
++	.driver.pm = NULL,
+ 	.shutdown = rtw_pci_shutdown,
+ };
+ module_pci_driver(rtw_8822ce_driver);
 -- 
-1.8.3.1
+2.20.1
+
+
 
