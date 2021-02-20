@@ -2,99 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAAA1320652
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 17:57:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17A8320654
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:01:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhBTQ5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 11:57:00 -0500
-Received: from vern.gendns.com ([98.142.107.122]:34166 "EHLO vern.gendns.com"
+        id S229812AbhBTRA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 12:00:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhBTQ46 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 11:56:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=rtReqm6BD8NSkzJ0Wi5T2+JHymMgDP+iJZyHo3wdEQ8=; b=N/oMDpnItwRnMQX8p1llCL4Lb5
-        06fFrczrCxCE0UVxM67Cpgzfm9bDaxCs/PeleokcZqpp/AJbQd9UcecaK+k4FSk1ueB/Kv2/pZ+M5
-        YjP3TiteYL8vMp0T0ACnOcQZwVlRX532BRWG4AGis9yIJj6n2QCuYKSzF5f9cZwP3TvVVIF7kz57S
-        5qwMOfBCnZj1ZcQVTl11zWp7H7lUKXojAKJ0YdzrBaC4nkogK5ofzR3A4o7/39CqPuNagNnPweLYQ
-        3mSmIcP80Psuxe7AuKTzSL7JwtQx2AneZr+s0sj98qFvTJw2MwqisFZ40Ee+3HwIrK9mhzwNGyazD
-        ODr55F3A==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:57830 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1lDVYE-0005DO-Qy; Sat, 20 Feb 2021 11:56:14 -0500
-Subject: Re: [PATCH v8 12/22] counter: Rename counter_count_function to
- counter_function
-To:     Jonathan Cameron <jic23@kernel.org>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
-        o.rempel@pengutronix.de
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
- <355aaaaf44b36c5de1704e4074a4671abcb9699d.1613131238.git.vilhelm.gray@gmail.com>
- <20210214171340.3cc7b686@archlinux>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <2b6913ac-0802-f83e-06ba-e89d5318dbd7@lechnology.com>
-Date:   Sat, 20 Feb 2021 10:56:13 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229803AbhBTRA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 12:00:56 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 713C764D9A;
+        Sat, 20 Feb 2021 17:00:15 +0000 (UTC)
+Date:   Sat, 20 Feb 2021 12:00:13 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>
+Subject: [for-next][PATCH] kprobes: Fix to delay the kprobes jump
+ optimization
+Message-ID: <20210220120013.59c07876@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210214171340.3cc7b686@archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/14/21 11:13 AM, Jonathan Cameron wrote:
-> On Fri, 12 Feb 2021 21:13:36 +0900
-> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> 
->> The phrase "Counter Count function" is verbose and unintentionally
->> implies that function is a Count extension. This patch adjusts the
->> Counter subsystem code to use the more direct "Counter function" phrase
->> to make the intent of this code clearer. The phrase "Count action" is
->> adjusted herein as well for the same reason.
->>
->> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
->> Cc: Patrick Havelange <patrick.havelange@essensium.com>
->> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
->> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
->> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
->> Cc: Alexandre Torgue <alexandre.torgue@st.com>
->> Cc: David Lechner <david@lechnology.com>
->> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> 
-> I agree this makes sense in the counter core code, but in the drivers
-> it may not be quite so obvious we are talking about a counter function
-> given some of the bits of hardware do a number of other things.
-> 
-> I guess up to the various driver maintainers on whether they
-> think the new meaning is clear enough!
-> 
-> Jonathan
-> 
 
-TBH, I think "counter count function" makes more sense to me.
+Masami Hiramatsu (1):
+      kprobes: Fix to delay the kprobes jump optimization
 
+----
+ kernel/kprobes.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
+---------------------------
+commit c85c9a2c6e368dc94907e63babb18a9788e5c9b6
+Author: Masami Hiramatsu <mhiramat@kernel.org>
+Date:   Thu Feb 18 23:29:23 2021 +0900
+
+    kprobes: Fix to delay the kprobes jump optimization
+    
+    Commit 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+    moved the kprobe setup in early_initcall(), which includes kprobe
+    jump optimization.
+    The kprobes jump optimizer involves synchronize_rcu_tasks() which
+    depends on the ksoftirqd and rcu_spawn_tasks_*(). However, since
+    those are setup in core_initcall(), kprobes jump optimizer can not
+    run at the early_initcall().
+    
+    To avoid this issue, make the kprobe optimization disabled in the
+    early_initcall() and enables it in subsys_initcall().
+    
+    Note that non-optimized kprobes is still available after
+    early_initcall(). Only jump optimization is delayed.
+    
+    Link: https://lkml.kernel.org/r/161365856280.719838.12423085451287256713.stgit@devnote2
+    
+    Fixes: 36dadef23fcc ("kprobes: Init kprobes in early_initcall")
+    Cc: Ingo Molnar <mingo@kernel.org>
+    Cc: Peter Zijlstra <peterz@infradead.org>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: RCU <rcu@vger.kernel.org>
+    Cc: Michael Ellerman <mpe@ellerman.id.au>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Daniel Axtens <dja@axtens.net>
+    Cc: Frederic Weisbecker <frederic@kernel.org>
+    Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+    Cc: Joel Fernandes <joel@joelfernandes.org>
+    Cc: Michal Hocko <mhocko@suse.com>
+    Cc: "Theodore Y . Ts'o" <tytso@mit.edu>
+    Cc: Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+    Cc: stable@vger.kernel.org
+    Reported-by: Paul E. McKenney <paulmck@kernel.org>
+    Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+    Reported-by: Uladzislau Rezki <urezki@gmail.com>
+    Acked-by: Paul E. McKenney <paulmck@kernel.org>
+    Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index dd1d027455c4..745f08fdd7a6 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -861,7 +861,6 @@ static void try_to_optimize_kprobe(struct kprobe *p)
+ 	cpus_read_unlock();
+ }
+ 
+-#ifdef CONFIG_SYSCTL
+ static void optimize_all_kprobes(void)
+ {
+ 	struct hlist_head *head;
+@@ -887,6 +886,7 @@ static void optimize_all_kprobes(void)
+ 	mutex_unlock(&kprobe_mutex);
+ }
+ 
++#ifdef CONFIG_SYSCTL
+ static void unoptimize_all_kprobes(void)
+ {
+ 	struct hlist_head *head;
+@@ -2500,18 +2500,14 @@ static int __init init_kprobes(void)
+ 		}
+ 	}
+ 
+-#if defined(CONFIG_OPTPROBES)
+-#if defined(__ARCH_WANT_KPROBES_INSN_SLOT)
+-	/* Init kprobe_optinsn_slots */
+-	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
+-#endif
+-	/* By default, kprobes can be optimized */
+-	kprobes_allow_optimization = true;
+-#endif
+-
+ 	/* By default, kprobes are armed */
+ 	kprobes_all_disarmed = false;
+ 
++#if defined(CONFIG_OPTPROBES) && defined(__ARCH_WANT_KPROBES_INSN_SLOT)
++	/* Init kprobe_optinsn_slots for allocation */
++	kprobe_optinsn_slots.insn_size = MAX_OPTINSN_SIZE;
++#endif
++
+ 	err = arch_init_kprobes();
+ 	if (!err)
+ 		err = register_die_notifier(&kprobe_exceptions_nb);
+@@ -2526,6 +2522,21 @@ static int __init init_kprobes(void)
+ }
+ early_initcall(init_kprobes);
+ 
++#if defined(CONFIG_OPTPROBES)
++static int __init init_optprobes(void)
++{
++	/*
++	 * Enable kprobe optimization - this kicks the optimizer which
++	 * depends on synchronize_rcu_tasks() and ksoftirqd, that is
++	 * not spawned in early initcall. So delay the optimization.
++	 */
++	optimize_all_kprobes();
++
++	return 0;
++}
++subsys_initcall(init_optprobes);
++#endif
++
+ #ifdef CONFIG_DEBUG_FS
+ static void report_probe(struct seq_file *pi, struct kprobe *p,
+ 		const char *sym, int offset, char *modname, struct kprobe *pp)
