@@ -2,74 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EF832062E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 17:32:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D20032063C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 17:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBTQbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 11:31:22 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50732 "EHLO vps0.lunn.ch"
+        id S229862AbhBTQem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 11:34:42 -0500
+Received: from mga07.intel.com ([134.134.136.100]:49624 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229803AbhBTQbT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 11:31:19 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lDV9J-007XVe-Gy; Sat, 20 Feb 2021 17:30:29 +0100
-Date:   Sat, 20 Feb 2021 17:30:29 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Ivan Bornyakov <i.bornyakov@metrotek.ru>, netdev@vger.kernel.org,
-        system@metrotek.ru, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] net: phy: add Marvell 88X2222 transceiver support
-Message-ID: <YDE5Ja/O4sk4hewj@lunn.ch>
-References: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
- <20210220094621.tl6fawj7c5hjrp6s@dhcp-179.ddg>
- <20210220115303.GL1463@shell.armlinux.org.uk>
+        id S229871AbhBTQe2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 11:34:28 -0500
+IronPort-SDR: nbw0B8AwgS98nuupm9RYH2oe+/aggpEuPNtz49TQazCH2TMCmgVTPs9/UdEBkSlrTmeP8Ldr/2
+ eUtqJqp8gx3A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9901"; a="248166570"
+X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
+   d="scan'208";a="248166570"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 08:33:45 -0800
+IronPort-SDR: HCmfnr4BFvfkIsrMlOz26nZFz60eFrZkpzp+8aso+hjQSnAOdAEixQnxHfrxtY+96fnx6Du/in
+ +adw/bEQtbxQ==
+X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
+   d="scan'208";a="582068409"
+Received: from aevangel-mobl.amr.corp.intel.com (HELO intel.com) ([10.252.134.76])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 08:33:46 -0800
+Date:   Sat, 20 Feb 2021 08:33:44 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>,
+        kernel test robot <lkp@intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH v5 4/9] cxl/mem: Add basic IOCTL interface
+Message-ID: <20210220163344.csczmkyxkpu4fxah@intel.com>
+References: <20210217040958.1354670-1-ben.widawsky@intel.com>
+ <20210217040958.1354670-5-ben.widawsky@intel.com>
+ <YDBkOB3K8UqVakFf@Konrads-MacBook-Pro.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210220115303.GL1463@shell.armlinux.org.uk>
+In-Reply-To: <YDBkOB3K8UqVakFf@Konrads-MacBook-Pro.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +/* switch line-side interface between 10GBase-R and 1GBase-X
-> > + * according to speed */
-> > +static void mv2222_update_interface(struct phy_device *phydev)
+On 21-02-19 20:22:00, Konrad Rzeszutek Wilk wrote:
+> ..snip..
+> > +static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
+> > +					const struct cxl_mem_command *cmd,
+> > +					u64 in_payload, u64 out_payload,
+> > +					s32 *size_out, u32 *retval)
 > > +{
-> > +	struct mv2222_data *priv = phydev->priv;
+> > +	struct device *dev = &cxlm->pdev->dev;
+> > +	struct mbox_cmd mbox_cmd = {
+> > +		.opcode = cmd->opcode,
+> > +		.size_in = cmd->info.size_in,
+> > +		.size_out = cmd->info.size_out,
+> > +	};
+> > +	int rc;
 > > +
-> > +	if (phydev->speed == SPEED_10000 &&
-> > +	    priv->line_interface == PHY_INTERFACE_MODE_1000BASEX) {
-> > +		priv->line_interface = PHY_INTERFACE_MODE_10GBASER;
-> > +
-> > +		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
-> > +			      MV_PCS_HOST_XAUI | MV_PCS_LINE_10GBR);
-> > +		mv2222_soft_reset(phydev);
+> > +	if (cmd->info.size_out) {
+> > +		mbox_cmd.payload_out = kvzalloc(cmd->info.size_out, GFP_KERNEL);
+> > +		if (!mbox_cmd.payload_out)
+> > +			return -ENOMEM;
 > > +	}
 > > +
-> > +	if (phydev->speed == SPEED_1000 &&
-> > +	    priv->line_interface == PHY_INTERFACE_MODE_10GBASER) {
-> > +		priv->line_interface = PHY_INTERFACE_MODE_1000BASEX;
-> > +
-> > +		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
-> > +			      MV_PCS_HOST_XAUI | MV_PCS_LINE_1GBX_AN);
-> > +		mv2222_soft_reset(phydev);
+> > +	if (cmd->info.size_in) {
+> > +		mbox_cmd.payload_in = vmemdup_user(u64_to_user_ptr(in_payload),
+> > +						   cmd->info.size_in);
+> > +		if (IS_ERR(mbox_cmd.payload_in))
+> > +			return PTR_ERR(mbox_cmd.payload_in);
+> 
+> Not that this should happen, but what if info.size_out was set? Should
+> you also free mbox_cmd.payload_out?
+> 
+
+Thanks Konrad.
+
+Dan, do you want me to send a fixup patch? This bug was introduced from v4->v5.
+
 > > +	}
+> > +
+> > +	rc = cxl_mem_mbox_get(cxlm);
+> > +	if (rc)
+> > +		goto out;
+> > +
+> > +	dev_dbg(dev,
+> > +		"Submitting %s command for user\n"
+> > +		"\topcode: %x\n"
+> > +		"\tsize: %ub\n",
+> > +		cxl_command_names[cmd->info.id].name, mbox_cmd.opcode,
+> > +		cmd->info.size_in);
+> > +
+> > +	rc = __cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > +	cxl_mem_mbox_put(cxlm);
+> > +	if (rc)
+> > +		goto out;
+> > +
+> > +	/*
+> > +	 * @size_out contains the max size that's allowed to be written back out
+> > +	 * to userspace. While the payload may have written more output than
+> > +	 * this it will have to be ignored.
+> > +	 */
+> > +	if (mbox_cmd.size_out) {
+> > +		dev_WARN_ONCE(dev, mbox_cmd.size_out > *size_out,
+> > +			      "Invalid return size\n");
+> > +		if (copy_to_user(u64_to_user_ptr(out_payload),
+> > +				 mbox_cmd.payload_out, mbox_cmd.size_out)) {
+> > +			rc = -EFAULT;
+> > +			goto out;
+> > +		}
+> > +	}
+> > +
+> > +	*size_out = mbox_cmd.size_out;
+> > +	*retval = mbox_cmd.return_code;
+> > +
+> > +out:
+> > +	kvfree(mbox_cmd.payload_in);
+> > +	kvfree(mbox_cmd.payload_out);
+> > +	return rc;
+> > +}
 > 
-> Wouldn't it be better to have a single function to set the line
-> interface, used by both this function and your sfp_module_insert
-> function? I'm thinking something like:
+> ..snip..
 > 
-> static int mv2222_set_line_interface(struct phy_device *phydev,
-> 				     phy_interface_t line_interface)
-> {
-> ...
-> }
+> > +static int cxl_query_cmd(struct cxl_memdev *cxlmd,
+> > +			 struct cxl_mem_query_commands __user *q)
+> > +{
+> > +	struct device *dev = &cxlmd->dev;
+> > +	struct cxl_mem_command *cmd;
+> > +	u32 n_commands;
+> > +	int j = 0;
 > 
-> and calling that from both these locations to configure the PHY for
-> 10GBASE-R, 1000BASE-X and SGMII modes.
+> How come it is 'j' instead of the usual 'i'?
 
-Agreed. This got me confused, wondering where the SGMII handling was.
+Just how it got split out/copied from an earlier version of the series.
 
-	Andrew
+I think rename to i, or cmds would be best as well. I/Dan can do it as part of
+the bug fix you found above.
+
+> > +
+> > +	dev_dbg(dev, "Query IOCTL\n");
+> > +
+> > +	if (get_user(n_commands, &q->n_commands))
+> > +		return -EFAULT;
+> > +
+> > +	/* returns the total number if 0 elements are requested. */
+> > +	if (n_commands == 0)
+> > +		return put_user(cxl_cmd_count, &q->n_commands);
+> > +
+> > +	/*
+> > +	 * otherwise, return max(n_commands, total commands) cxl_command_info
+> > +	 * structures.
+> > +	 */
+> > +	cxl_for_each_cmd(cmd) {
+> > +		const struct cxl_command_info *info = &cmd->info;
+> > +
+> > +		if (copy_to_user(&q->commands[j++], info, sizeof(*info)))
+> > +			return -EFAULT;
+> > +
+> > +		if (j == n_commands)
+> > +			break;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
