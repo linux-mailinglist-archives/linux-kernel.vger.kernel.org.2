@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FF632044B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 08:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E5732044D
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 08:06:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhBTHD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 02:03:56 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12984 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhBTHDp (ORCPT
+        id S229725AbhBTHGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 02:06:13 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:47120 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhBTHGD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 02:03:45 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DjK9k2V7BzjQLY;
-        Sat, 20 Feb 2021 15:01:30 +0800 (CST)
-Received: from [10.174.178.147] (10.174.178.147) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 20 Feb 2021 15:02:54 +0800
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Scott Branden <scott.branden@broadcom.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        PEIXIN HOU <PEIXIN.HOU@huawei.com>,
-        Yanjin <yanjin.yan@huawei.com>,
-        "Zhangdianfang (Dianfang, OS Lab)" <zhangdianfang@huawei.com>,
-        Zhaohongjiang <zhaohongjiang@huawei.com>,
-        Huxinwei <huxinwei@huawei.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>
-References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
- <YA/E1bHRmZb50MlS@kroah.com>
- <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
- <YC+AEcuXhPXXtmRB@kroah.com>
-From:   Hanjun Guo <guohanjun@huawei.com>
-Message-ID: <a0e56fe4-8e85-d8c7-ed63-7a96c0944aaf@huawei.com>
-Date:   Sat, 20 Feb 2021 15:02:54 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sat, 20 Feb 2021 02:06:03 -0500
+Received: by mail-io1-f72.google.com with SMTP id o4so5498155ioh.14
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 23:05:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yBvR6QhWGmgWa6u0J4gSpumL12+o1rDkset8CbmpFLE=;
+        b=DjBWCALr55e0YqWAMpoTak3mN1xd1whpAGFBsa8eRlMOhev3vLy7F+VQ/+B8Vf3GJa
+         QPL6C9mybK2TuaOkcG4cOpxDx21gUGpdPNW+mIvN+cRR4TID/Om9vdfpmfPQ44PPzWs1
+         hzXH7xSDIgYGek3w0aNbXnGdQZ+OOJFKGIXzfN7YDXlZ+HeWZ6jjk5tXNMRDkzf3sn21
+         JO7kL1TYEG56ykFv8TzBTPgU93zSufGcva+opvi5KIq8u0VzBDguO4u8t5mOWkqEwOxp
+         +3cetftfnWDrXW2ySO0kv+PaZpupw2t4boLaHrm41PwN+YV9CCgHetj+G7TKm4QWHCZW
+         S4OQ==
+X-Gm-Message-State: AOAM530AlG8o/k9NVSIDpkJZqn0dyFCZMzLf8epQouU71lFu8R2hhMr8
+        zFaf8p7ChlMVUFIRPw0gcGoUpBymYwK1/m6NYWd7uiUN40cq
+X-Google-Smtp-Source: ABdhPJybJnMZCn/LeCBjhTJlQbnaaEUk+y67n2RpMTcuWILBwRAH3DvYSKAqvmE49rSvTP7t+sIDwIGKokSoWbAzoHVZ9ucs5z73
 MIME-Version: 1.0
-In-Reply-To: <YC+AEcuXhPXXtmRB@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.147]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a6b:f317:: with SMTP id m23mr7548478ioh.67.1613804721960;
+ Fri, 19 Feb 2021 23:05:21 -0800 (PST)
+Date:   Fri, 19 Feb 2021 23:05:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000307cc205bbbf31d3@google.com>
+Subject: WARNING in netlbl_cipsov4_add
+From:   syzbot <syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/19 17:08, Greg Kroah-Hartman wrote:
-> On Fri, Feb 19, 2021 at 04:54:24PM +0800, Hanjun Guo wrote:
->> Hi Greg,
->>
->> On 2021/1/26 15:29, Greg Kroah-Hartman wrote:
->> [...]
->>>
->>> I want to see companies _using_ the kernel, and most importantly,
->>> _updating_ their devices with it, to know if it is worth to keep around
->>> for longer than 2 years.  I also, hopefully, want to see how those
->>> companies will help me out in the testing and maintenance of that kernel
->>> version in order to make supporting it for 6 years actually possible.
->>>
->>> So, are you planning on using 5.10?  Will you will be willing to help
->>> out in testing the -rc releases I make to let me know if there are any
->>> problems, and to help in pointing out and backporting any specific
->>> patches that your platforms need for that kernel release?
->>
->> We(Huawei) are willing to commit resources to help out in testing the
->> stable -rc releases, and to help to backport patches for stable kernels.
-> 
-> Wonderful!
-> 
->> 5.10 stable kernel will be used for openEuler [1] kernel and also inside
->> Huawei. From customer's feedback, it's very important to see the stable
->> kernel we used to be maintained for 6 years in the community, and we
->> will use 5.10 kernel for at least 6 years, so we are willing to help
->> you and help ourselves :)
->>
->> In specific, we will start from the testing work, using HULK robot
->> (reports lots of bugs to mainline kernel) testing framework to test
->> compile, reboot, functional testing, and will extend to basic
->> performance regression testing in the future.
-> 
-> Great!  Do you all need an email notification when the -rc releases come
-> out for the stable trees, or can you trigger off of the -rc stable git
-> tree?  Different CI systems work in different ways :)
+Hello,
 
-We can trigger the test when you updated the -rc stable git tree,
-by monitoring new commits for the stable branches. So if you push
-all the commits at once for -rc stable branches, then our CI system
-can work well.
+syzbot found the following issue on:
 
-> 
-> And if you can reply to the -rc release emails with a "Tested-by:" tag,
-> I will be glad to add that to the release commit when that happens to
-> show that you all have tested the release.
+HEAD commit:    4773acf3 b43: N-PHY: Fix the update of coef for the PHY re..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=13290cb0d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8cb23303ddb9411f
+dashboard link: https://syzkaller.appspot.com/bug?extid=cdd51ee2e6b0b2e18c0d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1267953cd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d98524d00000
 
-Thanks, will reply "Tested-by:" with -rc releases. We are working on
-setting up the test farm and will report the test results in a week.
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
-> 
->> And we will start from ARM64 and X86 architecture first, and then extend
->> to other platforms.
-> 
-> That's a good start, the useful ones :)
-> 
->> For patch backporting, will send the bugfix patches (from mainline)
->> we spotted, but I think this work may not doing in regular but will
->> be triggered as needed.
-> 
-> That's fine, it is not something that happens at a regular interval.
-> 
->> Does this sound good to you?
-> 
-> Yes it does, thank you so much.
-> 
-> greg k-h
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1127cc82d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=1327cc82d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=1527cc82d00000
 
-Thanks
-Hanjun
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cdd51ee2e6b0b2e18c0d@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8425 at mm/page_alloc.c:4979 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5014
+Modules linked in:
+CPU: 0 PID: 8425 Comm: syz-executor629 Not tainted 5.11.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4979
+Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+RSP: 0018:ffffc900017ef3e0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff920002fde80 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040dc0
+RBP: 0000000000040dc0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b29ac1 R11: 0000000000000000 R12: 0000000000000015
+R13: 0000000000000015 R14: 0000000000000000 R15: ffff88801209c980
+FS:  0000000001c35300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fbf6f3656c0 CR3: 000000001db9e000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x32/0xd0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x130 mm/slab_common.c:853
+ kmalloc_array include/linux/slab.h:592 [inline]
+ kcalloc include/linux/slab.h:621 [inline]
+ netlbl_cipsov4_add_std net/netlabel/netlabel_cipso_v4.c:188 [inline]
+ netlbl_cipsov4_add+0x5a9/0x23e0 net/netlabel/netlabel_cipso_v4.c:416
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x43fcc9
+Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdcdd33c48 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fcc9
+RDX: 0000000000004904 RSI: 0000000020000140 RDI: 0000000000000003
+RBP: 0000000000403730 R08: 0000000000000005 R09: 00000000004004a0
+R10: 0000000000000003 R11: 0000000000000246 R12: 00000000004037c0
+R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
