@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E53B320534
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 13:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB693320549
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 13:26:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229725AbhBTMNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 07:13:06 -0500
-Received: from mail.xenproject.org ([104.130.215.37]:54760 "EHLO
-        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhBTMNF (ORCPT
+        id S229784AbhBTM0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 07:26:31 -0500
+Received: from mail-pg1-f175.google.com ([209.85.215.175]:33083 "EHLO
+        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229734AbhBTM01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 07:13:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
-        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
-        bh=bQI3Ccup6yTIKmHa56nvcajDRXzkAB6HThNzesI2iXU=; b=lB2ygTAnJokH5Xh2dCOi/z2iZo
-        gJEn36BjiNPpV/WPhRsJ1hbLzvpOxpIgdFONvx94OiQG5YIh8DqilRSb/6q3f2OzzHcyOycYs8AXm
-        W6OQIhbdXauznCSyDbuErPjDa6qK7iSxYdS3yTFhyu9OSKi3zQFE85Qc9FEG5lvUmFWw=;
-Received: from xenbits.xenproject.org ([104.239.192.120])
-        by mail.xenproject.org with esmtp (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lDR7Q-0002Ad-Ue; Sat, 20 Feb 2021 12:12:16 +0000
-Received: from [54.239.6.185] (helo=a483e7b01a66.ant.amazon.com)
-        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <julien@xen.org>)
-        id 1lDR7Q-0008An-I2; Sat, 20 Feb 2021 12:12:16 +0000
-Subject: Re: [PATCH v3 3/8] xen/events: avoid handling the same event on two
- cpus at the same time
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        stable@vger.kernel.org
-References: <20210219154030.10892-1-jgross@suse.com>
- <20210219154030.10892-4-jgross@suse.com>
-From:   Julien Grall <julien@xen.org>
-Message-ID: <495a12e4-d54b-0841-07b2-5b0a0cea5d10@xen.org>
-Date:   Sat, 20 Feb 2021 12:12:14 +0000
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Sat, 20 Feb 2021 07:26:27 -0500
+Received: by mail-pg1-f175.google.com with SMTP id z68so7118011pgz.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 04:26:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=kfSr9wGDBaeTdPfP9BpaWnIALsMQibOPcyKNdfyx780=;
+        b=Hokzr7OPJYb4xec7J9shF7IhvZibEa5I4U+3pDyREaO5MGeke1ln0sprEiw08lzlHV
+         ULO6wbjoDlNE0NPVWRb6XBmcESEz1XXFYi2ZhVMdWR2oKxW6BMN0wEi1p2nMZUJeRELj
+         d5MVpZzoQRuiuaGLIM42LVckl19bVmVUXmKmMJaGYhxeSOGNDpiRZuvkqvmVCjmwffNZ
+         rGvVDvOC6aqYjxGsEvtUBTQvI3GNyndbD/3njI0RL/ZYeWFLkC46P6K7jajIMCfz7ZvA
+         yV7sb/f7/vUHYg6Lsd753+pVtSUjtILHXtxyL05lFsNdbwwMSLTaou5BZ4quZFMQuRX2
+         pNbw==
+X-Gm-Message-State: AOAM531foOR71bZYkQ9Dj6fvCe4SmAMv+AbSqdWiHu95JMhQ8qjyojVD
+        jWmh8uxinD5gWov0HP+AOto=
+X-Google-Smtp-Source: ABdhPJzZ64Xpr7tvcYyCFMBE1WGAtudkcdluTRxySrO7x3NXG/cHK803UCNrV9OedTZW4CS2uiETpg==
+X-Received: by 2002:a63:1f1e:: with SMTP id f30mr12622514pgf.141.1613823946831;
+        Sat, 20 Feb 2021 04:25:46 -0800 (PST)
+Received: from karthik-strix-linux.karthek.com ([192.140.155.84])
+        by smtp.gmail.com with ESMTPSA id z68sm409492pgb.41.2021.02.20.04.25.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 04:25:46 -0800 (PST)
+Date:   Sat, 20 Feb 2021 17:55:42 +0530
+From:   karthek <mail@karthek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        shivang upadhyay <oroz3x@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: wimax/i2400m: fix byte-order issue
+Message-ID: <YDD/xqjmlibz72XP@karthik-strix-linux.karthek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210219154030.10892-4-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juergen,
+fix sparse byte-order warnings by converting host byte-order
+types to le32 types
 
-On 19/02/2021 15:40, Juergen Gross wrote:
-> When changing the cpu affinity of an event it can happen today that
-> (with some unlucky timing) the same event will be handled on the old
-> and the new cpu at the same time.
-> 
-> Avoid that by adding an "event active" flag to the per-event data and
-> call the handler only if this flag isn't set.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Julien Grall <julien@xen.org>
-> Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: karthek <mail@karthek.com>
+---
+ drivers/staging/wimax/i2400m/op-rfkill.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: Julien Grall <jgrall@amazon.com>
-
-Cheers,
-
+diff --git a/drivers/staging/wimax/i2400m/op-rfkill.c b/drivers/staging/wimax/i2400m/op-rfkill.c
+index a159808f0..0f438ae6a 100644
+--- a/drivers/staging/wimax/i2400m/op-rfkill.c
++++ b/drivers/staging/wimax/i2400m/op-rfkill.c
+@@ -86,7 +86,7 @@ int i2400m_op_rfkill_sw_toggle(struct wimax_dev *wimax_dev,
+ 	if (cmd == NULL)
+ 		goto error_alloc;
+ 	cmd->hdr.type = cpu_to_le16(I2400M_MT_CMD_RF_CONTROL);
+-	cmd->hdr.length = sizeof(cmd->sw_rf);
++	cmd->hdr.length = cpu_to_le16(sizeof(cmd->sw_rf));
+ 	cmd->hdr.version = cpu_to_le16(I2400M_L3L4_VERSION);
+ 	cmd->sw_rf.hdr.type = cpu_to_le16(I2400M_TLV_RF_OPERATION);
+ 	cmd->sw_rf.hdr.length = cpu_to_le16(sizeof(cmd->sw_rf.status));
 -- 
-Julien Grall
+2.30.1
+
