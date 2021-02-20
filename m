@@ -2,248 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B42D320415
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:01:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DC0F32041A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhBTFxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 00:53:21 -0500
-Received: from mail-eopbgr20077.outbound.protection.outlook.com ([40.107.2.77]:49076
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229462AbhBTFxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 00:53:17 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GwFrALwwa7AGLiJ3WzfTtxtDKC5GeQTRv5fPtFoBLyRP5R/qpwDmOkJYdkB2PmtvWmBvzOUpIemwD56PlXFDVI5vDUyKUUMIj7E0jq8XfixjkA7W51ca1y8Yd53WwCptXOGdjL4cigVEgq2GaTsE62rHfhWhKC3+eowvwu/zhaiz+NCHmlAAYmqW0Swwa90f0Oh6rBQ/POZ0z3Lg7t3m3e0SHQAyv6kIMV71UrYCOraT3FyARnu6MUAvsG1T+WHWnri+U18VxDYQJzi0OHyzDXICemRn4iUepdQyOtwWcS8NeVeyJPg8K0JhHI0P+DCVsMOpEn42p20dGggKSAacQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Sklt5O+FOd7cXd9j6MhtD/xgTZJbc0qEhWb4p1I3umw=;
- b=Rgfr7Aq2tCoLYFwMs7OAjJxZAMj4A5K72l8PNUvs2bk6zLnt+ffH9fIxjHVS5ZXnzLXXxxTVZ8jOYVLfVqCmwAs7G0IcgKMipVtL1RfOXzKXaeaMzxLy7bix+I9ewqH/9NOtPEPDSwXTwNloOVFztrJyaicg0mcwC+c8kIePag/YEkjt6a5a27k4A9JdLB2mNutn5XznZ4AJjAeX08J+bofNzdWpyx1JAdBup2APC57XgJ47PtYtuuv9cELKYmLuTF5j0/LRKJoeqVXcC5zeWfyR59ePOlB/uIZf5SATiOmOwuGFw+1jbjP0f9+hV56rn235A3pegJT01pPTS1uRhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Sklt5O+FOd7cXd9j6MhtD/xgTZJbc0qEhWb4p1I3umw=;
- b=W/k+7kjgciCrLQpbbC1LtD2aN4CaqjtEDp6KV1ZgmeNo07kOUum/K9WkQ+IfCOvuHRwsVdzLVWLz1FaUVNjKqq2qIosLjCBGDxccbCEx8890o+E5DOn4get6VeCwYRrAYwsKeZVe2JnCcCSQbDEpypNICZ+8XkdbavJgmQaV0CM=
-Authentication-Results: sigxcpu.org; dkim=none (message not signed)
- header.d=none;sigxcpu.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com (2603:10a6:803:4c::16)
- by VI1PR04MB7118.eurprd04.prod.outlook.com (2603:10a6:800:127::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Sat, 20 Feb
- 2021 05:52:26 +0000
-Received: from VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0]) by VI1PR04MB3983.eurprd04.prod.outlook.com
- ([fe80::2564:cacc:2da5:52d0%5]) with mapi id 15.20.3868.027; Sat, 20 Feb 2021
- 05:52:26 +0000
-Message-ID: <a98f7531b9d0293d3c89174446f742d4199cb27c.camel@nxp.com>
-Subject: Re: [PATCH v2 1/1] phy: fsl-imx8-mipi-dphy: Hook into runtime pm
-From:   Liu Ying <victor.liu@nxp.com>
-To:     Guido =?ISO-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Date:   Sat, 20 Feb 2021 13:50:51 +0800
-In-Reply-To: <424af315b677934fe6a91cee5a0a7aee058245a9.camel@nxp.com>
-References: <cover.1608118008.git.agx@sigxcpu.org>
-         <eae82b09fd5ed39dbcd88cc10ce60338474183aa.1608118008.git.agx@sigxcpu.org>
-         <424af315b677934fe6a91cee5a0a7aee058245a9.camel@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR02CA0031.apcprd02.prod.outlook.com
- (2603:1096:3:18::19) To VI1PR04MB3983.eurprd04.prod.outlook.com
- (2603:10a6:803:4c::16)
+        id S229633AbhBTGGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 01:06:04 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:36461 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhBTGGB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 01:06:01 -0500
+Received: by mail-il1-f197.google.com with SMTP id v11so4812520ilc.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 22:05:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=xR2lYrl2rO31/7brBFYZKgpp4LvejpyF05dbAyouGuc=;
+        b=gt90PswlzHOMw8sRLbYEwjN4Oyh2lNtasUfmxAobM/AWrp1WHdaMXTFAdMHPOy4IJd
+         B4Pkc5St3Wor3kQJBStlyMzDkQUkW0EwOmN2BI9nLe+1gvIHa9Qp02SlOP4Qydf35u3j
+         ens4aBmSCgYKjxHeCP7W/OpaMbCpW7wEsFep03SwAbHJZk1IT6QoxWCi96bq60417SuP
+         AsKUC1Lh2wEiRT1P8hmyI9RJbyKyhbMCH0rHoNE9M6t1BgJKM+yVXCW53yO6rEG4w7X5
+         sVaBq+ySE2RgQ+XM2f0IDnHYfeXrId2qbAYydUaT07Gd2UDgg+M32UX+wZmWIaOToTfR
+         sX+A==
+X-Gm-Message-State: AOAM533ASvcGREDjdnQAqghOIaEsJxozW8MNmJBXCcJvbp9dlM9NNEna
+        ZEU/PDHVcnfqVOKXUfsQ6b4yP+O2I1cecQ4WzrgNSQ37b3eK
+X-Google-Smtp-Source: ABdhPJy8Q4OwZuXZgBB7AZPMCrtvxNicI+ZGkGM8KdL0dONVA621Xr735lZGB2YntR+/Ej5+1GSOmM/dvkIkxYnpG9wsdrjSM38g
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from blueberry.ap.freescale.net (119.31.174.66) by SG2PR02CA0031.apcprd02.prod.outlook.com (2603:1096:3:18::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Sat, 20 Feb 2021 05:52:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 950c9747-99ea-4d0c-0ab9-08d8d563b379
-X-MS-TrafficTypeDiagnostic: VI1PR04MB7118:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB7118DCA10FC6657E7567B39498839@VI1PR04MB7118.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QIMezmklMq5bpZlc6wRaiwMbInI9MW7aGRq15TIO6knA3SSs0ytYJkHusgf97T2/s/umC8zm3iSd5fRvbYG1lJPrQBiPRzhlm74/FkUnvpqjdFtQCSI9++0e7piaWBS/eEfQE7ZtHB8HIEnOZ5q9gx8OcS8Y7Hua19fB+dEGdKXj55kCebdBDFwgXKQwViqqhqcJeDutHmYesW8qyFVarazdbgTWn/ZeCc2HAcwr1N6JRV5CisN8FF1A7GLOuMktXeBh1pwaguCxXaL1x8V7X8ipUIcZ9N3znhbyfM0LRhTb5ksWqlHEL8ZWCF61rrnPlF4Iyx2fzpUQQlRHWeZkw0ZyVKm0CW84LP1Qlrg2y63Hyc2FNUHEvlkJAvKy87C6OsqU6OgbjHKAgE4T+gFKb0lKs3eFtPIf90UPkmcYjC1/1awWgnItEKCqV93ZkCFwR73pC4E4RbzNQmUsg3q5iIE4dwGir07Hf5py5FLNodoqSDAIapZqXioBFZBGoJexI9q8fq7hsnPAo9Xd2GUVfmTpfYcTKF+PxGUgimvU1w1Gid3WAv/M+3zHH4GHk6Zd
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB3983.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(136003)(39860400002)(376002)(86362001)(921005)(110136005)(52116002)(66946007)(66476007)(66556008)(316002)(6666004)(6506007)(5660300002)(2906002)(6486002)(36756003)(26005)(6512007)(186003)(478600001)(8676002)(8936002)(83380400001)(66574015)(4001150100001)(2616005)(956004)(16526019);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?bGEzeDRNU1J4dGM0ZDlSTWhXTlJOSnkvVWRqMnRCZVZOSW9nOGd6VVVHcXF0?=
- =?utf-8?B?bU1ZQzdaMWVLako2WHdaclkwRFlKRWk1cldyZUxRWW5CZE9YOXA4Nm45WEto?=
- =?utf-8?B?TjYzZDhQLytKRGFGMlhUaGZMVnRWRlp5YnMyVUZ1R0hhdFVYK2tIZ2ZrV1Ry?=
- =?utf-8?B?M3BaTE1CN00xSzUzcCtEdmNoYU9qa3lTTDhJMDY5UVlhUmFkVDdzUXN6bXhS?=
- =?utf-8?B?MVlHSk15THpoVXZlL1IvbDdOSE1qQWt4YXV2NlBXOHdubmo4ZyswS1Ruck9N?=
- =?utf-8?B?ajJZZ1hHeG0zeGg4NmVnZDk4OGUrOVJVdUlrNjJKVGs1WXlicnNsTGxOVWg2?=
- =?utf-8?B?Wi9laGE1VDFoL25iaG9MZGVnQXl6cm1DbUwzMXFxRGNFQi82cExDN21UVWtG?=
- =?utf-8?B?dmFNYjhZVUxjL3BuRzJmZ0VCK2s3Y3E4Y1NTaGYxVWhMYU9rcmdmTG52dmFi?=
- =?utf-8?B?NVhFNTFsczRnRTVXKzVnUnY2MUU0UUU3dUFVRjBZL3NQL1ZaWlQ1bEhib0d1?=
- =?utf-8?B?ZEJiaWNPRTlhUWRYdFY2VmFsYVJ0ZXN4emlvcCtLQlE1TzZVRitYVWtsNVBs?=
- =?utf-8?B?Sk43NkJXcXIxOVdlNnB4dS93ZVdwVERZMzVqOTBxc2x3SFFnbDdyYnZoMjlG?=
- =?utf-8?B?cTlDYnlVWlJXMUdmT2hVRTZxbDFGWmlsNnVYc3RZRHdGSGR5b0NueGtXV3Vy?=
- =?utf-8?B?WW9jaC8zb0dXYzRnQzAyOEhSM3YwSnBiR29Xdk81S3lXeWQyRFVKalQwQ0NE?=
- =?utf-8?B?R2RSSjUxZFlzOFJzQXpwa0lDcmFhOGFiMHV4SGdXUUNndkRLeWMwWXRqeW1V?=
- =?utf-8?B?dUt5a2NzbWF3Rlg0TENpSWYxWjlhaDhTQi9INHR1b2JyWUNZcEFjTytPOTU1?=
- =?utf-8?B?elNoOUg3dlZGNGJxd1BnMTJBa0dSaFZqc3hUR2V2UFVESyt5WEZSRW9YVk4z?=
- =?utf-8?B?a0JleU1OWXJ3QWd1aUc0ejRGcEhGRU9GZ1NTSFppTHEyRnBsUUJIOGZkNGF6?=
- =?utf-8?B?aUVJTkQzRUZCa2E3ZGFCOHZWa0FuWG5RUjhLUFduMmhTVTV2TVUvSkV4d0dE?=
- =?utf-8?B?eW5DR0ljZm54TS9OQVNXSlhaaDVBVjVwOWpNZG11UVo2R0d4QTNQN3krTE5G?=
- =?utf-8?B?aFdwOWFHYUJZdlpxTjh1RkU4czFTWmsxU2Z0L25OM1VKL1FHQ2ZjY251c2wz?=
- =?utf-8?B?VSt3SWg2bHkyeWZnL0h6M0FTUk1lZlNQL3BnN3lxOU16V0xPbUZBeXplUm1Z?=
- =?utf-8?B?NFVSNThHdDJmSE1EdHZFZGo3dlJkRUdMelN4RXF1YVUrQklrM3F2aURubzVk?=
- =?utf-8?B?VDUyRGNsS0NjSjY4MHUva05Zckxlb20rSlpXZVZXK1F6NUhJRGNXVEFLSEMx?=
- =?utf-8?B?d3J0dmMzRWZ3SG4vL0FSdThBRVRaUUJlSmRDWnI3WWI5aC80Q0Vpc2JTbjhP?=
- =?utf-8?B?aVZxRC9hTDdxWkNIbUN6aC9SWStVNW1PNDhxTW13dUZlTWVGaXVhNklKY0J1?=
- =?utf-8?B?a3UxNFBMVlFSdTBLQWdXY0xUTUdBYnZTVHROeTk5SGxqYzNSVERzdE9DN1Qw?=
- =?utf-8?B?aW1uREFUNWdMdXVhMXpwRnhIQmVHNlFiV01VTzRXVmRGbkIvNHNzVTdVdmVY?=
- =?utf-8?B?c3VwV0dEZFRsaDhsTUIwVDc2K3pBTG92Mk1wajlVRDFVK2JxRVNoYXRnbXB3?=
- =?utf-8?B?THZRaWg3OWk1MjRMTUVyOUtxRDlWcEcyQWZSOWtGc1ZFV3A4cWx2RTdEZlJB?=
- =?utf-8?Q?3+jIdQNKfLpZqSPwwZUWjfktC1ZtwybNN9o4kdm?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 950c9747-99ea-4d0c-0ab9-08d8d563b379
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB3983.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2021 05:52:26.5196
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gxtHtWPcxm90lqHYsJtY9WRkFI1k/pHfIBdqvY4WAS6ukZmbB6BEefNX4cLiqXMXDomX8RPBqjO9C/47bEjEZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7118
+X-Received: by 2002:a05:6602:200e:: with SMTP id y14mr1465878iod.94.1613801120415;
+ Fri, 19 Feb 2021 22:05:20 -0800 (PST)
+Date:   Fri, 19 Feb 2021 22:05:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000085468e05bbbe5a7a@google.com>
+Subject: KASAN: out-of-bounds Read in leaf_paste_entries
+From:   syzbot <syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-02-20 at 13:37 +0800, Liu Ying wrote:
-> Hi Guido,
-> 
-> On Wed, 2020-12-16 at 12:27 +0100, Guido Günther wrote:
-> > This allows us to shut down the mipi power domain on the imx8. The
-> > alternative would be to drop the dphy from the mipi power domain in the
-> > SOCs device tree and only have the DSI host controller visible there but
-> > since the PD is mostly about the PHY that would defeat it's purpose.
-> > 
-> > This allows to shut off the power domain hen blanking the LCD panel:
-> > 
-> > pm_genpd_summary before:
-> > 
-> > domain                          status          slaves
-> >     /device                                             runtime status
-> > ----------------------------------------------------------------------
-> > mipi                            on
-> >     /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  unsupported
-> >     /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
-> > 
-> > after:
-> > 
-> > mipi                            off-0
-> >     /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  suspended
-> >     /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
-> > 
-> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
-> > ---
-> >  .../phy/freescale/phy-fsl-imx8-mipi-dphy.c    | 22 ++++++++++++++++++-
-> >  1 file changed, 21 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c b/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c
-> > index a95572b397ca..34e2d801e520 100644
-> > --- a/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c
-> > +++ b/drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c
-> > @@ -14,6 +14,7 @@
-> >  #include <linux/of_platform.h>
-> >  #include <linux/phy/phy.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include <linux/regmap.h>
-> >  
-> >  /* DPHY registers */
-> > @@ -93,6 +94,7 @@ struct mixel_dphy_cfg {
-> >  };
-> >  
-> >  struct mixel_dphy_priv {
-> > +	struct device *dev;
-> >  	struct mixel_dphy_cfg cfg;
-> >  	struct regmap *regmap;
-> >  	struct clk *phy_ref_clk;
-> > @@ -382,6 +384,7 @@ static int mixel_dphy_power_on(struct phy *phy)
-> >  	ret = clk_prepare_enable(priv->phy_ref_clk);
-> >  	if (ret < 0)
-> >  		return ret;
-> > +	pm_runtime_get_sync(priv->dev);
-> >  
-> >  	phy_write(phy, PWR_ON, DPHY_PD_PLL);
-> >  	ret = regmap_read_poll_timeout(priv->regmap, DPHY_LOCK, locked,
-> > @@ -395,6 +398,7 @@ static int mixel_dphy_power_on(struct phy *phy)
-> >  
-> >  	return 0;
-> >  clock_disable:
-> > +	pm_runtime_put(priv->dev);
-> >  	clk_disable_unprepare(priv->phy_ref_clk);
-> >  	return ret;
-> >  }
-> > @@ -406,6 +410,7 @@ static int mixel_dphy_power_off(struct phy *phy)
-> >  	phy_write(phy, PWR_OFF, DPHY_PD_PLL);
-> >  	phy_write(phy, PWR_OFF, DPHY_PD_DPHY);
-> >  
-> > +	pm_runtime_put(priv->dev);
-> >  	clk_disable_unprepare(priv->phy_ref_clk);
-> >  
-> >  	return 0;
-> > @@ -467,6 +472,7 @@ static int mixel_dphy_probe(struct platform_device *pdev)
-> >  	dev_dbg(dev, "phy_ref clock rate: %lu\n",
-> >  		clk_get_rate(priv->phy_ref_clk));
-> >  
-> > +	priv->dev = dev;
-> >  	dev_set_drvdata(dev, priv);
-> >  
-> >  	phy = devm_phy_create(dev, np, &mixel_dphy_phy_ops);
-> > @@ -477,12 +483,26 @@ static int mixel_dphy_probe(struct platform_device *pdev)
-> >  	phy_set_drvdata(phy, priv);
-> >  
-> >  	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-> > +	if (IS_ERR(phy_provider))
-> > +		return PTR_ERR(phy_provider);
-> >  
-> > -	return PTR_ERR_OR_ZERO(phy_provider);
-> > +	pm_runtime_enable(dev);
-> 
-> If this enablement is done prior to devm_phy_create(), then the
-> phy-core will manage runtime PM for this device.  This way, this driver
-> doesn't have to manage it by itself.
-> 
-> Regards,
-> Liu Ying
-> 
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int mixel_dphy_remove(struct platform_device *pdev)
-> > +{
-> > +	struct mixel_dphy_priv *priv = platform_get_drvdata(pdev);
-> > +
-> > +	pm_runtime_disable(priv->dev);
+Hello,
 
-One more comment - 'pm_runtime_disable(&pdev->dev);' is fine.
+syzbot found the following issue on:
 
-Regards,
-Liu Ying
+HEAD commit:    f40ddce8 Linux 5.11
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c21204d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=51ab7ccaffffc30c
+dashboard link: https://syzkaller.appspot.com/bug?extid=c31a48e6702ccb3d64c9
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10ede514d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f9f338d00000
 
-> > +
-> > +	return 0;
-> >  }
-> >  
-> >  static struct platform_driver mixel_dphy_driver = {
-> >  	.probe	= mixel_dphy_probe,
-> > +	.remove = mixel_dphy_remove,
-> >  	.driver = {
-> >  		.name = "mixel-mipi-dphy",
-> >  		.of_match_table	= mixel_dphy_of_match,
+Bisection is inconclusive: the issue happens on the oldest tested release.
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=141b8882d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=161b8882d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=121b8882d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c31a48e6702ccb3d64c9@syzkaller.appspotmail.com
+
+REISERFS (device loop0): journal params: device loop0, size 15748, journal first block 18, max trans len 1024, max batch 900, max commit age 30, max trans age 30
+REISERFS (device loop0): checking transaction log (loop0)
+REISERFS (device loop0): Using tea hash to sort names
+==================================================================
+BUG: KASAN: out-of-bounds in memmove include/linux/string.h:462 [inline]
+BUG: KASAN: out-of-bounds in leaf_paste_entries+0x449/0x910 fs/reiserfs/lbalance.c:1377
+Read of size 18446744073709551584 at addr ffff888040a03fa4 by task syz-executor585/8424
+
+CPU: 1 PID: 8424 Comm: syz-executor585 Not tainted 5.11.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2c6 mm/kasan/report.c:230
+ __kasan_report mm/kasan/report.c:396 [inline]
+ kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+ check_memory_region_inline mm/kasan/generic.c:179 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+ memmove+0x20/0x60 mm/kasan/shadow.c:53
+ memmove include/linux/string.h:462 [inline]
+ leaf_paste_entries+0x449/0x910 fs/reiserfs/lbalance.c:1377
+ balance_leaf_finish_node_paste_dirent fs/reiserfs/do_balan.c:1295 [inline]
+ balance_leaf_finish_node_paste fs/reiserfs/do_balan.c:1321 [inline]
+ balance_leaf_finish_node fs/reiserfs/do_balan.c:1364 [inline]
+ balance_leaf+0x951e/0xd8b0 fs/reiserfs/do_balan.c:1452
+ do_balance+0x315/0x810 fs/reiserfs/do_balan.c:1888
+ reiserfs_paste_into_item+0x762/0x8e0 fs/reiserfs/stree.c:2138
+ reiserfs_add_entry+0x8cb/0xcf0 fs/reiserfs/namei.c:566
+ reiserfs_mkdir+0x66e/0x980 fs/reiserfs/namei.c:858
+ create_privroot fs/reiserfs/xattr.c:889 [inline]
+ reiserfs_xattr_init+0x4de/0xb60 fs/reiserfs/xattr.c:1011
+ reiserfs_fill_super+0x215d/0x2e00 fs/reiserfs/super.c:2177
+ mount_bdev+0x34d/0x410 fs/super.c:1366
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1496
+ do_new_mount fs/namespace.c:2881 [inline]
+ path_mount+0x13ad/0x20c0 fs/namespace.c:3211
+ do_mount fs/namespace.c:3224 [inline]
+ __do_sys_mount fs/namespace.c:3432 [inline]
+ __se_sys_mount fs/namespace.c:3409 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3409
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x445b8a
+Code: 48 c7 c2 c0 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d2 e8 a8 00 00 00 0f 1f 84 00 00 00 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff8c7af438 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fff8c7af490 RCX: 0000000000445b8a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fff8c7af450
+RBP: 00007fff8c7af450 R08: 00007fff8c7af490 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000286 R12: 00000000200002a8
+R13: 0000000000000003 R14: 0000000000000004 R15: 0000000000000007
+
+The buggy address belongs to the page:
+page:000000008f17f20f refcount:3 mapcount:0 mapping:000000009acfcc32 index:0x3d97 pfn:0x40a03
+aops:def_blk_aops ino:700000
+flags: 0xfff00000002022(referenced|active|private)
+raw: 00fff00000002022 dead000000000100 dead000000000122 ffff88801795cb50
+raw: 0000000000003d97 ffff888038f7c4c8 00000003ffffffff ffff8881407ac000
+page dumped because: kasan: bad access detected
+pages's memcg:ffff8881407ac000
+
+Memory state around the buggy address:
+ ffff888040a03e80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888040a03f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>ffff888040a03f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                               ^
+ ffff888040a04000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff888040a04080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
