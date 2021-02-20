@@ -2,138 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610F832030E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:13:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D05C320320
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:24:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhBTCMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 21:12:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhBTCMZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 21:12:25 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEC0C061794
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:11:07 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id s23so1986328pji.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:11:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T/bcmgFG5Q/B+6/HjkjoWIy++Ai0witxQcUitgDw+g4=;
-        b=eRMxvTRh3HWfGoRuMVVLNT1xvUOCKcAvZTqpYvGnv2gaTMGTWW7XKM8/Xx5WDISdR+
-         XKRwLK7ymE++esbSiXOycOJqCyl/poIunZtOuF25vCKgpFbb2jKdxOrMMoIxirXs84Yy
-         Zg/GrVxZk8MHhhndLmeBx5Nvc9pSNXdCCga9c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T/bcmgFG5Q/B+6/HjkjoWIy++Ai0witxQcUitgDw+g4=;
-        b=nOInfJEy1WgH4bDbDSSTrFf/k1rgq9BW9982mYfk0tpH1+pF2nujJoraOO13HSsoET
-         a3yTUwFSrcVgbVGp4F8C1Z1LfEbj5uhqMghxxpHHwgwIN98JJDPnKe2Xa0Ilm9v4diWI
-         mQTt1JJAQ5uAT/XicO4f9kWF/qKTfhF+Qmd81F/V/Lxt466oQFW0koTTThFSiTXaALjB
-         Z/3CwKm6UYv1wvh8W8VutZKvL3I5AzxQUploTzHeVn2BOHpRiiuY+DRQr6LkE4gHLP4H
-         zOyL5dD9gjqb7kqF8/Z4fGqeyJhIlmakPPr5T1mbOwMs6y+J76M9SaKtsImFuQZepPRr
-         mrWg==
-X-Gm-Message-State: AOAM533OHJMRXMfgWnHnrFXF6KlL+YDzQXvKD9fEN4bjZlCOhu3JZRO9
-        boDWIlhf5VXG2bOf0f2ubc9HCw==
-X-Google-Smtp-Source: ABdhPJzP3ewmp+T7JsEUpOd4wjUq4O4buC6eZbE+P/amgOtYEdsAckKh6zEdRG95+GTHN8EfwMsXYg==
-X-Received: by 2002:a17:90a:ab8b:: with SMTP id n11mr11634378pjq.109.1613787067582;
-        Fri, 19 Feb 2021 18:11:07 -0800 (PST)
-Received: from localhost ([2620:15c:202:1:bdfd:8eaf:bd48:f73e])
-        by smtp.gmail.com with UTF8SMTPSA id ca19sm749988pjb.31.2021.02.19.18.11.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 18:11:07 -0800 (PST)
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
-Subject: [PATCH 3/3] arm64: dts: qcom: sc7180: Delete charger thermal zone and ADC channel for lazor <= rev3
-Date:   Fri, 19 Feb 2021 18:10:59 -0800
-Message-Id: <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid>
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-In-Reply-To: <20210219181032.1.I23e12818c4a841ba9c37c60b3ba8cfeeb048285f@changeid>
-References: <20210219181032.1.I23e12818c4a841ba9c37c60b3ba8cfeeb048285f@changeid>
+        id S229908AbhBTCXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 21:23:17 -0500
+Received: from mga18.intel.com ([134.134.136.126]:38941 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229745AbhBTCXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 21:23:14 -0500
+IronPort-SDR: NWVWBcrOoJXr0+r9LDi9ANPUkuroSuxXWN/wTCWOzwr35+uQpKPjQj1HBVjugi8Xac2/F2uqqp
+ tuk98380ePng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="171685573"
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; 
+   d="scan'208";a="171685573"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 18:21:28 -0800
+IronPort-SDR: jgSY0f4qrxlE3DaXtKwmJn+gTZ7v2A0K0Dsz0yVXZEqgzjfpCj4FuGBdhJnfB3jnzvAZU82IRc
+ 2EmChZmwK2iA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; 
+   d="scan'208";a="420588765"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
+  by fmsmga004.fm.intel.com with ESMTP; 19 Feb 2021 18:21:24 -0800
+Cc:     baolu.lu@linux.intel.com, Yi Liu <yi.l.liu@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>
+Subject: Re: [PATCH 3/4] iommu/vt-d: Reject unsupported page request modes
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>
+References: <1613683878-89946-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1613683878-89946-4-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <fb796569-4612-4ba9-0859-310bd13a32fc@linux.intel.com>
+Date:   Sat, 20 Feb 2021 10:12:41 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1613683878-89946-4-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lazor rev3 and older are stuffed with a 47k NTC as thermistor for
-the charger temperature which currently isn't supported by the
-PM6150 ADC driver. Delete the charger thermal zone and ADC channel
-to avoid the use of bogus temperature values.
+On 2/19/21 5:31 AM, Jacob Pan wrote:
+> When supervisor/privilige mode SVM is used, we bind init_mm.pgd with
+> a supervisor PASID. There should not be any page fault for init_mm.
+> Execution request with DMA read is also not supported.
+> 
+> This patch checks PRQ descriptor for both unsupported configurations,
+> reject them both with invalid responses.
+> 
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
----
+Fixes: 1c4f88b7f1f92 ("iommu/vt-d: Shared virtual address in scalable mode")
+Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 9 +++++++++
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 9 +++++++++
- arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts | 9 +++++++++
- 3 files changed, 27 insertions(+)
+Best regards,
+baolu
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-index 30e3e769d2b4..0974dbd424e1 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-@@ -14,6 +14,15 @@ / {
- 	compatible = "google,lazor-rev0", "qcom,sc7180";
- };
- 
-+/*
-+ * rev <= 3 are stuffed with a 47k NTC as charger thermistor which is currently
-+ * not supported by the PM6150 ADC driver. Delete the thermal zone and ADC
-+ * channel to avoid the use of bogus temperature values.
-+ */
-+/delete-node/ &charger_thermal;
-+/delete-node/ &pm6150_adc_charger_thm;
-+/delete-node/ &pm6150_adc_tm_charger_thm;
-+
- &pp3300_hub {
- 	/* pp3300_l7c is used to power the USB hub */
- 	/delete-property/regulator-always-on;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-index c2ef06367baf..0381ca85ae97 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts
-@@ -14,6 +14,15 @@ / {
- 	compatible = "google,lazor-rev1", "google,lazor-rev2", "qcom,sc7180";
- };
- 
-+/*
-+ * rev <= 3 are stuffed with a 47k NTC as charger thermistor which is currently
-+ * not supported by the PM6150 ADC driver. Delete the thermal zone and ADC
-+ * channel to avoid the use of bogus temperature values.
-+ */
-+/delete-node/ &charger_thermal;
-+/delete-node/ &pm6150_adc_charger_thm;
-+/delete-node/ &pm6150_adc_tm_charger_thm;
-+
- &pp3300_hub {
- 	/* pp3300_l7c is used to power the USB hub */
- 	/delete-property/regulator-always-on;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts
-index 240c3e067fac..b9473bba8f4a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts
-+++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts
-@@ -13,3 +13,12 @@ / {
- 	model = "Google Lazor (rev3)";
- 	compatible = "google,lazor-rev3", "qcom,sc7180";
- };
-+
-+/*
-+ * rev <= 3 are stuffed with a 47k NTC as charger thermistor which is currently
-+ * not supported by the PM6150 ADC driver. Delete the thermal zone and ADC
-+ * channel to avoid the use of bogus temperature values.
-+ */
-+/delete-node/ &charger_thermal;
-+/delete-node/ &pm6150_adc_charger_thm;
-+/delete-node/ &pm6150_adc_tm_charger_thm;
--- 
-2.30.0.617.g56c4b15f3c-goog
-
+> ---
+>   drivers/iommu/intel/svm.c | 12 +++++++++++-
+>   1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 23a1e4f58c54..ff7ae7cc17d5 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -1113,7 +1113,17 @@ static irqreturn_t prq_event_thread(int irq, void *d)
+>   			       ((unsigned long long *)req)[1]);
+>   			goto no_pasid;
+>   		}
+> -
+> +		/* We shall not receive page request for supervisor SVM */
+> +		if (req->pm_req && (req->rd_req | req->wr_req)) {
+> +			pr_err("Unexpected page request in Privilege Mode");
+> +			/* No need to find the matching sdev as for bad_req */
+> +			goto no_pasid;
+> +		}
+> +		/* DMA read with exec requeset is not supported. */
+> +		if (req->exe_req && req->rd_req) {
+> +			pr_err("Execution request not supported\n");
+> +			goto no_pasid;
+> +		}
+>   		if (!svm || svm->pasid != req->pasid) {
+>   			rcu_read_lock();
+>   			svm = ioasid_find(NULL, req->pasid, NULL);
+> 
