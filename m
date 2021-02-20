@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C740D3203C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 06:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B04D3203CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 06:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229657AbhBTFRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 00:17:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhBTFRF (ORCPT
+        id S230014AbhBTFTE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 00:19:04 -0500
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:35632 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229825AbhBTFSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 00:17:05 -0500
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0C2C061574;
-        Fri, 19 Feb 2021 21:16:25 -0800 (PST)
-Received: by mail-lj1-x22a.google.com with SMTP id k22so35370357ljg.3;
-        Fri, 19 Feb 2021 21:16:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=75WgM4j7TpcglCJIQaidtSvYuszmMtipi4ZJU85Xubs=;
-        b=s+91Q/NxEOWWfiT2BbVxo3Htl8db0wjaq1enuCFCFswR75Spv5EtSIqCwZqc68F+iO
-         Dy3RLT413GvOqNnrhKPD/Vg8AoZA2PRWZq6DXoJsO1VDHzsmp7UpveYPwRPCMfnNLVRd
-         p/4Zt6sLr+G0bKCgBzhF5CUSOML3nCnLzfQDepoBJvdZ2vlgy3uQDWeQt1ajuMd1zE0B
-         U5CRBES1msaKbgxJCpElsC9vYP2AV8szpwT6wlsoM6t4PbHIe7FG0UwkRYS9ynZ89v/9
-         TDlmuP8IceGw3ja00kM9W1Krj26CbsF99tXj2Sh9P9RE1smQPG80GH5HZxCQkA+GcuAC
-         VoTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=75WgM4j7TpcglCJIQaidtSvYuszmMtipi4ZJU85Xubs=;
-        b=FJ6b3twa3eRSfoUKWkt0sqTp8HSWdGHWxxfzJqy1JIhsrT28PQy4WXfM1opxdlcACT
-         5yRFCYGjYNCy1JvSHEaHchXmyc6F4PeOGAxKZFQ4rZotlanhN1yYlXbecSD1j5pX4JbG
-         QLgi0rT0KcOFyrTx25ssjXglcxacFKq3lomGiJ9E3OOFxf6PnLZgARh3YHycd8dB+5fM
-         GMGycUhxggIURFLIDV04uirw+qANafu4NCvxBliG/UWuTEX6FYahatOu83d2IO/bfX7a
-         TDJPehGyJzgL+A4gRit4IdeYEUOQrLGUjKIGpMhETGIOTAmTyRRSACpuDj9Qbu+yfpPU
-         LIBA==
-X-Gm-Message-State: AOAM530z5qjfP5b7xqjgz9VqtD67kB6q+7/ij6UkCt6aenXiRg1fOjOn
-        XMBdLsIfqQbLaqRsveQCizIKzJ0PXZY=
-X-Google-Smtp-Source: ABdhPJwjsq3TDQS5wEjqyDwFxuQJ5k1GaYHDBbikWFxv6QHUKfYn86ehN4RvF+ueagBaOHj5rxLwTQ==
-X-Received: by 2002:a19:500a:: with SMTP id e10mr7503522lfb.241.1613798183645;
-        Fri, 19 Feb 2021 21:16:23 -0800 (PST)
-Received: from [192.168.2.145] (109-252-193-52.dynamic.spd-mgts.ru. [109.252.193.52])
-        by smtp.googlemail.com with ESMTPSA id o16sm284804lfn.252.2021.02.19.21.16.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Feb 2021 21:16:23 -0800 (PST)
-Subject: Re: [PATCH] iommu/tegra-smmu: Fix mc errors on tegra124-nyan
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, joro@8bytes.org,
-        thierry.reding@gmail.com, will@kernel.org,
-        guillaume.tucker@collabora.com
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210218220702.1962-1-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <9d6445c0-9574-1650-e327-32b11716f87e@gmail.com>
-Date:   Sat, 20 Feb 2021 08:16:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        Sat, 20 Feb 2021 00:18:54 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id CE37828237;
+        Sat, 20 Feb 2021 00:18:03 -0500 (EST)
+Date:   Sat, 20 Feb 2021 16:18:07 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Xiaofei Tan <tanxiaofei@huawei.com>
+cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        linux-m68k@vger.kernel.org
+Subject: Re: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
+ for SCSI drivers
+In-Reply-To: <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com>
+Message-ID: <588a87f-ae42-0b7-749e-c780ce5c3e4f@telegraphics.com.au>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com> <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au> <e949a474a9284ac6951813bfc8b34945@hisilicon.com> <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+ <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210218220702.1962-1-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-19.02.2021 01:07, Nicolin Chen пишет:
-> Commit 25938c73cd79 ("iommu/tegra-smmu: Rework tegra_smmu_probe_device()")
-> removed certain hack in the tegra_smmu_probe() by relying on IOMMU core to
-> of_xlate SMMU's SID per device, so as to get rid of tegra_smmu_find() and
-> tegra_smmu_configure() that are typically done in the IOMMU core also.
-> 
-> This approach works for both existing devices that have DT nodes and other
-> devices (like PCI device) that don't exist in DT, on Tegra210 and Tegra3
-> upon testing. However, Page Fault errors are reported on tegra124-Nyan:
-> 
->   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> 	 EMEM address decode error (SMMU translation error [--S])
->   tegra-mc 70019000.memory-controller: display0a: read @0xfe056b40:
-> 	 Page fault (SMMU translation error [--S])
-> 
-> After debugging, I found that the mentioned commit changed some function
-> callback sequence of tegra-smmu's, resulting in enabling SMMU for display
-> client before display driver gets initialized. I couldn't reproduce exact
-> same issue on Tegra210 as Tegra124 (arm-32) differs at arch-level code.
+On Thu, 18 Feb 2021, Xiaofei Tan wrote:
 
-Hello Nicolin,
+> On 2021/2/9 13:06, Finn Thain wrote:
+> > On Tue, 9 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > 
+> > > > On Sun, 7 Feb 2021, Xiaofei Tan wrote:
+> > > > 
+> > > > > Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI 
+> > > > > drivers. There are no function changes, but may speed up if 
+> > > > > interrupt happen too often.
+> > > > 
+> > > > This change doesn't necessarily work on platforms that support 
+> > > > nested interrupts.
+> > > > 
+> > > > Were you able to measure any benefit from this change on some 
+> > > > other platform?
+> > > 
+> > > I think the code disabling irq in hardIRQ is simply wrong.
+> > > Since this commit
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e58aa3d2d0cc
+> > > genirq: Run irq handlers with interrupts disabled
+> > > 
+> > > interrupt handlers are definitely running in a irq-disabled context
+> > > unless irq handlers enable them explicitly in the handler to permit
+> > > other interrupts.
+> > > 
+> > 
+> > Repeating the same claim does not somehow make it true. If you put 
+> > your claim to the test, you'll see that that interrupts are not 
+> > disabled on m68k when interrupt handlers execute.
+> > 
+> > The Interrupt Priority Level (IPL) can prevent any given irq handler 
+> > from being re-entered, but an irq with a higher priority level may be 
+> > handled during execution of a lower priority irq handler.
+> > 
+> > sonic_interrupt() uses an irq lock within an interrupt handler to 
+> > avoid issues relating to this. This kind of locking may be needed in 
+> > the drivers you are trying to patch. Or it might not. Apparently, 
+> > no-one has looked.
+> > 
+> 
+> According to your discussion with Barry, it seems that m68k is a little 
+> different from other architecture, and this kind of modification of this 
+> patch cannot be applied to m68k. So, could help to point out which 
+> driver belong to m68k architecture in this patch set of SCSI? I can 
+> remove them.
+> 
 
-Could you please explain in a more details what exactly makes the
-difference for the callback sequence?
+If you would claim that "there are no function changes" in your patches 
+(as above) then the onus is on you to support that claim.
+
+I assume that there are some platforms on which your assumptions hold.
+
+With regard to drivers for those platforms, you might want to explain why 
+your patches should be applied there, given that the existing code is 
+superior for being more portable.
+
+> BTW, sonic_interrupt() is from net driver natsemi, right?  It would be 
+> appreciative if only discuss SCSI drivers in this patch set. thanks.
+> 
+
+The 'net' subsystem does have some different requirements than the 'scsi' 
+subsystem. But I don't see how that's relevant. Perhaps you can explain 
+it. Thanks.
