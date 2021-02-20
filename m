@@ -2,122 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 452E53206AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 19:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B94543206B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 19:43:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBTSh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 13:37:27 -0500
-Received: from pb-smtp2.pobox.com ([64.147.108.71]:55548 "EHLO
-        pb-smtp2.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhBTShZ (ORCPT
+        id S229876AbhBTSnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 13:43:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhBTSnK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 13:37:25 -0500
-Received: from pb-smtp2.pobox.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id CA7CAA2C34;
-        Sat, 20 Feb 2021 13:36:41 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=date:from:to
-        :cc:subject:in-reply-to:message-id:references:mime-version
-        :content-type; s=sasl; bh=KqoCn39xmNhOTQk46ZqLtsrra/o=; b=wOY6fg
-        ksf6XBE7QVSHedfb8nvK1o4kzx0HKpyE25DpMQc5HAsbGfaZE9YvAvSg+Us8MLDo
-        8lbDuLHCWAq6q8UAve+DlqLViDNq4/tWa+KwZuj7aNXM+h/QSFVaOcMhQ7fcfHHk
-        5SoUve/QO71rkCq3KpxgNbDl4BEOneuhke1VA=
-Received: from pb-smtp2.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp2.pobox.com (Postfix) with ESMTP id C260EA2C32;
-        Sat, 20 Feb 2021 13:36:41 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=fluxnic.net;
- h=date:from:to:cc:subject:in-reply-to:message-id:references:mime-version:content-type; s=2016-12.pbsmtp; bh=QKF/B4e6NYtv0pMbTy2WxlqUpmStZjtrrFy73d9SP0k=; b=OyKhZMi8BSfetEFPXSUbqFvLKYXGE7ku4Wy+6ZzROAbpRkhWkp4iWIEdvbnjUkVc2mCvTEFK46DbhFW1xqH92P2gpsEvt4kPdqqETIelK6HvVtKqSFXuhPwBQ/+gblaunie9Q2w1AY1PoVf30j8+qx2/ohzDH3H1vEqmyO2v4Q8=
-Received: from yoda.home (unknown [24.203.50.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by pb-smtp2.pobox.com (Postfix) with ESMTPSA id 48157A2C31;
-        Sat, 20 Feb 2021 13:36:41 -0500 (EST)
-        (envelope-from nico@fluxnic.net)
-Received: from xanadu.home (xanadu.home [192.168.2.2])
-        by yoda.home (Postfix) with ESMTPSA id 597202DA0084;
-        Sat, 20 Feb 2021 13:36:40 -0500 (EST)
-Date:   Sat, 20 Feb 2021 13:36:40 -0500 (EST)
-From:   Nicolas Pitre <nico@fluxnic.net>
-To:     Randy Dunlap <rdunlap@infradead.org>
-cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        patches@armlinux.org.uk
-Subject: Re: [PATCH v3] arm: OABI compat: fix build when EPOLL is not
- enabled
-In-Reply-To: <20210220183311.30197-1-rdunlap@infradead.org>
-Message-ID: <3391os3-o03p-63sn-5o20-5s23o377998s@syhkavp.arg>
-References: <20210220183311.30197-1-rdunlap@infradead.org>
+        Sat, 20 Feb 2021 13:43:10 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7ED6C06178A
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 10:42:29 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id q14so42671452ljp.4
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 10:42:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LS5gwKcMHR9sdDFFvyyOOfE/sEKmvwhv6AyHy6Ue0Eg=;
+        b=CxRwsvrkffeovIBHK7QTB89JlhPdqIfqw+OlXY+dk1cV4IBWxveisxrcUXMAzaouwX
+         fCV67iU6F7wX58CSAB5bIhAZryiPW4kLYNGaSHKwHyZfiC3BJaxC8F8KyC//7Sr9kedd
+         k/1Z1c5M9zpDpPUVPZTbt3wjaCQILE4AU3eRYQr9gUWqgLvDhdPANHX6twqvn52BSM9d
+         /XVXHjsqNzgP19683zUFeWOvXII9YAEt77lIPj9EDecTQ2EJZTbTZwboEFHJFWKYWFO2
+         Yw/69e/r8XLUYqeR2buSTRgqQGY5iAHXuDqg9R3jh1hm9KKUmurs62Vy6ubPsfD2xqan
+         T5fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LS5gwKcMHR9sdDFFvyyOOfE/sEKmvwhv6AyHy6Ue0Eg=;
+        b=M9KVR+nXT/wv5gzaFhAF4+mhqXIvTmqJw/ktpYgSmIvH7S3NOW4SiqmCntpoqsaylR
+         aK9U/xL3xbvJSwbu5MRjWnwYpCFErYbLonVqOY41PzUAnKftVYS1Gg1ncAeGrXv7ItHn
+         9LkNmWtoSDZqVrhEGGE+tVQb7KTk7CS+8l289/WPrKRvp6XRJ4UFGtCfPGdK8fp37gt6
+         uWwULeohQ+cSfnvFbXDW67EN9ZK8iNfwpUS9JhuZTUZjtC3tX5DjDOdZHtrZhPRF1syR
+         KfAShD2Jj8ADnDa1EHASXOssV5Q4jA+uqlSw9CKSPFTH68iYDyRucCjR9YfaVX26+gLa
+         pNvw==
+X-Gm-Message-State: AOAM531/iFZOEAs97Jdr4440CFnc3Z5ufr28dY4T74qD/zg335Q8ZlTj
+        kypjdm221TDf5mYVPxW3faZ6hQ==
+X-Google-Smtp-Source: ABdhPJy4Ons8DzOVQF9Alozjt1JiZgxRKMkzCccYD/nKdhBwPokycuN7WiTTNWnzO+LvOxU2rXYJ4g==
+X-Received: by 2002:a2e:9707:: with SMTP id r7mr575046lji.359.1613846548141;
+        Sat, 20 Feb 2021 10:42:28 -0800 (PST)
+Received: from [192.168.118.216] ([85.249.43.69])
+        by smtp.gmail.com with ESMTPSA id i30sm1316467lfc.154.2021.02.20.10.42.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Feb 2021 10:42:27 -0800 (PST)
+Subject: Re: [PATCH v5 04/22] media: camss: Add CAMSS_845 camss version
+To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+References: <20210217112122.424236-1-robert.foss@linaro.org>
+ <20210217112122.424236-5-robert.foss@linaro.org>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <17de547b-a473-129e-62a1-f453d5f9881b@linaro.org>
+Date:   Sat, 20 Feb 2021 21:42:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Pobox-Relay-ID: 93047B32-73AA-11EB-9365-74DE23BA3BAF-78420484!pb-smtp2.pobox.com
+In-Reply-To: <20210217112122.424236-5-robert.foss@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Feb 2021, Randy Dunlap wrote:
+Hi Robert,
 
-> When CONFIG_EPOLL is not set/enabled, sys_oabi-compat.c has build
-> errors. Fix these by surrounding them with ifdef CONFIG_EPOLL/endif
-> and providing stubs for the "EPOLL is not set" case.
+Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+
+Thanks,
+Andrey
+
+On 17.02.2021 14:21, Robert Foss wrote:
+> Add enum representing the SDM845 SOC, which incorporates version
+> 170 of the Titan architecture ISP.
 > 
-> ../arch/arm/kernel/sys_oabi-compat.c: In function 'sys_oabi_epoll_ctl':
-> ../arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror=implicit-function-declaration]
->   257 |  if (ep_op_has_event(op) &&
->       |      ^~~~~~~~~~~~~~~
-> ../arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl'; did you mean 'sys_epoll_ctl'? [-Werror=implicit-function-declaration]
->   264 |  return do_epoll_ctl(epfd, op, fd, &kernel, false);
->       |         ^~~~~~~~~~~~
-> 
-> Fixes: c281634c8652 ("ARM: compat: remove KERNEL_DS usage in sys_oabi_epoll_ctl()")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com> # from an lkp .config file
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: Nicolas Pitre <nico@fluxnic.net>
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: patches@armlinux.org.uk
-
-Acked-by: Nicolas Pitre <nico@fluxnic.net>
-
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
 > ---
-> v2: use correct Fixes: tag (thanks, rmk)
-> v3: add patches@ to Cc: list
+>   drivers/media/platform/qcom/camss/camss.h | 1 +
+>   1 file changed, 1 insertion(+)
 > 
->  arch/arm/kernel/sys_oabi-compat.c |   15 +++++++++++++++
->  1 file changed, 15 insertions(+)
-> 
-> --- linux-next-20201214.orig/arch/arm/kernel/sys_oabi-compat.c
-> +++ linux-next-20201214/arch/arm/kernel/sys_oabi-compat.c
-> @@ -248,6 +248,7 @@ struct oabi_epoll_event {
->  	__u64 data;
->  } __attribute__ ((packed,aligned(4)));
->  
-> +#ifdef CONFIG_EPOLL
->  asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
->  				   struct oabi_epoll_event __user *event)
->  {
-> @@ -298,6 +299,20 @@ asmlinkage long sys_oabi_epoll_wait(int
->  	kfree(kbuf);
->  	return err ? -EFAULT : ret;
->  }
-> +#else
-> +asmlinkage long sys_oabi_epoll_ctl(int epfd, int op, int fd,
-> +				   struct oabi_epoll_event __user *event)
-> +{
-> +	return -EINVAL;
-> +}
-> +
-> +asmlinkage long sys_oabi_epoll_wait(int epfd,
-> +				    struct oabi_epoll_event __user *events,
-> +				    int maxevents, int timeout)
-> +{
-> +	return -EINVAL;
-> +}
-> +#endif
->  
->  struct oabi_sembuf {
->  	unsigned short	sem_num;
+> diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+> index 3a0484683cd6..46e986452824 100644
+> --- a/drivers/media/platform/qcom/camss/camss.h
+> +++ b/drivers/media/platform/qcom/camss/camss.h
+> @@ -66,6 +66,7 @@ enum camss_version {
+>   	CAMSS_8x16,
+>   	CAMSS_8x96,
+>   	CAMSS_660,
+> +	CAMSS_845,
+>   };
+>   
+>   struct camss {
 > 
