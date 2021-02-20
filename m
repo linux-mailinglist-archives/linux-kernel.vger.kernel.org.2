@@ -2,78 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2522332044A
+	by mail.lfdr.de (Postfix) with ESMTP id 97FF632044B
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 08:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhBTHDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 02:03:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229789AbhBTHDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 02:03:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8C7864EB8;
-        Sat, 20 Feb 2021 07:02:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613804546;
-        bh=Pvh5cvdWKO1LNmyetgVB1YyxbpJdDKcFN/Tg6OGL7+E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jmEaiT3r/F6fl71Sc7Hqap7ot1RTVLGh1ddbcZ03dVUXbg2yw6DhnQBAHtzdwzKWj
-         pHRHxHJohqqkFnsAIOWK9oMMCXUueYM39jYhs4pl/B4sEXMJv7MSYaC8g9u+IYNBPW
-         ep4njqFYZg12q0E39j6RthsylaOujRIHSjUewA2E=
-Date:   Sat, 20 Feb 2021 08:02:23 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Julian Braha <julianbraha@gmail.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: rtl8192e: fix kconfig dependency on CRYPTO
-Message-ID: <YDCz/6gQgp07NGw2@kroah.com>
-References: <8483722.hVsnvgcxvV@ubuntu-mate-laptop>
+        id S229824AbhBTHD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 02:03:56 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12984 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhBTHDp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 02:03:45 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DjK9k2V7BzjQLY;
+        Sat, 20 Feb 2021 15:01:30 +0800 (CST)
+Received: from [10.174.178.147] (10.174.178.147) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 20 Feb 2021 15:02:54 +0800
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     Scott Branden <scott.branden@broadcom.com>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        PEIXIN HOU <PEIXIN.HOU@huawei.com>,
+        Yanjin <yanjin.yan@huawei.com>,
+        "Zhangdianfang (Dianfang, OS Lab)" <zhangdianfang@huawei.com>,
+        Zhaohongjiang <zhaohongjiang@huawei.com>,
+        Huxinwei <huxinwei@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>
+References: <ef30af4d-2081-305d-cd63-cb74da819a6d@broadcom.com>
+ <YA/E1bHRmZb50MlS@kroah.com>
+ <595affb4-36e8-0a63-ebb3-a4fd0e3c243a@huawei.com>
+ <YC+AEcuXhPXXtmRB@kroah.com>
+From:   Hanjun Guo <guohanjun@huawei.com>
+Message-ID: <a0e56fe4-8e85-d8c7-ed63-7a96c0944aaf@huawei.com>
+Date:   Sat, 20 Feb 2021 15:02:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8483722.hVsnvgcxvV@ubuntu-mate-laptop>
+In-Reply-To: <YC+AEcuXhPXXtmRB@kroah.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.147]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 06:14:57PM -0500, Julian Braha wrote:
-> commit 1a3f343027d7f5a6475a019aa20be89795b8c8e0
-> Author: Julian Braha <julianbraha@gmail.com>
-> Date:   Fri Feb 19 17:02:24 2021 -0500
+On 2021/2/19 17:08, Greg Kroah-Hartman wrote:
+> On Fri, Feb 19, 2021 at 04:54:24PM +0800, Hanjun Guo wrote:
+>> Hi Greg,
+>>
+>> On 2021/1/26 15:29, Greg Kroah-Hartman wrote:
+>> [...]
+>>>
+>>> I want to see companies _using_ the kernel, and most importantly,
+>>> _updating_ their devices with it, to know if it is worth to keep around
+>>> for longer than 2 years.  I also, hopefully, want to see how those
+>>> companies will help me out in the testing and maintenance of that kernel
+>>> version in order to make supporting it for 6 years actually possible.
+>>>
+>>> So, are you planning on using 5.10?  Will you will be willing to help
+>>> out in testing the -rc releases I make to let me know if there are any
+>>> problems, and to help in pointing out and backporting any specific
+>>> patches that your platforms need for that kernel release?
+>>
+>> We(Huawei) are willing to commit resources to help out in testing the
+>> stable -rc releases, and to help to backport patches for stable kernels.
 > 
->     staging: rtl8192e: fix kconfig dependency on CRYPTO
->     
->     When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
->     Kbuild gives the following warning:
->     
->     WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
->       Depends on [n]: CRYPTO [=n]
->       Selected by [m]:
->       - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
->     
->     WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
->       Depends on [n]: CRYPTO [=n]
->       Selected by [m]:
->       - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
->       - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
->     
->     This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and CRYPTO_LIB_ARC4,
->     without depending on or selecting CRYPTO, despite those config options
->     being subordinate to CRYPTO.
->     
->     Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> Wonderful!
 > 
-> diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
-> index 03fcc23516fd..6e7d84ac06f5 100644
-> --- a/drivers/staging/rtl8192e/Kconfig
-> +++ b/drivers/staging/rtl8192e/Kconfig
-> @@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
->  config RTLLIB_CRYPTO_TKIP
->         tristate "Support for rtllib TKIP crypto"
->         depends on RTLLIB
-> +      select CRYPTO
->         select CRYPTO_LIB_ARC4
->         select CRYPTO_MICHAEL_MIC
->         default y
+>> 5.10 stable kernel will be used for openEuler [1] kernel and also inside
+>> Huawei. From customer's feedback, it's very important to see the stable
+>> kernel we used to be maintained for 6 years in the community, and we
+>> will use 5.10 kernel for at least 6 years, so we are willing to help
+>> you and help ourselves :)
+>>
+>> In specific, we will start from the testing work, using HULK robot
+>> (reports lots of bugs to mainline kernel) testing framework to test
+>> compile, reboot, functional testing, and will extend to basic
+>> performance regression testing in the future.
+> 
+> Great!  Do you all need an email notification when the -rc releases come
+> out for the stable trees, or can you trigger off of the -rc stable git
+> tree?  Different CI systems work in different ways :)
 
-Odd indentation :(
+We can trigger the test when you updated the -rc stable git tree,
+by monitoring new commits for the stable branches. So if you push
+all the commits at once for -rc stable branches, then our CI system
+can work well.
 
+> 
+> And if you can reply to the -rc release emails with a "Tested-by:" tag,
+> I will be glad to add that to the release commit when that happens to
+> show that you all have tested the release.
+
+Thanks, will reply "Tested-by:" with -rc releases. We are working on
+setting up the test farm and will report the test results in a week.
+
+> 
+>> And we will start from ARM64 and X86 architecture first, and then extend
+>> to other platforms.
+> 
+> That's a good start, the useful ones :)
+> 
+>> For patch backporting, will send the bugfix patches (from mainline)
+>> we spotted, but I think this work may not doing in regular but will
+>> be triggered as needed.
+> 
+> That's fine, it is not something that happens at a regular interval.
+> 
+>> Does this sound good to you?
+> 
+> Yes it does, thank you so much.
+> 
+> greg k-h
+
+Thanks
+Hanjun
