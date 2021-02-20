@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7538A32067D
+	by mail.lfdr.de (Postfix) with ESMTP id F14B432067E
 	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhBTRlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 12:41:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51838 "EHLO
+        id S229934AbhBTRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 12:41:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhBTRlg (ORCPT
+        with ESMTP id S229809AbhBTRlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:41:36 -0500
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47211C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:40:56 -0800 (PST)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lDWFQ-00GNvt-VM; Sat, 20 Feb 2021 17:40:53 +0000
-Date:   Sat, 20 Feb 2021 17:40:52 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     syzbot <syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-kernel@vger.kernel.org, snovitoll@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: [git pull] work.namei stuff (v2)
-Message-ID: <YDFJpF216gaPavrc@zeniv-ca.linux.org.uk>
-References: <0000000000001fb73f05bb767334@google.com>
- <0000000000000ca18b05bbc556d6@google.com>
- <CAHk-=wiEBTD884i-U9DU7aDdRxXuz66Q1r-rKTiJUzZoYFgp+g@mail.gmail.com>
- <YDFJKR5uG1N+g9TL@zeniv-ca.linux.org.uk>
+        Sat, 20 Feb 2021 12:41:47 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA2F5C061786
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:41:06 -0800 (PST)
+Received: from zn.tnic (p200300ec2f14bd002490444ce9b57ac6.dip0.t-ipconnect.de [IPv6:2003:ec:2f14:bd00:2490:444c:e9b5:7ac6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C07901EC01DF;
+        Sat, 20 Feb 2021 18:41:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1613842863;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=lfXXQdZUDmQdTpAha8096XlXO/gL9eYwC0kOdnYXm8c=;
+        b=fVUdRZHdhbo8jcxoIWlXeuNXzw0MeHUyqJ2+3XiKHQmFMy5iKH35Om0qO2QaW0bMpL9VZZ
+        9txg58C9nqznNdq8B+UCDX3B66JlU/Uk6APWiVJUwDvFANm+b8Dm3zFP2YyVwbLVExP85v
+        E+rUQSaNktzmz5wgs/cMfKMeDo43y0o=
+Date:   Sat, 20 Feb 2021 18:41:01 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
+        pjt@google.com, mbenes@suze.cz, jgross@suse.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC][PATCH 6/6] objtool,x86: Rewrite retpoline thunk calls
+Message-ID: <20210220174101.GA29905@zn.tnic>
+References: <20210219204300.749932493@infradead.org>
+ <20210219210535.492733466@infradead.org>
+ <20210219215530.ivzzv3oavhuip6un@treble>
+ <20210219220158.GD59023@worktop.programming.kicks-ass.net>
+ <20210220003920.GG26778@zn.tnic>
+ <YDE9bmaO4tOZ/HWn@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YDFJKR5uG1N+g9TL@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <YDE9bmaO4tOZ/HWn@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of that pile is LOOKUP_CACHED series; the rest is a couple of
-misc cleanups in the general area...
+On Sat, Feb 20, 2021 at 05:48:46PM +0100, Peter Zijlstra wrote:
+>  - straight line execution is always better than a round-trip to
+>    somewhere else, no matter how trivial.
 
-There's a minor bisect hazard in the end of series, and normally
-I would've just folded the fix into the previous commit, but this branch is
-shared with Jens' tree, with stuff on top of it in there, so that would've
-required rebases outside of vfs.git.
+Sure, but not at that price. Especially not if it is waaay down in perf
+profiles.
 
-NOTE: I'm less than thrilled by the "let's allow offloading pathwalks
-to helper threads" push, but LOOKUP_CACHED is useful on its own.
+>  - supposely EIBRS (yeah, I know, there's a paper out there) should
+>    result in no longer using retpolines.
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+Yap, supposedly both vendors have stuff like that in the works. When
+that happens, we can finally use ALTERNATIVE_3 in the ratpolines. :-)
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+>  - I really, as in _REALLY_ don't want to do a CET enabled retpoline
 
-are available in the git repository at:
+WTF is that? Can we deal with one atrocity at a time pls...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.namei
+>  - IOW, retpolines should be on their way out (knock on wood)
 
-for you to fetch changes up to eacd9aa8cedeb412842c7b339adbaa0477fdd5ad:
+Yap, my hope too.
 
-  fix handling of nd->depth on LOOKUP_CACHED failures in try_to_unlazy* (2021-02-20 12:33:12 -0500)
+>  - doing this was fun :-)
 
-----------------------------------------------------------------
-Al Viro (3):
-      do_tmpfile(): don't mess with finish_open()
-      saner calling conventions for unlazy_child()
-      fix handling of nd->depth on LOOKUP_CACHED failures in try_to_unlazy*
+I know.
 
-Jens Axboe (3):
-      fs: make unlazy_walk() error handling consistent
-      fs: add support for LOOKUP_CACHED
-      fs: expose LOOKUP_CACHED through openat2() RESOLVE_CACHED
+>  - this stuff was mostly trivial make work stuff I could do with a head
+>    full of snot and a headache.
 
-Steven Rostedt (VMware) (1):
-      fs/namei.c: Remove unlikely of status being -ECHILD in lookup_fast()
+I don't want to imagine what you'd come up with when you're all healthy
+and rested. :-P
 
- fs/namei.c                   | 89 ++++++++++++++++++++++----------------------
- fs/open.c                    |  6 +++
- include/linux/fcntl.h        |  2 +-
- include/linux/namei.h        |  1 +
- include/uapi/linux/openat2.h |  4 ++
- 5 files changed, 56 insertions(+), 46 deletions(-)
+>  - if we had negative alternatives objtool doesn't need to actually
+>    rewrite code in this case. It could simply emit alternative entries
+>    and call it a day.
+
+I don't mind the negative alt per se - I mind the implementation I saw.
+I'm sure we can come up with something nicer, like, for example, struct
+alt_instr.flags to denote that this feature is a NOT feature. IOW, I'd
+like for the fact that a feature is a NOT feature or patching needs to
+happen in the NOT case, to be explicitly stated with a flag. I.e.,
+
+	if (!boot_cpu_has(a->cpuid) && !(a->flags & PATCH_WHEN_X86_FEATURE_FLAG_NOT_SET))
+		continue;
+
+Something like that.
+			
+>  - objtool already rewrites code
+
+Sure, as long as one can reconstruct from looking at the asm, what
+objdool has changed. I fear that'll get out of control if not done with
+restraint and proper documentation.
+
+>  - I have more cases for objtool to rewrite code (I'll see if I can
+>    rebase and post that this weekend -- no promises).
+
+Oh noes.
+
+>  - also https://lkml.kernel.org/r/20200625200235.GQ4781@hirez.programming.kicks-ass.net
+
+Oh well, I guess you can simply make objtool compile the kernel and be
+done with it.
+
+:)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
