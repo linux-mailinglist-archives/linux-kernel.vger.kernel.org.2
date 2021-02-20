@@ -2,253 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A3832034F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:53:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B63320352
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhBTCxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 21:53:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229907AbhBTCxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 21:53:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DB5B464E57;
-        Sat, 20 Feb 2021 02:52:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613789551;
-        bh=IshvD1skejssrDWILgPwdyGSe2QXYmwraex7kk2PWWo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jKZ/hSuPXbX3XnVzse86yJWGCGjGz68vEB9aq80fY1QQU6k3oKZIMyRDpNY+7wR/d
-         mDQsyJ1WVWDKR6EfdhRWXM+nhOruy2E+b9JF23yuxSw/zNjzncbjmk7BeD9AckCA45
-         0xNUeFwG/CGp+BNxFynDqLwFKd3MoJFIi783ajwRKf1YMgJlzOa3srFF5CNLUzEPEQ
-         WFa3UqjTALUaMURqTn8bPc9qIkvGJkADp54vRbv5HErw5CG3bhtX/tClUiVVRxtkD3
-         fQ0+0/NwT32Jh7BY+rTMEVLxgcBJOAHwTfN++7f0A5ZBmtqtkH7LcJoa2XwCYIb5h4
-         X8kopTsOnqHIQ==
-Date:   Sat, 20 Feb 2021 04:52:15 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Matthew Garrett <matthewgarrett@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-pm@vger.kernel.org, keyrings@vger.kernel.org,
-        zohar@linux.ibm.com, jejb@linux.ibm.com, corbet@lwn.net,
-        rjw@rjwysocki.net, Matthew Garrett <mjg59@google.com>
-Subject: Re: [PATCH 1/9] tpm: Add support for in-kernel resetting of PCRs
-Message-ID: <YDB5X9mUiIso3gnr@kernel.org>
-References: <20210220013255.1083202-1-matthewgarrett@google.com>
- <20210220013255.1083202-2-matthewgarrett@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210220013255.1083202-2-matthewgarrett@google.com>
+        id S229891AbhBTC4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 21:56:31 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:38157 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229725AbhBTC41 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 21:56:27 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UP.D.cg_1613789708;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UP.D.cg_1613789708)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 20 Feb 2021 10:55:45 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH v2] drm/amdgpu/swsmu/navi1x: Remove unnecessary conversion to bool
+Date:   Sat, 20 Feb 2021 10:55:06 +0800
+Message-Id: <1613789706-100430-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 01:32:47AM +0000, Matthew Garrett wrote:
+Fix the following coccicheck warnings:
 
-Perhaps, prepend with a paragraph elaborating the background just a bit:
+./drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c:900:47-52: WARNING:
+conversion to bool not needed here.
 
-"When entering to hibernation, PCR 23 will be used to store a known value.
-This value defines a policy for the decryption of the key used to encrypt
-the hibernate image."
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-At minimum that. You can of course edit this however you see fit.
+diff --git a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+index cd7efa9..58028a7 100644
+--- a/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
++++ b/drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c
+@@ -897,7 +897,7 @@ static bool navi10_is_support_fine_grained_dpm(struct smu_context *smu, enum smu
+ 	dpm_desc = &pptable->DpmDescriptor[clk_index];
+ 
+ 	/* 0 - Fine grained DPM, 1 - Discrete DPM */
+-	return dpm_desc->SnapToDiscrete == 0 ? true : false;
++	return dpm_desc->SnapToDiscrete == 0;
+ }
+ 
+ static inline bool navi10_od_feature_is_supported(struct smu_11_0_overdrive_table *od_table, enum SMU_11_0_ODFEATURE_CAP cap)
+-- 
+1.8.3.1
 
-> Add an internal command for resetting a PCR.
-> 
-> Signed-off-by: Matthew Garrett <mjg59@google.com>
-> ---
->  drivers/char/tpm/tpm-interface.c | 28 +++++++++++++++++++++++++
->  drivers/char/tpm/tpm.h           |  2 ++
->  drivers/char/tpm/tpm1-cmd.c      | 34 ++++++++++++++++++++++++++++++
->  drivers/char/tpm/tpm2-cmd.c      | 36 ++++++++++++++++++++++++++++++++
->  include/linux/tpm.h              |  7 +++++++
->  5 files changed, 107 insertions(+)
-> 
-> diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-interface.c
-> index 1621ce818705..17b8643ee109 100644
-> --- a/drivers/char/tpm/tpm-interface.c
-> +++ b/drivers/char/tpm/tpm-interface.c
-> @@ -342,6 +342,34 @@ int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
->  }
->  EXPORT_SYMBOL_GPL(tpm_pcr_extend);
->  
-> +/**
-> + * tpm_pcr_reset - reset the specified PCR
-> + * @chip:	a &struct tpm_chip instance, %NULL for the default chip
-> + * @pcr_idx:	the PCR to be reset
-> + *
-> + * Return: same as with tpm_transmit_cmd()
-> + */
-> +int tpm_pcr_reset(struct tpm_chip *chip, u32 pcr_idx)
-> +{
-> +	int rc;
-> +
-> +	chip = tpm_find_get_ops(chip);
-> +	if (!chip)
-> +		return -ENODEV;
-> +
-> +	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
-> +		rc = tpm2_pcr_reset(chip, pcr_idx);
-> +		goto out;
-> +	}
-> +
-> +	rc = tpm1_pcr_reset(chip, pcr_idx, "attempting to reset a PCR");
-> +
-> +out:
-> +	tpm_put_ops(chip);
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(tpm_pcr_reset);
-> +
->  /**
->   * tpm_send - send a TPM command
->   * @chip:	a &struct tpm_chip instance, %NULL for the default chip
-> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-> index 947d1db0a5cc..746f7696bdc0 100644
-> --- a/drivers/char/tpm/tpm.h
-> +++ b/drivers/char/tpm/tpm.h
-> @@ -176,6 +176,7 @@ int tpm1_get_timeouts(struct tpm_chip *chip);
->  unsigned long tpm1_calc_ordinal_duration(struct tpm_chip *chip, u32 ordinal);
->  int tpm1_pcr_extend(struct tpm_chip *chip, u32 pcr_idx, const u8 *hash,
->  		    const char *log_msg);
-> +int tpm1_pcr_reset(struct tpm_chip *chip, u32 pcr_idx, const char *log_msg);
->  int tpm1_pcr_read(struct tpm_chip *chip, u32 pcr_idx, u8 *res_buf);
->  ssize_t tpm1_getcap(struct tpm_chip *chip, u32 subcap_id, cap_t *cap,
->  		    const char *desc, size_t min_cap_length);
-> @@ -220,6 +221,7 @@ int tpm2_pcr_read(struct tpm_chip *chip, u32 pcr_idx,
->  		  struct tpm_digest *digest, u16 *digest_size_ptr);
->  int tpm2_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
->  		    struct tpm_digest *digests);
-> +int tpm2_pcr_reset(struct tpm_chip *chip, u32 pcr_idx);
->  int tpm2_get_random(struct tpm_chip *chip, u8 *dest, size_t max);
->  ssize_t tpm2_get_tpm_pt(struct tpm_chip *chip, u32 property_id,
->  			u32 *value, const char *desc);
-> diff --git a/drivers/char/tpm/tpm1-cmd.c b/drivers/char/tpm/tpm1-cmd.c
-> index ca7158fa6e6c..36990e9d2dc1 100644
-> --- a/drivers/char/tpm/tpm1-cmd.c
-> +++ b/drivers/char/tpm/tpm1-cmd.c
-> @@ -478,6 +478,40 @@ int tpm1_pcr_extend(struct tpm_chip *chip, u32 pcr_idx, const u8 *hash,
->  	return rc;
->  }
->  
-> +struct tpm_pcr_selection {
-> +	u16 size_of_select;
-> +	u8  pcr_select[3];
-> +} __packed;
-> +
-> +#define TPM_ORD_PCR_RESET 200
-> +int tpm1_pcr_reset(struct tpm_chip *chip, u32 pcr_idx, const char *log_msg)
-> +{
-> +	struct tpm_pcr_selection selection;
-> +	struct tpm_buf buf;
-> +	int i, rc;
-> +	char tmp;
-> +
-> +	rc = tpm_buf_init(&buf, TPM_TAG_RQU_COMMAND, TPM_ORD_PCR_RESET);
-> +	if (rc)
-> +		return rc;
-> +
-> +	selection.size_of_select = 3;
-> +
-> +	for (i = 0; i < selection.size_of_select; i++) {
-> +		tmp = 0;
-> +		if (pcr_idx / 3 == i) {
-> +			pcr_idx -= i * 8;
-> +			tmp |= 1 << pcr_idx;
-> +		}
-> +		selection.pcr_select[i] = tmp;
-> +	}
-> +	tpm_buf_append(&buf, (u8 *)&selection, sizeof(selection));
-> +
-> +	rc = tpm_transmit_cmd(chip, &buf, sizeof(selection), log_msg);
-> +	tpm_buf_destroy(&buf);
-> +	return rc;
-> +}
-> +
->  #define TPM_ORD_GET_CAP 101
->  ssize_t tpm1_getcap(struct tpm_chip *chip, u32 subcap_id, cap_t *cap,
->  		    const char *desc, size_t min_cap_length)
-> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-> index eff1f12d981a..9609ae8086c6 100644
-> --- a/drivers/char/tpm/tpm2-cmd.c
-> +++ b/drivers/char/tpm/tpm2-cmd.c
-> @@ -269,6 +269,42 @@ int tpm2_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
->  	return rc;
->  }
->  
-> +/**
-> + * tpm2_pcr_reset() - reset a PCR
-> + *
-> + * @chip:	TPM chip to use.
-> + * @pcr_idx:	index of the PCR.
-> + *
-> + * Return: Same as with tpm_transmit_cmd.
-> + */
-> +int tpm2_pcr_reset(struct tpm_chip *chip, u32 pcr_idx)
-> +{
-> +	struct tpm_buf buf;
-> +	struct tpm2_null_auth_area auth_area;
-> +	int rc;
-> +
-> +	rc = tpm_buf_init(&buf, TPM2_ST_SESSIONS, TPM2_CC_PCR_RESET);
-> +	if (rc)
-> +		return rc;
-> +
-> +	tpm_buf_append_u32(&buf, pcr_idx);
-> +
-> +	auth_area.handle = cpu_to_be32(TPM2_RS_PW);
-> +	auth_area.nonce_size = 0;
-> +	auth_area.attributes = 0;
-> +	auth_area.auth_size = 0;
-> +
-> +	tpm_buf_append_u32(&buf, sizeof(struct tpm2_null_auth_area));
-> +	tpm_buf_append(&buf, (const unsigned char *)&auth_area,
-> +		       sizeof(auth_area));
-> +
-> +	rc = tpm_transmit_cmd(chip, &buf, 0, "attempting to reset a PCR");
-> +
-> +	tpm_buf_destroy(&buf);
-> +
-> +	return rc;
-> +}
-> +
->  struct tpm2_get_random_out {
->  	__be16 size;
->  	u8 buffer[TPM_MAX_RNG_DATA];
-> diff --git a/include/linux/tpm.h b/include/linux/tpm.h
-> index 8f4ff39f51e7..e2075e2242a0 100644
-> --- a/include/linux/tpm.h
-> +++ b/include/linux/tpm.h
-> @@ -211,6 +211,7 @@ enum tpm2_command_codes {
->  	TPM2_CC_HIERARCHY_CONTROL       = 0x0121,
->  	TPM2_CC_HIERARCHY_CHANGE_AUTH   = 0x0129,
->  	TPM2_CC_CREATE_PRIMARY          = 0x0131,
-> +	TPM2_CC_PCR_RESET		= 0x013D,
->  	TPM2_CC_SEQUENCE_COMPLETE       = 0x013E,
->  	TPM2_CC_SELF_TEST	        = 0x0143,
->  	TPM2_CC_STARTUP		        = 0x0144,
-> @@ -399,6 +400,7 @@ static inline u32 tpm2_rc_value(u32 rc)
->  extern int tpm_is_tpm2(struct tpm_chip *chip);
->  extern int tpm_pcr_read(struct tpm_chip *chip, u32 pcr_idx,
->  			struct tpm_digest *digest);
-> +extern int tpm_pcr_reset(struct tpm_chip *chip, u32 pcr_idx);
->  extern int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
->  			  struct tpm_digest *digests);
->  extern int tpm_send(struct tpm_chip *chip, void *cmd, size_t buflen);
-> @@ -417,6 +419,11 @@ static inline int tpm_pcr_read(struct tpm_chip *chip, int pcr_idx,
->  	return -ENODEV;
->  }
->  
-> +static inline int tpm_pcr_reset(struct tpm_chip *chip, int pcr_idx)
-> +{
-> +	return -ENODEV;
-> +}
-> +
->  static inline int tpm_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
->  				 struct tpm_digest *digests)
->  {
-> -- 
-> 2.30.0.617.g56c4b15f3c-goog
-> 
-> 
-
-/Jarkko
