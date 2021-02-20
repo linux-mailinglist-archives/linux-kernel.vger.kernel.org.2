@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E19D320444
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 08:00:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2522332044A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 08:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229763AbhBTG7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 01:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhBTG7J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 01:59:09 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57535C061574;
-        Fri, 19 Feb 2021 22:58:29 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id a207so9631105wmd.1;
-        Fri, 19 Feb 2021 22:58:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vwrkpEL71NpFTJHy3ngrO6p4FfCqPpFxaFL4h0AeKK8=;
-        b=m/ldRO6Yf+qs9nBx2UOJdwnjRZB7jcR2ovjoyvVsWglu9tSjX/yixDqEFxC5kDldJ/
-         t/Ssp+x96nxFa4teXICU4G5pmetJKoEZtUOsiOor5EwAd4IhjY57cmqw54z7hYy7kdNv
-         ZmPAF+Jyw+7HoOPfnGoO4nNkEDCVc4yUZPADjfzL3AvsP0kxJspYdR4ZbaYT10HbyKeG
-         572DCiKS5qTShkcbSTKRIdHaEnKCCPvqfhX7D8xAUZ2QRrksEMagZLmPLDWVrwYzx6EY
-         I4AmKzl3rtQ1wT6KZNmLQFUZyYS5QcrDzcHV2r//FemdMiGDIX2JoMzLOgx3OxfY8Zvs
-         pxrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vwrkpEL71NpFTJHy3ngrO6p4FfCqPpFxaFL4h0AeKK8=;
-        b=b6ladaI4QQP0gPcTdj9x3R3HjHumjoaTiFg72OUTStGUgiUZIa48pkhFwDer9rlt3w
-         2pgt4zfGa9ZCNeFqWAL4E/ViONwj57AxgcHIJjnrtL1QwjRhtBW1S4ymRF6O22mIZc+a
-         quzvfdvtxcaBCkVERewtPh/tP0BU2Sv78h2OeWBDa17/LIVLrQfUrWtIrBB2U/Dz5Ywc
-         KZkPKQCkfMWIYxpbIDpo6DtDrMvdiqANQBVJAsSfoJ3XxO4tsLwoM7s+7rqHBQnc3j7o
-         sv6kFnIBvqc+n7Ow8dg9ENKpeSQom7bB/WHIpHUGRpWa5DZNhj9+uzWvCWNOVr4OAqPX
-         eV3w==
-X-Gm-Message-State: AOAM532K4O06zSoB6R2SNdn2PsxFaRxExXvS0/Td4scOsbG33ZrODeVL
-        /907uvDBF/6qy26WGyRxsfbrDGX4/FxQZA==
-X-Google-Smtp-Source: ABdhPJxNLSmehVwEyUwnGmYvR51HktCsKm5MnQWCbZMFPz2Rc6BMSBaFTlcdMNtJddPLXCTO0Md2Iw==
-X-Received: by 2002:a1c:1d16:: with SMTP id d22mr11306530wmd.110.1613804307731;
-        Fri, 19 Feb 2021 22:58:27 -0800 (PST)
-Received: from hthiery.fritz.box (ip1f1322f8.dynamic.kabel-deutschland.de. [31.19.34.248])
-        by smtp.gmail.com with ESMTPSA id y4sm10732857wrs.66.2021.02.19.22.58.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 22:58:27 -0800 (PST)
-From:   Heiko Thiery <heiko.thiery@gmail.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        Heiko Thiery <heiko.thiery@gmail.com>
-Subject: [PATCH 1/1] net: fec: ptp: avoid register access when ipg clock is disabled
-Date:   Sat, 20 Feb 2021 07:56:55 +0100
-Message-Id: <20210220065654.25598-1-heiko.thiery@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        id S229808AbhBTHDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 02:03:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhBTHDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 02:03:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D8C7864EB8;
+        Sat, 20 Feb 2021 07:02:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613804546;
+        bh=Pvh5cvdWKO1LNmyetgVB1YyxbpJdDKcFN/Tg6OGL7+E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jmEaiT3r/F6fl71Sc7Hqap7ot1RTVLGh1ddbcZ03dVUXbg2yw6DhnQBAHtzdwzKWj
+         pHRHxHJohqqkFnsAIOWK9oMMCXUueYM39jYhs4pl/B4sEXMJv7MSYaC8g9u+IYNBPW
+         ep4njqFYZg12q0E39j6RthsylaOujRIHSjUewA2E=
+Date:   Sat, 20 Feb 2021 08:02:23 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Julian Braha <julianbraha@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: rtl8192e: fix kconfig dependency on CRYPTO
+Message-ID: <YDCz/6gQgp07NGw2@kroah.com>
+References: <8483722.hVsnvgcxvV@ubuntu-mate-laptop>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8483722.hVsnvgcxvV@ubuntu-mate-laptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When accessing the timecounter register on an i.MX8MQ the kernel hangs.
-This is only the case when the interface is down. This can be reproduced
-by reading with 'phc_ctrl eth0 get'.
+On Fri, Feb 19, 2021 at 06:14:57PM -0500, Julian Braha wrote:
+> commit 1a3f343027d7f5a6475a019aa20be89795b8c8e0
+> Author: Julian Braha <julianbraha@gmail.com>
+> Date:   Fri Feb 19 17:02:24 2021 -0500
+> 
+>     staging: rtl8192e: fix kconfig dependency on CRYPTO
+>     
+>     When RTLLIB_CRYPTO_TKIP is enabled and CRYPTO is disabled,
+>     Kbuild gives the following warning:
+>     
+>     WARNING: unmet direct dependencies detected for CRYPTO_MICHAEL_MIC
+>       Depends on [n]: CRYPTO [=n]
+>       Selected by [m]:
+>       - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+>     
+>     WARNING: unmet direct dependencies detected for CRYPTO_LIB_ARC4
+>       Depends on [n]: CRYPTO [=n]
+>       Selected by [m]:
+>       - RTLLIB_CRYPTO_TKIP [=m] && STAGING [=y] && RTLLIB [=m]
+>       - RTLLIB_CRYPTO_WEP [=m] && STAGING [=y] && RTLLIB [=m]
+>     
+>     This is because RTLLIB_CRYPTO_TKIP selects CRYPTO_MICHAEL_MIC and CRYPTO_LIB_ARC4,
+>     without depending on or selecting CRYPTO, despite those config options
+>     being subordinate to CRYPTO.
+>     
+>     Signed-off-by: Julian Braha <julianbraha@gmail.com>
+> 
+> diff --git a/drivers/staging/rtl8192e/Kconfig b/drivers/staging/rtl8192e/Kconfig
+> index 03fcc23516fd..6e7d84ac06f5 100644
+> --- a/drivers/staging/rtl8192e/Kconfig
+> +++ b/drivers/staging/rtl8192e/Kconfig
+> @@ -26,6 +26,7 @@ config RTLLIB_CRYPTO_CCMP
+>  config RTLLIB_CRYPTO_TKIP
+>         tristate "Support for rtllib TKIP crypto"
+>         depends on RTLLIB
+> +      select CRYPTO
+>         select CRYPTO_LIB_ARC4
+>         select CRYPTO_MICHAEL_MIC
+>         default y
 
-Like described in the change in 91c0d987a9788dcc5fe26baafd73bf9242b68900
-the igp clock is disabled when the interface is down and leads to a
-system hang.
-
-So we check if the ptp clock status before reading the timecounter
-register.
-
-Signed-off-by: Heiko Thiery <heiko.thiery@gmail.com>
----
- drivers/net/ethernet/freescale/fec_ptp.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 2e344aada4c6..c9882083da02 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -377,6 +377,9 @@ static int fec_ptp_gettime(struct ptp_clock_info *ptp, struct timespec64 *ts)
- 	u64 ns;
- 	unsigned long flags;
- 
-+	/* Check the ptp clock */
-+	if (!adapter->ptp_clk_on)
-+		return -EINVAL;
- 	spin_lock_irqsave(&adapter->tmreg_lock, flags);
- 	ns = timecounter_read(&adapter->tc);
- 	spin_unlock_irqrestore(&adapter->tmreg_lock, flags);
--- 
-2.30.0
+Odd indentation :(
 
