@@ -2,185 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B1C320256
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 01:57:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A1DD320252
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 01:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229871AbhBTA4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 19:56:44 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:60360 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhBTA4k (ORCPT
+        id S229812AbhBTAze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 19:55:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229700AbhBTAza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 19:56:40 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11K0ngC0174660;
-        Sat, 20 Feb 2021 00:54:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=RYl3Y3X/AkFzOkcEi2tJufGb8xFZ+DOgq9HkaHQEUlI=;
- b=OTdjfP0TuC3/li58Ae7/oj27jQg14F6qG/g/LMrDj1pETqDQ/7J/6USYrMevcP1CYjvi
- A1uAw2g7PCFhKzLvEgkDKZeNd0dEd27pAj1R/DsBIooCxCaY7KfiEY0ZWeB1FpKXsGZq
- sRyncJQ3UMAyJJJRk832Ls1+zF+xn3cenuIyw0XmTyz27J6HTBYlUxDiLBde1wKlzNBx
- dhldId1c1ISRYgQ3HFCIzPYYHqg22o9qaELgDR8obwUHsPn15twvRc5t6yRpOrwu3aF1
- /tDt8M5WmnfyGc5MIcxoJPNQpUaLNqikkD467ZrQDvXFFZzqHtkCu5Vppc3X6B4XsxSz rQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36p66rb5m9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Feb 2021 00:54:52 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11K0noZl079971;
-        Sat, 20 Feb 2021 00:54:52 GMT
-Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2055.outbound.protection.outlook.com [104.47.46.55])
-        by userp3020.oracle.com with ESMTP id 36prhwa7rr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Feb 2021 00:54:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kdJGhe/R7k9Bt39ZfVTD6tFxOKtb3y5oicPbQsjs+37dMH41bDNmVj4n8EXLU5JCAK4Ipkt2aDhqf2vimDZyBQw9pNFatv4+dGed7qD5B/gqxUaTvGuFKKfUXH79arCXF2MBK7oCXLDwRfvwfxP42h4tHXGyA5WFS2JdjRvDx4BqvuzWHt41jtssAKYgde1jHSSwkOQS/E1J8ULJzvPlR1LU4LpsRPTfBARpA2A3yZHHubd7/TP+H9sZeHxMU5I4VnRtuSfw/QwKdydzJcSAjwvXSqfvQGBZGZOOHSIyvgXp9dB+P0fPlg5O4Ea/urhg3OfZDeCrzO1kQ+CdkLnm8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RYl3Y3X/AkFzOkcEi2tJufGb8xFZ+DOgq9HkaHQEUlI=;
- b=DF0mamQhFt5ZnTFcPW32PbbHj37gQbO05XTCpaWhVsAwJs/rPRn11qNGKiskP18E5YLhYODp3FwyRmV8DoMowUmPobW+I/SYi643dxpZun+4gCjVVVhtVCOPTgZ2xm2EtoL7nKPoE3+tNzaqFxYysnj11dAkupUfJUgUNde8Bh7WYYLF56FKpdhP4j17Oe+tSnZdS4LTemSpaB45f6eSXKRn4M8oc/+tQpI78HaqvxKwHRHS18AF3hEFzwj8LB9mHlRuRKMfSgMW9f4mVVdklBIEiXeTAxseY58BYSKVgYfqulGSqMZ2XMH2qwlXLCzcSfeHCcbHO4OXOGKuiRABBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 19 Feb 2021 19:55:30 -0500
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A61AC061574;
+        Fri, 19 Feb 2021 16:54:50 -0800 (PST)
+Received: by mail-ot1-x32e.google.com with SMTP id o10so6753951ote.13;
+        Fri, 19 Feb 2021 16:54:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RYl3Y3X/AkFzOkcEi2tJufGb8xFZ+DOgq9HkaHQEUlI=;
- b=vAIXRhMGGEAuVaX7/j/TVWJEn3UaDVZBsvRYEQ4ME2QI0ts0JLXG/H+rsLh59VSvS12ZZM+bqJU45EZpc7xqIvi/E2qVj4nsd2U2uaSmI4ALQ2xvlqFCKeThXflGos5BLrynkQfPpz9hF4hn5sNWMHEhoS87BKKzasdGBVtL6/0=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BYAPR10MB2551.namprd10.prod.outlook.com (2603:10b6:a02:b6::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Sat, 20 Feb
- 2021 00:54:49 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3846.039; Sat, 20 Feb 2021
- 00:54:49 +0000
-Date:   Fri, 19 Feb 2021 19:54:44 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH v5 1/9] cxl/mem: Introduce a driver for CXL-2.0-Type-3
- endpoints
-Message-ID: <YDBd1J98VJM0dLvE@Konrads-MacBook-Pro.local>
-References: <20210217040958.1354670-1-ben.widawsky@intel.com>
- <20210217040958.1354670-2-ben.widawsky@intel.com>
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=Sl18xJK0FBSUcbbYuyh+oreHTjQxjE1dyshoc+jjlUI=;
+        b=K7XCW1WWWeAL73AOb5FLLcLtM9+VV2lCYoajJA7RPceu3wu6hrJf+Gtj+D/j11sQI6
+         iZBucvwZ5S6JSA3T4TmFnM8zFrc95/bujHMA6ObGe2N9kw/ioi/x2PCB2K6LCuy9jG6n
+         WA3Sxja+fyHbA8nStBSJTtC+bAt4oZwCP2zgts4yK0QhpnBZlNiaoOebbb5mhQiOJvPB
+         035EXtKGWpPUqcvxhqyyyMd5/MhYfVe2E3AheXdqOyyvCo8YEwTQ9Nx3NqrHEH3U42OZ
+         ZMiPsSRKp089gIBox6Ecn6vf/6/NU/o2Hll47SmLgzcLHhOjdwIWXb+seieSxgIWCRQS
+         SWTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Sl18xJK0FBSUcbbYuyh+oreHTjQxjE1dyshoc+jjlUI=;
+        b=T2oyh4o8rfAc3VH0cAH9WC2MihbEVHgrYXsAiZo/5qFQRseRjkiJp9GmNlAlkoJ97I
+         bv9/0iJ1oKyh2jps9/wYSYlisSBeSByOtveaoMKByWmVPMIwCcrBUoYiTOCckyOQzSXr
+         ssecb8b8D3sNAg+08LqtmJ2uyq7y0zjyCI+f5Uf6ZM9+KaBARl3E/k50X07RW6mwSF/z
+         0vnDxwL7SpIQbL3+8fFnC6iZGMYoHDprmL2P+WYo1oluynseeyFlil/qLDvxlh6+zeCU
+         brSsaIlXR7GavMSMrjJB8rflv0hmVnO2o4IdCEqZF66a/1y0y15IqI2gYubMBC0ME4ex
+         tOtg==
+X-Gm-Message-State: AOAM53379TOQ3wbSxEiS3zxh3vYE9KCD5XK9RqKqgHvzOL+ZfUmhfR/C
+        qGgZ4Y8ptjDEOW/tZFpvaCg=
+X-Google-Smtp-Source: ABdhPJwPRmY9a0WjZK0JIk246VwicuAgC8AShTzOXy0zbGunJ7038NI7+oHlKVZ3tF1Mcgc2qSppHg==
+X-Received: by 2002:a05:6830:1d68:: with SMTP id l8mr8939616oti.238.1613782489766;
+        Fri, 19 Feb 2021 16:54:49 -0800 (PST)
+Received: from localhost.localdomain (99-6-134-177.lightspeed.snmtca.sbcglobal.net. [99.6.134.177])
+        by smtp.gmail.com with ESMTPSA id u126sm2224426oig.55.2021.02.19.16.54.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Feb 2021 16:54:49 -0800 (PST)
+Date:   Fri, 19 Feb 2021 16:54:47 -0800
+From:   Enke Chen <enkechen2020@gmail.com>
+To:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Neal Cardwell <ncardwell@google.com>,
+        Yuchung Cheng <ycheng@google.com>, enkechen2020@gmai.com
+Subject: [PATCH net] tcp: fix keepalive when data remain undelivered
+Message-ID: <20210220005447.GA93678@localhost.localdomain>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210217040958.1354670-2-ben.widawsky@intel.com>
-X-Originating-IP: [209.6.208.110]
-X-ClientProxiedBy: SN4PR0501CA0034.namprd05.prod.outlook.com
- (2603:10b6:803:40::47) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Konrads-MacBook-Pro.local (209.6.208.110) by SN4PR0501CA0034.namprd05.prod.outlook.com (2603:10b6:803:40::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.11 via Frontend Transport; Sat, 20 Feb 2021 00:54:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 65c47051-b1c3-4260-64a6-08d8d53a1fdc
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2551:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB2551DDB86FC97148F322186089839@BYAPR10MB2551.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LYGRuwEWMWFelWojFbjLkQdlMgsm7yW20GMsCm70uwAtVzSciFM5Arzio9wcm+yotO2PBi6mCqX/T4K4AcnyXcqH/5WUyeDuEE2muqeRVXGhKwXnIyD8E7ThpSYAigqOorVJJ5lPBHeFsJQb5gl/SNPU54XGb9QD2oNOVOiJzylr8iR7PD5hXZilbkSKCoa2drWZ/Ssevb4U+zbFicVdLsFo+8YI2eFtPiGBKfbJIfQdXAFIk0QvTHe9G2ylxfaRMj4REpVxPIqQA1UdXKgebLK0pANRLlQu7q/umAKaAGGmoJ3Wmc8JeMQ/ZOEEt7MgTQCSpDhDpyzqyQDbXwhCsUNTge503wPqoz3lPM7uJKcHPPtqzpoM1rp7re66HyxDPyX1oqWv2wmd1uCNuCUDjZjprWJT41Z7HizaHj4BP0mcBI/aLw+gyFx2YawJ1wBmeilrQ+p8bhBcSPjVNEqsyWEcSJwA0l4ZpW7aOguyxaMWYGzfdvsBPsMDZDNb1fLsdaFVPz38erwU42LPAoeg41jYII0rGSaV4eCAKW8Ae/24srCl6oGU2GKhIvYcN57XUrucGaklIBaYjingFbOHbbhS/l9hiYHxBDe3pf1FG+g=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(396003)(376002)(136003)(6506007)(26005)(5660300002)(4326008)(956004)(66946007)(16526019)(83380400001)(52116002)(7416002)(186003)(2906002)(8676002)(66476007)(8936002)(478600001)(316002)(7696005)(966005)(86362001)(66556008)(54906003)(9686003)(6916009)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?v1khhlDI+IQUVEaM598yURUL+0Gm6EU3rcoOMjQfRciaSNI1OZJjbnGCwmSc?=
- =?us-ascii?Q?eVKWz6FgJDvzBxIFqui8evKNTY7uBinenwECmTRtopdKgU9zkQbFI3u12jSC?=
- =?us-ascii?Q?EByQ3l4cdU+IsM+d96dGVAz3xO3v3IM6Ycox/6iJ9PJgL66TvIp46t9saRd1?=
- =?us-ascii?Q?M0/kVkkXWXamRhDRf7nHm/qIMaPpXaE7RFiyw9LxSClsSx1Rg+EkPWH6h2sm?=
- =?us-ascii?Q?dCIn5o6I9TLy7731bWGUKHe63DcdOtUz/IrTFf8ORELJ58Eiy8tVCa9nwY6A?=
- =?us-ascii?Q?ru9G2I/iKHo9HNR1R/zPHyRxbt1IIJG75nkVrY8TQFaGcbMRG0AJImiZpyBb?=
- =?us-ascii?Q?Dgbthx2ea8wM3zqM/j2hGwIf1xR5Q/oyRHmuPlPzmqca1Oa4Ae17Mc3c7ARO?=
- =?us-ascii?Q?wcJAma3Nuhlag4EqcU3OnRvnofi7E4OlUF4F1kUPehM3rKZCnnQO2+ww8wqb?=
- =?us-ascii?Q?J2cppZHMgXbwhOCpBwJEVQHWtCfxj5lH6JbWEVz5VAXEnkGyRe7sIVzGr7Pk?=
- =?us-ascii?Q?KAJCvWjU9sI1BJ/buXVGvwZpT9bi/qiB+QnzBrEhDpEqem8ZrjMBG6gbUcjL?=
- =?us-ascii?Q?AcNvH9kzurafvEqxmnp9hXEuAZjBqnf9547rd1BsimLINCEfm28SRmXHgYOe?=
- =?us-ascii?Q?bSSC1MLD8pw8OickSMk8oFdDy7W+6sAcih/gPMwyv/PFbVGi6XNd0Quzh+5W?=
- =?us-ascii?Q?N9uLVkLq0WQUbsrN0Z1mF9k5B0wrDucWi+YCtx8bBxmYnccgeTPn1wCy+uZ5?=
- =?us-ascii?Q?/nLHWL+Gk2DP++hGXHVU/OA6LhneXxUslrcTA/8F37HZjd72AbpZZO+ivJLY?=
- =?us-ascii?Q?SPkOd8J0lztehn6efxZ5eBMhRfUjwPhYTVOMeugvjR3Xvs2P8VxjRsrVd1X6?=
- =?us-ascii?Q?NQu1jDwz2ub9tjMg1jbWRZRmt4L7yc+pOndsIZgxr+28NZH2I76nHqVk/+BK?=
- =?us-ascii?Q?dGLKvUZbcEbwIQxagHHSNxK8LD2h1LonkkPNKMsinZsB7FyfEQJMq58Y9qhs?=
- =?us-ascii?Q?euLamJiWbgGc+oJ5I+w1ABdwzHNY9CkSbPfB65048hil/6iLdkbEeiYmj95a?=
- =?us-ascii?Q?XYwFmrs/TsEKrQ//qnfIE9tqoOjAMPXI7y7966ZT8AfM6+z0s1CSYgOIHcXk?=
- =?us-ascii?Q?4KKd92NFJiD/mz6GzyEf/oQK7TUZcvH1GbA7+zJZwezUj/WYZZGzL29ZbL4r?=
- =?us-ascii?Q?RlimhMLVrLhcgc4YAEiq6cOhfrZ/voFuMDgYMz6JZkvO7NWoEz4IGN6n8nn4?=
- =?us-ascii?Q?VOcKFh0YzsEjZLsTOu3P1ZRrCDdGTlFdeR0fI8RvwVfyGudY8VYy+Uea0iY+?=
- =?us-ascii?Q?V6awvuBmwZYDxL7PwRWGTJbb?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 65c47051-b1c3-4260-64a6-08d8d53a1fdc
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2021 00:54:49.3771
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nPlCvED8JPGtSZXpQlMyEPzdhxr9z1MGHMtGu2hE+j7fWmGmaZTR5U47nhGCMNMwQs5lMvRXzo5c17vWp0wOWw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2551
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0 mlxscore=0
- bulkscore=0 suspectscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102200002
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
- impostorscore=0 priorityscore=1501 clxscore=1015 spamscore=0 mlxscore=0
- phishscore=0 malwarescore=0 bulkscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102200002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 16, 2021 at 08:09:50PM -0800, Ben Widawsky wrote:
-> From: Dan Williams <dan.j.williams@intel.com>
-> 
-> The CXL.mem protocol allows a device to act as a provider of "System
-> RAM" and/or "Persistent Memory" that is fully coherent as if the memory
-> was attached to the typical CPU memory controller.
-> 
-> With the CXL-2.0 specification a PCI endpoint can implement a "Type-3"
-> device interface and give the operating system control over "Host
-> Managed Device Memory". See section 2.3 Type 3 CXL Device.
-> 
-> The memory range exported by the device may optionally be described by
-> the platform firmware memory map, or by infrastructure like LIBNVDIMM to
-> provision persistent memory capacity from one, or more, CXL.mem devices.
-> 
-> A pre-requisite for Linux-managed memory-capacity provisioning is this
-> cxl_mem driver that can speak the mailbox protocol defined in section
-> 8.2.8.4 Mailbox Registers.
-> 
-> For now just land the initial driver boiler-plate and Documentation/
-> infrastructure.
-> 
-> Link: https://www.computeexpresslink.org/download-the-specification
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> Acked-by: David Rientjes <rientjes@google.com> (v1)
-Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+From: Enke Chen <enchen@paloaltonetworks.com>
 
-Albeit you may want to modify 2020 to 2021 in the Copyright sections.
+TCP keepalive does not timeout under the condition that network connection
+is lost and data remain undelivered (incl. retransmit). A very simple
+scenarios of the failure is to write data to a tcp socket after the network
+connection is lost.
+
+Under the specified condition the keepalive timeout is not evaluated in
+the keepalive timer. That is the primary cause of the failure. In addition,
+the keepalive probe is not sent out in the keepalive timer. Although packet
+retransmit or 0-window probe can serve a similar purpose, they have their
+own timers and backoffs that are generally not aligned with the keepalive
+parameters for probes and timeout.
+
+As the timing and conditions of the events involved are random, the tcp
+keepalive can fail randomly. Given the randomness of the failures, fixing
+the issue would not cause any backward compatibility issues. As was well
+said, "Determinism is a special case of randomness".
+
+The fix in this patch consists of the following:
+
+  a. Always evaluate the keepalive timeout in the keepalive timer.
+
+  b. Always send out the keepalive probe in the keepalive timer (post the
+     keepalive idle time). Given that the keepalive intervals are usually
+     in the range of 30 - 60 seconds, there is no need for an optimization
+     to further reduce the number of keepalive probes in the presence of
+     packet retransmit.
+
+  c. Use the elapsed time (instead of the 0-window probe counter) in
+     evaluating tcp keepalive timeout.
+
+Thanks to Eric Dumazet, Neal Cardwell, and Yuchung Cheng for helpful
+discussions about the issue and options for fixing it.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2 Initial git repository build")
+Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
+---
+ net/ipv4/tcp_timer.c | 20 ++++++--------------
+ 1 file changed, 6 insertions(+), 14 deletions(-)
+
+diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+index 4ef08079ccfa..16a044da20db 100644
+--- a/net/ipv4/tcp_timer.c
++++ b/net/ipv4/tcp_timer.c
+@@ -708,29 +708,23 @@ static void tcp_keepalive_timer (struct timer_list *t)
+ 	    ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_SYN_SENT)))
+ 		goto out;
+ 
+-	elapsed = keepalive_time_when(tp);
+-
+-	/* It is alive without keepalive 8) */
+-	if (tp->packets_out || !tcp_write_queue_empty(sk))
+-		goto resched;
+-
+ 	elapsed = keepalive_time_elapsed(tp);
+ 
+ 	if (elapsed >= keepalive_time_when(tp)) {
+ 		/* If the TCP_USER_TIMEOUT option is enabled, use that
+ 		 * to determine when to timeout instead.
+ 		 */
+-		if ((icsk->icsk_user_timeout != 0 &&
+-		    elapsed >= msecs_to_jiffies(icsk->icsk_user_timeout) &&
+-		    icsk->icsk_probes_out > 0) ||
+-		    (icsk->icsk_user_timeout == 0 &&
+-		    icsk->icsk_probes_out >= keepalive_probes(tp))) {
++		u32 timeout = icsk->icsk_user_timeout ?
++		  msecs_to_jiffies(icsk->icsk_user_timeout) :
++		  keepalive_intvl_when(tp) * keepalive_probes(tp) +
++		  keepalive_time_when(tp);
++
++		if (elapsed >= timeout) {
+ 			tcp_send_active_reset(sk, GFP_ATOMIC);
+ 			tcp_write_err(sk);
+ 			goto out;
+ 		}
+ 		if (tcp_write_wakeup(sk, LINUX_MIB_TCPKEEPALIVE) <= 0) {
+-			icsk->icsk_probes_out++;
+ 			elapsed = keepalive_intvl_when(tp);
+ 		} else {
+ 			/* If keepalive was lost due to local congestion,
+@@ -744,8 +738,6 @@ static void tcp_keepalive_timer (struct timer_list *t)
+ 	}
+ 
+ 	sk_mem_reclaim(sk);
+-
+-resched:
+ 	inet_csk_reset_keepalive_timer (sk, elapsed);
+ 	goto out;
+ 
+-- 
+2.29.2
+
