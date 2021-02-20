@@ -2,183 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583903203A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 05:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BE23203AE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 05:33:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229930AbhBTEWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 23:22:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S229979AbhBTEc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 23:32:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhBTEVx (ORCPT
+        with ESMTP id S229771AbhBTEcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 23:21:53 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A30EC06178A
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 20:21:13 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id b21so6618275pgk.7
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 20:21:13 -0800 (PST)
+        Fri, 19 Feb 2021 23:32:55 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF0D3C061574;
+        Fri, 19 Feb 2021 20:32:14 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id e9so5398031pjj.0;
+        Fri, 19 Feb 2021 20:32:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mklg+AYwKzafXeovf7IuFZZrAWcs0LMC3PrPd1tFTKU=;
-        b=12b7zh+2/tZORGhOPLBBGI1aC17iBV3qsfujetE2XOCQYGg56u4ElUYrHBoKbS5uuc
-         jO3TCUFl/u8EdF5/kbZtA9RAFu2qywWZJg5tFL4Zx6Mo8+LxP5OZtio585fA619DKjJ+
-         ktz7rSrKj1Je+nCBS7ttc5v2CMIqcb8xniDRheJ9NnFjuuNVIGbS2fUAcHlI7juzx31J
-         kjJqPpW/Ryy0ikHGt904ok0oRJbarKGIlf3Yr7DuzgJL+wSZPrR8zRAaBa/0MjmIMxKt
-         sCiDfxX9HN9h9LVSSW0pC+z19hvhXpFVDJUPrU0gTEuE9eWoh49+bAMQYodtQW3CnFVP
-         SvhQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yCttkUx212Ws6BTJ2fdRdVpLwAsB14QF6Ud0cGT18g=;
+        b=k8PgyoRcuZ1594p6siTTyJGzzMHBC6odvBihaj3/CFzO3YkShOgf7bxgOVPLQCPMzh
+         xFS2JNrRKMeJlWS4KuMVKJgxhMVar9Ewt1Xu3EJhZl7IO4ELKoTZ8+1a0pcWeUQHoWmH
+         Ha6aISkSKmr2yrnWln5asJR/evaB/xP97BmGb1zXJyuZYPoj/NMNMGqLmIQDdObER+cj
+         NyTTmyjG3xYurYn/xX6V7JKS1JuPz1mPkeCxqjgdjmpS7PjN5WqDEwA4nTHeWljWDmO4
+         TKvD2rJhHUhJRqAQAffeenvgZS0DP5eHOka8PtWkh7LvIlH9qcNleV3jl0abgdjx6kib
+         cdJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mklg+AYwKzafXeovf7IuFZZrAWcs0LMC3PrPd1tFTKU=;
-        b=jlsK1PXwAk6ZQiqIY1tQIB2fx7fm8pWWoF9vTbeysN1LOe3Uoe7JgHlJrBIcFEFhbL
-         9WpHkOW4CaPsw5w99bpry5hnU9qCcbiEC0KF1mLBcnF8cYr+duJz/qY6tw7UZot0ZiGn
-         RD2L92qz92ftpm15B3dwT+UPIyCiMfFPCOobyf58ZcN+mEvtv7fy8lN2yvL0VnRiDP8c
-         B/FnvTPn9prUZA127VZeAcv4wg67ExAAv3hC6I7f+EIEkMjVwb2W2NcmIMsUZlV9gwJ+
-         TQyZd2G3f/eouPMPqgph22f5gnMgyBMPAWUFcmXmHdApfW8ywlp0MatdczVutUc+drkn
-         m2tQ==
-X-Gm-Message-State: AOAM531FHiDG60roj6fjJDbtGNs2L6iJmd+o53LEkeOwrNNYNglwYhgU
-        bfk13LFsEk9kqwcdaC+vAqSLuXQmjTsiAv3C8Su00Q==
-X-Google-Smtp-Source: ABdhPJzHovR+Dqry8e8TbF1nft1zNiAj/LjO/P0dMklt0n5mDlaBx7myVp+4tffX6GW6uG3XzrCZ0MNMiYeL7UoKw0Q=
-X-Received: by 2002:aa7:910c:0:b029:1ed:ef1:81b with SMTP id
- 12-20020aa7910c0000b02901ed0ef1081bmr10564219pfh.49.1613794872318; Fri, 19
- Feb 2021 20:21:12 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3yCttkUx212Ws6BTJ2fdRdVpLwAsB14QF6Ud0cGT18g=;
+        b=WiRv/uBBpN22dx+fMoKOhHjNqIz2XgqoHFGNeAiUcmdZsQ0yR77sIoiH/RVRVTVy3f
+         6gofws4HePclVBaw6ojMeoKZH6+fpsXQobyfHXmPOp2ocnv2Ojye2xKayhiIpYRKiSGs
+         VvEJYA/2OxXNHIVDb8b0LrQQEuLJeE+dUYbcgxjSC+iBCO3Ispk+9/6ha0eA5UtkYmey
+         Btlh3bnpHiGhmGu1FlcHUVK0GgV8nuqnzqbEGA6CGywSomieLefTdobemI4ug13biNOa
+         jNHFclLHwKBWg++uvgq3+SPuXMHPF7lpdxKl4sKg5SkLW38Qqdqmva2o9Id7rke4OB0F
+         z3cA==
+X-Gm-Message-State: AOAM531li+vJHu1ormUFjVmtlK0fYrD7AH6tNdodjm1WyWxagsJnVoJs
+        z+4p/tXI2wJ9EA6mqwe/PeA=
+X-Google-Smtp-Source: ABdhPJyjMsBPPxTgwfCmU92cN2F38mcCH0tSp3aTPpoefPYnlTZC7hvk6Ps8gSmWs8zfRIHawXijvA==
+X-Received: by 2002:a17:902:ed88:b029:e3:6b9f:9ac3 with SMTP id e8-20020a170902ed88b02900e36b9f9ac3mr5060522plj.72.1613795534208;
+        Fri, 19 Feb 2021 20:32:14 -0800 (PST)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id ca19sm997054pjb.31.2021.02.19.20.32.12
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Feb 2021 20:32:13 -0800 (PST)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yejune.deng@gmail.com
+Subject: [PATCH] arp: Remove the arp_hh_ops structure
+Date:   Sat, 20 Feb 2021 12:32:03 +0800
+Message-Id: <20210220043203.11754-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-References: <20210219104954.67390-1-songmuchun@bytedance.com>
- <20210219104954.67390-5-songmuchun@bytedance.com> <YC/HRTq1MRaDWn7O@dhcp22.suse.cz>
-In-Reply-To: <YC/HRTq1MRaDWn7O@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sat, 20 Feb 2021 12:20:36 +0800
-Message-ID: <CAMZfGtW-j=WizTckEWZNB2OSPkz662Vjr79Fb0he9tMD+bnT3Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 10:12 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 19-02-21 18:49:49, Muchun Song wrote:
-> > When we free a HugeTLB page to the buddy allocator, we should allocate
-> > the vmemmap pages associated with it. But we may cannot allocate vmemmap
-> > pages when the system is under memory pressure, in this case, we just
-> > refuse to free the HugeTLB page instead of looping forever trying to
-> > allocate the pages. This changes some behavior (list below) on some
-> > corner cases.
-> >
-> >  1) Failing to free a huge page triggered by the user (decrease nr_pages).
-> >
-> >     Need try again later by the user.
-> >
-> >  2) Failing to free a surplus huge page when freed by the application.
-> >
-> >     Try again later when freeing a huge page next time.
->
-> This means that surplus pages can accumulate right? This should be
-> rather unlikely because one released huge page could then be reused for
-> normal allocations - including vmemmap. Unlucky timing might still end
-> up in the accumulation though. Not something critical though.
+The 'arp_hh_ops' structure is similar to the 'arp_generic_ops' structure.
+So remove the 'arp_hh_ops' structure.
 
-Agree.
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+---
+ net/ipv4/arp.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
->
-> >  3) Failing to dissolve a free huge page on ZONE_MOVABLE via
-> >     offline_pages().
-> >
-> >     This is a bit unfortunate if we have plenty of ZONE_MOVABLE memory
-> >     but are low on kernel memory. For example, migration of huge pages
-> >     would still work, however, dissolving the free page does not work.
-> >     This is a corner cases. When the system is that much under memory
-> >     pressure, offlining/unplug can be expected to fail.
->
-> Please mention that this is unfortunate because it prevents from the
-> memory offlining which shouldn't happen for movable zones. People
-> depending on the memory hotplug and movable zone should carefuly
-> consider whether savings on unmovable memory are worth losing their
-> hotplug functionality in some situations.
+diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
+index 922dd73e5740..6d60d9b89286 100644
+--- a/net/ipv4/arp.c
++++ b/net/ipv4/arp.c
+@@ -135,14 +135,6 @@ static const struct neigh_ops arp_generic_ops = {
+ 	.connected_output =	neigh_connected_output,
+ };
+ 
+-static const struct neigh_ops arp_hh_ops = {
+-	.family =		AF_INET,
+-	.solicit =		arp_solicit,
+-	.error_report =		arp_error_report,
+-	.output =		neigh_resolve_output,
+-	.connected_output =	neigh_resolve_output,
+-};
+-
+ static const struct neigh_ops arp_direct_ops = {
+ 	.family =		AF_INET,
+ 	.output =		neigh_direct_output,
+@@ -277,15 +269,10 @@ static int arp_constructor(struct neighbour *neigh)
+ 			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
+ 		}
+ 
+-		if (dev->header_ops->cache)
+-			neigh->ops = &arp_hh_ops;
+-		else
+-			neigh->ops = &arp_generic_ops;
+-
+-		if (neigh->nud_state & NUD_VALID)
+-			neigh->output = neigh->ops->connected_output;
++		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
++			neigh->output = arp_generic_ops.connected_output;
+ 		else
+-			neigh->output = neigh->ops->output;
++			neigh->output = arp_generic_ops.output;
+ 	}
+ 	return 0;
+ }
+-- 
+2.29.0
 
-Make sense. I will mention this in the change log. Thanks.
-
->
-> >  4) Failing to dissolve a huge page on CMA/ZONE_MOVABLE via
-> >     alloc_contig_range() - once we have that handling in place. Mainly
-> >     affects CMA and virtio-mem.
->
-> What about hugetlb page poisoning on HW failure (resp. soft offlining)?
-
-If the HW poisoned hugetlb page failed to be dissolved, the page
-will go back to the free list with PG_HWPoison set. But the page
-will not be used, because we will check whether the page is HW
-poisoned when it is dequeued from the free list. If so, we will skip
-this page.
-
->
-> >
-> >     Similar to 3). virito-mem will handle migration errors gracefully.
-> >     CMA might be able to fallback on other free areas within the CMA
-> >     region.
-> >
-> > We do not want to use GFP_ATOMIC to allocate vmemmap pages. Because it
-> > grants access to memory reserves and we do not think it is reasonable
-> > to use memory reserves. We use GFP_KERNEL in alloc_huge_page_vmemmap().
->
-> This likely needs more context around. Maybe something like
-> "
-> Vmemmap pages are allocated from the page freeing context. In order for
-> those allocations to be not disruptive (e.g. trigger oom killer)
-> __GFP_NORETRY is used. hugetlb_lock is dropped for the allocation
-> because a non sleeping allocation would be too fragile and it could fail
-> too easily under memory pressure. GFP_ATOMIC or other modes to access
-> memory reserves is not used because we want to prevent consuming
-> reserves under heavy hugetlb freeing.
-> "
-
-Thanks. I will use this to the change log.
-
->
-> I haven't gone through the patch in a great detail yet, from a high
-> level POV it looks good although the counter changes and reshuffling
-> seems little wild. That requires a more detailed look I do not have time
-> for right now. Mike would be much better for that anywya ;)
-
-Yeah. Hope Mike will review this (I believe he is good at this area).
-
->
-> I do not see any check for an atomic context in free_huge_page path. I
-> have suggested to replace in_task by in_atomic check (with a gotcha that
-> the later doesn't work without preempt_count but there is a work to
-> address that).
-
-Sorry. I forgot it. I will replace in_task with in_atomic in the next version.
-Thanks for your suggestions.
-
-> --
-> Michal Hocko
-> SUSE Labs
