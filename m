@@ -2,132 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3A13206D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 799943206D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhBTTNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 14:13:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhBTTNd (ORCPT
+        id S230029AbhBTTOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 14:14:12 -0500
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:38318 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229868AbhBTTOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:13:33 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE95C061786;
-        Sat, 20 Feb 2021 11:12:49 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id 7so14572117wrz.0;
-        Sat, 20 Feb 2021 11:12:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qrC9ugpTSFJhkRwNI6sJByWWg907u86/Upjg3HOk4D0=;
-        b=Hp515hymLEetLq9ONPca46+wj+BWbhIYyqsKw35C6b8hV75FdrFL78b7u+VQ8GkZ0W
-         dEEuUDm4wmI1Ny9jpg/AxGfDEV2oDYeUFazTZPtMPuVYDGRPzuhOde/DjN/1Yjz5oQoQ
-         6ovOX6ddBoRHp8KUmxJAowBTQ/Q4eLr6dviQ/Vr0UdLc/IP7k7r7Wci9JhVjtSASgIkY
-         OomnA8iznkkjvuKVhAAteqlOAnQzLQUg7ENIjCGIU7/n+hPGDvQPm2bObTrEfpGasr4I
-         aVSbN6TPnDNlgXmviXZzPw5gSgsm9klouQUAUYj628DlclmBWK458p+J80ktsA6dONII
-         R2XA==
+        Sat, 20 Feb 2021 14:14:08 -0500
+Received: by mail-wm1-f46.google.com with SMTP id m25so1268746wmi.3;
+        Sat, 20 Feb 2021 11:13:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qrC9ugpTSFJhkRwNI6sJByWWg907u86/Upjg3HOk4D0=;
-        b=iiltZ3JJy1x6zrc14aZ/fZ2Hcj+ULgocBKj5MKuNNvmP8iZ8QHfT9GUDgN+Hmo6bjp
-         YIhniTDWTyBLCwG7PoOnRoV8XCuGXy1Q5ePypn93Uie02F89yYDZ8X5/OXjRJkV7U4rm
-         BCGaDFaws2h+izDJArkG2FerdJRjuK7tgs/Gb4/9H0BcJu7wVtDzt5zE/fWYm0eVXAlL
-         3CedhS/ze0uY1VmdTx2cBcHoR5s4svnaZJ9IJLfYOTE5L4RdS2Um8a55b3AWJAuP7Zbw
-         kFh7fdAGscFTbESRVvSx12bD8qZS2kZp+yWcoK+Ka2qNj1tg2vIEcRgMD57T3mTJshJo
-         7VKQ==
-X-Gm-Message-State: AOAM531iAs2INk7NYHFTedUW6GIDiMjVP3EBDyUGE/N0ctIKZHLiwnf9
-        K3XWh/odolUt28aazBoFxNc=
-X-Google-Smtp-Source: ABdhPJwONz0TGGNpJOR78cmtrhV6BpLoc4v6UgNQOaVFSOHTj9Hy1TQuN0eZ40BJcE7rMraXJPfFIg==
-X-Received: by 2002:adf:f750:: with SMTP id z16mr12357490wrp.108.1613848366898;
-        Sat, 20 Feb 2021 11:12:46 -0800 (PST)
-Received: from [192.168.1.10] (23.red-2-137-25.dynamicip.rima-tde.net. [2.137.25.23])
-        by smtp.gmail.com with ESMTPSA id h12sm24987060wru.18.2021.02.20.11.12.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Feb 2021 11:12:46 -0800 (PST)
-Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     mpm@selenic.com, herbert@gondor.apana.org.au,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        rikard.falkeborn@gmail.com, linux-crypto@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stijn@linux-ipv6.be, ynezz@true.cz
-References: <20210220174741.23665-1-noltari@gmail.com>
- <YDFeao/bOxvoXI9D@lunn.ch>
-From:   =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
-Message-ID: <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
-Date:   Sat, 20 Feb 2021 20:12:45 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VF3s9s8dD+8FgMnQzEnFyHG1q1prhIJgjdP8jQ0Kb/E=;
+        b=UfHKLMARmIa6ApDFpt8RQj3yF7my2W8MSWSXMWNAu3+ibB4l/IQsqrrmNuBJ6kM/7c
+         otg8+GxDQp/BQ2qqkU3Kt5ix6Aq2luJ6MXhxMHgiHg5mch0cw/xWIEbk5qmxeq8rTeDj
+         IVSWxc4qWTMQ/3bVjjK+LlLLzFywiAy4Ck98klJD2QSWswAT00jz1PRekCXVPZPddRW+
+         7cZYSXxGzgsDQEcoQXI+ymJ86dif1BSBzoAFvBkneWEINNS1x/VBwWAMRyh+ZdsEt4G6
+         ZTOygK3JQn7Qc3+tqJ2f5nCKkbanYakofcNWJoLwvS14fvIwwfyPQtY8mYZH+Xr/w++d
+         Es0w==
+X-Gm-Message-State: AOAM532A5r6rAde+UV6l1uJIAMNLHwBw3IwrvymVBjuOn/DmQwJ/xYxt
+        Xd+Zhc1FgRcnmFaLj7bRM1w=
+X-Google-Smtp-Source: ABdhPJw9s3IjvIxVsPN1AfNRpwIaxtgvmFES1CWbXCIdbkt8xArpUI6D3W0a2jIIJOy8C9bd/VV77g==
+X-Received: by 2002:a1c:d7:: with SMTP id 206mr13505454wma.68.1613848406537;
+        Sat, 20 Feb 2021 11:13:26 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id x18sm10044772wrr.10.2021.02.20.11.13.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 11:13:25 -0800 (PST)
+Date:   Sat, 20 Feb 2021 20:13:23 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Hector Martin <marcan@marcan.st>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Olof Johansson <olof@lixom.net>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Tony Lindgren <tony@atomide.com>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Alexander Graf <graf@amazon.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 20/25] tty: serial: samsung_tty: Use
+ devm_ioremap_resource
+Message-ID: <20210220191323.ugmzrtkvcxyqqolj@kozik-lap>
+References: <20210215121713.57687-1-marcan@marcan.st>
+ <20210215121713.57687-21-marcan@marcan.st>
+ <20210215185135.onivzktfscv5myh2@kozik-lap>
+ <20274436-7275-9734-5a07-d6da46b45c5f@marcan.st>
 MIME-Version: 1.0
-In-Reply-To: <YDFeao/bOxvoXI9D@lunn.ch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20274436-7275-9734-5a07-d6da46b45c5f@marcan.st>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Thu, Feb 18, 2021 at 11:01:21PM +0900, Hector Martin wrote:
+> On 16/02/2021 03.51, Krzysztof Kozlowski wrote:
+> > > Also fix a bug checking the return value, which should use IS_ERR().
+> > 
+> > No, no, no. We never, never combine fixing bugs with some rework.
+> > However devm_ioremap() returns NULL so where is the error?
+> 
+> Sorry, this was a commit message mistake. The code is correct and so is the
+> patch: just the NULL check is correct for the previous variant and IS_ERR is
+> correct for devm_ioremap_resource. I confused myself while writing the
+> commit message after the fact.
+> 
+> > Did you test your patches on existing platforms? If not, please mark all
+> > of them as RFT on next submission, so Greg does not pick them too fast.
+> 
+> I unfortunately don't have any Exynos devices where I could test the code (I
+> have a couple but no serial connections, and I have no idea if mailine would
+> run on them). I'll mark v3 as RFT.
 
-I ran rngtest and this is what I got:
-root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
-rngtest 6.10
-Copyright (c) 2004 by Henrique de Moraes Holschuh
-This is free software; see the source for copying conditions.  There is 
-NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-PURPOSE.
-
-rngtest: starting FIPS tests...
-rngtest: bits received from input: 20000032
-rngtest: FIPS 140-2 successes: 996
-rngtest: FIPS 140-2 failures: 4
-rngtest: FIPS 140-2(2001-10-10) Monobit: 0
-rngtest: FIPS 140-2(2001-10-10) Poker: 0
-rngtest: FIPS 140-2(2001-10-10) Runs: 1
-rngtest: FIPS 140-2(2001-10-10) Long run: 3
-rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-rngtest: input channel speed: (min=146.002; avg=349.394; 
-max=1302083.333)Kibits/s
-rngtest: FIPS tests speed: (min=12.126; avg=22.750; max=23.432)Mibits/s
-rngtest: Program run time: 56826982 microseconds
-
-996 successes and 4 failures -> 99.6% success rate
-1024 * 99.6% = 1019 (rounded down to 1000)
-
-I'm not sure if I can rely on rngtest for that...
+If you have one of Odroid boards with Exynos, then you can nicely test
+Exynos. Others - depends, on board.
+Anyway I can test them for you. I just want to be sure that Greg waits
+for this testing.
 
 Best regards,
-Álvaro.
+Krzysztof
 
-El 20/02/2021 a las 20:09, Andrew Lunn escribió:
-> On Sat, Feb 20, 2021 at 06:47:40PM +0100, Álvaro Fernández Rojas wrote:
->> This allows devices without a high precission timer to reduce boot from >100s
->> to <30s.
->> diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
->> index 1a7c43b43c6b..4b48cb7176b0 100644
->> --- a/drivers/char/hw_random/bcm2835-rng.c
->> +++ b/drivers/char/hw_random/bcm2835-rng.c
->> @@ -163,6 +163,7 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
->>   	priv->rng.init = bcm2835_rng_init;
->>   	priv->rng.read = bcm2835_rng_read;
->>   	priv->rng.cleanup = bcm2835_rng_cleanup;
->> +	priv->rng.quality = 1000;
-> 
-> Hi Alvero
-> 
->   * @quality:		Estimation of true entropy in RNG's bitstream
->   *			(in bits of entropy per 1024 bits of input;
->   *			valid values: 1 to 1024, or 0 for unknown).
-> 
-> How did you determine this device produces 1000 bits of true entropy
-> per 1024?
-> 
->      Andrew
-> 
