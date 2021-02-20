@@ -2,124 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678AC3206DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:20:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF9D3206E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhBTTUD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 20 Feb 2021 14:20:03 -0500
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:37949 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229784AbhBTTT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:19:59 -0500
-Received: by mail-ed1-f42.google.com with SMTP id s11so16615603edd.5;
-        Sat, 20 Feb 2021 11:19:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OBKL52x1c+0wtBbYVRakXBkOcTFo42BB6g8G38t5+3w=;
-        b=ZuzjdN0IkhSLeo3ZDnyf0ZaEoeIdVXkYwBIaz/3fYBDR3+0FZuv3paz135VNUlMId4
-         M2izgsLgussNK28qlom5K12cOg6qn7OTpCMN+BPBlldnlpGWPkLhNeKIc2f4ccPIXBlI
-         mgSpkgy+rm1p9F/uK6LRqRJxRK+r0R2mfa3cqdU4JcLNvCvUPnS5GRvPLIq53Yvci+Qb
-         NdzF9LuYr4cMj114LAY21D/dTCtqyfIyPPGdieo23FDDWvRb7b9vnlvy+Kd+i+GvnVmz
-         Sacb9rGdDsOe69pkO0HSaP4VUdUyoN8TEROGMutNbnxHtJnXlinO3PhxxhgtaC8ySEkm
-         SXjw==
-X-Gm-Message-State: AOAM532+hs1c0NV3TpXtY1FnmUkkTmMPUNTK2F6U2c9p3utZz9idtKDY
-        IsgqlScHsi8fPQyHt5G2XCOmc2MuJ8Q=
-X-Google-Smtp-Source: ABdhPJwcQ7jmMKc3nguM404IJLKp3QhifbcjgDcH43iCNTW/Pm4ga706Kg6F+Bjpt68nSxKeuZk/9Q==
-X-Received: by 2002:a05:6402:190a:: with SMTP id e10mr15292700edz.110.1613848757108;
-        Sat, 20 Feb 2021 11:19:17 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id r23sm6843913ejd.56.2021.02.20.11.19.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 11:19:16 -0800 (PST)
-Date:   Sat, 20 Feb 2021 20:19:14 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adrien Grassein <adrien.grassein@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/8] arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
-Message-ID: <20210220191914.pir3ep3utz6uwyrb@kozik-lap>
-References: <20210217161052.877877-1-adrien.grassein@gmail.com>
- <20210217161052.877877-2-adrien.grassein@gmail.com>
- <20210219131825.niiftfm5r32qc6m3@kozik-lap>
- <CABkfQAH75N1k0bDEGzo0mRtoqP=-9p9hzBo43f6gQnSmGsXQUw@mail.gmail.com>
+        id S229914AbhBTTUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 14:20:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48552 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229808AbhBTTUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 14:20:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BF2264E51;
+        Sat, 20 Feb 2021 19:19:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613848768;
+        bh=opkZV9+iiOg5i7CeRhciYmBMWsz/qz9Xmo/qIEL+++w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lAzR3vLqQJN7zA0sj+1l2vnXCMVW4WzYcT/7zoi2XEkR75dxEfZxsr9ZZXs0vfoPA
+         MIIgjdK8Bfi/OCFnVUkAXbnH1QuOe78GE9Zog3tA5xLd9ntizTOGRftkJ5DbbTpQLW
+         omYiai3857LXH2o97xCBrMSxBqmNpxN940EtlMYI230TK91985WJW6trAwt3FkdY/L
+         VqIe5cfn3Bm95NdASEstDvnzMUXt7VhCJVGdKAJfJ58WvX9DqAgAts08MiZ6GAolne
+         0nuR0yF2z+6rnQQ4z7QrJaZEUfQQrwShmPsQQ1TDKXSeEoktfn9AzBO1+I/LSxew2+
+         2ipaElzzXH/Mw==
+Date:   Sun, 21 Feb 2021 04:19:21 +0900
+From:   Keith Busch <kbusch@kernel.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'SelvaKumar S' <selvakuma.s1@samsung.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
+        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "snitzer@redhat.com" <snitzer@redhat.com>,
+        "selvajove@gmail.com" <selvajove@gmail.com>,
+        "joshiiitr@gmail.com" <joshiiitr@gmail.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
+        "joshi.k@samsung.com" <joshi.k@samsung.com>,
+        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
+        "kch@kernel.org" <kch@kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [RFC PATCH v5 0/4] add simple copy support
+Message-ID: <20210220191921.GA7968@redsun51.ssa.fujisawa.hgst.com>
+References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
+ <20210219124517.79359-1-selvakuma.s1@samsung.com>
+ <146c47907c2446d4a896830de400dd81@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CABkfQAH75N1k0bDEGzo0mRtoqP=-9p9hzBo43f6gQnSmGsXQUw@mail.gmail.com>
+In-Reply-To: <146c47907c2446d4a896830de400dd81@AcuMS.aculab.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:03:55PM +0100, Adrien Grassein wrote:
-> Le ven. 19 févr. 2021 à 14:18, Krzysztof Kozlowski <krzk@kernel.org> a écrit :
-> >
-> > On Wed, Feb 17, 2021 at 05:10:45PM +0100, Adrien Grassein wrote:
-> > > Add usdhc3 description which corresponds to the wifi/bt chip
-> > >
-> > > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> > > ---
-> > >  .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 31 +++++++++++++++++++
-> > >  1 file changed, 31 insertions(+)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> > > index c0c384d76147..212dc9e5e85d 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> > > @@ -9,6 +9,17 @@
-> > >  / {
-> > >       model = "Boundary Devices i.MX8MMini Nitrogen8MM Rev2";
-> > >       compatible = "boundary,imx8mm-nitrogen8mm", "fsl,imx8mm";
-> > > +
-> > > +     reg_wlan_vmmc: regulator-wlan-vmmc {
-> > > +             compatible = "regulator-fixed";
-> > > +             pinctrl-names = "default";
-> > > +             pinctrl-0 = <&pinctrl_reg_wlan_vmmc>;
-> > > +             regulator-name = "reg_wlan_vmmc";
-> > > +             regulator-min-microvolt = <3300000>;
-> > > +             regulator-max-microvolt = <3300000>;
-> > > +             gpio = <&gpio3 20 GPIO_ACTIVE_HIGH>;
-> > > +             enable-active-high;
-> > > +     };
-> > >  };
-> > >
-> > >  &A53_0 {
-> > > @@ -206,6 +217,20 @@ &usdhc2 {
-> > >       status = "okay";
-> > >  };
-> > >
-> > > +/* wlan */
-> > > +&usdhc3 {
-> > > +     bus-width = <4>;
-> > > +     sdhci-caps-mask = <0x2 0x0>;
-> > > +     non-removable;
-> > > +     pinctrl-names = "default", "state_100mhz", "state_200mhz";
-> > > +     pinctrl-0 = <&pinctrl_usdhc3>;
-> > > +     pinctrl-1 = <&pinctrl_usdhc3_100mhz>;
-> > > +     pinctrl-2 = <&pinctrl_usdhc3_200mhz>;
-> > > +     vmmc-supply = <&reg_wlan_vmmc>;
-> > > +     vqmmc-1-8-v;
-> >
-> > There is no such property in the bindings.
-> >
+On Sat, Feb 20, 2021 at 06:01:56PM +0000, David Laight wrote:
+> From: SelvaKumar S
+> > Sent: 19 February 2021 12:45
+> > 
+> > This patchset tries to add support for TP4065a ("Simple Copy Command"),
+> > v2020.05.04 ("Ratified")
+> > 
+> > The Specification can be found in following link.
+> > https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
+> > 
+> > Simple copy command is a copy offloading operation and is  used to copy
+> > multiple contiguous ranges (source_ranges) of LBA's to a single destination
+> > LBA within the device reducing traffic between host and device.
 > 
-> Sorry, I copied a property from the FSL kernel.
-> I will fix this with a "fixed-regulator".
+> Sounds to me like the real reason is that the copy just ends up changing
+> some indirect block pointers rather than having to actually copy the data.
 
-I would assume this goes from PMIC, so check your schematics. There is
-little point in adding a fixed regulator which is non-controllable.
-I think bindings don't require it.
-
-Best regards,
-Krzysztof
-
+I guess an implementation could do that, but I think that's missing the
+point of the command. The intention is to copy the data to a new
+location on the media for host managed garbage collection. 
