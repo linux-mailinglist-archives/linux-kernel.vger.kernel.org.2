@@ -2,148 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B241A320432
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4637C320436
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 07:35:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbhBTGdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 01:33:14 -0500
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:37326 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhBTGdM (ORCPT
+        id S229808AbhBTGeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 01:34:31 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:44067 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229645AbhBTGeW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 01:33:12 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id D5F0E29A93;
-        Sat, 20 Feb 2021 01:32:26 -0500 (EST)
-Date:   Sat, 20 Feb 2021 17:32:30 +1100 (AEDT)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Arnd Bergmann <arnd@kernel.org>
-cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "geert@linux-m68k.org" <geert@linux-m68k.org>,
-        "funaho@jurai.org" <funaho@jurai.org>,
-        "philb@gnu.org" <philb@gnu.org>, "corbet@lwn.net" <corbet@lwn.net>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] IRQ handlers run with some high-priority interrupts(not
- NMI) enabled on some platform
-In-Reply-To: <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
-Message-ID: <264b37c2-527-f0ed-197d-b016a7d16e32@telegraphics.com.au>
-References: <c46ddb954cfe45d9849c911271d7ec23@hisilicon.com> <CAK8P3a2adJsz5hRT_eMzSoHnUBC+aK9HZ18=oAYCZ-gisEkd1w@mail.gmail.com> <24e0652b3afa48cdbf7c83287e43c087@hisilicon.com> <CAK8P3a0fwMe9LaXMfKjH46yvt6o-euZJZ4HXtVRPhYbKvAUPKg@mail.gmail.com>
- <0b766dba0b004ced94131e158cd8e67d@hisilicon.com> <CAK8P3a2ZnKeeZ-zEWO+vHogs0DdLuDrZet61cSmJe_UMYhtaWQ@mail.gmail.com> <5148eb2aaceb42d78087bc6d8ce15183@hisilicon.com> <5fcea94e-6fc9-c340-d7d2-4ae8b69890b8@telegraphics.com.au> <0c0ea8eca77c45ea89f2d4432580211c@hisilicon.com>
- <28d4b91d-1774-a8a-df97-7ac9b365c2@telegraphics.com.au> <CAK8P3a0VquJPxvS8B=2kLQ5y=h5BftJDR7WJYmj3hgQ8yQY5=Q@mail.gmail.com>
+        Sat, 20 Feb 2021 01:34:22 -0500
+X-UUID: a1cf49f638f24f0ca1a738f6dd3be683-20210220
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=vNvKWXaLVsNfYfp/yjKIyUMJfnM46rdL37hgDLSjDWA=;
+        b=Bf+ZUa9Du2MC27LUzAsA2wlSBxYb/cc9L38ZRJpKODoTKynf3y5N8Sp9BO4ogcYFF8X8nNeSADllIRSvAHxrlESCq2zpYzNmdmGZohkVwy3QVM1uwJpFua2Wbd+HiMsT6IN6f3WNypjr+oBcvZoaNW72+wTwnnr09iBtHntQoYM=;
+X-UUID: a1cf49f638f24f0ca1a738f6dd3be683-20210220
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <irui.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 804606797; Sat, 20 Feb 2021 14:33:32 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 20 Feb
+ 2021 14:33:25 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 20 Feb 2021 14:33:23 +0800
+Message-ID: <1613802803.896.8.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/3] dt-bindings: media: mtk-vcodec: Separating mtk
+ vcodec encoder node
+From:   Irui Wang <irui.wang@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Tomasz Figa" <tfiga@google.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
+Date:   Sat, 20 Feb 2021 14:33:23 +0800
+In-Reply-To: <20210209155350.GA3827709@robh.at.kernel.org>
+References: <20210121061804.26423-1-irui.wang@mediatek.com>
+         <20210209155350.GA3827709@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-TM-SNTS-SMTP: 85AA0E7ED4C3C79C25C20767B9DC4302CF53518326B6918097B00A7D2E041E9B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Feb 2021, Arnd Bergmann wrote:
+T24gVHVlLCAyMDIxLTAyLTA5IGF0IDA5OjUzIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gVGh1LCBKYW4gMjEsIDIwMjEgYXQgMDI6MTg6MDJQTSArMDgwMCwgSXJ1aSBXYW5nIHdyb3Rl
+Og0KPiA+IFVwZGF0ZXMgYmluZGluZyBkb2N1bWVudCBzaW5jZSB0aGUgYXZjIGFuZCB2cDggaGFy
+ZHdhcmUgZW5jb2RlciBpbg0KPiA+IE1UODE3MyBhcmUgbm93IHNlcGFyYXRlZC4gU2VwYXJhdGUg
+Im1lZGlhdGVrLG10ODE3My12Y29kZWMtZW5jIiB0bw0KPiA+ICJtZWRpYXRlayxtdDgxNzMtdmNv
+ZGVjLXZwOC1lbmMiIGFuZCAibWVkaWF0ZWssbXQ4MTczLXZjb2RlYy1hdmMtZW5jIi4NCj4gDQo+
+IFRoaXMgaXMgbm90IGEgY29tcGF0aWJsZSBjaGFuZ2UuIFlvdSBuZWVkIHRvIGRldGFpbCB0aGF0
+IGFuZCB3aHkgdGhhdCdzIA0KPiBva2F5IChhc3N1bWluZyBpdCBpcykuDQo+IA0KdGhpcyBwYXRj
+aCBzZXBhcmF0ZXMgdGhlIHR3byBkZXZpY2VzLCBpdCdzIGEgcHJlcGFyaW5nIHBhdGNoIGZvciBh
+ZGRpbmcNCmRldmljZV9saW5rIGJldHdlZW4gdGhlIGxhcmJzIGFuZCB2ZW5jLWRldmljZS4gSXQn
+cyBtYWlubHkgZm9yIGZpeGluZw0KdGhlIHByb2JsZW06DQpodHRwczovL2xrbWwub3JnL2xrbWwv
+MjAxOS85LzMvMzE2DQoNCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhz
+aW55aUBjaHJvbWl1bS5vcmc+DQo+ID4gU2lnbmVkLW9mZi1ieTogTWFvZ3VhbmcgTWVuZyA8bWFv
+Z3VhbmcubWVuZ0BtZWRpYXRlay5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogSXJ1aSBXYW5nIDxp
+cnVpLndhbmdAbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IC0tLQ0KPiA+ICAuLi4vYmluZGluZ3Mv
+bWVkaWEvbWVkaWF0ZWstdmNvZGVjLnR4dCAgICAgICAgfCA1OCArKysrKysrKysrLS0tLS0tLS0t
+DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAzMSBpbnNlcnRpb25zKCspLCAyNyBkZWxldGlvbnMoLSkN
+Cj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L21lZGlhL21lZGlhdGVrLXZjb2RlYy50eHQgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvbWVkaWEvbWVkaWF0ZWstdmNvZGVjLnR4dA0KPiA+IGluZGV4IDgyMTc0MjRmZDRiZC4u
+Zjg1Mjc2ZTYyOWJmIDEwMDY0NA0KPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
+aW5kaW5ncy9tZWRpYS9tZWRpYXRlay12Y29kZWMudHh0DQo+ID4gKysrIGIvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL21lZGlhL21lZGlhdGVrLXZjb2RlYy50eHQNCj4gPiBAQCAt
+NCw3ICs0LDkgQEAgTWVkaWF0ZWsgVmlkZW8gQ29kZWMgaXMgdGhlIHZpZGVvIGNvZGVjIGh3IHBy
+ZXNlbnQgaW4gTWVkaWF0ZWsgU29DcyB3aGljaA0KPiA+ICBzdXBwb3J0cyBoaWdoIHJlc29sdXRp
+b24gZW5jb2RpbmcgYW5kIGRlY29kaW5nIGZ1bmN0aW9uYWxpdGllcy4NCj4gPiAgDQo+ID4gIFJl
+cXVpcmVkIHByb3BlcnRpZXM6DQo+ID4gLS0gY29tcGF0aWJsZSA6ICJtZWRpYXRlayxtdDgxNzMt
+dmNvZGVjLWVuYyIgZm9yIE1UODE3MyBlbmNvZGVyDQo+ID4gKy0gY29tcGF0aWJsZSA6IG11c3Qg
+YmUgb25lIG9mIHRoZSBmb2xsb3dpbmcgc3RyaW5nOg0KPiA+ICsgICJtZWRpYXRlayxtdDgxNzMt
+dmNvZGVjLXZwOC1lbmMiIGZvciBtdDgxNzMgdnA4IGVuY29kZXIuDQo+ID4gKyAgIm1lZGlhdGVr
+LG10ODE3My12Y29kZWMtYXZjLWVuYyIgZm9yIG10ODE3MyBhdmMgZW5jb2Rlci4NCj4gPiAgICAi
+bWVkaWF0ZWssbXQ4MTgzLXZjb2RlYy1lbmMiIGZvciBNVDgxODMgZW5jb2Rlci4NCj4gPiAgICAi
+bWVkaWF0ZWssbXQ4MTczLXZjb2RlYy1kZWMiIGZvciBNVDgxNzMgZGVjb2Rlci4NCj4gPiAgLSBy
+ZWcgOiBQaHlzaWNhbCBiYXNlIGFkZHJlc3Mgb2YgdGhlIHZpZGVvIGNvZGVjIHJlZ2lzdGVycyBh
+bmQgbGVuZ3RoIG9mDQo+ID4gQEAgLTEzLDEwICsxNSwxMSBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVz
+Og0KPiA+ICAtIG1lZGlhdGVrLGxhcmIgOiBtdXN0IGNvbnRhaW4gdGhlIGxvY2FsIGFyYml0ZXJz
+IGluIHRoZSBjdXJyZW50IFNvY3MuDQo+ID4gIC0gY2xvY2tzIDogbGlzdCBvZiBjbG9jayBzcGVj
+aWZpZXJzLCBjb3JyZXNwb25kaW5nIHRvIGVudHJpZXMgaW4NCj4gPiAgICB0aGUgY2xvY2stbmFt
+ZXMgcHJvcGVydHkuDQo+ID4gLS0gY2xvY2stbmFtZXM6IGVuY29kZXIgbXVzdCBjb250YWluICJ2
+ZW5jX3NlbF9zcmMiLCAidmVuY19zZWwiLCwNCj4gPiAtICAidmVuY19sdF9zZWxfc3JjIiwgInZl
+bmNfbHRfc2VsIiwgZGVjb2RlciBtdXN0IGNvbnRhaW4gInZjb2RlY3BsbCIsDQo+ID4gLSAgInVu
+aXZwbGxfZDIiLCAiY2xrX2NjaTQwMF9zZWwiLCAidmRlY19zZWwiLCAidmRlY3BsbCIsICJ2ZW5j
+cGxsIiwNCj4gPiAtICAidmVuY19sdF9zZWwiLCAidmRlY19idXNfY2xrX3NyYyIuDQo+ID4gKy0g
+Y2xvY2stbmFtZXM6DQo+ID4gKyAgIGF2YyB2ZW5jIG11c3QgY29udGFpbiAidmVuY19zZWwiOw0K
+PiA+ICsgICB2cDggdmVuYyBtdXN0IGNvbnRhaW4gInZlbmNfbHRfc2VsIjsNCj4gPiArICAgZGVj
+b2RlciAgbXVzdCBjb250YWluICJ2Y29kZWNwbGwiLCAidW5pdnBsbF9kMiIsICJjbGtfY2NpNDAw
+X3NlbCIsDQo+ID4gKyAgICJ2ZGVjX3NlbCIsICJ2ZGVjcGxsIiwgInZlbmNwbGwiLCAidmVuY19s
+dF9zZWwiLCAidmRlY19idXNfY2xrX3NyYyIuDQo+ID4gIC0gaW9tbXVzIDogc2hvdWxkIHBvaW50
+IHRvIHRoZSByZXNwZWN0aXZlIElPTU1VIGJsb2NrIHdpdGggbWFzdGVyIHBvcnQgYXMNCj4gPiAg
+ICBhcmd1bWVudCwgc2VlIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pb21tdS9t
+ZWRpYXRlayxpb21tdS50eHQNCj4gPiAgICBmb3IgZGV0YWlscy4NCj4gPiBAQCAtODAsMTQgKzgz
+LDEwIEBAIHZjb2RlY19kZWM6IHZjb2RlY0AxNjAwMDAwMCB7DQo+ID4gICAgICBhc3NpZ25lZC1j
+bG9jay1yYXRlcyA9IDwwPiwgPDA+LCA8MD4sIDwxNDgyMDAwMDAwPiwgPDgwMDAwMDAwMD47DQo+
+ID4gICAgfTsNCj4gPiAgDQo+ID4gLSAgdmNvZGVjX2VuYzogdmNvZGVjQDE4MDAyMDAwIHsNCj4g
+PiAtICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLXZjb2RlYy1lbmMiOw0KPiA+IC0g
+ICAgcmVnID0gPDAgMHgxODAwMjAwMCAwIDB4MTAwMD4sICAgIC8qVkVOQ19TWVMqLw0KPiA+IC0g
+ICAgICAgICAgPDAgMHgxOTAwMjAwMCAwIDB4MTAwMD47ICAgIC8qVkVOQ19MVF9TWVMqLw0KPiA+
+IC0gICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE5OCBJUlFfVFlQRV9MRVZFTF9MT1c+LA0KPiA+
+IC0JCSA8R0lDX1NQSSAyMDIgSVJRX1RZUEVfTEVWRUxfTE9XPjsNCj4gPiAtICAgIG1lZGlhdGVr
+LGxhcmIgPSA8JmxhcmIzPiwNCj4gPiAtCQkgICAgPCZsYXJiNT47DQo+ID4gK3Zjb2RlY19lbmM6
+IHZjb2RlY0AxODAwMjAwMCB7DQo+ID4gKyAgICBjb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3
+My12Y29kZWMtYXZjLWVuYyI7DQo+ID4gKyAgICByZWcgPSA8MCAweDE4MDAyMDAwIDAgMHgxMDAw
+PjsNCj4gPiArICAgIGludGVycnVwdHMgPSA8R0lDX1NQSSAxOTggSVJRX1RZUEVfTEVWRUxfTE9X
+PjsNCj4gPiAgICAgIGlvbW11cyA9IDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SQ1BVPiwNCj4gPiAg
+ICAgICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SRUM+LA0KPiA+ICAgICAgICAgICAg
+ICAgPCZpb21tdSBNNFVfUE9SVF9WRU5DX0JTRE1BPiwNCj4gPiBAQCAtOTgsOCArOTcsMjAgQEAg
+dmNvZGVjX2RlYzogdmNvZGVjQDE2MDAwMDAwIHsNCj4gPiAgICAgICAgICAgICAgIDwmaW9tbXUg
+TTRVX1BPUlRfVkVOQ19SRUZfTFVNQT4sDQo+ID4gICAgICAgICAgICAgICA8JmlvbW11IE00VV9Q
+T1JUX1ZFTkNfUkVGX0NIUk9NQT4sDQo+ID4gICAgICAgICAgICAgICA8JmlvbW11IE00VV9QT1JU
+X1ZFTkNfTkJNX1JETUE+LA0KPiA+IC0gICAgICAgICAgICAgPCZpb21tdSBNNFVfUE9SVF9WRU5D
+X05CTV9XRE1BPiwNCj4gPiAtICAgICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19SQ1BV
+X1NFVDI+LA0KPiA+ICsgICAgICAgICAgICAgPCZpb21tdSBNNFVfUE9SVF9WRU5DX05CTV9XRE1B
+PjsNCj4gPiArICAgIG1lZGlhdGVrLGxhcmIgPSA8JmxhcmIzPjsNCj4gPiArICAgIG1lZGlhdGVr
+LHZwdSA9IDwmdnB1PjsNCj4gPiArICAgIGNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5D
+X1NFTD47DQo+ID4gKyAgICBjbG9jay1uYW1lcyA9ICJ2ZW5jX3NlbCI7DQo+ID4gKyAgICBhc3Np
+Z25lZC1jbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkVOQ19TRUw+Ow0KPiA+ICsgICAgYXNz
+aWduZWQtY2xvY2stcGFyZW50cyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WQ09ERUNQTEw+Ow0KPiA+
+ICsgIH07DQo+ID4gKw0KPiA+ICt2Y29kZWNfZW5jX2x0OiB2Y29kZWNAMTkwMDIwMDAgew0KPiA+
+ICsgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtdmNvZGVjLXZwOC1lbmMiOw0KPiA+
+ICsgICAgcmVnID0gIDwwIDB4MTkwMDIwMDAgMCAweDEwMDA+OwkvKiBWRU5DX0xUX1NZUyAqLw0K
+PiA+ICsgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDIwMiBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0K
+PiA+ICsgICAgaW9tbXVzID0gPCZpb21tdSBNNFVfUE9SVF9WRU5DX1JDUFVfU0VUMj4sDQo+ID4g
+ICAgICAgICAgICAgICA8JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVDX0ZSTV9TRVQyPiwNCj4gPiAg
+ICAgICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19CU0RNQV9TRVQyPiwNCj4gPiAgICAg
+ICAgICAgICAgIDwmaW9tbXUgTTRVX1BPUlRfVkVOQ19TVl9DT01BX1NFVDI+LA0KPiA+IEBAIC0x
+MDgsMTcgKzExOSwxMCBAQCB2Y29kZWNfZGVjOiB2Y29kZWNAMTYwMDAwMDAgew0KPiA+ICAgICAg
+ICAgICAgICAgPCZpb21tdSBNNFVfUE9SVF9WRU5DX0NVUl9DSFJPTUFfU0VUMj4sDQo+ID4gICAg
+ICAgICAgICAgICA8JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVGX0xVTUFfU0VUMj4sDQo+ID4gICAg
+ICAgICAgICAgICA8JmlvbW11IE00VV9QT1JUX1ZFTkNfUkVDX0NIUk9NQV9TRVQyPjsNCj4gPiAr
+ICAgIG1lZGlhdGVrLGxhcmIgPSA8JmxhcmI1PjsNCj4gPiAgICAgIG1lZGlhdGVrLHZwdSA9IDwm
+dnB1PjsNCj4gPiAtICAgIGNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5DUExMX0QyPiwN
+Cj4gPiAtICAgICAgICAgICAgIDwmdG9wY2tnZW4gQ0xLX1RPUF9WRU5DX1NFTD4sDQo+ID4gLSAg
+ICAgICAgICAgICA8JnRvcGNrZ2VuIENMS19UT1BfVU5JVlBMTDFfRDI+LA0KPiA+IC0gICAgICAg
+ICAgICAgPCZ0b3Bja2dlbiBDTEtfVE9QX1ZFTkNfTFRfU0VMPjsNCj4gPiAtICAgIGNsb2NrLW5h
+bWVzID0gInZlbmNfc2VsX3NyYyIsDQo+ID4gLSAgICAgICAgICAgICAgICAgICJ2ZW5jX3NlbCIs
+DQo+ID4gLSAgICAgICAgICAgICAgICAgICJ2ZW5jX2x0X3NlbF9zcmMiLA0KPiA+IC0gICAgICAg
+ICAgICAgICAgICAidmVuY19sdF9zZWwiOw0KPiA+IC0gICAgYXNzaWduZWQtY2xvY2tzID0gPCZ0
+b3Bja2dlbiBDTEtfVE9QX1ZFTkNfU0VMPiwNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgIDwm
+dG9wY2tnZW4gQ0xLX1RPUF9WRU5DX0xUX1NFTD47DQo+ID4gLSAgICBhc3NpZ25lZC1jbG9jay1w
+YXJlbnRzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX1ZFTkNQTExfRDI+LA0KPiA+IC0gICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIDwmdG9wY2tnZW4gQ0xLX1RPUF9VTklWUExMMV9EMj47DQo+ID4g
+KyAgICBjbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkVOQ19MVF9TRUw+Ow0KPiA+ICsgICAg
+Y2xvY2stbmFtZXMgPSAidmVuY19sdF9zZWwiOw0KPiA+ICsgICAgYXNzaWduZWQtY2xvY2tzID0g
+PCZ0b3Bja2dlbiBDTEtfVE9QX1ZFTkNfTFRfU0VMPjsNCj4gPiArICAgIGFzc2lnbmVkLWNsb2Nr
+LXBhcmVudHMgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkNPREVDUExMXzM3MFA1PjsNCj4gPiAgICB9
+Ow0KPiA+IC0tIA0KPiA+IDIuMTguMA0KPiA+IA0KDQo=
 
-> On Thu, Feb 18, 2021 at 6:30 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > On Wed, 17 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > > > On Sat, 13 Feb 2021, Song Bao Hua (Barry Song) wrote:
-> > > >
-> > > > That scenario seems a little contrived to me (drivers for two or 
-> > > > more devices sharing state through their interrupt handlers). Is 
-> > > > it real? I suppose every platform has its quirks. The irq lock in 
-> > > > sonic_interrupt() is only there because of a platform quirk (the 
-> > > > same device can trigger either of two IRQs). Anyway, no-one 
-> > > > expects all drivers to work on all platforms; I don't know why it 
-> > > > bothers you so much when platforms differ.
-> > >
-> > > Basically, we wrote drivers with the assumption that this driver 
-> > > will be cross-platform. (Of course there are some drivers which can 
-> > > only work on one platform, for example, if the IP of the device is 
-> > > only used in one platform as an internal component of a specific 
-> > > SoC.)
-> > >
-> > > So once a device has two or more interrupts, we need to consider one 
-> > > interrupt might preempt another one on m68k on the same cpu if we 
-> > > also want to support this driver on m68k. this usually doesn't 
-> > > matter on other platforms.
-> >
-> > When users show up who desire to run your drivers on their platform, 
-> > you can expect them to bring patches and a MAINTAINERS file entry. 
-> > AFAIK, Linux development has always worked that way.
-> 
-> This is only part of the picture though. We also also constantly trying 
-> to generalize the internal interfaces, to make sure that platforms work 
-> the same way and that it's possible to write drivers in a portable way 
-> without having to rely on platform maintainers to point out the 
-> differences.
-> 
-> I think it would make a lot of sense to remove the architecture 
-> differences here by making m68k work the same way as the others and 
-> documenting that as the expected behavior.
-> 
-
-If you had some great new feature that was incompatible with priority 
-masking, or incompatible with existing drivers portable enough to support 
-such features, then I would be more amenable to your plan to remove 
-functionality.
-
-But there's no real justification here. You say platform maintainers 
-should not have to "point out the differences". But is that not their job?
-
-> You are probably right that there are no specific bugs on m68k machines 
-> that rely on the nested hardirqs today, but I think they only get away 
-> with it because
-> 
-> a) there is no SMP support on m68k, so it likely doesn't run into the
->    more subtle cases with lock ordering that you could get when you have 
->    hardirq handlers on multiple CPUs in parallel
-> 
-
-And that's relevant because SMP support is now mandatory? Is this the 
-logical consequence of your intention to "remove the architecture 
-differences"?
-
-> b) there is a very limited number of device drivers that are actually
->    used on m68k, in particular only M54xx has PCI support, but that in 
->    turn has a different interrupt scheme.
-> 
-
-Everyone is afraid of some mysterious bug somewhere, yet no one can point 
-to it.
-
-Again, I submit that the bug doesn't exist. That's because there is no 
-material difference in semantics between the irqs_disabled() 
-implementation that says "all interrupts are disabled except for NMI (and 
-some others that some ARM platform cares about)" and the implementation 
-that says "interrupts are disabled except higher priority ones than you 
-may be enabled".
-
-If you can point to code that cares about such semantics, I predict you've 
-found either a coding anti-pattern or perhaps some obscure hardware design 
-flaw. Either way, there is no justification for your plan.
-
-> Changing the behavior on m68k clearly has its own regression risk, but 
-> it could be done as a configuration option that defaults to the 
-> traditional behavior on machines that have not been verified to be 
-> well-behaved without nested hardirqs, and hidden on machines that do not 
-> need it (any more).
-> 
-
-This plan will quantifiably increase interrupt latency. It's not some 
-vague risk that you can hand-wave away. It's unavoidable.
-
-> As far as I can tell, the only reason you would actually need nested 
-> hardirqs is when a low-priority interrupt has to perform expensive I/O 
-> processing, but we've had countless other methods to do the same over 
-> the years (at least bottom half, softirq, taskqueue, tasklet, keventd, 
-> workqueue, kthread, threaded interrupt handlers and probably others).
-> 
-
-Nope. Interrupt priority masking is there to place an upper bound 
-interrupt latency. That's why this feature is shipping in contemporary 
-hardware (e.g. ARM GIC). If you care about real time workloads on arm64, 
-that may interest you.
-
-If you don't care about arm hardware or real time workloads, that's fine 
-too, but here's the rub. Song Bao Hua's plan involves reworking the 
-locking in existing drivers (which may be portable enough to support 
-interrerupt priority) without justification.
