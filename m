@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 158793244ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:09:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D573244F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Feb 2021 21:11:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235116AbhBXUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Feb 2021 15:09:16 -0500
-Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:37377 "EHLO
+        id S233440AbhBXUJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Feb 2021 15:09:45 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:44435 "EHLO
         wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235325AbhBXUIa (ORCPT
+        by vger.kernel.org with ESMTP id S235297AbhBXUIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Feb 2021 15:08:30 -0500
+        Wed, 24 Feb 2021 15:08:51 -0500
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 94386715;
+        by mailout.west.internal (Postfix) with ESMTP id C99C98EF;
         Wed, 24 Feb 2021 15:07:44 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Wed, 24 Feb 2021 15:07:44 -0500
+  by compute3.internal (MEProxy); Wed, 24 Feb 2021 15:07:45 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=a4SvWZ4mRnZQjwvZsd0BmDkuU2
-        RvVRgdRXdczOv4N3U=; b=H/PfSYqv2EX+frCX9pQVTppCsS829F6g5iHH8EXliM
-        6/juUH8Ev/zcnDezNSUOoAkRM0XTHi71CncyUusJ1mFy04G5IQ0u92maGq32eAQL
-        7CV+hX66Xur+2CsaifYF0lfgkyEI5O88z768DDYcETHZaOnxWVD4I5e3VfCPS/88
-        RCJVZCGOuyPfWKDo9DrLMBiJifMtj7kH0nS5KS4jhQWBp+/pMk6c8A6svxFQGxiQ
-        rCoPFC/MT+PSbN6pi/ZN6F/mQ+kkWLxMKUbFV1ojdwMqjhInYugaOEut7RAFiX6h
-        YR+3Q0SSKEIVz6cB08FSzSanqx0aKoUIkJwW4B7jW58A==
+        :to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm2; bh=RYLufI04OScg/
+        q2h48yuGO/OEesMeqFUtY3MNWzcEh8=; b=Bh0jimy7vnixVQ9Pz6DTiLhm4hMbL
+        Nv217Da+jFskg8R/MzfyHAwR6ayNqHg8GAAxTtGf1R3vHSbZGih8Mk5nfD1tgOqZ
+        tOhNSP0KHnsKS4mr760/S0U9wswkfQmfdNNOnQNVlm1UlJ+ixa1YlpySmkO8/a1c
+        Kv7+OscX/PvpA48keBYcR3/b9D+az2jjm/Ro1b6EPX5vnZv8p0Ye1Pfqbtp3voAB
+        eSLCKXAmTHa7c/pz9nFyZGfzpN/trG+iozNL82I8hhb+9yxyhcwsMHGcI/KkXSdf
+        XwUwncGoyWfBzC4bOhH/YHKHLiDZddXZxpeUSrNUSAzFmfGtLX/fWXUEw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=a4SvWZ4mRnZQjwvZs
-        d0BmDkuU2RvVRgdRXdczOv4N3U=; b=C2NZDp3nI59LogqwWT38JRdCjV0fohFy4
-        WGW//m6F8LcwHLW3DlY73Advpf4XPskI6fphftUJqDeST0BTHGyyMc8jQRyvXa81
-        dmlO70SNh6owywdEslunWfWgvwNVZRldfufUB/HLoZ9Txq221H/B3RC9u243FMzl
-        C0aUsZVOWU0K89YPK2qj3Po7OWRpaR1qYPoz/RvQvQ6lEfYnOQB5a3H7xYjSAVFU
-        +RPSbfAUlePYxyuNCA5ZFqiiYKww0LOQ5UcB6POuY7Z4GXh7dYdcjgix5IXV4ZRj
-        fI+gCgibZZjkI3ueuXklw9uKn0jh6O/Z24EX7q49aRIDP9rhCI6eQ==
-X-ME-Sender: <xms:D7I2YLjntuFD8bHN1A6GyildG5Pzl5Iei-aWamM5kOe_ykA-Yjoj-g>
-    <xme:D7I2YIAVpuRu8_Xf0yqqX5xVzN3JkIdogsd8EerZKO2nIoJxXcMYp9zyZETI4ma93
-    SNY6_X88KruqPCU_g>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=RYLufI04OScg/q2h48yuGO/OEesMeqFUtY3MNWzcEh8=; b=Q4keBwCN
+        DOO9qrl6LmJzOSng1QfewFI/bOuoXqV73JZYN0ScltsTZDKzXZkovNAS8RU1nxuu
+        Kv/JMeSV605RzyXAXh2yKocA34XOoQ6l2hUafnZspJFtYj0Hohd3FmvtbAwExNPD
+        XcSLn+RaxWtzsL2nTj1tx/VTvVb+/VjEmjJGEUwGcZZ8ixpVQMqWtL/hvoiv2awb
+        z3mG8rFLBeGbFYaxJqoEnU4Gnrco0CwO1G/yPsy/4DiY7rkZ6TY89Meo1M6q8Inx
+        hVg1Gjb3Ae6HanK/Ggy69Xs0yFPbVEfVCtgapSBprgeNeIWkbhwPhgbSkt58JJ7I
+        X0qx17K//107ww==
+X-ME-Sender: <xms:ELI2YOPVaq3hgc4MZ_sJWIucvHxalxPs2wHvzcGMTWsVWlaT0SvnNg>
+    <xme:ELI2YM8f4SHBNVyVRv8m9OnqDpkluLmGkT9Dt3qKzolNS5t-XQXyd7VNZtumoHv1n
+    0yXUZr4dxHdcQhS9w>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeejgddufeduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeghihhllhhirghm
-    ucffuhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrthhtvg
-    hrnhepffehieekueeileeufeeuteegveeugeejfeelhfevkefhhfdvtddvjedufeekfeeu
-    necukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
-X-ME-Proxy: <xmx:D7I2YLF_aFsqF5MLuNy0qia91aFn1FG8s_3dH6eVRl__eHng6Mp2Bg>
-    <xmx:D7I2YITQRkj5eUQrLtZhBMTJWCqlM94yt9pPEcuZ47e5-RoEKXvk5w>
-    <xmx:D7I2YIwkcVPjlNx9mY3PD5lkxwe5jt-PQHmQ2KlFMkhybzXn8nY7gg>
-    <xmx:ELI2YOaBqTv-Y7xKRQ6tamvO9Y4el7lMPC28Mvc1mXkLV-Krn2qsGg>
+    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeghihhllhhi
+    rghmucffuhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrth
+    htvghrnhepjedvgeffieeivdefleekvddvudffvefhiefgueeujedvgfegfeelkeduffel
+    ffefnecukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
+X-ME-Proxy: <xmx:ELI2YFTdonvRuaTLbAdch4L0PYZcqZ-9oEtKJVrL86ySYkeZMrfSRQ>
+    <xmx:ELI2YOsghR0pqGq7yVp-6obCXNZLWlPPCC3TeeUlRjdhE7QP5oQKeA>
+    <xmx:ELI2YGfqKYwfIN2_Q_5n7GIZXowlfuHKTUTs8F4ps6FW8yay8Hh9Eg>
+    <xmx:ELI2YOnQ5miqUY7Aq6qmWywnW4NW0nz7IzBfTO7-2pL0yKBfg5jI0Q>
 Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 49D6C108005F;
+        by mail.messagingengine.com (Postfix) with ESMTPA id E570E1080054;
         Wed, 24 Feb 2021 15:07:43 -0500 (EST)
 From:   William Durand <will+git@drnd.me>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 00/13] bss_ht struct cleanups
-Date:   Sat, 20 Feb 2021 17:28:56 +0000
-Message-Id: <20210220172909.15812-1-will+git@drnd.me>
+Subject: [PATCH v2 01/13] staging: rtl8192e: remove blank line in bss_ht struct
+Date:   Sat, 20 Feb 2021 17:28:57 +0000
+Message-Id: <20210220172909.15812-2-will+git@drnd.me>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210220172909.15812-1-will+git@drnd.me>
+References: <20210220172909.15812-1-will+git@drnd.me>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset fixes the checkpatch issues related to the `bss_ht` struct
-defined in `rtl8192e/rtl819x_HT.h` (avoid camelcase). The first patch
-removes a blank line and the last patch reformats the struct a bit to be
-more consistent with the other types defined in the same file.
+Fix a checkpatch warning about a blank line after an open curly brace.
 
-Changes in v2:
-  Updated commit messages as per Dan Carpenter recommendation
+Signed-off-by: William Durand <will+git@drnd.me>
+---
+ drivers/staging/rtl8192e/rtl819x_HT.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-William Durand (13):
-  staging: rtl8192e: remove blank line in bss_ht struct
-  staging: rtl8192e: rename bdSupportHT to bd_support_ht in bss_ht struct
-  staging: rtl8192e: rename bdHTCapBuf to bd_ht_cap_buf in bss_ht struct
-  staging: rtl8192e: rename bdHTCapLen to bd_ht_cap_len in bss_ht struct
-  staging: rtl8192e: rename bdHTInfoBuf to bd_ht_info_buf in bss_ht struct
-  staging: rtl8192e: rename bdHTInfoLen to bd_ht_info_len in bss_ht struct
-  staging: rtl8192e: rename bdHTSpecVer to bd_ht_spec_ver in bss_ht struct
-  staging: rtl8192e: rename bdBandWidth to bd_bandwidth in bss_ht struct
-  staging: rtl8192e: rename bdRT2RTAggregation to bd_rt2rt_aggregation in bss_ht struct
-  staging: rtl8192e: rename bdRT2RTLongSlotTime to bd_rt2rt_long_slot_time in bss_ht struct
-  staging: rtl8192e: rename RT2RT_HT_Mode to rt2rt_ht_mode in bss_ht struct
-  staging: rtl8192e: rename bdHT1R to bd_ht_1r in bss_ht struct
-  staging: rtl8192e: reformat bss_ht struct
+diff --git a/drivers/staging/rtl8192e/rtl819x_HT.h b/drivers/staging/rtl8192e/rtl819x_HT.h
+index 11269fe6b395..1bbb9ed18e6d 100644
+--- a/drivers/staging/rtl8192e/rtl819x_HT.h
++++ b/drivers/staging/rtl8192e/rtl819x_HT.h
+@@ -179,7 +179,6 @@ struct rt_hi_throughput {
+ } __packed;
 
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  5 +-
- drivers/staging/rtl8192e/rtl819x_HT.h        | 23 +++--
- drivers/staging/rtl8192e/rtl819x_HTProc.c    | 58 ++++++------
- drivers/staging/rtl8192e/rtllib_rx.c         | 96 ++++++++++----------
- drivers/staging/rtl8192e/rtllib_softmac.c    | 12 +--
- drivers/staging/rtl8192e/rtllib_wx.c         |  6 +-
- 6 files changed, 100 insertions(+), 100 deletions(-)
+ struct bss_ht {
+-
+ 	u8				bdSupportHT;
 
+ 	u8					bdHTCapBuf[32];
 --
 2.30.0
 
