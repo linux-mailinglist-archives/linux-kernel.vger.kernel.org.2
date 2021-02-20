@@ -2,82 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B73C320690
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 19:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C46A32069E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 19:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229808AbhBTSDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 13:03:41 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:39245 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229804AbhBTSDi (ORCPT
+        id S229817AbhBTSXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 13:23:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhBTSXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 13:03:38 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-246-SoJwM6GlPY20W1KbkIBHGQ-1; Sat, 20 Feb 2021 18:01:58 +0000
-X-MC-Unique: SoJwM6GlPY20W1KbkIBHGQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 20 Feb 2021 18:01:57 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 20 Feb 2021 18:01:57 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'SelvaKumar S' <selvakuma.s1@samsung.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-CC:     "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
-        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "selvajove@gmail.com" <selvajove@gmail.com>,
-        "joshiiitr@gmail.com" <joshiiitr@gmail.com>,
-        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
-        "joshi.k@samsung.com" <joshi.k@samsung.com>,
-        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
-        "kch@kernel.org" <kch@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: RE: [RFC PATCH v5 0/4] add simple copy support
-Thread-Topic: [RFC PATCH v5 0/4] add simple copy support
-Thread-Index: AQHXByyi0XMTfmzR3kSGd6ttkW2CGaphVhLg
-Date:   Sat, 20 Feb 2021 18:01:56 +0000
-Message-ID: <146c47907c2446d4a896830de400dd81@AcuMS.aculab.com>
-References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
- <20210219124517.79359-1-selvakuma.s1@samsung.com>
-In-Reply-To: <20210219124517.79359-1-selvakuma.s1@samsung.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 20 Feb 2021 13:23:31 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40A61C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 10:22:51 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id t9so965907pjl.5
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 10:22:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zt+f+ZZ7AgqTp/T9NQYJE8WcutGO9R85KYcRUCR8J68=;
+        b=ldrCucySxPeGTMKsmTb0Wj3/r91FMrM3ot+J8doXhYLiOHTvErZeFkIRRktxscPynU
+         NDTabqWIgnFM+5/831kTYpheow2Oj67e7lmUTMwgZv2+czIHDCYelK4zpCJkSWX4Sr5n
+         VplmXfVjhBe6NcmaFULUEOLIa8xl3lZszyV+Qt7fos88kUSkRON8Jk1eFsH+67OkbE2Q
+         SQgsRn13IcmvbL9yDrR/twCDldXltrJMKZX5EnLrdsOEvOuXh1fCBKbHFiKl79qnfthV
+         5JjZq/ewAimpDJisbrLJ7Bqp7m1VZX7WBPICQHjaViSM06//mpXfOTY3CXxkB32TYI+Z
+         R9Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Zt+f+ZZ7AgqTp/T9NQYJE8WcutGO9R85KYcRUCR8J68=;
+        b=RJUzRKkdxF1MBSfjN4NkTjIkz48OGnmbNYz00+K6meoIYYX24etmAUqnvZ3jcki8si
+         os0v8rRdL2Yd6pvXU8Z7fc8iAXCUxgrDeVdwInrfyalyANhNzNpJcswOyJty5q1BF842
+         p5d91BeeMLxfC6rV2QZvKuIkSURH8MTb/rLWhPYu6YdMwjTKHUwFq5+jbtuvbLP+yP5O
+         bNX4ayKEIFqYDw5GZAUdEr6RkQ/ibQ4tmTKvdaC8SPbcqYYI9nHIvUYGWjWfGM6+FAKe
+         raBAEHMEeoy3OgfBN3Rbpiesv451DH4FiSQWVehTdGwcR/kQzjoSZOco+az7t3IcXg/4
+         y/+g==
+X-Gm-Message-State: AOAM530SZtwm76htmMWN6oaB9PWoiCw9OxKkKZTrlVaayC5EwJ115r5e
+        Ncs0j8N+i0hQdfXhfeKV2qU=
+X-Google-Smtp-Source: ABdhPJxnHG8/3hVLnIqwCf72FVVXGEeuFtOVI1OLuUuo+tE5pGoRhhpVMftIwPrAmVcTkdIlvTVgow==
+X-Received: by 2002:a17:902:ce86:b029:e3:c3e6:59e4 with SMTP id f6-20020a170902ce86b02900e3c3e659e4mr7851906plg.67.1613845370394;
+        Sat, 20 Feb 2021 10:22:50 -0800 (PST)
+Received: from localhost.localdomain ([106.200.44.186])
+        by smtp.gmail.com with ESMTPSA id j34sm12461018pgi.62.2021.02.20.10.22.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 10:22:49 -0800 (PST)
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     gustavo@embeddedor.com, tiwai@suse.de, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Atul Gopinathan <atulgopinathan@gmail.com>
+Subject: [PATCH 1/2] staging: rtl8192e: Pass array value to memcpy instead of struct pointer
+Date:   Sat, 20 Feb 2021 23:51:53 +0530
+Message-Id: <20210220182154.9457-1-atulgopinathan@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU2VsdmFLdW1hciBTDQo+IFNlbnQ6IDE5IEZlYnJ1YXJ5IDIwMjEgMTI6NDUNCj4gDQo+
-IFRoaXMgcGF0Y2hzZXQgdHJpZXMgdG8gYWRkIHN1cHBvcnQgZm9yIFRQNDA2NWEgKCJTaW1wbGUg
-Q29weSBDb21tYW5kIiksDQo+IHYyMDIwLjA1LjA0ICgiUmF0aWZpZWQiKQ0KPiANCj4gVGhlIFNw
-ZWNpZmljYXRpb24gY2FuIGJlIGZvdW5kIGluIGZvbGxvd2luZyBsaW5rLg0KPiBodHRwczovL252
-bWV4cHJlc3Mub3JnL3dwLWNvbnRlbnQvdXBsb2Fkcy9OVk0tRXhwcmVzcy0xLjQtUmF0aWZpZWQt
-VFBzLTEuemlwDQo+IA0KPiBTaW1wbGUgY29weSBjb21tYW5kIGlzIGEgY29weSBvZmZsb2FkaW5n
-IG9wZXJhdGlvbiBhbmQgaXMgIHVzZWQgdG8gY29weQ0KPiBtdWx0aXBsZSBjb250aWd1b3VzIHJh
-bmdlcyAoc291cmNlX3Jhbmdlcykgb2YgTEJBJ3MgdG8gYSBzaW5nbGUgZGVzdGluYXRpb24NCj4g
-TEJBIHdpdGhpbiB0aGUgZGV2aWNlIHJlZHVjaW5nIHRyYWZmaWMgYmV0d2VlbiBob3N0IGFuZCBk
-ZXZpY2UuDQoNClNvdW5kcyB0byBtZSBsaWtlIHRoZSByZWFsIHJlYXNvbiBpcyB0aGF0IHRoZSBj
-b3B5IGp1c3QgZW5kcyB1cCBjaGFuZ2luZw0Kc29tZSBpbmRpcmVjdCBibG9jayBwb2ludGVycyBy
-YXRoZXIgdGhhbiBoYXZpbmcgdG8gYWN0dWFsbHkgY29weSB0aGUgZGF0YS4NCg0KCURhdmlkDQoN
-Ci0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJt
-LCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChX
-YWxlcykNCg==
+The variable "info_element" is of the following type:
+struct rtllib_info_element *info_element
+
+rtllib_info_element is a struct containing the following fields as
+defined in drivers/staging/rtl8192e/rtllib.h:
+
+struct rtllib_info_element {
+        u8 id;
+        u8 len;
+        u8 data[];
+} __packed;
+
+The following code of interest (to which this patch applies) is
+supposed to check if the "info_element->len" is greater than 4 and
+equal to 6, if this is satisfied then, the last two bytes (the
+4th and 5th index of u8 "data" array) are copied into
+"network->CcxRmState".
+
+Currently the code uses "memcpy()" with the source as
+"&info_element[4]" which would copy in wrong and unintended
+information.
+
+This patch rectifies this error by using "&info_element->data[4]" which
+rightly copies the last two bytes as the required state information.
+
+Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+---
+ drivers/staging/rtl8192e/rtllib_rx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
+index 66c135321da4..15bbb63ca130 100644
+--- a/drivers/staging/rtl8192e/rtllib_rx.c
++++ b/drivers/staging/rtl8192e/rtllib_rx.c
+@@ -1963,15 +1963,15 @@ static void rtllib_parse_mife_generic(struct rtllib_device *ieee,
+ 
+ 	if (info_element->len > 4 &&
+ 	    info_element->data[0] == 0x00 &&
+ 	    info_element->data[1] == 0x40 &&
+ 	    info_element->data[2] == 0x96 &&
+ 	    info_element->data[3] == 0x01) {
+ 		if (info_element->len == 6) {
+-			memcpy(network->CcxRmState, &info_element[4], 2);
++			memcpy(network->CcxRmState, &info_element->data[4], 2);
+ 			if (network->CcxRmState[0] != 0)
+ 				network->bCcxRmEnable = true;
+ 			else
+ 				network->bCcxRmEnable = false;
+ 			network->MBssidMask = network->CcxRmState[1] & 0x07;
+ 			if (network->MBssidMask != 0) {
+ 				network->bMBssidValid = true;
+-- 
+2.27.0
 
