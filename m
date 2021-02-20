@@ -2,207 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65601320479
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 09:42:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9926A320472
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 09:37:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229739AbhBTImB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 03:42:01 -0500
-Received: from out01.smtpout.orange.fr ([193.252.22.210]:28708 "EHLO
-        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhBTIl5 (ORCPT
+        id S229632AbhBTIgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 03:36:04 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:37162 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229476AbhBTIgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 03:41:57 -0500
-Received: from localhost.localdomain ([90.126.17.6])
-        by mwinf5d03 with ME
-        id XLXz2400E07rLVE03LY0oB; Sat, 20 Feb 2021 09:32:02 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 20 Feb 2021 09:32:02 +0100
-X-ME-IP: 90.126.17.6
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] scsi: pm80xx: switch from 'pci_' to 'dma_' API
-Date:   Sat, 20 Feb 2021 09:31:59 +0100
-Message-Id: <20210220083159.904990-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sat, 20 Feb 2021 03:36:00 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UP0VNdn_1613810111;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UP0VNdn_1613810111)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 20 Feb 2021 16:35:16 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu/sdma5.2: Remove unnecessary conversion to bool
+Date:   Sat, 20 Feb 2021 16:35:10 +0800
+Message-Id: <1613810110-106402-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+Fix the following coccicheck warnings:
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+./drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c:1621:40-45: WARNING: conversion
+to bool not needed here.
 
-When memory is allocated in 'pm8001_init_ccb_tag()' GFP_KERNEL can be used
-because this function already uses this flag a few lines above.
+./drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c:1619:40-45: WARNING: conversion
+to bool not needed here.
 
-While at it, remove "pm80xx: " in a debug message. 'pm8001_dbg()' already
-add the driver name in the message.
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/scsi/pm8001/pm8001_init.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index d21078ca7fb3..bd626ef876da 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -423,7 +423,7 @@ static int pm8001_alloc(struct pm8001_hba_info *pm8001_ha,
- err_out_nodev:
- 	for (i = 0; i < pm8001_ha->max_memcnt; i++) {
- 		if (pm8001_ha->memoryMap.region[i].virt_ptr != NULL) {
--			pci_free_consistent(pm8001_ha->pdev,
-+			dma_free_coherent(&pm8001_ha->pdev->dev,
- 				(pm8001_ha->memoryMap.region[i].total_len +
- 				pm8001_ha->memoryMap.region[i].alignment),
- 				pm8001_ha->memoryMap.region[i].virt_ptr,
-@@ -1197,12 +1197,13 @@ pm8001_init_ccb_tag(struct pm8001_hba_info *pm8001_ha, struct Scsi_Host *shost,
- 		goto err_out_noccb;
- 	}
- 	for (i = 0; i < ccb_count; i++) {
--		pm8001_ha->ccb_info[i].buf_prd = pci_alloc_consistent(pdev,
-+		pm8001_ha->ccb_info[i].buf_prd = dma_alloc_coherent(&pdev->dev,
- 				sizeof(struct pm8001_prd) * PM8001_MAX_DMA_SG,
--				&pm8001_ha->ccb_info[i].ccb_dma_handle);
-+				&pm8001_ha->ccb_info[i].ccb_dma_handle,
-+				GFP_KERNEL);
- 		if (!pm8001_ha->ccb_info[i].buf_prd) {
- 			pm8001_dbg(pm8001_ha, FAIL,
--				   "pm80xx: ccb prd memory allocation error\n");
-+				   "ccb prd memory allocation error\n");
- 			goto err_out;
- 		}
- 		pm8001_ha->ccb_info[i].task = NULL;
+diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+index f1ba36a..9ed79a9 100644
+--- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
++++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c
+@@ -1616,9 +1616,9 @@ static int sdma_v5_2_set_clockgating_state(void *handle,
+ 	case CHIP_VANGOGH:
+ 	case CHIP_DIMGREY_CAVEFISH:
+ 		sdma_v5_2_update_medium_grain_clock_gating(adev,
+-				state == AMD_CG_STATE_GATE ? true : false);
++				state == AMD_CG_STATE_GATE);
+ 		sdma_v5_2_update_medium_grain_light_sleep(adev,
+-				state == AMD_CG_STATE_GATE ? true : false);
++				state == AMD_CG_STATE_GATE);
+ 		break;
+ 	default:
+ 		break;
 -- 
-2.27.0
+1.8.3.1
 
