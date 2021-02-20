@@ -2,132 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB12320321
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B894D320323
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbhBTCYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 21:24:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
+        id S229953AbhBTCZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 21:25:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbhBTCYf (ORCPT
+        with ESMTP id S229765AbhBTCZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 21:24:35 -0500
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6345BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:23:50 -0800 (PST)
-Received: by mail-pj1-x1043.google.com with SMTP id s23so1997232pji.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:23:50 -0800 (PST)
+        Fri, 19 Feb 2021 21:25:20 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F840C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:24:40 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id u14so11354919wri.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Feb 2021 18:24:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mccsd.net; s=google;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=1s737Td8zbHZBMtFnyeEZHgLM0pKP1M/8RLNOmS9Fo4=;
-        b=nrBNV0TqlK2kyp66Ds/DqkMMN+e+X7/OMwoj1YijpxxamCtZp+M1Oqlh0ql0btUfNF
-         KiWETLefryhjobNqANfMh5pj3AcNqk2wwpN4WEzC4SuI98xiN2pmEfKclMGAdBGs7fXW
-         07aDk5geropI+iFR4z4SC0U48jV64n9K1TljS2oTWUz9Ms70ml9h8TOviDpCIgOGWKmU
-         CqaJhOyiDld4jH7CqEbij/QLGuVT5jzwXhpBJv+JNvWyH3AtblgXgKlTE0lQdIU+cTpF
-         /7Sk1+X1RKDTEsN7UkMyAg2vCeiHedxSviqHcx/roTxZMuTj1MGp+obRlW/AoU4SHFiL
-         jP0w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UoU4tpvF69vvvt1X/oNX9U45MXD4nIA/xhwKBjIoiM4=;
+        b=i5SvSNPxpFV0SP2RexUvRcZ/V7GJjPefhgRTAdSd7hi7rrqDZo3+Jj3PWDpN4BTFVb
+         SjPzPSlFjWYV7c6OqI1CKT9+z7W8/GwQaPnPIek1oftL6HSoNkAmesC4x/uKWbJttSpc
+         lXfuIMSZ5mV0VW1TXXv6n63ksw+XB60a29pxX8z6j3uLz07hQhw5BAsCbHRlV2Vml2Ym
+         LXjbYM1bWgOcQjEMyFmXKPM5Yr96AAsfx1ZLKHl/kAmzE/zplATkvYeuZAQiMXIUPnVH
+         pwtkbEhF+t8PKSXE3GxRA0H9Ff8K4WV5AwzPcO93FfwuCw4Vh0+AFM46zruBv+K6BVCA
+         RFcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=1s737Td8zbHZBMtFnyeEZHgLM0pKP1M/8RLNOmS9Fo4=;
-        b=eeoD47G5x2caY64C1ngpB7SPavPo8UF5eY9qxZboZC/Lazb3xKkh/OStkLPWP3RHRQ
-         LAXNrxavfMJ9gdSlnSb+RCZNS7u72BPsnwIyJxDbY7b6gG8bQx0//qZbGSjnsyoBCt8z
-         PjyAnTuuZf2qOPC4oyLY/v5h6G2/lxT+aCQXBABLgG3VRxnGIrxbXRrOMorI2xsC48Be
-         HfM4IkJyTuBAPHJT9EAD1P+00+9n+yvviTqbIpWoCxjfV9/lpObARGTUGc8UQCxz2Hk7
-         2pUT1JAbTJvLS5ag/pW4cxMNYr8hBavKI4xfsxRkmYXg8VrA8cSdzD2oI2TubYU5B6UY
-         HHDA==
-X-Gm-Message-State: AOAM530/l5bXdoJZ7vHnlMkAxUWdDDtth3Ope2eMHWRib0/Bpj8kJI7l
-        U+J3YgQsqChrfcUQCYIZL4nerkp6U8Bb3Qz3Fh3SaQ==
-X-Google-Smtp-Source: ABdhPJx6fyN0NGI1Wag2CZdDyw4R0U8ASHKsBGCDv+Id1spFi32XMjaolirebl2NZmkMfXYcINeqlUTl/ARuZL6xJWE=
-X-Received: by 2002:a17:90a:4603:: with SMTP id w3mr12258650pjg.125.1613787829619;
- Fri, 19 Feb 2021 18:23:49 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UoU4tpvF69vvvt1X/oNX9U45MXD4nIA/xhwKBjIoiM4=;
+        b=Vz7W7ZZZVJg6L7v1LvEAze+rVduevT2PtXFA/2y7lBRgReOPmwrZBtqZAUIrL0gYhg
+         Sk5z9qpTXnZ6ttdO62U0CaUUikwjsmtU+MuZUmDitizCOEYYg5h+gAawIaHc0yRYWDI3
+         XmKt1cdr7JekLXh2r25Erfrf93CMBTvPjALwWZT8x+JbExpTGIQtB+3vRgLnJAmETx/K
+         P7ziCC5ET8fG2n/fxHp5Zcam31XRudzOSrwCNWhUtDo67SYDvtwNCdIX3RYo2sYD9X2K
+         dqMrI7GfVF/a4OXSXUqX+QAzc82yatgIaYSBh2rNeJqh2nE6D51kj0vJjHvnjzzOlO7I
+         MP5A==
+X-Gm-Message-State: AOAM532MeHXrUSLCaBWVErnhWNs7Ygz1jKQWBbdVhmRUsfW7ebhVVdyV
+        uXBUYEL532NmnQ0WqH+Wr5iUcMZ2UeKcJ9ZWTbuKtw==
+X-Google-Smtp-Source: ABdhPJwPefi9vd6ur48vMAuvT3Pa4HeV3aINqGAtBbKyOpINYpGVueoIWtPxI8ksetdYneRMByBl8PnmUCHmxyswaqQ=
+X-Received: by 2002:adf:8084:: with SMTP id 4mr11637816wrl.49.1613787878514;
+ Fri, 19 Feb 2021 18:24:38 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:a17:90a:e97:0:0:0:0 with HTTP; Fri, 19 Feb 2021 18:23:48
- -0800 (PST)
-Reply-To: ABDERAZACK.ZEBDANI@hotmail.com
-From:   ABDERAZACK ZEBDANI <jpummel766@mccsd.net>
-Date:   Fri, 19 Feb 2021 18:23:49 -0800
-Message-ID: <CA+RpMnEKV_FeZUWykKn-jyi4Qq232py_NE9kidh0ev519GZaBg@mail.gmail.com>
-Subject: Greetings My Dear Friend,
-To:     undisclosed-recipients:;
+References: <20210220005447.GA93678@localhost.localdomain>
+In-Reply-To: <20210220005447.GA93678@localhost.localdomain>
+From:   Yuchung Cheng <ycheng@google.com>
+Date:   Fri, 19 Feb 2021 18:24:00 -0800
+Message-ID: <CAK6E8=err50_ob6r99eXw++0D84yJe66Lzsz6F7KWbU5=ii_ew@mail.gmail.com>
+Subject: Re: [PATCH net] tcp: fix keepalive when data remain undelivered
+To:     Enke Chen <enkechen2020@gmail.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neal Cardwell <ncardwell@google.com>, enkechen2020@gmai.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings My Dear Friend,
+On Fri, Feb 19, 2021 at 4:54 PM Enke Chen <enkechen2020@gmail.com> wrote:
+>
+> From: Enke Chen <enchen@paloaltonetworks.com>
+>
+> TCP keepalive does not timeout under the condition that network connection
+> is lost and data remain undelivered (incl. retransmit). A very simple
+> scenarios of the failure is to write data to a tcp socket after the network
+> connection is lost.
 
-Before I introduce myself, I wish to inform you that this letter is
-not a hoax mail and I urge you to treat it serious.This letter must
-come to you as a big surprise, but I believe it is only a day that
-people meet and become great friends and business partners. Please I
-want you to read this letter very carefully and I must apologize for
-barging this message into your mail box without any formal
-introduction due to the urgency and confidentiality of this business
-and I know that this message will come to you as a surprise. Please
-this is not a joke and I will not like you to joke with it ok,With due
-respect to your person and much sincerity of purpose, I make this
-contact with you as I believe that you can be of great assistance to
-me. My name is Mr.Abderazack zebdani, from Burkina Faso, West Africa.
-I work in Bank Of Africa (BOA) as telex manager, please see this as a
-confidential message and do not reveal it to another person and let me
-know whether you can be of assistance regarding my proposal below
-because it is top secret.
+AFAIK current Linux TCP KA implementation does not violate the
+RFC793bis (Section 3.7.4 Keep-Alives)
+https://tools.ietf.org/html/draft-ietf-tcpm-rfc793bis-20#section-3.7.4
 
-I am about to retire from active Banking service to start a new life
-but I am skeptical to reveal this particular secret to a stranger. You
-must assure me that everything will be handled confidentially because
-we are not going to suffer again in life. It has been 10 years now
-that most of the greedy African Politicians used our bank to launder
-money overseas through the help of their Political advisers. Most of
-the funds which they transferred out of the shores of Africa were gold
-and oil money that was supposed to have been used to develop the
-continent. Their Political advisers always inflated the amounts before
-transferring to foreign accounts, so I also used the opportunity to
-divert part of the funds hence I am aware that there is no official
-trace of how much was transferred as all the accounts used for such
-transfers were being closed after transfer. I acted as the Bank
-Officer to most of the politicians and when I discovered that they
-were using me to succeed in their greedy act; I also cleaned some of
-their banking records from the Bank files and no one cared to ask me
-because the money was too much for them to control. They laundered
-over $5billion Dollars during the process.
+We have even raised that in IETF tcpm list to get more clarity
+https://mailarchive.ietf.org/arch/msg/tcpm/KxcEsLtDuDNhcP8UjbyPkJqpzsE/
 
-Before I send this message to you, I have already diverted
-($10.5million Dollars) to an escrow account belonging to no one in the
-bank. The bank is anxious now to know who the beneficiary to the funds
-is because they have made a lot of profits with the funds. It is more
-than Eight years now and most of the politicians are no longer using
-our bank to transfer funds overseas. The ($10.5million Dollars) has
-been laying waste in our bank and I don=E2=80=99t want to retire from the b=
-ank
-without transferring the funds to a foreign account to enable me share
-the proceeds with the receiver (a foreigner). The money will be shared
-60% for me and 40% for you. There is no one coming to ask you about
-the funds because I secured everything. I only want you to assist me
-by providing a reliable bank account where the funds can be
-transferred.
+I believe you interpret the keep-alive differently -- so this is
+arguably a subjective "bug-fix". As Neal and I have expressed in our
+private communications, current Linux KA has been implemented for more
+than a decade. Changing this behavior may break many existing
+applications even if it may benefit certain.
 
-You are not to face any difficulties or legal implications as I am
-going to handle the transfer personally. If you are capable of
-receiving the funds, do let me know immediately to enable me give you
-a detailed information on what to do. For me, I have not stolen the
-money from anyone because the other people that took the whole money
-did not face any problems. This is my chance to grab my own life
-opportunity but you must keep the details of the funds secret to avoid
-any leakages as no one in the bank knows about my plans.Please get
-back to me if you are interested and capable to handle this project, I
-shall intimate you on what to do when I hear from your confirmation
-and acceptance.If you are capable of being my trusted associate, do
-declare your consent to me I am looking forward to hear from you
-immediately for further information, KINDLY REPLY THIS EMAIL
-(ABDERAZACK.ZEBDANI@HOTMAIL.COM)
-Thanks with my best regards.
-Mr.Abderazack zebdani.
-Telex Manager
-Bank Of Africa (BOA)
-Burkina Faso.
+>
+> Under the specified condition the keepalive timeout is not evaluated in
+> the keepalive timer. That is the primary cause of the failure. In addition,
+> the keepalive probe is not sent out in the keepalive timer. Although packet
+> retransmit or 0-window probe can serve a similar purpose, they have their
+> own timers and backoffs that are generally not aligned with the keepalive
+> parameters for probes and timeout.
+>
+> As the timing and conditions of the events involved are random, the tcp
+> keepalive can fail randomly. Given the randomness of the failures, fixing
+> the issue would not cause any backward compatibility issues. As was well
+> said, "Determinism is a special case of randomness".
+>
+> The fix in this patch consists of the following:
+>
+>   a. Always evaluate the keepalive timeout in the keepalive timer.
+>
+>   b. Always send out the keepalive probe in the keepalive timer (post the
+>      keepalive idle time). Given that the keepalive intervals are usually
+>      in the range of 30 - 60 seconds, there is no need for an optimization
+>      to further reduce the number of keepalive probes in the presence of
+>      packet retransmit.
+>
+>   c. Use the elapsed time (instead of the 0-window probe counter) in
+>      evaluating tcp keepalive timeout.
+>
+> Thanks to Eric Dumazet, Neal Cardwell, and Yuchung Cheng for helpful
+> discussions about the issue and options for fixing it.
+>
+> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2 Initial git repository build")
+> Signed-off-by: Enke Chen <enchen@paloaltonetworks.com>
+> ---
+>  net/ipv4/tcp_timer.c | 20 ++++++--------------
+>  1 file changed, 6 insertions(+), 14 deletions(-)
+>
+> diff --git a/net/ipv4/tcp_timer.c b/net/ipv4/tcp_timer.c
+> index 4ef08079ccfa..16a044da20db 100644
+> --- a/net/ipv4/tcp_timer.c
+> +++ b/net/ipv4/tcp_timer.c
+> @@ -708,29 +708,23 @@ static void tcp_keepalive_timer (struct timer_list *t)
+>             ((1 << sk->sk_state) & (TCPF_CLOSE | TCPF_SYN_SENT)))
+>                 goto out;
+>
+> -       elapsed = keepalive_time_when(tp);
+> -
+> -       /* It is alive without keepalive 8) */
+> -       if (tp->packets_out || !tcp_write_queue_empty(sk))
+> -               goto resched;
+> -
+>         elapsed = keepalive_time_elapsed(tp);
+>
+>         if (elapsed >= keepalive_time_when(tp)) {
+>                 /* If the TCP_USER_TIMEOUT option is enabled, use that
+>                  * to determine when to timeout instead.
+>                  */
+> -               if ((icsk->icsk_user_timeout != 0 &&
+> -                   elapsed >= msecs_to_jiffies(icsk->icsk_user_timeout) &&
+> -                   icsk->icsk_probes_out > 0) ||
+> -                   (icsk->icsk_user_timeout == 0 &&
+> -                   icsk->icsk_probes_out >= keepalive_probes(tp))) {
+> +               u32 timeout = icsk->icsk_user_timeout ?
+> +                 msecs_to_jiffies(icsk->icsk_user_timeout) :
+> +                 keepalive_intvl_when(tp) * keepalive_probes(tp) +
+> +                 keepalive_time_when(tp);
+> +
+> +               if (elapsed >= timeout) {
+>                         tcp_send_active_reset(sk, GFP_ATOMIC);
+>                         tcp_write_err(sk);
+>                         goto out;
+>                 }
+>                 if (tcp_write_wakeup(sk, LINUX_MIB_TCPKEEPALIVE) <= 0) {
+> -                       icsk->icsk_probes_out++;
+>                         elapsed = keepalive_intvl_when(tp);
+>                 } else {
+>                         /* If keepalive was lost due to local congestion,
+> @@ -744,8 +738,6 @@ static void tcp_keepalive_timer (struct timer_list *t)
+>         }
+>
+>         sk_mem_reclaim(sk);
+> -
+> -resched:
+>         inet_csk_reset_keepalive_timer (sk, elapsed);
+>         goto out;
+>
+> --
+> 2.29.2
+>
