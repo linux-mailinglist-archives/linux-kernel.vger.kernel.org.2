@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F9023205D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 15:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A88F3205E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 16:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhBTOyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 09:54:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44594 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhBTOyo (ORCPT
+        id S229804AbhBTPPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 10:15:36 -0500
+Received: from smtprelay0222.hostedemail.com ([216.40.44.222]:50716 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229734AbhBTPPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 09:54:44 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CF5C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 06:54:02 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id t9so772945pjl.5
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 06:54:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ONWndi/ymoXM48nCRrDbCP/DsC1CRxO7WJjCq9Zsb8=;
-        b=GGGNvrnm7XlXEiPBW7Tj6pBL8B0dQZoO1PY7u1xYv/uO7Dztf+wzuTLoh80oJaPifT
-         YHamXnmYgCz9ey0K4p+1LjjpebVkTDX6W/ojNdyf1WM/2w0Wmyg709apYCeP2YTeF4AN
-         DienmVYlZOs0SbrPPh8Ne2OX4blBopagJkEX9Bt2RUKP0OMk+sbGpPE04KB36StmRytv
-         fKt6jQaxmv18yB447uVvRSYSNlnDufVq0VAIIh5wxEF1ewWF9BbaV+5zj2BPxsRiOoEE
-         +fgWMG558vRq0zqZxBEg6Y49IcPc4COcVX7x/iV6MipVrc6d8fhwj216MvxK4hYDDWpB
-         cjtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+ONWndi/ymoXM48nCRrDbCP/DsC1CRxO7WJjCq9Zsb8=;
-        b=HbqxXvrJsjBksw55fQaUpOKMC3iJx3XcxL+5UVPwk4gCf5jcy6tApY2YG1WQxISE/W
-         tJ0OzNdkXXz++dsaYlCe9zW4HZkVZInEtPkAnM97ZdfhiTUkbpRimzfjONpr2FJjlX83
-         Gm0EF0mkxPYRiBOA6R7aMFowDZHDpDWxhdGEJOBqIiuob4loQNxPRGCrAV13qlhHBuWB
-         6+RXIIH/IBxKoOkaDXndfSltG+Kdbve8jpuXIzqHfxmfbXqilu4vzoIv2r/ojC1zpJ/g
-         GrOsMzfXrxZFwK5hY8hXS2WC7jTO06aDpYhUbt4Eh1Q/jkXtNFDBQJrOoVdwWh1hdBOZ
-         o9Vw==
-X-Gm-Message-State: AOAM5315ClZJkzigCLX1oTPsEUbfUWMX1OZgPNsMpXZJT0XsE3O0CT5R
-        g5v5Owq9Ozp+quUXsGuCAUs=
-X-Google-Smtp-Source: ABdhPJx4OxBRxnDMGJsjtb6SMSvU67RivLwUrSzBqrRNHBjMQHXBgcoOuPF2abG5BgoIix2E9yohig==
-X-Received: by 2002:a17:90a:bd90:: with SMTP id z16mr14948548pjr.88.1613832842130;
-        Sat, 20 Feb 2021 06:54:02 -0800 (PST)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id v1sm12065313pjh.29.2021.02.20.06.54.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 20 Feb 2021 06:54:01 -0800 (PST)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, yejune.deng@gmail.com
-Subject: [PATCH] virt: acrn: Use vfs_poll() instead of f_op->poll()
-Date:   Sat, 20 Feb 2021 22:53:51 +0800
-Message-Id: <20210220145351.14464-1-yejune.deng@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        Sat, 20 Feb 2021 10:15:34 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id A2B45837F253;
+        Sat, 20 Feb 2021 15:14:49 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6117:7652:7875:7903:8603:8784:9010:9025:10004:10400:10848:11026:11232:11473:11658:11783:11914:12043:12296:12297:12740:12895:13069:13095:13190:13229:13311:13357:13439:13894:14096:14097:14181:14659:14721:14764:21080:21433:21451:21611:21627:21939:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:146,LUA_SUMMARY:none
+X-HE-Tag: wall13_5e05dae27667
+X-Filterd-Recvd-Size: 2222
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf02.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 20 Feb 2021 15:14:48 +0000 (UTC)
+Message-ID: <cda9541eb8cff5cbba178d6a6d511a46f193aab1.camel@perches.com>
+Subject: Re: [PATCH v5 0/2] checkpatch: add verbose mode
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Date:   Sat, 20 Feb 2021 07:14:46 -0800
+In-Reply-To: <20210220120220.32585-1-dwaipayanray1@gmail.com>
+References: <20210220120220.32585-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use vfs_poll() is a more advanced function in acrn_irqfd_assign().
-as the same time, modify the definition of events.
+On Sat, 2021-02-20 at 17:32 +0530, Dwaipayan Ray wrote:
+> Add a new verbose mode to checkpatch. The verbose test
+> descriptions are read from the checkpatch documentation
+> file at `Documentation/dev-tools/checkpatch.rst`.
+> 
+> The verbose mode is optional and can be enabled by the
+> flag -v or --verbose.
+> 
+> The documentation file is only parsed by checkpatch.pl
+> if the verbose mode is enabled. The verbose mode can
+> not be used together with the --terse option.
+> 
+> Changes in v5:
+> - Change the reference format to use absolute links.
+> - Print verbose descriptions only for the first time
+>   a message type is encountered.
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- drivers/virt/acrn/irqfd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+OK, I think a nice addition would be to add --verbose
+text to the --list-types option when used together.
 
-diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
-index a8766d528e29..98d6e9b18f9e 100644
---- a/drivers/virt/acrn/irqfd.c
-+++ b/drivers/virt/acrn/irqfd.c
-@@ -112,7 +112,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
- {
- 	struct eventfd_ctx *eventfd = NULL;
- 	struct hsm_irqfd *irqfd, *tmp;
--	unsigned int events;
-+	__poll_t events;
- 	struct fd f;
- 	int ret = 0;
- 
-@@ -158,7 +158,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
- 	mutex_unlock(&vm->irqfds_lock);
- 
- 	/* Check the pending event in this stage */
--	events = f.file->f_op->poll(f.file, &irqfd->pt);
-+	events = vfs_poll(f.file, &irqfd->pt);
- 
- 	if (events & POLLIN)
- 		acrn_irqfd_inject(irqfd);
--- 
-2.29.0
+$ ./scripts/checkpatch.pl --list-types --verbose
+1	ALLOC_ARRAY_ARGS
+
+	The first argument for kcalloc or kmalloc_array should be the
+	number of elements.  sizeof() as the first argument is generally
+	wrong.
+
+	See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
+
+2	ALLOC_SIZEOF_STRUCT
+
+	The allocation style is bad.  In general for family of
+	allocation functions using sizeof() to get memory size,
+	constructs like::
+
+	p = alloc(sizeof(struct foo), ...)
+
+	should be::
+
+	p = alloc(sizeof(*p), ...)
+
+	See: https://www.kernel.org/doc/html/latest/process/coding-style.html#allocating-memory
+
+etc...
+
 
