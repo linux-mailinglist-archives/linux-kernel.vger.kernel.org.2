@@ -2,78 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69456320484
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 09:59:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 745323204B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229696AbhBTI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 03:58:23 -0500
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:36284 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229525AbhBTI6U (ORCPT
+        id S229739AbhBTJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 04:25:35 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12559 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhBTJZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 03:58:20 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UP0IAvR_1613811457;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UP0IAvR_1613811457)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 20 Feb 2021 16:57:37 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     mpe@ellerman.id.au
-Cc:     benh@kernel.crashing.org, paulus@samba.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] powerpc/sstep: Use bitwise instead of arithmetic operator for flags
-Date:   Sat, 20 Feb 2021 16:57:35 +0800
-Message-Id: <1613811455-2457-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 20 Feb 2021 04:25:31 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DjNJq2PzBzMc4Z;
+        Sat, 20 Feb 2021 17:22:51 +0800 (CST)
+Received: from huawei.com (10.151.151.241) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Sat, 20 Feb 2021
+ 17:24:40 +0800
+From:   Luo Longjun <luolongjun@huawei.com>
+To:     <viro@zeniv.linux.org.uk>, <jlayton@kernel.org>,
+        <bfields@fieldses.org>
+CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sangyan@huawei.com>, <luchunhua@huawei.com>
+Subject: [PATCH] fs/locks: print full locks information
+Date:   Sat, 20 Feb 2021 01:32:50 -0500
+Message-ID: <20210220063250.742164-1-luolongjun@huawei.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.151.151.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccinelle warnings:
-./arch/powerpc/lib/sstep.c:1090:20-21: WARNING: sum of probable
-bitmasks, consider |
-./arch/powerpc/lib/sstep.c:1115:20-21: WARNING: sum of probable
-bitmasks, consider |
-./arch/powerpc/lib/sstep.c:1134:20-21: WARNING: sum of probable
-bitmasks, consider |
+Commit fd7732e033e3 ("fs/locks: create a tree of dependent requests.")
+has put blocked locks into a tree.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+So, with a for loop, we can't check all locks information.
+
+To solve this problem, we should traverse the tree by DFS.
+
+Signed-off-by: Luo Longjun <luolongjun@huawei.com>
 ---
- arch/powerpc/lib/sstep.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/locks.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/arch/powerpc/lib/sstep.c b/arch/powerpc/lib/sstep.c
-index ede093e..e568cc5 100644
---- a/arch/powerpc/lib/sstep.c
-+++ b/arch/powerpc/lib/sstep.c
-@@ -1087,7 +1087,7 @@ static nokprobe_inline void add_with_carry(const struct pt_regs *regs,
+diff --git a/fs/locks.c b/fs/locks.c
+index 99ca97e81b7a..1f7b6683ed54 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -2828,9 +2828,10 @@ struct locks_iterator {
+ };
  
- 	if (carry_in)
- 		++val;
--	op->type = COMPUTE + SETREG + SETXER;
-+	op->type = COMPUTE | SETREG | SETXER;
- 	op->reg = rd;
- 	op->val = val;
- #ifdef __powerpc64__
-@@ -1112,7 +1112,7 @@ static nokprobe_inline void do_cmp_signed(const struct pt_regs *regs,
+ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+-			    loff_t id, char *pfx)
++			    loff_t id, char *pfx, int repeat)
  {
- 	unsigned int crval, shift;
+ 	struct inode *inode = NULL;
++	int i;
+ 	unsigned int fl_pid;
+ 	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
  
--	op->type = COMPUTE + SETCC;
-+	op->type = COMPUTE | SETCC;
- 	crval = (regs->xer >> 31) & 1;		/* get SO bit */
- 	if (v1 < v2)
- 		crval |= 8;
-@@ -1131,7 +1131,7 @@ static nokprobe_inline void do_cmp_unsigned(const struct pt_regs *regs,
+@@ -2844,7 +2845,13 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+ 	if (fl->fl_file != NULL)
+ 		inode = locks_inode(fl->fl_file);
+ 
+-	seq_printf(f, "%lld:%s ", id, pfx);
++	seq_printf(f, "%lld: ", id);
++	for (i = 1; i < repeat; i++)
++		seq_puts(f, " ");
++
++	if (repeat)
++		seq_printf(f, "%s", pfx);
++
+ 	if (IS_POSIX(fl)) {
+ 		if (fl->fl_flags & FL_ACCESS)
+ 			seq_puts(f, "ACCESS");
+@@ -2906,6 +2913,19 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
+ 	}
+ }
+ 
++static int __locks_show(struct seq_file *f, struct file_lock *fl, int level)
++{
++	struct locks_iterator *iter = f->private;
++	struct file_lock *bfl;
++
++	lock_get_status(f, fl, iter->li_pos, "-> ", level);
++
++	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
++		__locks_show(f, bfl, level + 1);
++
++	return 0;
++}
++
+ static int locks_show(struct seq_file *f, void *v)
  {
- 	unsigned int crval, shift;
+ 	struct locks_iterator *iter = f->private;
+@@ -2917,10 +2937,10 @@ static int locks_show(struct seq_file *f, void *v)
+ 	if (locks_translate_pid(fl, proc_pidns) == 0)
+ 		return 0;
  
--	op->type = COMPUTE + SETCC;
-+	op->type = COMPUTE | SETCC;
- 	crval = (regs->xer >> 31) & 1;		/* get SO bit */
- 	if (v1 < v2)
- 		crval |= 8;
+-	lock_get_status(f, fl, iter->li_pos, "");
++	lock_get_status(f, fl, iter->li_pos, "", 0);
+ 
+ 	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
+-		lock_get_status(f, bfl, iter->li_pos, " ->");
++		__locks_show(f, bfl, 1);
+ 
+ 	return 0;
+ }
+@@ -2941,7 +2961,7 @@ static void __show_fd_locks(struct seq_file *f,
+ 
+ 		(*id)++;
+ 		seq_puts(f, "lock:\t");
+-		lock_get_status(f, fl, *id, "");
++		lock_get_status(f, fl, *id, "", 0);
+ 	}
+ }
+ 
 -- 
-1.8.3.1
+2.17.1
 
