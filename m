@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72A1320674
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:38:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C3A32067A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:51:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhBTRip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 12:38:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51218 "EHLO
+        id S229863AbhBTRjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 12:39:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhBTRil (ORCPT
+        with ESMTP id S229784AbhBTRjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:38:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF41C061574;
-        Sat, 20 Feb 2021 09:38:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ncte2IIQTeBtTyvUJS/06d8GB/UyYxf4MK1I86Ykfdg=; b=WHSmTU/+aeltzFU2z1bHDTHrOX
-        x+6nt/0qPi5tEnpS2rLDQR7aG25ogU50uzXjlDuFqObweO3e66UnWdTwzc/VeCUoDnsR0Yg05IUVz
-        qKja4x36gCYsSIkMjxs3K0eCChqiLjBKDTSyoMDzKNxTSjp+Jzfr5p8VvISV5KUuhRPe+YtgAhIql
-        kJf6C/FZopt3SHEpq9xNPi3JJ6m299a50q92TuVifbZ+M5EfN9VJVLNHgKYBsU8HyM2wRnwa5zhbJ
-        AQjCHFQjF8Tskgm9rvY6ZnLR9ypqhcrzk1QkHGyktm3AdSe4gFZE9Q4fQ4/bEgPAw+PlFWeu0anNd
-        Wfk8BSyQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lDWAn-004H31-V2; Sat, 20 Feb 2021 17:36:25 +0000
-Date:   Sat, 20 Feb 2021 17:36:05 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [BUG] page allocation failure reading procfs ipv6 configuration
- files with cgroups
-Message-ID: <20210220173605.GD2858050@casper.infradead.org>
-References: <d2d3e617-17bf-8d43-f4a2-e4a7a2d421bd@gmail.com>
+        Sat, 20 Feb 2021 12:39:48 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA9FFC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:39:07 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lDWDR-00GNt7-LN; Sat, 20 Feb 2021 17:38:49 +0000
+Date:   Sat, 20 Feb 2021 17:38:49 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     syzbot <syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, snovitoll@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING in iov_iter_revert (2)
+Message-ID: <YDFJKR5uG1N+g9TL@zeniv-ca.linux.org.uk>
+References: <0000000000001fb73f05bb767334@google.com>
+ <0000000000000ca18b05bbc556d6@google.com>
+ <CAHk-=wiEBTD884i-U9DU7aDdRxXuz66Q1r-rKTiJUzZoYFgp+g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d2d3e617-17bf-8d43-f4a2-e4a7a2d421bd@gmail.com>
+In-Reply-To: <CAHk-=wiEBTD884i-U9DU7aDdRxXuz66Q1r-rKTiJUzZoYFgp+g@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 12:29:18PM -0500, Peter Geis wrote:
-> Good Afternoon,
+On Sat, Feb 20, 2021 at 08:56:40AM -0800, Linus Torvalds wrote:
+> Al,
+>  This is the "FIXME! Have Al check this!" case in do_tty_write(). You were
+> in on that whole discussion, but we never did get to that issue...
 > 
-> I have been tracking down a regular bug that triggers when running OpenWRT in a lxd container.
-> Every ten minutes I was greeted with the following splat in the kernel log:
+> There are some subtle rules about doing the iov_iter_revert(), but what's
+> the best way to do this properly? Instead of doing a copy_from_iter() and
+> then reverting the part that didn't fit in the buffer, doing a
+> non-advancing copy and then advancing the amount that did fit, or what?
 > 
-> [2122311.383389] warn_alloc: 3 callbacks suppressed
-> [2122311.383403] cat: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__GFP_COMP|__GFP_ZERO), nodemask=(null),cpuset=lxc.payload.openwrt,mems_allowed=0
+> I still don't have power, so this is all me on mobile with html email
+> (sorry), and limited ability to really look closer.
+> 
+> "Help me, Albi-wan Viro, you're my only hope"
 
-You want this patch:
-
-https://lore.kernel.org/linux-fsdevel/6345270a2c1160b89dd5e6715461f388176899d1.1612972413.git.josef@toxicpanda.com/
+Will check...  BTW, when you get around to doing pulls, could you pick
+the replacement (in followup) instead of the first pull request for
+work.namei?  Jens has caught a braino in the last commit there...
