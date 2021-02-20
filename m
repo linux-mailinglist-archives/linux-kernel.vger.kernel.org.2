@@ -2,64 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BA3320372
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 04:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A2E32037C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 04:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBTDKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 22:10:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229765AbhBTDKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 22:10:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B717064EE0;
-        Sat, 20 Feb 2021 03:09:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613790563;
-        bh=BKUd+jallq37FDOP7XZNlKIoHsBYEgg+risJ2luufz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F2sQxU/R9X/6fZkIEcVkTVPkOug75dkQlMgvr2tDh/+49Rn3rP6Xe1/UPE2raBAdJ
-         vwTG3NOpHrftST365HlCBYQy9WyZeUmhZd8sFnZrz6G3xt4Vxw6IMGFzYXM+VyRRoH
-         DPCB+GmOfOlA1oAVNNoeEwWxZyvHX3UvF/2+YEEdvC1+xoKwbZrN+k2CAIZ+oYHvMq
-         r94OWRrCDwG+C3kJFKachpZkSh3PrpCsozjuVgnrL7oAMk2o9vZfbe/WcNsT6WetAd
-         xgZakwtUVC5GMfYJrUVPPXhxbeRFRdLpq/Cpa+Pz0aMKD5aKH9RNu1SCyjkdIPllxy
-         ciQmefUC0pHgw==
-Date:   Sat, 20 Feb 2021 05:09:07 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Matthew Garrett <matthewgarrett@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-pm@vger.kernel.org, keyrings@vger.kernel.org,
-        zohar@linux.ibm.com, jejb@linux.ibm.com, corbet@lwn.net,
-        rjw@rjwysocki.net, Matthew Garrett <mjg59@google.com>
-Subject: Re: [PATCH 5/9] security: keys: trusted: Allow storage of PCR values
- in creation data
-Message-ID: <YDB9U2oyt0fmvLDF@kernel.org>
-References: <20210220013255.1083202-1-matthewgarrett@google.com>
- <20210220013255.1083202-6-matthewgarrett@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210220013255.1083202-6-matthewgarrett@google.com>
+        id S229959AbhBTDTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 22:19:17 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:57411 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229745AbhBTDTI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 22:19:08 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R321e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UP.D3-J_1613791104;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UP.D3-J_1613791104)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 20 Feb 2021 11:18:25 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     steffen.klassert@secunet.com
+Cc:     herbert@gondor.apana.org.au, davem@davemloft.net, kuba@kernel.org,
+        fw@strlen.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH v2] xfrm: Fix incorrect types in assignment
+Date:   Sat, 20 Feb 2021 11:18:23 +0800
+Message-Id: <1613791103-127057-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 01:32:51AM +0000, Matthew Garrett wrote:
-> When TPMs generate keys, they can also generate some information
-> describing the state of the PCRs at creation time. This data can then
-> later be certified by the TPM, allowing verification of the PCR values.
-> This allows us to determine the state of the system at the time a key
-> was generated. Add an additional argument to the trusted key creation
-> options, allowing the user to provide the set of PCRs that should have
-> their values incorporated into the creation data.
-> 
-> Signed-off-by: Matthew Garrett <mjg59@google.com>
+Fix the following sparse warnings:
+net/xfrm/xfrm_policy.c:1303:22: warning: incorrect type in assignment
+(different address spaces)
 
-LGTM too.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ net/xfrm/xfrm_policy.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Something popped into mind: could we make PCR 23 reservation dynamic
-instead of a config option.
+diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
+index b74f28c..aac5e88 100644
+--- a/net/xfrm/xfrm_policy.c
++++ b/net/xfrm/xfrm_policy.c
+@@ -1300,7 +1300,8 @@ static void xfrm_hash_rebuild(struct work_struct *work)
+ 		}
+ 
+ 		hmask = net->xfrm.policy_bydst[dir].hmask;
+-		odst = net->xfrm.policy_bydst[dir].table;
++		odst = rcu_dereference_protected(net->xfrm.policy_bydst[dir].table,
++						 lockdep_is_held(&net->xfrm.xfrm_policy_lock));
+ 		for (i = hmask; i >= 0; i--) {
+ 			hlist_for_each_entry_safe(policy, n, odst + i, bydst)
+ 				hlist_del_rcu(&policy->bydst);
+-- 
+1.8.3.1
 
-E.g. if the user space uses it, then it's dirty and hibernate will
-fail. I really dislike the static compilation time firewall on it.
-
-/Jarkko
