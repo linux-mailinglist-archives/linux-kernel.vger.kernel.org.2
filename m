@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A88F3205E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 16:17:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E0273205F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 16:37:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhBTPPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 10:15:36 -0500
-Received: from smtprelay0222.hostedemail.com ([216.40.44.222]:50716 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229734AbhBTPPe (ORCPT
+        id S229867AbhBTPhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 10:37:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhBTPhY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 10:15:34 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id A2B45837F253;
-        Sat, 20 Feb 2021 15:14:49 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6117:7652:7875:7903:8603:8784:9010:9025:10004:10400:10848:11026:11232:11473:11658:11783:11914:12043:12296:12297:12740:12895:13069:13095:13190:13229:13311:13357:13439:13894:14096:14097:14181:14659:14721:14764:21080:21433:21451:21611:21627:21939:30034:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:146,LUA_SUMMARY:none
-X-HE-Tag: wall13_5e05dae27667
-X-Filterd-Recvd-Size: 2222
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf02.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 20 Feb 2021 15:14:48 +0000 (UTC)
-Message-ID: <cda9541eb8cff5cbba178d6a6d511a46f193aab1.camel@perches.com>
-Subject: Re: [PATCH v5 0/2] checkpatch: add verbose mode
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 20 Feb 2021 07:14:46 -0800
-In-Reply-To: <20210220120220.32585-1-dwaipayanray1@gmail.com>
-References: <20210220120220.32585-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 20 Feb 2021 10:37:24 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9300DC061574;
+        Sat, 20 Feb 2021 07:36:43 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id i14so15761886eds.8;
+        Sat, 20 Feb 2021 07:36:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wATcNsGQ/oV+qooew2j8xDn4vI42JsAWo32QGZmbb+A=;
+        b=AQKgtrORd7lVQvhYFCJGbh54yA4gHgnvGqhfD8teU9m9JkLBm00/WfHj+n2Q6Rqf1o
+         y81V0R1sgDacJle7587rarWwNrTlCJEUqambWUUSU7PeqB2wavdcZKq8LM5xchzi/k6w
+         XGkdrj7e+3xPxqcdTYtqHxyJA/N+189HCp0ZMYjDr8ptk4VCHw51UF2QWVEPbbQl9D7g
+         uWfvnWrUyivssb30xF68qNsF4PgejkxLNEjUEs/LuKQXq/Ii3cQ/aHNLrojqgok5L9hc
+         S7zb3q3+DrwycU1eaaGMk2YA5TwlNCfv2kXjKnEkKvb10Cf3NC7d8SuUrF5Ko6rgBdm9
+         VQDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wATcNsGQ/oV+qooew2j8xDn4vI42JsAWo32QGZmbb+A=;
+        b=ue+jO1Jlz1VRYOAT+C4cVgbXDHGshryDy23XTWaUauo/DE+mVd7gGs6JfHrgCEyqKR
+         G/h1GlLrX3pCwO+DOEbSLumQHU2hZWQLAxtaEPHxJDVs4uub0+dFNTV8GMnrq4EnsXUy
+         1qsF9iz70FRvlWyyU6IraVI27kGVIFwpjLGJ9SiLvLHUtYIooDP86lxv2WfqXcJBL4t2
+         5GVa7sA2tFGi57CASYjL758X9H1Tg3hQaQhARJFEG/vEMMWdFnn4+4oHsemv7ZKguPEP
+         sOszSF5yS31GaGMCfvI5H2SkTlt1apqjfxjhIY1bk8U8Gig1lrcz+uxivDb8Gwe8J9a6
+         yvhg==
+X-Gm-Message-State: AOAM533jc3ucXm6H/BjCYt7mYYMAmDDAsmgUSCuN+5OAyWN0gUDWvVyR
+        pEFC4bX/A4m5SuzYwoMYhoM=
+X-Google-Smtp-Source: ABdhPJzMRQJuL4I/MR+1TXRJxgbhFwcSAU6UjxvcxOz/JpyQtqYhLWqM3JhNDrsODD5KLTCWouhnTA==
+X-Received: by 2002:aa7:d9c4:: with SMTP id v4mr5221087eds.15.1613835402333;
+        Sat, 20 Feb 2021 07:36:42 -0800 (PST)
+Received: from skbuf ([188.25.217.13])
+        by smtp.gmail.com with ESMTPSA id f4sm3499779edt.53.2021.02.20.07.36.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Feb 2021 07:36:41 -0800 (PST)
+Date:   Sat, 20 Feb 2021 17:36:40 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] net: dsa: Fix dependencies with HSR
+Message-ID: <20210220153640.gj4fwpnzjhursumb@skbuf>
+References: <20210220051222.15672-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210220051222.15672-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-02-20 at 17:32 +0530, Dwaipayan Ray wrote:
-> Add a new verbose mode to checkpatch. The verbose test
-> descriptions are read from the checkpatch documentation
-> file at `Documentation/dev-tools/checkpatch.rst`.
+On Fri, Feb 19, 2021 at 09:12:21PM -0800, Florian Fainelli wrote:
+> The core DSA framework uses hsr_is_master() which would not resolve to a
+> valid symbol if HSR is built-into the kernel and DSA is a module.
 > 
-> The verbose mode is optional and can be enabled by the
-> flag -v or --verbose.
-> 
-> The documentation file is only parsed by checkpatch.pl
-> if the verbose mode is enabled. The verbose mode can
-> not be used together with the --terse option.
-> 
-> Changes in v5:
-> - Change the reference format to use absolute links.
-> - Print verbose descriptions only for the first time
->   a message type is encountered.
+> Fixes: 18596f504a3e ("net: dsa: add support for offloading HSR")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
 
-OK, I think a nice addition would be to add --verbose
-text to the --list-types option when used together.
-
-$ ./scripts/checkpatch.pl --list-types --verbose
-1	ALLOC_ARRAY_ARGS
-
-	The first argument for kcalloc or kmalloc_array should be the
-	number of elements.  sizeof() as the first argument is generally
-	wrong.
-
-	See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
-
-2	ALLOC_SIZEOF_STRUCT
-
-	The allocation style is bad.  In general for family of
-	allocation functions using sizeof() to get memory size,
-	constructs like::
-
-	p = alloc(sizeof(struct foo), ...)
-
-	should be::
-
-	p = alloc(sizeof(*p), ...)
-
-	See: https://www.kernel.org/doc/html/latest/process/coding-style.html#allocating-memory
-
-etc...
-
-
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Tested-by: Vladimir Oltean <olteanv@gmail.com>
