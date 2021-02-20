@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69F4320719
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 21:29:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAB032071E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 21:35:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhBTU3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 15:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhBTU3W (ORCPT
+        id S229891AbhBTUea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 15:34:30 -0500
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:45452 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhBTUe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 15:29:22 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D304AC0617AA
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 12:28:08 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id s16so5291421plr.9
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 12:28:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=U8ZmjrxOmELViwc9AyVYtXHixP3nj10dIfkqJbLS8aE=;
-        b=eS7yPJljQGWjuJMMxqbZwkHUTVYl8v4kzt6L95XPmHT6mNdd8L7EaXY4iAkPDjM5iW
-         z+5XNCHpWrcbNlpBbNraNhCuaQ+3hQv3jgevykJ5FMqKP2ZsKEyvKqf8np8PAa5Y/7AR
-         8lqnoCvV0Ks1HmYSvnWNx0/kuU2IATjVE+6MT0RQqrZ1gj65DejTZIMOczvo99q4SVcW
-         lYLwPPIbu8w0gsDy+qggj9n0U85msawLcY3GpuIDn5pN/DAu2CO3z9X1EdswlNQnoZJ5
-         6ixCY9P69uieFPE7eYa+Q/zK7LWbR8rVeU76nKbfbxRjUN5A+GwDzjAVG71chHNckLnG
-         NzOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=U8ZmjrxOmELViwc9AyVYtXHixP3nj10dIfkqJbLS8aE=;
-        b=KAosAXRHKwbV7IsgaYItgqwvM2M1lNFIJKBHZAT7M4Yplet3iP66rKb2F4CapfOVd5
-         Z5V25qbfAMlytNSwYpsG+R94/59PDyUtLI+lNXo/L9inZoVW5FEcUxvzZxBJjvNaPsMK
-         Ndc9SmzaYm6N1UDmcsCwv+I1liIV0Kq+zE/Em00qFowt+o9miYYOX9CljbB7d9Dlakxa
-         ikjtyDlsY7hu4fCvl/8+knh7EsB/sJIQuSDeL8rPDFhrxDnv3Qd9Q8on6zQQRX/B5nGw
-         aGzB6vHs1YC2F9ANXpqY2BHEU8yh72QX9Fphszd1TVKcqfn7dUkazAz7TWW9D90dgg+x
-         m9Jw==
-X-Gm-Message-State: AOAM531vkkhOyLL1lXQUh3TzPIu8lTCuNfOETdk99tMFezeDnHGLOBrK
-        5rb2NSRs3r0Nj5/j3/jG0+P9vQ==
-X-Google-Smtp-Source: ABdhPJy1BoNkNQb5ifXpVxXSpZP6sFp3o18og3WLYV/ouirrPldF6GXEIN4rJXT9vHeDDLl9Ny5ZiQ==
-X-Received: by 2002:a17:90a:6405:: with SMTP id g5mr15104193pjj.137.1613852888379;
-        Sat, 20 Feb 2021 12:28:08 -0800 (PST)
-Received: from x1.hsd1.or.comcast.net ([2601:1c0:4701:ae70:3902:ca9d:7b75:1d0c])
-        by smtp.gmail.com with ESMTPSA id 125sm13497871pfu.7.2021.02.20.12.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 12:28:07 -0800 (PST)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@beagleboard.org>,
-        Joe Perches <joe@perches.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH v8 3/3] docs/pinctrl: document debugfs files
-Date:   Sat, 20 Feb 2021 12:27:50 -0800
-Message-Id: <20210220202750.117421-4-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210220202750.117421-1-drew@beagleboard.org>
-References: <20210220202750.117421-1-drew@beagleboard.org>
+        Sat, 20 Feb 2021 15:34:26 -0500
+X-Greylist: delayed 1192 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Feb 2021 15:34:25 EST
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lDYdP-0001Ob-Ez; Sat, 20 Feb 2021 20:13:47 +0000
+Received: from madding.kot-begemot.co.uk ([192.168.3.98])
+        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lDYdN-0007Q5-1O; Sat, 20 Feb 2021 20:13:47 +0000
+Subject: Re: NFS Caching broken in 4.19.37
+To:     Salvatore Bonaccorso <carnil@debian.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        940821@bugs.debian.org, linux-nfs@vger.kernel.org,
+        bfields@fieldses.org, chuck.lever@oracle.com
+References: <5022bdc4-9f3e-9756-cbca-ada37f88ecc7@cambridgegreys.com>
+ <YDFrN0rZAJBbouly@eldamar.lan>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Organization: Cambridge Greys
+Message-ID: <af5cebbd-74c9-9345-9fe8-253fb96033f6@cambridgegreys.com>
+Date:   Sat, 20 Feb 2021 20:13:44 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
+In-Reply-To: <YDFrN0rZAJBbouly@eldamar.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document debugfs directories and files created for pinctrl subsystem.
+On 20/02/2021 20:04, Salvatore Bonaccorso wrote:
+> Hi,
+>
+> On Mon, Jul 08, 2019 at 07:19:54PM +0100, Anton Ivanov wrote:
+>> Hi list,
+>>
+>> NFS caching appears broken in 4.19.37.
+>>
+>> The more cores/threads the easier to reproduce. Tested with identical
+>> results on Ryzen 1600 and 1600X.
+>>
+>> 1. Mount an openwrt build tree over NFS v4
+>> 2. Run make -j `cat /proc/cpuinfo | grep vendor | wc -l` ; make clean in a
+>> loop
+>> 3. Result after 3-4 iterations:
+>>
+>> State on the client
+>>
+>> ls -laF /var/autofs/local/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+>>
+>> total 8
+>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+>>
+>> State as seen on the server (mounted via nfs from localhost):
+>>
+>> ls -laF /var/autofs/local/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+>> total 12
+>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+>> -rw-r--r-- 1 anivanov anivanov   32 Jul  8 11:40 ipcbuf.h
+>>
+>> Actual state on the filesystem:
+>>
+>> ls -laF /exports/work/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+>> total 12
+>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+>> -rw-r--r-- 1 anivanov anivanov   32 Jul  8 11:40 ipcbuf.h
+>>
+>> So the client has quite clearly lost the plot. Telling it to drop caches and
+>> re-reading the directory shows the file present.
+>>
+>> It is possible to reproduce this using a linux kernel tree too, just takes
+>> much more iterations - 10+ at least.
+>>
+>> Both client and server run 4.19.37 from Debian buster. This is filed as
+>> debian bug 931500. I originally thought it to be autofs related, but IMHO it
+>> is actually something fundamentally broken in nfs caching resulting in cache
+>> corruption.
+> According to the reporter downstream in Debian, at
+> https://bugs.debian.org/940821#26 thi seem still reproducible with
+> more recent kernels than the initial reported. Is there anything Anton
+> can provide to try to track down the issue?
+>
+> Anton, can you reproduce with current stable series?
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- Documentation/driver-api/pinctl.rst | 37 +++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+100% reproducible with any kernel from 4.9 to 5.4, stable or backports. 
+It may exist in earlier versions, but I do not have a machine with 
+anything before 4.9 to test at present.
 
-diff --git a/Documentation/driver-api/pinctl.rst b/Documentation/driver-api/pinctl.rst
-index 3d2deaf48841..c905b273e833 100644
---- a/Documentation/driver-api/pinctl.rst
-+++ b/Documentation/driver-api/pinctl.rst
-@@ -1428,3 +1428,40 @@ on the pins defined by group B::
- The above has to be done from process context. The reservation of the pins
- will be done when the state is activated, so in effect one specific pin
- can be used by different functions at different times on a running system.
-+
-+
-+Debugfs files
-+=============
-+These files are created in ``/sys/kernel/debug/pinctrl``:
-+
-+- ``pinctrl-devices``: prints each pin controller device along with columns to
-+  indicate support for pinmux and pinconf
-+
-+- ``pinctrl-handles``: prints each configured pin controller handle and the
-+  corresponding pinmux maps
-+
-+- ``pinctrl-maps``: print all pinctrl maps
-+
-+A sub-directory is created inside of ``/sys/kernel/debug/pinctrl`` for each pin
-+controller device containing these files:
-+
-+- ``pins``: prints a line for each pin registered on the pin controller. The
-+  pinctrl driver may add additional information such as register contents.
-+
-+- ``gpio-ranges``: print ranges that map gpio lines to pins on the controller
-+
-+- ``pingroups``: print all pin groups registered on the pin controller
-+
-+- ``pinconf-pins``: print pin config settings for each pin
-+
-+- ``pinconf-groups``: print pin config settings per pin group
-+
-+- ``pinmux-functions``: print each pin function along with the pin groups that
-+  map to the pin function
-+
-+- ``pinmux-pins``: iterate through all pins and print mux owner, gpio owner
-+  and if the pin is a hog
-+
-+- ``pinmux-select``: write to this file to activate a pin function for a group::
-+
-+        echo "<group-name function-name>" > pinmux-select
+ From 1-2 make clean && make  cycles to one afternoon depending on the 
+number of machine cores. More cores/threads the faster it does it.
+
+I tried playing with protocol minor versions, caching options, etc - it 
+is still reproducible for any nfs4 settings as long as there is client 
+side caching of metadata.
+
+A.
+
+>
+> Regards,
+> Salvatore
+>
+
 -- 
-2.25.1
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
 
