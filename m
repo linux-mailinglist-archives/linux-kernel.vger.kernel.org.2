@@ -2,107 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 175A13207B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 00:34:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E063207B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 00:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhBTXcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 18:32:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
+        id S229996AbhBTXeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 18:34:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229994AbhBTXYg (ORCPT
+        with ESMTP id S229930AbhBTXdr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 18:24:36 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56896C061786;
-        Sat, 20 Feb 2021 15:23:55 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id 75so7752157pgf.13;
-        Sat, 20 Feb 2021 15:23:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZEjysgVVbHEsGME6Wv90Jk09wITPyZdk9nBnNUCyClw=;
-        b=k1ki9cicCDJbkJsuoubsAMk6X89zc99oPuxySFSs7YnVYkXY6mPh3DgrjBaWJcm0aV
-         KDWlhH2s9mhQ0voHYm9qe3FVw3IUQ4Z2VDjr7tqQ+yBquM8GPVcKbqOdzPa8v2dM0TcR
-         Mikk9OyQQw/IPpL31mhZ337Nnuuyd1EoxRfup3Yuuz6RCbPMo1MrXUCFYWY9DYvjA9IO
-         Tdt/b+B4gUeDCZF7Y1ePXK8haclcwrNM+sOkP+KGC9lN/yuTHCpYtuPUZXUFqWQannoS
-         bePO7K0zoDf1s1000eUBTuVic14Q0kICes5WnVpcL+hnmtu47AzbljsHUC8VNUqEJLLh
-         A4hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZEjysgVVbHEsGME6Wv90Jk09wITPyZdk9nBnNUCyClw=;
-        b=rE+SuX/QAtYhewnP8/JwuKgkRb6780piQ+acM5Q8S/QIvbXw0akSLsWOfQcznoMV1g
-         8zKRdB93K4HQCGLMd6KsaIwHa/WeMixmrO0t9KCqt81z2snvP+PQh7NVx+L4U7HOoaXZ
-         pm/K033ZmfIWIlIUJwXNm6KPT2eXFeEQCXiOVYTrxDOXhS4+HsCu3nR1IBWhojkfUlyz
-         lxy19fH/bRZw7+JxUhBDNNkunYSP3fiSyEklLnAet8yk8xP5pOHpm3FRpDKlKdXnP9ca
-         dnb5b9jfdH6i+hg+wp9Crhmqy28eR/jrx6dP7yuwLwtsfmbo8jIpj5xUHvtj5XfKkdB2
-         36hQ==
-X-Gm-Message-State: AOAM530+mfZYPgxcZLLx3XWkT3tiIkGuUTDGl4Yp5NkQRjVM/rEMAY4C
-        JyZAwP/mOjZVUqQRzq9xhvw18Jqls9o=
-X-Google-Smtp-Source: ABdhPJxwQ/HdqHGgznC2A0+kbznawdO8hKohZl/5eYYUnmQpitptf6/ZRXT2Sk+7pXcxar4p7WYbyA==
-X-Received: by 2002:a63:d355:: with SMTP id u21mr14475962pgi.133.1613863434826;
-        Sat, 20 Feb 2021 15:23:54 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:b993:3e9c:7cd5:5a8e])
-        by smtp.gmail.com with ESMTPSA id w3sm9454041pjn.12.2021.02.20.15.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Feb 2021 15:23:53 -0800 (PST)
-Date:   Sat, 20 Feb 2021 15:23:51 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Vincent Knecht <vincent.knecht@mailoo.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Michael Srba <Michael.Srba@seznam.cz>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v4 2/2] Input: add MStar MSG2638 touchscreen driver
-Message-ID: <YDGaB6L5+Aa2snUM@google.com>
-References: <20210210173403.667482-1-vincent.knecht@mailoo.org>
- <20210210173403.667482-2-vincent.knecht@mailoo.org>
+        Sat, 20 Feb 2021 18:33:47 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F404FC061574;
+        Sat, 20 Feb 2021 15:33:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=oMktDWRKXyoBFa7CtiuawGTrjQqJNKUNw1j4Qpf7tLQ=; b=KrW9CdHrNeeaD0CH7+mhlWCYHf
+        RHtbrBLi0NpdCZ2uUDqeblPvzZRxHCqjFKNewXGfpM8R0LeLCpyE9TmWC/JQKSNBSpVkfJVSr1pMz
+        lsPGkv7QyPeM/Ifw/KmCpTeEpm7Dghjp1WutT+ILL0nWyPHqfo+wi2y20Gem3JQw28PbjaGsArQ04
+        bjO2BYQvTKeOFNofeJnFSd3zpXYL2WdvJkQqBcn30ez9HWB3ySBOZn91kklXWCSFlR4V3glxiNl5Y
+        nrzLiOhKczeLrtf3xnwcu+T3UEQa93XKNot2+DY0iUjxaEPZkhGTA13BQl9Ka9xK8oOM2jUPx+UQ5
+        HinEZHog==;
+Received: from [2601:1c0:6280:3f0::d05b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lDbkE-0004ZU-3j; Sat, 20 Feb 2021 23:33:02 +0000
+Subject: Re: [PATCH] video: fbdev: pm2fb: avoid stall on fb_sync
+To:     Tong Zhang <ztong0001@gmail.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210220230248.320870-1-ztong0001@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ea1c5ff3-0b24-71c9-7a44-08b184c4854d@infradead.org>
+Date:   Sat, 20 Feb 2021 15:32:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210210173403.667482-2-vincent.knecht@mailoo.org>
+In-Reply-To: <20210220230248.320870-1-ztong0001@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
+Hi--
 
-On Wed, Feb 10, 2021 at 06:33:52PM +0100, Vincent Knecht wrote:
-> +
-> +	for (i = 0; i < MAX_SUPPORTED_FINGER_NUM; i++) {
-> +		p = &touch_event.pkt[i];
-> +		/* Ignore non-pressed finger data */
-> +		if (p->xy_hi == 0xFF && p->x_low == 0xFF && p->y_low == 0xFF)
-> +			continue;
-> +
-> +		coord.x = (((p->xy_hi & 0xF0) << 4) | p->x_low) * msg2638->prop.max_x / TPD_WIDTH;
-> +		coord.y = (((p->xy_hi & 0x0F) << 8) | p->y_low) * msg2638->prop.max_y / TPD_HEIGHT;
-> +		msg2638_report_finger(msg2638, i, &coord);
+On 2/20/21 3:02 PM, Tong Zhang wrote:
+> pm2fb_sync is called when doing /dev/fb read or write.
+> The original pm2fb_sync wait indefinitely on hardware flags which can
+> possibly stall kernel and make everything unresponsive.
+> Instead of waiting indefinitely, we can timeout to give user a chance to
+> get back control.
 
-We do not scale the coordinates in the kernel. Rather we provide
-resolution, if known, and min/max coordinates reported by the hardware,
-and let userspace handle the rest.
+Is this a real problem or theoretical?
+Does someone still use this driver?
 
-> +static int __maybe_unused msg2638_suspend(struct device *dev)
+
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> ---
+>  drivers/video/fbdev/pm2fb.c | 29 ++++++++++++++++++++++++++---
+>  1 file changed, 26 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/video/fbdev/pm2fb.c b/drivers/video/fbdev/pm2fb.c
+> index 27893fa139b0..8578c64a0c54 100644
+> --- a/drivers/video/fbdev/pm2fb.c
+> +++ b/drivers/video/fbdev/pm2fb.c
+> @@ -183,12 +183,23 @@ static inline void pm2v_RDAC_WR(struct pm2fb_par *p, s32 idx, u32 v)
+>  
+>  #ifdef CONFIG_FB_PM2_FIFO_DISCONNECT
+>  #define WAIT_FIFO(p, a)
+> +#define WAIT_FIFO_TIMEOUT(p, a) (0)
+>  #else
+>  static inline void WAIT_FIFO(struct pm2fb_par *p, u32 a)
+>  {
+>  	while (pm2_RD(p, PM2R_IN_FIFO_SPACE) < a)
+>  		cpu_relax();
+>  }
+> +static int inline void WAIT_FIFO_TIMEOUT(struct pm2fb_par *p, u32 a)
+
+drop      void       ^^^
+It's already "int".
+Did you compile this?
+
 > +{
-> +	struct i2c_client *client = to_i2c_client(dev);
-> +	struct msg2638_ts_data *msg2638 = i2c_get_clientdata(client);
-> +
-> +	mutex_lock(&msg2638->input_dev->mutex);
-> +
-> +	if (input_device_enabled(msg2638->input_dev))
-> +		msg2638_stop(msg2638);
+> +	int timeout = 10000;
+> +	while (pm2_RD(p, PM2R_IN_FIFO_SPACE) < a) {
+> +		cpu_relax();
+> +		if (--timeout==0)
 
-I believe that you should power down the device only if it is not
-configures as wakeup source. In fact (and I think most drivers are
-wrong in this), you may want to power up the device if it is a wakeup
-source and it does not have any users.
+spaces around ==
 
-Thanks.
+> +			return 1;
+> +	}
+> +	return 0;
+> +}
+>  #endif
+>  
+>  /*
+> @@ -1031,15 +1042,27 @@ static int pm2fb_blank(int blank_mode, struct fb_info *info)
+>  static int pm2fb_sync(struct fb_info *info)
+>  {
+>  	struct pm2fb_par *par = info->par;
+> +	int timeout_sync = 10000;
+> +	int timeout_fifo;
+>  
+> -	WAIT_FIFO(par, 1);
+> +	if (WAIT_FIFO_TIMEOUT(par, 1))
+> +		goto end;
+>  	pm2_WR(par, PM2R_SYNC, 0);
+>  	mb();
+>  	do {
+> -		while (pm2_RD(par, PM2R_OUT_FIFO_WORDS) == 0)
+> +		timeout_fifo = 10000;
+> +		while (pm2_RD(par, PM2R_OUT_FIFO_WORDS) == 0) {
+>  			cpu_relax();
+> -	} while (pm2_RD(par, PM2R_OUT_FIFO) != PM2TAG(PM2R_SYNC));
+> +			if (--timeout_fifo==0)
 
+spaces around ==
+
+> +				goto end;
+> +		}
+> +		if (pm2_RD(par, PM2R_OUT_FIFO) == PM2TAG(PM2R_SYNC))
+> +			break;
+> +	} while (--timeout_sync>0);
+
+spaces around >
+
+>  
+> +end:
+> +	if ((!timeout_sync) || (!timeout_fifo))
+> +		printk_ratelimited(KERN_WARNING "pm2fb: sync timeout!\n");
+>  	return 0;
+>  }
+>  
+> 
+
+
+thanks.
 -- 
-Dmitry
+~Randy
