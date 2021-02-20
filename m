@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A6C3206CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:12:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819443206C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:11:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbhBTTLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 14:11:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbhBTTLc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:11:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA018C061574;
-        Sat, 20 Feb 2021 11:10:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=z8+/WNpbsZkqwy3FrYALDel13DrFd2M7SHQC2LqXykk=; b=Coqv5TZ84pbYV63BlHltSBs+O6
-        PKlkeMKd9GjQBqahXNppgY+/xX6UfosepmWfMMZGYxfbMYZLokGKnYGxzrHd//hRD3ea6ydPU5Ytr
-        jk14BWdCLSI0Xjk4dUlY/0AuGf7+IS46QTKPcxQDHjVPt697wE7M9ASyd68sRt67wCFENbj1Sy0kt
-        KqqHpoWVrNfHkIOOJDK9bcVxCM3THBS7gsYqggibHRGGsuhhWcqYjoHcE5wj4W2q5T06Uq2cui7oH
-        FimgH0MLEq4pfqGbJ2iPd/+91tRxJFefAI/iiGCu+kY3koSvRTlYD9gNzRUZzIek5wvaRqZ0H05K1
-        L7LLTzpg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lDXcL-004MAE-36; Sat, 20 Feb 2021 19:08:48 +0000
-Date:   Sat, 20 Feb 2021 19:08:37 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'SelvaKumar S' <selvakuma.s1@samsung.com>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        "kbusch@kernel.org" <kbusch@kernel.org>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
-        "hch@lst.de" <hch@lst.de>, "sagi@grimberg.me" <sagi@grimberg.me>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "snitzer@redhat.com" <snitzer@redhat.com>,
-        "selvajove@gmail.com" <selvajove@gmail.com>,
-        "joshiiitr@gmail.com" <joshiiitr@gmail.com>,
-        "nj.shetty@samsung.com" <nj.shetty@samsung.com>,
-        "joshi.k@samsung.com" <joshi.k@samsung.com>,
-        "javier.gonz@samsung.com" <javier.gonz@samsung.com>,
-        "kch@kernel.org" <kch@kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [RFC PATCH v5 0/4] add simple copy support
-Message-ID: <20210220190837.GE2858050@casper.infradead.org>
-References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
- <20210219124517.79359-1-selvakuma.s1@samsung.com>
- <146c47907c2446d4a896830de400dd81@AcuMS.aculab.com>
+        id S229944AbhBTTKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 14:10:30 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:50822 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229796AbhBTTK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 14:10:26 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lDXdC-007Z1R-6F; Sat, 20 Feb 2021 20:09:30 +0100
+Date:   Sat, 20 Feb 2021 20:09:30 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
+Cc:     mpm@selenic.com, herbert@gondor.apana.org.au,
+        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        rikard.falkeborn@gmail.com, linux-crypto@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        stijn@linux-ipv6.be, ynezz@true.cz
+Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
+Message-ID: <YDFeao/bOxvoXI9D@lunn.ch>
+References: <20210220174741.23665-1-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <146c47907c2446d4a896830de400dd81@AcuMS.aculab.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210220174741.23665-1-noltari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 06:01:56PM +0000, David Laight wrote:
-> From: SelvaKumar S
-> > Sent: 19 February 2021 12:45
-> > 
-> > This patchset tries to add support for TP4065a ("Simple Copy Command"),
-> > v2020.05.04 ("Ratified")
-> > 
-> > The Specification can be found in following link.
-> > https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
-> > 
-> > Simple copy command is a copy offloading operation and is  used to copy
-> > multiple contiguous ranges (source_ranges) of LBA's to a single destination
-> > LBA within the device reducing traffic between host and device.
-> 
-> Sounds to me like the real reason is that the copy just ends up changing
-> some indirect block pointers rather than having to actually copy the data.
+On Sat, Feb 20, 2021 at 06:47:40PM +0100, Álvaro Fernández Rojas wrote:
+> This allows devices without a high precission timer to reduce boot from >100s
+> to <30s.
+> diff --git a/drivers/char/hw_random/bcm2835-rng.c b/drivers/char/hw_random/bcm2835-rng.c
+> index 1a7c43b43c6b..4b48cb7176b0 100644
+> --- a/drivers/char/hw_random/bcm2835-rng.c
+> +++ b/drivers/char/hw_random/bcm2835-rng.c
+> @@ -163,6 +163,7 @@ static int bcm2835_rng_probe(struct platform_device *pdev)
+>  	priv->rng.init = bcm2835_rng_init;
+>  	priv->rng.read = bcm2835_rng_read;
+>  	priv->rng.cleanup = bcm2835_rng_cleanup;
+> +	priv->rng.quality = 1000;
 
-That would be incorrect, at least for firmware that I have knowledge of.
-There are checksums which involve the logical block address of the data,
-and you can't just rewrite the checksum on NAND, you have to write the
-entire block.
+Hi Alvero
 
-Now, firmware doesn't have to implement their checksum like this,
-but there are good reasons to do it this way (eg if the command gets
-corrupted in transfer and you read the wrong block, it will fail the
-checksum, preventing the drive from returning Somebody Else's Data).
+ * @quality:		Estimation of true entropy in RNG's bitstream
+ *			(in bits of entropy per 1024 bits of input;
+ *			valid values: 1 to 1024, or 0 for unknown).
 
-So let's take these people at their word.  It is to reduce traffic
-between drive and host.  And that is a good enough reason to do it.
+How did you determine this device produces 1000 bits of true entropy
+per 1024?
+
+    Andrew
