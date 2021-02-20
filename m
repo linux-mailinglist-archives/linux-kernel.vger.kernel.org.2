@@ -2,120 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29304320687
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:51:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8970032068C
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 18:58:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbhBTRtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 12:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbhBTRtM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 12:49:12 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E29C06178B
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:48:31 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id w1so21846792ejf.11
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 09:48:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=niF1k3dVyqWcVFhX7Jys8F/FWOuqyr/3JpoSyGWUad4=;
-        b=SJiJGOm92EOLuEmD8ZxINHCPgWL9FHxOSQ3VIYWX9zoyH2E9wOjXIS9rFt4qflATpv
-         hSN/bjk3gMWmOoic96yidZvVl7/B4XMCsqfh0PkuMvTvPzxsbnnAAzqFwvJBX/EHx6Jq
-         lEXEZ04J4mAMFF3qpTPsBe+t1d1hZCpoZ1tHexVfyV6BEj3IJZ6FxOnS5w7SFjV4xaQB
-         bzdJovpxJgMpQMBdOPWU4kOe8uTftngZHfL80X3V4NBKw6dQvwl3+V0eAaAFtkaj7Nyw
-         q6pWkVkKDyqb9Tw8d5bxJN+VZ9kPSu7gfMjLM+uXAWL9W050qu1qq3zAwkiaymsFO0Qm
-         BLwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=niF1k3dVyqWcVFhX7Jys8F/FWOuqyr/3JpoSyGWUad4=;
-        b=gsepjtsoTOFvXHYI0fIhs9/T4ZOYai76XTDYUhDc4YvHxGEWXGraheG06XxZGFXtB1
-         dKjC9os9gx36tj3C2l+0g2SQNuqQd+DdghwMcbiI492//LZ2QzJOUf0bCucUCQbFycUf
-         jEh3Sxuzt6BPTitW/z/qVhlbQvCQAIJZqSePIHjkNaCrCZwJ6sQWHYKJZFJ1EfB0WBzV
-         ptWZcE1h13c1GJ0oBAoWCG2mzwmLmTHFNxnxOgcL8mM5DyS0NuBgwHhd71HC9L0SgmEZ
-         y6E7+EmuIIV395im+d4hMEDkudfhvclritGAs7c/gKoiKN4Iwky7d2WP9hA2Ygd+Lk6f
-         8AkA==
-X-Gm-Message-State: AOAM530J18K22LugLzxvwFVXZktIcM51CjP+twnKYTh/jOlqkPbh/AFu
-        Q/dOHZF9yfbDgjwKWOVWySWCqtAIE9kXsVOSw02lNw==
-X-Google-Smtp-Source: ABdhPJzMFtM3V/tSlVTUOFi/gy4tLf3ErLDeRmJYFtXE81s7f90uq338SYuA8goZna9AO+QqkY89+APsjw6TJdTe694=
-X-Received: by 2002:a17:907:373:: with SMTP id rs19mr1248541ejb.341.1613843310167;
- Sat, 20 Feb 2021 09:48:30 -0800 (PST)
+        id S229838AbhBTRvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 12:51:45 -0500
+Received: from vern.gendns.com ([98.142.107.122]:39320 "EHLO vern.gendns.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229803AbhBTRvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 12:51:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=cxAy898ikaXB5b80r/PivtPGuAM/Ddrpj1pSL31gbP0=; b=MBv+GmIm+3Sdm5COSX/SJIdBQa
+        CfnIkjFxBaCtDGZKCRL4aQU00LYN2sl+rRK0MDg/r/8P4r1nXT1Q0pQQEz4Kyi++M/Jw09h2PW/zc
+        /K/HtuKLEaioCv/L4Enmj+OqH9Jl+VEmA1Oj4xzl4L2tdkMSMLwZ1DO1Cx+B5Up2rIZ+YwdIM7TEq
+        geK5tuR/ivVFJqeViOGeTBXy/IVTXhUy/6M9FsGidExjULnmvtz0f4nPqM/0zHYnNTIGGvhAPWL5g
+        +800y493IiiTVPr3suSdrJ5fmCKBpVov8H8skohMScjucnGPqXTBshhOSmPoRmC/sYX/ipLpRIop3
+        gCgBNraQ==;
+Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:58766 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <david@lechnology.com>)
+        id 1lDWP8-0001tJ-DN; Sat, 20 Feb 2021 12:50:54 -0500
+Subject: Re: [PATCH v8 13/22] counter: Internalize sysfs interface code
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>, jic23@kernel.org
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com,
+        o.rempel@pengutronix.de, Dan Carpenter <dan.carpenter@oracle.com>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+ <3fc2580af0efd6312a64a0e107bd6fa758f0d466.1613131238.git.vilhelm.gray@gmail.com>
+From:   David Lechner <david@lechnology.com>
+Message-ID: <2d9c7cfe-1f26-22b4-281f-63a7a1801452@lechnology.com>
+Date:   Sat, 20 Feb 2021 11:50:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210217040958.1354670-1-ben.widawsky@intel.com>
- <20210217040958.1354670-5-ben.widawsky@intel.com> <YDBkOB3K8UqVakFf@Konrads-MacBook-Pro.local>
- <20210220163344.csczmkyxkpu4fxah@intel.com>
-In-Reply-To: <20210220163344.csczmkyxkpu4fxah@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 20 Feb 2021 09:48:22 -0800
-Message-ID: <CAPcyv4jWnW_i=jaGP_nXRuGgwmngObw_V8AOPY3k_YMHkL-8Eg@mail.gmail.com>
-Subject: Re: [PATCH v5 4/9] cxl/mem: Add basic IOCTL interface
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>,
-        kernel test robot <lkp@intel.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3fc2580af0efd6312a64a0e107bd6fa758f0d466.1613131238.git.vilhelm.gray@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 8:33 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
->
-> On 21-02-19 20:22:00, Konrad Rzeszutek Wilk wrote:
-> > ..snip..
-> > > +static int handle_mailbox_cmd_from_user(struct cxl_mem *cxlm,
-> > > +                                   const struct cxl_mem_command *cmd,
-> > > +                                   u64 in_payload, u64 out_payload,
-> > > +                                   s32 *size_out, u32 *retval)
-> > > +{
-> > > +   struct device *dev = &cxlm->pdev->dev;
-> > > +   struct mbox_cmd mbox_cmd = {
-> > > +           .opcode = cmd->opcode,
-> > > +           .size_in = cmd->info.size_in,
-> > > +           .size_out = cmd->info.size_out,
-> > > +   };
-> > > +   int rc;
-> > > +
-> > > +   if (cmd->info.size_out) {
-> > > +           mbox_cmd.payload_out = kvzalloc(cmd->info.size_out, GFP_KERNEL);
-> > > +           if (!mbox_cmd.payload_out)
-> > > +                   return -ENOMEM;
-> > > +   }
-> > > +
-> > > +   if (cmd->info.size_in) {
-> > > +           mbox_cmd.payload_in = vmemdup_user(u64_to_user_ptr(in_payload),
-> > > +                                              cmd->info.size_in);
-> > > +           if (IS_ERR(mbox_cmd.payload_in))
-> > > +                   return PTR_ERR(mbox_cmd.payload_in);
-> >
-> > Not that this should happen, but what if info.size_out was set? Should
-> > you also free mbox_cmd.payload_out?
-> >
->
-> Thanks Konrad.
->
-> Dan, do you want me to send a fixup patch? This bug was introduced from v4->v5.
+On 2/12/21 6:13 AM, William Breathitt Gray wrote:
+> This is a reimplementation of the Generic Counter driver interface.
+> There are no modifications to the Counter subsystem userspace interface,
+> so existing userspace applications should continue to run seamlessly.
+> 
+> The purpose of this patch is to internalize the sysfs interface code
+> among the various counter drivers into a shared module. Counter drivers
+> pass and take data natively (i.e. u8, u64, etc.) and the shared counter
+> module handles the translation between the sysfs interface and the
+> device drivers. This guarantees a standard userspace interface for all
+> counter drivers, and helps generalize the Generic Counter driver ABI in
+> order to support the Generic Counter chrdev interface (introduced in a
+> subsequent patch) without significant changes to the existing counter
+> drivers.
+> 
+> Note, Counter device registration is the same as before: drivers
+> populate a struct counter_device with components and callbacks, then
+> pass the structure to the devm_counter_register function. However,
+> what's different now is how the Counter subsystem code handles this
+> registration internally.
+> 
+> Whereas before callbacks would interact directly with sysfs data, this
+> interaction is now abstracted and instead callbacks interact with native
+> C data types. The counter_comp structure forms the basis for Counter
+> extensions.
+> 
+> The counter-sysfs.c file contains the code to parse through the
+> counter_device structure and register the requested components and
+> extensions. Attributes are created and populated based on type, with
+> respective translation functions to handle the mapping between sysfs and
+> the counter driver callbacks.
+> 
+> The translation performed for each attribute is straightforward: the
+> attribute type and data is parsed from the counter_attribute structure,
+> the respective counter driver read/write callback is called, and sysfs
+> I/O is handled before or after the driver read/write function is called.
+> 
+> Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+> Cc: Patrick Havelange <patrick.havelange@essensium.com>
+> Cc: Kamel Bouhara <kamel.bouhara@bootlin.com>
+> Cc: Fabrice Gasnier <fabrice.gasnier@st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Alexandre Torgue <alexandre.torgue@st.com>
+> Cc: David Lechner <david@lechnology.com>
+> Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> ---
 
-Yes, please, incremental to libnvdimm-for-next which I'm planning to
-send to Linus on Tuesday.
+For TI eQEP bits...
+
+Reviewed-by: David Lechner <david@lechnology.com>
+Tested-by: David Lechner <david@lechnology.com>
