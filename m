@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F341A32048F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F3E320491
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 10:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229849AbhBTJDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 04:03:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42094 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229824AbhBTJCv (ORCPT
+        id S229867AbhBTJF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 04:05:26 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:56342 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229542AbhBTJDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 04:02:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613811684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JgoL6yAU+V/ArfjxO3XDCSurXdtNKbGCFrJc0uCVVRc=;
-        b=Eqny4QLbWroe99WbRgPEczS3QxqJ6zCAmUpNo1NVkWpylk1yb1153M2AwyqGLFwHRNsTQf
-        eA1KfWdtP8TwzdO2suo6ileRW0Q8tMarqtNJW8zV94w32FRI0IJbW4GQbiHXRScqNwojOx
-        LYdJVkdm9OrluYJgh+ww3fR+M+6jL7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-527-EtcmsycmMP6Ck3kTppQAqg-1; Sat, 20 Feb 2021 04:01:20 -0500
-X-MC-Unique: EtcmsycmMP6Ck3kTppQAqg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 91037107ACE3;
-        Sat, 20 Feb 2021 09:01:16 +0000 (UTC)
-Received: from [10.36.112.45] (ovpn-112-45.ams2.redhat.com [10.36.112.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 60B415D9C2;
-        Sat, 20 Feb 2021 09:01:01 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Peter Xu <peterx@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <20210218225904.GB6669@xz-x1>
- <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
- <20210219163157.GF6669@xz-x1>
- <41444eb8-8bb8-8d5b-4cec-be7fa7530d0e@redhat.com>
- <4d8e6f55-66a6-d701-6a94-79f5e2b23e46@redhat.com>
- <15da147c-e440-ee87-c505-a4684a5b29dc@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <2073702b-9e09-2033-2915-628c7b7ccb3d@redhat.com>
-Date:   Sat, 20 Feb 2021 10:01:00 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sat, 20 Feb 2021 04:03:54 -0500
+Date:   Sat, 20 Feb 2021 12:02:48 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 01/20] net: phy: realtek: Fix events detection failure in
+ LPI mode
+Message-ID: <20210220090248.oiyonlfucvmgzw6d@mobilestation>
+References: <20210208140341.9271-1-Sergey.Semin@baikalelectronics.ru>
+ <20210208140341.9271-2-Sergey.Semin@baikalelectronics.ru>
+ <8300d9ca-b877-860f-a975-731d6d3a93a5@gmail.com>
+ <20210209101528.3lf47ouaedfgq74n@mobilestation>
+ <a652c69b-94d3-9dc6-c529-1ebc0ed407ac@gmail.com>
+ <20210209105646.GP1463@shell.armlinux.org.uk>
+ <20210210164720.migzigazyqsuxwc6@mobilestation>
+ <20210211103941.GW1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <15da147c-e440-ee87-c505-a4684a5b29dc@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210211103941.GW1463@shell.armlinux.org.uk>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Sorry, for jumping in late ... hugetlb keyword just hit my mail filters :)
+On Thu, Feb 11, 2021 at 10:39:41AM +0000, Russell King - ARM Linux admin wrote:
+> On Wed, Feb 10, 2021 at 07:47:20PM +0300, Serge Semin wrote:
+> > On Tue, Feb 09, 2021 at 10:56:46AM +0000, Russell King - ARM Linux admin wrote:
+> > > On Tue, Feb 09, 2021 at 11:37:29AM +0100, Heiner Kallweit wrote:
+> > > > Right, adding something like a genphy_{read,write}_mmd() doesn't make
+> > > > too much sense for now. What I meant is just exporting mmd_phy_indirect().
+> > > > Then you don't have to open-code the first three steps of a mmd read/write.
+> > > > And it requires no additional code in phylib.
+> > > 
+> > > ... but at the cost that the compiler can no longer inline that code,
+> > > as I mentioned in my previous reply. (However, the cost of the accesses
+> > > will be higher.) On the plus side, less I-cache footprint, and smaller
+> > > kernel code.
+> > 
+> > Just to note mmd_phy_indirect() isn't defined with inline specifier,
+> > but just as static and it's used twice in the
+> > drivers/net/phy/phy-core.c unit. So most likely the compiler won't
+> > inline the function code in there.
 > 
+> You can't always tell whether the compiler will inline a static function
+> or not.
 
-Sorry for not realizing to cc you before I sent out the man page update :)
+Andrew, Heiner, Russell, what is your final decision about this? Shall
+we export the mmd_phy_indirect() method, implement new
+genphy_{read,write}_mmd() or just leave the patch as is manually
+accessing the MMD register in the driver?
 
-> Yes, it is true that hugetlb reservations are not numa aware.  So, even if
-> pages are reserved at mmap time one could still SIGBUS if a fault is
-> restricted to a node with insufficient pages.
+-Sergey
+
 > 
-> I looked into this some years ago, and there really is not a good way to
-> make hugetlb reservations numa aware.  preallocation, or on demand
-> populating as proposed here is a way around the issue.
-
-
-Thanks for confirming, this makes a lot of sense to me now.
-
-
--- 
-Thanks,
-
-David / dhildenb
-
+> > Anyway it's up to the PHY
+> > library maintainers to decide. Please settle the issue with Heiner and
+> > Andrew then. I am ok with both solutions and will do as you decide.
+> 
+> FYI, *I* am one of the phylib maintainers.
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
