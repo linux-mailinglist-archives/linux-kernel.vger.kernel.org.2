@@ -2,209 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE34032032B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:39:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71E5320335
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 03:44:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229874AbhBTCiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Feb 2021 21:38:50 -0500
-Received: from mga17.intel.com ([192.55.52.151]:27633 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229725AbhBTCiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Feb 2021 21:38:46 -0500
-IronPort-SDR: A8FG9Tu+2f+/cCLs5jTsiUOfNbINntB5fJGvkbOyGwXHZb+ZVZSYbxndhGMLsQ/rvs9e3OYlAs
- VS3SqpdYeLKQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="163807420"
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; 
-   d="scan'208";a="163807420"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 18:38:05 -0800
-IronPort-SDR: b23D60e3gfqSf4UGKO6MaUuIqd2/d7FVDybXxeX16ZJl1vQuf1Re8ag9nrzPVdcprvi4iYKL2m
- XGpMLTHphWuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,191,1610438400"; 
-   d="scan'208";a="387281978"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga008.fm.intel.com with ESMTP; 19 Feb 2021 18:38:05 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 19 Feb 2021 18:38:05 -0800
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 19 Feb 2021 18:38:04 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Fri, 19 Feb 2021 18:38:04 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.176)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Fri, 19 Feb 2021 18:38:04 -0800
+        id S229983AbhBTCnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Feb 2021 21:43:01 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:44246 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229745AbhBTCm6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Feb 2021 21:42:58 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11K2eWt7025564;
+        Sat, 20 Feb 2021 02:42:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ references : cc : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=ULm+jw7W/Hk7YAdPpTLglb+aLz8d193SGPpVmK6pluA=;
+ b=Sxmi0CmZS2RawTU0Cl5qPZMg3UAGzVxQqsV2v1LmFMGGaoljzvhguBmz6GyHiuS3iB9F
+ ODrvzLstJP0fe6r5RaxVbk90NFDmHj4ur+sb+tEaMCnSp8NoMqsP/dXnLCcWpBQaSPrM
+ JoJfvb8+ksqpFjFD6S8euIzobo2tlO8m9/ISU9Clj6hYQdT9CF9Bz+lT0y/7VSO9jzE6
+ uyYvHsbp9LlKcK1BOQugVg+G/ZGrhXz033onZJVvFyuM8RAdEu/PVctdWdQmYYkue8uu
+ DZ9Zq3htM0O2S9QNRdscLqakAPhPrRSPXGnnVUF3jTuFjUhDHroejl1iusE3j/WHsBsa Uw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 36tqxb83a4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 20 Feb 2021 02:42:10 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11K2eMKU122282;
+        Sat, 20 Feb 2021 02:42:10 GMT
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2040.outbound.protection.outlook.com [104.47.73.40])
+        by aserp3020.oracle.com with ESMTP id 36prp3ke67-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 20 Feb 2021 02:42:10 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VFbOlE+zilz189k2PbwXhwl2GclgC4Pw7pDwCalxEMWuwyJtu6vZAIJwIyat8fFwTIHWnJp8G+TtIxEkZJf3UdnV+djvW+hqZieCIAraoGElWIdGs6nvWfGWXWIUioJHpLwj8aNnlfPl1+h8Wvp2hV37pOWpwygkD3PgixfUCy2oXlnp6SzekElDHqNvc8l8jq7zhCvEdlUXMM6opSSXgrdeiOM2P4UGh1hKumV+YeoX+92GnKDHfY2p+TQ16BZvR/4TiDTliG9ed+DTfD+ddYX0yhTRtcFi3kmqwPbJtVDCSkHwEvSp4pN/6KfesYKJvHdBejbkNeag4tD0x8k5Ng==
+ b=YTh28cGZcFf8XjhgzYCqHAQjDyz5xYmpTO72d/mDK1p9oti+aXmV9aGfmrGnkWTjJbdGA0iQI0qa2PLsw0kHS4gNE2g1FCJAc7SVzP6sos4y4Y0Yt+5PmfNuMT2EVdGr12TdIBWawdrg04NjOs8v+ETA82p3bpkc+MPdQTMkzDesIjUgeT6IpJrekkG1MM3BdquLrI16mvQDFNi63Bj0+3zHF7i9z22MWTy7asqgCNbItn4k2Bk80vaqAc4r0/lbQOWRMvAM0gyPz06Aa6b69re9lvjZRekHG8nxy5lA2ouzmhjiVJa4G6bgs2NXrrp6cIlvpfhe5HMdVDbrUDfLkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ppW+27zcOZ+sIKNGXe0X5s6MJZmhbTRB23yNioAFGoY=;
- b=Z8TEYpl/VZHkomw+DV7Q2BpOqGSdsf4O3RqrNqbxk2rnmnuFKJZP2j+ol7yj9Q8uVkSRtZdeAwXK8zSGB9zIA0y9HGLkvcLpFX3Pn6BaFWAqTgoV2MxGAYMlryKyBnPucyCkOF1jFUy8okCWYDhDQR7x/cfyBnyKudsBUY3L1wzWCykLbnUOTNC6Ai3TDqeWF954m+YFWWAxz8nmJ2qlaZxVqhqpsia1GjJASGOqhrWFBFtVc8Y9H7wocwNBvjUr0WxfbRUkOrUIBW0DRmaFGM6Zmf1BdCRjUvRwF/UDjXFYhxSbPSOQd0h8Aj8cQ4Fyd2qiV+J1RjLyMPvoPM1LOQ==
+ bh=ULm+jw7W/Hk7YAdPpTLglb+aLz8d193SGPpVmK6pluA=;
+ b=BrmREe5M37CWFRA86/rL7vBQ6I2/Xq3nJAS0btOUMzt8pNI/kBxPtbUL5M3+u+5zRzcN9xWp8Bo+2OLU/sDwLFgJEP2+YLkaNdZyFfLLUO0JeNRUrjK9xj3llH79tMCExe8KeWSZqbFD+4KTpMikq2Y4sGD75gAZdgBEYO+YScVWJh4v3ebWDr3FGvYlDR1cZltkn9Vd0ASo65PpYKQMPGl93Oe5s1nL4BY3Xq/UOzsijI3ct+CZx8uKh8eelStRN81F7t2ECpzKfAc1e3jNbCeddv/rtaTRl0FNC0U2RG96HcsONpzS/M58ZhWzepvor34mQpNi2+iXu+T+IiH+mg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ppW+27zcOZ+sIKNGXe0X5s6MJZmhbTRB23yNioAFGoY=;
- b=FNE4rnlbPqv6TMJV0RMop/2BHhCy6G97IR9HY1Ulh+P1VJdT428G+TQZ7B/Wo77+aEZOLeFpOUbdq3g9sNaNFAK4vr3WqZku45sdVm3Mx8tUgnWPWaaqFTV1xSlcbXPk06pTzv3y01g8+WljkTFskgpN0+RryjWWjaLZtE4gRqI=
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
- by MWHPR1101MB2080.namprd11.prod.outlook.com (2603:10b6:301:56::9) with
+ bh=ULm+jw7W/Hk7YAdPpTLglb+aLz8d193SGPpVmK6pluA=;
+ b=TfZoWXL45Esii8qBCij3lrm9Cukf8cU+erKnVUdhr6NUjhJ05+6RNzy3xXjvWhgCbWBVqCw4ZH7GPX2Pe4rhncFMf7ldEjnA6MbNV/xLxwvt2/2VpmDBLvu8cyuwJIEHNLGZZ5vFLaOyvOseMS7Vsz8dJlZWMOqJ06P2hzbuX6Q=
+Authentication-Results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=oracle.com;
+Received: from BYAPR10MB3287.namprd10.prod.outlook.com (2603:10b6:a03:15c::11)
+ by BYAPR10MB3288.namprd10.prod.outlook.com (2603:10b6:a03:156::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.25; Sat, 20 Feb
- 2021 02:38:03 +0000
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::f1b4:bace:1e44:4a46]) by MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::f1b4:bace:1e44:4a46%6]) with mapi id 15.20.3846.044; Sat, 20 Feb 2021
- 02:38:03 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Sun, Yi Y" <yi.y.sun@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>
-Subject: RE: [PATCH 2/4] iommu/vt-d: Enable write protect propagation from
- guest
-Thread-Topic: [PATCH 2/4] iommu/vt-d: Enable write protect propagation from
- guest
-Thread-Index: AQHXBoTVNqb9bp0o3EmwFylJcNjAwKpe/2uwgAC3SYCAAJ4O8A==
-Date:   Sat, 20 Feb 2021 02:38:02 +0000
-Message-ID: <MWHPR11MB1886D3FA49A212684239530D8C839@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <1613683878-89946-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1613683878-89946-3-git-send-email-jacob.jun.pan@linux.intel.com>
-        <MWHPR11MB1886F4395B64EC23277D88328C849@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210219090841.4ae6f01c@jacob-builder>
-In-Reply-To: <20210219090841.4ae6f01c@jacob-builder>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Sat, 20 Feb
+ 2021 02:42:08 +0000
+Received: from BYAPR10MB3287.namprd10.prod.outlook.com
+ ([fe80::45b5:49d:d171:5359]) by BYAPR10MB3287.namprd10.prod.outlook.com
+ ([fe80::45b5:49d:d171:5359%5]) with mapi id 15.20.3868.029; Sat, 20 Feb 2021
+ 02:42:07 +0000
+Subject: Re: [PATCH 1/2] vdpa/mlx5: Fix suspend/resume index restoration
+From:   Si-Wei Liu <si-wei.liu@oracle.com>
+To:     Eli Cohen <elic@nvidia.com>, jasowang@redhat.com
+References: <20210216162001.83541-1-elic@nvidia.com>
+ <4ecc1c7f-4f5a-68be-6734-e18dfeb91437@oracle.com>
+Cc:     mst@redhat.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, virtualization@lists.linux-foundation.org
+Organization: Oracle Corporation
+Message-ID: <033b0806-4037-5755-a1fa-91dbb58bab2e@oracle.com>
+Date:   Fri, 19 Feb 2021 18:42:04 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+In-Reply-To: <4ecc1c7f-4f5a-68be-6734-e18dfeb91437@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [101.88.226.48]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 77aff634-3f17-47bf-31c7-08d8d5488baf
-x-ms-traffictypediagnostic: MWHPR1101MB2080:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB20801BBBDDE31825C59463A08C839@MWHPR1101MB2080.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:632;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jnPeSrV09iFwdL3nLAKFMZAKGHQC3SVQqcJW9pk+W7M41U4/iQ9UAEpUQA54NM3T9+w0H4otYWAssLfWQCbFVdHywsmeFKoC1xNsIDchogKCMMii3C+LLxfBi+BTVySujpZLLOJQR3j0zsbneRWOQU2j87sM1Q95KHaodUYfQjeVuTHNrzNHCBkv7C8CjNtfz3CwtH4CM9reNoJ3G4HKznN4rfA+Lh9rP0nZqj5WYSl/9VBT56g8RLSii3dU3ObPAZuTqMdgKL/4GSMutGPdH3lyLCv29wb2/4F1co/f6QYD6atZdDfUv61pcNhdP+JfntxPJ1DNWFSMGwAjnZ3KNsNn7vUMIAhEFV8yuI9VFJACh1m4ayRgKx2zjGQRPCnciXHeLeMbpM1JjYce1ejQmriicpe+s+iVDDaNtAMxfI7esX4mfI+LmQ2VzVc56sAsh/K05T/fr7yHlsZRm16K9ryPktWMeTO3pjuHqNvXMrZa2mFbzI9f4zbpipuNP6lr3BAFSP2CfnXPwh/6P8i48A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(376002)(346002)(39860400002)(136003)(76116006)(6916009)(4326008)(66476007)(86362001)(186003)(55016002)(2906002)(66946007)(64756008)(8676002)(33656002)(71200400001)(54906003)(66556008)(52536014)(8936002)(316002)(7696005)(6506007)(478600001)(83380400001)(5660300002)(9686003)(66446008)(26005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+yrTJ2RvgvmrAc3JStUj1eq7fp7pwXmAxnYOPejBUXhlPGDQq3sINvc1Dopj?=
- =?us-ascii?Q?rgDZXDqhDf8jaO3qiVze/dlTiODyjYlcOed/EOBQ+cQ7R8i8LUv5uoWNlHGQ?=
- =?us-ascii?Q?LyhsN5Jnm4rgYiwmbvfYmAC7qQk+HX4F2sWvpLSzuLzhvFSJPdntEacp0sVA?=
- =?us-ascii?Q?YL4gPZkuUoYEgWO2dczHvdVm7Sgc9Xqufv3B9pp/+qdnBA9qztZRWy8I7yXT?=
- =?us-ascii?Q?A+uawp69A8mjVxAQpcvgWEzsKKzrOQKT5iCRg25xrHS0CWUYodwOFTnjtfHh?=
- =?us-ascii?Q?HuTjyAlpfaBKBZPsc+/5dZD2bhkgCF3KlVzpkIZXPT5+LDkYz0tmXrHAkwki?=
- =?us-ascii?Q?t56I4tsyklkrZdteDfXpD1OzEwdvMFt/v7t2kWz2XGtWKu6GpgWc+yPWkAf5?=
- =?us-ascii?Q?fRcC5EOfOzJybyn+62Q+KnOfHw/cuZQaoKuJuslCbRXJjqagC30CaAcnZS1w?=
- =?us-ascii?Q?LxkNFHNNs4Os21FCTqIeveBg1yflDSr459q7vKI0oWeQphJw40CsHM3FWPaW?=
- =?us-ascii?Q?vw1L6Mg3aSWvlZ9PBCkzluUBaNSn4OSyaAz52NBRUD6U07ri00cEy4zoIi17?=
- =?us-ascii?Q?J/XApxWeQTeyZkSAzmW3USfvYrN9VqnWaNxt3zYJgHy1fIltqCi2qiGQbI7X?=
- =?us-ascii?Q?TNWzNLLaTElL6yBN2PVViY+k1OvNq3tZtO7nYeGjl1g+Smg507E6AhgvE+4L?=
- =?us-ascii?Q?Gs5MV9zKJLPKY8o/cZI05V0Jcw8SoVijXBwN8kZtjC6jUGQfw3xx2d3U6GDi?=
- =?us-ascii?Q?kl248LcL8Uzl8u2bFIaRz2nLFGovDyY79OhkaUoMmLm1ba3609ylt33Ox1+E?=
- =?us-ascii?Q?e1DEhcQk6sPbpw83To0MW3culXkxFfVuQQwKoNKKiT7pPDhbMR3v9E+JAcDB?=
- =?us-ascii?Q?J538e1BE/CNaACMQ4FjUaqQfbhy/CTE+jITU9nW+4OXdNB6TQ2+QWH4UyfQP?=
- =?us-ascii?Q?lvM7p5ef18PozIWZ3yhg/4LBhvZtHwPXoZ0k2jH/Q6ic/EIZ36j6BWE0wqtu?=
- =?us-ascii?Q?PnwOJQB45ZZ1Ac93bpSacCyhEf42ga8jvlx91PXZklYEidBKIpe9j9oHFIua?=
- =?us-ascii?Q?5U9hLyF3TWVdovDYf5Am/5NzNpcbS7cUz0ZkyIEV4nUFsSVIPONFf9Y3Bww8?=
- =?us-ascii?Q?yBcRzRfTl/guozWOR10ph3z2P+VCM9p0UEJ1AGw+zEswC9t2i6SRhx0RxzrX?=
- =?us-ascii?Q?ijXIoFELSdSsOL/v8Bb7hyhxecKoAKbhuef1G4R3aw8xf5RQEFjh1wl3vEYm?=
- =?us-ascii?Q?3t7NVr2/30BLDRQysEmmG3CH6eQdRIeoOuB1QF5/w/gdKtkDL+RhdA7O7u3z?=
- =?us-ascii?Q?+pogDriPbUnt7DTCWTvTza32?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [73.189.186.83]
+X-ClientProxiedBy: CY4PR02CA0013.namprd02.prod.outlook.com
+ (2603:10b6:903:18::23) To BYAPR10MB3287.namprd10.prod.outlook.com
+ (2603:10b6:a03:15c::11)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.19] (73.189.186.83) by CY4PR02CA0013.namprd02.prod.outlook.com (2603:10b6:903:18::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Sat, 20 Feb 2021 02:42:06 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5c8190a6-2660-473a-0d95-08d8d5491d6c
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3288:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB328857EC93A84835C5B6A65BB1839@BYAPR10MB3288.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sKfIjVjeZNbUujIsMq5YHULcGtwXjJ58N5dl10vN6M0BM33m3QC29lQKmqmUJDq9cfZhLzjX/4ANujb03Aku49tLRJTb1b6Ek5IpXO0dEtHwJ5hapdGleA1FUdZi/hPyknjf1rWsjmOd3n+DRgyNPSX9lWrYspkSfjrXxc5gJNpe+J/9js8B4yax5Ld3UCVlBaOcW+QlN1cSBVqjudwOwOb/LMT2J1R+IOIdsSac5s2PSkROWhovvbmaOsmoRrO9faE+zaVhIhs1HXy5H+Fa4TvvN7DlXRB+4CT2OJMu+Wz2U+mSlLXw5bjA2/FNPP/0/eH3P9LvTMwXsbLYfruqkD+sZrQnNaSdKShwyvpp8Og44kR9xLOsEN02Orx8pK6lUYE2r/0x2GKnVQpnxrELtXk5qAAKz6YbFLqq31qFkAghuNrm9NAfi1c6BiZa2WKawT9zPQV7284f6vzWwuDIB1T6Sx9hqXbxEAkm+AqyqSwRJQpoz109la1nL20XbOH12sYOX5CETKrEwp9fSAdy0TtWbotHBzjy5wiUXqro5U4gisHYREwebEUaY8fqyyncpaMyFBmEs1BUJrOp1o2mGYPhNNfl7IoDcUG3Wc2ckS4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3287.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(346002)(396003)(366004)(16526019)(31696002)(186003)(66946007)(4326008)(8676002)(8936002)(66556008)(66476007)(36756003)(83380400001)(2906002)(53546011)(36916002)(86362001)(6486002)(15650500001)(26005)(478600001)(5660300002)(956004)(2616005)(31686004)(16576012)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OWF2ajNBWmhBRFkvT256U04rRVJSRTU5YVMvVmlieW1NT2drbXZXR3MxMnlt?=
+ =?utf-8?B?Z2poVnpJNExqa3FCbnFkTnZlcGZiTmgzVW45NENIRWdBekRSK3E5TzJrU2lx?=
+ =?utf-8?B?eDVicVp4L3JBbk9wTHQvQmpKTENmOEpXVXhhN1RSL21ndlkwUWJVamFGMVVY?=
+ =?utf-8?B?eDZ5cmNDM2FWaWlWUnllK3VCZkdMUHBWMFNKS3k4QjVjVTZGcDJkUzBLeSsy?=
+ =?utf-8?B?SXlUcFpBZnYvMnJuZ3dPdzJDbkFlMEloMDdlRXhTZU00SmVUNWQxS2gwdFFl?=
+ =?utf-8?B?U1AwZW4wd3M3MkkzckpXL2doR2Z3NTNPOXJhbjFYTkViWmlMSDlFenROaXJ6?=
+ =?utf-8?B?OHlDbjN2MXJqS3VBNjBRdjZHQmZaTHV2SktmbWF4VS9MYXNVTCtpbFc0T1F1?=
+ =?utf-8?B?cUxDQnlDWDdmaVVCSUl4d0NFaXprTzZVVnZNbml4bWJ3QnVLMThnU2ZRbWEw?=
+ =?utf-8?B?RlBVT1dwemV2cXlDZ2hoWDlMS0Y2NzFTc3JobHVaREZERjdlK0c1RkFMQi95?=
+ =?utf-8?B?dEk4aDNkSHBjZ1E4WmcvMWpGdGJiWVdUUDJBVkFTdWhXSHhpU0wxcCtJNytx?=
+ =?utf-8?B?R3hZM3hNZW80ZkVqUnlnS3c1QW0vUmUwQm02eUoxaXdvYzZISlRNaFY0emd5?=
+ =?utf-8?B?bmxTY3VObEtFMGM1UVQ4RE0wRURhVC9aK3JGY3pCMTk0S1dwZTFmTXNrSyta?=
+ =?utf-8?B?M1dBeXlTZG9GWnFKRGgrNWxiSkc1VzlCRGhnaDhDU1M5dlJpb05pWWM5K05W?=
+ =?utf-8?B?Q1I0aFZiUXNFT3VVS21KREdaS0lXMjBueGhWd0R2aTQzR09weVBZa0czTjJn?=
+ =?utf-8?B?emxtZUd5Q0ZOTklmSDBiaE0zVDZoczV3MzhWaUZYQVBpczlOTkNsRkhad2hU?=
+ =?utf-8?B?cXQzREYvRUVzb3hzTllRK0RyeFlpVktPQW94QkVrWEF6Q0RCUkZxUVdUbWZP?=
+ =?utf-8?B?YkNEaFRJMnNiTTF6cWtwOUJ0TGI0VFBUOUwyL2h1Mnd0YWozMC8vV3RiaHJI?=
+ =?utf-8?B?ZXRVRnJGTHVHRTJ1V21ZU0RjZEpub0FmVkdSK1g0WFJEVjlRSEJyKy9QQ0d0?=
+ =?utf-8?B?aFJRNG1YcXordFdXd2t3Z2krTTNPV1J3QWplcUZwUFBURFlCZmFQMElrUFJs?=
+ =?utf-8?B?ZjRxNFBNdmJnWDJxYzQ4WmsyUkJJSGRzYkVub0xyNnRPWFdOalhOak8raVh5?=
+ =?utf-8?B?YXlxY09jeTdsZkc3NktwYzkwTS9OZlQrdk0xNDdvMmZjc3JpcUxsWlhaK05Q?=
+ =?utf-8?B?alB0eW5ZWGFNaUIyWnBRTjFGMUZrSEQ4L3NmdEtIbjlxQ0J5K1ZESXU3VzZk?=
+ =?utf-8?B?RnJmVC90MDZlVG9PaHEwaVJHTE9hdXJ3Y0s4WC92dTdQSGtTWk1URktsTjhr?=
+ =?utf-8?B?TXRVTytFMVVibFliQWRJZ0ZGTkJuS2k0K01nWDlzdHJxdlZrS2lKMHpTZmVY?=
+ =?utf-8?B?WE0wZkMwamUrUXA5L09SME12VjY4NlFvcWQzbXV0SWFRb0RRbHZwMDBiS1Fy?=
+ =?utf-8?B?RlhjZWVWWXVzVGFMeDBmd0xmUXlCbTlDZ2FKaXo4TlJLa1dqZUxtSTAwaUlZ?=
+ =?utf-8?B?OWdPd2JZWGpYV2ZMMGtIWUdIQittS0JyZ1JhcFB2NzRwL1d6QUF1cjJRSFgz?=
+ =?utf-8?B?cjc4MFYwVEI2OSsxMEpmWUhNUmFvZDRtbVR5dWFhTGhKV2R3R2JZTFUzdHRC?=
+ =?utf-8?B?MHVuRjBuaVFoSWE0K2QyN0psUHJRb1VWNXdVMFBlZVczVHorY3Z3c0hLVlJB?=
+ =?utf-8?Q?F+a399V4l0cNNwcvzc4wB+OnpQCGrTMZ98LHK5w?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c8190a6-2660-473a-0d95-08d8d5491d6c
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3287.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 77aff634-3f17-47bf-31c7-08d8d5488baf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2021 02:38:02.9381
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2021 02:42:07.7433
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PfRvIkJGDzgzP74avbZ74Rv2lnynHtFbcnyUhTfV6giyDTuGppwybFBSJDvY45Z9edL/axItjUqOkNO0rnh9AQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2080
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: b776r3UTQOqvFNInjNjkauQ/jFG5U7mJuJx/gt7YifxrHDik7OvOHxWel4RJ75YfD/aijNNPVztqA9E2FzieSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3288
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102200021
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9900 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 malwarescore=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 bulkscore=0 adultscore=0 priorityscore=1501 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102200021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> Sent: Saturday, February 20, 2021 1:09 AM
->=20
-> Hi Kevin,
->=20
-> On Fri, 19 Feb 2021 06:19:04 +0000, "Tian, Kevin" <kevin.tian@intel.com>
-> wrote:
->=20
-> > > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > > Sent: Friday, February 19, 2021 5:31 AM
-> > >
-> > > Write protect bit, when set, inhibits supervisor writes to the read-o=
-nly
-> > > pages. In guest supervisor shared virtual addressing (SVA),
-> > > write-protect should be honored upon guest bind supervisor PASID
-> > > request.
-> > >
-> > > This patch extends the VT-d portion of the IOMMU UAPI to include WP b=
-it.
-> > > WPE bit of the  supervisor PASID entry will be set to match CPU CR0.W=
-P
-> > > bit.
-> > >
-> > > Signed-off-by: Sanjay Kumar <sanjay.k.kumar@intel.com>
-> > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > > ---
-> > >  drivers/iommu/intel/pasid.c | 5 +++++
-> > >  include/uapi/linux/iommu.h  | 3 ++-
-> > >  2 files changed, 7 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.=
-c
-> > > index 0b7e0e726ade..c7a2ec930af4 100644
-> > > --- a/drivers/iommu/intel/pasid.c
-> > > +++ b/drivers/iommu/intel/pasid.c
-> > > @@ -763,6 +763,11 @@ intel_pasid_setup_bind_data(struct
-> intel_iommu
-> > > *iommu, struct pasid_entry *pte,
-> > >  			return -EINVAL;
-> > >  		}
-> > >  		pasid_set_sre(pte);
-> > > +		/* Enable write protect WP if guest requested */
-> > > +		if (pasid_data->flags & IOMMU_SVA_VTD_GPASID_WPE) {
-> > > +			if (pasid_enable_wpe(pte))
-> > > +				return -EINVAL;
-> >
-> > We should call pasid_set_wpe directly, as this binding is about guest
-> > page table and suppose the guest has done whatever check required
-> > (e.g. gcr0.wp) before setting this bit. pasid_enable_wpe has an
-> > additional check on host cr0.wp thus is logically incorrect here.
-> >
-> If the host CPU does not support WP, can guest VCPU still support WP? If
-> so, I agree.
->=20
 
-If you change 'support' to 'enable', then the answer is yes.
+
+On 2/17/2021 11:42 AM, Si-Wei Liu wrote:
+>
+>
+> On 2/16/2021 8:20 AM, Eli Cohen wrote:
+>> When we suspend the VM, the VDPA interface will be reset. When the VM is
+>> resumed again, clear_virtqueues() will clear the available and used
+>> indices resulting in hardware virqtqueue objects becoming out of sync.
+>> We can avoid this function alltogether since qemu will clear them if
+>> required, e.g. when the VM went through a reboot.
+>>
+>> Moreover, since the hw available and used indices should always be
+>> identical on query and should be restored to the same value same value
+>> for virtqueues that complete in order, we set the single value provided
+>> by set_vq_state(). In get_vq_state() we return the value of hardware
+>> used index.
+>>
+>> Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 
+>> devices")
+>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+> Acked-by: Si-Wei Liu <si-wei.liu@oracle.com>
+
+I'd take it back for the moment, according to Jason's latest comment. 
+Discussion still going.
+
+>
+>> ---
+>>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 17 ++++-------------
+>>   1 file changed, 4 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c 
+>> b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>> index b8e9d525d66c..a51b0f86afe2 100644
+>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>> @@ -1169,6 +1169,7 @@ static void suspend_vq(struct mlx5_vdpa_net 
+>> *ndev, struct mlx5_vdpa_virtqueue *m
+>>           return;
+>>       }
+>>       mvq->avail_idx = attr.available_index;
+>> +    mvq->used_idx = attr.used_index;
+>>   }
+>>     static void suspend_vqs(struct mlx5_vdpa_net *ndev)
+>> @@ -1426,6 +1427,7 @@ static int mlx5_vdpa_set_vq_state(struct 
+>> vdpa_device *vdev, u16 idx,
+>>           return -EINVAL;
+>>       }
+>>   +    mvq->used_idx = state->avail_index;
+>>       mvq->avail_idx = state->avail_index;
+This is where things starts getting interesting. According to Jason, the 
+original expectation of this API would be to restore the internal 
+last_avail_index in the hardware. With Mellanox network vDPA hardware 
+implementation, there's no such last_avail_index thing in the hardware 
+but only a single last_used_index representing both indices, which 
+should always be the same and in sync with each other. So from migration 
+point of view, it appears logical to restore the saved last_avail_index 
+to the last_used_index in the hardware, right? But what is the point to 
+restore mvq->avail_idx?
+
+Actually, this code path is being repurposed to address the index reset 
+problem in the device reset scenario. Where the mvq->avail_idx and 
+mvq->used_idx are both reset to 0 once device is reset. This is a bit 
+crossing the boundary to me.
+
+
+>>       return 0;
+>>   }
+>> @@ -1443,7 +1445,7 @@ static int mlx5_vdpa_get_vq_state(struct 
+>> vdpa_device *vdev, u16 idx, struct vdpa
+>>        * that cares about emulating the index after vq is stopped.
+>>        */
+>>       if (!mvq->initialized) {
+>> -        state->avail_index = mvq->avail_idx;
+>> +        state->avail_index = mvq->used_idx;
+This is where the last_used_index gets loaded from the hardware (when 
+device is stopped).
+
+>>           return 0;
+>>       }
+>>   @@ -1452,7 +1454,7 @@ static int mlx5_vdpa_get_vq_state(struct 
+>> vdpa_device *vdev, u16 idx, struct vdpa
+>>           mlx5_vdpa_warn(mvdev, "failed to query virtqueue\n");
+>>           return err;
+>>       }
+>> -    state->avail_index = attr.available_index;
+>> +    state->avail_index = attr.used_index;
+This code path never gets called from userspace (when device is running).
+
+-Siwei
+
+>>       return 0;
+>>   }
+>>   @@ -1532,16 +1534,6 @@ static void teardown_virtqueues(struct 
+>> mlx5_vdpa_net *ndev)
+>>       }
+>>   }
+>>   -static void clear_virtqueues(struct mlx5_vdpa_net *ndev)
+>> -{
+>> -    int i;
+>> -
+>> -    for (i = ndev->mvdev.max_vqs - 1; i >= 0; i--) {
+>> -        ndev->vqs[i].avail_idx = 0;
+>> -        ndev->vqs[i].used_idx = 0;
+>> -    }
+>> -}
+>> -
+>>   /* TODO: cross-endian support */
+>>   static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev 
+>> *mvdev)
+>>   {
+>> @@ -1777,7 +1769,6 @@ static void mlx5_vdpa_set_status(struct 
+>> vdpa_device *vdev, u8 status)
+>>       if (!status) {
+>>           mlx5_vdpa_info(mvdev, "performing device reset\n");
+>>           teardown_driver(ndev);
+>> -        clear_virtqueues(ndev);
+>>           mlx5_vdpa_destroy_mr(&ndev->mvdev);
+>>           ndev->mvdev.status = 0;
+>>           ++mvdev->generation;
+>
+
