@@ -2,76 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E983F3206F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:41:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71C963206F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Feb 2021 20:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhBTTld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 14:41:33 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50886 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229796AbhBTTl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 14:41:29 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lDY7O-007ZCv-KM; Sat, 20 Feb 2021 20:40:42 +0100
-Date:   Sat, 20 Feb 2021 20:40:42 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     mpm@selenic.com, herbert@gondor.apana.org.au,
-        nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
-        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
-        rikard.falkeborn@gmail.com, linux-crypto@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stijn@linux-ipv6.be, ynezz@true.cz
-Subject: Re: [PATCH] hwrng: bcm2835: set quality to 1000
-Message-ID: <YDFlurbYyiphXmHb@lunn.ch>
-References: <20210220174741.23665-1-noltari@gmail.com>
- <YDFeao/bOxvoXI9D@lunn.ch>
- <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
+        id S229863AbhBTTlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 14:41:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229828AbhBTTlf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 14:41:35 -0500
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF183C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 11:40:54 -0800 (PST)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lDY7V-00GPdn-Ie; Sat, 20 Feb 2021 19:40:49 +0000
+Date:   Sat, 20 Feb 2021 19:40:49 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     syzbot <syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-kernel@vger.kernel.org, snovitoll@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: WARNING in iov_iter_revert (2)
+Message-ID: <YDFlwf3AKbLiZhvh@zeniv-ca.linux.org.uk>
+References: <0000000000001fb73f05bb767334@google.com>
+ <0000000000000ca18b05bbc556d6@google.com>
+ <CAHk-=wiEBTD884i-U9DU7aDdRxXuz66Q1r-rKTiJUzZoYFgp+g@mail.gmail.com>
+ <YDFJKR5uG1N+g9TL@zeniv-ca.linux.org.uk>
+ <YDFjNRv+DNL/Xh8W@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9b86c773-7153-1e18-472a-f66b01c83173@gmail.com>
+In-Reply-To: <YDFjNRv+DNL/Xh8W@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 08:12:45PM +0100, Álvaro Fernández Rojas wrote:
-> Hi Andrew,
-> 
-> I ran rngtest and this is what I got:
-> root@OpenWrt:/# cat /dev/hwrng | rngtest -c 1000
-> rngtest 6.10
-> Copyright (c) 2004 by Henrique de Moraes Holschuh
-> This is free software; see the source for copying conditions.  There is NO
-> warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> 
-> rngtest: starting FIPS tests...
-> rngtest: bits received from input: 20000032
-> rngtest: FIPS 140-2 successes: 996
-> rngtest: FIPS 140-2 failures: 4
-> rngtest: FIPS 140-2(2001-10-10) Monobit: 0
-> rngtest: FIPS 140-2(2001-10-10) Poker: 0
-> rngtest: FIPS 140-2(2001-10-10) Runs: 1
-> rngtest: FIPS 140-2(2001-10-10) Long run: 3
-> rngtest: FIPS 140-2(2001-10-10) Continuous run: 0
-> rngtest: input channel speed: (min=146.002; avg=349.394;
-> max=1302083.333)Kibits/s
-> rngtest: FIPS tests speed: (min=12.126; avg=22.750; max=23.432)Mibits/s
-> rngtest: Program run time: 56826982 microseconds
-> 
-> 996 successes and 4 failures -> 99.6% success rate
-> 1024 * 99.6% = 1019 (rounded down to 1000)
-> 
-> I'm not sure if I can rely on rngtest for that...
+On Sat, Feb 20, 2021 at 07:29:57PM +0000, Al Viro wrote:
 
-Hi Álvaro
+> And then you notice that it has reports
+> successful write of amount other than what you'd passed and tries
+> to pull back.
 
-You need some sort of justification for setting the quality
-value. Please include what you have written above in the commit
-message. It then becomes possible for reviewers to say if this
-justification is valid or not.
+Sorry, half-edited sentence has escaped ;-/  Should be
 
-	Andrew
+"And there the caller notices that callback has reported a successful
+write, but the amount apparently written is not the same as the
+amount it had asked to write.  It interprets that as a short write
+and tries to pull back.  Only it's actually _forward_, since we'd
+asked to write 0 bytes and got a small positive number from the
+callback."
