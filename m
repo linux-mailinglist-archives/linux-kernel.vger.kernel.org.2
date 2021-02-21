@@ -2,112 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B246E320E3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:15:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41031320E41
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231728AbhBUWN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:13:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
+        id S231755AbhBUWQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 17:16:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhBUWNO (ORCPT
+        with ESMTP id S231745AbhBUWQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 17:13:14 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F5B4C061574;
-        Sun, 21 Feb 2021 14:12:30 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id s12so4613234qvq.4;
-        Sun, 21 Feb 2021 14:12:30 -0800 (PST)
+        Sun, 21 Feb 2021 17:16:05 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 236D3C061574;
+        Sun, 21 Feb 2021 14:15:25 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id l30so1421322wrb.12;
+        Sun, 21 Feb 2021 14:15:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=ZveoRDfU1ztK8NF19LRexUft1jiNWtqDdCKy/TbMan8=;
-        b=ljR0S1WYkdA1OLqy/x6rQdsiPkP/YbdtreQ+yiZ/YNWxwWHBaTPP7vq036qGCDLhiw
-         HS9WEUC+bTeHuOvRIKid9otkTKp5CkI6wayvcTtoX5EPPftvQGMsieBSafnjud/hTRL0
-         28VUK0krLAXTeADfH6jk3oSI3hoxxD/7zj2k5wSVAkx7HJPcE2iZhILZd8ZYMR2pbyb9
-         vJav7upaf73H5spXjkGomfQWH8MJOJzaVI8kmur6WH/bLx7vBoE+dHELmU2/HbCjMEIg
-         Tnw8xo1eFLx6JVcqeZZXbgTmkHQHo9w43HhKpGXYfYnlUFRR0BLMSTMi6R66MEDY4Z7k
-         tliA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=CWmiNEs97OZnCfH3+LxcVD0SeyQhZ+wmaHX9mtZJ5TU=;
+        b=jmjEGhzKJdAe8dthuCi+Sd0P67T1gL/fZZTX8iPKjXFza9+Y5PuPGG5eEdyb1jpood
+         JCJhVm6Nxqbijwh5KuSaMUIx2dv/cAJS7V9VxqPjmnsAE2LPnU0diPa+RN1e4BygqVt8
+         AtN6BS398O+HUBK0/lLf+xYbYFV3K8Y8FfRMzS62vrnh152f9cgW/lrvRUcWzMj+pPAS
+         RAk6Xr52SVilKuA7RMta5n0nGAPdnXtX7+m2LvL95IDParU7x/qPoOcTn3Hh5/6gBBbX
+         QIKhxEC5lznd1m46dNPOkkh7G2XOYMNMArQhWAJT0lNvlKhJy3d7AxumCW+CyUAh3dUK
+         Ygvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ZveoRDfU1ztK8NF19LRexUft1jiNWtqDdCKy/TbMan8=;
-        b=UWiNlkIT13t/IBWD3vq+6tMaHzXnXrbq6gJleeHzHFDYrzOkewU1AfN0SxKMMeEej9
-         uOLqLq6YiFveoqr579mS15UhonYVpg2vQNBtzECJm83tyIWQMthWKj4Gb+zW8HcWBZM5
-         xyJOmbo+BbhEqzZMfCLiIsUUh8yqKjjOZyUTymK4QvJ2zRZ5IfVtFBgaC1WjR0u3ZdzI
-         Wg2cPV8nPnPXcYbM4R/4XT3BrwqKwAodtqw7KqmhIgx2PRgumPENnEnJANc+hphcGmVk
-         zurYpwMkHnEZ4EG9gfgTIcOkvmmLcJ3/s9pN6RwK+09eOezgqTUeGFfx6LkM+mVbXPIN
-         10sg==
-X-Gm-Message-State: AOAM532hOW92NWFaYymWhkMAfhxWyBYl6tv+0CveK5sYsjnyWdhxZaGP
-        MGBvxQ6kGOgIUfh8K3itCpgzYQ3rN3/ooQ==
-X-Google-Smtp-Source: ABdhPJwVZxISMQmAB7V7M3w47ceDWkiuPm+mL91l7B89IGpf8ud/mPjoH8xpAu5AIYYW9mcRDnvDpQ==
-X-Received: by 2002:a0c:b418:: with SMTP id u24mr17959285qve.20.1613945549780;
-        Sun, 21 Feb 2021 14:12:29 -0800 (PST)
-Received: from localhost ([128.211.185.212])
-        by smtp.gmail.com with ESMTPSA id p12sm9694739qtw.27.2021.02.21.14.12.29
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=CWmiNEs97OZnCfH3+LxcVD0SeyQhZ+wmaHX9mtZJ5TU=;
+        b=Co6Kwx1LrHduq83gfhR7BF2yKSygYgcPvCU8Y34Xm8BURQ1cFgPGS3QnRDmw14pXIb
+         89cwJLc5UKcIB41yWdvBOOHTrkp1w4eECxzlZRWQoyr3QN+R8scXSrdfEu1U0Hv2+72/
+         ciV3LBmOS18szvEF3FA+1TQb5hkR4covJqDIPb4GJBzG5V6k1oO105OCxMtXR11+5Mzk
+         c0Ch3puDbF7UOnbwEjRtAvQGI5NJ2c5RVYsJx0/k62pY0YMKTBpcvp3EkwEy8oBwyRVD
+         Wdhvx8hafhTOzuQDsHvyMgzVUCsAHsbtxAqBRQKxZk/5ntIwwv9tNcAUklHsP3Ljuzjg
+         JACA==
+X-Gm-Message-State: AOAM532E1z20+A9FqDC47pSh7buZI7x7lL+VPI/D//NbV9yDQ7h7FIZo
+        6AvxO8jo7GO6m37hEQClNYo=
+X-Google-Smtp-Source: ABdhPJwowhgc63ULwqi1ptjDgHV3SsxPZtcnUFL/kseNnwpRF3WBNlEgzQ4HEtWbrwgeNF5H+4nRZQ==
+X-Received: by 2002:adf:e809:: with SMTP id o9mr18793183wrm.137.1613945722917;
+        Sun, 21 Feb 2021 14:15:22 -0800 (PST)
+Received: from localhost.localdomain (host-79-22-224-43.retail.telecomitalia.it. [79.22.224.43])
+        by smtp.gmail.com with ESMTPSA id h18sm30446261wrm.54.2021.02.21.14.15.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 14:12:29 -0800 (PST)
-Date:   Sun, 21 Feb 2021 17:12:28 -0500
-From:   Akash Melachuri <amelachuri@gmail.com>
-To:     benjamin.tissoires@redhat.com
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [PATCH] HID: ezkey: Fix trailing statements error style and blank
- line after declarations warning style.
-Message-ID: <20210221221228.avvdbmcn5miebpk2@akash.localdomain>
+        Sun, 21 Feb 2021 14:15:22 -0800 (PST)
+From:   Elia Devito <eliadevito@gmail.com>
+Cc:     Elia Devito <eliadevito@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] platform/x86: hp-wmi: add platform profile support
+Date:   Sun, 21 Feb 2021 23:13:40 +0100
+Message-Id: <20210221221339.12395-1-eliadevito@gmail.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <nVb9zC39HBbC5-iweNmNol7ymCjT4iD91ydsZVuo_Upqh2_3eVKaF1X1rbYpZGva-NyrGUW_W2uJIc5RHu1KhBGy7-ejGNYZJyRttjhJT-s=@protonmail.com>
+References: <nVb9zC39HBbC5-iweNmNol7ymCjT4iD91ydsZVuo_Upqh2_3eVKaF1X1rbYpZGva-NyrGUW_W2uJIc5RHu1KhBGy7-ejGNYZJyRttjhJT-s=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the checkpatch.pl errors and warnings:
-ERROR: trailing statements should be on next line
-ERROR: trailing statements should be on next line
-ERROR: trailing statements should be on next line
-WARNING: Missing a blank line after declarations
+Implement support for cool, balanced and performance thermal profile
 
-Signed-off-by: Akash Melachuri <amelachuri@gmail.com>
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
 ---
- drivers/hid/hid-ezkey.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+the "quiet" profile will be implemented with a further patch
 
-diff --git a/drivers/hid/hid-ezkey.c b/drivers/hid/hid-ezkey.c
-index d14f91d78c96..8fa568ac79f9 100644
---- a/drivers/hid/hid-ezkey.c
-+++ b/drivers/hid/hid-ezkey.c
-@@ -30,14 +30,20 @@ static int ez_input_mapping(struct hid_device *hdev, struct hid_input *hi,
- 		return 0;
+v2: added platform_profile_remove() missing call
+v3: apply Barnabás suggestions
+
+ drivers/platform/x86/hp-wmi.c | 97 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 92 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.c
+index 6d7b91b8109b..027a1467d009 100644
+--- a/drivers/platform/x86/hp-wmi.c
++++ b/drivers/platform/x86/hp-wmi.c
+@@ -21,6 +21,7 @@
+ #include <linux/input.h>
+ #include <linux/input/sparse-keymap.h>
+ #include <linux/platform_device.h>
++#include <linux/platform_profile.h>
+ #include <linux/acpi.h>
+ #include <linux/rfkill.h>
+ #include <linux/string.h>
+@@ -119,6 +120,12 @@ enum hp_wireless2_bits {
+ 	HPWMI_POWER_FW_OR_HW	= HPWMI_POWER_BIOS | HPWMI_POWER_HARD,
+ };
  
- 	switch (usage->hid & HID_USAGE) {
--	case 0x230: ez_map_key(BTN_MOUSE);	break;
--	case 0x231: ez_map_rel(REL_WHEEL);	break;
-+	case 0x230:
-+		ez_map_key(BTN_MOUSE);
-+		break;
-+	case 0x231:
-+		ez_map_rel(REL_WHEEL);
-+		break;
- 	/*
- 	 * this keyboard has a scrollwheel implemented in
- 	 * totally broken way. We map this usage temporarily
- 	 * to HWHEEL and handle it in the event quirk handler
- 	 */
--	case 0x232: ez_map_rel(REL_HWHEEL);	break;
-+	case 0x232:
-+		ez_map_rel(REL_HWHEEL);
-+		break;
- 	default:
- 		return 0;
- 	}
-@@ -54,6 +60,7 @@ static int ez_event(struct hid_device *hdev, struct hid_field *field,
- 	/* handle the temporary quirky mapping to HWHEEL */
- 	if (usage->type == EV_REL && usage->code == REL_HWHEEL) {
- 		struct input_dev *input = field->hidinput->input;
++enum hp_thermal_profile {
++	HP_THERMAL_PROFILE_PERFORMANCE	= 0x00,
++	HP_THERMAL_PROFILE_DEFAULT		= 0x01,
++	HP_THERMAL_PROFILE_COOL			= 0x02
++};
 +
- 		input_event(input, usage->type, REL_WHEEL, -value);
- 		return 1;
+ #define IS_HWBLOCKED(x) ((x & HPWMI_POWER_FW_OR_HW) != HPWMI_POWER_FW_OR_HW)
+ #define IS_SWBLOCKED(x) !(x & HPWMI_POWER_SOFT)
+ 
+@@ -159,6 +166,8 @@ static const struct key_entry hp_wmi_keymap[] = {
+ 
+ static struct input_dev *hp_wmi_input_dev;
+ static struct platform_device *hp_wmi_platform_dev;
++static struct platform_profile_handler platform_profile_handler;
++static bool platform_profile_support;
+ 
+ static struct rfkill *wifi_rfkill;
+ static struct rfkill *bluetooth_rfkill;
+@@ -869,11 +878,74 @@ static int __init hp_wmi_rfkill2_setup(struct platform_device *device)
+ 	return err;
+ }
+ 
+-static int thermal_profile_setup(struct platform_device *device)
++static int thermal_profile_get(void)
++{
++	return hp_wmi_read_int(HPWMI_THERMAL_PROFILE_QUERY);
++}
++
++static int thermal_profile_set(int thermal_profile)
++{
++	return hp_wmi_perform_query(HPWMI_THERMAL_PROFILE_QUERY, HPWMI_WRITE, &thermal_profile,
++							   sizeof(thermal_profile), 0);
++}
++
++static int platform_profile_get(struct platform_profile_handler *pprof,
++				enum platform_profile_option *profile)
++{
++	int tp;
++
++	tp = thermal_profile_get();
++	if (tp < 0)
++		return tp;
++
++	switch (tp) {
++	case HP_THERMAL_PROFILE_PERFORMANCE:
++		*profile =  PLATFORM_PROFILE_PERFORMANCE;
++		break;
++	case HP_THERMAL_PROFILE_DEFAULT:
++		*profile =  PLATFORM_PROFILE_BALANCED;
++		break;
++	case HP_THERMAL_PROFILE_COOL:
++		*profile =  PLATFORM_PROFILE_COOL;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int platform_profile_set(struct platform_profile_handler *pprof,
++				enum platform_profile_option profile)
+ {
+ 	int err, tp;
+ 
+-	tp = hp_wmi_read_int(HPWMI_THERMAL_PROFILE_QUERY);
++	switch (profile) {
++	case PLATFORM_PROFILE_PERFORMANCE:
++		tp =  HP_THERMAL_PROFILE_PERFORMANCE;
++		break;
++	case PLATFORM_PROFILE_BALANCED:
++		tp =  HP_THERMAL_PROFILE_DEFAULT;
++		break;
++	case PLATFORM_PROFILE_COOL:
++		tp =  HP_THERMAL_PROFILE_COOL;
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	err = thermal_profile_set(tp);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static int thermal_profile_setup(void)
++{
++	int err, tp;
++
++	tp = thermal_profile_get();
+ 	if (tp < 0)
+ 		return tp;
+ 
+@@ -881,11 +953,23 @@ static int thermal_profile_setup(struct platform_device *device)
+ 	 * call thermal profile write command to ensure that the firmware correctly
+ 	 * sets the OEM variables for the DPTF
+ 	 */
+-	err = hp_wmi_perform_query(HPWMI_THERMAL_PROFILE_QUERY, HPWMI_WRITE, &tp,
+-							   sizeof(tp), 0);
++	err = thermal_profile_set(tp);
+ 	if (err)
+ 		return err;
+ 
++	platform_profile_handler.profile_get = platform_profile_get,
++	platform_profile_handler.profile_set = platform_profile_set,
++
++	set_bit(PLATFORM_PROFILE_COOL, platform_profile_handler.choices);
++	set_bit(PLATFORM_PROFILE_BALANCED, platform_profile_handler.choices);
++	set_bit(PLATFORM_PROFILE_PERFORMANCE, platform_profile_handler.choices);
++
++	err = platform_profile_register(&platform_profile_handler);
++	if (err)
++		return err;
++
++	platform_profile_support = true;
++
+ 	return 0;
+ }
+ 
+@@ -900,7 +984,7 @@ static int __init hp_wmi_bios_setup(struct platform_device *device)
+ 	if (hp_wmi_rfkill_setup(device))
+ 		hp_wmi_rfkill2_setup(device);
+ 
+-	thermal_profile_setup(device);
++	thermal_profile_setup();
+ 
+ 	return 0;
+ }
+@@ -927,6 +1011,9 @@ static int __exit hp_wmi_bios_remove(struct platform_device *device)
+ 		rfkill_destroy(wwan_rfkill);
  	}
+ 
++	if (platform_profile_support)
++		platform_profile_remove();
++
+ 	return 0;
+ }
+ 
 -- 
-2.30.0
+2.29.2
 
