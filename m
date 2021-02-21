@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA673207D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 01:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAF33207D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 01:30:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBUA0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 19:26:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhBUA0s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 19:26:48 -0500
-Received: from smtp.gentoo.org (dev.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DA6C061574;
-        Sat, 20 Feb 2021 16:26:07 -0800 (PST)
-Received: by sf.home (Postfix, from userid 1000)
-        id 58FC65A2208E; Sun, 21 Feb 2021 00:25:59 +0000 (GMT)
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     Sergei Trofimovich <slyfox@gentoo.org>, linux-ia64@vger.kernel.org,
-        "Dmitry V . Levin" <ldv@altlinux.org>
-Subject: [PATCH] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
-Date:   Sun, 21 Feb 2021 00:25:54 +0000
-Message-Id: <20210221002554.333076-2-slyfox@gentoo.org>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210221002554.333076-1-slyfox@gentoo.org>
-References: <20210221002554.333076-1-slyfox@gentoo.org>
+        id S229934AbhBUA3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 19:29:51 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58785 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229811AbhBUA3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 19:29:44 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DjmQD67rZz9sRf;
+        Sun, 21 Feb 2021 11:28:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613867341;
+        bh=vvPVqxIeRBrdK7QCoG+ZE+fB25g/ZXZrgC8+3gmKmVU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CxtB/WwfDqLzBpWk7F+hM1mcDROSx8Pf3TCM1OQWP1gcmmmHSHLzENSlXH2AmBaDx
+         a7UvkzxQQ4Aq87vmbr74Jkl/UzZEGVe8meJkLKg1oaypKep5k8C+IYGUUUjPw99PxS
+         ybXxzL18Mx6CWLlf/suxV1ewcvr2M3JyKyu19ZxWiFP6iFU+hauv1Ihw5TMIz6k6gT
+         jgvAX7hInPTtwrt94N5ny4IsMwoVW3yVsPWhJr6k5Q93guU4H0Dr3M0tt9FDrAhyDB
+         xAoPM0BYiDtpjSDSqe1XRd4TpXQ4M7eQIgMcWufNY6pFHshHZVjis+x4eqeL/Pqa3o
+         bwXH+vywTscOA==
+Date:   Sun, 21 Feb 2021 11:28:50 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alain Volmat <avolmat@me.com>
+Cc:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the arm-soc tree with the arm tree
+Message-ID: <20210221112850.475f6bfb@canb.auug.org.au>
+In-Reply-To: <20210220194524.GA4200@gnbcxl0029.gnb.st.com>
+References: <20210202090135.04b9890e@canb.auug.org.au>
+        <20210215091444.3300fb43@canb.auug.org.au>
+        <20210220194524.GA4200@gnbcxl0029.gnb.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/ef7lLH7RV230qLfJxTM4xik";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In https://bugs.gentoo.org/769614 Dmitry noticed that
-`ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
+--Sig_/ef7lLH7RV230qLfJxTM4xik
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The bug is in mismatch between get/set errors:
+Hi Alain,
 
-static inline long syscall_get_error(struct task_struct *task,
-                                     struct pt_regs *regs)
-{
-        return regs->r10 == -1 ? regs->r8:0;
-}
+On Sat, 20 Feb 2021 20:45:25 +0100 Alain Volmat <avolmat@me.com> wrote:
+>
+> sorry for the delay, is there anything I should do concerning this issue
+> ?
 
-static inline long syscall_get_return_value(struct task_struct *task,
-                                            struct pt_regs *regs)
-{
-        return regs->r8;
-}
+No, it should be taken care of my the maintainers when they get Linus
+to merge their trees.
 
-static inline void syscall_set_return_value(struct task_struct *task,
-                                            struct pt_regs *regs,
-                                            int error, long val)
-{
-        if (error) {
-                /* error < 0, but ia64 uses > 0 return value */
-                regs->r8 = -error;
-                regs->r10 = -1;
-        } else {
-                regs->r8 = val;
-                regs->r10 = 0;
-        }
-}
+--=20
+Cheers,
+Stephen Rothwell
 
-Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
+--Sig_/ef7lLH7RV230qLfJxTM4xik
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-CC: linux-ia64@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-CC: Andrew Morton <akpm@linux-foundation.org>
-Reported-by: Dmitry V. Levin <ldv@altlinux.org>
-Bug: https://bugs.gentoo.org/769614
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
----
- arch/ia64/include/asm/syscall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/arch/ia64/include/asm/syscall.h b/arch/ia64/include/asm/syscall.h
-index 6c6f16e409a8..0d23c0049301 100644
---- a/arch/ia64/include/asm/syscall.h
-+++ b/arch/ia64/include/asm/syscall.h
-@@ -32,7 +32,7 @@ static inline void syscall_rollback(struct task_struct *task,
- static inline long syscall_get_error(struct task_struct *task,
- 				     struct pt_regs *regs)
- {
--	return regs->r10 == -1 ? regs->r8:0;
-+	return regs->r10 == -1 ? -regs->r8:0;
- }
- 
- static inline long syscall_get_return_value(struct task_struct *task,
--- 
-2.30.1
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAxqUMACgkQAVBC80lX
+0GyYUAf/Vw/GkpidQTpEH8ONnilx2Z91ISJkogJAnlqqzEGipZiBmsj3B8XIJMeD
+SHLqQtsFXTb/EoV4piT14k8OpgfGq5jhkavnV8VzDu0MVuipR6RORpAoLLDgZmbp
+ehT/1TAbKzFGFqFGyt05SHvAAPuRx7bdSHdCF6pXaiIeGNTYOLrsr2HO27TtO7rw
+Kx4y0DNUcRSuXmKIwF4tYkRhK8kByBULyQoGRoqONIEkiC2lXNhSBKSbFVBsJXoV
+TYQ49RLM6FozoW7pQvvDTbyD8sgzYAfM2zaORvWP7iKEKNKw+sC+pU1IPnkET3W2
+0IyJnHyRTfABGo84JTN3yWorHdNiRQ==
+=iueg
+-----END PGP SIGNATURE-----
 
+--Sig_/ef7lLH7RV230qLfJxTM4xik--
