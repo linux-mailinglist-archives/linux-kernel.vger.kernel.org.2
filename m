@@ -2,88 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA19320D18
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512E3320D1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230148AbhBUTOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:14:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhBUTOZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:14:25 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA21C061574;
-        Sun, 21 Feb 2021 11:13:45 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id m6so5233145pfk.1;
-        Sun, 21 Feb 2021 11:13:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9okeHahnxkQIyczL5QktCGq4Y0Vq91gH7S23ae5Xnxo=;
-        b=ZVyvhv+PO5zERn53QqLCYhRDu/Jd831HCK2eVChketfdSpEZbSeL1z/aaPFo2vnvR+
-         25NrSf2RBYEw/2jgb4TzsEuXAuu0CgdBWBjN6/FZbldIgnVbOryelwcts9SMGC2vXrcK
-         nrEVbWyHLo6uUnSK8iUnIZ0qBiEKU7OkcysTCPwkxe4FZjdTyHw7514agzy/ZflykECN
-         /K4zIxWGiNMo0ShlxNA1tnKhp+hJjjwVUsbfV3ozj3/iZ7l3MZBbTutwzg0dCEAjjXnL
-         zixXdaV7BfjAZPNbYxmY9kiBshChyxJ0Vbn6VARZHR5TLWr8ZfVX6OTTMePxbFhNOnSr
-         VzFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9okeHahnxkQIyczL5QktCGq4Y0Vq91gH7S23ae5Xnxo=;
-        b=GwU45pWVDHxpBJQbTXEafiXMvWbcB6mXWDor05nKrRKBiNIPSxEqUVPeq52HQYOoC2
-         2TtvhX3Bm11LO0KXXxK76l9eORFASCC0dbQBE6/1udaUfaELtrTaU0xA1FUEyT9a+x0T
-         ujiK7dmc2LRHP5Jee7hYRdwsiO/sA1TArO8vCQQTISTz9t4tsrAm8u5mD0bvZ4aKZsY6
-         bgn5kzuPED79iZgxAX7w6YIoeV7kp4ViuIIznZdonY+sVy1dLdvCZGbttsDKnwQpo548
-         eUeMm5Koefrhe993GZUkQ+AlC5hUBtk4NJ6nw/m4YlOkfKBLlQHCq+yuWXZjfkmS6PSu
-         rxeA==
-X-Gm-Message-State: AOAM530+eqV5ZTK6WbZikV7y3OTHbVKeioQWYQbal55pdkuI+p7hkpKI
-        iYzP5QpYmgFFQvmXx56ufxZRaehT125JDQ+J5ZA=
-X-Google-Smtp-Source: ABdhPJwlEj7b5dtHO9WJKEVfnpgQJ3refQ75n3pGOhZHvQB6zRYMTGIwDLxZYVibZjwv3uNwrpLW2Bu5QHmXRaifhQI=
-X-Received: by 2002:a65:56c6:: with SMTP id w6mr17014227pgs.368.1613934824969;
- Sun, 21 Feb 2021 11:13:44 -0800 (PST)
-MIME-Version: 1.0
-References: <20210216201813.60394-1-xie.he.0141@gmail.com> <YC4sB9OCl5mm3JAw@unreal>
- <CAJht_EN2ZO8r-dpou5M4kkg3o3J5mHvM7NdjS8nigRCGyih7mg@mail.gmail.com>
- <YC5DVTHHd6OOs459@unreal> <CAJht_EOhu+Wsv91yDS5dEt+YgSmGsBnkz=igeTLibenAgR=Tew@mail.gmail.com>
- <YC7GHgYfGmL2wVRR@unreal> <CAJht_EPZ7rVFd-XD6EQD2VJTDtmZZv0HuZvii+7=yhFgVz68VQ@mail.gmail.com>
- <CAJht_EPPMhB0JTtjWtMcGbRYNiZwJeMLWSC5hS6WhWuw5FgZtg@mail.gmail.com>
- <20210219103948.6644e61f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOru3pW6AHN4QVjiaERpLSfg-0G0ZEaqU_hkhX1acv0HQ@mail.gmail.com> <YDIAIwLVQK0P4EQW@unreal>
-In-Reply-To: <YDIAIwLVQK0P4EQW@unreal>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Sun, 21 Feb 2021 11:13:34 -0800
-Message-ID: <CAJht_ENK=X1hXhM2qkwZW6xoFwMB5R+iS0GSnsXR3EERd+S35g@mail.gmail.com>
-Subject: Re: [PATCH net-next RFC v4] net: hdlc_x25: Queue outgoing LAPB frames
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>,
-        Krzysztof Halasa <khc@pm.waw.pl>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S230241AbhBUTPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 14:15:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229956AbhBUTPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 14:15:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 87529601FE;
+        Sun, 21 Feb 2021 19:14:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613934890;
+        bh=T0rAkxWOSDF9tWbpx6HmmhvHRUJc1xmau3Bz9wLbp1g=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=uTf5C2uhC1gNtm582/INehsK70wpVl5x5tw9eKbyZw4Ow5N5Xzo0REi8JBNPj760q
+         f4M12IebmPPd0Nk507AawLD+ibjLteL4DgFAmPH8bxAzJwnnXPDfvLBSi1MaAkbNrv
+         QvmYriSuBfjvtiHxhqoSoEPc9r02D7+WdrT83nBWxzOO+jLYm7c2lqs3zHY7J+ifMx
+         y7/monR5jEmA9tCuaSu4D97VgDugYHi4OVQVhdbrR5W0t0OL9sLeVQ7lApIvrSvGQA
+         ntFu6L/1UsauA9xb5YlviXiajQYYTF3S5kFKkRzb04uutZTXCWkpYEtdDu2B28GsWG
+         jev4MkePDnTVQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7432960191;
+        Sun, 21 Feb 2021 19:14:50 +0000 (UTC)
+Subject: Re: [GIT PULL] Remove oprofile and dcookies for v5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210215050618.hgftdmfmslbdrg3j@vireshk-i7>
+References: <20210215050618.hgftdmfmslbdrg3j@vireshk-i7>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210215050618.hgftdmfmslbdrg3j@vireshk-i7>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/linux.git tags/oprofile-removal-5.12
+X-PR-Tracked-Commit-Id: be65de6b03aa638c46ea51e9d11a92e4914d8103
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 24880bef417f6e9069158c750969d18793427a10
+Message-Id: <161393489041.9182.14381703952935027622.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Feb 2021 19:14:50 +0000
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Robert Richter <rric@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 10:39 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> > Yes, this patch will break backward compatibility. Users with old
-> > scripts will find them no longer working.
->
-> Did you search in debian/fedora code repositories to see if such scripts exist
-> as part of any distro package?
+The pull request you sent on Mon, 15 Feb 2021 10:36:18 +0530:
 
-I just tried to search in Debian and Fedora packages but didn't seem
-to find anything related.
+> git://git.kernel.org/pub/scm/linux/kernel/git/vireshk/linux.git tags/oprofile-removal-5.12
 
-I searched "hdlc" and "x25". The only things I can find are "AX.25"
-related things. But "AX.25" is not related to "X.25".
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/24880bef417f6e9069158c750969d18793427a10
 
-I guess a script that brings a network interface up might not be very
-useful? So we might not be able to find it in public repositories.
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
