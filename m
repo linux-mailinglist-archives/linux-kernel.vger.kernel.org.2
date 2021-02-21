@@ -2,106 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E207320E0C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:42:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8E6320E0A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:42:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbhBUVmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 16:42:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12197 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhBUVmU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 16:42:20 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DkJcV6GNdzlNC8;
-        Mon, 22 Feb 2021 05:39:38 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.202.172) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Feb 2021 05:41:27 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
-        <jan.kiszka@siemens.com>, <kbingham@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        Barry Song <song.bao.hua@hisilicon.com>
-Subject: [PATCH] scripts/gdb: document lx_current is only supported by x86
-Date:   Mon, 22 Feb 2021 10:35:27 +1300
-Message-ID: <20210221213527.22076-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S230370AbhBUVmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 16:42:07 -0500
+Received: from mout.gmx.net ([212.227.15.19]:54621 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230174AbhBUVmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 16:42:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613943592;
+        bh=GJ6uw/0QQ/OVNc65IgAoS6Y2h50ncWbM79nTeMI1iak=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=VQHMI0rbaopv2BK3GOH1NvgchTziZmVDV2KjQJcJsl4ho5/ZqKf8mNihIQj2/LNoW
+         eTllZWf8nvyrfoAo56nB0+K5At8y5twf1vbSjEwt4cQAr0g3dpZnOgSc7Pq3+7pq4T
+         rFJGcB9GLPnMnBy/VgKvn2aYX0M7JBCnSID5pQ1U=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.20.60] ([92.116.180.210]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MysRk-1lzZ2A377S-00w04p; Sun, 21
+ Feb 2021 22:39:52 +0100
+Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
+To:     John Ogness <john.ogness@linutronix.de>,
+        Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+References: <20210218081817.28849-1-john.ogness@linutronix.de>
+ <20210218081817.28849-9-john.ogness@linutronix.de> <YC+9gc/IR8PzeIFf@alley>
+ <875z2o15ha.fsf@jogness.linutronix.de> <8735xs10hi.fsf@jogness.linutronix.de>
+From:   Helge Deller <deller@gmx.de>
+Message-ID: <db43de06-3183-7401-30f2-0e9302cc48e0@gmx.de>
+Date:   Sun, 21 Feb 2021 22:39:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.202.172]
-X-CFilter-Loop: Reflected
+In-Reply-To: <8735xs10hi.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ZJ1Cbc0FtNCQZ2qqu85yNIzy18fhbaTtZ6/w9nBlBYX0j9pTsBd
+ hzZIewj/8kKVHUdKawH57LsnkNnph8DH2flFeTAFRYr7et8SspfbG5mw8LfcKGcO53qENTw
+ eCYcKNyUSZ01azyb5rK5ov/u3GHOEJ1iJKE9K6kZv+RoGjjQsz68NIbikMMiY5NcpUjbF/Q
+ /EoOb3UEm9CPyWLkhwDMQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7TKuTg6RX28=:sn3V7rBz/l8uNG6KlRcMjo
+ PxNl/UCxqVVYqRue+n0AudXo8F2n/UFQLbvmqFvsvdBQVv/FiHqfLNMf95ffFfYKmQLgDJ0MD
+ HlWTM193xsNlgXDiXWoqPZPWt9XsFyKHCDaLTuAMbJL2WgDE3D2C/JN9AMDBVxlgX6iPDEvoq
+ 9tDDRlrlFbSWY55/Hgri5cW+EIfiY5qC36l9zrqbcz97obhiXDrkOK2L35oqgweFFr2bR8yy5
+ 8+l5v5s3Zh6DM+56OwvZOY1nM6I2EH4FLVWfaUt79DfCWSZwTR1KgHi/YubjIsCTQ3KnVsDwt
+ bFcVnnNi+AVTGoXLqvjeS/mlrsuDMqNtW86qc7wkLnVsE81xW13EswMz6wSlZlNbLauAQVuYg
+ viUfxfv+X1ZmTAKSg6pyblW7ulYkfEd9Ea2Qab9HVyupxR2JDD5W4pRy/X9drudQJnoMc5qDQ
+ tMjNQzWcB+IxS+jQOmacnDVVIAsWd+ODlIILdmd4y/tVy4E3HLVf3t6vuhPYwMWXXxgtGaaU2
+ uZ8t6k7enkf4xdeeu7mUgaNS2OYirzv427TEJEOKlPVT3KAccQLsDmfEwKazh643AVB030V7U
+ oBTzLi1NmMTH1mJGRdb51dmqaWFU4bnKqzPSKmU2bG0Y8un4eRs+Y0avAEJk2G16BQ9xm8Gx2
+ Pev+rGXgbkeWvnEtMFlh/WGPmT7wkxbwv6fHOSQILCy5ekLjv7z1Ud4y12kn4aR+9YR5NSzl1
+ +q+iWP/+LKQbubAkp2Zmxe8heW/GXNXMZi79JPnyfOsQ/jYn2I9FfRL2LJRRaoq/ofkIJL7bZ
+ ohsKLgUtnCN2rjyq9rLgieW5Dmk26qo/x2M6Pxq1F+Gn/lUYa7iXss5VbGgyakIYSIXjh8vBZ
+ B4/diUZUCq0eItRue8kw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-lx_current depends on the per_cpu current_task which exists on x86 only:
+On 2/19/21 5:33 PM, John Ogness wrote:
+> Added CC: linux-parisc@vger.kernel.org
+>
+> On 2021-02-19, John Ogness <john.ogness@linutronix.de> wrote:
+>>>> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+>>>> index 20c21a25143d..401df370832b 100644
+>>>> --- a/kernel/printk/printk.c
+>>>> +++ b/kernel/printk/printk.c
+>>>> +/* Return a consistent copy of @syslog_seq. */
+>>>> +static u64 read_syslog_seq_irq(void)
+>>>> +{
+>>>> +	u64 seq;
+>>>> +
+>>>> +	raw_spin_lock_irq(&syslog_lock);
+>>>> +	seq =3D syslog_seq;
+>>>> +	raw_spin_unlock_irq(&syslog_lock);
+>>>
+>>> Is there any particular reason to disable interrupts here?
+>>>
+>>> It would make sense only when the lock could be taken in IRQ
+>>> context. Then we would need to always disable interrupts when
+>>> the lock is taken. And if it is taken in IRQ context, we would
+>>> need to safe flags.
+>>
+>> All other instances of locking @syslog_lock are done with interrupts
+>> disabled. And we have:
+>>
+>> register_console()
+>>    logbuf_lock_irqsave()
+>>      raw_spin_lock(&syslog_lock)
+>>
+>> I suppose I need to go through all the console drivers to see if any
+>> register in interrupt context. If not, that logbuf_lock_irqsave()
+>> should be replaced with logbuf_lock_irq(). And then locking
+>> @syslog_lock will not need to disable interrupts.
+>
+> I found a possible call chain in interrupt context. From arch/parisc
+> there is the interrupt handler:
+>
+> handle_interruption(code=3D1) /* High-priority machine check (HPMC) */
+>    pdc_console_restart()
+>      pdc_console_init_force()
+>        register_console()
+>
+> All other register_console() calls in the kernel are either during init
+> (within __init sections and probe functions) or are clearly not in
+> interrupt context (using mutex, kzalloc, spin_lock_irq, etc).
+>
+> I am not familiar with parisc, but I am assuming handle_interruption()
+> is always called with interrupts disabled (unless the HPMC interrupt is
+> somehow an exception).
 
-arch$ git grep current_task | grep -i per_cpu
-x86/include/asm/current.h:DECLARE_PER_CPU(struct task_struct *, current_task);
-x86/kernel/cpu/common.c:DEFINE_PER_CPU(struct task_struct *, current_task) ____cacheline_aligned =
-x86/kernel/cpu/common.c:EXPORT_PER_CPU_SYMBOL(current_task);
-x86/kernel/cpu/common.c:DEFINE_PER_CPU(struct task_struct *, current_task) = &init_task;
-x86/kernel/cpu/common.c:EXPORT_PER_CPU_SYMBOL(current_task);
-x86/kernel/smpboot.c:	per_cpu(current_task, cpu) = idle;
+Yes, handle_interruption() is the irq handler, running with irqs off.
+HPMC is the crash handler - it's called when the kernel will stop
+anyway. pdc_console is a very basic firmware console which prints
+the last messages before the machine halts on fatal errors.
+So, this code it's not the typical use case....
 
-On other architectures, lx_current() will lead to a python exception:
-(gdb) p $lx_current().pid
-Python Exception <class 'gdb.error'> No symbol "current_task" in current context.:
-Error occurred in Python: No symbol "current_task" in current context.
-
-To avoid more people struggling and wasting time in other architectures,
-document it.
-
-Cc: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- Documentation/dev-tools/gdb-kernel-debugging.rst |  2 +-
- scripts/gdb/linux/cpus.py                        | 10 ++++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/dev-tools/gdb-kernel-debugging.rst b/Documentation/dev-tools/gdb-kernel-debugging.rst
-index 4756f6b3a04e..1586901b683c 100644
---- a/Documentation/dev-tools/gdb-kernel-debugging.rst
-+++ b/Documentation/dev-tools/gdb-kernel-debugging.rst
-@@ -114,7 +114,7 @@ Examples of using the Linux-provided gdb helpers
-     [     0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
-     ....
- 
--- Examine fields of the current task struct::
-+- Examine fields of the current task struct(supported by x86 only)::
- 
-     (gdb) p $lx_current().pid
-     $1 = 4998
-diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
-index 008e62f3190d..f382762509d3 100644
---- a/scripts/gdb/linux/cpus.py
-+++ b/scripts/gdb/linux/cpus.py
-@@ -156,6 +156,13 @@ Note that VAR has to be quoted as string."""
- 
- PerCpu()
- 
-+def get_current_task(cpu):
-+    if utils.is_target_arch("x86"):
-+         var_ptr = gdb.parse_and_eval("&current_task")
-+         return per_cpu(var_ptr, cpu).dereference()
-+    else:
-+        raise gdb.GdbError("Sorry, obtaining the current task is not yet "
-+                           "supported with this arch")
- 
- class LxCurrentFunc(gdb.Function):
-     """Return current task.
-@@ -167,8 +174,7 @@ number. If CPU is omitted, the CPU of the current context is used."""
-         super(LxCurrentFunc, self).__init__("lx_current")
- 
-     def invoke(self, cpu=-1):
--        var_ptr = gdb.parse_and_eval("&current_task")
--        return per_cpu(var_ptr, cpu).dereference()
-+        return get_current_task(cpu)
- 
- 
- LxCurrentFunc()
--- 
-2.25.1
-
+Helge
