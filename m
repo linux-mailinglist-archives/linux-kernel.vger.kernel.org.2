@@ -2,948 +2,484 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44967320D13
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EC28320D14
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhBUTMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:12:19 -0500
-Received: from mout.gmx.net ([212.227.15.15]:45345 "EHLO mout.gmx.net"
+        id S230207AbhBUTOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 14:14:06 -0500
+Received: from mga12.intel.com ([192.55.52.136]:6751 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229999AbhBUTMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:12:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613934624;
-        bh=Gnyw3ntDXzq5J+pulO1CLr/hLoiws9/OqNz9CVLVugo=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=SfGqHuhRbXbRGAuifza6fX39bI7JSNC/9hfgQJ2rdbCAs8LbA6MOFwMdcbehAWJlN
-         /fQObsJaCfp2lHEh27ae+7mCrsmHiXvX259GCHBoINTn7GqilY7sRgL6PWBfHOhieW
-         dv35h1WCHdvygp85fqwSESOhnhe20dTrsItarfIM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
- (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MFbRs-1l3Q013fVm-00HBTD; Sun, 21 Feb 2021 20:10:24 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     John Wood <john.wood@gmx.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 6/8] selftests/brute: Add tests for the Brute LSM
-Date:   Sun, 21 Feb 2021 16:49:17 +0100
-Message-Id: <20210221154919.68050-7-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210221154919.68050-1-john.wood@gmx.com>
-References: <20210221154919.68050-1-john.wood@gmx.com>
+        id S230119AbhBUTOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 14:14:01 -0500
+IronPort-SDR: Aw9UAae7/uIMNa0fiCAMHtUq6mtOSFad2Z8uHcKrXK1n56sSuSqFLZ9GSQNm6GRPI8B2RBE4pK
+ FFDoblU+s88w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="163466057"
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="gz'50?scan'50,208,50";a="163466057"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 11:13:21 -0800
+IronPort-SDR: oeAvki2pjhOYidxkzSOrfJ1V5ZDJTuKICOGn0ryS+etAIXs2zazB/+f3e0RKaNvSwzIOgiXazC
+ NDQDs7Jam83Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="gz'50?scan'50,208,50";a="365890143"
+Received: from lkp-server01.sh.intel.com (HELO 48acba29b68a) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 21 Feb 2021 11:13:18 -0800
+Received: from kbuild by 48acba29b68a with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lDuAQ-0000Ox-Au; Sun, 21 Feb 2021 19:13:18 +0000
+Date:   Mon, 22 Feb 2021 03:12:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Robin Murphy <robin.murphy@arm.com>
+Subject: arch/mips/bmips/dma.c:55:13: warning: no previous prototype for
+ 'dma_to_phys'
+Message-ID: <202102220321.Bt6gpMVH-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:eKkNKSkGjbtNgTlJujXkC2f8Pg87GIo90kS3LmnUYSjVMr2Wqye
- EMwnTO1UqT+O6wAWReyrVZkSSEWxIwb2tOH5U9jtwOm6TiPWCNi4dqUtVWUr9D2gt36CABQ
- 1dlJK6ZO3W95BfpxPT3ayWXrPsRARBZPqQ4XtdG9IxGfwvrDlbtjnV62/wgtsZgQKphMqiK
- nO/bjMzNGc+9y9Q1J/gpg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8VSAE4T77jc=:dNtm2eg6T/fvgg7gEAT5ii
- MWBI5wgS6l5MaveTzDykka9KM7e4wdOypFFspy7Y6WzkihhVuUE731CTCYszRbGzu+/69/ndp
- vVzA8oeCrQadsDOFgI2jASys/wD+sR3AcMALp65sam8zm3OGKmjmCEdvFLyzhykYvXdQDaax0
- r1hiXxs6A75sASESoH6d5RYM53WdEKxvQ2jU55IsZWyggsrRJlnJDkxxWvRgHS35uzTKp3dDg
- wYaNlpnaRsbn8UF+QkVcyBATLXhol0u3dCYc/WxTB5DqyfMJNLiizR8JGxtGP2FL9/LKUh+hF
- f+VLBzwuc1nZW7PV1tPClLgsKLyrqPteDfSfLNNigtZcNi89qglfdxbv8TxuCReh/HRzLtmOc
- sFsFUEZCcj9P4GKcASOlpW1QI/skbtJyFvyh9coX5Jbest8rO39b0MGOT62rwi8ALvnnnTk9m
- J9umipwBY3P0f4qrpURCvzHyhv96xSdkM1utgqLMbhl2KZf7xF/5DKGCKRo1buXi5eXsdcYQp
- 4hwKevacFlezlofK4vQstokv60T9PyXAke8TNKQ9OANynANV1mP4sUxAn34iwXC9WZs1HXmxA
- ionMMVi+1wdI6URJIg88nZyPPe/JSHzrB59ev7IzGLJza1338+VBE0UyRghxZykQ+iVztrpGI
- OsEdfo/44T3kca4E+8svOnzf8s/pFcn1zMz2l0sgD/7Fiq89BthvtRj6odlnXMcFWM/G/HOAI
- 8RzZr/aJbLDyojIDTR9ELx5ConEuJpN5kNvshwq5FDyQ7raIbi/GgBCcE487N/iZcceLeHUo+
- pIyIhjlWD9eO7rFv3flsYD/ODLcgh6VE6INNvzR+vBZfSev/i4bg4WsStk/tTXNQaLGW/x08i
- N9q6f1Pdvje58tVZwkBw==
+Content-Type: multipart/mixed; boundary="T4sUOijqQbZv57TR"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add tests to check the brute LSM functionality and cover fork/exec brute
-force attacks crossing the following privilege boundaries:
 
-1.- setuid process
-2.- privilege changes
-3.- network to local
+--T4sUOijqQbZv57TR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Also, as a first step check that fork/exec brute force attacks without
-crossing any privilege boundariy already commented doesn't trigger the
-detection and mitigation stage.
+Hi Christoph,
 
-All the fork brute force attacks are carried out via the "exec" app to
-avoid the triggering of the "brute" LSM over the shell script running
-the tests.
+FYI, the error/warning still remains.
 
-Signed-off-by: John Wood <john.wood@gmx.com>
-=2D--
- tools/testing/selftests/Makefile         |   1 +
- tools/testing/selftests/brute/.gitignore |   2 +
- tools/testing/selftests/brute/Makefile   |   5 +
- tools/testing/selftests/brute/config     |   1 +
- tools/testing/selftests/brute/exec.c     |  44 ++
- tools/testing/selftests/brute/test.c     | 507 +++++++++++++++++++++++
- tools/testing/selftests/brute/test.sh    | 226 ++++++++++
- 7 files changed, 786 insertions(+)
- create mode 100644 tools/testing/selftests/brute/.gitignore
- create mode 100644 tools/testing/selftests/brute/Makefile
- create mode 100644 tools/testing/selftests/brute/config
- create mode 100644 tools/testing/selftests/brute/exec.c
- create mode 100644 tools/testing/selftests/brute/test.c
- create mode 100755 tools/testing/selftests/brute/test.sh
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   55f62bc873477dae2c45bbbc30b86cf3e0982f3b
+commit: 7bc5c428a660d4d1bc95ba54bf4cb6bccf8c3029 dma-direct: remove __dma_to_phys
+date:   5 months ago
+config: mips-randconfig-r013-20210222 (attached as .config)
+compiler: mipsel-linux-gcc (GCC) 9.3.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7bc5c428a660d4d1bc95ba54bf4cb6bccf8c3029
+        git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+        git fetch --no-tags linus master
+        git checkout 7bc5c428a660d4d1bc95ba54bf4cb6bccf8c3029
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Ma=
-kefile
-index 8a917cb4426a..e63f040e2859 100644
-=2D-- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -2,6 +2,7 @@
- TARGETS =3D arm64
- TARGETS +=3D bpf
- TARGETS +=3D breakpoints
-+TARGETS +=3D brute
- TARGETS +=3D capabilities
- TARGETS +=3D cgroup
- TARGETS +=3D clone3
-diff --git a/tools/testing/selftests/brute/.gitignore b/tools/testing/self=
-tests/brute/.gitignore
-new file mode 100644
-index 000000000000..1ccc45251a1b
-=2D-- /dev/null
-+++ b/tools/testing/selftests/brute/.gitignore
-@@ -0,0 +1,2 @@
-+exec
-+test
-diff --git a/tools/testing/selftests/brute/Makefile b/tools/testing/selfte=
-sts/brute/Makefile
-new file mode 100644
-index 000000000000..52662d0b484c
-=2D-- /dev/null
-+++ b/tools/testing/selftests/brute/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+CFLAGS +=3D -Wall -O2
-+TEST_PROGS :=3D test.sh
-+TEST_GEN_FILES :=3D exec test
-+include ../lib.mk
-diff --git a/tools/testing/selftests/brute/config b/tools/testing/selftest=
-s/brute/config
-new file mode 100644
-index 000000000000..3587b7bf6c23
-=2D-- /dev/null
-+++ b/tools/testing/selftests/brute/config
-@@ -0,0 +1 @@
-+CONFIG_SECURITY_FORK_BRUTE=3Dy
-diff --git a/tools/testing/selftests/brute/exec.c b/tools/testing/selftest=
-s/brute/exec.c
-new file mode 100644
-index 000000000000..1bbe72f6e4bd
-=2D-- /dev/null
-+++ b/tools/testing/selftests/brute/exec.c
-@@ -0,0 +1,44 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <libgen.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+
-+static __attribute__((noreturn)) void error_failure(const char *message)
-+{
-+	perror(message);
-+	exit(EXIT_FAILURE);
-+}
-+
-+#define PROG_NAME basename(argv[0])
-+
-+int main(int argc, char **argv)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	if (argc < 2) {
-+		printf("Usage: %s <EXECUTABLE>\n", PROG_NAME);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	pid =3D fork();
-+	if (pid < 0)
-+		error_failure("fork");
-+
-+	/* Child process */
-+	if (!pid) {
-+		execve(argv[1], &argv[1], NULL);
-+		error_failure("execve");
-+	}
-+
-+	/* Parent process */
-+	pid =3D waitpid(pid, &status, 0);
-+	if (pid < 0)
-+		error_failure("waitpid");
-+
-+	return EXIT_SUCCESS;
-+}
-diff --git a/tools/testing/selftests/brute/test.c b/tools/testing/selftest=
-s/brute/test.c
-new file mode 100644
-index 000000000000..44c32f446dca
-=2D-- /dev/null
-+++ b/tools/testing/selftests/brute/test.c
-@@ -0,0 +1,507 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <arpa/inet.h>
-+#include <errno.h>
-+#include <libgen.h>
-+#include <pwd.h>
-+#include <signal.h>
-+#include <stdbool.h>
-+#include <stdint.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/socket.h>
-+#include <sys/time.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+
-+static const char *message =3D "message";
-+
-+enum mode {
-+	MODE_NONE,
-+	MODE_CRASH,
-+	MODE_SERVER_CRASH,
-+	MODE_CLIENT,
-+};
-+
-+enum crash_after {
-+	CRASH_AFTER_NONE,
-+	CRASH_AFTER_FORK,
-+	CRASH_AFTER_EXEC,
-+};
-+
-+enum signal_from {
-+	SIGNAL_FROM_NONE,
-+	SIGNAL_FROM_USER,
-+	SIGNAL_FROM_KERNEL,
-+};
-+
-+struct args {
-+	uint32_t ip;
-+	uint16_t port;
-+	int counter;
-+	long timeout;
-+	enum mode mode;
-+	enum crash_after crash_after;
-+	enum signal_from signal_from;
-+	unsigned char has_counter : 1;
-+	unsigned char has_change_priv : 1;
-+	unsigned char has_ip : 1;
-+	unsigned char has_port : 1;
-+	unsigned char has_timeout : 1;
-+};
-+
-+#define OPT_STRING "hm:c:s:n:Ca:p:t:"
-+
-+static void usage(const char *prog)
-+{
-+	printf("Usage: %s <OPTIONS>\n", prog);
-+	printf("OPTIONS:\n");
-+	printf("  -h: Show this help and exit. Optional.\n");
-+	printf("  -m (crash | server_crash | client): Mode. Required.\n");
-+	printf("Options for crash mode:\n");
-+	printf("  -c (fork | exec): Crash after. Optional.\n");
-+	printf("  -s (user | kernel): Signal from. Required.\n");
-+	printf("  -n counter: Number of crashes.\n");
-+	printf("              Required if the option -c is used.\n");
-+	printf("              Not used without the option -c.\n");
-+	printf("              Range from 1 to INT_MAX.\n");
-+	printf("  -C: Change privileges before crash. Optional.\n");
-+	printf("Options for server_crash mode:\n");
-+	printf("  -a ip: Ip v4 address to accept. Required.\n");
-+	printf("  -p port: Port number. Required.\n");
-+	printf("           Range from 1 to UINT16_MAX.\n");
-+	printf("  -t secs: Accept timeout. Required.\n");
-+	printf("           Range from 1 to LONG_MAX.\n");
-+	printf("  -c (fork | exec): Crash after. Required.\n");
-+	printf("  -s (user | kernel): Signal from. Required.\n");
-+	printf("  -n counter: Number of crashes. Required.\n");
-+	printf("              Range from 1 to INT_MAX.\n");
-+	printf("Options for client mode:\n");
-+	printf("  -a ip: Ip v4 address to connect. Required.\n");
-+	printf("  -p port: Port number. Required.\n");
-+	printf("           Range from 1 to UINT16_MAX.\n");
-+	printf("  -t secs: Connect timeout. Required.\n");
-+	printf("           Range from 1 to LONG_MAX.\n");
-+}
-+
-+static __attribute__((noreturn)) void info_failure(const char *message,
-+						   const char *prog)
-+{
-+	printf("%s\n", message);
-+	usage(prog);
-+	exit(EXIT_FAILURE);
-+}
-+
-+static enum mode get_mode(const char *text, const char *prog)
-+{
-+	if (!strcmp(text, "crash"))
-+		return MODE_CRASH;
-+
-+	if (!strcmp(text, "server_crash"))
-+		return MODE_SERVER_CRASH;
-+
-+	if (!strcmp(text, "client"))
-+		return MODE_CLIENT;
-+
-+	info_failure("Invalid mode option [-m].", prog);
-+}
-+
-+static enum crash_after get_crash_after(const char *text, const char *pro=
-g)
-+{
-+	if (!strcmp(text, "fork"))
-+		return CRASH_AFTER_FORK;
-+
-+	if (!strcmp(text, "exec"))
-+		return CRASH_AFTER_EXEC;
-+
-+	info_failure("Invalid crash after option [-c].", prog);
-+}
-+
-+static enum signal_from get_signal_from(const char *text, const char *pro=
-g)
-+{
-+	if (!strcmp(text, "user"))
-+		return SIGNAL_FROM_USER;
-+
-+	if (!strcmp(text, "kernel"))
-+		return SIGNAL_FROM_KERNEL;
-+
-+	info_failure("Invalid signal from option [-s]", prog);
-+}
-+
-+static int get_counter(const char *text, const char *prog)
-+{
-+	int counter;
-+
-+	counter =3D atoi(text);
-+	if (counter > 0)
-+		return counter;
-+
-+	info_failure("Invalid counter option [-n].", prog);
-+}
-+
-+static __attribute__((noreturn)) void error_failure(const char *message)
-+{
-+	perror(message);
-+	exit(EXIT_FAILURE);
-+}
-+
-+static uint32_t get_ip(const char *text, const char *prog)
-+{
-+	int ret;
-+	uint32_t ip;
-+
-+	ret =3D inet_pton(AF_INET, text, &ip);
-+	if (!ret)
-+		info_failure("Invalid ip option [-a].", prog);
-+	else if (ret < 0)
-+		error_failure("inet_pton");
-+
-+	return ip;
-+}
-+
-+static uint16_t get_port(const char *text, const char *prog)
-+{
-+	long port;
-+
-+	port =3D atol(text);
-+	if ((port > 0) && (port <=3D UINT16_MAX))
-+		return htons(port);
-+
-+	info_failure("Invalid port option [-p].", prog);
-+}
-+
-+static long get_timeout(const char *text, const char *prog)
-+{
-+	long timeout;
-+
-+	timeout =3D atol(text);
-+	if (timeout > 0)
-+		return timeout;
-+
-+	info_failure("Invalid timeout option [-t].", prog);
-+}
-+
-+static void check_args(const struct args *args, const char *prog)
-+{
-+	if (args->mode =3D=3D MODE_CRASH && args->crash_after !=3D CRASH_AFTER_N=
-ONE &&
-+	    args->signal_from !=3D SIGNAL_FROM_NONE && args->has_counter &&
-+	    !args->has_ip && !args->has_port && !args->has_timeout)
-+		return;
-+
-+	if (args->mode =3D=3D MODE_CRASH && args->signal_from !=3D SIGNAL_FROM_N=
-ONE &&
-+	    args->crash_after =3D=3D CRASH_AFTER_NONE && !args->has_counter &&
-+	    !args->has_ip && !args->has_port && !args->has_timeout)
-+		return;
-+
-+	if (args->mode =3D=3D MODE_SERVER_CRASH && args->has_ip && args->has_por=
-t &&
-+	    args->has_timeout && args->crash_after !=3D CRASH_AFTER_NONE &&
-+	    args->signal_from !=3D SIGNAL_FROM_NONE && args->has_counter &&
-+	    !args->has_change_priv)
-+		return;
-+
-+	if (args->mode =3D=3D MODE_CLIENT && args->has_ip && args->has_port &&
-+	    args->has_timeout && args->crash_after =3D=3D CRASH_AFTER_NONE &&
-+	    args->signal_from =3D=3D SIGNAL_FROM_NONE && !args->has_counter &&
-+	    !args->has_change_priv)
-+		return;
-+
-+	info_failure("Invalid use of options.", prog);
-+}
-+
-+static uid_t get_non_root_uid(void)
-+{
-+	struct passwd *pwent;
-+	uid_t uid;
-+
-+	while (true) {
-+		errno =3D 0;
-+		pwent =3D getpwent();
-+		if (!pwent) {
-+			if (errno) {
-+				perror("getpwent");
-+				endpwent();
-+				exit(EXIT_FAILURE);
-+			}
-+			break;
-+		}
-+
-+		if (pwent->pw_uid) {
-+			uid =3D pwent->pw_uid;
-+			endpwent();
-+			return uid;
-+		}
-+	}
-+
-+	endpwent();
-+	printf("A user different of root is needed.\n");
-+	exit(EXIT_FAILURE);
-+}
-+
-+static inline void do_sigsegv(void)
-+{
-+	int *p =3D NULL;
-+	*p =3D 0;
-+}
-+
-+static void do_sigkill(void)
-+{
-+	int ret;
-+
-+	ret =3D kill(getpid(), SIGKILL);
-+	if (ret)
-+		error_failure("kill");
-+}
-+
-+static void crash(enum signal_from signal_from, bool change_priv)
-+{
-+	int ret;
-+
-+	if (change_priv) {
-+		ret =3D setuid(get_non_root_uid());
-+		if (ret)
-+			error_failure("setuid");
-+	}
-+
-+	if (signal_from =3D=3D SIGNAL_FROM_KERNEL)
-+		do_sigsegv();
-+
-+	do_sigkill();
-+}
-+
-+static void execve_crash(char *const argv[])
-+{
-+	execve(argv[0], argv, NULL);
-+	error_failure("execve");
-+}
-+
-+static void exec_crash_user(void)
-+{
-+	char *const argv[] =3D {
-+		"./test", "-m", "crash", "-s", "user", NULL,
-+	};
-+
-+	execve_crash(argv);
-+}
-+
-+static void exec_crash_user_change_priv(void)
-+{
-+	char *const argv[] =3D {
-+		"./test", "-m", "crash", "-s", "user", "-C", NULL,
-+	};
-+
-+	execve_crash(argv);
-+}
-+
-+static void exec_crash_kernel(void)
-+{
-+	char *const argv[] =3D {
-+		"./test", "-m", "crash", "-s", "kernel", NULL,
-+	};
-+
-+	execve_crash(argv);
-+}
-+
-+static void exec_crash_kernel_change_priv(void)
-+{
-+	char *const argv[] =3D {
-+		"./test", "-m", "crash", "-s", "kernel", "-C", NULL,
-+	};
-+
-+	execve_crash(argv);
-+}
-+
-+static void exec_crash(enum signal_from signal_from, bool change_priv)
-+{
-+	if (signal_from =3D=3D SIGNAL_FROM_USER && !change_priv)
-+		exec_crash_user();
-+	if (signal_from =3D=3D SIGNAL_FROM_USER && change_priv)
-+		exec_crash_user_change_priv();
-+	if (signal_from =3D=3D SIGNAL_FROM_KERNEL && !change_priv)
-+		exec_crash_kernel();
-+	if (signal_from =3D=3D SIGNAL_FROM_KERNEL && change_priv)
-+		exec_crash_kernel_change_priv();
-+}
-+
-+static void do_crash(enum crash_after crash_after, enum signal_from signa=
-l_from,
-+		     int counter, bool change_priv)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	if (crash_after =3D=3D CRASH_AFTER_NONE)
-+		crash(signal_from, change_priv);
-+
-+	while (counter > 0) {
-+		pid =3D fork();
-+		if (pid < 0)
-+			error_failure("fork");
-+
-+		/* Child process */
-+		if (!pid) {
-+			if (crash_after =3D=3D CRASH_AFTER_FORK)
-+				crash(signal_from, change_priv);
-+
-+			exec_crash(signal_from, change_priv);
-+		}
-+
-+		/* Parent process */
-+		counter -=3D 1;
-+		pid =3D waitpid(pid, &status, 0);
-+		if (pid < 0)
-+			error_failure("waitpid");
-+	}
-+}
-+
-+static __attribute__((noreturn)) void error_close_failure(const char *mes=
-sage,
-+							  int fd)
-+{
-+	perror(message);
-+	close(fd);
-+	exit(EXIT_FAILURE);
-+}
-+
-+static void do_server(uint32_t ip, uint16_t port, long accept_timeout)
-+{
-+	int sockfd;
-+	int ret;
-+	struct sockaddr_in address;
-+	struct timeval timeout;
-+	int newsockfd;
-+
-+	sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
-+	if (sockfd < 0)
-+		error_failure("socket");
-+
-+	address.sin_family =3D AF_INET;
-+	address.sin_addr.s_addr =3D ip;
-+	address.sin_port =3D port;
-+
-+	ret =3D bind(sockfd, (const struct sockaddr *)&address, sizeof(address))=
-;
-+	if (ret)
-+		error_close_failure("bind", sockfd);
-+
-+	ret =3D listen(sockfd, 1);
-+	if (ret)
-+		error_close_failure("listen", sockfd);
-+
-+	timeout.tv_sec =3D accept_timeout;
-+	timeout.tv_usec =3D 0;
-+	ret =3D setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,
-+			 (const struct timeval *)&timeout, sizeof(timeout));
-+	if (ret)
-+		error_close_failure("setsockopt", sockfd);
-+
-+	newsockfd =3D accept(sockfd, NULL, NULL);
-+	if (newsockfd < 0)
-+		error_close_failure("accept", sockfd);
-+
-+	close(sockfd);
-+	close(newsockfd);
-+}
-+
-+static void do_client(uint32_t ip, uint16_t port, long connect_timeout)
-+{
-+	int sockfd;
-+	int ret;
-+	struct timeval timeout;
-+	struct sockaddr_in address;
-+
-+	sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
-+	if (sockfd < 0)
-+		error_failure("socket");
-+
-+	timeout.tv_sec =3D connect_timeout;
-+	timeout.tv_usec =3D 0;
-+	ret =3D setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO,
-+			 (const struct timeval *)&timeout, sizeof(timeout));
-+	if (ret)
-+		error_close_failure("setsockopt", sockfd);
-+
-+	address.sin_family =3D AF_INET;
-+	address.sin_addr.s_addr =3D ip;
-+	address.sin_port =3D port;
-+
-+	ret =3D connect(sockfd, (const struct sockaddr *)&address,
-+		      sizeof(address));
-+	if (ret)
-+		error_close_failure("connect", sockfd);
-+
-+	ret =3D write(sockfd, message, strlen(message));
-+	if (ret < 0)
-+		error_close_failure("write", sockfd);
-+
-+	close(sockfd);
-+}
-+
-+#define PROG_NAME basename(argv[0])
-+
-+int main(int argc, char **argv)
-+{
-+	int opt;
-+	struct args args =3D {
-+		.mode =3D MODE_NONE,
-+		.crash_after =3D CRASH_AFTER_NONE,
-+		.signal_from =3D SIGNAL_FROM_NONE,
-+		.has_counter =3D false,
-+		.has_change_priv =3D false,
-+		.has_ip =3D false,
-+		.has_port =3D false,
-+		.has_timeout =3D false,
-+	};
-+
-+	while ((opt =3D getopt(argc, argv, OPT_STRING)) !=3D -1) {
-+		switch (opt) {
-+		case 'h':
-+			usage(PROG_NAME);
-+			return EXIT_SUCCESS;
-+		case 'm':
-+			args.mode =3D get_mode(optarg, PROG_NAME);
-+			break;
-+		case 'c':
-+			args.crash_after =3D get_crash_after(optarg, PROG_NAME);
-+			break;
-+		case 's':
-+			args.signal_from =3D get_signal_from(optarg, PROG_NAME);
-+			break;
-+		case 'n':
-+			args.counter =3D get_counter(optarg, PROG_NAME);
-+			args.has_counter =3D true;
-+			break;
-+		case 'C':
-+			args.has_change_priv =3D true;
-+			break;
-+		case 'a':
-+			args.ip =3D get_ip(optarg, PROG_NAME);
-+			args.has_ip =3D true;
-+			break;
-+		case 'p':
-+			args.port =3D get_port(optarg, PROG_NAME);
-+			args.has_port =3D true;
-+			break;
-+		case 't':
-+			args.timeout =3D get_timeout(optarg, PROG_NAME);
-+			args.has_timeout =3D true;
-+			break;
-+		default:
-+			usage(PROG_NAME);
-+			return EXIT_FAILURE;
-+		}
-+	}
-+
-+	check_args(&args, PROG_NAME);
-+
-+	if (args.mode =3D=3D MODE_CRASH) {
-+		do_crash(args.crash_after, args.signal_from, args.counter,
-+			 args.has_change_priv);
-+	} else if (args.mode =3D=3D MODE_SERVER_CRASH) {
-+		do_server(args.ip, args.port, args.timeout);
-+		do_crash(args.crash_after, args.signal_from, args.counter,
-+			 false);
-+	} else if (args.mode =3D=3D MODE_CLIENT) {
-+		do_client(args.ip, args.port, args.timeout);
-+	}
-+
-+	return EXIT_SUCCESS;
-+}
-diff --git a/tools/testing/selftests/brute/test.sh b/tools/testing/selftes=
-ts/brute/test.sh
-new file mode 100755
-index 000000000000..f53f26ae5b96
-=2D-- /dev/null
-+++ b/tools/testing/selftests/brute/test.sh
-@@ -0,0 +1,226 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+
-+TCID=3D"test.sh"
-+
-+KSFT_PASS=3D0
-+KSFT_FAIL=3D1
-+KSFT_SKIP=3D4
-+
-+errno=3D$KSFT_PASS
-+
-+check_root()
-+{
-+	local uid=3D$(id -u)
-+	if [ $uid -ne 0 ]; then
-+		echo $TCID: must be run as root >&2
-+		exit $KSFT_SKIP
-+	fi
-+}
-+
-+count_fork_matches()
-+{
-+	dmesg | grep "brute: Fork brute force attack detected" | wc -l
-+}
-+
-+assert_equal()
-+{
-+	local val1=3D$1
-+	local val2=3D$2
-+
-+	if [ $val1 -eq $val2 ]; then
-+		echo "$TCID: $message [PASS]"
-+	else
-+		echo "$TCID: $message [FAIL]"
-+		errno=3D$KSFT_FAIL
-+	fi
-+}
-+
-+test_fork_user()
-+{
-+	COUNTER=3D20
-+
-+	old_count=3D$(count_fork_matches)
-+	./exec test -m crash -c fork -s user -n $COUNTER
-+	new_count=3D$(count_fork_matches)
-+
-+	message=3D"Fork attack (user signals, no bounds crossed)"
-+	assert_equal $old_count $new_count
-+}
-+
-+test_fork_kernel()
-+{
-+	old_count=3D$(count_fork_matches)
-+	./exec test -m crash -c fork -s kernel -n $COUNTER
-+	new_count=3D$(count_fork_matches)
-+
-+	message=3D"Fork attack (kernel signals, no bounds crossed)"
-+	assert_equal $old_count $new_count
-+}
-+
-+count_exec_matches()
-+{
-+	dmesg | grep "brute: Exec brute force attack detected" | wc -l
-+}
-+
-+test_exec_user()
-+{
-+	old_count=3D$(count_exec_matches)
-+	./test -m crash -c exec -s user -n $COUNTER
-+	new_count=3D$(count_exec_matches)
-+
-+	message=3D"Exec attack (user signals, no bounds crossed)"
-+	assert_equal $old_count $new_count
-+}
-+
-+test_exec_kernel()
-+{
-+	old_count=3D$(count_exec_matches)
-+	./test -m crash -c exec -s kernel -n $COUNTER
-+	new_count=3D$(count_exec_matches)
-+
-+	message=3D"Exec attack (kernel signals, no bounds crossed)"
-+	assert_equal $old_count $new_count
-+}
-+
-+assert_not_equal()
-+{
-+	local val1=3D$1
-+	local val2=3D$2
-+
-+	if [ $val1 -ne $val2 ]; then
-+		echo $TCID: $message [PASS]
-+	else
-+		echo $TCID: $message [FAIL]
-+		errno=3D$KSFT_FAIL
-+	fi
-+}
-+
-+test_fork_kernel_setuid()
-+{
-+	old_count=3D$(count_fork_matches)
-+	chmod u+s test
-+	./exec test -m crash -c fork -s kernel -n $COUNTER
-+	chmod u-s test
-+	new_count=3D$(count_fork_matches)
-+
-+	message=3D"Fork attack (kernel signals, setuid binary)"
-+	assert_not_equal $old_count $new_count
-+}
-+
-+test_exec_kernel_setuid()
-+{
-+	old_count=3D$(count_exec_matches)
-+	chmod u+s test
-+	./test -m crash -c exec -s kernel -n $COUNTER
-+	chmod u-s test
-+	new_count=3D$(count_exec_matches)
-+
-+	message=3D"Exec attack (kernel signals, setuid binary)"
-+	assert_not_equal $old_count $new_count
-+}
-+
-+test_fork_kernel_change_priv()
-+{
-+	old_count=3D$(count_fork_matches)
-+	./exec test -m crash -c fork -s kernel -n $COUNTER -C
-+	new_count=3D$(count_fork_matches)
-+
-+	message=3D"Fork attack (kernel signals, change privileges)"
-+	assert_not_equal $old_count $new_count
-+}
-+
-+test_exec_kernel_change_priv()
-+{
-+	old_count=3D$(count_exec_matches)
-+	./test -m crash -c exec -s kernel -n $COUNTER -C
-+	new_count=3D$(count_exec_matches)
-+
-+	message=3D"Exec attack (kernel signals, change privileges)"
-+	assert_not_equal $old_count $new_count
-+}
-+
-+network_ns_setup()
-+{
-+	local vnet_name=3D$1
-+	local veth_name=3D$2
-+	local ip_src=3D$3
-+	local ip_dst=3D$4
-+
-+	ip netns add $vnet_name
-+	ip link set $veth_name netns $vnet_name
-+	ip -n $vnet_name addr add $ip_src/24 dev $veth_name
-+	ip -n $vnet_name link set $veth_name up
-+	ip -n $vnet_name route add $ip_dst/24 dev $veth_name
-+}
-+
-+network_setup()
-+{
-+	VETH0_NAME=3Dveth0
-+	VNET0_NAME=3Dvnet0
-+	VNET0_IP=3D10.0.1.0
-+	VETH1_NAME=3Dveth1
-+	VNET1_NAME=3Dvnet1
-+	VNET1_IP=3D10.0.2.0
-+
-+	ip link add $VETH0_NAME type veth peer name $VETH1_NAME
-+	network_ns_setup $VNET0_NAME $VETH0_NAME $VNET0_IP $VNET1_IP
-+	network_ns_setup $VNET1_NAME $VETH1_NAME $VNET1_IP $VNET0_IP
-+}
-+
-+test_fork_kernel_network_to_local()
-+{
-+	INADDR_ANY=3D0.0.0.0
-+	PORT=3D65535
-+	TIMEOUT=3D5
-+
-+	old_count=3D$(count_fork_matches)
-+	ip netns exec $VNET0_NAME ./exec test -m server_crash -a $INADDR_ANY \
-+		-p $PORT -t $TIMEOUT -c fork -s kernel -n $COUNTER &
-+	sleep 1
-+	ip netns exec $VNET1_NAME ./test -m client -a $VNET0_IP -p $PORT \
-+		-t $TIMEOUT
-+	sleep 1
-+	new_count=3D$(count_fork_matches)
-+
-+	message=3D"Fork attack (kernel signals, network to local)"
-+	assert_not_equal $old_count $new_count
-+}
-+
-+test_exec_kernel_network_to_local()
-+{
-+	old_count=3D$(count_exec_matches)
-+	ip netns exec $VNET0_NAME ./test -m server_crash -a $INADDR_ANY \
-+		-p $PORT -t $TIMEOUT -c exec -s kernel -n $COUNTER &
-+	sleep 1
-+	ip netns exec $VNET1_NAME ./test -m client -a $VNET0_IP -p $PORT \
-+		-t $TIMEOUT
-+	sleep 1
-+	new_count=3D$(count_exec_matches)
-+
-+	message=3D"Exec attack (kernel signals, network to local)"
-+	assert_not_equal $old_count $new_count
-+}
-+
-+network_cleanup()
-+{
-+	ip netns del $VNET0_NAME >/dev/null 2>&1
-+	ip netns del $VNET1_NAME >/dev/null 2>&1
-+	ip link delete $VETH0_NAME >/dev/null 2>&1
-+	ip link delete $VETH1_NAME >/dev/null 2>&1
-+}
-+
-+check_root
-+test_fork_user
-+test_fork_kernel
-+test_exec_user
-+test_exec_kernel
-+test_fork_kernel_setuid
-+test_exec_kernel_setuid
-+test_fork_kernel_change_priv
-+test_exec_kernel_change_priv
-+network_setup
-+test_fork_kernel_network_to_local
-+test_exec_kernel_network_to_local
-+network_cleanup
-+exit $errno
-=2D-
-2.25.1
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
+All warnings (new ones prefixed by >>):
+
+   arch/mips/bmips/dma.c:43:12: warning: no previous prototype for '__phys_to_dma' [-Wmissing-prototypes]
+      43 | dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t pa)
+         |            ^~~~~~~~~~~~~
+>> arch/mips/bmips/dma.c:55:13: warning: no previous prototype for 'dma_to_phys' [-Wmissing-prototypes]
+      55 | phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+         |             ^~~~~~~~~~~
+   arch/mips/bmips/dma.c:67:6: warning: no previous prototype for 'arch_sync_dma_for_cpu_all' [-Wmissing-prototypes]
+      67 | void arch_sync_dma_for_cpu_all(void)
+         |      ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/dma_to_phys +55 arch/mips/bmips/dma.c
+
+    42	
+  > 43	dma_addr_t __phys_to_dma(struct device *dev, phys_addr_t pa)
+    44	{
+    45		struct bmips_dma_range *r;
+    46	
+    47		for (r = bmips_dma_ranges; r && r->size; r++) {
+    48			if (pa >= r->child_addr &&
+    49			    pa < (r->child_addr + r->size))
+    50				return pa - r->child_addr + r->parent_addr;
+    51		}
+    52		return pa;
+    53	}
+    54	
+  > 55	phys_addr_t dma_to_phys(struct device *dev, dma_addr_t dma_addr)
+    56	{
+    57		struct bmips_dma_range *r;
+    58	
+    59		for (r = bmips_dma_ranges; r && r->size; r++) {
+    60			if (dma_addr >= r->parent_addr &&
+    61			    dma_addr < (r->parent_addr + r->size))
+    62				return dma_addr - r->parent_addr + r->child_addr;
+    63		}
+    64		return dma_addr;
+    65	}
+    66	
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+--T4sUOijqQbZv57TR
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
+
+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
+OyYBAA==
+
+--T4sUOijqQbZv57TR--
