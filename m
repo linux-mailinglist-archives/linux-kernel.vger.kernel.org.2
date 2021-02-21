@@ -2,98 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C536D3209D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 12:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEED93209ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 12:27:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229933AbhBULRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 06:17:37 -0500
-Received: from smtp-42a9.mail.infomaniak.ch ([84.16.66.169]:48891 "EHLO
-        smtp-42a9.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229897AbhBULRc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 06:17:32 -0500
-Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
-        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Dk2nm4X2pzMqFPR;
-        Sun, 21 Feb 2021 12:16:44 +0100 (CET)
-Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
-        by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4Dk2nj6xrTzlh8T8;
-        Sun, 21 Feb 2021 12:16:41 +0100 (CET)
-Subject: Re: [PATCH v6 0/5] Enable root to update the blacklist keyring
-To:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-References: <20210210120410.471693-1-mic@digikod.net>
-From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Message-ID: <132a6049-e91b-3922-cd3f-89574dd049fe@digikod.net>
-Date:   Sun, 21 Feb 2021 12:17:54 +0100
-User-Agent: 
+        id S229844AbhBUL1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 06:27:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54338 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229540AbhBUL1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 06:27:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5397164EE6;
+        Sun, 21 Feb 2021 11:26:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613906781;
+        bh=kkFnXUKm0Rf2iX3RQtP2a5rmUIvBNUgXozmpS/vKma8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nQjYtThi8Z6ofSATMneeTrITirVNKfdpTg78V0XP4ydEoy+MtQJ2NqkQeUVpneT8M
+         zVNZRAr5CPLFQdXTbcfBEyyp/XhN/UTEwfsLc11OJHwKGS34uOh94Hsn+jfXmYU5yS
+         p6pwjzM8lCvkOx9NLXE9NYs/dtKmFVo1LbAKBOcQ=
+Date:   Sun, 21 Feb 2021 12:26:19 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     karthik alapati <mail@karthek.com>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Arnd Bergmann <arnd@arndb.de>, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: wimax/i2400m: fix byte-order type issue
+Message-ID: <YDJDW97X7k+mb/gE@kroah.com>
+References: <YDEGD7pFyTi+CTXy@karthik-strix-linux.karthek.com>
 MIME-Version: 1.0
-In-Reply-To: <20210210120410.471693-1-mic@digikod.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDEGD7pFyTi+CTXy@karthik-strix-linux.karthek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David, Eric, what is the status of this patch series?
+On Sat, Feb 20, 2021 at 06:22:31PM +0530, karthik alapati wrote:
+> fix sparse type warning by converting le32 types to
+> host byte-order types before comparison
+> 
+> Signed-off-by: karthik alapati <mail@karthek.com>
+> ---
+>  drivers/staging/wimax/i2400m/fw.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/wimax/i2400m/fw.c b/drivers/staging/wimax/i2400m/fw.c
+> index 92ea5c101..f09de1810 100644
+> --- a/drivers/staging/wimax/i2400m/fw.c
+> +++ b/drivers/staging/wimax/i2400m/fw.c
+> @@ -511,7 +511,7 @@ ssize_t __i2400m_bm_ack_verify(struct i2400m *i2400m, int opcode,
+>  			opcode, i2400m_brh_get_response(ack));
+>  		goto error_ack_failed;
+>  	}
+> -	if (ack_size < ack->data_size + sizeof(*ack)) {
+> +	if (ack_size < le32_to_cpu(ack->data_size) + sizeof(*ack)) {
+>  		dev_err(dev, "boot-mode cmd %d: SW BUG "
+>  			"driver provided only %zu bytes for %zu bytes "
+>  			"of data\n", opcode, ack_size,
 
-On 10/02/2021 13:04, Mickaël Salaün wrote:
-> This new patch series is a rebase on David Howells's keys-misc branch.
-> This mainly fixes UEFI DBX and the new Eric Snowberg's feature to import
-> asymmetric keys to the blacklist keyring.
-> I successfully tested this patch series with the 186 entries from
-> https://uefi.org/sites/default/files/resources/dbxupdate_x64.bin (184
-> binary hashes and 2 certificates).
-> 
-> The goal of these patches is to add a new configuration option to enable the
-> root user to load signed keys in the blacklist keyring.  This keyring is useful
-> to "untrust" certificates or files.  Enabling to safely update this keyring
-> without recompiling the kernel makes it more usable.
-> 
-> This can be applied on top of David Howells's keys-next branch:
-> https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=keys-next
-> Git commits can be found in https://github.com/l0kod/linux branch
-> dyn-auth-blacklist-v6 commit fcf976b74ffcd4551683e6b70dbf5fb102cf9906 .
-> 
-> Previous patch series:
-> https://lore.kernel.org/lkml/20210128191705.3568820-1-mic@digikod.net/
-> 
-> Regards,
-> 
-> Mickaël Salaün (5):
->   tools/certs: Add print-cert-tbs-hash.sh
->   certs: Check that builtin blacklist hashes are valid
->   certs: Make blacklist_vet_description() more strict
->   certs: Factor out the blacklist hash creation
->   certs: Allow root user to append signed hashes to the blacklist
->     keyring
-> 
->  MAINTAINERS                                   |   2 +
->  certs/.gitignore                              |   1 +
->  certs/Kconfig                                 |  17 +-
->  certs/Makefile                                |  17 +-
->  certs/blacklist.c                             | 218 ++++++++++++++----
->  crypto/asymmetric_keys/x509_public_key.c      |   3 +-
->  include/keys/system_keyring.h                 |  14 +-
->  scripts/check-blacklist-hashes.awk            |  37 +++
->  .../platform_certs/keyring_handler.c          |  26 +--
->  tools/certs/print-cert-tbs-hash.sh            |  91 ++++++++
->  10 files changed, 346 insertions(+), 80 deletions(-)
->  create mode 100755 scripts/check-blacklist-hashes.awk
->  create mode 100755 tools/certs/print-cert-tbs-hash.sh
-> 
-> 
-> base-commit: 5bcd72358a7d7794ade0452ed12919b8c4d6ffc7
-> 
+You sent 3 patches that seem to do the same thing, yet are a bit
+different?
+
+Please make your patches a patch series and provide proper subject lines
+to make them unique.  I have now dropped all of your submitted patches
+from my review queue.
+
+thanks,
+
+greg k-h
