@@ -2,172 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F10F320DD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC632320DD7
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230295AbhBUVNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 16:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35478 "EHLO
+        id S230321AbhBUVP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 16:15:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230154AbhBUVNk (ORCPT
+        with ESMTP id S230119AbhBUVPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 16:13:40 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5415FC06178A
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 13:13:00 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id m2so8935724pgq.5
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 13:13:00 -0800 (PST)
+        Sun, 21 Feb 2021 16:15:22 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81741C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 13:14:42 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id s3so2750462qvn.7
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 13:14:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XGOsLiErfxYd1/InqUure7ZZFegbdsVCiWPPvmHL1jQ=;
-        b=rzbSTNMpVPCXZzLHL+sy4i7YqojBC6CzlNhGxN/Z0AESXTI4H6eBVI8ETjpdgByGho
-         kAT9rPu5sux/kzqFtT5SxfRQgr1zJzZP2lCCMS6z+r23FnX+elS7+d4CNWef/kI4VymT
-         Nl7vgCG2S5m4qpRQzdqhPdBzxAFSQF9e0x+uq2wNTCE6Aj/2Lxim3OgLzIY0aGE2In++
-         2OBHxUkjNia6QuxejLQs84QDRyRtf0btf8idSToyylp7pVduoPMg4wdCBOWQAA0SC6LD
-         ob6BAX5tDEmT/Q0fkkqEj9BJ5mGXdgGXvOJT4Fg6+OyLGCduWbYDDMsamjhzzOUrfxLM
-         gCRw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=hF003MFwp+K0lX9kpA6fMysR2+yjkMKAKOs+TriaFiQ=;
+        b=YjYpXwL5MJ3DWcDR7RHx1XzYw+RXLJU9bb7dKSvgiZ0JRZFYlyhd8jvv4AS9DJ/VQX
+         fF2mvJI5wEtZigGCDl0x9749koC+Apbx4aZpHfRwBoad4FhCm68+jKK8xn1Lsy8DJRbt
+         BVK5cAaNix4gZJG/IaJLHvmHTe4HoxsVMjT/olhPu8JF8+wesB1FtPpfenzV3OUXPEbr
+         EP5drf0tivvNqXpUqCLOR+Lbea28FaTihfy+XupOnWigNgWSvi33bN6Z663eLyM3Z3Jz
+         g/83Ld3IMgXnq0oT+tMgOB2tepO/T8d+N+FB0aIZdLxBuOFGapskdsBU++GyUZ7sHk0J
+         6gpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XGOsLiErfxYd1/InqUure7ZZFegbdsVCiWPPvmHL1jQ=;
-        b=Q3/uzUaLuMj5L0GwfkzonFut+pq6tMeDepzLxw8af4vLTZEOcMPK13+zfldG3vRUbT
-         m+czL9IESHB0FdBpCkah+exXZMuAoQWvyrkAAHG6bppSt1chpisE1ueO6igNqXqcD4XN
-         1CT89ckuxv6Zpnr4jgJs2fjQFaO1JOncI9H9WA/N3O+Dj24OyaSb0oDYAmrHPLoNkn4P
-         mCGOvYRzkxNuZ4N4bd6VEDPcC6p4A16tVMID6iLZusjik0AAF1Wi0vqEVL+NE329S47l
-         C5sHB+oaqkV2PMuDf9vAMWW3VfIsfhotgVxHZviCaNJEAJz+G7bfWfGHbceXzUwiXvRW
-         0a8A==
-X-Gm-Message-State: AOAM532HhsMpq7K5DvxcQy6UBj0dAusR7cipiqfdqHiku7dLf8/gNnQQ
-        0TrLCMeO/JDqI8BrTLX4tz+Uog==
-X-Google-Smtp-Source: ABdhPJw5MqPMqd3CQkEk8Sv2l+wtWCYG2L8ozgrBxT3nTFiE0cEYbdVQSGU22jcHSNwZ3x9d7vnIIg==
-X-Received: by 2002:a63:6f8a:: with SMTP id k132mr17687990pgc.59.1613941979229;
-        Sun, 21 Feb 2021 13:12:59 -0800 (PST)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id j1sm15721768pjf.26.2021.02.21.13.12.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Feb 2021 13:12:58 -0800 (PST)
-Subject: Re: [PATCH v3 0/2] io_uring: add support for IORING_OP_GETDENTS
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'Lennert Buytenhek' <buytenh@wantstofly.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
-Cc:     Matthew Wilcox <willy@infradead.org>
-References: <20210218122640.GA334506@wantstofly.org>
- <247d154f2ba549b88a77daf29ec1791f@AcuMS.aculab.com>
- <28a71bb1-0aac-c166-ade7-93665811d441@kernel.dk>
- <b2227a95338f4d949442970f990205fa@AcuMS.aculab.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <de7e79a4-ebbd-4536-ea54-365e26646587@kernel.dk>
-Date:   Sun, 21 Feb 2021 14:12:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=hF003MFwp+K0lX9kpA6fMysR2+yjkMKAKOs+TriaFiQ=;
+        b=JO5xcKwRnRenJu/HfXoTpLZ8o5PI0IiFehRas16hdq96B5f41lAPCRd55zWk2hVx72
+         3oZGvfu59ptShkwp+MAFDQSYuT0/oNFJ+HeD4FeUaJ1JrwYI4GDElZiijURKx0I/M5+m
+         snHv8ycgH/wjjcG5ft5oNuA+bxjQYFPeYg4QwJPyckhWu7iJ3ofZVo/54Sm+fudEhXtZ
+         qI/825gVzST3t81S4k/DDxf9DfiqoiWSTm74eK2bhMWGc+dfhJh7zYy85Z4EtNh+wT54
+         gHO+gebagLzHmTjwE1PC0sTKH3F7HpBBMG7NBlOf8Jd4M5DCv2pIoj1NN55hqtDR2p1V
+         KkoQ==
+X-Gm-Message-State: AOAM531RVPknicUMJ1DqKOfUQxFQ+eFInZ2kHnJTI3HZrmTyc5fjg86m
+        Ne8Jp+dFOVplrhqvNgWdBDM=
+X-Google-Smtp-Source: ABdhPJxaImelsZgZdnXY6O0l9K9gbEuG0LNwrC4I218WzODN4xIprCY1o6hNO/kco3wxJQ5QkmrvUg==
+X-Received: by 2002:a05:6214:1302:: with SMTP id a2mr1321637qvv.37.1613942081650;
+        Sun, 21 Feb 2021 13:14:41 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id o11sm2402171qta.1.2021.02.21.13.14.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 13:14:41 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Sun, 21 Feb 2021 16:14:40 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] workqueue changes for v5.12-rc1
+Message-ID: <YDLNQFGN0fi8plof@slm.duckdns.org>
 MIME-Version: 1.0
-In-Reply-To: <b2227a95338f4d949442970f990205fa@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/21/21 12:38 PM, David Laight wrote:
-> From: Jens Axboe
->> Sent: 20 February 2021 18:29
->>
->> On 2/20/21 10:44 AM, David Laight wrote:
->>> From: Lennert Buytenhek
->>>> Sent: 18 February 2021 12:27
->>>>
->>>> These patches add support for IORING_OP_GETDENTS, which is a new io_uring
->>>> opcode that more or less does an lseek(sqe->fd, sqe->off, SEEK_SET)
->>>> followed by a getdents64(sqe->fd, (void *)sqe->addr, sqe->len).
->>>>
->>>> A dumb test program for IORING_OP_GETDENTS is available here:
->>>>
->>>> 	https://krautbox.wantstofly.org/~buytenh/uringfind-v2.c
->>>>
->>>> This test program does something along the lines of what find(1) does:
->>>> it scans recursively through a directory tree and prints the names of
->>>> all directories and files it encounters along the way -- but then using
->>>> io_uring.  (The io_uring version prints the names of encountered files and
->>>> directories in an order that's determined by SQE completion order, which
->>>> is somewhat nondeterministic and likely to differ between runs.)
->>>>
->>>> On a directory tree with 14-odd million files in it that's on a
->>>> six-drive (spinning disk) btrfs raid, find(1) takes:
->>>>
->>>> 	# echo 3 > /proc/sys/vm/drop_caches
->>>> 	# time find /mnt/repo > /dev/null
->>>>
->>>> 	real    24m7.815s
->>>> 	user    0m15.015s
->>>> 	sys     0m48.340s
->>>> 	#
->>>>
->>>> And the io_uring version takes:
->>>>
->>>> 	# echo 3 > /proc/sys/vm/drop_caches
->>>> 	# time ./uringfind /mnt/repo > /dev/null
->>>>
->>>> 	real    10m29.064s
->>>> 	user    0m4.347s
->>>> 	sys     0m1.677s
->>>> 	#
->>>
->>> While there may be uses for IORING_OP_GETDENTS are you sure your
->>> test is comparing like with like?
->>> The underlying work has to be done in either case, so you are
->>> swapping system calls for code complexity.
->>
->> What complexity?
-> 
-> Evan adding commands to a list to execute later is 'complexity'.
-> As in adding more cpu cycles.
+Hello,
 
-That's a pretty blanket statement. If the list is heavily shared, and
-hence contended, yes that's generally true. But it isn't.
+Tracepoint and comment updates only.
 
->>> I suspect that find is actually doing a stat() call on every
->>> directory entry and that your io_uring example is just believing
->>> the 'directory' flag returned in the directory entry for most
->>> modern filesystems.
->>
->> While that may be true (find doing stat as well), the runtime is
->> clearly dominated by IO. Adding a stat on top would be an extra
->> copy, but no extra IO.
-> 
-> I'd expect stat() to require the disk inode be read into memory.
-> getdents() only requires the data of the directory be read.
-> So calling stat() requires a lot more IO.
+Thanks.
 
-I actually went and checked instead of guessing, and find isn't doing a
-stat by default on the files.
+The following changes since commit 1e2a199f6ccdc15cf111d68d212e2fd4ce65682e:
 
-> The other thing I just realises is that the 'system time'
-> output from time is completely meaningless for the io_uring case.
-> All that processing is done by a kernel thread and I doubt
-> is re-attributed to the user process.
+  Merge tag 'spi-fix-v5.11-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi (2021-01-18 11:23:05 -0800)
 
-For sure, you can't directly compare the sys times. But the actual
-runtime is of course directly comparable. The actual example is btrfs,
-which heavily offloads to threads as well. So the find case doesn't show
-you the full picture either. Note that once the reworked worker scheme
-is adopted, sys time will be directly attributed to the original task
-and it will be included (for io_uring, not talking about btrfs).
+are available in the Git repository at:
 
-I'm going to ignore the rest of this email as it isn't productive going
-down that path. Suffice it to say that ideally _no_ operations will be
-using the async offload, that's really only for regular file IO where
-you cannot poll for readiness. And even those cases are gradually being
-improved to not rely on it, like for async buffered reads. We still
-need to handle writes better, and ideally things like this as well. But
-that's a bit further out.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-5.12
+
+for you to fetch changes up to e9ad2eb3d9ae05471c9b9fafcc0a31d8f565ca5b:
+
+  workqueue: Use %s instead of function name (2021-01-27 09:42:48 -0500)
+
+----------------------------------------------------------------
+Menglong Dong (1):
+      workqueue: fix annotation for WQ_SYSFS
+
+Stephen Zhang (1):
+      workqueue: Use %s instead of function name
+
+Zqiang (1):
+      workqueue: tracing the name of the workqueue instead of it's address
+
+ include/linux/workqueue.h        | 2 +-
+ include/trace/events/workqueue.h | 6 +++---
+ kernel/workqueue.c               | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 -- 
-Jens Axboe
-
+tejun
