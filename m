@@ -2,45 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C43320AE5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BB23320AE6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:06:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhBUOFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:05:25 -0500
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:45126 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhBUOFW (ORCPT
+        id S230084AbhBUOFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:05:46 -0500
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:40651 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229970AbhBUOFm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:05:22 -0500
-Received: by mail-pl1-f175.google.com with SMTP id w18so2840697plc.12
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 06:05:06 -0800 (PST)
+        Sun, 21 Feb 2021 09:05:42 -0500
+Received: by mail-pl1-f180.google.com with SMTP id z7so5978798plk.7
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 06:05:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=FJwLUK5Y+uvXnv0u3F+27KKfrXN2CvtQs9gB7otpFhU=;
-        b=H1KIhyBIUPCBAj6V4mckrs5fAQBcXCYR6fj4FhasF3vsz+lg0J8j20w1s/K8oeGJw/
-         zEhwjI7lL4M/sqqnA5BJ9gYnurhPmBxmugr9XyVm2A6A6GL28+TxrT9LXWxSBzSx85RB
-         0ItxV1n+uPRwlYgHYHCnVjNMQtt5ZQ+m67xKogNyPiDamYoN7maliRJ5CjmJov+2aS55
-         f2xrXTcHGcjEOZH3lviN8S0RGKkYceYR8JPVD/mNRUYgbIp1zHQWZHdkOUJepTtiqLng
-         LsnmbDkdkTJZ94n4mxqnLnIQa/ErmJRh524zCcBD9FCVb7vvWhX3euuGcDHaG+R8zcgX
-         9giA==
-X-Gm-Message-State: AOAM532efk9CmRxa0jMEmgKNOIkWvcOZ/6q/0oVd0ZMT5fNJ74n2vKUj
-        zXBVXiPXYU25ckgMJa7QCEQ=
-X-Google-Smtp-Source: ABdhPJzM4qUUFeS6ZUr+JAN81oTo6QqGklFnV8wcN2n0WY95XUQcinTlFV5uAAmr3dDD7JS5aAoyVA==
-X-Received: by 2002:a17:902:e551:b029:de:8dba:84a3 with SMTP id n17-20020a170902e551b02900de8dba84a3mr17649066plf.8.1613916281512;
-        Sun, 21 Feb 2021 06:04:41 -0800 (PST)
+        bh=ztDsdAIBTtQ1nkN7dw6CYE5xnJ1DaXEAMZjHk0Yhkkw=;
+        b=A5IWgLbPwz8+oMBB5RuqGhqPheGlx/gW1aIt9ZGWP7C+6p9UhBOemFJynuTl5ZwBxA
+         wzEDXZme0sX9VuVFB2SYktrhY5dgUm2Klm06JIu2PVp5bPZ4UWm0r2DRJkWV9+nYIP9a
+         iAhAb2HM7vMvNKtrhACyK9ChTS0rxKzbTI50nHfqtScI14uAIuTVUrY/GjEkZf33LKtu
+         oq+HmG5sZnG80ZJ+2RyOlE3Bhsp2H+1sYi68XORdQZIJ/cNbBwfSnaEMwTOT/IbEeBJm
+         +kW2vZyW964G55xt3mkoCNb/QeK6SlhRpYfq320Di8W5+bmpONKsWZANQonj1EiAb4oJ
+         6rMw==
+X-Gm-Message-State: AOAM532prYjH/VwUu0kUM0pEqN0ePn2wKl0+X0ljwcUsyDyzG7A9wg5h
+        26HKIx7RVAtk/gLgJPxM1MO9JgEdWh4=
+X-Google-Smtp-Source: ABdhPJwzZcsp9cJ7K4okRUk9bpxKQIxBd+1Jag4P8sKj8kZVI6r/mZByZEV4zL13h0d9nBbmPUPj1A==
+X-Received: by 2002:a17:903:31d1:b029:de:8361:739b with SMTP id v17-20020a17090331d1b02900de8361739bmr17605925ple.85.1613916301220;
+        Sun, 21 Feb 2021 06:05:01 -0800 (PST)
 Received: from karthik-strix-linux.karthek.com ([192.140.154.12])
-        by smtp.gmail.com with ESMTPSA id j3sm14770700pgk.24.2021.02.21.06.04.39
+        by smtp.gmail.com with ESMTPSA id e1sm11511838pjm.12.2021.02.21.06.04.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 06:04:41 -0800 (PST)
-Date:   Sun, 21 Feb 2021 19:34:37 +0530
+        Sun, 21 Feb 2021 06:05:00 -0800 (PST)
+Date:   Sun, 21 Feb 2021 19:34:57 +0530
 From:   karthik alapati <mail@karthek.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] staging: wimax/i2400m: convert __le32 type to host
- byte-order
-Message-ID: <87f93e091f736cb422f1d557fa5a2ac752f057a8.1613915981.git.mail@karthek.com>
+Subject: [PATCH 3/3] staging: media/atomisp: don't compile unused code
+Message-ID: <90eb63796a8f8aca988efb33247ea01f4a860074.1613915981.git.mail@karthek.com>
 References: <cover.1613915981.git.mail@karthek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -50,27 +49,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix sparse type warning by converting __le32 types
-to host byte-order types before comparison
+currently the functions defined in ibuf_ctrl_rmgr.c file are only
+used by isys_init.c when CONFIG_VIDEO_ATOMISP_ISP2401 is selected
+so dont't compile it when not needed, also fixes some sparse warnings
 
 Signed-off-by: karthik alapati <mail@karthek.com>
 ---
- drivers/staging/wimax/i2400m/fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/atomisp/Makefile | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/wimax/i2400m/fw.c b/drivers/staging/wimax/i2400m/fw.c
-index 92ea5c101..f09de1810 100644
---- a/drivers/staging/wimax/i2400m/fw.c
-+++ b/drivers/staging/wimax/i2400m/fw.c
-@@ -511,7 +511,7 @@ ssize_t __i2400m_bm_ack_verify(struct i2400m *i2400m, int opcode,
- 			opcode, i2400m_brh_get_response(ack));
- 		goto error_ack_failed;
- 	}
--	if (ack_size < ack->data_size + sizeof(*ack)) {
-+	if (ack_size < le32_to_cpu(ack->data_size) + sizeof(*ack)) {
- 		dev_err(dev, "boot-mode cmd %d: SW BUG "
- 			"driver provided only %zu bytes for %zu bytes "
- 			"of data\n", opcode, ack_size,
+diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
+index 1dfad0dd0..51498b2e8 100644
+--- a/drivers/staging/media/atomisp/Makefile
++++ b/drivers/staging/media/atomisp/Makefile
+@@ -126,7 +126,6 @@ atomisp-objs += \
+ 	pci/runtime/inputfifo/src/inputfifo.o \
+ 	pci/runtime/isp_param/src/isp_param.o \
+ 	pci/runtime/isys/src/csi_rx_rmgr.o \
+-	pci/runtime/isys/src/ibuf_ctrl_rmgr.o \
+ 	pci/runtime/isys/src/isys_dma_rmgr.o \
+ 	pci/runtime/isys/src/isys_init.o \
+ 	pci/runtime/isys/src/isys_stream2mmio_rmgr.o \
+@@ -323,7 +322,9 @@ DEFINES := -DHRT_HW -DHRT_ISP_CSS_CUSTOM_HOST -DHRT_USE_VIR_ADDRS -D__HOST__
+ #DEFINES += -DUSE_KMEM_CACHE
+ 
+ ifeq ($(CONFIG_VIDEO_ATOMISP_ISP2401),y)
+-atomisp-objs += $(obj-cht)
++atomisp-objs += \
++	$(obj-cht) \
++	pci/runtime/isys/src/ibuf_ctrl_rmgr.o
+ DEFINES += -DISP2401 -DISP2401_NEW_INPUT_SYSTEM -DSYSTEM_hive_isp_css_2401_system
+ else
+ atomisp-objs += $(obj-byt)
 -- 
 2.30.1
 
