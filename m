@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF83F320AAE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E74320AC0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:58:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229947AbhBUNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 08:52:38 -0500
-Received: from mail.baikalelectronics.com ([87.245.175.226]:58328 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhBUNwe (ORCPT
+        id S229943AbhBUN6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 08:58:37 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:11090 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229817AbhBUN6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 08:52:34 -0500
-Date:   Sun, 21 Feb 2021 16:51:32 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Jose Abreu <Jose.Abreu@synopsys.com>,
-        Joao Pinto <Joao.Pinto@synopsys.com>,
-        <linux-kernel@vger.kernel.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        <netdev@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Vyacheslav Mitrofanov 
-        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 01/20] net: phy: realtek: Fix events detection failure in
- LPI mode
-Message-ID: <20210221135132.5uaogtn7h3gd4inr@mobilestation>
-References: <20210208140341.9271-2-Sergey.Semin@baikalelectronics.ru>
- <8300d9ca-b877-860f-a975-731d6d3a93a5@gmail.com>
- <20210209101528.3lf47ouaedfgq74n@mobilestation>
- <a652c69b-94d3-9dc6-c529-1ebc0ed407ac@gmail.com>
- <20210209105646.GP1463@shell.armlinux.org.uk>
- <20210210164720.migzigazyqsuxwc6@mobilestation>
- <20210211103941.GW1463@shell.armlinux.org.uk>
- <20210220090248.oiyonlfucvmgzw6d@mobilestation>
- <4dcecf82-f222-4957-f5fc-e8f9d073599c@gmail.com>
- <YDEvglPLbUcNp0dR@lunn.ch>
+        Sun, 21 Feb 2021 08:58:36 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id BD445A1116;
+        Sun, 21 Feb 2021 14:57:53 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=JMWVu00sJKNa
+        UzNO4ZqMeD8FYjdkJxYXTlplUlw+228=; b=uG9+E9I/d1bg/MLj7SPOUDoYPycj
+        c/k9k8uOCRZt3M6oYlEzSXXED6u40Lb+c7OcsxEVY5NGLX6kYfJyKc1IRPN0RZKr
+        wmV61OG2joo6ND3USkRSZY6bKPdF3vKKRaeNs9N93ExrxbbZ63tpHxmBVBzIAWSq
+        xCf9/wV+gbxQXcf9t+OnOCL4jk7d/xAgrfu8HTlaPTKE36gr5TnODHfnnTTObuJO
+        uCH1As/anVSuGxtapgRvh2NkxvJnuzLHAy0TWyf9LEcBp3jS8TKvlKtDquhK9/FD
+        nLqVS9a+y5XAH8hU9+PMNGJZZgSO41d/TeKkS0xOB9poC/A/Vm6thatwYA==
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+To:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
+CC:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jason Wang <jasowang@redhat.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 1/9] uapi: virtio_ids: add a sound device type ID from OASIS spec
+Date:   Sun, 21 Feb 2021 14:57:23 +0100
+Message-ID: <20210221135731.51348-2-anton.yakovlev@opensynergy.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210221135731.51348-1-anton.yakovlev@opensynergy.com>
+References: <20210221135731.51348-1-anton.yakovlev@opensynergy.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <YDEvglPLbUcNp0dR@lunn.ch>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
+ SR-MAIL-02.open-synergy.com (10.26.10.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 04:49:22PM +0100, Andrew Lunn wrote:
-> > If in doubt, leaving the patch as is would be fine with me.
-> 
-> The patch is O.K. as is, no need to export something so simple for a
-> single users. When the next user come along, we can reconsider.
+The OASIS virtio spec defines a sound device type ID that is not
+present in the header yet.
 
-Ok. Thanks for clarification. I performed some additional tests to
-make sure the bug was on the PHY side. They proved my original
-conclusion. It's indeed Realtek PHY to blame for the weird behavior. 
-So I've added a few more words into the patch log regarding those
-tests. The patch will be resent tomorrow together with the rest of the
-STMMAC-driver-related bug-fixes detached from the original series of
-the fixes and cleanups (as Andrew asked to do).
+Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+---
+ include/uapi/linux/virtio_ids.h | 1 +
+ 1 file changed, 1 insertion(+)
 
--Sergey
+diff --git a/include/uapi/linux/virtio_ids.h b/include/uapi/linux/virtio_ids.h
+index bc1c0621f5ed..029a2e07a7f9 100644
+--- a/include/uapi/linux/virtio_ids.h
++++ b/include/uapi/linux/virtio_ids.h
+@@ -51,6 +51,7 @@
+ #define VIRTIO_ID_PSTORE		22 /* virtio pstore device */
+ #define VIRTIO_ID_IOMMU			23 /* virtio IOMMU */
+ #define VIRTIO_ID_MEM			24 /* virtio mem */
++#define VIRTIO_ID_SOUND			25 /* virtio sound */
+ #define VIRTIO_ID_FS			26 /* virtio filesystem */
+ #define VIRTIO_ID_PMEM			27 /* virtio pmem */
+ #define VIRTIO_ID_MAC80211_HWSIM	29 /* virtio mac80211-hwsim */
+-- 
+2.30.0
 
-> 
->        Andrew
+
