@@ -2,134 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C874320D5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 407ED320D6F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhBUUDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 15:03:08 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:48506 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhBUUDE (ORCPT
+        id S230466AbhBUULM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 15:11:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230296AbhBUULF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:03:04 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 1A58D60A3587;
-        Sun, 21 Feb 2021 21:02:22 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id k69zyif8DZWs; Sun, 21 Feb 2021 21:02:21 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id B584C60A3592;
-        Sun, 21 Feb 2021 21:02:21 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id m67_rH2fde5z; Sun, 21 Feb 2021 21:02:21 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id A1F2C60A3587;
-        Sun, 21 Feb 2021 21:02:21 +0100 (CET)
-Date:   Sun, 21 Feb 2021 21:02:21 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-um <linux-um@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1264486228.14901.1613937741621.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML changes for 5.12
+        Sun, 21 Feb 2021 15:11:05 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EFEC06178B;
+        Sun, 21 Feb 2021 12:10:25 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 07C0028E5; Sun, 21 Feb 2021 15:10:24 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 07C0028E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1613938224;
+        bh=7ZYHvlz2PyOH+1LBos+UH4lABWNPQ4hE/eJx23H2AVM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kdABrIaGwL/eI3jBD++XWajauPoawwiH8JbrZft3T7k7FePF3rPxit/zoYPW4uf2h
+         YuMiE/3N0vVZ8FPaSCS8oeetn9bXRnhBEMjIXkzteBypIY/tCbsG6nT9guQeyZ1/08
+         m987d5kdmNjfkDNQmrWTE6pBJmPrPkZP+RGSrQpQ=
+Date:   Sun, 21 Feb 2021 15:10:24 -0500
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Luo Longjun <luolongjun@huawei.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sangyan@huawei.com, luchunhua@huawei.com
+Subject: Re: [PATCH] fs/locks: print full locks information
+Message-ID: <20210221201024.GB15975@fieldses.org>
+References: <20210220063250.742164-1-luolongjun@huawei.com>
+ <YDKP0XdT1TVOaGnj@zeniv-ca.linux.org.uk>
+ <b76672d52ffe498259181688eaf54ec75be449e8.camel@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: mHBkGFFNnr0R+r7J/8sHQfwiLkZ7xQ==
-Thread-Topic: UML changes for 5.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b76672d52ffe498259181688eaf54ec75be449e8.camel@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sun, Feb 21, 2021 at 01:43:03PM -0500, Jeff Layton wrote:
+> On Sun, 2021-02-21 at 16:52 +0000, Al Viro wrote:
+> > On Sat, Feb 20, 2021 at 01:32:50AM -0500, Luo Longjun wrote:
+> > > +	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
+> > > +		__locks_show(f, bfl, level + 1);
+> > 
+> > Er...  What's the maximal depth, again?  Kernel stack is very much finite...
+> 
+> Ooof, good point. I don't think there is a maximal depth on the tree
+> itself. If you do want to do something like this, then you'd need to
+> impose a hard limit on the recursion somehow.
 
-The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
+I think all you need to do is something like: follow the first entry of
+fl_blocked_requests, printing as you go, until you get down to lock with
+empty fl_blocked_requests (a leaf of the tree).  When you get to a leaf,
+print, then follow fl_blocker back up and look for your parent's next
+sibling on its fl_blocked_requests list.  If there are no more siblings,
+continue up to your grandparent, etc.
 
-  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
+It's the traverse-a-maze-by-always-turning-left algorithm applied to a
+tree.  I think we do it elsewhere in the VFS.
 
-are available in the Git repository at:
+You also need an integer that keeps track of your current indent depth.
+But you don't need a stack.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rw/uml.git tags/for-linux-5.12-rc1
+?
 
-for you to fetch changes up to ddad5187fc2a12cb84c9d1ac8ecb816708a2986b:
-
-  um: irq.h: include <asm-generic/irq.h> (2021-02-12 21:40:14 +0100)
-
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
-
-- Many cleanups and fixes for our virtio code
-- Add support for a pseudo RTC
-- Fix for a possible jailbreak
-- Minor fixes (spelling, header files)
-
-----------------------------------------------------------------
-Christophe Leroy (1):
-      mm: Remove arch_remap() and mm-arch-hooks.h
-
-Colin Ian King (1):
-      um: fix spelling mistake in Kconfig "privleges" -> "privileges"
-
-Johannes Berg (15):
-      um: virtio: clean up a comment
-      um: virtio: fix handling of messages without payload
-      um: virtio: disable VQs during suspend
-      um: time-travel: rework interrupt handling in ext mode
-      um: virtio: allow devices to be configured for wakeup
-      um: hostfs: use a kmem cache for inodes
-      um: print register names in wait_for_stub
-      um: mm: check more comprehensively for stub changes
-      um: defer killing userspace on page table update failures
-      um: separate child and parent errors in clone stub
-      um: rework userspace stubs to not hard-code stub location
-      um: remove process stub VMA
-      um: add a pseudo RTC
-      um: io.h: include <linux/types.h>
-      um: irq.h: include <asm-generic/irq.h>
-
- arch/um/drivers/Kconfig                 |  13 +-
- arch/um/drivers/Makefile                |   2 +
- arch/um/drivers/rtc.h                   |  15 +++
- arch/um/drivers/rtc_kern.c              | 211 ++++++++++++++++++++++++++++++++
- arch/um/drivers/rtc_user.c              |  80 ++++++++++++
- arch/um/drivers/virtio_uml.c            | 145 +++++++++++++++-------
- arch/um/include/asm/Kbuild              |   2 +-
- arch/um/include/asm/io.h                |   1 +
- arch/um/include/asm/irq.h               |   1 +
- arch/um/include/asm/mmu_context.h       |  29 +----
- arch/um/include/linux/time-internal.h   |  17 +++
- arch/um/include/shared/as-layout.h      |  17 +--
- arch/um/include/shared/common-offsets.h |   6 +
- arch/um/include/shared/irq_kern.h       |  60 +++++++++
- arch/um/include/shared/skas/mm_id.h     |   1 +
- arch/um/include/shared/skas/stub-data.h |   2 +-
- arch/um/kernel/exec.c                   |   4 +-
- arch/um/kernel/irq.c                    | 171 ++++++++++++++++++++++----
- arch/um/kernel/skas/clone.c             |  28 ++---
- arch/um/kernel/skas/mmu.c               |  87 -------------
- arch/um/kernel/time.c                   |  17 ++-
- arch/um/kernel/tlb.c                    |  14 +--
- arch/um/kernel/um_arch.c                |   5 +
- arch/um/os-Linux/skas/mem.c             |   2 +
- arch/um/os-Linux/skas/process.c         |  86 ++++++++++---
- arch/x86/um/os-Linux/task_size.c        |   2 +-
- arch/x86/um/shared/sysdep/stub_32.h     |  33 +++--
- arch/x86/um/shared/sysdep/stub_64.h     |  36 ++++--
- arch/x86/um/stub_32.S                   |  17 ++-
- arch/x86/um/stub_64.S                   |   5 +-
- arch/x86/um/stub_segv.c                 |   5 +-
- fs/hostfs/hostfs_kern.c                 |  10 +-
- include/asm-generic/Kbuild              |   1 -
- include/asm-generic/mm-arch-hooks.h     |  16 ---
- include/linux/mm-arch-hooks.h           |  22 ----
- mm/mremap.c                             |   3 -
- 36 files changed, 841 insertions(+), 325 deletions(-)
- create mode 100644 arch/um/drivers/rtc.h
- create mode 100644 arch/um/drivers/rtc_kern.c
- create mode 100644 arch/um/drivers/rtc_user.c
- delete mode 100644 include/asm-generic/mm-arch-hooks.h
- delete mode 100644 include/linux/mm-arch-hooks.h
+--b.
