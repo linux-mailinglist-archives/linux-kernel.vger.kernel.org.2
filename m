@@ -2,308 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC3B320C8A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A62A1320C83
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:22:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230169AbhBUSW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 13:22:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29067 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230048AbhBUSWu (ORCPT
+        id S230155AbhBUSWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 13:22:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229985AbhBUSWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 13:22:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613931682;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zglb5HPjQwXkwakAytJHCKEB76+JAMUrAbTe4isW8k8=;
-        b=MPm5qNVsGEjFSNnefpKLLJQqqG1PQVsroa3PqD+8bgCheFSJisNSXraRfI89NGpIgwRjjT
-        VupDn07OnOeVx0mD4biDL9rsJKIgL8rkdY8tV79UQ6U95SYMhCgG1fD1Bx32DVk/S/+i9q
-        TBj7JNxeJqs70zl+lvpdeQyx3Ox1VD0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-l2jy31ocMDOPi0f0jf4RdQ-1; Sun, 21 Feb 2021 13:21:17 -0500
-X-MC-Unique: l2jy31ocMDOPi0f0jf4RdQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 965521E565;
-        Sun, 21 Feb 2021 18:21:14 +0000 (UTC)
-Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 816935D9CA;
-        Sun, 21 Feb 2021 18:21:04 +0000 (UTC)
-Subject: Re: [PATCH v13 00/15] SMMUv3 Nested Stage Setup (IOMMU part)
-To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
-        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "will@kernel.org" <will@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
-Cc:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
-        "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>,
-        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
-        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
-        "yi.l.liu@intel.com" <yi.l.liu@intel.com>,
-        "tn@semihalf.com" <tn@semihalf.com>,
-        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
-        yuzenghui <yuzenghui@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <ad88f78cf56f4f7fb69728cbf22a1052@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <9554e747-59fe-3bda-8cfc-13f40f74f0ca@redhat.com>
-Date:   Sun, 21 Feb 2021 19:21:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 21 Feb 2021 13:22:16 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A75C061574;
+        Sun, 21 Feb 2021 10:21:36 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 59FA7EF;
+        Sun, 21 Feb 2021 19:21:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613931694;
+        bh=GrTgQ2aab5eBCzMDahXFKzsgqhR0cCzd4d93CPbsd74=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S7py4GN1+mpKFxaItm5BBufzjOGkqLdjNQ2MgSfbxdQj+51l9D2t3BC2YyeQEmWI7
+         XeNseMhQGrt8folLYb5Ub+y60aver4uMxtfEEWxsp3I0QdkeEcogpgL/qx0R3cZL50
+         Jf4yp7Vzr3b+VPBGRGqLdh/UMEIwSFyVwm8rczfQ=
+Date:   Sun, 21 Feb 2021 20:21:08 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Oleg Vasilev <oleg.vasilev@intel.com>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        "Jerry (Fangzhi) Zuo" <Jerry.Zuo@amd.com>,
+        Chris Park <Chris.Park@amd.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Joe Perches <joe@perches.com>, Icenowy Zheng <icenowy@aosc.io>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>,
+        "open list:DRM DRIVERS FOR NVIDIA TEGRA" 
+        <linux-tegra@vger.kernel.org>,
+        "moderated list:ARM/ZYNQ ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 15/30] drm/dp: Add backpointer to drm_device in drm_dp_aux
+Message-ID: <YDKklI3grZjn3dde@pendragon.ideasonboard.com>
+References: <20210219215326.2227596-1-lyude@redhat.com>
+ <20210219215326.2227596-16-lyude@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <ad88f78cf56f4f7fb69728cbf22a1052@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Disposition: inline
+In-Reply-To: <20210219215326.2227596-16-lyude@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shameer,
-On 1/8/21 6:05 PM, Shameerali Kolothum Thodi wrote:
-> Hi Eric,
-> 
->> -----Original Message-----
->> From: Eric Auger [mailto:eric.auger@redhat.com]
->> Sent: 18 November 2020 11:22
->> To: eric.auger.pro@gmail.com; eric.auger@redhat.com;
->> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
->> kvm@vger.kernel.org; kvmarm@lists.cs.columbia.edu; will@kernel.org;
->> joro@8bytes.org; maz@kernel.org; robin.murphy@arm.com;
->> alex.williamson@redhat.com
->> Cc: jean-philippe@linaro.org; zhangfei.gao@linaro.org;
->> zhangfei.gao@gmail.com; vivek.gautam@arm.com; Shameerali Kolothum
->> Thodi <shameerali.kolothum.thodi@huawei.com>;
->> jacob.jun.pan@linux.intel.com; yi.l.liu@intel.com; tn@semihalf.com;
->> nicoleotsuka@gmail.com; yuzenghui <yuzenghui@huawei.com>
->> Subject: [PATCH v13 00/15] SMMUv3 Nested Stage Setup (IOMMU part)
->>
->> This series brings the IOMMU part of HW nested paging support
->> in the SMMUv3. The VFIO part is submitted separately.
->>
->> The IOMMU API is extended to support 2 new API functionalities:
->> 1) pass the guest stage 1 configuration
->> 2) pass stage 1 MSI bindings
->>
->> Then those capabilities gets implemented in the SMMUv3 driver.
->>
->> The virtualizer passes information through the VFIO user API
->> which cascades them to the iommu subsystem. This allows the guest
->> to own stage 1 tables and context descriptors (so-called PASID
->> table) while the host owns stage 2 tables and main configuration
->> structures (STE).
-> 
-> I am seeing an issue with Guest testpmd run with this series.
-> I have two different setups and testpmd works fine with the
-> first one but not with the second.
-> 
-> 1). Guest doesn't have kernel driver built-in for pass-through dev.
-> 
-> root@ubuntu:/# lspci -v
-> ...
-> 00:02.0 Ethernet controller: Huawei Technologies Co., Ltd. Device a22e (rev 21)
-> Subsystem: Huawei Technologies Co., Ltd. Device 0000
-> Flags: fast devsel
-> Memory at 8000100000 (64-bit, prefetchable) [disabled] [size=64K]
-> Memory at 8000000000 (64-bit, prefetchable) [disabled] [size=1M]
-> Capabilities: [40] Express Root Complex Integrated Endpoint, MSI 00
-> Capabilities: [a0] MSI-X: Enable- Count=67 Masked-
-> Capabilities: [b0] Power Management version 3
-> Capabilities: [100] Access Control Services
-> Capabilities: [300] Transaction Processing Hints
-> 
-> root@ubuntu:/# echo vfio-pci > /sys/bus/pci/devices/0000:00:02.0/driver_override
-> root@ubuntu:/# echo 0000:00:02.0 > /sys/bus/pci/drivers_probe
-> 
-> root@ubuntu:/mnt/dpdk/build/app# ./testpmd -w 0000:00:02.0 --file-prefix socket0  -l 0-1 -n 2 -- -i
-> EAL: Detected 8 lcore(s)
-> EAL: Detected 1 NUMA nodes
-> EAL: Multi-process socket /var/run/dpdk/socket0/mp_socket
-> EAL: Selected IOVA mode 'VA'
-> EAL: No available hugepages reported in hugepages-32768kB
-> EAL: No available hugepages reported in hugepages-64kB
-> EAL: No available hugepages reported in hugepages-1048576kB
-> EAL: Probing VFIO support...
-> EAL: VFIO support initialized
-> EAL:   Invalid NUMA socket, default to 0
-> EAL:   using IOMMU type 1 (Type 1)
-> EAL: Probe PCI driver: net_hns3_vf (19e5:a22e) device: 0000:00:02.0 (socket 0)
-> EAL: No legacy callbacks, legacy socket not created
-> Interactive-mode selected
-> testpmd: create a new mbuf pool <mbuf_pool_socket_0>: n=155456, size=2176, socket=0
-> testpmd: preferred mempool ops selected: ring_mp_mc
-> 
-> Warning! port-topology=paired and odd forward ports number, the last port will pair with itself.
-> 
-> Configuring Port 0 (socket 0)
-> Port 0: 8E:A6:8C:43:43:45
-> Checking link statuses...
-> Done
-> testpmd>
-> 
-> 2). Guest have kernel driver built-in for pass-through dev.
-> 
-> root@ubuntu:/# lspci -v
-> ...
-> 00:02.0 Ethernet controller: Huawei Technologies Co., Ltd. Device a22e (rev 21)
-> Subsystem: Huawei Technologies Co., Ltd. Device 0000
-> Flags: bus master, fast devsel, latency 0
-> Memory at 8000100000 (64-bit, prefetchable) [size=64K]
-> Memory at 8000000000 (64-bit, prefetchable) [size=1M]
-> Capabilities: [40] Express Root Complex Integrated Endpoint, MSI 00
-> Capabilities: [a0] MSI-X: Enable+ Count=67 Masked-
-> Capabilities: [b0] Power Management version 3
-> Capabilities: [100] Access Control Services
-> Capabilities: [300] Transaction Processing Hints
-> Kernel driver in use: hns3
-> 
-> root@ubuntu:/# echo vfio-pci > /sys/bus/pci/devices/0000:00:02.0/driver_override
-> root@ubuntu:/# echo 0000:00:02.0 > /sys/bus/pci/drivers/hns3/unbind
-> root@ubuntu:/# echo 0000:00:02.0 > /sys/bus/pci/drivers_probe
-> 
-> root@ubuntu:/mnt/dpdk/build/app# ./testpmd -w 0000:00:02.0 --file-prefix socket0 -l 0-1 -n 2 -- -i
-> EAL: Detected 8 lcore(s)
-> EAL: Detected 1 NUMA nodes
-> EAL: Multi-process socket /var/run/dpdk/socket0/mp_socket
-> EAL: Selected IOVA mode 'VA'
-> EAL: No available hugepages reported in hugepages-32768kB
-> EAL: No available hugepages reported in hugepages-64kB
-> EAL: No available hugepages reported in hugepages-1048576kB
-> EAL: Probing VFIO support...
-> EAL: VFIO support initialized
-> EAL:   Invalid NUMA socket, default to 0
-> EAL:   using IOMMU type 1 (Type 1)
-> EAL: Probe PCI driver: net_hns3_vf (19e5:a22e) device: 0000:00:02.0 (socket 0)
-> 0000:00:02.0 hns3_get_mbx_resp(): VF could not get mbx(11,0) head(1) tail(0) lost(1) from PF in_irq:0
-> hns3vf_get_queue_info(): Failed to get tqp info from PF: -62
-> hns3vf_init_vf(): Failed to fetch configuration: -62
-> hns3vf_dev_init(): Failed to init vf: -62
-> EAL: Releasing pci mapped resource for 0000:00:02.0
-> EAL: Calling pci_unmap_resource for 0000:00:02.0 at 0x1100800000
-> EAL: Calling pci_unmap_resource for 0000:00:02.0 at 0x1100810000
-> EAL: Requested device 0000:00:02.0 cannot be used
-> EAL: Bus (pci) probe failed.
-> EAL: No legacy callbacks, legacy socket not created
-> testpmd: No probed ethernet devices
-> Interactive-mode selected
-> testpmd: create a new mbuf pool <mbuf_pool_socket_0>: n=155456, size=2176, socket=0
-> testpmd: preferred mempool ops selected: ring_mp_mc
-> Done
-> testpmd>
-> 
-> And in this case, smmu(host) reports a translation fault,
-> 
-> [ 6542.670624] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
-> [ 6542.670630] arm-smmu-v3 arm-smmu-v3.2.auto: 0x00007d1200000010
-> [ 6542.670631] arm-smmu-v3 arm-smmu-v3.2.auto: 0x000012000000007c
-> [ 6542.670633] arm-smmu-v3 arm-smmu-v3.2.auto: 0x00000000fffef040
-> [ 6542.670634] arm-smmu-v3 arm-smmu-v3.2.auto: 0x00000000fffef000
-> 
-> Tested with Intel 82599 card(ixgbevf) as well. but same errror.
+Hi Lyude,
 
-So this should be fixed in the next release. The problem came from the
-fact the MSI giova was not duly unregistered. When vfio is not in used
-on guest side, the guest kernel allocates giovas for MSIs @fffef000 - 40
-is the ITS translater offset ;-) - When passthrough is in use, the iova
-is allocated @0x8000000. As fffef000 MSI giova was not properly
-unregistered, the host kernel used it - despite it has been unmapped by
-the guest kernel -, hence the translation fault. So the fix is to
-unregister the MSI in the VFIO QEMU code when msix are disabled. So to
-me this is a QEMU integration issue.
+Thank you for the patch.
 
-Thank you very much for testing and reporting!
+On Fri, Feb 19, 2021 at 04:53:11PM -0500, Lyude Paul wrote:
+> This is something that we've wanted for a while now: the ability to
+> actually look up the respective drm_device for a given drm_dp_aux struct.
+> This will also allow us to transition over to using the drm_dbg_*() helpers
+> for debug message printing, as we'll finally have a drm_device to reference
+> for doing so.
 
-Thanks
+Isn't it better to use the existing dev field ? If you have multiple DP
+outputs for one DRM device, using the DRM device name in debug messages
+won't tell which output the message corresponds to.
 
-Eric
+> Note that there is one limitation with this - because some DP AUX adapters
+> exist as platform devices which are initialized independently of their
+> respective DRM devices, one cannot rely on drm_dp_aux->drm_dev to always be
+> non-NULL until drm_dp_aux_register() has been called. We make sure to point
+> this out in the documentation for struct drm_dp_aux.
 > 
-> Not able to root cause the problem yet. With the hope that, this is 
-> related to tlb entries not being invlaidated properly, I tried explicitly
-> issuing CMD_TLBI_NSNH_ALL and CMD_CFGI_CD_ALL just before
-> the STE update, but no luck yet :(
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/atombios_dp.c                 | 1 +
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c  | 1 +
+>  drivers/gpu/drm/bridge/analogix/analogix-anx6345.c       | 1 +
+>  drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c       | 1 +
+>  drivers/gpu/drm/bridge/analogix/analogix_dp_core.c       | 1 +
+>  drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c      | 1 +
+>  drivers/gpu/drm/bridge/tc358767.c                        | 1 +
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c                    | 1 +
+>  drivers/gpu/drm/drm_dp_aux_dev.c                         | 6 ++++++
+>  drivers/gpu/drm/drm_dp_mst_topology.c                    | 1 +
+>  drivers/gpu/drm/i915/display/intel_dp_aux.c              | 1 +
+>  drivers/gpu/drm/msm/edp/edp.h                            | 3 +--
+>  drivers/gpu/drm/msm/edp/edp_aux.c                        | 5 +++--
+>  drivers/gpu/drm/msm/edp/edp_ctrl.c                       | 2 +-
+>  drivers/gpu/drm/nouveau/nouveau_connector.c              | 1 +
+>  drivers/gpu/drm/radeon/atombios_dp.c                     | 1 +
+>  drivers/gpu/drm/tegra/dpaux.c                            | 1 +
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c                         | 1 +
+>  include/drm/drm_dp_helper.h                              | 9 ++++++++-
+>  19 files changed, 33 insertions(+), 6 deletions(-)
 > 
-> Please let me know if I am missing something here or has any clue if you
-> can replicate this on your setup.
-> 
-> Thanks,
-> Shameer
-> 
->>
->> Best Regards
->>
->> Eric
->>
->> This series can be found at:
->> https://github.com/eauger/linux/tree/5.10-rc4-2stage-v13
->> (including the VFIO part in his last version: v11)
->>
->> The series includes a patch from Jean-Philippe. It is better to
->> review the original patch:
->> [PATCH v8 2/9] iommu/arm-smmu-v3: Maintain a SID->device structure
->>
->> The VFIO series is sent separately.
->>
->> History:
->>
->> v12 -> v13:
->> - fixed compilation issue with CONFIG_ARM_SMMU_V3_SVA
->>   reported by Shameer. This urged me to revisit patch 4 into
->>   iommu/smmuv3: Allow s1 and s2 configs to coexist where
->>   s1_cfg and s2_cfg are not dynamically allocated anymore.
->>   Instead I use a new set field in existing structs
->> - fixed 2 others config checks
->> - Updated "iommu/arm-smmu-v3: Maintain a SID->device structure"
->>   according to the last version
->>
->> v11 -> v12:
->> - rebase on top of v5.10-rc4
->>
->> Eric Auger (14):
->>   iommu: Introduce attach/detach_pasid_table API
->>   iommu: Introduce bind/unbind_guest_msi
->>   iommu/smmuv3: Allow s1 and s2 configs to coexist
->>   iommu/smmuv3: Get prepared for nested stage support
->>   iommu/smmuv3: Implement attach/detach_pasid_table
->>   iommu/smmuv3: Allow stage 1 invalidation with unmanaged ASIDs
->>   iommu/smmuv3: Implement cache_invalidate
->>   dma-iommu: Implement NESTED_MSI cookie
->>   iommu/smmuv3: Nested mode single MSI doorbell per domain enforcement
->>   iommu/smmuv3: Enforce incompatibility between nested mode and HW MSI
->>     regions
->>   iommu/smmuv3: Implement bind/unbind_guest_msi
->>   iommu/smmuv3: Report non recoverable faults
->>   iommu/smmuv3: Accept configs with more than one context descriptor
->>   iommu/smmuv3: Add PASID cache invalidation per PASID
->>
->> Jean-Philippe Brucker (1):
->>   iommu/arm-smmu-v3: Maintain a SID->device structure
->>
->>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 659
->> ++++++++++++++++++--
->>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 103 ++-
->>  drivers/iommu/dma-iommu.c                   | 142 ++++-
->>  drivers/iommu/iommu.c                       | 105 ++++
->>  include/linux/dma-iommu.h                   |  16 +
->>  include/linux/iommu.h                       |  41 ++
->>  include/uapi/linux/iommu.h                  |  54 ++
->>  7 files changed, 1042 insertions(+), 78 deletions(-)
->>
->> --
->> 2.21.3
-> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/atombios_dp.c b/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
+> index a3ba9ca11e98..6d35da65e09f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/atombios_dp.c
+> @@ -188,6 +188,7 @@ void amdgpu_atombios_dp_aux_init(struct amdgpu_connector *amdgpu_connector)
+>  {
+>  	amdgpu_connector->ddc_bus->rec.hpd = amdgpu_connector->hpd.hpd;
+>  	amdgpu_connector->ddc_bus->aux.transfer = amdgpu_atombios_dp_aux_transfer;
+> +	amdgpu_connector->ddc_bus->aux.drm_dev = amdgpu_connector->base.dev;
+>  	drm_dp_aux_init(&amdgpu_connector->ddc_bus->aux);
+>  	amdgpu_connector->ddc_bus->has_aux = true;
+>  }
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> index 41b09ab22233..163641b44339 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_mst_types.c
+> @@ -431,6 +431,7 @@ void amdgpu_dm_initialize_dp_connector(struct amdgpu_display_manager *dm,
+>  			  link_index);
+>  	aconnector->dm_dp_aux.aux.transfer = dm_dp_aux_transfer;
+>  	aconnector->dm_dp_aux.ddc_service = aconnector->dc_link->ddc;
+> +	aconnector->dm_dp_aux.aux.drm_dev = dm->ddev;
+>  
+>  	drm_dp_aux_init(&aconnector->dm_dp_aux.aux);
+>  	drm_dp_cec_register_connector(&aconnector->dm_dp_aux.aux,
+> diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+> index aa6cda458eb9..e33cd077595a 100644
+> --- a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+> +++ b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+> @@ -537,6 +537,7 @@ static int anx6345_bridge_attach(struct drm_bridge *bridge,
+>  	/* Register aux channel */
+>  	anx6345->aux.name = "DP-AUX";
+>  	anx6345->aux.dev = &anx6345->client->dev;
+> +	anx6345->aux.drm_dev = bridge->dev;
+>  	anx6345->aux.transfer = anx6345_aux_transfer;
+>  
+>  	err = drm_dp_aux_register(&anx6345->aux);
+> diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+> index f20558618220..5e6a0ed39199 100644
+> --- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+> +++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
+> @@ -905,6 +905,7 @@ static int anx78xx_bridge_attach(struct drm_bridge *bridge,
+>  	/* Register aux channel */
+>  	anx78xx->aux.name = "DP-AUX";
+>  	anx78xx->aux.dev = &anx78xx->client->dev;
+> +	anx78xx->aux.drm_dev = bridge->dev;
+>  	anx78xx->aux.transfer = anx78xx_aux_transfer;
+>  
+>  	err = drm_dp_aux_register(&anx78xx->aux);
+> diff --git a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
+> index f115233b1cb9..550814ca2139 100644
+> --- a/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
+> +++ b/drivers/gpu/drm/bridge/analogix/analogix_dp_core.c
+> @@ -1765,6 +1765,7 @@ int analogix_dp_bind(struct analogix_dp_device *dp, struct drm_device *drm_dev)
+>  	dp->aux.name = "DP-AUX";
+>  	dp->aux.transfer = analogix_dpaux_transfer;
+>  	dp->aux.dev = dp->dev;
+> +	dp->aux.drm_dev = drm_dev;
+>  
+>  	ret = drm_dp_aux_register(&dp->aux);
+>  	if (ret)
+> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> index d966a33743b5..fe821ad628ec 100644
+> --- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+> @@ -1674,6 +1674,7 @@ static int cdns_mhdp_attach(struct drm_bridge *bridge,
+>  
+>  	dev_dbg(mhdp->dev, "%s\n", __func__);
+>  
+> +	mhdp->aux.drm_dev = bridge->dev;
+>  	ret = drm_dp_aux_register(&mhdp->aux);
+>  	if (ret < 0)
+>  		return ret;
+> diff --git a/drivers/gpu/drm/bridge/tc358767.c b/drivers/gpu/drm/bridge/tc358767.c
+> index da89922721ed..23a6f90b694b 100644
+> --- a/drivers/gpu/drm/bridge/tc358767.c
+> +++ b/drivers/gpu/drm/bridge/tc358767.c
+> @@ -1414,6 +1414,7 @@ static int tc_bridge_attach(struct drm_bridge *bridge,
+>  	if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
+>  		return 0;
+>  
+> +	tc->aux.drm_dev = drm;
+>  	ret = drm_dp_aux_register(&tc->aux);
+>  	if (ret < 0)
+>  		return ret;
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 88df4dd0f39d..8e24272bbf00 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -362,6 +362,7 @@ static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+>  		return -EINVAL;
+>  	}
+>  
+> +	pdata->aux.drm_dev = bridge->dev;
+>  	ret = drm_dp_aux_register(&pdata->aux);
+>  	if (ret < 0) {
+>  		drm_err(bridge->dev, "Failed to register DP AUX channel: %d\n", ret);
+> diff --git a/drivers/gpu/drm/drm_dp_aux_dev.c b/drivers/gpu/drm/drm_dp_aux_dev.c
+> index e25181bf2c48..06b374cae956 100644
+> --- a/drivers/gpu/drm/drm_dp_aux_dev.c
+> +++ b/drivers/gpu/drm/drm_dp_aux_dev.c
+> @@ -278,6 +278,12 @@ void drm_dp_aux_unregister_devnode(struct drm_dp_aux *aux)
+>  	if (!aux_dev) /* attach must have failed */
+>  		return;
+>  
+> +	/*
+> +	 * As some AUX adapters may exist as platform devices which outlive their respective DRM
+> +	 * devices, we clear drm_dev to ensure that we never accidentally reference a stale pointer
+> +	 */
+> +	aux->drm_dev = NULL;
+> +
+>  	mutex_lock(&aux_idr_mutex);
+>  	idr_remove(&aux_idr, aux_dev->index);
+>  	mutex_unlock(&aux_idr_mutex);
+> diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
+> index 932c4641ec3e..cf4f2f85711e 100644
+> --- a/drivers/gpu/drm/drm_dp_mst_topology.c
+> +++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+> @@ -2349,6 +2349,7 @@ drm_dp_mst_add_port(struct drm_device *dev,
+>  	port->aux.is_remote = true;
+>  
+>  	/* initialize the MST downstream port's AUX crc work queue */
+> +	port->aux.drm_dev = dev;
+>  	drm_dp_remote_aux_init(&port->aux);
+>  
+>  	/*
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux.c b/drivers/gpu/drm/i915/display/intel_dp_aux.c
+> index eaebf123310a..0571c0794226 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp_aux.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux.c
+> @@ -675,6 +675,7 @@ void intel_dp_aux_init(struct intel_dp *intel_dp)
+>  	else
+>  		intel_dp->get_aux_send_ctl = g4x_get_aux_send_ctl;
+>  
+> +	intel_dp->aux.drm_dev = &dev_priv->drm;
+>  	drm_dp_aux_init(&intel_dp->aux);
+>  
+>  	/* Failure to allocate our preferred name is not critical */
+> diff --git a/drivers/gpu/drm/msm/edp/edp.h b/drivers/gpu/drm/msm/edp/edp.h
+> index eb34243dad53..8590f2ce274d 100644
+> --- a/drivers/gpu/drm/msm/edp/edp.h
+> +++ b/drivers/gpu/drm/msm/edp/edp.h
+> @@ -46,8 +46,7 @@ void edp_bridge_destroy(struct drm_bridge *bridge);
+>  struct drm_connector *msm_edp_connector_init(struct msm_edp *edp);
+>  
+>  /* AUX */
+> -void *msm_edp_aux_init(struct device *dev, void __iomem *regbase,
+> -			struct drm_dp_aux **drm_aux);
+> +void *msm_edp_aux_init(struct msm_edp *edp, void __iomem *regbase, struct drm_dp_aux **drm_aux);
+>  void msm_edp_aux_destroy(struct device *dev, struct edp_aux *aux);
+>  irqreturn_t msm_edp_aux_irq(struct edp_aux *aux, u32 isr);
+>  void msm_edp_aux_ctrl(struct edp_aux *aux, int enable);
+> diff --git a/drivers/gpu/drm/msm/edp/edp_aux.c b/drivers/gpu/drm/msm/edp/edp_aux.c
+> index df10a0196d94..e3d85c622cfb 100644
+> --- a/drivers/gpu/drm/msm/edp/edp_aux.c
+> +++ b/drivers/gpu/drm/msm/edp/edp_aux.c
+> @@ -184,9 +184,9 @@ static ssize_t edp_aux_transfer(struct drm_dp_aux *drm_aux,
+>  	return ret;
+>  }
+>  
+> -void *msm_edp_aux_init(struct device *dev, void __iomem *regbase,
+> -	struct drm_dp_aux **drm_aux)
+> +void *msm_edp_aux_init(struct msm_edp *edp, void __iomem *regbase, struct drm_dp_aux **drm_aux)
+>  {
+> +	struct device *dev = &edp->pdev->dev;
+>  	struct edp_aux *aux = NULL;
+>  	int ret;
+>  
+> @@ -201,6 +201,7 @@ void *msm_edp_aux_init(struct device *dev, void __iomem *regbase,
+>  
+>  	aux->drm_aux.name = "msm_edp_aux";
+>  	aux->drm_aux.dev = dev;
+> +	aux->drm_aux.drm_dev = edp->dev;
+>  	aux->drm_aux.transfer = edp_aux_transfer;
+>  	ret = drm_dp_aux_register(&aux->drm_aux);
+>  	if (ret) {
+> diff --git a/drivers/gpu/drm/msm/edp/edp_ctrl.c b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> index 0d9657cc70db..57af3d8b6699 100644
+> --- a/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/edp/edp_ctrl.c
+> @@ -1153,7 +1153,7 @@ int msm_edp_ctrl_init(struct msm_edp *edp)
+>  	}
+>  
+>  	/* Init aux and phy */
+> -	ctrl->aux = msm_edp_aux_init(dev, ctrl->base, &ctrl->drm_aux);
+> +	ctrl->aux = msm_edp_aux_init(edp, ctrl->base, &ctrl->drm_aux);
+>  	if (!ctrl->aux || !ctrl->drm_aux) {
+>  		pr_err("%s:failed to init aux\n", __func__);
+>  		return -ENOMEM;
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
+> index bfce762adcf0..d1b49508ecb9 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_connector.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+> @@ -1355,6 +1355,7 @@ nouveau_connector_create(struct drm_device *dev,
+>  	case DRM_MODE_CONNECTOR_DisplayPort:
+>  	case DRM_MODE_CONNECTOR_eDP:
+>  		nv_connector->aux.dev = connector->kdev;
+> +		nv_connector->aux.drm_dev = dev;
+>  		nv_connector->aux.transfer = nouveau_connector_aux_xfer;
+>  		snprintf(aux_name, sizeof(aux_name), "sor-%04x-%04x",
+>  			 dcbe->hasht, dcbe->hashm);
+> diff --git a/drivers/gpu/drm/radeon/atombios_dp.c b/drivers/gpu/drm/radeon/atombios_dp.c
+> index 15b00a347560..c50c504bad50 100644
+> --- a/drivers/gpu/drm/radeon/atombios_dp.c
+> +++ b/drivers/gpu/drm/radeon/atombios_dp.c
+> @@ -232,6 +232,7 @@ void radeon_dp_aux_init(struct radeon_connector *radeon_connector)
+>  
+>  	radeon_connector->ddc_bus->rec.hpd = radeon_connector->hpd.hpd;
+>  	radeon_connector->ddc_bus->aux.dev = radeon_connector->base.kdev;
+> +	radeon_connector->ddc_bus->aux.drm_dev = radeon_connector->base.dev;
+>  	if (ASIC_IS_DCE5(rdev)) {
+>  		if (radeon_auxch)
+>  			radeon_connector->ddc_bus->aux.transfer = radeon_dp_aux_transfer_native;
+> diff --git a/drivers/gpu/drm/tegra/dpaux.c b/drivers/gpu/drm/tegra/dpaux.c
+> index ea56c6ec25e4..7d7cc90b6fc9 100644
+> --- a/drivers/gpu/drm/tegra/dpaux.c
+> +++ b/drivers/gpu/drm/tegra/dpaux.c
+> @@ -719,6 +719,7 @@ int drm_dp_aux_attach(struct drm_dp_aux *aux, struct tegra_output *output)
+>  	unsigned long timeout;
+>  	int err;
+>  
+> +	aux->drm_dev = output->connector.dev;
+>  	err = drm_dp_aux_register(aux);
+>  	if (err < 0)
+>  		return err;
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 99158ee67d02..8272eee03adc 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1069,6 +1069,7 @@ static int zynqmp_dp_aux_init(struct zynqmp_dp *dp)
+>  
+>  	dp->aux.name = "ZynqMP DP AUX";
+>  	dp->aux.dev = dp->dev;
+> +	dp->aux.drm_dev = dp->drm;
+>  	dp->aux.transfer = zynqmp_dp_aux_transfer;
+>  
+>  	return drm_dp_aux_register(&dp->aux);
+> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+> index b35a1c1339e8..45ec74862212 100644
+> --- a/include/drm/drm_dp_helper.h
+> +++ b/include/drm/drm_dp_helper.h
+> @@ -1833,13 +1833,19 @@ struct drm_dp_aux_cec {
+>   * @name: user-visible name of this AUX channel and the I2C-over-AUX adapter
+>   * @ddc: I2C adapter that can be used for I2C-over-AUX communication
+>   * @dev: pointer to struct device that is the parent for this AUX channel
+> + * @drm_dev: pointer to the &drm_device that owns this AUX channel. Beware, this may be %NULL
+> + * before drm_dp_aux_register() has been called.
+>   * @crtc: backpointer to the crtc that is currently using this AUX channel
+>   * @hw_mutex: internal mutex used for locking transfers
+>   * @crc_work: worker that captures CRCs for each frame
+>   * @crc_count: counter of captured frame CRCs
+>   * @transfer: transfers a message representing a single AUX transaction
+>   *
+> - * The @dev field should be set to a pointer to the device that implements the AUX channel.
+> + * The @dev field should be set to a pointer to the device that implements the AUX channel. As well,
+> + * the @drm_dev field should be set to the &drm_device that will be using this AUX channel as early
+> + * as possible. For many graphics drivers this should happen before drm_dp_aux_init(), however it's
+> + * perfectly fine to set this field later so long as it's assigned before calling
+> + * drm_dp_aux_register().
+>   *
+>   * The @name field may be used to specify the name of the I2C adapter. If set to %NULL, dev_name()
+>   * of @dev will be used.
+> @@ -1866,6 +1872,7 @@ struct drm_dp_aux {
+>  	const char *name;
+>  	struct i2c_adapter ddc;
+>  	struct device *dev;
+> +	struct drm_device *drm_dev;
+>  	struct drm_crtc *crtc;
+>  	struct mutex hw_mutex;
+>  	struct work_struct crc_work;
 
+-- 
+Regards,
+
+Laurent Pinchart
