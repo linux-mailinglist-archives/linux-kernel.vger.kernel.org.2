@@ -2,59 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84429320CD1
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9675320CD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhBUSo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 13:44:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56750 "EHLO mail.kernel.org"
+        id S230080AbhBUSpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 13:45:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhBUSlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 13:41:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9FE6C64F04;
+        id S230315AbhBUSlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 13:41:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E369E64F08;
         Sun, 21 Feb 2021 18:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1613932783;
-        bh=ExY7nMX+kg5cIN1bkc58jHVWbsM7wSFpFLshZoRf7Hk=;
+        bh=elGYTcXChBWsfDRccHJ3f3SY+OUH/bcWWbYdGxO5JzM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=EfWE7MhqVXzQ6BBnQ/+/+b5S5csaQuAb1Cn63lHYtsT6fIuKAW57lxepBEqk0NOI2
-         7/IHtpTDVhokHt6ESrf02D5qXjxPlZDZai9gB9XLiEiEEwtWyhD+P3rslD8/YVuFAF
-         6wAYUfR6iVfionXDXzYkmebaGsvNZJgo6TbT7IVeFV+UvRU41pfpA9TbLPVGW8lFpx
-         1A0nIqXRfm8BxZqn89tvaE5OwOmvCzUUUDlgdFkDU3o2Pu7Tdf3Cem709zc/ZFL2vq
-         EB0Ah/M4oMuSIecoSOCj4WUnIPGTTHyud/gypTpK81R1lApitkaJiwya9SBB+bXaAo
-         vNt9mO3iCRRKA==
+        b=c3Y0+MRSn4StdK32kqjwV3khCDTUmpzDn6Yu69jDntfPDkNCMkNSBFiy0slBbZm5F
+         frqcm4zmUigOoQgMU/sPKnSVRDNNjoxvPei78tz1EMh1EuCWdIEpDkBHb/z7mWunJr
+         A2RAEkzB+OrvgSWlldC2au0aYC9ixT51n9uTSLiZ2yEPXaYBrZDimFCFUUCLgANYo8
+         MY1bbLfnmuBQ6WCdo9/RtoKi1efg1+7hr4HXzaZQDMAhDXeePRMfr6atouy72RkIo0
+         lWo6uw4Qsq87QCAlJvulth6EYQSem9aIkxBOAISjMCUokSIfbxsDZvx0CQhP//frsE
+         1X6O1VV3/kDOA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9B1F460191;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DD3AE60191;
         Sun, 21 Feb 2021 18:39:43 +0000 (UTC)
-Subject: Re: [GIT PULL] iomap: new code for 5.12-rc1
+Subject: Re: [GIT PULL] erofs update for 5.12-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210219033302.GY7193@magnolia>
-References: <20210219033302.GY7193@magnolia>
+In-Reply-To: <20210219113537.GA492321@xiangao.remote.csb>
+References: <20210219113537.GA492321@xiangao.remote.csb>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210219033302.GY7193@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.12-merge-2
-X-PR-Tracked-Commit-Id: ed1128c2d0c87e5ff49c40f5529f06bc35f4251b
+X-PR-Tracked-Message-Id: <20210219113537.GA492321@xiangao.remote.csb>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.12-rc1
+X-PR-Tracked-Commit-Id: ce063129181312f8781a047a50be439c5859747b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4f016a316f2243efb0d1c0e7259f07817eb99e67
-Message-Id: <161393278362.20435.17293846078865363205.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 681e2abe2191058b320716896cccda05b161eedc
+Message-Id: <161393278390.20435.11331185091951569905.pr-tracker-bot@kernel.org>
 Date:   Sun, 21 Feb 2021 18:39:43 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
+To:     Gao Xiang <hsiangkao@redhat.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de, linux-btrfs@vger.kernel.org,
-        naohiro.aota@wdc.com
+        linux-erofs@lists.ozlabs.org, LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miao Xie <miaoxie@huawei.com>, Chao Yu <yuchao0@huawei.com>,
+        Fang Wei <fangwei1@huawei.com>,
+        Li Guifu <bluce.liguifu@huawei.com>,
+        Huang Jianan <huangjianan@oppo.com>,
+        Guo Weichao <guoweichao@oppo.com>,
+        Gao Xiang <hsiangkao@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 18 Feb 2021 19:33:02 -0800:
+The pull request you sent on Fri, 19 Feb 2021 19:35:37 +0800:
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.12-merge-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/xiang/erofs.git tags/erofs-for-5.12-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4f016a316f2243efb0d1c0e7259f07817eb99e67
+https://git.kernel.org/torvalds/c/681e2abe2191058b320716896cccda05b161eedc
 
 Thank you!
 
