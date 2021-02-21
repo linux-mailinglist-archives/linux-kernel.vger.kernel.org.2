@@ -2,207 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CF7320D9C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02098320DA0
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:38:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbhBUUee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 15:34:34 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:37293 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229761AbhBUUec (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:34:32 -0500
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id F37EF5C00A9;
-        Sun, 21 Feb 2021 15:33:44 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 21 Feb 2021 15:33:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=drnd.me; h=from
-        :to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm2; bh=vsDawagnbCweTXi+6Ffx/hfen5
-        OZppefssZRmq2SsIM=; b=bNkj6/4vMBxmrMRYYGcr4VAFmZtBUNpTsVhLcPZMb6
-        1eA0OKixBQC2KzSC+oKpGkvWHpsn/TCjyLH9etD0W9nNs+AGFh3nqePI0mANxU1O
-        uXcJJrxRsfMU3yt4cXw+0yP15y3bT9ho4XZ5oqjPLzULetKE84hA2zWsNu1RWEC8
-        qlzlx3CxjqM5KZ7E/mGmOIiTYS/fgiUTkRLQU0yKI8MlGruusFMNx57HHuX66460
-        R6WxJWJKwhPZUTQZxrsVlSrC8gNz3jzx2IXSGc+iWk+Sa8RkLR4xiI292sE88NVK
-        NJEOrjBkgt98tVUzENuELFZSvfOUKaq+e/JkfyXflSsA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=vsDawagnbCweTXi+6
-        Ffx/hfen5OZppefssZRmq2SsIM=; b=Q/oF4FVHaFUpXuU+ZW//7+3KZ4HrK9O3o
-        yBQ+d4paKiL4Vcu8EwXHQzfQRRa19Ih7urCpnU7GPvBXwwRG8jF2t6j+qxuPYdI+
-        DOu9Fh5GPvMUnv3empA2tJcNYb1f3GuF8G2MLMCbjLc/UGH23df8CDavuJOcPdcH
-        QO6VKwixDspMoToLAJf/JpE1c0b66uYGzC0V+8TxChkYCnW5mZn6ITp8RveO1H0L
-        ZBfGYBiv/qlBP8diODJRtgG1aInHMBgNULfGmLKXetIjdhee7ye/EC51gTOXVVJ+
-        UurxPlKCRrYJx5TYVq6r2ff5t8GG33X5J3+Tk0g0/PnFz6/iYM4mA==
-X-ME-Sender: <xms:qMMyYD_VKxyCz8xHRF-YGHRaGBKDcU2JWQVHk8nn8xssJV2p0vGVsA>
-    <xme:qMMyYPuBSuBh8VpDD3jy91_9k3UGoF8UorNDJd1AQlD2E9nLHJgmAjzw4aMHnqjFV
-    U7axpeIU2jJtcJY1A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkedugddufeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeghihhllhhirghm
-    ucffuhhrrghnugcuoeifihhllhdoghhithesughrnhgurdhmvgeqnecuggftrfgrthhtvg
-    hrnhepffehieekueeileeufeeuteegveeugeejfeelhfevkefhhfdvtddvjedufeekfeeu
-    necukfhppedvudejrddvfeekrddvtdekrdejgeenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpeifihhllhdoghhithesughrnhgurdhmvg
-X-ME-Proxy: <xmx:qMMyYBAyReXxenHYbPV6HIjQndNf3CTEWMjSpy-wwFcQ_2OzlfyMIQ>
-    <xmx:qMMyYPccFBVmI8plvCcc5scjw7yNdHI4qgat4DN2rBo6EVT0TytRgA>
-    <xmx:qMMyYIMDji1XC5waP5btRr1ziXq_XSXItdc0dahSD6ac7ohBmYaa-g>
-    <xmx:qMMyYCWBoNwyvnDuGY11k-MZ1ogpfwG89Bxle3v4wACSNOacYe28Pw>
-Received: from vagrant.vm (pd9eed04a.dip0.t-ipconnect.de [217.238.208.74])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1CC5D240064;
-        Sun, 21 Feb 2021 15:33:44 -0500 (EST)
-From:   William Durand <will+git@drnd.me>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: rtl8192e: fix alignment issues in rtllib_wx.c
-Date:   Fri, 19 Feb 2021 23:33:52 +0000
-Message-Id: <20210219233352.2298-1-will+git@drnd.me>
-X-Mailer: git-send-email 2.30.0
+        id S231145AbhBUUgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 15:36:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230174AbhBUUgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 15:36:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B768B64E86;
+        Sun, 21 Feb 2021 20:35:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613939759;
+        bh=62pblr5PKwtl7r1W6CVV/N21T1Y68VBAk4kKZYHcIw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EMmpefgwQiboemyixGKxEA/xqCYHSvI32QBR0mJDthQTSsp2gByDsefnDLHZme3p0
+         Z50dYGskwtcrXpk+g1xS0nJgRqs6t29g/zcdG2EZ6u9eO/fTHy0mSw7jx0e9Yx0aWY
+         zkVPwFnLkksfYC1CDFl7QP5bLqC2emTP36WL30MDZcoLBnm2E+itHBITLZ+ZOLq1ca
+         6iobcUGb/ek+hPKB0wMP0LAPp6yoj+u/ZRu2nv/edXsrIFFqBn0wG61cvoT7pJImUF
+         f6iFGymgNHOa7K9p32UWLfnrlk2ERzTaVq8GrjO3Cn59FGtLsUcuphVAcn1P2dQUSy
+         ItTUUiXx5GlBg==
+Received: by earth.universe (Postfix, from userid 1000)
+        id C1F5F3C0C96; Sun, 21 Feb 2021 21:35:57 +0100 (CET)
+Date:   Sun, 21 Feb 2021 21:35:57 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     Marcel Holtmann <marcel@holtmann.org>,
+        Trent Piepho <tpiepho@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Hilda Wu <hildawu@realtek.com>,
+        Sathish Narasimman <sathish.narasimman@intel.com>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Hsin-Yu Chao <hychao@chromium.org>,
+        Amit K Bag <amit.k.bag@intel.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        kernel@collabora.com, Sjoerd Simons <sjoerd@collabora.com>
+Subject: Re: [PATCH] Bluetooth: btusb: Always fallback to alt 1 for WBS
+Message-ID: <20210221203557.wcmukv77sng25bql@earth.universe>
+References: <20201210012003.133000-1-tpiepho@gmail.com>
+ <7ADF39E2-647E-49E2-9C5B-B0BF6A303B95@holtmann.org>
+ <YB68RUVLRGQKS+yH@dawn.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wercdu6qitq2sblv"
+Content-Disposition: inline
+In-Reply-To: <YB68RUVLRGQKS+yH@dawn.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes "Alignment should match open parenthesis" issues reported by
-checkpatch.pl in the `rtllib_wx.c` file.
 
-Signed-off-by: William Durand <will+git@drnd.me>
----
- drivers/staging/rtl8192e/rtllib_wx.c | 42 ++++++++++++----------------
- 1 file changed, 18 insertions(+), 24 deletions(-)
+--wercdu6qitq2sblv
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/staging/rtl8192e/rtllib_wx.c b/drivers/staging/rtl8192e/rtllib_wx.c
-index ecd472baee16..ce095febc9ed 100644
---- a/drivers/staging/rtl8192e/rtllib_wx.c
-+++ b/drivers/staging/rtl8192e/rtllib_wx.c
-@@ -160,8 +160,7 @@ static inline char *rtl819x_translate_scan(struct rtllib_device *ieee,
- 	iwe.cmd = SIOCGIWRATE;
- 	iwe.u.bitrate.fixed = iwe.u.bitrate.disabled = 0;
- 	iwe.u.bitrate.value = max_rate * 500000;
--	start = iwe_stream_add_event_rsl(info, start, stop, &iwe,
--				     IW_EV_PARAM_LEN);
-+	start = iwe_stream_add_event_rsl(info, start, stop, &iwe, IW_EV_PARAM_LEN);
- 	iwe.cmd = IWEVCUSTOM;
- 	iwe.u.data.length = p - custom;
- 	if (iwe.u.data.length)
-@@ -181,15 +180,13 @@ static inline char *rtl819x_translate_scan(struct rtllib_device *ieee,
- 	if (!(network->stats.mask & RTLLIB_STATMASK_SIGNAL))
- 		iwe.u.qual.updated |= IW_QUAL_QUAL_INVALID;
- 	iwe.u.qual.updated = 7;
--	start = iwe_stream_add_event_rsl(info, start, stop, &iwe,
--					 IW_EV_QUAL_LEN);
-+	start = iwe_stream_add_event_rsl(info, start, stop, &iwe, IW_EV_QUAL_LEN);
+[+cc stable@vger.kernel.org]
 
- 	iwe.cmd = IWEVCUSTOM;
- 	p = custom;
- 	iwe.u.data.length = p - custom;
- 	if (iwe.u.data.length)
--		start = iwe_stream_add_point_rsl(info, start, stop,
--						 &iwe, custom);
-+		start = iwe_stream_add_point_rsl(info, start, stop, &iwe, custom);
+Hi,
 
- 	memset(&iwe, 0, sizeof(iwe));
- 	if (network->wpa_ie_len) {
-@@ -238,8 +235,8 @@ static inline char *rtl819x_translate_scan(struct rtllib_device *ieee,
- }
+On Sat, Feb 06, 2021 at 04:56:53PM +0100, Sjoerd Simons wrote:
+> On Fri, Dec 18, 2020 at 10:23:08PM +0100, Marcel Holtmann wrote:
+> > Hi Trent,
+> >=20
+> > > When alt mode 6 is not available, fallback to the kernel <=3D 5.7 beh=
+avior
+> > > of always using alt mode 1.
+> > >=20
+> > > Prior to kernel 5.8, btusb would always use alt mode 1 for WBS (Wide
+> > > Band Speech aka mSBC aka transparent SCO).  In commit baac6276c0a9
+> > > ("Bluetooth: btusb: handle mSBC audio over USB Endpoints") this
+> > > was changed to use alt mode 6, which is the recommended mode in the
+> > > Bluetooth spec (Specifications of the Bluetooth System, v5.0, Vol 4.B
+> > > =A72.2.1).  However, many if not most BT USB adapters do not support =
+alt
+> > > mode 6.  In fact, I have been unable to find any which do.
+>=20
+> > patch has been applied to bluetooth-next tree.
+>=20
+> For easier application to the stable tree(s) this should probably get:
+>   Fixes: baac6276c0a9 ("Bluetooth: btusb: handle mSBC audio over USB Endp=
+oints")
+>=20
+> In my testing this indeed fixes mSBC audio with both a Belkin (Broadcom
+> BCM20702A, 050d:065a) and an Intel Bluetooth (8087:0a2b) adapters.
+>=20
+>   Tested-By: Sjoerd Simons <sjoerd@collabora.com>
 
- int rtllib_wx_get_scan(struct rtllib_device *ieee,
--			  struct iw_request_info *info,
--			  union iwreq_data *wrqu, char *extra)
-+		       struct iw_request_info *info,
-+		       union iwreq_data *wrqu, char *extra)
- {
- 	struct rtllib_network *network;
- 	unsigned long flags;
-@@ -285,8 +282,8 @@ int rtllib_wx_get_scan(struct rtllib_device *ieee,
- EXPORT_SYMBOL(rtllib_wx_get_scan);
+Tested on Intel AX200 Bluetooth (8087:0029):
 
- int rtllib_wx_set_encode(struct rtllib_device *ieee,
--			    struct iw_request_info *info,
--			    union iwreq_data *wrqu, char *keybuf)
-+			 struct iw_request_info *info,
-+			 union iwreq_data *wrqu, char *keybuf)
- {
- 	struct iw_point *erq = &(wrqu->encoding);
- 	struct net_device *dev = ieee->dev;
-@@ -328,7 +325,7 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
- 				if (key_provided)
- 					break;
- 				lib80211_crypt_delayed_deinit(&ieee->crypt_info,
--						    &ieee->crypt_info.crypt[i]);
-+							      &ieee->crypt_info.crypt[i]);
- 			}
- 		}
+Tested-by: Sebastian Reichel <sre@kernel.org>
 
-@@ -406,8 +403,7 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
- 					     NULL, (*crypt)->priv);
- 		if (len == 0) {
- 			/* Set a default key of all 0 */
--			netdev_info(ieee->dev, "Setting key %d to all zero.\n",
--					   key);
-+			netdev_info(ieee->dev, "Setting key %d to all zero.\n", key);
+The patch has been merged to Linus' tree today and I think it should
+be applied to the 5.10 tree, which is used by Debian. This patch is
+required to use BT headset with bidirectional-audio in acceptable
+quality (That also requires proper userspace software, e.g. pipewire
+0.3.22, which Sjoerd uploaded to Debian experimental).
 
- 			memset(sec.keys[key], 0, 13);
- 			(*crypt)->ops->set_key(sec.keys[key], 13, NULL,
-@@ -460,8 +456,8 @@ int rtllib_wx_set_encode(struct rtllib_device *ieee,
- EXPORT_SYMBOL(rtllib_wx_set_encode);
+Patch applies cleanly on 5.10.
 
- int rtllib_wx_get_encode(struct rtllib_device *ieee,
--			    struct iw_request_info *info,
--			    union iwreq_data *wrqu, char *keybuf)
-+			 struct iw_request_info *info,
-+			 union iwreq_data *wrqu, char *keybuf)
- {
- 	struct iw_point *erq = &(wrqu->encoding);
- 	int len, key;
-@@ -505,8 +501,8 @@ int rtllib_wx_get_encode(struct rtllib_device *ieee,
- EXPORT_SYMBOL(rtllib_wx_get_encode);
+Thanks,
 
- int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
--			       struct iw_request_info *info,
--			       union iwreq_data *wrqu, char *extra)
-+			     struct iw_request_info *info,
-+			     union iwreq_data *wrqu, char *extra)
- {
- 	int ret = 0;
- 	struct net_device *dev = ieee->dev;
-@@ -663,8 +659,8 @@ int rtllib_wx_set_encode_ext(struct rtllib_device *ieee,
- EXPORT_SYMBOL(rtllib_wx_set_encode_ext);
+-- Sebastian
 
- int rtllib_wx_set_mlme(struct rtllib_device *ieee,
--			       struct iw_request_info *info,
--			       union iwreq_data *wrqu, char *extra)
-+		       struct iw_request_info *info,
-+		       union iwreq_data *wrqu, char *extra)
- {
- 	u8 i = 0;
- 	bool deauth = false;
-@@ -710,8 +706,8 @@ int rtllib_wx_set_mlme(struct rtllib_device *ieee,
- EXPORT_SYMBOL(rtllib_wx_set_mlme);
+--wercdu6qitq2sblv
+Content-Type: application/pgp-signature; name="signature.asc"
 
- int rtllib_wx_set_auth(struct rtllib_device *ieee,
--			       struct iw_request_info *info,
--			       struct iw_param *data, char *extra)
-+		       struct iw_request_info *info,
-+		       struct iw_param *data, char *extra)
- {
- 	switch (data->flags & IW_AUTH_INDEX) {
- 	case IW_AUTH_WPA_VERSION:
-@@ -771,9 +767,7 @@ int rtllib_wx_set_gen_ie(struct rtllib_device *ieee, u8 *ie, size_t len)
+-----BEGIN PGP SIGNATURE-----
 
- 	if (len) {
- 		eid = ie[0];
--		if ((eid == MFIE_TYPE_GENERIC) && (!memcmp(&ie[2],
--		     wps_oui, 4))) {
--
-+		if ((eid == MFIE_TYPE_GENERIC) && (!memcmp(&ie[2], wps_oui, 4))) {
- 			ieee->wps_ie_len = min_t(size_t, len, MAX_WZC_IE_LEN);
- 			buf = kmemdup(ie, ieee->wps_ie_len, GFP_KERNEL);
- 			if (!buf)
---
-2.30.0
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAyxCEACgkQ2O7X88g7
++poTOA/7BIfVEMLI8RRz7+F2HQiJXwieTVgLSHIVc6EADDgK/K0BCkFYUX+bHSkL
+BQ7PbVqhS77A9EtDrP0aMNioC126fKKMJ4uePBnhCzyHN0YpZwPmriagu6MlOMUh
+xYGNMAjLk3e6jBusaGSGkIzN43LkjDJmIwYn4NDrUxceJa+VGoTkEVhGhPMOa2zj
+AbVIGetuWY5Q9pqzzUgJnaFnqNflsA6NZQ3IuCrD0pi2SKwkzKOglk1+MgxUmUVa
+HdSIeLNyOJLoGDS0Qr6Nytma3S0frYrcru2w1zQ0S1/fujWvSP+io4PNuceXo6Vj
++c71oggRPjRbZowXvPkYvJN7yAKr07h7YfsCf6nXAf0XHSSea3kxmQrn3xgYRNTG
+Pf0Xx7IGPptpOLt/Lym8b0dDQc8483I42QLQxtwDvrk9hCjC5ifFu3jNfBdoZF8K
+/kFtIHWk/1FVNoyRWSeCf/Wi1/Z4zkoEzkzBdufcujY05vj/43HSxZb7ttlZRmkB
+1uG/I3JIdJUOdUU9EWqea65NKd8HnU+zMyb6LjXhfI0eyy7FyhAuP6n/qnRdoKfM
+M/RE3PtnuZPsk98OMgpJ4TPJnyFyoOA9zxn+wtfTbaxmRy6hIFHf4alB8FPaWg04
+H2vJG5xfugXrOln8u5wwtl2ZckmzFAUY58ylQsvpy1QlWG0qxNE=
+=K/qZ
+-----END PGP SIGNATURE-----
 
+--wercdu6qitq2sblv--
