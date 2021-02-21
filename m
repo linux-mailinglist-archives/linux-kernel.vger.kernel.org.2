@@ -2,99 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B95320A71
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:10:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B4A320A74
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:13:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbhBUNJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 08:09:50 -0500
-Received: from smtp.gentoo.org ([140.211.166.183]:59902 "EHLO smtp.gentoo.org"
+        id S229944AbhBUNMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 08:12:25 -0500
+Received: from mga18.intel.com ([134.134.136.126]:5610 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhBUNJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 08:09:46 -0500
-X-Greylist: delayed 45781 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Feb 2021 08:09:45 EST
-Date:   Sun, 21 Feb 2021 13:08:59 +0000
-From:   Sergei Trofimovich <slyfox@gentoo.org>
-To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-ia64@vger.kernel.org,
-        "Dmitry V . Levin" <ldv@altlinux.org>
-Subject: Re: [PATCH] ia64: fix ptrace(PTRACE_SYSCALL_INFO_EXIT) sign
-Message-ID: <20210221130859.089ce1ed@sf>
-In-Reply-To: <66569d56-1af0-a6bb-8b54-9d1cded893cd@physik.fu-berlin.de>
-References: <20210221002554.333076-1-slyfox@gentoo.org>
-        <20210221002554.333076-2-slyfox@gentoo.org>
-        <66569d56-1af0-a6bb-8b54-9d1cded893cd@physik.fu-berlin.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S229889AbhBUNMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 08:12:17 -0500
+IronPort-SDR: umgGLGP0XIg6+LlOTZKFwZpvqQMzY3rM7q2DmPUx4VkGaaMxL8aAOX1EcNr+bxC9zB9uE0pUX+
+ HSzRY9tUHZXA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9901"; a="171892657"
+X-IronPort-AV: E=Sophos;i="5.81,194,1610438400"; 
+   d="scan'208";a="171892657"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 05:11:36 -0800
+IronPort-SDR: H4Fp9jDvq/8fcsQZdO+yXsDaNhI25W0/KzUnIxCNd5TexHo6bPOfdvrD4dONiJMOpFLPAFpyGf
+ SXp5Q4RoGkqg==
+X-IronPort-AV: E=Sophos;i="5.81,194,1610438400"; 
+   d="scan'208";a="401994269"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 05:11:35 -0800
+Date:   Sun, 21 Feb 2021 21:11:33 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Yejune Deng <yejune.deng@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virt: acrn: Use vfs_poll() instead of f_op->poll()
+Message-ID: <20210221131133.GC30008@shuo-intel.sh.intel.com>
+References: <20210220145351.14464-1-yejune.deng@gmail.com>
+ <714d4648-46d7-bc44-a9a2-5ce3c919897c@intel.com>
+ <YDIRnrVYAGkYXcxp@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YDIRnrVYAGkYXcxp@kroah.com>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 21 Feb 2021 10:21:56 +0100
-John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de> wrote:
+On Sun 21.Feb'21 at  8:54:06 +0100, Greg Kroah-Hartman wrote:
+>On Sun, Feb 21, 2021 at 09:50:42AM +0800, Liu, Shuo A wrote:
+>>
+>>
+>> On 2/20/2021 22:53, Yejune Deng wrote:
+>> > Use vfs_poll() is a more advanced function in acrn_irqfd_assign().
+>> > as the same time, modify the definition of events.
+>> >
+>> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+>>
+>> Thanks for the update.
+>> Reviewed-by: Shuo Liu <shuo.a.liu@intel.com>
+>>
+>> Hi Greg,
+>> Need i do more work on this patch?
+>> Or you will review and apply on your tree directly?
+>
+>Please resend it to me with your signed-off-by on it.
 
-> Hi Sergei!
-> 
-> On 2/21/21 1:25 AM, Sergei Trofimovich wrote:
-> > In https://bugs.gentoo.org/769614 Dmitry noticed that
-> > `ptrace(PTRACE_GET_SYSCALL_INFO)` does not return error sign properly.
-> > (...)  
-> 
-> Do these two patches unbreak gdb on ia64?
-
-gdb was somewhat working on ia64 for Gentoo. strace was the main
-impacted here.
-
-But I did not try anything complicated recently. Anything specific that
-breaks for you?
-
-$ uname -r
-5.10.0
-(even without the patches above)
-
-$ cat c.c
-int main(){}
-$ gcc c.c -o a -ggdb3
-$ gdb --quiet ./a
-Reading symbols from ./a...
-(gdb) start
-Temporary breakpoint 1 at 0x7f2: file c.c, line 1.
-Starting program: /home/slyfox/a
-Failed to read a valid object file image from memory.
-
-Temporary breakpoint 1, main () at c.c:1
-1	int main(){}
-(gdb) disassemble
-Dump of assembler code for function main:
-   0x20000008000007f0 <+0>:	[MII]       mov r2=r12
-   0x20000008000007f1 <+1>:	            mov r14=r0;;
-=> 0x20000008000007f2 <+2>:	            mov r8=r14
-   0x2000000800000800 <+16>:	[MIB]       mov r12=r2
-   0x2000000800000801 <+17>:	            nop.i 0x0
-   0x2000000800000802 <+18>:	            br.ret.sptk.many b0;;
-End of assembler dump.
-(gdb) break *0x2000000800000800
-Breakpoint 2 at 0x2000000800000800: file c.c, line 1.
-(gdb) continue
-Continuing.
-
-Breakpoint 2, 0x2000000800000800 in main () at c.c:1
-1	int main(){}
-
-Looks ok for minor stuff.
-
-> And have you, by any chance, managed to get the hpsa driver working again?
-
-v5.10 seems to boot off hpsa just fine without extra patches:
-  14:01.0 RAID bus controller: Hewlett-Packard Company Smart Array P600
-	Subsystem: Hewlett-Packard Company 3 Gb/s SAS RAID
-	Kernel driver in use: hpsa
-
-v5.11 does not boot yet. Kernel does not see some files while boots after init is
-started  (but I'm not sure it's a block device problem). Bisecting now why.
-
--- 
-
-  Sergei
+OK.
