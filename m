@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29062320D00
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:07:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E39320D02
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:07:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhBUTGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:06:52 -0500
-Received: from mga05.intel.com ([192.55.52.43]:37166 "EHLO mga05.intel.com"
+        id S231129AbhBUTHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 14:07:34 -0500
+Received: from mga05.intel.com ([192.55.52.43]:37169 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230463AbhBUTCm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:02:42 -0500
-IronPort-SDR: h0KDsBw/QO7DchAAtmkG96u8rIwijmEyJDKspXhc2912nsz9rX7BVzs2LQlTn6FTrOrOhJsC6e
- 3w+yL1rW3CRg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269192151"
+        id S230472AbhBUTCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 14:02:43 -0500
+IronPort-SDR: f/GnrmTxjwipF4S1pOpM1/PeuqUOs4TlKMDGWIUGtDGBpJectu8vj5xJiNr3FF1ZWyYQZDK2ut
+ azxq0JnHk7MQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269192154"
 X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="269192151"
+   d="scan'208";a="269192154"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 11:01:29 -0800
-IronPort-SDR: T7HkBMImrz0UoQ8t6JFT2WdfTyKxH+BMjAXs0iEKqQpzKDyFIjy54a1vPCC8WniiTurFDevCfr
- k7ExVrbqwjTA==
+IronPort-SDR: wyNzWGo+DTzstj/VQ5ID7o33e7Cq4Z0IjceF95c3XRrYfVq63z5tvR8B6vZnE1JsFbQMX3l2gS
+ 26MGmBgFIpEg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="429792123"
+   d="scan'208";a="429792125"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Feb 2021 11:01:27 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 21 Feb 2021 11:01:29 -0800
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
 To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
         x86@kernel.org
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
         chang.seok.bae@intel.com
-Subject: [PATCH v4 14/22] x86/fpu/xstate: Expand the xstate buffer on the first use of dynamic user state
-Date:   Sun, 21 Feb 2021 10:56:29 -0800
-Message-Id: <20210221185637.19281-15-chang.seok.bae@intel.com>
+Subject: [PATCH v4 15/22] x86/fpu/xstate: Support ptracer-induced xstate buffer expansion
+Date:   Sun, 21 Feb 2021 10:56:30 -0800
+Message-Id: <20210221185637.19281-16-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210221185637.19281-1-chang.seok.bae@intel.com>
 References: <20210221185637.19281-1-chang.seok.bae@intel.com>
@@ -41,35 +41,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Intel's Extended Feature Disable (XFD) feature is an extension of the XSAVE
-architecture. XFD allows the kernel to enable a feature state in XCR0 and
-to receive a #NM trap when a task uses instructions accessing that state.
-In this way, Linux can defer allocating the large XSAVE buffer until tasks
-need it.
-
-XFD introduces two MSRs: IA32_XFD to enable/disable the feature and
-IA32_XFD_ERR to assist the #NM trap handler. Both use the same
-state-component bitmap format, used by XCR0.
-
-Use this hardware capability to find the right time to expand the xstate
-buffer. Introduce two sets of helper functions for that:
-
-1. The first set is primarily for interacting with the XFD hardware:
-	xdisable_setbits()
-	xdisable_getbits()
-	xdisable_switch()
-
-2. The second set is for managing the first-use status and handling #NM
-   trap:
-	xfirstuse_enabled()
-	xfirstuse_not_detected()
-
-The #NM handler induces the xstate buffer expansion to save the first-used
-states.
-
-The XFD feature is enabled only for the compacted format. If the kernel
-uses the standard format, the buffer has to be always enough for all the
-states.
+ptrace() may update xstate data before the target task has taken an XFD
+fault and expanded the xstate buffer. Detect this case and allocate a
+sufficient buffer to support the request. Also, disable the (now
+unnecessary) associated first-use fault.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
@@ -77,311 +52,55 @@ Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
 Changes from v3:
-* Removed 'no functional change' in the changelog. (Borislav Petkov)
+* Removed 'no functional changes' in the changelog. (Borislav Petkov)
 
 Changes from v2:
-* Changed to enable XFD only when the compacted format is used.
 * Updated the changelog with task->fpu removed. (Borislav Petkov)
-
-Changes from v1:
-* Inlined the XFD-induced #NM handling code (Andy Lutomirski)
+* Updated the code comments.
 ---
- arch/x86/include/asm/cpufeatures.h  |  1 +
- arch/x86/include/asm/fpu/internal.h | 51 ++++++++++++++++++++++++++++-
- arch/x86/include/asm/msr-index.h    |  2 ++
- arch/x86/kernel/cpu/cpuid-deps.c    |  1 +
- arch/x86/kernel/fpu/xstate.c        | 37 +++++++++++++++++++--
- arch/x86/kernel/process.c           |  5 +++
- arch/x86/kernel/process_32.c        |  2 +-
- arch/x86/kernel/process_64.c        |  2 +-
- arch/x86/kernel/traps.c             | 40 ++++++++++++++++++++++
- 9 files changed, 135 insertions(+), 6 deletions(-)
+ arch/x86/kernel/fpu/regset.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index 84b887825f12..3170ab367cf2 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -277,6 +277,7 @@
- #define X86_FEATURE_XSAVEC		(10*32+ 1) /* XSAVEC instruction */
- #define X86_FEATURE_XGETBV1		(10*32+ 2) /* XGETBV with ECX = 1 instruction */
- #define X86_FEATURE_XSAVES		(10*32+ 3) /* XSAVES/XRSTORS instructions */
-+#define X86_FEATURE_XFD			(10*32+ 4) /* eXtended Feature Disabling */
+diff --git a/arch/x86/kernel/fpu/regset.c b/arch/x86/kernel/fpu/regset.c
+index ee27df4caed6..ec6cbb75010e 100644
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -122,6 +122,35 @@ int xstateregs_set(struct task_struct *target, const struct user_regset *regset,
  
- /*
-  * Extended auxiliary flags: Linux defined - for features scattered in various
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index f964f3efc92e..c467312d38d8 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -557,11 +557,58 @@ static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
-  * Misc helper functions:
-  */
+ 	xsave = &fpu->state->xsave;
  
-+/* The first-use detection helpers: */
-+
-+static inline void xdisable_setbits(u64 value)
-+{
-+	wrmsrl_safe(MSR_IA32_XFD, value);
-+}
-+
-+static inline u64 xdisable_getbits(void)
-+{
-+	u64 value;
-+
-+	rdmsrl_safe(MSR_IA32_XFD, &value);
-+	return value;
-+}
-+
-+static inline u64 xfirstuse_enabled(void)
-+{
-+	/* All the dynamic user components are first-use enabled. */
-+	return xfeatures_mask_user_dynamic;
-+}
-+
-+/*
-+ * Convert fpu->state_mask to the xdisable configuration to be written to
-+ * MSR IA32_XFD.  So, xdisable_setbits() only uses this outcome.
-+ */
-+static inline u64 xfirstuse_not_detected(struct fpu *fpu)
-+{
-+	u64 firstuse_bv = (fpu->state_mask & xfirstuse_enabled());
-+
 +	/*
-+	 * If first-use is not detected, set the bit. If the detection is
-+	 * not enabled, the bit is always zero in firstuse_bv. So, make
-+	 * following conversion:
++	 * When a ptracer attempts to write any state in the target buffer but not
++	 * sufficiently allocated, it dynamically expands the buffer.
 +	 */
-+	return  (xfirstuse_enabled() ^ firstuse_bv);
-+}
++	if (count > get_xstate_size(fpu->state_mask)) {
++		unsigned int offset, size;
++		struct xstate_header hdr;
++		u64 mask;
 +
-+/* Update MSR IA32_XFD with xfirstuse_not_detected() if needed. */
-+static inline void xdisable_switch(struct fpu *prev, struct fpu *next)
-+{
-+	if (!static_cpu_has(X86_FEATURE_XFD) || !xfirstuse_enabled())
-+		return;
++		offset = offsetof(struct xregs_state, header);
++		size = sizeof(hdr);
 +
-+	if (unlikely(prev->state_mask != next->state_mask))
-+		xdisable_setbits(xfirstuse_not_detected(next));
-+}
++		/* Retrieve XSTATE_BV */
++		if (kbuf) {
++			memcpy(&hdr, kbuf + offset, size);
++		} else {
++			ret = __copy_from_user(&hdr, ubuf + offset, size);
++			if (ret)
++				return ret;
++		}
 +
- /*
-  * Load PKRU from the FPU context if available. Delay loading of the
-  * complete FPU state until the return to userland.
-  */
--static inline void switch_fpu_finish(struct fpu *new_fpu)
-+static inline void switch_fpu_finish(struct fpu *old_fpu, struct fpu *new_fpu)
- {
- 	u32 pkru_val = init_pkru_value;
- 	struct pkru_state *pk;
-@@ -571,6 +618,8 @@ static inline void switch_fpu_finish(struct fpu *new_fpu)
- 
- 	set_thread_flag(TIF_NEED_FPU_LOAD);
- 
-+	xdisable_switch(old_fpu, new_fpu);
-+
- 	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
- 		return;
- 
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 546d6ecf0a35..eb65e836c2d1 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -622,6 +622,8 @@
- #define MSR_IA32_BNDCFGS_RSVD		0x00000ffc
- 
- #define MSR_IA32_XSS			0x00000da0
-+#define MSR_IA32_XFD			0x000001c4
-+#define MSR_IA32_XFD_ERR		0x000001c5
- 
- #define MSR_IA32_APICBASE		0x0000001b
- #define MSR_IA32_APICBASE_BSP		(1<<8)
-diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
-index 42af31b64c2c..4423046c2d74 100644
---- a/arch/x86/kernel/cpu/cpuid-deps.c
-+++ b/arch/x86/kernel/cpu/cpuid-deps.c
-@@ -72,6 +72,7 @@ static const struct cpuid_dep cpuid_deps[] = {
- 	{ X86_FEATURE_AVX512_FP16,		X86_FEATURE_AVX512BW  },
- 	{ X86_FEATURE_ENQCMD,			X86_FEATURE_XSAVES    },
- 	{ X86_FEATURE_PER_THREAD_MBA,		X86_FEATURE_MBA       },
-+	{ X86_FEATURE_XFD,			X86_FEATURE_XSAVES    },
- 	{}
- };
- 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index c57877df797d..b69913ae30ed 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -175,6 +175,21 @@ static bool xfeature_is_supervisor(int xfeature_nr)
- 	return ecx & 1;
- }
- 
-+static bool xfeature_disable_supported(int xfeature_nr)
-+{
-+	u32 eax, ebx, ecx, edx;
-+
-+	if (!boot_cpu_has(X86_FEATURE_XFD))
-+		return false;
-+
-+	/*
-+	 * If state component 'i' supports xfeature disable (first-use
-+	 * detection), ECX[2] return 1; otherwise, 0.
-+	 */
-+	cpuid_count(XSTATE_CPUID, xfeature_nr, &eax, &ebx, &ecx, &edx);
-+	return ecx & 4;
-+}
-+
- /**
-  * get_xstate_comp_offset() - Find the feature's offset in the compacted format
-  * @mask:	This bitmap tells which components reserved in the format.
-@@ -366,6 +381,9 @@ void fpu__init_cpu_xstate(void)
- 		wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor() |
- 				     xfeatures_mask_supervisor_dynamic());
- 	}
-+
-+	if (boot_cpu_has(X86_FEATURE_XFD))
-+		xdisable_setbits(xfirstuse_enabled());
- }
- 
- static bool xfeature_enabled(enum xfeature xfeature)
-@@ -565,8 +583,9 @@ static void __init print_xstate_offset_size(void)
- 	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
- 		if (!xfeature_enabled(i))
- 			continue;
--		pr_info("x86/fpu: xstate_offset[%d]: %4d, xstate_sizes[%d]: %4d\n",
--			 i, xstate_comp_offsets[i], i, xstate_sizes[i]);
-+		pr_info("x86/fpu: xstate_offset[%d]: %4d, xstate_sizes[%d]: %4d (%s)\n",
-+			i, xstate_comp_offsets[i], i, xstate_sizes[i],
-+			(xfeatures_mask_user_dynamic & BIT_ULL(i)) ? "on-demand" : "default");
- 	}
- }
- 
-@@ -999,9 +1018,18 @@ void __init fpu__init_system_xstate(void)
- 	}
- 
- 	xfeatures_mask_all &= fpu__get_supported_xfeatures_mask();
--	/* Do not support the dynamically allocated buffer yet. */
- 	xfeatures_mask_user_dynamic = 0;
- 
-+	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
-+		u64 feature_mask = BIT_ULL(i);
-+
-+		if (!(xfeatures_mask_user() & feature_mask))
-+			continue;
-+
-+		if (xfeature_disable_supported(i))
-+			xfeatures_mask_user_dynamic |= feature_mask;
++		mask = hdr.xfeatures & xfeatures_mask_user_dynamic;
++		if (!mask) {
++			ret = alloc_xstate_buffer(fpu, mask);
++			if (ret)
++				return ret;
++		}
 +	}
 +
- 	/* Enable xstate instructions to be able to continue with initialization: */
- 	fpu__init_cpu_xstate();
- 	err = init_xstate_size();
-@@ -1053,6 +1081,9 @@ void fpu__resume_cpu(void)
- 		wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor()  |
- 				     xfeatures_mask_supervisor_dynamic());
- 	}
-+
-+	if (boot_cpu_has(X86_FEATURE_XFD))
-+		xdisable_setbits(xfirstuse_not_detected(&current->thread.fpu));
- }
+ 	fpu__prepare_write(fpu);
  
- /*
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index c41116543a82..697d554a242d 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -103,6 +103,11 @@ void arch_thread_struct_whitelist(unsigned long *offset, unsigned long *size)
- 	*size = get_xstate_config(XSTATE_MIN_SIZE);
- }
- 
-+void arch_release_task_struct(struct task_struct *tsk)
-+{
-+	free_xstate_buffer(&tsk->thread.fpu);
-+}
-+
- /*
-  * Free thread data structures etc..
-  */
-diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
-index 4f2f54e1281c..7bd5d08eeb41 100644
---- a/arch/x86/kernel/process_32.c
-+++ b/arch/x86/kernel/process_32.c
-@@ -213,7 +213,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- 
- 	this_cpu_write(current_task, next_p);
- 
--	switch_fpu_finish(next_fpu);
-+	switch_fpu_finish(prev_fpu, next_fpu);
- 
- 	/* Load the Intel cache allocation PQR MSR. */
- 	resctrl_sched_in();
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index ad582f9ac5a6..6fb44c4ceeee 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -594,7 +594,7 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
- 	this_cpu_write(current_task, next_p);
- 	this_cpu_write(cpu_current_top_of_stack, task_top_of_stack(next_p));
- 
--	switch_fpu_finish(next_fpu);
-+	switch_fpu_finish(prev_fpu, next_fpu);
- 
- 	/* Reload sp0. */
- 	update_task_stack(next_p);
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 7f5aec758f0e..821a7f408ad4 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -1106,10 +1106,50 @@ DEFINE_IDTENTRY(exc_spurious_interrupt_bug)
- 	 */
- }
- 
-+static __always_inline bool handle_xfirstuse_event(struct fpu *fpu)
-+{
-+	bool handled = false;
-+	u64 event_mask;
-+
-+	/* Check whether the first-use detection is running. */
-+	if (!static_cpu_has(X86_FEATURE_XFD) || !xfirstuse_enabled())
-+		return handled;
-+
-+	rdmsrl_safe(MSR_IA32_XFD_ERR, &event_mask);
-+
-+	/* The trap event should happen to one of first-use enabled features */
-+	WARN_ON(!(event_mask & xfirstuse_enabled()));
-+
-+	/* If IA32_XFD_ERR is empty, the current trap has nothing to do with. */
-+	if (!event_mask)
-+		return handled;
-+
-+	/*
-+	 * The first-use event is presumed to be from userspace, so it should have
-+	 * nothing to do with interrupt context.
-+	 */
-+	if (WARN_ON(in_interrupt()))
-+		return handled;
-+
-+	if (alloc_xstate_buffer(fpu, event_mask))
-+		return handled;
-+
-+	xdisable_setbits(xfirstuse_not_detected(fpu));
-+
-+	/* Clear the trap record. */
-+	wrmsrl_safe(MSR_IA32_XFD_ERR, 0);
-+	handled = true;
-+
-+	return handled;
-+}
-+
- DEFINE_IDTENTRY(exc_device_not_available)
- {
- 	unsigned long cr0 = read_cr0();
- 
-+	if (handle_xfirstuse_event(&current->thread.fpu))
-+		return;
-+
- #ifdef CONFIG_MATH_EMULATION
- 	if (!boot_cpu_has(X86_FEATURE_FPU) && (cr0 & X86_CR0_EM)) {
- 		struct math_emu_info info = { };
+ 	if (using_compacted_format()) {
 -- 
 2.17.1
 
