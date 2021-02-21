@@ -2,85 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1839F320E9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:54:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51787320EA2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:56:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhBUXxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 18:53:38 -0500
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:38331 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229918AbhBUXxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 18:53:35 -0500
-Received: from dread.disaster.area (pa49-179-130-210.pa.nsw.optusnet.com.au [49.179.130.210])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 7E7221ADB51;
-        Mon, 22 Feb 2021 10:52:49 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lDyWu-00Fq01-QV; Mon, 22 Feb 2021 10:52:48 +1100
-Date:   Mon, 22 Feb 2021 10:52:48 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     SelvaKumar S <selvakuma.s1@samsung.com>
-Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
-        damien.lemoal@wdc.com, hch@lst.de, sagi@grimberg.me,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
-        joshiiitr@gmail.com, nj.shetty@samsung.com, joshi.k@samsung.com,
-        javier.gonz@samsung.com, kch@kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH v5 0/4] add simple copy support
-Message-ID: <20210221235248.GZ4626@dread.disaster.area>
-References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
- <20210219124517.79359-1-selvakuma.s1@samsung.com>
+        id S229932AbhBUX4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 18:56:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229717AbhBUX4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 18:56:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8493364E64;
+        Sun, 21 Feb 2021 23:55:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613951721;
+        bh=pCV1sQy9uTqnFAmmvzP8ZG3dSUM5TF1WU3OUbHWIOv4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=T1pRRi5/D/X7oVKcOmFHTJtXqE5RutVhZWk7CLVNL5XbPT8qLQytrs0gEhOLn4zd/
+         oMtzAGHyufc5EAcu9qpi67kgU5sFMf0THymI2PM4BPddsXq3IEgenfteJzQ7WsMpWg
+         Fh++ylm32cIb7DV/46FFXRFy9poORUQIvjU8kqLcIl0MrLQppdq+Qg8jAVnNCwkeN8
+         /s3Qc9qVacn1oOqUcFUrQUhG+UfoVpF7MO9ssZOm1coRCCrCAsNKygsF8/yDUcW1cN
+         zVRfdYaI0IFjAPoRJWcZeJb+WzRvA2sS0avXg/cZpzLDNODhVX8uiwhLavvKRoiERK
+         9eZgDdBOeY/sQ==
+Received: by mail-ed1-f51.google.com with SMTP id i14so19434588eds.8;
+        Sun, 21 Feb 2021 15:55:21 -0800 (PST)
+X-Gm-Message-State: AOAM530Ig5p3dOBvdBDxynLTxJ9qlmFw4q4+RM928g2qYOdwaNLkZxdL
+        PXgwHswInickGI+KBg28diwa945MO2Qwd0n5Vg==
+X-Google-Smtp-Source: ABdhPJzjfP1nPPQ1MNPaWVnfk2Mr7HLZ5b27HJabVIkK5eW+HiRwhioG5vwkCodyWo5nFcJXQ+8wp5PIi/mGH6iID4E=
+X-Received: by 2002:aa7:dd4b:: with SMTP id o11mr19989951edw.303.1613951719928;
+ Sun, 21 Feb 2021 15:55:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219124517.79359-1-selvakuma.s1@samsung.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
-        a=JD06eNgDs9tuHP7JIKoLzw==:117 a=JD06eNgDs9tuHP7JIKoLzw==:17
-        a=kj9zAlcOel0A:10 a=qa6Q16uM49sA:10 a=pNaSbsGRAAAA:8 a=7-415B0cAAAA:8
-        a=bdcsEvdjF_AAMq5uHxAA:9 a=CjuIK1q_8ugA:10 a=k8uaQqolKd8A:10
-        a=cz0TccRYsqG1oLvFGeGV:22 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <1613728452-24871-1-git-send-email-yongqiang.niu@mediatek.com> <1613728452-24871-2-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1613728452-24871-2-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 22 Feb 2021 07:55:10 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_92-Kw+BFnxgQbh2zFT5hDBAF+uZe+_VgCd4NAziQ0wUg@mail.gmail.com>
+Message-ID: <CAAOTY_92-Kw+BFnxgQbh2zFT5hDBAF+uZe+_VgCd4NAziQ0wUg@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/mediatek: move page flip handle into cmdq cb
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 06:15:13PM +0530, SelvaKumar S wrote:
-> This patchset tries to add support for TP4065a ("Simple Copy Command"),
-> v2020.05.04 ("Ratified")
-> 
-> The Specification can be found in following link.
-> https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
-> 
-> Simple copy command is a copy offloading operation and is  used to copy
-> multiple contiguous ranges (source_ranges) of LBA's to a single destination
-> LBA within the device reducing traffic between host and device.
-> 
-> This implementation doesn't add native copy offload support for stacked
-> devices rather copy offload is done through emulation. Possible use
-> cases are F2FS gc and BTRFS relocation/balance.
+Hi, Yongqiang:
 
-It sounds like you are missing the most obvious use case for this:
-hooking up filesystem copy_file_range() implementations to allow
-userspace to offload user data copies to hardware....
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B42=E6=9C=
+=8819=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=885:54=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> move page flip handle into cmdq cb
+> irq callback will before cmdq flush ddp register
+> into hardware, that will cause the display frame page
+> flip event before it realy display out time
+>
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 33 +++++++++++++++++++++++++++=
+++----
+>  1 file changed, 29 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/me=
+diatek/mtk_drm_crtc.c
+> index bdd37ea..bece327 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+> @@ -72,6 +72,13 @@ struct mtk_crtc_state {
+>         unsigned int                    pending_vrefresh;
+>  };
+>
+> +#if IS_REACHABLE(CONFIG_MTK_CMDQ)
+> +struct mtk_cmdq_cb_data {
+> +       struct cmdq_pkt                 *cmdq_handle;
+> +       struct mtk_drm_crtc             *mtk_crtc;
+> +};
+> +#endif
+> +
+>  static inline struct mtk_drm_crtc *to_mtk_crtc(struct drm_crtc *c)
+>  {
+>         return container_of(c, struct mtk_drm_crtc, base);
+> @@ -96,7 +103,6 @@ static void mtk_drm_crtc_finish_page_flip(struct mtk_d=
+rm_crtc *mtk_crtc)
+>
+>  static void mtk_drm_finish_page_flip(struct mtk_drm_crtc *mtk_crtc)
+>  {
+> -       drm_crtc_handle_vblank(&mtk_crtc->base);
+>         if (mtk_crtc->pending_needs_vblank) {
+>                 mtk_drm_crtc_finish_page_flip(mtk_crtc);
+>                 mtk_crtc->pending_needs_vblank =3D false;
+> @@ -241,7 +247,19 @@ struct mtk_ddp_comp *mtk_drm_ddp_comp_for_plane(stru=
+ct drm_crtc *crtc,
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>  static void ddp_cmdq_cb(struct cmdq_cb_data data)
+>  {
+> -       cmdq_pkt_destroy(data.data);
+> +       struct mtk_cmdq_cb_data *cb_data =3D data.data;
+> +
+> +       if (cb_data) {
+> +               struct mtk_drm_crtc *mtk_crtc =3D cb_data->mtk_crtc;
+> +
+> +               if (mtk_crtc)
+> +                       mtk_drm_finish_page_flip(mtk_crtc);
+> +
+> +               if (cb_data->cmdq_handle)
+> +                       cmdq_pkt_destroy(cb_data->cmdq_handle);
+> +
+> +               kfree(cb_data);
+> +       }
+>  }
+>  #endif
+>
+> @@ -481,13 +499,20 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_c=
+rtc *mtk_crtc)
+>         }
+>  #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+>         if (mtk_crtc->cmdq_client) {
+> +               struct mtk_cmdq_cb_data *cb_data;
+> +
+>                 mbox_flush(mtk_crtc->cmdq_client->chan, 2000);
+>                 cmdq_handle =3D cmdq_pkt_create(mtk_crtc->cmdq_client, PA=
+GE_SIZE);
+>                 cmdq_pkt_clear_event(cmdq_handle, mtk_crtc->cmdq_event);
+>                 cmdq_pkt_wfe(cmdq_handle, mtk_crtc->cmdq_event, false);
+>                 mtk_crtc_ddp_config(crtc, cmdq_handle);
+>                 cmdq_pkt_finalize(cmdq_handle);
+> -               cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cmdq_handl=
+e);
+> +
+> +               cb_data =3D kmalloc(sizeof(*cb_data), GFP_KERNEL);
+> +               cb_data->cmdq_handle =3D cmdq_handle;
+> +               cb_data->mtk_crtc =3D mtk_crtc;
+> +
+> +               cmdq_pkt_flush_async(cmdq_handle, ddp_cmdq_cb, cb_data);
+>         }
+>  #endif
+>         mutex_unlock(&mtk_crtc->hw_lock);
+> @@ -674,7 +699,7 @@ void mtk_crtc_ddp_irq(struct drm_crtc *crtc, struct m=
+tk_ddp_comp *comp)
+>  #endif
+>                 mtk_crtc_ddp_config(crtc, NULL);
+>
+> -       mtk_drm_finish_page_flip(mtk_crtc);
+> +       drm_crtc_handle_vblank(&mtk_crtc->base);
 
-Another fs level feature that could use this for hardware
-acceleration fallocate(FALLOC_FL_UNSHARE).
+For CPU and shadow register case, where to handle page flip?
+The correct sequence should be:
 
-These are probably going to be far easier to hook up than filesystem
-GC algorithms, and there is also solid data integrity and stress
-testing checking infrastructure for these operations via fstests.
+1. set pending_needs_vblank to true
+2. mtk_drm_crtc_hw_config
+3. irq comes, handle page flip, and set pending_needs_vblank to false
 
-> As SCSI XCOPY can take two different block devices and no of source range is
-> equal to 1, this interface can be extended in future to support SCSI XCOPY.
+But now irq comes before 2, so this patch want to fix this bug.
+I think shadow register also have this problem. The control flow of
+shadow register is similar to cmdq, so I would like to fix both
+problem in the same way.
 
-That greatly complicates the implementation. do we even care at this
-point about cross-device XCOPY at this point?
+Regards,
+Chun-Kuang.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>  }
+>
+>  static int mtk_drm_crtc_num_comp_planes(struct mtk_drm_crtc *mtk_crtc,
+> --
+> 1.8.1.1.dirty
+>
