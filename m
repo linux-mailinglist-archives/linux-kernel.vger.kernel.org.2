@@ -2,61 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8BA320CB8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:41:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0E7320CC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:42:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhBUSkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 13:40:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhBUSkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 13:40:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 498BA64EE9;
-        Sun, 21 Feb 2021 18:39:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613932782;
-        bh=mi6x5MBE2+LRZ2kcKtoRBnpU64+odAVPKOamHqfu3cE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Jk/Mq+Sn+ZkvJUXqEPqlK0RO7YCPtWZMZNov0rP1NK50dQhSHYGEILAusfon0ZcZB
-         +9PlxDmwf5gP2r/hT4gWSSP3zz1/6hNAQMfXdnxfBtWGy/jhaoeEoowvJ9QqeciQEA
-         uzEH9BO6hUbHQGUIL8MzD70Pqx60pHjrtc9nvTjget7E+4yt6laq3KrkyszsSgoxAD
-         rJy7qixCJEYshdoZTUD38G04x9bn+h07m/p7eLnVxaT5XjPfKud1KQUszthrz4iWuQ
-         XwJsApbW1BtIuQT8NqdNzXxlA7DdGpl1UVdFRFNNunB8wI3euccyFSgvK0yRQId6LP
-         clhDVyCxG6T+w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 45A6460191;
-        Sun, 21 Feb 2021 18:39:42 +0000 (UTC)
-Subject: Re: [GIT PULL] jfs updates for 5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <4605002a-b275-1190-c56d-7d888aa770a0@oracle.com>
-References: <4605002a-b275-1190-c56d-7d888aa770a0@oracle.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4605002a-b275-1190-c56d-7d888aa770a0@oracle.com>
-X-PR-Tracked-Remote: git://github.com/kleikamp/linux-shaggy.git tags/jfs-5.12
-X-PR-Tracked-Commit-Id: 4208c398aae4c2290864ba15c3dab7111f32bec1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d88e8b67a6f2f6dae41c986ed58cb1955e0179b3
-Message-Id: <161393278227.20435.11982601908255141368.pr-tracker-bot@kernel.org>
-Date:   Sun, 21 Feb 2021 18:39:42 +0000
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>
+        id S230188AbhBUSlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 13:41:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230284AbhBUSkq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 13:40:46 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EDBC0617AB
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:39:47 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id e8so12974257ljj.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:39:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=35pzqO9O3l5AL2z+dNGmH+7/+WET1My3h21Jjydq1RE=;
+        b=QXZBpyPQ/Nj+N18ro87ronCkYiIuKDrDoItzktNDE5atJOc207NDHNqJkd5bwr4ymm
+         B50Mq62BjW8MusaKCAwr/Q/csrVjCzSzSc5imWIO6oaDfdkyXwK1/Fdqjj1uDQcfMiD7
+         ImYtNS0DYgAFnlJsi6YkTAZUE7RWPMfL6+YldaA1OP8Sa31H3+WOFyxUXLNxj/OPlaSz
+         qa131PnEFzhkG28/Fn92WhKQgrf3HIPzzE9VqhRKObE+7OtuXpKoXF7eQdmdjoBdSoc2
+         0AHrMmYWUUbW2haRBDewuYuW6P1nrDZ8n6yQzbnPuea5s8cglEHjDCCnQi4uQgiBM9fn
+         +TFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=35pzqO9O3l5AL2z+dNGmH+7/+WET1My3h21Jjydq1RE=;
+        b=E2sYS4cLPoUGa5DSgx/b5R1VNIDBfEHy4xKdKjbXvyOzqsef9UepdJTIOhh6fUeH2B
+         KbcSBYzfM6gY+EU7k2NQmjiiSPWNkIFh5HXC7DXY8gzEO7uPzqwshFhGXrCHUhc3J3gN
+         w09plErkBwnEf6JraFX1U18rNNZZ7/tlKq/OySPNeIKRvBXDC7ZSSqpAbjTbAadBfb9u
+         mqixs6ZTTo4Q0dosmzYFUx+n5kptEYqXEoOZS13CQPuVLi2qJRvsQ+OsX4KwFx07gQgC
+         EBB4bYhwxSZlsuq0QTGF9lwtVAJ6sCzkMsSYHzNSi+uIxBwOLQ23biH4NhvAcy4Vy0C1
+         f7+Q==
+X-Gm-Message-State: AOAM530mYWae+7AGx8GlvGdPzLUF1TfYrZYRMnXFyW01I4uYQeL7P9mE
+        2qggIBZWBT08f9b7/YGhE3FTxQ==
+X-Google-Smtp-Source: ABdhPJytJb6BG+ryBC3pDHSlSwMSkRTeAhgxj/UdTPjDnv/ZoUtUoo+ADJONRpar4ClobZTsCqCLIA==
+X-Received: by 2002:a05:6512:68a:: with SMTP id t10mr11171766lfe.334.1613932785525;
+        Sun, 21 Feb 2021 10:39:45 -0800 (PST)
+Received: from [192.168.118.216] ([85.249.43.69])
+        by smtp.gmail.com with ESMTPSA id c5sm1637566lff.113.2021.02.21.10.39.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Feb 2021 10:39:45 -0800 (PST)
+Subject: Re: [PATCH v5 22/22] arm64: dts: sdm845-db845c: Enable ov8856 sensor
+ and connect to ISP
+To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+References: <20210217112122.424236-1-robert.foss@linaro.org>
+ <20210217112122.424236-23-robert.foss@linaro.org>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <89be7089-4dd2-caba-a0b0-aec256e7f8a1@linaro.org>
+Date:   Sun, 21 Feb 2021 21:39:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210217112122.424236-23-robert.foss@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 15 Feb 2021 10:05:32 -0600:
+Hi Robert,
 
-> git://github.com/kleikamp/linux-shaggy.git tags/jfs-5.12
+Thank you for your patch!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d88e8b67a6f2f6dae41c986ed58cb1955e0179b3
+Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
 
-Thank you!
+Thanks,
+Andrey
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+On 17.02.2021 14:21, Robert Foss wrote:
+> Enable camss & ov8856 DT nodes.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+> 
+> Changes since v1
+>   - Laurent: Fix subject
+>   - Laurent: Remove redundant regulator labels
+>   - Laurent: Remove empty line
+> 
+> Changes since v3
+>   - Fixed ordering of IRQs
+>   - Add newlines for better readability
+> 
+>   arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 19 +++++++++++++++++--
+>   1 file changed, 17 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> index 5842ab65789c..d89286f6aacb 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+> @@ -1108,6 +1108,21 @@ &cci {
+>   
+>   &camss {
+>   	vdda-supply = <&vreg_l1a_0p875>;
+> +
+> +	status = "ok";
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		port@0 {
+> +			reg = <0>;
+> +			csiphy0_ep: endpoint {
+> +				clock-lanes = <1>;
+> +				data-lanes = <1 2 3 4>;
+> +				remote-endpoint = <&ov8856_ep>;
+> +			};
+> +		};
+> +	};
+>   };
+>   
+>   &cci_i2c0 {
+> @@ -1139,7 +1154,7 @@ camera@10 {
+>   		avdd-supply = <&cam0_avdd_2v8>;
+>   		dvdd-supply = <&cam0_dvdd_1v2>;
+>   
+> -		status = "disable";
+> +		status = "ok";
+>   
+>   		port {
+>   			ov8856_ep: endpoint {
+> @@ -1147,7 +1162,7 @@ ov8856_ep: endpoint {
+>   				link-frequencies = /bits/ 64
+>   					<360000000 180000000>;
+>   				data-lanes = <1 2 3 4>;
+> -//				remote-endpoint = <&csiphy0_ep>;
+> +				remote-endpoint = <&csiphy0_ep>;
+>   			};
+>   		};
+>   	};
+> 
