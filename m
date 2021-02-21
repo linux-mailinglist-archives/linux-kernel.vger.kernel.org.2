@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DF89320AF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690BD320AF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:37:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhBUOXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:23:22 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49589 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhBUOXU (ORCPT
+        id S229994AbhBUOg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:36:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhBUOgu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:23:20 -0500
-X-Originating-IP: 2.7.49.219
-Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id C6A621BF207;
-        Sun, 21 Feb 2021 14:22:34 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH] riscv: Get rid of MAX_EARLY_MAPPING_SIZE
-Date:   Sun, 21 Feb 2021 09:22:33 -0500
-Message-Id: <20210221142233.3661-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
+        Sun, 21 Feb 2021 09:36:50 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C22C061574;
+        Sun, 21 Feb 2021 06:36:10 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id e9so6014552plh.3;
+        Sun, 21 Feb 2021 06:36:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0NKlohU11NhDaMLzPFWNpnCD3UlsUYj1N/lz0ikZqEU=;
+        b=unte5hEVeIHbWIlnmFSIky6LLV07dwUI9HCak7zYa6fyGvPNNKaCoM0RYeToLptvNz
+         uiOpXFxkFPEj53cmXnQRg2GbmHWGmxAN0kJSuZ4fgS7OVLsUWzPRq1tu9Y49DDDAa7jJ
+         OqA++CAkcigfdc0vp6o9fRs6YAmiLH3GiH+9QfFcFUjRrL2gBNl31UqDuLWnxyS/Lb7c
+         rNkWE2Ei3xaQh5TdWWyinKkTiZu5E+Z/YFSIliBwjPW+AHOuttKjvwryP2s0GCzCC80a
+         qFaMSy4szmUCE/mJ4bUqpjoAywITS6MSST35bVbaah6hDvVMSKL7xtI4EyLPd9tS+n9p
+         1rUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0NKlohU11NhDaMLzPFWNpnCD3UlsUYj1N/lz0ikZqEU=;
+        b=lzYyLRb2MCzL29IOWCZnEdcVvIFktTcTQ8JPtvomD40HytvouG+Ojx9y56Mbl1SDnr
+         vCybXy7Mwa/Rs2gGVowbTIDxkgI5ocw6KYCd/VFGncWItIQV3nbRZXFIsrGP5RlJRHk5
+         otCNsSVwUYBdavfG7ZXDva71g467SCNPa7cGAvgYQO6nCZz6LoYi2oX7Mvcg5z2D+3MF
+         xu2QAx8K19pV6ui5r3g9dWhBQXDxgl9VyWZrNA5PGWkhcgMbg8d85sNDvwXFd5mU9k3C
+         6KMvJpgot24kXVYkiPi1aHRQgVqEvmRWjAF0s6qYtl9X9GOkz0IVr+rQwRE+SBQnDLuy
+         ekZg==
+X-Gm-Message-State: AOAM531yNLWHDbXPdSQ2AbnZLoR6a6Xm47ula5kbF4lVCO2zPTOBkONs
+        1kuXWuDzJb1+xqbPLCbC0aw=
+X-Google-Smtp-Source: ABdhPJx/3JBAbs1QqHYNQuzH/72GS4CrMvmYREX2IaZalk4T+qmnBdKr18y3/UzCAnPzfq4QS34oVw==
+X-Received: by 2002:a17:90a:1904:: with SMTP id 4mr18658104pjg.212.1613918169730;
+        Sun, 21 Feb 2021 06:36:09 -0800 (PST)
+Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
+        by smtp.gmail.com with ESMTPSA id m16sm16142189pfd.203.2021.02.21.06.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 06:36:09 -0800 (PST)
+From:   Chuhong Yuan <hslester96@gmail.com>
+Cc:     Tariq Toukan <tariqt@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        Moni Shoua <monis@mellanox.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chuhong Yuan <hslester96@gmail.com>
+Subject: [PATCH] net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
+Date:   Sun, 21 Feb 2021 22:35:59 +0800
+Message-Id: <20210221143559.390277-1-hslester96@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At early boot stage, we have a whole PGDIR to map the kernel, so there
-is no need to restrict the early mapping size to 128MB. Removing this
-define also allows us to simplify some compile time logic.
+mlx4_do_mirror_rule() forgets to call mlx4_free_cmd_mailbox() to
+free the memory region allocated by mlx4_alloc_cmd_mailbox() before
+an exit.
+Add the missed call to fix it.
 
-This fixes large kernel mappings with a size greater than 128MB, as it
-is the case for syzbot kernels whose size was just ~130MB.
-
-Note that on rv64, for now, we are then limited to PGDIR size for early
-mapping as we can't use PGD mappings (see [1]). That should be enough
-given the relative small size of syzbot kernels compared to PGDIR_SIZE
-which is 1GB.
-
-[1] https://lore.kernel.org/lkml/20200603153608.30056-1-alex@ghiti.fr/
-
-Reported-by: Dmitry Vyukov <dvyukov@google.com>
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+Fixes: 78efed275117 ("net/mlx4_core: Support mirroring VF DMFS rules on both ports")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
 ---
- arch/riscv/mm/init.c | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
+ drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index f9f9568d689e..f81f813b9603 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -226,8 +226,6 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
- pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
- pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+index 394f43add85c..a99e71bc7b3c 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
++++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
+@@ -4986,6 +4986,7 @@ static int mlx4_do_mirror_rule(struct mlx4_dev *dev, struct res_fs_rule *fs_rule
  
--#define MAX_EARLY_MAPPING_SIZE	SZ_128M
--
- pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
- 
- void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
-@@ -302,13 +300,7 @@ static void __init create_pte_mapping(pte_t *ptep,
- 
- pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
- pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
--
--#if MAX_EARLY_MAPPING_SIZE < PGDIR_SIZE
--#define NUM_EARLY_PMDS		1UL
--#else
--#define NUM_EARLY_PMDS		(1UL + MAX_EARLY_MAPPING_SIZE / PGDIR_SIZE)
--#endif
--pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata __aligned(PAGE_SIZE);
-+pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
- pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
- 
- static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
-@@ -330,11 +322,9 @@ static pmd_t *get_pmd_virt_late(phys_addr_t pa)
- 
- static phys_addr_t __init alloc_pmd_early(uintptr_t va)
- {
--	uintptr_t pmd_num;
-+	BUG_ON((va - PAGE_OFFSET) >> PGDIR_SHIFT);
- 
--	pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
--	BUG_ON(pmd_num >= NUM_EARLY_PMDS);
--	return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
-+	return (uintptr_t)early_pmd;
- }
- 
- static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
-@@ -452,7 +442,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	uintptr_t va, pa, end_va;
- 	uintptr_t load_pa = (uintptr_t)(&_start);
- 	uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
--	uintptr_t map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
-+	uintptr_t map_size;
- #ifndef __PAGETABLE_PMD_FOLDED
- 	pmd_t fix_bmap_spmd, fix_bmap_epmd;
- #endif
-@@ -464,12 +454,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	 * Enforce boot alignment requirements of RV32 and
- 	 * RV64 by only allowing PMD or PGD mappings.
- 	 */
--	BUG_ON(map_size == PAGE_SIZE);
-+	map_size = PMD_SIZE;
- 
- 	/* Sanity check alignment and size */
- 	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
- 	BUG_ON((load_pa % map_size) != 0);
--	BUG_ON(load_sz > MAX_EARLY_MAPPING_SIZE);
- 
- 	pt_ops.alloc_pte = alloc_pte_early;
- 	pt_ops.get_pte_virt = get_pte_virt_early;
+ 	if (!fs_rule->mirr_mbox) {
+ 		mlx4_err(dev, "rule mirroring mailbox is null\n");
++		mlx4_free_cmd_mailbox(dev, mailbox);
+ 		return -EINVAL;
+ 	}
+ 	memcpy(mailbox->buf, fs_rule->mirr_mbox, fs_rule->mirr_mbox_size);
 -- 
-2.20.1
+2.27.0
 
