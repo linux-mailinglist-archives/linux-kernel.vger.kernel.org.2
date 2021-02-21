@@ -2,153 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A2C320B6F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89057320B61
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhBUPdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 10:33:15 -0500
-Received: from conuserg-12.nifty.com ([210.131.2.79]:54050 "EHLO
-        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbhBUPdF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 10:33:05 -0500
-Received: from grover.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-12.nifty.com with ESMTP id 11LFPXLH002478;
-        Mon, 22 Feb 2021 00:25:33 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 11LFPXLH002478
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613921134;
-        bh=BpSvNChKiVnLgw+LcmYaO/tWVZloQb+Ml+194wpU6LA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Z8iVhXT6WqegRIO9yrCfgFFVhp5ssUJBnL3MaLuC/X5RKpVAwhvmTCNX8Y/q7dqen
-         5I7LpUMMiabcPv9dp0xJIxR8RSz0XERlw1eW375qlS6gxtTKOZvSVvsH8p56WmQCEu
-         k+Jv60bHUESh55NUhfFWGThw5Ipo1Q2yFKAUc2WuugBq6HitWC4YQux8HqF72ebe0a
-         7Gwsgvf91vWpxgm7aWw30X4vZomn4xOkScFPIlyZCGB7bVI4e4XEb7fDtoehumlCE4
-         CCxqrcdQIqaO5PKiJPWFJlw9z0+KGNJYDwwl7Px6XwW9IRjkgtNWtQQZZ09ZQJlEDf
-         9QaICeu+EyrEQ==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Harry Wei <harryxiyou@gmail.com>, Jyri Sarha <jsarha@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] doc: use KCFLAGS instead of EXTRA_CFLAGS to pass flags from command line
-Date:   Mon, 22 Feb 2021 00:25:24 +0900
-Message-Id: <20210221152524.197693-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S229895AbhBUPbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 10:31:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhBUPbO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 10:31:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 62FA664EEF;
+        Sun, 21 Feb 2021 15:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613921431;
+        bh=O9xlPGiejTlK8aa43y0xsYCFghq5BZtPdRfRU4PePuY=;
+        h=From:To:Subject:Date:From;
+        b=Dn2ff16+PkGl2Jcm8JDnI4a16EOK+VRAilHMxwxScAZCTufG9SNFVwMlmQmRuCnZT
+         fUjJcb5Eyye4dwMVSLLVoRzH29wyh6QcKgdWkND7+wpl1kF9ruLeLmPBzk5AwqbT63
+         z8x2bcnw624KdCfPVq9VoAuF8pJFLUYmTz1Aw3FTA1jshi41EZlAXkZk8aC/JAU3pU
+         6H5kriL6l4uL4I1D/Ge2Aq/naELHUmWKie5O0S/PdP4dA8cRomcsP5SQWtPDORsoRF
+         sZ6za2fIl+/ehickYhTY1YghnlhWDxNCbccZczdTfYNb/+X9z21HvQTGBwo4FJ+Yrg
+         Kya+3+dUaGIqQ==
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: [PATCH] ASoC: constify of_phandle_args in snd_soc_get_dai_name()
+Date:   Sun, 21 Feb 2021 16:30:24 +0100
+Message-Id: <20210221153024.453583-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You should use KCFLAGS to pass additional compiler flags from the
-command line. Using EXTRA_CFLAGS is wrong.
+The pointer to of_phandle_args passed to snd_soc_get_dai_name() and
+of_xlate_dai_name() implementations is not modified.  Since it is being
+used only to translate passed OF node to a DAI name, it should not be
+modified, so mark it as const for correctness and safer code.
 
-EXTRA_CFLAGS is supposed to specify flags applied only to the current
-Makefile (and now deprecated in favor of ccflags-y).
-
-It is still used in arch/mips/kvm/Makefile (and possibly in external
-modules too). Passing EXTRA_CFLAGS from the command line overwrites
-it and breaks the build.
-
-I also fixed drivers/gpu/drm/tilcdc/Makefile because commit 816175dd1fd7
-("drivers/gpu/drm/tilcdc: Makefile, only -Werror when no -W* in
-EXTRA_CFLAGS") was based on the same misunderstanding.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
+ include/sound/soc-component.h     | 4 ++--
+ include/sound/soc.h               | 2 +-
+ sound/soc/meson/aiu-acodec-ctrl.c | 2 +-
+ sound/soc/meson/aiu-codec-ctrl.c  | 2 +-
+ sound/soc/meson/aiu.c             | 4 ++--
+ sound/soc/meson/aiu.h             | 2 +-
+ sound/soc/qcom/lpass-cpu.c        | 2 +-
+ sound/soc/qcom/qdsp6/q6afe-dai.c  | 2 +-
+ sound/soc/soc-component.c         | 2 +-
+ sound/soc/soc-core.c              | 2 +-
+ 10 files changed, 12 insertions(+), 12 deletions(-)
 
- Documentation/process/4.Coding.rst                            | 2 +-
- Documentation/process/submit-checklist.rst                    | 2 +-
- Documentation/translations/it_IT/process/4.Coding.rst         | 2 +-
- Documentation/translations/it_IT/process/submit-checklist.rst | 2 +-
- Documentation/translations/zh_CN/process/4.Coding.rst         | 2 +-
- drivers/gpu/drm/tilcdc/Makefile                               | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/process/4.Coding.rst b/Documentation/process/4.Coding.rst
-index 0825dc496f22..1f0d81f44e14 100644
---- a/Documentation/process/4.Coding.rst
-+++ b/Documentation/process/4.Coding.rst
-@@ -242,7 +242,7 @@ and try to avoid "fixes" which make the warning go away without addressing
- its cause.
+diff --git a/include/sound/soc-component.h b/include/sound/soc-component.h
+index 5b47768222b7..7dc75b39287f 100644
+--- a/include/sound/soc-component.h
++++ b/include/sound/soc-component.h
+@@ -101,7 +101,7 @@ struct snd_soc_component_driver {
  
- Note that not all compiler warnings are enabled by default.  Build the
--kernel with "make EXTRA_CFLAGS=-W" to get the full set.
-+kernel with "make KCFLAGS=-W" to get the full set.
+ 	/* DT */
+ 	int (*of_xlate_dai_name)(struct snd_soc_component *component,
+-				 struct of_phandle_args *args,
++				 const struct of_phandle_args *args,
+ 				 const char **dai_name);
+ 	int (*of_xlate_dai_id)(struct snd_soc_component *comment,
+ 			       struct device_node *endpoint);
+@@ -450,7 +450,7 @@ void snd_soc_component_remove(struct snd_soc_component *component);
+ int snd_soc_component_of_xlate_dai_id(struct snd_soc_component *component,
+ 				      struct device_node *ep);
+ int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
+-					struct of_phandle_args *args,
++					const struct of_phandle_args *args,
+ 					const char **dai_name);
+ int snd_soc_component_compr_open(struct snd_compr_stream *cstream);
+ void snd_soc_component_compr_free(struct snd_compr_stream *cstream,
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index bd38015d6c6d..78609ab331c8 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1219,7 +1219,7 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 				     struct device_node **bitclkmaster,
+ 				     struct device_node **framemaster);
+ int snd_soc_get_dai_id(struct device_node *ep);
+-int snd_soc_get_dai_name(struct of_phandle_args *args,
++int snd_soc_get_dai_name(const struct of_phandle_args *args,
+ 			 const char **dai_name);
+ int snd_soc_of_get_dai_name(struct device_node *of_node,
+ 			    const char **dai_name);
+diff --git a/sound/soc/meson/aiu-acodec-ctrl.c b/sound/soc/meson/aiu-acodec-ctrl.c
+index 7078197e0cc5..27a6d3259c50 100644
+--- a/sound/soc/meson/aiu-acodec-ctrl.c
++++ b/sound/soc/meson/aiu-acodec-ctrl.c
+@@ -159,7 +159,7 @@ static const struct snd_kcontrol_new aiu_acodec_ctrl_controls[] = {
+ };
  
- The kernel provides several configuration options which turn on debugging
- features; most of these are found in the "kernel hacking" submenu.  Several
-diff --git a/Documentation/process/submit-checklist.rst b/Documentation/process/submit-checklist.rst
-index 230ee42f872f..cfc23492b9ea 100644
---- a/Documentation/process/submit-checklist.rst
-+++ b/Documentation/process/submit-checklist.rst
-@@ -98,7 +98,7 @@ and elsewhere regarding submitting Linux kernel patches.
-     injection might be appropriate.
+ static int aiu_acodec_of_xlate_dai_name(struct snd_soc_component *component,
+-					struct of_phandle_args *args,
++					const struct of_phandle_args *args,
+ 					const char **dai_name)
+ {
+ 	return aiu_of_xlate_dai_name(component, args, dai_name, AIU_ACODEC);
+diff --git a/sound/soc/meson/aiu-codec-ctrl.c b/sound/soc/meson/aiu-codec-ctrl.c
+index 4b773d3e8b07..c3ea733fce91 100644
+--- a/sound/soc/meson/aiu-codec-ctrl.c
++++ b/sound/soc/meson/aiu-codec-ctrl.c
+@@ -125,7 +125,7 @@ static const struct snd_soc_dapm_route aiu_hdmi_ctrl_routes[] = {
+ };
  
- 21) Newly-added code has been compiled with ``gcc -W`` (use
--    ``make EXTRA_CFLAGS=-W``).  This will generate lots of noise, but is good
-+    ``make KCFLAGS=-W``).  This will generate lots of noise, but is good
-     for finding bugs like "warning: comparison between signed and unsigned".
+ static int aiu_hdmi_of_xlate_dai_name(struct snd_soc_component *component,
+-				      struct of_phandle_args *args,
++				      const struct of_phandle_args *args,
+ 				      const char **dai_name)
+ {
+ 	return aiu_of_xlate_dai_name(component, args, dai_name, AIU_HDMI);
+diff --git a/sound/soc/meson/aiu.c b/sound/soc/meson/aiu.c
+index dc35ca79021c..ba15d5762b0b 100644
+--- a/sound/soc/meson/aiu.c
++++ b/sound/soc/meson/aiu.c
+@@ -42,7 +42,7 @@ static const struct snd_soc_dapm_route aiu_cpu_dapm_routes[] = {
+ };
  
- 22) Tested after it has been merged into the -mm patchset to make sure
-diff --git a/Documentation/translations/it_IT/process/4.Coding.rst b/Documentation/translations/it_IT/process/4.Coding.rst
-index a5e36aa60448..8012fe9497ae 100644
---- a/Documentation/translations/it_IT/process/4.Coding.rst
-+++ b/Documentation/translations/it_IT/process/4.Coding.rst
-@@ -256,7 +256,7 @@ e cercate di evitare le "riparazioni" che fan sparire l'avvertimento senza
- però averne trovato la causa.
+ int aiu_of_xlate_dai_name(struct snd_soc_component *component,
+-			  struct of_phandle_args *args,
++			  const struct of_phandle_args *args,
+ 			  const char **dai_name,
+ 			  unsigned int component_id)
+ {
+@@ -72,7 +72,7 @@ int aiu_of_xlate_dai_name(struct snd_soc_component *component,
+ }
  
- Tenete a mente che non tutti gli avvertimenti sono disabilitati di default.
--Costruite il kernel con "make EXTRA_CFLAGS=-W" per ottenerli tutti.
-+Costruite il kernel con "make KCFLAGS=-W" per ottenerli tutti.
+ static int aiu_cpu_of_xlate_dai_name(struct snd_soc_component *component,
+-				     struct of_phandle_args *args,
++				     const struct of_phandle_args *args,
+ 				     const char **dai_name)
+ {
+ 	return aiu_of_xlate_dai_name(component, args, dai_name, AIU_CPU);
+diff --git a/sound/soc/meson/aiu.h b/sound/soc/meson/aiu.h
+index 87aa19ac4af3..393b6c2307e4 100644
+--- a/sound/soc/meson/aiu.h
++++ b/sound/soc/meson/aiu.h
+@@ -45,7 +45,7 @@ struct aiu {
+ 		     SNDRV_PCM_FMTBIT_S24_LE)
  
- Il kernel fornisce differenti opzioni che abilitano funzionalità di debugging;
- molti di queste sono trovano all'interno del sotto menu "kernel hacking".
-diff --git a/Documentation/translations/it_IT/process/submit-checklist.rst b/Documentation/translations/it_IT/process/submit-checklist.rst
-index 3e575502690f..614fc17d9086 100644
---- a/Documentation/translations/it_IT/process/submit-checklist.rst
-+++ b/Documentation/translations/it_IT/process/submit-checklist.rst
-@@ -104,7 +104,7 @@ sottomissione delle patch, in particolare
-     l'iniezione di fallimenti specifici per il sottosistema.
+ int aiu_of_xlate_dai_name(struct snd_soc_component *component,
+-			  struct of_phandle_args *args,
++			  const struct of_phandle_args *args,
+ 			  const char **dai_name,
+ 			  unsigned int component_id);
  
- 22) Il nuovo codice è stato compilato con ``gcc -W`` (usate
--    ``make EXTRA_CFLAGS=-W``).  Questo genererà molti avvisi, ma è ottimo
-+    ``make KCFLAGS=-W``).  Questo genererà molti avvisi, ma è ottimo
-     per scovare bachi come  "warning: comparison between signed and unsigned".
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index c642e5f8f28c..4762286b33fe 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -340,7 +340,7 @@ int asoc_qcom_lpass_cpu_dai_probe(struct snd_soc_dai *dai)
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_probe);
  
- 23) La patch è stata verificata dopo essere stata inclusa nella serie di patch
-diff --git a/Documentation/translations/zh_CN/process/4.Coding.rst b/Documentation/translations/zh_CN/process/4.Coding.rst
-index 959a06ba025c..66cd8ee07606 100644
---- a/Documentation/translations/zh_CN/process/4.Coding.rst
-+++ b/Documentation/translations/zh_CN/process/4.Coding.rst
-@@ -165,7 +165,7 @@ Linus对这个问题给出了最佳答案:
- 通常，这些警告都指向真正的问题。提交以供审阅的代码通常不会产生任何编译器警告。
- 在消除警告时，注意了解真正的原因，并尽量避免“修复”，使警告消失而不解决其原因。
+ static int asoc_qcom_of_xlate_dai_name(struct snd_soc_component *component,
+-				   struct of_phandle_args *args,
++				   const struct of_phandle_args *args,
+ 				   const char **dai_name)
+ {
+ 	struct lpass_data *drvdata = snd_soc_component_get_drvdata(component);
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index 4e1f101281e7..e8915519f427 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -1315,7 +1315,7 @@ static struct snd_soc_dai_driver q6afe_dais[] = {
+ };
  
--请注意，并非所有编译器警告都默认启用。使用“make EXTRA_CFLAGS=-W”构建内核以
-+请注意，并非所有编译器警告都默认启用。使用“make KCFLAGS=-W”构建内核以
- 获得完整集合。
+ static int q6afe_of_xlate_dai_name(struct snd_soc_component *component,
+-				   struct of_phandle_args *args,
++				   const struct of_phandle_args *args,
+ 				   const char **dai_name)
+ {
+ 	int id = args->args[0];
+diff --git a/sound/soc/soc-component.c b/sound/soc/soc-component.c
+index 159bf88b9f8c..8415e9bd2932 100644
+--- a/sound/soc/soc-component.c
++++ b/sound/soc/soc-component.c
+@@ -370,7 +370,7 @@ int snd_soc_component_of_xlate_dai_id(struct snd_soc_component *component,
+ }
  
- 内核提供了几个配置选项，可以打开调试功能；大多数配置选项位于“kernel hacking”
-diff --git a/drivers/gpu/drm/tilcdc/Makefile b/drivers/gpu/drm/tilcdc/Makefile
-index 662bf3a348c9..f5190477de72 100644
---- a/drivers/gpu/drm/tilcdc/Makefile
-+++ b/drivers/gpu/drm/tilcdc/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--ifeq (, $(findstring -W,$(EXTRA_CFLAGS)))
-+ifeq (, $(findstring -W,$(KCFLAGS)))
- 	ccflags-y += -Werror
- endif
+ int snd_soc_component_of_xlate_dai_name(struct snd_soc_component *component,
+-					struct of_phandle_args *args,
++					const struct of_phandle_args *args,
+ 					const char **dai_name)
+ {
+ 	if (component->driver->of_xlate_dai_name)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f6d4e99b590c..50190654edda 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2994,7 +2994,7 @@ int snd_soc_get_dai_id(struct device_node *ep)
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_get_dai_id);
  
+-int snd_soc_get_dai_name(struct of_phandle_args *args,
++int snd_soc_get_dai_name(const struct of_phandle_args *args,
+ 				const char **dai_name)
+ {
+ 	struct snd_soc_component *pos;
 -- 
-2.27.0
+2.25.1
 
