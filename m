@@ -2,89 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0CC320ADE
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A647320AE3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhBUOEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:04:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhBUOD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:03:59 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E86E64EE0;
-        Sun, 21 Feb 2021 14:03:15 +0000 (UTC)
-Date:   Sun, 21 Feb 2021 14:03:12 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de
-Subject: Re: [PATCH v8 10/22] counter: Standardize to ERANGE for limit
- exceeded errors
-Message-ID: <20210221140312.299b0e5a@archlinux>
-In-Reply-To: <YCsfXGzfEgRAD9p9@shinobu>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
-        <7fa80c10fcd10d1d47d1bddced2b2cca3ff59ba9.1613131238.git.vilhelm.gray@gmail.com>
-        <20210214171021.41b3e4e3@archlinux>
-        <YCsfXGzfEgRAD9p9@shinobu>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230004AbhBUOEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:04:47 -0500
+Received: from mail-pg1-f170.google.com ([209.85.215.170]:32785 "EHLO
+        mail-pg1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhBUOEi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 09:04:38 -0500
+Received: by mail-pg1-f170.google.com with SMTP id z68so8446412pgz.0
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 06:04:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=pzWhTSdAe7cqn4KT2SjhkgBpropTuu+rr5Ez+qPvqEg=;
+        b=nKT9XYYUATnMS4ggQqnXPb5rvQGa9FvWq/yWL4wVONznsdOXzopY59eGyuwbSjDzsh
+         SpdCdvFibZ5ZTcCG+qIbRUidppaT61nTcnvgCC95iHBzwYl9d/Hi2tdoeE6UV++vJ+xV
+         cAr1W76OwfH+CqqM4gYfekfBIhrZU0QNkSdhFybfnoQZZ+kT77ivoT17XywWWnePnST4
+         UX1eAT/iMy+t5YdTeaESRJj3s/8jmdHy4T67XhuP37It/Yp+kAxKfQo7mCDVWrw3NTuW
+         XVzW+0+0A6SQ+P9Sj+sf4m+z2M/cRXCC6ftdcV4Ubu9q4s5BUoTNP4/laoRBMMhImmNw
+         M5BA==
+X-Gm-Message-State: AOAM531J1wDW6Xrfy8uj8Esixbx1YnghBWJwla2p/6rd7O5hRmkpdhRz
+        ygqz1SyuxkPBmt2+zUJt05bmSHoYI7g=
+X-Google-Smtp-Source: ABdhPJwLdNMVeWd78rkGu1VPCg315nj6cV6hekFSpPJ1MFEEfbwTGRtC5qlb+4gN4lzwh5REMy0zFQ==
+X-Received: by 2002:aa7:92c4:0:b029:1e6:c4:c821 with SMTP id k4-20020aa792c40000b02901e600c4c821mr18364472pfa.10.1613916237891;
+        Sun, 21 Feb 2021 06:03:57 -0800 (PST)
+Received: from karthik-strix-linux.karthek.com ([192.140.154.12])
+        by smtp.gmail.com with ESMTPSA id y12sm14459340pjc.56.2021.02.21.06.03.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 06:03:57 -0800 (PST)
+Date:   Sun, 21 Feb 2021 19:33:53 +0530
+From:   karthik alapati <mail@karthek.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] fix sparse warnings
+Message-ID: <cover.1613915981.git.mail@karthek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Feb 2021 10:26:52 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+the following patches fixes two  byte-order issues and a Makefile 
+issue and fixes these sparse warnings
 
-> On Sun, Feb 14, 2021 at 05:10:21PM +0000, Jonathan Cameron wrote:
-> > On Fri, 12 Feb 2021 21:13:34 +0900
-> > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> >   
-> > > ERANGE is a semantically better error code to return when an argument
-> > > value falls outside the supported limit range of a device.  
-> > 
-> > #define	ERANGE		34	/* Math result not representable */
-> > 
-> > Not generally applicable to a parameter being out of range
-> > despite the name.
-> > #define	EINVAL		22	/* Invalid argument */
-> > Is probably closer to what we want to describe here.
-> > 
-> > Jonathan  
-> 
-> The comment for ERANGE in error-base.h may be terse to a fault. I
-> believe there's a connotation here provided by ERANGE that is absent
-> from EINVAL: primarily that the device buffer is incapable of supporting
-> the desired value (i.e. there is a hardware limitation).
-> 
-> This is why strtoul() returns ERANGE if the correct value is outside the
-> range of representable values: the result of the operation is valid in
-> theory (it would be an unsigned integer), but it cannot be returned to
-> the user due to a limitation of the hardware to support that value (e.g.
-> 32-bit registers) [1].
-> 
-> The changes in this patch follow the same logic: these are arguments
-> that are valid in theory (e.g. they are unsigned integers), but the
-> underlying devices are incapable of processing such a value (e.g. the
-> 104-QUAD-8 can only handle 24-bit values).
-> 
-> [1] https://stackoverflow.com/a/34981398/1806289
 
-Its a bit of a stretch, but I can't claim to feel that strongly about
-this.
+drivers/staging//wimax/i2400m/op-rfkill.c:89:25: warning: incorrect type in assignment (different base types)
+drivers/staging//wimax/i2400m/op-rfkill.c:89:25:    expected restricted __le16 [usertype] length
+drivers/staging//wimax/i2400m/op-rfkill.c:89:25:    got unsigned long
+.
+drivers/staging//wimax/i2400m/fw.c:514:27: warning: restricted __le32 degrades to integer
+.
+drivers/staging//media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:34:6: warning: symbol 'ia_css_isys_ibuf_rmgr_init' was not declared. Should it be static?
+drivers/staging//media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:40:6: warning: symbol 'ia_css_isys_ibuf_rmgr_uninit' was not declared. Should it be static?
+drivers/staging//media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:46:6: warning: symbol 'ia_css_isys_ibuf_rmgr_acquire' was not declared. Should it be static?
+drivers/staging//media/atomisp/pci/runtime/isys/src/ibuf_ctrl_rmgr.c:106:6: warning: symbol 'ia_css_isys_ibuf_rmgr_release' was not declared. Should it be static?
 
-Jonathan
+karthik alapati (3):
+  staging: wimax/i2400m: fix byte-order issue
+  staging: wimax/i2400m: convert __le32 type to host byte-order
+  staging: media/atomisp: don't compile unused code
 
-> 
-> William Breathitt Gray
+ drivers/staging/media/atomisp/Makefile   | 5 +++--
+ drivers/staging/wimax/i2400m/fw.c        | 2 +-
+ drivers/staging/wimax/i2400m/op-rfkill.c | 2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+-- 
+2.30.1
 
