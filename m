@@ -2,118 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BB8320DF7
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E207320E0C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbhBUVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 16:34:38 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:53274 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhBUVee (ORCPT
+        id S230429AbhBUVmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 16:42:22 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12197 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230174AbhBUVmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 16:34:34 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9C9B5E9;
-        Sun, 21 Feb 2021 22:33:52 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613943232;
-        bh=HTHH63QNa5S6zuapT4omOv5k2G+KS2r39y6Crg5E58w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qr5dwWYTtVrcQHkjabimfEqARrDLdYqh5w/y7MJXRiuEuwvsu5PXWoyDpx3XCszhT
-         kJyAp1u6JzczqZ+kMc8wdoZ5ZPPuvx0eRnXo1cBXG/LAjCzO2hDR9Nul9qNmmc1sSA
-         zI+kkzrI/nFia7f5BoGg6FT9uH0AsjH2NX2YOjnc=
-Date:   Sun, 21 Feb 2021 23:33:26 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Nikolay Kyx <knv418@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: media: omap4iss: code style - avoid macro
- argument precedence issues
-Message-ID: <YDLRpmZmq/ZpeoSW@pendragon.ideasonboard.com>
-References: <20210221195308.1451-1-knv418@gmail.com>
+        Sun, 21 Feb 2021 16:42:20 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DkJcV6GNdzlNC8;
+        Mon, 22 Feb 2021 05:39:38 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.202.172) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Feb 2021 05:41:27 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <corbet@lwn.net>, <linux-doc@vger.kernel.org>,
+        <jan.kiszka@siemens.com>, <kbingham@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
+        Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH] scripts/gdb: document lx_current is only supported by x86
+Date:   Mon, 22 Feb 2021 10:35:27 +1300
+Message-ID: <20210221213527.22076-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210221195308.1451-1-knv418@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.202.172]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolay,
+lx_current depends on the per_cpu current_task which exists on x86 only:
 
-Thank you for the patch.
+arch$ git grep current_task | grep -i per_cpu
+x86/include/asm/current.h:DECLARE_PER_CPU(struct task_struct *, current_task);
+x86/kernel/cpu/common.c:DEFINE_PER_CPU(struct task_struct *, current_task) ____cacheline_aligned =
+x86/kernel/cpu/common.c:EXPORT_PER_CPU_SYMBOL(current_task);
+x86/kernel/cpu/common.c:DEFINE_PER_CPU(struct task_struct *, current_task) = &init_task;
+x86/kernel/cpu/common.c:EXPORT_PER_CPU_SYMBOL(current_task);
+x86/kernel/smpboot.c:	per_cpu(current_task, cpu) = idle;
 
-On Sun, Feb 21, 2021 at 10:53:08PM +0300, Nikolay Kyx wrote:
-> This patch fixes the following checkpatch.pl check:
-> 
-> CHECK: Macro argument 'i' may be better as '(i)' to avoid precedence issues
-> 
-> in file iss_regs.h
-> 
-> Signed-off-by: Nikolay Kyx <knv418@gmail.com>
+On other architectures, lx_current() will lead to a python exception:
+(gdb) p $lx_current().pid
+Python Exception <class 'gdb.error'> No symbol "current_task" in current context.:
+Error occurred in Python: No symbol "current_task" in current context.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To avoid more people struggling and wasting time in other architectures,
+document it.
 
-> ---
-> 
-> Additionally some style warnings remain valid here and could be fixed by
-> another patch.
-> 
->  drivers/staging/media/omap4iss/iss_regs.h | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/staging/media/omap4iss/iss_regs.h b/drivers/staging/media/omap4iss/iss_regs.h
-> index 09a7375c89ac..cfe0bb075072 100644
-> --- a/drivers/staging/media/omap4iss/iss_regs.h
-> +++ b/drivers/staging/media/omap4iss/iss_regs.h
-> @@ -197,7 +197,7 @@
->  #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_MASK		(0x1fff << 0)
->  #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_SHIFT	0
->  
-> -#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * i))
-> +#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * (i)))
->  #define CSI2_CTX_CTRL1_GENERIC				BIT(30)
->  #define CSI2_CTX_CTRL1_TRANSCODE			(0xf << 24)
->  #define CSI2_CTX_CTRL1_FEC_NUMBER_MASK			(0xff << 16)
-> @@ -210,7 +210,7 @@
->  #define CSI2_CTX_CTRL1_PING_PONG			BIT(3)
->  #define CSI2_CTX_CTRL1_CTX_EN				BIT(0)
->  
-> -#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * i))
-> +#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * (i)))
->  #define CSI2_CTX_CTRL2_FRAME_MASK			(0xffff << 16)
->  #define CSI2_CTX_CTRL2_FRAME_SHIFT			16
->  #define CSI2_CTX_CTRL2_USER_DEF_MAP_SHIFT		13
-> @@ -222,19 +222,19 @@
->  #define CSI2_CTX_CTRL2_FORMAT_MASK			(0x3ff << 0)
->  #define CSI2_CTX_CTRL2_FORMAT_SHIFT			0
->  
-> -#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * i))
-> +#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * (i)))
->  #define CSI2_CTX_DAT_OFST_MASK				(0xfff << 5)
->  
-> -#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * i))
-> +#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * (i)))
->  #define CSI2_CTX_PING_ADDR_MASK				0xffffffe0
->  
-> -#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * i))
-> +#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * (i)))
->  #define CSI2_CTX_PONG_ADDR_MASK				CSI2_CTX_PING_ADDR_MASK
->  
-> -#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * i))
-> -#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * i))
-> +#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * (i)))
-> +#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * (i)))
->  
-> -#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * i))
-> +#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * (i)))
->  #define CSI2_CTX_CTRL3_ALPHA_SHIFT			5
->  #define CSI2_CTX_CTRL3_ALPHA_MASK			\
->  		(0x3fff << CSI2_CTX_CTRL3_ALPHA_SHIFT)
+Cc: Jan Kiszka <jan.kiszka@siemens.com>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ Documentation/dev-tools/gdb-kernel-debugging.rst |  2 +-
+ scripts/gdb/linux/cpus.py                        | 10 ++++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
+diff --git a/Documentation/dev-tools/gdb-kernel-debugging.rst b/Documentation/dev-tools/gdb-kernel-debugging.rst
+index 4756f6b3a04e..1586901b683c 100644
+--- a/Documentation/dev-tools/gdb-kernel-debugging.rst
++++ b/Documentation/dev-tools/gdb-kernel-debugging.rst
+@@ -114,7 +114,7 @@ Examples of using the Linux-provided gdb helpers
+     [     0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved
+     ....
+ 
+-- Examine fields of the current task struct::
++- Examine fields of the current task struct(supported by x86 only)::
+ 
+     (gdb) p $lx_current().pid
+     $1 = 4998
+diff --git a/scripts/gdb/linux/cpus.py b/scripts/gdb/linux/cpus.py
+index 008e62f3190d..f382762509d3 100644
+--- a/scripts/gdb/linux/cpus.py
++++ b/scripts/gdb/linux/cpus.py
+@@ -156,6 +156,13 @@ Note that VAR has to be quoted as string."""
+ 
+ PerCpu()
+ 
++def get_current_task(cpu):
++    if utils.is_target_arch("x86"):
++         var_ptr = gdb.parse_and_eval("&current_task")
++         return per_cpu(var_ptr, cpu).dereference()
++    else:
++        raise gdb.GdbError("Sorry, obtaining the current task is not yet "
++                           "supported with this arch")
+ 
+ class LxCurrentFunc(gdb.Function):
+     """Return current task.
+@@ -167,8 +174,7 @@ number. If CPU is omitted, the CPU of the current context is used."""
+         super(LxCurrentFunc, self).__init__("lx_current")
+ 
+     def invoke(self, cpu=-1):
+-        var_ptr = gdb.parse_and_eval("&current_task")
+-        return per_cpu(var_ptr, cpu).dereference()
++        return get_current_task(cpu)
+ 
+ 
+ LxCurrentFunc()
 -- 
-Regards,
+2.25.1
 
-Laurent Pinchart
