@@ -2,58 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB29E3209B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 12:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D693209B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 12:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229896AbhBUK7L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Feb 2021 05:59:11 -0500
-Received: from mailer.bingner.com ([64.62.210.4]:29170 "EHLO mail.bingner.com"
+        id S229913AbhBULH7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 06:07:59 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:59804 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhBUK7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 05:59:07 -0500
-X-Greylist: delayed 941 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Feb 2021 05:59:07 EST
-Received: from EX02.ds.sbdhi.com (2001:470:3c:1::22) by EX01.ds.sbdhi.com
- (2001:470:3c:1::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Sun, 21 Feb
- 2021 00:42:44 -1000
-Received: from EX02.ds.sbdhi.com ([fe80::8911:a681:797:3bb6]) by
- EX02.ds.sbdhi.com ([fe80::8911:a681:797:3bb6%2]) with mapi id 15.01.2044.004;
- Sun, 21 Feb 2021 00:42:44 -1000
-From:   Sam Bingner <sam@bingner.com>
-To:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        Martin Habets <mhabets@solarflare.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matti Vuorela <matti.vuorela@bitfactor.fi>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Yves-Alexis Perez" <corsac@corsac.net>
-Subject: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
-Thread-Topic: Re: [PATCH] usbnet: ipheth: fix connectivity with iOS 14
-Thread-Index: AdcIPCziP88UnOb2Try4p4IFfkZ3BQ==
-Date:   Sun, 21 Feb 2021 10:42:44 +0000
-Message-ID: <370902e520c44890a44cb5dd0cb1595f@bingner.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [98.155.121.8]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229817AbhBULH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 06:07:58 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 872EAFB0A;
+        Sun, 21 Feb 2021 12:07:14 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id DF_wmRXuiGUH; Sun, 21 Feb 2021 12:07:12 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 99808403CD; Sun, 21 Feb 2021 12:07:11 +0100 (CET)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        "Angus Ainslie (Purism)" <angus@akkea.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Walle <michael@walle.cc>,
+        Max Krummenacher <max.oss.09@gmail.com>,
+        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/6] arm64: dts: librem5-devkit: Improve audio support
+Date:   Sun, 21 Feb 2021 12:07:05 +0100
+Message-Id: <cover.1613905396.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There seems to be a problem with this patch:
+So far only headphone output worked. Thesse patches add support for the
+built in speaker and mic, allow a headset microphone to work and wire up jack
+detection so audio output can switch to headphones automatically.  They also
+adjust the card name to match the board not the codec, similar what's done for
+the Librem 5.
 
-Whenever the iPhone sends a packet to the tethered device that is 1500 bytes long, it gets the error "ipheth 1-1:4.2: ipheth_rcvbulk_callback: urb status: -79" on the connected device and stops passing traffic.  I am able to bring it back up by shutting and unshutting the interface, but the same thing happens very quickly.   I noticed that this patch dropped the max USB packet size from 1516 to 1514 bytes, so I decided to try lowering the MTU to 1498; this made the connection reliable and no more errors occurred.
+Patches are against next-20210210 but also apply against Shawn's imx-dt64-5.12
 
-It appears to me that the iPhone is still sending out 1516 bytes over USB for a 1500 byte packet and this patch makes USB abort when that happens?  I could duplicate reliably by sending a ping from the iphone (ping -s 1472) to the connected device, or vice versa as the reply would then break it.
+Guido Günther (6):
+  arm64: dts: librem5-devkit: Use a less generic codec name
+  arm64: dts: librem5-devkit: Add speaker amplifier
+  arm64: dts: librem5-devkit: "Drop Line In Jack"
+  arm64: defconfig: Enable asoc simple mux
+  arm64: dts: librem5-devkit: Add mux for built-in vs headset mic
+  arm64: dts: librem5-devkit: Move headphone detection to sound card
 
-I apologize if this reply doesn't end up where it should - I tried to reply to the last message in this thread but I wasn't actually *on* the thread so I had to just build it as much as possible myself.
+ .../dts/freescale/imx8mq-librem5-devkit.dts   | 69 ++++++++++++++-----
+ arch/arm64/configs/defconfig                  |  1 +
+ 2 files changed, 52 insertions(+), 18 deletions(-)
 
-Sam
+-- 
+2.30.0
+
