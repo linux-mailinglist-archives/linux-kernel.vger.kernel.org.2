@@ -2,92 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE120320DC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA053320DC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:02:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhBUVA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 16:00:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231180AbhBUVAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 16:00:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBABE64EB3;
-        Sun, 21 Feb 2021 20:56:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613940975;
-        bh=/cN6BElwNRO7utpxxr5oOogV0crmkCkzi47VJ17rv6Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u5zBCSAc/1TTXkd7Nrq4Qd8xtAs0yta4WTdPkw3gc3Jdx14HrWQs96Ls+tktnoPX4
-         3sbr0NBGPcfVOHo5htOoY0llhFi40Fqwz+MAHsfZlvcUYjJI2hq9+B1nVLftCXZBhP
-         m6cOamfrR7MgxV6tA4l1+KguVHttHCFrTBZSj1nAveXFmX3vu4cOjSSjauqk4bvvLt
-         AwoNBSasNcgEMKHQGfLOmlyJp1olZVakfInV2gg1YkGak0uqB5qEhae9pcJtBJ/2UC
-         +BaSNu2izN5iKRkWtduNVSZp4N0zX14jY9eShzW/8CmANbyABr4f8aAkcA5HgUOdxI
-         geOnXrgXtaGnQ==
-Received: by earth.universe (Postfix, from userid 1000)
-        id C3B803C0C96; Sun, 21 Feb 2021 21:56:13 +0100 (CET)
-Date:   Sun, 21 Feb 2021 21:56:13 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-omap@vger.kernel.org, nekit1000@gmail.com, mpartap@gmx.net,
-        merlijn@wizzup.org, martin_rysavy@centrum.cz,
-        phone-devel@vger.kernel.org, maemo-leste@lists.dyne.org,
-        Carl Philipp Klemm <philipp@uvos.xyz>
-Subject: Re: Droid 4 charging
-Message-ID: <20210221205613.yuvxoxzi33wa74s3@earth.universe>
-References: <20210206131415.GA4499@amd>
- <YCn5+ZPdPojwCz8g@atomide.com>
- <20210219215752.GA31435@amd>
+        id S230088AbhBUU5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 15:57:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230203AbhBUU5J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 15:57:09 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FD3C061574;
+        Sun, 21 Feb 2021 12:56:27 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkHfZ1p6Wz9sRN;
+        Mon, 22 Feb 2021 07:56:21 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613940984;
+        bh=AGhqqkKGVT9zLlM0vMv4krjRShEVU6ptqeB+ncq720o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=DSY5JnLnObT88i27GEOwaj8PW7DSfKsBtNr7wjfsslE0zHC9XITLJFeouf0t/CUMj
+         QhlwLPy9JTzezQ/SrZXvpM8CLFzGtrvXZBZQo3+Txvr+TYelFy3pMPEYA9C/+Ie9Cv
+         GrmmrhYxQUxjXjBQbJhlM/ARVWGonlqbecYmcjbUcAafpmBuG+wv5v/2EY28TEvAcS
+         3xrmGf5aFRHPfARlzHL0z9R2PKM+1xJpF7QB/QGp40R/CPWvh10LaTMXPsJtCnu4Cg
+         ubse7vXiG/5cdFZTtc3+8aRZX2kvaZWdPn5K3LEG5npbs4xdRBR1HbZVRpw/h7FukM
+         j3ZOJ/VCfj/bg==
+Date:   Mon, 22 Feb 2021 07:56:20 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: linux-next: manual merge of the sparc tree with Linus' tree
+Message-ID: <20210222075620.419a6965@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zeqgg3ishmvo4gqn"
-Content-Disposition: inline
-In-Reply-To: <20210219215752.GA31435@amd>
+Content-Type: multipart/signed; boundary="Sig_/uCUahW6fSs9fSMr.4RU5iVL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---zeqgg3ishmvo4gqn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--Sig_/uCUahW6fSs9fSMr.4RU5iVL
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi all,
 
-On Fri, Feb 19, 2021 at 10:57:53PM +0100, Pavel Machek wrote:
-> > And then we still need to restart the charger at some point, but that
-> > could happen based on much longer timeouts that what we currently have.
->=20
-> Li-ion batteries are very slow to self-discharge. This could timeout
-> could be week... or maybe a year.
+Today's linux-next merge of the sparc tree got a conflict in:
 
-True, as long as the battery is not connected to anything. When connected
-to something there are often leak currents. So leak currents must be
-measured to figure out a sensible timeout.
+  arch/sparc/Kconfig
 
--- Sebastian
+between commit:
 
---zeqgg3ishmvo4gqn
-Content-Type: application/pgp-signature; name="signature.asc"
+  41026c343540 ("Kconfig: regularize selection of CONFIG_BINFMT_ELF")
+
+from Linus' tree and commit:
+
+  80bddf5c93a9 ("sparc64: only select COMPAT_BINFMT_ELF if BINFMT_ELF is se=
+t")
+
+from the sparc tree.
+
+I fixed it up (I used the former) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uCUahW6fSs9fSMr.4RU5iVL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAyyOYACgkQ2O7X88g7
-+pr5YRAAo+fP1HPtLciMak9zPcHNVtgFJos4FxbOBpjrju3KAz6ixUhMA1xaze6E
-enMYvXKAJGrdRxwr+zcBR6T/ST/YUo5uUJQwd+RjVRnKcZbXXOSQfIKCol8QJMFr
-EJEGAS2uS1PqkymwXz47GyQ8/m1wTEXyhwFzmuvivdsPMjkzKVprn+pCUV5a296X
-80wwwvFnMr1ENPl+FDU8NkiFuOc9JeGBH9ydmjpg+t6kEMJkqvfe863uEDN24nci
-PQVnqVnVx9nyiz9zKp0hkkjMVQYKaGDYhgU/T4gQdx7XRTWGe3NV/5wvvxqiARYI
-0tM9teZb5cIYKr+Zh53f0MCB3hRWxJebIrJDMLXa5vtbHQPaLkxcy1ZtnONjn/wO
-PLHBq017Sl4gCko1J7slmmoSPPG6BYdGYEOiGdnqjWbYfNhukyPbXH/N6hAGESVv
-ThOrr2af2rhXZLENhxfxQfGCkI+Cqwvda6D4Yu3YUt8adJ+7CQocTgHSGsqalSYb
-a7i9QWxZw/DCUpiWfs8fOb61N8qPqMmk6D/TWQimomH9OjGn2+aC/kr6eYq34Gks
-8tCaZb9d7ItNH5cpHDrBLpj5UdozNJE/YKMSVLYt+1MWQAdMdG5tt9DKE2aqFaSD
-u1YDX5a0l2Xix7OjS7HUqVT2rStOIFyUMJhfXtBTYhmlpZZXOmU=
-=vZ8i
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAyyPQACgkQAVBC80lX
+0GzxdAf/RiD8GRt7zyLOQ1p7M9TxVfeNTCu5Xk8lBgqQRLiuVL6x9m8rT219h6oM
+HxKH+JsYlhZx4um/yuywKLWZyWJ1hrW3K9g4WqSadGTEqlIpswvpBy8PwEHxHmTk
+h08SgvqN4Z5KWwa/Zx05W1V+393IipX3Eri2A3rma1DDe2apSOhla4SXtCriGdeY
+Sb0AfXD9R2sL2fNe/Tw3Rr4/jtpm3V7ZWMH7nokgS76A1dKJS+N9UIGkaz/QlxYc
+i8V1J5ZgDMWg461lsBU2FUO8wrpXMbQtJEoTx6q1q/rRH8/fTNFzbGktaF0M+ZdP
+RaQ2Btcf2eeaNHOl/LtpspTfPG8iAQ==
+=/fqB
 -----END PGP SIGNATURE-----
 
---zeqgg3ishmvo4gqn--
+--Sig_/uCUahW6fSs9fSMr.4RU5iVL--
