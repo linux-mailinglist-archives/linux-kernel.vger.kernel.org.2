@@ -2,94 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 846A0320D8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:19:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E317E320D5B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhBUUTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 15:19:09 -0500
-Received: from mout.gmx.net ([212.227.15.19]:48833 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230174AbhBUUTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:19:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613938631;
-        bh=cFGcwB+oIMoQD2nm971NYoY7QQ0QXu1e9XPHJAzwb7k=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=GOZwDesgWdfw4DZi7UV0SSNxWXqWTaptbzoRgQq/dOd+ZSmTmVKCJj5Zm9l0x7Uks
-         ZFDoacsmwJQMbMZImrM3XVv7ODwsjhmvAQaWact2YeTIQG8k+NmIC1CAXjYP8YOpYA
-         xzTn2vTksJsdIuiDFDno8FDV3C94wNqyAUagcA44=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1MplXz-1ldI6c2LhF-00qEN2; Sun, 21 Feb 2021 21:17:11 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     John Wood <john.wood@gmx.com>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 8/8] MAINTAINERS: Add a new entry for the Brute LSM
-Date:   Sun, 21 Feb 2021 16:49:19 +0100
-Message-Id: <20210221154919.68050-9-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210221154919.68050-1-john.wood@gmx.com>
-References: <20210221154919.68050-1-john.wood@gmx.com>
+        id S230426AbhBUUCt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Feb 2021 15:02:49 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:48458 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhBUUCs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 15:02:48 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 74C7A60A357B;
+        Sun, 21 Feb 2021 21:02:05 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id fjj8azMOkIez; Sun, 21 Feb 2021 21:02:05 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id E987460A3582;
+        Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id S8tQaMGGhfW2; Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id B8A7160A357B;
+        Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+Date:   Sun, 21 Feb 2021 21:02:04 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Message-ID: <1860844222.14898.1613937724518.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] MTD changes for 5.12
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:A9lV3V9nsLMCf5CmMu6k/qVFGT1BkfgTJJSixdrK1IpFF6pUB7/
- peNPmEQle3ecEnl7Bk6MLydWlFKHNCF7Fzm8lkP9Vv5TR7vuedJis7NBbrz6WXPwAMNmtnC
- zdnbYQ9+zGzQlaSIt4JlxwSK4lg/pdpElRrY/c203DLGnQFE16MLhZdE1jJmWGAWY6TqxYD
- ZrIGTZhAjXr/UJ9yfMS3w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:MM733bPvwtU=:tsjxnsOkeC5P2GMTGa4ajS
- XPH1WOi3gOxUnh1Zk8XgsE/gheE3qzBqu0wpZdjzHwOJoUaHitd6jn6B711VuRlq1t0Xsn4Kq
- gZReMFfirnCNVrL+UVzx9SmD7Vrfa6fuJtPIk3VOe8kPu+1Ac7PKZ/h46FvNEJEJPmTVeOFVE
- 9nlqNuPKlH4Z/31jN8j5BbUvJIphjMr3KQ7fPIQP2znm8K90lBUR5/AAPhC07jrkgxaUKO/2a
- SH3WtcrX+J7xPY7mgPGCCNwz4Lp4o2zXhv2Zx9LAxZpnS+xFBhQYaHTg07LrQAK7B7QPMtkc3
- Pxanl08Z700pqccI4ALdspjqtUrpMQMUtFLdKZ9p1+ZGDqwk14jQVGqafsQp50GnqKm/yFoaT
- TH8ST0/kDC831b6BvHkitx/iqhmDQvVljGqlXWqSCF/+Z+nZSfgWZa/taJB6Ot0fFicNvuJ7s
- gE8wtxOm/n1anWlGPhqmeBSeiudrcIF8kT2H/Q4PbMXus3Wqzwxe7cCC0HCJYCMlCpaaC32dC
- RAkgqEGi39VdLlsvLpc5bk/BMzyks7B0+IP4VPO1ewId0lxytyAqNxx/Y1hOA5dkiPO7of2Fg
- iproAeTELRRF+4dqU2JL/FSKlAuSDcGIT6jXN6X8IQFf30Dsv07dYYOJxf9N49EpsVZOVxeLL
- dx621j4LVw52JkTVToYVOVSd0fXvx4JQgaU/AYdv9/in3rTz9GUfu6pnYb7p7aAPcy2Q+DICM
- CZQJCaDuFg5vvxlecRE/mOkApyK3r3ZuMF5b53xforWIxLPTW+3JVXTGtfHxyuYyH17XZ+M5y
- TWO54IvBjlu1APw3zoqqDHC3we1y5f33bhLhp7TrWRgUVKL2Q0JYTTXvf7XCtb5cdZhN0oIJ7
- PBo417v0KOadm/NriYTg==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Index: 7+C02FdulTyKA9J1LISl0R0IkBqhDg==
+Thread-Topic: MTD changes for 5.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to maintain the code for the Brute LSM add a new entry to the
-maintainers list.
+Linus,
 
-Signed-off-by: John Wood <john.wood@gmx.com>
-=2D--
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index bfc1b86e3e73..a88327198474 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3760,6 +3760,13 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/ethernet/brocade/bna/
+  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
 
-+BRUTE SECURITY MODULE
-+M:	John Wood <john.wood@gmx.com>
-+S:	Maintained
-+F:	Documentation/admin-guide/LSM/Brute.rst
-+F:	security/brute/
-+F:	tools/testing/selftests/brute/
-+
- BSG (block layer generic sg v4 driver)
- M:	FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
- L:	linux-scsi@vger.kernel.org
-=2D-
-2.25.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.12
+
+for you to fetch changes up to 6e9dff6fe3fbc452f16566e4a7e293b0decefdba:
+
+  dt-bindings: mtd: add binding for BCM4908 partitions (2021-02-12 22:24:48 +0100)
+
+----------------------------------------------------------------
+MTD core changes:
+* Initial support for BCM4908 partitions
+
+Raw NAND controller drivers:
+* Intel: Fix an error handling path in 'ebu_dma_start()'
+* Tango: Remove the driver
+* Marvell: Convert comma to semicolon
+* MXC: Convert comma to semicolon
+* Qcom: Add support for Qcom SMEM parser
+
+Related MTD changes:
+* parsers: Add Qcom SMEM parser
+
+SPI NOR core changes:
+* Add non-uniform erase fixes.
+* Add Global Block Unlock command. It is defined by few flash
+ vendors, and it is used for now just by sst.
+
+SPI NOR controller drivers changes:
+* intel-spi: Add support for Intel Alder Lake-P SPI serial flash.
+* hisi-sfc: Put child node np on error path.
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      mtd: rawnand: tango: Remove the driver
+
+Christophe JAILLET (1):
+      mtd: rawnand: intel: Fix an error handling path in 'ebu_dma_start()'
+
+Colin Ian King (1):
+      mtd: remove redundant assignment to pointer eb
+
+Dan Carpenter (1):
+      mtd: parser: imagetag: fix error codes in bcm963xx_parse_imagetag_partitions()
+
+Manivannan Sadhasivam (4):
+      dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
+      mtd: parsers: Add Qcom SMEM parser
+      mtd: rawnand: qcom: Add support for Qcom SMEM parser
+      mtd: parsers: afs: Fix freeing the part name memory in failure
+
+Mika Westerberg (1):
+      mtd: spi-nor: intel-spi: Add support for Intel Alder Lake-P SPI serial flash
+
+Pan Bian (1):
+      mtd: spi-nor: hisi-sfc: Put child node np on error path
+
+Rafał Miłecki (2):
+      dt-bindings: mtd: move partition binding to its own file
+      dt-bindings: mtd: add binding for BCM4908 partitions
+
+Richard Weinberger (2):
+      Merge tag 'nand/for-5.12' of git://git.kernel.org/.../mtd/linux into mtd/next
+      Merge tag 'spi-nor/for-5.12' of git://git.kernel.org/.../mtd/linux into mtd/next
+
+Takahiro Kuwano (4):
+      mtd: spi-nor: sfdp: Fix wrong erase type bitmask for overlaid region
+      mtd: spi-nor: sfdp: Fix last erase region marking
+      mtd: spi-nor: core: Fix erase type discovery for overlaid region
+      mtd: spi-nor: core: Add erase size check for erase command initialization
+
+Tudor Ambarus (2):
+      mtd: spi-nor: Add Global Block Unlock command
+      mtd: spi-nor: sst: Add support for Global Unlock on sst26vf
+
+Zheng Yongjun (4):
+      mtd: rawnand: mxc: Convert comma to semicolon
+      mtd: convert comma to semicolon
+      mtd: st_spi_fsm: convert comma to semicolon
+      mtd: rawnand: marvell: convert comma to semicolon
+
+yangerkun (1):
+      mtd: phram: use div_u64_rem to stop overwrite len in phram_setup
+
+ .../mtd/partitions/brcm,bcm4908-partitions.yaml    |  70 ++
+ .../bindings/mtd/partitions/fixed-partitions.yaml  |  33 +-
+ .../bindings/mtd/partitions/partition.yaml         |  47 ++
+ .../bindings/mtd/partitions/qcom,smem-part.yaml    |  33 +
+ drivers/mtd/devices/phram.c                        |   6 +-
+ drivers/mtd/devices/st_spi_fsm.c                   |   2 +-
+ drivers/mtd/maps/pci.c                             |   8 +-
+ drivers/mtd/mtdswap.c                              |   1 -
+ drivers/mtd/nand/raw/Kconfig                       |   7 -
+ drivers/mtd/nand/raw/Makefile                      |   1 -
+ drivers/mtd/nand/raw/intel-nand-controller.c       |   6 +-
+ drivers/mtd/nand/raw/marvell_nand.c                |   2 +-
+ drivers/mtd/nand/raw/mxc_nand.c                    |   2 +-
+ drivers/mtd/nand/raw/qcom_nandc.c                  |   4 +-
+ drivers/mtd/nand/raw/tango_nand.c                  | 727 ---------------------
+ drivers/mtd/parsers/Kconfig                        |   8 +
+ drivers/mtd/parsers/Makefile                       |   1 +
+ drivers/mtd/parsers/afs.c                          |   4 +-
+ drivers/mtd/parsers/parser_imagetag.c              |   4 +
+ drivers/mtd/parsers/qcomsmempart.c                 | 170 +++++
+ drivers/mtd/spi-nor/controllers/hisi-sfc.c         |   4 +-
+ drivers/mtd/spi-nor/controllers/intel-spi-pci.c    |   1 +
+ drivers/mtd/spi-nor/core.c                         |  49 +-
+ drivers/mtd/spi-nor/core.h                         |   2 +
+ drivers/mtd/spi-nor/sfdp.c                         |   5 +-
+ drivers/mtd/spi-nor/sst.c                          |  52 +-
+ include/linux/mtd/spi-nor.h                        |   1 +
+ 27 files changed, 457 insertions(+), 793 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/partition.yaml
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
+ delete mode 100644 drivers/mtd/nand/raw/tango_nand.c
+ create mode 100644 drivers/mtd/parsers/qcomsmempart.c
