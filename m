@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1119032091D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 09:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1397732091F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 09:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbhBUIIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 03:08:04 -0500
-Received: from mail-dm6nam12on2053.outbound.protection.outlook.com ([40.107.243.53]:58976
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S229905AbhBUIKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 03:10:13 -0500
+Received: from mail-co1nam11on2047.outbound.protection.outlook.com ([40.107.220.47]:63329
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229502AbhBUIH7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 03:07:59 -0500
+        id S229502AbhBUIKG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 03:10:06 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Fny744yqaQorqMS2ZcQ08+ZL5uwNUMvoy+Jd3jcmk8rGzCnYtZ9p/TsD1Y9HOmVYuEWma+eRo7qfY8h3zGvYyZ5k/NRJfbf8lCcBGks3W3OWTy2ubChE2XDfeSwplJanHuZHMLHpy4DiZcov9XcQrKo2HpoXy44OA8tMIDzXDLfqF+hwAxqjSSR8hNiHSVshPBNbwp2mwMI75EtWtUQrGsutIbxyAeV2RFvDpCXAk+ajGW/zFEDCtBT3iBSBeWwwCxoD3LqKhjb8QhuYSp0+yp8/E5NGYP7Qd6T2gJTWjgjK0ayIp1qeVdzTTrCg0QN86vm6uP1lqb7I/yX+yAgKTg==
+ b=CJ8yNhO+iGvv7B4kyQvwqVlpcG44C0T0FZBNFRfI84knSH4mn64soHdX6sC1gErHT9P//L8/Q0GdkEnJ4hd8pS/QQAd1Ty2h9jMvks9J8Oyu/gz368ATnRp+FgXL8iIOjcrTbOf5HmDG6A7+wdeIwTZuKWyJUjpVjg5ObFz6S/5WkXLjhL3/+zKCfQUdkXnHs9/OM276mFrDWxkP0pYONXN9Zzt81Wp+tsTxHXo//2Yj5Acy8VymElx0TBy501sb69KvAnrh6HhPVFw4hEiVeq56JuO9Uwv5dFuvpmKn3aizoJ6LCsabmXs3qnQAvSX7BV3CGiiHKsccKCJcaKLo2g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l0X9IbrY7oartuXDx0L9w4RVKCOn7G2wyMuHYrEcmWQ=;
- b=i2cnxqeMjBTX1bLgn2IUyaH7w1HBWeG7GkDBEiSxCyK0TRAxi+H6l8qgEQCknkw36++dhW3p0doI2gNVJLWjVe9OMBYT3FIu6r64MCZn6pWg1pIDfrrB/WhyWEPHobfq2E/iKamGIsqLqXD8fRF3u9gYb5/PN+RrskJ0E6DVZc0Q3168ZPsl3PzbtitHk1nz0h8sX+CsvEn4GHp5anb2Ozh6h47vuBYp1kTnl1bP67NcC2YmHC2uiHWDong/lu4wOQVJncsmVKUyBJ9YH5Q8YJb9JZOuOccp68YBbuikmKbrDKzMe1Ywl4esJLuCgKo0FyiyUfxrD8OuAwhJzJJlWQ==
+ bh=j3neTUxEu3CE2lhS6mIu1YTy4pwfLLVl8sTOJxSFds4=;
+ b=ndWCYsDCNOaBqf6LUtS9yyl681zim3lA6LJPWOzJ/M4zl0Rkx49cgWzQAyrryD1m70uU9cMI6QvBE9iN/6wxkuDr4sDUQsUBU4zaBY6bEfGPPAqXlcSMuSZ1hCi0QV70Lq/8jZe+bq0BtFUz5p/Mp6YZkxK7nZvmV5z9zCXINij1O95ZjxH+lWviI2VxwKG+6POGB5xMu0Yc6CpQ3iRkwHugBlFJIWPiXjsig8ahg9CcX6aYuZn6WwcBAZcu0OFBCdK100GQnDvBA4BuAVUeY4qwGLp6PfjOMfYxaXO3jpk2+/bBRXabdoLiD3KNmpt8Kjw62bQ+26jzttawNUp0dQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=windriver.com; dmarc=pass action=none
  header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
@@ -26,283 +26,214 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=windriversystems.onmicrosoft.com;
  s=selector2-windriversystems-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l0X9IbrY7oartuXDx0L9w4RVKCOn7G2wyMuHYrEcmWQ=;
- b=ejm8elxwRkt57MNDej3JKGGCDLPdbVRx2tcVjT//dJSmWuvImIe+HfoIQ8ARUCtVhueqiKE1PP4HTgidQazDSB0aFLkSMXgd9z5Xl98CjkABKksoanrizT4AAJ2NzG8z9uDK2wZQLVXreQ6lfRGSarOYkTELi2ImCTncnDJyMjc=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+ bh=j3neTUxEu3CE2lhS6mIu1YTy4pwfLLVl8sTOJxSFds4=;
+ b=l2GB5jcmndoYJllxgy9vZ26bsdr3ANIZpUe6PE3el34rYd2QEk2d3s8qaX2d/EUugdL350+bLcL109kdtLX4545lmFlGwwzZor9TQQu4aAJNECdkiIPRawgLmdJ9tHWnyDlHvseHlaz6qiDv9QG/wcBhWc336lPj6D2rYdmtgXw=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
 Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
- by DM6PR11MB4532.namprd11.prod.outlook.com (2603:10b6:5:2aa::21) with
+ by DM6PR11MB4740.namprd11.prod.outlook.com (2603:10b6:5:2ad::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.29; Sun, 21 Feb
- 2021 08:07:12 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Sun, 21 Feb
+ 2021 08:08:47 +0000
 Received: from DM6PR11MB4545.namprd11.prod.outlook.com
  ([fe80::49d6:e3db:2f06:3432]) by DM6PR11MB4545.namprd11.prod.outlook.com
  ([fe80::49d6:e3db:2f06:3432%6]) with mapi id 15.20.3868.032; Sun, 21 Feb 2021
- 08:07:12 +0000
-Date:   Sun, 21 Feb 2021 03:07:08 -0500
+ 08:08:47 +0000
 From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, Ingo Molnar <mingo@kernel.org>,
+To:     linux-kernel@vger.kernel.org
+Cc:     Li Zefan <lizefan@huawei.com>, Ingo Molnar <mingo@kernel.org>,
+        Yury Norov <yury.norov@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Josh Triplett <josh@joshtriplett.org>,
         Peter Zijlstra <peterz@infradead.org>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Frederic Weisbecker <fweisbec@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Subject: Re: [PATCH 6/8] lib: bitmap: support "N" as an alias for size of
- bitmap
-Message-ID: <20210221080708.GC6298@windriver.com>
-References: <20210209225907.78405-1-paul.gortmaker@windriver.com>
- <20210209225907.78405-7-paul.gortmaker@windriver.com>
- <CAAH8bW_fJi_PeHrXsPZzLtRP=-L99QJBXEvHkN9w6DBP-1FPWQ@mail.gmail.com>
- <20210210155825.GA28155@windriver.com>
- <YCQOmkfEH0lLJY8l@smile.fi.intel.com>
- <20210212012417.GB167389@yury-ThinkPad>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210212012417.GB167389@yury-ThinkPad>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: [PATCH v5 0/8] support for bitmap (and hence CPU) list "N" abbreviation
+Date:   Sun, 21 Feb 2021 03:08:19 -0500
+Message-Id: <20210221080827.84862-1-paul.gortmaker@windriver.com>
+X-Mailer: git-send-email 2.30.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-Originating-IP: [128.224.252.2]
-X-ClientProxiedBy: YT1PR01CA0118.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2c::27) To DM6PR11MB4545.namprd11.prod.outlook.com
+X-ClientProxiedBy: MN2PR13CA0036.namprd13.prod.outlook.com
+ (2603:10b6:208:160::49) To DM6PR11MB4545.namprd11.prod.outlook.com
  (2603:10b6:5:2ae::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from windriver.com (128.224.252.2) by YT1PR01CA0118.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29 via Frontend Transport; Sun, 21 Feb 2021 08:07:11 +0000
+Received: from yow-cube1.wrs.com (128.224.252.2) by MN2PR13CA0036.namprd13.prod.outlook.com (2603:10b6:208:160::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.9 via Frontend Transport; Sun, 21 Feb 2021 08:08:47 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fd999a9e-90ec-41a3-f2d7-08d8d63fb197
-X-MS-TrafficTypeDiagnostic: DM6PR11MB4532:
-X-Microsoft-Antispam-PRVS: <DM6PR11MB4532676F8709FE407FC6A9FC83829@DM6PR11MB4532.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 6bb9aa35-71e9-4381-a844-08d8d63fea69
+X-MS-TrafficTypeDiagnostic: DM6PR11MB4740:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR11MB474088444D54068EAB2CE1F783829@DM6PR11MB4740.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9ILOyeto5E2FQIrybGstjZLmtHTH07m0y7Oaw8TdMhJN5jYAQnnD8CT3lua6YSxu9j9HKh57RbPH6nOJo7Xxmj/eo7cmc58+ZoizLi7KGhyZYUe1tTsQrS+nTWIE4B4jiZ/ye0MBJ47XLYSJn6T+NY+zgKy+JVBepBMrjYYK8wDG8NyTZmar+qnkg0+82DlxahQxT+dscp5QZHKpK8ep8kqcappPLPM0XvBclr3oawgGuPC1T0mcQ8nn2KIhCEi+pGVJ0VK9dbrlxSCivATG1t8Lxucza3x4nRJLl33WkpilOOmSQiFnypEXMXvGBMELUK00xSwiCJPyOv6fCrYYW0eEs7JthETmBd/eX/LTbUFmR08Q4yCw/J4Hu/AKCHbK0qjwS7XTlXf7LCQT3+bEUsP/wZQ10udbmy8tQm9ZXYON3nESAaeK4L6fPZMgBpu3SEaHCd+JHyyDMD17ipshpnK9A+1UdMEDU3fB2gcM5OrmMYS4WyN5FQ1BRRP6YYywgnnT+J3H7r3SFFw+L0ewcg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(376002)(396003)(39830400003)(26005)(66556008)(478600001)(2906002)(2616005)(54906003)(956004)(8676002)(16526019)(6916009)(4326008)(53546011)(8936002)(6666004)(7416002)(8886007)(186003)(1076003)(83380400001)(66946007)(52116002)(86362001)(7696005)(55016002)(36756003)(33656002)(44832011)(66476007)(316002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?c+3BbjCvvsYEfQp0lRXcGigFFYj+gVMcXhaqr2T4EEebCW0B94JL03qXQYaw?=
- =?us-ascii?Q?Ho3OLHJMC921YnFpKznj6jaqr3LNsh8BymNGCJK1Q8tP63sTf+/3jYwU8Mva?=
- =?us-ascii?Q?jfde0ZOrgTr1uTEMmQa/YHkYqeb75crMam0/I2RCYMabcz55+kwWmd+Wr+Q0?=
- =?us-ascii?Q?h1/DQ4FEJCpzn3lwA5hSUFRQxDOq4sFRDt95A/PwSHieWqktu6UXwmFBo8p5?=
- =?us-ascii?Q?5KmhCsg1sXwYnZRQS2duQoRDPNtu9eVD8UXvBjQVCCOle+86KUHuCZOnYZ7t?=
- =?us-ascii?Q?viN+fuaGDgrYnLo3UfmwDX+CMIBMn2e7jPNscj8WD8FeoWHMbeIi2uyVqk/u?=
- =?us-ascii?Q?LPieJ6IPocxOdiKzeiLabay7HzDz4RBPG9pUahfdBRwgT2Jpz5UHy8UcVDmB?=
- =?us-ascii?Q?OYBE1iyMg7/1QkMxtcpnncRyldgGwveH1gxIdUsKGlCP8Q3Yd1o/lvXV8Pf0?=
- =?us-ascii?Q?SdXf9GZQFo5uJ1mz+EQmADsbWqHMDE7Mx0Xmv/t+Zocyg+wIhK8XLKG6CzjG?=
- =?us-ascii?Q?1YLZlzIbGtdgx28Sxot6UnsA11HJTjNhBegkfA4bX6m93gQ0z3+NwW6RURVi?=
- =?us-ascii?Q?3oD40kksclZkrIuRT3dhLPkJtdJDWfCg266RSWFANe44CPGlAX/lcvKRFa+o?=
- =?us-ascii?Q?sijjI2xMrZ0U+8MD+Gewttt2denvhzP4z5nRsZjesXVPoT3ZpC5pkebT8vaA?=
- =?us-ascii?Q?w/hU4cT2IF8rk6aJr5FUWrkVFGCaXAx9Nu04nzNBPVQ05AfZxFQSVD5i0AWK?=
- =?us-ascii?Q?PBeoE4D88Hhvnx/2u89SdTBSPukfBYH1IEo5QMbMbJTUreAgfMxSBpJCuswL?=
- =?us-ascii?Q?p24qKR8QJ3v6AGK4zeTL5QuNpTCX+hXyICjRqO4NCzK080CZTZCBSevJbTnS?=
- =?us-ascii?Q?N6ePrH4cvLnFWBdSQ2XH1wmQOHl9kjujCMnAXb1X4WqrhLQ9ezxrsA+DmaRa?=
- =?us-ascii?Q?dv/YoCW2dCTnFQi9shXYD6VOebOFrHzrjJYkFN2TKjCR0WbBrFFujQ8anksl?=
- =?us-ascii?Q?tN0HX58OBtzKLv9T41YGpmbeGp085G5Tjgvj61SveQq73Ky0LV1ZpB0meMqv?=
- =?us-ascii?Q?vc4O8vm8rR0h/Jss0thwUupKKPnMi0bLzWCBz1xK4nW9LJlnp1HupPB5OsGi?=
- =?us-ascii?Q?5Yf9xIvKFSEg7iC0qvBCvbsOw9vGUgRX5T8tNc4/s5kSwq3pOIXJh29YwKK+?=
- =?us-ascii?Q?1DXW9v9hq5THcbWLFsNaCwY7DEk840HxTY8pQ7bRiDiGE3xpBmhr5xCgpyaB?=
- =?us-ascii?Q?tR+VI3uvw81RE/j0P52ei0jKhc2jlg8HePOb3mOwz6iTSiwDaqec83RqGzUn?=
- =?us-ascii?Q?rHYi75sVjyh35jHNbt29VEEv?=
+X-Microsoft-Antispam-Message-Info: VHjtwZ3acD5GYyJlTb4A3pmn+Q5M50BtJZH+zbagGqWwgcx5HCLbpvPJtEgo/CagfQ9ufqsCMbAjMW9V2dgvuiROVIVMVUN2KbQrczwbQ6r4ffr5m0YYHQfrcd0sZ79rStJjFzHHYVkQynoOBI+7PnJ151yZCDonj36zXdk6THBjtY4HSbTgpNmP1ByOaojf6ki/fmlFRZVVwiBgi9e8PprkU1N2UY4f23ohvQh7yClzTI5j5kFPy3pwc1bIgxfV8++Gg/ps9vUmZ+yuWOy4HnvJAgqHaEpQUPeYvo/AriQaBHapaj8rONpWcQluqFBlWMhWM/oU8OBHEDGo3hsjZfW5QqncUC5A0/haS/sF4tIjBBacTCSCL288nA/AtML6eayHf0vqlj5ht34XlP/FoQUO7P5asK3mgeakQ1oxNC0Jzb6hzqD5TLbQgtOZfevUNEjH9uC6tUEyE9PuNQXLGt5LtzxVVwaeZUSG82L8XkEshAAEfjuGp3MPRrZAkNAHcgjQShX8GnP979ZV0EPsE5whtgiBp9DCldMK+RaiNE/tuQ9URW9gTu0DqlEE4n6ll5aDG6/P+Mc/Db5HiXVJtL5uYXU+btdXPkuXYsp6Ucg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(136003)(39830400003)(346002)(2906002)(16526019)(316002)(186003)(54906003)(26005)(8676002)(5660300002)(6666004)(1076003)(8936002)(4326008)(36756003)(6512007)(478600001)(966005)(107886003)(83380400001)(66946007)(6916009)(2616005)(66556008)(66476007)(7416002)(956004)(6486002)(44832011)(52116002)(86362001)(6506007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vlwSSKnhQ1yk3VLQeP/gL+XdJZLSVaB27h34ll6IorNRGoZceD51arvSQ3qb?=
+ =?us-ascii?Q?fT5grjUDJwFHFL1B8bEElUy4rccYJrIEyalKhqvJmbZHosFJ4yFCe890K0fb?=
+ =?us-ascii?Q?jvtXG0lJM7ykr+9c2HLHQ3cn90IdSaznG0VjSelmAQbt8nDjscz1ik4IK9VI?=
+ =?us-ascii?Q?q5vGHK4SKOr35kLocDlTZ6/SIZVtMQbr4O9ao+deZp49oPPY7dsvOdQ7j42K?=
+ =?us-ascii?Q?ZoDsV/OX+nbxlBZXNO3T9tsQ4f2eV7OLFwW4CVulYxbh4oXAKQgYQBHXKgB/?=
+ =?us-ascii?Q?PIW1XfraryUtjrRMSxMTOmNORtJawjsAQLdO4evD2tPY1efvi6rdxvTHCQoU?=
+ =?us-ascii?Q?86Y7TFwa5LsBPgK8+l7yDlAtJhKe3lQfA39/JI8TwJs21w0pVyj83wEJB1PH?=
+ =?us-ascii?Q?ytSJ+GvyA728rYXEUqRT9OWR8+JJzDmTSN0yCr4vJw4c8B4fT806NOqcgemn?=
+ =?us-ascii?Q?d8oGxX8IYd/lQA7KbYMCePQzNxM9hIf8MREXVyvlzopKHXdugunerFbbp6fI?=
+ =?us-ascii?Q?3Np4baaKdeaubu1/i1ybmbCEqeRrXys+xUF2E0FmOHjXiozVgbL1Uq+oFzf9?=
+ =?us-ascii?Q?9pkv7SYUoCYe8Bbm8ewTFUmj5A+DfBkGKfMyu6XafG1WFiXkBUuBNdO6YE0X?=
+ =?us-ascii?Q?GLlYD+yGm1x5mwfhcSPkRsO1zcECfxOxz1TUuopiM6/HNwPhwpsB3qZ0FyId?=
+ =?us-ascii?Q?PIBcsOi7OCqZ01nA397HJMyf6x5IiDPUE8LYAs4rxisjzUJt2SqhUutbsrCc?=
+ =?us-ascii?Q?84ZbrZH1rLc4sNbE3JYXbQB7xKTZVxHyBZEj9pGnOSEvgkcubVE0udsZ2tLN?=
+ =?us-ascii?Q?lq2fAoaLNTQkhDiDRPp72yJENqkeyiefxrAN9LcH2hE/h4W/rwySM+hE81ui?=
+ =?us-ascii?Q?IDQ7GN42GEs3chE8RaR3u2jUQCcSAdM2dg3zIWAmYXJmD3Hi/4J+/DWxVJ8/?=
+ =?us-ascii?Q?jFK+E7A86xh5WwMaOKrGaRzW6IdBCIfhq5pumsVAu+H30tq5SrKXjs1unoDK?=
+ =?us-ascii?Q?UAjUXuDX+X59v0HxQGijPWeYTuaRrS3Gfq+R5F2srLXhbDyBYjhTA8SgP0xO?=
+ =?us-ascii?Q?ZGlrBq4QRehgzDFw0KKTxPAH/jqsdyixFwJWznU4eym6MWfpUJadhgVVt5nl?=
+ =?us-ascii?Q?OBwm4deidqO1QLTXqLLzMa8Z8zzK2D4IDyywqJiH9guI1OSY3tgi1FlZhbSf?=
+ =?us-ascii?Q?PqGE8DSje9wVLe6wzMyrjh4kJhRhzMbUUS5Zw+zLMPcxCaBPNH31qxlvZpuQ?=
+ =?us-ascii?Q?zzUCh6NZ5SXPDhRXOAFYRSEqnsec0tUVEP8FeNuo9ITBjMiMyVNUbw1Z8axF?=
+ =?us-ascii?Q?8F+xXNB/Ix8WRPfR3ZoWGxhC?=
 X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd999a9e-90ec-41a3-f2d7-08d8d63fb197
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bb9aa35-71e9-4381-a844-08d8d63fea69
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2021 08:07:12.4759
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Feb 2021 08:08:47.8216
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: oE2or7yiRqRU6duHOCWgmXRNwy5M3CYDsx8J0Ccj4eFN2GZwedoRmE7upqdFp23fNC9961d+WDRlTqyzP0RMgZfEJWlgd4PReiu/tgmsKKQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4532
+X-MS-Exchange-CrossTenant-UserPrincipalName: Bd0ZkgxtNpT5UgDsLN5XMPyihw02ZvCwPk0g95SjuDSwJIGaUSHfyMcjaEVKUVSz21izVt5nd66ko+EVOEw9dcDnTNS5P7VQv0EylTcjhrk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4740
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[Re: [PATCH 6/8] lib: bitmap: support "N" as an alias for size of bitmap] On 11/02/2021 (Thu 17:24) Yury Norov wrote:
+This is the 5th and final version of this series.  We got some good
+improvements, like adding self-tests, using "N" as "just another number"
+that could be used anywhere, and making things not CPU specific.
 
-> On Wed, Feb 10, 2021 at 06:49:30PM +0200, Andy Shevchenko wrote:
-> > On Wed, Feb 10, 2021 at 10:58:25AM -0500, Paul Gortmaker wrote:
-> > > [Re: [PATCH 6/8] lib: bitmap: support "N" as an alias for size of bitmap] On 09/02/2021 (Tue 15:16) Yury Norov wrote:
-> > > 
-> > > > On Tue, Feb 9, 2021 at 3:01 PM Paul Gortmaker
-> > > > <paul.gortmaker@windriver.com> wrote:
-> > > 
-> > > [...]
-> > > 
-> > > > > -static const char *bitmap_getnum(const char *str, unsigned int *num)
-> > > > > +static const char *bitmap_getnum(const char *str, unsigned int *num,
-> > > > > +                                unsigned int lastbit)
-> > > > 
-> > > > The idea of struct bitmap_region is avoid passing the lastbit to the functions.
-> > > > But here you do pass. Can you please be consistent? Or if I misunderstand
-> > > > the idea of struct bitmap_region, can you please clarify it?
-> > > > 
-> > > > Also, I don't think that in this specific case it's worth it to create
-> > > > a hierarchy of
-> > > > structures. Just adding lastbits to struct region will be simpler and more
-> > > > transparent.
-> > > 
-> > > I'm getting mixed messages from different people as to what is wanted here.
-> > > 
-> > > Here is what the code looks like now; only relevant lines shown:
-> > > 
-> > >  -------------------------------
-> > > int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
-> > > {
-> > > 
-> > >         struct region r;
-> > > 
-> > >         bitmap_parse_region(buf, &r);       <-----------
-> > >         bitmap_check_region(&r);
-> > >         bitmap_set_region(&r, maskp, nmaskbits);
-> > > }
-> > > 
-> > > static const char *bitmap_parse_region(const char *str, struct region *r)
-> > > {
-> > >         bitmap_getnum(str, &r->start);
-> > >         bitmap_getnum(str + 1, &r->end);
-> > >         bitmap_getnum(str + 1, &r->off);
-> > >         bitmap_getnum(str + 1, &r->group_len);
-> > > }
-> > > 
-> > > static const char *bitmap_getnum(const char *str, unsigned int *num)
-> > > {
-> > > 	/* PG: We need nmaskbits here for N processing. */
-> > > }
-> > >  -------------------------------
-> > > 
-> > > 
-> > > Note the final function - the one where you asked to locate the N
-> > > processing into -- does not take a region.  So even if we bundle nbits
-> > > into the region struct, it doesn't get the data to where we need it.
+But now it is time to close this review out since is down to just
+hand-wringing over hypothetical use cases, bikeshedding on upper/lower
+case, and a wild goose chase on trying to avoid adding a function arg.
 
-Yury - you asked why there was an arg passed -- "lastbit"  -- and from
-your reply, I don't think you fully read my answer - or at least missed
-the three key sentences above as to why "lastbit" was passed.
+So, once again - thanks to all who provided input; it was all considered
+even if not all of it was used.  And in that vein, just to be clear:
 
-> > > 
-> > > Choices:
-> > > 
-> > > 1) pass in nbits just like bitmap_set_region() does currently.
-> > > 
-> > > 2) add nbits to region and pass full region instead of start/end/off.
-> > > 
-> > > 2a) add nbits to region and pass full region and also start/end/off.
-> > > 
-> > > 3) use *num as a bi-directional data path and initialize with nbits.
-> > > 
-> > > 
-> > > Yury doesn't want us add any function args -- i.e. not to do #1.
-> > > 
-> > > Andy didn't like #2 because it "hides" that we are writing to r.
-> > > 
-> > > I ruled out sending 2a -- bitmap_getnum(str, r, &r->end)  because
-> > > it adds an arg, AND seems rather redundant to pass r and r->field.
-> > > 
-> > > The #3 is the smallest change - but seems like we are trying to be
-> > > too clever just to save a line of code or a couple bytes. (see below)
-> > > 
-> > > Yury - in your reply to patch 5, you indicate you wrote the region
-> > > code and want me to go back to putting nbits into region directly.
-> > > 
-> > > Can you guys please clarify who is maintainer and hence exactly how
-> > > you want this relatively minor detail handled?  I'll gladly do it
-> > > in whatever way the maintainer wants just to get this finally done.
-> > 
-> > Funny that there is no maintainer of the code.
-> > That said, I consider #1 or #3 is good enough. Rationale for
-> > - #1: it doesn't touch purity of getnum(), I think it's good enough not to know
-> >   region details
-> > - #3 (as you posted below): I like how it looks like (one nit below, though)
-> > 
-> > But let's put this way, I think Yury had done a lot in the area, let's listen
-> > more to him than to me.
-> 
-> I think that the simplest approach is the best. For me, the simplest
-> thing is to add a field to existing structure, like this:
-> 
->         struct region {
->                 unsigned int start;
->                 unsigned int off; 
->                 unsigned int group_len;
->                 unsigned int end; 
->                 unsigned int nbits; 
->         };
+1) There will be no adaptive modifying or guessing what the user meant if
+a range turns out to be invalid.  The caller will be responsible for
+handling the -EINVAL just as things are currently today.
 
-This is what was in v3 of this series, and I have put it back to this.
+2) There will be no use of "L" or lower case "n" because there is simply
+no need for it.  Yes, it would be simple enough to add, but it complicates
+things and would also be impossible to remove later, once it went mainline.
 
-But as stated above, it doesn't get nbits to where it is needed, so
-there still needs to be this one change you explicitly asked about:
 
- -static const char *bitmap_getnum(const char *str, unsigned int *num)
- +static const char *bitmap_getnum(const char *str, unsigned int *num,
- +                                 unsigned int lastbit)
+The original text from v4 follows:
 
-There is no region here, so there is no access to nbits via region.
-Hence the extra arg. So that is what v5 of the series will do - just
-like v4 did.
+The basic objective here was to add support for "nohz_full=8-N" and/or
+"rcu_nocbs="4-N" -- essentially introduce "N" as a portable reference
+to the last core, evaluated at boot for anything using a CPU list.
+
+The thinking behind this, is that people carve off a few early CPUs to
+support housekeeping tasks, and perhaps dedicate one to a busy I/O
+peripheral, and then the remaining pool of CPUs out to the end are a
+part of a commonly configured pool used for the real work the user
+cares about.
+
+Extend that logic out to a fleet of machines - some new, and some
+nearing EOL, and you've probably got a wide range of core counts to
+contend with - even though the early number of cores dedicated to the
+system overhead probably doesn't vary.
+
+This change would enable sysadmins to have a common bootarg across all
+such systems, and would also avoid any off-by-one fencepost errors that
+happen for users who might briefly forget that core counts start at zero.
+
+Originally I did this at the CPU subsys level, but Yury suggested it
+be moved down further to bitmap level itself, which made the core 
+implementation smaller and less complex, but the series longer.
+
+New self tests are added to better exercise what bitmap range/region
+currently supports, and new tests are added for the new "N" support.
+
+Also tested boot arg and the post-boot cgroup use case as per below:
+
+   root@hackbox:~# cat /proc/cmdline 
+   BOOT_IMAGE=/boot/bzImage root=/dev/sda1 rcu_nocbs=2,3,8-N:1/2
+   root@hackbox:~# dmesg|grep Offl
+   rcu:     Offload RCU callbacks from CPUs: 2-3,8,10,12,14.
+
+   root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+   
+   root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 10-N > cpuset.cpus
+   root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+   10-15
+   root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo N-N:N/N > cpuset.cpus
+   root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
+   15
+
+This was on a 16 core machine with CONFIG_NR_CPUS=16 in .config file.
+
+Note that "N" is a dynamic quantity, and can change scope if the bitmap
+is changed in size.  So at the risk of stating the obvious, don't use it
+for "burn_eFuse=128-N" or "secure_erase_firmware=32-N" type stuff.
 
 Paul.
---
+---
 
-> 
-> Of course we can do like:
->  
->         struct region {
->                 struct boundaries;
->                 struct periodic_part;
->         };
-> 
->         struct bitmap_region {
->                 struct region;
->                 unsigned int nbits; 
->         };
-> 
-> But it would be nothing better than simple flat structure.
-> 
-> > > I'd rather not keep going in circles and guessing and annoying everyone
-> > > else on the Cc: list by filling their inbox any more than I already have.
-> > > 
-> > > That would help a lot in getting this finished.
-> > 
-> > Agree!
-> > 
-> > > Example #3 -- not sent..
-> > > 
-> > > +#define DECLARE_REGION(rname, initval) \
-> > > +struct region rname = {                \
-> > > +       .start = initval,               \
-> > > +       .off = initval,                 \
-> > > +       .group_len = initval,           \
-> > > +       .end = initval,                 \
-> > > +}
-> > > 
-> > > [...]
-> > > 
-> > > -       struct region r;
-> > > +       DECLARE_REGION(r, nmaskbits - 1);       /* "N-N:N/N" */
-> >
-> > I would initialize with nmaskbits to be sure the value is invalid, but it will
-> > add some code, below, so up to you, guys.
-> 
-> We don't need to initialize r because it's purely internal and helpers
-> don't expect that r is initialized, so it's waste of cycles.
->  
-> > > +/*
-> > > + * Seeing 'N' tells us to leave the value of "num" unchanged (which will
-> > > + * be the max value for the width of the bitmap, set via DECLARE_REGION).
-> > > + */
-> > >  static const char *bitmap_getnum(const char *str, unsigned int *num)
-> > >  {
-> > >         unsigned long long n;
-> > >         unsigned int len;
-> > >  
-> > > +       if (str[0] == 'N')      /* nothing to do, just advance str */
-> > > +               return str + 1;
-> 
-> Is my understanding correct that this is an attempt to avoid adding
-> the nbits to struct region? It would probably work, but I'd prefer
-> to extend the structure. For me it's more readable and maintainable
-> approach.
-> 
-> Yury
+[v5: go back to v3 location of "nbits" in region.  Add acks/reviewed.]
+
+[v4: pair nbits with region, instead of inside it.  Split EINVAL and
+ ERANGE tests.  Don't handle start/end/offset within a macro to
+ abstract away nbits usage.  Added some Reviwed-by/Ack tags.]
+ https://lore.kernel.org/lkml/20210209225907.78405-1-paul.gortmaker@windriver.com/
+
+[v3: Allow "N" to be used anywhere in the region spec, i.e. "N-N:N/N" vs.
+ just being allowed at end of range like "0-N".  Add new self-tests.  Drop
+ "all" and "none" aliases as redundant and not worth the extra complication. ]
+ https://lore.kernel.org/lkml/20210126171141.122639-1-paul.gortmaker@windriver.com/
+
+[v2: push code down from cpu subsys to core bitmap code as per
+ Yury's comments.  Change "last" to simply be "N" as per PeterZ.]
+ https://lore.kernel.org/lkml/20210121223355.59780-1-paul.gortmaker@windriver.com/
+
+[v1: https://lore.kernel.org/lkml/20210106004850.GA11682@paulmck-ThinkPad-P72/
+
+Cc: Li Zefan <lizefan@huawei.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Yury Norov <yury.norov@gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Frederic Weisbecker <fweisbec@gmail.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+
+
+Paul Gortmaker (8):
+  lib: test_bitmap: clearly separate ERANGE from EINVAL tests.
+  lib: test_bitmap: add tests to trigger ERANGE case.
+  lib: test_bitmap: add more start-end:offset/len tests
+  lib: bitmap: fold nbits into region struct
+  lib: bitmap: move ERANGE check from set_region to check_region
+  lib: bitmap: support "N" as an alias for size of bitmap
+  lib: test_bitmap: add tests for "N" alias
+  rcu: deprecate "all" option to rcu_nocbs=
+
+ .../admin-guide/kernel-parameters.rst         |  7 +++
+ .../admin-guide/kernel-parameters.txt         |  4 +-
+ kernel/rcu/tree_plugin.h                      |  6 +--
+ lib/bitmap.c                                  | 49 +++++++++++--------
+ lib/test_bitmap.c                             | 46 ++++++++++++++---
+ 5 files changed, 79 insertions(+), 33 deletions(-)
+
+-- 
+2.30.0
+
