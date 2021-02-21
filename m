@@ -2,413 +2,362 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3133D320B0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:47:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0A2320B31
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhBUOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:47:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230010AbhBUOrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:47:04 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED85C601FB;
-        Sun, 21 Feb 2021 14:46:19 +0000 (UTC)
-Date:   Sun, 21 Feb 2021 14:46:16 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Jyoti Bhayana <jbhayana@google.com>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
-        cristian.marussi@arm.com, sudeep.holla@arm.com,
-        egranata@google.com, mikhail.golubev@opensynergy.com,
-        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
-        ankitarora@google.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v6 1/1] iio/scmi: Adding support for IIO SCMI Based
- Sensors
-Message-ID: <20210221144616.4eef6a79@archlinux>
-In-Reply-To: <20210212172235.507028-2-jbhayana@google.com>
-References: <20210212172235.507028-1-jbhayana@google.com>
-        <20210212172235.507028-2-jbhayana@google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229958AbhBUO7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:59:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31330 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229802AbhBUO7F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 09:59:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613919457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2befxLu2IQxO43e65gbS8ljrIpOf1REtIzhaumemsBs=;
+        b=LZY6deYZk9ue5wmcfnQBsxuhIRQQEz1QAC46vCzwyZRQKpzWCVjUDg6HlSBCDAG0bxk0Wn
+        7OVpIo5V3XXbrOGuyXnXKrCfiWQ4v8pnbFWpZBbqOBLmJj6/CHhiPasCzzg7TYCgcWpBp5
+        UC9ViJJTGJLhDfshFyTWHVdR+888VaM=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-hAFJepcoMbuEmkyEQiTzvA-1; Sun, 21 Feb 2021 09:57:34 -0500
+X-MC-Unique: hAFJepcoMbuEmkyEQiTzvA-1
+Received: by mail-qv1-f70.google.com with SMTP id ea15so326260qvb.11
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 06:57:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=2befxLu2IQxO43e65gbS8ljrIpOf1REtIzhaumemsBs=;
+        b=JxZWg2BpOQAVdAGibkj6Gqy2sDcF6YZLyvTUweOqyopY3xJKtYRFhbCgyo07vPP+8d
+         YmKXe/suZ416Mztavk/toTL78Hy5zPzzK6KqYZY3e34pjXTAtdsGsBXbEfKHbVj6ppn0
+         vC5M6gaLQTGF6zYdxM05Q147nAD2xN+RwgDeZJugIZrLqdBaTczbg7yjDa7LIWKRcXZ/
+         LxODUs7k/cEvu2nYP00IFoRIU0VRQGQX1C1n2/1zgBiQtm3kJEWnFCEmsLtAsOfgf366
+         Y3/ZIyvY+KjWPD/XsinY+kn4IARkvtSt1CkJWB9PI6CjytOemliB0gvTF2XkT1FGR65p
+         5JEQ==
+X-Gm-Message-State: AOAM533yjIufnpWbmnqLg1bL/x4G3ViFwsfW+FP9GBu49CbCi5Fg6IqO
+        iE8Kqmj0rZLowf42sqCmwxQ2iDk7n1vXZ4CEpCzMyP71Oj4ylf6pPGoTtKRM0a/yAF+nKdubzxo
+        BbBGLQ7bEcnv8y0xWaJ4S6j9M
+X-Received: by 2002:a0c:f510:: with SMTP id j16mr9413613qvm.61.1613919454393;
+        Sun, 21 Feb 2021 06:57:34 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy1M5cNMTqFUqOPWG72zbGBl5rmWXEQ+hX6IVHdj22jB+26MYa7yveQ5COgKJj/TeS/SMQpmg==
+X-Received: by 2002:a0c:f510:: with SMTP id j16mr9413599qvm.61.1613919454106;
+        Sun, 21 Feb 2021 06:57:34 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id q3sm10461625qkb.73.2021.02.21.06.57.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Feb 2021 06:57:33 -0800 (PST)
+Subject: Re: [PATCH V3 XRT Alveo 18/18] fpga: xrt: Kconfig and Makefile
+ updates for XRT drivers
+To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org,
+        "mdf@kernel.org" <mdf@kernel.org>
+Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
+        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
+        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-19-lizhih@xilinx.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <287d9c6b-1b2b-f62d-ff8a-ad57b01f58a6@redhat.com>
+Date:   Sun, 21 Feb 2021 06:57:31 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210218064019.29189-19-lizhih@xilinx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 12 Feb 2021 17:22:35 +0000
-Jyoti Bhayana <jbhayana@google.com> wrote:
+As I am looking through the files, I have this comment.
 
-> This change provides ARM SCMI Protocol based IIO device.
-> This driver provides support for Accelerometer and Gyroscope using
-> SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
+fpga/ is currently a single directory, while files could be organized in subdirectories like
 
-Hi Joyti
+dfl/pci.c
 
-A few things inline but nothing to require a v7.
+instead have the possible subdir name as a prefix to the filename.
 
-1) Use of long long to get s64 - I can tidy that up whilst applying.
-2) Going to have a clash with Alex's multi buffer rework of the core
-   I'll sort that out when I apply this as well.
+dfl-pci.c
 
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
+For consistency,
 
-For fixes within a larger patch as a result of the various build robots,
-we should either only mention them in comments, or add a note after the
-Reported-by to say what was fixed.  E.g something like
+xrt/metadata/metadata.c
 
-Reported-by: kernel test robot <lkp@intel.com> # off by 1 error
+should be
 
-I can't remember what was actually reported for this one.
+xrt-metadata.c
 
-If you can reply with such a comment I'll add it on, if not I'll drop
-the Reported-by as uninformative.   Right now it looks like the whole
-patch is a fix for an issue that 0-day reported :)
+Likewise the build infra needs to integrated within the existing files fpga/Kconfig,Makefile
 
+This is a bigish refactor, so let's get a second opinion.
 
-> Signed-off-by: Jyoti Bhayana <jbhayana@google.com>
+Moritz ?
+
+On 2/17/21 10:40 PM, Lizhi Hou wrote:
+> Update fpga Kconfig/Makefile and add Kconfig/Makefile for new drivers.
+Expand the comment, there are several new configs that could use an explanation
+>
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
 > ---
->  MAINTAINERS                                |   6 +
->  drivers/firmware/arm_scmi/driver.c         |   2 +-
->  drivers/iio/common/Kconfig                 |   1 +
->  drivers/iio/common/Makefile                |   1 +
->  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
->  drivers/iio/common/scmi_sensors/Makefile   |   5 +
->  drivers/iio/common/scmi_sensors/scmi_iio.c | 678 +++++++++++++++++++++
->  7 files changed, 710 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
->  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
->  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
-> 
+>  MAINTAINERS                        | 11 +++++++++++
+>  drivers/Makefile                   |  1 +
+>  drivers/fpga/Kconfig               |  2 ++
+>  drivers/fpga/Makefile              |  4 ++++
+>  drivers/fpga/xrt/Kconfig           |  8 ++++++++
+>  drivers/fpga/xrt/lib/Kconfig       | 16 ++++++++++++++++
+>  drivers/fpga/xrt/lib/Makefile      | 30 ++++++++++++++++++++++++++++++
+>  drivers/fpga/xrt/metadata/Kconfig  | 12 ++++++++++++
+>  drivers/fpga/xrt/metadata/Makefile | 16 ++++++++++++++++
+>  drivers/fpga/xrt/mgmt/Kconfig      | 15 +++++++++++++++
+>  drivers/fpga/xrt/mgmt/Makefile     | 19 +++++++++++++++++++
+>  11 files changed, 134 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/Kconfig
+>  create mode 100644 drivers/fpga/xrt/lib/Kconfig
+>  create mode 100644 drivers/fpga/xrt/lib/Makefile
+>  create mode 100644 drivers/fpga/xrt/metadata/Kconfig
+>  create mode 100644 drivers/fpga/xrt/metadata/Makefile
+>  create mode 100644 drivers/fpga/xrt/mgmt/Kconfig
+>  create mode 100644 drivers/fpga/xrt/mgmt/Makefile
+>
 > diff --git a/MAINTAINERS b/MAINTAINERS
-> index b516bb34a8d5..ccf37d43ab41 100644
+> index d3e847f7f3dc..e6e147c2454c 100644
 > --- a/MAINTAINERS
 > +++ b/MAINTAINERS
-> @@ -8567,6 +8567,12 @@ S:	Maintained
->  F:	Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
->  F:	drivers/iio/multiplexer/iio-mux.c
+> @@ -6973,6 +6973,17 @@ F:	Documentation/fpga/
+>  F:	drivers/fpga/
+>  F:	include/linux/fpga/
 >  
-> +IIO SCMI BASED DRIVER
-> +M:	Jyoti Bhayana <jbhayana@google.com>
-> +L:	linux-iio@vger.kernel.org
+> +FPGA XRT DRIVERS
+> +M:	Lizhi Hou <lizhi.hou@xilinx.com>
+> +R:	Max Zhen <max.zhen@xilinx.com>
+> +R:	Sonal Santan <sonal.santan@xilinx.com>
+> +L:	linux-fpga@vger.kernel.org
 > +S:	Maintained
-> +F:	drivers/iio/common/scmi_sensors/scmi_iio.c
+> +W:	https://github.com/Xilinx/XRT
+> +F:	Documentation/fpga/xrt.rst
+> +F:	drivers/fpga/xrt/
+> +F:	include/uapi/linux/xrt/
 > +
+>  FPU EMULATOR
+>  M:	Bill Metzenthen <billm@melbpc.org.au>
+>  S:	Maintained
+> diff --git a/drivers/Makefile b/drivers/Makefile
+> index fd11b9ac4cc3..e03912af8e48 100644
+> --- a/drivers/Makefile
+> +++ b/drivers/Makefile
+> @@ -178,6 +178,7 @@ obj-$(CONFIG_STM)		+= hwtracing/stm/
+>  obj-$(CONFIG_ANDROID)		+= android/
+>  obj-$(CONFIG_NVMEM)		+= nvmem/
+>  obj-$(CONFIG_FPGA)		+= fpga/
+> +obj-y				+= fpga/xrt/metadata/
 
-...
+This is wrong.
 
-> diff --git a/drivers/iio/common/scmi_sensors/Makefile b/drivers/iio/common/scmi_sensors/Makefile
+Move metadata building to fpga/ Makefile and pick an appropriate config, not just 'obj-y'
+
+>  obj-$(CONFIG_FSI)		+= fsi/
+>  obj-$(CONFIG_TEE)		+= tee/
+>  obj-$(CONFIG_MULTIPLEXER)	+= mux/
+> diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+> index 5645226ca3ce..aeca635b1f25 100644
+> --- a/drivers/fpga/Kconfig
+> +++ b/drivers/fpga/Kconfig
+> @@ -216,4 +216,6 @@ config FPGA_MGR_ZYNQMP_FPGA
+>  	  to configure the programmable logic(PL) through PS
+>  	  on ZynqMP SoC.
+>  
+> +source "drivers/fpga/xrt/Kconfig"
+> +
+>  endif # FPGA
+> diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+> index d8e21dfc6778..2b4453ff7c52 100644
+> --- a/drivers/fpga/Makefile
+> +++ b/drivers/fpga/Makefile
+> @@ -46,3 +46,7 @@ dfl-afu-objs += dfl-afu-error.o
+>  
+>  # Drivers for FPGAs which implement DFL
+>  obj-$(CONFIG_FPGA_DFL_PCI)		+= dfl-pci.o
+> +
+> +# XRT drivers for Alveo
+> +obj-$(CONFIG_FPGA_XRT_LIB)		+= xrt/lib/
+> +obj-$(CONFIG_FPGA_XRT_XMGMT)		+= xrt/mgmt/
+
+I don't see how mgmnt would work without lib.  If that is so
+
+these configs could collapse to CONFIG_FPGA_XRT
+
+> diff --git a/drivers/fpga/xrt/Kconfig b/drivers/fpga/xrt/Kconfig
 > new file mode 100644
-> index 000000000000..f13140a2575a
+> index 000000000000..0e2c59589ddd
 > --- /dev/null
-> +++ b/drivers/iio/common/scmi_sensors/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX - License - Identifier : GPL - 2.0 - only
+> +++ b/drivers/fpga/xrt/Kconfig
+> @@ -0,0 +1,8 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
 > +#
-> +# Makefile for the IIO over SCMI
+> +# Xilinx Alveo FPGA device configuration
 > +#
-> +obj-$(CONFIG_IIO_SCMI) += scmi_iio.o
-> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> +
+> +source "drivers/fpga/xrt/metadata/Kconfig"
+> +source "drivers/fpga/xrt/lib/Kconfig"
+> +source "drivers/fpga/xrt/mgmt/Kconfig"
+> diff --git a/drivers/fpga/xrt/lib/Kconfig b/drivers/fpga/xrt/lib/Kconfig
 > new file mode 100644
-> index 000000000000..31977c3bc600
+> index 000000000000..eed5cb73f5e2
 > --- /dev/null
-> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
-> @@ -0,0 +1,678 @@
-> +// SPDX-License-Identifier: GPL-2.0
+> +++ b/drivers/fpga/xrt/lib/Kconfig
+> @@ -0,0 +1,16 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# XRT Alveo FPGA device configuration
+> +#
 > +
-> +/*
-> + * System Control and Management Interface(SCMI) based IIO sensor driver
-> + *
-> + * Copyright (C) 2021 Google LLC
-> + */
+> +config FPGA_XRT_LIB
+> +	tristate "XRT Alveo Driver Library"
+> +	depends on HWMON && PCI && HAS_IOMEM
+> +	select FPGA_XRT_METADATA
+> +	help
+> +	  Select this option to enable Xilinx XRT Alveo driver library. This
+> +	  library is core infrastructure of XRT Alveo FPGA drivers which
+> +	  provides functions for working with device nodes, iteration and
+> +	  lookup of platform devices, common interfaces for platform devices,
+> +	  plumbing of function call and ioctls between platform devices and
+> +	  parent partitions.
+> diff --git a/drivers/fpga/xrt/lib/Makefile b/drivers/fpga/xrt/lib/Makefile
+> new file mode 100644
+> index 000000000000..5641231b2a36
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/Makefile
+> @@ -0,0 +1,30 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
+> +#
+> +# Authors: Sonal.Santan@xilinx.com
+> +#
 > +
-> +#include <linux/delay.h>
-> +#include <linux/err.h>
-> +#include <linux/iio/buffer.h>
-> +#include <linux/iio/iio.h>
-> +#include <linux/iio/kfifo_buf.h>
-> +#include <linux/iio/sysfs.h>
-> +#include <linux/kernel.h>
-> +#include <linux/kthread.h>
-> +#include <linux/module.h>
-> +#include <linux/scmi_protocol.h>
-> +#include <linux/time.h>
-> +#include <linux/types.h>
+> +FULL_XRT_PATH=$(srctree)/$(src)/..
+> +FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
 > +
-> +#define SCMI_IIO_NUM_OF_AXIS 3
+> +obj-$(CONFIG_FPGA_XRT_LIB) += xrt-lib.o
 > +
-> +struct scmi_iio_priv {
-> +	struct scmi_handle *handle;
-> +	const struct scmi_sensor_info *sensor_info;
-> +	struct iio_dev *indio_dev;
-> +	/* adding one additional channel for timestamp */
-> +	long long iio_buf[SCMI_IIO_NUM_OF_AXIS + 1];
+> +xrt-lib-objs :=			\
+> +	main.o			\
+> +	xroot.o			\
+> +	xclbin.o		\
+> +	subdev.o		\
+> +	cdev.o			\
+> +	group.o			\
+> +	xleaf/vsec.o		\
+> +	xleaf/axigate.o		\
+> +	xleaf/devctl.o		\
+> +	xleaf/icap.o		\
+> +	xleaf/clock.o		\
+> +	xleaf/clkfreq.o		\
+> +	xleaf/ucs.o		\
+> +	xleaf/calib.o		\
+> +
+> +ccflags-y := -I$(FULL_XRT_PATH)/include	 \
+> +	-I$(FULL_DTC_PATH)
+> diff --git a/drivers/fpga/xrt/metadata/Kconfig b/drivers/fpga/xrt/metadata/Kconfig
+> new file mode 100644
+> index 000000000000..5012c9c6584d
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/metadata/Kconfig
+> @@ -0,0 +1,12 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# XRT Alveo FPGA device configuration
+> +#
+> +
+> +config FPGA_XRT_METADATA
+> +	bool "XRT Alveo Driver Metadata Parser"
+> +	select LIBFDT
+> +	help
+> +	  This option provides helper functions to parse Xilinx Alveo FPGA
+> +	  firmware metadata. The metadata is in device tree format and XRT
+and the XRT
+> +	  driver uses it to discover HW subsystems behind PCIe BAR.
+the HW
+> diff --git a/drivers/fpga/xrt/metadata/Makefile b/drivers/fpga/xrt/metadata/Makefile
+> new file mode 100644
+> index 000000000000..14f65ef1595c
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/metadata/Makefile
+> @@ -0,0 +1,16 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
+> +#
+> +# Authors: Sonal.Santan@xilinx.com
+> +#
+> +
+> +FULL_XRT_PATH=$(srctree)/$(src)/..
+> +FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
+> +
+> +obj-$(CONFIG_FPGA_XRT_METADATA) += xrt-md.o
+> +
+> +xrt-md-objs := metadata.o
+> +
+> +ccflags-y := -I$(FULL_XRT_PATH)/include	\
+> +	-I$(FULL_DTC_PATH)
+> diff --git a/drivers/fpga/xrt/mgmt/Kconfig b/drivers/fpga/xrt/mgmt/Kconfig
+> new file mode 100644
+> index 000000000000..2b2a2c34685c
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/mgmt/Kconfig
+> @@ -0,0 +1,15 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +#
+> +# Xilinx XRT FPGA device configuration
+> +#
+> +
+> +config FPGA_XRT_XMGMT
+> +	tristate "Xilinx Alveo Management Driver"
+> +	depends on HWMON && PCI && FPGA_XRT_LIB
 
-Missed this previously but we should probably be careful to
-make this explicitly 64 bit rather than rely on long long being
-that length. s64 iio_buf[SCMI_IIO_NUM_OF_AXIS + 1];
+FPGA_XRT_LIB also depends on HWMON and PCI, so this could be minimized.
 
-I can tidy this up whilst applying if that is fine with you.
+Tom
 
-> +	struct notifier_block sensor_update_nb;
-> +	u32 *freq_avail;
-> +};
+> +	select FPGA_XRT_METADATA
+> +	select FPGA_BRIDGE
+> +	select FPGA_REGION
+> +	help
+> +	  Select this option to enable XRT PCIe driver for Xilinx Alveo FPGA.
+> +	  This driver provides interfaces for userspace application to access
+> +	  Alveo FPGA device.
+> diff --git a/drivers/fpga/xrt/mgmt/Makefile b/drivers/fpga/xrt/mgmt/Makefile
+> new file mode 100644
+> index 000000000000..8051708c361c
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/mgmt/Makefile
+> @@ -0,0 +1,19 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Copyright (C) 2020-2021 Xilinx, Inc. All rights reserved.
+> +#
+> +# Authors: Sonal.Santan@xilinx.com
+> +#
 > +
+> +FULL_XRT_PATH=$(srctree)/$(src)/..
+> +FULL_DTC_PATH=$(srctree)/scripts/dtc/libfdt
+> +
+> +obj-$(CONFIG_FPGA_XRT_XMGMT)	+= xmgmt.o
+> +
+> +xmgmt-objs := root.o		\
+> +	   main.o		\
+> +	   fmgr-drv.o		\
+> +	   main-region.o
+> +
+> +ccflags-y := -I$(FULL_XRT_PATH)/include		\
+> +	-I$(FULL_DTC_PATH)
 
-...
-
-> +
-> +static ssize_t scmi_iio_get_raw_available(struct iio_dev *iio_dev,
-> +					  uintptr_t private,
-> +					  const struct iio_chan_spec *chan,
-> +					  char *buf)
-
-Looks good.  Thanks for persevering with this!
-
-> +{
-> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
-> +	unsigned long long resolution, rem;
-> +	long long min_range, max_range;
-> +	s8 exponent, scale;
-> +	int len = 0;
-> +
-> +	/*
-> +	 * All the axes are supposed to have the same value for range and resolution.
-> +	 * We are just using the values from the Axis 0 here.
-> +	 */
-> +	if (sensor->sensor_info->axis[0].extended_attrs) {
-> +		min_range = sensor->sensor_info->axis[0].attrs.min_range;
-> +		max_range = sensor->sensor_info->axis[0].attrs.max_range;
-> +		resolution = sensor->sensor_info->axis[0].resolution;
-> +		exponent = sensor->sensor_info->axis[0].exponent;
-> +		scale = sensor->sensor_info->axis[0].scale;
-> +
-> +		/*
-> +		 * To provide the raw value for the resolution to the userspace,
-> +		 * need to divide the resolution exponent by the sensor scale
-> +		 */
-> +		exponent = exponent - scale;
-> +		if (exponent < 0) {
-> +			resolution = div64_u64_rem(resolution,
-> +						   int_pow(10, abs(exponent)),
-> +						   &rem);
-> +			len = scnprintf(buf, PAGE_SIZE,
-> +					"[%lld %llu.%llu %lld]\n", min_range,
-> +					resolution, rem, max_range);
-> +		} else {
-> +			resolution = resolution * int_pow(10, exponent);
-> +			len = scnprintf(buf, PAGE_SIZE, "[%lld %llu %lld]\n",
-> +					min_range, resolution, max_range);
-> +		}
-> +	}
-> +	return len;
-> +}
-> +
-> +static const struct iio_chan_spec_ext_info scmi_iio_ext_info[] = {
-> +	{
-> +		.name = "raw_available",
-> +		.read = scmi_iio_get_raw_available,
-> +		.shared = IIO_SHARED_BY_TYPE,
-> +	},
-> +	{},
-> +};
-> +
-> +static void scmi_iio_set_timestamp_channel(struct iio_chan_spec *iio_chan,
-> +					   int scan_index)
-
-Not relevant to this patch!:  I wonder how many times
-we now have this replicated in various drivers.  Feels like a good thing
-to just have as a library function in the IIO core.
-(about 8 copies of this from a quick grep)
-
-> +{
-> +	iio_chan->type = IIO_TIMESTAMP;
-> +	iio_chan->channel = -1;
-> +	iio_chan->scan_index = scan_index;
-> +	iio_chan->scan_type.sign = 'u';
-> +	iio_chan->scan_type.realbits = 64;
-> +	iio_chan->scan_type.storagebits = 64;
-> +}
-> +
-
-...
-
-> +
-> +static int scmi_iio_set_sampling_freq_avail(struct iio_dev *iio_dev)
-
-Really trivial, but if you happen to be respinning for some reason, the
-naming of this function is a little confusing.  My initial
-thought is it would somehow specify the sampling frequencies that
-the driver expects to be available, rather than the opposite where
-it is the driver establishing what is available.
-
-If _get_ is also ambiguous, perhaps _query_ or _format_ or _convert_
-(to reflect you are converting values to expected form).
-
-> +{
-> +	u64 cur_interval_ns, low_interval_ns, high_interval_ns, step_size_ns,
-> +		hz, uhz;
-...
-
-> +}
-> +
-> +static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
-> +{
-> +	struct iio_buffer *buffer;
-> +
-> +	buffer = devm_iio_kfifo_allocate(&scmi_iiodev->dev);
-> +	if (!buffer)
-> +		return -ENOMEM;
-> +
-> +	iio_device_attach_buffer(scmi_iiodev, buffer);
-> +	scmi_iiodev->modes |= INDIO_BUFFER_SOFTWARE;
-> +	scmi_iiodev->setup_ops = &scmi_iio_buffer_ops;
-
-Ah.  This has now crossed with Alex's large rework of the buffer
-registration in the core (to support multiple buffers).
-
-Specifically it needs to flip over to using the function introduced
-in https://lore.kernel.org/linux-iio/20210215104043.91251-3-alexandru.ardelean@analog.com/T/#u
-
-This is going to make taking this via an immutable branch more fiddly.
-Don't worry about it though; I'll figure it out once rc1 is out.
-(either the merge of this tree will have to before Alex's series, or
-I'll need to do a non trivial merge resolution).
-
-The one thing we can't do is rebase this series as that would then delay
-Cristian's work for a whole cycle (or require some usual tree management.)
-What fun :)
-
-> +	return 0;
-> +}
-> +
-> +static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
-> +					 struct scmi_handle *handle,
-> +					 const struct scmi_sensor_info *sensor_info)
-> +{
-> +	struct iio_chan_spec *iio_channels;
-> +	struct scmi_iio_priv *sensor;
-> +	enum iio_modifier modifier;
-> +	enum iio_chan_type type;
-> +	struct iio_dev *iiodev;
-> +	int i, ret;
-> +
-> +	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
-> +	if (!iiodev)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	iiodev->modes = INDIO_DIRECT_MODE;
-> +	iiodev->dev.parent = dev;
-> +	sensor = iio_priv(iiodev);
-> +	sensor->handle = handle;
-> +	sensor->sensor_info = sensor_info;
-> +	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
-> +	sensor->indio_dev = iiodev;
-> +
-> +	/* adding one additional channel for timestamp */
-> +	iiodev->num_channels = sensor_info->num_axis + 1;
-> +	iiodev->name = sensor_info->name;
-> +	iiodev->info = &scmi_iio_info;
-> +
-> +	iio_channels =
-> +		devm_kzalloc(dev,
-> +			     sizeof(*iio_channels) * (iiodev->num_channels),
-> +			     GFP_KERNEL);
-> +	if (!iio_channels)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	ret = scmi_iio_set_sampling_freq_avail(iiodev);
-> +	if (ret < 0)
-> +		return ERR_PTR(ret);
-> +
-> +	for (i = 0; i < sensor_info->num_axis; i++) {
-> +		ret = scmi_iio_get_chan_type(sensor_info->axis[i].type, &type);
-> +		if (ret < 0)
-> +			return ERR_PTR(ret);
-> +
-> +		ret = scmi_iio_get_chan_modifier(sensor_info->axis[i].name,
-> +						 &modifier);
-> +		if (ret < 0)
-> +			return ERR_PTR(ret);
-> +
-> +		scmi_iio_set_data_channel(&iio_channels[i], type, modifier,
-> +					  sensor_info->axis[i].id);
-> +	}
-> +
-> +	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
-> +	iiodev->channels = iio_channels;
-> +	return iiodev;
-> +}
-> +
-> +static int scmi_iio_dev_probe(struct scmi_device *sdev)
-> +{
-> +	const struct scmi_sensor_info *sensor_info;
-> +	struct scmi_handle *handle = sdev->handle;
-> +	struct device *dev = &sdev->dev;
-> +	struct iio_dev *scmi_iio_dev;
-> +	u16 nr_sensors;
-> +	int err = -ENODEV, i;
-> +
-> +	if (!handle || !handle->sensor_ops) {
-> +		dev_err(dev, "SCMI device has no sensor interface\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	nr_sensors = handle->sensor_ops->count_get(handle);
-> +	if (!nr_sensors) {
-> +		dev_dbg(dev, "0 sensors found via SCMI bus\n");
-> +		return -ENODEV;
-> +	}
-> +
-> +	for (i = 0; i < nr_sensors; i++) {
-> +		sensor_info = handle->sensor_ops->info_get(handle, i);
-> +		if (!sensor_info) {
-> +			dev_err(dev, "SCMI sensor %d has missing info\n", i);
-> +			return -EINVAL;
-> +		}
-> +
-> +		/* This driver only supports 3-axis accel and gyro, skipping other sensors */
-> +		if (sensor_info->num_axis != SCMI_IIO_NUM_OF_AXIS)
-> +			continue;
-> +
-> +		/* This driver only supports 3-axis accel and gyro, skipping other sensors */
-> +		if (sensor_info->axis[0].type != METERS_SEC_SQUARED &&
-> +		    sensor_info->axis[0].type != RADIANS_SEC)
-> +			continue;
-> +
-> +		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
-> +		if (IS_ERR(scmi_iio_dev)) {
-> +			dev_err(dev,
-> +				"failed to allocate IIO device for sensor %s: %ld\n",
-> +				sensor_info->name, PTR_ERR(scmi_iio_dev));
-> +			return PTR_ERR(scmi_iio_dev);
-> +		}
-> +
-> +		err = scmi_iio_buffers_setup(scmi_iio_dev);
-> +		if (err < 0) {
-> +			dev_err(dev,
-> +				"IIO buffer setup error at sensor %s: %d\n",
-> +				sensor_info->name, err);
-> +			return err;
-> +		}
-> +
-> +		err = devm_iio_device_register(dev, scmi_iio_dev);
-> +		if (err) {
-> +			dev_err(dev,
-> +				"IIO device registration failed at sensor %s: %d\n",
-> +				sensor_info->name, err);
-> +			return err;
-> +		}
-> +	}
-> +	return err;
-> +}
