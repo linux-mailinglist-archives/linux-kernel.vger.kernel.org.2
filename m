@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ACBC320A3E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 13:27:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CE8320A25
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 13:01:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhBUM1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 07:27:30 -0500
-Received: from m15113.mail.126.com ([220.181.15.113]:34008 "EHLO
-        m15113.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhBUM12 (ORCPT
+        id S229962AbhBUL6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 06:58:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhBUL6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 07:27:28 -0500
-X-Greylist: delayed 8994 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Feb 2021 07:27:25 EST
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=G9gwKZta4TeKG9dXje
-        SByg2i5Ouo5RFeGkqM2bZkx+U=; b=OLCm1lX0QSJLbic8cJMPGv2/lP6QajOLWf
-        R62xYjJGyxgW6P/Nt3sYTS0bUehMuvD54N+lF7G/VxFCPlCI2C7o6VTjyQ0gEnXT
-        kPvKKxyBuRNDX/r9UfWCzrchhhBDoXNgxA4LXdcvPMz5yfYJdnyAkSAp2KXs223U
-        hjLUrip/g=
-Received: from 192.168.137.133 (unknown [112.10.84.6])
-        by smtp3 (Coremail) with SMTP id DcmowAB32_jkyTFgxsFKOw--.43436S3;
-        Sun, 21 Feb 2021 10:48:06 +0800 (CST)
-From:   Xianting Tian <xianting_tian@126.com>
-To:     mst@redhat.com, jasowang@redhat.com
-Cc:     guoren@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] virtio: remove export for virtio_config_{enable, disable}
-Date:   Sat, 20 Feb 2021 21:48:04 -0500
-Message-Id: <1613875684-7967-1-git-send-email-xianting_tian@126.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DcmowAB32_jkyTFgxsFKOw--.43436S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KFy8XF17JrWDXF1UKF1fXrb_yoW8ury3pF
-        n7AFyFy3yUJF4fGa95Ja48u3WavanFk3yxJ34Fgwn8Wr12yr9Fyr1kA34xZa17ArWDAF1r
-        JFyIgFyjv34DuFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jwTmhUUUUU=
-X-Originating-IP: [112.10.84.6]
-X-CM-SenderInfo: h0ld03plqjs3xldqqiyswou0bp/1tbioAZApFx5bq+kEgAAsQ
+        Sun, 21 Feb 2021 06:58:39 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC09C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 03:57:58 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id a24so5878103plm.11
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 03:57:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PuTW0NO8el9VftnBi7d1E863EASjdSSJ/VHcBqzraRk=;
+        b=ifgjMjriBGhWNkwI70jM7BEA8mKVNwjvolh720mk9gkYK9Pry2OQxlbUQej+U6FCGd
+         Ayi3c0LWnxZU8fmgzEeEwoTDK2amBuB+ydWVvrC6kfSEz0zirAHdFPaO4GP/bks/3wgM
+         PCD4sVI/B70XLuHMJp6CojQLAcvONx3cjRNdzki7jBJr5clFENs6H6MIcOCE0Cw1wsZM
+         ZgEmBpwQ3SlfZTibAEVy5dWyGf7UbGk/DrCvWqAMakHvP+X6TLGCfpBw947ChEsuZay6
+         Ly5SWiJjX1plOAOn53KQMQ11lgOuzeWVCc28slpgmAzIxZzJ9D1Bn3VCC4codXHPtuiI
+         FKbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PuTW0NO8el9VftnBi7d1E863EASjdSSJ/VHcBqzraRk=;
+        b=SZtVkV6DZ4AI2HEDntstTh1kRSX1aR6y5iDxM79MkJhI8PzkNI5vv90DmlKJASLIsT
+         JTlFqIaQ7wyGyJba6XIC+ek03i0eQkORoUmSZNUd2qduWVC/kseJFuIyNZ4GAZ9Bo+pm
+         OKGyIRjjEY1+733owjHdGPGGfGql1wptXC+ZypPOE4zhzZG3fygqgWO7Oo/fxGAXyduy
+         JvsKYBhuZrGSiiUiD7T/QBxOklrVf5SF+qaTW4bG+aOIdAthnSplaCWFOV4i3JsV1Ihl
+         Ahbxj/W2ug/r4pe2JH2nEadSTyC+SneoQqf8lelSWUlwjdM8h0H8PqRPUxWU2reP+V1Z
+         00wA==
+X-Gm-Message-State: AOAM532tKRB8OL5OXRPUL5ODzm3M/Cvfc5N15t11CG8RJhmuIeJQ6GuB
+        kF35GaKbnt7mbx2Iz+1+GFD79qhICwTa+/kV
+X-Google-Smtp-Source: ABdhPJykIeFlEGm/sq5p7mYj4xIHPcrhKnS/hfWZK7Ap/CtJ67E+DYJA1l7ROHSy2eDW68FQgIZMkQ==
+X-Received: by 2002:a17:90a:af93:: with SMTP id w19mr18543481pjq.46.1613908678244;
+        Sun, 21 Feb 2021 03:57:58 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:9004:6950:6d00:817e:a84c:30d2])
+        by smtp.gmail.com with ESMTPSA id r5sm15694563pfh.13.2021.02.21.03.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 03:57:57 -0800 (PST)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Subject: [PATCH v6 0/2] checkpatch: add verbose mode
+Date:   Sun, 21 Feb 2021 17:28:00 +0530
+Message-Id: <20210221115802.19788-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-virtio_config_enable(), virtio_config_disable() are only used inside
-drivers/virtio/virtio.c, so it doesn't need export the symbols.
+Add a new verbose mode to checkpatch. The verbose test
+descriptions are read from the checkpatch documentation
+file at `Documentation/dev-tools/checkpatch.rst`.
 
-Signed-off-by: Xianting Tian <xianting_tian@126.com>
----
- drivers/virtio/virtio.c | 6 ++----
- include/linux/virtio.h  | 2 --
- 2 files changed, 2 insertions(+), 6 deletions(-)
+The verbose mode is optional and can be enabled by the
+flag -v or --verbose.
 
-diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
-index 42e09cc..4b15c00 100644
---- a/drivers/virtio/virtio.c
-+++ b/drivers/virtio/virtio.c
-@@ -141,15 +141,14 @@ void virtio_config_changed(struct virtio_device *dev)
- }
- EXPORT_SYMBOL_GPL(virtio_config_changed);
- 
--void virtio_config_disable(struct virtio_device *dev)
-+static void virtio_config_disable(struct virtio_device *dev)
- {
- 	spin_lock_irq(&dev->config_lock);
- 	dev->config_enabled = false;
- 	spin_unlock_irq(&dev->config_lock);
- }
--EXPORT_SYMBOL_GPL(virtio_config_disable);
- 
--void virtio_config_enable(struct virtio_device *dev)
-+static void virtio_config_enable(struct virtio_device *dev)
- {
- 	spin_lock_irq(&dev->config_lock);
- 	dev->config_enabled = true;
-@@ -158,7 +157,6 @@ void virtio_config_enable(struct virtio_device *dev)
- 	dev->config_change_pending = false;
- 	spin_unlock_irq(&dev->config_lock);
- }
--EXPORT_SYMBOL_GPL(virtio_config_enable);
- 
- void virtio_add_status(struct virtio_device *dev, unsigned int status)
- {
-diff --git a/include/linux/virtio.h b/include/linux/virtio.h
-index 55ea329..b1894e0 100644
---- a/include/linux/virtio.h
-+++ b/include/linux/virtio.h
-@@ -132,8 +132,6 @@ static inline struct virtio_device *dev_to_virtio(struct device *_dev)
- void virtio_break_device(struct virtio_device *dev);
- 
- void virtio_config_changed(struct virtio_device *dev);
--void virtio_config_disable(struct virtio_device *dev);
--void virtio_config_enable(struct virtio_device *dev);
- int virtio_finalize_features(struct virtio_device *dev);
- #ifdef CONFIG_PM_SLEEP
- int virtio_device_freeze(struct virtio_device *dev);
+The documentation file is only parsed by checkpatch.pl
+if the verbose mode is enabled. The verbose mode can
+not be used together with the --terse option.
+
+Changes in v6:
+- Allow using verbose mode with --list-types option
+
+Changes in v5:
+- Change the reference format to use absolute links.
+- Print verbose descriptions only for the first time
+  a message type is encountered.
+
+Changes in v4:
+- Change the type description format
+- Group the message types by usage
+- Make handling of --terse with --verbose simpler
+
+Changes in v3:
+- Simplify documentation file parsing in checkpatch
+- Document a total of 33 message types for checkpatch
+
+Changes in v2:
+- Use .rst Field Lists to specify the type descriptions.
+- Add a few more type descriptions to documentation.
+
+Dwaipayan Ray (2):
+  checkpatch: add verbose mode
+  docs: add documentation for checkpatch
+
+ Documentation/dev-tools/checkpatch.rst | 526 +++++++++++++++++++++++++
+ Documentation/dev-tools/index.rst      |   1 +
+ scripts/checkpatch.pl                  |  68 +++-
+ 3 files changed, 592 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/dev-tools/checkpatch.rst
+
 -- 
-1.8.3.1
+2.30.0
 
