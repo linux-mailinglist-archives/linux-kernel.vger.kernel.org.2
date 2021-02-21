@@ -2,510 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED524320C7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCC3B320C8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhBUSS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 13:18:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhBUSSW (ORCPT
+        id S230169AbhBUSW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 13:22:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29067 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230048AbhBUSWu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 13:18:22 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40AAC06178A
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:17:41 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id e17so51702798ljl.8
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:17:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Tatb66V17i/V8QqqjKl/5lap4EvQJ7B8LrmX1Bb8JDA=;
-        b=H8ZFF8mz9IevKV8PlVOLe9IgWhPlvmxTiSHQ0brSwJV4dcTbkSQ8HiLz8UOTUpBZHE
-         EGc7wG2pCIw/1aRtvS3LJBu+Em8z/TMsTqqcyeELOqNA0rNCIc0awe+HBNJlK6RqbVsG
-         Jmiwmv4E7KNMUviPBm5lvziBmRm5fD3FXM9epDbUGSZtDp0ccbh+4+45CqQCcpa0SwtK
-         WlBtZeZWbzZ0wrjmUbPV8cCR4s7IKkkyE3hUxtjLKoJM1EMrFKDHcAWgj3f5dXKWziPc
-         CJ5ks04mjtIYKB5k1vXU2e6asMiqb7pzb2l4yierwtAxEFYWbEbw5Xu6A8tPltGHGnta
-         /Y8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Tatb66V17i/V8QqqjKl/5lap4EvQJ7B8LrmX1Bb8JDA=;
-        b=M/3xkB3jZJXMFc9JNWW2tXkJHS9B85PsB7TdGNgeVUxQ2cwybZt3rwTb1XA1OHgPdr
-         Hc1gx7kSJjxQHBTW8SAr43HpJcNWycrTqLQgk8teHDaOq6IteQuzV1fPgrcfrD4QAAUQ
-         mmfmEhPrx5o5yW3kdztAC+PmxZMBKM2Z5Cq2gjVbYzGCl5XSql7qd5A+ajUdica8ZaAA
-         ajEK+toQZEaqRy7Fmuf9qKP/tA4UKpNSQTlRLD8tYzGahdxj1mwb76KXYLKtvD6VAtOB
-         ZQQU/haMazwpMaQCqg6MRMP8pa4lwWwk1vm6efR/8T2/M/6XBvS2nOQmau/d+JC+L+Tw
-         KoXw==
-X-Gm-Message-State: AOAM5303tGFbn/Zkak5h1ZX1tahWxuZjpNQh5HxRWXpqxEJjb2K1wulc
-        YZz88tm6ZMDclNXeOXnhwlSzKQ==
-X-Google-Smtp-Source: ABdhPJwfEHQL/IaNtef6bWRT2MnGE7kRgs4VZyfURl/UKRGnZb36RNl4DD89Pr4ipKr3V8BaPA0ytQ==
-X-Received: by 2002:a05:651c:102c:: with SMTP id w12mr12018702ljm.432.1613931459928;
-        Sun, 21 Feb 2021 10:17:39 -0800 (PST)
-Received: from [192.168.118.216] ([85.249.43.69])
-        by smtp.gmail.com with ESMTPSA id v72sm1629085lfa.77.2021.02.21.10.17.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Feb 2021 10:17:39 -0800 (PST)
-Subject: Re: [PATCH v5 11/22] media: camss: Add support for CSIPHY hardware
- version Titan 170
-To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, todor.too@gmail.com,
-        mchehab@kernel.org, robh+dt@kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-References: <20210217112122.424236-1-robert.foss@linaro.org>
- <20210217112122.424236-12-robert.foss@linaro.org>
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-Message-ID: <73691f16-a7e7-71e4-1ffc-5c28805493d2@linaro.org>
-Date:   Sun, 21 Feb 2021 21:17:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 21 Feb 2021 13:22:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613931682;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Zglb5HPjQwXkwakAytJHCKEB76+JAMUrAbTe4isW8k8=;
+        b=MPm5qNVsGEjFSNnefpKLLJQqqG1PQVsroa3PqD+8bgCheFSJisNSXraRfI89NGpIgwRjjT
+        VupDn07OnOeVx0mD4biDL9rsJKIgL8rkdY8tV79UQ6U95SYMhCgG1fD1Bx32DVk/S/+i9q
+        TBj7JNxeJqs70zl+lvpdeQyx3Ox1VD0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-440-l2jy31ocMDOPi0f0jf4RdQ-1; Sun, 21 Feb 2021 13:21:17 -0500
+X-MC-Unique: l2jy31ocMDOPi0f0jf4RdQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 965521E565;
+        Sun, 21 Feb 2021 18:21:14 +0000 (UTC)
+Received: from [10.36.114.34] (ovpn-114-34.ams2.redhat.com [10.36.114.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 816935D9CA;
+        Sun, 21 Feb 2021 18:21:04 +0000 (UTC)
+Subject: Re: [PATCH v13 00/15] SMMUv3 Nested Stage Setup (IOMMU part)
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        "eric.auger.pro@gmail.com" <eric.auger.pro@gmail.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "will@kernel.org" <will@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>
+Cc:     "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        "zhangfei.gao@linaro.org" <zhangfei.gao@linaro.org>,
+        "zhangfei.gao@gmail.com" <zhangfei.gao@gmail.com>,
+        "vivek.gautam@arm.com" <vivek.gautam@arm.com>,
+        "jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>,
+        "yi.l.liu@intel.com" <yi.l.liu@intel.com>,
+        "tn@semihalf.com" <tn@semihalf.com>,
+        "nicoleotsuka@gmail.com" <nicoleotsuka@gmail.com>,
+        yuzenghui <yuzenghui@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <ad88f78cf56f4f7fb69728cbf22a1052@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <9554e747-59fe-3bda-8cfc-13f40f74f0ca@redhat.com>
+Date:   Sun, 21 Feb 2021 19:21:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210217112122.424236-12-robert.foss@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <ad88f78cf56f4f7fb69728cbf22a1052@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
-
-Thank you for your patch!
-
-On 17.02.2021 14:21, Robert Foss wrote:
-> Add register definitions for version 170 of the Titan architecture
-> and implement support for the CSIPHY subdevice.
+Hi Shameer,
+On 1/8/21 6:05 PM, Shameerali Kolothum Thodi wrote:
+> Hi Eric,
 > 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
+>> -----Original Message-----
+>> From: Eric Auger [mailto:eric.auger@redhat.com]
+>> Sent: 18 November 2020 11:22
+>> To: eric.auger.pro@gmail.com; eric.auger@redhat.com;
+>> iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org;
+>> kvm@vger.kernel.org; kvmarm@lists.cs.columbia.edu; will@kernel.org;
+>> joro@8bytes.org; maz@kernel.org; robin.murphy@arm.com;
+>> alex.williamson@redhat.com
+>> Cc: jean-philippe@linaro.org; zhangfei.gao@linaro.org;
+>> zhangfei.gao@gmail.com; vivek.gautam@arm.com; Shameerali Kolothum
+>> Thodi <shameerali.kolothum.thodi@huawei.com>;
+>> jacob.jun.pan@linux.intel.com; yi.l.liu@intel.com; tn@semihalf.com;
+>> nicoleotsuka@gmail.com; yuzenghui <yuzenghui@huawei.com>
+>> Subject: [PATCH v13 00/15] SMMUv3 Nested Stage Setup (IOMMU part)
+>>
+>> This series brings the IOMMU part of HW nested paging support
+>> in the SMMUv3. The VFIO part is submitted separately.
+>>
+>> The IOMMU API is extended to support 2 new API functionalities:
+>> 1) pass the guest stage 1 configuration
+>> 2) pass stage 1 MSI bindings
+>>
+>> Then those capabilities gets implemented in the SMMUv3 driver.
+>>
+>> The virtualizer passes information through the VFIO user API
+>> which cascades them to the iommu subsystem. This allows the guest
+>> to own stage 1 tables and context descriptors (so-called PASID
+>> table) while the host owns stage 2 tables and main configuration
+>> structures (STE).
 > 
-> Changes since v3
->   - Sakari: Make variable const
+> I am seeing an issue with Guest testpmd run with this series.
+> I have two different setups and testpmd works fine with the
+> first one but not with the second.
 > 
-> Changes since v4
->   - kernel test robot: Fix warning related to const
+> 1). Guest doesn't have kernel driver built-in for pass-through dev.
 > 
+> root@ubuntu:/# lspci -v
+> ...
+> 00:02.0 Ethernet controller: Huawei Technologies Co., Ltd. Device a22e (rev 21)
+> Subsystem: Huawei Technologies Co., Ltd. Device 0000
+> Flags: fast devsel
+> Memory at 8000100000 (64-bit, prefetchable) [disabled] [size=64K]
+> Memory at 8000000000 (64-bit, prefetchable) [disabled] [size=1M]
+> Capabilities: [40] Express Root Complex Integrated Endpoint, MSI 00
+> Capabilities: [a0] MSI-X: Enable- Count=67 Masked-
+> Capabilities: [b0] Power Management version 3
+> Capabilities: [100] Access Control Services
+> Capabilities: [300] Transaction Processing Hints
 > 
->   .../qcom/camss/camss-csiphy-3ph-1-0.c         | 182 ++++++++++++++++--
->   .../media/platform/qcom/camss/camss-csiphy.c  |  66 +++++--
->   drivers/media/platform/qcom/camss/camss.c     |  74 +++++++
->   3 files changed, 290 insertions(+), 32 deletions(-)
+> root@ubuntu:/# echo vfio-pci > /sys/bus/pci/devices/0000:00:02.0/driver_override
+> root@ubuntu:/# echo 0000:00:02.0 > /sys/bus/pci/drivers_probe
 > 
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-> index 97cb9de85031..f350c0c92362 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy-3ph-1-0.c
-> @@ -47,6 +47,105 @@
->   #define CSIPHY_3PH_CMN_CSI_COMMON_CTRL6_SHOW_REV_ID	BIT(1)
->   #define CSIPHY_3PH_CMN_CSI_COMMON_STATUSn(n)	(0x8b0 + 0x4 * (n))
->   
-> +#define CSIPHY_DEFAULT_PARAMS            0
-> +#define CSIPHY_LANE_ENABLE               1
-> +#define CSIPHY_SETTLE_CNT_LOWER_BYTE     2
-> +#define CSIPHY_SETTLE_CNT_HIGHER_BYTE    3
-> +#define CSIPHY_DNP_PARAMS                4
-> +#define CSIPHY_2PH_REGS                  5
-> +#define CSIPHY_3PH_REGS                  6
-> +
-> +struct csiphy_reg_t {
-> +	int32_t  reg_addr;
-> +	int32_t  reg_data;
-> +	int32_t  delay;
-> +	uint32_t csiphy_param_type;
-> +};
-> +
-> +static const struct
-> +csiphy_reg_t lane_regs_sdm845[5][14] = {
-> +	{
-> +		{0x0004, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x002C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0034, 0x0F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x001C, 0x0A, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0014, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0028, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x003C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0000, 0x91, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0008, 0x00, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
-> +		{0x000c, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x0010, 0x52, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0038, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0060, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0064, 0x7F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +	},
-> +	{
-> +		{0x0704, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x072C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0734, 0x0F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x071C, 0x0A, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0714, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0728, 0x04, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x073C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0700, 0x80, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0708, 0x14, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
-> +		{0x070C, 0xA5, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0710, 0x52, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0738, 0x1F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0760, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0764, 0x7F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +	},
-> +	{
-> +		{0x0204, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x022C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0234, 0x0F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x021C, 0x0A, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0214, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0228, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x023C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0200, 0x91, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0208, 0x00, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
-> +		{0x020C, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x0210, 0x52, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0238, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0260, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0264, 0x7F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +	},
-> +	{
-> +		{0x0404, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x042C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0434, 0x0F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x041C, 0x0A, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0414, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0428, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x043C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0400, 0x91, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0408, 0x00, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
-> +		{0x040C, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x0410, 0x52, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0438, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0460, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0464, 0x7F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +	},
-> +	{
-> +		{0x0604, 0x0C, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x062C, 0x01, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0634, 0x0F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x061C, 0x0A, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0614, 0x60, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0628, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x063C, 0xB8, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0600, 0x91, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0608, 0x00, 0x00, CSIPHY_SETTLE_CNT_LOWER_BYTE},
-> +		{0x060C, 0x00, 0x00, CSIPHY_DNP_PARAMS},
-> +		{0x0610, 0x52, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0638, 0xFE, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0660, 0x00, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +		{0x0664, 0x7F, 0x00, CSIPHY_DEFAULT_PARAMS},
-> +	},
-> +};
-> +
->   static void csiphy_hw_version_read(struct csiphy_device *csiphy,
->   				   struct device *dev)
->   {
-> @@ -135,26 +234,13 @@ static u8 csiphy_settle_cnt_calc(u32 pixel_clock, u8 bpp, u8 num_lanes,
->   	return settle_cnt;
->   }
->   
-> -static void csiphy_lanes_enable(struct csiphy_device *csiphy,
-> -				struct csiphy_config *cfg,
-> -				u32 pixel_clock, u8 bpp, u8 lane_mask)
-> +static void csiphy_gen1_config_lanes(struct csiphy_device *csiphy,
-> +				     struct csiphy_config *cfg,
-> +				     u8 settle_cnt)
->   {
->   	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
-> -	u8 settle_cnt;
-> -	u8 val, l = 0;
-> -	int i;
-> -
-> -	settle_cnt = csiphy_settle_cnt_calc(pixel_clock, bpp, c->num_data,
-> -					    csiphy->timer_clk_rate);
-> -
-> -	val = BIT(c->clk.pos);
-> -	for (i = 0; i < c->num_data; i++)
-> -		val |= BIT(c->data[i].pos * 2);
-> -
-> -	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(5));
-> -
-> -	val = CSIPHY_3PH_CMN_CSI_COMMON_CTRL6_COMMON_PWRDN_B;
-> -	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(6));
-> +	int i, l = 0;
-> +	u8 val;
->   
->   	for (i = 0; i <= c->num_data; i++) {
->   		if (i == c->num_data)
-> @@ -208,6 +294,66 @@ static void csiphy_lanes_enable(struct csiphy_device *csiphy,
->   
->   	val = CSIPHY_3PH_LNn_MISC1_IS_CLKLANE;
->   	writel_relaxed(val, csiphy->base + CSIPHY_3PH_LNn_MISC1(l));
-> +}
-> +
-> +static void csiphy_gen2_config_lanes(struct csiphy_device *csiphy,
-> +				     u8 settle_cnt)
-> +{
-> +	int i, l;
-> +	u32 val;
-> +
-> +	for (l = 0; l < 5; l++) {
-> +		for (i = 0; i < 14; i++) {
-> +			const struct csiphy_reg_t *r = &lane_regs_sdm845[l][i];
-> +
-> +			switch (r->csiphy_param_type) {
-> +			case CSIPHY_SETTLE_CNT_LOWER_BYTE:
-> +				val = settle_cnt & 0xff;
-> +				break;
-> +			case CSIPHY_DNP_PARAMS:
-> +				continue;
-> +			default:
-> +				val = r->reg_data;
-> +				break;
-> +			}
-> +			writel_relaxed(val, csiphy->base + r->reg_addr);
-> +		}
-> +	}
-> +}
-> +
-> +static void csiphy_lanes_enable(struct csiphy_device *csiphy,
-> +				struct csiphy_config *cfg,
-> +				u32 pixel_clock, u8 bpp, u8 lane_mask)
-> +{
-> +	struct csiphy_lanes_cfg *c = &cfg->csi2->lane_cfg;
-> +	u8 settle_cnt;
-> +	u8 val;
-> +	int i;
-> +
-> +	settle_cnt = csiphy_settle_cnt_calc(pixel_clock, bpp, c->num_data,
-> +					    csiphy->timer_clk_rate);
-> +
-> +	val = BIT(c->clk.pos);
-> +	for (i = 0; i < c->num_data; i++)
-> +		val |= BIT(c->data[i].pos * 2);
+> root@ubuntu:/mnt/dpdk/build/app# ./testpmd -w 0000:00:02.0 --file-prefix socket0  -l 0-1 -n 2 -- -i
+> EAL: Detected 8 lcore(s)
+> EAL: Detected 1 NUMA nodes
+> EAL: Multi-process socket /var/run/dpdk/socket0/mp_socket
+> EAL: Selected IOVA mode 'VA'
+> EAL: No available hugepages reported in hugepages-32768kB
+> EAL: No available hugepages reported in hugepages-64kB
+> EAL: No available hugepages reported in hugepages-1048576kB
+> EAL: Probing VFIO support...
+> EAL: VFIO support initialized
+> EAL:   Invalid NUMA socket, default to 0
+> EAL:   using IOMMU type 1 (Type 1)
+> EAL: Probe PCI driver: net_hns3_vf (19e5:a22e) device: 0000:00:02.0 (socket 0)
+> EAL: No legacy callbacks, legacy socket not created
+> Interactive-mode selected
+> testpmd: create a new mbuf pool <mbuf_pool_socket_0>: n=155456, size=2176, socket=0
+> testpmd: preferred mempool ops selected: ring_mp_mc
+> 
+> Warning! port-topology=paired and odd forward ports number, the last port will pair with itself.
+> 
+> Configuring Port 0 (socket 0)
+> Port 0: 8E:A6:8C:43:43:45
+> Checking link statuses...
+> Done
+> testpmd>
+> 
+> 2). Guest have kernel driver built-in for pass-through dev.
+> 
+> root@ubuntu:/# lspci -v
+> ...
+> 00:02.0 Ethernet controller: Huawei Technologies Co., Ltd. Device a22e (rev 21)
+> Subsystem: Huawei Technologies Co., Ltd. Device 0000
+> Flags: bus master, fast devsel, latency 0
+> Memory at 8000100000 (64-bit, prefetchable) [size=64K]
+> Memory at 8000000000 (64-bit, prefetchable) [size=1M]
+> Capabilities: [40] Express Root Complex Integrated Endpoint, MSI 00
+> Capabilities: [a0] MSI-X: Enable+ Count=67 Masked-
+> Capabilities: [b0] Power Management version 3
+> Capabilities: [100] Access Control Services
+> Capabilities: [300] Transaction Processing Hints
+> Kernel driver in use: hns3
+> 
+> root@ubuntu:/# echo vfio-pci > /sys/bus/pci/devices/0000:00:02.0/driver_override
+> root@ubuntu:/# echo 0000:00:02.0 > /sys/bus/pci/drivers/hns3/unbind
+> root@ubuntu:/# echo 0000:00:02.0 > /sys/bus/pci/drivers_probe
+> 
+> root@ubuntu:/mnt/dpdk/build/app# ./testpmd -w 0000:00:02.0 --file-prefix socket0 -l 0-1 -n 2 -- -i
+> EAL: Detected 8 lcore(s)
+> EAL: Detected 1 NUMA nodes
+> EAL: Multi-process socket /var/run/dpdk/socket0/mp_socket
+> EAL: Selected IOVA mode 'VA'
+> EAL: No available hugepages reported in hugepages-32768kB
+> EAL: No available hugepages reported in hugepages-64kB
+> EAL: No available hugepages reported in hugepages-1048576kB
+> EAL: Probing VFIO support...
+> EAL: VFIO support initialized
+> EAL:   Invalid NUMA socket, default to 0
+> EAL:   using IOMMU type 1 (Type 1)
+> EAL: Probe PCI driver: net_hns3_vf (19e5:a22e) device: 0000:00:02.0 (socket 0)
+> 0000:00:02.0 hns3_get_mbx_resp(): VF could not get mbx(11,0) head(1) tail(0) lost(1) from PF in_irq:0
+> hns3vf_get_queue_info(): Failed to get tqp info from PF: -62
+> hns3vf_init_vf(): Failed to fetch configuration: -62
+> hns3vf_dev_init(): Failed to init vf: -62
+> EAL: Releasing pci mapped resource for 0000:00:02.0
+> EAL: Calling pci_unmap_resource for 0000:00:02.0 at 0x1100800000
+> EAL: Calling pci_unmap_resource for 0000:00:02.0 at 0x1100810000
+> EAL: Requested device 0000:00:02.0 cannot be used
+> EAL: Bus (pci) probe failed.
+> EAL: No legacy callbacks, legacy socket not created
+> testpmd: No probed ethernet devices
+> Interactive-mode selected
+> testpmd: create a new mbuf pool <mbuf_pool_socket_0>: n=155456, size=2176, socket=0
+> testpmd: preferred mempool ops selected: ring_mp_mc
+> Done
+> testpmd>
+> 
+> And in this case, smmu(host) reports a translation fault,
+> 
+> [ 6542.670624] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
+> [ 6542.670630] arm-smmu-v3 arm-smmu-v3.2.auto: 0x00007d1200000010
+> [ 6542.670631] arm-smmu-v3 arm-smmu-v3.2.auto: 0x000012000000007c
+> [ 6542.670633] arm-smmu-v3 arm-smmu-v3.2.auto: 0x00000000fffef040
+> [ 6542.670634] arm-smmu-v3 arm-smmu-v3.2.auto: 0x00000000fffef000
+> 
+> Tested with Intel 82599 card(ixgbevf) as well. but same errror.
 
-- before your patch this "val" was written to the CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(5)
-   register.
-   In your patch you are overwriting it with the below hardcoded number:
+So this should be fixed in the next release. The problem came from the
+fact the MSI giova was not duly unregistered. When vfio is not in used
+on guest side, the guest kernel allocates giovas for MSIs @fffef000 - 40
+is the ITS translater offset ;-) - When passthrough is in use, the iova
+is allocated @0x8000000. As fffef000 MSI giova was not properly
+unregistered, the host kernel used it - despite it has been unmapped by
+the guest kernel -, hence the translation fault. So the fix is to
+unregister the MSI in the VFIO QEMU code when msix are disabled. So to
+me this is a QEMU integration issue.
 
-> +
-> +	val = 0xd5;
+Thank you very much for testing and reporting!
 
-- why?
+Thanks
 
-Thanks,
-Andrey
-
-> +	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(5));
-> +
-> +	val = 1;
-> +	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(6));
-> +
-> +	val = 0x02;
-> +	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(7));
-> +
-> +	val = 0x00;
-> +	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(0));
-> +
-> +	if (csiphy->camss->version == CAMSS_8x16 ||
-> +	    csiphy->camss->version == CAMSS_8x96)
-> +		csiphy_gen1_config_lanes(csiphy, cfg, settle_cnt);
-> +	else if (csiphy->camss->version == CAMSS_845)
-> +		csiphy_gen2_config_lanes(csiphy, settle_cnt);
->   
->   	val = 0xff;
->   	writel_relaxed(val, csiphy->base + CSIPHY_3PH_CMN_CSI_COMMON_CTRLn(11));
-> diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> index 509c9a59c09c..e3fdc268050c 100644
-> --- a/drivers/media/platform/qcom/camss/camss-csiphy.c
-> +++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
-> @@ -73,6 +73,30 @@ static const struct csiphy_format csiphy_formats_8x96[] = {
->   	{ MEDIA_BUS_FMT_Y10_1X10, 10 },
->   };
->   
-> +static const struct csiphy_format csiphy_formats_sdm845[] = {
-> +	{ MEDIA_BUS_FMT_UYVY8_2X8, 8 },
-> +	{ MEDIA_BUS_FMT_VYUY8_2X8, 8 },
-> +	{ MEDIA_BUS_FMT_YUYV8_2X8, 8 },
-> +	{ MEDIA_BUS_FMT_YVYU8_2X8, 8 },
-> +	{ MEDIA_BUS_FMT_SBGGR8_1X8, 8 },
-> +	{ MEDIA_BUS_FMT_SGBRG8_1X8, 8 },
-> +	{ MEDIA_BUS_FMT_SGRBG8_1X8, 8 },
-> +	{ MEDIA_BUS_FMT_SRGGB8_1X8, 8 },
-> +	{ MEDIA_BUS_FMT_SBGGR10_1X10, 10 },
-> +	{ MEDIA_BUS_FMT_SGBRG10_1X10, 10 },
-> +	{ MEDIA_BUS_FMT_SGRBG10_1X10, 10 },
-> +	{ MEDIA_BUS_FMT_SRGGB10_1X10, 10 },
-> +	{ MEDIA_BUS_FMT_SBGGR12_1X12, 12 },
-> +	{ MEDIA_BUS_FMT_SGBRG12_1X12, 12 },
-> +	{ MEDIA_BUS_FMT_SGRBG12_1X12, 12 },
-> +	{ MEDIA_BUS_FMT_SRGGB12_1X12, 12 },
-> +	{ MEDIA_BUS_FMT_SBGGR14_1X14, 14 },
-> +	{ MEDIA_BUS_FMT_SGBRG14_1X14, 14 },
-> +	{ MEDIA_BUS_FMT_SGRBG14_1X14, 14 },
-> +	{ MEDIA_BUS_FMT_SRGGB14_1X14, 14 },
-> +	{ MEDIA_BUS_FMT_Y10_1X10, 10 },
-> +};
-> +
->   /*
->    * csiphy_get_bpp - map media bus format to bits per pixel
->    * @formats: supported media bus formats array
-> @@ -257,16 +281,20 @@ static int csiphy_stream_on(struct csiphy_device *csiphy)
->   		return -EINVAL;
->   	}
->   
-> -	val = readl_relaxed(csiphy->base_clk_mux);
-> -	if (cfg->combo_mode && (lane_mask & 0x18) == 0x18) {
-> -		val &= ~0xf0;
-> -		val |= cfg->csid_id << 4;
-> -	} else {
-> -		val &= ~0xf;
-> -		val |= cfg->csid_id;
-> +	if (csiphy->base_clk_mux) {
-> +		val = readl_relaxed(csiphy->base_clk_mux);
-> +		if (cfg->combo_mode && (lane_mask & 0x18) == 0x18) {
-> +			val &= ~0xf0;
-> +			val |= cfg->csid_id << 4;
-> +		} else {
-> +			val &= ~0xf;
-> +			val |= cfg->csid_id;
-> +		}
-> +		writel_relaxed(val, csiphy->base_clk_mux);
-> +
-> +		/* Enforce reg write ordering between clk mux & lane enabling */
-> +		wmb();
->   	}
-> -	writel_relaxed(val, csiphy->base_clk_mux);
-> -	wmb();
->   
->   	csiphy->ops->lanes_enable(csiphy, cfg, pixel_clock, bpp, lane_mask);
->   
-> @@ -557,6 +585,10 @@ int msm_csiphy_subdev_init(struct camss *camss,
->   		csiphy->ops = &csiphy_ops_3ph_1_0;
->   		csiphy->formats = csiphy_formats_8x96;
->   		csiphy->nformats = ARRAY_SIZE(csiphy_formats_8x96);
-> +	} else if (camss->version == CAMSS_845) {
-> +		csiphy->ops = &csiphy_ops_3ph_1_0;
-> +		csiphy->formats = csiphy_formats_sdm845;
-> +		csiphy->nformats = ARRAY_SIZE(csiphy_formats_sdm845);
->   	} else {
->   		return -EINVAL;
->   	}
-> @@ -570,11 +602,17 @@ int msm_csiphy_subdev_init(struct camss *camss,
->   		return PTR_ERR(csiphy->base);
->   	}
->   
-> -	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[1]);
-> -	csiphy->base_clk_mux = devm_ioremap_resource(dev, r);
-> -	if (IS_ERR(csiphy->base_clk_mux)) {
-> -		dev_err(dev, "could not map memory\n");
-> -		return PTR_ERR(csiphy->base_clk_mux);
-> +	if (camss->version == CAMSS_8x16 ||
-> +	    camss->version == CAMSS_8x96) {
-> +		r = platform_get_resource_byname(pdev, IORESOURCE_MEM,
-> +			res->reg[1]);
-> +		csiphy->base_clk_mux = devm_ioremap_resource(dev, r);
-> +		if (IS_ERR(csiphy->base_clk_mux)) {
-> +			dev_err(dev, "could not map memory\n");
-> +			return PTR_ERR(csiphy->base_clk_mux);
-> +		}
-> +	} else {
-> +		csiphy->base_clk_mux = NULL;
->   	}
->   
->   	/* Interrupt */
-> diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-> index 0b1693c34fbc..5d0479b5589c 100644
-> --- a/drivers/media/platform/qcom/camss/camss.c
-> +++ b/drivers/media/platform/qcom/camss/camss.c
-> @@ -465,6 +465,80 @@ static const struct resources vfe_res_660[] = {
->   	}
->   };
->   
-> +static const struct resources csiphy_res_845[] = {
-> +	/* CSIPHY0 */
-> +	{
-> +		.regulator = { NULL },
-> +		.clock = { "camnoc_axi", "soc_ahb", "slow_ahb_src",
-> +				"cpas_ahb", "cphy_rx_src", "csiphy0",
-> +				"csiphy0_timer_src", "csiphy0_timer" },
-> +		.clock_rate = { { 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 19200000, 240000000, 269333333 } },
-> +		.reg = { "csiphy0" },
-> +		.interrupt = { "csiphy0" }
-> +	},
-> +
-> +	/* CSIPHY1 */
-> +	{
-> +		.regulator = { NULL },
-> +		.clock = { "camnoc_axi", "soc_ahb", "slow_ahb_src",
-> +				"cpas_ahb", "cphy_rx_src", "csiphy1",
-> +				"csiphy1_timer_src", "csiphy1_timer" },
-> +		.clock_rate = { { 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 19200000, 240000000, 269333333 } },
-> +		.reg = { "csiphy1" },
-> +		.interrupt = { "csiphy1" }
-> +	},
-> +
-> +	/* CSIPHY2 */
-> +	{
-> +		.regulator = { NULL },
-> +		.clock = { "camnoc_axi", "soc_ahb", "slow_ahb_src",
-> +				"cpas_ahb", "cphy_rx_src", "csiphy2",
-> +				"csiphy2_timer_src", "csiphy2_timer" },
-> +		.clock_rate = { { 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 19200000, 240000000, 269333333 } },
-> +		.reg = { "csiphy2" },
-> +		.interrupt = { "csiphy2" }
-> +	},
-> +
-> +	/* CSIPHY3 */
-> +	{
-> +		.regulator = { NULL },
-> +		.clock = { "camnoc_axi", "soc_ahb", "slow_ahb_src",
-> +				"cpas_ahb", "cphy_rx_src", "csiphy3",
-> +				"csiphy3_timer_src", "csiphy3_timer" },
-> +		.clock_rate = { { 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 0 },
-> +				{ 19200000, 240000000, 269333333 } },
-> +		.reg = { "csiphy3" },
-> +		.interrupt = { "csiphy3" }
-> +	}
-> +};
-> +
->   static const struct resources csid_res_845[] = {
->   	/* CSID0 */
->   	{
+Eric
 > 
+> Not able to root cause the problem yet. With the hope that, this is 
+> related to tlb entries not being invlaidated properly, I tried explicitly
+> issuing CMD_TLBI_NSNH_ALL and CMD_CFGI_CD_ALL just before
+> the STE update, but no luck yet :(
+> 
+> Please let me know if I am missing something here or has any clue if you
+> can replicate this on your setup.
+> 
+> Thanks,
+> Shameer
+> 
+>>
+>> Best Regards
+>>
+>> Eric
+>>
+>> This series can be found at:
+>> https://github.com/eauger/linux/tree/5.10-rc4-2stage-v13
+>> (including the VFIO part in his last version: v11)
+>>
+>> The series includes a patch from Jean-Philippe. It is better to
+>> review the original patch:
+>> [PATCH v8 2/9] iommu/arm-smmu-v3: Maintain a SID->device structure
+>>
+>> The VFIO series is sent separately.
+>>
+>> History:
+>>
+>> v12 -> v13:
+>> - fixed compilation issue with CONFIG_ARM_SMMU_V3_SVA
+>>   reported by Shameer. This urged me to revisit patch 4 into
+>>   iommu/smmuv3: Allow s1 and s2 configs to coexist where
+>>   s1_cfg and s2_cfg are not dynamically allocated anymore.
+>>   Instead I use a new set field in existing structs
+>> - fixed 2 others config checks
+>> - Updated "iommu/arm-smmu-v3: Maintain a SID->device structure"
+>>   according to the last version
+>>
+>> v11 -> v12:
+>> - rebase on top of v5.10-rc4
+>>
+>> Eric Auger (14):
+>>   iommu: Introduce attach/detach_pasid_table API
+>>   iommu: Introduce bind/unbind_guest_msi
+>>   iommu/smmuv3: Allow s1 and s2 configs to coexist
+>>   iommu/smmuv3: Get prepared for nested stage support
+>>   iommu/smmuv3: Implement attach/detach_pasid_table
+>>   iommu/smmuv3: Allow stage 1 invalidation with unmanaged ASIDs
+>>   iommu/smmuv3: Implement cache_invalidate
+>>   dma-iommu: Implement NESTED_MSI cookie
+>>   iommu/smmuv3: Nested mode single MSI doorbell per domain enforcement
+>>   iommu/smmuv3: Enforce incompatibility between nested mode and HW MSI
+>>     regions
+>>   iommu/smmuv3: Implement bind/unbind_guest_msi
+>>   iommu/smmuv3: Report non recoverable faults
+>>   iommu/smmuv3: Accept configs with more than one context descriptor
+>>   iommu/smmuv3: Add PASID cache invalidation per PASID
+>>
+>> Jean-Philippe Brucker (1):
+>>   iommu/arm-smmu-v3: Maintain a SID->device structure
+>>
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 659
+>> ++++++++++++++++++--
+>>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h | 103 ++-
+>>  drivers/iommu/dma-iommu.c                   | 142 ++++-
+>>  drivers/iommu/iommu.c                       | 105 ++++
+>>  include/linux/dma-iommu.h                   |  16 +
+>>  include/linux/iommu.h                       |  41 ++
+>>  include/uapi/linux/iommu.h                  |  54 ++
+>>  7 files changed, 1042 insertions(+), 78 deletions(-)
+>>
+>> --
+>> 2.21.3
+> 
+
