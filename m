@@ -2,170 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E317E320D5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:05:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BE7320D5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:05:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhBUUCt convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Feb 2021 15:02:49 -0500
-Received: from lithops.sigma-star.at ([195.201.40.130]:48458 "EHLO
-        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhBUUCs (ORCPT
+        id S231307AbhBUUD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 15:03:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhBUUDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:02:48 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 74C7A60A357B;
-        Sun, 21 Feb 2021 21:02:05 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id fjj8azMOkIez; Sun, 21 Feb 2021 21:02:05 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id E987460A3582;
-        Sun, 21 Feb 2021 21:02:04 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id S8tQaMGGhfW2; Sun, 21 Feb 2021 21:02:04 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id B8A7160A357B;
-        Sun, 21 Feb 2021 21:02:04 +0100 (CET)
-Date:   Sun, 21 Feb 2021 21:02:04 +0100 (CET)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <1860844222.14898.1613937724518.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] MTD changes for 5.12
+        Sun, 21 Feb 2021 15:03:24 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F3CC061574;
+        Sun, 21 Feb 2021 12:02:43 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7FCB6EF;
+        Sun, 21 Feb 2021 21:02:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613937759;
+        bh=o2eDVQuJ6yjcFRPIKu9v84KcpaYn/gl029K82U+HOIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YdOPKjyLq8xdf0OTeyQLgnjwKVOCYKOHnKiieixUnPwgrWv5l2NQObgBijpagtJ0p
+         J06nCkSIS5V60pcLfJBRNn34iHJ7slDc+sPMWDex7NITULHQ5FnkLaQrVZNjum6JNM
+         RkaDyTd0rfkUBd16SHXqnqTx+CcvYjxmIZvyprEA=
+Date:   Sun, 21 Feb 2021 22:02:13 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Nikolay Kyx <knv418@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: media: omap4iss: code style - avoid macro
+ argument precedence issues
+Message-ID: <YDK8RfFUlktIyu7q@pendragon.ideasonboard.com>
+References: <20210221195308.1451-1-knv418@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
-Thread-Index: 7+C02FdulTyKA9J1LISl0R0IkBqhDg==
-Thread-Topic: MTD changes for 5.12
+Content-Disposition: inline
+In-Reply-To: <20210221195308.1451-1-knv418@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi Nikolay,
 
-The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
+Thank you for the patch.
 
-  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
+On Sun, Feb 21, 2021 at 10:53:08PM +0300, Nikolay Kyx wrote:
+> This patch fixes the following checkpatch.pl check:
+> 
+> CHECK: Macro argument 'i' may be better as '(i)' to avoid precedence issues
+> 
+> in file iss_regs.h
+> 
+> Signed-off-by: Nikolay Kyx <knv418@gmail.com>
+> ---
+> 
+> Additionally some style warnings remain valid here and could be fixed by
+> another patch.
+> 
+>  drivers/staging/media/omap4iss/iss_regs.h | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/staging/media/omap4iss/iss_regs.h b/drivers/staging/media/omap4iss/iss_regs.h
+> index 09a7375c89ac..cfe0bb075072 100644
+> --- a/drivers/staging/media/omap4iss/iss_regs.h
+> +++ b/drivers/staging/media/omap4iss/iss_regs.h
+> @@ -197,7 +197,7 @@
+>  #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_MASK		(0x1fff << 0)
+>  #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_SHIFT	0
+>  
+> -#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * i))
+> +#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * (i)))
 
-are available in the Git repository at:
+This is a good change, as it fixes potential issues, but maybe we could
+go one step forward and drop the unneeded parentheses ?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-5.12
+-#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * i))
++#define CSI2_CTX_CTRL1(i)				(0x70 + 0x20 * (i))
 
-for you to fetch changes up to 6e9dff6fe3fbc452f16566e4a7e293b0decefdba:
+What do you think ?
 
-  dt-bindings: mtd: add binding for BCM4908 partitions (2021-02-12 22:24:48 +0100)
+>  #define CSI2_CTX_CTRL1_GENERIC				BIT(30)
+>  #define CSI2_CTX_CTRL1_TRANSCODE			(0xf << 24)
+>  #define CSI2_CTX_CTRL1_FEC_NUMBER_MASK			(0xff << 16)
+> @@ -210,7 +210,7 @@
+>  #define CSI2_CTX_CTRL1_PING_PONG			BIT(3)
+>  #define CSI2_CTX_CTRL1_CTX_EN				BIT(0)
+>  
+> -#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * i))
+> +#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * (i)))
+>  #define CSI2_CTX_CTRL2_FRAME_MASK			(0xffff << 16)
+>  #define CSI2_CTX_CTRL2_FRAME_SHIFT			16
+>  #define CSI2_CTX_CTRL2_USER_DEF_MAP_SHIFT		13
+> @@ -222,19 +222,19 @@
+>  #define CSI2_CTX_CTRL2_FORMAT_MASK			(0x3ff << 0)
+>  #define CSI2_CTX_CTRL2_FORMAT_SHIFT			0
+>  
+> -#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * i))
+> +#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * (i)))
+>  #define CSI2_CTX_DAT_OFST_MASK				(0xfff << 5)
+>  
+> -#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * i))
+> +#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * (i)))
+>  #define CSI2_CTX_PING_ADDR_MASK				0xffffffe0
+>  
+> -#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * i))
+> +#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * (i)))
+>  #define CSI2_CTX_PONG_ADDR_MASK				CSI2_CTX_PING_ADDR_MASK
+>  
+> -#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * i))
+> -#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * i))
+> +#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * (i)))
+> +#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * (i)))
+>  
+> -#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * i))
+> +#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * (i)))
+>  #define CSI2_CTX_CTRL3_ALPHA_SHIFT			5
+>  #define CSI2_CTX_CTRL3_ALPHA_MASK			\
+>  		(0x3fff << CSI2_CTX_CTRL3_ALPHA_SHIFT)
 
-----------------------------------------------------------------
-MTD core changes:
-* Initial support for BCM4908 partitions
+-- 
+Regards,
 
-Raw NAND controller drivers:
-* Intel: Fix an error handling path in 'ebu_dma_start()'
-* Tango: Remove the driver
-* Marvell: Convert comma to semicolon
-* MXC: Convert comma to semicolon
-* Qcom: Add support for Qcom SMEM parser
-
-Related MTD changes:
-* parsers: Add Qcom SMEM parser
-
-SPI NOR core changes:
-* Add non-uniform erase fixes.
-* Add Global Block Unlock command. It is defined by few flash
- vendors, and it is used for now just by sst.
-
-SPI NOR controller drivers changes:
-* intel-spi: Add support for Intel Alder Lake-P SPI serial flash.
-* hisi-sfc: Put child node np on error path.
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      mtd: rawnand: tango: Remove the driver
-
-Christophe JAILLET (1):
-      mtd: rawnand: intel: Fix an error handling path in 'ebu_dma_start()'
-
-Colin Ian King (1):
-      mtd: remove redundant assignment to pointer eb
-
-Dan Carpenter (1):
-      mtd: parser: imagetag: fix error codes in bcm963xx_parse_imagetag_partitions()
-
-Manivannan Sadhasivam (4):
-      dt-bindings: mtd: partitions: Add binding for Qcom SMEM parser
-      mtd: parsers: Add Qcom SMEM parser
-      mtd: rawnand: qcom: Add support for Qcom SMEM parser
-      mtd: parsers: afs: Fix freeing the part name memory in failure
-
-Mika Westerberg (1):
-      mtd: spi-nor: intel-spi: Add support for Intel Alder Lake-P SPI serial flash
-
-Pan Bian (1):
-      mtd: spi-nor: hisi-sfc: Put child node np on error path
-
-Rafał Miłecki (2):
-      dt-bindings: mtd: move partition binding to its own file
-      dt-bindings: mtd: add binding for BCM4908 partitions
-
-Richard Weinberger (2):
-      Merge tag 'nand/for-5.12' of git://git.kernel.org/.../mtd/linux into mtd/next
-      Merge tag 'spi-nor/for-5.12' of git://git.kernel.org/.../mtd/linux into mtd/next
-
-Takahiro Kuwano (4):
-      mtd: spi-nor: sfdp: Fix wrong erase type bitmask for overlaid region
-      mtd: spi-nor: sfdp: Fix last erase region marking
-      mtd: spi-nor: core: Fix erase type discovery for overlaid region
-      mtd: spi-nor: core: Add erase size check for erase command initialization
-
-Tudor Ambarus (2):
-      mtd: spi-nor: Add Global Block Unlock command
-      mtd: spi-nor: sst: Add support for Global Unlock on sst26vf
-
-Zheng Yongjun (4):
-      mtd: rawnand: mxc: Convert comma to semicolon
-      mtd: convert comma to semicolon
-      mtd: st_spi_fsm: convert comma to semicolon
-      mtd: rawnand: marvell: convert comma to semicolon
-
-yangerkun (1):
-      mtd: phram: use div_u64_rem to stop overwrite len in phram_setup
-
- .../mtd/partitions/brcm,bcm4908-partitions.yaml    |  70 ++
- .../bindings/mtd/partitions/fixed-partitions.yaml  |  33 +-
- .../bindings/mtd/partitions/partition.yaml         |  47 ++
- .../bindings/mtd/partitions/qcom,smem-part.yaml    |  33 +
- drivers/mtd/devices/phram.c                        |   6 +-
- drivers/mtd/devices/st_spi_fsm.c                   |   2 +-
- drivers/mtd/maps/pci.c                             |   8 +-
- drivers/mtd/mtdswap.c                              |   1 -
- drivers/mtd/nand/raw/Kconfig                       |   7 -
- drivers/mtd/nand/raw/Makefile                      |   1 -
- drivers/mtd/nand/raw/intel-nand-controller.c       |   6 +-
- drivers/mtd/nand/raw/marvell_nand.c                |   2 +-
- drivers/mtd/nand/raw/mxc_nand.c                    |   2 +-
- drivers/mtd/nand/raw/qcom_nandc.c                  |   4 +-
- drivers/mtd/nand/raw/tango_nand.c                  | 727 ---------------------
- drivers/mtd/parsers/Kconfig                        |   8 +
- drivers/mtd/parsers/Makefile                       |   1 +
- drivers/mtd/parsers/afs.c                          |   4 +-
- drivers/mtd/parsers/parser_imagetag.c              |   4 +
- drivers/mtd/parsers/qcomsmempart.c                 | 170 +++++
- drivers/mtd/spi-nor/controllers/hisi-sfc.c         |   4 +-
- drivers/mtd/spi-nor/controllers/intel-spi-pci.c    |   1 +
- drivers/mtd/spi-nor/core.c                         |  49 +-
- drivers/mtd/spi-nor/core.h                         |   2 +
- drivers/mtd/spi-nor/sfdp.c                         |   5 +-
- drivers/mtd/spi-nor/sst.c                          |  52 +-
- include/linux/mtd/spi-nor.h                        |   1 +
- 27 files changed, 457 insertions(+), 793 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/brcm,bcm4908-partitions.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/partition.yaml
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/qcom,smem-part.yaml
- delete mode 100644 drivers/mtd/nand/raw/tango_nand.c
- create mode 100644 drivers/mtd/parsers/qcomsmempart.c
+Laurent Pinchart
