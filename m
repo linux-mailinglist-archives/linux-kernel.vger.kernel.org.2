@@ -2,169 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4023207C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 01:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C85DE3207D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 01:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhBUABr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 19:01:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47752 "EHLO
+        id S229918AbhBUA2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 19:28:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229809AbhBUAB3 (ORCPT
+        with ESMTP id S229819AbhBUA1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 19:01:29 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC58C061786;
-        Sat, 20 Feb 2021 16:00:42 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id k17so1772976ioc.5;
-        Sat, 20 Feb 2021 16:00:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eyv75EVqtjc5sQV9MZqlAZakzRqPKcB25AWLRe+93L4=;
-        b=EeEEtR5leYnNT9Sg+XnH3v351ZDvCxVEBjBfcUET5qi1u/cmUQkdNKI9mUIlJo7Q3s
-         5UIS16soeZu9Ggp3Y/TUbOFBgxAZLL1YthsBzdJVSC9gsOZ25285t5TXzbPw6rJ4cQ4L
-         DSkculSrmw7+55COZVPqPw/oOsYis1xq41wYAaeGtUQTsdf0k3oxsg7B90zktWnb7ort
-         dhA86+BOwdVgoapWJ/Jxm3KZshiESGcd0tRtyPguIWBOH+l6ECeu2WMk000w0ldrYUP9
-         4Rqaq/Eiz3bclqRUoBwzKxxPIutKWSfmiSGUC0j+XoIfVBNJ+LoxTRZqRQAbXi6x1DpW
-         H75w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eyv75EVqtjc5sQV9MZqlAZakzRqPKcB25AWLRe+93L4=;
-        b=eNPC8lgH5gRyS16D1dK6EnlN+CN/9wioPSLYI7HXnReVVP481eLJ9oHxdFFueROyLq
-         AOm1PaJ8Pn88++feZf/gORmYk5dDdQYzV156XWO5q1Kt2YRk8/7ze+b7wOJtBWoznK41
-         nFgDZAEmsMFVZsEpBFBgTtGM8IQS2ZrGWeXNZp9M0oBeGK5muee0LN+10rmc9mjPAwQ6
-         KBxknKtTFW/amCMuh9xYeaWpKXqrfqS70m9FrQnNjOlbsxvKrPZQe9cdONsxFhqmOZ80
-         MWWxVNFBA6Lk+++ey5swEGqjxrZAWFnHJMPaqiWvh+U4IEPPLbjX028ohMyluBrtl4IL
-         V8ZA==
-X-Gm-Message-State: AOAM531HXJ+xa3plUp03aZfi5Qq49fbppqK78I+QQNfCSAirogT+3u66
-        ryvROy332LQK6/t08EfhU5wjmcohYLIQFOAX4y8=
-X-Google-Smtp-Source: ABdhPJz3rxxFjCPyN29YDDBIIwzFQM+arC6T2FY7bbj046hdU3CXgyZf6jieSBzvW96n+pRuJB+O6FpE2+XZRZLta08=
-X-Received: by 2002:a6b:8dcc:: with SMTP id p195mr9669717iod.74.1613865642373;
- Sat, 20 Feb 2021 16:00:42 -0800 (PST)
+        Sat, 20 Feb 2021 19:27:24 -0500
+Received: from smtp.gentoo.org (woodpecker.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F97C061786;
+        Sat, 20 Feb 2021 16:26:44 -0800 (PST)
+Received: by sf.home (Postfix, from userid 1000)
+        id A7DE75A2208B; Sun, 21 Feb 2021 00:25:58 +0000 (GMT)
+From:   Sergei Trofimovich <slyfox@gentoo.org>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Sergei Trofimovich <slyfox@gentoo.org>,
+        Oleg Nesterov <oleg@redhat.com>, linux-ia64@vger.kernel.org,
+        "Dmitry V . Levin" <ldv@altlinux.org>
+Subject: [PATCH] ia64: fix ia64_syscall_get_set_arguments() for break-based syscalls
+Date:   Sun, 21 Feb 2021 00:25:53 +0000
+Message-Id: <20210221002554.333076-1-slyfox@gentoo.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <20210220230248.320870-1-ztong0001@gmail.com> <ea1c5ff3-0b24-71c9-7a44-08b184c4854d@infradead.org>
-In-Reply-To: <ea1c5ff3-0b24-71c9-7a44-08b184c4854d@infradead.org>
-From:   Tong Zhang <ztong0001@gmail.com>
-Date:   Sat, 20 Feb 2021 19:00:31 -0500
-Message-ID: <CAA5qM4D0y9-gL7AAMQvtwrfJC_UvSTB5_S5PX3qkYSxHRUS-Qw@mail.gmail.com>
-Subject: Re: [PATCH] video: fbdev: pm2fb: avoid stall on fb_sync
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-Thanks for the comment.
-I currently have this problem on my machine.
-I have submitted a revised patch -- which includes the console log.
-Thanks!
-- Tong
+In https://bugs.gentoo.org/769614 Dmitry noticed that
+`ptrace(PTRACE_GET_SYSCALL_INFO)` does not work for syscalls called
+via glibc's syscall() wrapper.
 
-On Sat, Feb 20, 2021 at 6:33 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> Hi--
->
-> On 2/20/21 3:02 PM, Tong Zhang wrote:
-> > pm2fb_sync is called when doing /dev/fb read or write.
-> > The original pm2fb_sync wait indefinitely on hardware flags which can
-> > possibly stall kernel and make everything unresponsive.
-> > Instead of waiting indefinitely, we can timeout to give user a chance to
-> > get back control.
->
-> Is this a real problem or theoretical?
-> Does someone still use this driver?
->
->
-> > Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> > ---
-> >  drivers/video/fbdev/pm2fb.c | 29 ++++++++++++++++++++++++++---
-> >  1 file changed, 26 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/video/fbdev/pm2fb.c b/drivers/video/fbdev/pm2fb.c
-> > index 27893fa139b0..8578c64a0c54 100644
-> > --- a/drivers/video/fbdev/pm2fb.c
-> > +++ b/drivers/video/fbdev/pm2fb.c
-> > @@ -183,12 +183,23 @@ static inline void pm2v_RDAC_WR(struct pm2fb_par *p, s32 idx, u32 v)
-> >
-> >  #ifdef CONFIG_FB_PM2_FIFO_DISCONNECT
-> >  #define WAIT_FIFO(p, a)
-> > +#define WAIT_FIFO_TIMEOUT(p, a) (0)
-> >  #else
-> >  static inline void WAIT_FIFO(struct pm2fb_par *p, u32 a)
-> >  {
-> >       while (pm2_RD(p, PM2R_IN_FIFO_SPACE) < a)
-> >               cpu_relax();
-> >  }
-> > +static int inline void WAIT_FIFO_TIMEOUT(struct pm2fb_par *p, u32 a)
->
-> drop      void       ^^^
-> It's already "int".
-> Did you compile this?
->
-> > +{
-> > +     int timeout = 10000;
-> > +     while (pm2_RD(p, PM2R_IN_FIFO_SPACE) < a) {
-> > +             cpu_relax();
-> > +             if (--timeout==0)
->
-> spaces around ==
->
-> > +                     return 1;
-> > +     }
-> > +     return 0;
-> > +}
-> >  #endif
-> >
-> >  /*
-> > @@ -1031,15 +1042,27 @@ static int pm2fb_blank(int blank_mode, struct fb_info *info)
-> >  static int pm2fb_sync(struct fb_info *info)
-> >  {
-> >       struct pm2fb_par *par = info->par;
-> > +     int timeout_sync = 10000;
-> > +     int timeout_fifo;
-> >
-> > -     WAIT_FIFO(par, 1);
-> > +     if (WAIT_FIFO_TIMEOUT(par, 1))
-> > +             goto end;
-> >       pm2_WR(par, PM2R_SYNC, 0);
-> >       mb();
-> >       do {
-> > -             while (pm2_RD(par, PM2R_OUT_FIFO_WORDS) == 0)
-> > +             timeout_fifo = 10000;
-> > +             while (pm2_RD(par, PM2R_OUT_FIFO_WORDS) == 0) {
-> >                       cpu_relax();
-> > -     } while (pm2_RD(par, PM2R_OUT_FIFO) != PM2TAG(PM2R_SYNC));
-> > +                     if (--timeout_fifo==0)
->
-> spaces around ==
->
-> > +                             goto end;
-> > +             }
-> > +             if (pm2_RD(par, PM2R_OUT_FIFO) == PM2TAG(PM2R_SYNC))
-> > +                     break;
-> > +     } while (--timeout_sync>0);
->
-> spaces around >
->
-> >
-> > +end:
-> > +     if ((!timeout_sync) || (!timeout_fifo))
-> > +             printk_ratelimited(KERN_WARNING "pm2fb: sync timeout!\n");
-> >       return 0;
-> >  }
-> >
-> >
->
->
-> thanks.
-> --
-> ~Randy
+ia64 has two ways to call syscalls from userspace: via `break` and via
+`eps` instructions.
+
+The difference is in stack layout:
+
+1. `eps` creates simple stack frame: no locals, in{0..7} == out{0..8}
+2. `break` uses userspace stack frame: may be locals (glibc provides
+   one), in{0..7} == out{0..8}.
+
+Both work fine in syscall handling cde itself.
+
+But `ptrace(PTRACE_GET_SYSCALL_INFO)` uses unwind mechanism to
+re-extract syscall arguments but it does not account for locals.
+
+The change always skips locals registers. It should not change `eps`
+path as kernel's handler already enforces locals=0 and fixes `break`.
+
+Tested on v5.10 on rx3600 machine (ia64 9040 CPU).
+
+CC: Oleg Nesterov <oleg@redhat.com>
+CC: linux-ia64@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+CC: Andrew Morton <akpm@linux-foundation.org>
+Reported-by: Dmitry V. Levin <ldv@altlinux.org>
+Bug: https://bugs.gentoo.org/769614
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+---
+ arch/ia64/kernel/ptrace.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/arch/ia64/kernel/ptrace.c b/arch/ia64/kernel/ptrace.c
+index c3490ee2daa5..e14f5653393a 100644
+--- a/arch/ia64/kernel/ptrace.c
++++ b/arch/ia64/kernel/ptrace.c
+@@ -2013,27 +2013,39 @@ static void syscall_get_set_args_cb(struct unw_frame_info *info, void *data)
+ {
+ 	struct syscall_get_set_args *args = data;
+ 	struct pt_regs *pt = args->regs;
+-	unsigned long *krbs, cfm, ndirty;
++	unsigned long *krbs, cfm, ndirty, nlocals, nouts;
+ 	int i, count;
+ 
+ 	if (unw_unwind_to_user(info) < 0)
+ 		return;
+ 
++	/*
++	 * We get here via a few paths:
++	 * - break instruction: cfm is shared with caller.
++	 *   syscall args are in out= regs, locals are non-empty.
++	 * - epsinstruction: cfm is set by br.call
++	 *   locals don't exist.
++	 *
++	 * For both cases argguments are reachable in cfm.sof - cfm.sol.
++	 * CFM: [ ... | sor: 17..14 | sol : 13..7 | sof : 6..0 ]
++	 */
+ 	cfm = pt->cr_ifs;
++	nlocals = (cfm >> 7) & 0x7f; /* aka sol */
++	nouts = (cfm & 0x7f) - nlocals; /* aka sof - sol */
+ 	krbs = (unsigned long *)info->task + IA64_RBS_OFFSET/8;
+ 	ndirty = ia64_rse_num_regs(krbs, krbs + (pt->loadrs >> 19));
+ 
+ 	count = 0;
+ 	if (in_syscall(pt))
+-		count = min_t(int, args->n, cfm & 0x7f);
++		count = min_t(int, args->n, nouts);
+ 
++	/* Iterate over outs. */
+ 	for (i = 0; i < count; i++) {
++		int j = ndirty + nlocals + i + args->i;
+ 		if (args->rw)
+-			*ia64_rse_skip_regs(krbs, ndirty + i + args->i) =
+-				args->args[i];
++			*ia64_rse_skip_regs(krbs, j) = args->args[i];
+ 		else
+-			args->args[i] = *ia64_rse_skip_regs(krbs,
+-				ndirty + i + args->i);
++			args->args[i] = *ia64_rse_skip_regs(krbs, j);
+ 	}
+ 
+ 	if (!args->rw) {
+-- 
+2.30.1
+
