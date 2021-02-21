@@ -2,79 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B6432098F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 10:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED66D320993
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 11:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhBUJzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 04:55:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60682 "EHLO
+        id S229863AbhBUKJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 05:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhBUJzG (ORCPT
+        with ESMTP id S229502AbhBUKJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 04:55:06 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C6FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 01:54:25 -0800 (PST)
-Received: from zn.tnic (p200300ec2f205c000e54e9bea7f0af0c.dip0.t-ipconnect.de [IPv6:2003:ec:2f20:5c00:e54:e9be:a7f0:af0c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D8D951EC04BF;
-        Sun, 21 Feb 2021 10:54:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1613901264;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=uxF4+IXKSyYsqHBlEAL+H1yOj5yvBTV6KLN9xQ3Mh2E=;
-        b=Tzg/QBiDN016zSYBFLyhgwTEtJbx3woK6DxJ6RaC7SKmzkPngXk11ztBmPFj8ltja7MJEJ
-        qr4OwMwyNuUPid8zVOJI+WYl+Bhi2R3JwEw9mAC8dmwDy0w7PXDwnMsDdxtUcjsh7l9Hcc
-        y+/RWnzvxtnqpEG0pPZzJKpfaZA8sgs=
-Date:   Sun, 21 Feb 2021 10:54:27 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, x86@kernel.org,
-        pjt@google.com, mbenes@suze.cz, jgross@suse.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC][PATCH 6/6] objtool,x86: Rewrite retpoline thunk calls
-Message-ID: <20210221095427.GB1897@zn.tnic>
-References: <20210219204300.749932493@infradead.org>
- <20210219210535.492733466@infradead.org>
- <20210219215530.ivzzv3oavhuip6un@treble>
- <20210219220158.GD59023@worktop.programming.kicks-ass.net>
- <20210220003920.GG26778@zn.tnic>
- <YDE9bmaO4tOZ/HWn@hirez.programming.kicks-ass.net>
- <20210220174101.GA29905@zn.tnic>
- <20210220222802.GA4746@worktop.programming.kicks-ass.net>
- <20210220225100.GA5208@worktop.programming.kicks-ass.net>
+        Sun, 21 Feb 2021 05:09:05 -0500
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949C3C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 02:08:24 -0800 (PST)
+Received: by mail-lj1-x243.google.com with SMTP id c8so46272813ljd.12
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 02:08:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wa+uDqai5FO8EqQOT4ZyA5Zo9X7Xp8q4ul//4wyTkAU=;
+        b=I83zqoqH6/lq+F6L3SuRyN83+v1zg3bMGUnchLJqRzr1IdDITC/KBdcH0IuMWWrFYL
+         3+xxGW3DgfRykBTIx/glhJykPvTcICG3l5MUPvYEo0ACIITn5he8wMa0UbfbwHtHQC7s
+         SxgatgOTyNBpshNYxdsskovYXaa7JlCLTXezZbMtyGzaOhZdhzaaoF8G299YKN2FaFHi
+         fN8BS8WUudMf1b2v+rAfMQhrnb3uLuknDRF5aRczcqv9eRPNY0gKhQVTh4wsN4gS/kZY
+         9vuqwnVupWLR3ngDiboXKVm85tDMT63rPmdQHWhT8U+eC0dWl8UPcQhYQXkIPCkk+gEO
+         2QMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wa+uDqai5FO8EqQOT4ZyA5Zo9X7Xp8q4ul//4wyTkAU=;
+        b=fstpFsJipvc8NzE+iclgo27Eve6vNcFMohhfjbA86ke3nbu9ZeREMOEPWb0ntfqAkX
+         g2HGqaCasYdeypB8lkjRHcHLfmnmJx0g26tXp1aSmEAfvhmr8/8CISUwlHJn1AUo7kxt
+         YcWBy0KWD+/fj9S3fDpTIwL7dDpAnbp1bIPezFqh0Im5vNYa8uECCzdxJ+4GuRSc/uuD
+         +RL+t6Zn+r+YhTT/ioilz/GcDdJ1MHXOniRWI+O7OOzLU05q5OGN2xCtm+0S0UrD5DCm
+         NquX21l54OZCsL+qSs1syJQGjFSM1aRJBEahn7M3sd/lNgdnU/XgTSdgfq7MGHx1qQGL
+         x9jg==
+X-Gm-Message-State: AOAM533r5qDlH4ELE15Gr7DGRvJmB5ADhs99jYH5EYrmNsICTHhmSiMc
+        0q5oCrmLCXt5/K1NQ7iM4L6tB6cJ26BDug==
+X-Google-Smtp-Source: ABdhPJz4d5jAqq6pjvLRaQTApuvns5gM/vhbSqI74n2L9dRogeLiy5iz+FN4ZF99w/tL0ItFrLSlxQ==
+X-Received: by 2002:a2e:b0e1:: with SMTP id h1mr4717824ljl.436.1613902103205;
+        Sun, 21 Feb 2021 02:08:23 -0800 (PST)
+Received: from localhost.localdomain (cable-hki-50dc98-67.dhcp.inet.fi. [80.220.152.67])
+        by smtp.gmail.com with ESMTPSA id b8sm1509822lfo.84.2021.02.21.02.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 02:08:22 -0800 (PST)
+From:   Hassan Shahbazi <h.shahbazi.git@gmail.com>
+To:     akpm@linux-foundation.org, sjhuang@iluvatar.ai
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org,
+        Hassan Shahbazi <h.shahbazi.git@gmail.com>
+Subject: [PATCH] lib: genalloc: fix warning generated by checkpatch
+Date:   Sun, 21 Feb 2021 12:07:57 +0200
+Message-Id: <20210221100757.68753-1-h.shahbazi.git@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210220225100.GA5208@worktop.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 11:51:00PM +0100, Peter Zijlstra wrote:
-> > 11 patches and one beer later, it even boots :-)
+Add missing blank line after declarations.
 
-Yah, beer and coding sometimes works. But only sometimes, ask rostedt
-and tglx.
+Signed-off-by: Hassan Shahbazi <h.shahbazi.git@gmail.com>
+---
+ lib/genalloc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-:-P
-
-> > Saves more than 6k on a defconfig build.
-
-Uuh, niice. And that will be a lot more on a all{yes,mod}config.
-
-> https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git/log/?h=locking/jump_label
-
-Looks interesting. I'll definitely have an indepth look when you send
-them proper.
-
-Thx.
-
+diff --git a/lib/genalloc.c b/lib/genalloc.c
+index dab97bb69df6..3e901fd93b00 100644
+--- a/lib/genalloc.c
++++ b/lib/genalloc.c
+@@ -757,6 +757,7 @@ unsigned long gen_pool_best_fit(unsigned long *map, unsigned long size,
+ 
+ 	while (index < size) {
+ 		unsigned long next_bit = find_next_bit(map, size, index + nr);
++
+ 		if ((next_bit - index) < len) {
+ 			len = next_bit - index;
+ 			start_bit = index;
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
