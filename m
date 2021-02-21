@@ -2,150 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E2F320E97
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:48:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC2A6320E9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234199AbhBUXr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 18:47:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbhBUXrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 18:47:49 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33397C061574;
-        Sun, 21 Feb 2021 15:47:09 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id g3so19622143edb.11;
-        Sun, 21 Feb 2021 15:47:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bJIAtmO8Hab9V++l/vJOBTqLNhVwE9QuyRHZ5pv7/rQ=;
-        b=DkJOonPNeNiziz9OFoyDzyqSF3bYXq2R3YxCYIvboVB0UimoDjvkRee0bEfYPcEli1
-         d2U1NUXF9FIVduYVTHdZ+Vn9qJ0BvBCB6cIx1GE454GBPAdfbWJIt8kA02DqMqMPCdJG
-         w8ZWou+ZfRaVe2oUZ713dXIN9WCjjjp3HYrG4V0NKOEIyasN4krU+euI339lWguLCziv
-         zJT6PqJFZfJ75p9SjGYEDhTMMY+hd1EboWMtkMYlXJVfP1ueuek8VaBXZcf9BApMrv5E
-         izH18rbT6E9LUmZvO/2JDhMKIYQ4caS3WyJAj7cJ4TAt7WOCbWkxvvbZM2SLEHOrH8Ao
-         zv6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bJIAtmO8Hab9V++l/vJOBTqLNhVwE9QuyRHZ5pv7/rQ=;
-        b=aPKMFUTuJyTDUS39HuoW91XOmn/zvjMocZ2jS6gIfcSttNP3EyxKN3Qy0eALIIXOTx
-         khLgoHV+6L1K/EW6gIdHLMaA34saEuNhR+SPN9fZLlTgrpSsQyZ5pYk3cfkiMndXQ9mb
-         1xas6KEOMrSbV4rJ46HlEEqnaYvW6pSvZclaTTVlOSLA2R4lOc7r2j5Kc2ku3vjzEWlB
-         ri9MUkLDw2lSD1mvDgEQ/1ncaAu3tJqPY9fhQT3maMorNd3VxszV8tqbXhdx8O7EPZZF
-         t1+ZE8bytImUT/35JU6U9XmReHtfUSuzydYiZG6vhRThMkbQCyDVzRyMstr6A0/yu1H3
-         pkYA==
-X-Gm-Message-State: AOAM533ndoMjuXP/WPrOUizwTBWSgIAJCeGHki8INkMJde72gop5fPZr
-        lli71gzR6SL/HbFaADziXcDuIhgPVrJ+sWRMUMsESHObkVA=
-X-Google-Smtp-Source: ABdhPJzw6s59F8zvCdYjEOZFsKuG5KWXdM7/iFUBsjpeFojaRfISCn7+/NUQKU+N3CSU/hxRUjTOqbLYWB8IEoYaqok=
-X-Received: by 2002:a05:6402:1d9b:: with SMTP id dk27mr4738460edb.209.1613951227974;
- Sun, 21 Feb 2021 15:47:07 -0800 (PST)
+        id S229844AbhBUXvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 18:51:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229634AbhBUXup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 18:50:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69D7164E2E;
+        Sun, 21 Feb 2021 23:50:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613951404;
+        bh=6hacnVmVBfDVPVg0HrBwY+/up5Gd/RRlaNgdilyoPE4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=tD4SGFOi2/3l+mOLhMU439GUNWhJ8c0vJJFReD/mxQzFIVEn8afGw3Kd4ZnrJHJmP
+         cP1rOtrmSvZgRri716ZpzmTxHS2xram4JyphSEUFuPY2atT0FmMwlkn+XavSnVCxp6
+         vcyZ9jEgbA87ugyuCMdElePpj+QNUKCcKKC3IyP0sJiPSY2zHLbMaHK+wWy+GSZiwv
+         WubdthtD25wvEKkwvU+IcfqTB4tdI5A0wLjisKPQkzWh1co+gNXuQQBrL45fHNMu3e
+         h1Zj9VyClc5x5St0ZsMsjOy604zylTmYQ6/+Qm7U9ssU8xVXDPYwd0w0MpxeLhzy1H
+         v8Ea0ATwD1o8Q==
+Received: by earth.universe (Postfix, from userid 1000)
+        id 842B83C0C96; Mon, 22 Feb 2021 00:50:02 +0100 (CET)
+Date:   Mon, 22 Feb 2021 00:50:02 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: [GIT PULL] power-supply changes for 5.12
+Message-ID: <20210221235002.yjqkcbuugnusveg6@earth.universe>
 MIME-Version: 1.0
-References: <20210217161052.877877-1-adrien.grassein@gmail.com>
- <20210217161052.877877-2-adrien.grassein@gmail.com> <20210219131825.niiftfm5r32qc6m3@kozik-lap>
- <CABkfQAH75N1k0bDEGzo0mRtoqP=-9p9hzBo43f6gQnSmGsXQUw@mail.gmail.com> <20210220191914.pir3ep3utz6uwyrb@kozik-lap>
-In-Reply-To: <20210220191914.pir3ep3utz6uwyrb@kozik-lap>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Mon, 22 Feb 2021 00:46:57 +0100
-Message-ID: <CABkfQAGyr_ntKMR3Ht0CVZY7zLiBcRN3-WeWiZQ-BTzXHqSF3w@mail.gmail.com>
-Subject: Re: [PATCH v2 1/8] arm64: dts: imx8mm-nitrogen-r2: add wifi/bt chip
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        dl-linux-imx <linux-imx@nxp.com>, catalin.marinas@arm.com,
-        will@kernel.org, DTML <devicetree@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yp6m36jp7q6qpjoy"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le sam. 20 f=C3=A9vr. 2021 =C3=A0 20:19, Krzysztof Kozlowski <krzk@kernel.o=
-rg> a =C3=A9crit :
->
-> On Fri, Feb 19, 2021 at 03:03:55PM +0100, Adrien Grassein wrote:
-> > Le ven. 19 f=C3=A9vr. 2021 =C3=A0 14:18, Krzysztof Kozlowski <krzk@kern=
-el.org> a =C3=A9crit :
-> > >
-> > > On Wed, Feb 17, 2021 at 05:10:45PM +0100, Adrien Grassein wrote:
-> > > > Add usdhc3 description which corresponds to the wifi/bt chip
-> > > >
-> > > > Signed-off-by: Adrien Grassein <adrien.grassein@gmail.com>
-> > > > ---
-> > > >  .../boot/dts/freescale/imx8mm-nitrogen-r2.dts | 31 +++++++++++++++=
+
+--yp6m36jp7q6qpjoy
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Linus,
+
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+
+are available in the Git repository at:
+
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-su=
+pply.git tags/for-v5.12
+
+for you to fetch changes up to a72acc56f3e939b9e10f2dd460ac1e4519de621f:
+
+  power-supply: use kobj_to_dev() (2021-01-28 01:31:42 +0100)
+
+----------------------------------------------------------------
+power supply and reset changes for the v5.12 series
+
+battery/charger driver changes:
+ * acer_a500: new fuel gauge driver for Acer Iconia Tab A500
+ * bq256xx: new charger driver
+ * bq27xxx: Support CHARGE_NOW for bq27z561/bq28z610/bq34z100
+ * bq27xxx: Fix inverted CURRENT_NOW sign
+ * cpcap: rework fuel gauge and charger drivers
+ * ltc4162l: new charger driver
+ * max8997-charger: add extcon based current limit configuration
+ * max8903, wm97xx, z2: convert to GPIO descriptors (incl. ARM board files)
+ * misc. cleanup and fixes
+
+reset drivers:
+ * new poweroff driver for ATC260x
+ * at91-sama5d2_shdwc: add support for sama7g5
+ * drop zte zx driver (SoC support is removed from kernel)
+
+----------------------------------------------------------------
+Andreas Kemnade (1):
+      power: supply: bq27xxx: fix polarity of current_now
+
+Arnd Bergmann (1):
+      power/reset: remove zte zx driver
+
+Arthur Demchenkov (4):
+      power: supply: cpcap-battery: Add charge_full property
+      power: supply: cpcap-battery: Keep track of state for capacity report=
+ing
+      power: supply: cpcap-battery: Implement capacity reporting
+      power: supply: cpcap-battery: Add charge_now property
+
+Carl Philipp Klemm (1):
+      power: supply: cpcap-battery: improve handling of 3rd party batteries.
+
+Claudiu Beznea (3):
+      power: reset: at91-sama5d2_shdwc: fix wkupdbc mask
+      dt-bindings: atmel-sysreg: add microchip,sama7g5-shdwc
+      power: reset: at91-sama5d2_shdwc: add support for sama7g5
+
+Colin Ian King (2):
+      power: supply: max8997_charger: fix spelling mistake "diconnected" ->=
+ "disconnected"
+      power: supply: cpcap-charger: Fix power_supply_put on null battery po=
+inter
+
+Cristian Ciocaltea (1):
+      power: reset: Add poweroff driver for ATC260x PMICs
+
+Daniel Gonz=E1lez Cabanelas (1):
+      power: reset: linkstation-poweroff: add missing put_device()
+
+Dmitry Osipenko (2):
+      power: supply: Add battery gauge driver for Acer Iconia Tab A500
+      power: supply: smb347-charger: Fix interrupt usage if interrupt is un=
+available
+
+Hans de Goede (1):
+      power: supply: axp288_fuel_gauge: Add Mele PCG03 to the deny-list
+
+Hermes Zhang (1):
+      power: supply: bq27xxx: Support CHARGE_NOW for bq27z561/bq28z610/bq34=
+z100
+
+Jian Dong (1):
+      power-supply: use kobj_to_dev()
+
+Junlin Yang (2):
+      power: supply: charger-manager: fix incorrect health status
+      power: supply: charger-manager: fix typo
+
+Linus Walleij (5):
+      power: supply: max14656: Drop unused includes
+      power: supply: max8903: Absorb pdata header
+      power: supply: max8903: Convert to GPIO descriptors
+      power: supply: z2_battery: Convert to GPIO descriptors
+      power: supply: wm97xx_battery: Convert to GPIO descriptor
+
+Menglong Dong (1):
+      power: supply: remove duplicated argument in power_supply_hwmon_info
+
+Mike Looijmans (2):
+      power/supply: Add ltc4162-l-charger
+      dt-bindings: power/supply: Add ltc4162-l-charger
+
+Pavel Machek (2):
+      power: supply: cpcap-charger: Limiting charge current on Droid 4
+      power: supply: cpcap-battery: Fix typo
+
+Randy Dunlap (1):
+      power: supply: fix sbs-charger build, needs REGMAP_I2C
+
+Ricardo Rivera-Matos (3):
+      dt-bindings: power: Add the bq256xx dt bindings
+      power: supply: bq256xx: Introduce the BQ256XX charger driver
+      power: supply: bq256xx: Fix BQ256XX_NUM_WD_VAL and bq256xx_watchdog_t=
+ime[] overrun
+
+Rikard Falkeborn (2):
+      power: supply: ltc4162-l: Constify static struct attribute_group
+      power: supply: core: Constify static struct attribute_group
+
+Samuel Holland (1):
+      power: supply: axp20x_usb_power: Init work before enabling IRQs
+
+Sebastian Reichel (2):
+      Merge tag 'ib-psy-pxa-for-5.12-signed' into psy-next
+      power: supply: cpcap-battery: constify psy_desc
+
+Tian Tao (1):
+      power: supply: ds2780: Switch to using the new API kobj_to_dev()
+
+Timon Baetz (1):
+      power: supply: max8997_charger: Set CHARGER current limit
+
+Tom Rix (1):
+      power: supply: ingenic: remove unneeded semicolon
+
+Tony Lindgren (10):
+      power: supply: cpcap: Add missing IRQF_ONESHOT to fix regression
+      power: supply: cpcap-charger: Fix missing power_supply_put()
+      power: supply: cpcap-battery: Fix missing power_supply_put()
+      power: supply: cpcap-charger: Fix flakey reboot with charger connected
+      power: supply: cpcap-charger: Make VBUS already provided debug only
+      power: supply: cpcap-charger: Use standard enumeration
+      power: supply: cpcap-charger: Drop internal state and use generic sta=
+ts
+      power: supply: cpcap-charger: Simplify things with enable and disable
+      power: supply: cpcap-charger: Provide state updates for battery from =
+charger
+      power: supply: cpcap-battery: Use charger status for battery full det=
+ection
+
+Zheng Yongjun (2):
+      power: supply: ab8500_fg: convert comma to semicolon
+      power: supply: bq24190_charger: convert comma to semicolon
+
+xinjian (1):
+      power: supply: bq25980: Fix repetive bq25975 with bq25960
+
+ .../ABI/testing/sysfs-class-power-ltc4162l         |   82 +
+ .../devicetree/bindings/arm/atmel-sysregs.txt      |    5 +-
+ .../devicetree/bindings/power/supply/bq256xx.yaml  |  110 ++
+ .../bindings/power/supply/ltc4162-l.yaml           |   69 +
+ arch/arm/mach-pxa/mioa701.c                        |    1 -
+ arch/arm/mach-pxa/palm27x.c                        |    1 -
+ arch/arm/mach-pxa/palmte2.c                        |    1 -
+ arch/arm/mach-pxa/z2.c                             |   12 +-
+ drivers/power/reset/Kconfig                        |   15 +-
+ drivers/power/reset/Makefile                       |    2 +-
+ drivers/power/reset/at91-sama5d2_shdwc.c           |   74 +-
+ drivers/power/reset/atc260x-poweroff.c             |  262 +++
+ drivers/power/reset/linkstation-poweroff.c         |    1 +
+ drivers/power/reset/zx-reboot.c                    |   86 -
+ drivers/power/supply/Kconfig                       |   27 +
+ drivers/power/supply/Makefile                      |    3 +
+ drivers/power/supply/ab8500_fg.c                   |    2 +-
+ drivers/power/supply/acer_a500_battery.c           |  297 ++++
+ drivers/power/supply/axp20x_usb_power.c            |    2 +-
+ drivers/power/supply/axp288_fuel_gauge.c           |    6 +
+ drivers/power/supply/bq24190_charger.c             |    2 +-
+ drivers/power/supply/bq256xx_charger.c             | 1749 ++++++++++++++++=
 ++++
-> > > >  1 file changed, 31 insertions(+)
-> > > >
-> > > > diff --git a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts b=
-/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> > > > index c0c384d76147..212dc9e5e85d 100644
-> > > > --- a/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> > > > +++ b/arch/arm64/boot/dts/freescale/imx8mm-nitrogen-r2.dts
-> > > > @@ -9,6 +9,17 @@
-> > > >  / {
-> > > >       model =3D "Boundary Devices i.MX8MMini Nitrogen8MM Rev2";
-> > > >       compatible =3D "boundary,imx8mm-nitrogen8mm", "fsl,imx8mm";
-> > > > +
-> > > > +     reg_wlan_vmmc: regulator-wlan-vmmc {
-> > > > +             compatible =3D "regulator-fixed";
-> > > > +             pinctrl-names =3D "default";
-> > > > +             pinctrl-0 =3D <&pinctrl_reg_wlan_vmmc>;
-> > > > +             regulator-name =3D "reg_wlan_vmmc";
-> > > > +             regulator-min-microvolt =3D <3300000>;
-> > > > +             regulator-max-microvolt =3D <3300000>;
-> > > > +             gpio =3D <&gpio3 20 GPIO_ACTIVE_HIGH>;
-> > > > +             enable-active-high;
-> > > > +     };
-> > > >  };
-> > > >
-> > > >  &A53_0 {
-> > > > @@ -206,6 +217,20 @@ &usdhc2 {
-> > > >       status =3D "okay";
-> > > >  };
-> > > >
-> > > > +/* wlan */
-> > > > +&usdhc3 {
-> > > > +     bus-width =3D <4>;
-> > > > +     sdhci-caps-mask =3D <0x2 0x0>;
-> > > > +     non-removable;
-> > > > +     pinctrl-names =3D "default", "state_100mhz", "state_200mhz";
-> > > > +     pinctrl-0 =3D <&pinctrl_usdhc3>;
-> > > > +     pinctrl-1 =3D <&pinctrl_usdhc3_100mhz>;
-> > > > +     pinctrl-2 =3D <&pinctrl_usdhc3_200mhz>;
-> > > > +     vmmc-supply =3D <&reg_wlan_vmmc>;
-> > > > +     vqmmc-1-8-v;
-> > >
-> > > There is no such property in the bindings.
-> > >
-> >
-> > Sorry, I copied a property from the FSL kernel.
-> > I will fix this with a "fixed-regulator".
->
-> I would assume this goes from PMIC, so check your schematics. There is
-> little point in adding a fixed regulator which is non-controllable.
+ drivers/power/supply/bq25980_charger.c             |    2 +-
+ drivers/power/supply/bq27xxx_battery.c             |   39 +-
+ drivers/power/supply/charger-manager.c             |    8 +-
+ drivers/power/supply/cpcap-battery.c               |  217 ++-
+ drivers/power/supply/cpcap-charger.c               |  262 +--
+ drivers/power/supply/ds2760_battery.c              |    2 +-
+ drivers/power/supply/ds2780_battery.c              |    8 +-
+ drivers/power/supply/ingenic-battery.c             |    2 +-
+ drivers/power/supply/ltc4162-l-charger.c           |  931 +++++++++++
+ drivers/power/supply/max14656_charger_detector.c   |    2 -
+ drivers/power/supply/max8903_charger.c             |  360 ++--
+ drivers/power/supply/max8997_charger.c             |   96 ++
+ drivers/power/supply/power_supply_hwmon.c          |    2 -
+ drivers/power/supply/power_supply_sysfs.c          |    2 +-
+ drivers/power/supply/smb347-charger.c              |   12 +-
+ drivers/power/supply/wm97xx_battery.c              |   45 +-
+ drivers/power/supply/z2_battery.c                  |   46 +-
+ include/linux/power/max8903_charger.h              |   43 -
+ include/linux/wm97xx.h                             |    1 -
+ include/linux/z2_battery.h                         |    1 -
+ 42 files changed, 4331 insertions(+), 559 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-class-power-ltc4162l
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.=
+yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/ltc4162-=
+l.yaml
+ create mode 100644 drivers/power/reset/atc260x-poweroff.c
+ delete mode 100644 drivers/power/reset/zx-reboot.c
+ create mode 100644 drivers/power/supply/acer_a500_battery.c
+ create mode 100644 drivers/power/supply/bq256xx_charger.c
+ create mode 100644 drivers/power/supply/ltc4162-l-charger.c
+ delete mode 100644 include/linux/power/max8903_charger.h
 
-No, the 1.8V is issued directly from the alimentation stage.
-So we can't control it.
+--yp6m36jp7q6qpjoy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> I think bindings don't require it.
-After reading some code, I can say that vqmmc is not mandatory but it
-helped to find out
-the caps of the mmc host. In this case, we only support 1.8V on vqmmc.
-It avoids driver to guess it (and avoid bad behaviour on any future change)=
-.
+-----BEGIN PGP SIGNATURE-----
 
->
-> Best regards,
-> Krzysztof
->
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAy8aIACgkQ2O7X88g7
++ppdRhAAh2PQALJviN0LWQSReBEOJgOegyQKhl4mQthLj3KKQArOTb6Y2bgc4l4e
+ZKMezn0GsRju46OiGHYTatwJqVZ/t8P0cu3H76s9cQzU1/dA8jX7lqpXMPtao7ot
+J1ZqSFtZzJg0LSVUqg1B1b/RpGfJZ1qvfaNKSN84j2KdNtpS2Adj6StvmJFUsC3j
+xdyslYYVKSdSJ9gRvRRNTu3GET2nrHBuoNnFgwTn2EsuXPLt0DzEOElUi1KpAUSd
+JURcbZCmxruQx1FM5Bjdutq/Hn+mX/7IaXiGYefMXQNG52LxvS7gO4yJpFcyiA+I
+4hjdctSzIqMnSuqKDoJr+JYRV/kiHgRCTy+sYjwhfotU6l5jsf5u2xYsxvhMyZJe
+9rphWTBnbGnCnNnsLKEZDngVSLm/gy1dLv+1/sO0A3ucphhCP7tb8aYWJsa/zmzx
+axkw6AGdMwLObz2ovo/q7OgAg3q/sDFSBBw03SAJGq2piOVxFUwLLzSl63N/8IjM
+zjNo7t571SchKQPfCCZMtNPCswAx3PCK1myAswIzxGe/LbifBqmNXJ/ssADZ4qem
+wp6bT+L/tjCJuagXx2hvy+QqHlQj4baixtAIdSK8Pv76yJ0DaMa8BnZUCUDxag9u
+mQKABPz9uXwfsAEzRlm6EuoiM7TAHP65/8WQ0B0B4TwtlXPMEI8=
+=bLFk
+-----END PGP SIGNATURE-----
 
-Thanks,
-Adrien
+--yp6m36jp7q6qpjoy--
