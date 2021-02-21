@@ -2,76 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDBAE320A0E
+	by mail.lfdr.de (Postfix) with ESMTP id 6C52D320A0D
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 12:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhBULkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 06:40:15 -0500
-Received: from mail-02.mail-europe.com ([51.89.119.103]:48544 "EHLO
-        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhBULkK (ORCPT
+        id S229866AbhBULjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 06:39:47 -0500
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:46468 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhBULjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 06:40:10 -0500
-Date:   Sun, 21 Feb 2021 11:38:37 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1613907525;
-        bh=a3IDBP1MUD9HVWhd+LV35seWKF7UAKzn50KHWLxZjLs=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=jeA4FCl12JIu9/6k7T8wCa4iAkeZjzYowzqqnIzHnK+GORYGfCisT2MICkGmlSIWA
-         R3K7oW71zzR2L8oyVt2ZIcik2GM3V5iGQTWuOADIF/ZlqDB/mB+qARomfJd20aqLbW
-         mvgYCVu+jTcYvlD8Ac4LaiOUOWMWcvAq7Sm2Pkyo=
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     Willy Tarreau <w@1wt.eu>,
-        Jari Ruusu <jariruusu@users.sourceforge.net>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
-Message-ID: <wZCdYp_4tvo3IvJ4KO3jTbgJaofJam1HGxEuIm09vHQPhoCx4eWLaoZ7yBRvHg_aMA51hqW5SGTV8nshbHebC6LdiUoln5MC5G925JMQrE0=@protonmail.com>
-In-Reply-To: <YDEzOg4WTRWBC7DS@kroah.com>
-References: <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC91OWVGAfyorRbc@kroah.com> <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com> <YC+U+beaI91aXh5z@kroah.com> <OurD0pqDIPLLZlt1kk-JE57wXeMoh0NFPKKcBrbY3ValknDXcpLwAJz6x1DMbB6LNZ6FDdeUrPM-pX60VF5FERTiDK_gzgHy4tq7iG3MFAM=@protonmail.com> <YC+d/NyXDebGSHwN@kroah.com> <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com> <RpmkVZBUhx36C8VTTIM1SZz6jf46qBoOL4rMaBMuTMRTe-TQGmEfgeMcrGhXWt1N6SSPrHfFERM_hzHRBod7Xn9XV6d0cyEHoQ8nqXi7rXA=@protonmail.com> <YDEzOg4WTRWBC7DS@kroah.com>
+        Sun, 21 Feb 2021 06:39:41 -0500
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lDn4g-000440-JL; Sun, 21 Feb 2021 11:38:54 +0000
+Received: from madding.kot-begemot.co.uk ([192.168.3.98])
+        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lDn4e-0002LU-7v; Sun, 21 Feb 2021 11:38:54 +0000
+Subject: Re: NFS Caching broken in 4.19.37
+To:     Salvatore Bonaccorso <carnil@debian.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "940821@bugs.debian.org" <940821@bugs.debian.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Bruce Fields <bfields@fieldses.org>,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
+References: <5022bdc4-9f3e-9756-cbca-ada37f88ecc7@cambridgegreys.com>
+ <YDFrN0rZAJBbouly@eldamar.lan>
+ <af5cebbd-74c9-9345-9fe8-253fb96033f6@cambridgegreys.com>
+ <BEBA9809-373A-4172-B4AD-E19D82E56DB1@oracle.com>
+ <YDIkH6yVgLoALT6x@eldamar.lan>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Organization: Cambridge Greys
+Message-ID: <9305dc03-5557-5e18-e5c9-aaf886a03fff@cambridgegreys.com>
+Date:   Sun, 21 Feb 2021 11:38:51 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <YDIkH6yVgLoALT6x@eldamar.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, February 20, 2021 6:05 PM, Greg Kroah-Hartman <gregkh@linuxfou=
-ndation.org> wrote:
-> On Sat, Feb 20, 2021 at 01:29:21PM +0000, Jari Ruusu wrote:
-> > I have been able to narrow the beginning of the problem to these kernel=
-s:
-> > 4.14.188 ... 4.14.202
-> > Same "fix" that went info 4.14.y is also bugging 4.19.y kernels.
->
-> Great, any chance you can narrow this down to the commit itself?
+On 21/02/2021 09:13, Salvatore Bonaccorso wrote:
+> Hi,
+> 
+> On Sat, Feb 20, 2021 at 08:16:26PM +0000, Chuck Lever wrote:
+>>
+>>
+>>> On Feb 20, 2021, at 3:13 PM, Anton Ivanov <anton.ivanov@cambridgegreys.com> wrote:
+>>>
+>>> On 20/02/2021 20:04, Salvatore Bonaccorso wrote:
+>>>> Hi,
+>>>>
+>>>> On Mon, Jul 08, 2019 at 07:19:54PM +0100, Anton Ivanov wrote:
+>>>>> Hi list,
+>>>>>
+>>>>> NFS caching appears broken in 4.19.37.
+>>>>>
+>>>>> The more cores/threads the easier to reproduce. Tested with identical
+>>>>> results on Ryzen 1600 and 1600X.
+>>>>>
+>>>>> 1. Mount an openwrt build tree over NFS v4
+>>>>> 2. Run make -j `cat /proc/cpuinfo | grep vendor | wc -l` ; make clean in a
+>>>>> loop
+>>>>> 3. Result after 3-4 iterations:
+>>>>>
+>>>>> State on the client
+>>>>>
+>>>>> ls -laF /var/autofs/local/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+>>>>>
+>>>>> total 8
+>>>>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+>>>>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+>>>>>
+>>>>> State as seen on the server (mounted via nfs from localhost):
+>>>>>
+>>>>> ls -laF /var/autofs/local/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+>>>>> total 12
+>>>>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+>>>>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+>>>>> -rw-r--r-- 1 anivanov anivanov   32 Jul  8 11:40 ipcbuf.h
+>>>>>
+>>>>> Actual state on the filesystem:
+>>>>>
+>>>>> ls -laF /exports/work/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+>>>>> total 12
+>>>>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+>>>>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+>>>>> -rw-r--r-- 1 anivanov anivanov   32 Jul  8 11:40 ipcbuf.h
+>>>>>
+>>>>> So the client has quite clearly lost the plot. Telling it to drop caches and
+>>>>> re-reading the directory shows the file present.
+>>>>>
+>>>>> It is possible to reproduce this using a linux kernel tree too, just takes
+>>>>> much more iterations - 10+ at least.
+>>>>>
+>>>>> Both client and server run 4.19.37 from Debian buster. This is filed as
+>>>>> debian bug 931500. I originally thought it to be autofs related, but IMHO it
+>>>>> is actually something fundamentally broken in nfs caching resulting in cache
+>>>>> corruption.
+>>>> According to the reporter downstream in Debian, at
+>>>> https://bugs.debian.org/940821#26 thi seem still reproducible with
+>>>> more recent kernels than the initial reported. Is there anything Anton
+>>>> can provide to try to track down the issue?
+>>>>
+>>>> Anton, can you reproduce with current stable series?
+>>>
+>>> 100% reproducible with any kernel from 4.9 to 5.4, stable or backports. It may exist in earlier versions, but I do not have a machine with anything before 4.9 to test at present.
+>>
+>> Confirming you are varying client-side kernels. Should the Linux
+>> NFS client maintainers be Cc'd?
+> 
+> Ok, agreed. Let's add them as well. NFS client maintainers any ideas
+> on how to trackle this?
 
-I am not able to test WiFi on that laptop computer anymore,
-because that laptop now connects to world using wired connection.
-It was that WiFI->wired connection change that led me to realize
-the buggyness of in-tree iwlwifi in 4.19.y kernels.
+This is not observed with Debian backports 5.10 package
 
-I did that narrowing to specific kernel versions by digging my
-archived backup files and their notes. No tests were run.
+uname -a
+Linux madding 5.10.0-0.bpo.3-amd64 #1 SMP Debian 5.10.13-1~bpo10+1 
+(2021-02-11) x86_64 GNU/Linux
 
-Problems started triggering in those kernels that I mentioned in
-earlier email. That does not mean that the bugs were not already
-there in kernels older that those. Maybe some change just widened
-"window of opportunity" enough for me to see the issues.
+I left the testcase running for ~ 4 hours on a 6core/12thread Ryzen. It 
+should have blown up 10 times by now.
 
-In-tree iwlwifi in 4.19.y is missing locking fixes. No amount of
-smooth-talking is going to change that.
+So one of the commits between 5.4 and 5.10.13 fixed it.
 
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
+If nobody can think of a particular commit which fixes it, I can try 
+dissecting it during the week.
 
+A.
+
+> 
+>>
+>>>  From 1-2 make clean && make  cycles to one afternoon depending on the number of machine cores. More cores/threads the faster it does it.
+>>>
+>>> I tried playing with protocol minor versions, caching options, etc - it is still reproducible for any nfs4 settings as long as there is client side caching of metadata.
+>>>
+>>> A.
+>>>
+>>>>
+>>>> Regards,
+>>>> Salvatore
+>>>>
+>>>
+>>> -- 
+>>> Anton R. Ivanov
+>>> Cambridgegreys Limited. Registered in England. Company Number 10273661
+>>> https://www.cambridgegreys.com/
+>>
+>> --
+>> Chuck Lever
+> 
+> Regards,
+> Salvatore
+> 
+
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
