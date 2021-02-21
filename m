@@ -2,226 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177AA320ACC
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E0CC320ADE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbhBUN7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 08:59:45 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:29839 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhBUN7Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 08:59:25 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id C7510A15B0;
-        Sun, 21 Feb 2021 14:58:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=95s+AzOiGXf8
-        TEV6sBKkmLgoLbV83d7l8aV1FakcGqQ=; b=W4e06nrtuROWepYPVfKA9wtuovTw
-        I2YZ13J8k0OsEjmWPqxPB2AiwkBirovipeLxhoRHecsvyj2yDZQRMdmRGzXZ+u0E
-        vVNJW/XdXWXlH8ss8ng8AeKfnMNWIDQHkSHeMRCAdSjmMTOXH0dyOyb4x6kof+1e
-        USefnTU/SskIGvZZ/O4IDdPn7ElnBQaFsDGrQ9b/rkEB51A8TeTgtnQvOd8x8gBH
-        mxtEKktaXudyOElyK6XrxxuMhP+W2GU/3KOtFJR7gSCdd90uJiEhiv4VB/C6aK4L
-        T+oux/Hzc9nQ7YLyTQUSPs/iXHRxqjOxVhjYwDMm3zl6T9u64pPn2WrlDA==
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 9/9] ALSA: virtio: introduce device suspend/resume support
-Date:   Sun, 21 Feb 2021 14:57:31 +0100
-Message-ID: <20210221135731.51348-10-anton.yakovlev@opensynergy.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210221135731.51348-1-anton.yakovlev@opensynergy.com>
-References: <20210221135731.51348-1-anton.yakovlev@opensynergy.com>
+        id S229925AbhBUOEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:04:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhBUOD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 09:03:59 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E86E64EE0;
+        Sun, 21 Feb 2021 14:03:15 +0000 (UTC)
+Date:   Sun, 21 Feb 2021 14:03:12 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de
+Subject: Re: [PATCH v8 10/22] counter: Standardize to ERANGE for limit
+ exceeded errors
+Message-ID: <20210221140312.299b0e5a@archlinux>
+In-Reply-To: <YCsfXGzfEgRAD9p9@shinobu>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+        <7fa80c10fcd10d1d47d1bddced2b2cca3ff59ba9.1613131238.git.vilhelm.gray@gmail.com>
+        <20210214171021.41b3e4e3@archlinux>
+        <YCsfXGzfEgRAD9p9@shinobu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-02.open-synergy.com (10.26.10.22)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All running PCM substreams are stopped on device suspend and restarted
-on device resume.
+On Tue, 16 Feb 2021 10:26:52 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
----
- sound/virtio/virtio_card.c    | 57 +++++++++++++++++++++++++++++++++++
- sound/virtio/virtio_pcm.c     |  1 +
- sound/virtio/virtio_pcm_ops.c | 44 ++++++++++++++++++++-------
- 3 files changed, 91 insertions(+), 11 deletions(-)
+> On Sun, Feb 14, 2021 at 05:10:21PM +0000, Jonathan Cameron wrote:
+> > On Fri, 12 Feb 2021 21:13:34 +0900
+> > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+> >   
+> > > ERANGE is a semantically better error code to return when an argument
+> > > value falls outside the supported limit range of a device.  
+> > 
+> > #define	ERANGE		34	/* Math result not representable */
+> > 
+> > Not generally applicable to a parameter being out of range
+> > despite the name.
+> > #define	EINVAL		22	/* Invalid argument */
+> > Is probably closer to what we want to describe here.
+> > 
+> > Jonathan  
+> 
+> The comment for ERANGE in error-base.h may be terse to a fault. I
+> believe there's a connotation here provided by ERANGE that is absent
+> from EINVAL: primarily that the device buffer is incapable of supporting
+> the desired value (i.e. there is a hardware limitation).
+> 
+> This is why strtoul() returns ERANGE if the correct value is outside the
+> range of representable values: the result of the operation is valid in
+> theory (it would be an unsigned integer), but it cannot be returned to
+> the user due to a limitation of the hardware to support that value (e.g.
+> 32-bit registers) [1].
+> 
+> The changes in this patch follow the same logic: these are arguments
+> that are valid in theory (e.g. they are unsigned integers), but the
+> underlying devices are incapable of processing such a value (e.g. the
+> 104-QUAD-8 can only handle 24-bit values).
+> 
+> [1] https://stackoverflow.com/a/34981398/1806289
 
-diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-index 787a4dec1da8..1f0a0fa7bbc0 100644
---- a/sound/virtio/virtio_card.c
-+++ b/sound/virtio/virtio_card.c
-@@ -373,6 +373,59 @@ static void virtsnd_config_changed(struct virtio_device *vdev)
- 			 "sound device configuration was changed\n");
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+/**
-+ * virtsnd_freeze() - Suspend device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_freeze(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+
-+	/* Stop all the virtqueues. */
-+	vdev->config->reset(vdev);
-+	vdev->config->del_vqs(vdev);
-+
-+	virtsnd_ctl_msg_cancel_all(snd);
-+
-+	kfree(snd->event_msgs);
-+
-+	/*
-+	 * If the virtsnd_restore() fails before re-allocating events, then we
-+	 * get a dangling pointer here.
-+	 */
-+	snd->event_msgs = NULL;
-+
-+	return 0;
-+}
-+
-+/**
-+ * virtsnd_restore() - Resume device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_restore(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+	int rc;
-+
-+	rc = virtsnd_find_vqs(snd);
-+	if (rc)
-+		return rc;
-+
-+	virtio_device_ready(vdev);
-+
-+	virtsnd_enable_event_vq(snd);
-+
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
-+
- static const struct virtio_device_id id_table[] = {
- 	{ VIRTIO_ID_SOUND, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -386,6 +439,10 @@ static struct virtio_driver virtsnd_driver = {
- 	.probe = virtsnd_probe,
- 	.remove = virtsnd_remove,
- 	.config_changed = virtsnd_config_changed,
-+#ifdef CONFIG_PM_SLEEP
-+	.freeze = virtsnd_freeze,
-+	.restore = virtsnd_restore,
-+#endif
- };
- 
- static int __init init(void)
-diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-index 5f7b4090c6a2..d7471e0a9d04 100644
---- a/sound/virtio/virtio_pcm.c
-+++ b/sound/virtio/virtio_pcm.c
-@@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
- 		SNDRV_PCM_INFO_BATCH |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_RESUME |
- 		SNDRV_PCM_INFO_PAUSE;
- 
- 	if (!info->channels_min || info->channels_min > info->channels_max) {
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-index 07510778b555..ccef64502c13 100644
---- a/sound/virtio/virtio_pcm_ops.c
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -218,6 +218,10 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (rc)
- 		return rc;
- 
-+	/* If messages have already been allocated before, do nothing. */
-+	if (runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
-+		return 0;
-+
- 	return virtsnd_pcm_msg_alloc(vss, periods, period_bytes);
- }
- 
-@@ -258,19 +262,21 @@ static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
- 	}
- 
- 	spin_lock_irqsave(&vss->lock, flags);
--	/*
--	 * Since I/O messages are asynchronous, they can be completed
--	 * when the runtime structure no longer exists. Since each
--	 * completion implies incrementing the hw_ptr, we cache all the
--	 * current values needed to compute the new hw_ptr value.
--	 */
--	vss->frame_bytes = runtime->frame_bits >> 3;
--	vss->period_size = runtime->period_size;
--	vss->buffer_size = runtime->buffer_size;
-+	if (runtime->status->state != SNDRV_PCM_STATE_SUSPENDED) {
-+		/*
-+		 * Since I/O messages are asynchronous, they can be completed
-+		 * when the runtime structure no longer exists. Since each
-+		 * completion implies incrementing the hw_ptr, we cache all the
-+		 * current values needed to compute the new hw_ptr value.
-+		 */
-+		vss->frame_bytes = runtime->frame_bits >> 3;
-+		vss->period_size = runtime->period_size;
-+		vss->buffer_size = runtime->buffer_size;
- 
--	vss->hw_ptr = 0;
-+		vss->hw_ptr = 0;
-+		vss->msg_last_enqueued = -1;
-+	}
- 	vss->xfer_xrun = false;
--	vss->msg_last_enqueued = -1;
- 	vss->msg_count = 0;
- 	spin_unlock_irqrestore(&vss->lock, flags);
- 
-@@ -300,6 +306,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 	int rc;
- 
- 	switch (command) {
-+	case SNDRV_PCM_TRIGGER_RESUME: {
-+		/*
-+		 * We restart the substream by executing the standard command
-+		 * sequence.
-+		 */
-+		rc = virtsnd_pcm_hw_params(substream, NULL);
-+		if (rc)
-+			return rc;
-+
-+		rc = virtsnd_pcm_prepare(substream);
-+		if (rc)
-+			return rc;
-+
-+		fallthrough;
-+	}
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: {
- 		struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
-@@ -326,6 +347,7 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 
- 		return virtsnd_ctl_msg_send_sync(snd, msg);
- 	}
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: {
- 		spin_lock_irqsave(&vss->lock, flags);
--- 
-2.30.0
+Its a bit of a stretch, but I can't claim to feel that strongly about
+this.
 
+Jonathan
+
+> 
+> William Breathitt Gray
 
