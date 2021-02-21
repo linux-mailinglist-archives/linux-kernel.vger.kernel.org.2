@@ -2,56 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29136320B3E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 169A2320B44
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:10:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230038AbhBUPC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 10:02:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57190 "EHLO mail.kernel.org"
+        id S229961AbhBUPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 10:09:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhBUPC5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 10:02:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52E1E64EDE;
-        Sun, 21 Feb 2021 15:02:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613919736;
-        bh=d4ANynSmNbXObqDDoOwixZII/pFiyoIFifqZb3QHJZQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BV9ea2WRL93VHHdd8M4b8HmNPaZy1+rg+pDZAZdqOMg7bSHrdC7QpKLfxCHBi3d+w
-         AlokQjkItPU6LenTidaXAe8jDxkUsXPerszhfTEjGRClM+8bgPooQYW9OKjzSiCS27
-         EEh2oy7Qnon8J3Rvbp5GbJBHAJgcq/smrvnFlO0w=
-Date:   Sun, 21 Feb 2021 16:02:14 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     karthik alapati <mail@karthek.com>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] staging: media/atomisp: don't compile unused code
-Message-ID: <YDJ19vSgRjR6edby@kroah.com>
-References: <cover.1613915981.git.mail@karthek.com>
- <90eb63796a8f8aca988efb33247ea01f4a860074.1613915981.git.mail@karthek.com>
+        id S229802AbhBUPJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 10:09:54 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC41864EE6;
+        Sun, 21 Feb 2021 15:09:11 +0000 (UTC)
+Date:   Sun, 21 Feb 2021 15:09:07 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 2/2] dt-bindings: vcnl3020: add proximity rate in hz
+Message-ID: <20210221150907.2161b964@archlinux>
+In-Reply-To: <20210216145346.18304-3-i.mikhaylov@yadro.com>
+References: <20210216145346.18304-1-i.mikhaylov@yadro.com>
+        <20210216145346.18304-3-i.mikhaylov@yadro.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <90eb63796a8f8aca988efb33247ea01f4a860074.1613915981.git.mail@karthek.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 21, 2021 at 07:34:57PM +0530, karthik alapati wrote:
-> currently the functions defined in ibuf_ctrl_rmgr.c file are only
-> used by isys_init.c when CONFIG_VIDEO_ATOMISP_ISP2401 is selected
-> so dont't compile it when not needed, also fixes some sparse warnings
+On Tue, 16 Feb 2021 17:53:46 +0300
+Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+
+> Describe the possible proximity values in herzes for vcnl3020.
+Hertz
+
+Why does this belong in DT?
+
+DT bindings should reflect physical characteristics of the device, so how
+is wired up, whether there are plastic windows over it that might affect
+calibration - that sort of thing.   A rate of sampling proximity seems
+like a policy decision best left to user space.
+
+Jonathan
+
 > 
-> Signed-off-by: karthik alapati <mail@karthek.com>
+> Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
 > ---
->  drivers/staging/media/atomisp/Makefile | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
+>  .../devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml  | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
+> index fbd3a2e32280..1bb6ca1770f3 100644
+> --- a/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
+> +++ b/Documentation/devicetree/bindings/iio/proximity/vishay,vcnl3020.yaml
+> @@ -43,6 +43,12 @@ properties:
+>             180000, 190000, 200000]
+>      default: 20000
+>  
+> +  vishay,proximity-rate-hz:
+> +    description:
+> +      The rate of proximity measurement.
+> +    enum: [1, 3, 7, 16, 31, 62, 125, 500]
+> +    default: 1
+> +
+>  required:
+>    - compatible
+>    - reg
 
-This has nothing to do with the previous 2 patches, why did you add it
-to this series?
-
-And note, you missed the correct people to send this patch to, so it's
-not going to ever get applied :(
-
-thanks,
-
-greg k-h
