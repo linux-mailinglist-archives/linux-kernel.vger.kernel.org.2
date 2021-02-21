@@ -2,95 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 690BD320AF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24BCC320AFC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbhBUOg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:36:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35800 "EHLO
+        id S230019AbhBUOh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:37:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhBUOgu (ORCPT
+        with ESMTP id S229999AbhBUOhy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:36:50 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C22C061574;
-        Sun, 21 Feb 2021 06:36:10 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id e9so6014552plh.3;
-        Sun, 21 Feb 2021 06:36:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0NKlohU11NhDaMLzPFWNpnCD3UlsUYj1N/lz0ikZqEU=;
-        b=unte5hEVeIHbWIlnmFSIky6LLV07dwUI9HCak7zYa6fyGvPNNKaCoM0RYeToLptvNz
-         uiOpXFxkFPEj53cmXnQRg2GbmHWGmxAN0kJSuZ4fgS7OVLsUWzPRq1tu9Y49DDDAa7jJ
-         OqA++CAkcigfdc0vp6o9fRs6YAmiLH3GiH+9QfFcFUjRrL2gBNl31UqDuLWnxyS/Lb7c
-         rNkWE2Ei3xaQh5TdWWyinKkTiZu5E+Z/YFSIliBwjPW+AHOuttKjvwryP2s0GCzCC80a
-         qFaMSy4szmUCE/mJ4bUqpjoAywITS6MSST35bVbaah6hDvVMSKL7xtI4EyLPd9tS+n9p
-         1rUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0NKlohU11NhDaMLzPFWNpnCD3UlsUYj1N/lz0ikZqEU=;
-        b=lzYyLRb2MCzL29IOWCZnEdcVvIFktTcTQ8JPtvomD40HytvouG+Ojx9y56Mbl1SDnr
-         vCybXy7Mwa/Rs2gGVowbTIDxkgI5ocw6KYCd/VFGncWItIQV3nbRZXFIsrGP5RlJRHk5
-         otCNsSVwUYBdavfG7ZXDva71g467SCNPa7cGAvgYQO6nCZz6LoYi2oX7Mvcg5z2D+3MF
-         xu2QAx8K19pV6ui5r3g9dWhBQXDxgl9VyWZrNA5PGWkhcgMbg8d85sNDvwXFd5mU9k3C
-         6KMvJpgot24kXVYkiPi1aHRQgVqEvmRWjAF0s6qYtl9X9GOkz0IVr+rQwRE+SBQnDLuy
-         ekZg==
-X-Gm-Message-State: AOAM531yNLWHDbXPdSQ2AbnZLoR6a6Xm47ula5kbF4lVCO2zPTOBkONs
-        1kuXWuDzJb1+xqbPLCbC0aw=
-X-Google-Smtp-Source: ABdhPJx/3JBAbs1QqHYNQuzH/72GS4CrMvmYREX2IaZalk4T+qmnBdKr18y3/UzCAnPzfq4QS34oVw==
-X-Received: by 2002:a17:90a:1904:: with SMTP id 4mr18658104pjg.212.1613918169730;
-        Sun, 21 Feb 2021 06:36:09 -0800 (PST)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([202.120.40.82])
-        by smtp.gmail.com with ESMTPSA id m16sm16142189pfd.203.2021.02.21.06.36.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 06:36:09 -0800 (PST)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Tariq Toukan <tariqt@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Or Gerlitz <ogerlitz@mellanox.com>,
-        Jack Morgenstein <jackm@dev.mellanox.co.il>,
-        Moni Shoua <monis@mellanox.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH] net/mlx4_core: Add missed mlx4_free_cmd_mailbox()
-Date:   Sun, 21 Feb 2021 22:35:59 +0800
-Message-Id: <20210221143559.390277-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 21 Feb 2021 09:37:54 -0500
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D0FC061574;
+        Sun, 21 Feb 2021 06:37:14 -0800 (PST)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 7CFB228E5; Sun, 21 Feb 2021 09:37:12 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 7CFB228E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1613918232;
+        bh=Q0gnwv2t4NZsEC7k5ibkWa5MYZGFMGKdh3cOh4PXWJ8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vmmiIdXpVc38B39drEy7+CfrDKlMzrhsPw0lKWzTCJbFkKCqnUlHOwIWAz/ol6J6L
+         7Set20VbLn82On8qh6/QfKPeTTRywcVCfr/bvPkJ4h+wEjc9TxaB7tL2QmBzr8Uv1e
+         4QvPwPbN4B4DdfXdzAJark17xbQQM9DegYBcAlU8=
+Date:   Sun, 21 Feb 2021 09:37:12 -0500
+From:   Bruce Fields <bfields@fieldses.org>
+To:     Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc:     Salvatore Bonaccorso <carnil@debian.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "940821@bugs.debian.org" <940821@bugs.debian.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
+Subject: Re: NFS Caching broken in 4.19.37
+Message-ID: <20210221143712.GA15975@fieldses.org>
+References: <5022bdc4-9f3e-9756-cbca-ada37f88ecc7@cambridgegreys.com>
+ <YDFrN0rZAJBbouly@eldamar.lan>
+ <af5cebbd-74c9-9345-9fe8-253fb96033f6@cambridgegreys.com>
+ <BEBA9809-373A-4172-B4AD-E19D82E56DB1@oracle.com>
+ <YDIkH6yVgLoALT6x@eldamar.lan>
+ <9305dc03-5557-5e18-e5c9-aaf886a03fff@cambridgegreys.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9305dc03-5557-5e18-e5c9-aaf886a03fff@cambridgegreys.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mlx4_do_mirror_rule() forgets to call mlx4_free_cmd_mailbox() to
-free the memory region allocated by mlx4_alloc_cmd_mailbox() before
-an exit.
-Add the missed call to fix it.
+On Sun, Feb 21, 2021 at 11:38:51AM +0000, Anton Ivanov wrote:
+> On 21/02/2021 09:13, Salvatore Bonaccorso wrote:
+> >On Sat, Feb 20, 2021 at 08:16:26PM +0000, Chuck Lever wrote:
+> >>Confirming you are varying client-side kernels. Should the Linux
+> >>NFS client maintainers be Cc'd?
+> >
+> >Ok, agreed. Let's add them as well. NFS client maintainers any ideas
+> >on how to trackle this?
+> 
+> This is not observed with Debian backports 5.10 package
+> 
+> uname -a
+> Linux madding 5.10.0-0.bpo.3-amd64 #1 SMP Debian 5.10.13-1~bpo10+1
+> (2021-02-11) x86_64 GNU/Linux
 
-Fixes: 78efed275117 ("net/mlx4_core: Support mirroring VF DMFS rules on both ports")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx4/resource_tracker.c | 1 +
- 1 file changed, 1 insertion(+)
+I'm still unclear: when you say you tested a certain kernel: are you
+varying the client-side kernel version, or the server side, or both at
+once?
 
-diff --git a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-index 394f43add85c..a99e71bc7b3c 100644
---- a/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/resource_tracker.c
-@@ -4986,6 +4986,7 @@ static int mlx4_do_mirror_rule(struct mlx4_dev *dev, struct res_fs_rule *fs_rule
- 
- 	if (!fs_rule->mirr_mbox) {
- 		mlx4_err(dev, "rule mirroring mailbox is null\n");
-+		mlx4_free_cmd_mailbox(dev, mailbox);
- 		return -EINVAL;
- 	}
- 	memcpy(mailbox->buf, fs_rule->mirr_mbox, fs_rule->mirr_mbox_size);
--- 
-2.27.0
-
+--b.
