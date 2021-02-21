@@ -2,88 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC7E320B8B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D117320B92
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhBUPs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 10:48:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42948 "EHLO mail.kernel.org"
+        id S229802AbhBUPwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 10:52:19 -0500
+Received: from mout.gmx.net ([212.227.17.22]:60717 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229974AbhBUPsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 10:48:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9321564F06;
-        Sun, 21 Feb 2021 15:48:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613922492;
-        bh=jcWCoBwWx2HnSC/EBefOB99kQ2ZXLE7HTEG/sXIXKog=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qquIW9v/tVu4EORzsxrDLsva3f/tNw/QNj5R3UeooTpAeXX3KNXGE+M9v6YrLWiSk
-         CX+tU/SLV7vtuIoP1+PygFsBpGidFYgeTbDkDtFnchBIhmUCw4p0yBoWz2app5T0S1
-         9hGMZYaChoGyqQZ9zRPXzlfQcPH/ugSzCtxy5oppeu/iWebWxay1VpB1z/HmnG4atw
-         ZFR1MQpufrjahC2LvVZ2m8jNwdTLczR6u1n6dcIVJDuM3nu6MPb054hWPfOfTlODzp
-         pH14Y8fSMOGHPibWx1X8fZA5f+WwXIdTgYFLKjXHUCoEbZSJW6ZE6xNdGdY3LAh4ZG
-         X3tMmOMMHpl5A==
-Received: by mail-ej1-f54.google.com with SMTP id hs11so25266976ejc.1;
-        Sun, 21 Feb 2021 07:48:12 -0800 (PST)
-X-Gm-Message-State: AOAM5309OKVyrGbzfurxoODzOLeAbhXS3O8RK+cg+A7NEAS8g9z14oDZ
-        /UlQhD57H9pF08NIXDQKvMLp6EZjIkdtAKWFn98=
-X-Google-Smtp-Source: ABdhPJyP+b6iCRU0oPc1IlpU3m6/5pCUO3+cOICburAsl7GU24805l8o9tUdORtu3NiHyRXBuySfbjnBtOKawO2nvE4=
-X-Received: by 2002:a17:906:1c4f:: with SMTP id l15mr6507034ejg.148.1613922491110;
- Sun, 21 Feb 2021 07:48:11 -0800 (PST)
+        id S229663AbhBUPwG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 10:52:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613922599;
+        bh=Bbi8D9zimrBxrToyY2cmCuzduWBv7NSyYLuDnJH9sAo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=e2CQYgvDFsIWTTa+5nOrljkJjJ/IaUUr7dfBxKEewpRP273HL5xLU7zbBWXg9H/Kh
+         CyWbeg7tkUMr0A/6COgWTvAGMpFtM/NSjdYAyrWQGb0XVhlpYX4Eccgvrjb04C/ROG
+         hzGlZkAbFJCbKoBvq/Zby2HrDMCuW2HEaWURAudc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
+ (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MQ5vc-1lR8go2wUq-00M85s; Sun, 21 Feb 2021 16:49:58 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 0/8] Fork brute force attack mitigation
+Date:   Sun, 21 Feb 2021 16:49:11 +0100
+Message-Id: <20210221154919.68050-1-john.wood@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1613750416-11901-1-git-send-email-abel.vesa@nxp.com> <1613750416-11901-16-git-send-email-abel.vesa@nxp.com>
-In-Reply-To: <1613750416-11901-16-git-send-email-abel.vesa@nxp.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Sun, 21 Feb 2021 16:47:59 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPdNx7LSpNS7VmwpGXyNSUSZjEVDMmVpz1T3nmqWWuqH=g@mail.gmail.com>
-Message-ID: <CAJKOXPdNx7LSpNS7VmwpGXyNSUSZjEVDMmVpz1T3nmqWWuqH=g@mail.gmail.com>
-Subject: Re: [RFC 15/19] arm64: dts: imx8mq: Add all pl301 nodes
-To:     Abel Vesa <abel.vesa@nxp.com>
-Cc:     Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Georgi Djakov <djakov@kernel.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OhAf9XvO+sZYfuIy60MlI1jlL30B6+bmI4NFG9TAaaqwkmcMkdm
+ S3GLYv+QOvuXyVkf27DRvsH+0L8iMQdmmtTYTm3YCB5QBxRXZ51pO08O9H7ag3UfDOgmhxs
+ IKTQrbdPt1J6Ca8Uqmud3O6KRKpsioYXmE7tG7P6U337GlPI8tpFTHs7ctEiS+Kzhs5fI4X
+ kzn5Dnhj6EPNPxLhkyvJg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DZMiibCW060=:3tj82Nk20Etv0D/iyR3ot3
+ Ij4L9Afd6/Z4dbMrhEqAb82q0cldoS4PnhesJ4zzUbOORCq1H5U+P26FnE5fr0Fk4uKecjIFY
+ 7QTOAGkvMQHdpttSU4RPLnDnBwgGbBZ0Rcifx4wpByLGbxeX9MNCT4eicDsnl676moQpHu0OZ
+ JKw63APKRIz1J+VY3o4w7OGW3RfBykrNpO4An2VtE7EP17HKu3YrxfOADM7ZzcoRKdfPmk1Mf
+ 0QPo57td9WDYsSZBG+KETxZy4mSP9vGr5sz4y1mIaqjp1RG4419UzZB8dC7uRiV7c6gE2D9f0
+ LWlIcyl2O/7QDXM41kmq6J8JfAWWm1UxuV7g03YwHS6J5hBYAQTlr9iAq6FxuHsHZx5KS4Eas
+ 8v0OdUj66xNlD0pwk43GqhkrNR45atmCujXatdMZwPMMlkppDKeVOKrx+ae7YY09tKMOWyECx
+ rqCVvIrQT3ZImcuhvljPthHBYsoMyByoze4XlSe4MNxxKvtF8u5+X81UCabTD+FLrMUUB+mcy
+ EDmKSmyta7Ef5mjmMXce0Rd03fNgB/CGTqB4bMS+MtFnUHZ+UeQ1Up7jyinvwY3zD7lbdJEYf
+ mb6nNbYJhTQhZ6/LdDpeqn1QhNNJL621aYCwQu91Ynhi4pJXjlWCMvcjXyLs2p8QaByyUlnhx
+ F8+F379ioZsagDTRIiD6/lYfCt1z1uXRD3RLbWxPGwSiT90CuyuLsArfnqofmCZc/KUFB7wZ2
+ Re6Qv/5XG3gOy6sgjH8bjqQ+rSb9xo7LjnTHcIVwjbikLcuBLYCmasZymYVw6erUSZgZDyitf
+ WVIJU6VaYKRiuUjYxInIcm2ElNZcfA0+EZAHQ/1yV4MtBRZpl2pmg0evacOInmHI9hT6qgNr2
+ hx9uxBCh66IrW+ZR9xqQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021 at 17:04, Abel Vesa <abel.vesa@nxp.com> wrote:
->
-> Add all the pl301s found on i.MX8MQ, according to the bus diagram.
-> Each pl301 has its own clock, icc id and opp table. They are probed
-> by the imx-bus driver.
->
-> Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 180 ++++++++++++++++++++++
->  1 file changed, 180 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> index e30e948648e9..5f9ffa465d6c 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
-> @@ -1447,5 +1447,185 @@ ddr-pmu@3d800000 {
->                         interrupt-parent = <&gic>;
->                         interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
->                 };
-> +
-> +               pl301_main: pl301@0 {
-> +                       compatible = "fsl,imx8m-nic";
+Attacks against vulnerable userspace applications with the purpose to brea=
+k
+ASLR or bypass canaries traditionally use some level of brute force with
+the help of the fork system call. This is possible since when creating a
+new process using fork its memory contents are the same as those of the
+parent process (the process that called the fork system call). So, the
+attacker can test the memory infinite times to find the correct memory
+values or the correct memory addresses without worrying about crashing the
+application.
 
-Does it pass dtc W=1 and dtbs_check without the "reg" property?
+Based on the above scenario it would be nice to have this detected and
+mitigated, and this is the goal of this patch serie. Specifically the
+following attacks are expected to be detected:
 
-Please also name the node in a generic way (see for example  DT spec
-"2.2.2 Generic Names Recommendation").
+1.- Launching (fork()/exec()) a setuid/setgid process repeatedly until a
+    desirable memory layout is got (e.g. Stack Clash).
+2.- Connecting to an exec()ing network daemon (e.g. xinetd) repeatedly
+    until a desirable memory layout is got (e.g. what CTFs do for simple
+    network service).
+3.- Launching processes without exec() (e.g. Android Zygote) and exposing
+    state to attack a sibling.
+4.- Connecting to a fork()ing network daemon (e.g. apache) repeatedly unti=
+l
+    the previously shared memory layout of all the other children is
+    exposed (e.g. kind of related to HeartBleed).
 
-Best regards,
-Krzysztof
+In each case, a privilege boundary has been crossed:
+
+Case 1: setuid/setgid process
+Case 2: network to local
+Case 3: privilege changes
+Case 4: network to local
+
+So, what will really be detected are fork/exec brute force attacks that
+cross any of the commented bounds.
+
+The implementation details and comparison against other existing
+implementations can be found in the "Documentation" patch.
+
+This v3 version has changed a lot from the v2. Basically the application
+crash period is now compute on an on-going basis using an exponential
+moving average (EMA), a detection of a brute force attack through the
+"execve" system call has been added and the crossing of the commented
+privilege bounds are taken into account. Also, the fine tune has also been
+removed and now, all this kind of attacks are detected without
+administrator intervention.
+
+In the v2 version Kees Cook suggested to study if the statistical data
+shared by all the fork hierarchy processes can be tracked in some other
+way. Specifically the question was if this info can be hold by the family
+hierarchy of the mm struct. After studying this hierarchy I think it is no=
+t
+suitable for the Brute LSM since they are totally copied on fork() and in
+this case we want that they are shared. So I leave this road.
+
+So, knowing all this information I will explain now the different patches:
+
+The 1/8 patch defines a new LSM hook to get the fatal signal of a task.
+This will be useful during the attack detection phase.
+
+The 2/8 patch defines a new LSM and manages the statistical data shared by
+all the fork hierarchy processes.
+
+The 3/8 patch detects a fork/exec brute force attack.
+
+The 4/8 patch narrows the detection taken into account the privilege
+boundary crossing.
+
+The 5/8 patch mitigates a brute force attack.
+
+The 6/8 patch adds self-tests to validate the Brute LSM expectations.
+
+The 7/8 patch adds the documentation to explain this implementation.
+
+The 8/8 patch updates the maintainers file.
+
+This patch serie is a task of the KSPP [1] and can also be accessed from m=
+y
+github tree [2] in the "brute_v3" branch.
+
+[1] https://github.com/KSPP/linux/issues/39
+[2] https://github.com/johwood/linux/
+
+The previous versions can be found in:
+
+https://lore.kernel.org/kernel-hardening/20200910202107.3799376-1-keescook=
+@chromium.org/
+https://lore.kernel.org/kernel-hardening/20201025134540.3770-1-john.wood@g=
+mx.com/
+
+Changelog RFC -> v2
+=2D------------------
+- Rename this feature with a more suitable name (Jann Horn, Kees Cook).
+- Convert the code to an LSM (Kees Cook).
+- Add locking  to avoid data races (Jann Horn).
+- Add a new LSM hook to get the fatal signal of a task (Jann Horn, Kees
+  Cook).
+- Add the last crashes timestamps list to avoid false positives in the
+  attack detection (Jann Horn).
+- Use "period" instead of "rate" (Jann Horn).
+- Other minor changes suggested (Jann Horn, Kees Cook).
+
+Changelog v2 -> v3
+=2D-----------------
+- Compute the application crash period on an on-going basis (Kees Cook).
+- Detect a brute force attack through the execve system call (Kees Cook).
+- Detect an slow brute force attack (Randy Dunlap).
+- Fine tuning the detection taken into account privilege boundary crossing
+  (Kees Cook).
+- Taken into account only fatal signals delivered by the kernel (Kees
+  Cook).
+- Remove the sysctl attributes to fine tuning the detection (Kees Cook).
+- Remove the prctls to allow per process enabling/disabling (Kees Cook).
+- Improve the documentation (Kees Cook).
+- Fix some typos in the documentation (Randy Dunlap).
+- Add self-test to validate the expectations (Kees Cook).
+
+John Wood (8):
+  security: Add LSM hook at the point where a task gets a fatal signal
+  security/brute: Define a LSM and manage statistical data
+  securtiy/brute: Detect a brute force attack
+  security/brute: Fine tuning the attack detection
+  security/brute: Mitigate a brute force attack
+  selftests/brute: Add tests for the Brute LSM
+  Documentation: Add documentation for the Brute LSM
+  MAINTAINERS: Add a new entry for the Brute LSM
+
+ Documentation/admin-guide/LSM/Brute.rst  |  224 +++++
+ Documentation/admin-guide/LSM/index.rst  |    1 +
+ MAINTAINERS                              |    7 +
+ include/linux/lsm_hook_defs.h            |    1 +
+ include/linux/lsm_hooks.h                |    4 +
+ include/linux/security.h                 |    4 +
+ kernel/signal.c                          |    1 +
+ security/Kconfig                         |   11 +-
+ security/Makefile                        |    4 +
+ security/brute/Kconfig                   |   13 +
+ security/brute/Makefile                  |    2 +
+ security/brute/brute.c                   | 1102 ++++++++++++++++++++++
+ security/security.c                      |    5 +
+ tools/testing/selftests/Makefile         |    1 +
+ tools/testing/selftests/brute/.gitignore |    2 +
+ tools/testing/selftests/brute/Makefile   |    5 +
+ tools/testing/selftests/brute/config     |    1 +
+ tools/testing/selftests/brute/exec.c     |   44 +
+ tools/testing/selftests/brute/test.c     |  507 ++++++++++
+ tools/testing/selftests/brute/test.sh    |  226 +++++
+ 20 files changed, 2160 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/admin-guide/LSM/Brute.rst
+ create mode 100644 security/brute/Kconfig
+ create mode 100644 security/brute/Makefile
+ create mode 100644 security/brute/brute.c
+ create mode 100644 tools/testing/selftests/brute/.gitignore
+ create mode 100644 tools/testing/selftests/brute/Makefile
+ create mode 100644 tools/testing/selftests/brute/config
+ create mode 100644 tools/testing/selftests/brute/exec.c
+ create mode 100644 tools/testing/selftests/brute/test.c
+ create mode 100755 tools/testing/selftests/brute/test.sh
+
+=2D-
+2.25.1
+
