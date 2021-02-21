@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86382320E9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:51:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1839F320E9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhBUXvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 18:51:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhBUXur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 18:50:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D051364E08;
-        Sun, 21 Feb 2021 23:50:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613951407;
-        bh=wXko/iNr1ukArvR4Rnyr4nOhQqcduBCN36YlmjFpMwE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=jScCAt/CadCfsjNPAadO68NazZY09us2F8gUWPRfsO0WJ3ayElnB7y5QBYM/qdCtS
-         1fclEGvAFweAFLxnv3+Kek+0WwTBVWlNA5RJF4R4/WNWAGBMYHBNlLmJONAMTjr1jR
-         MK0sT4Kg+gCxai8eZKN5P3Xvtf3q6K13++uTB+PZ5jPl2gmbic09NHX4Xj2vKR/tIQ
-         GIu5G+2OLTezWLC4U/S66pky/bNh0u6FXexdjgllVrxHn+G7BbhBxeB2Q18anVbPvr
-         yAN43FcrwfmAy+oq+7Oj48UWDmYj4jdZIkOuGhEb0bFG/dznG4CsPJR3WSw3xp+LjV
-         3bU6GaVcx9eIQ==
-Received: by earth.universe (Postfix, from userid 1000)
-        id 340903C0C96; Mon, 22 Feb 2021 00:50:05 +0100 (CET)
-Date:   Mon, 22 Feb 2021 00:50:05 +0100
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] hsi changes for 5.12
-Message-ID: <20210221235005.5cy7swj6g4kfpwgt@earth.universe>
+        id S229961AbhBUXxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 18:53:38 -0500
+Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:38331 "EHLO
+        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229918AbhBUXxf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 18:53:35 -0500
+Received: from dread.disaster.area (pa49-179-130-210.pa.nsw.optusnet.com.au [49.179.130.210])
+        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id 7E7221ADB51;
+        Mon, 22 Feb 2021 10:52:49 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lDyWu-00Fq01-QV; Mon, 22 Feb 2021 10:52:48 +1100
+Date:   Mon, 22 Feb 2021 10:52:48 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     SelvaKumar S <selvakuma.s1@samsung.com>
+Cc:     linux-nvme@lists.infradead.org, kbusch@kernel.org, axboe@kernel.dk,
+        damien.lemoal@wdc.com, hch@lst.de, sagi@grimberg.me,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, snitzer@redhat.com, selvajove@gmail.com,
+        joshiiitr@gmail.com, nj.shetty@samsung.com, joshi.k@samsung.com,
+        javier.gonz@samsung.com, kch@kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC PATCH v5 0/4] add simple copy support
+Message-ID: <20210221235248.GZ4626@dread.disaster.area>
+References: <CGME20210219124555epcas5p1334e7c4d64ada5dc4a2ca0feb48c1d44@epcas5p1.samsung.com>
+ <20210219124517.79359-1-selvakuma.s1@samsung.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t5uaf76gvassv3u2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210219124517.79359-1-selvakuma.s1@samsung.com>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=YKPhNiOx c=1 sm=1 tr=0 cx=a_idp_d
+        a=JD06eNgDs9tuHP7JIKoLzw==:117 a=JD06eNgDs9tuHP7JIKoLzw==:17
+        a=kj9zAlcOel0A:10 a=qa6Q16uM49sA:10 a=pNaSbsGRAAAA:8 a=7-415B0cAAAA:8
+        a=bdcsEvdjF_AAMq5uHxAA:9 a=CjuIK1q_8ugA:10 a=k8uaQqolKd8A:10
+        a=cz0TccRYsqG1oLvFGeGV:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Feb 19, 2021 at 06:15:13PM +0530, SelvaKumar S wrote:
+> This patchset tries to add support for TP4065a ("Simple Copy Command"),
+> v2020.05.04 ("Ratified")
+> 
+> The Specification can be found in following link.
+> https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1.zip
+> 
+> Simple copy command is a copy offloading operation and is  used to copy
+> multiple contiguous ranges (source_ranges) of LBA's to a single destination
+> LBA within the device reducing traffic between host and device.
+> 
+> This implementation doesn't add native copy offload support for stacked
+> devices rather copy offload is done through emulation. Possible use
+> cases are F2FS gc and BTRFS relocation/balance.
 
---t5uaf76gvassv3u2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It sounds like you are missing the most obvious use case for this:
+hooking up filesystem copy_file_range() implementations to allow
+userspace to offload user data copies to hardware....
 
-Hi Linus,
+Another fs level feature that could use this for hardware
+acceleration fallocate(FALLOC_FL_UNSHARE).
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+These are probably going to be far easier to hook up than filesystem
+GC algorithms, and there is also solid data integrity and stress
+testing checking infrastructure for these operations via fstests.
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+> As SCSI XCOPY can take two different block devices and no of source range is
+> equal to 1, this interface can be extended in future to support SCSI XCOPY.
 
-are available in the Git repository at:
+That greatly complicates the implementation. do we even care at this
+point about cross-device XCOPY at this point?
 
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/sre/linux-hsi.git tags/hsi-for-5.12
+Cheers,
 
-for you to fetch changes up to aa57e77b3d28f0df07149d88c47bc0f3aa77330b:
-
-  HSI: Fix PM usage counter unbalance in ssi_hw_init (2020-12-29 23:57:06 +0100)
-
-----------------------------------------------------------------
-HSI changes for the 5.12 series
-
-* runtime PM usage counter fix
-
-----------------------------------------------------------------
-Zhang Qilong (1):
-      HSI: Fix PM usage counter unbalance in ssi_hw_init
-
- drivers/hsi/controllers/omap_ssi_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---t5uaf76gvassv3u2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAy8awACgkQ2O7X88g7
-+pqTug/+OgdsSXfsvSYVWBcvtZBREgbzQcZIoNnGmb6fo9FwmMJsOTqGCDLPnMm1
-XRnK2Hc7IZz5PYc7iAQYPg3OcR/Q9K0jghaRP9JQwP75HCu5DI8GZaaqEoFX+qu8
-Zpcq5DbadcpeUFN8mdCKRreL6mTpob5pHOJBg9Fln9sM8k5HKu4o6DmVeiEgh1L1
-SXErWSNNBl1UBZXUvSlvL4khpkgt929Ddd76t2u111HAS46qHsTAYwPXjLsBXE2f
-BlrbEdE4Nx9P2nF/VQw7N6TV8zP6RywvTvgs5bkojyQQXFcLre3DxJrfKveIjqgC
-jhF1DzwZJ1rEw/qiOG8Fu63nwf4MsCIDSpYmzR9cX6ThojqZ6Q3Ie3uUMB1uZCfg
-jfsSt7pdfdQioNh9fDHyro7Gz3zz9vZq4sqgtZNzInvS2g2riZ+fDqfj6Alqwync
-CVyQk2ZgRsJ8W+d+f6X+0nnLID3fzV0O1xon3sFa+BHoyuxL4M+3gGTUm8KXoGjp
-SqXT+r5auAktybJ4KimLSHqzwB+UDMIPirMyRUaUrmZ/jCU4Zfq7JjfQ5XKgHPUV
-LozVbjVH5/uwsarpelfeo5DXFMNCMcEVfaOa3hDbFZHKzAmtmDWZFZQEnLJAiXbm
-SeXUMvzXGPevzTG3UbFJlu9VhAXqxaSrbSGiW8XmwK7dMjAsMjY=
-=cpcx
------END PGP SIGNATURE-----
-
---t5uaf76gvassv3u2--
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
