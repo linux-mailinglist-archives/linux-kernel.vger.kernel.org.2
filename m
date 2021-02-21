@@ -2,85 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC569320BF0
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 18:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555C0320BF4
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 18:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhBURKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 12:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhBURKf (ORCPT
+        id S230124AbhBURMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 12:12:47 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:44442 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhBURMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 12:10:35 -0500
-Received: from mail.marcansoft.com (marcansoft.com [IPv6:2a01:298:fe:f::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D5DC061574;
-        Sun, 21 Feb 2021 09:09:54 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 189FC425CB;
-        Sun, 21 Feb 2021 17:09:47 +0000 (UTC)
-Subject: Re: [PATCH v2 20/25] tty: serial: samsung_tty: Use
- devm_ioremap_resource
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, Arnd Bergmann <arnd@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Tony Lindgren <tony@atomide.com>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Alexander Graf <graf@amazon.com>,
-        Will Deacon <will@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210215121713.57687-1-marcan@marcan.st>
- <20210215121713.57687-21-marcan@marcan.st>
- <20210215185135.onivzktfscv5myh2@kozik-lap>
- <20274436-7275-9734-5a07-d6da46b45c5f@marcan.st>
- <20210220191323.ugmzrtkvcxyqqolj@kozik-lap>
- <5a4b3d7095d1ec4be97ec154109632dc@kernel.org>
- <28128b77-87b4-3595-59fa-44600c5bdbc7@marcan.st>
- <87im6l1n7h.wl-maz@kernel.org>
-From:   Hector Martin <marcan@marcan.st>
-Message-ID: <5d2e94bd-af24-6521-5ead-479fd7b757f1@marcan.st>
-Date:   Mon, 22 Feb 2021 02:09:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 21 Feb 2021 12:12:42 -0500
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 11LHBZxQ028780;
+        Mon, 22 Feb 2021 02:11:35 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 11LHBZxQ028780
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613927495;
+        bh=DvvustrzqKtKLI6zhBqGHjkFSER50wKV1i/U9qk6bu8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZEu9kZRKO2IVdqO8rr03PH2gFSU1JKQVYeg7iBkH3M+iGISLPb5ga9X2+3y7sq+u5
+         BvxE7HpLxI9CAu0wxlSVPKPKYigFY8FFX61bpWr8gpLoM96kTIeY0MDxg/jwoKKTbL
+         g7Lba9teuuS2IzA6IOKeGuy4c9ClHQzuITuI2ZKa3PJqTlRg8YXg7IiyFsU1qwiW30
+         PLTuu1K+vDg1JuSR7MQEHOiIvMhCMgqhjDyZ+1J6jMziMk79wLOjmtW5jezxmZ59uU
+         EmepU9W7sLcF73jX6ltH854Jk1FkEf0KuMYz1cD7TuyfqhlZKsmAd8sXNtZIjeo996
+         3EvwaXfG4RBKg==
+X-Nifty-SrcIP: [209.85.210.170]
+Received: by mail-pf1-f170.google.com with SMTP id x129so374365pfx.7;
+        Sun, 21 Feb 2021 09:11:35 -0800 (PST)
+X-Gm-Message-State: AOAM5312wg0/CjR4RcmyPQq3AhInqXbkz2UFpfo33HGhzPRZjuF++lsF
+        Nzl8y0DzZz3GVH8Hds3sPZPT3OFORZKcZMcmfhE=
+X-Google-Smtp-Source: ABdhPJzBtwmlHW4UhRXzXaVsco3d7YPNXCznKnDxzLBaDDk/xQP0zVZbSpy9P5oIEsA3U2iK74eXx+v3ED23ZQCSBjA=
+X-Received: by 2002:a63:575e:: with SMTP id h30mr16533332pgm.7.1613927494874;
+ Sun, 21 Feb 2021 09:11:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87im6l1n7h.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: es-ES
-Content-Transfer-Encoding: 7bit
+References: <20210216031004.552417-1-masahiroy@kernel.org> <20210216031004.552417-2-masahiroy@kernel.org>
+In-Reply-To: <20210216031004.552417-2-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 22 Feb 2021 02:10:57 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARD3FuBmFaNSw7wxSYxRmXheFbWXU-z2gxziP4PrLjEYg@mail.gmail.com>
+Message-ID: <CAK7LNARD3FuBmFaNSw7wxSYxRmXheFbWXU-z2gxziP4PrLjEYg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kbuild: check the minimum linker version in Kconfig
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     David Laight <david.laight@aculab.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        KP Singh <kpsingh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nick Terrell <terrelln@fb.com>,
+        Quentin Perret <qperret@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/02/2021 23.59, Marc Zyngier wrote:
-> Here's what I've been using last time I had to muck with the 4210
-> stuff:
-> 
-> <quote>
-> qemu-system-arm \
-> 	-kernel arch/arm/boot/zImage -M smdkc210 \
-> 	-append "console=ttySAC0,115200n8 earlycon=smh root=/dev/mmcblk0p2 rootwait" \
-> 	-nographic -semihosting -smp 2 \
-> 	-dtb arch/arm/boot/dts/exynos4210-smdkv310.dtb \
-> 	-drive if=sd,driver=null-co -drive if=sd,driver=null-co \
-> 	-drive if=sd,file=../vminstall/bullseye32/MsiKFRxxujYIkiKT.img,format=raw
-> </quote>
-> 
-> where the last line points to a standard Debian image created
-> separately.
+On Tue, Feb 16, 2021 at 12:11 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Unify the two scripts/ld-version.sh and scripts/lld-version.sh, and
+> check the minimum linker version like scripts/cc-version.sh did.
+>
+> I tested this script for some corner cases reported in the past:
+>
+>  - GNU ld version 2.25-15.fc23
+>    as reported by commit 8083013fc320 ("ld-version: Fix it on Fedora")
+>
+>  - GNU ld (GNU Binutils) 2.20.1.20100303
+>    as reported by commit 0d61ed17dd30 ("ld-version: Drop the 4th and
+>    5th version components")
+>
+> This script show an error message if the linker is too old:
+>
+>   $ make LD=ld.lld-9
+>     SYNC    include/config/auto.conf
+>   ***
+>   *** Linker is too old.
+>   ***   Your LLD version:    9.0.1
+>   ***   Minimum LLD version: 10.0.1
+>   ***
+>   scripts/Kconfig.include:50: Sorry, this linker is not supported.
+>   make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
+>   make[1]: *** [Makefile:600: syncconfig] Error 2
+>   make: *** [Makefile:708: include/config/auto.conf] Error 2
+>
+> I also moved the check for gold to this script, so gold is still rejected:
+>
+>   $ make LD=gold
+>     SYNC    include/config/auto.conf
+>   gold linker is not supported as it is not capable of linking the kernel proper.
+>   scripts/Kconfig.include:50: Sorry, this linker is not supported.
+>   make[2]: *** [scripts/kconfig/Makefile:71: syncconfig] Error 1
+>   make[1]: *** [Makefile:600: syncconfig] Error 2
+>   make: *** [Makefile:708: include/config/auto.conf] Error 2
+>
+> Thanks to David Laight for suggesting shell script improvements.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>
 
-Hah, exynos4210-smdkv310.dtb is what did it. And here I was thinking 
-something with "c210" in the name would be more likely to work with qemu 
-machine "smdkc210"... :-)
+Applied to linux-kbuild.
+
 
 -- 
-Hector Martin (marcan@marcan.st)
-Public Key: https://mrcn.st/pub
+Best Regards
+Masahiro Yamada
