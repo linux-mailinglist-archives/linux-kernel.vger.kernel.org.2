@@ -2,115 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BDAC320A65
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4547A320A5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:06:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBUNEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 08:04:54 -0500
-Received: from conuserg-10.nifty.com ([210.131.2.77]:58318 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbhBUNEh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 08:04:37 -0500
-Received: from grover.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 11LD3L9l011207;
-        Sun, 21 Feb 2021 22:03:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 11LD3L9l011207
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613912603;
-        bh=hmQ6YdR7C31Qdx1RburqnKJnpwAcnPXGJ1yRVTrR3sU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qjwFzgXSvRTYitEJyphRVb4/6Fj2GW2uxzZ/MQwPN9lJDOUmLO7H7YEbLNtdrOdef
-         KBF0XDbksTNecWS3vcfM+yd4x0boiCf0arWuqRb0SyAp+tjaRG0KacN9ERXF1kMHCN
-         W9z2DX4fFuXE19ReeSECNvvp4e95XFpaJFRnsCtrOtbLRsouK9VI86ZgXmKvghel/n
-         IhtiwWwMgI5eaQ0oku0AwiD7nmQz/XIdsP7etBMCR92s5tpRNnDPS8Zk9NdXKHGAqY
-         Yzq1ofhVHNEIA+ZvFxjZIc6qoOqelkE/OjKCYEuUrpSKCUYplilxcYdzE2blCjNYuk
-         UntElwBp03M9g==
-X-Nifty-SrcIP: [126.26.90.165]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        id S229921AbhBUNEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 08:04:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46676 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229817AbhBUNEJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 08:04:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CA2C64F03;
+        Sun, 21 Feb 2021 13:03:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1613912606;
+        bh=+8YJso1d5U+qmCHLYyOR3A9yiMaPev5dqfSzbqYDd1g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MWmg+Fbo2n4LLziiIcpqRyPwVFqLA8GaK7oPTw/ouQ6Bap9+C5IwWZbJFPy8p7nky
+         HhDzv87oMXlwY6g1Owyee4RHpITBKpxLFvEvRYbG8nFQdOHZmwsK8gwkUvM50jBlaL
+         AU3cw2MHrkHbzmPZRzaXJYsLdHbVJIuw6vCW4NaM=
+Date:   Sun, 21 Feb 2021 14:03:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Nikolay Kyx <knv418@gmail.com>
+Cc:     sergiu.cuciurean@analog.com, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] kconfig: unify rule of config, menuconfig, nconfig, gconfig, xconfig
-Date:   Sun, 21 Feb 2021 22:03:18 +0900
-Message-Id: <20210221130318.160327-3-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210221130318.160327-1-masahiroy@kernel.org>
-References: <20210221130318.160327-1-masahiroy@kernel.org>
+Subject: Re: [PATCH v3 01/02] staging: kpc2000: code style: fix alignment
+ issues
+Message-ID: <YDJaHNsT9zta2up2@kroah.com>
+References: <YC92OIgh6HTEexu4@kroah.com>
+ <20210219163411.24873-1-knv418@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219163411.24873-1-knv418@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unify the similar build rules.
+On Fri, Feb 19, 2021 at 07:34:11PM +0300, Nikolay Kyx wrote:
+> This patch fixes the following checkpatch.pl check:
+> 
+> CHECK: Alignment should match open parenthesis
+> 
+> in files kpc2000_i2c.c kpc2000_spi.c
+> 
+> Signed-off-by: Nikolay Kyx <knv418@gmail.com>
+> ---
+> 
+> Additionally some style warnings remain valid here and could be fixed by
+> another patch.
+> 
+> v2: Edited changelog, as suggested by Greg KH <gregkh@linuxfoundation.org>
+> v3: Splitted patch in two parts, as suggested by Greg KH <gregkh@linuxfoundation.org>
 
-This supports 'make build_config', which builds scripts/kconfig/conf
-but does not invoke it.
+You sent 2 different patches, that did different things, yet have the
+same exact subject line :(
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+Please fix up and resend.
 
- scripts/kconfig/Makefile | 35 +++++++++++++----------------------
- 1 file changed, 13 insertions(+), 22 deletions(-)
+thanks,
 
-diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
-index 5180a71c931f..5187639f9da5 100644
---- a/scripts/kconfig/Makefile
-+++ b/scripts/kconfig/Makefile
-@@ -3,9 +3,6 @@
- # Kernel configuration targets
- # These targets are used from top-level makefile
- 
--PHONY += xconfig gconfig menuconfig config localmodconfig localyesconfig \
--	build_menuconfig build_nconfig build_gconfig build_xconfig
--
- ifdef KBUILD_KCONFIG
- Kconfig := $(KBUILD_KCONFIG)
- else
-@@ -19,29 +16,23 @@ endif
- # We need this, in case the user has it in its environment
- unexport CONFIG_
- 
--xconfig: $(obj)/qconf
--	$(Q)$< $(silent) $(Kconfig)
--
--gconfig: $(obj)/gconf
--	$(Q)$< $(silent) $(Kconfig)
--
--menuconfig: $(obj)/mconf
--	$(Q)$< $(silent) $(Kconfig)
--
--config: $(obj)/conf
--	$(Q)$< $(silent) $(Kconfig)
--
--nconfig: $(obj)/nconf
--	$(Q)$< $(silent) $(Kconfig)
--
--build_menuconfig: $(obj)/mconf
-+config-prog	:= conf
-+menuconfig-prog	:= mconf
-+nconfig-prog	:= nconf
-+gconfig-prog	:= gconf
-+xconfig-prog	:= qconf
- 
--build_nconfig: $(obj)/nconf
-+define config_rule
-+PHONY += $(1) build_$(1)
-+$(1): $(obj)/$($(1)-prog)
-+	$(Q)$$< $(silent) $(Kconfig)
- 
--build_gconfig: $(obj)/gconf
-+build_$(1): $(obj)/$($(1)-prog)
-+endef
- 
--build_xconfig: $(obj)/qconf
-+$(foreach c, config menuconfig nconfig gconfig xconfig, $(eval $(call config_rule,$(c))))
- 
-+PHONY += localmodconfig localyesconfig
- localyesconfig localmodconfig: $(obj)/conf
- 	$(Q)$(PERL) $(srctree)/$(src)/streamline_config.pl --$@ $(srctree) $(Kconfig) > .tmp.config
- 	$(Q)if [ -f .config ]; then 				\
--- 
-2.27.0
-
+greg k-h
