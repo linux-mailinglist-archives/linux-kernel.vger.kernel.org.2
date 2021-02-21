@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1DDF320E1E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:03:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 431E8320E2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:15:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhBUWCu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:02:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48578 "EHLO mail.kernel.org"
+        id S230489AbhBUWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 17:03:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230240AbhBUWCa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 17:02:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5679064EBE;
-        Sun, 21 Feb 2021 22:01:50 +0000 (UTC)
+        id S230288AbhBUWDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 17:03:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1F3F364EE0;
+        Sun, 21 Feb 2021 22:01:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613944910;
-        bh=rBHPtKMqOcQkuEVyZSPxC/b0gZx8t1BQ7Ni4l5JX3Tk=;
+        s=k20201202; t=1613944911;
+        bh=ead7r2hcu1SPttI/kAhAKS9H4EVXgGhmWeMXsX6WnjY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=iqR+SwALQl1MXZY1ijCf6f3DlHAsVpPnuPi3B+2dD7OlMZTAj9+FvtWeMFlQWC0EC
-         NrN8/cgbzm1nimgggff6fOkhPGmIOB5mKyA+/kqt7GCgp58dl9OAL5eOM4HZH1lQDp
-         0xKKN3ll3p8LUyUQNml1+PeiM7jKNmZpicfsE/l6UDQPHS2O2LP5pDVxT0xVLiMpB8
-         HO+lPFWJbJcTWHZFMzxM6AT0FGuFsy/oOg+5Lj2N3FcxOEkCdXxAS0v/1pLjJbLcRl
-         fN3GzPCsMxfAFwth5vAyZ1R58whwiv+NybBW1pbv1T4PEDNuBon3Tuob1DyFuEDPTC
-         opBveriSZ4Pcw==
+        b=kDCX7cUCQChVjw3Ai6WDG6cZgDVcfhovlYZKrrIC8EnMvHFReLoqKuAb9gOCLQaba
+         1s0uiCRFzSuu08IVxTVxZv1bsw5cd7bfxF+ptbTAJjTMkO3eKNOVR/6d8SzVpYPLCU
+         Qgy3O9+6A+80gE4UFue5Ne22BfltfXSlT5zrS3cbzLUOl/vshvu9pgUOwkjfYARVar
+         ljdp9wNeWjVIni3w5scUsrJBYpN8FB0SmP6i8NSBtJBiG/l5Xj7ag0UZlGnw5JMiam
+         rpRiQyGI+ADr0Gx3Ilf6oY4RMLZzjvIZ/w25nPietqXs8vD3T8arT2LZi7qmLHx4U1
+         ycj4lPrARWJ5g==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5228660191;
-        Sun, 21 Feb 2021 22:01:50 +0000 (UTC)
-Subject: Re: [GIT PULL] m68k updates for 5.12
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1B0B460191;
+        Sun, 21 Feb 2021 22:01:51 +0000 (UTC)
+Subject: Re: [GIT PULL] JFFS2/UBIFS and UBI changes for 5.12
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210215151127.2550851-1-geert@linux-m68k.org>
-References: <20210215151127.2550851-1-geert@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210215151127.2550851-1-geert@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag1
-X-PR-Tracked-Commit-Id: c396dd2ec5bbd1cb80eafe32a72ab6bd6b17cb5a
+In-Reply-To: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
+References: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
+X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+X-PR-Tracked-Message-Id: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.12-rc1
+X-PR-Tracked-Commit-Id: 42119dbe571eb419dae99b81dd20fa42f47464e1
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b811b41024afa1271afc5af84f663515d9227554
-Message-Id: <161394491033.8676.10772278445065167378.pr-tracker-bot@kernel.org>
-Date:   Sun, 21 Feb 2021 22:01:50 +0000
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
+X-PR-Merge-Commit-Id: 66f73fb3facd42d0a7c899d7f4c712332b28499a
+Message-Id: <161394491110.8676.13685988086312540707.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Feb 2021 22:01:51 +0000
+To:     Richard Weinberger <richard@nod.at>
+Cc:     torvalds <torvalds@linux-foundation.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 15 Feb 2021 16:11:27 +0100:
+The pull request you sent on Sun, 21 Feb 2021 21:02:14 +0100 (CET):
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/geert/linux-m68k.git tags/m68k-for-v5.12-tag1
+> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.12-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b811b41024afa1271afc5af84f663515d9227554
+https://git.kernel.org/torvalds/c/66f73fb3facd42d0a7c899d7f4c712332b28499a
 
 Thank you!
 
