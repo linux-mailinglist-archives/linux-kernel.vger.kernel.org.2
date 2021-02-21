@@ -2,190 +2,413 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C18B5320B19
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3133D320B0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230025AbhBUOrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:47:36 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:64427 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbhBUOrO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:47:14 -0500
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 11LEkEJw018830;
-        Sun, 21 Feb 2021 23:46:15 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 11LEkEJw018830
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1613918775;
-        bh=jpeCrPBkpqDTRmJNiKNUkX+1VgE88GRr1ejOnJsXFaY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HAyL7AkohPuL4yy2HMBIdsu5SUvn1dvwYlxH/bL7qO/Vcwa/6lM+gcYNUzRnzDgSc
-         tCNCcfuwHGcAlK6IT9aoZ3usZ5hiod3kbu1MAlLl3168IpWqRg6xPattT4RIoQnXOX
-         buBy6JSgqZbzZ2sSvI+msSDCPh3s5NLJk7fDl5ZaJ2+H3cE4BfBo5fEi4RY/MpOVE+
-         WQBsOTq0ziwdKAi3APXk9ZfBdsn4NGTArQ9pE0hyZbSW4hXFTSH8Y3ki2REA/0ya1p
-         DDxKCBhW5PnVekvqahP1bYO46rSzl8I1n87ngbUTIOkuOeB00kb51wEZAiLctQEll3
-         7V7myLRS7zKSw==
-X-Nifty-SrcIP: [209.85.215.182]
-Received: by mail-pg1-f182.google.com with SMTP id a4so8453360pgc.11;
-        Sun, 21 Feb 2021 06:46:15 -0800 (PST)
-X-Gm-Message-State: AOAM530hOATVVNF9kraYMFShceLMp83BdgpOIiJkhY28ifXb0RBrhlhH
-        +dRaXaoROBM5zzHtfslsBwjfSE8ambW7aiSC/xQ=
-X-Google-Smtp-Source: ABdhPJxma72dHfe9EEP25keVH9m43oNbIOaTLqkU9zVQyOC0KMwzA1NH/8Cl6Gk80jnpK8xgGwb5fbOUFUoteHKaFSk=
-X-Received: by 2002:a62:d454:0:b029:1ed:a6d6:539d with SMTP id
- u20-20020a62d4540000b02901eda6d6539dmr792619pfl.63.1613918774514; Sun, 21 Feb
- 2021 06:46:14 -0800 (PST)
+        id S230049AbhBUOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:47:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55504 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230010AbhBUOrE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 09:47:04 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED85C601FB;
+        Sun, 21 Feb 2021 14:46:19 +0000 (UTC)
+Date:   Sun, 21 Feb 2021 14:46:16 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jyoti Bhayana <jbhayana@google.com>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        cristian.marussi@arm.com, sudeep.holla@arm.com,
+        egranata@google.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
+        ankitarora@google.com, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v6 1/1] iio/scmi: Adding support for IIO SCMI Based
+ Sensors
+Message-ID: <20210221144616.4eef6a79@archlinux>
+In-Reply-To: <20210212172235.507028-2-jbhayana@google.com>
+References: <20210212172235.507028-1-jbhayana@google.com>
+        <20210212172235.507028-2-jbhayana@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210215181511.2840674-1-mic@digikod.net> <20210215181511.2840674-4-mic@digikod.net>
- <CAFqZXNsvqx-pbC+wzHB4aXX6h=buU3csM_a=By-zCOmx0n-xCQ@mail.gmail.com>
- <CAK7LNAQDWxGJU41D4+AbjFiX63BiA+bsNzTHZsKKc-LPyO7oCQ@mail.gmail.com> <8809a929-980a-95d1-42dc-576ff54e2923@digikod.net>
-In-Reply-To: <8809a929-980a-95d1-42dc-576ff54e2923@digikod.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 21 Feb 2021 23:45:36 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARq3YneLCVReHf8z34T7VKfv5zmkqwSiNZwgQGD64VMtA@mail.gmail.com>
-Message-ID: <CAK7LNARq3YneLCVReHf8z34T7VKfv5zmkqwSiNZwgQGD64VMtA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] security: Add LSMs dependencies to CONFIG_LSM
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Nicolas Iooss <nicolas.iooss@m4x.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 21, 2021 at 8:11 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> =
-wrote:
->
->
-> On 21/02/2021 09:50, Masahiro Yamada wrote:
-> > On Tue, Feb 16, 2021 at 4:03 AM Ondrej Mosnacek <omosnace@redhat.com> w=
-rote:
-> >>
-> >> On Mon, Feb 15, 2021 at 7:17 PM Micka=C3=ABl Sala=C3=BCn <mic@digikod.=
-net> wrote:
-> >>> From: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> >>>
-> >>> Thanks to the previous commit, this gives the opportunity to users, w=
-hen
-> >>> running make oldconfig, to update the list of enabled LSMs at boot ti=
-me
-> >>> if an LSM has just been enabled or disabled in the build.  Moreover,
-> >>> this list only makes sense if at least one LSM is enabled.
-> >>>
-> >>> Cc: Casey Schaufler <casey@schaufler-ca.com>
-> >>> Cc: James Morris <jmorris@namei.org>
-> >>> Cc: Masahiro Yamada <masahiroy@kernel.org>
-> >>> Cc: Serge E. Hallyn <serge@hallyn.com>
-> >>> Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
-> >>> Link: https://lore.kernel.org/r/20210215181511.2840674-4-mic@digikod.=
-net
-> >>> ---
-> >>>
-> >>> Changes since v1:
-> >>> * Add CONFIG_SECURITY as a dependency of CONFIG_LSM.  This prevent an
-> >>>   error when building without any LSMs.
-> >>> ---
-> >>>  security/Kconfig | 4 ++++
-> >>>  1 file changed, 4 insertions(+)
-> >>>
-> >>> diff --git a/security/Kconfig b/security/Kconfig
-> >>> index 7561f6f99f1d..addcc1c04701 100644
-> >>> --- a/security/Kconfig
-> >>> +++ b/security/Kconfig
-> >>> @@ -277,6 +277,10 @@ endchoice
-> >>>
-> >>>  config LSM
-> >>>         string "Ordered list of enabled LSMs"
-> >>> +       depends on SECURITY || SECURITY_LOCKDOWN_LSM || SECURITY_YAMA=
- || \
-> >>> +               SECURITY_LOADPIN || SECURITY_SAFESETID || INTEGRITY |=
-| \
-> >>> +               SECURITY_SELINUX || SECURITY_SMACK || SECURITY_TOMOYO=
- || \
-> >>> +               SECURITY_APPARMOR || BPF_LSM
-> >>
-> >> This looks really awkward, since all of these already depend on
-> >> SECURITY (if not, it's a bug)... I guarantee you that after some time
-> >> someone will come, see that the weird boolean expression is equivalent
-> >> to just SECURITY, and simplify it.
-> >
-> >
-> > Currently, LSM does not depend on SECURITY.
-> > So you can always define LSM irrespective of SECURITY,
-> > which seems a bug.
-> >
-> > So, I agree with adding 'depends on SECURITY'.
-> >
-> > What he is trying to achieve in this series
-> > seems wrong, of course.
->
-> This may be wrong in the general case, but not for CONFIG_LSM.
->
-> >
-> >
-> >> I assume the new mechanism wouldn't work as intended if there is just
-> >> SECURITY? If not, then maybe you should rather specify this value
-> >> dependency via some new  field rather than abusing "depends on" (say,
-> >> "value depends on"?). The fact that a seemingly innocent change to the
-> >> config definition breaks your mechanism suggests that the design is
-> >> flawed.
->
-> Masahiro, what do you think about this suggested "value depends on"?
+On Fri, 12 Feb 2021 17:22:35 +0000
+Jyoti Bhayana <jbhayana@google.com> wrote:
+
+> This change provides ARM SCMI Protocol based IIO device.
+> This driver provides support for Accelerometer and Gyroscope using
+> SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
+
+Hi Joyti
+
+A few things inline but nothing to require a v7.
+
+1) Use of long long to get s64 - I can tidy that up whilst applying.
+2) Going to have a clash with Alex's multi buffer rework of the core
+   I'll sort that out when I apply this as well.
+
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+
+For fixes within a larger patch as a result of the various build robots,
+we should either only mention them in comments, or add a note after the
+Reported-by to say what was fixed.  E.g something like
+
+Reported-by: kernel test robot <lkp@intel.com> # off by 1 error
+
+I can't remember what was actually reported for this one.
+
+If you can reply with such a comment I'll add it on, if not I'll drop
+the Reported-by as uninformative.   Right now it looks like the whole
+patch is a fix for an issue that 0-day reported :)
 
 
-Of course, no.
+> Signed-off-by: Jyoti Bhayana <jbhayana@google.com>
+> ---
+>  MAINTAINERS                                |   6 +
+>  drivers/firmware/arm_scmi/driver.c         |   2 +-
+>  drivers/iio/common/Kconfig                 |   1 +
+>  drivers/iio/common/Makefile                |   1 +
+>  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+>  drivers/iio/common/scmi_sensors/Makefile   |   5 +
+>  drivers/iio/common/scmi_sensors/scmi_iio.c | 678 +++++++++++++++++++++
+>  7 files changed, 710 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+>  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+>  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b516bb34a8d5..ccf37d43ab41 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8567,6 +8567,12 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
+>  F:	drivers/iio/multiplexer/iio-mux.c
+>  
+> +IIO SCMI BASED DRIVER
+> +M:	Jyoti Bhayana <jbhayana@google.com>
+> +L:	linux-iio@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/iio/common/scmi_sensors/scmi_iio.c
+> +
 
+...
 
-See the help text in init/Kconfig:
+> diff --git a/drivers/iio/common/scmi_sensors/Makefile b/drivers/iio/common/scmi_sensors/Makefile
+> new file mode 100644
+> index 000000000000..f13140a2575a
+> --- /dev/null
+> +++ b/drivers/iio/common/scmi_sensors/Makefile
+> @@ -0,0 +1,5 @@
+> +# SPDX - License - Identifier : GPL - 2.0 - only
+> +#
+> +# Makefile for the IIO over SCMI
+> +#
+> +obj-$(CONFIG_IIO_SCMI) += scmi_iio.o
+> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> new file mode 100644
+> index 000000000000..31977c3bc600
+> --- /dev/null
+> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> @@ -0,0 +1,678 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * System Control and Management Interface(SCMI) based IIO sensor driver
+> + *
+> + * Copyright (C) 2021 Google LLC
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/iio/buffer.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/kfifo_buf.h>
+> +#include <linux/iio/sysfs.h>
+> +#include <linux/kernel.h>
+> +#include <linux/kthread.h>
+> +#include <linux/module.h>
+> +#include <linux/scmi_protocol.h>
+> +#include <linux/time.h>
+> +#include <linux/types.h>
+> +
+> +#define SCMI_IIO_NUM_OF_AXIS 3
+> +
+> +struct scmi_iio_priv {
+> +	struct scmi_handle *handle;
+> +	const struct scmi_sensor_info *sensor_info;
+> +	struct iio_dev *indio_dev;
+> +	/* adding one additional channel for timestamp */
+> +	long long iio_buf[SCMI_IIO_NUM_OF_AXIS + 1];
 
-          This choice is there only for converting CONFIG_DEFAULT_SECURITY
-          in old kernel configs to CONFIG_LSM in new kernel configs. Don't
-          change this choice unless you are creating a fresh kernel config,
-          for this choice will be ignored after CONFIG_LSM has been set.
+Missed this previously but we should probably be careful to
+make this explicitly 64 bit rather than rely on long long being
+that length. s64 iio_buf[SCMI_IIO_NUM_OF_AXIS + 1];
 
+I can tidy this up whilst applying if that is fine with you.
 
-When CONFIG_LSM is already set in the .config,
-this choice is just ignored.
-So, oldconfig is working as the help message says.
+> +	struct notifier_block sensor_update_nb;
+> +	u32 *freq_avail;
+> +};
+> +
 
-If you think 2623c4fbe2ad1341ff2d1e12410d0afdae2490ca
-is a pointless commit, you should ask Kees about it.
+...
 
+> +
+> +static ssize_t scmi_iio_get_raw_available(struct iio_dev *iio_dev,
+> +					  uintptr_t private,
+> +					  const struct iio_chan_spec *chan,
+> +					  char *buf)
 
+Looks good.  Thanks for persevering with this!
 
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	unsigned long long resolution, rem;
+> +	long long min_range, max_range;
+> +	s8 exponent, scale;
+> +	int len = 0;
+> +
+> +	/*
+> +	 * All the axes are supposed to have the same value for range and resolution.
+> +	 * We are just using the values from the Axis 0 here.
+> +	 */
+> +	if (sensor->sensor_info->axis[0].extended_attrs) {
+> +		min_range = sensor->sensor_info->axis[0].attrs.min_range;
+> +		max_range = sensor->sensor_info->axis[0].attrs.max_range;
+> +		resolution = sensor->sensor_info->axis[0].resolution;
+> +		exponent = sensor->sensor_info->axis[0].exponent;
+> +		scale = sensor->sensor_info->axis[0].scale;
+> +
+> +		/*
+> +		 * To provide the raw value for the resolution to the userspace,
+> +		 * need to divide the resolution exponent by the sensor scale
+> +		 */
+> +		exponent = exponent - scale;
+> +		if (exponent < 0) {
+> +			resolution = div64_u64_rem(resolution,
+> +						   int_pow(10, abs(exponent)),
+> +						   &rem);
+> +			len = scnprintf(buf, PAGE_SIZE,
+> +					"[%lld %llu.%llu %lld]\n", min_range,
+> +					resolution, rem, max_range);
+> +		} else {
+> +			resolution = resolution * int_pow(10, exponent);
+> +			len = scnprintf(buf, PAGE_SIZE, "[%lld %llu %lld]\n",
+> +					min_range, resolution, max_range);
+> +		}
+> +	}
+> +	return len;
+> +}
+> +
+> +static const struct iio_chan_spec_ext_info scmi_iio_ext_info[] = {
+> +	{
+> +		.name = "raw_available",
+> +		.read = scmi_iio_get_raw_available,
+> +		.shared = IIO_SHARED_BY_TYPE,
+> +	},
+> +	{},
+> +};
+> +
+> +static void scmi_iio_set_timestamp_channel(struct iio_chan_spec *iio_chan,
+> +					   int scan_index)
 
+Not relevant to this patch!:  I wonder how many times
+we now have this replicated in various drivers.  Feels like a good thing
+to just have as a library function in the IIO core.
+(about 8 copies of this from a quick grep)
 
+> +{
+> +	iio_chan->type = IIO_TIMESTAMP;
+> +	iio_chan->channel = -1;
+> +	iio_chan->scan_index = scan_index;
+> +	iio_chan->scan_type.sign = 'u';
+> +	iio_chan->scan_type.realbits = 64;
+> +	iio_chan->scan_type.storagebits = 64;
+> +}
+> +
 
-> >>
-> >> I do think this would be a useful feature, but IMHO shouldn't be
-> >> implemented like this.
-> >>
-> >>>         default "lockdown,yama,loadpin,safesetid,integrity,smack,seli=
-nux,tomoyo,apparmor,bpf" if DEFAULT_SECURITY_SMACK
-> >>>         default "lockdown,yama,loadpin,safesetid,integrity,apparmor,s=
-elinux,smack,tomoyo,bpf" if DEFAULT_SECURITY_APPARMOR
-> >>>         default "lockdown,yama,loadpin,safesetid,integrity,tomoyo,bpf=
-" if DEFAULT_SECURITY_TOMOYO
-> >>> --
-> >>> 2.30.0
-> >>>
-> >>
-> >> --
-> >> Ondrej Mosnacek
-> >> Software Engineer, Linux Security - SELinux kernel
-> >> Red Hat, Inc.
-> >>
-> >
-> >
---
-Best Regards
-Masahiro Yamada
+...
+
+> +
+> +static int scmi_iio_set_sampling_freq_avail(struct iio_dev *iio_dev)
+
+Really trivial, but if you happen to be respinning for some reason, the
+naming of this function is a little confusing.  My initial
+thought is it would somehow specify the sampling frequencies that
+the driver expects to be available, rather than the opposite where
+it is the driver establishing what is available.
+
+If _get_ is also ambiguous, perhaps _query_ or _format_ or _convert_
+(to reflect you are converting values to expected form).
+
+> +{
+> +	u64 cur_interval_ns, low_interval_ns, high_interval_ns, step_size_ns,
+> +		hz, uhz;
+...
+
+> +}
+> +
+> +static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+> +{
+> +	struct iio_buffer *buffer;
+> +
+> +	buffer = devm_iio_kfifo_allocate(&scmi_iiodev->dev);
+> +	if (!buffer)
+> +		return -ENOMEM;
+> +
+> +	iio_device_attach_buffer(scmi_iiodev, buffer);
+> +	scmi_iiodev->modes |= INDIO_BUFFER_SOFTWARE;
+> +	scmi_iiodev->setup_ops = &scmi_iio_buffer_ops;
+
+Ah.  This has now crossed with Alex's large rework of the buffer
+registration in the core (to support multiple buffers).
+
+Specifically it needs to flip over to using the function introduced
+in https://lore.kernel.org/linux-iio/20210215104043.91251-3-alexandru.ardelean@analog.com/T/#u
+
+This is going to make taking this via an immutable branch more fiddly.
+Don't worry about it though; I'll figure it out once rc1 is out.
+(either the merge of this tree will have to before Alex's series, or
+I'll need to do a non trivial merge resolution).
+
+The one thing we can't do is rebase this series as that would then delay
+Cristian's work for a whole cycle (or require some usual tree management.)
+What fun :)
+
+> +	return 0;
+> +}
+> +
+> +static struct iio_dev *scmi_alloc_iiodev(struct device *dev,
+> +					 struct scmi_handle *handle,
+> +					 const struct scmi_sensor_info *sensor_info)
+> +{
+> +	struct iio_chan_spec *iio_channels;
+> +	struct scmi_iio_priv *sensor;
+> +	enum iio_modifier modifier;
+> +	enum iio_chan_type type;
+> +	struct iio_dev *iiodev;
+> +	int i, ret;
+> +
+> +	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+> +	if (!iiodev)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	iiodev->modes = INDIO_DIRECT_MODE;
+> +	iiodev->dev.parent = dev;
+> +	sensor = iio_priv(iiodev);
+> +	sensor->handle = handle;
+> +	sensor->sensor_info = sensor_info;
+> +	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+> +	sensor->indio_dev = iiodev;
+> +
+> +	/* adding one additional channel for timestamp */
+> +	iiodev->num_channels = sensor_info->num_axis + 1;
+> +	iiodev->name = sensor_info->name;
+> +	iiodev->info = &scmi_iio_info;
+> +
+> +	iio_channels =
+> +		devm_kzalloc(dev,
+> +			     sizeof(*iio_channels) * (iiodev->num_channels),
+> +			     GFP_KERNEL);
+> +	if (!iio_channels)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	ret = scmi_iio_set_sampling_freq_avail(iiodev);
+> +	if (ret < 0)
+> +		return ERR_PTR(ret);
+> +
+> +	for (i = 0; i < sensor_info->num_axis; i++) {
+> +		ret = scmi_iio_get_chan_type(sensor_info->axis[i].type, &type);
+> +		if (ret < 0)
+> +			return ERR_PTR(ret);
+> +
+> +		ret = scmi_iio_get_chan_modifier(sensor_info->axis[i].name,
+> +						 &modifier);
+> +		if (ret < 0)
+> +			return ERR_PTR(ret);
+> +
+> +		scmi_iio_set_data_channel(&iio_channels[i], type, modifier,
+> +					  sensor_info->axis[i].id);
+> +	}
+> +
+> +	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+> +	iiodev->channels = iio_channels;
+> +	return iiodev;
+> +}
+> +
+> +static int scmi_iio_dev_probe(struct scmi_device *sdev)
+> +{
+> +	const struct scmi_sensor_info *sensor_info;
+> +	struct scmi_handle *handle = sdev->handle;
+> +	struct device *dev = &sdev->dev;
+> +	struct iio_dev *scmi_iio_dev;
+> +	u16 nr_sensors;
+> +	int err = -ENODEV, i;
+> +
+> +	if (!handle || !handle->sensor_ops) {
+> +		dev_err(dev, "SCMI device has no sensor interface\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	nr_sensors = handle->sensor_ops->count_get(handle);
+> +	if (!nr_sensors) {
+> +		dev_dbg(dev, "0 sensors found via SCMI bus\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	for (i = 0; i < nr_sensors; i++) {
+> +		sensor_info = handle->sensor_ops->info_get(handle, i);
+> +		if (!sensor_info) {
+> +			dev_err(dev, "SCMI sensor %d has missing info\n", i);
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* This driver only supports 3-axis accel and gyro, skipping other sensors */
+> +		if (sensor_info->num_axis != SCMI_IIO_NUM_OF_AXIS)
+> +			continue;
+> +
+> +		/* This driver only supports 3-axis accel and gyro, skipping other sensors */
+> +		if (sensor_info->axis[0].type != METERS_SEC_SQUARED &&
+> +		    sensor_info->axis[0].type != RADIANS_SEC)
+> +			continue;
+> +
+> +		scmi_iio_dev = scmi_alloc_iiodev(dev, handle, sensor_info);
+> +		if (IS_ERR(scmi_iio_dev)) {
+> +			dev_err(dev,
+> +				"failed to allocate IIO device for sensor %s: %ld\n",
+> +				sensor_info->name, PTR_ERR(scmi_iio_dev));
+> +			return PTR_ERR(scmi_iio_dev);
+> +		}
+> +
+> +		err = scmi_iio_buffers_setup(scmi_iio_dev);
+> +		if (err < 0) {
+> +			dev_err(dev,
+> +				"IIO buffer setup error at sensor %s: %d\n",
+> +				sensor_info->name, err);
+> +			return err;
+> +		}
+> +
+> +		err = devm_iio_device_register(dev, scmi_iio_dev);
+> +		if (err) {
+> +			dev_err(dev,
+> +				"IIO device registration failed at sensor %s: %d\n",
+> +				sensor_info->name, err);
+> +			return err;
+> +		}
+> +	}
+> +	return err;
+> +}
