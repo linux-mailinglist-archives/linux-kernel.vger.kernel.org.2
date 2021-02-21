@@ -2,161 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7B9320E60
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6AD320E65
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231862AbhBUWwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:52:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbhBUWwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 17:52:23 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A25FC061574;
-        Sun, 21 Feb 2021 14:51:43 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkLCc6gm3z9sRN;
-        Mon, 22 Feb 2021 09:51:40 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1613947901;
-        bh=p7ZtKSbkGUQws4We3zbipV3v+EKzfwfSXclU5GNJ+zc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SQNCNPt3XSH8A9LQpcC4bPnPCj6k55pKmJPYMGA8kUoijFtbBS0E+H6LBZm/5WHtz
-         eypHCHR6opyoWIQCaWG0+rrViT9wOU+MDyswRbetQ7h9JxSaLPtcd18STKy7bgD+dB
-         JhTIvg9jWA5ZBM+tygNF8HC6J5MYQUFArjHHg9chTOEQs+ziCOYbbIey7gvxD1dvqL
-         j0TS0ihWxo7SoNZW5HA5oZ4iSeAXcLoW5yH6qTgakvNkdmqE5X1uixl37YLKKTmht3
-         AE8s9shcUeX7m/GvnR5cK/1pQ+Lr6IL099vSxRcdHM/90xKLvZBSDF4B8UhpFp5VDA
-         pdf2myCr9nMFw==
-Date:   Mon, 22 Feb 2021 09:51:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the pidfd tree with the vfs tree
-Message-ID: <20210222095140.53d1aaea@canb.auug.org.au>
-In-Reply-To: <20210215080521.45f7a061@canb.auug.org.au>
-References: <20210125170054.54869988@canb.auug.org.au>
-        <20210215080521.45f7a061@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zCPMrAh4GUVFq6VCkQ2L3gH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S231894AbhBUWxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 17:53:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231865AbhBUWxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 17:53:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 3A52164DEC;
+        Sun, 21 Feb 2021 22:53:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613947980;
+        bh=CGADNtHbhBDuUr0477Sp2L8mirxsm6/naw33uCHrX64=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=bp8Dd+lpHY9i2x/o39qQTcvbd5Y4EF5dWMrkqWvJ6zigDCrk+pya8Jml9BFIpJcOo
+         xvcR7pXPvM1Yb9rxWDfAvXlwoZPHCQ/RjNhqp7z20ESk5j93QITTZRL8gxlLVft0n2
+         LTa5emMISgU7EAe5ID7AM8LJ+8p0A4TlTbOWm5Dc+MKnpQLQs0cm1fJDew/7vM4aEF
+         1FSMJgFDReWgbn3arYrdUueDDZGEvPs5YlnyS3MumemEWzrufuZhGYcTG0Chp39aY3
+         nGHrYXsQUf/iPm1O8m/LEwTkbOIvZNOlx/xiOtzAzMqBRHiuQsRcL/SsVLn5rb7HjT
+         No8FQA8d3AA5g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1C9AD60192;
+        Sun, 21 Feb 2021 22:53:00 +0000 (UTC)
+Subject: Re: [GIT PULL for v5.12-rc1] media updates
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210217154040.46145543@coco.lan>
+References: <20210217154040.46145543@coco.lan>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210217154040.46145543@coco.lan>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.12-1
+X-PR-Tracked-Commit-Id: 8f202f8e9ff38e29694a4bc0a519b4e03c1726ee
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: de1617578849acab8e16c9ffdce39b91fb50639d
+Message-Id: <161394798005.6686.9170511149935724108.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Feb 2021 22:53:00 +0000
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zCPMrAh4GUVFq6VCkQ2L3gH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The pull request you sent on Wed, 17 Feb 2021 15:40:40 +0100:
 
-Hi all,
+> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.12-1
 
-On Mon, 15 Feb 2021 08:05:21 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Mon, 25 Jan 2021 17:00:54 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > Today's linux-next merge of the pidfd tree got a conflict in:
-> >=20
-> >   fs/namei.c
-> >=20
-> > between commit:
-> >=20
-> >   e36cffed20a3 ("fs: make unlazy_walk() error handling consistent")
-> >   1e8f44f159b3 ("do_tmpfile(): don't mess with finish_open()")
-> >=20
-> > from the vfs tree and commit:
-> >=20
-> >   47291baa8ddf ("namei: make permission helpers idmapped mount aware")
-> >   ba73d98745be ("namei: handle idmapped mounts in may_*() helpers")
-> >   549c7297717c ("fs: make helpers idmap mount aware")
-> >=20
-> > from the pidfd tree.
-> >=20
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
-> >=20
-> > diff --cc fs/namei.c
-> > index 4cae88733a5c,dbf53b325ac9..000000000000
-> > --- a/fs/namei.c
-> > +++ b/fs/namei.c
-> > @@@ -1568,14 -1639,18 +1644,16 @@@ static struct dentry *lookup_slow(co=
-ns
-> >   	return res;
-> >   }
-> >  =20
-> > - static inline int may_lookup(struct nameidata *nd)
-> > + static inline int may_lookup(struct user_namespace *mnt_userns,
-> > + 			     struct nameidata *nd)
-> >   {
-> >   	if (nd->flags & LOOKUP_RCU) {
-> > - 		int err =3D inode_permission(nd->inode, MAY_EXEC|MAY_NOT_BLOCK);
-> > + 		int err =3D inode_permission(mnt_userns, nd->inode,
-> > + 					   MAY_EXEC | MAY_NOT_BLOCK);
-> >  -		if (err !=3D -ECHILD)
-> >  +		if (err !=3D -ECHILD || !try_to_unlazy(nd))
-> >   			return err;
-> >  -		if (unlazy_walk(nd))
-> >  -			return -ECHILD;
-> >   	}
-> > - 	return inode_permission(nd->inode, MAY_EXEC);
-> > + 	return inode_permission(mnt_userns, nd->inode, MAY_EXEC);
-> >   }
-> >  =20
-> >   static int reserve_stack(struct nameidata *nd, struct path *link, uns=
-igned seq)
-> > @@@ -3324,9 -3453,11 +3453,9 @@@ static int do_tmpfile(struct nameidata=
-=20
-> >   	path.dentry =3D child;
-> >   	audit_inode(nd->name, child, 0);
-> >   	/* Don't check for other permissions, the inode was just created */
-> > - 	error =3D may_open(&path, 0, op->open_flag);
-> > + 	error =3D may_open(mnt_userns, &path, 0, op->open_flag);
-> >  -	if (error)
-> >  -		goto out2;
-> >  -	file->f_path.mnt =3D path.mnt;
-> >  -	error =3D finish_open(file, child, NULL);
-> >  +	if (!error)
-> >  +		error =3D vfs_open(&path, file);
-> >   out2:
-> >   	mnt_drop_write(path.mnt);
-> >   out: =20
->=20
-> With the merge window about to open, this is a reminder that this
-> conflict still exists.
->=20
-> Those vfs tree commits have also been merged into the block tree.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/de1617578849acab8e16c9ffdce39b91fb50639d
 
-This is now a conflict between the pidfd tree and Linus' tree.
---=20
-Cheers,
-Stephen Rothwell
+Thank you!
 
---Sig_/zCPMrAh4GUVFq6VCkQ2L3gH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAy4/wACgkQAVBC80lX
-0GzpXAf/bWvZLid2Oswe57Ysca6i52pUbchZsBOaqBiqSWbpUs5daXbK1NU2x+EQ
-B7ROsurzBjWhoj24gE+JVwSr2cylIyv7+5JAklMxnlo6mhjnOHCKaceCO2uBPd8L
-qD0RmfiTebzFAbtldQT/fHydSreNw0f9/YPd1eI9eXPpJX78sirt3vMfg2nBGH8M
-7skD67q4Dg0cRAqWkq9XDSiIjHldJ7rIl3ozVOXEOsiD0PUFjQ4PPIeHcfwiu0fO
-gGzN0KPLcx6JL0CAPor+X81Ep8QHeZ8Xa9Znz9rAZBD7l6zawNPGqul9kf9zaZm2
-aLqUNodEr568YAEcqrylTzyuEhipfQ==
-=GeRJ
------END PGP SIGNATURE-----
-
---Sig_/zCPMrAh4GUVFq6VCkQ2L3gH--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
