@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B400320A26
+	by mail.lfdr.de (Postfix) with ESMTP id BD9AC320A27
 	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 13:01:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229983AbhBUL66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 06:58:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
+        id S229996AbhBUL7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 06:59:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhBUL6m (ORCPT
+        with ESMTP id S229884AbhBUL6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 06:58:42 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B397C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 03:58:02 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id z6so4865239pfq.0
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 03:58:02 -0800 (PST)
+        Sun, 21 Feb 2021 06:58:46 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2734C06178A
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 03:58:05 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id z7so5886960plk.7
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 03:58:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=i3IQGEkMNg3SPWQMPEj53QXgIVqHL4s9+hHV8n/Qa3c=;
-        b=n9oFtiiYkxyHmUHCc43SLu+ZSfNPcaZUkiN4xVFFnXoZv0gl60geo8YxOIjCy0Uj17
-         XwXklT9FdAVs3qVN1LL1drCS8opXbDhNRmyBUeiT3lhP4s7NTfCrP6bYmdZuUmS86YnS
-         rgTqm4iGh65WvHN3kK7cNc2t8T23goOT/acJNYn3PdHCWOcUr0Vy+dtFBblR+n8enMuk
-         9cTLd1c6AnHrwCk7WQ6SGqBa/4Jbd68VPkYgLCTjIltZqum61thsSGl/sEyBCxAbmAGN
-         yJy1kXoTa1wy+oXlo4XsecCATo2Vj756GYpE2uRsB0LOjgWttrvXrrmRWTCPLN3/Zd0Q
-         5Lgw==
+        bh=QwTmp0t10gU6keU+dFoBJ3PuBW0qxuWqkC//wm7O0Mg=;
+        b=GYadnKGuvuNZzQoHDTkkEKOF+FxgBBA3T5k543cOOhEJDMnIvSN5zvZN3B19virQr/
+         yPMIwI/xE8PuuFUGgLohpgnQjJa1IjjHtteMeUmaR/ctLvBH3BdsNDG7QpHL1lDgeuyt
+         kUWDdXGJ0NbI9DZNmQkcrxaWWctR5/5e3Y9I27m9DaAHvfgY9N++rXFSth6ahq5//f6V
+         s4UVy20hG39hIr+DJ6pGLjEmz5cXNqxsT9FT61bcwAFmDKCINDuV+U/PzXrJEc3HJX7K
+         qDCSHlCLu/Ogz9xo7vFgY+7Bun2LRrUP6j4JROoC4P6bZ1wbmJpmLk/FFUTlM8XNPhJb
+         7N0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=i3IQGEkMNg3SPWQMPEj53QXgIVqHL4s9+hHV8n/Qa3c=;
-        b=b792n0n5ibJp8OppogjZwYMpXGkFv6z2eg5kQX542YUSV/s3PCDE8f6/NTE0L1wu/N
-         1yrbbmH6VqOMAMMLCpyVFDs0yDnv0soXz6a4H29Gd+WHBZyPsWTsQ40g7OJ5URtQZS5Y
-         +CZ8j675p5byeFPXrTBeWXWomKuci0ZJl2LT4TC0vIVutGxVDt3xUV4F8lakL8C0Wsqq
-         nwYo4ty7yKZk6Ejd+Dxzmyvjl+1EMpmNluvdhA1I0FJP8UulLoZNpw8ZhXnuEFlNWqnm
-         5a6bmgXjCrkm8n4AtbB8Fta7/FjcHaKl1tAbSlp/OOra+A89C8atOSJWljryH6EXY4it
-         EsEg==
-X-Gm-Message-State: AOAM530uWKi2wuDUyD9fDOeFTE0CHSIdhmB03OQhOn0mHDtHfmL6Qelz
-        Y1SAFBtMxVHGcixHpK0+Yifg8u6dc0Mh2BIb
-X-Google-Smtp-Source: ABdhPJxfC99UCDUV8B9Ey0aLgQPoIEWsxpy3Ws5vzVfpSwjDr1Km27jI2tTLJxXiaGNo5MmvZ6SOgg==
-X-Received: by 2002:a62:1855:0:b029:1d9:2fe3:5b28 with SMTP id 82-20020a6218550000b02901d92fe35b28mr17950819pfy.42.1613908681689;
-        Sun, 21 Feb 2021 03:58:01 -0800 (PST)
+        bh=QwTmp0t10gU6keU+dFoBJ3PuBW0qxuWqkC//wm7O0Mg=;
+        b=CTanerZhNT6Z2YI06B9S93+1GXnzkxYHQ1vNSdpgyrAj2i5++aK7YipnDL1fB9hVJS
+         +PBlstQMvDuo20kTcff3Ge6gY1fuYMQ56dGHbesBdC5gD0gWjpAIflvryZzhgwQirNtx
+         iDcM1R6nf5+dV/hAWgg9cZi5z8CYtTMDKtflveuVBoEHVz2+F57a9XwfwYwGVqsbCF80
+         VVd3v9Asrq3OICIoC5SbOV05mGdDPitwHZr5KwCJWbvIr3AXsVGOu5cwcvS9VrTFSWpx
+         pgt/8Q/Lt8Pq0e1y+o0E8EPUR1cli4TzK4W9NbpH3gLAvPxQEzYG+gQW04vipuLY7Lpn
+         2myQ==
+X-Gm-Message-State: AOAM530ChRUYovaZoUiD2KmQPVEdujK79sgyBtVw78KRi23MXAd2ngjW
+        6dxJSDQgErNpm9h0yEKbzDk=
+X-Google-Smtp-Source: ABdhPJzbrsV5ewjnyJw02BvfdBzd8QuoO96dc+7OmW68VJYL7zHf7vBoas1bq7j8q61iwjFPPUehGA==
+X-Received: by 2002:a17:90a:6343:: with SMTP id v3mr18582049pjs.15.1613908685180;
+        Sun, 21 Feb 2021 03:58:05 -0800 (PST)
 Received: from localhost.localdomain ([2405:201:9004:6950:6d00:817e:a84c:30d2])
-        by smtp.gmail.com with ESMTPSA id r5sm15694563pfh.13.2021.02.21.03.57.59
+        by smtp.gmail.com with ESMTPSA id r5sm15694563pfh.13.2021.02.21.03.58.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 03:58:01 -0800 (PST)
+        Sun, 21 Feb 2021 03:58:04 -0800 (PST)
 From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
 To:     joe@perches.com
 Cc:     lukas.bulwahn@gmail.com,
         linux-kernel-mentees@lists.linuxfoundation.org,
         linux-kernel@vger.kernel.org,
         Dwaipayan Ray <dwaipayanray1@gmail.com>
-Subject: [PATCH v6 1/2] checkpatch: add verbose mode
-Date:   Sun, 21 Feb 2021 17:28:01 +0530
-Message-Id: <20210221115802.19788-2-dwaipayanray1@gmail.com>
+Subject: [PATCH v6 2/2] docs: add documentation for checkpatch
+Date:   Sun, 21 Feb 2021 17:28:02 +0530
+Message-Id: <20210221115802.19788-3-dwaipayanray1@gmail.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210221115802.19788-1-dwaipayanray1@gmail.com>
 References: <20210221115802.19788-1-dwaipayanray1@gmail.com>
@@ -66,171 +66,565 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new verbose mode to checkpatch.pl to emit additional verbose
-test descriptions. The verbose mode is optional and can be enabled
-by the flag -v or --verbose.
+Add documentation for kernel script checkpatch.pl.
+This documentation is also parsed by checkpatch to
+enable a verbose mode.
 
-The test descriptions are parsed from the checkpatch documentation
-file at `Documentation/dev-tools/checkpatch.rst`. The test
-descriptions in the docs are kept in a fixed format grouped by
-usage. Some examples of this format are:
-
-  **LINE_SPACING**
-    Vertical space is wasted given the limited number of lines an
-    editor window can display when multiple blank lines are used.
-
-  **MISSING_SIGN_OFF**
-    The patch is missing a Signed-off-by line.  A signed-off-by
-    line should be added according to Developer's certificate of
-    Origin.
-
-To avoid lengthy output, the verbose description is printed only
-for the first instance of a particular message type.
-
-The --verbose option cannot be used along with the --terse option.
-
-Verbose mode can also be used with the --list-types option, which
-will then output the verbose descriptions along with the checkpatch
-message types.
+The checkpatch message types are grouped by usage. Under
+each group the types are described briefly. 34 of such
+types are documented.
 
 Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- scripts/checkpatch.pl | 68 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 3 deletions(-)
+ Documentation/dev-tools/checkpatch.rst | 526 +++++++++++++++++++++++++
+ Documentation/dev-tools/index.rst      |   1 +
+ 2 files changed, 527 insertions(+)
+ create mode 100644 Documentation/dev-tools/checkpatch.rst
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 9a549b009d2f..b44fcf13dec1 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -23,6 +23,9 @@ my $V = '0.32';
- use Getopt::Long qw(:config no_auto_abbrev);
- 
- my $quiet = 0;
-+my $verbose = 0;
-+my %verbose_messages = ();
-+my %verbose_emitted = ();
- my $tree = 1;
- my $chk_signoff = 1;
- my $chk_patch = 1;
-@@ -61,6 +64,7 @@ my $spelling_file = "$D/spelling.txt";
- my $codespell = 0;
- my $codespellfile = "/usr/share/codespell/dictionary.txt";
- my $conststructsfile = "$D/const_structs.checkpatch";
-+my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
- my $typedefsfile;
- my $color = "auto";
- my $allow_c99_comments = 1; # Can be overridden by --ignore C99_COMMENT_TOLERANCE
-@@ -78,6 +82,7 @@ Version: $V
- 
- Options:
-   -q, --quiet                quiet
-+  -v, --verbose              verbose mode
-   --no-tree                  run without a kernel tree
-   --no-signoff               do not check for 'Signed-off-by' line
-   --patch                    treat FILE as patchfile (default)
-@@ -167,6 +172,11 @@ sub list_types {
- 	print("#\tMessage type\n\n");
- 	foreach my $type (@types) {
- 		print(++$count . "\t" . $type . "\n");
-+		if ($verbose && exists($verbose_messages{$type})) {
-+			my $message = $verbose_messages{$type};
-+			$message =~ s/\n/\n\t/g;
-+			print("\t" . $message . "\n\n");
-+		}
- 	}
- 
- 	exit($exitcode);
-@@ -198,6 +208,46 @@ if (-f $conf) {
- 	unshift(@ARGV, @conf_args) if @conf_args;
- }
- 
-+sub load_docs {
-+	open(my $docs, '<', "$docsfile")
-+	    or warn "$P: Can't read the documentation file $docsfile $!\n";
+diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+new file mode 100644
+index 000000000000..d3c0fbf553c3
+--- /dev/null
++++ b/Documentation/dev-tools/checkpatch.rst
+@@ -0,0 +1,526 @@
++.. SPDX-License-Identifier: GPL-2.0-only
 +
-+	my $type = '';
-+	my $desc = '';
-+	my $in_desc = 0;
++==========
++Checkpatch
++==========
 +
-+	while (<$docs>) {
-+		chomp;
-+		my $line = $_;
-+		$line =~ s/\s+$//;
++This document describes the kernel script checkpatch.pl.
 +
-+		if ($line =~ /^\s*\*\*(.+)\*\*$/) {
-+			if ($desc ne '') {
-+				$verbose_messages{$type} = trim($desc);
-+			}
-+			$type = $1;
-+			$desc = '';
-+			$in_desc = 1;
-+		} elsif ($in_desc) {
-+			if ($line =~ /^(?:\s{4,}|$)/) {
-+				$line =~ s/^\s{4}//;
-+				$desc .= $line;
-+				$desc .= "\n";
-+			} else {
-+				$verbose_messages{$type} = trim($desc);
-+				$type = '';
-+				$desc = '';
-+				$in_desc = 0;
-+			}
-+		}
-+	}
++.. Table of Contents
 +
-+	if ($desc ne '') {
-+		$verbose_messages{$type} = trim($desc);
-+	}
-+	close($docs);
-+}
++	=== Introduction
++	=== Options
++	=== Message Levels
++	=== Type Descriptions
 +
- # Perl's Getopt::Long allows options to take optional arguments after a space.
- # Prevent --color by itself from consuming other arguments
- foreach (@ARGV) {
-@@ -208,6 +258,7 @@ foreach (@ARGV) {
- 
- GetOptions(
- 	'q|quiet+'	=> \$quiet,
-+	'v|verbose!'	=> \$verbose,
- 	'tree!'		=> \$tree,
- 	'signoff!'	=> \$chk_signoff,
- 	'patch!'	=> \$chk_patch,
-@@ -247,13 +298,15 @@ GetOptions(
- 
- help(0) if ($help);
- 
-+die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
-+die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
++Introduction
++============
 +
-+load_docs() if ($verbose);
- list_types(0) if ($list_types);
- 
- $fix = 1 if ($fix_inplace);
- $check_orig = $check;
- 
--die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
--
- my $exit = 0;
- 
- my $perl_version_ok = 1;
-@@ -2209,7 +2262,16 @@ sub report {
- 		splice(@lines, 1, 1);
- 		$output = join("\n", @lines);
- 	}
--	$output = (split('\n', $output))[0] . "\n" if ($terse);
++Checkpatch (scripts/checkpatch.pl) is a perl script which checks for trivial
++style violations in patches and optionally corrects them.  Checkpatch can
++also be run on file contexts and without the kernel tree.
 +
-+	if ($terse) {
-+		$output = (split('\n', $output))[0] . "\n";
-+	}
++Checkpatch is not always right. Your judgement takes precedence over checkpatch
++messages.  If your code looks better with the violations, then its probably
++best left alone.
 +
-+	if ($verbose && exists($verbose_messages{$type}) &&
-+	    !exists($verbose_emitted{$type})) {
-+		$output .= $verbose_messages{$type} . "\n\n";
-+		$verbose_emitted{$type} = 1;
-+	}
++
++Options
++=======
++
++This section will describe the options checkpatch can be run with.
++
++Usage::
++
++  ./scripts/checkpatch.pl [OPTION]... [FILE]...
++
++Available options:
++
++ - -q,  --quiet
++
++   Enable quiet mode.
++
++ - -v,  --verbose
++   Enable verbose mode.  Additional verbose test descriptions are output
++   so as to provide information on why that particular message is shown.
++
++ - --no-tree
++
++   Run checkpatch without the kernel tree.
++
++ - --no-signoff
++
++   Disable the 'Signed-off-by' line check.  The sign-off is a simple line at
++   the end of the explanation for the patch, which certifies that you wrote it
++   or otherwise have the right to pass it on as an open-source patch.
++
++   Example::
++
++	 Signed-off-by: Random J Developer <random@developer.example.org>
++
++   Setting this flag effectively stops a message for a missing signed-off-by
++   line in a patch context.
++
++ - --patch
++
++   Treat FILE as a patch.  This is the default option and need not be
++   explicitly specified.
++
++ - --emacs
++
++   Set output to emacs compile window format.  This allows emacs users to jump
++   from the error in the compile window directly to the offending line in the
++   patch.
++
++ - --terse
++
++   Output only one line per report.
++
++ - --showfile
++
++   Show the diffed file position instead of the input file position.
++
++ - -g,  --git
++
++   Treat FILE as a single commit or a git revision range.
++
++   Single commit with:
++
++   - <rev>
++   - <rev>^
++   - <rev>~n
++
++   Multiple commits with:
++
++   - <rev1>..<rev2>
++   - <rev1>...<rev2>
++   - <rev>-<count>
++
++ - -f,  --file
++
++   Treat FILE as a regular source file.  This option must be used when running
++   checkpatch on source files in the kernel.
++
++ - --subjective,  --strict
++
++   Enable stricter tests in checkpatch.  By default the tests emitted as CHECK
++   do not activate by default.  Use this flag to activate the CHECK tests.
++
++ - --list-types
++
++   Every message emitted by checkpatch has an associated TYPE.  Add this flag
++   to display all the types in checkpatch.
++
++   Note that when this flag is active, checkpatch does not read the input FILE,
++   and no message is emitted.  Only a list of types in checkpatch is output.
++
++ - --types TYPE(,TYPE2...)
++
++   Only display messages with the given types.
++
++   Example::
++
++     ./scripts/checkpatch.pl mypatch.patch --types EMAIL_SUBJECT,BRACES
++
++ - --ignore TYPE(,TYPE2...)
++
++   Checkpatch will not emit messages for the specified types.
++
++   Example::
++
++     ./scripts/checkpatch.pl mypatch.patch --ignore EMAIL_SUBJECT,BRACES
++
++ - --show-types
++
++   By default checkpatch doesn't display the type associated with the messages.
++   Set this flag to show the message type in the output.
++
++ - --max-line-length=n
++
++   Set the max line length (default 100).  If a line exceeds the specified
++   length, a LONG_LINE message is emitted.
++
++
++   The message level is different for patch and file contexts.  For patches,
++   a WARNING is emitted.  While a milder CHECK is emitted for files.  So for
++   file contexts, the --strict flag must also be enabled.
++
++ - --min-conf-desc-length=n
++
++   Set the Kconfig entry minimum description length, if shorter, warn.
++
++ - --tab-size=n
++
++   Set the number of spaces for tab (default 8).
++
++ - --root=PATH
++
++   PATH to the kernel tree root.
++
++   This option must be specified when invoking checkpatch from outside
++   the kernel root.
++
++ - --no-summary
++
++   Suppress the per file summary.
++
++ - --mailback
++
++   Only produce a report in case of Warnings or Errors.  Milder Checks are
++   excluded from this.
++
++ - --summary-file
++
++   Include the filename in summary.
++
++ - --debug KEY=[0|1]
++
++   Turn on/off debugging of KEY, where KEY is one of 'values', 'possible',
++   'type', and 'attr' (default is all off).
++
++ - --fix
++
++   This is an EXPERIMENTAL feature.  If correctable errors exists, a file
++   <inputfile>.EXPERIMENTAL-checkpatch-fixes is created which has the
++   automatically fixable errors corrected.
++
++ - --fix-inplace
++
++   EXPERIMENTAL - Similar to --fix but input file is overwritten with fixes.
++
++   DO NOT USE this flag unless you are absolutely sure and you have a backup
++   in place.
++
++ - --ignore-perl-version
++
++   Override checking of perl version.  Runtime errors maybe encountered after
++   enabling this flag if the perl version does not meet the minimum specified.
++
++ - --codespell
++
++   Use the codespell dictionary for checking spelling errors.
++
++ - --codespellfile
++
++   Use the specified codespell file.
++   Default is '/usr/share/codespell/dictionary.txt'.
++
++ - --typedefsfile
++
++   Read additional types from this file.
++
++ - --color[=WHEN]
++
++   Use colors 'always', 'never', or only when output is a terminal ('auto').
++   Default is 'auto'.
++
++ - --kconfig-prefix=WORD
++
++   Use WORD as a prefix for Kconfig symbols (default is `CONFIG_`).
++
++ - -h, --help, --version
++
++   Display the help text.
++
++Message Levels
++==============
++
++Messages in checkpatch are divided into three levels. The levels of messages
++in checkpatch denote the severity of the error. They are:
++
++ - ERROR
++
++   This is the most strict level.  Messages of type ERROR must be taken
++   seriously as they denote things that are very likely to be wrong.
++
++ - WARNING
++
++   This is the next stricter level.  Messages of type WARNING requires a
++   more careful review.  But it is milder than an ERROR.
++
++ - CHECK
++
++   This is the mildest level.  These are things which may require some thought.
++
++Type Descriptions
++=================
++
++This section contains a description of all the message types in checkpatch.
++
++.. Types in this section are also parsed by checkpatch.
++.. The types are grouped into subsections based on use.
++
++
++Allocation style
++----------------
++
++  **ALLOC_ARRAY_ARGS**
++    The first argument for kcalloc or kmalloc_array should be the
++    number of elements.  sizeof() as the first argument is generally
++    wrong.
++    See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
++
++  **ALLOC_SIZEOF_STRUCT**
++    The allocation style is bad.  In general for family of
++    allocation functions using sizeof() to get memory size,
++    constructs like::
++
++      p = alloc(sizeof(struct foo), ...)
++
++    should be::
++
++      p = alloc(sizeof(*p), ...)
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#allocating-memory
++
++  **ALLOC_WITH_MULTIPLY**
++    Prefer kmalloc_array/kcalloc over kmalloc/kzalloc with a
++    sizeof multiply.
++    See: https://www.kernel.org/doc/html/latest/core-api/memory-allocation.html
++
++
++API usage
++---------
++
++  **ARCH_DEFINES**
++    Architecture specific defines should be avoided wherever
++    possible.
++
++  **ARCH_INCLUDE_LINUX**
++    Whenever asm/file.h is included and linux/file.h exists, a
++    conversion can be made when linux/file.h includes asm/file.h.
++    However this is not always the case (See signal.h).
++    This message type is emitted only for includes from arch/.
++
++  **ARRAY_SIZE**
++    The ARRAY_SIZE(foo) macro should be preferred over
++    sizeof(foo)/sizeof(foo[0]) for finding number of elements in an
++    array.
++
++    The macro is defined in include/linux/kernel.h::
++
++      #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
++
++  **AVOID_BUG**
++    BUG() or BUG_ON() should be avoided totally.
++    Use WARN() and WARN_ON() instead, and handle the "impossible"
++    error condition as gracefully as possible.
++    See: https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
++
++  **AVOID_EXTERNS**
++    Function prototypes don't need to be declared extern in .h
++    files.  It's assumed by the compiler and is unnecessary.
++
++  **AVOID_L_PREFIX**
++    Local symbol names that are prefixed with `.L` should be avoided,
++    as this has special meaning for the assembler; a symbol entry will
++    not be emitted into the symbol table.  This can prevent `objtool`
++    from generating correct unwind info.
++
++    Symbols with STB_LOCAL binding may still be used, and `.L` prefixed
++    local symbol names are still generally usable within a function,
++    but `.L` prefixed local symbol names should not be used to denote
++    the beginning or end of code regions via
++    `SYM_CODE_START_LOCAL`/`SYM_CODE_END`
++
++  **BIT_MACRO**
++    Defines like: 1 << <digit> could be BIT(digit).
++    The BIT() macro is defined in include/linux/bitops.h::
++
++      #define BIT(nr)         (1UL << (nr))
++
++  **CONSIDER_KSTRTO**
++    The simple_strtol(), simple_strtoll(), simple_strtoul(), and
++    simple_strtoull() functions explicitly ignore overflows, which
++    may lead to unexpected results in callers.  The respective kstrtol(),
++    kstrtoll(), kstrtoul(), and kstrtoull() functions tend to be the
++    correct replacements.
++    See: https://www.kernel.org/doc/html/latest/process/deprecated.html#simple-strtol-simple-strtoll-simple-strtoul-simple-strtoull
++
++
++Comment style
++-------------
++
++  **BLOCK_COMMENT_STYLE**
++    The comment style is i
++    ncorrect.  The preferred style for multi-
++    line comments is::
++
++      /*
++      * This is the preferred style
++      * for multi line comments.
++      */
++
++    The networking comment style is a bit different, with the first line
++    not empty like the former::
++
++      /* This is the preferred comment style
++      * for files in net/ and drivers/net/
++      */
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
++
++  **C99_COMMENTS**
++    C99 style single line comments (//) should not be used.
++    Prefer the block comment style instead.
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#commenting
++
++
++
++Commit message
++--------------
++
++  **BAD_SIGN_OFF**
++    The signed-off-by line does not fall in line with the standards
++    specified by the community.
++    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
++
++  **BAD_STABLE_ADDRESS_STYLE**
++    The email format for stable is incorrect.
++    Some valid options for stable address are::
++
++      1. stable@vger.kernel.org
++      2. stable@kernel.org
++
++    For adding version info, the following comment style should be used::
++
++      stable@vger.kernel.org # version info
++
++  **COMMIT_COMMENT_SYMBOL**
++    Commit log lines starting with a '#' are ignored by git as
++    comments.  To solve this problem addition of a single space
++    infront of the log line is enough.
++
++  **COMMIT_MESSAGE**
++    The patch is missing a commit description.  A brief
++    description of the changes made by the patch should be added.
++    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#describe-your-changes
++
++  **MISSING_SIGN_OFF**
++    The patch is missing a Signed-off-by line.  A signed-off-by
++    line should be added according to Developer's certificate of
++    Origin.
++    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
++
++  **NO_AUTHOR_SIGN_OFF**
++    The author of the patch has not signed off the patch.  It is
++    required that a simple sign off line should be present at the
++    end of explanation of the patch to denote that the author has
++    written it or otherwise has the rights to pass it on as an open
++    source patch.
++    See: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#sign-your-work-the-developer-s-certificate-of-origin
++
++
++Comparison style
++----------------
++
++  **ASSIGN_IN_IF**
++    Do not use assignments in if condition.
++    Example::
++
++      if ((foo = bar(...)) < BAZ) {
++
++    should be written as::
++
++      foo = bar(...);
++      if (foo < BAZ) {
++
++  **BOOL_COMPARISON**
++    Comparisons of A to true and false are better written
++    as A and !A.
++    See: https://lore.kernel.org/lkml/1365563834.27174.12.camel@joe-AO722/
++
++  **COMPARISON_TO_NULL**
++    Comparisons to NULL in the form (foo == NULL) or (foo != NULL)
++    are better written as (!foo) and (foo).
++
++  **CONSTANT_COMPARISON**
++    Comparisons with a constant or upper case identifier on the left
++    side of the test should be avoided.
++
++
++Spacing and Brackets
++--------------------
++
++  **ASSIGNMENT_CONTINUATIONS**
++    Assignment operators should not be written at the start of a
++    line but should follow the operand at the previous line.
++
++  **BRACES**
++    The placement of braces is stylistically incorrect.
++    The preferred way is to put the opening brace last on the line,
++    and put the closing brace first::
++
++      if (x is true) {
++        we do y
++      }
++
++    This applies for all non-functional blocks.
++    However, there is one special case, namely functions: they have the
++    opening brace at the beginning of the next line, thus::
++
++      int function(int x)
++      {
++        body of function
++      }
++
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#placing-braces-and-spaces
++
++  **BRACKET_SPACE**
++    Whitespace before opening bracket '[' is prohibited.
++    There are some exceptions:
++
++    1. With a type on the left::
++
++        ;int [] a;
++
++    2. At the beginning of a line for slice initialisers::
++
++        [0...10] = 5,
++
++    3. Inside a curly brace::
++
++        = { [0...10] = 5 }
++
++  **CODE_INDENT**
++    Code indent should use tabs instead of spaces.
++    Outside of comments, documentation and Kconfig,
++    spaces are never used for indentation.
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#indentation
++
++  **CONCATENATED_STRING**
++    Concatenated elements should have a space in between.
++    Example::
++
++      printk(KERN_INFO"bar");
++
++    should be::
++
++      printk(KERN_INFO "bar");
++
++  **LINE_SPACING**
++    Vertical space is wasted given the limited number of lines an
++    editor window can display when multiple blank lines are used.
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
++
++  **SPACING**
++    Whitespace style used in the kernel sources is described in kernel docs.
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
++
++  **TRAILING_WHITESPACE**
++    Trailing whitespace should always be removed.
++    Some editors highlight the trailing whitespace and cause visual
++    distractions when editing files.
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#spaces
++
++
++Others
++------
++
++  **CAMELCASE**
++    Avoid CamelCase Identifiers.
++    See: https://www.kernel.org/doc/html/latest/process/coding-style.html#naming
++
++  **CONFIG_DESCRIPTION**
++    Kconfig symbols should have a help text which fully describes
++    it.
+diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/index.rst
+index 1b1cf4f5c9d9..43d28998118b 100644
+--- a/Documentation/dev-tools/index.rst
++++ b/Documentation/dev-tools/index.rst
+@@ -14,6 +14,7 @@ whole; patches welcome!
+ .. toctree::
+    :maxdepth: 2
  
- 	push(our @report, $output);
- 
++   checkpatch
+    coccinelle
+    sparse
+    kcov
 -- 
 2.30.0
 
