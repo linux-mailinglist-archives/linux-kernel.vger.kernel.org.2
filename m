@@ -2,97 +2,384 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D7B320DA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:39:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8794A320DA8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:40:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231321AbhBUUii (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 15:38:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhBUUih (ORCPT
+        id S230460AbhBUUk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 15:40:26 -0500
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:45084 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230456AbhBUUkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:38:37 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EDEC061574;
-        Sun, 21 Feb 2021 12:37:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=TodMQhTq+cGVVOCaD81EhvMNZtfQt3L+a/bV5YenmcA=; b=iErmknlTcb1M7IRQXgT7TBPyaO
-        HSbSyds3TPXzWMgvu9MopiUz5HPxmmbw2d7UvJrSOLBQOzz9pEQNYJdtyaJuX1MbfBd5u059mn9k9
-        MdupbdNr4jSeVlQD7kVqELaqVmduU8KegPUIxqtNWZb6qoLD6z+pcMl6MUvlYwrgremIlMMocf4JW
-        jVKX2d8seEIwUUcCAicqDqUEeJ84rpZ6lBOzwUa5BlDU8rs25zkak0hm7cW8Y7Xj+RKliYz+lAvXw
-        tgZXyzTEuX5BGYG8BzqFLdLoLpGuSE65A0PRAvOMK2GIV4Fat8WWpCr8DNCnFibrqmYOQUa3XRgNP
-        lCo8DIeA==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lDvUH-0000HV-J4; Sun, 21 Feb 2021 20:37:53 +0000
-Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
- control state component support
-To:     "Bae, Chang Seok" <chang.seok.bae@intel.com>
-Cc:     Borislav Petkov <bp@suse.de>, "luto@kernel.org" <luto@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Liu, Jing2" <jing2.liu@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-23-chang.seok.bae@intel.com>
- <cb6151cf-8f71-2275-c757-098d163f87ff@infradead.org>
- <4862AEE9-1819-43A7-BF95-C02DB6E2D06D@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <40a65a30-ce41-6a51-50f4-34a0b0b1ef6f@infradead.org>
-Date:   Sun, 21 Feb 2021 12:37:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 21 Feb 2021 15:40:21 -0500
+Received: by mail-pg1-f172.google.com with SMTP id p21so8836214pgl.12;
+        Sun, 21 Feb 2021 12:40:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HHIRMMKElR7qt/qK4sUuMdT/ZhoEzcXLzRz90+ElSFA=;
+        b=JaenpsSMRo2rabbKUD+6kBrvkI+a3eVk9ksRrwGTJOMmXsBYSXPBFM4E6yPr98QTMs
+         jRxhyKF6anf1PnivMpBehxlHItt9aBwoWy3mN4x9y4VnQ9BS4diLPibyJ9PGjLCxRVkH
+         CiZeNLJ5gfQi2YJnpEE0jYY5wHxe01HIliO5ccnTfV6D0/zgh7FzYEQP67UigxyxKkFR
+         EcVHk026ngO9UfBTECm8H+Qu3q7TKSdMRl7JqH2ENZ83UGMP9KhhQZtdRGtAhNyNy8OR
+         GYErccUVdcGqF8sQA0GHdRWr3Llym+Tz85MKJcoCpXAJRL4apnBKf6T52aI/f7pUi6kI
+         nF3Q==
+X-Gm-Message-State: AOAM531IaqJFfWHTU3Q0BuQEbv4RQ3muU5mJ/Ti+x001hbgelFUdyM7B
+        OA5pZWj5ybxiDfrSEXBlLmMDKF23sy7TBg==
+X-Google-Smtp-Source: ABdhPJxnsfw8vud1fFj+y0HFsqfuVW0SUd8Zo1cAXWcxl8iCVtM7OYEmtLX/Xqo+gZlh2bOVYrz2Dg==
+X-Received: by 2002:aa7:9205:0:b029:1ec:8eab:7ca3 with SMTP id 5-20020aa792050000b02901ec8eab7ca3mr19356292pfo.20.1613939980110;
+        Sun, 21 Feb 2021 12:39:40 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id 23sm10812502pfx.44.2021.02.21.12.39.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 12:39:39 -0800 (PST)
+Date:   Sun, 21 Feb 2021 12:39:42 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Lizhi Hou <lizhi.hou@xilinx.com>
+Cc:     linux-kernel@vger.kernel.org, Lizhi Hou <lizhih@xilinx.com>,
+        linux-fpga@vger.kernel.org, maxz@xilinx.com,
+        sonal.santan@xilinx.com, michal.simek@xilinx.com,
+        stefanos@xilinx.com, devicetree@vger.kernel.org, trix@redhat.com,
+        mdf@kernel.org, robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
+Subject: Re: [PATCH V3 XRT Alveo 04/18] fpga: xrt: xrt-lib platform driver
+ manager
+Message-ID: <YDLFDpJ4STer/yKx@archbook>
+References: <20210218064019.29189-1-lizhih@xilinx.com>
+ <20210218064019.29189-5-lizhih@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <4862AEE9-1819-43A7-BF95-C02DB6E2D06D@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210218064019.29189-5-lizhih@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/21/21 12:10 PM, Bae, Chang Seok wrote:
-> On Feb 21, 2021, at 11:30, Randy Dunlap <rdunlap@infradead.org> wrote:
->> Can we tell people (in this Doc file) where to look up the values that can be
->> used in xstate.enable and xstate.disable?
+Lizhi,
+
+On Wed, Feb 17, 2021 at 10:40:05PM -0800, Lizhi Hou wrote:
+> xrt-lib kernel module infrastructure code to register and manage all
+> leaf driver modules.
 > 
-> Perhaps add something like this with the change below:
->     “See comment before function fpu__init_parse_early_param() in
->      arch/x86/kernel/fpu/init.c."
-
-Hi,
-
-I was thinking more along the lines of where can I find the value
-0x60000 or BIT(22) or BIT(19), for example and see what they mean,
-even though it will likely be some abbreviation.
-
-
-> /*
->  * The kernel parameter "xstate.enable='mask'" and "xstate.disable='mask'" have a
->  * mask value in a subset of XFEATURE_MASK_CONFIGURABLE.
->  *
->  * The longest parameter is 22 octal number characters with '0' prefix and an extra
->  * '\0' for termination.
->  */
-> #define MAX_XSTATE_MASK_CHARS   24
+> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+> ---
+>  drivers/fpga/xrt/lib/main.c | 274 ++++++++++++++++++++++++++++++++++++
+>  drivers/fpga/xrt/lib/main.h |  17 +++
+>  2 files changed, 291 insertions(+)
+>  create mode 100644 drivers/fpga/xrt/lib/main.c
+>  create mode 100644 drivers/fpga/xrt/lib/main.h
 > 
-> /**
->  * fpu__init_parse_early_param() - parse the xstate kernel parameters
->  *
->  * Parse them early because fpu__init_system() is executed before
->  * parse_early_param().
->  */
-> static void __init fpu__init_parse_early_param(void)
+> diff --git a/drivers/fpga/xrt/lib/main.c b/drivers/fpga/xrt/lib/main.c
+> new file mode 100644
+> index 000000000000..36fb62710843
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/main.c
+> @@ -0,0 +1,274 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Driver for Xilinx Alveo FPGA Support
+> + *
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#include <linux/module.h>
+> +#include "xleaf.h"
+> +#include "xroot.h"
+> +#include "main.h"
+> +
+> +#define XRT_IPLIB_MODULE_NAME		"xrt-lib"
+> +#define XRT_IPLIB_MODULE_VERSION	"4.0.0"
+> +#define XRT_MAX_DEVICE_NODES		128
+> +#define XRT_DRVNAME(drv)		((drv)->driver.name)
+> +
+> +/*
+> + * Subdev driver is known by ID to others. We map the ID to it's
+> + * struct platform_driver, which contains it's binding name and driver/file ops.
+> + * We also map it to the endpoint name in DTB as well, if it's different
+> + * than the driver's binding name.
+> + */
+> +struct xrt_drv_map {
+> +	struct list_head list;
+> +	enum xrt_subdev_id id;
+> +	struct platform_driver *drv;
+> +	struct xrt_subdev_endpoints *eps;
+> +	struct ida ida; /* manage driver instance and char dev minor */
+> +};
+> +
+> +static DEFINE_MUTEX(xrt_lib_lock); /* global lock protecting xrt_drv_maps list */
+> +static LIST_HEAD(xrt_drv_maps);
+> +struct class *xrt_class;
+> +
+> +static inline struct xrt_subdev_drvdata *
+> +xrt_drv_map2drvdata(struct xrt_drv_map *map)
+> +{
+> +	return (struct xrt_subdev_drvdata *)map->drv->id_table[0].driver_data;
+> +}
+> +
+> +static struct xrt_drv_map *
+> +xrt_drv_find_map_by_id_nolock(enum xrt_subdev_id id)
+> +{
+> +	const struct list_head *ptr;
+> +
+> +	list_for_each(ptr, &xrt_drv_maps) {
+> +		struct xrt_drv_map *tmap = list_entry(ptr, struct xrt_drv_map, list);
+list_for_each_entry, maybe?
+> +
+> +		if (tmap->id == id)
+> +			return tmap;
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static struct xrt_drv_map *
+> +xrt_drv_find_map_by_id(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map;
+> +
+> +	mutex_lock(&xrt_lib_lock);
+> +	map = xrt_drv_find_map_by_id_nolock(id);
+> +	mutex_unlock(&xrt_lib_lock);
+> +	/*
+> +	 * map should remain valid even after lock is dropped since a registered
+> +	 * driver should only be unregistered when driver module is being unloaded,
+> +	 * which means that the driver should not be used by then.
+> +	 */
+> +	return map;
+> +}
+> +
+> +static int xrt_drv_register_driver(struct xrt_drv_map *map)
+> +{
+> +	struct xrt_subdev_drvdata *drvdata;
+> +	int rc = 0;
+> +	const char *drvname = XRT_DRVNAME(map->drv);
+> +
+> +	rc = platform_driver_register(map->drv);
+> +	if (rc) {
+> +		pr_err("register %s platform driver failed\n", drvname);
+> +		return rc;
+> +	}
+> +
+> +	drvdata = xrt_drv_map2drvdata(map);
+> +	if (drvdata) {
+> +		/* Initialize dev_t for char dev node. */
+> +		if (xleaf_devnode_enabled(drvdata)) {
+> +			rc = alloc_chrdev_region(&drvdata->xsd_file_ops.xsf_dev_t, 0,
+> +						 XRT_MAX_DEVICE_NODES, drvname);
+> +			if (rc) {
+> +				platform_driver_unregister(map->drv);
+> +				pr_err("failed to alloc dev minor for %s: %d\n", drvname, rc);
+> +				return rc;
+> +			}
+> +		} else {
+> +			drvdata->xsd_file_ops.xsf_dev_t = (dev_t)-1;
+> +		}
+> +	}
+> +
+> +	ida_init(&map->ida);
+> +
+> +	pr_info("%s registered successfully\n", drvname);
+Is this not xrt_info() then?
+> +
+> +	return 0;
+> +}
+> +
+> +static void xrt_drv_unregister_driver(struct xrt_drv_map *map)
+> +{
+> +	const char *drvname = XRT_DRVNAME(map->drv);
+> +	struct xrt_subdev_drvdata *drvdata;
+> +
+> +	ida_destroy(&map->ida);
+> +
+> +	drvdata = xrt_drv_map2drvdata(map);
+> +	if (drvdata && drvdata->xsd_file_ops.xsf_dev_t != (dev_t)-1) {
+> +		unregister_chrdev_region(drvdata->xsd_file_ops.xsf_dev_t,
+> +					 XRT_MAX_DEVICE_NODES);
+> +	}
+> +
+> +	platform_driver_unregister(map->drv);
+> +
+> +	pr_info("%s unregistered successfully\n", drvname);
+> +}
+> +
+> +int xleaf_register_driver(enum xrt_subdev_id id,
+> +			  struct platform_driver *drv,
+> +			  struct xrt_subdev_endpoints *eps)
+> +{
+> +	struct xrt_drv_map *map;
+> +
+> +	mutex_lock(&xrt_lib_lock);
+> +
+> +	map = xrt_drv_find_map_by_id_nolock(id);
+> +	if (map) {
+> +		mutex_unlock(&xrt_lib_lock);
+> +		pr_err("Id %d already has a registered driver, 0x%p\n",
+> +		       id, map->drv);
+> +		return -EEXIST;
+> +	}
+> +
+> +	map = vzalloc(sizeof(*map));
+> +	if (!map) {
+> +		mutex_unlock(&xrt_lib_lock);
+> +		return -ENOMEM;
+> +	}
+> +	map->id = id;
+> +	map->drv = drv;
+> +	map->eps = eps;
+> +
+> +	xrt_drv_register_driver(map);
+> +
+> +	list_add(&map->list, &xrt_drv_maps);
+> +
+> +	mutex_unlock(&xrt_lib_lock);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_register_driver);
+> +
+> +void xleaf_unregister_driver(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map;
+> +
+> +	mutex_lock(&xrt_lib_lock);
+> +
+> +	map = xrt_drv_find_map_by_id_nolock(id);
+> +	if (!map) {
+> +		mutex_unlock(&xrt_lib_lock);
+> +		pr_err("Id %d has no registered driver\n", id);
+> +		return;
+> +	}
+> +
+> +	list_del(&map->list);
+> +
+> +	mutex_unlock(&xrt_lib_lock);
+> +
+> +	xrt_drv_unregister_driver(map);
+> +	vfree(map);
+> +}
+> +EXPORT_SYMBOL_GPL(xleaf_unregister_driver);
+> +
+> +const char *xrt_drv_name(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +
+> +	if (map)
+> +		return XRT_DRVNAME(map->drv);
+> +	return NULL;
+> +}
+> +
+> +int xrt_drv_get_instance(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +
+> +	return ida_alloc_range(&map->ida, 0, XRT_MAX_DEVICE_NODES, GFP_KERNEL);
+> +}
+> +
+> +void xrt_drv_put_instance(enum xrt_subdev_id id, int instance)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +
+> +	ida_free(&map->ida, instance);
+> +}
+> +
+> +struct xrt_subdev_endpoints *xrt_drv_get_endpoints(enum xrt_subdev_id id)
+> +{
+> +	struct xrt_drv_map *map = xrt_drv_find_map_by_id(id);
+> +	struct xrt_subdev_endpoints *eps;
+> +
+> +	eps = map ? map->eps : NULL;
+> +	return eps;
+> +}
+> +
+> +/* Leaf driver's module init/fini callbacks. */
+> +static void (*leaf_init_fini_cbs[])(bool) = {
+> +	group_leaf_init_fini,
+> +	vsec_leaf_init_fini,
+> +	devctl_leaf_init_fini,
+> +	axigate_leaf_init_fini,
+> +	icap_leaf_init_fini,
+> +	calib_leaf_init_fini,
+> +	clkfreq_leaf_init_fini,
+> +	clock_leaf_init_fini,
+> +	ucs_leaf_init_fini,
+> +};
+> +
+> +static __init int xrt_lib_init(void)
+> +{
+> +	int i;
+> +
+> +	xrt_class = class_create(THIS_MODULE, XRT_IPLIB_MODULE_NAME);
+> +	if (IS_ERR(xrt_class))
+> +		return PTR_ERR(xrt_class);
+> +
+> +	for (i = 0; i < ARRAY_SIZE(leaf_init_fini_cbs); i++)
+> +		leaf_init_fini_cbs[i](true);
+> +	return 0;
+> +}
+> +
+> +static __exit void xrt_lib_fini(void)
+> +{
+> +	struct xrt_drv_map *map;
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(leaf_init_fini_cbs); i++)
+> +		leaf_init_fini_cbs[i](false);
+> +
+> +	mutex_lock(&xrt_lib_lock);
+> +
+> +	while (!list_empty(&xrt_drv_maps)) {
+> +		map = list_first_entry_or_null(&xrt_drv_maps, struct xrt_drv_map, list);
+> +		pr_err("Unloading module with %s still registered\n", XRT_DRVNAME(map->drv));
+> +		list_del(&map->list);
+> +		mutex_unlock(&xrt_lib_lock);
+> +		xrt_drv_unregister_driver(map);
+> +		vfree(map);
+> +		mutex_lock(&xrt_lib_lock);
+> +	}
+> +
+> +	mutex_unlock(&xrt_lib_lock);
+> +
+> +	class_destroy(xrt_class);
+> +}
+> +
+> +module_init(xrt_lib_init);
+> +module_exit(xrt_lib_fini);
+> +
+> +MODULE_VERSION(XRT_IPLIB_MODULE_VERSION);
+> +MODULE_AUTHOR("XRT Team <runtime@xilinx.com>");
+> +MODULE_DESCRIPTION("Xilinx Alveo IP Lib driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/drivers/fpga/xrt/lib/main.h b/drivers/fpga/xrt/lib/main.h
+> new file mode 100644
+> index 000000000000..f3bfc87ee614
+> --- /dev/null
+> +++ b/drivers/fpga/xrt/lib/main.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020-2021 Xilinx, Inc.
+> + *
+> + * Authors:
+> + *	Cheng Zhen <maxz@xilinx.com>
+> + */
+> +
+> +#ifndef _XRT_MAIN_H_
+> +#define _XRT_MAIN_H_
+> +
+> +const char *xrt_drv_name(enum xrt_subdev_id id);
+> +int xrt_drv_get_instance(enum xrt_subdev_id id);
+> +void xrt_drv_put_instance(enum xrt_subdev_id id, int instance);
+> +struct xrt_subdev_endpoints *xrt_drv_get_endpoints(enum xrt_subdev_id id);
+> +
+> +#endif	/* _XRT_MAIN_H_ */
+> -- 
+> 2.18.4
+> 
 
-thanks.
--- 
-~Randy
+This smells like it should be a bus to me...
 
+- Moritz
