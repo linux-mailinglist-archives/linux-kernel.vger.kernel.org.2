@@ -2,85 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB23320AE6
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:06:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987C0320AE8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:06:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230084AbhBUOFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:05:46 -0500
-Received: from mail-pl1-f180.google.com ([209.85.214.180]:40651 "EHLO
-        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhBUOFm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:05:42 -0500
-Received: by mail-pl1-f180.google.com with SMTP id z7so5978798plk.7
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 06:05:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ztDsdAIBTtQ1nkN7dw6CYE5xnJ1DaXEAMZjHk0Yhkkw=;
-        b=A5IWgLbPwz8+oMBB5RuqGhqPheGlx/gW1aIt9ZGWP7C+6p9UhBOemFJynuTl5ZwBxA
-         wzEDXZme0sX9VuVFB2SYktrhY5dgUm2Klm06JIu2PVp5bPZ4UWm0r2DRJkWV9+nYIP9a
-         iAhAb2HM7vMvNKtrhACyK9ChTS0rxKzbTI50nHfqtScI14uAIuTVUrY/GjEkZf33LKtu
-         oq+HmG5sZnG80ZJ+2RyOlE3Bhsp2H+1sYi68XORdQZIJ/cNbBwfSnaEMwTOT/IbEeBJm
-         +kW2vZyW964G55xt3mkoCNb/QeK6SlhRpYfq320Di8W5+bmpONKsWZANQonj1EiAb4oJ
-         6rMw==
-X-Gm-Message-State: AOAM532prYjH/VwUu0kUM0pEqN0ePn2wKl0+X0ljwcUsyDyzG7A9wg5h
-        26HKIx7RVAtk/gLgJPxM1MO9JgEdWh4=
-X-Google-Smtp-Source: ABdhPJwzZcsp9cJ7K4okRUk9bpxKQIxBd+1Jag4P8sKj8kZVI6r/mZByZEV4zL13h0d9nBbmPUPj1A==
-X-Received: by 2002:a17:903:31d1:b029:de:8361:739b with SMTP id v17-20020a17090331d1b02900de8361739bmr17605925ple.85.1613916301220;
-        Sun, 21 Feb 2021 06:05:01 -0800 (PST)
-Received: from karthik-strix-linux.karthek.com ([192.140.154.12])
-        by smtp.gmail.com with ESMTPSA id e1sm11511838pjm.12.2021.02.21.06.04.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 06:05:00 -0800 (PST)
-Date:   Sun, 21 Feb 2021 19:34:57 +0530
-From:   karthik alapati <mail@karthek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] staging: media/atomisp: don't compile unused code
-Message-ID: <90eb63796a8f8aca988efb33247ea01f4a860074.1613915981.git.mail@karthek.com>
-References: <cover.1613915981.git.mail@karthek.com>
+        id S230104AbhBUOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:06:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229945AbhBUOFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 09:05:54 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0315061481;
+        Sun, 21 Feb 2021 14:05:10 +0000 (UTC)
+Date:   Sun, 21 Feb 2021 14:05:07 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     William Breathitt Gray <vilhelm.gray@gmail.com>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, o.rempel@pengutronix.de,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v8 19/22] counter: Implement extension*_name sysfs
+ attributes
+Message-ID: <20210221140507.0a5ef57f@archlinux>
+In-Reply-To: <YC98GTwzwt+pkzMO@shinobu>
+References: <cover.1613131238.git.vilhelm.gray@gmail.com>
+        <c9b55d1cff6acac692a7853b0a25777ecf017b12.1613131238.git.vilhelm.gray@gmail.com>
+        <20210214180913.05bd3498@archlinux>
+        <YC98GTwzwt+pkzMO@shinobu>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1613915981.git.mail@karthek.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-currently the functions defined in ibuf_ctrl_rmgr.c file are only
-used by isys_init.c when CONFIG_VIDEO_ATOMISP_ISP2401 is selected
-so dont't compile it when not needed, also fixes some sparse warnings
+On Fri, 19 Feb 2021 17:51:37 +0900
+William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
 
-Signed-off-by: karthik alapati <mail@karthek.com>
----
- drivers/staging/media/atomisp/Makefile | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> On Sun, Feb 14, 2021 at 06:09:13PM +0000, Jonathan Cameron wrote:
+> > On Fri, 12 Feb 2021 21:13:43 +0900
+> > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+> >   
+> > > The Generic Counter chrdev interface expects users to supply extension
+> > > IDs in order to select extensions for requests. In order for users to
+> > > know what extension ID belongs to which extension this information must
+> > > be exposed. The extension*_name attribute provides a way for users to
+> > > discover what extension ID belongs to which extension by reading the
+> > > respective extension name for an extension ID.
+> > > 
+> > > Cc: David Lechner <david@lechnology.com>
+> > > Cc: Gwendal Grignou <gwendal@chromium.org>
+> > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
+> > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> > > ---
+> > >  Documentation/ABI/testing/sysfs-bus-counter |  9 ++++
+> > >  drivers/counter/counter-sysfs.c             | 51 +++++++++++++++++----
+> > >  2 files changed, 50 insertions(+), 10 deletions(-)
+> > > 
+> > > diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/ABI/testing/sysfs-bus-counter
+> > > index 6353f0a2f8f8..847e96f19d19 100644
+> > > --- a/Documentation/ABI/testing/sysfs-bus-counter
+> > > +++ b/Documentation/ABI/testing/sysfs-bus-counter
+> > > @@ -100,6 +100,15 @@ Description:
+> > >  		Read-only attribute that indicates whether excessive noise is
+> > >  		present at the channel Y counter inputs.
+> > >  
+> > > +What:		/sys/bus/counter/devices/counterX/countY/extensionZ_name
+> > > +What:		/sys/bus/counter/devices/counterX/extensionZ_name
+> > > +What:		/sys/bus/counter/devices/counterX/signalY/extensionZ_name
+> > > +KernelVersion:	5.13
+> > > +Contact:	linux-iio@vger.kernel.org
+> > > +Description:
+> > > +		Read-only attribute that indicates the component name of
+> > > +		Extension Z.  
+> > 
+> > Good to say what form this takes.  
+> 
+> Do you mean a description like this: "Read-only string attribute that
+> indicates the component name of Extension Z"?
 
-diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
-index 1dfad0dd0..51498b2e8 100644
---- a/drivers/staging/media/atomisp/Makefile
-+++ b/drivers/staging/media/atomisp/Makefile
-@@ -126,7 +126,6 @@ atomisp-objs += \
- 	pci/runtime/inputfifo/src/inputfifo.o \
- 	pci/runtime/isp_param/src/isp_param.o \
- 	pci/runtime/isys/src/csi_rx_rmgr.o \
--	pci/runtime/isys/src/ibuf_ctrl_rmgr.o \
- 	pci/runtime/isys/src/isys_dma_rmgr.o \
- 	pci/runtime/isys/src/isys_init.o \
- 	pci/runtime/isys/src/isys_stream2mmio_rmgr.o \
-@@ -323,7 +322,9 @@ DEFINES := -DHRT_HW -DHRT_ISP_CSS_CUSTOM_HOST -DHRT_USE_VIR_ADDRS -D__HOST__
- #DEFINES += -DUSE_KMEM_CACHE
- 
- ifeq ($(CONFIG_VIDEO_ATOMISP_ISP2401),y)
--atomisp-objs += $(obj-cht)
-+atomisp-objs += \
-+	$(obj-cht) \
-+	pci/runtime/isys/src/ibuf_ctrl_rmgr.o
- DEFINES += -DISP2401 -DISP2401_NEW_INPUT_SYSTEM -DSYSTEM_hive_isp_css_2401_system
- else
- atomisp-objs += $(obj-byt)
--- 
-2.30.1
+My expectation would be that the possible strings are tightly constrained
+(perhaps via review). So I'd like to see what they are and a brief description
+of what each one means.
+
+Jonathan
+
+> 
+> William Breathitt Gray
 
