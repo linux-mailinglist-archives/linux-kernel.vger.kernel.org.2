@@ -2,198 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FCB320814
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 03:10:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FA9320818
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 03:23:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhBUCHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 21:07:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54350 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhBUCHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 21:07:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 10FEF64EF2;
-        Sun, 21 Feb 2021 02:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613873208;
-        bh=Nm+5OkKW4X7QmW/uKwyf/FKGq/9207/TvxjJOKuREHs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DIzy17qAEc1Jgi+GT/lBeEN09XCUU26SQpcA1V0+Ex0vhmyg+LuexROdEqgiv5WES
-         4Q5WhjfzhvbvK1JJiSCSsCjYQTymmM9mR69KLIsbtN1PI16S+0PR2JEw3WoSASfX7G
-         V+gsqX5Yam2RcOGxKVCH3buagX42ONQaus7deE+NxDkJ9Dj75liwwq3eViaecZLeba
-         KfxwWT90yfHh3UXyOJq/cX45ZAhZBPnEkZNhZlK2laFzAhuUJ0HmmiMQnYRQU+R6MG
-         tLq0bD+wjIQcTzriDy5fcB94CYqKKqzcToep0naronywIX+/FTi7gHfyUHMWWzMLun
-         D4cJtfDbC0O5w==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     linux-sgx@vger.kernel.org
-Cc:     haitao.huang@intel.com, dan.j.williams@intel.com,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] x86/sgx: Add a basic NUMA allocation scheme to sgx_alloc_epc_page()
-Date:   Sun, 21 Feb 2021 04:06:30 +0200
-Message-Id: <20210221020631.171404-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.30.1
+        id S229889AbhBUCVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 21:21:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhBUCVh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 21:21:37 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE16C061574;
+        Sat, 20 Feb 2021 18:20:57 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id f17so6928095qth.7;
+        Sat, 20 Feb 2021 18:20:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lXiKXFfeWt9fU0aynhUPV7n3Y0YFPh1zzQ5w7OiN4mM=;
+        b=cFC7u7NHHyBOp5k9mW7/pxbztiaxUnpSNt86azW9EwDKnp1kqiZcL/F490A7RSbyxx
+         Uxt1J2ROaMu1VWPU16BjHUP+jQed6PJXCIaUHn78f0uzWG2NMgbBz+zfLlksUKNsvzAS
+         f8utfn3OCGiTwSaU8XgbtAPPYZiuHTIpMOXq4htmY8ivzB1LIq/u48w/n2rWFWACTxCl
+         59pcRZYjGouQ4ejcxxpeUurqwsmB0VBgjesuiiBfK9ViN9GRuVey511MYZLaKVIjO9EM
+         oPzTVURyuLPmWlXav416O9K4ZCs+Rmh81xwc1uzpgVTfw2ek+/ETxwHHyYapABFD6jNb
+         sZnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lXiKXFfeWt9fU0aynhUPV7n3Y0YFPh1zzQ5w7OiN4mM=;
+        b=agkHC1IUL4P9lvunhbatu/2un9vgjFy+EL0OnyMOQSrZyx1v+MU/WG2PZFvO/wwhIZ
+         Fl96683DxBDYE8C5FXVH95lOrkQ3Z3vxwLk2TW3484fCh6SmH7ODHERJFJzP8Py4V1f7
+         8R1LRPijwQD+6xV3YuLw937X0Xw9DBVDS3AuZwFTn+u/z6iD8+2aLurY+qt2+eBvQmUt
+         2eRTRFn2SUzNrUHc2itN7tm4cybzZ4IexKDX6riE4DZubGEEa5Pj9jIZAGoQ5R0pN7Yr
+         9gYnjSyaeOE/m/bKJk35n/Y1SItTBI09JsTr0r+ago+sRw6kEY0kJo9Bc1jfeKfEwL5Z
+         5I9w==
+X-Gm-Message-State: AOAM533EIOchmK9Be96c4hWf3GnDAeDK+CRPGml/e6DyQrs1GfwBvDI/
+        bZMm5V7Dsjm+Sa8juz+IDCzq2/HZsuZLh2W0P+o=
+X-Google-Smtp-Source: ABdhPJzS83AOa3X+3olu8OpFyXENV/vMJO86vMNACCxwO9i5S9I3K5QYQNtqjh52tnrrn7yZuewuP1QvuAfGOLCifJY=
+X-Received: by 2002:a05:622a:18c:: with SMTP id s12mr15604599qtw.131.1613874055734;
+ Sat, 20 Feb 2021 18:20:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210220043203.11754-1-yejune.deng@gmail.com> <3b69191b-9bd5-9050-9126-17b4905a67e9@gmail.com>
+In-Reply-To: <3b69191b-9bd5-9050-9126-17b4905a67e9@gmail.com>
+From:   Yejune Deng <yejune.deng@gmail.com>
+Date:   Sun, 21 Feb 2021 10:20:44 +0800
+Message-ID: <CABWKuGW5bvPDvNv5=Fj_=f9=gk--=_w28jsCJ8MK5t7ysK+s8g@mail.gmail.com>
+Subject: Re: [PATCH] arp: Remove the arp_hh_ops structure
+To:     David Ahern <dsahern@gmail.com>
+Cc:     David Miller <davem@davemloft.net>, yoshfuji@linux-ipv6.org,
+        dsahern@kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Background
-==========
+Sorry,it was my fault, I will resubmit.
 
-EPC section is covered by one or more SRAT entries that are associated with
-one and only one PXM (NUMA node). The motivation behind this patch is to
-provide basic elements of building allocation scheme based on this premise.
-
-It does not try to fully address NUMA. For instance, it does not provide
-integration to the mempolicy API, but neither does introduce any
-bottlenecks to address this later on. Memory allocation is a complex topic,
-and thus it's better to start with baby steps.
-
-Solution
-========
-
-Use phys_to_target_node() to associate each NUMA node with the EPC sections
-contained within its range.
-
-In sgx_alloc_epc_page(), first try to allocate from the NUMA node, where
-the CPU is executing. If that fails, fallback to the legacy allocation.
-
-Link: https://lore.kernel.org/lkml/158188326978.894464.217282995221175417.stgit@dwillia2-desk3.amr.corp.intel.com/
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/Kconfig               |  1 +
- arch/x86/kernel/cpu/sgx/main.c | 52 +++++++++++++++++++++++++++++++++-
- arch/x86/kernel/cpu/sgx/sgx.h  |  1 +
- 3 files changed, 53 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 21f851179ff0..dcb73a5edf63 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -1941,6 +1941,7 @@ config X86_SGX
- 	depends on CRYPTO_SHA256=y
- 	select SRCU
- 	select MMU_NOTIFIER
-+	select NUMA_KEEP_MEMINFO if NUMA
- 	help
- 	  Intel(R) Software Guard eXtensions (SGX) is a set of CPU instructions
- 	  that can be used by applications to set aside private regions of code
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 8df81a3ed945..21addedc5240 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -18,6 +18,12 @@ static int sgx_nr_epc_sections;
- static struct task_struct *ksgxd_tsk;
- static DECLARE_WAIT_QUEUE_HEAD(ksgxd_waitq);
- 
-+/* Nodes with one or more EPC sections. */
-+static nodemask_t sgx_numa_mask;
-+
-+/* Array of lists of EPC sections for each NUMA node. */
-+struct list_head *sgx_numa_nodes;
-+
- /*
-  * These variables are part of the state of the reclaimer, and must be accessed
-  * with sgx_reclaimer_lock acquired.
-@@ -473,6 +479,26 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
- 	return page;
- }
- 
-+static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
-+{
-+	struct sgx_epc_section *section;
-+	struct sgx_epc_page *page;
-+
-+	if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES))
-+		return NULL;
-+
-+	if (!node_isset(nid, sgx_numa_mask))
-+		return NULL;
-+
-+	list_for_each_entry(section, &sgx_numa_nodes[nid], section_list) {
-+		page = __sgx_alloc_epc_page_from_section(section);
-+		if (page)
-+			return page;
-+	}
-+
-+	return NULL;
-+}
-+
- /**
-  * __sgx_alloc_epc_page() - Allocate an EPC page
-  *
-@@ -485,13 +511,17 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_section(struct sgx_epc_sec
-  */
- struct sgx_epc_page *__sgx_alloc_epc_page(void)
- {
-+	int current_nid = numa_node_id();
- 	struct sgx_epc_section *section;
- 	struct sgx_epc_page *page;
- 	int i;
- 
-+	page = __sgx_alloc_epc_page_from_node(current_nid);
-+	if (page)
-+		return page;
-+
- 	for (i = 0; i < sgx_nr_epc_sections; i++) {
- 		section = &sgx_epc_sections[i];
--
- 		page = __sgx_alloc_epc_page_from_section(section);
- 		if (page)
- 			return page;
-@@ -665,8 +695,12 @@ static bool __init sgx_page_cache_init(void)
- {
- 	u32 eax, ebx, ecx, edx, type;
- 	u64 pa, size;
-+	int nid;
- 	int i;
- 
-+	nodes_clear(sgx_numa_mask);
-+	sgx_numa_nodes = kmalloc_array(MAX_NUMNODES, sizeof(*sgx_numa_nodes), GFP_KERNEL);
-+
- 	for (i = 0; i < ARRAY_SIZE(sgx_epc_sections); i++) {
- 		cpuid_count(SGX_CPUID, i + SGX_CPUID_EPC, &eax, &ebx, &ecx, &edx);
- 
-@@ -690,6 +724,22 @@ static bool __init sgx_page_cache_init(void)
- 		}
- 
- 		sgx_nr_epc_sections++;
-+
-+		nid = numa_map_to_online_node(phys_to_target_node(pa));
-+
-+		if (nid == NUMA_NO_NODE) {
-+			pr_err(FW_BUG "unable to map EPC section %d to online node.\n", nid);
-+			nid = 0;
-+		} else if (WARN_ON_ONCE(nid < 0 || nid >= MAX_NUMNODES)) {
-+			nid = 0;
-+		}
-+
-+		if (!node_isset(nid, sgx_numa_mask)) {
-+			INIT_LIST_HEAD(&sgx_numa_nodes[nid]);
-+			node_set(nid, sgx_numa_mask);
-+		}
-+
-+		list_add_tail(&sgx_epc_sections[i].section_list, &sgx_numa_nodes[nid]);
- 	}
- 
- 	if (!sgx_nr_epc_sections) {
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 5fa42d143feb..4bc31bc4bacf 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -45,6 +45,7 @@ struct sgx_epc_section {
- 	spinlock_t lock;
- 	struct list_head page_list;
- 	unsigned long free_cnt;
-+	struct list_head section_list;
- 
- 	/*
- 	 * Pages which need EREMOVE run on them before they can be
--- 
-2.30.1
-
+On Sun, Feb 21, 2021 at 9:54 AM David Ahern <dsahern@gmail.com> wrote:
+>
+> On 2/19/21 9:32 PM, Yejune Deng wrote:
+> >  static const struct neigh_ops arp_direct_ops = {
+> >       .family =               AF_INET,
+> >       .output =               neigh_direct_output,
+> > @@ -277,15 +269,10 @@ static int arp_constructor(struct neighbour *neigh)
+> >                       memcpy(neigh->ha, dev->broadcast, dev->addr_len);
+> >               }
+> >
+> > -             if (dev->header_ops->cache)
+> > -                     neigh->ops = &arp_hh_ops;
+> > -             else
+> > -                     neigh->ops = &arp_generic_ops;
+>
+> How did you test this?
+>
+> you took out the neigh->ops assignment, so all of the neigh->ops in
+> net/core/neighbour.c are going to cause a NULL dereference.
+>
+>
+> > -
+> > -             if (neigh->nud_state & NUD_VALID)
+> > -                     neigh->output = neigh->ops->connected_output;
+> > +             if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
+> > +                     neigh->output = arp_generic_ops.connected_output;
+> >               else
+> > -                     neigh->output = neigh->ops->output;
+> > +                     neigh->output = arp_generic_ops.output;
+> >       }
+> >       return 0;
+> >  }
+> >
+>
