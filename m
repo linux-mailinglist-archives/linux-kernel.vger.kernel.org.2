@@ -2,115 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07042320CCC
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F75320CB2
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:40:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhBUSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 13:42:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhBUSkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 13:40:46 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42D1AC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:39:35 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id g1so45844463ljj.13
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:39:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NhYOZbgBpd4mjAxZCaWZK1LAzWuXyFM8/hnnTWXx6so=;
-        b=WcE3YfpuwsaIbUWi+3p8vcZMWVlvLG227eL4urxfnk+0rSx5+Mrftg1MiOpgzYY/xO
-         yVNA92s1myyzTf5DE/UetWToGByOlpbmWjxyEuF2L9h6NiTO0po/EZRBtENCYvamLDok
-         shZJZoPIrYBX8fRG4N9dxLVhj4/ULftnMzFP3QAHLxDcn2tzhAHKD1DnhBF1UJdPfaZy
-         KAkA2Q9PdwApPyLYr6z2SZuVi5sRumkkfdX/5Xfezt6MfbBEIYwoYfxfXML0amY0zh4G
-         c35VmcX/LZjtdCEP8f+Pq0caFbfBlEqG0rb1AYlGk8AR/uqOkTsavlkWJ7fAUN2YJZt1
-         yYNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NhYOZbgBpd4mjAxZCaWZK1LAzWuXyFM8/hnnTWXx6so=;
-        b=CE7WqXxVT0sdis6zferCrcOyaFxdvu2jP12KLGYs6NmkqEH31MNyc/hRh6qZjgxC+v
-         hHbEdyemKRUcRGnuTiAfB2FTW7J1RHNLosriODkq3T7yDuQ06wbQmWNy67G/3ERneCfl
-         OxjRXhqiraMaSNud0SfouWe+k2bLuE4iweoBEL90l9V/t+BESZsMkvW8qguuZjrZ99fo
-         /FThI6qEVFqcSBgjstV99Eb5lAwqgWp6/HvN3XWlURJZK6LE7JiQque97gUhZ6hX0XGm
-         Sv0uIcfVaWG4W+ez6A/2qqLCCigGIDpkoBW2TpJzBWaN4awhZHg3G25LVXt1Z/QDE6f+
-         swpQ==
-X-Gm-Message-State: AOAM531QRFGjnJkMxBEqMTnNG9Lg4pReOy3rr0rIG9HkqViDPjdSv9qW
-        e9KTO5BvGUtIQ8yv6mLbh8B82A==
-X-Google-Smtp-Source: ABdhPJyuvHfzWnYWyJihn2ndFwj/qnblDirw0I0KTUo8pRXKmboqktGnHYLVV42qAQ9YNDaJlfxDEA==
-X-Received: by 2002:ac2:5f6c:: with SMTP id c12mr9185267lfc.316.1613932773820;
-        Sun, 21 Feb 2021 10:39:33 -0800 (PST)
-Received: from [192.168.118.216] ([85.249.43.69])
-        by smtp.gmail.com with ESMTPSA id y17sm971708lfh.221.2021.02.21.10.39.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Feb 2021 10:39:33 -0800 (PST)
-Subject: Re: [PATCH v5 21/22] arm64: dts: sdm845-db845c: Configure regulators
- for camss node
-To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, todor.too@gmail.com,
-        mchehab@kernel.org, robh+dt@kernel.org,
-        angelogioacchino.delregno@somainline.org,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Jonathan Marek <jonathan@marek.ca>
-References: <20210217112122.424236-1-robert.foss@linaro.org>
- <20210217112122.424236-22-robert.foss@linaro.org>
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-Message-ID: <b033d21a-72bb-6965-2d62-6e7d67113f06@linaro.org>
-Date:   Sun, 21 Feb 2021 21:39:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210217112122.424236-22-robert.foss@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230212AbhBUSkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 13:40:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56126 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230107AbhBUSkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 13:40:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 648E06148E;
+        Sun, 21 Feb 2021 18:39:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613932776;
+        bh=5GoWN4pGByWaKK+ZMToa01cR0SV78JG9i1Ai2sqmyII=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=EG+OGadZvQFeksMrwXCsy5aIER5t956wyLhLL+tv8xlBXjfC9vbEFNsg/Jz3kT5dV
+         LLiA3KSYZN5/ZWI9SCrkOPtHn5lyKIFiDDrhoysvGGHpxfzzBE3pWb4ZaQvYZWkHHB
+         EkmST4mNVpsN9AEvi6IQia0ksr/Apoy336wY/8RKX8rYAaa9w6eE7KLwQx8RIrMtK4
+         AHIiZ5ggMoVyXxiCezGny8yrn2eEhHNyVB5B37h/WpgWQNDjSuBlHKoCECIo+u0nPG
+         fR9wiJzqIku1qO8zcr2I3eV72BCpM8WT6HTqQ7AOMPXy7SDaDrTvnChsgTqLv0F7aX
+         jA1+Jel/XK/eg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 605A860967;
+        Sun, 21 Feb 2021 18:39:36 +0000 (UTC)
+Subject: Re: [git pull] saner ELF compat handling
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YCqpJZxNrb7+O8Ns@zeniv-ca.linux.org.uk>
+References: <YCqpJZxNrb7+O8Ns@zeniv-ca.linux.org.uk>
+X-PR-Tracked-List-Id: <linux-arch.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YCqpJZxNrb7+O8Ns@zeniv-ca.linux.org.uk>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.elf-compat
+X-PR-Tracked-Commit-Id: e565d89e4aa07e3f20ac5e8757b1da24b5878e69
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 591fd30eee47ed75d1296d619dd467414d0894e3
+Message-Id: <161393277638.20435.1673939815325390026.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Feb 2021 18:39:36 +0000
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
+The pull request you sent on Mon, 15 Feb 2021 17:02:29 +0000:
 
-Thank you for your patch!
+> git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.elf-compat
 
-Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/591fd30eee47ed75d1296d619dd467414d0894e3
 
-Thanks,
-Andrey
+Thank you!
 
-On 17.02.2021 14:21, Robert Foss wrote:
-> Add regulator to camss device tree node.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->   arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> index a943b3f353ce..5842ab65789c 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> @@ -1106,6 +1106,10 @@ &cci {
->   	status = "okay";
->   };
->   
-> +&camss {
-> +	vdda-supply = <&vreg_l1a_0p875>;
-> +};
-> +
->   &cci_i2c0 {
->   	camera@10 {
->   		compatible = "ovti,ov8856";
-> 
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
