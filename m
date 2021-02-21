@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 431E8320E2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:15:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C05320E2E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230489AbhBUWDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:03:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48976 "EHLO mail.kernel.org"
+        id S231180AbhBUWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 17:03:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48978 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230288AbhBUWDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230453AbhBUWDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 21 Feb 2021 17:03:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1F3F364EE0;
-        Sun, 21 Feb 2021 22:01:51 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id E7BEC64EDB;
+        Sun, 21 Feb 2021 22:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613944911;
-        bh=ead7r2hcu1SPttI/kAhAKS9H4EVXgGhmWeMXsX6WnjY=;
+        s=k20201202; t=1613944915;
+        bh=wS727jVtYsL2dmpDZqTrhJFV4YFFRTw4Zm+tqy/eqdQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=kDCX7cUCQChVjw3Ai6WDG6cZgDVcfhovlYZKrrIC8EnMvHFReLoqKuAb9gOCLQaba
-         1s0uiCRFzSuu08IVxTVxZv1bsw5cd7bfxF+ptbTAJjTMkO3eKNOVR/6d8SzVpYPLCU
-         Qgy3O9+6A+80gE4UFue5Ne22BfltfXSlT5zrS3cbzLUOl/vshvu9pgUOwkjfYARVar
-         ljdp9wNeWjVIni3w5scUsrJBYpN8FB0SmP6i8NSBtJBiG/l5Xj7ag0UZlGnw5JMiam
-         rpRiQyGI+ADr0Gx3Ilf6oY4RMLZzjvIZ/w25nPietqXs8vD3T8arT2LZi7qmLHx4U1
-         ycj4lPrARWJ5g==
+        b=pNZTrNfyV33CXxS1ghZ6mJroirjl1c6230Z7hcApOZZEtATJXlrldGV2i2Zqf8m5m
+         hk9kd07/INFYLEa4gq7dyd/n/JRZ5BwsUHuITK/CHY+d+I0QM0F8t16SuFzLVfG2A5
+         Qiq/K3kZ+8/ZcXYUuB7kovpR1wv3kqErLcNz19uSm+aRxEUFdcxyZUZ8rdbtJoH/xX
+         sIfQdzqVfHJbIvM4l/Klvu4gFyNi4FNKexP49hC8Bj2hBinIIEHLIwssTNdKPg+lKN
+         HN2UXRMNeX0WrlXeyeYrJk76pnGp6QqjmTjXNYQHTvgFbCRVRCneTJi+3id22GzfQx
+         NkbQvqsAHiaCw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1B0B460191;
-        Sun, 21 Feb 2021 22:01:51 +0000 (UTC)
-Subject: Re: [GIT PULL] JFFS2/UBIFS and UBI changes for 5.12
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E1AF860192;
+        Sun, 21 Feb 2021 22:01:55 +0000 (UTC)
+Subject: Re: [GIT PULL] First batch of KVM changes for Linux 5.12
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
-References: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.12-rc1
-X-PR-Tracked-Commit-Id: 42119dbe571eb419dae99b81dd20fa42f47464e1
+In-Reply-To: <20210214172845.1047934-1-pbonzini@redhat.com>
+References: <20210214172845.1047934-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210214172845.1047934-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 8c6e67bec3192f16fa624203c8131e10cc4814ba
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 66f73fb3facd42d0a7c899d7f4c712332b28499a
-Message-Id: <161394491110.8676.13685988086312540707.pr-tracker-bot@kernel.org>
-Date:   Sun, 21 Feb 2021 22:01:51 +0000
-To:     Richard Weinberger <richard@nod.at>
-Cc:     torvalds <torvalds@linux-foundation.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 3e10585335b7967326ca7b4118cada0d2d00a2ab
+Message-Id: <161394491591.8676.9147322641970268083.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Feb 2021 22:01:55 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 21 Feb 2021 21:02:14 +0100 (CET):
+The pull request you sent on Sun, 14 Feb 2021 12:28:45 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.12-rc1
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/66f73fb3facd42d0a7c899d7f4c712332b28499a
+https://git.kernel.org/torvalds/c/3e10585335b7967326ca7b4118cada0d2d00a2ab
 
 Thank you!
 
