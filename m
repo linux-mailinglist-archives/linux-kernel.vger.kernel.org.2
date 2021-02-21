@@ -2,127 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BE7320D5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:05:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8477C320D5C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:05:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhBUUD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 15:03:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229761AbhBUUDY (ORCPT
+        id S230502AbhBUUC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 15:02:58 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:48490 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229761AbhBUUC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:03:24 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F3CC061574;
-        Sun, 21 Feb 2021 12:02:43 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7FCB6EF;
-        Sun, 21 Feb 2021 21:02:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613937759;
-        bh=o2eDVQuJ6yjcFRPIKu9v84KcpaYn/gl029K82U+HOIM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YdOPKjyLq8xdf0OTeyQLgnjwKVOCYKOHnKiieixUnPwgrWv5l2NQObgBijpagtJ0p
-         J06nCkSIS5V60pcLfJBRNn34iHJ7slDc+sPMWDex7NITULHQ5FnkLaQrVZNjum6JNM
-         RkaDyTd0rfkUBd16SHXqnqTx+CcvYjxmIZvyprEA=
-Date:   Sun, 21 Feb 2021 22:02:13 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Nikolay Kyx <knv418@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: media: omap4iss: code style - avoid macro
- argument precedence issues
-Message-ID: <YDK8RfFUlktIyu7q@pendragon.ideasonboard.com>
-References: <20210221195308.1451-1-knv418@gmail.com>
+        Sun, 21 Feb 2021 15:02:57 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id DECBB60A3582;
+        Sun, 21 Feb 2021 21:02:14 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id CxQ-5D8vKsRy; Sun, 21 Feb 2021 21:02:14 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 9B40660A3587;
+        Sun, 21 Feb 2021 21:02:14 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id jVmISwEKIoao; Sun, 21 Feb 2021 21:02:14 +0100 (CET)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 8270B60A3582;
+        Sun, 21 Feb 2021 21:02:14 +0100 (CET)
+Date:   Sun, 21 Feb 2021 21:02:14 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <2079847149.14899.1613937734472.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] JFFS2/UBIFS and UBI changes for 5.12
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210221195308.1451-1-knv418@gmail.com>
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Index: TrGKkieyaZn28el165n92fOXdblJ5w==
+Thread-Topic: JFFS2/UBIFS and UBI changes for 5.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikolay,
+Linus,
 
-Thank you for the patch.
+The following changes since commit 92bf22614b21a2706f4993b278017e437f7785b3:
 
-On Sun, Feb 21, 2021 at 10:53:08PM +0300, Nikolay Kyx wrote:
-> This patch fixes the following checkpatch.pl check:
-> 
-> CHECK: Macro argument 'i' may be better as '(i)' to avoid precedence issues
-> 
-> in file iss_regs.h
-> 
-> Signed-off-by: Nikolay Kyx <knv418@gmail.com>
-> ---
-> 
-> Additionally some style warnings remain valid here and could be fixed by
-> another patch.
-> 
->  drivers/staging/media/omap4iss/iss_regs.h | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/staging/media/omap4iss/iss_regs.h b/drivers/staging/media/omap4iss/iss_regs.h
-> index 09a7375c89ac..cfe0bb075072 100644
-> --- a/drivers/staging/media/omap4iss/iss_regs.h
-> +++ b/drivers/staging/media/omap4iss/iss_regs.h
-> @@ -197,7 +197,7 @@
->  #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_MASK		(0x1fff << 0)
->  #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_SHIFT	0
->  
-> -#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * i))
-> +#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * (i)))
+  Linux 5.11-rc7 (2021-02-07 13:57:38 -0800)
 
-This is a good change, as it fixes potential issues, but maybe we could
-go one step forward and drop the unneeded parentheses ?
+are available in the Git repository at:
 
--#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * i))
-+#define CSI2_CTX_CTRL1(i)				(0x70 + 0x20 * (i))
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.12-rc1
 
-What do you think ?
+for you to fetch changes up to 42119dbe571eb419dae99b81dd20fa42f47464e1:
 
->  #define CSI2_CTX_CTRL1_GENERIC				BIT(30)
->  #define CSI2_CTX_CTRL1_TRANSCODE			(0xf << 24)
->  #define CSI2_CTX_CTRL1_FEC_NUMBER_MASK			(0xff << 16)
-> @@ -210,7 +210,7 @@
->  #define CSI2_CTX_CTRL1_PING_PONG			BIT(3)
->  #define CSI2_CTX_CTRL1_CTX_EN				BIT(0)
->  
-> -#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * i))
-> +#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * (i)))
->  #define CSI2_CTX_CTRL2_FRAME_MASK			(0xffff << 16)
->  #define CSI2_CTX_CTRL2_FRAME_SHIFT			16
->  #define CSI2_CTX_CTRL2_USER_DEF_MAP_SHIFT		13
-> @@ -222,19 +222,19 @@
->  #define CSI2_CTX_CTRL2_FORMAT_MASK			(0x3ff << 0)
->  #define CSI2_CTX_CTRL2_FORMAT_SHIFT			0
->  
-> -#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * i))
-> +#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * (i)))
->  #define CSI2_CTX_DAT_OFST_MASK				(0xfff << 5)
->  
-> -#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * i))
-> +#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * (i)))
->  #define CSI2_CTX_PING_ADDR_MASK				0xffffffe0
->  
-> -#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * i))
-> +#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * (i)))
->  #define CSI2_CTX_PONG_ADDR_MASK				CSI2_CTX_PING_ADDR_MASK
->  
-> -#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * i))
-> -#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * i))
-> +#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * (i)))
-> +#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * (i)))
->  
-> -#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * i))
-> +#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * (i)))
->  #define CSI2_CTX_CTRL3_ALPHA_SHIFT			5
->  #define CSI2_CTX_CTRL3_ALPHA_MASK			\
->  		(0x3fff << CSI2_CTX_CTRL3_ALPHA_SHIFT)
+  ubifs: Fix error return code in alloc_wbufs() (2021-02-13 22:58:44 +0100)
 
--- 
-Regards,
+----------------------------------------------------------------
+This pull request contains changes (actually just fixes) for UBIFS
 
-Laurent Pinchart
+JFFS2:
+- Fix for use-after-free in jffs2_sum_write_data()
+- Fix for out-of-bounds access in jffs2_zlib_compress()
+
+UBI:
+- Remove dead/useless code
+
+UBIFS:
+- Fix for a memory leak in ubifs_init_authentication()
+- Fix for high stack usage
+- Fix for a off-by-one error in xattrs code
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      ubifs: replay: Fix high stack usage, again
+
+Dinghao Liu (1):
+      ubifs: Fix memleak in ubifs_init_authentication
+
+Jubin Zhong (1):
+      ubi: remove dead code in validate_vid_hdr()
+
+Sascha Hauer (1):
+      ubifs: Fix off-by-one error
+
+Tom Rix (1):
+      jffs2: fix use after free in jffs2_sum_write_data()
+
+Wang ShaoBo (1):
+      ubifs: Fix error return code in alloc_wbufs()
+
+Yang Yang (1):
+      jffs2: check the validity of dstlen in jffs2_zlib_compress()
+
+Zheng Yongjun (1):
+      ubi: eba: Delete useless kfree code
+
+ drivers/mtd/ubi/eba.c  | 1 -
+ drivers/mtd/ubi/io.c   | 7 +------
+ fs/jffs2/compr_rtime.c | 3 +++
+ fs/jffs2/summary.c     | 3 +++
+ fs/ubifs/auth.c        | 2 +-
+ fs/ubifs/journal.c     | 2 +-
+ fs/ubifs/replay.c      | 4 +++-
+ fs/ubifs/super.c       | 4 +++-
+ fs/ubifs/xattr.c       | 2 +-
+ 9 files changed, 16 insertions(+), 12 deletions(-)
