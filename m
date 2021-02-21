@@ -2,40 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292BE320809
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 02:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5D032080B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 02:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229867AbhBUBvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 20:51:31 -0500
-Received: from mga12.intel.com ([192.55.52.136]:1080 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhBUBv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 20:51:29 -0500
-IronPort-SDR: SW8zDtU7mFWvoGcnKM/xK6RwEjXNiRMBXB9ocrM4M7W8uuMxwL1DT7DPhqKiU1s6Knek4Xs97L
- Ufnv1SAiZxhw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9901"; a="163348949"
-X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
-   d="scan'208";a="163348949"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 17:50:48 -0800
-IronPort-SDR: zbPehEoTWBgLun78p5az7xp7IZ53u/2CzSm4TQ9Ylm7f+PZGPP9ItOYb1iUstVkpIUHmD9F3Yy
- g8CNPXvYnhAA==
-X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
-   d="scan'208";a="401756043"
-Received: from jzhao41-mobl1.ccr.corp.intel.com (HELO [10.255.30.119]) ([10.255.30.119])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 17:50:46 -0800
-Subject: Re: [PATCH] virt: acrn: Use vfs_poll() instead of f_op->poll()
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210220145351.14464-1-yejune.deng@gmail.com>
-From:   "Liu, Shuo A" <shuo.a.liu@intel.com>
-Message-ID: <714d4648-46d7-bc44-a9a2-5ce3c919897c@intel.com>
-Date:   Sun, 21 Feb 2021 09:50:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229914AbhBUByz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 20:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229811AbhBUByv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Feb 2021 20:54:51 -0500
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F0AC061574;
+        Sat, 20 Feb 2021 17:54:11 -0800 (PST)
+Received: by mail-oi1-x22c.google.com with SMTP id o3so673381oic.8;
+        Sat, 20 Feb 2021 17:54:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2YeG2HTU6ffO0nhsXtBfvb2LSJCOeXJuMNGMXF/3az4=;
+        b=LyqUox4giymneLKtYSf9GSOLBlfSZAqrA47Y54NRxAJDnqQKWi+TEZlKclVIaodEsC
+         +i1OierxMLQDRH4YfySHAz4FCz2dQksO/uEsgk8kq7n/Ot5+63l2rHUWkXTmMIKa51rm
+         3v2f4QIKJScvULohfCGv36QmGsIO9BidKPmXyZDOQgFN9BZiUu1ywDR1J/zZm2ZggRHF
+         pwGW5mjE4+wmV7ZQgy4x6oglMG2MG3Oa+/T5nGRyv6FjuQ231wUPzpxMlx9OkN6GbgcH
+         THFs/low3d0mK+1iWXLkqkKbbHyYYUDZpqBLvHwkLD4bee+R5o5nVGr28gaUeNKl9Ewr
+         apvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2YeG2HTU6ffO0nhsXtBfvb2LSJCOeXJuMNGMXF/3az4=;
+        b=N8oMo/vzEZdHTlMhW6uBp8o20xhLMqc+XEj7iZlw4FawWhxNSDafX+Apk0Rl9QdmTg
+         R5gsJLNW19WakJ2wCQNsWcYzM9T5HNCFgDAfHf2htPcjRGB97kOdBC4E5otCqLjsLi4N
+         YCMnH4UH7hLr0QVQzU1wiXGRH8qiQJr/fWGao50lWJW99X4ApCzU0uc/u4pu7heNBWqS
+         RKLLPxrp1bUioz70OkfomtfNZNIEvpxzsYlMVlv3DLJbkf/5WWw+1DxUNOkDMjUumRJE
+         EUqjWacupionuGLMYqdDt0ZtimKLDksXO7Wgn+Prfp3ocRjgx5ks2LgryuHpAjUoFJHf
+         wkpA==
+X-Gm-Message-State: AOAM531O0rkYhDMR1VhnUKI37emynjtYZJDtrqvqKwmDlKDnpnLc3HRo
+        6hp/A4Z0z+dgnsOanfVEh8nFMT6fp8k=
+X-Google-Smtp-Source: ABdhPJwSZ27T8bbKpU/QWqVD1FJUkG4mOApvpKQtffWBuj4z5BRnc6InlACNoR4nieRmVJaphWgegw==
+X-Received: by 2002:aca:f5d4:: with SMTP id t203mr150123oih.132.1613872450283;
+        Sat, 20 Feb 2021 17:54:10 -0800 (PST)
+Received: from Davids-MacBook-Pro.local ([8.48.134.40])
+        by smtp.googlemail.com with ESMTPSA id g6sm2656423ooh.29.2021.02.20.17.54.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Feb 2021 17:54:09 -0800 (PST)
+Subject: Re: [PATCH] arp: Remove the arp_hh_ops structure
+To:     Yejune Deng <yejune.deng@gmail.com>, davem@davemloft.net,
+        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210220043203.11754-1-yejune.deng@gmail.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <3b69191b-9bd5-9050-9126-17b4905a67e9@gmail.com>
+Date:   Sat, 20 Feb 2021 18:54:08 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210220145351.14464-1-yejune.deng@gmail.com>
+In-Reply-To: <20210220043203.11754-1-yejune.deng@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -43,48 +68,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2/20/2021 22:53, Yejune Deng wrote:
-> Use vfs_poll() is a more advanced function in acrn_irqfd_assign().
-> as the same time, modify the definition of events.
-> 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-
-Thanks for the update.
-Reviewed-by: Shuo Liu <shuo.a.liu@intel.com>
-
-Hi Greg,
-Need i do more work on this patch?
-Or you will review and apply on your tree directly?
-
-Thanks
-shuo
-
-> ---
->  drivers/virt/acrn/irqfd.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/virt/acrn/irqfd.c b/drivers/virt/acrn/irqfd.c
-> index a8766d528e29..98d6e9b18f9e 100644
-> --- a/drivers/virt/acrn/irqfd.c
-> +++ b/drivers/virt/acrn/irqfd.c
-> @@ -112,7 +112,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
->  {
->  	struct eventfd_ctx *eventfd = NULL;
->  	struct hsm_irqfd *irqfd, *tmp;
-> -	unsigned int events;
-> +	__poll_t events;
->  	struct fd f;
->  	int ret = 0;
+On 2/19/21 9:32 PM, Yejune Deng wrote:
+>  static const struct neigh_ops arp_direct_ops = {
+>  	.family =		AF_INET,
+>  	.output =		neigh_direct_output,
+> @@ -277,15 +269,10 @@ static int arp_constructor(struct neighbour *neigh)
+>  			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
+>  		}
 >  
-> @@ -158,7 +158,7 @@ static int acrn_irqfd_assign(struct acrn_vm *vm, struct acrn_irqfd *args)
->  	mutex_unlock(&vm->irqfds_lock);
->  
->  	/* Check the pending event in this stage */
-> -	events = f.file->f_op->poll(f.file, &irqfd->pt);
-> +	events = vfs_poll(f.file, &irqfd->pt);
->  
->  	if (events & POLLIN)
->  		acrn_irqfd_inject(irqfd);
+> -		if (dev->header_ops->cache)
+> -			neigh->ops = &arp_hh_ops;
+> -		else
+> -			neigh->ops = &arp_generic_ops;
+
+How did you test this?
+
+you took out the neigh->ops assignment, so all of the neigh->ops in
+net/core/neighbour.c are going to cause a NULL dereference.
+
+
+> -
+> -		if (neigh->nud_state & NUD_VALID)
+> -			neigh->output = neigh->ops->connected_output;
+> +		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
+> +			neigh->output = arp_generic_ops.connected_output;
+>  		else
+> -			neigh->output = neigh->ops->output;
+> +			neigh->output = arp_generic_ops.output;
+>  	}
+>  	return 0;
+>  }
 > 
+
