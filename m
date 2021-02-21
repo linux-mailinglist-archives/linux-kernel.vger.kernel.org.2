@@ -2,86 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B0F320B80
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14375320B83
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 16:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhBUPjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 10:39:39 -0500
-Received: from mail-pl1-f173.google.com ([209.85.214.173]:35385 "EHLO
-        mail-pl1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbhBUPj2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 10:39:28 -0500
-Received: by mail-pl1-f173.google.com with SMTP id g20so6071153plo.2;
-        Sun, 21 Feb 2021 07:39:11 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=ztDsdAIBTtQ1nkN7dw6CYE5xnJ1DaXEAMZjHk0Yhkkw=;
-        b=CLzlTYsr6Eu0qk/JsV6OjIPnc1bglXxs2lXVLQ2nP5+4Q/o4TKStFUjlHIk9mqkenX
-         vtz+/hSTVrnfQDTDfd9tc4ulnGFIzYOP00TaBOg6SxAFbMcT/MUstsnsalUtDHq5Plh0
-         45BM3CGMW8NhqMbRRrEux5naceAZiRVg0MpS9NV72Fa/3e2oNGREVcmyDezFo+8CEYBo
-         fLrDflOEg+o/JDki4cSzQNYDwhiAc4yAwMXW7LLVAUgKv2eX9y7nxxR4t696Q7XSb0qT
-         xnT3Ytu9//uLT8k/z1FqNZ+icpNV2ypQQpvPlS3z2eGJj3mfbzXJcstD+7usMGxsv62O
-         8r5A==
-X-Gm-Message-State: AOAM532ecjwAImnmOpDBbn2B/y2zWjrQ6ZvUx4f4SzRU5ZiDso3JTYtQ
-        1PR2yzwhPY2m24Y6h4yt9Y0=
-X-Google-Smtp-Source: ABdhPJy7ew3irN+CjCeSThYxeb8w3rsTyMjhsPtQX1cWNgJT0jqJxGKKKXDh1DmGmsMnGXZx5F5UGQ==
-X-Received: by 2002:a17:902:c114:b029:e3:b2e7:d410 with SMTP id 20-20020a170902c114b02900e3b2e7d410mr15102746pli.16.1613921925678;
-        Sun, 21 Feb 2021 07:38:45 -0800 (PST)
-Received: from karthik-strix-linux.karthek.com ([192.140.154.12])
-        by smtp.gmail.com with ESMTPSA id o20sm14636124pjt.43.2021.02.21.07.38.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 07:38:45 -0800 (PST)
-Date:   Sun, 21 Feb 2021 21:08:40 +0530
-From:   karthik alapati <mail@karthek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: media/atomisp: don't compile unused code
-Message-ID: <YDJ+gDMyBeNp0Jft@karthik-strix-linux.karthek.com>
+        id S230100AbhBUPmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 10:42:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229926AbhBUPmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 10:42:18 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8196564DA8;
+        Sun, 21 Feb 2021 15:41:35 +0000 (UTC)
+Date:   Sun, 21 Feb 2021 15:41:32 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Robin van der Gracht <robin@protonic.nl>,
+        linux-iio@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v6 2/2] counter: add IRQ or GPIO based event counter
+Message-ID: <20210221154132.037100ff@archlinux>
+In-Reply-To: <20210216081356.3577-3-o.rempel@pengutronix.de>
+References: <20210216081356.3577-1-o.rempel@pengutronix.de>
+        <20210216081356.3577-3-o.rempel@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-currently the functions defined in ibuf_ctrl_rmgr.c file are only
-used by isys_init.c when CONFIG_VIDEO_ATOMISP_ISP2401 is selected
-so dont't compile it when not needed, also fixes some sparse warnings
+On Tue, 16 Feb 2021 09:13:56 +0100
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-Signed-off-by: karthik alapati <mail@karthek.com>
----
- drivers/staging/media/atomisp/Makefile | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> Add simple IRQ or GPIO base event counter. This device is used to measure
+> rotation speed of some agricultural devices, so no high frequency on the
+> counter pin is expected.
+> 
+> The maximal measurement frequency depends on the CPU and system load. On
+> the idle iMX6S I was able to measure up to 20kHz without count drops.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+A FYI note inline.
 
-diff --git a/drivers/staging/media/atomisp/Makefile b/drivers/staging/media/atomisp/Makefile
-index 1dfad0dd0..51498b2e8 100644
---- a/drivers/staging/media/atomisp/Makefile
-+++ b/drivers/staging/media/atomisp/Makefile
-@@ -126,7 +126,6 @@ atomisp-objs += \
- 	pci/runtime/inputfifo/src/inputfifo.o \
- 	pci/runtime/isp_param/src/isp_param.o \
- 	pci/runtime/isys/src/csi_rx_rmgr.o \
--	pci/runtime/isys/src/ibuf_ctrl_rmgr.o \
- 	pci/runtime/isys/src/isys_dma_rmgr.o \
- 	pci/runtime/isys/src/isys_init.o \
- 	pci/runtime/isys/src/isys_stream2mmio_rmgr.o \
-@@ -323,7 +322,9 @@ DEFINES := -DHRT_HW -DHRT_ISP_CSS_CUSTOM_HOST -DHRT_USE_VIR_ADDRS -D__HOST__
- #DEFINES += -DUSE_KMEM_CACHE
- 
- ifeq ($(CONFIG_VIDEO_ATOMISP_ISP2401),y)
--atomisp-objs += $(obj-cht)
-+atomisp-objs += \
-+	$(obj-cht) \
-+	pci/runtime/isys/src/ibuf_ctrl_rmgr.o
- DEFINES += -DISP2401 -DISP2401_NEW_INPUT_SYSTEM -DSYSTEM_hive_isp_css_2401_system
- else
- atomisp-objs += $(obj-byt)
--- 
-2.30.1
+Driver looks good to me.
 
+Jonathan
+
+> ---
+>  MAINTAINERS                     |   7 +
+>  drivers/counter/Kconfig         |  10 ++
+>  drivers/counter/Makefile        |   1 +
+>  drivers/counter/interrupt-cnt.c | 249 ++++++++++++++++++++++++++++++++
+>  4 files changed, 267 insertions(+)
+>  create mode 100644 drivers/counter/interrupt-cnt.c
+> 
+...
+
+> +static int interrupt_cnt_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct interrupt_cnt_priv *priv;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->irq = platform_get_irq_optional(pdev,  0);
+> +	if (priv->irq == -ENXIO)
+> +		priv->irq = 0;
+> +	else if (priv->irq < 0)
+> +		return dev_err_probe(dev, priv->irq, "failed to get IRQ\n");
+> +
+> +	priv->gpio = devm_gpiod_get_optional(dev, NULL, GPIOD_IN);
+> +	if (IS_ERR(priv->gpio))
+> +		return dev_err_probe(dev, PTR_ERR(priv->gpio), "failed to get GPIO\n");
+> +
+> +	if (!priv->irq && !priv->gpio) {
+> +		dev_err(dev, "IRQ and GPIO are not found. At least one source should be provided\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	if (!priv->irq) {
+> +		int irq = gpiod_to_irq(priv->gpio);
+> +
+> +		if (irq < 0)
+> +			return dev_err_probe(dev, irq, "failed to get IRQ from GPIO\n");
+> +
+> +		priv->irq = irq;
+> +	}
+> +
+> +	priv->counter.priv = priv;
+> +	priv->counter.name = dev_name(dev);
+> +	priv->counter.parent = dev;
+> +	priv->counter.ops = &interrupt_cnt_ops;
+> +	priv->counter.counts = interrupt_cnts;
+> +	priv->counter.num_counts = ARRAY_SIZE(interrupt_cnts);
+> +	priv->counter.signals = interrupt_cnt_signals;
+> +	priv->counter.num_signals = priv->gpio ?
+> +				    ARRAY_SIZE(interrupt_cnt_signals) : 0;
+> +
+> +	irq_set_status_flags(priv->irq, IRQ_NOAUTOEN);
+
+Just as a side note, there is a series that cleans up this case, though no
+idea if it will make the merge window or not.
+
+https://lore.kernel.org/linux-input/aefbe49321b845c98e505518314a93cc@hisilicon.com/
+
+If it does we can tidy this up then.
+
+> +	ret = devm_request_irq(dev, priv->irq, interrupt_cnt_isr,
+> +			       IRQF_TRIGGER_RISING | IRQF_NO_THREAD,
+> +			       INTERRUPT_CNT_NAME, priv);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_counter_register(dev, &priv->counter);
+> +}
+> +
+...
