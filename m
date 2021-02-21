@@ -2,519 +2,948 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FE1320D0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44967320D13
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhBUTKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:10:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbhBUTJW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:09:22 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BA5C061574;
-        Sun, 21 Feb 2021 11:08:40 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id DCF1EEF;
-        Sun, 21 Feb 2021 20:08:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613934518;
-        bh=3XmyzxGwzCd8W8K+XsKRw4jMy6r2jo1Zwca1NaO6OoI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rU/0UczNJb8ek+bqoP2wG/+erPunX3E0WsJAn/5u5zh4kO0nbOrlVzxBeb86MQ9nq
-         2HWsnutcV1vvxluEATl5D3BLotKGqrxdDEDslPvR3hy8lFtyd+61M4zJeoqE8YCewe
-         WUUvD/doI5P3nO9nSZnuSGW4unEacqXPxtDNrunw=
-Date:   Sun, 21 Feb 2021 21:08:11 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Xin Ji <xji@analogixsemi.com>, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: Re: [PATCH] drm/dsi: Add _NO_ to MIPI_DSI_* flags disabling features
-Message-ID: <YDKvm1QmdJtJbaN6@pendragon.ideasonboard.com>
-References: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+        id S230331AbhBUTMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 14:12:19 -0500
+Received: from mout.gmx.net ([212.227.15.15]:45345 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229999AbhBUTMQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 14:12:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613934624;
+        bh=Gnyw3ntDXzq5J+pulO1CLr/hLoiws9/OqNz9CVLVugo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=SfGqHuhRbXbRGAuifza6fX39bI7JSNC/9hfgQJ2rdbCAs8LbA6MOFwMdcbehAWJlN
+         /fQObsJaCfp2lHEh27ae+7mCrsmHiXvX259GCHBoINTn7GqilY7sRgL6PWBfHOhieW
+         dv35h1WCHdvygp85fqwSESOhnhe20dTrsItarfIM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.229.153]) by mail.gmx.net
+ (mrgmx004 [212.227.17.184]) with ESMTPSA (Nemesis) id
+ 1MFbRs-1l3Q013fVm-00HBTD; Sun, 21 Feb 2021 20:10:24 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 6/8] selftests/brute: Add tests for the Brute LSM
+Date:   Sun, 21 Feb 2021 16:49:17 +0100
+Message-Id: <20210221154919.68050-7-john.wood@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210221154919.68050-1-john.wood@gmx.com>
+References: <20210221154919.68050-1-john.wood@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:eKkNKSkGjbtNgTlJujXkC2f8Pg87GIo90kS3LmnUYSjVMr2Wqye
+ EMwnTO1UqT+O6wAWReyrVZkSSEWxIwb2tOH5U9jtwOm6TiPWCNi4dqUtVWUr9D2gt36CABQ
+ 1dlJK6ZO3W95BfpxPT3ayWXrPsRARBZPqQ4XtdG9IxGfwvrDlbtjnV62/wgtsZgQKphMqiK
+ nO/bjMzNGc+9y9Q1J/gpg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8VSAE4T77jc=:dNtm2eg6T/fvgg7gEAT5ii
+ MWBI5wgS6l5MaveTzDykka9KM7e4wdOypFFspy7Y6WzkihhVuUE731CTCYszRbGzu+/69/ndp
+ vVzA8oeCrQadsDOFgI2jASys/wD+sR3AcMALp65sam8zm3OGKmjmCEdvFLyzhykYvXdQDaax0
+ r1hiXxs6A75sASESoH6d5RYM53WdEKxvQ2jU55IsZWyggsrRJlnJDkxxWvRgHS35uzTKp3dDg
+ wYaNlpnaRsbn8UF+QkVcyBATLXhol0u3dCYc/WxTB5DqyfMJNLiizR8JGxtGP2FL9/LKUh+hF
+ f+VLBzwuc1nZW7PV1tPClLgsKLyrqPteDfSfLNNigtZcNi89qglfdxbv8TxuCReh/HRzLtmOc
+ sFsFUEZCcj9P4GKcASOlpW1QI/skbtJyFvyh9coX5Jbest8rO39b0MGOT62rwi8ALvnnnTk9m
+ J9umipwBY3P0f4qrpURCvzHyhv96xSdkM1utgqLMbhl2KZf7xF/5DKGCKRo1buXi5eXsdcYQp
+ 4hwKevacFlezlofK4vQstokv60T9PyXAke8TNKQ9OANynANV1mP4sUxAn34iwXC9WZs1HXmxA
+ ionMMVi+1wdI6URJIg88nZyPPe/JSHzrB59ev7IzGLJza1338+VBE0UyRghxZykQ+iVztrpGI
+ OsEdfo/44T3kca4E+8svOnzf8s/pFcn1zMz2l0sgD/7Fiq89BthvtRj6odlnXMcFWM/G/HOAI
+ 8RzZr/aJbLDyojIDTR9ELx5ConEuJpN5kNvshwq5FDyQ7raIbi/GgBCcE487N/iZcceLeHUo+
+ pIyIhjlWD9eO7rFv3flsYD/ODLcgh6VE6INNvzR+vBZfSev/i4bg4WsStk/tTXNQaLGW/x08i
+ N9q6f1Pdvje58tVZwkBw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nicolas,
+Add tests to check the brute LSM functionality and cover fork/exec brute
+force attacks crossing the following privilege boundaries:
 
-Thank you for the patch.
+1.- setuid process
+2.- privilege changes
+3.- network to local
 
-On Thu, Feb 11, 2021 at 11:33:55AM +0800, Nicolas Boichat wrote:
-> Many of the DSI flags have names opposite to their actual effects,
-> e.g. MIPI_DSI_MODE_EOT_PACKET means that EoT packets will actually
-> be disabled. Fix this by including _NO_ in the flag names, e.g.
-> MIPI_DSI_MODE_NO_EOT_PACKET.
-> 
-> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Also, as a first step check that fork/exec brute force attacks without
+crossing any privilege boundariy already commented doesn't trigger the
+detection and mitigation stage.
 
-This looks good to me, it increases readability.
+All the fork brute force attacks are carried out via the "exec" app to
+avoid the triggering of the "brute" LSM over the shell script running
+the tests.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: John Wood <john.wood@gmx.com>
+=2D--
+ tools/testing/selftests/Makefile         |   1 +
+ tools/testing/selftests/brute/.gitignore |   2 +
+ tools/testing/selftests/brute/Makefile   |   5 +
+ tools/testing/selftests/brute/config     |   1 +
+ tools/testing/selftests/brute/exec.c     |  44 ++
+ tools/testing/selftests/brute/test.c     | 507 +++++++++++++++++++++++
+ tools/testing/selftests/brute/test.sh    | 226 ++++++++++
+ 7 files changed, 786 insertions(+)
+ create mode 100644 tools/testing/selftests/brute/.gitignore
+ create mode 100644 tools/testing/selftests/brute/Makefile
+ create mode 100644 tools/testing/selftests/brute/config
+ create mode 100644 tools/testing/selftests/brute/exec.c
+ create mode 100644 tools/testing/selftests/brute/test.c
+ create mode 100755 tools/testing/selftests/brute/test.sh
 
-Please however see the end of the mail for a comment.
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Ma=
+kefile
+index 8a917cb4426a..e63f040e2859 100644
+=2D-- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -2,6 +2,7 @@
+ TARGETS =3D arm64
+ TARGETS +=3D bpf
+ TARGETS +=3D breakpoints
++TARGETS +=3D brute
+ TARGETS +=3D capabilities
+ TARGETS +=3D cgroup
+ TARGETS +=3D clone3
+diff --git a/tools/testing/selftests/brute/.gitignore b/tools/testing/self=
+tests/brute/.gitignore
+new file mode 100644
+index 000000000000..1ccc45251a1b
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/.gitignore
+@@ -0,0 +1,2 @@
++exec
++test
+diff --git a/tools/testing/selftests/brute/Makefile b/tools/testing/selfte=
+sts/brute/Makefile
+new file mode 100644
+index 000000000000..52662d0b484c
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
++CFLAGS +=3D -Wall -O2
++TEST_PROGS :=3D test.sh
++TEST_GEN_FILES :=3D exec test
++include ../lib.mk
+diff --git a/tools/testing/selftests/brute/config b/tools/testing/selftest=
+s/brute/config
+new file mode 100644
+index 000000000000..3587b7bf6c23
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/config
+@@ -0,0 +1 @@
++CONFIG_SECURITY_FORK_BRUTE=3Dy
+diff --git a/tools/testing/selftests/brute/exec.c b/tools/testing/selftest=
+s/brute/exec.c
+new file mode 100644
+index 000000000000..1bbe72f6e4bd
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/exec.c
+@@ -0,0 +1,44 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <libgen.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++static __attribute__((noreturn)) void error_failure(const char *message)
++{
++	perror(message);
++	exit(EXIT_FAILURE);
++}
++
++#define PROG_NAME basename(argv[0])
++
++int main(int argc, char **argv)
++{
++	pid_t pid;
++	int status;
++
++	if (argc < 2) {
++		printf("Usage: %s <EXECUTABLE>\n", PROG_NAME);
++		exit(EXIT_FAILURE);
++	}
++
++	pid =3D fork();
++	if (pid < 0)
++		error_failure("fork");
++
++	/* Child process */
++	if (!pid) {
++		execve(argv[1], &argv[1], NULL);
++		error_failure("execve");
++	}
++
++	/* Parent process */
++	pid =3D waitpid(pid, &status, 0);
++	if (pid < 0)
++		error_failure("waitpid");
++
++	return EXIT_SUCCESS;
++}
+diff --git a/tools/testing/selftests/brute/test.c b/tools/testing/selftest=
+s/brute/test.c
+new file mode 100644
+index 000000000000..44c32f446dca
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/test.c
+@@ -0,0 +1,507 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <arpa/inet.h>
++#include <errno.h>
++#include <libgen.h>
++#include <pwd.h>
++#include <signal.h>
++#include <stdbool.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/socket.h>
++#include <sys/time.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <unistd.h>
++
++static const char *message =3D "message";
++
++enum mode {
++	MODE_NONE,
++	MODE_CRASH,
++	MODE_SERVER_CRASH,
++	MODE_CLIENT,
++};
++
++enum crash_after {
++	CRASH_AFTER_NONE,
++	CRASH_AFTER_FORK,
++	CRASH_AFTER_EXEC,
++};
++
++enum signal_from {
++	SIGNAL_FROM_NONE,
++	SIGNAL_FROM_USER,
++	SIGNAL_FROM_KERNEL,
++};
++
++struct args {
++	uint32_t ip;
++	uint16_t port;
++	int counter;
++	long timeout;
++	enum mode mode;
++	enum crash_after crash_after;
++	enum signal_from signal_from;
++	unsigned char has_counter : 1;
++	unsigned char has_change_priv : 1;
++	unsigned char has_ip : 1;
++	unsigned char has_port : 1;
++	unsigned char has_timeout : 1;
++};
++
++#define OPT_STRING "hm:c:s:n:Ca:p:t:"
++
++static void usage(const char *prog)
++{
++	printf("Usage: %s <OPTIONS>\n", prog);
++	printf("OPTIONS:\n");
++	printf("  -h: Show this help and exit. Optional.\n");
++	printf("  -m (crash | server_crash | client): Mode. Required.\n");
++	printf("Options for crash mode:\n");
++	printf("  -c (fork | exec): Crash after. Optional.\n");
++	printf("  -s (user | kernel): Signal from. Required.\n");
++	printf("  -n counter: Number of crashes.\n");
++	printf("              Required if the option -c is used.\n");
++	printf("              Not used without the option -c.\n");
++	printf("              Range from 1 to INT_MAX.\n");
++	printf("  -C: Change privileges before crash. Optional.\n");
++	printf("Options for server_crash mode:\n");
++	printf("  -a ip: Ip v4 address to accept. Required.\n");
++	printf("  -p port: Port number. Required.\n");
++	printf("           Range from 1 to UINT16_MAX.\n");
++	printf("  -t secs: Accept timeout. Required.\n");
++	printf("           Range from 1 to LONG_MAX.\n");
++	printf("  -c (fork | exec): Crash after. Required.\n");
++	printf("  -s (user | kernel): Signal from. Required.\n");
++	printf("  -n counter: Number of crashes. Required.\n");
++	printf("              Range from 1 to INT_MAX.\n");
++	printf("Options for client mode:\n");
++	printf("  -a ip: Ip v4 address to connect. Required.\n");
++	printf("  -p port: Port number. Required.\n");
++	printf("           Range from 1 to UINT16_MAX.\n");
++	printf("  -t secs: Connect timeout. Required.\n");
++	printf("           Range from 1 to LONG_MAX.\n");
++}
++
++static __attribute__((noreturn)) void info_failure(const char *message,
++						   const char *prog)
++{
++	printf("%s\n", message);
++	usage(prog);
++	exit(EXIT_FAILURE);
++}
++
++static enum mode get_mode(const char *text, const char *prog)
++{
++	if (!strcmp(text, "crash"))
++		return MODE_CRASH;
++
++	if (!strcmp(text, "server_crash"))
++		return MODE_SERVER_CRASH;
++
++	if (!strcmp(text, "client"))
++		return MODE_CLIENT;
++
++	info_failure("Invalid mode option [-m].", prog);
++}
++
++static enum crash_after get_crash_after(const char *text, const char *pro=
+g)
++{
++	if (!strcmp(text, "fork"))
++		return CRASH_AFTER_FORK;
++
++	if (!strcmp(text, "exec"))
++		return CRASH_AFTER_EXEC;
++
++	info_failure("Invalid crash after option [-c].", prog);
++}
++
++static enum signal_from get_signal_from(const char *text, const char *pro=
+g)
++{
++	if (!strcmp(text, "user"))
++		return SIGNAL_FROM_USER;
++
++	if (!strcmp(text, "kernel"))
++		return SIGNAL_FROM_KERNEL;
++
++	info_failure("Invalid signal from option [-s]", prog);
++}
++
++static int get_counter(const char *text, const char *prog)
++{
++	int counter;
++
++	counter =3D atoi(text);
++	if (counter > 0)
++		return counter;
++
++	info_failure("Invalid counter option [-n].", prog);
++}
++
++static __attribute__((noreturn)) void error_failure(const char *message)
++{
++	perror(message);
++	exit(EXIT_FAILURE);
++}
++
++static uint32_t get_ip(const char *text, const char *prog)
++{
++	int ret;
++	uint32_t ip;
++
++	ret =3D inet_pton(AF_INET, text, &ip);
++	if (!ret)
++		info_failure("Invalid ip option [-a].", prog);
++	else if (ret < 0)
++		error_failure("inet_pton");
++
++	return ip;
++}
++
++static uint16_t get_port(const char *text, const char *prog)
++{
++	long port;
++
++	port =3D atol(text);
++	if ((port > 0) && (port <=3D UINT16_MAX))
++		return htons(port);
++
++	info_failure("Invalid port option [-p].", prog);
++}
++
++static long get_timeout(const char *text, const char *prog)
++{
++	long timeout;
++
++	timeout =3D atol(text);
++	if (timeout > 0)
++		return timeout;
++
++	info_failure("Invalid timeout option [-t].", prog);
++}
++
++static void check_args(const struct args *args, const char *prog)
++{
++	if (args->mode =3D=3D MODE_CRASH && args->crash_after !=3D CRASH_AFTER_N=
+ONE &&
++	    args->signal_from !=3D SIGNAL_FROM_NONE && args->has_counter &&
++	    !args->has_ip && !args->has_port && !args->has_timeout)
++		return;
++
++	if (args->mode =3D=3D MODE_CRASH && args->signal_from !=3D SIGNAL_FROM_N=
+ONE &&
++	    args->crash_after =3D=3D CRASH_AFTER_NONE && !args->has_counter &&
++	    !args->has_ip && !args->has_port && !args->has_timeout)
++		return;
++
++	if (args->mode =3D=3D MODE_SERVER_CRASH && args->has_ip && args->has_por=
+t &&
++	    args->has_timeout && args->crash_after !=3D CRASH_AFTER_NONE &&
++	    args->signal_from !=3D SIGNAL_FROM_NONE && args->has_counter &&
++	    !args->has_change_priv)
++		return;
++
++	if (args->mode =3D=3D MODE_CLIENT && args->has_ip && args->has_port &&
++	    args->has_timeout && args->crash_after =3D=3D CRASH_AFTER_NONE &&
++	    args->signal_from =3D=3D SIGNAL_FROM_NONE && !args->has_counter &&
++	    !args->has_change_priv)
++		return;
++
++	info_failure("Invalid use of options.", prog);
++}
++
++static uid_t get_non_root_uid(void)
++{
++	struct passwd *pwent;
++	uid_t uid;
++
++	while (true) {
++		errno =3D 0;
++		pwent =3D getpwent();
++		if (!pwent) {
++			if (errno) {
++				perror("getpwent");
++				endpwent();
++				exit(EXIT_FAILURE);
++			}
++			break;
++		}
++
++		if (pwent->pw_uid) {
++			uid =3D pwent->pw_uid;
++			endpwent();
++			return uid;
++		}
++	}
++
++	endpwent();
++	printf("A user different of root is needed.\n");
++	exit(EXIT_FAILURE);
++}
++
++static inline void do_sigsegv(void)
++{
++	int *p =3D NULL;
++	*p =3D 0;
++}
++
++static void do_sigkill(void)
++{
++	int ret;
++
++	ret =3D kill(getpid(), SIGKILL);
++	if (ret)
++		error_failure("kill");
++}
++
++static void crash(enum signal_from signal_from, bool change_priv)
++{
++	int ret;
++
++	if (change_priv) {
++		ret =3D setuid(get_non_root_uid());
++		if (ret)
++			error_failure("setuid");
++	}
++
++	if (signal_from =3D=3D SIGNAL_FROM_KERNEL)
++		do_sigsegv();
++
++	do_sigkill();
++}
++
++static void execve_crash(char *const argv[])
++{
++	execve(argv[0], argv, NULL);
++	error_failure("execve");
++}
++
++static void exec_crash_user(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "user", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash_user_change_priv(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "user", "-C", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash_kernel(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "kernel", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash_kernel_change_priv(void)
++{
++	char *const argv[] =3D {
++		"./test", "-m", "crash", "-s", "kernel", "-C", NULL,
++	};
++
++	execve_crash(argv);
++}
++
++static void exec_crash(enum signal_from signal_from, bool change_priv)
++{
++	if (signal_from =3D=3D SIGNAL_FROM_USER && !change_priv)
++		exec_crash_user();
++	if (signal_from =3D=3D SIGNAL_FROM_USER && change_priv)
++		exec_crash_user_change_priv();
++	if (signal_from =3D=3D SIGNAL_FROM_KERNEL && !change_priv)
++		exec_crash_kernel();
++	if (signal_from =3D=3D SIGNAL_FROM_KERNEL && change_priv)
++		exec_crash_kernel_change_priv();
++}
++
++static void do_crash(enum crash_after crash_after, enum signal_from signa=
+l_from,
++		     int counter, bool change_priv)
++{
++	pid_t pid;
++	int status;
++
++	if (crash_after =3D=3D CRASH_AFTER_NONE)
++		crash(signal_from, change_priv);
++
++	while (counter > 0) {
++		pid =3D fork();
++		if (pid < 0)
++			error_failure("fork");
++
++		/* Child process */
++		if (!pid) {
++			if (crash_after =3D=3D CRASH_AFTER_FORK)
++				crash(signal_from, change_priv);
++
++			exec_crash(signal_from, change_priv);
++		}
++
++		/* Parent process */
++		counter -=3D 1;
++		pid =3D waitpid(pid, &status, 0);
++		if (pid < 0)
++			error_failure("waitpid");
++	}
++}
++
++static __attribute__((noreturn)) void error_close_failure(const char *mes=
+sage,
++							  int fd)
++{
++	perror(message);
++	close(fd);
++	exit(EXIT_FAILURE);
++}
++
++static void do_server(uint32_t ip, uint16_t port, long accept_timeout)
++{
++	int sockfd;
++	int ret;
++	struct sockaddr_in address;
++	struct timeval timeout;
++	int newsockfd;
++
++	sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
++	if (sockfd < 0)
++		error_failure("socket");
++
++	address.sin_family =3D AF_INET;
++	address.sin_addr.s_addr =3D ip;
++	address.sin_port =3D port;
++
++	ret =3D bind(sockfd, (const struct sockaddr *)&address, sizeof(address))=
+;
++	if (ret)
++		error_close_failure("bind", sockfd);
++
++	ret =3D listen(sockfd, 1);
++	if (ret)
++		error_close_failure("listen", sockfd);
++
++	timeout.tv_sec =3D accept_timeout;
++	timeout.tv_usec =3D 0;
++	ret =3D setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO,
++			 (const struct timeval *)&timeout, sizeof(timeout));
++	if (ret)
++		error_close_failure("setsockopt", sockfd);
++
++	newsockfd =3D accept(sockfd, NULL, NULL);
++	if (newsockfd < 0)
++		error_close_failure("accept", sockfd);
++
++	close(sockfd);
++	close(newsockfd);
++}
++
++static void do_client(uint32_t ip, uint16_t port, long connect_timeout)
++{
++	int sockfd;
++	int ret;
++	struct timeval timeout;
++	struct sockaddr_in address;
++
++	sockfd =3D socket(AF_INET, SOCK_STREAM, 0);
++	if (sockfd < 0)
++		error_failure("socket");
++
++	timeout.tv_sec =3D connect_timeout;
++	timeout.tv_usec =3D 0;
++	ret =3D setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO,
++			 (const struct timeval *)&timeout, sizeof(timeout));
++	if (ret)
++		error_close_failure("setsockopt", sockfd);
++
++	address.sin_family =3D AF_INET;
++	address.sin_addr.s_addr =3D ip;
++	address.sin_port =3D port;
++
++	ret =3D connect(sockfd, (const struct sockaddr *)&address,
++		      sizeof(address));
++	if (ret)
++		error_close_failure("connect", sockfd);
++
++	ret =3D write(sockfd, message, strlen(message));
++	if (ret < 0)
++		error_close_failure("write", sockfd);
++
++	close(sockfd);
++}
++
++#define PROG_NAME basename(argv[0])
++
++int main(int argc, char **argv)
++{
++	int opt;
++	struct args args =3D {
++		.mode =3D MODE_NONE,
++		.crash_after =3D CRASH_AFTER_NONE,
++		.signal_from =3D SIGNAL_FROM_NONE,
++		.has_counter =3D false,
++		.has_change_priv =3D false,
++		.has_ip =3D false,
++		.has_port =3D false,
++		.has_timeout =3D false,
++	};
++
++	while ((opt =3D getopt(argc, argv, OPT_STRING)) !=3D -1) {
++		switch (opt) {
++		case 'h':
++			usage(PROG_NAME);
++			return EXIT_SUCCESS;
++		case 'm':
++			args.mode =3D get_mode(optarg, PROG_NAME);
++			break;
++		case 'c':
++			args.crash_after =3D get_crash_after(optarg, PROG_NAME);
++			break;
++		case 's':
++			args.signal_from =3D get_signal_from(optarg, PROG_NAME);
++			break;
++		case 'n':
++			args.counter =3D get_counter(optarg, PROG_NAME);
++			args.has_counter =3D true;
++			break;
++		case 'C':
++			args.has_change_priv =3D true;
++			break;
++		case 'a':
++			args.ip =3D get_ip(optarg, PROG_NAME);
++			args.has_ip =3D true;
++			break;
++		case 'p':
++			args.port =3D get_port(optarg, PROG_NAME);
++			args.has_port =3D true;
++			break;
++		case 't':
++			args.timeout =3D get_timeout(optarg, PROG_NAME);
++			args.has_timeout =3D true;
++			break;
++		default:
++			usage(PROG_NAME);
++			return EXIT_FAILURE;
++		}
++	}
++
++	check_args(&args, PROG_NAME);
++
++	if (args.mode =3D=3D MODE_CRASH) {
++		do_crash(args.crash_after, args.signal_from, args.counter,
++			 args.has_change_priv);
++	} else if (args.mode =3D=3D MODE_SERVER_CRASH) {
++		do_server(args.ip, args.port, args.timeout);
++		do_crash(args.crash_after, args.signal_from, args.counter,
++			 false);
++	} else if (args.mode =3D=3D MODE_CLIENT) {
++		do_client(args.ip, args.port, args.timeout);
++	}
++
++	return EXIT_SUCCESS;
++}
+diff --git a/tools/testing/selftests/brute/test.sh b/tools/testing/selftes=
+ts/brute/test.sh
+new file mode 100755
+index 000000000000..f53f26ae5b96
+=2D-- /dev/null
++++ b/tools/testing/selftests/brute/test.sh
+@@ -0,0 +1,226 @@
++#!/bin/sh
++# SPDX-License-Identifier: GPL-2.0
++
++TCID=3D"test.sh"
++
++KSFT_PASS=3D0
++KSFT_FAIL=3D1
++KSFT_SKIP=3D4
++
++errno=3D$KSFT_PASS
++
++check_root()
++{
++	local uid=3D$(id -u)
++	if [ $uid -ne 0 ]; then
++		echo $TCID: must be run as root >&2
++		exit $KSFT_SKIP
++	fi
++}
++
++count_fork_matches()
++{
++	dmesg | grep "brute: Fork brute force attack detected" | wc -l
++}
++
++assert_equal()
++{
++	local val1=3D$1
++	local val2=3D$2
++
++	if [ $val1 -eq $val2 ]; then
++		echo "$TCID: $message [PASS]"
++	else
++		echo "$TCID: $message [FAIL]"
++		errno=3D$KSFT_FAIL
++	fi
++}
++
++test_fork_user()
++{
++	COUNTER=3D20
++
++	old_count=3D$(count_fork_matches)
++	./exec test -m crash -c fork -s user -n $COUNTER
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (user signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++test_fork_kernel()
++{
++	old_count=3D$(count_fork_matches)
++	./exec test -m crash -c fork -s kernel -n $COUNTER
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++count_exec_matches()
++{
++	dmesg | grep "brute: Exec brute force attack detected" | wc -l
++}
++
++test_exec_user()
++{
++	old_count=3D$(count_exec_matches)
++	./test -m crash -c exec -s user -n $COUNTER
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (user signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++test_exec_kernel()
++{
++	old_count=3D$(count_exec_matches)
++	./test -m crash -c exec -s kernel -n $COUNTER
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, no bounds crossed)"
++	assert_equal $old_count $new_count
++}
++
++assert_not_equal()
++{
++	local val1=3D$1
++	local val2=3D$2
++
++	if [ $val1 -ne $val2 ]; then
++		echo $TCID: $message [PASS]
++	else
++		echo $TCID: $message [FAIL]
++		errno=3D$KSFT_FAIL
++	fi
++}
++
++test_fork_kernel_setuid()
++{
++	old_count=3D$(count_fork_matches)
++	chmod u+s test
++	./exec test -m crash -c fork -s kernel -n $COUNTER
++	chmod u-s test
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, setuid binary)"
++	assert_not_equal $old_count $new_count
++}
++
++test_exec_kernel_setuid()
++{
++	old_count=3D$(count_exec_matches)
++	chmod u+s test
++	./test -m crash -c exec -s kernel -n $COUNTER
++	chmod u-s test
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, setuid binary)"
++	assert_not_equal $old_count $new_count
++}
++
++test_fork_kernel_change_priv()
++{
++	old_count=3D$(count_fork_matches)
++	./exec test -m crash -c fork -s kernel -n $COUNTER -C
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, change privileges)"
++	assert_not_equal $old_count $new_count
++}
++
++test_exec_kernel_change_priv()
++{
++	old_count=3D$(count_exec_matches)
++	./test -m crash -c exec -s kernel -n $COUNTER -C
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, change privileges)"
++	assert_not_equal $old_count $new_count
++}
++
++network_ns_setup()
++{
++	local vnet_name=3D$1
++	local veth_name=3D$2
++	local ip_src=3D$3
++	local ip_dst=3D$4
++
++	ip netns add $vnet_name
++	ip link set $veth_name netns $vnet_name
++	ip -n $vnet_name addr add $ip_src/24 dev $veth_name
++	ip -n $vnet_name link set $veth_name up
++	ip -n $vnet_name route add $ip_dst/24 dev $veth_name
++}
++
++network_setup()
++{
++	VETH0_NAME=3Dveth0
++	VNET0_NAME=3Dvnet0
++	VNET0_IP=3D10.0.1.0
++	VETH1_NAME=3Dveth1
++	VNET1_NAME=3Dvnet1
++	VNET1_IP=3D10.0.2.0
++
++	ip link add $VETH0_NAME type veth peer name $VETH1_NAME
++	network_ns_setup $VNET0_NAME $VETH0_NAME $VNET0_IP $VNET1_IP
++	network_ns_setup $VNET1_NAME $VETH1_NAME $VNET1_IP $VNET0_IP
++}
++
++test_fork_kernel_network_to_local()
++{
++	INADDR_ANY=3D0.0.0.0
++	PORT=3D65535
++	TIMEOUT=3D5
++
++	old_count=3D$(count_fork_matches)
++	ip netns exec $VNET0_NAME ./exec test -m server_crash -a $INADDR_ANY \
++		-p $PORT -t $TIMEOUT -c fork -s kernel -n $COUNTER &
++	sleep 1
++	ip netns exec $VNET1_NAME ./test -m client -a $VNET0_IP -p $PORT \
++		-t $TIMEOUT
++	sleep 1
++	new_count=3D$(count_fork_matches)
++
++	message=3D"Fork attack (kernel signals, network to local)"
++	assert_not_equal $old_count $new_count
++}
++
++test_exec_kernel_network_to_local()
++{
++	old_count=3D$(count_exec_matches)
++	ip netns exec $VNET0_NAME ./test -m server_crash -a $INADDR_ANY \
++		-p $PORT -t $TIMEOUT -c exec -s kernel -n $COUNTER &
++	sleep 1
++	ip netns exec $VNET1_NAME ./test -m client -a $VNET0_IP -p $PORT \
++		-t $TIMEOUT
++	sleep 1
++	new_count=3D$(count_exec_matches)
++
++	message=3D"Exec attack (kernel signals, network to local)"
++	assert_not_equal $old_count $new_count
++}
++
++network_cleanup()
++{
++	ip netns del $VNET0_NAME >/dev/null 2>&1
++	ip netns del $VNET1_NAME >/dev/null 2>&1
++	ip link delete $VETH0_NAME >/dev/null 2>&1
++	ip link delete $VETH1_NAME >/dev/null 2>&1
++}
++
++check_root
++test_fork_user
++test_fork_kernel
++test_exec_user
++test_exec_kernel
++test_fork_kernel_setuid
++test_exec_kernel_setuid
++test_fork_kernel_change_priv
++test_exec_kernel_change_priv
++network_setup
++test_fork_kernel_network_to_local
++test_exec_kernel_network_to_local
++network_cleanup
++exit $errno
+=2D-
+2.25.1
 
-> ---
-> I considered adding _DISABLE_ instead, but that'd make the
-> flag names a big too long.
-> 
-> Generated with:
-> flag=MIPI_DSI_MODE_VIDEO_HFP; git grep $flag | cut -f1 -d':' | \
->   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HFP/" {}
-> flag=MIPI_DSI_MODE_VIDEO_HBP; git grep $flag | cut -f1 -d':' | \
->   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HBP/" {}
-> flag=MIPI_DSI_MODE_VIDEO_HSA; git grep $flag | cut -f1 -d':' | \
->   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HSA/" {}
-> flag=MIPI_DSI_MODE_EOT_PACKET; git grep $flag | cut -f1 -d':' | \
->   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_NO_EOT_PACKET/" {}
-> (then minor format changes)
-
-Ever tried coccinelle ? :-)
-
->  drivers/gpu/drm/bridge/adv7511/adv7533.c             | 2 +-
->  drivers/gpu/drm/bridge/analogix/anx7625.c            | 2 +-
->  drivers/gpu/drm/bridge/cdns-dsi.c                    | 4 ++--
->  drivers/gpu/drm/bridge/tc358768.c                    | 2 +-
->  drivers/gpu/drm/exynos/exynos_drm_dsi.c              | 8 ++++----
->  drivers/gpu/drm/mcde/mcde_dsi.c                      | 2 +-
->  drivers/gpu/drm/mediatek/mtk_dsi.c                   | 2 +-
->  drivers/gpu/drm/msm/dsi/dsi_host.c                   | 8 ++++----
->  drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c | 2 +-
->  drivers/gpu/drm/panel/panel-dsi-cm.c                 | 2 +-
->  drivers/gpu/drm/panel/panel-elida-kd35t133.c         | 2 +-
->  drivers/gpu/drm/panel/panel-khadas-ts050.c           | 2 +-
->  drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c   | 2 +-
->  drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c   | 2 +-
->  drivers/gpu/drm/panel/panel-novatek-nt35510.c        | 2 +-
->  drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c   | 2 +-
->  drivers/gpu/drm/panel/panel-samsung-s6d16d0.c        | 2 +-
->  drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c     | 2 +-
->  drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c    | 2 +-
->  drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c        | 4 ++--
->  drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c      | 2 +-
->  drivers/gpu/drm/panel/panel-simple.c                 | 2 +-
->  drivers/gpu/drm/panel/panel-sony-acx424akp.c         | 2 +-
->  drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c     | 2 +-
->  include/drm/drm_mipi_dsi.h                           | 8 ++++----
->  25 files changed, 36 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/adv7511/adv7533.c b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-> index aa19d5a40e31..59d718bde8c4 100644
-> --- a/drivers/gpu/drm/bridge/adv7511/adv7533.c
-> +++ b/drivers/gpu/drm/bridge/adv7511/adv7533.c
-> @@ -165,7 +165,7 @@ int adv7533_attach_dsi(struct adv7511 *adv)
->  	dsi->lanes = adv->num_dsi_lanes;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
-> -			  MIPI_DSI_MODE_EOT_PACKET | MIPI_DSI_MODE_VIDEO_HSE;
-> +			  MIPI_DSI_MODE_NO_EOT_PACKET | MIPI_DSI_MODE_VIDEO_HSE;
->  
->  	ret = mipi_dsi_attach(dsi);
->  	if (ret < 0) {
-> diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> index 65cc05982f82..beecfe6bf359 100644
-> --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-> +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-> @@ -1334,7 +1334,7 @@ static int anx7625_attach_dsi(struct anx7625_data *ctx)
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO	|
->  		MIPI_DSI_MODE_VIDEO_SYNC_PULSE	|
-> -		MIPI_DSI_MODE_EOT_PACKET	|
-> +		MIPI_DSI_MODE_NO_EOT_PACKET	|
->  		MIPI_DSI_MODE_VIDEO_HSE;
->  
->  	if (mipi_dsi_attach(dsi) < 0) {
-> diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
-> index 76373e31df92..34aa24269a57 100644
-> --- a/drivers/gpu/drm/bridge/cdns-dsi.c
-> +++ b/drivers/gpu/drm/bridge/cdns-dsi.c
-> @@ -829,7 +829,7 @@ static void cdns_dsi_bridge_enable(struct drm_bridge *bridge)
->  	tmp = DIV_ROUND_UP(dsi_cfg.htotal, nlanes) -
->  	      DIV_ROUND_UP(dsi_cfg.hsa, nlanes);
->  
-> -	if (!(output->dev->mode_flags & MIPI_DSI_MODE_EOT_PACKET))
-> +	if (!(output->dev->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
->  		tmp -= DIV_ROUND_UP(DSI_EOT_PKT_SIZE, nlanes);
->  
->  	tx_byte_period = DIV_ROUND_DOWN_ULL((u64)NSEC_PER_SEC * 8,
-> @@ -902,7 +902,7 @@ static void cdns_dsi_bridge_enable(struct drm_bridge *bridge)
->  	tmp = readl(dsi->regs + MCTL_MAIN_DATA_CTL);
->  	tmp &= ~(IF_VID_SELECT_MASK | HOST_EOT_GEN | IF_VID_MODE);
->  
-> -	if (!(output->dev->mode_flags & MIPI_DSI_MODE_EOT_PACKET))
-> +	if (!(output->dev->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
->  		tmp |= HOST_EOT_GEN;
->  
->  	if (output->dev->mode_flags & MIPI_DSI_MODE_VIDEO)
-> diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-> index 8ed8302d6bbb..320f95ae6077 100644
-> --- a/drivers/gpu/drm/bridge/tc358768.c
-> +++ b/drivers/gpu/drm/bridge/tc358768.c
-> @@ -825,7 +825,7 @@ static void tc358768_bridge_pre_enable(struct drm_bridge *bridge)
->  	if (!(dsi_dev->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS))
->  		val |= TC358768_DSI_CONTROL_HSCKMD;
->  
-> -	if (dsi_dev->mode_flags & MIPI_DSI_MODE_EOT_PACKET)
-> +	if (dsi_dev->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
->  		val |= TC358768_DSI_CONTROL_EOTDIS;
->  
->  	tc358768_write(priv, TC358768_DSI_CONFW, val);
-> diff --git a/drivers/gpu/drm/exynos/exynos_drm_dsi.c b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-> index 83ab6b343f51..99249d0da330 100644
-> --- a/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-> +++ b/drivers/gpu/drm/exynos/exynos_drm_dsi.c
-> @@ -809,15 +809,15 @@ static int exynos_dsi_init_link(struct exynos_dsi *dsi)
->  			reg |= DSIM_AUTO_MODE;
->  		if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HSE)
->  			reg |= DSIM_HSE_MODE;
-> -		if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HFP))
-> +		if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_NO_HFP))
->  			reg |= DSIM_HFP_MODE;
-> -		if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HBP))
-> +		if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_NO_HBP))
->  			reg |= DSIM_HBP_MODE;
-> -		if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_HSA))
-> +		if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO_NO_HSA))
->  			reg |= DSIM_HSA_MODE;
->  	}
->  
-> -	if (!(dsi->mode_flags & MIPI_DSI_MODE_EOT_PACKET))
-> +	if (!(dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET))
->  		reg |= DSIM_EOT_DISABLE;
->  
->  	switch (dsi->format) {
-> diff --git a/drivers/gpu/drm/mcde/mcde_dsi.c b/drivers/gpu/drm/mcde/mcde_dsi.c
-> index 2314c8122992..f4cdc3cfd7d0 100644
-> --- a/drivers/gpu/drm/mcde/mcde_dsi.c
-> +++ b/drivers/gpu/drm/mcde/mcde_dsi.c
-> @@ -760,7 +760,7 @@ static void mcde_dsi_start(struct mcde_dsi *d)
->  		DSI_MCTL_MAIN_DATA_CTL_BTA_EN |
->  		DSI_MCTL_MAIN_DATA_CTL_READ_EN |
->  		DSI_MCTL_MAIN_DATA_CTL_REG_TE_EN;
-> -	if (d->mdsi->mode_flags & MIPI_DSI_MODE_EOT_PACKET)
-> +	if (d->mdsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET)
->  		val |= DSI_MCTL_MAIN_DATA_CTL_HOST_EOT_GEN;
->  	writel(val, d->regs + DSI_MCTL_MAIN_DATA_CTL);
->  
-> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> index a1ff152ef468..5c0c9180273a 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-> @@ -402,7 +402,7 @@ static void mtk_dsi_rxtx_control(struct mtk_dsi *dsi)
->  	}
->  
->  	tmp_reg |= (dsi->mode_flags & MIPI_DSI_CLOCK_NON_CONTINUOUS) << 6;
-> -	tmp_reg |= (dsi->mode_flags & MIPI_DSI_MODE_EOT_PACKET) >> 3;
-> +	tmp_reg |= (dsi->mode_flags & MIPI_DSI_MODE_NO_EOT_PACKET) >> 3;
->  
->  	writel(tmp_reg, dsi->regs + DSI_TXRX_CTRL);
->  }
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index ab281cba0f08..a97a7822e596 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -850,11 +850,11 @@ static void dsi_ctrl_config(struct msm_dsi_host *msm_host, bool enable,
->  	if (flags & MIPI_DSI_MODE_VIDEO) {
->  		if (flags & MIPI_DSI_MODE_VIDEO_HSE)
->  			data |= DSI_VID_CFG0_PULSE_MODE_HSA_HE;
-> -		if (flags & MIPI_DSI_MODE_VIDEO_HFP)
-> +		if (flags & MIPI_DSI_MODE_VIDEO_NO_HFP)
->  			data |= DSI_VID_CFG0_HFP_POWER_STOP;
-> -		if (flags & MIPI_DSI_MODE_VIDEO_HBP)
-> +		if (flags & MIPI_DSI_MODE_VIDEO_NO_HBP)
->  			data |= DSI_VID_CFG0_HBP_POWER_STOP;
-> -		if (flags & MIPI_DSI_MODE_VIDEO_HSA)
-> +		if (flags & MIPI_DSI_MODE_VIDEO_NO_HSA)
->  			data |= DSI_VID_CFG0_HSA_POWER_STOP;
->  		/* Always set low power stop mode for BLLP
->  		 * to let command engine send packets
-> @@ -909,7 +909,7 @@ static void dsi_ctrl_config(struct msm_dsi_host *msm_host, bool enable,
->  			  DSI_T_CLK_PRE_EXTEND_INC_BY_2_BYTECLK);
->  
->  	data = 0;
-> -	if (!(flags & MIPI_DSI_MODE_EOT_PACKET))
-> +	if (!(flags & MIPI_DSI_MODE_NO_EOT_PACKET))
->  		data |= DSI_EOT_PACKET_CTRL_TX_EOT_APPEND;
->  	dsi_write(msm_host, REG_DSI_EOT_PACKET_CTRL, data);
->  
-> diff --git a/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c b/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
-> index e95bc9f60b3f..44674ebedf59 100644
-> --- a/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
-> +++ b/drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c
-> @@ -302,7 +302,7 @@ static int tm5p5_nt35596_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 4;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-> -			  MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_EOT_PACKET |
-> +			  MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_NO_EOT_PACKET |
->  			  MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_LPM;
->  
->  	drm_panel_init(&ctx->panel, dev, &tm5p5_nt35596_panel_funcs,
-> diff --git a/drivers/gpu/drm/panel/panel-dsi-cm.c b/drivers/gpu/drm/panel/panel-dsi-cm.c
-> index af381d756ac1..178abfb1737c 100644
-> --- a/drivers/gpu/drm/panel/panel-dsi-cm.c
-> +++ b/drivers/gpu/drm/panel/panel-dsi-cm.c
-> @@ -571,7 +571,7 @@ static int dsicm_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 2;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS |
-> -			  MIPI_DSI_MODE_EOT_PACKET;
-> +			  MIPI_DSI_MODE_NO_EOT_PACKET;
->  	dsi->hs_rate = ddata->panel_data->max_hs_rate;
->  	dsi->lp_rate = ddata->panel_data->max_lp_rate;
->  
-> diff --git a/drivers/gpu/drm/panel/panel-elida-kd35t133.c b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
-> index bc36aa3c1123..ae3361ccccd5 100644
-> --- a/drivers/gpu/drm/panel/panel-elida-kd35t133.c
-> +++ b/drivers/gpu/drm/panel/panel-elida-kd35t133.c
-> @@ -265,7 +265,7 @@ static int kd35t133_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 1;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-> -			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
-> +			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	drm_panel_init(&ctx->panel, &dsi->dev, &kd35t133_funcs,
->  		       DRM_MODE_CONNECTOR_DSI);
-> diff --git a/drivers/gpu/drm/panel/panel-khadas-ts050.c b/drivers/gpu/drm/panel/panel-khadas-ts050.c
-> index 8f6ac1a40c31..a3ec4cbdbf7a 100644
-> --- a/drivers/gpu/drm/panel/panel-khadas-ts050.c
-> +++ b/drivers/gpu/drm/panel/panel-khadas-ts050.c
-> @@ -809,7 +809,7 @@ static int khadas_ts050_panel_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 4;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-> -			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
-> +			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	khadas_ts050 = devm_kzalloc(&dsi->dev, sizeof(*khadas_ts050),
->  				    GFP_KERNEL);
-> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> index ed0d5f959037..a5a414920430 100644
-> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c
-> @@ -593,7 +593,7 @@ static int ltk050h3146w_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 4;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-> -			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
-> +			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	drm_panel_init(&ctx->panel, &dsi->dev, &ltk050h3146w_funcs,
->  		       DRM_MODE_CONNECTOR_DSI);
-> diff --git a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
-> index 3c00e4f8f803..21e48923836d 100644
-> --- a/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
-> +++ b/drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c
-> @@ -442,7 +442,7 @@ static int ltk500hd1829_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 4;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-> -			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
-> +			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	drm_panel_init(&ctx->panel, &dsi->dev, &ltk500hd1829_funcs,
->  		       DRM_MODE_CONNECTOR_DSI);
-> diff --git a/drivers/gpu/drm/panel/panel-novatek-nt35510.c b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-> index b9a0e56f33e2..9d9334656803 100644
-> --- a/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-> +++ b/drivers/gpu/drm/panel/panel-novatek-nt35510.c
-> @@ -899,7 +899,7 @@ static int nt35510_probe(struct mipi_dsi_device *dsi)
->  	dsi->hs_rate = 349440000;
->  	dsi->lp_rate = 9600000;
->  	dsi->mode_flags = MIPI_DSI_CLOCK_NON_CONTINUOUS |
-> -		MIPI_DSI_MODE_EOT_PACKET;
-> +		MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	/*
->  	 * Every new incarnation of this display must have a unique
-> diff --git a/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c b/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c
-> index 45b975dee587..198493a6eb6a 100644
-> --- a/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c
-> +++ b/drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c
-> @@ -184,7 +184,7 @@ static int osd101t2587_panel_probe(struct mipi_dsi_device *dsi)
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
->  			  MIPI_DSI_MODE_VIDEO_BURST |
->  			  MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
-> -			  MIPI_DSI_MODE_EOT_PACKET;
-> +			  MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	osd101t2587 = devm_kzalloc(&dsi->dev, sizeof(*osd101t2587), GFP_KERNEL);
->  	if (!osd101t2587)
-> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
-> index 4aac0d1573dd..b04b9975e9b2 100644
-> --- a/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
-> +++ b/drivers/gpu/drm/panel/panel-samsung-s6d16d0.c
-> @@ -186,7 +186,7 @@ static int s6d16d0_probe(struct mipi_dsi_device *dsi)
->  	 */
->  	dsi->mode_flags =
->  		MIPI_DSI_CLOCK_NON_CONTINUOUS |
-> -		MIPI_DSI_MODE_EOT_PACKET;
-> +		MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	s6->supply = devm_regulator_get(dev, "vdd1");
->  	if (IS_ERR(s6->supply))
-> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c b/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c
-> index b962c817fb30..ccc8ed6fe3ae 100644
-> --- a/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c
-> +++ b/drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c
-> @@ -446,7 +446,7 @@ static int s6e63j0x03_probe(struct mipi_dsi_device *dsi)
->  
->  	dsi->lanes = 1;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
-> -	dsi->mode_flags = MIPI_DSI_MODE_EOT_PACKET;
-> +	dsi->mode_flags = MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	ctx->supplies[0].supply = "vdd3";
->  	ctx->supplies[1].supply = "vci";
-> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c b/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
-> index eec74c10ddda..77289967d3e5 100644
-> --- a/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
-> +++ b/drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c
-> @@ -97,7 +97,7 @@ static int s6e63m0_dsi_probe(struct mipi_dsi_device *dsi)
->  	dsi->hs_rate = 349440000;
->  	dsi->lp_rate = 9600000;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
-> -		MIPI_DSI_MODE_EOT_PACKET |
-> +		MIPI_DSI_MODE_NO_EOT_PACKET |
->  		MIPI_DSI_MODE_VIDEO_BURST;
->  
->  	ret = s6e63m0_probe(dev, s6e63m0_dsi_dcs_read, s6e63m0_dsi_dcs_write,
-> diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c b/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c
-> index 527371120266..9b3599d6d2de 100644
-> --- a/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c
-> +++ b/drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c
-> @@ -990,8 +990,8 @@ static int s6e8aa0_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 4;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST
-> -		| MIPI_DSI_MODE_VIDEO_HFP | MIPI_DSI_MODE_VIDEO_HBP
-> -		| MIPI_DSI_MODE_VIDEO_HSA | MIPI_DSI_MODE_EOT_PACKET
-> +		| MIPI_DSI_MODE_VIDEO_NO_HFP | MIPI_DSI_MODE_VIDEO_NO_HBP
-> +		| MIPI_DSI_MODE_VIDEO_NO_HSA | MIPI_DSI_MODE_NO_EOT_PACKET
->  		| MIPI_DSI_MODE_VSYNC_FLUSH | MIPI_DSI_MODE_VIDEO_AUTO_VERT;
->  
->  	ret = s6e8aa0_parse_dt(ctx);
-> diff --git a/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c b/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
-> index 16dbf0f353ed..b937e24dac8e 100644
-> --- a/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
-> +++ b/drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c
-> @@ -282,7 +282,7 @@ static int sharp_nt_panel_probe(struct mipi_dsi_device *dsi)
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO |
->  			MIPI_DSI_MODE_VIDEO_HSE |
->  			MIPI_DSI_CLOCK_NON_CONTINUOUS |
-> -			MIPI_DSI_MODE_EOT_PACKET;
-> +			MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	sharp_nt = devm_kzalloc(&dsi->dev, sizeof(*sharp_nt), GFP_KERNEL);
->  	if (!sharp_nt)
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index 4e2dad314c79..babc7a7f6844 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -4745,7 +4745,7 @@ static const struct panel_desc_dsi osd101t2045_53ts = {
->  	},
->  	.flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
->  		 MIPI_DSI_MODE_VIDEO_SYNC_PULSE |
-> -		 MIPI_DSI_MODE_EOT_PACKET,
-> +		 MIPI_DSI_MODE_NO_EOT_PACKET,
->  	.format = MIPI_DSI_FMT_RGB888,
->  	.lanes = 4,
->  };
-> diff --git a/drivers/gpu/drm/panel/panel-sony-acx424akp.c b/drivers/gpu/drm/panel/panel-sony-acx424akp.c
-> index 065efae213f5..6b706cbf2f9c 100644
-> --- a/drivers/gpu/drm/panel/panel-sony-acx424akp.c
-> +++ b/drivers/gpu/drm/panel/panel-sony-acx424akp.c
-> @@ -450,7 +450,7 @@ static int acx424akp_probe(struct mipi_dsi_device *dsi)
->  	else
->  		dsi->mode_flags =
->  			MIPI_DSI_CLOCK_NON_CONTINUOUS |
-> -			MIPI_DSI_MODE_EOT_PACKET;
-> +			MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	acx->supply = devm_regulator_get(dev, "vddi");
->  	if (IS_ERR(acx->supply))
-> diff --git a/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c b/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c
-> index 55172d63a922..d17aae8b71d7 100644
-> --- a/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c
-> +++ b/drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c
-> @@ -311,7 +311,7 @@ static int xpp055c272_probe(struct mipi_dsi_device *dsi)
->  	dsi->lanes = 4;
->  	dsi->format = MIPI_DSI_FMT_RGB888;
->  	dsi->mode_flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST |
-> -			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET;
-> +			  MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_NO_EOT_PACKET;
->  
->  	drm_panel_init(&ctx->panel, &dsi->dev, &xpp055c272_funcs,
->  		       DRM_MODE_CONNECTOR_DSI);
-> diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-> index 360e6377e84b..ba91cf22af51 100644
-> --- a/include/drm/drm_mipi_dsi.h
-> +++ b/include/drm/drm_mipi_dsi.h
-> @@ -119,15 +119,15 @@ struct mipi_dsi_host *of_find_mipi_dsi_host_by_node(struct device_node *node);
->  /* enable hsync-end packets in vsync-pulse and v-porch area */
->  #define MIPI_DSI_MODE_VIDEO_HSE		BIT(4)
-
-We're mixing bits that enable a feature and bits that disable a feature.
-Are these bits defined in the DSI spec, or internal to DRM ? In the
-latter case, would it make sense to standardize on one "polarity" ? That
-would be a more intrusive change in drivers though.
-
->  /* disable hfront-porch area */
-> -#define MIPI_DSI_MODE_VIDEO_HFP		BIT(5)
-> +#define MIPI_DSI_MODE_VIDEO_NO_HFP	BIT(5)
->  /* disable hback-porch area */
-> -#define MIPI_DSI_MODE_VIDEO_HBP		BIT(6)
-> +#define MIPI_DSI_MODE_VIDEO_NO_HBP	BIT(6)
->  /* disable hsync-active area */
-> -#define MIPI_DSI_MODE_VIDEO_HSA		BIT(7)
-> +#define MIPI_DSI_MODE_VIDEO_NO_HSA	BIT(7)
->  /* flush display FIFO on vsync pulse */
->  #define MIPI_DSI_MODE_VSYNC_FLUSH	BIT(8)
->  /* disable EoT packets in HS mode */
-> -#define MIPI_DSI_MODE_EOT_PACKET	BIT(9)
-> +#define MIPI_DSI_MODE_NO_EOT_PACKET	BIT(9)
->  /* device supports non-continuous clock behavior (DSI spec 5.6.1) */
->  #define MIPI_DSI_CLOCK_NON_CONTINUOUS	BIT(10)
->  /* transmit data in low power */
-
--- 
-Regards,
-
-Laurent Pinchart
