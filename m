@@ -2,193 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C37A320BC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 17:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2429F320BC6
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 17:37:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhBUQe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 11:34:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229826AbhBUQe4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 11:34:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FCFE60241;
-        Sun, 21 Feb 2021 16:34:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613925255;
-        bh=qZx2uLfA8mSrl/SwqY4eAAK7kPKsif5dj+x4dRjxyeU=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=K98MfVE+5xxgb/kAl3yJaEy2sXUJEgeEuYN6eHGSyzwJveZuJv6Or1Pe8q0OOvxVA
-         RnKxTjoWptD4U7fFldOqEFJgpijC+KVz1Cr+h9FnAa6d9apHg/t0pmrbFvihB9JMGf
-         nMTJlVc1b9PEU130h10FRkSuwyQ5rL1NmSVWfbP5P4Xg1lwujzg7HUIip3usWsafjX
-         Ctkp2T1z+5RGnx9MvMjeCniUxCNuzOZVTsZJtw9jMLwXYNuh35WDRtDGQymoT36RRs
-         NxzYfFKA5th/0tV9dwZdDAEVutddCsOG7GgMAF3as7+XdMItkPqeK06NM0SgzZnkwM
-         ykgiFcJKfLtwQ==
-Message-ID: <da24695f063976573af14e3197a426f444a9ac14.camel@kernel.org>
-Subject: Re: [PATCH] fs/locks: print full locks information
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Luo Longjun <luolongjun@huawei.com>, viro@zeniv.linux.org.uk,
-        bfields@fieldses.org, NeilBrown <neilb@suse.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sangyan@huawei.com, luchunhua@huawei.com
-Date:   Sun, 21 Feb 2021 11:34:13 -0500
-In-Reply-To: <20210220063250.742164-1-luolongjun@huawei.com>
-References: <20210220063250.742164-1-luolongjun@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S230083AbhBUQgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 11:36:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhBUQgu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 11:36:50 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E5F3C061574;
+        Sun, 21 Feb 2021 08:36:09 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id u20so24655059ejb.7;
+        Sun, 21 Feb 2021 08:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Vz0D2hb8azzFA/YJrEwh/eM9FqM4vxUQYz4qe31Suc4=;
+        b=HT+MyzO4wdYIJXrvhLU2zCsTdoCIv0J+fvIhJKN7OfHJVu7qPGD57EHEjWRsQLpFVE
+         SNoFMBK8ZmdV3cyoZEFnytfXblaUil1F4JXddiiqS/y4Y1Ri5EHcMrkuWPawemFvqG9v
+         uf6eGhHVLHB9SefTiJfiPwlbSJN8SU4BhR7gMPcW7eunZQUW66ittno3G7XraoFmg40C
+         40RnPog9F2vQMcbqB0Z2D6STP/HsaJmYNmDMF7+pxlOkpRsveDIVJdecpRdGnf5Ze+47
+         ap2OMRY6Tenm2jx+jLUL6E56WnoM75M0c+91OyXAIfG+zGF3yohzvK0jP3GqkeFK1YzK
+         AZkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Vz0D2hb8azzFA/YJrEwh/eM9FqM4vxUQYz4qe31Suc4=;
+        b=lUYWVrvYaC4x5/IwOVrgFf2dWqpARkx9hbvi+MMw4R7QKtvNPAcZ/cAd8uKxVoKQE0
+         qCu0DWv4soY0ZRp6J7CVIq+tTK5p+z38DK+IgehVj7dhfK5Mu1IxlU8y1t4DUPK/8kle
+         5Dphk3TfCwGUWMV0RCDoYYTUfZOdgMHlRTZg3lqlLb08mYMFmnbMYBpJ4yZ2GRjfGMk+
+         xIChEyikiHvFyRK5USNWIgIjAocS/Qc0rgDxDr8N44NICfbBn4N+KzDbGx45dXsGx3Z1
+         8+CPmEeKGB/sFMMsFHI31U+4EpxJBFylllZM4ysXuD6ice8TRvKhVF9FngHLTcU+s7Ck
+         Qeyw==
+X-Gm-Message-State: AOAM5302AwfACEyMO+zHyu1tfgTwrMZrOe7ZiuPPIFSQf2NEWczRYChX
+        1OGUfskOw/WI8tW4ROrMxjs=
+X-Google-Smtp-Source: ABdhPJwoCiaTcah2Byf/IKaVAcO0yCymSQZWTCh7JF3iWtSHBloeCIoqZnEUJ5JGMPNrNqpwiqAqQg==
+X-Received: by 2002:a17:906:6942:: with SMTP id c2mr2538412ejs.425.1613925366269;
+        Sun, 21 Feb 2021 08:36:06 -0800 (PST)
+Received: from BV030612LT ([81.18.95.223])
+        by smtp.gmail.com with ESMTPSA id t19sm8406046ejc.62.2021.02.21.08.36.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 08:36:05 -0800 (PST)
+Date:   Sun, 21 Feb 2021 18:36:02 +0200
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-actions@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v7 0/5] Add initial support for ATC260x PMICs
+Message-ID: <20210221163602.GA297639@BV030612LT>
+References: <cover.1611653995.git.cristian.ciocaltea@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1611653995.git.cristian.ciocaltea@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-02-20 at 01:32 -0500, Luo Longjun wrote:
-> Commit fd7732e033e3 ("fs/locks: create a tree of dependent requests.")
-> has put blocked locks into a tree.
-> 
-> So, with a for loop, we can't check all locks information.
-> 
-> To solve this problem, we should traverse the tree by DFS.
-> 
-> Signed-off-by: Luo Longjun <luolongjun@huawei.com>
-> ---
->  fs/locks.c | 30 +++++++++++++++++++++++++-----
->  1 file changed, 25 insertions(+), 5 deletions(-)
-> 
+Hi Lee,
 
-(cc'ing Neil B.)
+I have just noticed your mfd-next tag for 5.12 doesn't include the
+support for the ATC260x PMICs.
 
-It is true that you don't see the full set of blocked locks here like
-you used to. This patch doesn't exactly restore the old behavior either
-though. You end up with a tree of blocked locks like this in the output
-when things are lined up behind a single lock:
-
-1: POSIX  ADVISORY  WRITE 1553 00:21:27 0 EOF
-1: -> POSIX  ADVISORY  WRITE 1629 00:21:27 0 EOF
-1:  -> POSIX  ADVISORY  WRITE 1577 00:21:27 0 EOF
-1:   -> POSIX  ADVISORY  WRITE 1610 00:21:27 0 EOF
-1:    -> POSIX  ADVISORY  WRITE 1595 00:21:27 0 EOF
-1:     -> POSIX  ADVISORY  WRITE 1568 00:21:27 0 EOF
-1:      -> POSIX  ADVISORY  WRITE 1639 00:21:27 0 EOF
-
-That's not necessarily wrong, since that does represent how things are
-organized now, but it is different in that before you'd see everything
-lined up behind the first lock rather than a chain of them like this.
-
-/proc/locks turns out to be one of the more troublesome parts of this
-code, as there really is no guiding design behind it, and it's hard to
-know whether changes there will break userland.
-
-The only tool that I know of that _really_ depends on /proc/locks is
-lslocks, and I think it should work fine in the face of this patch. So,
-I'm inclined to take it, unless anyone has objections.
-
-I'll plan to pull it into -next for now, and this should make v5.13
-(unless you think it needs to go in sooner).
+I assumed the patchset is ready for merging.. Did I miss something?
 
 Thanks,
-Jeff
+Cristi
 
-> diff --git a/fs/locks.c b/fs/locks.c
-> index 99ca97e81b7a..1f7b6683ed54 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -2828,9 +2828,10 @@ struct locks_iterator {
->  };
->  
+On Tue, Jan 26, 2021 at 11:55:56AM +0200, Cristian Ciocaltea wrote:
+> The ATC260x family of PMICs integrates Audio Codec, Power management,
+> Clock generation and GPIO controller blocks. There are currently 3
+> variants: ATC2603A, ATC2603C and ATC2609A.
 > 
+> This is re-spin of the v1 patch series submitted some time ago by
+> Mani, who provided the MFD and regulator drivers for ATC2609A:
+> https://lore.kernel.org/lkml/20190617155011.15376-1-manivannan.sadhasivam@linaro.org/
 > 
+> Since v2, I added support for ATC2603C, together with some new
+> functionalities for both chips: power controller and onkey input.
+> The ATC2603A chip type remains unsupported for the moment.
 > 
->  static void lock_get_status(struct seq_file *f, struct file_lock *fl,
-> -			    loff_t id, char *pfx)
-> +			    loff_t id, char *pfx, int repeat)
->  {
->  	struct inode *inode = NULL;
-> +	int i;
->  	unsigned int fl_pid;
->  	struct pid_namespace *proc_pidns = proc_pid_ns(file_inode(f->file)->i_sb);
->  
+> This has been tested on RoseapplePi, a SBC based on the Actions Semi S500
+> SoC, which integrates the ATC2603C variant of the PMIC.
 > 
+> Note that enabling the ATC260x PMICs on compatible Actions Semi Owl SoC
+> based boards depends on:
 > 
+> * the Actions Semi SIRQ driver (for PMIC DTS setup), merged in v5.10:
+>   https://lore.kernel.org/lkml/cover.1600114378.git.cristian.ciocaltea@gmail.com/
 > 
-> @@ -2844,7 +2845,13 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
->  	if (fl->fl_file != NULL)
->  		inode = locks_inode(fl->fl_file);
->  
+> * the atomic transfers in Owl I2C driver (for power controller), merged in v5.11:
+>   https://lore.kernel.org/lkml/cover.1602190168.git.cristian.ciocaltea@gmail.com/
 > 
+> Additionally, please note that I have taken the authorship for the MFD
+> and regulator drivers patches, considering the original code has been
+> modified to a large extent.
 > 
+> Thanks,
+> Cristi
 > 
-> -	seq_printf(f, "%lld:%s ", id, pfx);
-> +	seq_printf(f, "%lld: ", id);
-> +	for (i = 1; i < repeat; i++)
-> +		seq_puts(f, " ");
-> +
-> +	if (repeat)
-> +		seq_printf(f, "%s", pfx);
-> +
->  	if (IS_POSIX(fl)) {
->  		if (fl->fl_flags & FL_ACCESS)
->  			seq_puts(f, "ACCESS");
-> @@ -2906,6 +2913,19 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
->  	}
->  }
->  
+> Changes in v7:
+> - Dropped the patches already queued for merging:
+>   * regulator: Add regulator driver for ATC260x PMICs
+>   * power: reset: Add poweroff driver for ATC260x PMICs
+> - Rebased patchset on v5.11-rc5
 > 
+> Changes in v6 - MFD driver updates as indicated by Lee:
+> - Defined a magic number for max chip revision
+> - Adjusted code formatting around i2c_driver struct initialization
+> - Dropped the device initialization callback in struct atc260x and instead 
+>   provided a generic function making use of a new member structure to hold
+>   the hardware specific register information
 > 
+> Changes in v5:
+> - Removed an unnecessary '#include' line in the power-off driver,
+>   as noticed by Sebastian
+> - Rebased patchset on v5.11-rc3
 > 
-> +static int __locks_show(struct seq_file *f, struct file_lock *fl, int level)
-> +{
-> +	struct locks_iterator *iter = f->private;
-> +	struct file_lock *bfl;
-> +
-> +	lock_get_status(f, fl, iter->li_pos, "-> ", level);
-> +
-> +	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
-> +		__locks_show(f, bfl, level + 1);
-> +
-> +	return 0;
-> +}
-> +
->  static int locks_show(struct seq_file *f, void *v)
->  {
->  	struct locks_iterator *iter = f->private;
-> @@ -2917,10 +2937,10 @@ static int locks_show(struct seq_file *f, void *v)
->  	if (locks_translate_pid(fl, proc_pidns) == 0)
->  		return 0;
->  
+> Changes in v4:
+> - Updated MFD driver according to Lee's review
+> - Handled ATC2603C's LDO12 fixed regulator per Mark's suggestion
+> - Rebased patchset on v5.11-rc1
 > 
+> Changes in v3:
+> - Integrated feedback from Mani, Rob, Mark, Sebastian, Dmitry
+> - Fixed issues reported by Lee's kernel test robot
+> - Added new patch for 'reset-time-sec' DT binding property
+> - Rebased patchset on v5.10-rc6
 > 
+> Changes in v2:
+> - Reworked MFD core & I2C driver
+>   * Integrated Lee's feedback
+>   * Added support for using the regmap within atomic contexts
+>   * Added support for ATC2603C chip variant
+>   * Reorganized KConfig entries
+> - Improved regulator driver
+>   * Added support for ATC2603C variant
+>   * Used helper macros for more compact specification of regulator_desc items
+>   * Added more regulator capabilities
+> - Added power controller driver
+>   * Provides system poweroff/reboot functionalities
+>   * Depends on atomic transfers in the Owl I2C driver
+> - Added onkey driver: exposes the power button as an input device
+> - Added yaml binding doc
+> - Rebased patchset on kernel v5.9-rc1
 > 
-> -	lock_get_status(f, fl, iter->li_pos, "");
-> +	lock_get_status(f, fl, iter->li_pos, "", 0);
->  
+> Cristian Ciocaltea (4):
+>   dt-bindings: input: Add reset-time-sec common property
+>   dt-bindings: mfd: Add Actions Semi ATC260x PMIC binding
+>   mfd: Add MFD driver for ATC260x PMICs
+>   input: atc260x: Add onkey driver for ATC260x PMICs
 > 
+> Manivannan Sadhasivam (1):
+>   MAINTAINERS: Add entry for ATC260x PMIC
 > 
+>  .../devicetree/bindings/input/input.yaml      |   7 +
+>  .../bindings/mfd/actions,atc260x.yaml         | 183 +++++++++++
+>  MAINTAINERS                                   |  12 +
+>  drivers/input/misc/Kconfig                    |  11 +
+>  drivers/input/misc/Makefile                   |   2 +-
+>  drivers/input/misc/atc260x-onkey.c            | 305 +++++++++++++++++
+>  drivers/mfd/Kconfig                           |  18 +
+>  drivers/mfd/Makefile                          |   3 +
+>  drivers/mfd/atc260x-core.c                    | 310 ++++++++++++++++++
+>  drivers/mfd/atc260x-i2c.c                     |  64 ++++
+>  include/linux/mfd/atc260x/atc2603c.h          | 281 ++++++++++++++++
+>  include/linux/mfd/atc260x/atc2609a.h          | 308 +++++++++++++++++
+>  include/linux/mfd/atc260x/core.h              |  58 ++++
+>  13 files changed, 1561 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/actions,atc260x.yaml
+>  create mode 100644 drivers/input/misc/atc260x-onkey.c
+>  create mode 100644 drivers/mfd/atc260x-core.c
+>  create mode 100644 drivers/mfd/atc260x-i2c.c
+>  create mode 100644 include/linux/mfd/atc260x/atc2603c.h
+>  create mode 100644 include/linux/mfd/atc260x/atc2609a.h
+>  create mode 100644 include/linux/mfd/atc260x/core.h
 > 
->  	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
-> -		lock_get_status(f, bfl, iter->li_pos, " ->");
-> +		__locks_show(f, bfl, 1);
->  
+> -- 
+> 2.30.0
 > 
-> 
-> 
->  	return 0;
->  }
-> @@ -2941,7 +2961,7 @@ static void __show_fd_locks(struct seq_file *f,
->  
-> 
-> 
-> 
->  		(*id)++;
->  		seq_puts(f, "lock:\t");
-> -		lock_get_status(f, fl, *id, "");
-> +		lock_get_status(f, fl, *id, "", 0);
->  	}
->  }
->  
-> 
-> 
-> 
-
--- 
-Jeff Layton <jlayton@kernel.org>
-
