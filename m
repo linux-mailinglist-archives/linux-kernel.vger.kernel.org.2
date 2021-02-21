@@ -2,59 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723E6320866
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 06:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10F5A3208A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 06:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhBUFNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 00:13:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230016AbhBUFIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 00:08:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B452964F1D;
-        Sun, 21 Feb 2021 05:06:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613883996;
-        bh=7WpHGEyK/lVE24OawIXAGumo1kxYd59PWQ5GhKzHieQ=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=q4ZOSOaZTVKgcY2RsBBFqII6VU8G9ETGAgBmuWg6DZAy5DlmmejyqHj2LXbJGYJ8B
-         zbvhnsTY8QqfOk31G3mmp/sue+D5+Sa4DLhjA2Y+dGBRBSaSceqZ3yyXG+qHmReQH4
-         09SVcDZkLcv0Q0F6EI42WAsFLS/L0vSb5QXlUonHuCrK1SG+o2IqfEii9sy8bRP8po
-         b6GPxErHim+nkp1xrrjcs4cp9OmNvs0Cjn/2giE1nHVTPml4vYNy2IP8yskUSbRrQv
-         R7OAPT8eHjlrGLgnHqfl26ELlgQZ+eRd7RGBcN6xCEj2Nab6ckjKyrJPTCJXa4c0Sk
-         +y3T1y00qBG6w==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AFCAC60A3C;
-        Sun, 21 Feb 2021 05:06:36 +0000 (UTC)
-Subject: Re: [GIT PULL] x86/asm for v5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210215124050.GF7265@zn.tnic>
-References: <20210215124050.GF7265@zn.tnic>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210215124050.GF7265@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_asm_for_v5.12
-X-PR-Tracked-Commit-Id: 5c99720b28381bb400d4f546734c34ddaf608761
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2c405d1ab8b3103df2df541aaacc2113dc6c9fac
-Message-Id: <161388399671.9594.480858331802251776.pr-tracker-bot@kernel.org>
-Date:   Sun, 21 Feb 2021 05:06:36 +0000
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        id S230164AbhBUF1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 00:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhBUF0z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 00:26:55 -0500
+X-Greylist: delayed 811 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 20 Feb 2021 21:26:15 PST
+Received: from frontdoor.pr.hu (frontdoor.pr.hu [IPv6:2a02:808:3:101:250:56ff:fe8e:1370])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 730AFC061574;
+        Sat, 20 Feb 2021 21:26:15 -0800 (PST)
+Received: from [2a02:808:3:101::5] (helo=mail.pr.hu)
+        by frontdoor.pr.hu with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <zboszor@pr.hu>)
+        id 1lDh2q-0000VP-Oj; Sun, 21 Feb 2021 06:12:36 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=pr.hu;
+        s=pr20170203; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=f40Fx/Hmx9xz9dKoklu7aLMqq9AlCJu/St+EpaOZARI=; b=GU4QLV+XxVaEG7rY4f3YbMTCte
+        HbbHbAOLmPIMXpAoKZUjOBBB+MLSCz/n9xeGFi5+VRYuHjG9GcxYB2F0HX4By7vuRJxUS/jhqA68X
+        0ujdlrNea9f+QuMrqCBnPoZXa8yIVt7tQ+25XYdXSbSj0bhh+rug86BFFsvz5uuZ61qPJSExYSTDv
+        Rx7EPVkzCxpTT7XQOEcYpSYdJgaZGS4tyf+mnr3XkH2Oc1Sfhl39LncwO2UeVtE1LI9pudHzsb/lh
+        4EQU4XemzW+H5sQPzAQK+/a3GX1dCb/aNgs0FigESasjWsLfisIpwLAIGjosPZZz6+JOC5wdYpBRR
+        EcB9YTbQ==;
+Received: from host-87-242-23-58.prtelecom.hu ([87.242.23.58] helo=zolilaptop.lan)
+        by mail.pr.hu with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <zboszor@pr.hu>)
+        id 1lDh2m-0002j6-TT; Sun, 21 Feb 2021 06:12:34 +0100
+From:   =?UTF-8?q?Zolt=C3=A1n=20B=C3=B6sz=C3=B6rm=C3=A9nyi?= 
+        <zboszor@pr.hu>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-scsi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        gregkh@linuxfoundation.org,
+        =?UTF-8?q?Zolt=C3=A1n=20B=C3=B6sz=C3=B6rm=C3=A9nyi?= 
+        <zboszor@gmail.com>
+Subject: [PATCH] nvme: Apply the same fix Kingston SKC2000 nVME SSD as A2000
+Date:   Sun, 21 Feb 2021 06:12:16 +0100
+Message-Id: <20210221051216.3398620-1-zboszor@pr.hu>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -0.9 (/)
+X-Scan-Signature: dda648b1d3e643e91fd1a0320e0a0c7d
+X-Spam-Tracer: backend.mail.pr.hu -0.9 20210221051234Z
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 15 Feb 2021 13:40:50 +0100:
+From: Zoltán Böszörményi <zboszor@gmail.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_asm_for_v5.12
+My 2TB SKC2000 showed the exact same symptoms that were provided
+in 538e4a8c57 ("nvme-pci: avoid the deepest sleep state on
+Kingston A2000 SSDs"), i.e. a complete NVME lockup that needed
+cold boot to get it back.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2c405d1ab8b3103df2df541aaacc2113dc6c9fac
+According to some sources, the A2000 is simply a rebadged
+SKC2000 with a slightly optimized firmware.
 
-Thank you!
+Adding the SKC2000 PCI ID to the quirk list with the same workaround
+as the A2000 made my laptop survive a 5 hours long Yocto bootstrap
+buildfest which reliably triggered the SSD lockup previously.
 
+Tested against 5.10.17.
+
+Signed-off-by: Zoltán Böszörményi <zboszor@gmail.com>
+
+---
+ drivers/nvme/host/pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index 4a33287..3af6a95 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -3264,6 +3264,8 @@ static const struct pci_device_id nvme_id_table[] = {
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
+ 	{ PCI_DEVICE(0x15b7, 0x2001),   /*  Sandisk Skyhawk */
+ 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
++	{ PCI_DEVICE(0x2646, 0x2262),   /* KINGSTON SKC2000 NVMe SSD  */
++		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
+ 	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
+ 		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
+ 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.29.2
+
