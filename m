@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FCE320E6E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9BB320E7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 00:09:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232167AbhBUW5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:57:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S232536AbhBUXIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 18:08:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbhBUW5f (ORCPT
+        with ESMTP id S232450AbhBUXIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 17:57:35 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B278DC061574;
-        Sun, 21 Feb 2021 14:56:54 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id s107so10377449otb.8;
-        Sun, 21 Feb 2021 14:56:54 -0800 (PST)
+        Sun, 21 Feb 2021 18:08:17 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54E8C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 15:07:36 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id y7so50784507lji.7
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 15:07:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=BMlieb6U92lcNjW+CkztzeL1c/s8InuHgyvsXFn4OdU=;
-        b=M6zz+wIGsyJlgsoKsvT4r/K3OJ8vIXbnyCFPE3jaoMGfzQkiqpBu1bVZnoalTdAG/O
-         ZW9JYNkCTSzQ8MRd9Ue69ZgnMZGhWwkHtnvoIhSgW+OwZevtCcf3E5PUr66swHfZ3Tvy
-         HBKuWY8SoMhrO1tymK3VQz3nJ9qjVrh6jNPs1rHsj/Orz+9UT1BLKaGROuJwsIcnGMm5
-         HcbVx3shiTUyPpx49XIK2s4QsJL0QndbK6/rCH9Ois1HPGU9M6gAU4BQ7xD8mLJmwf66
-         7rHjzT9md3venlK3wYG/9SIMx4OpL45Y82Nt4OET0rhhq4auABqr6ssnwxwP3J1Z/8IZ
-         8ZCg==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K9CZc6j54KVkhNtnlVAPjyH9O60vJPCOdPJohXtM448=;
+        b=VJE0KaWIqLNIiVJZbdHs7iPeShk8LirvoiZO0J4hrm9nUuO13brxoUpPUVYVGEp5Yc
+         z2DLPU/lGPdy0+JV8Sh+xoVbZsY236mVW2P/emeJPhXbdj98+0x08/R9XeqZDRD29nEK
+         NN/0xcVdF7ZYkPc7TtkjCNnUSVwu7OYjs1Cio=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=BMlieb6U92lcNjW+CkztzeL1c/s8InuHgyvsXFn4OdU=;
-        b=XFZ5jvTQx27l54rYEUUvOd7yw0KLfOERM+aFFG+d4pPHyRYzpte2SMbCgJvwn6fHZ9
-         oLDkLh8PJ2jnPppQ1cHRvxLu9AfethntYgfsJNpsZkl5oRRcuVrV9yyz0y+5OtzJKLxk
-         TITxBawu15QhnHJlQw4ZjjDMPwTpsjKJ7MGAsiywf5IzG316GtA/Hl4rxAnWib6wAWbm
-         WXCe6BbnOme/JPY53bM1M7Vy+yyrUk96VUXbENw1NPZ6qXTsLGhNva3IQJtPt7l60TS9
-         R12Dle5X/P0E1m0Wtgzq1RH8d5G6EnLFgkSBgLCUgL8SYTvAPbcXCVb3pUUMJUJUd4Xo
-         bRnw==
-X-Gm-Message-State: AOAM531u1mru/0gqEoTbZnJ1UxzTDsTYZIobrV46F1VNnLnAboV138ej
-        tgWxaLCTe1bZuy97pzys62O3CyS00mc=
-X-Google-Smtp-Source: ABdhPJy1k//MXUUCfVO+EN2AqRi7nyNt9DUiG/3U8QkFMX/7/Gu+QRCLWtK6J6eCy4tVc7hLAkHA9A==
-X-Received: by 2002:a05:6830:1ac2:: with SMTP id r2mr5915387otc.80.1613948214142;
-        Sun, 21 Feb 2021 14:56:54 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i23sm3383705oik.10.2021.02.21.14.56.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 21 Feb 2021 14:56:53 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH] gcc-plugins: Disable GCC_PLUGIN_CYC_COMPLEXITY for s390
-Date:   Sun, 21 Feb 2021 14:56:50 -0800
-Message-Id: <20210221225650.33134-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K9CZc6j54KVkhNtnlVAPjyH9O60vJPCOdPJohXtM448=;
+        b=ifNaSEgbnmeRbENUE/HE0Q2omDH98E1aPmZf3NkG6Bw1qIhBFqtcYTwIvh04EVN94I
+         wCb9vJoWT4YQCmm/NeHEdvAZCeD0mEAKNqlVyGvwnwJ5wURWqLUqp9/EM3Evn3TfN1DP
+         SB2tlSkyWuN0UaWyQ9kiu3ZA3dE3H9RNGJadlgh8oDSMv0OFbS6a0UIbELfigYq23aIm
+         zbc1WUJJR22BM4S5WDMk6mLQ4qPeibYAowHD58Ycw4XvZn1eF3S7270YD95pEOF8hPXO
+         t2D1CTLlkzmtqVnPrkSS2cNcZVohovyt/x4jI4W6Ji6GQxVf5943IeFtNt0ahBeDNyFv
+         r8Lg==
+X-Gm-Message-State: AOAM533az3/HCVMyoDSo68eMShO5gmyL3TfKDHm/ofBH6RVqcSR+Ow7q
+        me7vqEMlpFtSTMjfJPngG7zhYg8wylgcCA==
+X-Google-Smtp-Source: ABdhPJwizjQ9tETQ68XIXrNjwA9kKU2BP5ew56MR4wse1Dl+JQmcryQxtZhcS+s1lVMdCTwZiqGgCA==
+X-Received: by 2002:a05:6512:228b:: with SMTP id f11mr12509687lfu.78.1613948854665;
+        Sun, 21 Feb 2021 15:07:34 -0800 (PST)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id k5sm143541ljb.79.2021.02.21.15.07.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Feb 2021 15:07:34 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id o16so48252963ljj.11
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 15:07:33 -0800 (PST)
+X-Received: by 2002:a05:651c:112:: with SMTP id a18mr12843554ljb.465.1613948853595;
+ Sun, 21 Feb 2021 15:07:33 -0800 (PST)
+MIME-Version: 1.0
+References: <CAPM=9txd-x1NKWK9BBqVTDNOR00zNqcXgs76YJrDfL94eMLYqQ@mail.gmail.com>
+In-Reply-To: <CAPM=9txd-x1NKWK9BBqVTDNOR00zNqcXgs76YJrDfL94eMLYqQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 21 Feb 2021 15:07:17 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgiPxXzRNnfaXk7ozSWSu7fFU--kTmVjkDaTB05wwUk_g@mail.gmail.com>
+Message-ID: <CAHk-=wgiPxXzRNnfaXk7ozSWSu7fFU--kTmVjkDaTB05wwUk_g@mail.gmail.com>
+Subject: Re: [git pull] drm for 5.12-rc1
+To:     Dave Airlie <airlied@gmail.com>, Kevin Wang <kevin1.wang@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390") disabled
-COMPILE_TEST for s390. At the same time, "make allmodconfig/allyesconfig" for
-s390 is still supported. However, it generates thousands of compiler
-messages such as the following, making it highly impractical to run.
+On Thu, Feb 18, 2021 at 10:06 PM Dave Airlie <airlied@gmail.com> wrote:
+>
+> Let me know if there are any issues,
 
-Cyclomatic Complexity 1 scripts/mod/devicetable-offsets.c:main
-Cyclomatic Complexity 1 scripts/mod/devicetable-offsets.c:_GLOBAL__sub_I_00100_0_main
+gcc was happy, and I obviously already pushed out my merge, but then
+when I did my clang build afterwards, it reports:
 
-Since GCC_PLUGIN_CYC_COMPLEXITY is primarily used for testing, disable it
-when building s390 images.
+  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:764:2: warning:
+variable 'structure_size' is used uninitialized whenever switch
+default is taken [-Wsometimes-uninitialized]
+          default:
+          ^~~~~~~
+  drivers/gpu/drm/amd/amdgpu/../pm/swsmu/smu_cmn.c:770:23: note:
+uninitialized use occurs here
+          memset(header, 0xFF, structure_size);
+                               ^~~~~~~~~~~~~~
 
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Fixes: 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- scripts/gcc-plugins/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+and clang is very very right. That "default" case is completely
+broken, and will generate a randomly sized memset. Not good.
 
-diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
-index ab9eb4cbe33a..5e9bb500f443 100644
---- a/scripts/gcc-plugins/Kconfig
-+++ b/scripts/gcc-plugins/Kconfig
-@@ -21,7 +21,7 @@ if GCC_PLUGINS
- 
- config GCC_PLUGIN_CYC_COMPLEXITY
- 	bool "Compute the cyclomatic complexity of a function" if EXPERT
--	depends on !COMPILE_TEST	# too noisy
-+	depends on !COMPILE_TEST && !S390	# too noisy
- 	help
- 	  The complexity M of a function's control flow graph is defined as:
- 	   M = E - N + 2P
--- 
-2.17.1
+Presumably that default case never happens, but if so it shouldn't exist.
 
+Perhaps better yet, make the "default" case just do a "return" instead
+of a break. Breaking out of the switch statement to code that cannot
+possibly work is all kinds of mindless.
+
+Kevin/Alex? This was introduced by commit de4b7cd8cb87
+("drm/amd/pm/swsmu: unify the init soft gpu metrics function")
+
+              Linus
