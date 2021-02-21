@@ -2,255 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30639320A9B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A05BB320A9E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbhBUNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 08:38:57 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:36311 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhBUNiy (ORCPT
+        id S229918AbhBUNlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 08:41:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229826AbhBUNlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 08:38:54 -0500
-X-Originating-IP: 2.7.49.219
-Received: from [192.168.1.100] (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id DC02E20005;
-        Sun, 21 Feb 2021 13:38:04 +0000 (UTC)
-Subject: Re: [PATCH v2 1/1] riscv/kasan: add KASAN_VMALLOC support
-From:   Alex Ghiti <alex@ghiti.fr>
-To:     Palmer Dabbelt <palmer@dabbelt.com>, nylon7@andestech.com
-Cc:     aou@eecs.berkeley.edu, nickhu@andestech.com, alankao@andestech.com,
-        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        nylon7717@gmail.com, glider@google.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aryabinin@virtuozzo.com, linux-riscv@lists.infradead.org,
-        dvyukov@google.com
-References: <mhng-443fd141-b9a3-4be6-a056-416877f99ea4@palmerdabbelt-glaptop>
- <2b2f3038-3e27-8763-cf78-3fbbfd2100a0@ghiti.fr>
- <4fa97788-157c-4059-ae3f-28ab074c5836@ghiti.fr>
-Message-ID: <e15fbf55-25db-7f91-6feb-fb081ab60cdb@ghiti.fr>
-Date:   Sun, 21 Feb 2021 08:38:04 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sun, 21 Feb 2021 08:41:44 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B578AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 05:41:03 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id z9so7013001pjl.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 05:41:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rYPWdfQDErM49hDyDe8HZEC/S9QGDrMuKNGM0lXXWH8=;
+        b=Lf0ILpNmVGQ1kwXwnOF64u30UufNZRlFj1c7loSM3+NAx2vUV1hdZGkYkl6M+pLWGN
+         TJsp+xQPvjbCys+SN9kNQ21zLT/2kyKpwCgv7WfV1na4YjWzwKXJ1szywyHxXudlBXdo
+         lf/iupzRWgWTU8p3DQHXhMNbC4V/CFhz0h7gNULQwT+/8e5iDcBYS42WV4bGZQkNumQ6
+         c6Z/GQOs1joVicArF74k/QpX23chfxgqE3FR0um49GgaRM51IVW59lfG8VRdGLpig8Qe
+         N5YDkAwazjsHLvMQH2yoRfkNc9F5zVELiDHe5QUNul0sOdU4AyfCZqdNxo43RX7bW7BZ
+         8AgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rYPWdfQDErM49hDyDe8HZEC/S9QGDrMuKNGM0lXXWH8=;
+        b=oruF5WXbI9d3T+SAcBvE4cvTVYaSuRDjhMhdCTAbgKNvKP4iiIQMwKtQqi2k+IxV8R
+         qirO/WVQHPOAF4VEVU+U3gwAIEquXc6gsjTZqm+ATf6ZiMxzs03IICA6dLEp2X4IDftl
+         Af90GUkw7ZYxgasX4DkV1DySAe6u01qMcLCdq+0LhiS9v+W4rj1ld1+4HgMa0kht9LMK
+         TacALyJstEjbi49iCfxTEcmBnWLjIhhP3BxPOdnbzUqzThTkDTL6lAW0hlmRwQMTRhcq
+         g8Fz1dwi87U5luA8Jg4q21L7Gj4Nsib2rZFu8nMxxGdLN05rvNslh4sTKbkVge+yslH+
+         LNTw==
+X-Gm-Message-State: AOAM532VjZn8/rW3uvZfDddCbAbp5o6x1BXvlnLmknnaUEUaBGv0f/81
+        BK42oswgAaKWfwMxV2DUuC4=
+X-Google-Smtp-Source: ABdhPJxhQWbxltNb93GnJoFZbBVPCzJSO/5yxELzBDYYwXvkAejsfhQPzZ2V8NK4l5aWLkMBF8BwQw==
+X-Received: by 2002:a17:902:b941:b029:e3:1628:97b7 with SMTP id h1-20020a170902b941b02900e3162897b7mr17660892pls.60.1613914863197;
+        Sun, 21 Feb 2021 05:41:03 -0800 (PST)
+Received: from localhost ([103.106.200.55])
+        by smtp.gmail.com with ESMTPSA id w1sm14440356pjq.38.2021.02.21.05.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 05:41:02 -0800 (PST)
+From:   Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+To:     gregkh@linuxfoundation.org, lee.jones@linaro.org, kuba@kernel.org,
+        johannes@sipsolutions.net, memxor@gmail.com, arnd@arndb.de
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+Subject: [PATCH v3] staging: wimax: i2400m: add space before open parenthesis
+Date:   Sun, 21 Feb 2021 05:39:51 -0800
+Message-Id: <20210221133951.21234-1-sssraj.sssraj@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210220134652.16127-1-sssraj.sssraj@gmail.com>
+References: <20210220134652.16127-1-sssraj.sssraj@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4fa97788-157c-4059-ae3f-28ab074c5836@ghiti.fr>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 2/13/21 à 5:52 AM, Alex Ghiti a écrit :
-> Hi Nylon, Palmer,
-> 
-> Le 2/8/21 à 1:28 AM, Alex Ghiti a écrit :
->> Hi Nylon,
->>
->> Le 1/22/21 à 10:56 PM, Palmer Dabbelt a écrit :
->>> On Fri, 15 Jan 2021 21:58:35 PST (-0800), nylon7@andestech.com wrote:
->>>> It references to x86/s390 architecture.
->>>> >> So, it doesn't map the early shadow page to cover VMALLOC space.
->>>>
->>>> Prepopulate top level page table for the range that would otherwise be
->>>> empty.
->>>>
->>>> lower levels are filled dynamically upon memory allocation while
->>>> booting.
->>
->> I think we can improve the changelog a bit here with something like that:
->>
->> "KASAN vmalloc space used to be mapped using kasan early shadow page. 
->> KASAN_VMALLOC requires the top-level of the kernel page table to be 
->> properly populated, lower levels being filled dynamically upon memory 
->> allocation at runtime."
->>
->>>>
->>>> Signed-off-by: Nylon Chen <nylon7@andestech.com>
->>>> Signed-off-by: Nick Hu <nickhu@andestech.com>
->>>> ---
->>>>  arch/riscv/Kconfig         |  1 +
->>>>  arch/riscv/mm/kasan_init.c | 57 +++++++++++++++++++++++++++++++++++++-
->>>>  2 files changed, 57 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
->>>> index 81b76d44725d..15a2c8088bbe 100644
->>>> --- a/arch/riscv/Kconfig
->>>> +++ b/arch/riscv/Kconfig
->>>> @@ -57,6 +57,7 @@ config RISCV
->>>>      select HAVE_ARCH_JUMP_LABEL
->>>>      select HAVE_ARCH_JUMP_LABEL_RELATIVE
->>>>      select HAVE_ARCH_KASAN if MMU && 64BIT
->>>> +    select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
->>>>      select HAVE_ARCH_KGDB
->>>>      select HAVE_ARCH_KGDB_QXFER_PKT
->>>>      select HAVE_ARCH_MMAP_RND_BITS if MMU
->>>> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
->>>> index 12ddd1f6bf70..4b9149f963d3 100644
->>>> --- a/arch/riscv/mm/kasan_init.c
->>>> +++ b/arch/riscv/mm/kasan_init.c
->>>> @@ -9,6 +9,19 @@
->>>>  #include <linux/pgtable.h>
->>>>  #include <asm/tlbflush.h>
->>>>  #include <asm/fixmap.h>
->>>> +#include <asm/pgalloc.h>
->>>> +
->>>> +static __init void *early_alloc(size_t size, int node)
->>>> +{
->>>> +    void *ptr = memblock_alloc_try_nid(size, size,
->>>> +        __pa(MAX_DMA_ADDRESS), MEMBLOCK_ALLOC_ACCESSIBLE, node);
->>>> +
->>>> +    if (!ptr)
->>>> +        panic("%pS: Failed to allocate %zu bytes align=%zx nid=%d 
->>>> from=%llx\n",
->>>> +            __func__, size, size, node, (u64)__pa(MAX_DMA_ADDRESS));
->>>> +
->>>> +    return ptr;
->>>> +}
->>>>
->>>>  extern pgd_t early_pg_dir[PTRS_PER_PGD];
->>>>  asmlinkage void __init kasan_early_init(void)
->>>> @@ -83,6 +96,40 @@ static void __init populate(void *start, void *end)
->>>>      memset(start, 0, end - start);
->>>>  }
->>>>
->>>> +void __init kasan_shallow_populate(void *start, void *end)
->>>> +{
->>>> +    unsigned long vaddr = (unsigned long)start & PAGE_MASK;
->>>> +    unsigned long vend = PAGE_ALIGN((unsigned long)end);
->>>> +    unsigned long pfn;
->>>> +    int index;
->>>> +    void *p;
->>>> +    pud_t *pud_dir, *pud_k;
->>>> +    pgd_t *pgd_dir, *pgd_k;
->>>> +    p4d_t *p4d_dir, *p4d_k;
->>>> +
->>>> +    while (vaddr < vend) {
->>>> +        index = pgd_index(vaddr);
->>>> +        pfn = csr_read(CSR_SATP) & SATP_PPN;
->>
->> At this point in the boot process, we know that we use swapper_pg_dir 
->> so no need to read SATP.
->>
->>>> +        pgd_dir = (pgd_t *)pfn_to_virt(pfn) + index;
->>
->> Here, this pgd_dir assignment is overwritten 2 lines below, so no need 
->> for it.
->>
->>>> +        pgd_k = init_mm.pgd + index;
->>>> +        pgd_dir = pgd_offset_k(vaddr);
->>
->> pgd_offset_k(vaddr) = init_mm.pgd + pgd_index(vaddr) so pgd_k == pgd_dir.
->>
->>>> +        set_pgd(pgd_dir, *pgd_k);
->>>> +
->>>> +        p4d_dir = p4d_offset(pgd_dir, vaddr);
->>>> +        p4d_k  = p4d_offset(pgd_k, vaddr);
->>>> +
->>>> +        vaddr = (vaddr + PUD_SIZE) & PUD_MASK;
->>
->> Why do you increase vaddr *before* populating the first one ? And 
->> pud_addr_end does that properly: it returns the next pud address if it 
->> does not go beyond end address to map.
->>
->>>> +        pud_dir = pud_offset(p4d_dir, vaddr);
->>>> +        pud_k = pud_offset(p4d_k, vaddr);
->>>> +
->>>> +        if (pud_present(*pud_dir)) {
->>>> +            p = early_alloc(PAGE_SIZE, NUMA_NO_NODE);
->>>> +            pud_populate(&init_mm, pud_dir, p);
->>
->> init_mm is not needed here.
->>
->>>> +        }
->>>> +        vaddr += PAGE_SIZE;
->>
->> Why do you need to add PAGE_SIZE ? vaddr already points to the next pud.
->>
->> It seems like this patch tries to populate userspace page table 
->> whereas at this point in the boot process, only swapper_pg_dir is used 
->> or am I missing something ?
->>
->> Thanks,
->>
->> Alex
-> 
-> I implemented this morning a version that fixes all the comments I made 
-> earlier. I was able to insert test_kasan_module on both sv39 and sv48 
-> without any modification: set_pgd "goes through" all the unused page 
-> table levels, whereas p*d_populate are noop for unused levels.
-> 
-> If you have any comment, do not hesitate.
-> 
-> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> index adbf94b7e68a..d643b222167c 100644
-> --- a/arch/riscv/mm/kasan_init.c
-> +++ b/arch/riscv/mm/kasan_init.c
-> @@ -195,6 +195,31 @@ static void __init kasan_populate(void *start, void 
-> *end)
->          memset(start, KASAN_SHADOW_INIT, end - start);
->   }
-> 
-> 
-> +void __init kasan_shallow_populate_pgd(unsigned long vaddr, unsigned 
-> long end)
-> +{
-> +       unsigned long next;
-> +       void *p;
-> +       pgd_t *pgd_k = pgd_offset_k(vaddr);
-> +
-> +       do {
-> +               next = pgd_addr_end(vaddr, end);
-> +               if (pgd_page_vaddr(*pgd_k) == (unsigned 
-> long)lm_alias(kasan_early_shadow_pgd_next)) {
-> +                       p = memblock_alloc(PAGE_SIZE, PAGE_SIZE);
-> +                       set_pgd(pgd_k, pfn_pgd(PFN_DOWN(__pa(p)), 
-> PAGE_TABLE));
-> +               }
-> +       } while (pgd_k++, vaddr = next, vaddr != end);
-> +}
-> +
+fixing ERROR: space required before the open parenthesis '('
 
-This way of going through the page table seems to be largely used across 
-the kernel (cf KASAN population functions of arm64/x86) so I do think 
-this patch brings value to Nylon and Nick's patch.
+Signed-off-by: Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+---
+Changes in v3:
+	- Fixed commit message (removed filename).
+Changes in v2:
+	- Removed filename from commit message.
 
-I can propose a real patch if you agree and I'll add a co-developed by 
-Nylon/Nick since this only 'improves' theirs.
+ drivers/staging/wimax/i2400m/netdev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/drivers/staging/wimax/i2400m/netdev.c b/drivers/staging/wimax/i2400m/netdev.c
+index cd06eaf75e8b..5b53e59084c8 100644
+--- a/drivers/staging/wimax/i2400m/netdev.c
++++ b/drivers/staging/wimax/i2400m/netdev.c
+@@ -523,7 +523,7 @@ void i2400m_net_erx(struct i2400m *i2400m, struct sk_buff *skb,
+ 
+ 	d_fnstart(2, dev, "(i2400m %p skb %p [%u] cs %d)\n",
+ 		  i2400m, skb, skb->len, cs);
+-	switch(cs) {
++	switch (cs) {
+ 	case I2400M_CS_IPV4_0:
+ 	case I2400M_CS_IPV4:
+ 		i2400m_rx_fake_eth_header(i2400m->wimax_dev.net_dev,
+-- 
+2.25.1
 
-Alex
-
-> +void __init kasan_shallow_populate(void *start, void *end)
-> +{
-> +       unsigned long vaddr = (unsigned long)start & PAGE_MASK;
-> +       unsigned long vend = PAGE_ALIGN((unsigned long)end);
-> +
-> +       kasan_shallow_populate_pgd(vaddr, vend);
-> +
-> +       local_flush_tlb_all();
-> +}
-> +
->   void __init kasan_init(void)
->   {
->          phys_addr_t _start, _end;
-> @@ -206,7 +231,15 @@ void __init kasan_init(void)
->           */
->          kasan_populate_early_shadow((void *)KASAN_SHADOW_START,
->                                      (void *)kasan_mem_to_shadow((void *)
-> - VMALLOC_END));
-> + VMEMMAP_END));
-> +       if (IS_ENABLED(CONFIG_KASAN_VMALLOC))
-> +               kasan_shallow_populate(
-> +                       (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
-> +                       (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
-> +       else
-> +               kasan_populate_early_shadow(
-> +                       (void *)kasan_mem_to_shadow((void *)VMALLOC_START),
-> +                       (void *)kasan_mem_to_shadow((void *)VMALLOC_END));
-> 
-> 
->          /* Populate the linear mapping */
->          for_each_mem_range(i, &_start, &_end) {
