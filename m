@@ -2,61 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BFB0320E64
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C55F320E68
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhBUWxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:53:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53826 "EHLO mail.kernel.org"
+        id S231915AbhBUWyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 17:54:35 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:50491 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231864AbhBUWxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 17:53:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 86FE764EBE;
-        Sun, 21 Feb 2021 22:53:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613947980;
-        bh=NhCrjIpfdG6db7TdanoKDZXBwcbOsviXSL5HHQywyjw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GAuzBw151q0neJSKY/gm7cKgEmZAJBS+iMe14GYLOFtgk/aQQGA+d0vn5pd9eL53l
-         5/nKCl1BatvoU6RhEGlrSpFyDmlvRH7jIDlnTnErA9L+eNPwg62i+AwVBqzgTMxxym
-         9CiVBrKnX9UYbkfznMALX8LSqBPZKUNwmeUE3hWZHgSf6XeRDfoR3n3ERte7aapx8/
-         TwPW9YHy5OUuqYj1TWr/ycY9Y6QvEUehR3D9MCOzWI/bgNA709c2Jo0wAgDm4+vVSm
-         o4yGB5rVwGnMAnyq3jxr5j9n6NP1p1NMcIjuYLTDq0C76vcvurlGHC7kQT1yMA2/Xa
-         NN93/6elc6ntA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 81DFD60191;
-        Sun, 21 Feb 2021 22:53:00 +0000 (UTC)
-Subject: Re: [GIT PULL] sound updates for 5.12
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <s5ho8ggz9iy.wl-tiwai@suse.de>
-References: <s5ho8ggz9iy.wl-tiwai@suse.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <s5ho8ggz9iy.wl-tiwai@suse.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc1
-X-PR-Tracked-Commit-Id: c4294d7f057d05053412ebd0d5700228d0f2588d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 10e2ec8edece2566b40f69bae035a555ece71ab4
-Message-Id: <161394798052.6686.8258692861799592347.pr-tracker-bot@kernel.org>
-Date:   Sun, 21 Feb 2021 22:53:00 +0000
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S231779AbhBUWyd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 17:54:33 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkLG02hhJz9sRN;
+        Mon, 22 Feb 2021 09:53:44 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613948030;
+        bh=4/O2JiwVPVpuG+xm9BdGowJkGLilkAkyPpTRjEKIL68=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZJSVEFTjFVlsJNiPZROU0txPaE4rMdsUAY0eIMFcba3cJahR3R+1udt+rCd2hVdgJ
+         FNb1BQuX0dnDTL6Yh7MxdneBjKA/zEmbaMRhXYgJp+g8hYh3O3bhiNDY1x/zPEVcp1
+         t0t3ZmhQctAzSe9BPeKBqd2FwmlYVASuV7X6ZYaKUxpwKUwODQ1O/Tjjv9FoKIbuL4
+         1h+GwugZ9+ff6iHibLvhjqWA3vLW/OEsZOvT21cBMT9/1f1Fmvy8C6tA9YSZd5vbVx
+         KIhfj0VlSfyyP2+KkBNF6sGX1oP7CTmmHyF7fGSpCJr3OzmyEEbEg0Hjcmr83GphD9
+         fn/C1ZZyYIYXg==
+Date:   Mon, 22 Feb 2021 09:53:43 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian@brauner.io>, linux-xfs@vger.kernel.org
+Cc:     "Darrick J. Wong" <djwong@kernel.org>,
+        David Chinner <david@fromorbit.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the pidfd tree with the xfs tree
+Message-ID: <20210222095343.21b5a367@canb.auug.org.au>
+In-Reply-To: <20210215084243.6e22abeb@canb.auug.org.au>
+References: <20210125171414.41ed957a@canb.auug.org.au>
+        <20210127112441.1d07c1d4@canb.auug.org.au>
+        <20210215084243.6e22abeb@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/ENE1_RMIkp8vJ_Pq_Qhb=U8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 19 Feb 2021 10:33:57 +0100:
+--Sig_/ENE1_RMIkp8vJ_Pq_Qhb=U8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-5.12-rc1
+Hi all,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/10e2ec8edece2566b40f69bae035a555ece71ab4
+On Mon, 15 Feb 2021 08:42:43 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Wed, 27 Jan 2021 11:24:41 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >=20
+> > On Mon, 25 Jan 2021 17:14:14 +1100 Stephen Rothwell <sfr@canb.auug.org.=
+au> wrote: =20
+> > >
+> > > Today's linux-next merge of the pidfd tree got a conflict in:
+> > >=20
+> > >   fs/xfs/xfs_inode.c
+> > >=20
+> > > between commit:
+> > >=20
+> > >   01ea173e103e ("xfs: fix up non-directory creation in SGID directori=
+es")
+> > >=20
+> > > from the xfs tree and commit:
+> > >=20
+> > >   f736d93d76d3 ("xfs: support idmapped mounts")
+> > >=20
+> > > from the pidfd tree.
+> > >=20
+> > > I fixed it up (see below) and can carry the fix as necessary. This
+> > > is now fixed as far as linux-next is concerned, but any non trivial
+> > > conflicts should be mentioned to your upstream maintainer when your t=
+ree
+> > > is submitted for merging.  You may also want to consider cooperating
+> > > with the maintainer of the conflicting tree to minimise any particula=
+rly
+> > > complex conflicts.
+> > >=20
+> > > diff --cc fs/xfs/xfs_inode.c
+> > > index e2a1db4cee43,95b7f2ba4e06..000000000000
+> > > --- a/fs/xfs/xfs_inode.c
+> > > +++ b/fs/xfs/xfs_inode.c
+> > > @@@ -809,13 -810,13 +810,13 @@@ xfs_init_new_inode
+> > >   	inode->i_rdev =3D rdev;
+> > >   	ip->i_d.di_projid =3D prid;
+> > >  =20
+> > >  -	if (pip && XFS_INHERIT_GID(pip)) {
+> > >  -		inode->i_gid =3D VFS_I(pip)->i_gid;
+> > >  -		if ((VFS_I(pip)->i_mode & S_ISGID) && S_ISDIR(mode))
+> > >  -			inode->i_mode |=3D S_ISGID;
+> > >  +	if (dir && !(dir->i_mode & S_ISGID) &&
+> > >  +	    (mp->m_flags & XFS_MOUNT_GRPID)) {
+> > >  +		inode->i_uid =3D current_fsuid();   =20
+> >=20
+> > Looking a bit harder, I replaced the above line with
+> > 		inode->i_uid =3D fsuid_into_mnt(mnt_userns);
+> >  =20
+> > >  +		inode->i_gid =3D dir->i_gid;
+> > >  +		inode->i_mode =3D mode;
+> > >   	} else {
+> > > - 		inode_init_owner(inode, dir, mode);
+> > >  -		inode->i_gid =3D fsgid_into_mnt(mnt_userns);
+> > > ++		inode_init_owner(mnt_userns, inode, dir, mode);
+> > >   	}
+> > >  =20
+> > >   	/*   =20
+>=20
+> With the merge window about to open, this is a reminder that this
+> conflict still exists.
 
-Thank you!
+This is now a conflict between the pidfd tree and Linus' tree.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ENE1_RMIkp8vJ_Pq_Qhb=U8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAy5HcACgkQAVBC80lX
+0Gyqpgf+Jj8z5dtQ7dKf2smHeXzpAERxaIjjdhlb6d/6a6gcigP2gYlrur6hpaus
+WeeimUG/TFpnqEuZ0cZ5YBvzattapDhnlh7tVDSmzYONudXXuqXKPphduv8GhsNj
+28rWcJSd2KnsnBNN28uL66hI8ic+mTBBQGDNEM3gnqvcAJwQxo2BUNrB8e5qSsd6
+ciWTuGvLAcrqHEgzDM1kb81cKMVapGSr0DIhzhUT1RaeDA5uKM5d1gCU2JuQMKAk
+OUYxG8X1zLZZAe7n8yMo+aGhrPnYFPQGzj+8j5YshGBWJ13C07Z2pDEzaoUy4l8A
+eq9Anenwc81RiRqWDXs5/Ycv3tQQYw==
+=ykSr
+-----END PGP SIGNATURE-----
+
+--Sig_/ENE1_RMIkp8vJ_Pq_Qhb=U8--
