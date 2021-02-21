@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C05320E2E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:15:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85C5320E2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhBUWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:03:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48978 "EHLO mail.kernel.org"
+        id S231222AbhBUWDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 17:03:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230453AbhBUWDJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 17:03:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id E7BEC64EDB;
-        Sun, 21 Feb 2021 22:01:55 +0000 (UTC)
+        id S230459AbhBUWDL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 17:03:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id AE06364ED7;
+        Sun, 21 Feb 2021 22:01:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613944915;
-        bh=wS727jVtYsL2dmpDZqTrhJFV4YFFRTw4Zm+tqy/eqdQ=;
+        s=k20201202; t=1613944917;
+        bh=mK3C99UKZixS/nnfE5aagPIFw7iVd/1vCpSt8FauGUc=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=pNZTrNfyV33CXxS1ghZ6mJroirjl1c6230Z7hcApOZZEtATJXlrldGV2i2Zqf8m5m
-         hk9kd07/INFYLEa4gq7dyd/n/JRZ5BwsUHuITK/CHY+d+I0QM0F8t16SuFzLVfG2A5
-         Qiq/K3kZ+8/ZcXYUuB7kovpR1wv3kqErLcNz19uSm+aRxEUFdcxyZUZ8rdbtJoH/xX
-         sIfQdzqVfHJbIvM4l/Klvu4gFyNi4FNKexP49hC8Bj2hBinIIEHLIwssTNdKPg+lKN
-         HN2UXRMNeX0WrlXeyeYrJk76pnGp6QqjmTjXNYQHTvgFbCRVRCneTJi+3id22GzfQx
-         NkbQvqsAHiaCw==
+        b=VXG4inXsdwoOIuUytoDO6GsuKxYBT2e20sD4yHWdXpya6idATdol9dAqJ4oLIvn4R
+         arezUGuQ86km5mHbF6sWtmM5jT4EnJdRm4o2OppoFUyt/Fx1ILenikNVEWOVn/xj+R
+         Q351H+xwReoQZEArvwmof2fcBDs6aTcL1+CirYJ+J0DXZqc5rZvj4N/+O2vZvXG3Bp
+         YJSPUkXxvL1AbsMWuZEzX1mgAFLtgK1ZgigLEDgE18nA2ce6aUpADIu5pQ+WI26uE0
+         pyQhzO73bajhD3fLP1+lEfXLMz33trXw9wihp8G7Ruv+bWC4owYc0FVYC2XvIC0ijZ
+         mNKOHPX+DfpeQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E1AF860192;
-        Sun, 21 Feb 2021 22:01:55 +0000 (UTC)
-Subject: Re: [GIT PULL] First batch of KVM changes for Linux 5.12
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AA07C60191;
+        Sun, 21 Feb 2021 22:01:57 +0000 (UTC)
+Subject: Re: [GIT PULL] xen: branch for v5.12-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210214172845.1047934-1-pbonzini@redhat.com>
-References: <20210214172845.1047934-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210214172845.1047934-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 8c6e67bec3192f16fa624203c8131e10cc4814ba
+In-Reply-To: <20210216124015.28923-1-jgross@suse.com>
+References: <20210216124015.28923-1-jgross@suse.com>
+X-PR-Tracked-List-Id: Xen developer discussion <xen-devel.lists.xenproject.org>
+X-PR-Tracked-Message-Id: <20210216124015.28923-1-jgross@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.12-rc1-tag
+X-PR-Tracked-Commit-Id: 871997bc9e423f05c7da7c9178e62dde5df2a7f8
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3e10585335b7967326ca7b4118cada0d2d00a2ab
-Message-Id: <161394491591.8676.9147322641970268083.pr-tracker-bot@kernel.org>
-Date:   Sun, 21 Feb 2021 22:01:55 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
+X-PR-Merge-Commit-Id: 4a037ad5d115b2cc79a5071a7854475f365476fa
+Message-Id: <161394491769.8676.1427666132870005356.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Feb 2021 22:01:57 +0000
+To:     Juergen Gross <jgross@suse.com>
 Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 14 Feb 2021 12:28:45 -0500:
+The pull request you sent on Tue, 16 Feb 2021 13:40:15 +0100:
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-5.12-rc1-tag
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3e10585335b7967326ca7b4118cada0d2d00a2ab
+https://git.kernel.org/torvalds/c/4a037ad5d115b2cc79a5071a7854475f365476fa
 
 Thank you!
 
