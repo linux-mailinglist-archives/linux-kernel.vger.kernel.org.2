@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6AD320E65
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:54:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8534A320E63
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 23:54:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231894AbhBUWxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 17:53:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53804 "EHLO mail.kernel.org"
+        id S231876AbhBUWxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 17:53:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231865AbhBUWxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 17:53:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3A52164DEC;
+        id S231847AbhBUWxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 17:53:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6152164EC3;
         Sun, 21 Feb 2021 22:53:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1613947980;
-        bh=CGADNtHbhBDuUr0477Sp2L8mirxsm6/naw33uCHrX64=;
+        bh=beU37vgyLzR0GWf1iv8QDmH77p2/Dnn6d4xXEQsAdmE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=bp8Dd+lpHY9i2x/o39qQTcvbd5Y4EF5dWMrkqWvJ6zigDCrk+pya8Jml9BFIpJcOo
-         xvcR7pXPvM1Yb9rxWDfAvXlwoZPHCQ/RjNhqp7z20ESk5j93QITTZRL8gxlLVft0n2
-         LTa5emMISgU7EAe5ID7AM8LJ+8p0A4TlTbOWm5Dc+MKnpQLQs0cm1fJDew/7vM4aEF
-         1FSMJgFDReWgbn3arYrdUueDDZGEvPs5YlnyS3MumemEWzrufuZhGYcTG0Chp39aY3
-         nGHrYXsQUf/iPm1O8m/LEwTkbOIvZNOlx/xiOtzAzMqBRHiuQsRcL/SsVLn5rb7HjT
-         No8FQA8d3AA5g==
+        b=VvHCRIDmsGhFHv79Hs28EphZVutuqzEDKT7Pra7jEzqhlkGXcQ2plKQPyEKcFAF5i
+         Vh4DSUg/qVRVjCwTEa0uIAJNlPzYLhIkwSbvz7N55yuLeLJcc87p/aDaHk3CICdtS/
+         D/ElJ5gQLvvkvtBtIiwvPeVM65f6DCOIowxO1TAEhHjjxDVGMz0r4zZAorrINhLx1W
+         ney2GNQn5EnNSiFd0cNCs9FqXN2bTJeTCJ1MK1e/aLHLbX1EUPVsCDBrutbiUacY99
+         wh/M5hdBM3QfGfetMBmYJWTkku0/uZyAIwGjKjh+uXC/zzC40OhBVOLe8CpWVok69Q
+         kuSIHTHiYHYcA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1C9AD60192;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5CE3860192;
         Sun, 21 Feb 2021 22:53:00 +0000 (UTC)
-Subject: Re: [GIT PULL for v5.12-rc1] media updates
+Subject: Re: [git pull] drm for 5.12-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210217154040.46145543@coco.lan>
-References: <20210217154040.46145543@coco.lan>
+In-Reply-To: <CAPM=9txd-x1NKWK9BBqVTDNOR00zNqcXgs76YJrDfL94eMLYqQ@mail.gmail.com>
+References: <CAPM=9txd-x1NKWK9BBqVTDNOR00zNqcXgs76YJrDfL94eMLYqQ@mail.gmail.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210217154040.46145543@coco.lan>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.12-1
-X-PR-Tracked-Commit-Id: 8f202f8e9ff38e29694a4bc0a519b4e03c1726ee
+X-PR-Tracked-Message-Id: <CAPM=9txd-x1NKWK9BBqVTDNOR00zNqcXgs76YJrDfL94eMLYqQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-02-19
+X-PR-Tracked-Commit-Id: f730f39eb981af249d57336b47cfe3925632a7fd
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: de1617578849acab8e16c9ffdce39b91fb50639d
-Message-Id: <161394798005.6686.9170511149935724108.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: d99676af540c2dc829999928fb81c58c80a1dce4
+Message-Id: <161394798037.6686.4750501257597585917.pr-tracker-bot@kernel.org>
 Date:   Sun, 21 Feb 2021 22:53:00 +0000
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Dave Airlie <airlied@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 17 Feb 2021 15:40:40 +0100:
+The pull request you sent on Fri, 19 Feb 2021 16:06:19 +1000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.12-1
+> git://anongit.freedesktop.org/drm/drm tags/drm-next-2021-02-19
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/de1617578849acab8e16c9ffdce39b91fb50639d
+https://git.kernel.org/torvalds/c/d99676af540c2dc829999928fb81c58c80a1dce4
 
 Thank you!
 
