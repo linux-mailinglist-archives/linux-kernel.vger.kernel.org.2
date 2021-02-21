@@ -2,131 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2369320D51
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:56:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CCB320D57
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:00:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhBUTz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230174AbhBUTz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:55:56 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A10C061574;
-        Sun, 21 Feb 2021 11:55:15 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id e17so52120845ljl.8;
-        Sun, 21 Feb 2021 11:55:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HB9B8oIruGylyRqCF6zX0rkKFDgB6LDCYxjHaA5K9kg=;
-        b=AjUzG3hKbmjVWAkWPS5fRT3f2IWdAmqa6b92vEdvYU0Abb9HUCEx5/laaG5PG+cIl9
-         SiQnKDyfzI4Xn9EKLMRPw+ucu8qLfuNdl+UnJkK9AWDNAZHSTYl6/4qusAKxei8dsEK0
-         S3HJAjZGI6GNLbI6O5E2Eu1JSvqB+1+wgj0HoCZL7jL88SUFIWZVN0rdUEOcCOaPIria
-         ZyZMzaSIK7XvDt5bNe/3H20tPbNYNQqAVnpfZMKoqmo7KxrJKELv0ZRNJqNK+B9rxnW2
-         e1wmWCVmCy80vbwHOBWsgY+akgBpzesFmbARAnllNYkQhHaK4ngChJmx++r7EwlmUrKh
-         PdbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HB9B8oIruGylyRqCF6zX0rkKFDgB6LDCYxjHaA5K9kg=;
-        b=MW7eT9MPyZIdWp7NZIqoq7JQsBvbYLtDbm33YTwkqXfMx8CFUDiQRszpnYF+jc2ivU
-         L7ubcdzz0/RrtKX0Gy5J9V7qlU5IDMHnO05PKcQpbLbMm9KCt+l49LyZMaGa3RhKzBpu
-         9wHFQ4emvOnOeNx+acMWMMsbigVn/Jqb9Wa1HNbz990QClKDqB3mYJ3uwXtkfLiNSrU2
-         gNKAtC9JZdMucEGwer8ueGdwVCZd6wHqYNjqbJ72IB5INsp1i/DvupzhXnebW71JAhZE
-         kiHW8uIMfm9Nx5a3fDnctIdCPEgZKLsSbxtdNyepGPYUaKWc9P86LC38PHeB3TL3Bef+
-         Cu3A==
-X-Gm-Message-State: AOAM5327mu2wtH74aft5L9xaLsiyCovS3VYZMM0jJSXbnfFHOTcG7Sfv
-        mn/q+B0SccmEaXrdZmNXPiPvgYKWUinz7w==
-X-Google-Smtp-Source: ABdhPJwnohB4eX4R+mXbyruf/El7kUWwd8tGrLgAGnLKkBBsLQPWM6hn1/Grg/87i64DRvz3RNgrFw==
-X-Received: by 2002:a2e:3101:: with SMTP id x1mr12299521ljx.412.1613937314274;
-        Sun, 21 Feb 2021 11:55:14 -0800 (PST)
-Received: from msi.localdomain (vmpool.ut.mephi.ru. [85.143.112.90])
-        by smtp.gmail.com with ESMTPSA id q6sm1659850lfn.23.2021.02.21.11.55.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 11:55:13 -0800 (PST)
-From:   Nikolay Kyx <knv418@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Nikolay Kyx <knv418@gmail.com>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: media: omap4iss: code style - avoid macro argument precedence issues
-Date:   Sun, 21 Feb 2021 22:53:08 +0300
-Message-Id: <20210221195308.1451-1-knv418@gmail.com>
-X-Mailer: git-send-email 2.30.1
+        id S230413AbhBUT6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 14:58:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43214 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230315AbhBUT6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 14:58:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 852DAAE03;
+        Sun, 21 Feb 2021 19:57:30 +0000 (UTC)
+Received: from localhost (brahms [local])
+        by brahms (OpenSMTPD) with ESMTPA id 24d1b77a;
+        Sun, 21 Feb 2021 19:58:34 +0000 (UTC)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Amir Goldstein <amir73il@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
+        linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Luis Henriques <lhenriques@suse.de>
+Subject: [PATCH v7] vfs: fix copy_file_range regression in cross-fs copies
+Date:   Sun, 21 Feb 2021 19:58:33 +0000
+Message-Id: <20210221195833.23828-1-lhenriques@suse.de>
+In-Reply-To: <CAN-5tyGs9skFZ=ghd8Vz2F35S70QYi+kujdyRYLSkcEi8Jm9gw@mail.gmail.com>
+References: <CAN-5tyGs9skFZ=ghd8Vz2F35S70QYi+kujdyRYLSkcEi8Jm9gw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the following checkpatch.pl check:
+A regression has been reported by Nicolas Boichat, found while using the
+copy_file_range syscall to copy a tracefs file.  Before commit
+5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+kernel would return -EXDEV to userspace when trying to copy a file across
+different filesystems.  After this commit, the syscall doesn't fail anymore
+and instead returns zero (zero bytes copied), as this file's content is
+generated on-the-fly and thus reports a size of zero.
 
-CHECK: Macro argument 'i' may be better as '(i)' to avoid precedence issues
+This patch restores some cross-filesystem copy restrictions that existed
+prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+devices").  Filesystems are still allowed to fall-back to the VFS
+generic_copy_file_range() implementation, but that has now to be done
+explicitly.
 
-in file iss_regs.h
+nfsd is also modified to fall-back into generic_copy_file_range() in case
+vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
 
-Signed-off-by: Nikolay Kyx <knv418@gmail.com>
+Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Luis Henriques <lhenriques@suse.de>
 ---
+Changes since v6
+- restored i_sb checks for the clone operation
+Changes since v5
+- check if ->copy_file_range is NULL before calling it
+Changes since v4
+- nfsd falls-back to generic_copy_file_range() only *if* it gets -EOPNOTSUPP
+  or -EXDEV.
+Changes since v3
+- dropped the COPY_FILE_SPLICE flag
+- kept the f_op's checks early in generic_copy_file_checks, implementing
+  Amir's suggestions
+- modified nfsd to use generic_copy_file_range()
+Changes since v2
+- do all the required checks earlier, in generic_copy_file_checks(),
+  adding new checks for ->remap_file_range
+- new COPY_FILE_SPLICE flag
+- don't remove filesystem's fallback to generic_copy_file_range()
+- updated commit changelog (and subject)
+Changes since v1 (after Amir review)
+- restored do_copy_file_range() helper
+- return -EOPNOTSUPP if fs doesn't implement CFR
+- updated commit description
 
-Additionally some style warnings remain valid here and could be fixed by
-another patch.
+ fs/nfsd/vfs.c   |  8 +++++++-
+ fs/read_write.c | 50 ++++++++++++++++++++++++-------------------------
+ 2 files changed, 32 insertions(+), 26 deletions(-)
 
- drivers/staging/media/omap4iss/iss_regs.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/staging/media/omap4iss/iss_regs.h b/drivers/staging/media/omap4iss/iss_regs.h
-index 09a7375c89ac..cfe0bb075072 100644
---- a/drivers/staging/media/omap4iss/iss_regs.h
-+++ b/drivers/staging/media/omap4iss/iss_regs.h
-@@ -197,7 +197,7 @@
- #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_MASK		(0x1fff << 0)
- #define CSI2_TIMING_STOP_STATE_COUNTER_IO1_SHIFT	0
+diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+index 04937e51de56..23dab0fa9087 100644
+--- a/fs/nfsd/vfs.c
++++ b/fs/nfsd/vfs.c
+@@ -568,6 +568,7 @@ __be32 nfsd4_clone_file_range(struct nfsd_file *nf_src, u64 src_pos,
+ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+ 			     u64 dst_pos, u64 count)
+ {
++	ssize_t ret;
  
--#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * i))
-+#define CSI2_CTX_CTRL1(i)				(0x70 + (0x20 * (i)))
- #define CSI2_CTX_CTRL1_GENERIC				BIT(30)
- #define CSI2_CTX_CTRL1_TRANSCODE			(0xf << 24)
- #define CSI2_CTX_CTRL1_FEC_NUMBER_MASK			(0xff << 16)
-@@ -210,7 +210,7 @@
- #define CSI2_CTX_CTRL1_PING_PONG			BIT(3)
- #define CSI2_CTX_CTRL1_CTX_EN				BIT(0)
+ 	/*
+ 	 * Limit copy to 4MB to prevent indefinitely blocking an nfsd
+@@ -578,7 +579,12 @@ ssize_t nfsd_copy_file_range(struct file *src, u64 src_pos, struct file *dst,
+ 	 * limit like this and pipeline multiple COPY requests.
+ 	 */
+ 	count = min_t(u64, count, 1 << 22);
+-	return vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
++	ret = vfs_copy_file_range(src, src_pos, dst, dst_pos, count, 0);
++
++	if (ret == -EOPNOTSUPP || ret == -EXDEV)
++		ret = generic_copy_file_range(src, src_pos, dst, dst_pos,
++					      count, 0);
++	return ret;
+ }
  
--#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * i))
-+#define CSI2_CTX_CTRL2(i)				(0x74 + (0x20 * (i)))
- #define CSI2_CTX_CTRL2_FRAME_MASK			(0xffff << 16)
- #define CSI2_CTX_CTRL2_FRAME_SHIFT			16
- #define CSI2_CTX_CTRL2_USER_DEF_MAP_SHIFT		13
-@@ -222,19 +222,19 @@
- #define CSI2_CTX_CTRL2_FORMAT_MASK			(0x3ff << 0)
- #define CSI2_CTX_CTRL2_FORMAT_SHIFT			0
+ __be32 nfsd4_vfs_fallocate(struct svc_rqst *rqstp, struct svc_fh *fhp,
+diff --git a/fs/read_write.c b/fs/read_write.c
+index 75f764b43418..463345c0ee30 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -1388,28 +1388,6 @@ ssize_t generic_copy_file_range(struct file *file_in, loff_t pos_in,
+ }
+ EXPORT_SYMBOL(generic_copy_file_range);
  
--#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * i))
-+#define CSI2_CTX_DAT_OFST(i)				(0x78 + (0x20 * (i)))
- #define CSI2_CTX_DAT_OFST_MASK				(0xfff << 5)
+-static ssize_t do_copy_file_range(struct file *file_in, loff_t pos_in,
+-				  struct file *file_out, loff_t pos_out,
+-				  size_t len, unsigned int flags)
+-{
+-	/*
+-	 * Although we now allow filesystems to handle cross sb copy, passing
+-	 * a file of the wrong filesystem type to filesystem driver can result
+-	 * in an attempt to dereference the wrong type of ->private_data, so
+-	 * avoid doing that until we really have a good reason.  NFS defines
+-	 * several different file_system_type structures, but they all end up
+-	 * using the same ->copy_file_range() function pointer.
+-	 */
+-	if (file_out->f_op->copy_file_range &&
+-	    file_out->f_op->copy_file_range == file_in->f_op->copy_file_range)
+-		return file_out->f_op->copy_file_range(file_in, pos_in,
+-						       file_out, pos_out,
+-						       len, flags);
+-
+-	return generic_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+-				       flags);
+-}
+-
+ /*
+  * Performs necessary checks before doing a file copy
+  *
+@@ -1427,6 +1405,25 @@ static int generic_copy_file_checks(struct file *file_in, loff_t pos_in,
+ 	loff_t size_in;
+ 	int ret;
  
--#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * i))
-+#define CSI2_CTX_PING_ADDR(i)				(0x7c + (0x20 * (i)))
- #define CSI2_CTX_PING_ADDR_MASK				0xffffffe0
++	/*
++	 * Although we now allow filesystems to handle cross sb copy, passing
++	 * a file of the wrong filesystem type to filesystem driver can result
++	 * in an attempt to dereference the wrong type of ->private_data, so
++	 * avoid doing that until we really have a good reason.  NFS defines
++	 * several different file_system_type structures, but they all end up
++	 * using the same ->copy_file_range() function pointer.
++	 */
++	if (file_out->f_op->copy_file_range) {
++		if (file_in->f_op->copy_file_range !=
++		    file_out->f_op->copy_file_range)
++			return -EXDEV;
++	} else if (file_in->f_op->remap_file_range) {
++		if (file_inode(file_in)->i_sb != file_inode(file_out)->i_sb)
++			return -EXDEV;
++	} else {
++                return -EOPNOTSUPP;
++	}
++
+ 	ret = generic_file_rw_checks(file_in, file_out);
+ 	if (ret)
+ 		return ret;
+@@ -1511,11 +1508,14 @@ ssize_t vfs_copy_file_range(struct file *file_in, loff_t pos_in,
+ 			ret = cloned;
+ 			goto done;
+ 		}
++		/* Resort to copy_file_range if implemented. */
++		ret = -EOPNOTSUPP;
+ 	}
  
--#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * i))
-+#define CSI2_CTX_PONG_ADDR(i)				(0x80 + (0x20 * (i)))
- #define CSI2_CTX_PONG_ADDR_MASK				CSI2_CTX_PING_ADDR_MASK
- 
--#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * i))
--#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * i))
-+#define CSI2_CTX_IRQENABLE(i)				(0x84 + (0x20 * (i)))
-+#define CSI2_CTX_IRQSTATUS(i)				(0x88 + (0x20 * (i)))
- 
--#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * i))
-+#define CSI2_CTX_CTRL3(i)				(0x8c + (0x20 * (i)))
- #define CSI2_CTX_CTRL3_ALPHA_SHIFT			5
- #define CSI2_CTX_CTRL3_ALPHA_MASK			\
- 		(0x3fff << CSI2_CTX_CTRL3_ALPHA_SHIFT)
--- 
-2.30.1
-
+-	ret = do_copy_file_range(file_in, pos_in, file_out, pos_out, len,
+-				flags);
+-	WARN_ON_ONCE(ret == -EOPNOTSUPP);
++	if (file_out->f_op->copy_file_range)
++		ret = file_out->f_op->copy_file_range(file_in, pos_in,
++						      file_out, pos_out,
++						      len, flags);
+ done:
+ 	if (ret > 0) {
+ 		fsnotify_access(file_in);
