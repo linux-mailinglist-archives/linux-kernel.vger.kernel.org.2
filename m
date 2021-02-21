@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859C5320AAB
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF83F320AAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:52:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229903AbhBUNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 08:49:46 -0500
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:34767 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229663AbhBUNtp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 08:49:45 -0500
-Received: from [192.168.1.176] (dynamic-078-055-128-098.78.55.pool.telefonica.de [78.55.128.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 507A22064792E;
-        Sun, 21 Feb 2021 14:49:03 +0100 (CET)
-Subject: Re: [PATCH] iommu/amd: Fix event counter availability check
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Joerg Roedel <joro@8bytes.org>
-References: <20200529200738.1923-1-amonakov@ispras.ru>
- <56761139-f794-39b1-4dfa-dfc05fbe5f60@amd.com>
- <alpine.LNX.2.20.13.2006011132530.16067@monopod.intra.ispras.ru>
- <dba1e37a-1ed7-ef7f-7252-2ebd1d6bde8c@amd.com>
- <alpine.LNX.2.20.13.2006152346320.21123@monopod.intra.ispras.ru>
- <b01994db-da9b-d8e6-e0c1-1af35dd62191@amd.com>
- <alpine.LNX.2.20.13.2009172052480.29869@monopod.intra.ispras.ru>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <23d42e73-91ac-8f47-af64-40edff8bc027@molgen.mpg.de>
-Date:   Sun, 21 Feb 2021 14:49:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229947AbhBUNwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 08:52:38 -0500
+Received: from mail.baikalelectronics.com ([87.245.175.226]:58328 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhBUNwe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 08:52:34 -0500
+Date:   Sun, 21 Feb 2021 16:51:32 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+CC:     Serge Semin <fancer.lancer@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Jose Abreu <Jose.Abreu@synopsys.com>,
+        Joao Pinto <Joao.Pinto@synopsys.com>,
+        <linux-kernel@vger.kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        <netdev@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Vyacheslav Mitrofanov 
+        <Vyacheslav.Mitrofanov@baikalelectronics.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 01/20] net: phy: realtek: Fix events detection failure in
+ LPI mode
+Message-ID: <20210221135132.5uaogtn7h3gd4inr@mobilestation>
+References: <20210208140341.9271-2-Sergey.Semin@baikalelectronics.ru>
+ <8300d9ca-b877-860f-a975-731d6d3a93a5@gmail.com>
+ <20210209101528.3lf47ouaedfgq74n@mobilestation>
+ <a652c69b-94d3-9dc6-c529-1ebc0ed407ac@gmail.com>
+ <20210209105646.GP1463@shell.armlinux.org.uk>
+ <20210210164720.migzigazyqsuxwc6@mobilestation>
+ <20210211103941.GW1463@shell.armlinux.org.uk>
+ <20210220090248.oiyonlfucvmgzw6d@mobilestation>
+ <4dcecf82-f222-4957-f5fc-e8f9d073599c@gmail.com>
+ <YDEvglPLbUcNp0dR@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.20.13.2009172052480.29869@monopod.intra.ispras.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YDEvglPLbUcNp0dR@lunn.ch>
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Suravee,
-
-
-Am 17.09.20 um 19:55 schrieb Alexander Monakov:
-> On Tue, 16 Jun 2020, Suravee Suthikulpanit wrote:
+On Sat, Feb 20, 2021 at 04:49:22PM +0100, Andrew Lunn wrote:
+> > If in doubt, leaving the patch as is would be fine with me.
 > 
->>>> Instead of blindly moving the code around to a spot that would just work,
->>>> I am trying to understand what might be required here. In this case,
->>>> the init_device_table_dma()should not be needed. I suspect it's the IOMMU
->>>> invalidate all command that's also needed here.
->>>>
->>>> I'm also checking with the HW and BIOS team. Meanwhile, could you please
->>>> give
->>>> the following change a try:
->>> Hello. Can you give any update please?
+> The patch is O.K. as is, no need to export something so simple for a
+> single users. When the next user come along, we can reconsider.
 
-[…]
+Ok. Thanks for clarification. I performed some additional tests to
+make sure the bug was on the PHY side. They proved my original
+conclusion. It's indeed Realtek PHY to blame for the weird behavior. 
+So I've added a few more words into the patch log regarding those
+tests. The patch will be resent tomorrow together with the rest of the
+STMMAC-driver-related bug-fixes detached from the original series of
+the fixes and cleanups (as Andrew asked to do).
 
->> Sorry for late reply. I have a reproducer and working with the HW team to
->> understand the issue.
->> I should be able to provide update with solution by the end of this week.
+-Sergey
+
 > 
-> Hello, hope you are doing well. Has this investigation found anything?
-
-I am wondering the same. It’d be great to have this fixed in the 
-upstream Linux kernel.
-
-
-Kind regards,
-
-Paul
+>        Andrew
