@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5D032080B
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 02:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D5932080D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 02:56:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbhBUByz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Feb 2021 20:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43546 "EHLO
+        id S229930AbhBUB41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Feb 2021 20:56:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229811AbhBUByv (ORCPT
+        with ESMTP id S229819AbhBUB4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Feb 2021 20:54:51 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F0AC061574;
-        Sat, 20 Feb 2021 17:54:11 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id o3so673381oic.8;
-        Sat, 20 Feb 2021 17:54:11 -0800 (PST)
+        Sat, 20 Feb 2021 20:56:16 -0500
+Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CE9C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 17:55:36 -0800 (PST)
+Received: by mail-vk1-xa30.google.com with SMTP id u141so2081783vkb.12
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Feb 2021 17:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2YeG2HTU6ffO0nhsXtBfvb2LSJCOeXJuMNGMXF/3az4=;
-        b=LyqUox4giymneLKtYSf9GSOLBlfSZAqrA47Y54NRxAJDnqQKWi+TEZlKclVIaodEsC
-         +i1OierxMLQDRH4YfySHAz4FCz2dQksO/uEsgk8kq7n/Ot5+63l2rHUWkXTmMIKa51rm
-         3v2f4QIKJScvULohfCGv36QmGsIO9BidKPmXyZDOQgFN9BZiUu1ywDR1J/zZm2ZggRHF
-         pwGW5mjE4+wmV7ZQgy4x6oglMG2MG3Oa+/T5nGRyv6FjuQ231wUPzpxMlx9OkN6GbgcH
-         THFs/low3d0mK+1iWXLkqkKbbHyYYUDZpqBLvHwkLD4bee+R5o5nVGr28gaUeNKl9Ewr
-         apvg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
+        b=VekUdwd8+AAukW9MxzdqP6MNWFl9txlu3LhwYFKscDMsYlPl9V9Xma9Dgizg1P9Ljr
+         vyy5PHN2IdwBQsQywleCWi5fN6DnTDlerDYAMzagw/10xgOrenrggyoCjnsXyemc8aOM
+         DFNF3jsrYcDE9MClrBaHcxmNAsjJpl/Z5oIIj9Gy0Rkrl6fpZ4aNay62jdqdLhj1nBEO
+         Ldx+UJBQs+LIVoENGsgoJtUynz/ZDRsZKPjBGM5d3VR7Jp1Mfw6eonM/wDd8YQtsJgqB
+         69BDPX5Qa8FzPFxXKToPPePzLGt8NB4UOaV2sl+ZAtNLRCJQwzV+NwridqgTWLGcnh9D
+         m/kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2YeG2HTU6ffO0nhsXtBfvb2LSJCOeXJuMNGMXF/3az4=;
-        b=N8oMo/vzEZdHTlMhW6uBp8o20xhLMqc+XEj7iZlw4FawWhxNSDafX+Apk0Rl9QdmTg
-         R5gsJLNW19WakJ2wCQNsWcYzM9T5HNCFgDAfHf2htPcjRGB97kOdBC4E5otCqLjsLi4N
-         YCMnH4UH7hLr0QVQzU1wiXGRH8qiQJr/fWGao50lWJW99X4ApCzU0uc/u4pu7heNBWqS
-         RKLLPxrp1bUioz70OkfomtfNZNIEvpxzsYlMVlv3DLJbkf/5WWw+1DxUNOkDMjUumRJE
-         EUqjWacupionuGLMYqdDt0ZtimKLDksXO7Wgn+Prfp3ocRjgx5ks2LgryuHpAjUoFJHf
-         wkpA==
-X-Gm-Message-State: AOAM531O0rkYhDMR1VhnUKI37emynjtYZJDtrqvqKwmDlKDnpnLc3HRo
-        6hp/A4Z0z+dgnsOanfVEh8nFMT6fp8k=
-X-Google-Smtp-Source: ABdhPJwSZ27T8bbKpU/QWqVD1FJUkG4mOApvpKQtffWBuj4z5BRnc6InlACNoR4nieRmVJaphWgegw==
-X-Received: by 2002:aca:f5d4:: with SMTP id t203mr150123oih.132.1613872450283;
-        Sat, 20 Feb 2021 17:54:10 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([8.48.134.40])
-        by smtp.googlemail.com with ESMTPSA id g6sm2656423ooh.29.2021.02.20.17.54.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Feb 2021 17:54:09 -0800 (PST)
-Subject: Re: [PATCH] arp: Remove the arp_hh_ops structure
-To:     Yejune Deng <yejune.deng@gmail.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210220043203.11754-1-yejune.deng@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <3b69191b-9bd5-9050-9126-17b4905a67e9@gmail.com>
-Date:   Sat, 20 Feb 2021 18:54:08 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
+        b=Kmei//7hV10R5ybFt+i89/ZorAC1KuQrZ0dT/9vvQVPGzmWVW3vQwk7rVIOpIb5idG
+         6V8pxVk2mI0f9G5A17tYdpukl8sAvd6O8ro4do6t0459tVwjOiC/kUezaRzz+9dohTkr
+         iQDRRF6X5KU7YWPX8yiDAMU2Fubt3GcxcxIkpp0AhzzwBYk8CaXWwXWP+kKVTFf9wpxc
+         ZSqNRU4hTI2jO1Pr1DxP+QTcutvMJV2elaTieZ38As5JSqBlUwGPuwy61hbfuCTRh795
+         BDYsAKK8bCh8bbO/T0AQvqVmRw754ArYNfXvCDBvt2sQ+mQlaUFf4tI8W07fR5OVzXo6
+         dtig==
+X-Gm-Message-State: AOAM53119hD5TX1DxTmQy3gyiazhNp1sTtrRlMHpOg8uYpENNohCC9a5
+        Hbr93IH5h9j7BrD3tLegbLlQ5c53FePgCANRG+Q=
+X-Google-Smtp-Source: ABdhPJzISXr1XxrFCIPwMrNJhtnG83O9ehtvfts5k6J6KycJ/KqtVnc4N9lht9Sqw+FY/fpyTzEItLqwv24/NC9l0eE=
+X-Received: by 2002:a1f:8d54:: with SMTP id p81mr11069985vkd.10.1613872535328;
+ Sat, 20 Feb 2021 17:55:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210220043203.11754-1-yejune.deng@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Sender: mrobert1442@gmail.com
+Received: by 2002:a67:ed87:0:0:0:0:0 with HTTP; Sat, 20 Feb 2021 17:55:34
+ -0800 (PST)
+From:   Alexandra Kelly <alexandrakelly779@gmail.com>
+Date:   Sun, 21 Feb 2021 02:55:34 +0100
+X-Google-Sender-Auth: _ghTLriqp7WRFN6dLBAuUEUwHZw
+Message-ID: <CAMWe3GuwuZDJ2Oms_XRh0V78VhVsqnOwr0BJwS_hqNJpxBemog@mail.gmail.com>
+Subject: Urgent Response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/19/21 9:32 PM, Yejune Deng wrote:
->  static const struct neigh_ops arp_direct_ops = {
->  	.family =		AF_INET,
->  	.output =		neigh_direct_output,
-> @@ -277,15 +269,10 @@ static int arp_constructor(struct neighbour *neigh)
->  			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
->  		}
->  
-> -		if (dev->header_ops->cache)
-> -			neigh->ops = &arp_hh_ops;
-> -		else
-> -			neigh->ops = &arp_generic_ops;
+Dear friend,
 
-How did you test this?
+I am contacting you independently of my investigation in
+my bank and no one is informed of this communication. I need your
+urgent assistance in transferring the sum of $5.3 million dollars to
+your private account,that belongs to one of our foreign customers who
+died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
+money has been here in our Bank lying dormant for years now without
+anybody coming for the claim of it.
 
-you took out the neigh->ops assignment, so all of the neigh->ops in
-net/core/neighbour.c are going to cause a NULL dereference.
-
-
-> -
-> -		if (neigh->nud_state & NUD_VALID)
-> -			neigh->output = neigh->ops->connected_output;
-> +		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
-> +			neigh->output = arp_generic_ops.connected_output;
->  		else
-> -			neigh->output = neigh->ops->output;
-> +			neigh->output = arp_generic_ops.output;
->  	}
->  	return 0;
->  }
-> 
-
+I want to release the money to you as the relative to our deceased
+customer , the Banking laws here does not allow such money to stay
+more than 18 years, because the money will be recalled to the Bank
+treasury account as unclaimed fund. I am ready to share with you 40%
+for you and 60% will be kept for me, by indicating your interest i
+will send you the full details on how the business will be executed, i
+will be waiting for your urgent response.
