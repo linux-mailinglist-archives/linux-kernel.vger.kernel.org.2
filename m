@@ -2,133 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB32320D2E
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DABE9320D37
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:40:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhBUTbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbhBUTa6 (ORCPT
+        id S230175AbhBUTkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 14:40:13 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22753 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229956AbhBUTkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:30:58 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E352C061574;
-        Sun, 21 Feb 2021 11:30:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=VSMHLHDB7pBRPWsMCPY4560P/deR5lUq0uveRSDWdaA=; b=c6OzXVJOwVR/jqpy4S0SXjhCTW
-        fqL/ClLdHlKhcuBHDnYMdZoL+s3mGgrXJXWrrTuo9WHKHI4cmmFUZrSnebANRMPeISmEbvrOYqj4w
-        nacRc+x+bPe6kVOWoBGCcIRPfiFPT8Y7QPQf73QkUlBRGVuAgC2n/IyHdcD0/4tr4Db5A3NOW62d9
-        urdKCWiiEAA+B44cRVda9F5cyqKbTpVAb5UBI0rdJOB021apJ7zgtbCw8tM/EdT+cVVuDZG9/NubK
-        /oizGz4tgYoI+dhtZQL7XuTcoTCWT+vqfSw6/LtfclschpiTBeHdDLghnicQvKQqXXLRThbOVVcpU
-        5MDrKYAA==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lDuQp-0005FX-Mn; Sun, 21 Feb 2021 19:30:16 +0000
-Subject: Re: [PATCH v4 22/22] x86/fpu/xstate: Introduce boot-parameters to
- control state component support
-To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
-        x86@kernel.org
-Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
-        ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-References: <20210221185637.19281-1-chang.seok.bae@intel.com>
- <20210221185637.19281-23-chang.seok.bae@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <cb6151cf-8f71-2275-c757-098d163f87ff@infradead.org>
-Date:   Sun, 21 Feb 2021 11:30:09 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 21 Feb 2021 14:40:06 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-212-qxf1crOUMJuZHCnF-243zg-1; Sun, 21 Feb 2021 19:38:26 +0000
+X-MC-Unique: qxf1crOUMJuZHCnF-243zg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 21 Feb 2021 19:38:26 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 21 Feb 2021 19:38:26 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jens Axboe' <axboe@kernel.dk>,
+        'Lennert Buytenhek' <buytenh@wantstofly.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>
+CC:     Matthew Wilcox <willy@infradead.org>
+Subject: RE: [PATCH v3 0/2] io_uring: add support for IORING_OP_GETDENTS
+Thread-Topic: [PATCH v3 0/2] io_uring: add support for IORING_OP_GETDENTS
+Thread-Index: AQHXBfFRAjVxpRid2k+E4G2FbTp65qphUAowgAAQsQCAAaBWMA==
+Date:   Sun, 21 Feb 2021 19:38:26 +0000
+Message-ID: <b2227a95338f4d949442970f990205fa@AcuMS.aculab.com>
+References: <20210218122640.GA334506@wantstofly.org>
+ <247d154f2ba549b88a77daf29ec1791f@AcuMS.aculab.com>
+ <28a71bb1-0aac-c166-ade7-93665811d441@kernel.dk>
+In-Reply-To: <28a71bb1-0aac-c166-ade7-93665811d441@kernel.dk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210221185637.19281-23-chang.seok.bae@intel.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/21/21 10:56 AM, Chang S. Bae wrote:
-> "xstate.disable=0x60000" will disable AMX on a system that has AMX compiled
-> into XFEATURE_MASK_USER_ENABLED.
-> 
-> "xstate.enable=0x60000" will enable AMX on a system that does NOT have AMX
-> compiled into XFEATURE_MASK_USER_ENABLED (assuming the kernel is new enough
-> to support this feature).
-> 
-> Rename XFEATURE_MASK_USER_SUPPORTED to XFEATURE_MASK_USER_ENABLED to be
-> aligned with the new parameters.
-> 
-> While this cmdline is currently enabled only for AMX, it is intended to be
-> easily enabled to be useful for future XSAVE-enabled features.
-> 
-
-Hi,
-Can we tell people (in this Doc file) where to look up the values that can be
-used in xstate.enable and xstate.disable?
-
-thanks.
-
-> Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
-> Reviewed-by: Len Brown <len.brown@intel.com>
-> Cc: x86@kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> ---
-> Changes from v3:
-> * Fixed a few typos. (Randy Dunlap)
-> 
-> Changes from v2:
-> * Changed the kernel tainted when any unknown state is enabled. (Andy
->   Lutomirski)
-> * Simplified the cmdline handling.
-> * Edited the changelog.
-> 
-> Changes from v1:
-> * Renamed the user state mask define (Andy Lutomirski and Dave Hansen)
-> * Changed the error message (Dave Hansen)
-> * Fixed xfeatures_mask_user()
-> * Rebased the upstream kernel (5.10) -- revived the param parse function
-> ---
->  .../admin-guide/kernel-parameters.txt         | 15 +++++
->  arch/x86/include/asm/fpu/types.h              |  6 ++
->  arch/x86/include/asm/fpu/xstate.h             | 24 +++----
->  arch/x86/kernel/fpu/init.c                    | 65 +++++++++++++++++--
->  4 files changed, 93 insertions(+), 17 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index a10b545c2070..ec79f63979a4 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -6014,6 +6014,21 @@
->  			which allow the hypervisor to 'idle' the guest on lock
->  			contention.
->  
-> +	xstate.enable=	[X86-64]
-> +	xstate.disable=	[X86-64]
-> +			The kernel is compiled with a default xstate bitmask --
-> +			enabling it to use the XSAVE hardware to efficiently
-> +			save and restore thread states on context switch.
-> +			xstate.enable allows adding to that default mask at
-> +			boot-time without recompiling the kernel just to support
-> +			the new thread state. (Note that the kernel will ignore
-> +			any bits in the mask that do not correspond to features
-> +			that are actually available in CPUID.)  xstate.disable
-> +			allows clearing bits in the default mask, forcing the
-> +			kernel to forget that it supports the specified thread
-> +			state. When a bit set for both, the kernel takes
-> +			xstate.disable as a priority.
-> +
->  	xirc2ps_cs=	[NET,PCMCIA]
->  			Format:
->  			<irq>,<irq_mask>,<io>,<full_duplex>,<do_sound>,<lockup_hack>[,<irq2>[,<irq3>[,<irq4>]]]
-
-
-
--- 
-~Randy
+RnJvbTogSmVucyBBeGJvZQ0KPiBTZW50OiAyMCBGZWJydWFyeSAyMDIxIDE4OjI5DQo+IA0KPiBP
+biAyLzIwLzIxIDEwOjQ0IEFNLCBEYXZpZCBMYWlnaHQgd3JvdGU6DQo+ID4gRnJvbTogTGVubmVy
+dCBCdXl0ZW5oZWsNCj4gPj4gU2VudDogMTggRmVicnVhcnkgMjAyMSAxMjoyNw0KPiA+Pg0KPiA+
+PiBUaGVzZSBwYXRjaGVzIGFkZCBzdXBwb3J0IGZvciBJT1JJTkdfT1BfR0VUREVOVFMsIHdoaWNo
+IGlzIGEgbmV3IGlvX3VyaW5nDQo+ID4+IG9wY29kZSB0aGF0IG1vcmUgb3IgbGVzcyBkb2VzIGFu
+IGxzZWVrKHNxZS0+ZmQsIHNxZS0+b2ZmLCBTRUVLX1NFVCkNCj4gPj4gZm9sbG93ZWQgYnkgYSBn
+ZXRkZW50czY0KHNxZS0+ZmQsICh2b2lkICopc3FlLT5hZGRyLCBzcWUtPmxlbikuDQo+ID4+DQo+
+ID4+IEEgZHVtYiB0ZXN0IHByb2dyYW0gZm9yIElPUklOR19PUF9HRVRERU5UUyBpcyBhdmFpbGFi
+bGUgaGVyZToNCj4gPj4NCj4gPj4gCWh0dHBzOi8va3JhdXRib3gud2FudHN0b2ZseS5vcmcvfmJ1
+eXRlbmgvdXJpbmdmaW5kLXYyLmMNCj4gPj4NCj4gPj4gVGhpcyB0ZXN0IHByb2dyYW0gZG9lcyBz
+b21ldGhpbmcgYWxvbmcgdGhlIGxpbmVzIG9mIHdoYXQgZmluZCgxKSBkb2VzOg0KPiA+PiBpdCBz
+Y2FucyByZWN1cnNpdmVseSB0aHJvdWdoIGEgZGlyZWN0b3J5IHRyZWUgYW5kIHByaW50cyB0aGUg
+bmFtZXMgb2YNCj4gPj4gYWxsIGRpcmVjdG9yaWVzIGFuZCBmaWxlcyBpdCBlbmNvdW50ZXJzIGFs
+b25nIHRoZSB3YXkgLS0gYnV0IHRoZW4gdXNpbmcNCj4gPj4gaW9fdXJpbmcuICAoVGhlIGlvX3Vy
+aW5nIHZlcnNpb24gcHJpbnRzIHRoZSBuYW1lcyBvZiBlbmNvdW50ZXJlZCBmaWxlcyBhbmQNCj4g
+Pj4gZGlyZWN0b3JpZXMgaW4gYW4gb3JkZXIgdGhhdCdzIGRldGVybWluZWQgYnkgU1FFIGNvbXBs
+ZXRpb24gb3JkZXIsIHdoaWNoDQo+ID4+IGlzIHNvbWV3aGF0IG5vbmRldGVybWluaXN0aWMgYW5k
+IGxpa2VseSB0byBkaWZmZXIgYmV0d2VlbiBydW5zLikNCj4gPj4NCj4gPj4gT24gYSBkaXJlY3Rv
+cnkgdHJlZSB3aXRoIDE0LW9kZCBtaWxsaW9uIGZpbGVzIGluIGl0IHRoYXQncyBvbiBhDQo+ID4+
+IHNpeC1kcml2ZSAoc3Bpbm5pbmcgZGlzaykgYnRyZnMgcmFpZCwgZmluZCgxKSB0YWtlczoNCj4g
+Pj4NCj4gPj4gCSMgZWNobyAzID4gL3Byb2Mvc3lzL3ZtL2Ryb3BfY2FjaGVzDQo+ID4+IAkjIHRp
+bWUgZmluZCAvbW50L3JlcG8gPiAvZGV2L251bGwNCj4gPj4NCj4gPj4gCXJlYWwgICAgMjRtNy44
+MTVzDQo+ID4+IAl1c2VyICAgIDBtMTUuMDE1cw0KPiA+PiAJc3lzICAgICAwbTQ4LjM0MHMNCj4g
+Pj4gCSMNCj4gPj4NCj4gPj4gQW5kIHRoZSBpb191cmluZyB2ZXJzaW9uIHRha2VzOg0KPiA+Pg0K
+PiA+PiAJIyBlY2hvIDMgPiAvcHJvYy9zeXMvdm0vZHJvcF9jYWNoZXMNCj4gPj4gCSMgdGltZSAu
+L3VyaW5nZmluZCAvbW50L3JlcG8gPiAvZGV2L251bGwNCj4gPj4NCj4gPj4gCXJlYWwgICAgMTBt
+MjkuMDY0cw0KPiA+PiAJdXNlciAgICAwbTQuMzQ3cw0KPiA+PiAJc3lzICAgICAwbTEuNjc3cw0K
+PiA+PiAJIw0KPiA+DQo+ID4gV2hpbGUgdGhlcmUgbWF5IGJlIHVzZXMgZm9yIElPUklOR19PUF9H
+RVRERU5UUyBhcmUgeW91IHN1cmUgeW91cg0KPiA+IHRlc3QgaXMgY29tcGFyaW5nIGxpa2Ugd2l0
+aCBsaWtlPw0KPiA+IFRoZSB1bmRlcmx5aW5nIHdvcmsgaGFzIHRvIGJlIGRvbmUgaW4gZWl0aGVy
+IGNhc2UsIHNvIHlvdSBhcmUNCj4gPiBzd2FwcGluZyBzeXN0ZW0gY2FsbHMgZm9yIGNvZGUgY29t
+cGxleGl0eS4NCj4gDQo+IFdoYXQgY29tcGxleGl0eT8NCg0KRXZhbiBhZGRpbmcgY29tbWFuZHMg
+dG8gYSBsaXN0IHRvIGV4ZWN1dGUgbGF0ZXIgaXMgJ2NvbXBsZXhpdHknLg0KQXMgaW4gYWRkaW5n
+IG1vcmUgY3B1IGN5Y2xlcy4NCg0KPiA+IEkgc3VzcGVjdCB0aGF0IGZpbmQgaXMgYWN0dWFsbHkg
+ZG9pbmcgYSBzdGF0KCkgY2FsbCBvbiBldmVyeQ0KPiA+IGRpcmVjdG9yeSBlbnRyeSBhbmQgdGhh
+dCB5b3VyIGlvX3VyaW5nIGV4YW1wbGUgaXMganVzdCBiZWxpZXZpbmcNCj4gPiB0aGUgJ2RpcmVj
+dG9yeScgZmxhZyByZXR1cm5lZCBpbiB0aGUgZGlyZWN0b3J5IGVudHJ5IGZvciBtb3N0DQo+ID4g
+bW9kZXJuIGZpbGVzeXN0ZW1zLg0KPiANCj4gV2hpbGUgdGhhdCBtYXkgYmUgdHJ1ZSAoZmluZCBk
+b2luZyBzdGF0IGFzIHdlbGwpLCB0aGUgcnVudGltZSBpcw0KPiBjbGVhcmx5IGRvbWluYXRlZCBi
+eSBJTy4gQWRkaW5nIGEgc3RhdCBvbiB0b3Agd291bGQgYmUgYW4gZXh0cmENCj4gY29weSwgYnV0
+IG5vIGV4dHJhIElPLg0KDQpJJ2QgZXhwZWN0IHN0YXQoKSB0byByZXF1aXJlIHRoZSBkaXNrIGlu
+b2RlIGJlIHJlYWQgaW50byBtZW1vcnkuDQpnZXRkZW50cygpIG9ubHkgcmVxdWlyZXMgdGhlIGRh
+dGEgb2YgdGhlIGRpcmVjdG9yeSBiZSByZWFkLg0KU28gY2FsbGluZyBzdGF0KCkgcmVxdWlyZXMg
+YSBsb3QgbW9yZSBJTy4NCg0KVGhlIG90aGVyIHRoaW5nIEkganVzdCByZWFsaXNlcyBpcyB0aGF0
+IHRoZSAnc3lzdGVtIHRpbWUnDQpvdXRwdXQgZnJvbSB0aW1lIGlzIGNvbXBsZXRlbHkgbWVhbmlu
+Z2xlc3MgZm9yIHRoZSBpb191cmluZyBjYXNlLg0KQWxsIHRoYXQgcHJvY2Vzc2luZyBpcyBkb25l
+IGJ5IGEga2VybmVsIHRocmVhZCBhbmQgSSBkb3VidA0KaXMgcmUtYXR0cmlidXRlZCB0byB0aGUg
+dXNlciBwcm9jZXNzLg0KDQo+ID4gSWYgeW91IHdyaXRlIGEgcHJvZ3JhbSB0aGF0IGRvZXMgb3Bl
+bmF0KCksIHJlYWRkaXIoKSwgY2xvc2UoKQ0KPiA+IGZvciBlYWNoIGRpcmVjdG9yeSBhbmQgd2l0
+aCBhIGxvbmcgZW5vdWdoIGJ1ZmZlciAobW9zdGx5KSBkbw0KPiA+IG9uZSByZWFkZGlyKCkgcGVy
+IGRpcmVjdG9yeSB5b3UnbGwgZ2V0IGEgbXVjaCBiZXR0ZXIgY29tcGFyaXNvbi4NCj4gPg0KPiA+
+IFlvdSBjb3VsZCBldmVuIHdyaXRlIGEgcHJvZ3JhbSB3aXRoIDIgdGhyZWFkcywgb25lIGRvZXMg
+YWxsIHRoZQ0KPiA+IG9wZW4vcmVhZGRpci9jbG9zZSBzeXN0ZW0gY2FsbHMgYW5kIHRoZSBvdGhl
+ciBkb2VzIHRoZSBwcmludGluZw0KPiA+IGFuZCBnZW5lcmF0aW5nIHRoZSBsaXN0IG9mIGRpcmVj
+dG9yaWVzIHRvIHByb2Nlc3MuDQo+ID4gVGhhdCBzaG91bGQgZ2V0IHRoZSBlcXVpdmFsZW50IG92
+ZXJsYXBwaW5nIHRoYXQgaW9fdXJpbmcgZ2l2ZXMNCj4gPiB3aXRob3V0IG11Y2ggb2YgdGhlIGNv
+bXBsZXhpdHkuDQo+IA0KPiBCdXQgdGhpcyBpcyB3aGF0IHRha2UgdGhlIG1vc3Qgb2ZmZW5zZSB0
+byAtIGl0J3MgX3RyaXZpYWxfIHRvDQo+IHdyaXRlIHRoYXQgcHJvZ3JhbSB3aXRoIGlvX3VyaW5n
+LCBlc3BlY2lhbGx5IGNvbXBhcmVkIHRvIG1hbmFnaW5nDQo+IHRocmVhZHMuIFRocmVhZHMgYXJl
+IGNlcnRhaW5seSBhIG1vcmUga25vd24gcGFyYWRpZ20gYXQgdGhpcyBwb2ludCwNCj4gYnV0IGFu
+IGlvX3VyaW5nIHN1Ym1pdCArIHJlYXAgbG9vcCBpcyBkZWZpbml0ZWx5IG5vdCAibXVjaCBvZiB0
+aGUNCj4gY29tcGxleGl0eSIuIElmIHlvdSdyZSByZWZlcnJpbmcgdG8gdGhlIGtlcm5lbCBjaGFu
+Z2UgaXRzZWxmLCB0aGF0J3MNCj4gdHJpdmlhbCwgYXMgdGhlIGRpZmZzdGF0IHNob3dzLg0KDQpJ
+J3ZlIGxvb2tlZCBhdCB0aGUga2VybmVsIGNvZGUgaW4gaW9fdXJpbmcuYy4NCk1ha2VzIG1lIHB1
+bGwgbXkgaGFpciBvdXQgKHdoYXQncyBsZWZ0IG9mIGl0IC0gbW9zdGx5IGJlYXJkKS4NCkFwYXJ0
+IGZyb20gc2F2aW5nIHN5c3RlbSBjYWxsIGNvc3RzIEkgZG9uJ3QgYWN0dWFsbHkgdW5kZXJzdGFu
+ZCB3aHkNCml0IGlzbid0IGEgdXNlcnNwYWNlIGxpYnJhcnk/DQoNCkFueXdheSwgSSB0aG91Z2h0
+IHRoZSBwb2ludCBvZiBpb191cmluZyB3YXMgdG8gYXR0ZW1wdCB0byBpbXBsZW1lbnQNCmFzeW5j
+aHJvbm91cyBJTyBvbiBhIHVuaXggc3lzdGVtLg0KSWYgeW91IHdhbnQgYXN5bmMgSU8geW91IG5l
+ZWQgdG8gZ28gYmFjayB0byB0aGUgbWlkIDE5NzBzIGFuZCBwaWNrDQp0aGUgYW5jZXN0b3JzIG9m
+IFJTTS8xMU0gcmF0aGVyIHRoYW4gdGhvc2Ugb2YgSyZSJ3MgdW5peC4NClRoYXQgbGVhZHMgeW91
+IHRvIFVsdHJpeCBhbmQgdGhlbiBXaW5kb3dzIE5ULg0KDQpBbmQgeWVzLCBJIGhhdmUgd3JpdHRl
+biBjb2RlIHRoYXQgZGlkIGFzeW5jIElPIHVuZGVyIFJTTS8xMU0uDQoNCglEYXZpZA0KDQotDQpS
+ZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWls
+dG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMp
+DQo=
 
