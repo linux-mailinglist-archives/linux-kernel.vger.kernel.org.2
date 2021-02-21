@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B287320A5C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CDE320A64
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 14:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhBUNDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 08:03:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229588AbhBUNDT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 08:03:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F028F64F06;
-        Sun, 21 Feb 2021 13:02:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613912559;
-        bh=PqaCurbTk7C7PNgYa86YlnmbN9I/E96rikO0Wib/WY8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PyHB26EkP3rIRXTKptOk+uxlSFsP4XnNBH5dIXSFe+OtHZOVU0BYB95jIr+iJLr2Q
-         lbuhKWuniwfBkzXZRLWE/IuirpoC+PCtPcq1xKoJDadGA1zYX3uHuWrxV0xL8OgHXp
-         r9DCrXuDSXTSQnge75VH/nyNCXG6bW979+EhZkPU=
-Date:   Sun, 21 Feb 2021 14:02:36 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Lee Gibson <leegib@gmail.com>
-Cc:     mchehab+huawei@kernel.org, devel@driverdev.osuosl.org,
+        id S229968AbhBUNEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 08:04:52 -0500
+Received: from conuserg-10.nifty.com ([210.131.2.77]:58317 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229944AbhBUNEh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 08:04:37 -0500
+Received: from grover.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 11LD3L9j011207;
+        Sun, 21 Feb 2021 22:03:21 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 11LD3L9j011207
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613912601;
+        bh=93cOihUj2rUnNcCpcoiAb0mZrnzHAhGNcUPEKrb6928=;
+        h=From:To:Cc:Subject:Date:From;
+        b=zvvB0dlTGF442fguOjj5H4/o2QHxpn/fhn5/1xlfk2KhaeBRPslNxnUsnZ3qGuByO
+         /kqd6aoTMsxa++1VlbuVJHdnigyikJs4kh8LT/OApPKosnoZrosL1zL01ExLXms2l3
+         6ht42CE50IUdBRMPO1jf/l+Gf9HrMbydijpflxAaxKTVqLx+WXddSz39E2eBopg64K
+         9AgR6gcgkHKvBoV/zH/5FTuiDPs/GTF+Q7SmqccFzxvw/fXtvsMfS/yeaii6XJukiE
+         T/cVAsvneTi3c6wHc1aUa3CUa5MdTW8UVXXVFZQATpHxpgv99OoJVM3WHl5elt8F6n
+         SxuU4HjK1T4dw==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: hikey9xx: Fix space tab style warnings
-Message-ID: <YDJZ7GTF/8tmJg4x@kroah.com>
-References: <20210219143851.83672-1-leegib@gmail.com>
+Subject: [PATCH 1/3] kconfig: fix 'invalid option' for help option
+Date:   Sun, 21 Feb 2021 22:03:16 +0900
+Message-Id: <20210221130318.160327-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219143851.83672-1-leegib@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 02:38:51PM +0000, Lee Gibson wrote:
-> This patch fixes the checkpatch warnings such as:
-> 
-> hi6421-spmi-pmic.c:51: WARNING: please, no space before tabs
-> 
-> Signed-off-by: Lee Gibson <leegib@gmail.com>
-> ---
->  drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> index 4ebcfea9f3bf..626140cb96f2 100644
-> --- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> +++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-> @@ -48,9 +48,9 @@ enum hi6421_spmi_pmic_irq_list {
->  /*
->   * The IRQs are mapped as:
->   *
-> - * 	======================  =============   ============	=====
-> - *	IRQ			MASK REGISTER 	IRQ REGISTER	BIT
-> - * 	======================  =============   ============	=====
-> + *	======================  =============   ============	=====
-> + *	IRQ			MASK REGISTER	IRQ REGISTER	BIT
-> + *	======================  =============   ============	=====
->   *	OTMP			0x0202		0x212		bit 0
->   *	VBUS_CONNECT		0x0202		0x212		bit 1
->   *	VBUS_DISCONNECT		0x0202		0x212		bit 2
-> @@ -66,7 +66,7 @@ enum hi6421_spmi_pmic_irq_list {
->   *	SIM0_HPD_F		0x0203		0x213		bit 3
->   *	SIM1_HPD_R		0x0203		0x213		bit 4
->   *	SIM1_HPD_F		0x0203		0x213		bit 5
-> - * 	======================  =============   ============	=====
-> + *	======================  =============   ============	=====
->   */
->  #define SOC_PMIC_IRQ_MASK_0_ADDR	0x0202
->  #define SOC_PMIC_IRQ0_ADDR		0x0212
-> -- 
-> 2.25.1
+scripts/kconfig/conf supports -? option to show the help message.
+This is not wired up to Makefile, so nobody would notice this, but
+it also shows 'invalid option' message.
 
-This patch doesn't apply to my staging-testing branch of staging.git
-right now, did someone else already make this change recently?
+  $ ./scripts/kconfig/conf -?
+  ./scripts/kconfig/conf: invalid option -- '?'
+  Usage: ./scripts/kconfig/conf [-s] [option] <kconfig-file>
+  [option] is _one_ of the following:
+    --listnewconfig         List new options
+    --helpnewconfig         List new options and help text
+    --oldaskconfig          Start a new configuration using a line-oriented program
+    ...
 
-thanks,
+The reason is the '?' is missing in the short option list passed to
+getopt_long().
 
-greg k-h
+While I fixed this issue, I also changed the option '?' to 'h'.
+I prefer -h (or --help, if a long option is also desired).
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/kconfig/conf.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
+index 3a98c9e0a7c8..37e17934b67a 100644
+--- a/scripts/kconfig/conf.c
++++ b/scripts/kconfig/conf.c
+@@ -494,7 +494,7 @@ int main(int ac, char **av)
+ 
+ 	tty_stdio = isatty(0) && isatty(1);
+ 
+-	while ((opt = getopt_long(ac, av, "s", long_opts, NULL)) != -1) {
++	while ((opt = getopt_long(ac, av, "hs", long_opts, NULL)) != -1) {
+ 		if (opt == 's') {
+ 			conf_set_message_callback(NULL);
+ 			continue;
+@@ -550,7 +550,7 @@ int main(int ac, char **av)
+ 		case yes2modconfig:
+ 		case mod2yesconfig:
+ 			break;
+-		case '?':
++		case 'h':
+ 			conf_usage(progname);
+ 			exit(1);
+ 			break;
+-- 
+2.27.0
+
