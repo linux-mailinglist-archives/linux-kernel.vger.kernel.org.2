@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 645A9320CFB
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E08320CFD
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 20:06:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhBUTFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 14:05:20 -0500
-Received: from mga05.intel.com ([192.55.52.43]:37166 "EHLO mga05.intel.com"
+        id S230334AbhBUTGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 14:06:00 -0500
+Received: from mga05.intel.com ([192.55.52.43]:37169 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230367AbhBUTCZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 14:02:25 -0500
-IronPort-SDR: 59xFBacYzbb9wdU7IS87r6C8h6Cj3NQLkr6UMX0QPcDiP0DywybOrsT+DtFGsHZ1x8ilvyPe1y
- TzHWhr9LmkmA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269192147"
+        id S230375AbhBUTC0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 14:02:26 -0500
+IronPort-SDR: /uWxx57gK4hhkSIDGVus7BEZqIp64hfjUpfrBGjmxu3GuHRmmta+AfK5OtEyuB8HwXeLdqYBIu
+ GjkIZTmIPKrg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="269192150"
 X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="269192147"
+   d="scan'208";a="269192150"
 Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 11:01:28 -0800
-IronPort-SDR: riq+h46S09FTbJHO5p9lO8+QrLt8W77mBhOmjYEuMC7CknxpTiKXsngWDVR6DIPq4DutOMlcc5
- glep/+dFJAXg==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 11:01:29 -0800
+IronPort-SDR: GjK+4Kg+KRif4gCT2fI6x797ysZkONvCOlAoiR2wwenNe3MVXYBZmYDSE1cQbRKs4eMBCfTdgH
+ a6GsWiPAEiew==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
-   d="scan'208";a="429792111"
+   d="scan'208";a="429792115"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by FMSMGA003.fm.intel.com with ESMTP; 21 Feb 2021 11:01:27 -0800
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -30,10 +30,10 @@ To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
         x86@kernel.org
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, kvm@vger.kernel.org
-Subject: [PATCH v4 11/22] x86/fpu/xstate: Update the xstate save function to support dynamic states
-Date:   Sun, 21 Feb 2021 10:56:26 -0800
-Message-Id: <20210221185637.19281-12-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com
+Subject: [PATCH v4 12/22] x86/fpu/xstate: Update the xstate buffer address finder to support dynamic states
+Date:   Sun, 21 Feb 2021 10:56:27 -0800
+Message-Id: <20210221185637.19281-13-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210221185637.19281-1-chang.seok.bae@intel.com>
 References: <20210221185637.19281-1-chang.seok.bae@intel.com>
@@ -41,81 +41,139 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend copy_xregs_to_kernel() to receive a mask argument of which states to
-save, in preparation for dynamic user state handling.
+__raw_xsave_addr() returns the requested component's pointer in an xstate
+buffer, by simply looking up the offset table. The offset used to be fixed,
+but, with dynamic user states, it becomes variable.
 
-Update KVM to set a valid fpu->state_mask, so it can continue to share with
-the core code.
+get_xstate_size() has a routine to find an offset at runtime. Refactor to
+use it for the address finder.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: kvm@vger.kernel.org
 ---
 Changes from v3:
-* Updated the changelog. (Borislav Petkov)
-* Made the code change more reviewable.
-
-Changes from v2:
-* Updated the changelog to clarify the KVM code changes.
+* Added the function description in the kernel-doc style. (Borislav Petkov)
+* Removed 'no functional change' in the changelog. (Borislav Petkov)
 ---
- arch/x86/include/asm/fpu/internal.h | 3 +--
- arch/x86/kernel/fpu/core.c          | 2 +-
- arch/x86/kvm/x86.c                  | 9 +++++++--
- 3 files changed, 9 insertions(+), 5 deletions(-)
+ arch/x86/kernel/fpu/xstate.c | 80 ++++++++++++++++++++++--------------
+ 1 file changed, 50 insertions(+), 30 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
-index e4afc1831e29..f964f3efc92e 100644
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -317,9 +317,8 @@ static inline void copy_kernel_to_xregs_booting(struct xregs_state *xstate)
- /*
-  * Save processor xstate to xsave area.
-  */
--static inline void copy_xregs_to_kernel(struct xregs_state *xstate)
-+static inline void copy_xregs_to_kernel(struct xregs_state *xstate, u64 mask)
- {
--	u64 mask = xfeatures_mask_all;
- 	u32 lmask = mask;
- 	u32 hmask = mask >> 32;
- 	int err;
-diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index dc20eabb072d..ad1ac80f98ef 100644
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -98,7 +98,7 @@ EXPORT_SYMBOL(irq_fpu_usable);
- int copy_fpregs_to_fpstate(struct fpu *fpu)
- {
- 	if (likely(use_xsave())) {
--		copy_xregs_to_kernel(&fpu->state->xsave);
-+		copy_xregs_to_kernel(&fpu->state->xsave, fpu->state_mask);
- 
- 		/*
- 		 * AVX512 state is tracked here because its use is
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index c10122547ecd..ca2c0574acf2 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9275,11 +9275,16 @@ static void kvm_save_current_fpu(struct fpu *fpu)
- 	 * KVM does not support dynamic user states yet. Assume the buffer
- 	 * always has the minimum size.
- 	 */
--	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-+	if (test_thread_flag(TIF_NEED_FPU_LOAD)) {
- 		memcpy(fpu->state, current->thread.fpu.state,
- 		       get_xstate_config(XSTATE_MIN_SIZE));
--	else
-+	} else {
-+		struct fpu *src_fpu = &current->thread.fpu;
-+
-+		if (fpu->state_mask != src_fpu->state_mask)
-+			fpu->state_mask = src_fpu->state_mask;
- 		copy_fpregs_to_fpstate(fpu);
-+	}
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index daf76108aa5f..84b55f51bdb7 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -175,6 +175,40 @@ static bool xfeature_is_supervisor(int xfeature_nr)
+ 	return ecx & 1;
  }
  
- /* Swap (qemu) user FPU context for the guest FPU context. */
++/**
++ * get_xstate_comp_offset() - Find the feature's offset in the compacted format
++ * @mask:	This bitmap tells which components reserved in the format.
++ * @feature_nr:	The feature number
++ *
++ * Returns:	The offset value
++ */
++static unsigned int get_xstate_comp_offset(u64 mask, int feature_nr)
++{
++	u64 xmask = BIT_ULL(feature_nr + 1) - 1;
++	unsigned int next_offset, offset = 0;
++	int i;
++
++	if ((mask & xmask) == (xfeatures_mask_all & xmask))
++		return xstate_comp_offsets[feature_nr];
++
++	/*
++	 * With the given mask, no relevant size is found. Calculate it by summing
++	 * up each state size.
++	 */
++
++	next_offset = FXSAVE_SIZE + XSAVE_HDR_SIZE;
++
++	for (i = FIRST_EXTENDED_XFEATURE; i <= feature_nr; i++) {
++		if (!(mask & BIT_ULL(i)))
++			continue;
++
++		offset = xstate_aligns[i] ? ALIGN(next_offset, 64) : next_offset;
++		next_offset += xstate_sizes[i];
++	}
++
++	return offset;
++}
++
+ /**
+  * get_xstate_size() - calculate an xstate buffer size
+  * @mask:	This bitmap tells which components reserved in the buffer.
+@@ -186,9 +220,8 @@ static bool xfeature_is_supervisor(int xfeature_nr)
+  */
+ unsigned int get_xstate_size(u64 mask)
+ {
+-	unsigned int size;
+-	u64 xmask;
+-	int i, nr;
++	unsigned int offset;
++	int nr;
+ 
+ 	if (!mask)
+ 		return 0;
+@@ -207,24 +240,8 @@ unsigned int get_xstate_size(u64 mask)
+ 	if (!using_compacted_format())
+ 		return xstate_offsets[nr] + xstate_sizes[nr];
+ 
+-	xmask = BIT_ULL(nr + 1) - 1;
+-
+-	if (mask == (xmask & xfeatures_mask_all))
+-		return xstate_comp_offsets[nr] + xstate_sizes[nr];
+-
+-	/*
+-	 * With the given mask, no relevant size is found so far. So, calculate
+-	 * it by summing up each state size.
+-	 */
+-	for (size = FXSAVE_SIZE + XSAVE_HDR_SIZE, i = FIRST_EXTENDED_XFEATURE; i <= nr; i++) {
+-		if (!(mask & BIT_ULL(i)))
+-			continue;
+-
+-		if (xstate_aligns[i])
+-			size = ALIGN(size, 64);
+-		size += xstate_sizes[i];
+-	}
+-	return size;
++	offset = get_xstate_comp_offset(mask, nr);
++	return offset + xstate_sizes[nr];
+ }
+ 
+ /*
+@@ -1042,17 +1059,20 @@ static void *__raw_xsave_addr(struct fpu *fpu, int xfeature_nr)
+ {
+ 	void *xsave;
+ 
+-	if (!xfeature_enabled(xfeature_nr)) {
+-		WARN_ON_FPU(1);
+-		return NULL;
+-	}
+-
+-	if (fpu)
+-		xsave = &fpu->state->xsave;
+-	else
++	if (!xfeature_enabled(xfeature_nr))
++		goto not_found;
++	else if (!fpu)
+ 		xsave = &init_fpstate.xsave;
++	else if (!(fpu->state_mask & BIT_ULL(xfeature_nr)))
++		goto not_found;
++	else
++		xsave = &fpu->state->xsave;
++
++	return xsave + get_xstate_comp_offset(fpu->state_mask, xfeature_nr);
+ 
+-	return xsave + xstate_comp_offsets[xfeature_nr];
++not_found:
++	WARN_ON_FPU(1);
++	return NULL;
+ }
+ /*
+  * Given the xsave area and a state inside, this function returns the
 -- 
 2.17.1
 
