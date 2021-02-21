@@ -2,63 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F3D320BD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 17:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E66320BDB
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 17:54:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhBUQxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 11:53:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229685AbhBUQxX (ORCPT
+        id S230092AbhBUQyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 11:54:14 -0500
+Received: from conuserg-12.nifty.com ([210.131.2.79]:28568 "EHLO
+        conuserg-12.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229685AbhBUQyN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 11:53:23 -0500
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C51C061574;
-        Sun, 21 Feb 2021 08:52:42 -0800 (PST)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lDryD-00Gicm-Qx; Sun, 21 Feb 2021 16:52:33 +0000
-Date:   Sun, 21 Feb 2021 16:52:33 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Luo Longjun <luolongjun@huawei.com>
-Cc:     jlayton@kernel.org, bfields@fieldses.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sangyan@huawei.com, luchunhua@huawei.com
-Subject: Re: [PATCH] fs/locks: print full locks information
-Message-ID: <YDKP0XdT1TVOaGnj@zeniv-ca.linux.org.uk>
-References: <20210220063250.742164-1-luolongjun@huawei.com>
+        Sun, 21 Feb 2021 11:54:13 -0500
+Received: from oscar.flets-west.jp (softbank126026090165.bbtec.net [126.26.90.165]) (authenticated)
+        by conuserg-12.nifty.com with ESMTP id 11LGr9VU017012;
+        Mon, 22 Feb 2021 01:53:09 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-12.nifty.com 11LGr9VU017012
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1613926389;
+        bh=/d3wrpyKPu6mGWtrIlHH+84+f3/4luUBVGglFDf/H8U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hX7zfXnMYg5K0c838CdDCFVrBgyZ/K5TBdjCyZS4bFoPsINwIoSkLwNba8EDAR5ln
+         HDvjt0Ulhg+VPD6rWrq3SmFv7pTA4Z57ne0b1B/yqhJbS7ySSALStGf5gNz/MF0RtT
+         zZMtKx+YERbVP9hsl58fIx+IYwVNuphc1jX2qXQADx/DAagakCGVd09YozLl82eO/f
+         171Y5lRHsSFSIQxO1ZWiRMKGycV65vfYwite+F9lv/nxp06NELMFJjOxrQB01M/FHL
+         XWvEin1gX/wUkGNgnFhcUdWd6nVjM/Rjm2JL1Ahcg+w1+usNdW6kcsroSJuZtiDxUV
+         5RLOFtV+6QIjg==
+X-Nifty-SrcIP: [126.26.90.165]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Subject: [PATCH] kbuild: parse C= and M= before changing the working directory
+Date:   Mon, 22 Feb 2021 01:53:06 +0900
+Message-Id: <20210221165306.294172-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210220063250.742164-1-luolongjun@huawei.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 01:32:50AM -0500, Luo Longjun wrote:
->  
-> @@ -2844,7 +2845,13 @@ static void lock_get_status(struct seq_file *f, struct file_lock *fl,
->  	if (fl->fl_file != NULL)
->  		inode = locks_inode(fl->fl_file);
->  
-> -	seq_printf(f, "%lld:%s ", id, pfx);
-> +	seq_printf(f, "%lld: ", id);
-> +	for (i = 1; i < repeat; i++)
-> +		seq_puts(f, " ");
-> +
-> +	if (repeat)
-> +		seq_printf(f, "%s", pfx);
+If Kbuild recurses to the top Makefile (for example, 'make deb-pkg'),
+C= and M= are parsed over again, needlessly.
 
-RTFCStandard(printf, %*s), please
+Parse them before changing the working directory. After that,
+sub_make_done is set to 1, so they are parsed just once.
 
-> +static int __locks_show(struct seq_file *f, struct file_lock *fl, int level)
-> +{
-> +	struct locks_iterator *iter = f->private;
-> +	struct file_lock *bfl;
-> +
-> +	lock_get_status(f, fl, iter->li_pos, "-> ", level);
-> +
-> +	list_for_each_entry(bfl, &fl->fl_blocked_requests, fl_blocked_member)
-> +		__locks_show(f, bfl, level + 1);
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-Er...  What's the maximal depth, again?  Kernel stack is very much finite...
+ Makefile | 61 ++++++++++++++++++++++++++++----------------------------
+ 1 file changed, 31 insertions(+), 30 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index b127881e6bf0..874536f5fc1a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -100,6 +100,36 @@ endif
+ 
+ export quiet Q KBUILD_VERBOSE
+ 
++# Call a source code checker (by default, "sparse") as part of the
++# C compilation.
++#
++# Use 'make C=1' to enable checking of only re-compiled files.
++# Use 'make C=2' to enable checking of *all* source files, regardless
++# of whether they are re-compiled or not.
++#
++# See the file "Documentation/dev-tools/sparse.rst" for more details,
++# including where to get the "sparse" utility.
++
++ifeq ("$(origin C)", "command line")
++  KBUILD_CHECKSRC = $(C)
++endif
++ifndef KBUILD_CHECKSRC
++  KBUILD_CHECKSRC = 0
++endif
++
++export KBUILD_CHECKSRC
++
++# Use make M=dir or set the environment variable KBUILD_EXTMOD to specify the
++# directory of external module to build. Setting M= takes precedence.
++ifeq ("$(origin M)", "command line")
++  KBUILD_EXTMOD := $(M)
++endif
++
++$(if $(word 2, $(KBUILD_EXTMOD)), \
++	$(error building multiple external modules is not supported))
++
++export KBUILD_EXTMOD
++
+ # Kbuild will save output files in the current working directory.
+ # This does not need to match to the root of the kernel source tree.
+ #
+@@ -194,36 +224,6 @@ ifeq ($(need-sub-make),)
+ # so that IDEs/editors are able to understand relative filenames.
+ MAKEFLAGS += --no-print-directory
+ 
+-# Call a source code checker (by default, "sparse") as part of the
+-# C compilation.
+-#
+-# Use 'make C=1' to enable checking of only re-compiled files.
+-# Use 'make C=2' to enable checking of *all* source files, regardless
+-# of whether they are re-compiled or not.
+-#
+-# See the file "Documentation/dev-tools/sparse.rst" for more details,
+-# including where to get the "sparse" utility.
+-
+-ifeq ("$(origin C)", "command line")
+-  KBUILD_CHECKSRC = $(C)
+-endif
+-ifndef KBUILD_CHECKSRC
+-  KBUILD_CHECKSRC = 0
+-endif
+-
+-# Use make M=dir or set the environment variable KBUILD_EXTMOD to specify the
+-# directory of external module to build. Setting M= takes precedence.
+-ifeq ("$(origin M)", "command line")
+-  KBUILD_EXTMOD := $(M)
+-endif
+-
+-$(if $(word 2, $(KBUILD_EXTMOD)), \
+-	$(error building multiple external modules is not supported))
+-
+-export KBUILD_CHECKSRC KBUILD_EXTMOD
+-
+-extmod-prefix = $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
+-
+ ifeq ($(abs_srctree),$(abs_objtree))
+         # building in the source tree
+         srctree := .
+@@ -1092,6 +1092,7 @@ endif # CONFIG_BPF
+ 
+ PHONY += prepare0
+ 
++extmod-prefix = $(if $(KBUILD_EXTMOD),$(KBUILD_EXTMOD)/)
+ export MODORDER := $(extmod-prefix)modules.order
+ export MODULES_NSDEPS := $(extmod-prefix)modules.nsdeps
+ 
+-- 
+2.27.0
+
