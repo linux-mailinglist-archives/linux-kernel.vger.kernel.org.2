@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A09C320DC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 21:57:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE120320DC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 22:02:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231452AbhBUU4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 15:56:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbhBUU4H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 15:56:07 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE9CC061574;
-        Sun, 21 Feb 2021 12:55:27 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id x19so11028225ybe.0;
-        Sun, 21 Feb 2021 12:55:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fyF0LjaB9P2i7Lp6wc61I/btQ3dRrAgoAWpQ7eEEOi0=;
-        b=AMXMDZhadbJBdedrcFda8hxcGPQzCNjWeeyaIpIinWvB2IzEf/0Gp2JDmIIghiSrya
-         oE9Ehvr0PTAMObjbBMRfWwIOdy0SWWdrS0lklcB+WL17LMsGLNUlu9a4Ti9qQb3s9nLI
-         bIQcrprd+csVYjSsDkPVFX+Zmbn+9LKnSg9e3pVY5aWMLtnOOVuOSmCULPCXa49BDtx6
-         s+fx13KdVF7vhrBQPoIXzKABKUxxHkSlB2ZvO9kHGtZ6zNSS602eSBCqwofh1duZYwAo
-         l/394c8ejzOHBIw9RXIxCXrr7gXWNMJ7v+oEcNJ7GBFZ4DzPpIpNVtttZsO1scbysudw
-         SZUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fyF0LjaB9P2i7Lp6wc61I/btQ3dRrAgoAWpQ7eEEOi0=;
-        b=oLcCw4TgBBON+ROvjimfQDpXL6VT66uJXchOCEBJjrwIVIHTTTBe378IcmYiMqQci7
-         UxNtgtVLpJSGzHCNmJO1bvXaKPWlj8FikJqTD2/9hYwRF3ibzwBGcM1ZQsZp7YC4K3K5
-         Zyk7nrzjnOVUQ0B08f/WKlfXYQRULXQk+eigeFFXDMnsn+HAoyQPORdIFERE4Y+gLEcK
-         yB6N7zyMVUFG0Rsczw8ibPWdhjVl0heP/YO4LyJ+Wch6/B72/rd0JrZpBJxfyVtQvIit
-         BuhJIDjjofCOXsYyk+a7m7un8QbtxkqLxaAwg0rWTiMvfXwrzKw/KXO2OLR7j6Ra0oqT
-         4nmg==
-X-Gm-Message-State: AOAM531ZLRvWttoWw56AVebOB9JHLjcjnmXInHbhEdAaU5iEN5pfp9RE
-        sBnt7UjF7TZEJrrSV6to2M0HSXvAKCUXcheQAXw=
-X-Google-Smtp-Source: ABdhPJx+AizyWn+h1qrEy2y5dKAMirtiFf6UqoCnpkjAxzqgIc6xAVFIDUBnCYvlnbJcRcPttrfWqYmNtGUYDLUL4QI=
-X-Received: by 2002:a25:2d07:: with SMTP id t7mr28967962ybt.127.1613940926443;
- Sun, 21 Feb 2021 12:55:26 -0800 (PST)
+        id S229780AbhBUVA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 16:00:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231180AbhBUVAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 16:00:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BBABE64EB3;
+        Sun, 21 Feb 2021 20:56:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613940975;
+        bh=/cN6BElwNRO7utpxxr5oOogV0crmkCkzi47VJ17rv6Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u5zBCSAc/1TTXkd7Nrq4Qd8xtAs0yta4WTdPkw3gc3Jdx14HrWQs96Ls+tktnoPX4
+         3sbr0NBGPcfVOHo5htOoY0llhFi40Fqwz+MAHsfZlvcUYjJI2hq9+B1nVLftCXZBhP
+         m6cOamfrR7MgxV6tA4l1+KguVHttHCFrTBZSj1nAveXFmX3vu4cOjSSjauqk4bvvLt
+         AwoNBSasNcgEMKHQGfLOmlyJp1olZVakfInV2gg1YkGak0uqB5qEhae9pcJtBJ/2UC
+         +BaSNu2izN5iKRkWtduNVSZp4N0zX14jY9eShzW/8CmANbyABr4f8aAkcA5HgUOdxI
+         geOnXrgXtaGnQ==
+Received: by earth.universe (Postfix, from userid 1000)
+        id C3B803C0C96; Sun, 21 Feb 2021 21:56:13 +0100 (CET)
+Date:   Sun, 21 Feb 2021 21:56:13 +0100
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Pavel Machek <pavel@ucw.cz>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-omap@vger.kernel.org, nekit1000@gmail.com, mpartap@gmx.net,
+        merlijn@wizzup.org, martin_rysavy@centrum.cz,
+        phone-devel@vger.kernel.org, maemo-leste@lists.dyne.org,
+        Carl Philipp Klemm <philipp@uvos.xyz>
+Subject: Re: Droid 4 charging
+Message-ID: <20210221205613.yuvxoxzi33wa74s3@earth.universe>
+References: <20210206131415.GA4499@amd>
+ <YCn5+ZPdPojwCz8g@atomide.com>
+ <20210219215752.GA31435@amd>
 MIME-Version: 1.0
-References: <20210205092117.551317-1-unixbhaskar@gmail.com>
-In-Reply-To: <20210205092117.551317-1-unixbhaskar@gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Sun, 21 Feb 2021 20:55:00 +0000
-Message-ID: <CA+V-a8sFaW99J8tVa=1w=o37TufLgLmh0TcnSqkdaaY0SpYZdw@mail.gmail.com>
-Subject: Re: [PATCH] include: media: davinci: Fixed up few trivial spellings
- in the file isif.h
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zeqgg3ishmvo4gqn"
+Content-Disposition: inline
+In-Reply-To: <20210219215752.GA31435@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaskar,
 
-Thank you for the patch.
+--zeqgg3ishmvo4gqn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 5, 2021 at 9:21 AM Bhaskar Chowdhury <unixbhaskar@gmail.com> wrote:
->
->
->
-> Several spelling fixes throughout the file.
->
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> ---
->  include/media/davinci/isif.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-Acked-by: Lad Prabhakar <prabhakar.csengg@gmail.com>
+Hi,
 
-Cheers,
-Prabhakar
+On Fri, Feb 19, 2021 at 10:57:53PM +0100, Pavel Machek wrote:
+> > And then we still need to restart the charger at some point, but that
+> > could happen based on much longer timeouts that what we currently have.
+>=20
+> Li-ion batteries are very slow to self-discharge. This could timeout
+> could be week... or maybe a year.
 
-> diff --git a/include/media/davinci/isif.h b/include/media/davinci/isif.h
-> index e66589c4022d..8369acd26e7e 100644
-> --- a/include/media/davinci/isif.h
-> +++ b/include/media/davinci/isif.h
-> @@ -177,7 +177,7 @@ struct isif_black_clamp {
->          * 1 - clamp value calculated separately for all colors
->          */
->         __u8 bc_mode_color;
-> -       /* Vrtical start position for bc subtraction */
-> +       /* Vertical start position for bc subtraction */
->         __u16 vert_start_sub;
->         /* Black clamp for horizontal direction */
->         struct isif_horz_bclamp horz;
-> @@ -193,7 +193,7 @@ struct isif_color_space_conv {
->         /* Enable color space conversion */
->         __u8 en;
->         /*
-> -        * csc coeffient table. S8Q5, M00 at index 0, M01 at index 1, and
-> +        * csc coefficient table. S8Q5, M00 at index 0, M01 at index 1, and
->          * so forth
->          */
->         struct isif_float_8 coeff[ISIF_CSC_NUM_COEFF];
-> @@ -340,7 +340,7 @@ struct isif_data_formatter {
->  };
->
->  struct isif_df_csc {
-> -       /* Color Space Conversion confguration, 0 - csc, 1 - df */
-> +       /* Color Space Conversion configuration, 0 - csc, 1 - df */
->         __u8 df_or_csc;
->         /* csc configuration valid if df_or_csc is 0 */
->         struct isif_color_space_conv csc;
-> @@ -406,7 +406,7 @@ struct isif_config_params_raw {
->         struct isif_linearize linearize;
->         /* Data formatter or CSC */
->         struct isif_df_csc df_csc;
-> -       /* Defect Pixel Correction (DFC) confguration */
-> +       /* Defect Pixel Correction (DFC) configuration */
->         struct isif_dfc dfc;
->         /* Black/Digital Clamp configuration */
->         struct isif_black_clamp bclamp;
-> --
-> 2.30.0
->
+True, as long as the battery is not connected to anything. When connected
+to something there are often leak currents. So leak currents must be
+measured to figure out a sensible timeout.
+
+-- Sebastian
+
+--zeqgg3ishmvo4gqn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmAyyOYACgkQ2O7X88g7
++pr5YRAAo+fP1HPtLciMak9zPcHNVtgFJos4FxbOBpjrju3KAz6ixUhMA1xaze6E
+enMYvXKAJGrdRxwr+zcBR6T/ST/YUo5uUJQwd+RjVRnKcZbXXOSQfIKCol8QJMFr
+EJEGAS2uS1PqkymwXz47GyQ8/m1wTEXyhwFzmuvivdsPMjkzKVprn+pCUV5a296X
+80wwwvFnMr1ENPl+FDU8NkiFuOc9JeGBH9ydmjpg+t6kEMJkqvfe863uEDN24nci
+PQVnqVnVx9nyiz9zKp0hkkjMVQYKaGDYhgU/T4gQdx7XRTWGe3NV/5wvvxqiARYI
+0tM9teZb5cIYKr+Zh53f0MCB3hRWxJebIrJDMLXa5vtbHQPaLkxcy1ZtnONjn/wO
+PLHBq017Sl4gCko1J7slmmoSPPG6BYdGYEOiGdnqjWbYfNhukyPbXH/N6hAGESVv
+ThOrr2af2rhXZLENhxfxQfGCkI+Cqwvda6D4Yu3YUt8adJ+7CQocTgHSGsqalSYb
+a7i9QWxZw/DCUpiWfs8fOb61N8qPqMmk6D/TWQimomH9OjGn2+aC/kr6eYq34Gks
+8tCaZb9d7ItNH5cpHDrBLpj5UdozNJE/YKMSVLYt+1MWQAdMdG5tt9DKE2aqFaSD
+u1YDX5a0l2Xix7OjS7HUqVT2rStOIFyUMJhfXtBTYhmlpZZXOmU=
+=vZ8i
+-----END PGP SIGNATURE-----
+
+--zeqgg3ishmvo4gqn--
