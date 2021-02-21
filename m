@@ -2,129 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0582D3209F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 12:29:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBAE320A0E
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 12:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229921AbhBUL3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 06:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbhBUL3A (ORCPT
+        id S229891AbhBULkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 06:40:15 -0500
+Received: from mail-02.mail-europe.com ([51.89.119.103]:48544 "EHLO
+        mail-02.mail-europe.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229540AbhBULkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 06:29:00 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C99C061574;
-        Sun, 21 Feb 2021 03:28:20 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id u4so1178757lja.3;
-        Sun, 21 Feb 2021 03:28:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XailET+Iz0kS61iHBGbLnnT1v04j2RILsJcsZVq8qik=;
-        b=lh/3mdQ+xAZKSuK5gv22xNPa6GEkldcs0lgL5hVKw0TgzXphO7b2Fu6fUZrprxNk7H
-         H/zP2VmHVFQkLwyy3T30wksKBWug+vwowuGfAateyeM+RpoJrH6TjD7WNyDxLGip3bAc
-         lNvYfSR92evbcGDK3SiWwwsypGyU+7Dbk2gp60tJx5fUMJAAQoky26xlpq0YiiXLcseq
-         V/hBgDuxM5bih1GG6nyvhtdKSTXDgRuQw7QSJXi1AFQ7zNx1/SeySh19Ujz9rZg8Bqzb
-         brDdYuSEYnSZ90eeNZHWIA1IxWpc5SGuu0inRmdcj0k3WG3pIwX0Bj8nyt/hl5cPrp0L
-         /X3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XailET+Iz0kS61iHBGbLnnT1v04j2RILsJcsZVq8qik=;
-        b=JrH22rABg50wKykm2/aQOVthDsYAHKUev/1Fh5OseYx6QayOY02sfEs6NDfwkxC+S8
-         bLU9n98x//Idw4Lf3k67yA/oL5IJSe3TiBXAy2We/s/pMoMeL//nHR5zUSk/0iJo3W8o
-         kyUBycikllEFYc6Z8y609Ii//AUIqeMgGhsIQAkep3fC/r8r45qFrCtF05E46BZb+XBW
-         DjTiceZNJBM19jY/lcUNrKdc8y7BB8Mi7fMbJxyik5EK3Zb98OuGVDzm1yK262nekW1I
-         jhPDPnJ/njTI1mjR9/wnunmSXv8mFiDGSYESPZ3ddC8gru4waEKkeolNJX5ldInqjTWG
-         bk1Q==
-X-Gm-Message-State: AOAM530FtvJmV/98SluCuX0DJKvXKclHY6qe1QUKri5q2lQuGyFXzz3Q
-        E4Yi5iZy7sEIZeXQDveWz04=
-X-Google-Smtp-Source: ABdhPJwiJy5T8cZv/11xeat3V6sbW5pu72MNEX6NOIO6KFTr9udo0S9iL6GikugUnw2/EdfL7/ypQQ==
-X-Received: by 2002:a05:6512:11d1:: with SMTP id h17mr10792421lfr.116.1613906898546;
-        Sun, 21 Feb 2021 03:28:18 -0800 (PST)
-Received: from [192.168.0.131] ([194.183.54.57])
-        by smtp.gmail.com with ESMTPSA id g24sm273950ljl.122.2021.02.21.03.28.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Feb 2021 03:28:18 -0800 (PST)
-Subject: Re: [PATCH v2 2/4] leds: Add driver for QCOM SPMI Flash LEDs
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@protonmail.com>, Dan Murphy <dmurphy@ti.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        Brian Masney <masneyb@onstation.org>,
-        Luca Weiss <luca@z3ntu.xyz>,
-        Russell King <linux@armlinux.org.uk>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        lkcamp@lists.libreplanetbr.org, andrealmeid@collabora.com
-References: <20210126140240.1517044-1-nfraprado@protonmail.com>
- <20210126140240.1517044-3-nfraprado@protonmail.com>
- <a26a1d40-1c7c-b97c-2970-58a2fda8f1cf@gmail.com>
- <20210219110227.GG19207@duo.ucw.cz>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <7bb757c7-55af-66a4-aa12-fe646a19fcf6@gmail.com>
-Date:   Sun, 21 Feb 2021 12:28:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sun, 21 Feb 2021 06:40:10 -0500
+Date:   Sun, 21 Feb 2021 11:38:37 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1613907525;
+        bh=a3IDBP1MUD9HVWhd+LV35seWKF7UAKzn50KHWLxZjLs=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=jeA4FCl12JIu9/6k7T8wCa4iAkeZjzYowzqqnIzHnK+GORYGfCisT2MICkGmlSIWA
+         R3K7oW71zzR2L8oyVt2ZIcik2GM3V5iGQTWuOADIF/ZlqDB/mB+qARomfJd20aqLbW
+         mvgYCVu+jTcYvlD8Ac4LaiOUOWMWcvAq7Sm2Pkyo=
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Jari Ruusu <jariruusu@protonmail.com>
+Cc:     Willy Tarreau <w@1wt.eu>,
+        Jari Ruusu <jariruusu@users.sourceforge.net>,
+        Scott Branden <scott.branden@broadcom.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>
+Reply-To: Jari Ruusu <jariruusu@protonmail.com>
+Subject: Re: 5.10 LTS Kernel: 2 or 6 years?
+Message-ID: <wZCdYp_4tvo3IvJ4KO3jTbgJaofJam1HGxEuIm09vHQPhoCx4eWLaoZ7yBRvHg_aMA51hqW5SGTV8nshbHebC6LdiUoln5MC5G925JMQrE0=@protonmail.com>
+In-Reply-To: <YDEzOg4WTRWBC7DS@kroah.com>
+References: <dbLhDu5W6LMrWDRrgzNQJGLZPMWGkRtOcxFUbghT-Uuc8zmQObV5KjhYqVBo2U6k7r2rNVtVEaMjev_lyz8eNQGvksSTjVrHd8LaPrO_6Qs=@protonmail.com> <YC91OWVGAfyorRbc@kroah.com> <QYs3MUT8alABsssQUgn1j3b7BF6zgqqiBq0-76Rqcpo6lPFnKyfd8iAagAfotVhDzKP6FFRIjlRVVoIaRtCAEaNT3P-4gyF43rTEPEsvqEA=@protonmail.com> <YC+U+beaI91aXh5z@kroah.com> <OurD0pqDIPLLZlt1kk-JE57wXeMoh0NFPKKcBrbY3ValknDXcpLwAJz6x1DMbB6LNZ6FDdeUrPM-pX60VF5FERTiDK_gzgHy4tq7iG3MFAM=@protonmail.com> <YC+d/NyXDebGSHwN@kroah.com> <NBnmv-hTU50xKWL-Q7clpw69elSJgEX7kWA2LiuvzVJ4uOwh8xc5yh83qQDmAfMZl8OcCZxatCZ84dxV2-R2bv25kZLhW0howAP0kOadkwE=@protonmail.com> <RpmkVZBUhx36C8VTTIM1SZz6jf46qBoOL4rMaBMuTMRTe-TQGmEfgeMcrGhXWt1N6SSPrHfFERM_hzHRBod7Xn9XV6d0cyEHoQ8nqXi7rXA=@protonmail.com> <YDEzOg4WTRWBC7DS@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <20210219110227.GG19207@duo.ucw.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/19/21 12:02 PM, Pavel Machek wrote:
-> Hi!
-> 
->>> + */
->>> +
->>> +#include <linux/kernel.h>
->>> +#include <linux/module.h>
->>> +#include <linux/spmi.h>
->>> +#include <linux/of_device.h>
->>> +#include <linux/device.h>
->>> +#include <linux/types.h>
->>> +#include <linux/string.h>
->>> +#include <linux/mutex.h>
->>> +#include <linux/sysfs.h>
->>> +#include <linux/led-class-flash.h>
->>> +#include <linux/regulator/consumer.h>
->>> +#include <linux/delay.h>
->>> +#include <linux/regmap.h>
->>> +#include <dt-bindings/leds/leds-qcom-spmi-flash.h>
->>
->> Please sort includes alphabetically.
-> 
-> No need to do that.
+On Saturday, February 20, 2021 6:05 PM, Greg Kroah-Hartman <gregkh@linuxfou=
+ndation.org> wrote:
+> On Sat, Feb 20, 2021 at 01:29:21PM +0000, Jari Ruusu wrote:
+> > I have been able to narrow the beginning of the problem to these kernel=
+s:
+> > 4.14.188 ... 4.14.202
+> > Same "fix" that went info 4.14.y is also bugging 4.19.y kernels.
+>
+> Great, any chance you can narrow this down to the commit itself?
 
-Keeping the includes sorted eliminates the risk of introducing 
-duplicates and allows for faster lookup.
+I am not able to test WiFi on that laptop computer anymore,
+because that laptop now connects to world using wired connection.
+It was that WiFI->wired connection change that led me to realize
+the buggyness of in-tree iwlwifi in 4.19.y kernels.
 
-What gain is in having them unsorted?
+I did that narrowing to specific kernel versions by digging my
+archived backup files and their notes. No tests were run.
 
->>> +#define FLASH_SAFETY_TIMER		0x40
->>
->> Namespacing prefix is needed for macros, e.g. QCOM_FLASH*.
-> 
-> No need for that in .c files.
+Problems started triggering in those kernels that I mentioned in
+earlier email. That does not mean that the bugs were not already
+there in kernels older that those. Maybe some change just widened
+"window of opportunity" enough for me to see the issues.
 
-In general it eliminates the risk of name clash with other subsystems
-headers.
+In-tree iwlwifi in 4.19.y is missing locking fixes. No amount of
+smooth-talking is going to change that.
 
-And actually the prefix here should be QCOM_LED_FLASH to avoid ambiguity
-with flash memory. If you dropped the vendor prefix then you'd get
-possible name clash with led-class-flash.h namespace prefix.
+--
+Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
+80 8132 F189
 
--- 
-Best regards,
-Jacek Anaszewski
