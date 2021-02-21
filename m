@@ -2,173 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217E4320CA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:36:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6763320CAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 19:40:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhBUSgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 13:36:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
+        id S230200AbhBUSkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 13:40:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhBUSgX (ORCPT
+        with ESMTP id S230107AbhBUSkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 13:36:23 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF9BC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:35:42 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id a22so51727792ljp.10
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:35:42 -0800 (PST)
+        Sun, 21 Feb 2021 13:40:04 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B79C06178B
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:39:24 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id r23so51852285ljh.1
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 10:39:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oxqy2QaM0H7zKuChLvrzb4hgaQQEMjeZnvyVRfd9I1o=;
-        b=GBRdczyy0sPWHm91ezLPqpJRcQlHLvOqC8LCjTQhUHzRB+wzrdW5of5bkX7OLUpgDe
-         irDwU7OjZ/0wGxpeTNF6FlIqXpf1uMl/POHHKjfVwz6MG1CSVXlCpEqHTHBwxolrb3al
-         yVp6HvIQW7DLHIMZtaOwjWzKKtzB05rNI1lUY5XEOR7yarPHjP82DEvAco16mMdc4wLO
-         HKGnXaf3zVB+IBnzE4v1l/hM5n3BKMfw8biYsbXCkdgrM7LqNVUDzIJ8VQY2ygTgxb1X
-         3y5rMAZ+J8uGxMEHkxQP5mrru41eRqKMvLO/vKAZUQD7EeTHjdpwCByaybJZpG5JPBtG
-         sqZw==
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=5I3tMMTBMyjB/2CdlpmtYbbra5FZ++dhXNjXHnm0pkc=;
+        b=NPxuhy9ewQtSl+JUt7hx4Vt61oDQN8ny87nxySsXBD7XDdR/Glar5huLBBvO/2p6Mq
+         O+IzvO7vbKIrxvnjPZjYwffSP8gCyVoo/gjXZcglmzIG8CCILwD+wnsG87b4mG6toALR
+         W999ksjJ0ai9oO+2Yw77nIHqoedqcoHwdnpstg77Fx4h35ibtuH5U8ClfjO4wt0/O2Ir
+         MaMKOGRZA+LkpjStWxGb9gtAPUjb8GrDpbcqO6Y3XzDFXsGoCAMSm0KkpIdIBzz6rI7m
+         4Jv0/tRpsfyCKOcWhPxGxcfB1Lgevf6j1+fFTugMJvzitd2k0lt0AQNT3u+zV0l8EBA3
+         +sMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oxqy2QaM0H7zKuChLvrzb4hgaQQEMjeZnvyVRfd9I1o=;
-        b=pi2/6BQJhb+Nyhdhym2NhRHs83GdwDdsOVFGxrsRFojUUPXBhyU17gc61l815rfFhq
-         Lr9iIEI86ff/acza+JtPXluV75E+MRTgQwlI0vBgv6aStCjnVy4Q2Bc5QCkKrY6g8Mrr
-         /O0sZh4VV4CPy4XEJBaLy2oaDqs9VsDQSTqpgT7TC3O7zhfIiqsxGu6xIu8aiOR/9Z4j
-         6S7KGGVVSgO2J1uU0bVHzAHtrIv9gSajFjCgm8kE+VnFEloYT79qehZgSiyspkCr7sXf
-         ODnbVLk4MMkTeBwR+MD+rwc7A+PL5ic4L4g0HRma0vxdI8ceZQoSWslFIyB7lO8l16Qe
-         j4Cw==
-X-Gm-Message-State: AOAM533LjAItOAlG+uLiCcYxZH8JkB587RMeB/tFUaBYwzVII0wfPm7W
-        LI9YirGjda8ljSLefU0Ao8Bm62+cgY+1Jmi0PWY=
-X-Google-Smtp-Source: ABdhPJzDLi7vHID87eLisqTtrtAoyZILR4cMH/xqtP0Pdr9p/t4A1/0/kjdYShz1ib/0ZK7utaYWQOo2RAUmyap7O0w=
-X-Received: by 2002:a2e:9841:: with SMTP id e1mr2207442ljj.373.1613932541079;
- Sun, 21 Feb 2021 10:35:41 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5I3tMMTBMyjB/2CdlpmtYbbra5FZ++dhXNjXHnm0pkc=;
+        b=tru2iaYdL3bv9OyPN1v3BahPb5k0cllAREWQ03gYeKRFFrLFd6pjPAf5uRZFYPXVSZ
+         mWR/9dDRacsVy4Y++gOXEj2W4bcLGIEciSLvnKvwhhVE6ZYx/fgcMsROkNw1HFH05x/M
+         yS110rM/cFBWWsIaY3rD/S8wZIK2m6x3uHwf9ztQD2L16d6wGsVHg7vxzJM31x+C759V
+         qgy8v6OhwLI7hzSXoXAyluBcWq96jPNDL+iW7dkegMahC367bRIdz/skXr8h+2uwL8x8
+         FTKLny7+n4E7HTlRCMbZqSh+Rq8h3OQFywEgI+ipPcHTOhAQs0NGnaXlsAeMYDwFHosW
+         kqAg==
+X-Gm-Message-State: AOAM532j9H61mry+g/PhxeoiTe4KIWSwetP/l4MrkI5RjvR8V2Q3Antq
+        e6fPuR9KVgt59mRm/QYpF+9Mlg==
+X-Google-Smtp-Source: ABdhPJzyPK/Lok31uLcddeKKE6KehkSGm/6qNIlTxjr1qm/9OxPMa8LN0bFwvO3Tz1eYRkcLnPRovg==
+X-Received: by 2002:a05:6512:36c9:: with SMTP id e9mr3644403lfs.343.1613932762637;
+        Sun, 21 Feb 2021 10:39:22 -0800 (PST)
+Received: from [192.168.118.216] ([85.249.43.69])
+        by smtp.gmail.com with ESMTPSA id y13sm706921ljd.6.2021.02.21.10.39.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Feb 2021 10:39:22 -0800 (PST)
+Subject: Re: [PATCH v5 20/22] arm64: dts: sdm845: Add CAMSS ISP node
+To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+References: <20210217112122.424236-1-robert.foss@linaro.org>
+ <20210217112122.424236-21-robert.foss@linaro.org>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <9b8f9394-3ab6-3a2f-32cf-4e60012be2d8@linaro.org>
+Date:   Sun, 21 Feb 2021 21:39:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210221115802.19788-1-dwaipayanray1@gmail.com>
- <20210221115802.19788-2-dwaipayanray1@gmail.com> <46c3b16602f36858b194b22dfbdb2150e25f5d94.camel@perches.com>
-In-Reply-To: <46c3b16602f36858b194b22dfbdb2150e25f5d94.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 22 Feb 2021 00:05:40 +0530
-Message-ID: <CABJPP5CJKUeaxUqKzuJD5pd2HsHKcAx9x3iCm6W+Z8AuXiR5Rg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] checkpatch: add verbose mode
-To:     Joe Perches <joe@perches.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210217112122.424236-21-robert.foss@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Feb 21, 2021 at 11:36 PM Joe Perches <joe@perches.com> wrote:
->
-> On Sun, 2021-02-21 at 17:28 +0530, Dwaipayan Ray wrote:
-> > Add a new verbose mode to checkpatch.pl to emit additional verbose
-> > test descriptions. The verbose mode is optional and can be enabled
-> > by the flag -v or --verbose.
->
-> OK, maybe add color coding to the list_types output.
+Hi Robert,
 
-Okay, nice idea!
-> Something like:
-> ---
->  scripts/checkpatch.pl | 61 ++++++++++++++++++++++++++++++++++++---------------
->  1 file changed, 43 insertions(+), 18 deletions(-)
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index bbff13e0ca7e..ccd4a1bd73cb 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -163,14 +163,39 @@ sub list_types {
->         my $text = <$script>;
->         close($script);
->
-> -       my @types = ();
-> +       my %types = ();
->         # Also catch when type or level is passed through a variable
-> -       for ($text =~ /(?:(?:\bCHK|\bWARN|\bERROR|&\{\$msg_level})\s*\(|\$msg_type\s*=)\s*"([^"]+)"/g) {
-> -               push (@types, $_);
-> +       while ($text =~ /\b(CHK|WARN|ERROR|&\{\$msg_level})\s*\(\s*"([^"]+)"/g) {
-> +               if (exists($types{$2})) {
-> +                       $types{$2} .= ",$1" if ($types{$2} ne $1);
-> +               } else {
-> +                       $types{$2} = $1;
-> +               }
-> +       }
-> +       print("#\tMessage type");
-> +       if ($color) {
-> +               print(" (color coding: ");
-> +               print(RED . "ERROR" . RESET);
-> +               print("|");
-> +               print(YELLOW . "WARNING" . RESET);
-> +               print("|");
-> +               print(GREEN . "CHECK" . RESET);
-> +               print("|");
-> +               print("Multiple levels" . RESET);
-> +               print(")");
->         }
-> -       @types = sort(uniq(@types));
-> -       print("#\tMessage type\n\n");
-> -       foreach my $type (@types) {
-> +       print("\n\n");
-> +       foreach my $type (sort keys %types) {
-> +               if ($color) {
-> +                       my $level = $types{$type};
-> +                       if ($level eq 'ERROR') {
-> +                               $type = RED . $type . RESET;
-> +                       } elsif ($level eq 'WARN') {
-> +                               $type = YELLOW . $type . RESET;
-> +                       } elsif ($level eq 'CHK') {
-> +                               $type = GREEN . $type . RESET;
-> +                       }
-> +               }
->                 print(++$count . "\t" . $type . "\n");
->                 if ($verbose && exists($verbose_messages{$type})) {
->                         my $message = $verbose_messages{$type};
-> @@ -301,6 +326,18 @@ help(0) if ($help);
->  die "$P: --git cannot be used with --file or --fix\n" if ($git && ($file || $fix));
->  die "$P: --verbose cannot be used with --terse\n" if ($verbose && $terse);
->
-> +if ($color =~ /^[01]$/) {
-> +       $color = !$color;
-> +} elsif ($color =~ /^always$/i) {
-> +       $color = 1;
-> +} elsif ($color =~ /^never$/i) {
-> +       $color = 0;
-> +} elsif ($color =~ /^auto$/i) {
-> +       $color = (-t STDOUT);
-> +} else {
-> +       die "$P: Invalid color mode: $color\n";
-> +}
-> +
->  load_docs() if ($verbose);
->  list_types(0) if ($list_types);
->
-> @@ -321,18 +358,6 @@ if ($#ARGV < 0) {
->         push(@ARGV, '-');
->  }
->
-> -if ($color =~ /^[01]$/) {
-> -       $color = !$color;
-> -} elsif ($color =~ /^always$/i) {
-> -       $color = 1;
-> -} elsif ($color =~ /^never$/i) {
-> -       $color = 0;
-> -} elsif ($color =~ /^auto$/i) {
-> -       $color = (-t STDOUT);
-> -} else {
-> -       die "$P: Invalid color mode: $color\n";
-> -}
-> -
->  # skip TAB size 1 to avoid additional checks on $tabsize - 1
->  die "$P: Invalid TAB size: $tabsize\n" if ($tabsize < 2);
->
->
+Thank you for your patch!
 
-Sure, I will do something like this.
-Are there any other improvements you can see right now
-or will the coloring thing suffice?
+Reviewed-by: Andrey Konovalov <andrey.konovalov@linaro.org>
 
 Thanks,
-Dwaipayan
+Andrey
+
+On 17.02.2021 14:21, Robert Foss wrote:
+> Add the camss dt node for sdm845.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>   arch/arm64/boot/dts/qcom/sdm845.dtsi | 135 +++++++++++++++++++++++++++
+>   1 file changed, 135 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> index bcf888381f14..4fe93c69908a 100644
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -3911,6 +3911,141 @@ videocc: clock-controller@ab00000 {
+>   			#reset-cells = <1>;
+>   		};
+>   
+> +		camss: camss@a00000 {
+> +			compatible = "qcom,sdm845-camss";
+> +
+> +			reg = <0 0xacb3000 0 0x1000>,
+> +				<0 0xacba000 0 0x1000>,
+> +				<0 0xacc8000 0 0x1000>,
+> +				<0 0xac65000 0 0x1000>,
+> +				<0 0xac66000 0 0x1000>,
+> +				<0 0xac67000 0 0x1000>,
+> +				<0 0xac68000 0 0x1000>,
+> +				<0 0xacaf000 0 0x4000>,
+> +				<0 0xacb6000 0 0x4000>,
+> +				<0 0xacc4000 0 0x4000>;
+> +			reg-names = "csid0",
+> +				"csid1",
+> +				"csid2",
+> +				"csiphy0",
+> +				"csiphy1",
+> +				"csiphy2",
+> +				"csiphy3",
+> +				"vfe0",
+> +				"vfe1",
+> +				"vfe_lite";
+> +
+> +			interrupts = <GIC_SPI 464 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 466 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 468 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 477 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 478 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 479 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 448 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 465 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 467 IRQ_TYPE_LEVEL_HIGH>,
+> +				<GIC_SPI 469 IRQ_TYPE_LEVEL_HIGH>;
+> +			interrupt-names = "csid0",
+> +				"csid1",
+> +				"csid2",
+> +				"csiphy0",
+> +				"csiphy1",
+> +				"csiphy2",
+> +				"csiphy3",
+> +				"vfe0",
+> +				"vfe1",
+> +				"vfe_lite";
+> +
+> +			power-domains = <&clock_camcc IFE_0_GDSC>,
+> +				<&clock_camcc IFE_1_GDSC>,
+> +				<&clock_camcc TITAN_TOP_GDSC>;
+> +
+> +			clocks = <&clock_camcc CAM_CC_CAMNOC_AXI_CLK>,
+> +				<&clock_camcc CAM_CC_CPAS_AHB_CLK>,
+> +				<&clock_camcc CAM_CC_CPHY_RX_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_IFE_0_CSID_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_0_CSID_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_IFE_1_CSID_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_1_CSID_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_IFE_LITE_CSID_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_LITE_CSID_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_CSIPHY0_CLK>,
+> +				<&clock_camcc CAM_CC_CSI0PHYTIMER_CLK>,
+> +				<&clock_camcc CAM_CC_CSI0PHYTIMER_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_CSIPHY1_CLK>,
+> +				<&clock_camcc CAM_CC_CSI1PHYTIMER_CLK>,
+> +				<&clock_camcc CAM_CC_CSI1PHYTIMER_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_CSIPHY2_CLK>,
+> +				<&clock_camcc CAM_CC_CSI2PHYTIMER_CLK>,
+> +				<&clock_camcc CAM_CC_CSI2PHYTIMER_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_CSIPHY3_CLK>,
+> +				<&clock_camcc CAM_CC_CSI3PHYTIMER_CLK>,
+> +				<&clock_camcc CAM_CC_CSI3PHYTIMER_CLK_SRC>,
+> +				<&gcc GCC_CAMERA_AHB_CLK>,
+> +				<&gcc GCC_CAMERA_AXI_CLK>,
+> +				<&clock_camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_SOC_AHB_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_0_AXI_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_0_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_0_CPHY_RX_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_0_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_IFE_1_AXI_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_1_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_1_CPHY_RX_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_1_CLK_SRC>,
+> +				<&clock_camcc CAM_CC_IFE_LITE_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_LITE_CPHY_RX_CLK>,
+> +				<&clock_camcc CAM_CC_IFE_LITE_CLK_SRC>;
+> +			clock-names = "camnoc_axi",
+> +				"cpas_ahb",
+> +				"cphy_rx_src",
+> +				"csi0",
+> +				"csi0_src",
+> +				"csi1",
+> +				"csi1_src",
+> +				"csi2",
+> +				"csi2_src",
+> +				"csiphy0",
+> +				"csiphy0_timer",
+> +				"csiphy0_timer_src",
+> +				"csiphy1",
+> +				"csiphy1_timer",
+> +				"csiphy1_timer_src",
+> +				"csiphy2",
+> +				"csiphy2_timer",
+> +				"csiphy2_timer_src",
+> +				"csiphy3",
+> +				"csiphy3_timer",
+> +				"csiphy3_timer_src",
+> +				"gcc_camera_ahb",
+> +				"gcc_camera_axi",
+> +				"slow_ahb_src",
+> +				"soc_ahb",
+> +				"vfe0_axi",
+> +				"vfe0",
+> +				"vfe0_cphy_rx",
+> +				"vfe0_src",
+> +				"vfe1_axi",
+> +				"vfe1",
+> +				"vfe1_cphy_rx",
+> +				"vfe1_src",
+> +				"vfe_lite",
+> +				"vfe_lite_cphy_rx",
+> +				"vfe_lite_src";
+> +
+> +			iommus = <&apps_smmu 0x0808 0x0>,
+> +				 <&apps_smmu 0x0810 0x8>,
+> +				 <&apps_smmu 0x0c08 0x0>,
+> +				 <&apps_smmu 0x0c10 0x8>;
+> +
+> +			status = "disabled";
+> +
+> +			ports {
+> +				#address-cells = <1>;
+> +				#size-cells = <0>;
+> +			};
+> +		};
+> +
+>   		cci: cci@ac4a000 {
+>   			compatible = "qcom,sdm845-cci";
+>   			#address-cells = <1>;
+> 
