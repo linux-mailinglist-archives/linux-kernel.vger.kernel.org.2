@@ -2,120 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D47320A2D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 13:11:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FE5320A39
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 13:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhBUMKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 07:10:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhBUMKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 07:10:44 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8F996186A;
-        Sun, 21 Feb 2021 12:10:01 +0000 (UTC)
-Date:   Sun, 21 Feb 2021 12:09:58 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <lars@metafoo.de>, <Michael.Hennerich@analog.com>,
-        <nuno.sa@analog.com>, <dragos.bogdan@analog.com>
-Subject: Re: [PATCH v3 6/6] iio: buffer-dma: add support for cyclic DMA
- transfers
-Message-ID: <20210221120958.7623e02c@archlinux>
-In-Reply-To: <20210219124012.92897-7-alexandru.ardelean@analog.com>
-References: <20210219124012.92897-1-alexandru.ardelean@analog.com>
-        <20210219124012.92897-7-alexandru.ardelean@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230000AbhBUMNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 07:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229989AbhBUMND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 07:13:03 -0500
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56061C061786;
+        Sun, 21 Feb 2021 04:12:21 -0800 (PST)
+Received: by mail-lj1-x22d.google.com with SMTP id q14so47239508ljp.4;
+        Sun, 21 Feb 2021 04:12:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=AFrIx7saRiKChL+GBKdte021u7jJCLE/loYJ5cq9bic=;
+        b=ZWL2i2nTyP0l2+87Cd3+Y0f+F6MyhfAP/+jneHxIiV2Ncpx9ByFaZmSva4XylP6YG2
+         ufL4/UKrSc4hP8ZE+BHJG4mPyLV8BUyFzlG5cyaUlDKM21SKndnSFG38HY4lrCxXpTLX
+         Vn14JpB8fSEM/HDHk92Ytb/0QQwmxiGmkL8EPYOAeNe/e4qF/cG0Ae0ObtmTbEE4zLgV
+         dSWhL0fbNV4GyaZjDdANI/31/o+V8eM1PHiQHbD3Nr5Wrb3Dzy/0zVk+JeyH8RQRXNce
+         aA3yfAxu8cuX5QZFm94qizlR8Jy8ys78az0URuXvrObtfuhNMKb7EVYXbZQSwnQ6KxlS
+         CG2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=AFrIx7saRiKChL+GBKdte021u7jJCLE/loYJ5cq9bic=;
+        b=VQPGA1aKDuNBZNsPKERBP4nCOHoPRAmKRgCVMoB1PWBt8bZzcC6vc3OgPkb6pTxUSQ
+         JQHpRNXyXjMoeXBxc9ZtKnKAPH7t04Ut866fRHQAUoc8G0IPGmfsQkB9iS8gKOB1xpJp
+         3ZqzQPyJfaZYvUcb2mfGVwrt39L10bvz8OH8izKJni//PFALUF12r/R9CYp2/FslNsX6
+         m7cbdR0O6GwTjmipR5/8OiyWm1BuNpUuxlcJaJQGwEmtCguSX5HVSAuuzOO79EOSBclD
+         shvO9dPVNEVD8aFPSZHSJCBm7Wbjk1OQiadQ3TFdyIVBQC83VfSMuVbJrGOqQrn502YF
+         k75A==
+X-Gm-Message-State: AOAM530bbtx5SV16Lyhz5XOnvSVC4/jqSoXnYBbF53RuatSSJybsvJ89
+        tKbmMjgoYqEYZhRzp8GEhnM=
+X-Google-Smtp-Source: ABdhPJyTJpgyQhyPQfHTG4obq4iNGUrC4g3+srKXwR1EwCNqwUKC8Bf5uJayFjX93bT9OskUeLrUqg==
+X-Received: by 2002:a19:3c4:: with SMTP id 187mr11444074lfd.458.1613909539918;
+        Sun, 21 Feb 2021 04:12:19 -0800 (PST)
+Received: from msi.localdomain (vmpool.ut.mephi.ru. [85.143.112.90])
+        by smtp.gmail.com with ESMTPSA id 12sm668214lfq.229.2021.02.21.04.12.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 04:12:19 -0800 (PST)
+From:   Nikolay Kyx <knv418@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nikolay Kyx <knv418@gmail.com>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: media: ipu3: code style fix - avoid multiple line dereference
+Date:   Sun, 21 Feb 2021 15:10:20 +0300
+Message-Id: <20210221121020.1501-1-knv418@gmail.com>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <YDIX3Q0U8/PcVWgN@kroah.com>
+References: <YDIX3Q0U8/PcVWgN@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021 14:40:12 +0200
-Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+This patch fixes the following checkpatch.pl warning:
 
-> From: Lars-Peter Clausen <lars@metafoo.de>
-> 
-> This change adds support for cyclic DMA transfers using the IIO buffer DMA
-> infrastructure.
-> To do this, userspace must set the IIO_BUFFER_BLOCK_FLAG_CYCLIC flag on the
-> block when enqueueing them via the ENQUEUE_BLOCK ioctl().
-> 
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Series in general looks good to me, but this change needs a little more
-detail + probably some level of example userspace flow.
+WARNING: Avoid multiple line dereference
 
-I don't really understand how this is used!
+in file ipu3-css.c
 
-Also, it's easy to test output buffers with the kfifo support so we
-should be able to move forward quickly with that part (1-3, 4 is probably
-fine as well as clearly harmless).
+Signed-off-by: Nikolay Kyx <knv418@gmail.com>
+---
 
-The dma stuff worries me more, at least partly based on the experience
-of the original dma buffers which basically sat their unused (in upstream)
-for a very long time.   So to move these forward, they need to come
-with users...
+Additionally some style warnings remain valid here and could be fixed by
+another patch.
 
-Thanks,
+v2: Removed second part of patch which fixes non-existent problem
 
-Jonathan
+ drivers/staging/media/ipu3/ipu3-css.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-> ---
->  .../buffer/industrialio-buffer-dmaengine.c    | 24 ++++++++++++-------
->  include/uapi/linux/iio/buffer.h               |  1 +
->  2 files changed, 17 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iio/buffer/industrialio-buffer-dmaengine.c b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> index 65458a6cc81a..39cc230c7991 100644
-> --- a/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> +++ b/drivers/iio/buffer/industrialio-buffer-dmaengine.c
-> @@ -82,14 +82,22 @@ static int iio_dmaengine_buffer_submit_block(struct iio_dma_buffer_queue *queue,
->  
->  	direction = dmaengine_buffer->is_tx ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM;
->  
-> -	desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
-> -		block->phys_addr, block->block.bytes_used, direction,
-> -		DMA_PREP_INTERRUPT);
-> -	if (!desc)
-> -		return -ENOMEM;
-> -
-> -	desc->callback_result = iio_dmaengine_buffer_block_done;
-> -	desc->callback_param = block;
-> +	if (block->block.flags & IIO_BUFFER_BLOCK_FLAG_CYCLIC) {
-> +		desc = dmaengine_prep_dma_cyclic(dmaengine_buffer->chan,
-> +			block->phys_addr, block->block.bytes_used,
-> +			block->block.bytes_used, direction, 0);
-> +		if (!desc)
-> +			return -ENOMEM;
-> +	} else {
-> +		desc = dmaengine_prep_slave_single(dmaengine_buffer->chan,
-> +			block->phys_addr, block->block.bytes_used, direction,
-> +			DMA_PREP_INTERRUPT);
-> +		if (!desc)
-> +			return -ENOMEM;
-> +
-> +		desc->callback_result = iio_dmaengine_buffer_block_done;
-> +		desc->callback_param = block;
-> +	}
->  
->  	cookie = dmaengine_submit(desc);
->  	if (dma_submit_error(cookie))
-> diff --git a/include/uapi/linux/iio/buffer.h b/include/uapi/linux/iio/buffer.h
-> index 4e4ee9befea1..1bde508fe1b9 100644
-> --- a/include/uapi/linux/iio/buffer.h
-> +++ b/include/uapi/linux/iio/buffer.h
-> @@ -33,6 +33,7 @@ struct iio_buffer_block_alloc_req {
->  
->  /* A function will be assigned later for BIT(0) */
->  #define IIO_BUFFER_BLOCK_FLAG_RESERVED		(1 << 0)
-> +#define IIO_BUFFER_BLOCK_FLAG_CYCLIC		(1 << 1)
->  
->  /**
->   * struct iio_buffer_block - Descriptor for a single IIO block
+diff --git a/drivers/staging/media/ipu3/ipu3-css.c b/drivers/staging/media/ipu3/ipu3-css.c
+index 608dcacf12b2..29894ee566c1 100644
+--- a/drivers/staging/media/ipu3/ipu3-css.c
++++ b/drivers/staging/media/ipu3/ipu3-css.c
+@@ -1206,14 +1206,14 @@ static int imgu_css_binary_preallocate(struct imgu_css *css, unsigned int pipe)
+ 
+ 	for (i = 0; i < IPU3_CSS_AUX_FRAMES; i++)
+ 		if (!imgu_dmamap_alloc(imgu,
+-				       &css_pipe->aux_frames[IPU3_CSS_AUX_FRAME_REF].
+-				       mem[i], CSS_BDS_SIZE))
++				       &css_pipe->aux_frames[IPU3_CSS_AUX_FRAME_REF].mem[i],
++				       CSS_BDS_SIZE))
+ 			goto out_of_memory;
+ 
+ 	for (i = 0; i < IPU3_CSS_AUX_FRAMES; i++)
+ 		if (!imgu_dmamap_alloc(imgu,
+-				       &css_pipe->aux_frames[IPU3_CSS_AUX_FRAME_TNR].
+-				       mem[i], CSS_GDC_SIZE))
++				       &css_pipe->aux_frames[IPU3_CSS_AUX_FRAME_TNR].mem[i],
++				       CSS_GDC_SIZE))
+ 			goto out_of_memory;
+ 
+ 	return 0;
+@@ -1441,13 +1441,11 @@ static int imgu_css_map_init(struct imgu_css *css, unsigned int pipe)
+ 	for (p = 0; p < IPU3_CSS_PIPE_ID_NUM; p++)
+ 		for (i = 0; i < IMGU_ABI_MAX_STAGES; i++) {
+ 			if (!imgu_dmamap_alloc(imgu,
+-					       &css_pipe->
+-					       xmem_sp_stage_ptrs[p][i],
++					       &css_pipe->xmem_sp_stage_ptrs[p][i],
+ 					       sizeof(struct imgu_abi_sp_stage)))
+ 				return -ENOMEM;
+ 			if (!imgu_dmamap_alloc(imgu,
+-					       &css_pipe->
+-					       xmem_isp_stage_ptrs[p][i],
++					       &css_pipe->xmem_isp_stage_ptrs[p][i],
+ 					       sizeof(struct imgu_abi_isp_stage)))
+ 				return -ENOMEM;
+ 		}
+-- 
+2.30.1
 
