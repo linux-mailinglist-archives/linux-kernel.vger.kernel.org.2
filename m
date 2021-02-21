@@ -2,311 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA454320944
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 09:57:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B8532094C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 10:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhBUI4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 03:56:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S229685AbhBUJNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 04:13:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhBUI4c (ORCPT
+        with ESMTP id S229502AbhBUJNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 03:56:32 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABE65C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 00:55:52 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id c19so6272667pjq.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 00:55:52 -0800 (PST)
+        Sun, 21 Feb 2021 04:13:48 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3CAC061574;
+        Sun, 21 Feb 2021 01:13:06 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id w4so10741689wmi.4;
+        Sun, 21 Feb 2021 01:13:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=george-graphics-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c8A/oMWjXqTCpUMaTP6/pnUw+IWu6z60c9rE8Yo1Hio=;
-        b=YvG0AjZ2//0bwYamuylSZJlmt2ZapHp4kLMvvjDhWbydvIyK5bE+zSBM1InoPj96zi
-         nWP03odv6mSgRqcQK8HnHsx3qR7QSAlTeLYtPLA43WUVnJt0h3j/8DLz1wdw8j/0m131
-         qVlTfSZxC6hRzcHDUlTRPwq7eY5iGe8rmBLRz8uUnBkXHaaf2T0nMH7CekRLhR9ZVjfD
-         SDWEx1d74k43XOhItWaybZ6HPJE4nRuRmlr1FegJuz4rsHDMxDbiex6VA51znmy1AWJ4
-         kk+NEzwx0QAWLDJ+dNHAOuDF+eowsd3d4BOylG7/hsjoqyxhW1fC6vKiD1sYh7nA4jQU
-         PI+w==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sxti6CnOOSbS39ZOnKJQFnh3i2szvBvlkpT+WOP/J+A=;
+        b=vLksB6WQjLsyWv7GIUZFQOuJsk1edJ+F0ssyXB5gZEI+AhHmBV+hwtpjTf8ukUaNQx
+         si/IPob52GTvFkI/lsDGvmSvDkxtC/VMcRLwQSBKuI8/wAo27zwqWBil1WJvokdTvKAR
+         vdcmpZGcGFrPZnmYd74I6Yrjg6i/beIusJNuYqjti0ry6tfPq3TkZFpAsnNPNYKfvIpY
+         mW4Jg53MITOY1uk2So/Uc99/h/75Ag6B+gJ+B8oo0/Rcp4XR9VbiEUBQkRFZpkIgtLCT
+         dWXedQXYCDR0ZYE0l6edCYLCwUpULgA5yGR02hOPNRhBS1CPI1Y0Qv3klz8NXKZCzVPU
+         +Cyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=c8A/oMWjXqTCpUMaTP6/pnUw+IWu6z60c9rE8Yo1Hio=;
-        b=pRjclKwthLAc2WblI4XGyIIHJl1ZVDKYCxsmFvMu89rmK1CB/SygPdvNj2s5DzZgf4
-         cSWp+2p8PI6fgbpyKSqSMjfstu63gKVtOZjk2vYFbZNIqfF50yDABAUdPoQ4Ba0iCrrI
-         0EctVOyHKzb1VVAv3hL2818etH90A8gX4d6ptCIQPvdBnR29t3YB2M09AL1Xi1pH9J9g
-         fPWDjUk0Yw2TIet83NbmhEgrqIF70ULR71HxJb3oT94TOYhkBXOXqKjZ5G6khqKw7rm1
-         Aiy7mLKRSg8rN3G9zwQIG4yLlPiEy6L+EnHEA4E8LVZgaBxt6XhVhWMS4gc155VkriBP
-         Zixg==
-X-Gm-Message-State: AOAM531cIz2ZXOzGwhar90Vdy5YOhUTiK1YkQPeWaojgqn3DQHKkr15l
-        2DjkoEedlfOX+aiorQ0pxNCIN0ovtYfZ7Y/tEGk=
-X-Google-Smtp-Source: ABdhPJwKxWt5anSUjSFWYGVM7XqPJegiwNDZoU2QRI9p6qvQC27hNmeJG7Roo++SXB6oFP7fOtSERg==
-X-Received: by 2002:a17:902:ba92:b029:e3:8358:34c5 with SMTP id k18-20020a170902ba92b02900e3835834c5mr17256541pls.9.1613897752076;
-        Sun, 21 Feb 2021 00:55:52 -0800 (PST)
-Received: from sequencer.hsd1.wa.comcast.net (c-174-61-159-125.hsd1.wa.comcast.net. [174.61.159.125])
-        by smtp.gmail.com with ESMTPSA id 74sm15209131pfw.53.2021.02.21.00.55.51
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=sxti6CnOOSbS39ZOnKJQFnh3i2szvBvlkpT+WOP/J+A=;
+        b=gJDKQ4qzNjV7NV0v3nYKY/QtgtCde8Exl2uN9OD7QItjtOveJzTMP0ctrag1Joz0B5
+         mvAXO59pYxOKo5N6H66x25GV28oalodRyAvx7yKi3jYUPI1OL64jBHIJMFxneQvV2UwJ
+         IxYHkouDQCD0kwj18kuf2TpW8Ak+Y9g0z4Uj3O9w7ZD+Hv/eR7Ry3kyzlcmWqDCuZBEa
+         CtivZvDWAksSgTju52dAFUx1BTVAjNY9LF8MVK9iVWIfkTXj5eKkXWPNxi25mRuqjWhh
+         PzJOG1CPiD5936Y5fhhMAUmNrnHkGB8e8Cw1ug/qjDIuWUOAi3yEXutCzfwSK9ehq5Dc
+         lhew==
+X-Gm-Message-State: AOAM530Adccm39mzVhtUcODC2ouX7NL5ig5O6KQ5RSHWOt8cGecCZru7
+        THfWmLEKH9eYj7mpXIjhDiE=
+X-Google-Smtp-Source: ABdhPJyXsI2ipNwUH991WhQrCW+li5wmjsg924NA5jpk5WTUkxTMReThXidY/6RJ8LcqfetnIjpr0Q==
+X-Received: by 2002:a7b:cb81:: with SMTP id m1mr15506584wmi.117.1613898785363;
+        Sun, 21 Feb 2021 01:13:05 -0800 (PST)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id 6sm29963574wra.63.2021.02.21.01.13.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 00:55:51 -0800 (PST)
-From:   George Harker <george@george-graphics.co.uk>
-To:     alsa-devel@alsa-project.org
-Cc:     George Harker <george@george-graphics.co.uk>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] sound/usb generate midi streaming substream names from jack names
-Date:   Sun, 21 Feb 2021 08:53:35 +0000
-Message-Id: <20210221085336.29788-1-george@george-graphics.co.uk>
-X-Mailer: git-send-email 2.20.1
+        Sun, 21 Feb 2021 01:13:04 -0800 (PST)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Sun, 21 Feb 2021 10:13:03 +0100
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Chuck Lever <chuck.lever@oracle.com>
+Cc:     Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "940821@bugs.debian.org" <940821@bugs.debian.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Bruce Fields <bfields@fieldses.org>,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
+Subject: Re: NFS Caching broken in 4.19.37
+Message-ID: <YDIkH6yVgLoALT6x@eldamar.lan>
+References: <5022bdc4-9f3e-9756-cbca-ada37f88ecc7@cambridgegreys.com>
+ <YDFrN0rZAJBbouly@eldamar.lan>
+ <af5cebbd-74c9-9345-9fe8-253fb96033f6@cambridgegreys.com>
+ <BEBA9809-373A-4172-B4AD-E19D82E56DB1@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BEBA9809-373A-4172-B4AD-E19D82E56DB1@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A number of devices have named substreams which are hard to remember /
-decypher from <device> MIDI n names.  Eg. Korg puts a pass through on
-one substream and iConnectivity devices name the connections.
+Hi,
 
-This makes it easier to connect to the correct device.  Devices which
-handle naming through quirks are unaffected by this change.
+On Sat, Feb 20, 2021 at 08:16:26PM +0000, Chuck Lever wrote:
+> 
+> 
+> > On Feb 20, 2021, at 3:13 PM, Anton Ivanov <anton.ivanov@cambridgegreys.com> wrote:
+> > 
+> > On 20/02/2021 20:04, Salvatore Bonaccorso wrote:
+> >> Hi,
+> >> 
+> >> On Mon, Jul 08, 2019 at 07:19:54PM +0100, Anton Ivanov wrote:
+> >>> Hi list,
+> >>> 
+> >>> NFS caching appears broken in 4.19.37.
+> >>> 
+> >>> The more cores/threads the easier to reproduce. Tested with identical
+> >>> results on Ryzen 1600 and 1600X.
+> >>> 
+> >>> 1. Mount an openwrt build tree over NFS v4
+> >>> 2. Run make -j `cat /proc/cpuinfo | grep vendor | wc -l` ; make clean in a
+> >>> loop
+> >>> 3. Result after 3-4 iterations:
+> >>> 
+> >>> State on the client
+> >>> 
+> >>> ls -laF /var/autofs/local/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+> >>> 
+> >>> total 8
+> >>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+> >>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+> >>> 
+> >>> State as seen on the server (mounted via nfs from localhost):
+> >>> 
+> >>> ls -laF /var/autofs/local/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+> >>> total 12
+> >>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+> >>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+> >>> -rw-r--r-- 1 anivanov anivanov   32 Jul  8 11:40 ipcbuf.h
+> >>> 
+> >>> Actual state on the filesystem:
+> >>> 
+> >>> ls -laF /exports/work/src/openwrt/build_dir/target-mips_24kc_musl/linux-ar71xx_tiny/linux-4.14.125/arch/mips/include/generated/uapi/asm
+> >>> total 12
+> >>> drwxr-xr-x 2 anivanov anivanov 4096 Jul  8 11:40 ./
+> >>> drwxr-xr-x 3 anivanov anivanov 4096 Jul  8 11:40 ../
+> >>> -rw-r--r-- 1 anivanov anivanov   32 Jul  8 11:40 ipcbuf.h
+> >>> 
+> >>> So the client has quite clearly lost the plot. Telling it to drop caches and
+> >>> re-reading the directory shows the file present.
+> >>> 
+> >>> It is possible to reproduce this using a linux kernel tree too, just takes
+> >>> much more iterations - 10+ at least.
+> >>> 
+> >>> Both client and server run 4.19.37 from Debian buster. This is filed as
+> >>> debian bug 931500. I originally thought it to be autofs related, but IMHO it
+> >>> is actually something fundamentally broken in nfs caching resulting in cache
+> >>> corruption.
+> >> According to the reporter downstream in Debian, at
+> >> https://bugs.debian.org/940821#26 thi seem still reproducible with
+> >> more recent kernels than the initial reported. Is there anything Anton
+> >> can provide to try to track down the issue?
+> >> 
+> >> Anton, can you reproduce with current stable series?
+> > 
+> > 100% reproducible with any kernel from 4.9 to 5.4, stable or backports. It may exist in earlier versions, but I do not have a machine with anything before 4.9 to test at present.
+> 
+> Confirming you are varying client-side kernels. Should the Linux
+> NFS client maintainers be Cc'd?
 
-Addresses TODO comment in sound/usb/midi.c
+Ok, agreed. Let's add them as well. NFS client maintainers any ideas
+on how to trackle this?
 
-Signed-off-by: George Harker <george@george-graphics.co.uk>
----
- sound/usb/midi.c | 122 ++++++++++++++++++++++++++++++++++++++---------
- sound/usb/midi.h |   2 +
- 2 files changed, 101 insertions(+), 23 deletions(-)
+> 
+> > From 1-2 make clean && make  cycles to one afternoon depending on the number of machine cores. More cores/threads the faster it does it.
+> > 
+> > I tried playing with protocol minor versions, caching options, etc - it is still reproducible for any nfs4 settings as long as there is client side caching of metadata.
+> > 
+> > A.
+> > 
+> >> 
+> >> Regards,
+> >> Salvatore
+> >> 
+> > 
+> > -- 
+> > Anton R. Ivanov
+> > Cambridgegreys Limited. Registered in England. Company Number 10273661
+> > https://www.cambridgegreys.com/
+> 
+> --
+> Chuck Lever
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 0c23fa6d8..c6651a566 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -47,6 +47,7 @@
- #include <linux/usb.h>
- #include <linux/wait.h>
- #include <linux/usb/audio.h>
-+#include <linux/usb/midi.h>
- #include <linux/module.h>
- 
- #include <sound/core.h>
-@@ -77,23 +78,6 @@ MODULE_AUTHOR("Clemens Ladisch <clemens@ladisch.de>");
- MODULE_DESCRIPTION("USB Audio/MIDI helper module");
- MODULE_LICENSE("Dual BSD/GPL");
- 
--
--struct usb_ms_header_descriptor {
--	__u8  bLength;
--	__u8  bDescriptorType;
--	__u8  bDescriptorSubtype;
--	__u8  bcdMSC[2];
--	__le16 wTotalLength;
--} __attribute__ ((packed));
--
--struct usb_ms_endpoint_descriptor {
--	__u8  bLength;
--	__u8  bDescriptorType;
--	__u8  bDescriptorSubtype;
--	__u8  bNumEmbMIDIJack;
--	__u8  baAssocJackID[];
--} __attribute__ ((packed));
--
- struct snd_usb_midi_in_endpoint;
- struct snd_usb_midi_out_endpoint;
- struct snd_usb_midi_endpoint;
-@@ -1756,12 +1740,68 @@ static void snd_usbmidi_get_port_info(struct snd_rawmidi *rmidi, int number,
- 	}
- }
- 
-+static struct usb_midi_in_jack_descriptor *find_usb_in_jack_descriptor(
-+					struct usb_host_interface *hostif, uint8_t jack_id)
-+{
-+	unsigned char *extra = hostif->extra;
-+	int extralen = hostif->extralen;
-+
-+	while (extralen > 4) {
-+		struct usb_midi_in_jack_descriptor *injd =
-+				(struct usb_midi_in_jack_descriptor *)extra;
-+
-+		if (injd->bLength > 4 &&
-+		    injd->bDescriptorType == USB_DT_CS_INTERFACE &&
-+		    injd->bDescriptorSubtype == UAC_MIDI_IN_JACK &&
-+				injd->bJackID == jack_id)
-+			return injd;
-+		if (!extra[0])
-+			break;
-+		extralen -= extra[0];
-+		extra += extra[0];
-+	}
-+	return NULL;
-+}
-+
-+static struct usb_midi_out_jack_descriptor *find_usb_out_jack_descriptor(
-+					struct usb_host_interface *hostif, uint8_t jack_id)
-+{
-+	unsigned char *extra = hostif->extra;
-+	int extralen = hostif->extralen;
-+
-+	while (extralen > 4) {
-+		struct usb_midi_out_jack_descriptor *outjd =
-+				(struct usb_midi_out_jack_descriptor *)extra;
-+
-+		if (outjd->bLength > 4 &&
-+		    outjd->bDescriptorType == USB_DT_CS_INTERFACE &&
-+		    outjd->bDescriptorSubtype == UAC_MIDI_OUT_JACK &&
-+				outjd->bJackID == jack_id)
-+			return outjd;
-+		if (!extra[0])
-+			break;
-+		extralen -= extra[0];
-+		extra += extra[0];
-+	}
-+	return NULL;
-+}
-+
- static void snd_usbmidi_init_substream(struct snd_usb_midi *umidi,
--				       int stream, int number,
-+				       int stream, int number, int jack_id,
- 				       struct snd_rawmidi_substream **rsubstream)
- {
- 	struct port_info *port_info;
- 	const char *name_format;
-+	struct usb_interface *intf;
-+	struct usb_host_interface *hostif;
-+	struct usb_midi_in_jack_descriptor *injd;
-+	struct usb_midi_out_jack_descriptor *outjd;
-+	uint8_t jack_name_buf[32];
-+	uint8_t *default_jack_name = "MIDI";
-+	uint8_t *jack_name = default_jack_name;
-+	uint8_t iJack;
-+	size_t sz;
-+	int res;
- 
- 	struct snd_rawmidi_substream *substream =
- 		snd_usbmidi_find_substream(umidi, stream, number);
-@@ -1771,11 +1811,35 @@ static void snd_usbmidi_init_substream(struct snd_usb_midi *umidi,
- 		return;
- 	}
- 
--	/* TODO: read port name from jack descriptor */
-+	intf = umidi->iface;
-+	if (intf && jack_id >= 0) {
-+		hostif = intf->cur_altsetting;
-+		iJack = 0;
-+		if (stream != SNDRV_RAWMIDI_STREAM_OUTPUT) {
-+			/* in jacks connect to outs */
-+			outjd = find_usb_out_jack_descriptor(hostif, jack_id);
-+			if (outjd) {
-+				sz = USB_DT_MIDI_OUT_SIZE(outjd->bNrInputPins);
-+				iJack = *(((uint8_t *) outjd) + sz - 1);
-+			}
-+		} else {
-+			/* and out jacks connect to ins */
-+			injd = find_usb_in_jack_descriptor(hostif, jack_id);
-+			if (injd)
-+				iJack = injd->iJack;
-+		}
-+		if (iJack != 0) {
-+			res = usb_string(umidi->dev, iJack, jack_name_buf, 32);
-+			if (res)
-+				jack_name = jack_name_buf;
-+		}
-+	}
-+
- 	port_info = find_port_info(umidi, number);
--	name_format = port_info ? port_info->name : "%s MIDI %d";
-+	name_format = port_info ? port_info->name :
-+		(jack_name != default_jack_name  ? "%s %s" : "%s %s %d");
- 	snprintf(substream->name, sizeof(substream->name),
--		 name_format, umidi->card->shortname, number + 1);
-+		 name_format, umidi->card->shortname, jack_name, number + 1);
- 
- 	*rsubstream = substream;
- }
-@@ -1810,6 +1874,7 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
- 				snd_usbmidi_init_substream(umidi,
- 							   SNDRV_RAWMIDI_STREAM_OUTPUT,
- 							   out_ports,
-+							   endpoints[i].assoc_out_jacks[j],
- 							   &umidi->endpoints[i].out->ports[j].substream);
- 				++out_ports;
- 			}
-@@ -1817,6 +1882,7 @@ static int snd_usbmidi_create_endpoints(struct snd_usb_midi *umidi,
- 				snd_usbmidi_init_substream(umidi,
- 							   SNDRV_RAWMIDI_STREAM_INPUT,
- 							   in_ports,
-+							   endpoints[i].assoc_in_jacks[j],
- 							   &umidi->endpoints[i].in->ports[j].substream);
- 				++in_ports;
- 			}
-@@ -1862,7 +1928,7 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
- 	struct usb_host_endpoint *hostep;
- 	struct usb_endpoint_descriptor *ep;
- 	struct usb_ms_endpoint_descriptor *ms_ep;
--	int i, epidx;
-+	int i, j, epidx;
- 
- 	intf = umidi->iface;
- 	if (!intf)
-@@ -1875,7 +1941,7 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
- 	    ms_header->bDescriptorType == USB_DT_CS_INTERFACE &&
- 	    ms_header->bDescriptorSubtype == UAC_HEADER)
- 		dev_dbg(&umidi->dev->dev, "MIDIStreaming version %02x.%02x\n",
--			    ms_header->bcdMSC[1], ms_header->bcdMSC[0]);
-+			    ((uint8_t *)&ms_header->bcdMSC)[1], ((uint8_t *)&ms_header->bcdMSC)[0]);
- 	else
- 		dev_warn(&umidi->dev->dev,
- 			 "MIDIStreaming interface descriptor not found\n");
-@@ -1911,6 +1977,10 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
- 				endpoints[epidx].out_interval = 1;
- 			endpoints[epidx].out_cables =
- 				(1 << ms_ep->bNumEmbMIDIJack) - 1;
-+			for (j = 0; j < ms_ep->bNumEmbMIDIJack; ++j)
-+				endpoints[epidx].assoc_out_jacks[j] = ms_ep->baAssocJackID[j];
-+			for (; j < 0x10; ++j)
-+				endpoints[epidx].assoc_out_jacks[j] = -1;
- 			dev_dbg(&umidi->dev->dev, "EP %02X: %d jack(s)\n",
- 				ep->bEndpointAddress, ms_ep->bNumEmbMIDIJack);
- 		} else {
-@@ -1928,6 +1998,10 @@ static int snd_usbmidi_get_ms_info(struct snd_usb_midi *umidi,
- 				endpoints[epidx].in_interval = 1;
- 			endpoints[epidx].in_cables =
- 				(1 << ms_ep->bNumEmbMIDIJack) - 1;
-+			for (j = 0; j < ms_ep->bNumEmbMIDIJack; ++j)
-+				endpoints[epidx].assoc_in_jacks[j] = ms_ep->baAssocJackID[j];
-+			for (; j < 0x10; ++j)
-+				endpoints[epidx].assoc_in_jacks[j] = -1;
- 			dev_dbg(&umidi->dev->dev, "EP %02X: %d jack(s)\n",
- 				ep->bEndpointAddress, ms_ep->bNumEmbMIDIJack);
- 		}
-@@ -2244,11 +2318,13 @@ static int snd_usbmidi_create_endpoints_midiman(struct snd_usb_midi *umidi,
- 			snd_usbmidi_init_substream(umidi,
- 						   SNDRV_RAWMIDI_STREAM_OUTPUT,
- 						   cable,
-+						   -1 /* prevent trying to find jack */,
- 						   &umidi->endpoints[cable & 1].out->ports[cable].substream);
- 		if (endpoint->in_cables & (1 << cable))
- 			snd_usbmidi_init_substream(umidi,
- 						   SNDRV_RAWMIDI_STREAM_INPUT,
- 						   cable,
-+						   -1 /* prevent trying to find jack */,
- 						   &umidi->endpoints[0].in->ports[cable].substream);
- 	}
- 	return 0;
-diff --git a/sound/usb/midi.h b/sound/usb/midi.h
-index 8c38aec22..3f153195c 100644
---- a/sound/usb/midi.h
-+++ b/sound/usb/midi.h
-@@ -13,6 +13,8 @@ struct snd_usb_midi_endpoint_info {
- 	uint8_t  in_interval;
- 	uint16_t out_cables;	/* bitmask */
- 	uint16_t in_cables;	/* bitmask */
-+	int16_t  assoc_in_jacks[16];
-+	int16_t  assoc_out_jacks[16];
- };
- 
- /* for QUIRK_MIDI_YAMAHA, data is NULL */
--- 
-2.20.1
-
+Regards,
+Salvatore
