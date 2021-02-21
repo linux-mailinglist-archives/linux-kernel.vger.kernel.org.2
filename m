@@ -2,99 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 987C0320AE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:06:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DF89320AF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Feb 2021 15:37:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhBUOGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 09:06:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229945AbhBUOFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 09:05:54 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0315061481;
-        Sun, 21 Feb 2021 14:05:10 +0000 (UTC)
-Date:   Sun, 21 Feb 2021 14:05:07 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     William Breathitt Gray <vilhelm.gray@gmail.com>
-Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v8 19/22] counter: Implement extension*_name sysfs
- attributes
-Message-ID: <20210221140507.0a5ef57f@archlinux>
-In-Reply-To: <YC98GTwzwt+pkzMO@shinobu>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
-        <c9b55d1cff6acac692a7853b0a25777ecf017b12.1613131238.git.vilhelm.gray@gmail.com>
-        <20210214180913.05bd3498@archlinux>
-        <YC98GTwzwt+pkzMO@shinobu>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229907AbhBUOXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 09:23:22 -0500
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49589 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhBUOXU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 09:23:20 -0500
+X-Originating-IP: 2.7.49.219
+Received: from debian.home (lfbn-lyo-1-457-219.w2-7.abo.wanadoo.fr [2.7.49.219])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id C6A621BF207;
+        Sun, 21 Feb 2021 14:22:34 +0000 (UTC)
+From:   Alexandre Ghiti <alex@ghiti.fr>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Alexandre Ghiti <alex@ghiti.fr>
+Subject: [PATCH] riscv: Get rid of MAX_EARLY_MAPPING_SIZE
+Date:   Sun, 21 Feb 2021 09:22:33 -0500
+Message-Id: <20210221142233.3661-1-alex@ghiti.fr>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021 17:51:37 +0900
-William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+At early boot stage, we have a whole PGDIR to map the kernel, so there
+is no need to restrict the early mapping size to 128MB. Removing this
+define also allows us to simplify some compile time logic.
 
-> On Sun, Feb 14, 2021 at 06:09:13PM +0000, Jonathan Cameron wrote:
-> > On Fri, 12 Feb 2021 21:13:43 +0900
-> > William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
-> >   
-> > > The Generic Counter chrdev interface expects users to supply extension
-> > > IDs in order to select extensions for requests. In order for users to
-> > > know what extension ID belongs to which extension this information must
-> > > be exposed. The extension*_name attribute provides a way for users to
-> > > discover what extension ID belongs to which extension by reading the
-> > > respective extension name for an extension ID.
-> > > 
-> > > Cc: David Lechner <david@lechnology.com>
-> > > Cc: Gwendal Grignou <gwendal@chromium.org>
-> > > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > > ---
-> > >  Documentation/ABI/testing/sysfs-bus-counter |  9 ++++
-> > >  drivers/counter/counter-sysfs.c             | 51 +++++++++++++++++----
-> > >  2 files changed, 50 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-bus-counter b/Documentation/ABI/testing/sysfs-bus-counter
-> > > index 6353f0a2f8f8..847e96f19d19 100644
-> > > --- a/Documentation/ABI/testing/sysfs-bus-counter
-> > > +++ b/Documentation/ABI/testing/sysfs-bus-counter
-> > > @@ -100,6 +100,15 @@ Description:
-> > >  		Read-only attribute that indicates whether excessive noise is
-> > >  		present at the channel Y counter inputs.
-> > >  
-> > > +What:		/sys/bus/counter/devices/counterX/countY/extensionZ_name
-> > > +What:		/sys/bus/counter/devices/counterX/extensionZ_name
-> > > +What:		/sys/bus/counter/devices/counterX/signalY/extensionZ_name
-> > > +KernelVersion:	5.13
-> > > +Contact:	linux-iio@vger.kernel.org
-> > > +Description:
-> > > +		Read-only attribute that indicates the component name of
-> > > +		Extension Z.  
-> > 
-> > Good to say what form this takes.  
-> 
-> Do you mean a description like this: "Read-only string attribute that
-> indicates the component name of Extension Z"?
+This fixes large kernel mappings with a size greater than 128MB, as it
+is the case for syzbot kernels whose size was just ~130MB.
 
-My expectation would be that the possible strings are tightly constrained
-(perhaps via review). So I'd like to see what they are and a brief description
-of what each one means.
+Note that on rv64, for now, we are then limited to PGDIR size for early
+mapping as we can't use PGD mappings (see [1]). That should be enough
+given the relative small size of syzbot kernels compared to PGDIR_SIZE
+which is 1GB.
 
-Jonathan
+[1] https://lore.kernel.org/lkml/20200603153608.30056-1-alex@ghiti.fr/
 
-> 
-> William Breathitt Gray
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+---
+ arch/riscv/mm/init.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
+
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index f9f9568d689e..f81f813b9603 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -226,8 +226,6 @@ pgd_t swapper_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+ pgd_t trampoline_pg_dir[PTRS_PER_PGD] __page_aligned_bss;
+ pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
+ 
+-#define MAX_EARLY_MAPPING_SIZE	SZ_128M
+-
+ pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
+ 
+ void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
+@@ -302,13 +300,7 @@ static void __init create_pte_mapping(pte_t *ptep,
+ 
+ pmd_t trampoline_pmd[PTRS_PER_PMD] __page_aligned_bss;
+ pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
+-
+-#if MAX_EARLY_MAPPING_SIZE < PGDIR_SIZE
+-#define NUM_EARLY_PMDS		1UL
+-#else
+-#define NUM_EARLY_PMDS		(1UL + MAX_EARLY_MAPPING_SIZE / PGDIR_SIZE)
+-#endif
+-pmd_t early_pmd[PTRS_PER_PMD * NUM_EARLY_PMDS] __initdata __aligned(PAGE_SIZE);
++pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+ pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
+ 
+ static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
+@@ -330,11 +322,9 @@ static pmd_t *get_pmd_virt_late(phys_addr_t pa)
+ 
+ static phys_addr_t __init alloc_pmd_early(uintptr_t va)
+ {
+-	uintptr_t pmd_num;
++	BUG_ON((va - PAGE_OFFSET) >> PGDIR_SHIFT);
+ 
+-	pmd_num = (va - PAGE_OFFSET) >> PGDIR_SHIFT;
+-	BUG_ON(pmd_num >= NUM_EARLY_PMDS);
+-	return (uintptr_t)&early_pmd[pmd_num * PTRS_PER_PMD];
++	return (uintptr_t)early_pmd;
+ }
+ 
+ static phys_addr_t __init alloc_pmd_fixmap(uintptr_t va)
+@@ -452,7 +442,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ 	uintptr_t va, pa, end_va;
+ 	uintptr_t load_pa = (uintptr_t)(&_start);
+ 	uintptr_t load_sz = (uintptr_t)(&_end) - load_pa;
+-	uintptr_t map_size = best_map_size(load_pa, MAX_EARLY_MAPPING_SIZE);
++	uintptr_t map_size;
+ #ifndef __PAGETABLE_PMD_FOLDED
+ 	pmd_t fix_bmap_spmd, fix_bmap_epmd;
+ #endif
+@@ -464,12 +454,11 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+ 	 * Enforce boot alignment requirements of RV32 and
+ 	 * RV64 by only allowing PMD or PGD mappings.
+ 	 */
+-	BUG_ON(map_size == PAGE_SIZE);
++	map_size = PMD_SIZE;
+ 
+ 	/* Sanity check alignment and size */
+ 	BUG_ON((PAGE_OFFSET % PGDIR_SIZE) != 0);
+ 	BUG_ON((load_pa % map_size) != 0);
+-	BUG_ON(load_sz > MAX_EARLY_MAPPING_SIZE);
+ 
+ 	pt_ops.alloc_pte = alloc_pte_early;
+ 	pt_ops.get_pte_virt = get_pte_virt_early;
+-- 
+2.20.1
 
