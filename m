@@ -2,103 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D96232204A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:39:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C32532204C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:39:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhBVTik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:38:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231397AbhBVTib (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:38:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDD564E12;
-        Mon, 22 Feb 2021 19:37:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614022670;
-        bh=QxlYfneRY2HBN6KTXEA8fk9V3REnEK8ST+NRSecETSw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cTAtP66vodXx5Id4YRl0vwCatSI5W9JhzJWWumCv6O/pb+0D0n51Pd0K/IKDH7/Sf
-         2cbmdDdLkas6QN0oSkiETzVXAbySDkV1DZ9Fj516V3TfG2rmf5+DYQqKj+pcZnsAym
-         f/UECmj+OolANVgK0/aoTDKdaMeA8+HS0JWllCbHTvcz46qQg4SgIqxJ8xpC0Br2OO
-         0b8+UzLKd4RDTONrRiBeqX1R2guRlhoTH10Geq70ZDGyM080Ro3DDrxhxS3dSFHIum
-         bBBbYPodP5neobHfWt/gMut9yQfddpYE+HKyrSebIMxHezN73JO73m8W1hbDaUN2hm
-         gUO40DbQKrgxg==
-Date:   Mon, 22 Feb 2021 12:37:49 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: clang-12: tun: Unknown symbol _GLOBAL_OFFSET_TABLE_ (err -2)
-Message-ID: <20210222193749.GA2954@24bbad8f3778>
-References: <CA+G9fYuE4ELVDju=LESHnphL4Z2DT5YQjdh9rNgr5D1x5gZxgg@mail.gmail.com>
+        id S233073AbhBVTiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:38:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232983AbhBVTiu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:38:50 -0500
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96FFCC06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:38:09 -0800 (PST)
+Received: by mail-il1-x12e.google.com with SMTP id o1so4996555ila.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:38:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lCpqEV3eW8CcyGSmXvovayWJLt4fKp6FGKh4rVVK4UQ=;
+        b=0s6MksYdEfGF0ZiiNsEafPdAgPr0ygnxD+aBaBry+AlmjnJwzoKo5loodzunHaCYBd
+         pOa0yzaJk/zc85HljsBFIx/kKQW7Bwwtz1Dq70hY8wJ0nMtqmqgXm1o3YsmEHRD99sxC
+         +wT576ok11KhJEINoGZYaoB59TweOua7g86d+Nz8ChFxPSws8qQ55ymOVf66M/D2rr6J
+         fYyWTz3cPluKLhlJLgNjHmxr6a52Yp4aAtT4/1wN5Eih/xPknK8OYXmlC4Fax8lkRVzY
+         sYiDb93Y7ErLN9EblEcuiHW8qyBXiElBCA6+PHd/Tuz5r0gY5rFdbn0lL4KhyUEV6dvG
+         7Geg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lCpqEV3eW8CcyGSmXvovayWJLt4fKp6FGKh4rVVK4UQ=;
+        b=XpxxJYL/teixHSXV4ovu0JyYLYBfwmE8D+IidtVFjTkozTZxJt/JHl2XwiIkJ8FaLj
+         4GOi1YJ9OMCZ4bNrwUHMA78e/Q35LfZws/fcNVtSZIIErlQj3BWIbyHnMcpaOZ/nBwLz
+         e/BOvl6hiJd7FplWe+MUcuXzQ8249KZoD1OUVobIBCbHSTUB452D4Jbe317kVfv1WGGJ
+         XDpxV6WeGIbWx8Az7Qke8KeANrk808pjVloE0k3jTdTkUUz94NEKpDFIKl5vHVjYkuTD
+         qcS81/h5g4BN1Iw0zD1D7gRLKbUmz12/bLut8uIV+8dVP5B+Wf0Dq7zCYD/GKIQGNk3P
+         95kQ==
+X-Gm-Message-State: AOAM530jqmqW3BZyN4KFMILtr/1qxCQPLKXWJuoPewPAvZuIg5580d85
+        6hY8Imspzv3hFYTZRja4HL9pOw==
+X-Google-Smtp-Source: ABdhPJzhF7sCROPKsaZ5xG0H1UsTGfn1Cgg6gr+MFUVNyhC49BkqhWuGUImqQ0L8J9LD1DcIPcxYiQ==
+X-Received: by 2002:a05:6e02:586:: with SMTP id c6mr9184545ils.106.1614022688906;
+        Mon, 22 Feb 2021 11:38:08 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id j1sm11850949ilu.78.2021.02.22.11.38.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 11:38:08 -0800 (PST)
+Subject: Re: [PATCH v2] kyber: introduce kyber_depth_updated()
+To:     Yang Yang <yang.yang@vivo.com>,
+        Omar Sandoval <osandov@osandov.com>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     onlyfever@icloud.com
+References: <20210205091311.129498-1-yang.yang@vivo.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1f94990f-2732-547a-09f4-42d5a6ab77d7@kernel.dk>
+Date:   Mon, 22 Feb 2021 12:38:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYuE4ELVDju=LESHnphL4Z2DT5YQjdh9rNgr5D1x5gZxgg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210205091311.129498-1-yang.yang@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 01:01:16AM +0530, Naresh Kamboju wrote:
-> Following test regressions reported after upgrade to clang-12 from clang-10.
-> Regression detected on Linux mainline and stable-rc 5.4, 5.10 and 5.11.
+On 2/5/21 2:13 AM, Yang Yang wrote:
+> Hang occurs when user changes the scheduler queue depth, by writing to
+> the 'nr_requests' sysfs file of that device.
 > 
-> qemu-x86_64-clang-12 failed test cases,
->   ltp-containers-tests:
->     * netns_breakns_ip_ipv4_ioctl
->     * netns_breakns_ip_ipv4_netlink
->     * netns_breakns_ip_ipv6_ioctl
->     * netns_breakns_ip_ipv6_netlink
->     * netns_breakns_ns_exec_ipv4_ioctl
->     * netns_breakns_ns_exec_ipv4_netlink
->     * netns_breakns_ns_exec_ipv6_ioctl
->     * netns_breakns_ns_exec_ipv6_netlink
->     * netns_comm_ip_ipv4_ioctl
->     * netns_comm_ip_ipv4_netlink
->     * netns_comm_ip_ipv6_ioctl
->     * netns_comm_ip_ipv6_netlink
->     * netns_comm_ns_exec_ipv4_ioctl
->     * netns_comm_ns_exec_ipv4_netlink
->     * netns_comm_ns_exec_ipv6_ioctl
->     * netns_comm_ns_exec_ipv6_netlink
->     * netns_netlink
+> The details of the environment that we found the problem are as follows:
+>   an eMMC block device
+>   total driver tags: 16
+>   default queue_depth: 32
+>   kqd->async_depth initialized in kyber_init_sched() with queue_depth=32
 > 
-> Test error log:
-> --------------
-> [   19.017163] tun: Unknown symbol _GLOBAL_OFFSET_TABLE_ (err -2)
-> open: No such device
-> netns_netlink    1  TBROK  :  netns_netlink.c:143: system() failed
-> netns_netlink    2  TBROK  :  netns_netlink.c:143: Remaining cases broken
-> netns_breakns 1 TINFO: timeout per run is 0h 15m 0s
-> [   19.070922] veth: Unknown symbol _GLOBAL_OFFSET_TABLE_ (err -2)
-> [   19.095171] veth: Unknown symbol _GLOBAL_OFFSET_TABLE_ (err -2)
-> Error: Unknown device type.[   19.101364] ip (751) used greatest stack
-> depth: 12088 bytes left
+> Then we change queue_depth to 256, by writing to the 'nr_requests' sysfs
+> file. But kqd->async_depth don't be updated after queue_depth changes.
+> Now the value of async depth is too small for queue_depth=256, this may
+> cause hang.
 > 
-> netns_breakns 1 TBROK: unable to create veth pair devices
-> Cannot find device \"veth0\"
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> 
-> Full test error log link,
-> -------------------------
-> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11-13-g6380656c9227/testrun/4002283/suite/ltp-containers-tests/test/netns_breakns_ip_ipv4_ioctl/log
-> https://qa-reports.linaro.org/lkft/linux-mainline-master/build/v5.11-2899-g2c405d1ab8b3/testrun/3994442/suite/ltp-containers-tests/test/netns_breakns_ip_ipv4_ioctl/log
-> 
-> -- 
-> Linaro LKFT
-> https://lkft.linaro.org
+> This patch introduces kyber_depth_updated(), so that kyber can update
+> async depth when queue depth changes.
 
-Thanks for the report. This has been fixed in -next and has a CC for
-stable when it is merged into mainline:
+Applied, thanks.
 
-https://git.kernel.org/next/linux-next/c/ebfac7b778fac8b0e8e92ec91d0b055f046b4604
-https://github.com/ClangBuiltLinux/linux/issues/1250
+-- 
+Jens Axboe
 
-Cheers,
-Nathan
