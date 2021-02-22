@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE3623222C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F993222CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhBVXs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 18:48:27 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:52774 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230125AbhBVXsR (ORCPT
+        id S231494AbhBVXur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 18:50:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhBVXuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 18:48:17 -0500
-Received: from 1.general.cascardo.us.vpn ([10.172.70.58] helo=mussarela)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <cascardo@canonical.com>)
-        id 1lEKvL-0000qH-TA; Mon, 22 Feb 2021 23:47:32 +0000
-Date:   Mon, 22 Feb 2021 20:47:26 -0300
-From:   Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-To:     Felipe Balbi <balbi@kernel.org>
-Cc:     Jim Lin <jilin@nvidia.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] usb: gadget: configfs: Fix KASAN use-after-free
-Message-ID: <20210222234726.GA166848@mussarela>
-References: <1484647168-30135-1-git-send-email-jilin@nvidia.com>
- <878tqakmiy.fsf@linux.intel.com>
+        Mon, 22 Feb 2021 18:50:40 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CB15C061574;
+        Mon, 22 Feb 2021 15:50:00 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkzSK0pcNz9sSC;
+        Tue, 23 Feb 2021 10:49:52 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614037795;
+        bh=pX0WYdPuB6nv8cg3kUdrKd2A841m2wNDY//CSlQG4cE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ljC/1Jb1//43GKjkVW+9pgrLIXZFAJko8/80nMMcm83KyLX/m5oU9C4RSW0V3MX7U
+         VDG3RiUlXFC1GoMVDRVenIA0Ajhwtvres0G3ypg5WWDoaChMZZmdxVc+Nv4gxuFrfZ
+         y1thulL7ip3Oh14RWx8wpT1foUsZ+T6GDSRNr/ftz97RwVxZ1iwf/UX378la7XvcSB
+         PeRCU4YcUzwOgNNBNwBb0wyVD2yaiZQ46au2HlnVj8m1ArX6oi1vAwcW8bTwbWZVWk
+         1PI6oECDqMaRp1Wl3VObdcVybG5ch04a3DjT1cLUJrdjBd3al4Gcq1vFiSQVf+uzTp
+         xnPwCOGr+4O0Q==
+Date:   Tue, 23 Feb 2021 10:49:50 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kees Cook <keescook@chromium.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: linux-next: manual merge of the kspp tree with the mips tree
+Message-ID: <20210223104950.1f754320@canb.auug.org.au>
+In-Reply-To: <20210215074726.60c45281@canb.auug.org.au>
+References: <20210118150804.378ac9f3@canb.auug.org.au>
+        <20210215074726.60c45281@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <878tqakmiy.fsf@linux.intel.com>
+Content-Type: multipart/signed; boundary="Sig_/_L.V5b/u7kTB1oSiHwMFBW2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 17, 2017 at 12:29:09PM +0200, Felipe Balbi wrote:
-> 
-> Hi,
-> 
-> Jim Lin <jilin@nvidia.com> writes:
-> > When gadget is disconnected, running sequence is like this.
-> > . composite_disconnect
-> > . Call trace:
-> >   usb_string_copy+0xd0/0x128
-> >   gadget_config_name_configuration_store+0x4
-> >   gadget_config_name_attr_store+0x40/0x50
-> >   configfs_write_file+0x198/0x1f4
-> >   vfs_write+0x100/0x220
-> >   SyS_write+0x58/0xa8
-> > . configfs_composite_unbind
-> > . configfs_composite_bind
-> >
-> > In configfs_composite_bind, it has
-> > "cn->strings.s = cn->configuration;"
-> >
-> > When usb_string_copy is invoked. it would
-> > allocate memory, copy input string, release previous pointed memory space,
-> > and use new allocated memory.
-> >
-> > When gadget is connected, host sends down request to get information.
-> > Call trace:
-> >   usb_gadget_get_string+0xec/0x168
-> >   lookup_string+0x64/0x98
-> >   composite_setup+0xa34/0x1ee8
-> >
-> > If gadget is disconnected and connected quickly, in the failed case,
-> > cn->configuration memory has been released by usb_string_copy kfree but
-> > configfs_composite_bind hasn't been run in time to assign new allocated
-> > "cn->configuration" pointer to "cn->strings.s".
-> >
-> > When "strlen(s->s) of usb_gadget_get_string is being executed, the dangling
-> > memory is accessed, "BUG: KASAN: use-after-free" error occurs.
-> >
-> > Signed-off-by: Jim Lin <jilin@nvidia.com>
-> > ---
-> > Changes in v2:
-> > Changes in v3:
-> >  Change commit description
-> 
-> well, I need to be sure you tested this with Linus' tree. The reason I'm
-> asking is because this could be a bug caused by Android changes. From
-> your previous patch, the problem started with android_setup().
-> 
-> Please test with v4.10-rc4 and any configfs-based gadget.
-> 
-> -- 
-> balbi
+--Sig_/_L.V5b/u7kTB1oSiHwMFBW2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I tested this with dummy_hcd on top of a 5.8 kernel and I got lsusb to respond
-with an error instead of the right manufacturer string, after overwriting such
-a string after binding.
+Hi all,
 
-With the patch applied, after the string is overwritten, lsusb will show the
-updated string.
+On Mon, 15 Feb 2021 07:47:26 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> On Mon, 18 Jan 2021 15:08:04 +1100 Stephen Rothwell <sfr@canb.auug.org.au=
+> wrote:
+> >=20
+> > Today's linux-next merge of the kspp tree got a conflict in:
+> >=20
+> >   include/asm-generic/vmlinux.lds.h
+> >=20
+> > between commits:
+> >=20
+> >   9a427556fb8e ("vmlinux.lds.hf41b233de0ae: catch compound literals int=
+o data and BSS")
+> >   f41b233de0ae ("vmlinux.lds.h: catch UBSAN's "unnamed data" into data")
+> >=20
+> > from the mips tree and commit:
+> >=20
+> >   dc5723b02e52 ("kbuild: add support for Clang LTO")
+> >=20
+> > from the kspp tree.
+> >=20
+> > I fixed it up (9a427556fb8e and dc5723b02e52 made the same change to
+> > DATA_MAIN, which conflicted with the change in f41b233de0ae) and can
+> > carry the fix as necessary. This is now fixed as far as linux-next is
+> > concerned, but any non trivial conflicts should be mentioned to your
+> > upstream maintainer when your tree is submitted for merging. You may
+> > also want to consider cooperating with the maintainer of the
+> > conflicting tree to minimise any particularly complex conflicts. =20
+>=20
+> With the merge window about to open, this is a reminder that this
+> conflict still exists.
 
-Because of commit 81c7462883b0cc0a4eeef0687f80ad5b5baee5f6 ("USB: replace
-hardcode maximum usb string length by definition"), the patch will need a
-fixup. Should I send a v2 with my sign-off?
+This is now a conflict between the kspp tree and Linus' tree.
 
-Thanks.
-Cascardo.
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_L.V5b/u7kTB1oSiHwMFBW2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0Qx4ACgkQAVBC80lX
+0GzvaAf/exYfZ63fFOXiiAaFP0uHEBIhRhM1t9R/hMH1ktuFdwluNFDAWb6tryej
+CJt3LHk8CZTyvc4MlaZgAWW/VaGFyJKsN+EjBl5Q8oIMyn2RlazhZfLx7ZA3n1jL
+d1q9xh4fK8xhKxzF0TAlsTm2QumF7b5pl7YOy6a7ISmc5qmw25UP7goVve1bHrYH
+/QbYVIXBi9azya06tYhrMYd9+HlD7tq7wibcoHIDtb+uIRnIldxrEMQXmMzkYSPQ
+M1gGAsLMHoy54ClkMkmvKWoaSwGsUrK9ZpkkaLomJM1ZTtJUzJcPXVZtPmIKRClc
+NxoSGrm49gW3acu4n124c1w852dJVg==
+=4lJh
+-----END PGP SIGNATURE-----
+
+--Sig_/_L.V5b/u7kTB1oSiHwMFBW2--
