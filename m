@@ -2,81 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893B53211C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250673211C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhBVIIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:08:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230352AbhBVII2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230431AbhBVIIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:08:53 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52930 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230135AbhBVII2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 03:08:28 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAC9C061574;
-        Mon, 22 Feb 2021 00:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=Tr1ML1nr5oksMQv9KAcH0/1j9EyorwBVbrTZIi5dm7Q=; b=GMIURamVFWbPlGldFnkn9UjeIR
-        7QCCKOgZf2pEfTnLGRQKw1Q6kuUZJgfFd0PUnSV1RbXyPbrjPbkZBTsrkGnwrsHmhgIzcTHBMyWDK
-        Ota8t2vmyf40yFBfFJPUzEhOprfhZ+6VYn/V76LpQLyS9b3diYTIPOMK3FeGLquaqWa+3+6QvFmLU
-        l+tfb7AC+zaOiyu6pK8LwRhomgmsTMWiHUdSxB+DZ+f+s9AbKiAJco0XRFRSFXgEsN2MaXmaijWJY
-        8cvk4Lyk2yAyE54F/QDi3YkHGhQflfDi3+d0j4me1+KyKji4f+Am2k0Wn5p0gDs0anmprm7z1wD/9
-        5Uo0hJ6A==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lE6Ft-0001kQ-48; Mon, 22 Feb 2021 08:07:45 +0000
-Subject: Re: [PATCH] drivers: input: mouse: Change postive to positive in the
- file alps.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, pali@kernel.org,
-        dmitry.torokhov@gmail.com, rydberg@bitmath.org,
-        colin.king@canonical.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210222075439.32201-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <97932a41-0d3b-adaa-3b08-35c6e81763ff@infradead.org>
-Date:   Mon, 22 Feb 2021 00:07:40 -0800
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8FF14AF59;
+        Mon, 22 Feb 2021 08:07:46 +0000 (UTC)
+Subject: Re: [PATCH] efifb: Ensure graphics device for efifb stays at PCI D0
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>, pjones@redhat.com
+Cc:     Alex Deucher <alexdeucher@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:EFIFB FRAMEBUFFER DRIVER" <linux-fbdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>
+References: <20210129084327.986630-1-kai.heng.feng@canonical.com>
+ <CADnq5_MduzcezmAjEGK0X7bDiY98f68s8roXc6gOTWjcpNC9Rw@mail.gmail.com>
+ <CAAd53p4y+A5Bv4nUKZw+kzrmxcYm8DXrY06QqkU4iopj0dRrzw@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <5f2dfeb9-7600-2426-bd50-0da48eb72b5f@suse.de>
+Date:   Mon, 22 Feb 2021 09:07:45 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210222075439.32201-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <CAAd53p4y+A5Bv4nUKZw+kzrmxcYm8DXrY06QqkU4iopj0dRrzw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="kkjvE4ePNJC9ui3YvsjoIitrxUNRBbqUE"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/21/21 11:54 PM, Bhaskar Chowdhury wrote:
-> 
-> s/postive/positive/
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--kkjvE4ePNJC9ui3YvsjoIitrxUNRBbqUE
+Content-Type: multipart/mixed; boundary="Wrd47MzSapqF5RXxa0t5fv0RaF2SAKqli";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>, pjones@redhat.com
+Cc: Alex Deucher <alexdeucher@gmail.com>, Hans de Goede
+ <hdegoede@redhat.com>,
+ "open list:EFIFB FRAMEBUFFER DRIVER" <linux-fbdev@vger.kernel.org>,
+ open list <linux-kernel@vger.kernel.org>,
+ "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>
+Message-ID: <5f2dfeb9-7600-2426-bd50-0da48eb72b5f@suse.de>
+Subject: Re: [PATCH] efifb: Ensure graphics device for efifb stays at PCI D0
+References: <20210129084327.986630-1-kai.heng.feng@canonical.com>
+ <CADnq5_MduzcezmAjEGK0X7bDiY98f68s8roXc6gOTWjcpNC9Rw@mail.gmail.com>
+ <CAAd53p4y+A5Bv4nUKZw+kzrmxcYm8DXrY06QqkU4iopj0dRrzw@mail.gmail.com>
+In-Reply-To: <CAAd53p4y+A5Bv4nUKZw+kzrmxcYm8DXrY06QqkU4iopj0dRrzw@mail.gmail.com>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+--Wrd47MzSapqF5RXxa0t5fv0RaF2SAKqli
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  drivers/input/mouse/alps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/input/mouse/alps.c b/drivers/input/mouse/alps.c
-> index b067bfd2699c..4a6b33bbe7ea 100644
-> --- a/drivers/input/mouse/alps.c
-> +++ b/drivers/input/mouse/alps.c
-> @@ -986,7 +986,7 @@ static void alps_get_finger_coordinate_v7(struct input_mt_pos *mt,
->  	case V7_PACKET_ID_TWO:
->  		mt[1].x &= ~0x000F;
->  		mt[1].y |= 0x000F;
-> -		/* Detect false-postive touches where x & y report max value */
-> +		/* Detect false-positive touches where x & y report max value */
->  		if (mt[1].y == 0x7ff && mt[1].x == 0xff0) {
->  			mt[1].x = 0;
->  			/* y gets set to 0 at the end of this function */
-> --
+Hi
+
+Am 22.02.21 um 08:08 schrieb Kai-Heng Feng:
+> On Mon, Feb 1, 2021 at 11:21 PM Alex Deucher <alexdeucher@gmail.com> wr=
+ote:
+>>
+>> On Sat, Jan 30, 2021 at 6:27 AM Kai-Heng Feng
+>> <kai.heng.feng@canonical.com> wrote:
+>>>
+>>> We are seeing root ports on some desktop boards support D3cold for
+>>> discrete graphics card. So when efifb is in use while graphics device=
+
+>>> isn't bound to a driver, PCI and ACPI will put the graphics to D3cold=
+
+>>> when runtime suspend kicks in, makes efifb stop working.
+>>>
+>>> So ensure the graphics device won't be runtime suspended, to keep efi=
+fb
+>>> work all the time.
+>>>
+>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>
+>> Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+>=20
+> A gentle ping...
+
+Thanks for your patch. I've added it to drm-misc-next.
+
+Best regards
+Thomas
+
+>=20
+>>
+>>> ---
+>>>   drivers/video/fbdev/efifb.c | 3 +++
+>>>   1 file changed, 3 insertions(+)
+>>>
+>>> diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.=
+c
+>>> index e57c00824965..19edd7206409 100644
+>>> --- a/drivers/video/fbdev/efifb.c
+>>> +++ b/drivers/video/fbdev/efifb.c
+>>> @@ -16,6 +16,7 @@
+>>>   #include <linux/platform_device.h>
+>>>   #include <linux/printk.h>
+>>>   #include <linux/screen_info.h>
+>>> +#include <linux/pm_runtime.h>
+>>>   #include <video/vga.h>
+>>>   #include <asm/efi.h>
+>>>   #include <drm/drm_utils.h> /* For drm_get_panel_orientation_quirk *=
+/
+>>> @@ -575,6 +576,7 @@ static int efifb_probe(struct platform_device *de=
+v)
+>>>                  goto err_fb_dealoc;
+>>>          }
+>>>          fb_info(info, "%s frame buffer device\n", info->fix.id);
+>>> +       pm_runtime_get_sync(&efifb_pci_dev->dev);
+>>>          return 0;
+>>>
+>>>   err_fb_dealoc:
+>>> @@ -601,6 +603,7 @@ static int efifb_remove(struct platform_device *p=
+dev)
+>>>          unregister_framebuffer(info);
+>>>          sysfs_remove_groups(&pdev->dev.kobj, efifb_groups);
+>>>          framebuffer_release(info);
+>>> +       pm_runtime_put(&efifb_pci_dev->dev);
+>>>
+>>>          return 0;
+>>>   }
+>>> --
+>>> 2.29.2
+>>>
+>>> _______________________________________________
+>>> dri-devel mailing list
+>>> dri-devel@lists.freedesktop.org
+>>> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
--- 
-~Randy
+--Wrd47MzSapqF5RXxa0t5fv0RaF2SAKqli--
 
+--kkjvE4ePNJC9ui3YvsjoIitrxUNRBbqUE
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAzZlEFAwAAAAAACgkQlh/E3EQov+AM
+pQ/+MQ9+NdTxfIS42DvbIjnne9Iax9MelwpXPZMiQiElOdu1sw6c+Ufzi6RONQZqonDvK07vRbAB
+tyZwAkVTamrANyvZomtbVAWb4WVK1DdB939sB8UwA+PY6GPT/QIbFGJkoOfdvy3Frk6kf8cqq0Nk
+CjipsDVkztfkwL2xRDd4Vg4vIVMsYTgVHBhszqCMGSDzDvLqcm44V2gyiV7Vg8MKwFmKVo/L8z3P
+80OdFptq1JtxfvHYAau0r/wM5LyGDeSeisuSs30GSDHT9P4lZ+FbqLhK/xTWJm316CXgMtk2OA4f
+5LyqN9OyAIXxSXylGtxoijZJExXltcub8tHNDZW3sESh4E1WJbVSU6SgpPwHWLuBStsZVYoHC4KO
+N0w+MNSjXY2reoOmAuGyjL6kiWJYzS8B4LNrbyI8X+fV8nV7GBFfGqW7CKC3fkPRa0eXabX8UDYi
+9MUN2TU3Ana6jObm7anUEYHuxNFv3U9Uka7mF2cRwXszt5evBNt3n6QKxgFO/UWM2P1GAaX1tAdJ
+Ob3xax9W9/wtM2ZyH9FabbISS3aOwFdMz9QyJ3hWFPpcx21jK1AhovTTqV5L9SqMw8SdxCK0zX5K
+LY9LSFAAmuMfnHKRcyj57Ohg4tYyHmbpVbYH3Qa6WrRQZELl7zUnRg1PYpW6TuuE0/FzuW7Q63ts
+rAs=
+=astH
+-----END PGP SIGNATURE-----
+
+--kkjvE4ePNJC9ui3YvsjoIitrxUNRBbqUE--
