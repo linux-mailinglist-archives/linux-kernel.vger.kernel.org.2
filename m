@@ -2,161 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D795320F43
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:49:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E5A1320F46
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231701AbhBVBtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
+        id S231731AbhBVBx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbhBVBtn (ORCPT
+        with ESMTP id S230169AbhBVBx4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:49:43 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2107AC061574;
-        Sun, 21 Feb 2021 17:49:03 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id 201so2558931pfw.5;
-        Sun, 21 Feb 2021 17:49:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Hebd6uugVGveygY0H7hjLr9kdJP1KXNvKEA6aicEnDM=;
-        b=sR31DYeKTcPjOerVBQbZ0rno2hEkGvFGxVuoJ8/bhPDuObgh5A3ykBcF/hY1Bv2WEK
-         jyxsSK9OYQedJ4nKyGGJS6NfpxBhBvBinsLW4Ci4B5OSQeBsGwZZWyKqsZ3WZzsyBbne
-         v5lmXuOX0BcxUmpa4ibo572JoK3XI1j7lMEwxi9RHKSqy4NSKmFEVftlpPG5utC1Wcov
-         Td+3L9DHEYNPEBBzxOpY2ods5G3Obx+BBetoWMfIu5Oy/xKHaZ6N3nk1tyv3RyEZSyPB
-         LEFeAOh9obkZwyO12P3bH+0SiI71Byxn3igHYDdcICvc8w+ws/iqe8jkQXdIHd1aMBLb
-         2z+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hebd6uugVGveygY0H7hjLr9kdJP1KXNvKEA6aicEnDM=;
-        b=nnWaoow2J1/YkdeYL2dOtNdnb33PAadDKDVPv2x6mcjGH1Xa/bW5PviN6iRqK459gz
-         OGjm7O1oXJ9DRIW20q/WT4K7QwFgQcIQm+IP+WY7qCEXXYCp6DmBJEo1RUTpI4Ew5s7I
-         TjtTjAbpOct0AAWWLPPkT7CgtX2x3yt4tA/iSsbYvd3TFmX9LjMQaG7EaaHklvOdvBkL
-         kPOMMg9oc5ABUYLzi3cL6ltut9hEXMcfOZMx6iL2iRgN+0TMMSjIzYojKs/ggGzc4ZRl
-         81Ppnkr2+xu36e6Ros/J5dDHJTWRhIkRl7+cnpy0gTGoOdNcSZAwzFNiHgEtPPXgPmdd
-         GQWA==
-X-Gm-Message-State: AOAM532XJCKiP3YFhxHYChb8cuE38Wc0caoTNnYhjyxiEcdTCcYNW+ab
-        DmHkPtb9VJIewSKQjX1r9No=
-X-Google-Smtp-Source: ABdhPJyyxvuNEFtgbC+oGFs9yHjgmuGvCLzyl7/1VLVUySw8WP7BeltcJ0/YrMsoqDrKT42+4+FT5Q==
-X-Received: by 2002:a63:cf05:: with SMTP id j5mr1823111pgg.384.1613958542443;
-        Sun, 21 Feb 2021 17:49:02 -0800 (PST)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id l144sm16346802pfd.104.2021.02.21.17.48.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 17:49:01 -0800 (PST)
-Date:   Mon, 22 Feb 2021 10:48:56 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v6 0/2] add support for GPIO or IRQ based evemt counter
-Message-ID: <YDMNiBjnJKanhTUH@shinobu>
-References: <20210216081356.3577-1-o.rempel@pengutronix.de>
+        Sun, 21 Feb 2021 20:53:56 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F631C061574;
+        Sun, 21 Feb 2021 17:53:15 -0800 (PST)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A52DA517;
+        Mon, 22 Feb 2021 02:53:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1613958793;
+        bh=cZo8VAxkk3xeVoof9QR0VTyYNyYcuhuTFVM0e9anjpU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gw5QBU46pr0Q2rZWMKaRoYLBHMc+AZA7eyyCu/+mx48yV/8RZR+ilNR+3uY+pkCei
+         XSV5E9rlM73rAY3QJckkB3ze7zrjtu7yJMgk2zw37ZLw2HNn34aCxtSzsSBE3zBf99
+         oc8ANk4VpEDdOgi/W6ZAxYeo0qGOhLcvDgXIGuPw=
+Date:   Mon, 22 Feb 2021 03:52:41 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 13/16] media: i2c: rdacm2x: Implement .init() subdev op
+Message-ID: <YDMOaZUi8Q1vWq9j@pendragon.ideasonboard.com>
+References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
+ <20210216174146.106639-14-jacopo+renesas@jmondi.org>
+ <ce1673db-9ea7-f28c-a22a-0d129c0bff98@ideasonboard.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="BDjHk8mAMD1tdDzJ"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210216081356.3577-1-o.rempel@pengutronix.de>
+In-Reply-To: <ce1673db-9ea7-f28c-a22a-0d129c0bff98@ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jacopo,
 
---BDjHk8mAMD1tdDzJ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-On Tue, Feb 16, 2021 at 09:13:54AM +0100, Oleksij Rempel wrote:
-> changes v6:
-> - rename it to interrupt-counter
+On Thu, Feb 18, 2021 at 04:13:14PM +0000, Kieran Bingham wrote:
+> On 16/02/2021 17:41, Jacopo Mondi wrote:
+> > The current probe() procedure of the RDACM20 and RDACM20 performs
+> 
+> and RDACM21?
+> 
+> > initialization of the serializer image sensors and increases the noise
+> 
+> Of the serializer 'and' image sensors ?
+> or perhaps just
+> 
+> s/serializer/serializer,/ ?
+> 
+> > immunity threshold as last operation, which is then compensated by the
+> 
+> as a last operation
+> or
+> as a final operation
+> 
+> 
+> > remote deserializer by increasing the reverse channel signal amplitude
+> > once all remotes have bound.
+> > 
+> > The probe routine is then run without noise immunity activated which
 
-Hi Oleksij,
+Maybe s/then/thus/ ? I initially interpreted this as meaning the probe
+routine is run after the operations listed above.
 
-Sorry to nitpick again, I think "irq-counter" as Jonathan suggested in
-an earlier review would be a better name afterall. Would you be able to
-rename this driver to use that name instead?
+> > in noisy environment conditions makes the probe sequence less reliable as
+> > the chips configuration requires a relevant amount of i2c transactions.
+> 
+> s/relevant/relatively high/ ?
+> 
+> > Break chip initialization in two:
+> > - At probe time only configure the serializer's reverse channel with
+> >   noise immunity activated, to reduce the number of transactions
+> >   performed without noise immunity protection
+> > - Move the chips initialization to the .init() core subdev operation to
+> >   be invoked by the deserializer after the camera has probed and it has
+> >   increased the reverse channel amplitude
+> 
+> Is this the op you said was deprecated?
+> 
+> 
+> Functionally in this code, it seems fine, but as mentioned on the next
+> patch, I suspect it might need squashing to make sure it stays functional...
+> 
+> I'm not fully sure of the implications of this patch, but your tests
+> have reportede that this series is helping a lot with reliability so I
+> don't want to block it.
+> 
+> The code changes themselves look ok, with the following thougts:
+> 
+>  - If this op/methodology is deprecated it might be harder to get
+>    acceptance?
 
-Sincerely,
+I think we need to propose de-deprecating the operation, which should
+include a clear explanation of the valid use cases.
 
-William Breathitt Gray
+>  - now we have _init and _initialise - should that be made more
+>    distinct?
+> 
+>  - Seeing the duplication of the MAX9271_DEFAULT_ADDR / ping again
+>    really makes me want to see that wrapped in the max9271.c ;-)
+> 
+>  - Likely needs squashed with relevant changes in max9286?
 
-> - driver fixes
-> - device tree fixes
->=20
-> changes v5:
-> - rename it to event counter, since it support different event sources
-> - make it work with gpio-only or irq-only configuration
-> - update yaml binding
->=20
-> changes v4:
-> - use IRQ_NOAUTOEN to not enable IRQ by default
-> - rename gpio_ from name pattern and make this driver work any IRQ
->   source.
->=20
-> changes v3:
-> - convert counter to atomic_t
->=20
-> changes v2:
-> - add commas
-> - avoid possible unhandled interrupts in the enable path
-> - do not use of_ specific gpio functions
->=20
-> Add support for GPIO based pulse counter. For now it can only count
-> pulses. With counter char device support, we will be able to attach
-> timestamps and measure actual pulse frequency.
->=20
-> Never the less, it is better to mainline this driver now (before chardev
-> patches go mainline), to provide developers additional use case for the c=
-ounter
-> framework with chardev support.
->=20
-> Oleksij Rempel (2):
->   dt-bindings: counter: add event-counter binding
->   counter: add IRQ or GPIO based event counter
->=20
->  .../bindings/counter/interrupt-counter.yaml   |  62 +++++
->  MAINTAINERS                                   |   7 +
->  drivers/counter/Kconfig                       |  10 +
->  drivers/counter/Makefile                      |   1 +
->  drivers/counter/interrupt-cnt.c               | 249 ++++++++++++++++++
->  5 files changed, 329 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/counter/interrupt-c=
-ounter.yaml
->  create mode 100644 drivers/counter/interrupt-cnt.c
->=20
-> --=20
-> 2.29.2
->=20
+I share the bisectability concerns.
 
---BDjHk8mAMD1tdDzJ
-Content-Type: application/pgp-signature; name="signature.asc"
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
------BEGIN PGP SIGNATURE-----
+> But even with those thoughts, I don't think this is necessarily wrong so:
+> 
+> Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> 
+> > Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+> > ---
+> >  drivers/media/i2c/rdacm20.c | 65 ++++++++++++++++++++++---------------
+> >  drivers/media/i2c/rdacm21.c | 65 ++++++++++++++++++++++---------------
+> >  2 files changed, 78 insertions(+), 52 deletions(-)
+> > 
+> > diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
+> > index 39e4b4241870..0632ef98eea7 100644
+> > --- a/drivers/media/i2c/rdacm20.c
+> > +++ b/drivers/media/i2c/rdacm20.c
+> > @@ -437,36 +437,12 @@ static int rdacm20_get_fmt(struct v4l2_subdev *sd,
+> >  	return 0;
+> >  }
+> >  
+> > -static const struct v4l2_subdev_video_ops rdacm20_video_ops = {
+> > -	.s_stream	= rdacm20_s_stream,
+> > -};
+> > -
+> > -static const struct v4l2_subdev_pad_ops rdacm20_subdev_pad_ops = {
+> > -	.enum_mbus_code = rdacm20_enum_mbus_code,
+> > -	.get_fmt	= rdacm20_get_fmt,
+> > -	.set_fmt	= rdacm20_get_fmt,
+> > -};
+> > -
+> > -static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+> > -	.video		= &rdacm20_video_ops,
+> > -	.pad		= &rdacm20_subdev_pad_ops,
+> > -};
+> > -
+> > -static int rdacm20_initialize(struct rdacm20_device *dev)
+> > +static int rdacm20_init(struct v4l2_subdev *sd, unsigned int val)
+> >  {
+> > +	struct rdacm20_device *dev = sd_to_rdacm20(sd);
+> >  	unsigned int i;
+> >  	int ret;
+> >  
+> > -	/* Verify communication with the MAX9271: ping to wakeup. */
+> > -	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > -	i2c_smbus_read_byte(dev->serializer.client);
+> > -	usleep_range(5000, 8000);
+> > -
+> > -	/* Serial link disabled during config as it needs a valid pixel clock. */
+> > -	ret = max9271_set_serial_link(&dev->serializer, false);
+> > -	if (ret)
+> > -		return ret;
+> > -
+> >  	/*
+> >  	 *  Ensure that we have a good link configuration before attempting to
+> >  	 *  identify the device.
+> > @@ -537,6 +513,43 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
+> >  
+> >  	dev_info(dev->dev, "Identified RDACM20 camera module\n");
+> >  
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct v4l2_subdev_core_ops rdacm20_core_ops = {
+> > +	.init           = rdacm20_init,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_video_ops rdacm20_video_ops = {
+> > +	.s_stream	= rdacm20_s_stream,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_pad_ops rdacm20_subdev_pad_ops = {
+> > +	.enum_mbus_code = rdacm20_enum_mbus_code,
+> > +	.get_fmt	= rdacm20_get_fmt,
+> > +	.set_fmt	= rdacm20_get_fmt,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_ops rdacm20_subdev_ops = {
+> > +	.core		= &rdacm20_core_ops,
+> > +	.video		= &rdacm20_video_ops,
+> > +	.pad		= &rdacm20_subdev_pad_ops,
+> > +};
+> > +
+> > +static int rdacm20_initialize(struct rdacm20_device *dev)
+> > +{
+> > +	int ret;
+> > +
+> > +	/* Verify communication with the MAX9271: ping to wakeup. */
+> > +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > +	i2c_smbus_read_byte(dev->serializer.client);
+> > +	usleep_range(5000, 8000);
+> > +
+> > +	/* Serial link disabled during config as it needs a valid pixel clock. */
+> > +	ret = max9271_set_serial_link(&dev->serializer, false);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> >  	/*
+> >  	 * Set reverse channel high threshold to increase noise immunity.
+> >  	 *
+> > diff --git a/drivers/media/i2c/rdacm21.c b/drivers/media/i2c/rdacm21.c
+> > index c420a6b96879..80b6f16f87a8 100644
+> > --- a/drivers/media/i2c/rdacm21.c
+> > +++ b/drivers/media/i2c/rdacm21.c
+> > @@ -314,21 +314,6 @@ static int rdacm21_get_fmt(struct v4l2_subdev *sd,
+> >  	return 0;
+> >  }
+> >  
+> > -static const struct v4l2_subdev_video_ops rdacm21_video_ops = {
+> > -	.s_stream	= rdacm21_s_stream,
+> > -};
+> > -
+> > -static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
+> > -	.enum_mbus_code = rdacm21_enum_mbus_code,
+> > -	.get_fmt	= rdacm21_get_fmt,
+> > -	.set_fmt	= rdacm21_get_fmt,
+> > -};
+> > -
+> > -static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
+> > -	.video		= &rdacm21_video_ops,
+> > -	.pad		= &rdacm21_subdev_pad_ops,
+> > -};
+> > -
+> >  static int ov10640_initialize(struct rdacm21_device *dev)
+> >  {
+> >  	u8 val;
+> > @@ -448,20 +433,11 @@ static int ov490_initialize(struct rdacm21_device *dev)
+> >  	return 0;
+> >  }
+> >  
+> > -static int rdacm21_initialize(struct rdacm21_device *dev)
+> > +static int rdacm21_init(struct v4l2_subdev *sd, unsigned int val)
+> >  {
+> > +	struct rdacm21_device *dev = sd_to_rdacm21(sd);
+> >  	int ret;
+> >  
+> > -	/* Verify communication with the MAX9271: ping to wakeup. */
+> > -	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > -	i2c_smbus_read_byte(dev->serializer.client);
+> > -	usleep_range(5000, 8000);
+> > -
+> > -	/* Enable reverse channel and disable the serial link. */
+> > -	ret = max9271_set_serial_link(&dev->serializer, false);
+> > -	if (ret)
+> > -		return ret;
+> > -
+> >  	/* Configure I2C bus at 105Kbps speed and configure GMSL. */
+> >  	ret = max9271_configure_i2c(&dev->serializer,
+> >  				    MAX9271_I2CSLVSH_469NS_234NS |
+> > @@ -508,6 +484,43 @@ static int rdacm21_initialize(struct rdacm21_device *dev)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct v4l2_subdev_core_ops rdacm21_core_ops = {
+> > +	.init		= rdacm21_init,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_video_ops rdacm21_video_ops = {
+> > +	.s_stream	= rdacm21_s_stream,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_pad_ops rdacm21_subdev_pad_ops = {
+> > +	.enum_mbus_code = rdacm21_enum_mbus_code,
+> > +	.get_fmt	= rdacm21_get_fmt,
+> > +	.set_fmt	= rdacm21_get_fmt,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_ops rdacm21_subdev_ops = {
+> > +	.core		= &rdacm21_core_ops,
+> > +	.video		= &rdacm21_video_ops,
+> > +	.pad		= &rdacm21_subdev_pad_ops,
+> > +};
+> > +
+> > +static int rdacm21_initialize(struct rdacm21_device *dev)
+> > +{
+> > +	int ret;
+> > +
+> > +	/* Verify communication with the MAX9271: ping to wakeup. */
+> > +	dev->serializer.client->addr = MAX9271_DEFAULT_ADDR;
+> > +	i2c_smbus_read_byte(dev->serializer.client);
+> > +	usleep_range(5000, 8000);
+> > +
+> > +	/* Enable reverse channel and disable the serial link. */
+> > +	ret = max9271_set_serial_link(&dev->serializer, false);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> >  	/*
+> >  	 * Set reverse channel high threshold to increase noise immunity.
+> >  	 *
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAzDYgACgkQhvpINdm7
-VJIgoRAApS74TXDUsKkZQX0zB2tstPlhK4yOcr5po7I8Gqgk7PPCEcVtwBKEGC5y
-YfcAXhnz1apn+3DragCbxs1LWPqP8U+TyjOt80k5o8in7YWDlSVPdKTIb5PtUwNJ
-EIIEFiwf8qhdW9m7tMo6iePdEx2/OlU6/NSoH6qb6RPCz+5UzetrqyyKSrDSrLGC
-P4VykWpSA2IPK0wq5O8kS7pcxB1X4FVSJGNGYXouz3qonPmKw6Q+uaDHNZNhHAxa
-T2SLW8lu/cKtB/P7gkHtUqQuOFbG6kkpGJ1MqI+uNN6XpLjd4jg0qO7kLMxaphZv
-29T+Mw+H5mzvnMmnsk31JNNUTWj6fLjqqRcuGfXHEizCL1O5KC6mDXt0E1+BNjz+
-rM03txQwaNhicXWZvix0EZzRrNT0njRGQzXJkumsDk0teCsFW/8dO50Ab/DbtoVv
-V6EtYdbnN4m6BPbQ3vU2IEEEnLrMw32SjEF+2ZaVB7G21iZIFjjrpbCjKvFTT87A
-Y2XX7ggGPwfAH97BIgbrGqMD2sds9qPOCcjpsbYeNWsE4fJsRFxd4n9G0tyFZ5Id
-XXcyc/ReXdsjzia8nOtXg3GoXrcYkYFQzqSsBb0srpBQeHgBWy0M7ZnOxKJFUmMf
-M8HEsF8Q7avqxbpkuPqHIxj5sjQzPU1FcTt3E0CTk4L0SoYXC90=
-=w7XY
------END PGP SIGNATURE-----
+-- 
+Regards,
 
---BDjHk8mAMD1tdDzJ--
+Laurent Pinchart
