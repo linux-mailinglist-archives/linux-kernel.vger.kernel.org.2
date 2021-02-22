@@ -2,126 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E2A321485
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D0F321487
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhBVKyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:54:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33480 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230042AbhBVKyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:54:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB87364E04;
-        Mon, 22 Feb 2021 10:54:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613991250;
-        bh=paRjSN108FmOvvi0TofHdKlKJPnvAiYjtvHzzEJsom4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FFFHN+N/hLrZCq8x2aBnXef3slLETnF/RqgxBhzLnGXwg/k8mSfS9VPLyXLshKmGf
-         Qs3FewOVrp7jnwrcbaFXjChrPqq/5GfHYpS48erB0IavUYPcKKUdglyU+Z6emEH8sw
-         vO+R3KQP8jhDGipZE4K0Hb9KmD04lz0bcC6FlPwSkoyVteMWARZr4aryKNT4mKkvLU
-         La3L46MmuIzek9C0vYSg3n78fqWjKqp9IEgrX6/gvCwNC1vFlgvOn1Kcs5I9QmfTAU
-         perId2YWM7ekxb66UQ3vntiMZOQqrvZUleN2Oq2CNupPrbt+74zDOJUmalC8UhfZCy
-         v4jKQSpxPbL8Q==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v6 0/1] mm: fix initialization of struct page for holes in  memory layout
-Date:   Mon, 22 Feb 2021 12:54:00 +0200
-Message-Id: <20210222105400.28583-1-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
+        id S230384AbhBVKzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:55:19 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:12934 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230140AbhBVKzM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:55:12 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DkfD25D29zjQ63;
+        Mon, 22 Feb 2021 18:53:06 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Feb 2021 18:54:13 +0800
+Subject: Re: [PATCH stable-rc queue/4.9 1/1] futex: Provide distinct return
+ value when owner is exiting
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <sashal@kernel.org>, <tglx@linutronix.de>, <wangle6@huawei.com>,
+        <zhengyejian1@huawei.com>
+References: <20210222070328.102384-1-nixiaoming@huawei.com>
+ <20210222070328.102384-2-nixiaoming@huawei.com> <YDOEZhmKqjTVxtMn@kroah.com>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <3bc570f6-f8af-b0a2-4d62-13ed4adc1f33@huawei.com>
+Date:   Mon, 22 Feb 2021 18:54:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDOEZhmKqjTVxtMn@kroah.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On 2021/2/22 18:16, Greg KH wrote:
+> On Mon, Feb 22, 2021 at 03:03:28PM +0800, Xiaoming Ni wrote:
+>> From: Thomas Gleixner<tglx@linutronix.de>
+>>
+>> commit ac31c7ff8624409ba3c4901df9237a616c187a5d upstream.
+> This commit is already in the 4.9 tree.  If the backport was incorrect,
+> say that here, and describe what went wrong and why this commit fixes
+> it.
+> 
+> Also state what commit this fixes as well, otherwise this changelog just
+> looks like it is being applied again to the tree, which doesn't make
+> much sense.
+> 
+> thanks,
+> 
+> greg k-h
+> .
 
-Hi,
+I wrote a cover for it. but forgot to adjust the title of the cover:
+ 
+https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
 
-@Andrew, this is based on v5.11-mmotm-2021-02-18-18-29 with the previous
-version reverted
 
-Commit 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather
-that check each PFN") exposed several issues with the memory map
-initialization and these patches fix those issues.
+I found a dead code in the queue/4.9 branch of the stable-rc repository.
 
-Initially there were crashes during compaction that Qian Cai reported back
-in April [1]. It seemed back then that the problem was fixed, but a few
-weeks ago Andrea Arcangeli hit the same bug [2] and there was an additional
-discussion at [3].
+2021-02-03:
+commit c27f392040e2f6 ("futex: Provide distinct return value when
+  owner is exiting")
+	The function handle_exit_race does not exist. Therefore, the
+	change in handle_exit_race() is ignored in the patch round.
 
-I didn't appreciate variety of ways BIOSes can report memory in the first
-megabyte, so previous versions of this set caused all kinds of troubles.
+2021-02-22:
+commit e55cb811e612 ("futex: Cure exit race")
+	Define the handle_exit_race() function,
+	but no branch in the function returns EBUSY.
+	As a result, dead code occurs in the attach_to_pi_owner():
 
-The last version that implicitly extended node/zone to cover the complete
-section might also have unexpected side effects, so this time I'm trying to
-move in forward in baby steps.
+		int ret = handle_exit_race(uaddr, uval, p);
+		...
+		if (ret == -EBUSY)
+			*exiting = p; /* dead code */
 
-This is mostly a return to the fist version that simply merges
-init_unavailable_pages() into memmap_init() so that the only effective
-change would be more sensible zone/node links in unavailable struct pages.
+To fix the dead code, modify the commit e55cb811e612 ("futex: Cure exit 
+race"),
+or install a patch to incorporate the changes in handle_exit_race().
 
-For now, I've dropped the patch that tried to make ZONE_DMA to span pfn 0
-because it didn't cause any issues for really long time and there are way
-to many hidden mines around this.
+I am unfamiliar with the processing of the stable-rc queue branch,
+and I cannot find the patch mail of the current branch in
+	https://lore.kernel.org/lkml/?q=%22futex%3A+Cure+exit+race%22
+Therefore, I re-integrated commit ac31c7ff8624 ("futex: Provide distinct
+  return value when owner is exiting").
+  And wrote a cover (but forgot to adjust the title of the cover):
+ 
+https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
 
-I have an ugly workaround for "pfn 0" issue that IMHO is the safest way to
-deal with it until it could be gradually fixed properly:
+Thanks
+Xiaoming Ni
 
-https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/commit/?id=a1b6e4d7e4a6d893caeda9a7f3800766243a02fe
-
-v6:
-* only interleave initialization of unavailable pages in memmap_init(), so
-that it is essentially includes init_unavailable_pages().
-
-v5: https://lore.kernel.org/lkml/20210208110820.6269-1-rppt@kernel.org
-* extend node/zone spans to cover complete sections, this allows to interleave
-  the initialization of unavailable pages with "normal" memory map init.
-* drop modifications to x86 early setup
-
-v4: https://lore.kernel.org/lkml/20210130221035.4169-1-rppt@kernel.org/
-* make sure pages in the range 0 - start_pfn_of_lowest_zone are initialized
-  even if an architecture hides them from the generic mm
-* finally make pfn 0 on x86 to be a part of memory visible to the generic
-  mm as reserved memory.
-
-v3: https://lore.kernel.org/lkml/20210111194017.22696-1-rppt@kernel.org
-* use architectural zone constraints to set zone links for struct pages
-  corresponding to the holes
-* drop implicit update of memblock.memory
-* add a patch that sets pfn 0 to E820_TYPE_RAM on x86
-
-v2: https://lore.kernel.org/lkml/20201209214304.6812-1-rppt@kernel.org/):
-* added patch that adds all regions in memblock.reserved that do not
-overlap with memblock.memory to memblock.memory in the beginning of
-free_area_init()
-
-[1] https://lore.kernel.org/lkml/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
-[2] https://lore.kernel.org/lkml/20201121194506.13464-1-aarcange@redhat.com
-[3] https://lore.kernel.org/mm-commits/20201206005401.qKuAVgOXr%akpm@linux-foundation.org
-
-Mike Rapoport (1):
-  mm/page_alloc.c: refactor initialization of struct page for holes in
-    memory layout
-
- mm/page_alloc.c | 144 ++++++++++++++++++++----------------------------
- 1 file changed, 61 insertions(+), 83 deletions(-)
-
--- 
-2.28.0
 
