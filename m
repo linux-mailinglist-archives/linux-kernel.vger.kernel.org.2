@@ -2,121 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026EA3220EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFFB03220F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhBVUqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 15:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhBVUqG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 15:46:06 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02070C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:45:26 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id q20so7334061pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:45:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=LwMwnyMNe0dbsBjwrdA/4K91mX9d7JEcNbNBT2gfDLE=;
-        b=PiPgFgoRJVCzZCl5lIpO1thRE8Msnn+qjIg+b+Ez5BJdtCLHqhzeME8kuAqFFhLXEe
-         eDFr8N+O14ZrXRhmKEGiz8jwtselrH+PvzYUvHC3ELg83/fim//n/UO+IygmFZfoesMo
-         +RjTEfpQlYxVmvusEvJJYZu1ZhTaf9KEZu91g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=LwMwnyMNe0dbsBjwrdA/4K91mX9d7JEcNbNBT2gfDLE=;
-        b=TzwStf7GBUhoH7Bc6OvEVBMFTZOeO8HBTqQTkVnzUn25xec5spoCHEiXqm/F+iYlaJ
-         MvH3NSha5QSodcHejFtBFex/aV4me13uCz2lU4Q2JqH42eYNYExhVAPlbD3CBAO9xqSR
-         UIDSGmCeeMKC37lsRhDKbWueeadGustnz9hXLeyDec/qTJDJFyfJX0k4AztUuAwJvZB5
-         HQBZX5awX2yIrYrwgx7uthWnJIsnMV6xspVqYTCUrYh9//HqXzimaUhIAxVvEVXNRFJd
-         RD7HNVWL4MV4Fek1hzlIKJutKAPwL9GZZPssA5xa1UJrZ2wlY4oJ2b/zVScqQyhdxaRD
-         aiZw==
-X-Gm-Message-State: AOAM532Mp/XfHW5Y7bb/MRk12bM4qD4Kk6FYXUYKjdfG2zErIkXveNMv
-        9qAZqF2DTFSQDvV1ZIKVVgsqkA==
-X-Google-Smtp-Source: ABdhPJyrGk657Pl699wmjr2BYgjCD55KtTF8hbxTlXFYi0LmhqlBNxGc7egWS9i7/RS4KOFYUdPkXw==
-X-Received: by 2002:a63:c702:: with SMTP id n2mr20903322pgg.382.1614026725558;
-        Mon, 22 Feb 2021 12:45:25 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:a878:327b:a10a:e189])
-        by smtp.gmail.com with ESMTPSA id o6sm20240447pfb.9.2021.02.22.12.45.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 12:45:25 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        id S230390AbhBVUwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 15:52:35 -0500
+Received: from msg-2.mailo.com ([213.182.54.12]:52402 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230006AbhBVUwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 15:52:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailoo.org; s=mailo;
+        t=1614027101; bh=yT9yvRTMH3hDKjbPZh495ozLuLQga9KRyWtS41qgQCU=;
+        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+         References:Content-Type:MIME-Version:Content-Transfer-Encoding;
+        b=BYeUEKdZE9FXyhfvc4fAaF5jKPeAEWA1ZbxZSV+4nPOaCIg6I7JHwPaXI3UBkEqOy
+         RQqEZ40po1lIclGjYCGsV/MPkZBjVaeaxIkTDiyCVCVJmmqALZ3tE04UQKs/BJZQDA
+         KJUUd6WRB7tj5KV7lD68J8QkoYvsIaPpU0bflziQ=
+Received: by b-3.in.mailobj.net [192.168.90.13] with ESMTP
+        via proxy.mailoo.org [213.182.55.207]
+        Mon, 22 Feb 2021 21:51:41 +0100 (CET)
+X-EA-Auth: f5tjIfSV86z/9LHQH2uDIBjEZ8HeKzTj2PLSAxSAmowAtHZFNnsFbP6GwYOUdr6lJYANbpibI12fpPDkqck81zFAduM28S7yZ6VZJy+/mTo=
+Message-ID: <a22fda89b5f97418e936655817f45bd55f6248ee.camel@mailoo.org>
+Subject: Re: [PATCH v4 2/2] Input: add MStar MSG2638 touchscreen driver
+From:   Vincent Knecht <vincent.knecht@mailoo.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michael Srba <Michael.Srba@seznam.cz>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Date:   Mon, 22 Feb 2021 21:51:39 +0100
+In-Reply-To: <YDGaB6L5+Aa2snUM@google.com>
+References: <20210210173403.667482-1-vincent.knecht@mailoo.org>
+         <20210210173403.667482-2-vincent.knecht@mailoo.org>
+         <YDGaB6L5+Aa2snUM@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YDQWVresOGZGLL6N@google.com>
-References: <20210219181032.1.I23e12818c4a841ba9c37c60b3ba8cfeeb048285f@changeid> <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid> <161402520418.1254594.7435679604383921403@swboyd.mtv.corp.google.com> <YDQWVresOGZGLL6N@google.com>
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: sc7180: Delete charger thermal zone and ADC channel for lazor <= rev3
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org
-To:     Matthias Kaehlcke <mka@chromium.org>
-Date:   Mon, 22 Feb 2021 12:45:23 -0800
-Message-ID: <161402672369.1254594.14091287979440332862@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matthias Kaehlcke (2021-02-22 12:38:46)
-> On Mon, Feb 22, 2021 at 12:20:04PM -0800, Stephen Boyd wrote:
-> > Quoting Matthias Kaehlcke (2021-02-19 18:10:59)
-> > > Lazor rev3 and older are stuffed with a 47k NTC as thermistor for
-> > > the charger temperature which currently isn't supported by the
-> > > PM6150 ADC driver. Delete the charger thermal zone and ADC channel
-> > > to avoid the use of bogus temperature values.
-> > >=20
-> > > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> > > ---
-> > >=20
-> > >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 9 +++++++++
-> > >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 9 +++++++++
-> > >  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts | 9 +++++++++
-> > >  3 files changed, 27 insertions(+)
-> > >=20
-> > > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts b/a=
-rch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-> > > index 30e3e769d2b4..0974dbd424e1 100644
-> > > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-> > > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-> > > @@ -14,6 +14,15 @@ / {
-> > >         compatible =3D "google,lazor-rev0", "qcom,sc7180";
-> > >  };
-> > > =20
-> > > +/*
-> > > + * rev <=3D 3 are stuffed with a 47k NTC as charger thermistor which=
- is currently
-> > > + * not supported by the PM6150 ADC driver. Delete the thermal zone a=
-nd ADC
-> > > + * channel to avoid the use of bogus temperature values.
-> > > + */
-> > > +/delete-node/ &charger_thermal;
-> > > +/delete-node/ &pm6150_adc_charger_thm;
-> > > +/delete-node/ &pm6150_adc_tm_charger_thm;
-> >=20
-> > Can we disable pm6150_adc_tm instead on <=3D rev3 boards? It would be t=
-he
-> > same number of lines, but is simpler to reason about disabled nodes vs.
-> > deleted nodes usually.
->=20
-> For Lazor theoretically this could be done since it doesn't use other ADC
-> channels, however it won't work for other trogdor devices that will be
-> upstreamed eventually. Some of these boards have the same problem, however
-> they have other thermistors connected to the ADC. One could argue that it=
-'s
-> preferable to do things in a uniform way, but I'm open to do it either way
-> for Lazor.
->=20
+Le samedi 20 f=C3=A9vrier 2021 =C3=A0 15:23 -0800, Dmitry Torokhov a =C3=A9=
+crit=C2=A0:
+> Hi Vincent,
 
-I see. Can the thermal-zone be disabled then vs. deleting three nodes? I
-think the thermal driver uses for_each_available_child_of_node() so that
-would work?
+Hi Dmitry, thank you for the review !
+
+> On Wed, Feb 10, 2021 at 06:33:52PM +0100, Vincent Knecht wrote:
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0for (i =3D 0; i < MAX_SUPPOR=
+TED_FINGER_NUM; i++) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0p =3D &touch_event.pkt[i];
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0/* Ignore non-pressed finger data */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0if (p->xy_hi =3D=3D 0xFF && p->x_low =3D=3D 0xFF && p-=
+>y_low =3D=3D 0xFF)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0contin=
+ue;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0coord.x =3D (((p->xy_hi & 0xF0) << 4) | p->x_low) * ms=
+g2638->prop.max_x / TPD_WIDTH;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0coord.y =3D (((p->xy_hi & 0x0F) << 8) | p->y_low) * ms=
+g2638->prop.max_y / TPD_HEIGHT;
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0msg2638_report_finger(msg2638, i, &coord);
+>=20
+> We do not scale the coordinates in the kernel. Rather we provide
+> resolution, if known, and min/max coordinates reported by the hardware,
+> and let userspace handle the rest.
+
+Ok, will remove scaling... I was able to test it's ok by setting=20
+touchscreen-size-{x,y} =3D <2048>;
+
+> > +static int __maybe_unused msg2638_suspend(struct device *dev)
+> > +{
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct i2c_client *client =
+=3D to_i2c_client(dev);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct msg2638_ts_data *msg2=
+638 =3D i2c_get_clientdata(client);
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mutex_lock(&msg2638->input_d=
+ev->mutex);
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (input_device_enabled(msg=
+2638->input_dev))
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0msg2638_stop(msg2638);
+>=20
+> I believe that you should power down the device only if it is not
+> configures as wakeup source. In fact (and I think most drivers are
+> wrong in this), you may want to power up the device if it is a wakeup
+> source and it does not have any users.
+
+I don't know much on this subject ; from downstream code, it seems
+the touchscreen supports "wakeup gestures" (like "double click",
+up/down/left/right directions and some characters/letters) and apparently
+an irq-gpio which would be used to wakeup.
+I don't handle that currently, is it required ?
+
+
+
+
+
