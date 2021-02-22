@@ -2,331 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23EEE321EB9
+	by mail.lfdr.de (Postfix) with ESMTP id C5DC3321EBA
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:02:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhBVSAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:00:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbhBVR7w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:59:52 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEDEC06178A;
-        Mon, 22 Feb 2021 09:59:12 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id dg2so4323874qvb.12;
-        Mon, 22 Feb 2021 09:59:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=l9YLmg7WoD/sXSgKqqmul0S728x4FmeNw1kdYobDOww=;
-        b=CaQ4imczF8gDRBbt5Lquc/aqR+B4Q9FOAihoJrAW2ZByPUwTZp3UZ0x6pQZz7DO7DW
-         V/CJZcnC/Bpl7/hFUc9jdie+vdMgbtZkhyQlPaBv/IO8MbI1g5nXl9Z7CtlMTV9zfMMn
-         7Acfq5LiHpVBZig2Xz7+OKMCymSN6rmabqProlzBEsiOFP7QdeFEtCTWg369FUiLaA83
-         ZQYZFiHu01KnoApBDoIBBg0Xf+iwKWOZfajraiSN4WTDs/AkuPfzdELggp4h+NP8YGfN
-         9R/PZMzXA+r4RHG1mSNywMAKQ3hnBN28qOeNbmWPtIULbD6Rr46AFx+8XHgPrax68zkt
-         YVHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=l9YLmg7WoD/sXSgKqqmul0S728x4FmeNw1kdYobDOww=;
-        b=YrffpW5T0n4IEOXPzfc57RAHbGVeOiU9Xd9CCxoQC/JyyiQQxY+dKNciYAluCq3W3G
-         0YXi1EAjG2flNRrq24mVVTT3iHMqQdrRCykfKRsa4N/wf5JhnCsuBArVG24z1tqOzCfi
-         SfecPkYo8tmseLbCCG/xZ1LyjO5jkk8/TJqy5NBRuq63cCDL6jHvPH6VO67Y1MoJA5d3
-         6e5Fp+gybeCRD6p7Z4EGkQYGCaOBWxOuqyEaYKqVCvD5nGegRGwSz/z/N2rAVbHwL6MP
-         /ZQUTzdS/lHF06Ae/HikqsXU4dZQ+0SdETwG/6qLl27OpmKb3WDBKU+ruBSUpvIxfKF3
-         gjwA==
-X-Gm-Message-State: AOAM533L5iXQ0im51D5ElB6AkmUAryDWPgkMoqo2Nn6uTkVgrEdbk/ZJ
-        mvqhEEAbPePVRrIUp9opKKQ=
-X-Google-Smtp-Source: ABdhPJyldq/rP9cA9QHUGCCSNpLEQcRxfTflnDTXqDdDBCE+pXeGPgHrBI72GOpfvNd4zsnif4nnlw==
-X-Received: by 2002:ad4:5ecc:: with SMTP id jm12mr19318022qvb.33.1614016751822;
-        Mon, 22 Feb 2021 09:59:11 -0800 (PST)
-Received: from localhost.localdomain ([189.61.66.20])
-        by smtp.gmail.com with ESMTPSA id p6sm12686170qkg.36.2021.02.22.09.59.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 09:59:10 -0800 (PST)
-From:   Saulo Alessandre <saulo.alessandre@gmail.com>
-To:     stefanb@linux.ibm.com
-Cc:     davem@davemloft.net, dhowells@redhat.com,
-        herbert@gondor.apana.org.au, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        zohar@linux.ibm.com, Saulo Alessandre <saulo.alessandre@tse.jus.br>
-Subject: [PATCH v2 3/3] adds nist_p384 register and unregister to support nist_p384 and tests
-Date:   Mon, 22 Feb 2021 14:58:50 -0300
-Message-Id: <20210222175850.1131780-3-saulo.alessandre@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210222175850.1131780-1-saulo.alessandre@gmail.com>
-References: <20210215162532.1077098-1-stefanb@linux.ibm.com>
- <20210222175850.1131780-1-saulo.alessandre@gmail.com>
-MIME-Version: 1.0
+        id S231859AbhBVSBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:01:17 -0500
+Received: from mail-dm6nam11on2077.outbound.protection.outlook.com ([40.107.223.77]:25505
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231955AbhBVSAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:00:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZGa7FGojeHbmFYFsSpx7IUY2UHBSxI+4CDMDKaby+ccue9T56HYZmLDDCX/Sk56S9OETMHhUUek1gBiXAVLtdQ1cI4jUxgQNwemUsJbm9hkzMdYlPAezWps0jDDT/Fs4zVsmd8vprX1GKyyahcgFzMFi7dhiXqKu29dr1cadL1BTXiByGs8ph6DMmFPcWPuC/E3mWIv3DPdHACaNFI6+xPFmGf3TogrgIEkwqSZX17kx1uj9BVAzoRs9XdFPTXReyLF4DbNyHI8FFmZuCFNK8AaTJ1fsWqYnDBpBckZrzuYHaiwwyV1C8OLF7Mv2CQUfx1/S8j3fpYshIfNN2fxi4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d/rPX1oc6zOhNtifGe8ZR8LE0ZdRrGRB5XchlZWIq7U=;
+ b=V3AJf0CYWXCAo6dR2h6vcCQxfnEwq/Kqz5JpROqYNrcqJ9WpesyFBl8b1Bp1c+3kCbfXPEF2kbPZgmILRp1q2/Jr+DsmQj37+AM8TdAPQ0FJeKhGx+Rcskq45nXtJTEDRR7mf7Wo53HXKD4BjAyVUYcmDnN2VJCGkftD9VyJuoqr6I5nDs4pquQTmRFF7ebAIpT2b2xQK9cuwERllkrUSpZFqfo0ZKFQoARVQ8MjdCgmg7h/1jE6wMXNRBW3SaI/FIn39/sd82Sf1XPbkCO1k5WQ8PI33s2xVsr1alGNDqt4YVcjh/IB15k9BgNBINMKkb3arw7j1wvYTYgtWiP3QA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=d/rPX1oc6zOhNtifGe8ZR8LE0ZdRrGRB5XchlZWIq7U=;
+ b=Sbe4QlQR1kxVvlGiNkHfD+c5jnbhO0RMhDqCSqLQ+hHhC5rvYr81JYr2dvI4sZkAAr+48gHxMYCgeJwMvDz8RzMeaqSyrqflWihCu0NeU950tY/UIhSx3d6app1OUn/CAid2Z5YJxxT3Pp73hccWnpsLilIfC9kXULxWIOqQRJ8=
+Authentication-Results: 8bytes.org; dkim=none (message not signed)
+ header.d=none;8bytes.org; dmarc=none action=none header.from=amd.com;
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
+ by BYAPR12MB2824.namprd12.prod.outlook.com (2603:10b6:a03:97::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Mon, 22 Feb
+ 2021 17:59:52 +0000
+Received: from BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::a95a:7202:81db:1972]) by BYAPR12MB4597.namprd12.prod.outlook.com
+ ([fe80::a95a:7202:81db:1972%7]) with mapi id 15.20.3868.033; Mon, 22 Feb 2021
+ 17:59:52 +0000
+Subject: Re: [PATCH] iommu/amd: Fix event counter availability check
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200529200738.1923-1-amonakov@ispras.ru>
+ <56761139-f794-39b1-4dfa-dfc05fbe5f60@amd.com>
+ <alpine.LNX.2.20.13.2006011132530.16067@monopod.intra.ispras.ru>
+ <dba1e37a-1ed7-ef7f-7252-2ebd1d6bde8c@amd.com>
+ <alpine.LNX.2.20.13.2006152346320.21123@monopod.intra.ispras.ru>
+ <b01994db-da9b-d8e6-e0c1-1af35dd62191@amd.com>
+ <alpine.LNX.2.20.13.2009172052480.29869@monopod.intra.ispras.ru>
+ <23d42e73-91ac-8f47-af64-40edff8bc027@molgen.mpg.de>
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Message-ID: <290635dc-723e-a55e-8447-95cef703b090@amd.com>
+Date:   Tue, 23 Feb 2021 00:59:41 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
+In-Reply-To: <23d42e73-91ac-8f47-af64-40edff8bc027@molgen.mpg.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [124.121.4.202]
+X-ClientProxiedBy: SG2PR02CA0060.apcprd02.prod.outlook.com
+ (2603:1096:4:54::24) To BYAPR12MB4597.namprd12.prod.outlook.com
+ (2603:10b6:a03:10b::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Suravees-MacBook-Pro.local (124.121.4.202) by SG2PR02CA0060.apcprd02.prod.outlook.com (2603:1096:4:54::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Mon, 22 Feb 2021 17:59:50 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 61d55878-cb25-4501-6037-08d8d75ba735
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2824:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB282467083ABCDD5C4104AC70F3819@BYAPR12MB2824.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tZdbB9BoO/jbwx1sBmE1dHjtU++xBcH7REhY+KqZGK0UuK56+I1zlSTHNIN7vjS6cqPSki9gUw2nf+hd7Qidrz595uuNeXh9f+UG8wekAMwf3GAJDRfYrsFSoqjs7gLA6mR44uqVadwn5a2oAM3eTEKMQHQ/HW3Anm5fFSfRuXFlHoGLRP/93T7BKnYcGSYI2n1XzAH+GYEHa3V210HwKTiS3EwjEoQlaMI7rIwxiy9kc9cikkVBfq4mJOuJwsYvVXgpTF451XRRUJ0yZaAq0U5nOPojgMqrf6t+mSsck879qdaPDP4mP6gbtWqgK822KbVQw5hxLYZjBT+WiJXMg5GS44vQQ9ZZ7ApwD5KPhkzpJP1we+CNWLWdr2sEVNI53YK54V5urNarq39uX0lLp8Cbs5v5UTeJMabM9VyKLhDBNQvY8ckFSOqZMaB852QtS15ZfXOPGrU9/h2TTgDV5SOFwW16hnbEbYiHfQ8ab+K/ofB6hh77IBldQhoGmy7c3tXed6HJ2b/O+OWjc+Wc6FSkfmiKAHp24SpI8UtHBRqTa8qlSqZ406f5tkYccmWY9MaGwHo2Jdjo/nHk6OQa3/WRVpH1z1qIIoyMELOT2DwJ3PhxQXOtmkmDlQTCidllRWEYKzj/UJdhPtHJ9ehZBsqKY9xjGqpXX2sjluTnH2+MD0Xn7BcOoUOf0clAIqh6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(136003)(366004)(6666004)(6512007)(6486002)(86362001)(52116002)(2906002)(316002)(31696002)(31686004)(36756003)(6916009)(4326008)(8676002)(8936002)(16526019)(478600001)(966005)(5660300002)(66946007)(53546011)(44832011)(26005)(66476007)(83380400001)(54906003)(66556008)(186003)(956004)(6506007)(2616005)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?aWZZanBmWUJ0ZDZXb0doeTB2T014UThOTDh1UWRqSWdLaDhCWkRnYWRYbUZz?=
+ =?utf-8?B?Y1ZlNlVnUWlqeGc5dUZRS0hldXZEcVZMcTkyYlk2dThKOFZldXAwVTJYVGd3?=
+ =?utf-8?B?ZU50SWptbGVXZEQvU1d0NGVlUFV4d1d2aitpNlRVdVp2OVFFa28vdSt3T0lz?=
+ =?utf-8?B?Tkd0dzhJTjJYM01LWVI4L28yMTFIOWNDenN0bXlHaGZXMkRjOVNrdnNwc2h3?=
+ =?utf-8?B?T2FDN1pkenRnT1p3Yi80a0NmVllTOXpMZjRUZVdLb3NpMEt6ZTZKQWZNczZH?=
+ =?utf-8?B?MVJPVUl6ODRrM01NdXdlaWJ1Z1IzaHpHWnVFTlRtZTNqRmVBeExqelZ4b1pR?=
+ =?utf-8?B?VDBySVlGTDJiREJEU3RBdURlZUN2ZFV6MU9JVklxNXR4clBGemhJcDNuNWtP?=
+ =?utf-8?B?UlZ6SUZTYWZlazlTZTlUdHdoUW5IVmtuL2xVTWluM21XajlHS2NiRnFDb04y?=
+ =?utf-8?B?eEJtT2M4NWpvWmNvazNSbHk1V1AyeUVaYk5IbzUydTRVODlMeTljSVB3OWx3?=
+ =?utf-8?B?UzJONmJKTm04MmhtOUJCSGNmN2toZndpWXVwV0JPN1J0YjQyYytlNTZsRE02?=
+ =?utf-8?B?eS8xUTZKMHQzS1J1dVpBLys5eDI5QUNrTEtmTG1UZTJmckVKTy9saVhPWkpR?=
+ =?utf-8?B?c2lpQlVwMWxVNlhCSEZYWXB2WXNWL1dvWUVBdW5MdjVpTElSR3A4aklsVEdx?=
+ =?utf-8?B?UU1FSEZsTU1XN1N2ejZNQ0R4RjFQMTdaQmRJVEV5VDdvSkMrc25CNlplUVM5?=
+ =?utf-8?B?QUhXMzVFNjAzdmJMRG15V1JYMC9XMlVSLzVxcW0zL0dUT3V6b082eXFheUJX?=
+ =?utf-8?B?b1BTMmtVK0xlUGlSWkpkb0YzRXZHckRXV0JNVDZHSW1oSkFyZmZTdlE5SjhW?=
+ =?utf-8?B?RVc0MDZ0NkxKU0NrM0FySitCSitVYUN2N2FPemVGYnZ1MFRTenM4OXU2Mlhq?=
+ =?utf-8?B?Ym84WWF0VnBYNllUVUhzNGhGY2p3RkJPV1o1S0RoQTAzb3JHbkZ5ZlltL2hD?=
+ =?utf-8?B?SzA1R0JPTDFsczYweDRRUGU3L0JXQVRBZjhKTFFJZVdVckQ1aldsTU9aYkpL?=
+ =?utf-8?B?UURuUVNMU1VnWXBqYmtGMnU0Y3VsQm5GYnd6YUE3d3FjUmY5TndOd2lKTEYr?=
+ =?utf-8?B?SW9KeFFxNjhKdEdZNHJkaGdwR2ZGUkVUU2dISlZjVmswbjZzK2ZDekczWVVQ?=
+ =?utf-8?B?WlNlMTZYeGMwb0E1NHlYeE5xTVJESTAxVEx2YlJNZFh4WnFNZjArcW1DVTc3?=
+ =?utf-8?B?T0cyNVRSQWhQVUNyWjZyaU53Uy9nVWIraGVQVEgzb2pjckNONkJNS0txU1ND?=
+ =?utf-8?B?bWc5MU1TVXdOdDRSZVJWMk9VcDNpUm1xUnovcjVBTWlYVDA3eU9SbldwRjRt?=
+ =?utf-8?B?clJyeTgvQ3lzNWRhQTQvZTJqZEliRWZ5c2NaVGRmU1hwMUNCSG9yNGw2Z3ND?=
+ =?utf-8?B?YWdSemRjL3N6bXJ4WDRwYVM5a3kyQXNSaklaQklSdEVsS01oMC9YcFZ3MFEy?=
+ =?utf-8?B?Wmg3czB4MmlsbmMvSUtDYWtLUkZKdkF0NHJQV3RFWVBib2N6ZFZIbUhzUXRq?=
+ =?utf-8?B?OGlQMU5NSWFrM1NSQWRqRVhVQW5ZbFdaU3ZnRC9waytsODBIaXB0NVVTSDRF?=
+ =?utf-8?B?RlRySmxrWnNla3hidVNraGl4dU9SWmJwNk1Fa0ovN214eW1waXJPTW95VTJF?=
+ =?utf-8?B?Tk5pbkh5V3FBYnpTOWZkNi9IZVNDVHFlelR1cTZVQ1YzSXUwa3JlVUNySkpC?=
+ =?utf-8?Q?Ko2YE7MpoyFfbUceKPrPOhMdQvbzdHe9fOEmYrt?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 61d55878-cb25-4501-6037-08d8d75ba735
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2021 17:59:52.3512
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LxTwlgvmZScItvrx5x6vCufP8BgGSRcddj48ZDre3yfnPDk+NkyvBrPKk+MMm6f4Nlfr8aJ+ccrqpsUh6+ixsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2824
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saulo Alessandre <saulo.alessandre@tse.jus.br>
+This fix has been accepted in the upstream recently.
 
-* crypto/ecdsa.c
-  - add ecdsa_nist_p384_init_tfm
-  - register and unregister p384 tfm
+https://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git/commit/?h=x86/amd
 
-* crypto/testmgr.c
-  - add test vector for p384 on vector of tests
+Could you please give this a try?
 
-* crypto/testmgr.h
-  - add test vector params for p384(sha1, sha224, sha256, sha384 and sha512)
+Thanks,
+Suravee
 
-Signed-off-by: Saulo Alessandre <saulo.alessandre@tse.jus.br>
----
- crypto/ecdsa.c   |  30 ++++++++-
- crypto/testmgr.c |   6 ++
- crypto/testmgr.h | 157 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 192 insertions(+), 1 deletion(-)
-
-diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
-index 4b45230276b3..17a95a3bec9a 100644
---- a/crypto/ecdsa.c
-+++ b/crypto/ecdsa.c
-@@ -289,6 +289,28 @@ static unsigned int ecdsa_max_size(struct crypto_akcipher *tfm)
- 	return ctx->pub_key.ndigits << ECC_DIGITS_TO_BYTES_SHIFT;
- }
- 
-+static int ecdsa_nist_p384_init_tfm(struct crypto_akcipher *tfm)
-+{
-+	struct ecc_ctx *ctx = akcipher_tfm_ctx(tfm);
-+
-+	return ecdsa_ecc_ctx_init(ctx, ECC_CURVE_NIST_P384);
-+}
-+
-+static struct akcipher_alg ecdsa_nist_p384 = {
-+	.verify = ecdsa_verify,
-+	.set_pub_key = ecdsa_set_pub_key,
-+	.max_size = ecdsa_max_size,
-+	.init = ecdsa_nist_p384_init_tfm,
-+	.exit = ecdsa_exit_tfm,
-+	.base = {
-+		.cra_name = "ecdsa-nist-p384",
-+		.cra_driver_name = "ecdsa-nist-p384-generic",
-+		.cra_priority = 100,
-+		.cra_module = THIS_MODULE,
-+		.cra_ctxsize = sizeof(struct ecc_ctx),
-+	},
-+};
-+
- static int ecdsa_nist_p256_init_tfm(struct crypto_akcipher *tfm)
- {
- 	struct ecc_ctx *ctx = akcipher_tfm_ctx(tfm);
-@@ -342,7 +364,12 @@ static int ecdsa_init(void)
- 	ret = crypto_register_akcipher(&ecdsa_nist_p192);
- 	ecdsa_nist_p192_registered = ret == 0;
- 
--	return crypto_register_akcipher(&ecdsa_nist_p256);
-+	ret = crypto_register_akcipher(&ecdsa_nist_p256);
-+	if (ret != 0)
-+		return ret;
-+
-+	ret = crypto_register_akcipher(&ecdsa_nist_p384);
-+	return ret;
- }
- 
- static void ecdsa_exit(void)
-@@ -350,6 +377,7 @@ static void ecdsa_exit(void)
- 	if (ecdsa_nist_p192_registered)
- 		crypto_unregister_akcipher(&ecdsa_nist_p192);
- 	crypto_unregister_akcipher(&ecdsa_nist_p256);
-+	crypto_unregister_akcipher(&ecdsa_nist_p384);
- }
- 
- subsys_initcall(ecdsa_init);
-diff --git a/crypto/testmgr.c b/crypto/testmgr.c
-index 67c6c229487c..367aba992548 100644
---- a/crypto/testmgr.c
-+++ b/crypto/testmgr.c
-@@ -4922,6 +4922,12 @@ static const struct alg_test_desc alg_test_descs[] = {
- 		.suite = {
- 			.akcipher = __VECS(ecdsa_nist_p256_tv_template)
- 		}
-+	}, {
-+		.alg = "ecdsa-nist-p384",
-+		.test = alg_test_akcipher,
-+		.suite = {
-+			.akcipher = __VECS(ecdsa_nist_p384_tv_template)
-+		}
- 	}, {
- 		.alg = "ecrdsa",
- 		.test = alg_test_akcipher,
-diff --git a/crypto/testmgr.h b/crypto/testmgr.h
-index a860b669047c..de9bb4226b8b 100644
---- a/crypto/testmgr.h
-+++ b/crypto/testmgr.h
-@@ -833,6 +833,163 @@ static const struct akcipher_testvec ecdsa_nist_p256_tv_template[] = {
- 	},
- };
- 
-+static const struct akcipher_testvec ecdsa_nist_p384_tv_template[] = {
-+	{
-+	.key = /* secp384r1(sha1) */
-+	"\x04\x89\x25\xf3\x97\x88\xcb\xb0\x78\xc5\x72\x9a\x14\x6e\x7a\xb1"
-+	"\x5a\xa5\x24\xf1\x95\x06\x9e\x28\xfb\xc4\xb9\xbe\x5a\x0d\xd9\x9f"
-+	"\xf3\xd1\x4d\x2d\x07\x99\xbd\xda\xa7\x66\xec\xbb\xea\xba\x79\x42"
-+	"\xc9\x34\x89\x6a\xe7\x0b\xc3\xf2\xfe\x32\x30\xbe\xba\xf9\xdf\x7e"
-+	"\x4b\x6a\x07\x8e\x26\x66\x3f\x1d\xec\xa2\x57\x91\x51\xdd\x17\x0e"
-+	"\x0b\x25\xd6\x80\x5c\x3b\xe6\x1a\x98\x48\x91\x45\x7a\x73\xb0\xc3"
-+	"\xf1",
-+	.key_len = 97,
-+	.params =
-+	"\x30\x10\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x05\x2b\x81\x04"
-+	"\x00\x22",
-+	.param_len = 18,
-+	.m =
-+	"\x12\x55\x28\xf0\x77\xd5\xb6\x21\x71\x32\x48\xcd\x28\xa8\x25\x22"
-+	"\x3a\x69\xc1\x93",
-+	.m_size = 20,
-+	.algo = OID_id_ecdsa_with_sha1,
-+	.c =
-+	"\x30\x66\x02\x31\x00\xf5\x0f\x24\x4c\x07\x93\x6f\x21\x57\x55\x07"
-+	"\x20\x43\x30\xde\xa0\x8d\x26\x8e\xae\x63\x3f\xbc\x20\x3a\xc6\xf1"
-+	"\x32\x3c\xce\x70\x2b\x78\xf1\x4c\x26\xe6\x5b\x86\xcf\xec\x7c\x7e"
-+	"\xd0\x87\xd7\xd7\x6e\x02\x31\x00\xcd\xbb\x7e\x81\x5d\x8f\x63\xc0"
-+	"\x5f\x63\xb1\xbe\x5e\x4c\x0e\xa1\xdf\x28\x8c\x1b\xfa\xf9\x95\x88"
-+	"\x74\xa0\x0f\xbf\xaf\xc3\x36\x76\x4a\xa1\x59\xf1\x1c\xa4\x58\x26"
-+	"\x79\x12\x2a\xb7\xc5\x15\x92\xc5",
-+	.c_size = 104,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	}, {
-+	.key = /* secp384r1(sha224) */
-+	"\x04\x69\x6c\xcf\x62\xee\xd0\x0d\xe5\xb5\x2f\x70\x54\xcf\x26\xa0"
-+	"\xd9\x98\x8d\x92\x2a\xab\x9b\x11\xcb\x48\x18\xa1\xa9\x0d\xd5\x18"
-+	"\x3e\xe8\x29\x6e\xf6\xe4\xb5\x8e\xc7\x4a\xc2\x5f\x37\x13\x99\x05"
-+	"\xb6\xa4\x9d\xf9\xfb\x79\x41\xe7\xd7\x96\x9f\x73\x3b\x39\x43\xdc"
-+	"\xda\xf4\x06\xb9\xa5\x29\x01\x9d\x3b\xe1\xd8\x68\x77\x2a\xf4\x50"
-+	"\x6b\x93\x99\x6c\x66\x4c\x42\x3f\x65\x60\x6c\x1c\x0b\x93\x9b\x9d"
-+	"\xe0",
-+	.key_len = 97,
-+	.params =
-+	"\x30\x10\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x05\x2b\x81\x04"
-+	"\x00\x22",
-+	.param_len = 18,
-+	.m =
-+	"\x12\x80\xb6\xeb\x25\xe2\x3d\xf0\x21\x32\x96\x17\x3a\x38\x39\xfd"
-+	"\x1f\x05\x34\x7b\xb8\xf9\x71\x66\x03\x4f\xd5\xe5",
-+	.m_size = 28,
-+	.algo = OID_id_ecdsa_with_sha224,
-+	.c =
-+	"\x30\x66\x02\x31\x00\x8a\x51\x84\xce\x13\x1e\xd2\xdc\xec\xcb\xe4"
-+	"\x89\x47\xb2\xf7\xbc\x97\xf1\xc8\x72\x26\xcf\x5a\x5e\xc5\xda\xb4"
-+	"\xe3\x93\x07\xe0\x99\xc9\x9c\x11\xb8\x10\x01\xc5\x41\x3f\xdd\x15"
-+	"\x1b\x68\x2b\x9d\x8b\x02\x31\x00\x8b\x03\x2c\xfc\x1f\xd1\xa9\xa4"
-+	"\x4b\x00\x08\x31\x6c\xf5\xd5\xf6\xdf\xd8\x68\xa2\x64\x42\x65\xf3"
-+	"\x4d\xd0\xc6\x6e\xb0\xe9\xfc\x14\x9f\x19\xd0\x42\x8b\x93\xc2\x11"
-+	"\x88\x2b\x82\x26\x5e\x1c\xda\xfb",
-+	.c_size = 104,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	}, {
-+	.key = /* secp384r1(sha256) */
-+	"\x04\xee\xd6\xda\x3e\x94\x90\x00\x27\xed\xf8\x64\x55\xd6\x51\x9a"
-+	"\x1f\x52\x00\x63\x78\xf1\xa9\xfd\x75\x4c\x9e\xb2\x20\x1a\x91\x5a"
-+	"\xba\x7a\xa3\xe5\x6c\xb6\x25\x68\x4b\xe8\x13\xa6\x54\x87\x2c\x0e"
-+	"\xd0\x83\x95\xbc\xbf\xc5\x28\x4f\x77\x1c\x46\xa6\xf0\xbc\xd4\xa4"
-+	"\x8d\xc2\x8f\xb3\x32\x37\x40\xd6\xca\xf8\xae\x07\x34\x52\x39\x52"
-+	"\x17\xc3\x34\x29\xd6\x40\xea\x5c\xb9\x3f\xfb\x32\x2e\x12\x33\xbc"
-+	"\xab",
-+	.key_len = 97,
-+	.params =
-+	"\x30\x10\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x05\x2b\x81\x04"
-+	"\x00\x22",
-+	.param_len = 18,
-+	.m =
-+	"\xaa\xe7\xfd\x03\x26\xcb\x94\x71\xe4\xce\x0f\xc5\xff\xa6\x29\xa3"
-+	"\xe1\xcc\x4c\x35\x4e\xde\xca\x80\xab\x26\x0c\x25\xe6\x68\x11\xc2",
-+	.m_size = 32,
-+	.algo = OID_id_ecdsa_with_sha256,
-+	.c =
-+	"\x30\x64\x02\x30\x08\x09\x12\x9d\x6e\x96\x64\xa6\x8e\x3f\x7e\xce"
-+	"\x0a\x9b\xaa\x59\xcc\x47\x53\x87\xbc\xbd\x83\x3f\xaf\x06\x3f\x84"
-+	"\x04\xe2\xf9\x67\xb6\xc6\xfc\x70\x2e\x66\x3c\x77\xc8\x8d\x2c\x79"
-+	"\x3a\x8e\x32\xc4\x02\x30\x40\x34\xb8\x90\xa9\x80\xab\x47\x26\xa2"
-+	"\xb0\x89\x42\x0a\xda\xd9\xdd\xce\xbc\xb2\x97\xf4\x9c\xf3\x15\x68"
-+	"\xc0\x75\x3e\x23\x5e\x36\x4f\x8d\xde\x1e\x93\x8d\x95\xbb\x10\x0e"
-+	"\xf4\x1f\x39\xca\x4d\x43",
-+	.c_size = 102,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	}, {
-+	.key = /* secp384r1(sha384) */
-+	"\x04\x3a\x2f\x62\xe7\x1a\xcf\x24\xd0\x0b\x7c\xe0\xed\x46\x0a\x4f"
-+	"\x74\x16\x43\xe9\x1a\x25\x7c\x55\xff\xf0\x29\x68\x66\x20\x91\xf9"
-+	"\xdb\x2b\xf6\xb3\x6c\x54\x01\xca\xc7\x6a\x5c\x0d\xeb\x68\xd9\x3c"
-+	"\xf1\x01\x74\x1f\xf9\x6c\xe5\x5b\x60\xe9\x7f\x5d\xb3\x12\x80\x2a"
-+	"\xd8\x67\x92\xc9\x0e\x4c\x4c\x6b\xa1\xb2\xa8\x1e\xac\x1c\x97\xd9"
-+	"\x21\x67\xe5\x1b\x5a\x52\x31\x68\xd6\xee\xf0\x19\xb0\x55\xed\x89"
-+	"\x9e",
-+	.key_len = 97,
-+	.params =
-+	"\x30\x10\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x05\x2b\x81\x04"
-+	"\x00\x22",
-+	.param_len = 18,
-+	.m =
-+	"\x8d\xf2\xc0\xe9\xa8\xf3\x8e\x44\xc4\x8c\x1a\xa0\xb8\xd7\x17\xdf"
-+	"\xf2\x37\x1b\xc6\xe3\xf5\x62\xcc\x68\xf5\xd5\x0b\xbf\x73\x2b\xb1"
-+	"\xb0\x4c\x04\x00\x31\xab\xfe\xc8\xd6\x09\xc8\xf2\xea\xd3\x28\xff",
-+	.m_size = 48,
-+	.algo = OID_id_ecdsa_with_sha384,
-+	.c =
-+	"\x30\x66\x02\x31\x00\x9b\x28\x68\xc0\xa1\xea\x8c\x50\xee\x2e\x62"
-+	"\x35\x46\xfa\x00\xd8\x2d\x7a\x91\x5f\x49\x2d\x22\x08\x29\xe6\xfb"
-+	"\xca\x8c\xd6\xb6\xb4\x3b\x1f\x07\x8f\x15\x02\xfe\x1d\xa2\xa4\xc8"
-+	"\xf2\xea\x9d\x11\x1f\x02\x31\x00\xfc\x50\xf6\x43\xbd\x50\x82\x0e"
-+	"\xbf\xe3\x75\x24\x49\xac\xfb\xc8\x71\xcd\x8f\x18\x99\xf0\x0f\x13"
-+	"\x44\x92\x8c\x86\x99\x65\xb3\x97\x96\x17\x04\xc9\x05\x77\xf1\x8e"
-+	"\xab\x8d\x4e\xde\xe6\x6d\x9b\x66",
-+	.c_size = 104,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	}, {
-+	.key = /* secp384r1(sha512) */
-+	"\x04\xb4\xe7\xc1\xeb\x64\x25\x22\x46\xc3\x86\x61\x80\xbe\x1e\x46"
-+	"\xcb\xf6\x05\xc2\xee\x73\x83\xbc\xea\x30\x61\x4d\x40\x05\x41\xf4"
-+	"\x8c\xe3\x0e\x5c\xf0\x50\xf2\x07\x19\xe8\x4f\x25\xbe\xee\x0c\x95"
-+	"\x54\x36\x86\xec\xc2\x20\x75\xf3\x89\xb5\x11\xa1\xb7\xf5\xaf\xbe"
-+	"\x81\xe4\xc3\x39\x06\xbd\xe4\xfe\x68\x1c\x6d\x99\x2b\x1b\x63\xfa"
-+	"\xdf\x42\x5c\xc2\x5a\xc7\x0c\xf4\x15\xf7\x1b\xa3\x2e\xd7\x00\xac"
-+	"\xa3",
-+	.key_len = 97,
-+	.params =
-+	"\x30\x10\x06\x07\x2a\x86\x48\xce\x3d\x02\x01\x06\x05\x2b\x81\x04"
-+	"\x00\x22",
-+	.param_len = 18,
-+	.m =
-+	"\xe8\xb7\x52\x7d\x1a\x44\x20\x05\x53\x6b\x3a\x68\xf2\xe7\x6c\xa1"
-+	"\xae\x9d\x84\xbb\xba\x52\x43\x3e\x2c\x42\x78\x49\xbf\x78\xb2\x71"
-+	"\xeb\xe1\xe0\xe8\x42\x7b\x11\xad\x2b\x99\x05\x1d\x36\xe6\xac\xfc"
-+	"\x55\x73\xf0\x15\x63\x39\xb8\x6a\x6a\xc5\x91\x5b\xca\x6a\xa8\x0e",
-+	.m_size = 64,
-+	.algo = OID_id_ecdsa_with_sha512,
-+	.c =
-+	"\x30\x63\x02\x2f\x1d\x20\x94\x77\xfe\x31\xfa\x4d\xc6\xef\xda\x02"
-+	"\xe7\x0f\x52\x9a\x02\xde\x93\xe8\x83\xe4\x84\x4c\xfc\x6f\x80\xe3"
-+	"\xaf\xb3\xd9\xdc\x2b\x43\x0e\x6a\xb3\x53\x6f\x3e\xb3\xc7\xa8\xb3"
-+	"\x17\x77\xd1\x02\x30\x63\xf6\xf0\x3d\x5f\x5f\x99\x3f\xde\x3a\x3d"
-+	"\x16\xaf\xb4\x52\x6a\xec\x63\xe3\x0c\xec\x50\xdc\xcc\xc4\x6a\x03"
-+	"\x5f\x8d\x7a\xf9\xfb\x34\xe4\x8b\x80\xa5\xb6\xda\x2c\x4e\x45\xcf"
-+	"\x3c\x93\xff\x50\x5d",
-+	.c_size = 101,
-+	.public_key_vec = true,
-+	.siggen_sigver_test = true,
-+	},
-+};
-+
- /*
-  * EC-RDSA test vectors are generated by gost-engine.
-  */
--- 
-2.25.1
-
+On 2/21/21 8:49 PM, Paul Menzel wrote:
+> Dear Suravee,
+> 
+> 
+> Am 17.09.20 um 19:55 schrieb Alexander Monakov:
+>> On Tue, 16 Jun 2020, Suravee Suthikulpanit wrote:
+>>
+>>>>> Instead of blindly moving the code around to a spot that would just work,
+>>>>> I am trying to understand what might be required here. In this case,
+>>>>> the init_device_table_dma()should not be needed. I suspect it's the IOMMU
+>>>>> invalidate all command that's also needed here.
+>>>>>
+>>>>> I'm also checking with the HW and BIOS team. Meanwhile, could you please
+>>>>> give
+>>>>> the following change a try:
+>>>> Hello. Can you give any update please?
+> 
+> […]
+> 
+>>> Sorry for late reply. I have a reproducer and working with the HW team to
+>>> understand the issue.
+>>> I should be able to provide update with solution by the end of this week.
+>>
+>> Hello, hope you are doing well. Has this investigation found anything?
+> 
+> I am wondering the same. It’d be great to have this fixed in the upstream Linux kernel.
+> 
+> 
+> Kind regards,
+> 
+> Paul
