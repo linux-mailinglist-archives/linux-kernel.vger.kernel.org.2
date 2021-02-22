@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB6F23220BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:21:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC743220C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:24:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbhBVUUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 15:20:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
+        id S232912AbhBVUX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 15:23:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230417AbhBVUUq (ORCPT
+        with ESMTP id S232447AbhBVUXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 15:20:46 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B71EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:20:06 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id q20so7290375pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:20:06 -0800 (PST)
+        Mon, 22 Feb 2021 15:23:24 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCF97C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:22:43 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id f3so15299347oiw.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:22:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=0FFaqD7lFmkmLvbd+lboGqMsUtUT1GYSLYTzpM80sYA=;
-        b=NCXyTI6lmqK/udlKoKih+/PYp0H7ycjuoK9TM9yUIGAMJFXuSOmgzKBVljSbBHeJRb
-         TAimZgL4GeLVvLsvYDVoI7UiabnKX/Vn5fcNR5k2rfICZRLVl+UCcXLSNOLwL5e3vhGo
-         4ar21RtaFSAzJB7+jnOuUXomEcr9gCYVMX/Bg=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=/zUxZgcnCvVVMkZxer/qPy4+yli90D8nt9Ux36SsgZs=;
+        b=RWQBFkXyeMNOQjeD1Kc3RRJXVGMl+74YDUp15mHVrPVrFqPIzO5GHeGTQltOzbV63o
+         ZIZwc381bzxr+hOfu7xK0ZpTJS+QEcA36DpQIJJp9zNGxH2jAJiHXyphz6abXKbbqAY9
+         Ag9sTLSRayloTm2xtfgbS/Fumoq+OI5m0VCNwjDCkGwXvhpMdRiWX5hB2XTzZXgy+0Fo
+         /WivJH383We+IVL4jo5lybgXDiVoEHGqQEjeYriyAy9JzIdTIi0RW0nRlBo/Pe2fZiNg
+         E6AS+9QZ4kfxoL9LqQ5wec6FHBNp1/Ac8+9kYxnkBk/dvKL+esnye86WXfIA+xaD+N4J
+         4aRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=0FFaqD7lFmkmLvbd+lboGqMsUtUT1GYSLYTzpM80sYA=;
-        b=W95MIF0RSvptJceadrThJh+raZuUqFt/SwE1mQBA6vWw9jTdY7JqUbp9Y6QGIliifc
-         AtOkqW+EySB1P8eprmwOXKk4J6wjYgNp+ncgkMGB62RoBwIlV9MjAgX2J7t4iKGxPIY4
-         SxfDwfqJ/q0bTRaEibGLh6F6tLKLIWf/0o9H4D4QaDKTbSuYZUgVXi86H8ShXJQI74OR
-         6D+g7OYrSNu8xz6vQwSMRsuOKupGDGI208KhN9hd8HdoTD7zDwP/P0kHRH2/iZid4tt3
-         bPTu0keta7eZZW4hIxqVBRV22pcq3hz0PoDyxjPFQopv9AFxxyvxM2f6pvnK3t+nkwiI
-         Nw2Q==
-X-Gm-Message-State: AOAM530EeI0zeoq59nUbT4n7YF2snERUE1ACN+eslPiWFA5gSJao+Xe/
-        cRrzUJNJEPowuN4J+CJi0OIFHw==
-X-Google-Smtp-Source: ABdhPJz7LNu3WobrzpHT2ReKlSV8zjPxqwuYpwdA7y4fqn39IxkviJVKNzg+78dHtTGTxbwtU9JpFw==
-X-Received: by 2002:a63:f311:: with SMTP id l17mr21490461pgh.349.1614025206019;
-        Mon, 22 Feb 2021 12:20:06 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:a878:327b:a10a:e189])
-        by smtp.gmail.com with ESMTPSA id j1sm19928859pfr.78.2021.02.22.12.20.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 12:20:05 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=/zUxZgcnCvVVMkZxer/qPy4+yli90D8nt9Ux36SsgZs=;
+        b=kd2L2D7sDNNpp5sHWUvFK7HYMtU8R7z+umkOw3Hx3p0Er6ePsf1AUCuffGjExL6KV7
+         ybd4D8oGneh9mXcsSHLWelkqgXNeBA7+OSBdUADtgsVi9sxzaDj8eJ5Jcqb52AmYLY7V
+         ET9+BqqRz+KVaBXJwZqlvSrjn1PgcQissMxPqnZ7AO9/xAgeawYc0a+WC7NO52cDKvyC
+         VlUNakCz5P589BRrRP/Mvh3xDHC9krgzyiwvPWx8fUOiw9QxXuPUnyLzxhrG8wtsG8a5
+         pAdpfj8IRocR1lsO05fRMPvNMgMXWEwb+0BeH31RfMhXjFX5n64GVSslDT7eaLGgAXWo
+         hVMg==
+X-Gm-Message-State: AOAM532KjqpydV8GBebNFZsKJJeBvrfunUUUeWUulepkDNatVrgZPSCq
+        SVD8fbQ6nbdeLBvnEA956h0=
+X-Google-Smtp-Source: ABdhPJyxynC/qUkfM9m2BbNUu+GDqexEdkig67h42a2PSQnnYl4vRIFk9jQHpyhBm0haU5y+2ztEUA==
+X-Received: by 2002:aca:3507:: with SMTP id c7mr7877911oia.26.1614025363323;
+        Mon, 22 Feb 2021 12:22:43 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q132sm2393106oif.32.2021.02.22.12.22.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Feb 2021 12:22:42 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 22 Feb 2021 12:22:41 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] RISC-V: Add a non-void return for sbi v02 functions
+Message-ID: <20210222202241.GA82802@roeck-us.net>
+References: <20210204052643.1608586-1-atish.patra@wdc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid>
-References: <20210219181032.1.I23e12818c4a841ba9c37c60b3ba8cfeeb048285f@changeid> <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid>
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: sc7180: Delete charger thermal zone and ADC channel for lazor <= rev3
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 22 Feb 2021 12:20:04 -0800
-Message-ID: <161402520418.1254594.7435679604383921403@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210204052643.1608586-1-atish.patra@wdc.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matthias Kaehlcke (2021-02-19 18:10:59)
-> Lazor rev3 and older are stuffed with a 47k NTC as thermistor for
-> the charger temperature which currently isn't supported by the
-> PM6150 ADC driver. Delete the charger thermal zone and ADC channel
-> to avoid the use of bogus temperature values.
->=20
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+On Wed, Feb 03, 2021 at 09:26:43PM -0800, Atish Patra wrote:
+> SBI v0.2 functions can return an error code from SBI implementation.
+> We are already processing the SBI error code and coverts it to the Linux
+> error code.
+> 
+> Propagate to the error code to the caller as well. As of now, kvm is the
+> only user of these error codes.
+> 
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
 > ---
->=20
->  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 9 +++++++++
->  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 9 +++++++++
->  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts | 9 +++++++++
->  3 files changed, 27 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts b/arch/=
-arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-> index 30e3e769d2b4..0974dbd424e1 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
-> @@ -14,6 +14,15 @@ / {
->         compatible =3D "google,lazor-rev0", "qcom,sc7180";
->  };
-> =20
-> +/*
-> + * rev <=3D 3 are stuffed with a 47k NTC as charger thermistor which is =
-currently
-> + * not supported by the PM6150 ADC driver. Delete the thermal zone and A=
-DC
-> + * channel to avoid the use of bogus temperature values.
-> + */
-> +/delete-node/ &charger_thermal;
-> +/delete-node/ &pm6150_adc_charger_thm;
-> +/delete-node/ &pm6150_adc_tm_charger_thm;
+...
+>  #else /* CONFIG_RISCV_SBI */
+> -static inline void sbi_remote_fence_i(const unsigned long *hart_mask) {}
+> +static inline int sbi_remote_fence_i(const unsigned long *hart_mask) {}
 
-Can we disable pm6150_adc_tm instead on <=3D rev3 boards? It would be the
-same number of lines, but is simpler to reason about disabled nodes vs.
-deleted nodes usually.
+Error log:
+In file included from arch/riscv/kernel/setup.c:29:
+arch/riscv/include/asm/sbi.h: In function 'sbi_remote_fence_i':
+arch/riscv/include/asm/sbi.h:150:1: error: no return statement in function returning non-void
 
-> +
->  &pp3300_hub {
->         /* pp3300_l7c is used to power the USB hub */
->         /delete-property/regulator-always-on;
+Guenter
