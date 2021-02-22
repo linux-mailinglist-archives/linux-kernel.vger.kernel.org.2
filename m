@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60465320EEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:09:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C959D320EEF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhBVBHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:07:39 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54446 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhBVBHd (ORCPT
+        id S230260AbhBVBIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:08:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229958AbhBVBIF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:07:33 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 90EAF517;
-        Mon, 22 Feb 2021 02:06:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613956010;
-        bh=jNbNj5a4VeClhaJnrkKKAr7eFN6l98/8cYmw+xeTqCU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GMVYcZLyG06zegvLb44IDrDKnn9r6AzqRPFfYa9lawOOtnKL4SzgOphoim31vSxdk
-         k1geVNkyXhr/hOjYQPtg83XRhZDzJHmkdqtfoRSZM913TYIbhb3gIXj2J3WnTVNmYT
-         xVuyjG73lUeE5M3HkZ6PY0hCK1UPEjkIkwMAQIBM=
-Date:   Mon, 22 Feb 2021 03:06:23 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 04/16] media: i2c: rdacm20: Report camera module name
-Message-ID: <YDMDj8+qm+8pfbyV@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-5-jacopo+renesas@jmondi.org>
+        Sun, 21 Feb 2021 20:08:05 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32088C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 17:07:25 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id e8so14539722ljj.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 17:07:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UH4IPTgqw8AV3WlrSAJLfYK0v76O6zMRzSlgWb6EEEk=;
+        b=epNELKSmVgggxleUs/hUx8T5udyukRpdhNESQ+whKzNkBUy6vGiMQQL3+A5y/lgi86
+         +wlCZKqU5cjhFnP3qkh2TQzHIEdpPg79WhCQCoWMn/JtXFV7I/H28CrBZaOs6sPM1AjU
+         MGE+52zLo6WA9tDVuM0CFPYrOyrvsgWxn/oxs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UH4IPTgqw8AV3WlrSAJLfYK0v76O6zMRzSlgWb6EEEk=;
+        b=tHsylHaAfAYu1x9LhjwNcD9QGFH5+dbOrP98rXaV6mh8jSvK1tj+h+cxGfF7i1T7vV
+         v75k3RFPsAEbmpC84pFYNubmSv5+6b1bmlZN1sBwyloerxDaCC/lseAopLukLQnXH5Fk
+         6fbEIUrdJKfLQ9ogyKMPss67YPioRstfWU6xkP1GWwjq8DGH2rf1+vqxMc83LgHkRjHd
+         rqZ22gaaIpwAKNfBdjyQU/y3p31yPlMZ8UjaSNQxLwsK3qBthOK8GENe5g010a7sDPih
+         bzoqcy0QQhq3xN6RAwgDdlET7J1ltPHVSy+CboEgXIc41KskXLv3S8HJxw2QI1ZCpgwO
+         wQHg==
+X-Gm-Message-State: AOAM533OgONb9PScKIP8/Q2aeBdm7BCtbme/+ER3cMCIB7MNGYrbXos/
+        w8gAW+kxppvCql4uLvSCXH4til73xGgEEw==
+X-Google-Smtp-Source: ABdhPJyxqk7WC7zCrYvoU+Z2XQ19LZfXYVO50g/SoptdEmRlpD3fpRQP4JP/PH8OeaEJMS7nr+2YCw==
+X-Received: by 2002:a05:6512:906:: with SMTP id e6mr12433352lft.224.1613956043361;
+        Sun, 21 Feb 2021 17:07:23 -0800 (PST)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id j2sm1713712lfe.134.2021.02.21.17.07.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Feb 2021 17:07:22 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id q14so53364741ljp.4
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 17:07:22 -0800 (PST)
+X-Received: by 2002:ac2:5184:: with SMTP id u4mr7249839lfi.487.1613956041861;
+ Sun, 21 Feb 2021 17:07:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216174146.106639-5-jacopo+renesas@jmondi.org>
+References: <CAHC9VhRkn65jgVW5fTRWOrDe+dXQD-_-BTN+rZ8Kcq5qxFi45Q@mail.gmail.com>
+In-Reply-To: <CAHC9VhRkn65jgVW5fTRWOrDe+dXQD-_-BTN+rZ8Kcq5qxFi45Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 21 Feb 2021 17:07:06 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjs1S_63iF509z6-ZJSXbm5rASYYykMAcOLzjP46eYuRQ@mail.gmail.com>
+Message-ID: <CAHk-=wjs1S_63iF509z6-ZJSXbm5rASYYykMAcOLzjP46eYuRQ@mail.gmail.com>
+Subject: Re: [GIT PULL] SELinux patches for v5.12
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+On Mon, Feb 15, 2021 at 1:57 PM Paul Moore <paul@paul-moore.com> wrote:
+>
+> - Add support for labeling anonymous inodes, and extend this new
+> support to userfaultfd.
 
-Thank you for the patch.
+I've pulled this, but I just have to note how much I hate the function
+names. "secure inode"? There's nothing particularly secure about the
+resulting inode.
 
-On Tue, Feb 16, 2021 at 06:41:34PM +0100, Jacopo Mondi wrote:
-> When the device is identified the driver currently reports the
-> names of the chips embedded in the camera module.
-> 
-> Report the name of the camera module itself instead.
-> Cosmetic change only.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
+It's gone through the security layer init, that doesn't make it
+"secure". ALL normal inodes go through it, are all those inodes thus
+"secure"? No.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Naming matters, and I think these things are actively mis-named
+implying things that they aren't.
 
-> ---
->  drivers/media/i2c/rdacm20.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/rdacm20.c b/drivers/media/i2c/rdacm20.c
-> index 6504ed0bd3bc..56406d82b5ac 100644
-> --- a/drivers/media/i2c/rdacm20.c
-> +++ b/drivers/media/i2c/rdacm20.c
-> @@ -532,7 +532,7 @@ static int rdacm20_initialize(struct rdacm20_device *dev)
->  	if (ret)
->  		return ret;
->  
-> -	dev_info(dev->dev, "Identified MAX9271 + OV10635 device\n");
-> +	dev_info(dev->dev, "Identified RDACM20 camera module\n");
->  
->  	/*
->  	 * Set reverse channel high threshold to increase noise immunity.
-
--- 
-Regards,
-
-Laurent Pinchart
+              Linus
