@@ -2,80 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5778E32118F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A23F321171
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhBVHqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        id S230107AbhBVHgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:36:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhBVHqQ (ORCPT
+        with ESMTP id S229915AbhBVHgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:46:16 -0500
-X-Greylist: delayed 597 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 21 Feb 2021 23:45:35 PST
-Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37C9C061786;
-        Sun, 21 Feb 2021 23:45:35 -0800 (PST)
-Received: by cavan.codon.org.uk (Postfix, from userid 1000)
-        id 2065540A21; Mon, 22 Feb 2021 07:34:52 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 07:34:52 +0000
-From:   Matthew Garrett <mjg59@srcf.ucam.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
- secretmem users
-Message-ID: <20210222073452.GA30403@codon.org.uk>
-References: <20210208084920.2884-1-rppt@kernel.org>
- <20210208084920.2884-9-rppt@kernel.org>
+        Mon, 22 Feb 2021 02:36:08 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBC0C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:35:28 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id v22so20447561edx.13
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:35:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lightnvm-io.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=Iji0WeR6vKM0Z3iG2537zAB1TJYq/UVFyP+dbtL51mM=;
+        b=gdM+aXHSKTgLU0VG/7m4Z9ee0ftRGE+Fcpc+3RgwVP+bydhQsEquyBLpCYaM/8nvkQ
+         crCLEEdZ2vWAK43tmtv1gAGOdHly3FDlOHtcLhScMlHT1OCauRfrrsRm/BcrjiCc9Det
+         fIplMLMa3fuv7rHpfrJaygVvqXF3kAmaQjZgCHsmomRlel8DmeXvK+yjSEm+yBJA+JYa
+         95x5y9f3gxiU+WUMuduwhNqD5AW45XiB2ogz+Dt1FcSb18177yJXIW7xVsKWnDk92IBA
+         g61jpVQ7xU+GSHZRukzzxQtfhTQYCtlZWYPou/cVbIOrY8jBRJWp/Iw5o9Mmbl5VKWXG
+         lCdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=Iji0WeR6vKM0Z3iG2537zAB1TJYq/UVFyP+dbtL51mM=;
+        b=BmexX0Q8fDlLYnIuEXP8gT4yia1DtnxjjK8WbsGCHuba9Z8HwpKzGvduRtRJnylzR3
+         9M7yVDfNPsqzlajorjsNysbzDRMqWA/BHLyWEUXi81M6zR1fZ1klQFCgZoCJFHMoSNFj
+         Ymv1oOeqqDdppHgXTMNpTm48L295Qt7qjk3jR/RKcQhufFgEsOt4C0eb5WZac4nSSXrX
+         nxpcagLvIQRXfpf/UleAyPsjeCYc/NOtyhwKSKVBDXEiUBEhLwDjxJlrW1Up1h5V0vfx
+         vJuJzutuA/BOs4DJpbtM/eOqgr1frphyfkb8T8w0T5zcAQwAS3SxmPk0dcainkVI853o
+         OM9w==
+X-Gm-Message-State: AOAM530qXs+zVD7UG57dzfrODcDugfPPc/5wj5LhuExtuYmPdIk49qE/
+        uBlsa1BjbkbWVBqAubGWwkORbUEMB64dSxey
+X-Google-Smtp-Source: ABdhPJxpyr7tn4lZ8nte4KPNPbXnvhS7eTEHIlc4MDPkNXkz3gfaudtSV7GKlAUlG3dMs2tOMcuMaA==
+X-Received: by 2002:aa7:c54b:: with SMTP id s11mr5247917edr.82.1613979327131;
+        Sun, 21 Feb 2021 23:35:27 -0800 (PST)
+Received: from [10.0.0.6] (xb932c246.cust.hiper.dk. [185.50.194.70])
+        by smtp.gmail.com with ESMTPSA id bo12sm9708094ejb.93.2021.02.21.23.35.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Feb 2021 23:35:26 -0800 (PST)
+Subject: Re: [PATCH] lightnvm: use kobj_to_dev()
+To:     Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        linux-nvme@lists.indradead.org,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210222060650.45373-1-chaitanya.kulkarni@wdc.com>
+From:   =?UTF-8?Q?Matias_Bj=c3=b8rling?= <mb@lightnvm.io>
+Message-ID: <1bae7eca-c41a-28ed-f575-e9891b4ce45d@lightnvm.io>
+Date:   Mon, 22 Feb 2021 08:35:26 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210208084920.2884-9-rppt@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210222060650.45373-1-chaitanya.kulkarni@wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 08, 2021 at 10:49:18AM +0200, Mike Rapoport wrote:
+On 22/02/2021 07.06, Chaitanya Kulkarni wrote:
+> This fixs coccicheck warning:-
+>
+> drivers/nvme//host/lightnvm.c:1243:60-61: WARNING opportunity for
+> kobj_to_dev()
+>
+> Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+> ---
+>   drivers/nvme/host/lightnvm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/nvme/host/lightnvm.c b/drivers/nvme/host/lightnvm.c
+> index b705988629f2..e3240d189093 100644
+> --- a/drivers/nvme/host/lightnvm.c
+> +++ b/drivers/nvme/host/lightnvm.c
+> @@ -1240,7 +1240,7 @@ static struct attribute *nvm_dev_attrs[] = {
+>   static umode_t nvm_dev_attrs_visible(struct kobject *kobj,
+>   				     struct attribute *attr, int index)
+>   {
+> -	struct device *dev = container_of(kobj, struct device, kobj);
+> +	struct device *dev = kobj_to_dev(kobj);
+>   	struct gendisk *disk = dev_to_disk(dev);
+>   	struct nvme_ns *ns = disk->private_data;
+>   	struct nvm_dev *ndev = ns->ndev;
 
-> It is unsafe to allow saving of secretmem areas to the hibernation
-> snapshot as they would be visible after the resume and this essentially
-> will defeat the purpose of secret memory mappings.
+Thanks, Chaitanya. I'll pull it in.
 
-Sorry for being a bit late to this - from the point of view of running
-processes (and even the kernel once resume is complete), hibernation is
-effectively equivalent to suspend to RAM. Why do they need to be handled
-differently here?
