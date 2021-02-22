@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71798321B12
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CB7321B1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhBVPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:15:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
+        id S231478AbhBVPQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:16:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhBVPNu (ORCPT
+        with ESMTP id S231217AbhBVPNu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 10:13:50 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1FCC061793;
-        Mon, 22 Feb 2021 07:12:47 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id v1so19442055wrd.6;
-        Mon, 22 Feb 2021 07:12:47 -0800 (PST)
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52337C061794;
+        Mon, 22 Feb 2021 07:12:48 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id v21so785156wml.4;
+        Mon, 22 Feb 2021 07:12:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pdGuMOt4W9f6d632mZ/3+qcmk+vyhqvdNPaPLq7IjEM=;
-        b=k6YPsBKxhiIVQgrR1NdSYHdWn4S97ym5N5LCHyB5TOSQxclZfqhb+K112mwVOvPdbc
-         YsUsd4glncxcxs/mU+68rO2yBsai6OJMWHsI7TDIBaGyHKBwGGMOcRdSxtby0dHsakBU
-         xudObvNr9cstN2fAOzMrQywEDT+qKOMFCrVBy1Yvo5/K3pN1wuEhu5nMw7+Vn4P+oyzq
-         kPMccoOCphrMrfGWAsxbhPcYfTeCYThv/ZThSHcajVGLTJ648gdvc90RDNiEvAwmz1CF
-         EodIi/cqA2HJ68SYPUU3JACVRe/vGDjIvh4jIeA6QGbl9MIa6ktk+C1cJU8HA7lmYQtu
-         aDrg==
+        bh=YByzcYLbOT1FbVq7W/iPz1yV9tO4yNodoZHiZ+8vsb4=;
+        b=R5bTKuwSZfiTHw6sQBKH/77xOM7ENB9Wls1sA2mT5ciYD1/ZMOeou2Exj8X3p+MbPY
+         cUoivQD3TUa4RigPCyw3YoC3o1vIfe8umtW75zeiIxpZfHKb/h6bxwZVexAZHXWmDLBm
+         OEcua6ZvtH4jIMiyhrS56W0+nTqUXMm7bN5XC1qRoxtiJiKLYdQD7gTbCoNU3lS1l0E2
+         gIRp+GBzjvJxR3vo1aYTFOBh4bfPnPbk7dx5MsQeOya+siDPjpnDs26vCPWnenTSPN/v
+         yVHVAt/sq16RjIBcpQYcl9AiT1IKbIeB3AC7Y+i4njEdWtdOqL0QAaG43ySBwD+7AMlJ
+         fI6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pdGuMOt4W9f6d632mZ/3+qcmk+vyhqvdNPaPLq7IjEM=;
-        b=fgqmJuN4KsslMmdXYjIp12sX91+G/WcEZOYfWSP/w8IjHsPOG5/ukFFlAs6XFVu7ov
-         iRaJNknjoqN9Odp4MmR3eTJNBSOWwM6IVUnpOjgRZWzL5MflhmAT50pQ9GoCWsev+BgQ
-         8RcdjfPN6rOGT0hSmXtCdIlsk4fZmk0hyj8fVa8VSwiCGc7pNQSSnTXx10WkQi0rdUdh
-         lRK6V8YchkCSzINycTvTgRiSSwFmpBiA9gNTdTF0fCk55LWa9tG5aafdKyHX+ofRArJj
-         jxvK+b+DDbJTrqsyo2FCcW5rZsKaCiValUMIiG9wcNOjSgJrRLsgF6WZqndAThmbTa+u
-         G9lg==
-X-Gm-Message-State: AOAM5331oP5EgE+g0QyYZ9rsU2JkiylNPXK+MPzvhq/J83qCBeZCpkZV
-        hBz4Gy4SB0bN/0/sLlivlD1rkBr3yATt1i6RVik=
-X-Google-Smtp-Source: ABdhPJxrpzigvnHf99oo4cOIbGkxhLJ4N3VZOzCxRfNHMT7x79PfV4RdRx6LhrL4FqA9HYIKUqBMqg==
-X-Received: by 2002:adf:ff88:: with SMTP id j8mr15600241wrr.62.1614006765655;
-        Mon, 22 Feb 2021 07:12:45 -0800 (PST)
+        bh=YByzcYLbOT1FbVq7W/iPz1yV9tO4yNodoZHiZ+8vsb4=;
+        b=KPNvnTkPndu4kC2L2XTV4jHVNCzMhtPwUIMAWH/0LahY2NtKx/2K7ajAnUvFm+Uevt
+         2fjCs2xXQDct2W2ioY+qxqBZJoEFM9Ejp+/ygAvZz4DTn0fOlgcdDOWPsp3rwaCiiPqF
+         Q9PdgBeJVGt7JGgdA9U7HUrdpZIYy02Pxk7c+mymr29w0WzCMfcRRHCLwgKoPOzaf3bL
+         fD2oBzBsYcWVTtfprYy4jw5v5W3AFYPhRpXxIuGbyDoZDBNqOSLq85ASEFuVXUd+2ZPH
+         SuIs6wnillkR3t+9eygMtwm4mbXdoHseL4gJR+o2Pny9cGGr2VwAQVnaddnGLHmfeFdp
+         wbaQ==
+X-Gm-Message-State: AOAM532icpWPfVk7JawOaJRAZlRlFbwpfyR0dbY//hxhlL40cnCLP6f8
+        lMR8SDGTdgcwMvqcAcJgsj/AtKiO6h9AFQl8nWs=
+X-Google-Smtp-Source: ABdhPJxU2vGpa+8wC1SXGOcCy8k2fmqGbntcVq+4bVDVPsoZbAKl5HHMxz/ILTdabK3Q5VQIwNIKDw==
+X-Received: by 2002:a7b:c184:: with SMTP id y4mr13880282wmi.1.1614006766877;
+        Mon, 22 Feb 2021 07:12:46 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id m17sm24783472wmq.5.2021.02.22.07.12.45
+        by smtp.gmail.com with ESMTPSA id m17sm24783523wmq.5.2021.02.22.07.12.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:45 -0800 (PST)
+        Mon, 22 Feb 2021 07:12:46 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com, Jiri Pirko <jiri@nvidia.com>
-Cc:     Romain Perier <romain.perier@gmail.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 03/20] devlink: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:14 +0100
-Message-Id: <20210222151231.22572-4-romain.perier@gmail.com>
+        kernel-hardening@lists.openwall.com,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Romain Perier <romain.perier@gmail.com>,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 04/20] dma-buf: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:15 +0100
+Message-Id: <20210222151231.22572-5-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -80,25 +83,26 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- net/core/devlink.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/dma-buf/dma-buf.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 737b61c2976e..7eb445460c92 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -9461,10 +9461,10 @@ EXPORT_SYMBOL_GPL(devlink_port_param_value_changed);
- void devlink_param_value_str_fill(union devlink_param_value *dst_val,
- 				  const char *src)
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index f264b70c383e..515192f2f404 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -42,12 +42,12 @@ static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
  {
--	size_t len;
-+	ssize_t len;
+ 	struct dma_buf *dmabuf;
+ 	char name[DMA_BUF_NAME_LEN];
+-	size_t ret = 0;
++	ssize_t ret = 0;
  
--	len = strlcpy(dst_val->vstr, src, __DEVLINK_PARAM_MAX_STRING_VALUE);
--	WARN_ON(len >= __DEVLINK_PARAM_MAX_STRING_VALUE);
-+	len = strscpy(dst_val->vstr, src, __DEVLINK_PARAM_MAX_STRING_VALUE);
-+	WARN_ON(len == -E2BIG);
- }
- EXPORT_SYMBOL_GPL(devlink_param_value_str_fill);
+ 	dmabuf = dentry->d_fsdata;
+ 	spin_lock(&dmabuf->name_lock);
+ 	if (dmabuf->name)
+-		ret = strlcpy(name, dmabuf->name, DMA_BUF_NAME_LEN);
++		ret = strscpy(name, dmabuf->name, DMA_BUF_NAME_LEN);
+ 	spin_unlock(&dmabuf->name_lock);
  
+ 	return dynamic_dname(dentry, buffer, buflen, "/%s:%s",
 
