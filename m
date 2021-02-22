@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1360432167B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:24:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49CC4321629
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:19:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhBVMXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:23:54 -0500
+        id S230257AbhBVMSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:18:44 -0500
 Received: from mail.kernel.org ([198.145.29.99]:44938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230333AbhBVMPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB6DA64E2E;
-        Mon, 22 Feb 2021 12:14:15 +0000 (UTC)
+        id S230255AbhBVMOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:14:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AF2764E83;
+        Mon, 22 Feb 2021 12:13:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996056;
-        bh=caBomS7bWdy579qeovr/GI6YRE02FIOHJwofYCiet2E=;
+        s=korg; t=1613996016;
+        bh=QLZhJUPlZ5XpW8nAu6Vl/nSqLs2v7n280BWJj4kcnAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YavS27gCmNZR/6Evp1l40cHlCYF0Zi0+c1u19kk9+j6IHFolNeAzvVzJUI4gg3lFN
-         1xjLnsLj66feCt/QhIIbG440eFGT4DJW95vOigllhBCE8E+MlldzI59+dZtPkS8Qx9
-         wL1/zoOqX8+ycahpbGcMWrVJtuSp7Gdxlk25fkzg=
+        b=g4w6B+l41+3ePWESoF6XcwLRHjCUg3WK5pckKGDeOXj257/LuIlB22E7lYZy+ZxYB
+         31xNvH4b/ziH90vDPs1y5Z9AS40j9KNRbJ4IjeHTtyX3eIK16z/N3L3jniXHf7VWV7
+         zfoQhS0zrzaFFEZw9rRDfIGVm91QrKOeslW3Y1ks=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 5.10 05/29] vdpa_sim: add get_config callback in vdpasim_dev_attr
-Date:   Mon, 22 Feb 2021 13:12:59 +0100
-Message-Id: <20210222121021.019351925@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.11 08/12] xen-scsiback: dont "handle" error by BUG()
+Date:   Mon, 22 Feb 2021 13:13:00 +0100
+Message-Id: <20210222121018.547345140@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
-References: <20210222121019.444399883@linuxfoundation.org>
+In-Reply-To: <20210222121013.586597942@linuxfoundation.org>
+References: <20210222121013.586597942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,109 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit 65b709586e222fa6ffd4166ac7fdb5d5dad113ee upstream.
+commit 7c77474b2d22176d2bfb592ec74e0f2cb71352c9 upstream.
 
-The get_config callback can be used by the device to fill the
-config structure.
-The callback will be invoked in vdpasim_get_config() before copying
-bytes into caller buffer.
+In particular -ENOMEM may come back here, from set_foreign_p2m_mapping().
+Don't make problems worse, the more that handling elsewhere (together
+with map's status fields now indicating whether a mapping wasn't even
+attempted, and hence has to be considered failed) doesn't require this
+odd way of dealing with errors.
 
-Move vDPA-net config updates from vdpasim_set_features() in the
-new vdpasim_net_get_config() callback.
-This is safe since in vdpa_get_config() we already check that
-.set_features() callback is called before .get_config().
+This is part of XSA-362.
 
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lore.kernel.org/r/20201215144256.155342-13-sgarzare@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c |   35 +++++++++++++++++++++--------------
- 1 file changed, 21 insertions(+), 14 deletions(-)
 
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -69,9 +69,12 @@ static u64 vdpasim_features = (1ULL << V
- 			      (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
- 			      (1ULL << VIRTIO_NET_F_MAC);
+---
+ drivers/xen/xen-scsiback.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/xen/xen-scsiback.c
++++ b/drivers/xen/xen-scsiback.c
+@@ -386,12 +386,12 @@ static int scsiback_gnttab_data_map_batc
+ 		return 0;
  
-+struct vdpasim;
-+
- struct vdpasim_dev_attr {
- 	size_t config_size;
- 	int nvqs;
-+	void (*get_config)(struct vdpasim *vdpasim, void *config);
- };
- 
- /* State of each vdpasim device */
-@@ -524,8 +527,6 @@ static u64 vdpasim_get_features(struct v
- static int vdpasim_set_features(struct vdpa_device *vdpa, u64 features)
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
--	struct virtio_net_config *config =
--		(struct virtio_net_config *)vdpasim->config;
- 
- 	/* DMA mapping must be done by driver */
- 	if (!(features & (1ULL << VIRTIO_F_ACCESS_PLATFORM)))
-@@ -533,16 +534,6 @@ static int vdpasim_set_features(struct v
- 
- 	vdpasim->features = features & vdpasim_features;
- 
--	/* We generally only know whether guest is using the legacy interface
--	 * here, so generally that's the earliest we can set config fields.
--	 * Note: We actually require VIRTIO_F_ACCESS_PLATFORM above which
--	 * implies VIRTIO_F_VERSION_1, but let's not try to be clever here.
--	 */
--
--	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
--	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
--	memcpy(config->mac, macaddr_buf, ETH_ALEN);
--
- 	return 0;
- }
- 
-@@ -595,8 +586,13 @@ static void vdpasim_get_config(struct vd
- {
- 	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
- 
--	if (offset + len < vdpasim->dev_attr.config_size)
--		memcpy(buf, vdpasim->config + offset, len);
-+	if (offset + len > vdpasim->dev_attr.config_size)
-+		return;
-+
-+	if (vdpasim->dev_attr.get_config)
-+		vdpasim->dev_attr.get_config(vdpasim, vdpasim->config);
-+
-+	memcpy(buf, vdpasim->config + offset, len);
- }
- 
- static void vdpasim_set_config(struct vdpa_device *vdpa, unsigned int offset,
-@@ -739,12 +735,23 @@ static const struct vdpa_config_ops vdpa
- 	.free                   = vdpasim_free,
- };
- 
-+static void vdpasim_net_get_config(struct vdpasim *vdpasim, void *config)
-+{
-+	struct virtio_net_config *net_config =
-+		(struct virtio_net_config *)config;
-+
-+	net_config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
-+	net_config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
-+	memcpy(net_config->mac, macaddr_buf, ETH_ALEN);
-+}
-+
- static int __init vdpasim_dev_init(void)
- {
- 	struct vdpasim_dev_attr dev_attr = {};
- 
- 	dev_attr.nvqs = VDPASIM_VQ_NUM;
- 	dev_attr.config_size = sizeof(struct virtio_net_config);
-+	dev_attr.get_config = vdpasim_net_get_config;
- 
- 	vdpasim_dev = vdpasim_create(&dev_attr);
- 
+ 	err = gnttab_map_refs(map, NULL, pg, cnt);
+-	BUG_ON(err);
+ 	for (i = 0; i < cnt; i++) {
+ 		if (unlikely(map[i].status != GNTST_okay)) {
+ 			pr_err("invalid buffer -- could not remap it\n");
+ 			map[i].handle = SCSIBACK_INVALID_HANDLE;
+-			err = -ENOMEM;
++			if (!err)
++				err = -ENOMEM;
+ 		} else {
+ 			get_page(pg[i]);
+ 		}
 
 
