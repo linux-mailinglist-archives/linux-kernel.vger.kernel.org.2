@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A55A4321011
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5C7321018
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 05:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230117AbhBVEtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 23:49:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhBVEtP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 23:49:15 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEA2C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:48:34 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id u4so8829523lja.3
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 20:48:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T9VDWpnb5lfzit8yS6WyeZO6cXnnRi0ASXtFAlOXtGQ=;
-        b=ZQoECtYg95T1WUJ7rlkNUoB2fEylQMU7nwAvu80LUOe9PriPH731NwSWpIt3UMdrwy
-         q2TZkMl+WJUbgbyN4Y7yRP71IC+3SNBAlZi5a7lDpiNaCS6L1BDgdeD8aL+ys9cS98s9
-         BySvhwM1g7Tx9AOfo3eIoWJ6VNN42rMKoJBZgv+GDc2hQyZP29/uHQ7NuXRJ9qk1DRQM
-         VcmLLBO28lo/fl48XKkL+VMaweH8G9GCftKvoz143k++SiUEIJ5YOLIeJq2Vw9QrF2y8
-         /VEvOioie6CNb/v6xawdP2amBGcX2VuVGOND59Pwm7xAFt+t9OwZzs4RIRbaO3PaeU9J
-         JaDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T9VDWpnb5lfzit8yS6WyeZO6cXnnRi0ASXtFAlOXtGQ=;
-        b=dQmwFS2pFuLaxY6kQoVVMJMYb9V+qk0HuGU+JztHi5jNRJEpOeMEEhT86lGBCqo0at
-         tPHnu7BQYe5jllIlfmAVVUaOsE7HJTvr7qTPxPycWAsbMss3+Q7++XB1mZJiY6q+xPLX
-         fjXjZZi4oXL+EudxPPdbdr7ZDT3Dc1t27mrWtx7l14/oaRVnN/EMk3GPWdiZQLPBm/M/
-         PDTyRfm0MQz5LJmuz4OOmtSLjSW0dWG4KoBUheWXbE/5tfXYWw55M+z1CsYK+KKmPVpx
-         u+ibDfhTMtbqBt1srTEyf8SQ+sDf6vvOs0AVGrG/T5sFjRNc5+h5kfO6GNL7COmXbRvY
-         AL6g==
-X-Gm-Message-State: AOAM531KIzXdAnO+WWmZBfPH1iMzT77yoqVrrV18zNqom+qVNZfBvKCR
-        O1BS5fEzxweZotpwdUMmDSLyBun0u+FKwxE0Wt99kH1dSWk=
-X-Google-Smtp-Source: ABdhPJzlpPEGc66709Uzvnm1Zpg1ZXQG6r4s65eRlBlZOsGe+xlTtKrspZuH9YpF0jiHOjquWIq8/vtjeAmZojXDg80=
-X-Received: by 2002:a19:c194:: with SMTP id r142mr4959749lff.342.1613969312967;
- Sun, 21 Feb 2021 20:48:32 -0800 (PST)
+        id S230148AbhBVE7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 23:59:37 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:48185 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230029AbhBVE7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 23:59:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1613969951; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=eMp/Oi18EvtK5YOknhy++/LedAfl59fyqLiaB5bvtI4=;
+ b=kVna8xnlQIC2dIfySXDmbIpMJjxJ8mNhnBN8opNYlx9kcvU3cmOls9GgkOhtlrtfP8SdKD8o
+ pamX7H6vQraBKYHoiDILT/zU7FkUmZsSpj/1scFUB9Jthx6lSthyVn84PT+dWG5+eMQKd7S3
+ Zw8SdpEofYYYcWH0uOHsVR3zb9s=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60333a027237f827dcf20c3e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 04:58:42
+ GMT
+Sender: pnagar=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 94EF4C43468; Mon, 22 Feb 2021 04:58:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pnagar)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 517FEC433CA;
+        Mon, 22 Feb 2021 04:58:41 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210221115802.19788-1-dwaipayanray1@gmail.com>
- <20210221115802.19788-2-dwaipayanray1@gmail.com> <46c3b16602f36858b194b22dfbdb2150e25f5d94.camel@perches.com>
- <CABJPP5CJKUeaxUqKzuJD5pd2HsHKcAx9x3iCm6W+Z8AuXiR5Rg@mail.gmail.com> <7bd4520e2552e1a9ae7eccb812c197d6a955e85c.camel@perches.com>
-In-Reply-To: <7bd4520e2552e1a9ae7eccb812c197d6a955e85c.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 22 Feb 2021 10:18:33 +0530
-Message-ID: <CABJPP5BkFj1N+PNpLmT4J_kNuD0q14EvmOQoLEkA8760iG4TfQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] checkpatch: add verbose mode
-To:     Joe Perches <joe@perches.com>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 22 Feb 2021 10:28:41 +0530
+From:   pnagar@codeaurora.org
+To:     Marc Zyngier <maz@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Will Deacon <will@kernel.org>, ardb@kernel.org, arnd@arndb.de,
+        jmorris@namei.org, serge@hallyn.com, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-arch@vger.kernel.org, casey@schaufler-ca.com,
+        ndesaulniers@google.com, dhowells@redhat.com, ojeda@kernel.org,
+        psodagud@codeaurora.org, nmardana@codeaurora.org, johan@kernel.org,
+        joe@perches.com, jeyu@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RTIC: selinux: ARM64: Move selinux_state to a separate
+ page
+In-Reply-To: <09bd49a4d8fcb1bebaa4f40fd5c6eac3@kernel.org>
+References: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
+ <20210217094205.GA3570@willie-the-truck>
+ <09bd49a4d8fcb1bebaa4f40fd5c6eac3@kernel.org>
+Message-ID: <5f33e59bf9c01ed5c33a9c3cbe277615@codeaurora.org>
+X-Sender: pnagar@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 8:14 AM Joe Perches <joe@perches.com> wrote:
->
-> On Mon, 2021-02-22 at 00:05 +0530, Dwaipayan Ray wrote:
-> > On Sun, Feb 21, 2021 at 11:36 PM Joe Perches <joe@perches.com> wrote:
-> > >
-> > > On Sun, 2021-02-21 at 17:28 +0530, Dwaipayan Ray wrote:
-> > > > Add a new verbose mode to checkpatch.pl to emit additional verbose
-> > > > test descriptions. The verbose mode is optional and can be enabled
-> > > > by the flag -v or --verbose.
-> > >
-> > > OK, maybe add color coding to the list_types output.
-> > Okay, nice idea!
-> []
-> > Sure, I will do something like this.
-> > Are there any other improvements you can see right now
-> > or will the coloring thing suffice?
->
-> A lot more descriptive output for the .rst file and
-> of course a lot more of the types documented...
->
+On 2021-02-17 15:45, Marc Zyngier wrote:
+> On 2021-02-17 09:42, Will Deacon wrote:
+>> [Please include arm64 and kvm folks for threads involving the stage-2 
+>> MMU]
+>> 
+>> On Tue, Feb 16, 2021 at 03:47:52PM +0530, Preeti Nagar wrote:
+>>> The changes introduce a new security feature, RunTime Integrity Check
+>>> (RTIC), designed to protect Linux Kernel at runtime. The motivation
+>>> behind these changes is:
+>>> 1. The system protection offered by Security Enhancements(SE) for
+>>> Android relies on the assumption of kernel integrity. If the kernel
+>>> itself is compromised (by a perhaps as yet unknown future 
+>>> vulnerability),
+>>> SE for Android security mechanisms could potentially be disabled and
+>>> rendered ineffective.
+>>> 2. Qualcomm Snapdragon devices use Secure Boot, which adds 
+>>> cryptographic
+>>> checks to each stage of the boot-up process, to assert the 
+>>> authenticity
+>>> of all secure software images that the device executes.  However, due 
+>>> to
+>>> various vulnerabilities in SW modules, the integrity of the system 
+>>> can be
+>>> compromised at any time after device boot-up, leading to 
+>>> un-authorized
+>>> SW executing.
+>>> 
+>>> The feature's idea is to move some sensitive kernel structures to a
+>>> separate page and monitor further any unauthorized changes to these,
+>>> from higher Exception Levels using stage 2 MMU. Moving these to a
+>>> different page will help avoid getting page faults from un-related 
+>>> data.
+>>> The mechanism we have been working on removes the write permissions 
+>>> for
+>>> HLOS in the stage 2 page tables for the regions to be monitored, such
+>>> that any modification attempts to these will lead to faults being
+>>> generated and handled by handlers. If the protected assets are moved 
+>>> to
+>>> a separate page, faults will be generated corresponding to change 
+>>> attempts
+>>> to these assets only. If not moved to a separate page, write attempts 
+>>> to
+>>> un-related data present on the monitored pages will also be 
+>>> generated.
+>>> 
+>>> Using this feature, some sensitive variables of the kernel which are
+>>> initialized after init or are updated rarely can also be protected 
+>>> from
+>>> simple overwrites and attacks trying to modify these.
+>> 
+>> Although I really like the idea of using stage-2 to protect the 
+>> kernel, I
+>> think the approach you outline here is deeply flawed. Identifying 
+>> "sensitive
+>> variables" of the kernel to protect is subjective and doesn't scale.
+>> Furthermore, the triaging of what constitues a valid access is notably
+>> absent from your description and is assumedly implemented in an opaque 
+>> blob
+>> at EL2.
+>> 
+>> I think a better approach would be along the lines of:
+>> 
+>>   1. Introduce the protection at stage-1 (like we already have for 
+>> mapping
+>>      e.g. the kernel text R/O)
+>> 
+>>   2. Implement the handlers in the kernel, so the heuristics are 
+>> clear.
+>> 
+>>   3. Extend this to involve KVM, so that the host can manage its own
+>>      stage-2 to firm-up the stage-1 protections.
+> 
+> +1 on that. Even if, as I suspect, this is targeting some unspecified
+> hypervisor that is not KVM, the first course of action should be for
+> this to be implemented in the kernel's own hypervisor first so that
+> anyone can review understand what is at play.
+> 
+> Thanks,
+> 
+>          M.
 
-Sure I was hoping to do that over time after getting
-this series in...
+Thank you for your comments. The key value add of the feature is a third
+party independent entity keeping a watch on crucial kernel assets, such 
+that
+in case the kernel itself is compromised, still, the protection can 
+remain intact.
+Can this be achieved if the implementation is done in KVM? I've limited 
+knowledge
+of KVM currently, can surely look into more details for a better 
+understanding.
 
-Nevertheless I will send the v7 in right away with the color
-code changes.
-
-Thanks,
-Dwaipayan.
+Agree that the mechanism for triaging what constitutes valid access 
+needs a clear
+approach. We will discuss your suggestions internally if we can use them 
+to improve
+the overall feature design and share updated patches. Thank you!
