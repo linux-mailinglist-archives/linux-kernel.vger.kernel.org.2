@@ -2,69 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55EA1321339
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CAB32133C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbhBVJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:37:04 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38568 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229961AbhBVJgv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:36:51 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613986565; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GU+/aw0PIkgH54Q2zt6jA65ZSt7fVydd5NaglnVXyOw=;
-        b=t0H3TF7+rYpmNyYySQukP1ra4gB6JoPmqMWwnuVvu2yXFxrWVX8PsVumfhg7TlH7LxEPEO
-        1Bz6jNdqyF6qPVUngtov1TIwZ157qzS4IjVHACX7p/MXHIy5VKOr5yptz9uWTFoFGE28us
-        IFnlNsk4g6gMMPf/OiVjA25GC5bFmVo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DB745AD6B;
-        Mon, 22 Feb 2021 09:36:04 +0000 (UTC)
-Message-ID: <777991bb72f8842e3e730f9b600b2086478f5d36.camel@suse.com>
-Subject: Re: usb: cdc-acm: BUG kmalloc-128 Poison overwritten
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Bruno Thomsen <bruno.thomsen@gmail.com>, linux-usb@vger.kernel.org,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Bruno Thomsen <bth@kamstrup.com>,
-        Lars Alex Pedersen <laa@kamstrup.com>
-Date:   Mon, 22 Feb 2021 10:36:01 +0100
-In-Reply-To: <CAH+2xPCkKRhXJSqMx7kzsO53JwXbrmYPLLL-_ANO9waNJREDWA@mail.gmail.com>
-References: <CAH+2xPCmZNW0ct8XoBmAnd0QK53guv2e4HLn40NvWrEA7pj3qw@mail.gmail.com>
-         <CAH+2xPCkKRhXJSqMx7kzsO53JwXbrmYPLLL-_ANO9waNJREDWA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S229987AbhBVJib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:38:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhBVJiS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:38:18 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF52C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:37:37 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id u14so18320454wri.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:37:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition;
+        bh=wMCik8OMhKRvlGn7Bn8d2Q4kMtrUNEeYNGZWFYz3tEM=;
+        b=HSPHghvo9TAtYjbkPJrhU0lNbF3S3PxaEgT4aSX5mASOSNmB/ez6PG9Na4va9rVe+C
+         Mzv0z0Kv8UgGn+wg+3B7x/ZNUYRInSpU62g8vANa+cmtIdj5pJIoYEFcPwULZiw707d7
+         y0t6vUXET1NvZeTbS32ipJaZU/UAjLIvK+20U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition;
+        bh=wMCik8OMhKRvlGn7Bn8d2Q4kMtrUNEeYNGZWFYz3tEM=;
+        b=ILbGqSfXf+1TEBa6RDBlsJtaf9hjxlTZwqZSgsCcqYeKDqE4WmU5ExC8v7AAL0iig1
+         o8I4WBzjtanxLT55GW+yFAx749ONIgjJj1AoDsKf23F7xReCnrkNysIc87fj72P2I2wZ
+         Ml4owJLE6RgBQvk1eXuaW25R73wCsHW39kQS6pzyhmQTks/Kufk4R9ynHsSJt2KfE+A6
+         nlFcQpeegOCEIEn+gkG1GsGJMo37kTJK+fFui7B0jKGk/anPRQ+Gc8XVgLQGEiSy+TjG
+         9mIsWd4sdfpLjEVOAZ8F1xguXn3dDeUnu9zuMRlwMCM0M9bFk4Av6Neh1JoTxwvCnE88
+         dtiA==
+X-Gm-Message-State: AOAM532SEIwmImGa240J+/Is6McoMu1JTIQmFKzD5Di1JmFSAFo7Z6Of
+        YsB7MiDMkNOa/ltIaNwr6CTm7A==
+X-Google-Smtp-Source: ABdhPJxf4EpB2oHzM6hdAxC1zUf2GYli1mGy4hf8Jirrzeu9oFK9WYMdIUkvVW3QSaWT/7gGPl0dQA==
+X-Received: by 2002:a5d:6808:: with SMTP id w8mr18158234wru.290.1613986656449;
+        Mon, 22 Feb 2021 01:37:36 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id u8sm25466wmb.36.2021.02.22.01.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 01:37:36 -0800 (PST)
+Date:   Mon, 22 Feb 2021 10:37:27 +0100
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Airlie <airlied@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: [PULL] topic/kcmp-kconfig
+Message-ID: <YDNrq+mpwta0f0vt@phenom.ffwll.local>
+Mail-Followup-To: Linus Torvalds <torvalds@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Dave Airlie <airlied@gmail.com>, Kees Cook <keescook@chromium.org>,
+        Andy Lutomirski <luto@amacapital.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, den 18.02.2021, 16:52 +0100 schrieb Bruno Thomsen:
-> Den fre. 12. feb. 2021 kl. 16.33 skrev Bruno Thomsen <bruno.thomsen@gmail.com>:
-> > Hi,
-> > 
-> > I have been experience random kernel oops in the cdc-acm driver on
-> > imx7 (arm arch). Normally it happens during the first 1-3min runtime
-> > after power-on. Below oops is from 5.8.17 mainline kernel with an
-> > extra patch back-ported in an attempt to fix it:
-> > 38203b8385 ("usb: cdc-acm: fix cooldown mechanism")
-> 
-> I can now boot board with 5.11 kernel without any extra patches and
-> it produce similar issue. Hopefully that make the oops more useful.
-> Issue has been seen on multiple devices, so I don't think it's a bad
-> hardware issue.
+Hi Linus,
 
-Hi,
+One patch pull request for you to ponder in the hopefully less stressful
+2nd week of the merge window :-)
 
-is this a regression from 5.10?
+It's also marked cc: stable so people can stop building kernels that don't
+work so well.
 
-	Regards
-		Oliver
+topic/kcmp-kconfig-2021-02-22:
+kconfig for kcmp syscall
 
+drm userspaces uses this, systemd uses this, makes sense to pull it
+out from the checkpoint-restore bundle. Kees reviewed this from
+security pov and is happy with the final version.
 
+LWN coverage: https://lwn.net/Articles/845448/
+
+Cheers, Daniel
+
+The following changes since commit f40ddce88593482919761f74910f42f4b84c004b:
+
+  Linux 5.11 (2021-02-14 14:32:24 -0800)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/topic/kcmp-kconfig-2021-02-22
+
+for you to fetch changes up to bfe3911a91047557eb0e620f95a370aee6a248c7:
+
+  kcmp: Support selection of SYS_kcmp without CHECKPOINT_RESTORE (2021-02-16 09:59:41 +0100)
+
+----------------------------------------------------------------
+kconfig for kcmp syscall
+
+drm userspaces uses this, systemd uses this, makes sense to pull it
+out from the checkpoint-restore bundle. Kees reviewed this from
+security pov and is happy with the final version.
+
+LWN coverage: https://lwn.net/Articles/845448/
+
+----------------------------------------------------------------
+Chris Wilson (1):
+      kcmp: Support selection of SYS_kcmp without CHECKPOINT_RESTORE
+
+ drivers/gpu/drm/Kconfig                       |  3 +++
+ fs/eventpoll.c                                |  4 ++--
+ include/linux/eventpoll.h                     |  2 +-
+ init/Kconfig                                  | 11 +++++++++++
+ kernel/Makefile                               |  2 +-
+ tools/testing/selftests/seccomp/seccomp_bpf.c |  2 +-
+ 6 files changed, 19 insertions(+), 5 deletions(-)
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
