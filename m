@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01885321886
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594853218A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhBVNXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:23:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52920 "EHLO mail.kernel.org"
+        id S230220AbhBVN21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:28:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231262AbhBVMlc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:41:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49F0F64F04;
-        Mon, 22 Feb 2021 12:39:05 +0000 (UTC)
+        id S231286AbhBVMmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:42:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ED5E64F07;
+        Mon, 22 Feb 2021 12:39:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997545;
-        bh=Tens+KZWgStKeLAY7QC1RTOow2s6QedXxInN0lRi6Qo=;
+        s=korg; t=1613997583;
+        bh=Hz+J5UmtDXGaKbBwf4cbi2y0bPeNszPDZvo/Tzji9R4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I84etmJ6ubi/QA8DCpdvMpOpWSun0qTiLe1Ux4NJFbKXF7M30SPUfgScFpJaZ2YUy
-         92cW+XHgv6mCyWh2H48Sdi3gmPG7JKVYSbvJdUWSWNfJhVV3FOS2m1yc65miYUHT6e
-         IMgNCVWokXLuT5uhgg0BqkebFRm3km7HfyX+exGw=
+        b=GMcInGaNloVenHyLfoc6cq9XHGnwo4xLg03W/beh1989e1U8E3Mzq7HzI0CvDaXp1
+         bp4byGE0D5Z2UUltlrE2D6s8SWKaUqksts0LqixzBHGixDkh+9OcD8gMYmK2XzhOIa
+         eX6U95zYOfVRolHnKYMEoWnIeaPYZ+RNhg0Qv2eg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 33/57] usb: dwc3: ulpi: fix checkpatch warning
-Date:   Mon, 22 Feb 2021 13:35:59 +0100
-Message-Id: <20210222121030.062749112@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 04/35] iwlwifi: pcie: add a NULL check in iwl_pcie_txq_unmap
+Date:   Mon, 22 Feb 2021 13:36:00 +0100
+Message-Id: <20210222121017.933649049@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
-References: <20210222121027.174911182@linuxfoundation.org>
+In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
+References: <20210222121013.581198717@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,29 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felipe Balbi <balbi@kernel.org>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-commit 2a499b45295206e7f3dc76edadde891c06cc4447 upstream
+[ Upstream commit 98c7d21f957b10d9c07a3a60a3a5a8f326a197e5 ]
 
-no functional changes.
+I hit a NULL pointer exception in this function when the
+init flow went really bad.
 
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210115130252.2e8da9f2c132.I0234d4b8ddaf70aaa5028a20c863255e05bc1f84@changeid
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/ulpi.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/iwlwifi/pcie/tx.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/drivers/usb/dwc3/ulpi.c
-+++ b/drivers/usb/dwc3/ulpi.c
-@@ -22,7 +22,7 @@
+diff --git a/drivers/net/wireless/iwlwifi/pcie/tx.c b/drivers/net/wireless/iwlwifi/pcie/tx.c
+index 8dfe6b2bc7031..cb03c2855019b 100644
+--- a/drivers/net/wireless/iwlwifi/pcie/tx.c
++++ b/drivers/net/wireless/iwlwifi/pcie/tx.c
+@@ -585,6 +585,11 @@ static void iwl_pcie_txq_unmap(struct iwl_trans *trans, int txq_id)
+ 	struct iwl_txq *txq = &trans_pcie->txq[txq_id];
+ 	struct iwl_queue *q = &txq->q;
  
- static int dwc3_ulpi_busyloop(struct dwc3 *dwc)
- {
--	unsigned count = 1000;
-+	unsigned int count = 1000;
- 	u32 reg;
- 
- 	while (count--) {
++	if (!txq) {
++		IWL_ERR(trans, "Trying to free a queue that wasn't allocated?\n");
++		return;
++	}
++
+ 	spin_lock_bh(&txq->lock);
+ 	while (q->write_ptr != q->read_ptr) {
+ 		IWL_DEBUG_TX_REPLY(trans, "Q %d Free %d\n",
+-- 
+2.27.0
+
 
 
