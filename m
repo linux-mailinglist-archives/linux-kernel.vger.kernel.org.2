@@ -2,102 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FD03221AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB393221B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:44:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231688AbhBVVla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:41:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
+        id S231267AbhBVVmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:42:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231640AbhBVVkr (ORCPT
+        with ESMTP id S230431AbhBVVmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:40:47 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9C84C061786;
-        Mon, 22 Feb 2021 13:40:05 -0800 (PST)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 875E930D;
-        Mon, 22 Feb 2021 21:40:05 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 875E930D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1614030005; bh=EFM1k3V9bO7Y53Xdrp5AG/ja+u+SEr6m8EZGNNYAocA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=LblIRwbmGR0JwwL06ujLz65nEyig0pcLcQSCTe5cXiD8cpjKM+if4EwV8W/FVrR5K
-         9Nzcgfwh0+r3yGzfWLj3zxVMqll1x8GDwzoXJfMNWmVRzszh1WWryqvEkkTGcxW58t
-         xa7F8hXK+ZGNCvA28hSV+9njhkCUz1PoOwv06AWH6D5ujZqg7s41JIdzmlmDCScFvx
-         cJ+zvVxkXttFBr1lPttyBv2Sp8DgrzjCsjboHmDSTCpvqsAtLLf4yBZJd4EPRaCpAx
-         /CkdcPHJ0qWFONaTSyceBKFacD8ZEbFfY2wytr1xJ/f2DNQ5kzwV08wynccIkoL+0y
-         WJwPfa/z7Eavw==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [RFC] scripts: kernel-doc: fix typedef support for struct parsing
-In-Reply-To: <20210222160347.23410-1-yashsri421@gmail.com>
-References: <20210222160347.23410-1-yashsri421@gmail.com>
-Date:   Mon, 22 Feb 2021 14:40:04 -0700
-Message-ID: <875z2jlr2j.fsf@meer.lwn.net>
+        Mon, 22 Feb 2021 16:42:20 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88BF9C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 13:41:40 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id f3so15538816oiw.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 13:41:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gFU4xCY1lmnRTtgwAHd72b7gU2GJilKA5WuHpwi22SA=;
+        b=N1FTYldZeoOzK0vtgLm7rTW/SrZeksU0UMK+hNfUjrGwLWkzgnrjW+J8221K8R/qAk
+         P1RtcqMpFdUPPWRZ1qGzfLb/fllFVkWpv456DO/kEO7ByFRVthMhw4nErdSm5g1kGQ6J
+         xtj7++SXbvzz+akwgRWz0RXcQqbESbDoza4lLvwf/fr+dbRpw22RXPQIcBtS34oD06YZ
+         q4iNK4WJJJvHtuuHqmj+aTFS6Xr/D5QqaDXaZLV4w+RcaxLOIMnnnOE9c8YBHle77u7x
+         7rz43vrISGWowpXNo0iAUQQSjESNwXYiCtdThfJInG6LQNIz+CsfS/WjKmDU6NkRnER7
+         hS6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gFU4xCY1lmnRTtgwAHd72b7gU2GJilKA5WuHpwi22SA=;
+        b=NnIomLwCY11aJjYEFRCT0jVlTmnyfmUJloXoKBiG54A/wdimpDDRbkyqFZjqUxf6sY
+         QdycLZcH4kDrdJDnDTrrX7AP7CikTCYh4B40dlImRmlMksedc7nXKJ+p3JCAuK0eaIHf
+         XVhxp2KlvIpOFKYM6cWG486dBfWz2u39MpQUM8q9A6QTRNTS1IWTcdpnzXSEqIrTwdYI
+         u0hiCpTAgnvYvo9uvQ9BbeY4RGNzjDTFgsKD9tWP9JzIPpB2T4QHRMVJyxtICW4lRUs/
+         SlFe6uVb/b/F4WN0trvcrly/J2/91DeLmZfCz0Gmol5mBNqPex/5VrleI+b5Vm0xrpHE
+         LdJw==
+X-Gm-Message-State: AOAM533eCACiR/H1ILEd3WN8i6RZQMyVDmlARfueu/x+YxYbA9z5GqIX
+        tSZVQuq8D06rG8Q0Mn1kROX+7KrLjsPi6cm70yQ=
+X-Google-Smtp-Source: ABdhPJw32ZEogvCTmpB15sh+Ll3hSPvV8Sc5iPF1lqUkxoZjhcorelbZg6kdvkFnrG3d+38kCN+sLXkRallvCqbxDB0=
+X-Received: by 2002:aca:fccb:: with SMTP id a194mr7835630oii.5.1614030099987;
+ Mon, 22 Feb 2021 13:41:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1613805352-12397-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1613805352-12397-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 22 Feb 2021 16:41:28 -0500
+Message-ID: <CADnq5_OdQ8ZAV+sMFEbNJeoBXca5i87-T8_rSpzqiK-D=2Kz+g@mail.gmail.com>
+Subject: Re: [PATCH] drm/amd/display/dc/core/dc_link_ddc: Remove unnecessary
+ conversion to bool
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     "Wentland, Harry" <harry.wentland@amd.com>,
+        "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aditya Srivastava <yashsri421@gmail.com> writes:
+Applied.  Thanks!
 
-> There are files in kernel, which use 'typedef struct' syntax for defining
-> struct. For eg, include/linux/zstd.h, drivers/scsi/megaraid/mega_common.h,
-> etc.
-> However, kernel-doc still does not support it, causing a parsing error.
+Alex
+
+On Sat, Feb 20, 2021 at 2:16 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
 >
-> For eg, running scripts/kernel-doc -none on include/linux/zstd.h emits:
-> "error: Cannot parse struct or union!"
+> Fix the following coccicheck warnings:
 >
-> Add support for parsing it.
+> ./drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c:544:34-39: WARNING:
+> conversion to bool not needed here.
 >
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 > ---
->  scripts/kernel-doc | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-> index 8b5bc7bf4bb8..46e904dc3f87 100755
-> --- a/scripts/kernel-doc
-> +++ b/scripts/kernel-doc
-> @@ -1201,12 +1201,20 @@ sub dump_union($$) {
->  sub dump_struct($$) {
->      my $x = shift;
->      my $file = shift;
-> +    my $decl_type;
-> +    my $members;
->  
->      if ($x =~ /(struct|union)\s+(\w+)\s*\{(.*)\}(\s*(__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*/) {
-> -	my $decl_type = $1;
-> +	$decl_type = $1;
->  	$declaration_name = $2;
-> -	my $members = $3;
-> +	$members = $3;
-> +    } elsif ($x =~ /typedef\s+(struct|union)\s*\{(.*)\}(?:\s*(?:__packed|__aligned|____cacheline_aligned_in_smp|____cacheline_aligned|__attribute__\s*\(\([a-z0-9,_\s\(\)]*\)\)))*\s*(\w*)\s*;/) {
-
-So this isn't your fault, but these regexes are really getting out of
-hand.  I would *really* like to see some effort made into making this
-code more understandable / maintainable as we tweak this stuff.  So:
-
- - Splitting out the common part, as suggested by Lukas, would be really
-   useful.  That would also avoid the problem of only occurrence being
-   edited the next tine we add a new qualifier.
-
- - Splitting out other subsections of the regex and giving them symbolic
-   names would also help.
-
- - We really could use some comments before these branches saying what
-   they are doing; it is *not* obvious from the code.
-
-See what I'm getting at here?
-
-Thanks,
-
-jon
+> diff --git a/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c b/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
+> index c5936e0..45a59cf 100644
+> --- a/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
+> +++ b/drivers/gpu/drm/amd/display/dc/core/dc_link_ddc.c
+> @@ -541,7 +541,7 @@ bool dal_ddc_service_query_ddc_data(
+>                         /* should not set mot (middle of transaction) to 0
+>                          * if there are pending read payloads
+>                          */
+> -                       payload.mot = read_size == 0 ? false : true;
+> +                       payload.mot = !(read_size == 0);
+>                         payload.length = write_size;
+>                         payload.data = write_buf;
+>
+> --
+> 1.8.3.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
