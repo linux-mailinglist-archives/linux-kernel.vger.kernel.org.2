@@ -2,59 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9716321E7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:49:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24E3321E7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:49:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231732AbhBVRs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:48:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45340 "EHLO
+        id S231787AbhBVRsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:48:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhBVRsV (ORCPT
+        with ESMTP id S231754AbhBVRsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:48:21 -0500
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C6950C061574;
-        Mon, 22 Feb 2021 09:47:40 -0800 (PST)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id F332E92009C; Mon, 22 Feb 2021 18:47:38 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id E854592009B;
-        Mon, 22 Feb 2021 18:47:38 +0100 (CET)
-Date:   Mon, 22 Feb 2021 18:47:38 +0100 (CET)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Willy Tarreau <w@1wt.eu>, linux-edac@vger.kernel.org,
-        linux-hams@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] Remove dead linux-mips.org references
-In-Reply-To: <20210222161905.1153-1-lukas.bulwahn@gmail.com>
-Message-ID: <alpine.DEB.2.21.2102221836030.1900@angie.orcam.me.uk>
-References: <20210222161905.1153-1-lukas.bulwahn@gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Mon, 22 Feb 2021 12:48:39 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E94C1C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:47:58 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id t11so30749193ejx.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:47:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=fyP7UwKRMN2zq6eNmDTOnJj19G4PIaEbS9WKm7ZygBE=;
+        b=PUrINC2SBWq6oLLobOQEgSd5bYjPLN+TttmGuyDxk7mUSCKdaGtum3Bi4TqRO/a+jb
+         q2NgYvr80nLicSi0SY2Bm+IJaMvs8io4+QEyMaX1raFxzKrPP7n3UF2l3SgKyblD5w4f
+         +jAI+NJzhkTKcy8QZNUTA/HEoZG8yH1Gg1MgnPTt297iQoP+U03RLlIdSQ9cEQOL9+yd
+         7fky7ML1RSDuETwD7ZV3YOKS00EB61QH6gRp3klTDET214akipsx+Zdezt716PCdo/kF
+         iOpoJNTLOiu83r3Yz0ZAM6bKYr78G42fPLqd/tWfhJyGz1Ii8pdnqsNQvRvwjfGDbQZF
+         6v7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=fyP7UwKRMN2zq6eNmDTOnJj19G4PIaEbS9WKm7ZygBE=;
+        b=KQuFa5hvLIBgoeEgr4bYyNM7zSJUFMusvseGoLvwctPnW9uAUwrCXkxe8CWLYwp/HB
+         yUfeS7VKj60hyfU7tKJTBzg0/aUvpplnm+CHrjboJ4BkddLt5FT84FZOHmcKs8Hr0nbR
+         oVzg06VJXBgduIqzxykjxKDpOPV0dI3VE+kshGhl+s6Im9KIf4pdyxU4KxE8UBdA9es5
+         cEu6NVj0uS1TKBZQn+Yue/2pgCz7i1EfSJ6eO770zOYDx/eTHDXs/Etj87sh9kF9HY62
+         MSAWmD/kP8rGRa14OPF0CCAh36XjIht4U1qhl9G06rljyFFyPyAvKWfwobciC7Bh2xav
+         GK+g==
+X-Gm-Message-State: AOAM532GOpQy/WXX7qK1pSVyvtUzya+1oIMWach1qCRXY2rubWEabA8k
+        LSMl6RQ108W5Z3967TTauSB2pIR2uFu+1ND6M5PiyZIhfzlN8p5m
+X-Google-Smtp-Source: ABdhPJyyV2miN2e5V+Rf7k3+ZmPpPyEilWYcd0JDgLzCgVsL2QNBLJ0aDsCiJ9oUCgCOSwjEAHhgmzWbIhVZy15DIzE=
+X-Received: by 2002:a17:906:444d:: with SMTP id i13mr21382620ejp.170.1614016077640;
+ Mon, 22 Feb 2021 09:47:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 22 Feb 2021 23:17:46 +0530
+Message-ID: <CA+G9fYtXHHfLEd7+v05gG=1uMqWskTPof-4mrCnZ=xWZNgfZ7w@mail.gmail.com>
+Subject: riscv: sbi.h:150:1: error: no return statement in function returning
+ non-void [-Werror=return-type]
+To:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021, Lukas Bulwahn wrote:
+Following riscv tiny and allnoconfig build failed on linux next 20210222 tag
+  - riscv (tinyconfig) with gcc-8, gcc-9 and gcc-10
+  - riscv (allnoconfig) with gcc-8, gcc-9 and gcc-10
 
-> The domain lookup for linux-mips.org fails for quite some time now.
-> Hence, webpages, the patchwork instance and Ralf Baechle's email there is
-> not reachable anymore.
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=riscv
+CROSS_COMPILE=riscv64-linux-gnu- 'CC=sccache riscv64-linux-gnu-gcc'
+'HOSTCC=sccache gcc'
+In file included from arch/riscv/kernel/setup.c:29:
+arch/riscv/include/asm/sbi.h: In function 'sbi_remote_fence_i':
+arch/riscv/include/asm/sbi.h:150:1: error: no return statement in
+function returning non-void [-Werror=return-type]
+  150 | static inline int sbi_remote_fence_i(const unsigned long *hart_mask) {}
+      | ^~~~~~
+cc1: some warnings being treated as errors
+make[3]: *** [scripts/Makefile.build:287: arch/riscv/kernel/setup.o] Error 1
 
- I have been contacted by Ralf a couple of weeks ago and he told me there 
-had been a storage failure with the machine running linux-mips.org.
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
- Due to a complex situation with linux-mips.org I do not want to dive the 
-details of into here recovery of the site caused some trouble, however I 
-was told it had been under way now.  So I suggest that we wait a couple of 
-weeks yet and see how it goes before going ahead with this series.
+step to reproduce:
+------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
 
- As to Ralf personal commitments WRT maintenance duties I can't speak, but 
-I have bcc-ed him on his alternative e-mail address with this message in 
-case he wants to speak up.
 
-  Maciej
+tuxmake --runtime podman --target-arch riscv --toolchain gcc-9
+--kconfig tinyconfig
+
+build log,
+https://builds.tuxbuild.com/1opbLmoztDBhgUOMidDILjVsQys/
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
