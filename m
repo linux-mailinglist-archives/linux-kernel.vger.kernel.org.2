@@ -2,80 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C906E321D1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91D55321D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:38:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhBVQge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:36:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57918 "EHLO
+        id S231573AbhBVQho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:37:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231226AbhBVQgY (ORCPT
+        with ESMTP id S230037AbhBVQhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:36:24 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FCA3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:35:43 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id n10so14996686wmq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:35:43 -0800 (PST)
+        Mon, 22 Feb 2021 11:37:36 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05B6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:36:55 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id s107so12545433otb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:36:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9HyW+R/tTqJ32XAGo3SEoB1HTbrZ1MBBmQvUTLk8VTQ=;
-        b=CTgLeobky8icBFLKoJgHs91VRzgLtKreHngrsYuwaj55bzy/s90rt+9SDUmn4x0lfE
-         bJSaWEnSlek9C6cBQtknyYRyvXUI3F9l0gdl2jlFCsp86buC8PuQDQQoEWw/mEoxMSti
-         cXi9BpKFPR0qDui9cBDt6PafgCkXWbmhxY7Rce8FdAArb1pgnKKtWkmezSi29oYoyqZs
-         4mBV7GRNN9liR4fGctYVXcagrbIy34GSj71cOND9PHHCUZPvTuYl0Dmfntrd5F/N+5xK
-         vqRaxuhKzGd3DufnofEH/k8vAhmRj/01g8ZoZ6nBYZP3x0JXBKxt/3Ld3Joyh37BsN2y
-         ILow==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CQtzj2ET+OspvcT7VasFUJh31XI2DgueE7K7chQefu0=;
+        b=JgIAcXbmqnUtAzeQggrQMFDw+iRD7712f5b6XLlsNpGFq/2OH71ZR8eVPcYSvV8O9Z
+         Q4ZFhr/HY3qIL2VVw5am2ZXMqQjcHv6oQm57icBzxpF2r/H6pUN28Ic0UVcMNAWR0oM3
+         Nk4pk+06r39DoxUQo5VbU8V6VX0ewSDT/6fu0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9HyW+R/tTqJ32XAGo3SEoB1HTbrZ1MBBmQvUTLk8VTQ=;
-        b=PndaFrp8bSRDllcS3qjXpyY86y0TLumHCVVZuAq2hT6Bv1AUCKnMV6YZeSIzDPA8xP
-         lHxVBXJSlkkhsznLsCABALsfFuXN7+3n5z0aDIfXE2UxJUotBFwelpkBZxzrYDjDA5zn
-         QDPXnRMpjNiX/56cjIRkxWvEmX1YxKUUjDPfdzvI17e5uEEKu3pxa6QNAIBFpOiSgM92
-         sLykPlKVtroIuswZdXhtcSfL7iqnGqcxTcH11suG/cs2FGHA60GnVl6OvTtf/OBaoTIS
-         rgnOqWo9ksr+iGk/462BHZxy9oNijI0hJhRrpYZBCZGjv1P8u66+wLanQPcBe4GLUJMo
-         WdWA==
-X-Gm-Message-State: AOAM530seBtfviA6VzGaAqMxrWD99cyKJXpYOUaT4qcOvm8HmepwWQ85
-        iil9Url/CvWuTNZ/kR28V9P+ng==
-X-Google-Smtp-Source: ABdhPJwculwG7dtlay8rgowavRCvCCjs2FuL8nzagvlRCdSBKEuOEqBdCbRzg9ICG2mQzo1Vhe36tw==
-X-Received: by 2002:a05:600c:22d1:: with SMTP id 17mr5739015wmg.168.1614011741818;
-        Mon, 22 Feb 2021 08:35:41 -0800 (PST)
-Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
-        by smtp.gmail.com with ESMTPSA id r15sm10416462wmq.47.2021.02.22.08.35.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 08:35:41 -0800 (PST)
-Date:   Mon, 22 Feb 2021 16:35:38 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com
-Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
- cpu_util_next()
-Message-ID: <YDPdWtwO/uPHf69Q@google.com>
-References: <20210222095401.37158-1-vincent.donnefort@arm.com>
- <YDODN1rnTqfTQOug@google.com>
- <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
- <YDOiKH/XQDUKcrPU@google.com>
- <20210222150151.GA124800@e124901.cambridge.arm.com>
- <YDPUwKKYgZfzzCJm@google.com>
- <20210222163108.GA225035@e124901.cambridge.arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CQtzj2ET+OspvcT7VasFUJh31XI2DgueE7K7chQefu0=;
+        b=j+noUqOtnDKrHyr0+7K/Q76redY4xWExQkOi3/Gor4hNI2u6ZK+v0rXCoU5/yLraFl
+         k6NQnYpsYqsQ5MMSYq921L75p5adAdoRpB4RUf9bdcIozIdB2Te3YB61lRPb86k7LAsq
+         n9pG/dhX72DTP4FhU4zPnxu4Faz41cJZX8iyvZpPMyd8w5QzgfEYffAJj33Yj8XBwdBS
+         61e7gXtFyh+CIGNqSsYcvfM+l+q34i+zE9VpxHczpUARv8+ujACZPQ/Y/uJOCziFqXbP
+         9XpNPfNXkGyIOee+cn5SWef+ipg6GDQb0XzzajRml8LprO0fana3+DlLrX7faYIyZAYU
+         wdEw==
+X-Gm-Message-State: AOAM533fDuPoSnrSdBnRm3lEzntoAXhzQ7v35pUnikHRqREI83puKzcp
+        UuPLB9XIAmE6/4R1FSZwO7b2QQ==
+X-Google-Smtp-Source: ABdhPJyA692d/UkhfnySsVsus41uILuIidqyduT1DxwFO8wUlVI27VDOIjP5WOhWxUUsjwOOYq7M6Q==
+X-Received: by 2002:a05:6830:314d:: with SMTP id c13mr16134049ots.124.1614011814286;
+        Mon, 22 Feb 2021 08:36:54 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id 7sm3712035oth.38.2021.02.22.08.36.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 08:36:53 -0800 (PST)
+Subject: Re: [PATCH 00/20] Manual replacement of all strlcpy in favor of
+ strscpy
+To:     Romain Perier <romain.perier@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     cgroups@vger.kernel.org, linux-crypto@vger.kernel.org,
+        netdev@vger.kernel.org, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-hwmon@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210222151231.22572-1-romain.perier@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <936bcf5e-2006-7643-7804-9efa318b3e2b@linuxfoundation.org>
+Date:   Mon, 22 Feb 2021 09:36:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222163108.GA225035@e124901.cambridge.arm.com>
+In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 22 Feb 2021 at 16:31:08 (+0000), Vincent Donnefort wrote:
-> I suppose, a way of fixing this, is to keep cpu_util_next() the way it is to
-> get the appropriate frequency at which the CPU would run once the task has been
-> enqueued, for the 'max_util', and have 'sum_util' being the sum of the pd's util
-> (without the task) + task_util_est().
+On 2/22/21 8:12 AM, Romain Perier wrote:
+> strlcpy() copy a C-String into a sized buffer, the result is always a
+> valid NULL-terminated that fits in the buffer, howerver it has severals
+> issues. It reads the source buffer first, which is dangerous if it is non
+> NULL-terminated or if the corresponding buffer is unbounded. Its safe
+> replacement is strscpy(), as suggested in the deprecated interface [1].
+> 
+> We plan to make this contribution in two steps:
+> - Firsly all cases of strlcpy's return value are manually replaced by the
+>    corresponding calls of strscpy() with the new handling of the return
+>    value (as the return code is different in case of error).
+> - Then all other cases are automatically replaced by using coccinelle.
+> 
 
-You read my mind :)
+Cool. A quick check shows me 1031 strscpy() calls with no return
+checks. All or some of these probably need to be reviewed and add
+return checks. Is this something that is in the plan to address as
+part of this work?
+
+thanks,
+-- Shuah
