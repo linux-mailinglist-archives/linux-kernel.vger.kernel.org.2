@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0244321F3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71881321F3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhBVSiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:38:23 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41628 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231366AbhBVSiM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:38:12 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B67531C0B7F; Mon, 22 Feb 2021 19:37:11 +0100 (CET)
-Date:   Mon, 22 Feb 2021 19:37:11 +0100
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.4 00/35] 4.4.258-rc1 review
-Message-ID: <20210222183711.GA29892@duo.ucw.cz>
-References: <20210222121013.581198717@linuxfoundation.org>
+        id S230100AbhBVSjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:39:42 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:55018 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231298AbhBVSi7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:38:59 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id E198CFB04;
+        Mon, 22 Feb 2021 19:38:13 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id n_CEz-QL95Ge; Mon, 22 Feb 2021 19:38:12 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id B490C403CD; Mon, 22 Feb 2021 19:38:11 +0100 (CET)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Liu Ying <victor.liu@nxp.com>
+Subject: [PATCH v4 0/1] phy: fsl-imx8-mipi-dphy: Hook into runtime pm
+Date:   Mon, 22 Feb 2021 19:38:10 +0100
+Message-Id: <cover.1614019053.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
-Content-Disposition: inline
-In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This allows us to shut down the mipi power domain on the imx8. The alternative
+would be to drop the dphy from the mipi power domain in the SOCs device tree
+and only have the DSI host controller visible there but since the PD is mostly
+about the PHY that would defeat it's purpose.
 
---0F1p//8PRICkK4MW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This allows to shut off the power domain hen blanking the LCD panel:
 
-Hi!
+pm_genpd_summary before:
 
-> This is the start of the stable review cycle for the 4.4.258 release.
-> There are 35 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+domain                          status          slaves
+    /device                                             runtime status
+----------------------------------------------------------------------
+mipi                            on
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  unsupported
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
 
-CIP testing did not find any problems here:
+after:
 
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.4.y
+mipi                            off-0
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  suspended
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
 
-Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+Changes from v1:
+ - Tweak commit message slightly
 
-Best regards,
-                                                                Pavel
+Changes from v2:
+  - As per review comment by Lucas Stach
+    https://lore.kernel.org/linux-arm-kernel/ee22b072e0abe07559a3e6a63ccf6ece064a46cb.camel@pengutronix.de/
+    Check for pm_runtime_get_sync failure
+
+Changes from v3:
+  - As per review comment by Liu Ying
+    https://lore.kernel.org/linux-arm-kernel/424af315b677934fe6a91cee5a0a7aee058245a9.camel@nxp.com/
+    https://lore.kernel.org/linux-arm-kernel/a98f7531b9d0293d3c89174446f742d4199cb27c.camel@nxp.com/
+    - Use phy layers runtime pm
+    - simplify mixel_dphy_remove
 
 
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
---0F1p//8PRICkK4MW
-Content-Type: application/pgp-signature; name="signature.asc"
+Guido Günther (1):
+  phy: fsl-imx8-mipi-dphy: Hook into runtime pm
 
------BEGIN PGP SIGNATURE-----
+ drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYDP51wAKCRAw5/Bqldv6
-8rxpAJ9BlH81J4hdE7Y0tF1gMXGP5xsReACfX8evjL+aq2r3gcnhXPEmFLELdEg=
-=vTpq
------END PGP SIGNATURE-----
+-- 
+2.30.0
 
---0F1p//8PRICkK4MW--
