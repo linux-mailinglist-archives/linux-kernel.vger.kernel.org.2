@@ -2,140 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E3D321E44
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 815BD321E4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhBVRjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231411AbhBVRi6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:38:58 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0738C06178B
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:38:17 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id g1so53969971ljj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:38:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v7wqePzSgwskG1/tuXGQ+kZYGBboCrb+s/SmtJNtNR4=;
-        b=iT3LsK4hvs9RPodo+tY+HqAJBe3Hvz+r+KHAKjmMJStqt4wt1/WysDdi0gAGLEK4Bw
-         CJ+OzgExS/5XgubOnDIswVin/bTIgOJB5qvCk1i6z2ZyrNPZJfBbVhM613Ed7uKvZWTO
-         nSg1qBG19ojFuhnlNxgILWPkvZ7s2TBKHixJAf5cRve1TAINmKyjKaf9HktrwQm6l6fQ
-         lPhqmqobRfYZPaQZLWO6AXrL7dLCZcdWLoxLnnHenbkp6vc8c2v3Geds6/6fqKqWJh5x
-         2S1uvC2H/Uq/qLyU3D4OKrD3nb7jYLVXCstO7ntjDse8TgT9w+b4M0VZJ2mUG3Pi7OGu
-         1uqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v7wqePzSgwskG1/tuXGQ+kZYGBboCrb+s/SmtJNtNR4=;
-        b=HIrBw7IH/0P7AMDRWldZ5SnzBMvxw7OzmZGJ9y3nrNsiCROcDJyU1hS8DK3rHXcAZJ
-         gd3nk7x5G3aDVZ1VPUxUNFHnFYFJRhiyiewbLhYZ6Jhr3hjEou6JnkyxQGUh2t8iW4W4
-         JuGCPWmYUpOadxZpZVoktwZsUQSaC6DA6TArRYM89/2xRqtilvrDSmyXnnUbrDQDrT1d
-         698bYN5fQ2UmDzkQ9YLmeY1JjqN/1UCuTb/UW3VSsFcB55L1u6GMAiWvccQVGBri4mYI
-         74vn/J04MphZNQoFChGx7kPTQuEHwVhc4ZdzROIXaXQNaGLF/c9f671cnUwqb1botqaE
-         yW+Q==
-X-Gm-Message-State: AOAM530XbRP4R9RqVJmI+E4EnLkXeDgyE7Dp6PwATAQe5mNHB2O4Ivgq
-        3JxprOoexH4wWAv5y+xRYnZpFoD2OF7mrlJL71WknpRiAWsoiA==
-X-Google-Smtp-Source: ABdhPJzJu6kPRlidgAXH+mByKlsyWeNFjgfFNfeNG1fnrvbBXk259RMGQMZFtEzlwcP93DWjKCcYxJzhPgRdgyUpnnw=
-X-Received: by 2002:a05:651c:2042:: with SMTP id t2mr14080474ljo.233.1614015496303;
- Mon, 22 Feb 2021 09:38:16 -0800 (PST)
+        id S231469AbhBVRkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:40:08 -0500
+Received: from marcansoft.com ([212.63.210.85]:59694 "EHLO mail.marcansoft.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230213AbhBVRj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 12:39:58 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id 453DA41982;
+        Mon, 22 Feb 2021 17:39:13 +0000 (UTC)
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>
+References: <20210219113904.41736-8-mark.rutland@arm.com>
+ <20210219172530.45805-1-marcan@marcan.st>
+ <20210219182641.GB84857@C02TD0UTHF1T.local>
+From:   Hector Martin <marcan@marcan.st>
+Subject: Re: [PATCH 7/8 v1.5] arm64: Always keep DAIF.[IF] in sync
+Message-ID: <8c955dd3-8f40-3837-da33-7e117b357a35@marcan.st>
+Date:   Tue, 23 Feb 2021 02:39:11 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <CA+G9fYsb0LRBatwtbjULObmc4zA6SrYBE6W+S_AjxXedPwPdVQ@mail.gmail.com>
-In-Reply-To: <CA+G9fYsb0LRBatwtbjULObmc4zA6SrYBE6W+S_AjxXedPwPdVQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 22 Feb 2021 09:38:05 -0800
-Message-ID: <CAKwvOdm+z0PeK3HDyTqvs4ZTq8hf9UKvfMOrTawy3zKG=RzDYg@mail.gmail.com>
-Subject: Re: gfp.h:20:32: error: redefinition of typedef 'gfp_t' is a C11 feature
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210219182641.GB84857@C02TD0UTHF1T.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: es-ES
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 9:36 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
->
-> arm davinci_all_defconfig config with clang 10, 11 and 12 failing
-> on Linux next tag 20210222 due to below listed errors / warnings.
->
->  - arm (davinci_all_defconfig) with clang-10
->  - arm (davinci_all_defconfig) with clang-11
->  - arm (davinci_all_defconfig) with clang-12
->
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm
-> CROSS_COMPILE=arm-linux-gnueabihf- 'HOSTCC=sccache clang' 'CC=sccache
-> clang' davinci_all_defconfig
->
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm
-> CROSS_COMPILE=arm-linux-gnueabihf- 'HOSTCC=sccache clang' 'CC=sccache
-> clang'
->
->
-> include/linux/gfp.h:20:32: error: redefinition of typedef 'gfp_t' is a
-> C11 feature [-Werror,-Wtypedef-redefinition]
-> typedef unsigned int __bitwise gfp_t;   // repeated here for kernel-doc
->                                ^
+On 20/02/2021 03.26, Mark Rutland wrote:
+> On Sat, Feb 20, 2021 at 02:25:30AM +0900, Hector Martin wrote:
+>> Apple SoCs (A11 and newer) have some interrupt sources hardwired to the
+>> FIQ line. We implement support for this by simply treating IRQs and FIQs
+>> the same way in the interrupt vectors.
+>>
+>> To support these systems, the FIQ mask bit needs to be kept in sync with
+>> the IRQ mask bit, so both kinds of exceptions are masked together. No
+>> other platforms should be delivering FIQ exceptions right now, and we
+>> already unmask FIQ in normal process context, so this should not have an
+>> effect on other systems - if spurious FIQs were arriving, they would
+>> already panic the kernel.
+> 
+> This looks good to me; I've picked this up and pushed out my arm64/fiq
+> branch [1,2] incorporating this, tagged as arm64-fiq-20210219.
+> 
+> I'll give this version a few days to gather comments before I post a v2.
+> 
+> [1] git://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git arm64/fiq
+> [2] https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/fiqA
 
-Thanks for the report, sounds like this has already been fixed:
-https://lore.kernel.org/linux-mm/CAKwvOdmbx+rLv+z-POUq+DPedhrWFEFVHhWW9j5vWpzH0J53Kg@mail.gmail.com/T/#m7d7d6f2905b1be082f31628011d51056a7e94abc
-
-> include/linux/types.h:148:32: note: previous definition is here
-> typedef unsigned int __bitwise gfp_t;
->                                ^
-> 1 warning generated.
-> 1 warning generated.
-> 1 warning generated.
-> 1 warning generated.
-> 1 error generated.
-> make[5]: *** [scripts/Makefile.build:287:
-> drivers/gpu/drm/tilcdc/tilcdc_plane.o] Error 1
->
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
->
-> Step to reproduce:
-> ---------------------------
-> # TuxMake is a command line tool and Python library that provides
-> # portable and repeatable Linux kernel builds across a variety of
-> # architectures, toolchains, kernel configurations, and make targets.
-> #
-> # TuxMake supports the concept of runtimes.
-> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
-> # that you install podman or docker on your system.
-> #
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
->
-> tuxmake --runtime podman --target-arch arm --toolchain clang-10
-> --kconfig davinci_all_defconfig
->
-> build log,
-> https://builds.tuxbuild.com/1opbM56yvX4uyeXV8JBwFNz9WEQ/
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
-
-
+Thanks! Any chance you can do a rebase on top of torvalds/master? Since 
+Marc's nVHE changes went in, we're going to need to add a workaround 
+patch for the M1's lack of nVHE mode, which is going to be in the next 
+version of my M1 bringup series - but right now that would involve 
+telling people to merge two trees to build a base to apply it on, which 
+is sub-optimal.
 
 -- 
-Thanks,
-~Nick Desaulniers
+Hector Martin (marcan@marcan.st)
+Public Key: https://mrcn.st/pub
