@@ -2,207 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3AF3321D02
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:33:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04FE7321D05
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:33:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231410AbhBVQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:29:58 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:42574 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231532AbhBVQ1V (ORCPT
+        id S231745AbhBVQa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:30:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231737AbhBVQ1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:27:21 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11MGIOvf073002;
-        Mon, 22 Feb 2021 16:26:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=N2JHoNooTc/nQcbR0Mo3zUXxbgkBPc1tT4z5ZDDCFkI=;
- b=pbIMM7wIdMSqLLSVaAc1IvRPs+KrugXWP+l8CqxrFOEMogg9uAlRjPeOU/4qIyzJub/l
- H/px6A6jD9+u0JJo9jFidfH4tUrdwJaLD9fx0wxxBqk13UUEGR2lJTI4XSz6LJt0VN6v
- iwvAeW60m9AiZeLuiLSKQls893un/ZQNAeQSRSr+P9x8r/ZpYIbaMpgL91DRN6vUbO+c
- 8F/PX2pBdsYdx/BWGPXtVknAlP0wu419ZqTbUK97OqgAKwL6YcoDURCkJSinsn6GqJQe
- nlCV6kniuAgxU6ZUQC8HfZy7Fa9MwikvVbzlNPrq6Np7XFjZidIm+wguEW6X3cnqUjxi qQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 36ugq3b3v8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Feb 2021 16:26:36 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11MGK3QP142202;
-        Mon, 22 Feb 2021 16:26:36 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2058.outbound.protection.outlook.com [104.47.36.58])
-        by userp3020.oracle.com with ESMTP id 36uc6qk790-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Feb 2021 16:26:36 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BeFWc7W/zj+W0aLKFy7f6IeCahUp3NoEAh2YsXEDQeP7Sma4S0guHIBta1EV/bydF9sNQToVkimDGZr/t1lse5Kym2G9OYH6hvU7Q5ZCwLHrisnb2AFnVP+nqYQ79Na0A9ho2x4A/N8T8l7wbdbjA8BQd73FvbIComPtL59AUHwxrPnVsTHPbKK2VdIdhz3FD8P4xyNHGytfuKnDsfhtsX46ek2qeMf8vZuo2yJVIzgV7YzSQ8srCkAwUT+w1iH9AU58uSusgbqJLOwgPR7lyQlkvLbWebQtN5agVTeK2AImGwetpRc0wK+QGmvY4VxnlhPmoaFvd7V059rg7PiRCA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N2JHoNooTc/nQcbR0Mo3zUXxbgkBPc1tT4z5ZDDCFkI=;
- b=ky4DLL/IjfuUcTLhwwqy/iHhDDYS5XVI/ogJ/wb1GaGl6zOQV1fBm3SXH4fbt/8NsY7yDqCG8pxucROtUrSGJQ6FsiCP16A8T4FAsAZBQxH3/qz0+a0WpjQ9aE06k37rV+Ne61kGF7E4l/mfqsYnlTHokSLT65UnKEfyvOLbvLT37cgT9135ZgZDFH+M5OXZObVDWuAOla/2i3nbYSEgkA2OQXsp/qwIhw6oj6g3F4VBcy761qePEh+fEPkWObWMlvOkuRtFfqe9ysmFSX9QkQTO992mQFy2vt7qMO9JWAqhs/VBgTTy0J5v5Hex6AAuGMbDkVJh0vXkI+Y1iuOCjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Mon, 22 Feb 2021 11:27:44 -0500
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5464EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:26:59 -0800 (PST)
+Received: by mail-lj1-x231.google.com with SMTP id q14so59614092ljp.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:26:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N2JHoNooTc/nQcbR0Mo3zUXxbgkBPc1tT4z5ZDDCFkI=;
- b=ZWCaaDZ43IlFYZ4I49hcjuPHtDDwUg5xSnohkr6xLhRae2DrAA2HHG//UJsiwjUkyxJfOm+2JaHZ/hhPy+ArYm66Jlcm59Eb6gbSsR49UiuyWoQktC1/W3GDLlingtZnu1rnPvJfdgZ/H9lxAJ3kNkqFpTbGTnYo0F87+ee74SE=
-Received: from CY4PR10MB1448.namprd10.prod.outlook.com (2603:10b6:903:27::12)
- by CY4PR1001MB2053.namprd10.prod.outlook.com (2603:10b6:910:3f::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.42; Mon, 22 Feb
- 2021 16:26:23 +0000
-Received: from CY4PR10MB1448.namprd10.prod.outlook.com
- ([fe80::14d0:f061:b858:4c1]) by CY4PR10MB1448.namprd10.prod.outlook.com
- ([fe80::14d0:f061:b858:4c1%7]) with mapi id 15.20.3868.033; Mon, 22 Feb 2021
- 16:26:23 +0000
-From:   Praveen Kannoju <praveen.kannoju@oracle.com>
-To:     Praveen Kannoju <praveen.kannoju@oracle.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Rajesh Sivaramasubramaniom 
-        <rajesh.sivaramasubramaniom@oracle.com>
-Subject: RE: [PATCH RFC] IB/mlx5: Reduce max order of memory allocated for xlt
- update
-Thread-Topic: [PATCH RFC] IB/mlx5: Reduce max order of memory allocated for
- xlt update
-Thread-Index: AQHXAUbUEaNnuB0gHkC1mpYzXMJFhqpkbDrg
-Date:   Mon, 22 Feb 2021 16:26:23 +0000
-Message-ID: <CY4PR10MB1448EDE77B7FB66DF79ACAD38C819@CY4PR10MB1448.namprd10.prod.outlook.com>
-References: <praveen.kannoju@oracle.com>
- <1613138176-22082-1-git-send-email-praveen.kannoju@oracle.com>
-In-Reply-To: <1613138176-22082-1-git-send-email-praveen.kannoju@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [223.237.50.237]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3e578ea8-4c81-4373-a58a-08d8d74e9871
-x-ms-traffictypediagnostic: CY4PR1001MB2053:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <CY4PR1001MB20534C544BE8F117754D9CE88C819@CY4PR1001MB2053.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1824;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: z5TC4SFgagazvb/Fve1m0HGNC1mLe4GeeMFn4ukb7Or/rnbNkgE3F3iHAWbjkyaNMDSfC4bQc1xNZjgMiCKQacCkDfUYByau55He+/3hXwJajAcB/Vx6JUNWHDqM2Z563IL4bR+ZEeQSE3fzJmNt0Rl9jbqRm2+evOrBk9D0kk3cRrJByMYOonVkRjGnhAP0ENzjJS7EuFH8pyO72IF4IMsFnYSMRDl/obIWM/Bj4QysQvU0etJx87pxCDmXFf0CyPyOI4oNu1DgHMj75Su26EwDBzAHL8iWjiS685wM5Qfdg4Uy9Gy0OAd6aobE2BiOgFcXD0qktLjg8K/IQErHGyaBlq5m3y97VPKagcFUXpncn2tE+g5nCj84P8nPPog2VA/m/nHDT7WCnHY1XzvTg6W+NbK6/wi56zgljedAU9bUJPTXF29Vx3pbNDuYFyLbuSYk6Xn6jjO8JquWWCnsADuS/jx63Fx2wwoYi3BdyJI/Ov63StZfaYIeocReZM9YK+6GOrQtn2jlwYbSuWJIQg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1448.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(366004)(136003)(39860400002)(4326008)(186003)(66946007)(5660300002)(66446008)(64756008)(110136005)(76116006)(52536014)(86362001)(66476007)(44832011)(66556008)(8936002)(107886003)(8676002)(9686003)(7696005)(33656002)(15650500001)(6506007)(53546011)(316002)(54906003)(71200400001)(478600001)(55016002)(2906002)(26005)(83380400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?VWN3ejBUWHZlY0RaSXkyb1FaZTc2V3JtdTk0YUJiQi8xTFh3akRWcW1qYXQ5?=
- =?utf-8?B?L3BRWlUxZG0wMlpKNWtkYUFXUldRMXc5NXcrRTl2a1BtQnV0aFR6T0FnMXhV?=
- =?utf-8?B?SWZXSVZEVnpKMlhzUTMyNjBsOGVFN0lXRDljZmFqUFBmVEJGNDNiVDRUMHl0?=
- =?utf-8?B?bDlSOUxjREJ2M21mWTFGRlZlamJ0NTNBVldOTWsrMm5GT2hLeVVqU2NFU25L?=
- =?utf-8?B?ckUwdDJYYldtQ3BmYzArWUo5b1RuRnVkL0p4cHpNQi93aTFrWmpGV09BOXZq?=
- =?utf-8?B?cDB4bWFja0M3aVNFNk9wVW5GSzJUNlc5Q05QWi9CTHZzUlJUQkVnUThLMkNY?=
- =?utf-8?B?T1RRYVhEMDZUdkExMTVIZExCNnAvUGhPMVp0ZFhmWC9SRHpGUzZ1L2hWNU9C?=
- =?utf-8?B?bDVWVUY2b1AzUjZxbGVJcTBaVkROcVdHOSs0WnJVby9ueVhRSCtFVi9pQVlw?=
- =?utf-8?B?MG81RDJLNC9CS0dveEd2YlRSL1ZGcmpLRDVQVUpINjhYQzdJOVFja2RkVEYy?=
- =?utf-8?B?YzZGT25SZk1PcmMyYTZ1RFNCbFlFS3BKNXZFeWJ2Vy94eGRCem9DU3hLQ1c0?=
- =?utf-8?B?VEg0UUZmTzhZMVpieGszSkNSR2FlTDgvZ1VON2tZRHpsZ3dQS2RrVkxPeUhm?=
- =?utf-8?B?UG9JWFMya3F4MlFYaFVUbWxxT0p2ekJSN3hTQWd1dEN1Y3NHQmV1Vk9ldHhn?=
- =?utf-8?B?SFdmYzNzMjExOU5Ka0lGSEVWakR1bkIxcUF0Tjloa1ROTFZLa0RyNm5udGl4?=
- =?utf-8?B?N2UzZTd1aGlzL1Iyd2N4dEhoMEgxanl5bmtGSFM5SE1Gdi9pWEhoYXhUQ0l6?=
- =?utf-8?B?eUoyNlhWZ3B3dDAyMjVkN0drcnhTUGluRUtLVzdZNE9QTlNSVC91Y2VmUXFD?=
- =?utf-8?B?emJleUt1THJzL1hBYiswYnJQMldjUndDVTYrSWU0aldLSmRESitDazE2OTlM?=
- =?utf-8?B?WlJQbUJiK3U0a0VlcGl3WDBLTWxHRzN1bGp1Y3FrT1NMSmtHV01iZmxpaWVm?=
- =?utf-8?B?bllGcmNWcTlUd09Gc2RUY1NJRTNGRFk2VkJYWENZVE1WNmh0NllUcWlrbXlS?=
- =?utf-8?B?RUtiUzJYelhSYnRkSERDOHhrMm95SWk3eVhQckcyR21UUlhyOURwT01TTkpC?=
- =?utf-8?B?UUM5eVhSMVdZRDAxeHNvd3FVYTh4Mkc1aHhic3c4b3M2ZG9IS0xlMEF5SnRu?=
- =?utf-8?B?ZlpVa1ZHZ0dxdjUrYTR3Q1ZqMmxDdllyNXppNWl2UDZLY3BHZTB5aWxmaXoy?=
- =?utf-8?B?REQ5dVhIRVlocGV0SmZHdTc1clBLMEtnYTdVOXh2czVQbXNkNzZhS3RwMTd4?=
- =?utf-8?B?ZzNuQ0JOVnM4dXN3SnlwKzhQL1Frb0Y3WERhM3Q5d0pFQ1NWRmZQV3hXaU52?=
- =?utf-8?B?a0xxaHRHaDQxY3U4SDVreC9IWVYvd2dyR2owQ1BuK0d4d0c3cSt6bWJ0OU1v?=
- =?utf-8?B?R05CRmx3czE3aWVDcldtM1ZtZ1k4T0RPYktUNExsblVkdC9DNnB3NU9xK1N3?=
- =?utf-8?B?eHVFTi82T0pQNkpPdFJDMVZpY0IvaE5MdWNhSUJZUEJUOWtuZFhETzFMNkZW?=
- =?utf-8?B?WmtIR28zQm9WREYvUDNzcllhVmZiTEdpcHlwWG14OWI2T1gwNkt3eUNuQXh1?=
- =?utf-8?B?ampYMzBQSlNFaWNRRnRKdGJPWkx1SG50bHNwVEhaYnB6VDhldTdKYWE2Y2Qw?=
- =?utf-8?B?QzI3cy9aYnZyOTlsTnBGS2MwZU1BaW1zVW05ZGI2eFN5MGlOTlc1SG81VWZt?=
- =?utf-8?Q?EAKa/g1v+mM6VaYDGY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mp2QQ7MvrV5zUofeFKg73RhwyazD5hfojtJwL2lbSOo=;
+        b=CQ5BSYE17bAMylBR6D/q2/HIcfSBxLJksn3AmOzI1DfO+18D98Ie5GrJoA5Gk4DGp1
+         kMW0MOxFH8THlXa0hbZqRbS7iAD4SShoL+OWC89YNpbuFje1X8hsrnvdUqz+vq1Qizfj
+         22ukhqqfzvcTWqdLsG0xzJdj5tbX1PVM77aDzCpQQ3v6HC8OCEr68vIlwTVXvFS76flt
+         /Aj4M34J6IJdI2rEvhixZEbR9f9U+WwBucJLpx8VEIMqorvIyY+yx2U8J/7MRbQaGjow
+         l82Jn0VaVyEew4UcIE2y9D6pGcgYkWY5wQT0vqFgMt5m/O5oetsf/PIX97iNZT1m7Hi8
+         repw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mp2QQ7MvrV5zUofeFKg73RhwyazD5hfojtJwL2lbSOo=;
+        b=bl/GgWDWlk/N9B3plmRdF+DSxHYpyd9MrOEQYbNwKIdP8/ZrPqO8ecGfmOx8bJVU8/
+         UE5JRXlOoWkW3RnfqDWG9fPrvF/tN0fElDU6Z+Ky2baItRnh6jKlGsyRuNguBDm59Shi
+         2z5g/W3QqNvFmMg+DK2IAMSwcZEicZ3aeXTANloS2DX78OuN7rdwyyexeZqtbtUjdlQQ
+         mQbDOS66w6ijaa6MB+Xg3QRBuJD43pONyZKDV8wMD9qmoAH9UFoWQC/bEz4glJWEuX8F
+         Pw8y0tJPk54l5AjW9S5Klyg8atKZBPUejjqYGXO/U3ILkp5kN3M/hsm6SNSshIEj1Lae
+         OGQg==
+X-Gm-Message-State: AOAM531kJzDW0LoNLj+kDHRoOV/PQ9xA8DJu0Err0O7uPq93JajXx0DM
+        pPo2KEGX+V4LOMQwpVdkjaeumQ==
+X-Google-Smtp-Source: ABdhPJxGwceBPuVjmyf18Mdqo1hgQf9u3FDMoPxiBpD6nJuwxSs7K8ql3RXClACX9VwKUk2lVHWFyQ==
+X-Received: by 2002:a2e:9cc2:: with SMTP id g2mr14144873ljj.348.1614011217845;
+        Mon, 22 Feb 2021 08:26:57 -0800 (PST)
+Received: from [192.168.118.216] ([85.249.43.69])
+        by smtp.gmail.com with ESMTPSA id a6sm1087926ljp.135.2021.02.22.08.26.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 08:26:57 -0800 (PST)
+Subject: Re: [PATCH v5 08/22] media: camss: Add missing format identifiers
+To:     Robert Foss <robert.foss@linaro.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org,
+        angelogioacchino.delregno@somainline.org,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>, Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Jonathan Marek <jonathan@marek.ca>
+References: <20210217112122.424236-1-robert.foss@linaro.org>
+ <20210217112122.424236-9-robert.foss@linaro.org>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <3e8eced2-de18-5def-c25e-b819e17b9c22@linaro.org>
+Date:   Mon, 22 Feb 2021 19:26:55 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1448.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3e578ea8-4c81-4373-a58a-08d8d74e9871
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Feb 2021 16:26:23.6241
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 8ROjjzsVb8c4O+iyle+UTt7lYnySh/vSFRUQekwGnpd6Mukud8PM7WKDXWPRY/Hs8GkToXemK4yZIXL9px2N/vxkxf2Yqn76ItcWqw7YOEo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2053
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9903 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 adultscore=0 bulkscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102220149
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9903 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0
- malwarescore=0 spamscore=0 mlxscore=0 suspectscore=0 priorityscore=1501
- clxscore=1011 impostorscore=0 lowpriorityscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102220149
+In-Reply-To: <20210217112122.424236-9-robert.foss@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-UGluZyENCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IHByYXZlZW4ua2Fubm9q
-dUBvcmFjbGUuY29tIFttYWlsdG86cHJhdmVlbi5rYW5ub2p1QG9yYWNsZS5jb21dIA0KU2VudDog
-MTIgRmVicnVhcnkgMjAyMSAwNzoyNiBQTQ0KVG86IGxlb25Aa2VybmVsLm9yZzsgZGxlZGZvcmRA
-cmVkaGF0LmNvbTsgamdnQHppZXBlLmNhOyBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZzsgbGlu
-dXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KQ2M6IFByYXZlZW4gS2Fubm9qdSA8cHJhdmVlbi5r
-YW5ub2p1QG9yYWNsZS5jb20+OyBSYW1hIE5pY2hhbmFtYXRsdSA8cmFtYS5uaWNoYW5hbWF0bHVA
-b3JhY2xlLmNvbT47IFJhamVzaCBTaXZhcmFtYXN1YnJhbWFuaW9tIDxyYWplc2guc2l2YXJhbWFz
-dWJyYW1hbmlvbUBvcmFjbGUuY29tPg0KU3ViamVjdDogW1BBVENIIFJGQ10gSUIvbWx4NTogUmVk
-dWNlIG1heCBvcmRlciBvZiBtZW1vcnkgYWxsb2NhdGVkIGZvciB4bHQgdXBkYXRlDQoNClRvIHVw
-ZGF0ZSB4bHQgKGR1cmluZyBtbHg1X2liX3JlZ191c2VyX21yKCkpLCB0aGUgZHJpdmVyIGNhbiBy
-ZXF1ZXN0IHVwIHRvDQoxIE1CIChvcmRlci04KSBtZW1vcnksIGRlcGVuZGluZyBvbiB0aGUgc2l6
-ZSBvZiB0aGUgTVIuIFRoaXMgY29zdGx5IGFsbG9jYXRpb24gY2FuIHNvbWV0aW1lcyB0YWtlIHZl
-cnkgbG9uZyB0byByZXR1cm4gKGEgZmV3IHNlY29uZHMpLCBlc3BlY2lhbGx5IGlmIHRoZSBzeXN0
-ZW0gaXMgZnJhZ21lbnRlZCBhbmQgZG9lcyBub3QgaGF2ZSBhbnkgZnJlZSBjaHVua3MgZm9yIG9y
-ZGVycyA+PSAzLiBUaGlzIGNhdXNlcyB0aGUgY2FsbGluZyBhcHBsaWNhdGlvbiB0byBoYW5nIGZv
-ciBhIGxvbmcgdGltZS4gVG8gYXZvaWQgdGhlc2UgbG9uZyBsYXRlbmN5IHNwaWtlcywgbGltaXQg
-bWF4IG9yZGVyIG9mIGFsbG9jYXRpb24gdG8gb3JkZXIgMywgYW5kIHJldXNlIHRoYXQgYnVmZmVy
-IHRvIHBvcHVsYXRlX3hsdCgpIGZvciB0aGF0IE1SLiBUaGlzIHdpbGwgaW5jcmVhc2UgdGhlIGxh
-dGVuY3kgc2xpZ2h0bHkgKGluIHRoZSBvcmRlciBvZiBtaWNyb3NlY29uZHMpIGZvciBlYWNoDQpt
-bHg1X2liX3VwZGF0ZV94bHQoKSBjYWxsLCBlc3BlY2lhbGx5IGZvciBsYXJnZXIgTVJzIChzaW5j
-ZSB3ZeKAmXJlIG1ha2luZyBtdWx0aXBsZSBjYWxscyB0byBwb3B1bGF0ZV94bHQoKSksIGJ1dCBp
-dOKAmXMgYSBzbWFsbCBwcmljZSB0byBwYXkgdG8gYXZvaWQgdGhlIGxhcmdlIGxhdGVuY3kgc3Bp
-a2VzIHdpdGggaGlnaGVyIG9yZGVyIGFsbG9jYXRpb25zLg0KDQpTaWduZWQtb2ZmLWJ5OiBQcmF2
-ZWVuIEt1bWFyIEthbm5vanUgPHByYXZlZW4ua2Fubm9qdUBvcmFjbGUuY29tPg0KLS0tDQogZHJp
-dmVycy9pbmZpbmliYW5kL2h3L21seDUvbXIuYyB8ICAgMjAgKystLS0tLS0tLS0tLS0tLS0tLS0N
-CiAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pDQoNCmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbWx4NS9tci5jIGIvZHJpdmVycy9pbmZp
-bmliYW5kL2h3L21seDUvbXIuYyBpbmRleCAyNGY4ZDU5Li40ZjMzMTI3IDEwMDY0NA0KLS0tIGEv
-ZHJpdmVycy9pbmZpbmliYW5kL2h3L21seDUvbXIuYw0KKysrIGIvZHJpdmVycy9pbmZpbmliYW5k
-L2h3L21seDUvbXIuYw0KQEAgLTk4Niw5ICs5ODYsNyBAQCBzdGF0aWMgdm9pZCBzZXRfbXJfZmll
-bGRzKHN0cnVjdCBtbHg1X2liX2RldiAqZGV2LCBzdHJ1Y3QgbWx4NV9pYl9tciAqbXIsDQogCXJl
-dHVybiBtcjsNCiB9DQogDQotI2RlZmluZSBNTFg1X01BWF9VTVJfQ0hVTksgKCgxIDw8IChNTFg1
-X01BWF9VTVJfU0hJRlQgKyA0KSkgLSBcDQotCQkJICAgIE1MWDVfVU1SX01UVF9BTElHTk1FTlQp
-DQotI2RlZmluZSBNTFg1X1NQQVJFX1VNUl9DSFVOSyAweDEwMDAwDQorI2RlZmluZSBNTFg1X1NQ
-QVJFX1VNUl9DSFVOSyAweDgwMDANCiANCiAvKg0KICAqIEFsbG9jYXRlIGEgdGVtcG9yYXJ5IGJ1
-ZmZlciB0byBob2xkIHRoZSBwZXItcGFnZSBpbmZvcm1hdGlvbiB0byB0cmFuc2ZlciB0byBAQCAt
-MTAxMiwyOCArMTAxMCwxNCBAQCBzdGF0aWMgdm9pZCBzZXRfbXJfZmllbGRzKHN0cnVjdCBtbHg1
-X2liX2RldiAqZGV2LCBzdHJ1Y3QgbWx4NV9pYl9tciAqbXIsDQogDQogCWdmcF9tYXNrIHw9IF9f
-R0ZQX1pFUk87DQogDQotCS8qDQotCSAqIElmIHRoZSBzeXN0ZW0gYWxyZWFkeSBoYXMgYSBzdWl0
-YWJsZSBoaWdoIG9yZGVyIHBhZ2UgdGhlbiBqdXN0IHVzZQ0KLQkgKiB0aGF0LCBidXQgZG9uJ3Qg
-dHJ5IGhhcmQgdG8gY3JlYXRlIG9uZS4gVGhpcyBtYXggaXMgYWJvdXQgMU0sIHNvIGENCi0JICog
-ZnJlZSB4ODYgaHVnZSBwYWdlIHdpbGwgc2F0aXNmeSBpdC4NCi0JICovDQogCXNpemUgPSBtaW5f
-dChzaXplX3QsIGVudF9zaXplICogQUxJR04oKm5lbnRzLCB4bHRfY2h1bmtfYWxpZ24pLA0KLQkJ
-ICAgICBNTFg1X01BWF9VTVJfQ0hVTkspOw0KKwkJICAgICBNTFg1X1NQQVJFX1VNUl9DSFVOSyk7
-DQogCSpuZW50cyA9IHNpemUgLyBlbnRfc2l6ZTsNCiAJcmVzID0gKHZvaWQgKilfX2dldF9mcmVl
-X3BhZ2VzKGdmcF9tYXNrIHwgX19HRlBfTk9XQVJOLA0KIAkJCQkgICAgICAgZ2V0X29yZGVyKHNp
-emUpKTsNCiAJaWYgKHJlcykNCiAJCXJldHVybiByZXM7DQogDQotCWlmIChzaXplID4gTUxYNV9T
-UEFSRV9VTVJfQ0hVTkspIHsNCi0JCXNpemUgPSBNTFg1X1NQQVJFX1VNUl9DSFVOSzsNCi0JCSpu
-ZW50cyA9IGdldF9vcmRlcihzaXplKSAvIGVudF9zaXplOw0KLQkJcmVzID0gKHZvaWQgKilfX2dl
-dF9mcmVlX3BhZ2VzKGdmcF9tYXNrIHwgX19HRlBfTk9XQVJOLA0KLQkJCQkJICAgICAgIGdldF9v
-cmRlcihzaXplKSk7DQotCQlpZiAocmVzKQ0KLQkJCXJldHVybiByZXM7DQotCX0NCi0NCiAJKm5l
-bnRzID0gUEFHRV9TSVpFIC8gZW50X3NpemU7DQogCXJlcyA9ICh2b2lkICopX19nZXRfZnJlZV9w
-YWdlKGdmcF9tYXNrKTsNCiAJaWYgKHJlcykNCi0tDQoxLjcuMQ0KDQo=
+Hi Robert,
+
+Thank you for your patch!
+
+On 17.02.2021 14:21, Robert Foss wrote:
+> The CSI-2 spec defines the following types:
+>   - Data Type - Often abbreviated DT
+>   - Decode Format - Often abbreviated as DF
+>   - Encode Format
+> 
+> These definitions are as far as I can tell complete for CSI-2.
+> 
+> Additionally the Qualcomm internal type describing Plain Formats
+> has been added. Plain formats describe the size of the pixels
+> written by the RDI units to memory. PLAIN8 for example has the size
+> 8 bits, and PLAIN32 32 bits. The appropriate Plain Format is
+> determined by the Decode Format used. The smallest Plain Format
+> that is able to contain a pixel of the used Decode Format is the
+> appropriate one to use.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>   .../media/platform/qcom/camss/camss-csid.h    | 50 +++++++++++++++++++
+>   1 file changed, 50 insertions(+)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
+> index 1824b3745e10..02fc34ee8a41 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.h
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.h
+> @@ -21,6 +21,56 @@
+>   #define MSM_CSID_PAD_SRC 1
+>   #define MSM_CSID_PADS_NUM 2
+>   
+> +#define DATA_TYPE_EMBEDDED_DATA_8BIT	0x12
+> +#define DATA_TYPE_YUV420_8BIT		0x18
+> +#define DATA_TYPE_YUV420_10BIT		0x19
+> +#define DATA_TYPE_YUV420_8BIT_LEGACY	0x1a
+> +#define DATA_TYPE_YUV420_8BIT_SHIFTED	0x1c /* Chroma Shifted Pixel Sampling */
+> +#define DATA_TYPE_YUV420_10BIT_SHIFTED	0x1d /* Chroma Shifted Pixel Sampling */
+> +#define DATA_TYPE_YUV422_8BIT		0x1e
+> +#define DATA_TYPE_YUV422_10BIT		0x1f
+> +#define DATA_TYPE_RGB444		0x20
+> +#define DATA_TYPE_RGB555		0x21
+> +#define DATA_TYPE_RGB565		0x22
+> +#define DATA_TYPE_RGB666		0x23
+> +#define DATA_TYPE_RGB888		0x24
+> +#define DATA_TYPE_RAW_24BIT		0x27
+> +#define DATA_TYPE_RAW_6BIT		0x28
+> +#define DATA_TYPE_RAW_7BIT		0x29
+> +#define DATA_TYPE_RAW_8BIT		0x2a
+> +#define DATA_TYPE_RAW_10BIT		0x2b
+> +#define DATA_TYPE_RAW_12BIT		0x2c
+> +#define DATA_TYPE_RAW_14BIT		0x2d
+> +#define DATA_TYPE_RAW_16BIT		0x2e
+> +#define DATA_TYPE_RAW_20BIT		0x2f
+
+- these look OK for me (the old MIPI spec draft I have doesn't have
+   some of the data types listed above).
+
+   As these are generic values from the MIPI standard, it could probably make
+   sense to create a common header file for that someday.
+   E.g. the very similar defines (same values, different names) are present in
+   drivers/staging/media/atomisp/pci/isp_capture_defs.h
+   But it looks like most of the current drivers don't need the MIPI data type
+   defines, so not a problem at the moment.
+
+> +
+> +#define DECODE_FORMAT_UNCOMPRESSED_6_BIT	0x0
+> +#define DECODE_FORMAT_UNCOMPRESSED_8_BIT	0x1
+> +#define DECODE_FORMAT_UNCOMPRESSED_10_BIT	0x2
+> +#define DECODE_FORMAT_UNCOMPRESSED_12_BIT	0x3
+> +#define DECODE_FORMAT_UNCOMPRESSED_14_BIT	0x4
+> +#define DECODE_FORMAT_UNCOMPRESSED_16_BIT	0x5
+> +#define DECODE_FORMAT_UNCOMPRESSED_20_BIT	0x6
+> +#define DECODE_FORMAT_DPCM_10_6_10		0x7
+> +#define DECODE_FORMAT_DPCM_10_8_10		0x8
+> +#define DECODE_FORMAT_DPCM_12_6_12		0x9
+> +#define DECODE_FORMAT_DPCM_12_8_12		0xA
+> +#define DECODE_FORMAT_DPCM_14_8_14		0xB
+> +#define DECODE_FORMAT_DPCM_14_10_14		0xC
+> +#define DECODE_FORMAT_USER_DEFINED		0xE
+> +#define DECODE_FORMAT_PAYLOAD_ONLY		0xF
+
+- interesting that the subset of the DECODE_FORMAT's used in
+   camss-csid-4-1.c (the first four formats above - UNCOMPRESSED_6_BIT
+   to UNCOMPRESSED_12_BIT ones) has the same values as the corresponding
+   field in the CSID_CID_n_CFG registers - according to the public
+   "APQ8016E Technical Reference Manual" [1]. So these exact DECODE_FORMAT_*
+   values are written into the bits 7:4 of the hw register.
+   But in [1] the values of DPCM_10_6_10 to DPCM_12_8_12 are 0x4 to 0x7
+   (as the camss-csid-4-1.c doesn't support DPCM this is not an issue).
+   Are the DECODE_FORMAT_* values above defined in the MIPI standard, or did
+   they come from the datasheet for a particular SOC?
+
+[1] https://developer.qualcomm.com/download/sd410/snapdragon-410e-technical-reference-manual.pdf
+     page 990
+> +
+> +#define ENCODE_FORMAT_RAW_8_BIT		0x1
+> +#define ENCODE_FORMAT_RAW_10_BIT	0x2
+> +#define ENCODE_FORMAT_RAW_12_BIT	0x3
+> +#define ENCODE_FORMAT_RAW_14_BIT	0x4
+> +#define ENCODE_FORMAT_RAW_16_BIT	0x5
+
+- the ENCODE_FORMAT_* defines are not used in the driver.
+
+> +
+> +#define PLAIN_FORMAT_PLAIN8	0x0 /* supports DPCM, UNCOMPRESSED_6/8_BIT */
+> +#define PLAIN_FORMAT_PLAIN16	0x1 /* supports DPCM, UNCOMPRESSED_10/16_BIT */
+> +#define PLAIN_FORMAT_PLAIN32	0x2 /* supports UNCOMPRESSED_20_BIT */
+
+- the PLAIN_FORMAT_* defines are not used in the driver, but
+   camss-csid-4-1.c and camss-csid-4-7.c do define there own
+   CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_8 and CAMSS_CSID_CID_n_CFG_PLAIN_FORMAT_16
+   (without relying on PLAIN_FORMAT_PLAIN8 or PLAIN_FORMAT_PLAIN16).
+
+Thanks,
+Andrey
+
+> +
+> +
+>   enum csid_payload_mode {
+>   	CSID_PAYLOAD_MODE_INCREMENTING = 0,
+>   	CSID_PAYLOAD_MODE_ALTERNATING_55_AA = 1,
+> 
