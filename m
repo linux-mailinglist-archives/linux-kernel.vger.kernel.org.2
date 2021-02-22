@@ -2,149 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CEE7321A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0C2321A93
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:54:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhBVOvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:51:24 -0500
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:33292 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230220AbhBVOvR (ORCPT
+        id S230260AbhBVOx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:53:56 -0500
+Received: from mail.efficios.com ([167.114.26.124]:59372 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229991AbhBVOxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:51:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1614005476;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=MJCxW3qNl1hPqMGc5zH16ZGY1J+V6SCxU2+Rwzu6njQ=;
-  b=g71G0Hdq5gHhhv/HR4GVOw+o1/tboNbkV/gMu4iyN/x1VUZw1dfJupDu
-   HrTEA3oR9C54zGsMWttuWJ3hpxCwubiuKxrmp6l1qSNPGlsCbDMzdzpS6
-   Gise5fYOcwmXjXkp22wYDRZ0eulzMTbCEVnbTTGbRGk1QX980VLQTL39d
-   8=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
-IronPort-SDR: 4FTGYgDDVZVKUJiVByAJDO+Gq2ll4f3pfvbAQ5vnRiwBYIoOKobf2dCEXaGK+mCuIsvbbnw0jh
- gOfPGd9qOR+0f0FrmusWHV4F89lXZxGm4l31j4dP1u/AMBN+6lxL86wq1i/plBAHnCne7Ej3Sr
- wM7hp7+LtJBQ8V8S5RiKPie6sNmYMZ/a6pmW5lllLZi3b6bakS3pg8LiepHFqSfY4kB1iObfMW
- okuNPVnN/yDjm+rr0IGOMy1EmbCt2HXZ5e0SbMGPdPm2OIiCSZsvmuFivPVslOqHWxGFqCKU3O
- weg=
-X-SBRS: 5.2
-X-MesageID: 37761949
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.156.83
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.81,197,1610427600"; 
-   d="scan'208";a="37761949"
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXFgoFxid9SBdi90XzbWQoD7zc+/Z/oua60Zh0A6YTHNCQ2x19T4T/Wt8+9jSfzYjhjV59Aj5/Gq12L08nRDkZqyhORw0QyBNGJrZ/NiwvbReR4Lly7HPRPt+aZtEvgurXFsJcwaZ7AdzB//qEYCfMGnbIVLYWwbTEQQAOTKccTMBzoDeNz7hdJd4XVa9W3FTjZ3AP/2X8Fh7I18CLvJT+nf5zsZZ2kg7Rpknq5YTvgcc110WFPOBugoCcE22aAiRuaJcMR/2CKVU2A0PC1zqs1dVeRTVDocKmTX7A3ro74K1nNWs71kqIo3OkUb471LAaaZU2nw2IPK1ajBbJopfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IHWIzam8C4gOjndBTLDHVX7Kab5zRN8V8acWF+pcAAs=;
- b=gIi/CBQye3wk8w2BE87B8aYZ9wpMuOuuMm2tED4AijYoGV/UzWAND7C+/md/XmESFRueKQCQg06ENEP8xDPvCutUjhGpgs8dcFOo5ZK1WMLdT6+66AmRUOaELTc/GSNtIrhets5EGItqEFQ/zqk71Kj4hBgGC1/ppB6uYXcoHZ0zfKxHQAlkqN1qqf4vIPsPHEMcz12BauywsNR7ZhLzr/XqMhHCzj+lwYLjfTjxBjULqEi2vli/CVAnyYi0TPCXAVSfDzciP/vLxEU+nIllXKeFGSLj7B7Ii3dlIl1JFZiMfPT4NgEr0HC2FE9R1JIRP5s2fAHpZGTrtXcT0k3Kjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
- dkim=pass header.d=citrix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IHWIzam8C4gOjndBTLDHVX7Kab5zRN8V8acWF+pcAAs=;
- b=YbJMCD2VfUmFtIGu7o4d6nBIqnOAG/Gcmjn+6ZeUPebwLlY7+qfUb9bN9tpVUjzfZ0uvrIMQP2GzhxwAxQcBhDgkmhJshg1aGDk4ZpvCAjY873MqQi2/mFBxwZBvKHXP/3g8fNzUvfpmJfOmVFYWKZgtaiYzHUXym271a/TOHE0=
-Date:   Mon, 22 Feb 2021 15:50:00 +0100
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     Juergen Gross <jgross@suse.com>
-CC:     <xen-devel@lists.xenproject.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Jens Axboe <axboe@kernel.dk>, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Subject: Re: [PATCH v3 5/8] xen/events: link interdomain events to associated
- xenbus device
-Message-ID: <YDPEmFaWQsBhvmb0@Air-de-Roger>
-References: <20210219154030.10892-1-jgross@suse.com>
- <20210219154030.10892-6-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210219154030.10892-6-jgross@suse.com>
-X-ClientProxiedBy: MR2P264CA0047.FRAP264.PROD.OUTLOOK.COM (2603:10a6:500::35)
- To DS7PR03MB5608.namprd03.prod.outlook.com (2603:10b6:5:2c9::18)
+        Mon, 22 Feb 2021 09:53:53 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 4A0BA31D9F3;
+        Mon, 22 Feb 2021 09:53:11 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id qWipWIQqlJGq; Mon, 22 Feb 2021 09:53:10 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C927D31D9F2;
+        Mon, 22 Feb 2021 09:53:10 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C927D31D9F2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1614005590;
+        bh=wPjmYfhFF1uIglVBdUJXreooF4Fi1lQtXzkwUbCrG68=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=TkEWQHhiXL9QWtwt0pn64j7Yc1PO3yj9qp84fsGFxQuup6CjxaUrOOXOebDnzxggL
+         xHooRqhGKvyu2gutiFPj1fsFoCGhjyRZjqXT1YXDb6YItHNI2ZKqSJUP6aEb4QRYC/
+         uzGyxhk/KNmveJXzW3wq00UGB7BG0X+g5LvNTV3D/yZ+sF1qB/GCJwWnQdCw66vx1O
+         B84Zo3+K2J5n4euRJW4bo7fDCnQp3i9pZB6X2QFbCS7Zbi2LtXRIF4rE3Nb4q+nnSZ
+         o5HWVqSzuo0QjbQAVgwbfVVcahZ04KheLraqj1gms2X9be/ikCLa1vzc+BSW3nO1L6
+         BbwGIlq1BZSpA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id UsrCmF-bCwQv; Mon, 22 Feb 2021 09:53:10 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id B08D131DA4D;
+        Mon, 22 Feb 2021 09:53:10 -0500 (EST)
+Date:   Mon, 22 Feb 2021 09:53:10 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     "Dmitry V. Levin" <ldv@altlinux.org>
+Cc:     Piotr Figiel <figiel@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        paulmck <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrei Vagin <avagin@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Oskolkov <posk@google.com>,
+        Kamil Yurtsever <kyurtsever@google.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Paul Turner <pjt@google.com>, emmir@google.com,
+        linux-man <linux-man@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>
+Message-ID: <1510231959.29418.1614005590596.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20210222115726.GA30843@altlinux.org>
+References: <20210222100443.4155938-1-figiel@google.com> <20210222115726.GA30843@altlinux.org>
+Subject: Re: [PATCH] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 387c4e78-c9b3-4029-2c2f-08d8d7412459
-X-MS-TrafficTypeDiagnostic: DM5PR03MB3068:
-X-Microsoft-Antispam-PRVS: <DM5PR03MB3068FF543A6D78210C9E04EA8F819@DM5PR03MB3068.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Je14NHuU8TTgtU49vAC30bDxawrIvvoOhuXCa5JPGzMcNPZ6Z3VE4gcwLorgev9+wHVhGb8x45OiYfdiZI23AWAUqMEXzi9oiDtrcXeoQnV7TUK/9kbmwTOGpOum9nkDQqzPeYrrU2CtuEXrUZODzyRBdNocVaKcJCGiemolY7Mo/oHwDRiZm+r6tr5Ql2hvFlRK8t4GnRiiweoXhJMM+DSoV+0umpQxFzkfNhYbPaDYi/D9J23gHKS/xxeA1+WQirHjDqZV/iG802YIF9AvrvYfuT/Oe4PzDcblohiBA1oEBonGI8qsoecU1Wa5f67pHMFroVscrlXSWKuKu6TDprZnQU8F3ZF7XCkzXse6y89FoCmGNQlBdZ4DdRPTnqfx5A9u4LRNkORAcBGynaD6gf+rfYDq/z/nyuKvtEgtzCFYkSk5oIoGzeozjYKpceU/Z7IVTrh7roCD10VqjrvGLAxt/kSCgxKNlBTbyJBg92BCsJHiz430/0+4BxsjQgmpuqNAMr2hOrV6UZJdEkVy4g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR03MB5608.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(39860400002)(346002)(366004)(376002)(396003)(136003)(6666004)(6496006)(7416002)(54906003)(8676002)(6486002)(8936002)(4326008)(4744005)(85182001)(6916009)(83380400001)(186003)(33716001)(66476007)(9686003)(26005)(66556008)(5660300002)(86362001)(316002)(16526019)(478600001)(66946007)(956004)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S2Z1VFREOEJpdEdmU3Y4SVBndTY0WU1leGVtdUxaOGN4RythVkdJMmxMM0Jm?=
- =?utf-8?B?b0dmWlo2QnRhYUkwT0FMVlpOcXN6cDl5djFFUmlpZytCMVR6QnpZZXBtQ0xT?=
- =?utf-8?B?bGsrSHZ5N2xITmlBTlkvQjFzWlRXR1grS2h1M3NqVXFLY2lPT2VvVVFaWWNl?=
- =?utf-8?B?U0J4TUFudExLOFRmNnZmWndoWlQ2czBIbXBOM1ZsRlBUV3U1RnBuUG1KcHZC?=
- =?utf-8?B?Y0llaG15MjlLZ2orUU9SMkxzc3pPV3lpSlZqM0MzR2x3T2RWb2Q2b3c1MThq?=
- =?utf-8?B?US9pUEZOSExpNnFUR2toVmtqaUlHcFdkOE9UQXlkd2E2ZTRyNEJXbERUcFRr?=
- =?utf-8?B?VzRtbHlSRVE2QVh2RlVMeWlnNWY5V1VxV3NIU2Q1WnVzZjB2WDQwQ0xQbGpy?=
- =?utf-8?B?WjIrSEQyZU9hN0ZpRzFZZXRRRUpJRldEMjhyaktScnJzdzNSa0Y5dkhVRXRS?=
- =?utf-8?B?RU5UYXg5YVZiYytNekprRGJReG5ZT1dSYTlBSTNuSEpuQ3ZwTjFYY0JLOWcx?=
- =?utf-8?B?VWRlcWc3cWJnKzRINU96MGVaYUc4b1JrUHJDQkFRRkxxRCsvUkhER3FCalpl?=
- =?utf-8?B?UVFzYkdNYURGcGJMaTU5Nyt0djJEM0drMnpWc1E3aEptZVFVL3pYakJXMzcw?=
- =?utf-8?B?b01zaE8xVWZ3M0FNM2VVNDExRWJKYjBick8raGZsczdyUHRiRXovS1FLMXl3?=
- =?utf-8?B?TElyTTgraWcxMFZDQkFWeG5zTkJ0dndYd1pNazdwci9aKzFieTVtZjRaeUJu?=
- =?utf-8?B?RXAwZDdNUEtOV00waVlldUNXUmNJcGExYTc3bFNxeUVnT2RhZjJZTGJob1dh?=
- =?utf-8?B?NkZGL1A4b1JvWFo3dE5PTjRoNFZ6Zk9aZ292bDBtSG5KM0FoUXl2SXBIY3Zm?=
- =?utf-8?B?YVh4MVVUem1RN1l0RUExM2JUYU9EczRibTVmbnhnSTdOdnhTMEVsQXptWm5Q?=
- =?utf-8?B?QnJDOXlTOE01L2FwUkRuaW50Tm8zQSthdFAvTGlVbHEzbE8zTWJoeVZjMGZx?=
- =?utf-8?B?eUFnSndQK2tEMXA3RHpKT2NZWjRoeGNEdjIydTMzUDVTTWIxc1dHNWxISTVi?=
- =?utf-8?B?dUt4aDhXTGxBUzJQUHpicjU1UzlvVUNlSHZsZHNHRzE2WTdwQ3ZQY2Exd2Rv?=
- =?utf-8?B?SjIyOVJsS0VZbHlWeDNBd3hzYXRlR0lYSkNYdXdKYkNKTHo2NnN2cCsrNEU3?=
- =?utf-8?B?MXhPL05XUnZEVDFJaTdUUEVzdURqbGRXTEtScnVrb2FrMjMyY2owcDZaZmow?=
- =?utf-8?B?ck9yNCsvQzV6YU11WG9EN2VFZFoyR1R1UVFCN1VzUVhGUFlRcW83Rm9TR1Qw?=
- =?utf-8?B?Z2tCU1k5a0RmQ2lWMzVndXlXV1RSWDdVRE9PSDRtZDZITGJaTnM4Um9qWnhR?=
- =?utf-8?B?TjFaenF3WVkwYWcrVFZ1ZGtldXg2MHB6MThsRDlib2EwTUxLa2tZaGczMTBB?=
- =?utf-8?B?cnNYbHVpamZVNzNOY1Y1VlBIVGQzMXFYRzBwVmZOZ3NpWE5vbWpFaXdqZmZj?=
- =?utf-8?B?Y0JsZnhQWkZWdU9BUWw4WVNmcWJWd3FpejNwUDY2QVI4TDBPY2lyRkZqWVFp?=
- =?utf-8?B?V3pnWUtiYVBSUDl4Mm5GMFIyNkZsMGZSejN3RmZiaUtGc2I3MVJhOTJTcHhm?=
- =?utf-8?B?Q3o2YlpQSkFzK2M4eGRJdVVMRlJxZEh4ZzlxNHllSFhucGpManZhdjE1MTM4?=
- =?utf-8?B?ZmdkS1J5WjRLYk9PcTRha2x1VXpjblR0bk11Z0JkN2ZhY2pDb293Vk9HZWty?=
- =?utf-8?Q?5908sgLNKSbpSZwrIzUyMPAzJADEFhDtCUpvYjy?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 387c4e78-c9b3-4029-2c2f-08d8d7412459
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR03MB5608.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2021 14:50:05.8044
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gGVLEiKd4DwEUnfr+UjobNjiT+4qMmPV7Z85YSjlp9pypfFRv0P/YmxSFJsd/5YiOcV/hm7XibDc0TzXTguZYg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB3068
-X-OriginatorOrg: citrix.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3996 (ZimbraWebClient - FF85 (Linux)/8.8.15_GA_3996)
+Thread-Topic: ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
+Thread-Index: JeKlBcoleYbfr2zysFNBRALUsSBZ4Q==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 04:40:27PM +0100, Juergen Gross wrote:
-> In order to support the possibility of per-device event channel
-> settings (e.g. lateeoi spurious event thresholds) add a xenbus device
-> pointer to struct irq_info() and modify the related event channel
-> binding interfaces to take the pointer to the xenbus device as a
-> parameter instead of the domain id of the other side.
-> 
-> While at it remove the stale prototype of bind_evtchn_to_irq_lateeoi().
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-> Reviewed-by: Wei Liu <wei.liu@kernel.org>
-> Reviewed-by: Paul Durrant <paul@xen.org>
-> ---
->  drivers/block/xen-blkback/xenbus.c  |  2 +-
+----- On Feb 22, 2021, at 6:57 AM, Dmitry V. Levin ldv@altlinux.org wrote:
 
-Reviewed-by: Roger Pau Monné <roger.pau@citrix.com>
+> On Mon, Feb 22, 2021 at 11:04:43AM +0100, Piotr Figiel wrote:
+> [...]
+>> --- a/include/uapi/linux/ptrace.h
+>> +++ b/include/uapi/linux/ptrace.h
+>> @@ -102,6 +102,14 @@ struct ptrace_syscall_info {
+>>  =09};
+>>  };
+>> =20
+>> +#define PTRACE_GET_RSEQ_CONFIGURATION=090x420f
+>> +
+>> +struct ptrace_rseq_configuration {
+>> +=09__u64 rseq_abi_pointer;
+>> +=09__u32 signature;
+>> +=09__u32 pad;
+>> +};
+>> +
+>>  /*
+>>   * These values are stored in task->ptrace_message
+>>   * by tracehook_report_syscall_* to describe the current syscall-stop.
+>> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+>> index 61db50f7ca86..a936af66cf6f 100644
+>> --- a/kernel/ptrace.c
+>> +++ b/kernel/ptrace.c
+>> @@ -31,6 +31,7 @@
+>>  #include <linux/cn_proc.h>
+>>  #include <linux/compat.h>
+>>  #include <linux/sched/signal.h>
+>> +#include <linux/minmax.h>
+>> =20
+>>  #include <asm/syscall.h>=09/* for syscall_get_* */
+>> =20
+>> @@ -779,6 +780,22 @@ static int ptrace_peek_siginfo(struct task_struct *=
+child,
+>>  =09return ret;
+>>  }
+>> =20
+>> +#ifdef CONFIG_RSEQ
+>> +static long ptrace_get_rseq_configuration(struct task_struct *task,
+>> +=09=09=09=09=09  unsigned long size, void __user *data)
+>> +{
+>> +=09struct ptrace_rseq_configuration conf =3D {
+>> +=09=09.rseq_abi_pointer =3D (u64)(uintptr_t)task->rseq,
+>> +=09=09.signature =3D task->rseq_sig,
+>> +=09};
+>> +
+>> +=09size =3D min_t(unsigned long, size, sizeof(conf));
+>> +=09if (copy_to_user(data, &conf, size))
+>> +=09=09return -EFAULT;
+>> +=09return size;
+>> +}
+>> +#endif
+>=20
+> From API perspective I suggest for such interfaces to return the amount o=
+f
+> data that could have been written if there was enough room specified, e.g=
+.
+> in this case it's sizeof(conf) instead of size.
 
-Thanks, Roger.
+Looking at the ptrace(2) man page:
+
+RETURN VALUE
+       On success, the PTRACE_PEEK* requests return the  requested  data  (=
+but
+       see NOTES), the PTRACE_SECCOMP_GET_FILTER request returns the number=
+ of
+       instructions in the BPF program, and other requests return zero.
+
+       On error, all requests return  -1,  and  errno  is  set  appropriate=
+ly.
+       Since  the  value  returned by a successful PTRACE_PEEK* request may=
+ be
+       -1, the caller must clear errno before the call, and then check it  =
+af=E2=80=90
+       terward to determine whether or not an error occurred.
+
+It looks like the usual behavior for ptrace requests would be to return 0 w=
+hen everything
+is OK. Unless there a strong motivation for doing different for this new re=
+quest, I
+would be tempted to use the same expected behavior than other requests on s=
+uccess:
+return 0.
+
+Unless there is a strong motivation for returning either size or sizeof(con=
+f) ? If we
+return sizeof(conf) to user-space, it means it should check it and deal wit=
+h the
+size mismatch. Is that size ever expected to change ?
+
+Thanks,
+
+Mathieu
+
+>=20
+>=20
+> --
+> ldv
+
+--=20
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
