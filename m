@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC92632228E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:11:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678AB322290
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhBVXLX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 18:11:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58410 "EHLO
+        id S231158AbhBVXLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 18:11:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhBVXLQ (ORCPT
+        with ESMTP id S230088AbhBVXLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 18:11:16 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C030C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 15:10:36 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id e7so8509019lft.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 15:10:36 -0800 (PST)
+        Mon, 22 Feb 2021 18:11:42 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4047C061786;
+        Mon, 22 Feb 2021 15:11:01 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id n1so24005912edv.2;
+        Mon, 22 Feb 2021 15:11:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=htMgZbviUWPJfHpdvErYulOZUuVUyLrfs/6w9xy28ag=;
-        b=ClwOBQrwLYSl4rhcoxRQ/DM5JJD+v+bODw1s4lJtLIZLpR9EdecXQ0HTHBzAaHl4Ws
-         2SlZ7n9BfUorVsr4NXXysklod2KJtdWt0UU+mjXez2pbalJK1kXFrsJZsDPZ4+RDmbTr
-         xpZRt9pamMdqv04Mlhknx2b0AXqapL1LxFQSZkN8UParBtLWg31UV9q6+L5DLB5eX8hW
-         a1QCTeyuoncaoYnxdFmkzUEzbag4c24ITH1i2Fn3K+mvUYpss/c1sQxA2EWOZ/DvQlyl
-         SKQx70LDQenui6v1rV+TJ0R6HdULMgTpC7ORwZ3Ppl/wg48R6e7g0HqawlYa9BkX1TqS
-         zmYA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GdNyYSieHSaiPrVeA7xGe4FuuX5KcxMXSC/IiyRe8pc=;
+        b=OPVJKCZ+LxQN2P9cqoK+/QTRQ6DVKDWQLtDQWx16kmL+GOapjecDVhSgOAqwrbvYym
+         /pU5jxTD1eBtpzhJEfqNDZqI6uCHK95+Pf+Vhnofr9Vnz8S8NkXMwsNnwds8oAxaP4Oc
+         gXbwT/L7h02clM6/aTR8cbrw5pe8qq32oHooPFwUHi1T/zg1GEPAremUa6MCH+DTv7wi
+         EI9O7WQ+J8e35o4ui8bR1zCTt0cEHFG1b+zKQbtciQSQZ6gg6+8eQNUUKqrZdvQ3kvVG
+         weA68nx4SLeSEW3UdOVaBG04TeLsbz3FAN5UqYgfAO0BT74q79BpYqav/yH3f/OLZBBV
+         +fHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=htMgZbviUWPJfHpdvErYulOZUuVUyLrfs/6w9xy28ag=;
-        b=i2PMWtCfG4WCnUhH5VBQW5Dfxqewb6QV8ugBRj3M1CDM71tBX+b/QIl0/ENcwkOYin
-         Dp8CdfPpazfjl0vaMSajuKaJ/+J6l23eI+n1HtJNX4JCCgnu2HrxX5lhBy6zYREEVTH/
-         0euKdgPk7mTuGAXZl9myXXLK8ZxPYhoxq8vtR4+M+9mJ2K/KaVJorZrbMv4L9S8ej1GR
-         rq1eIGetr2Fj0uGgQYMupNMM0I7s8Kx86vt785P1xFRhKreB2fJQnQCSxSwSCvFH8lOT
-         tCn5SNkxn9rg2AiIqoiB1eLA5z6+ttCT7GsFapzwtnKZ9UNC3ahJuWdeAXMV781gP/Qt
-         46zw==
-X-Gm-Message-State: AOAM532kMHCq+ZQpr2FdBMXPwjavXFQtUaGlm4VRR7ActgooJLUOlr8+
-        +XMBsCc5488Kde8HQpi1RIDw0VexGNquBVyvSfbZtA==
-X-Google-Smtp-Source: ABdhPJwpRsRyerHjiRnE+ThB+csI+gODmDp0QyaJFsIStJfWMTBWcuWoOsE3BMvF8l/UbVnYJqknooqnxdHP02t5lpU=
-X-Received: by 2002:ac2:5de4:: with SMTP id z4mr3297329lfq.535.1614035434936;
- Mon, 22 Feb 2021 15:10:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GdNyYSieHSaiPrVeA7xGe4FuuX5KcxMXSC/IiyRe8pc=;
+        b=T934k413YX+Av1bj1fPkbmBtVYxh2G/aZw2Uft+mkTJHxnOAciZP0w9CKWn/dDoeUO
+         eSvTRISvVrCDPlHnbDK1EvmWZ0dN0CzY/jShclpSPFXFzZZHxEIzbMQfrf0Z+5Iot5/7
+         p6JfEOhKDU8t0MLIxIHB4hyXe6NMrN+JdA5Zl+BZzd6SdwVdm18GILEIJ+/aLOlKqeio
+         y5UVHbK4CDLDQAiIlQ7O2q5gAunlFc6eMaZ/7YS24vBfGBAPfVvI6DGDjT3ibIjMmorD
+         MRdS4IrfmEPMbwHcCiWoM2yS9eKU/bHo9kMLu7YD1bxfWbwQ3PZ4MSlyl7akSF+Xjj92
+         TqAQ==
+X-Gm-Message-State: AOAM533uSmtz1N6chKi2vBja+sNVun+paVbv/zZDJKs4gn3n7jG5VZfH
+        qicJNB1khfEMkblEZPe9bR8=
+X-Google-Smtp-Source: ABdhPJy+hs3FIl8YvsUiJg9vFmY6CcPIlaEJprGjOQ5j1F8gzQU54pbEA5v8Zaww+HRJXc1RJoNjKQ==
+X-Received: by 2002:a05:6402:c9a:: with SMTP id cm26mr11055639edb.133.1614035460413;
+        Mon, 22 Feb 2021 15:11:00 -0800 (PST)
+Received: from skbuf ([188.25.217.13])
+        by smtp.gmail.com with ESMTPSA id s12sm13007411edu.28.2021.02.22.15.10.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 15:10:59 -0800 (PST)
+Date:   Tue, 23 Feb 2021 01:10:58 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net v2 1/2] net: dsa: bcm_sf2: Wire-up br_flags_pre,
+ br_flags and set_mrouter
+Message-ID: <20210222231058.q5mrpvfibjvw7jki@skbuf>
+References: <20210222223010.2907234-1-f.fainelli@gmail.com>
+ <20210222223010.2907234-2-f.fainelli@gmail.com>
 MIME-Version: 1.0
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 22 Feb 2021 15:10:22 -0800
-Message-ID: <CALAqxLU3B8YcS_MTnr2Lpasvn8oLJvD2qO4hkfkZeEwVNfeHXg@mail.gmail.com>
-Subject: [REGRESSION] "add a disk_uevent helper" breaks booting Andorid w/
- dynamic partitions
-To:     Christoph Hellwig <hch@lst.de>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Anderson <dvander@google.com>
-Cc:     linux-block@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
-        Todd Kjos <tkjos@google.com>,
-        Amit Pundir <amit.pundir@linaro.org>,
-        Alistair Delva <adelva@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222223010.2907234-2-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey all,
-  After updating to Linus' HEAD today I found my db845c board wouldn't
-boot to android with the error below.
+On Mon, Feb 22, 2021 at 02:30:09PM -0800, Florian Fainelli wrote:
+> Because bcm_sf2 implements its own dsa_switch_ops we need to export the
+> b53_br_flags_pre(), b53_br_flags() and b53_set_mrouter so we can wire-up
+> them up like they used to be with the former b53_br_egress_floods().
+> 
+> Fixes: a8b659e7ff75 ("net: dsa: act as passthrough for bridge port flags")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
 
-I was able to bisect the boot regression down to "block: add a
-disk_uevent helper":
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bc359d03c7ec1bf3b86d03bafaf6bbb21e6414fd
+To be clear, I did not miss migrating .port_egress_floods towards
+.port_bridge_flags, I just migrated what existed, and sf2 didn't have
+it. So from a blame perspective, this patch should have:
 
-And have validated that reverting that change seems to get things working again.
+Fixes: 53568438e381 ("net: dsa: b53: Add support for port_egress_floods callback")
 
-I don't really know the dynamic partition DM details well, so any tips
-as to what might be going wrong here would be appreciated!
+However, your fix cannot be backported past the patch you blamed, so in
+practice it makes no difference.
 
-thanks
--john
-
-[   25.782268] init: [libfs_mgr]Skipping mounting '/dev/block/dm-0'
-[   25.788373] init: [libfs_mgr]Failed to open '/dev/block/dm-0': No
-such file or directory
-[   25.796579] init:
-[libfs_mgr]__mount(source=/dev/block/dm-0(missing),target=/system,type=ext4)=-1:
-No such file or directory
-[   25.807978] init: Failed to mount /system: No such file or directory
-[   25.814466] init: Failed to mount required partitions early ...
-[   25.820757] init: InitFatalReboot: signal 6
-[   25.833635] init: #00 pc 00000000003936a8  /init
-(UnwindStackCurrent::UnwindFromContext(unsigned long, void*)+96)
-[   25.844001] init: #01 pc 00000000002f1df0  /init
-(android::init::InitFatalReboot(int)+208)
-[   25.852340] init: #02 pc 00000000002f21d8  /init
-(android::init::InstallRebootSignalHandlers()::$_22::__invoke(int)+32)
-[   25.863211] init: #03 pc 000000000000053c  [vdso:0000007f97c34000]
-[   25.869449] init: #04 pc 000000000045ffb0  /init (abort+176)
-[   25.875163] init: #05 pc 00000000002f714c  /init
-(android::init::InitAborter(char const*)+44)
-[   25.883760] init: #06 pc 000000000034dc98  /init
-(android::base::SetAborter(std::__1::function<void (char
-const*)>&&)::$_3::__invoke(char const*)+80)
-[   25.897241] init: #07 pc 000000000034d840  /init
-(android::base::LogMessage::~LogMessage()+360)
-[   25.906002] init: #08 pc 00000000002e93a8  /init
-(android::init::FirstStageMain(int, char**)+6648)
-[   25.915039] init: #09 pc 000000000045ee58  /init
-(__real_libc_init(void*, void (*)(), int (*)(int, char**, char**),
-structors_array_t const*, bionic_tc)
-[   25.929411] init: Reboot ending, jumping to kernel
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
