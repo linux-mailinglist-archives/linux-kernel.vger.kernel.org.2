@@ -2,104 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D3D321EBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 468B5321EBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:02:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhBVSBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:01:47 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11902 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231950AbhBVSBS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:01:18 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6033f1450003>; Mon, 22 Feb 2021 10:00:37 -0800
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
- 2021 18:00:36 +0000
-Received: from HKMAIL101.nvidia.com (10.18.16.10) by HKMAIL102.nvidia.com
- (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
- 2021 18:00:35 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.42) by
- HKMAIL101.nvidia.com (10.18.16.10) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Mon, 22 Feb 2021 18:00:34 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PEyE5Foyx+LzFgedN5t4danpXvj94WoA0xlnZL3tfSGgFPcMEHGtxaKik0K9wBp+wCBOZIDVjrNk0eLbA/qse+G2r3gaZ8G043ieB7Zw2uLeP++X1QwAUjeTycLwy1qnvt/tcYeqJqvJ5Siqn4vxeAxjBkE7BP35u4nKoE8EmWMAcrGld0cql7W5mjWUaJRFCxL7gddLKflvob+FTmoo9dA3xURJvtrE6wZtL8dByNR9FiPYKOXJ5BkAkkZ8UJ0/5uJ/LWGjhg7cAICewmj6puGGINUSf7k3/x/lZb8rLBxuVMQg7ZXTpsaBz9LtbSgur2PW2hEPDZfh+qYjp0aPEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/xMU25c5qARPtud9sssUX2OPCpeDLepzDuGHSJoSGz8=;
- b=oa3jsq2xAd7TAFPhPezwB8iz+gZZHJrltHCDLNFsl5AOd5RRp7zJV2Rn7WCThby82PFZStEAI/w6iBR8gR1o9SxKtF3HjvYRuXPSDUA4t8tb/r6PGAHpEB58QW0j/Qd9NKbMJbqA3fsKwyQrDWAyKGHm37CwBkTK+4CVijpQ8iYGaC2TOWbPAGgMcBrFEWhklqWZQ2z/A2IVfiXAedgKqIW+8NuxSFlChs5Jvg0g5j6lj/enfGwW1RByURvQepZAEkfkoVD8+qu/S5xGaOLg3662W0qG13DK/3P7MhGGabpVuFUZKcuamZ0ktGtpVf1eEL4nTDlwuNDC7srVNbJUuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4497.namprd12.prod.outlook.com (2603:10b6:5:2a5::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.30; Mon, 22 Feb
- 2021 18:00:32 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.045; Mon, 22 Feb 2021
- 18:00:32 +0000
-Date:   Mon, 22 Feb 2021 14:00:31 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [RFC PATCH 00/10] vfio: Device memory DMA mapping improvements
-Message-ID: <20210222180031.GR4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <161401167013.16443.8389863523766611711.stgit@gimli.home>
-X-ClientProxiedBy: BL0PR02CA0030.namprd02.prod.outlook.com
- (2603:10b6:207:3c::43) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231939AbhBVSB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:01:26 -0500
+Received: from mga06.intel.com ([134.134.136.31]:4652 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231936AbhBVSAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:00:16 -0500
+IronPort-SDR: P1ztj35Hud7HIUErJQ9wcUp1xZO/wkjTj840sZ7vNuFDDrSOZ+QP7LzqU8S4ogcfUwHH8HB5xK
+ KLMuGGYryd7g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="245958041"
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="245958041"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 09:58:30 -0800
+IronPort-SDR: IA7AY8wsZOxpoKUHheB4xcj/giQmReA+JZG0euxu7ms2z7uPEeoGak2bviLbsthLmeu3gP6qzR
+ znzSJYah6wwQ==
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="432171493"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 09:58:29 -0800
+Date:   Mon, 22 Feb 2021 10:01:06 -0800
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Sun, Yi Y" <yi.y.sun@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 2/4] iommu/vt-d: Enable write protect propagation from
+ guest
+Message-ID: <20210222100106.0ae8380e@jacob-builder>
+In-Reply-To: <MWHPR11MB1886D3FA49A212684239530D8C839@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <1613683878-89946-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1613683878-89946-3-git-send-email-jacob.jun.pan@linux.intel.com>
+        <MWHPR11MB1886F4395B64EC23277D88328C849@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210219090841.4ae6f01c@jacob-builder>
+        <MWHPR11MB1886D3FA49A212684239530D8C839@MWHPR11MB1886.namprd11.prod.outlook.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL0PR02CA0030.namprd02.prod.outlook.com (2603:10b6:207:3c::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Mon, 22 Feb 2021 18:00:32 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lEFVX-00ETGP-Ds; Mon, 22 Feb 2021 14:00:31 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614016837; bh=/xMU25c5qARPtud9sssUX2OPCpeDLepzDuGHSJoSGz8=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=msGmGPpziq2wJhyYVNFv+IBLQhCRHBQ6GKORP/uy376hauC/NccVj92T9p85ahlRN
-         jJog9RgNA1fvx9NvMkWrxelopAs/34kcGKmr7+mMyp4R3vXldQgB5JH/Lzg2LJFHZR
-         bRvXr7rdoQ0OeoPjBnhh/P3arpiBdlsUSr0Xb6iDBJ/7JV5txD8gDJeqQDwRYIOXHY
-         MWFAqWnNVfkhrXwKopsbT8XrQRvGefSrOmDviw6ZrBzniYb7aJ9vyJrYN2PH17YB4g
-         PUZ6UHKW/8FrupEWMJCBAEAWtzHJHf/wtNvkn0OR0YU+7wGx2HE9COsaNZApxzEaNg
-         /9CHVrcAPpfsg==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 09:50:22AM -0700, Alex Williamson wrote:
-> This is a re-implementation of [1] following suggestions and code from
-> Jason Gunthorpe.  This is lightly tested but seems functional and
-> throws no lockdep warnings.  In this series we tremendously simplify
-> zapping of vmas mapping device memory using unmap_mapping_range(), we
-> create a protocol for looking up a vfio_device from a vma and provide
-> an interface to get a reference from that vma, using that device
-> reference, the caller can register a notifier for the device to
-> trigger on events such as device release.  This notifier is only
-> enabled here for vfio-pci, but both the vma policy and the notifier
-> trigger should be trivial to add to any vfio bus driver after RFC.
+Hi Kevin,
+
+On Sat, 20 Feb 2021 02:38:02 +0000, "Tian, Kevin" <kevin.tian@intel.com>
+wrote:
+
+> > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > Sent: Saturday, February 20, 2021 1:09 AM
+> > 
+> > Hi Kevin,
+> > 
+> > On Fri, 19 Feb 2021 06:19:04 +0000, "Tian, Kevin" <kevin.tian@intel.com>
+> > wrote:
+> >   
+> > > > From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > > Sent: Friday, February 19, 2021 5:31 AM
+> > > >
+> > > > Write protect bit, when set, inhibits supervisor writes to the
+> > > > read-only pages. In guest supervisor shared virtual addressing
+> > > > (SVA), write-protect should be honored upon guest bind supervisor
+> > > > PASID request.
+> > > >
+> > > > This patch extends the VT-d portion of the IOMMU UAPI to include WP
+> > > > bit. WPE bit of the  supervisor PASID entry will be set to match
+> > > > CPU CR0.WP bit.
+> > > >
+> > > > Signed-off-by: Sanjay Kumar <sanjay.k.kumar@intel.com>
+> > > > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > > > ---
+> > > >  drivers/iommu/intel/pasid.c | 5 +++++
+> > > >  include/uapi/linux/iommu.h  | 3 ++-
+> > > >  2 files changed, 7 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/drivers/iommu/intel/pasid.c
+> > > > b/drivers/iommu/intel/pasid.c index 0b7e0e726ade..c7a2ec930af4
+> > > > 100644 --- a/drivers/iommu/intel/pasid.c
+> > > > +++ b/drivers/iommu/intel/pasid.c
+> > > > @@ -763,6 +763,11 @@ intel_pasid_setup_bind_data(struct  
+> > intel_iommu  
+> > > > *iommu, struct pasid_entry *pte,
+> > > >  			return -EINVAL;
+> > > >  		}
+> > > >  		pasid_set_sre(pte);
+> > > > +		/* Enable write protect WP if guest requested */
+> > > > +		if (pasid_data->flags & IOMMU_SVA_VTD_GPASID_WPE) {
+> > > > +			if (pasid_enable_wpe(pte))
+> > > > +				return -EINVAL;  
+> > >
+> > > We should call pasid_set_wpe directly, as this binding is about guest
+> > > page table and suppose the guest has done whatever check required
+> > > (e.g. gcr0.wp) before setting this bit. pasid_enable_wpe has an
+> > > additional check on host cr0.wp thus is logically incorrect here.
+> > >  
+> > If the host CPU does not support WP, can guest VCPU still support WP? If
+> > so, I agree.
+> >   
 > 
-> Does this look more like the direction we should go?
+> If you change 'support' to 'enable', then the answer is yes.
 
-Yep, it seems pretty good already, see my remarks in each patch
+I agree, thanks for explaining. Will change it to pasid_set_wpe.
 
-For security only vfio_device's that have been enabled for P2P, set
-the vm_pgoff to the pfn, and trigger invalidation, should be used with
-this mechanism.
+Thanks,
 
-I'd add some global opt-in so vfio_device_get_from_vma() will refuse
-to return vfio_device's that don't declare they have support.
-
-Add a flags member to vfio_device_ops would get it done fairly cleanly
-
-Jason
+Jacob
