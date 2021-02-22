@@ -2,102 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2371D32223D
+	by mail.lfdr.de (Postfix) with ESMTP id 9474332223E
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:39:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhBVWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 17:38:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S231411AbhBVWj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 17:39:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhBVWif (ORCPT
+        with ESMTP id S231152AbhBVWjU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:38:35 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C63C061574;
-        Mon, 22 Feb 2021 14:37:54 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id i7so663478wmb.0;
-        Mon, 22 Feb 2021 14:37:54 -0800 (PST)
+        Mon, 22 Feb 2021 17:39:20 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36AC1C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:38:40 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id w1so12343822ilm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:38:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=OG84TCVpzOvu0k+n0n+mBjAnoUroeSHULIlvXLAswOQ=;
-        b=KjLbT1T6wGDYkYrP1rC7MvL8hgAAM1DzCaojVOdGag82ig4oJrCiHArQmceF44/Li+
-         JE+/8D7gWnMxJipthpHRF6JBDj5t5KdT7N0MoIyvdNSBXIQpoLIuDK8jwvaaKrKlbK/E
-         52yJXZzOKMw0PvEfhZhEQZ4M3QHuEroBs4AVINrHokkQycuiYPnts7Hs7Mnl8cawcm+F
-         04qcsvCpNShaLAlJyzRx65apTthWGRJkPXTXyJTVCd3K3xOwtqOhXaH0D3X58ZeDnvx5
-         grxPJHJM8NrvMP20LMMM1IBMyX7xqzULxOb+H2JLBUndg1WwiWtqzpZfp5lfX92g8sED
-         rN2A==
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v+bRTmjwUn3uBzqoT+jMaNbtbzbUVi4q8qV4RGj6hQY=;
+        b=EgH6YhENDcXw0kF2Lm0gvd7DSF0AdF8mGL6MkxAGbZ1FixDC4XmaEkJfB9fe7SpEsC
+         EHYkrqPUje5df/yuI6UDgecqj1IdaGuAt3d/6+P26Q5ZCrJ73BdFlXECVIXsZucTCN3X
+         wHbCC6rZvQJLYOdgvF0Mf92a26AbdPv1GvvWk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=OG84TCVpzOvu0k+n0n+mBjAnoUroeSHULIlvXLAswOQ=;
-        b=M1UMngQm6gCbBacEnZ1V9EAXCU8l1soVoHeMh2L8EUbSZv/MPrn7BD8BS2H756C6kG
-         HLBWIKd9g+ol082DwbfJ7DJItdGp0Ej037vjDIYEGi5Kf2hIzrNF94zrnF7XlkEKBXkn
-         zSX9jtlZYFPziJxkIqVbdVPUhjCRWpEIcYT7PB17UTcHI5DVLQkN6BNe4LKsyUDAI2Ti
-         lwx4FQ4MQKNEC/ApHxOC7WC1m3u5nMWlWOy97wMWGrXxQGJQ0tsrnTL35954bcEEpAEr
-         R67tQZGuGb6tjoWg+905ww2Hls9Ap2svhgdEPEYTMbChxsIuel3UzcDItqsKvD/KhY20
-         4XjA==
-X-Gm-Message-State: AOAM5335O5GbUAl64YM1j5MotZjJgHkIO63v+EEegSM6g1OrjH+fczco
-        YCpZLTrwsZu0uFSqJKxsEv4=
-X-Google-Smtp-Source: ABdhPJxF3LwORa249PDud7gcZLOJApH8R9HWg9suqvDcMjAIbN36Nf77fwz2awTGfkrXN6VYi0EqSQ==
-X-Received: by 2002:a7b:c5c7:: with SMTP id n7mr22017751wmk.63.1614033473415;
-        Mon, 22 Feb 2021 14:37:53 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.123])
-        by smtp.gmail.com with ESMTPSA id v9sm26246302wrn.86.2021.02.22.14.37.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 14:37:52 -0800 (PST)
-Subject: Re: [PATCH v3 6/6] mfd: tps68470: Remove tps68470 MFD driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Rajmohan Mani <rajmohan.mani@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        andy.shevchenko@linux.intel.com,
-        kieran.bingham+renesas@ideasonboard.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>, me@fabwu.ch,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        devel@acpica.org
-References: <20210222130735.1313443-1-djrscally@gmail.com>
- <20210222130735.1313443-7-djrscally@gmail.com>
- <CAHp75Veb=0OOE=iyt5ua46HkMuG6_Xu1bWAxzZX5d3378CrfNg@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <995b2a4e-601a-3256-9348-bcad173826ff@gmail.com>
-Date:   Mon, 22 Feb 2021 22:37:51 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v+bRTmjwUn3uBzqoT+jMaNbtbzbUVi4q8qV4RGj6hQY=;
+        b=ZJ7dLDPNgq/MyFoYrO/+brcdxsdUvi6W++4Rx87XSvCGk4J5oaIzki7B7OsBvONBKE
+         7LUmMkfXneFo4nj6TDsZQpr3Ms2Kkcj8ICNHfNHQyxv0X4vSgTBbdjp5WEFaI3kUFwlM
+         MX8MBQzzMLlbovryjhNJ7bfWeBm/tsoFTw82Z3znRtxRg0C42eBIOp65cBxHGsF7w1KN
+         TG/2gEup+QwZnohMzaicQpgpJX3cJHXL26WiYQUDlRNkzNNeFjnjLWQSQ1vcBdWeSbTO
+         YuGfRF01YApUIhe2/mxJYsd4CUWTFNtfmwNinRZLj/fBQiM8FukBaqSHlnRtmBmGi9vH
+         YfAg==
+X-Gm-Message-State: AOAM531f/OeCC/2QCmvQcjOuEi/kT96nM+AT1jTJRCE0avdNGx/c4lYx
+        Y9br52gm/taxvl26Usp3HOJTNru9mrXv8ouCDqRO8HCPig==
+X-Google-Smtp-Source: ABdhPJw2TIj0o52iS6C93kPC5ubNmLckikW0/NOuSjuDGxRpxJiLWiY/8Uw03gMhec9boJyB0dzpYovmHDPrLT3gaes=
+X-Received: by 2002:a05:6e02:4a3:: with SMTP id e3mr16432525ils.77.1614033519752;
+ Mon, 22 Feb 2021 14:38:39 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Veb=0OOE=iyt5ua46HkMuG6_Xu1bWAxzZX5d3378CrfNg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210204052643.1608586-1-atish.patra@wdc.com> <20210222202241.GA82802@roeck-us.net>
+In-Reply-To: <20210222202241.GA82802@roeck-us.net>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Mon, 22 Feb 2021 14:38:28 -0800
+Message-ID: <CAOnJCUJq4Gfd_YvJz5K2yFwmsSiB3LDM6rSQ2d+O+jV8b0z_wg@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Add a non-void return for sbi v02 functions
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/02/2021 14:12, Andy Shevchenko wrote:
-> On Mon, Feb 22, 2021 at 3:12 PM Daniel Scally <djrscally@gmail.com> wrote:
->> This driver only covered one scenario in which ACPI devices with _HID
->> INT3472 are found, and its functionality has been taken over by the
->> intel-skl-int3472 module, so remove it.
-> As long as patch 5 accepted
-> Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Great - thank you! And likewise for the R-bs on the previous patches,
-I'll follow all the comments for those
+On Mon, Feb 22, 2021 at 12:23 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Wed, Feb 03, 2021 at 09:26:43PM -0800, Atish Patra wrote:
+> > SBI v0.2 functions can return an error code from SBI implementation.
+> > We are already processing the SBI error code and coverts it to the Linux
+> > error code.
+> >
+> > Propagate to the error code to the caller as well. As of now, kvm is the
+> > only user of these error codes.
+> >
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > ---
+> ...
+> >  #else /* CONFIG_RISCV_SBI */
+> > -static inline void sbi_remote_fence_i(const unsigned long *hart_mask) {}
+> > +static inline int sbi_remote_fence_i(const unsigned long *hart_mask) {}
+>
+> Error log:
+> In file included from arch/riscv/kernel/setup.c:29:
+> arch/riscv/include/asm/sbi.h: In function 'sbi_remote_fence_i':
+> arch/riscv/include/asm/sbi.h:150:1: error: no return statement in function returning non-void
+>
+
+Sorry for the oversight. The return statement is missing.
+
+@Palmer Dabbelt : Can you fix it in for-next or should I send a v2 ?
+
+> Guenter
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
+
+
+-- 
+Regards,
+Atish
