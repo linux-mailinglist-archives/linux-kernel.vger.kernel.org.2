@@ -2,127 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0BB320F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:04:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD16320F4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:07:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230303AbhBVCES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 21:04:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229973AbhBVCEK (ORCPT
+        id S231325AbhBVCFZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 21 Feb 2021 21:05:25 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:2906 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229973AbhBVCFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 21:04:10 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61519C061574;
-        Sun, 21 Feb 2021 18:03:30 -0800 (PST)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 89DAD517;
-        Mon, 22 Feb 2021 03:03:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613959408;
-        bh=3+Z06nktataXtXvY4PntHi6rSu7jvSLOb2DO0aEka6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r5aRkcqyQ1KbTe/kGBkz9EVuzIgryJa1II5Y3HmtN+SjOWxgsZsl4HslhOSVdP/DA
-         9SHy5CqJZYelCSekrf1bpXxz74LR4S+HjCHbJpyXrGJvStEBfLeJMhzqZDepmOFyC1
-         /PAEMQoqo9U5OdVFObptHti36qwf0TXs/sDk9aZ8=
-Date:   Mon, 22 Feb 2021 04:03:02 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 14/16] media: i2c: max9286: Initialize remotes when bound
-Message-ID: <YDMQ1gyao0WCyQ0u@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-15-jacopo+renesas@jmondi.org>
+        Sun, 21 Feb 2021 21:05:10 -0500
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4DkQRk5Y3Hz5TwC;
+        Mon, 22 Feb 2021 10:02:26 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 22 Feb 2021 10:04:24 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 22 Feb 2021 10:04:24 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Mon, 22 Feb 2021 10:04:24 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        tanxiaofei <tanxiaofei@huawei.com>
+CC:     "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "linux-m68k@vger.kernel.org" <linux-m68k@vger.kernel.org>
+Subject: RE: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage
+ optimization for SCSI drivers
+Thread-Topic: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage
+ optimization for SCSI drivers
+Thread-Index: AQHXBcVsHfRcgE5/oku9/SZGNaGMW6pf/eSAgANvFTA=
+Date:   Mon, 22 Feb 2021 02:04:24 +0000
+Message-ID: <8c99b5c060eb4e5aa5b604666a8db516@hisilicon.com>
+References: <1612697823-8073-1-git-send-email-tanxiaofei@huawei.com>
+ <31cd807d-3d0-ed64-60d-fde32cb3833c@telegraphics.com.au>
+ <e949a474a9284ac6951813bfc8b34945@hisilicon.com>
+ <f0a3339d-b1db-6571-fa2f-6765e150eb9d@telegraphics.com.au>
+ <7bc39d19-f4cc-8028-11e6-c0e45421a765@huawei.com>
+ <588a87f-ae42-0b7-749e-c780ce5c3e4f@telegraphics.com.au>
+In-Reply-To: <588a87f-ae42-0b7-749e-c780ce5c3e4f@telegraphics.com.au>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.172]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216174146.106639-15-jacopo+renesas@jmondi.org>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
 
-Thank you for the patch.
 
-On Tue, Feb 16, 2021 at 06:41:44PM +0100, Jacopo Mondi wrote:
-> With the introduction of the .init() core subdev operation in the
-> max9271 GMSL serializer, the max9286 deserializer needs to explicitly
-> initialize the remote devices by calling the .init() subdev operation on
-> each probed camera.
+> -----Original Message-----
+> From: Finn Thain [mailto:fthain@telegraphics.com.au]
+> Sent: Saturday, February 20, 2021 6:18 PM
+> To: tanxiaofei <tanxiaofei@huawei.com>
+> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>; jejb@linux.ibm.com;
+> martin.petersen@oracle.com; linux-scsi@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linuxarm@openeuler.org;
+> linux-m68k@vger.kernel.org
+> Subject: Re: [Linuxarm] Re: [PATCH for-next 00/32] spin lock usage optimization
+> for SCSI drivers
 > 
-> Call the .init() subdev operation at remote bound time and toggle
-> the reverse channel amplitude to compensate for the remote ends
-> noise immunity threshold.
+> On Thu, 18 Feb 2021, Xiaofei Tan wrote:
 > 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/max9286.c | 24 +++++++++++++++++++-----
->  1 file changed, 19 insertions(+), 5 deletions(-)
+> > On 2021/2/9 13:06, Finn Thain wrote:
+> > > On Tue, 9 Feb 2021, Song Bao Hua (Barry Song) wrote:
+> > >
+> > > > > On Sun, 7 Feb 2021, Xiaofei Tan wrote:
+> > > > >
+> > > > > > Replace spin_lock_irqsave with spin_lock in hard IRQ of SCSI
+> > > > > > drivers. There are no function changes, but may speed up if
+> > > > > > interrupt happen too often.
+> > > > >
+> > > > > This change doesn't necessarily work on platforms that support
+> > > > > nested interrupts.
+> > > > >
+> > > > > Were you able to measure any benefit from this change on some
+> > > > > other platform?
+> > > >
+> > > > I think the code disabling irq in hardIRQ is simply wrong.
+> > > > Since this commit
+> > > >
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/
+> ?id=e58aa3d2d0cc
+> > > > genirq: Run irq handlers with interrupts disabled
+> > > >
+> > > > interrupt handlers are definitely running in a irq-disabled context
+> > > > unless irq handlers enable them explicitly in the handler to permit
+> > > > other interrupts.
+> > > >
+> > >
+> > > Repeating the same claim does not somehow make it true. If you put
+> > > your claim to the test, you'll see that that interrupts are not
+> > > disabled on m68k when interrupt handlers execute.
+> > >
+> > > The Interrupt Priority Level (IPL) can prevent any given irq handler
+> > > from being re-entered, but an irq with a higher priority level may be
+> > > handled during execution of a lower priority irq handler.
+> > >
+> > > sonic_interrupt() uses an irq lock within an interrupt handler to
+> > > avoid issues relating to this. This kind of locking may be needed in
+> > > the drivers you are trying to patch. Or it might not. Apparently,
+> > > no-one has looked.
+> > >
+> >
+> > According to your discussion with Barry, it seems that m68k is a little
+> > different from other architecture, and this kind of modification of this
+> > patch cannot be applied to m68k. So, could help to point out which
+> > driver belong to m68k architecture in this patch set of SCSI? I can
+> > remove them.
+> >
 > 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 7913b5f2249e..c41284de89b6 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -554,25 +554,39 @@ static int max9286_notify_bound(struct v4l2_async_notifier *notifier,
->  	dev_dbg(&priv->client->dev, "Bound %s pad: %u on index %u\n",
->  		subdev->name, src_pad, index);
->  
-> +	/*
-> +	 * Initialize the remote camera. Increase the channel amplitude
-> +	 * to compensate for the remote noise immunity threshold.
-> +	 */
-> +	max9286_reverse_channel_setup(priv, MAX9286_REV_AMP_HIGH);
-> +	ret = v4l2_subdev_call(subdev, core, init, 0);
-> +	if (ret) {
-> +		dev_err(&priv->client->dev,
-> +			"Failed to initialize camera device %u\n", index);
-> +		return ret;
-> +	}
-> +
->  	/*
->  	 * We can only register v4l2_async_notifiers, which do not provide a
->  	 * means to register a complete callback. bound_sources allows us to
->  	 * identify when all remote serializers have completed their probe.
->  	 */
-> -	if (priv->bound_sources != priv->source_mask)
-> +	if (priv->bound_sources != priv->source_mask) {
-> +		/*
-> +		 * If not all remotes have probed yet, restore the initial
-> +		 * reverse channel amplitude to allow the next camera to probe.
-> +		 */
-> +		max9286_reverse_channel_setup(priv, priv->init_rev_chan_mv);
->  		return 0;
-> +	}
+> If you would claim that "there are no function changes" in your patches
+> (as above) then the onus is on you to support that claim.
+> 
+> I assume that there are some platforms on which your assumptions hold.
+> 
+> With regard to drivers for those platforms, you might want to explain why
+> your patches should be applied there, given that the existing code is
+> superior for being more portable.
 
-Instead of going back and forth, would it make sense to incerase the
-channel amplitude here, and call the init() subdev operation in a loop
-over all cameras ?
+I don't think it has nothing to do with portability. In the case of
+sonic_interrupt() you pointed out, on m68k, there is a high-priority
+interrupt can preempt low-priority interrupt, they will result in
+access the same critical data. M68K's spin_lock_irqsave() can disable
+the high-priority interrupt and avoid the race condition of the data.
+So the case should not be touched. I'd like to accept the reality
+and leave sonic_interrupt() alone.
 
-Otherwise the patch looks good to me, but I agree with Kieran that it
-should probably be squashed with 13/16.
+However, even on m68k, spin_lock_irqsave is not needed for other
+ordinary cases.
+If there is no other irq handler coming to access same critical data,
+it is pointless to hold a redundant irqsave lock in irqhandler even
+on m68k.
 
->  
->  	/*
->  	 * All enabled sources have probed and enabled their reverse control
->  	 * channels:
-> -	 *
-> -	 * - Increase the reverse channel amplitude to compensate for the
-> -	 *   remote ends high threshold
->  	 * - Verify all configuration links are properly detected
->  	 * - Disable auto-ack as communication on the control channel are now
->  	 *   stable.
->  	 */
-> -	max9286_reverse_channel_setup(priv, MAX9286_REV_AMP_HIGH);
->  	max9286_check_config_link(priv, priv->source_mask);
->  
->  	/*
+In thread contexts, we always need that if an irqhandler can preempt
+those threads and access the same data. In hardirq, if there is an
+high-priority which can jump out on m68k to access the critical data
+which needs protection, we use the spin_lock_irqsave as you have used
+in sonic_interrupt(). Otherwise, the irqsave is also redundant for
+m68k.
 
--- 
-Regards,
+> 
+> > BTW, sonic_interrupt() is from net driver natsemi, right?  It would be
+> > appreciative if only discuss SCSI drivers in this patch set. thanks.
+> >
+> 
+> The 'net' subsystem does have some different requirements than the 'scsi'
+> subsystem. But I don't see how that's relevant. Perhaps you can explain
+> it. Thanks.
 
-Laurent Pinchart
+The difference is that if there are two co-existing interrupts which can
+access the same critical data on m68k. I don't think net and scsi matter.
+What really matters is the specific driver.
+
+Thanks
+Barry
+
