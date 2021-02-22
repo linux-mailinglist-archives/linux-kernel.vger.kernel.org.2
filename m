@@ -2,377 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E4C4321F62
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:50:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C96B2321F5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:49:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhBVSuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:50:15 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:19098 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231709AbhBVStY (ORCPT
+        id S231559AbhBVSsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:48:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231424AbhBVSqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:49:24 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11MIgiTv158848;
-        Mon, 22 Feb 2021 13:47:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=pp1;
- bh=7g8nMPK0BWDP02m4h8rVpPLI++nL8C+0dAkk5BW4xow=;
- b=IFr69xQANSi7a0VXN4CAuSGV0DIWl7KVH/9GpyBcx8tGQhaEhkIhP7lQMfGpYsuR9JmP
- NtnrPrOOMiOwwn+REYhlyoOy5M1aXHxCcKwLqP60oZIof5jSckoo+GBWPK7vzsE3EpNo
- 4NYUJpWD6PbrTaYf/dwJsbyhl+EWNDUyFifJ/nkGgYAWmzb5YzWEXZfMPVVV6liCa8jz
- cXrMG/R03sECr410VASMeMTd+md4KuV9ZVv99fDsPtS1QqBXIM5pOEbK2rvnfYk+806t
- CQ2JJeg08eOnGSmRTrZMW2KJne+DscipysdAQ5DL2Y162jepp9/4yQwTQkt62Rxye20t tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vhy78k8s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 13:47:47 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 11MIgvj2159799;
-        Mon, 22 Feb 2021 13:47:33 -0500
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36vhy78j7x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 13:47:32 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11MIgCZM014626;
-        Mon, 22 Feb 2021 18:45:52 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04ams.nl.ibm.com with ESMTP id 36tt289wmu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 18:45:51 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11MIjnkg43712902
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Feb 2021 18:45:49 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AFA0911C05B;
-        Mon, 22 Feb 2021 18:45:49 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BCDF211C04A;
-        Mon, 22 Feb 2021 18:45:45 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.51.238])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 22 Feb 2021 18:45:45 +0000 (GMT)
-Date:   Mon, 22 Feb 2021 20:45:43 +0200
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Konrad Rzeszutek Wilk <konrad@darnok.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dhaval Giani <dhaval.giani@oracle.com>
-Subject: Re: [PATCH] mm, kasan: don't poison boot memory
-Message-ID: <20210222184543.GA1741768@linux.ibm.com>
-References: <e58cbb53-5f5b-42ae-54a0-e3e1b76ad271@redhat.com>
- <d11bf144-669b-0fe1-4fa4-001a014db32a@oracle.com>
- <CAAeHK+y_SmP5yAeSM3Cp6V3WH9uj4737hDuVGA7U=xA42ek3Lw@mail.gmail.com>
- <c7166cae-bf89-8bdd-5849-72b5949fc6cc@oracle.com>
- <797fae72-e3ea-c0b0-036a-9283fa7f2317@oracle.com>
- <1ac78f02-d0af-c3ff-cc5e-72d6b074fc43@redhat.com>
- <bd7510b5-d325-b516-81a8-fbdc81a27138@oracle.com>
- <56c97056-6d8b-db0e-e303-421ee625abe3@redhat.com>
- <4c7351e2-e97c-e740-5800-ada5504588aa@redhat.com>
- <20210222174036.GA399355@fedora>
+        Mon, 22 Feb 2021 13:46:48 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE617C06178B
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:46:07 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id u4so60190395ljh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:46:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EF4DZ8/YPHLgiqcKgmmLocSOb1RhL6xlS59EKbvTOMk=;
+        b=l7F/ZAQ0Ut25vN6NuV1Mgnps+4oWPHrywIpIgaIMkipU6kKTEaaav9qFISBOq1DdyE
+         NxV5B0YqGvSpNTeBTU4M8gA9rVt3DhfzqEvukbwx9tXDmt6zQ2n3ccGgf5qIKe49GnOK
+         +MG8d7OArOJULgO1WVyGHqga7pkUYoKEF0jYlWUT7KupD2fnJOKOBEvX+wG9rctXY6A0
+         huZx9EPyD30ZfcsfqJCpapDIv4dTgJ9lGV8+dWQVJX0mNpKcf+5Bv88WBKvJOqVaTD7s
+         YZ1Umhgva/38fQ8BD83N9bpYvAW5BKOdVqDYTmQ9f7UVVfHRMuI58kMKCF4Rq1tWhOEZ
+         1ufg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EF4DZ8/YPHLgiqcKgmmLocSOb1RhL6xlS59EKbvTOMk=;
+        b=TjrrOhokH1izlxLpgBuyOFzuNyoqHFwICOPkQPCfUGHRrJ4GJrCq2w37rRVsDYkZ8E
+         5otAzNkRTdnCvtkfxxHLg4FtCz77W8DXtksgNtIlefA8bG4Wu5INuU5AyJvxpUMZ5zMj
+         6/V3CazOl7HcCh6HGtwpRMwDEq2PJFm5YCAr5mNOdkRuKOMlIEWttUlUidQzD4UnktmK
+         dNsMrWkUayuj1XM1Jc2uC8/BNaYrBxzQDrnVn7wlWeNvCDyhprWUt9mDNStFxk6FAkIf
+         NOOI4DlsJJ6UGiiWvur7brqqs/ANO5tLtVO6IkY0awBh2Al6uXA58HsBmxowrTvVxzcv
+         aZ+A==
+X-Gm-Message-State: AOAM5312WkjkJ11mUyv6OoxpxK0OPwS2WYxieZrGse0wqcWEUnuC2hcl
+        G44O08aUYhI3ltQ7z/r8dgWigRT0ZB/sunJ8h7Be2w==
+X-Google-Smtp-Source: ABdhPJwAlLu4bzPgqgTebDPTwhJRG9Bc8Q1yEa/sHT1s8b5RpgzeO9D8REbo/sutzBeci2QV80/CUYjcvDc2ktE4rDE=
+X-Received: by 2002:a2e:2f05:: with SMTP id v5mr13605682ljv.279.1614019566052;
+ Mon, 22 Feb 2021 10:46:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210222174036.GA399355@fedora>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-22_06:2021-02-22,2021-02-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- phishscore=0 mlxlogscore=999 spamscore=0 suspectscore=0 adultscore=0
- clxscore=1011 priorityscore=1501 lowpriorityscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102220163
+References: <20210219224405.1544597-1-shakeelb@google.com> <YDBZFY8WnLewRqLg@cmpxchg.org>
+In-Reply-To: <YDBZFY8WnLewRqLg@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 22 Feb 2021 10:45:54 -0800
+Message-ID: <CALvZod6Uf4w1xTrM6wSuGyefqWSfauXiJbCex_OnhY2g-Kadhw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: charge before adding to swapcache on swapin
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 12:40:36PM -0500, Konrad Rzeszutek Wilk wrote:
-> On Mon, Feb 22, 2021 at 05:39:29PM +0100, David Hildenbrand wrote:
-> > On 22.02.21 17:13, David Hildenbrand wrote:
-> > > On 22.02.21 16:13, George Kennedy wrote:
-> > > > 
-> > > > 
-> > > > On 2/22/2021 4:52 AM, David Hildenbrand wrote:
-> > > > > On 20.02.21 00:04, George Kennedy wrote:
-> > > > > > 
-> > > > > > 
-> > > > > > On 2/19/2021 11:45 AM, George Kennedy wrote:
-> > > > > > > 
-> > > > > > > 
-> > > > > > > On 2/18/2021 7:09 PM, Andrey Konovalov wrote:
-> > > > > > > > On Fri, Feb 19, 2021 at 1:06 AM George Kennedy
-> > > > > > > > <george.kennedy@oracle.com> wrote:
-> > > > > > > > > 
-> > > > > > > > > 
-> > > > > > > > > On 2/18/2021 3:55 AM, David Hildenbrand wrote:
-> > > > > > > > > > On 17.02.21 21:56, Andrey Konovalov wrote:
-> > > > > > > > > > > During boot, all non-reserved memblock memory is exposed to the
-> > > > > > > > > > > buddy
-> > > > > > > > > > > allocator. Poisoning all that memory with KASAN lengthens boot
-> > > > > > > > > > > time,
-> > > > > > > > > > > especially on systems with large amount of RAM. This patch makes
-> > > > > > > > > > > page_alloc to not call kasan_free_pages() on all new memory.
-> > > > > > > > > > > 
-> > > > > > > > > > > __free_pages_core() is used when exposing fresh memory during
-> > > > > > > > > > > system
-> > > > > > > > > > > boot and when onlining memory during hotplug. This patch adds a new
-> > > > > > > > > > > FPI_SKIP_KASAN_POISON flag and passes it to __free_pages_ok()
-> > > > > > > > > > > through
-> > > > > > > > > > > free_pages_prepare() from __free_pages_core().
-> > > > > > > > > > > 
-> > > > > > > > > > > This has little impact on KASAN memory tracking.
-> > > > > > > > > > > 
-> > > > > > > > > > > Assuming that there are no references to newly exposed pages
-> > > > > > > > > > > before they
-> > > > > > > > > > > are ever allocated, there won't be any intended (but buggy)
-> > > > > > > > > > > accesses to
-> > > > > > > > > > > that memory that KASAN would normally detect.
-> > > > > > > > > > > 
-> > > > > > > > > > > However, with this patch, KASAN stops detecting wild and large
-> > > > > > > > > > > out-of-bounds accesses that happen to land on a fresh memory page
-> > > > > > > > > > > that
-> > > > > > > > > > > was never allocated. This is taken as an acceptable trade-off.
-> > > > > > > > > > > 
-> > > > > > > > > > > All memory allocated normally when the boot is over keeps getting
-> > > > > > > > > > > poisoned as usual.
-> > > > > > > > > > > 
-> > > > > > > > > > > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> > > > > > > > > > > Change-Id: Iae6b1e4bb8216955ffc14af255a7eaaa6f35324d
-> > > > > > > > > > Not sure this is the right thing to do, see
-> > > > > > > > > > 
-> > > > > > > > > > https://lkml.kernel.org/r/bcf8925d-0949-3fe1-baa8-cc536c529860@oracle.com
-> > > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > 
-> > > > > > > > > > Reversing the order in which memory gets allocated + used during
-> > > > > > > > > > boot
-> > > > > > > > > > (in a patch by me) might have revealed an invalid memory access
-> > > > > > > > > > during
-> > > > > > > > > > boot.
-> > > > > > > > > > 
-> > > > > > > > > > I suspect that that issue would no longer get detected with your
-> > > > > > > > > > patch, as the invalid memory access would simply not get detected.
-> > > > > > > > > > Now, I cannot prove that :)
-> > > > > > > > > Since David's patch we're having trouble with the iBFT ACPI table,
-> > > > > > > > > which
-> > > > > > > > > is mapped in via kmap() - see acpi_map() in "drivers/acpi/osl.c".
-> > > > > > > > > KASAN
-> > > > > > > > > detects that it is being used after free when ibft_init() accesses
-> > > > > > > > > the
-> > > > > > > > > iBFT table, but as of yet we can't find where it get's freed (we've
-> > > > > > > > > instrumented calls to kunmap()).
-> > > > > > > > Maybe it doesn't get freed, but what you see is a wild or a large
-> > > > > > > > out-of-bounds access. Since KASAN marks all memory as freed during the
-> > > > > > > > memblock->page_alloc transition, such bugs can manifest as
-> > > > > > > > use-after-frees.
-> > > > > > > 
-> > > > > > > It gets freed and re-used. By the time the iBFT table is accessed by
-> > > > > > > ibft_init() the page has been over-written.
-> > > > > > > 
-> > > > > > > Setting page flags like the following before the call to kmap()
-> > > > > > > prevents the iBFT table page from being freed:
-> > > > > > 
-> > > > > > Cleaned up version:
-> > > > > > 
-> > > > > > diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-> > > > > > index 0418feb..8f0a8e7 100644
-> > > > > > --- a/drivers/acpi/osl.c
-> > > > > > +++ b/drivers/acpi/osl.c
-> > > > > > @@ -287,9 +287,12 @@ static void __iomem *acpi_map(acpi_physical_address
-> > > > > > pg_off, unsigned long pg_sz)
-> > > > > > 
-> > > > > >          pfn = pg_off >> PAGE_SHIFT;
-> > > > > >          if (should_use_kmap(pfn)) {
-> > > > > > +        struct page *page = pfn_to_page(pfn);
-> > > > > > +
-> > > > > >              if (pg_sz > PAGE_SIZE)
-> > > > > >                  return NULL;
-> > > > > > -        return (void __iomem __force *)kmap(pfn_to_page(pfn));
-> > > > > > +        SetPageReserved(page);
-> > > > > > +        return (void __iomem __force *)kmap(page);
-> > > > > >          } else
-> > > > > >              return acpi_os_ioremap(pg_off, pg_sz);
-> > > > > >      }
-> > > > > > @@ -299,9 +302,12 @@ static void acpi_unmap(acpi_physical_address
-> > > > > > pg_off, void __iomem *vaddr)
-> > > > > >          unsigned long pfn;
-> > > > > > 
-> > > > > >          pfn = pg_off >> PAGE_SHIFT;
-> > > > > > -    if (should_use_kmap(pfn))
-> > > > > > -        kunmap(pfn_to_page(pfn));
-> > > > > > -    else
-> > > > > > +    if (should_use_kmap(pfn)) {
-> > > > > > +        struct page *page = pfn_to_page(pfn);
-> > > > > > +
-> > > > > > +        ClearPageReserved(page);
-> > > > > > +        kunmap(page);
-> > > > > > +    } else
-> > > > > >              iounmap(vaddr);
-> > > > > >      }
-> > > > > > 
-> > > > > > David, the above works, but wondering why it is now necessary. kunmap()
-> > > > > > is not hit. What other ways could a page mapped via kmap() be unmapped?
-> > > > > > 
-> > > > > 
-> > > > > Let me look into the code ... I have little experience with ACPI
-> > > > > details, so bear with me.
-> > > > > 
-> > > > > I assume that acpi_map()/acpi_unmap() map some firmware blob that is
-> > > > > provided via firmware/bios/... to us.
-> > > > > 
-> > > > > should_use_kmap() tells us whether
-> > > > > a) we have a "struct page" and should kmap() that one
-> > > > > b) we don't have a "struct page" and should ioremap.
-> > > > > 
-> > > > > As it is a blob, the firmware should always reserve that memory region
-> > > > > via memblock (e.g., memblock_reserve()), such that we either
-> > > > > 1) don't create a memmap ("struct page") at all (-> case b) )
-> > > > > 2) if we have to create e memmap, we mark the page PG_reserved and
-> > > > >      *never* expose it to the buddy (-> case a) )
-> > > > > 
-> > > > > 
-> > > > > Are you telling me that in this case we might have a memmap for the HW
-> > > > > blob that is *not* PG_reserved? In that case it most probably got
-> > > > > exposed to the buddy where it can happily get allocated/freed.
-> > > > > 
-> > > > > The latent BUG would be that that blob gets exposed to the system like
-> > > > > ordinary RAM, and not reserved via memblock early during boot.
-> > > > > Assuming that blob has a low physical address, with my patch it will
-> > > > > get allocated/used a lot earlier - which would mean we trigger this
-> > > > > latent BUG now more easily.
-> > > > > 
-> > > > > There have been similar latent BUGs on ARM boards that my patch
-> > > > > discovered where special RAM regions did not get marked as reserved
-> > > > > via the device tree properly.
-> > > > > 
-> > > > > Now, this is just a wild guess :) Can you dump the page when mapping
-> > > > > (before PageReserved()) and when unmapping, to see what the state of
-> > > > > that memmap is?
-> > > > 
-> > > > Thank you David for the explanation and your help on this,
-> > > > 
-> > > > dump_page() before PageReserved and before kmap() in the above patch:
-> > > > 
-> > > > [    1.116480] ACPI: Core revision 20201113
-> > > > [    1.117628] XXX acpi_map: about to call kmap()...
-> > > > [    1.118561] page:ffffea0002f914c0 refcount:0 mapcount:0
-> > > > mapping:0000000000000000 index:0x0 pfn:0xbe453
-> > > > [    1.120381] flags: 0xfffffc0000000()
-> > > > [    1.121116] raw: 000fffffc0000000 ffffea0002f914c8 ffffea0002f914c8
-> > > > 0000000000000000
-> > > > [    1.122638] raw: 0000000000000000 0000000000000000 00000000ffffffff
-> > > > 0000000000000000
-> > > > [    1.124146] page dumped because: acpi_map pre SetPageReserved
-> > > > 
-> > > > I also added dump_page() before unmapping, but it is not hit. The
-> > > > following for the same pfn now shows up I believe as a result of setting
-> > > > PageReserved:
-> > > > 
-> > > > [   28.098208] BUG:Bad page state in process mo dprobe  pfn:be453
-> > > > [   28.098394] page:ffffea0002f914c0 refcount:0 mapcount:0
-> > > > mapping:0000000000000000 index:0x1 pfn:0xbe453
-> > > > [   28.098394] flags: 0xfffffc0001000(reserved)
-> > > > [   28.098394] raw: 000fffffc0001000 dead000000000100 dead000000000122
-> > > > 0000000000000000
-> > > > [   28.098394] raw: 0000000000000001 0000000000000000 00000000ffffffff
-> > > > 0000000000000000
-> > > > [   28.098394] page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag(s) set
-> > > > [   28.098394] page_owner info is not present (never set?)
-> > > > [   28.098394] Modules linked in:
-> > > > [   28.098394] CPU: 2 PID: 204 Comm: modprobe Not tainted 5.11.0-3dbd5e3 #66
-> > > > [   28.098394] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-> > > > BIOS 0.0.0 02/06/2015
-> > > > [   28.098394] Call Trace:
-> > > > [   28.098394]  dump_stack+0xdb/0x120
-> > > > [   28.098394]  bad_page.cold.108+0xc6/0xcb
-> > > > [   28.098394]  check_new_page_bad+0x47/0xa0
-> > > > [   28.098394]  get_page_from_freelist+0x30cd/0x5730
-> > > > [   28.098394]  ? __isolate_free_page+0x4f0/0x4f0
-> > > > [   28.098394]  ? init_object+0x7e/0x90
-> > > > [   28.098394]  __alloc_pages_nodemask+0x2d8/0x650
-> > > > [   28.098394]  ? write_comp_data+0x2f/0x90
-> > > > [   28.098394]  ? __alloc_pages_slowpath.constprop.103+0x2110/0x2110
-> > > > [   28.098394]  ? __sanitizer_cov_trace_pc+0x21/0x50
-> > > > [   28.098394]  alloc_pages_vma+0xe2/0x560
-> > > > [   28.098394]  do_fault+0x194/0x12c0
-> > > > [   28.098394]  ? write_comp_data+0x2f/0x90
-> > > > [   28.098394]  __handle_mm_fault+0x1650/0x26c0
-> > > > [   28.098394]  ? copy_page_range+0x1350/0x1350
-> > > > [   28.098394]  ? write_comp_data+0x2f/0x90
-> > > > [   28.098394]  ? write_comp_data+0x2f/0x90
-> > > > [   28.098394]  handle_mm_fault+0x1f9/0x810
-> > > > [   28.098394]  ? write_comp_data+0x2f/0x90
-> > > > [   28.098394]  do_user_addr_fault+0x6f7/0xca0
-> > > > [   28.098394]  exc_page_fault+0xaf/0x1a0
-> > > > [   28.098394]  asm_exc_page_fault+0x1e/0x30
-> > > > [   28.098394] RIP: 0010:__clear_user+0x30/0x60
-> > > 
-> > > I think the PAGE_FLAGS_CHECK_AT_PREP check in this instance means that
-> > > someone is trying to allocate that page with the PG_reserved bit set.
-> > > This means that the page actually was exposed to the buddy.
-> > > 
-> > > However, when you SetPageReserved(), I don't think that PG_buddy is set
-> > > and the refcount is 0. That could indicate that the page is on the buddy
-> > > PCP list. Could be that it is getting reused a couple of times.
-> > > 
-> > > The PFN 0xbe453 looks a little strange, though. Do we expect ACPI tables
-> > > close to 3 GiB ? No idea. Could it be that you are trying to map a wrong
-> > > table? Just a guess.
-> 
-> Nah, ACPI MADT enumerates the table and that is the proper location of it.
-> > 
-> > ... but I assume ibft_check_device() would bail out on an invalid checksum.
-> > So the question is, why is this page not properly marked as reserved
-> > already.
-> 
-> The ibft_check_device ends up being called as module way way after the
-> kernel has cleaned the memory.
-> 
-> The funny thing about iBFT is that (it is also mentioned in the spec)
-> that the table can resize in memory .. or in the ACPI regions (which
+On Fri, Feb 19, 2021 at 4:34 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Fri, Feb 19, 2021 at 02:44:05PM -0800, Shakeel Butt wrote:
+> > Currently the kernel adds the page, allocated for swapin, to the
+> > swapcache before charging the page. This is fine but now we want a
+> > per-memcg swapcache stat which is essential for folks who wants to
+> > transparently migrate from cgroup v1's memsw to cgroup v2's memory and
+> > swap counters.
+> >
+> > To correctly maintain the per-memcg swapcache stat, one option which
+> > this patch has adopted is to charge the page before adding it to
+> > swapcache. One challenge in this option is the failure case of
+> > add_to_swap_cache() on which we need to undo the mem_cgroup_charge().
+> > Specifically undoing mem_cgroup_uncharge_swap() is not simple.
+> >
+> > This patch circumvent this specific issue by removing the failure path
+> > of  add_to_swap_cache() by providing __GFP_NOFAIL. Please note that in
+> > this specific situation ENOMEM was the only possible failure of
+> > add_to_swap_cache() which is removed by using __GFP_NOFAIL.
+> >
+> > Another option was to use __mod_memcg_lruvec_state(NR_SWAPCACHE) in
+> > mem_cgroup_charge() but then we need to take of the do_swap_page() case
+> > where synchronous swap devices bypass the swapcache. The do_swap_page()
+> > already does hackery to set and reset PageSwapCache bit to make
+> > mem_cgroup_charge() execute the swap accounting code and then we would
+> > need to add additional parameter to tell to not touch NR_SWAPCACHE stat
+> > as that code patch bypass swapcache.
+> >
+> > This patch added memcg charging API explicitly foe swapin pages and
+> > cleaned up do_swap_page() to not set and reset PageSwapCache bit.
+> >
+> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+>
+> The patch makes sense to me. While it extends the charge interface, I
+> actually quite like that it charges the page earlier - before putting
+> it into wider circulation. It's a step in the right direction.
+>
+> But IMO the semantics of mem_cgroup_charge_swapin_page() are a bit too
+> fickle: the __GFP_NOFAIL in add_to_swap_cache() works around it, but
+> having a must-not-fail-after-this line makes the code tricky to work
+> on and error prone.
+>
+> It would be nicer to do a proper transaction sequence.
+>
+> > @@ -497,16 +497,15 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
+> >       __SetPageLocked(page);
+> >       __SetPageSwapBacked(page);
+> >
+> > -     /* May fail (-ENOMEM) if XArray node allocation failed. */
+> > -     if (add_to_swap_cache(page, entry, gfp_mask & GFP_RECLAIM_MASK, &shadow)) {
+> > -             put_swap_page(page, entry);
+> > +     if (mem_cgroup_charge_swapin_page(page, NULL, gfp_mask, entry))
+> >               goto fail_unlock;
+> > -     }
+> >
+> > -     if (mem_cgroup_charge(page, NULL, gfp_mask)) {
+> > -             delete_from_swap_cache(page);
+> > -             goto fail_unlock;
+> > -     }
+> > +     /*
+> > +      * Use __GFP_NOFAIL to not worry about undoing the changes done by
+> > +      * mem_cgroup_charge_swapin_page() on failure of add_to_swap_cache().
+> > +      */
+> > +     add_to_swap_cache(page, entry,
+> > +                       (gfp_mask|__GFP_NOFAIL) & GFP_RECLAIM_MASK, &shadow);
+>
+> How about:
+>
+>         mem_cgroup_charge_swapin_page()
+>         add_to_swap_cache()
+>         mem_cgroup_finish_swapin_page()
+>
+> where finish_swapin_page() only uncharges the swap entry (on cgroup1)
+> once the swap->memory transition is complete?
+>
+> Otherwise the patch looks good to me.
 
-                   ^ reside I presume?
-
-> have no E820_RAM and are considered "MMIO" regions).
-> 
-> Either place is fine, so it can be in either RAM or MMIO :-(
-
-I'd say that the tables in this case are in E820_RAM, because with MMIO we
-wouldn't get to kmap() at the first place.
-It can be easily confirmed by comparing the problematic address with
-/proc/iomem.
-
-Can't say I have a clue about what's going on there, but the theory that
-somehow iBFT table does not get PG_Reserved during boot makes sense.
-
-Do you see "iBFT found at 0x<addr>" early in the kernel log?
-
-I don't know if ACPI relocates the tables, but I could not find anywhere
-that it reserves the original ones. The memblock_reserve() in
-acpi_table_upgrade() is merely a part of open coded memblock allocation.
-
--- 
-Sincerely yours,
-Mike.
+Thanks for the review and yes this makes the code much more clear and
+maintainable.
