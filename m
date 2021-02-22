@@ -2,143 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF770321D13
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:34:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E25321D1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:37:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhBVQdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:33:54 -0500
-Received: from foss.arm.com ([217.140.110.172]:55640 "EHLO foss.arm.com"
+        id S231718AbhBVQft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:35:49 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:27308 "EHLO z11.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhBVQby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:31:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 204C91FB;
-        Mon, 22 Feb 2021 08:31:08 -0800 (PST)
-Received: from e124901.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 41A3E3F73B;
-        Mon, 22 Feb 2021 08:31:06 -0800 (PST)
-Date:   Mon, 22 Feb 2021 16:31:08 +0000
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, linux-kernel@vger.kernel.org,
-        patrick.bellasi@matbug.net, valentin.schneider@arm.com
-Subject: Re: [PATCH] sched/fair: Fix task utilization accountability in
- cpu_util_next()
-Message-ID: <20210222163108.GA225035@e124901.cambridge.arm.com>
-References: <20210222095401.37158-1-vincent.donnefort@arm.com>
- <YDODN1rnTqfTQOug@google.com>
- <20210222113602.GA286874@e120877-lin.cambridge.arm.com>
- <YDOiKH/XQDUKcrPU@google.com>
- <20210222150151.GA124800@e124901.cambridge.arm.com>
- <YDPUwKKYgZfzzCJm@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDPUwKKYgZfzzCJm@google.com>
+        id S231226AbhBVQdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:33:22 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614011582; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=BqRijYipU9wMMRj5psKXr7YKhuIcT/6FhmGW7Z+ymvI=; b=Ee72CgHY54xn5tFWk/T3HDEVCf4SXAYefIZBpdfodU8mCbSdDsC7xEeeoj/hG8S1IwqFk9Pp
+ v1rHPmRWF1hExk+0ZmPTucdHUzEoWLziaLi8muNZt2QvpRLx7EhgSKoAJWLIkr2gfE8mvnhq
+ 3p+krhnh6bkqqshz3MDnI6GlUts=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6033dcbcba08663830ecd646 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 16:32:59
+ GMT
+Sender: kapandey=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E3CCBC43461; Mon, 22 Feb 2021 16:32:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from kapandey-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: kapandey)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A575BC433CA;
+        Mon, 22 Feb 2021 16:32:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A575BC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kapandey@codeaurora.org
+From:   Kaustubh Pandey <kapandey@codeaurora.org>
+Cc:     Kaustubh Pandey <kapandey@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sharathv@codeaurora.org,
+        chinagar@codeaurora.org
+Subject: [PATCH] ipv6: Honor route mtu if it is within limit of dev mtu
+Date:   Mon, 22 Feb 2021 22:02:35 +0530
+Message-Id: <1614011555-21951-1-git-send-email-kapandey@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 03:58:56PM +0000, Quentin Perret wrote:
-> On Monday 22 Feb 2021 at 15:01:51 (+0000), Vincent Donnefort wrote:
-> > You mean that it could lead to a wrong frequency estimation when doing
-> > freq = map_util_freq() in em_cpu_energy()?
-> 
-> I'm not too worried about the map_util_freq() part, I'm worried about
-> the schedutil aggregation. Specifically, when a task is enqueued on a
-> rq, we sum its util_avg to the rq's util_avg, and the _task_util_est()
-> to the rq's util_est.enqueue member (as per util_est_enqueue()).
-> 
-> Now, in schedutil, sugov_get_util() calls cpu_util_cfs(), which does the
-> following:
-> 
-> 	static inline unsigned long cpu_util_cfs(struct rq *rq)
-> 	{
-> 		unsigned long util = READ_ONCE(rq->cfs.avg.util_avg);
-> 
-> 		if (sched_feat(UTIL_EST)) {
-> 			util = max_t(unsigned long, util,
-> 				     READ_ONCE(rq->cfs.avg.util_est.enqueued));
-> 		}
-> 
-> 		return util;
-> 	}
-> 
-> And that value will be the base for frequency selection. cpu_util_next()
-> tries to mimic this as accurately as possible, by doing the sums
-> independently, and then computing the max, exactly as we will do when
-> the task is enqueued and a freq update is generated.
-> 
-> > But in any case, the computed energy, being the product of sum_util with the
-> > OPP's cost, it is directly affected by this util_avg/util_est difference.
-> 
-> Sure, but we're not going to fix it by messing up the OPP selection part ;-)
-> 
-> > In the case where the task placement doesn't change the OPP, which is often the
-> > case, we can simplify the comparison and end-up with the following:
-> > 
-> >   delta_energy(CPU-3): OPP3 cost * (cpu_util_avg + task_util_avg - cpu_util_avg)
-> >   delta_energy(CPU-2): OPP2 cost * (cpu_util_est + task_util_est - cpu_util_est)
-> > 
-> >   => OPP3 cost * task_util_avg < task_util_est * OPP2 cost
-> > 
-> > With the same example I described previously, if you add the scaled OPP cost of
-> > 0.76 for CPU-3 and 0.65 for CPU-2 (real life OPP scaled costs), we have:
-> > 
-> >   2.3 (CPU-3) < 7.15 (CPU-2)
-> > 
-> > The task is placed on CPU-3, while it would have been much more efficient to use
-> > CPU-2.
-> 
-> That should really be a transient state: having a util_avg much larger
-> than util_est.enqueued is indicative of either a new task or a workload
-> changing behaviour. And so, chances are all the estimations are wrong
-> anyways -- it's hard to do good estimations when the present doesn't
-> look like the recent past.
+When netdevice MTU is increased via sysfs, NETDEV_CHANGEMTU is raised.
 
-Not really a transient state sadly. This problem could happen with several tasks.
-All of them ending-up on the same CPU, they'll keep its util_avg high enough,
-while others will starve by being stuck with the task_util_est usage.
+addrconf_notify -> rt6_mtu_change -> rt6_mtu_change_route ->
+fib6_nh_mtu_change
 
-> 
-> But in any case, if we're going to address this, I'm still not sure this
-> patch will be what we want. As per my first comment we need to keep the
-> frequency estimation right.
+As part of handling NETDEV_CHANGEMTU notification we land up on a
+condition where if route mtu is less than dev mtu and route mtu equals
+ipv6_devconf mtu, route mtu gets updated.
 
-No indeed, there's still a util_est/util_avg mix-up in this proposal too. For a
-CPU with util_avg > util_est, we would use the CPU's util_avg and the task's
-util_est, which doesn't reflect the "real" util.
+Due to this v6 traffic end up using wrong MTU then configured earlier.
+This commit fixes this by removing comparison with ipv6_devconf
+and updating route mtu only when it is greater than incoming dev mtu.
 
-I suppose, a way of fixing this, is to keep cpu_util_next() the way it is to
-get the appropriate frequency at which the CPU would run once the task has been
-enqueued, for the 'max_util', and have 'sum_util' being the sum of the pd's util
-(without the task) + task_util_est().
+This can be easily reproduced with below script:
+pre-condition:
+device up(mtu = 1500) and route mtu for both v4 and v6 is 1500
 
-Thoughts?
+test-script:
+ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1400
+ip -6 route change 2001::/64 dev eth0 metric 256 mtu 1400
+echo 1400 > /sys/class/net/eth0/mtu
+ip route change 192.168.0.0/24 dev eth0 src 192.168.0.1 mtu 1500
+echo 1500 > /sys/class/net/eth0/mtu
 
---
-Vincent
+Signed-off-by: Kaustubh Pandey <kapandey@codeaurora.org>
+---
+ net/ipv6/route.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> 
-> > > > When computing the energy
-> > > > deltas, pd0's is likely to be higher than pd1's, only because the task
-> > > > contribution is higher for one comparison than the other.
-> > > 
-> > > You mean the contribution to sum_util right? I think I see what you mean
-> > > but I'm still not sure if this really is an issue. This is how util_est
-> > > works, and the EM stuff is just consistent with that.
-> > > 
-> > > The issue you describe can only happen (I think) when a rq's util_avg is
-> > > larger than its util-est emwa by some margin (that has to do with the
-> > > ewma-util_avg delta for the task?). But that means the ewma is not to be
-> > > trusted to begin with, so ...
-> > 
-> > cfs_rq->avg.util_est.ewma is not used. cpu_util() will only return the max
-> > between ue.enqueued and util_avg.
-> 
-> Right, my bad, it was the 'enqueued' member. But the rest of the
-> argument is still valid I think, but with s/ewma/enqueued :-)
-> 
-> Thanks,
-> Quentin
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 1536f49..653b6c7 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -4813,8 +4813,7 @@ static int fib6_nh_mtu_change(struct fib6_nh *nh, void *_arg)
+ 		struct inet6_dev *idev = __in6_dev_get(arg->dev);
+ 		u32 mtu = f6i->fib6_pmtu;
+ 
+-		if (mtu >= arg->mtu ||
+-		    (mtu < arg->mtu && mtu == idev->cnf.mtu6))
++		if (mtu >= arg->mtu)
+ 			fib6_metric_set(f6i, RTAX_MTU, arg->mtu);
+ 
+ 		spin_lock_bh(&rt6_exception_lock);
+-- 
+2.7.4
+
