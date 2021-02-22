@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A3F0321852
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:20:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDEA321851
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbhBVNRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:17:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53738 "EHLO mail.kernel.org"
+        id S230232AbhBVNRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:17:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53740 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231452AbhBVMjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231454AbhBVMjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:39:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95FB564E41;
-        Mon, 22 Feb 2021 12:38:09 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01B6B64F0B;
+        Mon, 22 Feb 2021 12:38:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997490;
-        bh=sUEhRW8eodrWE6ARQEJb2zD7Y+mmXznoyhZiF4RlgVQ=;
+        s=korg; t=1613997492;
+        bh=dVLQvtbsKCojXjoXcwI0+T5ojVYY+xl9GaZtIR/vDes=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zYKTAfg7pZPaBome88QZG7KJvB/naP0ZBQUk27J7hVaa5RGLcv3xv5lvjhr2PcT1Q
-         woy6GrXYglUmjXZhRwE15Uinhjdrf+hmY3pYXV47JJ21ydUvufexC0FNnitVJuADjU
-         qMMdmNS6ORK3v1/1RhPszZ2GAHohOwBzEoqCkVTs=
+        b=RscYSy1G8YoVgC3ki59tLtwJncu5jrJYLKgblpytYnXZBzN+rMcrJ+voXO3tRcobR
+         omd6GbASEF+hpmPFTNERs4YzCczKkcTxhCmnPv07PnMHXX32+u3gfm+85ve0ig+WQH
+         LFTw513yzv34kCeIyH4d3CToaHEnLG96d5K0THmM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 38/57] vsock: fix locking in vsock_shutdown()
-Date:   Mon, 22 Feb 2021 13:36:04 +0100
-Message-Id: <20210222121030.592550076@linuxfoundation.org>
+        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 39/57] i2c: stm32f7: fix configuration of the digital filter
+Date:   Mon, 22 Feb 2021 13:36:05 +0100
+Message-Id: <20210222121030.706809562@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -39,86 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Alain Volmat <alain.volmat@foss.st.com>
 
-commit 1c5fae9c9a092574398a17facc31c533791ef232 upstream.
+[ Upstream commit 3d6a3d3a2a7a3a60a824e7c04e95fd50dec57812 ]
 
-In vsock_shutdown() we touched some socket fields without holding the
-socket lock, such as 'state' and 'sk_flags'.
+The digital filter related computation are present in the driver
+however the programming of the filter within the IP is missing.
+The maximum value for the DNF is wrong and should be 15 instead of 16.
 
-Also, after the introduction of multi-transport, we are accessing
-'vsk->transport' in vsock_send_shutdown() without holding the lock
-and this call can be made while the connection is in progress, so
-the transport can change in the meantime.
+Fixes: aeb068c57214 ("i2c: i2c-stm32f7: add driver")
 
-To avoid issues, we hold the socket lock when we enter in
-vsock_shutdown() and release it when we leave.
-
-Among the transports that implement the 'shutdown' callback, only
-hyperv_transport acquired the lock. Since the caller now holds it,
-we no longer take it.
-
-Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/vmw_vsock/af_vsock.c         |    8 +++++---
- net/vmw_vsock/hyperv_transport.c |    4 ----
- 2 files changed, 5 insertions(+), 7 deletions(-)
+ drivers/i2c/busses/i2c-stm32f7.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -823,10 +823,12 @@ static int vsock_shutdown(struct socket
- 	 */
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index 14f60751729e7..9768921a164c0 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -42,6 +42,8 @@
  
- 	sk = sock->sk;
+ /* STM32F7 I2C control 1 */
+ #define STM32F7_I2C_CR1_ANFOFF			BIT(12)
++#define STM32F7_I2C_CR1_DNF_MASK		GENMASK(11, 8)
++#define STM32F7_I2C_CR1_DNF(n)			(((n) & 0xf) << 8)
+ #define STM32F7_I2C_CR1_ERRIE			BIT(7)
+ #define STM32F7_I2C_CR1_TCIE			BIT(6)
+ #define STM32F7_I2C_CR1_STOPIE			BIT(5)
+@@ -95,7 +97,7 @@
+ #define STM32F7_I2C_MAX_LEN			0xff
+ 
+ #define STM32F7_I2C_DNF_DEFAULT			0
+-#define STM32F7_I2C_DNF_MAX			16
++#define STM32F7_I2C_DNF_MAX			15
+ 
+ #define STM32F7_I2C_ANALOG_FILTER_ENABLE	1
+ #define STM32F7_I2C_ANALOG_FILTER_DELAY_MIN	50	/* ns */
+@@ -543,6 +545,13 @@ static void stm32f7_i2c_hw_config(struct stm32f7_i2c_dev *i2c_dev)
+ 	else
+ 		stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+ 				     STM32F7_I2C_CR1_ANFOFF);
 +
-+	lock_sock(sk);
- 	if (sock->state == SS_UNCONNECTED) {
- 		err = -ENOTCONN;
- 		if (sk->sk_type == SOCK_STREAM)
--			return err;
-+			goto out;
- 	} else {
- 		sock->state = SS_DISCONNECTING;
- 		err = 0;
-@@ -835,10 +837,8 @@ static int vsock_shutdown(struct socket
- 	/* Receive and send shutdowns are treated alike. */
- 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
- 	if (mode) {
--		lock_sock(sk);
- 		sk->sk_shutdown |= mode;
- 		sk->sk_state_change(sk);
--		release_sock(sk);
- 
- 		if (sk->sk_type == SOCK_STREAM) {
- 			sock_reset_flag(sk, SOCK_DONE);
-@@ -846,6 +846,8 @@ static int vsock_shutdown(struct socket
- 		}
- 	}
- 
-+out:
-+	release_sock(sk);
- 	return err;
++	/* Program the Digital Filter */
++	stm32f7_i2c_clr_bits(i2c_dev->base + STM32F7_I2C_CR1,
++			     STM32F7_I2C_CR1_DNF_MASK);
++	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
++			     STM32F7_I2C_CR1_DNF(i2c_dev->setup.dnf));
++
+ 	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+ 			     STM32F7_I2C_CR1_PE);
  }
- 
---- a/net/vmw_vsock/hyperv_transport.c
-+++ b/net/vmw_vsock/hyperv_transport.c
-@@ -444,14 +444,10 @@ static void hvs_shutdown_lock_held(struc
- 
- static int hvs_shutdown(struct vsock_sock *vsk, int mode)
- {
--	struct sock *sk = sk_vsock(vsk);
--
- 	if (!(mode & SEND_SHUTDOWN))
- 		return 0;
- 
--	lock_sock(sk);
- 	hvs_shutdown_lock_held(vsk->trans, mode);
--	release_sock(sk);
- 	return 0;
- }
- 
+-- 
+2.27.0
+
 
 
