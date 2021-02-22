@@ -2,161 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4484321F7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03596321F81
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:00:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhBVS66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:58:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49657 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231816AbhBVS6S (ORCPT
+        id S232258AbhBVS7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:59:49 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:38775 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232171AbhBVS7N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:58:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614020211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rHg9HBe21T8aNYDULFVYUPlUSoyVR/CXm3vwO0QOYbs=;
-        b=L+I9OzLEGaI2Mj8m9FI87gFVUDH1BFciHyl/5nUfESref7Qx9zt7aJ2fK0wYHeslGjaRrb
-        0mf//7bREKiILrJp1R7pUdOpnRv2qNsD5qN2gQmVlQ50Jf49+R+cmSTkYI+I5sSp2ASz+M
-        hngx3Mhdp/2qc8BvBqFkgfKKoVOOn0k=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-201-z8BmI0lZOq6gElNfBLMIJg-1; Mon, 22 Feb 2021 13:56:48 -0500
-X-MC-Unique: z8BmI0lZOq6gElNfBLMIJg-1
-Received: by mail-qt1-f199.google.com with SMTP id l1so8340617qtv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:56:48 -0800 (PST)
+        Mon, 22 Feb 2021 13:59:13 -0500
+Received: by mail-oi1-f169.google.com with SMTP id h17so15075156oih.5;
+        Mon, 22 Feb 2021 10:58:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rHg9HBe21T8aNYDULFVYUPlUSoyVR/CXm3vwO0QOYbs=;
-        b=Iw8mf+D2wqFWFtBVOv+Lslz8Ro/v8pKCATRETAMuOHr+mx02jmQJwJ7cf63/UZLznm
-         gBGW0UvDgMPQ8X/aoiuZ4c0Jj5wIDlw25ZY5ds7umllIVXaOr0JBEhCxrk/t7pABn3rZ
-         fe9dK9BihSnSUpIQEXUUyVWj/aZZE/KfuxQ0FMSHr/EyftbQJxkXahEj92NjZtEvAHoL
-         jSTsaCcP/ab0fjuZwWM/cGBU9IEC8Gppi7Q/8fM+1QeXANlLv35AwdD503dtTDgFxfun
-         jyLjxcLjJhDYB21ZaF7a3LTi0R4AkakErXPD+kij1VBcjSTbauYinRuhLAbk+5CgU3lv
-         Svdw==
-X-Gm-Message-State: AOAM533eUPBdkXY6hkxjBdxcCYRl8SL9miL3rFQPFhjNeNSiQCCl945e
-        DnJHvXD/6Mi1YvwV7qgx3gKA6oDRid4kvOEiBd4AS2X7u80CQS2Xm9Ge7vbtjjtTbePS48VrJOg
-        GhaQ3sTLQLlW+PGaRvAjHwrjj
-X-Received: by 2002:a0c:abce:: with SMTP id k14mr21747502qvb.23.1614020207772;
-        Mon, 22 Feb 2021 10:56:47 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJw/AMx9vVcs0qiOU4dEFXY7oJr5YRPBT1Zk6NdMEC00pqTTu9EDaFcj25uu4N7WZVpErziydw==
-X-Received: by 2002:a0c:abce:: with SMTP id k14mr21747480qvb.23.1614020207539;
-        Mon, 22 Feb 2021 10:56:47 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l24sm11386133qtj.50.2021.02.22.10.56.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 10:56:47 -0800 (PST)
-Subject: Re: [PATCH v11 0/2] UIO support for dfl devices
-To:     Xu Yilun <yilun.xu@intel.com>, gregkh@linuxfoundation.org,
-        mdf@kernel.org, linux-fpga@vger.kernel.org,
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=k/Tr83e07kUDjV2mdPt8HHeG/axFkBtTveNJhvZFiaM=;
+        b=G4sJeLm1HKv0GiTd5ifD6QdcYrwirgnsohbMLQvHV87hIPaNQcBNgfsnPkYQwr86NE
+         Im8xaXErK09hz0bhYM6go6jm5ThCW85Gn5bT3iBVWoynG414dtr8k8tswfq34/BC+WR1
+         Sfj9lxtWC+/HEmCICCWRu0H8iCNywmhnMKRHFQVXKMZoDwccpbJcMc2AlZjXrdBtYl7f
+         MYii0/uUMxY73iKEpo9dvUOSQBNS2BJDwfwbITNMYaCnoVeZkBOJcOMVRFur140RIHk9
+         S8+0PTMbdy9xcEDaotppR3+V36DjCZJZUwLKtWCZwDVSx0M8Z2fEU+7de/iuTZXL/WMo
+         ee/w==
+X-Gm-Message-State: AOAM533MFhDVFM1Jo1Ul/mpg76ZZBFfz5a3xQQGziBGHq7QXbrZZ/qvM
+        JjO2qx5x186Hf50TORAqFTaWJfVDEw==
+X-Google-Smtp-Source: ABdhPJyItZocFcAaxt6taWYSRmGgSdWuWQwBBzMn5CanndOkqsRyk0swI5gSgKdbA3SNu9pvCqilZw==
+X-Received: by 2002:aca:b389:: with SMTP id c131mr16869006oif.99.1614020311162;
+        Mon, 22 Feb 2021 10:58:31 -0800 (PST)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a25sm2210235oos.6.2021.02.22.10.58.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 10:58:30 -0800 (PST)
+Received: (nullmailer pid 1828596 invoked by uid 1000);
+        Mon, 22 Feb 2021 18:58:29 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Liam Beguin <liambeguin@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     lgoncalv@redhat.com, hao.wu@intel.com
-References: <1612403971-13291-1-git-send-email-yilun.xu@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <9b5f6e54-7122-8cfb-39f8-a84599e081f1@redhat.com>
-Date:   Mon, 22 Feb 2021 10:56:45 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <1612403971-13291-1-git-send-email-yilun.xu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+In-Reply-To: <20210221194427.1184208-2-liambeguin@gmail.com>
+References: <20210221194427.1184208-1-liambeguin@gmail.com> <20210221194427.1184208-2-liambeguin@gmail.com>
+Subject: Re: [PATCH v2 1/2] clk: add support for the lmk04832
+Date:   Mon, 22 Feb 2021 12:58:29 -0600
+Message-Id: <1614020309.337925.1828595.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yilun,
+On Sun, 21 Feb 2021 14:44:26 -0500, Liam Beguin wrote:
+> From: Liam Beguin <lvb@xiphos.com>
+> 
+> The LMK04832 is an ultra-high performance clock conditioner with JEDEC
+> JESD204B support and is also pin compatible with the LMK0482x family of
+> devices.
+> 
+> Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> ---
+>  .../bindings/clock/ti,lmk04832.yaml           |  201 +++
+>  drivers/clk/Kconfig                           |    7 +
+>  drivers/clk/Makefile                          |    1 +
+>  drivers/clk/clk-lmk04832.c                    | 1286 +++++++++++++++++
+>  4 files changed, 1495 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
+>  create mode 100644 drivers/clk/clk-lmk04832.c
+> 
 
-Is there anything outstanding or remaining to be done ?
+My bot found errors running 'make dt_binding_check' on your patch:
 
-Tom
+yamllint warnings/errors:
 
-On 2/3/21 5:59 PM, Xu Yilun wrote:
-> This patchset supports some dfl device drivers written in userspace.
->
-> In the patchset v1, the "driver_override" interface should be used to bind
-> the DFL UIO driver to DFL devices. But there is concern that the 
-> "driver_override" interface is not OK itself.
->
-> In v2, we use a new matching algorithem. The "driver_override" interface
-> is abandoned, the DFL UIO driver matches any DFL device which could not be
-> handled by other DFL drivers. So the DFL UIO driver could be used for new 
-> DFL devices which are not supported by kernel. The concern is the UIO may 
-> not be suitable as a default/generic driver for all dfl features, such as
-> features with multiple interrupts.
->
-> In v4, we specify each matching device in the id_table of the UIO driver,
-> just the same as other dfl drivers do. Now the UIO driver supports Ether
-> Group feature. To support more DFL features, their feature ids should be
-> added to the driver's id_table.
->
-> Before v9, we create a "uio_pdrv_genirq" platform device using DFL devices'
-> resources. Then we leverage the uio_pdrv_genirq driver for UIO support. It
-> is suggested that we implement a driver in drivers/uio that directly calls
-> UIO framework APIs. So we implement the uio_dfl driver in v9. The driver
-> now only binds the ether group feature, which has no irq. So the irq 
-> support is not implemented yet.
->
->
-> Main changes from v1:
-> - switch to the new matching algorithem. It matches DFL devices which could
->   not be handled by other DFL drivers.
-> - refacor the code about device resources filling.
-> - add the documentation.
->
-> Main changes from v2:
-> - split the match ops changes in dfl.c to an independent patch.
-> - move the declarations needed for dfl-uio-pdev from include/linux/dfl.h
->   to driver/fpga/dfl.h
-> - some minor fixes.
->
-> Main changes from v3:
-> - switch to specifying each matching device in the driver's id_table.
-> - refactor the irq handling code.
->
-> Main changes from v4:
-> - refactor the irq handling code.
->
-> Main changes from v5:
-> - fix the res[] zero initialization issue.
-> - improve the return code for probe().
-> - some doc improvement.
->
-> Main changes from v6:
-> - use platform_device_register_resndata() for pdev creation.
->
-> Main changes from v7:
-> - some doc fixes.
->
-> Main changes from v8:
-> - switch to add a uio driver in drivers/uio
->
-> Main changes from v9:
-> - add this source file in MAINTAINERS
-> - improve the Kconfig, add more descriptive Kconfig header, add detailed
->   path for opae uio example in Kconfig.
->
-> Main changes from v10:
-> - add description in doc that interrupt support is not implemented yet.
->
->
-> Xu Yilun (2):
->   uio: uio_dfl: add userspace i/o driver for DFL bus
->   Documentation: fpga: dfl: Add description for DFL UIO support
->
->  Documentation/fpga/dfl.rst | 26 ++++++++++++++++++
->  MAINTAINERS                |  1 +
->  drivers/uio/Kconfig        | 17 ++++++++++++
->  drivers/uio/Makefile       |  1 +
->  drivers/uio/uio_dfl.c      | 66 ++++++++++++++++++++++++++++++++++++++++++++++
->  5 files changed, 111 insertions(+)
->  create mode 100644 drivers/uio/uio_dfl.c
->
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/clock/ti,lmk04832.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 852, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.parser.ParserError: while parsing a block collection
+  in "<unicode string>", line 149, column 3
+did not find expected '-' indicator
+  in "<unicode string>", line 200, column 3
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/clock/ti,lmk04832.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+Traceback (most recent call last):
+  File "/usr/bin/yamllint", line 11, in <module>
+    load_entry_point('yamllint==1.20.0', 'console_scripts', 'yamllint')()
+  File "/usr/lib/python3/dist-packages/yamllint/cli.py", line 184, in run
+    prob_level = show_problems(problems, file, args_format=args.format,
+  File "/usr/lib/python3/dist-packages/yamllint/cli.py", line 91, in show_problems
+    for problem in problems:
+  File "/usr/lib/python3/dist-packages/yamllint/linter.py", line 200, in _run
+    for problem in get_cosmetic_problems(buffer, conf, filepath):
+  File "/usr/lib/python3/dist-packages/yamllint/linter.py", line 137, in get_cosmetic_problems
+    for problem in rule.check(rule_conf,
+  File "/usr/lib/python3/dist-packages/yamllint/rules/indentation.py", line 570, in check
+    for problem in _check(conf, token, prev, next, nextnext, context):
+  File "/usr/lib/python3/dist-packages/yamllint/rules/indentation.py", line 336, in _check
+    'wrong indentation: expected %d but found %d' %
+TypeError: %d format: a number is required, not NoneType
+./Documentation/devicetree/bindings/clock/ti,lmk04832.yaml:  while parsing a block collection
+  in "<unicode string>", line 149, column 3
+did not find expected '-' indicator
+  in "<unicode string>", line 200, column 3
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
+make: *** [Makefile:1370: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1442868
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
