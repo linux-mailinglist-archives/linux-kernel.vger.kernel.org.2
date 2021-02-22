@@ -2,92 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C30E43217BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7AF3217BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231678AbhBVMza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:55:30 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12564 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbhBVMVg (ORCPT
+        id S231680AbhBVMzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:55:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230321AbhBVMXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:21:36 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Dkh6x470jzMcf0;
-        Mon, 22 Feb 2021 20:18:49 +0800 (CST)
-Received: from [10.67.110.218] (10.67.110.218) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Feb 2021 20:20:38 +0800
-Subject: Re: [PATCH 4.9.257 1/1] futex: Fix OWNER_DEAD fixup
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>
-CC:     <stable@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <judy.chenhui@huawei.com>, <zhangjinhao2@huawei.com>,
-        <tglx@linutronix.de>
-References: <20210222110542.3531596-1-zhengyejian1@huawei.com>
- <20210222110542.3531596-2-zhengyejian1@huawei.com>
- <20210222115424.GF376568@dell> <YDOec1kosGKKO80g@kroah.com>
-From:   "Zhengyejian (Zetta)" <zhengyejian1@huawei.com>
-Message-ID: <4f06340a-e027-f944-3248-2939639d5e07@huawei.com>
-Date:   Mon, 22 Feb 2021 20:20:38 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Feb 2021 07:23:24 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425CCC061574;
+        Mon, 22 Feb 2021 04:22:44 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0402008ca1f4f712cbc8cf.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:200:8ca1:f4f7:12cb:c8cf])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3E28E1EC050D;
+        Mon, 22 Feb 2021 13:22:42 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1613996562;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ljhihQwx9chR9lhZJgSKKh6JlCTcVb2u54fkWRxZeCM=;
+        b=CWs7LgUffpmzmGWCsOvzdbbFv8trrKfB4y4xU7o6qBWEmiALd37UviYSwkmb6CFokpmlhl
+        rGc8Ax5WKbKKNnOuDv8bOw4Sk6pyJHv8WgbmPYJGobPb+VZB1Vlu9+5OZqVbEq7lfmZuch
+        9KIxuXhRlpQC7wfxhf9iaUdPUItR7Oc=
+Date:   Mon, 22 Feb 2021 13:22:41 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Aili Yao <yaoaili@kingsoft.com>
+Cc:     tony.luck@intel.com, mingo@redhat.com, tglx@linutronix.de,
+        hpa@zytor.com, x86@kernel.org, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com
+Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
+ do_machine_check()
+Message-ID: <20210222122241.GA10880@zn.tnic>
+References: <20210222113124.35f2d552@alex-virtual-machine>
+ <20210222115007.75b7de9b@alex-virtual-machine>
+ <20210222092403.GA29063@zn.tnic>
+ <20210222173109.7b7ac42a@alex-virtual-machine>
+ <20210222100356.GB29063@zn.tnic>
+ <20210222180819.3998fe33@alex-virtual-machine>
+ <20210222102206.GC29063@zn.tnic>
+ <20210222192146.76ffec84@alex-virtual-machine>
+ <20210222201723.0fcec589@alex-virtual-machine>
 MIME-Version: 1.0
-In-Reply-To: <YDOec1kosGKKO80g@kroah.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.110.218]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210222201723.0fcec589@alex-virtual-machine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 22, 2021 at 08:17:23PM +0800, Aili Yao wrote:
+> AR (Action Required) flag, bit 55 - Indicates (when set) that MCA
+> error code specific recovery action must be...
 
+Give me the *exact* MCE signature you're injecting please.
 
-On 2021/2/22 20:07, Greg KH wrote:
-> On Mon, Feb 22, 2021 at 11:54:24AM +0000, Lee Jones wrote:
->> On Mon, 22 Feb 2021, Zheng Yejian wrote:
->>
->>> From: Peter Zijlstra <peterz@infradead.org>
->>>
->>> commit a97cb0e7b3f4c6297fd857055ae8e895f402f501 upstream.
->>>
->>> Both Geert and DaveJ reported that the recent futex commit:
->>>
->>>    c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
->>>
->>> introduced a problem with setting OWNER_DEAD. We set the bit on an
->>> uninitialized variable and then entirely optimize it away as a
->>> dead-store.
->>>
->>> Move the setting of the bit to where it is more useful.
->>>
->>> Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
->>> Reported-by: Dave Jones <davej@codemonkey.org.uk>
->>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: Linus Torvalds <torvalds@linux-foundation.org>
->>> Cc: Paul E. McKenney <paulmck@us.ibm.com>
->>> Cc: Peter Zijlstra <peterz@infradead.org>
->>> Cc: Thomas Gleixner <tglx@linutronix.de>
->>> Fixes: c1e2f0eaf015 ("futex: Avoid violating the 10th rule of futex")
->>> Link: http://lkml.kernel.org/r/20180122103947.GD2228@hirez.programming.kicks-ass.net
->>> Signed-off-by: Ingo Molnar <mingo@kernel.org>
->>> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
->>> ---
->>>   kernel/futex.c | 7 +++----
->>>   1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> Reviewed-by: Lee Jones <lee.jones@linaro.org>
-> 
-> This does not apply to the 4.9.y tree at all right now, are you all sure
-> you got the backport correct?
-> 
-> confused,
-> 
-> greg k-h
-> .
-> 
-I make the patch basing on 282aeb477a10 ("Linux 4.9.257").
-Should I base on f0cf73f13b39 ("Linux 4.9.258-rc1")?
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
