@@ -2,99 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBE63219CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9623219C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhBVOIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:08:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40204 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231325AbhBVNYV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 08:24:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614000175;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QRsNQR46kCoWJ5LwqQ/hYDavqNf0sAJPGKLdOJIj1SE=;
-        b=YRecH139FVKHx7OdRTTI0skxMykbm3d2J1eEZHqI9h+OVtJGg667r1EtyHyVkDcMrMaf2Q
-        iPJf1N1Ep03UhqEkpDTk5gvjZvpTxZkeVbZ9kC7E4b0elyhbDJO4AXm/pQn1TVCAKjwGkh
-        ww7KEE39DhGj3KdjBJHWgXvC71FwJ1Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-3PSoCvXGM7mZVcLSo73BrA-1; Mon, 22 Feb 2021 08:22:51 -0500
-X-MC-Unique: 3PSoCvXGM7mZVcLSo73BrA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00B44835E23;
-        Mon, 22 Feb 2021 13:22:48 +0000 (UTC)
-Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E80F760C17;
-        Mon, 22 Feb 2021 13:22:38 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <640738b5-a47e-448b-586d-a1fb80131891@redhat.com>
- <YDOqA9nQHiuIrKBu@dhcp22.suse.cz>
- <73f73cf2-1b4e-bfa9-9a4c-3192d7b7a5ec@redhat.com>
- <YDOvRv8sCVcgF6yC@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <3b5cd68d-c4ac-c6be-8824-34c541d5377b@redhat.com>
-Date:   Mon, 22 Feb 2021 14:22:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S232355AbhBVOId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:08:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36702 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231131AbhBVNX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 08:23:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 119DF600CF;
+        Mon, 22 Feb 2021 13:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614000198;
+        bh=xqQOF02MY68NQaErsbZLk6z07mtojH5uvtvco3RHktg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MkKoZ1LR/FxUlROkW7zpmvzAm5DW02Ec5ywdqWt9HSH9KTahBeSAL9RTwGeOo75mc
+         4V45Bb8xOfVXsqscPbwgTySAdh9JswoGghQzV8ANe2/vQLOzHU0VGdyeSOpZ2O4Y5R
+         Kl7oGBMycQx/DXI0kCKSPEEBg6ROpzBmBSOsQdqrZy317tY9mG1RB8vCDrjKtXsvx+
+         plfd8++//dvtl/3DV0iv/JkD7ZOTo+8iJ/n3aJvHWQUpK7J/4cDbJ4FdYCkFrEhPBq
+         quWSAX2UkukmyCt5I0lei8eHE8bun8w+dBuMB1ZncZNGgtFSHm3Vuq3m1ANVknidVN
+         9/cfYCjzM8KbQ==
+Date:   Mon, 22 Feb 2021 15:23:15 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, yishaih@nvidia.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] IB/mlx5: Add missing error code
+Message-ID: <YDOwQyZJ+Iovj/Yj@unreal>
+References: <20210222082503.22388-1-yuehaibing@huawei.com>
+ <20210222122343.19720-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <YDOvRv8sCVcgF6yC@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222122343.19720-1-yuehaibing@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> Exactly. But for hugetlbfs/shmem ("!RAM-backed files") this is not what we
->> want.
-> 
-> OK, then I must have misread your requirements. Maybe I just got lost in
-> all the combinations you have listed.
+On Mon, Feb 22, 2021 at 08:23:43PM +0800, YueHaibing wrote:
+> Set err to -ENOMEM if kzalloc fails instead of 0.
+>
+> Fixes: 759738537142 ("IB/mlx5: Enable subscription for device events over DEVX")
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  drivers/infiniband/hw/mlx5/devx.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
 
-Another special case could be dax/pmem I think. You might want to fault 
-it in readable/writable but not perform an actual read/write unless 
-really required.
-
-QEMU phrases this as "don't cause wear on the storage backing".
-
--- 
 Thanks,
+Acked-by: Leon Romanovsky <leonro@nvidia.com>
 
-David / dhildenb
+And please don't send new version of patches as a reply-to, it is
+annoying like hell.
 
+Thanks
