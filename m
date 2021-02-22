@@ -2,226 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DBA4321BB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 587C5321B9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhBVPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:40:12 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:28588 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231478AbhBVPhp (ORCPT
+        id S231432AbhBVPfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:35:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230470AbhBVPfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:37:45 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 8BCDCA1388;
-        Mon, 22 Feb 2021 16:36:29 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=+YCATf5+C3B/
-        nxGZ2PUfrPFxdE2oCryE0fZZBwd25JA=; b=zLGFdvYYrRDpFjwNDwqEtb6HMdSZ
-        gK1/6Uly78ldcaIOFcyIWO7h9udHfbllhPk9Qjkr2esEGQa3Un3v0WKC92bUvQfZ
-        WVwopDUKWbGXh3s39x+8N0tI3zW6DuqITsrWWT9AywKKpj/XCHtpD/QS+EL8SOd0
-        LYnm6ZezHqQcyNtpBk8W3SZb9Uhye9Qm1toMCMg6YSjyXYElRPJ1/g9mT1bMD4Yp
-        FZG7VzOUIA5aY/IVenegL7XPMk4Ky5J1n/K7sm+O+3ESS2kLqZ0t1Eg3lHjpdC/v
-        W/cKhzunGX9IA4U2elLvM7e3gKV4EHnV5qW5FLAq57t6DD4QgfujLyYWuQ==
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-To:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>
-CC:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 9/9] ALSA: virtio: introduce device suspend/resume support
-Date:   Mon, 22 Feb 2021 16:34:44 +0100
-Message-ID: <20210222153444.348390-10-anton.yakovlev@opensynergy.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
-References: <20210222153444.348390-1-anton.yakovlev@opensynergy.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SR-MAIL-01.open-synergy.com (10.26.10.21) To
- SR-MAIL-02.open-synergy.com (10.26.10.22)
+        Mon, 22 Feb 2021 10:35:46 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6E3C06178B
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:35:02 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id b15so4262475pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:35:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=huaqin-corp-partner-google-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=2U8z9Rh9hQENfZBHEjdzikqpHVnTZc9rkP25ytLoLPU=;
+        b=f5b0xj9I7Q2Tdl970OI1nAueN9gZ9C/8xSu7nxLdEu37PQanoVd6pG9SLWKaVCs3zo
+         RebudpQ7qZ95dPitRY/WfCM/UhkBTkD9BIDVSiilPneUXbeSmb4yFHv6L/1qxMH8uEGS
+         hqHbrmIJFNTtaRoMb08qGRnuySLIkuc1nlNRs+qXz8EjLTTbc4p0KthZ/a7GeZKwNB3t
+         IXasK8dqli+nFMMwrmmFbuBujHR8oWfp0ezeGEce5fMZC2kDcNaOFygWyRCUrpV1AAJ/
+         UNKNK7T4cc+R6AL2VfrxxdNz1Ave33xHISD6aribpFnjVjCAx93ovzYqVUanCsKOfz66
+         4ZHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2U8z9Rh9hQENfZBHEjdzikqpHVnTZc9rkP25ytLoLPU=;
+        b=KiKk5zFPUmTV7jbGFD00f68OjxJLDez8cgwwaJADQyK8xMifsTz0yfw+1VHkG6+kw/
+         MMLIUS6D1CRjd4ewkT5VzvheyAju5EhzBmS5ZKRRzxJ6DIhueK3gDavXmhlEuv4VGOGi
+         AH7sZRLNEKF7XkznT9jw+790uONeKtR6ucY3cgl0VTkJ1VSrJYuj9LPmRroqfSGwbPPr
+         EepB80rbxolazdCmZgskMNU96V+NHMeLzNzzppx4A1KwACuYo3OVR4G92/MQVpvtY/nW
+         +ao8t22CLb4K6m9SU+lnmCwqAMEylXWbk88AfZga6r6mAh3sufEUPma0+w67sObZa3FK
+         MrxA==
+X-Gm-Message-State: AOAM531g0OTs+YsO1xncE1ov3xhHsXpYYpyRcy3tjj/yjJcLeIRACV0I
+        RkVdJeK195mlUGyCXRHofIGkQA==
+X-Google-Smtp-Source: ABdhPJx5RtOzgQKUgQ8ekAvGjECJ4YXFYw0+bp7A8XgvPW7G4TLCBTqESYK3dBHLMVlpG4t8tCf9NQ==
+X-Received: by 2002:a17:90a:fb4e:: with SMTP id iq14mr24519817pjb.18.1614008102050;
+        Mon, 22 Feb 2021 07:35:02 -0800 (PST)
+Received: from ubuntu.huaqin.com ([101.78.151.214])
+        by smtp.gmail.com with ESMTPSA id s62sm11692837pfb.148.2021.02.22.07.34.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 07:35:01 -0800 (PST)
+From:   Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+To:     pihsun@chromium.org, drinkcat@google.com, marcheu@chromium.org,
+        jitao.shi@mediatek.com, thierry.reding@gmail.com, sam@ravnborg.org,
+        airlied@linux.ie, daniel@ffwll.ch, robh+dt@kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
+Subject: [PATCH 1/2] dt-bindings: display: Add STARRY 2081101QFH032011-53G
+Date:   Mon, 22 Feb 2021 23:34:54 +0800
+Message-Id: <20210222153454.20198-1-xiazhengqiao@huaqin.corp-partner.google.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All running PCM substreams are stopped on device suspend and restarted
-on device resume.
+Add dt-bindings for 10.1" TFT LCD module called STARRY 2081101
+QFH032011-53G.
 
-Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Signed-off-by: Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
 ---
- sound/virtio/virtio_card.c    | 57 +++++++++++++++++++++++++++++++++++
- sound/virtio/virtio_pcm.c     |  1 +
- sound/virtio/virtio_pcm_ops.c | 44 ++++++++++++++++++++-------
- 3 files changed, 91 insertions(+), 11 deletions(-)
+ .../display/panel/innolux,himax8279d.yaml     | 74 +++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/innolux,himax8279d.yaml
 
-diff --git a/sound/virtio/virtio_card.c b/sound/virtio/virtio_card.c
-index 787a4dec1da8..1f0a0fa7bbc0 100644
---- a/sound/virtio/virtio_card.c
-+++ b/sound/virtio/virtio_card.c
-@@ -373,6 +373,59 @@ static void virtsnd_config_changed(struct virtio_device *vdev)
- 			 "sound device configuration was changed\n");
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+/**
-+ * virtsnd_freeze() - Suspend device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_freeze(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
+diff --git a/Documentation/devicetree/bindings/display/panel/innolux,himax8279d.yaml b/Documentation/devicetree/bindings/display/panel/innolux,himax8279d.yaml
+new file mode 100644
+index 000000000000..ae2d6d39fed5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/panel/innolux,himax8279d.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/panel/innolux,himax8279d.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	/* Stop all the virtqueues. */
-+	vdev->config->reset(vdev);
-+	vdev->config->del_vqs(vdev);
++title: INNOLUX HIMAX8279D DSI Display Panel
 +
-+	virtsnd_ctl_msg_cancel_all(snd);
++maintainers:
++  - Zhengqiao Xia <xiazhengqiao@huaqin.corp-partner.google.com>
 +
-+	kfree(snd->event_msgs);
++allOf:
++  - $ref: panel-common.yaml#
 +
-+	/*
-+	 * If the virtsnd_restore() fails before re-allocating events, then we
-+	 * get a dangling pointer here.
-+	 */
-+	snd->event_msgs = NULL;
++properties:
++  compatible:
++    enum:
++        # STARRY 2081101QFH032011-53G 10.1" WUXGA TFT LCD panel
++      - starry,2081101qfh032011-53g
 +
-+	return 0;
-+}
 +
-+/**
-+ * virtsnd_restore() - Resume device.
-+ * @vdev: VirtIO parent device.
-+ *
-+ * Context: Any context.
-+ * Return: 0 on success, -errno on failure.
-+ */
-+static int virtsnd_restore(struct virtio_device *vdev)
-+{
-+	struct virtio_snd *snd = vdev->priv;
-+	int rc;
++  reg:
++    description: the virtual channel number of a DSI peripheral
 +
-+	rc = virtsnd_find_vqs(snd);
-+	if (rc)
-+		return rc;
++  enable-gpios:
++    description: a GPIO spec for the enable pin
 +
-+	virtio_device_ready(vdev);
++  pp1800-supply:
++    description: core voltage supply
 +
-+	virtsnd_enable_event_vq(snd);
++  avdd-supply:
++    description: phandle of the regulator that provides positive voltage
 +
-+	return 0;
-+}
-+#endif /* CONFIG_PM_SLEEP */
++  avee-supply:
++    description: phandle of the regulator that provides negative voltage
 +
- static const struct virtio_device_id id_table[] = {
- 	{ VIRTIO_ID_SOUND, VIRTIO_DEV_ANY_ID },
- 	{ 0 },
-@@ -386,6 +439,10 @@ static struct virtio_driver virtsnd_driver = {
- 	.probe = virtsnd_probe,
- 	.remove = virtsnd_remove,
- 	.config_changed = virtsnd_config_changed,
-+#ifdef CONFIG_PM_SLEEP
-+	.freeze = virtsnd_freeze,
-+	.restore = virtsnd_restore,
-+#endif
- };
- 
- static int __init init(void)
-diff --git a/sound/virtio/virtio_pcm.c b/sound/virtio/virtio_pcm.c
-index 3605151860f2..4a4a6583b002 100644
---- a/sound/virtio/virtio_pcm.c
-+++ b/sound/virtio/virtio_pcm.c
-@@ -109,6 +109,7 @@ static int virtsnd_pcm_build_hw(struct virtio_pcm_substream *vss,
- 		SNDRV_PCM_INFO_BATCH |
- 		SNDRV_PCM_INFO_BLOCK_TRANSFER |
- 		SNDRV_PCM_INFO_INTERLEAVED |
-+		SNDRV_PCM_INFO_RESUME |
- 		SNDRV_PCM_INFO_PAUSE;
- 
- 	if (!info->channels_min || info->channels_min > info->channels_max) {
-diff --git a/sound/virtio/virtio_pcm_ops.c b/sound/virtio/virtio_pcm_ops.c
-index 07510778b555..ccef64502c13 100644
---- a/sound/virtio/virtio_pcm_ops.c
-+++ b/sound/virtio/virtio_pcm_ops.c
-@@ -218,6 +218,10 @@ static int virtsnd_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (rc)
- 		return rc;
- 
-+	/* If messages have already been allocated before, do nothing. */
-+	if (runtime->status->state == SNDRV_PCM_STATE_SUSPENDED)
-+		return 0;
++  backlight:
++    description: phandle of the backlight device attached to the panel
 +
- 	return virtsnd_pcm_msg_alloc(vss, periods, period_bytes);
- }
- 
-@@ -258,19 +262,21 @@ static int virtsnd_pcm_prepare(struct snd_pcm_substream *substream)
- 	}
- 
- 	spin_lock_irqsave(&vss->lock, flags);
--	/*
--	 * Since I/O messages are asynchronous, they can be completed
--	 * when the runtime structure no longer exists. Since each
--	 * completion implies incrementing the hw_ptr, we cache all the
--	 * current values needed to compute the new hw_ptr value.
--	 */
--	vss->frame_bytes = runtime->frame_bits >> 3;
--	vss->period_size = runtime->period_size;
--	vss->buffer_size = runtime->buffer_size;
-+	if (runtime->status->state != SNDRV_PCM_STATE_SUSPENDED) {
-+		/*
-+		 * Since I/O messages are asynchronous, they can be completed
-+		 * when the runtime structure no longer exists. Since each
-+		 * completion implies incrementing the hw_ptr, we cache all the
-+		 * current values needed to compute the new hw_ptr value.
-+		 */
-+		vss->frame_bytes = runtime->frame_bits >> 3;
-+		vss->period_size = runtime->period_size;
-+		vss->buffer_size = runtime->buffer_size;
- 
--	vss->hw_ptr = 0;
-+		vss->hw_ptr = 0;
-+		vss->msg_last_enqueued = -1;
-+	}
- 	vss->xfer_xrun = false;
--	vss->msg_last_enqueued = -1;
- 	vss->msg_count = 0;
- 	spin_unlock_irqrestore(&vss->lock, flags);
- 
-@@ -300,6 +306,21 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 	int rc;
- 
- 	switch (command) {
-+	case SNDRV_PCM_TRIGGER_RESUME: {
-+		/*
-+		 * We restart the substream by executing the standard command
-+		 * sequence.
-+		 */
-+		rc = virtsnd_pcm_hw_params(substream, NULL);
-+		if (rc)
-+			return rc;
++  port: true
 +
-+		rc = virtsnd_pcm_prepare(substream);
-+		if (rc)
-+			return rc;
++required:
++  - compatible
++  - reg
++  - enable-gpios
++  - pp1800-supply
++  - avdd-supply
++  - avee-supply
 +
-+		fallthrough;
-+	}
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE: {
- 		struct virtio_snd_queue *queue = virtsnd_pcm_queue(vss);
-@@ -326,6 +347,7 @@ static int virtsnd_pcm_trigger(struct snd_pcm_substream *substream, int command)
- 
- 		return virtsnd_ctl_msg_send_sync(snd, msg);
- 	}
-+	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH: {
- 		spin_lock_irqsave(&vss->lock, flags);
++additionalProperties: false
++
++examples:
++  - |
++    dsi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        panel@0 {
++            compatible = "starry,2081101qfh032011-53g";
++            reg = <0>;
++            enable-gpios = <&pio 45 0>;
++            avdd-supply = <&ppvarn_lcd>;
++            avee-supply = <&ppvarp_lcd>;
++            pp1800-supply = <&pp1800_lcd>;
++            backlight = <&backlight_lcd0>;
++            status = "okay";
++            port {
++                panel_in: endpoint {
++                    remote-endpoint = <&dsi_out>;
++                };
++            };
++        };
++    };
++
++...
 -- 
-2.30.0
-
+2.17.1
 
