@@ -2,128 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68933321B6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE0BF321B6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbhBVP3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:29:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54266 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231424AbhBVP2t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:28:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614007640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TXZsMYpXn71LSKrMbfU4t7gfQPTn4Ouohxtv8HpftpQ=;
-        b=gdAJB3bISNjWGv+eXrlk+0UoM71OC1XPoTBjXa/pCQ1/a2jllfDOkpwqM8dbb6I1Sj6gPt
-        gaEoSJlFNxqDO6XUiMjTWJivnv//zhKKslbKv/9ALA70zxPfNrR2LoEJ8VC3BtDaOMamxk
-        AWvbjv0tRehfIAmjfDsJOXftZbUrBA4=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-ruXTpb55Nee8j1UNks7pLQ-1; Mon, 22 Feb 2021 10:27:18 -0500
-X-MC-Unique: ruXTpb55Nee8j1UNks7pLQ-1
-Received: by mail-wm1-f72.google.com with SMTP id u15so5199207wmj.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:27:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TXZsMYpXn71LSKrMbfU4t7gfQPTn4Ouohxtv8HpftpQ=;
-        b=tVVwbjybFyKwB5m1gy0TR+bxwPKpioEzuvp/WsBf0Dq/T/G/By2skPQ2iWBJiYXnU1
-         HighEMmY4SrkbyIP6osWBAwqYzIdukkeCiCLoyVMij/AsH12u4cUn3N1RaMSx/R7egdZ
-         XTb8OS2zDPPUebblPpC1PAaFylzBiaRa/LMJqpG/W8XzGBDvWEy6ydHAl/mSx/w/oBYC
-         OOVwOVh0f1ce846T3DfYCKHPP6d5rFGBLJOBzaKDNX2WnjU+llAoqotMqTsXKPFwOAfZ
-         ytwjwesU1mJ9mKJ9r5+Lq+tS95rUYyYR4CwNeZ3TuLGV712WIHz7zHgYi3SQjA9VUDvO
-         7fHw==
-X-Gm-Message-State: AOAM53165/4c5wtyCTR+Dqj3QlC3Rd5PuXVYYhlZzT1H7JVp6zX8iO47
-        YNjMqnH4rWIwP0d2lzTXr0tittxMs3eDZ43MbK+HLLlQGTtFgKZp/k0nwHn7N+aeD3/EahXVB0a
-        ijrTpbRLo5ccWqHZFc86lGhpE
-X-Received: by 2002:adf:e444:: with SMTP id t4mr10980956wrm.97.1614007637010;
-        Mon, 22 Feb 2021 07:27:17 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzhiINXVo9/Kl6zyPC/+Cx2AASIrpnH/QSMH0uXnxoLV5V5LDfLysUW9pHxz/qycFwCzMn7/A==
-X-Received: by 2002:adf:e444:: with SMTP id t4mr10980943wrm.97.1614007636842;
-        Mon, 22 Feb 2021 07:27:16 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id a3sm1755509wrt.68.2021.02.22.07.27.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:27:16 -0800 (PST)
-Date:   Mon, 22 Feb 2021 16:27:14 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Xianting Tian <xianting_tian@126.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, guoren@linux.alibaba.com,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] virtio: remove export for virtio_config_{enable, disable}
-Message-ID: <20210222152714.jhggub3lrv7xfwju@steredhat>
-References: <1613838498-8791-1-git-send-email-xianting_tian@126.com>
+        id S230017AbhBVP31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:29:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230084AbhBVP21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 10:28:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 721A764E24;
+        Mon, 22 Feb 2021 15:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614007659;
+        bh=q9Estwy8/COuQq0gmoB1jzKJT7r7o9dG+aiZnsncBrg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eO1cGdcxtFayjKzpEuEQAoVVTsItSUTEV7Zy90sBssqe1fe7c30+88S3SWP65BeDs
+         FaHGPdT3U8a7aP7pRsA7q6p+TNwGwnECaS16uEc45HOhNWAKSYkPUIwQ4y7/I6159k
+         aa5tobVGnUsBHPNsdZ6cdBlE0cTaAXvhlHGdZEwnDs/IKpG8/3TPNUoQvxi56QmEUV
+         AV0U3YIDdm4Y+23rTwqPIsAw/dvmWGITbs5/PWRYNVrv16OO96gidoq/ZXluQsy80m
+         zxHbatbyHLtk1CPI8XO2thrkz/+FnfPTVpGiFu3wEvyJJssDHfJfMR7+Li7Lft1Y11
+         wxRteMPpsHt7w==
+Date:   Mon, 22 Feb 2021 16:27:34 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Manivannan Sadhasivam <mani@kernel.org>,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patong.mxl@gmail.com,
+        linus.walleij@linaro.org, angelo.dureghello@timesys.com
+Subject: Re: [PATCH v5 1/3] usb: serial: Add MaxLinear/Exar USB to Serial
+ driver
+Message-ID: <20210222161119.0bd70a2b@coco.lan>
+In-Reply-To: <YBBCvHvduivta07b@hovoldconsulting.com>
+References: <20201122170822.21715-1-mani@kernel.org>
+        <20201122170822.21715-2-mani@kernel.org>
+        <YAlVLOqzx8otPgOg@hovoldconsulting.com>
+        <20210126154604.GC29751@thinkpad>
+        <YBBCvHvduivta07b@hovoldconsulting.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <1613838498-8791-1-git-send-email-xianting_tian@126.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 11:28:18AM -0500, Xianting Tian wrote:
->virtio_config_enable(), virtio_config_disable() are only used inside
->drivers/virtio/virtio.c, so it doesn't need export the symbols.
->
->Signed-off-by: Xianting Tian <xianting_tian@126.com>
->---
-> drivers/virtio/virtio.c | 6 ++----
-> include/linux/virtio.h  | 2 --
-> 2 files changed, 2 insertions(+), 6 deletions(-)
+Hi Johan,
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Em Tue, 26 Jan 2021 17:26:36 +0100
+Johan Hovold <johan@kernel.org> escreveu:
 
->
->diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
->index 42e09cc..4b15c00 100644
->--- a/drivers/virtio/virtio.c
->+++ b/drivers/virtio/virtio.c
->@@ -141,15 +141,14 @@ void virtio_config_changed(struct virtio_device *dev)
-> }
-> EXPORT_SYMBOL_GPL(virtio_config_changed);
->
->-void virtio_config_disable(struct virtio_device *dev)
->+static void virtio_config_disable(struct virtio_device *dev)
-> {
-> 	spin_lock_irq(&dev->config_lock);
-> 	dev->config_enabled = false;
-> 	spin_unlock_irq(&dev->config_lock);
-> }
->-EXPORT_SYMBOL_GPL(virtio_config_disable);
->
->-void virtio_config_enable(struct virtio_device *dev)
->+static void virtio_config_enable(struct virtio_device *dev)
-> {
-> 	spin_lock_irq(&dev->config_lock);
-> 	dev->config_enabled = true;
->@@ -158,7 +157,6 @@ void virtio_config_enable(struct virtio_device *dev)
-> 	dev->config_change_pending = false;
-> 	spin_unlock_irq(&dev->config_lock);
-> }
->-EXPORT_SYMBOL_GPL(virtio_config_enable);
->
-> void virtio_add_status(struct virtio_device *dev, unsigned int status)
-> {
->diff --git a/include/linux/virtio.h b/include/linux/virtio.h
->index 55ea329..b1894e0 100644
->--- a/include/linux/virtio.h
->+++ b/include/linux/virtio.h
->@@ -132,8 +132,6 @@ static inline struct virtio_device *dev_to_virtio(struct device *_dev)
-> void virtio_break_device(struct virtio_device *dev);
->
-> void virtio_config_changed(struct virtio_device *dev);
->-void virtio_config_disable(struct virtio_device *dev);
->-void virtio_config_enable(struct virtio_device *dev);
-> int virtio_finalize_features(struct virtio_device *dev);
-> #ifdef CONFIG_PM_SLEEP
-> int virtio_device_freeze(struct virtio_device *dev);
->-- 
->1.8.3.1
->
+> On Tue, Jan 26, 2021 at 09:16:04PM +0530, Manivannan Sadhasivam wrote:
+> > On Thu, Jan 21, 2021 at 11:19:24AM +0100, Johan Hovold wrote:  
+> > > On Sun, Nov 22, 2020 at 10:38:20PM +0530, Manivannan Sadhasivam wrote:  
+> > > > Add support for MaxLinear/Exar USB to Serial converters. This driver
+> > > > only supports XR21V141X series but it can be extended to other series
+> > > > from Exar as well in future.  
+> > > 
+> > > There are still a few issues with this driver, but I really don't want
+> > > to have to review it again in a couple of months so I've fixed it up
+> > > myself this time.
+> > > 
+> > > The trivial stuff I folded into this patch, and I'll submit a follow-on
+> > > series for the rest.
+> > >   
+> > 
+> > Many thanks for doing this! These days it is really difficult to find
+> > time for spare time stuffs.
+> > 
+> > And all of your fixes makes sense to me.  
+> 
+> Thanks for taking a look!
 
+Thanks for merging it!
+
+-
+
+I'm now facing an issue with this driver. I have here two different
+boards with those USB UART from MaxLinear/Exar.
+
+The first one is identical to Mani's one:
+	USB_DEVICE(0x04e2, 0x1411)
+The second one is a different version of it:
+	USB_DEVICE(0x04e2, 0x1424)
+
+By looking at the final driver merged at linux-next, it sounds that
+somewhere during the review of this series, it lost the priv struct,
+and the xr_probe function. It also lost support for all MaxLinear/Exar
+devices, except for just one model (04e2:1411).
+
+The original submission:
+
+	https://lore.kernel.org/linux-usb/20180404070634.nhspvmxcjwfgjkcv@advantechmxl-desktop
+
+And the manufacturer's Linux driver on their website:
+
+	https://www.maxlinear.com/support/design-tools/software-drivers
+
+Had support for other 12 different models of the MaxLinear/Exar USB
+UART. 
+
+Those are grouped into 5 different major types:
+
+	+	init_xr2280x_reg_map();
+	+	init_xr21b142x_reg_map();
+	+	init_xr21b1411_reg_map();
+	+	init_xr21v141x_reg_map();
+	+
+	+	if ((xrusb->DeviceProduct & 0xfff0) == 0x1400)
+	+		memcpy(&(xrusb->reg_map), &xr2280x_reg_map,
+	+			sizeof(struct reg_addr_map));
+	+	else if ((xrusb->DeviceProduct & 0xFFF0) == 0x1420)
+	+		memcpy(&(xrusb->reg_map), &xr21b142x_reg_map,
+	+			sizeof(struct reg_addr_map));
+	+	else if (xrusb->DeviceProduct == 0x1411)
+	+		memcpy(&(xrusb->reg_map), &xr21b1411_reg_map,
+	+			sizeof(struct reg_addr_map));
+	+	else if ((xrusb->DeviceProduct & 0xfff0) == 0x1410)
+	+		memcpy(&(xrusb->reg_map), &xr21v141x_reg_map,
+	+			sizeof(struct reg_addr_map));
+	+	else
+	+		rv = -1;
+
+Note: Please don't be confused by "reg_map" name. This has nothing
+      to do with Linux regmap API ;-)
+
+What happens is that different USB IDs have different values for
+each register. So, for instance, the UART enable register is set to
+either one of the following values, depending on the value of
+udev->descriptor.idProduct:
+
+	xr21b140x_reg_map.uart_enable_addr = 0x00;
+	xr21b1411_reg_map.uart_enable_addr = 0xc00;
+	xr21v141x_reg_map.uart_enable_addr = 0x03;
+	xr21b142x_reg_map.uart_enable_addr = 0x00;
+
+There are other values that depend on the probing time detection,
+based on other USB descriptors. Those set several fields at the
+priv data that would allow to properly map the registers.
+
+Also, there are 4 models that support multiple channels. On those,
+there are one pair of register get/set for each channel.
+
+-
+
+In summary, while supporting just 04e2:1411 there's no need for
+a private struct, in order to properly support the other models,
+some autodetection is needed. The best way of doing that is to
+re-add the .probe method and adding a priv struct.
+
+As I dunno why this was dropped in the first place, I'm wondering
+if it would be ok to re-introduce them.
+
+To be clear: my main focus here is just to avoid needing to use 
+Windows in order to use the serial console of the hardware with
+the 0x1424 variant ;-)
+
+I can't test the driver with the other hardware, but, IMHO, instead
+of adding a hack to support 0x1424, the better (but more painful)
+would be to re-add the auto-detection part and support for the
+other models.
+
+Thanks!
+Mauro
