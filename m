@@ -2,225 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 477CD3218E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F303218DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:32:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232045AbhBVNda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:33:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53738 "EHLO mail.kernel.org"
+        id S231383AbhBVNcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:32:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52847 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231438AbhBVMmu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:42:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B0B564F35;
-        Mon, 22 Feb 2021 12:39:57 +0000 (UTC)
+        id S231386AbhBVMmO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:42:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CE0964E2F;
+        Mon, 22 Feb 2021 12:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997597;
-        bh=vksbG7U6sQB9JwDxtG/2COloYALwFun7reCziQkI0tE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ns4s0iNfsdKgBByq8MLAkQMFJhK5wuqHaalRFPuW1zQWom+pSbHX7pSLDZemopgEL
-         FCVtbJ9EbwREyvBSw3BkGalA8UTejpjylq/DYDOyKDJH5SoUkA26OQp0MyNND5voMg
-         RjXPcTiIHMJozSS5OHs99VO+Fez9SIEOeQcbAQdY=
+        s=korg; t=1613997579;
+        bh=mOZrxsMuS8Iyo28/X7/ikWnVHoRzhoKOzgfbwmCkz3M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=iWQUcligh5Syn9mir1nX3gJvck+IW8Fc6+2axE2vRBanio/KVK6gKVUrE4wFt2lLR
+         OjnEiUJ9OBJRE/ZgYjqw8gMA0HJifnTWGUZE9KuCSMa7c6uPVPNo+yxkemtADGMuKk
+         ijmdrftZQw/S84pcmS8k+Lfz3Q6/5SnBcTgvzY40=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-Subject: [PATCH 4.4 00/35] 4.4.258-rc1 review
-Date:   Mon, 22 Feb 2021 13:35:56 +0100
-Message-Id: <20210222121013.581198717@linuxfoundation.org>
+        stable@vger.kernel.org, pierre.gondois@arm.com,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.4 02/35] fgraph: Initialize tracing_graph_pause at task creation
+Date:   Mon, 22 Feb 2021 13:35:58 +0100
+Message-Id: <20210222121017.542227125@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-MIME-Version: 1.0
+In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
+References: <20210222121013.581198717@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.258-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.4.258-rc1
-X-KernelTest-Deadline: 2021-02-24T12:10+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.4.258 release.
-There are 35 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-Anything received after that time might be too late.
+commit 7e0a9220467dbcfdc5bc62825724f3e52e50ab31 upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.258-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
-and the diffstat can be found below.
+On some archs, the idle task can call into cpu_suspend(). The cpu_suspend()
+will disable or pause function graph tracing, as there's some paths in
+bringing down the CPU that can have issues with its return address being
+modified. The task_struct structure has a "tracing_graph_pause" atomic
+counter, that when set to something other than zero, the function graph
+tracer will not modify the return address.
 
-thanks,
+The problem is that the tracing_graph_pause counter is initialized when the
+function graph tracer is enabled. This can corrupt the counter for the idle
+task if it is suspended in these architectures.
 
-greg k-h
+   CPU 1				CPU 2
+   -----				-----
+  do_idle()
+    cpu_suspend()
+      pause_graph_tracing()
+          task_struct->tracing_graph_pause++ (0 -> 1)
 
--------------
-Pseudo-Shortlog of commits:
+				start_graph_tracing()
+				  for_each_online_cpu(cpu) {
+				    ftrace_graph_init_idle_task(cpu)
+				      task-struct->tracing_graph_pause = 0 (1 -> 0)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.4.258-rc1
+      unpause_graph_tracing()
+          task_struct->tracing_graph_pause-- (0 -> -1)
 
-Lai Jiangshan <laijs@linux.alibaba.com>
-    kvm: check tlbs_dirty directly
+The above should have gone from 1 to zero, and enabled function graph
+tracing again. But instead, it is set to -1, which keeps it disabled.
 
-Arun Easi <aeasi@marvell.com>
-    scsi: qla2xxx: Fix crash during driver load on big endian machines
+There's no reason that the field tracing_graph_pause on the task_struct can
+not be initialized at boot up.
 
-Jan Beulich <jbeulich@suse.com>
-    xen-blkback: fix error handling in xen_blkbk_map()
+Cc: stable@vger.kernel.org
+Fixes: 380c4b1411ccd ("tracing/function-graph-tracer: append the tracing_graph_flag")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=211339
+Reported-by: pierre.gondois@arm.com
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/ftrace.h |    4 +++-
+ kernel/trace/ftrace.c  |    2 --
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Jan Beulich <jbeulich@suse.com>
-    xen-scsiback: don't "handle" error by BUG()
-
-Jan Beulich <jbeulich@suse.com>
-    xen-netback: don't "handle" error by BUG()
-
-Jan Beulich <jbeulich@suse.com>
-    xen-blkback: don't "handle" error by BUG()
-
-Stefano Stabellini <stefano.stabellini@xilinx.com>
-    xen/arm: don't ignore return errors from set_phys_to_machine
-
-Jan Beulich <jbeulich@suse.com>
-    Xen/gntdev: correct error checking in gntdev_map_grant_pages()
-
-Jan Beulich <jbeulich@suse.com>
-    Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
-
-Jan Beulich <jbeulich@suse.com>
-    Xen/x86: also check kernel mapping in set_foreign_p2m_mapping()
-
-Jan Beulich <jbeulich@suse.com>
-    Xen/x86: don't bail early from clear_foreign_p2m_mapping()
-
-Vasily Gorbik <gor@linux.ibm.com>
-    tracing: Avoid calling cc-option -mrecord-mcount for every Makefile
-
-Greg Thelen <gthelen@google.com>
-    tracing: Fix SKIP_STACK_VALIDATION=1 build due to bad merge with -mrecord-mcount
-
-Andi Kleen <ak@linux.intel.com>
-    trace: Use -mcount-record for dynamic ftrace
-
-Borislav Petkov <bp@suse.de>
-    x86/build: Disable CET instrumentation in the kernel for 32-bit too
-
-Stefano Garzarella <sgarzare@redhat.com>
-    vsock: fix locking in vsock_shutdown()
-
-Edwin Peer <edwin.peer@broadcom.com>
-    net: watchdog: hold device global xmit lock during tx disable
-
-Serge Semin <Sergey.Semin@baikalelectronics.ru>
-    usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
-
-Felipe Balbi <balbi@kernel.org>
-    usb: dwc3: ulpi: fix checkpatch warning
-
-Randy Dunlap <rdunlap@infradead.org>
-    h8300: fix PREEMPTION build, TI_PRE_COUNT undefined
-
-Jozsef Kadlecsik <kadlec@mail.kfki.hu>
-    netfilter: xt_recent: Fix attempt to update deleted entry
-
-Roman Gushchin <guro@fb.com>
-    memblock: do not start bottom-up allocations with kernel_end
-
-Phillip Lougher <phillip@squashfs.org.uk>
-    squashfs: add more sanity checks in xattr id lookup
-
-Phillip Lougher <phillip@squashfs.org.uk>
-    squashfs: add more sanity checks in inode lookup
-
-Phillip Lougher <phillip@squashfs.org.uk>
-    squashfs: add more sanity checks in id lookup
-
-Theodore Ts'o <tytso@mit.edu>
-    memcg: fix a crash in wb_workfn when a device disappears
-
-Qian Cai <cai@lca.pw>
-    include/trace/events/writeback.h: fix -Wstringop-truncation warnings
-
-Tobin C. Harding <tobin@kernel.org>
-    lib/string: Add strscpy_pad() function
-
-Dave Wysochanski <dwysocha@redhat.com>
-    SUNRPC: Handle 0 length opaque XDR object data properly
-
-Dave Wysochanski <dwysocha@redhat.com>
-    SUNRPC: Move simple_get_bytes and simple_get_netobj into private header
-
-Johannes Berg <johannes.berg@intel.com>
-    iwlwifi: mvm: guard against device removal in reprobe
-
-Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-    iwlwifi: pcie: add a NULL check in iwl_pcie_txq_unmap
-
-Cong Wang <cong.wang@bytedance.com>
-    af_key: relax availability checks for skb size calculation
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    fgraph: Initialize tracing_graph_pause at task creation
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Do not count ftrace events in top level enable output
-
-
--------------
-
-Diffstat:
-
- Makefile                                | 11 +++++-
- arch/arm/xen/p2m.c                      |  6 ++-
- arch/h8300/kernel/asm-offsets.c         |  3 ++
- arch/x86/Makefile                       |  6 +--
- arch/x86/xen/p2m.c                      | 15 ++++----
- drivers/block/xen-blkback/blkback.c     | 28 ++++++++------
- drivers/net/wireless/iwlwifi/mvm/ops.c  |  3 +-
- drivers/net/wireless/iwlwifi/pcie/tx.c  |  5 +++
- drivers/net/xen-netback/netback.c       |  4 +-
- drivers/scsi/qla2xxx/qla_tmpl.c         |  9 +++--
- drivers/scsi/qla2xxx/qla_tmpl.h         |  2 +-
- drivers/usb/dwc3/ulpi.c                 | 20 ++++++++--
- drivers/xen/gntdev.c                    | 33 +++++++++++------
- drivers/xen/xen-scsiback.c              |  4 +-
- fs/fs-writeback.c                       |  2 +-
- fs/squashfs/export.c                    | 41 ++++++++++++++++----
- fs/squashfs/id.c                        | 40 ++++++++++++++++----
- fs/squashfs/squashfs_fs_sb.h            |  1 +
- fs/squashfs/super.c                     |  6 +--
- fs/squashfs/xattr.h                     | 10 ++++-
- fs/squashfs/xattr_id.c                  | 66 ++++++++++++++++++++++++++++-----
- include/linux/backing-dev.h             | 10 +++++
- include/linux/ftrace.h                  |  4 +-
- include/linux/netdevice.h               |  2 +
- include/linux/string.h                  |  4 ++
- include/linux/sunrpc/xdr.h              |  3 +-
- include/trace/events/writeback.h        | 35 +++++++++--------
- include/xen/grant_table.h               |  1 +
- kernel/trace/ftrace.c                   |  2 -
- kernel/trace/trace_events.c             |  3 +-
- lib/string.c                            | 47 +++++++++++++++++++----
- mm/backing-dev.c                        |  1 +
- mm/memblock.c                           | 49 +++---------------------
- net/key/af_key.c                        |  6 +--
- net/netfilter/xt_recent.c               | 12 +++++-
- net/sunrpc/auth_gss/auth_gss.c          | 30 +--------------
- net/sunrpc/auth_gss/auth_gss_internal.h | 45 ++++++++++++++++++++++
- net/sunrpc/auth_gss/gss_krb5_mech.c     | 31 +---------------
- net/vmw_vsock/af_vsock.c                |  8 ++--
- scripts/Makefile.build                  |  3 ++
- virt/kvm/kvm_main.c                     |  3 +-
- 41 files changed, 389 insertions(+), 225 deletions(-)
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -747,7 +747,9 @@ typedef int (*trace_func_graph_ent_t)(st
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+ 
+ /* for init task */
+-#define INIT_FTRACE_GRAPH		.ret_stack = NULL,
++#define INIT_FTRACE_GRAPH				\
++	.ret_stack		= NULL,			\
++	.tracing_graph_pause	= ATOMIC_INIT(0),
+ 
+ /*
+  * Stack of return addresses for functions
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5708,7 +5708,6 @@ static int alloc_retstack_tasklist(struc
+ 		}
+ 
+ 		if (t->ret_stack == NULL) {
+-			atomic_set(&t->tracing_graph_pause, 0);
+ 			atomic_set(&t->trace_overrun, 0);
+ 			t->curr_ret_stack = -1;
+ 			/* Make sure the tasks see the -1 first: */
+@@ -5920,7 +5919,6 @@ static DEFINE_PER_CPU(struct ftrace_ret_
+ static void
+ graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
+ {
+-	atomic_set(&t->tracing_graph_pause, 0);
+ 	atomic_set(&t->trace_overrun, 0);
+ 	t->ftrace_timestamp = 0;
+ 	/* make curr_ret_stack visible before we add the ret_stack */
 
 
