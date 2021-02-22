@@ -2,149 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A4E32136F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3E6321372
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhBVJuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:50:55 -0500
-Received: from mail-m121144.qiye.163.com ([115.236.121.144]:49094 "EHLO
-        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230147AbhBVJuH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:50:07 -0500
-Received: from [127.0.0.1] (unknown [157.0.31.124])
-        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id 6043AAC0460;
-        Mon, 22 Feb 2021 17:49:10 +0800 (CST)
-Subject: Re: [PATCH v2] kyber: introduce kyber_depth_updated()
-From:   Yang Yang <yang.yang@vivo.com>
-To:     Omar Sandoval <osandov@osandov.com>, Jens Axboe <axboe@kernel.dk>
-Cc:     onlyfever@icloud.com, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-References: <20210205091311.129498-1-yang.yang@vivo.com>
-Message-ID: <c1ac179d-5d22-e4bb-e661-87981c8535f3@vivo.com>
-Date:   Mon, 22 Feb 2021 17:49:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        id S230141AbhBVJwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:52:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229995AbhBVJvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:51:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5BE664E13;
+        Mon, 22 Feb 2021 09:51:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613987473;
+        bh=Yu/qN8STAau22SmwxKcvT5Lel5uW0oN72WFz+Pv29SI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ojMcOtCF8a6RX8HGZnEdqE1r3Rb7ZEEPIj86z2Tq5ncrGQBXtlLZmKGK9h7EEqzso
+         frAx2sa7klpY1ZxLTOUX5QhlxClfFmLgOPymUQHCfvHSbtuG5/XK22qk077SPBHYoU
+         QEO/taupT2HnwZylbF8/1rBEEX/S3v5XMbBmTbLR9XTgfAg+6pcc1A6c/P+znfqhj5
+         D2ahVEXud88bF2HO5uBRY97+p2F/Wo7qd0mTfFYsDgUh6/oxrZYiyOVRV6lzgICRHK
+         UjOKzsQd/YzHLsG/3wosV7tHADShns2JHDc8s5M5GY/jz4gUUtMxjS4UJPALcEFQU8
+         GWoSNM9oC43Zg==
+Received: by pali.im (Postfix)
+        id 72680C9A; Mon, 22 Feb 2021 10:51:11 +0100 (CET)
+Date:   Mon, 22 Feb 2021 10:51:11 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     nnet <nnet@fastmail.fm>
+Cc:     Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>, a.heider@gmail.com,
+        andrew@lunn.ch, gerald@gk2.net, gregory.clement@bootlin.com,
+        kostap@marvell.com, linux-arm-kernel@lists.infradead.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luka.perkov@sartura.hr, miquel.raynal@bootlin.com,
+        mturquette@baylibre.com, rmk+kernel@armlinux.org.uk,
+        sboyd@kernel.org, tmn505@gmail.com, vladimir.vid@sartura.hr
+Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base
+ CPU speed to 800 MHz from 1000 MHz
+Message-ID: <20210222095111.zcokx4g3sqghjgyl@pali>
+References: <20210211234445.hbv2diphmgbir76u@pali>
+ <000b92cc-9b54-4af9-b95c-d1317fb6f97f@www.fastmail.com>
+ <20210213100139.ckrscepg72zjkj4f@pali>
+ <c0b02aa0-1789-43a3-8d73-057890f703f1@www.fastmail.com>
+ <20210214123310.d6armpep7kxbymbu@pali>
+ <675b7a74-066b-4dc0-8dcb-f11c5606ae52@www.fastmail.com>
+ <20210216104141.umy6zrrkal3dlj5j@pali>
+ <d057d7f7-27a5-45ec-88f0-a653572a8ca6@www.fastmail.com>
+ <20210219193302.odcjcaukxxjaedd5@pali>
+ <c0ade595-9bfa-4cfc-8c87-0e955173d5db@www.fastmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210205091311.129498-1-yang.yang@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZH0NOSxhNTkhIQxofVkpNSkhCQ0xITktOSklVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KyI6UQw*ED8UExgNKxkNFi8u
-        FTwaFBFVSlVKTUpIQkNMSE5LQ0NPVTMWGhIXVQIaFRxVAhoVHDsNEg0UVRgUFkVZV1kSC1lBWUpO
-        TFVLVUhKVUpJT1lXWQgBWUFPQ0hDNwY+
-X-HM-Tid: 0a77c92487c8b039kuuu6043aac0460
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0ade595-9bfa-4cfc-8c87-0e955173d5db@www.fastmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/5 17:13, Yang Yang wrote:
-> Hang occurs when user changes the scheduler queue depth, by writing to
-> the 'nr_requests' sysfs file of that device.
+On Sunday 21 February 2021 19:17:40 nnet wrote:
+> > Could you test if 1.155V voltage for L1 is stable on 1.2 GHz variant?
 > 
-> The details of the environment that we found the problem are as follows:
->    an eMMC block device
->    total driver tags: 16
->    default queue_depth: 32
->    kqd->async_depth initialized in kyber_init_sched() with queue_depth=32
+> ++#define MIN_VOLT_MV_FOR_L1_1200MHZ 1155
+> ...
+> ++              if (avs_min_l1 > dvfs->avs[0])
+> ++                      avs_min_l1 = dvfs->avs[0];
+> ++
+> ++              if (dvfs->avs[1] < avs_min_l1)
+> ++                      dvfs->avs[1] = avs_min_l1;
 > 
-> Then we change queue_depth to 256, by writing to the 'nr_requests' sysfs
-> file. But kqd->async_depth don't be updated after queue_depth changes.
-> Now the value of async depth is too small for queue_depth=256, this may
-> cause hang.
-> 
-> This patch introduces kyber_depth_updated(), so that kyber can update
-> async depth when queue depth changes.
-> 
-> Signed-off-by: Yang Yang <yang.yang@vivo.com>
-> ---
-> v2:
-> - Change the commit message
-> - Change from sbitmap::depth to 2^sbitmap::shift
-> ---
->   block/kyber-iosched.c | 29 +++++++++++++----------------
->   1 file changed, 13 insertions(+), 16 deletions(-)
-> 
-> diff --git a/block/kyber-iosched.c b/block/kyber-iosched.c
-> index dc89199bc8c6..17215b6bf482 100644
-> --- a/block/kyber-iosched.c
-> +++ b/block/kyber-iosched.c
-> @@ -353,19 +353,9 @@ static void kyber_timer_fn(struct timer_list *t)
->   	}
->   }
->   
-> -static unsigned int kyber_sched_tags_shift(struct request_queue *q)
-> -{
-> -	/*
-> -	 * All of the hardware queues have the same depth, so we can just grab
-> -	 * the shift of the first one.
-> -	 */
-> -	return q->queue_hw_ctx[0]->sched_tags->bitmap_tags->sb.shift;
-> -}
-> -
->   static struct kyber_queue_data *kyber_queue_data_alloc(struct request_queue *q)
->   {
->   	struct kyber_queue_data *kqd;
-> -	unsigned int shift;
->   	int ret = -ENOMEM;
->   	int i;
->   
-> @@ -400,9 +390,6 @@ static struct kyber_queue_data *kyber_queue_data_alloc(struct request_queue *q)
->   		kqd->latency_targets[i] = kyber_latency_targets[i];
->   	}
->   
-> -	shift = kyber_sched_tags_shift(q);
-> -	kqd->async_depth = (1U << shift) * KYBER_ASYNC_PERCENT / 100U;
-> -
->   	return kqd;
->   
->   err_buckets:
-> @@ -458,9 +445,19 @@ static void kyber_ctx_queue_init(struct kyber_ctx_queue *kcq)
->   		INIT_LIST_HEAD(&kcq->rq_list[i]);
->   }
->   
-> -static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
-> +static void kyber_depth_updated(struct blk_mq_hw_ctx *hctx)
->   {
->   	struct kyber_queue_data *kqd = hctx->queue->elevator->elevator_data;
-> +	struct blk_mq_tags *tags = hctx->sched_tags;
-> +	unsigned int shift = tags->bitmap_tags->sb.shift;
-> +
-> +	kqd->async_depth = (1U << shift) * KYBER_ASYNC_PERCENT / 100U;
-> +
-> +	sbitmap_queue_min_shallow_depth(tags->bitmap_tags, kqd->async_depth);
-> +}
-> +
-> +static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
-> +{
->   	struct kyber_hctx_data *khd;
->   	int i;
->   
-> @@ -502,8 +499,7 @@ static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
->   	khd->batching = 0;
->   
->   	hctx->sched_data = khd;
-> -	sbitmap_queue_min_shallow_depth(hctx->sched_tags->bitmap_tags,
-> -					kqd->async_depth);
-> +	kyber_depth_updated(hctx);
->   
->   	return 0;
->   
-> @@ -1022,6 +1018,7 @@ static struct elevator_type kyber_sched = {
->   		.completed_request = kyber_completed_request,
->   		.dispatch_request = kyber_dispatch_request,
->   		.has_work = kyber_has_work,
-> +		.depth_updated = kyber_depth_updated,
->   	},
->   #ifdef CONFIG_BLK_DEBUG_FS
->   	.queue_debugfs_attrs = kyber_queue_debugfs_attrs,
-> 
+> This works fine. Tested with switching 600MHz to 1.2GHz under load.
 
-Hello,
+Perfect! Therefore here is final version of patch 04/10 for both 1 GHz
+and 1.2 GHz variants of A3720 SoC. I will resend whole patch series.
+Could I add your Tested-by line to patch series?
 
-Ping...
-
-Thanks!
+diff --git a/drivers/cpufreq/armada-37xx-cpufreq.c b/drivers/cpufreq/armada-37xx-cpufreq.c
+index b8dc6c849..c7683d447 100644
+--- a/drivers/cpufreq/armada-37xx-cpufreq.c
++++ b/drivers/cpufreq/armada-37xx-cpufreq.c
+@@ -73,6 +73,8 @@
+ #define LOAD_LEVEL_NR	4
+ 
+ #define MIN_VOLT_MV 1000
++#define MIN_VOLT_MV_FOR_L1_1000MHZ 1108
++#define MIN_VOLT_MV_FOR_L1_1200MHZ 1155
+ 
+ /*  AVS value for the corresponding voltage (in mV) */
+ static int avs_map[] = {
+@@ -208,6 +210,8 @@ static u32 armada_37xx_avs_val_match(int target_vm)
+  * - L2 & L3 voltage should be about 150mv smaller than L0 voltage.
+  * This function calculates L1 & L2 & L3 AVS values dynamically based
+  * on L0 voltage and fill all AVS values to the AVS value table.
++ * When base CPU frequency is 1000 or 1200 MHz then there is additional
++ * minimal avs value for load L1.
+  */
+ static void __init armada37xx_cpufreq_avs_configure(struct regmap *base,
+ 						struct armada_37xx_dvfs *dvfs)
+@@ -239,6 +243,19 @@ static void __init armada37xx_cpufreq_avs_configure(struct regmap *base,
+ 		for (load_level = 1; load_level < LOAD_LEVEL_NR; load_level++)
+ 			dvfs->avs[load_level] = avs_min;
+ 
++		/*
++		 * Set the avs values for load L0 and L1 when base CPU frequency
++		 * is 1000/1200 MHz to its typical initial values according to
++		 * the Armada 3700 Hardware Specifications.
++		 */
++		if (dvfs->cpu_freq_max >= 1000*1000*1000) {
++			if (dvfs->cpu_freq_max >= 1200*1000*1000)
++				avs_min = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1200MHZ);
++			else
++				avs_min = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1000MHZ);
++			dvfs->avs[0] = dvfs->avs[1] = avs_min;
++		}
++
+ 		return;
+ 	}
+ 
+@@ -258,6 +275,26 @@ static void __init armada37xx_cpufreq_avs_configure(struct regmap *base,
+ 	target_vm = avs_map[l0_vdd_min] - 150;
+ 	target_vm = target_vm > MIN_VOLT_MV ? target_vm : MIN_VOLT_MV;
+ 	dvfs->avs[2] = dvfs->avs[3] = armada_37xx_avs_val_match(target_vm);
++
++	/*
++	 * Fix the avs value for load L1 when base CPU frequency is 1000/1200 MHz,
++	 * otherwise the CPU gets stuck when switching from load L1 to load L0.
++	 * Also ensure that avs value for load L1 is not higher than for L0.
++	 */
++	if (dvfs->cpu_freq_max >= 1000*1000*1000) {
++		u32 avs_min_l1;
++
++		if (dvfs->cpu_freq_max >= 1200*1000*1000)
++			avs_min_l1 = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1200MHZ);
++		else
++			avs_min_l1 = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1000MHZ);
++
++		if (avs_min_l1 > dvfs->avs[0])
++			avs_min_l1 = dvfs->avs[0];
++
++		if (dvfs->avs[1] < avs_min_l1)
++			dvfs->avs[1] = avs_min_l1;
++	}
+ }
+ 
+ static void __init armada37xx_cpufreq_avs_setup(struct regmap *base,
