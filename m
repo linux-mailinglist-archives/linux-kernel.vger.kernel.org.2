@@ -2,124 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C13320F93
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD6F320F94
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:49:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhBVCsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 21:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbhBVCsG (ORCPT
+        id S231880AbhBVCsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 21:48:38 -0500
+Received: from zg8tmty1ljiyny4xntqumjca.icoremail.net ([165.227.154.27]:57932
+        "HELO zg8tmty1ljiyny4xntqumjca.icoremail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S231681AbhBVCsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 21:48:06 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD12C061574;
-        Sun, 21 Feb 2021 18:47:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=5fFHNeJ8nqeNMa0DGHcRPcH+3cOuL7XbveGYEMFXDD0=; b=zv4edCC+GUZ4S1hKw2n1qVccHA
-        SyAdKzZ7/YhO7qCGFXhKPPMOylEbFxDAr3gyFcD+aWyX7xIx/6p393eHfreBW3ie4QmMpK/fm81Bn
-        VZg+wbJHlpaMhy/OexPEqs2ay95PZ97d006cElTeOeBdu50B12NLBz3h+Gl0Q54P4S2AQ4Cuq9yE8
-        BnfK+54Y9cUu52AYwqTyGiyPerKvaKwtu4W9BqkMib187LitIbX5AWpKuN8nhXdNCISllSyZV3nw0
-        RcPrJWAo0C5WilVYiksG1s7MyFmNEyhvjkZFw5dYkxLNaT+C6UTobqz3cDtYT2UmpB5ffJ3KahLbz
-        EwpxiH5Q==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lE1Fq-0001g8-QV; Mon, 22 Feb 2021 02:47:23 +0000
-Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
-To:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20210221154919.68050-1-john.wood@gmx.com>
- <20210221154919.68050-4-john.wood@gmx.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <f4fd9e44-539e-279e-a3a6-8af39f863f73@infradead.org>
-Date:   Sun, 21 Feb 2021 18:47:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <20210221154919.68050-4-john.wood@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 21 Feb 2021 21:48:35 -0500
+Received: from centos7u5.localdomain (unknown [202.43.158.76])
+        by c1app2 (Coremail) with SMTP id AgINCgBnvSk9GzNg+MkTAw--.26618S3;
+        Mon, 22 Feb 2021 10:47:26 +0800 (CST)
+From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+To:     akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+Subject: [PATCH] mm/dmapool: switch from strlcpy to strscpy
+Date:   Mon, 22 Feb 2021 10:47:30 +0800
+Message-Id: <1613962050-14188-1-git-send-email-daizhiyuan@phytium.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: AgINCgBnvSk9GzNg+MkTAw--.26618S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr4rAFyDtw4UArW7Ww4Durg_yoW3Zrc_u3
+        WUtFW8XF45JF9Fv3Z0krWqya47Aw1kuFyDAFs7Xr9rKayfJayDKFykXrya9ryUuw12qrZx
+        Cw1DArW3C34fGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbckFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJV
+        W0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUDWrAUUUUU=
+X-Originating-IP: [202.43.158.76]
+X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi--
+strlcpy is marked as deprecated in Documentation/process/deprecated.rst,
+and there is no functional difference when the caller expects truncation
+(when not checking the return value). strscpy is relatively better as it
+also avoids scanning the whole source string.
 
-scripts/kernel-doc does not like these items to be marked
-as being in kernel-doc notation. scripts/kernel-doc does not
-recognize them as one of: struct, union, enum, typedef, so it
-defaults to trying to interpret these as functions, and then
-says:
+Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+---
+ mm/dmapool.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-(I copied these blocks to my test megatest.c source file.)
-
-
-../src/megatest.c:1214: warning: cannot understand function prototype: 'const u64 BRUTE_EMA_WEIGHT_NUMERATOR = 7; '
-../src/megatest.c:1219: warning: cannot understand function prototype: 'const u64 BRUTE_EMA_WEIGHT_DENOMINATOR = 10; '
-../src/megatest.c:1228: warning: cannot understand function prototype: 'const unsigned char BRUTE_MAX_FAULTS = 200; '
-../src/megatest.c:1239: warning: cannot understand function prototype: 'const unsigned char BRUTE_MIN_FAULTS = 5; '
-../src/megatest.c:1249: warning: cannot understand function prototype: 'const u64 BRUTE_CRASH_PERIOD_THRESHOLD = 30000; '
-
-
-On 2/21/21 7:49 AM, John Wood wrote:
-> 
-> +/**
-> + * brute_stats_ptr_lock - Lock to protect the brute_stats structure pointer.
-> + */
-> +static DEFINE_RWLOCK(brute_stats_ptr_lock);
-
-> +/**
-> + * BRUTE_EMA_WEIGHT_NUMERATOR - Weight's numerator of EMA.
-> + */
-> +static const u64 BRUTE_EMA_WEIGHT_NUMERATOR = 7;
-
-> +/**
-> + * BRUTE_EMA_WEIGHT_DENOMINATOR - Weight's denominator of EMA.
-> + */
-> +static const u64 BRUTE_EMA_WEIGHT_DENOMINATOR = 10;
-
-> +/**
-> + * BRUTE_MAX_FAULTS - Maximum number of faults.
-> + *
-> + * If a brute force attack is running slowly for a long time, the application
-> + * crash period's EMA is not suitable for the detection. This type of attack
-> + * must be detected using a maximum number of faults.
-> + */
-> +static const unsigned char BRUTE_MAX_FAULTS = 200;
-
-> +/**
-> + * BRUTE_MIN_FAULTS - Minimum number of faults.
-> + *
-> + * The application crash period's EMA cannot be used until a minimum number of
-> + * data has been applied to it. This constraint allows getting a trend when this
-> + * moving average is used. Moreover, it avoids the scenario where an application
-> + * fails quickly from execve system call due to reasons unrelated to a real
-> + * attack.
-> + */
-> +static const unsigned char BRUTE_MIN_FAULTS = 5;
-
-> +/**
-> + * BRUTE_CRASH_PERIOD_THRESHOLD - Application crash period threshold.
-> + *
-> + * The units are expressed in milliseconds.
-> + *
-> + * A fast brute force attack is detected when the application crash period falls
-> + * below this threshold.
-> + */
-> +static const u64 BRUTE_CRASH_PERIOD_THRESHOLD = 30000;
-
-Basically we don't support scalars in kernel-doc notation...
-
+diff --git a/mm/dmapool.c b/mm/dmapool.c
+index a97c972..38cf2a7 100644
+--- a/mm/dmapool.c
++++ b/mm/dmapool.c
+@@ -156,7 +156,7 @@ struct dma_pool *dma_pool_create(const char *name, struct device *dev,
+ 	if (!retval)
+ 		return retval;
+ 
+-	strlcpy(retval->name, name, sizeof(retval->name));
++	strscpy(retval->name, name, sizeof(retval->name));
+ 
+ 	retval->dev = dev;
+ 
 -- 
-~Randy
+1.8.3.1
 
