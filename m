@@ -2,94 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8B0321C6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:10:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2355321C5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhBVQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:09:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39558 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231649AbhBVQGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:06:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614009917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fymWnnsJD9yF0KQNLsNQHmDiy5LI+Jp/eC+pUhdETqg=;
-        b=Mp7Bpn1ZgI/7N6RkHbPs4X/sFZCgDuoQZZUGyqGIpXabF5OX+SFPdoEPKuXIPJ6sQbIx1H
-        8ql2HRLV0xKd/P8wXFM6yWDZoL4ovfFOUr8VBGPiatlQodPGDTKSCSC2nIIJ1qMhKn/hoB
-        V34fL+EKXysVgBiQx9qfIzMYCuAODsc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E8B16AFD8;
-        Mon, 22 Feb 2021 16:05:16 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 17:05:16 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 08/14] printk: add syslog_lock
-Message-ID: <YDPWPI4aZat+D1DE@alley>
-References: <20210218081817.28849-1-john.ogness@linutronix.de>
- <20210218081817.28849-9-john.ogness@linutronix.de>
- <YC+9gc/IR8PzeIFf@alley>
- <875z2o15ha.fsf@jogness.linutronix.de>
+        id S231672AbhBVQGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:06:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231500AbhBVQFJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:05:09 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3053C06178C;
+        Mon, 22 Feb 2021 08:03:41 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id u14so19661668wri.3;
+        Mon, 22 Feb 2021 08:03:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M3HrPldQNINRDApkREUB3CejIa6YRDxufQU+GfYs42A=;
+        b=TJPGKawlVl43Zfhg5kXKIMNPLifrS+FKQLdlcAzrn82TAGzn6WwW0RxJY0PEWQUaT6
+         Ru480aODjlOuCph8XyCP+NyOWP8Q5jY9DykDQlAms2jwMGSwd4CYsWWScxrS5dmjBmRO
+         Cx5C5htnSYVfObO1nzUoW1GtQAAfJ6wZHNFfT74YvteqG+vdnbNj3xFwHUVMeQoysJHj
+         LeCijUp56FsvsML+pem4TB4AwBxXlxcsoPePfrczD3oNDxTY5mIzq9jr5gNqJrfz1KDA
+         uIGtlXGQYQoxoQpQpHge6TXy4kza72QrYxojC62MN4sDmXCViR34ghY7dKf3yynYP1Vd
+         zEHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M3HrPldQNINRDApkREUB3CejIa6YRDxufQU+GfYs42A=;
+        b=rvpFyjJiMJg/XDYUddPlz2eE78Gv4Dc3j2tL2swueTyilH0kxiG/ufw2Wh1ie5DWRC
+         rPTzokrkyoEzKA00PJIoKG5djXdgYYo7zc55WF01N8O9bfWNeVnnNNYtIcnxqG2j89pd
+         CpjlxQ9NUh3lOqwYPMFd8vweFpVUkTns6dZ8C4xmW/VNC17TsI4q2UScagWgL31SNUM3
+         A9ShIL4iR0PeT1H8gDfM76wYZ0WA2KAFxoB8I9DHdxSrOS/s0EQSxuR0ag+K6LCI4O4B
+         qoyTINLhHHLbeVmjGYSpWlGVHSJbiS1fOZ7/RTlTWtT50M6hGTbN2QzQ3xajROdPIR6n
+         vzhQ==
+X-Gm-Message-State: AOAM532e0eWZGto0hFxGeOUg/3uVCj4/dPgTgy3M2DNUU33wyQfDaEu6
+        YgMXfaXGGrtCBe7k8ArRiyN2DsN4DgLZdiN2sRigVbHxs1U=
+X-Google-Smtp-Source: ABdhPJzAmISKz624HeEpKgKdI0aNDUTbh4qfVREBzH+bS3Xmz/KkwIDif6koWv7cOeMcJe0BabSA6S2nRXomVyEYk3g=
+X-Received: by 2002:adf:b60f:: with SMTP id f15mr22500863wre.83.1614009820457;
+ Mon, 22 Feb 2021 08:03:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875z2o15ha.fsf@jogness.linutronix.de>
+References: <20210216200909.19039-1-jonathan@marek.ca> <CAF6AEGv53nnzqMgTfSA6t2YpHx1dDW8UqnH9Gw0w3p8bf0mTLw@mail.gmail.com>
+ <775436ba-c94a-ab22-d65b-b2391047ec65@codeaurora.org> <20210217190820.GA2229@jcrouse1-lnx.qualcomm.com>
+ <CAF6AEGsHws23ozeJ8G23LFQ8J=CVVrx5xvkSgBuE_uSwT4YurQ@mail.gmail.com>
+ <74d1277e-295f-0996-91c3-05cfce8d3a0e@marek.ca> <e4b62857-bd4d-cca6-0d6b-b9cc960b52a2@codeaurora.org>
+ <CAF6AEGsWCrkOgMVxnx53k8b_o7xy3KWv9VaNRoY44+4GfXtWdg@mail.gmail.com>
+ <757b557a-b5f6-6018-caa4-34bffb1b60b7@codeaurora.org> <CAF6AEGv-A5=4z7ZO-SytmivZTfKPYxhAjmRLVsQnrT7_pYCDtQ@mail.gmail.com>
+ <0f057c99-ec94-f3e3-796f-b73a609f735d@codeaurora.org>
+In-Reply-To: <0f057c99-ec94-f3e3-796f-b73a609f735d@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 22 Feb 2021 08:06:38 -0800
+Message-ID: <CAF6AEGvXYmcj0YuciZATveALJEP6DdFiwmtnYevrK2SEOJNZGg@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/a6xx: fix for kernels without CONFIG_NVMEM
+To:     Akhil P Oommen <akhilpo@codeaurora.org>
+Cc:     Jonathan Marek <jonathan@marek.ca>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-02-19 15:45:21, John Ogness wrote:
-> On 2021-02-19, Petr Mladek <pmladek@suse.com> wrote:
-> >> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> >> index 20c21a25143d..401df370832b 100644
-> >> --- a/kernel/printk/printk.c
-> >> +++ b/kernel/printk/printk.c
-> >> +/* Return a consistent copy of @syslog_seq. */
-> >> +static u64 read_syslog_seq_irq(void)
-> >> +{
-> >> +	u64 seq;
-> >> +
-> >> +	raw_spin_lock_irq(&syslog_lock);
-> >> +	seq = syslog_seq;
-> >> +	raw_spin_unlock_irq(&syslog_lock);
+On Mon, Feb 22, 2021 at 7:45 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+>
+> On 2/19/2021 9:30 PM, Rob Clark wrote:
+> > On Fri, Feb 19, 2021 at 2:44 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+> >>
+> >> On 2/18/2021 9:41 PM, Rob Clark wrote:
+> >>> On Thu, Feb 18, 2021 at 4:28 AM Akhil P Oommen <akhilpo@codeaurora.org> wrote:
+> >>>>
+> >>>> On 2/18/2021 2:05 AM, Jonathan Marek wrote:
+> >>>>> On 2/17/21 3:18 PM, Rob Clark wrote:
+> >>>>>> On Wed, Feb 17, 2021 at 11:08 AM Jordan Crouse
+> >>>>>> <jcrouse@codeaurora.org> wrote:
+> >>>>>>>
+> >>>>>>> On Wed, Feb 17, 2021 at 07:14:16PM +0530, Akhil P Oommen wrote:
+> >>>>>>>> On 2/17/2021 8:36 AM, Rob Clark wrote:
+> >>>>>>>>> On Tue, Feb 16, 2021 at 12:10 PM Jonathan Marek <jonathan@marek.ca>
+> >>>>>>>>> wrote:
+> >>>>>>>>>>
+> >>>>>>>>>> Ignore nvmem_cell_get() EOPNOTSUPP error in the same way as a
+> >>>>>>>>>> ENOENT error,
+> >>>>>>>>>> to fix the case where the kernel was compiled without CONFIG_NVMEM.
+> >>>>>>>>>>
+> >>>>>>>>>> Fixes: fe7952c629da ("drm/msm: Add speed-bin support to a618 gpu")
+> >>>>>>>>>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> >>>>>>>>>> ---
+> >>>>>>>>>>     drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
+> >>>>>>>>>>     1 file changed, 3 insertions(+), 3 deletions(-)
+> >>>>>>>>>>
+> >>>>>>>>>> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >>>>>>>>>> b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >>>>>>>>>> index ba8e9d3cf0fe..7fe5d97606aa 100644
+> >>>>>>>>>> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >>>>>>>>>> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> >>>>>>>>>> @@ -1356,10 +1356,10 @@ static int a6xx_set_supported_hw(struct
+> >>>>>>>>>> device *dev, struct a6xx_gpu *a6xx_gpu,
+> >>>>>>>>>>
+> >>>>>>>>>>            cell = nvmem_cell_get(dev, "speed_bin");
+> >>>>>>>>>>            /*
+> >>>>>>>>>> -        * -ENOENT means that the platform doesn't support
+> >>>>>>>>>> speedbin which is
+> >>>>>>>>>> -        * fine
+> >>>>>>>>>> +        * -ENOENT means no speed bin in device tree,
+> >>>>>>>>>> +        * -EOPNOTSUPP means kernel was built without CONFIG_NVMEM
+> >>>>>>>>>
+> >>>>>>>>> very minor nit, it would be nice to at least preserve the gist of the
+> >>>>>>>>> "which is fine" (ie. some variation of "this is an optional thing and
+> >>>>>>>>> things won't catch fire without it" ;-))
+> >>>>>>>>>
+> >>>>>>>>> (which is, I believe, is true, hopefully Akhil could confirm.. if not
+> >>>>>>>>> we should have a harder dependency on CONFIG_NVMEM..)
+> >>>>>>>> IIRC, if the gpu opp table in the DT uses the 'opp-supported-hw'
+> >>>>>>>> property,
+> >>>>>>>> we will see some error during boot up if we don't call
+> >>>>>>>> dev_pm_opp_set_supported_hw(). So calling "nvmem_cell_get(dev,
+> >>>>>>>> "speed_bin")"
+> >>>>>>>> is a way to test this.
+> >>>>>>>>
+> >>>>>>>> If there is no other harm, we can put a hard dependency on
+> >>>>>>>> CONFIG_NVMEM.
+> >>>>>>>
+> >>>>>>> I'm not sure if we want to go this far given the squishiness about
+> >>>>>>> module
+> >>>>>>> dependencies. As far as I know we are the only driver that uses this
+> >>>>>>> seriously
+> >>>>>>> on QCOM SoCs and this is only needed for certain targets. I don't
+> >>>>>>> know if we
+> >>>>>>> want to force every target to build NVMEM and QFPROM on our behalf.
+> >>>>>>> But maybe
+> >>>>>>> I'm just saying that because Kconfig dependencies tend to break my
+> >>>>>>> brain (and
+> >>>>>>> then Arnd has to send a patch to fix it).
+> >>>>>>>
+> >>>>>>
+> >>>>>> Hmm, good point.. looks like CONFIG_NVMEM itself doesn't have any
+> >>>>>> other dependencies, so I suppose it wouldn't be the end of the world
+> >>>>>> to select that.. but I guess we don't want to require QFPROM
+> >>>>>>
+> >>>>>> I guess at the end of the day, what is the failure mode if you have a
+> >>>>>> speed-bin device, but your kernel config misses QFPROM (and possibly
+> >>>>>> NVMEM)?  If the result is just not having the highest clk rate(s)
+> >>>>
+> >>>> Atleast on sc7180's gpu, using an unsupported FMAX breaks gmu. It won't
+> >>>> be very obvious what went wrong when this happens!
+> >>>
+> >>> Ugg, ok..
+> >>>
+> >>> I suppose we could select NVMEM, but not QFPROM, and then the case
+> >>> where QFPROM is not enabled on platforms that have the speed-bin field
+> >>> in DT will fail gracefully and all other platforms would continue on
+> >>> happily?
+> >>>
+> >>> BR,
+> >>> -R
+> >>
+> >> Sounds good to me.
+> >>
 > >
-> > Is there any particular reason to disable interrupts here?
+> > You probably should do a quick test with NVMEM enabled but QFPROM
+> > disabled to confirm my theory, but I *think* that should work
 > >
-> > It would make sense only when the lock could be taken in IRQ
-> > context. Then we would need to always disable interrupts when
-> > the lock is taken. And if it is taken in IRQ context, we would
-> > need to safe flags.
-> 
-> All other instances of locking @syslog_lock are done with interrupts
-> disabled. And we have:
-> 
-> register_console()
->   logbuf_lock_irqsave()
->     raw_spin_lock(&syslog_lock)
+> > BR,
+> > -R
+> >
+>
+> I tried it on an sc7180 device. The suggested combo (CONFIG_NVMEM + no
+> CONFIG_QCOM_QFPROM) makes the gpu probe fail with error "failed to read
+> speed-bin. Some OPPs may not be supported by hardware". This is good
+> enough clue for the developer that he should fix the broken speedbin
+> detection.
+>
 
-I see. We should revisit this after removing logbuf_lock and
-printk_safe context.
+Ok, great.. then sounds like selecting NVMEM is a good approach
 
-> Looking back through history, I found that locking of the "console lock"
-> in register_console() was changed from spin_lock_irq() to
-> spin_lock_irqsave() for 2.3.15pre1 [0]. The only reason I can find why
-> that was done is because sparc64 was regstering its console in a PROM
-> callback (the comments there: "Pretty sick eh?").
-
-Note that console_lock was a spinlock in 2.3.15.pre1. I see it defined
-in kernel/printk.c as:
-
-spinlock_t console_lock = SPIN_LOCK_UNLOCKED;
-
-But it is a sleeping semaphore these days. As a result,
-register_console(), as it is now, must not be called in an interrupt context.
-
-Best Regards,
-Petr
+BR,
+-R
