@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FEC32192E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DE332195C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbhBVNlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:41:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56550 "EHLO mail.kernel.org"
+        id S231424AbhBVNtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:49:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230486AbhBVMng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:43:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BEE564F34;
-        Mon, 22 Feb 2021 12:40:11 +0000 (UTC)
+        id S231292AbhBVMpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:45:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9967464F0B;
+        Mon, 22 Feb 2021 12:41:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997612;
-        bh=Y4EgobtCuJy6vPELmhRZdgR6r4br66n4aCvLTUoZy6g=;
+        s=korg; t=1613997697;
+        bh=JfVYjEi0zIlpP6xg5PEVzrHOmDViZ2UvhwrbqBwjkHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZN0iwdpB/Nmvam94N9LpW1MwGc/T3Pv9U1YKhcOChudx/x+xaVMuHF1rXFw1soG8D
-         VylBg0bJnV4jU3LDQ4gsnnjrrq9ZcdZ2Z9O8QlQlvip63GfE0B/qE/FFWTVXKQE+aA
-         4Pzj3/TBlxglCtLLiy9k44Sdnyvq8bPqaapmA1fY=
+        b=J9WekR8tcQcmzhI2JUrgZ/Uzq77WQORV28fzMklLwNAzD32V3fT7PMzmRfqt2NzUA
+         A78qVGSGoe0l6Yy/wAJZI3wnbGP9etKAJ2lyX5LSZbo/M+iuZA0DULY5NC2YjwAUUo
+         4ufJWr0MnOify1gg0DLgtj1kuKUvdir8TAdV+KJg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.4 31/35] xen-netback: dont "handle" error by BUG()
-Date:   Mon, 22 Feb 2021 13:36:27 +0100
-Message-Id: <20210222121022.171009617@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 30/49] usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
+Date:   Mon, 22 Feb 2021 13:36:28 +0100
+Message-Id: <20210222121027.167570999@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
-References: <20210222121013.581198717@linuxfoundation.org>
+In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
+References: <20210222121022.546148341@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,44 +41,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-commit 3194a1746e8aabe86075fd3c5e7cf1f4632d7f16 upstream.
+commit fca3f138105727c3a22edda32d02f91ce1bf11c9 upstream
 
-In particular -ENOMEM may come back here, from set_foreign_p2m_mapping().
-Don't make problems worse, the more that handling elsewhere (together
-with map's status fields now indicating whether a mapping wasn't even
-attempted, and hence has to be considered failed) doesn't require this
-odd way of dealing with errors.
+Originally the procedure of the ULPI transaction finish detection has been
+developed as a simple busy-loop with just decrementing counter and no
+delays. It's wrong since on different systems the loop will take a
+different time to complete. So if the system bus and CPU are fast enough
+to overtake the ULPI bus and the companion PHY reaction, then we'll get to
+take a false timeout error. Fix this by converting the busy-loop procedure
+to take the standard bus speed, address value and the registers access
+mode into account for the busy-loop delay calculation.
 
-This is part of XSA-362.
+Here is the way the fix works. It's known that the ULPI bus is clocked
+with 60MHz signal. In accordance with [1] the ULPI bus protocol is created
+so to spend 5 and 6 clock periods for immediate register write and read
+operations respectively, and 6 and 7 clock periods - for the extended
+register writes and reads. Based on that we can easily pre-calculate the
+time which will be needed for the controller to perform a requested IO
+operation. Note we'll still preserve the attempts counter in case if the
+DWC USB3 controller has got some internals delays.
 
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Juergen Gross <jgross@suse.com>
+[1] UTMI+ Low Pin Interface (ULPI) Specification, Revision 1.1,
+    October 20, 2004, pp. 30 - 36.
+
+Fixes: 88bc9d194ff6 ("usb: dwc3: add ULPI interface support")
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Link: https://lore.kernel.org/r/20201210085008.13264-3-Sergey.Semin@baikalelectronics.ru
+Cc: stable <stable@vger.kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+[sudip: adjust context]
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/xen-netback/netback.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/usb/dwc3/ulpi.c |   18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1792,13 +1792,11 @@ int xenvif_tx_action(struct xenvif_queue
- 		return 0;
+--- a/drivers/usb/dwc3/ulpi.c
++++ b/drivers/usb/dwc3/ulpi.c
+@@ -10,6 +10,8 @@
+  * published by the Free Software Foundation.
+  */
  
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0) {
-+	if (nr_mops != 0)
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
--		BUG_ON(ret);
--	}
++#include <linux/delay.h>
++#include <linux/time64.h>
+ #include <linux/ulpi/regs.h>
  
- 	work_done = xenvif_tx_submit(queue);
+ #include "core.h"
+@@ -20,12 +22,22 @@
+ 		DWC3_GUSB2PHYACC_ADDR(ULPI_ACCESS_EXTENDED) | \
+ 		DWC3_GUSB2PHYACC_EXTEND_ADDR(a) : DWC3_GUSB2PHYACC_ADDR(a))
  
+-static int dwc3_ulpi_busyloop(struct dwc3 *dwc)
++#define DWC3_ULPI_BASE_DELAY	DIV_ROUND_UP(NSEC_PER_SEC, 60000000L)
++
++static int dwc3_ulpi_busyloop(struct dwc3 *dwc, u8 addr, bool read)
+ {
++	unsigned long ns = 5L * DWC3_ULPI_BASE_DELAY;
+ 	unsigned int count = 1000;
+ 	u32 reg;
+ 
++	if (addr >= ULPI_EXT_VENDOR_SPECIFIC)
++		ns += DWC3_ULPI_BASE_DELAY;
++
++	if (read)
++		ns += DWC3_ULPI_BASE_DELAY;
++
+ 	while (count--) {
++		ndelay(ns);
+ 		reg = dwc3_readl(dwc->regs, DWC3_GUSB2PHYACC(0));
+ 		if (!(reg & DWC3_GUSB2PHYACC_BUSY))
+ 			return 0;
+@@ -44,7 +56,7 @@ static int dwc3_ulpi_read(struct device
+ 	reg = DWC3_GUSB2PHYACC_NEWREGREQ | DWC3_ULPI_ADDR(addr);
+ 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
+ 
+-	ret = dwc3_ulpi_busyloop(dwc);
++	ret = dwc3_ulpi_busyloop(dwc, addr, true);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -62,7 +74,7 @@ static int dwc3_ulpi_write(struct device
+ 	reg |= DWC3_GUSB2PHYACC_WRITE | val;
+ 	dwc3_writel(dwc->regs, DWC3_GUSB2PHYACC(0), reg);
+ 
+-	return dwc3_ulpi_busyloop(dwc);
++	return dwc3_ulpi_busyloop(dwc, addr, false);
+ }
+ 
+ static const struct ulpi_ops dwc3_ulpi_ops = {
 
 
