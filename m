@@ -2,150 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4D6C321E91
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:56:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CD4321E92
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:56:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBVRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:55:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbhBVRzl (ORCPT
+        id S231838AbhBVR4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:56:16 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11329 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230398AbhBVR4L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:55:41 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82F1C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:55:11 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id q7so14225334iob.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:55:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=4iQ/6A1pHeGyjMlUbh4JKbPflnnpW7pvKy+xN/oRk5Y=;
-        b=Ctq58+IKe14DzaazBQFfQpQop6MG4aYU6Z5+wu/jIdnqat1f5A2aZPnQgtLwjx7HDD
-         IfaxJO4Mn6OpnH5bljeYxw6T+sbJh1L7obl05QFMtBwmz/NXJS9Tsvt+xLTU7DUIbLtJ
-         7Tcd7hWJ3W9wDPP1rd/xiD4ch7FZQLJCHun4o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4iQ/6A1pHeGyjMlUbh4JKbPflnnpW7pvKy+xN/oRk5Y=;
-        b=dqK+RhcrjV5VSqER36OOBPhdHZsLave6b6e9VqEYFQVIDXLILjKQ5tDwJC36GTyLsN
-         DzfF2e5kn+1ki6t5E3EMQd/Y8HzEhlsGEfJAbtRck4uOLWh9PxVmvsFwP11BvVzZvDlM
-         idM8cQAxrrjyjGqgx7Ic7W8aOnqqzLRf92pC8UIRJcfFxCrYONEezTkI146APptq/z05
-         pFoutQzr/0XzwrmN/aicHhA3Ebl1IXXX5H7OOhCpVEd3ijn+m1J6oJ9LONMud/1cpbnI
-         MN1v33dql7zhn/w3McyreLlHfAROYyOPJZhCx/5okLqtW0dIxF4fX3Y9ZNTgIzWGSQov
-         eF5g==
-X-Gm-Message-State: AOAM532sGi6CUCn/h1cU4wVPKQWXHRlJ1aj+uecJ9JmhQ7nBAGhhju5P
-        kYDkgAmZJc/7+f8/61FhHO5AuL0awZDFKA==
-X-Google-Smtp-Source: ABdhPJzxm2PkzLxteZZw8GajkbO500BR3wcCKJELWz5XqxFC0IfTEpzNHbP9K5Jv+kGcI/WnHtrOqA==
-X-Received: by 2002:a6b:b2c2:: with SMTP id b185mr16611880iof.104.1614016511045;
-        Mon, 22 Feb 2021 09:55:11 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id j25sm13656433iog.27.2021.02.22.09.55.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 09:55:10 -0800 (PST)
-Subject: Re: [PATCH net-next v2 2/3] net: ethernet: rmnet: Support for
- downlink MAPv5 checksum offload
-To:     Sharath Chandra Vurukala <sharathv@codeaurora.org>,
-        davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1614012946-23506-1-git-send-email-sharathv@codeaurora.org>
- <1614012946-23506-3-git-send-email-sharathv@codeaurora.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <f968761d-2567-4538-c4cd-e1cb66d47bcd@ieee.org>
-Date:   Mon, 22 Feb 2021 11:55:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 22 Feb 2021 12:56:11 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6033f0120001>; Mon, 22 Feb 2021 09:55:30 -0800
+Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
+ 2021 17:55:28 +0000
+Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
+ (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
+ 2021 17:55:27 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Mon, 22 Feb 2021 17:55:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DmEawTFPNwOOikfjgd5A4eX2D+a82IsVFjojxVVUgpEjie8sAghFrADSexxrlTPNNQmbTZJ0iOMFJvFQ5c03NHUcMD4TCJxdJXLZUAQM5nuwGA60cTH5F0CYZiPuBS//3U6rwOc2bxAia7kxZxefOtgXRL5tPso5IiC3XRWCG9+SkcyTQ0zJXwmj2owzayq5Y7o2+2lp2Yg3dFkT8288yPkaaC1hadPpfk/VoRnvEQAY4Zb8PLkoDB4bLh0LTfUTWfZ/zmyoc8Ifd6WgOqjDMKA/FqCuhGWkahI6tz8DOxOmQCNJeZ+GH2Or0eK9X7mSb3HouTYD8WuMuDPX8s5nOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qxW56EmplwlaPPUdRNeEHUkMVOPoRIxsUQLO8MzsIyA=;
+ b=MtU2NNWtZsYQxQQMM54k0vxn1uzPlsFxAjUaMxJcywrTVlcqyZJP2bvcDeD7VFWcO6WzknslOvtVb3+IzUeDyh4Xu6EqYHFSX4dXqOI1ZJl4IxPyhYgvk2CjYNqnxqqlmK4CtH6HK6/K+c/IJ1isZMkpLi9IKJyagGf/p4IU2nwEVdyBE0fO8AuPar9awIjV6sS7pxqL0/FVq2Ib8KZRgYz1IBQ7zgtxVsutxcRdzQvFbJQYR4i1bnqwnZhaYOQieI4mHXCmS15oxAP0vgCw1kxXDh8Wpbr5ejhinbr6uJNabTcJIlPXNnkmAkzdOtlka154IgUxEOVCZZdXPGsW8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3594.namprd12.prod.outlook.com (2603:10b6:5:11f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Mon, 22 Feb
+ 2021 17:55:25 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.045; Mon, 22 Feb 2021
+ 17:55:25 +0000
+Date:   Mon, 22 Feb 2021 13:55:23 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
+Subject: Re: [RFC PATCH 10/10] vfio/type1: Register device notifier
+Message-ID: <20210222175523.GQ4247@nvidia.com>
+References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
+ <161401275279.16443.6350471385325897377.stgit@gimli.home>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <161401275279.16443.6350471385325897377.stgit@gimli.home>
+X-ClientProxiedBy: BL1PR13CA0016.namprd13.prod.outlook.com
+ (2603:10b6:208:256::21) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <1614012946-23506-3-git-send-email-sharathv@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0016.namprd13.prod.outlook.com (2603:10b6:208:256::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.9 via Frontend Transport; Mon, 22 Feb 2021 17:55:25 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lEFQa-00ETB7-0X; Mon, 22 Feb 2021 13:55:24 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1614016530; bh=qxW56EmplwlaPPUdRNeEHUkMVOPoRIxsUQLO8MzsIyA=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=CGXQcccrbOS9ZhylsHR9avGGZgxNX9jt5LSUhdCc8PWm/WisU7m6lK8bZhSPIGznv
+         lTTLktjV4DYB8J/vShn09G6ZP+T4pNGBUODpvpKlR+ekJywxQafAxsRKgvmvhXRUuk
+         tYMgHzESq812241l0vtWi/fgfEVSpLzA1mYiXZHUdIXfsjr8IAc70kjGar5AVdB8Sz
+         C7HzRF/7qfeCMcs1ST71PsXkeV+bnpaDunSJ5HtH5u3gFGuPdkIRKUdt40I9jHvIjC
+         2SkIEvCA9ToBFBgO8loNroliIeDKqFJA3REAFTZ07oJp8M0U/hnxNN3dB3P5dlCoBy
+         xeCP3b/6bbr+w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 10:55 AM, Sharath Chandra Vurukala wrote:
-> Adding support for processing of Mapv5 downlink packets.
-> It involves parsing the Mapv5 packet and checking the csum header
-> to know whether the hardware has validated the checksum and is
-> valid or not.
+On Mon, Feb 22, 2021 at 09:52:32AM -0700, Alex Williamson wrote:
+> Introduce a new default strict MMIO mapping mode where the vma for
+> a VM_PFNMAP mapping must be backed by a vfio device.  This allows
+> holding a reference to the device and registering a notifier for the
+> device, which additionally keeps the device in an IOMMU context for
+> the extent of the DMA mapping.  On notification of device release,
+> automatically drop the DMA mappings for it.
 > 
-> Based on the checksum valid bit the corresponding stats are
-> incremented and skb->ip_summed is marked either CHECKSUM_UNNECESSARY
-> or left as CHEKSUM_NONE to let network stack revalidated the checksum
-> and update the respective snmp stats.
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+>  drivers/vfio/vfio_iommu_type1.c |  124 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 123 insertions(+), 1 deletion(-)
 > 
-> Current MapV1 header has been modified, the reserved field in the
-> Mapv1 header is now used for next header indication.
-> 
-> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
-> ---
+> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+> index b34ee4b96a4a..2a16257bd5b6 100644
+> +++ b/drivers/vfio/vfio_iommu_type1.c
+> @@ -61,6 +61,11 @@ module_param_named(dma_entry_limit, dma_entry_limit, uint, 0644);
+>  MODULE_PARM_DESC(dma_entry_limit,
+>  		 "Maximum number of user DMA mappings per container (65535).");
+>  
+> +static bool strict_mmio_maps = true;
+> +module_param_named(strict_mmio_maps, strict_mmio_maps, bool, 0644);
+> +MODULE_PARM_DESC(strict_mmio_maps,
+> +		 "Restrict to safe DMA mappings of device memory (true).");
 
-. . .
+I think this should be a kconfig, historically we've required kconfig
+to opt-in to unsafe things that could violate kernel security. Someone
+building a secure boot trusted kernel system should not have an
+options for userspace to just turn off protections.
 
+> +/* Req separate object for async removal from notifier vs dropping vfio_dma */
+> +struct pfnmap_obj {
+> +	struct notifier_block	nb;
+> +	struct work_struct	work;
+> +	struct vfio_iommu	*iommu;
+> +	struct vfio_device	*device;
+> +};
 
-> diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
-> index 9661416..a6de521 100644
-> --- a/include/linux/if_rmnet.h
-> +++ b/include/linux/if_rmnet.h
-> @@ -1,5 +1,5 @@
->   /* SPDX-License-Identifier: GPL-2.0-only
-> - * Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2013-2019, 2021 The Linux Foundation. All rights reserved.
->    */
->   
->   #ifndef _LINUX_IF_RMNET_H_
-> @@ -8,11 +8,11 @@
->   struct rmnet_map_header {
->   #if defined(__LITTLE_ENDIAN_BITFIELD)
->   	u8  pad_len:6;
-> -	u8  reserved_bit:1;
-> +	u8  next_hdr:1;
->   	u8  cd_bit:1;
->   #elif defined (__BIG_ENDIAN_BITFIELD)
->   	u8  cd_bit:1;
-> -	u8  reserved_bit:1;
-> +	u8  next_hdr:1;
->   	u8  pad_len:6;
->   #else
->   #error	"Please fix <asm/byteorder.h>"
+So this is basically the dmabuf, I think it would be simple enough to
+go in here and change it down the road if someone had interest.
 
-. . .
+> +static void unregister_device_bg(struct work_struct *work)
+> +{
+> +	struct pfnmap_obj *pfnmap = container_of(work, struct pfnmap_obj, work);
+> +
+> +	vfio_device_unregister_notifier(pfnmap->device, &pfnmap->nb);
+> +	vfio_device_put(pfnmap->device);
 
-I know that KS said he is "not convinced that it is
-helping improve anything" and that it "just adds a
-big overhead of testing everything again without
-any improvement of performance or readability of
-code."  But I will ask again that these structures
-be redefined to use host byte-order masks and
-structure fields with clearly defined endianness.
+The device_put keeps the device from becoming unregistered, but what
+happens during the hot reset case? Is this what the cover letter
+was talking about? CPU access is revoked but P2P is still possible?
 
-I strongly disagree with the statement from KS.
-Specifically I feel the whole notion of "bit field
-endianness" is not obvious, and makes it harder than
-necessary to understand how the bits are laid out
-in memory.  It also obscures in code that bit fields
-have certain properties that are different from other
-"normal" struct field types (such as alignment, size,
-or atomicity of the field).  And I say this despite
-knowing this pattern is used elsewhere in the
-networking code.
+> +static int vfio_device_nb_cb(struct notifier_block *nb,
+> +			     unsigned long action, void *unused)
+> +{
+> +	struct pfnmap_obj *pfnmap = container_of(nb, struct pfnmap_obj, nb);
+> +
+> +	switch (action) {
+> +	case VFIO_DEVICE_RELEASE:
+> +	{
+> +		struct vfio_dma *dma, *dma_last = NULL;
+> +		int retries = 0;
+> +again:
+> +		mutex_lock(&pfnmap->iommu->lock);
+> +		dma = pfnmap_find_dma(pfnmap);
 
-In the first version of the series, Jakub asked that
-the conversion be done.  I offered to implement the
-change to the existing code, and that offer stands.
-I can do so fairly quickly if you would like to have
-it soon to build upon.
+Feels a bit strange that the vfio_dma isn't linked to the pfnmap_obj
+instead of searching the entire list?
 
-Either way, I would like a chance to review the
-rest of this series, but I'd like to get this issue
-resolved (either decide it must be done or not)
-before I spend more time on that.
+> @@ -549,8 +625,48 @@ static int vaddr_get_pfn(struct vfio_iommu *iommu, struct vfio_dma *dma,
+>  		if (ret == -EAGAIN)
+>  			goto retry;
 
-Thanks.
+I'd prefer this was written a bit differently, I would like it very
+much if this doesn't mis-use follow_pte() by returning pfn outside
+the lock.
 
-					-Alex
+vaddr_get_bar_pfn(..)
+{
+        vma = find_vma_intersection(mm, vaddr, vaddr + 1);
+	if (!vma)
+           return -ENOENT;
+        if ((vma->vm_flags & VM_DENYWRITE) && (prot & PROT_WRITE)) // Check me
+           return -EFAULT;
+        device = vfio_device_get_from_vma(vma);
+	if (!device)
+           return -ENOENT;
+
+	/*
+         * Now do the same as vfio_pci_mmap_fault() - the vm_pgoff must
+	 * be the physical pfn when using this mechanism. Delete follow_pte entirely()
+         */
+        pfn = (vaddr - vma->vm_start)/PAGE_SIZE + vma->vm_pgoff
+	
+        /* de-dup device and record that we are using device's pages in the
+	   pfnmap */
+        ...
+}
+
+This would be significantly better if it could do whole ranges instead
+of page at a time.
+
+Jason
