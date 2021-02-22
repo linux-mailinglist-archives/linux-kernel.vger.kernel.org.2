@@ -2,112 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42CF8321A6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:35:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB91B321A72
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:36:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbhBVOfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:35:16 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:45604 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231462AbhBVObc (ORCPT
+        id S231309AbhBVOfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231705AbhBVOe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:31:32 -0500
-Received: by mail-ot1-f50.google.com with SMTP id l16so3115785oti.12;
-        Mon, 22 Feb 2021 06:31:15 -0800 (PST)
+        Mon, 22 Feb 2021 09:34:28 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E47C06178A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:33:41 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id u8so13373422ior.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:33:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JO32q5fPn0DGWos0JK/kEGYznlXgZQ3x7QyQiycLWM4=;
+        b=09PGHVV9iHjJ2KgS1fZmUroAPCg2DpQj8+75pLjnHRIkUBUHc1dcDMPB3m5YmdJk/N
+         KrH3S+VlUktXPgbTuCSFX9ATlQ9EyCvg+kZDD38HIqEM4t4vh6NL/L5NII7SESQLVJvE
+         98vyscYJcD9WQfOxVsUMoKKieXsvDDAbcjpVXiDnhH6Cew48TLBMMQfCVZl2x2BhVeIz
+         or2YjVDlVUCpyq5Fyv6mYxS2tvvb/QQon983I/OlvmQ+pIBpVc+INCaWtC/025lOqPZP
+         GUV+TCR3Z7MhLQ08pKOslWuLi37+VYC2Ap6q/Nyb/Xa1QAase9MI0chH8qm3VkZY981N
+         /+DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QLCazOgCqLhMhGLjagf/Fn5ANchaVeFWA3OGXEWxjbw=;
-        b=BVvuJjnAPGScG4locryb9JkYRx+hvBq5tIpFZWvvdXXz17ZhfveHAMlcfAKovZQWWE
-         p4ioM1T7j3+5yn3e5yETdjuU9/2yFNE1q2rhx5NaYHf2N8iPlVd7tk0Gl+VtcEuDSAAG
-         vRuPO2zbMxCY/68kBM4XKO9sEwDLiaOpFl/7S8NFRPbevN/WaQenVLEu7ybQc3N3KmWL
-         pEdN1URexsi0NtCw6QdAU0duWSswa/HLQGdafFJBTX5tiTGnPql4qIcH0W+IIH31QfE/
-         ZFDOOpxtxZoJaEA1wWO7M81lB9uxelyK+lxebXDzzTEurnwOLSByUB2XTTuw1Fb9g1m5
-         KCrg==
-X-Gm-Message-State: AOAM532QhvEaRnOgUU0GXtyeiot9g/zdPRDEjjYIFyO7K0aitETjyKd9
-        gsp9c2KiIPCCRy5ZeBqY+WqVPdRGp4q1KbabiVI=
-X-Google-Smtp-Source: ABdhPJyp5T0fvLilSZjXj0s8pz28nKjqaqGdEot5SDNgXw9VAkBQJ1X2Sk/QIsFXIFgc5CsOHmxm0VZ0/ZDZ7MmhSoc=
-X-Received: by 2002:a05:6830:2106:: with SMTP id i6mr16715657otc.260.1614004250012;
- Mon, 22 Feb 2021 06:30:50 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JO32q5fPn0DGWos0JK/kEGYznlXgZQ3x7QyQiycLWM4=;
+        b=aOVfbJ64yLjUQp/0oJFVJ+HkTfjMeYBuS8wb6OcT2CfX8Qp6CvPSdcC4fopLGU9vBJ
+         O8kgKh1MB0xkzJj/QwHdDS8rbSOBynrAwriJOpvfB1v4NbYadoGe1w3y+6zTEpN6bNHp
+         xqdo9DqoFIWuWiHQj0ToAEmgOUwj4F19GvZkuyUVzNXdBTqFlYTJpDtzESWW1+hEOH9d
+         BOygrKPS/q0BEVuqBqOZxNwPTBGLER1YudVMb25DIh5wdJGPLcep9sSYtgc13/8O7ih8
+         b7CKVDaW08KdBP/nbiiCwFe1LDBiy7YYBMrQqybYX+Ga/MEFDvBTyfLUTHSmOs3bbYHj
+         20Pg==
+X-Gm-Message-State: AOAM533wA3Age1BYc2vFmlFToceWijT/ZBk24/kW3S7+oX5Gvb/li66c
+        rIWXnGu4IYK3ugZlyjjQvbRbqw==
+X-Google-Smtp-Source: ABdhPJyzVpeauR6vkegV1RB7nvXptTO6uzLp5CKgeWirnk2rWHV8k8twxWA94BkkuabkQp4U+BkNxg==
+X-Received: by 2002:a6b:d01a:: with SMTP id x26mr15797193ioa.11.1614004420388;
+        Mon, 22 Feb 2021 06:33:40 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id h13sm13055345ioe.40.2021.02.22.06.33.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 06:33:39 -0800 (PST)
+Subject: Re: [RFC PATCH 0/4] Asynchronous passthrough ioctl
+To:     Kanchan Joshi <joshiiitr@gmail.com>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Kanchan Joshi <joshi.k@samsung.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Nitesh Shetty <nj.shetty@samsung.com>,
+        Selvakumar S <selvakuma.s1@samsung.com>
+References: <CGME20210127150134epcas5p251fc1de3ff3581dd4c68b3fbe0b9dd91@epcas5p2.samsung.com>
+ <20210127150029.13766-1-joshi.k@samsung.com>
+ <489691ce-3b1e-30ce-9f72-d32389e33901@gmail.com>
+ <a287bd9e-3474-83a4-e5c2-98df17214dc7@gmail.com>
+ <CA+1E3rJHHFyjwv7Kp32E9H-cf5ksh0pOHSVdGoTpktQrB8SE6A@mail.gmail.com>
+ <2d37d0ca-5853-4bb6-1582-551b9044040c@kernel.dk>
+ <CA+1E3rKeqaLXBuvpMcjZ37XH9RqJHjPnTFObJj0T-u8K9Otw-w@mail.gmail.com>
+ <dd0392a1-acfa-ef4d-5531-5f1dddc9efe7@kernel.dk>
+ <CA+1E3rJqtpfDbKVGBjSYhX=WfzZ2bE8b0U3drUNz_=bp0u9Vuw@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <03c15e42-c10a-1f67-c60b-ddc11902f9c5@kernel.dk>
+Date:   Mon, 22 Feb 2021 07:33:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210218082514.1437-1-zbestahu@gmail.com> <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
- <20210219113804.00004a7e.zbestahu@gmail.com> <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
- <20210219144140.00004de9.zbestahu@gmail.com> <20210219074249.2hcwcnakihor343h@vireshk-i7>
- <20210219162026.00002e2b.zbestahu@gmail.com> <20210219093551.bykqhjk6xvs4kszi@vireshk-i7>
- <20210219194509.00005884.zbestahu@gmail.com> <20210222053014.s45odi3qsfio2ahp@vireshk-i7>
- <20210222170420.000019a3.zbestahu@163.com>
-In-Reply-To: <20210222170420.000019a3.zbestahu@163.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 22 Feb 2021 15:30:34 +0100
-Message-ID: <CAJZ5v0jouxkj5uKrkNSBZUxXkSNjGY5NAo3zAqSaO9rJBGcqCQ@mail.gmail.com>
-Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to busy
- CPU if need_freq_update is set
-To:     Yue Hu <zbestahu@163.com>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Yue Hu <zbestahu@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yue Hu <huyue2@yulong.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+1E3rJqtpfDbKVGBjSYhX=WfzZ2bE8b0U3drUNz_=bp0u9Vuw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 2:57 PM Yue Hu <zbestahu@163.com> wrote:
->
-> On Mon, 22 Feb 2021 11:00:14 +0530
-> Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> > On 19-02-21, 19:45, Yue Hu wrote:
-> > > We will set next_f to next_freq(previous freq) if next_f is
-> > > reduced for busy CPU. Then the next sugov_update_next_freq() will check
-> > > if next_freq matches next_f if need_freq_update is not set.
-> > > Obviously, we will do nothing for the case. And The related check to
-> > > fast_switch_enabled and raw_spin_{lock,unlock} operations are
-> > > unnecessary.
-> >
-> > Right, but we will still need sugov_update_next_freq() to have the
-> > same implementation regardless and so I am not sure if we should add
->
-> Yes, sugov_update_next_freq() should be keeping current logic for corner case.
->
-> > this change:
-> >
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 41e498b0008a..7289e1adab73 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -362,6 +362,9 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-> >          * recently, as the reduction is likely to be premature then.
-> >          */
-> >         if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
-> > +               if (!sg_policy->need_freq_update)
->
-> The initial purpose about code of `next_f = sg_policy->next_freq` here (for special CPU busy
-> case) should be skipping the freq update.
->
-> Since commit 600f5badb78c ("cpufreq: schedutil: Don't skip freq update when limits change"),
-> we add the check to busy CPU for not skipping the update, we need to update the freq using
-> computed one because limits change.
->
-> After commit 23a881852f3e ("cpufreq: schedutil: Don't skip freq update if need_freq_update
-> is set"), we removed the need_freq_update check(no issue of commit 600f5badb78c anymore?)
-> and introduce to always do an update in sugov_update_next_freq() if need_freq_update is set
-> even though current freq == sg_policy->next_freq because of corner case issue. But that is
-> conflict with original purpose of the freq skip code (next_f = sg_policy->next_freq) of
-> busy CPU.
+On 2/22/21 6:42 AM, Kanchan Joshi wrote:
+> On Thu, Jan 28, 2021 at 10:54 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> On 1/28/21 10:13 AM, Kanchan Joshi wrote:
+>>> On Thu, Jan 28, 2021 at 8:08 PM Jens Axboe <axboe@kernel.dk> wrote:
+>>>>
+>>>> On 1/28/21 5:04 AM, Kanchan Joshi wrote:
+>>>>> On Wed, Jan 27, 2021 at 9:32 PM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>>>>>
+>>>>>> On 27/01/2021 15:42, Pavel Begunkov wrote:
+>>>>>>> On 27/01/2021 15:00, Kanchan Joshi wrote:
+>>>>>>>> This RFC patchset adds asynchronous ioctl capability for NVMe devices.
+>>>>>>>> Purpose of RFC is to get the feedback and optimize the path.
+>>>>>>>>
+>>>>>>>> At the uppermost io-uring layer, a new opcode IORING_OP_IOCTL_PT is
+>>>>>>>> presented to user-space applications. Like regular-ioctl, it takes
+>>>>>>>> ioctl opcode and an optional argument (ioctl-specific input/output
+>>>>>>>> parameter). Unlike regular-ioctl, it is made to skip the block-layer
+>>>>>>>> and reach directly to the underlying driver (nvme in the case of this
+>>>>>>>> patchset). This path between io-uring and nvme is via a newly
+>>>>>>>> introduced block-device operation "async_ioctl". This operation
+>>>>>>>> expects io-uring to supply a callback function which can be used to
+>>>>>>>> report completion at later stage.
+>>>>>>>>
+>>>>>>>> For a regular ioctl, NVMe driver submits the command to the device and
+>>>>>>>> the submitter (task) is made to wait until completion arrives. For
+>>>>>>>> async-ioctl, completion is decoupled from submission. Submitter goes
+>>>>>>>> back to its business without waiting for nvme-completion. When
+>>>>>>>> nvme-completion arrives, it informs io-uring via the registered
+>>>>>>>> completion-handler. But some ioctls may require updating certain
+>>>>>>>> ioctl-specific fields which can be accessed only in context of the
+>>>>>>>> submitter task. For that reason, NVMe driver uses task-work infra for
+>>>>>>>> that ioctl-specific update. Since task-work is not exported, it cannot
+>>>>>>>> be referenced when nvme is compiled as a module. Therefore, one of the
+>>>>>>>> patch exports task-work API.
+>>>>>>>>
+>>>>>>>> Here goes example of usage (pseudo-code).
+>>>>>>>> Actual nvme-cli source, modified to issue all ioctls via this opcode
+>>>>>>>> is present at-
+>>>>>>>> https://github.com/joshkan/nvme-cli/commit/a008a733f24ab5593e7874cfbc69ee04e88068c5
+>>>>>>>
+>>>>>>> see https://git.kernel.dk/cgit/linux-block/log/?h=io_uring-fops
+>>>>>>>
+>>>>>>> Looks like good time to bring that branch/discussion back
+>>>>>>
+>>>>>> a bit more context:
+>>>>>> https://github.com/axboe/liburing/issues/270
+>>>>>
+>>>>> Thanks, it looked good. It seems key differences (compared to
+>>>>> uring-patch that I posted) are -
+>>>>> 1. using file-operation instead of block-dev operation.
+>>>>
+>>>> Right, it's meant to span wider than just block devices.
+>>>>
+>>>>> 2. repurpose the sqe memory for ioctl-cmd. If an application does
+>>>>> ioctl with <=40 bytes of cmd, it does not have to allocate ioctl-cmd.
+>>>>> That's nifty. We still need to support passing larger-cmd (e.g.
+>>>>> nvme-passthru ioctl takes 72 bytes) but that shouldn't get too
+>>>>> difficult I suppose.
+>>>>
+>>>> It's actually 48 bytes in the as-posted version, and I've bumped it to
+>>>> 56 bytes in the latest branch. So not quite enough for everything,
+>>>> nothing ever will be, but should work for a lot of cases without
+>>>> requiring per-command allocations just for the actual command.
+>>>
+>>> Agreed. But if I got it right, you are open to support both in-the-sqe
+>>> command (<= 56 bytes) and out-of-sqe command (> 56 bytes) with this
+>>> interface.
+>>> Driver processing the ioctl can fetch the cmd from user-space in one
+>>> case (as it does now), and skips in another.
+>>
+>> Your out-of-seq command would be none of io_urings business, outside of
+>> the fact that we'd need to ensure it's stable if we need to postpone
+>> it. So yes, that would be fine, it just means your actual command is
+>> passed in as a pointer, and you would be responsible for copying it
+>> in for execution
+>>
+>> We're going to need something to handle postponing, and something
+>> for ensuring that eg cancelations free the allocated memory.
+> 
+> I have few doubts about allocation/postponing. Are you referring to
+> uring allocating memory for this case, similar to the way
+> "req->async_data" is managed for few other opcodes?
+> Or can it (i.e. larger cmd) remain a user-space pointer, and the
+> underlying driver fetches the command in.
+> If submission context changes (for sqo/io-wq case), uring seemed to
+> apply context-grabbing techniques to make that work.
 
-That's because we realized that it was not always a good idea to skip
-the update even if next_f == sg_policy->next_freq.
+There are two concerns here:
 
-That's why CPUFREQ_NEED_UPDATE_LIMITS has been introduced and the
-current flow is a result of subsequent code rearrangements.
+1) We need more space than the 48 bytes, which means we need to allocate
+   the command or part of the command when get the sqe, and of course
+   free that when the command is done.
+
+2) When io_uring_enter() returns and has consumed N commands, the state
+   for those commands must be stable. Hence if you're passing in a
+   pointer to a struct, that struct will have been read and store
+   safely. This prevents things like on-stack structures from being an
+   issue.
+
+->async_data deals with #2 here, it's used when a command needs to store
+data because we're switching to an async context to execute the command
+(or the command is otherwise deferred, eg links and such). You can
+always rely on the context being sane, it's either the task itself or
+equivalent.
+
+>>>>> And for some ioctls, driver may still need to use task-work to update
+>>>>> the user-space pointers (embedded in uring/ioctl cmd) during
+>>>>> completion.
+>>>>>
+>>>>> @Jens - will it be fine if I start looking at plumbing nvme-part of
+>>>>> this series on top of your work?
+>>>>
+>>>> Sure, go ahead. Just beware that things are still changing, so you might
+>>>> have to adapt it a few times. It's still early days, but I do think
+>>>> that's the way forward in providing controlled access to what is
+>>>> basically async ioctls.
+>>>
+>>> Sounds good, I will start with the latest branch that you posted. Thanks.
+>>
+>> It's io_uring-fops.v2 for now, use that one.
+> 
+> Moved to v3 now.
+> nvme_user_io is 48 bytes, while nvme passthrough requires 72 or 80
+> bytes (passthru with 64 bit result).
+> The block_uring_cmd has 32 bytes of available space. If NVMe defines
+> its own "nvme_uring_cmd" (which can be used for nvme char interface)
+> that will buy some more space, but still won't be enough for passthru
+> command.
+> 
+> So I am looking at adding support for large-cmd in uring. And felt the
+> need to clear those doubts I mentioned above.
+
+The simple solution is to just keep the command type the same on the
+NVMe side, and just pass in a pointer to it. Then API could then be
+nr_commands and **commands, for example.
+
+But I think we're getting to the point where it'd be easier to just
+discuss actual code. So if you rebase on top of the v3 code, then send
+out those patches and we can discuss the most convenient API to present
+for nvme passthrough and friends. Does that work?
+
+-- 
+Jens Axboe
+
