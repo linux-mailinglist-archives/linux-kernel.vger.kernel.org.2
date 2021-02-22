@@ -2,121 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4BEA321E1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BADA321E2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231232AbhBVRaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:30:03 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17815 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhBVR36 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:29:58 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6033e9ed0002>; Mon, 22 Feb 2021 09:29:17 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
- 2021 17:29:17 +0000
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by HQMAIL109.nvidia.com (172.20.187.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Mon, 22 Feb 2021 17:29:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SfWApWPGM0mOHxxzb5RUvDWbG3lDdpE+iq8dsS1ANag0CGJL0VX+LBlDPC8LesOpblfkmceRZz7c0ztuVl681i1VHJrQR33hccovtz0GKHpTD8B5pNIA3G/ccpV/xOupFLyVtIOchGIBjzlBBbdCeVNCV6/4g+wbTPs9h7slo54FyDYOMt4bdMMXQfDOYzPVOlo5rNHV0A6VCmiWY9yZrXqY3xlJGVFrzuFgm5qBF2CRKoQloKHBCZmcYLvqgo0QZYr5uDQUDJH2Dhf2y9QJ2q0g54Tw5hATN+FRPQ5YWUbW3k0zXyoGDJxxGVGFq2Oqo8wpDNt21Wf4AEKTN/9SRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LtL52Fdqmqph0ZAbU2bpeQE2JEOOj4ovMHMVaae9XBE=;
- b=gSGBGm7GJuA+4/ZOKRuHH7QVpI7k7WnU5dkuI8jRPGf1iH7XHdRGErLzFfiYXu+/hc4NLT5BcxkPoviZ+MnNQ3B8Y5DrD4uadwGhWsYPlKx21jTgezGYGfj6cClv0dwVC43oK3ZPW+Bpp9YMw4KQfsQIZGTWDiOVrGYeDe2kPoljjYbk0JaY1y+DD6sN2O0CFcoFRlAAlxi4PdZHkKaF+mF54/XtEhxzBvC36obBTAGHEpxb6lA7pC23jMNb3mnxkeSk7P/jkZ8M9ycUpNzayQYe8Hv5oosYoXUPpr5DsHoW1yyOD8lzL9lchXVLlMotDmqqbvdrFXhVHvtXNYD8Ig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB2439.namprd12.prod.outlook.com (2603:10b6:4:b4::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27; Mon, 22 Feb
- 2021 17:29:16 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.045; Mon, 22 Feb 2021
- 17:29:15 +0000
-Date:   Mon, 22 Feb 2021 13:29:13 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [RFC PATCH 05/10] vfio: Create a vfio_device from vma lookup
-Message-ID: <20210222172913.GP4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401268537.16443.2329805617992345365.stgit@gimli.home>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <161401268537.16443.2329805617992345365.stgit@gimli.home>
-X-ClientProxiedBy: BL1PR13CA0408.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::23) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S231179AbhBVRd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:33:29 -0500
+Received: from m42-2.mailgun.net ([69.72.42.2]:45563 "EHLO m42-2.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230218AbhBVRd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 12:33:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614015182; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=wMRx10zuS5ThMWxA6VKc8X0C9+uthh229JNG1OCt8TE=;
+ b=P8fXHRoeAidzNBMMN7e2F7dewvVFR3v9aew1zIikLrsPnZ5SGeqcJRcn5rzswmLz1dMdzrpv
+ IKRaA/LKI+hKUho+7/ERSraPyWNLl9Na3+1NmWvKOQYp4ASp+O4h9qESUAUMISVVcmbszodh
+ 7Jua3BPKnAdZK9N26RaDWtGCG5E=
+X-Mailgun-Sending-Ip: 69.72.42.2
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6033eab04511108a813b0a0b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 17:32:32
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72451C433CA; Mon, 22 Feb 2021 17:32:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 56169C433C6;
+        Mon, 22 Feb 2021 17:32:30 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0408.namprd13.prod.outlook.com (2603:10b6:208:2c2::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.11 via Frontend Transport; Mon, 22 Feb 2021 17:29:15 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lEF1F-00ESnJ-LB; Mon, 22 Feb 2021 13:29:13 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614014957; bh=LtL52Fdqmqph0ZAbU2bpeQE2JEOOj4ovMHMVaae9XBE=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=aGDpp3tDaE4ZelC+iU+xATL2X7u+T7GQMkmuPtQmz+gJIKJMMls40qm90028sa9AW
-         ep3xCAXdtk/wrkcvc6dLrq7AnuI/Pl2h1DS/Ve/5j/dBXqJTLFHm5cT2xGl0DaindF
-         LwOJouOYqqgZMDcvmpbrDh8zDGmyhBu8jvtC5sZMBFeZmhvi2LtDsELo0lgnYHaAQd
-         puhgUbaZf+0gi7Fk8XA6WD7u+La/RUksUVGm2F7SJ1dvFSvb+lw8vpUdO5arvTqOu8
-         sJjM3duvuWlqHWmy03SunmOk5ZntmXWJ1tj2rdZZNvEy3q4zNwmy6X3yXomt0i/O3i
-         Js3Di3ZR0E+MA==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 22 Feb 2021 09:32:30 -0800
+From:   khsieh@codeaurora.org
+To:     Sean Paul <seanpaul@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Dave Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        abhinavk@codeaurora.org, Rob Clark <robdclark@gmail.com>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>, aravindh@codeaurora.org,
+        Sean Paul <sean@poorly.run>
+Subject: Re: [Freedreno] [PATCH v2 2/2] drm/msm/dp: add supported max link
+ rate specified from dtsi
+In-Reply-To: <CAOw6vbLkET7UvsUhWDeeMz8V5i5c_hBSR-Q4-B6_Y5apoTzEng@mail.gmail.com>
+References: <1613681704-12539-1-git-send-email-khsieh@codeaurora.org>
+ <161368935031.1254594.14384765673800900954@swboyd.mtv.corp.google.com>
+ <7af07dcacd5b68087cc61e467e9c57ea@codeaurora.org>
+ <161377480166.1254594.16557636343276220817@swboyd.mtv.corp.google.com>
+ <1782d03506bebe7751d33ae12a38d21c@codeaurora.org>
+ <CAOw6vbLkET7UvsUhWDeeMz8V5i5c_hBSR-Q4-B6_Y5apoTzEng@mail.gmail.com>
+Message-ID: <6815d6545347278b252886a721bc7fc9@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 09:51:25AM -0700, Alex Williamson wrote:
+On 2021-02-22 08:55, Sean Paul wrote:
+> On Mon, Feb 22, 2021 at 11:31 AM <khsieh@codeaurora.org> wrote:
+>> 
+>> On 2021-02-19 14:46, Stephen Boyd wrote:
+>> > Quoting khsieh@codeaurora.org (2021-02-19 08:39:38)
+>> >> On 2021-02-18 15:02, Stephen Boyd wrote:
+>> >> > Quoting Kuogee Hsieh (2021-02-18 12:55:04)
+>> >> >> Allow supported link rate to be limited to the value specified at
+>> >> >> dtsi. If it is not specified, then link rate is derived from dpcd
+>> >> >> directly. Below are examples,
+>> >> >> link-rate = <162000> for max link rate limited at 1.62G
+>> >> >> link-rate = <270000> for max link rate limited at 2.7G
+>> >> >> link-rate = <540000> for max link rate limited at 5.4G
+>> >> >> link-rate = <810000> for max link rate limited at 8.1G
+>> >> >>
+>> >> >> Changes in V2:
+>> >> >> -- allow supported max link rate specified from dtsi
+>> >> >
+>> >> > Please don't roll this into the patch that removes the limit. The
+>> >> > previous version of this patch was fine. The part that lowers the limit
+>> >> > back down should be another patch.
+>> >> >
+>> >> > We rejected link-rate in DT before and we should reject it upstream
+>> >> > again. As far as I can tell, the maximum link rate should be determined
+>> >> > based on the panel or the type-c port on the board. The dp controller
+>> >> > can always achieve HBR3, so limiting it at the dp controller is
+>> >> > incorrect. The driver should query the endpoints to figure out if they
+>> >> > want to limit the link rate. Is that done automatically sometimes by
+>> >> > intercepting the DPCD?
+>> >>
+>> >> ok, i will roll back to original patch and add the second patch for
+>> >> max
+>> >> link rate limited purpose.
+>> >> panel dpcd specified max link rate it supported.
+>> >> At driver, link rate is derived from dpcd directly since driver will
+>> >> try
+>> >> to use the maximum supported link rate and less lane to save power.
+>> >> Therefore it is not possible that limit link rate base on dpcd.
+>> >> AS i understand we are going to do max link rate limitation is due to
+>> >> old redriver chip can not support HBR3.
+>> >> How can I acquire which type-c port on the board so that I can trigger
+>> >> max link rate limitation?
+>> >>
+>> >>
+>> >
+>> > The driver already seems to support lowering the link rate during link
+>> > training. Can't we try to train at the highest rate and then downgrade
+>> > the link speed until it trains properly? I sort of fail to see why we
+>> > need to introduce a bunch of complexity around limiting the link rate
+>> > on
+>> > certain boards if the driver can figure out that link training doesn't
+>> > work at HBR3 so it should try to train at HBR2 instead.
+>> 
+>> yes, dp driver did support down grade link rate during link training
+>> procedure.
+>> But link training is kind of setting up agreement between host and 
+>> panel
+>> with assumption that there are no other limitations in between.
+>> The problem we are discussing here is the limitation of usb re driver
+>> link rate support.
+>> Since we do not know how usb re driver behavior, I am not sure link
+>> training will work appropriately for this case.
+>> It may end up link status keep toggling up and down.
+>> 
+> 
+> IMO we should just fail link training if the redriver doesn't support
+> a link count/rate and fallback to the next count/rate. This should be
+> handled the same as if there were a cable incapable of achieving a
+> link rate. Adding the link rate to the device tree (at least on the dp
+> block) seems suspicious.
+> 
+> If you really wanted to model the redriver's limitations in software,
+> you'd probably want to introduce a bridge driver/connector which
+> rejects modes that cannot be achieved by the redriver. This should
+> prevent the dp driver from trying to train at the unsupported rates.
+> 
+> Sean
+> 
+I am not familiar with drm arch that well.
+Can you elaborate more how bridge can work in this case?
+When dp driver received plug-in interrupt, it read panel capability dpcd 
+and start link training with link rate specified at dpcd.
+How bridge can propagate link rate (limited by redriver) before link 
+training happen?
 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index da212425ab30..399c42b77fbb 100644
-> +++ b/drivers/vfio/vfio.c
-> @@ -572,6 +572,15 @@ void vfio_device_unmap_mapping_range(struct vfio_device *device,
->  }
->  EXPORT_SYMBOL_GPL(vfio_device_unmap_mapping_range);
->  
-> +/*
-> + * A VFIO bus driver using this open callback will provide a
-> + * struct vfio_device pointer in the vm_private_data field.
 
-The vfio_device pointer should be stored in the struct file
 
-> +struct vfio_device *vfio_device_get_from_vma(struct vm_area_struct *vma)
-> +{
-> +	struct vfio_device *device;
-> +
-> +	if (vma->vm_ops->open != vfio_device_vma_open)
-> +		return ERR_PTR(-ENODEV);
-> +
-
-Having looked at VFIO alot more closely last week, this is even more
-trivial - VFIO only creates mmaps of memory we want to invalidate, so
-this is just very simple:
-
-struct vfio_device *vfio_device_get_from_vma(struct vm_area_struct *vma)
-{
-       if (!vma->vm_file ||vma->vm_file->f_op != &vfio_device_fops)
-	   return ERR_PTR(-ENODEV);
-       return vma->vm_file->f_private;
-}
-
-The only use of the special ops would be if there are multiple types
-of mmap's going on, but for this narrow use case those would be safely
-distinguished by the vm_pgoff instead
-
-> +extern void vfio_device_vma_open(struct vm_area_struct *vma);
-> +extern struct vfio_device *vfio_device_get_from_vma(struct vm_area_struct *vma);
-
-No externs on function prototypes in new code please, we've been
-slowly deleting them..
-
-Jason
+> 
+>> Both link-lane and link-rate specified at dtsi are for the limitation 
+>> of
+>> Trogdor hardware platform.
+>> Both link-lane and link-rate specified at dtsi are NOT for panel since
+>> panel have specified its capability at its DPCD.
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> 
+>> _______________________________________________
+>> Freedreno mailing list
+>> Freedreno@lists.freedesktop.org
+>> https://lists.freedesktop.org/mailman/listinfo/freedreno
