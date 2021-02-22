@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51498321884
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EED321885
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhBVNXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:23:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52902 "EHLO mail.kernel.org"
+        id S230417AbhBVNXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:23:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52870 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230480AbhBVMl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:41:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72B8F64F1A;
-        Mon, 22 Feb 2021 12:38:55 +0000 (UTC)
+        id S230483AbhBVMlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:41:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC0F264ED6;
+        Mon, 22 Feb 2021 12:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997536;
-        bh=zGNC/Msq2Mct8bA3ldnkJb9Q0GCEogFNKAOBx2PoKgA=;
+        s=korg; t=1613997538;
+        bh=k+uH5JhWqxcQBAXaoYHY6wyG1XuJ0CDvbMOB7XR4PUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HYIwuTAeiBSLHAQskcprhbQXUaAkmFQ7ul0OXbNDzCwwBN9WmEk3icstNOX/CibLG
-         /7nQwg33p1rtL6QpEsScO14N25jGGKJgX1QzRzW8uI6DXzLOCqO4Xlc25RAvdk1fvh
-         6ISyhG/K9jRkd5pEW8m8JubaOk4g6zJHMXa7cpc4=
+        b=jmWapUOKpCc/9KY8O46BolD8xrO8hB8o0t+9WfNHel8n3HkaDxO0HMko7ovBL903a
+         HvqLcEDGMdO96wqUQcCUWMYzqE3KwgfVqWaHtZzuuwj92BvnOHtDhmiB2bxWqrjtoA
+         R7koFYKj+6qhi8Ea9gc45FMwFlhuIeBdze/AC8aI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>,
+        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 56/57] usb: gadget: u_ether: Fix MTU size mismatch with RX packet size
-Date:   Mon, 22 Feb 2021 13:36:22 +0100
-Message-Id: <20210222121035.709487049@linuxfoundation.org>
+Subject: [PATCH 4.14 57/57] kvm: check tlbs_dirty directly
+Date:   Mon, 22 Feb 2021 13:36:23 +0100
+Message-Id: <20210222121035.779272145@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -39,60 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Manish Narani <manish.narani@xilinx.com>
+From: Lai Jiangshan <laijs@linux.alibaba.com>
 
-commit 0a88fa221ce911c331bf700d2214c5b2f77414d3 upstream
+commit 88bf56d04bc3564542049ec4ec168a8b60d0b48c upstream
 
-Fix the MTU size issue with RX packet size as the host sends the packet
-with extra bytes containing ethernet header. This causes failure when
-user sets the MTU size to the maximum i.e. 15412. In this case the
-ethernet packet received will be of length 15412 plus the ethernet header
-length. This patch fixes the issue where there is a check that RX packet
-length must not be more than max packet length.
+In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
+        need_tlb_flush |= kvm->tlbs_dirty;
+with need_tlb_flush's type being int and tlbs_dirty's type being long.
 
-Fixes: bba787a860fa ("usb: gadget: ether: Allow jumbo frames")
-Signed-off-by: Manish Narani <manish.narani@xilinx.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/1605597215-122027-1-git-send-email-manish.narani@xilinx.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It means that tlbs_dirty is always used as int and the higher 32 bits
+is useless.  We need to check tlbs_dirty in a correct way and this
+change checks it directly without propagating it to need_tlb_flush.
+
+Note: it's _extremely_ unlikely this neglecting of higher 32 bits can
+cause problems in practice.  It would require encountering tlbs_dirty
+on a 4 billion count boundary, and KVM would need to be using shadow
+paging or be running a nested guest.
+
+Cc: stable@vger.kernel.org
+Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
+Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
+Message-Id: <20201217154118.16497-1-jiangshanlai@gmail.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+[sudip: adjust context]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/u_ether.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ virt/kvm/kvm_main.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/function/u_ether.c
-+++ b/drivers/usb/gadget/function/u_ether.c
-@@ -49,9 +49,10 @@
- #define UETH__VERSION	"29-May-2008"
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -382,9 +382,8 @@ static void kvm_mmu_notifier_invalidate_
+ 	 */
+ 	kvm->mmu_notifier_count++;
+ 	need_tlb_flush = kvm_unmap_hva_range(kvm, start, end);
+-	need_tlb_flush |= kvm->tlbs_dirty;
+ 	/* we've to flush the tlb before the pages can be freed */
+-	if (need_tlb_flush)
++	if (need_tlb_flush || kvm->tlbs_dirty)
+ 		kvm_flush_remote_tlbs(kvm);
  
- /* Experiments show that both Linux and Windows hosts allow up to 16k
-- * frame sizes. Set the max size to 15k+52 to prevent allocating 32k
-+ * frame sizes. Set the max MTU size to 15k+52 to prevent allocating 32k
-  * blocks and still have efficient handling. */
--#define GETHER_MAX_ETH_FRAME_LEN 15412
-+#define GETHER_MAX_MTU_SIZE 15412
-+#define GETHER_MAX_ETH_FRAME_LEN (GETHER_MAX_MTU_SIZE + ETH_HLEN)
- 
- struct eth_dev {
- 	/* lock is held while accessing port_usb
-@@ -790,7 +791,7 @@ struct eth_dev *gether_setup_name(struct
- 
- 	/* MTU range: 14 - 15412 */
- 	net->min_mtu = ETH_HLEN;
--	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
-+	net->max_mtu = GETHER_MAX_MTU_SIZE;
- 
- 	dev->gadget = g;
- 	SET_NETDEV_DEV(net, &g->dev);
-@@ -852,7 +853,7 @@ struct net_device *gether_setup_name_def
- 
- 	/* MTU range: 14 - 15412 */
- 	net->min_mtu = ETH_HLEN;
--	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
-+	net->max_mtu = GETHER_MAX_MTU_SIZE;
- 
- 	return net;
- }
+ 	spin_unlock(&kvm->mmu_lock);
 
 
