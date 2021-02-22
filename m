@@ -2,268 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2453213A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:04:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B8A3213A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230374AbhBVKDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:03:04 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:51844 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230303AbhBVJ67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:58:59 -0500
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 952B120A1E;
-        Mon, 22 Feb 2021 09:57:15 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH v7 7/7] kselftests: Add test to check for rlimit changes in different user namespaces
-Date:   Mon, 22 Feb 2021 10:56:32 +0100
-Message-Id: <07f37fb07ac9845edd9ff8f44ecafa36f644611d.1613987704.git.gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1613987704.git.gladkov.alexey@gmail.com>
-References: <cover.1613987704.git.gladkov.alexey@gmail.com>
+        id S230352AbhBVKDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:03:24 -0500
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:46369 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230334AbhBVJ7B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:59:01 -0500
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B3CF65C0045;
+        Mon, 22 Feb 2021 04:58:13 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 22 Feb 2021 04:58:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=drKS7R
+        CyiLHPJhLL3iSRiYPaWkDIGsBINiMi76uTKs8=; b=dctGY4hE35BtGf5vdTVcxn
+        DYYON3WR+kWVeCQxc5NbcN3uyxWC2B1RwlkY6OzGjEZl/Rz1TazU4HeBKQ2iapWb
+        Skw3fmn89VIoaNrpihpaG/R2AlVGw0WU4f2goW3CJByo+2lBHyenE1HGOWc3NxGE
+        w7he+jHSI9Gp6YqvI7a7rgofMtq9rvf128xoDWQGw8Dr12UTqPNqavS/cN07J2ax
+        BwSyacwfVhuHv9q4efgn4aEWsxccB6YQJXx/gnG6w3wBfT1jkDmNxoxSNl08UTyO
+        i0aCyjrNWxM8jwjoGXLx7LV3HCLGSwHeSPTDpxS4q7sSylC5vyQ5RKVAteXlcFHg
+        ==
+X-ME-Sender: <xms:NYAzYFJ1hxKe9UGTqBkGPGXxkmd9o8Nou7YzL8HRsfBdaDD-ZTFj3w>
+    <xme:NYAzYBK8oiLIRwVgUZcHBG-OdrqAAzw2-1ajgzwRYjfJ-3jUacnHeKFPN6lABoW1t
+    J0pvdnr3h_2nzk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeefgddutdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepkfguohcuufgt
+    hhhimhhmvghluceoihguohhstghhsehiughoshgthhdrohhrgheqnecuggftrfgrthhtvg
+    hrnheptdffkeekfeduffevgeeujeffjefhtefgueeugfevtdeiheduueeukefhudehleet
+    necukfhppeekgedrvddvledrudehfedrgeegnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:NYAzYNuXOug7_VKcNEqh_yDbU4i6RrbyNbnXGEOERiJdeU2b-h2C3Q>
+    <xmx:NYAzYGbWKLI1yVLp4vmFMHo2Mf9JRFzgWUly0byhZoSXSocSspnC5g>
+    <xmx:NYAzYMaxTuLslQ_ikctvJjKF4Mjadss0y-w9qxAplYA_LHntB7E94g>
+    <xmx:NYAzYHwIgsZBtBMYyj7Wvj0hZp4KhaZhk7vwGfRELjdP5rJvo8ALRA>
+Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E496F240068;
+        Mon, 22 Feb 2021 04:58:12 -0500 (EST)
+Date:   Mon, 22 Feb 2021 11:58:09 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] netdevsim: fib: remove unneeded semicolon
+Message-ID: <YDOAMdp8pWXG+reW@shredder.lan>
+References: <1613987224-33151-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 22 Feb 2021 09:57:16 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1613987224-33151-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The testcase runs few instances of the program with RLIMIT_NPROC=1 from
-user uid=60000, in different user namespaces.
+On Mon, Feb 22, 2021 at 05:47:04PM +0800, Jiapeng Chong wrote:
+> Fix the following coccicheck warnings:
+> 
+> ./drivers/net/netdevsim/fib.c:564:2-3: Unneeded semicolon.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/net/netdevsim/fib.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/netdevsim/fib.c b/drivers/net/netdevsim/fib.c
+> index 46fb414..11b43ce 100644
+> --- a/drivers/net/netdevsim/fib.c
+> +++ b/drivers/net/netdevsim/fib.c
+> @@ -561,7 +561,7 @@ static void nsim_fib6_rt_nh_del(struct nsim_fib6_rt *fib6_rt,
+>  err_fib6_rt_nh_del:
+>  	for (i--; i >= 0; i--) {
+>  		nsim_fib6_rt_nh_del(fib6_rt, rt_arr[i]);
+> -	};
+> +	}
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
----
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/rlimits/.gitignore    |   2 +
- tools/testing/selftests/rlimits/Makefile      |   6 +
- tools/testing/selftests/rlimits/config        |   1 +
- .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
- 5 files changed, 171 insertions(+)
- create mode 100644 tools/testing/selftests/rlimits/.gitignore
- create mode 100644 tools/testing/selftests/rlimits/Makefile
- create mode 100644 tools/testing/selftests/rlimits/config
- create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+You can simply remove the braces since they are not needed
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 8a917cb4426a..a6d3fde4a617 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -46,6 +46,7 @@ TARGETS += proc
- TARGETS += pstore
- TARGETS += ptrace
- TARGETS += openat2
-+TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
- TARGETS += seccomp
-diff --git a/tools/testing/selftests/rlimits/.gitignore b/tools/testing/selftests/rlimits/.gitignore
-new file mode 100644
-index 000000000000..091021f255b3
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+rlimits-per-userns
-diff --git a/tools/testing/selftests/rlimits/Makefile b/tools/testing/selftests/rlimits/Makefile
-new file mode 100644
-index 000000000000..03aadb406212
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+CFLAGS += -Wall -O2 -g
-+TEST_GEN_PROGS := rlimits-per-userns
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/rlimits/config b/tools/testing/selftests/rlimits/config
-new file mode 100644
-index 000000000000..416bd53ce982
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/config
-@@ -0,0 +1 @@
-+CONFIG_USER_NS=y
-diff --git a/tools/testing/selftests/rlimits/rlimits-per-userns.c b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-new file mode 100644
-index 000000000000..26dc949e93ea
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Author: Alexey Gladkov <gladkov.alexey@gmail.com>
-+ */
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <sys/prctl.h>
-+#include <sys/stat.h>
-+
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <limits.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <err.h>
-+
-+#define NR_CHILDS 2
-+
-+static char *service_prog;
-+static uid_t user   = 60000;
-+static uid_t group  = 60000;
-+
-+static void setrlimit_nproc(rlim_t n)
-+{
-+	pid_t pid = getpid();
-+	struct rlimit limit = {
-+		.rlim_cur = n,
-+		.rlim_max = n
-+	};
-+
-+	warnx("(pid=%d): Setting RLIMIT_NPROC=%ld", pid, n);
-+
-+	if (setrlimit(RLIMIT_NPROC, &limit) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setrlimit(RLIMIT_NPROC)", pid);
-+}
-+
-+static pid_t fork_child(void)
-+{
-+	pid_t pid = fork();
-+
-+	if (pid < 0)
-+		err(EXIT_FAILURE, "fork");
-+
-+	if (pid > 0)
-+		return pid;
-+
-+	pid = getpid();
-+
-+	warnx("(pid=%d): New process starting ...", pid);
-+
-+	if (prctl(PR_SET_PDEATHSIG, SIGKILL) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): prctl(PR_SET_PDEATHSIG)", pid);
-+
-+	signal(SIGUSR1, SIG_DFL);
-+
-+	warnx("(pid=%d): Changing to uid=%d, gid=%d", pid, user, group);
-+
-+	if (setgid(group) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setgid(%d)", pid, group);
-+	if (setuid(user) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setuid(%d)", pid, user);
-+
-+	warnx("(pid=%d): Service running ...", pid);
-+
-+	warnx("(pid=%d): Unshare user namespace", pid);
-+	if (unshare(CLONE_NEWUSER) < 0)
-+		err(EXIT_FAILURE, "unshare(CLONE_NEWUSER)");
-+
-+	char *const argv[] = { "service", NULL };
-+	char *const envp[] = { "I_AM_SERVICE=1", NULL };
-+
-+	warnx("(pid=%d): Executing real service ...", pid);
-+
-+	execve(service_prog, argv, envp);
-+	err(EXIT_FAILURE, "(pid=%d): execve", pid);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	size_t i;
-+	pid_t child[NR_CHILDS];
-+	int wstatus[NR_CHILDS];
-+	int childs = NR_CHILDS;
-+	pid_t pid;
-+
-+	if (getenv("I_AM_SERVICE")) {
-+		pause();
-+		exit(EXIT_SUCCESS);
-+	}
-+
-+	service_prog = argv[0];
-+	pid = getpid();
-+
-+	warnx("(pid=%d) Starting testcase", pid);
-+
-+	/*
-+	 * This rlimit is not a problem for root because it can be exceeded.
-+	 */
-+	setrlimit_nproc(1);
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		child[i] = fork_child();
-+		wstatus[i] = 0;
-+		usleep(250000);
-+	}
-+
-+	while (1) {
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+
-+			errno = 0;
-+			pid_t ret = waitpid(child[i], &wstatus[i], WNOHANG);
-+
-+			if (!ret || (!WIFEXITED(wstatus[i]) && !WIFSIGNALED(wstatus[i])))
-+				continue;
-+
-+			if (ret < 0 && errno != ECHILD)
-+				warn("(pid=%d): waitpid(%d)", pid, child[i]);
-+
-+			child[i] *= -1;
-+			childs -= 1;
-+		}
-+
-+		if (!childs)
-+			break;
-+
-+		usleep(250000);
-+
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+			kill(child[i], SIGUSR1);
-+		}
-+	}
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		if (WIFEXITED(wstatus[i]))
-+			warnx("(pid=%d): pid %d exited, status=%d",
-+				pid, -child[i], WEXITSTATUS(wstatus[i]));
-+		else if (WIFSIGNALED(wstatus[i]))
-+			warnx("(pid=%d): pid %d killed by signal %d",
-+				pid, -child[i], WTERMSIG(wstatus[i]));
-+
-+		if (WIFSIGNALED(wstatus[i]) && WTERMSIG(wstatus[i]) == SIGUSR1)
-+			continue;
-+
-+		warnx("(pid=%d): Test failed", pid);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	warnx("(pid=%d): Test passed", pid);
-+	exit(EXIT_SUCCESS);
-+}
--- 
-2.29.2
-
+>  	nsim_fib_rt_fini(&fib6_rt->common);
+>  	kfree(fib6_rt);
+>  	return ERR_PTR(err);
+> -- 
+> 1.8.3.1
+> 
