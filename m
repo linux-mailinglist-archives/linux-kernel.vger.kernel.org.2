@@ -2,91 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9605C321A62
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB05321A63
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:34:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231947AbhBVObJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:31:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232363AbhBVOXY (ORCPT
+        id S231470AbhBVOb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:31:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34731 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231396AbhBVOYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:23:24 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A486C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:22:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=TppepVjfjYfA1KV/1a+QHIAEUCkDzLHUeJRfYlrhokI=; b=aFJmQ5pgUHPTeObvKHT1ibTGsq
-        ppKCVAaI66FqXLbTblbEn5ifz3NJ88899ExTVhnBtvLdSbYZDvnhobolhy7swhvI+0KDhBpmjncON
-        4jhl86qNoWcj78VsSgQuDlTb1sXQDpEKdWfHas1AvjlbGc7rwQXa2tpw1Au95WcpbN7RX3VfnyGIc
-        qMXfyu5/ar7C+/EgL4ut6z9sP4BPpZyohApz9hu6BVdzoK3DXTO3D9Hh8Z77HkchAu//PIbxRWPoA
-        ClMQabo8veyfJQTi+sEbbflU8S0xWZuBxPPft0WwpjVxa2JS0E/Au/m4QjKcoToIpu2S2IpjM59wT
-        AqfIEEsg==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEC6j-00069h-9f; Mon, 22 Feb 2021 14:22:41 +0000
-Subject: Re: [PATCH] drivers: gnu: drm: i915: gvt: Fixed couple of spellings
- in the file gtt.c
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        jani.nikula@linux.intel.com, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210222081838.30328-1-unixbhaskar@gmail.com>
- <c4d15313-78a6-a7c8-97c9-8291600f6264@infradead.org>
-Message-ID: <0a95e99c-57c0-cede-f9c7-9d76711596fd@infradead.org>
-Date:   Mon, 22 Feb 2021 06:22:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Feb 2021 09:24:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614003798;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wzyVHac7bUd3mCc3EMe28wAe65P5w8DpSyWYPCo7GCg=;
+        b=Ufwt8AOKkjGXgfx1+UeSGsqEtFW+jTR72eHMVManz2hFQ0RVfjJ9h7GNqTCSRYvayjczfw
+        3q+2WfF/am1iVmLCTI/zEwTvSbm3u9jY+kLaa5jYSV6H0uF0vUnk5rctuPe81KXTuVr73M
+        UVkUykRsn/X3Q/aK2bIWZHIQ1Gcg4v4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-jfo_04oLNLKlqFumETQ5Tw-1; Mon, 22 Feb 2021 09:23:16 -0500
+X-MC-Unique: jfo_04oLNLKlqFumETQ5Tw-1
+Received: by mail-wr1-f71.google.com with SMTP id d7so6117901wri.23
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:23:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wzyVHac7bUd3mCc3EMe28wAe65P5w8DpSyWYPCo7GCg=;
+        b=qOwvFWubD89kpv4jhTtAqUSYq/SEVRg9QijUU02a6bSZOigSLb/y6K7A1vLLpyHayW
+         nCHcjpUSSI+iXtm2Q+givg3x73Reow+2n2XCyuwtNERKJb39NYN36RY9Ngz3qlhYwkHb
+         ftAxU4HE/25Aq2FJK2gJz7CdRbuNM7ix+dy9j6YKq6x1nJGEmlKYJfITDoLPhJgB2iQC
+         XLCv54om5B/GyYR09QxALx7GOryVCcpRBvWZhdwt9beqomcPalj88z3WJMo2dNgt3x+D
+         D+S1Xki8FyA4mmAgk1SZjNgXm5YhBCZZzWPNMvh5T8e2W2ZEU+WtWHU+URBUA0NAijea
+         UyEg==
+X-Gm-Message-State: AOAM531dJ4nNW5pa17thM4O4E4pedE41sOO10KyZwx/Htem2g5hm0awz
+        TBqDmYF+a2wZn51mvAiAOXtLCdmKPvsnuulPozu/8pvo9Zci5rLd1S+y8DI5bQUIPnPbuZhAt8d
+        E886RSKXJvouvRX/9K4OrVC2c
+X-Received: by 2002:a1c:23c2:: with SMTP id j185mr20392826wmj.96.1614003795017;
+        Mon, 22 Feb 2021 06:23:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyCb72c0yXyjgk1dT0m2zWBpWEuSOVEk1PCqETARj8JSNyPsc7yiew5yYtu4mvxw9C4hwrGDA==
+X-Received: by 2002:a1c:23c2:: with SMTP id j185mr20392806wmj.96.1614003794853;
+        Mon, 22 Feb 2021 06:23:14 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id o10sm22488407wrx.5.2021.02.22.06.23.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 06:23:14 -0800 (PST)
+Date:   Mon, 22 Feb 2021 15:23:11 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v5 00/19] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210222142311.gekdd7gsm33wglos@steredhat>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <c4d15313-78a6-a7c8-97c9-8291600f6264@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 6:21 AM, Randy Dunlap wrote:
-> On 2/22/21 12:18 AM, Bhaskar Chowdhury wrote:
->>
->> s/negtive/negative/
->> s/possilbe/possible/
->>
->> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
-> 
-> Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Hi Arseny,
 
-except the Subject has a typo in it.
-s/gnu/gpu/
+On Thu, Feb 18, 2021 at 08:33:44AM +0300, Arseny Krasnov wrote:
+>	This patchset impelements support of SOCK_SEQPACKET for virtio
+>transport.
+>	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>do it, two new packet operations were added: first for start of record
+> and second to mark end of record(SEQ_BEGIN and SEQ_END later). Also,
+>both operations carries metadata - to maintain boundaries and payload
+>integrity. Metadata is introduced by adding special header with two
+>fields - message count and message length:
+>
+>	struct virtio_vsock_seq_hdr {
+>		__le32  msg_cnt;
+>		__le32  msg_len;
+>	} __attribute__((packed));
+>
+>	This header is transmitted as payload of SEQ_BEGIN and SEQ_END
+>packets(buffer of second virtio descriptor in chain) in the same way as
+>data transmitted in RW packets. Payload was chosen as buffer for this
+>header to avoid touching first virtio buffer which carries header of
+>packet, because someone could check that size of this buffer is equal
+>to size of packet header. To send record, packet with start marker is
+>sent first(it's header contains length of record and counter), then
+>counter is incremented and all data is sent as usual 'RW' packets and
+>finally SEQ_END is sent(it also carries counter of message, which is
+>counter of SEQ_BEGIN + 1), also after sedning SEQ_END counter is
+>incremented again. On receiver's side, length of record is known from
+>packet with start record marker. To check that no packets were dropped
+>by transport, counters of two sequential SEQ_BEGIN and SEQ_END are
+>checked(counter of SEQ_END must be bigger that counter of SEQ_BEGIN by
+>1) and length of data between two markers is compared to length in
+>SEQ_BEGIN header.
+>	Now as  packets of one socket are not reordered neither on
+>vsock nor on vhost transport layers, such markers allows to restore
+>original record on receiver's side. If user's buffer is smaller that
+>record length, when all out of size data is dropped.
+>	Maximum length of datagram is not limited as in stream socket,
+>because same credit logic is used. Difference with stream socket is
+>that user is not woken up until whole record is received or error
+>occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>	Tests also implemented.
 
->> ---
->>  drivers/gpu/drm/i915/gvt/gtt.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
->> index 897c007ea96a..dc5834bf4de2 100644
->> --- a/drivers/gpu/drm/i915/gvt/gtt.c
->> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
->> @@ -1159,8 +1159,8 @@ static inline void ppgtt_generate_shadow_entry(struct intel_gvt_gtt_entry *se,
->>   * @vgpu: target vgpu
->>   * @entry: target pfn's gtt entry
->>   *
->> - * Return 1 if 2MB huge gtt shadowing is possilbe, 0 if miscondition,
->> - * negtive if found err.
->> + * Return 1 if 2MB huge gtt shadowing is possible, 0 if miscondition,
->> + * negative if found err.
->>   */
->>  static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
->>  	struct intel_gvt_gtt_entry *entry)
->> --
-> 
-> 
+I reviewed the first part (af_vsock.c changes), tomorrow I'll review the 
+rest. That part looks great to me, only found a few minor issues.
 
+In the meantime, however, I'm getting a doubt, especially with regard to 
+other transports besides virtio.
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Should we hide the begin/end marker sending in the transport?
+
+I mean, should the transport just provide a seqpacket_enqueue() 
+callbacl?
+Inside it then the transport will send the markers. This is because some 
+transports might not need to send markers.
+
+But thinking about it more, they could actually implement stubs for that 
+calls, if they don't need to send markers.
+
+So I think for now it's fine since it allows us to reuse a lot of code, 
+unless someone has some objection.
+
+Thanks,
+Stefano
+
