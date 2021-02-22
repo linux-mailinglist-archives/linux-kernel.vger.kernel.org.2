@@ -2,39 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F83032172B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C2C3216F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:41:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhBVMn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:43:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45468 "EHLO mail.kernel.org"
+        id S229952AbhBVMkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:40:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhBVMRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230434AbhBVMRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:17:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17EC064F12;
-        Mon, 22 Feb 2021 12:16:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94B9B64F13;
+        Mon, 22 Feb 2021 12:16:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996194;
-        bh=PYrS36eLoHwCchuEv3GtasPtYiowxhUsjoGUmCqlgto=;
+        s=korg; t=1613996197;
+        bh=W8Iy6YrF3A+u0xq4e5/2i4uzGfnVsC3uU6cmDFI8KcM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sSvn2U2ZbO5wLsR8sYWnwRPr5pIXnlPPyNRgGVv+CYOOgPccXzX4MDq5B5/+6xBZM
-         Epj8cdSStqUiP28exxu69KqV+T5aEN4X5Kc6zvDBhnasvQyD6mTnSpCYYAKNuogqar
-         vFVEhFW+SIZSIGPCe+lw7lhtxzZWVp6xftyVe6fA=
+        b=IZWekke1sh5EXhuR0mH+gZWXrY/rG+onUctlaZbRf0dqySxuJRM/mlOci948ETSVQ
+         HFoUOmj+6dd4WC3e+os8WeK8MoLu3Dd0QXUjLnCbvFxim+Qz0UAnIitIdtmmbVPIXA
+         /PwFpoCp6HR+fZvE5npRaHQL5hyRVLTLTWCnVk8w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fangrui Song <maskray@google.com>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 24/50] firmware_loader: align .builtin_fw to 8
-Date:   Mon, 22 Feb 2021 13:13:15 +0100
-Message-Id: <20210222121024.622972918@linuxfoundation.org>
+        stable@vger.kernel.org, Alain Volmat <alain.volmat@foss.st.com>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 25/50] i2c: stm32f7: fix configuration of the digital filter
+Date:   Mon, 22 Feb 2021 13:13:16 +0100
+Message-Id: <20210222121024.896291023@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -46,52 +40,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fangrui Song <maskray@google.com>
+From: Alain Volmat <alain.volmat@foss.st.com>
 
-[ Upstream commit 793f49a87aae24e5bcf92ad98d764153fc936570 ]
+[ Upstream commit 3d6a3d3a2a7a3a60a824e7c04e95fd50dec57812 ]
 
-arm64 references the start address of .builtin_fw (__start_builtin_fw)
-with a pair of R_AARCH64_ADR_PREL_PG_HI21/R_AARCH64_LDST64_ABS_LO12_NC
-relocations.  The compiler is allowed to emit the
-R_AARCH64_LDST64_ABS_LO12_NC relocation because struct builtin_fw in
-include/linux/firmware.h is 8-byte aligned.
+The digital filter related computation are present in the driver
+however the programming of the filter within the IP is missing.
+The maximum value for the DNF is wrong and should be 15 instead of 16.
 
-The R_AARCH64_LDST64_ABS_LO12_NC relocation requires the address to be a
-multiple of 8, which may not be the case if .builtin_fw is empty.
-Unconditionally align .builtin_fw to fix the linker error.  32-bit
-architectures could use ALIGN(4) but that would add unnecessary
-complexity, so just use ALIGN(8).
+Fixes: aeb068c57214 ("i2c: i2c-stm32f7: add driver")
 
-Link: https://lkml.kernel.org/r/20201208054646.2913063-1-maskray@google.com
-Link: https://github.com/ClangBuiltLinux/linux/issues/1204
-Fixes: 5658c76 ("firmware: allow firmware files to be built into kernel image")
-Signed-off-by: Fangrui Song <maskray@google.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Douglas Anderson <dianders@chromium.org>
-Acked-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Signed-off-by: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/asm-generic/vmlinux.lds.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-stm32f7.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index f65a924a75abd..e71c97c3c25ef 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -363,7 +363,7 @@
- 	}								\
- 									\
- 	/* Built-in firmware blobs */					\
--	.builtin_fw        : AT(ADDR(.builtin_fw) - LOAD_OFFSET) {	\
-+	.builtin_fw : AT(ADDR(.builtin_fw) - LOAD_OFFSET) ALIGN(8) {	\
- 		__start_builtin_fw = .;					\
- 		KEEP(*(.builtin_fw))					\
- 		__end_builtin_fw = .;					\
+diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+index eb7e533b0dd47..6feafebf85feb 100644
+--- a/drivers/i2c/busses/i2c-stm32f7.c
++++ b/drivers/i2c/busses/i2c-stm32f7.c
+@@ -49,6 +49,8 @@
+ #define STM32F7_I2C_CR1_RXDMAEN			BIT(15)
+ #define STM32F7_I2C_CR1_TXDMAEN			BIT(14)
+ #define STM32F7_I2C_CR1_ANFOFF			BIT(12)
++#define STM32F7_I2C_CR1_DNF_MASK		GENMASK(11, 8)
++#define STM32F7_I2C_CR1_DNF(n)			(((n) & 0xf) << 8)
+ #define STM32F7_I2C_CR1_ERRIE			BIT(7)
+ #define STM32F7_I2C_CR1_TCIE			BIT(6)
+ #define STM32F7_I2C_CR1_STOPIE			BIT(5)
+@@ -147,7 +149,7 @@
+ #define STM32F7_I2C_MAX_SLAVE			0x2
+ 
+ #define STM32F7_I2C_DNF_DEFAULT			0
+-#define STM32F7_I2C_DNF_MAX			16
++#define STM32F7_I2C_DNF_MAX			15
+ 
+ #define STM32F7_I2C_ANALOG_FILTER_ENABLE	1
+ #define STM32F7_I2C_ANALOG_FILTER_DELAY_MIN	50	/* ns */
+@@ -645,6 +647,13 @@ static void stm32f7_i2c_hw_config(struct stm32f7_i2c_dev *i2c_dev)
+ 	else
+ 		stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+ 				     STM32F7_I2C_CR1_ANFOFF);
++
++	/* Program the Digital Filter */
++	stm32f7_i2c_clr_bits(i2c_dev->base + STM32F7_I2C_CR1,
++			     STM32F7_I2C_CR1_DNF_MASK);
++	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
++			     STM32F7_I2C_CR1_DNF(i2c_dev->setup.dnf));
++
+ 	stm32f7_i2c_set_bits(i2c_dev->base + STM32F7_I2C_CR1,
+ 			     STM32F7_I2C_CR1_PE);
+ }
 -- 
 2.27.0
 
