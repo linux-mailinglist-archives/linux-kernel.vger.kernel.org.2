@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D7073216B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A67B3216C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbhBVMa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:30:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45452 "EHLO mail.kernel.org"
+        id S231380AbhBVMdD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:33:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230399AbhBVMPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D7A664F12;
-        Mon, 22 Feb 2021 12:14:32 +0000 (UTC)
+        id S230417AbhBVMQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:16:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B3D064E24;
+        Mon, 22 Feb 2021 12:15:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996073;
-        bh=YQRGc5ZUeibdSR2xq8N0L7mh/79nWG0Mxa3J9FETjYo=;
+        s=korg; t=1613996141;
+        bh=nd186f3BLoo6KHkxRnL67GXzCZ0OfNgDdDg4C62PUpM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cLhzo4EaB8Aw3Ox+Wrh87dXCveQlwGRAcaOl93Tqs22ZYly93KqZJhg2jSG0biAz4
-         rYUpzzLe1+ILyQL8WgsE2+8/vXRbuP41hjHMnvq4LAh66N15NpRtq4E/T3AjJ1Uzsb
-         XB3ZDd9ajU8jQKo/dDj3wv+LFBzAj55XaD/76MBM=
+        b=lHBHX3/7a5/BkfS/Vk4Ra1JgqtfTQS2A14tPYNgKxbdCXLhYV/CiaXnCK98L558fk
+         vtfwTNrykvXVUrNZkeGlAwuIKlsNbrbdcrohHDw6OfK8IW7+sFkHyul73XjEPUmjMJ
+         238NKcfrYjymBnVlIS8tEu+0BGqyAkuWicmg1+Lk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "stable@vger.kernel.org, dsterba@suse.cz, Filipe Manana" 
-        <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 5.10 28/29] btrfs: fix crash after non-aligned direct IO write with O_DSYNC
-Date:   Mon, 22 Feb 2021 13:13:22 +0100
-Message-Id: <20210222121025.628566179@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.4 06/13] Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
+Date:   Mon, 22 Feb 2021 13:13:23 +0100
+Message-Id: <20210222121018.308403743@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
-References: <20210222121019.444399883@linuxfoundation.org>
+In-Reply-To: <20210222121013.583922436@linuxfoundation.org>
+References: <20210222121013.583922436@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,137 +40,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-Whenever we attempt to do a non-aligned direct IO write with O_DSYNC, we
-end up triggering an assertion and crashing. Example reproducer:
+commit dbe5283605b3bc12ca45def09cc721a0a5c853a2 upstream.
 
-  $ cat test.sh
-  #!/bin/bash
+We may not skip setting the field in the unmap structure when
+GNTMAP_device_map is in use - such an unmap would fail to release the
+respective resources (a page ref in the hypervisor). Otoh the field
+doesn't need setting at all when GNTMAP_device_map is not in use.
 
-  DEV=/dev/sdj
-  MNT=/mnt/sdj
+To record the value for unmapping, we also better don't use our local
+p2m: In particular after a subsequent change it may not have got updated
+for all the batch elements. Instead it can simply be taken from the
+respective map's results.
 
-  mkfs.btrfs -f $DEV > /dev/null
-  mount $DEV $MNT
+We can additionally avoid playing this game altogether for the kernel
+part of the mappings in (x86) PV mode.
 
-  # Do a direct IO write with O_DSYNC into a non-aligned range...
-  xfs_io -f -d -s -c "pwrite -S 0xab -b 64K 1111 64K" $MNT/foobar
+This is part of XSA-361.
 
-  umount $MNT
-
-When running the reproducer an assertion fails and produces the following
-trace:
-
-  [ 2418.403134] assertion failed: !current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA, in fs/btrfs/space-info.c:1467
-  [ 2418.403745] ------------[ cut here ]------------
-  [ 2418.404306] kernel BUG at fs/btrfs/ctree.h:3286!
-  [ 2418.404862] invalid opcode: 0000 [#2] PREEMPT SMP DEBUG_PAGEALLOC PTI
-  [ 2418.405451] CPU: 1 PID: 64705 Comm: xfs_io Tainted: G      D           5.10.15-btrfs-next-87 #1
-  [ 2418.406026] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-  [ 2418.407228] RIP: 0010:assertfail.constprop.0+0x18/0x26 [btrfs]
-  [ 2418.407835] Code: e6 48 c7 (...)
-  [ 2418.409078] RSP: 0018:ffffb06080d13c98 EFLAGS: 00010246
-  [ 2418.409696] RAX: 000000000000006c RBX: ffff994c1debbf08 RCX: 0000000000000000
-  [ 2418.410302] RDX: 0000000000000000 RSI: 0000000000000027 RDI: 00000000ffffffff
-  [ 2418.410904] RBP: ffff994c21770000 R08: 0000000000000000 R09: 0000000000000000
-  [ 2418.411504] R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000010000
-  [ 2418.412111] R13: ffff994c22198400 R14: ffff994c21770000 R15: 0000000000000000
-  [ 2418.412713] FS:  00007f54fd7aff00(0000) GS:ffff994d35200000(0000) knlGS:0000000000000000
-  [ 2418.413326] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [ 2418.413933] CR2: 000056549596d000 CR3: 000000010b928003 CR4: 0000000000370ee0
-  [ 2418.414528] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [ 2418.415109] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [ 2418.415669] Call Trace:
-  [ 2418.416254]  btrfs_reserve_data_bytes.cold+0x22/0x22 [btrfs]
-  [ 2418.416812]  btrfs_check_data_free_space+0x4c/0xa0 [btrfs]
-  [ 2418.417380]  btrfs_buffered_write+0x1b0/0x7f0 [btrfs]
-  [ 2418.418315]  btrfs_file_write_iter+0x2a9/0x770 [btrfs]
-  [ 2418.418920]  new_sync_write+0x11f/0x1c0
-  [ 2418.419430]  vfs_write+0x2bb/0x3b0
-  [ 2418.419972]  __x64_sys_pwrite64+0x90/0xc0
-  [ 2418.420486]  do_syscall_64+0x33/0x80
-  [ 2418.420979]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  [ 2418.421486] RIP: 0033:0x7f54fda0b986
-  [ 2418.421981] Code: 48 c7 c0 (...)
-  [ 2418.423019] RSP: 002b:00007ffc40569c38 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-  [ 2418.423547] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f54fda0b986
-  [ 2418.424075] RDX: 0000000000010000 RSI: 000056549595e000 RDI: 0000000000000003
-  [ 2418.424596] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000400
-  [ 2418.425119] R10: 0000000000000400 R11: 0000000000000246 R12: 00000000ffffffff
-  [ 2418.425644] R13: 0000000000000400 R14: 0000000000010000 R15: 0000000000000000
-  [ 2418.426148] Modules linked in: btrfs blake2b_generic (...)
-  [ 2418.429540] ---[ end trace ef2aeb44dc0afa34 ]---
-
-1) At btrfs_file_write_iter() we set current->journal_info to
-   BTRFS_DIO_SYNC_STUB;
-
-2) We then call __btrfs_direct_write(), which calls btrfs_direct_IO();
-
-3) We can't do the direct IO write because it starts at a non-aligned
-   offset (1111). So at btrfs_direct_IO() we return -EINVAL (coming from
-   check_direct_IO() which does the alignment check), but we leave
-   current->journal_info set to BTRFS_DIO_SYNC_STUB - we only clear it
-   at btrfs_dio_iomap_begin(), because we assume we always get there;
-
-4) Then at __btrfs_direct_write() we see that the attempt to do the
-   direct IO write was not successful, 0 bytes written, so we fallback
-   to a buffered write by calling btrfs_buffered_write();
-
-5) There we call btrfs_check_data_free_space() which in turn calls
-   btrfs_alloc_data_chunk_ondemand() and that calls
-   btrfs_reserve_data_bytes() with flush == BTRFS_RESERVE_FLUSH_DATA;
-
-6) Then at btrfs_reserve_data_bytes() we have current->journal_info set to
-   BTRFS_DIO_SYNC_STUB, therefore not NULL, and flush has the value
-   BTRFS_RESERVE_FLUSH_DATA, triggering the second assertion:
-
-  int btrfs_reserve_data_bytes(struct btrfs_fs_info *fs_info, u64 bytes,
-                               enum btrfs_reserve_flush_enum flush)
-  {
-      struct btrfs_space_info *data_sinfo = fs_info->data_sinfo;
-      int ret;
-
-      ASSERT(flush == BTRFS_RESERVE_FLUSH_DATA ||
-             flush == BTRFS_RESERVE_FLUSH_FREE_SPACE_INODE);
-      ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_DATA);
-  (...)
-
-So fix that by setting the journal to NULL whenever check_direct_IO()
-returns a failure.
-
-This bug only affects 5.10 kernels, and the regression was introduced in
-5.10-rc1 by commit 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround").
-The bug does not exist in 5.11 kernels due to commit ecfdc08b8cc65d
-("btrfs: remove dio iomap DSYNC workaround"), which depends on a large
-patchset that went into the merge window for 5.11. So this is a fix only
-for 5.10.x stable kernels, as there are people hitting this bug.
-
-Fixes: 0eb79294dbe328 ("btrfs: dio iomap DSYNC workaround")
-CC: stable@vger.kernel.org # 5.10 (and only 5.10)
-Acked-by: David Sterba <dsterba@suse.com>
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1181605
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/btrfs/inode.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -8026,8 +8026,12 @@ ssize_t btrfs_direct_IO(struct kiocb *io
- 	bool relock = false;
- 	ssize_t ret;
+---
+ drivers/xen/gntdev.c |   24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+--- a/drivers/xen/gntdev.c
++++ b/drivers/xen/gntdev.c
+@@ -319,18 +319,25 @@ int gntdev_map_grant_pages(struct gntdev
+ 		 * to the kernel linear addresses of the struct pages.
+ 		 * These ptes are completely different from the user ptes dealt
+ 		 * with find_grant_ptes.
++		 * Note that GNTMAP_device_map isn't needed here: The
++		 * dev_bus_addr output field gets consumed only from ->map_ops,
++		 * and by not requesting it when mapping we also avoid needing
++		 * to mirror dev_bus_addr into ->unmap_ops (and holding an extra
++		 * reference to the page in the hypervisor).
+ 		 */
++		unsigned int flags = (map->flags & ~GNTMAP_device_map) |
++				     GNTMAP_host_map;
++
+ 		for (i = 0; i < map->count; i++) {
+ 			unsigned long address = (unsigned long)
+ 				pfn_to_kaddr(page_to_pfn(map->pages[i]));
+ 			BUG_ON(PageHighMem(map->pages[i]));
  
--	if (check_direct_IO(fs_info, iter, offset))
-+	if (check_direct_IO(fs_info, iter, offset)) {
-+		ASSERT(current->journal_info == NULL ||
-+		       current->journal_info == BTRFS_DIO_SYNC_STUB);
-+		current->journal_info = NULL;
- 		return 0;
-+	}
+-			gnttab_set_map_op(&map->kmap_ops[i], address,
+-				map->flags | GNTMAP_host_map,
++			gnttab_set_map_op(&map->kmap_ops[i], address, flags,
+ 				map->grants[i].ref,
+ 				map->grants[i].domid);
+ 			gnttab_set_unmap_op(&map->kunmap_ops[i], address,
+-				map->flags | GNTMAP_host_map, -1);
++				flags, -1);
+ 		}
+ 	}
  
- 	count = iov_iter_count(iter);
- 	if (iov_iter_rw(iter) == WRITE) {
+@@ -346,17 +353,12 @@ int gntdev_map_grant_pages(struct gntdev
+ 			continue;
+ 		}
+ 
++		if (map->flags & GNTMAP_device_map)
++			map->unmap_ops[i].dev_bus_addr = map->map_ops[i].dev_bus_addr;
++
+ 		map->unmap_ops[i].handle = map->map_ops[i].handle;
+ 		if (use_ptemod)
+ 			map->kunmap_ops[i].handle = map->kmap_ops[i].handle;
+-#ifdef CONFIG_XEN_GRANT_DMA_ALLOC
+-		else if (map->dma_vaddr) {
+-			unsigned long bfn;
+-
+-			bfn = pfn_to_bfn(page_to_pfn(map->pages[i]));
+-			map->unmap_ops[i].dev_bus_addr = __pfn_to_phys(bfn);
+-		}
+-#endif
+ 	}
+ 	return err;
+ }
 
 
