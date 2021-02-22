@@ -2,450 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E54F3214F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:20:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC9A3214FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhBVLT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:19:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhBVLT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:19:56 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1890C06178C
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 03:19:10 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id q20so6375853pfu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 03:19:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oCAo7IpqHyroEPQXtSm8kSnOvzhLaLHtFXJKdGhVkIM=;
-        b=o7SIYX9zQMoOYB+YvdmVUcY9rTrAaPOEtJ1TrWDw6v3+pJXwIwGCvn3HrT9CxIQSFw
-         Y1Qb6QzKxwIs+MYjCdo+mDpfS6iz8E0f1g6dTO2EIpLny2MRL3ZdwtdhMJG8NTC7xUKP
-         fOr3wYuS/7+Vv8y/E+IluwSq49R7jvEmWR5/Yes3mdqJvIoRvKwyodjJ+Ar9ixxkBxMX
-         U9/jxCPoqVHLWXILSeXnVL0In16d4HqJDbyFp5jRUIwNv7bmVt7Mh7zGKauNTTymJbrg
-         4CXWYAu4XIbqWD+V/0pCH+YxP0MOo7DSkO4BNwhiLJtrh1f+1RlejpZKMCvBV3nLpC9h
-         fEAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oCAo7IpqHyroEPQXtSm8kSnOvzhLaLHtFXJKdGhVkIM=;
-        b=RyaO6LADlLB2TAJeEERxE5Uo+qtqUCfmtAdMpwLODJfm7gGFhhXC1pA0Qj5s1Sma4E
-         bCQKgOjtOoyhIU+EwVXa34OUN+wyXcQlBwSN8n1j8AQakGKMxRTg0DGgn1q4H7CC/0FF
-         r4YXiOjL9z51qJWcLtIXEr1EG4mmmDKU4cXgFZM4ct27s3MR5Nwur8RHakarBFz/txAb
-         KkNYyThdja9iB8wsTUtU99Few+N4WQwxrpDa1ng8EPo9zgMtNnqAxq5wN8Tx0ySmZQn2
-         NhX6i6aN8BHPG3V55PzRqvGJjLnzcfPW5BK2eqjYsqbFUdtYb1G9WylIKZ6Hu8K2Z6yO
-         NvoQ==
-X-Gm-Message-State: AOAM530pF2/mgvtH4jW1wAh75Y/U5x4ow5eFohM0KdIIVQnW14Od8bTE
-        KhOUsIbXQ6+QRgqh1uxqoyH+Xw==
-X-Google-Smtp-Source: ABdhPJy0XHZajV+eaHtfkG1J8LUM9zaSXutIY5MHZC2h+W/9LBOn1g3A7k3licrSevPsaCBqcWzfTQ==
-X-Received: by 2002:a63:4e13:: with SMTP id c19mr19281261pgb.432.1613992749762;
-        Mon, 22 Feb 2021 03:19:09 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id g19sm18116486pjv.43.2021.02.22.03.19.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Feb 2021 03:19:09 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     linux-pm@vger.kernel.org,
-        Ionela Voinescu <ionela.voinescu@arm.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4 2/2] cpufreq: cppc: Add support for frequency invariance
-Date:   Mon, 22 Feb 2021 16:48:24 +0530
-Message-Id: <51c2260e8760fdc0b489bed2ff2c6bb8209ea35d.1613991982.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1613991982.git.viresh.kumar@linaro.org>
-References: <cover.1613991982.git.viresh.kumar@linaro.org>
-MIME-Version: 1.0
+        id S230379AbhBVLYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 06:24:17 -0500
+Received: from mail-eopbgr50114.outbound.protection.outlook.com ([40.107.5.114]:35673
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230044AbhBVLYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 06:24:07 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gc9fk1ox9FMDu0LKJlsAeg1FtuVolxEOtirAKcXZ1PHuMGbR7+5nS5pGfIIZNpY/Jj1ov4aWLkw4CPDlrCYSqd97Ysis7W3xyC6JeINm+LcZ3dcQAwVvfrwlBzpkF1xx+JRZZ5s+Lnsf07lIW4m9Pwa6yZjd6lVUi+GyzaJm5ARVX/xElLElKBGlqQtI8hG/iLcn2H17NNkte24yd5yWMkf9tqqsbHPUpZYukXO2QktyayeJXLPz/Y+ITOG9wP8y65ZUYy2NWoPE3rzbyLJG9TBqgfNiGgv1bjGHfYuyfb9geRZ7ywB5Qi4byOTE6JAyGaOZWfTYCXQAFdjYqeRmyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVgwPMiOlytmqn8vFgNuXpp7+DyxnYgXlb3fnqdVM+o=;
+ b=OMw0GPRfaUIPGsmEYNoSBBF0gzQD7E0w6sfRUCjirD8UBLFqYk0iS14KjIpecQvq8Zql2BCSEBQ3T3TctOvxbutMvMFUsON55IoFc33K/Sm/F9fIaTczM7JOl0zCj8mEiUhr7NKQ+wpIkgJHLQk+rx88zvrELG06xIqRHut+n7GhwK/zX0uYg+Lc77mHM6qysPEM0RY3QkjCH7vAJtHEQwTpCK/ATQd37QTX8OezGuOGZYVkhFYpL6i4DwWU17rK4Oc7ZLfIrXI/99QCXSyIm2HSIwEgm5CYvTtt4wh/cK8Xmspi4D7FmocKZ4Ao/Q0aNfGtWjyCuuajeM81j6g+nQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TVgwPMiOlytmqn8vFgNuXpp7+DyxnYgXlb3fnqdVM+o=;
+ b=fWXl/zIPIcrZjjj0DmR7yXegEAqeIIhUyfGdXU6iDZy+YvreefNNWb8pahFhYtC1mXGjw9nMBRkWspv2olxQ4+hKmyv36iJYjc3iQjruwffXhWBVViJVQWCDUx0qBfYOsZ/yYjPVxegxUcDN2R8nbWt882y3mXYk055VNYAVRrI=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM0PR10MB3108.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:124::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32; Mon, 22 Feb
+ 2021 11:23:16 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a907:416:cdde:9538]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::a907:416:cdde:9538%3]) with mapi id 15.20.3868.031; Mon, 22 Feb 2021
+ 11:23:16 +0000
+From:   Schrempf Frieder <frieder.schrempf@kontron.de>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Robin Gong <yibin.gong@nxp.com>
+Cc:     stable@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Axel Lin <axel.lin@ingics.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] regulator: pca9450: Reset PRESET_EN bit to fix BUCK1/2/3 voltage setting
+Date:   Mon, 22 Feb 2021 12:19:27 +0100
+Message-Id: <20210222111935.44038-1-frieder.schrempf@kontron.de>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [88.130.66.75]
+X-ClientProxiedBy: ZR0P278CA0128.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:40::7) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fs-work.as-domain.local (88.130.66.75) by ZR0P278CA0128.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:40::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.32 via Frontend Transport; Mon, 22 Feb 2021 11:23:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1a2d84f1-cd64-4d47-4055-08d8d7243fef
+X-MS-TrafficTypeDiagnostic: AM0PR10MB3108:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM0PR10MB31086BE545BC1BF35CE48C4EE9819@AM0PR10MB3108.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +/lUID1n+F/umDNsa195gP9AARhbgxQOZE9r4scm9wBrB3LGnhNPE/CvtwdaPBV3bf/CS/VtS+3LrmZwqRR5omsrYlDft64s4FhU63v80ejtv2BsCKoZ/+n+bjfyHTVYZStxV4dGXYnzyiW3+FFCEADig34CRyEmWr2Z4dm9LbcAxFjJ5+DHvT65pY3Gxe/QPRPe3WGDYD2wryCfV+Nz5PsePTkgLjyC/FWrT6dzLHhzUrLdBlnKu8YpVU4CWjEpIN1e6IBFsxzLw6G/p1k8lLFYTlhNZuIVCecWw5kYp0Lco6C/sT56Xr8vr1AvpumWLCvu5U8+I9fDBWkuSFGPRrQdUyWmdOvBXAJFhPFuF4IJJFbOtdLQGP+FHFvSSoOMh2xyIsEh1OW6JXaw/u31VzNkj/ogNnausKlfRdq0NKrm89Ethts2g3VaXhwTAf4JxNZ+lY/rpO069hjIBheDpzVpYjPgAPxb5fnJZZsXfgNzkSnjlK7N3XCMpOZCpcp02hPMyWr6htIHhW62bTI7Yw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(346002)(366004)(136003)(8676002)(4326008)(83380400001)(26005)(6486002)(86362001)(2616005)(316002)(1076003)(36756003)(54906003)(110136005)(8936002)(6512007)(6666004)(16526019)(956004)(478600001)(66556008)(2906002)(5660300002)(52116002)(186003)(6506007)(66476007)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?meL/6f7S4bTdd33T3niXUdejpwcIi+c7xWsAeRr0UfCOeqZanJ1XW9109yGF?=
+ =?us-ascii?Q?x4ZgWFcLAXcBbsES+k5CjB559heRdh3eYdoCvzgQYj74qseO7X2mYjnB/X+g?=
+ =?us-ascii?Q?sJ/lgejiSiSeZfvANT4q3u5b+bAcj0WCxE14ks7Ew6SWLKOS9DuQmAthmy3n?=
+ =?us-ascii?Q?vH6ziUTobp6453DpWKGjNMQsUlJg+oAZRqZVYDnqtvxMPFk+9UCcPqYP9IB2?=
+ =?us-ascii?Q?5Gt4XqQUFifsxK0WRVPJCiQPvghajM/lVHxSdUPqGC4fCcdh8IT0jFML/WEy?=
+ =?us-ascii?Q?fThnzs2F0R522K0SelBMXam+JKqGX7NqJPRaNioRGO8KCzFyPeXc1KSdMGpM?=
+ =?us-ascii?Q?hiMd+HInbE8Ude432hPBXrEH4jrn4vHrxbkxDiiw0hN4PzEu0nuwNQJgSljM?=
+ =?us-ascii?Q?lY7lS0KoPNIrWecqrM4xtnoV34JOa2p+zQiFk9kP3uLhZ85rpxeZ/f9Gj6/t?=
+ =?us-ascii?Q?UAPySwrGz8knl39X7mo/FBPnbMMntXlSsG4A/d4n7cOabi1eA5zy6AAeaT64?=
+ =?us-ascii?Q?I1zOiSSaRcW6klHsClk23Ajf9jdIQx92BHX/+F5730HxGS4qsVMx7PtoGd2Q?=
+ =?us-ascii?Q?tOPXHOHm75WbICL6VqPR56lsoGIlhCvx+kW/h/pRp9sTuVVD4DtlSiIvRZjK?=
+ =?us-ascii?Q?oN4RCeTedaTV4mkIb/PO47R5VUAd7ysbUPQANlDURQxj1KLh4fd4urTug21B?=
+ =?us-ascii?Q?aF8ruC8jiP4Aw9fX9vSABdQ7kPCVryCAGVepjqnYxvRO88JY2TedxOeT0oe2?=
+ =?us-ascii?Q?Llv31DO7NfV7XU0DAChj2nrHbjnZLD8psOnx/jX7yKeqkJEtxaRTrz/lLI1M?=
+ =?us-ascii?Q?p/0KZVyNr25YRWMGAKUvEH0aMWFD1aquEBKjAqUKxHBFD1ZuwBZGzPH4N+0s?=
+ =?us-ascii?Q?V9t6Oi/hc55OkBhCsKhTKGVFCvJU3ZyeQutPqpO1+EBAnGucZNgGFCqYKXdf?=
+ =?us-ascii?Q?VN8c2pN74RJOfg8A8neiKKEtM6q29QqNq6E9YLNqeiU8h5v63FcwzZD9BeB2?=
+ =?us-ascii?Q?uQIOCmNAJEAigSO22yqkbFMxknXJhx2jvB3VbZn4DU1TlpHd3GluUfYo7fiw?=
+ =?us-ascii?Q?2n60a9w09TF36S9JVRs9BOUnkmOrOUV1JCezxvJutL6+4yfCGwDt7gA7iPu4?=
+ =?us-ascii?Q?pZkVzbNsXI+hvTBfrrQmXPtF/I6O8VSnvD+iOZcLWSx7NnhKwUVcIy7Lrj2r?=
+ =?us-ascii?Q?zkfbGSOq5WGUTzpl62HaSUfORn6DQDjTXx6ck2aP3YeAUpNo+X4e8fvkUpa5?=
+ =?us-ascii?Q?4AOED98kEv2CtImDyP6c7YCNXATwLqnKfsO4OYxjDkCR4BCaUi/BeXbGb8Mf?=
+ =?us-ascii?Q?k7Dtzgp/sTjgglR8UOwgGR5n?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a2d84f1-cd64-4d47-4055-08d8d7243fef
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2021 11:23:16.6172
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jM4HPYf1sOUj4XFJ/QW9JiAsCENULBu6gyMOTULtMqTL/YMMWMB+wnXmUB5hAE6XIoWOf81mCHg6LuYgK9YasiOAD0yndQ1ONyDv+NXRAqA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Frequency Invariance Engine (FIE) is providing a frequency scaling
-correction factor that helps achieve more accurate load-tracking.
+From: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-Normally, this scaling factor can be obtained directly with the help of
-the cpufreq drivers as they know the exact frequency the hardware is
-running at. But that isn't the case for CPPC cpufreq driver.
+The driver uses the DVS registers PCA9450_REG_BUCKxOUT_DVS0 to set the
+voltage for the buck regulators 1, 2 and 3. This has no effect as the
+PRESET_EN bit is set by default. This causes the preset values to be
+used instead, which are set to 850 mV by default.
 
-Another way of obtaining that is using the arch specific counter
-support, which is already present in kernel, but that hardware is
-optional for platforms.
+To fix this we reset the PRESET_EN bit at time of initialization.
 
-This patch thus obtains this scaling factor using the existing logic
-present in the cppc driver. Note that the arch specific counters have
-higher priority than CPPC counters if available, though the CPPC driver
-doesn't need to have any special handling for that.
-
-To allow platforms to disable frequency invariance support if they want,
-this is all done under CONFIG_ACPI_CPPC_CPUFREQ_FIE, which is enabled by
-default.
-
-This also exports sched_setattr_nocheck() as the CPPC driver can be
-built as a module.
-
-Cc: Ionela Voinescu <ionela.voinescu@arm.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Fixes: 0935ff5f1f0a ("regulator: pca9450: add pca9450 pmic driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 ---
- drivers/cpufreq/Kconfig.arm    |   9 ++
- drivers/cpufreq/cppc_cpufreq.c | 223 +++++++++++++++++++++++++++++++--
- include/linux/arch_topology.h  |   1 +
- kernel/sched/core.c            |   1 +
- 4 files changed, 222 insertions(+), 12 deletions(-)
+ drivers/regulator/pca9450-regulator.c | 8 ++++++++
+ include/linux/regulator/pca9450.h     | 3 +++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
-index e65e0a43be64..a3e2d6dfea70 100644
---- a/drivers/cpufreq/Kconfig.arm
-+++ b/drivers/cpufreq/Kconfig.arm
-@@ -19,6 +19,15 @@ config ACPI_CPPC_CPUFREQ
- 
- 	  If in doubt, say N.
- 
-+config ACPI_CPPC_CPUFREQ_FIE
-+	bool "Frequency Invariance support for CPPC cpufreq driver"
-+	depends on ACPI_CPPC_CPUFREQ
-+	default y
-+	help
-+	  This enables frequency invariance support for CPPC cpufreq driver.
-+
-+	  If in doubt, say N.
-+
- config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
- 	tristate "Allwinner nvmem based SUN50I CPUFreq driver"
- 	depends on ARCH_SUNXI
-diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index 8a482c434ea6..fa1692db93c4 100644
---- a/drivers/cpufreq/cppc_cpufreq.c
-+++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -10,14 +10,18 @@
- 
- #define pr_fmt(fmt)	"CPPC Cpufreq:"	fmt
- 
-+#include <linux/arch_topology.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/delay.h>
- #include <linux/cpu.h>
- #include <linux/cpufreq.h>
- #include <linux/dmi.h>
-+#include <linux/irq_work.h>
-+#include <linux/kthread.h>
- #include <linux/time.h>
- #include <linux/vmalloc.h>
-+#include <uapi/linux/sched/types.h>
- 
- #include <asm/unaligned.h>
- 
-@@ -57,6 +61,182 @@ static struct cppc_workaround_oem_info wa_info[] = {
+diff --git a/drivers/regulator/pca9450-regulator.c b/drivers/regulator/pca9450-regulator.c
+index 833d398c6aa2..cf329341cb2f 100644
+--- a/drivers/regulator/pca9450-regulator.c
++++ b/drivers/regulator/pca9450-regulator.c
+@@ -797,6 +797,14 @@ static int pca9450_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
  	}
- };
  
-+#ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
-+
-+/* Frequency invariance support */
-+struct cppc_freq_invariance {
-+	int cpu;
-+	struct irq_work irq_work;
-+	struct kthread_work work;
-+	struct cppc_perf_fb_ctrs prev_perf_fb_ctrs;
-+	struct cppc_cpudata *cpu_data;
-+};
-+
-+static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_freq_inv);
-+static struct kthread_worker *kworker_fie;
-+
-+static struct cpufreq_driver cppc_cpufreq_driver;
-+static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpu);
-+static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
-+				 struct cppc_perf_fb_ctrs fb_ctrs_t0,
-+				 struct cppc_perf_fb_ctrs fb_ctrs_t1);
-+
-+static void cppc_scale_freq_workfn(struct kthread_work *work)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-+	struct cppc_cpudata *cpu_data;
-+	unsigned long local_freq_scale;
-+	u64 perf;
-+
-+	cppc_fi = container_of(work, struct cppc_freq_invariance, work);
-+	cpu_data = cppc_fi->cpu_data;
-+
-+	if (cppc_get_perf_ctrs(cppc_fi->cpu, &fb_ctrs)) {
-+		pr_warn("%s: failed to read perf counters\n", __func__);
-+		return;
-+	}
-+
-+	cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
-+	perf = cppc_perf_from_fbctrs(cpu_data, cppc_fi->prev_perf_fb_ctrs,
-+				     fb_ctrs);
-+
-+	perf <<= SCHED_CAPACITY_SHIFT;
-+	local_freq_scale = div64_u64(perf, cpu_data->perf_caps.highest_perf);
-+	if (WARN_ON(local_freq_scale > 1024))
-+		local_freq_scale = 1024;
-+
-+	per_cpu(freq_scale, cppc_fi->cpu) = local_freq_scale;
-+}
-+
-+static void cppc_irq_work(struct irq_work *irq_work)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+
-+	cppc_fi = container_of(irq_work, struct cppc_freq_invariance, irq_work);
-+	kthread_queue_work(kworker_fie, &cppc_fi->work);
-+}
-+
-+static void cppc_scale_freq_tick(void)
-+{
-+	struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, smp_processor_id());
-+
-+	/*
-+	 * cppc_get_perf_ctrs() can potentially sleep, call that from the right
-+	 * context.
-+	 */
-+	irq_work_queue(&cppc_fi->irq_work);
-+}
-+
-+static struct scale_freq_data cppc_sftd = {
-+	.source = SCALE_FREQ_SOURCE_CPPC,
-+	.set_freq_scale = cppc_scale_freq_tick,
-+};
-+
-+static void cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
-+					     struct cppc_cpudata *cpu_data)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+	int i;
-+
-+	for_each_cpu(i, policy->cpus) {
-+		cppc_fi = &per_cpu(cppc_freq_inv, i);
-+		cppc_fi->cpu = i;
-+		cppc_fi->cpu_data = cpu_data;
-+	}
-+}
-+
-+static void cppc_freq_invariance_exit(void)
-+{
-+	struct cppc_freq_invariance *cppc_fi;
-+	int i;
-+
-+	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-+		return;
-+
-+	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
-+
-+	for_each_possible_cpu(i) {
-+		cppc_fi = &per_cpu(cppc_freq_inv, i);
-+		irq_work_sync(&cppc_fi->irq_work);
-+	}
-+
-+	kthread_destroy_worker(kworker_fie);
-+	kworker_fie = NULL;
-+}
-+
-+static void __init cppc_freq_invariance_init(void)
-+{
-+	struct cppc_perf_fb_ctrs fb_ctrs = {0};
-+	struct cppc_freq_invariance *cppc_fi;
-+	struct sched_attr attr = {
-+		.size		= sizeof(struct sched_attr),
-+		.sched_policy	= SCHED_DEADLINE,
-+		.sched_nice	= 0,
-+		.sched_priority	= 0,
-+		/*
-+		 * Fake (unused) bandwidth; workaround to "fix"
-+		 * priority inheritance.
-+		 */
-+		.sched_runtime	= 1000000,
-+		.sched_deadline = 10000000,
-+		.sched_period	= 10000000,
-+	};
-+	int i, ret;
-+
-+	if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
-+		return;
-+
-+	kworker_fie = kthread_create_worker(0, "cppc_fie");
-+	if (IS_ERR(kworker_fie))
-+		return;
-+
-+	for_each_possible_cpu(i) {
-+		cppc_fi = &per_cpu(cppc_freq_inv, i);
-+
-+		/* A policy failed to initialize, abort */
-+		if (unlikely(!cppc_fi->cpu_data))
-+			return cppc_freq_invariance_exit();
-+
-+		kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
-+		init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
-+		ret = sched_setattr_nocheck(kworker_fie->task, &attr);
-+		if (ret) {
-+			pr_warn("%s: failed to set SCHED_DEADLINE: %d\n",
-+				__func__, ret);
-+			return cppc_freq_invariance_exit();
-+		}
-+
-+		ret = cppc_get_perf_ctrs(i, &fb_ctrs);
-+		if (ret) {
-+			pr_warn("%s: failed to read perf counters: %d\n",
-+				__func__, ret);
-+			return cppc_freq_invariance_exit();
-+		}
-+
-+		cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
-+	}
-+
-+	/* Register for freq-invariance */
-+	topology_set_scale_freq_source(&cppc_sftd, cpu_present_mask);
-+}
-+
-+#else
-+static inline void
-+cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
-+				 struct cppc_cpudata *cpu_data)
-+{
-+}
-+
-+static inline void cppc_freq_invariance_exit(void)
-+{
-+}
-+
-+static inline void cppc_freq_invariance_init(void)
-+{
-+}
-+#endif /* CONFIG_ACPI_CPPC_CPUFREQ_FIE */
-+
- /* Callback function used to retrieve the max frequency from DMI */
- static void cppc_find_dmi_mhz(const struct dmi_header *dm, void *private)
- {
-@@ -355,9 +535,12 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
- 
- 	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
--	if (ret)
++	/* Reset PRESET_EN bit in BUCK123_DVS to use DVS registers */
++	ret = regmap_update_bits(pca9450->regmap, PCA9450_REG_BUCK123_DVS,
++				BUCK123_PRESET_EN, ~BUCK123_PRESET_EN);
 +	if (ret) {
- 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
- 			 caps->highest_perf, cpu, ret);
-+	} else {
-+		cppc_freq_invariance_policy_init(policy, cpu_data);
++		dev_err(&i2c->dev, "Failed to reset PRESET_EN bit\n");
++		return ret;
 +	}
- 
- 	return ret;
- }
-@@ -370,12 +553,12 @@ static inline u64 get_delta(u64 t1, u64 t0)
- 	return (u32)t1 - (u32)t0;
- }
- 
--static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
--				     struct cppc_perf_fb_ctrs fb_ctrs_t0,
--				     struct cppc_perf_fb_ctrs fb_ctrs_t1)
-+static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
-+				 struct cppc_perf_fb_ctrs fb_ctrs_t0,
-+				 struct cppc_perf_fb_ctrs fb_ctrs_t1)
- {
- 	u64 delta_reference, delta_delivered;
--	u64 reference_perf, delivered_perf;
-+	u64 reference_perf;
- 
- 	reference_perf = fb_ctrs_t0.reference_perf;
- 
-@@ -384,12 +567,21 @@ static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
- 	delta_delivered = get_delta(fb_ctrs_t1.delivered,
- 				    fb_ctrs_t0.delivered);
- 
--	/* Check to avoid divide-by zero */
--	if (delta_reference || delta_delivered)
--		delivered_perf = (reference_perf * delta_delivered) /
--					delta_reference;
--	else
--		delivered_perf = cpu_data->perf_ctrls.desired_perf;
-+	/* Check to avoid divide-by zero and invalid delivered_perf */
-+	if (!delta_reference || !delta_delivered)
-+		return cpu_data->perf_ctrls.desired_perf;
 +
-+	return (reference_perf * delta_delivered) / delta_reference;
-+}
+ 	/* Set reset behavior on assertion of WDOG_B signal */
+ 	ret = regmap_update_bits(pca9450->regmap, PCA9450_REG_RESET_CTRL,
+ 				WDOG_B_CFG_MASK, WDOG_B_CFG_COLD_LDO12);
+diff --git a/include/linux/regulator/pca9450.h b/include/linux/regulator/pca9450.h
+index ccdb5320a240..71902f41c919 100644
+--- a/include/linux/regulator/pca9450.h
++++ b/include/linux/regulator/pca9450.h
+@@ -147,6 +147,9 @@ enum {
+ #define BUCK6_FPWM			0x04
+ #define BUCK6_ENMODE_MASK		0x03
+ 
++/* PCA9450_REG_BUCK123_PRESET_EN bit */
++#define BUCK123_PRESET_EN		0x80
 +
-+static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
-+				     struct cppc_perf_fb_ctrs fb_ctrs_t0,
-+				     struct cppc_perf_fb_ctrs fb_ctrs_t1)
-+{
-+	u64 delivered_perf;
-+
-+	delivered_perf = cppc_perf_from_fbctrs(cpu_data, fb_ctrs_t0,
-+					       fb_ctrs_t1);
- 
- 	return cppc_cpufreq_perf_to_khz(cpu_data, delivered_perf);
- }
-@@ -514,6 +706,8 @@ static void cppc_check_hisi_workaround(void)
- 
- static int __init cppc_cpufreq_init(void)
- {
-+	int ret;
-+
- 	if ((acpi_disabled) || !acpi_cpc_valid())
- 		return -ENODEV;
- 
-@@ -521,7 +715,11 @@ static int __init cppc_cpufreq_init(void)
- 
- 	cppc_check_hisi_workaround();
- 
--	return cpufreq_register_driver(&cppc_cpufreq_driver);
-+	ret = cpufreq_register_driver(&cppc_cpufreq_driver);
-+	if (!ret)
-+		cppc_freq_invariance_init();
-+
-+	return ret;
- }
- 
- static inline void free_cpu_data(void)
-@@ -538,6 +736,7 @@ static inline void free_cpu_data(void)
- 
- static void __exit cppc_cpufreq_exit(void)
- {
-+	cppc_freq_invariance_exit();
- 	cpufreq_unregister_driver(&cppc_cpufreq_driver);
- 
- 	free_cpu_data();
-diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
-index 3bcfba5c21a7..47ac4b41c28d 100644
---- a/include/linux/arch_topology.h
-+++ b/include/linux/arch_topology.h
-@@ -37,6 +37,7 @@ bool topology_scale_freq_invariant(void);
- enum scale_freq_source {
- 	SCALE_FREQ_SOURCE_CPUFREQ = 0,
- 	SCALE_FREQ_SOURCE_ARCH,
-+	SCALE_FREQ_SOURCE_CPPC,
- };
- 
- struct scale_freq_data {
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index ca2bb629595f..3adedc7b1725 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6386,6 +6386,7 @@ int sched_setattr_nocheck(struct task_struct *p, const struct sched_attr *attr)
- {
- 	return __sched_setscheduler(p, attr, false, true);
- }
-+EXPORT_SYMBOL_GPL(sched_setattr_nocheck);
- 
- /**
-  * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
+ /* PCA9450_BUCK1OUT_DVS0 bits */
+ #define BUCK1OUT_DVS0_MASK		0x7F
+ #define BUCK1OUT_DVS0_DEFAULT		0x14
 -- 
-2.25.0.rc1.19.g042ed3e048af
+2.25.1
 
