@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48CA321220
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FE7321224
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbhBVIin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:38:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
+        id S230073AbhBVIjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:39:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhBVIid (ORCPT
+        with ESMTP id S229989AbhBVIjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:38:33 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD775C061574;
-        Mon, 22 Feb 2021 00:37:51 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id p3so2524380wmc.2;
-        Mon, 22 Feb 2021 00:37:51 -0800 (PST)
+        Mon, 22 Feb 2021 03:39:43 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A616CC061574;
+        Mon, 22 Feb 2021 00:39:02 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id n8so18071367wrm.10;
+        Mon, 22 Feb 2021 00:39:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CeWBZt+hcCxVqYJNaniFHpV0E/tU4rgmknD4HdcGoA8=;
-        b=B7RaBO+aD3Tzj0ptbjRBs/L0Tl8BhA1vYGHLzgZGwDCq0Wf9LNAP4q91TXQIXqcrJD
-         6UwWdNJgd+CIoAEOII3zYFqGA7VH3HaVaqbWbFV+T/L653qvNuDr7h1HY5w5AUzZXi5Z
-         dSv37h529bzRmG4aNSY0+KyY59cdMaQo1HmBoR7qeOEYSs6j9VMwk0e/KuJg3uY+6qXI
-         k8fIqAKGWTG4XTYVQ+5M9HqYqlQPIgyW+J0ZQOtpVwDdNeMUILMudW5+mXgUjhI+Oga7
-         fJCb8tlsYSLuqxYyGcflHCx+aEo3pPgZyFENysWtucVVbp8fNuzdZPdHes8gM13k3o3Y
-         OLiQ==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=NDKFrp9F6/y1igRI90XgA2aDEor3w6tbIvsGtkSu0Qw=;
+        b=Ml3ap+cde7a/DXPl+wLsSZpYKUVb3PMyBG7IjEpl7T1w202i0/LpdYEnnbiRytkDiq
+         RBY9jjbLK+ZyeJCvcr5zaBa7q8p4PvfiCWP+pimsCMHRt8fhL1Gdafn+nDpKpqixTvrD
+         kI9oE5iypNUH+z+uTRrwh0/9tcGOMeyqY2tpt6Tkd1d7zbMlrHAT8p/hZ5t51DpYtvjF
+         gPGoAzXWFFYzxA2AU/Kd7MP0Q5AtaxLzbGLA1EncN1QQ3R2rO80KITPVPsM9A8uw8Pxk
+         vxX4RWuxY+D0Q5i3jRsF7oPfHA5b3NcbxDvBR4S5/ZOCsa0p7UK6HDLMZ3ybKvdGgaSC
+         HaEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=CeWBZt+hcCxVqYJNaniFHpV0E/tU4rgmknD4HdcGoA8=;
-        b=gvh4Z8TnoVEZWifQREkLgpkj7L1JD+xmvUWzC/nnNfjbgMU1OG708U/Q4XW7mbFQqZ
-         am9enpuK80svXkXDFbe6gd2xvPD0c89pEnUUCKXDHmTe+6LTj3TdIjJjFdlYk69I8ASM
-         quFqbBDWg/jgiSk/6lSo1AKeOAUqXOh1U5MahzmVj1VH+976OrzYNS4qJw23LrCUhNOx
-         HP+4rlgbTs5u/UMMJJVrFOq+CoX3haUbWvaHIM3j3igew/Q6nh0+390Vs1ig81asdgKY
-         SWvdXGatMGfu6aEkoIube89udWX4vP9ecaEKHjWBlUFhQUFEOaZdjDG+d0f/lRnssBDY
-         /QkA==
-X-Gm-Message-State: AOAM531NM6LHZSs/L+PH2gSjWFPoQXcR+JcJwNPVNSP0LQlvab8L4eMm
-        8vjFVo6dFduwF4cvnaY5y2Hi2uc3QB8=
-X-Google-Smtp-Source: ABdhPJymMOf4TNIDxX2pW6azZ2nmgM8INoCSdxZy+6QriYxawL7PnXosUCFFkkYekcAEUTqztF3u0A==
-X-Received: by 2002:a05:600c:4f46:: with SMTP id m6mr19430978wmq.154.1613983070546;
-        Mon, 22 Feb 2021 00:37:50 -0800 (PST)
+        bh=NDKFrp9F6/y1igRI90XgA2aDEor3w6tbIvsGtkSu0Qw=;
+        b=s9RlpvMIsM+izeXL5JHQJOEeSQLp22X+cmLEgHqqE49wqPTLgsEBEZBMX0FyXvoRd4
+         YdrLnfZg8ldXVCvHLpVW9sLt3mSaOj2F7NeIfMS1rRjBUwQ0/Wn+/Tnm6x9ZK8wl6I18
+         NHXQt4FoWyCnotAAJXpYhM2CFGvr4s37a2ogsPSIbyDdCpWb5Ge8Unt1Y/Smr0wGoti0
+         e/RvmxaJK3QZf4TviNpsxUeAxaRiwcvvDVHLyCVVebv6U7RVhSNn8mzJUGi1ogSMAri7
+         aPjzFIoAC/OrAY0m2bQQv2X89MLzTClpYB7ceVVfx/Ahg0d9+TdQAKN/2Jiu26dV0Tc3
+         D6hA==
+X-Gm-Message-State: AOAM531wdnS6meARVem+CGJ+2tlX8PUETJj58UwjER9RzhWiUcYXNwKG
+        /xDkJmnEdCs7A7fIlJkOUJA=
+X-Google-Smtp-Source: ABdhPJxfO34MTcMJAvLxNLqx94wLOLSN5dTiAqLL4iqnOBT6MJvotoCWjDloXXXLe8WYyOc0S4X/Rw==
+X-Received: by 2002:a05:6000:1546:: with SMTP id 6mr20334564wry.398.1613983141390;
+        Mon, 22 Feb 2021 00:39:01 -0800 (PST)
 Received: from [192.168.1.101] ([37.171.239.209])
-        by smtp.gmail.com with ESMTPSA id f7sm28234732wrm.92.2021.02.22.00.37.49
+        by smtp.gmail.com with ESMTPSA id d20sm29885090wrc.12.2021.02.22.00.39.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 00:37:49 -0800 (PST)
-Subject: Re: [PATCH] arp: Remove the arp_hh_ops structure
-To:     Yejune Deng <yejune.deng@gmail.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-References: <20210222031526.3834-1-yejune.deng@gmail.com>
+        Mon, 22 Feb 2021 00:39:00 -0800 (PST)
+Subject: Re: KASAN: use-after-free Read in nbd_genl_connect
+To:     syzbot <syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000bda69205bbe88a09@google.com>
 From:   Eric Dumazet <eric.dumazet@gmail.com>
-Message-ID: <0143f961-7530-3ae9-27f2-f076ea951975@gmail.com>
-Date:   Mon, 22 Feb 2021 09:37:48 +0100
+Message-ID: <db587e0d-816d-a0bf-feb4-b581bec3252a@gmail.com>
+Date:   Mon, 22 Feb 2021 09:38:59 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210222031526.3834-1-yejune.deng@gmail.com>
+In-Reply-To: <000000000000bda69205bbe88a09@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,80 +71,176 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2/22/21 4:15 AM, Yejune Deng wrote:
-> The arp_hh_ops structure is similar to the arp_generic_ops structure.
-> but the latter is more general,so remove the arp_hh_ops structure.
+On 2/22/21 9:25 AM, syzbot wrote:
+> Hello,
 > 
-> Fix when took out the neigh->ops assignment:
-> 8.973653] #PF: supervisor read access in kernel mode
-> [    8.975027] #PF: error_code(0x0000) - not-present page
-> [    8.976310] PGD 0 P4D 0
-> [    8.977036] Oops: 0000 [#1] SMP PTI
-> [    8.977973] CPU: 1 PID: 210 Comm: sd-resolve Not tainted 5.11.0-rc7-02046-g4591591ab715 #1
-> [    8.979998] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
-> [    8.981996] RIP: 0010:neigh_probe (kbuild/src/consumer/net/core/neighbour.c:1009)
+> syzbot found the following issue on:
 > 
-
-I have a hard time understanding this patch submission.
-
-This seems a mix of a net-next and net material ?
-
-
-
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-
-If this is a bug fix, we want a Fixes: tag
-
-This will really help us. Please don't let us guess what is going on.
-
-
-Also, if this is not a bug fix, this should target net-next tree,
-please take a look at Documentation/networking/netdev-FAQ.rst
-
-In short, the stack trace in this changelog seems to be not
-related to this patch, maybe a prior version ? We do not want
-to keep artifacts of some buggy version that was never merged
-into official tree.
-
-Thanks.
-
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> HEAD commit:    f40ddce8 Linux 5.11
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=179e8d22d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=e53d04227c52a0df
+> dashboard link: https://syzkaller.appspot.com/bug?extid=429d3f82d757c211bff3
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d190cad00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13dc8a82d00000
+> 
+> Bisection is inconclusive: the issue happens on the oldest tested release.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1128ae60d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1328ae60d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1528ae60d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+429d3f82d757c211bff3@syzkaller.appspotmail.com
+> 
+> ==================================================================
+> BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:71 [inline]
+> BUG: KASAN: use-after-free in atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+> BUG: KASAN: use-after-free in refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
+> Read of size 4 at addr ffff888014ca19a0 by task syz-executor980/8540
+> 
+> CPU: 0 PID: 8540 Comm: syz-executor980 Not tainted 5.11.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
+>  __kasan_report mm/kasan/report.c:396 [inline]
+>  kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
+>  check_memory_region_inline mm/kasan/generic.c:179 [inline]
+>  check_memory_region+0x13d/0x180 mm/kasan/generic.c:185
+>  instrument_atomic_read include/linux/instrumented.h:71 [inline]
+>  atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+>  refcount_dec_not_one+0x71/0x1e0 lib/refcount.c:76
+>  refcount_dec_and_mutex_lock+0x19/0x140 lib/refcount.c:115
+>  nbd_put drivers/block/nbd.c:248 [inline]
+>  nbd_genl_connect+0xee7/0x1560 drivers/block/nbd.c:1980
+>  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+>  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+>  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+>  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:672
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x440709
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 14 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffd63e9cc88 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 000000000000e3fb RCX: 0000000000440709
+> RDX: 0000000000000000 RSI: 0000000020000340 RDI: 0000000000000003
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffd63e9ce28
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd63e9cc9c
+> R13: 431bde82d7b634db R14: 00000000004ae018 R15: 00000000004004a0
+> 
+> Allocated by task 8536:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:401 [inline]
+>  ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
+>  kmalloc include/linux/slab.h:552 [inline]
+>  kzalloc include/linux/slab.h:682 [inline]
+>  nbd_dev_add+0x44/0x8e0 drivers/block/nbd.c:1673
+>  nbd_genl_connect+0x59c/0x1560 drivers/block/nbd.c:1838
+>  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+>  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+>  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+>  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:672
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> Freed by task 8540:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
+>  ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
+>  kasan_slab_free include/linux/kasan.h:192 [inline]
+>  slab_free_hook mm/slub.c:1547 [inline]
+>  slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
+>  slab_free mm/slub.c:3143 [inline]
+>  kfree+0xdb/0x3b0 mm/slub.c:4139
+>  nbd_dev_remove drivers/block/nbd.c:243 [inline]
+>  nbd_put.part.0+0x180/0x1d0 drivers/block/nbd.c:251
+>  nbd_put drivers/block/nbd.c:295 [inline]
+>  nbd_config_put+0x6dd/0x8c0 drivers/block/nbd.c:1242
+>  nbd_genl_connect+0xeb7/0x1560 drivers/block/nbd.c:1978
+>  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+>  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+>  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+>  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+>  sock_sendmsg_nosec net/socket.c:652 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:672
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> 
+> The buggy address belongs to the object at ffff888014ca1800
+>  which belongs to the cache kmalloc-1k of size 1024
+> The buggy address is located 416 bytes inside of
+>  1024-byte region [ffff888014ca1800, ffff888014ca1c00)
+> The buggy address belongs to the page:
+> page:0000000086766889 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x14ca0
+> head:0000000086766889 order:3 compound_mapcount:0 compound_pincount:0
+> flags: 0xfff00000010200(slab|head)
+> raw: 00fff00000010200 ffffea0000929400 0000000200000002 ffff888010c41140
+> raw: 0000000000000000 0000000000100010 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> 
+> Memory state around the buggy address:
+>  ffff888014ca1880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888014ca1900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>> ffff888014ca1980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                ^
+>  ffff888014ca1a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888014ca1a80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ==================================================================
+> 
+> 
 > ---
->  net/ipv4/arp.c | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> diff --git a/net/ipv4/arp.c b/net/ipv4/arp.c
-> index 922dd73e5740..9ee59c2e419a 100644
-> --- a/net/ipv4/arp.c
-> +++ b/net/ipv4/arp.c
-> @@ -135,14 +135,6 @@ static const struct neigh_ops arp_generic_ops = {
->  	.connected_output =	neigh_connected_output,
->  };
->  
-> -static const struct neigh_ops arp_hh_ops = {
-> -	.family =		AF_INET,
-> -	.solicit =		arp_solicit,
-> -	.error_report =		arp_error_report,
-> -	.output =		neigh_resolve_output,
-> -	.connected_output =	neigh_resolve_output,
-> -};
-> -
->  static const struct neigh_ops arp_direct_ops = {
->  	.family =		AF_INET,
->  	.output =		neigh_direct_output,
-> @@ -277,12 +269,9 @@ static int arp_constructor(struct neighbour *neigh)
->  			memcpy(neigh->ha, dev->broadcast, dev->addr_len);
->  		}
->  
-> -		if (dev->header_ops->cache)
-> -			neigh->ops = &arp_hh_ops;
-> -		else
-> -			neigh->ops = &arp_generic_ops;
-> +		neigh->ops = &arp_generic_ops;
->  
-> -		if (neigh->nud_state & NUD_VALID)
-> +		if (!dev->header_ops->cache && (neigh->nud_state & NUD_VALID))
->  			neigh->output = neigh->ops->connected_output;
->  		else
->  			neigh->output = neigh->ops->output;
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
 > 
+
+This might be caused by :
+
+commit a2c97909f97ef32b76e856572fba4f77e1885fe6
+Author: Josef Bacik <josef@toxicpanda.com>
+Date:   Thu Apr 6 17:02:07 2017 -0400
+
+    nbd: add a flag to destroy an nbd device on disconnect
+   
+    For ease of management it would be nice for users to specify that the
+    device node for a nbd device is destroyed once it is disconnected and
+    there are no more users.  Add a client flag and enable this operation to
+    happen.
+   
+    Signed-off-by: Josef Bacik <jbacik@fb.com>
+    Signed-off-by: Jens Axboe <axboe@fb.com>
