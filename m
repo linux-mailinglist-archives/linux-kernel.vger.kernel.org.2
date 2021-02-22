@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2DC321426
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:28:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 311003213B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230345AbhBVK10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbhBVK1T (ORCPT
+        id S230125AbhBVKF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:05:59 -0500
+Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:15340 "EHLO
+        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230417AbhBVKCY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:27:19 -0500
-Received: from filter01-ipv6-out02.totaalholding.nl (filter01-ipv6-out02.totaalholding.nl [IPv6:2a02:40c0:1:2:ffff::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA6C7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:26:38 -0800 (PST)
-Received: from www98.totaalholding.nl ([185.94.230.81])
-        by filter01.totaalholding.nl with esmtps (TLSv1.2:AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <mjbaars1977.gcc@cyberfiber.eu>)
-        id 1lE7ep-0002dM-RE
-        for linux-kernel@vger.kernel.org; Mon, 22 Feb 2021 10:37:36 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=cyberfiber.eu; s=default; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uJBoqmb20AESWIZNsJyyi5m2Layyiy5w27GvfUr/XJs=; b=xO4g/dl0dv4jEnuRJOXC0AEzii
-        iB5pOMwUKQveAX9ZVa0X7SHiFHDML2UmuXlGjWQK4rqykolab4sEA4n4o/n2rGaFEbUxHapfK311O
-        O1dGhu28ddOrl876T/TFxl+HYE31AL0Rk1AScuLmfhmeMbA2vN2qcHPlfjJxoaKcESnA8J0mQ6jyC
-        L8Ec8OMAPh6RWDQ0aftk3PM9ahopvl1vJbvDoUBoIfekj9nABJIsPOAkiVQeKXORmndYDQtEhfMfp
-        qpuCsllMv4jelONQz3iV8TVR1vxJ3mlB0dd+9zHYizkwsVwgD8w3iHgYXSQuCvDO329xtLlWmU35B
-        B3y3Uz+A==;
-Received: from 82-94-23-232.ip.xs4all.nl ([82.94.23.232]:48582 helo=tp06.long4more.com)
-        by www98.totaalholding.nl with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <mjbaars1977.gcc@cyberfiber.eu>)
-        id 1lE7em-0006qG-O4; Mon, 22 Feb 2021 10:37:32 +0100
-Message-ID: <d9a2cdcf116ed32874ed02bd6fa60ad899ce5f50.camel@cyberfiber.eu>
-Subject: Re: problems with memory allocation and the alignment check
-From:   "Michael J. Baars" <mjbaars1977.gcc@cyberfiber.eu>
-To:     Andrew Pinski <pinskia@gmail.com>
-Cc:     GCC Mailing List <gcc@gcc.gnu.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 22 Feb 2021 10:37:33 +0100
-In-Reply-To: <CA+=Sn1njFZ-XZRHJdmjzOyvXvcMXg+oBao=wK8w3RXN_Ji=fLA@mail.gmail.com>
-References: <80753cbc54ef69b4fc136f791666197fc8b1f8bb.camel@cyberfiber.eu>
-         <CA+=Sn1njFZ-XZRHJdmjzOyvXvcMXg+oBao=wK8w3RXN_Ji=fLA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Mon, 22 Feb 2021 05:02:24 -0500
+X-Greylist: delayed 646 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Feb 2021 05:02:08 EST
+Subject: Re: [PATCH] RTIC: selinux: ARM64: Move selinux_state to a separate
+ page
+To:     Will Deacon <will@kernel.org>,
+        Preeti Nagar <pnagar@codeaurora.org>, <maz@kernel.org>,
+        <ardb@kernel.org>
+CC:     <arnd@arndb.de>, <jmorris@namei.org>, <serge@hallyn.com>,
+        <paul@paul-moore.com>, <stephen.smalley.work@gmail.com>,
+        <eparis@parisplace.org>, <linux-security-module@vger.kernel.org>,
+        <selinux@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <casey@schaufler-ca.com>, <ndesaulniers@google.com>,
+        <dhowells@redhat.com>, <ojeda@kernel.org>,
+        <psodagud@codeaurora.org>, <nmardana@codeaurora.org>,
+        <rkavati@codeaurora.org>, <vsekhar@codeaurora.org>,
+        <mreichar@codeaurora.org>, <johan@kernel.org>, <joe@perches.com>,
+        <jeyu@kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1613470672-3069-1-git-send-email-pnagar@codeaurora.org>
+ <20210217094205.GA3570@willie-the-truck>
+From:   peter enderborg <peter.enderborg@sony.com>
+Message-ID: <5f6b5d38-266e-12f7-8e55-07fe794fbf97@sony.com>
+Date:   Mon, 22 Feb 2021 10:50:16 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210217094205.GA3570@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - www98.totaalholding.nl
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - cyberfiber.eu
-X-Get-Message-Sender-Via: www98.totaalholding.nl: authenticated_id: mjbaars1977.gcc@cyberfiber.eu
-X-Authenticated-Sender: www98.totaalholding.nl: mjbaars1977.gcc@cyberfiber.eu
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Originating-IP: 185.94.230.81
-X-SpamExperts-Domain: out.totaalholding.nl
-X-SpamExperts-Username: 185.94.230.81
-Authentication-Results: totaalholding.nl; auth=pass smtp.auth=185.94.230.81@out.totaalholding.nl
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.10)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT86LOCQny59ksdOdRHzCf5PPUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5z4WkZ/TJaiaBbP2NJqrVHtfCzdNGNoLjYW00m5NbCHvI9w
- knWGobBIYos3d1n2bRGguWCSRiV4Egg0CI/eXxnF5WCy5VkstzhnxgTXqsdmpzAZsc6MRuL9DcHa
- Zpd4we/piBIbZdykCKL9bqvChryU+RG6hze7zJVTSRhy6iTC2HkixtWJU3ux8TqCslrbPB+bgaCk
- W8nGm/sYr5TGcUrdU3OqTzTj50M7fvGTHKtUfcFSHlWCaM2L0TajYf48Pb86t/uXZsD0kV3eTzZp
- 3NyQLDnQGgRgHjioU8fpt7xeC7AK0L/uTNt3WCw41GzGb1Zq+pu9ho29CVyp3Dt9A9c5Q0rCcBHa
- hWKxj5ucSpYIqLmSWYrW9rfAlJyD3amD/+N02lc/+6URXoMhQMtzRh3qJOVgT5lyfynWs+kbrg/X
- Ljy6H8ZAD1knk8QPx5GWwsxL96o2cJJSAqZrdlwt8BT+rl/L3p68qpY0qoWMExIKqSSxWVdlbFqx
- F8WMzybyHsghJ1UrIDz/zIKkhjMfdql/vyG/94A9cXb+Do2HsRTe4iHS0NxcLTrnItRtF3glL8Fz
- lRYBdrHtfAxZw42LBRK8JPpUwLRS/j55N5WCkBFDwy25y0VVCnTvyy8sSoe9MJmYQRPlfhUIsQHw
- 9jJ1gs4A07pSUabTJxCHRiVu3X4RqvdjzQ6YC7Heg3Xf7O1TOd4ek3v5uIRk1iKw5Fn4+Jv37dfW
- alqFj9toMieTbX1rTptKDSCSE1jQS4xT8YHigtq8kLcbHwp89REWDGmTSXlzZuM7jUXIESohoO51
- xWmU8ZsLPNyWKRVhd4Yc6cD23FynV0BR+dlWoGfFQ+S+p4Yps+5OVLTtd9bM4QLzoum6fo2azxuH
- F97acinCSKJAyH+R27r9HYUzziTFhEVK8LUgzbwe5wJ+PSAukJcp0I0jTu0aTq8ZhiCjAOP7kbHh
- TW8wbVA/fmexh8/zhz5EUrcqADujzMmWyPJKS+6kHMEcy2SSgL4U/904QKV4vLt8ilQ=
-X-Report-Abuse-To: spam@filter01.totaalholding.nl
+Content-Language: en-GB
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=fqOim2wf c=1 sm=1 tr=0 a=9drRLWArJOlETflmpfiyCA==:117 a=IkcTkHD0fZMA:10 a=qa6Q16uM49sA:10 a=aMTo-Due3bUgzeKeeW4A:9 a=QEXdDO2ut3YA:10
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-22 at 01:29 -0800, Andrew Pinski wrote:
-> On Mon, Feb 22, 2021 at 1:17 AM Michael J. Baars
-> <mjbaars1977.gcc@cyberfiber.eu> wrote:
-> > Hi,
-> > 
-> > I just wrote this little program to demonstrate a possible flaw in both malloc and calloc.
-> > 
-> > If I allocate a the simplest memory region from main(), one out of three optimization flags fail.
-> > If I allocate the same region from a function, three out of three optimization flags fail.
-> > 
-> > Does someone know if this really is a flaw, and if so, is it a gcc or a kernel flaw?
-> 
-> There is no flaw.  GCC (kernel, glibc) all assume unaligned accesses
-> on x86 will not cause an exception.
+On 2/17/21 10:42 AM, Will Deacon wrote:
+> [Please include arm64 and kvm folks for threads involving the stage-2 MMU]
+>
+> On Tue, Feb 16, 2021 at 03:47:52PM +0530, Preeti Nagar wrote:
+>> The changes introduce a new security feature, RunTime Integrity Check
+>> (RTIC), designed to protect Linux Kernel at runtime. The motivation
+>> behind these changes is:
+>> 1. The system protection offered by Security Enhancements(SE) for
+>> Android relies on the assumption of kernel integrity. If the kernel
+>> itself is compromised (by a perhaps as yet unknown future vulnerability),
+>> SE for Android security mechanisms could potentially be disabled and
+>> rendered ineffective.
+>> 2. Qualcomm Snapdragon devices use Secure Boot, which adds cryptographic
+>> checks to each stage of the boot-up process, to assert the authenticity
+>> of all secure software images that the device executes.  However, due to
+>> various vulnerabilities in SW modules, the integrity of the system can be
+>> compromised at any time after device boot-up, leading to un-authorized
+>> SW executing.
+>>
+>> The feature's idea is to move some sensitive kernel structures to a
+>> separate page and monitor further any unauthorized changes to these,
+>> from higher Exception Levels using stage 2 MMU. Moving these to a
+>> different page will help avoid getting page faults from un-related data.
+>> The mechanism we have been working on removes the write permissions for
+>> HLOS in the stage 2 page tables for the regions to be monitored, such
+>> that any modification attempts to these will lead to faults being
+>> generated and handled by handlers. If the protected assets are moved to
+>> a separate page, faults will be generated corresponding to change attempts
+>> to these assets only. If not moved to a separate page, write attempts to
+>> un-related data present on the monitored pages will also be generated.
+>>
+>> Using this feature, some sensitive variables of the kernel which are
+>> initialized after init or are updated rarely can also be protected from
+>> simple overwrites and attacks trying to modify these.
+> Although I really like the idea of using stage-2 to protect the kernel, I
+> think the approach you outline here is deeply flawed. Identifying "sensitive
+> variables" of the kernel to protect is subjective and doesn't scale.
+> Furthermore, the triaging of what constitues a valid access is notably
+> absent from your description and is assumedly implemented in an opaque blob
+> at EL2.
+>
+> I think a better approach would be along the lines of:
+>
+>   1. Introduce the protection at stage-1 (like we already have for mapping
+>      e.g. the kernel text R/O)
 
-Is this just an assumption or more like a fact? I agree with you that byte aligned is more or less the same as unaligned.
+Will that really solve the problem? There is a lot of caches that are used
+to resolve policy data in selinux, and this caches will not be protected.
+If you can manipulate kernel data you can do cache poisoning.
 
-> 
-> Thanks,
-> Andrew
-> 
-> > Regards,
-> > Mischa.
+
+>   2. Implement the handlers in the kernel, so the heuristics are clear.
+>
+>   3. Extend this to involve KVM, so that the host can manage its own
+>      stage-2 to firm-up the stage-1 protections.
+>
+> I also think we should avoid tying this to specific data structures.
+> Rather, we should introduce a mechanism to make arbitrary data read-only.
+>
+> I've CC'd Ard and Marc, as I think they've both been thinking about this
+> sort of thing recently as well.
+>
+> Will
+
 
