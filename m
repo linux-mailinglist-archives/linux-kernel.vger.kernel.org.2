@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979573218D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B3432190D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231258AbhBVNbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:31:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52922 "EHLO mail.kernel.org"
+        id S232217AbhBVNiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:38:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231338AbhBVMmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:42:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D4AE64F2C;
-        Mon, 22 Feb 2021 12:39:52 +0000 (UTC)
+        id S231633AbhBVMnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:43:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F7BD64F0D;
+        Mon, 22 Feb 2021 12:40:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997593;
-        bh=YFOsmi5Ootxj9TIjtEJQUafDBl1z442k+pJe9rZEhoA=;
+        s=korg; t=1613997659;
+        bh=B0VgdNSrgJ22491qWfCcOkmKYCUq+dZ7n2Imoclvofc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HMxB9QOBWFk0G4/M43NchZWJTaNZyKp7afjAJJnRbYeiXU3uQaI3dTGwcpoD8TUzG
-         k/av9v16BH1Ls7ZHkCNSmKpX0c5l9aucPsDD8GIwRFzp2kaxJm24aSV3nIW90hBF5K
-         yi2BcQ6NuomUZfpWISzA4z3xyX0+ushTFrlCJpBA=
+        b=rjO/f6+o6YJbxzEOCvJmneU6iOq1PgxTOO3O82YpO1a33IpBzb7cNggHJ54eNb19x
+         6o0jlQdzmZ3N8nZFmqXCw2WPUu9gzc4Mh+D5VAiFuDcV3X4E1t2wHyDV+0UYYhrMrP
+         yC03NNA/9mgnvkIkpRg72O7dd6EzJmPHGM2wvwtw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        "Tobin C. Harding" <tobin@kernel.org>,
-        Shuah Khan <shuah@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 08/35] lib/string: Add strscpy_pad() function
-Date:   Mon, 22 Feb 2021 13:36:04 +0100
-Message-Id: <20210222121018.650380893@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 07/49] iwlwifi: mvm: guard against device removal in reprobe
+Date:   Mon, 22 Feb 2021 13:36:05 +0100
+Message-Id: <20210222121024.688887304@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
-References: <20210222121013.581198717@linuxfoundation.org>
+In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
+References: <20210222121022.546148341@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,116 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tobin C. Harding <tobin@kernel.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 458a3bf82df4fe1f951d0f52b1e0c1e9d5a88a3b ]
+[ Upstream commit 7a21b1d4a728a483f07c638ccd8610d4b4f12684 ]
 
-We have a function to copy strings safely and we have a function to copy
-strings and zero the tail of the destination (if source string is
-shorter than destination buffer) but we do not have a function to do
-both at once.  This means developers must write this themselves if they
-desire this functionality.  This is a chore, and also leaves us open to
-off by one errors unnecessarily.
+If we get into a problem severe enough to attempt a reprobe,
+we schedule a worker to do that. However, if the problem gets
+more severe and the device is actually destroyed before this
+worker has a chance to run, we use a free device. Bump up the
+reference count of the device until the worker runs to avoid
+this situation.
 
-Add a function that calls strscpy() then memset()s the tail to zero if
-the source string is shorter than the destination buffer.
-
-Acked-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Tobin C. Harding <tobin@kernel.org>
-Signed-off-by: Shuah Khan <shuah@kernel.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210122144849.871f0892e4b2.I94819e11afd68d875f3e242b98bef724b8236f1e@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/string.h |  4 ++++
- lib/string.c           | 47 +++++++++++++++++++++++++++++++++++-------
- 2 files changed, 44 insertions(+), 7 deletions(-)
+ drivers/net/wireless/intel/iwlwifi/mvm/ops.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index 870268d42ae7d..7da409760cf18 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -28,6 +28,10 @@ size_t strlcpy(char *, const char *, size_t);
- #ifndef __HAVE_ARCH_STRSCPY
- ssize_t strscpy(char *, const char *, size_t);
- #endif
-+
-+/* Wraps calls to strscpy()/memset(), no arch specific code required */
-+ssize_t strscpy_pad(char *dest, const char *src, size_t count);
-+
- #ifndef __HAVE_ARCH_STRCAT
- extern char * strcat(char *, const char *);
- #endif
-diff --git a/lib/string.c b/lib/string.c
-index 7f4baad6fb193..4351ec43cd6b8 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -157,11 +157,9 @@ EXPORT_SYMBOL(strlcpy);
-  * @src: Where to copy the string from
-  * @count: Size of destination buffer
-  *
-- * Copy the string, or as much of it as fits, into the dest buffer.
-- * The routine returns the number of characters copied (not including
-- * the trailing NUL) or -E2BIG if the destination buffer wasn't big enough.
-- * The behavior is undefined if the string buffers overlap.
-- * The destination buffer is always NUL terminated, unless it's zero-sized.
-+ * Copy the string, or as much of it as fits, into the dest buffer.  The
-+ * behavior is undefined if the string buffers overlap.  The destination
-+ * buffer is always NUL terminated, unless it's zero-sized.
-  *
-  * Preferred to strlcpy() since the API doesn't require reading memory
-  * from the src string beyond the specified "count" bytes, and since
-@@ -171,8 +169,10 @@ EXPORT_SYMBOL(strlcpy);
-  *
-  * Preferred to strncpy() since it always returns a valid string, and
-  * doesn't unnecessarily force the tail of the destination buffer to be
-- * zeroed.  If the zeroing is desired, it's likely cleaner to use strscpy()
-- * with an overflow test, then just memset() the tail of the dest buffer.
-+ * zeroed.  If zeroing is desired please use strscpy_pad().
-+ *
-+ * Return: The number of characters copied (not including the trailing
-+ *         %NUL) or -E2BIG if the destination buffer wasn't big enough.
-  */
- ssize_t strscpy(char *dest, const char *src, size_t count)
- {
-@@ -259,6 +259,39 @@ char *stpcpy(char *__restrict__ dest, const char *__restrict__ src)
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
+index 6d38eec3f9d3c..a78aaf17116e9 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/ops.c
+@@ -1104,6 +1104,7 @@ static void iwl_mvm_reprobe_wk(struct work_struct *wk)
+ 	reprobe = container_of(wk, struct iwl_mvm_reprobe, work);
+ 	if (device_reprobe(reprobe->dev))
+ 		dev_err(reprobe->dev, "reprobe failed!\n");
++	put_device(reprobe->dev);
+ 	kfree(reprobe);
+ 	module_put(THIS_MODULE);
  }
- EXPORT_SYMBOL(stpcpy);
- 
-+/**
-+ * strscpy_pad() - Copy a C-string into a sized buffer
-+ * @dest: Where to copy the string to
-+ * @src: Where to copy the string from
-+ * @count: Size of destination buffer
-+ *
-+ * Copy the string, or as much of it as fits, into the dest buffer.  The
-+ * behavior is undefined if the string buffers overlap.  The destination
-+ * buffer is always %NUL terminated, unless it's zero-sized.
-+ *
-+ * If the source string is shorter than the destination buffer, zeros
-+ * the tail of the destination buffer.
-+ *
-+ * For full explanation of why you may want to consider using the
-+ * 'strscpy' functions please see the function docstring for strscpy().
-+ *
-+ * Return: The number of characters copied (not including the trailing
-+ *         %NUL) or -E2BIG if the destination buffer wasn't big enough.
-+ */
-+ssize_t strscpy_pad(char *dest, const char *src, size_t count)
-+{
-+	ssize_t written;
-+
-+	written = strscpy(dest, src, count);
-+	if (written < 0 || written == count - 1)
-+		return written;
-+
-+	memset(dest + written + 1, 0, count - written - 1);
-+
-+	return written;
-+}
-+EXPORT_SYMBOL(strscpy_pad);
-+
- #ifndef __HAVE_ARCH_STRCAT
- /**
-  * strcat - Append one %NUL-terminated string to another
+@@ -1202,7 +1203,7 @@ void iwl_mvm_nic_restart(struct iwl_mvm *mvm, bool fw_error)
+ 			module_put(THIS_MODULE);
+ 			return;
+ 		}
+-		reprobe->dev = mvm->trans->dev;
++		reprobe->dev = get_device(mvm->trans->dev);
+ 		INIT_WORK(&reprobe->work, iwl_mvm_reprobe_wk);
+ 		schedule_work(&reprobe->work);
+ 	} else if (mvm->cur_ucode == IWL_UCODE_REGULAR) {
 -- 
 2.27.0
 
