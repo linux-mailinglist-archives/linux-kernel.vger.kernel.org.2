@@ -2,89 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9EB320F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0F7320F0B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:26:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBVBVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:21:10 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:54618 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhBVBVI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:21:08 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 83BDD517;
-        Mon, 22 Feb 2021 02:20:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1613956826;
-        bh=1R6CPlY5akEJ3QQme3Uw0ejikPnQfE4Ykqrs0zToIpQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OjSgZ5ocM4OXTOSZ5DaAEKVoIut1+/FchkPjosm/9lpa44fSlZBEaQLIDhUs54SWG
-         v7Rm7XpJ3oxfJ7X8n2XDWifYVw6hgKhIBOZeNmJtHJxam2dvujWU5KNwZt51B29aL7
-         Xr6G235l1XlOlAKWlY+mbNEZ6YKB2vSlPebw0ajA=
-Date:   Mon, 22 Feb 2021 03:20:00 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jacopo Mondi <jacopo+renesas@jmondi.org>
-Cc:     kieran.bingham+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 08/16] media: i2c: max9286: Adjust parameters indent
-Message-ID: <YDMGwL6mJuHWwsWq@pendragon.ideasonboard.com>
-References: <20210216174146.106639-1-jacopo+renesas@jmondi.org>
- <20210216174146.106639-9-jacopo+renesas@jmondi.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210216174146.106639-9-jacopo+renesas@jmondi.org>
+        id S230309AbhBVBVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:21:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230186AbhBVBVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 20:21:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E015C64ED6;
+        Mon, 22 Feb 2021 01:20:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1613956851;
+        bh=GHzQgAZYqyh+zIBNuWaiu+W+uV9SXp/fN01OGtvmryQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=u/iuagqLphNQLM05hdL4UMK7jQ1tD03l7EBjaHEoqtHRfPgTRfb1+KlV5GZp27xqt
+         JrtAhS5oBQQAKF0IF8uExMwO4PjQIxOLhfN/Atm+mIgtR54IlDFsFLvrOON4UQW+HR
+         JIhdPjZAoDVU4dx+RUoN5bOwGjw0r6IpG90m7+gAuW9fBvuBg5GXGxmr86l1+1GcAO
+         dz3wrDccSEcnY1IRPfE02Wylt1w66cGnw+xOXZcNhhHr/vKMyQY49fmmRagcVegSH+
+         GG12CxFGRHk8ybVZjrsKuMwsu2rWuDUGjuL0HZ69TJlgPJsey1ZJMDbbzJ+i+Tkgx3
+         6W/pqFMslv6Cg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D984860192;
+        Mon, 22 Feb 2021 01:20:51 +0000 (UTC)
+Subject: Re: [GIT PULL] Smack patches for v5.12
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <7fc1be79-b611-24e9-f2fb-282dd061d755@schaufler-ca.com>
+References: <7fc1be79-b611-24e9-f2fb-282dd061d755.ref@schaufler-ca.com> <7fc1be79-b611-24e9-f2fb-282dd061d755@schaufler-ca.com>
+X-PR-Tracked-List-Id: <linux-security-module.vger.kernel.org>
+X-PR-Tracked-Message-Id: <7fc1be79-b611-24e9-f2fb-282dd061d755@schaufler-ca.com>
+X-PR-Tracked-Remote: https://github.com/cschaufler/smack-next tags/Smack-for-v5.12
+X-PR-Tracked-Commit-Id: 7ef4c19d245f3dc233fd4be5acea436edd1d83d8
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 92ae63c07b8fba40f960c7286403bbdc90e46655
+Message-Id: <161395685188.836.16504244911447964533.pr-tracker-bot@kernel.org>
+Date:   Mon, 22 Feb 2021 01:20:51 +0000
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        Casey Schaufler <casey@schaufler-ca.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jacopo,
+The pull request you sent on Tue, 16 Feb 2021 14:06:51 -0800:
 
-Thank you for the patch.
+> https://github.com/cschaufler/smack-next tags/Smack-for-v5.12
 
-On Tue, Feb 16, 2021 at 06:41:38PM +0100, Jacopo Mondi wrote:
-> The parameters to max9286_i2c_mux_configure() fits on the previous
-> line. Adjust it.
-> 
-> Cosmetic change only.
-> 
-> Signed-off-by: Jacopo Mondi <jacopo+renesas@jmondi.org>
-> ---
->  drivers/media/i2c/max9286.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/i2c/max9286.c b/drivers/media/i2c/max9286.c
-> index 6fd4d59fcc72..1d9951215868 100644
-> --- a/drivers/media/i2c/max9286.c
-> +++ b/drivers/media/i2c/max9286.c
-> @@ -287,9 +287,8 @@ static int max9286_i2c_mux_select(struct i2c_mux_core *muxc, u32 chan)
->  
->  	priv->mux_channel = chan;
->  
-> -	max9286_i2c_mux_configure(priv,
-> -				  MAX9286_FWDCCEN(chan) |
-> -				  MAX9286_REVCCEN(chan));
-> +	max9286_i2c_mux_configure(priv, MAX9286_FWDCCEN(chan) |
-> +					MAX9286_REVCCEN(chan));
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/92ae63c07b8fba40f960c7286403bbdc90e46655
 
-I feel obliged to say I would have written
-
-	max9286_i2c_mux_configure(priv, MAX9286_FWDCCEN(chan) |
-				  MAX9286_REVCCEN(chan));
-
-:-)
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
->  
->  	return 0;
->  }
+Thank you!
 
 -- 
-Regards,
-
-Laurent Pinchart
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
