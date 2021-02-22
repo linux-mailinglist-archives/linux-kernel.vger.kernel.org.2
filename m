@@ -2,86 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A5532101D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:08:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B16FD32101F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhBVFGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 00:06:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhBVFGd (ORCPT
+        id S230138AbhBVFGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 00:06:41 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:46850 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229487AbhBVFGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 00:06:33 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA074C061574;
-        Sun, 21 Feb 2021 21:05:53 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id c16so10939942otp.0;
-        Sun, 21 Feb 2021 21:05:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0IK9DLxki6SqxTG9lDZWezFEq9f+5L8fVOWIJWBJcgc=;
-        b=g/9QDjeiIwY+SOlK16krLiqxHVJIm7RHFeIudP3cD0+oX/ziWfJbaxTqf8dRiB+oh+
-         Z2NRwAl6tMCUK9eufuaSmlHXnoGbiZV+ESjISSGH1sNEugt3Eu1/5rb5rrD4BPSXpYIN
-         mnlC3/muNdWjJFoziVQgf+C5rNi3fC3xFC3eyR/SqaDTQnIgW9YjmiNTw7VJezXNxSw9
-         3JbugPFz0cUiFd2Q4MjAVx7ROLPjve6CXUsTeXfyypnzs13zjjX1vZh2zFhxzEwgVLV9
-         yV/WFpqyPvnvamDsWei+MSBiFR69Tx8SwZC6WX+MfORTlBTEhDaodMQSpuXWK0Zzbh2B
-         z0gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0IK9DLxki6SqxTG9lDZWezFEq9f+5L8fVOWIJWBJcgc=;
-        b=rrCbRlYyYlKdnNTjHPr82OHPNY1sE+TGmD5V0Wh/0JuNZxQLbb0QRVDtrBkrGs9kJz
-         ELrpebDcEB7Sm0FM5hl+1qxi66EBKDu8GvPDTb4wOVq2q1tf5WXb46c/8VPl2C5vskaW
-         OJb0cHpbPjdikQadcII6O2q8Fw2PwGHQhZJMA0W4/o6XCNl2xiCDuIThpGTz3eXjgBY9
-         yQdLrD8ZKtGEXvENrVfdolNtMONTi3rFzPdo3OiGJaVhNE8g6cvs+VTZ661B+tP790xr
-         K5PWwaX9qvRd57RN5VBFcaoA2gMeU22drXeAUsl2fZsp2w6bt3YKZhAjJh+T+GY1NPgE
-         G5sw==
-X-Gm-Message-State: AOAM5305gjKJwmiii0hq7V6RFw0waT7ekCWA3JmuCZ0b7sZuuMIV2p82
-        PihdTLZ+P6m0YegerV4vLSBMKzv9J4c=
-X-Google-Smtp-Source: ABdhPJzpYSscCuDBWQEd/tRzW0amNsQ6jx7Nm4YsORf9VsCjvFjjm4ESDu2I2erNinKEz9TGFdRXNg==
-X-Received: by 2002:a9d:6317:: with SMTP id q23mr15068819otk.301.1613970351714;
-        Sun, 21 Feb 2021 21:05:51 -0800 (PST)
-Received: from ?IPv6:2600:1700:dfe0:49f0:f028:e4b6:7941:9a45? ([2600:1700:dfe0:49f0:f028:e4b6:7941:9a45])
-        by smtp.gmail.com with ESMTPSA id s6sm55231oon.46.2021.02.21.21.05.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Feb 2021 21:05:51 -0800 (PST)
-Subject: Re: [PATCH net] bcm63xx_enet: fix sporadic kernel panic
-To:     Sieng Piaw Liew <liew.s.piaw@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210222013530.1356-1-liew.s.piaw@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <f382effd-a4f5-b860-c521-5728f1f6200d@gmail.com>
-Date:   Sun, 21 Feb 2021 21:05:50 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Mon, 22 Feb 2021 00:06:39 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UP9fL7J_1613970355;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UP9fL7J_1613970355)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 22 Feb 2021 13:05:56 +0800
+Subject: Re: [PATCH] doc: use KCFLAGS instead of EXTRA_CFLAGS to pass flags
+ from command line
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Harry Wei <harryxiyou@gmail.com>, Jyri Sarha <jsarha@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210221152524.197693-1-masahiroy@kernel.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <b1d148cf-5264-54c7-1b6a-b0b4a5e866a1@linux.alibaba.com>
+Date:   Mon, 22 Feb 2021 13:05:54 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20210222013530.1356-1-liew.s.piaw@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210221152524.197693-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
 
-On 2/21/2021 17:35, Sieng Piaw Liew wrote:
-> In ndo_stop functions, netdev_completed_queue() is called during forced
-> tx reclaim, after netdev_reset_queue(). This may trigger kernel panic if
-> there is any tx skb left.
+在 2021/2/21 下午11:25, Masahiro Yamada 写道:
+> You should use KCFLAGS to pass additional compiler flags from the
+> command line. Using EXTRA_CFLAGS is wrong.
 > 
-> This patch moves netdev_reset_queue() to after tx reclaim, so BQL can
-> complete successfully then reset.
+> EXTRA_CFLAGS is supposed to specify flags applied only to the current
+> Makefile (and now deprecated in favor of ccflags-y).
 > 
-> Signed-off-by: Sieng Piaw Liew <liew.s.piaw@gmail.com>
-
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Fixes: 4c59b0f5543d ("bcm63xx_enet: add BQL support")
--- 
-Florian
+> It is still used in arch/mips/kvm/Makefile (and possibly in external
+> modules too). Passing EXTRA_CFLAGS from the command line overwrites
+> it and breaks the build.
+> 
+> I also fixed drivers/gpu/drm/tilcdc/Makefile because commit 816175dd1fd7
+> ("drivers/gpu/drm/tilcdc: Makefile, only -Werror when no -W* in
+> EXTRA_CFLAGS") was based on the same misunderstanding.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  Documentation/process/4.Coding.rst                            | 2 +-
+>  Documentation/process/submit-checklist.rst                    | 2 +-
+>  Documentation/translations/it_IT/process/4.Coding.rst         | 2 +-
+>  Documentation/translations/it_IT/process/submit-checklist.rst | 2 +-
+>  Documentation/translations/zh_CN/process/4.Coding.rst         | 2 +-
+>  drivers/gpu/drm/tilcdc/Makefile                               | 2 +-
+>  6 files changed, 6 insertions(+), 6 deletions(-)
+> 
