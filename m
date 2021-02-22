@@ -2,120 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C99321A40
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4754C321A43
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232582AbhBVOXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:23:52 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12199 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232153AbhBVOM3 (ORCPT
+        id S232643AbhBVOX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:23:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32072 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231982AbhBVONx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:12:29 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DkkZz72WNzlNcN;
-        Mon, 22 Feb 2021 22:09:47 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 22 Feb 2021 22:11:37 +0800
-Subject: Re: [PATCH stable-rc queue/4.9 1/1] futex: Provide distinct return
- value when owner is exiting
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        <sashal@kernel.org>, <tglx@linutronix.de>, <wangle6@huawei.com>,
-        <zhengyejian1@huawei.com>
-References: <20210222070328.102384-1-nixiaoming@huawei.com>
- <20210222070328.102384-2-nixiaoming@huawei.com> <YDOEZhmKqjTVxtMn@kroah.com>
- <3bc570f6-f8af-b0a2-4d62-13ed4adc1f33@huawei.com>
- <YDOe9GNivoHQphQc@kroah.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <76f6a446-41db-3b7a-dcab-a85d0841654f@huawei.com>
-Date:   Mon, 22 Feb 2021 22:11:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Mon, 22 Feb 2021 09:13:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1614003146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C4ob/HwZY6JToPa6OIARFnOVuWbb8EWH4Jtjs9jshMI=;
+        b=ZJzeBd3FVu9OByQEluSXqLAxIaaA+l8rj3B7FAUNatpqBwKy5wI7Ak6GGvRUxbLDT9EsYc
+        pJWPkcz9eTGJGPBhHDMGuBu7t4DHMxM2w8Wune7o4q6umXgKkEYMWe7rubfC9HrvXtM9qU
+        7FzrvRRnrY47BlS6D/5s3Dx4w4zR7Uo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-275-Qbm7owRRPHGd4HXjpaXsmw-1; Mon, 22 Feb 2021 09:12:24 -0500
+X-MC-Unique: Qbm7owRRPHGd4HXjpaXsmw-1
+Received: by mail-wr1-f71.google.com with SMTP id j12so554775wrt.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:12:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C4ob/HwZY6JToPa6OIARFnOVuWbb8EWH4Jtjs9jshMI=;
+        b=OpRjqZT3promThODSW/Gs3eosdUwmecIb0tMG4X3IAeQgXcRDQMjimRXoVrynQelfT
+         m6ATW3rc4gR+COb4z9a/v7dtsvnsxskySx00TobCY8s2u0TJL0WnsNmshtcRA0GmHoop
+         vLXeDkxVgvl8bfZ1rypwoQx8XmXapMx0BpFue6PT8DeL7qmpusNEqwYIAsSYMK5docj7
+         KTBlUJKboC6Gw9F6FYA62DZo77rtGZdBSgv2+XbEoLX7aSS+5sjwdShLks1Xsf2xdu7K
+         wEmN4gnQggNMHSdrbisznwmP6t+COIWqJ3KtCnGW3OzA16NHrFkpx2lAqfM8ZsIbj+DW
+         7gzQ==
+X-Gm-Message-State: AOAM532R+Vt8fEraP7Ic5B6N0PeNFFkfhbzkhvedadQfCv7ryHkissBI
+        /iIFwI6MQ1u8u3npSvjfpRz04ew5KS2Qc+JhI4Qg+0wSkcphX0Vr2GVgWjq8nnck4LUxmTl+mfj
+        pJFz8ike1iJjbPyN4uwuHatUC
+X-Received: by 2002:a5d:5441:: with SMTP id w1mr21614570wrv.366.1614003142875;
+        Mon, 22 Feb 2021 06:12:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzvUh6+RKpz1p9mHjfUgu/bHee+H13baHG8nnXHUSqARjGTCoY6aSGxXiwzPvqOvhgWfA6Rew==
+X-Received: by 2002:a5d:5441:: with SMTP id w1mr21614537wrv.366.1614003142640;
+        Mon, 22 Feb 2021 06:12:22 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id i1sm25218726wmq.12.2021.02.22.06.12.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 06:12:22 -0800 (PST)
+Date:   Mon, 22 Feb 2021 15:12:19 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v5 07/19] af_vsock: rest of SEQPACKET support
+Message-ID: <20210222141219.nvw4323sizvsud5d@steredhat>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053831.1067678-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <YDOe9GNivoHQphQc@kroah.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210218053831.1067678-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/22 20:09, Greg KH wrote:
-> On Mon, Feb 22, 2021 at 06:54:06PM +0800, Xiaoming Ni wrote:
->> On 2021/2/22 18:16, Greg KH wrote:
->>> On Mon, Feb 22, 2021 at 03:03:28PM +0800, Xiaoming Ni wrote:
->>>> From: Thomas Gleixner<tglx@linutronix.de>
->>>>
->>>> commit ac31c7ff8624409ba3c4901df9237a616c187a5d upstream.
->>> This commit is already in the 4.9 tree.  If the backport was incorrect,
->>> say that here, and describe what went wrong and why this commit fixes
->>> it.
->>>
->>> Also state what commit this fixes as well, otherwise this changelog just
->>> looks like it is being applied again to the tree, which doesn't make
->>> much sense.
->>>
->>> thanks,
->>>
->>> greg k-h
->>> .
->>
->> I wrote a cover for it. but forgot to adjust the title of the cover:
->>
->> https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
->>
->>
->> I found a dead code in the queue/4.9 branch of the stable-rc repository.
->>
->> 2021-02-03:
->> commit c27f392040e2f6 ("futex: Provide distinct return value when
->>   owner is exiting")
->> 	The function handle_exit_race does not exist. Therefore, the
->> 	change in handle_exit_race() is ignored in the patch round.
->>
->> 2021-02-22:
->> commit e55cb811e612 ("futex: Cure exit race")
->> 	Define the handle_exit_race() function,
->> 	but no branch in the function returns EBUSY.
->> 	As a result, dead code occurs in the attach_to_pi_owner():
->>
->> 		int ret = handle_exit_race(uaddr, uval, p);
->> 		...
->> 		if (ret == -EBUSY)
->> 			*exiting = p; /* dead code */
->>
->> To fix the dead code, modify the commit e55cb811e612 ("futex: Cure exit
->> race"),
->> or install a patch to incorporate the changes in handle_exit_race().
->>
->> I am unfamiliar with the processing of the stable-rc queue branch,
->> and I cannot find the patch mail of the current branch in
->> 	https://lore.kernel.org/lkml/?q=%22futex%3A+Cure+exit+race%22
->> Therefore, I re-integrated commit ac31c7ff8624 ("futex: Provide distinct
->>   return value when owner is exiting").
->>   And wrote a cover (but forgot to adjust the title of the cover):
->>
->> https://lore.kernel.org/lkml/20210222070328.102384-1-nixiaoming@huawei.com/
-> 
-> So this is a "fixup" patch, right?
-> 
-> Please clearly label it as such in your patch description and resend
-> this as what is here I can not apply at all.
-> 
-> thanks,
-> 
-> greg k-h
-> .
+On Thu, Feb 18, 2021 at 08:38:28AM +0300, Arseny Krasnov wrote:
+>This does rest of SOCK_SEQPACKET support:
+>1) Adds socket ops for SEQPACKET type.
+>2) Allows to create socket with SEQPACKET type.
 >
-Thank you for your guidance.
-I have updated the patch description and resent the patch based on 
-v4.9.258-rc1
-https://lore.kernel.org/lkml/20210222125352.110124-1-nixiaoming@huawei.com/
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/af_vsock.c | 36 +++++++++++++++++++++++++++++++++++-
+> 1 file changed, 35 insertions(+), 1 deletion(-)
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index f352cd9d91ce..f4b02c6d35d1 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -452,6 +452,7 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 		new_transport = transport_dgram;
+> 		break;
+> 	case SOCK_STREAM:
+>+	case SOCK_SEQPACKET:
+> 		if (vsock_use_local_transport(remote_cid))
+> 			new_transport = transport_local;
+> 		else if (remote_cid <= VMADDR_CID_HOST || !transport_h2g ||
+>@@ -484,6 +485,14 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
+> 	if (!new_transport || !try_module_get(new_transport->module))
+> 		return -ENODEV;
+>
+>+	if (sk->sk_type == SOCK_SEQPACKET) {
+>+		if (!new_transport->seqpacket_seq_send_len ||
+>+		    !new_transport->seqpacket_seq_send_eor ||
+>+		    !new_transport->seqpacket_seq_get_len ||
+>+		    !new_transport->seqpacket_dequeue)
 
-Thanks
-Xiaoming Ni
+We must release the module reference acquired above:
 
+			module_put(new_transport->module);
+
+>+			return -ESOCKTNOSUPPORT;
+>+	}
+>+
+> 	ret = new_transport->init(vsk, psk);
+> 	if (ret) {
+> 		module_put(new_transport->module);
+>@@ -684,6 +693,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+>
+> 	switch (sk->sk_socket->type) {
+> 	case SOCK_STREAM:
+>+	case SOCK_SEQPACKET:
+> 		spin_lock_bh(&vsock_table_lock);
+> 		retval = __vsock_bind_connectible(vsk, addr);
+> 		spin_unlock_bh(&vsock_table_lock);
+>@@ -769,7 +779,7 @@ static struct sock *__vsock_create(struct net *net,
+>
+> static bool sock_type_connectible(u16 type)
+> {
+>-	return type == SOCK_STREAM;
+>+	return (type == SOCK_STREAM) || (type == SOCK_SEQPACKET);
+> }
+>
+> static void __vsock_release(struct sock *sk, int level)
+>@@ -2191,6 +2201,27 @@ static const struct proto_ops vsock_stream_ops = {
+> 	.sendpage = sock_no_sendpage,
+> };
+>
+>+static const struct proto_ops vsock_seqpacket_ops = {
+>+	.family = PF_VSOCK,
+>+	.owner = THIS_MODULE,
+>+	.release = vsock_release,
+>+	.bind = vsock_bind,
+>+	.connect = vsock_connect,
+>+	.socketpair = sock_no_socketpair,
+>+	.accept = vsock_accept,
+>+	.getname = vsock_getname,
+>+	.poll = vsock_poll,
+>+	.ioctl = sock_no_ioctl,
+>+	.listen = vsock_listen,
+>+	.shutdown = vsock_shutdown,
+>+	.setsockopt = vsock_connectible_setsockopt,
+>+	.getsockopt = vsock_connectible_getsockopt,
+>+	.sendmsg = vsock_connectible_sendmsg,
+>+	.recvmsg = vsock_connectible_recvmsg,
+>+	.mmap = sock_no_mmap,
+>+	.sendpage = sock_no_sendpage,
+>+};
+>+
+> static int vsock_create(struct net *net, struct socket *sock,
+> 			int protocol, int kern)
+> {
+>@@ -2211,6 +2242,9 @@ static int vsock_create(struct net *net, struct socket *sock,
+> 	case SOCK_STREAM:
+> 		sock->ops = &vsock_stream_ops;
+> 		break;
+>+	case SOCK_SEQPACKET:
+>+		sock->ops = &vsock_seqpacket_ops;
+>+		break;
+> 	default:
+> 		return -ESOCKTNOSUPPORT;
+> 	}
+>-- 
+>2.25.1
+>
 
