@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A63032165A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:22:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DAC3216AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbhBVMVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:21:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
+        id S231150AbhBVM3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:29:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230296AbhBVMOv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:14:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C30164F04;
-        Mon, 22 Feb 2021 12:14:01 +0000 (UTC)
+        id S230371AbhBVMPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:15:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 912FE64EF2;
+        Mon, 22 Feb 2021 12:14:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996041;
-        bh=4EOEIar5w3owvOWf/YV6gO4rfvd44ZBDkwIEZooU3g4=;
+        s=korg; t=1613996044;
+        bh=LqBI0T4uKzthKBRdmuCd499fYfUi0a/WI1AfKlgDRIU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZsPRjvASM72C5kNXGCDZA/xmbgzd6MLlHEqJXOm2EW1gURjd1KsNQOMtQMycai/aA
-         A7kZC4YsQBSMXojy0wirJf3UCo9uyZrRi1vUB+lJNEso4dm8zv4gZY5LOKMUjvcAu8
-         N9wPslN2xiUktb+UhGilLuIvVOh6RLR+DX6vswsg=
+        b=jRRzFePOLw/XhXpiVBWFOiFPhpvAvuLYZSq94F7FjeanNsSwALnBBNAEYLmcHWX09
+         Y2p77Cn0296Xr95f8IJemwcIg2Sh42g4VGtdw8t0NRgFcBqrcoMDwLcDXo25ujQt/x
+         UsZrz23bw9oC+YNwZDMweVabvP2/+XQaWX6/QwzQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yonatan Linik <yonatanlinik@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 15/29] net: fix proc_fs init handling in af_packet and tls
-Date:   Mon, 22 Feb 2021 13:13:09 +0100
-Message-Id: <20210222121022.233608866@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.10 16/29] Xen/x86: dont bail early from clear_foreign_p2m_mapping()
+Date:   Mon, 22 Feb 2021 13:13:10 +0100
+Message-Id: <20210222121022.357852140@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
 References: <20210222121019.444399883@linuxfoundation.org>
@@ -40,85 +39,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonatan Linik <yonatanlinik@gmail.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-[ Upstream commit a268e0f2455c32653140775662b40c2b1f1b2efa ]
+commit a35f2ef3b7376bfd0a57f7844bd7454389aae1fc upstream.
 
-proc_fs was used, in af_packet, without a surrounding #ifdef,
-although there is no hard dependency on proc_fs.
-That caused the initialization of the af_packet module to fail
-when CONFIG_PROC_FS=n.
+Its sibling (set_foreign_p2m_mapping()) as well as the sibling of its
+only caller (gnttab_map_refs()) don't clean up after themselves in case
+of error. Higher level callers are expected to do so. However, in order
+for that to really clean up any partially set up state, the operation
+should not terminate upon encountering an entry in unexpected state. It
+is particularly relevant to notice here that set_foreign_p2m_mapping()
+would skip setting up a p2m entry if its grant mapping failed, but it
+would continue to set up further p2m entries as long as their mappings
+succeeded.
 
-Specifically, proc_create_net() was used in af_packet.c,
-and when it fails, packet_net_init() returns -ENOMEM.
-It will always fail when the kernel is compiled without proc_fs,
-because, proc_create_net() for example always returns NULL.
+Arguably down the road set_foreign_p2m_mapping() may want its page state
+related WARN_ON() also converted to an error return.
 
-The calling order that starts in af_packet.c is as follows:
-packet_init()
-register_pernet_subsys()
-register_pernet_operations()
-__register_pernet_operations()
-ops_init()
-ops->init() (packet_net_ops.init=packet_net_init())
-proc_create_net()
+This is part of XSA-361.
 
-It worked in the past because register_pernet_subsys()'s return value
-wasn't checked before this Commit 36096f2f4fa0 ("packet: Fix error path in
-packet_init.").
-It always returned an error, but was not checked before, so everything
-was working even when CONFIG_PROC_FS=n.
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The fix here is simply to add the necessary #ifdef.
-
-This also fixes a similar error in tls_proc.c, that was found by Jakub
-Kicinski.
-
-Fixes: d26b698dd3cd ("net/tls: add skeleton of MIB statistics")
-Fixes: 36096f2f4fa0 ("packet: Fix error path in packet_init")
-Signed-off-by: Yonatan Linik <yonatanlinik@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/packet/af_packet.c | 2 ++
- net/tls/tls_proc.c     | 3 +++
- 2 files changed, 5 insertions(+)
+ arch/x86/xen/p2m.c |   12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/net/packet/af_packet.c b/net/packet/af_packet.c
-index 7a18ffff85514..a0121e7c98b14 100644
---- a/net/packet/af_packet.c
-+++ b/net/packet/af_packet.c
-@@ -4615,9 +4615,11 @@ static int __net_init packet_net_init(struct net *net)
- 	mutex_init(&net->packet.sklist_lock);
- 	INIT_HLIST_HEAD(&net->packet.sklist);
+--- a/arch/x86/xen/p2m.c
++++ b/arch/x86/xen/p2m.c
+@@ -750,17 +750,15 @@ int clear_foreign_p2m_mapping(struct gnt
+ 		unsigned long mfn = __pfn_to_mfn(page_to_pfn(pages[i]));
+ 		unsigned long pfn = page_to_pfn(pages[i]);
  
-+#ifdef CONFIG_PROC_FS
- 	if (!proc_create_net("packet", 0, net->proc_net, &packet_seq_ops,
- 			sizeof(struct seq_net_private)))
- 		return -ENOMEM;
-+#endif /* CONFIG_PROC_FS */
- 
- 	return 0;
- }
-diff --git a/net/tls/tls_proc.c b/net/tls/tls_proc.c
-index 3a5dd1e072332..feeceb0e4cb48 100644
---- a/net/tls/tls_proc.c
-+++ b/net/tls/tls_proc.c
-@@ -37,9 +37,12 @@ static int tls_statistics_seq_show(struct seq_file *seq, void *v)
- 
- int __net_init tls_proc_init(struct net *net)
- {
-+#ifdef CONFIG_PROC_FS
- 	if (!proc_create_net_single("tls_stat", 0444, net->proc_net,
- 				    tls_statistics_seq_show, NULL))
- 		return -ENOMEM;
-+#endif /* CONFIG_PROC_FS */
+-		if (mfn == INVALID_P2M_ENTRY || !(mfn & FOREIGN_FRAME_BIT)) {
++		if (mfn != INVALID_P2M_ENTRY && (mfn & FOREIGN_FRAME_BIT))
++			set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
++		else
+ 			ret = -EINVAL;
+-			goto out;
+-		}
+-
+-		set_phys_to_machine(pfn, INVALID_P2M_ENTRY);
+ 	}
+ 	if (kunmap_ops)
+ 		ret = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref,
+-						kunmap_ops, count);
+-out:
++						kunmap_ops, count) ?: ret;
 +
- 	return 0;
+ 	return ret;
  }
- 
--- 
-2.27.0
-
+ EXPORT_SYMBOL_GPL(clear_foreign_p2m_mapping);
 
 
