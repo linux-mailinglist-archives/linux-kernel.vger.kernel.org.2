@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B507320F33
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:37:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6BA320F36
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhBVBgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:36:47 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:44656 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231775AbhBVBgl (ORCPT
+        id S231695AbhBVBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:41:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230151AbhBVBlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:36:41 -0500
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D759320B57A0;
-        Sun, 21 Feb 2021 17:35:59 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D759320B57A0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1613957760;
-        bh=ExCdsyPkQI85bgvWno/UIC3VrrC79Ve3YTXOyYnfvYU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Qq4J4yH6UugpeNQ3CD/H/jYSDYubKgYDrULJm5MSRGGMy4pVUF3ZhkkpFDiz4UKpC
-         Fbe9plxzMLfQUkOqW20+R5R0Fp3HF31QA9jJO+T4Drq2NGRAd0AXMWGRuiHddmF4lc
-         s/bgSL36U18cNAWtIPD4IoDQS7mWtllOclFbv2tE=
-Subject: Re: [PATCH v18 03/11] of: Add a common kexec FDT setup function
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     zohar@linux.ibm.com, bauerman@linux.ibm.com, robh@kernel.org,
-        takahiro.akashi@linaro.org, gregkh@linuxfoundation.org,
-        will@kernel.org, joe@perches.com, catalin.marinas@arm.com,
-        mpe@ellerman.id.au, mark.rutland@arm.com, benh@kernel.crashing.org,
-        tao.li@vivo.com, paulus@samba.org, vincenzo.frascino@arm.com,
-        frowand.list@gmail.com, sashal@kernel.org, masahiroy@kernel.org,
-        jmorris@namei.org, allison@lohutok.net, serge@hallyn.com,
-        devicetree@vger.kernel.org, pasha.tatashin@soleen.com,
-        prsriva@linux.microsoft.com, hsinyi@chromium.org,
-        linux-arm-kernel@lists.infradead.org, christophe.leroy@c-s.fr,
-        mbrugger@suse.com, balajib@linux.microsoft.com,
-        dmitry.kasatkin@gmail.com, linux-kernel@vger.kernel.org,
-        james.morse@arm.com, linux-integrity@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210213161049.6190-1-nramas@linux.microsoft.com>
- <20210213161049.6190-4-nramas@linux.microsoft.com>
- <20210222013207.GA142216@roeck-us.net>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <b4237414-24ec-f905-2561-6237081ea7ff@linux.microsoft.com>
-Date:   Sun, 21 Feb 2021 17:35:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sun, 21 Feb 2021 20:41:10 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75181C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 17:40:30 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id z5so2455952pfe.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 17:40:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=axtens.net; s=google;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=Pmfn8f/i9TumuS4aSYkIvZo4/H99mKopifdoxhuUtdg=;
+        b=T60i5xmqABV5ARr6WaanBLU2cGHolVYLPmE8mrIYt8SPrVLMMpkuxwYiviwuc+L/u/
+         C2gaolDpezEK6fLu0XlDVV8E0WMSwzTrsCT/Wshcx36Yjszf+UlIJRa4va6+DbG31ldw
+         14kfSmTnvfkgCJYqH1/jrOwaHT8u6AA+kA3TU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=Pmfn8f/i9TumuS4aSYkIvZo4/H99mKopifdoxhuUtdg=;
+        b=dwnjswAAtBlljtku3/b3sr+Kuap/tqagbe4gBRUvc1qUO9NLlVESm2J3R5LjVB0moZ
+         z+sSMukTOGgoG1JilEadtGS7G7I4otV70VgCX5swUCCuLtJJ3XMxZfYm/gUG6vBhJ1ZC
+         q7ocrAP3WpVsV/gOFt+Sz4cr1JX6qfp6imU+3HUDgXjIBsj9Yg5CZRQjlGvUEXNSva9g
+         3vgoGHBXb/EI0yar4FgFw0RYck/kZ4fFDk0sFd5gbyMe0v3tRiUqOFyDYkI4rXMgdr72
+         mMafoqTEyHTHhRHaHS1+FOtUJUAL8ca2AH8Ml926LFaR2IgtDpwUTc4A7O8Pg2eHccUs
+         Xp7g==
+X-Gm-Message-State: AOAM533Y6y0UaJvNKO4gDW9hrqAfAcDjrnIbl7fzAYwnJlg1ZrRANpQt
+        V7GQzlDBejUzU/qzzyFw9hWwjjUcscvGS6kz
+X-Google-Smtp-Source: ABdhPJxtyPWEO8BWjW1Faie4bC1Bqwm2iJDW3XPcs1fWp5czZ1Gt1y7cs6vsAEeh8RmiztWxGvI7Ww==
+X-Received: by 2002:a65:6a4b:: with SMTP id o11mr17970000pgu.138.1613958030061;
+        Sun, 21 Feb 2021 17:40:30 -0800 (PST)
+Received: from localhost (2001-44b8-1113-6700-c141-3594-a9dc-6972.static.ipv6.internode.on.net. [2001:44b8:1113:6700:c141:3594:a9dc:6972])
+        by smtp.gmail.com with ESMTPSA id v1sm19889837pfi.99.2021.02.21.17.40.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 17:40:29 -0800 (PST)
+From:   Daniel Axtens <dja@axtens.net>
+To:     Yang Li <yang.lee@linux.alibaba.com>, mpe@ellerman.id.au
+Cc:     benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: Re: [PATCH] powerpc: use ARRAY_SIZE instead of division operation
+In-Reply-To: <1613808853-78381-1-git-send-email-yang.lee@linux.alibaba.com>
+References: <1613808853-78381-1-git-send-email-yang.lee@linux.alibaba.com>
+Date:   Mon, 22 Feb 2021 12:40:26 +1100
+Message-ID: <87blccq3qt.fsf@dja-thinkpad.axtens.net>
 MIME-Version: 1.0
-In-Reply-To: <20210222013207.GA142216@roeck-us.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/21/21 5:32 PM, Guenter Roeck wrote:
+Hi Yang,
 
-Hi Guenter,
+> This eliminates the following coccicheck warning:
+> ./arch/powerpc/boot/mktree.c:130:31-32: WARNING: Use ARRAY_SIZE
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  arch/powerpc/boot/mktree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/powerpc/boot/mktree.c b/arch/powerpc/boot/mktree.c
+> index dc603f3..0b2def5 100644
+> --- a/arch/powerpc/boot/mktree.c
+> +++ b/arch/powerpc/boot/mktree.c
+> @@ -127,7 +127,7 @@ int main(int argc, char *argv[])
+>  			exit(5);
+>  		}
+>  		cp = tmpbuf;
+> -		for (i = 0; i < sizeof(tmpbuf) / sizeof(unsigned int); i++)
+> +		for (i = 0; i < ARRAY_SIZE(tmpbuf); i++)
 
-> On Sat, Feb 13, 2021 at 08:10:41AM -0800, Lakshmi Ramasubramanian wrote:
->> From: Rob Herring <robh@kernel.org>
->>
->> Both arm64 and powerpc do essentially the same FDT /chosen setup for
->> kexec.  The differences are either omissions that arm64 should have
->> or additional properties that will be ignored.  The setup code can be
->> combined and shared by both powerpc and arm64.
->>
->> The differences relative to the arm64 version:
->>   - If /chosen doesn't exist, it will be created (should never happen).
->>   - Any old dtb and initrd reserved memory will be released.
->>   - The new initrd and elfcorehdr are marked reserved.
->>   - "linux,booted-from-kexec" is set.
->>
->> The differences relative to the powerpc version:
->>   - "kaslr-seed" and "rng-seed" may be set.
->>   - "linux,elfcorehdr" is set.
->>   - Any existing "linux,usable-memory-range" is removed.
->>
->> Combine the code for setting up the /chosen node in the FDT and updating
->> the memory reservation for kexec, for powerpc and arm64, in
->> of_kexec_alloc_and_setup_fdt() and move it to "drivers/of/kexec.c".
->>
->> Signed-off-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-> 
-> s390:allmodconfig:
-> 
-> drivers/of/kexec.c: In function 'of_kexec_alloc_and_setup_fdt':
-> drivers/of/kexec.c:378:10: error: 'const struct kimage' has no member named 'arch'
->    378 |     image->arch.elf_load_addr,
->        |          ^~
-> drivers/of/kexec.c:379:10: error: 'const struct kimage' has no member named 'arch'
->    379 |     image->arch.elf_headers_sz);
->        |          ^~
-> drivers/of/kexec.c:387:35: error: 'const struct kimage' has no member named 'arch'
->    387 |   ret = fdt_add_mem_rsv(fdt, image->arch.elf_load_addr,
->        |                                   ^~
-> drivers/of/kexec.c:388:16: error: 'const struct kimage' has no member named 'arch'
->    388 |           image->arch.elf_headers_sz);
->        |                ^~
-> 
+Unfortunately this breaks the build - see
+https://patchwork.ozlabs.org/project/linuxppc-dev/patch/1613808853-78381-1-git-send-email-yang.lee@linux.alibaba.com/
 
-I have posted a new patch set (link given below) that fixes the above 
-build break. Could you please try that?
+This is because 'boot/mktree.c' is a userspace program without access to
+the usual kernel headers.
 
-https://patchwork.kernel.org/project/linux-integrity/patch/20210221174930.27324-14-nramas@linux.microsoft.com/
+It might be best to get coccicheck to exclude all of
+'arch/powerpc/boot/' as I believe everything in that directory is
+compiled differently to the rest of the kernel (see the Makefile), but
+maybe just blacklisting boot/mktree.c would be sufficient.
 
-thanks,
-  -lakshmi
+Kind regards,
+Daniel
 
+>  			cksum += *cp++;
+>  		if (write(out_fd, tmpbuf, sizeof(tmpbuf)) != sizeof(tmpbuf)) {
+>  			perror("boot-image write");
+> -- 
+> 1.8.3.1
