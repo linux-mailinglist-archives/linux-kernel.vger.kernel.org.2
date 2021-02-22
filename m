@@ -2,146 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF36E322268
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69F4132226E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 23:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232428AbhBVWxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 17:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232396AbhBVWxe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 17:53:34 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65952C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:52:54 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id f7so8894304pgp.19
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 14:52:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=WCWa6LwM2bR7pmLc5+vjMwUQ7Td6/ol6HmkorD+Rs9E=;
-        b=lDd76rRs/xcSBBfRk70gFbmfgQxT9We6bVeJPObs5IDgLOlnPbzKIFIM/1ZOsf0aq+
-         WmPsPewXicb1MUkmTReT9/qGkuKCE6luXgSHW7iEKpAf62OLjNkjciRCDsmt92SULBEw
-         ADEQc+NSwaqo194CKHIQuqgHc65keoQ6nhjn0pVAVXQzuLSbNH7EMK4sXlTEA4Q0Cp6B
-         kZ+i6jYHuS74AQ1ZftWm4fMMnfp9B/ymM9NLFaiqlDJ7hCkJHLlaa6BGeiq7IlofQg4C
-         Yt1VGSjTumokX/yM6XK/cStxXbO4IqsXMuIbwMUpx+EeR0H8V/wiISMSpUCeYyrWn3Rt
-         kdXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=WCWa6LwM2bR7pmLc5+vjMwUQ7Td6/ol6HmkorD+Rs9E=;
-        b=V4uxW0m+us3tcnwinNEvMx/Xa9Dg9TWFN3DTkcqyWXzDtUqdVQPw7vqiVGmAzoTDyD
-         KtYW5BvlgXy8q2vaFhqxKq/wIVO5YGlYLyIYx+BvaCj96Lxz9/wai+Btr3wp6fdxnnpq
-         dqJkjt3Ka+2QrWrKWwDnmw/ZWTYXHxwYnov+oBIqbspNOjXQTdrr9/P9PsJvWhjNOD8x
-         GS1qA+RMOg81vveM/iAWAleGjXfSTm6WYTolL3Ryb5362NSiRJ2i5e741pTdXyEyOMn7
-         2kYAFOwxHZCbpGSnoPFhMtUfIWE4qAHOBbJHeS1U1FAhJaAI2tZvJZ2ROOvqMCk8175e
-         mmlw==
-X-Gm-Message-State: AOAM532dyOsDSrZJaldrMI5IMIei6ZQsuZ0rmV/gR9zr7teCx1S5sE3E
-        JY2ybiV7gexrO5mQQVNE1xLAxW/Z40a9Lw==
-X-Google-Smtp-Source: ABdhPJwtHV6TBb9PF8vdxnwdg9i2ZEKDTAqAQRVyGEyJFdwR2yHkcqOSNcIG9NoO4tbOg7DEs6lhwUOXlxNwfQ==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:1ce2:63d4:4764:e103])
- (user=dlatypov job=sendgmr) by 2002:a62:8f0c:0:b029:1ed:8c8d:6910 with SMTP
- id n12-20020a628f0c0000b02901ed8c8d6910mr9773014pfd.31.1614034373814; Mon, 22
- Feb 2021 14:52:53 -0800 (PST)
-Date:   Mon, 22 Feb 2021 14:52:41 -0800
-Message-Id: <20210222225241.201145-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH] kunit: tool: make --kunitconfig accept dirs, add lib/kunit fragment
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com
-Cc:     davidgow@google.com, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, tytso@mit.edu,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S231891AbhBVW4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 17:56:41 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:35525 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229902AbhBVW4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 17:56:38 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DkyG428Jcz9sVR;
+        Tue, 23 Feb 2021 09:55:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1614034556;
+        bh=YGbyfBCqyDeORyWh7vBb5P38QO8qcnOEq6JEeUbAiaQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hTjNGtkc3yJYiKi9r3t8t7duyARK5ZRJiSsUdcPVo7qXkP4ukjdLkpuFJuZpn9HgJ
+         seGuP3CziYDhi73M1FaKgtEc+OW6C63sWLtvzK9FrrqmgMQeojzFle6tk4jj/98RYc
+         drO2szYvvky5afBN36VuqW1pqB/OYZLPCRr4oHRucdfhNPcdV8iuYs5IfDRku3syGZ
+         wZ5O2ZjNfbmYjM5x2/HBOtzo1GkC+j3HWQX1x8HtwTnTBv+fZbaq3mLJbdv1IRaiQY
+         eigjIasv/NX4AfrWPiklvtc3qpM2tJKdrdSrw7srjtKBx0dlXA//Kgc+DZO0rSIy2T
+         kc5+oucuooBiA==
+Date:   Tue, 23 Feb 2021 09:55:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Rob Herring <robherring2@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: linux-next: manual merge of the devicetree tree with the kbuild
+ tree
+Message-ID: <20210223095555.70ee4c0c@canb.auug.org.au>
+In-Reply-To: <20210215093202.36611afd@canb.auug.org.au>
+References: <20210205144540.1438cc3c@canb.auug.org.au>
+        <20210215093202.36611afd@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/hPzXB8sr3EZQc_SVxxI3ZU9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TL;DR
-$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit
+--Sig_/hPzXB8sr3EZQc_SVxxI3ZU9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Per suggestion from Ted [1], we can reduce the amount of typing by
-assuming a convention that these files are named '.kunitconfig'.
+Hi all,
 
-In the case of [1], we now have
-$ ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4
+On Mon, 15 Feb 2021 09:32:02 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> On Fri, 5 Feb 2021 14:45:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+> >=20
+> > Today's linux-next merge of the devicetree tree got a conflict in:
+> >=20
+> >   scripts/Makefile.lib
+> >=20
+> > between commit:
+> >=20
+> >   d73a6a04c76a ("kbuild: use always-y instead of extra-y")
+> >=20
+> > from the kbuild tree and commit:
+> >=20
+> >   ce88c9c79455 ("kbuild: Add support to build overlays (%.dtbo)")
+> >=20
+> > from the devicetree tree.
+> >=20
+> > I fixed it up (see below) and can carry the fix as necessary. This
+> > is now fixed as far as linux-next is concerned, but any non trivial
+> > conflicts should be mentioned to your upstream maintainer when your tree
+> > is submitted for merging.  You may also want to consider cooperating
+> > with the maintainer of the conflicting tree to minimise any particularly
+> > complex conflicts.
+> >=20
+> > diff --cc scripts/Makefile.lib
+> > index 6f248ff91982,b00855b247e0..000000000000
+> > --- a/scripts/Makefile.lib
+> > +++ b/scripts/Makefile.lib
+> > @@@ -85,12 -81,14 +85,14 @@@ always-y +=3D $(userprogs-always-y) $(use
+> >  =20
+> >   # DTB
+> >   # If CONFIG_OF_ALL_DTBS is enabled, all DT blobs are built
+> >  -extra-y				+=3D $(dtb-y)
+> >  -extra-$(CONFIG_OF_ALL_DTBS)	+=3D $(dtb-)
+> >  +always-y			+=3D $(dtb-y)
+> >  +always-$(CONFIG_OF_ALL_DTBS)	+=3D $(dtb-)
+> >  =20
+> >   ifneq ($(CHECK_DTBS),)
+> >  -extra-y +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+> >  -extra-y +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
+> >  -extra-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+> >  -extra-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-))
+> >  +always-y +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
+> > ++always-y +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-y))
+> >  +always-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtb,%.dt.yaml, $(dtb-))
+> > ++always-$(CONFIG_OF_ALL_DTBS) +=3D $(patsubst %.dtbo,%.dt.yaml, $(dtb-=
+))
+> >   endif
+> >  =20
+> >   # Add subdir path =20
+>=20
+> With the merge window about to open, this is a reminder that this
+> conflict still exists.
 
-Also add in such a fragment for kunit itself so we can give that as an
-example more close to home (and thus less likely to be accidentally
-broken).
+This is now a conflict between the kbuild tree and Linus' tree.
 
-[1] https://lore.kernel.org/linux-ext4/YCNF4yP1dB97zzwD@mit.edu/
+--=20
+Cheers,
+Stephen Rothwell
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- lib/kunit/.kunitconfig                 | 3 +++
- tools/testing/kunit/kunit.py           | 4 +++-
- tools/testing/kunit/kunit_kernel.py    | 2 ++
- tools/testing/kunit/kunit_tool_test.py | 6 ++++++
- 4 files changed, 14 insertions(+), 1 deletion(-)
- create mode 100644 lib/kunit/.kunitconfig
+--Sig_/hPzXB8sr3EZQc_SVxxI3ZU9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-diff --git a/lib/kunit/.kunitconfig b/lib/kunit/.kunitconfig
-new file mode 100644
-index 000000000000..9235b7d42d38
---- /dev/null
-+++ b/lib/kunit/.kunitconfig
-@@ -0,0 +1,3 @@
-+CONFIG_KUNIT=y
-+CONFIG_KUNIT_TEST=y
-+CONFIG_KUNIT_EXAMPLE_TEST=y
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index d5144fcb03ac..5da8fb3762f9 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -184,7 +184,9 @@ def add_common_opts(parser) -> None:
- 			    help='Run all KUnit tests through allyesconfig',
- 			    action='store_true')
- 	parser.add_argument('--kunitconfig',
--			     help='Path to Kconfig fragment that enables KUnit tests',
-+			     help='Path to Kconfig fragment that enables KUnit tests.'
-+			     ' If given a directory, (e.g. lib/kunit), "/.kunitconfig" '
-+			     'will get  automatically appended.',
- 			     metavar='kunitconfig')
- 
- def add_build_opts(parser) -> None:
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index f309a33256cd..89a7d4024e87 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -132,6 +132,8 @@ class LinuxSourceTree(object):
- 			return
- 
- 		if kunitconfig_path:
-+			if os.path.isdir(kunitconfig_path):
-+				kunitconfig_path = os.path.join(kunitconfig_path, KUNITCONFIG_PATH)
- 			if not os.path.exists(kunitconfig_path):
- 				raise ConfigError(f'Specified kunitconfig ({kunitconfig_path}) does not exist')
- 		else:
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index 1ad3049e9069..2e809dd956a7 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -251,6 +251,12 @@ class LinuxSourceTreeTest(unittest.TestCase):
- 		with tempfile.NamedTemporaryFile('wt') as kunitconfig:
- 			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
- 
-+	def test_dir_kunitconfig(self):
-+		with tempfile.TemporaryDirectory('') as dir:
-+			with open(os.path.join(dir, '.kunitconfig'), 'w') as f:
-+				pass
-+			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=dir)
-+
- 	# TODO: add more test cases.
- 
- 
+-----BEGIN PGP SIGNATURE-----
 
-base-commit: b12b47249688915e987a9a2a393b522f86f6b7ab
--- 
-2.30.0.617.g56c4b15f3c-goog
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0NnsACgkQAVBC80lX
+0GxL9QgAiRTX5n+xJDlJAklQdheB33nFHd6bQj4wQIN5hDML/AOxxG4gs4cdwwfv
+NUX6XYLL/XJbGbrzUa5vox7IofLH3znpnAHBwiRIhwTRwwhMZqgTuAZi8CLpVhA7
++PM0P9K1i1R+6/gGFJjVDRaVT2Z9uZ0ypGEPPuzDUjCF8GRPLx4FiqGAZWyi+blX
+H1Wfh/SYApOd9232DEq/Frdc8uQmHPOcLB/dubF9UFam21G2etvDxVYTJ/Ph7H3/
+c+1vNiQaloQPsyYq2jZg/8aYxLaclUkwmaHYkvjX8IeBZkVCjLJqoygiUzKmo5/0
+lsd7ksNRjZcS0B2CVPMLcEfe3/rbgw==
+=7w1X
+-----END PGP SIGNATURE-----
 
+--Sig_/hPzXB8sr3EZQc_SVxxI3ZU9--
