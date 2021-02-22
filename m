@@ -2,108 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6C9321070
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C012D32107A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229891AbhBVFbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 00:31:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
+        id S229994AbhBVFcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 00:32:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhBVFa7 (ORCPT
+        with ESMTP id S229966AbhBVFcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 00:30:59 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA619C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:30:19 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id f8so7033666plg.5
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:30:19 -0800 (PST)
+        Mon, 22 Feb 2021 00:32:10 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897E8C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:31:29 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id i3so3944380uai.3
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:31:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=88bCU0wVX0zazGnaAQhw1Te7NFEOR8aLunDEDqQi1Z4=;
-        b=Y/5/Ig063lR7XiqKZl8egup3Bw/7Q79fv9uidDgZJ+d31Fed4RfdYAYDgNcOiMkLle
-         DiBlIUsEBr4EpfSA5eE30xl0LdLAWTmxvEEPSmvwE/C5yfxk3dcwoYw37+Sssqa875Jx
-         9p6aRBt1TbGorSxSmzd7cPS4NoT1DDEins0tvkz+pcdSzVdfMhBKFPDnUCsvZyCy+obe
-         zhjFNOTS5+GX5tsls6GlwrBiUlhtoEvrSaJCTTrgS8S3b7CZtrd6EAz7JSsaJwf/7Swd
-         yfNQ10331+hrXcep02vkjKD0h8paB/IsoEckuIySzjw9gSB2vqBQSeB6rcf7pPbzLkFN
-         nbJQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Gu/fKr3GRAQ+ErLkQJBUlVQcwe14YTdgKKhXg0Cv4l4=;
+        b=nKDy+b2+V7fS2f7mnoG/Ss5+uvRYBQnercKoIeTycpfWKJxx6kOPPx2ZeMe5ucP5Iv
+         50sS1bwNYdUpsm04AudIWrPnD+CNDRIBtKgv/9JUPjkbQlh1RAybhdP7pPk7uV3lZTxy
+         I4/U2OZz5f4aafI7BWCv88whwJWIfvn83D3IM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=88bCU0wVX0zazGnaAQhw1Te7NFEOR8aLunDEDqQi1Z4=;
-        b=amx3yEUUQHyE+FgC1wcc5QLsD0/84aVI53KV9Io8W+Qxuadq56/foFNVrKI50we5Fl
-         i5WN1eZrJiGEi/MJhvyf1QX8FxkBL2+8Th/APJZiuIFcmYTcEDTB9EOR4dSZPlyQCmnW
-         15DT4EAafX0YVcfV/ZMyeq3GbLF7rIe1z0hxJjEdupZCLCGezSQEvJkTCtCucXHMKSHW
-         D5mbjlUmOKxMNZBYlin3iDOJiCb0nqbfavDoBReAybTqXvyQgaR2TwF+obF935Dno+XY
-         jI+PYgmMg9EWkiyLd/fFQ/q5hHFpGCFUHvi2BP2Yy/iGgHhCSIvXSDASidG3F6a42DGt
-         GlWg==
-X-Gm-Message-State: AOAM531laG5wwLjIfOmayH3CnYX8p+7TsJS+SH3QOZX0Dff6o89+VSgu
-        Vjvs9C7Ro1wibTRFt+nOcEHsGw==
-X-Google-Smtp-Source: ABdhPJxxUldPNtASIvqHMCd0gy1HyqRM3BSDH/3dNeY642zgH1crWjaH8NJhBWi3riNxSSYPIRzftw==
-X-Received: by 2002:a17:90a:1503:: with SMTP id l3mr21543094pja.41.1613971819001;
-        Sun, 21 Feb 2021 21:30:19 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id w203sm9743518pff.184.2021.02.21.21.30.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 21 Feb 2021 21:30:17 -0800 (PST)
-Date:   Mon, 22 Feb 2021 11:00:14 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
- busy CPU if need_freq_update is set
-Message-ID: <20210222053014.s45odi3qsfio2ahp@vireshk-i7>
-References: <20210218082514.1437-1-zbestahu@gmail.com>
- <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
- <20210219113804.00004a7e.zbestahu@gmail.com>
- <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
- <20210219144140.00004de9.zbestahu@gmail.com>
- <20210219074249.2hcwcnakihor343h@vireshk-i7>
- <20210219162026.00002e2b.zbestahu@gmail.com>
- <20210219093551.bykqhjk6xvs4kszi@vireshk-i7>
- <20210219194509.00005884.zbestahu@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gu/fKr3GRAQ+ErLkQJBUlVQcwe14YTdgKKhXg0Cv4l4=;
+        b=odgWhdfRvIycZV/csUr8rcylfOk2nHy+YC52Gg8FxPw/zyQMvkCzhAXp2jyHcO0HGz
+         1q0JfhDkYl0eO+oi2bkeohkVvQ1hQDRctyvqorZ5daTtS8joC9QxdmsdiYX8p3sioMqk
+         tBL6fZ4nTFqFMVVcX1/ytwOwitWaaJfgeLVCEnMQpC+YMB9kxids1ZxfSJG5pXQNWy8Z
+         d6oiQc+t/xrXMfmriz6I0ZmRJIGS1HG2npb6qE0iR/btUUe36rRp4ZQZ6OKDmZ6Bvr5y
+         Wvl9XGjT46qyla0QoZsAXk+IGGbWmFqDbAey6bBxxahrd2Hcp9vKDfEz1x5D/dc9Qdyr
+         VDUQ==
+X-Gm-Message-State: AOAM5323zTNT6nOqaEPNyVx6pVoM6tpoxWaCyjv/WcYrHuNWTycTe8+j
+        N1K2ovwH6r6JS49M5tXS4o2JXt/eyRGMpF4twKe5zQ==
+X-Google-Smtp-Source: ABdhPJys5c+rCVxUlnAkJ7c+Jss6rAjW1MoFOcoVaCF3S96QpX3HiNwsT/MLRIitrpXf+DKZerK3D3cbUQdqljXKnGs=
+X-Received: by 2002:ab0:1052:: with SMTP id g18mr3262401uab.74.1613971888653;
+ Sun, 21 Feb 2021 21:31:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219194509.00005884.zbestahu@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20210211113309.1.I629b2366a6591410359c7fcf6d385b474b705ca2@changeid>
+ <YDKvm1QmdJtJbaN6@pendragon.ideasonboard.com>
+In-Reply-To: <YDKvm1QmdJtJbaN6@pendragon.ideasonboard.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Mon, 22 Feb 2021 13:31:17 +0800
+Message-ID: <CANMq1KALq+C2GD2uRohKpwvkDC05-fHyo=_WoHwnsKNjgcSfEQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/dsi: Add _NO_ to MIPI_DSI_* flags disabling features
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Inki Dae <inki.dae@samsung.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>, Sean Paul <sean@poorly.run>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Xin Ji <xji@analogixsemi.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno@lists.freedesktop.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-msm@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-samsung-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-02-21, 19:45, Yue Hu wrote:
-> We will set next_f to next_freq(previous freq) if next_f is
-> reduced for busy CPU. Then the next sugov_update_next_freq() will check
-> if next_freq matches next_f if need_freq_update is not set.
-> Obviously, we will do nothing for the case. And The related check to
-> fast_switch_enabled and raw_spin_{lock,unlock} operations are
-> unnecessary.
+On Mon, Feb 22, 2021 at 3:08 AM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Nicolas,
+>
+> Thank you for the patch.
+>
+> On Thu, Feb 11, 2021 at 11:33:55AM +0800, Nicolas Boichat wrote:
+> > Many of the DSI flags have names opposite to their actual effects,
+> > e.g. MIPI_DSI_MODE_EOT_PACKET means that EoT packets will actually
+> > be disabled. Fix this by including _NO_ in the flag names, e.g.
+> > MIPI_DSI_MODE_NO_EOT_PACKET.
+> >
+> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+>
+> This looks good to me, it increases readability.
+>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>
+> Please however see the end of the mail for a comment.
+>
+> > ---
+> > I considered adding _DISABLE_ instead, but that'd make the
+> > flag names a big too long.
+> >
+> > Generated with:
+> > flag=MIPI_DSI_MODE_VIDEO_HFP; git grep $flag | cut -f1 -d':' | \
+> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HFP/" {}
+> > flag=MIPI_DSI_MODE_VIDEO_HBP; git grep $flag | cut -f1 -d':' | \
+> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HBP/" {}
+> > flag=MIPI_DSI_MODE_VIDEO_HSA; git grep $flag | cut -f1 -d':' | \
+> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_VIDEO_NO_HSA/" {}
+> > flag=MIPI_DSI_MODE_EOT_PACKET; git grep $flag | cut -f1 -d':' | \
+> >   xargs -I{} sed -i -e "s/$flag/MIPI_DSI_MODE_NO_EOT_PACKET/" {}
+> > (then minor format changes)
+>
+> Ever tried coccinelle ? :-)
 
-Right, but we will still need sugov_update_next_freq() to have the
-same implementation regardless and so I am not sure if we should add
-this change:
+Fun project for next time ,-)
 
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 41e498b0008a..7289e1adab73 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -362,6 +362,9 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
-         * recently, as the reduction is likely to be premature then.
-         */
-        if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
-+               if (!sg_policy->need_freq_update)
-+                       return;
-+
-                next_f = sg_policy->next_freq;
- 
-                /* Restore cached freq as next_freq has changed */
+>
+> >  drivers/gpu/drm/bridge/adv7511/adv7533.c             | 2 +-
+> >  drivers/gpu/drm/bridge/analogix/anx7625.c            | 2 +-
+> >  drivers/gpu/drm/bridge/cdns-dsi.c                    | 4 ++--
+> >  drivers/gpu/drm/bridge/tc358768.c                    | 2 +-
+> >  drivers/gpu/drm/exynos/exynos_drm_dsi.c              | 8 ++++----
+> >  drivers/gpu/drm/mcde/mcde_dsi.c                      | 2 +-
+> >  drivers/gpu/drm/mediatek/mtk_dsi.c                   | 2 +-
+> >  drivers/gpu/drm/msm/dsi/dsi_host.c                   | 8 ++++----
+> >  drivers/gpu/drm/panel/panel-asus-z00t-tm5p5-n35596.c | 2 +-
+> >  drivers/gpu/drm/panel/panel-dsi-cm.c                 | 2 +-
+> >  drivers/gpu/drm/panel/panel-elida-kd35t133.c         | 2 +-
+> >  drivers/gpu/drm/panel/panel-khadas-ts050.c           | 2 +-
+> >  drivers/gpu/drm/panel/panel-leadtek-ltk050h3146w.c   | 2 +-
+> >  drivers/gpu/drm/panel/panel-leadtek-ltk500hd1829.c   | 2 +-
+> >  drivers/gpu/drm/panel/panel-novatek-nt35510.c        | 2 +-
+> >  drivers/gpu/drm/panel/panel-osd-osd101t2587-53ts.c   | 2 +-
+> >  drivers/gpu/drm/panel/panel-samsung-s6d16d0.c        | 2 +-
+> >  drivers/gpu/drm/panel/panel-samsung-s6e63j0x03.c     | 2 +-
+> >  drivers/gpu/drm/panel/panel-samsung-s6e63m0-dsi.c    | 2 +-
+> >  drivers/gpu/drm/panel/panel-samsung-s6e8aa0.c        | 4 ++--
+> >  drivers/gpu/drm/panel/panel-sharp-ls043t1le01.c      | 2 +-
+> >  drivers/gpu/drm/panel/panel-simple.c                 | 2 +-
+> >  drivers/gpu/drm/panel/panel-sony-acx424akp.c         | 2 +-
+> >  drivers/gpu/drm/panel/panel-xinpeng-xpp055c272.c     | 2 +-
+> >  include/drm/drm_mipi_dsi.h                           | 8 ++++----
+> >  25 files changed, 36 insertions(+), 36 deletions(-)
+> >
+> > []
+> > diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
+> > index 360e6377e84b..ba91cf22af51 100644
+> > --- a/include/drm/drm_mipi_dsi.h
+> > +++ b/include/drm/drm_mipi_dsi.h
+> > @@ -119,15 +119,15 @@ struct mipi_dsi_host *of_find_mipi_dsi_host_by_node(struct device_node *node);
+> >  /* enable hsync-end packets in vsync-pulse and v-porch area */
+> >  #define MIPI_DSI_MODE_VIDEO_HSE              BIT(4)
+>
+> We're mixing bits that enable a feature and bits that disable a feature.
+> Are these bits defined in the DSI spec, or internal to DRM ? In the
+> latter case, would it make sense to standardize on one "polarity" ? That
+> would be a more intrusive change in drivers though.
+
+Yes, that'd require auditing every single code path and reverse the
+logic as needed. I'm not volunteering for that ,-P (hopefully the
+current change is still an improvement).
+
+Hopefully real DSI experts can comment (Andrzej?), I think the default
+are sensible settings?
 
 
--- 
-viresh
+>
+> >  /* disable hfront-porch area */
+> > -#define MIPI_DSI_MODE_VIDEO_HFP              BIT(5)
+> > +#define MIPI_DSI_MODE_VIDEO_NO_HFP   BIT(5)
+> >  /* disable hback-porch area */
+> > -#define MIPI_DSI_MODE_VIDEO_HBP              BIT(6)
+> > +#define MIPI_DSI_MODE_VIDEO_NO_HBP   BIT(6)
+> >  /* disable hsync-active area */
+> > -#define MIPI_DSI_MODE_VIDEO_HSA              BIT(7)
+> > +#define MIPI_DSI_MODE_VIDEO_NO_HSA   BIT(7)
+> >  /* flush display FIFO on vsync pulse */
+> >  #define MIPI_DSI_MODE_VSYNC_FLUSH    BIT(8)
+> >  /* disable EoT packets in HS mode */
+> > -#define MIPI_DSI_MODE_EOT_PACKET     BIT(9)
+> > +#define MIPI_DSI_MODE_NO_EOT_PACKET  BIT(9)
+> >  /* device supports non-continuous clock behavior (DSI spec 5.6.1) */
+> >  #define MIPI_DSI_CLOCK_NON_CONTINUOUS        BIT(10)
+> >  /* transmit data in low power */
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
