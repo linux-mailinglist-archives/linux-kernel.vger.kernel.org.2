@@ -2,56 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 927643213F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4405321402
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbhBVKQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:16:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230312AbhBVKQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:16:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1162E64E25;
-        Mon, 22 Feb 2021 10:16:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613988968;
-        bh=O0NvwfBKkS0RnKoR4ARbDP43jooN9w/n0isV/TdnQVk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zEMZMb9NrGtQGKSt52jxbjiK0ZZTsrOnedUNufG9wbMEMgISCCazwD96jny7hfuA4
-         +EiFzYvD5Zn8IlIsI2W/VgvyQRQ7QThsYNlyR0GLZod/FobA8dtKrapjOxj8hsBSmc
-         mCL6uwkdDEDl9hYsDhrVlKJOCKNt2MhPHovTW/CU=
-Date:   Mon, 22 Feb 2021 11:16:06 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        sashal@kernel.org, tglx@linutronix.de, wangle6@huawei.com,
-        zhengyejian1@huawei.com
-Subject: Re: [PATCH stable-rc queue/4.9 1/1] futex: Provide distinct return
- value when owner is exiting
-Message-ID: <YDOEZhmKqjTVxtMn@kroah.com>
-References: <20210222070328.102384-1-nixiaoming@huawei.com>
- <20210222070328.102384-2-nixiaoming@huawei.com>
+        id S229990AbhBVKVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:21:39 -0500
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:52328 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhBVKVi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:21:38 -0500
+Received: by mail-wm1-f47.google.com with SMTP id p3so2835909wmc.2;
+        Mon, 22 Feb 2021 02:21:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jqrZ9o2ASN5akD88hAC25nkBz+M3fdiYTEO2MDdzKQE=;
+        b=EltAjHHrDhCWuvvepWB334bmL2nekHymABVwrA58UiNIXcEUtlZC1jSXL/TBoc9hwt
+         CNyR0epgofOEwA6DycbjKEYODfS963tdNQ6fGZT9lDBjT9KPqlw+rfImcaeBIl9lFlBj
+         RzcWypSVwfFNsOGdtX8gmYqWMjtrUA1OkzE67oAbmDLdaVYnn+g8NBZ2dlL4qLEjeWj/
+         sdrmyqjNkJX1UMiAvmF4sEbsJUeCSqCP+y1pcnCu/62ySect9K6VpKNYvNVdKYErGLI5
+         Z8YK7WX/x5lRG1JbUAJ4YvNDli7ge+L+ZUlrvogOa7v2B12vBOIkbgjHNMH6otZsLw9S
+         bS/w==
+X-Gm-Message-State: AOAM530qaYHDQYcoPR3OJpXXVlSEYL92zMPdkrqy/+MzTAkHk7hG+RL0
+        LUN4XPhLeseZBDSK5sgNkmQ=
+X-Google-Smtp-Source: ABdhPJz6cUY0N/jr2N6r9cNHbFyBBPKLgGXIicBYbLYdkyrpqWdneK8zmyzgqA+XPnNl8ArCLJFTWw==
+X-Received: by 2002:a05:600c:19c6:: with SMTP id u6mr9172317wmq.65.1613989256338;
+        Mon, 22 Feb 2021 02:20:56 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t16sm10088771wrq.53.2021.02.22.02.20.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 02:20:55 -0800 (PST)
+Date:   Mon, 22 Feb 2021 10:20:54 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
+        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
+        daniel.lezcano@linaro.org, kys@microsoft.com
+Subject: Re: [PATCH v8 1/6] arm64: hyperv: Add Hyper-V hypercall and register
+ access utilities
+Message-ID: <20210222102054.7ktopdg2jcao7itz@liuwe-devbox-debian-v2>
+References: <1613690194-102905-1-git-send-email-mikelley@microsoft.com>
+ <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210222070328.102384-2-nixiaoming@huawei.com>
+In-Reply-To: <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 03:03:28PM +0800, Xiaoming Ni wrote:
-> From: Thomas Gleixner <tglx@linutronix.de>
+On Thu, Feb 18, 2021 at 03:16:29PM -0800, Michael Kelley wrote:
+> hyperv-tlfs.h defines Hyper-V interfaces from the Hyper-V Top Level
+> Functional Spec (TLFS), and #includes the architecture-independent
+> part of hyperv-tlfs.h in include/asm-generic.  The published TLFS
+> is distinctly oriented to x86/x64, so the ARM64-specific
+> hyperv-tlfs.h includes information for ARM64 that is not yet formally
+> published. The TLFS is available here:
 > 
-> commit ac31c7ff8624409ba3c4901df9237a616c187a5d upstream.
+>   docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
+> 
+> mshyperv.h defines Linux-specific structures and routines for
+> interacting with Hyper-V on ARM64, and #includes the architecture-
+> independent part of mshyperv.h in include/asm-generic.
+> 
+> Use these definitions to provide utility functions to make
+> Hyper-V hypercalls and to get and set Hyper-V provided
+> registers associated with a virtual processor.
+> 
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
-This commit is already in the 4.9 tree.  If the backport was incorrect,
-say that here, and describe what went wrong and why this commit fixes
-it.
-
-Also state what commit this fixes as well, otherwise this changelog just
-looks like it is being applied again to the tree, which doesn't make
-much sense.
-
-thanks,
-
-greg k-h
+Reviewed-by: Wei Liu <wei.liu@kernel.org>
