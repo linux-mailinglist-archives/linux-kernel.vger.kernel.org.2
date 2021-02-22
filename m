@@ -2,134 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7823211E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:23:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2063211EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:24:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbhBVIWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:22:49 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:33900 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhBVIWn (ORCPT
+        id S230049AbhBVIXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:23:40 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:58583 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229863AbhBVIXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:22:43 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210222082159epoutp030be1c1d16c9bbbe291d32984b00f4e3e~mBC_mLIF70468904689epoutp03a
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:21:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210222082159epoutp030be1c1d16c9bbbe291d32984b00f4e3e~mBC_mLIF70468904689epoutp03a
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1613982119;
-        bh=wf9owq+FMxy6TzPevBvv9+v5GHiUn8Wbll+MzEXLgc0=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=mqOzP26yrkdaIp2SV105nTlGLUeAD+rmBtvwa2e5NYe9TX+l1sUC71cDtBdmg4e4Z
-         IoxlgVS7+nWFxQgrkG7dOhaaq8HIJ06nrdUaLbA15P/vONoHLx60vPgl/D9sXLudd7
-         r8jsEaOOcZUk9Q5o0m0ay0XWo8ThdEiS4owhaTnM=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210222082157epcas2p34ad06ed581d38fa4e06d2c7b6d97be63~mBC8w67Nq0563305633epcas2p3y;
-        Mon, 22 Feb 2021 08:21:57 +0000 (GMT)
-Received: from epsmges2p4.samsung.com (unknown [182.195.40.191]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4DkZsb6vYwz4x9QG; Mon, 22 Feb
-        2021 08:21:55 +0000 (GMT)
-X-AuditID: b6c32a48-50fff7000000cd1f-08-603369a364e3
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        55.9C.52511.3A963306; Mon, 22 Feb 2021 17:21:55 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v21 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB6575B0CAAAEFACBC719257F5FC839@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210222082155epcms2p4bf924773e8497cf75d72ab9eef1a0d1c@epcms2p4>
-Date:   Mon, 22 Feb 2021 17:21:55 +0900
-X-CMS-MailID: 20210222082155epcms2p4bf924773e8497cf75d72ab9eef1a0d1c
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA52Te0xbVRzHPb2lr8i8sBYOmGi9hNcCpS295cBWNxddrjIWjWNLnAg35YYS
-        oZC2EEAT6+Q9XjO6IY/qOhmPobWEQik4FhgPydBtMB0v6RSMSHDMOSMs22xpcYt/+t83n/P9
-        ne/v9zs5PMx/gBvMy9QaGJ2WziI4AnbPcGRc9NnM2DTpioNETlMPB31dOs5FKxvXOWh47ncu
-        OrW+gaE/LOd80MpQJOpwHkUfnLVwUNOkkYWqa20c9PP8HS4y3+hhodoHZWw05WjioBM/2Dmo
-        dewBC811C1CLbQagitOdbGQ+08/eJ6KmphOpqZpqFtXXsMCl6swXATXY3Mmlir8ZZFO3l2fZ
-        VE13B6DudD1DlV08wXpV8IYR7KF1ak1mPiNmtOqc9ExthopIPnwgGhFiTY7eoCKOyZBcIosn
-        JYp4iTwuJUEmlcpJQqylsxkVURDtrSbEOnWuy21g9AYdo2ZcSLdPb6AzGImeztbnaTMk6pxs
-        QpxPZ+W56oiY5/doGDqd0YnTloBmoaIot5hf0FLWyjGCy5xKwOdBXAEv20/5uLU/bgdwuTKv
-        EvB4vrgfvG/f6cY78b3QsliOeSwEtFxt4Hq4BM7e7ARuzcGj4OnxRRcX8IT4PQxeXXPfKeBh
-        eAsGzy8bMU+YL6wvW2Z79NOwt9W2Vc3HU+DAx06uh0fAv89Ve/0iOHN+jbutb41+CjxaCEt+
-        nPR6/KBzo9/Lg+Bo/zrLo9+DtvlN4G4C4lUADvfN+ngOYuD35Va2Z8okaLPGuzEbD4V/Otq8
-        vb0Im+tubi0Iw5+FvWtNmNuO4ZHQ4ohxS4iHwEuz7O2pjNZ73P9qDN8By4fv/8vtpiVvZ2Hw
-        yw0Lqw6ENDzadMNjWQ2Psj4DWAcIYHL12RmMXp6rePyZu8DWD9hF2UHj2rpkCLB4YAhAHkYI
-        fTkL8jR/33S6sIjR5aTq8rIY/RAock15EgsWqXNcX0hrSJUppXIlGauIjSUV5P/GpFyplMaT
-        iFTKERHoq5M6U/3xDNrAvM0wuYxuO5zF4wcbWXtXg4GiJ2LtOCj2m8NLm8iF4/tNwUFHzIdu
-        3Go5KDPRKuvJblPSWN+Tw/rQ57rF7aMbyfQvb4aZlno6CjQJm2Cg6/XdsaqwrGXLC4MJxZpv
-        D39VM3v7XVqJR708MZ7/sFHxoSg5qCnKNpM2knetNNxZPFbb7rBeWP91/dol2WCJOCm8NGni
-        ldSKj+6GNE4XVrQd2dErDA+5Mi2qaeZHHJt8KbEwIPD911afSJz43G+RKXmr+Qv86G+ipxJX
-        rzMpVVVlQtZmVNZCnOphY6h5fIRUGaj9ZHc/Y3Vc6ReMvfOdMKKSHbB7dcRY/1OQ+cLdkk8O
-        1PMDD7WfyRbNt+UfzDT8RbD1Glq2C9Pp6X8AJOON9c8EAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210218090627epcms2p639c216ccebed773120121b1d53641d94
-References: <DM6PR04MB6575B0CAAAEFACBC719257F5FC839@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210218090627epcms2p639c216ccebed773120121b1d53641d94@epcms2p6>
-        <20210218090853epcms2p8ccac0b5611dec22afd04ecc06e74498e@epcms2p8>
-        <CGME20210218090627epcms2p639c216ccebed773120121b1d53641d94@epcms2p4>
+        Mon, 22 Feb 2021 03:23:34 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UPBmRGZ_1613982169;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UPBmRGZ_1613982169)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 22 Feb 2021 16:22:50 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     pawell@cadence.com
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] usb: cdnsp: remove unneeded semicolon
+Date:   Mon, 22 Feb 2021 16:22:42 +0800
+Message-Id: <1613982162-72490-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> >         kmem_cache_destroy(hpb->map_req_cache);
-> > @@ -1670,7 +2109,7 @@ void ufshpb_init_hpb_lu(struct ufs_hba *hba, struct
-> > scsi_device *sdev)
-> >         if (ret)
-> >                 goto out;
-> > 
-> > -       hpb = ufshpb_alloc_hpb_lu(hba, lun, &hba->ufshpb_dev,
-> > +       hpb = ufshpb_alloc_hpb_lu(hba, sdev, &hba->ufshpb_dev,
-> >                                   &hpb_lu_info);
-> >         if (!hpb)
-> >                 goto out;
-> In HPB2.0 device control mode, the host is expected to send HPB-WRITE-BUFFER 0x3
-> To informs that all HPB Regions are inactive (expect for pinned regions).
-> Maybe a good place to do so is here, or in ufshpb_hpb_lu_prepared after you kicked the map work for pinned regions.
+Fix the following coccicheck warnings:
 
-Done
+./drivers/usb/cdns3/cdnsp-gadget.c:83:2-3: Unneeded semicolon.
 
-> Either way, If you decide to do so, I would appreciate if you could align to the framework I proposed in
-> (scsi: ufshpb: Region inactivation in host mode).
-> This way you would have a wrapper unmap_all that would call ufshpb_issue_umap_req with buffer id 0x3,
-> And I would have a wrapper unmap_single that would call it with buffer id 0x1.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/usb/cdns3/cdnsp-gadget.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I will do this way on the next patch.
+diff --git a/drivers/usb/cdns3/cdnsp-gadget.c b/drivers/usb/cdns3/cdnsp-gadget.c
+index f2ebbac..c186a617 100644
+--- a/drivers/usb/cdns3/cdnsp-gadget.c
++++ b/drivers/usb/cdns3/cdnsp-gadget.c
+@@ -80,7 +80,7 @@ int cdnsp_find_next_ext_cap(void __iomem *base, u32 start, int id)
+ 		offset = HCC_EXT_CAPS(val) << 2;
+ 		if (!offset)
+ 			return 0;
+-	};
++	}
+ 
+ 	do {
+ 		val = readl(base + offset);
+-- 
+1.8.3.1
 
-Thanks,
-Daejun
