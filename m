@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02E753217CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6415F3217D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhBVM7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:59:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231263AbhBVM0d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:26:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 772AB64E2F;
-        Mon, 22 Feb 2021 12:25:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613996751;
-        bh=F61yD7TfzwZTNpXdixKLax2iqMRPofRipBni27VX2xM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SAl1T7KZJQQwmBaF9he+BHXzMUkMmuxBth+/0xxzpsa6fqv5Oqis3kFS/MtYzCguy
-         ATqJ/v6/dT1POnWGmADkz8WaOI+GwO8I4FMLp6eesSzsBRAfXXgNlB3+tLIStB9WZ4
-         zBm+XwHVcygvLkB9feyhjgTBUP37E07KQG4Rq24EPDZboITntvu0XhiS9EhUnJyw6G
-         XNkLQz14KNRFQmd4qbeR21szj/IZGbMceiFqH3CZscpl2UBYO86E8kWyDhaHFxtw0W
-         5vtcegPw5+YMFPEuMJBSCq7+MR2y4WhdulKtm45bkEj5G9rr6dAj9DbiKPbRQekucp
-         Fs1H68Bt2620w==
-Date:   Mon, 22 Feb 2021 12:25:46 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Pavel Tatashin <pasha.tatashin@soleen.com>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        James Morris <jmorris@namei.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH v3 1/1] arm64: mm: correct the inside linear map range
- during hotplug check
-Message-ID: <20210222122545.GA8847@willie-the-truck>
-References: <20210216150351.129018-1-pasha.tatashin@soleen.com>
- <20210216150351.129018-2-pasha.tatashin@soleen.com>
- <20210219191807.GB6683@willie-the-truck>
- <CA+CK2bB13G4wTm6P_hdkwi2cbu=774GnpwBV7giy77-fEHDKow@mail.gmail.com>
+        id S230502AbhBVNAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:00:40 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:4166 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230282AbhBVM31 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:29:27 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11MCOh7Z129265;
+        Mon, 22 Feb 2021 07:28:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=GkuPKJiGvWLM3ySATq8gt64Y5ObBblBDwn52W4C/hf4=;
+ b=EUElLiEHES5spXeeH3ymtmh2OwphJL/YDo5TnQqDnwROnKeHVjNgc9wyyKO0MShfSHsL
+ OpvKFIGtW/6gd9hR8YGHbIaWCsc9ppSrYabehR21L4GQt50gCPTOevdjXXt21rRf1Aqz
+ 3tIpJxbrikKZr4BO8LTy1Fypqj9r3mqidZvUJ5WPhhfMaTn7pT61xEHqYdgZMWG/VfPr
+ DDmmV50VjFTJhA94Jn3vVNx39pxBN9r6B+bAFdqoXhrxcRWWAkydu5kA/SyQCrXQ5gk1
+ U7CpoQ/TkLUIx2CeMJ/K/DY518bhX9np6KgxGVSlyX4HX3z31YOVCAUS/TdeYw1fz/pI uA== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36vckh042b-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Feb 2021 07:28:30 -0500
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 11MC2jdX017253;
+        Mon, 22 Feb 2021 12:06:00 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma05fra.de.ibm.com with ESMTP id 36tt288tqc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Feb 2021 12:05:59 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 11MC5vXM66322908
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Feb 2021 12:05:57 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 92E04A4055;
+        Mon, 22 Feb 2021 12:05:57 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 49DB1A404D;
+        Mon, 22 Feb 2021 12:05:57 +0000 (GMT)
+Received: from osiris (unknown [9.171.69.228])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 22 Feb 2021 12:05:57 +0000 (GMT)
+Date:   Mon, 22 Feb 2021 13:05:55 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH] gcc-plugins: Disable GCC_PLUGIN_CYC_COMPLEXITY for s390
+Message-ID: <YDOeI5+1H3T1ocmQ@osiris>
+References: <20210221225650.33134-1-linux@roeck-us.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bB13G4wTm6P_hdkwi2cbu=774GnpwBV7giy77-fEHDKow@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210221225650.33134-1-linux@roeck-us.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-22_02:2021-02-22,2021-02-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ bulkscore=0 spamscore=0 priorityscore=1501 suspectscore=0 mlxscore=0
+ phishscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102220113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 02:44:49PM -0500, Pavel Tatashin wrote:
-> On Fri, Feb 19, 2021 at 2:18 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Tue, Feb 16, 2021 at 10:03:51AM -0500, Pavel Tatashin wrote:
-> > > Memory hotplug may fail on systems with CONFIG_RANDOMIZE_BASE because the
-> > > linear map range is not checked correctly.
-> > >
-> > > The start physical address that linear map covers can be actually at the
-> > > end of the range because of randomization. Check that and if so reduce it
-> > > to 0.
-> > >
-> > > This can be verified on QEMU with setting kaslr-seed to ~0ul:
-> > >
-> > > memstart_offset_seed = 0xffff
-> > > START: __pa(_PAGE_OFFSET(vabits_actual)) = ffff9000c0000000
-> > > END:   __pa(PAGE_END - 1) =  1000bfffffff
-> > >
-> > > Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> > > Fixes: 58284a901b42 ("arm64/mm: Validate hotplug range before creating linear mapping")
-> > > Tested-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > ---
-> > >  arch/arm64/mm/mmu.c | 21 +++++++++++++++++++--
-> > >  1 file changed, 19 insertions(+), 2 deletions(-)
-> >
-> > I tried to queue this as a fix, but unfortunately it doesn't apply.
-> > Please can you send a v4 based on the arm64 for-next/fixes branch?
+On Sun, Feb 21, 2021 at 02:56:50PM -0800, Guenter Roeck wrote:
+> Commit 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390") disabled
+> COMPILE_TEST for s390. At the same time, "make allmodconfig/allyesconfig" for
+> s390 is still supported. However, it generates thousands of compiler
+> messages such as the following, making it highly impractical to run.
 > 
-> The previous version, that is not built against linux-next would still
-> applies against current mainlein/for-next/fixes
+> Cyclomatic Complexity 1 scripts/mod/devicetable-offsets.c:main
+> Cyclomatic Complexity 1 scripts/mod/devicetable-offsets.c:_GLOBAL__sub_I_00100_0_main
 > 
-> https://lore.kernel.org/lkml/20210215192237.362706-2-pasha.tatashin@soleen.com/
+> Since GCC_PLUGIN_CYC_COMPLEXITY is primarily used for testing, disable it
+> when building s390 images.
 > 
-> I just tried it. I think it would make sense to take v2 fix, so it
-> could also be backported to stables.
+> Cc: Arnd Bergmann <arnd@kernel.org>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Fixes: 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+>  scripts/gcc-plugins/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
+> index ab9eb4cbe33a..5e9bb500f443 100644
+> --- a/scripts/gcc-plugins/Kconfig
+> +++ b/scripts/gcc-plugins/Kconfig
+> @@ -21,7 +21,7 @@ if GCC_PLUGINS
+>  
+>  config GCC_PLUGIN_CYC_COMPLEXITY
+>  	bool "Compute the cyclomatic complexity of a function" if EXPERT
+> -	depends on !COMPILE_TEST	# too noisy
+> +	depends on !COMPILE_TEST && !S390	# too noisy
 
-Taking that won't help either though, because it will just explode when
-it meets 'mm' in Linus's tree.
+I don't see a reason to disable this in general for s390. COMPILE_TEST
+was only disabled for s390 because a lot of irrelevant configs didn't
+compile and it would cause a lot of unnecessary work to fix that.
 
-So here's what I think we need to do:
-
-  - I'll apply your v3 at -rc1
-  - You can send backports based on your -v2 for stable once the v3 has
-    been merged upstream.
-
-Sound good?
-
-Will
+However the !COMPILE_TEST dependency here looks more like it was
+misused in lack of a possibility to detect if the config was generated
+with allyesconfig/allmodconfig. Maybe that could be added somehow to
+Kconfig?
