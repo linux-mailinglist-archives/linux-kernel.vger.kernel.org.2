@@ -2,70 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C04432106E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:32:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6C9321070
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 06:32:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229863AbhBVFax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 00:30:53 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:58493
-        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229487AbhBVFau (ORCPT
+        id S229891AbhBVFbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 00:31:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhBVFa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 00:30:50 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgBXXLhIQTNgOy4UAw--.1517S3;
-        Mon, 22 Feb 2021 13:29:45 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/memory_hotplug: minor coding style tweaks
-Date:   Mon, 22 Feb 2021 13:29:44 +0800
-Message-Id: <1613971784-24878-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgBXXLhIQTNgOy4UAw--.1517S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xKr4xXw18Aw4rJr1kKrg_yoW3ZFb_Ka
-        yIqwsFgryFvF1S9r4qy34fJrn3Kr109w48uFyxJasIyryDX3sxZF4kJwn3ZryF9347Wr12
-        q34DZrWagry7WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJV
-        W0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GrWl
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI
-        42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUe2NtDUUUU
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        Mon, 22 Feb 2021 00:30:59 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA619C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:30:19 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id f8so7033666plg.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 21:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=88bCU0wVX0zazGnaAQhw1Te7NFEOR8aLunDEDqQi1Z4=;
+        b=Y/5/Ig063lR7XiqKZl8egup3Bw/7Q79fv9uidDgZJ+d31Fed4RfdYAYDgNcOiMkLle
+         DiBlIUsEBr4EpfSA5eE30xl0LdLAWTmxvEEPSmvwE/C5yfxk3dcwoYw37+Sssqa875Jx
+         9p6aRBt1TbGorSxSmzd7cPS4NoT1DDEins0tvkz+pcdSzVdfMhBKFPDnUCsvZyCy+obe
+         zhjFNOTS5+GX5tsls6GlwrBiUlhtoEvrSaJCTTrgS8S3b7CZtrd6EAz7JSsaJwf/7Swd
+         yfNQ10331+hrXcep02vkjKD0h8paB/IsoEckuIySzjw9gSB2vqBQSeB6rcf7pPbzLkFN
+         nbJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=88bCU0wVX0zazGnaAQhw1Te7NFEOR8aLunDEDqQi1Z4=;
+        b=amx3yEUUQHyE+FgC1wcc5QLsD0/84aVI53KV9Io8W+Qxuadq56/foFNVrKI50we5Fl
+         i5WN1eZrJiGEi/MJhvyf1QX8FxkBL2+8Th/APJZiuIFcmYTcEDTB9EOR4dSZPlyQCmnW
+         15DT4EAafX0YVcfV/ZMyeq3GbLF7rIe1z0hxJjEdupZCLCGezSQEvJkTCtCucXHMKSHW
+         D5mbjlUmOKxMNZBYlin3iDOJiCb0nqbfavDoBReAybTqXvyQgaR2TwF+obF935Dno+XY
+         jI+PYgmMg9EWkiyLd/fFQ/q5hHFpGCFUHvi2BP2Yy/iGgHhCSIvXSDASidG3F6a42DGt
+         GlWg==
+X-Gm-Message-State: AOAM531laG5wwLjIfOmayH3CnYX8p+7TsJS+SH3QOZX0Dff6o89+VSgu
+        Vjvs9C7Ro1wibTRFt+nOcEHsGw==
+X-Google-Smtp-Source: ABdhPJxxUldPNtASIvqHMCd0gy1HyqRM3BSDH/3dNeY642zgH1crWjaH8NJhBWi3riNxSSYPIRzftw==
+X-Received: by 2002:a17:90a:1503:: with SMTP id l3mr21543094pja.41.1613971819001;
+        Sun, 21 Feb 2021 21:30:19 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id w203sm9743518pff.184.2021.02.21.21.30.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 21 Feb 2021 21:30:17 -0800 (PST)
+Date:   Mon, 22 Feb 2021 11:00:14 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     rjw@rjwysocki.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] cpufreq: schedutil: Don't consider freq reduction to
+ busy CPU if need_freq_update is set
+Message-ID: <20210222053014.s45odi3qsfio2ahp@vireshk-i7>
+References: <20210218082514.1437-1-zbestahu@gmail.com>
+ <20210218102029.syj6vkltlbtoxsig@vireshk-i7>
+ <20210219113804.00004a7e.zbestahu@gmail.com>
+ <20210219040933.2o5hhbjb6emf3xl4@vireshk-i7>
+ <20210219144140.00004de9.zbestahu@gmail.com>
+ <20210219074249.2hcwcnakihor343h@vireshk-i7>
+ <20210219162026.00002e2b.zbestahu@gmail.com>
+ <20210219093551.bykqhjk6xvs4kszi@vireshk-i7>
+ <20210219194509.00005884.zbestahu@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210219194509.00005884.zbestahu@gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch move the pointer location to fix coding style issues,
-improve code reading.
+On 19-02-21, 19:45, Yue Hu wrote:
+> We will set next_f to next_freq(previous freq) if next_f is
+> reduced for busy CPU. Then the next sugov_update_next_freq() will check
+> if next_freq matches next_f if need_freq_update is not set.
+> Obviously, we will do nothing for the case. And The related check to
+> fast_switch_enabled and raw_spin_{lock,unlock} operations are
+> unnecessary.
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
----
- mm/memory_hotplug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Right, but we will still need sugov_update_next_freq() to have the
+same implementation regardless and so I am not sure if we should add
+this change:
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index f9d57b9..a46c297 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -764,7 +764,7 @@ static inline struct zone *default_zone_for_pfn(int nid, unsigned long start_pfn
- 	return movable_node_enabled ? movable_zone : kernel_zone;
- }
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 41e498b0008a..7289e1adab73 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -362,6 +362,9 @@ static void sugov_update_single_freq(struct update_util_data *hook, u64 time,
+         * recently, as the reduction is likely to be premature then.
+         */
+        if (sugov_cpu_is_busy(sg_cpu) && next_f < sg_policy->next_freq) {
++               if (!sg_policy->need_freq_update)
++                       return;
++
+                next_f = sg_policy->next_freq;
  
--struct zone * zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
-+struct zone *zone_for_pfn_range(int online_type, int nid, unsigned start_pfn,
- 		unsigned long nr_pages)
- {
- 	if (online_type == MMOP_ONLINE_KERNEL)
--- 
-1.8.3.1
+                /* Restore cached freq as next_freq has changed */
 
+
+-- 
+viresh
