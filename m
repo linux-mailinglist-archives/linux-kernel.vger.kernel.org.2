@@ -2,71 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA7532120D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23937321214
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 09:35:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230042AbhBVId3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 03:33:29 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2591 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229852AbhBVId1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:33:27 -0500
-Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DkZxm2bjyz67bmb;
-        Mon, 22 Feb 2021 16:25:32 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Mon, 22 Feb 2021 09:32:43 +0100
-Received: from [10.210.165.112] (10.210.165.112) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 22 Feb 2021 08:32:43 +0000
-Subject: Re: [PATCH] scsi: iscsi: Switch to using the new API kobj_to_dev()
-To:     Yang Li <yang.lee@linux.alibaba.com>, <martin.petersen@oracle.com>
-CC:     <jejb@linux.ibm.com>, <lduncan@suse.com>, <cleech@redhat.com>,
-        <open-iscsi@googlegroups.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <1613978804-4846-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4fa2baa0-8727-9e72-eb42-db773401b8a1@huawei.com>
-Date:   Mon, 22 Feb 2021 08:30:57 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S229967AbhBVIeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 03:34:50 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57375 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229863AbhBVIer (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 03:34:47 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dkb7Z2mWSz9sRf;
+        Mon, 22 Feb 2021 19:34:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1613982844;
+        bh=oBVcSJQaoUWqCs4J+OvnO0YKmH7a7jV/4yZBhtbKFTs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fT6opzSgPrKLddFi3pWZrt+lhML/03n35pPDPevTKcLxSZ6ERibDJtwKuLxiDR95C
+         X9zKPK3ct6wDfR53M4JNFhPNO3YfElD+CWFv51WtW4E10EkS5hrV5OVtXRp887zW+x
+         SULdCblu46YJxBkGQfLNEk5UMestEAg51lzbxmNSVXruphcCT66pOgmpSCsTwLhLwh
+         Pnx2Ek3WiQHGVfVrlaDQHTJ0h0YqcbwYQ81//3RuQ/PshfVjcVeeotmgEKvW7xiuDE
+         66WIgKRZS0Abtf9lwjQnKUBRLOw5nPCKBcIYgJlHbUWM5s3Yl3c3sY3QMOu+GABPNL
+         nyVz4W11g3e9A==
+Date:   Mon, 22 Feb 2021 19:34:01 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the pm tree
+Message-ID: <20210222193401.524d0ab1@canb.auug.org.au>
+In-Reply-To: <20210215113939.03e44e3c@canb.auug.org.au>
+References: <20210215113939.03e44e3c@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <1613978804-4846-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.210.165.112]
-X-ClientProxiedBy: lhreml748-chm.china.huawei.com (10.201.108.198) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/HRnmCbGVUGkfYU5co_9wRzC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/02/2021 07:26, Yang Li wrote:
-> fixed the following coccicheck:
-> ./drivers/scsi/scsi_transport_iscsi.c:436:60-61: WARNING opportunity for
-> kobj_to_dev()
-> ./drivers/scsi/scsi_transport_iscsi.c:1128:60-61: WARNING opportunity
-> for kobj_to_dev()
-> ./drivers/scsi/scsi_transport_iscsi.c:4043:61-62: WARNING opportunity
-> for kobj_to_dev()
-> ./drivers/scsi/scsi_transport_iscsi.c:4312:61-62: WARNING opportunity
-> for kobj_to_dev()
-> ./drivers/scsi/scsi_transport_iscsi.c:4456:61-62: WARNING opportunity
-> for kobj_to_dev()
+--Sig_/HRnmCbGVUGkfYU5co_9wRzC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-that API is not new, so please in future stop writing that. And 'new' is 
-a time-dependent term, and not appropriate to use anyway.
+Hi all,
 
-Thanks,
-John
+On Mon, 15 Feb 2021 11:39:39 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Hi all,
+>=20
+> After merging the pm tree, today's linux-next build (x86_64 allmodconfig)
+> produced this warning:
+>=20
+> In file included from drivers/gpu/drm/gma500/mdfld_output.c:28:
+> arch/x86/include/asm/intel_scu_ipc.h:23:12: warning: 'struct module' decl=
+ared inside parameter list will not be visible outside of this definition o=
+r declaration
+>    23 |     struct module *owner);
+>       |            ^~~~~~
+> arch/x86/include/asm/intel_scu_ipc.h:33:17: warning: 'struct module' decl=
+ared inside parameter list will not be visible outside of this definition o=
+r declaration
+>    33 |          struct module *owner);
+>       |                 ^~~~~~
+>=20
+> Introduced by commit
+>=20
+>   bfc838f8598e ("drm/gma500: Convert to use new SCU IPC API")
+>=20
+> OK, these will go away when the drm-misc tree removes this file in commit
+>=20
+>   e1da811218d2 ("drm/gma500: Remove Medfield support")
+>=20
+> So, if you don't want to see these warnings in Linus' build testing,
+> you need to make sure that the drm-misc tree is merged before the pm
+> tree (or the drivers-x86 tree).  Or you need to include module.h in
+> mdfld_output.c before intel_scu_ipc.h (or in intel_scu_ipc.h itself).
 
-> 
-> Reported-by: Abaci Robot<abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li<yang.lee@linux.alibaba.com>
+The above drm-misc commit is now in Linus' tree.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/HRnmCbGVUGkfYU5co_9wRzC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAzbHkACgkQAVBC80lX
+0Gy4CQgAoQmz+3H/Qw7wvjREpG+UBBhIWCAQgK+omgZaidj1LuLxL7ornq37qqPv
+3tzq5U2aiR00XmbMhqe11t3sbuMX7eMVM/qhtTRHOdzNzdbCXsCMjBvYhp2P01XD
+O2GdAi7fdYfAlFfIfp1UgUgNeQmt5EHyzIg/gbySj/QK7anVB9ejwWazWArncaId
+yrCcq0NTVkyhVdeYE1pjuTctnVx0CmGSm8J2uzkZyHmzojVLi4mvfXdRpjP2zJES
+ekG9G3DRDDq+18Fnskt0gcPN+DBBc3M9XEXSM23hnb3Dh4ixyhDFhptsQE+igJ39
+NBdLWVdxg/LoYSXsa4gynUUmhw6FXA==
+=xDeT
+-----END PGP SIGNATURE-----
+
+--Sig_/HRnmCbGVUGkfYU5co_9wRzC--
