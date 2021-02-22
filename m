@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D64F321880
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:25:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51498321884
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:26:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhBVNWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:22:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52847 "EHLO mail.kernel.org"
+        id S231869AbhBVNXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:23:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231219AbhBVMlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:41:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B1A464EEF;
-        Mon, 22 Feb 2021 12:38:52 +0000 (UTC)
+        id S230480AbhBVMl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:41:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72B8F64F1A;
+        Mon, 22 Feb 2021 12:38:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997533;
-        bh=RDAQ4yFCcAZJ92OXX7JBJgTLs9H9bazkxtbFRSElUn0=;
+        s=korg; t=1613997536;
+        bh=zGNC/Msq2Mct8bA3ldnkJb9Q0GCEogFNKAOBx2PoKgA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZzxwT3N265SUJ/8dMPswOTV0ueP54fbOOuTsVYxn0qyEv8qW7Ph8gMEdykYVtfEMz
-         hip3NFmIQnSzLxRVqFLBdDKGIfgyHV/GpAMQRQGMN74dnE86RcrOzojxiPuaf82lkb
-         ABlOwXUojl7Eqayv1Fp/1Sflk5F8xN97pKq8z4FU=
+        b=HYIwuTAeiBSLHAQskcprhbQXUaAkmFQ7ul0OXbNDzCwwBN9WmEk3icstNOX/CibLG
+         /7nQwg33p1rtL6QpEsScO14N25jGGKJgX1QzRzW8uI6DXzLOCqO4Xlc25RAvdk1fvh
+         6ISyhG/K9jRkd5pEW8m8JubaOk4g6zJHMXa7cpc4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Greb <h3x4m3r0n@gmail.com>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        stable@vger.kernel.org, Manish Narani <manish.narani@xilinx.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.14 55/57] USB: Gadget Ethernet: Re-enable Jumbo frames.
-Date:   Mon, 22 Feb 2021 13:36:21 +0100
-Message-Id: <20210222121035.642232419@linuxfoundation.org>
+Subject: [PATCH 4.14 56/57] usb: gadget: u_ether: Fix MTU size mismatch with RX packet size
+Date:   Mon, 22 Feb 2021 13:36:22 +0100
+Message-Id: <20210222121035.709487049@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -40,35 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Greb <h3x4m3r0n@gmail.com>
+From: Manish Narani <manish.narani@xilinx.com>
 
-commit eea52743eb5654ec6f52b0e8b4aefec952543697 upstream
+commit 0a88fa221ce911c331bf700d2214c5b2f77414d3 upstream
 
-Fixes: <b3e3893e1253> ("net: use core MTU range checking")
-which patched only one of two functions used to setup the
-USB Gadget Ethernet driver, causing a serious performance
-regression in the ability to increase mtu size above 1500.
+Fix the MTU size issue with RX packet size as the host sends the packet
+with extra bytes containing ethernet header. This causes failure when
+user sets the MTU size to the maximum i.e. 15412. In this case the
+ethernet packet received will be of length 15412 plus the ethernet header
+length. This patch fixes the issue where there is a check that RX packet
+length must not be more than max packet length.
 
-Signed-off-by: John Greb <h3x4m3r0n@gmail.com>
-Signed-off-by: Felipe Balbi <felipe.balbi@linux.intel.com>
+Fixes: bba787a860fa ("usb: gadget: ether: Allow jumbo frames")
+Signed-off-by: Manish Narani <manish.narani@xilinx.com>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/1605597215-122027-1-git-send-email-manish.narani@xilinx.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/gadget/function/u_ether.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/usb/gadget/function/u_ether.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 --- a/drivers/usb/gadget/function/u_ether.c
 +++ b/drivers/usb/gadget/function/u_ether.c
-@@ -850,6 +850,10 @@ struct net_device *gether_setup_name_def
- 	net->ethtool_ops = &ops;
- 	SET_NETDEV_DEVTYPE(net, &gadget_type);
+@@ -49,9 +49,10 @@
+ #define UETH__VERSION	"29-May-2008"
  
-+	/* MTU range: 14 - 15412 */
-+	net->min_mtu = ETH_HLEN;
-+	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
-+
+ /* Experiments show that both Linux and Windows hosts allow up to 16k
+- * frame sizes. Set the max size to 15k+52 to prevent allocating 32k
++ * frame sizes. Set the max MTU size to 15k+52 to prevent allocating 32k
+  * blocks and still have efficient handling. */
+-#define GETHER_MAX_ETH_FRAME_LEN 15412
++#define GETHER_MAX_MTU_SIZE 15412
++#define GETHER_MAX_ETH_FRAME_LEN (GETHER_MAX_MTU_SIZE + ETH_HLEN)
+ 
+ struct eth_dev {
+ 	/* lock is held while accessing port_usb
+@@ -790,7 +791,7 @@ struct eth_dev *gether_setup_name(struct
+ 
+ 	/* MTU range: 14 - 15412 */
+ 	net->min_mtu = ETH_HLEN;
+-	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
++	net->max_mtu = GETHER_MAX_MTU_SIZE;
+ 
+ 	dev->gadget = g;
+ 	SET_NETDEV_DEV(net, &g->dev);
+@@ -852,7 +853,7 @@ struct net_device *gether_setup_name_def
+ 
+ 	/* MTU range: 14 - 15412 */
+ 	net->min_mtu = ETH_HLEN;
+-	net->max_mtu = GETHER_MAX_ETH_FRAME_LEN;
++	net->max_mtu = GETHER_MAX_MTU_SIZE;
+ 
  	return net;
  }
- EXPORT_SYMBOL_GPL(gether_setup_name_default);
 
 
