@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2B23215FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:17:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FEA321631
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhBVMPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:15:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44546 "EHLO mail.kernel.org"
+        id S230224AbhBVMTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:19:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230368AbhBVMOH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:14:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ACB1164E2F;
-        Mon, 22 Feb 2021 12:13:19 +0000 (UTC)
+        id S230261AbhBVMOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:14:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BD8760C3E;
+        Mon, 22 Feb 2021 12:13:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996000;
-        bh=NU1gHsf4JE4vpBv8JPhmdDq4aUB9g67+HPkgEOn957w=;
+        s=korg; t=1613996029;
+        bh=tu95Ey8D12jZg/R9mceQ2cio8kmJ7Gfw3dkobEdymms=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HiR2F5Ms5Oobpa19RWVoyQ/nbyO7Cuj7/hUHoGL3qZvCPzTduozw0H0bDi9g0/G7w
-         Cn1F09278JlkVC9NVkGBERj1Bi/WjxAOKlivpkfuTpLnNeiOaX4fLv5JsNgtMbnhme
-         P6iub5jyK30UQjo6vFSyVUXVRnfhHssBgJNpVY1I=
+        b=CqUOEKuTsAmJHF5zBGgJfQ4HQjEQOhxyu/MY8N6ZfBwcoQ/imKbOD4JizreWVIaST
+         BSse6XsIaqUgXcoHvueWK+UnabmOaKhuME4bn5Su3kiIO7P9a3JxugNReH03LyPGWY
+         d0Es+NJ8PWZq0s3RMg8+9WaZQw/thDBK7AO5CTVw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Matwey V. Kornilov" <matwey@sai.msu.ru>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.11 12/12] media: pwc: Use correct device for DMA
+        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 10/29] mt76: mt7915: fix endian issues
 Date:   Mon, 22 Feb 2021 13:13:04 +0100
-Message-Id: <20210222121019.151831417@linuxfoundation.org>
+Message-Id: <20210222121021.741215487@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.586597942@linuxfoundation.org>
-References: <20210222121013.586597942@linuxfoundation.org>
+In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
+References: <20210222121019.444399883@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,143 +39,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matwey V. Kornilov <matwey@sai.msu.ru>
+From: Felix Fietkau <nbd@nbd.name>
 
-commit 69c9e825e812ec6d663e64ebf14bd3bc7f37e2c7 upstream.
+[ Upstream commit cee236e1489ecca9d23d6ce6f60d126cc651a5ba ]
 
-This fixes the following newly introduced warning:
+Multiple MCU messages were using u16/u32 fields without endian annotations
+or conversions
 
-[   15.518253] ------------[ cut here ]------------
-[   15.518941] WARNING: CPU: 0 PID: 246 at kernel/dma/mapping.c:149 dma_map_page_attrs+0x1a8/0x1d0
-[   15.520634] Modules linked in: pwc videobuf2_vmalloc videobuf2_memops videobuf2_v4l2 videobuf2_common videodev mc efivarfs
-[   15.522335] CPU: 0 PID: 246 Comm: v4l2-test Not tainted 5.11.0-rc1+ #1
-[   15.523281] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[   15.524438] RIP: 0010:dma_map_page_attrs+0x1a8/0x1d0
-[   15.525135] Code: 10 5b 5d 41 5c 41 5d c3 4d 89 d0 eb d7 4d 89 c8 89 e9 48 89 da e8 68 29 00 00 eb d1 48 89 f2 48 2b 50 18 48 89 d0 eb 83 0f 0b <0f> 0b 48 c7 c0 ff ff ff ff eb b8 48 89 d9 48 8b 40 40 e8 61 69 d2
-[   15.527938] RSP: 0018:ffffa2694047bca8 EFLAGS: 00010246
-[   15.528716] RAX: 0000000000000000 RBX: 0000000000002580 RCX: 0000000000000000
-[   15.529782] RDX: 0000000000000000 RSI: ffffcdce000ecc00 RDI: ffffa0b4bdb888a0
-[   15.530849] RBP: 0000000000000002 R08: 0000000000000002 R09: 0000000000000000
-[   15.531881] R10: 0000000000000004 R11: 000000000002d8c0 R12: 0000000000000000
-[   15.532911] R13: ffffa0b4bdb88800 R14: ffffa0b483820000 R15: ffffa0b4bdb888a0
-[   15.533942] FS:  00007fc5fbb5e4c0(0000) GS:ffffa0b4fc000000(0000) knlGS:0000000000000000
-[   15.535141] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   15.535988] CR2: 00007fc5fb6ea138 CR3: 0000000003812000 CR4: 00000000001506f0
-[   15.537025] Call Trace:
-[   15.537425]  start_streaming+0x2e9/0x4b0 [pwc]
-[   15.538143]  vb2_start_streaming+0x5e/0x110 [videobuf2_common]
-[   15.538989]  vb2_core_streamon+0x107/0x140 [videobuf2_common]
-[   15.539831]  __video_do_ioctl+0x18f/0x4a0 [videodev]
-[   15.540670]  video_usercopy+0x13a/0x5b0 [videodev]
-[   15.541349]  ? video_put_user+0x230/0x230 [videodev]
-[   15.542096]  ? selinux_file_ioctl+0x143/0x200
-[   15.542752]  v4l2_ioctl+0x40/0x50 [videodev]
-[   15.543360]  __x64_sys_ioctl+0x89/0xc0
-[   15.543930]  do_syscall_64+0x33/0x40
-[   15.544448]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   15.545236] RIP: 0033:0x7fc5fb671587
-[   15.545780] Code: b3 66 90 48 8b 05 11 49 2c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d e1 48 2c 00 f7 d8 64 89 01 48
-[   15.548486] RSP: 002b:00007fff0f71f038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[   15.549578] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007fc5fb671587
-[   15.550664] RDX: 00007fff0f71f060 RSI: 0000000040045612 RDI: 0000000000000003
-[   15.551706] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-[   15.552738] R10: 0000000000000000 R11: 0000000000000246 R12: 00007fff0f71f060
-[   15.553817] R13: 00007fff0f71f1d0 R14: 0000000000de1270 R15: 0000000000000000
-[   15.554914] ---[ end trace 7be03122966c2486 ]---
-
-Fixes: 1161db6776bd ("media: usb: pwc: Don't use coherent DMA buffers for ISO transfer")
-Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: e57b7901469f ("mt76: add mac80211 driver for MT7915 PCIe-based chipsets")
+Fixes: 5517f78b0063 ("mt76: mt7915: enable firmware module debug support")
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/pwc/pwc-if.c |   22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ .../net/wireless/mediatek/mt76/mt7915/mcu.c   | 87 +++++++++++++++----
+ 1 file changed, 68 insertions(+), 19 deletions(-)
 
---- a/drivers/media/usb/pwc/pwc-if.c
-+++ b/drivers/media/usb/pwc/pwc-if.c
-@@ -155,16 +155,17 @@ static const struct video_device pwc_tem
- /***************************************************************************/
- /* Private functions */
- 
--static void *pwc_alloc_urb_buffer(struct device *dev,
-+static void *pwc_alloc_urb_buffer(struct usb_device *dev,
- 				  size_t size, dma_addr_t *dma_handle)
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+index a3ccc17856615..ea71409751519 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7915/mcu.c
+@@ -2835,7 +2835,7 @@ int mt7915_mcu_fw_dbg_ctrl(struct mt7915_dev *dev, u32 module, u8 level)
+ 	struct {
+ 		u8 ver;
+ 		u8 pad;
+-		u16 len;
++		__le16 len;
+ 		u8 level;
+ 		u8 rsv[3];
+ 		__le32 module_idx;
+@@ -3070,12 +3070,12 @@ int mt7915_mcu_rdd_cmd(struct mt7915_dev *dev,
+ int mt7915_mcu_set_fcc5_lpn(struct mt7915_dev *dev, int val)
  {
-+	struct device *dmadev = dev->bus->sysdev;
- 	void *buffer = kmalloc(size, GFP_KERNEL);
+ 	struct {
+-		u32 tag;
+-		u16 min_lpn;
++		__le32 tag;
++		__le16 min_lpn;
+ 		u8 rsv[2];
+ 	} __packed req = {
+-		.tag = 0x1,
+-		.min_lpn = val,
++		.tag = cpu_to_le32(0x1),
++		.min_lpn = cpu_to_le16(val),
+ 	};
  
- 	if (!buffer)
- 		return NULL;
- 
--	*dma_handle = dma_map_single(dev, buffer, size, DMA_FROM_DEVICE);
--	if (dma_mapping_error(dev, *dma_handle)) {
-+	*dma_handle = dma_map_single(dmadev, buffer, size, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(dmadev, *dma_handle)) {
- 		kfree(buffer);
- 		return NULL;
- 	}
-@@ -172,12 +173,14 @@ static void *pwc_alloc_urb_buffer(struct
- 	return buffer;
- }
- 
--static void pwc_free_urb_buffer(struct device *dev,
-+static void pwc_free_urb_buffer(struct usb_device *dev,
- 				size_t size,
- 				void *buffer,
- 				dma_addr_t dma_handle)
+ 	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_RDD_TH,
+@@ -3086,14 +3086,29 @@ int mt7915_mcu_set_pulse_th(struct mt7915_dev *dev,
+ 			    const struct mt7915_dfs_pulse *pulse)
  {
--	dma_unmap_single(dev, dma_handle, size, DMA_FROM_DEVICE);
-+	struct device *dmadev = dev->bus->sysdev;
+ 	struct {
+-		u32 tag;
+-		struct mt7915_dfs_pulse pulse;
++		__le32 tag;
 +
-+	dma_unmap_single(dmadev, dma_handle, size, DMA_FROM_DEVICE);
- 	kfree(buffer);
++		__le32 max_width;		/* us */
++		__le32 max_pwr;			/* dbm */
++		__le32 min_pwr;			/* dbm */
++		__le32 min_stgr_pri;		/* us */
++		__le32 max_stgr_pri;		/* us */
++		__le32 min_cr_pri;		/* us */
++		__le32 max_cr_pri;		/* us */
+ 	} __packed req = {
+-		.tag = 0x3,
++		.tag = cpu_to_le32(0x3),
++
++#define __req_field(field) .field = cpu_to_le32(pulse->field)
++		__req_field(max_width),
++		__req_field(max_pwr),
++		__req_field(min_pwr),
++		__req_field(min_stgr_pri),
++		__req_field(max_stgr_pri),
++		__req_field(min_cr_pri),
++		__req_field(max_cr_pri),
++#undef __req_field
+ 	};
+ 
+-	memcpy(&req.pulse, pulse, sizeof(*pulse));
+-
+ 	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_RDD_TH,
+ 				   &req, sizeof(req), true);
  }
- 
-@@ -282,6 +285,7 @@ static void pwc_frame_complete(struct pw
- static void pwc_isoc_handler(struct urb *urb)
+@@ -3102,16 +3117,50 @@ int mt7915_mcu_set_radar_th(struct mt7915_dev *dev, int index,
+ 			    const struct mt7915_dfs_pattern *pattern)
  {
- 	struct pwc_device *pdev = (struct pwc_device *)urb->context;
-+	struct device *dmadev = urb->dev->bus->sysdev;
- 	int i, fst, flen;
- 	unsigned char *iso_buf = NULL;
+ 	struct {
+-		u32 tag;
+-		u16 radar_type;
+-		struct mt7915_dfs_pattern pattern;
++		__le32 tag;
++		__le16 radar_type;
++
++		u8 enb;
++		u8 stgr;
++		u8 min_crpn;
++		u8 max_crpn;
++		u8 min_crpr;
++		u8 min_pw;
++		u32 min_pri;
++		u32 max_pri;
++		u8 max_pw;
++		u8 min_crbn;
++		u8 max_crbn;
++		u8 min_stgpn;
++		u8 max_stgpn;
++		u8 min_stgpr;
++		u8 rsv[2];
++		u32 min_stgpr_diff;
+ 	} __packed req = {
+-		.tag = 0x2,
+-		.radar_type = index,
++		.tag = cpu_to_le32(0x2),
++		.radar_type = cpu_to_le16(index),
++
++#define __req_field_u8(field) .field = pattern->field
++#define __req_field_u32(field) .field = cpu_to_le32(pattern->field)
++		__req_field_u8(enb),
++		__req_field_u8(stgr),
++		__req_field_u8(min_crpn),
++		__req_field_u8(max_crpn),
++		__req_field_u8(min_crpr),
++		__req_field_u8(min_pw),
++		__req_field_u32(min_pri),
++		__req_field_u32(max_pri),
++		__req_field_u8(max_pw),
++		__req_field_u8(min_crbn),
++		__req_field_u8(max_crbn),
++		__req_field_u8(min_stgpn),
++		__req_field_u8(max_stgpn),
++		__req_field_u8(min_stgpr),
++		__req_field_u32(min_stgpr_diff),
++#undef __req_field_u8
++#undef __req_field_u32
+ 	};
  
-@@ -328,7 +332,7 @@ static void pwc_isoc_handler(struct urb
- 	/* Reset ISOC error counter. We did get here, after all. */
- 	pdev->visoc_errors = 0;
+-	memcpy(&req.pattern, pattern, sizeof(*pattern));
+-
+ 	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_RDD_TH,
+ 				   &req, sizeof(req), true);
+ }
+@@ -3342,12 +3391,12 @@ int mt7915_mcu_add_obss_spr(struct mt7915_dev *dev, struct ieee80211_vif *vif,
+ 		u8 drop_tx_idx;
+ 		u8 sta_idx;	/* 256 sta */
+ 		u8 rsv[2];
+-		u32 val;
++		__le32 val;
+ 	} __packed req = {
+ 		.action = MT_SPR_ENABLE,
+ 		.arg_num = 1,
+ 		.band_idx = mvif->band_idx,
+-		.val = enable,
++		.val = cpu_to_le32(enable),
+ 	};
  
--	dma_sync_single_for_cpu(&urb->dev->dev,
-+	dma_sync_single_for_cpu(dmadev,
- 				urb->transfer_dma,
- 				urb->transfer_buffer_length,
- 				DMA_FROM_DEVICE);
-@@ -379,7 +383,7 @@ static void pwc_isoc_handler(struct urb
- 		pdev->vlast_packet_size = flen;
- 	}
- 
--	dma_sync_single_for_device(&urb->dev->dev,
-+	dma_sync_single_for_device(dmadev,
- 				   urb->transfer_dma,
- 				   urb->transfer_buffer_length,
- 				   DMA_FROM_DEVICE);
-@@ -461,7 +465,7 @@ retry:
- 		urb->pipe = usb_rcvisocpipe(udev, pdev->vendpoint);
- 		urb->transfer_flags = URB_ISO_ASAP | URB_NO_TRANSFER_DMA_MAP;
- 		urb->transfer_buffer_length = ISO_BUFFER_SIZE;
--		urb->transfer_buffer = pwc_alloc_urb_buffer(&udev->dev,
-+		urb->transfer_buffer = pwc_alloc_urb_buffer(udev,
- 							    urb->transfer_buffer_length,
- 							    &urb->transfer_dma);
- 		if (urb->transfer_buffer == NULL) {
-@@ -524,7 +528,7 @@ static void pwc_iso_free(struct pwc_devi
- 		if (urb) {
- 			PWC_DEBUG_MEMORY("Freeing URB\n");
- 			if (urb->transfer_buffer)
--				pwc_free_urb_buffer(&urb->dev->dev,
-+				pwc_free_urb_buffer(urb->dev,
- 						    urb->transfer_buffer_length,
- 						    urb->transfer_buffer,
- 						    urb->transfer_dma);
+ 	return __mt76_mcu_send_msg(&dev->mt76, MCU_EXT_CMD_SET_SPR,
+-- 
+2.27.0
+
 
 
