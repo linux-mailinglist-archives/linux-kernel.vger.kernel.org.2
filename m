@@ -2,102 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3713220B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:18:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6F23220BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 21:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbhBVURo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 15:17:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
+        id S232452AbhBVUUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 15:20:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233423AbhBVURj (ORCPT
+        with ESMTP id S230417AbhBVUUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 15:17:39 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DC6C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:16:59 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id v1so20388561wrd.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:16:59 -0800 (PST)
+        Mon, 22 Feb 2021 15:20:46 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B71EC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:20:06 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id q20so7290375pfu.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 12:20:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FNpf1WTmufOquSJigNdqP1VsRu9mN6RPbIuIKJ+aSyo=;
-        b=ExmZ0llzHQFOJiIBf3pJwbKdOEK0ywmump7PiCpQF52HrrDVnm4gFtOodkyDtcSGI8
-         VOjefbWgGwSrD4QJxoaPmdJtXQBx7FeCZo99xPdTFmg2yMyunoagor0maXQEZ89kfDyQ
-         2oRvM0G/1WTfeaMNZtH32XFfmZMVbB3pN5alrfOMISYtFcZn61gMSi05Fk0bdocfOdvZ
-         6xAkHEiDMpXGvXuDXTyMmLIbztL1wjgSVHCwusBiIZol0WOXKhcaLlr6V/u6q2v5etbn
-         CBSdy4BZC/ZMuNpec+n0mLfVDU3ZTlqyNhAsLKYtqaN8LmNnWgkrIPyC3prxax8Hinps
-         y90g==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=0FFaqD7lFmkmLvbd+lboGqMsUtUT1GYSLYTzpM80sYA=;
+        b=NCXyTI6lmqK/udlKoKih+/PYp0H7ycjuoK9TM9yUIGAMJFXuSOmgzKBVljSbBHeJRb
+         TAimZgL4GeLVvLsvYDVoI7UiabnKX/Vn5fcNR5k2rfICZRLVl+UCcXLSNOLwL5e3vhGo
+         4ar21RtaFSAzJB7+jnOuUXomEcr9gCYVMX/Bg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FNpf1WTmufOquSJigNdqP1VsRu9mN6RPbIuIKJ+aSyo=;
-        b=FOH/3r0NYHDIuJ1FO2n6SdwJPIeJg49TroDC5ZSVD6IB1v1PrylO+SZyE4u/APnzsM
-         Ir4Xfg/+mKHoJajQipWVyEUuUvHxlCkjBn93Nuqylv1EcTUKEnU0Z2IO5NrpYuO9OHjQ
-         jdvRSODwjinQb0X0w7QGAsQqjR3eqnK6DxBb8X/UUN47LZHzeJ59UMfqKufkWADy7LkE
-         J1kmYqRJNudHOWXaB0zNHLwzIdSHenJUmtTDxE4YnixDkzmfrnw9TJJctYYQUsHfpMab
-         GFKbkNbj8y6geftllByCa6DsJ91anXMvHbzXEgEqTbJAwg/jrrjgOg6cVDD/M5GO7UiX
-         oagg==
-X-Gm-Message-State: AOAM531kTZeKIZUqjHHIv4uEhjd/r8rYxLDp7+hT5dyqA2uhYbL+D3H/
-        wvb+yoUsB7BvB3XvnK//MF4=
-X-Google-Smtp-Source: ABdhPJx+c/A5IPTtbAYjZmVXoKRDL3SiFrBkLdy+0eTjLBNZwfx3qd/jYJkFn2P7q5twhRj+5Esynw==
-X-Received: by 2002:adf:8bd2:: with SMTP id w18mr23261463wra.204.1614025018124;
-        Mon, 22 Feb 2021 12:16:58 -0800 (PST)
-Received: from skynet.lan (170.red-88-1-105.dynamicip.rima-tde.net. [88.1.105.170])
-        by smtp.gmail.com with ESMTPSA id o14sm28489528wri.48.2021.02.22.12.16.57
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=0FFaqD7lFmkmLvbd+lboGqMsUtUT1GYSLYTzpM80sYA=;
+        b=W95MIF0RSvptJceadrThJh+raZuUqFt/SwE1mQBA6vWw9jTdY7JqUbp9Y6QGIliifc
+         AtOkqW+EySB1P8eprmwOXKk4J6wjYgNp+ncgkMGB62RoBwIlV9MjAgX2J7t4iKGxPIY4
+         SxfDwfqJ/q0bTRaEibGLh6F6tLKLIWf/0o9H4D4QaDKTbSuYZUgVXi86H8ShXJQI74OR
+         6D+g7OYrSNu8xz6vQwSMRsuOKupGDGI208KhN9hd8HdoTD7zDwP/P0kHRH2/iZid4tt3
+         bPTu0keta7eZZW4hIxqVBRV22pcq3hz0PoDyxjPFQopv9AFxxyvxM2f6pvnK3t+nkwiI
+         Nw2Q==
+X-Gm-Message-State: AOAM530EeI0zeoq59nUbT4n7YF2snERUE1ACN+eslPiWFA5gSJao+Xe/
+        cRrzUJNJEPowuN4J+CJi0OIFHw==
+X-Google-Smtp-Source: ABdhPJz7LNu3WobrzpHT2ReKlSV8zjPxqwuYpwdA7y4fqn39IxkviJVKNzg+78dHtTGTxbwtU9JpFw==
+X-Received: by 2002:a63:f311:: with SMTP id l17mr21490461pgh.349.1614025206019;
+        Mon, 22 Feb 2021 12:20:06 -0800 (PST)
+Received: from chromium.org ([2620:15c:202:201:a878:327b:a10a:e189])
+        by smtp.gmail.com with ESMTPSA id j1sm19928859pfr.78.2021.02.22.12.20.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 12:16:57 -0800 (PST)
-From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-To:     Brian Norris <computersforpeace@gmail.com>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>
-Subject: [PATCH] nand: brcmnand: fix OOB R/W with Hamming ECC
-Date:   Mon, 22 Feb 2021 21:16:55 +0100
-Message-Id: <20210222201655.32361-1-noltari@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 22 Feb 2021 12:20:05 -0800 (PST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid>
+References: <20210219181032.1.I23e12818c4a841ba9c37c60b3ba8cfeeb048285f@changeid> <20210219181032.3.Ia4c1022191d09fe8c56a16486b77796b83ffcae4@changeid>
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: sc7180: Delete charger thermal zone and ADC channel for lazor <= rev3
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 22 Feb 2021 12:20:04 -0800
+Message-ID: <161402520418.1254594.7435679604383921403@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hamming ECC doesn't cover the OOB data, so reading or writing OOB shall
-always be done without ECC enabled.
-This is a problem when adding JFFS2 cleanmarkers to erased blocks. If JFFS2
-clenmarkers are added to the OOB with ECC enabled, OOB bytes will be changed
-from ff ff ff to 00 00 00, reporting incorrect ECC errors.
+Quoting Matthias Kaehlcke (2021-02-19 18:10:59)
+> Lazor rev3 and older are stuffed with a 47k NTC as thermistor for
+> the charger temperature which currently isn't supported by the
+> PM6150 ADC driver. Delete the charger thermal zone and ADC channel
+> to avoid the use of bogus temperature values.
+>=20
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>=20
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts | 9 +++++++++
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r1.dts | 9 +++++++++
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r3.dts | 9 +++++++++
+>  3 files changed, 27 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts b/arch/=
+arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+> index 30e3e769d2b4..0974dbd424e1 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-lazor-r0.dts
+> @@ -14,6 +14,15 @@ / {
+>         compatible =3D "google,lazor-rev0", "qcom,sc7180";
+>  };
+> =20
+> +/*
+> + * rev <=3D 3 are stuffed with a 47k NTC as charger thermistor which is =
+currently
+> + * not supported by the PM6150 ADC driver. Delete the thermal zone and A=
+DC
+> + * channel to avoid the use of bogus temperature values.
+> + */
+> +/delete-node/ &charger_thermal;
+> +/delete-node/ &pm6150_adc_charger_thm;
+> +/delete-node/ &pm6150_adc_tm_charger_thm;
 
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
----
- drivers/mtd/nand/raw/brcmnand/brcmnand.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Can we disable pm6150_adc_tm instead on <=3D rev3 boards? It would be the
+same number of lines, but is simpler to reason about disabled nodes vs.
+deleted nodes usually.
 
-diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-index 659eaa6f0980..5ff4291380c5 100644
---- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
-@@ -2688,6 +2688,12 @@ static int brcmnand_attach_chip(struct nand_chip *chip)
- 
- 	ret = brcmstb_choose_ecc_layout(host);
- 
-+	/* If OOB is written with ECC enabled it will cause ECC errors */
-+	if (is_hamming_ecc(host->ctrl, &host->hwcfg)) {
-+		chip->ecc.write_oob = brcmnand_write_oob_raw;
-+		chip->ecc.read_oob = brcmnand_read_oob_raw;
-+	}
-+
- 	return ret;
- }
- 
--- 
-2.20.1
-
+> +
+>  &pp3300_hub {
+>         /* pp3300_l7c is used to power the USB hub */
+>         /delete-property/regulator-always-on;
