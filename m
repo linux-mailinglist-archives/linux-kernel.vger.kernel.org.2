@@ -2,260 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 384C3321382
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9816D321399
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:00:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhBVJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:57:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28747 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230138AbhBVJ5B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:57:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613987735;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AK4yt3E8U0Og9wDcu8xib+pli0Ob9nbDlOPFgta9TBk=;
-        b=a/YhzVudTv99LZ9gg4gSToBXtqJAAjPmBAU1jVcxT8+3RgOLscn2YLuC4cgS7jkzKkxtP5
-        zFrUo4ncKJjyFNlLoT4aGL4C4K6oETDlBUOotdyHBzyfpkxSD5JffovHKOlDMMczxYwWv9
-        XyqzA9i5ZeTKhSwCgreBnZHf0fo9BKw=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-6hSaRD1YN3SucqeLaDNJbg-1; Mon, 22 Feb 2021 04:55:33 -0500
-X-MC-Unique: 6hSaRD1YN3SucqeLaDNJbg-1
-Received: by mail-ed1-f70.google.com with SMTP id f11so6702405edk.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:55:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=AK4yt3E8U0Og9wDcu8xib+pli0Ob9nbDlOPFgta9TBk=;
-        b=JGiI6jNaAKuiuyknEkoUcekch2S4ge5knCZXnaA2ye5eW/le6nqRA1X0RxzrGRhbW8
-         ETiyYwZY7R7Mg9PVZokXMaUWP2HheSTzSLfO62+22CAYN/OHluGrK+v/FvMqkKL0IbA9
-         jswhTVaLwD5ufEOB0W5pqw3A8BQnFZTg5l60XHFGrObQf70ylLEafzxCCjegT+Cz/02j
-         228TxFxHhGCBIC1sWY6zhgURZZJQ277/G1v2evj5G97SNEflyT91+FLz3wikuGox0qJ0
-         Q5jZgGkVS/RE5iLNnkSarouNNzgyDhUPhfvbhhgQziqFGDxGQDgVmb1Y2YhreOjTl6tq
-         iYiA==
-X-Gm-Message-State: AOAM530eFekcn5nx7NCPLOKCiR4W45JaVUKK/Sibb6pCuAYbYpWb8MwN
-        TXMeITfuw9V+X5Phoxy09PXMJz/TRyEk/SjE8vLW8GRVGus6Dm3AfRImQ22XceUBInpLeOU/fbX
-        bwzArBmfEwquvSCdbAYYhCuqUZShq/fUWNbYfLT8zBhrp9taWBfVY57f7bYEgAW5w9332K1dbNt
-        Vm
-X-Received: by 2002:aa7:dd4c:: with SMTP id o12mr21177518edw.180.1613987731837;
-        Mon, 22 Feb 2021 01:55:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyN4gCgnQMNNOXxqIHlj1WxFZiv+ZGViW135bVl0qWLRetXzxUzwEHBtywebPf/GAlsWXhlJw==
-X-Received: by 2002:aa7:dd4c:: with SMTP id o12mr21177506edw.180.1613987731628;
-        Mon, 22 Feb 2021 01:55:31 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id k27sm10306471eje.67.2021.02.22.01.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 01:55:31 -0800 (PST)
-Subject: Re: [PATCH v3 2/2] platform/x86: hp-wmi: add platform profile support
-To:     Elia Devito <eliadevito@gmail.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <nVb9zC39HBbC5-iweNmNol7ymCjT4iD91ydsZVuo_Upqh2_3eVKaF1X1rbYpZGva-NyrGUW_W2uJIc5RHu1KhBGy7-ejGNYZJyRttjhJT-s=@protonmail.com>
- <20210221221339.12395-1-eliadevito@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <95419d36-78de-7804-87af-39f776d9ad51@redhat.com>
-Date:   Mon, 22 Feb 2021 10:55:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230340AbhBVJ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:59:06 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:51250 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230189AbhBVJ6D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:58:03 -0500
+Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 283CB209FA;
+        Mon, 22 Feb 2021 09:56:46 +0000 (UTC)
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: [PATCH v7 0/7] Count rlimits in each user namespace
+Date:   Mon, 22 Feb 2021 10:56:25 +0100
+Message-Id: <cover.1613987704.git.gladkov.alexey@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210221221339.12395-1-eliadevito@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 22 Feb 2021 09:57:11 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Preface
+-------
+These patches are for binding the rlimit counters to a user in user namespace.
+This patch set can be applied on top of:
 
-On 2/21/21 11:13 PM, Elia Devito wrote:
-> Implement support for cool, balanced and performance thermal profile
-> 
-> Signed-off-by: Elia Devito <eliadevito@gmail.com>
+git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git v5.11
 
-Thanks, patch looks good to me:
+Problem
+-------
+The RLIMIT_NPROC, RLIMIT_MEMLOCK, RLIMIT_SIGPENDING, RLIMIT_MSGQUEUE rlimits
+implementation places the counters in user_struct [1]. These limits are global
+between processes and persists for the lifetime of the process, even if
+processes are in different user namespaces.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+To illustrate the impact of rlimits, let's say there is a program that does not
+fork. Some service-A wants to run this program as user X in multiple containers.
+Since the program never fork the service wants to set RLIMIT_NPROC=1.
 
-I will merge this once we are out of the merge-window / once 5.12-rc1 is out.
+service-A
+ \- program (uid=1000, container1, rlimit_nproc=1)
+ \- program (uid=1000, container2, rlimit_nproc=1)
 
-Regards,
+The service-A sets RLIMIT_NPROC=1 and runs the program in container1. When the
+service-A tries to run a program with RLIMIT_NPROC=1 in container2 it fails
+since user X already has one running process.
 
-Hans
+The problem is not that the limit from container1 affects container2. The
+problem is that limit is verified against the global counter that reflects
+the number of processes in all containers.
 
+This problem can be worked around by using different users for each container
+but in this case we face a different problem of uid mapping when transferring
+files from one container to another.
 
+Eric W. Biederman mentioned this issue [2][3].
 
-> ---
-> the "quiet" profile will be implemented with a further patch
-> 
-> v2: added platform_profile_remove() missing call
-> v3: apply Barnabás suggestions
-> 
->  drivers/platform/x86/hp-wmi.c | 97 +++++++++++++++++++++++++++++++++--
->  1 file changed, 92 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.c
-> index 6d7b91b8109b..027a1467d009 100644
-> --- a/drivers/platform/x86/hp-wmi.c
-> +++ b/drivers/platform/x86/hp-wmi.c
-> @@ -21,6 +21,7 @@
->  #include <linux/input.h>
->  #include <linux/input/sparse-keymap.h>
->  #include <linux/platform_device.h>
-> +#include <linux/platform_profile.h>
->  #include <linux/acpi.h>
->  #include <linux/rfkill.h>
->  #include <linux/string.h>
-> @@ -119,6 +120,12 @@ enum hp_wireless2_bits {
->  	HPWMI_POWER_FW_OR_HW	= HPWMI_POWER_BIOS | HPWMI_POWER_HARD,
->  };
->  
-> +enum hp_thermal_profile {
-> +	HP_THERMAL_PROFILE_PERFORMANCE	= 0x00,
-> +	HP_THERMAL_PROFILE_DEFAULT		= 0x01,
-> +	HP_THERMAL_PROFILE_COOL			= 0x02
-> +};
-> +
->  #define IS_HWBLOCKED(x) ((x & HPWMI_POWER_FW_OR_HW) != HPWMI_POWER_FW_OR_HW)
->  #define IS_SWBLOCKED(x) !(x & HPWMI_POWER_SOFT)
->  
-> @@ -159,6 +166,8 @@ static const struct key_entry hp_wmi_keymap[] = {
->  
->  static struct input_dev *hp_wmi_input_dev;
->  static struct platform_device *hp_wmi_platform_dev;
-> +static struct platform_profile_handler platform_profile_handler;
-> +static bool platform_profile_support;
->  
->  static struct rfkill *wifi_rfkill;
->  static struct rfkill *bluetooth_rfkill;
-> @@ -869,11 +878,74 @@ static int __init hp_wmi_rfkill2_setup(struct platform_device *device)
->  	return err;
->  }
->  
-> -static int thermal_profile_setup(struct platform_device *device)
-> +static int thermal_profile_get(void)
-> +{
-> +	return hp_wmi_read_int(HPWMI_THERMAL_PROFILE_QUERY);
-> +}
-> +
-> +static int thermal_profile_set(int thermal_profile)
-> +{
-> +	return hp_wmi_perform_query(HPWMI_THERMAL_PROFILE_QUERY, HPWMI_WRITE, &thermal_profile,
-> +							   sizeof(thermal_profile), 0);
-> +}
-> +
-> +static int platform_profile_get(struct platform_profile_handler *pprof,
-> +				enum platform_profile_option *profile)
-> +{
-> +	int tp;
-> +
-> +	tp = thermal_profile_get();
-> +	if (tp < 0)
-> +		return tp;
-> +
-> +	switch (tp) {
-> +	case HP_THERMAL_PROFILE_PERFORMANCE:
-> +		*profile =  PLATFORM_PROFILE_PERFORMANCE;
-> +		break;
-> +	case HP_THERMAL_PROFILE_DEFAULT:
-> +		*profile =  PLATFORM_PROFILE_BALANCED;
-> +		break;
-> +	case HP_THERMAL_PROFILE_COOL:
-> +		*profile =  PLATFORM_PROFILE_COOL;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int platform_profile_set(struct platform_profile_handler *pprof,
-> +				enum platform_profile_option profile)
->  {
->  	int err, tp;
->  
-> -	tp = hp_wmi_read_int(HPWMI_THERMAL_PROFILE_QUERY);
-> +	switch (profile) {
-> +	case PLATFORM_PROFILE_PERFORMANCE:
-> +		tp =  HP_THERMAL_PROFILE_PERFORMANCE;
-> +		break;
-> +	case PLATFORM_PROFILE_BALANCED:
-> +		tp =  HP_THERMAL_PROFILE_DEFAULT;
-> +		break;
-> +	case PLATFORM_PROFILE_COOL:
-> +		tp =  HP_THERMAL_PROFILE_COOL;
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	err = thermal_profile_set(tp);
-> +	if (err)
-> +		return err;
-> +
-> +	return 0;
-> +}
-> +
-> +static int thermal_profile_setup(void)
-> +{
-> +	int err, tp;
-> +
-> +	tp = thermal_profile_get();
->  	if (tp < 0)
->  		return tp;
->  
-> @@ -881,11 +953,23 @@ static int thermal_profile_setup(struct platform_device *device)
->  	 * call thermal profile write command to ensure that the firmware correctly
->  	 * sets the OEM variables for the DPTF
->  	 */
-> -	err = hp_wmi_perform_query(HPWMI_THERMAL_PROFILE_QUERY, HPWMI_WRITE, &tp,
-> -							   sizeof(tp), 0);
-> +	err = thermal_profile_set(tp);
->  	if (err)
->  		return err;
->  
-> +	platform_profile_handler.profile_get = platform_profile_get,
-> +	platform_profile_handler.profile_set = platform_profile_set,
-> +
-> +	set_bit(PLATFORM_PROFILE_COOL, platform_profile_handler.choices);
-> +	set_bit(PLATFORM_PROFILE_BALANCED, platform_profile_handler.choices);
-> +	set_bit(PLATFORM_PROFILE_PERFORMANCE, platform_profile_handler.choices);
-> +
-> +	err = platform_profile_register(&platform_profile_handler);
-> +	if (err)
-> +		return err;
-> +
-> +	platform_profile_support = true;
-> +
->  	return 0;
->  }
->  
-> @@ -900,7 +984,7 @@ static int __init hp_wmi_bios_setup(struct platform_device *device)
->  	if (hp_wmi_rfkill_setup(device))
->  		hp_wmi_rfkill2_setup(device);
->  
-> -	thermal_profile_setup(device);
-> +	thermal_profile_setup();
->  
->  	return 0;
->  }
-> @@ -927,6 +1011,9 @@ static int __exit hp_wmi_bios_remove(struct platform_device *device)
->  		rfkill_destroy(wwan_rfkill);
->  	}
->  
-> +	if (platform_profile_support)
-> +		platform_profile_remove();
-> +
->  	return 0;
->  }
->  
-> 
+Introduced changes
+------------------
+To address the problem, we bind rlimit counters to user namespace. Each counter
+reflects the number of processes in a given uid in a given user namespace. The
+result is a tree of rlimit counters with the biggest value at the root (aka
+init_user_ns). The limit is considered exceeded if it's exceeded up in the tree.
+
+[1] https://lore.kernel.org/containers/87imd2incs.fsf@x220.int.ebiederm.org/
+[2] https://lists.linuxfoundation.org/pipermail/containers/2020-August/042096.html
+[3] https://lists.linuxfoundation.org/pipermail/containers/2020-October/042524.html
+
+Changelog
+---------
+v7:
+* Fixed issues found by lkp-tests project in the patch that Reimplements
+  RLIMIT_MEMLOCK on top of ucounts.
+
+v6:
+* Fixed issues found by lkp-tests project.
+* Rebased onto v5.11.
+
+v5:
+* Split the first commit into two commits: change ucounts.count type to atomic_long_t
+  and add ucounts to cred. These commits were merged by mistake during the rebase.
+* The __get_ucounts() renamed to alloc_ucounts().
+* The cred.ucounts update has been moved from commit_creds() as it did not allow
+  to handle errors.
+* Added error handling of set_cred_ucounts().
+
+v4:
+* Reverted the type change of ucounts.count to refcount_t.
+* Fixed typo in the kernel/cred.c
+
+v3:
+* Added get_ucounts() function to increase the reference count. The existing
+  get_counts() function renamed to __get_ucounts().
+* The type of ucounts.count changed from atomic_t to refcount_t.
+* Dropped 'const' from set_cred_ucounts() arguments.
+* Fixed a bug with freeing the cred structure after calling cred_alloc_blank().
+* Commit messages have been updated.
+* Added selftest.
+
+v2:
+* RLIMIT_MEMLOCK, RLIMIT_SIGPENDING and RLIMIT_MSGQUEUE are migrated to ucounts.
+* Added ucounts for pair uid and user namespace into cred.
+* Added the ability to increase ucount by more than 1.
+
+v1:
+* After discussion with Eric W. Biederman, I increased the size of ucounts to
+  atomic_long_t.
+* Added ucount_max to avoid the fork bomb.
+
+--
+
+Alexey Gladkov (7):
+  Increase size of ucounts to atomic_long_t
+  Add a reference to ucounts for each cred
+  Reimplement RLIMIT_NPROC on top of ucounts
+  Reimplement RLIMIT_MSGQUEUE on top of ucounts
+  Reimplement RLIMIT_SIGPENDING on top of ucounts
+  Reimplement RLIMIT_MEMLOCK on top of ucounts
+  kselftests: Add test to check for rlimit changes in different user
+    namespaces
+
+ fs/exec.c                                     |   6 +-
+ fs/hugetlbfs/inode.c                          |  16 +-
+ fs/io-wq.c                                    |  22 ++-
+ fs/io-wq.h                                    |   2 +-
+ fs/io_uring.c                                 |   2 +-
+ fs/proc/array.c                               |   2 +-
+ include/linux/cred.h                          |   4 +
+ include/linux/hugetlb.h                       |   4 +-
+ include/linux/mm.h                            |   4 +-
+ include/linux/sched/user.h                    |   7 -
+ include/linux/shmem_fs.h                      |   2 +-
+ include/linux/signal_types.h                  |   4 +-
+ include/linux/user_namespace.h                |  24 ++-
+ ipc/mqueue.c                                  |  41 ++---
+ ipc/shm.c                                     |  26 +--
+ kernel/cred.c                                 |  50 +++++-
+ kernel/exit.c                                 |   2 +-
+ kernel/fork.c                                 |  18 +-
+ kernel/signal.c                               |  57 +++----
+ kernel/sys.c                                  |  14 +-
+ kernel/ucount.c                               | 120 +++++++++++--
+ kernel/user.c                                 |   3 -
+ kernel/user_namespace.c                       |   9 +-
+ mm/memfd.c                                    |   4 +-
+ mm/mlock.c                                    |  20 ++-
+ mm/mmap.c                                     |   4 +-
+ mm/shmem.c                                    |   8 +-
+ tools/testing/selftests/Makefile              |   1 +
+ tools/testing/selftests/rlimits/.gitignore    |   2 +
+ tools/testing/selftests/rlimits/Makefile      |   6 +
+ tools/testing/selftests/rlimits/config        |   1 +
+ .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
+ 32 files changed, 502 insertions(+), 144 deletions(-)
+ create mode 100644 tools/testing/selftests/rlimits/.gitignore
+ create mode 100644 tools/testing/selftests/rlimits/Makefile
+ create mode 100644 tools/testing/selftests/rlimits/config
+ create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+
+-- 
+2.29.2
 
