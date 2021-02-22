@@ -2,80 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C25321FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA9C321FAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232710AbhBVTIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:08:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        id S232584AbhBVTJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:09:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbhBVTGt (ORCPT
+        with ESMTP id S232838AbhBVTHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:06:49 -0500
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DBAC06178C;
-        Mon, 22 Feb 2021 11:06:09 -0800 (PST)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lEGWu-00HAo8-GG; Mon, 22 Feb 2021 19:06:01 +0000
-Date:   Mon, 22 Feb 2021 19:06:00 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     netdev@vger.kernel.org
-Cc:     Denis Kirjanov <kda@linux-powerpc.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Subject: [PATCHSET] making unix_bind() undo mknod on failure
-Message-ID: <YDQAmH9zSsaqf+Dg@zeniv-ca.linux.org.uk>
-References: <20210129131855.GA2346744@infradead.org>
- <YClpVIfHYyzd6EWu@zeniv-ca.linux.org.uk>
- <CAOJe8K00srtuD+VAJOFcFepOqgNUm0mC8C=hLq2=qhUFSfhpuw@mail.gmail.com>
- <YCwIQmsxWxuw+dnt@zeniv-ca.linux.org.uk>
- <YC86WeSTkYZqRlJY@zeniv-ca.linux.org.uk>
- <YC88acS6dN6cU1y0@zeniv-ca.linux.org.uk>
- <CAM_iQpVpJwRNKjKo3p1jFvCjYAXAY83ux09rd2Mt0hKmvx=RgQ@mail.gmail.com>
- <YDFj3OZ4DMQSqylH@zeniv-ca.linux.org.uk>
- <CAM_iQpXX7SBGgUkBUY6BEjCqJYbHAUW5Z3VtV2U=yhiw1YJr=w@mail.gmail.com>
- <YDF6Z8QHh3yw7es9@zeniv-ca.linux.org.uk>
+        Mon, 22 Feb 2021 14:07:48 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAB16C061574;
+        Mon, 22 Feb 2021 11:07:07 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id j19so7377363lfr.12;
+        Mon, 22 Feb 2021 11:07:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=O6GIyyoTrO4dQ+CLo8l+0ODsKrayFvT21sFlP6VM+Ow=;
+        b=GKIiSC9+xR2v8RwrUGMH1HxMmpqevlrFj6JU1WtB0+3fV4i9qY9QuCT88QlJU3pHYp
+         ngr5fJMAFpj7EEazdS6IoExvI6nmjdp4DnqdpVlzeOm4xtEQpAtLx2zzHi5lNk75O1pa
+         L3lFMg75sBPnhI0LAm2i2K4j+mGKHS/BwTLwgTn8/rMe8Bry5P2K/d5YfDuzFBLwmQZO
+         JX8+W7i8E3aM4rzjoKtpPsbVhyQ6McXOp8oD2zlZYjfoS11xriSuE6vS95VHnx26SvFn
+         LWc0eX2gxIrs1WW6HLeqEy0zXh0+a7+pN0K4NDOGWA3BQbqpTS5qymIpIWdwiZEDsuEq
+         ytAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=O6GIyyoTrO4dQ+CLo8l+0ODsKrayFvT21sFlP6VM+Ow=;
+        b=sTZbiyNeFy2R/e+utuejiWbiVHkxHCq5Sf+p0ItAhGg9XJI8FhJ82+HOChObvlv4QK
+         Bx8jfA5iEpLtPB4RX3QqgnN0PvBdxGNMZ352CTdUPmRMXRW9tzugiBRRhRKdY6DjTS7h
+         YTokYZrqM07sZJqRZtWkx8DyAVUcxZFgPN/qa4QvPjqeskM8up/Tk1MB6XAYjiBIfBQQ
+         HW+1IREpha6JcCKjvA6eqxmmmlU89x1N/eAWj2GTcGgb6yrBQmzToidp8kRRPSIDnos3
+         YdS7cVkpXYWgXD5DxwhKsytL8yXZbgUlm9wvxEsEsOMR9AKrFm/B0aAo7MuslH5Wez5V
+         0l+w==
+X-Gm-Message-State: AOAM533Uf1motMQ5fcZdrKMCyhRjvKtV2f7B3tHh7i8WslNINKkYPqUP
+        ZljdXJAhw5o3XJp3KmEf5Lk=
+X-Google-Smtp-Source: ABdhPJwprln/0QJQjiEmse61T0OMSwWIRgMXxIAwrDlDqwPXUhVen++cqWMM8FQmYSIUVFiDsPDvig==
+X-Received: by 2002:a19:7d1:: with SMTP id 200mr14404599lfh.110.1614020826373;
+        Mon, 22 Feb 2021 11:07:06 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id c6sm2062614lfb.204.2021.02.22.11.07.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 11:07:05 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Mon, 22 Feb 2021 20:07:03 +0100
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210222190703.GA19167@pc638.lan>
+References: <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
+ <20210219112751.GA34528@pc638.lan>
+ <20210219181811.GY2743@paulmck-ThinkPad-P72>
+ <20210219183336.GA23049@paulmck-ThinkPad-P72>
+ <20210222102104.v3pr7t57hmpwijpi@linutronix.de>
+ <20210222125431.GA41939@pc638.lan>
+ <20210222150903.GH2743@paulmck-ThinkPad-P72>
+ <20210222171605.GA42169@pc638.lan>
+ <20210222181608.GK2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YDF6Z8QHh3yw7es9@zeniv-ca.linux.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210222181608.GK2743@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 09:08:56PM +0000, Al Viro wrote:
-
-> *shrug*
+On Mon, Feb 22, 2021 at 10:16:08AM -0800, Paul E. McKenney wrote:
+> On Mon, Feb 22, 2021 at 06:16:05PM +0100, Uladzislau Rezki wrote:
+> > On Mon, Feb 22, 2021 at 07:09:03AM -0800, Paul E. McKenney wrote:
+> > > On Mon, Feb 22, 2021 at 01:54:31PM +0100, Uladzislau Rezki wrote:
+> > > > On Mon, Feb 22, 2021 at 11:21:04AM +0100, Sebastian Andrzej Siewior wrote:
+> > > > > On 2021-02-19 10:33:36 [-0800], Paul E. McKenney wrote:
+> > > > > > For definiteness, here is the first part of the change, posted earlier.
+> > > > > > The commit log needs to be updated.  I will post the change that keeps
+> > > > > > the tick going as a reply to this email.
+> > > > > …
+> > > > > > diff --git a/kernel/softirq.c b/kernel/softirq.c
+> > > > > > index 9d71046..ba78e63 100644
+> > > > > > --- a/kernel/softirq.c
+> > > > > > +++ b/kernel/softirq.c
+> > > > > > @@ -209,7 +209,7 @@ static inline void invoke_softirq(void)
+> > > > > >  	if (ksoftirqd_running(local_softirq_pending()))
+> > > > > >  		return;
+> > > > > >  
+> > > > > > -	if (!force_irqthreads) {
+> > > > > > +	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
+> > > > > >  #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+> > > > > >  		/*
+> > > > > >  		 * We can safely execute softirq on the current stack if
+> > > > > > @@ -358,8 +358,8 @@ asmlinkage __visible void __softirq_entry __do_softirq(void)
+> > > > > >  
+> > > > > >  	pending = local_softirq_pending();
+> > > > > >  	if (pending) {
+> > > > > > -		if (time_before(jiffies, end) && !need_resched() &&
+> > > > > > -		    --max_restart)
+> > > > > > +		if (!__this_cpu_read(ksoftirqd) ||
+> > > > > > +		    (time_before(jiffies, end) && !need_resched() && --max_restart))
+> > > > > >  			goto restart;
+> > > > > 
+> > > > > This is hunk shouldn't be needed. The reason for it is probably that the
+> > > > > following wakeup_softirqd() would avoid further invoke_softirq()
+> > > > > performing the actual softirq work. It would leave early due to
+> > > > > ksoftirqd_running(). Unless I'm wrong, any raise_softirq() invocation
+> > > > > outside of an interrupt would do the same. 
+> > > 
+> > > And it does pass the rcutorture test without that hunk:
+> > > 
+> > > tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y" --bootargs "threadirqs=1" --trust-make
+> > > 
+> > Yep. I have tested that patch also. It works for me as well. So
+> > technically i do not see any issues from the first glance but of
+> > course it should be reviewed by the softirq people to hear their
+> > opinion.
+> > 
+> > IRQs are enabled, so it can be handled from an IRQ tail until
+> > ksoftirqd threads are spawned.
 > 
-> If anything, __unix_complete_bind() might make a better name for that,
-> with dropping ->bindlock also pulled in, but TBH I don't have sufficiently
-> strong preferences - might as well leave dropping the lock to caller.
+> And if I add "CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" it still works,
+> even if I revert my changes to rcu_needs_cpu().  Should I rely on this
+> working globally?  ;-)
 > 
-> I'll post that series to netdev tonight.
+There might be corner cases which we are not aware of so far. From the
+other hand what the patch does is simulating the !threadirqs behaviour
+during early boot. In that case we know that handling of SW irqs from
+real-irq tail works :)
 
-	Took longer than I hoped...  Anyway, here's the current variant;
-it's 5.11-based, lives in
-git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git misc.af_unix
-
-Shortlog:
-Al Viro (8):
-      af_unix: take address assignment/hash insertion into a new helper
-      unix_bind(): allocate addr earlier
-      unix_bind(): separate BSD and abstract cases
-      unix_bind(): take BSD and abstract address cases into new helpers
-      fold unix_mknod() into unix_bind_bsd()
-      unix_bind_bsd(): move done_path_create() call after dealing with ->bindlock
-      unix_bind_bsd(): unlink if we fail after successful mknod
-      __unix_find_socket_byname(): don't pass hash and type separately
-
-Diffstat:
- net/unix/af_unix.c | 186 +++++++++++++++++++++++++++--------------------------
- 1 file changed, 94 insertions(+), 92 deletions(-)
-
-The actual fix is in #7/8, the first 6 are massage in preparation to that
-and #8/8 is a minor followup cleanup.  Individual patches in followups.
-Please, review.
+--
+Vlad Rezki
