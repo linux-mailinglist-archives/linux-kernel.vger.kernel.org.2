@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63DF321913
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FFA32196D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232360AbhBVNjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:39:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56558 "EHLO mail.kernel.org"
+        id S231923AbhBVNwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:52:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57438 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231331AbhBVMnl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:43:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1333D64F3F;
-        Mon, 22 Feb 2021 12:40:20 +0000 (UTC)
+        id S231540AbhBVMqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:46:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FF7664F13;
+        Mon, 22 Feb 2021 12:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997621;
-        bh=hqRMGL169tU0T/SbBpFDuyo6p5pYPA3x9o4Z4luF19I=;
+        s=korg; t=1613997706;
+        bh=Q7sAHFgYj+I33ZEH+6qOE4rO2T5rsDuvGxTCOzru9iQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PK6zu10AQPFqRdJF5tylLKV7aftQnBU0hlKuKAs3qD3lT/3ooTFJFTnVr8zhFaqRH
-         LmC4EhuHh6HMhA4xCr+PbE1aUIf3iZQo26dZTe1ouWmY2BXgOY0qZD0rqK1R9lDY2O
-         23GTUZb3Y/SrB6ydvbCTqdOOYkIrp7s0dRIpOokE=
+        b=AHjXshukKXhb2ODiK9UWzN8ai670kUeKa8PymyLuFnaLwtBhQSgE9fP6WOKemb7vV
+         ya/680Le8Jajunx4rvbA4wuB3xbNkwSA+D6GkZpaNa3HkhfwGwbtkgAbBrHs+Y9pv2
+         bo+ct8yS7Gv3RULXLW5etoEFUtWVpvKoYN671kB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 35/35] kvm: check tlbs_dirty directly
-Date:   Mon, 22 Feb 2021 13:36:31 +0100
-Message-Id: <20210222121022.530225901@linuxfoundation.org>
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 34/49] vsock: fix locking in vsock_shutdown()
+Date:   Mon, 22 Feb 2021 13:36:32 +0100
+Message-Id: <20210222121027.465544252@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
-References: <20210222121013.581198717@linuxfoundation.org>
+In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
+References: <20210222121022.546148341@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +39,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lai Jiangshan <laijs@linux.alibaba.com>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-commit 88bf56d04bc3564542049ec4ec168a8b60d0b48c upstream
+commit 1c5fae9c9a092574398a17facc31c533791ef232 upstream.
 
-In kvm_mmu_notifier_invalidate_range_start(), tlbs_dirty is used as:
-        need_tlb_flush |= kvm->tlbs_dirty;
-with need_tlb_flush's type being int and tlbs_dirty's type being long.
+In vsock_shutdown() we touched some socket fields without holding the
+socket lock, such as 'state' and 'sk_flags'.
 
-It means that tlbs_dirty is always used as int and the higher 32 bits
-is useless.  We need to check tlbs_dirty in a correct way and this
-change checks it directly without propagating it to need_tlb_flush.
+Also, after the introduction of multi-transport, we are accessing
+'vsk->transport' in vsock_send_shutdown() without holding the lock
+and this call can be made while the connection is in progress, so
+the transport can change in the meantime.
 
-Note: it's _extremely_ unlikely this neglecting of higher 32 bits can
-cause problems in practice.  It would require encountering tlbs_dirty
-on a 4 billion count boundary, and KVM would need to be using shadow
-paging or be running a nested guest.
+To avoid issues, we hold the socket lock when we enter in
+vsock_shutdown() and release it when we leave.
 
-Cc: stable@vger.kernel.org
-Fixes: a4ee1ca4a36e ("KVM: MMU: delay flush all tlbs on sync_page path")
-Signed-off-by: Lai Jiangshan <laijs@linux.alibaba.com>
-Message-Id: <20201217154118.16497-1-jiangshanlai@gmail.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Among the transports that implement the 'shutdown' callback, only
+hyperv_transport acquired the lock. Since the caller now holds it,
+we no longer take it.
+
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- virt/kvm/kvm_main.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/vmw_vsock/af_vsock.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -346,9 +346,8 @@ static void kvm_mmu_notifier_invalidate_
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -830,10 +830,12 @@ static int vsock_shutdown(struct socket
  	 */
- 	kvm->mmu_notifier_count++;
- 	need_tlb_flush = kvm_unmap_hva_range(kvm, start, end);
--	need_tlb_flush |= kvm->tlbs_dirty;
- 	/* we've to flush the tlb before the pages can be freed */
--	if (need_tlb_flush)
-+	if (need_tlb_flush || kvm->tlbs_dirty)
- 		kvm_flush_remote_tlbs(kvm);
  
- 	spin_unlock(&kvm->mmu_lock);
+ 	sk = sock->sk;
++
++	lock_sock(sk);
+ 	if (sock->state == SS_UNCONNECTED) {
+ 		err = -ENOTCONN;
+ 		if (sk->sk_type == SOCK_STREAM)
+-			return err;
++			goto out;
+ 	} else {
+ 		sock->state = SS_DISCONNECTING;
+ 		err = 0;
+@@ -842,10 +844,8 @@ static int vsock_shutdown(struct socket
+ 	/* Receive and send shutdowns are treated alike. */
+ 	mode = mode & (RCV_SHUTDOWN | SEND_SHUTDOWN);
+ 	if (mode) {
+-		lock_sock(sk);
+ 		sk->sk_shutdown |= mode;
+ 		sk->sk_state_change(sk);
+-		release_sock(sk);
+ 
+ 		if (sk->sk_type == SOCK_STREAM) {
+ 			sock_reset_flag(sk, SOCK_DONE);
+@@ -853,6 +853,8 @@ static int vsock_shutdown(struct socket
+ 		}
+ 	}
+ 
++out:
++	release_sock(sk);
+ 	return err;
+ }
+ 
 
 
