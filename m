@@ -2,56 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24472322010
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E62832200C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:25:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhBVTXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:23:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
+        id S233327AbhBVTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:23:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232913AbhBVTRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:17:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 47AED64E57;
-        Mon, 22 Feb 2021 19:12:04 +0000 (UTC)
+        id S233035AbhBVTQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:16:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 420E964E4B;
+        Mon, 22 Feb 2021 19:12:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614021124;
-        bh=TisF0WqPeRTvGcIracJDLuQa1NMfjGLI/c/0Pm+E6Bw=;
+        s=k20201202; t=1614021127;
+        bh=g0upDflBt5+bAoWqBvx1N6DXdS3ZNpE1r4oGb7SmNnI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=n8+cgbF/f0zsy3Sbif/F/nvT2jjOiQPbKIKuSWwVIuXSjav6UUeWc8Kg/wtA2gFc+
-         GaQrVD0nkIUjCSXPG+e2Ve2hpKaoY9QGE3kkfBfGFhxN0DXRGosiBjxwv7mV9bPmf9
-         9mDdxZUvBa3W8mALfhJdDukEMkwZwvN3NNBdNpcdtEs3OrPK0sWkDG1ccLtmy5UTar
-         oEUnsmMjfUh8puO+dhKZYJmmg/eYFZ8ORzyy14G71LgA6brfJE+Bu4tfmWaawWZQE1
-         WnEzmPU74i6VhAzijYijnggyFjlNirZ8iFUsCavrjdsPXZeqt9gFe6/BHoKAnS97hk
-         k7AFbVwdw9izg==
+        b=n9B9irmBWof1EZneqBNVrm6RrZM4JkHn5AtEQYGqKed834+J2UVlDD60PeoWbdi38
+         igGuYglgCmvdd7WIXYJXOtsKyO6fMGBz2JOrY6wXZCYk8g5d0NnLDorzRuTfUgXlgF
+         Dt/ATCwC8KQ0USXdjiCvYfXXLTUAAsjUUa1xBRKWtnCnSk4l1hOJeTI3HLQ7Ueciqq
+         brJU3Pyjm+U1Xyle2E5Na9BwoLjAAQYHXxhVxxmA+PE5EtVBafwIlOH3xw0N87q/PH
+         ZHa/TwTFgnxZ3YYEDSxKGehkQxJqmmeWEFG8sdiZ6X4R2zsLXS//cQsQYnz9lrgRsH
+         bouETWmf8vFDw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4326160963;
-        Mon, 22 Feb 2021 19:12:04 +0000 (UTC)
-Subject: Re: [GIT PULL] livepatching for 5.12
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3DACE60963;
+        Mon, 22 Feb 2021 19:12:07 +0000 (UTC)
+Subject: Re: [GIT PULL] Kselftest update for Linux 5.12-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YDO/aM82PiGprdPQ@alley>
-References: <YDO/aM82PiGprdPQ@alley>
-X-PR-Tracked-List-Id: <live-patching.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YDO/aM82PiGprdPQ@alley>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching.git tags/livepatching-for-5.12
-X-PR-Tracked-Commit-Id: f89f20acff2d0f7a4801dc6ecde3de1ef0abe1d2
+In-Reply-To: <448c2248-d217-c3fe-3b03-761fa4749b78@linuxfoundation.org>
+References: <448c2248-d217-c3fe-3b03-761fa4749b78@linuxfoundation.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <448c2248-d217-c3fe-3b03-761fa4749b78@linuxfoundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.12-rc1
+X-PR-Tracked-Commit-Id: e0c0840a46db9d50ba7391082d665d74f320c39f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 54ab35d6bbc0d3175b0a74282c3365c80a43a93c
-Message-Id: <161402112427.16114.2758103562111713691.pr-tracker-bot@kernel.org>
-Date:   Mon, 22 Feb 2021 19:12:04 +0000
-To:     Petr Mladek <pmladek@suse.com>
+X-PR-Merge-Commit-Id: 80215095cefefa3bebf6e57971d0f1211e17153e
+Message-Id: <161402112724.16114.11996725068293591149.pr-tracker-bot@kernel.org>
+Date:   Mon, 22 Feb 2021 19:12:07 +0000
+To:     Shuah Khan <skhan@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, live-patching@vger.kernel.org
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 22 Feb 2021 15:27:52 +0100:
+The pull request you sent on Wed, 17 Feb 2021 16:39:47 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching.git tags/livepatching-for-5.12
+> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-next-5.12-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/54ab35d6bbc0d3175b0a74282c3365c80a43a93c
+https://git.kernel.org/torvalds/c/80215095cefefa3bebf6e57971d0f1211e17153e
 
 Thank you!
 
