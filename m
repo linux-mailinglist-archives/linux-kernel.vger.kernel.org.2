@@ -2,132 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13B8321E05
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D722321E06
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:24:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231285AbhBVRXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:23:18 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16415 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230432AbhBVRXN (ORCPT
+        id S230379AbhBVRYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:24:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhBVRYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:23:13 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6033e8590002>; Mon, 22 Feb 2021 09:22:33 -0800
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
- 2021 17:22:33 +0000
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Mon, 22 Feb 2021 17:22:33 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oC06WsMuW2cuPpSzw9TxGE4wqIU+w9HsD03TSDXMHvHU4aueeW/d+jh1yXtcCV07lTON2VLllqoern4+kb+2G4pYFHZbZa5tUTI+b1TxdBiWF8M7J23x6AZE+/fYh5qJRQEQZ/vP0qwfxcjSO3KLPWPEy2yY5YvTW8uMpdvRiWlKfSpGsHhyyU7asIBYNG01yTNGh/ETdFevn8fVUtNyL0HbYYw8z48id/m/9ja8glMuuj87/5+h0VsXRO/lSg4v106Ujoj2StlhakcOFpW8CygFLsArPDxfaIqjTXmqJ4elP9ZIuSGFHNgQVGVdQqkSxU4ESouT3vGs1JDnqm1Big==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y8sLryL/ZP0p1XdKIDarogJY/SJmBjUcOL4B+1Amq78=;
- b=XfvOjF9LQdtXLv03M1lHqpZ7umZ6nYHZZi+hDPnjUZABn/0mvpf7sxM7OE6f7VXvDP7t6X0o8jr1E0wf8QIJILv6l/mkvLElE1iFBbMD+/tGj0ReawwCZmiPsCbI6S65GLtlJg8vEVBKg0/T48edTPEot35H31YrV+ApFh98P04m/B0t7RJF7CFyHURW6m+y2Q9PqhVKdyBUt5sxZlMeJ8UOsEQTCtOJf96eELTQvPEMVfryIGIouSTcbcMKvwIVQ3uUKVC4S3A3JNz23CFgr5a9v7QIuP+28uyvx2AdBO8T4/qNjAhAoszQ7MYE+4arv3CPyriNenbBoP5QSsn16g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3516.namprd12.prod.outlook.com (2603:10b6:5:18b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.27; Mon, 22 Feb
- 2021 17:22:32 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.045; Mon, 22 Feb 2021
- 17:22:32 +0000
-Date:   Mon, 22 Feb 2021 13:22:30 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [RFC PATCH 04/10] vfio/pci: Use vfio_device_unmap_mapping_range()
-Message-ID: <20210222172230.GO4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401267316.16443.11184767955094847849.stgit@gimli.home>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <161401267316.16443.11184767955094847849.stgit@gimli.home>
-X-ClientProxiedBy: BL1PR13CA0484.namprd13.prod.outlook.com
- (2603:10b6:208:2c7::9) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Mon, 22 Feb 2021 12:24:19 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7847BC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:23:39 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id b15so4495310pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:23:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DUHGntaKFYzrq7NZkx3mWcd1ZCuicESk7vii1Ds1bwQ=;
+        b=rx5gkdRFqp9yhSb7+6RWUSzvNoBfPNu5d27yhXnbQJDAoKap+icxeZ4adyPk0oRhAA
+         4j2d14G7xHkTJD9npx6E1UZ+BgeP9soxBveDiTuQ0lWQKmiTRFncVcvkfJdNWkaw3MvE
+         GJbPWHtzxs1htljhabPzgO9rDiPDwd0dcw8hHXoLVCGsVcMiXJ6G8XFjViQ5Jz227dZt
+         eF3nZCMt6bDlzQ1P6Gd/cSCZYIpUPb/zICoOS87ZIWemV58Ma38mxRQ/AsrrmhF45FKZ
+         06WQeDNHEO/e7nXcbStjdCDgxwfVdWEZAFphOcdgTGwwRcNtkeklhFq7IKrUfjGvc3n9
+         bEKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DUHGntaKFYzrq7NZkx3mWcd1ZCuicESk7vii1Ds1bwQ=;
+        b=XVl/zslaj+DhccAtYIVUuD5/cXi2vEobCVcWqxMGumSaeY+IDFCoDGHNfFc1MRi0FQ
+         KskuloBphacEHsMdpmM/B1EMSlPzmHtPRH3t8SeXR++Oqg52Xr8quJo1ai8cwOgwpcYG
+         rIMf/Wb6L48Z7paCFs3CKv+6d7BAuz4RUzpm1zLqBMfSFyqiiKpEtqaFZFVFuOyfV7Lt
+         Hw1EGbvuwiUjdX2E7kjRdxY7RMH8YvE5i/G2eH0LyigoGxU1l/5vgH/5gqukKMTafZ8g
+         OO0OWwZPWDmi2xFR5a+LnMM8kJ/nGDdNlUqqyTq81BFrF9DcJPOT/n/O9S/VMzChVPbP
+         KIVg==
+X-Gm-Message-State: AOAM532/KgHdreAXvjTYzDNdNq5tdV25JaMwZtU9pWsLG326gsC+7HPD
+        NTZsNFSNdXHz6KiL2Rm0yHQ=
+X-Google-Smtp-Source: ABdhPJwkqR0nooNiBJVEp5Xxrif3+NWqYOdkzYMEOKJhg6OpIGXa6RgbvwDSdBvgXRNZZJIMlbKKrQ==
+X-Received: by 2002:a17:90a:602:: with SMTP id j2mr24221506pjj.65.1614014617069;
+        Mon, 22 Feb 2021 09:23:37 -0800 (PST)
+Received: from atulu-ubuntu ([27.61.20.212])
+        by smtp.gmail.com with ESMTPSA id t15sm19044867pjy.37.2021.02.22.09.23.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 09:23:36 -0800 (PST)
+Date:   Mon, 22 Feb 2021 22:53:30 +0530
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     tiwai@suse.de, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, gustavo@embeddedor.com
+Subject: Re: [PATCH 2/2] staging: rtl8192e: Change state information from u16
+ to u8
+Message-ID: <20210222172330.GA2507@atulu-ubuntu>
+References: <20210220182154.9457-1-atulgopinathan@gmail.com>
+ <20210220182154.9457-2-atulgopinathan@gmail.com>
+ <YDJbSgqTpBpIsbVB@kroah.com>
+ <20210221165721.GA10040@atulu-nitro>
+ <YDPNKTHZqaS37XPe@kroah.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0484.namprd13.prod.outlook.com (2603:10b6:208:2c7::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.8 via Frontend Transport; Mon, 22 Feb 2021 17:22:31 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lEEuk-00ESeq-HZ; Mon, 22 Feb 2021 13:22:30 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614014553; bh=y8sLryL/ZP0p1XdKIDarogJY/SJmBjUcOL4B+1Amq78=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=M8PkYZHeehhlIpFDPc1qr9UDSnMTIO1DR08Hei0HN/HnmfLC3FPsUsVkb2lEHhkGx
-         Jqvf2704mv0NO5/C47eoV1CPHW0kQD4urSfMNP+DB51apkmN0cg9G6xLhmv80Ipgyu
-         F3Y4YGRf9uAmf5x0ixuKEWPXFxpwl/GXcPSwZzmQos4beS92d27osDTfnBhkNG1LxM
-         7lLngyM5GBf7UmwgRoNMut0CL9ml206jza/wLGUCG+mUU+UQhSnFK/DNpOcscC3Fxk
-         O5D7tmP1sjuTNT1yMfrKt765MZTXRTtXAvMTg5N/exCYoilith0dCtJKDf9PcyImUb
-         w4KuT14rFKcIw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YDPNKTHZqaS37XPe@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 09:51:13AM -0700, Alex Williamson wrote:
+On Mon, Feb 22, 2021 at 04:26:33PM +0100, Greg KH wrote:
+> On Sun, Feb 21, 2021 at 10:27:21PM +0530, Atul Gopinathan wrote:
+> > On Sun, Feb 21, 2021 at 02:08:26PM +0100, Greg KH wrote:
+> > > On Sat, Feb 20, 2021 at 11:51:55PM +0530, Atul Gopinathan wrote:
+> > > > The "CcxRmState" field in struct "rtllib_network" is defined
+> > > > as a u16 array of size 2 (so, 4 bytes in total).
+> > > > 
+> > > > But the operations performed on this array throughout the code
+> > > > base (in rtl8192e/) are all in byte size 2 indicating that this
+> > > > array's type was defined wrongly.
+> > > > 
+> > > > There are two situation were u16 type of this field could yield
+> > > > incorrect behaviour:
+> > > > 
+> > > > 1. In rtllib_rx.c:1970:
+> > > > memcpy(network->CcxRmState, &info_element->data[4], 2);
+> > > > 
+> > > > Here last 2 bytes (index 4 and 5) from the info_element->data[]
+> > > > array are meant to be copied into CcxRmState[].
+> > > > Note that "data" array here is an array of type u8.
+> > > > 
+> > > > 2. In function "update_network()" in staging/rtl8192e/rtllib_rx.c:
+> > > > memcpy(dst->CcxRmState, src->CcxRmState, 2);
+> > > > 
+> > > > Here again, only 2 bytes are copied from the source state to
+> > > > destination state.
+> > > > 
+> > > > There are no instances of "CcxRmState" requiring u16 data type.
+> > > > Here is the output of "grep -IRn 'CcxRmState'" on the rtl8192e/
+> > > > directory for reviewing:
+> > > > 
+> > > > rtllib_rx.c:1970:			memcpy(network->CcxRmState, &info_element->data[4], 2);
+> > > > rtllib_rx.c:1971:			if (network->CcxRmState[0] != 0)
+> > > > rtllib_rx.c:1975:			network->MBssidMask = network->CcxRmState[1] & 0x07;
+> > > > rtllib_rx.c:2520:	memcpy(dst->CcxRmState, src->CcxRmState, 2);
+> > > > rtllib.h:1108:	u8	CcxRmState[2];
+> > > 
+> > > You just changed the logic in line 1975 in that file, right?  Are you
+> > > _SURE_ that is ok?  Do you have a device to test this on?
+> > 
+> > I'm sorry, I didn't quite get you. By line 1975 in rtllib_rx.c, did you mean
+> > the following line?:
+> > 
+> > network->MBssidMask = network->CcxRmState[1] & 0x07;
+> 
+> Yes.
+> 
+> > network->CcxRmState is being fed with 2 bytes of u8 data, in line 1970 (as
+> > seen above). I believe my patch doesn't change the logic of an "&" operation
+> > being performed on it with 0x07, right?
+> 
+> It changes the location of the [1] operation to point to a different
+> place in memory from what I can tell, as you changed the type of that
+> array.
 
-> +	vfio_device_unmap_mapping_range(vdev->device,
-> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX),
-> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_ROM_REGION_INDEX) -
-> +			VFIO_PCI_INDEX_TO_OFFSET(VFIO_PCI_BAR0_REGION_INDEX));
+Oh yes, earlier, the network->CcxRmState[] array had memory locations as:
+[x, x+16]. With this patch, it's locations are [x, x+8].
 
-Isn't this the same as invalidating everything? I see in
-vfio_pci_mmap():
+And I strongly believe this is how it should be based on how the original
+author is using the CcxRmState[] array throughout the codebase:
 
-	if (index >= VFIO_PCI_ROM_REGION_INDEX)
-		return -EINVAL;
+Allow me to explain (Based on the output of "grep -IRn 'CcxRmState'" that
+I sent previously):
+1. At line 1970:
 
-> @@ -2273,15 +2112,13 @@ static int vfio_pci_try_zap_and_vma_lock_cb(struct pci_dev *pdev, void *data)
->  
->  	vdev = vfio_device_data(device);
->  
-> -	/*
-> -	 * Locking multiple devices is prone to deadlock, runaway and
-> -	 * unwind if we hit contention.
-> -	 */
-> -	if (!vfio_pci_zap_and_vma_lock(vdev, true)) {
-> +	if (!down_write_trylock(&vdev->memory_lock)) {
->  		vfio_device_put(device);
->  		return -EBUSY;
->  	}
+    memcpy(network->CcxRmState, &info_element->data[4], 2);
 
-And this is only done as part of VFIO_DEVICE_PCI_HOT_RESET?
+this is where the array CcxRmState[] is being fed with
+data. And one can see the source is an array named "data" which itself
+has type u8. The third argument is "2", meaning 2 bytes of data should
+be written from "data" array to "CcxRmState".
 
-It looks like VFIO_DEVICE_PCI_HOT_RESET effects the entire slot?
+Also note that, the array CcxRmState has a size 2, as defined in
+rtllib.h, in struct "rtllib_network":
 
-How about putting the inode on the reflck structure, which is also
-per-slot, and then a single unmap_mapping_range() will take care of
-everything, no need to iterate over things in the driver core.
+    u16 CcxRmState[2];
 
-Note the vm->pg_off space doesn't have any special meaning, it is
-fine that two struct vfio_pci_device's are sharing the same address
-space and using an incompatible overlapping pg_offs
+Say if CcxRmState[] _was_ supposed to be u16 and not u8, then both elements
+of the source "data" array will only be written into the first element of
+"CcxRmState", i.e, "CcxRmState[0]". The 2nd element, "CcxRmState[1]" will
+never be fed with any data. The resultant CcxRmState[] array would look
+something like this:
 
-> diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-> index 9cd1882a05af..ba37f4eeefd0 100644
-> +++ b/drivers/vfio/pci/vfio_pci_private.h
-> @@ -101,6 +101,7 @@ struct vfio_pci_mmap_vma {
->  
->  struct vfio_pci_device {
->  	struct pci_dev		*pdev;
-> +	struct vfio_device	*device;
+    [(u8-data and u8-data squashed), 0].
 
-Ah, I did this too, but I didn't use a pointer :)
+The 2 u8-data here refers to info_element->data[4] and
+info_element->data[5].
 
-All the places trying to call vfio_device_put() when they really want
-a vfio_pci_device * become simpler now. Eg struct vfio_devices wants
-to have an array of vfio_pci_device, and get_pf_vdev() only needs to
-return one pointer.
+Instead, if "CcxRmState" was of type u8, then both elements of source
+"data" array will be written into the 2 elements of "CcxRmState"
+respectively:
 
-Jason
+    [u8 data, u8 data]
+
+This makes a lot more sense.
+
+2. Line 1975:
+    network->MBssidMask = network->CcxRmState[1] & 0x07;
+
+With point 1 clear, it should now be easy to understand that
+the the "&" operation in line 1975, will _always_ yield 0 if "CcxRmState"
+is u16, simply because CcxRmState[1] is never fed with any data at
+all.
+
+Oh and "network->MBssidMask" is also of type u8.
+
+3. Line 2520:
+memcpy(dst->CcxRmState, src->CcxRmState, 2);
+
+2 bytes, and not 4, again.:D
+The above line belongs to the following function:
+
+    static inline void update_network(struct rtllib_device *ieee,
+                      struct rtllib_network *dst,
+                      struct rtllib_network *src)
+
+As you can see, there is "dst" destination and a "src" source. The author
+is essentially copying all the data from "src" to "dst" in this function.
+Throughout the function, "memcpy()" is being used several times to copy
+the data of all arrays/structs existing in "src" into "dst". In each
+of those instances, the author is making sure to copy the entirety of
+the respective struct/array by passing all used up size of the struct/
+array in the third, size, argument. Here are a few lines from that
+function (posting the entire function defintion would be inappropriate)
+
+	instance 1: memcpy(dst->hidden_ssid, src->ssid, src->ssid_len);
+        instance 2: memcpy(&dst->stats, &src->stats, sizeof(struct rtllib_rx_stats));
+        instance 3: memcpy(&dst->tim, &src->tim, sizeof(struct rtllib_tim_parameters));
+        instance 4: memcpy(dst->wzc_ie, src->wzc_ie, src->wzc_ie_len);
+
+There are a LOT more instances, here is the elixir link to that
+function for a quick reference:
+https://elixir.bootlin.com/linux/v5.11/source/drivers/staging/rtl8192e/rtllib_rx.c#L2420
+
+My point is, it's clear that the intent of this function is to duplicate
+the data of src into dst. If "CcxRmState" really is supposed to be u16,
+then why only write down the first 2 bytes into "dst->CcxRmState"?
+
+What about "dst->CcxRmState[1]"? It never gets any value, again.
+
+These are the only places where CcxRmState is being used in the entire
+rtl8192e driver directory. I skipped line 1971 as it just checks whether
+"CcxRmState[0]" is 0 or not, this should not require any explanation.
+
+
+Thank you for your patience!
+Atul
