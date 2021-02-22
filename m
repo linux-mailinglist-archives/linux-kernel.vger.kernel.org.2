@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275A9321A57
+	by mail.lfdr.de (Postfix) with ESMTP id 98EDF321A58
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbhBVO2H convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Feb 2021 09:28:07 -0500
-Received: from mgw-02.mpynet.fi ([82.197.21.91]:36122 "EHLO mgw-02.mpynet.fi"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231601AbhBVOUC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:20:02 -0500
-Received: from pps.filterd (mgw-02.mpynet.fi [127.0.0.1])
-        by mgw-02.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 11MEH0wD032555;
-        Mon, 22 Feb 2021 16:18:51 +0200
-Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-02.mpynet.fi with ESMTP id 36tq071dhd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 22 Feb 2021 16:18:51 +0200
-Received: from tuxera-exch.ad.tuxera.com (10.20.48.11) by
- tuxera-exch.ad.tuxera.com (10.20.48.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 22 Feb 2021 16:18:50 +0200
-Received: from tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789]) by
- tuxera-exch.ad.tuxera.com ([fe80::552a:f9f0:68c3:d789%12]) with mapi id
- 15.00.1497.010; Mon, 22 Feb 2021 16:18:50 +0200
-From:   Anton Altaparmakov <anton@tuxera.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-ntfs-dev@lists.sourceforge.net" 
-        <linux-ntfs-dev@lists.sourceforge.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Rustam Kovhaev <rkovhaev@gmail.com>
-Subject: Re: [PATCH] ntfs: check for valid standard information attribute
-Thread-Topic: [PATCH] ntfs: check for valid standard information attribute
-Thread-Index: AQHXBUX43Bx0ygm+wEC4t5YdRoTv2qpemD8AgAEbtgCABGs/AA==
-Date:   Mon, 22 Feb 2021 14:18:50 +0000
-Message-ID: <A4498E63-33DC-4DAA-837D-D97B8F29F70C@tuxera.com>
-References: <20210217155930.1506815-1-rkovhaev@gmail.com>
- <42B686E5-92C1-4AD3-8CF4-E9AB39CBDB7B@tuxera.com>
- <20210219104956.09e869c36f065a78d1901725@linux-foundation.org>
-In-Reply-To: <20210219104956.09e869c36f065a78d1901725@linux-foundation.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [109.155.251.193]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <E0CA92CF3C57764CBAD62349D499E051@ex13.tuxera.com>
-Content-Transfer-Encoding: 8BIT
+        id S232335AbhBVO2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232041AbhBVOV6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 09:21:58 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46421C06178B;
+        Mon, 22 Feb 2021 06:21:17 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id e13so26413628ejl.8;
+        Mon, 22 Feb 2021 06:21:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ekjo4rKlS9igYMaQMjtFAKeWa9l9vaEq+4QyGfDGcno=;
+        b=eC360sHskqhl3gwfGLIJnXqlM0GAto3XOC0wi7V7MNj5UX4Aab0YIrrUJweHC950uH
+         sDOt4MrXERUpqGDvNkqaeRsyGha+Rq1cR0mWXT43AQy+iFJwMAxiH0JjzEkVsclBEApJ
+         +k8e7lbjAFtPLSuIsZFxV6cVbyVL2NKw1bNHH3GYM1ivgW0XvvjLwm9W+Mk607oP357f
+         8xcv9wv+RmznsLd5n7X6iCZiuZI4xthYYLC0dy+k6K03IeGUAQECez7AhFtESWoauXi5
+         dA8de99dcI3XLiaIJK4IVXz5BMq/dzsYvjN0CTAbygcjoO0KrNL19d50S1x3f07sb+zv
+         /Bkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ekjo4rKlS9igYMaQMjtFAKeWa9l9vaEq+4QyGfDGcno=;
+        b=dPzrRrvIGOeV9QrBQ7ekSaYPUMY0CrLK+7GLeRKyeHi36oCWJmlSEt44Gid2IWfkHS
+         RCf/x+Zv93EZXzXZdjs9gI/krCye4dwl3k5Xvb8LjyM8rxavdo/x2nPiSk+sSe+/25TL
+         wZEMhM+MsVH7UPpXY/8rN4VZnYwJnfrzTc7mAy+CuvgXZ6zArc2mEZgM8ha4cJV8sYF6
+         zl1Yjd3TfG5anaMZD6Ksmu0MjRvoD8lbIWySbK9p/tV6WzWNkHA3diudFRjFVubss9ZW
+         BxhMh0TK8jiZMDs99Zs8D1qpHq7qZIROYLW3ltv30Go+h4YpvR3yzEZ29GjIP9mNd7GJ
+         f65g==
+X-Gm-Message-State: AOAM530PPZvt1TmH/E3UHVrnG+yWYUJceB0QuDpB3HPKHEqQU5eqTIQh
+        2tz8Jt6CSnJxiWkEYcBv90y9xPVlj/U=
+X-Google-Smtp-Source: ABdhPJyUgChX7hXrjLM3oYneyvHJbxCCLXbvnDErOnZBwkDAlFOSp0xs8kIFf30fbJhxUVm3sRYr7A==
+X-Received: by 2002:a17:906:2b4e:: with SMTP id b14mr1896857ejg.467.1614003676095;
+        Mon, 22 Feb 2021 06:21:16 -0800 (PST)
+Received: from kwango.local (ip-94-112-132-16.net.upcbroadband.cz. [94.112.132.16])
+        by smtp.gmail.com with ESMTPSA id l7sm10462072edv.50.2021.02.22.06.21.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 06:21:15 -0800 (PST)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph updates for 5.12-rc1
+Date:   Mon, 22 Feb 2021 15:21:07 +0100
+Message-Id: <20210222142107.20046-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-22_02:2021-02-22,2021-02-22 signatures=0
-X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 phishscore=0 adultscore=0
- suspectscore=0 spamscore=0 bulkscore=0 malwarescore=0 mlxscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102220132
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+Hi Linus,
 
-Sorry for the delay in replying.
+The following changes since commit f40ddce88593482919761f74910f42f4b84c004b:
 
-> On 19 Feb 2021, at 18:49, Andrew Morton <akpm@linux-foundation.org> wrote:
-> 
-> On Fri, 19 Feb 2021 01:54:30 +0000 Anton Altaparmakov <anton@tuxera.com> wrote:
-> 
->> Hi Andrew,
->> 
->> Can you please push this one upstream?  Thanks a lot in advance!
-> 
-> The changelog is a bit brief...
+  Linux 5.11 (2021-02-14 14:32:24 -0800)
 
-Yes you are right it is a bit brief.  I guess I thought the syzkaller link was sufficient...  Rustam would you like to resubmit with an improved/extended description?
+are available in the Git repository at:
 
->>> On 17 Feb 2021, at 15:59, Rustam Kovhaev <rkovhaev@gmail.com> wrote:
->>> 
->>> we should check for valid STANDARD_INFORMATION attribute offset and
->>> length before trying to access it
-> 
-> It's a kernel a crash and I assume it results from mounting a corrupted
-> filesystem?
-> 
-> I think it's worth a cc:stable, yes?
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.12-rc1
 
-The problem is an invalid memory access due to corrupt on-disk metadata.
+for you to fetch changes up to 558b4510f622a3d96cf9d95050a04e7793d343c7:
 
-The issue with NTFS is that it is effectively a relational database so it is full of "struct X, field A" contains offset to "struct Y" so you get: "&struct Y = &struct X + X->A" and if the value of A is corrupt on-disk then your Y pointer is now pointing to random memory.
+  ceph: defer flushing the capsnap if the Fb is used (2021-02-16 12:09:52 +0100)
 
-The patch fixes one such place by validating that Y pointer is within bounds of the structure/buffer it is in.
+----------------------------------------------------------------
+With netfs helper library and fscache rework delayed, just a few cap
+handling improvements to avoid grabbing mmap_lock in some code paths
+and deal with capsnaps better and a mount option cleanup.
 
-So I guess this could be worth a cc:stable?  I guess we can add it and Greg / others can decide whether to put it into stable or not...  Rustam when resubmitting with better description, please also add the "Cc: stable@vger.kernel.org" line together with the "Signed-off-by", etc lines (note no need to actually put this in CC: field of the email iteslf).
+----------------------------------------------------------------
+Ilya Dryomov (2):
+      libceph: deprecate [no]cephx_require_signatures options
+      libceph: remove osdtimeout option entirely
 
-Best regards,
+Jeff Layton (3):
+      ceph: fix flush_snap logic after putting caps
+      ceph: clean up inode work queueing
+      ceph: allow queueing cap/snap handling after putting cap references
 
-	Anton
--- 
-Anton Altaparmakov <anton at tuxera.com> (replace at with @)
-Lead in File System Development, Tuxera Inc., http://www.tuxera.com/
-Linux NTFS maintainer
+Xiubo Li (1):
+      ceph: defer flushing the capsnap if the Fb is used
 
+ fs/ceph/addr.c               |  2 +-
+ fs/ceph/caps.c               | 70 +++++++++++++++++++++++++++++++-------------
+ fs/ceph/inode.c              | 61 ++++++++------------------------------
+ fs/ceph/snap.c               | 10 +++++++
+ fs/ceph/super.h              | 40 +++++++++++++++++++++----
+ include/linux/ceph/libceph.h |  7 ++---
+ net/ceph/ceph_common.c       | 17 ++++-------
+ 7 files changed, 115 insertions(+), 92 deletions(-)
