@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8658D32159C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A0D73215A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhBVL7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:59:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230105AbhBVL7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:59:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4914A64E15;
-        Mon, 22 Feb 2021 11:58:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613995104;
-        bh=cX6+zcAFvYLB9KQP4npgFv9p/Y9T3UFAefLKaAVJ7cA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MEtBdS+pzZVBPR9ZfrHvwUbU8LRoQz7FCSZ16Ws+XJQEGovFiXQj0n6bcaFJadohy
-         QzV37B4gnkaa1wRZY0DBHM2Y9vYSwdb9ITEyVkeDkTnC/xPn9uextV4FkzGIcKWJR+
-         dJrUhg8x7sR8Okocjn0cLzGuy1nMW0YOTn2YiADr5DEtzNVlUiFi/dppws4uCUpbCr
-         2oQ/u39Uwjm1LWPZEISNNeZ7XtAZWPhrUdMINVz5qmj3v/mokXgde1++ClEeRllpdX
-         YOJCy+1h9hqYCONnAjuzHHCJTgqWY14/Zep5CfTvo/Tlo1tyLMY22L1dG1zxP5RRR9
-         43oHdPbH9KTyQ==
-Date:   Mon, 22 Feb 2021 11:58:16 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Jian Cai <jiancai@google.com>
-Cc:     ndesaulniers@google.com, manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v4] ARM: Implement SLS mitigation
-Message-ID: <20210222115816.GA8605@willie-the-truck>
-References: <20210219201852.3213914-1-jiancai@google.com>
- <20210219230841.875875-1-jiancai@google.com>
+        id S229961AbhBVMDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229780AbhBVMDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:03:52 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F2C7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:03:12 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id b15so3818716pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:03:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RN+J/cQ3UYA8vDbFfio0gcTzGBY9lrHpdeKD2Fs7CY8=;
+        b=dnQirMY5XNWssjV5xFor/9+hdJe4/wfpv97ncukvlQAzGaPfy9ro0xc81E3lQEfqRX
+         nb/0G0CQ1GQFisu4YekJ+WITrBoTYF5V6CEXVo7tpB4/fUFxxcpKuHpJQhKoVr/QqoMt
+         PCbi01ymtzy4fT7/69m3M8rODxX9INJ+JLQsAkhMMQRBLx3UFXph733iUaJbEaKJaf4a
+         DpuUKoEWPcWTB5LMP6q7h2Sr1kOb5dVtP7lBIYy/9Bf+/ykXlmBZdTrh2PoF/7kMHepZ
+         1EbdWAuQ9qPelQQcHoQZ9O3m1p9JvhpqboG9ubF2GldaeFjrlOY9x4HcpSuKmn1Pw5Ih
+         Xm0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RN+J/cQ3UYA8vDbFfio0gcTzGBY9lrHpdeKD2Fs7CY8=;
+        b=Ex6bfX9LL0Cq+S9rfVJPHj6mDTkUCHt++oKsFGJaG510wTAakemRpRr3DTEbGt0WNg
+         q9CJzpS8ZWWUNd67rHr5r89PXigmAuN9+CbyoAalT+nqO5Zmb5mEVl5lU941s47liMFf
+         8ErrXbAP5tM5nXrW2kF9GDIpHH4/WZpv3UO5YZ0+Hqw+22U4aaAT4jcg35fxJou9p0SX
+         Kj0c/wLGEqEqjfZK1aDFaO37shrmlgI9EOq3O01vyAx2qdB72QUphmS+ZpI49aBm2uad
+         j8jnJierjpDTh1EgbsL0yMvvCr9SiKBJhz4GNmdXIdbgg6Nkgko8X9JyVahpDoho6tf4
+         lrNA==
+X-Gm-Message-State: AOAM531p6LWZPOiUo+OqwP6AavP+xw1oGevKxfFEyX/Li9XhbYrp1bRy
+        BZFuJl8f/FQcTdgGiOtwrDIG
+X-Google-Smtp-Source: ABdhPJxyO+GrVKVH43RmyAk94dqCfrZLr6eaBqYt8ot+9/AYZLVN3rjsFb2r8BHf3f9aIJetks2D1Q==
+X-Received: by 2002:a17:90a:b28a:: with SMTP id c10mr23173772pjr.39.1613995391573;
+        Mon, 22 Feb 2021 04:03:11 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:6215:cc7b:cb8f:abf4:d1c9:3864])
+        by smtp.gmail.com with ESMTPSA id g17sm17017221pfh.14.2021.02.22.04.03.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 04:03:10 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+        robh+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        boris.brezillon@collabora.com,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/3] Add support for secure regions in Qcom NANDc driver
+Date:   Mon, 22 Feb 2021 17:32:56 +0530
+Message-Id: <20210222120259.94465-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219230841.875875-1-jiancai@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 03:08:13PM -0800, Jian Cai wrote:
-> This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
-> -mharden-sls=all, which mitigates the straight-line speculation
-> vulnerability, speculative execution of the instruction following some
-> unconditional jumps. Notice -mharden-sls= has other options as below,
-> and this config turns on the strongest option.
-> 
-> all: enable all mitigations against Straight Line Speculation that are implemented.
-> none: disable all mitigations against Straight Line Speculation.
-> retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
-> blr: enable the mitigation against Straight Line Speculation for BLR instructions.
-> 
-> Links:
-> https://reviews.llvm.org/D93221
-> https://reviews.llvm.org/D81404
-> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
-> https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
-> 
-> Suggested-by: Manoj Gupta <manojgupta@google.com>
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Suggested-by: Nathan Chancellor  <nathan@kernel.org>
-> Suggested-by: David Laight <David.Laight@aculab.com>
-> Suggested-by: Will Deacon <will@kernel.org>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Jian Cai <jiancai@google.com>
-> ---
+On a typical end product, a vendor may choose to secure some regions in
+the NAND memory which are supposed to stay intact between FW upgrades.
+The access to those regions will be blocked by a secure element like
+Trustzone. So the normal world software like Linux kernel should not
+touch these regions (including reading).
 
-Please can you reply to my previous questions?
+So this series adds a property for declaring such secure regions in DT
+so that the driver can skip touching them. While at it, the DT binding
+is also converted to YAML format.
 
-https://lore.kernel.org/linux-arm-kernel/20210217094859.GA3706@willie-the-truck/
+Thanks,
+Mani
 
-(apologies if you did, but I don't see them in the archive or my inbox)
+Manivannan Sadhasivam (3):
+  dt-bindings: mtd: Convert Qcom NANDc binding to YAML
+  dt-bindings: mtd: Add a property to declare secure regions in Qcom
+    NANDc
+  mtd: rawnand: qcom: Add support for secure regions in NAND memory
 
-Will
+ .../devicetree/bindings/mtd/qcom,nandc.yaml   | 203 ++++++++++++++++++
+ .../devicetree/bindings/mtd/qcom_nandc.txt    | 142 ------------
+ drivers/mtd/nand/raw/qcom_nandc.c             |  72 ++++++-
+ 3 files changed, 266 insertions(+), 151 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mtd/qcom,nandc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/mtd/qcom_nandc.txt
+
+-- 
+2.25.1
+
