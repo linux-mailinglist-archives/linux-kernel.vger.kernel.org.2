@@ -2,101 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4287D321DC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:13:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 623F3321DCA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhBVRNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:13:04 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:41390 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbhBVRNC (ORCPT
+        id S230245AbhBVRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:13:41 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60058 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhBVRNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:13:02 -0500
-Received: by mail-il1-f200.google.com with SMTP id d11so8270685ilu.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:12:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=fSqpsrPKqTlmAum6ca5ws/+HsbhJRU2P1eLs1C3vaH0=;
-        b=JW3pCQOE/FBXQQnPXqDrSwWkHyI4l+AoBb5JVYgcJ2mU6RF/jFijH6LzvCq/98Z9CW
-         h4uykeXk05JXrPnPkfqbV1AthTZtaxYuVL31wb7gOWdNd3koOMpHxbX94UjQIZV4EC14
-         A6XvXGM4oJ0sHVet5yS7XJzAw2BHwHBiu/PlCmK5D6DaoMfgyIvq7sAEiBD1rMO3Vcp7
-         VwpAicodJse2LBI1aPBguf9/PuRbvzxtSPD7TPJi+rALskN9ZgjeYgL6bWtHvAVnfOtN
-         0Lv7YdR566Ck0QaeFHKaJfm9nc5fhRsqH1cuKwGKaA+nBDP6E4syRWtCqgFDVcSxB3Iy
-         +dUA==
-X-Gm-Message-State: AOAM531fKJQHxE868YCy/+VGqrxSNMVST2CzEsNyvjzuNkhlDNgcxAza
-        ypaEeA/4oB6OP7s+Qe8r3aU6/NzgThH9cfNVoi0if/c4Jm1T
-X-Google-Smtp-Source: ABdhPJxcd089wvTabE6b6MvFLQtS60t2W4KEv5s7SnUcrZ5Z4TKhRdsFUt8DohviM493lC3A+kCctsYFYLM8I0g0Dbyb3UR7WGwm
+        Mon, 22 Feb 2021 12:13:37 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id BB2A91F44325
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 4BBAD4800C3; Mon, 22 Feb 2021 18:12:51 +0100 (CET)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kernel@collabora.com
+Subject: [PATCHv1 0/6] Support for GE B1x5v2
+Date:   Mon, 22 Feb 2021 18:12:41 +0100
+Message-Id: <20210222171247.97609-1-sebastian.reichel@collabora.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9c88:: with SMTP id p8mr8412192iop.23.1614013941430;
- Mon, 22 Feb 2021 09:12:21 -0800 (PST)
-Date:   Mon, 22 Feb 2021 09:12:21 -0800
-In-Reply-To: <000000000000ffac1205b9a2112f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a43f1f05bbefe703@google.com>
-Subject: Re: UBSAN: shift-out-of-bounds in load_balance
-From:   syzbot <syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, hpa@zytor.com,
-        linux-kernel@vger.kernel.org, luto@kernel.org, mingo@redhat.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, valentin.schneider@arm.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Hi,
 
-HEAD commit:    31caf8b2 Merge branch 'linus' of git://git.kernel.org/pub/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ab2682d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b81388f0b32761d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=d7581744d5fd27c9fbe1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1277457f500000
+This series adds support for another General Electric patient
+monitor series (similar to existing Bx50v3), which is based on
+i.MX6DL using Congatec's QMX6 module.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d7581744d5fd27c9fbe1@syzkaller.appspotmail.com
+The module uses an I2C RTC to provide the i.MX6 32768 Hz clock,
+so it's important to keep it enabled. Not doing so results in
+incorrect timings of watchdog and i.MX6 RTC. The bootloader
+enables the watchdog, so disabling the clock results in system
+reboot. [0]
 
-================================================================================
-UBSAN: shift-out-of-bounds in kernel/sched/fair.c:7712:14
-shift exponent 149 is too large for 64-bit type 'long unsigned int'
-CPU: 0 PID: 12 Comm: ksoftirqd/0 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- detach_tasks kernel/sched/fair.c:7712 [inline]
- load_balance.cold+0x1d/0x2e kernel/sched/fair.c:9641
- rebalance_domains+0x5cc/0xdb0 kernel/sched/fair.c:10029
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
- run_ksoftirqd kernel/softirq.c:650 [inline]
- run_ksoftirqd+0x2d/0x60 kernel/softirq.c:642
- smpboot_thread_fn+0x655/0x9e0 kernel/smpboot.c:165
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-================================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 12 Comm: ksoftirqd/0 Not tainted 5.11.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0xfa/0x151 lib/dump_stack.c:120
- panic+0x306/0x73d kernel/panic.c:231
- ubsan_epilogue+0x54/0x5a lib/ubsan.c:162
- __ubsan_handle_shift_out_of_bounds.cold+0xb1/0x181 lib/ubsan.c:395
- detach_tasks kernel/sched/fair.c:7712 [inline]
- load_balance.cold+0x1d/0x2e kernel/sched/fair.c:9641
- rebalance_domains+0x5cc/0xdb0 kernel/sched/fair.c:10029
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:343
- run_ksoftirqd kernel/softirq.c:650 [inline]
- run_ksoftirqd+0x2d/0x60 kernel/softirq.c:642
- smpboot_thread_fn+0x655/0x9e0 kernel/smpboot.c:165
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+The second patch is required for B155v2, which uses a 1366x768
+G156XTN01 panel. The 1366 width is not supported by the display
+pipeline and result in boot hanging without the patch. [1]
 
-======================================================
+Patches 3+4 are updating DT bindings for the new board compatible
+values.
+
+Patch 5 adds missing sst25vf032b to spi-nor bindings. Checkpatch
+still complains, since the binding lists all chips without vendor
+prefix. This probably should be fixed when the files is moved to
+YAML, but is non-trivial since those chips are manufactured by
+multiple vendors. E.g. sst25vf032b can be sourced from at least
+sst and microchip.
+
+Finally patch 6 adds the board files.
+
+Thanks,
+
+[0] There has been a discussion for the problem on the mailinglists
+last year. The discussion died off, when I told people their ideas
+don't work. I hope using protected-clocks is fine for this usecase.
+
+https://lore.kernel.org/linux-clk/20191108170135.9053-1-sebastian.reichel@collabora.com/
+
+[1] I've sent this before as a separate patch in September, but
+nobody seemed to care. This adds full context for the problem.
+
+https://lore.kernel.org/dri-devel/20200910162831.321556-1-sebastian.reichel@collabora.com/
+
+-- Sebastian
+
+Sebastian Reichel (6):
+  rtc: m41t80: add support for protected clock
+  drm/imx: Add 8 pixel alignment fix
+  dt-bindings: vendor-prefixes: add congatec
+  dt-bindings: arm: fsl: add GE B1x5pv2 boards
+  dt-bindings: mtd: jedec,spi-nor: add sst25vf032b
+  ARM: dts: imx6: Add GE B1x5v2
+
+ .../devicetree/bindings/arm/fsl.yaml          |  11 +
+ .../devicetree/bindings/mtd/jedec,spi-nor.txt |   1 +
+ .../devicetree/bindings/rtc/rtc-m41t80.txt    |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   5 +
+ arch/arm/boot/dts/imx6dl-b105pv2.dts          |  35 +
+ arch/arm/boot/dts/imx6dl-b105v2.dts           |  35 +
+ arch/arm/boot/dts/imx6dl-b125pv2.dts          |  33 +
+ arch/arm/boot/dts/imx6dl-b125v2.dts           |  33 +
+ arch/arm/boot/dts/imx6dl-b155v2.dts           |  36 +
+ arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi         | 434 ++++++++++++
+ arch/arm/boot/dts/imx6dl-b1x5v2.dtsi          |  61 ++
+ arch/arm/boot/dts/imx6dl-qmx6.dtsi            | 623 ++++++++++++++++++
+ drivers/gpu/drm/imx/imx-drm-core.c            |  19 +-
+ drivers/gpu/drm/imx/imx-ldb.c                 |   5 +
+ drivers/gpu/drm/imx/ipuv3-crtc.c              |  11 +-
+ drivers/gpu/drm/imx/ipuv3-plane.c             |  19 +-
+ drivers/gpu/ipu-v3/ipu-dc.c                   |   5 +
+ drivers/gpu/ipu-v3/ipu-di.c                   |   7 +
+ drivers/rtc/rtc-m41t80.c                      |   3 +
+ 20 files changed, 1373 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6dl-b105pv2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b105v2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b125pv2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b125v2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b155v2.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-b1x5pv2.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6dl-b1x5v2.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6dl-qmx6.dtsi
+
+-- 
+2.30.0
 
