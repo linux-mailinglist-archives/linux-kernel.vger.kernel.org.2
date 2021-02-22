@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998C53217AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4973216BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhBVMwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:52:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44746 "EHLO mail.kernel.org"
+        id S231239AbhBVMb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:31:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231158AbhBVMR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:17:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7771764E4B;
-        Mon, 22 Feb 2021 12:17:43 +0000 (UTC)
+        id S230378AbhBVMPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:15:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 754B864EEF;
+        Mon, 22 Feb 2021 12:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996264;
-        bh=Lp96/hbN9zF85s2USitS9aMGi0YbHNb+X/E9qNrrWbI=;
+        s=korg; t=1613996125;
+        bh=eptyiKcxa2IQuv43NO582Oq2wn+WSgujbiylpCj8u1c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nxc6LCHxl65EyKJMlPrIBNel8IH6dkTk+2c9Inj+LIow6aKPlftND/qvuNkcGQdhv
-         xW4YXkb7nbu6cZR7ejM1IY5ceZl2jRR2bMO9Xbq3r6otGPpL/MAEr1DqPBriFYR8VM
-         1ucRgGhh9p8N/KW84iH2UEx+fmsJ6HyMhazvZfZQ=
+        b=MYT556qEUvg6SCHW5uovsmbmjhGV5wnDFErM6iGc1dYzDI1lJz0XLJqYHPd19RRnP
+         tve0rDLkONJkWHfDIJWWMcj36rTNfNn+4qSZV27j4JFSnXp1POFd9KPhjHS/IiJXCa
+         7TmFtjysgsS19yvCOHdcyluLJMIv/m6eGJMIQsN4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.19 36/50] ovl: expand warning in ovl_d_real()
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.4 10/13] xen-netback: dont "handle" error by BUG()
 Date:   Mon, 22 Feb 2021 13:13:27 +0100
-Message-Id: <20210222121026.317653245@linuxfoundation.org>
+Message-Id: <20210222121018.854444187@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
-References: <20210222121019.925481519@linuxfoundation.org>
+In-Reply-To: <20210222121013.583922436@linuxfoundation.org>
+References: <20210222121013.583922436@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,54 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit cef4cbff06fbc3be54d6d79ee139edecc2ee8598 upstream.
+commit 3194a1746e8aabe86075fd3c5e7cf1f4632d7f16 upstream.
 
-There was a syzbot report with this warning but insufficient information...
+In particular -ENOMEM may come back here, from set_foreign_p2m_mapping().
+Don't make problems worse, the more that handling elsewhere (together
+with map's status fields now indicating whether a mapping wasn't even
+attempted, and hence has to be considered failed) doesn't require this
+odd way of dealing with errors.
 
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+This is part of XSA-362.
+
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/overlayfs/super.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -82,7 +82,7 @@ static void ovl_dentry_release(struct de
- static struct dentry *ovl_d_real(struct dentry *dentry,
- 				 const struct inode *inode)
- {
--	struct dentry *real;
-+	struct dentry *real = NULL, *lower;
+---
+ drivers/net/xen-netback/netback.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+--- a/drivers/net/xen-netback/netback.c
++++ b/drivers/net/xen-netback/netback.c
+@@ -1335,13 +1335,11 @@ int xenvif_tx_action(struct xenvif_queue
+ 		return 0;
  
- 	/* It's an overlay file */
- 	if (inode && d_inode(dentry) == inode)
-@@ -101,9 +101,10 @@ static struct dentry *ovl_d_real(struct
- 	if (real && !inode && ovl_has_upperdata(d_inode(dentry)))
- 		return real;
+ 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
+-	if (nr_mops != 0) {
++	if (nr_mops != 0)
+ 		ret = gnttab_map_refs(queue->tx_map_ops,
+ 				      NULL,
+ 				      queue->pages_to_map,
+ 				      nr_mops);
+-		BUG_ON(ret);
+-	}
  
--	real = ovl_dentry_lowerdata(dentry);
--	if (!real)
-+	lower = ovl_dentry_lowerdata(dentry);
-+	if (!lower)
- 		goto bug;
-+	real = lower;
- 
- 	/* Handle recursion */
- 	real = d_real(real, inode);
-@@ -111,8 +112,10 @@ static struct dentry *ovl_d_real(struct
- 	if (!inode || inode == d_inode(real))
- 		return real;
- bug:
--	WARN(1, "ovl_d_real(%pd4, %s:%lu): real dentry not found\n", dentry,
--	     inode ? inode->i_sb->s_id : "NULL", inode ? inode->i_ino : 0);
-+	WARN(1, "%s(%pd4, %s:%lu): real dentry (%p/%lu) not found\n",
-+	     __func__, dentry, inode ? inode->i_sb->s_id : "NULL",
-+	     inode ? inode->i_ino : 0, real,
-+	     real && d_inode(real) ? d_inode(real)->i_ino : 0);
- 	return dentry;
- }
+ 	work_done = xenvif_tx_submit(queue);
  
 
 
