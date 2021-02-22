@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3B43215E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:15:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DF24321677
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhBVMOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:14:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
+        id S230335AbhBVMWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:22:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230364AbhBVMN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:13:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA01764E2E;
-        Mon, 22 Feb 2021 12:13:14 +0000 (UTC)
+        id S230334AbhBVMPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:15:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED43264F10;
+        Mon, 22 Feb 2021 12:14:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613995995;
-        bh=A/tjXZ4Qe/7L/KH0rdQM1tzfxBiExdbxX9Xvrf5SEWU=;
+        s=korg; t=1613996063;
+        bh=3kSREwTnBCR5ivjM0Wwb+NnC86pufTtuP3hHwsGQP8Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iuBYPcuFu5//obaIHqIJXRbgGDZl2HIM+NETtvbx7r1LeR1Lsmf1u5U4123ZvQEEv
-         R0vlUdWLLl58CAHKxO/x9hXdTMOK2xA7cKb0U7GRowU+0DgdfWQ1HIvy0Xn+TCRy1+
-         CMixgdpMn7ARc/zWsDZlPI2yZvkqqG6pq/CxkYIw=
+        b=H3kyQ6yM21yWyWuBwFTyw/1uPTqIcfkQedAtapFkSTQtmn9+ckiB3S4j1GTwxoCpc
+         ifn+ToqKxP9NAzLKm7O13/4vmun8XwzRyyy3dQ4927QqVgmrNyw8Osep3w2Zk39sYS
+         mtLr4CyI5xoc+0uxTULL9z4uvOp5YrAtVesprvUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.11 10/12] tty: protect tty_write from odd low-level tty disciplines
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 08/29] mptcp: skip to next candidate if subflow has unacked data
 Date:   Mon, 22 Feb 2021 13:13:02 +0100
-Message-Id: <20210222121018.841201057@linuxfoundation.org>
+Message-Id: <20210222121021.519452639@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.586597942@linuxfoundation.org>
-References: <20210222121013.586597942@linuxfoundation.org>
+In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
+References: <20210222121019.444399883@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,46 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Florian Westphal <fw@strlen.de>
 
-commit 3342ff2698e9720f4040cc458a2744b2b32f5c3a upstream.
+[ Upstream commit 860975c6f80adae9d2c7654bde04a99dd28bc94f ]
 
-Al root-caused a new warning from syzbot to the ttyprintk tty driver
-returning a write count larger than the data the tty layer actually gave
-it.  Which confused the tty write code mightily, and with the new
-iov_iter based code, caused a WARNING in iov_iter_revert().
+In case a subflow path is blocked, MPTCP-level retransmit may not take
+place anymore because such subflow is likely to have unacked data left
+in its write queue.
 
-syzbot correctly bisected the source of the new warning to commit
-9bb48c82aced ("tty: implement write_iter"), but the oddity goes back
-much further, it just didn't get caught by anything before.
+Ignore subflows that have experienced loss and test next candidate.
 
-Reported-by: syzbot+3d2c27c2b7dc2a94814d@syzkaller.appspotmail.com
-Fixes: 9bb48c82aced ("tty: implement write_iter")
-Debugged-by: Al Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 3b1d6210a95773691 ("mptcp: implement and use MPTCP-level retransmission")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_io.c |    5 ++++-
+ net/mptcp/protocol.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -962,11 +962,14 @@ static inline ssize_t do_tty_write(
- 		if (ret <= 0)
- 			break;
+diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
+index 967ce9ccfc0da..f56b2e331bb6b 100644
+--- a/net/mptcp/protocol.c
++++ b/net/mptcp/protocol.c
+@@ -1648,8 +1648,11 @@ static struct sock *mptcp_subflow_get_retrans(const struct mptcp_sock *msk)
+ 			continue;
  
-+		written += ret;
-+		if (ret > size)
-+			break;
-+
- 		/* FIXME! Have Al check this! */
- 		if (ret != size)
- 			iov_iter_revert(from, size-ret);
+ 		/* still data outstanding at TCP level?  Don't retransmit. */
+-		if (!tcp_write_queue_empty(ssk))
++		if (!tcp_write_queue_empty(ssk)) {
++			if (inet_csk(ssk)->icsk_ca_state >= TCP_CA_Loss)
++				continue;
+ 			return NULL;
++		}
  
--		written += ret;
- 		count -= ret;
- 		if (!count)
- 			break;
+ 		if (subflow->backup) {
+ 			if (!backup)
+-- 
+2.27.0
+
 
 
