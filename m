@@ -2,94 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54A8E3212F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6ED3212FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:24:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhBVJWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:22:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229780AbhBVJV6 (ORCPT
+        id S230131AbhBVJX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:23:56 -0500
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:36602 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230107AbhBVJXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:21:58 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85806C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:21:17 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id n4so18281216wrx.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:21:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Vb5b+CkV0wy9KJRTZwAevRcpVkwdWb7PHcO+BJh4EIs=;
-        b=pbzfKEpYbWtiCY1GbLMNqqn6+IPgm3x7BxAqtU9PY6beWBfK7Dkv6vxLZlrTZOKlYU
-         1v9Ia2oNDds8tHYwnhV5dgdfXLMyVxfxw7SxaDSjI4baRWu/cK/HNwqHVbxdEhqmnx3i
-         VnjKLWjsSAJjj4eH88Pep89P7RNgFbSARyBDjy0VU7gESJy2Z+VHrQ436tB4eb1mUawN
-         mn60yUbYzXjfutptek4dF/4tQbWS12QKjmuxUyaUACghfs94k0EnLAKIFWKqNBBPwz+z
-         PppYQE4OcfAw1dqG+7p+1bmR/GHQMGoh5KNS9QgDTgKH9SESnD6DLudwhXiR1DXzBSXy
-         bxTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Vb5b+CkV0wy9KJRTZwAevRcpVkwdWb7PHcO+BJh4EIs=;
-        b=OuXDNrD+lGvUxZOvZQKYqt5uJ32eKYmjQxbb5t9qJ4JnXlkUjFN8Fl56FXsHugUSlu
-         s8yvvCsSQPXk8x2O8YdquglZtelxalQSp+oVfGGBA/Gf/HONxN2frU/FC4jVhlwpTJ+X
-         hjyzpZXlqlFSTYCLN4VKSuK/UrXbJYEI9dYEKL1fBZFRtflCJsI5co/CMCRlZhZ9qu16
-         e2/LYTo7ZOAgbOJ6vX1rTdqcu4AWQbEx16dueT6zikj45WXNHt1r891lWgFQZU9vRS68
-         J/M4v141dCjyMv4ss84als2G3F81fRl04Y08IGo6nCdqDlTJE5FHufs/BxFXWoF3ephl
-         NX0A==
-X-Gm-Message-State: AOAM5304qfJVx0gHgc4hQMOtxNb8c0aOo2OIyDaHhfocpAUrT92lVHIZ
-        VjbH21D40+06pHHRy143/jKBlw==
-X-Google-Smtp-Source: ABdhPJxOxDC5j75cbFDb+qWQyxlbBD/HryvZ2mzxb6Jqj4w9IdAy6kpy9+09ctZ45O8lnxorA8JVSA==
-X-Received: by 2002:adf:f192:: with SMTP id h18mr21068624wro.340.1613985676226;
-        Mon, 22 Feb 2021 01:21:16 -0800 (PST)
-Received: from dell ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id c133sm15966566wme.46.2021.02.22.01.21.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 01:21:15 -0800 (PST)
-Date:   Mon, 22 Feb 2021 09:21:14 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     "Li, Meng" <Meng.Li@windriver.com>, linux-kernel@vger.kernel.org,
-        arnd@arndb.de, "Hao, Kexin" <Kexin.Hao@windriver.com>
-Subject: Re: [v2][PATCH] Revert "mfd: syscon: Don't free allocated name for
- regmap_config"
-Message-ID: <20210222092114.GE376568@dell>
-References: <20210115015050.26657-1-meng.li@windriver.com>
- <CO1PR11MB48497CB7B11EDA65A3941FDCF1819@CO1PR11MB4849.namprd11.prod.outlook.com>
- <36cc2d810d90237947ad953ebd6b9fb7@kernel.org>
+        Mon, 22 Feb 2021 04:23:53 -0500
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11M9Korh016507;
+        Mon, 22 Feb 2021 10:22:47 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=selector1;
+ bh=c1aebQ0l+1wgZ6Yg2/4eGkGmBoaVEzzO8QSq6ZSd5Uw=;
+ b=vhiV8BnoY5HnAmz5KjdyLzuugaCLOUpfsjXwve1YovHu0WR8Kzx7+y6fK37tY+u8MFdl
+ PWf3Tahu7cLxeCwMIlGuIHbenHb5Yfqu4tmHzZXUcoQ+NcfYmviFY9w3NiweTrpUv3CQ
+ 6oGZ+XtAuMe7okQnu80BF3mP7dUpGDmuRlDmgG/6wfzUZjEWDvJGrmcl/+pmhFQcFBui
+ EixY5FfWrXF6P/tr9BAak35JXu7VSgkcJuAUrhHECFPVvXPNBGJOVJfM+wvYMNGvDU84
+ UwZYeiz9RoYeMsSVknXWTw2dWz9WyoOqV0fyQGF7WWs2u9GHkLNPNj/Bjm7uvVHUNf72 lg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 36ttn6tndd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Feb 2021 10:22:47 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 025D4100038;
+        Mon, 22 Feb 2021 10:22:43 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D2CB721F0A4;
+        Mon, 22 Feb 2021 10:22:43 +0100 (CET)
+Received: from SFHDAG2NODE3.st.com (10.75.127.6) by SFHDAG2NODE2.st.com
+ (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Feb
+ 2021 10:22:43 +0100
+Received: from SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c]) by
+ SFHDAG2NODE3.st.com ([fe80::31b3:13bf:2dbe:f64c%20]) with mapi id
+ 15.00.1473.003; Mon, 22 Feb 2021 10:22:43 +0100
+From:   Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>
+To:     Yannick FERTRE <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent ABRIOU <vincent.abriou@st.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "Joe Perches" <joe@perches.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@st.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Yannick FERTRE - foss <yannick.fertre@foss.st.com>,
+        Philippe CORNU - foss <philippe.cornu@foss.st.com>,
+        Raphael GALLAIS-POU - foss <raphael.gallais-pou@foss.st.com>,
+        Raphael GALLAIS-POU <raphael.gallais-pou@st.com>,
+        Alexandre TORGUE - foss <alexandre.torgue@foss.st.com>
+Subject: [PATCH 0/2] Standardize DSI driver logging system
+Thread-Topic: [PATCH 0/2] Standardize DSI driver logging system
+Thread-Index: AQHXCPxG7Aav2VLZYkepVFMirMgYKw==
+Date:   Mon, 22 Feb 2021 09:22:43 +0000
+Message-ID: <20210222092205.32086-1-raphael.gallais-pou@foss.st.com>
+Accept-Language: fr-FR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.75.127.46]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <36cc2d810d90237947ad953ebd6b9fb7@kernel.org>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-02-22_02:2021-02-18,2021-02-22 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021, Marc Zyngier wrote:
+The use of DRM logging macros was removed and dev_err_probe() replaces
+condition, showing errors but not EPROBE_DEFER.
 
-> Hi Limeng,
-> 
-> On 2021-02-22 03:45, Li, Meng wrote:
-> > Hi Marc&Lee,
-> > 
-> > Is there any comment on this patch?
-> > Could you please help to review this patch so that I can improve it if
-> > it still has weakness?
-> 
-> If you are confident that the root issue has been fixed, no objection
-> from me, but I'm not in a position to test it at the moment (the board
-> I found the problem on is in a bit of a state).
+Yannick Fertre (2):
+  drm/stm: dsi: Avoid printing errors for -EPROBE_DEFER
+  drm/stm: dsi: Use dev_ based logging
 
-I'm not keen on flip-flopping this patch in and out of the kernel.
-Someone really needs to spend some time to map out the full life-cycle
-and propose a (possibly cross-subsystem) solution.
+ drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 58 +++++++++++++--------------
+ 1 file changed, 29 insertions(+), 29 deletions(-)
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+--=20
+2.17.1
