@@ -2,77 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4405321402
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AAC321404
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229990AbhBVKVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:21:39 -0500
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:52328 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhBVKVi (ORCPT
+        id S230179AbhBVKV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:21:56 -0500
+Received: from Galois.linutronix.de ([193.142.43.55]:44456 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhBVKVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:21:38 -0500
-Received: by mail-wm1-f47.google.com with SMTP id p3so2835909wmc.2;
-        Mon, 22 Feb 2021 02:21:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jqrZ9o2ASN5akD88hAC25nkBz+M3fdiYTEO2MDdzKQE=;
-        b=EltAjHHrDhCWuvvepWB334bmL2nekHymABVwrA58UiNIXcEUtlZC1jSXL/TBoc9hwt
-         CNyR0epgofOEwA6DycbjKEYODfS963tdNQ6fGZT9lDBjT9KPqlw+rfImcaeBIl9lFlBj
-         RzcWypSVwfFNsOGdtX8gmYqWMjtrUA1OkzE67oAbmDLdaVYnn+g8NBZ2dlL4qLEjeWj/
-         sdrmyqjNkJX1UMiAvmF4sEbsJUeCSqCP+y1pcnCu/62ySect9K6VpKNYvNVdKYErGLI5
-         Z8YK7WX/x5lRG1JbUAJ4YvNDli7ge+L+ZUlrvogOa7v2B12vBOIkbgjHNMH6otZsLw9S
-         bS/w==
-X-Gm-Message-State: AOAM530qaYHDQYcoPR3OJpXXVlSEYL92zMPdkrqy/+MzTAkHk7hG+RL0
-        LUN4XPhLeseZBDSK5sgNkmQ=
-X-Google-Smtp-Source: ABdhPJz6cUY0N/jr2N6r9cNHbFyBBPKLgGXIicBYbLYdkyrpqWdneK8zmyzgqA+XPnNl8ArCLJFTWw==
-X-Received: by 2002:a05:600c:19c6:: with SMTP id u6mr9172317wmq.65.1613989256338;
-        Mon, 22 Feb 2021 02:20:56 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id t16sm10088771wrq.53.2021.02.22.02.20.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 02:20:55 -0800 (PST)
-Date:   Mon, 22 Feb 2021 10:20:54 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        arnd@arndb.de, wei.liu@kernel.org, ardb@kernel.org,
-        daniel.lezcano@linaro.org, kys@microsoft.com
-Subject: Re: [PATCH v8 1/6] arm64: hyperv: Add Hyper-V hypercall and register
- access utilities
-Message-ID: <20210222102054.7ktopdg2jcao7itz@liuwe-devbox-debian-v2>
-References: <1613690194-102905-1-git-send-email-mikelley@microsoft.com>
- <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
+        Mon, 22 Feb 2021 05:21:49 -0500
+Date:   Mon, 22 Feb 2021 11:21:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613989266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=awhpzrnKVfjijEHXiKgK8U7szqwcwqjNV5JLWoQZgaM=;
+        b=ZcxJOIv9+kU9xE/WPjtFNKWfM4sWh5aE/J1EFZVDaBO5QUmTF1d1jNAFFF3Xy9a8t+vnO9
+        M5rEUfb80W2H1bhFffelKsuoGlELJ5jTWcGDLeUs1fglLsIcEskEi8kVbGLbkxQEF0O+ui
+        bCjYzKbX1fJi/nXHEdVgRXxinAcoCJ4jn8Toy0P005OnSxqb4fmuu1wkiyfOfxGTL96gRt
+        7Yfjg1gUFD6ZTCep9FUvNC2H7+fbTdzHa45LA2yT3cjYHgOdnphJirhw5spJqAiDjNyG8v
+        27gCBBJ9hHP85Cbz5/jU55Bq2KDaO+1MKVbsZ8BdSsQecHQwL+jtV1aUXSJTmA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613989266;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=awhpzrnKVfjijEHXiKgK8U7szqwcwqjNV5JLWoQZgaM=;
+        b=xYQcmyRSTGPoqatxQCI1obo4FQeUqzuKXnz6OkHyKneOrCIsM4+DCmPChwg3C6a5MXphuS
+        pKzIb6ed9Y85/vBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Michal Hocko <mhocko@suse.com>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
+Message-ID: <20210222102104.v3pr7t57hmpwijpi@linutronix.de>
+References: <20210218151554.GQ2743@paulmck-ThinkPad-P72>
+ <20210219081755.eucq4srbam6wg2gm@linutronix.de>
+ <20210219104958.GA34308@pc638.lan>
+ <20210219105710.d626zexj6vzt6k6y@linutronix.de>
+ <20210219111301.GA34441@pc638.lan>
+ <20210219111738.go6i2fdzvavpotxd@linutronix.de>
+ <20210219112357.GA34462@pc638.lan>
+ <20210219112751.GA34528@pc638.lan>
+ <20210219181811.GY2743@paulmck-ThinkPad-P72>
+ <20210219183336.GA23049@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1613690194-102905-2-git-send-email-mikelley@microsoft.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210219183336.GA23049@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 03:16:29PM -0800, Michael Kelley wrote:
-> hyperv-tlfs.h defines Hyper-V interfaces from the Hyper-V Top Level
-> Functional Spec (TLFS), and #includes the architecture-independent
-> part of hyperv-tlfs.h in include/asm-generic.  The published TLFS
-> is distinctly oriented to x86/x64, so the ARM64-specific
-> hyperv-tlfs.h includes information for ARM64 that is not yet formally
-> published. The TLFS is available here:
-> 
->   docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/reference/tlfs
-> 
-> mshyperv.h defines Linux-specific structures and routines for
-> interacting with Hyper-V on ARM64, and #includes the architecture-
-> independent part of mshyperv.h in include/asm-generic.
-> 
-> Use these definitions to provide utility functions to make
-> Hyper-V hypercalls and to get and set Hyper-V provided
-> registers associated with a virtual processor.
-> 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+On 2021-02-19 10:33:36 [-0800], Paul E. McKenney wrote:
+> For definiteness, here is the first part of the change, posted earlier.
+> The commit log needs to be updated.  I will post the change that keeps
+> the tick going as a reply to this email.
+=E2=80=A6
+> diff --git a/kernel/softirq.c b/kernel/softirq.c
+> index 9d71046..ba78e63 100644
+> --- a/kernel/softirq.c
+> +++ b/kernel/softirq.c
+> @@ -209,7 +209,7 @@ static inline void invoke_softirq(void)
+>  	if (ksoftirqd_running(local_softirq_pending()))
+>  		return;
+> =20
+> -	if (!force_irqthreads) {
+> +	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
+>  #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
+>  		/*
+>  		 * We can safely execute softirq on the current stack if
+> @@ -358,8 +358,8 @@ asmlinkage __visible void __softirq_entry __do_softir=
+q(void)
+> =20
+>  	pending =3D local_softirq_pending();
+>  	if (pending) {
+> -		if (time_before(jiffies, end) && !need_resched() &&
+> -		    --max_restart)
+> +		if (!__this_cpu_read(ksoftirqd) ||
+> +		    (time_before(jiffies, end) && !need_resched() && --max_restart))
+>  			goto restart;
 
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
+This is hunk shouldn't be needed. The reason for it is probably that the
+following wakeup_softirqd() would avoid further invoke_softirq()
+performing the actual softirq work. It would leave early due to
+ksoftirqd_running(). Unless I'm wrong, any raise_softirq() invocation
+outside of an interrupt would do the same.=20
+
+I would like PeterZ / tglx to comment on this one. Basically I'm not
+sure if it is okay to expect softirqs beeing served and waited on that
+early in the boot.
+
+>  		wakeup_softirqd();
+
+Sebastian
