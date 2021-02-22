@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD59321EDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:13:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1545F321EF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhBVSMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:12:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37430 "EHLO mail.kernel.org"
+        id S232052AbhBVSOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:14:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231280AbhBVSMj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:12:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 98EEA64F00;
-        Mon, 22 Feb 2021 18:11:59 +0000 (UTC)
+        id S231997AbhBVSNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:13:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6DAE164E77;
+        Mon, 22 Feb 2021 18:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614017519;
-        bh=T1yujTi1lkCGk1+uLXIYcblG8Jjo4Zk+bHwQU5Ayp7E=;
+        s=k20201202; t=1614017520;
+        bh=TWlDqxdjAPXK7Y0HwZjmvPBdNDFxLJ5zbrktq7vyzpE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=cjljOPygcViWVbuZN5b04+87yqXWCQcNOeh6VoaWzrhqutuMdDvNgTKCoU+ZZdqtB
-         lYzvjlUNAkqxi02HUfyqAXAqulKAV7PWpi/Caujh7k0pIv3uwdqDnLN/ywlZA08e8q
-         +/xi9IxtdITprsIBGh+3nH6L0LbPRXXXMociRv8udofhkmNP7YV/dRteO13oMyA+Nm
-         7Jjsx2J2lBrcwMkXIc6lwCTTsCFf698gvbfowNJRfcKMpxksCYS+9B60RCmTs13Rtp
-         Y7vhUg6hPVE5/0EDvS6XEc0pSR1gd/Aoh31gEFl7V6NgHatquj59E0G/R3Qyqi8boy
-         BWf+bkLzUd8Lg==
+        b=OS6Cn+sZRkm5Du4WWBK56VbJkCxjitO3M0TMSVVwlWaHyuCP9jmmhXE31LXysyTiN
+         Ef19H8u+p8UVhxhAtLGjQOTMipEexNVYcP6xpEEy+bQZn6f3qDCj/c19RyopoumQFC
+         bSkJDJQS4fzie/3KsT41eVyPNv9PAwZdedL6nFRgPv3aqBCTeqq/zI1pk9Pa9Ancmw
+         9in/UGggcMiq0KXvZL1y7Zu+6vrZlPnZSxcWDVxCnerYR3m+AJpr0m+5FEb4/trdHq
+         /cdklajdaKmFQ0IS50DiA1aLVm0KF6Z4io5kTZJ1E++GIUNkPrgzBHxrv9bSgfJmC4
+         dp7fA/Xb9l5QQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 94EF960963;
-        Mon, 22 Feb 2021 18:11:59 +0000 (UTC)
-Subject: Re: [GIT PULL] clk changes for the merge window
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6906160982;
+        Mon, 22 Feb 2021 18:12:00 +0000 (UTC)
+Subject: Re: [GIT PULL] I3C changes for 5.12
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210219195548.3379073-1-sboyd@kernel.org>
-References: <20210219195548.3379073-1-sboyd@kernel.org>
-X-PR-Tracked-List-Id: <linux-clk.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210219195548.3379073-1-sboyd@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
-X-PR-Tracked-Commit-Id: 4d5c4ae32945ac86cf68740a2236205b333d5a66
+In-Reply-To: <YDL9slBuOqU83/RK@piout.net>
+References: <YDL9slBuOqU83/RK@piout.net>
+X-PR-Tracked-List-Id: <linux-i3c.lists.infradead.org>
+X-PR-Tracked-Message-Id: <YDL9slBuOqU83/RK@piout.net>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-5.12
+X-PR-Tracked-Commit-Id: 5c34b8e7e8bb605925b33e1aa7dc17966811219a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 28b9aaac4cc5a11485b6f70656e4e9ead590cf5b
-Message-Id: <161401751960.943.7155679406767564969.pr-tracker-bot@kernel.org>
-Date:   Mon, 22 Feb 2021 18:11:59 +0000
-To:     Stephen Boyd <sboyd@kernel.org>
+X-PR-Merge-Commit-Id: 36c1b20d15703662aa0f14a32a8bd19ab3a33076
+Message-Id: <161401752042.943.3286519972663636563.pr-tracker-bot@kernel.org>
+Date:   Mon, 22 Feb 2021 18:12:00 +0000
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 19 Feb 2021 11:55:48 -0800:
+The pull request you sent on Mon, 22 Feb 2021 01:41:22 +0100:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-5.12
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/28b9aaac4cc5a11485b6f70656e4e9ead590cf5b
+https://git.kernel.org/torvalds/c/36c1b20d15703662aa0f14a32a8bd19ab3a33076
 
 Thank you!
 
