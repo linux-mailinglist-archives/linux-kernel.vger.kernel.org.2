@@ -2,180 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BABB132229B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E5A3222A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Feb 2021 00:27:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhBVXXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 18:23:05 -0500
-Received: from mga07.intel.com ([134.134.136.100]:25817 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230088AbhBVXXC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 18:23:02 -0500
-IronPort-SDR: pK1rxDb3BFTbH+nZzZfi6YtpROxTCREv1+4GDReOVCz8bK9fA0sTgyGNQXgrxO9nyse4ZZptjo
- Akdxdo03Ddcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="248685483"
-X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
-   d="scan'208";a="248685483"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 15:22:21 -0800
-IronPort-SDR: mcwdq6bspd+njOJ7ALjETDr2mXSczKXOZuX3JVSJfTGd4Urj0qhyCysj5wJBj3zNJ/ZzkBCziL
- WT/nONNFIGGw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
-   d="scan'208";a="596170233"
-Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
-  by fmsmga005.fm.intel.com with ESMTP; 22 Feb 2021 15:22:19 -0800
-Received: from kbuild by 16660e54978b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lEKWx-0000id-1K; Mon, 22 Feb 2021 23:22:19 +0000
-Date:   Tue, 23 Feb 2021 07:22:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:timers/urgent] BUILD SUCCESS
- 8acb54abc1db4e1e3913359e4108e04e88ce4d92
-Message-ID: <60343c98.w5UON2EbFXW2Z6t1%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231237AbhBVX0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 18:26:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33328 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231200AbhBVX0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 18:26:08 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCE3C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 15:25:27 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id d6so344980qvs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 15:25:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/oxheRV/zYlSYJgiTUORu/R/sZ9O15RX0FoUHQXYP0A=;
+        b=L1VU0bgJMRWAPIlu7JlvZYs4sMFK0Rfgee/BaMVitzOXQEwyOFVTGmvIIrHp87Zs7C
+         fTS9WDZmca6Q5MhVf143lkSoEVlBN3I/MrosQ/zRKY6Sb5suIx5R6V7ne6HhGZ2Mtge8
+         WkDfz0uMBGptMDbjLSvoscg5PrfoGfwwNffrs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/oxheRV/zYlSYJgiTUORu/R/sZ9O15RX0FoUHQXYP0A=;
+        b=H5oHrcDbNkg4JgJwLfdlKU2g8Yx/ApHsfxWnXvCTlrreoZU5Z+z+P88nrcMAm7Gsld
+         4ZBNR2CE3pOEZA5HROciLlXCUh/nxbILsQLsxws9MXrl9NMLrwAVa+P0v8zAUBLgOGAA
+         xAtn7Ixas6jHaoIbyVIBQrz6MvMWcBeSGjHEv9WQ04CJYrpDptiUS08zkmN13PtES3PX
+         ezBZel+UDyvL6xHqOClA1SiBW6f2K6QknVsKDMvCvbaMWOFHd1UsqTnNUATTj79rRm6Y
+         pbwkWVJM4ErBkfQaKD8uTQiFlZLOzWVuWdg0/1/24adnqNj0HHMdeidMI2pbNh3IKn5/
+         8JKg==
+X-Gm-Message-State: AOAM532pSz7K8JF/hvglgu3pa+8oOtzpz1sCJneUbno47mZSiokf0OaI
+        1qn/S2l33H3tsaNzqDD09sV1sqASdQjhFg==
+X-Google-Smtp-Source: ABdhPJzPQzZfsPmqhDwx18N/XydxFhHxGtdxOjtPSCqoBFq9sc/4WhAL4rykRGRXZI+XH4HzLmVRew==
+X-Received: by 2002:a0c:8304:: with SMTP id j4mr22938436qva.18.1614036326766;
+        Mon, 22 Feb 2021 15:25:26 -0800 (PST)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id a6sm12415631qkn.89.2021.02.22.15.25.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 15:25:26 -0800 (PST)
+Received: by mail-yb1-f181.google.com with SMTP id p193so14675285yba.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 15:25:26 -0800 (PST)
+X-Received: by 2002:a25:aa43:: with SMTP id s61mr38889621ybi.32.1614036325816;
+ Mon, 22 Feb 2021 15:25:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210219181032.1.I23e12818c4a841ba9c37c60b3ba8cfeeb048285f@changeid>
+ <20210219181032.2.I6a426324db3d98d6cfae8adf2598831bb30bba74@changeid>
+In-Reply-To: <20210219181032.2.I6a426324db3d98d6cfae8adf2598831bb30bba74@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 22 Feb 2021 15:25:14 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=W7W9RT3SjGChP16o1Mz4_EwCJ=t8nNFYiS5QvK6E27OA@mail.gmail.com>
+Message-ID: <CAD=FV=W7W9RT3SjGChP16o1Mz4_EwCJ=t8nNFYiS5QvK6E27OA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7180: trogdor: Add labels to
+ charger thermal zone and ADC channel
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/urgent
-branch HEAD: 8acb54abc1db4e1e3913359e4108e04e88ce4d92  Merge tag 'timers-v5.11-rc5' of https://git.linaro.org/people/daniel.lezcano/linux into timers/urgent
+Hi,
 
-elapsed time: 725m
+On Fri, Feb 19, 2021 at 6:11 PM Matthias Kaehlcke <mka@chromium.org> wrote:
+>
+> Some revisions of trogdor boards use a thermistor for the charger
+> temperature which currently isn't supported by the PM6150 ADC
+> driver. Add labels for the charger thermal zone and ADC channel
+> to allow the removal of these nodes from affected boards and
+> avoid the use of bogus temperature values.
+>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
+>
+>  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
-configs tested: 118
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                      chrp32_defconfig
-arm                            qcom_defconfig
-arm                       netwinder_defconfig
-powerpc                     mpc83xx_defconfig
-sh                  sh7785lcr_32bit_defconfig
-ia64                             alldefconfig
-mips                           mtx1_defconfig
-mips                malta_qemu_32r6_defconfig
-powerpc                        fsp2_defconfig
-h8300                            alldefconfig
-powerpc                        icon_defconfig
-sh                           se7343_defconfig
-ia64                            zx1_defconfig
-arm                         shannon_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                     kmeter1_defconfig
-sh                         ecovec24_defconfig
-powerpc                     redwood_defconfig
-sh                         apsh4a3a_defconfig
-powerpc                      ppc44x_defconfig
-sh                          polaris_defconfig
-powerpc                          g5_defconfig
-mips                          malta_defconfig
-arc                        nsim_700_defconfig
-arm                           spitz_defconfig
-m68k                           sun3_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                     akebono_defconfig
-mips                            ar7_defconfig
-sparc                       sparc32_defconfig
-ia64                      gensparse_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                     mpc5200_defconfig
-arm                     davinci_all_defconfig
-mips                         tb0219_defconfig
-arm                        keystone_defconfig
-powerpc                      makalu_defconfig
-arm                        realview_defconfig
-powerpc                     taishan_defconfig
-arm                          pxa168_defconfig
-arm                          simpad_defconfig
-mips                           ci20_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210222
-x86_64               randconfig-a002-20210222
-x86_64               randconfig-a003-20210222
-x86_64               randconfig-a005-20210222
-x86_64               randconfig-a006-20210222
-x86_64               randconfig-a004-20210222
-i386                 randconfig-a005-20210222
-i386                 randconfig-a006-20210222
-i386                 randconfig-a004-20210222
-i386                 randconfig-a003-20210222
-i386                 randconfig-a001-20210222
-i386                 randconfig-a002-20210222
-i386                 randconfig-a013-20210222
-i386                 randconfig-a012-20210222
-i386                 randconfig-a011-20210222
-i386                 randconfig-a014-20210222
-i386                 randconfig-a016-20210222
-i386                 randconfig-a015-20210222
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a015-20210222
-x86_64               randconfig-a011-20210222
-x86_64               randconfig-a012-20210222
-x86_64               randconfig-a016-20210222
-x86_64               randconfig-a014-20210222
-x86_64               randconfig-a013-20210222
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
