@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C1E322069
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:45:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DC9322053
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233353AbhBVTo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:44:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233269AbhBVTnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:43:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA23664E6B;
-        Mon, 22 Feb 2021 19:42:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614022941;
-        bh=oWt7ErhnmfnnXaBPbupsHdZENFTiCLpTVx1ck7Qsfpw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gPMLgU/nLUABrP69uQotuxSpiaaahvz5H9FohqsR0NYr+7/wJ6s+BMEjLXLpU5eB9
-         E4VDt+V6G9yBgqC96/f0IWcDiHe74FeIV7+0n/lJuS88DhFi+Pa4FsvFlKjNU1Nlm0
-         U9clGFkod049ji/fmSpp82MYExRWbrnJct9tNtPMb31uQB2gkB6o6k//XksimwDUUI
-         6UaSPqgp1q2B1lcDMGgqX5MlfR/iCTqRuO1WFwWbQah8YY0KSqClZFfRlWetIdAKIq
-         yNdOua3MKl7bCmCAT+9uqxFrOJK/DrE+0VsKj5MwYUf1FVT1dxCepo1Xn+VmPNK7Hl
-         S0hiPUKZN+bCA==
-Received: by pali.im (Postfix)
-        id 24DAD1034; Mon, 22 Feb 2021 20:42:18 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Andre Heider <a.heider@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        =?UTF-8?q?G=C3=A9rald=20Kerma?= <gerald@gk2.net>,
-        Konstantin Porotchkin <kostap@marvell.com>
-Subject: [PATCH mvebu v3 07/10] cpufreq: armada-37xx: Fix driver cleanup when registration failed
-Date:   Mon, 22 Feb 2021 20:41:55 +0100
-Message-Id: <20210222194158.12342-8-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210222194158.12342-1-pali@kernel.org>
-References: <20210114124032.12765-1-pali@kernel.org>
- <20210222194158.12342-1-pali@kernel.org>
+        id S232943AbhBVTmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232908AbhBVTmx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:42:53 -0500
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A8BCC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:42:13 -0800 (PST)
+Received: by mail-pl1-x62f.google.com with SMTP id z7so8374221plk.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:42:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vq/LjtkFh9pERziNSLl6ylHhs+PEljKyW7ISagnaboE=;
+        b=XnlFPzGDm2iVBbnCctLYiQ0ZZVvR0bP9dNZwKJQG5BBdmWwo1WppTcH4qDHyV6SIlu
+         vZbUPQkyhNZLNJee5cvHVsD6fAzt6mQFMW0RxPkDctKiWe9bxZTncWKlKbRNQBf6bTvS
+         g2f6GWr6CU5cd5jM84+s7kWAcyZvDTznUyW6GGI/z51iiVutA3gI/Sn5p6TgmqBSgfIn
+         NIh4mjgOxc9jQ/RbsFk+9tnMe8KATAaoDDJ2bve/k7/4+henrRIymoe6D20iu2unXXsx
+         +E8DQbc/aysGY8o2nm2rhHFPw2OkmYlHC35xBa9VzYAgEhju5SIR4q1+cjiHK4aJ7zJc
+         nfow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vq/LjtkFh9pERziNSLl6ylHhs+PEljKyW7ISagnaboE=;
+        b=gx7RXvYf9DgH0pSKpRRs5ijPHiCYkZuEf/m7aaJBvKowq7eHU7KO4gxo4eThr2+1ZU
+         /0Gsq0lQ3EclcYSkTeKVmCBse8BmjYzmLmilXnhvttsWytfK4Kl0DcePbEQJHuwx5ccg
+         tFIyFh3wK+IOouz7WDN76gjRyK3toClLkaWjle0AyXyeOi3rIeqpBrCVvpUqpifswaxI
+         2H3tVhr8bxTKmkMTBV4eGZXgQptcoeZJSozSryyk24sMRGO+xjdqh1anxXZnPRBfrMlL
+         77xfnvLfEfBdmHnQwsOCE2kAMrP9usbd0tlDYi0tvpn+Xl4v7NXvANFeZxX1g8y+z5Az
+         4RVQ==
+X-Gm-Message-State: AOAM531uvptyG/WIMK3g+p9OhNLlIY2jDiQwCWlPQ3TwBFkX1n+c2aQl
+        Md1H5QGZ7eOIEHE63/+pnKo50vb6lMEvJQ==
+X-Google-Smtp-Source: ABdhPJwYItbZQJc4+/MmJCXyy1YmB7Y8ohzyJLyZa08XcyTi4YjVuF8Iz8/umZ7XfJPtXaj4u/NhQg==
+X-Received: by 2002:a17:90a:ad4a:: with SMTP id w10mr16495041pjv.112.1614022932721;
+        Mon, 22 Feb 2021 11:42:12 -0800 (PST)
+Received: from localhost ([103.106.200.56])
+        by smtp.gmail.com with ESMTPSA id c23sm19578464pfi.47.2021.02.22.11.42.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 11:42:11 -0800 (PST)
+From:   Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+To:     perex@perex.cz, tiwai@suse.com, sfr@canb.auug.org.au
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
+Subject: [PATCH] sound: core: fixed coding style errors
+Date:   Mon, 22 Feb 2021 11:41:56 -0800
+Message-Id: <20210222194156.26758-1-sssraj.sssraj@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8db82563451f ("cpufreq: armada-37xx: fix frequency calculation for
-opp") changed calculation of frequency passed to the dev_pm_opp_add()
-function call. But the code for dev_pm_opp_remove() function call was not
-updated, so the driver cleanup phase does not work when registration fails.
+fixing ERROR: "foo * bar" should be "foo *bar"
+fixing WARNING: Missing a blank line after declarations
 
-This fixes the issue by using the same frequency in both calls.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-Tested-by: Anders Trier Olesen <anders.trier.olesen@gmail.com>
-Tested-by: Philip Soares <philips@netisense.com>
-Fixes: 8db82563451f ("cpufreq: armada-37xx: fix frequency calculation for opp")
-Cc: stable@vger.kernel.org
+Signed-off-by: Rajesh Kumbhakar <sssraj.sssraj@gmail.com>
 ---
- drivers/cpufreq/armada-37xx-cpufreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/core/hwdep_compat.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/cpufreq/armada-37xx-cpufreq.c b/drivers/cpufreq/armada-37xx-cpufreq.c
-index c7683d447b11..1ab2113daef5 100644
---- a/drivers/cpufreq/armada-37xx-cpufreq.c
-+++ b/drivers/cpufreq/armada-37xx-cpufreq.c
-@@ -521,7 +521,7 @@ static int __init armada37xx_cpufreq_driver_init(void)
- remove_opp:
- 	/* clean-up the already added opp before leaving */
- 	while (load_lvl-- > ARMADA_37XX_DVFS_LOAD_0) {
--		freq = cur_frequency / dvfs->divider[load_lvl];
-+		freq = base_frequency / dvfs->divider[load_lvl];
- 		dev_pm_opp_remove(cpu_dev, freq);
- 	}
+diff --git a/sound/core/hwdep_compat.c b/sound/core/hwdep_compat.c
+index a0b76706c..d8624a14a 100644
+--- a/sound/core/hwdep_compat.c
++++ b/sound/core/hwdep_compat.c
+@@ -36,11 +36,13 @@ enum {
+ 	SNDRV_HWDEP_IOCTL_DSP_LOAD32   = _IOW('H', 0x03, struct snd_hwdep_dsp_image32)
+ };
  
+-static long snd_hwdep_ioctl_compat(struct file * file, unsigned int cmd,
++static long snd_hwdep_ioctl_compat(struct file *file, unsigned int cmd,
+ 				   unsigned long arg)
+ {
+ 	struct snd_hwdep *hw = file->private_data;
++
+ 	void __user *argp = compat_ptr(arg);
++
+ 	switch (cmd) {
+ 	case SNDRV_HWDEP_IOCTL_PVERSION:
+ 	case SNDRV_HWDEP_IOCTL_INFO:
 -- 
-2.20.1
+2.25.1
 
