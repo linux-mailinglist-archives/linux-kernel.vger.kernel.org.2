@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF406321125
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:09:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B75A32112A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:09:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhBVHJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:09:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34091 "EHLO
+        id S230042AbhBVHJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:09:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57632 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229908AbhBVHJC (ORCPT
+        by vger.kernel.org with ESMTP id S229908AbhBVHJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:09:02 -0500
+        Mon, 22 Feb 2021 02:09:09 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613977656;
+        s=mimecast20190719; t=1613977663;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VDuXO5zUJ4skk3u4UbGFqeIktbCo8MisQ81CqMl1/44=;
-        b=Qe0ZZtDgIHcmf3X92JOaLc0RMrpGrvEvnU3y42faHYj5geppSqxJ1JnTq3fOoeLKZ368Cz
-        jAWgR/vNwmLMRqdPui0+mrATGdg5bPClDeHQVb7GYxr8REbLGqLNV3VNuWN9l8N8IgEVPZ
-        v05aAelkdhWy+RSHQZRMq3r/LuxwJAo=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-31-M8VFg8ZbMhOztS6OKo-ITA-1; Mon, 22 Feb 2021 02:07:31 -0500
-X-MC-Unique: M8VFg8ZbMhOztS6OKo-ITA-1
-Received: by mail-pg1-f197.google.com with SMTP id m5so7602670pgu.21
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:07:31 -0800 (PST)
+        bh=gAp2I2H4ORRdIzGQOTnp0OVejY1BSXenzSWMruiT71M=;
+        b=dzq04eqZXhlutVjLsfdvIhDYCLYMIskdl2vpfC5eyu/B4W6JhfVIIhviRh+RYomYa7Gz9W
+        F/6Eqqz3FMZ44b4ubEo7c23MZd0guG5Lqk0CxFz26930mCdHafkRGYwbMWTiubZXrtTsFU
+        dGyvQxa4kYu6vF1JJ3InhyRo1H5iAt8=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-8Aw5AxU9M6uwytb1Qv9seg-1; Mon, 22 Feb 2021 02:07:41 -0500
+X-MC-Unique: 8Aw5AxU9M6uwytb1Qv9seg-1
+Received: by mail-pf1-f198.google.com with SMTP id 185so3983099pfx.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:07:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VDuXO5zUJ4skk3u4UbGFqeIktbCo8MisQ81CqMl1/44=;
-        b=fTWnzOD/S0iX6RY4ZSEwUnAC5vup+oR7If7LBWEzYJdSNnTKsu1P35aRKwpxc/JBo7
-         RlltGqPQQIPJX2O2Uf8V++DhL1NEFoe/QxxeRbtM6Jpp3GS7SXqpkrCiCSP3lhxGlzm3
-         RCw4n1K6lNBxUnrnPNA+0ejnBYeKZvx1v9gE6BzepYalfOzgf/35Vhjk5Op/HBDmgse5
-         JFzwpeYemxvzQ7aWhrph3Y/S+BIy7tOdBjQG2+De7NdifAZw5s3djaTF6v+nyUvRzd83
-         tm94P/+1+xxYBot1vrt3ETDMhGQAXiKSKjjbv+JOtfcIbuBpg2HR7CrrCuNlHWi38BEm
-         jmVA==
-X-Gm-Message-State: AOAM530eksOAyblxqraUwS2JBhAWxbxpXj1bnisSXO2AOSgIGP+YEO0u
-        odCQPH7ot1xlIXhgtY7X4loiJUdkvrOT/p1C9ZK4wOLTl36HkWsSRwfjd+7xN9KZIUIpy10yrm3
-        Q45TtkkW1Voaxuwx9TDT6OjUQ
-X-Received: by 2002:a17:90a:cd06:: with SMTP id d6mr4867752pju.138.1613977650543;
-        Sun, 21 Feb 2021 23:07:30 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz79OrKbRrtAfiD6Esm6oEGGKH8K+mEKBsf+u12b+o9o8Q4Qyg003s3d36qBlqAERFQrUMlJA==
-X-Received: by 2002:a17:90a:cd06:: with SMTP id d6mr4867739pju.138.1613977650377;
-        Sun, 21 Feb 2021 23:07:30 -0800 (PST)
+        bh=gAp2I2H4ORRdIzGQOTnp0OVejY1BSXenzSWMruiT71M=;
+        b=BB0A75KZTNr1Hgo6jVaCEQeMm6E8btGm1wWLxiSyNFmz6XEUW4VlniHBDPS9U3Mibj
+         gZlmGvMKdZwrOtng5ynKpdGokD8VRHbgfmoZErISjGIIXYVILYOK8LbC85LcSROJzPCT
+         u3HWTDhfPEXfDX4wWGejhO+BhWhj1kP22wZu3Dior3wb/6Jg3/6PRdgO3SfbHhcoEVTO
+         MnvanZl6xSYW1iOuwczI14jDIkbO3LRHxQXEqNTKG3P7KBBxWlRjF57Qx9y0hTCXnLNf
+         RmZLHHcz6Qs6CI7o04IEFjPGidQOU1rfr514Xwk8kZmIrtT0LSJKBjd1bFCtIhATgiPF
+         lo6g==
+X-Gm-Message-State: AOAM531lYn+IZEy0jYDcYDKQksEYknp+6R+k89owhzuYpkV4l8UaPvLX
+        V3GnuZ5PItki7SqeEqcAZJgkXVJD0CwiTtK9OQtOqGGMgzUx+b59t+P6BbLE8w3O4rqU+RVQLC0
+        9xDtIYbx1KYmIm9x20kyabihL
+X-Received: by 2002:a17:90a:194b:: with SMTP id 11mr21935618pjh.100.1613977660050;
+        Sun, 21 Feb 2021 23:07:40 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx1p7DWcYJD3VbncV/CfHu7aM+wNHjZQUVuys68WjauioDf0PpZYeqnLQl9yRTiF9YT6Xnl0w==
+X-Received: by 2002:a17:90a:194b:: with SMTP id 11mr21935603pjh.100.1613977659906;
+        Sun, 21 Feb 2021 23:07:39 -0800 (PST)
 Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id g65sm16855068pfb.20.2021.02.21.23.07.29
+        by smtp.gmail.com with ESMTPSA id h186sm13422121pgc.38.2021.02.21.23.07.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 23:07:29 -0800 (PST)
+        Sun, 21 Feb 2021 23:07:39 -0800 (PST)
 From:   Coiby Xu <coxu@redhat.com>
 To:     netdev@vger.kernel.org
 Cc:     kexec@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
@@ -59,9 +59,9 @@ Cc:     kexec@lists.infradead.org, intel-wired-lan@lists.osuosl.org,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [RFC PATCH 1/4] i40e: use minimal tx and rx pairs for kdump
-Date:   Mon, 22 Feb 2021 15:06:58 +0800
-Message-Id: <20210222070701.16416-2-coxu@redhat.com>
+Subject: [RFC PATCH 2/4] i40e: use minimal rx and tx ring buffers for kdump
+Date:   Mon, 22 Feb 2021 15:06:59 +0800
+Message-Id: <20210222070701.16416-3-coxu@redhat.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222070701.16416-1-coxu@redhat.com>
 References: <20210222070701.16416-1-coxu@redhat.com>
@@ -71,44 +71,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the number of the MSI-X vectors to 1. When MSI-X is enabled,
-it's not allowed to use more TC queue pairs than MSI-X vectors
-(pf->num_lan_msix) exist. Thus the number of tx and rx pairs
-(vsi->num_queue_pairs) will be equal to the number of MSI-X vectors,
-i.e., 1.
+Use the minimum of the number of descriptors thus we will allocate the
+minimal ring buffers for kdump.
 
 Signed-off-by: Coiby Xu <coxu@redhat.com>
 ---
- drivers/net/ethernet/intel/i40e/i40e_main.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_main.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 1db482d310c2..069c86e2f69d 100644
+index 069c86e2f69d..5307f1744766 100644
 --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
 +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -6,6 +6,7 @@
- #include <linux/pci.h>
- #include <linux/bpf.h>
- #include <generated/utsrelease.h>
-+#include <linux/crash_dump.h>
+@@ -10552,6 +10552,11 @@ static int i40e_set_num_rings_in_vsi(struct i40e_vsi *vsi)
+ 		return -ENODATA;
+ 	}
  
- /* Local includes */
- #include "i40e.h"
-@@ -15000,6 +15001,14 @@ static int i40e_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	if (err)
- 		goto err_switch_setup;
- 
-+	/* Reduce tx and rx pairs for kdump
-+	 * When MSI-X is enabled, it's not allowed to use more TC queue
-+	 * pairs than MSI-X vectors (pf->num_lan_msix) exist. Thus
-+	 * vsi->num_queue_pairs will be equal to pf->num_lan_msix, i.e., 1.
-+	 */
-+	if (is_kdump_kernel())
-+		pf->num_lan_msix = 1;
++	if (is_kdump_kernel()) {
++		vsi->num_tx_desc = I40E_MIN_NUM_DESCRIPTORS;
++		vsi->num_rx_desc = I40E_MIN_NUM_DESCRIPTORS;
++	}
 +
- 	pf->udp_tunnel_nic.set_port = i40e_udp_tunnel_set_port;
- 	pf->udp_tunnel_nic.unset_port = i40e_udp_tunnel_unset_port;
- 	pf->udp_tunnel_nic.flags = UDP_TUNNEL_NIC_INFO_MAY_SLEEP;
+ 	return 0;
+ }
+ 
 -- 
 2.30.0
 
