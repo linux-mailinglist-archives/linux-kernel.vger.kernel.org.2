@@ -2,130 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B233320F70
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:31:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC8B320F76
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 03:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhBVCbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 21:31:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46564 "EHLO
+        id S231765AbhBVCfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 21:35:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhBVCa7 (ORCPT
+        with ESMTP id S231631AbhBVCfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 21:30:59 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D81EC061574;
-        Sun, 21 Feb 2021 18:30:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=FxtaJxHYxh45JP8CGcyZZ3iN6KsOnhwHVasM+q0hz4E=; b=0yFtlVmfnjyQi9y36fryboiiNq
-        r0ZlCmpgoi6iKlEKoseouKm0RcbeN9vjcUULuGsz9Yr/bHfvMKEE7L4ySRAQpxQKe5DG9WmyZRLGh
-        toFArWcpzK9Pgi+/HMIhZcAL0ZFpu1trhsq+aCwjKTuANK/ArzL8xnfPpVQT7wsW5/02CyqGtGRWS
-        RvsS2Px570Tn/AP4ktfxfZk+EVwhqgFZytnNKCAyGWJZ0nPEYaYAKXTBZzLtYgKfAFur2CNKIF/+A
-        KNUsXJGJ+s90bFSwJrcwz3IYPv11d6XoK1ApDTtr8QGheQzxlEmD3k0Da18KkkepzNa46DPay8K/2
-        ma5b4DgQ==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lE0zH-0000q3-U0; Mon, 22 Feb 2021 02:30:16 +0000
-Subject: Re: [PATCH v3 3/8] securtiy/brute: Detect a brute force attack
-To:     John Wood <john.wood@gmx.com>, Kees Cook <keescook@chromium.org>,
-        Jann Horn <jannh@google.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>, Shuah Khan <shuah@kernel.org>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20210221154919.68050-1-john.wood@gmx.com>
- <20210221154919.68050-4-john.wood@gmx.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <4fde79a5-34fe-fd27-b390-e9fd341996fb@infradead.org>
-Date:   Sun, 21 Feb 2021 18:30:10 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 21 Feb 2021 21:35:37 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77593C061574;
+        Sun, 21 Feb 2021 18:34:56 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id w4so12065257wmi.4;
+        Sun, 21 Feb 2021 18:34:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UUWfmmu8/MSSQ/CGog/7Af40QRm3i4Uz451jOqVr8Ko=;
+        b=llPwk55sZ4y4UJM/0xOBAUAKjkG3CgnmdJXfkWCz27lsaXPeNHBfWdqk4TdIhkVikc
+         6vnqdA6xddu/jtf8lOhT6aY7XEcIJXcGK/Q+e+RZMvkbynD5Vt/dxDYxH84cpdgb8UI0
+         x5dR/HAJkH78+zcvhVabmxEZB0S6QEtBUrO1t5Z96oFKK68E/uMQG3ic+uzQCIj/whbv
+         rHHAZtsae+913GZtnqE+V7FeByaPDgz54advLm3LdnAdb8wyAPFWBX0gtkfBLiCeORlH
+         8t8fMh9FZ235eWIr/Udmrq2DJqLFpXGqBzzLq4Vt6X4RBdHPPES81jCoeI/KZaj0t8bw
+         wXfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UUWfmmu8/MSSQ/CGog/7Af40QRm3i4Uz451jOqVr8Ko=;
+        b=PhKzaSZGD8wE18FWt7/Zha000fH5jiTzlwhJLyQ+EZlh4PZRqiiFOQSUJqY8LJU1K5
+         d+Kf0EUvJdmwd6KHdgbByyCkajWrf9g9xtVnBYWeDJBu81Sreuz7gZnIvsl0ct6SRsYZ
+         6Y4Tf66lmewPEc4YxvE7pjLiQ0yXTzMNAHk/PZ3s0vceLNORRJaJ5jC4/D/vTnFrxnNr
+         dK8ZQqbt3+wyW4PtPo8c3fPEGHET5GLl4DzYy0etIBkZXzKXeXn5ZtmMBntPVnMGK30v
+         ZCeLFv5odu5dn3jftANrbV2V1WVC6BtwnGJGFmUPd96R0OYQyR4uvMlhK9R/GqTd529C
+         aazQ==
+X-Gm-Message-State: AOAM5308K89AEA0ZqJlJyH9IbQnNxqIh1bF8O8wkD+kc9DAEO/rHe/Yv
+        2rV9hvzVQX6115RgIIwZxbJACYDJZx0=
+X-Google-Smtp-Source: ABdhPJxikA1Kx8VGY9k+tYHdKEvoC0iXMWun+BF8aSsaa68Pj9Cuz3l00y8RO5sep2TF+7uzma5fRw==
+X-Received: by 2002:a1c:c3d5:: with SMTP id t204mr12572195wmf.114.1613961295319;
+        Sun, 21 Feb 2021 18:34:55 -0800 (PST)
+Received: from localhost.localdomain ([195.245.17.255])
+        by smtp.gmail.com with ESMTPSA id g1sm23918827wmh.9.2021.02.21.18.34.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Feb 2021 18:34:54 -0800 (PST)
+From:   Alexander Sverdlin <alexander.sverdlin@gmail.com>
+To:     linux-spi@vger.kernel.org
+Cc:     Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: omap2-mcspi: Activate pinctrl idle state during runtime suspend
+Date:   Mon, 22 Feb 2021 03:32:43 +0100
+Message-Id: <20210222023243.491432-1-alexander.sverdlin@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210221154919.68050-4-john.wood@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Set the (optional) idle pinctrl state during runtime suspend. This is the
+same schema used in PL022 driver and can help with HW designs sharing
+the SPI lines for different purposes.
 
-one spello in 2 locations:
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ drivers/spi/spi-omap2-mcspi.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-On 2/21/21 7:49 AM, John Wood wrote:
-> To detect a brute force attack it is necessary that the statistics
-> shared by all the fork hierarchy processes be updated in every fatal
-> crash and the most important data to update is the application crash
-> period. To do so, use the new "task_fatal_signal" LSM hook added in a
-> previous step.
-> 
-> The application crash period must be a value that is not prone to change
-> due to spurious data and follows the real crash period. So, to compute
-> it, the exponential moving average (EMA) is used.
-> 
-> There are two types of brute force attacks that need to be detected. The
-> first one is an attack that happens through the fork system call and the
-> second one is an attack that happens through the execve system call. The
-> first type uses the statistics shared by all the fork hierarchy
-> processes, but the second type cannot use this statistical data due to
-> these statistics dissapear when the involved tasks finished. In this
-
-                   disappear
-
-> last scenario the attack info should be tracked by the statistics of a
-> higher fork hierarchy (the hierarchy that contains the process that
-> forks before the execve system call).
-> 
-> Moreover, these two attack types have two variants. A slow brute force
-> attack that is detected if the maximum number of faults per fork
-> hierarchy is reached and a fast brute force attack that is detected if
-> the application crash period falls below a certain threshold.
-> 
-> Also, this patch adds locking to protect the statistics pointer hold by
-> every process.
-> 
-> Signed-off-by: John Wood <john.wood@gmx.com>
-> ---
->  security/brute/brute.c | 488 +++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 474 insertions(+), 14 deletions(-)
-> 
-> diff --git a/security/brute/brute.c b/security/brute/brute.c
-> index 70f812bb7763..645bd6e02638 100644
-> --- a/security/brute/brute.c
-> +++ b/security/brute/brute.c
-
-
-
-> +/**
-> + * brute_get_exec_stats() - Get the exec statistics.
-> + * @stats: When this function is called, this parameter must point to the
-> + *         current process' statistical data. When this function returns, this
-> + *         parameter points to the parent process' statistics of the fork
-> + *         hierarchy that hold the current process' statistics.
-> + *
-> + * To manage a brute force attack that happens through the execve system call it
-> + * is not possible to use the statistical data hold by this process due to these
-> + * statistics dissapear when this task is finished. In this scenario this data
-
-                 disappear
-
-> + * should be tracked by the statistics of a higher fork hierarchy (the hierarchy
-> + * that contains the process that forks before the execve system call).
-> + *
-> + * To find these statistics the current fork hierarchy must be traversed up
-> + * until new statistics are found.
-> + *
-> + * Context: Must be called with tasklist_lock and brute_stats_ptr_lock held.
-> + */
-> +static void brute_get_exec_stats(struct brute_stats **stats)
-> +{
-
-
+diff --git a/drivers/spi/spi-omap2-mcspi.c b/drivers/spi/spi-omap2-mcspi.c
+index d4c9510af393..999c22736416 100644
+--- a/drivers/spi/spi-omap2-mcspi.c
++++ b/drivers/spi/spi-omap2-mcspi.c
+@@ -1327,6 +1327,17 @@ static int omap2_mcspi_controller_setup(struct omap2_mcspi *mcspi)
+ 	return 0;
+ }
+ 
++static int omap_mcspi_runtime_suspend(struct device *dev)
++{
++	int error;
++
++	error = pinctrl_pm_select_idle_state(dev);
++	if (error)
++		dev_warn(dev, "%s: failed to set pins: %i\n", __func__, error);
++
++	return 0;
++}
++
+ /*
+  * When SPI wake up from off-mode, CS is in activate state. If it was in
+  * inactive state when driver was suspend, then force it to inactive state at
+@@ -1338,6 +1349,11 @@ static int omap_mcspi_runtime_resume(struct device *dev)
+ 	struct omap2_mcspi *mcspi = spi_master_get_devdata(master);
+ 	struct omap2_mcspi_regs *ctx = &mcspi->ctx;
+ 	struct omap2_mcspi_cs *cs;
++	int error;
++
++	error = pinctrl_pm_select_default_state(dev);
++	if (error)
++		dev_warn(dev, "%s: failed to set pins: %i\n", __func__, error);
+ 
+ 	/* McSPI: context restore */
+ 	mcspi_write_reg(master, OMAP2_MCSPI_MODULCTRL, ctx->modulctrl);
+@@ -1566,11 +1582,6 @@ static int __maybe_unused omap2_mcspi_resume(struct device *dev)
+ 	struct omap2_mcspi *mcspi = spi_master_get_devdata(master);
+ 	int error;
+ 
+-	error = pinctrl_pm_select_default_state(dev);
+-	if (error)
+-		dev_warn(mcspi->dev, "%s: failed to set pins: %i\n",
+-			 __func__, error);
+-
+ 	error = spi_master_resume(master);
+ 	if (error)
+ 		dev_warn(mcspi->dev, "%s: master resume failed: %i\n",
+@@ -1582,7 +1593,8 @@ static int __maybe_unused omap2_mcspi_resume(struct device *dev)
+ static const struct dev_pm_ops omap2_mcspi_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(omap2_mcspi_suspend,
+ 				omap2_mcspi_resume)
+-	.runtime_resume	= omap_mcspi_runtime_resume,
++	.runtime_suspend	= omap_mcspi_runtime_suspend,
++	.runtime_resume		= omap_mcspi_runtime_resume,
+ };
+ 
+ static struct platform_driver omap2_mcspi_driver = {
 -- 
-~Randy
+2.29.2
 
