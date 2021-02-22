@@ -2,82 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DA8321364
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:48:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A4E32136F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhBVJsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:48:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230169AbhBVJrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:47:49 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 910C564E2F;
-        Mon, 22 Feb 2021 09:47:08 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lE7o2-00FI1i-EN; Mon, 22 Feb 2021 09:47:06 +0000
+        id S230125AbhBVJuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:50:55 -0500
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:49094 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230147AbhBVJuH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:50:07 -0500
+Received: from [127.0.0.1] (unknown [157.0.31.124])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id 6043AAC0460;
+        Mon, 22 Feb 2021 17:49:10 +0800 (CST)
+Subject: Re: [PATCH v2] kyber: introduce kyber_depth_updated()
+From:   Yang Yang <yang.yang@vivo.com>
+To:     Omar Sandoval <osandov@osandov.com>, Jens Axboe <axboe@kernel.dk>
+Cc:     onlyfever@icloud.com, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+References: <20210205091311.129498-1-yang.yang@vivo.com>
+Message-ID: <c1ac179d-5d22-e4bb-e661-87981c8535f3@vivo.com>
+Date:   Mon, 22 Feb 2021 17:49:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Mon, 22 Feb 2021 09:47:06 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.ne@posteo.net>
-Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Ajay Patil <pajay@qti.qualcomm.com>, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v7 23/23] [DO NOT MERGE] arm64: Cope with CPUs stuck in
- VHE mode
-In-Reply-To: <YDN6BtDhzmF5OtBO@latitude>
-References: <20210208095732.3267263-1-maz@kernel.org>
- <20210208095732.3267263-24-maz@kernel.org> <YDN6BtDhzmF5OtBO@latitude>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <4d4e9a5cff65dbd8861f829089f570e5@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: j.ne@posteo.net, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, psodagud@codeaurora.org, sramana@codeaurora.org, catalin.marinas@arm.com, marcan@marcan.st, pajay@qti.qualcomm.com, kernel-team@android.com, will@kernel.org, ardb@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+In-Reply-To: <20210205091311.129498-1-yang.yang@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZH0NOSxhNTkhIQxofVkpNSkhCQ0xITktOSklVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hNSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6KyI6UQw*ED8UExgNKxkNFi8u
+        FTwaFBFVSlVKTUpIQkNMSE5LQ0NPVTMWGhIXVQIaFRxVAhoVHDsNEg0UVRgUFkVZV1kSC1lBWUpO
+        TFVLVUhKVUpJT1lXWQgBWUFPQ0hDNwY+
+X-HM-Tid: 0a77c92487c8b039kuuu6043aac0460
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
-
-On 2021-02-22 09:35, Jonathan Neuschäfer wrote:
-> Hi,
+On 2021/2/5 17:13, Yang Yang wrote:
+> Hang occurs when user changes the scheduler queue depth, by writing to
+> the 'nr_requests' sysfs file of that device.
 > 
-> On Mon, Feb 08, 2021 at 09:57:32AM +0000, Marc Zyngier wrote:
->> It seems that the CPU known as Apple M1 has the terrible habit
->> of being stuck with HCR_EL2.E2H==1, in violation of the architecture.
+> The details of the environment that we found the problem are as follows:
+>    an eMMC block device
+>    total driver tags: 16
+>    default queue_depth: 32
+>    kqd->async_depth initialized in kyber_init_sched() with queue_depth=32
 > 
-> Minor nitpick from the sideline: The M1 SoC has two kinds of CPU in it
-> (Icestorm and Firestorm), which makes "CPU known as Apple M1" a bit
-> imprecise.
+> Then we change queue_depth to 256, by writing to the 'nr_requests' sysfs
+> file. But kqd->async_depth don't be updated after queue_depth changes.
+> Now the value of async depth is too small for queue_depth=256, this may
+> cause hang.
+> 
+> This patch introduces kyber_depth_updated(), so that kyber can update
+> async depth when queue depth changes.
+> 
+> Signed-off-by: Yang Yang <yang.yang@vivo.com>
+> ---
+> v2:
+> - Change the commit message
+> - Change from sbitmap::depth to 2^sbitmap::shift
+> ---
+>   block/kyber-iosched.c | 29 +++++++++++++----------------
+>   1 file changed, 13 insertions(+), 16 deletions(-)
+> 
+> diff --git a/block/kyber-iosched.c b/block/kyber-iosched.c
+> index dc89199bc8c6..17215b6bf482 100644
+> --- a/block/kyber-iosched.c
+> +++ b/block/kyber-iosched.c
+> @@ -353,19 +353,9 @@ static void kyber_timer_fn(struct timer_list *t)
+>   	}
+>   }
+>   
+> -static unsigned int kyber_sched_tags_shift(struct request_queue *q)
+> -{
+> -	/*
+> -	 * All of the hardware queues have the same depth, so we can just grab
+> -	 * the shift of the first one.
+> -	 */
+> -	return q->queue_hw_ctx[0]->sched_tags->bitmap_tags->sb.shift;
+> -}
+> -
+>   static struct kyber_queue_data *kyber_queue_data_alloc(struct request_queue *q)
+>   {
+>   	struct kyber_queue_data *kqd;
+> -	unsigned int shift;
+>   	int ret = -ENOMEM;
+>   	int i;
+>   
+> @@ -400,9 +390,6 @@ static struct kyber_queue_data *kyber_queue_data_alloc(struct request_queue *q)
+>   		kqd->latency_targets[i] = kyber_latency_targets[i];
+>   	}
+>   
+> -	shift = kyber_sched_tags_shift(q);
+> -	kqd->async_depth = (1U << shift) * KYBER_ASYNC_PERCENT / 100U;
+> -
+>   	return kqd;
+>   
+>   err_buckets:
+> @@ -458,9 +445,19 @@ static void kyber_ctx_queue_init(struct kyber_ctx_queue *kcq)
+>   		INIT_LIST_HEAD(&kcq->rq_list[i]);
+>   }
+>   
+> -static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
+> +static void kyber_depth_updated(struct blk_mq_hw_ctx *hctx)
+>   {
+>   	struct kyber_queue_data *kqd = hctx->queue->elevator->elevator_data;
+> +	struct blk_mq_tags *tags = hctx->sched_tags;
+> +	unsigned int shift = tags->bitmap_tags->sb.shift;
+> +
+> +	kqd->async_depth = (1U << shift) * KYBER_ASYNC_PERCENT / 100U;
+> +
+> +	sbitmap_queue_min_shallow_depth(tags->bitmap_tags, kqd->async_depth);
+> +}
+> +
+> +static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
+> +{
+>   	struct kyber_hctx_data *khd;
+>   	int i;
+>   
+> @@ -502,8 +499,7 @@ static int kyber_init_hctx(struct blk_mq_hw_ctx *hctx, unsigned int hctx_idx)
+>   	khd->batching = 0;
+>   
+>   	hctx->sched_data = khd;
+> -	sbitmap_queue_min_shallow_depth(hctx->sched_tags->bitmap_tags,
+> -					kqd->async_depth);
+> +	kyber_depth_updated(hctx);
+>   
+>   	return 0;
+>   
+> @@ -1022,6 +1018,7 @@ static struct elevator_type kyber_sched = {
+>   		.completed_request = kyber_completed_request,
+>   		.dispatch_request = kyber_dispatch_request,
+>   		.has_work = kyber_has_work,
+> +		.depth_updated = kyber_depth_updated,
+>   	},
+>   #ifdef CONFIG_BLK_DEBUG_FS
+>   	.queue_debugfs_attrs = kyber_queue_debugfs_attrs,
+> 
 
-Fair enough. How about something along the lines of:
-"At least some of the CPUs integrated in the Apple M1 SoC have
-  the terrible habit..."
+Hello,
 
-> In practicality it seems unlikely though, that Icestorm and Firestorm
-> act differently with regards to the code in this patch.
+Ping...
 
-This is my hunch as well. And if they did, it shouldn't be a big deal:
-the "architecture compliant" CPUs would simply transition via EL1
-as expected, and join their buggy friends running at EL2 slightly later.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Thanks!
