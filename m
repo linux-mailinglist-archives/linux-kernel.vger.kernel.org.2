@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FCD321999
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3B6321989
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:58:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhBVN64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:58:56 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:41860 "EHLO mail.skyhub.de"
+        id S231432AbhBVN5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:57:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39944 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231560AbhBVMqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:46:36 -0500
-Received: from zn.tnic (p200300ec2f0402008ca1f4f712cbc8cf.dip0.t-ipconnect.de [IPv6:2003:ec:2f04:200:8ca1:f4f7:12cb:c8cf])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6A8671EC04DF;
-        Mon, 22 Feb 2021 13:45:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1613997951;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=31aR5SmeNWKzmknO5BmzvlMZt/XF1kSn8FQK2ndz1gY=;
-        b=CR4sY/solpVu3FGOCwN77RSvpi7NPfYKjsxIQvulkvyDeg/5olTohtaYKfm1d/cXYs89Hz
-        eWkB5B9D6ZvARsAM0BsfFBhIicmk7yhAT/QFOCj+uolESi+3Vh4HF7T/lc+HXg0XYMFH+6
-        UFjw290QPcwnoAg8AaUT+SAFDvp2ECI=
-Date:   Mon, 22 Feb 2021 13:45:50 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Aili Yao <yaoaili@kingsoft.com>
-Cc:     tony.luck@intel.com, mingo@redhat.com, tglx@linutronix.de,
-        hpa@zytor.com, x86@kernel.org, linux-edac@vger.kernel.org,
-        linux-kernel@vger.kernel.org, yangfeng1@kingsoft.com
-Subject: Re: [PATCH v2] x86/mce: fix wrong no-return-ip logic in
- do_machine_check()
-Message-ID: <20210222124550.GB10880@zn.tnic>
-References: <20210222115007.75b7de9b@alex-virtual-machine>
- <20210222092403.GA29063@zn.tnic>
- <20210222173109.7b7ac42a@alex-virtual-machine>
- <20210222100356.GB29063@zn.tnic>
- <20210222180819.3998fe33@alex-virtual-machine>
- <20210222102206.GC29063@zn.tnic>
- <20210222192146.76ffec84@alex-virtual-machine>
- <20210222201723.0fcec589@alex-virtual-machine>
- <20210222122241.GA10880@zn.tnic>
- <20210222203549.0e54c26f@alex-virtual-machine>
+        id S231629AbhBVMrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:47:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613997998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pSoQkwih8ksFFRXBnQ2uGYGVyAUL6YhMR0u+WuJWwqg=;
+        b=XqMjnMB7820VC1A4vgfme9m2Hi31qX2p6kBGzOO6c/eIdI+pfkp1/RDkL+7WgOIBXaVB6M
+        HOScBSKlqCkR9P1qVM1CvzxtuNwVi1OLvpl4xp6M9Y4rZW9Hntb22y0lB+L15WhsWbIx28
+        j7Yi6MpOwdivG/IyiOW/jl6Vfd2KeY4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D0C5AAD2B;
+        Mon, 22 Feb 2021 12:46:37 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 13:46:35 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
+ prefault/prealloc memory
+Message-ID: <YDOnq9Nliopj9kQL@dhcp22.suse.cz>
+References: <20210217154844.12392-1-david@redhat.com>
+ <20210218225904.GB6669@xz-x1>
+ <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210222203549.0e54c26f@alex-virtual-machine>
+In-Reply-To: <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 08:35:49PM +0800, Aili Yao wrote:
-> Guest VM, the qemu has no way to know the RIPV value, so always get it
-> cleared.
+I am slowly catching up with this thread.
 
-What does that mean?
+On Fri 19-02-21 09:20:16, David Hildenbrand wrote:
+[...]
+> So if we have zero, we write zero. We'll COW pages, triggering a write fault
+> - and that's the only good thing about it. For example, similar to
+> MADV_POPULATE, nothing stops KSM from merging anonymous pages again. So for
+> anonymous memory the actual write is not helpful at all. Similarly for
+> hugetlbfs, the actual write is not necessary - but there is no other way to
+> really achieve the goal.
 
-The guest VM will get the MCE signature it gets from the host kernel so
-the host kernel most definitely knows the RIPV value.
-
-It looks like you're testing how guests will handle MCEs which the host
-has caught and wants to inject into the guest for further handling. What
-is your exact use case? Please explain in detail how I can reproduce it
-step-by-step locally.
-
-Thx.
-
+I really do not see why you care about KSM so much. Isn't KSM an
+explicit opt-in with a fine grained interface to control which memory to
+KSM or not?
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Michal Hocko
+SUSE Labs
