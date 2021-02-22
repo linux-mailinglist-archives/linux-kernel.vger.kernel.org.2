@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC3C6321872
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:22:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A8C232186D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhBVNVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:21:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52868 "EHLO mail.kernel.org"
+        id S231410AbhBVNV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:21:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230235AbhBVMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230317AbhBVMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:41:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE56164F1B;
-        Mon, 22 Feb 2021 12:38:45 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DD9264F1C;
+        Mon, 22 Feb 2021 12:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997526;
-        bh=iw37dohlXulVCmlbNQCufXtdzZ9Etj83bfl4M1ZwFRw=;
+        s=korg; t=1613997528;
+        bh=ShK4phf9eyeT5/b/ZTMuY21y299TDlP+k9nlxPQ5Oeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFBu6CUXeZYCz4opgcEpJGcCPeRqMz0ivOqm5LMIti1GmX4hvtpEtudu9KWixC537
-         sknZDBkeUDbFuE5GVLA4TDTR559lmG/pfmtZsjv7Hgev1RTnZsYESmMVXV59R41xBW
-         WByvriZHpoBUs30rTkPDFxZiqZ1TDzGIIyg4mkWk=
+        b=KYnL4zs2jOGRxSg4/iFZH+PP0VI4v6zGJdfE4iZsBnAsNNyQDe8YhyhLa0exdCAtd
+         hfD7Plb9DHPJgYcVLyNyMD32HAQEUCGp1NZXJtDfRnKO3pZf4uCD12/ZD4IsCPJZO6
+         G8qEp3NGOx9zRUbf2bu2p84M9f2UD6ix+wWJFOQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 52/57] xen-scsiback: dont "handle" error by BUG()
-Date:   Mon, 22 Feb 2021 13:36:18 +0100
-Message-Id: <20210222121035.254299632@linuxfoundation.org>
+        Juergen Gross <jgross@suse.com>, Julien Grall <julien@xen.org>
+Subject: [PATCH 4.14 53/57] xen-blkback: fix error handling in xen_blkbk_map()
+Date:   Mon, 22 Feb 2021 13:36:19 +0100
+Message-Id: <20210222121035.370374653@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -41,42 +41,76 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jan Beulich <jbeulich@suse.com>
 
-commit 7c77474b2d22176d2bfb592ec74e0f2cb71352c9 upstream.
+commit 871997bc9e423f05c7da7c9178e62dde5df2a7f8 upstream.
 
-In particular -ENOMEM may come back here, from set_foreign_p2m_mapping().
-Don't make problems worse, the more that handling elsewhere (together
-with map's status fields now indicating whether a mapping wasn't even
-attempted, and hence has to be considered failed) doesn't require this
-odd way of dealing with errors.
+The function uses a goto-based loop, which may lead to an earlier error
+getting discarded by a later iteration. Exit this ad-hoc loop when an
+error was encountered.
 
-This is part of XSA-362.
+The out-of-memory error path additionally fails to fill a structure
+field looked at by xen_blkbk_unmap_prepare() before inspecting the
+handle which does get properly set (to BLKBACK_INVALID_HANDLE).
+
+Since the earlier exiting from the ad-hoc loop requires the same field
+filling (invalidation) as that on the out-of-memory path, fold both
+paths. While doing so, drop the pr_alert(), as extra log messages aren't
+going to help the situation (the kernel will log oom conditions already
+anyway).
+
+This is XSA-365.
 
 Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Cc: stable@vger.kernel.org
 Reviewed-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Julien Grall <julien@xen.org>
 Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/xen/xen-scsiback.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/block/xen-blkback/blkback.c |   24 ++++++++++++++----------
+ 1 file changed, 14 insertions(+), 10 deletions(-)
 
---- a/drivers/xen/xen-scsiback.c
-+++ b/drivers/xen/xen-scsiback.c
-@@ -422,12 +422,12 @@ static int scsiback_gnttab_data_map_batc
- 		return 0;
- 
- 	err = gnttab_map_refs(map, NULL, pg, cnt);
--	BUG_ON(err);
- 	for (i = 0; i < cnt; i++) {
- 		if (unlikely(map[i].status != GNTST_okay)) {
- 			pr_err("invalid buffer -- could not remap it\n");
- 			map[i].handle = SCSIBACK_INVALID_HANDLE;
--			err = -ENOMEM;
-+			if (!err)
-+				err = -ENOMEM;
+--- a/drivers/block/xen-blkback/blkback.c
++++ b/drivers/block/xen-blkback/blkback.c
+@@ -843,8 +843,11 @@ again:
+ 			pages[i]->page = persistent_gnt->page;
+ 			pages[i]->persistent_gnt = persistent_gnt;
  		} else {
- 			get_page(pg[i]);
- 		}
+-			if (get_free_page(ring, &pages[i]->page))
+-				goto out_of_memory;
++			if (get_free_page(ring, &pages[i]->page)) {
++				put_free_pages(ring, pages_to_gnt, segs_to_map);
++				ret = -ENOMEM;
++				goto out;
++			}
+ 			addr = vaddr(pages[i]->page);
+ 			pages_to_gnt[segs_to_map] = pages[i]->page;
+ 			pages[i]->persistent_gnt = NULL;
+@@ -928,17 +931,18 @@ next:
+ 	}
+ 	segs_to_map = 0;
+ 	last_map = map_until;
+-	if (map_until != num)
++	if (!ret && map_until != num)
+ 		goto again;
+ 
+-	return ret;
+-
+-out_of_memory:
+-	pr_alert("%s: out of memory\n", __func__);
+-	put_free_pages(ring, pages_to_gnt, segs_to_map);
+-	for (i = last_map; i < num; i++)
++out:
++	for (i = last_map; i < num; i++) {
++		/* Don't zap current batch's valid persistent grants. */
++		if(i >= last_map + segs_to_map)
++			pages[i]->persistent_gnt = NULL;
+ 		pages[i]->handle = BLKBACK_INVALID_HANDLE;
+-	return -ENOMEM;
++	}
++
++	return ret;
+ }
+ 
+ static int xen_blkbk_map_seg(struct pending_req *pending_req)
 
 
