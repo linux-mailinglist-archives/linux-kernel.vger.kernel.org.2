@@ -2,317 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA9F3221C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:51:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0D33221C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:51:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhBVVtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41030 "EHLO
+        id S230071AbhBVVvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:51:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230106AbhBVVtr (ORCPT
+        with ESMTP id S230081AbhBVVu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:49:47 -0500
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B100C061574;
-        Mon, 22 Feb 2021 13:49:07 -0800 (PST)
-Received: by mail-qv1-xf29.google.com with SMTP id l19so2202041qvz.2;
-        Mon, 22 Feb 2021 13:49:07 -0800 (PST)
+        Mon, 22 Feb 2021 16:50:58 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931A9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 13:50:18 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id f33so294040otf.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 13:50:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Aaq1Eiu5nDnx4zbppH7vtiVUqHGdWOLrQOc9GIoC9xY=;
-        b=YEdf9OVXSLNqy6njNfrO/y0eCw7XJcflWHOelwykD5c75MGxs0qQLiNfGy1uh/W22v
-         76LPuJ+SD5uWPW3E64UbIauZF+M7CMKCROQvWyp9DhDrEp77K1JVHxOXehz2qCXu9a50
-         cov9sHiAgSkkT2S83JZ48yq7TMyaxlc1TY1IbH5SnHdUQ/qPDJm03GSAUIVR66/5nCJu
-         /NpjzBPHZYbyzVGa7Yq1yZ29PPXnQWQvgxbIzJBK34qEVDEwLE5wqgCTtdk27Z/lilvQ
-         MUx169kh+NZc1BGjrpdEiOWAWiUNeMSpvpC6ldDJl6S5NISyh6ANb0AelPw1BVPDdh2l
-         laRA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5XvA1Gvev4npN0zTNKBUEQYu6pllkjUp8fGvFiKGsaw=;
+        b=oPaglzkjKqzjUBBPUjqw1unuPnLeRIg+r2e+b5ukaQtb/CbFhejThtt83WKjf+uRWe
+         KFn/OkCiXG7jSjp1nQqXY7tjbvTf6QKmcEGby7qkIb8lTX8W2xZOw+NEjkaHyfb0y83y
+         ZL+/Nco8WNGPOhZcKSnj8kGXbTy3hmoHvPFDTRmyYdxWIcPQ54CtQgUtuwa8DFf9vEGZ
+         pUm8rMXHgVXxuoQucIETk3LjqO7v1JwBhPM7k+lXRB6icRyOfS9oD86WvjI17VK+uYfp
+         ZyD1JnASki0fT4pyG0rrTfuzd7T0o/Nhsr55gPy5LF7wJRo15112lYcAy/Ycx2KGYYJc
+         WSdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Aaq1Eiu5nDnx4zbppH7vtiVUqHGdWOLrQOc9GIoC9xY=;
-        b=d6Lxi5LNNuRCZGCNm/eeV7qUZDsnygLznQ1ATBy3FFV8ZXi0yHr2m+W/ZWcPpuN1hQ
-         y7Pd0UZtP9Q+fXPeShYKR6/wOAd+kFXLyW+yZICmyse79MPcc+catjQOgz70lvZEfw4g
-         f3b4AxVUHglpAq7vgGF3jEs7S1Wtcwuo5MQGHWH+WfvWtiuV8qjecwhexIz06RnRGut4
-         e1Q+9naZ4KJVh6HwBwrbgQeo864OaIes2KsXNL4ZfS1cy9C0UO/GpMRogN/t5u15z3Tr
-         lLLWM9dxXXPmrDSgcFuj8gmD94gou7dS6PcdH1LyWsx79k17dgs+XjK7mVEKXgIRWOnt
-         XLRQ==
-X-Gm-Message-State: AOAM532fLy9xZGmo5rfolgUOEUnU5kLZvy41wmbQCaPtIyn0mp8Hjqe3
-        +u1DFLmxfEr8suiUtvfPpQM=
-X-Google-Smtp-Source: ABdhPJxMCEhoXuMXSDp213/xdbcwGbv+bk+XnAxb3fEiXeEL2SpoXWUFmzWds1/zqTfvhokdZ+c59w==
-X-Received: by 2002:a05:6214:bce:: with SMTP id ff14mr22396215qvb.26.1614030546456;
-        Mon, 22 Feb 2021 13:49:06 -0800 (PST)
-Received: from debian-vm ([189.120.76.30])
-        by smtp.gmail.com with ESMTPSA id f26sm13175740qkh.80.2021.02.22.13.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 13:49:06 -0800 (PST)
-From:   Igor <igormtorrente@gmail.com>
-X-Google-Original-From: Igor <igor>
-Date:   Mon, 22 Feb 2021 18:49:01 -0300
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org,
-        skhan@linuxfoundation.org
-Subject: Re: [PATCH 4.19 00/50] 4.19.177-rc1 review
-Message-ID: <YDQmzefrMUZMnRPL@debian-vm>
-References: <20210222121019.925481519@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5XvA1Gvev4npN0zTNKBUEQYu6pllkjUp8fGvFiKGsaw=;
+        b=nwp8B3VZrANDboFUtaQnoVLLTR1GK8z9fQzm3lXdbju4lwlod1PpSYGYzJu5LNDWfI
+         +WHHFn0VZtx5VkSlH989cToCT1y4ZjgS8IraUUrYDN6M1hrpYbAQ6Wn2D6bzcIdsOnZH
+         EFtHaOpX34aizRXR2lr+hYPbSiCjw3a1Ctp9A1zlg/nkky0eLCTyaGAa/qqaNtyQccKo
+         vYs6Zpz4loLGoDauu7S5f+Ma7ZNMSHaskKB+4qfrYzFOBM0UhbwpNABJ74K5JEudxeKi
+         DFf2KEYieSpwydnUWzD1V9qvZiV6YqFJ94rrIQsie4/OtcCOSEi8FCdo0fqfwaNYqhGO
+         7R9g==
+X-Gm-Message-State: AOAM532jJykKnLpsojaj/itdnIjfjSvdbFU0daVHlxiX1wPcAlHyIf9j
+        b3OlCz9CdZwxMxNtkS688svtg1wWTgWqAlqOa6fg0w==
+X-Google-Smtp-Source: ABdhPJxMYKRODjg5XZiabTyJz9ooiRtNu/86y64qGHku2dN8574FUKIwnz31nIc7J8RgCH9i500XWk553hkczvcZYCM=
+X-Received: by 2002:a05:6830:1def:: with SMTP id b15mr18107040otj.111.1614030617845;
+ Mon, 22 Feb 2021 13:50:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
+References: <20210219201852.3213914-1-jiancai@google.com> <20210219230841.875875-1-jiancai@google.com>
+ <20210222115816.GA8605@willie-the-truck>
+In-Reply-To: <20210222115816.GA8605@willie-the-truck>
+From:   Jian Cai <jiancai@google.com>
+Date:   Mon, 22 Feb 2021 13:50:06 -0800
+Message-ID: <CA+SOCLJVGJSn67VU24wPDdsOVeHhGe+KO5ekOCusano=bhn1Mg@mail.gmail.com>
+Subject: Re: [PATCH v4] ARM: Implement SLS mitigation
+To:     Will Deacon <will@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        James Morse <james.morse@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 01:12:51PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.177 release.
-> There are 50 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.177-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Please see my comments inlined below.
 
-Compiled and booted on my machine(x86_64) without any dmesg regression.
-My compilation uses the default Debian 10 .config(From kernel
-4.19.0-14-amd64), followed by olddefconfig.
+Thanks,
+Jian
 
-Tested-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+On Mon, Feb 22, 2021 at 3:58 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, Feb 19, 2021 at 03:08:13PM -0800, Jian Cai wrote:
+> > This patch adds CONFIG_HARDEN_SLS_ALL that can be used to turn on
+> > -mharden-sls=all, which mitigates the straight-line speculation
+> > vulnerability, speculative execution of the instruction following some
+> > unconditional jumps. Notice -mharden-sls= has other options as below,
+> > and this config turns on the strongest option.
+> >
+> > all: enable all mitigations against Straight Line Speculation that are implemented.
+> > none: disable all mitigations against Straight Line Speculation.
+> > retbr: enable the mitigation against Straight Line Speculation for RET and BR instructions.
+> > blr: enable the mitigation against Straight Line Speculation for BLR instructions.
+> >
+> > Links:
+> > https://reviews.llvm.org/D93221
+> > https://reviews.llvm.org/D81404
+> > https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/downloads/straight-line-speculation
+> > https://developer.arm.com/support/arm-security-updates/speculative-processor-vulnerability/frequently-asked-questions#SLS2
+> >
+> > Suggested-by: Manoj Gupta <manojgupta@google.com>
+> > Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Suggested-by: Nathan Chancellor  <nathan@kernel.org>
+> > Suggested-by: David Laight <David.Laight@aculab.com>
+> > Suggested-by: Will Deacon <will@kernel.org>
+> > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> > Signed-off-by: Jian Cai <jiancai@google.com>
+> > ---
+>
+> Please can you reply to my previous questions?
+>
+> https://lore.kernel.org/linux-arm-kernel/20210217094859.GA3706@willie-the-truck/
+>
+> (apologies if you did, but I don't see them in the archive or my inbox)
 
-Best regards,
----
-Igor Matheus Andrade Torrente
+I should have clarified the suggested-by tag was in regard to the
+Kconfig text change. Regarding your earlier questions, please see my
+comments below.
 
-> -------------
-> Pseudo-Shortlog of commits:
-> 
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 4.19.177-rc1
-> 
-> Lai Jiangshan <laijs@linux.alibaba.com>
->     kvm: check tlbs_dirty directly
-> 
-> Arun Easi <aeasi@marvell.com>
->     scsi: qla2xxx: Fix crash during driver load on big endian machines
-> 
-> Jan Beulich <jbeulich@suse.com>
->     xen-blkback: fix error handling in xen_blkbk_map()
-> 
-> Jan Beulich <jbeulich@suse.com>
->     xen-scsiback: don't "handle" error by BUG()
-> 
-> Jan Beulich <jbeulich@suse.com>
->     xen-netback: don't "handle" error by BUG()
-> 
-> Jan Beulich <jbeulich@suse.com>
->     xen-blkback: don't "handle" error by BUG()
-> 
-> Stefano Stabellini <stefano.stabellini@xilinx.com>
->     xen/arm: don't ignore return errors from set_phys_to_machine
-> 
-> Jan Beulich <jbeulich@suse.com>
->     Xen/gntdev: correct error checking in gntdev_map_grant_pages()
-> 
-> Jan Beulich <jbeulich@suse.com>
->     Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
-> 
-> Jan Beulich <jbeulich@suse.com>
->     Xen/x86: also check kernel mapping in set_foreign_p2m_mapping()
-> 
-> Jan Beulich <jbeulich@suse.com>
->     Xen/x86: don't bail early from clear_foreign_p2m_mapping()
-> 
-> Loic Poulain <loic.poulain@linaro.org>
->     net: qrtr: Fix port ID for control messages
-> 
-> Paolo Bonzini <pbonzini@redhat.com>
->     KVM: SEV: fix double locking due to incorrect backport
-> 
-> Borislav Petkov <bp@suse.de>
->     x86/build: Disable CET instrumentation in the kernel for 32-bit too
-> 
-> Miklos Szeredi <mszeredi@redhat.com>
->     ovl: expand warning in ovl_d_real()
-> 
-> Sabyrzhan Tasbolatov <snovitoll@gmail.com>
->     net/qrtr: restrict user-controlled length in qrtr_tun_write_iter()
-> 
-> Sabyrzhan Tasbolatov <snovitoll@gmail.com>
->     net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
-> 
-> Stefano Garzarella <sgarzare@redhat.com>
->     vsock: fix locking in vsock_shutdown()
-> 
-> Stefano Garzarella <sgarzare@redhat.com>
->     vsock/virtio: update credit only if socket is not closed
-> 
-> Edwin Peer <edwin.peer@broadcom.com>
->     net: watchdog: hold device global xmit lock during tx disable
-> 
-> Norbert Slusarek <nslusarek@gmx.net>
->     net/vmw_vsock: improve locking in vsock_connect_timeout()
-> 
-> NeilBrown <neilb@suse.de>
->     net: fix iteration for sctp transport seq_files
-> 
-> Serge Semin <Sergey.Semin@baikalelectronics.ru>
->     usb: dwc3: ulpi: Replace CPU-based busyloop with Protocol-based one
-> 
-> Felipe Balbi <balbi@kernel.org>
->     usb: dwc3: ulpi: fix checkpatch warning
-> 
-> Randy Dunlap <rdunlap@infradead.org>
->     h8300: fix PREEMPTION build, TI_PRE_COUNT undefined
-> 
-> Alain Volmat <alain.volmat@foss.st.com>
->     i2c: stm32f7: fix configuration of the digital filter
-> 
-> Fangrui Song <maskray@google.com>
->     firmware_loader: align .builtin_fw to 8
-> 
-> Yufeng Mo <moyufeng@huawei.com>
->     net: hns3: add a check for queue_id in hclge_reset_vf_queue()
-> 
-> Florian Westphal <fw@strlen.de>
->     netfilter: conntrack: skip identical origin tuple in same zone only
-> 
-> Mohammad Athari Bin Ismail <mohammad.athari.ismail@intel.com>
->     net: stmmac: set TxQ mode back to DCB after disabling CBS
-> 
-> Juergen Gross <jgross@suse.com>
->     xen/netback: avoid race in xenvif_rx_ring_slots_available()
-> 
-> Sven Auhagen <sven.auhagen@voleatech.de>
->     netfilter: flowtable: fix tcp and udp header checksum update
-> 
-> Jozsef Kadlecsik <kadlec@mail.kfki.hu>
->     netfilter: xt_recent: Fix attempt to update deleted entry
-> 
-> Bui Quang Minh <minhquangbui99@gmail.com>
->     bpf: Check for integer overflow when using roundup_pow_of_two()
-> 
-> Lorenzo Bianconi <lorenzo@kernel.org>
->     mt76: dma: fix a possible memory leak in mt76_add_fragment()
-> 
-> Russell King <rmk+kernel@armlinux.org.uk>
->     ARM: kexec: fix oops after TLB are invalidated
-> 
-> Russell King <rmk+kernel@armlinux.org.uk>
->     ARM: ensure the signal page contains defined contents
-> 
-> Alexandre Belloni <alexandre.belloni@bootlin.com>
->     ARM: dts: lpc32xx: Revert set default clock rate of HCLK PLL
-> 
-> Lin Feng <linf@wangsu.com>
->     bfq-iosched: Revert "bfq: Fix computation of shallow depth"
-> 
-> Alexandre Ghiti <alex@ghiti.fr>
->     riscv: virt_addr_valid must check the address belongs to linear mapping
-> 
-> Victor Lu <victorchengchi.lu@amd.com>
->     drm/amd/display: Free atomic state after drm_atomic_commit
-> 
-> Victor Lu <victorchengchi.lu@amd.com>
->     drm/amd/display: Fix dc_sink kref count in emulated_link_detect
-> 
-> Amir Goldstein <amir73il@gmail.com>
->     ovl: skip getxattr of security labels
-> 
-> Miklos Szeredi <mszeredi@redhat.com>
->     cap: fix conversions on getxattr
-> 
-> Miklos Szeredi <mszeredi@redhat.com>
->     ovl: perform vfs_getxattr() with mounter creds
-> 
-> Hans de Goede <hdegoede@redhat.com>
->     platform/x86: hp-wmi: Disable tablet-mode reporting by default
-> 
-> Marc Zyngier <maz@kernel.org>
->     arm64: dts: rockchip: Fix PCIe DT properties on rk3399
-> 
-> Julien Grall <jgrall@amazon.com>
->     arm/xen: Don't probe xenbus as part of an early initcall
-> 
-> Steven Rostedt (VMware) <rostedt@goodmis.org>
->     tracing: Check length before giving out the filter buffer
-> 
-> Steven Rostedt (VMware) <rostedt@goodmis.org>
->     tracing: Do not count ftrace events in top level enable output
-> 
-> 
-> -------------
-> 
-> Diffstat:
-> 
->  Makefile                                           |  4 +-
->  arch/arm/boot/dts/lpc32xx.dtsi                     |  3 -
->  arch/arm/include/asm/kexec-internal.h              | 12 ++++
->  arch/arm/kernel/asm-offsets.c                      |  5 ++
->  arch/arm/kernel/machine_kexec.c                    | 20 +++----
->  arch/arm/kernel/relocate_kernel.S                  | 38 ++++--------
->  arch/arm/kernel/signal.c                           | 14 +++--
->  arch/arm/xen/enlighten.c                           |  2 -
->  arch/arm/xen/p2m.c                                 |  6 +-
->  arch/arm64/boot/dts/rockchip/rk3399.dtsi           |  2 +-
->  arch/h8300/kernel/asm-offsets.c                    |  3 +
->  arch/riscv/include/asm/page.h                      |  5 +-
->  arch/x86/Makefile                                  |  6 +-
->  arch/x86/kvm/svm.c                                 |  1 -
->  arch/x86/xen/p2m.c                                 | 15 +++--
->  block/bfq-iosched.c                                |  8 +--
->  drivers/block/xen-blkback/blkback.c                | 30 +++++-----
->  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  | 18 +++---
->  drivers/i2c/busses/i2c-stm32f7.c                   | 11 +++-
->  .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    |  7 +++
->  drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c    |  7 ++-
->  drivers/net/wireless/mediatek/mt76/dma.c           |  8 ++-
->  drivers/net/xen-netback/netback.c                  |  4 +-
->  drivers/net/xen-netback/rx.c                       |  9 ++-
->  drivers/platform/x86/hp-wmi.c                      | 14 +++--
->  drivers/scsi/qla2xxx/qla_tmpl.c                    |  9 +--
->  drivers/scsi/qla2xxx/qla_tmpl.h                    |  2 +-
->  drivers/usb/dwc3/ulpi.c                            | 20 +++++--
->  drivers/xen/gntdev.c                               | 37 ++++++------
->  drivers/xen/xen-scsiback.c                         |  4 +-
->  drivers/xen/xenbus/xenbus.h                        |  1 -
->  drivers/xen/xenbus/xenbus_probe.c                  |  2 +-
->  fs/overlayfs/copy_up.c                             | 15 ++---
->  fs/overlayfs/inode.c                               |  2 +
->  fs/overlayfs/super.c                               | 13 +++--
->  include/asm-generic/vmlinux.lds.h                  |  2 +-
->  include/linux/netdevice.h                          |  2 +
->  include/xen/grant_table.h                          |  1 +
->  include/xen/xenbus.h                               |  2 -
->  kernel/bpf/stackmap.c                              |  2 +
->  kernel/trace/trace.c                               |  2 +-
->  kernel/trace/trace_events.c                        |  3 +-
->  net/netfilter/nf_conntrack_core.c                  |  3 +-
->  net/netfilter/nf_flow_table_core.c                 |  4 +-
->  net/netfilter/xt_recent.c                          | 12 +++-
->  net/qrtr/qrtr.c                                    |  2 +-
->  net/qrtr/tun.c                                     |  6 ++
->  net/rds/rdma.c                                     |  3 +
->  net/sctp/proc.c                                    | 16 ++++--
->  net/vmw_vsock/af_vsock.c                           | 13 ++---
->  net/vmw_vsock/hyperv_transport.c                   |  4 --
->  net/vmw_vsock/virtio_transport_common.c            |  4 +-
->  security/commoncap.c                               | 67 ++++++++++++++--------
->  virt/kvm/kvm_main.c                                |  3 +-
->  54 files changed, 303 insertions(+), 205 deletions(-)
-> 
-> 
+> So I think that either we enable this unconditionally, or we don't enable it
+> at all (and people can hack their CFLAGS themselves if they want to).
+
+Not sure if this answers your question but this config should provide
+a way for people to turn on the mitigation at their own risk.
+
+> It would be helpful for one of the Arm folks to chime in, as I'm yet to see any
+> evidence that this is actually exploitable. Is it any worse that Spectre-v1,
+> where we _don't_ have a compiler mitigation?
+
+> Finally, do we have to worry about our assembly code?
+
+I am not sure if there are any plans to protect assembly code and I
+will leave it to the Arm folks since they know a whole lot better. But
+even without that part, we should still have better protection,
+especially when overhead does not look too bad: I did some preliminary
+experiments on ChromeOS, code size of vmlinux increased 3%, and there
+were no noticeable changes to run-time performance of the benchmarks I
+used.
