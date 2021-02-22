@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DF24321677
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C8B321672
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhBVMWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:22:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44936 "EHLO mail.kernel.org"
+        id S231187AbhBVMWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:22:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230334AbhBVMPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230337AbhBVMPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:15:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED43264F10;
-        Mon, 22 Feb 2021 12:14:22 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59F6464F13;
+        Mon, 22 Feb 2021 12:14:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996063;
-        bh=3kSREwTnBCR5ivjM0Wwb+NnC86pufTtuP3hHwsGQP8Q=;
+        s=korg; t=1613996065;
+        bh=AXRPNFRFsMVy5AkzagRtajrSyqb8LlOJOicep2zvSFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H3kyQ6yM21yWyWuBwFTyw/1uPTqIcfkQedAtapFkSTQtmn9+ckiB3S4j1GTwxoCpc
-         ifn+ToqKxP9NAzLKm7O13/4vmun8XwzRyyy3dQ4927QqVgmrNyw8Osep3w2Zk39sYS
-         mtLr4CyI5xoc+0uxTULL9z4uvOp5YrAtVesprvUg=
+        b=IZ2QxKLufRnDXGJ8R7DnrP4u/e7F6DzoMEAKMDB+V4rUSxj5eCJ2E5MiEkRIwTvDJ
+         whoSFvaOu6GRKzJ/tVYCtv2EhXq2B6mcmW3qE5Rp+T6L1V2bkEUPvakHTZ7dOe6c6V
+         G5L9pH7IzDovlFwP9nqZ1Rc5RF2Ysbdm4e9MhTVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
-        Mat Martineau <mathew.j.martineau@linux.intel.com>,
+        stable@vger.kernel.org, wenxu <wenxu@ucloud.cn>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 08/29] mptcp: skip to next candidate if subflow has unacked data
-Date:   Mon, 22 Feb 2021 13:13:02 +0100
-Message-Id: <20210222121021.519452639@linuxfoundation.org>
+Subject: [PATCH 5.10 09/29] net/sched: fix miss init the mru in qdisc_skb_cb
+Date:   Mon, 22 Feb 2021 13:13:03 +0100
+Message-Id: <20210222121021.654740545@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
 References: <20210222121019.444399883@linuxfoundation.org>
@@ -41,42 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Westphal <fw@strlen.de>
+From: wenxu <wenxu@ucloud.cn>
 
-[ Upstream commit 860975c6f80adae9d2c7654bde04a99dd28bc94f ]
+[ Upstream commit aadaca9e7c392dbf877af8cefb156199f1a67bbe ]
 
-In case a subflow path is blocked, MPTCP-level retransmit may not take
-place anymore because such subflow is likely to have unacked data left
-in its write queue.
+The mru in the qdisc_skb_cb should be init as 0. Only defrag packets in the
+act_ct will set the value.
 
-Ignore subflows that have experienced loss and test next candidate.
-
-Fixes: 3b1d6210a95773691 ("mptcp: implement and use MPTCP-level retransmission")
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+Fixes: 038ebb1a713d ("net/sched: act_ct: fix miss set mru for ovs after defrag in act_ct")
+Signed-off-by: wenxu <wenxu@ucloud.cn>
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mptcp/protocol.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ net/core/dev.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-index 967ce9ccfc0da..f56b2e331bb6b 100644
---- a/net/mptcp/protocol.c
-+++ b/net/mptcp/protocol.c
-@@ -1648,8 +1648,11 @@ static struct sock *mptcp_subflow_get_retrans(const struct mptcp_sock *msk)
- 			continue;
+diff --git a/net/core/dev.c b/net/core/dev.c
+index da85cb9398693..210d0fce58e17 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -3867,6 +3867,7 @@ sch_handle_egress(struct sk_buff *skb, int *ret, struct net_device *dev)
+ 		return skb;
  
- 		/* still data outstanding at TCP level?  Don't retransmit. */
--		if (!tcp_write_queue_empty(ssk))
-+		if (!tcp_write_queue_empty(ssk)) {
-+			if (inet_csk(ssk)->icsk_ca_state >= TCP_CA_Loss)
-+				continue;
- 			return NULL;
-+		}
+ 	/* qdisc_skb_cb(skb)->pkt_len was already set by the caller. */
++	qdisc_skb_cb(skb)->mru = 0;
+ 	mini_qdisc_bstats_cpu_update(miniq, skb);
  
- 		if (subflow->backup) {
- 			if (!backup)
+ 	switch (tcf_classify(skb, miniq->filter_list, &cl_res, false)) {
+@@ -4950,6 +4951,7 @@ sch_handle_ingress(struct sk_buff *skb, struct packet_type **pt_prev, int *ret,
+ 	}
+ 
+ 	qdisc_skb_cb(skb)->pkt_len = skb->len;
++	qdisc_skb_cb(skb)->mru = 0;
+ 	skb->tc_at_ingress = 1;
+ 	mini_qdisc_bstats_cpu_update(miniq, skb);
+ 
 -- 
 2.27.0
 
