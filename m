@@ -2,200 +2,459 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29451321BF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:56:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 025D0321BF9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230245AbhBVP4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:56:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbhBVP4f (ORCPT
+        id S230316AbhBVP6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:58:24 -0500
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:37793 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230021AbhBVP6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:56:35 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD57C061574;
-        Mon, 22 Feb 2021 07:55:52 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id d20so14378444oiw.10;
-        Mon, 22 Feb 2021 07:55:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TPpevQFvMZZaJ5SzMpqPhoMUxM8hXrVsQM4xh4VAqE0=;
-        b=m0cbFoUW3OXA+TA1/2nGv1cjum3dpvIZg31hF14CB0UgAIGlLR/MvrWzsnEXtacM8m
-         Fmj3AWJa1qzDaNdSGMCjH/MKHZdMoiqmMkVfQIlJtVZ51+psoFP6Ul4B1uqexRO+v/QF
-         k/mGOCJaeHd6LRUc8XYEMg3CKPwJ3pGSfw8XFE5Dd4/dKWzSMpYxGI/DSQdmjcesLU8E
-         jLyBR5XrWlKISITxUZsDrQM8D+dgC3UlifK7I6KFWdQGT4RegbRwlfF5d7DVyedH2vzT
-         YZDIH5Xj+8SZjjmQvElLoazJnrn6NmR2UBTvUUqYBQuZVj/BkHIzxEgPV+NNx65erk2H
-         /Xvg==
+        Mon, 22 Feb 2021 10:58:20 -0500
+Received: by mail-ot1-f45.google.com with SMTP id s6so12404498otk.4;
+        Mon, 22 Feb 2021 07:58:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=TPpevQFvMZZaJ5SzMpqPhoMUxM8hXrVsQM4xh4VAqE0=;
-        b=efm7ZCiZKoQAdaxK0rEa8CR6lsvIOPYtGsLVzb47s97X/DtJrgR57BNAHQj6A2JPyP
-         l0NaiAzHLUn4KdqQyy1XymrlvOX/6z1+XisYYj3JLjlt8qEQtECFzkUrXy1tQLaZZBpz
-         xlVQnxa1chuQWlUVyhybnGvJLxx0jP4p9GnO12pgcyhGnVvkFU8pcO57jzjFHJQUs5nI
-         9reAoz3SlfpnBxMMYLRede9IT4/tikfHPxNcRRUPFQkcA5hw8s3K5q4At/DOarb9qQFK
-         NMDVNgYBzKDiwj9Oo4XiN04hM1btGIxatLRF0n7Ktr2CjoeYR1hvc2bF5t6tFI4/I5ns
-         fKCw==
-X-Gm-Message-State: AOAM53089u2yD1j3jWL7GX/vWsoxs4AO4mfzYgnZGskuD3IABrolsQVP
-        MN5rzLjoe4IM/IxHctr4VkAEMQkXRBg=
-X-Google-Smtp-Source: ABdhPJxEg0BBP7mWsE08uisVDLqWYrDPsvyCHU3uMb22kVyWIjJiTrrrK2B23MSxj0dtI55Eju57jg==
-X-Received: by 2002:a05:6808:aa6:: with SMTP id r6mr4112330oij.128.1614009351635;
-        Mon, 22 Feb 2021 07:55:51 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q132sm2254187oif.32.2021.02.22.07.55.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 07:55:51 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 20/20] s390/watchdog: Manual replacement of the deprecated
- strlcpy() with return values
-To:     Romain Perier <romain.perier@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210222151231.22572-1-romain.perier@gmail.com>
- <20210222151231.22572-21-romain.perier@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <98317dfa-d884-d4ae-9449-d84b902c0e5c@roeck-us.net>
-Date:   Mon, 22 Feb 2021 07:55:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B7vUYhzafhlcgMm2RFSd0Iajpd5S/uaFdPDm6SSIqyc=;
+        b=k+ePGvPUWvSKIbK4kziz5O1LSnKabP7znCMUkeNOcoVlr8jzVuClmofr6t5HYm23ee
+         jeKpJDM8IoKuQc6sR0x8VfQrmRx2WC69mJKp8NQEC0B2DiLIL6bhv3+KzWc6kfITCuw3
+         66gQszR0ItNRj7VAiiVjNNPVdzPhMtb+gEQBytp9HmlFaKwtZ+GzL28Sm6HeBkc+aOug
+         +RYGmbKu27OaAxl1BEfWLGQPs2aPFWDyu3GoDQOuYx2JgJJuP4V65+hii7P24PMzuUsN
+         vDc9leOM44Y4z7B16Di+TYvn2JLRT+hP9UCN4b7Ne8DrQtGdJe6/CXkiHu7zOUVW4gnx
+         kSgQ==
+X-Gm-Message-State: AOAM5329t7M9nbsdBfpP3K2xoazKuctWrnODPVSQG1X6grpBFCZCw2YB
+        eH/ZusFIl+Rr6A4thT8L8WFz0WsFuy90oFP9iE4=
+X-Google-Smtp-Source: ABdhPJxbc6QD/y+obNFYjlYivq5Ve3TlzhcGDAH8or79smH+R2Y9EwqCKPmoTOzbGYqp8UABpgch0Eq0HWlASvMx/wk=
+X-Received: by 2002:a9d:22a5:: with SMTP id y34mr13451658ota.321.1614009456538;
+ Mon, 22 Feb 2021 07:57:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210222151231.22572-21-romain.perier@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <cover.1613991982.git.viresh.kumar@linaro.org> <51c2260e8760fdc0b489bed2ff2c6bb8209ea35d.1613991982.git.viresh.kumar@linaro.org>
+In-Reply-To: <51c2260e8760fdc0b489bed2ff2c6bb8209ea35d.1613991982.git.viresh.kumar@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 22 Feb 2021 16:57:25 +0100
+Message-ID: <CAJZ5v0i_JeMMAJA-J7ghuQr_+uN6urCGTn0O0FyZ8x8ntpKcJg@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] cpufreq: cppc: Add support for frequency invariance
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 7:12 AM, Romain Perier wrote:
-> The strlcpy() reads the entire source buffer first, it is dangerous if
-> the source buffer lenght is unbounded or possibility non NULL-terminated.
+On Mon, Feb 22, 2021 at 12:20 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> The Frequency Invariance Engine (FIE) is providing a frequency scaling
+> correction factor that helps achieve more accurate load-tracking.
+>
+> Normally, this scaling factor can be obtained directly with the help of
+> the cpufreq drivers as they know the exact frequency the hardware is
+> running at. But that isn't the case for CPPC cpufreq driver.
 
-length
+Even though the driver is located in drivers/cpufreq/ CPPC is part of
+ACPI and so a CC to linux-acpi is missing.
 
-> It can lead to linear read overflows, crashes, etc...
-> 
+> Another way of obtaining that is using the arch specific counter
+> support, which is already present in kernel, but that hardware is
+> optional for platforms.
+>
+> This patch thus obtains this scaling factor using the existing logic
+> present in the cppc driver.
 
-That won't happen here since both buffers have the same length
-and the source is known to be NULL_terminated.
+It would be nice to expand this a bit to describe the design.  Also
+IMO it wouldn't hurt to add a kerneldoc comment describing it, say to
+cppc_scale_freq_workfn().
 
-So this is another misleading patch. If strlcpy() is deemed so dangerous
-nowadays, replace it with memcpy(). That is expensive too, but at least
-it won't create the impression that a non-existing error would ever occur
-On top of that, the code is handling all MAX_CMDLEN bytes twice anyway
-later on, so we can for sure afford the extra cost of the memcpy().
-Pus, we'll have the added benefit that the unused part of the buffer
-will be cleared and no longer contain random data.
+And spelling CPPC consistently would be nice too.
 
-Guenter
-
-> As recommended in the deprecated interfaces [1], it should be replaced
-> by strscpy.
-> 
-> This commit replaces all calls to strlcpy that handle the return values
-> by the corresponding strscpy calls with new handling of the return
-> values (as it is quite different between the two functions).
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-> 
-> Signed-off-by: Romain Perier <romain.perier@gmail.com>
+> Note that the arch specific counters have
+> higher priority than CPPC counters if available, though the CPPC driver
+> doesn't need to have any special handling for that.
+>
+> To allow platforms to disable frequency invariance support if they want,
+> this is all done under CONFIG_ACPI_CPPC_CPUFREQ_FIE, which is enabled by
+> default.
+>
+> This also exports sched_setattr_nocheck() as the CPPC driver can be
+> built as a module.
+>
+> Cc: Ionela Voinescu <ionela.voinescu@arm.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 > ---
->  drivers/watchdog/diag288_wdt.c |   12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/watchdog/diag288_wdt.c b/drivers/watchdog/diag288_wdt.c
-> index aafc8d98bf9f..5703f35dd0b7 100644
-> --- a/drivers/watchdog/diag288_wdt.c
-> +++ b/drivers/watchdog/diag288_wdt.c
-> @@ -111,7 +111,7 @@ static unsigned long wdt_status;
->  static int wdt_start(struct watchdog_device *dev)
->  {
->  	char *ebc_cmd;
-> -	size_t len;
-> +	ssize_t len;
->  	int ret;
->  	unsigned int func;
->  
-> @@ -126,7 +126,9 @@ static int wdt_start(struct watchdog_device *dev)
->  			clear_bit(DIAG_WDOG_BUSY, &wdt_status);
->  			return -ENOMEM;
->  		}
-> -		len = strlcpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
-> +		len = strscpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
-> +		if (len == -E2BIG)
-> +			return -E2BIG;
->  		ASCEBC(ebc_cmd, MAX_CMDLEN);
->  		EBC_TOUPPER(ebc_cmd, MAX_CMDLEN);
->  
-> @@ -163,7 +165,7 @@ static int wdt_stop(struct watchdog_device *dev)
->  static int wdt_ping(struct watchdog_device *dev)
->  {
->  	char *ebc_cmd;
-> -	size_t len;
-> +	ssize_t len;
->  	int ret;
->  	unsigned int func;
->  
-> @@ -173,7 +175,9 @@ static int wdt_ping(struct watchdog_device *dev)
->  		ebc_cmd = kmalloc(MAX_CMDLEN, GFP_KERNEL);
->  		if (!ebc_cmd)
->  			return -ENOMEM;
-> -		len = strlcpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
-> +		len = strscpy(ebc_cmd, wdt_cmd, MAX_CMDLEN);
-> +		if (len == -E2BIG)
-> +			return -E2BIG;
->  		ASCEBC(ebc_cmd, MAX_CMDLEN);
->  		EBC_TOUPPER(ebc_cmd, MAX_CMDLEN);
->  
-> 
+>  drivers/cpufreq/Kconfig.arm    |   9 ++
+>  drivers/cpufreq/cppc_cpufreq.c | 223 +++++++++++++++++++++++++++++++--
+>  include/linux/arch_topology.h  |   1 +
+>  kernel/sched/core.c            |   1 +
+>  4 files changed, 222 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/cpufreq/Kconfig.arm b/drivers/cpufreq/Kconfig.arm
+> index e65e0a43be64..a3e2d6dfea70 100644
+> --- a/drivers/cpufreq/Kconfig.arm
+> +++ b/drivers/cpufreq/Kconfig.arm
+> @@ -19,6 +19,15 @@ config ACPI_CPPC_CPUFREQ
+>
+>           If in doubt, say N.
+>
+> +config ACPI_CPPC_CPUFREQ_FIE
+> +       bool "Frequency Invariance support for CPPC cpufreq driver"
+> +       depends on ACPI_CPPC_CPUFREQ
 
+In theory, the CPPC cpufreq driver can be used on systems with
+nontrivial arch_freq_scale_tick() in which case the latter should be
+used I suppose.
+
+Would that actually happen if this option is enabled?
+
+> +       default y
+> +       help
+> +         This enables frequency invariance support for CPPC cpufreq driver.
+> +
+> +         If in doubt, say N.
+> +
+>  config ARM_ALLWINNER_SUN50I_CPUFREQ_NVMEM
+>         tristate "Allwinner nvmem based SUN50I CPUFreq driver"
+>         depends on ARCH_SUNXI
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index 8a482c434ea6..fa1692db93c4 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -10,14 +10,18 @@
+>
+>  #define pr_fmt(fmt)    "CPPC Cpufreq:" fmt
+>
+> +#include <linux/arch_topology.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+>  #include <linux/delay.h>
+>  #include <linux/cpu.h>
+>  #include <linux/cpufreq.h>
+>  #include <linux/dmi.h>
+> +#include <linux/irq_work.h>
+> +#include <linux/kthread.h>
+>  #include <linux/time.h>
+>  #include <linux/vmalloc.h>
+> +#include <uapi/linux/sched/types.h>
+>
+>  #include <asm/unaligned.h>
+>
+> @@ -57,6 +61,182 @@ static struct cppc_workaround_oem_info wa_info[] = {
+>         }
+>  };
+>
+> +#ifdef CONFIG_ACPI_CPPC_CPUFREQ_FIE
+> +
+> +/* Frequency invariance support */
+> +struct cppc_freq_invariance {
+> +       int cpu;
+> +       struct irq_work irq_work;
+> +       struct kthread_work work;
+> +       struct cppc_perf_fb_ctrs prev_perf_fb_ctrs;
+> +       struct cppc_cpudata *cpu_data;
+> +};
+> +
+> +static DEFINE_PER_CPU(struct cppc_freq_invariance, cppc_freq_inv);
+> +static struct kthread_worker *kworker_fie;
+> +
+> +static struct cpufreq_driver cppc_cpufreq_driver;
+> +static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpu);
+> +static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
+> +                                struct cppc_perf_fb_ctrs fb_ctrs_t0,
+> +                                struct cppc_perf_fb_ctrs fb_ctrs_t1);
+> +
+> +static void cppc_scale_freq_workfn(struct kthread_work *work)
+> +{
+> +       struct cppc_freq_invariance *cppc_fi;
+> +       struct cppc_perf_fb_ctrs fb_ctrs = {0};
+> +       struct cppc_cpudata *cpu_data;
+> +       unsigned long local_freq_scale;
+> +       u64 perf;
+> +
+> +       cppc_fi = container_of(work, struct cppc_freq_invariance, work);
+> +       cpu_data = cppc_fi->cpu_data;
+> +
+> +       if (cppc_get_perf_ctrs(cppc_fi->cpu, &fb_ctrs)) {
+> +               pr_warn("%s: failed to read perf counters\n", __func__);
+> +               return;
+> +       }
+> +
+> +       cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
+> +       perf = cppc_perf_from_fbctrs(cpu_data, cppc_fi->prev_perf_fb_ctrs,
+> +                                    fb_ctrs);
+> +
+> +       perf <<= SCHED_CAPACITY_SHIFT;
+> +       local_freq_scale = div64_u64(perf, cpu_data->perf_caps.highest_perf);
+> +       if (WARN_ON(local_freq_scale > 1024))
+> +               local_freq_scale = 1024;
+> +
+> +       per_cpu(freq_scale, cppc_fi->cpu) = local_freq_scale;
+> +}
+> +
+> +static void cppc_irq_work(struct irq_work *irq_work)
+> +{
+> +       struct cppc_freq_invariance *cppc_fi;
+> +
+> +       cppc_fi = container_of(irq_work, struct cppc_freq_invariance, irq_work);
+> +       kthread_queue_work(kworker_fie, &cppc_fi->work);
+> +}
+> +
+> +static void cppc_scale_freq_tick(void)
+> +{
+> +       struct cppc_freq_invariance *cppc_fi = &per_cpu(cppc_freq_inv, smp_processor_id());
+> +
+> +       /*
+> +        * cppc_get_perf_ctrs() can potentially sleep, call that from the right
+> +        * context.
+> +        */
+> +       irq_work_queue(&cppc_fi->irq_work);
+> +}
+> +
+> +static struct scale_freq_data cppc_sftd = {
+> +       .source = SCALE_FREQ_SOURCE_CPPC,
+> +       .set_freq_scale = cppc_scale_freq_tick,
+> +};
+> +
+> +static void cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
+> +                                            struct cppc_cpudata *cpu_data)
+> +{
+> +       struct cppc_freq_invariance *cppc_fi;
+> +       int i;
+> +
+> +       for_each_cpu(i, policy->cpus) {
+> +               cppc_fi = &per_cpu(cppc_freq_inv, i);
+> +               cppc_fi->cpu = i;
+> +               cppc_fi->cpu_data = cpu_data;
+> +       }
+> +}
+> +
+> +static void cppc_freq_invariance_exit(void)
+> +{
+> +       struct cppc_freq_invariance *cppc_fi;
+> +       int i;
+> +
+> +       if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+> +               return;
+> +
+> +       topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_CPPC, cpu_present_mask);
+> +
+> +       for_each_possible_cpu(i) {
+> +               cppc_fi = &per_cpu(cppc_freq_inv, i);
+> +               irq_work_sync(&cppc_fi->irq_work);
+> +       }
+> +
+> +       kthread_destroy_worker(kworker_fie);
+> +       kworker_fie = NULL;
+> +}
+> +
+> +static void __init cppc_freq_invariance_init(void)
+> +{
+> +       struct cppc_perf_fb_ctrs fb_ctrs = {0};
+> +       struct cppc_freq_invariance *cppc_fi;
+> +       struct sched_attr attr = {
+> +               .size           = sizeof(struct sched_attr),
+> +               .sched_policy   = SCHED_DEADLINE,
+> +               .sched_nice     = 0,
+> +               .sched_priority = 0,
+> +               /*
+> +                * Fake (unused) bandwidth; workaround to "fix"
+> +                * priority inheritance.
+> +                */
+> +               .sched_runtime  = 1000000,
+> +               .sched_deadline = 10000000,
+> +               .sched_period   = 10000000,
+> +       };
+> +       int i, ret;
+> +
+> +       if (cppc_cpufreq_driver.get == hisi_cppc_cpufreq_get_rate)
+> +               return;
+> +
+> +       kworker_fie = kthread_create_worker(0, "cppc_fie");
+> +       if (IS_ERR(kworker_fie))
+> +               return;
+> +
+> +       for_each_possible_cpu(i) {
+> +               cppc_fi = &per_cpu(cppc_freq_inv, i);
+> +
+> +               /* A policy failed to initialize, abort */
+> +               if (unlikely(!cppc_fi->cpu_data))
+> +                       return cppc_freq_invariance_exit();
+> +
+> +               kthread_init_work(&cppc_fi->work, cppc_scale_freq_workfn);
+> +               init_irq_work(&cppc_fi->irq_work, cppc_irq_work);
+
+What would be wrong with doing the above in
+cppc_freq_invariance_policy_init()?  It looks like a better place to
+me.
+
+> +               ret = sched_setattr_nocheck(kworker_fie->task, &attr);
+
+And this needs to be done only once if I'm not mistaken.
+
+> +               if (ret) {
+> +                       pr_warn("%s: failed to set SCHED_DEADLINE: %d\n",
+> +                               __func__, ret);
+> +                       return cppc_freq_invariance_exit();
+> +               }
+> +
+> +               ret = cppc_get_perf_ctrs(i, &fb_ctrs);
+> +               if (ret) {
+> +                       pr_warn("%s: failed to read perf counters: %d\n",
+> +                               __func__, ret);
+> +                       return cppc_freq_invariance_exit();
+> +               }
+> +
+> +               cppc_fi->prev_perf_fb_ctrs = fb_ctrs;
+> +       }
+> +
+> +       /* Register for freq-invariance */
+> +       topology_set_scale_freq_source(&cppc_sftd, cpu_present_mask);
+> +}
+> +
+> +#else
+> +static inline void
+> +cppc_freq_invariance_policy_init(struct cpufreq_policy *policy,
+> +                                struct cppc_cpudata *cpu_data)
+> +{
+> +}
+> +
+> +static inline void cppc_freq_invariance_exit(void)
+> +{
+> +}
+> +
+> +static inline void cppc_freq_invariance_init(void)
+> +{
+> +}
+> +#endif /* CONFIG_ACPI_CPPC_CPUFREQ_FIE */
+> +
+>  /* Callback function used to retrieve the max frequency from DMI */
+>  static void cppc_find_dmi_mhz(const struct dmi_header *dm, void *private)
+>  {
+> @@ -355,9 +535,12 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>         cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
+>
+>         ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
+> -       if (ret)
+> +       if (ret) {
+>                 pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
+>                          caps->highest_perf, cpu, ret);
+> +       } else {
+> +               cppc_freq_invariance_policy_init(policy, cpu_data);
+> +       }
+>
+>         return ret;
+>  }
+> @@ -370,12 +553,12 @@ static inline u64 get_delta(u64 t1, u64 t0)
+>         return (u32)t1 - (u32)t0;
+>  }
+>
+> -static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
+> -                                    struct cppc_perf_fb_ctrs fb_ctrs_t0,
+> -                                    struct cppc_perf_fb_ctrs fb_ctrs_t1)
+> +static int cppc_perf_from_fbctrs(struct cppc_cpudata *cpu_data,
+> +                                struct cppc_perf_fb_ctrs fb_ctrs_t0,
+> +                                struct cppc_perf_fb_ctrs fb_ctrs_t1)
+>  {
+>         u64 delta_reference, delta_delivered;
+> -       u64 reference_perf, delivered_perf;
+> +       u64 reference_perf;
+>
+>         reference_perf = fb_ctrs_t0.reference_perf;
+>
+> @@ -384,12 +567,21 @@ static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
+>         delta_delivered = get_delta(fb_ctrs_t1.delivered,
+>                                     fb_ctrs_t0.delivered);
+>
+> -       /* Check to avoid divide-by zero */
+> -       if (delta_reference || delta_delivered)
+> -               delivered_perf = (reference_perf * delta_delivered) /
+> -                                       delta_reference;
+> -       else
+> -               delivered_perf = cpu_data->perf_ctrls.desired_perf;
+> +       /* Check to avoid divide-by zero and invalid delivered_perf */
+> +       if (!delta_reference || !delta_delivered)
+> +               return cpu_data->perf_ctrls.desired_perf;
+> +
+> +       return (reference_perf * delta_delivered) / delta_reference;
+> +}
+> +
+> +static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
+> +                                    struct cppc_perf_fb_ctrs fb_ctrs_t0,
+> +                                    struct cppc_perf_fb_ctrs fb_ctrs_t1)
+> +{
+> +       u64 delivered_perf;
+> +
+> +       delivered_perf = cppc_perf_from_fbctrs(cpu_data, fb_ctrs_t0,
+> +                                              fb_ctrs_t1);
+>
+>         return cppc_cpufreq_perf_to_khz(cpu_data, delivered_perf);
+>  }
+> @@ -514,6 +706,8 @@ static void cppc_check_hisi_workaround(void)
+>
+>  static int __init cppc_cpufreq_init(void)
+>  {
+> +       int ret;
+> +
+>         if ((acpi_disabled) || !acpi_cpc_valid())
+>                 return -ENODEV;
+>
+> @@ -521,7 +715,11 @@ static int __init cppc_cpufreq_init(void)
+>
+>         cppc_check_hisi_workaround();
+>
+> -       return cpufreq_register_driver(&cppc_cpufreq_driver);
+> +       ret = cpufreq_register_driver(&cppc_cpufreq_driver);
+> +       if (!ret)
+> +               cppc_freq_invariance_init();
+> +
+> +       return ret;
+>  }
+>
+>  static inline void free_cpu_data(void)
+> @@ -538,6 +736,7 @@ static inline void free_cpu_data(void)
+>
+>  static void __exit cppc_cpufreq_exit(void)
+>  {
+> +       cppc_freq_invariance_exit();
+>         cpufreq_unregister_driver(&cppc_cpufreq_driver);
+>
+>         free_cpu_data();
+> diff --git a/include/linux/arch_topology.h b/include/linux/arch_topology.h
+> index 3bcfba5c21a7..47ac4b41c28d 100644
+> --- a/include/linux/arch_topology.h
+> +++ b/include/linux/arch_topology.h
+> @@ -37,6 +37,7 @@ bool topology_scale_freq_invariant(void);
+>  enum scale_freq_source {
+>         SCALE_FREQ_SOURCE_CPUFREQ = 0,
+>         SCALE_FREQ_SOURCE_ARCH,
+> +       SCALE_FREQ_SOURCE_CPPC,
+>  };
+>
+>  struct scale_freq_data {
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index ca2bb629595f..3adedc7b1725 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6386,6 +6386,7 @@ int sched_setattr_nocheck(struct task_struct *p, const struct sched_attr *attr)
+>  {
+>         return __sched_setscheduler(p, attr, false, true);
+>  }
+> +EXPORT_SYMBOL_GPL(sched_setattr_nocheck);
+>
+>  /**
+>   * sched_setscheduler_nocheck - change the scheduling policy and/or RT priority of a thread from kernelspace.
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
