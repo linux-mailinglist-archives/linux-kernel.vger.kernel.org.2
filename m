@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9281321678
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D934321621
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:19:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbhBVMXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:23:15 -0500
+        id S231167AbhBVMSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:18:01 -0500
 Received: from mail.kernel.org ([198.145.29.99]:44934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230321AbhBVMPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E852564E44;
-        Mon, 22 Feb 2021 12:14:10 +0000 (UTC)
+        id S230257AbhBVMOs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:14:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8411264E05;
+        Mon, 22 Feb 2021 12:13:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996051;
-        bh=U6UJ3Wi8upIgMqpYP1SxDIhxzYJNtHBuwr0OCk9/ZOM=;
+        s=korg; t=1613996012;
+        bh=D8+nZ2fey+DhdbVVhKbwY5/ZqYS8vfRCe1+7dyAFP1k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J5HKCAASO98gATQB10xpD4nciPzaw4RFIwcKO4UbvvDRgEvtk0EpZJO15ZVw4DO2w
-         t8ern8x0RX6oyFTb+izLwUEHwuTNel6az1OIbEzJBzomWjpPdPpKfqHNU+cmKaz7Tt
-         RGOmWbyBqxIRg2zeY+qb0FRa9hscB1ur55xf+1sk=
+        b=krXBuF8Gd7loNhhIFLaL9pVKvvLu1AcQyS2H3kvWHTxyyNtsk39VK6iVyiD7nwIzI
+         fkGGkm+YBfHUxLycqQzWJqDyYNZ3f1+W+KP8mf99erat9Bpkb81lXyXU2Fxc4uqygo
+         fqIKTBt7p73yH7Qptx3R+4NLqUVbArYi3YcXEygM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCH 5.10 03/29] vdpa_sim: store parsed MAC address in a buffer
-Date:   Mon, 22 Feb 2021 13:12:57 +0100
-Message-Id: <20210222121020.153222666@linuxfoundation.org>
+        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 5.11 06/12] xen-blkback: dont "handle" error by BUG()
+Date:   Mon, 22 Feb 2021 13:12:58 +0100
+Message-Id: <20210222121018.316873045@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
-References: <20210222121019.444399883@linuxfoundation.org>
+In-Reply-To: <20210222121013.586597942@linuxfoundation.org>
+References: <20210222121013.586597942@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,60 +39,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefano Garzarella <sgarzare@redhat.com>
+From: Jan Beulich <jbeulich@suse.com>
 
-commit cf1a3b35382c10ce315c32bd2b3d7789897fbe13 upstream.
+commit 5a264285ed1cd32e26d9de4f3c8c6855e467fd63 upstream.
 
-As preparation for the next patches, we store the MAC address,
-parsed during the vdpasim_create(), in a buffer that will be used
-to fill 'config' together with other configurations.
+In particular -ENOMEM may come back here, from set_foreign_p2m_mapping().
+Don't make problems worse, the more that handling elsewhere (together
+with map's status fields now indicating whether a mapping wasn't even
+attempted, and hence has to be considered failed) doesn't require this
+odd way of dealing with errors.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-Link: https://lore.kernel.org/r/20201215144256.155342-11-sgarzare@redhat.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+This is part of XSA-362.
+
+Signed-off-by: Jan Beulich <jbeulich@suse.com>
+Cc: stable@vger.kernel.org
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/vdpa/vdpa_sim/vdpa_sim.c |   10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
 
---- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-+++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-@@ -42,6 +42,8 @@ static char *macaddr;
- module_param(macaddr, charp, 0);
- MODULE_PARM_DESC(macaddr, "Ethernet MAC address");
- 
-+u8 macaddr_buf[ETH_ALEN];
-+
- struct vdpasim_virtqueue {
- 	struct vringh vring;
- 	struct vringh_kiov iov;
-@@ -392,13 +394,13 @@ static struct vdpasim *vdpasim_create(st
- 		goto err_iommu;
- 
- 	if (macaddr) {
--		mac_pton(macaddr, vdpasim->config.mac);
--		if (!is_valid_ether_addr(vdpasim->config.mac)) {
-+		mac_pton(macaddr, macaddr_buf);
-+		if (!is_valid_ether_addr(macaddr_buf)) {
- 			ret = -EADDRNOTAVAIL;
- 			goto err_iommu;
- 		}
- 	} else {
--		eth_random_addr(vdpasim->config.mac);
-+		eth_random_addr(macaddr_buf);
+---
+ drivers/block/xen-blkback/blkback.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+--- a/drivers/block/xen-blkback/blkback.c
++++ b/drivers/block/xen-blkback/blkback.c
+@@ -811,10 +811,8 @@ again:
+ 			break;
  	}
  
- 	for (i = 0; i < dev_attr->nvqs; i++)
-@@ -532,6 +534,8 @@ static int vdpasim_set_features(struct v
+-	if (segs_to_map) {
++	if (segs_to_map)
+ 		ret = gnttab_map_refs(map, NULL, pages_to_gnt, segs_to_map);
+-		BUG_ON(ret);
+-	}
  
- 	config->mtu = cpu_to_vdpasim16(vdpasim, 1500);
- 	config->status = cpu_to_vdpasim16(vdpasim, VIRTIO_NET_S_LINK_UP);
-+	memcpy(config->mac, macaddr_buf, ETH_ALEN);
-+
- 	return 0;
- }
- 
+ 	/*
+ 	 * Now swizzle the MFN in our domain with the MFN from the other domain
+@@ -830,7 +828,7 @@ again:
+ 				gnttab_page_cache_put(&ring->free_pages,
+ 						      &pages[seg_idx]->page, 1);
+ 				pages[seg_idx]->handle = BLKBACK_INVALID_HANDLE;
+-				ret |= 1;
++				ret |= !ret;
+ 				goto next;
+ 			}
+ 			pages[seg_idx]->handle = map[new_map_idx].handle;
 
 
