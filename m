@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6B1321B19
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:18:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A44C1321B29
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhBVPPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:15:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        id S231538AbhBVPRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:17:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbhBVPNz (ORCPT
+        with ESMTP id S231191AbhBVPOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:13:55 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20545C0617A7;
-        Mon, 22 Feb 2021 07:12:51 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id i9so3926585wml.5;
-        Mon, 22 Feb 2021 07:12:51 -0800 (PST)
+        Mon, 22 Feb 2021 10:14:08 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F33C0617A9;
+        Mon, 22 Feb 2021 07:12:52 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id n10so14712516wmq.0;
+        Mon, 22 Feb 2021 07:12:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LLkuX0+ITGWZ/iVnAzMULSxwtPPckweuLMISePt9ssw=;
-        b=BPykAZVvUp4icbQV3I8OKq3dgj9xE7I0bXvTLRa+lLFvT2T9S46GpK5rzpalk0vka7
-         EMAebBc4xNncmRW0iYtFoKILmLT9xpNRKjXNkKgGb+RdrBDYrM86Ih0zaynkmOTCb5LP
-         NaKo4wGex24T0J5JuUZcwofRPEBZMW4HusebFD6CYD7Muei1Q9Ep+FX3tFJoNNyi6fQ4
-         vE8B0dAximKDBpReNOj1/mEWaFJRZGAdbJ6d3RmzX4lwPElZ4tQbzdIkzl+VgYesDdXm
-         1qtG97aM1OEtTOrV6g9qGUbFcX4kZio/WjmW8dJAY8W54ikoDB+MgxYkLUCWt2nF9F/v
-         xpkQ==
+        bh=65uTl/DL0ujA6C8p6tAwX4+93DKKilnR81zX6h8q1v8=;
+        b=b1r1t7/9FkfFvI8NzbPsWItaj3Vp8C1YOhKzqWDv/cIeky/XuHH9lL48rVM1yGCDQM
+         rYYwTs+SOxYhOfw5Z+59Gn+navsY/NfttlX1NbrQUYk/Qc68NddzJFdzbuDTX8GpQLTB
+         wBhgKXIFZug2leJR1e8TkH+md11czHNCQqs3jqi6qv/eTwSfES1On6EUG6wqwVsDiUix
+         Arv9gm7BT3V09ls3cWgJky4r8RyyC5tqLKw9aJDFkjVJrMUgDoc1sjDc5ACqVM5Up1wS
+         KWkZfPcFZM7K4Dxoj66LfT6arTk1SvQk5+ZkE9/v9Ipd9E7sGPqzMMaStGYWCyqNPQSI
+         YxaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LLkuX0+ITGWZ/iVnAzMULSxwtPPckweuLMISePt9ssw=;
-        b=t8e3DWaynfASCENevG8YlmPo5GrYiVVFXKIj9scJ4wmW7RynSfmcyWx8RNxMa4dY2K
-         F+hYXyZFTgExhFu0DrdQ89vIttPIna6bawPKhnn5GerNQqxhH2927l5X4B4M7eF3L5SF
-         1CGCeQ66o8XBoCrD5IY5VoIC6qJlxRUzgTUaDbgL+IaFvIDJ56b9mwVGTFVR25HZ3COT
-         r+q0TzDVhq1nDNyuIlJhNb7r7JRoxkY0keZwYoJxae3Fm2pgcEZw9539LtpTwdcrpYKf
-         SVl2hZOJithkUpaUeALs3ibL1OJUQEpjvQ/4oqGlKRtbOvDj5tNoe1r2RU6jX0zYq3YA
-         q/TQ==
-X-Gm-Message-State: AOAM531b8Eans2ce0nyTMOWOYumrv9SMuw51RGgOL9qcbOSDd43PqSGS
-        UO/6S3ILaVhNsr0onNxUSX9/d8FXEVc5Zc30VGY=
-X-Google-Smtp-Source: ABdhPJxc30UcYQVY9SrjO7shc//rXjLfBfc8tuVxMSyonaZSmDzTDDA/bQLZBQpXRC/u5O+PvGH7Xw==
-X-Received: by 2002:a1c:2094:: with SMTP id g142mr20921780wmg.101.1614006769655;
-        Mon, 22 Feb 2021 07:12:49 -0800 (PST)
+        bh=65uTl/DL0ujA6C8p6tAwX4+93DKKilnR81zX6h8q1v8=;
+        b=Q721dZrUqQ8C7HUAm3vaJWTpVnTu28nx4CwyikwXJDNJI6LjrvBP9Pf+i2XpxoMqt2
+         th8EAFcLK3AG1vrfoZzpbH2a8DEdC0tdXRPsYFjHFbpQtap/xDzTVPst8mKEZD7L+hAu
+         6dLBQIOYg8NK/4Kd1/Z86FJ20mGlQ8Zm03g/yz292a3gJSyG6A0n9aZhDDSUn2Dav4AG
+         7fld4TiLGgBn66Ag2GOnKsj9ZGF1uxkaLL1SttkmGBqzhw1YUqikcijFmRGLUgIt/HA8
+         SMU4qM9266FZqGlneZIZD4CMHzhI5LGYvwC4MdOH/9NK9UEbdf+PfAzTiVbdYEMx4Bhk
+         APhA==
+X-Gm-Message-State: AOAM531PWSAt9mzfBW9LtMda9NMAR9FMpJWL3Y4XR+VDNpCERLxNoNSU
+        hoYSFnT1ouzqkfErCWTJufmsnsOKctpg2Lly0Jw=
+X-Google-Smtp-Source: ABdhPJyr+0yYY214oKEDBI29fhzZwAOghMQnhkDW+SagA7DHVRiuybGQ/ITWc05OdOmwnuyzlppXNA==
+X-Received: by 2002:a1c:ac86:: with SMTP id v128mr20718184wme.175.1614006770799;
+        Mon, 22 Feb 2021 07:12:50 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id l15sm26251391wmh.21.2021.02.22.07.12.49
+        by smtp.gmail.com with ESMTPSA id k15sm27612368wrn.0.2021.02.22.07.12.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:49 -0800 (PST)
+        Mon, 22 Feb 2021 07:12:50 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     Romain Perier <romain.perier@gmail.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 06/20] ima: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:17 +0100
-Message-Id: <20210222151231.22572-7-romain.perier@gmail.com>
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     Romain Perier <romain.perier@gmail.com>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 07/20] SUNRPC: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:18 +0100
+Message-Id: <20210222151231.22572-8-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -82,27 +82,31 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- security/integrity/ima/ima_policy.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ net/sunrpc/clnt.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 9b45d064a87d..1a905b8b064f 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -790,8 +790,14 @@ static int __init ima_init_arch_policy(void)
- 	for (rules = arch_rules, i = 0; *rules != NULL; rules++) {
- 		char rule[255];
- 		int result;
-+		ssize_t len;
+diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
+index 612f0a641f4c..3c5c4ad8a808 100644
+--- a/net/sunrpc/clnt.c
++++ b/net/sunrpc/clnt.c
+@@ -282,7 +282,7 @@ static struct rpc_xprt *rpc_clnt_set_transport(struct rpc_clnt *clnt,
  
--		result = strlcpy(rule, *rules, sizeof(rule));
-+		len = strscpy(rule, *rules, sizeof(rule));
-+		if (len == -E2BIG) {
-+			pr_warn("Internal copy of architecture policy rule '%s' "
-+				"failed. Skipping.\n", *rules);
-+			continue;
-+		}
+ static void rpc_clnt_set_nodename(struct rpc_clnt *clnt, const char *nodename)
+ {
+-	clnt->cl_nodelen = strlcpy(clnt->cl_nodename,
++	clnt->cl_nodelen = strscpy(clnt->cl_nodename,
+ 			nodename, sizeof(clnt->cl_nodename));
+ }
  
- 		INIT_LIST_HEAD(&arch_policy_entry[i].list);
- 		result = ima_parse_rule(rule, &arch_policy_entry[i]);
+@@ -422,6 +422,10 @@ static struct rpc_clnt * rpc_new_client(const struct rpc_create_args *args,
+ 		nodename = utsname()->nodename;
+ 	/* save the nodename */
+ 	rpc_clnt_set_nodename(clnt, nodename);
++	if (clnt->cl_nodelen == -E2BIG) {
++		err = -ENOMEM;
++		goto out_no_path;
++	}
+ 
+ 	err = rpc_client_register(clnt, args->authflavor, args->client_name);
+ 	if (err)
 
