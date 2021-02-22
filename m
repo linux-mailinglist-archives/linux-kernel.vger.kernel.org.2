@@ -2,172 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68970321A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:20:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5312321A1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhBVOSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:18:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45994 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231897AbhBVNwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 08:52:23 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 95312AD2B;
-        Mon, 22 Feb 2021 13:51:42 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v3 2/2] mm: Make alloc_contig_range handle in-use hugetlb pages
-Date:   Mon, 22 Feb 2021 14:51:37 +0100
-Message-Id: <20210222135137.25717-3-osalvador@suse.de>
-X-Mailer: git-send-email 2.13.7
-In-Reply-To: <20210222135137.25717-1-osalvador@suse.de>
-References: <20210222135137.25717-1-osalvador@suse.de>
+        id S231390AbhBVOTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231592AbhBVNzA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 08:55:00 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38864C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 05:54:20 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id 81so12565637qkf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 05:54:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=marek-ca.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VS1uCxsWaVilHSWQLWzKvqKOZiAU0WU2yxAA9RpL/c0=;
+        b=Z+KR4S7gV0fXuSykElAqDeqMUe9jKg9pfUKRXrc6MunV0THzthsxBra0PKaSMzrVn3
+         N5ZnXtfZVkjINMlWtBRBxl3P433+m9uKOQ35C9nh7tm35GPi/QquSo7zZc3khPk30Xs1
+         XcnONlusrw5tUQa4cVyo8n0Z+JaBubkgfq8mQCaJ6kM3KBnexLBagMyz5cAF+7uVNBAH
+         R4nIjDJ7FouotOW2kjTQynetZMKfBazOsK98tsQgSaCWixFrl6JQeYRDKIy4DltnIBOv
+         rUN0ZBHON+5XNIvdAf5NN9f1O/qGuywhOPI1F91hfD1OvZA7KvJHjiZIaxHmBD8+tM1h
+         JC1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VS1uCxsWaVilHSWQLWzKvqKOZiAU0WU2yxAA9RpL/c0=;
+        b=VKvXQNtD9JbHIsAd2zRbM8tMktOg0GoO5ao8aXpJgOrKa0HrSaXiTMqjyKsL6d+fKY
+         b3qws5iVkuHnfcoPNXqJn/iwElwxTI+JZu5G7p/6S9Zp+Y1eT/kIh07fhPS22gjxnHpn
+         gLWqOG22LBzcJ9pzkDEf9Ors5sX8eixrqBbNIcy/S+p9LSdLysR/E0c8nhVrCkrWRb1t
+         tbJUV0Fg3KhLNxuXQwsNI2sFWZOUMeAjJSK96ZKkFkVXNcRLyU5I9JpLBnF308XuUUdv
+         55V6kuSDuvrNNahvhJCWiQMYovAu4MDhqIOVJbqReGgLNjScwYgts6p0nRMisogaYA5l
+         90LA==
+X-Gm-Message-State: AOAM530IuMS4EIaodeJNyb47hINE3lmyYaEXYovp2zMXmGiQxndm0DS+
+        Mz9TO7l4wXiGyQBy6Z34BgwOn9mjfVAALwyG
+X-Google-Smtp-Source: ABdhPJwYPrXA6xdc4ibfHhqwX32rHtCdgIVve5gfRyjL7cmibmPzvg6CIis4fH2S8Y0oa9dnnEjVww==
+X-Received: by 2002:a37:628e:: with SMTP id w136mr20831297qkb.46.1614002059116;
+        Mon, 22 Feb 2021 05:54:19 -0800 (PST)
+Received: from [192.168.0.189] (modemcable068.184-131-66.mc.videotron.ca. [66.131.184.68])
+        by smtp.gmail.com with ESMTPSA id r17sm10937838qta.78.2021.02.22.05.54.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 05:54:18 -0800 (PST)
+Subject: Re: [PATCH 3/3] fastrpc: remove redundant fastrpc_map_create() call
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210218032055.28247-1-jonathan@marek.ca>
+ <20210218032055.28247-4-jonathan@marek.ca>
+ <58e361e0-441e-fd71-362a-398dcb84f888@linaro.org>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <66afb839-7cd9-875c-72ea-f3236678f9f9@marek.ca>
+Date:   Mon, 22 Feb 2021 08:53:29 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <58e361e0-441e-fd71-362a-398dcb84f888@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-alloc_contig_range() will fail if it finds a HugeTLB page within the range,
-without a chance to handle them. Since HugeTLB pages can be migrated as any
-LRU or Movable page, it does not make sense to bail out without trying.
-Enable the interface to recognize in-use HugeTLB pages so we can migrate
-them, and have much better chances to succeed the call.
+On 2/22/21 7:37 AM, Srinivas Kandagatla wrote:
+> 
+> 
+> On 18/02/2021 03:20, Jonathan Marek wrote:
+>> fastrpc_internal_invoke() will call fastrpc_map_create, so there is no
+>> point in having it called here. This does change the behavior somewhat as
+>> fastrpc_internal_invoke() will release the map afterwards, but that's 
+>> what
+>> we want to happen in this case.
+> 
+> This will crash the DSP as you will be freeing the init process memory 
+> while it is actively using it!
+> 
+> The shell/init process is created as part of user process and it should 
+> be valid until the user process is valid! We can not free it when the 
+> invoke is finished/acked as we normally do for other invoke context!
+> 
+> In some firmwares the shell process is statically built into the DSP 
+> firmware which might work! But other normal cases are totally broken by 
+> this patch!
+> 
+> --srini
+> 
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- include/linux/hugetlb.h |  5 +++--
- mm/compaction.c         | 12 +++++++++++-
- mm/hugetlb.c            | 21 +++++++++++++++++----
- mm/vmscan.c             |  5 +++--
- 4 files changed, 34 insertions(+), 9 deletions(-)
+I am not using the static guest process, I am using the 
+FASTRPC_IOCTL_INIT_CREATE to load a fastrpc shell process. It doesn't crash.
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 72352d718829..8c17d0dbc87c 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -505,7 +505,7 @@ struct huge_bootmem_page {
- 	struct hstate *hstate;
- };
- 
--bool isolate_or_dissolve_huge_page(struct page *page);
-+bool isolate_or_dissolve_huge_page(struct page *page, struct list_head *list);
- struct page *alloc_huge_page(struct vm_area_struct *vma,
- 				unsigned long addr, int avoid_reserve);
- struct page *alloc_huge_page_nodemask(struct hstate *h, int preferred_nid,
-@@ -776,7 +776,8 @@ void set_page_huge_active(struct page *page);
- #else	/* CONFIG_HUGETLB_PAGE */
- struct hstate {};
- 
--static inline bool isolate_or_dissolve_huge_page(struct page *page)
-+static inline bool isolate_or_dissolve_huge_page(struct page *page,
-+						 struct list_head *list)
- {
- 	return false;
- }
-diff --git a/mm/compaction.c b/mm/compaction.c
-index d52506ed9db7..6d9169e71d61 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -906,9 +906,18 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		}
- 
- 		if (PageHuge(page) && cc->alloc_contig) {
--			if (!isolate_or_dissolve_huge_page(page))
-+			if (!isolate_or_dissolve_huge_page(page, &cc->migratepages))
- 				goto isolate_fail;
- 
-+			if (PageHuge(page)) {
-+				/*
-+				 * Hugepage was successfully isolated and placed
-+				 * on the cc->migratepages list.
-+				 */
-+				low_pfn += compound_nr(page) - 1;
-+				goto isolate_success_no_list;
-+			}
-+
- 			/*
- 			 * Ok, the hugepage was dissolved. Now these pages are
- 			 * Buddy and cannot be re-allocated because they are
-@@ -1053,6 +1062,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 
- isolate_success:
- 		list_add(&page->lru, &cc->migratepages);
-+isolate_success_no_list:
- 		cc->nr_migratepages += compound_nr(page);
- 		nr_isolated += compound_nr(page);
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 56eba64a1d33..95dd54cd53c0 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2336,7 +2336,9 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page)
- 		goto unlock;
- 	} else if (page_count(old_page)) {
- 		/*
--		 * Someone has grabbed the page, fail for now.
-+		 * Someone has grabbed the page, return -EBUSY so we give
-+		 * isolate_or_dissolve_huge_page a chance to handle an in-use
-+		 * page.
- 		 */
- 		ret = -EBUSY;
- 		update_and_free_page(h, new_page);
-@@ -2368,11 +2370,12 @@ static int alloc_and_dissolve_huge_page(struct hstate *h, struct page *old_page)
- 	return ret;
- }
- 
--bool isolate_or_dissolve_huge_page(struct page *page)
-+bool isolate_or_dissolve_huge_page(struct page *page, struct list_head *list)
- {
- 	struct hstate *h = NULL;
- 	struct page *head;
- 	bool ret = false;
-+	bool try_again = true;
- 
- 	spin_lock(&hugetlb_lock);
- 	if (PageHuge(page)) {
-@@ -2394,9 +2397,19 @@ bool isolate_or_dissolve_huge_page(struct page *page)
- 	 */
- 	if (hstate_is_gigantic(h))
- 		return ret;
--
--	if (!page_count(head) && alloc_and_dissolve_huge_page(h, head))
-+retry:
-+	if (page_count(head) && isolate_huge_page(head, list)) {
- 		ret = true;
-+	} else if (!page_count(head)) {
-+		int err = alloc_and_dissolve_huge_page(h, head);
-+
-+		if (!err) {
-+			ret = true;
-+		} else if (err == -EBUSY && try_again) {
-+			try_again = false;
-+			goto retry;
-+		}
-+	}
- 
- 	return ret;
- }
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b1b574ad199d..0803adca4469 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1506,8 +1506,9 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- 	LIST_HEAD(clean_pages);
- 
- 	list_for_each_entry_safe(page, next, page_list, lru) {
--		if (page_is_file_lru(page) && !PageDirty(page) &&
--		    !__PageMovable(page) && !PageUnevictable(page)) {
-+		if (!PageHuge(page) && page_is_file_lru(page) &&
-+		    !PageDirty(page) && !__PageMovable(page) &&
-+		    !PageUnevictable(page)) {
- 			ClearPageActive(page);
- 			list_move(&page->lru, &clean_pages);
- 		}
--- 
-2.16.3
+AFAIK the DSP does not need the process memory after the process 
+creation - this would allow userspace to modify the executable after the 
+DSP verifies the hash/signature. So the DSP absolutely needs to make a 
+copy of it before verifying it (otherwise this would be a pretty serious 
+and obvious security flaw in qcom's fastrpc system. but I wouldn't be 
+surprised!).
 
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   drivers/misc/fastrpc.c | 12 +-----------
+>>   1 file changed, 1 insertion(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+>> index 170352b43ab6..ccad9f5f5e2f 100644
+>> --- a/drivers/misc/fastrpc.c
+>> +++ b/drivers/misc/fastrpc.c
+>> @@ -1013,7 +1013,6 @@ static int fastrpc_init_create_process(struct 
+>> fastrpc_user *fl,
+>>       struct fastrpc_init_create init;
+>>       struct fastrpc_invoke_args *args;
+>>       struct fastrpc_phy_page pages[1];
+>> -    struct fastrpc_map *map = NULL;
+>>       struct fastrpc_buf *imem = NULL;
+>>       int memlen;
+>>       int err;
+>> @@ -1049,18 +1048,12 @@ static int fastrpc_init_create_process(struct 
+>> fastrpc_user *fl,
+>>       inbuf.siglen = init.siglen;
+>>       fl->pd = USER_PD;
+>> -    if (init.filelen && init.filefd) {
+>> -        err = fastrpc_map_create(fl, init.filefd, init.filelen, &map);
+>> -        if (err)
+>> -            goto err;
+>> -    }
+>> - >       memlen = ALIGN(max(INIT_FILELEN_MAX, (int)init.filelen * 4),
+>>                  1024 * 1024);
+>>       err = fastrpc_buf_alloc(fl, fl->sctx->dev, memlen,
+>>                   &imem);
+>>       if (err)
+>> -        goto err_alloc;
+>> +        goto err;
+>>       fl->init_mem = imem;
+>>       args[0].ptr = (u64)(uintptr_t)&inbuf;
+>> @@ -1106,9 +1099,6 @@ static int fastrpc_init_create_process(struct 
+>> fastrpc_user *fl,
+>>   err_invoke:
+>>       fl->init_mem = NULL;
+>>       fastrpc_buf_free(imem);
+>> -err_alloc:
+>> -    if (map)
+>> -        fastrpc_map_put(map);
+>>   err:
+>>       kfree(args);
+>>
