@@ -2,96 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8A03210FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 07:45:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3A63210FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 07:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhBVGox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 01:44:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhBVGoh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 01:44:37 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E737C061574;
-        Sun, 21 Feb 2021 22:43:57 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id b145so6001309pfb.4;
-        Sun, 21 Feb 2021 22:43:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=M1CBK07C46laJoyWYovF4lSgfEz56MEL8US4G4KcnR0=;
-        b=VMN5tc4DR8o2nDN/b5KFvZqQa6duu77h7sBp5OmZ2ROJmMJVtJKZMpc9GHprk1jDHb
-         ARN/Xf82uzfcaJdAHz/T4B+E2zuvrAo90wgUZG3Dld2wYmR6qqIR7z2r77JfUwca3UJY
-         dFR3NNQosShszX7Znz7D1vysGEWDj7YwsJKFKAe+osnWMvYW5MWhiy/wfaKjaUNL5Xou
-         tEsYM7mkvWZ2blnVtVAtemsQbZn9FMHy1w2ni/dBCw1Y+5dipyfkbxJPwz+fR429v1to
-         /bL8TKN9onyiZDZefBqntXFS5G7dubbubE1pueIFhA/aL2cJTx46DxfBH7mxMDNPfiVV
-         HbiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=M1CBK07C46laJoyWYovF4lSgfEz56MEL8US4G4KcnR0=;
-        b=kxfcIyafIRhKVB8aCGf/xRlymWB4qll1sRFNer9tQPqdV65RDljPZWvYdmQaVYN2tC
-         f5c/t1upXkz0Q03Yc1oncD4AA43uA5RsJNnsZZc5KTXOSg+J51Ct8SGIX5kU3hBFUXYk
-         PWxJ69dhQNyIX+OL2NyWY9a7tQH198M/qhxlX7OI1UVviwNfQhWAxL8bhFt4wYDnDeu6
-         cVPU4d1pq28lrWGerQkdftelAcRcGgXTloVsKcJQv8S0xcy4NvsR45sumVKI+G0Dx2Tu
-         pOJUJlVAwFrtxb10ifrLvn9x7e9Xzrk/VUb6fvVFGv1hDTyXGTfs0wyubatnIW7Ky1kp
-         wNCA==
-X-Gm-Message-State: AOAM533voAlIKS76gZIKdDDUJUHXAmALnUdB/bXOb/HO/11/h81d2mI/
-        wGXBLNBX0yMqZ8g45vJ+1Jo=
-X-Google-Smtp-Source: ABdhPJyqLaJut8n4jfDP5K19sjmiimEx9q9MGmuYnzLAtKKOKI8pG9AFY6QqZaKgUXolFrpGwmf/Og==
-X-Received: by 2002:a65:5c85:: with SMTP id a5mr10843098pgt.355.1613976236773;
-        Sun, 21 Feb 2021 22:43:56 -0800 (PST)
-Received: from linux-l9pv.suse ([124.11.22.254])
-        by smtp.gmail.com with ESMTPSA id 188sm8688195pfz.119.2021.02.21.22.43.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 21 Feb 2021 22:43:56 -0800 (PST)
-From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ben Boeckel <me@benboeckel.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: [PATCH 4/4] Documentation/admin-guide/module-signing.rst: add openssl command option example for CodeSign EKU
-Date:   Mon, 22 Feb 2021 14:42:51 +0800
-Message-Id: <20210222064251.13374-5-jlee@suse.com>
-X-Mailer: git-send-email 2.12.3
-In-Reply-To: <20210222064251.13374-1-jlee@suse.com>
-References: <20210222064251.13374-1-jlee@suse.com>
+        id S230104AbhBVGp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 01:45:29 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:55788 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230063AbhBVGoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 01:44:54 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxudSbUjNg5zUNAA--.16978S3;
+        Mon, 22 Feb 2021 14:43:39 +0800 (CST)
+Subject: Re: [PATCH v2 0/3] Add some perf support for mips
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+References: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Juxin Gao <gaojuxin@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <1d3c4abd-4b14-90e3-6528-457a8248cb52@loongson.cn>
+Date:   Mon, 22 Feb 2021 14:43:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <1612409724-3516-1-git-send-email-yangtiezhu@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxudSbUjNg5zUNAA--.16978S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uw18GFWftw4UCF1xuF4rZrb_yoW8KFWfpa
+        1DC3s5Gw45WrySy34fAF48ZFyfWwn5ZrWF934Iq3y3Zr1SqFnrJr1fGF98tF17Xw1UGa10
+        9rn0gr1UGw4SyaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrw
+        CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
+        14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
+        IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
+        x2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+        AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUEAp5UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an openssl command option example for generating CodeSign extended
-key usage in X.509 when CONFIG_CHECK_CODESIGN_EKU is enabled.
+On 02/04/2021 11:35 AM, Tiezhu Yang wrote:
+> v2: add R26 and R27 to the enum perf_event_mips_regs in patch #1
+>
+> Tiezhu Yang (3):
+>    MIPS: kernel: Support extracting off-line stack traces from user-space
+>      with perf
+>    perf tools: Support mips unwinding and dwarf-regs
+>    perf tools: Generate mips syscalls_n64.c syscall table
 
-Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
----
- Documentation/admin-guide/module-signing.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
+Hi Arnaldo,
 
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index 7d7c7c8a545c..b57b30c7125f 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -170,6 +170,12 @@ generate the public/private key files::
- 	   -config x509.genkey -outform PEM -out kernel_key.pem \
- 	   -keyout kernel_key.pem
- 
-+When ``CONFIG_CHECK_CODESIGN_EKU`` option be enabled, the following openssl
-+command option should be added for generating CodeSign extended key usage in
-+X.509::
-+
-+        -addext "extendedKeyUsage=codeSigning"
-+
- The full pathname for the resulting kernel_key.pem file can then be specified
- in the ``CONFIG_MODULE_SIG_KEY`` option, and the certificate and key therein will
- be used instead of an autogenerated keypair.
--- 
-2.16.4
+The kernel part patch #1 has been merged.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1ddc96bd42da
+
+Could the perf tool patches #2 and #3 have a chance to be merged before 
+5.12-rc1?
+If yes, we can use this feature in 5.12-rc1.
+
+https://lore.kernel.org/patchwork/patch/1375476/
+https://lore.kernel.org/patchwork/patch/1375475/
+
+
+Thanks,
+Tiezhu
+
+>
+>   arch/mips/Kconfig                                  |   2 +
+>   arch/mips/include/uapi/asm/perf_regs.h             |  40 +++
+>   arch/mips/kernel/Makefile                          |   2 +-
+>   arch/mips/kernel/perf_regs.c                       |  68 ++++
+>   tools/perf/Makefile.config                         |   9 +-
+>   tools/perf/arch/mips/Makefile                      |  22 ++
+>   tools/perf/arch/mips/entry/syscalls/mksyscalltbl   |  32 ++
+>   .../perf/arch/mips/entry/syscalls/syscall_n64.tbl  | 358 +++++++++++++++++++++
+>   tools/perf/arch/mips/include/dwarf-regs-table.h    |  31 ++
+>   tools/perf/arch/mips/include/perf_regs.h           |  84 +++++
+>   tools/perf/arch/mips/util/Build                    |   3 +
+>   tools/perf/arch/mips/util/dwarf-regs.c             |  38 +++
+>   tools/perf/arch/mips/util/perf_regs.c              |   6 +
+>   tools/perf/arch/mips/util/unwind-libunwind.c       |  22 ++
+>   tools/perf/check-headers.sh                        |   1 +
+>   tools/perf/util/dwarf-regs.c                       |   3 +
+>   tools/perf/util/syscalltbl.c                       |   4 +
+>   17 files changed, 723 insertions(+), 2 deletions(-)
+>   create mode 100644 arch/mips/include/uapi/asm/perf_regs.h
+>   create mode 100644 arch/mips/kernel/perf_regs.c
+>   create mode 100644 tools/perf/arch/mips/Makefile
+>   create mode 100644 tools/perf/arch/mips/entry/syscalls/mksyscalltbl
+>   create mode 100644 tools/perf/arch/mips/entry/syscalls/syscall_n64.tbl
+>   create mode 100644 tools/perf/arch/mips/include/dwarf-regs-table.h
+>   create mode 100644 tools/perf/arch/mips/include/perf_regs.h
+>   create mode 100644 tools/perf/arch/mips/util/Build
+>   create mode 100644 tools/perf/arch/mips/util/dwarf-regs.c
+>   create mode 100644 tools/perf/arch/mips/util/perf_regs.c
+>   create mode 100644 tools/perf/arch/mips/util/unwind-libunwind.c
+>
 
