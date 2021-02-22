@@ -2,431 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEB6321F6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:54:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7AD321F66
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhBVSxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:53:21 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31287 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231896AbhBVSwD (ORCPT
+        id S230139AbhBVSwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:52:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231656AbhBVSvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:52:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614019834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GfUDGfi6ea7xF4viXCBTQQvX0/p+g7vjdBBK65j/VPA=;
-        b=ULobO5LQsVpxGQz6PekQogVexvSXGtmPjvEHXLmVUHI7jhAARAPmc6TaZitCBZ3sys2CLm
-        rUZC9ygxVL+Xfw7YyqETo3WNoLEL+WNmsH75RLfuQjGtbW/ymeHjOp26NNem9e29/5lHAB
-        4eEZYvYXmj3f9fWGvGTsIo6d7JuHdlU=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-S19EaVNvNO-uRtTvbH3Kuw-1; Mon, 22 Feb 2021 13:50:32 -0500
-X-MC-Unique: S19EaVNvNO-uRtTvbH3Kuw-1
-Received: by mail-qk1-f197.google.com with SMTP id y79so9857433qka.23
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:50:32 -0800 (PST)
+        Mon, 22 Feb 2021 13:51:39 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B56AC061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:50:59 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id g20so8312949plo.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 10:50:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fWSnGOHQRw22BUkFu0CDCL0FRSrSJcNTmBm1h9SVnDQ=;
+        b=jsxlSAjMjBVR/+KtLcVPGhKoV4qJ83UNQAH23qgvxynIJTgK43UTjb04xUVrrrrmIP
+         DStorzSYehs5boEAg28nk+UbwRTsCnEZyalte0WxW/H2nH9WQZn2J5ZeaPgwAf7yMmK7
+         gizTdNxNOvBFY26HLNnvusjh1l3wqIIiMSz9xCTYYIy2LwEOId/qmJ+zVVmJqWQLxXW2
+         opr/aaEEvvKv3KXZs01EKiHIZ4oAnHM99G00tSRev6F2G0YQ/gGhmo21Rhpsdh66vA+r
+         JKY/Hlco1IFJ0IznpsGZ51adgsTUai/piX0aYZQcyG4xJqvuXzq/VmXjT9z61Nk5re9l
+         r+RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=GfUDGfi6ea7xF4viXCBTQQvX0/p+g7vjdBBK65j/VPA=;
-        b=t95llpisii59ksh39QPwvppApATVia4GTeNHmwwcTRy7EhQS4WTr40Ct4HdlKDOdE4
-         bxhwAZyq++nBdDuLcay1of+gYlgIbV9bRONfY8QahPGqJ+qq/0mgMOAjqewpEteYYOWB
-         fHUVEk43MIcBTMXg535J3FQS2TmYBph/sv8hCkZ4MC16OTAPCNdvDzLIjmy6AmIkcA84
-         Ukz4kUUcXgKID4ZRGOjIpIAg3qV5Q19uFS/rCIm3bcrQA5KK+WE3/IOkcNbXo2Wy/O2y
-         pAmF3zuKvyVoPI1Nr9JPqkfqgRUt3XsqstaB0P1o3kYsoasmmX/C5eHnwSUdPkYzhVLg
-         zx4A==
-X-Gm-Message-State: AOAM530IkvEd1MsN0NIxf6VDK4AL4zIG3ORbQ7KzR2e89IuKGyQ1TlWV
-        yNybZmLk7lw32v7aW8iTtBLm69NCQzSjr6jKXHD/SQ5+Cuqkk9f3qPMdHbzdg1K9j34G13N1+8g
-        T5RnmdCiJ9QjVD0CKwPIHHcZE
-X-Received: by 2002:ad4:5894:: with SMTP id dz20mr14440227qvb.26.1614019832399;
-        Mon, 22 Feb 2021 10:50:32 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwEzGiYdJnvdaOsdcpNFb0pt6R8goL7WirxetzekByYomC7ZgOJd9mVMcDW+paUosTpuxblbw==
-X-Received: by 2002:ad4:5894:: with SMTP id dz20mr14440187qvb.26.1614019831970;
-        Mon, 22 Feb 2021 10:50:31 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id f186sm1811264qkj.106.2021.02.22.10.50.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 10:50:31 -0800 (PST)
-Subject: Re: [PATCH V3 XRT Alveo 05/18] fpga: xrt: group platform driver
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     Lizhi Hou <lizhih@xilinx.com>, linux-fpga@vger.kernel.org,
-        maxz@xilinx.com, sonal.santan@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210218064019.29189-1-lizhih@xilinx.com>
- <20210218064019.29189-6-lizhih@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <ebf64992-4067-18c2-661d-6c3a3b64c7c0@redhat.com>
-Date:   Mon, 22 Feb 2021 10:50:29 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fWSnGOHQRw22BUkFu0CDCL0FRSrSJcNTmBm1h9SVnDQ=;
+        b=Ytpaqep2vcZ3fx8uwTmJ1xLxXDm/4z5vG7shQ+SsyuVH5PiNhCnhy2rGkMqxAWbK3o
+         I5HNZTOv6FxohH9ZLJ09R9DR6FNhAEpirLJ7DKvz4sjkdwpA7Z7WlxaET+UxyB+Nukea
+         146M5CG9tUdGsAc8fuBTHXFmYdJ7qv0JoOl/xsAMpPnnDhUb67eS46bNAPHoKiJ+nkly
+         hEmJV5we2kxX/D68bnkUUzjOKGJsbnsjxfvIkkVlNEW0CgycKkcndij4O90nzrzpWpNa
+         MhbqfT28+UKbAfgZdjJnbGcm9j+WEswzm+RiV7aIzRAZRGmXszcHbdNHPL1I/FQmahj/
+         mQAw==
+X-Gm-Message-State: AOAM532IJGtBOCDqNEV7T6WTrKrPFEeiy+Ybi0v9fVrJIUnEYxAFzohg
+        LLm457OD0qVnHnDqN1jPZaZ2lA==
+X-Google-Smtp-Source: ABdhPJxe3vfkvSEYm86oMzbeoUg9ThSJpfuio7psJ0LK+eXIWNzqLMP78vlcpVlkmHQ3M7gGzqSv3w==
+X-Received: by 2002:a17:90a:114f:: with SMTP id d15mr23788815pje.1.1614019858365;
+        Mon, 22 Feb 2021 10:50:58 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id s16sm9261450pfs.39.2021.02.22.10.50.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 10:50:57 -0800 (PST)
+Date:   Mon, 22 Feb 2021 11:50:55 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Mike Leach <mike.leach@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-doc@vger.kernel.org, suzuki.poulose@arm.com,
+        yabinc@google.com, corbet@lwn.net, leo.yan@linaro.org,
+        alexander.shishkin@linux.intel.com, tingwei@codeaurora.org,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 01/10] coresight: syscfg: Initial coresight system
+ configuration
+Message-ID: <20210222185055.GA3239381@xps15>
+References: <20210128170936.9222-1-mike.leach@linaro.org>
+ <20210128170936.9222-2-mike.leach@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210218064019.29189-6-lizhih@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128170936.9222-2-mike.leach@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2/17/21 10:40 PM, Lizhi Hou wrote:
-> group driver that manages life cycle of a bunch of leaf driver instances
-> and bridges them with root.
->
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhih@xilinx.com>
+On Thu, Jan 28, 2021 at 05:09:27PM +0000, Mike Leach wrote:
+> Creates an system management API to allow complex configurations and
+> features to be programmed into a CoreSight infrastructure.
+> 
+> A feature is defined as a programming set for a device or class of
+> devices.
+> 
+> A configuration is a set of features across the system that are enabled
+> for a trace session.
+> 
+> The API will manage system wide configuration, and allow complex
+> programmed features to be added to individual device instances, and
+> provide for system wide configuration selection on trace capture
+> operations.
+> 
+> This patch creates the initial data object and the initial API for
+> loading configurations and features.
+> 
+> Signed-off-by: Mike Leach <mike.leach@linaro.org>
 > ---
->  drivers/fpga/xrt/include/group.h |  27 ++++
->  drivers/fpga/xrt/lib/group.c     | 265 +++++++++++++++++++++++++++++++
->  2 files changed, 292 insertions(+)
->  create mode 100644 drivers/fpga/xrt/include/group.h
->  create mode 100644 drivers/fpga/xrt/lib/group.c
->
-> diff --git a/drivers/fpga/xrt/include/group.h b/drivers/fpga/xrt/include/group.h
+>  drivers/hwtracing/coresight/Makefile          |   2 +-
+>  .../hwtracing/coresight/coresight-config.h    | 167 +++++++++++++++
+>  drivers/hwtracing/coresight/coresight-core.c  |  12 +-
+>  .../hwtracing/coresight/coresight-etm-perf.c  |   2 +-
+>  .../hwtracing/coresight/coresight-etm-perf.h  |   2 +-
+>  .../hwtracing/coresight/coresight-syscfg.c    | 197 ++++++++++++++++++
+>  .../hwtracing/coresight/coresight-syscfg.h    |  54 +++++
+>  7 files changed, 432 insertions(+), 4 deletions(-)
+>  create mode 100644 drivers/hwtracing/coresight/coresight-config.h
+>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.c
+>  create mode 100644 drivers/hwtracing/coresight/coresight-syscfg.h
+> 
+> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+> index f20e357758d1..4ce854c434b1 100644
+> --- a/drivers/hwtracing/coresight/Makefile
+> +++ b/drivers/hwtracing/coresight/Makefile
+> @@ -4,7 +4,7 @@
+>  #
+>  obj-$(CONFIG_CORESIGHT) += coresight.o
+>  coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
+> -		coresight-sysfs.o
+> +		coresight-sysfs.o coresight-syscfg.o
+>  obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
+>  coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
+>  		      coresight-tmc-etr.o
+> diff --git a/drivers/hwtracing/coresight/coresight-config.h b/drivers/hwtracing/coresight/coresight-config.h
 > new file mode 100644
-> index 000000000000..1874cdd5120d
+> index 000000000000..3fedf8ab3cee
 > --- /dev/null
-> +++ b/drivers/fpga/xrt/include/group.h
-> @@ -0,0 +1,27 @@
+> +++ b/drivers/hwtracing/coresight/coresight-config.h
+> @@ -0,0 +1,167 @@
 > +/* SPDX-License-Identifier: GPL-2.0 */
 > +/*
-> + * Header file for Xilinx Runtime (XRT) driver
-A bit too generic, please add a description or remove.
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Cheng Zhen <maxz@xilinx.com>
+> + * Copyright (c) 2020 Linaro Limited, All rights reserved.
+> + * Author: Mike Leach <mike.leach@linaro.org>
 > + */
 > +
-> +#ifndef _XRT_GROUP_H_
-> +#define _XRT_GROUP_H_
+> +#ifndef _CORESIGHT_CORESIGHT_CONFIG_H
+> +#define _CORESIGHT_CORESIGHT_CONFIG_H
 > +
-> +#include "xleaf.h"
-This is patch 6, consider comments on patch 4.
+> +#include <linux/coresight.h>
+> +#include <linux/types.h>
+> +
+> +/* CoreSight Configuration Management - component and system wide configuration */
 > +
 > +/*
-> + * Group driver IOCTL calls.
-
-Are these really ioctl calls?
-
-Seems more like messages between nodes in a tree.
-
-Consider changing to better jagon, maybe ioctl -> msg
-
+> + * Register type flags for register value descriptor:
+> + * describe how the value is interpreted, and handled.
 > + */
-> +enum xrt_group_ioctl_cmd {
-> +	XRT_GROUP_GET_LEAF = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
-XRT_LEAF_CUSTOM_BASE is a #define, while these are enums. To be consistent, the XRT_LEAF_CUSTOM_BASE should be an enum in xleaf, you can initialize it to 64 there.
-> +	XRT_GROUP_PUT_LEAF,
-> +	XRT_GROUP_INIT_CHILDREN,
-> +	XRT_GROUP_FINI_CHILDREN,
-> +	XRT_GROUP_TRIGGER_EVENT,
-> +};
+> +#define CS_CFG_REG_TYPE_STD		0x80	/* reg is standard reg */
+> +#define CS_CFG_REG_TYPE_RESOURCE	0x40	/* reg is a resource */
+> +#define CS_CFG_REG_TYPE_VAL_PARAM	0x08	/* reg value uses param */
+> +#define CS_CFG_REG_TYPE_VAL_MASK	0x04	/* reg value bit masked */
+> +#define CS_CFG_REG_TYPE_VAL_64BIT	0x02	/* reg value 64 bit */
+> +#define CS_CFG_REG_TYPE_VAL_SAVE	0x01	/* reg value save on disable */
 > +
-> +#endif	/* _XRT_GROUP_H_ */
-> diff --git a/drivers/fpga/xrt/lib/group.c b/drivers/fpga/xrt/lib/group.c
-> new file mode 100644
-> index 000000000000..6ba56eea479b
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/group.c
-> @@ -0,0 +1,265 @@
-> +// SPDX-License-Identifier: GPL-2.0
 > +/*
-> + * Xilinx Alveo FPGA Group Driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Cheng Zhen <maxz@xilinx.com>
+> + * flags defining what device class a feature will match to when processing a
+> + * system configuration - used by config data and devices.
 > + */
+> +#define	CS_CFG_MATCH_CLASS_SRC_ALL	0x0001	/* match any source */
+> +#define CS_CFG_MATCH_CLASS_SRC_ETM4	0x0002	/* match any ETMv4 device */
 > +
-> +#include <linux/mod_devicetable.h>
-> +#include <linux/platform_device.h>
-> +#include "xleaf.h"
-> +#include "subdev_pool.h"
-> +#include "group.h"
-> +#include "metadata.h"
-> +#include "main.h"
+> +/* flags defining device instance matching - used in config match desc data. */
+> +#define CS_CFG_MATCH_INST_ANY		0x80000000 /* any instance of a class */
 > +
-> +#define XRT_GRP "xrt_group"
+> +/*
+> + * Limit number of presets in a configuration
+> + * This is related to the number of bits (4) we use to select the preset on
+> + * the perf command line. Preset 0 is always none selected.
+> + * See PMU_FORMAT_ATTR(preset, "config:0-3") in coresight-etm-perf.c
+> + */
+> +#define CS_CFG_CONFIG_PRESET_MAX 15
 > +
-> +struct xrt_group {
-> +	struct platform_device *pdev;
-> +	struct xrt_subdev_pool leaves;
-> +	bool leaves_created;
-> +	struct mutex lock; /* lock for group */
+> +/**
+> + * Parameter descriptor for a device feature.
+> + *
+> + * @name:  Name of parameter.
+> + * @value: Initial or default value.
+> + */
+> +struct cscfg_parameter_desc {
+> +	const char *name;
+> +	u64 value;
 > +};
 > +
-> +static int xrt_grp_root_cb(struct device *dev, void *parg,
-> +			   u32 cmd, void *arg)
-could 'cmd' be some enum type ?
-> +{
-> +	int rc;
-> +	struct platform_device *pdev =
-> +		container_of(dev, struct platform_device, dev);
-> +	struct xrt_group *xg = (struct xrt_group *)parg;
-> +
-> +	switch (cmd) {
-> +	case XRT_ROOT_GET_LEAF_HOLDERS: {
-> +		struct xrt_root_ioctl_get_holders *holders =
-> +			(struct xrt_root_ioctl_get_holders *)arg;
-> +		rc = xrt_subdev_pool_get_holders(&xg->leaves,
-> +						 holders->xpigh_pdev,
-> +						 holders->xpigh_holder_buf,
-> +						 holders->xpigh_holder_buf_len);
-> +		break;
-> +	}
-> +	default:
-> +		/* Forward parent call to root. */
-> +		rc = xrt_subdev_root_request(pdev, cmd, arg);
-> +		break;
-> +	}
-> +
-> +	return rc;
-> +}
-> +
-> +static int xrt_grp_create_leaves(struct xrt_group *xg)
-> +{
-> +	struct xrt_subdev_platdata *pdata = DEV_PDATA(xg->pdev);
-> +	enum xrt_subdev_id did;
-> +	struct xrt_subdev_endpoints *eps = NULL;
-> +	int ep_count = 0, i, ret = 0, failed = 0;
-> +	unsigned long mlen;
-> +	char *dtb, *grp_dtb = NULL;
-> +	const char *ep_name;
-> +
-> +	mutex_lock(&xg->lock);
-> +
-> +	if (xg->leaves_created) {
-> +		mutex_unlock(&xg->lock);
-This happens should be programming error, so print out some error message
-> +		return -EEXIST;
-> +	}
-> +
-> +	xrt_info(xg->pdev, "bringing up leaves...");
-> +
-> +	/* Create all leaves based on dtb. */
-> +	if (!pdata)
-> +		goto bail;
-move to above the lock and fail with something like -EINVAL
-> +
-> +	mlen = xrt_md_size(DEV(xg->pdev), pdata->xsp_dtb);
-> +	if (mlen == XRT_MD_INVALID_LENGTH) {
-> +		xrt_err(xg->pdev, "invalid dtb, len %ld", mlen);
-> +		goto bail;
-> +	}
-> +
-> +	grp_dtb = vmalloc(mlen);
-> +	if (!grp_dtb)
-> +		goto bail;
-failed is only set in the loop. This is an unreported -ENOMEM
-> +
-> +	memcpy(grp_dtb, pdata->xsp_dtb, mlen);
-> +	for (did = 0; did < XRT_SUBDEV_NUM;) {
-why isn't the did incremented ?
-> +		eps = eps ? eps + 1 : xrt_drv_get_endpoints(did);
-
-this assumes the enpoints are in an array and accessed serially.
-
-this is fragile.
-
-convert to using just the xrt_drv_get_endpoints() call
-
-> +		if (!eps || !eps->xse_names) {
-> +			did++;
-> +			eps = NULL;
-> +			continue;
-> +		}
-> +		ret = xrt_md_create(DEV(xg->pdev), &dtb);
-> +		if (ret) {
-> +			xrt_err(xg->pdev, "create md failed, drv %s",
-> +				xrt_drv_name(did));
-> +			failed++;
-failed but no cleanup of earier successes
-> +			continue;
-> +		}
-> +		for (i = 0; eps->xse_names[i].ep_name ||
-
-this assumes that xse_names[] always has a guard.
-
-why not use xse_min_ep ?
-
-> +		     eps->xse_names[i].regmap_name; i++) {
-> +			ep_name = (char *)eps->xse_names[i].ep_name;
-> +			if (!ep_name) {
-> +				xrt_md_get_compatible_endpoint(DEV(xg->pdev),
-> +							       grp_dtb,
-> +							       eps->xse_names[i].regmap_name,
-> +							       &ep_name);
-> +			}
-> +			if (!ep_name)
-> +				continue;
-> +
-> +			ret = xrt_md_copy_endpoint(DEV(xg->pdev),
-> +						   dtb, grp_dtb, ep_name,
-> +						   (char *)eps->xse_names[i].regmap_name,
-> +						   NULL);
-> +			if (ret)
-> +				continue;
-> +			xrt_md_del_endpoint(DEV(xg->pdev), grp_dtb, ep_name,
-> +					    (char *)eps->xse_names[i].regmap_name);
-> +			ep_count++;
-> +		}
-> +		if (ep_count >= eps->xse_min_ep) {
-This only happens if all additions are successful.
-> +			ret = xrt_subdev_pool_add(&xg->leaves, did,
-> +						  xrt_grp_root_cb, xg, dtb);
-> +			eps = NULL;
-> +			if (ret < 0) {
-> +				failed++;
-> +				xrt_err(xg->pdev, "failed to create %s: %d",
-> +					xrt_drv_name(did), ret);
-> +			}
-> +		} else if (ep_count > 0) {
-> +			xrt_md_copy_all_endpoints(DEV(xg->pdev), grp_dtb, dtb);
-> +		}
-> +		vfree(dtb);
-> +		ep_count = 0;
-> +	}
-> +
-> +	xg->leaves_created = true;
-This is true even if some failed ?
-> +
-> +bail:
-> +	vfree(grp_dtb);
-> +	mutex_unlock(&xg->lock);
-> +
-> +	return failed == 0 ? 0 : -ECHILD;
-> +}
-> +
-> +static void xrt_grp_remove_leaves(struct xrt_group *xg)
-> +{
-> +	mutex_lock(&xg->lock);
-> +
-> +	if (!xg->leaves_created) {
-> +		mutex_unlock(&xg->lock);
-> +		return;
-> +	}
-> +
-> +	xrt_info(xg->pdev, "tearing down leaves...");
-> +	xrt_subdev_pool_fini(&xg->leaves);
-partial failure above and the subdev_pool is not created ?
-> +	xg->leaves_created = false;
-> +
-> +	mutex_unlock(&xg->lock);
-> +}
-> +
-> +static int xrt_grp_probe(struct platform_device *pdev)
-> +{
-> +	struct xrt_group *xg;
-> +
-> +	xrt_info(pdev, "probing...");
-> +
-> +	xg = devm_kzalloc(&pdev->dev, sizeof(*xg), GFP_KERNEL);
-> +	if (!xg)
-> +		return -ENOMEM;
-> +
-> +	xg->pdev = pdev;
-> +	mutex_init(&xg->lock);
-> +	xrt_subdev_pool_init(DEV(pdev), &xg->leaves);
-> +	platform_set_drvdata(pdev, xg);
-> +
-> +	return 0;
-> +}
-> +
-> +static int xrt_grp_remove(struct platform_device *pdev)
-> +{
-> +	struct xrt_group *xg = platform_get_drvdata(pdev);
-> +
-> +	xrt_info(pdev, "leaving...");
-> +	xrt_grp_remove_leaves(xg);
-
-lock ?
-
-Tom
-
-> +	return 0;
-> +}
-> +
-> +static int xrt_grp_ioctl(struct platform_device *pdev, u32 cmd, void *arg)
-> +{
-> +	int rc = 0;
-> +	struct xrt_group *xg = platform_get_drvdata(pdev);
-> +
-> +	switch (cmd) {
-> +	case XRT_XLEAF_EVENT:
-> +		/* Simply forward to every child. */
-> +		xrt_subdev_pool_handle_event(&xg->leaves,
-> +					     (struct xrt_event *)arg);
-> +		break;
-> +	case XRT_GROUP_GET_LEAF: {
-> +		struct xrt_root_ioctl_get_leaf *get_leaf =
-> +			(struct xrt_root_ioctl_get_leaf *)arg;
-> +
-> +		rc = xrt_subdev_pool_get(&xg->leaves, get_leaf->xpigl_match_cb,
-> +					 get_leaf->xpigl_match_arg,
-> +					 DEV(get_leaf->xpigl_pdev),
-> +					 &get_leaf->xpigl_leaf);
-> +		break;
-> +	}
-> +	case XRT_GROUP_PUT_LEAF: {
-> +		struct xrt_root_ioctl_put_leaf *put_leaf =
-> +			(struct xrt_root_ioctl_put_leaf *)arg;
-> +
-> +		rc = xrt_subdev_pool_put(&xg->leaves, put_leaf->xpipl_leaf,
-> +					 DEV(put_leaf->xpipl_pdev));
-> +		break;
-> +	}
-> +	case XRT_GROUP_INIT_CHILDREN:
-> +		rc = xrt_grp_create_leaves(xg);
-> +		break;
-> +	case XRT_GROUP_FINI_CHILDREN:
-> +		xrt_grp_remove_leaves(xg);
-> +		break;
-> +	case XRT_GROUP_TRIGGER_EVENT:
-> +		xrt_subdev_pool_trigger_event(&xg->leaves, (enum xrt_events)(uintptr_t)arg);
-> +		break;
-> +	default:
-> +		xrt_err(pdev, "unknown IOCTL cmd %d", cmd);
-> +		rc = -EINVAL;
-> +		break;
-> +	}
-> +	return rc;
-> +}
-> +
-> +static struct xrt_subdev_drvdata xrt_grp_data = {
-> +	.xsd_dev_ops = {
-> +		.xsd_ioctl = xrt_grp_ioctl,
-> +	},
+> +/**
+> + * Representation of register value.
+> + *
+> + * Supports full 64 bit register value, or 32 bit value with optional mask
+> + * value.
+> + *
+> + * @type:	define register usage and interpretation.
+> + * @offset:	the address offset for register in the hardware device (per device specification).
+> + * @hw_info:	optional hardware device type specific information. (ETM / CTI specific etc)
+> + * @val64:	64 bit value.
+> + * @val32:	32 bit value.
+> + * @mask32:	32 bit mask when using 32 bit value to access device register.
+> + */
+> +struct cscfg_regval_desc {
+> +	struct {
+> +		u32 type:8;
+> +		u32 offset:12;
+> +		u32 hw_info:12;
+> +	};
+> +	union {
+> +		u64 val64;
+> +		struct {
+> +			u32 val32;
+> +			u32 mask32;
+> +		};
+> +	};
 > +};
 > +
-> +static const struct platform_device_id xrt_grp_id_table[] = {
-> +	{ XRT_GRP, (kernel_ulong_t)&xrt_grp_data },
-> +	{ },
-> +};
-> +
-> +static struct platform_driver xrt_group_driver = {
-> +	.driver	= {
-> +		.name    = XRT_GRP,
-> +	},
-> +	.probe   = xrt_grp_probe,
-> +	.remove  = xrt_grp_remove,
-> +	.id_table = xrt_grp_id_table,
-> +};
-> +
-> +void group_leaf_init_fini(bool init)
-> +{
-> +	if (init)
-> +		xleaf_register_driver(XRT_SUBDEV_GRP, &xrt_group_driver, NULL);
-> +	else
-> +		xleaf_unregister_driver(XRT_SUBDEV_GRP);
-> +}
+> +/**
+> + * Device feature descriptor - combination of registers and parameters to
+> + * program a device to implement a specific complex function.
+> + *
+> + * @name:	feature name.
+> + * @brief:	brief description of the feature.
+> + * @item:	List entry.
+> + * @match_flags: matching information if loading into a device
+> + * @nr_params:  number of parameters used.
+> + * @params:	array of parameters used.
+> + * @nr_regs:	number of registers used.
+> + * @reg:	array of registers used.
+> + */
+> +struct cscfg_feature_desc {
+> +	const char *name;
+> +	const char *brief;
+> +	struct list_head item;
+> +	u32 match_flags;
+> +	int nr_params;
+> +	struct cscfg_parameter_desc *params;
+
+	struct cscfg_parameter_desc *params_desc;
+
+> +	int nr_regs;
+> +	struct cscfg_regval_desc *regs;
+
+        struct cscfg_regval_desc *regs_desc;
+
+That way I know exactly what I'm looking at when I see something like the
+following in patch 03:
+
+        reg_desc = &feat->desc->regs[i];
 
