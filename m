@@ -2,82 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D26321315
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:28:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FD4321317
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:29:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhBVJ12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:27:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59220 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230218AbhBVJ0O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:26:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613985927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UahR2KSk7VlBZc3dTRORhVfUx0fNuikYUhL9eaPGX7U=;
-        b=fdt1pIsDWxpYh/9cEIqlC5GwlO0EdIF1ZtDcVKC44TP72vfj4m7lrgFpLv0Z188/YoB8XD
-        xzzyjQZQKyXvUjBhUPQBCOw6LHVFSs0URwuGj7QClp1QfzHFcQE5RGLVinrSWgPT9F9oZA
-        ef3B0M0lGkb4nF24pGHRdCEoARo9HFw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7EFEDACCF;
-        Mon, 22 Feb 2021 09:25:27 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 10:25:26 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        HORIGUCHI =?utf-8?B?TkFPWUEo5aCA5Y+jIOebtOS5nyk=?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v16 4/9] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-Message-ID: <YDN4hhhINcn69CeV@dhcp22.suse.cz>
-References: <20210219104954.67390-1-songmuchun@bytedance.com>
- <20210219104954.67390-5-songmuchun@bytedance.com>
- <YC/HRTq1MRaDWn7O@dhcp22.suse.cz>
- <CAMZfGtW-j=WizTckEWZNB2OSPkz662Vjr79Fb0he9tMD+bnT3Q@mail.gmail.com>
+        id S230169AbhBVJ22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230117AbhBVJ1q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:27:46 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9317C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:27:05 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id w1so10170940ilm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:27:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hQLZEj9iN7V7Wa6Bf/Y6KrV0f8vrXo1b1Pd+1jqrTTY=;
+        b=m9IJv5LUsBLiek3p4/0pXkCoDxek1CFJEIhFiAs9dS4NrAyPYJDpWdoZ8v73t06+u3
+         Sj7KqGl8uu10Gl/C+inuFrTi0XWVzNTovOUG0gZRxiaqLiwjTn/qSJl/lRWq18ggfyQe
+         piZONMWqCkfHQOEG/tLO9mH/tL+n2o3kmoyLmdnBGUSL9drUtHTC438bAYt35/eSP5NA
+         lMpI5eH4hiAR8CZ0qsAk0LTwRgXUQxok2hMxWv7rKM8WqxWD83g73roCDx07/iygGXQq
+         S+o2ain0CMtQXNrj7IjEfuyqiIcXFYyKO7GvxaRYnfYHkNGk4wDD0BDuIxymwom7HS4i
+         8lsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hQLZEj9iN7V7Wa6Bf/Y6KrV0f8vrXo1b1Pd+1jqrTTY=;
+        b=NarJq0J9UftE6hCsQJxP6uL2ZGyKUIY1Ug8HcD+2gi226I+xqLJB1uvsbHgelLXAtk
+         02tGLn17W46/NWS2cp2Ui1xnY0BTSDGBBaelZ9FF4RwUCQsCKIccdI/yfPqtam9MS/Eu
+         DWK2G6CzBhdI1Wjm6wLD4junxQTJQPGpz9q43OXkcY1tbkKe+mtU6x46vFV7Uv43OG3F
+         dxtYb9Nt9Xujq1sUWVgJmdqQuAxi0QRY3YUKu7QvWYU/oYRVIeDnszm/WqvgrSJcWKKH
+         3+HGd1S+tcb0V9WJZf6pQFiT5vEDR2WYzjW3MhOLDcEb0j+ATZJfiV+hp880CERb5lUh
+         Rvaw==
+X-Gm-Message-State: AOAM531wv/sGPzyPlBElgfyqvl4niZUDcT8LePTTge2n2ITkakry5zPP
+        zl4s2XbMePeIzoqLgJgYq1XiW8p4muCkBOYV7gbe1Q==
+X-Google-Smtp-Source: ABdhPJzs2A/nEMFlFND/SeVe0D5DWStliCbQoJqwBN9p7Oh1CHppoRpTveljZF82RVoV9hd+QrKyEkDwDVqGpAf5PxQ=
+X-Received: by 2002:a05:6e02:1b0c:: with SMTP id i12mr14452264ilv.200.1613986024863;
+ Mon, 22 Feb 2021 01:27:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtW-j=WizTckEWZNB2OSPkz662Vjr79Fb0he9tMD+bnT3Q@mail.gmail.com>
+References: <20210218122546.3546582-1-gmouse@google.com> <CADKL2t6P4gaSUZEFgk7y+TNBRw0Lhf8mXTxzLdbe3FhGs0WH+w@mail.gmail.com>
+ <CAP6Zq1jf4-XAhLQxqNx3LM7-YzDr8zaVPb-jznn8o=frxTotdQ@mail.gmail.com>
+In-Reply-To: <CAP6Zq1jf4-XAhLQxqNx3LM7-YzDr8zaVPb-jznn8o=frxTotdQ@mail.gmail.com>
+From:   Anton Kachalov <gmouse@google.com>
+Date:   Mon, 22 Feb 2021 10:26:53 +0100
+Message-ID: <CADVsX89F6Tc0Zk6uB3CKRK0F8j_E+sVGHVb9FMAkHDQqJ+KBAQ@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: nuvoton: Fix flash layout
+To:     Tomer Maimon <tmaimon77@gmail.com>
+Cc:     Benjamin Fair <benjaminfair@google.com>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 20-02-21 12:20:36, Muchun Song wrote:
-> On Fri, Feb 19, 2021 at 10:12 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > What about hugetlb page poisoning on HW failure (resp. soft offlining)?
-> 
-> If the HW poisoned hugetlb page failed to be dissolved, the page
-> will go back to the free list with PG_HWPoison set. But the page
-> will not be used, because we will check whether the page is HW
-> poisoned when it is dequeued from the free list. If so, we will skip
-> this page.
+Hi, Tom.
 
-Can this lead to an underprovisioned pool then? Or is there a new
-hugetlb allocated to replace the poisoned one?
+Yes, I'm using it for testing on real hardware.
 
--- 
-Michal Hocko
-SUSE Labs
+BTW. Recent u-boot doesn't work with SD cards. The card doesn't
+detect. The last working version was this one:
+
+https://github.com/Nuvoton-Israel/nuvoton-info/tree/master/npcm7xx-poleg/evaluation-board/sw_deliverables/npcm7xx_v2.3
+
+However, u-boot from igps repo:
+
+https://github.com/Nuvoton-Israel/igps/tree/master/ImageGeneration/versions
+
+Has issues too. It doesn't allow me to read more than 4k bytes once at
+a time. Thus, to flash the stuff I have manually read chunks from the
+SD-card: fat load doesn't work at all and I write that data in raw
+partition.
+
+On Sun, 21 Feb 2021 at 17:40, Tomer Maimon <tmaimon77@gmail.com> wrote:
+>
+> Hi Benjamin and Anton,
+>
+> Sorry for the late reply,
+>
+> The EVB FIU0-CS0 partitioning is used for testing the EVB and this is why it is different than the OpenBMC flash layout.
+>
+>
+>
+> Are you using the NPCM7XX EVB for OpenBMC? if yes we can consider to modify the flash partition to OpenBMC use.
+>
+>
+> On Thu, 18 Feb 2021 at 19:11, Benjamin Fair <benjaminfair@google.com> wrote:
+>>
+>> On Thu, 18 Feb 2021 at 04:42, <gmouse@google.com> wrote:
+>> >
+>> > From: "Anton D. Kachalov" <gmouse@google.com>
+>> >
+>> > This change satisfy OpenBMC requirements for flash layout.
+>> >
+>> > Signed-off-by: Anton D. Kachalov <gmouse@google.com>
+>> > ---
+>> >  arch/arm/boot/dts/nuvoton-npcm750-evb.dts | 28 +++++++----------------
+>> >  1 file changed, 8 insertions(+), 20 deletions(-)
+>> >
+>> > diff --git a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+>> > index bd1eb6ee380f..741c1fee8552 100644
+>> > --- a/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+>> > +++ b/arch/arm/boot/dts/nuvoton-npcm750-evb.dts
+>> > @@ -182,8 +182,8 @@ bbuboot2@80000 {
+>> >                                 reg = <0x0080000 0x80000>;
+>> >                                 read-only;
+>> >                                 };
+>> > -                       envparam@100000 {
+>> > -                               label = "env-param";
+>> > +                       ubootenv@100000 {
+>> > +                               label = "u-boot-env";
+>> >                                 reg = <0x0100000 0x40000>;
+>> >                                 read-only;
+>> >                                 };
+>> > @@ -195,25 +195,13 @@ kernel@200000 {
+>> >                                 label = "kernel";
+>> >                                 reg = <0x0200000 0x400000>;
+>> >                                 };
+>> > -                       rootfs@600000 {
+>> > -                               label = "rootfs";
+>> > -                               reg = <0x0600000 0x700000>;
+>> > +                       rofs@780000 {
+>> > +                               label = "rofs";
+>> > +                               reg = <0x0780000 0x1680000>;
+>> >                                 };
+>> > -                       spare1@D00000 {
+>> > -                               label = "spare1";
+>> > -                               reg = <0x0D00000 0x200000>;
+>> > -                               };
+>> > -                       spare2@0F00000 {
+>> > -                               label = "spare2";
+>> > -                               reg = <0x0F00000 0x200000>;
+>> > -                               };
+>> > -                       spare3@1100000 {
+>> > -                               label = "spare3";
+>> > -                               reg = <0x1100000 0x200000>;
+>> > -                               };
+>> > -                       spare4@1300000 {
+>> > -                               label = "spare4";
+>> > -                               reg = <0x1300000 0x0>;
+>> > +                       rwfs@1e00000 {
+>> > +                               label = "rwfs";
+>> > +                               reg = <0x1e00000 0x200000>;
+>> >                         };
+>>
+>> I recommend just including the openbmc-flash-layout.dtsi file here
+>> instead since that contains the common flash layout for most OpenBMC
+>> systems.
+>>
+> Good solution,
+> Do you mean nuvoton-openbmc-flash-layout?
+>>
+>> >                 };
+>> >         };
+>> > --
+>> > 2.30.0.478.g8a0d178c01-goog
+>> >
+>
+>
+> Thanks,
+>
+> Tomer
