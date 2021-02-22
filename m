@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF79D322059
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45DAA32205C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhBVTnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:43:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54742 "EHLO mail.kernel.org"
+        id S232970AbhBVTng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:43:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232971AbhBVTm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:42:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D833F64E3F;
-        Mon, 22 Feb 2021 19:42:18 +0000 (UTC)
+        id S232985AbhBVTnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:43:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C27364EC1;
+        Mon, 22 Feb 2021 19:42:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1614022939;
-        bh=+mUDeuOWLKyEBqA8AdkAHb887NlhdAD1/y956h82d2U=;
+        bh=g7I54Xx87A8O+3hHocomlXJ+qgIiONJK4DHpRS8aEOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cNV9HDGqtP1nSoySEYrlCpxBWY98eBDqY+mPelE+Ew5lCo3lA1nCZWcbfBe8D0ohl
-         95zZhv/RQFPNaE95pqP34cvhmdf42f/7V/SC1uT7F2ff/y0g5rzuQZmtMnm5ycUrJG
-         J0X9rAZBEVNYIYYxYFYtU3K8d5ONnwC6OQ60PgfFuLs+yvozNAjMTGd38mtIw9TvJa
-         PmxQQGVlgZ74as5wcFmkaUPOJSDYaedKZSoNZw4vDUlzWZ3guwWki+/ppBEPeck0h1
-         T6sPxcMrrJLqEIShvCEJCnNoKU/mW08j6WYDrCnKI/q7itr0EUVHokihVrwNPQO2Pv
-         ancRfLohkWzsw==
+        b=rIM4/TITjHNhYlYnDD0kak708vDb9Erq7OvQPzCzEzZSjIRVvyGtGnL+ulWmM9Uxf
+         v5Bxp372CZ7hEUEnE1ukKhAYyizQtGjKUT8dSyFsBrY7qQIUEyQ/DZtkldLumOqRJn
+         ecSlrKGsL/0OL87leK4VmJ4fRZE58gAsTrRsCSNqLBZQwjlaPb4e843Jgt0s9gxeC2
+         U7IMZuPedxkWB4yoApfzP0gMpZCNcimKQdYV7TM2iVi1GVSpg9xT6Og6uvs6Us6dI6
+         01Yk58RfhUUgy22l6CKU3ItYbyCcaMJ58xq4xb25lB2ebOyxwZ8TnP5pKdJnXWgGj2
+         OSH8KWds8YEhw==
 Received: by pali.im (Postfix)
-        id EEFD7F04; Mon, 22 Feb 2021 20:42:16 +0100 (CET)
+        id 4408EF17; Mon, 22 Feb 2021 20:42:17 +0100 (CET)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Gregory Clement <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>,
@@ -41,9 +41,9 @@ Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         Russell King <rmk+kernel@armlinux.org.uk>,
         =?UTF-8?q?G=C3=A9rald=20Kerma?= <gerald@gk2.net>,
         Konstantin Porotchkin <kostap@marvell.com>
-Subject: [PATCH mvebu v3 03/10] clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM clock
-Date:   Mon, 22 Feb 2021 20:41:51 +0100
-Message-Id: <20210222194158.12342-4-pali@kernel.org>
+Subject: [PATCH mvebu v3 04/10] cpufreq: armada-37xx: Fix the AVS value for load L1
+Date:   Mon, 22 Feb 2021 20:41:52 +0100
+Message-Id: <20210222194158.12342-5-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222194158.12342-1-pali@kernel.org>
 References: <20210114124032.12765-1-pali@kernel.org>
@@ -55,72 +55,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+The original CPU voltage value for load L1 is too low for Armada 37xx SoC
+when base CPU frequency is 1000 or 1200 MHz. It leads to instabilities
+where CPU gets stuck soon after dynamic voltage scaling from load L1 to L0.
 
-Remove the .set_parent method in clk_pm_cpu_ops.
+Update the CPU voltage value for load L1 accordingly when base frequency is
+1000 or 1200 MHz. The minimal L1 value for base CPU frequency 1000 MHz is
+updated from the original 1.05V to 1.108V and for 1200 MHz is updated to
+1.155V. This minimal L1 value is used only in the case when it is lower
+than value for L0.
 
-This method was supposed to be needed by the armada-37xx-cpufreq driver,
-but was never actually called due to wrong assumptions in the cpufreq
-driver. After this was fixed in the cpufreq driver, this method is not
-needed anymore.
+This change fixes CPU instability issues on 1 GHz and 1.2 GHz variants of
+Espressobin and 1 GHz Turris Mox.
 
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
-Tested-by: Pali Rohár <pali@kernel.org>
+Marvell previously for 1 GHz variant of Espressobin provided a patch [1]
+suitable only for their Marvell Linux kernel 4.4 fork which workarounded
+this issue. Patch forced CPU voltage value to 1.108V in all loads. But
+such change does not fix CPU instability issues on 1.2 GHz variants of
+Armada 3720 SoC.
+
+During testing we come to the conclusion that using 1.108V as minimal
+value for L1 load makes 1 GHz variants of Espressobin and Turris Mox boards
+stable. And similarly 1.155V for 1.2 GHz variant of Espressobin.
+
+These two values 1.108V and 1.155V are documented in Armada 3700 Hardware
+Specifications as typical initial CPU voltage values.
+
+Discussion about this issue is also at the Armbian forum [2].
+
+[1] - https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/dc33b62c90696afb6adc7dbcc4ebbd48bedec269
+[2] - https://forum.armbian.com/topic/10429-how-to-make-espressobin-v7-stable/
+
+Signed-off-by: Pali Rohár <pali@kernel.org>
 Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
 Tested-by: Anders Trier Olesen <anders.trier.olesen@gmail.com>
 Tested-by: Philip Soares <philips@netisense.com>
-Fixes: 2089dc33ea0e ("clk: mvebu: armada-37xx-periph: add DVFS support for cpu clocks")
+Fixes: 1c3528232f4b ("cpufreq: armada-37xx: Add AVS support")
+Cc: stable@vger.kernel.org
 ---
- drivers/clk/mvebu/armada-37xx-periph.c | 28 --------------------------
- 1 file changed, 28 deletions(-)
+ drivers/cpufreq/armada-37xx-cpufreq.c | 37 +++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/drivers/clk/mvebu/armada-37xx-periph.c b/drivers/clk/mvebu/armada-37xx-periph.c
-index f5746f9ea929..6507bd2c5f31 100644
---- a/drivers/clk/mvebu/armada-37xx-periph.c
-+++ b/drivers/clk/mvebu/armada-37xx-periph.c
-@@ -440,33 +440,6 @@ static u8 clk_pm_cpu_get_parent(struct clk_hw *hw)
- 	return val;
+diff --git a/drivers/cpufreq/armada-37xx-cpufreq.c b/drivers/cpufreq/armada-37xx-cpufreq.c
+index b8dc6c849579..c7683d447b11 100644
+--- a/drivers/cpufreq/armada-37xx-cpufreq.c
++++ b/drivers/cpufreq/armada-37xx-cpufreq.c
+@@ -73,6 +73,8 @@
+ #define LOAD_LEVEL_NR	4
+ 
+ #define MIN_VOLT_MV 1000
++#define MIN_VOLT_MV_FOR_L1_1000MHZ 1108
++#define MIN_VOLT_MV_FOR_L1_1200MHZ 1155
+ 
+ /*  AVS value for the corresponding voltage (in mV) */
+ static int avs_map[] = {
+@@ -208,6 +210,8 @@ static u32 armada_37xx_avs_val_match(int target_vm)
+  * - L2 & L3 voltage should be about 150mv smaller than L0 voltage.
+  * This function calculates L1 & L2 & L3 AVS values dynamically based
+  * on L0 voltage and fill all AVS values to the AVS value table.
++ * When base CPU frequency is 1000 or 1200 MHz then there is additional
++ * minimal avs value for load L1.
+  */
+ static void __init armada37xx_cpufreq_avs_configure(struct regmap *base,
+ 						struct armada_37xx_dvfs *dvfs)
+@@ -239,6 +243,19 @@ static void __init armada37xx_cpufreq_avs_configure(struct regmap *base,
+ 		for (load_level = 1; load_level < LOAD_LEVEL_NR; load_level++)
+ 			dvfs->avs[load_level] = avs_min;
+ 
++		/*
++		 * Set the avs values for load L0 and L1 when base CPU frequency
++		 * is 1000/1200 MHz to its typical initial values according to
++		 * the Armada 3700 Hardware Specifications.
++		 */
++		if (dvfs->cpu_freq_max >= 1000*1000*1000) {
++			if (dvfs->cpu_freq_max >= 1200*1000*1000)
++				avs_min = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1200MHZ);
++			else
++				avs_min = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1000MHZ);
++			dvfs->avs[0] = dvfs->avs[1] = avs_min;
++		}
++
+ 		return;
+ 	}
+ 
+@@ -258,6 +275,26 @@ static void __init armada37xx_cpufreq_avs_configure(struct regmap *base,
+ 	target_vm = avs_map[l0_vdd_min] - 150;
+ 	target_vm = target_vm > MIN_VOLT_MV ? target_vm : MIN_VOLT_MV;
+ 	dvfs->avs[2] = dvfs->avs[3] = armada_37xx_avs_val_match(target_vm);
++
++	/*
++	 * Fix the avs value for load L1 when base CPU frequency is 1000/1200 MHz,
++	 * otherwise the CPU gets stuck when switching from load L1 to load L0.
++	 * Also ensure that avs value for load L1 is not higher than for L0.
++	 */
++	if (dvfs->cpu_freq_max >= 1000*1000*1000) {
++		u32 avs_min_l1;
++
++		if (dvfs->cpu_freq_max >= 1200*1000*1000)
++			avs_min_l1 = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1200MHZ);
++		else
++			avs_min_l1 = armada_37xx_avs_val_match(MIN_VOLT_MV_FOR_L1_1000MHZ);
++
++		if (avs_min_l1 > dvfs->avs[0])
++			avs_min_l1 = dvfs->avs[0];
++
++		if (dvfs->avs[1] < avs_min_l1)
++			dvfs->avs[1] = avs_min_l1;
++	}
  }
  
--static int clk_pm_cpu_set_parent(struct clk_hw *hw, u8 index)
--{
--	struct clk_pm_cpu *pm_cpu = to_clk_pm_cpu(hw);
--	struct regmap *base = pm_cpu->nb_pm_base;
--	int load_level;
--
--	/*
--	 * We set the clock parent only if the DVFS is available but
--	 * not enabled.
--	 */
--	if (IS_ERR(base) || armada_3700_pm_dvfs_is_enabled(base))
--		return -EINVAL;
--
--	/* Set the parent clock for all the load level */
--	for (load_level = 0; load_level < LOAD_LEVEL_NR; load_level++) {
--		unsigned int reg, mask,  val,
--			offset = ARMADA_37XX_NB_TBG_SEL_OFF;
--
--		armada_3700_pm_dvfs_update_regs(load_level, &reg, &offset);
--
--		val = index << offset;
--		mask = ARMADA_37XX_NB_TBG_SEL_MASK << offset;
--		regmap_update_bits(base, reg, mask, val);
--	}
--	return 0;
--}
--
- static unsigned long clk_pm_cpu_recalc_rate(struct clk_hw *hw,
- 					    unsigned long parent_rate)
- {
-@@ -592,7 +565,6 @@ static int clk_pm_cpu_set_rate(struct clk_hw *hw, unsigned long rate,
- 
- static const struct clk_ops clk_pm_cpu_ops = {
- 	.get_parent = clk_pm_cpu_get_parent,
--	.set_parent = clk_pm_cpu_set_parent,
- 	.round_rate = clk_pm_cpu_round_rate,
- 	.set_rate = clk_pm_cpu_set_rate,
- 	.recalc_rate = clk_pm_cpu_recalc_rate,
+ static void __init armada37xx_cpufreq_avs_setup(struct regmap *base,
 -- 
 2.20.1
 
