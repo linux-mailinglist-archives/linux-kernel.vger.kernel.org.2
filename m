@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B1C321944
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EF632190E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231583AbhBVNpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:45:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56578 "EHLO mail.kernel.org"
+        id S232242AbhBVNig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:38:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231639AbhBVMny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:43:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4552D64DF0;
-        Mon, 22 Feb 2021 12:40:54 +0000 (UTC)
+        id S231631AbhBVMnc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:43:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA52E64F0A;
+        Mon, 22 Feb 2021 12:40:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997654;
-        bh=jCyPvmj/VHxcGkWl8CNXFkUNCSiy3nQSDgNHVBoMCJE=;
+        s=korg; t=1613997657;
+        bh=SoteQDSMWgUNiOX4z7Aq5Z9QkB1yzcEbMGEVBDYbOiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gD5og0omF8MHNbnhlPcZ6zYkf7NG85CNQJ26vOb2m2WaEhKb/JBZBJESe7zCBBt9v
-         azByQuQT/m+97AKYm+IwBY4Zkof6ZcXSvmfJ42d7a3MQiVdMHdI1AL2k0/3gJ5m+GS
-         3GW+fKULmRw6JETrg5cxHU3Xos4VNUjzDRjzNidE=
+        b=TJFedy8Cem/R8P9JiOtI9Z9MyGj0/lhxJVQxq3C1iNZz6GW0/QTCSnMmMkLfuwBnd
+         9l0Q1mB8a/R/vNx84IXTGxdfPq+RnF1VDcgJkK0jUstDqnM1Xx1q0/HCDXeHuqi6ke
+         m4ps/K0AWloxpUvmMseN9VTmIywD2H7gQn/l40BM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 05/49] iwlwifi: mvm: take mutex for calling iwl_mvm_get_sync_time()
-Date:   Mon, 22 Feb 2021 13:36:03 +0100
-Message-Id: <20210222121024.207916459@linuxfoundation.org>
+Subject: [PATCH 4.9 06/49] iwlwifi: pcie: add a NULL check in iwl_pcie_txq_unmap
+Date:   Mon, 22 Feb 2021 13:36:04 +0100
+Message-Id: <20210222121024.513702844@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
 References: <20210222121022.546148341@linuxfoundation.org>
@@ -41,36 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 
-[ Upstream commit 5c56d862c749669d45c256f581eac4244be00d4d ]
+[ Upstream commit 98c7d21f957b10d9c07a3a60a3a5a8f326a197e5 ]
 
-We need to take the mutex to call iwl_mvm_get_sync_time(), do it.
+I hit a NULL pointer exception in this function when the
+init flow went really bad.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20210115130252.4bb5ccf881a6.I62973cbb081e80aa5b0447a5c3b9c3251a65cf6b@changeid
+Link: https://lore.kernel.org/r/iwlwifi.20210115130252.2e8da9f2c132.I0234d4b8ddaf70aaa5028a20c863255e05bc1f84@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/pcie/tx.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c
-index f4d75ffe3d8a8..7f01fb91ea668 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs-vif.c
-@@ -518,7 +518,10 @@ static ssize_t iwl_dbgfs_os_device_timediff_read(struct file *file,
- 	const size_t bufsz = sizeof(buf);
- 	int pos = 0;
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+index 174e45d78c46a..ff564198d2cef 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx.c
+@@ -676,6 +676,11 @@ static void iwl_pcie_txq_unmap(struct iwl_trans *trans, int txq_id)
+ 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
+ 	struct iwl_txq *txq = &trans_pcie->txq[txq_id];
  
-+	mutex_lock(&mvm->mutex);
- 	iwl_mvm_get_sync_time(mvm, &curr_gp2, &curr_os);
-+	mutex_unlock(&mvm->mutex);
++	if (!txq) {
++		IWL_ERR(trans, "Trying to free a queue that wasn't allocated?\n");
++		return;
++	}
 +
- 	do_div(curr_os, NSEC_PER_USEC);
- 	diff = curr_os - curr_gp2;
- 	pos += scnprintf(buf + pos, bufsz - pos, "diff=%lld\n", diff);
+ 	spin_lock_bh(&txq->lock);
+ 	while (txq->write_ptr != txq->read_ptr) {
+ 		IWL_DEBUG_TX_REPLY(trans, "Q %d Free %d\n",
 -- 
 2.27.0
 
