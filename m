@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D1E322125
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBA8322128
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:16:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhBVVNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:13:37 -0500
-Received: from ozlabs.org ([203.11.71.1]:42749 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230106AbhBVVNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:13:31 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S231342AbhBVVNw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Feb 2021 16:13:52 -0500
+Received: from mx1.polytechnique.org ([129.104.30.34]:35651 "EHLO
+        mx1.polytechnique.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231313AbhBVVNo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 16:13:44 -0500
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Dkvz402Vrz9sVS;
-        Tue, 23 Feb 2021 08:12:44 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1614028369;
-        bh=4MOtbregBqGYfmDKCQXSURam+G+agXrc7zcpbGRavDY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JutZQE2fy1Z5YFP8NYSTuxsU8OTo8tT3EFzwu6Y23WZ3ul9QVGACLf+VwPdbOn4C5
-         hO1+/dsPSlhyLuodj7tm/gtPSPWrvcEQcF6HeOe85gqYHGHOC5itHDz2Qyii40S+XG
-         Lh16zWw57cyKJBK9g2BkaNwlGbRil+4kvz+psTiub4meieVeqqZzGtMuVHbsCzR47S
-         NGivgl/Lk1L4jKlGXDDaL2qpbQMKiq5EbLItuGAQmkGBP9fLdbYL48iTcI3/MxCHTv
-         X68LQhD4RhQgu+jiOfP1j1fw/FmAdG9ZMIRn8Ad/5YV02/3qtQ1n6OlAbvFUH3xRIi
-         CS2yyLvyp3bag==
-Date:   Tue, 23 Feb 2021 08:12:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Rob Herring <robherring2@gmail.com>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: linux-next: manual merge of the devicetree tree with the
- net-next tree
-Message-ID: <20210223081243.09879290@canb.auug.org.au>
-In-Reply-To: <bbddedcf-fa9b-95bd-1e10-5a46da88f305@ti.com>
-References: <20210121132645.0a9edc15@canb.auug.org.au>
-        <20210215075321.0f3ea0de@canb.auug.org.au>
-        <20210222192306.400c6a50@canb.auug.org.au>
-        <bbddedcf-fa9b-95bd-1e10-5a46da88f305@ti.com>
+        by ssl.polytechnique.org (Postfix) with ESMTPSA id 8DFFB56122A;
+        Mon, 22 Feb 2021 22:12:58 +0100 (CET)
+Received: by mail-ot1-f54.google.com with SMTP id h22so5126854otr.6;
+        Mon, 22 Feb 2021 13:12:58 -0800 (PST)
+X-Gm-Message-State: AOAM5325Ke9+2OhWW7sd5b7WRjfp6Ecwh1rA9Qr9fY0c4GpKuxD9PfJU
+        aRAPS151TctyuSthueKl5AkDTxkjQ9VDoEsy3o8=
+X-Google-Smtp-Source: ABdhPJwmK3muigXNi8XZXhn+ic4o+uiZ5UpZpQT0fWB8nOdB5z1mzOL6/KQn824EU99Pvwo5PyKpG3gvJw1bxg76XvM=
+X-Received: by 2002:a9d:dc9:: with SMTP id 67mr7261434ots.26.1614028377527;
+ Mon, 22 Feb 2021 13:12:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/fwlYFeHpG7Lzp2MPF8+E4KS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210222150608.808146-1-mic@digikod.net> <20210222150608.808146-2-mic@digikod.net>
+ <51725b44-bc40-0205-8583-285d3b35b5ca@schaufler-ca.com> <ee461f8d-a02d-0782-8f31-691853a57f00@digikod.net>
+ <7b67163a-9de1-313f-5b5a-8c720cef9b73@schaufler-ca.com>
+In-Reply-To: <7b67163a-9de1-313f-5b5a-8c720cef9b73@schaufler-ca.com>
+From:   Nicolas Iooss <nicolas.iooss@m4x.org>
+Date:   Mon, 22 Feb 2021 22:12:46 +0100
+X-Gmail-Original-Message-ID: <CAJfZ7=n5FOxHXMLRrDQ3F-kDqbYngNoYKcz6_PWi1rPa0_8WpA@mail.gmail.com>
+Message-ID: <CAJfZ7=n5FOxHXMLRrDQ3F-kDqbYngNoYKcz6_PWi1rPa0_8WpA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] security: Add CONFIG_LSM_AUTO to handle default
+ LSM stack ordering
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-AV-Checked: ClamAV using ClamSMTP at svoboda.polytechnique.org (Mon Feb 22 22:12:59 2021 +0100 (CET))
+X-Spam-Flag: No, tests=bogofilter, spamicity=0.000003, queueID=32870561233
+X-Org-Mail: nicolas.iooss.2010@polytechnique.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/fwlYFeHpG7Lzp2MPF8+E4KS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Grygorii,
-
-On Mon, 22 Feb 2021 12:35:10 +0200 Grygorii Strashko <grygorii.strashko@ti.=
-com> wrote:
+On Mon, Feb 22, 2021 at 9:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
 >
-> Sorry for inconvenience, is there anything I can do to help resolve it?
-> (Changes went through a different trees)
+> On 2/22/2021 10:31 AM, Mickaël Salaün wrote:
+> > On 22/02/2021 17:51, Casey Schaufler wrote:
+> >> On 2/22/2021 7:06 AM, Mickaël Salaün wrote:
+> >>> From: Mickaël Salaün <mic@linux.microsoft.com>
+> >>>
+> >>> Add a new option CONFIG_LSM_AUTO to enable users to delegate default LSM
+> >>> stacking order to kernel developers.  This enable to keep a consistent
+> >>> order of enabled LSM when changing the LSM selection, especially when a
+> >>> new LSM is added to the kernel.
+> >> TL;DR - NAK
+> >>
+> >> Do you think that we might have considered this when stacking was
+> >> introduced?
+> > I didn't dig the detailed history of LSM stacking, but you are in Cc
+> > because I know that you know. I may have though that the main goal of
+> > the current LSM stacking implementation was to enable to stack existing
+> > LSMs, which works well with this CONFIG_LSM list, but doesn't work as
+> > well for new LSMs.
+>
+> It works just fine for new LSMs if you treat them as significant
+> features which may have significant impact on the behavior of the
+> system.
+>
+> >> Did you even consider the implications before sending
+> >> the patch?
+> > Yes, and it doesn't change much the current behavior without user
+> > interaction. However, it gives the choice to users to choose how they
+> > want their configuration to evolve.
+>
+> Automatic inclusions of new LSMs would be counter to existing practice.
+> It won't work for "major" LSMs.
+>
+>
+> >> This only makes any sense if you want to compile in
+> >> AppArmor and/or Smack but always use SELinux. The existing Kconfig
+> >> model handles that perfectly well.
+> > This patch series doesn't change this behavior if the user doesn't want
+> > it to change.
+>
+> Well, there's the question. If a distribution/system uses the new scheme
+> "users" are going to get new LSMs spontaniously. If they don't it's up to
+> the "user". Unsophisticated users won't want this, and the others don't
+> need it.
 
-No, it is fine.
+Hello, sorry if I missed something simple but I did not understand
+what "Automatic inclusions of new LSMs " and "get new LSMs
+spontaniously" is about. If I understood the kernel practice
+development correctly, when a new LSM will be included, it will have a
+dedicated "config SECURITY_MYNEWLSM" which will be default to "n" in
+order to respect the "principle of least astonishment". How could such
+a new LSM be automatically/spontaneously added to the LSM list?
 
---=20
-Cheers,
-Stephen Rothwell
+I understand that this is a tough issue and that the subject might
+have been discussed a few years ago, and if that's the case, it would
+be nice to have pointers to some clear documentation or past emails
+(and it would be very very nice if the kernel documentation was
+updated to document the current state of LSM stacking: for example
+https://www.kernel.org/doc/html/v5.11/admin-guide/LSM/index.html still
+documents the "security=" kernel parameter even though it conflicts
+with CONFIG_LSM and can be ignored by the kernel in practise).
 
---Sig_/fwlYFeHpG7Lzp2MPF8+E4KS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Thanks,
+Nicolas
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmA0HksACgkQAVBC80lX
-0Gw/5gf/eiJhr3dwtGJG+sdgAT6aU3680kLWqD4YAB7RJnJzXPD4DonQKKPN3cZS
-eysDhpot1P9arXbrx0Azw549M77ntLaQdZZtyaTenUZQ2gOwHuUJpG++3/JJuxy+
-hb1v+qvUfDc1VvnpyJYVq04cIA1ltcYsNnWKOgOx6puQXpkTiy8i0t9uxR79VxWe
-9vTR3bXIdnWxRv7a6/M6qDU4iuT5i1yPJlSQwyIt+GLV/WawnVIzMbedS55xbyQ0
-8vgj5NC2iCw/uLCJLOXNND4fAKPvlpk6VALFNuspJR2AhNbr6i7s7Tz+gOQZsdLH
-wnUPmDVnrVR9VlHOAMXooe0O9SY9hg==
-=qNaf
------END PGP SIGNATURE-----
-
---Sig_/fwlYFeHpG7Lzp2MPF8+E4KS--
