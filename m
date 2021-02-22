@@ -2,79 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64918320EFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 485DF320EFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:21:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230171AbhBVBRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:17:40 -0500
-Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net ([206.189.21.223]:50076
-        "HELO zg8tmja2lje4os4yms4ymjma.icoremail.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with SMTP id S229866AbhBVBRg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:17:36 -0500
-Received: from centos7u5.localdomain (unknown [202.43.158.76])
-        by c1app2 (Coremail) with SMTP id AgINCgCnrrroBTNgAJ0TAw--.9444S3;
-        Mon, 22 Feb 2021 09:16:24 +0800 (CST)
-From:   Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Zhiyuan Dai <daizhiyuan@phytium.com.cn>
-Subject: [PATCH] mm/mlock: minor coding style tweaks
-Date:   Mon, 22 Feb 2021 09:16:28 +0800
-Message-Id: <1613956588-2453-1-git-send-email-daizhiyuan@phytium.com.cn>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: AgINCgCnrrroBTNgAJ0TAw--.9444S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1xKr4xGrW7WF45uF4fuFg_yoWfuFb_Aa
-        yIyryjgF15t3Wa9F10kw13Wryvvwn7ZF12yF95KrW3XryDGr98uF4UurW7Xryxuay7AFnx
-        C3Z5Cr9Fkr1I9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbcAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
-        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_
-        KwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
-        1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
-        64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
-        0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
-        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoUDGUUUUU
-X-Originating-IP: [202.43.158.76]
-X-CM-SenderInfo: hgdl6xpl1xt0o6sk53xlxphulrpou0/
+        id S230195AbhBVBSI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:18:08 -0500
+Received: from mga12.intel.com ([192.55.52.136]:16866 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229866AbhBVBSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 20:18:02 -0500
+IronPort-SDR: Qz7k2j+NlNLcH4GnGFlVWDa2N3t/MSSYQjCjV6SFxUC8jBQmHzvq+0sbf5ARdB5PZzBK7Ogd7a
+ xQLADd5mTcsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9902"; a="163508221"
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="scan'208";a="163508221"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 17:17:21 -0800
+IronPort-SDR: JpFBsS5FfOtqOFdx+oG2MqSRlAKrfPDQZuqavKtqDBP2U4jHQxyeNfH8C0hRVM/qtk6pJ8xthC
+ crHysZ/sVJqw==
+X-IronPort-AV: E=Sophos;i="5.81,195,1610438400"; 
+   d="scan'208";a="402317241"
+Received: from qiuxu-lab.sh.intel.com ([10.239.53.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Feb 2021 17:17:18 -0800
+From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Sean V Kelley <sean.v.kelley@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>, "Jin, Wen" <wen.jin@intel.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 1/1] PCI/RCEC: Fix RCiEP capable devices RCEC association
+Date:   Mon, 22 Feb 2021 09:17:17 +0800
+Message-Id: <20210222011717.43266-1-qiuxu.zhuo@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <4a0bf3a852ed47deb072890319fb39ec@intel.com>
+References: <4a0bf3a852ed47deb072890319fb39ec@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch move the pointer location to fix coding style issues,
-improve code reading.
+Function rcec_assoc_rciep() incorrectly used "rciep->devfn" (a single
+byte encoding the device and function number) as the device number to
+check whether the corresponding bit was set in the RCiEPBitmap of the
+RCEC (Root Complex Event Collector) while enumerating over each bit of
+the RCiEPBitmap.
 
-Signed-off-by: Zhiyuan Dai <daizhiyuan@phytium.com.cn>
+As per the PCI Express Base Specification, Revision 5.0, Version 1.0,
+Section 7.9.10.2, "Association Bitmap for RCiEPs", p. 935, only needs to
+use a device number to check whether the corresponding bit was set in
+the RCiEPBitmap.
+
+Fix rcec_assoc_rciep() using the PCI_SLOT() macro and convert the value
+of "rciep->devfn" to a device number to ensure that the RCiEP devices
+associated with the RCEC are linked when the RCEC is enumerated.
+
+Fixes: 507b460f8144 ("PCI/ERR: Add pcie_link_rcec() to associate RCiEPs")
+Reported-and-tested-by: Wen Jin <wen.jin@intel.com>
+Reviewed-by: Sean V Kelley <sean.v.kelley@intel.com>
+Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 ---
- mm/mlock.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+v2->v3:
+ Drop "[ Krzysztof: Update commit message. ]" from the commit message
 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 55b3b36..f6e26c2 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -560,7 +560,7 @@ static int apply_vma_lock_flags(unsigned long start, size_t len,
- 				vm_flags_t flags)
- {
- 	unsigned long nstart, end, tmp;
--	struct vm_area_struct * vma, * prev;
-+	struct vm_area_struct *vma, *prev;
- 	int error;
+ drivers/pci/pcie/rcec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+index 2c5c552994e4..d0bcd141ac9c 100644
+--- a/drivers/pci/pcie/rcec.c
++++ b/drivers/pci/pcie/rcec.c
+@@ -32,7 +32,7 @@ static bool rcec_assoc_rciep(struct pci_dev *rcec, struct pci_dev *rciep)
  
- 	VM_BUG_ON(offset_in_page(start));
-@@ -738,7 +738,7 @@ static __must_check int do_mlock(unsigned long start, size_t len, vm_flags_t fla
-  */
- static int apply_mlockall_flags(int flags)
- {
--	struct vm_area_struct * vma, * prev = NULL;
-+	struct vm_area_struct *vma, *prev = NULL;
- 	vm_flags_t to_add = 0;
+ 	/* Same bus, so check bitmap */
+ 	for_each_set_bit(devn, &bitmap, 32)
+-		if (devn == rciep->devfn)
++		if (devn == PCI_SLOT(rciep->devfn))
+ 			return true;
  
- 	current->mm->def_flags &= VM_LOCKED_CLEAR_MASK;
+ 	return false;
 -- 
-1.8.3.1
+2.17.1
 
