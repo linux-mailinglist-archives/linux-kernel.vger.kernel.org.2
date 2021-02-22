@@ -2,90 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361CB322158
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B326D32215B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:28:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhBVV13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:27:29 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:33165 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231624AbhBVV1Z (ORCPT
+        id S231931AbhBVV2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:28:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231624AbhBVV1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:27:25 -0500
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 2892AC0002;
-        Mon, 22 Feb 2021 21:26:26 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 22:26:26 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv1 1/6] rtc: m41t80: add support for protected clock
-Message-ID: <YDQhgkftoW4J9AtY@piout.net>
-References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
- <20210222171247.97609-2-sebastian.reichel@collabora.com>
- <YDQgLTPE0E+/1Cwv@piout.net>
+        Mon, 22 Feb 2021 16:27:32 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4E4CC061574;
+        Mon, 22 Feb 2021 13:26:51 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id c16so13547060otp.0;
+        Mon, 22 Feb 2021 13:26:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zaJGZVdWYhx6pYkLkRmSFtJpbY7PuqWAI5ylr9y3vXY=;
+        b=ZuOh5szYiXqqVtdi7pynNynvmCc3R9f7+Qkcu5AmztfPU08JNOv8tuFv4T32qQbcpW
+         JuJtwuktw/ouu7/venfpmhEzzhQ89UE3aPIO7IfJK1SXj2/JapkTm6mHZRcUmPGGfoVD
+         9tXn8S7ykGWCB/3E/EiDzbi6C88erMzQ38YUAQg6sJOSVfte6aBUjuOKfqUl3IkwdO49
+         0EUiefW0BOfDb1BhCA6SGhwFVca7jjsYXNzm0YHMMUzLgKgSaNWbumLlY+dsHRqh5JUC
+         7uTdD5XNUyY5l4whCc0kig0YiIM73Qqg7gb9q6m3PkBuV7FXEDGQaRlNquuJYtKo+idO
+         ZQhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zaJGZVdWYhx6pYkLkRmSFtJpbY7PuqWAI5ylr9y3vXY=;
+        b=lI9gqIYOvtfBFV3kfb7Inpkq/erI3+v93dINMgLCRPyzDayYUqga+MJCm3UEV1S6t/
+         YmULtnnF+Jv3E4nJJUSztNZ2mE5rG9ApI5+7ffEpctFCt+1MWMMmt3OZ5obtI8w2rU0W
+         5ahnaCUwUjRudMcLIb4a2RZGVcLjJ7m15zDycT1leJkM9gxkA0+aGcjzX5Reojn+H7OD
+         3sBO+gerXcFx+7pj24AKaMln03gz7eusf2cfEX0ZxRpfIGZlT8+es3D0WKehOfXOQpd4
+         dFoVrEEbZXbcR65DB2NaH10OhONcswQQBIx8MdTmLAF5cxoywJcXF2FnXLkdm2QKHlRo
+         edaA==
+X-Gm-Message-State: AOAM531Hv28vXb10vJdc6FbTJChKrv3o4O4rt82O+YBm6q7JHq8hx5x5
+        51Dleiv/GXyhyE0KR2yrmCE=
+X-Google-Smtp-Source: ABdhPJyJwYZyciyRBM8pgnjte/Oo6wPCpbc+Zvk67jbVhXh656XPv/scZWioinFj6TCDYGzshfzuOQ==
+X-Received: by 2002:a9d:6317:: with SMTP id q23mr17739027otk.301.1614029211312;
+        Mon, 22 Feb 2021 13:26:51 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id n11sm979438oij.51.2021.02.22.13.26.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Feb 2021 13:26:50 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 22 Feb 2021 13:26:49 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/35] 4.4.258-rc1 review
+Message-ID: <20210222212649.GA98612@roeck-us.net>
+References: <20210222121013.581198717@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YDQgLTPE0E+/1Cwv@piout.net>
+In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/02/2021 22:20:47+0100, Alexandre Belloni wrote:
-> On 22/02/2021 18:12:42+0100, Sebastian Reichel wrote:
-> > Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
-> > modules SQW clock output defaults to 32768 Hz. This behaviour is
-> > used to provide the i.MX6 CKIL clock. Once the RTC driver is probed,
-> > the clock is disabled and all i.MX6 functionality depending on
-> > the 32 KHz clock has undefined behaviour. On systems using hardware
-> > watchdog it seems to likely trigger a lot earlier than configured.
-> > 
-> > The proper solution would be to describe this dependency in DT,
-> > but that will result in a deadlock. The kernel will see, that
-> > i.MX6 system clock needs the RTC clock and do probe deferral.
-> > But the i.MX6 I2C module never becomes usable without the i.MX6
-> > CKIL clock and thus the RTC's clock will not be probed. So from
-> > the kernel's perspective this is a chicken-and-egg problem.
-> > 
+On Mon, Feb 22, 2021 at 01:35:56PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.258 release.
+> There are 35 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Reading the previous paragraph, I was going to suggest describing the
-> dependency and wondering whether this would cause a circular dependency.
-> I guess this will keep being an issue for clocks on an I2C or SPI bus...
+> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
+> Anything received after that time might be too late.
 > 
-> > Technically everything is fine by not touching anything, since
-> > the RTC clock correctly enables the clock on reset (i.e. on
-> > battery backup power loss) and also the bootloader enables it
-> > in case a kernel without this support has been booted.
-> > 
-> > The 'protected-clocks' property is already in use for some clocks
-> > that may not be touched because of firmware limitations and is
-> > described in Documentation/devicetree/bindings/clock/clock-bindings.txt.
-> > 
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
 
-Or maybe you expected me to apply the patch, how are the following
-patches dependent on this one?
+Build results:
+	total: 165 pass: 165 fail: 0
+Qemu test results:
+	total: 329 pass: 329 fail: 0
 
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Guenter
