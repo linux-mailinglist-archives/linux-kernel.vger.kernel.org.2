@@ -2,170 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2B0321173
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5778E32118F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhBVHgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:36:23 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37442 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230042AbhBVHgL (ORCPT
+        id S230235AbhBVHqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229925AbhBVHqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:36:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613979284;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6FVHK+rXFWPhvTdgY3ca3NMaeJHpQu46VbcX/NLNp1o=;
-        b=BBRGR8EEsaKbEYis3B4wqnH00BkdrfJ1aggwobhwkTPPHI8ByrPvhRfalWLuRESDXparV/
-        X25GR473nxAfDyoS3PtDqnIDgaToLYVFoWyGqVlWU9x/ZZNgKN8s35AblGr65hN1SNuSVV
-        bKGDkk/2iF1oGcYsOeoKk5JWs173Hms=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-WFkvTmykN2KrAvAA3Z3ZgQ-1; Mon, 22 Feb 2021 02:34:42 -0500
-X-MC-Unique: WFkvTmykN2KrAvAA3Z3ZgQ-1
-Received: by mail-ed1-f71.google.com with SMTP id l23so6558515edt.23
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:34:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=6FVHK+rXFWPhvTdgY3ca3NMaeJHpQu46VbcX/NLNp1o=;
-        b=mgR0lqifHL/VcHSpEo1Orixnn+knbeWCspDjihEVXr2GwjK6FmnrTzoQfq+g1xJYvw
-         XGIRpFh7wb3++rw8SSsCWtU/F4wiigCLw7VOVzka+QJfpCG21EaLa49sXGZaWLXTjQPO
-         mUArdZHA01r070SuuSZ3zbG/MZeEfaQ06wNNJOUatmWWa0wrRgVEpHrUw2VvV/Q3X9Ud
-         DYtzxjFYBIoX+yaxTmkt+3f4dYEQqYTJ/gf++5PNDM/8rlTzVDG/HgAVugqHUwhlh3XD
-         r1s1oRq2Xnc/CMGhqoszQCC6U9Lq2juKvjuAeO9E2w6Ux7wGt+MRt2FGEy2C7AqKFIgV
-         MQGw==
-X-Gm-Message-State: AOAM533kECsKnTgZZzmNiyDZZwVuUCTi1ngbaRKFmiP6qgdXGZ+xzEBp
-        +EKhMNcnrkf/0HmEOVJYM5ObXi/bwPBqc/D/WhSS2t95aQ25TgquK+0IST1IxmkjGYx5+YPdkOk
-        fA6UeoxfkJqpNDbnCiSguYrOb
-X-Received: by 2002:a05:6402:3d8:: with SMTP id t24mr21009491edw.298.1613979280811;
-        Sun, 21 Feb 2021 23:34:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxEzpKE3VGwXPIdtln/AiroN8FBRqHsg0v8D6hpM8GMEsbhJmhd1UQeVTsGMSLWYiL91843Cw==
-X-Received: by 2002:a05:6402:3d8:: with SMTP id t24mr21009478edw.298.1613979280624;
-        Sun, 21 Feb 2021 23:34:40 -0800 (PST)
-Received: from redhat.com (bzq-79-180-2-31.red.bezeqint.net. [79.180.2.31])
-        by smtp.gmail.com with ESMTPSA id m26sm4603396eja.6.2021.02.21.23.34.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 23:34:40 -0800 (PST)
-Date:   Mon, 22 Feb 2021 02:34:37 -0500
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     Si-Wei Liu <si-wei.liu@oracle.com>, elic@nvidia.com,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH] vdpa/mlx5: set_features should allow reset to zero
-Message-ID: <20210222023040-mutt-send-email-mst@kernel.org>
-References: <1613735698-3328-1-git-send-email-si-wei.liu@oracle.com>
- <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+        Mon, 22 Feb 2021 02:46:16 -0500
+X-Greylist: delayed 597 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 21 Feb 2021 23:45:35 PST
+Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37C9C061786;
+        Sun, 21 Feb 2021 23:45:35 -0800 (PST)
+Received: by cavan.codon.org.uk (Postfix, from userid 1000)
+        id 2065540A21; Mon, 22 Feb 2021 07:34:52 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 07:34:52 +0000
+From:   Matthew Garrett <mjg59@srcf.ucam.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v17 08/10] PM: hibernate: disable when there are active
+ secretmem users
+Message-ID: <20210222073452.GA30403@codon.org.uk>
+References: <20210208084920.2884-1-rppt@kernel.org>
+ <20210208084920.2884-9-rppt@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <605e7d2d-4f27-9688-17a8-d57191752ee7@redhat.com>
+In-Reply-To: <20210208084920.2884-9-rppt@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 12:14:17PM +0800, Jason Wang wrote:
-> 
-> On 2021/2/19 7:54 下午, Si-Wei Liu wrote:
-> > Commit 452639a64ad8 ("vdpa: make sure set_features is invoked
-> > for legacy") made an exception for legacy guests to reset
-> > features to 0, when config space is accessed before features
-> > are set. We should relieve the verify_min_features() check
-> > and allow features reset to 0 for this case.
-> > 
-> > It's worth noting that not just legacy guests could access
-> > config space before features are set. For instance, when
-> > feature VIRTIO_NET_F_MTU is advertised some modern driver
-> > will try to access and validate the MTU present in the config
-> > space before virtio features are set.
-> 
-> 
-> This looks like a spec violation:
-> 
-> "
-> 
-> The following driver-read-only field, mtu only exists if VIRTIO_NET_F_MTU is
-> set.
-> This field specifies the maximum MTU for the driver to use.
-> "
-> 
-> Do we really want to workaround this?
-> 
-> Thanks
+On Mon, Feb 08, 2021 at 10:49:18AM +0200, Mike Rapoport wrote:
 
-And also:
+> It is unsafe to allow saving of secretmem areas to the hibernation
+> snapshot as they would be visible after the resume and this essentially
+> will defeat the purpose of secret memory mappings.
 
-The driver MUST follow this sequence to initialize a device:
-1. Reset the device.
-2. Set the ACKNOWLEDGE status bit: the guest OS has noticed the device.
-3. Set the DRIVER status bit: the guest OS knows how to drive the device.
-4. Read device feature bits, and write the subset of feature bits understood by the OS and driver to the
-device. During this step the driver MAY read (but MUST NOT write) the device-specific configuration
-fields to check that it can support the device before accepting it.
-5. Set the FEATURES_OK status bit. The driver MUST NOT accept new feature bits after this step.
-6. Re-read device status to ensure the FEATURES_OK bit is still set: otherwise, the device does not
-support our subset of features and the device is unusable.
-7. Perform device-specific setup, including discovery of virtqueues for the device, optional per-bus setup,
-reading and possibly writing the device’s virtio configuration space, and population of virtqueues.
-8. Set the DRIVER_OK status bit. At this point the device is “live”.
-
-
-so accessing config space before FEATURES_OK is a spec violation, right?
-
-
-> 
-> > Rejecting reset to 0
-> > prematurely causes correct MTU and link status unable to load
-> > for the very first config space access, rendering issues like
-> > guest showing inaccurate MTU value, or failure to reject
-> > out-of-range MTU.
-> > 
-> > Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> > Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
-> > ---
-> >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 15 +--------------
-> >   1 file changed, 1 insertion(+), 14 deletions(-)
-> > 
-> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > index 7c1f789..540dd67 100644
-> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > @@ -1490,14 +1490,6 @@ static u64 mlx5_vdpa_get_features(struct vdpa_device *vdev)
-> >   	return mvdev->mlx_features;
-> >   }
-> > -static int verify_min_features(struct mlx5_vdpa_dev *mvdev, u64 features)
-> > -{
-> > -	if (!(features & BIT_ULL(VIRTIO_F_ACCESS_PLATFORM)))
-> > -		return -EOPNOTSUPP;
-> > -
-> > -	return 0;
-> > -}
-> > -
-> >   static int setup_virtqueues(struct mlx5_vdpa_net *ndev)
-> >   {
-> >   	int err;
-> > @@ -1558,18 +1550,13 @@ static int mlx5_vdpa_set_features(struct vdpa_device *vdev, u64 features)
-> >   {
-> >   	struct mlx5_vdpa_dev *mvdev = to_mvdev(vdev);
-> >   	struct mlx5_vdpa_net *ndev = to_mlx5_vdpa_ndev(mvdev);
-> > -	int err;
-> >   	print_features(mvdev, features, true);
-> > -	err = verify_min_features(mvdev, features);
-> > -	if (err)
-> > -		return err;
-> > -
-> >   	ndev->mvdev.actual_features = features & ndev->mvdev.mlx_features;
-> >   	ndev->config.mtu = cpu_to_mlx5vdpa16(mvdev, ndev->mtu);
-> >   	ndev->config.status |= cpu_to_mlx5vdpa16(mvdev, VIRTIO_NET_S_LINK_UP);
-> > -	return err;
-> > +	return 0;
-> >   }
-> >   static void mlx5_vdpa_set_config_cb(struct vdpa_device *vdev, struct vdpa_callback *cb)
-
+Sorry for being a bit late to this - from the point of view of running
+processes (and even the kernel once resume is complete), hibernation is
+effectively equivalent to suspend to RAM. Why do they need to be handled
+differently here?
