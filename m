@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8731D321EF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:16:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF7C321F09
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:20:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhBVSOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:14:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37810 "EHLO mail.kernel.org"
+        id S232342AbhBVST3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:19:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230492AbhBVSNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:13:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 26D8B64F09;
-        Mon, 22 Feb 2021 18:12:11 +0000 (UTC)
+        id S231894AbhBVSOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:14:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E34A464F14;
+        Mon, 22 Feb 2021 18:12:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1614017531;
-        bh=D8erod9JYUVXhNyeCUcNwNB7W3fMPAl0mID3LVo8E60=;
+        s=k20201202; t=1614017537;
+        bh=uWJQgaXgtsL76pxAFe5arHnvU/BmEn/TbDc3M+naUII=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Go7HrJzRlVInSm2pVKjDakefsIeG+/KpxBwm5P/2emggshvV52ePU0WXoLflK+CRe
-         6KBjkutRdk/C3d6AapuNLMIOeVv0tmbJyEXfQFEV9ontTcZMx2j3J5KAmC00o5yPEW
-         LUnIsjjgA8S8xNb9odr/W/H8275C9dqM5A0q0bMx7jOLhz39x9dNdGkOmY9vlT2D5R
-         yrSM/63Y7y2cngVCtoL0kdneYIJERfshpD1GwyplYx10wYpBB4DLOMZaOxPfD39PK4
-         wYmnfK41ZBW+nyqsMdbHYka1TQOVY3V+5XWx9DzGczEdcyy82cra/9BxAEmQcNOA8x
-         p11iasq9Jpkyg==
+        b=AQJpAlNy0vWOCJnwC1/1KH2O8KQ1OM5I/DvNjVrXWoW4QlMJtgSSIEA1YF6Kqj7DV
+         rajfiRtY4oyzPtCeCk96nj7JBcg3VUEgk7Hefr068bfFY2gmogSPsgdYvrNMBUzQlD
+         JXMs0+FZx8x9nWZRKbAhz4femEnmfnlNmKTYx+EFn8EP90wvFOXyv0rMV/Lj631hz/
+         E0Jhwf8ueOTZ/p3o/zWVcP+HFqbsv1zK+hHQIm/+XR3iMuY6wDY7dI1f0fkPu8/pHs
+         UtRFBfcp8nTmjfudiH2XyuPfBbAEp/EOusyc7hCGN5E3RqnLY5TOQ9L3RpLxvUl2J9
+         65P1/28K0GpHQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 22BEB60963;
-        Mon, 22 Feb 2021 18:12:11 +0000 (UTC)
-Subject: Re: [GIT PULL] gpio: updates for v5.12
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DF18D60963;
+        Mon, 22 Feb 2021 18:12:17 +0000 (UTC)
+Subject: Re: [GIT PULL] Backlight for v5.12
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210222153714.4961-1-brgl@bgdev.pl>
-References: <20210222153714.4961-1-brgl@bgdev.pl>
-X-PR-Tracked-List-Id: <linux-gpio.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210222153714.4961-1-brgl@bgdev.pl>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.12
-X-PR-Tracked-Commit-Id: a8002a35935aaefcd6a42ad3289f62bab947f2ca
+In-Reply-To: <20210216164645.GC4803@dell>
+References: <20210216164645.GC4803@dell>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210216164645.GC4803@dell>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-5.12
+X-PR-Tracked-Commit-Id: 0b5e0f45af403cb6e9df574e1cb52691611dc0b8
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 882d6edfc45cd2b6e33cf973eab9a1ae1dbad5d1
-Message-Id: <161401753113.943.13116874791992514927.pr-tracker-bot@kernel.org>
-Date:   Mon, 22 Feb 2021 18:12:11 +0000
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
+X-PR-Merge-Commit-Id: 4512d92b03a6ff4909bcde893752918a88cd4690
+Message-Id: <161401753790.943.16358648997039941601.pr-tracker-bot@kernel.org>
+Date:   Mon, 22 Feb 2021 18:12:17 +0000
+To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 22 Feb 2021 16:37:14 +0100:
+The pull request you sent on Tue, 16 Feb 2021 16:46:45 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-updates-for-v5.12
+> git://git.kernel.org/pub/scm/linux/kernel/git/lee/backlight.git backlight-next-5.12
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/882d6edfc45cd2b6e33cf973eab9a1ae1dbad5d1
+https://git.kernel.org/torvalds/c/4512d92b03a6ff4909bcde893752918a88cd4690
 
 Thank you!
 
