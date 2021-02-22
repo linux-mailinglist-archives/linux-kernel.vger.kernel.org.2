@@ -2,107 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F4A321C7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:12:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB066321C7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhBVQKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:10:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51762 "EHLO
+        id S230492AbhBVQLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhBVQH7 (ORCPT
+        with ESMTP id S231676AbhBVQJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:07:59 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFF5C061574;
-        Mon, 22 Feb 2021 08:07:18 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id k13so1922058otn.13;
-        Mon, 22 Feb 2021 08:07:18 -0800 (PST)
+        Mon, 22 Feb 2021 11:09:03 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EFEFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:08:21 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id k13so28423877ejs.10
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:08:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HQMLiQEqf7rFRpTKzRG90QcYRXwBbpW9ZX/tJUT+9X0=;
-        b=Y0x2wx8QXR5uoPzvvIRno7OEU1mrNwjBhAPHTz2Yw2fyDuXajSbDubYnA5jv3TYAf9
-         Aa2EEes1if0pi9OZhL5DIdnRulf5I9RInuMYZTNRcx/Gjpp+xStCvOVVJVsQ/ShIz52o
-         T0ezfE4e+8Ufz4n6TSrVJrxb5x7KLOer+39vDL/Y4YTFZXlHTDT/22+C0Q0fXn66G+z6
-         d312sAS0tZLkZddGB6IzFtU4pQ0KrL4f8MxW+Rcuel1OVpVf/B+FMonsj5Rb5z+XoYYl
-         V+RQUV05vBpS/TpcEtYAbOjp87FxFU7dq2GIxz4Dkd3M9pqwcVxyUXh96jCObUZCd99+
-         SojA==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=TyEqjaEftvJKe5NhA72gotX3XSovzTBWWQb9G6YQcso=;
+        b=mcHi7L8OQMByAnG4k4kByfqfoq+k0J+WdDqz0lJdbf1OoGGSEaUHecb3DJA85TYzIR
+         SPRsH+07l+Qo2eQfthA3NlILNsP14w3xFHg6q+STJNYInPgcsHgOiyzPrwX3IHOHSF3u
+         7DtAWBQwIS3DH9Bou8Gw/IchJeTRDgunloFmWbMkBJEjewlnPl3EPmfLLtqAesBomZjd
+         1BNbq74BxD8ROKHV3u8G7lyt4jQ6NldGCkEpkS6wzGcQ5kE52Y0Ta4N26/mVJpSrO8h8
+         DonVtuxCeAKMz30LVYoNwJqs59olI2mQrptdcvgjx8egktKxVfmY0Pkj2slmmT3yxcmw
+         D2RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HQMLiQEqf7rFRpTKzRG90QcYRXwBbpW9ZX/tJUT+9X0=;
-        b=WX7GnfZBhZR0ckcsfpkuvn+DTP9Yr42TzOrKhmTMuv9AoGz0ZxUN8a8odONirjeXZp
-         iKkNbjHG3mkE6avTNJQDufmIPiqSVhjqvOBVLDpVLjqD0z2nkEA+/Gg//Sc4GddB/CDq
-         tnmN0HKSP8nqJwf61FrLafO9lMh+Ll9CXfJwO7kHF3QHlUMTfauxwsTTa+UrY1Agi2YK
-         W04A8CA4hV9/OFg85O8FrGxuQjowEWkzpt6URXd8iZ25qm0VHDKA/jRkliLunceVq5Yx
-         H7M5MU/ElBKgmzTQ2Bmhj77xY7cAU8Xq/W3V9CvOUhphh3Hl6enPvoMxAasqazOUJRkI
-         DrUw==
-X-Gm-Message-State: AOAM530soCGBSljcUYFJkUfKxvkDp7lvMdNucvdZk/UB43UPwzTDMwDD
-        g56V+OEHjFJxuhvhN9x4qR4LhR5uIWU=
-X-Google-Smtp-Source: ABdhPJwhtOQderNHNT4rvTl6a59QQESPcB5tPVff2abbwaOXuBtTkrMrveihihrbIk2TFx8DfZDBsw==
-X-Received: by 2002:a05:6830:1ac2:: with SMTP id r2mr8289181otc.80.1614010037553;
-        Mon, 22 Feb 2021 08:07:17 -0800 (PST)
-Received: from Davids-MacBook-Pro.local ([2601:282:800:dc80:2446:7349:da2b:ae97])
-        by smtp.googlemail.com with ESMTPSA id f29sm3619605ook.7.2021.02.22.08.07.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 08:07:17 -0800 (PST)
-Subject: Re: [PATCH] arp: Remove the arp_hh_ops structure
-To:     Eric Dumazet <eric.dumazet@gmail.com>,
-        Yejune Deng <yejune.deng@gmail.com>, davem@davemloft.net,
-        yoshfuji@linux-ipv6.org, dsahern@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
-References: <20210222031526.3834-1-yejune.deng@gmail.com>
- <0143f961-7530-3ae9-27f2-f076ea951975@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <8de8cee8-55d3-5748-d17e-08dba3cf778d@gmail.com>
-Date:   Mon, 22 Feb 2021 09:07:13 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=TyEqjaEftvJKe5NhA72gotX3XSovzTBWWQb9G6YQcso=;
+        b=byrwSZ8MZ6EbrcCTwKDl83gQIhkGccVrKqpRJc8gf0W4ozEHpHD/c2bJ7Ab8NeABKE
+         JEDR8BjYzvbc6Ez1V9Ac5+BLX5+fP2fHT7CBfm5AFqORKeGM7dIkY5Z8MwcnDmjKRjUw
+         HOkmHwl3iwpmCmeMJmUuPHwYCbQTGovW4aTBwJSO1BnZ7ZcMD18XQQI5v5ys3pMaBGvs
+         T0HpceTFRO2SmoUrdgY4IHgouHqjaeTY5OkMfz5Q2dIKTU6cNRG6P/rePwAwoQwlRCn/
+         xyDm7TxWXDeju2Ht0fvn6KEwem15lqaTRE8TpTxDLlRPb1lnZ1wszNneumY8WotNr1a3
+         0pSw==
+X-Gm-Message-State: AOAM5313/785lwcapIRgMlYJoDRXYF0Bz19HME7K2qMctXtn3YURGaKl
+        xgqzuRO7xPzlWN5bOxNsdW0NCUx+3e/xaZ+4u5BhCQ==
+X-Google-Smtp-Source: ABdhPJzHDufFOg32CQ9qB+iWsbPkpMVmcHO+VclHeHiooTy3zmYJ6ykbddQWmVooA07uMgLHjV+WkHYwrlr1R5wy3hA=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr21293694eju.375.1614010099619;
+ Mon, 22 Feb 2021 08:08:19 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <0143f961-7530-3ae9-27f2-f076ea951975@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 22 Feb 2021 21:38:08 +0530
+Message-ID: <CA+G9fYtNOZ-G_RTq_Uedy-7wkFog2q+OWNbWd--eL+i2-OQ7NA@mail.gmail.com>
+Subject: clang-12: i386: Unsupported relocation type: R_386_PLT32 (4)
+To:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        x86-ml <x86@kernel.org>, lkft-triage@lists.linaro.org
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 1:37 AM, Eric Dumazet wrote:
-> 
-> 
-> On 2/22/21 4:15 AM, Yejune Deng wrote:
->> The arp_hh_ops structure is similar to the arp_generic_ops structure.
->> but the latter is more general,so remove the arp_hh_ops structure.
->>
->> Fix when took out the neigh->ops assignment:
->> 8.973653] #PF: supervisor read access in kernel mode
->> [    8.975027] #PF: error_code(0x0000) - not-present page
->> [    8.976310] PGD 0 P4D 0
->> [    8.977036] Oops: 0000 [#1] SMP PTI
->> [    8.977973] CPU: 1 PID: 210 Comm: sd-resolve Not tainted 5.11.0-rc7-02046-g4591591ab715 #1
->> [    8.979998] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
->> [    8.981996] RIP: 0010:neigh_probe (kbuild/src/consumer/net/core/neighbour.c:1009)
->>
-> 
-> I have a hard time understanding this patch submission.
-> 
-> This seems a mix of a net-next and net material ?
+While building i386 configs on stable-rc 5.10, stable-rc 5.11 branch
+and mainline
+with clang-12 these following warnings and errors were noticed.
 
-It is net-next at best.
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=i386
+CROSS_COMPILE=i686-linux-gnu- 'HOSTCC=sccache clang' 'CC=sccache
+clang'
 
-> 
-> 
-> 
->> Reported-by: kernel test robot <oliver.sang@intel.com>
-> 
-> If this is a bug fix, we want a Fixes: tag
-> 
-> This will really help us. Please don't let us guess what is going on.
-> 
+drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
+count >= width of type [-Wshift-count-overflow]
 
-This patch is a v2. v1 was clearly wrong and not tested; I responded as
-such 12 hours before the robot test.
+        return hweight64(VDBOX_MASK(&i915->gt));
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from
+macro 'hweight64'
+#define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) :
+__arch_hweight64(w))
+                                                ^~~~~~~~~~~~~~~~~~~~
+include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from
+macro '__const_hweight64'
+#define __const_hweight64(w) (__const_hweight32(w) +
+__const_hweight32((w) >> 32))
+                                                                           ^  ~~
+include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from
+macro '__const_hweight32'
+#define __const_hweight32(w) (__const_hweight16(w) +
+__const_hweight16((w) >> 16))
+                                                ^
+include/asm-generic/bitops/const_hweight.h:19:48: note: expanded from
+macro '__const_hweight16'
+#define __const_hweight16(w) (__const_hweight8(w)  +
+__const_hweight8((w)  >> 8 ))
+                                               ^
+include/asm-generic/bitops/const_hweight.h:10:9: note: expanded from
+macro '__const_hweight8'
+         ((!!((w) & (1ULL << 0))) +     \
+               ^
+drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c:2586:9: warning: shift
+count >= width of type [-Wshift-count-overflow]
+        return hweight64(VDBOX_MASK(&i915->gt));
+               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+<trim>
+
+32 warnings generated.
+Unsupported relocation type: R_386_PLT32 (4)
+make[3]: *** [arch/x86/boot/compressed/Makefile:116:
+arch/x86/boot/compressed/vmlinux.relocs] Error 1
+make[3]: *** Deleting file 'arch/x86/boot/compressed/vmlinux.relocs'
+make[3]: Target 'arch/x86/boot/compressed/vmlinux' not remade because of errors.
+
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+Steps to reproduce:
+---------------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+tuxmake --runtime podman --target-arch i386 --toolchain clang-12
+--kconfig defconfig  --kconfig-add
+https://builds.tuxbuild.com/1opxSKxZuRowPsiOsSJ0IoUOXOt/config
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
