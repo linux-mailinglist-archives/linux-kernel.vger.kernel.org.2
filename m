@@ -2,129 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D55321D26
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C82321D2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231573AbhBVQho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230037AbhBVQhg (ORCPT
+        id S230518AbhBVQij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 11:38:39 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:34453 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230218AbhBVQiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:37:36 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05B6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:36:55 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id s107so12545433otb.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:36:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CQtzj2ET+OspvcT7VasFUJh31XI2DgueE7K7chQefu0=;
-        b=JgIAcXbmqnUtAzeQggrQMFDw+iRD7712f5b6XLlsNpGFq/2OH71ZR8eVPcYSvV8O9Z
-         Q4ZFhr/HY3qIL2VVw5am2ZXMqQjcHv6oQm57icBzxpF2r/H6pUN28Ic0UVcMNAWR0oM3
-         Nk4pk+06r39DoxUQo5VbU8V6VX0ewSDT/6fu0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CQtzj2ET+OspvcT7VasFUJh31XI2DgueE7K7chQefu0=;
-        b=j+noUqOtnDKrHyr0+7K/Q76redY4xWExQkOi3/Gor4hNI2u6ZK+v0rXCoU5/yLraFl
-         k6NQnYpsYqsQ5MMSYq921L75p5adAdoRpB4RUf9bdcIozIdB2Te3YB61lRPb86k7LAsq
-         n9pG/dhX72DTP4FhU4zPnxu4Faz41cJZX8iyvZpPMyd8w5QzgfEYffAJj33Yj8XBwdBS
-         61e7gXtFyh+CIGNqSsYcvfM+l+q34i+zE9VpxHczpUARv8+ujACZPQ/Y/uJOCziFqXbP
-         9XpNPfNXkGyIOee+cn5SWef+ipg6GDQb0XzzajRml8LprO0fana3+DlLrX7faYIyZAYU
-         wdEw==
-X-Gm-Message-State: AOAM533fDuPoSnrSdBnRm3lEzntoAXhzQ7v35pUnikHRqREI83puKzcp
-        UuPLB9XIAmE6/4R1FSZwO7b2QQ==
-X-Google-Smtp-Source: ABdhPJyA692d/UkhfnySsVsus41uILuIidqyduT1DxwFO8wUlVI27VDOIjP5WOhWxUUsjwOOYq7M6Q==
-X-Received: by 2002:a05:6830:314d:: with SMTP id c13mr16134049ots.124.1614011814286;
-        Mon, 22 Feb 2021 08:36:54 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id 7sm3712035oth.38.2021.02.22.08.36.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 08:36:53 -0800 (PST)
-Subject: Re: [PATCH 00/20] Manual replacement of all strlcpy in favor of
- strscpy
-To:     Romain Perier <romain.perier@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        kernel-hardening@lists.openwall.com, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Steffen Maier <maier@linux.ibm.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     cgroups@vger.kernel.org, linux-crypto@vger.kernel.org,
-        netdev@vger.kernel.org, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-hwmon@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210222151231.22572-1-romain.perier@gmail.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <936bcf5e-2006-7643-7804-9efa318b3e2b@linuxfoundation.org>
-Date:   Mon, 22 Feb 2021 09:36:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Mon, 22 Feb 2021 11:38:16 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A258D5814F6;
+        Mon, 22 Feb 2021 11:37:17 -0500 (EST)
+Received: from imap2 ([10.202.2.52])
+  by compute4.internal (MEProxy); Mon, 22 Feb 2021 11:37:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=c28hTrZAUemv4yqSSQH1LBZ4DoA5FmR
+        Q414ixUeMM2Y=; b=n93/MUxYnt1mfFwvp4bF0iuyRDq8QMpIVFEbx8M9zL7YEmt
+        Bsduc60yoriiSYl7qeQjaHqVDthjcRsMtJEcXBtPp8QLd5BZgmPEthKFnoanJO/U
+        paa39Ym2UEK8cq6vIspTomaya9HrCKUCDnfn90sUDpHHjHyf/L5rQZrAw/cNoA4A
+        0t9vo0ZrSEVXkLwMVlvaIRWTff9RAhxcK1B00dXv1Thrvo6oJrK48VQAgA/Ub1f2
+        w7DrjRgI7fTu/cPYqp110ODlgXMTaig6ctquyiki0FvYsTb8rjUz2j6H+ZNCjTS6
+        MPGvyjlS26TLbTwG45UHRMqCpd9Uu5QQf2//J0Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=c28hTr
+        ZAUemv4yqSSQH1LBZ4DoA5FmRQ414ixUeMM2Y=; b=ciGz/ivIUjuQDtCQrdmQ2D
+        PZFPWMX1m2D1JYbSIpFf9TKQJoMW3SyiWY6VHuV7bO01O0HRDRRUffXfAh7Ki0IJ
+        uOpR0LFHunD4tncFxv4eU58LcK8dLqL51fhbvqJBwRvFHvw6aYjx7cxdBJTajIvT
+        U4VR1+DGZcK+jhxP12rXRYb1975tILeCbYPply1QPAoXZjBgKqOYRAM4mjRT7BnJ
+        gg+OG+inm6XQAku6fCWVVf5Jud2OkocUl1i8vnZAIQz9ogyWMLXmbB5IKJRWuMEA
+        N9euqRYv2f8tzensKapWiD0oT4q/oiPVVSnzrWcX7+cJbsWQgaKr7iiBXVvMynHw
+        ==
+X-ME-Sender: <xms:u90zYFX2EZSAy4eU3W1YL3QgUhx16WEv1PWjfscv7xn7aBkWYfqhIQ>
+    <xme:u90zYFlcSEMGLcbHVbEN2O4g3IUjXoEkYi_nadE_PRy4PjKtRlZI2zF3neWMTFrq_
+    -h7fjDnOsEaEw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeefgdeltdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpehnnhgvthcu
+    oehnnhgvthesfhgrshhtmhgrihhlrdhfmheqnecuggftrfgrthhtvghrnhephfejledtke
+    ehtdejtdekgfegheehfeevfeejffevkeevveekjefhtdehfeeffeegnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhhnvghtsehfrghsthhmrg
+    hilhdrfhhm
+X-ME-Proxy: <xmx:u90zYBagM_A9SEqUYG8w4a7FZCSaCJl84_uPZr_ZcsUxm86Qmuk_gw>
+    <xmx:u90zYIVZ-pTsyNkFoHDH-9NBXJR-Sp0Un4YsuN9JIlB42OlmeifgPA>
+    <xmx:u90zYPlf5XMHBmcfvB0kKIWkbkxC33RNWqXA8bHC1YTF7t-70t064g>
+    <xmx:vd0zYHngyDr_RocKIPve-KTS1ROUxGoxpTfwogCF5WdU8C8NudBCYg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C0D59A00060; Mon, 22 Feb 2021 11:37:15 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-141-gf094924a34-fm-20210210.001-gf094924a
+Mime-Version: 1.0
+Message-Id: <780f6c9d-388c-4d52-bab5-790cdd62b689@www.fastmail.com>
+In-Reply-To: <20210222095111.zcokx4g3sqghjgyl@pali>
+References: <20210211234445.hbv2diphmgbir76u@pali>
+ <000b92cc-9b54-4af9-b95c-d1317fb6f97f@www.fastmail.com>
+ <20210213100139.ckrscepg72zjkj4f@pali>
+ <c0b02aa0-1789-43a3-8d73-057890f703f1@www.fastmail.com>
+ <20210214123310.d6armpep7kxbymbu@pali>
+ <675b7a74-066b-4dc0-8dcb-f11c5606ae52@www.fastmail.com>
+ <20210216104141.umy6zrrkal3dlj5j@pali>
+ <d057d7f7-27a5-45ec-88f0-a653572a8ca6@www.fastmail.com>
+ <20210219193302.odcjcaukxxjaedd5@pali>
+ <c0ade595-9bfa-4cfc-8c87-0e955173d5db@www.fastmail.com>
+ <20210222095111.zcokx4g3sqghjgyl@pali>
+Date:   Mon, 22 Feb 2021 08:36:55 -0800
+From:   nnet <nnet@fastmail.fm>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+Cc:     =?UTF-8?Q?Marek_Beh=C3=BAn?= <kabel@kernel.org>,
+        a.heider@gmail.com, andrew@lunn.ch, gerald@gk2.net,
+        gregory.clement@bootlin.com, kostap@marvell.com,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luka.perkov@sartura.hr,
+        miquel.raynal@bootlin.com, mturquette@baylibre.com,
+        rmk+kernel@armlinux.org.uk, sboyd@kernel.org, tmn505@gmail.com,
+        vladimir.vid@sartura.hr, "Philip Soares" <philips@netisense.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_mvebu_v2_00/10]_Armada_37xx:_Fix_cpufreq_changing_b?=
+ =?UTF-8?Q?ase_CPU_speed_to_800_MHz_from_1000_MHz?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 8:12 AM, Romain Perier wrote:
-> strlcpy() copy a C-String into a sized buffer, the result is always a
-> valid NULL-terminated that fits in the buffer, howerver it has severals
-> issues. It reads the source buffer first, which is dangerous if it is non
-> NULL-terminated or if the corresponding buffer is unbounded. Its safe
-> replacement is strscpy(), as suggested in the deprecated interface [1].
-> 
-> We plan to make this contribution in two steps:
-> - Firsly all cases of strlcpy's return value are manually replaced by the
->    corresponding calls of strscpy() with the new handling of the return
->    value (as the return code is different in case of error).
-> - Then all other cases are automatically replaced by using coccinelle.
-> 
+> Could I add your Tested-by line to patch series?
 
-Cool. A quick check shows me 1031 strscpy() calls with no return
-checks. All or some of these probably need to be reviewed and add
-return checks. Is this something that is in the plan to address as
-part of this work?
+Yes, by: Philip Soares <philips@netisense.com>
 
-thanks,
--- Shuah
+Thank you for the patches!
