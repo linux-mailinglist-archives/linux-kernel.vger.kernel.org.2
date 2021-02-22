@@ -2,176 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B1432213A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86689322144
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 22:21:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhBVVTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 16:19:34 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:4631 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbhBVVT2 (ORCPT
+        id S231523AbhBVVVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 16:21:39 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:44567 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhBVVVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 16:19:28 -0500
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Dkw4G3h1CzYBb1;
-        Tue, 23 Feb 2021 05:17:18 +0800 (CST)
-Received: from dggemi712-chm.china.huawei.com (10.3.20.111) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 23 Feb 2021 05:18:43 +0800
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggemi712-chm.china.huawei.com (10.3.20.111) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 23 Feb 2021 05:18:43 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Tue, 23 Feb 2021 05:18:43 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     "kieran.bingham@ideasonboard.com" <kieran.bingham@ideasonboard.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "jan.kiszka@siemens.com" <jan.kiszka@siemens.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>
-Subject: RE: [PATCH] scripts/gdb: document lx_current is only supported by x86
-Thread-Topic: [PATCH] scripts/gdb: document lx_current is only supported by
- x86
-Thread-Index: AQHXCJpVC2mxTpeLEU+cRe9pw7RQHqpjfh0AgAEkrZA=
-Date:   Mon, 22 Feb 2021 21:18:43 +0000
-Message-ID: <eb48406902a84282a400846607e7a37a@hisilicon.com>
-References: <20210221213527.22076-1-song.bao.hua@hisilicon.com>
- <eac66671-f083-379a-c7b0-04b783e32d63@ideasonboard.com>
-In-Reply-To: <eac66671-f083-379a-c7b0-04b783e32d63@ideasonboard.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.203.20]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 22 Feb 2021 16:21:35 -0500
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 92EC9240004;
+        Mon, 22 Feb 2021 21:20:45 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 22:20:45 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kernel@collabora.com
+Subject: Re: [PATCHv1 1/6] rtc: m41t80: add support for protected clock
+Message-ID: <YDQgLTPE0E+/1Cwv@piout.net>
+References: <20210222171247.97609-1-sebastian.reichel@collabora.com>
+ <20210222171247.97609-2-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210222171247.97609-2-sebastian.reichel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS2llcmFuIEJpbmdoYW0g
-W21haWx0bzpraWVyYW4uYmluZ2hhbUBpZGVhc29uYm9hcmQuY29tXQ0KPiBTZW50OiBUdWVzZGF5
-LCBGZWJydWFyeSAyMywgMjAyMSAxMjowNiBBTQ0KPiBUbzogU29uZyBCYW8gSHVhIChCYXJyeSBT
-b25nKSA8c29uZy5iYW8uaHVhQGhpc2lsaWNvbi5jb20+OyBjb3JiZXRAbHduLm5ldDsNCj4gbGlu
-dXgtZG9jQHZnZXIua2VybmVsLm9yZzsgamFuLmtpc3prYUBzaWVtZW5zLmNvbQ0KPiBDYzogbGlu
-dXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXhhcm1Ab3BlbmV1bGVyLm9yZw0KPiBTdWJq
-ZWN0OiBSZTogW1BBVENIXSBzY3JpcHRzL2dkYjogZG9jdW1lbnQgbHhfY3VycmVudCBpcyBvbmx5
-IHN1cHBvcnRlZCBieSB4ODYNCj4gDQo+IEhpIEJhcnJ5DQo+IA0KPiBPbiAyMS8wMi8yMDIxIDIx
-OjM1LCBCYXJyeSBTb25nIHdyb3RlOg0KPiA+IGx4X2N1cnJlbnQgZGVwZW5kcyBvbiB0aGUgcGVy
-X2NwdSBjdXJyZW50X3Rhc2sgd2hpY2ggZXhpc3RzIG9uIHg4NiBvbmx5Og0KPiA+DQo+ID4gYXJj
-aCQgZ2l0IGdyZXAgY3VycmVudF90YXNrIHwgZ3JlcCAtaSBwZXJfY3B1DQo+ID4geDg2L2luY2x1
-ZGUvYXNtL2N1cnJlbnQuaDpERUNMQVJFX1BFUl9DUFUoc3RydWN0IHRhc2tfc3RydWN0ICosDQo+
-IGN1cnJlbnRfdGFzayk7DQo+ID4geDg2L2tlcm5lbC9jcHUvY29tbW9uLmM6REVGSU5FX1BFUl9D
-UFUoc3RydWN0IHRhc2tfc3RydWN0ICosIGN1cnJlbnRfdGFzaykNCj4gX19fX2NhY2hlbGluZV9h
-bGlnbmVkID0NCj4gPiB4ODYva2VybmVsL2NwdS9jb21tb24uYzpFWFBPUlRfUEVSX0NQVV9TWU1C
-T0woY3VycmVudF90YXNrKTsNCj4gPiB4ODYva2VybmVsL2NwdS9jb21tb24uYzpERUZJTkVfUEVS
-X0NQVShzdHJ1Y3QgdGFza19zdHJ1Y3QgKiwgY3VycmVudF90YXNrKQ0KPiA9ICZpbml0X3Rhc2s7
-DQo+ID4geDg2L2tlcm5lbC9jcHUvY29tbW9uLmM6RVhQT1JUX1BFUl9DUFVfU1lNQk9MKGN1cnJl
-bnRfdGFzayk7DQo+ID4geDg2L2tlcm5lbC9zbXBib290LmM6CXBlcl9jcHUoY3VycmVudF90YXNr
-LCBjcHUpID0gaWRsZTsNCj4gPg0KPiA+IE9uIG90aGVyIGFyY2hpdGVjdHVyZXMsIGx4X2N1cnJl
-bnQoKSB3aWxsIGxlYWQgdG8gYSBweXRob24gZXhjZXB0aW9uOg0KPiA+IChnZGIpIHAgJGx4X2N1
-cnJlbnQoKS5waWQNCj4gPiBQeXRob24gRXhjZXB0aW9uIDxjbGFzcyAnZ2RiLmVycm9yJz4gTm8g
-c3ltYm9sICJjdXJyZW50X3Rhc2siIGluIGN1cnJlbnQNCj4gY29udGV4dC46DQo+ID4gRXJyb3Ig
-b2NjdXJyZWQgaW4gUHl0aG9uOiBObyBzeW1ib2wgImN1cnJlbnRfdGFzayIgaW4gY3VycmVudCBj
-b250ZXh0Lg0KPiA+DQo+ID4gVG8gYXZvaWQgbW9yZSBwZW9wbGUgc3RydWdnbGluZyBhbmQgd2Fz
-dGluZyB0aW1lIGluIG90aGVyIGFyY2hpdGVjdHVyZXMsDQo+ID4gZG9jdW1lbnQgaXQuDQo+ID4N
-Cj4gPiBDYzogSmFuIEtpc3prYSA8amFuLmtpc3prYUBzaWVtZW5zLmNvbT4NCj4gPiBTaWduZWQt
-b2ZmLWJ5OiBCYXJyeSBTb25nIDxzb25nLmJhby5odWFAaGlzaWxpY29uLmNvbT4NCj4gPiAtLS0N
-Cj4gPiAgRG9jdW1lbnRhdGlvbi9kZXYtdG9vbHMvZ2RiLWtlcm5lbC1kZWJ1Z2dpbmcucnN0IHwg
-IDIgKy0NCj4gPiAgc2NyaXB0cy9nZGIvbGludXgvY3B1cy5weSAgICAgICAgICAgICAgICAgICAg
-ICAgIHwgMTAgKysrKysrKystLQ0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygr
-KSwgMyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rl
-di10b29scy9nZGIta2VybmVsLWRlYnVnZ2luZy5yc3QNCj4gYi9Eb2N1bWVudGF0aW9uL2Rldi10
-b29scy9nZGIta2VybmVsLWRlYnVnZ2luZy5yc3QNCj4gPiBpbmRleCA0NzU2ZjZiM2EwNGUuLjE1
-ODY5MDFiNjgzYyAxMDA2NDQNCj4gPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2Rldi10b29scy9nZGIt
-a2VybmVsLWRlYnVnZ2luZy5yc3QNCj4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2Rldi10b29scy9n
-ZGIta2VybmVsLWRlYnVnZ2luZy5yc3QNCj4gPiBAQCAtMTE0LDcgKzExNCw3IEBAIEV4YW1wbGVz
-IG9mIHVzaW5nIHRoZSBMaW51eC1wcm92aWRlZCBnZGIgaGVscGVycw0KPiA+ICAgICAgWyAgICAg
-MC4wMDAwMDBdIEJJT1MtZTgyMDogW21lbSAweDAwMDAwMDAwMDAwOWZjMDAtMHgwMDAwMDAwMDAw
-MDlmZmZmXQ0KPiByZXNlcnZlZA0KPiA+ICAgICAgLi4uLg0KPiA+DQo+ID4gLS0gRXhhbWluZSBm
-aWVsZHMgb2YgdGhlIGN1cnJlbnQgdGFzayBzdHJ1Y3Q6Og0KPiA+ICstIEV4YW1pbmUgZmllbGRz
-IG9mIHRoZSBjdXJyZW50IHRhc2sgc3RydWN0KHN1cHBvcnRlZCBieSB4ODYgb25seSk6Og0KPiA+
-DQo+ID4gICAgICAoZ2RiKSBwICRseF9jdXJyZW50KCkucGlkDQo+ID4gICAgICAkMSA9IDQ5OTgN
-Cj4gPiBkaWZmIC0tZ2l0IGEvc2NyaXB0cy9nZGIvbGludXgvY3B1cy5weSBiL3NjcmlwdHMvZ2Ri
-L2xpbnV4L2NwdXMucHkNCj4gPiBpbmRleCAwMDhlNjJmMzE5MGQuLmYzODI3NjI1MDlkMyAxMDA2
-NDQNCj4gPiAtLS0gYS9zY3JpcHRzL2dkYi9saW51eC9jcHVzLnB5DQo+ID4gKysrIGIvc2NyaXB0
-cy9nZGIvbGludXgvY3B1cy5weQ0KPiA+IEBAIC0xNTYsNiArMTU2LDEzIEBAIE5vdGUgdGhhdCBW
-QVIgaGFzIHRvIGJlIHF1b3RlZCBhcyBzdHJpbmcuIiIiDQo+ID4NCj4gPiAgUGVyQ3B1KCkNCj4g
-Pg0KPiA+ICtkZWYgZ2V0X2N1cnJlbnRfdGFzayhjcHUpOg0KPiA+ICsgICAgaWYgdXRpbHMuaXNf
-dGFyZ2V0X2FyY2goIng4NiIpOg0KPiA+ICsgICAgICAgICB2YXJfcHRyID0gZ2RiLnBhcnNlX2Fu
-ZF9ldmFsKCImY3VycmVudF90YXNrIikNCj4gPiArICAgICAgICAgcmV0dXJuIHBlcl9jcHUodmFy
-X3B0ciwgY3B1KS5kZXJlZmVyZW5jZSgpDQo+ID4gKyAgICBlbHNlOg0KPiA+ICsgICAgICAgIHJh
-aXNlIGdkYi5HZGJFcnJvcigiU29ycnksIG9idGFpbmluZyB0aGUgY3VycmVudCB0YXNrIGlzIG5v
-dCB5ZXQgIg0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAic3VwcG9ydGVkIHdpdGgg
-dGhpcyBhcmNoIikNCj4gDQo+IEkndmUgd29uZGVyZWQgaW4gdGhlIHBhc3QgaG93IHdlIHNob3Vs
-ZCBoYW5kbGUgdGhlIGFyY2hpdGVjdHVyZSBzcGVjaWZpYw0KPiBsYXllcnMuDQo+IA0KPiBQZXJo
-YXBzIHdlIG5lZWQgdG8gaGF2ZSBhbiBpbnRlcmZhY2Ugb2YgZnVuY3Rpb25hbGl0eSB0byBpbXBs
-ZW1lbnQgb24NCj4gZWFjaCBhcmNoaXRlY3R1cmUgc28gdGhhdCB3ZSBjYW4gY3JlYXRlIGEgcGVy
-LWFyY2ggc2V0IG9mIGhlbHBlcnMuDQo+IA0KPiBvciBicmVhayBpdCB1cCBpbnRvIGFyY2ggc3Bl
-Y2lmaWMgc3ViZGlycyBhdCBsZWFzdC4uLg0KPiANCj4gDQo+ID4gIGNsYXNzIEx4Q3VycmVudEZ1
-bmMoZ2RiLkZ1bmN0aW9uKToNCj4gPiAgICAgICIiIlJldHVybiBjdXJyZW50IHRhc2suDQo+ID4g
-QEAgLTE2Nyw4ICsxNzQsNyBAQCBudW1iZXIuIElmIENQVSBpcyBvbWl0dGVkLCB0aGUgQ1BVIG9m
-IHRoZSBjdXJyZW50IGNvbnRleHQNCj4gaXMgdXNlZC4iIiINCj4gPiAgICAgICAgICBzdXBlcihM
-eEN1cnJlbnRGdW5jLCBzZWxmKS5fX2luaXRfXygibHhfY3VycmVudCIpDQo+ID4NCj4gPiAgICAg
-IGRlZiBpbnZva2Uoc2VsZiwgY3B1PS0xKToNCj4gPiAtICAgICAgICB2YXJfcHRyID0gZ2RiLnBh
-cnNlX2FuZF9ldmFsKCImY3VycmVudF90YXNrIikNCj4gPiAtICAgICAgICByZXR1cm4gcGVyX2Nw
-dSh2YXJfcHRyLCBjcHUpLmRlcmVmZXJlbmNlKCkNCj4gPiArICAgICAgICByZXR1cm4gZ2V0X2N1
-cnJlbnRfdGFzayhjcHUpDQo+ID4NCj4gDQo+IEFuZCB0aGVuIHBlcmhhcHMgd2Ugc2ltcGx5IHNo
-b3VsZG4ndCBldmVuIGV4cG9zZSBjb21tYW5kcyB3aGljaCBjYW4gbm90DQo+IGJlIHN1cHBvcnRl
-ZCBvbiB0aG9zZSBhcmNoaXRlY3R1cmVzPw0KDQpJIGZlZWwgaXQgaXMgYmV0dGVyIHRvIHRlbGwg
-dXNlcnMgdGhpcyBmdW5jdGlvbiBpcyBub3Qgc3VwcG9ydGVkIG9uIGl0cyBhcmNoDQp0aGFuIHNp
-bXBseSBoaWRpbmcgdGhlIGZ1bmN0aW9uLg0KDQpJZiB3ZSBoaWRlIGl0LCB1c2VycyBzdGlsbCBo
-YXZlIG1hbnkgY2hhbmNlcyB0byB0cnkgaXQgYXMgdGhleSBoYXZlIGdvdA0KaW5mb3JtYXRpb24g
-b2YgbHhfY3VycmVudCBmcm9tIGdvb2dsZSBvciBzb21ld2hlcmUuDQpUaGV5IHdpbGwgdHJ5LCBp
-ZiBpdCB0dXJucyBvdXQgdGhlIGx4X2N1cnJlbnQgaXMgbm90IGluIHRoZSBsaXN0IGFuZCBhbg0K
-ZXJyb3IgbGlrZSAgImludmFsaWQgZGF0YSB0eXBlIGZvciBmdW5jdGlvbiB0byBiZSBjYWxsZWQi
-LCB0aGV5IHdpbGwNCnByb2JhYmx5IHN1c3BlY3QgdGhlaXIgZ2RiL3B5dGhvbiBlbnZpcm9ubWVu
-dCBpcyBub3Qgc2V0IHVwIGNvcnJlY3RseSwNCmFuZCBjb250aW51ZSB0byB3YXN0ZSB0aW1lIGlu
-IGNoZWNraW5nIHRoZWlyIGVudmlyb25tZW50LiANCkZpbmFsbHkgdGhleSBmaWd1cmUgb3V0IHRo
-aXMgZnVuY3Rpb24gaXMgbm90IHN1cHBvcnRlZCBieSBpdHMgYXJjaCBzbyBpdCBpcw0Kbm90IGV4
-cG9zZWQuIEJ1dCB0aGV5IGhhdmUgd2FzdGVkIGEgY291cGxlIG9mIGhvdXJzIGJlZm9yZSBrbm93
-aW5nIHRoYXQuDQoNCkl0IHNlZW1zIGl0IGlzIG1vcmUgZnJpZW5kbHkgdG8gZGlyZWN0bHkgdGVs
-bCB1c2VycyB0aGlzIGlzIG5vdCBzdXBwb3J0ZWQNCm9uIGl0cyBhcmNoIGV4cGxpY2l0bHkgYW5k
-IGNsZWFybHkgdGhhbiByZXBvcnRpbmcgYSAiaW52YWxpZCBkYXRhIHR5cGUNCmZvciBmdW5jdGlv
-biB0byBiZSBjYWxsZWQuDQoNCj4gDQo+IElzIGl0IGVhc3kgdG8gZGlzYWJsZSB0aGlzIGNvbW1h
-bmQgaWYgaXQncyBub3Qgc3VwcG9ydGFibGUgb24gdGhlDQo+IGFyY2hpdGVjdHVyZT8NCj4gDQoN
-ClRCSCwgSSdtIG5vdCBhIHB5dGhvbiBleHBlcnQuIEkgZG9uJ3Qga25vdyBob3cgdG8gZG8gdGhh
-dCBpbiBhbiBlbGVnYW50DQp3YXkgOi0pICBvbiB0aGUgb3RoZXIgaGFuZCwgaXQgc2VlbXMgbHhf
-Y3VycmVudCBpc27igJl0IGEgY29tbWFuZCBsaWtlDQpseC1kbWVzZy4gTHhfY3VycmVudCBpcyBh
-Y3R1YWxseSBzaW1pbGFyIHdpdGggbHhfcGVyX2NwdSwgd2UgdXNlIGdkYidzDQpwcmludChwKSBj
-b21tYW5kIHRvIHNob3cgaXRzIGNvbnRlbnQuDQoNCj4gUHJlc3VtYWJseSB5b3UgYXJlIHdvcmtp
-bmcgb24gbm9uLXg4NiwgaGF2ZSB5b3UgaW52ZXN0aWdhdGVkIGFkZGluZyB0aGlzDQo+IHN1cHBv
-cnQgZm9yIHlvdXIgYXJjaGl0ZWN0dXJlIChhcm0vYXJtNjQ/KT8NCg0KWWVzLiBJJ3ZlIHRob3Vn
-aHQgYWJvdXQgaXQuIEJ1dCBJdCB3b3VsZCBiZSBxdWl0ZSB0cml2aWFsIHRvIGJyaW5nIHVwDQp0
-aGlzIGZ1bmN0aW9uIG9uIGFybTY0Lg0KDQphcmNoL2FybTY0L2luY2x1ZGUvYXNtL2N1cnJlbnQu
-aDoNCnN0YXRpYyBfX2Fsd2F5c19pbmxpbmUgc3RydWN0IHRhc2tfc3RydWN0ICpnZXRfY3VycmVu
-dCh2b2lkKQ0Kew0KCXVuc2lnbmVkIGxvbmcgc3BfZWwwOw0KDQoJYXNtICgibXJzICUwLCBzcF9l
-bDAiIDogIj1yIiAoc3BfZWwwKSk7DQoNCglyZXR1cm4gKHN0cnVjdCB0YXNrX3N0cnVjdCAqKXNw
-X2VsMDsNCn0NCg0KV2UgaGF2ZSB0byByZWFkIGEgc3BlY2lhbCByZWdpc3RlciBuYW1lZCBzcF9l
-bDAgYW5kIGNvbnZlcnQgaXQgdG8NCnRhc2tfc3RydWN0IHdoaWxlIHdlIGFyZSBydW5uaW5nIGlu
-IGtlcm5lbCBtb2RlLiBJbiBnZGIgSSBjYW4gZG8NCml0IGJ5Og0KKGdkYilwL3ggJFNQX0VMMA0K
-JDIwID0gMHhmZmZmZmZjMDExNDkyNDAwDQooZ2RiKXAgKChzdHJ1Y3QgdGFza19zdHJ1Y3QgKjB4
-ZmZmZmZmYzAxMTQ5MjQwMCkpLT5waWQNCiQyMSA9IDANCg0KV2hhdCBpcyBtb3JlIGNvbXBsZXgg
-aXMgdGhhdCBpZiB3ZSBhcmUgcnVubmluZyBpbiB1c2VyIG1vZGUoRUwwKSwgdGhpcw0KcmVnaXN0
-ZXIgZG9lc24ndCBkZXNjcmliZSBjdXJyZW50IHRhc2sgYW55IG1vcmUuIHNvIHdlIGhhdmUgdG8N
-CmRpZmZlcmVudGlhdGUgdGhlIG1vZGVzIG9mIHByb2Nlc3NvciBhbmQgbWFrZSBzdXJlIGl0IG9u
-bHkgcmV0dXJucw0KY3VycmVudCB0YXNrIHdoaWxlIHdlIGFyZSBydW5uaW5nIGluIEVMMShwcm9j
-ZXNzb3IncyBrZXJuZWwgbW9kZSkuDQoNCj4gDQo+IFRoZSBmYWN0IHlvdSBoYXZlIHJ1biB0aGUg
-Y29tbWFuZCBpbXBsaWVzIGl0IHdvdWxkIGJlIHVzZWZ1bCBmb3IgeW91ID8NCj4gDQoNClllcy4g
-SSB0aGluayBpdCBpcyBhIGNvbW1vbiByZXF1aXJlbWVudCB0byBnZXQgY3VycmVudCB0YXNrLiBs
-eF9jdXJyZW50DQpjb252ZW5pZW5jZSBmdW5jdGlvbiBjYW4gaGVscCBldmVyeW9uZS4gU2luY2Ug
-dGhlcmUgaXMgYSBkb2N1bWVudCBzYXlpbmcNCnRoaXMgY29tbWFuZCBleGlzdHMsIGV2ZXJ5b25l
-IHVzaW5nIHNjcmlwdHMvZ2RiIHdvdWxkIGxpa2UgdG8gdHJ5IGl0DQpJIGd1ZXNzLg0KDQpUaGUg
-c2ltcGxlc3Qgd2F5IHdvdWxkIGJlIGFkZGluZyBjdXJyZW50X3Rhc2sgcGVyX2NwdSB2YXJpYWJs
-ZSBmb3Igb3RoZXINCmFyY2gsIGJ1dCBJIGJlbGlldmUgaGFyZGx5IGFyY2ggbWFpbnRhaW5lcnMg
-d2lsbCBhY2NlcHQgaXQgYXMgaXRzIG9ubHkNCmJlbmVmaXQgaXMgYnJpbmdpbmcgdXAgdGhlIGx4
-X2N1cnJlbnQuIFNvIDk5LjklIG5vIG1haW50YWluZXIgd2FudHMgaXQuDQoNClRodXMsIGZvciB0
-aGUgdGltZSBiZWluZywgSSBtb3ZlZCB0byBqdXN0IHN0b3AgcGVvcGxlIGZyb20gd2FzdGluZyB0
-aW1lDQpsaWtlIHdoYXQgSSBoYWQgZG9uZSB3aXRoIGEgY291cGxlIG9mIGhvdXJzLg0KDQo+IA0K
-PiA+ICBMeEN1cnJlbnRGdW5jKCkNCj4gPg0KPiANCj4gDQo+IC0tDQo+IFJlZ2FyZHMNCj4gLS0N
-Cj4gS2llcmFuDQoNClRoYW5rcw0KQmFycnkNCg==
+On 22/02/2021 18:12:42+0100, Sebastian Reichel wrote:
+> Congatec's QMX6 system on module (SoM) uses a m41t62 as RTC. The
+> modules SQW clock output defaults to 32768 Hz. This behaviour is
+> used to provide the i.MX6 CKIL clock. Once the RTC driver is probed,
+> the clock is disabled and all i.MX6 functionality depending on
+> the 32 KHz clock has undefined behaviour. On systems using hardware
+> watchdog it seems to likely trigger a lot earlier than configured.
+> 
+> The proper solution would be to describe this dependency in DT,
+> but that will result in a deadlock. The kernel will see, that
+> i.MX6 system clock needs the RTC clock and do probe deferral.
+> But the i.MX6 I2C module never becomes usable without the i.MX6
+> CKIL clock and thus the RTC's clock will not be probed. So from
+> the kernel's perspective this is a chicken-and-egg problem.
+> 
+
+Reading the previous paragraph, I was going to suggest describing the
+dependency and wondering whether this would cause a circular dependency.
+I guess this will keep being an issue for clocks on an I2C or SPI bus...
+
+> Technically everything is fine by not touching anything, since
+> the RTC clock correctly enables the clock on reset (i.e. on
+> battery backup power loss) and also the bootloader enables it
+> in case a kernel without this support has been booted.
+> 
+> The 'protected-clocks' property is already in use for some clocks
+> that may not be touched because of firmware limitations and is
+> described in Documentation/devicetree/bindings/clock/clock-bindings.txt.
+> 
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+> ---
+>  Documentation/devicetree/bindings/rtc/rtc-m41t80.txt | 1 +
+>  drivers/rtc/rtc-m41t80.c                             | 3 +++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt b/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
+> index c746cb221210..ea4bbf5c4282 100644
+> --- a/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
+> +++ b/Documentation/devicetree/bindings/rtc/rtc-m41t80.txt
+> @@ -19,6 +19,7 @@ Optional properties:
+>  - interrupts: rtc alarm interrupt.
+>  - clock-output-names: From common clock binding to override the default output
+>                        clock name
+> +- protected-clocks: Bool, if set operating system should not handle clock.
+>  - wakeup-source: Enables wake up of host system on alarm
+>  
+>  Example:
+> diff --git a/drivers/rtc/rtc-m41t80.c b/drivers/rtc/rtc-m41t80.c
+> index 160dcf68e64e..3296583853a8 100644
+> --- a/drivers/rtc/rtc-m41t80.c
+> +++ b/drivers/rtc/rtc-m41t80.c
+> @@ -546,6 +546,9 @@ static struct clk *m41t80_sqw_register_clk(struct m41t80_data *m41t80)
+>  	struct clk_init_data init;
+>  	int ret;
+>  
+> +	if (of_property_read_bool(node, "protected-clocks"))
+> +		return 0;
+> +
+>  	/* First disable the clock */
+>  	ret = i2c_smbus_read_byte_data(client, M41T80_REG_ALARM_MON);
+>  	if (ret < 0)
+> -- 
+> 2.30.0
+> 
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
