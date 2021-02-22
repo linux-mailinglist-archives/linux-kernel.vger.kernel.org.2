@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF8332199C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FB832199D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhBVN76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:59:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32931 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231609AbhBVMx7 (ORCPT
+        id S232125AbhBVOA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:00:29 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12636 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231811AbhBVMyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:53:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613998353;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2iEQDmFtT3qebJig5f9jd7ifXq3OPYbzSwZS/a5ZYlE=;
-        b=ipqaRcSaf49a8AlNSXTIuNwAxFXb42xzojkgCvhJ4G5Zo4QceGNK4q7OZmJvvhrgixejq+
-        HnavqaUvmmQ60DysKS4F/RTwEiLhMGyMgh1Gw5RWGMUteEqFCNgv1wGGytBrBPXnM3C0VC
-        TPQIif2rU06FNwoPzB5bNIuegpGlISQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-348-mZgLziWtMHSpoaneWBcJ5w-1; Mon, 22 Feb 2021 07:52:29 -0500
-X-MC-Unique: mZgLziWtMHSpoaneWBcJ5w-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4620A107ACC7;
-        Mon, 22 Feb 2021 12:52:26 +0000 (UTC)
-Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E65EE19CA8;
-        Mon, 22 Feb 2021 12:52:16 +0000 (UTC)
-Subject: Re: [PATCH RFC] mm/madvise: introduce MADV_POPULATE to
- prefault/prealloc memory
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Peter Xu <peterx@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Oscar Salvador <osalvador@suse.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Minchan Kim <minchan@kernel.org>, Jann Horn <jannh@google.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.org
-References: <20210217154844.12392-1-david@redhat.com>
- <20210218225904.GB6669@xz-x1>
- <b24996a6-7652-f88c-301e-28417637fd02@redhat.com>
- <YDOnq9Nliopj9kQL@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <296a1a02-f7ec-5085-f17e-eadc4bdb6a24@redhat.com>
-Date:   Mon, 22 Feb 2021 13:52:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Feb 2021 07:54:46 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Dkhsn199xz16BC4;
+        Mon, 22 Feb 2021 20:52:29 +0800 (CST)
+Received: from use12-sp2.huawei.com (10.67.189.174) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Feb 2021 20:53:57 +0800
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+        <gregkh@linuxfoundation.org>, <sashal@kernel.org>,
+        <tglx@linutronix.de>, <lee.jones@linaro.org>
+CC:     <nixiaoming@huawei.com>, <wangle6@huawei.com>,
+        <zhengyejian1@huawei.com>
+Subject: [PATCH] futex: fix dead code in attach_to_pi_owner()
+Date:   Mon, 22 Feb 2021 20:53:52 +0800
+Message-ID: <20210222125352.110124-1-nixiaoming@huawei.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <YDOnq9Nliopj9kQL@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.189.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.02.21 13:46, Michal Hocko wrote:
-> I am slowly catching up with this thread.
-> 
-> On Fri 19-02-21 09:20:16, David Hildenbrand wrote:
-> [...]
->> So if we have zero, we write zero. We'll COW pages, triggering a write fault
->> - and that's the only good thing about it. For example, similar to
->> MADV_POPULATE, nothing stops KSM from merging anonymous pages again. So for
->> anonymous memory the actual write is not helpful at all. Similarly for
->> hugetlbfs, the actual write is not necessary - but there is no other way to
->> really achieve the goal.
-> 
-> I really do not see why you care about KSM so much. Isn't KSM an
-> explicit opt-in with a fine grained interface to control which memory to
-> KSM or not?
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Yeah, I think it's opt-in via MADV_MERGEABLE. E.g., QEMU defaults to 
-enable KSM unless explicitly disabled by the user.
+The handle_exit_race() function is defined in commit c158b461306df82
+ ("futex: Cure exit race"), which never returns -EBUSY. This results
+in a small piece of dead code in the attach_to_pi_owner() function:
 
-But I agree, I got distracted by KSM details.
+	int ret = handle_exit_race(uaddr, uval, p); /* Never return -EBUSY */
+	...
+	if (ret == -EBUSY)
+		*exiting = p; /* dead code */
 
+The return value -EBUSY is added to handle_exit_race() in upsteam
+commit ac31c7ff8624409 ("futex: Provide distinct return value when
+owner is exiting"). This commit was incorporated into v4.9.255, before
+the function handle_exit_race() was introduced, whitout Modify
+handle_exit_race().
+
+To fix dead code, extract the change of handle_exit_race() from
+commit ac31c7ff8624409 ("futex: Provide distinct return value when owner
+ is exiting"), re-incorporated.
+
+Fixes: c158b461306df82 ("futex: Cure exit race")
+Cc: stable@vger.kernel.org # 4.9.258-rc1
+Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+---
+ kernel/futex.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/futex.c b/kernel/futex.c
+index b65dbb5d60bb..0fd785410150 100644
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1207,11 +1207,11 @@ static int handle_exit_race(u32 __user *uaddr, u32 uval,
+ 	u32 uval2;
+ 
+ 	/*
+-	 * If the futex exit state is not yet FUTEX_STATE_DEAD, wait
+-	 * for it to finish.
++	 * If the futex exit state is not yet FUTEX_STATE_DEAD, tell the
++	 * caller that the alleged owner is busy.
+ 	 */
+ 	if (tsk && tsk->futex_state != FUTEX_STATE_DEAD)
+-		return -EAGAIN;
++		return -EBUSY;
+ 
+ 	/*
+ 	 * Reread the user space value to handle the following situation:
 -- 
-Thanks,
-
-David / dhildenb
+2.27.0
 
