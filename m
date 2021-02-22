@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5106C321873
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:22:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3C6321872
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:22:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230420AbhBVNWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:22:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53432 "EHLO mail.kernel.org"
+        id S231622AbhBVNVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:21:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230306AbhBVMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230235AbhBVMlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 07:41:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64F1464F17;
-        Mon, 22 Feb 2021 12:38:43 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE56164F1B;
+        Mon, 22 Feb 2021 12:38:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997523;
-        bh=0ZL2nzoF7r9zTwQRSQ5KBgXhCXIS6ATrdSC1cJocPgQ=;
+        s=korg; t=1613997526;
+        bh=iw37dohlXulVCmlbNQCufXtdzZ9Etj83bfl4M1ZwFRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W6XsqSvO+l/f3YCtoTiL1pCeXrXJ1beBHGBXXXhezWQ0fc2SCL6bope5Lo/hz1Aid
-         6i/zktN53rWiYWCOqh4jhH+yTmEPh1LgwcgFxz9YKdaYidFojgeP97U4/GSu+zl8+R
-         ADjFaoJ3QHQAYYnB5avpBFzGZjbnZ5c03vv2m7Lc=
+        b=VFBu6CUXeZYCz4opgcEpJGcCPeRqMz0ivOqm5LMIti1GmX4hvtpEtudu9KWixC537
+         sknZDBkeUDbFuE5GVLA4TDTR559lmG/pfmtZsjv7Hgev1RTnZsYESmMVXV59R41xBW
+         WByvriZHpoBUs30rTkPDFxZiqZ1TDzGIIyg4mkWk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
         Juergen Gross <jgross@suse.com>
-Subject: [PATCH 4.14 51/57] xen-netback: dont "handle" error by BUG()
-Date:   Mon, 22 Feb 2021 13:36:17 +0100
-Message-Id: <20210222121035.088626729@linuxfoundation.org>
+Subject: [PATCH 4.14 52/57] xen-scsiback: dont "handle" error by BUG()
+Date:   Mon, 22 Feb 2021 13:36:18 +0100
+Message-Id: <20210222121035.254299632@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121027.174911182@linuxfoundation.org>
 References: <20210222121027.174911182@linuxfoundation.org>
@@ -41,7 +41,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jan Beulich <jbeulich@suse.com>
 
-commit 3194a1746e8aabe86075fd3c5e7cf1f4632d7f16 upstream.
+commit 7c77474b2d22176d2bfb592ec74e0f2cb71352c9 upstream.
 
 In particular -ENOMEM may come back here, from set_foreign_p2m_mapping().
 Don't make problems worse, the more that handling elsewhere (together
@@ -58,25 +58,25 @@ Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/xen-netback/netback.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/xen/xen-scsiback.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/xen-netback/netback.c
-+++ b/drivers/net/xen-netback/netback.c
-@@ -1328,13 +1328,11 @@ int xenvif_tx_action(struct xenvif_queue
+--- a/drivers/xen/xen-scsiback.c
++++ b/drivers/xen/xen-scsiback.c
+@@ -422,12 +422,12 @@ static int scsiback_gnttab_data_map_batc
  		return 0;
  
- 	gnttab_batch_copy(queue->tx_copy_ops, nr_cops);
--	if (nr_mops != 0) {
-+	if (nr_mops != 0)
- 		ret = gnttab_map_refs(queue->tx_map_ops,
- 				      NULL,
- 				      queue->pages_to_map,
- 				      nr_mops);
--		BUG_ON(ret);
--	}
- 
- 	work_done = xenvif_tx_submit(queue);
- 
+ 	err = gnttab_map_refs(map, NULL, pg, cnt);
+-	BUG_ON(err);
+ 	for (i = 0; i < cnt; i++) {
+ 		if (unlikely(map[i].status != GNTST_okay)) {
+ 			pr_err("invalid buffer -- could not remap it\n");
+ 			map[i].handle = SCSIBACK_INVALID_HANDLE;
+-			err = -ENOMEM;
++			if (!err)
++				err = -ENOMEM;
+ 		} else {
+ 			get_page(pg[i]);
+ 		}
 
 
