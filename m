@@ -2,161 +2,1098 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6C1320F3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5EB320F3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 02:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhBVBnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Feb 2021 20:43:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbhBVBnq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Feb 2021 20:43:46 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC4EC061574;
-        Sun, 21 Feb 2021 17:43:06 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id z5so2459393pfe.3;
-        Sun, 21 Feb 2021 17:43:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HZ/4l65nTDhovBkbwgDTnLClUOuYmVMheRYyJCbxZxM=;
-        b=h0cYF5fvpWEiRbbwRWAAqWEfqrdffeclp04xOx6AiP7i586mgB9Q5LMC2N+1DjcMC6
-         qvi5rPKwNvt8Ax6OZ/+GnVN2fW3MJi6DeCPv30sBm6uK0I+1pM5ALKEHf2pxOVb6Nv3h
-         2QSGxfy2koj9i8E39QpCUFPC4P5xn/QX7cs6dqp1SiGphc+F1gLbdRJigAvX8r3o40bE
-         Ag5SzS1RGj9SLXFM2QcxSvGZdAkE2LJ30jArcE2PtkISXy+1UD/RfDVKb3BUuunFUWNt
-         dsPVeh/M9an6AfBXoDQxzFohOExR+fyPnaSedk1W+sMDOJkmH+oWYh61bEXtUP2Y1Rlo
-         U/rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HZ/4l65nTDhovBkbwgDTnLClUOuYmVMheRYyJCbxZxM=;
-        b=dF2MGUXYwvbTUYpqdtH5S1r9c+4Sb99WgODK1sAMm8T9hvgXDgnxtbossc946ipVYI
-         wccgkHb4cCM51Cfs41EK1oVsjSD+fB9bNDxCRs+aOHRYJgA5j7Lt30AwjKbNmJ59unJO
-         0U268E4c+mVBDUArDPPzmNHak9qDzftj55zATwkE1M1S2HK3ZcsVnt31sibpkkkeaaQR
-         G52o90PikmoOJmQSZqfrHs0Dkg1PAyo+s4wLFiIHVCaZ4Jd3TGhbbquBH78hF0INIvBK
-         g57kGzgs44LfHKboRG7vk+Vpfj3QGNGkpNIaJKIx4H/wiv5NwsP+9DKeK3k8EIe1Rirt
-         kowg==
-X-Gm-Message-State: AOAM5335SK0xEHQ07g5XWGSWkOMubBmL1DSCVZPQeUQGMZ50sDWpnyBn
-        CB1uxmLB1Corgg7rlbvIW1M=
-X-Google-Smtp-Source: ABdhPJxBiOH+r7NdzTv2bl+669/mGs+q2NSfxyJ5R/ryNclj98f75uRzTtN2b8n/uhXnJ37Tw9vsuA==
-X-Received: by 2002:a63:4d41:: with SMTP id n1mr18230961pgl.147.1613958186088;
-        Sun, 21 Feb 2021 17:43:06 -0800 (PST)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id lw17sm14874202pjb.11.2021.02.21.17.43.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 17:43:05 -0800 (PST)
-Date:   Mon, 22 Feb 2021 10:43:00 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Robin van der Gracht <robin@protonic.nl>,
-        linux-iio@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v5 2/2] counter: add IRQ or GPIO based event counter
-Message-ID: <YDMMJJ985Zq9oEOv@shinobu>
-References: <20210208135347.18494-1-o.rempel@pengutronix.de>
- <20210208135347.18494-3-o.rempel@pengutronix.de>
- <YCjlPhEtyH+vfSi4@shinobu>
- <20210215091737.fx6dwiz7tt56wbkr@pengutronix.de>
+        id S231807AbhBVBpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Feb 2021 20:45:17 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:44676 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230151AbhBVBpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Feb 2021 20:45:13 -0500
+Received: from li-pc.loongson.cn (unknown [10.20.41.71])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmdRWDDNgZRQNAA--.16446S2;
+        Mon, 22 Feb 2021 09:43:50 +0800 (CST)
+From:   Chenyang Li <lichenyang@loongson.cn>
+To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v5] drm/loongson: Add DRM Driver for Loongson 7A1000 bridge chip
+Date:   Mon, 22 Feb 2021 09:43:50 +0800
+Message-Id: <20210222014350.2684-1-lichenyang@loongson.cn>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wC8Tf9mEZxh/iA1u"
-Content-Disposition: inline
-In-Reply-To: <20210215091737.fx6dwiz7tt56wbkr@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxmdRWDDNgZRQNAA--.16446S2
+X-Coremail-Antispam: 1UD129KBjvAXoWfuw17uFyxJr45WF4DZrWUArb_yoW5CrWfXo
+        WfZFnxW3yrWr1xCFZY9r1fJr1UZFsrXa1akrWSyF1DAw4Yy3Z8tF9Igr4ayrWfAF1FyF4U
+        A34Ykr4xWF47JrZ5n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+        AaLaJ3UjIYCTnIWjp_UUUY87k0a2IF6w4kM7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0
+        x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj4
+        1l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0
+        I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
+        xK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+        64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE-syl42xK
+        82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGw
+        C20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48J
+        MIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMI
+        IF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
+        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5PpnJUUUUU==
+X-CM-SenderInfo: xolfxvxq1d0wo6or00hjvr0hdfq/1tbiAQASA13QvM+sQAACsA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds an initial DRM driver for the Loongson LS7A1000
+bridge chip(LS7A). The LS7A bridge chip contains two display
+controllers, support dual display output. The maximum support for
+each channel display is to 1920x1080@60Hz.
+At present, DC device detection and DRM driver registration are
+completed, the crtc/plane/encoder/connector objects has been
+implemented.
+On Loongson 3A4000 CPU and 7A1000 system, we have achieved the use
+of dual screen, and support dual screen clone mode and expansion
+mode.
 
---wC8Tf9mEZxh/iA1u
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+v5:
+- Change the name of the chip to LS7A.
+- Change magic value in crtc to macros.
+- Correct mistakes words.
+- Change the register operation function prefix to ls7a.
 
-On Mon, Feb 15, 2021 at 10:17:37AM +0100, Oleksij Rempel wrote:
-> > > +static irqreturn_t event_cnt_isr(int irq, void *dev_id)
-> > > +{
-> > > +	struct event_cnt_priv *priv =3D dev_id;
-> > > +
-> > > +	atomic_inc(&priv->count);
-> >=20
-> > This is just used to count the number of interrupts right? I wonder if
-> > we can do this smarter. For example, the kernel already keeps track of
-> > number of interrupts that has occurred for any particular IRQ line on a
-> > CPU (see the 'kstat_irqs' member of struct irq_desc, and the
-> > show_interrupts() function in kernel/irq/proc.c). Would it make sense to
-> > simply store the initial interrupt count on driver load or enablement,
-> > and then return the difference during a count_read() callback?
->=20
-> This driver do not makes a lot of sense without your chardev patches. As
-> soon as this patches go mainline, this driver will be able to send
-> event with a timestamp and counter state to the user space.
->=20
-> With other words, we will need an irq handler anyway. In this case we
-> can't save more RAM or CPU cycles by using system irq counters.
+v4:
+- Move the mode_valid function to the crtc.
 
-It's true that this driver will need an IRQ handler when the timestamp
-functionality is added, but deriving the count value is different matter
-regardless. There's already code in the kernel to retrieve the number of
-interrupts, so it makes sense that we use that rather than rolling our
-own -- at the very least to ensure the value we provide to users is
-consistent with the ones already provided by other areas of the kernel.
+v3:
+- Move the mode_valid function to the connector and optimize it.
+- Fix num_crtc calculation method.
 
-To that end, I'd like to see your cnt_isr() function removed for this
-patchset (you can bring it back once timestamp support is added).
-Reimplement your cnt_read/cnt_write() functions to instead use
-kstat_irqs_usr() from <linux/kernel_stat.h> to get the current number of
-interrupts the IRQ line and use it to derive your count value for this
-driver.
+v2:
+- Complete the case of 32-bit color in CRTC.
 
-> > > +static struct counter_signal event_cnt_signals[] =3D {
-> > > +	{
-> > > +		.id =3D 0,
-> > > +		.name =3D "Channel 0 signal",
-> >=20
-> > You should choose a more description name for this Signal;
-> > "Channel 0 signal" isn't very useful information for the user. Is this
-> > signal the respective GPIO line state?
->=20
-> Sounds plausible. How about "Channel 0, GPIO line state"?
+Signed-off-by: Chenyang Li <lichenyang@loongson.cn>
+---
+ drivers/gpu/drm/Kconfig                       |   2 +
+ drivers/gpu/drm/Makefile                      |   1 +
+ drivers/gpu/drm/loongson/Kconfig              |  14 +
+ drivers/gpu/drm/loongson/Makefile             |  14 +
+ drivers/gpu/drm/loongson/loongson_connector.c |  48 ++++
+ drivers/gpu/drm/loongson/loongson_crtc.c      | 243 ++++++++++++++++
+ drivers/gpu/drm/loongson/loongson_device.c    |  54 ++++
+ drivers/gpu/drm/loongson/loongson_drv.c       | 269 ++++++++++++++++++
+ drivers/gpu/drm/loongson/loongson_drv.h       | 140 +++++++++
+ drivers/gpu/drm/loongson/loongson_encoder.c   |  37 +++
+ drivers/gpu/drm/loongson/loongson_plane.c     | 102 +++++++
+ 11 files changed, 924 insertions(+)
+ create mode 100644 drivers/gpu/drm/loongson/Kconfig
+ create mode 100644 drivers/gpu/drm/loongson/Makefile
+ create mode 100644 drivers/gpu/drm/loongson/loongson_connector.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_crtc.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_device.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_drv.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_drv.h
+ create mode 100644 drivers/gpu/drm/loongson/loongson_encoder.c
+ create mode 100644 drivers/gpu/drm/loongson/loongson_plane.c
 
-Ideally, this would match the GPIO name (or I suppose the IRQ number if
-not a GPIO line). So in your probe() function you can do something like
-this I believe:
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 0973f408d75f..6ed1b6dc2f25 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -374,6 +374,8 @@ source "drivers/gpu/drm/xen/Kconfig"
+ 
+ source "drivers/gpu/drm/vboxvideo/Kconfig"
+ 
++source "drivers/gpu/drm/loongson/Kconfig"
++
+ source "drivers/gpu/drm/lima/Kconfig"
+ 
+ source "drivers/gpu/drm/panfrost/Kconfig"
+diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
+index fefaff4c832d..f87da730ea6d 100644
+--- a/drivers/gpu/drm/Makefile
++++ b/drivers/gpu/drm/Makefile
+@@ -119,6 +119,7 @@ obj-$(CONFIG_DRM_PL111) += pl111/
+ obj-$(CONFIG_DRM_TVE200) += tve200/
+ obj-$(CONFIG_DRM_XEN) += xen/
+ obj-$(CONFIG_DRM_VBOXVIDEO) += vboxvideo/
++obj-$(CONFIG_DRM_LOONGSON) += loongson/
+ obj-$(CONFIG_DRM_LIMA)  += lima/
+ obj-$(CONFIG_DRM_PANFROST) += panfrost/
+ obj-$(CONFIG_DRM_ASPEED_GFX) += aspeed/
+diff --git a/drivers/gpu/drm/loongson/Kconfig b/drivers/gpu/drm/loongson/Kconfig
+new file mode 100644
+index 000000000000..3cf42a4cca08
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/Kconfig
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++config DRM_LOONGSON
++	tristate "DRM support for LS7A bridge chipset"
++	depends on DRM && PCI
++	depends on CPU_LOONGSON64
++	select DRM_KMS_HELPER
++	select DRM_VRAM_HELPER
++	select DRM_TTM
++	select DRM_TTM_HELPER
++	default n
++	help
++	  Support the display controllers found on the Loongson LS7A
++	  bridge.
+diff --git a/drivers/gpu/drm/loongson/Makefile b/drivers/gpu/drm/loongson/Makefile
+new file mode 100644
+index 000000000000..22d063953b78
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/Makefile
+@@ -0,0 +1,14 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Makefile for loongson drm drivers.
++# This driver provides support for the
++# Direct Rendering Infrastructure (DRI)
++
++ccflags-y := -Iinclude/drm
++loongson-y := loongson_drv.o \
++	loongson_crtc.o \
++	loongson_plane.o \
++	loongson_device.o \
++	loongson_connector.o \
++	loongson_encoder.o
++obj-$(CONFIG_DRM_LOONGSON) += loongson.o
+diff --git a/drivers/gpu/drm/loongson/loongson_connector.c b/drivers/gpu/drm/loongson/loongson_connector.c
+new file mode 100644
+index 000000000000..6b1f0ffa33bd
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_connector.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static int loongson_get_modes(struct drm_connector *connector)
++{
++	int count;
++
++	count = drm_add_modes_noedid(connector, 1920, 1080);
++	drm_set_preferred_mode(connector, 1024, 768);
++
++	return count;
++}
++
++static const struct drm_connector_helper_funcs loongson_connector_helper = {
++	.get_modes = loongson_get_modes,
++};
++
++static const struct drm_connector_funcs loongson_connector_funcs = {
++	.fill_modes = drm_helper_probe_single_connector_modes,
++	.destroy = drm_connector_cleanup,
++	.reset = drm_atomic_helper_connector_reset,
++	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
++	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
++};
++
++int loongson_connector_init(struct loongson_device *ldev, int index)
++{
++	struct drm_connector *connector;
++	struct loongson_connector *lconnector;
++
++	lconnector = kzalloc(sizeof(struct loongson_connector), GFP_KERNEL);
++	if (!lconnector) {
++		DRM_INFO("loongson connector kzalloc failed\n");
++		return -1;
++	}
++
++	lconnector->ldev = ldev;
++	lconnector->id = index;
++
++	ldev->mode_info[index].connector = lconnector;
++	connector = &lconnector->base;
++	drm_connector_init(ldev->dev, connector, &loongson_connector_funcs,
++			   DRM_MODE_CONNECTOR_Unknown);
++	drm_connector_helper_add(connector, &loongson_connector_helper);
++
++	return 0;
++}
+diff --git a/drivers/gpu/drm/loongson/loongson_crtc.c b/drivers/gpu/drm/loongson/loongson_crtc.c
+new file mode 100644
+index 000000000000..85227bc8b288
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_crtc.c
+@@ -0,0 +1,243 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static void try_each_loopc(u32 clk, u32 pstdiv, u32 frefc,
++			   struct pix_pll *pll_config)
++{
++	u32 loopc;
++	u32 clk_out;
++	u32 precision;
++	u32 min = 1000;
++	u32 base_clk = 100000L;
++
++	for (loopc = LOOPC_MIN; loopc < LOOPC_MAX; loopc++) {
++		if ((loopc < FRE_REF_MIN * frefc) ||
++		    (loopc > FRE_REF_MAX * frefc))
++			continue;
++
++		clk_out = base_clk * loopc / frefc;
++		precision = (clk > clk_out) ? (clk - clk_out) : (clk_out - clk);
++		if (precision < min) {
++			pll_config->l2_div = pstdiv;
++			pll_config->l1_loopc = loopc;
++			pll_config->l1_frefc = frefc;
++		}
++	}
++}
++
++static void cal_freq(u32 pixclock, struct pix_pll *pll_config)
++{
++	u32 pstdiv;
++	u32 frefc;
++	u32 clk;
++
++	for (pstdiv = 1; pstdiv < PST_DIV_MAX; pstdiv++) {
++		clk = pixclock * pstdiv;
++		for (frefc = DIV_REF_MIN; frefc <= DIV_REF_MAX; frefc++)
++			try_each_loopc(clk, pstdiv, frefc, pll_config);
++	}
++}
++
++static void config_pll(struct loongson_device *ldev, unsigned long pll_base,
++		       struct pix_pll *pll_cfg)
++{
++	u32 val;
++	u32 count = 0;
++
++	/* clear sel_pll_out0 */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(1UL << 8);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	/* set pll_pd */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val |= (1UL << 13);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	/* clear set_pll_param */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(1UL << 11);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	/* clear old value & config new value */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(0x7fUL << 0);
++	val |= (pll_cfg->l1_frefc << 0); /* refc */
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++	val = ls7a_io_rreg(ldev, pll_base + 0x0);
++	val &= ~(0x7fUL << 0);
++	val |= (pll_cfg->l2_div << 0); /* div */
++	val &= ~(0x1ffUL << 21);
++	val |= (pll_cfg->l1_loopc << 21); /* loopc */
++	ls7a_io_wreg(ldev, pll_base + 0x0, val);
++
++	/* set set_pll_param */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val |= (1UL << 11);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++	/* clear pll_pd */
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val &= ~(1UL << 13);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++
++	while (!(ls7a_io_rreg(ldev, pll_base + 0x4) & 0x80)) {
++		cpu_relax();
++		count++;
++		if (count >= 1000) {
++			DRM_ERROR("loongson-7A PLL lock failed\n");
++			break;
++		}
++	}
++
++	val = ls7a_io_rreg(ldev, pll_base + 0x4);
++	val |= (1UL << 8);
++	ls7a_io_wreg(ldev, pll_base + 0x4, val);
++}
++
++static void loongson_crtc_mode_set_nofb(struct drm_crtc *crtc)
++{
++	struct drm_device *dev = crtc->dev;
++	struct loongson_device *ldev = dev->dev_private;
++	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
++	struct drm_display_mode *mode = &crtc->state->adjusted_mode;
++	const struct drm_format_info *format;
++	struct pix_pll pll_cfg;
++	u32 hr, hss, hse, hfl;
++	u32 vr, vss, vse, vfl;
++	u32 pix_freq;
++	u32 reg_offset;
++
++	hr = mode->hdisplay;
++	hss = mode->hsync_start;
++	hse = mode->hsync_end;
++	hfl = mode->htotal;
++
++	vr = mode->vdisplay;
++	vss = mode->vsync_start;
++	vse = mode->vsync_end;
++	vfl = mode->vtotal;
++
++	pix_freq = mode->clock;
++	reg_offset = lcrtc->reg_offset;
++	format = crtc->primary->state->fb->format;
++
++	ls7a_mm_wreg_locked(ldev, FB_DITCFG_REG + reg_offset, 0);
++	ls7a_mm_wreg_locked(ldev, FB_DITTAB_LO_REG + reg_offset, 0);
++	ls7a_mm_wreg_locked(ldev, FB_DITTAB_HI_REG + reg_offset, 0);
++	ls7a_mm_wreg_locked(ldev, FB_PANCFG_REG + reg_offset, FB_PANCFG_DEF);
++	ls7a_mm_wreg_locked(ldev, FB_PANTIM_REG + reg_offset, 0);
++
++	ls7a_mm_wreg_locked(ldev, FB_HDISPLAY_REG + reg_offset, (hfl << 16) | hr);
++	ls7a_mm_wreg_locked(ldev, FB_HSYNC_REG + reg_offset,
++			  FB_HSYNC_PULSE | (hse << 16) | hss);
++
++	ls7a_mm_wreg_locked(ldev, FB_VDISPLAY_REG + reg_offset, (vfl << 16) | vr);
++	ls7a_mm_wreg_locked(ldev, FB_VSYNC_REG + reg_offset,
++			  FB_VSYNC_PULSE | (vse << 16) | vss);
++
++	switch (format->format) {
++	case DRM_FORMAT_RGB565:
++		lcrtc->cfg_reg |= 0x3;
++		break;
++	case DRM_FORMAT_RGB888:
++	case DRM_FORMAT_XRGB8888:
++	case DRM_FORMAT_ARGB8888:
++	default:
++		lcrtc->cfg_reg |= 0x4;
++		break;
++	}
++	ls7a_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
++
++	cal_freq(pix_freq, &pll_cfg);
++	config_pll(ldev, LS7A_PIX_PLL + reg_offset, &pll_cfg);
++}
++
++static void loongson_crtc_atomic_enable(struct drm_crtc *crtc,
++					struct drm_crtc_state *old_state)
++{
++	struct drm_device *dev = crtc->dev;
++	struct loongson_device *ldev = dev->dev_private;
++	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
++	u32 reg_offset = lcrtc->reg_offset;
++
++	lcrtc->cfg_reg |= CFG_ENABLE;
++	ls7a_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
++}
++
++static void loongson_crtc_atomic_disable(struct drm_crtc *crtc,
++					 struct drm_crtc_state *old_state)
++{
++	struct drm_device *dev = crtc->dev;
++	struct loongson_device *ldev = dev->dev_private;
++	struct loongson_crtc *lcrtc = to_loongson_crtc(crtc);
++	u32 reg_offset = lcrtc->reg_offset;
++
++	lcrtc->cfg_reg &= ~CFG_ENABLE;
++	ls7a_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, lcrtc->cfg_reg);
++}
++
++static enum drm_mode_status loongson_mode_valid(struct drm_crtc *crtc,
++						struct drm_display_mode *mode)
++{
++	if (mode->hdisplay > 1920)
++		return MODE_BAD;
++	if (mode->vdisplay > 1080)
++		return MODE_BAD;
++	if (mode->hdisplay % 64)
++		return MODE_BAD;
++	if (mode->clock > 173000)
++		return MODE_CLOCK_HIGH;
++
++	return MODE_OK;
++}
++
++static const struct drm_crtc_helper_funcs loongson_crtc_helper_funcs = {
++	.mode_valid = loongson_mode_valid,
++	.atomic_enable = loongson_crtc_atomic_enable,
++	.atomic_disable = loongson_crtc_atomic_disable,
++	.mode_set_nofb = loongson_crtc_mode_set_nofb,
++};
++
++static const struct drm_crtc_funcs loongson_crtc_funcs = {
++	.set_config = drm_atomic_helper_set_config,
++	.page_flip = drm_atomic_helper_page_flip,
++	.reset = drm_atomic_helper_crtc_reset,
++	.destroy = drm_crtc_cleanup,
++	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
++	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
++};
++
++int loongson_crtc_init(struct loongson_device *ldev, int index)
++{
++	struct loongson_crtc *lcrtc;
++	u32 ret;
++
++	lcrtc = kzalloc(sizeof(struct loongson_crtc), GFP_KERNEL);
++	if (lcrtc == NULL)
++		return -1;
++
++	lcrtc->ldev = ldev;
++	lcrtc->reg_offset = index * REG_OFFSET;
++	lcrtc->cfg_reg = CFG_RESET;
++	lcrtc->crtc_id = index;
++
++	ret = loongson_plane_init(lcrtc);
++	if (ret)
++		return ret;
++
++	ret = drm_crtc_init_with_planes(ldev->dev, &lcrtc->base, lcrtc->plane,
++					NULL, &loongson_crtc_funcs, NULL);
++	if (ret) {
++		DRM_ERROR("failed to init crtc %d\n", index);
++		drm_plane_cleanup(lcrtc->plane);
++		return ret;
++	}
++
++	drm_crtc_helper_add(&lcrtc->base, &loongson_crtc_helper_funcs);
++
++	ldev->mode_info[index].crtc = lcrtc;
++
++	return 0;
++}
++
+diff --git a/drivers/gpu/drm/loongson/loongson_device.c b/drivers/gpu/drm/loongson/loongson_device.c
+new file mode 100644
+index 000000000000..072bd3070731
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_device.c
+@@ -0,0 +1,54 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++u32 loongson_gpu_offset(struct drm_plane_state *state)
++{
++	struct drm_gem_vram_object *gbo;
++	struct loongson_crtc *lcrtc;
++	struct loongson_device *ldev;
++	u32 gpu_addr;
++
++	lcrtc = to_loongson_crtc(state->crtc);
++	ldev = lcrtc->ldev;
++
++	gbo = drm_gem_vram_of_gem(state->fb->obj[0]);
++	gpu_addr = ldev->vram_start + drm_gem_vram_offset(gbo);
++
++	return gpu_addr;
++}
++
++u32 ls7a_io_rreg(struct loongson_device *ldev, u32 offset)
++{
++	u32 val;
++
++	val = readl(ldev->io + offset);
++
++	return val;
++}
++
++void ls7a_io_wreg(struct loongson_device *ldev, u32 offset, u32 val)
++{
++	writel(val, ldev->io + offset);
++}
++
++u32 ls7a_mm_rreg_locked(struct loongson_device *ldev, u32 offset)
++{
++	u32 val;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ldev->mmio_lock, flags);
++	val = readl(ldev->mmio + offset);
++	spin_unlock_irqrestore(&ldev->mmio_lock, flags);
++
++	return val;
++}
++
++void ls7a_mm_wreg_locked(struct loongson_device *ldev, u32 offset, u32 val)
++{
++	unsigned long flags;
++
++	spin_lock_irqsave(&ldev->mmio_lock, flags);
++	writel(val, ldev->mmio + offset);
++	spin_unlock_irqrestore(&ldev->mmio_lock, flags);
++}
+diff --git a/drivers/gpu/drm/loongson/loongson_drv.c b/drivers/gpu/drm/loongson/loongson_drv.c
+new file mode 100644
+index 000000000000..14b2ea5d6784
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_drv.c
+@@ -0,0 +1,269 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++/*
++ * Loongson LS7A1000 bridge chipset drm driver
++ */
++
++#include <linux/console.h>
++#include <linux/pci.h>
++#include <linux/module.h>
++#include <linux/kernel.h>
++#include "loongson_drv.h"
++
++/* Interface history:
++ * 0.1 - original.
++ */
++#define DRIVER_MAJOR 0
++#define DRIVER_MINOR 1
++
++static const struct drm_mode_config_funcs loongson_mode_funcs = {
++	.fb_create = drm_gem_fb_create,
++	.atomic_check = drm_atomic_helper_check,
++	.atomic_commit = drm_atomic_helper_commit,
++	.output_poll_changed = drm_fb_helper_output_poll_changed,
++	.mode_valid = drm_vram_helper_mode_valid
++};
++
++static int loongson_device_init(struct drm_device *dev, uint32_t flags)
++{
++	struct loongson_device *ldev = dev->dev_private;
++	struct pci_dev *gpu_pdev;
++	resource_size_t aper_base;
++	resource_size_t aper_size;
++	resource_size_t mmio_base;
++	resource_size_t mmio_size;
++
++	/* GPU MEM */
++	/* We need get 7A-gpu pci device information for ldev->gpu_pdev */
++	/* dev->pdev save 7A-dc pci device information */
++	gpu_pdev = pci_get_device(PCI_VENDOR_ID_LOONGSON,
++				  PCI_DEVICE_ID_LOONGSON_GPU, NULL);
++	if (IS_ERR(gpu_pdev))
++		return PTR_ERR(gpu_pdev);
++
++	ldev->gpu_pdev = gpu_pdev;
++	aper_base = pci_resource_start(gpu_pdev, 2);
++	aper_size = pci_resource_len(gpu_pdev, 2);
++	ldev->vram_start = (u32)aper_base;
++	ldev->vram_size = (u32)aper_size;
++
++	if (!devm_request_mem_region(ldev->dev->dev, ldev->vram_start,
++				     ldev->vram_size, "loongson_vram")) {
++		DRM_ERROR("Can't reserve VRAM\n");
++		return -ENXIO;
++	}
++
++	/* DC MEM */
++	mmio_base = pci_resource_start(ldev->dev->pdev, 0);
++	mmio_size = pci_resource_len(ldev->dev->pdev, 0);
++	ldev->mmio = devm_ioremap(dev->dev, mmio_base, mmio_size);
++	if (!ldev->mmio) {
++		drm_err(dev, "Cannot map mmio region\n");
++		return -ENOMEM;
++	}
++
++	if (!devm_request_mem_region(ldev->dev->dev, mmio_base,
++				     mmio_size, "loongson_mmio")) {
++		DRM_ERROR("Can't reserve mmio registers\n");
++		return -ENOMEM;
++	}
++
++	/* DC IO */
++	ldev->io = (void *)TO_UNCAC(LS7A_CHIPCFG_REG_BASE);
++	if (ldev->io == NULL)
++		return -ENOMEM;
++
++	DRM_INFO("DC mmio_base 0x%llx mmio_size 0x%llx io 0x%x\n",
++		 mmio_base, mmio_size, *(int *)ldev->io);
++	DRM_INFO("GPU vram_start = 0x%x vram_size = 0x%x\n",
++		 ldev->vram_start, ldev->vram_size);
++
++	return 0;
++}
++
++int loongson_modeset_init(struct loongson_device *ldev)
++{
++	struct drm_encoder *encoder;
++	struct drm_connector *connector;
++	int i;
++	u32 ret;
++
++	ldev->dev->mode_config.allow_fb_modifiers = true;
++
++	for (i = 0; i < 2; i++) {
++		ret = loongson_crtc_init(ldev, i);
++		if (ret) {
++			DRM_WARN("loongson crtc%d init failed\n", i);
++			continue;
++		}
++
++		ret = loongson_encoder_init(ldev, i);
++		if (ret) {
++			DRM_ERROR("loongson_encoder_init failed\n");
++			return -1;
++		}
++
++		ret = loongson_connector_init(ldev, i);
++		if (ret) {
++			DRM_ERROR("loongson_connector_init failed\n");
++			return -1;
++		}
++
++		encoder = &ldev->mode_info[i].encoder->base;
++		connector = &ldev->mode_info[i].connector->base;
++		drm_connector_attach_encoder(connector, encoder);
++		ldev->num_crtc++;
++	}
++
++	return 0;
++}
++
++static int loongson_drm_load(struct drm_device *dev, unsigned long flags)
++{
++	struct loongson_device *ldev;
++	int ret;
++
++	ldev = devm_kzalloc(dev->dev, sizeof(*ldev), GFP_KERNEL);
++	if (!ldev)
++		return -ENOMEM;
++
++	dev->dev_private = ldev;
++	ldev->dev = dev;
++
++	ret = loongson_device_init(dev, flags);
++	if (ret)
++		goto err;
++
++	ret = drmm_vram_helper_init(dev, ldev->vram_start, ldev->vram_size);
++	if (ret)
++		goto err;
++
++	drm_mode_config_init(dev);
++	dev->mode_config.funcs = (void *)&loongson_mode_funcs;
++	dev->mode_config.min_width = 1;
++	dev->mode_config.min_height = 1;
++	dev->mode_config.max_width = 4096;
++	dev->mode_config.max_height = 4096;
++	dev->mode_config.preferred_depth = 32;
++	dev->mode_config.prefer_shadow = 1;
++	dev->mode_config.fb_base = ldev->vram_start;
++
++	pci_set_drvdata(dev->pdev, dev);
++
++	ret = loongson_modeset_init(ldev);
++	if (ret)
++		dev_err(dev->dev, "Fatal error during modeset init: %d\n", ret);
++
++	drm_kms_helper_poll_init(dev);
++	drm_mode_config_reset(dev);
++
++	return 0;
++
++err:
++	drm_err(dev, "failed to initialize drm driver: %d\n", ret);
++	return ret;
++}
++
++static void loongson_drm_unload(struct drm_device *dev)
++{
++	drm_vram_helper_release_mm(dev);
++	drm_mode_config_cleanup(dev);
++	dev->dev_private = NULL;
++	dev_set_drvdata(dev->dev, NULL);
++}
++
++DEFINE_DRM_GEM_FOPS(fops);
++
++static struct drm_driver loongson_drm_driver = {
++	.driver_features = DRIVER_MODESET | DRIVER_GEM | DRIVER_ATOMIC,
++	.fops = &fops,
++	DRM_GEM_VRAM_DRIVER,
++
++	.name = DRIVER_NAME,
++	.desc = DRIVER_DESC,
++	.date = DRIVER_DATE,
++	.major = DRIVER_MAJOR,
++	.minor = DRIVER_MINOR,
++};
++
++static int loongson_pci_probe(struct pci_dev *pdev,
++			      const struct pci_device_id *ent)
++{
++	int ret;
++	struct drm_device *dev;
++
++	dev = drm_dev_alloc(&loongson_drm_driver, &pdev->dev);
++	if (IS_ERR(dev)) {
++		DRM_ERROR("failed to allocate drm_device\n");
++		return PTR_ERR(dev);
++	}
++
++	dev->pdev = pdev;
++	pci_set_drvdata(pdev, dev);
++
++	ret = pci_enable_device(pdev);
++	if (ret) {
++		drm_err(dev, "failed to enable pci device: %d\n", ret);
++		goto err_free;
++	}
++
++	ret = loongson_drm_load(dev, 0x0);
++	if (ret) {
++		drm_err(dev, "failed to load loongson: %d\n", ret);
++		goto err_pdev;
++	}
++
++	ret = drm_dev_register(dev, 0);
++	if (ret) {
++		drm_err(dev, "failed to register drv for userspace access: %d\n",
++			ret);
++		goto err_pdev;
++	}
++
++	drm_fbdev_generic_setup(dev, dev->mode_config.preferred_depth);
++
++	return 0;
++
++err_pdev:
++	pci_disable_device(pdev);
++err_free:
++	drm_dev_put(dev);
++	return ret;
++}
++
++static void loongson_pci_remove(struct pci_dev *pdev)
++{
++	struct drm_device *dev = pci_get_drvdata(pdev);
++
++	drm_dev_unregister(dev);
++	loongson_drm_unload(dev);
++	drm_dev_put(dev);
++}
++
++static struct pci_device_id loongson_pci_devices[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_LOONGSON, PCI_DEVICE_ID_LOONGSON_DC) },
++	{0,}
++};
++
++static struct pci_driver loongson_drm_pci_driver = {
++	.name = DRIVER_NAME,
++	.id_table = loongson_pci_devices,
++	.probe = loongson_pci_probe,
++	.remove = loongson_pci_remove,
++};
++
++static int __init loongson_drm_init(void)
++{
++	return pci_register_driver(&loongson_drm_pci_driver);
++}
++
++static void __exit loongson_drm_exit(void)
++{
++	pci_unregister_driver(&loongson_drm_pci_driver);
++}
++
++module_init(loongson_drm_init);
++module_exit(loongson_drm_exit);
++
++MODULE_AUTHOR(DRIVER_AUTHOR);
++MODULE_DESCRIPTION(DRIVER_DESC);
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/gpu/drm/loongson/loongson_drv.h b/drivers/gpu/drm/loongson/loongson_drv.h
+new file mode 100644
+index 000000000000..9d0c05280a18
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_drv.h
+@@ -0,0 +1,140 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __LOONGSON_DRV_H__
++#define __LOONGSON_DRV_H__
++
++#include <drm/drm_drv.h>
++#include <drm/drm_gem.h>
++#include <drm/drm_fb_helper.h>
++#include <drm/drm_fourcc.h>
++#include <drm/drm_probe_helper.h>
++#include <drm/drm_atomic.h>
++#include <drm/drm_atomic_helper.h>
++#include <drm/drm_gem_framebuffer_helper.h>
++#include <drm/drm_gem_vram_helper.h>
++#include <drm/drm_plane.h>
++#include <drm/drm_plane_helper.h>
++#include <drm/drm_crtc.h>
++#include <drm/drm_crtc_helper.h>
++#include <drm/drm_connector.h>
++#include <drm/drm_encoder.h>
++
++/* General customization:
++ */
++#define DRIVER_AUTHOR "Loongson graphics driver team"
++#define DRIVER_NAME "loongson-drm"
++#define DRIVER_DESC "Loongson LS7A DRM driver"
++#define DRIVER_DATE "20200915"
++
++#define to_loongson_crtc(x) container_of(x, struct loongson_crtc, base)
++#define to_loongson_encoder(x) container_of(x, struct loongson_encoder, base)
++
++#define LS7A_CHIPCFG_REG_BASE (0x10010000)
++#define PCI_DEVICE_ID_LOONGSON_DC 0x7a06
++#define PCI_DEVICE_ID_LOONGSON_GPU 0x7a15
++#define LS7A_PIX_PLL (0x04b0)
++#define REG_OFFSET (0x10)
++#define FB_CFG_REG (0x1240)
++#define FB_ADDR0_REG (0x1260)
++#define FB_ADDR1_REG (0x1580)
++#define FB_STRI_REG (0x1280)
++#define FB_DITCFG_REG (0x1360)
++#define FB_DITTAB_LO_REG (0x1380)
++#define FB_DITTAB_HI_REG (0x13a0)
++#define FB_PANCFG_REG (0x13c0)
++#define FB_PANTIM_REG (0x13e0)
++#define FB_HDISPLAY_REG (0x1400)
++#define FB_HSYNC_REG (0x1420)
++#define FB_VDISPLAY_REG (0x1480)
++#define FB_VSYNC_REG (0x14a0)
++
++#define CFG_FMT GENMASK(2, 0)
++#define CFG_FBSWITCH BIT(7)
++#define CFG_ENABLE BIT(8)
++#define CFG_FBNUM BIT(11)
++#define CFG_GAMMAR BIT(12)
++#define CFG_RESET BIT(20)
++
++#define FB_PANCFG_DEF 0x80001311
++#define FB_HSYNC_PULSE (1 << 30)
++#define FB_VSYNC_PULSE (1 << 30)
++
++/* PIX PLL */
++#define LOOPC_MIN 24
++#define LOOPC_MAX 161
++#define FRE_REF_MIN 12
++#define FRE_REF_MAX 32
++#define DIV_REF_MIN 3
++#define DIV_REF_MAX 5
++#define PST_DIV_MAX 64
++
++struct pix_pll {
++	u32 l2_div;
++	u32 l1_loopc;
++	u32 l1_frefc;
++};
++
++struct loongson_crtc {
++	struct drm_crtc base;
++	struct loongson_device *ldev;
++	u32 crtc_id;
++	u32 reg_offset;
++	u32 cfg_reg;
++	struct drm_plane *plane;
++};
++
++struct loongson_encoder {
++	struct drm_encoder base;
++	struct loongson_device *ldev;
++	struct loongson_crtc *lcrtc;
++};
++
++struct loongson_connector {
++	struct drm_connector base;
++	struct loongson_device *ldev;
++	u16 id;
++	u32 type;
++};
++
++struct loongson_mode_info {
++	struct loongson_device *ldev;
++	struct loongson_crtc *crtc;
++	struct loongson_encoder *encoder;
++	struct loongson_connector *connector;
++};
++
++struct loongson_device {
++	struct drm_device *dev;
++	struct drm_atomic_state *state;
++
++	spinlock_t mmio_lock;
++	void __iomem *mmio;
++	void __iomem *io;
++	u32 vram_start;
++	u32 vram_size;
++
++	u32 num_crtc;
++	struct loongson_mode_info mode_info[2];
++	struct pci_dev *gpu_pdev; /* LS7A gpu device info */
++};
++
++/* crtc */
++int loongson_crtc_init(struct loongson_device *ldev, int index);
++
++/* connector */
++int loongson_connector_init(struct loongson_device *ldev, int index);
++
++/* encoder */
++int loongson_encoder_init(struct loongson_device *ldev, int index);
++
++/* plane */
++int loongson_plane_init(struct loongson_crtc *lcrtc);
++
++/* device */
++u32 loongson_gpu_offset(struct drm_plane_state *state);
++u32 ls7a_mm_rreg_locked(struct loongson_device *ldev, u32 offset);
++void ls7a_mm_wreg_locked(struct loongson_device *ldev, u32 offset, u32 val);
++u32 ls7a_io_rreg(struct loongson_device *ldev, u32 offset);
++void ls7a_io_wreg(struct loongson_device *ldev, u32 offset, u32 val);
++
++#endif /* __LOONGSON_DRV_H__ */
+diff --git a/drivers/gpu/drm/loongson/loongson_encoder.c b/drivers/gpu/drm/loongson/loongson_encoder.c
+new file mode 100644
+index 000000000000..2002cee00303
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_encoder.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static void loongson_encoder_destroy(struct drm_encoder *encoder)
++{
++	struct loongson_encoder *lencoder = to_loongson_encoder(encoder);
++
++	drm_encoder_cleanup(encoder);
++	kfree(lencoder);
++}
++
++static const struct drm_encoder_funcs loongson_encoder_funcs = {
++	.destroy = loongson_encoder_destroy,
++};
++
++int loongson_encoder_init(struct loongson_device *ldev, int index)
++{
++	struct drm_encoder *encoder;
++	struct loongson_encoder *lencoder;
++
++	lencoder = kzalloc(sizeof(struct loongson_encoder), GFP_KERNEL);
++	if (!lencoder)
++		return -1;
++
++	lencoder->lcrtc = ldev->mode_info[index].crtc;
++	lencoder->ldev = ldev;
++	encoder = &lencoder->base;
++	encoder->possible_crtcs = 1 << index;
++
++	drm_encoder_init(ldev->dev, encoder, &loongson_encoder_funcs,
++			 DRM_MODE_ENCODER_DAC, NULL);
++
++	ldev->mode_info[index].encoder = lencoder;
++
++	return 0;
++}
+diff --git a/drivers/gpu/drm/loongson/loongson_plane.c b/drivers/gpu/drm/loongson/loongson_plane.c
+new file mode 100644
+index 000000000000..8be999a443be
+--- /dev/null
++++ b/drivers/gpu/drm/loongson/loongson_plane.c
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "loongson_drv.h"
++
++static void loongson_plane_atomic_update(struct drm_plane *plane,
++					 struct drm_plane_state *old_state)
++{
++	struct loongson_crtc *lcrtc;
++	struct loongson_device *ldev;
++	struct drm_plane_state *state = plane->state;
++	u32 gpu_addr = 0;
++	u32 fb_addr = 0;
++	u32 reg_val = 0;
++	u32 reg_offset;
++	u32 pitch;
++	u8 depth;
++	u32 x, y;
++
++	if (!state->crtc || !state->fb)
++		return;
++
++	pitch = state->fb->pitches[0];
++	lcrtc = to_loongson_crtc(state->crtc);
++	ldev = lcrtc->ldev;
++	reg_offset = lcrtc->reg_offset;
++	x = state->crtc->x;
++	y = state->crtc->y;
++	depth = state->fb->format->cpp[0] << 3;
++
++	gpu_addr = loongson_gpu_offset(state);
++	reg_val = (pitch + 255) & ~255;
++	ls7a_mm_wreg_locked(ldev, FB_STRI_REG + reg_offset, reg_val);
++
++	switch (depth) {
++	case 12 ... 16:
++		fb_addr = gpu_addr + y * pitch + ALIGN(x, 64) * 2;
++		break;
++	case 24 ... 32:
++	default:
++		fb_addr = gpu_addr + y * pitch + ALIGN(x, 64) * 4;
++		break;
++	}
++
++	ls7a_mm_wreg_locked(ldev, FB_ADDR0_REG + reg_offset, fb_addr);
++	ls7a_mm_wreg_locked(ldev, FB_ADDR1_REG + reg_offset, fb_addr);
++	reg_val = lcrtc->cfg_reg | CFG_ENABLE;
++	ls7a_mm_wreg_locked(ldev, FB_CFG_REG + reg_offset, reg_val);
++}
++
++static const uint32_t loongson_formats[] = {
++	DRM_FORMAT_RGB565,
++	DRM_FORMAT_RGB888,
++	DRM_FORMAT_XRGB8888,
++	DRM_FORMAT_ARGB8888,
++};
++
++static const uint64_t loongson_format_modifiers[] = { DRM_FORMAT_MOD_LINEAR,
++						      DRM_FORMAT_MOD_INVALID };
++
++static const struct drm_plane_funcs loongson_plane_funcs = {
++	.atomic_duplicate_state = drm_atomic_helper_plane_duplicate_state,
++	.atomic_destroy_state = drm_atomic_helper_plane_destroy_state,
++	.destroy = drm_plane_cleanup,
++	.disable_plane = drm_atomic_helper_disable_plane,
++	.reset = drm_atomic_helper_plane_reset,
++	.update_plane = drm_atomic_helper_update_plane,
++};
++
++static const struct drm_plane_helper_funcs loongson_plane_helper_funcs = {
++	.prepare_fb	= drm_gem_vram_plane_helper_prepare_fb,
++	.cleanup_fb	= drm_gem_vram_plane_helper_cleanup_fb,
++	.atomic_update = loongson_plane_atomic_update,
++};
++
++int loongson_plane_init(struct loongson_crtc *lcrtc)
++{
++	struct loongson_device *ldev;
++	int crtc_id;
++	int ret;
++
++	ldev = lcrtc->ldev;
++	crtc_id = lcrtc->crtc_id;
++
++	lcrtc->plane = devm_kzalloc(ldev->dev->dev, sizeof(*lcrtc->plane),
++				    GFP_KERNEL);
++	if (!lcrtc->plane)
++		return -ENOMEM;
++
++	ret = drm_universal_plane_init(ldev->dev, lcrtc->plane, BIT(crtc_id),
++				       &loongson_plane_funcs, loongson_formats,
++				       ARRAY_SIZE(loongson_formats),
++				       loongson_format_modifiers,
++				       DRM_PLANE_TYPE_PRIMARY, NULL);
++	if (ret) {
++		DRM_ERROR("fail to init planed crtc %d\n", crtc_id);
++		return ret;
++	}
++
++	drm_plane_helper_add(lcrtc->plane, &loongson_plane_helper_funcs);
++
++	return 0;
++}
+-- 
+2.30.0
 
-	cnt_signals[0].name =3D priv->gpio->name;
-
-Of course, you should first check whether this is a GPIO line or IRQ
-line and set the name accordingly.
-
-William Breathitt Gray
-
---wC8Tf9mEZxh/iA1u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAzDBkACgkQhvpINdm7
-VJIqnw//X6S/JF8NIH9UZTbsm1n4Yu5N6OuQoLch0ADAHI6Ei6/ntVwFPUPG0Kaz
-8DoefFjwbu7ixJA/aCLo8c0dCzrztQxcz4gTB+50uoxGNk6YqvYGHtsfcalN2vae
-u9ku4i3j2oDk9KZwlFs49QhxZjBIZ6BBmz/R2HbYcurhU4pa/7Y22otyPUwKhXVB
-pvDTKNrQmN2PRYS1CQcwup+D0/skW/JKiG76MPCtJ1HWt+bj+Aih+7wIwqsQ1m6p
-W0jyQc4Mt+tbPZ30IratIJJiO1Vsw/D9TTHCkErP7x7BEE2dIY4SJ5fJe1L8up1f
-vHo2G8gFO8JdoZT4eFvEbmWKC6Lv76ClKjSDqDKgr5SYtyZOzbtqPaxjDD3GB3eY
-BPU8eekZoPjdDuktFnaLP6wXVewGP87Thr7NXCwRkA7boSe+6s3IYTFAzqhtgdKw
-QdE+C3154koHmyyd5kwkVm3Hzur4xCWj2wQ7fze6tjwnSiAdCMFrz6myMtj7Exg7
-GBDbLVQWvv0F6uA3G8vzzT2o//hb8AD1x859o1Bxmcbsrjz3yb4/s5QwKRxq7MFK
-IZYz9VAMgNUUYlD/hs21UBl2PmjEH6NGySuGvXOMTGU5EAdTdL8SopJ38l9XuzHS
-ZjlHqraYQvaP9p64s7vB8taS6LnZudVgivmf/0spF5PlL5K7R1o=
-=zZCZ
------END PGP SIGNATURE-----
-
---wC8Tf9mEZxh/iA1u--
