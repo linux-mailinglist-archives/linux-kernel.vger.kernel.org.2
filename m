@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719303212DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C51F73212E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbhBVJOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbhBVJLE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:11:04 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A788C061786
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:10:23 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id i7so7042445wmb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:10:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=F7jrUpzBO9ZQ9MHhBQ0zn1/FHacDR4Gte2WZnAPt3Ec=;
-        b=g+jBAscd5RBgO+9Xj1Bxg3rvzU4/REW/h8W0fkKyz3nrmSRS3azT+g1bpiyX7ZbSSX
-         AC8RSiOE9k7XIrVJKhYEdAHfvJuCI27gXnBPdHRTckJVcZH3hXkbFUGOY1cvh3ISjqkd
-         EGCom/xFs5Em37gnp4iD/aBVZLUrFor3lRhrVb80WqDRf6GgZEkCsQ1XvoSPvOKzXz+V
-         HIx3W4ZuD3dZ5XEpmuVAVylSsk6CYG2IcR3mT0eu7px0nJwDWS86sN4XguCk8ot0YU3f
-         MGY6BA4wO5QFyXk9B0kG36RGIbb1AdqvrG79stwdS3AdP3u51BMQfsz6mJVNmugC5GmZ
-         DB3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=F7jrUpzBO9ZQ9MHhBQ0zn1/FHacDR4Gte2WZnAPt3Ec=;
-        b=HCeoiJXGngHZMrcqQeYK9x7lleH0ECI4lNzfjN8zkEnHqwUtGrDv7lZ7IAKjKjA1+N
-         iw3zcl3KCngtttZ+jZ/sLDSO13+m+ztDO5Kl7kq1eHetX/pTCoiP1lck6ioOzeibuDp1
-         8CigMPOHi9xm9ncyJr46Km+AJEwSGajQMdyDD78dHup8Stms5y5wJudbgaxPYg5MFq79
-         VJv8SE/UTNxwhA4BXqZs0wlM/lsIvaN6oFEjUge2mHj0y0kO0w2vr16WMNht/T42hvCI
-         HzXr8TJekXTguyAdfYRyuzprM9E5HGJUDqwPkF9UcB8HAAxOwKWTvSjr96+A/HEdS8Yt
-         sU1w==
-X-Gm-Message-State: AOAM533iUMdoSq7eiCUzRRR4q573wfwsPYZI4qr0dI5jSi4PZkSRmaPT
-        B1eHhDEbTqG4yfOWaNKjPNdoEg==
-X-Google-Smtp-Source: ABdhPJxEMk6S8xAXLAW9n+JVEs96/oBry9X4LcAHKq2CXrz14JPPdrb0jtfLDpTdRAAbTwEQFrqdzg==
-X-Received: by 2002:a1c:4683:: with SMTP id t125mr19068441wma.75.1613985022217;
-        Mon, 22 Feb 2021 01:10:22 -0800 (PST)
-Received: from dell ([91.110.221.155])
-        by smtp.gmail.com with ESMTPSA id d15sm13470211wrb.43.2021.02.22.01.10.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 01:10:21 -0800 (PST)
-Date:   Mon, 22 Feb 2021 09:10:19 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     "Jonas Mark (BT-FIR/ENG1-Grb)" <Mark.Jonas@de.bosch.com>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Support Opensource <Support.Opensource@diasemi.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        Steve Twiss <stwiss.opensource@diasemi.com>,
-        "marek.vasut@gmail.com" <marek.vasut@gmail.com>,
-        "RUAN Tingquan (BT-FIR/ENG1-Zhu)" <Tingquan.Ruan@cn.bosch.com>,
-        "Streidl Hubert (BT-FIR/ENG1-Grb)" <Hubert.Streidl@de.bosch.com>
-Subject: Re: [PATCH v4] mfd: da9063: Support SMBus and I2C mode
-Message-ID: <20210222091019.GC376568@dell>
-References: <20210208152758.13093-1-mark.jonas@de.bosch.com>
- <PR3PR10MB41422B90076115ACCE07D2A5808E9@PR3PR10MB4142.EURPRD10.PROD.OUTLOOK.COM>
- <90bd35fa8c6f420fb1656c678c016509@de.bosch.com>
- <20210220110718.GA953@ninjato>
+        id S230318AbhBVJO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:14:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230257AbhBVJNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:13:06 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49DD361493;
+        Mon, 22 Feb 2021 09:12:25 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lE7GQ-00FHXV-Qt; Mon, 22 Feb 2021 09:12:22 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210220110718.GA953@ninjato>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 22 Feb 2021 09:12:22 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     "Li, Meng" <Meng.Li@windriver.com>
+Cc:     linux-kernel@vger.kernel.org, lee.jones@linaro.org, arnd@arndb.de,
+        "Hao, Kexin" <Kexin.Hao@windriver.com>
+Subject: Re: [v2][PATCH] Revert "mfd: syscon: Don't free allocated name for
+ regmap_config"
+In-Reply-To: <CO1PR11MB48497CB7B11EDA65A3941FDCF1819@CO1PR11MB4849.namprd11.prod.outlook.com>
+References: <20210115015050.26657-1-meng.li@windriver.com>
+ <CO1PR11MB48497CB7B11EDA65A3941FDCF1819@CO1PR11MB4849.namprd11.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <36cc2d810d90237947ad953ebd6b9fb7@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: Meng.Li@windriver.com, linux-kernel@vger.kernel.org, lee.jones@linaro.org, arnd@arndb.de, Kexin.Hao@windriver.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Feb 2021, Wolfram Sang wrote:
+Hi Limeng,
+
+On 2021-02-22 03:45, Li, Meng wrote:
+> Hi Marc&Lee,
+> 
+> Is there any comment on this patch?
+> Could you please help to review this patch so that I can improve it if
+> it still has weakness?
+
+If you are confident that the root issue has been fixed, no objection
+from me, but I'm not in a position to test it at the moment (the board
+I found the problem on is in a bit of a state).
+
+Thanks,
+
+         M.
 
 > 
-> > Is the patch already on the way upstream?
+> Thanks,
+> Limeng
 > 
-> Can't really speak for Lee here, but during the merge window patches are
-> usually not applied. So, in something like 2 weeks, usually collecting
-> for the next cycle begins. Looking at the CC list, I think you added all
-> the relevant people, so it seems all good.
-
-Wolfram is correct.  I'm not planning on taking patches again until
--rc1 is out.  Patch looks okay at first glance though.  A proper
-review will be provided in due course.
+>> -----Original Message-----
+>> From: Li, Meng <Meng.Li@windriver.com>
+>> Sent: Friday, January 15, 2021 9:51 AM
+>> To: linux-kernel@vger.kernel.org
+>> Cc: maz@kernel.org; lee.jones@linaro.org; arnd@arndb.de; Hao, Kexin
+>> <Kexin.Hao@windriver.com>; Li, Meng <Meng.Li@windriver.com>
+>> Subject: [v2][PATCH] Revert "mfd: syscon: Don't free allocated name 
+>> for
+>> regmap_config"
+>> 
+>> From: Limeng <Meng.Li@windriver.com>
+>> 
+>> This reverts commit 529a1101212a785c5df92c314b0e718287150c3b.
+>> 
+>> The reverted patch moves the memory free to error path, but introduce 
+>> a
+>> memory leak. There is another commit 94cc89eb8fa5("regmap: debugfs:
+>> Fix handling of name string for debugfs init delays") fixing this 
+>> debugfs init
+>> issue from root cause. With this fixing, the name field in struct
+>> regmap_debugfs_node is removed. When initialize debugfs for syscon 
+>> driver,
+>> the name field of struct regmap_config is not used anymore. So, revert 
+>> this
+>> patch directly to avoid memory leak.
+>> 
+>> v2:
+>> Notify the author of the reverted commit by adding Cc:
+>> 
+>> Fixes: 529a1101212a("mfd: syscon: Don't free allocated name for
+>> regmap_config")
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Meng Li <Meng.Li@windriver.com>
+>> ---
+>>  drivers/mfd/syscon.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/mfd/syscon.c b/drivers/mfd/syscon.c index
+>> ca465794ea9c..df5cebb372a5 100644
+>> --- a/drivers/mfd/syscon.c
+>> +++ b/drivers/mfd/syscon.c
+>> @@ -108,6 +108,7 @@ static struct syscon *of_syscon_register(struct
+>> device_node *np, bool check_clk)
+>>  	syscon_config.max_register = resource_size(&res) - reg_io_width;
+>> 
+>>  	regmap = regmap_init_mmio(NULL, base, &syscon_config);
+>> +	kfree(syscon_config.name);
+>>  	if (IS_ERR(regmap)) {
+>>  		pr_err("regmap init failed\n");
+>>  		ret = PTR_ERR(regmap);
+>> @@ -144,7 +145,6 @@ static struct syscon *of_syscon_register(struct
+>> device_node *np, bool check_clk)
+>>  	regmap_exit(regmap);
+>>  err_regmap:
+>>  	iounmap(base);
+>> -	kfree(syscon_config.name);
+>>  err_map:
+>>  	kfree(syscon);
+>>  	return ERR_PTR(ret);
+>> --
+>> 2.17.1
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Jazz is not dead. It just smells funny...
