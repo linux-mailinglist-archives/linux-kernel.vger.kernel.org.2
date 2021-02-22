@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A44C1321B29
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:18:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B9B321B35
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:21:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhBVPRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:17:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40104 "EHLO
+        id S231359AbhBVPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:18:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231191AbhBVPOI (ORCPT
+        with ESMTP id S231253AbhBVPOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Feb 2021 10:14:08 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F33C0617A9;
-        Mon, 22 Feb 2021 07:12:52 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id n10so14712516wmq.0;
-        Mon, 22 Feb 2021 07:12:52 -0800 (PST)
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71002C0617AA
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:12:53 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id p3so3715549wmc.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 07:12:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=65uTl/DL0ujA6C8p6tAwX4+93DKKilnR81zX6h8q1v8=;
-        b=b1r1t7/9FkfFvI8NzbPsWItaj3Vp8C1YOhKzqWDv/cIeky/XuHH9lL48rVM1yGCDQM
-         rYYwTs+SOxYhOfw5Z+59Gn+navsY/NfttlX1NbrQUYk/Qc68NddzJFdzbuDTX8GpQLTB
-         wBhgKXIFZug2leJR1e8TkH+md11czHNCQqs3jqi6qv/eTwSfES1On6EUG6wqwVsDiUix
-         Arv9gm7BT3V09ls3cWgJky4r8RyyC5tqLKw9aJDFkjVJrMUgDoc1sjDc5ACqVM5Up1wS
-         KWkZfPcFZM7K4Dxoj66LfT6arTk1SvQk5+ZkE9/v9Ipd9E7sGPqzMMaStGYWCyqNPQSI
-         YxaQ==
+        bh=fvdst0ke5NfAjFDKzfIGeJQUVrU5WqaPoSE7N9OL8Lk=;
+        b=ByUTfEFTtBWT1+a0ndUHz1KXLJgEtcEoht2zWrZ92q9qenV/FW/QItrNFBA9yTMyEu
+         nAxoZ+5AXu3tbOCmNa03Q8qLomQDKJiPxv7eM+CBxbCITTfPr61VnFrxqNLmeXxlwO3D
+         NSpdRj4Lfc+il7l9Z296wz7zGGhZmRTTRRQtCoJTKm2wn4y36LdYZ9EjyeLCQJ4lYebI
+         mYOlnGVeZdOkqV6tdEV2vpkWfpAsY7t3TGFQ6/SyIT186qvj7qU7fcfJQq7KTLm3B5ig
+         A/gh1JqPwarb2PAOkQI97K0mXH1teQXM1pBWa2rExNw6siyEglWGb/yNUH+O8aiFhMYI
+         3MXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=65uTl/DL0ujA6C8p6tAwX4+93DKKilnR81zX6h8q1v8=;
-        b=Q721dZrUqQ8C7HUAm3vaJWTpVnTu28nx4CwyikwXJDNJI6LjrvBP9Pf+i2XpxoMqt2
-         th8EAFcLK3AG1vrfoZzpbH2a8DEdC0tdXRPsYFjHFbpQtap/xDzTVPst8mKEZD7L+hAu
-         6dLBQIOYg8NK/4Kd1/Z86FJ20mGlQ8Zm03g/yz292a3gJSyG6A0n9aZhDDSUn2Dav4AG
-         7fld4TiLGgBn66Ag2GOnKsj9ZGF1uxkaLL1SttkmGBqzhw1YUqikcijFmRGLUgIt/HA8
-         SMU4qM9266FZqGlneZIZD4CMHzhI5LGYvwC4MdOH/9NK9UEbdf+PfAzTiVbdYEMx4Bhk
-         APhA==
-X-Gm-Message-State: AOAM531PWSAt9mzfBW9LtMda9NMAR9FMpJWL3Y4XR+VDNpCERLxNoNSU
-        hoYSFnT1ouzqkfErCWTJufmsnsOKctpg2Lly0Jw=
-X-Google-Smtp-Source: ABdhPJyr+0yYY214oKEDBI29fhzZwAOghMQnhkDW+SagA7DHVRiuybGQ/ITWc05OdOmwnuyzlppXNA==
-X-Received: by 2002:a1c:ac86:: with SMTP id v128mr20718184wme.175.1614006770799;
-        Mon, 22 Feb 2021 07:12:50 -0800 (PST)
+        bh=fvdst0ke5NfAjFDKzfIGeJQUVrU5WqaPoSE7N9OL8Lk=;
+        b=ax8M0AxGHyoXZ10BteaSyYclFBKeSBf9e30eGOZ9B/udGP43JWBuHXaIneVcElQxUr
+         T0kvTezQ/G1bHfmazv0QPZ/ikM+spcCRIdr8FlZW8nz1zgexKWPYUrX5l1uGPqhjFSU+
+         s266SwW0+mEUayTbEtNmcFVCxv3KIZrBDyi4/P3BnqDb8b+LCmhJLim+AN10jxU4ixzZ
+         pW34bpnifryfozwDQUTWdVhIBfATEvqomMzpw/M7y5xZmmrc8DTgPmq7HliP+NvFsKfl
+         QJEle04AWA34Kwe9aY0GeZ73xcQXojcsH8FJd9cEUIGw9gP9e3F0cFqgQYxQDGVFXpF1
+         idfw==
+X-Gm-Message-State: AOAM53299dtfd1OzqFO1CIuDe7enGcf2eRv8YRes1xjdOkhdgSmStw8n
+        Dh/oV4Od+qS/4h23EIiUQAVTKQTkVR3GvUdGbxw=
+X-Google-Smtp-Source: ABdhPJx3HdU5Aax1CbhYORFA+t6gTkfB7mL2V+O6OWbY4u994qmgJk/1EWCkqEb3ImN5wm0C+wO/uA==
+X-Received: by 2002:a1c:c906:: with SMTP id f6mr20165149wmb.128.1614006771938;
+        Mon, 22 Feb 2021 07:12:51 -0800 (PST)
 Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
-        by smtp.gmail.com with ESMTPSA id k15sm27612368wrn.0.2021.02.22.07.12.50
+        by smtp.gmail.com with ESMTPSA id k15sm27612424wrn.0.2021.02.22.07.12.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:12:50 -0800 (PST)
+        Mon, 22 Feb 2021 07:12:51 -0800 (PST)
 From:   Romain Perier <romain.perier@gmail.com>
 To:     Kees Cook <keescook@chromium.org>,
         kernel-hardening@lists.openwall.com,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>
-Cc:     Romain Perier <romain.perier@gmail.com>, linux-nfs@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>
+Cc:     Romain Perier <romain.perier@gmail.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 07/20] SUNRPC: Manual replacement of the deprecated strlcpy() with return values
-Date:   Mon, 22 Feb 2021 16:12:18 +0100
-Message-Id: <20210222151231.22572-8-romain.perier@gmail.com>
+Subject: [PATCH 08/20] kernfs: Manual replacement of the deprecated strlcpy() with return values
+Date:   Mon, 22 Feb 2021 16:12:19 +0100
+Message-Id: <20210222151231.22572-9-romain.perier@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210222151231.22572-1-romain.perier@gmail.com>
 References: <20210222151231.22572-1-romain.perier@gmail.com>
@@ -82,31 +82,97 @@ values (as it is quite different between the two functions).
 
 Signed-off-by: Romain Perier <romain.perier@gmail.com>
 ---
- net/sunrpc/clnt.c |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/kernfs/dir.c |   27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-index 612f0a641f4c..3c5c4ad8a808 100644
---- a/net/sunrpc/clnt.c
-+++ b/net/sunrpc/clnt.c
-@@ -282,7 +282,7 @@ static struct rpc_xprt *rpc_clnt_set_transport(struct rpc_clnt *clnt,
- 
- static void rpc_clnt_set_nodename(struct rpc_clnt *clnt, const char *nodename)
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 7a53eed69fef..9e65b595d880 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -42,9 +42,9 @@ static bool kernfs_lockdep(struct kernfs_node *kn)
+ static int kernfs_name_locked(struct kernfs_node *kn, char *buf, size_t buflen)
  {
--	clnt->cl_nodelen = strlcpy(clnt->cl_nodename,
-+	clnt->cl_nodelen = strscpy(clnt->cl_nodename,
- 			nodename, sizeof(clnt->cl_nodename));
+ 	if (!kn)
+-		return strlcpy(buf, "(null)", buflen);
++		return strscpy(buf, "(null)", buflen);
+ 
+-	return strlcpy(buf, kn->parent ? kn->name : "/", buflen);
++	return strscpy(buf, kn->parent ? kn->name : "/", buflen);
  }
  
-@@ -422,6 +422,10 @@ static struct rpc_clnt * rpc_new_client(const struct rpc_create_args *args,
- 		nodename = utsname()->nodename;
- 	/* save the nodename */
- 	rpc_clnt_set_nodename(clnt, nodename);
-+	if (clnt->cl_nodelen == -E2BIG) {
-+		err = -ENOMEM;
-+		goto out_no_path;
-+	}
+ /* kernfs_node_depth - compute depth from @from to @to */
+@@ -125,17 +125,18 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+ {
+ 	struct kernfs_node *kn, *common;
+ 	const char parent_str[] = "/..";
+-	size_t depth_from, depth_to, len = 0;
++	size_t depth_from, depth_to;
++	ssize_t len = 0;
+ 	int i, j;
  
- 	err = rpc_client_register(clnt, args->authflavor, args->client_name);
- 	if (err)
+ 	if (!kn_to)
+-		return strlcpy(buf, "(null)", buflen);
++		return strscpy(buf, "(null)", buflen);
+ 
+ 	if (!kn_from)
+ 		kn_from = kernfs_root(kn_to)->kn;
+ 
+ 	if (kn_from == kn_to)
+-		return strlcpy(buf, "/", buflen);
++		return strscpy(buf, "/", buflen);
+ 
+ 	if (!buf)
+ 		return -EINVAL;
+@@ -150,16 +151,16 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+ 	buf[0] = '\0';
+ 
+ 	for (i = 0; i < depth_from; i++)
+-		len += strlcpy(buf + len, parent_str,
++		len += strscpy(buf + len, parent_str,
+ 			       len < buflen ? buflen - len : 0);
+ 
+ 	/* Calculate how many bytes we need for the rest */
+ 	for (i = depth_to - 1; i >= 0; i--) {
+ 		for (kn = kn_to, j = 0; j < i; j++)
+ 			kn = kn->parent;
+-		len += strlcpy(buf + len, "/",
++		len += strscpy(buf + len, "/",
+ 			       len < buflen ? buflen - len : 0);
+-		len += strlcpy(buf + len, kn->name,
++		len += strscpy(buf + len, kn->name,
+ 			       len < buflen ? buflen - len : 0);
+ 	}
+ 
+@@ -173,8 +174,8 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+  * @buflen: size of @buf
+  *
+  * Copies the name of @kn into @buf of @buflen bytes.  The behavior is
+- * similar to strlcpy().  It returns the length of @kn's name and if @buf
+- * isn't long enough, it's filled upto @buflen-1 and nul terminated.
++ * similar to strscpy().  It returns the length of @kn's name and if @buf
++ * isn't long enough or @buflen is 0, it returns -E2BIG.
+  *
+  * Fills buffer with "(null)" if @kn is NULL.
+  *
+@@ -858,7 +859,7 @@ static struct kernfs_node *kernfs_walk_ns(struct kernfs_node *parent,
+ 					  const unsigned char *path,
+ 					  const void *ns)
+ {
+-	size_t len;
++	ssize_t len;
+ 	char *p, *name;
+ 
+ 	lockdep_assert_held(&kernfs_mutex);
+@@ -866,9 +867,9 @@ static struct kernfs_node *kernfs_walk_ns(struct kernfs_node *parent,
+ 	/* grab kernfs_rename_lock to piggy back on kernfs_pr_cont_buf */
+ 	spin_lock_irq(&kernfs_rename_lock);
+ 
+-	len = strlcpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
++	len = strscpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
+ 
+-	if (len >= sizeof(kernfs_pr_cont_buf)) {
++	if (len == -E2BIG) {
+ 		spin_unlock_irq(&kernfs_rename_lock);
+ 		return NULL;
+ 	}
 
