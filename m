@@ -2,181 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CD4321E92
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E74321EA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhBVR4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:56:16 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:11329 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbhBVR4L (ORCPT
+        id S231867AbhBVR50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:57:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231628AbhBVR5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:56:11 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6033f0120001>; Mon, 22 Feb 2021 09:55:30 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
- 2021 17:55:28 +0000
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Feb
- 2021 17:55:27 +0000
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
- HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Mon, 22 Feb 2021 17:55:27 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DmEawTFPNwOOikfjgd5A4eX2D+a82IsVFjojxVVUgpEjie8sAghFrADSexxrlTPNNQmbTZJ0iOMFJvFQ5c03NHUcMD4TCJxdJXLZUAQM5nuwGA60cTH5F0CYZiPuBS//3U6rwOc2bxAia7kxZxefOtgXRL5tPso5IiC3XRWCG9+SkcyTQ0zJXwmj2owzayq5Y7o2+2lp2Yg3dFkT8288yPkaaC1hadPpfk/VoRnvEQAY4Zb8PLkoDB4bLh0LTfUTWfZ/zmyoc8Ifd6WgOqjDMKA/FqCuhGWkahI6tz8DOxOmQCNJeZ+GH2Or0eK9X7mSb3HouTYD8WuMuDPX8s5nOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qxW56EmplwlaPPUdRNeEHUkMVOPoRIxsUQLO8MzsIyA=;
- b=MtU2NNWtZsYQxQQMM54k0vxn1uzPlsFxAjUaMxJcywrTVlcqyZJP2bvcDeD7VFWcO6WzknslOvtVb3+IzUeDyh4Xu6EqYHFSX4dXqOI1ZJl4IxPyhYgvk2CjYNqnxqqlmK4CtH6HK6/K+c/IJ1isZMkpLi9IKJyagGf/p4IU2nwEVdyBE0fO8AuPar9awIjV6sS7pxqL0/FVq2Ib8KZRgYz1IBQ7zgtxVsutxcRdzQvFbJQYR4i1bnqwnZhaYOQieI4mHXCmS15oxAP0vgCw1kxXDh8Wpbr5ejhinbr6uJNabTcJIlPXNnkmAkzdOtlka154IgUxEOVCZZdXPGsW8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3594.namprd12.prod.outlook.com (2603:10b6:5:11f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.33; Mon, 22 Feb
- 2021 17:55:25 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3846.045; Mon, 22 Feb 2021
- 17:55:25 +0000
-Date:   Mon, 22 Feb 2021 13:55:23 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <peterx@redhat.com>
-Subject: Re: [RFC PATCH 10/10] vfio/type1: Register device notifier
-Message-ID: <20210222175523.GQ4247@nvidia.com>
-References: <161401167013.16443.8389863523766611711.stgit@gimli.home>
- <161401275279.16443.6350471385325897377.stgit@gimli.home>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <161401275279.16443.6350471385325897377.stgit@gimli.home>
-X-ClientProxiedBy: BL1PR13CA0016.namprd13.prod.outlook.com
- (2603:10b6:208:256::21) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Mon, 22 Feb 2021 12:57:16 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F6CC061786;
+        Mon, 22 Feb 2021 09:56:35 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id q7so14229993iob.0;
+        Mon, 22 Feb 2021 09:56:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ANOaJ+Dv36acdHUTyk+J+U0eqbyeMKrUZXEtS6SU5zg=;
+        b=jh1bDuacVmABTLCM/yav8HOoP+zIh3JBPS5icgc0CmJWIGJT/9LpgnIIQhOBvM7TbI
+         N9MBi9aoLkToiNFLaIFl0VGyy0cPlVKqUk52yNw/DcqnZBac4gwt94RYGKNwL2ObQPg/
+         mE90zNYZd0vB8yCzomEQfAikk+JIwg/PZTNKH3iJUxa+RAG/tNW3z1uPG8geFs+4wn/d
+         QaJNRdAAOwQtBOds/r+0lsYkhRy0ORHhPj2zbEJJOM56rxkgterH9tGxs72z93laSEbk
+         VO/h5FXkFsQOh43sPq0EKPRND+5FgGovxUDtZvW+bzJGR2wju5asuz2tmZWokD8PHwVs
+         ffeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ANOaJ+Dv36acdHUTyk+J+U0eqbyeMKrUZXEtS6SU5zg=;
+        b=beerLe+LgwdYMtbtVW77IuPT6OizRvFUDPsm8gfLJaNIFg4muJ0In2XzPJF3xJ9XEZ
+         T2LNrQtDaKdJzpqjVUfAgCcQ3XCgmSPyHEoXeXkwvb6d++aN5ioE8qsUXSAFY9dHtRGJ
+         j3vD6fNClNVggDPWAT3f+qbjoilblBIL+0IQORid/ufB1/U0HwIIYsATY8lRDHKkYiKR
+         +KtsmE8XPVhTLelKbpwPo9X+vNl61C9JveX77azhhCOjkCvnuXWynEzWLt4I5up7kbVM
+         X0fbh81elD+KTVmiygw8D3LO2Al8G19D2y5/WCe3Xi1neC1Vtl5Wanf86NaoEppEskk8
+         FQHQ==
+X-Gm-Message-State: AOAM533WHTXeUCAG0g68o9lrLuOR97m/oPwVkyTzv39+iCi3BMOJ8NzP
+        H/i3ZUWbiXSFJRjnjTgUR01eyc3wg+W/e5D4X8iNK7mSaAE=
+X-Google-Smtp-Source: ABdhPJxYBlZZUWJRd+aGk5or3+eMKWUmCRxlp0Mil2mJnedvFOedbAuNtC58ZXCC2Ou2/5yOlQ8mouRniGtAiGcRy+w=
+X-Received: by 2002:a05:6638:22e:: with SMTP id f14mr10121385jaq.96.1614016595340;
+ Mon, 22 Feb 2021 09:56:35 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0016.namprd13.prod.outlook.com (2603:10b6:208:256::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.9 via Frontend Transport; Mon, 22 Feb 2021 17:55:25 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lEFQa-00ETB7-0X; Mon, 22 Feb 2021 13:55:24 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1614016530; bh=qxW56EmplwlaPPUdRNeEHUkMVOPoRIxsUQLO8MzsIyA=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=CGXQcccrbOS9ZhylsHR9avGGZgxNX9jt5LSUhdCc8PWm/WisU7m6lK8bZhSPIGznv
-         lTTLktjV4DYB8J/vShn09G6ZP+T4pNGBUODpvpKlR+ekJywxQafAxsRKgvmvhXRUuk
-         tYMgHzESq812241l0vtWi/fgfEVSpLzA1mYiXZHUdIXfsjr8IAc70kjGar5AVdB8Sz
-         C7HzRF/7qfeCMcs1ST71PsXkeV+bnpaDunSJ5HtH5u3gFGuPdkIRKUdt40I9jHvIjC
-         2SkIEvCA9ToBFBgO8loNroliIeDKqFJA3REAFTZ07oJp8M0U/hnxNN3dB3P5dlCoBy
-         xeCP3b/6bbr+w==
+References: <20210222161905.1153-1-lukas.bulwahn@gmail.com> <alpine.DEB.2.21.2102221836030.1900@angie.orcam.me.uk>
+In-Reply-To: <alpine.DEB.2.21.2102221836030.1900@angie.orcam.me.uk>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Mon, 22 Feb 2021 18:56:24 +0100
+Message-ID: <CAKXUXMwOpu3Ty4qMWaAjiAWSpdxrwKyJEt8D9wbzJb13-Z3xEg@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Remove dead linux-mips.org references
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Willy Tarreau <w@1wt.eu>, linux-edac@vger.kernel.org,
+        linux-hams@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 09:52:32AM -0700, Alex Williamson wrote:
-> Introduce a new default strict MMIO mapping mode where the vma for
-> a VM_PFNMAP mapping must be backed by a vfio device.  This allows
-> holding a reference to the device and registering a notifier for the
-> device, which additionally keeps the device in an IOMMU context for
-> the extent of the DMA mapping.  On notification of device release,
-> automatically drop the DMA mappings for it.
-> 
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
->  drivers/vfio/vfio_iommu_type1.c |  124 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 123 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-> index b34ee4b96a4a..2a16257bd5b6 100644
-> +++ b/drivers/vfio/vfio_iommu_type1.c
-> @@ -61,6 +61,11 @@ module_param_named(dma_entry_limit, dma_entry_limit, uint, 0644);
->  MODULE_PARM_DESC(dma_entry_limit,
->  		 "Maximum number of user DMA mappings per container (65535).");
->  
-> +static bool strict_mmio_maps = true;
-> +module_param_named(strict_mmio_maps, strict_mmio_maps, bool, 0644);
-> +MODULE_PARM_DESC(strict_mmio_maps,
-> +		 "Restrict to safe DMA mappings of device memory (true).");
+On Mon, Feb 22, 2021 at 6:47 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
+>
+> On Mon, 22 Feb 2021, Lukas Bulwahn wrote:
+>
+> > The domain lookup for linux-mips.org fails for quite some time now.
+> > Hence, webpages, the patchwork instance and Ralf Baechle's email there is
+> > not reachable anymore.
+>
+>  I have been contacted by Ralf a couple of weeks ago and he told me there
+> had been a storage failure with the machine running linux-mips.org.
+>
+>  Due to a complex situation with linux-mips.org I do not want to dive the
+> details of into here recovery of the site caused some trouble, however I
+> was told it had been under way now.  So I suggest that we wait a couple of
+> weeks yet and see how it goes before going ahead with this series.
+>
+>  As to Ralf personal commitments WRT maintenance duties I can't speak, but
+> I have bcc-ed him on his alternative e-mail address with this message in
+> case he wants to speak up.
+>
 
-I think this should be a kconfig, historically we've required kconfig
-to opt-in to unsafe things that could violate kernel security. Someone
-building a secure boot trusted kernel system should not have an
-options for userspace to just turn off protections.
+Thanks for the update. Maybe we can then rescue some of the valuable
+content from linux-mips.org and mirror it somewhere else as well?
 
-> +/* Req separate object for async removal from notifier vs dropping vfio_dma */
-> +struct pfnmap_obj {
-> +	struct notifier_block	nb;
-> +	struct work_struct	work;
-> +	struct vfio_iommu	*iommu;
-> +	struct vfio_device	*device;
-> +};
+The code mentioned some patch by referring to a linux-mips.org
+patchwork id, but without the service running, there is no chance to
+understand the comment. So, once linux-mips.org is up and running
+again, we might want to recover that referred patch and change the
+comment to a lore.kernel.org Link (that may stay with us for longer)
+or quickly find out if that comment is obsolete by now.
 
-So this is basically the dmabuf, I think it would be simple enough to
-go in here and change it down the road if someone had interest.
-
-> +static void unregister_device_bg(struct work_struct *work)
-> +{
-> +	struct pfnmap_obj *pfnmap = container_of(work, struct pfnmap_obj, work);
-> +
-> +	vfio_device_unregister_notifier(pfnmap->device, &pfnmap->nb);
-> +	vfio_device_put(pfnmap->device);
-
-The device_put keeps the device from becoming unregistered, but what
-happens during the hot reset case? Is this what the cover letter
-was talking about? CPU access is revoked but P2P is still possible?
-
-> +static int vfio_device_nb_cb(struct notifier_block *nb,
-> +			     unsigned long action, void *unused)
-> +{
-> +	struct pfnmap_obj *pfnmap = container_of(nb, struct pfnmap_obj, nb);
-> +
-> +	switch (action) {
-> +	case VFIO_DEVICE_RELEASE:
-> +	{
-> +		struct vfio_dma *dma, *dma_last = NULL;
-> +		int retries = 0;
-> +again:
-> +		mutex_lock(&pfnmap->iommu->lock);
-> +		dma = pfnmap_find_dma(pfnmap);
-
-Feels a bit strange that the vfio_dma isn't linked to the pfnmap_obj
-instead of searching the entire list?
-
-> @@ -549,8 +625,48 @@ static int vaddr_get_pfn(struct vfio_iommu *iommu, struct vfio_dma *dma,
->  		if (ret == -EAGAIN)
->  			goto retry;
-
-I'd prefer this was written a bit differently, I would like it very
-much if this doesn't mis-use follow_pte() by returning pfn outside
-the lock.
-
-vaddr_get_bar_pfn(..)
-{
-        vma = find_vma_intersection(mm, vaddr, vaddr + 1);
-	if (!vma)
-           return -ENOENT;
-        if ((vma->vm_flags & VM_DENYWRITE) && (prot & PROT_WRITE)) // Check me
-           return -EFAULT;
-        device = vfio_device_get_from_vma(vma);
-	if (!device)
-           return -ENOENT;
-
-	/*
-         * Now do the same as vfio_pci_mmap_fault() - the vm_pgoff must
-	 * be the physical pfn when using this mechanism. Delete follow_pte entirely()
-         */
-        pfn = (vaddr - vma->vm_start)/PAGE_SIZE + vma->vm_pgoff
-	
-        /* de-dup device and record that we are using device's pages in the
-	   pfnmap */
-        ...
-}
-
-This would be significantly better if it could do whole ranges instead
-of page at a time.
-
-Jason
+Lukas
