@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2213218FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:37:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CBF321933
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:44:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhBVNg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:36:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53428 "EHLO mail.kernel.org"
+        id S230412AbhBVNoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:44:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231549AbhBVMnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:43:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 172E064F36;
-        Mon, 22 Feb 2021 12:40:27 +0000 (UTC)
+        id S231388AbhBVMnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:43:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7B3964F0F;
+        Mon, 22 Feb 2021 12:41:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613997628;
-        bh=OREBePYUtrVAVN/k0Ft5UqwIM8mdZxh9ofG37Uluz1I=;
+        s=korg; t=1613997671;
+        bh=mJIG4cauEhAlTta4YP7PG54Qp7Xboh/D0/9NhZokow8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r2uv3MlnqkMe8tDK7707ZmWbZTbFJBwAVHWEnlnAaKYCsA6wPgtP5gKRsJ1pp1VjZ
-         tei6Exgr3ldzFVzQycxLliYBZQYBYP/dPLA9kAb4E0Iv+YnCSysIcout7k0uQpM6xJ
-         FTfl5l9p1Zp4fFalGQZp+4JgqsJJSvC8qaqX6EOg=
+        b=LabTi/orLDbCpu4fv9SN4IZpAJu6FRLqyXmO7XTKHzopyNqYTKCxx99KvgftxBmWl
+         TP1qcOk5MMxyTbdo1c68/iq4NRJfoRjbnTuufz2evwfjPZaS/vm37DyoVQ7qQUj8Ci
+         YXRzJxdOAUxC52UhgZiMtrr6AWwZwjcqfSKJEiwk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, AC <achirvasub@gmail.com>,
-        Borislav Petkov <bp@suse.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [PATCH 4.4 21/35] x86/build: Disable CET instrumentation in the kernel for 32-bit too
-Date:   Mon, 22 Feb 2021 13:36:17 +0100
-Message-Id: <20210222121021.116192176@linuxfoundation.org>
+        stable@vger.kernel.org, Wen Gong <wgong@codeaurora.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.9 20/49] tracing: Check length before giving out the filter buffer
+Date:   Mon, 22 Feb 2021 13:36:18 +0100
+Message-Id: <20210222121026.407484582@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121013.581198717@linuxfoundation.org>
-References: <20210222121013.581198717@linuxfoundation.org>
+In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
+References: <20210222121022.546148341@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +39,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit 256b92af784d5043eeb7d559b6d5963dcc2ecb10 upstream.
+commit b220c049d5196dd94d992dd2dc8cba1a5e6123bf upstream.
 
-Commit
+When filters are used by trace events, a page is allocated on each CPU and
+used to copy the trace event fields to this page before writing to the ring
+buffer. The reason to use the filter and not write directly into the ring
+buffer is because a filter may discard the event and there's more overhead
+on discarding from the ring buffer than the extra copy.
 
-  20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
+The problem here is that there is no check against the size being allocated
+when using this page. If an event asks for more than a page size while being
+filtered, it will get only a page, leading to the caller writing more that
+what was allocated.
 
-disabled CET instrumentation which gets added by default by the Ubuntu
-gcc9 and 10 by default, but did that only for 64-bit builds. It would
-still fail when building a 32-bit target. So disable CET for all x86
-builds.
+Check the length of the request, and if it is more than PAGE_SIZE minus the
+header default back to allocating from the ring buffer directly. The ring
+buffer may reject the event if its too big anyway, but it wont overflow.
 
-Fixes: 20bf2b378729 ("x86/build: Disable CET instrumentation in the kernel")
-Reported-by: AC <achirvasub@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Tested-by: AC <achirvasub@gmail.com>
-Link: https://lkml.kernel.org/r/YCCIgMHkzh/xT4ex@arch-chirva.localdomain
+Link: https://lore.kernel.org/ath10k/1612839593-2308-1-git-send-email-wgong@codeaurora.org/
+
+Cc: stable@vger.kernel.org
+Fixes: 0fc1b09ff1ff4 ("tracing: Use temp buffer when filtering events")
+Reported-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/Makefile |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ kernel/trace/trace.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -61,6 +61,9 @@ endif
- KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow
- KBUILD_CFLAGS += $(call cc-option,-mno-avx,)
- 
-+# Intel CET isn't enabled in the kernel
-+KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
-+
- ifeq ($(CONFIG_X86_32),y)
-         BITS := 32
-         UTS_MACHINE := i386
-@@ -137,9 +140,6 @@ else
-         KBUILD_CFLAGS += -mno-red-zone
-         KBUILD_CFLAGS += -mcmodel=kernel
- 
--	# Intel CET isn't enabled in the kernel
--	KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
--
-         # -funit-at-a-time shrinks the kernel .text considerably
-         # unfortunately it makes reading oopses harder.
-         KBUILD_CFLAGS += $(call cc-option,-funit-at-a-time)
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2090,7 +2090,7 @@ trace_event_buffer_lock_reserve(struct r
+ 	    (entry = this_cpu_read(trace_buffered_event))) {
+ 		/* Try to use the per cpu buffer first */
+ 		val = this_cpu_inc_return(trace_buffered_event_cnt);
+-		if (val == 1) {
++		if ((len < (PAGE_SIZE - sizeof(*entry))) && val == 1) {
+ 			trace_event_setup(entry, type, flags, pc);
+ 			entry->array[0] = len;
+ 			return entry;
 
 
