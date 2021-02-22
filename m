@@ -2,61 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C57321176
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FCE321178
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 08:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhBVHh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 02:37:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230099AbhBVHhx (ORCPT
+        id S230128AbhBVHkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 02:40:00 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:45673 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230041AbhBVHj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 02:37:53 -0500
-X-Greylist: delayed 95 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 21 Feb 2021 23:37:13 PST
-Received: from cavan.codon.org.uk (cavan.codon.org.uk [IPv6:2a00:1098:84:22e::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EEC9C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Feb 2021 23:37:13 -0800 (PST)
-Received: by cavan.codon.org.uk (Postfix, from userid 1000)
-        id 109D340A2E; Mon, 22 Feb 2021 07:36:27 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 07:36:27 +0000
-From:   Matthew Garrett <mjg59@srcf.ucam.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Matthew Garrett <matthewgarrett@google.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-pm@vger.kernel.org, keyrings@vger.kernel.org,
-        zohar@linux.ibm.com, jejb@linux.ibm.com, corbet@lwn.net,
-        rjw@rjwysocki.net, Matthew Garrett <mjg59@google.com>
-Subject: Re: [PATCH 3/9] security: keys: trusted: Parse out individual
- components of the key blob
-Message-ID: <20210222073627.GB30403@codon.org.uk>
-References: <20210220013255.1083202-1-matthewgarrett@google.com>
- <20210220013255.1083202-4-matthewgarrett@google.com>
- <YDB8gM6Z9OOKujQu@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YDB8gM6Z9OOKujQu@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Mon, 22 Feb 2021 02:39:59 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UPA9y4i_1613979555;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPA9y4i_1613979555)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 22 Feb 2021 15:39:15 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     james.smart@broadcom.com
+Cc:     dick.kennedy@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] scsi: lpfc: Switch to using the new API kobj_to_dev()
+Date:   Mon, 22 Feb 2021 15:39:13 +0800
+Message-Id: <1613979553-18399-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Feb 20, 2021 at 05:05:36AM +0200, Jarkko Sakkinen wrote:
-> On Sat, Feb 20, 2021 at 01:32:49AM +0000, Matthew Garrett wrote:
-> > Performing any sort of state validation of a sealed TPM blob requires
-> > being able to access the individual members in the response. Parse the
-> > blob sufficiently to be able to stash pointers to each member, along
-> > with the length.
-> > 
-> > Signed-off-by: Matthew Garrett <mjg59@google.com>
-> 
-> I'll just say LGTM for now. Did not see anything obviously wrong in
-> the code change (and does make sense to nitpick minor things just
-> yet).
-> 
-> Need to understand the whole use case just a little bit better.
+fixed the following coccicheck:
+./drivers/scsi/lpfc/lpfc_attr.c:4389:6-7: WARNING opportunity for
+kobj_to_dev()
+./drivers/scsi/lpfc/lpfc_attr.c:6326:60-61: WARNING opportunity for
+kobj_to_dev()
+./drivers/scsi/lpfc/lpfc_attr.c:6386:60-61: WARNING opportunity for
+kobj_to_dev()
 
-I wrote this up with some more detail at 
-https://mjg59.dreamwidth.org/55845.html - it seemed longer than
-appropriate for a commit message, but if you'd like more detail
-somewhere I can certainly add it.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/scsi/lpfc/lpfc_attr.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/lpfc/lpfc_attr.c b/drivers/scsi/lpfc/lpfc_attr.c
+index 4528166..a3bde0e 100644
+--- a/drivers/scsi/lpfc/lpfc_attr.c
++++ b/drivers/scsi/lpfc/lpfc_attr.c
+@@ -4385,8 +4385,7 @@ static DEVICE_ATTR(txcmplq_hw, S_IRUGO,
+ 		struct bin_attribute *bin_attr,
+ 		char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device,
+-		kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct Scsi_Host  *shost = class_to_shost(dev);
+ 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
+ 	struct lpfc_hba   *phba = vport->phba;
+@@ -6323,7 +6322,7 @@ struct device_attribute *lpfc_vport_attrs[] = {
+ 		   char *buf, loff_t off, size_t count)
+ {
+ 	size_t buf_off;
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct Scsi_Host  *shost = class_to_shost(dev);
+ 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
+ 	struct lpfc_hba   *phba = vport->phba;
+@@ -6383,7 +6382,7 @@ struct device_attribute *lpfc_vport_attrs[] = {
+ {
+ 	size_t buf_off;
+ 	uint32_t * tmp_ptr;
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct Scsi_Host  *shost = class_to_shost(dev);
+ 	struct lpfc_vport *vport = (struct lpfc_vport *) shost->hostdata;
+ 	struct lpfc_hba   *phba = vport->phba;
+-- 
+1.8.3.1
+
