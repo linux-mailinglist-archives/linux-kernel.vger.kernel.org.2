@@ -2,84 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4F5321A5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4622321A5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 15:30:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhBVO37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 09:29:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbhBVOWp (ORCPT
+        id S231419AbhBVO3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 09:29:08 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12639 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230125AbhBVOWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 09:22:45 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F1B0C06178C
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 06:21:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=h/4fTKGARCgog3SkiMpNKyKBIuxHr1/DvbKuL0vuoYU=; b=Z4+PNRDCFs1sEkUQjnEYSLkZMO
-        os8dzNXxUuQqlADj2cgJOcOB3SBs0qlI9yj1t3Iguvt90UEq2R/s61LV20nTIO2d4Oj/dwRUrIlrY
-        cdliADum2gRiZgKeFjObqhec7Jq/Vdmi8tdmuVSBfSQqR24wUHq3jJypzEjaE0d+4Uvzcl8AJ0vQs
-        bJqXs5a61NAGGqur8COSILqkXr0u/hJRcmGiTtBnkXQQWSdSvOZ1364zFoC/H5hTjDKpwd2UcrUpE
-        EFFuAKf7m+b3AH/p8VZ3NJhqodI1iQ/J5z090NmR+Kw609+xfhQef6bjetc4FN1J5MoQ2jvbvya7k
-        GG5Tn6rw==;
-Received: from [2601:1c0:6280:3f0::d05b]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1lEC5n-00064O-3q; Mon, 22 Feb 2021 14:21:43 +0000
-Subject: Re: [PATCH] drivers: gnu: drm: i915: gvt: Fixed couple of spellings
- in the file gtt.c
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>,
-        jani.nikula@linux.intel.com, intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210222081838.30328-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c4d15313-78a6-a7c8-97c9-8291600f6264@infradead.org>
-Date:   Mon, 22 Feb 2021 06:21:36 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 22 Feb 2021 09:22:48 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DkkqF2WBTz16BWQ;
+        Mon, 22 Feb 2021 22:20:25 +0800 (CST)
+Received: from [10.174.179.96] (10.174.179.96) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 22 Feb 2021 22:21:58 +0800
+Subject: Re: [PATCH v2 -next] IB/mlx5: Add missing error code
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>, <yishaih@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210222082503.22388-1-yuehaibing@huawei.com>
+ <20210222122343.19720-1-yuehaibing@huawei.com> <YDOwQyZJ+Iovj/Yj@unreal>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <4f4ed6f2-8b2d-30f5-20dd-f27049621399@huawei.com>
+Date:   Mon, 22 Feb 2021 22:21:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210222081838.30328-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YDOwQyZJ+Iovj/Yj@unreal>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.96]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/22/21 12:18 AM, Bhaskar Chowdhury wrote:
+On 2021/2/22 21:23, Leon Romanovsky wrote:
+> On Mon, Feb 22, 2021 at 08:23:43PM +0800, YueHaibing wrote:
+>> Set err to -ENOMEM if kzalloc fails instead of 0.
+>>
+>> Fixes: 759738537142 ("IB/mlx5: Enable subscription for device events over DEVX")
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/mlx5/devx.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
 > 
-> s/negtive/negative/
-> s/possilbe/possible/
+> Thanks,
+> Acked-by: Leon Romanovsky <leonro@nvidia.com>
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> And please don't send new version of patches as a reply-to, it is
+> annoying like hell.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Ok, Got it.
 
-> ---
->  drivers/gpu/drm/i915/gvt/gtt.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Thanks
+> .
 > 
-> diff --git a/drivers/gpu/drm/i915/gvt/gtt.c b/drivers/gpu/drm/i915/gvt/gtt.c
-> index 897c007ea96a..dc5834bf4de2 100644
-> --- a/drivers/gpu/drm/i915/gvt/gtt.c
-> +++ b/drivers/gpu/drm/i915/gvt/gtt.c
-> @@ -1159,8 +1159,8 @@ static inline void ppgtt_generate_shadow_entry(struct intel_gvt_gtt_entry *se,
->   * @vgpu: target vgpu
->   * @entry: target pfn's gtt entry
->   *
-> - * Return 1 if 2MB huge gtt shadowing is possilbe, 0 if miscondition,
-> - * negtive if found err.
-> + * Return 1 if 2MB huge gtt shadowing is possible, 0 if miscondition,
-> + * negative if found err.
->   */
->  static int is_2MB_gtt_possible(struct intel_vgpu *vgpu,
->  	struct intel_gvt_gtt_entry *entry)
-> --
-
-
--- 
-~Randy
-
