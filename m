@@ -2,121 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574153213EA
+	by mail.lfdr.de (Postfix) with ESMTP id C84743213EB
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:16:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhBVKOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:14:23 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:56712 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhBVKMS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:12:18 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 8B3741C0B7F; Mon, 22 Feb 2021 11:11:34 +0100 (CET)
-Date:   Mon, 22 Feb 2021 11:11:33 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     William Breathitt Gray <vilhelm.gray@gmail.com>,
-        kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
-        gwendal@chromium.org, alexandre.belloni@bootlin.com,
-        david@lechnology.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, o.rempel@pengutronix.de
-Subject: Re: [PATCH v8 18/22] docs: counter: Document character device
- interface
-Message-ID: <20210222101133.GB14587@amd>
-References: <cover.1613131238.git.vilhelm.gray@gmail.com>
- <350cafba81d3220b64efdb019bd76c08eb1e5d10.1613131238.git.vilhelm.gray@gmail.com>
- <20210214174819.6757e2b0@archlinux>
+        id S230379AbhBVKPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:15:04 -0500
+Received: from raptor.unsafe.ru ([5.9.43.93]:58216 "EHLO raptor.unsafe.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230375AbhBVKMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 05:12:30 -0500
+Received: from example.org (ip-94-113-225-162.net.upcbroadband.cz [94.113.225.162])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by raptor.unsafe.ru (Postfix) with ESMTPSA id 3E86D209FA;
+        Mon, 22 Feb 2021 10:11:46 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 11:11:41 +0100
+From:   Alexey Gladkov <gladkov.alexey@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH v6 3/7] Reimplement RLIMIT_NPROC on top of ucounts
+Message-ID: <20210222101141.uve6hnftsakf4u7n@example.org>
+References: <cover.1613392826.git.gladkov.alexey@gmail.com>
+ <72fdcd154bec7e0dfad090f1af65ddac1e767451.1613392826.git.gladkov.alexey@gmail.com>
+ <72214339-57fc-e47f-bb57-d1b39c69e38e@kernel.dk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="MfFXiAuoTsnnDAfZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210214174819.6757e2b0@archlinux>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <72214339-57fc-e47f-bb57-d1b39c69e38e@kernel.dk>
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 22 Feb 2021 10:11:46 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Feb 21, 2021 at 04:38:10PM -0700, Jens Axboe wrote:
+> On 2/15/21 5:41 AM, Alexey Gladkov wrote:
+> > diff --git a/fs/io-wq.c b/fs/io-wq.c
+> > index a564f36e260c..5b6940c90c61 100644
+> > --- a/fs/io-wq.c
+> > +++ b/fs/io-wq.c
+> > @@ -1090,10 +1091,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
+> >  		wqe->node = alloc_node;
+> >  		wqe->acct[IO_WQ_ACCT_BOUND].max_workers = bounded;
+> >  		atomic_set(&wqe->acct[IO_WQ_ACCT_BOUND].nr_running, 0);
+> > -		if (wq->user) {
+> > -			wqe->acct[IO_WQ_ACCT_UNBOUND].max_workers =
+> > -					task_rlimit(current, RLIMIT_NPROC);
+> > -		}
+> > +		wqe->acct[IO_WQ_ACCT_UNBOUND].max_workers = task_rlimit(current, RLIMIT_NPROC);
+> 
+> This doesn't look like an equivalent transformation. But that may be
+> moot if we merge the io_uring-worker.v3 series, as then you would not
+> have to touch io-wq at all.
 
---MfFXiAuoTsnnDAfZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In the current code the wq->user is always set to current_user():
 
-Hi!
+io_uring_create [1]
+`- io_sq_offload_create
+   `- io_init_wq_offload [2]
+      `-io_wq_create [3]
 
-> > +* COUNTER_ENABLE_EVENTS_IOCTL:
-> > +  Enables monitoring the events specified by the Counter watches that
-> > +  were queued by ``COUNTER_ADD_WATCH_IOCTL``. If events are already
-> > +  enabled, the new set of watches replaces the old one. Calling this
-> > +  ioctl also has the effect of clearing the queue of watches added by
-> > +  ``COUNTER_ADD_WATCH_IOCTL``.
-> > +
-> > +* COUNTER_DISABLE_EVENTS_IOCTL:
-> > +  Stops monitoring the previously enabled events.
->=20
-> Is there a way to remove a watch?=20
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/io_uring.c#n9752
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/io_uring.c#n8107
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/io-wq.c#n1070
 
-Is there a way to eat all kernel memory and crash the system by adding
-too many watches?
+So, specifying max_workers always happens.
 
-> > +For example, the following userspace code opens ``/dev/counter0``,
-> > +configures the ``COUNTER_EVENT_INDEX`` event channel 0 to gather Count=
- 0
-> > +and Count 1, and prints out the data as it becomes available on the
-> > +character device node::
-> > +
->=20
-> Consider adding an example program under tools/
->=20
-> > +        #include <fcntl.h>
-> > +        #include <linux/counter.h>
-> > +        #include <stdio.h>
-> > +        #include <string.h>
-> > +        #include <sys/ioctl.h>
-> > +        #include <unistd.h>
-> > +
-> > +        struct counter_watch watches[2] =3D {
-> > +                {
-> > +                        .component.type =3D COUNTER_COMPONENT_COUNT,
-> > +                        .component.scope =3D COUNTER_SCOPE_COUNT,
-> > +                        .component.parent =3D 0,
->=20
-> Good to add comments on what these elements actually are?
+-- 
+Rgrds, legion
 
-> > +                fd =3D open("/dev/counter0", O_RDWR);
-> > +
-> > +                ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches);
-> > +                ioctl(fd, COUNTER_ADD_WATCH_IOCTL, watches + 1);
-> > +                ioctl(fd, COUNTER_ENABLE_EVENTS_IOCTL);
-
-> > +                for (;;) {
-> > +                        read(fd, event_data, sizeof(event_data));
-
-If this goes to tools it really should have error handling and
-handling of short read.
-
-Best regards,
-							Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---MfFXiAuoTsnnDAfZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAzg1UACgkQMOfwapXb+vJsaACffCOe28RqjxELfyTkP8K3Wy+h
-SeYAn26EGcT9n9wUACiesQqsPDqCDl31
-=ku3H
------END PGP SIGNATURE-----
-
---MfFXiAuoTsnnDAfZ--
