@@ -2,106 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB4D321526
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 420BC321529
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 12:32:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230490AbhBVLbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 06:31:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44344 "EHLO
+        id S230502AbhBVLbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 06:31:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46534 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230525AbhBVLab (ORCPT
+        by vger.kernel.org with ESMTP id S230110AbhBVLbH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 06:30:31 -0500
+        Mon, 22 Feb 2021 06:31:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613993345;
+        s=mimecast20190719; t=1613993370;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ebJHLwtJv4Lygejth71y7MrguaqQLtiAIr5JvZWFqY4=;
-        b=Dc6B2tuCRBF7bcbn4T8UseU31UYCvcaSM9iET8HD0lOvL2qSGN3HmaE2GF1NxJwqBz0Kyv
-        GTKR7hAuUYG2L/JsFNlINMvbXOB0XDJkZbTHCA6yqz/94YouQoI9SZTiAy9JRlnLuA+EWB
-        GLtdFwdtBwRQAVPcMbfsQ4TOq0eGsY0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-rUQRAMg9PS6tW7bYycHvoQ-1; Mon, 22 Feb 2021 06:29:01 -0500
-X-MC-Unique: rUQRAMg9PS6tW7bYycHvoQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D181B8030C2;
-        Mon, 22 Feb 2021 11:28:59 +0000 (UTC)
-Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E95CF5B6AA;
-        Mon, 22 Feb 2021 11:28:57 +0000 (UTC)
-Subject: Re: [PATCH v2 0/7] Allocate memmap from hotadded memory (per device)
-To:     Oscar Salvador <osalvador@suse.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@kernel.org>, VlastimilBabkavbabka@suse.cz,
-        pasha.tatashin@soleen.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210209133854.17399-1-osalvador@suse.de>
- <20210217101851.GA28996@linux> <20210222111506.GA23651@linux>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <8b4670fa-583a-b68b-a65f-7eeca184afd3@redhat.com>
-Date:   Mon, 22 Feb 2021 12:28:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=Y8uZhtxPnMc3VJgJ7/XsbDI2s/GkB4V6o+tAFFKwv/8=;
+        b=dLnhb5UD+NpaCQn6v2pEF7GfZEbQ12O3I6Ief1E/7iLlUte0CrZPGBCt4uos+Cpy8o4Q3r
+        IeFh/pbOvxb6LWW2w6h0kIcO4avB7V+w/ErLLlsyNZUyRyap7+3BRDERKYHlw4Umn2qyd+
+        ebdBrw7L+LarN8RMfSbSc+7Dmw9Zpj8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-mHakWP2UPIG9dKLceVkvfg-1; Mon, 22 Feb 2021 06:29:29 -0500
+X-MC-Unique: mHakWP2UPIG9dKLceVkvfg-1
+Received: by mail-wr1-f71.google.com with SMTP id v1so5975441wru.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 03:29:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y8uZhtxPnMc3VJgJ7/XsbDI2s/GkB4V6o+tAFFKwv/8=;
+        b=VXciTvWn0S8XMiVbBVcjx3ZSF14WxyC5dkkSUYciq2V+dPSx0Wc2vU3QXozKJfKXa2
+         n3TMXBhbiMHZKcs42yxEHdaZLCvgoG9TKUtycE9SjUxo6RJENnjW8KqfD2vZq6u5Lcfp
+         bFSk5iwK43dnwkLz0uU8gXCUIvT48y7SjK1RRS6aF/1ja/5JTC3sl1Nc/vimKDOT1ObZ
+         GzSUo42wKw7yrNW6llArdvSOBymXsfo3SqGTSUw4XoqNLxDy6yLCXzs9ldK77fX9BlJY
+         MJq7vvuRQe2DBwflHrPgYtL15AVsmxc4ZieJaXtqzH7dH9u0S+tCLdRT4FkQOByxBlVu
+         pvWA==
+X-Gm-Message-State: AOAM533gb5whEjB1KsWSh9n6kuRrQEpUCnQRkKsZGo7FRK1YAl8UTsaY
+        woXDiKdm6wOwTZFNvodSWoe3zijEFd+s2LiBS8c9LhRu7NdTrtIIo54eb/AUY9mrsqW4rs4CXwF
+        eo9kMJfTwbUfkZ1AnhxiXvFOD
+X-Received: by 2002:a5d:63ce:: with SMTP id c14mr7733618wrw.15.1613993368179;
+        Mon, 22 Feb 2021 03:29:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxiJBgeZ62WLQXH1tkB63Xoc8oL1rWkIkvwkAGO6rqCCSIdNxSHGL/0LhoyC56LLS/oG3hmig==
+X-Received: by 2002:a5d:63ce:: with SMTP id c14mr7733598wrw.15.1613993367956;
+        Mon, 22 Feb 2021 03:29:27 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id m24sm7861270wmc.18.2021.02.22.03.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 03:29:27 -0800 (PST)
+Date:   Mon, 22 Feb 2021 12:29:24 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v5 02/19] af_vsock: separate wait data loop
+Message-ID: <20210222112924.hu2sfoiwni5kt5wm@steredhat>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053637.1066959-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <20210222111506.GA23651@linux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210218053637.1066959-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.02.21 12:15, Oscar Salvador wrote:
-> On Wed, Feb 17, 2021 at 11:18:59AM +0100, Oscar Salvador wrote:
->> On Tue, Feb 09, 2021 at 02:38:47PM +0100, Oscar Salvador wrote:
->>> Hi,
->>>
->>> here is v2.
->>>
->>> Changes from v1 -> v2
->>>   - Addressed feedback from David
->>>   - Fence off the feature in case struct page size is not
->>>     multiple of PMD size or pageblock alignment cannot be guaranted
->>>   - Tested on x86_64 small and large memory_blocks
->>>   - Tested on arm64 4KB and 64KB page sizes (for some reason I cannot boot
->>>     my VM with 16KB page size).
->>>
->>>   Arm64 with 4KB page size behaves like x86_64 after [1], which made section
->>>   size smaller.
->>>   With 64KB, the feature gets fenced off due to pageblock alignment.
->>>
->>> Changes from RFCv3 -> v1:
->>>   - Addressed feedback from David
->>>   - Re-order patches
->>>
->>> Changes from v2 -> v3 (RFC):
->>>   - Re-order patches (Michal)
->>>   - Fold "mm,memory_hotplug: Introduce MHP_MEMMAP_ON_MEMORY" in patch#1
->>>   - Add kernel boot option to enable this feature (Michal)
->>>
->>> Changes from v1 -> v2 (RFC):
->>>   - Addressed feedback provided by David
->>>   - Add a arch_support_memmap_on_memory to be called
->>>     from mhp_supports_memmap_on_memory, as atm,
->>>     only ARM, powerpc and x86_64 have altmat support.
->>>
->>> [1] https://lore.kernel.org/lkml/cover.1611206601.git.sudaraja@codeaurora.org/
->>
->> Let me refloat this one :-)
-> 
-> Kindly ping :-)
+On Thu, Feb 18, 2021 at 08:36:33AM +0300, Arseny Krasnov wrote:
+>This moves wait loop for data to dedicated function, because later
+>it will be used by SEQPACKET data receive loop.
 
--EBUSY, will try having a look this week!
+The patch LGTM, maybe just add a line in the commit message with 
+something like this:
 
--- 
-Thanks,
+     While moving the code around, let's update an old comment.
 
-David / dhildenb
+Whit that fixed:
+
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/af_vsock.c | 155 +++++++++++++++++++++------------------
+> 1 file changed, 83 insertions(+), 72 deletions(-)
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 656370e11707..6cf7bb977aa1 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -1832,6 +1832,68 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+> 	return err;
+> }
+>
+>+static int vsock_wait_data(struct sock *sk, struct wait_queue_entry *wait,
+>+			   long timeout,
+>+			   struct vsock_transport_recv_notify_data *recv_data,
+>+			   size_t target)
+>+{
+>+	const struct vsock_transport *transport;
+>+	struct vsock_sock *vsk;
+>+	s64 data;
+>+	int err;
+>+
+>+	vsk = vsock_sk(sk);
+>+	err = 0;
+>+	transport = vsk->transport;
+>+	prepare_to_wait(sk_sleep(sk), wait, TASK_INTERRUPTIBLE);
+>+
+>+	while ((data = vsock_stream_has_data(vsk)) == 0) {
+>+		if (sk->sk_err != 0 ||
+>+		    (sk->sk_shutdown & RCV_SHUTDOWN) ||
+>+		    (vsk->peer_shutdown & SEND_SHUTDOWN)) {
+>+			break;
+>+		}
+>+
+>+		/* Don't wait for non-blocking sockets. */
+>+		if (timeout == 0) {
+>+			err = -EAGAIN;
+>+			break;
+>+		}
+>+
+>+		if (recv_data) {
+>+			err = transport->notify_recv_pre_block(vsk, target, recv_data);
+>+			if (err < 0)
+>+				break;
+>+		}
+>+
+>+		release_sock(sk);
+>+		timeout = schedule_timeout(timeout);
+>+		lock_sock(sk);
+>+
+>+		if (signal_pending(current)) {
+>+			err = sock_intr_errno(timeout);
+>+			break;
+>+		} else if (timeout == 0) {
+>+			err = -EAGAIN;
+>+			break;
+>+		}
+>+	}
+>+
+>+	finish_wait(sk_sleep(sk), wait);
+>+
+>+	if (err)
+>+		return err;
+>+
+>+	/* Internal transport error when checking for available
+>+	 * data. XXX This should be changed to a connection
+>+	 * reset in a later change.
+>+	 */
+>+	if (data < 0)
+>+		return -ENOMEM;
+>+
+>+	return data;
+>+}
+>+
+> static int
+> vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+> 			  int flags)
+>@@ -1911,85 +1973,34 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>
+>
+> 	while (1) {
+>-		s64 ready;
+>-
+>-		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+>-		ready = vsock_stream_has_data(vsk);
+>-
+>-		if (ready == 0) {
+>-			if (sk->sk_err != 0 ||
+>-			    (sk->sk_shutdown & RCV_SHUTDOWN) ||
+>-			    (vsk->peer_shutdown & SEND_SHUTDOWN)) {
+>-				finish_wait(sk_sleep(sk), &wait);
+>-				break;
+>-			}
+>-			/* Don't wait for non-blocking sockets. */
+>-			if (timeout == 0) {
+>-				err = -EAGAIN;
+>-				finish_wait(sk_sleep(sk), &wait);
+>-				break;
+>-			}
+>+		ssize_t read;
+>
+>-			err = transport->notify_recv_pre_block(
+>-					vsk, target, &recv_data);
+>-			if (err < 0) {
+>-				finish_wait(sk_sleep(sk), &wait);
+>-				break;
+>-			}
+>-			release_sock(sk);
+>-			timeout = schedule_timeout(timeout);
+>-			lock_sock(sk);
+>+		err = vsock_wait_data(sk, &wait, timeout, &recv_data, target);
+>+		if (err <= 0)
+>+			break;
+>
+>-			if (signal_pending(current)) {
+>-				err = sock_intr_errno(timeout);
+>-				finish_wait(sk_sleep(sk), &wait);
+>-				break;
+>-			} else if (timeout == 0) {
+>-				err = -EAGAIN;
+>-				finish_wait(sk_sleep(sk), &wait);
+>-				break;
+>-			}
+>-		} else {
+>-			ssize_t read;
+>-
+>-			finish_wait(sk_sleep(sk), &wait);
+>-
+>-			if (ready < 0) {
+>-				/* Invalid queue pair content. XXX This should
+>-				* be changed to a connection reset in a later
+>-				* change.
+>-				*/
+>-
+>-				err = -ENOMEM;
+>-				goto out;
+>-			}
+>-
+>-			err = transport->notify_recv_pre_dequeue(
+>-					vsk, target, &recv_data);
+>-			if (err < 0)
+>-				break;
+>+		err = transport->notify_recv_pre_dequeue(vsk, target,
+>+							 &recv_data);
+>+		if (err < 0)
+>+			break;
+>
+>-			read = transport->stream_dequeue(
+>-					vsk, msg,
+>-					len - copied, flags);
+>-			if (read < 0) {
+>-				err = -ENOMEM;
+>-				break;
+>-			}
+>+		read = transport->stream_dequeue(vsk, msg, len - copied, flags);
+>+		if (read < 0) {
+>+			err = -ENOMEM;
+>+			break;
+>+		}
+>
+>-			copied += read;
+>+		copied += read;
+>
+>-			err = transport->notify_recv_post_dequeue(
+>-					vsk, target, read,
+>-					!(flags & MSG_PEEK), &recv_data);
+>-			if (err < 0)
+>-				goto out;
+>+		err = transport->notify_recv_post_dequeue(vsk, target, read,
+>+						!(flags & MSG_PEEK), &recv_data);
+>+		if (err < 0)
+>+			goto out;
+>
+>-			if (read >= target || flags & MSG_PEEK)
+>-				break;
+>+		if (read >= target || flags & MSG_PEEK)
+>+			break;
+>
+>-			target -= read;
+>-		}
+>+		target -= read;
+> 	}
+>
+> 	if (sk->sk_err)
+>-- 
+>2.25.1
+>
 
