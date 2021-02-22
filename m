@@ -2,168 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591993213D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:12:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7CC3213C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhBVKLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:11:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        id S230314AbhBVKIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhBVKHJ (ORCPT
+        with ESMTP id S230466AbhBVKFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:07:09 -0500
-Received: from mail-lj1-x249.google.com (mail-lj1-x249.google.com [IPv6:2a00:1450:4864:20::249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2969DC0617A9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:05:18 -0800 (PST)
-Received: by mail-lj1-x249.google.com with SMTP id p19so12927294lji.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:05:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=HAlNXozqX9ktnkUu4jC8ShsKasBf/lGNx2LEBgLBBTs=;
-        b=nmjk8ojRochjyOzQEglhDpzJdpBBsPPhrjob//aOe9JkCotAcObhJdJCd/ia6o7xYw
-         hY+Nwu0I3X4NMc/6cykncCNkyesyGbnmnKlKLcIe35SbeQNbWPNTTtDpk47XVVdHin4j
-         iWqQblXj/Wtk8vSXLpyl3aFTUf1qV5hjbyriK4Q7dY0M9l3zrPkJjl2JLDtSsw1ua3bi
-         JgHqfTzlR4pFX+jljVfkZuknvN9nYarZ7o1aGrygpmpyPcq4S4E1QQjD/s2hNm0qQakX
-         9FjVuYloD6Imgv6XwfYyKh5QDkypbG+cKLhDNPNJ+KKCj3O5N1CdsO188F8I2nQ3V7zU
-         GRQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=HAlNXozqX9ktnkUu4jC8ShsKasBf/lGNx2LEBgLBBTs=;
-        b=tC0erEA0BZaNFMk/cZ3+0TabiFIAotAEW+Zxq469YJ28dpKXK4q+BH2Yz6rXKDbsTK
-         +eXANf2oLrAejKs73gGXDhgNmy6qh+Zc7kgpZygEl6NnmvFkFA6mUbk3N0ScmvAV7Hfn
-         LnWfgbL9dTNUDm0gaLSDNmvSQOjc+Du4N91disLgfKEHSaf4MnlR4DIqMzqL9A+fenbw
-         YWnik1UHLdPgA7AH4OgNMincSxOe+sVtTau9pTYulGJF/NcPMNrn9jCZlOA5HtMtVhaM
-         e/21VcM4f0aQGpwrwyYy10xBORWyFK2arwE5Fq/e1WLO82BFFnHywP0P3wAy+4dm3uHA
-         RjRg==
-X-Gm-Message-State: AOAM533JUNYnA1OPZVmvriPWQfDpn5O14vXI7n8CplYhf4u+gutN8EUx
-        5rkwI8IcLfs+ftg8smoIgE7k+B2wLK8=
-X-Google-Smtp-Source: ABdhPJw/fbF4KyyczueUKrx8WTf1vLbXQzsQll7nbv32NTG0y8vwcMQq/G8gehT6GoSeKnRlLnvUOC5HIO4=
-Sender: "figiel via sendgmr" <figiel@odra.waw.corp.google.com>
-X-Received: from odra.waw.corp.google.com ([2a00:79e0:2:11:6904:20e5:9b8e:70ff])
- (user=figiel job=sendgmr) by 2002:a2e:6a11:: with SMTP id f17mr14482103ljc.14.1613988316410;
- Mon, 22 Feb 2021 02:05:16 -0800 (PST)
-Date:   Mon, 22 Feb 2021 11:04:43 +0100
-Message-Id: <20210222100443.4155938-1-figiel@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
-Subject: [PATCH] ptrace: add PTRACE_GET_RSEQ_CONFIGURATION request
-From:   Piotr Figiel <figiel@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        mathieu.desnoyers@efficios.com, peterz@infradead.org,
-        paulmck@kernel.org, boqun.feng@gmail.com, oleg@redhat.com
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org,
-        posk@google.com, kyurtsever@google.com, ckennelly@google.com,
-        pjt@google.com, emmir@google.com, linux-man@vger.kernel.org,
-        linux-api@vger.kernel.org, Piotr Figiel <figiel@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 22 Feb 2021 05:05:46 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EA64C061794;
+        Mon, 22 Feb 2021 02:05:00 -0800 (PST)
+Date:   Mon, 22 Feb 2021 10:04:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1613988298;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f/nb5ZPoMLItbBMeUxA8HeH6eiYzXLf6qk8oNPk3uT0=;
+        b=LIpl3BwU8U8+pZD4rW6bhgJQ69m0O3NSq6TM+WpaAKoj89ubyhl2L6H4kE68rn29inTaF5
+        +hQLEkb0vA7bcVzXnuYndwSLBJQp3Vn4287UzqWwZPg3Ix0/9Bk/cmkE9jLHWize7oLRAH
+        EWRO4mXkfFFM+WK6/+A5vcJx1ZSWd8ftUE6rrQcCjNd1PFt9/okKO1F8p7T/HWhM5i1AVf
+        Qc243Ot+4x1vT1xascHgLM7giBSePoJGPtRzconQniA6Z6hpyypR5ygyEpey5unMZUWWn4
+        hJOid5l83YLcFh7ziun1SBeuU5lLZiiAo/imyYl1b/Ci2LhnBaAcIcqptCTVeQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1613988298;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f/nb5ZPoMLItbBMeUxA8HeH6eiYzXLf6qk8oNPk3uT0=;
+        b=agmi4xJfjDp7bik9hCK1nme73sBy8TyhFce1R1PzYiqqXPkwNs9Fit7CQllq3HVIDjNQxo
+        6XN+lu2/EX2IVWDg==
+From:   "tip-bot2 for Tom Rix" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] clocksource/drivers/mxs_timer: Add missing
+ semicolon when DEBUG is defined
+Cc:     Tom Rix <trix@redhat.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210118211955.763609-1-trix@redhat.com>
+References: <20210118211955.763609-1-trix@redhat.com>
+MIME-Version: 1.0
+Message-ID: <161398829772.20312.16867985680081373214.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For userspace checkpoint and restore (C/R) a way of getting process state
-containing RSEQ configuration is needed.
+The following commit has been merged into the timers/urgent branch of tip:
 
-There are two ways this information is going to be used:
- - to re-enable RSEQ for threads which had it enabled before C/R
- - to detect if a thread was in a critical section during C/R
+Commit-ID:     7da390694afbaed8e0f05717a541dfaf1077ba51
+Gitweb:        https://git.kernel.org/tip/7da390694afbaed8e0f05717a541dfaf107=
+7ba51
+Author:        Tom Rix <trix@redhat.com>
+AuthorDate:    Mon, 18 Jan 2021 13:19:55 -08:00
+Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CommitterDate: Mon, 18 Jan 2021 22:28:59 +01:00
 
-Since C/R preserves TLS memory and addresses RSEQ ABI will be restored
-using the address registered before C/R.
+clocksource/drivers/mxs_timer: Add missing semicolon when DEBUG is defined
 
-Detection whether the thread is in a critical section during C/R is needed
-to enforce behavior of RSEQ abort during C/R. Attaching with ptrace()
-before registers are dumped itself doesn't cause RSEQ abort.
-Restoring the instruction pointer within the critical section is
-problematic because rseq_cs may get cleared before the control is passed
-to the migrated application code leading to RSEQ invariants not being
-preserved. C/R code will use RSEQ ABI address to find the abort handler
-to which the instruction pointer needs to be set.
+When DEBUG is defined this error occurs
 
-To achieve above goals expose the RSEQ ABI address and the signature value
-with the new ptrace request PTRACE_GET_RSEQ_CONFIGURATION.
+drivers/clocksource/mxs_timer.c:138:1: error:
+  expected =E2=80=98;=E2=80=99 before =E2=80=98}=E2=80=99 token
 
-This new ptrace request can also be used by debuggers so they are aware
-of stops within restartable sequences in progress.
+The preceding statement needs a semicolon.
+Replace pr_info() with pr_debug() and remove the unneeded ifdef.
 
-Signed-off-by: Piotr Figiel <figiel@google.com>
-Reviewed-by: Michal Miroslaw <emmir@google.com>
-
+Fixes: eb8703e2ef7c ("clockevents/drivers/mxs: Migrate to new 'set-state' int=
+erface")
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210118211955.763609-1-trix@redhat.com
 ---
- include/uapi/linux/ptrace.h |  8 ++++++++
- kernel/ptrace.c             | 23 +++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+ drivers/clocksource/mxs_timer.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/uapi/linux/ptrace.h b/include/uapi/linux/ptrace.h
-index 83ee45fa634b..d54cf6b6ce7c 100644
---- a/include/uapi/linux/ptrace.h
-+++ b/include/uapi/linux/ptrace.h
-@@ -102,6 +102,14 @@ struct ptrace_syscall_info {
- 	};
- };
- 
-+#define PTRACE_GET_RSEQ_CONFIGURATION	0x420f
-+
-+struct ptrace_rseq_configuration {
-+	__u64 rseq_abi_pointer;
-+	__u32 signature;
-+	__u32 pad;
-+};
-+
- /*
-  * These values are stored in task->ptrace_message
-  * by tracehook_report_syscall_* to describe the current syscall-stop.
-diff --git a/kernel/ptrace.c b/kernel/ptrace.c
-index 61db50f7ca86..a936af66cf6f 100644
---- a/kernel/ptrace.c
-+++ b/kernel/ptrace.c
-@@ -31,6 +31,7 @@
- #include <linux/cn_proc.h>
- #include <linux/compat.h>
- #include <linux/sched/signal.h>
-+#include <linux/minmax.h>
- 
- #include <asm/syscall.h>	/* for syscall_get_* */
- 
-@@ -779,6 +780,22 @@ static int ptrace_peek_siginfo(struct task_struct *child,
- 	return ret;
+diff --git a/drivers/clocksource/mxs_timer.c b/drivers/clocksource/mxs_timer.c
+index bc96a4c..e52e12d 100644
+--- a/drivers/clocksource/mxs_timer.c
++++ b/drivers/clocksource/mxs_timer.c
+@@ -131,10 +131,7 @@ static void mxs_irq_clear(char *state)
+=20
+ 	/* Clear pending interrupt */
+ 	timrot_irq_acknowledge();
+-
+-#ifdef DEBUG
+-	pr_info("%s: changing mode to %s\n", __func__, state)
+-#endif /* DEBUG */
++	pr_debug("%s: changing mode to %s\n", __func__, state);
  }
- 
-+#ifdef CONFIG_RSEQ
-+static long ptrace_get_rseq_configuration(struct task_struct *task,
-+					  unsigned long size, void __user *data)
-+{
-+	struct ptrace_rseq_configuration conf = {
-+		.rseq_abi_pointer = (u64)(uintptr_t)task->rseq,
-+		.signature = task->rseq_sig,
-+	};
-+
-+	size = min_t(unsigned long, size, sizeof(conf));
-+	if (copy_to_user(data, &conf, size))
-+		return -EFAULT;
-+	return size;
-+}
-+#endif
-+
- #ifdef PTRACE_SINGLESTEP
- #define is_singlestep(request)		((request) == PTRACE_SINGLESTEP)
- #else
-@@ -1222,6 +1239,12 @@ int ptrace_request(struct task_struct *child, long request,
- 		ret = seccomp_get_metadata(child, addr, datavp);
- 		break;
- 
-+#ifdef CONFIG_RSEQ
-+	case PTRACE_GET_RSEQ_CONFIGURATION:
-+		ret = ptrace_get_rseq_configuration(child, addr, datavp);
-+		break;
-+#endif
-+
- 	default:
- 		break;
- 	}
--- 
-2.30.0.617.g56c4b15f3c-goog
-
+=20
+ static int mxs_shutdown(struct clock_event_device *evt)
