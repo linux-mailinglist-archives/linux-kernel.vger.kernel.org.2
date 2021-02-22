@@ -2,87 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FD3F3215C3
+	by mail.lfdr.de (Postfix) with ESMTP id DBEC03215C4
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:08:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBVMHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:07:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43446 "EHLO mail.kernel.org"
+        id S230200AbhBVMHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:07:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:43906 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230189AbhBVMG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:06:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2745460C3E;
-        Mon, 22 Feb 2021 12:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1613995577;
-        bh=5Gsn/zc702+nIWsLqonuQfLsJTK2q5SP5gmnXwDweWQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mIAajKHp5asVP7wiXsMndVJuWXwPSaz78FMPKlx+yXjfKuY/UB3DiTnhuvZ+kabui
-         Xn8GyMTuuYV4iRxiCI7zrZWuMkkdZ79WPhz/CG+z/CDfzWzTkvpH7o2FCmgoFQrh/N
-         e+0aYRDNyMA3YRweRlPi2wTO9ADCq2cjKZkKXsQk0FbaPHhIYrzpjwpx1oqRwqwqS8
-         on6ItQKt0Mb+MPHYp6JKBAk0Di/VoSs4ZhRCFBZfiJAOxtkv0oayoY/tbjDw2dwHtc
-         z6/vUQIZXwOzNSAw5ecwAejo9F0fTMamdAgfqgm/+2A1b75OfWUTx0X95pyYvqObPx
-         1Yk431yNSuHzw==
-Date:   Mon, 22 Feb 2021 21:06:10 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     paulmck@kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH] kprobes: Fix to delay the kprobes jump optimization
-Message-Id: <20210222210610.66488ea25ce5d999162f9f6b@kernel.org>
-In-Reply-To: <20210219200442.GB2743@paulmck-ThinkPad-P72>
-References: <161365856280.719838.12423085451287256713.stgit@devnote2>
-        <20210219143607.3cdf9ed8@gandalf.local.home>
-        <20210219194744.GA2743@paulmck-ThinkPad-P72>
-        <20210219145830.0baca550@gandalf.local.home>
-        <20210219200442.GB2743@paulmck-ThinkPad-P72>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S229780AbhBVMHE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:07:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B89751FB;
+        Mon, 22 Feb 2021 04:06:18 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.51.127])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DBB993F70D;
+        Mon, 22 Feb 2021 04:06:16 -0800 (PST)
+Date:   Mon, 22 Feb 2021 12:06:14 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        catalin.marinas@arm.com, james.morse@arm.com, marcan@marcan.st,
+        tglx@linutronix.de, will@kernel.org
+Subject: Re: [PATCH 5/8] arm64: irq: add a default handle_irq panic function
+Message-ID: <20210222120614.GC70951@C02TD0UTHF1T.local>
+References: <20210219113904.41736-1-mark.rutland@arm.com>
+ <20210219113904.41736-6-mark.rutland@arm.com>
+ <20210222095913.GA70951@C02TD0UTHF1T.local>
+ <1d2c27d72b9b2cbdb83d25165a20559a@kernel.org>
+ <20210222112544.GB70951@C02TD0UTHF1T.local>
+ <2e6a9659eabcccb355318ff7214c8d1f@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2e6a9659eabcccb355318ff7214c8d1f@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Feb 2021 12:04:42 -0800
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> On Fri, Feb 19, 2021 at 02:58:30PM -0500, Steven Rostedt wrote:
-> > On Fri, 19 Feb 2021 11:47:44 -0800
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > 
-> > > Could you please add the following Reported-by tags?
+On Mon, Feb 22, 2021 at 11:43:13AM +0000, Marc Zyngier wrote:
+> On 2021-02-22 11:25, Mark Rutland wrote:
+> > On Mon, Feb 22, 2021 at 10:48:11AM +0000, Marc Zyngier wrote:
+> > > On 2021-02-22 09:59, Mark Rutland wrote:
+> > > > On Fri, Feb 19, 2021 at 11:39:01AM +0000, Mark Rutland wrote:
+> > > > > +void (*handle_arch_irq)(struct pt_regs *) __ro_after_init =
+> > > > > default_handle_irq;
+> > > > >
+> > > > >  int __init set_handle_irq(void (*handle_irq)(struct pt_regs *))
+> > > > >  {
+> > > > > -	if (handle_arch_irq)
+> > > > > +	if (handle_arch_irq != default_handle_irq)
+> > > > >  		return -EBUSY;
+> > > > >
+> > > > >  	handle_arch_irq = handle_irq;
+> > > > > @@ -87,7 +92,7 @@ void __init init_IRQ(void)
+> > > > >  	init_irq_stacks();
+> > > > >  	init_irq_scs();
+> > > > >  	irqchip_init();
+> > > > > -	if (!handle_arch_irq)
+> > > > > +	if (handle_arch_irq == default_handle_irq)
+> > > > >  		panic("No interrupt controller found.");
 > > > 
-> > > Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > > Reported-by: Uladzislau Rezki <urezki@gmail.com>
-> > > 
-> > > Sebastian first noticed the problem, and Uladzislau figured out
-> > > how softirqs were involved.
+> > > It also seems odd to have both default_handle_irq() that panics,
+> > > and init_IRQ that panics as well. Not a big deal, but maybe
+> > > we should just drop this altogether and get the firework on the
+> > > first interrupt.
 > > 
-> > These were already added. They must have appeared in the thread somewhere,
-> > as my internal patchwork picked them up already.
+> > My gut feeling was that both were useful, and served slightly different
+> > cases:
+> > 
+> > * The panic in default_handle_irq() helps if we unexpectedly unmask IRQ
+> >   too early. This is mostly a nicety over the current behaviour of
+> >   branching to NULL in this case.
+> > 
+> > * The panic in init_IRQ() gives us a consistent point at which we can
+> >   note the absence of a root IRQ controller even if all IRQs are
+> >   quiescent. This is a bit nicer to debug than seeing a load of driver
+> >   probes fail their request_irq() or whatever.
+> > 
+> > ... so I'd err on the side of keeping both, but if you think otherwise
+> > I'm happy to change this.
 > 
-> Even better, thank you!
+> As I said, it's not a big deal. I doubt that we'll see default_handle_irq()
+> exploding in practice. But the real nit here is the difference of treatment
+> between IRQ and FIQ. *IF* we ever get a system that only signals its
+> interrupt as FIQ (and I don't see why we'd forbid that), then we would
 
-Thank you for fixing and pulling it Steve and Paul!
-I couldn't find the original thread, so it is helpful :)
+That's a fair point.
 
-Thanks!
+For consistency, we could remove the init_IRQ() panic() and instead log
+the registered handlers, e.g.
 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+| pr_info("Root IRQ handler is %ps\n", handle_arch_irq);
+| pr_info("Root FIQ handler is %ps\n", handle_arch_fiq);
+
+... or do that inside the set_handle_{irq,fiq}() functions. That way the
+messages (or absence thereof) would be sufficient to diagnose the lack
+of a root IRQ/FIQ handler when IRQ/FIQ happens to be quiescent.
+
+Does that sound any better?
+
+> To be clear, I don't think we should care too much either way, and I'm
+> fine with the code as is.
+
+Sure, and FWIW I agree with the nit!
+
+Thanks,
+Mark.
