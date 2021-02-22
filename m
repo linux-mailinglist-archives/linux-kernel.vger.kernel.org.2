@@ -2,262 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D776321320
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4262832132E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230053AbhBVJaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:30:11 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:13429 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229863AbhBVJ36 (ORCPT
+        id S230141AbhBVJd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:33:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230281AbhBVJcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:29:58 -0500
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210222092912epoutp01549b4f54218d0efef77e3ecdbaa82ece~mB9rQptZr1057910579epoutp01b
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:29:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210222092912epoutp01549b4f54218d0efef77e3ecdbaa82ece~mB9rQptZr1057910579epoutp01b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1613986152;
-        bh=bZE/WgWdPqHqWcuB856m5Hbt0iJBeTUxg+3vuG5Bikg=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=aFD1l1pZ/mDepRKCzEohbNpTcy+PtGf7O3XK5X9p4HJvdrNt9rQr8mDi+L+Im/UFc
-         gri+RR8FfrsrlXE/j8FBF6vJsJ5DJiPJ1gEknecPXK/mLPoU1CsvZK7+bsySbyhUwI
-         ThGQdWKDO+vVUsIBDgtl/XrRxXEA+w93iBKRp7vU=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20210222092911epcas2p458f028f33f7de80e313296d0a6b1d5ff~mB9qMeRlg3186631866epcas2p4-;
-        Mon, 22 Feb 2021 09:29:11 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.40.189]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DkcM84vsFz4x9Q1; Mon, 22 Feb
-        2021 09:29:08 +0000 (GMT)
-X-AuditID: b6c32a45-34dff7000001297d-3a-60337964d21c
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        78.43.10621.46973306; Mon, 22 Feb 2021 18:29:08 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH v22 0/4] scsi: ufs: Add Host Performance Booster Support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        SEUNGUK SHIN <seunguk.shin@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        BoRam Shin <boram.shin@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
-Date:   Mon, 22 Feb 2021 18:29:07 +0900
-X-CMS-MailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEJsWRmVeSWpSXmKPExsWy7bCmhW5KpXGCwYc3KhYP5m1js9jbdoLd
-        4uXPq2wWh2+/Y7eY9uEns8Wn9ctYLV4e0rRY9SDconnxejaLOWcbmCx6+7eyWTy+85ndYtGN
-        bUwW/f/aWSwu75rDZtF9fQebxfLj/5gsbm/hsli69SajRef0NSwWixbuZnEQ9bh8xdvjcl8v
-        k8fOWXfZPSYsOsDosX/uGnaPlpP7WTw+Pr3F4tG3ZRWjx+dNch7tB7qZAriicmwyUhNTUosU
-        UvOS81My89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgD5UUihLzCkFCgUkFhcr
-        6dvZFOWXlqQqZOQXl9gqpRak5BQYGhboFSfmFpfmpesl5+daGRoYGJkCVSbkZCxbupS54KZW
-        xfkXz5gaGM8pdjFyckgImEg8bWpjB7GFBHYwSvw84NvFyMHBKyAo8XeHMEhYWMBD4tn3s8wQ
-        JUoS6y/OYoeI60nceriGEcRmE9CRmH7iPlCci0NEYBOLxI+3NxlBHGaBX0wSJx5/YIRYxisx
-        o/0pC4QtLbF9+VaouIbEj2W9zBC2qMTN1W/ZYez3x+ZD1YhItN47C1UjKPHg526ouKTEsd0f
-        mCDseomtd36BLZYQ6GGUOLzzFitEQl/iWsdGsMW8Ar4SPxrPgcVZBFQl1i25xAZR4yKxad9h
-        MJtZQF5i+9s5zKCQYBbQlFi/Sx/ElBBQljhyiwXmlYaNv9nR2cwCfBIdh//CxXfMewJ1mprE
-        up/rmSDGyEjcmsc4gVFpFiKkZyFZOwth7QJG5lWMYqkFxbnpqcVGBYbIcbuJEZzYtVx3ME5+
-        +0HvECMTB+MhRgkOZiURXra7RglCvCmJlVWpRfnxRaU5qcWHGE2BHp7ILCWanA/MLXkl8Yam
-        RmZmBpamFqZmRhZK4rzFBg/ihQTSE0tSs1NTC1KLYPqYODilGpgcJ+e961l2r6RF0ldRmbXd
-        uL1ocrnJmTuii93dthrkbWe5sF3gd8pPZ8lvtgmRX2a4zfureS9/6ipLKe+1Uo+f3OF6Udec
-        38d/RfPgXTPXB3tWn2Zl+7ufNfuF15GoH2vLDVbsFFOXWfbm5O46LcX62dlRYjwabNLTra9H
-        a/tveJvnKvfWx/3kg4jr6tLuuVJel/ZLlb7eu+0jh+TCw/+LLF/d+/+t2+6v057tq01DJqmf
-        efmezZ8jqIlzouBCKebFs76evnLv/i3NHqU3XXHejdluK+bdEtAumnp2Xw7X0zvbSnanHk95
-        fsg+vKFjZc35Ve1nv5ieXlT65Z/gwayb76xUC21uPvX1Ukn54a2sxFKckWioxVxUnAgAcYiU
-        GHUEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210222092907epcms2p307f3c4116349ebde6eed05c767287449
-References: <CGME20210222092907epcms2p307f3c4116349ebde6eed05c767287449@epcms2p3>
+        Mon, 22 Feb 2021 04:32:20 -0500
+X-Greylist: delayed 1359 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 22 Feb 2021 01:31:40 PST
+Received: from filter03-ipv6-out05.totaalholding.nl (filter03-ipv6-out05.totaalholding.nl [IPv6:2a02:c207:2038:8169::5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 668D4C061786
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 01:31:40 -0800 (PST)
+Received: from www98.totaalholding.nl ([185.94.230.81])
+        by filter03.totaalholding.nl with esmtps (TLSv1.2:AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <mjbaars1977.gcc@cyberfiber.eu>)
+        id 1lE7D6-0003ME-Cl
+        for linux-kernel@vger.kernel.org; Mon, 22 Feb 2021 10:08:59 +0100
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=cyberfiber.eu; s=default; h=MIME-Version:Content-Type:Date:To:From:Subject:
+        Message-ID:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=qn45xVVWSQjH5R6yy6NnJXSlgcDDV4KN3EY2K2ine1w=; b=GpHxLVhF/Xr+K7gzZ9lUEc8p92
+        1jSynsoPncbRtIV1Pk1nefGjByYJ9dzBNxOVFoEbbxJ95ObhzhvZokyRADKV8pws105YuGwz78bsg
+        uXsdJt9lyZUk44gQ+sEfepxVVeKMvj1D0rBCzxwREIGM0qaG/6mno62cqIQzHbcW3OcI+29TM1i7n
+        lEsNE1jDLK+1Xa3hqm9Zt08FfzcwB4nVO77w05KR8Znp3qCxslyVXuGJwvTa14ACpp0oY+yyCleE5
+        BPB9is6vhqxtBzIZacrjsk7WAWbpetObBAyuorSINf5/CopWNgDqax4A6L9zTHCN6pfYm3+DILySr
+        ZnwFhATw==;
+Received: from 82-94-23-232.ip.xs4all.nl ([82.94.23.232]:45070 helo=tp06.long4more.com)
+        by www98.totaalholding.nl with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <mjbaars1977.gcc@cyberfiber.eu>)
+        id 1lE7D3-0002Xy-MK; Mon, 22 Feb 2021 10:08:53 +0100
+Message-ID: <80753cbc54ef69b4fc136f791666197fc8b1f8bb.camel@cyberfiber.eu>
+Subject: problems with memory allocation and the alignment check
+From:   "Michael J. Baars" <mjbaars1977.gcc@cyberfiber.eu>
+To:     gcc@gcc.gnu.org, linux-kernel@vger.kernel.org
+Date:   Mon, 22 Feb 2021 10:08:50 +0100
+Content-Type: multipart/mixed; boundary="=-goyzitPaYjgqNmdnlSez"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+MIME-Version: 1.0
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - www98.totaalholding.nl
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - cyberfiber.eu
+X-Get-Message-Sender-Via: www98.totaalholding.nl: authenticated_id: mjbaars1977.gcc@cyberfiber.eu
+X-Authenticated-Sender: www98.totaalholding.nl: mjbaars1977.gcc@cyberfiber.eu
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Originating-IP: 185.94.230.81
+X-SpamExperts-Domain: out.totaalholding.nl
+X-SpamExperts-Username: 185.94.230.81
+Authentication-Results: totaalholding.nl; auth=pass smtp.auth=185.94.230.81@out.totaalholding.nl
+X-SpamExperts-Outgoing-Class: unsure
+X-SpamExperts-Outgoing-Evidence: Combined (0.32)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT9H3/Ls72yYo7+XkR8VhPVWPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5z4WkZ/TJaiaBbP2NJqrVHtfCzdNGNoLjYW00m5NbCHvI9w
+ knWGobBIYos3d1n2bRGp01QLDs5L7buacvUiCMt75WCy5VkstzhnxgTXqsdmpzAZsc6MRuL9DcHa
+ Zpd4we/piBIbZdykCKL9bqvChryU+RG6hze7zJVTSRhy6iTC2HkixtWJU3ux8TqCslrbPB+bgaCk
+ W8nGm/sYr5TGcUrdU3OqTzTj50M7fvGTHKtUfUdqO0eWk7cK+7Mu0E3oiuU6t/uXZsD0kV3eTzZp
+ 3NyQ3ceUEtcBrRN3cOZEdcQPT+ZG1fUd+zsVv0CjT0c5StJuxHTyr20QCMWbZvJ/43O0eFCgjm3k
+ HTZZa/hYJaCZ8fcNUETBRWLEtPQetNUJFPsVHRapBQPmCpFJcnS4eXEmh7e94ySlOOMz4vj86XPR
+ uQpu60LS3Law2NOH7O/uakNbBKaJo7HrAcemBJcirJ2QJgbEDaGOkPtOluCSVXl0lI0u1JFYoaai
+ GiKX/UCIqj62SBfK6J2iO8SDeqN+KIB/++DuIQUs/5JJj4C/n4CILjDyBB79EsOH+ueueKD3HVJx
+ pywl7Kxcn99+Sh3aNKrBV6iFIRQAGupVupMBrep5LS25y0VVCnTvyy8sSoe9MJmYQRPlfhUIsQHw
+ 9jJ1gs4A07pSUabTJxCHRiVu3X4RqvdjzQ6YC7Heg3Xf7O1TOd4ek3v5uIRk1iKw5Fn4+Jv37dfW
+ alqFj9toMieTbX1rThiUuff/T+y4pVTg+YdbScS3zNSNcYzh0NWvkiwQN/xdZuM7jUXIESohoO51
+ xWmU8ZsLPNyWKRVhd4Yc6cD23FynV0BR+dlWoGfFQ+S+p4Yps+5OVLTtd9bM4QLzoum6fo2azxuH
+ F97acinCSKJAyH+R27r9HYUzziTFhEVK8LUgzbwe5wJ+PSAukJcp0I0jTu0aTq8ZhiCjAOP7kbHh
+ TW8wbVA/fmexh8/zhz5EUrcqADujzMmWyPJKS+6kHMEcy2SSgL4U/904QKV4vLt8ilQ=
+X-Report-Abuse-To: spam@filter01.totaalholding.nl
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Changelog:
+--=-goyzitPaYjgqNmdnlSez
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 
-v21 -> v22
-1. Add support processing response UPIU in suspend state.
-2. Add support HPB hint from other LU.
-3. Add sending write buffer with 0x03 after HPB init.
+Hi,
 
-v20 -> v21
-1. Add bMAX_DATA_SIZE_FOR_HPB_SINGLE_CMD attr. and fHPBen flag support.
+I just wrote this little program to demonstrate a possible flaw in both malloc and calloc.
 
-v19 -> v20
-1. Add documentation for sysfs entries of hpb->stat.
-2. Fix read buffer command for under-sized sub-region.
-3. Fix wrong condition checking for kick map work.
-4. Delete redundant response UPIU checking.
-5. Add LUN checking in response UPIU.
-6. Fix possible deadlock problem due to runtime PM.
-7. Add instant changing of sub-region state from response UPIU.
-8. Fix endian problem in prefetched PPN.
-9. Add JESD220-3A (HPB v2.0) support.
+If I allocate a the simplest memory region from main(), one out of three optimization flags fail.
+If I allocate the same region from a function, three out of three optimization flags fail.
 
-v18 -> 19
-1. Fix null pointer error when printing sysfs from non-HPB LU.
-2. Apply HPB read opcode in lrbp->cmd->cmnd (from Can Guo's review).
-3. Rebase the patch on 5.12/scsi-queue.
+Does someone know if this really is a flaw, and if so, is it a gcc or a kernel flaw?
 
-v17 -> v18
-Fix build error which reported by kernel test robot.
+Regards,
+Mischa.
 
-v16 -> v17
-1. Rename hpb_state_lock to rgn_state_lock and move it to corresponding
-patch.
-2. Remove redundant information messages.
+--=-goyzitPaYjgqNmdnlSez
+Content-Disposition: attachment; filename="main.c"
+Content-Type: text/x-csrc; name="main.c"; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-v15 -> v16
-1. Add missed sysfs ABI documentation.
+I2luY2x1ZGUJPHN0ZGxpYi5oPgojaW5jbHVkZQk8c3RkaW50Lmg+CgojZGVmaW5lCVJGTEFHU19S
+RUdJU1RFUl9HRVQoeSkJCQkJCQlcCnsJCQkJCQkJCQlcCglhc20Jdm9sYXRpbGUJCQkJCQkJXAoJ
+KAkJCQkJCQkJXAoJIglwdXNoZnEJCQkJCQlcbiIJXAoJIglwb3AJJTAJCQkJCVxuIglcCgkJCQkJ
+CQkJCVwKCQk6ICI9bSIJKCogeSkgCQkJCQkJXAoJKTsJCQkJCQkJCVwKfTsKCiNkZWZpbmUJUkZM
+QUdTX1JFR0lTVEVSX1NFVCh4KQkJCQkJCVwKewkJCQkJCQkJCVwKCWFzbQl2b2xhdGlsZQkJCQkJ
+CQlcCgkoCQkJCQkJCQlcCgkiCXB1c2gJJTAJCQkJCVxuIglcCgkiCXBvcGZxCQkJCQkJXG4iCVwK
+CQkJCQkJCQkJXAoJCToJCQkJCQkJXAoJCTogInIiCSgqIHgpIAkJCQkJCVwKCSk7CQkJCQkJCQlc
+Cn07CgpzdHJ1Y3QJc3RvcmFnZQp7Cgl1aW50OF90KiBjOwp9OwoKaW50CWZ1bmN0aW9uKHN0cnVj
+dCBzdG9yYWdlKiBzKQp7CglzLT5jICAgPQljYWxsb2MJKHNpemVvZih1aW50OF90KSwgOCk7CgkJ
+ZnJlZQkocy0+Yyk7Cn07CgppbnQJbWFpbigpCnsKCXN0cnVjdAlzdG9yYWdlCXM7Cgl1aW50NjRf
+dAkJcmZsYWdzOwoJCglSRkxBR1NfUkVHSVNURVJfR0VUKCZyZmxhZ3MpOwlyZmxhZ3MgICAgICAg
+ICBePQkweDAwMDAwMDAwMDAwNDAwMDA7CglSRkxBR1NfUkVHSVNURVJfU0VUKCZyZmxhZ3MpOwoK
+Ly8JZnVuY3Rpb24oJnMpOwoJCglzLmMgICAgPQljYWxsb2MJKHNpemVvZih1aW50OF90KSwgOCk7
+CgkJZnJlZQkocy5jKTsKCQkKCVJGTEFHU19SRUdJU1RFUl9HRVQoJnJmbGFncyk7CXJmbGFncyAg
+ICAgICAgIF49CTB4MDAwMDAwMDAwMDA0MDAwMDsKCVJGTEFHU19SRUdJU1RFUl9TRVQoJnJmbGFn
+cyk7Cn0KCg==
 
-v14 -> v15
-1. Remove duplicated sysfs ABI entries in documentation.
-2. Add experiment result of HPB performance testing with iozone.
 
-v13 -> v14
-1. Cleanup codes by commentted in Greg's review.
-2. Add documentation for sysfs entries (from Greg's review).
-3. Add experiment result of HPB performance testing.
+--=-goyzitPaYjgqNmdnlSez
+Content-Disposition: attachment; filename="makefile"
+Content-Type: text/x-makefile; name="makefile"; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-v12 -> v13
-1. Cleanup codes by comments from Can Guo.
-2. Add HPB related descriptor/flag/attributes in sysfs.
-3. Change base commit from 5.10/scsi-queue to 5.11/scsi-queue.
+YWxsOgoKCWdjYyAgICAgICAgLW8gbWFpbiAgICAgIG1haW4uYwoJZ2NjIC1PMiAgICAtbyBtYWlu
+TzIgICAgbWFpbi5jCglnY2MgLU9mYXN0IC1vIG1haW5PZmFzdCBtYWluLmMK
 
-v11 -> v12
-1. Fixed to return error value when HPB fails to initialize pinned active 
-region.
-2. Fixed to disable HPB feature if HPB fails to allocate essential memory
-and workqueue.
-3. Fixed to change proper sub-region state when region is already evicted.
 
-v10 -> v11
-Add a newline at end the last line on Kconfig file.
-
-v9 -> v10
-1. Fixed 64-bit division error
-2. Fixed problems commentted in Bart's review.
-
-v8 -> v9
-1. Change sysfs initialization.
-2. Change reading descriptor during HPB initialization
-3. Fixed problems commentted in Bart's review.
-4. Change base commit from 5.9/scsi-queue to 5.10/scsi-queue.
-
-v7 -> v8
-Remove wrongly added tags.
-
-v6 -> v7
-1. Remove UFS feature layer.
-2. Cleanup for sparse error.
-
-v5 -> v6
-Change base commit to b53293fa662e28ae0cdd40828dc641c09f133405
-
-v4 -> v5
-Delete unused macro define.
-
-v3 -> v4
-1. Cleanup.
-
-v2 -> v3
-1. Add checking input module parameter value.
-2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
-3. Cleanup for unused variables and label.
-
-v1 -> v2
-1. Change the full boilerplate text to SPDX style.
-2. Adopt dynamic allocation for sub-region data structure.
-3. Cleanup.
-
-NAND flash memory-based storage devices use Flash Translation Layer (FTL)
-to translate logical addresses of I/O requests to corresponding flash
-memory addresses. Mobile storage devices typically have RAM with
-constrained size, thus lack in memory to keep the whole mapping table.
-Therefore, mapping tables are partially retrieved from NAND flash on
-demand, causing random-read performance degradation.
-
-To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
-(Host Performance Booster) which uses host system memory as a cache for the
-FTL mapping table. By using HPB, FTL data can be read from host memory
-faster than from NAND flash memory. 
-
-The current version only supports the DCM (device control mode).
-This patch consists of 3 parts to support HPB feature.
-
-1) HPB probe and initialization process
-2) READ -> HPB READ using cached map information
-3) L2P (logical to physical) map management
-
-In the HPB probe and init process, the device information of the UFS is
-queried. After checking supported features, the data structure for the HPB
-is initialized according to the device information.
-
-A read I/O in the active sub-region where the map is cached is changed to
-HPB READ by the HPB.
-
-The HPB manages the L2P map using information received from the
-device. For active sub-region, the HPB caches through ufshpb_map
-request. For the in-active region, the HPB discards the L2P map.
-When a write I/O occurs in an active sub-region area, associated dirty
-bitmap checked as dirty for preventing stale read.
-
-HPB is shown to have a performance improvement of 58 - 67% for random read
-workload. [1]
-
-[1]:
-https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
-
-Daejun Park (4):
-  scsi: ufs: Introduce HPB feature
-  scsi: ufs: L2P map management for HPB read
-  scsi: ufs: Prepare HPB read for cached sub-region
-  scsi: ufs: Add HPB 2.0 support
-
- Documentation/ABI/testing/sysfs-driver-ufs |  150 ++
- drivers/scsi/ufs/Kconfig                   |    9 +
- drivers/scsi/ufs/Makefile                  |    1 +
- drivers/scsi/ufs/ufs-sysfs.c               |   20 +
- drivers/scsi/ufs/ufs.h                     |   54 +-
- drivers/scsi/ufs/ufshcd.c                  |   69 +-
- drivers/scsi/ufs/ufshcd.h                  |   27 +
- drivers/scsi/ufs/ufshpb.c                  | 2338 ++++++++++++++++++++
- drivers/scsi/ufs/ufshpb.h                  |  273 +++
- 9 files changed, 2939 insertions(+), 2 deletions(-)
- create mode 100644 drivers/scsi/ufs/ufshpb.c
- create mode 100644 drivers/scsi/ufs/ufshpb.h
-
--- 
-2.25.1
+--=-goyzitPaYjgqNmdnlSez--
 
