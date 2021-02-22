@@ -2,177 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDAF4321B67
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:28:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D536321B69
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 16:28:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231713AbhBVP1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 10:27:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
+        id S231892AbhBVP14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 10:27:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhBVPTO (ORCPT
+        with ESMTP id S231469AbhBVPTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 10:19:14 -0500
-Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A854C061786;
-        Mon, 22 Feb 2021 07:18:30 -0800 (PST)
-Received: by mail-qv1-xf33.google.com with SMTP id q8so6147074qvx.11;
-        Mon, 22 Feb 2021 07:18:30 -0800 (PST)
+        Mon, 22 Feb 2021 10:19:05 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F71FC06174A;
+        Mon, 22 Feb 2021 07:18:21 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id h22so3942740otr.6;
+        Mon, 22 Feb 2021 07:18:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4EJ0/4j1CzdgzvXDHv2DPblNta/CmD3j5e8XxFsSk4w=;
-        b=cYSGZHgBzK2QU3KVvyZHXZP7WB82KLEvLy0xoP0+sGX0jk4BC7/nVfGNCn36t8Y84q
-         kGYEqIFVVuwGHrkoYJKLOFGI+R3SD0k2RtI0Ouug3abayu8nnD242aVeQZFT9fyrnVL4
-         sI2Ysz/lbqT26B0N76wI3OoCfEwLCaq9EMEOJ9zEminZyFJmSxStyotdl5B6DdJP07q3
-         wIOq0P/mzNyDc8qkle9TRWUz/uUhZHqSuymVsQX7d03s/QyRJjV5P9xdHM+UnsoVnKv2
-         N76zYkH36fQ7e23Q1uFelCi6oRJj1t5U1cT9yTTMiF24YhmFfn41CYNU0RBb5+0nhYoi
-         VQ5Q==
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zHUFcNQUogP4EIRrnsReE9FsSSUfOs19Rul8T8qqyIQ=;
+        b=iBX09sICI9WSYSpU0Rm/K/U8yKAmOrIRvEFBjru80nbNlznm6XmKRi/hv7ILHaYW8q
+         zvTTRGc+xrqT60apHcE2eJvbT/m49TUYfuG0wl4jJgHOes4lIe4KObsy1/xa3NAilqZX
+         2k1QVYEjY/lDyxREgyO/d50IVzPkorYZ8OSx9OuZcnmKY9ck/TByzYRU6lsbqvog5Izc
+         HiQ1wIyfPKroLiCS2CjE/eTGLz3YQyqHnkcALBPmQ5++cO1CJduTSnTEVtB9t4KTpMR0
+         lMXErYT3uqRHs7n6JF5d15evX+KvvG4nsctj1gts43iWcHBcaQXvxF1rbAseZvdVGCny
+         DHCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4EJ0/4j1CzdgzvXDHv2DPblNta/CmD3j5e8XxFsSk4w=;
-        b=Kfag/6DvGyPRwh43Ink4U1+6//PBq+uRBtCk3toLOYlYo2mbLhZyicZvgoDJaqODEP
-         r6S0k7NGuTxBundylFXzdhZ8cmAfUtLKL5G6G+S+cW59jWYbHOxahKyLbo4rJ97JPLhU
-         FexKkR2xuzUcMm56sIQH9xjO6N3QsaNwG6emyWqAnQjG7ErQwq+qLY2SGovkXlxSbCCJ
-         f2dGDV3Y/Wo50RW9hh7CYzC0Ou3s8yVXagAiDWn4zBg4EIBpdBsUGS74aRs3mnzb/F8e
-         JwBohZvKRUu69PuBbxmwJpGk1DSXiEW5IHtS3psWnLcnH6u5rkc+UmMvGYCF0Wp+zwzO
-         RiHQ==
-X-Gm-Message-State: AOAM530Bq0cShbkDb1Me+OFwwbz0u9KNx0aPFy2ll3nn1RbLBFz55TDa
-        Z7R8ghq81cpUOc/iq90iQZo=
-X-Google-Smtp-Source: ABdhPJwQUaMvorV/rbNg1h7/jQUZRc5+Neh2y9JEETaw/cfCRdGpk4UJTjhoJ8NC7wk8zMfFCKz6Jw==
-X-Received: by 2002:a0c:ea87:: with SMTP id d7mr10789742qvp.27.1614007109406;
-        Mon, 22 Feb 2021 07:18:29 -0800 (PST)
-Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id t16sm1847514qto.58.2021.02.22.07.18.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Feb 2021 07:18:28 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id EC9F127C0054;
-        Mon, 22 Feb 2021 10:18:26 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 22 Feb 2021 10:18:27 -0500
-X-ME-Sender: <xms:QMszYBnHag5WcKzBCKYGW9t1zIy_c-OnjvO71mKYcu31Rscz5ndeGA>
-    <xme:QMszYM1XWZNpZ7rd2cMRM0-M2cf5GAU2U8JEyTVnBq05_hjoXVhz8nDgMqQQ-31rC
-    27QDWXQah4Wv2e3tA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrkeefgdejgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhunhcu
-    hfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrghtth
-    gvrhhnpedvleeigedugfegveejhfejveeuveeiteejieekvdfgjeefudehfefhgfegvdeg
-    jeenucfkphepudeijedrvddvtddrvddruddvieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghr
-    shhonhgrlhhithihqdeiledvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvg
-    hngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:QMszYHroSLAeqWA4nlcXGxCZrf58U3DMySWpY7Is7pOlFLgbyEeXJQ>
-    <xmx:QMszYBkERPGWGuk1Ik00HzshNuvo2l7L4j_q4pEqXR_Polq_ZRbw5g>
-    <xmx:QMszYP3484Z2FE8RHH-PB0VOoeJsnKswALY_x3wLTooPsF7YOMwz8Q>
-    <xmx:QcszYNPFgj5DoPcv-2NSzyxgvkXVz_iLoWJh-i1odoj9n9Vul3PFpBb3VAw>
-Received: from localhost (unknown [167.220.2.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7D57724005C;
-        Mon, 22 Feb 2021 10:18:24 -0500 (EST)
-Date:   Mon, 22 Feb 2021 23:17:51 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        daniel.lezcano@linaro.org, arnd@arndb.de,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 08/10] clocksource/drivers/hyper-v: Handle sched_clock
- differences inline
-Message-ID: <YDPLH8zkczusJ66B@boqun-archlinux>
-References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
- <1611779025-21503-9-git-send-email-mikelley@microsoft.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=zHUFcNQUogP4EIRrnsReE9FsSSUfOs19Rul8T8qqyIQ=;
+        b=Cy2+hF7S3+uNbVtPaLbNR6STYmWrsY3qtDbhhv37D/HTXAv9CixR8cF+mPmNaS810p
+         DDYCTiris+oXUyIIspeU64V0RaKev4tmSgyQQPsCEqY0I/11IRnqANtV6PikLGhBGyfM
+         JkVEsOMn2DEHveRj2Hzp6jWslZ8uvmNzefeb3TjqCGXKCasNQRx8NUDaRlGJ+r/hq7Fw
+         d2MxVxDKqxYCw41AlvicjTpyFFCTJ9DsM01kycboHrhUoqA8MU47A0VDUSuwEH7QKfN+
+         xFTTx/eSRSOqmaW4f2+4e+m3H90xcEqPtE1uMAKf3/3dJzztH95sVYbd2JAKhMGBeHY7
+         HEfw==
+X-Gm-Message-State: AOAM532zu9wNKxHXpgTATMDvbXFUikOdA6hsA64uAfALv3mXCg2ntMf8
+        kYjH+fIJAdKJIlTYt1ed8oM=
+X-Google-Smtp-Source: ABdhPJzeWFCFV2X7NWSyIdVhvEUB8d8l5norFJl8hBgf8eisEsix/o9juLGYNQ30UzH28pkMF8/6Bg==
+X-Received: by 2002:a05:6830:140a:: with SMTP id v10mr16909486otp.355.1614007100741;
+        Mon, 22 Feb 2021 07:18:20 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k21sm581350ood.13.2021.02.22.07.18.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 07:18:19 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] gcc-plugins: Disable GCC_PLUGIN_CYC_COMPLEXITY for s390
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+References: <20210221225650.33134-1-linux@roeck-us.net>
+ <YDOeI5+1H3T1ocmQ@osiris>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <f35196cc-969f-21ef-0c38-dc6e13831fb0@roeck-us.net>
+Date:   Mon, 22 Feb 2021 07:18:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611779025-21503-9-git-send-email-mikelley@microsoft.com>
+In-Reply-To: <YDOeI5+1H3T1ocmQ@osiris>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:23:43PM -0800, Michael Kelley wrote:
-> While the Hyper-V Reference TSC code is architecture neutral, the
-> pv_ops.time.sched_clock() function is implemented for x86/x64, but not
-> for ARM64. Current code calls a utility function under arch/x86 (and
-> coming, under arch/arm64) to handle the difference.
+On 2/22/21 4:05 AM, Heiko Carstens wrote:
+> On Sun, Feb 21, 2021 at 02:56:50PM -0800, Guenter Roeck wrote:
+>> Commit 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390") disabled
+>> COMPILE_TEST for s390. At the same time, "make allmodconfig/allyesconfig" for
+>> s390 is still supported. However, it generates thousands of compiler
+>> messages such as the following, making it highly impractical to run.
+>>
+>> Cyclomatic Complexity 1 scripts/mod/devicetable-offsets.c:main
+>> Cyclomatic Complexity 1 scripts/mod/devicetable-offsets.c:_GLOBAL__sub_I_00100_0_main
+>>
+>> Since GCC_PLUGIN_CYC_COMPLEXITY is primarily used for testing, disable it
+>> when building s390 images.
+>>
+>> Cc: Arnd Bergmann <arnd@kernel.org>
+>> Cc: Heiko Carstens <hca@linux.ibm.com>
+>> Fixes: 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
+>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+>> ---
+>>  scripts/gcc-plugins/Kconfig | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/scripts/gcc-plugins/Kconfig b/scripts/gcc-plugins/Kconfig
+>> index ab9eb4cbe33a..5e9bb500f443 100644
+>> --- a/scripts/gcc-plugins/Kconfig
+>> +++ b/scripts/gcc-plugins/Kconfig
+>> @@ -21,7 +21,7 @@ if GCC_PLUGINS
+>>  
+>>  config GCC_PLUGIN_CYC_COMPLEXITY
+>>  	bool "Compute the cyclomatic complexity of a function" if EXPERT
+>> -	depends on !COMPILE_TEST	# too noisy
+>> +	depends on !COMPILE_TEST && !S390	# too noisy
 > 
-> Change this approach to handle the difference inline based on whether
-> GENERIC_SCHED_CLOCK is present.  The new approach removes code under
-> arch/* since the difference is tied more to the specifics of the Linux
-> implementation than to the architecture.
+> I don't see a reason to disable this in general for s390. COMPILE_TEST
+> was only disabled for s390 because a lot of irrelevant configs didn't
+> compile and it would cause a lot of unnecessary work to fix that.
 > 
-> No functional change.
+> However the !COMPILE_TEST dependency here looks more like it was
+> misused in lack of a possibility to detect if the config was generated
+> with allyesconfig/allmodconfig. Maybe that could be added somehow to
+> Kconfig?
 > 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+That is what COMPILE_TEST used to be for. Not setting it for s390 doesn't
+just cause this config to be disabled. Lots of other compile tests
+for s390 are now disabled as well, and code which should be disabled
+is now enabled. Looking at it, I'd be a bit surprised if allmodconfig/
+allyesconfig with COMPILE_TEST=y still builds for s390.
 
-Regards,
-Boqun
+I agree that COMPILE_TEST it is being misused. However, I think what
+you'd be looking for is something like COMPILE_TEST_RANDCONFIG.
+FWIW, in my opinion, randconfig should not enable COMPILE_TEST
+to start with. But that is a different discussion.
 
-> ---
->  arch/x86/include/asm/mshyperv.h    | 11 -----------
->  drivers/clocksource/hyperv_timer.c | 21 +++++++++++++++++++++
->  2 files changed, 21 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index ed9dc56..5ccbba8 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -29,17 +29,6 @@ static inline u64 hv_get_register(unsigned int reg)
->  
->  #define hv_get_raw_timer() rdtsc_ordered()
->  
-> -/*
-> - * Reference to pv_ops must be inline so objtool
-> - * detection of noinstr violations can work correctly.
-> - */
-> -static __always_inline void hv_setup_sched_clock(void *sched_clock)
-> -{
-> -#ifdef CONFIG_PARAVIRT
-> -	pv_ops.time.sched_clock = sched_clock;
-> -#endif
-> -}
-> -
->  void hyperv_vector_handler(struct pt_regs *regs);
->  
->  static inline void hv_enable_stimer0_percpu_irq(int irq) {}
-> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
-> index 9cee6db..a2bee50 100644
-> --- a/drivers/clocksource/hyperv_timer.c
-> +++ b/drivers/clocksource/hyperv_timer.c
-> @@ -423,6 +423,27 @@ static u64 notrace read_hv_sched_clock_msr(void)
->  	.flags	= CLOCK_SOURCE_IS_CONTINUOUS,
->  };
->  
-> +/*
-> + * Reference to pv_ops must be inline so objtool
-> + * detection of noinstr violations can work correctly.
-> + */
-> +static __always_inline void hv_setup_sched_clock(void *sched_clock)
-> +{
-> +#ifdef CONFIG_GENERIC_SCHED_CLOCK
-> +	/*
-> +	 * We're on an architecture with generic sched clock (not x86/x64).
-> +	 * The Hyper-V sched clock read function returns nanoseconds, not
-> +	 * the normal 100ns units of the Hyper-V synthetic clock.
-> +	 */
-> +	sched_clock_register(sched_clock, 64, NSEC_PER_SEC);
-> +#else
-> +#ifdef CONFIG_PARAVIRT
-> +	/* We're on x86/x64 *and* using PV ops */
-> +	pv_ops.time.sched_clock = sched_clock;
-> +#endif
-> +#endif
-> +}
-> +
->  static bool __init hv_init_tsc_clocksource(void)
->  {
->  	u64		tsc_msr;
-> -- 
-> 1.8.3.1
-> 
+Anyway, I can disable GCC_PLUGIN_CYC_COMPLEXITY manually in my own
+build tests, so this isn't that much of a problem for me, so feel
+free to drop this patch.
+
+Guenter
