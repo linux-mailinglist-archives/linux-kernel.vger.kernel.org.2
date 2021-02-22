@@ -2,264 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DE7322051
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C848C32205B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 20:43:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbhBVTlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 14:41:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231652AbhBVTlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:41:12 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33667C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:40:32 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id j6so4108473eja.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 11:40:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=b2K4+601JlQBwRzsBgNPHctuvMqlSDSENE5cSmeswoY=;
-        b=XcYcbPBFw/kdAISJ4TOCzsdZp8PqjqWF28/04zDpXRfxLakS3xdp/dgum24oSNqwFJ
-         tAFvxwQGCb7I8I2KMRZuJDSGEk3W8Kc0v071E5B/BVMl9UIlybq+KH+3U0COhnr4AIU0
-         4q9kFPjZi8In/DYFMIuixA/8yWUll90MTv9p5ARp9yCucShg5GXjHZKCCISexUJKZ05C
-         hXfDtdgrryh6uJhh90a4dGcD4sQ7MjO2siXHJzw3nwwaGt5+SDFn7k05+CzfHu55R6lJ
-         S7PCnqjGHjqBpqq4UBl7+RfiyvxcXsi/aBh9oOpUScCjkFd6vOW0vzgHGuKVmMThcwZK
-         COvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b2K4+601JlQBwRzsBgNPHctuvMqlSDSENE5cSmeswoY=;
-        b=QL9IXFld2dWO740y/CmIrReHCq0zUSD/nXloT0cX+CP08wNveqfJTgb2lRsP4tSyr8
-         BxtzMtv2rAE6YIclO2Kfh7ncKo7dAI5e4+E9b2xMAL4OGogCazrSAHDKNCapWs6F7K3/
-         HLouEbpN21QNgLirdqIO7HTL5LLu8+OSubPS8Xz7+f7LkJ+lQwtkJE9bp7CuxEcN5YTh
-         uuQDtDh9guRRj46oo2y7ovvLsdrBTT6B+FcdP8EpmKi0SDVrdhUqahhmYBl9+frZBhpR
-         y4hxHBSybhI3VBbt2q8e5L6VAv/8azJxdC1WFFP3gx5ODXxJNfHb5E5m4cXDxp2/fJzC
-         B4qA==
-X-Gm-Message-State: AOAM530Q94bgE6mfYTK/MT4tE0Z0jo27dS/y7uayb5bFb6yHzGvf01rc
-        PyVnpQ8wQZr+oi9PY4SEBE18OAD7PGcqjRUVO1hd/g==
-X-Google-Smtp-Source: ABdhPJwwREW3hdQAJRU+vH6xlBqebKFFQ7dT8FNSQr7qrLhPE59yq6USTJQ0uDEhlNqacnnBHW64blrz6FYDYVugLog=
-X-Received: by 2002:a17:906:444d:: with SMTP id i13mr21753229ejp.170.1614022830820;
- Mon, 22 Feb 2021 11:40:30 -0800 (PST)
+        id S233238AbhBVTnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 14:43:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232963AbhBVTm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:42:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B302A64E31;
+        Mon, 22 Feb 2021 19:42:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1614022938;
+        bh=2P/frDeCW8JTaaEDaSByJHY8gufOSsfYYCYfWdxiliM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=abMh/mOmtWtVl+TIrppLJ6TnbxgQNtb+Blsm8U8HjhRK95RKB0WpCWcPEOQypLEs2
+         sOkveT2/mec6BAlJ+ayxsADKdyyT5v2NRok5H9vPtt4iF7xe9KXXCKNTeTGhY3ztUD
+         eSAuoNFm/Dky/m90osSAOY0cp9cGJ9ufIN7BzvakR9isjJxh2bPtaeR87xYZ7MGGY/
+         Q2USAm9SzepEW6rBi8ZBJr5dO6XKrtkEYbyqBLrV992fNj/0KP9TTlf561Zi41bEXX
+         soLxI2NiO01stu2mKXfoGGaHvo7nmV8UPEg0XTc6z8LtFkkNSKyii0YYpOpIvKKiDt
+         KknppqcxIkRmw==
+Received: by pali.im (Postfix)
+        id 35A07C9A; Mon, 22 Feb 2021 20:42:16 +0100 (CET)
+From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
+To:     Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andre Heider <a.heider@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        =?UTF-8?q?G=C3=A9rald=20Kerma?= <gerald@gk2.net>,
+        Konstantin Porotchkin <kostap@marvell.com>
+Subject: [PATCH mvebu v3 00/10] Armada 37xx: Fix cpufreq changing base CPU speed to 800 MHz from 1000 MHz
+Date:   Mon, 22 Feb 2021 20:41:48 +0100
+Message-Id: <20210222194158.12342-1-pali@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210114124032.12765-1-pali@kernel.org>
+References: <20210114124032.12765-1-pali@kernel.org>
 MIME-Version: 1.0
-References: <20210222121013.586597942@linuxfoundation.org>
-In-Reply-To: <20210222121013.586597942@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Feb 2021 01:10:19 +0530
-Message-ID: <CA+G9fYvky9VTyPeOqnDBsNzP_to-+uCisCpLTiUoJTCUtsPvfg@mail.gmail.com>
-Subject: Re: [PATCH 5.11 00/12] 5.11.1-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Feb 2021 at 17:43, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.1 release.
-> There are 12 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.1-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Hello!
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+This is third version of patches for Armada 37xx cpufreq driver which
+fix CPU scaling with 1 GHz base frequency.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The only change in this third version is modified patch 04/10 with fixes
+for 1.2 GHz variant of Espressobin. Minimal CPU voltage in L1 load for
+1.2 GHz variant was increased to 1.155V.
 
-NOTE:
-1) We (LKFT) have upgraded clang-10 to clang-12 builds and following
-three new configs enabled.
-CONFIG_CC_HAS_ASM_GOTO_OUTPUT=3Dy
-CONFIG_CC_HAS_ASM_INLINE=3Dy
-CONFIG_HAVE_KCSAN_COMPILER=3Dy
+Patches are now rebased on top of the kernel version 5.11 with all
+collected Acked-by/Tested-by lines and are available also in my git
+tree in branch a3720-cpufreq-issues:
 
-2) on qemu_x86_64_clang-12 a large number of LTP tests reported failures
-on stable-rc 5.4, 5.10, 5.11 and Linux mainline.
-reported link,
-https://lore.kernel.org/lkml/CA+G9fYuE4ELVDju=3DLESHnphL4Z2DT5YQjdh9rNgr5D1=
-x5gZxgg@mail.gmail.com/
+https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=a3720-cpufreq-issues
 
-Summary
-------------------------------------------------------------------------
+If you have other Armada 3720 boards with 1.2 GHz CPU, including
+Espressobin V7, let us know if it is working fine for you.
 
-kernel: 5.11.1-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-5.11.y
-git commit: 6380656c9227c27a989f750aa7a0c81039d28607
-git describe: v5.11-13-g6380656c9227
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11=
-.y/build/v5.11-13-g6380656c9227
+Marek & Pali
 
-No regressions (compared to build v5.11)
+Marek Behún (3):
+  arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
+  cpufreq: armada-37xx: Fix setting TBG parent for load levels
+  clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM
+    clock
 
-No fixes (compared to build v5.11)
+Pali Rohár (7):
+  cpufreq: armada-37xx: Fix the AVS value for load L1
+  clk: mvebu: armada-37xx-periph: Fix switching CPU freq from 250 Mhz to
+    1 GHz
+  clk: mvebu: armada-37xx-periph: Fix workaround for switching from L1
+    to L0
+  cpufreq: armada-37xx: Fix driver cleanup when registration failed
+  cpufreq: armada-37xx: Fix determining base CPU frequency
+  cpufreq: armada-37xx: Remove cur_frequency variable
+  cpufreq: armada-37xx: Fix module unloading
 
-Ran 52054 total tests in the following environments and test suites.
+ arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   3 +-
+ drivers/clk/mvebu/armada-37xx-periph.c       |  83 +++++++-------
+ drivers/cpufreq/armada-37xx-cpufreq.c        | 111 +++++++++++++++----
+ 3 files changed, 135 insertions(+), 62 deletions(-)
 
-Environments
---------------
-- arc
-- arm
-- arm64
-- dragonboard-410c
-- dragonboard-845c
-- hi6220-hikey
-- i386
-- juno-64k_page_size
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- nxp-ls2088-64k_page_size
-- parisc
-- powerpc
-- qemu-arm-clang
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu-x86_64-kcsan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- riscv
-- s390
-- sh
-- sparc
-- x15
-- x86
-- x86-kasan
-- x86_64
+-- 
+2.20.1
 
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-lkdtm
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* perf
-* kvm-unit-tests
-* libhugetlbfs
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-ipc-tests
-* ltp-sched-tests
-* fwts
-* kselftest-intel_pstate
-* kselftest-livepatch
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-ptrace
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-zram
-* ltp-syscalls-tests
-* network-basic-tests
-* v4l2-compliance
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-vm
-* kselftest-x86
-* ltp-open-posix-tests
-* rcutorture
-* kunit
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
