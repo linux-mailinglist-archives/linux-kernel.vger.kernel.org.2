@@ -2,78 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CEB321106
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 07:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FB3D321103
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 07:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhBVGt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 01:49:28 -0500
-Received: from lucky1.263xmail.com ([211.157.147.132]:51380 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229518AbhBVGtZ (ORCPT
+        id S229994AbhBVGr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 01:47:59 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:58705 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229913AbhBVGr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 01:49:25 -0500
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 29657F0FFC;
-        Mon, 22 Feb 2021 14:47:04 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P27943T140459827513088S1613976423851514_;
-        Mon, 22 Feb 2021 14:47:03 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <17e9c158043e3d51b4697a8f6a79f68d>
-X-RL-SENDER: wangjingyu@uniontech.com
-X-SENDER: wangjingyu@uniontech.com
-X-LOGIN-NAME: wangjingyu@uniontech.com
-X-FST-TO: alexander.deucher@amd.com
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   wangjingyu <wangjingyu@uniontech.com>
-To:     alexander.deucher@amd.com, christian.koenig@amd.com,
-        airlied@linux.ie
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        wangjingyu <wangjingyu@uniontech.com>,
-        zhuyong <zhuyong@uniontech.com>
-Subject: [PATCH] drm/radeon: A gray screen appears when going into hibernation(S4)
-Date:   Mon, 22 Feb 2021 14:46:53 +0800
-Message-Id: <20210222064653.22084-1-wangjingyu@uniontech.com>
-X-Mailer: git-send-email 2.11.0
+        Mon, 22 Feb 2021 01:47:56 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R741e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UPBjxZ._1613976431;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPBjxZ._1613976431)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 22 Feb 2021 14:47:11 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     martin.petersen@oracle.com
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        jejb@linux.ibm.com, tyreld@linux.ibm.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] scsi: ibmvfc: Switch to using the new API kobj_to_dev()
+Date:   Mon, 22 Feb 2021 14:47:09 +0800
+Message-Id: <1613976429-89853-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Radeon Card:
-    Caicos[Radeon HD 6450/7450/8450 /R5 230 OEM]
+fixed the following coccicheck:
+./drivers/scsi/ibmvscsi/ibmvfc.c:3161:60-61: WARNING opportunity for
+kobj_to_dev()
 
-there is no gray screen when echo 4>/sys/module/drm/parameters/debug,
-so the WREG32 function after DRM_DEBUG_KMS may have wrong when going
-into hibernation.the delay of msleep(50) just can fix gray screen.
-
-Signed-off-by: wangjingyu <wangjingyu@uniontech.com>
-Signed-off-by: zhuyong <zhuyong@uniontech.com>
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 ---
- drivers/gpu/drm/radeon/radeon_display.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/ibmvscsi/ibmvfc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_display.c b/drivers/gpu/drm/radeon/radeon_display.c
-index ddfe91efa61e..1f7f0904e4a5 100644
---- a/drivers/gpu/drm/radeon/radeon_display.c
-+++ b/drivers/gpu/drm/radeon/radeon_display.c
-@@ -215,6 +215,7 @@ void radeon_crtc_load_lut(struct drm_crtc *crtc)
- 	if (!crtc->enabled)
- 		return;
- 
-+	msleep(50);
- 	if (ASIC_IS_DCE5(rdev))
- 		dce5_crtc_load_lut(crtc);
- 	else if (ASIC_IS_DCE4(rdev))
+diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
+index 65f168c..e947149 100644
+--- a/drivers/scsi/ibmvscsi/ibmvfc.c
++++ b/drivers/scsi/ibmvscsi/ibmvfc.c
+@@ -3158,7 +3158,7 @@ static ssize_t ibmvfc_read_trace(struct file *filp, struct kobject *kobj,
+ 				 struct bin_attribute *bin_attr,
+ 				 char *buf, loff_t off, size_t count)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct Scsi_Host *shost = class_to_shost(dev);
+ 	struct ibmvfc_host *vhost = shost_priv(shost);
+ 	unsigned long flags = 0;
 -- 
-2.11.0
-
-
+1.8.3.1
 
