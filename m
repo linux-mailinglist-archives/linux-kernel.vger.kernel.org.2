@@ -2,88 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1E6321E8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D6C321E91
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhBVRx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 12:53:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33430 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230398AbhBVRxZ (ORCPT
+        id S230071AbhBVRzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:55:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231800AbhBVRzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 12:53:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1614016319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q/184qGC08c/X9yZo4h4BJEplxwrcfp8FbIowMgcbh8=;
-        b=CnwgPTeae531K9EcluBxigJVwc6Bh4g1zgWM9qnQ5J4ViL5Ik63QITWjzM/fIfgA5M0hV4
-        DGZdLhI9fPEzVBpRKmCwGs7gvqjNXOmwuFAfnHPyUyeYIH1lQOdDNBnhAubCdFfOvLz45q
-        4+XxW76r4lmBnD43M5eZ4OAtFQaMRB8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-RChLU-ryP-K3uWCL8GQBYQ-1; Mon, 22 Feb 2021 12:51:55 -0500
-X-MC-Unique: RChLU-ryP-K3uWCL8GQBYQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACBA3100961C;
-        Mon, 22 Feb 2021 17:51:53 +0000 (UTC)
-Received: from treble (ovpn-118-117.rdu2.redhat.com [10.10.118.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BD5435D6B1;
-        Mon, 22 Feb 2021 17:51:52 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 11:51:50 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Evgenii Shatokhin <eshatokhin@virtuozzo.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kristen Carlson Accardi <kristen@linux.intel.com>,
-        live-patching@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        Konstantin Khorenko <khorenko@virtuozzo.com>
-Subject: Re: 'perf probe' and symbols from .text.<something>
-Message-ID: <20210222175150.yxgw3sxxaqjqgq56@treble>
-References: <09257fb8-3ded-07b0-b3cc-55d5431698d8@virtuozzo.com>
- <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
+        Mon, 22 Feb 2021 12:55:41 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82F1C061797
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:55:11 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id q7so14225334iob.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 09:55:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=4iQ/6A1pHeGyjMlUbh4JKbPflnnpW7pvKy+xN/oRk5Y=;
+        b=Ctq58+IKe14DzaazBQFfQpQop6MG4aYU6Z5+wu/jIdnqat1f5A2aZPnQgtLwjx7HDD
+         IfaxJO4Mn6OpnH5bljeYxw6T+sbJh1L7obl05QFMtBwmz/NXJS9Tsvt+xLTU7DUIbLtJ
+         7Tcd7hWJ3W9wDPP1rd/xiD4ch7FZQLJCHun4o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4iQ/6A1pHeGyjMlUbh4JKbPflnnpW7pvKy+xN/oRk5Y=;
+        b=dqK+RhcrjV5VSqER36OOBPhdHZsLave6b6e9VqEYFQVIDXLILjKQ5tDwJC36GTyLsN
+         DzfF2e5kn+1ki6t5E3EMQd/Y8HzEhlsGEfJAbtRck4uOLWh9PxVmvsFwP11BvVzZvDlM
+         idM8cQAxrrjyjGqgx7Ic7W8aOnqqzLRf92pC8UIRJcfFxCrYONEezTkI146APptq/z05
+         pFoutQzr/0XzwrmN/aicHhA3Ebl1IXXX5H7OOhCpVEd3ijn+m1J6oJ9LONMud/1cpbnI
+         MN1v33dql7zhn/w3McyreLlHfAROYyOPJZhCx/5okLqtW0dIxF4fX3Y9ZNTgIzWGSQov
+         eF5g==
+X-Gm-Message-State: AOAM532sGi6CUCn/h1cU4wVPKQWXHRlJ1aj+uecJ9JmhQ7nBAGhhju5P
+        kYDkgAmZJc/7+f8/61FhHO5AuL0awZDFKA==
+X-Google-Smtp-Source: ABdhPJzxm2PkzLxteZZw8GajkbO500BR3wcCKJELWz5XqxFC0IfTEpzNHbP9K5Jv+kGcI/WnHtrOqA==
+X-Received: by 2002:a6b:b2c2:: with SMTP id b185mr16611880iof.104.1614016511045;
+        Mon, 22 Feb 2021 09:55:11 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id j25sm13656433iog.27.2021.02.22.09.55.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Feb 2021 09:55:10 -0800 (PST)
+Subject: Re: [PATCH net-next v2 2/3] net: ethernet: rmnet: Support for
+ downlink MAPv5 checksum offload
+To:     Sharath Chandra Vurukala <sharathv@codeaurora.org>,
+        davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1614012946-23506-1-git-send-email-sharathv@codeaurora.org>
+ <1614012946-23506-3-git-send-email-sharathv@codeaurora.org>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <f968761d-2567-4538-c4cd-e1cb66d47bcd@ieee.org>
+Date:   Mon, 22 Feb 2021 11:55:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210223000508.cab3cddaa3a3790525f49247@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <1614012946-23506-3-git-send-email-sharathv@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 12:05:08AM +0900, Masami Hiramatsu wrote:
-> > Of course, one could place probes using absolute addresses of the 
-> > functions but that would be less convenient.
-> > 
-> > This also affects many livepatch modules where the kernel code can be 
-> > compiled with -ffunction-sections and each function may end up in a 
-> > separate section .text.<function_name>. 'perf probe' cannot be used 
-> > there, except with the absolute addresses.
-> > 
-> > Moreover, if FGKASLR patches are merged 
-> > (https://lwn.net/Articles/832434/) and the kernel is built with FGKASLR 
-> > enabled, -ffunction-sections will be used too. 'perf probe' will be 
-> > unable to see the kernel functions then.
+On 2/22/21 10:55 AM, Sharath Chandra Vurukala wrote:
+> Adding support for processing of Mapv5 downlink packets.
+> It involves parsing the Mapv5 packet and checking the csum header
+> to know whether the hardware has validated the checksum and is
+> valid or not.
 > 
-> Hmm, if the FGKASLAR really randomizes the symbol address, perf-probe
-> should give up "_text-relative" probe for that kernel, and must fallback
-> to the "symbol-based" probe. (Are there any way to check the FGKASLR is on?)
-> The problem of "symbol-based" probe is that local (static) symbols
-> may share a same name sometimes. In that case, it can not find correct
-> symbol. (Maybe I can find a candidate from its size.)
-> Anyway, sometimes the security and usability are trade-off.
+> Based on the checksum valid bit the corresponding stats are
+> incremented and skb->ip_summed is marked either CHECKSUM_UNNECESSARY
+> or left as CHEKSUM_NONE to let network stack revalidated the checksum
+> and update the respective snmp stats.
+> 
+> Current MapV1 header has been modified, the reserved field in the
+> Mapv1 header is now used for next header indication.
+> 
+> Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
+> ---
 
-We had a similar issue with FGKASLR and live patching.  The proposed
-solution is a new linker flag which eliminates duplicates: -z
-unique-symbol.
+. . .
 
-https://sourceware.org/bugzilla/show_bug.cgi?id=26391
 
--- 
-Josh
+> diff --git a/include/linux/if_rmnet.h b/include/linux/if_rmnet.h
+> index 9661416..a6de521 100644
+> --- a/include/linux/if_rmnet.h
+> +++ b/include/linux/if_rmnet.h
+> @@ -1,5 +1,5 @@
+>   /* SPDX-License-Identifier: GPL-2.0-only
+> - * Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
+> + * Copyright (c) 2013-2019, 2021 The Linux Foundation. All rights reserved.
+>    */
+>   
+>   #ifndef _LINUX_IF_RMNET_H_
+> @@ -8,11 +8,11 @@
+>   struct rmnet_map_header {
+>   #if defined(__LITTLE_ENDIAN_BITFIELD)
+>   	u8  pad_len:6;
+> -	u8  reserved_bit:1;
+> +	u8  next_hdr:1;
+>   	u8  cd_bit:1;
+>   #elif defined (__BIG_ENDIAN_BITFIELD)
+>   	u8  cd_bit:1;
+> -	u8  reserved_bit:1;
+> +	u8  next_hdr:1;
+>   	u8  pad_len:6;
+>   #else
+>   #error	"Please fix <asm/byteorder.h>"
 
+. . .
+
+I know that KS said he is "not convinced that it is
+helping improve anything" and that it "just adds a
+big overhead of testing everything again without
+any improvement of performance or readability of
+code."  But I will ask again that these structures
+be redefined to use host byte-order masks and
+structure fields with clearly defined endianness.
+
+I strongly disagree with the statement from KS.
+Specifically I feel the whole notion of "bit field
+endianness" is not obvious, and makes it harder than
+necessary to understand how the bits are laid out
+in memory.  It also obscures in code that bit fields
+have certain properties that are different from other
+"normal" struct field types (such as alignment, size,
+or atomicity of the field).  And I say this despite
+knowing this pattern is used elsewhere in the
+networking code.
+
+In the first version of the series, Jakub asked that
+the conversion be done.  I offered to implement the
+change to the existing code, and that offer stands.
+I can do so fairly quickly if you would like to have
+it soon to build upon.
+
+Either way, I would like a chance to review the
+rest of this series, but I'd like to get this issue
+resolved (either decide it must be done or not)
+before I spend more time on that.
+
+Thanks.
+
+					-Alex
