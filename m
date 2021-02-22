@@ -2,172 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B83321D99
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 17:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EFD321DA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 18:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230502AbhBVQ63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 11:58:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbhBVQ5T (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 11:57:19 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D31C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:56:38 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id q5so11392844ilc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HdNyJlknAH8feoDYpLG+qSZzF4E0AHcYq0sJE+ywDvg=;
-        b=Px2AQSymPs0ndnQo7hRE5ENeKz5PCcG+/YzLVJz4brjs6tQ52yjrQX7E0BxZFoo+1K
-         c5FXncZt0xI78U4Yh6abir2Rag7nxSTnTu1CF62G1d2+0VRIzaZKuxH7XvTqudFNffdw
-         q2FS16kVOJitiDJ5hGkzYyxfFKft9O+K+o8NU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HdNyJlknAH8feoDYpLG+qSZzF4E0AHcYq0sJE+ywDvg=;
-        b=qyAEZ0yTrw4c8hlRe3evO+XsPFOAiP6RvV/RRCubf0JyTRDqxjWE06yXjHiIPnAqoi
-         4AwyUkMieDqpzSKqc++znv/oHe5fKvsIBWA4Li+KPS84nE8AQ3OCf1w7oohb9EUdhhZe
-         DCbJNN9G9MmfKPgI2IDSRTiR7FaTur14jbJ3g3DygLuAQWvD0+wYRe1bXXJnALC9Q0wy
-         q4Am5ykyr8/XtLgq1RzzKixpmbGHgWQOSOhHKjcFAAZE2kHT0A672qvMTMavtID8xn8m
-         kzh7jR3cz1awyd+ESztJZJx1AB3PJSWWRTfybjP8v02z+8t61BCxmzprQs0+JkfRpFmG
-         TDIQ==
-X-Gm-Message-State: AOAM533zwl/dQolojDNxJTtMM/UPDU+ZjPryUwrMSXQFATU8M3545Gy7
-        iXODW1gBft+4JW1jpfb0xEwQtw/GJRbUjQ==
-X-Google-Smtp-Source: ABdhPJxxyPcatqUtUfLBN4yNQpRu23VmWEuoqP33YuJNMBjMOhiTulJQL+4J8N97jiBUbT68tXIPeA==
-X-Received: by 2002:a05:6e02:1c8a:: with SMTP id w10mr16571674ill.127.1614012997657;
-        Mon, 22 Feb 2021 08:56:37 -0800 (PST)
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com. [209.85.166.172])
-        by smtp.gmail.com with ESMTPSA id y1sm1145526ilm.28.2021.02.22.08.56.36
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 08:56:36 -0800 (PST)
-Received: by mail-il1-f172.google.com with SMTP id h18so3353611ils.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 08:56:36 -0800 (PST)
-X-Received: by 2002:a05:6e02:1a25:: with SMTP id g5mr16127965ile.2.1614012995930;
- Mon, 22 Feb 2021 08:56:35 -0800 (PST)
-MIME-Version: 1.0
-References: <1613681704-12539-1-git-send-email-khsieh@codeaurora.org>
- <161368935031.1254594.14384765673800900954@swboyd.mtv.corp.google.com>
- <7af07dcacd5b68087cc61e467e9c57ea@codeaurora.org> <161377480166.1254594.16557636343276220817@swboyd.mtv.corp.google.com>
- <1782d03506bebe7751d33ae12a38d21c@codeaurora.org>
-In-Reply-To: <1782d03506bebe7751d33ae12a38d21c@codeaurora.org>
-From:   Sean Paul <seanpaul@chromium.org>
-Date:   Mon, 22 Feb 2021 11:55:58 -0500
-X-Gmail-Original-Message-ID: <CAOw6vbLkET7UvsUhWDeeMz8V5i5c_hBSR-Q4-B6_Y5apoTzEng@mail.gmail.com>
-Message-ID: <CAOw6vbLkET7UvsUhWDeeMz8V5i5c_hBSR-Q4-B6_Y5apoTzEng@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH v2 2/2] drm/msm/dp: add supported max link
- rate specified from dtsi
-To:     khsieh@codeaurora.org
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Dave Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        abhinavk@codeaurora.org, Rob Clark <robdclark@gmail.com>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Daniel Vetter <daniel@ffwll.ch>, aravindh@codeaurora.org,
-        Sean Paul <sean@poorly.run>
-Content-Type: text/plain; charset="UTF-8"
+        id S230036AbhBVRAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 12:00:04 -0500
+Received: from z11.mailgun.us ([104.130.96.11]:33680 "EHLO z11.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231562AbhBVQ6N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 11:58:13 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1614013071; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=ZNI3knrHf978IyYZ3O96GMFOjaoLuge8N2yof/hPhCI=; b=uUzfTIdGZzd2hRMRzUFKTcaYvaYRlUOzYJPs/834zSgCHQne7KhcGITzLKUmMNiouGYqG2Jh
+ VwcpNHIQ+Hj11oMfk66D9GJlz0VkJ1XfVqvqLkN0++YRc0Dxg0FlW25yOFUCyzwfJiGD+/OF
+ jtX2ZIXmeY82FB4uWjUM+CZHKXM=
+X-Mailgun-Sending-Ip: 104.130.96.11
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6033e26ef33d74123feeff21 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Feb 2021 16:57:18
+ GMT
+Sender: sharathv=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id EEBDAC43461; Mon, 22 Feb 2021 16:57:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from svurukal-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sharathv)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 04AB2C433ED;
+        Mon, 22 Feb 2021 16:57:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 04AB2C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sharathv@codeaurora.org
+From:   Sharath Chandra Vurukala <sharathv@codeaurora.org>
+To:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sharath Chandra Vurukala <sharathv@codeaurora.org>
+Subject: [PATCH net-next v2 3/3] net: ethernet: rmnet: Add support for Mapv5 uplink packet
+Date:   Mon, 22 Feb 2021 22:25:46 +0530
+Message-Id: <1614012946-23506-4-git-send-email-sharathv@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1614012946-23506-1-git-send-email-sharathv@codeaurora.org>
+References: <1614012946-23506-1-git-send-email-sharathv@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 11:31 AM <khsieh@codeaurora.org> wrote:
->
-> On 2021-02-19 14:46, Stephen Boyd wrote:
-> > Quoting khsieh@codeaurora.org (2021-02-19 08:39:38)
-> >> On 2021-02-18 15:02, Stephen Boyd wrote:
-> >> > Quoting Kuogee Hsieh (2021-02-18 12:55:04)
-> >> >> Allow supported link rate to be limited to the value specified at
-> >> >> dtsi. If it is not specified, then link rate is derived from dpcd
-> >> >> directly. Below are examples,
-> >> >> link-rate = <162000> for max link rate limited at 1.62G
-> >> >> link-rate = <270000> for max link rate limited at 2.7G
-> >> >> link-rate = <540000> for max link rate limited at 5.4G
-> >> >> link-rate = <810000> for max link rate limited at 8.1G
-> >> >>
-> >> >> Changes in V2:
-> >> >> -- allow supported max link rate specified from dtsi
-> >> >
-> >> > Please don't roll this into the patch that removes the limit. The
-> >> > previous version of this patch was fine. The part that lowers the limit
-> >> > back down should be another patch.
-> >> >
-> >> > We rejected link-rate in DT before and we should reject it upstream
-> >> > again. As far as I can tell, the maximum link rate should be determined
-> >> > based on the panel or the type-c port on the board. The dp controller
-> >> > can always achieve HBR3, so limiting it at the dp controller is
-> >> > incorrect. The driver should query the endpoints to figure out if they
-> >> > want to limit the link rate. Is that done automatically sometimes by
-> >> > intercepting the DPCD?
-> >>
-> >> ok, i will roll back to original patch and add the second patch for
-> >> max
-> >> link rate limited purpose.
-> >> panel dpcd specified max link rate it supported.
-> >> At driver, link rate is derived from dpcd directly since driver will
-> >> try
-> >> to use the maximum supported link rate and less lane to save power.
-> >> Therefore it is not possible that limit link rate base on dpcd.
-> >> AS i understand we are going to do max link rate limitation is due to
-> >> old redriver chip can not support HBR3.
-> >> How can I acquire which type-c port on the board so that I can trigger
-> >> max link rate limitation?
-> >>
-> >>
-> >
-> > The driver already seems to support lowering the link rate during link
-> > training. Can't we try to train at the highest rate and then downgrade
-> > the link speed until it trains properly? I sort of fail to see why we
-> > need to introduce a bunch of complexity around limiting the link rate
-> > on
-> > certain boards if the driver can figure out that link training doesn't
-> > work at HBR3 so it should try to train at HBR2 instead.
->
-> yes, dp driver did support down grade link rate during link training
-> procedure.
-> But link training is kind of setting up agreement between host and panel
-> with assumption that there are no other limitations in between.
-> The problem we are discussing here is the limitation of usb re driver
-> link rate support.
-> Since we do not know how usb re driver behavior, I am not sure link
-> training will work appropriately for this case.
-> It may end up link status keep toggling up and down.
->
+Adding Support for Mapv5 uplink packet.
+Based on the configuration, request HW for csum offload,
+by setting the csum_valid_required of Mapv5 packet.
 
-IMO we should just fail link training if the redriver doesn't support
-a link count/rate and fallback to the next count/rate. This should be
-handled the same as if there were a cable incapable of achieving a
-link rate. Adding the link rate to the device tree (at least on the dp
-block) seems suspicious.
+Signed-off-by: Sharath Chandra Vurukala <sharathv@codeaurora.org>
+---
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h |  4 +-
+ .../net/ethernet/qualcomm/rmnet/rmnet_handlers.c   | 15 +++-
+ drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h    |  8 +-
+ .../net/ethernet/qualcomm/rmnet/rmnet_map_data.c   | 93 ++++++++++++++++++++--
+ include/uapi/linux/if_link.h                       |  1 +
+ 5 files changed, 108 insertions(+), 13 deletions(-)
 
-If you really wanted to model the redriver's limitations in software,
-you'd probably want to introduce a bridge driver/connector which
-rejects modes that cannot be achieved by the redriver. This should
-prevent the dp driver from trying to train at the unsupported rates.
+diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
+index 8d8d469..8e64ca9 100644
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_config.h
+@@ -1,5 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/* Copyright (c) 2013-2014, 2016-2018 The Linux Foundation. All rights reserved.
++/* Copyright (c) 2013-2014, 2016-2018, 2021 The Linux Foundation.
++ * All rights reserved.
+  *
+  * RMNET Data configuration engine
+  */
+@@ -56,6 +57,7 @@ struct rmnet_priv_stats {
+ 	u64 csum_fragmented_pkt;
+ 	u64 csum_skipped;
+ 	u64 csum_sw;
++	u64 csum_hw;
+ };
+ 
+ struct rmnet_priv {
+diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
+index 70ad6a7..e6a44cd 100644
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_handlers.c
+@@ -131,26 +131,33 @@ static int rmnet_map_egress_handler(struct sk_buff *skb,
+ 				    struct rmnet_port *port, u8 mux_id,
+ 				    struct net_device *orig_dev)
+ {
+-	int required_headroom, additional_header_len;
++	int required_headroom, additional_header_len, csum_type;
+ 	struct rmnet_map_header *map_header;
+ 
++	csum_type = 0;
+ 	additional_header_len = 0;
+ 	required_headroom = sizeof(struct rmnet_map_header);
+ 
+ 	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4) {
+ 		additional_header_len = sizeof(struct rmnet_map_ul_csum_header);
+ 		required_headroom += additional_header_len;
++		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV4;
++	} else if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
++		additional_header_len = sizeof(struct rmnet_map_v5_csum_header);
++		csum_type = RMNET_FLAGS_EGRESS_MAP_CKSUMV5;
+ 	}
+ 
++	required_headroom += additional_header_len;
++
+ 	if (skb_headroom(skb) < required_headroom) {
+ 		if (pskb_expand_head(skb, required_headroom, 0, GFP_ATOMIC))
+ 			return -ENOMEM;
+ 	}
+ 
+-	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV4)
+-		rmnet_map_checksum_uplink_packet(skb, orig_dev);
++	if (csum_type)
++		rmnet_map_checksum_uplink_packet(skb, port, orig_dev, csum_type);
+ 
+-	map_header = rmnet_map_add_map_header(skb, additional_header_len, 0);
++	map_header = rmnet_map_add_map_header(skb, additional_header_len, port, 0);
+ 	if (!map_header)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
+index 2ee1ce2..84d108e 100644
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map.h
+@@ -64,11 +64,15 @@ enum rmnet_map_commands {
+ struct sk_buff *rmnet_map_deaggregate(struct sk_buff *skb,
+ 				      struct rmnet_port *port);
+ struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
+-						  int hdrlen, int pad);
++						  int hdrlen,
++						  struct rmnet_port *port,
++						  int pad);
+ void rmnet_map_command(struct sk_buff *skb, struct rmnet_port *port);
+ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len);
+ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
+-				      struct net_device *orig_dev);
++				      struct rmnet_port *port,
++				      struct net_device *orig_dev,
++				      int csum_type);
+ int rmnet_map_process_next_hdr_packet(struct sk_buff *skb, u16 len);
+ u8 rmnet_map_get_next_hdr_type(struct sk_buff *skb);
+ bool rmnet_map_get_csum_valid(struct sk_buff *skb);
+diff --git a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+index a3dc220..f65bdd4 100644
+--- a/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
++++ b/drivers/net/ethernet/qualcomm/rmnet/rmnet_map_data.c
+@@ -263,12 +263,69 @@ rmnet_map_ipv6_ul_csum_header(void *ip6hdr,
+ }
+ #endif
+ 
++static void rmnet_map_v5_checksum_uplink_packet(struct sk_buff *skb,
++						struct rmnet_port *port,
++						struct net_device *orig_dev)
++{
++	struct rmnet_priv *priv = netdev_priv(orig_dev);
++	struct rmnet_map_v5_csum_header *ul_header;
++
++	if (!(port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5))
++		return;
++
++	ul_header = (struct rmnet_map_v5_csum_header *)
++		    skb_push(skb, sizeof(*ul_header));
++	memset(ul_header, 0, sizeof(*ul_header));
++	ul_header->header_type = RMNET_MAP_HEADER_TYPE_CSUM_OFFLOAD;
++
++	if (skb->ip_summed == CHECKSUM_PARTIAL) {
++		void *iph = (char *)ul_header + sizeof(*ul_header);
++		__sum16 *check;
++		void *trans;
++		u8 proto;
++
++		if (skb->protocol == htons(ETH_P_IP)) {
++			u16 ip_len = ((struct iphdr *)iph)->ihl * 4;
++
++			proto = ((struct iphdr *)iph)->protocol;
++			trans = iph + ip_len;
++		} else if (skb->protocol == htons(ETH_P_IPV6)) {
++#if IS_ENABLED(CONFIG_IPV6)
++			u16 ip_len = sizeof(struct ipv6hdr);
++
++			proto = ((struct ipv6hdr *)iph)->nexthdr;
++			trans = iph + ip_len;
++#else
++			priv->stats.csum_err_invalid_ip_version++;
++			goto sw_csum;
++#endif /* CONFIG_IPV6 */
++		} else {
++			priv->stats.csum_err_invalid_ip_version++;
++			goto sw_csum;
++		}
++
++		check = rmnet_map_get_csum_field(proto, trans);
++		if (check) {
++			skb->ip_summed = CHECKSUM_NONE;
++			/* Ask for checksum offloading */
++			ul_header->csum_valid_required = 1;
++			priv->stats.csum_hw++;
++			return;
++		}
++	}
++
++sw_csum:
++	priv->stats.csum_sw++;
++}
++
+ /* Adds MAP header to front of skb->data
+  * Padding is calculated and set appropriately in MAP header. Mux ID is
+  * initialized to 0.
+  */
+ struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
+-						  int hdrlen, int pad)
++						  int hdrlen,
++						  struct rmnet_port *port,
++						  int pad)
+ {
+ 	struct rmnet_map_header *map_header;
+ 	u32 padding, map_datalen;
+@@ -279,6 +336,11 @@ struct rmnet_map_header *rmnet_map_add_map_header(struct sk_buff *skb,
+ 			skb_push(skb, sizeof(struct rmnet_map_header));
+ 	memset(map_header, 0, sizeof(struct rmnet_map_header));
+ 
++	/* Set next_hdr bit for csum offload packets */
++	if (port->data_format & RMNET_FLAGS_EGRESS_MAP_CKSUMV5) {
++		map_header->next_hdr = 1;
++	}
++
+ 	if (pad == RMNET_MAP_NO_PAD_BYTES) {
+ 		map_header->pkt_len = htons(map_datalen);
+ 		return map_header;
+@@ -395,11 +457,8 @@ int rmnet_map_checksum_downlink_packet(struct sk_buff *skb, u16 len)
+ 	return 0;
+ }
+ 
+-/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
+- * packets that are supported for UL checksum offload.
+- */
+-void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
+-				      struct net_device *orig_dev)
++static void rmnet_map_v4_checksum_uplink_packet(struct sk_buff *skb,
++						struct net_device *orig_dev)
+ {
+ 	struct rmnet_priv *priv = netdev_priv(orig_dev);
+ 	struct rmnet_map_ul_csum_header *ul_header;
+@@ -418,10 +477,12 @@ void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
+ 
+ 		if (skb->protocol == htons(ETH_P_IP)) {
+ 			rmnet_map_ipv4_ul_csum_header(iphdr, ul_header, skb);
++			priv->stats.csum_hw++;
+ 			return;
+ 		} else if (skb->protocol == htons(ETH_P_IPV6)) {
+ #if IS_ENABLED(CONFIG_IPV6)
+ 			rmnet_map_ipv6_ul_csum_header(iphdr, ul_header, skb);
++			priv->stats.csum_hw++;
+ 			return;
+ #else
+ 			priv->stats.csum_err_invalid_ip_version++;
+@@ -457,6 +518,26 @@ bool rmnet_map_get_csum_valid(struct sk_buff *skb)
+ 	return ((struct rmnet_map_v5_csum_header *)data)->csum_valid_required;
+ }
+ 
++/* Generates UL checksum meta info header for IPv4 and IPv6 over TCP and UDP
++ * packets that are supported for UL checksum offload.
++ */
++void rmnet_map_checksum_uplink_packet(struct sk_buff *skb,
++				      struct rmnet_port *port,
++				      struct net_device *orig_dev,
++				      int csum_type)
++{
++	switch (csum_type) {
++	case RMNET_FLAGS_EGRESS_MAP_CKSUMV4:
++		rmnet_map_v4_checksum_uplink_packet(skb, orig_dev);
++		break;
++	case RMNET_FLAGS_EGRESS_MAP_CKSUMV5:
++		rmnet_map_v5_checksum_uplink_packet(skb, port, orig_dev);
++		break;
++	default:
++		break;
++	}
++}
++
+ /* Process a MAPv5 packet header */
+ int rmnet_map_process_next_hdr_packet(struct sk_buff *skb,
+ 				      u16 len)
+diff --git a/include/uapi/linux/if_link.h b/include/uapi/linux/if_link.h
+index 838bd29..319865f 100644
+--- a/include/uapi/linux/if_link.h
++++ b/include/uapi/linux/if_link.h
+@@ -1234,6 +1234,7 @@ enum {
+ #define RMNET_FLAGS_INGRESS_MAP_CKSUMV4           (1U << 2)
+ #define RMNET_FLAGS_EGRESS_MAP_CKSUMV4            (1U << 3)
+ #define RMNET_FLAGS_INGRESS_MAP_CKSUMV5           (1U << 4)
++#define RMNET_FLAGS_EGRESS_MAP_CKSUMV5            (1U << 5)
+ 
+ enum {
+ 	IFLA_RMNET_UNSPEC,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Sean
-
-
-> Both link-lane and link-rate specified at dtsi are for the limitation of
-> Trogdor hardware platform.
-> Both link-lane and link-rate specified at dtsi are NOT for panel since
-> panel have specified its capability at its DPCD.
->
->
->
->
->
->
->
->
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
