@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB0A32172F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E71232175E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:49:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbhBVMnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:43:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
+        id S231599AbhBVMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:46:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230516AbhBVMRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:17:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D842B64F00;
-        Mon, 22 Feb 2021 12:17:02 +0000 (UTC)
+        id S230527AbhBVMRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:17:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4547A64F0D;
+        Mon, 22 Feb 2021 12:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996223;
-        bh=/xmGoCgABF1f5UabHb4jBUvs5ctjYKuG4H3qs4tdsI4=;
+        s=korg; t=1613996225;
+        bh=In9cRPXkUPqty5EIdtKMwciDBWNm5gmKCa+LSHFmNlo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tV6zr2TY2htwPwbdaru2J5CG4j5Iu7NnnKFOZUZ6kLYgSTTm5OAT2upGnnLP59ofg
-         2JosM+KBhqm4jk827HzSuaOa2wvYojLWrHzedFNMhFna3VZY7tsQoYLiWVFvwLnaXX
-         oM2sP2TP+5hZH4+phpn8cvsbGqCjO26QO72zAZcM=
+        b=lVDBkKUI9dwHWX4efJp3feUZJObR37z4Wn+C7tXer43BNZ/N/Y6Q3jZ9i6SUdA+3I
+         4Anzu7+7CctVQakkSyRQWju2X2zFoF64uPJiK/eZ5FGHKNmdbSCeZD2bNIHRjqoQaM
+         NGIfaT9wtbphQEQ9fTvMDQexbqcC8d54i5FE15z0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Michael Labriola <michael.d.labriola@gmail.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Miklos Szeredi <mszeredi@redhat.com>,
+        stable@vger.kernel.org, Victor Lu <victorchengchi.lu@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Anson Jacob <Anson.Jacob@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 08/50] ovl: skip getxattr of security labels
-Date:   Mon, 22 Feb 2021 13:12:59 +0100
-Message-Id: <20210222121021.769360483@linuxfoundation.org>
+Subject: [PATCH 4.19 09/50] drm/amd/display: Fix dc_sink kref count in emulated_link_detect
+Date:   Mon, 22 Feb 2021 13:13:00 +0100
+Message-Id: <20210222121021.864479937@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
 References: <20210222121019.925481519@linuxfoundation.org>
@@ -42,72 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amir Goldstein <amir73il@gmail.com>
+From: Victor Lu <victorchengchi.lu@amd.com>
 
-[ Upstream commit 03fedf93593c82538b18476d8c4f0e8f8435ea70 ]
+[ Upstream commit 3ddc818d9bb877c64f5c649beab97af86c403702 ]
 
-When inode has no listxattr op of its own (e.g. squashfs) vfs_listxattr
-calls the LSM inode_listsecurity hooks to list the xattrs that LSMs will
-intercept in inode_getxattr hooks.
+[why]
+prev_sink is not used anywhere else in the function and the reference to
+it from dc_link is replaced with a new dc_sink.
 
-When selinux LSM is installed but not initialized, it will list the
-security.selinux xattr in inode_listsecurity, but will not intercept it
-in inode_getxattr.  This results in -ENODATA for a getxattr call for an
-xattr returned by listxattr.
+[how]
+Change dc_sink_retain(prev_sink) to dc_sink_release(prev_sink).
 
-This situation was manifested as overlayfs failure to copy up lower
-files from squashfs when selinux is built-in but not initialized,
-because ovl_copy_xattr() iterates the lower inode xattrs by
-vfs_listxattr() and vfs_getxattr().
-
-ovl_copy_xattr() skips copy up of security labels that are indentified by
-inode_copy_up_xattr LSM hooks, but it does that after vfs_getxattr().
-Since we are not going to copy them, skip vfs_getxattr() of the security
-labels.
-
-Reported-by: Michael Labriola <michael.d.labriola@gmail.com>
-Tested-by: Michael Labriola <michael.d.labriola@gmail.com>
-Link: https://lore.kernel.org/linux-unionfs/2nv9d47zt7.fsf@aldarion.sourceruckus.org/
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Victor Lu <victorchengchi.lu@amd.com>
+Reviewed-by: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
+Acked-by: Anson Jacob <Anson.Jacob@amd.com>
+Tested-by: Daniel Wheeler <daniel.wheeler@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/overlayfs/copy_up.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-index 6eb0b882ad231..e164f489d01d9 100644
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@ -79,6 +79,14 @@ int ovl_copy_xattr(struct dentry *old, struct dentry *new)
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 3b07a316680c2..7b00e96705b6d 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -668,8 +668,8 @@ static void emulated_link_detect(struct dc_link *link)
+ 	link->type = dc_connection_none;
+ 	prev_sink = link->local_sink;
  
- 		if (ovl_is_private_xattr(name))
- 			continue;
-+
-+		error = security_inode_copy_up_xattr(name);
-+		if (error < 0 && error != -EOPNOTSUPP)
-+			break;
-+		if (error == 1) {
-+			error = 0;
-+			continue; /* Discard */
-+		}
- retry:
- 		size = vfs_getxattr(old, name, value, value_size);
- 		if (size == -ERANGE)
-@@ -102,13 +110,6 @@ retry:
- 			goto retry;
- 		}
+-	if (prev_sink != NULL)
+-		dc_sink_retain(prev_sink);
++	if (prev_sink)
++		dc_sink_release(prev_sink);
  
--		error = security_inode_copy_up_xattr(name);
--		if (error < 0 && error != -EOPNOTSUPP)
--			break;
--		if (error == 1) {
--			error = 0;
--			continue; /* Discard */
--		}
- 		error = vfs_setxattr(new, name, value, size, 0);
- 		if (error)
- 			break;
+ 	switch (link->connector_signal) {
+ 	case SIGNAL_TYPE_HDMI_TYPE_A: {
 -- 
 2.27.0
 
