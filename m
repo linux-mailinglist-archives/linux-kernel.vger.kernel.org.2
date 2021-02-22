@@ -2,94 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF78321F1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C12B6321F20
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 19:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhBVSZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 13:25:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232521AbhBVSZm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 13:25:42 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FEB3C06174A;
-        Mon, 22 Feb 2021 10:25:01 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d11so3310612plo.8;
-        Mon, 22 Feb 2021 10:25:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CvSdoLrnq1mY4p0kCiD4et6I75dXHqRAmFnkSEEMGFo=;
-        b=rk9mbvOFGbi1VRL0Xfee+Dm/5QGS91WtRKYusoJo2ulCN8hzdUVEmS1xltdmtmt5qs
-         dEgPJR0dQzAONjFXhdKtHhdDz85ICUdHLqMobIX+d1+WhgmsgPLlDJdA3faHF7YXTNQJ
-         wiFVP47g72uvZSXhvBou69FJmn0ffAO2dvjnYOXPqPDb7J2xTbiI4BwNnJd70IFKjhyS
-         D8/EQKciL19yNhMuW+Xti9h9NTrv8lWGDCOTS6qE64eQyCbYQWqoftoQ7Oup7HW9M72y
-         u/4HAXe2XZqx6qqis3BBYRBbnfvTwml0rF56zVgSdIxkkxPIt38SLqd57cbPlN1pLXdB
-         iLSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CvSdoLrnq1mY4p0kCiD4et6I75dXHqRAmFnkSEEMGFo=;
-        b=GvS7O0SIZSkeOHevc5miSvCOOZrA/QzBx/YIfvQvG/0dNJoGymStTQ02HXMMv41zPT
-         JotbfR/pVeiiwh+7dTrKBq+RO/qUewxhc7GFHkmbh5SjP3QkBXsGgzHxEJcsgArAU5RO
-         aN7/n6lcuTxnfV2MmBdD7l90LQfezDXnR+RXg9KqwK2RAInEsuUib7HIr5+4ZRdOusbW
-         sRfiNFmiI9llzAwguJpRsuYdIIyhUjSXPR96tbbMc/nEfGYF+8bmgXaAzBzKBf8GLCPL
-         edDgAqrbHilTUdOTpbJ5Ly7Trexq0Y6AwQkTNu9w+MN7bryvrc8ONQ6aeRzw5TcK0GEr
-         x2fg==
-X-Gm-Message-State: AOAM530Tf1ndIFfQ4cDJbY6CE5L6c6X0YAHutGfJ9Gnyw9JifSOIKtbl
-        87j2rPrDdkG4xwRtc4w+W2y8aVHD240=
-X-Google-Smtp-Source: ABdhPJwvqFNXoe2syHpbfM8edrjeI76jsqEKr/MEDYMG7VQAXSPBVQqQU1lc9hqDcrCXN1cC/+ZFtw==
-X-Received: by 2002:a17:90a:e547:: with SMTP id ei7mr10446283pjb.72.1614018300590;
-        Mon, 22 Feb 2021 10:25:00 -0800 (PST)
-Received: from [10.230.29.30] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 200sm22082895pfx.24.2021.02.22.10.24.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Feb 2021 10:24:59 -0800 (PST)
-Subject: Re: [PATCH 4.9 00/49] 4.9.258-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210222121022.546148341@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <c22c1cf0-3d2f-cdde-241d-16aa6026492a@gmail.com>
-Date:   Mon, 22 Feb 2021 10:24:52 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.7.1
+        id S232604AbhBVS05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 13:26:57 -0500
+Received: from mga01.intel.com ([192.55.52.88]:62827 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232518AbhBVS0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 13:26:52 -0500
+IronPort-SDR: YE7qOfgqzVJ03jEFOYfvxL3p3rzbzKhgvjBbGF1NguSjFz2tvWLmUNneK7G86p1iN4ZKem8cIP
+ scRPwmuaJemw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="203949371"
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="203949371"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 10:26:12 -0800
+IronPort-SDR: 0qqxTj2v9ZB7ahCiyCkaDmxYP0H4fZ4g9DdqQO4yXaO+65NS6Xys8gCi9m7EvCSj3ITCdOqCIj
+ 6aUnCoWrsZLw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.81,197,1610438400"; 
+   d="scan'208";a="498667190"
+Received: from lkp-server01.sh.intel.com (HELO 16660e54978b) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Feb 2021 10:26:10 -0800
+Received: from kbuild by 16660e54978b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lEFuM-0000au-18; Mon, 22 Feb 2021 18:26:10 +0000
+Date:   Tue, 23 Feb 2021 02:25:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 2126d722fe93be10880b3ee5c1593137ea801d06
+Message-ID: <6033f720.tEeV9ZaH0d5gJf10%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210222121022.546148341@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 2126d722fe93be10880b3ee5c1593137ea801d06  Merge branch 'sched/smp'
 
+elapsed time: 729m
 
-On 2/22/2021 4:35 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.258 release.
-> There are 49 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 24 Feb 2021 12:07:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.258-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
+configs tested: 120
+configs skipped: 2
 
-On ARCH_BRCMST, 32-bit and 64-bit ARM:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                           mtx1_defconfig
+mips                malta_qemu_32r6_defconfig
+powerpc                        fsp2_defconfig
+h8300                            alldefconfig
+powerpc                        icon_defconfig
+powerpc                     redwood_defconfig
+powerpc                    adder875_defconfig
+arm                     am200epdkit_defconfig
+powerpc                 canyonlands_defconfig
+sh                            hp6xx_defconfig
+sh                     sh7710voipgw_defconfig
+sh                         apsh4a3a_defconfig
+powerpc                      ppc44x_defconfig
+sh                          polaris_defconfig
+powerpc                          g5_defconfig
+mips                          malta_defconfig
+arc                        nsim_700_defconfig
+alpha                            allyesconfig
+sh                           se7705_defconfig
+powerpc                      chrp32_defconfig
+ia64                        generic_defconfig
+powerpc                      bamboo_defconfig
+arm                          simpad_defconfig
+arc                     nsimosci_hs_defconfig
+arm                       netwinder_defconfig
+arm                           spitz_defconfig
+m68k                           sun3_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                     mpc5200_defconfig
+arm                     davinci_all_defconfig
+mips                         tb0219_defconfig
+arm                        keystone_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                      makalu_defconfig
+powerpc                      walnut_defconfig
+arm                         s3c6400_defconfig
+powerpc                     ep8248e_defconfig
+arm                           u8500_defconfig
+sh                             shx3_defconfig
+arm                            qcom_defconfig
+powerpc                 mpc8560_ads_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                      ppc6xx_defconfig
+ia64                             alldefconfig
+arm                            mps2_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20210222
+x86_64               randconfig-a002-20210222
+x86_64               randconfig-a003-20210222
+x86_64               randconfig-a005-20210222
+x86_64               randconfig-a006-20210222
+x86_64               randconfig-a004-20210222
+i386                 randconfig-a005-20210222
+i386                 randconfig-a006-20210222
+i386                 randconfig-a004-20210222
+i386                 randconfig-a003-20210222
+i386                 randconfig-a001-20210222
+i386                 randconfig-a002-20210222
+i386                 randconfig-a013-20210222
+i386                 randconfig-a012-20210222
+i386                 randconfig-a011-20210222
+i386                 randconfig-a014-20210222
+i386                 randconfig-a016-20210222
+i386                 randconfig-a015-20210222
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a015-20210222
+x86_64               randconfig-a011-20210222
+x86_64               randconfig-a012-20210222
+x86_64               randconfig-a016-20210222
+x86_64               randconfig-a014-20210222
+x86_64               randconfig-a013-20210222
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
