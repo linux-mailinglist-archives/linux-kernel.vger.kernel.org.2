@@ -2,140 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7381C3217E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D210E321830
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 14:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhBVNCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 08:02:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhBVMhr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:37:47 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67531C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:37:07 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id h98so14097007wrh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 04:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HiGNj3+R0Ym9jt9EX62JF7a9E4o3GHcwy0UNEFOwwjQ=;
-        b=efwJF4iNOmFW20peeakaKV2KAdXdCjDp6sNK0+AHQcjcgmj83HQDcfOabrsXcZQIAs
-         C+sjs989q1lerWvYIFrPsVWQk1p9S4LUycIcJ0PZZLC86r4gpr6oFaZ97rcVhIADUvOG
-         +aFLXgpowd+xC7dM20hME0hRh04gYbBrkzYfT5vRrk3X4sA24T5dU67+MyTCEeMX+HXq
-         BX9lqZ5awoD2bvd9Qc4BxdE+aNuHNJogu1TdEyo9aa0yg/w3raL/NdOGM9rSceleb4l9
-         ayLw52Utu+rYN0869rt0kfHJulxEbByVg3Kxlr0cHTWN0cDtbHG/1pNaEC2wVO2i5ZZx
-         lsyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HiGNj3+R0Ym9jt9EX62JF7a9E4o3GHcwy0UNEFOwwjQ=;
-        b=QGFftN4NwZ17F4R/0UCr7j4I0y3kvBJ+39NsPS2/336fNF2t5eaYMnxL6QY6zRYUlT
-         bknL/Z1mMOjuEqkF/ujcJLnW3BNoX45QxHgqgWpq1q/5VRGsMA0FA/EpNFQLj4Rce3zg
-         U+WrqvPeLZaKsHDl5K6xrqbBjeiiaDt7YZol+qYGfDyZ1QAgUYX0QZhd/BpeplYOHpwL
-         V5dBzfJtiZy7IjHP4Cpy6eKLeQyGkq1csffT0vxuzc8XOLQ+M3f6nkNn3h+3D0O2cWId
-         Y/Alam07MFHJS/cAyd0BXtsNVqtGQ8K2cQTppFkJ0XZnUn4U8V84HbFV3+c1x3jH1f+T
-         TBWQ==
-X-Gm-Message-State: AOAM532V7Phx55nkldA4nIm3aPfatCh1j6I52SOtSY7wUvkvJ3Ir+TaM
-        9QaxPZrUYlDGu/PdQoFhyyTtR5YGKv7Jxg==
-X-Google-Smtp-Source: ABdhPJy9o9rKOv95iSvpSUU2QrbdY7k9XakdSdgByr6YZQ+0bqdtv4QkCaM/HKsrIw9Ol7KIkzGMJA==
-X-Received: by 2002:a5d:6706:: with SMTP id o6mr13570370wru.235.1613997425876;
-        Mon, 22 Feb 2021 04:37:05 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id t11sm17633432wmb.32.2021.02.22.04.37.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Feb 2021 04:37:05 -0800 (PST)
-Subject: Re: [PATCH 3/3] fastrpc: remove redundant fastrpc_map_create() call
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210218032055.28247-1-jonathan@marek.ca>
- <20210218032055.28247-4-jonathan@marek.ca>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <58e361e0-441e-fd71-362a-398dcb84f888@linaro.org>
-Date:   Mon, 22 Feb 2021 12:37:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S229996AbhBVNMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 08:12:06 -0500
+Received: from mx2.suse.de ([195.135.220.15]:59322 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230395AbhBVMjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:39:05 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613997499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5gs7qei1LjxxGt8o7TsGXkD1pF4Wvb6ryeWApuTDRZU=;
+        b=NUEf0Dr1i+sQwilBf0DBdSEBzWMb68dKIInfyq+tZgg4UWMYR3bK7jVII4F1gC/03VljdQ
+        pLOH96CGNx4A9RHLexu1yW0se6vUsPtXf9vGtc492wkhvWwL+N0/hB2GX/QBtlke/5VPqo
+        7UnIaz5/LGQnFaMi8F9t4PJSmCKP72M=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E7C0AAD2B;
+        Mon, 22 Feb 2021 12:38:18 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 13:38:17 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     willy@infradead.org, andriy.shevchenko@linux.intel.com,
+        david@redhat.com, linmiaohe@huawei.com, vbabka@suse.cz,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        rostedt@goodmis.org, sergey.senozhatsky@gmail.com, joe@perches.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 3/3] vsprintf: dump full information of page flags in
+ pGp
+Message-ID: <YDOluaRK2CHtQyQD@alley>
+References: <20210215155141.47432-1-laoar.shao@gmail.com>
+ <20210215155141.47432-4-laoar.shao@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210218032055.28247-4-jonathan@marek.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210215155141.47432-4-laoar.shao@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
+
+first, I am sorry for the late reply. I have marked the thread as
+proceed by mistake last week...
 
 
-On 18/02/2021 03:20, Jonathan Marek wrote:
-> fastrpc_internal_invoke() will call fastrpc_map_create, so there is no
-> point in having it called here. This does change the behavior somewhat as
-> fastrpc_internal_invoke() will release the map afterwards, but that's what
-> we want to happen in this case.
-
-This will crash the DSP as you will be freeing the init process memory 
-while it is actively using it!
-
-The shell/init process is created as part of user process and it should 
-be valid until the user process is valid! We can not free it when the 
-invoke is finished/acked as we normally do for other invoke context!
-
-In some firmwares the shell process is statically built into the DSP 
-firmware which might work! But other normal cases are totally broken by 
-this patch!
-
---srini
-
+On Mon 2021-02-15 23:51:41, Yafang Shao wrote:
+> Currently the pGp only shows the names of page flags, rather than
+> the full information including section, node, zone, last cpupid and
+> kasan tag. While it is not easy to parse these information manually
+> because there're so many flavors. Let's interpret them in pGp as well.
 > 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->   drivers/misc/fastrpc.c | 12 +-----------
->   1 file changed, 1 insertion(+), 11 deletions(-)
+> To be compitable with the existed format of pGp, the new introduced ones
+> also use '|' as the separator, then the user tools parsing pGp won't
+> need to make change, suggested by Matthew. The new information is
+> tracked onto the end of the existed one.
 > 
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index 170352b43ab6..ccad9f5f5e2f 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -1013,7 +1013,6 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
->   	struct fastrpc_init_create init;
->   	struct fastrpc_invoke_args *args;
->   	struct fastrpc_phy_page pages[1];
-> -	struct fastrpc_map *map = NULL;
->   	struct fastrpc_buf *imem = NULL;
->   	int memlen;
->   	int err;
-> @@ -1049,18 +1048,12 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
->   	inbuf.siglen = init.siglen;
->   	fl->pd = USER_PD;
->   
-> -	if (init.filelen && init.filefd) {
-> -		err = fastrpc_map_create(fl, init.filefd, init.filelen, &map);
-> -		if (err)
-> -			goto err;
-> -	}
-> - >   	memlen = ALIGN(max(INIT_FILELEN_MAX, (int)init.filelen * 4),
->   		       1024 * 1024);
->   	err = fastrpc_buf_alloc(fl, fl->sctx->dev, memlen,
->   				&imem);
->   	if (err)
-> -		goto err_alloc;
-> +		goto err;
->   
->   	fl->init_mem = imem;
->   	args[0].ptr = (u64)(uintptr_t)&inbuf;
-> @@ -1106,9 +1099,6 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
->   err_invoke:
->   	fl->init_mem = NULL;
->   	fastrpc_buf_free(imem);
-> -err_alloc:
-> -	if (map)
-> -		fastrpc_map_put(map);
->   err:
->   	kfree(args);
->   
+> One example of the output in mm/slub.c as follows,
+> - Before the patch,
+> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
 > 
+> - After the patch,
+> [ 8448.272530] Slab 0x0000000090797883 objects=33 used=3 fp=0x00000000790f1c26 flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> 
+> The documentation and test cases are also updated. The output of the
+> test cases as follows,
+> [11585.830272] test_printf: loaded.
+> [11585.830454] test_printf: all 388 tests passed
+> [11585.831401] test_printf: unloaded.
+> 
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> +static
+> +char *format_page_flags(char *buf, char *end, unsigned long flags)
+> +{
+> +	unsigned long main_flags = flags & (BIT(NR_PAGEFLAGS) - 1);
+> +	bool append = false;
+> +	int i;
+> +
+> +	/* Page flags from the main area. */
+> +	if (main_flags) {
+> +		buf = format_flags(buf, end, main_flags, pageflag_names);
+> +		append = true;
+> +	}
+> +
+> +	/* Page flags from the fields area */
+> +	for (i = 0; i < ARRAY_SIZE(pff); i++) {
+> +		/* Skip undefined fields. */
+> +		if (!pff[i].width)
+> +			continue;
+> +
+> +		/* Format: Flag Name + '=' (equals sign) + Number + '|' (separator) */
+> +		if (append) {
+> +			if (buf < end)
+> +				*buf = '|';
+> +			buf++;
+> +		}
+> +
+> +		buf = string(buf, end, pff[i].name, *pff[i].spec);
+
+I have found one more small issue.
+
+The purpose of the flag-specific printk_spec is to define the format
+how the value is printed. The name of the flag should be printed
+using default_str_spec.
+
+It works because the string is printed as-is with both
+default_dec_spec and default_flag_spec. But it would be better
+to use the string format.
+
+> +		if (buf < end)
+> +			*buf = '=';
+> +		buf++;
+> +		buf = number(buf, end, (flags >> pff[i].shift) & pff[i].mask,
+> +			     *pff[i].spec);
+> +
+> +		append = true;
+> +	}
+> +
+> +	return buf;
+> +}
+
+Otherwise, the patch looks to me. The issue is cosmetic and might be
+fixed either by re-spinning just this patch or by a followup patch.
+Either way, feel free to use:
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+
+Another question where to push this change. It is pity the we
+finalized it in the middle of the merge window. It has to spend
+at least few days in linux-next.
+
+I would like to hear from Andy before I push it into linux-next.
+There is still theoretical chance to get it into 5.12 when Linus
+prolongs the merge window by one week. it has been delayed by
+a long lasting power outage.
+
+Best Regards,
+Petr
