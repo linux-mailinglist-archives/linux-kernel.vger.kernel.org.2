@@ -2,166 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEAE5321473
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEBE321476
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 11:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230395AbhBVKvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 05:51:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57242 "EHLO
+        id S230409AbhBVKwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 05:52:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56060 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230338AbhBVKvs (ORCPT
+        by vger.kernel.org with ESMTP id S230396AbhBVKv5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 05:51:48 -0500
+        Mon, 22 Feb 2021 05:51:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1613991021;
+        s=mimecast20190719; t=1613991030;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=B5Wwlru6GdzCo3Pp8y35Np82fHYLWpJqEicYWng65cw=;
-        b=FdvkyOBmZeei7QJsFpH+WCZmLFOVd6LoIZY5GUKnc7ZOnIDanPNF3bPJksp96A3LTnZhMG
-        2Hr4YYlFDYQwwVyaDkONmEVs/rafO0bXPnvJ5OHitZBTzHzssHgORvDTaQnJ4rAuqSwBOV
-        LzZUT7Jlq24YnYg2C4AlWC3WN3VeuGQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-367-FssqEYNDO-izvW_G71aw3w-1; Mon, 22 Feb 2021 05:50:17 -0500
-X-MC-Unique: FssqEYNDO-izvW_G71aw3w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 37EEA100CC88;
-        Mon, 22 Feb 2021 10:50:12 +0000 (UTC)
-Received: from [10.36.115.16] (ovpn-115-16.ams2.redhat.com [10.36.115.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 61DED7771A;
-        Mon, 22 Feb 2021 10:50:03 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     jejb@linux.ibm.com, Michal Hocko <mhocko@suse.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-References: <20210214091954.GM242749@kernel.org>
- <052DACE9-986B-424C-AF8E-D6A4277DE635@redhat.com>
- <244f86cba227fa49ca30cd595c4e5538fe2f7c2b.camel@linux.ibm.com>
- <YCo7TqUnBdgJGkwN@dhcp22.suse.cz>
- <be1d821d3f0aec24ad13ca7126b4359822212eb0.camel@linux.ibm.com>
- <YCrJjYmr7A2nO6lA@dhcp22.suse.cz>
- <12c3890b233c8ec8e3967352001a7b72a8e0bfd0.camel@linux.ibm.com>
- <dfd7db5c-a8c7-0676-59f8-70aa6bcaabe7@redhat.com>
- <000cfaa0a9a09f07c5e50e573393cda301d650c9.camel@linux.ibm.com>
- <5a8567a9-6940-c23f-0927-e4b5c5db0d5e@redhat.com>
- <b58debfe598331791ecc238a6bf8d2cf1762203a.camel@linux.ibm.com>
- <304e4c9d-81aa-20ac-cfbe-245ed0de9a86@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v17 07/10] mm: introduce memfd_secret system call to
- create "secret" memory areas
-Message-ID: <878ca057-3262-179d-eb9b-a26829307d09@redhat.com>
-Date:   Mon, 22 Feb 2021 11:50:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=r/umkKobSl1oJ5nCTeCGkktIBMKXA0l63/V8yWAiXgY=;
+        b=AKrRLCQGWCHFEwreUJmD5KHxfPRB0e45fG4PoO2NxVuL9v1w/ITXwEGT2tIBfjfA9+/fHA
+        SH/O3kf1lzk+kwlJF2Lcr1uK/tw084FI/daYMbySWiZXo7fuKwmOcxR22DgXv7/Y00dbpp
+        RTieycYtDPww80EYPQ/+qQ/KaOLbbm4=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-599-I0NJb_LfNl23NUQG00pIMg-1; Mon, 22 Feb 2021 05:50:28 -0500
+X-MC-Unique: I0NJb_LfNl23NUQG00pIMg-1
+Received: by mail-wm1-f71.google.com with SMTP id p8so4867954wmq.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Feb 2021 02:50:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r/umkKobSl1oJ5nCTeCGkktIBMKXA0l63/V8yWAiXgY=;
+        b=JLEOJJqF+LV9DAhoYYRYi+TaOHWWnIY2/p1MNg66QHam+gEOfJygWs7+A+gvz9LwdL
+         jFHvdCMz9qsOOCjZwkK1S7n7O6NAX4hEJlx+mhjsLzPH8tChVBXmQqg7/k6jd0+42W5f
+         JJDC6uZr/yR0dG70KILqgKyQcDYhAH7RpvWQIdkrMt8o0cllzQlHR2Xv1hBbp71eU41n
+         EzcmfxKV/O5urMjsR2EdtBpHRTp8PaUNHA0J4d3IE8L19TjZW5JBACGN/6E+SgbRaz9S
+         +ZNOHkN0KuShmO17zPkWE4Y6Ly2A/PXjTHXCZp4IQb3IBulPU+cv7PGiFNHI23bB4xTu
+         B9cw==
+X-Gm-Message-State: AOAM532+7cIVoy52Nncm4fT4dWnrdJHY3V8o5STLrcOvzlfxO7HCl501
+        ynHToZDHdoYkuzGmEbEfXI/a4Z3oy/9SQTebXHEsWp0Hs6vlxiHiby2S9O/m6zyauq8Ido7PWxe
+        LNmzgtTs6gq7d9BKUmIgUJurY
+X-Received: by 2002:a1c:356:: with SMTP id 83mr20229596wmd.31.1613991027236;
+        Mon, 22 Feb 2021 02:50:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwGeo1jDQvRWIZunRRhVDnke7H4Q4D0daD7CIHbY/NWBlQs7bEj3/GryyH4ccKUfYqegxDaVg==
+X-Received: by 2002:a1c:356:: with SMTP id 83mr20229567wmd.31.1613991027006;
+        Mon, 22 Feb 2021 02:50:27 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id v15sm28696163wra.61.2021.02.22.02.50.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 02:50:26 -0800 (PST)
+Date:   Mon, 22 Feb 2021 11:50:23 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stsp2@yandex.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v5 01/19] af_vsock: update functions for connectible
+ socket
+Message-ID: <20210222105023.aqcu25irkeed6div@steredhat>
+References: <20210218053347.1066159-1-arseny.krasnov@kaspersky.com>
+ <20210218053607.1066783-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <304e4c9d-81aa-20ac-cfbe-245ed0de9a86@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210218053607.1066783-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.02.21 10:38, David Hildenbrand wrote:
-> On 17.02.21 17:19, James Bottomley wrote:
->> On Tue, 2021-02-16 at 18:16 +0100, David Hildenbrand wrote:
->> [...]
->>>>>     The discussion regarding migratability only really popped up
->>>>> because this is a user-visible thing and not being able to
->>>>> migrate can be a real problem (fragmentation, ZONE_MOVABLE, ...).
->>>>
->>>> I think the biggest use will potentially come from hardware
->>>> acceleration.  If it becomes simple to add say encryption to a
->>>> secret page with no cost, then no flag needed.  However, if we only
->>>> have a limited number of keys so once we run out no more encrypted
->>>> memory then it becomes a costly resource and users might want a
->>>> choice of being backed by encryption or not.
->>>
->>> Right. But wouldn't HW support with configurable keys etc. need more
->>> syscall parameters (meaning, even memefd_secret() as it is would not
->>> be sufficient?). I suspect the simplistic flag approach might not
->>> be sufficient. I might be wrong because I have no clue about MKTME
->>> and friends.
->>
->> The theory I was operating under is key management is automatic and
->> hidden, but key scarcity can't be, so if you flag requesting hardware
->> backing then you either get success (the kernel found a key) or failure
->> (the kernel is out of keys).  If we actually want to specify the key
->> then we need an extra argument and we *must* have a new system call.
->>
->>> Anyhow, I still think extending memfd_create() might just be good
->>> enough - at least for now.
->>
->> I really think this is the wrong approach for a user space ABI.  If we
->> think we'll ever need to move to a separate syscall, we should begin
->> with one.  The pain of trying to shift userspace from memfd_create to a
->> new syscall would be enormous.  It's not impossible (see clone3) but
->> it's a pain we should avoid if we know it's coming.
-> 
-> Sorry for the late reply, there is just too much going on :)
-> 
-> *If* we ever realize we need to pass more parameters we can easily have
-> a new syscall for that purpose. *Then*, we know how that syscall will
-> look like. Right now, it's just pure speculation.
-> 
-> Until then, going with memfd_create() works just fine IMHO.
-> 
-> The worst think that could happen is that we might not be able to create
-> all fancy sectremem flavors in the future via memfd_create() but only
-> via different, highly specialized syscall. I don't see a real problem
-> with that.
-> 
+On Thu, Feb 18, 2021 at 08:36:03AM +0300, Arseny Krasnov wrote:
+>This prepares af_vsock.c for SEQPACKET support: some functions such
+>as setsockopt(), getsockopt(), connect(), recvmsg(), sendmsg() are
+>shared between both types of sockets, so rename them in general
+>manner.
+>
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> net/vmw_vsock/af_vsock.c | 64 +++++++++++++++++++++-------------------
+> 1 file changed, 34 insertions(+), 30 deletions(-)
 
-Adding to that, I'll give up arguing now as I have more important things 
-to do. It has been questioned by various people why we need a dedicate 
-syscall and at least for me, without a satisfying answer.
+IIRC I had already given my R-b to this patch. Please carry it over when 
+you post a new version.
 
-Worst thing is that we end up with a syscall that could have been 
-avoided, for example, because
-1. We add existing/future memfd_create() flags to memfd_secret() as well 
-when we need them (sealing, hugetlb., ..).
-2. We decide in the future to still add MFD_SECRET support to 
-memfd_secret().
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-So be it.
-
--- 
 Thanks,
+Stefano
 
-David / dhildenb
+>
+>diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>index 5546710d8ac1..656370e11707 100644
+>--- a/net/vmw_vsock/af_vsock.c
+>+++ b/net/vmw_vsock/af_vsock.c
+>@@ -604,8 +604,8 @@ static void vsock_pending_work(struct work_struct *work)
+>
+> /**** SOCKET OPERATIONS ****/
+>
+>-static int __vsock_bind_stream(struct vsock_sock *vsk,
+>-			       struct sockaddr_vm *addr)
+>+static int __vsock_bind_connectible(struct vsock_sock *vsk,
+>+				    struct sockaddr_vm *addr)
+> {
+> 	static u32 port;
+> 	struct sockaddr_vm new_addr;
+>@@ -685,7 +685,7 @@ static int __vsock_bind(struct sock *sk, struct sockaddr_vm *addr)
+> 	switch (sk->sk_socket->type) {
+> 	case SOCK_STREAM:
+> 		spin_lock_bh(&vsock_table_lock);
+>-		retval = __vsock_bind_stream(vsk, addr);
+>+		retval = __vsock_bind_connectible(vsk, addr);
+> 		spin_unlock_bh(&vsock_table_lock);
+> 		break;
+>
+>@@ -767,6 +767,11 @@ static struct sock *__vsock_create(struct net *net,
+> 	return sk;
+> }
+>
+>+static bool sock_type_connectible(u16 type)
+>+{
+>+	return type == SOCK_STREAM;
+>+}
+>+
+> static void __vsock_release(struct sock *sk, int level)
+> {
+> 	if (sk) {
+>@@ -785,7 +790,7 @@ static void __vsock_release(struct sock *sk, int level)
+>
+> 		if (vsk->transport)
+> 			vsk->transport->release(vsk);
+>-		else if (sk->sk_type == SOCK_STREAM)
+>+		else if (sock_type_connectible(sk->sk_type))
+> 			vsock_remove_sock(vsk);
+>
+> 		sock_orphan(sk);
+>@@ -947,7 +952,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 	lock_sock(sk);
+> 	if (sock->state == SS_UNCONNECTED) {
+> 		err = -ENOTCONN;
+>-		if (sk->sk_type == SOCK_STREAM)
+>+		if (sock_type_connectible(sk->sk_type))
+> 			goto out;
+> 	} else {
+> 		sock->state = SS_DISCONNECTING;
+>@@ -960,7 +965,7 @@ static int vsock_shutdown(struct socket *sock, int mode)
+> 		sk->sk_shutdown |= mode;
+> 		sk->sk_state_change(sk);
+>
+>-		if (sk->sk_type == SOCK_STREAM) {
+>+		if (sock_type_connectible(sk->sk_type)) {
+> 			sock_reset_flag(sk, SOCK_DONE);
+> 			vsock_send_shutdown(sk, mode);
+> 		}
+>@@ -1015,7 +1020,7 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
+> 		if (!(sk->sk_shutdown & SEND_SHUTDOWN))
+> 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
+>
+>-	} else if (sock->type == SOCK_STREAM) {
+>+	} else if (sock_type_connectible(sk->sk_type)) {
+> 		const struct vsock_transport *transport;
+>
+> 		lock_sock(sk);
+>@@ -1262,8 +1267,8 @@ static void vsock_connect_timeout(struct work_struct *work)
+> 	sock_put(sk);
+> }
+>
+>-static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
+>-				int addr_len, int flags)
+>+static int vsock_connect(struct socket *sock, struct sockaddr *addr,
+>+			 int addr_len, int flags)
+> {
+> 	int err;
+> 	struct sock *sk;
+>@@ -1413,7 +1418,7 @@ static int vsock_accept(struct socket *sock, struct socket *newsock, int flags,
+>
+> 	lock_sock(listener);
+>
+>-	if (sock->type != SOCK_STREAM) {
+>+	if (!sock_type_connectible(sock->type)) {
+> 		err = -EOPNOTSUPP;
+> 		goto out;
+> 	}
+>@@ -1490,7 +1495,7 @@ static int vsock_listen(struct socket *sock, int backlog)
+>
+> 	lock_sock(sk);
+>
+>-	if (sock->type != SOCK_STREAM) {
+>+	if (!sock_type_connectible(sk->sk_type)) {
+> 		err = -EOPNOTSUPP;
+> 		goto out;
+> 	}
+>@@ -1534,11 +1539,11 @@ static void vsock_update_buffer_size(struct vsock_sock *vsk,
+> 	vsk->buffer_size = val;
+> }
+>
+>-static int vsock_stream_setsockopt(struct socket *sock,
+>-				   int level,
+>-				   int optname,
+>-				   sockptr_t optval,
+>-				   unsigned int optlen)
+>+static int vsock_connectible_setsockopt(struct socket *sock,
+>+					int level,
+>+					int optname,
+>+					sockptr_t optval,
+>+					unsigned int optlen)
+> {
+> 	int err;
+> 	struct sock *sk;
+>@@ -1616,10 +1621,10 @@ static int vsock_stream_setsockopt(struct socket *sock,
+> 	return err;
+> }
+>
+>-static int vsock_stream_getsockopt(struct socket *sock,
+>-				   int level, int optname,
+>-				   char __user *optval,
+>-				   int __user *optlen)
+>+static int vsock_connectible_getsockopt(struct socket *sock,
+>+					int level, int optname,
+>+					char __user *optval,
+>+					int __user *optlen)
+> {
+> 	int err;
+> 	int len;
+>@@ -1687,8 +1692,8 @@ static int vsock_stream_getsockopt(struct socket *sock,
+> 	return 0;
+> }
+>
+>-static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+>-				size_t len)
+>+static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+>+				     size_t len)
+> {
+> 	struct sock *sk;
+> 	struct vsock_sock *vsk;
+>@@ -1827,10 +1832,9 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+> 	return err;
+> }
+>
+>-
+> static int
+>-vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>-		     int flags)
+>+vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>+			  int flags)
+> {
+> 	struct sock *sk;
+> 	struct vsock_sock *vsk;
+>@@ -2006,7 +2010,7 @@ static const struct proto_ops vsock_stream_ops = {
+> 	.owner = THIS_MODULE,
+> 	.release = vsock_release,
+> 	.bind = vsock_bind,
+>-	.connect = vsock_stream_connect,
+>+	.connect = vsock_connect,
+> 	.socketpair = sock_no_socketpair,
+> 	.accept = vsock_accept,
+> 	.getname = vsock_getname,
+>@@ -2014,10 +2018,10 @@ static const struct proto_ops vsock_stream_ops = {
+> 	.ioctl = sock_no_ioctl,
+> 	.listen = vsock_listen,
+> 	.shutdown = vsock_shutdown,
+>-	.setsockopt = vsock_stream_setsockopt,
+>-	.getsockopt = vsock_stream_getsockopt,
+>-	.sendmsg = vsock_stream_sendmsg,
+>-	.recvmsg = vsock_stream_recvmsg,
+>+	.setsockopt = vsock_connectible_setsockopt,
+>+	.getsockopt = vsock_connectible_getsockopt,
+>+	.sendmsg = vsock_connectible_sendmsg,
+>+	.recvmsg = vsock_connectible_recvmsg,
+> 	.mmap = sock_no_mmap,
+> 	.sendpage = sock_no_sendpage,
+> };
+>-- 
+>2.25.1
+>
 
