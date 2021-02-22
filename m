@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E073216B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0682E3216EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 13:39:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhBVMbY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 07:31:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44938 "EHLO mail.kernel.org"
+        id S231408AbhBVMjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 07:39:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230419AbhBVMPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 07:15:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9528B64DA1;
-        Mon, 22 Feb 2021 12:15:19 +0000 (UTC)
+        id S230467AbhBVMQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 07:16:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FC4F64F02;
+        Mon, 22 Feb 2021 12:16:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1613996120;
-        bh=KsqQ3uBD8Y5BptM4jjxn9N61BQOIrL3ots6oO0SgBJw=;
+        s=korg; t=1613996190;
+        bh=cMl5WW+fx0wsyVjr5ALt3IWST3sUbg5i4u6+TD+SagY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P0dNkT5++jBuBb5QieffVq7SO92VNVq51o+R6kHehkWJ5IBTaCR3e+8d8cValET9V
-         /hVIUL9RzyFGs97n3nOelmL+LP0doqkaqtqNacG5pExSyHa5WXE3C9yZSJS9Dz09ho
-         CiOz1MWX627U66ixiOYKTW4LdZEQg9RXD+GEOuK4=
+        b=xhRHknEt9Ftfa0Ww1uiw4VGjwEVsMCEoWEFEpaW8MACQQnvWktGPyVjIEL3uARw6C
+         ArISF4eZrvG2HHK+T8gPokhDKnQ2kCOKGYo9Rf/7AX0rFhuXOwNtPl5gdP4plgW+Be
+         8RmrEjYdhBVSDtoUsYBxYgrF3XQ0McmjzHq7a7Q4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jan Beulich <jbeulich@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Juergen Gross <jgross@suse.com>
-Subject: [PATCH 5.10 18/29] Xen/gntdev: correct dev_bus_addr handling in gntdev_map_grant_pages()
-Date:   Mon, 22 Feb 2021 13:13:12 +0100
-Message-Id: <20210222121022.521564108@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 22/50] netfilter: conntrack: skip identical origin tuple in same zone only
+Date:   Mon, 22 Feb 2021 13:13:13 +0100
+Message-Id: <20210222121024.266130513@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210222121019.444399883@linuxfoundation.org>
-References: <20210222121019.444399883@linuxfoundation.org>
+In-Reply-To: <20210222121019.925481519@linuxfoundation.org>
+References: <20210222121019.925481519@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,86 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jan Beulich <jbeulich@suse.com>
+From: Florian Westphal <fw@strlen.de>
 
-commit dbe5283605b3bc12ca45def09cc721a0a5c853a2 upstream.
+[ Upstream commit 07998281c268592963e1cd623fe6ab0270b65ae4 ]
 
-We may not skip setting the field in the unmap structure when
-GNTMAP_device_map is in use - such an unmap would fail to release the
-respective resources (a page ref in the hypervisor). Otoh the field
-doesn't need setting at all when GNTMAP_device_map is not in use.
+The origin skip check needs to re-test the zone. Else, we might skip
+a colliding tuple in the reply direction.
 
-To record the value for unmapping, we also better don't use our local
-p2m: In particular after a subsequent change it may not have got updated
-for all the batch elements. Instead it can simply be taken from the
-respective map's results.
+This only occurs when using 'directional zones' where origin tuples
+reside in different zones but the reply tuples share the same zone.
 
-We can additionally avoid playing this game altogether for the kernel
-part of the mappings in (x86) PV mode.
+This causes the new conntrack entry to be dropped at confirmation time
+because NAT clash resolution was elided.
 
-This is part of XSA-361.
-
-Signed-off-by: Jan Beulich <jbeulich@suse.com>
-Cc: stable@vger.kernel.org
-Reviewed-by: Stefano Stabellini <sstabellini@kernel.org>
-Signed-off-by: Juergen Gross <jgross@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 4e35c1cb9460240 ("netfilter: nf_nat: skip nat clash resolution for same-origin entries")
+Signed-off-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/xen/gntdev.c |   24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ net/netfilter/nf_conntrack_core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/xen/gntdev.c
-+++ b/drivers/xen/gntdev.c
-@@ -309,18 +309,25 @@ int gntdev_map_grant_pages(struct gntdev
- 		 * to the kernel linear addresses of the struct pages.
- 		 * These ptes are completely different from the user ptes dealt
- 		 * with find_grant_ptes.
-+		 * Note that GNTMAP_device_map isn't needed here: The
-+		 * dev_bus_addr output field gets consumed only from ->map_ops,
-+		 * and by not requesting it when mapping we also avoid needing
-+		 * to mirror dev_bus_addr into ->unmap_ops (and holding an extra
-+		 * reference to the page in the hypervisor).
- 		 */
-+		unsigned int flags = (map->flags & ~GNTMAP_device_map) |
-+				     GNTMAP_host_map;
-+
- 		for (i = 0; i < map->count; i++) {
- 			unsigned long address = (unsigned long)
- 				pfn_to_kaddr(page_to_pfn(map->pages[i]));
- 			BUG_ON(PageHighMem(map->pages[i]));
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index ad1da6b2fb607..1dceda3c0e759 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -1063,7 +1063,8 @@ nf_conntrack_tuple_taken(const struct nf_conntrack_tuple *tuple,
+ 			 * Let nf_ct_resolve_clash() deal with this later.
+ 			 */
+ 			if (nf_ct_tuple_equal(&ignored_conntrack->tuplehash[IP_CT_DIR_ORIGINAL].tuple,
+-					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple))
++					      &ct->tuplehash[IP_CT_DIR_ORIGINAL].tuple) &&
++					      nf_ct_zone_equal(ct, zone, IP_CT_DIR_ORIGINAL))
+ 				continue;
  
--			gnttab_set_map_op(&map->kmap_ops[i], address,
--				map->flags | GNTMAP_host_map,
-+			gnttab_set_map_op(&map->kmap_ops[i], address, flags,
- 				map->grants[i].ref,
- 				map->grants[i].domid);
- 			gnttab_set_unmap_op(&map->kunmap_ops[i], address,
--				map->flags | GNTMAP_host_map, -1);
-+				flags, -1);
- 		}
- 	}
- 
-@@ -336,17 +343,12 @@ int gntdev_map_grant_pages(struct gntdev
- 			continue;
- 		}
- 
-+		if (map->flags & GNTMAP_device_map)
-+			map->unmap_ops[i].dev_bus_addr = map->map_ops[i].dev_bus_addr;
-+
- 		map->unmap_ops[i].handle = map->map_ops[i].handle;
- 		if (use_ptemod)
- 			map->kunmap_ops[i].handle = map->kmap_ops[i].handle;
--#ifdef CONFIG_XEN_GRANT_DMA_ALLOC
--		else if (map->dma_vaddr) {
--			unsigned long bfn;
--
--			bfn = pfn_to_bfn(page_to_pfn(map->pages[i]));
--			map->unmap_ops[i].dev_bus_addr = __pfn_to_phys(bfn);
--		}
--#endif
- 	}
- 	return err;
- }
+ 			NF_CT_STAT_INC_ATOMIC(net, found);
+-- 
+2.27.0
+
 
 
