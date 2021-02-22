@@ -2,200 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C1D321344
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 330F4321347
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Feb 2021 10:43:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhBVJlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Feb 2021 04:41:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40130 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230148AbhBVJkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Feb 2021 04:40:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0884DACCF;
-        Mon, 22 Feb 2021 09:40:01 +0000 (UTC)
-Subject: Re: [PATCH] drm/ast: fix memory leak when unload the driver
-To:     Tong Zhang <ztong0001@gmail.com>, Dave Airlie <airlied@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210222023322.984885-1-ztong0001@gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <4f8e20f8-880b-5aae-da48-e06c32e3e14c@suse.de>
-Date:   Mon, 22 Feb 2021 10:39:58 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210222023322.984885-1-ztong0001@gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="dZTOeeJRDc43qHnZ5vOWKE1Oq82W5WHH3"
+        id S230131AbhBVJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Feb 2021 04:41:48 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:58023 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230139AbhBVJl3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Feb 2021 04:41:29 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UPEY.ri_1613986846;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UPEY.ri_1613986846)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 22 Feb 2021 17:40:47 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     dan.j.williams@intel.com
+Cc:     vishal.l.verma@intel.com, dave.jiang@intel.com,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] device-dax: Switch to using the new API kobj_to_dev()
+Date:   Mon, 22 Feb 2021 17:40:44 +0800
+Message-Id: <1613986844-25539-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---dZTOeeJRDc43qHnZ5vOWKE1Oq82W5WHH3
-Content-Type: multipart/mixed; boundary="6m3GrRZ7yINexKWmlU4PoFTmlzIxxOiFU";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tong Zhang <ztong0001@gmail.com>, Dave Airlie <airlied@redhat.com>,
- David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-ID: <4f8e20f8-880b-5aae-da48-e06c32e3e14c@suse.de>
-Subject: Re: [PATCH] drm/ast: fix memory leak when unload the driver
-References: <20210222023322.984885-1-ztong0001@gmail.com>
-In-Reply-To: <20210222023322.984885-1-ztong0001@gmail.com>
+fixed the following coccicheck:
+./drivers/dax/bus.c:486:60-61: WARNING opportunity for kobj_to_dev()
+./drivers/dax/bus.c:1215:60-61: WARNING opportunity for kobj_to_dev()
 
---6m3GrRZ7yINexKWmlU4PoFTmlzIxxOiFU
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/dax/bus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+index 737b207..0e9207c 100644
+--- a/drivers/dax/bus.c
++++ b/drivers/dax/bus.c
+@@ -483,7 +483,7 @@ static ssize_t delete_store(struct device *dev, struct device_attribute *attr,
+ static umode_t dax_region_visible(struct kobject *kobj, struct attribute *a,
+ 		int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct dax_region *dax_region = dev_get_drvdata(dev);
+ 
+ 	if (is_static(dax_region))
+@@ -1212,7 +1212,7 @@ static ssize_t numa_node_show(struct device *dev,
+ 
+ static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct dev_dax *dev_dax = to_dev_dax(dev);
+ 	struct dax_region *dax_region = dev_dax->region;
+ 
+-- 
+1.8.3.1
 
-
-Am 22.02.21 um 03:33 schrieb Tong Zhang:
-> a connector is leaked upon module unload, it seems that we should do
-> similar to sample driver as suggested in drm_drv.c.
->=20
-> Adding drm_atomic_helper_shutdown() in ast_pci_remove to prevent leakin=
-g.
->=20
-> [  153.822134] WARNING: CPU: 0 PID: 173 at drivers/gpu/drm/drm_mode_con=
-fig.c:504 drm_mode_config_cle0
-> [  153.822698] Modules linked in: ast(-) drm_vram_helper drm_ttm_helper=
- ttm [last unloaded: ttm]
-> [  153.823197] CPU: 0 PID: 173 Comm: modprobe Tainted: G        W      =
-   5.11.0-03615-g55f62bc873474
-> [  153.823708] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS=
- rel-1.13.0-48-gd9c812dda519-4
-> [  153.824333] RIP: 0010:drm_mode_config_cleanup+0x418/0x470
-> [  153.824637] Code: 0c 00 00 00 00 48 8b 84 24 a8 00 00 00 65 48 33 04=
- 25 28 00 00 00 75 65 48 81 c0
-> [  153.825668] RSP: 0018:ffff888103c9fb70 EFLAGS: 00010212
-> [  153.825962] RAX: ffff888102b0d100 RBX: ffff888102b0c298 RCX: fffffff=
-f818d8b2b
-> [  153.826356] RDX: dffffc0000000000 RSI: 000000007fffffff RDI: ffff888=
-102b0c298
-> [  153.826748] RBP: ffff888103c9fba0 R08: 0000000000000001 R09: ffffed1=
-020561857
-> [  153.827146] R10: ffff888102b0c2b7 R11: ffffed1020561856 R12: ffff888=
-102b0c000
-> [  153.827538] R13: ffff888102b0c2d8 R14: ffff888102b0c2d8 R15: 1ffff11=
-020793f70
-> [  153.827935] FS:  00007f24bff456a0(0000) GS:ffff88815b400000(0000) kn=
-lGS:0000000000000000
-> [  153.828380] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  153.828697] CR2: 0000000001c39018 CR3: 0000000103c90000 CR4: 0000000=
-0000006f0
-> [  153.829096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
-000000000
-> [  153.829486] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
-000000400
-> [  153.829883] Call Trace:
-> [  153.830024]  ? drmm_mode_config_init+0x930/0x930
-> [  153.830281]  ? cpumask_next+0x16/0x20
-> [  153.830488]  ? mnt_get_count+0x66/0x80
-> [  153.830699]  ? drm_mode_config_cleanup+0x470/0x470
-> [  153.830972]  drm_managed_release+0xed/0x1c0
-> [  153.831208]  drm_dev_release+0x3a/0x50
-> [  153.831420]  release_nodes+0x39e/0x410
-> [  153.831631]  ? devres_release+0x40/0x40
-> [  153.831852]  device_release_driver_internal+0x158/0x270
-> [  153.832143]  driver_detach+0x76/0xe0
-> [  153.832344]  bus_remove_driver+0x7e/0x100
-> [  153.832568]  pci_unregister_driver+0x28/0xf0
-> [  153.832821]  __x64_sys_delete_module+0x268/0x300
-> [  153.833086]  ? __ia32_sys_delete_module+0x300/0x300
-> [  153.833357]  ? call_rcu+0x372/0x4f0
-> [  153.833553]  ? fpregs_assert_state_consistent+0x4d/0x60
-> [  153.833840]  ? exit_to_user_mode_prepare+0x2f/0x130
-> [  153.834118]  do_syscall_64+0x33/0x40
-> [  153.834317]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  153.834597] RIP: 0033:0x7f24bfec7cf7
-> [  153.834797] Code: 48 89 57 30 48 8b 04 24 48 89 47 38 e9 1d a0 02 00=
- 48 89 f8 48 89 f7 48 89 d6 41
-> [  153.835812] RSP: 002b:00007fff72e6cb58 EFLAGS: 00000202 ORIG_RAX: 00=
-000000000000b0
-> [  153.836234] RAX: ffffffffffffffda RBX: 00007f24bff45690 RCX: 00007f2=
-4bfec7cf7
-> [  153.836623] RDX: 00000000ffffffff RSI: 0000000000000080 RDI: 0000000=
-001c2fb10
-> [  153.837018] RBP: 0000000001c2fac0 R08: 2f2f2f2f2f2f2f2f R09: 0000000=
-001c2fac0
-> [  153.837408] R10: fefefefefefefeff R11: 0000000000000202 R12: 0000000=
-001c2fac0
-> [  153.837798] R13: 0000000001c2f9d0 R14: 0000000000000000 R15: 0000000=
-000000001
-> [  153.838194] ---[ end trace b92031513bbe596c ]---
-> [  153.838441] [drm:drm_mode_config_cleanup] *ERROR* connector VGA-1 le=
-aked!
->=20
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-
-I've added the patch to drm-misc-next. Thanks a lot!
-
-Best regards
-Thomas
-
-> ---
->   drivers/gpu/drm/ast/ast_drv.c | 2 ++
->   1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_dr=
-v.c
-> index 667b450606ef..b047c0ea43e8 100644
-> --- a/drivers/gpu/drm/ast/ast_drv.c
-> +++ b/drivers/gpu/drm/ast/ast_drv.c
-> @@ -30,6 +30,7 @@
->   #include <linux/module.h>
->   #include <linux/pci.h>
->  =20
-> +#include <drm/drm_atomic_helper.h>
->   #include <drm/drm_crtc_helper.h>
->   #include <drm/drm_drv.h>
->   #include <drm/drm_fb_helper.h>
-> @@ -138,6 +139,7 @@ static void ast_pci_remove(struct pci_dev *pdev)
->   	struct drm_device *dev =3D pci_get_drvdata(pdev);
->  =20
->   	drm_dev_unregister(dev);
-> +	drm_atomic_helper_shutdown(dev);
->   }
->  =20
->   static int ast_drm_freeze(struct drm_device *dev)
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---6m3GrRZ7yINexKWmlU4PoFTmlzIxxOiFU--
-
---dZTOeeJRDc43qHnZ5vOWKE1Oq82W5WHH3
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAze+8FAwAAAAAACgkQlh/E3EQov+DC
-sRAAluU5/1d9OS+DBkyw3kJIxmEMG3duJJNQUlDzNiP6zx6jzPGZJSA7upQKzER9yBG2HpHJc3zD
-CfRfhdrondITR29FUuBYdv2KqzWsV9yDYXHcKYgjd+7Qrj8EUKXSFLiB2lkvtinKpAjfITBccZ7R
-hSkYeGPpQ/6IE1yZryFAzCxOQCHtknrwkpjNlb+8BZAJvEKxKG33kEbsGv88HTStpRL9d+fLaCgR
-AFsCdGm06mUbTVfdRtVMQQT2Th8pwB5MVL+BEt7MliDLhUj3WbxA3lSo73vOvsfv1LDIbtkrxG4a
-8Z3HHVuMwCq2zW52qcs0UqMPSCzjmLWOtIAHXqbge72q/tOxWifYS1uHj7Ks7r8h/8IF8IdLbi8X
-jDPufVtGSWESDj4mgVwxZlnWJ21vsQqFPP0/ouEsJsJ6H0EvfiVRK0j3cpGdopWrQvmjRNz8Zczd
-7BypRBWqJIZ3Smjl/jzcAwKo/NflqsZb1LhCIT5iWR+iKy6Xh+aOLlXQ8LUi6UxVt4VLXyU5i59s
-wRouK7IF+qQmzX5sv2LIZhaRXLS6Tyc28B2k5t//62MSMUbcsgTx/fAia8OM44NhTFQFmsuY0c7D
-G8qOFOelwh1xBlpIWkOu4JLdSqAcyl9kFnn5xd+cIeBZgVFEeivgV2PojzPK9cQMAwlRZZYIwAjU
-h4o=
-=tUtG
------END PGP SIGNATURE-----
-
---dZTOeeJRDc43qHnZ5vOWKE1Oq82W5WHH3--
